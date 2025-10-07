@@ -22,7 +22,7 @@ The following tutorial requires:
 Guideline
 *********
 
-#. The GUI has 8 general purpose buttons in the Control panel, which can be mapped to our needs.
+#. The GUI has eight general purpose buttons in the Control panel, which can be mapped to our needs.
 
    ..  _GUI_buttons:
    ..  figure:: ./img/buttons.png
@@ -113,20 +113,20 @@ Guideline
 #. Open the ``ipc_ARM.c`` file and add the ``is_three_phase_active`` variable with the ``extern`` keyword.
 
    * This file processes the commands send from the GUI.
-   * This includes e.g. the commands for the *Enable System* and *Enable Control* buttons, the *8 My_Buttons* and the *send_fields*.
+   * This includes e.g. the commands for the *Enable System* and *Enable Control* buttons, the *eight My_Buttons* and the *send_fields*.
 
 #. Scroll down to the cases of the ``My_Buttons`` in the switch-case structure and assign the variable ``is_three_phase_active`` the value *true* in the ``case (My_Button_4):`` .
 
    * This sets the value of the bool variable to true, if the ``My_Button_4`` is pressed.
-   * Keep in mind, that the corresponding button in the GUI is not a toggle button. Pressing this button will always set variable to true. It will not change the value depending on if the button is selected (pressed) or unselected.
+   * Keep in mind that the corresponding button in the GUI is not a toggle button. Pressing this button will always set the variable to true. It will not change the value depending on if the button is selected (pressed) or unselected.
 
 #. To be able to disable the three-phase-wave again, assign in the case ``case (My_Button_5):`` the variable ``is_three_phase_active`` the value *false*.
 #. Set the ``ultrazohm_state_machine_set_userLED()`` to true, if ``My_Button_4`` is pressed and to false, if ``My_Button_5`` is pressed. This will turn the *userLED* on, when the three-phase wave is active.
 #. Comment in the code of ``Bit_7`` and ``Bit_8`` for ``My_Button_4`` and ``My_Button_5`` and change it to the following.
 
-   * These status-bit relay information from the R5 back to the GUI.
+   * These status bits relay information from the R5 back to the GUI.
    * They are e.g. used to sync the *Ready LED*, *Running LED* etc.
-   * For this specific tutorial these two bits are used to relay the information to the GUI, that the button press was acknowledged by the R5.
+   * For this specific tutorial these two bits are used to relay the information to the GUI that the button press was acknowledged by the R5.
 
    .. code-block:: c
      :linenos:
@@ -168,8 +168,8 @@ Guideline
 #. Build the changes and flash the UltraZohm.
 #. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection and hide ``CH4`` and ``CH5``.
 #. Change the UltraZohm to the *Control state* by pressing the respective buttons.
-#. Because of the additional if-statement in the ``isr.c`` file no three-phase wave should be visible in the Scope.
-#. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the Scope and the field below the ``My_Button_4`` should turn green.
+#. Because of the additional if-statement in the ``isr.c`` file no three-phase wave should be visible in the scope.
+#. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the scope and the field below the ``My_Button_4`` should turn green.
 
    ..  _GUI_three_phase:
    ..  figure:: ./img/GUI_three_phase.png

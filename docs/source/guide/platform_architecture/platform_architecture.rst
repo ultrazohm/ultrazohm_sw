@@ -96,4 +96,4 @@ Sources
 -------
 
 .. [#ug1228] `Software Guide UG1228 <https://www.xilinx.com/support/documentation/sw_manuals/ug1228-ultrafast-embedded-design-methodology-guide.pdf>`_
-.. [#wiki] `Semiconductor intellectual property core <https://en.wikipedia.org/wiki/Semiconductor_intellectual_property_core>`
+.. [#wiki] `Semiconductor intellectual property core <https://en.wikipedia.org/wiki/Semiconductor_intellectual_property_core>`_

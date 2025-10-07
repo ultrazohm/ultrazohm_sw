@@ -26,7 +26,7 @@ None.
 Compatibility
 -------------
 
-Connect it with one Ethernet ethernet cable according to **T568B** with :ref:`Analog_LTC2311_16`.
+Connect it with one Ethernet cable according to **T568B** with :ref:`Analog_LTC2311_16`.
 
 See also
 """"""""

@@ -24,9 +24,9 @@ For the upgrade, different components are needed:
 Upgrade procedure
 ^^^^^^^^^^^^^^^^^
 
-1. Remove base, bottom and rear cover,  for better accessibility of the JTAG module.
+1. Remove base, bottom and rear cover for better accessibility of the JTAG module.
 
-2. Dismount old JTAG module  `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
+2. Dismount old JTAG module `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_.
 
    .. image:: upgrades/removejtag.jpg
        :width: 500
@@ -51,7 +51,7 @@ Upgrade procedure
    .. image:: upgrades/zipcable.jpg
        :width: 500
 
-7. Reconnect the USB Cable between the Front panel and the JTAG module. It is ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
+7. Reconnect the USB cable between the front panel and the JTAG module. It is ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
 
    .. image:: upgrades/readymountedjtag.jpg
        :width: 500

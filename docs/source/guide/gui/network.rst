@@ -21,7 +21,7 @@ Setup IP address
 
       255.255.255.0
 
-2. Usually a USB to network adapter is used. However, keep in mind, that these adapters commonly have only 100MBit/s.
+2. Usually a USB to network adapter is used. However, keep in mind that these adapters commonly have only 100MBit/s.
 
 	a. Configure the used network adapter as shown in the figure.
 

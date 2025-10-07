@@ -17,7 +17,7 @@ The following tutorial requires:
 - :ref:`Complete Xilinx Toolchain (Vivado, Vitis) installation <XilinxToolchain>`
 - :ref:`Git installation <Git>`
 - :ref:`Java installation <install_java>`
-- :ref:`Cloned the UltraZohm repositories from Bitbucket <clone>`
+- :ref:`Cloned UltraZohm repositories from Bitbucket <clone>`
 - :ref:`Generated Vitis workspace <genvitis>`
 - UltraZohm connected to your PC by Ethernet and USB (JTAG)
 
@@ -33,7 +33,7 @@ Initial steps
 *************
 
 #. Open the Git terminal inside the cloned UltraZohm repository, or alternatively do the following steps via your git-client (e.g. :ref:`Sourcetree`).
-#. Change your active branch from ``main`` to ``develop`` by using the **checkout** keyword (e.g. ``git checkout develop`` ).
+#. Change your active branch from ``main`` to ``develop`` by using the **checkout** keyword (e.g. ``git checkout develop``).
 
    * The ``develop`` branch is the current development branch with the latest merged changes made to the UltraZohm repository. Every new feature branch will be created from this point.
    * The ``main`` branch is the latest stable version. 
@@ -54,7 +54,7 @@ Initial steps
 
    * This file is the configuration file for the UltraZohm and has to be adjusted to your specific needs. 
    * Change the ``UZ_HARDWARE_VERSION`` to the version of *your* UltraZohm.
-   * Note that on hardware version 5 or newer, potential mismatches between the define and the actual hardware version are handled by the software
+   * Note that on hardware version 5 or newer, potential mismatches between the define and the actual hardware version are handled by the software.
    * See :ref:`global_configuration` for further details.
 
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.
@@ -100,8 +100,8 @@ Initial steps
 
 #. Five default channels are visible in the scope after pressing the *sendSelectData (all)* button. 
 
-   * To get the signals into the scope view, adjust the scaling of the first 3 channels.
-   * Adjust the time base of the Scope via the *setTime* button and the dropdown menu to ``x10``.
+   * To get the signals into the scope view, adjust the scaling of the first three channels.
+   * Adjust the time base of the scope via the *setTime* button and the dropdown menu to ``x10``.
    * FYI, the values for the channels *theta_mech* and *ua* are, in the default case, 0.
 
    ..  _GUI_connected:
@@ -111,4 +111,4 @@ Initial steps
        Visible signals after GUI has been connected.
 
 #. Get yourself familiar with the GUI by trying different things in the GUI. For further information, read the :ref:`sections about the Setup Scope Page, Control Page, and Logging Panel <JavaScope>`.
-#. In the next tutorial, changes will be made to the code-base, and the GUI will be customized.
+#. In the next tutorial, changes will be made to the codebase, and the GUI will be customized.

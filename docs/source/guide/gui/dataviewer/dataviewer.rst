@@ -15,7 +15,7 @@ In addition, log files can be created which can be further analyzed.
 
     Javascope logging the lifecheck signal.
 
-Fig. :numref:`dataviewer_log` shows logging the lifecheck signal of the UltraZohm.
+:numref:`dataviewer_log` shows logging the lifecheck signal of the UltraZohm.
 Two options are available to further analyze this log file:
 
    1. `Matlab Data Inspector`_
@@ -38,7 +38,7 @@ Call the script ``JS_plot_data.m``.
     Call ``JS_plot_data.m``.
 
 The script opens the latest log that is present in ``ultrazohm_sw/javascope`` in the `Matlab Data Inspector <https://de.mathworks.com/help/simulink/slref/simulationdatainspector.html>`_.
-The read data is also available in the Matlab workspace for further processing.
+The read data are also available in the Matlab workspace for further processing.
 
 ..  _dataviewer_matlab_dataviewer:
 
@@ -73,7 +73,7 @@ Python Data Viewer
 
 .. note:: The Python Data Viewer works out of the box inside the :ref:`vscode_remote_container`. If the remote container is not used, the dependencies of ``ultrazohm_sw/docs`` are required on the system. 
 
-The following steps start the python based data viewer:
+The following steps start the Python based data viewer:
 
 1. Open a terminal and navigate to ``ultrazohm_sw/javascope``
 2. Call the dataviewer like so
@@ -88,10 +88,10 @@ The following steps start the python based data viewer:
     :align: center
     :width: 500px
 
-    Start the python data viewer by calling ``dataviewer.py``. A dash server is started which can be open by typing the IP into the browser or clicking the pop op (right corner).
+    Start the Python data viewer by calling ``dataviewer.py``. A dash server is started which can be open by typing the IP into the browser or clicking the pop-up (right corner).
 
 3. Open the web page of the data viewer
-4. Upload the log file that you want to inspect. Note that the data is only *uploaded* to your local machine since the dash app runs on a local server. I.e., all data is only present on your hard drive.
+4. Upload the log file that you want to inspect. Note that the data are only *uploaded* to your local machine since the dash app runs on a local server. I.e., all data are only present on your hard drive.
 
 ..  _dataviewer_python_open:
 
@@ -106,7 +106,7 @@ The following steps start the python based data viewer:
 Data format
 -----------
 
-The python based data viewer can read ``.csv`` and ``.parquet`` (which stores the logs more efficient, i.e., with less disc space).
+The Python based data viewer can read ``.csv`` and ``.parquet`` (which stores the logs more efficiently, i.e., with less disk space).
 Call ``convert_csv_to_parquet.py`` to convert all logs present in the directory to parquet data format, like so
 
 .. code-block:: python

@@ -25,12 +25,12 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 Community & git
 ***************
 
-The UltraZohm project is a community based open source project and the `repository is hosted on Bitucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+The UltraZohm project is a community based open source project and the `repository is hosted on Bitbucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
 We use `Slack <https://slack.com/intl/de-de/>`_ as our primary communication channel.
 Follow these steps to join the community and understand how git works.
 
 #. Join the Slack channel by asking a community member for an invite or request access by mail (info@ultrazohm.com) 
-#. Create a Bitbucket account `on the bitbucket homepage <https://www.bitbucket.com>`_
+#. Create a Bitbucket account `on the Bitbucket homepage <https://www.bitbucket.com>`_
 #. Ask for your Bitbucket account to be added as a **User** in Bitbucket in the Slack channel
 #. Read :ref:`ProjectStructure` to get familiar with the naming conventions and structure of the community
 #. Complete the Atlassian git tutorials to familiarize yourself with the Bitbucket workflow and git:

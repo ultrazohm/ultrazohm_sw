@@ -48,7 +48,7 @@ Step-by-step for Trenz TE0790
 
 1. Remove the programmer (normally used for programming the Zynq) from X8 of the Carrier Board.
    The best way to access the programmer is to remove the bottom cover of the UltraZohm case (4 screws).
-   The TE0790 is the small green PCB with the four dip switches in the figure below.
+   The TE0790 is the small green PCB with the four DIP switches in the figure below.
 
    .. image:: cpld_programming/Programmer_Zynq_position.jpg
       :width: 500

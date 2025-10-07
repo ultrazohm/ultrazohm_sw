@@ -12,15 +12,16 @@ Having a common platform enables the active research community to focus on publi
 
 **High Computational power**
 
-The UltraZohm is based on `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
+The UltraZohm is based on the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
 These offer four ARM A53, two ARM R5, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
-The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_. specifically the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
-Additionally, SoM with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
+The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_.
+Specifically, the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
+Additionally, SoMs with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
 
 **Hard real-time**
 
 The UltraZohm is designed to meet modern control systems' timing requirements for power electronics.
-Thus, the control frequency of the real-time processor is in the range of :math:`10\,\mu s` to :math:`100\,\mu s`, depending on the specific application.
+Thus, the control period of the real-time processor is in the range of :math:`10\,\mu s` to :math:`100\,\mu s`, depending on the specific application.
 Additionally, many modern control algorithms such as model predictive control (MPC) and machine learning methods can be accelerated by using the PL (FPGA) of the UltraZohm.
 Therefore, the system is optimized for this approach.
 
@@ -28,7 +29,7 @@ Therefore, the system is optimized for this approach.
 
 The UltraZohm is a platform with no black boxes and no barriers to your research.
 It is built with the intent to give users full control and the ability to easily adapt the system to their specific needs and preferences.
-Therefore, UltraZohm project is licensed by Apache 2.0 and the hardware is licensed under CERN-OHL-P.
+Therefore, the UltraZohm project is licensed as Apache 2.0 and the hardware is licensed under CERN-OHL-P.
 See :ref:`license_target` for details.
 
 **Modularity**
@@ -59,12 +60,12 @@ Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazoh
 The UltraZohm repositories are split in software and hardware:
 
 - The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
-- The `PCB Designs <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
+- The `PCB Designs page <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
 
 **Maintained & funded**
 
 Project development is funded by the `BMBF with the research grant KI-Power <https://elektronikforschung.de/projekte/ki-power>`_ and is actively maintained by the `Institute ELSYS of TH Nuremberg <https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/>`_ as well as the `Chair of High-Power Converter Systems (HLU) of TU Munich <https://www.epe.ed.tum.de/en/eal/home/>`_.
-In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long term development of the system and to be able to distribute the fully assembled UltraZohm systems.
+In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long-term development of the system and to be able to distribute fully assembled UltraZohm systems.
 
 
 .. _uzslack:
@@ -92,7 +93,7 @@ Contributing
 - In principle, documentation, software, and even IP-Cores can be developed and contributed without physical access to an UltraZohm
 - For IP-Cores, developing with a generic UltraScale development kit is advised
 - While we try to reduce the barrier for contributions, physical access to an UltraZohm is often required
-- Contributes can get in contact by mail or Slack to the maintainers to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`) 
+- Contributors can get in contact by mail or Slack to the maintainers to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`)
 - `Open in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_ for contributing without tool setup
 
 
@@ -115,7 +116,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohm�An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohm - An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm

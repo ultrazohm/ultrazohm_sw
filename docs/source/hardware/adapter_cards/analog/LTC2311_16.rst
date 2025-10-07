@@ -34,18 +34,18 @@ The remainder of this page summarizes the analog input connector and measurement
 Pinout of Analog Connector 
 --------------------------
 
-The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`. 
+The pinout of the RJ45 Ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`.
 
 .. _rj45pinout:
 
 .. figure:: LTC2311_16_v3/rj45_pinout.png
    :width: 700
 
-   Pinout of the ADC ethernet port.
+   Pinout of the ADC Ethernet port.
 
 .. note::
 
-   Note that :numref:`rj45pinout` shows an ethernet cable according to **T568B**!
+   Note that :numref:`rj45pinout` shows an Ethernet cable according to **T568B**!
 
 
 We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
@@ -53,7 +53,7 @@ We provide a breakout board for the RJ45 cable that matches the ADC card. **P** 
 .. image:: LTC2311_16_v3/adc_breakout_PN.png
    :width: 400
 
-The pairs of the RJ45 ethernet connector map to the ADCs as follows:
+The pairs of the RJ45 Ethernet connector map to the ADCs as follows:
 
 =========      ==========================    ==========================
 Connected                         Pin on RJ45                           

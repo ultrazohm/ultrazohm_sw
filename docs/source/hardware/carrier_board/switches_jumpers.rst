@@ -6,14 +6,14 @@ Switches and Jumpers
 
 **Motivation**
 
-The carrier board has several dip switches on the back to change the boot mode and to activate or deactivate the power supply for various functions.
+The carrier board has several DIP switches on the back to change the boot mode and to activate or deactivate the power supply for various functions.
 The settings of the switches are chosen regarding the "TRM-TEBT0808-01" manual.
  
 
 SW1 - Boot Mode
 ---------------
 
-1. Adjustments for booting (Boot Mode Settings ->page 7 of TRM-TEBT0808.01):
+1. Adjustments for booting (Boot Mode Settings -> page 7 of TRM-TEBT0808.01):
 
 2. The ``default configuration`` for the UltraZohm is using SD1.
 

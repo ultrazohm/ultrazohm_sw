@@ -454,7 +454,7 @@ We implement the actual function of the driver in the following.
        return (uz_myIP_hw_read_C(self->config.base_address));
        }
 
-1.  Run the tests, we have several errors since we have no struct member ``config``. Add config to the struct ``uz_myIP_t``:
+16. Run the tests, we have several errors since we have no struct member ``config``. Add config to the struct ``uz_myIP_t``:
 
     .. code-block:: C
        :linenos:

@@ -18,7 +18,7 @@ Requirements
 Aim
 ***
 
-- Setup the physical connections of the UltraZohm
+- Set up the physical connections of the UltraZohm
 - :ref:`clone`
 - Generate the bitstream with Vivado
 - Generate the Vitis workspace
@@ -28,7 +28,7 @@ Aim
 
 .. _clone:
 
-Clone the UltraZohm Repositories
+Clone the UltraZohm repositories
 ********************************
 
 - Create a folder ``ultrazohm``
@@ -39,7 +39,7 @@ Clone the UltraZohm Repositories
    git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-After executing the ``git clone`` commands, the following directory structure exists.
+After executing the ``git clone`` command, the following directory structure exists.
 
 ::
 

@@ -51,7 +51,7 @@ The direction of the signals can be determined with your user CPLD software code
 X4: Ethernet
 ------------
 
-This RJ45 connector is used for ethernet communication. You can use standard LAN cables.
+This RJ45 connector is used for Ethernet communication. You can use standard LAN cables.
 
 X5: Analog adapter
 ------------------

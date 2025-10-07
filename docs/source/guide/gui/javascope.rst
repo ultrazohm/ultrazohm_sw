@@ -7,12 +7,12 @@ JavaScope
 The JavaScope is located in the main ultrazohm_sw repository in the folder  ``ultrazohm_sw\javascope``.
 The folder contains the following files
 
-- ``javascope_run.bat`` is the executable for Windows, start by double-clicking 
+- ``javascope_run.bat`` is the executable for Windows, start it by double-clicking
 - ``UZ_GUI.jar`` is the binary build file of the JavaScope, the sources are in a separate repository
 - ``properties.ini`` is the configuration file that is loaded when starting the JavaScope
-- ``JS_plot_data.m`` is a Matlab script, that reads and plots the measurement data 
+- ``JS_plot_data.m`` is a Matlab script that reads and plots the measurement data
 - ``lib`` is the folder including the required Java libraries
-- ``Log_yyyy-mm-dd-hh-mm-ss.csv`` is a log file that is created at every startup of the GUI
+- ``Log_yyyy-mm-dd_hh-mm-ss.csv`` is a log file that is created at every startup of the GUI
 
   ..  _javascope_folder:
 
@@ -37,7 +37,7 @@ The GUI is shown in :numref:`javascope_gui`.
 
 #. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 #. You will see some moving signs at (2) if the connection was successful.
-#. The ``Stop`` (3) respectively ``Run`` button stops or restarts the scope. After the connection has been established, the Scope will be put into the ``Run`` mode automatically.
+#. The ``Stop`` (3) respectively ``Run`` button stops or restarts the scope. After the connection has been established, the scope will be put into the ``Run`` mode automatically.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
@@ -59,7 +59,7 @@ The Setup Scope page is used to adjust the scope settings during operation.
       :scale: 90 %
       :align: center
 
-      JavsScope Setup tab
+      JavaScope Setup tab
 
 #. Up to 20 channels, out of a predefined variable selection, can be chosen and displayed.
 
@@ -104,7 +104,7 @@ The control page is used to step through the state-machine of the system and for
 
    b. From returning to the slow blinking of the ``Ready`` LED and turning off the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 
-#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data is transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
+#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data are transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
 
 #. The ``receive_fields``
 
@@ -129,7 +129,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``mybuttons``
 
-   a. Besides the ``send_field`` values, there are 8 buttons available for the user. In ``ipc_ARM.c`` one can choose what happens when pressing the buttons.
+   a. Besides the ``send_field`` values, there are eight buttons available for the user. In ``ipc_ARM.c`` one can choose what happens when pressing the buttons.
 
    b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have feedback for the button actions. See ``/* Bit 4 - My_Button_1 */`` in the right picture below for example usage.
 
@@ -162,10 +162,10 @@ The logging panel is used to setup the data logger of the GUI.
 
     logging panel
 
-#. The ``setTime`` button sets the time base of the Scope. It simply scales the time base of the scope by the selected value.
+#. The ``setTime`` button sets the time base of the scope. It simply scales the time base of the scope by the selected value.
 #. After zooming in on one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
 #. Here the trigger level for a manual trigger can be set (e.g. 1V).
-#. With this slider, the preTrigger can be configured. (e.g. how much time is visible before the trigger event happens).
+#. With this slider, the preTrigger can be configured (e.g. how much time is visible before the trigger event happens).
 #. The button ``setTrigger`` sets the selection for rising or falling edge for CH1->Ch4. Choose the desired setting in the dropdown menu above.
 #. The button ``SingleShot`` triggers the scope once.
 #. The button ``SaveScreen XLS`` saves the visible scope content in a xls file.
@@ -179,7 +179,7 @@ The logging panel is used to setup the data logger of the GUI.
    However, to reduce the file size, only values not equal to ``JSSD_FLOAT_ZEROVALUE`` are logged.
    For customizing them see :ref:`javascope_customizing`.
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
-#. With the ``set n-th log value`` the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged). 
+#. With the ``set n-th log value`` button the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged).
    This logging rate counts for the fast and slow data. Choose the desired value from the dropdown menu above.
 #. The button ``allow ext. logging`` enables the start and stop of the logging via a status-bit of the R5.
    If this functionality is enabled, the text of the button is highlighted and the button ``Logging ON/OFF`` is disabled/overwritten. 
@@ -214,13 +214,13 @@ Some settings can be configured before the start-up of the GUI in the ``properti
 
 #. The ``smallestTimeStepUSEC`` variable sets the time, with which data is assumed to be transferred to Java. 
    It's used to calculate the time-axis of the scope and logger. 
-   It should match the sample time of the ISR (e.q. ISR-frequency of 10kHz -> smallestTimeStepUSEC=100). 
+   It should match the sample time of the ISR (e.g. ISR-frequency of 10kHz -> smallestTimeStepUSEC=100).
 #. The ``initScaleChx`` variable sets the initial scaling factor for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``initOffsetCHx`` variable sets the initial offset for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``preSelectedChannelNumbers`` variable sets the pre-selected channel number for each of the 20 channels in the scope. 
-   The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (E.g. selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
+   The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (e.g. selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``preSelectedChannelVisibility`` variable sets the initial visibility for each of the 20 channels in the scope. 
    Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
@@ -292,7 +292,7 @@ The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text fiel
 
 If not every out of the 20 ``receive_fields`` is needed, the unnecessary channels can be set to ``JSSD_FLOAT_ZEROVALUE``. 
 They will appear as value 0 in the receive fields. 
-Furthermore, to reduces the size of the .csv logging file, the ``receive_fields`` with the value ``JSSD_FLOAT_ZEROVALUE`` won't be logged.
+Furthermore, to reduce the size of the .csv logging file, the ``receive_fields`` with the value ``JSSD_FLOAT_ZEROVALUE`` won't be logged.
 
 Known issues
 ------------

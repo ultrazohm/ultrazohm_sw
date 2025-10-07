@@ -23,20 +23,20 @@ Guideline
 #. For the purpose of this tutorial, multiple instances of the :ref:`uz_wavegen_chirp` will be used.
 #. Open the ``uz_global_configuration.h`` file and look at the ``#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES`` number. 
 
-   * Currently *two* instances of this module are allowed. This means, that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
+   * Currently *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
    * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances, when only e.g. three are needed, is wasteful, the max amount of possible instances is limited by this define.
    * This procedure is the same for every multiple instance module (e.g. :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
    * For further information see :ref:`static_memory_allocation`.
 
-#. In this tutorial three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore adjust the number after the define to ``3U`` .
-#. Follow the guideline for an :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three times.
+#. In this tutorial three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore adjust the number after the define to ``3U``.
+#. Follow the guideline for a :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three times.
 
    * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header of the R5 processor (Baremetal).
    * Declare three different configuration structs in the ``main.c`` with different values.
    * Initialize three different instances with three separate calls of the ``uz_wavegen_chirp_init`` function.
    * Create for the above steps a new case in the ``initialization_chain`` switch case and insert it after the ``init_software`` case.
-  
-#. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out of.
+
+#. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out.
 
    * The declaration of the three instances outside of the main is necessary, so that they can be accessed by other c-files.
    * Since the config-structs are not needed after initialization, they can be declared local to the main function.
@@ -135,13 +135,13 @@ Guideline
 #. Create three global float values, to which the output of the ``uz_wavegen_chirp_sample`` can be passed.
 #. Add the three function calls ``uz_wavegen_chirp_sample`` for the three instances in the if-statement.
 
-   * This if-statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.  
+   * This if-statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.
    * The UZ has four different states (see :ref:`r5_statemachine`):
-  
-      #. Idle state: *Ready LED* will blink slowly, all IO and PWM pins are disabled.
-      #. Running state: *Ready LED* will blink fast and the IP and PWM pins are enabled.
-      #. Control state: *Ready LED* will blink fast, *Running LED* will turn on and the specific code inside the if-statement in the ISR will be executed.
-      #. Error state: *Error LED* turns on, Running and Control state are disabled and the IO and PWM pins get disabled.
+
+     #. Idle state: *Ready LED* will blink slowly, all IO and PWM pins are disabled.
+     #. Running state: *Ready LED* will blink fast and the IP and PWM pins are enabled.
+     #. Control state: *Ready LED* will blink fast, *Running LED* will turn on and the specific code inside the if-statement in the ISR will be executed.
+     #. Error state: *Error LED* turns on, Running and Control state are disabled and the IO and PWM pins get disabled.
 
 #. Your ``isr.c`` should now look similar to this.
 
@@ -195,7 +195,7 @@ Guideline
       //....
 
 #. To display the different chirp waves on the JavaScope, the ``javascope.c`` and ``javascope.h`` file will be modified. 
-#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum. (e.g. JSO_Chirpwave1, etc.).
+#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum (e.g. JSO_Chirpwave1, etc.).
 
    * Here the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.

@@ -24,7 +24,7 @@ We use Bitbucket Cloud-hosted, so click ``Bitbucket`` (right).
 
 .. image:: ./images_git/sourcetree_anmeldung.png
 
-You will be asked to login to your Bitbucket account. If you do not have one, please create one <https://www.bitbucket.com> since it is required to access the software of the UltraZohm.
+You will be asked to login to your Bitbucket account. If you do not have one, please `create one <https://www.bitbucket.com>`_ since it is required to access the software of the UltraZohm.
 
 .. image:: ./images_git/sourcetree_login.png
 
@@ -36,12 +36,12 @@ You only need to download and install git (if you do not have installed it alrea
 
 .. image:: ./images_git/sourcetree_installer2.png
 
-If you know what an SSH Key is, how to use it and want to use it, you can you it (Ja=Yes, Nein=No).
+If you know what an SSH Key is, how to use it and want to use it, you can use it (Ja=Yes, Nein=No).
 If you do not know what an SSH Key is, click ``Nein`` (No) and use clone by ``https`` in the following.
 
 .. image:: ./images_git/sourcetree_ssh.png
 
-After that the installation is complete and you can open Sourcetree and you should be logged in and you see your remote repositories.
+After that the installation is complete and you can open Sourcetree and you should be logged in and see your remote repositories.
 If you are in the UltraZohm team you will see the ``ultrazohm_sw`` repository.
 
 .. image:: ./images_git/sourcetree_offen.png
@@ -56,7 +56,7 @@ The dialog to clone the repository is opened and you can add the local path. It 
 
   C:\UltraZohm\ultrazohm_sw
 
-Under Advanced Options (Erweiterte Optionen) checkout the **main** branch.
+Under Advanced Options (Erweiterte Optionen) check out the **main** branch.
 
 .. image:: ./images_git/sourcetree_clone2.png
 
@@ -116,7 +116,7 @@ Naming:
 
 .. warning::
 
-  do not change ``start at: develop`` to anything else.
+  Do not change ``start at: develop`` to anything else.
 
 .. image:: ./images_git/gitflow5.png
 

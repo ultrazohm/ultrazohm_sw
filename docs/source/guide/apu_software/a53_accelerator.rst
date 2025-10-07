@@ -42,7 +42,7 @@ the process.
       subgraph A53: Transfer_ipc_Intr_Handler
           C --> F[A53: crunch the numbers <br> with user data from OCM Bank 1, <br> write results to OCM Bank 2]
           style F fill:#f9f
-          W(Handle Javascope data <br> for ethernet <br> transmission)
+          W(Handle Javascope data <br> for Ethernet <br> transmission)
       end
           F -->|finished, set ack| G(R5: Invalidate <br> OCM Bank 2)
       subgraph R5: Javascope_update

@@ -145,12 +145,12 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - In the Workflow Advisor, extend the menu on the left
 - In ``1.1 Set Target Device and Synthesis Tool``, the following basic settings are applied:
 
-   - Target workflow: IP Core Generation
-   - Target platform: Generic Xilinx Platform
-   - Synthesis tool: Xilinx Vivado
-   - Family: Zynq UltraScale+
-   - Device: xczu9eg (rest of the number does not matter)
-   - Project folder: path to ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj
+  - Target workflow: IP Core Generation
+  - Target platform: Generic Xilinx Platform
+  - Synthesis tool: Xilinx Vivado
+  - Family: Zynq UltraScale+
+  - Device: xczu9eg (rest of the number does not matter)
+  - Project folder: path to ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj
 
 - Click run this task
 - Result will fail: click on ``turn on "Treat as atomic unit"``

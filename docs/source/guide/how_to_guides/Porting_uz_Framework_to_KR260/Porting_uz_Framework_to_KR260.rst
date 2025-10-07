@@ -21,10 +21,10 @@ This is the starting point for small Hil/Sil/PiL projects, which are compatible 
 Prerequisites
 =============
 
-  * Getting-Started completed and understood
-  * A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
-  * Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
-  * Basic knowledge of the used tools.
+* Getting-Started completed and understood
+* A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
+* Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
+* Basic knowledge of the used tools.
 
 Vivado
 ======
@@ -61,12 +61,12 @@ Creating Fresh Project
     .. tip:: This is the only point where you need automated assistant from Vivado! "Do not click to auto connection within the following Steps, otherwise Vivado is going to address the unused pins before deleting and create more problems!"
 
 #.  Create HDL-Wrapper and make sure its the Top-file.
- 
+
 #.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
 
 #.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
-    
+
     *  ip_cores \ Interlock_Module_3L \ top_npc_state_machine.vhd
     *  ip_cores \ Interlock_Module_3L \ npc_phase_state_machine.vhd
     *  ip_cores\ Delay_signal \ delay_trigger.vhd
@@ -136,7 +136,7 @@ Creating Fresh Project
         source ../tcl_scripts/kria_vivado_block_digital_adapter.tcl
         create_hier_cell_uz_digital_adapter hier_0 uz_digital_adapter
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_digital_adapter]
-       
+
 #.  Don't recreate the ``uz_analog_adapter`` since we don't have analog-Interfaces with the KR260.
 #.  Delete every digital Slot inside ``uz_digital_adapter`` except D1.
     We only want to use the 2-LvL-PWM-Cores in this How-To.
@@ -160,9 +160,9 @@ Project with TCL Scripts:
 
 #. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
 #. Add the missing VHDL-files:
-   
+
     .. code-block::
-        
+
         top_npc_state_machine.vhd
         npc_phase_state_machine.vhd
         delay_trigger.vhd
@@ -172,9 +172,9 @@ Project with TCL Scripts:
 #. Add the UltraZohm IP-Repository to the project. 
 #. Add a new Block design and name with ``k26sys``.
 #. Switch with the TCL Console to the current working folder with:
-   
+
     .. code-block::
-        
+
         cd [ get_property DIRECTORY [current_project] ]
 
 #. Open TCL Console and call the TCL-scripts for block and connection implementation with given order:
@@ -240,13 +240,13 @@ To create a suited software for the KR260, follow these steps:
         * #define XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
 
     #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP-Cores 
-     
+
         * uz_adcLtc2311_ip_core_init();
         * PWM_3L_Initialize(&Global_Data); // three-level modulator
         * initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-    
+
     #.  In the ``main.c - case init_gpios / uz_frontplane_button_and_led_init()`` , comment out 
-    
+
         * enableAllMioWithLEDsAttached(); 
         * enableAllMioWithButtonsAttached(); 
 
@@ -264,31 +264,31 @@ To create a suited software for the KR260, follow these steps:
 
     #. Fixing the Stop-Flag in ``hw_init / uz_platform_state_machine.c``  line 277 to 0. With no PS-GPIO enabled, we can't get any buttons.
 
-#. Changes for the FreeRTOS-Project:
+#.  Changes for the FreeRTOS-Project:
 
     #. Delete ever CAN-related Code from the ``main.c`` and remove the files ``can.c`` and ``can.h``.
     #. add a new define ``#define OS_IS_FREERTOS`` in the ``main.h``.
     #. Increase the DHCP-Timeout in the ``main.c``.
 
-        * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
+       * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
 
     #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
 
-        * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
+       * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
 
-#. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
+#.  Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
     * ``\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
-#. Restart Vitis to make the. launches-files accessible
-#. Build both C-Projects 
-#. Control the Debug Configuration and run the project on the KR260.
-    
+#.  Restart Vitis to make the. launches-files accessible
+#.  Build both C-Projects 
+#.  Control the Debug Configuration and run the project on the KR260.
+
     * Control the Debug Configuration - Application and Target Setup.
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
     * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
 
-#. Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
+#.  Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
 Known Issues
 ============

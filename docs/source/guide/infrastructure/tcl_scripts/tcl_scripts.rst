@@ -9,9 +9,9 @@ See Xilinx `UG835 <https://www.xilinx.com/support/documentation/sw_manuals/xilin
 All Tcl scripts of the UltraZohm Community are located in the ``ultrazohm_sw`` repository in the folder ``tcl_scripts``.
 The three different kinds of Tcl scripts are differentiated by prefix:
 
-    * ci\_ marks scripts that are used for continuous integration
-    * vivado\_ marks scripts for Vivado
-    * vitis\_ marks scripts for Vitis
+* ci\_ marks scripts that are used for continuous integration
+* vivado\_ marks scripts for Vivado
+* vitis\_ marks scripts for Vitis
 
 The Vivado scripts can be called from Vivado tcl console (``Window -> Tcl console`` in Vivado) or choose a Tcl script (``Tools -> Run Tcl script...``) as well as the command line in batch mode on linux:
 

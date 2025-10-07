@@ -235,34 +235,32 @@ Add variables to the scope drop-down menus
 For adding a variable to the drop-down menus of the 20 scope channels, two steps are required:
 
    1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the drop-down menu into the enum ``JS_ObservableData`` inside ``javascope.h`` (see blue box in the middle picture below). Pay attention to the naming convention starting with ``JSO_``.
-
    2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a pointer of the variable to be viewed in the scope to the new enum entry from step 1 (see red and blue boxes in the right picture below). 
 
-   The GUI parses the enum ``JS_ObservableData`` at startup and your new variable will appear in the drop-down menu (see green box in the left picture below). This way the user can add an almost infinite number of observable variables to the list, where 20 of them can be seen in the GUI at the same time.
+The GUI parses the enum ``JS_ObservableData`` at startup and your new variable will appear in the drop-down menu (see green box in the left picture below). This way the user can add an almost infinite number of observable variables to the list, where 20 of them can be seen in the GUI at the same time.
 
-  ..  _javascope_scopedata:
+..  _javascope_scopedata:
 
-  ..  figure:: ./images_javascope/addscopevariable.png
-      :align: center
+..  figure:: ./images_javascope/addscopevariable.png
+    :align: center
 
-      Correlation of ``javascope.c``, ``javascope.h`` and GUI for adding scope data
+    Correlation of ``javascope.c``, ``javascope.h`` and GUI for adding scope data
 
 Add variables to the slow data table
 """"""""""""""""""""""""""""""""""""
 For adding a variable to the slow data table, two steps are required:
 
    1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the slow data table into the enum ``JS_SlowData`` inside ``javascope.h`` (see the blue box in the middle picture below). Pay attention to the naming convention starting with ``JSSD_INT_`` or ``JSSD_FLOAT_``.
-
    2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a variable to be viewed in the slow data table to the new enum entry from step 1 (see red and blue boxes in the right picture below). 
 
-   The GUI parses the enum ``JS_SlowData`` at startup and your new variable will appear in the slow data table (see green box in the left picture below). This way the user can add an almost infinite number of slow data variables to the list. The longer the table, the slower it is updated, because the slow data are sent one after another with each scope data frame.
+The GUI parses the enum ``JS_SlowData`` at startup and your new variable will appear in the slow data table (see green box in the left picture below). This way the user can add an almost infinite number of slow data variables to the list. The longer the table, the slower it is updated, because the slow data are sent one after another with each scope data frame.
 
-  ..  _javascope_slowdata:
+..  _javascope_slowdata:
 
-  ..  figure:: ./images_javascope/addslowdatavariable.png
-      :align: center
+..  figure:: ./images_javascope/addslowdatavariable.png
+    :align: center
 
-      Correlation of ``javascope.c``, ``javascope.h`` and GUI for adding slow data
+    Correlation of ``javascope.c``, ``javascope.h`` and GUI for adding slow data
 
 Customize the Control tab in the GUI
 """"""""""""""""""""""""""""""""""""
@@ -310,5 +308,5 @@ See also
 
 Designed by
 """""""""""
-Philipp Loehdefink (THN), Sebastian Wendel (THN), Eyke Liegmann (TUM), Michael Hoerner (THN) , Dennis Hufnagel (THN) in 04/2022
+Philipp Loehdefink (THN), Sebastian Wendel (THN), Eyke Liegmann (TUM), Michael Hoerner (THN), Dennis Hufnagel (THN) in 04/2022
 

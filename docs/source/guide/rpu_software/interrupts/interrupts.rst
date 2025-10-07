@@ -59,10 +59,10 @@ Structure in the PL
 
 The Interrupt module consists of:
 
-    * ``mux_axi``: chose source of ADC conversion trigger 
-    * ``delay_trigger``: adds delay to the ADC conversion trigger
-    * ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging
-    * ``adc_delay``: vio to set delay of ``delay_trigger``
+* ``mux_axi``: chose source of ADC conversion trigger 
+* ``delay_trigger``: adds delay to the ADC conversion trigger
+* ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging
+* ``adc_delay``: vio to set delay of ``delay_trigger``
 
 .. _pl_interrupt_module:
 

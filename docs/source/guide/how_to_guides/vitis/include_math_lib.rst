@@ -23,4 +23,4 @@ Add the math library by going through the steps.
 6. **Apply**
 7. Apply and Close
 
-..	image:: ./images_problems/include_math_lib2.png
+   ..	image:: ./images_problems/include_math_lib2.png

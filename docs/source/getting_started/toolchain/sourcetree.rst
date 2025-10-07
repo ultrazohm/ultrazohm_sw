@@ -80,7 +80,7 @@ Sourcetree known issues
     C:Users\USERNAME\AppData\Local\SourceTree
 
   Where ``USERNAME`` is the name of your Windows user account. Note that the path might be a hidden folder.
-  To  create a shortcut right-click the sourcetree.exe and click ``create desktop shortcut``.
+  To create a shortcut right-click the sourcetree.exe and click ``create desktop shortcut``.
 
 
 Sourcetree git-flow

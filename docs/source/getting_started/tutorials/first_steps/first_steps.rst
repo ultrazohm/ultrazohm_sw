@@ -90,7 +90,7 @@ Initial steps
        Debug configuration in Vitis.
 
 #. If the flashing was successful, the **Ready LED** will blink slowly.
-#. Make sure that you have configured your Ethernet-to-USB adapter according to :ref:`this guide<GUI_network>`.
+#. Make sure that you have configured your Ethernet-to-USB adapter according to :ref:`this guide <GUI_network>`.
 #. Start the **uz_GUI** in the folder ``ultrazohm_sw/javascope`` by double-clicking on the ``UZ_GUI.jar`` file or executing the ``javascope_run.bat`` file.
 
 #. Press the **Connect** button in the GUI. Now the GUI should be up and running. 

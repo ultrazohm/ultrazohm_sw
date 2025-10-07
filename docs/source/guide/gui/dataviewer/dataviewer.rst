@@ -5,7 +5,7 @@ Data viewer
 ===========
 
 The :ref:`JavaScope` is used to observe log data during operation of the UltraZohm.
-In addition, log files can be created which can be further analyzed.
+In addition, log files can be created, which can be further analyzed.
 
 ..  _dataviewer_log:
 
@@ -56,7 +56,7 @@ To load a specific log file, set the file name accordingly, like so:
     paste file name here if you want to open a specific file
     file_name = 'Log_2024-03-11_99-99-99.csv';
 
-Additional settings, such as converting the log file to ``.mat`` for further usage in Matlab can be set:
+Additional settings, such as converting the log file to ``.mat`` for further usage in Matlab, can be set:
 
 .. code-block::
 
@@ -73,7 +73,7 @@ Python Data Viewer
 
 .. note:: The Python Data Viewer works out of the box inside the :ref:`vscode_remote_container`. If the remote container is not used, the dependencies of ``ultrazohm_sw/docs`` are required on the system. 
 
-The following steps start the Python based data viewer:
+The following steps start the Python-based data viewer:
 
 1. Open a terminal and navigate to ``ultrazohm_sw/javascope``
 2. Call the dataviewer like so
@@ -88,7 +88,7 @@ The following steps start the Python based data viewer:
     :align: center
     :width: 500px
 
-    Start the Python data viewer by calling ``dataviewer.py``. A dash server is started which can be open by typing the IP into the browser or clicking the pop-up (right corner).
+    Start the Python data viewer by calling ``dataviewer.py``. A dash server is started, which can be open by typing the IP into the browser or clicking the pop-up (right corner).
 
 3. Open the web page of the data viewer
 4. Upload the log file that you want to inspect. Note that the data are only *uploaded* to your local machine since the dash app runs on a local server. I.e., all data are only present on your hard drive.
@@ -99,14 +99,14 @@ The following steps start the Python based data viewer:
     :align: center
     :width: 500px
 
-    Data viewer after uploading log data. The figure dynamically rescales using `plotly resampler <https://github.com/predict-idlab/plotly-resampler>`_. Note that when viewing large timescales, aliasing might be present which is reduced if the x-axis is zoomed in.
+    Data viewer after uploading log data. The figure dynamically rescales using `plotly resampler <https://github.com/predict-idlab/plotly-resampler>`_. Note that when viewing large timescales, aliasing might be present, which is reduced if the x-axis is zoomed in.
 
 5. Inspect the log file
 
 Data format
 -----------
 
-The Python based data viewer can read ``.csv`` and ``.parquet`` (which stores the logs more efficiently, i.e., with less disk space).
+The Python-based data viewer can read ``.csv`` and ``.parquet`` (which stores the logs more efficiently, i.e., with less disk space).
 Call ``convert_csv_to_parquet.py`` to convert all logs present in the directory to parquet data format, like so
 
 .. code-block:: python

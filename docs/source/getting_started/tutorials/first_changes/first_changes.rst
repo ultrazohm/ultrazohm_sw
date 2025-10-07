@@ -7,7 +7,7 @@ First changes to the codebase
 Aim of the tutorial
 *******************
 
-In this tutorial a multi-instances module from the :ref:`wave_generator` library of the UltraZohm project will be used and the output displayed in the GUI. 
+In this tutorial, a multi-instances module from the :ref:`wave_generator` library of the UltraZohm project will be used and the output displayed in the GUI.
 
 Requirements
 ************
@@ -23,12 +23,12 @@ Guideline
 #. For the purpose of this tutorial, multiple instances of the :ref:`uz_wavegen_chirp` will be used.
 #. Open the ``uz_global_configuration.h`` file and look at the ``#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES`` number. 
 
-   * Currently *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
-   * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances, when only e.g. three are needed, is wasteful, the max amount of possible instances is limited by this define.
-   * This procedure is the same for every multiple instance module (e.g. :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
-   * For further information see :ref:`static_memory_allocation`.
+   * Currently, *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
+   * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances when only, e.g., three are needed is wasteful, the max amount of possible instances is limited by this define.
+   * This procedure is the same for every multiple-instance module (e.g., :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
+   * For further information, see :ref:`static_memory_allocation`.
 
-#. In this tutorial three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore adjust the number after the define to ``3U``.
+#. In this tutorial, three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore, adjust the number after the define to ``3U``.
 #. Follow the guideline for a :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three times.
 
    * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header of the R5 processor (Baremetal).
@@ -38,13 +38,13 @@ Guideline
 
 #. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out.
 
-   * The declaration of the three instances outside of the main is necessary, so that they can be accessed by other c-files.
-   * Since the config-structs are not needed after initialization, they can be declared local to the main function.
+   * The declaration of the three instances outside of the main is necessary so that they can be accessed by other c-files.
+   * Since the config structs are not needed after initialization, they can be declared local to the main function.
 
    .. code-block:: c
      :linenos:
      :emphasize-lines: 10,18-20,34,36-65
-     :caption: main.c code after changes. ``//....`` marks left out code. 
+     :caption: main.c code after changes. ``//....`` marks left-out code.
 
       // Includes from own files
       #include "main.h"
@@ -122,25 +122,25 @@ Guideline
 
 #. Open up the ``isr.c`` file of the R5 processor (Baremetal).
 
-   * This file is used to call the the sample functions (i.e. functions which calculate values for the current time step) of the wavegen module.
-   * This is done in the ISR and not the main, since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models. 
+   * This file is used to call the the sample functions (i.e., functions which calculate values for the current time step) of the wavegen module.
+   * This is done in the ISR and not the main since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models.
    * The ``while(1)`` loop in ``main.c`` does not run with a constant sample time. 
 
 #. Declare in the ``isr.c`` file the three instances again, but this time with the ``extern`` keyword in front.
 
-   * This keyword specifies that the variable is defined in another file. The ``extern`` keyword must be applied in all files, in which the variable is used, except in which the variable is initially defined.
-   * This only works, if the variable is global, i.e. declared outside the e.g. main-function.
+   * This keyword specifies that the variable is defined in another file. The ``extern`` keyword must be applied in all files in which the variable is used, except in which the variable is initially defined.
+   * This only works if the variable is global, i.e., declared outside the, e.g., main function.
    * It, in essence, allows the variable to be shared over multiple c-files.
 
-#. Create three global float values, to which the output of the ``uz_wavegen_chirp_sample`` can be passed.
-#. Add the three function calls ``uz_wavegen_chirp_sample`` for the three instances in the if-statement.
+#. Create three global float values to which the output of the ``uz_wavegen_chirp_sample`` can be passed.
+#. Add the three function calls ``uz_wavegen_chirp_sample`` for the three instances in the if statement.
 
-   * This if-statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.
+   * This if statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.
    * The UZ has four different states (see :ref:`r5_statemachine`):
 
      #. Idle state: *Ready LED* will blink slowly, all IO and PWM pins are disabled.
      #. Running state: *Ready LED* will blink fast and the IP and PWM pins are enabled.
-     #. Control state: *Ready LED* will blink fast, *Running LED* will turn on and the specific code inside the if-statement in the ISR will be executed.
+     #. Control state: *Ready LED* will blink fast, *Running LED* will turn on and the specific code inside the if statement in the ISR will be executed.
      #. Error state: *Error LED* turns on, Running and Control state are disabled and the IO and PWM pins get disabled.
 
 #. Your ``isr.c`` should now look similar to this.
@@ -148,7 +148,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 5-10,29-31
-     :caption: isr.c code after changes. ``//....`` marks left out code.  
+     :caption: isr.c code after changes. ``//....`` marks left-out code.
 
       //....
       // Global variable structure
@@ -195,9 +195,9 @@ Guideline
       //....
 
 #. To display the different chirp waves on the JavaScope, the ``javascope.c`` and ``javascope.h`` file will be modified. 
-#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum (e.g. JSO_Chirpwave1, etc.).
+#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum (e.g., JSO_Chirpwave1, etc.).
 
-   * Here the names for all observable data are stored in an enum.
+   * Here, the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.
 
    .. code-block:: c
@@ -245,9 +245,9 @@ Guideline
 
   
 #. Add to the ``javascope.c`` file with the ``extern`` keyword the three chirp_output float variables from the ``isr.c``.
-#. In the ``JavaScope_initalize`` function add the three new entries to the ``js_ch_observable`` array.
+#. In the ``JavaScope_initalize`` function, add the three new entries to the ``js_ch_observable`` array.
 
-   * Here the addresses of the variables are assigned to the specific elements in the ``js_ch_observable`` array corresponding to its enum.
+   * Here, the addresses of the variables are assigned to the specific elements in the ``js_ch_observable`` array corresponding to its enum.
    * The value of the variable itself will be automatically updated in the ``JavaScope_update`` function (no changes have to be made). 
   
 #. The ``javascope.c`` file should look like this now.
@@ -255,7 +255,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2-4,12-14
-     :caption: javascope.c code after changes. ``//....`` marks left out code.  
+     :caption: javascope.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern float chirp_output1;
@@ -275,8 +275,8 @@ Guideline
       }
       //....
 
-#. Build the changes and if no errors exist flash the UZ.
-#. Open the JavaScope and connect it and select the three new signals in the *Setup Scope* page. Set every other channel to ``(0) ZeroValue`` . 
+#. Build the changes and, if no errors exist, flash the UZ.
+#. Open the JavaScope and connect it and select the three new signals in the *Setup Scope* page. Set every other channel to ``(0) ZeroValue``.
 
    * You can hide the visible channels by clicking on the corresponding entry in the legend of the scope.
    * Clicking on the entry of the legend in the scope again makes that specific channel visible again.

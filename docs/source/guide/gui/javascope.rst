@@ -88,13 +88,13 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``Enable System`` button has the same functionality as the hardware button on the main front panel.
 
-   a. It sets the system state to enable which mainly enables IO and PWM pins.
+   a. It sets the system state to enable, which mainly enables IO and PWM pins.
 
    b. When the enable is confirmed by the R5 of the UltraZohm, the ``Ready`` LED on the front panel as well as its mirrored twin in the GUI will blink faster.
 
 #. The ``Enable Control`` button has the same functionality as the hardware button on the main front panel.
 
-   a. It sets the system state to enable control which mainly executes a part of the ISR of the R5 where the user should place its real-time application code.
+   a. It sets the system state to enable control, which mainly executes a part of the ISR of the R5 where the user should place its real-time application code.
 
    b. When the enable is confirmed by the R5 of the UltraZohm, the ``Running`` LED on the front panel as well as its mirrored twin in the GUI will turn on in addition to the blinking ``Ready`` LED.
 
@@ -104,11 +104,11 @@ The control page is used to step through the state-machine of the system and for
 
    b. From returning to the slow blinking of the ``Ready`` LED and turning off the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 
-#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data are transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
+#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm, no data are transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
 
 #. The ``receive_fields``
 
-   a. Here some user-defined slow data values can be visualized more prominently than in the slow data table.
+   a. Here, some user-defined slow data values can be visualized more prominently than in the slow data table.
 
    b. For the selection of which values are shown here, see section :ref:`javascope_customizing`.
 
@@ -129,7 +129,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``mybuttons``
 
-   a. Besides the ``send_field`` values, there are eight buttons available for the user. In ``ipc_ARM.c`` one can choose what happens when pressing the buttons.
+   a. Besides the ``send_field`` values, there are eight buttons available for the user. In ``ipc_ARM.c``, one can choose what happens when pressing the buttons.
 
    b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have feedback for the button actions. See ``/* Bit 4 - My_Button_1 */`` in the right picture below for example usage.
 
@@ -145,7 +145,7 @@ The control page is used to step through the state-machine of the system and for
 
    a. What happens when pressing ``Error Reset`` can also be programmed in ``ipc_ARM.c``
 
-   b. For sending error codes to the GUI that are then displayed in the respective text field ``error code`` use the slow data variable ``JSSD_FLOAT_Error_Code``.
+   b. For sending error codes to the GUI that are then displayed in the respective text field ``error code``, use the slow data variable ``JSSD_FLOAT_Error_Code``.
 
 #. In the ``SlowData`` table it is possible to debug an almost endless number of values by receiving data from the ISR (R5 processor). However, these variables share one frame and are transferred in a chain. The more values are displayed, the longer it takes until they are updated. For changing the entries in the slow data table, see :ref:`javascope_customizing`.
 
@@ -164,8 +164,8 @@ The logging panel is used to setup the data logger of the GUI.
 
 #. The ``setTime`` button sets the time base of the scope. It simply scales the time base of the scope by the selected value.
 #. After zooming in on one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
-#. Here the trigger level for a manual trigger can be set (e.g. 1V).
-#. With this slider, the preTrigger can be configured (e.g. how much time is visible before the trigger event happens).
+#. Here, the trigger level for a manual trigger can be set (e.g., 1V).
+#. With this slider, the preTrigger can be configured (e.g., how much time is visible before the trigger event happens).
 #. The button ``setTrigger`` sets the selection for rising or falling edge for CH1->Ch4. Choose the desired setting in the dropdown menu above.
 #. The button ``SingleShot`` triggers the scope once.
 #. The button ``SaveScreen XLS`` saves the visible scope content in a xls file.
@@ -179,7 +179,7 @@ The logging panel is used to setup the data logger of the GUI.
    However, to reduce the file size, only values not equal to ``JSSD_FLOAT_ZEROVALUE`` are logged.
    For customizing them see :ref:`javascope_customizing`.
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
-#. With the ``set n-th log value`` button the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged).
+#. With the ``set n-th log value`` button, the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g., Factor ``10``, only the values for every 10th timestamp will be logged).
    This logging rate counts for the fast and slow data. Choose the desired value from the dropdown menu above.
 #. The button ``allow ext. logging`` enables the start and stop of the logging via a status-bit of the R5.
    If this functionality is enabled, the text of the button is highlighted and the button ``Logging ON/OFF`` is disabled/overwritten. 
@@ -212,15 +212,15 @@ Adjusting the properties.ini file
 
 Some settings can be configured before the start-up of the GUI in the ``properties.ini`` file.
 
-#. The ``smallestTimeStepUSEC`` variable sets the time, with which data is assumed to be transferred to Java. 
+#. The ``smallestTimeStepUSEC`` variable sets the time with which data is assumed to be transferred to Java.
    It's used to calculate the time-axis of the scope and logger. 
-   It should match the sample time of the ISR (e.g. ISR-frequency of 10kHz -> smallestTimeStepUSEC=100).
+   It should match the sample time of the ISR (e.g., ISR-frequency of 10kHz -> smallestTimeStepUSEC=100).
 #. The ``initScaleChx`` variable sets the initial scaling factor for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``initOffsetCHx`` variable sets the initial offset for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``preSelectedChannelNumbers`` variable sets the pre-selected channel number for each of the 20 channels in the scope. 
-   The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (e.g. selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
+   The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (e.g., selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
    Use delimiter (;) to separate the scaling values for the channels.
 #. The ``preSelectedChannelVisibility`` variable sets the initial visibility for each of the 20 channels in the scope. 
    Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
@@ -253,7 +253,7 @@ For adding a variable to the slow data table, two steps are required:
    1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the slow data table into the enum ``JS_SlowData`` inside ``javascope.h`` (see the blue box in the middle picture below). Pay attention to the naming convention starting with ``JSSD_INT_`` or ``JSSD_FLOAT_``.
    2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a variable to be viewed in the slow data table to the new enum entry from step 1 (see red and blue boxes in the right picture below). 
 
-The GUI parses the enum ``JS_SlowData`` at startup and your new variable will appear in the slow data table (see green box in the left picture below). This way the user can add an almost infinite number of slow data variables to the list. The longer the table, the slower it is updated, because the slow data are sent one after another with each scope data frame.
+The GUI parses the enum ``JS_SlowData`` at startup and your new variable will appear in the slow data table (see green box in the left picture below). This way the user can add an almost infinite number of slow data variables to the list. The longer the table, the slower it is updated because the slow data are sent one after another with each scope data frame.
 
 ..  _javascope_slowdata:
 
@@ -280,7 +280,7 @@ The eight individual buttons can be labeled in the same way.
       Correlation of ``javascope.h`` and text entries in the GUI
 
 The selection of which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
-the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the twenty ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 20 from top to bottom.
+the commented-out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the twenty ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 20 from top to bottom.
 The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text field of the GUI and should not be changed.
 
   ..  _javascope_selectslowdata:

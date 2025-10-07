@@ -25,7 +25,7 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 Community & git
 ***************
 
-The UltraZohm project is a community based open source project and the `repository is hosted on Bitbucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+The UltraZohm project is a community-based open-source project and the `repository is hosted on Bitbucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
 We use `Slack <https://slack.com/intl/de-de/>`_ as our primary communication channel.
 Follow these steps to join the community and understand how git works.
 
@@ -42,12 +42,12 @@ Follow these steps to join the community and understand how git works.
 
 .. warning:: Using and understanding how git and Bitbucket work are mandatory for working with the UltraZohm!
 
-UltraZohm Setup & tutorials
+UltraZohm setup & tutorials
 ***************************
 
 The following steps set up your UltraZohm and provide tutorials to use different functions of the system.
 
-#. Refer to :ref:`SystemOverview` to get a high level idea what the UltraZohm is about.
+#. Refer to :ref:`SystemOverview` to get a high-level idea what the UltraZohm is about.
 #. Refer to :ref:`platform_architecture` to get a better understanding of the UltraZohm platform.
 #. Follow the :ref:`UltraZohmSetup` guide to setup a local workspace.
 #. Complete the UltraZohm Tutorials.
@@ -73,7 +73,7 @@ Please complete the steps if you are planning to contribute to the project.
 You will make your first contribution by adding yourself to the list of :ref:`Contributors` in the following steps.
 
 #. Read :ref:`contribution` to understand the UltraZohm workflow (git flow)
-#. Read the UltraZohm specific documentation for :ref:`Bitbucket`
+#. Read the UltraZohm-specific documentation for :ref:`Bitbucket`
 #. Request access to the contributor user group by asking in the Slack channel (see :ref:`ProjectStructure`)
 #. Create a new feature branch in Bitbucket with the name ``contributor_name``
 #. Open the repository with the :ref:`vscode_remote_container`
@@ -83,7 +83,7 @@ You will make your first contribution by adding yourself to the list of :ref:`Co
 #. Commit the changed file with a descriptive commit message (e.g., *Added MaxMustermann to the contributors list*)
 #. Push your commit to the remote repository
 #. The :ref:`ci` will run. Do not worry, you can not break anything in this step! If there are errors, inspect the log or ask in the Slack channel
-#. Create a pull-request and assign a maintainer as reviewer (ask in the Slack channel if you are not sure)
+#. Create a pull request and assign a maintainer as reviewer (ask in the Slack channel if you are not sure)
 #. A maintainer will review your change, accept the PR, and merge it
 #. You now contributed to the UltraZohm project for the first time!
 

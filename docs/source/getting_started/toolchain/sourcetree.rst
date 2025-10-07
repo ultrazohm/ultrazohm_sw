@@ -42,7 +42,7 @@ If you do not know what an SSH Key is, click ``Nein`` (No) and use clone by ``ht
 .. image:: ./images_git/sourcetree_ssh.png
 
 After that the installation is complete and you can open Sourcetree and you should be logged in and see your remote repositories.
-If you are in the UltraZohm team you will see the ``ultrazohm_sw`` repository.
+If you are in the UltraZohm team, you will see the ``ultrazohm_sw`` repository.
 
 .. image:: ./images_git/sourcetree_offen.png
 
@@ -56,7 +56,7 @@ The dialog to clone the repository is opened and you can add the local path. It 
 
   C:\UltraZohm\ultrazohm_sw
 
-Under Advanced Options (Erweiterte Optionen) check out the **main** branch.
+Under Advanced Options (Erweiterte Optionen), check out the **main** branch.
 
 .. image:: ./images_git/sourcetree_clone2.png
 
@@ -80,7 +80,7 @@ Sourcetree known issues
     C:Users\USERNAME\AppData\Local\SourceTree
 
   Where ``USERNAME`` is the name of your Windows user account. Note that the path might be a hidden folder.
-  To create a shortcut right-click the sourcetree.exe and click ``create desktop shortcut``.
+  To create a shortcut, right-click the sourcetree.exe and click ``create desktop shortcut``.
 
 
 Sourcetree git-flow
@@ -88,7 +88,7 @@ Sourcetree git-flow
 
 We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` `repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_.
 Git-flow is integrated in Sourcetree and straightforward for users.
-To use git-flow for the first time click the git-flow icon in Sourcetree.
+To use git-flow for the first time, click the git-flow icon in Sourcetree.
 
 .. image:: ./images_git/gitflow1.png
 
@@ -112,7 +112,7 @@ The only relevant action for users is ``Start New Feature`` - click it.
 You are asked to give a name for the feature, enter an expressive name, and click ok.
 Naming:
 
-* ``featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g. ``oversampling`` if the feature is about oversampling
+* ``featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g., ``oversampling`` if the feature is about oversampling
 
 .. warning::
 
@@ -121,7 +121,7 @@ Naming:
 .. image:: ./images_git/gitflow5.png
 
 The feature branch is now created on your local machine and you can start working.
-If you want to push the new branch to the remote repository just click push.
+If you want to push the new branch to the remote repository, just click push.
 
 .. image:: ./images_git/gitflow6.png
 

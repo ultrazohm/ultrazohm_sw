@@ -140,7 +140,7 @@ Pay attention to this during your error handling.
  }
 
 
-To read out the measured current and voltage signals both Ethernet cables have to be connected to an ADC-Card.
+To read out the measured current and voltage signals, both Ethernet cables have to be connected to an ADC-Card.
 In the ``isr.c`` add the following conversion factors to the measured signals.
 
 .. code-block:: c

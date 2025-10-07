@@ -25,15 +25,15 @@ The following tutorial requires:
 UltraZohm Setup
 ***************
 
-The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer).
+The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG programmer).
 
 .. image:: ./img/physical_setup.jpg
 
 Initial steps
 *************
 
-#. Open the Git terminal inside the cloned UltraZohm repository, or alternatively do the following steps via your git-client (e.g. :ref:`Sourcetree`).
-#. Change your active branch from ``main`` to ``develop`` by using the **checkout** keyword (e.g. ``git checkout develop``).
+#. Open the Git terminal inside the cloned UltraZohm repository, or alternatively do the following steps via your git client (e.g., :ref:`Sourcetree`).
+#. Change your active branch from ``main`` to ``develop`` by using the **checkout** keyword (e.g., ``git checkout develop``).
 
    * The ``develop`` branch is the current development branch with the latest merged changes made to the UltraZohm repository. Every new feature branch will be created from this point.
    * The ``main`` branch is the latest stable version. 

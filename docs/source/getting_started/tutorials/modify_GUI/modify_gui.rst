@@ -7,7 +7,7 @@ Modifying the GUI
 Aim of the tutorial
 *******************
 
-In this tutorial the :ref:`three-phase-wave <uz_wavegen_three_phase>` from the wavegen library will be used. 
+In this tutorial, the :ref:`three-phase-wave <uz_wavegen_three_phase>` from the wavegen library will be used.
 Configuration values of the three-phase wave will be modified during runtime via the GUI.
 
 Requirements
@@ -22,30 +22,30 @@ The following tutorial requires:
 Guideline
 *********
 
-#. The GUI has eight general purpose buttons in the Control panel, which can be mapped to our needs.
+#. The GUI has eight general-purpose buttons in the Control panel, which can be mapped to our needs.
 
    ..  _GUI_buttons:
    ..  figure:: ./img/buttons.png
        :align: center
 
-       General purpose buttons in the Control panel of the GUI
+       General-purpose buttons in the Control panel of the GUI
 
 #. **Discard** any changes you made to the code basis in the :ref:`previous tutorial <first_changes>`.
 #. Add the include statement ``#include "uz/uz_Transformation/uz_Transformation.h"`` and ``#include "uz/uz_wavegen/uz_wavegen.h"`` to the ``main.h`` file.
 
-   * This ``uz_Transformation.h`` header file includes structs for common coordinate systems used in the motor control world (e.g. abc-, dq0-system, etc.).
+   * This ``uz_Transformation.h`` header file includes structs for common coordinate systems used in the motor control world (e.g., abc-, dq0-system, etc.).
    * For further information see :ref:`uz_transformation`.
   
 #. Add a new global ``bool`` variable to the ``isr.c`` file which will be used to enable the three-phase wave.
 #. Add a new global ``uz_3ph_abc_t`` struct to the same file. This will store the calculated values of the ``uz_wavegen_three_phase_sample`` function.
 #. Add three new global ``float`` variables titled, *amplitude, frequency* and *offset* and initialize them with values. 
-#. Add an if-statement with the new bool variable inside the ``if (current_state==control_state)`` statement.
-#. Add the ``uz_wavegen_three_phase_sample`` function inside your new if-statement.
+#. Add an if statement with the new bool variable inside the ``if (current_state==control_state)`` statement.
+#. Add the ``uz_wavegen_three_phase_sample`` function inside your new if statement.
 
    .. code-block:: c
      :linenos:
      :emphasize-lines: 5-9,29
-     :caption: isr.c code after changes. ``//....`` signals left out code.  
+     :caption: isr.c code after changes. ``//....`` signals left-out code.
 
       //....
       // Global variable structure
@@ -89,13 +89,13 @@ Guideline
       }
       //....
 
-#. In the ``javascope.c`` file add the ``three_phase_output`` struct with the ``extern`` keyword.
+#. In the ``javascope.c`` file, add the ``three_phase_output`` struct with the ``extern`` keyword.
 #. Replace the assignment of the addresses for the ``JSO_ua`` , ``JSO_ub`` and ``JSO_uc`` members of the ``js_ch_observable`` array with the three elements of the ``three_phase_output`` struct.
 
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2,7-9
-     :caption: javascope.c code after changes. ``//....`` marks left out code.  
+     :caption: javascope.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern uz_3ph_abc_t three_phase_output;
@@ -113,7 +113,7 @@ Guideline
 #. Open the ``ipc_ARM.c`` file and add the ``is_three_phase_active`` variable with the ``extern`` keyword.
 
    * This file processes the commands send from the GUI.
-   * This includes e.g. the commands for the *Enable System* and *Enable Control* buttons, the *eight My_Buttons* and the *send_fields*.
+   * This includes, e.g., the commands for the *Enable System* and *Enable Control* buttons, the *eight My_Buttons* and the *send_fields*.
 
 #. Scroll down to the cases of the ``My_Buttons`` in the switch-case structure and assign the variable ``is_three_phase_active`` the value *true* in the ``case (My_Button_4):`` .
 
@@ -125,13 +125,13 @@ Guideline
 #. Comment in the code of ``Bit_7`` and ``Bit_8`` for ``My_Button_4`` and ``My_Button_5`` and change it to the following.
 
    * These status bits relay information from the R5 back to the GUI.
-   * They are e.g. used to sync the *Ready LED*, *Running LED* etc.
-   * For this specific tutorial these two bits are used to relay the information to the GUI that the button press was acknowledged by the R5.
+   * They are, e.g., used to sync the *Ready LED*, *Running LED* etc.
+   * For this specific tutorial, these two bits are used to relay the information to the GUI that the button press was acknowledged by the R5.
 
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2,8,9,13,14,17-29
-     :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
+     :caption: ipc_ARM.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern bool is_three_phase_active;
@@ -168,38 +168,38 @@ Guideline
 #. Build the changes and flash the UltraZohm.
 #. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection and hide ``CH4`` and ``CH5``.
 #. Change the UltraZohm to the *Control state* by pressing the respective buttons.
-#. Because of the additional if-statement in the ``isr.c`` file no three-phase wave should be visible in the scope.
+#. Because of the additional if statement in the ``isr.c`` file, no three-phase wave should be visible in the scope.
 #. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the scope and the field below the ``My_Button_4`` should turn green.
 
    ..  _GUI_three_phase:
    ..  figure:: ./img/GUI_three_phase.png
        :align: center
 
-       Visible three phase wave
+       Visible three-phase wave
 
 #. Disable and enable the three-phase wave with the respective buttons to see that everything is working as intended. If it is successful, close the GUI.
 #. It is possible to send values from the GUI to the R5 via the *send_fields*. These will be used to modify the three-phase wave during runtime.
 
    * Six values are available that can be used as references or setpoints for the user application.
-   * For further information refer to :ref:`JavaScope`.
+   * For further information, refer to :ref:`JavaScope`.
 
    ..  _GUI_sendfield1:
    ..  figure:: ./img/GUI_sendfield1.png
        :align: center
 
-       general purpose *Send_fields* 
+       General-purpose *Send_fields*
 
-#. In the ``javascope.h`` file we will modify the *send_fields* labels to our needs.
+#. In the ``javascope.h`` file, we will modify the *send_fields* labels to our needs.
 #. Change the description for the *send_fields* from ``send_field_1`` to ``send_field_3`` to ``amplitude`` , ``offset`` and ``frequency`` .
-#. You can adjust the labels next to the *send_fields*. Change them for the first three *send_fields* to e.g. *V*.
+#. You can adjust the labels next to the *send_fields*. Change them for the first three *send_fields* to, e.g., *V*.
 
    * These descriptions and labels are purely cosmetic.
    * They do not change anything in the code basis. They are therefore commented out as well.
   
 #. Go to the ``ipc_ARM.c`` file and add the three variables ``amplitude`` , ``frequency`` and ``offset`` from the ``isr.c`` with the extern keyword.
-#. In the cases ``Set_Send_Field_1`` to ``Set_Send_Field_3`` give the corresponding variable the value ``value``. 
+#. In the cases ``Set_Send_Field_1`` to ``Set_Send_Field_3``, give the corresponding variable the value ``value``.
 
-   * I.e. description says for ``send_field_1`` now ``amplitude``, ``amplitude`` has to be assigned in the ``Set_Send_Field_1`` case.
+   * I.e., description says for ``send_field_1`` now ``amplitude``, ``amplitude`` has to be assigned in the ``Set_Send_Field_1`` case.
    * Do not change the name of the case itself. 
    * With these changes, the value in the text box of the *Send_fields* will be given to the specified variable from the R5. 
 
@@ -208,7 +208,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 3-5,21,25,29
-     :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
+     :caption: ipc_ARM.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern bool is_three_phase_active;
@@ -265,6 +265,6 @@ Guideline
    ..  figure:: ./img/GUI_sendfield2.png
        :align: center
 
-       Visible three phase wave with different config settings and the changes made to the GUI
+       Visible three-phase wave with different config settings and the changes made to the GUI
 
 #. This concludes the third tutorial.

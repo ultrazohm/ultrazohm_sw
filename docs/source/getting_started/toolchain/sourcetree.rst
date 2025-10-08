@@ -36,8 +36,8 @@ You only need to download and install git (if you do not have installed it alrea
 
 .. image:: ./images_git/sourcetree_installer2.png
 
-If you know what an SSH Key is, how to use it and want to use it, you can use it (Ja=Yes, Nein=No).
-If you do not know what an SSH Key is, click ``Nein`` (No) and use clone by ``https`` in the following.
+If you know what an SSH key is, how to use it and want to use it, you can use it (Ja=Yes, Nein=No).
+If you do not know what an SSH key is, click ``Nein`` (No) and use clone over ``https`` in the following.
 
 .. image:: ./images_git/sourcetree_ssh.png
 

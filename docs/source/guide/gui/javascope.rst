@@ -104,6 +104,11 @@ The control page is used to step through the state-machine of the system and for
 
    b. From returning to the slow blinking of the ``Ready`` LED and turning off the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 
+   .. admonition:: Note for :ref:`≥Rev05-based UltraZohm systems <hardware>`
+
+      With ≥Rev05 carrier boards, the STOP and Enable buttons on the frontpanel have an effect beyond the UZ software that has to be considered when using the Javascope.
+      Please refer to the "Warning" info-box in the :ref:`"Powerbutton Functionality" documentation of the Rev05 carrier board <carrier_board_rev05_s3cpwr>` for details.
+
 #. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm, no data are transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
 
 #. The ``receive_fields``
@@ -290,7 +295,7 @@ The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text fiel
 
       Correlation of ``javascope.h`` and which slow data are displayed in the control tab
 
-If not every out of the 20 ``receive_fields`` is needed, the unnecessary channels can be set to ``JSSD_FLOAT_ZEROVALUE``. 
+If not all 20 ``receive_fields`` are needed, unused channels can be set to ``JSSD_FLOAT_ZEROVALUE``.
 They will appear as value 0 in the receive fields. 
 Furthermore, to reduce the size of the .csv logging file, the ``receive_fields`` with the value ``JSSD_FLOAT_ZEROVALUE`` won't be logged.
 

@@ -54,7 +54,7 @@ Initial steps
 
    * This file is the configuration file for the UltraZohm and has to be adjusted to your specific needs. 
    * Change the ``UZ_HARDWARE_VERSION`` to the version of *your* UltraZohm.
-   * Note that on hardware version 5 or newer, potential mismatches between the define and the actual hardware version are handled by the software.
+   * Note that on :ref:`hardware revision 5 or newer <hardware>`, potential mismatches between the define and the actual hardware version are handled by the software.
    * See :ref:`global_configuration` for further details.
 
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.
@@ -96,7 +96,7 @@ Initial steps
 #. Press the **Connect** button in the GUI. Now the GUI should be up and running. 
 
    * If the connection was successful, the field to the left of the IP address is moving. 
-   * If nothing happens, check out the :ref:`known issues section <GUI_network>`.
+   * If nothing happens, check out the :ref:`known issues section <GUI_knownissues>`.
 
 #. Five default channels are visible in the scope after pressing the *sendSelectData (all)* button. 
 

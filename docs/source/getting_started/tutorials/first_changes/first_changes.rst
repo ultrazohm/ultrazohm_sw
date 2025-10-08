@@ -24,7 +24,7 @@ Guideline
 #. Open the ``uz_global_configuration.h`` file and look at the ``#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES`` number. 
 
    * Currently, *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
-   * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances when only, e.g., three are needed is wasteful, the max amount of possible instances is limited by this define.
+   * This is done to ensure a proper static memory allocation for this module. Since the allocation of memory for 50 instances when only, e.g., three are needed is wasteful, the max amount of possible instances is limited by this define.
    * This procedure is the same for every multiple-instance module (e.g., :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
    * For further information, see :ref:`static_memory_allocation`.
 
@@ -38,7 +38,7 @@ Guideline
 
 #. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out.
 
-   * The declaration of the three instances outside of the main is necessary so that they can be accessed by other c-files.
+   * The declaration of the three instances outside of the main is necessary so that they can be accessed by other C files.
    * Since the config structs are not needed after initialization, they can be declared local to the main function.
 
    .. code-block:: c
@@ -130,7 +130,7 @@ Guideline
 
    * This keyword specifies that the variable is defined in another file. The ``extern`` keyword must be applied in all files in which the variable is used, except in which the variable is initially defined.
    * This only works if the variable is global, i.e., declared outside the, e.g., main function.
-   * It, in essence, allows the variable to be shared over multiple c-files.
+   * It, in essence, allows the variable to be shared over multiple C files.
 
 #. Create three global float values to which the output of the ``uz_wavegen_chirp_sample`` can be passed.
 #. Add the three function calls ``uz_wavegen_chirp_sample`` for the three instances in the if statement.

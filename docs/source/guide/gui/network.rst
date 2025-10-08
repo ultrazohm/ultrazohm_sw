@@ -21,14 +21,15 @@ Setup IP address
 
       255.255.255.0
 
+   ..	image:: ./images_network/network0.png
+
 2. Usually a USB to network adapter is used. However, keep in mind that these adapters commonly have only 100MBit/s.
 
 	a. Configure the used network adapter as shown in the figure.
 
 	b. Connect this network adapter to the UltraZohm system by a standard RJ45 cable.
-	
-	..	image:: ./images_network/network0.png
 
+.. _GUI_knownissues:
 
 Known issues
 ------------

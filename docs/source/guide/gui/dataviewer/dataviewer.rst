@@ -71,7 +71,7 @@ Additional settings, such as converting the log file to ``.mat`` for further usa
 Python Data Viewer
 ==================
 
-.. note:: The Python Data Viewer works out of the box inside the :ref:`vscode_remote_container`. If the remote container is not used, the dependencies of ``ultrazohm_sw/docs`` are required on the system. 
+.. note:: The Python Data Viewer works out of the box inside the :ref:`vscode_remote_container`. If the remote container is not used, the dependencies of ``ultrazohm_sw/docs`` have to be installed on the system.
 
 The following steps start the Python-based data viewer:
 

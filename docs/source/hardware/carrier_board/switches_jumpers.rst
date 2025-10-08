@@ -15,7 +15,7 @@ SW1 - Boot Mode
 
 1. Adjustments for booting (Boot Mode Settings -> page 7 of TRM-TEBT0808.01):
 
-2. The ``default configuration`` for the UltraZohm is using SD1.
+2. The ``default configuration`` for the UltraZohm is to use ``SD1``.
 
 .. list-table:: Boot Mode
    :widths: 10 10 10 10 20 20 20 
@@ -72,7 +72,7 @@ SW2 - Power Mode First Part
 
 1. EN_GT is disabled, because of a Bug in the layout for "EN_GT_L" -> Anyway, this is for FireFly and not necessary so far.
 
-2. The ``default configuration`` for the UltraZohm is highlighted.
+2. The ``default configuration`` for the UltraZohm is ``highlighted``.
 
 .. list-table:: Power Mode
    :widths: 40 15 15 15 15 
@@ -103,9 +103,9 @@ SW2 - Power Mode First Part
 SW3 - Power Mode Second Part
 ----------------------------
 
-1. All Switches are changed to "Off" in order to give 3.3V to the Enable Pins and switch on this DC/DC converters on the Trenz module.
+1. All switches are changed to "Off" in order to send 3.3V to the Enable Pins and switch on the respective DC/DC converters on the Trenz module.
 
-2. The ``default configuration`` for the UltraZohm is highlighted.
+2. The ``default configuration`` for the UltraZohm is ``highlighted``.
 
 .. list-table:: Power Mode
    :widths: 40 15 15 15 15 
@@ -133,15 +133,14 @@ SW3 - Power Mode Second Part
      - ON
 
 
-Default adjustments for the UltraZohm
--------------------------------------
+Default adjustments for the UltraZohm ≤Rev04
+--------------------------------------------
 
 .. image:: pictures/switches1.jpg
 
 
-Default adjustments for the UltraZohm :math:`\geq` ``Rev05``
--------------------------------------------------------------
-
+Default adjustments for the UltraZohm ≥Rev05
+--------------------------------------------
 
 .. image:: pictures/switchesrev06.jpg
 

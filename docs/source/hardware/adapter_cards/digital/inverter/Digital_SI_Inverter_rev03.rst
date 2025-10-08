@@ -69,7 +69,7 @@ Pinout
 Compatibility 
 -------------
 
-This digital adapter inverter board is directly compatible with the :ref:`uz_inverter_adapter` IP-Core.
+This digital adapter inverter board is directly compatible with the :ref:`uz_inverter_adapter` IP core.
 It can be used in any of the D1-D4 digital adapter card slots in the UltraZohm, provided the correct CPLD is flashed. 
 The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 
@@ -86,7 +86,7 @@ Although there is room for further optimization, the resulting switching behavio
    :align: right
 
 
-Setup before first use and implementation with Inverter Interface IP-Core
+Setup before first use and implementation with Inverter Interface IP core
 =========================================================================
 
 CPLD
@@ -100,8 +100,8 @@ Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct C
 Software implementation
 -----------------------
 
-This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP-Core and its associated driver.
-Follow :ref:`this guide <inverter_adapter_usage>` to integrate the IP-Core into the FPGA and to set up the software driver.
+This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP core and its associated driver.
+Follow :ref:`this guide <inverter_adapter_usage>` to integrate the IP core into the FPGA and to set up the software driver.
 While following this guide, be sure to adjust the `linear interpolation parameters` for the ``inverter_adapter_config``. 
 For this inverter card they should be:
 

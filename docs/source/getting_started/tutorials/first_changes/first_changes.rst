@@ -25,7 +25,7 @@ Guideline
 
    * Currently, *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
    * This is done to ensure a proper static memory allocation for this module. Since the allocation of memory for 50 instances when only, e.g., three are needed is wasteful, the max amount of possible instances is limited by this define.
-   * This procedure is the same for every multiple-instance module (e.g., :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
+   * This procedure is the same for every multiple-instance module (e.g., :ref:`IP core drivers<ip_cores>`, :ref:`uz_piController` etc.).
    * For further information, see :ref:`static_memory_allocation`.
 
 #. In this tutorial, three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore, adjust the number after the define to ``3U``.

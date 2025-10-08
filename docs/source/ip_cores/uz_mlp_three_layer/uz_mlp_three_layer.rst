@@ -4,7 +4,7 @@
 uz_mlp_three_layer
 ==================
 
-This IP-Core implements a three layer MLP network based on [#realTimeInference]_.
+This IP core implements a three layer MLP network based on [#realTimeInference]_.
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for hidden layers.
 The output uses :ref:`activation_function_linear` activation.
@@ -13,11 +13,11 @@ The output uses :ref:`activation_function_linear` activation.
    :align: center
    :width: 300px
 
-   Implemented MLP network of the IP-Core
+   Implemented MLP network of the IP core
 
-.. warning: This IP-Core can not be simulated with Simulink at the moment since it depends on an internal library.
-            However, the IP-Core can be used as-is.
-            If you want to contribute to improve the IP-Core, please get in touch. 
+.. warning: This IP core can not be simulated with Simulink at the moment since it depends on an internal library.
+            However, the IP core can be used as-is.
+            If you want to contribute to improve the IP core, please get in touch.
 
 Features:
 
@@ -32,10 +32,10 @@ Features:
 - Activation function is :ref:`activation_function_relu` for all hidden layer (with a saturation at max value!)
 - Activation function is :ref:`activation_function_linear` for output layer
 - Bias and weights can be written to the network at runtime
-- Fully compatible with :ref:`uz_nn` to use IP-Core as an accelerator
+- Fully compatible with :ref:`uz_nn` to use IP core as an accelerator
 - Uses :ref:`uz_matrix` as input and outputs
 
-The IP-Core is always configured by the processing system.
+The IP core is always configured by the processing system.
 The configuration (e.g., number of inputs) is valid for using the inputs from AXI and from the PL (depending on ``use_axi_input``).
 The calculation of one forward pass is triggered by a rising edge either from AXI or by the PL (``enable_nn`` port).
 The calculation trigger is a OR between the AXI and PL ports, thus no priority is used. 
@@ -45,13 +45,13 @@ If a calculation is triggered before the calculation is finished, the trigger is
 Usage
 =====
 
-The usage of the IP-Core driver depends heavily on :ref:`uz_nn`.
+The usage of the IP core driver depends heavily on :ref:`uz_nn`.
 First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
-Additionally, an array for the output data of the IP-Core has to be declared (see :ref:`uz_matrix`).
-The ``uz_mlp_three_layer_ip_init`` function writes all parameters of the network into the IP-Core.
-Thus, the network exist twice: one copy in the processor and one copy in the IP-Core (parameters are stored in BRAM).
+Additionally, an array for the output data of the IP core has to be declared (see :ref:`uz_matrix`).
+The ``uz_mlp_three_layer_ip_init`` function writes all parameters of the network into the IP core.
+Thus, the network exist twice: one copy in the processor and one copy in the IP core (parameters are stored in BRAM).
 During execution, only the input and output values are written. 
-Note that the :ref:`global_configuration` has to be adjusted to include at least one MLP IP-Core driver instance, one software network and four layers. 
+Note that the :ref:`global_configuration` has to be adjusted to include at least one MLP IP core driver instance, one software network and four layers.
 
 .. code-block::
 
@@ -136,7 +136,7 @@ Note that the :ref:`global_configuration` has to be adjusted to include at least
 Concurrent execution
 ********************
 
-The regular calculation with the IP-Core using the software driver and writing the inputs by AXI (``use_axi_inputs`` is true) is a blocking operation.
+The regular calculation with the IP core using the software driver and writing the inputs by AXI (``use_axi_inputs`` is true) is a blocking operation.
 The driver triggers the calculation and waits until it is finished.
 The processor can not do any other tasks.
 
@@ -162,8 +162,8 @@ The processor can not do any other tasks.
        Driver->>Processor: Return output values
 
 An alternative to the blocking calculation is a concurrent approach.
-In this, the IP-Core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
-This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP-Core calculation.
+In this, the IP core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
+This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP core calculation.
 Note that this means the actual calculation time of network without the communication overhead of the read/write operations. 
 
 .. code-block::
@@ -224,7 +224,7 @@ Implementation details
 Configuration
 *************
 
-The IP-Core has the following configuration possibilities.
+The IP core has the following configuration possibilities.
 
 enable_nn
 
@@ -236,7 +236,7 @@ disable_pl_trigger
 
   If set, the trigger from the PL is disabled.
   Thus, a rising edge on enable_nn from the PL does not trigger a calculation and the calculation can only triggered from the PS. 
-  Intended to be used for debugging purposes if the PL trigger is connected to a reoccurring trigger such as the PWM or ADC IP-Core.
+  Intended to be used for debugging purposes if the PL trigger is connected to a reoccurring trigger such as the PWM or ADC IP core.
 
 use_axi_input
 
@@ -246,7 +246,7 @@ axi_number_of_inputs
 
   Sets the number of inputs of the network.
   ``axi_number_of_inputs`` can be set to any value between 2 and 16.
-  The value has to be consistent with the values for bias and weights that are stored in the IP-Core!
+  The value has to be consistent with the values for bias and weights that are stored in the IP core!
 
 axi_output_number_configuration
 
@@ -330,7 +330,7 @@ The results are calculated by:
     y_4 &= x w_4 + b_4=\begin{bmatrix} 237  & 248 \end{bmatrix} \\
     y &= \begin{bmatrix} 171 & 182 & 193 & 204 & 215 & 226 & 237 & 248 \end{bmatrix}
 
-The weight parameters are written to block RAM (BRAM) in the IP-Core for each layer with the following memory layout:
+The weight parameters are written to block RAM (BRAM) in the IP core for each layer with the following memory layout:
 
 .. math::
 
@@ -340,7 +340,7 @@ The weight parameters are written to block RAM (BRAM) in the IP-Core for each la
 
     w =\begin{bmatrix}  1& 9& 17& 25& 2& 10& 18& 26& 3& 11& 19& 27& 4& 12& 20& 28& 5& 13& 21& 29& 6& 14& 22& 30& 7& 15& 23& 31& 8& 16& 24& 32 \end{bmatrix}
 
-The bias parameters are written to block RAM (BRAM) in the IP-Core for each layer with the following memory layout:
+The bias parameters are written to block RAM (BRAM) in the IP core for each layer with the following memory layout:
 
 .. math::
 
@@ -355,12 +355,12 @@ Due to the parallelization, the matrix is split, e.g., into four parts for four 
     w_3 &= \begin{bmatrix} 5 & 13 & 21 & 29 & 6 &14 & 22 &30 \end{bmatrix} \\
     w_4 &= \begin{bmatrix} 7 & 15 & 23 &31 & 8 & 16 & 24 & 32\end{bmatrix} 
 
-.. note:: This ordering is the transposed definition compared to what is used in :ref:`uz_matrix` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed. The init function of the driver handles this by calling ``uz_mlp_three_layer_set_weights``, which handles writing the correct parameters into the BRAM of the IP-Core!
+.. note:: This ordering is the transposed definition compared to what is used in :ref:`uz_matrix` to match the hardware setup of the IP core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed. The init function of the driver handles this by calling ``uz_mlp_three_layer_set_weights``, which handles writing the correct parameters into the BRAM of the IP core!
 
 Write parameters to network
 ***************************
 
-To write parameters to the BRAM of the IP-Core the following mechanism is used:
+To write parameters to the BRAM of the IP core the following mechanism is used:
 
 - Write a zero to ``axi_wrEnBias`` to prevent writes to the wrong address
 - Write the number of the layer (one-based, input is 1, first hidden layer is 2, output layer is 4)
@@ -382,7 +382,7 @@ For weights:
 Interfaces
 ==========
 
-.. csv-table:: Interfaces of three layer MLP IP-Core
+.. csv-table:: Interfaces of three layer MLP IP core
    :file: ./uz_mlp_interfaces.csv
    :widths: 50 50 50 50 200
    :header-rows: 1

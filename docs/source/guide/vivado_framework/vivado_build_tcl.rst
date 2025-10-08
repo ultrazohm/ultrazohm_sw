@@ -81,7 +81,7 @@ Depending on the board version, some of the signals are inverted using a magic c
 
 .. figure:: adc_input_buffer.png
 
-  External IOBUF for ADC IP-Core and constant to invert signals depending on SoM (TE0808 or TE0803).
+  External IOBUF for ADC IP core and constant to invert signals depending on SoM (TE0808 or TE0803).
 
 
 build_selected_target.tcl

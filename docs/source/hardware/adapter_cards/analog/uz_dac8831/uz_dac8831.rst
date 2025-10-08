@@ -37,8 +37,8 @@ This setup enables HIL testing including the whole signal chain of the ADC.
 Measurements
 ============
 
-The following measurements are conducted using the loopback configuration of :numref:`dac_adc_loopback` and the :ref:`uz_dac_ip_interface` IP-Core.
-The software writes the values for the DAC output from the :ref:`wave_generator` to the IP-Core in each ISR while the ADC reads the values.
+The following measurements are conducted using the loopback configuration of :numref:`dac_adc_loopback` and the :ref:`uz_dac_ip_interface` IP core.
+The software writes the values for the DAC output from the :ref:`wave_generator` to the IP core in each ISR while the ADC reads the values.
 Therefore, a delay between write to the DAC and the measurement of the ADC of one interrupt sample time is present.
 Additionally, the ADC always measures the signal of the DAC after the settling time has passed due to the timing of the system.
 Thus, the overshoot and settling of the DAC output is not present in the measurement logs in loopback operation.

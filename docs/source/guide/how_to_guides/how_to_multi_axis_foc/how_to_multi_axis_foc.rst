@@ -17,7 +17,7 @@ The following steps are required:
   - Connect incremental encoders to the Ultrazohm using :ref:`dig_incEncoder` on D5 for first machine and one on D4 for the second machine
   - Connect phase current measurement of the inverter to the UltraZohm using :ref:`Analog_LTC2311_16` on A1
 
-- Connect the input and outputs of the system with the required IP-Cores using the constraint files
+- Connect the input and outputs of the system with the required IP cores using the constraint files
 - In the setup used for the tutorial, the following mapping of signals applies:
 
   - ``Dig_13_Ch5`` is the A lane of the incremental encoder of the first machine
@@ -35,7 +35,7 @@ The following steps are required:
 Vivado
 ======
 
-- First, the required IP-Cores are added that are not present in the :ref:`default_vivado_project`:
+- First, the required IP cores are added that are not present in the :ref:`default_vivado_project`:
 
   - One :ref:`ipCore_incremental_encoder`
   - One :ref:`uz_pwm_ss_2l`
@@ -81,13 +81,13 @@ Vivado
      :align: center
 
 
-- Repeat for ``D4_12``, ``D4_14`` and connect to the IP-Core according to the pin mapping
+- Repeat for ``D4_12``, ``D4_14`` and connect to the IP core according to the pin mapping
 
   .. figure:: img/6_connect_ip_core.png
      :width: 800
      :align: center
 
-- Add the IP-Cores *PWM_and_SS_control_V4_ip* and *uz_interlockDeadtime2L* to the *uz_user* subblock
+- Add the IP cores *PWM_and_SS_control_V4_ip* and *uz_interlockDeadtime2L* to the *uz_user* subblock
 - Connect them to the 100 MHz CLK and AXI ports
 
   .. figure:: img/7_connect_pwm_and_interlock_clk.png
@@ -96,14 +96,14 @@ Vivado
 
 - Go to the subblock *uz_digital_adapter*, *D1_adapter*, *Gates* and copy the constant *xlconstant_0*
 - Paste the constant into *uz_user* and connect to *m_u1_norm*, *m_u2_norm*, *m_u3_norm*
-- Connect PWM IP-Core output *SS0_OUT* to *S0* input of interlock IP-Core, repeat for S0..S5
+- Connect PWM IP core output *SS0_OUT* to *S0* input of interlock IP core, repeat for S0..S5
 
   .. figure:: img/8_connect_pwm_interlock.png
      :width: 800
      :align: center
 
 - Go to the connection between *uz_digital_adapter* and the output port ``D1_OUT[5:0]`` and delete the connection
-- Add a new IP-Core called *Concat*
+- Add a new IP core called *Concat*
 - Connect *in0* of  the Concat with *D1_out* of *uz_digital_adapter*
 - Connect *dout* of the Concat to ``D1_OUT[5:0]``
 

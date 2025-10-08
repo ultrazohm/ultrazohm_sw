@@ -5,7 +5,7 @@ HDL-Coder (HDL)
 ===============
 
 This page includes introductory information about the usage of the `HDL Coder <https://www.mathworks.com/products/hdl-coder.html>`_.
-The HDL-Coder generates Verilog and VHDL code from MATLAB functions, Simulink models, and State flow charts to create IP-Cores for the FPGA of the UltraZohm.
+The HDL-Coder generates Verilog and VHDL code from MATLAB functions, Simulink models, and State flow charts to create IP cores for the FPGA of the UltraZohm.
 Please refer to the official documentation for detailed descriptions:
 
 - https://de.mathworks.com/help/hdlcoder/
@@ -18,16 +18,16 @@ Please refer to the official documentation for detailed descriptions:
 Timing
 ======
 
-There are three different aspects regarding the timing when dealing with IP-Cores:
+There are three different aspects regarding the timing when dealing with IP cores:
 
 - Timing of the FPGA logic (*Static timing*) (see, e.g., `this slide deck <http://www.ece.utep.edu/courses/web5375/Notes_files/ee5375_timing_fpga.pdf>`_)
 - Timing of the data 
 - Data throughput
 
 The static timing is required to make sure that the implemented algorithm is calculated correctly in the FPGA.
-It is related to the clock frequency of the IP-Core.
+It is related to the clock frequency of the IP core.
 Different operations in the FPGA logic take a specific time (path delay) to propagate through the logic (e.g., propagation delay).
-If the clock period is shorter than the required path delay, the timing is violated and the IP-Core does not function properly.
+If the clock period is shorter than the required path delay, the timing is violated and the IP core does not function properly.
 This is indicated by having a negative total slack time in Vivado.
 The HDL-Coder estimates the path delay with the *critical path estimation*, which is the chain of logic with the highest path delay.
 A common approach to fixing timing violations is adding delay blocks in Simulink (*pipeline*).
@@ -43,14 +43,14 @@ See the following Mathworks pages:
 - https://www.mathworks.com/help/hdlcoder/ug/delay-balancing-and-validation-model-workflow-in-hdl-coder.html
 - https://www.mathworks.com/help/hdlcoder/ug/delay-balancing.html
 
-The data throughput determines how long it takes to calculate the algorithm one time after new inputs are applied and the calculated result is available at the output of the IP-Core.
+The data throughput determines how long it takes to calculate the algorithm one time after new inputs are applied and the calculated result is available at the output of the IP core.
 This is the combination of calculation steps, number of clock cycles that these calculation steps and the achieved clock rate.
 
 
 Tutorial
 ========
 
-In this tutorial, an IP-Core is created that multiplies two integer values and returns the result.
+In this tutorial, an IP core is created that multiplies two integer values and returns the result.
 The result of this tutorial is the :ref:`AXI_testIP`.
 
 - Start Matlab (2022a used in the following)
@@ -108,7 +108,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 
 - Note that the simulation time base is not discrete (indicated by pink colored signals) and that double precision is used
 - First, add a data type conversion block for each input and change that output to ``int32``
-- The IP-Core interface will match the data type that is connected in the Simulink model
+- The IP core interface will match the data type that is connected in the Simulink model
 
 .. figure:: tutorial_img/8_data_type_conversion_int.png
    :width: 800px
@@ -116,7 +116,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 
 - Next, add a rate transition to convert the input signals to discrete time
 - Specify the output port sample rate to 100 MHz
-- The IP-Core clk is implicitly the same rate as the sample time of the input signals
+- The IP core clk is implicitly the same rate as the sample time of the input signals
 
 .. figure:: tutorial_img/9_data_rate.png
    :width: 800px
@@ -134,14 +134,14 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Set the output to ``int32``
 - Note: Setting the output to ``int32`` means that the result can overflow since the result of the multiplication of two ``int32`` values can be larger that the maximum representable value of ``int32``
 - Additionally, the ``Saturate on integer overflow`` is not checked. Thus, the value will wrap on overflow, i.e., ``max(int32)+1`` will be a large negative number
-- Take data type considerations into account when designing real IP-cores!
+- Take data type considerations into account when designing real IP cores!
 
 .. figure:: tutorial_img/11_product_settings.png
    :width: 800px
    :align: center
 
 - Simulink model is now ready to be generated
-- Right click on the ``uz_axi_mytestIP`` (that is the part of the model that will become an IP-Core), choose *HDL Coder* -> *HDL Workflow Advisor*
+- Right click on the ``uz_axi_mytestIP`` (that is the part of the model that will become an IP core), choose *HDL Coder* -> *HDL Workflow Advisor*
 - In the Workflow Advisor, extend the menu on the left
 - In ``1.1 Set Target Device and Synthesis Tool``, the following basic settings are applied:
 
@@ -161,9 +161,9 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :align: center
 
 - Click on ``Set Target Interface``
-- This setting specifies the interfaces of the IP-Core
+- This setting specifies the interfaces of the IP core
 - All input and outputs of the subsystem are possible as an interface
-- Usually, ``AXI4-Lite`` or ``AXI4`` is used as an interface between the IP-Core and the processor of the UltraZohm and ``External Port`` is used as an interface of the IP-Core towards the FPGA.
+- Usually, ``AXI4-Lite`` or ``AXI4`` is used as an interface between the IP core and the processor of the UltraZohm and ``External Port`` is used as an interface of the IP core towards the FPGA.
 - If one port is AXI4, the other ports can not be AXI4-Lite
 - ``AXI4`` and ``External Port`` can be mixed without problems
 - Click ``Run This Task``
@@ -249,8 +249,8 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- The IP-Core is now ready. However, an delay block for inputs should be added
-- Add the multiplication of A*B outside of the IP-Core with the same data types and sample rates
+- The IP core is now ready. However, an delay block for inputs should be added
+- Add the multiplication of A*B outside of the IP core with the same data types and sample rates
 - Add a scope
 - Run the simulation and notice that both results are completely identical
 
@@ -259,14 +259,14 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :align: center
 
 - Add the input delay and run the simulation again
-- The calculation now takes one clock cycle but the timing for incoming signals from outside of the IP-Core is more robust
-- Having input/output registers is (almost) always a good strategy to make sure that incoming signals do not depend on the timing of external components and the IP-Core provides a stable signal after the output register for subsequent IP-Cores
+- The calculation now takes one clock cycle but the timing for incoming signals from outside of the IP core is more robust
+- Having input/output registers is (almost) always a good strategy to make sure that incoming signals do not depend on the timing of external components and the IP core provides a stable signal after the output register for subsequent IP cores
 
 .. figure:: tutorial_img/25_delay_added.png
    :width: 800px
    :align: center
 
-- Add a multiplication for unsigned int to the IP-Core
+- Add a multiplication for unsigned int to the IP core
 
 .. figure:: tutorial_img/26_uint_added.png
    :width: 800px
@@ -276,7 +276,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Use signed 16 bit with 5 bits for the fraction
 - Use the same output data type for the multiplication
 - Consider that this leads to the same overflow problems as discussed for `int32` and `uint32`
-- In a real IP-Core, the data types have to be carefully designed regarding possible data range overflows
+- In a real IP core, the data types have to be carefully designed regarding possible data range overflows
 - Using full precision multiplication (output data type large enough to represent the result of the two largest possible input value) is not possible most of the time since this leads to extremely large data types that can not be implemented in the FPGA 
 
 .. figure:: tutorial_img/27_fixed_point.png
@@ -296,7 +296,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Save the ``hdlworkflow.m`` in the folder of the model to replicate the build at a later stage. The ``hdlworkflow.m`` script runs the code generation again with the same settings that were used when saving the file.
 - Check the reports and the validation model (``gm_uz_axi_mytestIP``)
 - The IP Core is now generated
-- Add the IP-Core in Vivado
+- Add the IP core in Vivado
 - Open Vivado and the block design
 
 .. figure:: tutorial_img/28_vivado.png
@@ -307,14 +307,14 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Refresh the IP catalogue
 - Extend *uz_user* subblock
 - Extend the smartconnect by one master port to connect AXI ports to the processor
-- Add the new IP-Core and connect it to the system
-- Go to the *Address editor* and assign a base address to the new IP-Core
+- Add the new IP core and connect it to the system
+- Go to the *Address editor* and assign a base address to the new IP core
 
 .. figure:: tutorial_img/vivado_add_ip_core.gif
    :align: center
 
 - Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`
-- Follow the :ref:`how_to_create_ipcore_driver` tutorial to create a software driver for the IP-Core
+- Follow the :ref:`how_to_create_ipcore_driver` tutorial to create a software driver for the IP core
 
 
 

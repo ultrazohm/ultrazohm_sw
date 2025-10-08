@@ -58,15 +58,15 @@ a good starting point. Use ``Samtec MMSD-15-xxx-x-xx.xx-D-P-LDX`` cables or for 
 
    Channelgroup Pinout
 
-Implementation with Temperature_Card_Interface IP-Core
+Implementation with Temperature_Card_Interface IP Core
 ------------------------------------------------------
-* The following describes the connecting of the adapter board with the respective IP-Core at the example of digital adapter slot ``D4``. 
-* For further details on the IP-Core, see :ref:`temperature_card_IPcore_v1`.
+* The following describes the connecting of the adapter board with the respective IP core at the example of digital adapter slot ``D4``.
+* For further details on the IP core, see :ref:`temperature_card_IPcore_v1`.
 
 .. note::
    | Users who use the adapter card for the first time are recommended to use the following step-by-step instructions for didactic reasons. 
    | See ``Step by step guide``.
-   | More experienced users that quickly want to implement the IP-Core can use a tcl-script in Vivado and execute it from the tcl-console after opening the block design. 
+   | More experienced users that quickly want to implement the IP core can use a tcl-script in Vivado and execute it from the tcl-console after opening the block design.
    | See ``tcl commands``.
 
 tcl commands
@@ -84,11 +84,11 @@ tcl commands
 Step by step guide
 ******************
 
-In general, one has to add the ``Temperature_Card_Interface`` IP-Core e.g. to the ``user`` hierarchy in the block design of the Vivado project. 
-This is achieved by right click and ``Add IP...`` and typing in the name of the IP-Core in the search field.
+In general, one has to add the ``Temperature_Card_Interface`` IP core e.g. to the ``user`` hierarchy in the block design of the Vivado project.
+This is achieved by right click and ``Add IP...`` and typing in the name of the IP core in the search field.
 Furthermore, one has to create pins inside the ``user`` hierarchy for later connecting them to the proper ports of the adapter board slots, outside of the ``user`` hierarchy. 
 Creating pins is achieved by right click and ``Create Pin...``, defining proper names and direction.
-The figure below shows how the result should look like with the IP_Core placed and all necessary pins created.
+The figure below shows how the result should look like with the IP core placed and all necessary pins created.
 The not connected pins are for development and debugging purpose only.
 
 .. _user_hierarchy_pins:
@@ -115,7 +115,7 @@ reset signal ``LTC_resetn_1``, all other reset signals are left unconnected.
 The mapping between the names and physical pins at the hardware is managed by constraint files. Two types of constraint files are already prepared. They can be found in the ``sources`` section 
 of the Vivado project, as shown below. By default the constraint file for D4 is written in a vectorized (``packed``) manner that is not proper for accessing single pins. But there are also 
 constraint files provided that allow access to the single pins. Right click on ``Digital_D4_packed.xdc`` and ``Disable File``. Then right click on ``Digital_AdapterBoard_D4.xdc`` and 
-``Enable File``. By double-clicking (opening) the recently enabled file you will recognize the port names you assigned in the block design and the correct mapping between the IP-Core 
+``Enable File``. By double-clicking (opening) the recently enabled file you will recognize the port names you assigned in the block design and the correct mapping between the IP core 
 and the adapter board slot is ensured.
 
 .. _temperature_constraints_d4:
@@ -126,8 +126,8 @@ and the adapter board slot is ensured.
 
   Constraint file for ``D4``
 
-Finally do not forget to connect ip-core clock (100 MHz), reset signals and AXI interfaces, as well as assigning an AXI base address to the IP_Core in the ``Address Editor``.
-Build the bitstream, export the .xsa file, build the UltraZohm workspace in Vitis and see the respective ip-core driver docs for the software part.
+Finally do not forget to connect IP core clock (100 MHz), reset signals and AXI interfaces, as well as assigning an AXI base address to the IP core in the ``Address Editor``.
+Build the bitstream, export the .xsa file, build the UltraZohm workspace in Vitis and see the respective IP core driver docs for the software part.
 
 Customize Wiring
 ----------------

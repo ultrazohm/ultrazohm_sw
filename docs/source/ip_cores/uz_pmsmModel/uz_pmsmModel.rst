@@ -4,14 +4,14 @@
 PMSM Model
 ==========
 
-- IP-Core of a PMSM model
+- IP core of a PMSM model
 - Simulates a PMSM on the FPGA
 - Intended for controller-in-the-loop (CIL) on the UltraZohm
 - Time discrete transformation is done by *zero order hold* transformation
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
-- IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
-- IP-Core has single precision AXI ports
-- All calculations in the IP-Core are done in single precision!
+- IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+- IP core has single precision AXI ports
+- All calculations in the IP core are done in single precision!
 
 System description
 ==================
@@ -160,10 +160,10 @@ With the constant coulomb friction :math:`M_c`, and the friction coefficient :ma
   \draw[->,dashed] (-0.1,0) -- node[left] {$M_C$} (-0.1,1);
   \end{tikzpicture}
 
-IP-Core overview
+IP core overview
 ================
 
-.. tikz:: Block diagram of IP-Core
+.. tikz:: Block diagram of IP core
   :libs: shapes, arrows, positioning, calc
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -192,23 +192,23 @@ IP-Core overview
 All time-dependent variables are either inputs or outputs that are written/read by AXI4-full.
 That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are inputs.
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
-The IP-Core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
+The IP core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
 Furthermore, all machine parameters, e.g., stator resistance, can be written by AXI at runtime.
 All AXI-transactions use single-precision variables.
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
-Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
+Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
 The inputs and outputs are implemented as an vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
 Note that :math:`\omega_{mech}` is an input as well as an output.
-The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
+The IP core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
 1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
 2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
-When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
+When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
-This behavior is implemented in the hardware of the IP-Core with switches.
-The IP-Core also has a mode regarding saturation and cross-coupling effects.
+This behavior is implemented in the hardware of the IP core with switches.
+The IP core also has a mode regarding saturation and cross-coupling effects.
 When the flag ``simulate_nonlinear`` is true, the flux-linkages :math:`\psi_d` and :math:`\psi_q` are dependent on the currents with the equations in `Model with non-linear effects`_.
 When the flag ``simulate_nonlinear`` is false, the flux-linkages are used as state values with the equations in `Linear model`_.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
@@ -234,15 +234,15 @@ For the mechanical system:
 
     \omega_{mech}(k+1) =ts \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
-IP-Core Hardware
+IP Core Hardware
 ----------------
 
 - The module uses single precision. 
 - All input values are adjustable at run-time
 - The sample time is fixed!
-- The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
+- The IP core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
 - Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP-Core uses an oversampling factor of 200
+- The IP core uses an oversampling factor of 200
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 
@@ -256,7 +256,7 @@ IP-Core Hardware
   :width: 800
   :align: center
 
-  Overview of PMSM IP-Core
+  Overview of PMSM IP core
 
 .. figure:: pmsm_model_inside_pmsm.svg
   :width: 800
@@ -282,17 +282,17 @@ Example usage
 Vivado
 ------
 
-- Add IP-Core to Vivado and connect to AXI (smartconnect)
+- Add IP core to Vivado and connect to AXI (smartconnect)
 - Source IPCORE_CLK with a :math:`100\,MHz` clock!
 - Connect other ports accordingly
-- Assign address to IP-Core
+- Assign address to IP core
 - Build bitstream, export .xsa, update Vitis platform
 
 .. figure:: pmsm_vivado.png
    :width: 800
    :align: center
 
-   Example connection of PMSM IP-Core
+   Example connection of PMSM IP core
 
 
 Vitis
@@ -449,7 +449,7 @@ Approximation Example usage
 
 In this example usage, flux-linkages of an example motor are getting approximated.
 
-- There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
+- There needs to be a Excel data sheet in the same directory as the PMSM IP core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
 
 - The naming in the script has to be adjusted. 
 
@@ -478,13 +478,13 @@ In this example usage, flux-linkages of an example motor are getting approximate
     ...
 
 - To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
-- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP-Core for nonlinear behavior or for different use in the sw-framework. 
+- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
 
 
-Comparison between reference and IP-Core
+Comparison between reference and IP core
 ----------------------------------------
 
-- Program UltraZohm with included PMSM IP-Core and software as described above
+- Program UltraZohm with included PMSM IP core and software as described above
 - Start Javascope
 - Connect to javascope, set scope to running and time scale to 100x
 - Start logging of data after a falling edge on the setpoint and stop at the next fallning edge
@@ -496,7 +496,7 @@ Comparison between reference and IP-Core
    :width: 800
    :align: center
 
-   Comparison of step response between the reference model and IP-Core implementation measured by Javascope
+   Comparison of step response between the reference model and IP core implementation measured by Javascope
 
 
 Closed loop

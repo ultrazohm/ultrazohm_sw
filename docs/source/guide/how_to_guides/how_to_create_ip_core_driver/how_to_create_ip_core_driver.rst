@@ -1,7 +1,7 @@
 .. _how_to_create_ipcore_driver:
 
 ==============================
-How to create a IP-core driver
+How to create a IP core driver
 ==============================
 
 This tutorial creates a software driver for the :ref:`AXI_testIP`.
@@ -71,14 +71,14 @@ Setup
         Test: test_uz_myIP_hw_write_to_A
         At line (21): "Need to Implement uz_myIP_hw"
 
-14. This means that the test builds, but no test is implemented for the new IP-Core.
+14. This means that the test builds, but no test is implemented for the new IP core.
 
-IP-Core driver: Hardware registers
+IP core driver: Hardware registers
 ==================================
 
 To multiply two variables :math:`C=A \cdot B` of type ``int32_t``, the driver has to write :math:`A` and :math:`B` from the PS to the PL by AXI in the correct registers and read back the result :math:`C` from the PL to the PS.
-In this section, we write a software module (``uz_myIP_hw``) that only deals with writing and reading the hardware registers of the IP-Core such that software modules can use the module without having to know the hardware addresses.
-See :ref:`AXI_testIP` for the available hardware registers of the IP-Core.
+In this section, we write a software module (``uz_myIP_hw``) that only deals with writing and reading the hardware registers of the IP core such that software modules can use the module without having to know the hardware addresses.
+See :ref:`AXI_testIP` for the available hardware registers of the IP core.
 The addresses of the registers are listed in ``uz_myIP_hwAddresses.h``.
 Read/write operations on AXI are done by using the :ref:`HAL`.
 Therefore, we expect that the driver first has to call the function ``uz_axi_write_int32`` with the register address of :math:`A` and an integer as arguments.
@@ -99,7 +99,7 @@ Write the test for this behavior:
 
 1. Run the tests (type ``ceedling test:all`` in terminal)
 2. Tests fail with a warning that ``uz_myIP_hw_write_to_A`` has an implicit declaration
-3. Declare the required functions to read and write from the IP-core in ``uz_myIP_hw.h``
+3. Declare the required functions to read and write from the IP core in ``uz_myIP_hw.h``
 
    .. code-block:: c
       :linenos:
@@ -173,7 +173,7 @@ Write the test for this behavior:
 
 12. Run the tests. They pass. Note that this assertion only prevents calling the function with ``base_address == 0``, e.g., if a struct initializer automatically initialized the variable. The function still can be called with a *wrong* base address!
 
-13. We can now write :math:`A` to the IP-Core and have a test that ensures that we write to the correct addresses. Next step: do the same for :math:`B`:
+13. We can now write :math:`A` to the IP core and have a test that ensures that we write to the correct addresses. Next step: do the same for :math:`B`:
 
     .. warning:: It is tempting to copy & paste everything here - be careful to get all addresses, functions, and variable names right!
 
@@ -279,7 +279,7 @@ Write the test for this behavior:
 
 26. Run the tests. All tests will pass!
 
-IP-Core driver: User software
+IP core driver: User software
 =============================
 
 Recall that we use the :ref:`AXI_testIP` to calculate :math:`C=A \cdot B`.
@@ -292,11 +292,11 @@ We implement the actual function of the driver in the following.
 
      ceedling module:create[IP_Cores/uz_myIP/uz_myIP]
 
-2. Create the interface of the IP-Core driver in ``uz_myIP.h``. Notice how the interface is focused on the user: We only have to initialize the module and use the hardware calculation :math:`C=A \cdot B` without knowledge about hardware registers and addresses. We use :ref:`doxygen` to document the interface. Type ``/**`` above a function, struct or typedef you want to comment and press enter, VSCode will auto-generate the doxygen boiler plate. We only use doxygen comments for the interface (in the ``.h`` file) and later include these in the sphinx documentation.
+2. Create the interface of the IP core driver in ``uz_myIP.h``. Notice how the interface is focused on the user: We only have to initialize the module and use the hardware calculation :math:`C=A \cdot B` without knowledge about hardware registers and addresses. We use :ref:`doxygen` to document the interface. Type ``/**`` above a function, struct or typedef you want to comment and press enter, VSCode will auto-generate the doxygen boiler plate. We only use doxygen comments for the interface (in the ``.h`` file) and later include these in the sphinx documentation.
 
    .. code-block:: c
       :linenos:
-      :caption: Software interface of IP-Core
+      :caption: Software interface of IP core
 
       #ifndef UZ_MYIP_H
       #define UZ_MYIP_H
@@ -379,7 +379,7 @@ We implement the actual function of the driver in the following.
       #endif
 
 6. Open ``uz_global_configuration.h`` if you already renamed the sample configuration. If not, see :ref:`global_configuration`.
-7. Add ``#define UZ_MYIP_MAX_INSTANCES 5U`` to ``uz_global_configuration.h`` inside the test ifdef (at the bottom of the file). We can now use up to 5 instances of the IP-core driver for five different instances of the IP-Core in the tests.
+7. Add ``#define UZ_MYIP_MAX_INSTANCES 5U`` to ``uz_global_configuration.h`` inside the test ifdef (at the bottom of the file). We can now use up to 5 instances of the IP core driver for five different instances of the IP core in the tests.
 8. Add the following code to ``test_uz_myIP.c``. We isolate the testing by using a mock version of our already implemented ``uz_myIP_hw``.
 
    .. code-block:: c
@@ -405,7 +405,7 @@ We implement the actual function of the driver in the following.
       }
 
 10. Run the tests, all tests pass, but ``uz_myIP_test`` is ignored.
-11. Start writing a test for the multiplication :math:`C=A \cdot B` by initializing an instance of the IP-Core driver:
+11. Start writing a test for the multiplication :math:`C=A \cdot B` by initializing an instance of the IP core driver:
 
     .. code-block:: c
        :linenos:
@@ -526,9 +526,9 @@ We implement the actual function of the driver in the following.
            return (uz_myIP_hw_read_C(self->config.base_address));
        }
 
-26.  We now have a working and fully tested driver for our IP-Core! 
+26.  We now have a working and fully tested driver for our IP core!
 
-    .. warning:: While we tested our functions with different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
+    .. warning:: While we tested our functions with different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
 
 Integration in Vitis
 ====================

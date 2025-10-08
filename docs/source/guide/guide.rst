@@ -39,14 +39,14 @@ Modularity
  The UltraZohm is modular in terms of software and hardware.
  The system can be used with different devices within the UltraScale MPSoC family.
  Adapter cards are used as a flexible interface for analoge and digital signals such as ADC's and gate signals for power electronics.
- Software modularity is achieved by using encapsulated design patterns combined with IP-Cores on the FPGA.
+ Software modularity is achieved by using encapsulated design patterns combined with IP cores on the FPGA.
 
 Usability
  We aim to create a system with a high usability.
- The UltraZohm is **novice friendly** since there are a lot of different tutorials, existing IP-Cores and adapter cards that are used by the community.
+ The UltraZohm is **novice friendly** since there are a lot of different tutorials, existing IP cores and adapter cards that are used by the community.
  Therefore, a new user does not have to start from scratch.
  The UltraZohm is **expert friendly** since there are **no black boxes** in the system.
- Due to project being open source, every user can investigate every line of code, every IP-Core and the complete signal chain in the schematics.
+ Due to project being open source, every user can investigate every line of code, every IP core and the complete signal chain in the schematics.
  Furthermore, **everybody** is encouraged to :ref:`contribute <contribution>` to the UltraZohm and improve the system!
 
 Requirements

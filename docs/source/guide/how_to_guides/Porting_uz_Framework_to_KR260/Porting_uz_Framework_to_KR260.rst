@@ -54,7 +54,7 @@ Creating Fresh Project
     .. tip:: ``Settings → IP → Repository → Add → IP core folder → Select → OK`` 
 
 
-#.  Add the IP-Core for the PS ``Zynq UltraScale+ MPSoC`` to the new Block design.
+#.  Add the IP core for the PS ``Zynq UltraScale+ MPSoC`` to the new Block design.
 
 #.  Click "Run Block automation" inside the green banner appearing. 
 
@@ -90,7 +90,7 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP core, click on the top left "Presets" and "Apply Configuration"
 
 #.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
 
@@ -124,7 +124,7 @@ Creating Fresh Project
 
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_user]
 
-    With this script, every IP-Core inside the generated hierarchy is configured and connected like in the UltraZohm-main-project
+    With this script, every IP core inside the generated hierarchy is configured and connected like in the UltraZohm-main-project
 #.  For the ``uz_user`` and ``uz_digital_adapter``, make the placement of IP blocks using the .tcl scripts: 
 
     .. code-block:: 
@@ -189,7 +189,7 @@ Project with TCL Scripts:
 #. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
     * k26sys_ps_generation → PS 
-    * k26sys_hd_generation → IP-Cores, Connections
+    * k26sys_hd_generation → IP cores, Connections
 
 .. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
 
@@ -200,7 +200,7 @@ Vitis
 =====
 
 After creating the Hardware-Design, there were a few Software-changes necessary.
-This includes mainly the removed IP-Cores and the Frontpanel, as well as the ISR.
+This includes mainly the removed IP cores and the Frontpanel, as well as the ISR.
 Additionally, a small hack to the Board-Support-Package BSP must be applied to bring up the network interface.#
 This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII Interface which isn't compatible with the used LwIP-Stack and both PHY's for the PS-GEM's shared the same MDIO's.
 
@@ -231,7 +231,7 @@ To create a suited software for the KR260, follow these steps:
 #.  Build the "UZ-Plattform-Project".
 #.  Changes for the Baremetal-Project:
 
-    #.  Addresses of dead IP-Cores have to be tied to a fixed address at `parameter.h` file. Use 0x0123456789 as address to prevent errors during compiling and ensure that those addresses never getting called! 
+    #.  Addresses of dead IP cores have to be tied to a fixed address at `parameter.h` file. Use 0x0123456789 as address to prevent errors during compiling and ensure that those addresses never getting called!
 
         * #define XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR 0x0123456789
         * #define XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_GATES_3L_PWM_SS_3L_IP_0_BASEADDR 0x0123456789
@@ -239,7 +239,7 @@ To create a suited software for the KR260, follow these steps:
         * #define XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
         * #define XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
 
-    #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP-Cores 
+    #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP cores
 
         * uz_adcLtc2311_ip_core_init();
         * PWM_3L_Initialize(&Global_Data); // three-level modulator
@@ -310,7 +310,7 @@ Some points and ideas for discussion on how the workflow could be better integra
 *   Add a CAN-Interface and route the pins through the PL to an PMOD-connector, for example? So we don't have to delete the CAN-related parts in the FreeRTOS-Project
 *   How a define should look like to tell the C-Code it’s a KR260/KV260-Hil? With this define some actions can be done:
 
-    *  Exclude some predefined IP-Cores from the Code?
+    *  Exclude some predefined IP cores from the Code?
         *  Analog-IP’s
         *  Encoder
         *  …

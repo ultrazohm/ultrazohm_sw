@@ -36,14 +36,14 @@ See :ref:`license_target` for details.
 
 The UltraZohm is modular regarding the UltraScale device to scale the computational power.
 The community continuously extends the platform with more hardware components, especially :ref:`adapter_cards` for which templates and libraries exist.
-Furthermore, IP-Cores and software components are developed and shared, and included in the project.
+Furthermore, IP cores and software components are developed and shared, and included in the project.
 
 **Usability**
 
 The UltraZohm project thrives to be novice friendly with tutorials and an existing codebase.
 This is especially relevant to onboard new users with different backgrounds, ranging from bachelor, master's, and PhD students to experienced engineers and developers.
 At the same time, the system is expert friendly with access *to the last bit* due to the lack of black boxes, access to the source code, and comprehensive documentation.
-In addition, there are multiple supported workflows for writing software (e.g., manually or using :ref:`embedded_coder`) and IP-Cores (manually, :ref:`hdl_coder`, Vitis HLS).
+In addition, there are multiple supported workflows for writing software (e.g., manually or using :ref:`embedded_coder`) and IP cores (manually, :ref:`hdl_coder`, Vitis HLS).
 
 **Community**
 
@@ -90,8 +90,8 @@ Contributing
 
 - We are accepting and welcoming contributions
 - Forking & creating a pull request is possible for everybody (see `fork a repository documentation <https://support.atlassian.com/bitbucket-cloud/docs/fork-a-repository/>`_)
-- In principle, documentation, software, and even IP-Cores can be developed and contributed without physical access to an UltraZohm
-- For IP-Cores, developing with a generic UltraScale development kit is advised
+- In principle, documentation, software, and even IP cores can be developed and contributed without physical access to an UltraZohm
+- For IP cores, developing with a generic UltraScale development kit is advised
 - While we try to reduce the barrier for contributions, physical access to an UltraZohm is often required
 - Contributors can get in contact with the maintainers by mail or Slack to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`)
 - `Open in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_ for contributing without tool setup

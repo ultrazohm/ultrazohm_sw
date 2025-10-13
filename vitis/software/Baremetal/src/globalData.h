@@ -10,7 +10,11 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_EnDat/uz_EnDat.h"
-
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -55,40 +59,42 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	float mechanicalRotorSpeed;
+	float theta_elec;
+	float mechanicalRotorSpeed_filtered;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float torque;
+	float i_a_left;
+	float i_b_left;
+	float i_c_left;
+	float i_dc_left;
+	float i_dc_right;
+	float i_a_right;
+	float i_b_right;
+	float i_c_right;
+	float v_a_left;
+	float v_b_left;
+	float v_c_left;
+	float v_a_right;
+	float v_b_right;
+	float v_c_right;
+	float v_dc_left;
+	float v_dc_right;
+	float i_d_left;
+	float i_q_left;
+	float i_d_right;
+	float i_q_right;
+	float v_d_left;
+	float v_q_left;
+	float v_d_right;
+	float v_q_right;
+	float omega_mech_right;
+	float omega_mech_left;
+	float polepairs_left;
+	float polepairs_right;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d3_1;
 	float omega_mech_d3_1;
 	float position_el_2pi_d3_1;
@@ -110,6 +116,11 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float M_ref_left;
+	float n_ref_left;
+	float n_ref_left_filt;
+	uz_3ph_dq_t i_dq_ref_right;
+	uz_3ph_dq_t i_dq_ref_left;
 } referenceAndSetValues;
 
 typedef struct{
@@ -122,10 +133,15 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
-	uz_mux_axi_t* mux_axi;
 	uz_resolverIP_t* resolver_d3_1;
 	uz_resolver_pl_interface_t* resolver_pl_interface_d3_1;
 	uz_EnDat_t* endat_d4_1;
+	uz_CurrentControl_t* current_ctrl_left;
+	uz_CurrentControl_t* current_ctrl_right;
+	uz_SpeedControl_t* speed_ctrl_left;
+	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_mux_axi_t* mux_axi;
+	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

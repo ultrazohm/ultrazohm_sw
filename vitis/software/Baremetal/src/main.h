@@ -55,7 +55,10 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "include/pi_foc.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 //----------------------------------------------------
 // FUNCTIONS

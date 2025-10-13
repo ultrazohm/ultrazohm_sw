@@ -186,7 +186,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.n_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -194,11 +194,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.i_dq_ref_right.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->rasv.i_dq_ref_right.q = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -211,42 +211,52 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_10):
 		data->av.snd_fld[10] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_11):
 		data->av.snd_fld[11] = value;
+		uz_SpeedControl_set_Kp(data->objects.speed_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_12):
 		data->av.snd_fld[12] = value;
+		uz_SpeedControl_set_Ki(data->objects.speed_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_13):
 		data->av.snd_fld[13] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_14):
 		data->av.snd_fld[14] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_15):
 		data->av.snd_fld[15] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_16):
 		data->av.snd_fld[16] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_17):

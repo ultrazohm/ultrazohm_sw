@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+extern const struct uz_PMSM_t Siemens_1FK7043;
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -85,6 +86,13 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.polepairs_left = Siemens_1FK7043.polePairs;
+            Global_Data.av.polepairs_right = Siemens_1FK7043.polePairs;
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+            Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+            Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

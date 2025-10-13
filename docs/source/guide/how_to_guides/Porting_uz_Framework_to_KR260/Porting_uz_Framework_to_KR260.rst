@@ -90,9 +90,9 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided Tcl script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP core, click on the top left "Presets" and "Apply Configuration"
 
-#.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
+#.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were Tcl scripts for each UZ-Hierarchy available.
 
     *  kria_vivado_block_uz_user.tcl
     *  kria_vivado_block_uz_system.tcl
@@ -100,7 +100,7 @@ Creating Fresh Project
     *  kria_vivado_block_digital_adapter.tcl
 
 #.  Create an empty hierarchy, e.g. ``hier_0``.
-#.  Switch with the TCL Console to the current working folder with:
+#.  Switch with the Tcl Console to the current working folder with:
 
     .. code-block::
 
@@ -155,7 +155,7 @@ Following those steps should lead to an HW-Design like this:
     Vivado-Project Hardware-Design KR260.
     
 
-Project with TCL Scripts: 
+Project with Tcl Scripts:
 ----------------------------
 
 #. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
@@ -171,13 +171,13 @@ Project with TCL Scripts:
 
 #. Add the UltraZohm IP-Repository to the project. 
 #. Add a new Block design and name with ``k26sys``.
-#. Switch with the TCL Console to the current working folder with:
+#. Switch with the Tcl Console to the current working folder with:
 
     .. code-block::
 
         cd [ get_property DIRECTORY [current_project] ]
 
-#. Open TCL Console and call the TCL-scripts for block and connection implementation with given order:
+#. Open Tcl Console and call the Tcl scripts for block and connection implementation with given order:
 
     .. code-block::
 
@@ -191,7 +191,7 @@ Project with TCL Scripts:
     * k26sys_ps_generation → PS 
     * k26sys_hd_generation → IP cores, Connections
 
-.. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
+.. tip:: Please consider Tcl Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.
 
 #.  Generate the Bitstream and export the `.xsa`.
 

@@ -1,7 +1,7 @@
 .. _viavdo_build_tcl:
 
 ========================
-Vivado build tcl scripts
+Vivado build Tcl scripts
 ========================
 
 The default Vivado project (see :ref:`default_vivado_project`) can be generated using the ``build.tcl`` script.
@@ -17,8 +17,8 @@ Usage:
 #. Open Vivado
 #. Click on ``Window`` -> ``Tcl Console``
 #. A window on the bottom of Vivado appears (*Tcl Console*)
-#. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the tcl console
-#. Navigate to ``ultrazohm_sw/vivado`` in the tcl console
+#. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the Tcl console
+#. Navigate to ``ultrazohm_sw/vivado`` in the Tcl console
 #. Call build.tcl with:
 
 .. code-block::

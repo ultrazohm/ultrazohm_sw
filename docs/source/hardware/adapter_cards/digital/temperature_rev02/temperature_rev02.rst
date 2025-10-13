@@ -66,10 +66,10 @@ Implementation with Temperature_Card_Interface IP Core
 .. note::
    | Users who use the adapter card for the first time are recommended to use the following step-by-step instructions for didactic reasons. 
    | See ``Step by step guide``.
-   | More experienced users that quickly want to implement the IP core can use a tcl-script in Vivado and execute it from the tcl-console after opening the block design.
-   | See ``tcl commands``.
+   | More experienced users that quickly want to implement the IP core can use a Tcl script in Vivado and execute it from the Tcl console after opening the block design.
+   | See ``Tcl commands``.
 
-tcl commands
+Tcl commands
 ************
 * cd [ get_property DIRECTORY [current_project] ]
 * source ../../tcl_scripts/ip_uz_user_temp_ip_core.tcl

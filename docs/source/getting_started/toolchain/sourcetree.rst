@@ -60,7 +60,7 @@ Under Advanced Options (Erweiterte Optionen), check out the **main** branch.
 
 .. image:: ./images_git/sourcetree_clone2.png
 
-This will take some time, after the clone is complete, Sourcetree and the repository is ready to use.
+This will take some time. After the clone is complete, Sourcetree and the repository are ready to use.
 
 .. image:: ./images_git/sourcetree_cloned.png
 

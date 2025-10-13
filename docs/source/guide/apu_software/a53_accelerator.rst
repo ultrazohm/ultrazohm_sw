@@ -173,7 +173,7 @@ Use uz library functions on the A53 processor
 All uz library functions are only accessible to the R5 processor and are located 
 in the folder ``\vitis\software\Baremetal\src\uz``. If you need one of them, 
 copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the 
-vitis workspace via the tcl script. Afterwards the sources are available on the 
+vitis workspace via the Tcl script. Afterwards the sources are available on the 
 A53 processor.
 
 Share data of types that are part of uz library functions

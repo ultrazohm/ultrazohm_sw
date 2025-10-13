@@ -64,7 +64,7 @@ Software
    .. code-block:: c
       :linenos:
       :emphasize-lines: 34
-      :caption: Snippet of ``main.c`` with initialization of the simscape IP core. ``//....`` marks left out code
+      :caption: Snippet of ``main.c`` with initialization of the simscape IP core. ``//....`` marks left-out code
  
        #include "IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h"
        uz_simscapeExample_handle sim_halfWaveRectifier;

@@ -8,7 +8,7 @@ Aim of the tutorial
 *******************
 
 In this tutorial, the digital voltage adapter board is used to generate a PWM signal at D1.
-You can use a scope to measure the gate Signal.
+You can use a scope to measure the gate signal.
 An assertion is triggered to showcase its use.
 
 After this tutorial, you can:
@@ -43,7 +43,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2-4,9-12,14-18
-     :caption: isr.c code after changes. ``//....`` signals left out code.  
+     :caption: isr.c code after changes. ``//....`` signals left-out code.
 
       //....
       float amplitude = 1.0f;
@@ -109,7 +109,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 4-6,7-11
-     :caption: isr.c code after changes. ``//....`` signals left out code.  
+     :caption: isr.c code after changes. ``//....`` signals left-out code.
 
       //....
       if (current_state==control_state)

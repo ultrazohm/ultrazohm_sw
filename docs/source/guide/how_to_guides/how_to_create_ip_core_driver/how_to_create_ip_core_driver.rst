@@ -534,7 +534,7 @@ Integration in Vitis
 ====================
 
 1. Open Vitis
-2. (if not already done) Run the tcl script to generate the workspace (:ref:`tcl_scripts`)
+2. (if not already done) Run the Tcl script to generate the workspace (:ref:`tcl_scripts`)
 3. Navigate to the Baremetal code
 4. Create the file ``uz_myIP_testebench.h`` in the ``include`` folder
 

@@ -143,10 +143,10 @@ Export Bitstream
 .. image:: ./img_exp_bit/9_load.png
 
 
-Export Bitstream tcl-script
+Export Bitstream Tcl script
 ---------------------------
 
-A TCL script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
+A Tcl script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
 
 - ``Tools -> Custom Commands -> Customize Commands``
 - Click on the `plus` and enter a name, e.g., export_xsa
@@ -247,7 +247,7 @@ Program (Debug)
 Javascope
 *********
 
-- Setup the network settings of the Ethernet adapter, which is connected to the UltraZohm
+- Setup the network settings of the Ethernet adapter that is connected to the UltraZohm
 
 ::
 

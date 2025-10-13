@@ -18,8 +18,8 @@ The trigger and refresh signals of the Transformation are connected with the RS-
 
 .. note:: 
 
-   To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP cores automatically and connects them.
-   To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
+   To simplify the usage of the CIL and to reduce possible errors, a Tcl script was created, that places all necessary IP cores automatically and connects them.
+   To use this, open the Vivado block design in a clean project and run the following commands seperately in the Tcl console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
 

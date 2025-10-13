@@ -7,7 +7,7 @@ Modifying the GUI
 Aim of the tutorial
 *******************
 
-In this tutorial, the :ref:`three-phase-wave <uz_wavegen_three_phase>` from the wavegen library will be used.
+In this tutorial, the :ref:`three-phase wave <uz_wavegen_three_phase>` from the wavegen library will be used.
 Configuration values of the three-phase wave will be modified during runtime via the GUI.
 
 Requirements
@@ -120,7 +120,7 @@ Guideline
    * This sets the value of the bool variable to true, if the ``My_Button_4`` is pressed.
    * Keep in mind that the corresponding button in the GUI is not a toggle button. Pressing this button will always set the variable to true. It will not change the value depending on if the button is selected (pressed) or unselected.
 
-#. To be able to disable the three-phase-wave again, assign in the case ``case (My_Button_5):`` the variable ``is_three_phase_active`` the value *false*.
+#. To be able to disable the three-phase wave again, assign in the case ``case (My_Button_5):`` the variable ``is_three_phase_active`` the value *false*.
 #. Set the ``ultrazohm_state_machine_set_userLED()`` to true, if ``My_Button_4`` is pressed and to false, if ``My_Button_5`` is pressed. This will turn the *userLED* on, when the three-phase wave is active.
 #. Comment in the code of ``Bit_7`` and ``Bit_8`` for ``My_Button_4`` and ``My_Button_5`` and change it to the following.
 

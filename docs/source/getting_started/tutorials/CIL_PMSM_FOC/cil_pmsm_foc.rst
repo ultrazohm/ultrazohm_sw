@@ -81,7 +81,7 @@ Initial steps
    .. code-block:: c  
         :linenos:
         :emphasize-lines: 7,13,14,28,30-66
-        :caption: main.c code after changes. ``//....`` signals left out code.  
+        :caption: main.c code after changes. ``//....`` signals left-out code.
 
          //....
          enum init_chain
@@ -163,7 +163,7 @@ Initial steps
    .. code-block:: c
         :linenos:
         :emphasize-lines: 1-19,25-34
-        :caption: isr.c code after changes. ``//....`` signals left out code.  
+        :caption: isr.c code after changes. ``//....`` signals left-out code.
    
          //....
          extern uz_pmsmModel_t *pmsm;
@@ -297,7 +297,7 @@ Initial steps
    .. code-block:: c
      :linenos:
      :emphasize-lines: 12-16,22-27
-     :caption: javascope.c code after changes. ``//....`` marks left out code.  
+     :caption: javascope.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern struct uz_pmsmModel_outputs_t pmsm_outputs;
@@ -335,7 +335,7 @@ Initial steps
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2,8,12
-     :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
+     :caption: ipc_ARM.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern uz_3ph_dq_t reference_currents_Amp;

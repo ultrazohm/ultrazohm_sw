@@ -28,3 +28,4 @@ IP Cores
     uz_resolverIP/uz_resolverIP
     uz_resolver_pl_interface/uz_resolver_pl_interface
     uz_axi_gpio/uz_axi_gpio
+    uz_NN_acc/uz_NN_acc

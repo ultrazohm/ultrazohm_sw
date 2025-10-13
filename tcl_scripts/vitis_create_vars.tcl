@@ -28,9 +28,6 @@ cd ..
 set FOLDER_PATH [pwd]
 cd $WS_PATH
 
-set FOLDER_PATH [pwd]
-cd $WS_PATH
-
 set VITIS_PATH $::env(XILINX_VITIS)
 cd $VITIS_PATH
 

@@ -90,6 +90,9 @@ Usage:
 ::
 
    cd [getws]
+
+::
+
    source {../../tcl_scripts/vitis_update_platform.tcl}
 
 .. _vitis_gen_workspace_tcl:
@@ -109,4 +112,7 @@ Usage:
 ::
 
    cd [getws]
+
+::
+
    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}

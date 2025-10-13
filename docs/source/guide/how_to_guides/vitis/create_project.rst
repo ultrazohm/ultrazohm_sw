@@ -46,14 +46,14 @@ The Platform Project
 
    ..	image:: ./images_create/vitis_create10.png
 
-4. Add the LW-IP-Ethernet IP core
+4. Add the lwIP (Ethernet/IPvX) library
 
    1. Right click on the FreeRTOS BSP
    2. Modify BSP settings
 
       .. image:: ./images_create/vitis_create11.png
 
-   3. Add the IP core
+   3. Add and configure the library
 
       .. image:: ./images_create/vitis_create12.png
 
@@ -79,7 +79,7 @@ FreeRTOS
 
    .. image:: ./images_create/vitis_create17.png
 
-3. The following step works only if the LW-IP was included before:
+3. The following step works only if the lwIP library was included before:
 
    .. image:: ./images_create/vitis_create18.png
 

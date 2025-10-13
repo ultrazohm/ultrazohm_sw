@@ -90,7 +90,7 @@ Guideline
       //....
 
 #. In the ``javascope.c`` file, add the ``three_phase_output`` struct with the ``extern`` keyword.
-#. Replace the assignment of the addresses for the ``JSO_ua`` , ``JSO_ub`` and ``JSO_uc`` members of the ``js_ch_observable`` array with the three elements of the ``three_phase_output`` struct.
+#. Replace the assignment of the addresses for the ``JSO_ua``, ``JSO_ub`` and ``JSO_uc`` members of the ``js_ch_observable`` array with the three elements of the ``three_phase_output`` struct.
 
    .. code-block:: c
      :linenos:
@@ -115,7 +115,7 @@ Guideline
    * This file processes the commands send from the GUI.
    * This includes, e.g., the commands for the *Enable System* and *Enable Control* buttons, the *eight My_Buttons* and the *send_fields*.
 
-#. Scroll down to the cases of the ``My_Buttons`` in the switch-case structure and assign the variable ``is_three_phase_active`` the value *true* in the ``case (My_Button_4):`` .
+#. Scroll down to the cases of the ``My_Buttons`` in the switch-case structure and assign the variable ``is_three_phase_active`` the value *true* in the ``case (My_Button_4):``.
 
    * This sets the value of the bool variable to true, if the ``My_Button_4`` is pressed.
    * Keep in mind that the corresponding button in the GUI is not a toggle button. Pressing this button will always set the variable to true. It will not change the value depending on if the button is selected (pressed) or unselected.
@@ -190,13 +190,13 @@ Guideline
        General-purpose *Send_fields*
 
 #. In the ``javascope.h`` file, we will modify the *send_fields* labels to our needs.
-#. Change the description for the *send_fields* from ``send_field_1`` to ``send_field_3`` to ``amplitude`` , ``offset`` and ``frequency`` .
+#. Change the description for the *send_fields* from ``send_field_1`` to ``send_field_3`` to ``amplitude``, ``offset`` and ``frequency``.
 #. You can adjust the labels next to the *send_fields*. Change them for the first three *send_fields* to, e.g., *V*.
 
    * These descriptions and labels are purely cosmetic.
    * They do not change anything in the code basis. They are therefore commented out as well.
   
-#. Go to the ``ipc_ARM.c`` file and add the three variables ``amplitude`` , ``frequency`` and ``offset`` from the ``isr.c`` with the extern keyword.
+#. Go to the ``ipc_ARM.c`` file and add the three variables ``amplitude``, ``frequency`` and ``offset`` from the ``isr.c`` with the extern keyword.
 #. In the cases ``Set_Send_Field_1`` to ``Set_Send_Field_3``, give the corresponding variable the value ``value``.
 
    * I.e., description says for ``send_field_1`` now ``amplitude``, ``amplitude`` has to be assigned in the ``Set_Send_Field_1`` case.

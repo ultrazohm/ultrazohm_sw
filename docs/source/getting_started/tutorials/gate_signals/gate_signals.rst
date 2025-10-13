@@ -13,8 +13,8 @@ An assertion is triggered to showcase its use.
 
 After this tutorial, you can:
 
- - Use the PWM-module
- - Test the optical adapter board
+- Use the PWM-module
+- Test the optical adapter board
 
 Requirements
 ************
@@ -70,15 +70,15 @@ Guideline
 
 #. Switch to the *Debug-View* in *Vitis*, select the *Vitis-Serial-Terminal*, click on the green **+**-Symbol and connect the serial port to the USB-port with which your JTAG-cabel is connected to the computer.
 
-    * This connects the Vitis serial port with the UltraZohm.
-    * This way, messages from the UltraZohm can be read in the *Vitis-Serial-Terminal*.
-    * On Windows, the Port may be called *COM6*.
+   * This connects the Vitis serial port with the UltraZohm.
+   * This way, messages from the UltraZohm can be read in the *Vitis-Serial-Terminal*.
+   * On Windows, the Port may be called *COM6*.
   
-   ..  _Vitis_serial_port:
-   ..  figure:: ./img/Vitis1.png
-       :align: center
+     ..  _Vitis_serial_port:
+     ..  figure:: ./img/Vitis1.png
+         :align: center
 
-       Vitis view to connect serial port.
+         Vitis view to connect serial port.
 
 #. Connect the GUI and press the *Enable System* and *Enable Control* buttons.
 #. After pressing the ``My_Button4``, the UltraZohm should switch into its *Error State*. This happens, because an assertion got triggered. The red *Error LED* should light up as well.

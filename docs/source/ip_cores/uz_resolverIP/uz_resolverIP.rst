@@ -54,7 +54,7 @@ For successful SPI communication, make sure that the following pins of the AD2S1
    * - A0
    * - A1
 
-The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the project's block design. The source files can be found in ``ip_cores\uz_resolverIP\src``. 
+The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the project's block design. The source files can be found in ``ip_cores\uz_resolverIP\src``.
 
 .. _pic_Resolver_ipCore:
 

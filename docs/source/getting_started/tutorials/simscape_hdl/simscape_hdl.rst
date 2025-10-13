@@ -36,11 +36,11 @@ Generate IP core
 3. Right-click the subsystem -> HDL Code -> HDL Workflow Advisor
 4. Settings in HDL Workflow Advisor:
 
-  - ``Zynq Ultrascale`` & ``IP core``
-  - Target Interface: ``AXI4-Lite``
-  - Reset: ``Synchronous``
-  - Enable native floating point
-  - Run Workflow to the last point
+   - ``Zynq Ultrascale`` & ``IP core``
+   - Target Interface: ``AXI4-Lite``
+   - Reset: ``Synchronous``
+   - Enable native floating point
+   - Run Workflow to the last point
 
 5. The IP core is now generated
 6. Copy the IP core to the IP core folder in the ultrazohm_sw repository. **Note**: the IP core is already present in the repository.

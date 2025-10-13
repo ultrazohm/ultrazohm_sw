@@ -55,7 +55,7 @@ Initial steps
 
       If the new IP core shows up as *unconnected* instead of *unassigned*, delete the ``AXI smartconnect`` in the ``uz_user`` block and add it again with the same connections.
 
-#. Save the project,generate and export the bitstream as done in :ref:`gen_bitstream`.
+#. Save the project, generate and export the bitstream as done in :ref:`gen_bitstream`.
 #. Generate the Vitis workspace as done in :ref:`genvitis`.
 #. Open the ``uz_global_configuration.h`` file and increase ``#define UZ_PMSMMODEL_MAX_INSTANCES`` by one. This way, one instance of the PMSM IP core driver can be used.
 #. At the same time check, that the ``UZ_PWM_FREQUENCY`` is set to ``20.0e3f`` .

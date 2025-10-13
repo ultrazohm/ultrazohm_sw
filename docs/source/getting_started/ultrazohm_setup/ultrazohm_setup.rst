@@ -222,9 +222,9 @@ Program (Debug)
 ***************
 
 - Click on the red-marked windows to see the design perspective in Vitis.
-- Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
+- Click the arrow next to the debug-icon and choose ``Debug Configurations``.
 - Choose the appropriate debug config.
-  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>` .
+  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>`.
 
 .. note:: There are two different debug configurations:
    

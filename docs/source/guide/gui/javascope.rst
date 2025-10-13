@@ -307,10 +307,6 @@ Known issues
    * If this is the case, just update your local Java version, as described in the section :ref:`install_java`.
 
 
-See also
-"""""""""""""""
-
-
 Designed by
 """""""""""
 Philipp Loehdefink (THN), Sebastian Wendel (THN), Eyke Liegmann (TUM), Michael Hoerner (THN), Dennis Hufnagel (THN) in 04/2022

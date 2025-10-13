@@ -7,7 +7,7 @@ Guide
 * UltraZohm is a powerful real-time computation unit
 * The UltraZohm is used to control power electronics and electrical drives
 * The UltraZohm is work in progress
-* Funded by `BMBF-Project KI-Power <https://www.elektronikforschung.de/projekte/ki-power>`_
+* Funded by `BMBF/BMFTR project KI-Power <https://www.elektronikforschung.de/projekte/ki-power>`_
 
 .. _UltraZohmFront:
 

@@ -41,7 +41,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 //defines and limits
-#define		MAX_CURRENT_AMP		5.0f
+#define		MAX_CURRENT_AMP		15.0f
 #define		MAX_SPEED 			1000.0f
 #define		MAX_DC_LINK_VOLTAGE 55.0f
 
@@ -66,6 +66,7 @@ static void control_left_motor();
 static void control_right_motor();
 static void measured_to_si_values();
 static void check_constraints_current_voltage_temperature();
+static inline float wrap_2pi(float x);
 
 void ISR_Control(void *data)
 {
@@ -91,6 +92,16 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_left.q = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+		v_dq_ref_right.q = 0.0f;
+		v_dq_ref_right.d = 0.0f;
+		v_dq_ref_left.q = 0.0f;
+		v_dq_ref_left.d = 0.0f;
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
     }
@@ -117,7 +128,7 @@ void ISR_Control(void *data)
     	control_left_motor();
 
     	// calculate control algorithm for right motor
-//    	control_right_motor();
+    	control_right_motor();
 
     	// set dutycycles
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
@@ -287,7 +298,7 @@ static void control_right_motor() {
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
-    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
+    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.position_el_2pi_d4_1);
 };
 
 
@@ -301,13 +312,18 @@ Global_Data.av.position_mech_2pi_d3_1 =  (2.0f * UZ_PIf) - Global_Data.av.resolv
 Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
 Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
 
+
 // Fake right position and speeds, if endat working delete this block
 Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
 Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
+Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
+Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
 
-// read position and speed from EnDat and assign to Global_Data
-Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
-Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
+
+//// read position and speed from EnDat and assign to Global_Data
+//Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
+//Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
 
 // Torque Sensor measurement
 Global_Data.av.torque = Global_Data.aa.A1.me.ADC_A1 * (-1.0f); //positive q-current = positive torque
@@ -356,3 +372,10 @@ static void check_constraints_current_voltage_temperature() {
     	ultrazohm_state_machine_set_stop(true);
     }
 };
+static inline float wrap_2pi(float x) {
+    float y = fmodf(x, 2.0f * (float)UZ_PIf);
+    if (y < 0.0f) {
+        y += 2.0f * (float)UZ_PIf;
+    }
+    return y;
+}

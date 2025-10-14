@@ -126,6 +126,8 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_left_filt;
 	float dut;
 	float resolver_offset;
+	float d4_to_d3_offset_mech;
+	float d4_to_d3_offset_el;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
 } referenceAndSetValues;

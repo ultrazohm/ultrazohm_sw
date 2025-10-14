@@ -113,6 +113,7 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.rasv.resolver_offset = -4.30f;
+            Global_Data.rasv.d4_to_d3_offset_mech = -1.8f;
             Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
             Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
             Global_Data.objects.endat_d4_1 = initialize_endat_D4_1();

@@ -262,6 +262,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_17):
+		data->rasv.d4_to_d3_offset_mech = value;
 		data->av.snd_fld[17] = value;
 			break;
 
@@ -290,30 +291,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		data->rasv.halfBridge1DutyCycle=data->rasv.dut;
-		data->rasv.halfBridge2DutyCycle=0.0f;
-		data->rasv.halfBridge3DutyCycle=0.0f;
+		data->rasv.halfBridge4DutyCycle=data->rasv.dut;
+		data->rasv.halfBridge5DutyCycle=0.0f;
+		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_5):
-		data->rasv.halfBridge1DutyCycle=0.0f;
-		data->rasv.halfBridge2DutyCycle=data->rasv.dut;
-		data->rasv.halfBridge3DutyCycle=0.0f;
+		data->rasv.halfBridge4DutyCycle=0.0f;
+		data->rasv.halfBridge5DutyCycle=data->rasv.dut;
+		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_6):
-		data->rasv.halfBridge1DutyCycle=0.0f;
-		data->rasv.halfBridge2DutyCycle=0.0f;
-		data->rasv.halfBridge3DutyCycle=data->rasv.dut;
+		data->rasv.halfBridge4DutyCycle=0.0f;
+		data->rasv.halfBridge5DutyCycle=0.0f;
+		data->rasv.halfBridge6DutyCycle=data->rasv.dut;
 
 			break;
 
 		case (My_Button_7):
-		data->rasv.halfBridge1DutyCycle=0.0f;
-		data->rasv.halfBridge2DutyCycle=0.0f;
-		data->rasv.halfBridge3DutyCycle=0.0f;
+		data->rasv.halfBridge4DutyCycle=0.0f;
+		data->rasv.halfBridge5DutyCycle=0.0f;
+		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
@@ -386,7 +387,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 	/* Bit 7 - My_Button_4 */
-	if (data->rasv.halfBridge1DutyCycle == data->rasv.dut)
+	if (data->rasv.halfBridge4DutyCycle == data->rasv.dut)
 	{
 		js_status_BareToRTOS |= (1u << 7);
 	}
@@ -397,7 +398,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 	/* Bit 8 - My_Button_5 */
-	if (data->rasv.halfBridge2DutyCycle == data->rasv.dut)
+	if (data->rasv.halfBridge5DutyCycle == data->rasv.dut)
 	{
 		js_status_BareToRTOS |= (1u << 8);
 	}
@@ -407,7 +408,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 9 - My_Button_6 */
-	if (data->rasv.halfBridge3DutyCycle == data->rasv.dut)
+	if (data->rasv.halfBridge6DutyCycle == data->rasv.dut)
 	{
 		js_status_BareToRTOS |= (1u << 9);
 	}
@@ -417,7 +418,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 10 - My_Button_7 */
-	if ((data->rasv.halfBridge1DutyCycle == 0.0f) && (data->rasv.halfBridge2DutyCycle == 0.0f) && (data->rasv.halfBridge3DutyCycle == 0.0f))
+	if ((data->rasv.halfBridge4DutyCycle == 0.0f) && (data->rasv.halfBridge5DutyCycle == 0.0f) && (data->rasv.halfBridge6DutyCycle == 0.0f))
 	{
 		js_status_BareToRTOS |= (1u << 10);
 	}

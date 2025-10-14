@@ -124,4 +124,22 @@ void test_uz_signals_Filter_1st_highpass_reverse_output(void) {
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, expected_filtered_array[i], filtered_array[i]);
     }
 }
+
+void test_uz_signals_Filter_reset(void) {
+    float input_array[20] = {0.0379f,1.1675f,-0.2292f,-1.1343f,0.5059f,1.3563f,
+    -0.2032f,-1.2368f,0.2300f,0.9577f,-0.7103f,-1.5429f,0.1174f,1.0406f,-0.6101f,
+    -1.3292f,0.2366f,1.1708f,-0.2176f,-1.0438f};
+    float filtered_array[20] = {0};
+    config.cutoff_frequency_Hz = 150.0f;
+    config.sample_frequency_Hz = 1000.0f;
+    config.selection = LowPass_first_order;
+    uz_IIR_Filter_t* test_instance = uz_signals_IIR_Filter_init(config);
+    for(int i=0;i< (int)(sizeof(input_array) / sizeof(float));i++) {
+        filtered_array[i] = uz_signals_IIR_Filter_reverse_sample(test_instance, input_array[i]);
+    }
+    uz_signals_IIR_Filter_reset(test_instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.0f, test_instance->old_input);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.0f, test_instance->old_output);
+    TEST_ASSERT_TRUE(test_instance->first_step);
+}
 #endif // TEST

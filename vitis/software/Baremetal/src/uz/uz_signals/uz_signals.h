@@ -92,7 +92,19 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
  * @return wrapped number
  */
 float uz_signals_wrap(float number, float limit);
-
+/**
+ * @brief wraps a number to the range of [0, limit] 
+ * 
+ * @param number number to wrap
+ * @param limit defines the wrapping limit of [0, limit]
+ * @return wrapped number
+ */
+void uz_signals_IIR_Filter_reset(uz_IIR_Filter_t *self);
+/**
+ * @brief resets the internal values of a Filter instance
+ * 
+ * @param self pointer instance of uz_IIR_Filter_t
+ */
 #endif // UZ_SIGNALS_H
 
 /**

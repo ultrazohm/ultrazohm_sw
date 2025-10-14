@@ -41,7 +41,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 //defines and limits
-#define		MAX_CURRENT_AMP		15.0f
+#define		MAX_CURRENT_AMP		5.0f
+#define		MAX_SPEED 			1000.0f
+#define		MAX_DC_LINK_VOLTAGE 55.0f
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -63,29 +65,22 @@ static void ReadAllADC();
 static void control_left_motor();
 static void control_right_motor();
 static void measured_to_si_values();
+static void check_constraints_current_voltage_temperature();
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-//    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    // set resolveroffset with javascope
+    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1,Global_Data.rasv.resolver_offset);
     // update and calculate measured values
     measured_to_si_values();
-
-    // check for current limit
-    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_left) > MAX_CURRENT_AMP ||
-   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_right) > MAX_CURRENT_AMP) {
-    	ultrazohm_state_machine_set_stop(true);
-    }
-
+    check_constraints_current_voltage_temperature();
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     // if "STOP"
     if (current_state==idle_state)
     {
-    	// disable inverters
-
-    	// Dig 12 und 13 auf 0
     	// reset controllers
-
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
 		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
@@ -104,7 +99,6 @@ void ISR_Control(void *data)
     {
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
-    	// enable inverters, Dig 12 und 13 auf 1
     }
 
     if (current_state==control_state)
@@ -112,12 +106,8 @@ void ISR_Control(void *data)
 
         i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	// park transformation of measured currents
-    	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
-    	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
-    	Global_Data.av.omega_mech_right = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
-    	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
-    	Global_Data.av.n_mech_rpm_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
-    	Global_Data.av.n_mech_rpm_d4_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+    	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.position_el_2pi_d3_1);
+    	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.position_el_2pi_d4_1);
     	Global_Data.av.i_d_left = i_dq_left.d;
     	Global_Data.av.i_q_left = i_dq_left.q;
     	Global_Data.av.i_d_right = i_dq_right.d;
@@ -127,7 +117,7 @@ void ISR_Control(void *data)
     	control_left_motor();
 
     	// calculate control algorithm for right motor
-    	control_right_motor();
+//    	control_right_motor();
 
     	// set dutycycles
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
@@ -281,14 +271,14 @@ static void control_left_motor() {
 	// filter speed setpoint signal
 	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
 	// calculate reference torque from speed ctrl of left motor
-	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.omega_mech_left, Global_Data.rasv.n_ref_left_filt);
 	// calculate current setpoints i_dq_ref for left motor
-	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left,Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left,Global_Data.av.omega_mech_left, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
 	// calculate reference voltages for current control
-	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left);
+	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left);
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
-	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.position_el_2pi_d3_1);
 };
 
 static void control_right_motor() {
@@ -297,21 +287,28 @@ static void control_right_motor() {
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
-    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
+    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi);
 };
 
 
 static void measured_to_si_values() {
 // update position and speed from resolver
 Global_Data.av.resolver_pl_outputs_d3_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d3_1);
+// calc motor angles and speeds with right orientation
+
+Global_Data.av.position_el_2pi_d3_1 = (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
+Global_Data.av.position_mech_2pi_d3_1 =  (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi;
+Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+
+// Fake right position and speeds, if endat working delete this block
+Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+
 // read position and speed from EnDat and assign to Global_Data
 Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
 Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
 
-// assign measurements to Global_Data
-Global_Data.av.omega_mech_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
-Global_Data.av.position_el_2pi_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
-Global_Data.av.n_mech_rpm_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
 // Torque Sensor measurement
 Global_Data.av.torque = Global_Data.aa.A1.me.ADC_A1 * (-1.0f); //positive q-current = positive torque
 
@@ -335,4 +332,27 @@ i_abc_left.c = Global_Data.av.i_c_left;
 i_abc_right.a = Global_Data.av.i_a_right;
 i_abc_right.b = Global_Data.av.i_b_right;
 i_abc_right.c = Global_Data.av.i_c_right;
+
+
+};
+
+static void check_constraints_current_voltage_temperature() {
+
+    // check for current limit
+    if (fabs(Global_Data.av.i_a_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_a_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_left) > MAX_CURRENT_AMP)
+    {
+    	Global_Data.av.overcurrent_ac = 1.0f;
+    	ultrazohm_state_machine_set_stop(true);
+    }
+    // check for dc link voltage
+    if (fabs(Global_Data.av.v_dc_left) > MAX_DC_LINK_VOLTAGE || fabs(Global_Data.av.v_dc_right) > MAX_DC_LINK_VOLTAGE)
+    {
+    	Global_Data.av.overvoltage_dc = 1.0f;
+    	ultrazohm_state_machine_set_stop(true);
+    }
+    // check for max speed
+      if (fabs(Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm) > MAX_SPEED || fabs(Global_Data.av.n_mech_rpm_d4_1) > MAX_SPEED) {
+    	Global_Data.av.overspeed = 1.0f;
+    	ultrazohm_state_machine_set_stop(true);
+    }
 };

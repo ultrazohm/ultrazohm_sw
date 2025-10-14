@@ -98,9 +98,14 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d3_1;
 	float omega_mech_d3_1;
 	float position_el_2pi_d3_1;
+	float position_mech_2pi_d3_1;
 	float n_mech_rpm_d3_1;
 	float position_mech_2pi_d4_1;
+	float position_el_2pi_d4_1;
 	float n_mech_rpm_d4_1;
+	float overcurrent_ac;
+	float overvoltage_dc;
+	float overspeed;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -119,6 +124,8 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_left;
 	float n_ref_left;
 	float n_ref_left_filt;
+	float dut;
+	float resolver_offset;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
 } referenceAndSetValues;

@@ -202,10 +202,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
+		data->rasv.dut = value;
 		data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
+		data->rasv.resolver_offset = value;
 		data->av.snd_fld[6] = value;
 			break;
 
@@ -288,28 +290,46 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
+		data->rasv.halfBridge1DutyCycle=data->rasv.dut;
+		data->rasv.halfBridge2DutyCycle=0.0f;
+		data->rasv.halfBridge3DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_5):
+		data->rasv.halfBridge1DutyCycle=0.0f;
+		data->rasv.halfBridge2DutyCycle=data->rasv.dut;
+		data->rasv.halfBridge3DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_6):
+		data->rasv.halfBridge1DutyCycle=0.0f;
+		data->rasv.halfBridge2DutyCycle=0.0f;
+		data->rasv.halfBridge3DutyCycle=data->rasv.dut;
 
 			break;
 
 		case (My_Button_7):
+		data->rasv.halfBridge1DutyCycle=0.0f;
+		data->rasv.halfBridge2DutyCycle=0.0f;
+		data->rasv.halfBridge3DutyCycle=0.0f;
 
 			break;
+
 
 		case (My_Button_8):
 
 			break;
 
+
 		case (Error_Reset):
+		data->av.overcurrent_ac = 0.0f;
+		data->av.overvoltage_dc = 0.0f;
+		data->av.overspeed = 0.0f;
 
 			break;
+
 
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
@@ -364,17 +384,47 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
 
+
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if (data->rasv.halfBridge1DutyCycle == data->rasv.dut)
+	{
+		js_status_BareToRTOS |= (1u << 7);
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1u << 7);
+	}
+
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	if (data->rasv.halfBridge2DutyCycle == data->rasv.dut)
+	{
+		js_status_BareToRTOS |= (1u << 8);
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1u << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (data->rasv.halfBridge3DutyCycle == data->rasv.dut)
+	{
+		js_status_BareToRTOS |= (1u << 9);
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1u << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	if ((data->rasv.halfBridge1DutyCycle == 0.0f) && (data->rasv.halfBridge2DutyCycle == 0.0f) && (data->rasv.halfBridge3DutyCycle == 0.0f))
+	{
+		js_status_BareToRTOS |= (1u << 10);
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1u << 10);
+	}
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

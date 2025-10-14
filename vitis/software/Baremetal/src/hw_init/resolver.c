@@ -10,7 +10,7 @@ struct uz_resolverIP_config_t resolver_config_d3_1={
         .freq_clockin = 8192000,
         .pole_pairs_machine = 3.0f,
         .pole_pairs_resolver = 3.0f,
-        .zero_position_mechanical = 0.0f,
+        .zero_position_mechanical = 0.0f, // first estimate 0,27f, second 0,15f
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 
@@ -21,7 +21,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d3_1 = {
                .machine_polepairs = 3,
                .position_intmax = 65535,
                .resolver_polepairs = 3,
-			   .theta_m_offset_rad = -0.0f
+			   .theta_m_offset_rad = -4.30f
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d3_1 = {

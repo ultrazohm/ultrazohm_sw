@@ -69,8 +69,8 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_d3_1.n_mech_rpm;
-//	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av..n_mech_rpm;
+	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.n_mech_rpm_d3_1;
+	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.n_mech_rpm_d4_1;
 	js_ch_observable[JSO_ia_left] 			= &data->av.i_a_left;
 	js_ch_observable[JSO_ib_left] 			= &data->av.i_b_left;
 	js_ch_observable[JSO_ic_left] 			= &data->av.i_c_left;
@@ -87,8 +87,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_left] 			= &data->av.i_q_left;
 	js_ch_observable[JSO_id_right] 			= &data->av.i_d_right;
 	js_ch_observable[JSO_iq_right] 			= &data->av.i_q_right;
-	js_ch_observable[JSO_theta_el_left] 	= &data->av.resolver_pl_outputs_d3_1.position_el_2pi;
-	js_ch_observable[JSO_theta_mech_left] 	= &data->av.resolver_pl_outputs_d3_1.position_mech_2pi;
+	js_ch_observable[JSO_theta_el_left] 	= &data->av.position_el_2pi_d3_1;
+	js_ch_observable[JSO_theta_mech_left] 	= &data->av.position_mech_2pi_d3_1;
 	js_ch_observable[JSO_theta_mech_right] 	= &data->av.position_mech_2pi_d4_1;
 	js_ch_observable[JSO_vd_left]			= &data->av.v_d_left;
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
@@ -107,9 +107,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vq_left] 			    = &(data->av.v_q_left);
 	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_left);
 	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_left);
-	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.resolver_pl_outputs_d3_1.n_mech_rpm);
+	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.n_mech_rpm_d3_1);
 	js_slowDataArray[JSSD_FLOAT_torque_right] 		    = &(data->av.torque);
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
+	js_slowDataArray[JSSD_FLOAT_Overcurrent_AC]			= &(data->av.overcurrent_ac);
+	js_slowDataArray[JSSD_FLOAT_Overvoltage_DC]			= &(data->av.overvoltage_dc);
+	js_slowDataArray[JSSD_FLOAT_Overspeed]				= &(data->av.overspeed);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

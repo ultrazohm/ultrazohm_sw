@@ -82,7 +82,7 @@ For the partial derivatives of the flux with respect to the currents, abbreviati
 
 .. math::
   
-    L_dd = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}}
+    L_{dd} = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}}
     
     L_{qq} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
     
@@ -102,7 +102,7 @@ The inner torque :math:`T_I`  is calculated using the flux-linkages.
 
 .. math::
 
-    T_I=\frac{3}{2}p(\psi_d(id,iq) i_q - \psi_q(id,iq) i_d)
+    T_I=\frac{3}{2}p(\psi_d(i_d,i_q) i_q - \psi_q(i_d,i_q) i_d)
 
 Mechanical system
 -----------------

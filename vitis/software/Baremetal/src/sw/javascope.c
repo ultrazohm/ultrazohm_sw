@@ -86,6 +86,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_ref_left] 		= &data->rasv.i_dq_ref_left.d;
 	js_ch_observable[JSO_iq_ref_left] 		= &data->rasv.i_dq_ref_left.q;
 	js_ch_observable[JSO_n_ref_left] 		= &data->rasv.n_ref_left;
+	js_ch_observable[JSO_n_ref_left_filt] 		= &data->rasv.n_ref_left_filt;
 	js_ch_observable[JSO_id_ref_right] 		= &data->rasv.i_dq_ref_right.d;
 	js_ch_observable[JSO_iq_ref_right] 		= &data->rasv.i_dq_ref_right.q;
 	js_ch_observable[JSO_theta_el_left] 	= &data->av.position_el_2pi_d3_1;

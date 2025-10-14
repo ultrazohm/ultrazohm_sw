@@ -32,7 +32,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
-
+#include "../uz/uz_signals/uz_signals.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -85,6 +85,7 @@ void ISR_Control(void *data)
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
 		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
+
 		Global_Data.rasv.n_ref_left = 0.0f;
 		Global_Data.rasv.n_ref_left_filt = 0.0f;
 		Global_Data.rasv.M_ref_left = 0.0f;
@@ -92,10 +93,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_left.q = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
-		v_dq_ref_right.q = 0.0f;
-		v_dq_ref_right.d = 0.0f;
-		v_dq_ref_left.q = 0.0f;
-		v_dq_ref_left.d = 0.0f;
+		uz_signals_IIR_Filter_reset(Global_Data.objects.iir_filter_ref_speed_left);
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;

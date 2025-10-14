@@ -97,7 +97,7 @@ Step-by-step
    .. image:: create_cpld_program/folder_structure_after_compile.jpg
      :height: 700
 
-14. The file ``uz_cpld_project_name.html`` is the documentation of the crated CPLD program and contains a summary of all settings, e.g. which pin in an input or an output.
+14. The file ``uz_cpld_project_name.html`` contains the documentation of the created CPLD program and includes a summary of all settings, e.g., which pin is an input or an output.
 
     .. image:: create_cpld_program/isplever_input_output_signal_list.jpg
       :height: 800      

@@ -324,7 +324,7 @@ Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_out
 //Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
 
 // Torque Sensor measurement
-Global_Data.av.torque = Global_Data.aa.A1.me.ADC_A1 * (-1.0f); //positive q-current = positive torque
+Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * (-1.0f); //positive q-current = positive torque
 
 // assign inverter measurements - Conversion factors from Michi
 Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A3 * 12.129f) + 0.10f;

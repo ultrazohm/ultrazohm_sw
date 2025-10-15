@@ -4,7 +4,7 @@
 Neural network IP core
 ======================
 
-There are two different neural network IP-Cores available in the library.
+There are two different neural network IP cores available in the library.
 
 #. :ref:`uz_mlp_three_layer`
 #. :ref:`uz_NN_acc`

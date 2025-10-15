@@ -4,19 +4,19 @@
 uz_NN_acc
 =========
 
-This IP-Core implements a **configurable MLP network** which was developed using Vitis HLS 2022.2.
+This IP core implements a **configurable MLP network** which was developed using Vitis HLS 2022.2.
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
   - Variable layer setup of up to **5 hidden layers** with :ref:`activation_function_relu` activation function for hidden layers.
-  - Output in the IP-Core is hard coded to use :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
+  - Output in the IP core is hard coded to use :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
   - The number of **neurons** in the hidden layers is variable.
   - Variable number of up to **24 Observations**.
   - Variable number of up to **12 Actions**.
   - Execution time of **~11-12µs** for 3x64 setup.
-  - Change of layer or neuron count :ref:`requires resynthesis of the IP-Core in Vitis HLS<uz_NN_customize_setup>`.
+  - Change of layer or neuron count :ref:`requires resynthesis of the IP core in Vitis HLS<uz_NN_customize_setup>`.
   - Synthesis configuration to prioritize performance or reduce resources.
-  - One default IP-Core with 3x64 setup is provided.
+  - One default IP core with 3x64 setup is provided.
 
   
 .. figure:: uz_NN_acc_layers.svg
@@ -28,10 +28,10 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
 Features
 --------
 - Feedforward calculation in **floating point**
-- Bias and weights are written to the IP-Core during initialization
-- Fully compatible with :ref:`uz_nn` to use IP-Core as an accelerator
+- Bias and weights are written to the IP core during initialization
+- Fully compatible with :ref:`uz_nn` to use IP core as an accelerator
 - Uses :ref:`uz_matrix` as input and outputs
-- IP-Core is configured and triggered exclusively by the PS
+- IP core is configured and triggered exclusively by the PS
 - Blocking and non-blocking operation (see :ref:`Execution<uz_NN_execution>`)
 - Correct size of the observation, weights, bias and action arrays will be asserted
 - Execution time for a 3x64 setup, with 20 observations and 4 actions takes roughly **~11µs**
@@ -42,12 +42,12 @@ Features
 Functionality
 -------------
 
-The usage of the IP-Core driver depends heavily on :ref:`uz_nn`.
+The usage of the IP core driver depends heavily on :ref:`uz_nn`.
 First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
-Additionally, an array for the output data of the IP-Core has to be declared (see :ref:`uz_matrix`).
-The ``uz_NN_acc_init`` function writes the memory addresses of the weight and bias arrays to the IP-Core.
-Following, the IP-Core reads all the weights & bias data from system memory.
-The weights & bias data is only read once during initialization of the IP-Core.
+Additionally, an array for the output data of the IP core has to be declared (see :ref:`uz_matrix`).
+The ``uz_NN_acc_init`` function writes the memory addresses of the weight and bias arrays to the IP core.
+Following, the IP core reads all the weights & bias data from system memory.
+The weights & bias data is only read once during initialization of the IP core.
 During runtime the weights & bias are stored in BRAM and are fixed.
 Only the observation and action data are read and written, respectively, during runtime.
 
@@ -55,25 +55,25 @@ Only the observation and action data are read and written, respectively, during 
 Usage
 -----
 
-The following step-by-step description guides the user in order to properly implement the IP-Core and the respective software driver.
+The following step-by-step description guides the user in order to properly implement the IP core and the respective software driver.
 
 Vivado
 ======
 
 .. _uz_NN_vivado:
 
-First, the IP-core has to be added to the block design in Vivado:
+First, the IP core has to be added to the block design in Vivado:
 
 #. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. Open the already existing ``uz_user`` hierarchy in the block design.
-#. Inside this hierarchy click on the plus (``+``) button to add a new IP-Core and select the one of the following IP-Cores:
+#. Inside this hierarchy click on the plus (``+``) button to add a new IP core and select the one of the following IP cores:
     
     .. note::
-        - Use the ``uz_NN_3_64_acc`` IP-Core for a preconfigured IP-Core with 3 hidden layers and 64 neurons each.
-        - Use customized ``uz_NN_X_YYY`` IP-Cores for different neuronal network setups. These can be generated using :ref:`this guide <uz_NN_customize_setup>`.
+        - Use the ``uz_NN_3_64_acc`` IP core for a preconfigured IP core with 3 hidden layers and 64 neurons each.
+        - Use customized ``uz_NN_X_YYY`` IP cores for different neuronal network setups. These can be generated using :ref:`this guide <uz_NN_customize_setup>`.
  
-#. Connect the ``ap_clk`` and ``ap_rst_n`` ports as shown in the image below. The IP-Core is designed for 100 MHz.
-#. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` IP-Core and connect it to the ``s_axi_control`` port of the IP-Core.
+#. Connect the ``ap_clk`` and ``ap_rst_n`` ports as shown in the image below. The IP core is designed for 100 MHz.
+#. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` IP core and connect it to the ``s_axi_control`` port of the IP core.
 
     .. figure:: uz_NN_acc_blockdesign_1.png
        :width: 600
@@ -83,7 +83,7 @@ First, the IP-core has to be added to the block design in Vivado:
 
 #. Double-click on the ``zynq_ultra_ps_e`` block in the top hierarchy.
 #. Navigate to ``PS-PL Configuration`` -> ``PS-PL Interface`` -> ``Slave Interface``.
-#. Add a new ``AXI HPx FPD`` Interface and set the Data Width to ``32``. If more than one uz_NN_acc IP-Core is being implemented, add a corresponding amount of ``AXI HPx FPD`` interfaces.
+#. Add a new ``AXI HPx FPD`` Interface and set the Data Width to ``32``. If more than one uz_NN_acc IP core is being implemented, add a corresponding amount of ``AXI HPx FPD`` interfaces.
 
     .. figure:: uz_NN_acc_blockdesign_2.png
        :width: 600
@@ -100,7 +100,7 @@ First, the IP-core has to be added to the block design in Vivado:
 
        Zynq clock connection
 
-#. Connect the S_AXI_HPX_FPD port to the output ``m_axi_arrays`` port of the ``uz_NN_acc`` IP-Core.
+#. Connect the S_AXI_HPX_FPD port to the output ``m_axi_arrays`` port of the ``uz_NN_acc`` IP core.
 
     .. figure:: uz_NN_acc_blockdesign_4.png
        :width: 600
@@ -108,7 +108,7 @@ First, the IP-core has to be added to the block design in Vivado:
 
        Zynq clock connection
 
-#. Open the ``Address Editor`` and right-click and select ``Assign all``. This assigns the address of the M_axi and S_axi interfaces for the IP-Core.
+#. Open the ``Address Editor`` and right-click and select ``Assign all``. This assigns the address of the M_axi and S_axi interfaces for the IP core.
 #. After assignment it should look similar to this.
 
     .. figure:: uz_NN_acc_blockdesign_5.png
@@ -123,7 +123,7 @@ First, the IP-core has to be added to the block design in Vivado:
 Software
 ========
 
-#. In the :ref:`global_configuration` include at least one ``uz_NN_acc`` IP-Core driver instance, :ref:`one software network instance<uz_nn>` and ``(your amount of hidden layers +1)`` :ref:`NN_LAYER instance <uz_nn_layer>`.
+#. In the :ref:`global_configuration` include at least one ``uz_NN_acc`` IP core driver instance, :ref:`one software network instance<uz_nn>` and ``(your amount of hidden layers +1)`` :ref:`NN_LAYER instance <uz_nn_layer>`.
 
     .. code-block:: c
      :caption: ``uz_global_configuration.h`` example code for a 3x64 setup for
@@ -168,10 +168,10 @@ Software
     .. warning::
         **Every array and uz_matrix_t object** has to be declared with the **MEMORY_ALIGN** attribute.
         It aligns the arrays (and therefore its pointers) to 32 byte.
-        Otherwise undefined behavior regarding the read/write process of the IP-Core can occur.
+        Otherwise undefined behavior regarding the read/write process of the IP core can occur.
 
     .. code-block:: c
-     :caption: Code for ``init_network_ip_core.c`` for initialization of network and IP-core
+     :caption: Code for ``init_network_ip_core.c`` for initialization of network and IP core
 
      #include "../uz/uz_nn/uz_nn.h"
      #include "../IP_Cores/uz_NN_acc/uz_NN_acc.h"
@@ -268,7 +268,7 @@ Software
         case print_msg:
         ....
 
-#. To use the IP-Core in the ISR add the following code to the ``isr.c`` :
+#. To use the IP core in the ISR add the following code to the ``isr.c`` :
 
     .. code-block:: c
      :caption: Code example for blocking operation ``isr.c`` 
@@ -345,7 +345,7 @@ Execution
 
 .. _uz_NN_execution:
 
-The regular calculation with the IP-Core using the software driver and writing the inputs and waiting for the output is a **blocking** operation.
+The regular calculation with the IP core using the software driver and writing the inputs and waiting for the output is a **blocking** operation.
 The driver triggers the calculation and waits until it is finished.
 The processor can not do any other tasks.
 
@@ -370,8 +370,8 @@ The processor can not do any other tasks.
        Driver->>Processor: Invalidate cache for output
 
 An alternative to the blocking calculation is a concurrent approach.
-In this, the IP-Core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
-This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP-Core calculation.
+In this, the IP core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
+This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP core calculation.
 Note that this means the actual calculation time of network without the communication overhead of the read/write operations. 
 
 .. code-block::
@@ -399,13 +399,13 @@ Note that this means the actual calculation time of network without the communic
        end
        Driver->>Processor: Invalidate cache for output
 
-Customize IP-Core
+Customize IP core
 -----------------
 
 .. _uz_NN_customize_setup:
 
-The IP-Core can be configured according to your needs (neuron count & layer setup).
-However, for this to work, the IP-Core will need to be synthesized again using the new setup. 
+The IP core can be configured according to your needs (neuron count & layer setup).
+However, for this to work, the IP core will need to be synthesized again using the new setup.
 This guide will walk you through the process.
 
 #. On windows make sure, that Vitis HLS is added to your path variables.
@@ -418,7 +418,7 @@ This guide will walk you through the process.
           The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5)
           Note however, that increasing the neuron count increases the resource usage significantly.
           **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
-        - The ``Performance_Target`` variable can be used, if the generated IP-Core resources are too much for your specific FPGA.
+        - The ``Performance_Target`` variable can be used, if the generated IP core resources are too much for your specific FPGA.
           Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance. 
           A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
         - Examples of the resource usage for different configurations can be found :ref:`here<uz_NN_resources>`.
@@ -439,12 +439,12 @@ This guide will walk you through the process.
 #. Save the file and navigate to  ``ip_cores\uz_NN_acc``
 
     .. note::
-        - Up to 5 custom IP-Cores can be generated and stored.
+        - Up to 5 custom IP cores can be generated and stored.
         - To facilitate this, 5 different synthesis solutions are provided.
-        - The name of the IP-Core can be configured in this solution. This is necessary to avoid clashes in Vivado.
+        - The name of the IP core can be configured in this solution. This is necessary to avoid clashes in Vivado.
         - Example for description: ``5x128_setup``
-        - Example for IP-Core display name: ``uz_NN_5_128_acc``
-        - Example for IP-Core name: ``uz_NN_5_128``
+        - Example for IP core display name: ``uz_NN_5_128_acc``
+        - Example for IP core name: ``uz_NN_5_128``
   
 #. Configure solution1 by opening the file ``uz_NN/solution1/script.tcl``.
 #. Edit the entry in line 27
@@ -455,7 +455,7 @@ This guide will walk you through the process.
      -description XxYYY_setup -display_name uz_NN_X_YYY_acc -ipname uz_NN_X_YYY
      ...
      
-#. Give the IP-Core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
+#. Give the IP core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
@@ -464,15 +464,15 @@ This guide will walk you through the process.
    In Vivado the resource usage is (except DSP Slices) a bit lower than stated in HLS.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
 #. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
-#. After that, follow the :ref:`guide to add the ip-core to the block design<uz_NN_vivado>`.
-#. [Optional] You can now generate another IP-Core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Modify ``uz_MMult_MaxSize.h`` again and then use solution2-5.
+#. After that, follow the :ref:`guide to add the IP core to the block design<uz_NN_vivado>`.
+#. [Optional] You can now generate another IP core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Modify ``uz_MMult_MaxSize.h`` again and then use solution2-5.
 
 Resource utilization
 ====================
 
 .. _uz_NN_resources:
 
-The resource utilization depends heavily on the configuration of the IP-Core.
+The resource utilization depends heavily on the configuration of the IP core.
 The following table shows the resource usage in Vivado for different configurations.
 Generally, more hidden layers is more resource efficient than more neurons per layer.
 Yours my vary slightly.
@@ -504,7 +504,7 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 Further improvements
 ====================
 
-Further improvements are planed for the IP-core and in development:
+Further improvements are planed for the IP core and in development:
 
 - Updating weights & bias during runtime.
 

@@ -4,7 +4,7 @@
 uz_NN_acc
 =========
 
-This IP core implements a **configurable MLP network** which was developed using Vitis HLS 2022.2.
+This IP core implements a **configurable MLP network**, which was developed using Vitis HLS 2022.2.
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
@@ -46,9 +46,9 @@ The usage of the IP core driver depends heavily on :ref:`uz_nn`.
 First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
 Additionally, an array for the output data of the IP core has to be declared (see :ref:`uz_matrix`).
 The ``uz_NN_acc_init`` function writes the memory addresses of the weight and bias arrays to the IP core.
-Following, the IP core reads all the weights & bias data from system memory.
-The weights & bias data is only read once during initialization of the IP core.
-During runtime the weights & bias are stored in BRAM and are fixed.
+Subsequently, the IP core reads all the weights & bias data from system memory.
+The weights & bias data are only read once during initialization of the IP core.
+During runtime, the weights & bias are stored in BRAM and are fixed.
 Only the observation and action data are read and written, respectively, during runtime.
 
 
@@ -64,9 +64,9 @@ Vivado
 
 First, the IP core has to be added to the block design in Vivado:
 
-#. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
+#. In Vivado, open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. Open the already existing ``uz_user`` hierarchy in the block design.
-#. Inside this hierarchy click on the plus (``+``) button to add a new IP core and select the one of the following IP cores:
+#. Inside this hierarchy, click on the plus (``+``) button to add a new IP core and select one of the following IP cores:
 
    .. note::
       - Use the ``uz_NN_3_64_acc`` IP core for a preconfigured IP core with 3 hidden layers and 64 neurons each.
@@ -108,8 +108,8 @@ First, the IP core has to be added to the block design in Vivado:
 
       Zynq clock connection
 
-#. Open the ``Address Editor`` and right-click and select ``Assign all``. This assigns the address of the M_axi and S_axi interfaces for the IP core.
-#. After assignment it should look similar to this.
+#. Open the ``Address Editor`` and right-click and select ``Assign all``. This assigns the addresses of the M_axi and S_axi interfaces for the IP core.
+#. After assignment, it should look similar to this.
 
    .. figure:: uz_NN_acc_blockdesign_5.png
       :width: 600
@@ -123,16 +123,16 @@ First, the IP core has to be added to the block design in Vivado:
 Software
 ========
 
-#. In the :ref:`global_configuration` include at least one ``uz_NN_acc`` IP core driver instance, :ref:`one software network instance<uz_nn>` and ``(your amount of hidden layers +1)`` :ref:`NN_LAYER instance <uz_nn_layer>`.
+#. In the :ref:`global_configuration`, include at least one ``uz_NN_acc`` IP core driver instance, :ref:`one software network instance<uz_nn>` and ``(your amount of hidden layers +1)`` :ref:`NN_LAYER instance(s) <uz_nn_layer>`.
 
    .. code-block:: c
-      :caption: ``uz_global_configuration.h`` example code for a 3x64 setup for
+      :caption: ``uz_global_configuration.h`` example code for a 3x64 setup
 
       #define UZ_NN_ACC_IP_MAX_INSTANCES    1U
       #define UZ_NN_LAYER_MAX_INSTANCES     4U
       #define UZ_NN_MAX_INSTANCES           1U
 
-#. In the ``globalData.h`` file add the following code to the ``object_pointers_t`` struct:
+#. In the ``globalData.h`` file, add the following code to the ``object_pointers_t`` struct:
 
    .. code-block:: c
       :caption: Code for ``globalData.h`` file
@@ -149,7 +149,7 @@ Software
       uz_NN_acc_t* NN_acc_Instance;
       }object_pointers_t;
 
-#. Create a header file (e.g. ``init_network_ip_core.h``) for the ``init_network`` function:
+#. Create a header file (e.g., ``init_network_ip_core.h``) for the ``init_network`` function:
 
    .. code-block:: c
       :caption: Code for ``init_network_ip_core.h``
@@ -161,12 +161,12 @@ Software
 
       #endif /* INIT_NETWORK_IP_CORE_H */
 
-#. Create an initialization c-file (e.g. ``init_network_ip_core.c``) for the ``init_network`` function:
+#. Create an initialization C file (e.g., ``init_network_ip_core.c``) for the ``init_network`` function:
 
    .. warning::
       **Every array and uz_matrix_t object** has to be declared with the **MEMORY_ALIGN** attribute.
       It aligns the arrays (and therefore its pointers) to 32 byte.
-      Otherwise undefined behavior regarding the read/write process of the IP core can occur.
+      Otherwise, undefined behavior regarding the read/write process of the IP core can occur.
 
    .. code-block:: c
       :caption: Code for ``init_network_ip_core.c`` for initialization of network and IP core
@@ -248,7 +248,7 @@ Software
          Global_Data.objects.NN_acc_Instance = uz_NN_acc_init(IP_config, Global_Data.objects.matrix_input_acc, Global_Data.objects.matrix_output_acc);
        }
 
-#. After including your header file (``init_network_ip_core.h``) in the ``main.h`` add the init function to the main.c file:
+#. After including your header file (``init_network_ip_core.h``) in the ``main.h``, add the init function to the main.c file:
 
    .. code-block:: c
       :caption: Code for main.c
@@ -266,7 +266,7 @@ Software
          case print_msg:
          ....
 
-#. To use the IP core in the ISR add the following code to the ``isr.c`` :
+#. To use the IP core in the ISR, add the following code to the ``isr.c``:
 
    .. code-block:: c
       :caption: Code example for blocking operation ``isr.c``
@@ -276,31 +276,31 @@ Software
       ...
       void ISR_Control(void *data)
       {
-      ...
-      Observation[0] = ...;
-      Observation[1] = ...;
-      Observation[2] = ...;
-      Observation[3] = ...;
-      Observation[4] = ...;
-      Observation[5] = ...;
-      Observation[6] = ...;
-      Observation[7] = ...;
-      Observation[8] = ...;
-      Observation[9] = ...;
-      Observation[10] = ...;
-      Observation[11] = ...;
-      Observation[12] = ...;
-      if (current_state==control_state) {
-         for (uint32_t i = 0; i < 13U; i++) {
+         ...
+         Observation[0] = ...;
+         Observation[1] = ...;
+         Observation[2] = ...;
+         Observation[3] = ...;
+         Observation[4] = ...;
+         Observation[5] = ...;
+         Observation[6] = ...;
+         Observation[7] = ...;
+         Observation[8] = ...;
+         Observation[9] = ...;
+         Observation[10] = ...;
+         Observation[11] = ...;
+         Observation[12] = ...;
+         if (current_state==control_state) {
+            for (uint32_t i = 0; i < 13U; i++) {
                  uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+            }
+            uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+            Output[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+            Output[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+            Output[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
+            Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
          }
-         uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
-         Output[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
-         Output[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
-         Output[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
-         Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
-      }
-      ...
+         ...
 
    .. code-block:: c
       :caption: Code example for non-blocking operation ``isr.c``
@@ -310,33 +310,33 @@ Software
       ...
       void ISR_Control(void *data)
       {
-      ...
-      Observation[0] = ...;
-      Observation[1] = ...;
-      Observation[2] = ...;
-      Observation[3] = ...;
-      Observation[4] = ...;
-      Observation[5] = ...;
-      Observation[6] = ...;
-      Observation[7] = ...;
-      Observation[8] = ...;
-      Observation[9] = ...;
-      Observation[10] = ...;
-      Observation[11] = ...;
-      Observation[12] = ...;
-      if (current_state==control_state) {
-         for (uint32_t i = 0; i < 13U; i++) {
+         ...
+         Observation[0] = ...;
+         Observation[1] = ...;
+         Observation[2] = ...;
+         Observation[3] = ...;
+         Observation[4] = ...;
+         Observation[5] = ...;
+         Observation[6] = ...;
+         Observation[7] = ...;
+         Observation[8] = ...;
+         Observation[9] = ...;
+         Observation[10] = ...;
+         Observation[11] = ...;
+         Observation[12] = ...;
+         if (current_state==control_state) {
+            for (uint32_t i = 0; i < 13U; i++) {
                  uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+            }
+            uz_NN_acc_ff_non_blocking(Global_Data.objects.NN_acc_Instance);
+            //do something else here
+            uz_NN_acc_get_result_blocking(Global_Data.objects.NN_acc_Instance);
+            Output[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+            Output[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+            Output[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
+            Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
          }
-         uz_NN_acc_ff_non_blocking(Global_Data.objects.NN_acc_Instance);
-         //do something else here
-         uz_NN_acc_get_result_blocking(Global_Data.objects.NN_acc_Instance);
-         Output[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
-         Output[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
-         Output[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
-         Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
-      }
-      ...
+         ...
 
 Execution
 ---------
@@ -368,8 +368,8 @@ The processor can not do any other tasks.
        Driver->>Processor: Invalidate cache for output
 
 An alternative to the blocking calculation is a concurrent approach.
-In this, the IP core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
-This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP core calculation.
+In this, the IP core calculation is triggered, the processor is free to do other tasks, and the data are fetched after the calculation is finished.
+This way, the calculation between trigger and retrieval of result does not add to the total required time if the task in between takes less time than the IP core calculation.
 Note that this means the actual calculation time of network without the communication overhead of the read/write operations. 
 
 .. code-block::
@@ -406,23 +406,23 @@ The IP core can be configured according to your needs (neuron count & layer setu
 However, for this to work, the IP core will need to be synthesized again using the new setup.
 This guide will walk you through the process.
 
-#. On windows make sure, that Vitis HLS is added to your path variables.
+#. On Windows, make sure that Vitis HLS is added to your path variables.
 #. Navigate to ``ip_cores\uz_NN_acc\uz_NN`` and open the ``uz_MMult_MaxSize.h`` file.
-#. Change the user definable variable to your needs.
+#. Change the user-definable variable to your needs.
 
    .. note::
       - A maximum of **5** hidden layers can be configured.
-      - Neurons can be configured on a per hidden layer basis as desired.
-        The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5)
-        Note however, that increasing the neuron count increases the resource usage significantly.
+      - Neurons can be configured on a per-hidden-layer basis as desired.
+        The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5).
+        Note, however, that increasing the neuron count increases the resource usage significantly.
         **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
-      - The ``Performance_Target`` variable can be used, if the generated IP core resources are too much for your specific FPGA.
+      - The ``Performance_Target`` variable can be used if the generated IP core resources are too much for your specific FPGA.
         Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance.
         A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
       - Examples of the resource usage for different configurations can be found :ref:`here<uz_NN_resources>`.
 
    .. code-block:: c
-      :caption: User definable variables in ``uz_MMult_MaxSize.h``
+      :caption: User-definable variables in ``uz_MMult_MaxSize.h``
 
       //User define
       #define Hidden_Layers 3 //max 5
@@ -452,15 +452,15 @@ This guide will walk you through the process.
       -description XxYYY_setup -display_name uz_NN_X_YYY_acc -ipname uz_NN_X_YYY
       ...
 
-#. Give the IP core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
+#. Give the IP core an appropriate name and description. E.g., ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
-#. After you see ``[HLS 200-111] Finished Command export_design`` the synthesis and export is finished.
+#. After you see ``[HLS 200-111] Finished Command export_design``, the synthesis and export are finished.
 #. A resource estimation can be found in ``uz_NN_acc\uz_NN\solution1\syn\report`` under ``csynth.rpt``.
-   In Vivado the resource usage is (except DSP Slices) a bit lower than stated in HLS.
+   In Vivado, the resource usage (except for DSP Slices) is a bit lower than stated in HLS.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
-#. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
+#. In Vivado, open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the IP core to the block design<uz_NN_vivado>`.
 #. [Optional] You can now generate another IP core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Modify ``uz_MMult_MaxSize.h`` again and then use solution2-5.
 
@@ -472,7 +472,7 @@ Resource utilization
 The resource utilization depends heavily on the configuration of the IP core.
 The following table shows the resource usage in Vivado for different configurations.
 Generally, more hidden layers is more resource efficient than more neurons per layer.
-Yours my vary slightly.
+Yours may vary slightly.
 
 ====== ====== ====== ====== ====== ======
 Setup  BRAM    DSP   FF      LUT   LUTRAM
@@ -488,7 +488,7 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 5x256  665    1281   170k   153k   848
 ====== ====== ====== ====== ====== ======
 
-By adjusting the ``#define Performance_Target 1`` to e.g. ``4``, the resources for BRAM, LUTs and DSP slices are reduced at the cost of higher latency.
+By adjusting the ``#define Performance_Target 1`` to, e.g., ``4``, the resources for BRAM, LUTs and DSP slices are reduced at the cost of higher latency.
 
 ====== ====== ====== ====== ====== ======
 Setup  BRAM    DSP   FF      LUT   LUTRAM
@@ -501,7 +501,7 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 Further improvements
 ====================
 
-Further improvements are planed for the IP core and in development:
+Further improvements are planned for the IP core and in development:
 
 - Updating weights & bias during runtime.
 

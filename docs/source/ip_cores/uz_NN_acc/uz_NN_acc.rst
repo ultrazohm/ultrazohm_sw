@@ -106,7 +106,7 @@ First, the IP core has to be added to the block design in Vivado:
       :width: 600
       :align: center
 
-      Zynq clock connection
+      Zynq axi connection
 
 #. Open the ``Address Editor`` and right-click and select ``Assign all``. This assigns the addresses of the M_axi and S_axi interfaces for the IP core.
 #. After assignment, it should look similar to this.
@@ -115,7 +115,7 @@ First, the IP core has to be added to the block design in Vivado:
       :width: 600
       :align: center
 
-      Zynq clock connection
+      Address assignment
 
 #. Generate the bitstream and export the hardware.
 #. In Vitis, generate the workspace with the exported hardware.

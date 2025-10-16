@@ -35,11 +35,11 @@ How to use the issues
 - Enter a **descriptive** and **compact title**. 
 - In the description, add **further details**:
 
-   - Specify the observed behavior.
-   - Steps on how to reproduce the issue.
-   - Steps that have been taken so far to resolve the issue.
-   - Add screenshots and cross-references to other issues or sources wherever needed.
-   
+  - Specify the observed behavior.
+  - Steps on how to reproduce the issue.
+  - Steps that have been taken so far to resolve the issue.
+  - Add screenshots and cross-references to other issues or sources wherever needed.
+
 - You can assign the issue to yourself or somebody else, who will be notified automatically. When creating a new issue, it **might be better not to assign the issue to someone** without talking to them beforehand. Otherwise, this might be perceived as telling them what they have to do - no one likes that. If in doubt, rather not assign the issue and instead tag the relevant people in the description.
 - **Tag the relevant people** in the issue description by using ``@person`` otherwise, they might miss the issue if they do not check the issue tracker regularly.
 - Take advantage of the issue features by modifying **kind and priority** to indicate its urgency and intent (bug report vs. suggestion for an enhancement).
@@ -90,5 +90,5 @@ With smart commits, you can process your issues using special commands in your c
 * Record time tracking information against issues.
 * Issues can be tagged and closed automatically through your commit message, by adding the following in your commit message, with ``XX`` being the issue number. This is a nice feature since it links your commit to the issue, making it easier to track your changes:
 
-   * ``close issue #XX`` for closing the issue ``XX``
-   * ``issue #XX`` to link the commit to the issue
+  * ``close issue #XX`` for closing the issue ``XX``
+  * ``issue #XX`` to link the commit to the issue

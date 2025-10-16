@@ -1,13 +1,10 @@
 .. _uz_nn_ip_core:
 
 ======================
-Neural network IP-Core
+Neural network IP core
 ======================
 
+There are two different neural network IP cores available in the library.
 
-Limitations:
-
-- Number of neurons should be a power of two
-- Number of neurons in each hidden layer are equal
-- Activation function of all hidden layer are equal
-- Output layer activation function is independent of hidden layer activation function
+#. :ref:`uz_mlp_three_layer`
+#. :ref:`uz_NN_acc`

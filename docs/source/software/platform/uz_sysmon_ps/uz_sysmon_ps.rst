@@ -4,7 +4,7 @@ PS System Monitor
 
 UltraScale+ has multiple system monitors (sysmon).
 There are system monitors in the PS and the PL.
-The system monitor in the PL is always present, but has extended capabilities if the SYSMON IP-core is instantiated (see https://www.xilinx.com/products/intellectual-property/system-management-wiz.html).
+The system monitor in the PL is always present, but has extended capabilities if the SYSMON IP core is instantiated (see https://www.xilinx.com/products/intellectual-property/system-management-wiz.html).
 This software module only deals with the PS system monitor and provides a wrapper to access part of the available information, especially the chip temperature.
 Information:
 

@@ -68,19 +68,19 @@ The activation of the adapter card identification feature depends on the ``UZ_PL
 
 * In all cases, ``uz_platform_init()`` is called at bootup to
 
- * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
- * retrieve the platform identification from the external EEPROM,
- * communicates the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
- * initialize internal data structures (for instance, the I/O map for the given platform), and
- * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
- * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
+  * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
+  * retrieve the platform identification from the external EEPROM,
+  * communicates the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
+  * initialize internal data structures (for instance, the I/O map for the given platform), and
+  * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
+  * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
 
 * ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console. The demo also calls UZP functions that are specific to adapter cards with extended features, which -- as of mid 2025 -- includes the :ref:`digitalVoltage_3v3_5v` card with its RGB LED (see below for details).
 
 .. note::
- Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
- Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
- With `commit b373877 <https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
+   Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
+   Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
+   With `commit b373877 <https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
 
 .. _uzpA53_cardid:
 
@@ -91,54 +91,54 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
 
 * ``uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, int* revision_p, int* serial_p)`` accesses the EEPROM on the adapter card in the given ``slot`` (where values 0 to 2 refer to slots A1 to A3 whilst values 3 to 7 pertain to slots D1 to D5).
 
- If successful, it populates
+  If successful, it populates
 
- * the enum identified by ``model_p`` with the (integer-encoded) model number,
- * the integer behind ``revision_p`` with the revision number, and
- * the integer pointed to by ``serial_p`` with the serial  of the adapter card selected.
+  * the enum identified by ``model_p`` with the (integer-encoded) model number,
+  * the integer behind ``revision_p`` with the revision number, and
+  * the integer pointed to by ``serial_p`` with the serial  of the adapter card selected.
 
 * The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of mid 2025) may have one of the following values
 
- * ``UZP_HWGROUP_ADCARD_LTC2311``,
- * ``UZP_HWGROUP_ADCARD_DIGVOLT``,
- * ``UZP_HWGROUP_ADCARD_DIGOPT`` (with three variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model004variants_t``),
- * ``UZP_HWGROUP_ADCARD_DIGRES``,
- * ``UZP_HWGROUP_ADCARD_DIGENC``,
- * ``UZP_HWGROUP_ADCARD_MAX11331C``,
- * ``UZP_HWGROUP_ADCARD_MAX11331CD``,
- * ``UZP_HWGROUP_ADCARD_MAX11331``,
- * ``UZP_HWGROUP_ADCARD_LTC2983``,
- * ``UZP_HWGROUP_ADCARD_DIGINV``,
- * ``UZP_HWGROUP_ADCARD_DAC8831``,
- * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
- * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
- * ``UZP_HWGROUP_ADCARD_DIGVOLT335``,
- * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
- * ``UZP_HWGROUP_ADCARD_DIGABSENC``
+  * ``UZP_HWGROUP_ADCARD_LTC2311``,
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT``,
+  * ``UZP_HWGROUP_ADCARD_DIGOPT`` (with three variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model004variants_t``),
+  * ``UZP_HWGROUP_ADCARD_DIGRES``,
+  * ``UZP_HWGROUP_ADCARD_DIGENC``,
+  * ``UZP_HWGROUP_ADCARD_MAX11331C``,
+  * ``UZP_HWGROUP_ADCARD_MAX11331CD``,
+  * ``UZP_HWGROUP_ADCARD_MAX11331``,
+  * ``UZP_HWGROUP_ADCARD_LTC2983``,
+  * ``UZP_HWGROUP_ADCARD_DIGINV``,
+  * ``UZP_HWGROUP_ADCARD_DAC8831``,
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT335``,
+  * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
+  * ``UZP_HWGROUP_ADCARD_DIGABSENC``
 
- that should be used in comparisons.
- Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``.
+  that should be used in comparisons.
+  Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``.
 
- Furthermore, an "enum-to-string" helper (``uz_platform_eeprom_group000models_enum2label(uz_platform_eeprom_group000models_t model)``) is available to convert the enum integer into a user-readable string in case such functionality is required.
+  Furthermore, an "enum-to-string" helper (``uz_platform_eeprom_group000models_enum2label(uz_platform_eeprom_group000models_t model)``) is available to convert the enum integer into a user-readable string in case such functionality is required.
 
 Example in ``main()``:
 
 .. code-block:: c
 
-  const uint8_t card_slots = UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + 1;
+   const uint8_t card_slots = UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + 1;
 
-  for (int i=0; i<card_slots; i++) {
-    uz_platform_eeprom_group000models_t model;
-    int revision, serial;
+   for (int i=0; i<card_slots; i++) {
+     uz_platform_eeprom_group000models_t model;
+     int revision, serial;
 
-    if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) ) {
-      uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i)\r\n", i, model, revision, serial);
- } else {
-      uz_printf("Identification of adapter card in slot %i failed (no card or EEPROM)\r\n", i);
- }
+     if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) ) {
+       uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i)\r\n", i, model, revision, serial);
+     } else {
+       uz_printf("Identification of adapter card in slot %i failed (no card or EEPROM)\r\n", i);
+     }
 
-    uz_printf("\r\n");
- }
+     uz_printf("\r\n");
+   }
 
 GPIO
 """"

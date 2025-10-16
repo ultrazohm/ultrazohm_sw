@@ -49,10 +49,10 @@ the mounted groups. You can find a description of the LED colors as well. The fu
 9. 15V Power supply
 10. Jumpers to bypass (5) if not required
 
-IO Interface
-------------
+I/O Interface
+-------------
 
-In order to enable maximal user flexibility and to save costs, the PCB comes without an IO interface connector. Originaly, the
+In order to enable maximal user flexibility and to save costs, the PCB comes without an I/O interface connector. Originally, the
 PCB has been designed for the Samtec `IPL1-120-01-L-D-RA-K <https://www.samtec.com/products/ipl1-120-01-l-d-ra-k>`_
 and `IPL1-115-01-L-D-RA-K <https://www.samtec.com/products/ipl1-115-01-l-d-ra-k>`_ connectors but any connector with
 a 1" (2.54mm) pin pitch can be used. 

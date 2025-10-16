@@ -83,9 +83,9 @@ We use `cppcheck <https://github.com/danmar/cppcheck>`_  as our static code anal
 
 - Useful information:
 
-    - https://github.com/danmar/cppcheck/blob/2.4.1/man/manual.md
-    - http://cppcheck.sourceforge.net/
-    - https://github.com/ChisholmKyle/SublimeLinter-cppcheck-misra
+  - https://github.com/danmar/cppcheck/blob/2.4.1/man/manual.md
+  - http://cppcheck.sourceforge.net/
+  - https://github.com/ChisholmKyle/SublimeLinter-cppcheck-misra
 
 .. note:: The build pipeline does not fail if there are warnings from the static code analysis!
 
@@ -183,15 +183,15 @@ The Drone Runner starts a Docker Container for each pipeline step.
 To use Vivado and Vitis, we use a costum Vivado docker image (``vivado:2020.1``).
 There are two challenges with using Vivado and Vitis in a Docker container.
 
-  * Xilinx license is locked to the MAC
-  * Create license on `<xilinx.com/getlicense>`_
-  * Lock the license to the MAC of the machine that executes the runner
-  * The UltraZohm-Server license is locked to the Docker network ``drone_default`` (see ``docker network ls`` and ``docker network inspect host``)
-  * Download the ``.lic`` file
-  * Follow the instructions in `uz_server_drone <https://bitbucket.org/ultrazohm/uz_server_drone_server_agent/src/master/create_vivado_docker/>`_ repository (only for admins due to licensing & login information)
-  * Make the network adapter that is used for the license MAC-lock to the Drone Runner
-  * See `<https://docs.drone.io/runner/docker/configuration/reference/drone-runner-networks/>`_
-  * E.g. DRONE_RUNNER_NETWORKS=drone_default
+* Xilinx license is locked to the MAC
+* Create license on `<xilinx.com/getlicense>`_
+* Lock the license to the MAC of the machine that executes the runner
+* The UltraZohm-Server license is locked to the Docker network ``drone_default`` (see ``docker network ls`` and ``docker network inspect host``)
+* Download the ``.lic`` file
+* Follow the instructions in `uz_server_drone <https://bitbucket.org/ultrazohm/uz_server_drone_server_agent/src/master/create_vivado_docker/>`_ repository (only for admins due to licensing & login information)
+* Make the network adapter that is used for the license MAC-lock to the Drone Runner
+* See `<https://docs.drone.io/runner/docker/configuration/reference/drone-runner-networks/>`_
+* E.g. DRONE_RUNNER_NETWORKS=drone_default
 
 See the docker-compose file for details (`drone/docker-compose.yml <https://bitbucket.org/ultrazohm/uz_server_main/src/master/drone/docker-compose.yml>`_, only for admins due to login information in the file).
 Following is an example docker-compose file without login information.

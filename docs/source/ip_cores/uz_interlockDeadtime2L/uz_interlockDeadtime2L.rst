@@ -4,9 +4,9 @@
 Interlock and Deadtime module (2L)
 ##################################
 
-The interlock and dead time IP-Core prevents the TOP and BOT gate signal being high at the same time and introduces a variable dead time between high states.
-The dead time has a range of :math:`0\,\mu s` to :math:`10.23\,\mu s` with :math:`10\,ns` resolution if the IP-Core is driven by a :math:`100\,MHz` clock.
-If the requested dead time is not an integer multiple of the inverse IP-Core clock frequency (e.g., :math:`10\,ns`) the driver rounds up using ``ceil``.
+The interlock and dead time IP core prevents the TOP and BOT gate signal being high at the same time and introduces a variable dead time between high states.
+The dead time has a range of :math:`0\,\mu s` to :math:`10.23\,\mu s` with :math:`10\,ns` resolution if the IP core is driven by a :math:`100\,MHz` clock.
+If the requested dead time is not an integer multiple of the inverse IP core clock frequency (e.g., :math:`10\,ns`) the driver rounds up using ``ceil``.
 
 .. warning::
 
@@ -15,7 +15,7 @@ If the requested dead time is not an integer multiple of the inverse IP-Core clo
 
 
 The module features three legs, i.e., is intended for two level voltage inverters.
-IP-Core is generated using Simulink HDL-Coder version 2021a.
+IP core is generated using Simulink HDL-Coder version 2021a.
 
 .. _InterlockDeadtime_driver:
 
@@ -74,7 +74,7 @@ To change the dead time of the module at runtime disable the output and set the 
 It is not possible to change other values of the module after initialization.
 
 ****************
-IP-Core Hardware
+IP Core Hardware
 ****************
 
 .. _InterlockDeadtime_ModuleOverview:
@@ -88,12 +88,12 @@ IP-Core Hardware
 :numref:`InterlockDeadtime_ModuleOverview` shows the module.
 The module takes the gate signals of a three phase inverter ``S0..S5`` as input and outputs them as ``S0_out..S5_out``.
 The output is enabled if ``AXI_EnableOutput`` is ``true``.
-The enable signal is routed to ``enableFB`` to be used by other IP-Cores in the PL.
+The enable signal is routed to ``enableFB`` to be used by other IP cores in the PL.
 The :ref:`InterlockDeadtime_interlock` prevents TOP and BOT (S0 & S1, S2 & S3, S4 & S5) of each signal to be ``true`` at the same time.
 The :ref:`InterlockDeadtime_deadtime` adds a variable length delay to each rising edge of the input signal.
-The number of IP-Core clock cycles added is determined by ``AXI_DelayCycles``.
+The number of IP core clock cycles added is determined by ``AXI_DelayCycles``.
 It is possible to inverse the signal of the bottom switch by setting ``AXI_InverseBotSwitch`` to true, see :ref:`InterlockDeadtime_invBot`.
-New values for IP-Core are written by the :ref:`InterlockDeadtime_driver`.
+New values for IP core are written by the :ref:`InterlockDeadtime_driver`.
 
 .. _InterlockDeadtime_Interface:
 
@@ -156,7 +156,7 @@ Vivado Example
     :width: 400
     :align: center
 
-    Screenshot of IP-Core in Vivado.
+    Screenshot of IP core in Vivado.
 
 The clock frequency for ``IPCORE_CLK`` and ``AXI4_Lite_ACLK`` is 100 MHz.
 

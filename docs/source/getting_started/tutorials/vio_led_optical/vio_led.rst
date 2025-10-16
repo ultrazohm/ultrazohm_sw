@@ -7,7 +7,7 @@ Virtual Input Output (VIO)
 Aim of the tutorial
 *******************
 
-In this tutorial, the Virtual Input Output (VIO) IP-Core is used to light up LEDs on the optical adapter board.
+In this tutorial, the Virtual Input Output (VIO) IP core is used to light up LEDs on the optical adapter board.
 
 After this tutorial, you can:
 
@@ -44,7 +44,7 @@ Updated information
 
 With optical adapter card **2v02** one must set Output 19 to high, since this is the **ENABLE** signal of the optical card.
 
-VIO IP-Core at `1:02 <https://youtu.be/jtIzec7ymQA?t=62>`_ has a different name now. Furthermore, the output ports are labled **D3_OUT[25:0]** instead of **Dig_Ch4[25:0]**.
+VIO IP core at `1:02 <https://youtu.be/jtIzec7ymQA?t=62>`_ has a different name now. Furthermore, the output ports are labled **D3_OUT[25:0]** instead of **Dig_Ch4[25:0]**.
 
 .. image:: ./img/Block_Design.png
 

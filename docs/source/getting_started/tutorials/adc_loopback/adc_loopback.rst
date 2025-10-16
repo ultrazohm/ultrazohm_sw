@@ -15,10 +15,10 @@ Furthermore, this signal is looped back to the ADC of the UltraZohm and read out
 
 After this tutorial, you can:
 
- - Use the PWM-module
- - Test the optical adapter board
- - Use the ADC adapter card
- - read out ADC
+- Use the PWM-module
+- Test the optical adapter board
+- Use the ADC adapter card
+- read out ADC
 
 Requirements
 ************

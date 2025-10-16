@@ -18,7 +18,7 @@ Requirements
 Aim
 ***
 
-- Setup the physical connections of the UltraZohm
+- Set up the physical connections of the UltraZohm
 - :ref:`clone`
 - Generate the bitstream with Vivado
 - Generate the Vitis workspace
@@ -28,7 +28,7 @@ Aim
 
 .. _clone:
 
-Clone the UltraZohm Repositories
+Clone the UltraZohm repositories
 ********************************
 
 - Create a folder ``ultrazohm``
@@ -39,7 +39,7 @@ Clone the UltraZohm Repositories
    git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-After executing the ``git clone`` commands, the following directory structure exists.
+After executing the ``git clone`` command, the following directory structure exists.
 
 ::
 
@@ -143,10 +143,10 @@ Export Bitstream
 .. image:: ./img_exp_bit/9_load.png
 
 
-Export Bitstream tcl-script
+Export Bitstream Tcl script
 ---------------------------
 
-A TCL script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
+A Tcl script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
 
 - ``Tools -> Custom Commands -> Customize Commands``
 - Click on the `plus` and enter a name, e.g., export_xsa
@@ -212,8 +212,8 @@ Physical Setup of the UltraZohm
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
 - For UltraZohm :ref:`carrier_board_rev03`: Plug an external stop or the external stop dummy into the front panel
-- For UltraZohm :ref:`carrier_board_rev04`: An external stop / dummy is not required
-- Turn on the UltraZohm
+- For UltraZohm :ref:`carrier_board_rev04` and newer: An external stop / dummy is not required
+- Turn on the UltraZohm -- NB: See :ref:`here <hardware>` for important differences between an older (i.e., pre-Rev05) and newer (Rev05 ff.) system w.r.t. power-on/off
 - All four LEDs are turned on
 
 .. image:: ./img_physical/physical_setup.png
@@ -222,9 +222,9 @@ Program (Debug)
 ***************
 
 - Click on the red-marked windows to see the design perspective in Vitis.
-- Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
+- Click the arrow next to the debug-icon and choose ``Debug Configurations``.
 - Choose the appropriate debug config.
-  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>` .
+  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>`.
 
 .. note:: There are two different debug configurations:
    
@@ -247,7 +247,7 @@ Program (Debug)
 Javascope
 *********
 
-- Setup the network settings of the Ethernet adapter, which is connected to the UltraZohm
+- Setup the network settings of the Ethernet adapter that is connected to the UltraZohm
 
 ::
 

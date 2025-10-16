@@ -21,10 +21,10 @@ This is the starting point for small Hil/Sil/PiL projects, which are compatible 
 Prerequisites
 =============
 
-  * Getting-Started completed and understood
-  * A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
-  * Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
-  * Basic knowledge of the used tools.
+* Getting-Started completed and understood
+* A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
+* Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
+* Basic knowledge of the used tools.
 
 Vivado
 ======
@@ -54,19 +54,19 @@ Creating Fresh Project
     .. tip:: ``Settings → IP → Repository → Add → IP core folder → Select → OK`` 
 
 
-#.  Add the IP-Core for the PS ``Zynq UltraScale+ MPSoC`` to the new Block design.
+#.  Add the IP core for the PS ``Zynq UltraScale+ MPSoC`` to the new Block design.
 
 #.  Click "Run Block automation" inside the green banner appearing. 
 
     .. tip:: This is the only point where you need automated assistant from Vivado! "Do not click to auto connection within the following Steps, otherwise Vivado is going to address the unused pins before deleting and create more problems!"
 
 #.  Create HDL-Wrapper and make sure its the Top-file.
- 
+
 #.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
 
 #.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
-    
+
     *  ip_cores \ Interlock_Module_3L \ top_npc_state_machine.vhd
     *  ip_cores \ Interlock_Module_3L \ npc_phase_state_machine.vhd
     *  ip_cores\ Delay_signal \ delay_trigger.vhd
@@ -90,9 +90,9 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided Tcl script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP core, click on the top left "Presets" and "Apply Configuration"
 
-#.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
+#.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were Tcl scripts for each UZ-Hierarchy available.
 
     *  kria_vivado_block_uz_user.tcl
     *  kria_vivado_block_uz_system.tcl
@@ -100,7 +100,7 @@ Creating Fresh Project
     *  kria_vivado_block_digital_adapter.tcl
 
 #.  Create an empty hierarchy, e.g. ``hier_0``.
-#.  Switch with the TCL Console to the current working folder with:
+#.  Switch with the Tcl Console to the current working folder with:
 
     .. code-block::
 
@@ -124,7 +124,7 @@ Creating Fresh Project
 
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_user]
 
-    With this script, every IP-Core inside the generated hierarchy is configured and connected like in the UltraZohm-main-project
+    With this script, every IP core inside the generated hierarchy is configured and connected like in the UltraZohm-main-project
 #.  For the ``uz_user`` and ``uz_digital_adapter``, make the placement of IP blocks using the .tcl scripts: 
 
     .. code-block:: 
@@ -136,7 +136,7 @@ Creating Fresh Project
         source ../tcl_scripts/kria_vivado_block_digital_adapter.tcl
         create_hier_cell_uz_digital_adapter hier_0 uz_digital_adapter
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_digital_adapter]
-       
+
 #.  Don't recreate the ``uz_analog_adapter`` since we don't have analog-Interfaces with the KR260.
 #.  Delete every digital Slot inside ``uz_digital_adapter`` except D1.
     We only want to use the 2-LvL-PWM-Cores in this How-To.
@@ -155,14 +155,14 @@ Following those steps should lead to an HW-Design like this:
     Vivado-Project Hardware-Design KR260.
     
 
-Project with TCL Scripts: 
+Project with Tcl Scripts:
 ----------------------------
 
 #. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
 #. Add the missing VHDL-files:
-   
+
     .. code-block::
-        
+
         top_npc_state_machine.vhd
         npc_phase_state_machine.vhd
         delay_trigger.vhd
@@ -171,13 +171,13 @@ Project with TCL Scripts:
 
 #. Add the UltraZohm IP-Repository to the project. 
 #. Add a new Block design and name with ``k26sys``.
-#. Switch with the TCL Console to the current working folder with:
-   
+#. Switch with the Tcl Console to the current working folder with:
+
     .. code-block::
-        
+
         cd [ get_property DIRECTORY [current_project] ]
 
-#. Open TCL Console and call the TCL-scripts for block and connection implementation with given order:
+#. Open Tcl Console and call the Tcl scripts for block and connection implementation with given order:
 
     .. code-block::
 
@@ -189,9 +189,9 @@ Project with TCL Scripts:
 #. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
     * k26sys_ps_generation → PS 
-    * k26sys_hd_generation → IP-Cores, Connections
+    * k26sys_hd_generation → IP cores, Connections
 
-.. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
+.. tip:: Please consider Tcl Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.
 
 #.  Generate the Bitstream and export the `.xsa`.
 
@@ -200,7 +200,7 @@ Vitis
 =====
 
 After creating the Hardware-Design, there were a few Software-changes necessary.
-This includes mainly the removed IP-Cores and the Frontpanel, as well as the ISR.
+This includes mainly the removed IP cores and the Frontpanel, as well as the ISR.
 Additionally, a small hack to the Board-Support-Package BSP must be applied to bring up the network interface.#
 This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII Interface which isn't compatible with the used LwIP-Stack and both PHY's for the PS-GEM's shared the same MDIO's.
 
@@ -231,7 +231,7 @@ To create a suited software for the KR260, follow these steps:
 #.  Build the "UZ-Plattform-Project".
 #.  Changes for the Baremetal-Project:
 
-    #.  Addresses of dead IP-Cores have to be tied to a fixed address at `parameter.h` file. Use 0x0123456789 as address to prevent errors during compiling and ensure that those addresses never getting called! 
+    #.  Addresses of dead IP cores have to be tied to a fixed address at `parameter.h` file. Use 0x0123456789 as address to prevent errors during compiling and ensure that those addresses never getting called!
 
         * #define XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR 0x0123456789
         * #define XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_GATES_3L_PWM_SS_3L_IP_0_BASEADDR 0x0123456789
@@ -239,14 +239,14 @@ To create a suited software for the KR260, follow these steps:
         * #define XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
         * #define XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
 
-    #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP-Cores 
-     
+    #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP cores
+
         * uz_adcLtc2311_ip_core_init();
         * PWM_3L_Initialize(&Global_Data); // three-level modulator
         * initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-    
+
     #.  In the ``main.c - case init_gpios / uz_frontplane_button_and_led_init()`` , comment out 
-    
+
         * enableAllMioWithLEDsAttached(); 
         * enableAllMioWithButtonsAttached(); 
 
@@ -264,31 +264,31 @@ To create a suited software for the KR260, follow these steps:
 
     #. Fixing the Stop-Flag in ``hw_init / uz_platform_state_machine.c``  line 277 to 0. With no PS-GPIO enabled, we can't get any buttons.
 
-#. Changes for the FreeRTOS-Project:
+#.  Changes for the FreeRTOS-Project:
 
     #. Delete ever CAN-related Code from the ``main.c`` and remove the files ``can.c`` and ``can.h``.
     #. add a new define ``#define OS_IS_FREERTOS`` in the ``main.h``.
     #. Increase the DHCP-Timeout in the ``main.c``.
 
-        * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
+       * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
 
     #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
 
-        * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
+       * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
 
-#. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
+#.  Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
     * ``\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
-#. Restart Vitis to make the. launches-files accessible
-#. Build both C-Projects 
-#. Control the Debug Configuration and run the project on the KR260.
-    
+#.  Restart Vitis to make the. launches-files accessible
+#.  Build both C-Projects 
+#.  Control the Debug Configuration and run the project on the KR260.
+
     * Control the Debug Configuration - Application and Target Setup.
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
     * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
 
-#. Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
+#.  Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
 Known Issues
 ============
@@ -310,7 +310,7 @@ Some points and ideas for discussion on how the workflow could be better integra
 *   Add a CAN-Interface and route the pins through the PL to an PMOD-connector, for example? So we don't have to delete the CAN-related parts in the FreeRTOS-Project
 *   How a define should look like to tell the C-Code it’s a KR260/KV260-Hil? With this define some actions can be done:
 
-    *  Exclude some predefined IP-Cores from the Code?
+    *  Exclude some predefined IP cores from the Code?
         *  Analog-IP’s
         *  Encoder
         *  …

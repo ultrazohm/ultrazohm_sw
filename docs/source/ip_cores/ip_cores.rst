@@ -1,7 +1,7 @@
 .. _ip_cores:
 
 ========
-IP-Cores
+IP Cores
 ========
 
 

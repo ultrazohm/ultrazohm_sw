@@ -29,9 +29,9 @@ Each resolver channel can be configured with several pull-up and pull-down resis
 
 .. note:: The clock speed of the Clock in Rev01 is 8.192 MHz, which is relevant to the Specifications of the AD2S1210 IC
 
-.. note:: As the resolver only operates with the 16 bit resolution in the board's default configuration, the measurable rotational speed is limited to 125 rounds per second (rps) (equals :math:`7500\frac{1}{min}`) with a clock speed of 8.192 MHz. For higher speeds the resolution has to be lowered. This affects RES0 and RES1 resistor configuration as well as ip-core driver configuration.
+.. note:: As the resolver only operates with the 16 bit resolution in the board's default configuration, the measurable rotational speed is limited to 125 rounds per second (rps) (equals :math:`7500\frac{1}{min}`) with a clock speed of 8.192 MHz. For higher speeds the resolution has to be lowered. This affects RES0 and RES1 resistor configuration as well as IP core driver configuration.
 
-With the Signals A0 and A1 the resolver`s operation mode can be configured. This is done through the ip-core driver:
+With the Signals A0 and A1 the resolver`s operation mode can be configured. This is done through the IP core driver:
 
 * ``A0`` to LOW and ``A1`` to LOW = Normal mode - position output
 * ``A0`` to LOW and ``A1`` to HIGH = Normal mode - velocity output
@@ -98,15 +98,15 @@ Pinout
 .. image:: Digital_Resolver_rev01/Pinout2_Adapter_Card_Digital_Resolver_edited.png
   :height: 700
 
-Implementation with Resolver Interface IP-Core
+Implementation with Resolver Interface IP Core
 ----------------------------------------------
 
-* The following describes the connecting of the adapter board with the resolver interface ip-cores.
+* The following describes the connecting of the adapter board with the resolver interface IP cores.
 * Two cases have to be distinguished here: ``3 channels in slot D1 to D4``, ``2 channels in slot D5``
 
-In general one has to add the ``Resolver Interface`` ip-core e.g. to the ``user`` hierarchy in the block design as many times as channels are needed. 
-The port names of the ip-core and at the adapterboard slightly differ. Therefore it is useful to create ports at the ``user`` hierarchy with the adapter boards' signal names in order to avoid confusion. 
-E.g. the picture below shows the ip-core and respective ports for channel A/1. Pay attention to the signals ``SDI`` and ``SDO``. Depending on the perspective, serial data in and out can change. 
+In general one has to add the ``Resolver Interface`` IP core e.g. to the ``user`` hierarchy in the block design as many times as channels are needed.
+The port names of the IP core and at the adapterboard slightly differ. Therefore it is useful to create ports at the ``user`` hierarchy with the adapter boards' signal names in order to avoid confusion.
+E.g. the picture below shows the IP core and respective ports for channel A/1. Pay attention to the signals ``SDI`` and ``SDO``. Depending on the perspective, serial data in and out can change.
 In this example it is seen from the FPGA perspective, therefore, ``SPI_MOSI`` is labeled to ``SDO_1``.
 
 .. image:: Digital_Resolver_rev01/resolverIP_interfaces.png
@@ -119,7 +119,7 @@ has to be connected to the pin number that provides the ``SDI`` signal of the ad
 2 Channels in Slot D5 (Ch A/1 and Ch B/2)
 =========================================
 
-The constraint file for slot D5 gives by default access to every single pin using the naming convention ``Dig_xx_Ch5``, where ``xx`` is the IO number [00...29]. 
+The constraint file for slot D5 gives by default access to every single pin using the naming convention ``Dig_xx_Ch5``, where ``xx`` is the I/O number [00...29].
 Simply create input and output ports as shown below and connect them.
 
 .. image:: Digital_Resolver_rev01/resolverIP_pinout_D5.png
@@ -140,8 +140,8 @@ Now we can access D4 pins with the same naming convention as above and create an
 .. image:: Digital_Resolver_rev01/resolverIP_pinout_D4.png
   :height: 750
 
-Finally do not forget to connect ip-core clocks (100 MHz) and AXI interfaces, as well as a proper ``sampling_trigger`` signal (e.g. ``trigger_conversion`` signal that also triggers the ADC's).
-Build the bitstream and see the respective ip-core driver docs for the software part.
+Finally do not forget to connect IP core clocks (100 MHz) and AXI interfaces, as well as a proper ``sampling_trigger`` signal (e.g. ``trigger_conversion`` signal that also triggers the ADC's).
+Build the bitstream and see the respective IP core driver docs for the software part.
 
 References
 """"""""""

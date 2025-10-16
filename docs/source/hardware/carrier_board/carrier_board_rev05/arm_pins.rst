@@ -12,16 +12,16 @@ Itemized list of MIO-related changes next to :ref:`carrier_board_rev04_mio`:
 
 - The retrofitted Ethernet PHY resets on Rev04 (cf. :ref:`carrier_known_issues_ethrst`) are moved from MIO26/27 to the S3C
 
-	- MIO26 becomes a PMU spare (with IRQ capability)
-	- MIO27 becomes part of DPaux
+  - MIO26 becomes a PMU spare (with IRQ capability)
+  - MIO27 becomes part of DPaux
 
 - Three LEDs (PS_1V8_GPIO2/3/4) on MIO33/34/39 and two frontpanel switches (PS_1V8_GPIO5/7) on MIO40/30 are moved to MIO56-60
 
-	- MIO30 becomes DPaux (with MIO27-29)
-	- MIO33 becomes a PMU spare
-	- MIO34 becomes CS1 of SPI1
-	- MIO39 becomes CS2 of SPI0
-	- MIO40 becomes CS1 of SPI0
+  - MIO30 becomes DPaux (with MIO27-29)
+  - MIO33 becomes a PMU spare
+  - MIO34 becomes CS1 of SPI1
+  - MIO39 becomes CS2 of SPI0
+  - MIO40 becomes CS1 of SPI0
 
 - The "External STOP" (isoEmergencyStop) on MIO31 is moved to MIO61, making room for a PMU spare (without IRQ capability)
 - ``PS_ANL_sharedA`` on MIO45 is moved to MIO62, making room for CD of the µSD

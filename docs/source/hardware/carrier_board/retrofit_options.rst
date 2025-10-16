@@ -10,6 +10,8 @@ All retrofits that aim at fixing bugs are documented in :ref:`carrier_known_issu
 As of mid-2025, the following retrofits are available:
 
 .. toctree::
+	:maxdepth: 1
+
 	retrofit_options/cardid.rst
 	retrofit_options/i2cssds2c.rst
 

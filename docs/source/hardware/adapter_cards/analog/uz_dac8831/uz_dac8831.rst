@@ -18,7 +18,7 @@ Therefore, all ADC channels change their set-point according to the data they re
 .. figure:: dac_pcb_colored.jpg
    :width: 700
 
-   Assembled DAC pcb with power supply and reference voltage (red and green), LVDS receiver (orange), DAC8831 (blue), output OpAMPs (pink), loopback connection (purple) and ethernet connector (yellow).
+   Assembled DAC PCB with power supply and reference voltage (red and green), LVDS receiver (orange), DAC8831 (blue), output OpAMPs (pink), loopback connection (purple) and Ethernet connector (yellow).
 
 The output of the DAC card is fully compatible to :ref:`Analog_LTC2311_16`, i.e., it can directly connect to the card with matching voltage levels and DAC1 corresponds to ADC1 on channel A.
 :numref:`dac_adc_loopback` shows the typical application of the DAC card.
@@ -37,8 +37,8 @@ This setup enables HIL testing including the whole signal chain of the ADC.
 Measurements
 ============
 
-The following measurements are conducted using the loopback configuration of :numref:`dac_adc_loopback` and the :ref:`uz_dac_ip_interface` IP-Core.
-The software writes the values for the DAC output from the :ref:`wave_generator` to the IP-Core in each ISR while the ADC reads the values.
+The following measurements are conducted using the loopback configuration of :numref:`dac_adc_loopback` and the :ref:`uz_dac_ip_interface` IP core.
+The software writes the values for the DAC output from the :ref:`wave_generator` to the IP core in each ISR while the ADC reads the values.
 Therefore, a delay between write to the DAC and the measurement of the ADC of one interrupt sample time is present.
 Additionally, the ADC always measures the signal of the DAC after the settling time has passed due to the timing of the system.
 Thus, the overshoot and settling of the DAC output is not present in the measurement logs in loopback operation.
@@ -71,7 +71,7 @@ Both voltages were determined by available resistor values for the rails of the 
 Pinout
 ======
 
-The pinout of the DAC ethernet port follows the pinout outlined in :ref:`Analog_LTC2311_16_pinout`.
+The pinout of the DAC Ethernet port follows the pinout outlined in :ref:`Analog_LTC2311_16_pinout`.
 See :numref:`rj45pinout` for the detailed pinout, the ADC number is equal to the DAC number (i.e., ADC1 is DAC1).
 
 

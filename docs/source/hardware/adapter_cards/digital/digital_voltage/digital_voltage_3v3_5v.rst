@@ -48,11 +48,11 @@ The functionality of the adapter card is segmented into several key areas, as de
 
    The card monitors both the 3.3 V and 5 V supply rails provided by the carrier board.
    By default, the level shifter output enable (nOE) is governed by these voltage monitors.
-   Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in carrier boards with a hardware revision :math:`\geq` ``Rev05`` (cf. :ref:`carrier_board_rev5`, ``SlotOE``).
+   Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in carrier boards with a hardware revision :math:`\geq` ``Rev05`` (cf. :ref:`carrier_board_rev05`, ``SlotOE``).
  
    As an additional feature, the output signal of the card's on-board supply rail monitoring (i.e., are its local 3V3 and 5V rails both okay) is also fed back to the carrier board by means of D connector (``X6[A-E]``) pin 100.
    Formerly used as ``PILOT_IN`` (and available locally on the LC4xxx CPLDs as ``/PILOT_INx``), newer :math:`\geq` ``Rev05``-based UltraZohm systems (where per-slot ``SlotOK`` signals link each slot to the S³C) may utilize this signal to generate application-specific error conditions and responses.
-   This holds true by means of the five per-slot CPLD *locally*, and -- as a feature not available on older carrier boards -- also on a *system*-wide scale via the S³C (cf. :ref:`carrier_board_rev5_s3c` for an overview and the "safety block diagram" at the end of the carrier's schematic for details).
+   This holds true by means of the five per-slot CPLD *locally*, and -- as a feature not available on older carrier boards -- also on a *system*-wide scale via the S³C (cf. :ref:`carrier_board_rev05_s3c` for an overview and the "safety block diagram" at the end of the carrier's schematic for details).
  
 4. I²C Port Expander
 

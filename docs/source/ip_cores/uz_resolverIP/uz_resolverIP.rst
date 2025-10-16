@@ -11,7 +11,7 @@ Introduction
 
 The Ultrazohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
 
-As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IPCore outputs. Also, raw values can be transfered to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
+As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IP core outputs. Also, raw values can be transfered to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
 
 .. _structure:
 
@@ -19,7 +19,7 @@ As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs a
    :width: 800
    :align: center
 
-   Block diagram of resolverIP IP Core 
+   Block diagram of resolverIP IP core
 
 
 
@@ -54,7 +54,7 @@ For successful SPI communication, make sure that the following pins of the AD2S1
    * - A0
    * - A1
 
-The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the project's block design. The source files can be found in ``ip_cores\uz_resolverIP\src``. 
+The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the project's block design. The source files can be found in ``ip_cores\uz_resolverIP\src``.
 
 .. _pic_Resolver_ipCore:
 
@@ -62,11 +62,11 @@ The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the pr
    :width: 300
    :align: center
 
-   Resolver IP Core in Vivado Block design 
+   Resolver IP core in Vivado Block design
 
-The pins of the IP Core have the following functionalities:
+The pins of the IP core have the following functionalities:
 
-.. list-table:: Functionality of Resolver IP Core pins 
+.. list-table:: Functionality of Resolver IP core pins
    :widths: 25 400
    :header-rows: 1
    :align: center
@@ -80,9 +80,9 @@ The pins of the IP Core have the following functionalities:
    * - sample_trigger
      - if sample_trigger = '1' and SPI Communication is not busy, a position and/or velocity conversion of the AD2S1210 is triggered via the N_SAMPLE signal. SPI Communication reads in position and/or velocity values to the PL. Values are made available to the PL via position_out_m and/or velocity_out_m pins. Values are made available to the PS via AXI registers. Connect to trigger source.
    * - s00_axi_aclk
-     - Clock, connect to respective global clock, this clock is used for AXI and for clocking of all processes of the IPCore
+     - Clock, connect to respective global clock, this clock is used for AXI and for clocking of all processes of the IP core
    * - s00_axi_aresetn
-     - Reset, connect to respective global reset, this Reset is used for AXI and for resetting of all processes of the IPCore
+     - Reset, connect to respective global reset, this Reset is used for AXI and for resetting of all processes of the IP core
    * - SPI_MOSI
      - SPI Interface, connect to pin DIG_IO_08 of Encoder Board  
    * - SPI_SCLK
@@ -113,7 +113,7 @@ The pins of the IP Core have the following functionalities:
 AD2S1210 Interface
 ^^^^^^^^^^^^^^^^^^
 
-An example conversion triggered by sample_trigger with the IPCore in ``POSITION_MODE`` is shown below. In ``POSITION_MODE`` only the position register of the AD2S1210 is read out.
+An example conversion triggered by sample_trigger with the IP core in ``POSITION_MODE`` is shown below. In ``POSITION_MODE`` only the position register of the AD2S1210 is read out.
 
 
 .. figure:: timing_POSMODE.png
@@ -138,11 +138,11 @@ In ``POSITION_VELOCITY_MODE``, the ResolverIP interface can also read out both p
 
 .. warning:: 
   If you plan to only use the PL output ports of the resolverIP, then you have to set 
-  the ``mode_after_init`` in your config struct to e.g. ``POSITION_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP Core will not update speed and position values.
+  the ``mode_after_init`` in your config struct to e.g. ``POSITION_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP core will not update speed and position values.
 
 Vitis Setup
 ***********
-To integrate AXI communication between your PS project and the PL IP Core follow the instructions below. 
+To integrate AXI communication between your PS project and the PL IP core follow the instructions below.
 
 
 Initialization
@@ -154,15 +154,15 @@ Important constant configuration parameters are stored in the struct ``uz_resolv
 	:members:
 
 .. note:: 
-   - The member ``base_address`` needs to be set to the AXI base address assgined to the IPCore by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
+   - The member ``base_address`` needs to be set to the AXI base address assgined to the IP core by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
    - The member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
    - The member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
    - The member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
    - The member ``pole_pairs_machine`` needs to be set according to the electric machine the resolver is attached to. It influences the conversion from mechanical to electrical position and velocity.
    - The member ``pole_pairs_resolver`` needs to be set according to the resolver data. It influences the conversion from measured to mechanical velocity.
    - The member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``.
-   - The member ``mode_after_init`` defines the operating mode of the ip core after init. This is important when the IP Core shall be used in the PL without using the software driver functions 
-     that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP Core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
+   - The member ``mode_after_init`` defines the operating mode of the IP core after init. This is important when the IP core shall be used in the PL without using the software driver functions
+     that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
      the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching modes during operation is handled via the read functions for position and velocity.
 
 .. code-block:: c
@@ -208,7 +208,7 @@ Because doxygen can't display nested structs, here is the declaration of ``uz_re
     	}; 
     };
 
-Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IP Core manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
+Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IP core manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
 
 The member ``union`` is used for buffering the position and velocity values read in via AXI from the RESDAT register. Position values are written to bits 0 to 15, velocity values are written to bits 16 to 31.
 
@@ -224,7 +224,7 @@ A pointer to an  instance of type uz_resolverIP_t can be stored in ``GlobalData.
 Data Aquistition
 ^^^^^^^^^^^^^^^^
 
-The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IPCore with the same trigger, that calls the corresponding data aquistition function. The data aquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s. 
+The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IP core with the same trigger, that calls the corresponding data aquistition function. The data aquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s.
 
 .. _pic_timing3:
 

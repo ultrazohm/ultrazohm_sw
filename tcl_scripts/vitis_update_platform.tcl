@@ -82,21 +82,21 @@ cd $WS_PATH
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
 
-####################################################
+#####################################################
 puts "Info (UltraZohm): Chose active platform"
 platform active $PLATFORM_NAME
 
-####################################################
+#####################################################
 puts "Info (UltraZohm): Import new xsa hardware file from:"
 puts "Info (UltraZohm): $XSA_FOLDER"
 if {[catch {set XSA_FILES [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
 #
 set XSA_FILE [lindex $XSA_FILES 0]
 puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
-puts "Info (UltraZohm): using {$XSA_FILE}"
+puts "Info (UltraZohm): using $XSA_FILE"
 platform config -updatehw $XSA_FILE
 
-####################################################
+#####################################################
 puts "Info (UltraZohm): Regenerate FreeRTOS_domain BSP"
 domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
@@ -105,7 +105,7 @@ bsp config total_heap_size  200000000
 platform write 
 bsp regenerate
 
-####################################################
+#####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain
 bsp regenerate
@@ -119,15 +119,33 @@ bsp regenerate
 puts "Info (UltraZohm): generate Platform project"
 platform generate
 
-####################################################
-#puts "Info (UltraZohm): clean all application projects"
-#app_clean
-puts "Info (UltraZohm): build all application projects"
-app_build
+#####################################################
+# clean up stale _ide folders - see Issue #353 in uz_sw
+  foreach d [list \
+      [file join $WS_PATH Baremetal _ide] \
+      [file join $WS_PATH FreeRTOS _ide] \
+  ] {
+      if {[file isdirectory $d]} {
+          if {![catch {file delete -force -- $d}]} {
+              puts "Info (UltraZohm): removed stale folder $d"
+          }
+      }
+  }
 
-puts "========================================"
+#####################################################
+puts "Info (UltraZohm): build all application projects"
+
+puts "==========================================================================="
+puts "Info (UltraZohm): if Vitis stalls, restart Vitis and run this script again"
+puts "==========================================================================="
+
+# app_build
+app build -all
+
+puts "==========================================================================="
 puts "Info (UltraZohm): vitis_update_platform.tcl script finished successfully"
-puts "========================================"
+puts "==========================================================================="
+
 
 }
 

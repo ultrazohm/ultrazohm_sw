@@ -16,7 +16,7 @@ Overview
 * Analog Sockets (A1-A3) 
 * Digital Sockets (D1-D5)
 
-Note that systems based on :ref:`carrier_board_rev5` integrate all aforementioned communication interfaces and JTAG via a :ref:`PCB-based front panel <frontpanelmainboard_rev01>` (not shown).
+Note that systems based on :ref:`carrier_board_rev05` and higher integrate all aforementioned communication interfaces and JTAG via a :ref:`PCB-based front panel <frontpanelmainboard_rev01>` (not shown).
 
 
 Useful things to buy
@@ -25,7 +25,7 @@ Useful things to buy
 * `USB Hub with Ethernet Adapter <https://www.amazon.de/gp/product/B073PVB9MM/>`_
 * `Cable USB Mini B <https://www.amazon.de/AmazonBasics-IFRI-Stecker-Mini-B-Stecker-Schwarz/dp/B00NH13S44>`_
 * `Short LAN cables <https://www.amazon.de/Cat-7-Netzwerkkabel-1m-Ethernetkabel-Patchkabel/dp/B01MZHGZ5Y/>`_
-* `Replaceable fuse **F1** on Carrier Board <https://de.rs-online.com/web/p/nicht-rueckstellende-sicherungen-smd/1740681/>`_
+* `Replaceable fuse F1 (and F2 in ≥Rev05 systems) on Carrier Board <https://de.rs-online.com/web/p/nicht-rueckstellende-sicherungen-smd/1740681/>`_
 * `Fuse in 230V mains connector <https://de.rs-online.com/web/p/feinsicherungen/5371004/>`_
 
 Source

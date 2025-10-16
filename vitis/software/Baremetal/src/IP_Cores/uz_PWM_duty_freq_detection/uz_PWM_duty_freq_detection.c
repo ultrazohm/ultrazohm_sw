@@ -35,9 +35,6 @@ uz_PWM_duty_freq_detection_t* uz_PWM_duty_freq_detection_init(struct uz_PWM_duty
     return(self);
 }
 
-
-
-
 float uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(uz_PWM_duty_freq_detection_t *self, float dutyCycleNormalized) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Repos/ultrazohm_sw2/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore/uz_pwmdutyfreqdetection_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="3a30d438624b42a18af442cc05db3657"/>
+    <Option Name="Id" Val="9d10b0331e4640718c686bc7b407c874"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -95,13 +95,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd">
+      <File Path="$PPRDIR/../hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd">
+      <File Path="$PPRDIR/../hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

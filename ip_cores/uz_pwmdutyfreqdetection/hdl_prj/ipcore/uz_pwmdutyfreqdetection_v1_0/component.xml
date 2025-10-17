@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b54da62d</spirit:value>
+            <spirit:value>b6cbe483</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b54da62d</spirit:value>
+            <spirit:value>b6cbe483</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -672,11 +672,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd</spirit:name>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -706,7 +706,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_13dcf6fb</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_b3e8bd25</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -717,12 +717,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd</spirit:name>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -815,14 +815,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pwmdutyfreqdetection</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114305975</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-10-16T08:56:16Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114307304</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-10-17T07:05:09Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="18ff721a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="da69ce62"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="07124df9"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="bb0ef15c"/>
     </xilinx:packagingInfo>

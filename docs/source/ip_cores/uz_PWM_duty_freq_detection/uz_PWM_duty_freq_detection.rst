@@ -12,10 +12,12 @@ The parameters of the interpolation can be freely configured.
 However, the IP core can also be used to simply measure any PWM signal's DutyCycle and frequency.
 To save FPGA resource, the calculation of the DutyCycle shown below is done on the PS.
 The IP core ensures synchronization of the outputs by updating all output values simultaneously whenever a new rise of the PWM is detected.
+The IP-core counts the number of clock cycles the PWM signal is high (:math:`N_{high}`) and the total number of clock cycles in one period (:math:`N_{period}`).
+From these two values the DutyCycle is calculated as:
 
 .. math::
 
-    DutyCycle=\frac{PWM_{hightime}}{PWM_{Freq}}
+    DutyCycle=\frac{N_{high}}{N_{period}}
 
 Usage
 -----

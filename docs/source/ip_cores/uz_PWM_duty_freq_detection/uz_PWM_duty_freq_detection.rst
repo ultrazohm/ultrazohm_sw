@@ -11,6 +11,7 @@ Linear interpolation is used to convert the DutyCycle to a temperature in degree
 The parameters of the interpolation can be freely configured.
 However, the IP core can also be used to simply measure any PWM signal's DutyCycle and frequency.
 To save FPGA resource, the calculation of the DutyCycle shown below is done on the PS.
+The IP core ensures synchronization of the outputs by updating all output values simultaneously whenever a new rise of the PWM is detected.
 
 .. math::
 

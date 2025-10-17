@@ -61,7 +61,7 @@ API functions and data types
 .. _uzpA53_init:
 
 Initialization
-""""""""""""""
+^^^^^^^^^^^^^^
 
 The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()``.
 The activation of the adapter card identification feature depends on the ``UZ_PLATFORM_CARDID`` C preprocessor ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
@@ -85,7 +85,7 @@ The activation of the adapter card identification feature depends on the ``UZ_PL
 .. _uzpA53_cardid:
 
 Adapter Card Identification
-"""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to retrieve and interpret information on the adapter cards currently plugged into the UltraZohm carrier/system (as demonstrated by the example included in ``main()`` and also reprinted below).
 
@@ -141,7 +141,7 @@ Example in ``main()``:
    }
 
 GPIO
-""""
+^^^^
 
 The UZP supports configuring and driving GPIO pins connected to PS-GPIOs and I²C-controlled expanders.
 API data types and I/O mappings for inputs are also defined, although the actual functionality has not yet been implemented.
@@ -187,12 +187,17 @@ NB:
 * Similarly, no function to read from inputs is implemented, although the framework's pre-populated I/O maps already cater to all existing input pins
 
 Ethernet MAC addresses
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 MAC addresses are accessible by means of ``uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)`` and ``uz_platform_macread_primary(uint8_t *addrbuf_p)``, although for neither there is any necessity for the user to use these functions explicitly.
 
 Card-specific functionalities
-"""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _uzpA53_dcards:
+
+D cards
+=======
 
 * :ref:`dig_optical` card (which supports various Rx/Tx combinations): The UZP provides the enum ``uz_platform_eeprom_group000model004variants_t`` that holds the card's variants, which -- as of mid 2025 -- are
 

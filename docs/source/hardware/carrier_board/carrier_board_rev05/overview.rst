@@ -108,7 +108,7 @@ Summary of new Features and Changes
 
 * All shared signals between SoM (both PS and PL) and the adapter card slots have been removed, with the only exception being a per-group I²C bus and an ANL_Pin54_Legacy signal to maintain compatibility as already targeted by Rev04 (cf. last bullet point in :ref:`carrier_board_rev04_features` of Rev04)
 * Migration of the SoM I²C (with its PLL and, in newer revisions, an EEPROM) from PS I²C0 to I²C1
-* Separation of the User I²C (PS I²C0) using an 8-channel bus switch linking to FP (for the isoIOs), A slots, D slot CPLDs, D slots, secondary S3C I²C, and BPs
+* Separation of the User I²C (PS I²C0) using an 8-channel bus switch linking to FP (for the isoIOs), A slots, D slot CPLDs, D slots, secondary S3C I²C, and BPs (cf. :ref:`carrier_board_i2c_rev05ff` for details)
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)
 * Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the :ref:`carrier_retrofits_i2cssds2c`)
 * Additional periphery (e.g., GTR clocks, EEPROMs, RTC supply) to use Linux on the APU (with an either volatile, RAMDisk-only or persistent, SSD-based rootfs; further storage via SD card and/or QSPI flash, and, optionally, PCIe)

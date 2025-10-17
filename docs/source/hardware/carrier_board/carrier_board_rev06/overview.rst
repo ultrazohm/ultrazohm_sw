@@ -27,7 +27,7 @@ Summary of new Features and Changes
 * Furthermore, individual slots (i.e., their three supply rails) can now be disabled on a per-slot basis if not required
 
   * This simplifies error handling (on S3C / CPLDs) and
-  * can be controlled via I²C from either S3C or uz_sw.
+  * can be controlled :ref:`via I²C <carrier_board_i2c_rev05ff>` from either S3C or uz_sw.
 
 * :ref:`Rev02 of the updated front panel (FP) <frontpanelmainboard_rev02>` with improved **Isolated I/Os** ("isoIOs") for
 

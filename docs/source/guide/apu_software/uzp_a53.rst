@@ -202,8 +202,10 @@ D cards
 * :ref:`dig_optical` card (which supports various Rx/Tx combinations): The UZP provides the enum ``uz_platform_eeprom_group000model004variants_t`` that holds the card's variants, which -- as of mid 2025 -- are
 
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
-  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX), and
-  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX).
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX),
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX),
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX12TX`` (18 TX + 12 TX), and
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX12RX`` (18 RX + 12 RX).
 
 * :ref:`digitalVoltage_3v3_5v` card: The UZP provides
 

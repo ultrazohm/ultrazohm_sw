@@ -15,7 +15,7 @@
 #ifndef UZ_PLATFORM_C
  #define UZ_NUMENUM_NOHELPER
 #endif
-#define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
+#define UZ_NUMENUM(ENUMNAME, ENUMITEM)		/* NB: Update /docs/source/guide/apu_software/uzp_a53.rst, too */ \
 	ENUMNAME(uz_platform_eeprom_group000models)																	/* Models in Group 0: Adapter cards (in both A and D slots) */ \
 	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_LTC2311,		"ADC LTC2311-16")											/*  */ \
 	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGVOLT,		"Digital Voltage 3V3/5V/15V/RS422")							/*  */ \
@@ -39,7 +39,7 @@
 #ifndef UZ_PLATFORM_C
  #define UZ_NUMENUM_NOHELPER
 #endif
-#define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
+#define UZ_NUMENUM(ENUMNAME, ENUMITEM)		/* NB: Update /docs/source/guide/apu_software/uzp_a53.rst, too */ \
 	ENUMNAME(uz_platform_eeprom_group000model004variants)														/* Variants in Group 0 (Adapter cards), Model 4 (Digital Optical) */ \
 	ENUMITEM( 0,	UZP_HWGROUP_ADCARD_DIGOPT_18TX,								"18 TX")						/*  */ \
 	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGOPT_18RX,								"18 RX")						/*  */ \

@@ -203,9 +203,11 @@ D cards
 
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX),
-  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX),
-  * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX12TX`` (18 TX + 12 TX), and
-  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX12RX`` (18 RX + 12 RX).
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX), and
+  * for the "two-storey variants" using the `UZ_D_Optical_Daugther <https://bitbucket.org/ultrazohm/uz_d_optical_daugther_12tx>`_\board
+
+    * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX12TX`` (18 TX + 12 TX), and
+    * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX12RX`` (18 RX + 12 RX).
 
 * :ref:`digitalVoltage_3v3_5v` card: The UZP provides
 

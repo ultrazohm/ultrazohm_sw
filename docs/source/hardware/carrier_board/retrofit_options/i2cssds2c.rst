@@ -20,13 +20,16 @@ There are three major, feature-distinct revisions of this board:
 Features of Rev03
 -----------------
 
+Overview
+^^^^^^^^
+
 - General-purpose and MAC EEPROMs, RTC, M.2 slots for SATA SSDs and frontpanel link-up as the two previous revisions of the board (cf. above)
-- Integration of an S³C-like management component ("S²C") that
+- Integration of an :ref:`S³C-like <carrier_board_rev05_s3c>` management component ("S²C") that
 
   - interfaces with
 
     - the previously-unused twelve "DIG_IO" signals of adapter card slot D5,
-    - the "system I²C" (PS-I2C1) bus to integrate, e.g., the frontpanel GPIO functionalities,
+    - the "system I²C" (PS_I2C1) bus to integrate, e.g., the frontpanel GPIO functionalities,
     - SPI0 (which, alternatively, can be forwarded to outside devices, e.g., by means of the twelve signals on D5),
     - the 11+1 "isoIOs" (i.e., PS-MIOs) out of which six are carrier outputs, five are carrier inputs and one is the External STOP, and
     - two on-board (and thus not-easily-reached) push buttons;
@@ -44,9 +47,53 @@ Features of Rev03
   - Isolated JTAG+UART interface to avoid ground loops during debugging
   - Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
   - Dual-UART (from SoM to USB) for independent consoles of RPU and APU
-  - Note that the second JTAG channel (connected to S²C and slot CPLDs) follows a different "switching strategy" than ≥Rev05 carriers -- see :ref:`below <carrier_retrofits_i2cssds2c_jtag>` for details
+  - Note that the second JTAG channel (connected to S²C and slot CPLDs) follows a different "switching strategy" than ≥Rev05 carriers -- see :ref:`below <carrier_retrofits_i2cssds2c_cpldjtag>` for details
 
 - Isolation of all but one of the links between carrier and extension board (per isolation domain on the extension board) to avoid ground loops
+
+Block diagram
+^^^^^^^^^^^^^
+
+.. image:: i2cssds2c/blockdiagram.jpg
+   :width: 100%
+
+See the last page of the schematic for a higher-quality version of the above figure.
+Colored boxes mark separate isolation domains.
+Note the (power and current) limits of the supply rails, in particular when using two M.2 SSDs.
+
+The ``CB_`` connectors (left-hand edge of the diagram) link the extension board to the carrier.
+Note that ``CB_X3`` also has to be connected at all times, even if the 12 D5 signals are unused.
+The ``CB_X1`` link replaces the (sometimes fitted) second USB/JTAG module for CPLD programming.
+
+
+.. _carrier_retrofits_i2cssds2c_usage:
+
+Usage hints
+-----------
+
+Both the integrated JTAG+UART interface and the :ref:`not-really-on-carrier "UZP EEPROM" <uzpA53_init>` are programmed with the (four-digit) serial number of the overall UltraZohm system as a part of their identifier.
+This has a number of helpful "side effects", which makes it easier to work with the single (or even multiple) system(s):
+
+- First of all, the stored serial number is visible in both Vivado and Vitis, and can be used to identify and address one particular system without manual selection of cables, JTAG targets, etc. during usage.
+  In various dialogs, the serial number (e.g., ``0040``) can be found at the end of the highlighted strings in the figures below (with Vivado on the left and Vitis -- after clicking "Select" -- on the right).
+
+  .. list-table::
+     :align: center
+     :widths: 27 73
+
+     * - .. image :: i2cssds2c/vivado.png
+            :width: 100%
+       - .. image :: i2cssds2c/vitis.png
+            :width: 100%
+
+- Secondly, users that rely on Linux on their host PC benefit from "nicely named" UARTs (i.e., the "COM ports" in Windows) thanks to sensible udev rules (in, e.g., Debian and Ubuntu).
+  Automatically generated links in ``/dev/serial/by-id/`` point to the four/three channels of the FTDI chip used.
+  Like in Windows, the two last ``ttyUSB``\s created (i.e., ``2`` and ``3`` when no other UARTs are connected, thus starting at ``0``) are the two UARTs of the Zynq PS, with the first of the two being the one used by the UltraZohm software::
+
+     /dev/serial/by-id/usb-Xilinx_UltraZohm_0100106000040-if02-port0 -> ../../ttyUSB2 # uz_sw
+     /dev/serial/by-id/usb-Xilinx_UltraZohm_0100106000040-if03-port0 -> ../../ttyUSB3 # Linux
+
+  These names stay the same even if the system is dis- and reconnected or the PC is rebooted.
 
 
 Technical notes
@@ -57,7 +104,7 @@ Technical notes
 - Currently, the extension board has been tested only with Rev04 carriers, although retrofitting earlier systems should also work with fewer features, e.g., no SSDs (due to lack of PS-GTR connectors on older carrier boards)
 
 
-.. _carrier_retrofits_i2cssds2c_jtag:
+.. _carrier_retrofits_i2cssds2c_cpldjtag:
 
 Second JTAG channel
 ^^^^^^^^^^^^^^^^^^^
@@ -80,7 +127,7 @@ There are three types of available I/Os:
 3. A special-purpose 3V3 pin header (``Xc1``) with RC filters targeting the S²C's secondary I²C controller and seven general-purpose I/Os
 
 
-Retrofitting Steps
+Retrofitting steps
 ------------------
 
 Prerequisites
@@ -107,6 +154,7 @@ For newer systems where the LEDs are on PCB-based, "Z-shaped" frontpanels, ``R36
 
 
 ..	Notes w.r.t. installation:
+		Make sure that you picked the correct extension board for the UltraZohm system to be retrofitted (cf. :ref:`carrier_retrofits_i2cssds2c_usage`) by ensuring that the four-digit serial number of your UltraZohm (shown on the back-label) matches the value in brackets (``(1234)``) at the very end of the extension card's overlay print (starting with "004-003-", cf. top of this page).
 		Insert battery (unless already done), date/time have to be set later;
 		...;
 		Positioning of plastic clips;

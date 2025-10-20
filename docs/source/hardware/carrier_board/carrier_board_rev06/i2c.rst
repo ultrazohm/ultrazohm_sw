@@ -17,12 +17,13 @@ I²C on ≥Rev05 carriers
   * ``CPLDs_I2C`` **[4]**: Primary I²C controllers of D slot CPLDs (1V8)
   * ``I2C_SEC`` **[7]**: Secondary I²C controller of S³C (1V8)
 
+    * On Rev05 carriers, this bus is :ref:`carrier_known_issues_rev05b`
     * On ≥Rev06 carriers, this bus also controls the I²C GPIO of the :ref:`slot disable feature <carrier_board_rev06_summary>`
 
   * ``I2C_FP_isoIOs`` **[2]**: IsoIOs on :ref:`frontpanelmainboard_rev01` and :ref:`frontpanelmainboard_rev02`
   * ``BP_T``/``BP_B`` **[8/6]**: Backpanels
   * Spare **[9]**: On ≥Rev06 carriers, this bus can be accessed via ``X3`` (NB: pull-up Rs needed!)
-  * The multiplexer can be reset via a MIO GPIO, which is helpful in case of bus lock-ups
+  * The bus switch/multiplexer (``U6``) can be reset via a MIO GPIO, which is helpful in case of bus lock-ups, e.g., due to downstream issues on cards etc.
 
 * I²C1 (``PS_I2C1``) **[1]**: "System bus" (``I2C_SYS``)
 

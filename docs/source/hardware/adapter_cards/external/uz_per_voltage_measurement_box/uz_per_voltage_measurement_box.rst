@@ -76,7 +76,16 @@ A 3D-printable housing is available for the voltage measurement PCB.
 The assembly with all necessary parts, including a bill of materials (BOM), is shown below. The PCB can be used without the housing, 
 but the setup is more rugged and cleaner with the housing.
 
-xxxx
+.. figure:: voltage_box_assembly.png
+  :width: 80%
+
+  Assembly drawing of the torque_box
+
+
+.. csv-table:: BOM for voltage_measurement_box assembly 
+   :file: voltage_box_assembly_bom.csv
+   :widths: 25 150 100 30 100
+   :header-rows: 1
 
 
 Downloads
@@ -85,6 +94,7 @@ Downloads
 * :download:`BOM 60V <BOM_JLC_uz_per_voltage_measurement_60V_Rev01.xlsx>`
 * :download:`Schematics 1000V <uz_per_voltage_measurement.pdf>`
 * :download:`Housing body STL file <housing_body.stl>`
+* :download:`Housing cover STL file <housing_cover.stl>`
 
 
 Designer

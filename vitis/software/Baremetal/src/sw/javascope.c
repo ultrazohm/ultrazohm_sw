@@ -98,6 +98,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
 	js_ch_observable[JSO_torque]			= &data->av.torque;
+	js_ch_observable[JSO_torque_filt]		= &data->av.torque_filt;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -111,7 +112,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_left);
 	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_left);
 	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.n_mech_rpm_d3_1);
-	js_slowDataArray[JSSD_FLOAT_torque_right] 		    = &(data->av.torque);
+	js_slowDataArray[JSSD_FLOAT_torque]		 		    = &(data->av.torque);
+	js_slowDataArray[JSSD_FLOAT_torque_filt]		    = &(data->av.torque_filt);
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
 	js_slowDataArray[JSSD_FLOAT_Overcurrent_AC]			= &(data->av.overcurrent_ac);
 	js_slowDataArray[JSSD_FLOAT_Overvoltage_DC]			= &(data->av.overvoltage_dc);

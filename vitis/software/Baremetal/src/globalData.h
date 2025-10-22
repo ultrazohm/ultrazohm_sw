@@ -67,6 +67,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float torque;
+	float torque_filt;
 	float i_a_left;
 	float i_b_left;
 	float i_c_left;
@@ -92,7 +93,9 @@ typedef struct _actualValues_ {
 	float v_d_right;
 	float v_q_right;
 	float omega_mech_right;
+	float omega_el_right;
 	float omega_mech_left;
+	float omega_el_left;
 	float polepairs_left;
 	float polepairs_right;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d3_1;
@@ -106,6 +109,7 @@ typedef struct _actualValues_ {
 	float overcurrent_ac;
 	float overvoltage_dc;
 	float overspeed;
+	uz_EnDat_pos_with_age endat_pos_2pi_with_age;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -130,6 +134,7 @@ typedef struct _referenceAndSetValues_ {
 	float d4_to_d3_offset_el;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
+	float torque_offset;
 } referenceAndSetValues;
 
 typedef struct{
@@ -151,6 +156,7 @@ typedef struct{
 	uz_SetPoint_t* setpoint_ctrl_left;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
+	uz_IIR_Filter_t* iir_filter_torque;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -42,7 +42,7 @@
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
 #include "include/resolver.h"
-#include "include/endat.h"
+#include "include/uz_EnDat_IP_Core_init.h"
 
 #include "uz/uz_HAL.h"
 

@@ -202,13 +202,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		data->rasv.dut = value;
+		data->rasv.torque_offset = value;
 		data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->rasv.resolver_offset = value;
+		data->rasv.d4_to_d3_offset_mech = value;
 		data->av.snd_fld[6] = value;
+//		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d3_1,data->rasv.resolver_offset);
 			break;
 
 		case (Set_Send_Field_7):

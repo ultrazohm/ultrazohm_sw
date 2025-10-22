@@ -37,13 +37,17 @@
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+extern uz_encoder_offset_estimation_t* encoder_offset_obj;
+struct uz_encoder_offset_estimation_status status;
+
 // Global variable structure
 extern DS_Data Global_Data;
 
 //defines and limits
 #define		MAX_CURRENT_AMP		15.0f
-#define		MAX_SPEED 			1000.0f
-#define		MAX_DC_LINK_VOLTAGE 55.0f
+#define		MAX_SPEED 			3200.0f
+#define		MAX_DC_LINK_VOLTAGE 320.0f
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -72,11 +76,13 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    // set resolveroffset with javascope
-    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1,Global_Data.rasv.resolver_offset);
     // update and calculate measured values
     measured_to_si_values();
     check_constraints_current_voltage_temperature();
+    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1,Global_Data.rasv.resolver_offset);
+
+    status = uz_encoder_offset_estimation_get_status(encoder_offset_obj);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     // if "STOP"
     if (current_state==idle_state)
@@ -94,6 +100,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
 		uz_signals_IIR_Filter_reset(Global_Data.objects.iir_filter_ref_speed_left);
+		uz_signals_IIR_Filter_reset(Global_Data.objects.iir_filter_torque);
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
@@ -277,6 +284,12 @@ static void ReadAllADC()
 };
 
 static void control_left_motor() {
+//	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
+//		Global_Data.rasv.i_dq_ref_left = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
+//	    }else{
+//	        Global_Data.rasv.i_dq_ref_left.d = 0.0f;                                              // else: it is finished, setpoints are 0
+//	        Global_Data.rasv.i_dq_ref_left.q = 0.0f;
+//	    }
 	// filter speed setpoint signal
 	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
 	// calculate reference torque from speed ctrl of left motor
@@ -308,6 +321,7 @@ Global_Data.av.resolver_pl_outputs_d3_1 = uz_resolver_pl_interface_get_outputs(G
 Global_Data.av.position_el_2pi_d3_1 = (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
 Global_Data.av.position_mech_2pi_d3_1 =  (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi;
 Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.omega_el_left = Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left;
 Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
 
 
@@ -318,13 +332,16 @@ Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Da
 Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
 Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
 
+// EnDat debug
+//Global_Data.av.endat_pos_2pi_with_age = uz_EnDat_read_pos_t0_as_radiant_and_age(Global_Data.objects.endat_d4_1, -1);
 
 //// read position and speed from EnDat and assign to Global_Data
 //Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
 //Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
 
 // Torque Sensor measurement
-Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * (-1.0f); //positive q-current = positive torque
+Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * (-1.0f) * 2.0f + Global_Data.rasv.torque_offset; //positive q-current = positive torque | Burster 8656-5010: 10Nm/10V = 1Nm/1V -> to +-5V via torque box: 1Nm/0.5V -> 2Nm/1V -> *2.0f
+Global_Data.av.torque_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_torque, Global_Data.av.torque);
 
 // assign inverter measurements - Conversion factors from Michi
 Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A3 * 12.129f) + 0.10f;

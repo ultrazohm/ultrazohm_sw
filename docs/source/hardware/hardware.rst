@@ -20,7 +20,7 @@ The following pages introduce key components, concepts and aspects of any UltraZ
 
 As of 2025, there are two "major versions" of UltraZohm systems in existence:
 
-1. Systems based on carrier boards :math:`\leq` Rev04, where
+1. Systems based on carrier boards ≤ Rev04, where
 
    * system power is controlled by a "0/1" power *switch* on the front panel,
    * power supply and 230V inlet are located on the SoM (i.e., when looking from the front, left-hand) side of the chassis, and
@@ -28,7 +28,7 @@ As of 2025, there are two "major versions" of UltraZohm systems in existence:
 
    Please refer to the left-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
 
-2. Systems based on carrier boards :math:`\geq` Rev05, where
+2. Systems based on carrier boards ≥ Rev05, where
 
    * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev05_04usr` and :ref:`carrier_board_rev05_s3c`),
    * power supply and 230V inlet are located on the adapter card (i.e., when looking from the front, right-hand) side of the chassis, and
@@ -41,8 +41,8 @@ As of 2025, there are two "major versions" of UltraZohm systems in existence:
    :header-rows: 1
    :align: center
 
-   * - Front panel for :math:`\leq` Rev04 carriers
-     - Front panel for :math:`\geq` Rev05 carriers
+   * - Front panel for ≤Rev04 carriers
+     - Front panel for ≥Rev05 carriers
    * - .. image :: hardware/frontpanel_Rev01-4UZs.jpg
           :width: 100%
      - .. image :: hardware/frontpanel_Rev05ffUZs.jpg

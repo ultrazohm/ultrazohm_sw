@@ -74,7 +74,7 @@ Assembly and Connection
 *************************
 A 3D-printable housing is available for the voltage measurement PCB. 
 The assembly with all necessary parts, including a bill of materials (BOM), is shown below. The PCB can be used without the housing, 
-but the setup is more rugged and cleaner with the housing.
+but the setup is more rugged and clean with the housing.
 
 .. figure:: voltage_box_assembly.png
   :width: 80%

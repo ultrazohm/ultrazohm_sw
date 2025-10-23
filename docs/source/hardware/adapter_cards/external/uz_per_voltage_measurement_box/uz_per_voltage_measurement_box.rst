@@ -49,6 +49,55 @@ The PCB is structured in functional areas as shown in Fig. :numref:`voltage_meas
 4. Power supply with 7V to 65V input range. Either use connectors J1, J2 (IPL1-102-02-L-D-K, Cable: ``MMSD-02-xx-x-xx.xx-x-x``) or J4 (TSW-102-07-F-S).
 5. Voltage dividers for up to 1000V measurement range.
 
+Power supply
+------------
+
+.. _power_supply:
+
+.. figure::  power_supply.jpg
+   :width: 50%
+
+   Pins for Vin+ are marked in blue and GND in orange. Connectors are marked in yellow. Cable should be configured accordingly. 
+
+The PCB can be powered in two ways. :
+
+1.  J1,J2: VIN/GND from the :ref:`Analog_LTC2311_16` card with a manufactured power supply cable (Type ``MMSD-02-xx-x-xx.xx-x-x`` to ``MMSD-08-xx-x-xx.xx-x-x``). Alternatively to external power source. 
+
+.. _connector_adc:
+
++-------------------------------------------------+-----------------------------------------------+
+| .. figure:: connector_LTC2311.jpg               | .. figure:: pins-LTC2311.jpg                  |
+|    :width: 75%                                  |    :width: 75%                                |
+|                                                 |                                               |
+|    Connector on the LTC2311_16 card for         |    Physical pins on the                       |
+|    power supply to the voltage measurement      |    :ref:`Analog_LTC2311_16` card.             |
+|    box.                                         |                                               |
+|                                                 |                                               |
+|    .. note:: Use pins 2 and 10 as return ground!|                                               |
++-------------------------------------------------+-----------------------------------------------+
+
+2. J4: Connect external power supply to pins.
+
+
+
+
+
+Pinout
+------
+
+The pairs of the RJ45 Ethernet connector map to the voltage measurement channels as follows:
+
+=========  =======    ==========================    ===================================
+Connected                         Pin on RJ45       (:ref:`RJ45-Belegung <rj45pinout>`)                         
+---------  -------    -----------------------------------------------------------------
+ ADC       Channel      :math:`V_\mathrm{in,p}`       :math:`V_\mathrm{in,n}`
+=========  =======    ==========================    ===================================
+ADC 1      1              7                                8                     
+ADC 2      2              4                                5                     
+ADC 3      3              3                                6                     
+ADC 4      4              1                                2                     
+=========  =======    ==========================    ===================================
+
 Variants
 --------
 

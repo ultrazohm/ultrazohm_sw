@@ -44,7 +44,7 @@ struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               
     .ptr_actual_omega_el = &Global_Data.av.omega_el_left,                       // pointer to actual electric rotor angular speed
     .ptr_actual_u_q_V = &Global_Data.av.v_q_left,                               // pointer to q-setpoint voltage
     .min_omega_el = 500.0f,                                                     // target electric rotor angular speed (USE OWN)
-    .setpoint_current = 3.0f};                                                  // current setpoint to reach speed (USE OWN)
+    .setpoint_current = 5.0f};                                                  // current setpoint to reach speed (USE OWN)
 uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;                      // object pointer
 
 enum init_chain
@@ -124,13 +124,13 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.rasv.resolver_offset = -4.363502f;
-            Global_Data.rasv.d4_to_d3_offset_mech = 0.18f;
-            // offset estimation
+            Global_Data.rasv.resolver_offset = -4.3458405; //-4.363502f; // estimated with offset estimation module
+            Global_Data.rasv.d4_to_d3_offset_mech = 0.59f; // estimated heuristically
             encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
             Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
             Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
-            Global_Data.objects.endat_d4_1 = uz_EnDat_IP_core_custom_init();
+            uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1, Global_Data.rasv.resolver_offset);
+//            Global_Data.objects.endat_d4_1 = uz_EnDat_IP_core_custom_init(); // not working yet
             initialization_chain = print_msg;
             break;
         case print_msg:

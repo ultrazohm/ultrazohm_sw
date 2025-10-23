@@ -195,10 +195,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 		data->rasv.i_dq_ref_right.d = value;
+//		data->rasv.v_d_left_ref = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->rasv.i_dq_ref_right.q = value;
+//		data->rasv.v_q_left_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -209,7 +211,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_6):
 		data->rasv.d4_to_d3_offset_mech = value;
 		data->av.snd_fld[6] = value;
-//		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d3_1,data->rasv.resolver_offset);
 			break;
 
 		case (Set_Send_Field_7):
@@ -277,6 +278,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
+		data->rasv.resolver_offset = value;
+		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d3_1, value);
 			break;
 
 		case (My_Button_1):
@@ -292,30 +295,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		data->rasv.halfBridge4DutyCycle=data->rasv.dut;
-		data->rasv.halfBridge5DutyCycle=0.0f;
-		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_5):
-		data->rasv.halfBridge4DutyCycle=0.0f;
-		data->rasv.halfBridge5DutyCycle=data->rasv.dut;
-		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
 		case (My_Button_6):
-		data->rasv.halfBridge4DutyCycle=0.0f;
-		data->rasv.halfBridge5DutyCycle=0.0f;
-		data->rasv.halfBridge6DutyCycle=data->rasv.dut;
 
 			break;
 
 		case (My_Button_7):
-		data->rasv.halfBridge4DutyCycle=0.0f;
-		data->rasv.halfBridge5DutyCycle=0.0f;
-		data->rasv.halfBridge6DutyCycle=0.0f;
 
 			break;
 
@@ -329,6 +320,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.overcurrent_ac = 0.0f;
 		data->av.overvoltage_dc = 0.0f;
 		data->av.overspeed = 0.0f;
+		data->av.overtorque = 0.0f;
 
 			break;
 
@@ -388,45 +380,33 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 	/* Bit 7 - My_Button_4 */
-	if (data->rasv.halfBridge4DutyCycle == data->rasv.dut)
-	{
-		js_status_BareToRTOS |= (1u << 7);
-	}
-	else
-	{
-		js_status_BareToRTOS &= ~(1u << 7);
-	}
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 7);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 7);
+	// }
 
 
 	/* Bit 8 - My_Button_5 */
-	if (data->rasv.halfBridge5DutyCycle == data->rasv.dut)
-	{
-		js_status_BareToRTOS |= (1u << 8);
-	}
-	else
-	{
-		js_status_BareToRTOS &= ~(1u << 8);
-	}
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 8);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 8);
+	// }
 
 	/* Bit 9 - My_Button_6 */
-	if (data->rasv.halfBridge6DutyCycle == data->rasv.dut)
-	{
-		js_status_BareToRTOS |= (1u << 9);
-	}
-	else
-	{
-		js_status_BareToRTOS &= ~(1u << 9);
-	}
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 9);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 9);
+	// }
 
 	/* Bit 10 - My_Button_7 */
-	if ((data->rasv.halfBridge4DutyCycle == 0.0f) && (data->rasv.halfBridge5DutyCycle == 0.0f) && (data->rasv.halfBridge6DutyCycle == 0.0f))
-	{
-		js_status_BareToRTOS |= (1u << 10);
-	}
-	else
-	{
-		js_status_BareToRTOS &= ~(1u << 10);
-	}
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 10);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 10);
+	// }
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

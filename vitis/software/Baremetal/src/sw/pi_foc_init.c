@@ -7,35 +7,31 @@ extern DS_Data Global_Data;
 
     const struct uz_PMSM_t Siemens_1FK7043 = {
       .R_ph_Ohm = 1.2f,
-      .Ld_Henry = 0.0013f,
-      .Lq_Henry = 0.0013f,
-      .Psi_PM_Vs = 0.137f,
+      .Ld_Henry = 0.0136f,
+      .Lq_Henry = 0.0136f,
+      .Psi_PM_Vs = 0.140f, //54V/1000rpm -> (54V*sqrt(2)*60/1000) / (3*sqrt(3)*2*pi) = 0.140 Vs
 	  .polePairs = 3.0f,
 	  .I_max_Ampere = 12.5f, //15.0f?
-	  .J_kg_m_squared = 0.00010f // alles aus Datenblatt
+	  .J_kg_m_squared = 0.00010f // from datasheet
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
     	      .type = UZ_PI_PARALLEL,
     		  .Kp = Siemens_1FK7043.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
     	      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
     	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-    	      .upper_limit = 48.0f,
-			  .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
 			  .type = UZ_PI_PARALLEL,
 			  .Kp = Siemens_1FK7043.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 		      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 		      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-    	      .upper_limit = 48.0f,
-			  .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_speed_left = {
 		   .Kp = 0.1f,
 		   .Ki = 2.0f,
 		   .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-		   .upper_limit = 6.0f,
-		   .lower_limit = -6.0f
+		   .upper_limit = 9.0f,
+		   .lower_limit = -9.0f
    };
 
    const struct uz_SetPoint_config config_setpoint_left = {
@@ -56,23 +52,19 @@ extern DS_Data Global_Data;
  		  .Kp = Siemens_1FK7043.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-	      .upper_limit = 48.0f,
-		  .lower_limit = -48.0f
   };
   const struct uz_PI_Controller_config config_iq_right = {
 		  .type = UZ_PI_PARALLEL,
 		  .Kp = Siemens_1FK7043.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-	      .upper_limit = 48.0f,
-		  .lower_limit = -48.0f
   };
 
    struct uz_CurrentControl_config config_current_ctrl_left = {
       .config_PMSM = Siemens_1FK7043,
 	  .config_id = config_id_left,
 	  .config_iq = config_iq_left,
-	  .decoupling_select = no_decoupling,
+	  .decoupling_select = linear_decoupling,
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
@@ -80,7 +72,7 @@ extern DS_Data Global_Data;
       .config_PMSM = Siemens_1FK7043,
 	  .config_id = config_id_right,
 	  .config_iq = config_iq_right,
-	  .decoupling_select = no_decoupling,
+	  .decoupling_select = linear_decoupling,
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
@@ -89,7 +81,7 @@ extern DS_Data Global_Data;
    		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    struct uz_IIR_Filter_config config_IIR_torque = { .selection = LowPass_first_order,
-      		.cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+      		.cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    uz_CurrentControl_t* current_ctrl_left_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_left));

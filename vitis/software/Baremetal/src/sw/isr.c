@@ -33,6 +33,7 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_spwm/uz_spwm.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -45,9 +46,10 @@ struct uz_encoder_offset_estimation_status status;
 extern DS_Data Global_Data;
 
 //defines and limits
-#define		MAX_CURRENT_AMP		15.0f
+#define		MAX_CURRENT_AMP		  15.0f
 #define		MAX_SPEED 			3200.0f
-#define		MAX_DC_LINK_VOLTAGE 320.0f
+#define		MAX_DC_LINK_VOLTAGE  350.0f
+#define		MAX_TORQUE			  9.0f
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -79,8 +81,6 @@ void ISR_Control(void *data)
     // update and calculate measured values
     measured_to_si_values();
     check_constraints_current_voltage_temperature();
-    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1,Global_Data.rasv.resolver_offset);
-
     status = uz_encoder_offset_estimation_get_status(encoder_offset_obj);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -297,15 +297,22 @@ static void control_left_motor() {
 	// calculate current setpoints i_dq_ref for left motor
 	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left,Global_Data.av.omega_mech_left, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
 	// calculate reference voltages for current control
-	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left);
+	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_el_left);
+	// get integrator clamping flag from current control
+	Global_Data.av.currentcontrol_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
+	Global_Data.av.currentcontrol_clamping_left_f = (float)(Global_Data.av.currentcontrol_clamping_left);
+	// set clamping of integrators of speed control when current control is clamped
+	uz_SpeedControl_set_ext_clamping(Global_Data.objects.speed_ctrl_left, Global_Data.av.currentcontrol_clamping_left);
+	// write v_dq_ref_left to Global_Data
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
+	// calculate SVPMW dutycycles
 	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.position_el_2pi_d3_1);
 };
 
 static void control_right_motor() {
     // calculate reference voltages for current control
-    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_el_right);
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
@@ -327,20 +334,14 @@ Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1
 
 // Fake right position and speeds, if endat working delete this block
 Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.omega_el_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
 Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
 Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
 Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
 Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
 
-// EnDat debug
-//Global_Data.av.endat_pos_2pi_with_age = uz_EnDat_read_pos_t0_as_radiant_and_age(Global_Data.objects.endat_d4_1, -1);
-
-//// read position and speed from EnDat and assign to Global_Data
-//Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
-//Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
-
 // Torque Sensor measurement
-Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * (-1.0f) * 2.0f + Global_Data.rasv.torque_offset; //positive q-current = positive torque | Burster 8656-5010: 10Nm/10V = 1Nm/1V -> to +-5V via torque box: 1Nm/0.5V -> 2Nm/1V -> *2.0f
+Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * 2.0f + Global_Data.rasv.torque_offset; //positive q-current = positive torque | Burster 8656-5010: 10Nm/10V = 1Nm/1V -> to +-5V via torque box: 1Nm/0.5V -> 2Nm/1V -> *2.0f
 Global_Data.av.torque_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_torque, Global_Data.av.torque);
 
 // assign inverter measurements - Conversion factors from Michi
@@ -384,6 +385,11 @@ static void check_constraints_current_voltage_temperature() {
     // check for max speed
       if (fabs(Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm) > MAX_SPEED || fabs(Global_Data.av.n_mech_rpm_d4_1) > MAX_SPEED) {
     	Global_Data.av.overspeed = 1.0f;
+    	ultrazohm_state_machine_set_stop(true);
+    }
+    // check for max torque
+      if (fabs(Global_Data.av.torque_filt) > MAX_TORQUE) {
+    	Global_Data.av.overtorque = 1.0f;
     	ultrazohm_state_machine_set_stop(true);
     }
 };

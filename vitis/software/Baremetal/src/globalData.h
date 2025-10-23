@@ -109,7 +109,10 @@ typedef struct _actualValues_ {
 	float overcurrent_ac;
 	float overvoltage_dc;
 	float overspeed;
+	float overtorque;
 	uz_EnDat_pos_with_age endat_pos_2pi_with_age;
+	bool currentcontrol_clamping_left;
+	float currentcontrol_clamping_left_f;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -128,13 +131,14 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_left;
 	float n_ref_left;
 	float n_ref_left_filt;
-	float dut;
 	float resolver_offset;
 	float d4_to_d3_offset_mech;
 	float d4_to_d3_offset_el;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
 	float torque_offset;
+	float v_d_left_ref;
+	float v_q_left_ref;
 } referenceAndSetValues;
 
 typedef struct{

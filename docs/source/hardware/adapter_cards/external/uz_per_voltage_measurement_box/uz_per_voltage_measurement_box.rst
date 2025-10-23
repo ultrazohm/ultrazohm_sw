@@ -57,7 +57,7 @@ Power supply
 .. figure::  power_supply.jpg
    :width: 50%
 
-   Pins for Vin+ are marked in blue and GND in orange. Connectors are marked in yellow. Cable should be configured accordingly. 
+   Pins for VIN are marked in blue and GND in orange. Connectors are marked in yellow. Cable should be configured accordingly. 
 
 The PCB can be powered in two ways. :
 

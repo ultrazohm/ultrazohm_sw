@@ -16,14 +16,14 @@ extern DS_Data Global_Data;
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
     	      .type = UZ_PI_PARALLEL,
-    		  .Kp = Siemens_1FK7043.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
-    	      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+    		  .Kp = Siemens_1FK7043.Ld_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY), // Ld_Herny / (2*tau_sigma) | tau_sigma = 1.5 * t_pwm
+    	      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY),
     	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
    };
    const struct uz_PI_Controller_config config_iq_left = {
 			  .type = UZ_PI_PARALLEL,
-			  .Kp = Siemens_1FK7043.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
-		      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+			  .Kp = Siemens_1FK7043.Lq_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY),
+		      .Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY),
 		      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
    };
    const struct uz_PI_Controller_config config_speed_left = {

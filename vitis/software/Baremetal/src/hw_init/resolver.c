@@ -6,7 +6,7 @@
 struct uz_resolverIP_config_t resolver_config_d3_1={
         .base_address=XPAR_UZ_USER_ADAPTER_D3_RESOLVER_INTERFACE_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
-        .resolution = 16,
+        .resolution = 16, // actually 14 bit ist selected in hardware, but due to buggy IP stay with 16
         .freq_clockin = 8192000,
         .pole_pairs_machine = 3.0f,
         .pole_pairs_resolver = 3.0f,
@@ -16,10 +16,10 @@ struct uz_resolverIP_config_t resolver_config_d3_1={
 
 struct uz_resolver_pl_interface_config_t resolver_pl_config_d3_1 = {
                .base_address = XPAR_UZ_USER_ADAPTER_D3_UZ_RESOLVER_PL_INTER_0_BASEADDR,
-               .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
+               .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT, // actually 14 bit ist selected in hardware, but due to buggy IP stay with 16
                .ip_clk_frequency_Hz = 100000000U,
                .machine_polepairs = 3,
-               .position_intmax = 65535,
+               .position_intmax = 65535,// actually 14 bit ist selected in hardware, but due to buggy IP stay with 16
                .resolver_polepairs = 3,
 			   .theta_m_offset_rad = 0.0f
 };

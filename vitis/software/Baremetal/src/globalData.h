@@ -110,9 +110,7 @@ typedef struct _actualValues_ {
 	float overvoltage_dc;
 	float overspeed;
 	float overtorque;
-	uz_EnDat_pos_with_age endat_pos_2pi_with_age;
 	bool currentcontrol_clamping_left;
-	float currentcontrol_clamping_left_f;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

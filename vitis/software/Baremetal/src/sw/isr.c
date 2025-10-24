@@ -33,14 +33,9 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "../uz/uz_signals/uz_signals.h"
-#include "../uz/uz_spwm/uz_spwm.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
-#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
-extern uz_encoder_offset_estimation_t* encoder_offset_obj;
-struct uz_encoder_offset_estimation_status status;
 
 // Global variable structure
 extern DS_Data Global_Data;
@@ -80,8 +75,8 @@ void ISR_Control(void *data)
     ReadAllADC();
     // update and calculate measured values
     measured_to_si_values();
+    // check for physical and safety limits
     check_constraints_current_voltage_temperature();
-    status = uz_encoder_offset_estimation_get_status(encoder_offset_obj);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     // if "STOP"
@@ -284,12 +279,6 @@ static void ReadAllADC()
 };
 
 static void control_left_motor() {
-//	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
-//		Global_Data.rasv.i_dq_ref_left = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
-//	    }else{
-//	        Global_Data.rasv.i_dq_ref_left.d = 0.0f;                                              // else: it is finished, setpoints are 0
-//	        Global_Data.rasv.i_dq_ref_left.q = 0.0f;
-//	    }
 	// filter speed setpoint signal
 	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
 	// calculate reference torque from speed ctrl of left motor
@@ -300,7 +289,6 @@ static void control_left_motor() {
 	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_el_left);
 	// get integrator clamping flag from current control
 	Global_Data.av.currentcontrol_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
-	Global_Data.av.currentcontrol_clamping_left_f = (float)(Global_Data.av.currentcontrol_clamping_left);
 	// set clamping of integrators of speed control when current control is clamped
 	uz_SpeedControl_set_ext_clamping(Global_Data.objects.speed_ctrl_left, Global_Data.av.currentcontrol_clamping_left);
 	// write v_dq_ref_left to Global_Data
@@ -323,19 +311,18 @@ static void control_right_motor() {
 static void measured_to_si_values() {
 // update position and speed from resolver
 Global_Data.av.resolver_pl_outputs_d3_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d3_1);
-// calc motor angles and speeds with right orientation
 
+// calc motor angles and speeds with right orientation
 Global_Data.av.position_el_2pi_d3_1 = (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
 Global_Data.av.position_mech_2pi_d3_1 =  (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi;
-Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f; // *4.0f accounting for bit resolution bug in resolverIP 16bit vs 14bit is factor 4
 Global_Data.av.omega_el_left = Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left;
-Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
-
+Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
 
 // Fake right position and speeds, if endat working delete this block
-Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f;
 Global_Data.av.omega_el_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
-Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
 Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
 Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
 Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
@@ -383,7 +370,7 @@ static void check_constraints_current_voltage_temperature() {
     	ultrazohm_state_machine_set_stop(true);
     }
     // check for max speed
-      if (fabs(Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm) > MAX_SPEED || fabs(Global_Data.av.n_mech_rpm_d4_1) > MAX_SPEED) {
+      if (fabs(Global_Data.av.n_mech_rpm_d3_1) > MAX_SPEED || fabs(Global_Data.av.n_mech_rpm_d4_1) > MAX_SPEED) {
     	Global_Data.av.overspeed = 1.0f;
     	ultrazohm_state_machine_set_stop(true);
     }

@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 extern const struct uz_PMSM_t Siemens_1FK7043;
 // Initialize the global variables
@@ -36,16 +35,6 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
-
-
-struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
-    .ptr_measured_rotor_angle = &Global_Data.av.position_el_2pi_d3_1,           // pointer to the measured electric rotor angle (raw, not offset corrected)
-    .ptr_offset_angle = &Global_Data.rasv.resolver_offset,                      // pointer to global variable holding the offset angle
-    .ptr_actual_omega_el = &Global_Data.av.omega_el_left,                       // pointer to actual electric rotor angular speed
-    .ptr_actual_u_q_V = &Global_Data.av.v_q_left,                               // pointer to q-setpoint voltage
-    .min_omega_el = 500.0f,                                                     // target electric rotor angular speed (USE OWN)
-    .setpoint_current = 5.0f};                                                  // current setpoint to reach speed (USE OWN)
-uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;                      // object pointer
 
 enum init_chain
 {
@@ -124,9 +113,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.rasv.resolver_offset = -4.3458405; //-4.363502f; // estimated with offset estimation module
+            Global_Data.rasv.resolver_offset = -4.363502f; // estimated with offset estimation module
             Global_Data.rasv.d4_to_d3_offset_mech = 0.59f; // estimated heuristically
-            encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
             Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
             Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
             uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1, Global_Data.rasv.resolver_offset);

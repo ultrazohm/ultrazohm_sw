@@ -30,3 +30,4 @@ Control
     uz_Trajectory/uz_Trajectory
     uz_Transformation/uz_Transformation
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
+    uz_HarmonicCurrentInjection/uz_HarmonicCurrentInjection

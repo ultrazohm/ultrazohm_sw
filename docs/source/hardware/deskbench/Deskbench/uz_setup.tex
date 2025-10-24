@@ -1,0 +1,31 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{document}
+
+\begin{tikzpicture}
+	\node [anchor=west] (ENC) at (9,7)  {\includegraphics[angle=90,width=0.24\textwidth]{incr_encoder_rev03_pcb.jpg}};
+	\node [anchor=west] (ADC) at (0,7) {\includegraphics[angle=90,width=0.24\textwidth]{adc.jpg}};
+	\node [anchor=west] (INV) at (3,7) {\includegraphics[angle=90,width=0.24\textwidth]{inverter.jpg}};
+	\node [anchor=west] (RES) at (6,7) {\includegraphics[angle=90,width=0.24\textwidth]{Adapter_Card_Digital_Resolver.png}};
+	\node[red,ultra thick,anchor=south] at (10.5,9.5) {\Huge D5};
+	\node[orange,ultra thick,anchor=south] at (7.5,9.5) {\Huge D4};
+	\node[purple,ultra thick,anchor=south] at (1.5,9.5) {\Huge A1-A3};
+	\node[blue,ultra thick,anchor=south] at (4.5,9.5) {\Huge D1-D2};
+	\begin{scope}
+		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{uz_deskbench.jpg}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\draw[red,ultra thick,rounded corners] (0.82,0.10) rectangle (0.87,0.82);
+			\draw [-latex, ultra thick, red] (ENC) to[out=-90, in=90] (0.86,0.82);
+			\draw[purple,ultra thick,rounded corners] (0.35,0.10) rectangle (0.55,0.82);
+			\draw [-latex, ultra thick, purple] (ADC) to[out=-90, in=90] (0.50,0.82);
+			\draw[blue,ultra thick,rounded corners] (0.575,0.10) rectangle (0.7,0.82);
+			\draw [-latex, ultra thick, blue] (INV) to[out=-90, in=90] (0.65,0.82);
+			\draw[orange,ultra thick,rounded corners] (0.75,0.10) rectangle (0.8,0.82);
+			\draw [-latex, ultra thick, orange] (RES) to[out=-90, in=90] (0.77,0.82);
+		\end{scope}
+	\end{scope}
+\end{tikzpicture}%
+\end{document}

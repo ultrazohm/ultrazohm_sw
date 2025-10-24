@@ -8,8 +8,8 @@ Sourcetree (git GUI)
 It is recommended to use Sourcetree for convenience and standardization in the community.
 If you are not familiar with Sourcetree please refer to the following resources:
 
-  * `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
-  * `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
+* `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
+* `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
 
 .. note::
 
@@ -24,7 +24,7 @@ We use Bitbucket Cloud-hosted, so click ``Bitbucket`` (right).
 
 .. image:: ./images_git/sourcetree_anmeldung.png
 
-You will be asked to login to your Bitbucket account. If you do not have one, please create one <https://www.bitbucket.com> since it is required to access the software of the UltraZohm.
+You will be asked to login to your Bitbucket account. If you do not have one, please `create one <https://www.bitbucket.com>`_ since it is required to access the software of the UltraZohm.
 
 .. image:: ./images_git/sourcetree_login.png
 
@@ -36,13 +36,13 @@ You only need to download and install git (if you do not have installed it alrea
 
 .. image:: ./images_git/sourcetree_installer2.png
 
-If you know what an SSH Key is, how to use it and want to use it, you can you it (Ja=Yes, Nein=No).
-If you do not know what an SSH Key is, click ``Nein`` (No) and use clone by ``https`` in the following.
+If you know what an SSH key is, how to use it and want to use it, you can use it (Ja=Yes, Nein=No).
+If you do not know what an SSH key is, click ``Nein`` (No) and use clone over ``https`` in the following.
 
 .. image:: ./images_git/sourcetree_ssh.png
 
-After that the installation is complete and you can open Sourcetree and you should be logged in and you see your remote repositories.
-If you are in the UltraZohm team you will see the ``ultrazohm_sw`` repository.
+After that the installation is complete and you can open Sourcetree and you should be logged in and see your remote repositories.
+If you are in the UltraZohm team, you will see the ``ultrazohm_sw`` repository.
 
 .. image:: ./images_git/sourcetree_offen.png
 
@@ -56,11 +56,11 @@ The dialog to clone the repository is opened and you can add the local path. It 
 
   C:\UltraZohm\ultrazohm_sw
 
-Under Advanced Options (Erweiterte Optionen) checkout the **main** branch.
+Under Advanced Options (Erweiterte Optionen), check out the **main** branch.
 
 .. image:: ./images_git/sourcetree_clone2.png
 
-This will take some time, after the clone is complete, Sourcetree and the repository is ready to use.
+This will take some time. After the clone is complete, Sourcetree and the repository are ready to use.
 
 .. image:: ./images_git/sourcetree_cloned.png
 
@@ -80,7 +80,7 @@ Sourcetree known issues
     C:Users\USERNAME\AppData\Local\SourceTree
 
   Where ``USERNAME`` is the name of your Windows user account. Note that the path might be a hidden folder.
-  To  create a shortcut right-click the sourcetree.exe and click ``create desktop shortcut``.
+  To create a shortcut, right-click the sourcetree.exe and click ``create desktop shortcut``.
 
 
 Sourcetree git-flow
@@ -88,7 +88,7 @@ Sourcetree git-flow
 
 We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` `repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_.
 Git-flow is integrated in Sourcetree and straightforward for users.
-To use git-flow for the first time click the git-flow icon in Sourcetree.
+To use git-flow for the first time, click the git-flow icon in Sourcetree.
 
 .. image:: ./images_git/gitflow1.png
 
@@ -112,16 +112,16 @@ The only relevant action for users is ``Start New Feature`` - click it.
 You are asked to give a name for the feature, enter an expressive name, and click ok.
 Naming:
 
-* ``featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g. ``oversampling`` if the feature is about oversampling
+* ``featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g., ``oversampling`` if the feature is about oversampling
 
 .. warning::
 
-  do not change ``start at: develop`` to anything else.
+  Do not change ``start at: develop`` to anything else.
 
 .. image:: ./images_git/gitflow5.png
 
 The feature branch is now created on your local machine and you can start working.
-If you want to push the new branch to the remote repository just click push.
+If you want to push the new branch to the remote repository, just click push.
 
 .. image:: ./images_git/gitflow6.png
 

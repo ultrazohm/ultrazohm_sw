@@ -1,13 +1,13 @@
 .. _cil_pmsm_foc:
 
 =========================================================
-Controlling a PMSM IP-Core with the CurrentControl module
+Controlling a PMSM IP core with the CurrentControl module
 =========================================================
 
 Aim of the tutorial
 *******************
 
-In this tutorial the :ref:`PMSM IP-Core <uz_pmsmModel>` will be added to the Vivado project and controlled using the :ref:`uz_CurrentControl`.
+In this tutorial the :ref:`PMSM IP core <uz_pmsmModel>` will be added to the Vivado project and controlled using the :ref:`uz_CurrentControl`.
 
 Requirements
 ************
@@ -15,7 +15,7 @@ Requirements
 The following tutorial requires:
 
 - :ref:`The previous tutorial <gate_signals>`.
-- :ref:`Check the documentation about the PMSM IP-Core <uz_pmsmModel>`.
+- :ref:`Check the documentation about the PMSM IP core <uz_pmsmModel>`.
 - :ref:`Check the documentation about the CurrentControl<uz_CurrentControl>`.
 
 Initial steps
@@ -33,9 +33,9 @@ Initial steps
        Block design in Vivado.
 
 #. Right click on the ``uz_user`` block and select ``Add IP ...`` and search for the ``uz_pmsm_model``.
-#. Double click on the result. The IP-Core should now reside inside the ``uz_user`` block.
+#. Double click on the result. The IP core should now reside inside the ``uz_user`` block.
 #. Double click on the ``AXI smartconnect`` and increase the number of *Master interfaces* by one.
-#. Connect the IP-Core as shown below.
+#. Connect the IP core as shown below.
 
    ..  _Vivado_pmsm:
    ..  figure:: ./img/Vivado2.png
@@ -53,11 +53,11 @@ Initial steps
 
    .. note:: 
 
-      If the new IP-Core shows up as *unconnected* instead of *unassigned*, delete the ``AXI smartconnect`` in the ``uz_user`` block and add it again with the same connections.
+      If the new IP core shows up as *unconnected* instead of *unassigned*, delete the ``AXI smartconnect`` in the ``uz_user`` block and add it again with the same connections.
 
-#. Save the project,generate and export the bitstream as done in :ref:`gen_bitstream`.
+#. Save the project, generate and export the bitstream as done in :ref:`gen_bitstream`.
 #. Generate the Vitis workspace as done in :ref:`genvitis`.
-#. Open the ``uz_global_configuration.h`` file and increase ``#define UZ_PMSMMODEL_MAX_INSTANCES`` by one. This way, one instance of the PMSM IP-Core driver can be used.
+#. Open the ``uz_global_configuration.h`` file and increase ``#define UZ_PMSMMODEL_MAX_INSTANCES`` by one. This way, one instance of the PMSM IP core driver can be used.
 #. At the same time check, that the ``UZ_PWM_FREQUENCY`` is set to ``20.0e3f`` .
 #. In the ``main.h`` add the following includes.
 
@@ -66,14 +66,14 @@ Initial steps
    * ``#include "uz/uz_CurrentControl/uz_CurrentControl.h"``
 
 #. In the ``main.c`` add another entry (e.g. ``init_pmsm`` ) to the ``init_chain`` enum and ``switch-case`` structure after the ``init_software`` case.
-#. Add the declaration as a global variable of the PMSM IP-Core before the ``main``-function.
-#. Add to the new ``init_CurrentControl_pmsm`` case the config struct and the init-function as show in the :ref:`PMSM IP-core docs <uz_pmsmModel>`. 
+#. Add the declaration as a global variable of the PMSM IP core before the ``main``-function.
+#. Add to the new ``init_CurrentControl_pmsm`` case the config struct and the init-function as show in the :ref:`PMSM IP core docs <uz_pmsmModel>`.
 
    .. note:: 
 
-      The base-address needed is different to the one specified in the :ref:`PMSM IP-core docs <uz_pmsmModel>`. 
-      We implemented the IP-Core in the ``uz_user`` subblock in Vivado, therefore the IP-Core base address has to be adjusted to the following: ``XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR`` .
-      If the IP-Core is not included into the block design in a subblock, the base address form the :ref:`PMSM IP-core docs <uz_pmsmModel>` is the correct one.
+      The base-address needed is different to the one specified in the :ref:`PMSM IP core docs <uz_pmsmModel>`.
+      We implemented the IP core in the ``uz_user`` subblock in Vivado, therefore the IP core base address has to be adjusted to the following: ``XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR`` .
+      If the IP core is not included into the block design in a subblock, the base address form the :ref:`PMSM IP core docs <uz_pmsmModel>` is the correct one.
 
 #. Initialize in the same switch-case the CurrentControl as shown :ref:`here <uz_CurrentControl>`.
 #. Your ``main.c`` should look similar to this now.
@@ -81,7 +81,7 @@ Initial steps
    .. code-block:: c  
         :linenos:
         :emphasize-lines: 7,13,14,28,30-66
-        :caption: main.c code after changes. ``//....`` signals left out code.  
+        :caption: main.c code after changes. ``//....`` signals left-out code.
 
          //....
          enum init_chain
@@ -133,7 +133,7 @@ Initial steps
                            .decoupling_select = linear_decoupling,
                            .config_PMSM = config_PMSM,
                            .config_id = config_id,
-                           .config_iq = config_iq
+                           .config_iq = config_iq,
                            .max_modulation_index = 1.0f / sqrtf(3.0f)};
                        CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
                        struct uz_pmsmModel_config_t pmsm_config={
@@ -150,6 +150,7 @@ Initial steps
                            .friction_coefficient = 0.001f};
                        pmsm=uz_pmsmModel_init(pmsm_config);
                        initialization_chain = init_ip_cores;
+                       break;
                    case init_ip_cores:
                     //....
                }
@@ -157,12 +158,12 @@ Initial steps
            return (status);
          }
 
-#. Add the code below to the ``isr.c`` . This will write the input and outputs of the IP-Core. The CurrentControl ``uz_CurrentControl_sample`` function will give out reference voltages for the PMSM IP-core.
+#. Add the code below to the ``isr.c`` . This will write the input and outputs of the IP core. The CurrentControl ``uz_CurrentControl_sample`` function will give out reference voltages for the PMSM IP core.
 
    .. code-block:: c
         :linenos:
         :emphasize-lines: 1-19,25-34
-        :caption: isr.c code after changes. ``//....`` signals left out code.  
+        :caption: isr.c code after changes. ``//....`` signals left-out code.
    
          //....
          extern uz_pmsmModel_t *pmsm;
@@ -232,6 +233,20 @@ Initial steps
       v_q,
       v_d,
       receive_field_6,
+      receive_field_7,
+      receive_field_8,
+      receive_field_9,
+      receive_field_10,
+      receive_field_11,
+      receive_field_12,
+      receive_field_13,
+      receive_field_14,
+      receive_field_15,
+      receive_field_16,
+      receive_field_17,
+      receive_field_18,
+      receive_field_19,
+      receive_field_20,
       RCV_FLD_ENDMARKER
 
 #. Change their label to:
@@ -246,6 +261,20 @@ Initial steps
       V,
       V,
       sec,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,      
       RCV_LABELS_ENDMARKER
 
 #. Change the displayed values of the ``receive_field_X`` to the following. This is done to display the values 
@@ -268,7 +297,7 @@ Initial steps
    .. code-block:: c
      :linenos:
      :emphasize-lines: 12-16,22-27
-     :caption: javascope.c code after changes. ``//....`` marks left out code.  
+     :caption: javascope.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern struct uz_pmsmModel_outputs_t pmsm_outputs;
@@ -306,7 +335,7 @@ Initial steps
    .. code-block:: c
      :linenos:
      :emphasize-lines: 2,8,12
-     :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
+     :caption: ipc_ARM.c code after changes. ``//....`` marks left-out code.
 
       //....
       extern uz_3ph_dq_t reference_currents_Amp;
@@ -329,7 +358,7 @@ Initial steps
 #. Choose the appropriate channels in the *Setup Scope* and set a reference current for the q-axis, e.g. 3A. 
 #. Press *Enable System* and *Enable Control* and you should see, that the PMSM is running.
 
-   * Notice, that the speed changes, if the current increases. This is the case, because the PMSM IP-Core is configured, to simulate the mechanical system.
+   * Notice, that the speed changes, if the current increases. This is the case, because the PMSM IP core is configured, to simulate the mechanical system.
    * Increasing the current over ~9.32A is not possible at first. This is the case, because the CurrentControl has a :ref:`uz_spacevectorlimiation` to limit the voltage from exceeding the DC-link voltage.
    * Setting a negative d-current (e.g. -5A) lets you increase the q-current further. The machine operates now in the field weakening territory.
 

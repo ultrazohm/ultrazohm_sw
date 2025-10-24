@@ -9,55 +9,66 @@ The UltraZohm is a powerful real-time computation platform for research, develop
 Development is driven by researchers for researchers to establish a common control platform.
 Having a common platform enables the active research community to focus on publication and results, while platform development is a shared effort. 
 
-**High Computational power**
 
-    The UltraZohm is based on `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
-    These offer four ARM A53, two ARM R5, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
-    The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_. specifically the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
-    Additionally, SoM with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
+**High Computational Power**
 
-**Hard real-time**
+The UltraZohm is based on the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
+These offer four ARM A53, two ARM R5, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
+The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_.
+Specifically, the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
+Additionally, SoMs with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
 
-    The UltraZohm is designed to meet modern control systems' timing requirements for power electronics.
-    Thus, the control frequency of the real-time processor is in the range of :math:`10\,\mu s` to :math:`100\,\mu s`, depending on the specific application.
-    Additionally, many modern control algorithms such as model predictive control (MPC) and machine learning methods can be accelerated by using the PL (FPGA) of the UltraZohm.
-    Therefore, the system is optimized for this approach.
+**Hard Real-time**
+
+The UltraZohm is designed to meet modern control systems' timing requirements for power electronics.
+Thus, the control period of the real-time processor is in the range of 10 µs to 100 µs, depending on the specific application.
+Additionally, many modern control algorithms such as model predictive control (MPC) and machine learning methods can be accelerated by using the PL (FPGA) of the UltraZohm.
+Therefore, the system is optimized for this approach.
 
 **Open Source**
 
-    The UltraZohm is a platform with no black boxes and no barriers to your research.
-    It is built with the intent to give users full control and the ability to easily adapt the system to their specific needs and preferences.
-    Therefore, UltraZohm project is licensed by Apache 2.0 and the hardware is licensed under CERN-OHL-P.
-    See :ref:`license_target` for details.
+The UltraZohm is a platform with no black boxes and no barriers to your research.
+It is built with the intent to give users full control and the ability to easily adapt the system to their specific needs and preferences.
+Therefore, the UltraZohm project is licensed as Apache 2.0 and the hardware is licensed under CERN-OHL-P.
+See :ref:`license_target` for details.
 
 **Modularity**
 
-    The UltraZohm is modular regarding the UltraScale device to scale the computational power.
-    The community continuously extends the platform with more hardware components, especially :ref:`adapter_cards` for which templates and libraries exist.
-    Furthermore, IP-Cores and software components are developed and shared, and included in the project.
+The UltraZohm is modular regarding the UltraScale device to scale the computational power.
+The community continuously extends the platform with more hardware components, especially :ref:`adapter_cards` for which templates and libraries exist.
+Furthermore, IP cores and software components are developed and shared, and included in the project.
 
 **Usability**
 
-    The UltraZohm project thrives to be novice friendly with tutorials and an existing codebase.
-    This is especially relevant to onboard new users with different backgrounds, ranging from bachelor, master's, and PhD students to experienced engineers and developers.
-    At the same time, the system is expert friendly with access *to the last bit* due to the lack of black boxes, access to the source code, and comprehensive documentation.
-    In addition, there are multiple supported workflows for writing software (e.g., manually or using :ref:`embedded_coder`) and IP-Cores (manually, :ref:`hdl_coder`, Vitis HLS).
+The UltraZohm project thrives to be novice friendly with tutorials and an existing codebase.
+This is especially relevant to onboard new users with different backgrounds, ranging from bachelor, master's, and PhD students to experienced engineers and developers.
+At the same time, the system is expert friendly with access *to the last bit* due to the lack of black boxes, access to the source code, and comprehensive documentation.
+In addition, there are multiple supported workflows for writing software (e.g., manually or using :ref:`embedded_coder`) and IP cores (manually, :ref:`hdl_coder`, Vitis HLS).
 
 **Community**
 
-    The UltraZohm community aims to connect researchers working on the same platform and solve infrastructure problems only once!
-    We write and review code together, design PCBs, and share our knowledge regarding the UltraZohm, Xilinx UltraScale, electronics, control approaches, and many more!
-    We welcome researchers from all around the world with an interest in the control of power electronics and electrical drives.
+The UltraZohm community aims to connect researchers working on the same platform and solve infrastructure problems only once!
+We write and review code together, design PCBs, and share our knowledge regarding the UltraZohm, Xilinx UltraScale, electronics, control approaches, and many more!
+We welcome researchers from all around the world with an interest in the control of power electronics and electrical drives.
 
 **Documentation**
 
-    Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
+Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
 
-**Maintained & funded**
+**Repositories**
 
-    Project development is funded by the `BMBF with the research grant KI-Power <https://elektronikforschung.de/projekte/ki-power>`_ and is actively maintained by the `Institute ELSYS of TH Nuremberg <https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/>`_ as well as the `Chair of High-Power Converter Systems (HLU) of TU Munich <https://www.epe.ed.tum.de/en/eal/home/>`_.
-    In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long term development of the system and to be able to distribute the fully assembled UltraZohm systems.
+The UltraZohm repositories are split in software and hardware:
 
+- The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
+- The `PCB Designs page <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
+
+**Maintained & Funded**
+
+Project development is funded by the `BMBF/BMFTR with the research grant KI-Power <https://elektronikforschung.de/projekte/ki-power>`_ and is actively maintained by the `Institute ELSYS of TH Nuremberg <https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/>`_ as well as the `Chair of High-Power Converter Systems (HLU) of TU Munich <https://www.epe.ed.tum.de/en/eal/home/>`_.
+In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long-term development of the system and to be able to distribute fully assembled UltraZohm systems.
+
+
+.. _uzslack:
 
 UltraZohm Community Slack
 *************************
@@ -79,10 +90,10 @@ Contributing
 
 - We are accepting and welcoming contributions
 - Forking & creating a pull request is possible for everybody (see `fork a repository documentation <https://support.atlassian.com/bitbucket-cloud/docs/fork-a-repository/>`_)
-- In principle, documentation, software, and even IP-Cores can be developed and contributed without physical access to an UltraZohm
-- For IP-Cores, developing with a generic UltraScale development kit is advised
+- In principle, documentation, software, and even IP cores can be developed and contributed without physical access to an UltraZohm
+- For IP cores, developing with a generic UltraScale development kit is advised
 - While we try to reduce the barrier for contributions, physical access to an UltraZohm is often required
-- Contributes can get in contact by mail or Slack to the maintainers to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`) 
+- Contributors can get in contact with the maintainers by mail or Slack to get write access to the repository and switch to a feature-branch workflow (see :ref:`contribution`)
 - `Open in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_ for contributing without tool setup
 
 
@@ -105,7 +116,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohm—An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohm - An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm
@@ -119,8 +130,14 @@ Literature using the UltraZohm
 #. `Implementation of a Long-Horizon Model Predictive Control Algorithm on an Embedded System <https://ieeexplore.ieee.org/document/9570583>`_
 #. `Design Guidelines of Rapid Control Prototyping Systems for Power Electronics and Electrical Drives <https://ieeexplore.ieee.org/document/9680975>`_
 #. `Design, Construction and Measurement of a Laminated Transverse Flux Machine <https://ieeexplore.ieee.org/document/9910771>`_
-
-
+#. `An Indirect Model Predictive Control Method for Grid-Connected Three-Level Neutral Point Clamped Converters With LCL Filters <https://ieeexplore.ieee.org/document/9716876>`_
+#. `On-Chip Simulation of a Nine-Phase Electrical Drive and Power Electronics for Rapid Control Prototyping Applications <https://ieeexplore.ieee.org/document/10025947>`_
+#. `Deep Reinforcement Learning Current Control of Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10238988>`_
+#. `Parameter Identification Methods for Multi-Phase Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10238936>`_
+#. `Reinforcement Learning Control of Six-Phase Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10372153>`_
+#. `High-Frequency Switching of State-of-the-Art Wide Band Gap Inverters and its Impact on Encoderless Control Schemes <https://ieeexplore.ieee.org/document/10407581>`_
+#. `Steady-State Error Reduction of Reinforcement Learning based Indirect Current Control of Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10653808>`_
+#. `Cluster-Fault Control Strategies for Modular Multilevel Converters <https://ieeexplore.ieee.org/document/10964518>`_
 
 .. _license_target:
 
@@ -129,13 +146,8 @@ License
 
 The project is licensed under the Apache 2.0 license.
 See `LICENSE <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_ for details.
-The source of the documentation is located in `ultrazohm_sw/docs <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/docs/>`_.
 
 The hardware is documented in :ref:`carrier_board` and :ref:`adapter_cards` including schematics and assembly files.
-Additionally, the source files of the PCBs is available in the `PCB-Design project <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_.
-Note that due to the specifics of Bitbucket, this project is only visible to users that are part of the UltraZohm workspace.
-The individual repositories of the PCB projects can be accessed directly if one is not part of the Ultrazohm workspace, e.g. `DAC-Card repository <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_.
-The documentation pages of the PCB links to their respective repository.
 The preferred license for hardware within the UltraZohm project is the `CERN Open Hardware License Version 2 - Permissive <https://ohwr.org/cern_ohl_p_v2.pdf>`_ (CERN-OHL-P).
 The UltraZohm project uses :ref:`altium` for PCB design.
 
@@ -145,66 +157,16 @@ Syllabus
 ********
 
 .. toctree::
-   :hidden:
-   :caption: Repository
+   :maxdepth: 1
+   :caption: Contents:
 
-    ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>
+   getting_started/getting_started
+   guide/guide
+   hardware/hardware
+   software/software
+   ip_cores/ip_cores
 
-.. toctree::
-    :maxdepth: 2
-    :caption: Getting-Started
-    
-    getting_started/onboarding/onboarding
-    getting_started/toolchain/index
-    getting_started/ultrazohm_setup/ultrazohm_setup
-    getting_started/tutorials/index
-
-.. toctree::
-    :maxdepth: 2
-    :caption: General
-
-    general/system_overview
-    general/project_structure/project_structure
-    general/infrastructure/infrastructure
-    general/how_to_guides/how_to_guides
-    general/useCases/useCases
-
-.. toctree::
-    :maxdepth: 2
-    :caption: MPSoC Platform
-
-    mpsoc/platform_architecture/platform_architecture
-    mpsoc/rpu_software/rpu_software
-    mpsoc/apu_software/apu_software
-    mpsoc/software_framework/software_framework
-    mpsoc/vivado_framework/vivado_framework
-    mpsoc/ip_cores/ip_cores
-    mpsoc/CPLD/index
-
-.. toctree::
-   :maxdepth: 2
-   :caption: User Software
-
-   software/gui/index
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Codegeneration
-
-   code_generation/hdl_coder/hdl_coder
-   code_generation/vivado_hls/index
-   code_generation/embedded_coder/embedded_coder
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Hardware
-
-   hardware/carrier_board/carrier_board
-   hardware/adapter_cards/adapter_cards
-   hardware/interface_powerelectronics/interface_powerelectronics
-   hardware/altium/altium
-
-Indices and tables
+Indices and Tables
 ==================
 
 * :ref:`genindex`

@@ -4,7 +4,7 @@
 Xilinx Toolchain
 ================
 
-#. Install Vivado and Vitis 2022.2: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2022-2.html>`_ (Xilinx account required)
+#. Install Vivado and Vitis 2022.2: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html>`_ (Xilinx account required)
 #. Choose ``Xilinx Unified Installer 2022.2: Windows Self Extracting Web Installer`` or ``Xilinx Unified Installer 2022.2: Linux Self Extracting Web Installer`` depending on your operating system
 
     .. image:: ./images_installation/vitis_website1_2022.png
@@ -18,7 +18,7 @@ Xilinx Toolchain
 
     .. note::
 
-      If the User Authentication in the installer results in an error, eventhough the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
+      If the User Authentication in the installer results in an error, even though the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
    
     .. image:: ./images_installation/vitis_website2_5_2022.png
 

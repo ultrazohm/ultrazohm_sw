@@ -38,7 +38,7 @@ static uz_pmsmModel_t *uz_pmsmModel_allocation(void)
     uz_pmsmModel_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
-    self->is_ready = true;
+    self->is_ready = true; 
     return (self);
 }
 
@@ -65,6 +65,37 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
     uz_assert(config.inertia > 0.0f);
     uz_assert(config.coulomb_friction_constant >= 0.0f);
     uz_assert(config.friction_coefficient >= 0.0f);
+    if (!config.simulate_nonlinear)
+    {
+        config.ad1 = 1.0f;              // If nonlinear model is not simulated, set parameters to random values to prevent division by zero
+        config.ad2 = 1.0f; // Random default values
+        config.ad3 = 1.0f;
+        config.ad4 = 1.0f;
+        config.ad5 = 1.0f;
+        config.ad6 = 1.0f;
+        config.aq1 = 1.0f;
+        config.aq2 = 1.0f;
+        config.aq3 = 1.0f;
+        config.aq4 = 1.0f;
+        config.aq5 = 1.0f;
+        config.aq6 = 1.0f;
+        config.F1G1 = 1.0f;
+        config.F2G2 = 1.0f;
+    }
+    uz_assert(config.ad1 !=0.0f);
+    uz_assert(config.ad2 !=0.0f);
+    uz_assert(config.ad3 !=0.0f);
+    uz_assert(config.ad4 !=0.0f);
+    uz_assert(config.ad5 !=0.0f);
+    uz_assert(config.ad6 !=0.0f);
+    uz_assert(config.aq1 !=0.0f);
+    uz_assert(config.aq2 !=0.0f);
+    uz_assert(config.aq3 !=0.0f);
+    uz_assert(config.aq4 !=0.0f);
+    uz_assert(config.aq5 !=0.0f);
+    uz_assert(config.aq6 !=0.0f);
+    uz_assert(config.F1G1 !=0.0f);
+    uz_assert(config.F2G2 !=0.0f);
 
     uz_pmsmModel_t *self = uz_pmsmModel_allocation();
     self->config = config;
@@ -126,11 +157,16 @@ void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self){
     uz_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
 }
 
-
 void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
-        uz_assert_not_NULL(self);
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
+}
+
+void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsmModel_hw_trigger_fitting_parameter_strobe(self->config.base_address);
 }
 
 
@@ -147,6 +183,31 @@ static void write_config_to_pl(uz_pmsmModel_t *self)
     uz_pmsmModel_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsmModel_hw_write_inertia(self->config.base_address, self->config.inertia);
     uz_pmsmModel_hw_write_simulate_mechanical(self->config.base_address, self->config.simulate_mechanical_system);
+    uz_pmsmModel_hw_write_ad1(self->config.base_address, self->config.ad1);
+    uz_pmsmModel_hw_write_ad2(self->config.base_address, self->config.ad2);
+    uz_pmsmModel_hw_write_ad3(self->config.base_address, self->config.ad3);
+    uz_pmsmModel_hw_write_ad4(self->config.base_address, self->config.ad4);
+    uz_pmsmModel_hw_write_ad5(self->config.base_address, self->config.ad5);
+    uz_pmsmModel_hw_write_ad6(self->config.base_address, self->config.ad6);
+    uz_pmsmModel_hw_write_aq1(self->config.base_address, self->config.aq1);
+    uz_pmsmModel_hw_write_aq2(self->config.base_address, self->config.aq2);
+    uz_pmsmModel_hw_write_aq3(self->config.base_address, self->config.aq3);
+    uz_pmsmModel_hw_write_aq4(self->config.base_address, self->config.aq4);
+    uz_pmsmModel_hw_write_aq5(self->config.base_address, self->config.aq5);
+    uz_pmsmModel_hw_write_aq6(self->config.base_address, self->config.aq6);
+    uz_pmsmModel_hw_write_reciprocal_F1G1(self->config.base_address, self->config.F1G1);
+    uz_pmsmModel_hw_write_reciprocal_F2G2(self->config.base_address, self->config.F2G2);
+    uz_pmsmModel_hw_write_ad4_mul_ad5(self->config.base_address, self->config.ad4, self->config.ad5);
+    uz_pmsmModel_hw_write_ad1_mul_ad2(self->config.base_address, self->config.ad1, self->config.ad2);
+    uz_pmsmModel_hw_write_aq4_mul_aq5(self->config.base_address, self->config.aq4, self->config.aq5);
+    uz_pmsmModel_hw_write_aq1_mul_aq2(self->config.base_address, self->config.aq1, self->config.aq2);
+    uz_pmsmModel_hw_write_aq4_div_aq5(self->config.base_address, self->config.aq4, self->config.aq5);
+    uz_pmsmModel_hw_write_aq1_div_aq2(self->config.base_address, self->config.aq1, self->config.aq2);
+    uz_pmsmModel_hw_write_ad4_div_ad5(self->config.base_address, self->config.ad4, self->config.ad5);
+    uz_pmsmModel_hw_write_ad1_div_ad2(self->config.base_address, self->config.ad1, self->config.ad2);
+    uz_pmsmModel_hw_write_aq3_min_aq6(self->config.base_address, self->config.aq3, self->config.aq6);
+    uz_pmsmModel_hw_write_simulate_nonlinear(self->config.base_address, self->config.simulate_nonlinear);
+    uz_pmsmModel_hw_trigger_fitting_parameter_strobe(self->config.base_address);
 }
 
 #endif

@@ -32,7 +32,7 @@ global uzcfg
 # Hardware platform: [UltraZohm]
 set uzcfg(PLATFORM_NAME) 	UltraZohm
 
-## APU/FreeRTS Settings
+## APU/FreeRTOS Settings
 # Enable DHCP for automatic assignment of IPv4 address: true, [false]
 set uzcfg(ENABLE_DHCP)		false
 
@@ -241,6 +241,9 @@ proc vitis_main {} {
   app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
   app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
+  # add math library to linker option
+  app config -name FreeRTOS -add libraries m
+
   ##Application FSBL (Standalone) A53_0
   #####################################################
   #puts "Info (UltraZohm): create FSBL Application"
@@ -287,12 +290,12 @@ set RunAll_TCL [file join $EXPORT_FOLDER Run_UltraZohm.launch]
 #file copy -force -- $DebugBaremetal $filename_launches
 file copy -force -- $DebugAll_TCL $filename_launches
 file copy -force -- $RunAll_TCL $filename_launches
-puts "========================================"
+puts "================================================================================"
 puts "Info (UltraZohm): debug files copied"
 puts "Info (UltraZohm): debug configurations are visible after restarting Vitis"
-puts "========================================"
+puts "================================================================================"
 puts "Info (UltraZohm): generate_UltraZohm_workspace.tcl script finished successfully"
-puts "========================================"
+puts "================================================================================"
 }
 
 

@@ -5,7 +5,7 @@ Vivado License
 ==============
 
 A valid license for the Vivado software is necessary to generate the bitstream for the Xilinx UltraScale+ (XCZU9EG).
-Otherwise following error message will be generated in Vivado
+Otherwise, the following error message will be generated in Vivado.
 
 .. image:: ./images_license/vitis_license0.png
 

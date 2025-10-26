@@ -7,6 +7,8 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -58,12 +60,13 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float I_a; 		// Machine side current in A
+	float I_b; 		// Machine side current in A
+	float I_c; 		// Machine side current in A
+	float I_DC;		// DC-link current in A
+	float U_a; 		// Machine side voltage in V
+	float U_b; 		// Machine side voltage in V
+	float U_c; 		// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -79,11 +82,15 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec_adv;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float omega_m;		// in rad/s
+	float omega_elec;	// in rad/s
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
@@ -114,6 +121,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

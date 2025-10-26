@@ -45,12 +45,16 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl_pmsm,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
+
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
 
 int main(void)
 {
@@ -72,7 +76,63 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
+            initialization_chain = init_CurrentControl_pmsm;
             break;
+
+        case init_CurrentControl_pmsm:;
+
+                       struct uz_PMSM_t config_PMSM = {
+                    	   .R_ph_Ohm = 543e-3f,
+                    	   .Ld_Henry = 1.13e-3f,
+                           .Lq_Henry = 1.42e-3f,
+                           .Psi_PM_Vs = 16.9e-3f,
+						   .polePairs = 3.0f,
+						   .J_kg_m_squared = 1.48e-05f,
+						   .I_max_Ampere = 10.8f};
+
+
+
+                       struct uz_PI_Controller_config config_id = {
+                           .Kp = 3.7667f,
+                           .Ki = 1810.0f,
+                           .samplingTime_sec = 1.0e-4f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+
+                       struct uz_PI_Controller_config config_iq = {
+                           .Kp = 4.7333f,
+                           .Ki = 1810.0f,
+                           .samplingTime_sec = 1.0e-4f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+
+                       struct uz_CurrentControl_config config_CurrentControl = {
+                           .decoupling_select = linear_decoupling,
+                           .config_PMSM = config_PMSM,
+                           .config_id = config_id,
+                           .config_iq = config_iq,
+                           .max_modulation_index = 1.0f / sqrtf(3.0f)};
+
+                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+
+                       struct uz_pmsmModel_config_t pmsm_config={
+                           .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                           .ip_core_frequency_Hz=100000000,
+                           .simulate_mechanical_system = false,
+                           .r_1 = 0.543f,
+                           .L_d = 1.13e-3f,
+                           .L_q = 1.42e-3f,
+                           .psi_pm = 16.9e-3f,
+                           .polepairs = 3.0f,
+                           .inertia = 1.48e-05f,
+                           .coulomb_friction_constant = 0.01f,
+                           .friction_coefficient = 0.001f};
+                       pmsm=uz_pmsmModel_init(pmsm_config);
+
+                       initialization_chain = init_ip_cores;
+
+                                      break;
+
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
@@ -91,6 +151,7 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             break;
 	    case print_msg:
             uz_printf("\r\n\r\n");

@@ -24,6 +24,15 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+
+extern uz_3ph_dq_t i_dq_ref_javascope;
+extern float n_rpm_ref_javascope;
+extern bool use_CiL;
+extern bool use_Motor;
+extern bool select_automatic_idiq;
+extern bool use_PI;
+
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -186,15 +195,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		i_dq_ref_javascope.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		i_dq_ref_javascope.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		n_rpm_ref_javascope = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -266,19 +275,37 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+		if (!use_Motor){
+				use_Motor = true;
+				use_CiL = false;
+			} else {
+			use_Motor = false;
+				}
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+		if (!use_CiL){
+				use_CiL = true;
+				use_Motor = false;
+			} else {
+				use_CiL = false;
+					}
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+		if (select_automatic_idiq==false) {
+				select_automatic_idiq=true;
+			} else {
+				select_automatic_idiq=false;
+					}
 			break;
 
 		case (My_Button_4):
-
+		if (!use_PI) {
+				use_PI = true;
+			} else {
+				use_PI = false;
+					}
 			break;
 
 		case (My_Button_5):

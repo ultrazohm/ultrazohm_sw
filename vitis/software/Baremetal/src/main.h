@@ -30,6 +30,9 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 
 // UltraZohm includes
@@ -54,6 +57,15 @@
 
 #include "include/pwm_init.h"
 
+
+
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_PMSM_config/uz_PMSM_config.h"
+
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

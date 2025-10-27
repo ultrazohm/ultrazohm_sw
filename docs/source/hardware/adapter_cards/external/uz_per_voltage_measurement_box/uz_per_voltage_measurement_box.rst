@@ -26,17 +26,24 @@ The measurement signals from all four channels are routed to an Ethernet connect
 Layout
 ------
 
-.. _voltage_meas_box_function:
+.. _voltage_meas_box_function_top:
 
-+----------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: voltage_meas_box_altium.jpg                        | .. figure:: voltage_meas_box_altium_back.jpg                     |
-|    :width: 75%                                                 |    :width: 75%                                                   |
-|                                                                |                                                                  |
-|    Functional areas of the voltage measurement box (top side)  |    Functional areas of the voltage measurement box (bottom side) |
-|                                                                |                                                                  |
-+----------------------------------------------------------------+------------------------------------------------------------------+
+.. figure:: voltage_meas_box_altium.jpg
+   :width: 45%
+   :align: left
 
-The PCB is structured in functional areas as shown in :numref:`voltage_meas_box_function`.
+   Functional areas of the voltage measurement box (top side)
+
+.. _voltage_meas_box_function_bottom:
+
+.. figure:: voltage_meas_box_altium_back.jpg
+   :width: 45%
+   :align: right
+
+   Functional areas of the voltage measurement box (bottom side)
+
+
+The PCB is structured in functional areas as shown in :numref:`voltage_meas_box_function_top` and :numref:`voltage_meas_box_function_bottom`.
 
 1. 4mm jack connectors for voltage measurement. V+ and V- for each channel.
 2. Ethernet connector to the ADC adapter card :ref:`Analog_LTC2311_16`.
@@ -58,7 +65,6 @@ The PCB can be powered in two ways:
 
 1.  J1,J2: VIN/GND from the :ref:`Analog_LTC2311_16` card with a manufactured power supply cable (Type ``MMSD-02-xx-x-xx.xx-x-x`` to ``MMSD-08-xx-x-xx.xx-x-x``). Alternatively to external power source. 
 
-.. _connector_adc:
 
 +-------------------------------------------------+-----------------------------------------------+
 | .. figure:: connector_LTC2311.jpg               | .. figure:: pins-LTC2311.jpg                  |

@@ -41,9 +41,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 //defines and limits
-#define		MAX_CURRENT_AMP		  15.0f
-#define		MAX_SPEED 			3200.0f
-#define		MAX_DC_LINK_VOLTAGE  350.0f
+#define		MAX_CURRENT_AMP		  5.0f
+#define		MAX_SPEED 			1000.0f
+#define		MAX_DC_LINK_VOLTAGE  60.0f
 #define		MAX_TORQUE			  9.0f
 
 // measurement structs for motor control
@@ -332,15 +332,17 @@ Global_Data.av.torque = Global_Data.aa.A1.me.ADC_B5 * 2.0f + Global_Data.rasv.to
 Global_Data.av.torque_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_torque, Global_Data.av.torque);
 
 // assign inverter measurements - Conversion factors from Michi
-Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A3 * 12.129f) + 0.10f;
-Global_Data.av.i_b_left = (Global_Data.aa.A1.me.ADC_A2 * 11.338) + 0.12f;
-Global_Data.av.i_c_left = (Global_Data.aa.A1.me.ADC_A1 * 12.051f) - 0.07f;
-Global_Data.av.i_a_right = (Global_Data.aa.A2.me.ADC_A3 * 12.038f) - 0.03f;
-Global_Data.av.i_b_right = (Global_Data.aa.A2.me.ADC_A2 * 12.115f) - 0.00f;
-Global_Data.av.i_c_right = (Global_Data.aa.A2.me.ADC_A1 * 12.038f) - 0.00f;
+Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A1 * 199.3266f) - 0.03954f;
+Global_Data.av.i_b_left = (Global_Data.aa.A1.me.ADC_A2 * 199.3347f) - 0.00550f;
+Global_Data.av.i_c_left = (Global_Data.aa.A1.me.ADC_A3 * -198.6403f) - 0.01849f;
+Global_Data.av.v_dc_left = (Global_Data.aa.A1.me.ADC_A4 * 2004.1883f) -0.26683f;
 
-Global_Data.av.v_dc_left = (Global_Data.aa.A1.me.ADC_A4 * 100.302f) + 451.30f;
-Global_Data.av.v_dc_right = (Global_Data.aa.A2.me.ADC_A4 * 99.700f) + 450.30f;
+Global_Data.av.i_a_right = (Global_Data.aa.A1.me.ADC_B5 * 199.3266f) - 0.03954f;
+Global_Data.av.i_b_right = (Global_Data.aa.A1.me.ADC_B6 * 199.3347f) - 0.00550f;
+Global_Data.av.i_c_right = (Global_Data.aa.A1.me.ADC_B7 * -198.6403f) - 0.01849f;
+
+
+Global_Data.av.v_dc_right = (Global_Data.aa.A1.me.ADC_B8  * 2004.1883f) -0.26683f;
 
 // assign measurements from global_data to motor control structs
 i_abc_left.a = Global_Data.av.i_a_left;

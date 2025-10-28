@@ -339,9 +339,7 @@ Global_Data.av.i_a_right = (Global_Data.aa.A2.me.ADC_A3 * 12.038f) - 0.03f;
 Global_Data.av.i_b_right = (Global_Data.aa.A2.me.ADC_A2 * 12.115f) - 0.00f;
 Global_Data.av.i_c_right = (Global_Data.aa.A2.me.ADC_A1 * 12.038f) - 0.00f;
 
-//Global_Data.av.i_dc_left = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
 Global_Data.av.v_dc_left = (Global_Data.aa.A1.me.ADC_A4 * 100.302f) + 451.30f;
-//Global_Data.av.i_dc_right = Global_Data.aa.A3.me.ADC_B5 * CURRENT_2_SI_AMPERE;
 Global_Data.av.v_dc_right = (Global_Data.aa.A2.me.ADC_A4 * 99.700f) + 450.30f;
 
 // assign measurements from global_data to motor control structs

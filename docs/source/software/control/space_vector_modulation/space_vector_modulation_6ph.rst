@@ -48,7 +48,7 @@ Minimum code example
 --------------------
 
 A minimal code example is given in the following.
-The SVM not only calculates Duty Cycles, it also yields phase shifts for the PWM IP-Cores.
+The SVM not only calculates Duty Cycles, it also yields phase shifts for the PWM IP cores.
 Applying them to the modules is vital.
 Additionally, the output struct contains two flags, indicating that either the :math:`\alpha\beta`- or :math:`XY`-setpoints or both have been limited.
 They can be used for a clamping feature, inhibiting integrators in the control algorithm to overflow.
@@ -172,7 +172,7 @@ Open loop simulation
 --------------------
 
 To verify the SVM in open loop simulation, setpoint voltages for :math:`\alpha\beta` and :math:`XY` given to the SVM.
-The resulting Duty Cycles were fed into the PWM-IP-Core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
+The resulting Duty Cycles were fed into the PWM-IP core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
 
 Setpoints and measured output voltages are shown in the following figure for both subspaces.
 In the last row, the limit flags for both subspaces are shown.

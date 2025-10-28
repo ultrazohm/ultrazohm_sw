@@ -346,8 +346,7 @@ void i2cio_thread()
 	uz_platform_gposet(I2CLED_FP4USR, UZP_GPO_ENABLE2PUSHPULLED);
 */
 	while(1) {
-		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
-		if (apu_version_final > 4U)
+		if (apu_version_final > 4U)					// FIXME: Support for MZ broken due to 18e978be1f5dfa2002753cfec87ef567094f8594 ff.
 		{
 			// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
 			uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1 << 0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);

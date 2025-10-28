@@ -20,29 +20,29 @@ The following pages introduce key components, concepts and aspects of any UltraZ
 
 As of 2025, there are two "major versions" of UltraZohm systems in existence:
 
-1. Systems based on carrier boards :math:`\leq` Rev04, where
+1. Systems based on carrier boards ≤ Rev04, where
 
-  * system power is controlled by a "0/1" power *switch* on the front panel,
-  * power supply and 230V inlet are located on the SoM (i.e., when looking from the front, left-hand) side of the chassis, and
-  * the front panel consists of several individual components (e.g., a dedicated cable harness per Ethernet, USB, and CAN connector).
+   * system power is controlled by a "0/1" power *switch* on the front panel,
+   * power supply and 230V inlet are located on the SoM (i.e., when looking from the front, left-hand) side of the chassis, and
+   * the front panel consists of several individual components (e.g., a dedicated cable harness per Ethernet, USB, and CAN connector).
 
-  Please refer to the left-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
+   Please refer to the left-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
 
-2. Systems based on carrier boards :math:`\geq` Rev05, where
+2. Systems based on carrier boards ≥ Rev05, where
 
-  * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev05_04usr` and :ref:`carrier_board_rev05_s3c`),
-  * power supply and 230V inlet are located on the adapter card (i.e., when looking from the front, right-hand) side of the chassis, and
-  * the front panel consists of three interconnected PCBs, most notably the :ref:`Front Panel Mainboard <frontpanelmainboard_rev01>` (which links the entire assembly to the carrier).
+   * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev05_04usr` and :ref:`carrier_board_rev05_s3c`),
+   * power supply and 230V inlet are located on the adapter card (i.e., when looking from the front, right-hand) side of the chassis, and
+   * the front panel consists of three interconnected PCBs, most notably the :ref:`Front Panel Mainboard <frontpanelmainboard_rev01>` (which links the entire assembly to the carrier).
 
-  Please refer to the right-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
+   Please refer to the right-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
 
 .. _frontpanel-photos:
 .. list-table:: Comparison of front panels across carrier board revisions (photos)
    :header-rows: 1
    :align: center
 
-   * - Front panel for :math:`\leq` Rev04 carriers
-     - Front panel for :math:`\geq` Rev05 carriers
+   * - Front panel for ≤Rev04 carriers
+     - Front panel for ≥Rev05 carriers
    * - .. image :: hardware/frontpanel_Rev01-4UZs.jpg
           :width: 100%
      - .. image :: hardware/frontpanel_Rev05ffUZs.jpg
@@ -86,6 +86,8 @@ Additional Components
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
     adapter_cards/external/deskbench_terminal/deskbench_terminal
     adapter_cards/external/rj_45_breakout/rj45_breakout
+    adapter_cards/external/uz_per_wolfspeed_25kw_FM3/uz_per_wolfspeed_25kw_FM3
+    adapter_cards/external/uz_per_voltage_measurement_box/uz_per_voltage_measurement_box
 
 
 .. toctree::

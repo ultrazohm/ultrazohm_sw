@@ -78,7 +78,7 @@ int main(void)
         	uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
-            uz_frontplane_button_and_led_init(apu_version_final); 
+            uz_frontpanel_button_and_led_init(apu_version_final);
             ultrazohm_state_machine_init(apu_version_final);
             initialization_chain = init_software;
             break;

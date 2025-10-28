@@ -4,7 +4,7 @@
 Frontpanel Mainboard (Rev01)
 ============================
 
-Fully PCB-based frontpanels are used exclusively in combination with carrier boards :math:`\geq` Rev05 (and are not compatible with earlier revisions/versions at all).
+Fully PCB-based frontpanels are used exclusively in combination with carrier boards ≥ Rev05 (and are not compatible with earlier revisions/versions at all).
 
 The frontpanel (FP) PCB contains the following connectors and features (cf. :ref:`carrier_board_rev05_summary` of the new carrier for a higher-level summary):
 

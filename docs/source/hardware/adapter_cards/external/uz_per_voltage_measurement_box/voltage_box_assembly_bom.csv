@@ -1,0 +1,6 @@
+No,Description,Manufacturer Part Number, Amount,Hint
+1,Housing body,housing_body.stl,1,Print on any FDM printer with PLA material
+,Housing cover,housing_cover.stl,1,Print on any FDM printer with PLA material
+2,PCB,uz_per_voltage_measurement_box,1,Choose variant with proper voltage rating
+3,Socket head cap screw, EN ISO 4762 M3x8,8,-
+4,Würth Steel spacer stud M3x28,970280321,4,-

@@ -11,8 +11,8 @@ Mux Axi / ISR Trigger Control
 PWM counter events
 ==================
 
-- The ``PWM and SS Control`` as well as the 3-level PWM ip core use an up-down counter
-- At counter min and max those ip cores provide rising edge signals that are fed to the uz_mux_axi ip core
+- The ``PWM and SS Control`` as well as the 3-level PWM IP core use an up-down counter
+- At counter min and max those IP cores provide rising edge signals that are fed to the uz_mux_axi IP core
 - Those trigger signals depend on the selected PWM frequency
 
 
@@ -77,22 +77,22 @@ These settings result in the behavior depicted in :numref:`example_trigger_pictu
    * Trigger ratios other than ``1`` were only tested with trigger source ``Interrupt_2L_min``
    * Especially when using trigger sources with two ADC trigger events (e.g. ``Interrupt_2L_max_min``), the user has to take care of the resulting ADC/ISR trigger ratio
 
-IP-Core
+IP core
 =======
 
-The IP-Core takes up to 8 different interrupt sources as inputs (external port ``interrupts_in``).
+The IP core takes up to 8 different interrupt sources as inputs (external port ``interrupts_in``).
 One of these inputs is selected by AXI configuration and routed directly routed to the ``interrupt_out_adc`` external port. 
 Additionally, all interrupt sources of ``interrupts_in`` are coupled with an internal counter that routes the signal of ``interrupts_in`` to ``interrupt_out_isr`` every n-th time the ``interrupt_out_adc`` signal is high.
-Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI and external port) that are present in the IP-Core.
+Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI and external port) that are present in the IP core.
 
 .. _ipCore_uz_mux_axi_interfaces:
 
-.. csv-table:: Interface of uz_mux_axi IP-Core
+.. csv-table:: Interface of uz_mux_axi IP core
    :file: uz_mux_axi_register_mapping.csv
    :widths: 50 50 50 50 50 50 200
    :header-rows: 1
 
-:numref:`ip_core_vivado_picture` of the IP-Core embedded in the block design:
+:numref:`ip_core_vivado_picture` of the IP core embedded in the block design:
 
 .. _ip_core_vivado_picture:
 
@@ -100,14 +100,14 @@ Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI 
    :width: 800
    :align: center
 
-   IP-Core in the default Vivado block design.
+   IP core in the default Vivado block design.
 
 
 Software driver
 ===============
 
 The software driver is initialized by default. The user just has to select the mux and the interrupt ratio ``#define`` in ``uz_global_configuration.h``
-The IP-Core is initialized at the startup of the system. The software driver is not intended to change the settings at runtime.
+The IP core is initialized at the startup of the system. The software driver is not intended to change the settings at runtime.
 
 Reference
 =========

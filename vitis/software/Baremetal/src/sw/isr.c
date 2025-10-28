@@ -42,7 +42,7 @@ extern DS_Data Global_Data;
 
 //defines and limits
 #define		MAX_CURRENT_AMP		  15.0f
-#define		MAX_SPEED 			3000.0f
+#define		MAX_SPEED 			3200.0f
 #define		MAX_DC_LINK_VOLTAGE  350.0f
 #define		MAX_TORQUE			  9.0f
 

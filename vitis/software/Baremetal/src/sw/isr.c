@@ -41,9 +41,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 //defines and limits
-#define		MAX_CURRENT_AMP		  5.0f
-#define		MAX_SPEED 			1000.0f
-#define		MAX_DC_LINK_VOLTAGE  60.0f
+#define		MAX_CURRENT_AMP		  15.0f
+#define		MAX_SPEED 			3000.0f
+#define		MAX_DC_LINK_VOLTAGE  350.0f
 #define		MAX_TORQUE			  9.0f
 
 // measurement structs for motor control

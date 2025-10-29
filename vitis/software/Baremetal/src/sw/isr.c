@@ -31,6 +31,9 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "xcp/xcp_interface.h"
+#include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hw.h"
+
+#include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hwAddresses.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -38,6 +41,15 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+float DutyCycleMeas_Value;
+uint32_t PWMin_HighTicks;
+uint32_t PWMin_PeriodTicks;
+uint32_t DutyCycleIPcoreTimestamp;
+//float PWM_DutyCycle[3];
+float PWM_DutyCycle_0;
+float PWM_DutyCycle_1;
+float PWM_DutyCycle_2;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -56,16 +68,22 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.rasv.halfBridge1DutyCycle = PWM_DutyCycle_0;//[0];
+    	Global_Data.rasv.halfBridge2DutyCycle = PWM_DutyCycle_1;//[1];
+		Global_Data.rasv.halfBridge3DutyCycle = PWM_DutyCycle_2;//[2];
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-//                        Global_Data.rasv.halfBridge2DutyCycle,
-//                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWMin_HighTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_hightime_Data_uz_dutycyclemeas_ip);
+//    PWMin_PeriodTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_period_Data_uz_dutycyclemeas_ip);
+    PWMin_HighTicks   = uz_DutyCycleMeas_hw_get_PWMhightimeTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+    PWMin_PeriodTicks = uz_DutyCycleMeas_hw_get_PWMperiodTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+
+    DutyCycleMeas_Value = uz_DutyCycleMeas_hw_get_DutyCycle(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+    DutyCycleIPcoreTimestamp = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + IPCore_Timestamp_uz_dutycyclemeas_ip);
 
 	xcp_irq();
     JavaScope_update(&Global_Data);

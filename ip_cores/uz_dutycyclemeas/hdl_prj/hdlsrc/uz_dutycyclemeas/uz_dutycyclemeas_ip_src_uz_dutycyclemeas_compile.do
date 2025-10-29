@@ -1,0 +1,4 @@
+vlib work
+vcom  uz_dutycyclemeas_ip_src_Detect_Fall_Nonpositive.vhd
+vcom  uz_dutycyclemeas_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_dutycyclemeas_ip_src_uz_dutycyclemeas.vhd

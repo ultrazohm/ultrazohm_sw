@@ -1,0 +1,2 @@
+vlib work
+vcom  uz_inverter_status_ip_src_uz_inverter_status.vhd

@@ -11,7 +11,7 @@ set_property PACKAGE_PIN AJ11   [get_ports {D1_OUT_PWM[4]}]
 set_property PACKAGE_PIN AK11   [get_ports {D1_OUT_PWM[5]}]
 
 # D1_06
-set_property PACKAGE_PIN AA7  	[get_ports D1_06_OUT_RESET_UVW[0]]
+set_property PACKAGE_PIN AA7  	[get_ports D1_06_OUT_RESET_UVW]
 
 # D1_07 - D1_12
 set_property PACKAGE_PIN AA8  	[get_ports {D1_IN_FLT[0]}]

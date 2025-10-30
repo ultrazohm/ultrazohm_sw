@@ -69,8 +69,10 @@ When communicating with the controller, attention has to be payed on the SPI mod
 Before first use
 ----------------
 
-* Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channels
-* Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
+* Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channelsX
+* Program CPLD with proper firmware (Tutorial: :ref:`label_cpld_programming`)
+  - Firmware UZ up to Rev04: `uz_d_resolver CPLD program up to Rev04 <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/ispMACH/LC4256V/uz_d_resolver/>`_
+  - Firmware UZ from Rev05: `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/>`_
 
 .. warning:: There are two different CPLD programms in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
 

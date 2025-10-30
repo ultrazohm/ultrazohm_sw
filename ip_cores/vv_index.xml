@@ -2179,7 +2179,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114254486">
+		<CoreRevision value="2114324903">
 		</CoreRevision>
 		<ComponentPath value="uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/component.xml">
 		</ComponentPath>

@@ -2,21 +2,21 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Wed Sep 10 16:46:54 2025
-# Process ID: 47744
-# Current directory: D:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip
+# Start of session at: Wed Oct 29 14:24:06 2025
+# Process ID: 27796
+# Current directory: D:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
-# Log file: D:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip/vivado.log
-# Journal file: D:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip\vivado.jou
+# Log file: D:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip/vivado.log
+# Journal file: D:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip\vivado.jou
 # Running On: NB-GEIGER, OS: Windows, CPU Frequency: 1992 MHz, CPU Physical cores: 4, Host memory: 16915 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'D:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip'
-create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:12 . Memory (MB): peak = 380.863 ; gain = 61.371
+Current project path is 'D:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip'
+create_project: Time (s): cpu = 00:00:13 ; elapsed = 00:00:17 . Memory (MB): peak = 379.184 ; gain = 56.109
 INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1700] Loaded user IP repository 'd:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'd:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'd:/Projekte/HeDrive/Work_MATLAB/IP_Cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'd:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'd:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'd:/Projekte/UltraZohm/Work_Xilinx/ultrazohm_sw/ip_cores/uz_inverter_status/hdl_prj/ipcore/uz_inverter_status_ip_v1_0/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -45,4 +45,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_inverter_status_ip_axi_lite.vhd" a
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_inverter_status_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_inverter_status_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_inverter_status_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed Sep 10 16:47:21 2025...
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 29 14:24:38 2025...

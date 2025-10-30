@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.4
+<td class="summaryTableSndColOddRow">1.7
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">10-Sep-2025 16:46:47
+<td class="summaryTableSndColOddRow">29-Oct-2025 14:23:55
 </td>
 </tr>
 <tr>
@@ -182,7 +182,63 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:84')">error</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:135')">EN_GateDriver</a>
+</td>
+<td>Inport
+</td>
+<td>uint8
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"104"
+</td>
+<td>RegisterInitialValue 0 EnableReadback inherit
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:84')">error</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:87')">AXI_FLT</a>
+</td>
+<td>Outport
+</td>
+<td>ufix6
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"164"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:92')">AXI_RDY</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">ufix6
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"100"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:137')">EN_GateDriver_out</a>
 </td>
 <td>Outport
 </td>
@@ -191,34 +247,6 @@ Target platform interface table:
 <td>External Port
 </td>
 <td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:87')">AXI_FLT</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">ufix6
-</td>
-<td class="distinctCellColor">AXI4-Lite
-</td>
-<td class="distinctCellColor">x"164"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_inverter_status:92')">AXI_RDY</a>
-</td>
-<td>Outport
-</td>
-<td>ufix6
-</td>
-<td>AXI4-Lite
-</td>
-<td>x"100"
 </td>
 <td>
 </td>
@@ -263,7 +291,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2509101646
+<td>contains unique IP timestamp (yymmddHHMM): 2510291423
 </td>
 </tr>
 <tr>
@@ -275,11 +303,19 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>AXI_FLT_Data
+<td>EN_GateDriver_Data
 </td>
-<td>0x164
+<td>0x104
 </td>
-<td>data register for Outport AXI_FLT
+<td>data register for Inport EN_GateDriver
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_FLT_Data
+</td>
+<td class="distinctCellColor">0x164
+</td>
+<td class="distinctCellColor">data register for Outport AXI_FLT
 </td>
 </tr>
 </tbody>

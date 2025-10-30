@@ -32,8 +32,10 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "xcp/xcp_interface.h"
 #include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hw.h"
+#include "../IP_Cores/uz_inverter_status/uz_inverter_status_hw.h"
 
 #include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hwAddresses.h"
+#include "../IP_Cores/uz_inverter_status/uz_inverter_status_hwAddresses.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -50,6 +52,9 @@ uint32_t DutyCycleIPcoreTimestamp;
 float PWM_DutyCycle_0;
 float PWM_DutyCycle_1;
 float PWM_DutyCycle_2;
+uint32_t inverter_status_RDY;
+uint32_t inverter_status_FLT;
+uint8_t inverter_GateDriverEnable;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -79,11 +84,15 @@ void ISR_Control(void *data)
 
 //    PWMin_HighTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_hightime_Data_uz_dutycyclemeas_ip);
 //    PWMin_PeriodTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_period_Data_uz_dutycyclemeas_ip);
-    PWMin_HighTicks   = uz_DutyCycleMeas_hw_get_PWMhightimeTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
-    PWMin_PeriodTicks = uz_DutyCycleMeas_hw_get_PWMperiodTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+    PWMin_HighTicks   = uz_DutyCycleMeas_hw_get_PWMhightimeTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+    PWMin_PeriodTicks = uz_DutyCycleMeas_hw_get_PWMperiodTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
 
-    DutyCycleMeas_Value = uz_DutyCycleMeas_hw_get_DutyCycle(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
-    DutyCycleIPcoreTimestamp = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + IPCore_Timestamp_uz_dutycyclemeas_ip);
+    DutyCycleMeas_Value = uz_DutyCycleMeas_hw_get_DutyCycle(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+    DutyCycleIPcoreTimestamp = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + IPCore_Timestamp_uz_dutycyclemeas_ip);
+
+    inverter_status_FLT = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+    inverter_status_RDY = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+    uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, inverter_GateDriverEnable, 0);
 
 	xcp_irq();
     JavaScope_update(&Global_Data);

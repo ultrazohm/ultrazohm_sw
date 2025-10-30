@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_inverter_status
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-2
+3
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-12
+20
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+1
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-29
+38
 </td>
 
 </tr>
@@ -246,7 +246,7 @@ uz_inverter_status
 
 </h5>
 <h5>
-Registers (2)
+Registers (3)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -272,14 +272,53 @@ Delay4
 </ul>
 
 </span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+8-bit Register 							: 1
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_inverter_status:136')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
 <br /><h5>
-Number of I/O Bits (29)
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_inverter_status:139')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (38)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 15
+Number of Input Bits: 23
 </span>
 <span name="Input_Port" id="Input_Port">
 <ul>
@@ -304,6 +343,12 @@ RDY
 </a>
 : 6 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_inverter_status:135')" name="code2model" class="code2model">
+EN_GateDriver
+</a>
+: 8 bits
+</li>
 
 </ul>
 
@@ -312,7 +357,7 @@ RDY
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 14
+Number of Output Bits: 15
 </span>
 <span name="Output_Port" id="Output_Port">
 <ul>
@@ -336,6 +381,12 @@ AXI_FLT
 AXI_RDY
 </a>
 : 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_inverter_status:137')" name="code2model" class="code2model">
+EN_GateDriver_out
+</a>
+: 1 bit
 </li>
 
 </ul>

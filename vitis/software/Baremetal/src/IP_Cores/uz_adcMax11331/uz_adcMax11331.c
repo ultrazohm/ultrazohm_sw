@@ -69,7 +69,9 @@ void uz_adcMax11331_set_clk_div(uz_adcMax11331_t *self, uint32_t value)
 
 void uz_adcMax11331_set_delay_offset(uz_adcMax11331_t *self, uint32_t value)
 {
-	uz_adcMax11331_hw_write_delay_offset(self->config.base_address, value);
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_adcMax11331_hw_write_delay_offset(self->config.base_address, value);
 }
 
 
@@ -118,11 +120,11 @@ void uz_adcMax11331_check_echo_of_master(uz_adcMax11331_t *self)
  * @brief Returns true if the MSB of value is not set
  *
  * @param value value to be tested
- * @return _Bool
+ * @return bool
  */
-_Bool uz_adcMax11331_check_32_bit_int_if_msb_not_set(uint32_t value)
+bool uz_adcMax11331_check_32_bit_int_if_msb_not_set(uint32_t value)
 {
-    _Bool return_value = true;
+    bool return_value = true;
     if ((value >> 31))
     {
         return_value = false;
@@ -136,11 +138,11 @@ _Bool uz_adcMax11331_check_32_bit_int_if_msb_not_set(uint32_t value)
  *
  * @param value Value to be tested
  * @param spec Number of LSBs that can be set. If a higher bit is set, the function returns false
- * @return _Bool
+ * @return bool
  */
-_Bool uz_adcMax11331_check_32_bit_int_if_not_more_sign_bits_set_than_spec(uint32_t value, uint32_t spec)
+bool uz_adcMax11331_check_32_bit_int_if_not_more_sign_bits_set_than_spec(uint32_t value, uint32_t spec)
 {
-    _Bool return_value = true;
+    bool return_value = true;
     if (value >> spec)
     {
         return_value = false;

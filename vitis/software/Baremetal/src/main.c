@@ -33,7 +33,30 @@ DS_Data Global_Data = {
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .aa = {
+        .A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+
+        .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+                  .A3 = {.cf.ADC_A1 = 4.96241f, .cf.ADC_A2 = 4.96241f, .cf.ADC_A3 = 4.96241f, .cf.ADC_A4 = 4.96241f, .cf.ADC_B5 = 4.96241f, .cf.ADC_B6 = 4.96241f, .cf.ADC_B7 = 4.96241f, .cf.ADC_B8 = 4.96241f,
+                         .cf.ADC_C9 = 4.96241f,
+                         .cf.ADC_C10 = 4.96241f,
+                         .cf.ADC_C11 = 4.96241f,
+                         .cf.ADC_C12 = 4.96241f,
+                         .cf.ADC_D13 = 4.96241f,
+                         .cf.ADC_D14 = 4.96241f,
+                         .cf.ADC_D15 = 4.96241f,
+                         .cf.ADC_E17 = 4.96241f,
+                         .cf.ADC_E18 = 4.96241f,
+                         .cf.ADC_E19 = 4.96241f,
+                         .cf.ADC_E20 = 4.96241f,
+                         .cf.ADC_F21 = 4.96241f,
+                         .cf.ADC_F22 = 4.96241f,
+                         .cf.ADC_F23 = 4.96241f,
+                         .cf.ADC_F24 = 4.96241f} // 10/6.65*3.3 = 4.96241
+
+    }
+
+};
 
 enum init_chain
 {
@@ -89,7 +112,8 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
-            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
+            uz_adcMax11331_ip_core_init();
+                Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
             Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();

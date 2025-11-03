@@ -10,8 +10,10 @@
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
-typedef union _ConversionFactors_ {
-	struct{
+typedef union _ConversionFactors_
+{
+	struct
+	{
 		float ADC_A1;
 		float ADC_A2;
 		float ADC_A3;
@@ -20,12 +22,14 @@ typedef union _ConversionFactors_ {
 		float ADC_B6;
 		float ADC_B7;
 		float ADC_B8;
-		};
+	};
 	float ADC_array[8];
 } ConversionFactors;
 
-typedef union _Measurements_ {
-	struct{
+typedef union _Measurements_
+{
+	struct
+	{
 		float ADC_A1;
 		float ADC_A2;
 		float ADC_A3;
@@ -34,61 +38,162 @@ typedef union _Measurements_ {
 		float ADC_B6;
 		float ADC_B7;
 		float ADC_B8;
-		};
+	};
 	float ADC_array[8];
 } Measurements;
 
-typedef struct _ADCcard_ {
-	ConversionFactors 	cf;
-	Measurements		me;
+typedef union _ConversionFactorsSlow_
+{
+
+	struct
+	{
+
+		float ADC_A1;
+
+		float ADC_A2;
+
+		float ADC_A3;
+
+		float ADC_A4;
+
+		float ADC_B5;
+
+		float ADC_B6;
+
+		float ADC_B7;
+
+		float ADC_B8;
+
+		float ADC_C9;
+
+		float ADC_C10;
+
+		float ADC_C11;
+
+		float ADC_C12;
+
+		float ADC_D13;
+
+		float ADC_D14;
+
+		float ADC_D15;
+
+		float ADC_D16;
+
+		float ADC_E17;
+
+		float ADC_E18;
+
+		float ADC_E19;
+
+		float ADC_E20;
+
+		float ADC_F21;
+
+		float ADC_F22;
+
+		float ADC_F23;
+
+		float ADC_F24;
+	};
+
+	float ADC_array[24];
+
+} ConversionFactorsSlow;
+
+typedef union _MeasurementsSlow_
+{
+	struct
+	{
+		float ADC_A1;
+		float ADC_A2;
+		float ADC_A3;
+		float ADC_A4;
+		float ADC_B5;
+		float ADC_B6;
+		float ADC_B7;
+		float ADC_B8;
+		float ADC_C9;
+		float ADC_C10;
+		float ADC_C11;
+		float ADC_C12;
+		float ADC_D13;
+		float ADC_D14;
+		float ADC_D15;
+		float ADC_D16;
+		float ADC_E17;
+		float ADC_E18;
+		float ADC_E19;
+		float ADC_E20;
+		float ADC_F21;
+		float ADC_F22;
+		float ADC_F23;
+		float ADC_F24;
+	};
+	float ADC_array[24];
+} MeasurementsSlow;
+
+typedef struct _ADCcardSlow_
+{
+	ConversionFactorsSlow cf;
+	MeasurementsSlow me;
+} ADCcardSlow;
+
+typedef struct _ADCcard_
+{
+	ConversionFactors cf;
+	Measurements me;
 } ADCcard;
 
-typedef struct _AnalogAdapters_ {
+typedef struct _AnalogAdapters_
+{
 	ADCcard A1;
 	ADCcard A2;
-	ADCcard A3;
+	ADCcardSlow A3;
 } AnalogAdapters;
 
-typedef struct _actualValues_ {
+typedef struct _actualValues_
+{
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
+	float I_L1;							 // Grid side current in A
+	float I_L2;							 // Grid side current in A
+	float I_L3;							 // Grid side current in A
+	float U_L1;							 // Grid side voltage in V
+	float U_L2;							 // Grid side voltage in V
+	float U_L3;							 // Grid side voltage in V
+	float I_U;							 // Machine side current in A
+	float I_V;							 // Machine side current in A
+	float I_W;							 // Machine side current in A
+	float U_U;							 // Machine side voltage in V
+	float U_V;							 // Machine side voltage in V
+	float U_W;							 // Machine side voltage in V
+	float U_ZK;							 // DC-Link voltage in V
+	float U_ZK2;						 // DC-Link voltage 2 in V
+	float Res1;							 // Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
+	float Res2;							 // Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
+	float mechanicalRotorSpeed;			 // in rpm
 	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
+	float mechanicalPosition;			 // in m
+	float mechanicalTorque;				 // in Nm
+	float mechanicalTorqueSensitive;	 // in Nm
+	float mechanicalTorqueObserved;		 // in Nm for observing the load torque
 	float I_d;
 	float I_q;
 	float U_d;
 	float U_q;
 	float theta_elec;
 	float theta_mech;
-	float theta_offset; //in rad/s
+	float theta_offset; // in rad/s
 	float temperature;
-	uint32_t  heartbeatframe_content;
+	uint32_t heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
 
-typedef struct _referenceAndSetValues_ {
+typedef struct _referenceAndSetValues_
+{
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
@@ -103,20 +208,22 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 } referenceAndSetValues;
 
-typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
-	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
-	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
-	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
+typedef struct
+{
+	uz_PWM_SS_2L_t *pwm_d1_pin_0_to_5;
+	uz_PWM_SS_2L_t *pwm_d1_pin_6_to_11;
+	uz_PWM_SS_2L_t *pwm_d1_pin_12_to_17;
+	uz_PWM_SS_2L_t *pwm_d1_pin_18_to_23;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
-	uz_mux_axi_t* mux_axi;
-}object_pointers_t;
+	uz_incrementalEncoder_t *encoder_D5;
+	uz_mux_axi_t *mux_axi;
+} object_pointers_t;
 
-typedef struct _DS_Data_ {
+typedef struct _DS_Data_
+{
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
@@ -124,4 +231,3 @@ typedef struct _DS_Data_ {
 } DS_Data;
 
 #endif
-

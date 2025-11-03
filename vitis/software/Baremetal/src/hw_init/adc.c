@@ -46,15 +46,33 @@ void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
 
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
-    data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q16) * data->aa.A3.cf.ADC_A1;
-    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q16) * data->aa.A3.cf.ADC_A2;
-    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q16) * data->aa.A3.cf.ADC_A3;
-    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q16) * data->aa.A3.cf.ADC_A4;
-    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q16) * data->aa.A3.cf.ADC_B5;
-    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q16) * data->aa.A3.cf.ADC_B6;
-    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q16) * data->aa.A3.cf.ADC_B7;
-    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q16) * data->aa.A3.cf.ADC_B8;
-};
+        // Max11 reads 12Bits in Fully Diff.-Mode Bipolar (2nd complement), see p.28 of MAX11 ADC datasheet.
+        // More details see: https://bitbucket.org/ultrazohm/uz_a_max11331/issues/2/first-commissioning-of-pcb
+        data->aa.A3.me.ADC_array[0] = (float)((int16_t)(adc_data.data[16] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_A1;
+        data->aa.A3.me.ADC_array[1] = (float)((int16_t)(adc_data.data[17] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_A2;
+        data->aa.A3.me.ADC_array[2] = (float)((int16_t)(adc_data.data[18] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_A3;
+        data->aa.A3.me.ADC_array[3] = (float)((int16_t)(adc_data.data[19] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_A4;
+        data->aa.A3.me.ADC_array[4] = (float)((int16_t)(adc_data.data[20] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_B5;
+        data->aa.A3.me.ADC_array[5] = (float)((int16_t)(adc_data.data[21] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_B6;
+        data->aa.A3.me.ADC_array[6] = (float)((int16_t)(adc_data.data[22] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_B7;
+        data->aa.A3.me.ADC_array[7] = (float)((int16_t)(adc_data.data[23] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_B8;
+        data->aa.A3.me.ADC_array[8] = (float)((int16_t)(adc_data.data[24] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_C9;
+        data->aa.A3.me.ADC_array[9] = (float)((int16_t)(adc_data.data[25] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_C10;
+        data->aa.A3.me.ADC_array[10] = (float)((int16_t)(adc_data.data[26] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_C11;
+        data->aa.A3.me.ADC_array[11] = (float)((int16_t)(adc_data.data[27] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_C12;
+        data->aa.A3.me.ADC_array[12] = (float)((int16_t)(adc_data.data[28] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_D13;
+        data->aa.A3.me.ADC_array[13] = (float)((int16_t)(adc_data.data[29] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_D14;
+        data->aa.A3.me.ADC_array[14] = (float)((int16_t)(adc_data.data[30] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_D15;
+        data->aa.A3.me.ADC_array[15] = (float)((int16_t)(adc_data.data[31] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_D16;
+        data->aa.A3.me.ADC_array[16] = (float)((int16_t)(adc_data.data[32] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_E17;
+        data->aa.A3.me.ADC_array[17] = (float)((int16_t)(adc_data.data[33] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_E18;
+        data->aa.A3.me.ADC_array[18] = (float)((int16_t)(adc_data.data[34] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_E19;
+        data->aa.A3.me.ADC_array[19] = (float)((int16_t)(adc_data.data[35] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_E20;
+        data->aa.A3.me.ADC_array[20] = (float)((int16_t)(adc_data.data[36] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_F21;
+        data->aa.A3.me.ADC_array[21] = (float)((int16_t)(adc_data.data[37] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_F22;
+        data->aa.A3.me.ADC_array[22] = (float)((int16_t)(adc_data.data[38] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_F23;
+        data->aa.A3.me.ADC_array[23] = (float)((int16_t)(adc_data.data[39] << Q4)) / (1 << Q15) * data->aa.A3.cf.ADC_F24;
+}
 
 void ADC_readCardALL(DS_Data *data)
 {

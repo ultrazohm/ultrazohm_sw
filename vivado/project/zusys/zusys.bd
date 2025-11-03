@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xBBB4922503A87696",
+      "boundary_crc": "0x43E13717D9987A6",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -33,9 +33,10 @@
           "A2_iobufds_inst": ""
         },
         "A3_adapter": {
-          "A3_ADC_LTC2311": "",
-          "A3_inv_input": "",
-          "iobufds_inst_2": ""
+          "ADC_MAX11331_top_0": "",
+          "duplicate_clk": "",
+          "duplicate_mosi": "",
+          "duplicate_cs": ""
         }
       },
       "uz_digital_adapter": {
@@ -154,26 +155,6 @@
         "right": "0"
       },
       "A2_OUT_CNV_1": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "A3_IN": {
-        "direction": "I",
-        "left": "15",
-        "right": "0"
-      },
-      "A3_OUT_CLK": {
-        "direction": "O",
-        "left": "1",
-        "right": "0"
-      },
-      "A3_OUT_CNV_0": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "A3_OUT_CNV_1": {
         "direction": "O",
         "left": "0",
         "right": "0"
@@ -343,6 +324,26 @@
       },
       "Dig_8_Ch5": {
         "direction": "I"
+      },
+      "A3_MISO": {
+        "direction": "I",
+        "left": "2",
+        "right": "0"
+      },
+      "A3_SCKL": {
+        "direction": "O",
+        "left": "2",
+        "right": "0"
+      },
+      "A3_MOSI": {
+        "direction": "O",
+        "left": "2",
+        "right": "0"
+      },
+      "A3_CS": {
+        "direction": "O",
+        "left": "2",
+        "right": "0"
       }
     },
     "components": {
@@ -395,27 +396,7 @@
             "left": "0",
             "right": "0"
           },
-          "A3_IN": {
-            "direction": "I",
-            "left": "15",
-            "right": "0"
-          },
-          "A3_OUT_CLK": {
-            "direction": "O",
-            "left": "1",
-            "right": "0"
-          },
-          "A3_OUT_CNV_1": {
-            "direction": "O",
-            "left": "0",
-            "right": "0"
-          },
           "Din": {
-            "direction": "O",
-            "left": "127",
-            "right": "0"
-          },
-          "RAW_VALUE": {
             "direction": "O",
             "left": "127",
             "right": "0"
@@ -442,6 +423,31 @@
           "s00_axi_aresetn": {
             "type": "rst",
             "direction": "I"
+          },
+          "A3_MISO": {
+            "direction": "I",
+            "left": "2",
+            "right": "0"
+          },
+          "A3_SCLK": {
+            "direction": "O",
+            "left": "2",
+            "right": "0"
+          },
+          "A3_MOSI": {
+            "direction": "O",
+            "left": "2",
+            "right": "0"
+          },
+          "A3_CS": {
+            "direction": "O",
+            "left": "2",
+            "right": "0"
+          },
+          "raw_measured_data": {
+            "direction": "O",
+            "left": "383",
+            "right": "0"
           }
         },
         "components": {
@@ -1169,26 +1175,6 @@
               }
             },
             "ports": {
-              "A3_IN": {
-                "direction": "I",
-                "left": "15",
-                "right": "0"
-              },
-              "A3_OUT_CLK": {
-                "direction": "O",
-                "left": "1",
-                "right": "0"
-              },
-              "A3_OUT_CNV_1": {
-                "direction": "O",
-                "left": "0",
-                "right": "0"
-              },
-              "RAW_VALUE": {
-                "direction": "O",
-                "left": "127",
-                "right": "0"
-              },
               "TRIGGER_CNV": {
                 "direction": "I",
                 "left": "0",
@@ -1201,146 +1187,184 @@
               "s00_axi_aresetn": {
                 "type": "rst",
                 "direction": "I"
+              },
+              "A3_MISO": {
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "A3_SCLK": {
+                "direction": "O",
+                "left": "2",
+                "right": "0"
+              },
+              "A3_MOSI": {
+                "direction": "O",
+                "left": "2",
+                "right": "0"
+              },
+              "A3_CS": {
+                "direction": "O",
+                "left": "2",
+                "right": "0"
+              },
+              "raw_measured_data": {
+                "direction": "O",
+                "left": "383",
+                "right": "0"
               }
             },
             "components": {
-              "A3_ADC_LTC2311": {
-                "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
-                "xci_name": "zusys_A3_ADC_LTC2311_0",
-                "xci_path": "ip/zusys_A3_ADC_LTC2311_0/zusys_A3_ADC_LTC2311_0.xci",
-                "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_ADC_LTC2311",
+              "ADC_MAX11331_top_0": {
+                "vlnv": "Wendel_ZC:UZ_IP_Repository:ADC_MAX11331_top:1.0",
+                "xci_name": "zusys_ADC_MAX11331_top_0_0",
+                "xci_path": "ip/zusys_ADC_MAX11331_top_0_0/zusys_ADC_MAX11331_top_0_0.xci",
+                "inst_hier_path": "uz_analog_adapter/A3_adapter/ADC_MAX11331_top_0",
                 "parameters": {
-                  "DIFFERENTIAL": {
-                    "value": "false"
-                  },
-                  "RES_LSB": {
-                    "value": "0"
-                  },
-                  "RES_MSB": {
-                    "value": "34"
+                  "NUMBER_OF_ADCS": {
+                    "value": "3"
                   }
                 }
               },
-              "A3_inv_input": {
-                "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_A3_inv_input_0",
-                "xci_path": "ip/zusys_A3_inv_input_0/zusys_A3_inv_input_0.xci",
-                "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_inv_input",
-                "parameters": {
-                  "CONST_VAL": {
-                    "value": "0x00"
-                  },
-                  "CONST_WIDTH": {
-                    "value": "8"
-                  }
-                }
-              },
-              "iobufds_inst_2": {
-                "vlnv": "xilinx.com:module_ref:iobufds_inst:1.0",
-                "xci_name": "zusys_iobufds_inst_2_0",
-                "xci_path": "ip/zusys_iobufds_inst_2_0/zusys_iobufds_inst_2_0.xci",
-                "inst_hier_path": "uz_analog_adapter/A3_adapter/iobufds_inst_2",
+              "duplicate_clk": {
+                "vlnv": "xilinx.com:module_ref:duplicate:1.0",
+                "xci_name": "zusys_duplicate_0_0",
+                "xci_path": "ip/zusys_duplicate_0_0/zusys_duplicate_0_0.xci",
+                "inst_hier_path": "uz_analog_adapter/A3_adapter/duplicate_clk",
                 "reference_info": {
                   "ref_type": "hdl",
-                  "ref_name": "iobufds_inst",
+                  "ref_name": "duplicate",
                   "boundary_crc": "0x0"
                 },
                 "ports": {
-                  "MISO_IN": {
-                    "direction": "I",
-                    "left": "15",
-                    "right": "0"
+                  "inp": {
+                    "direction": "I"
                   },
-                  "INVERT_OUTPUT": {
-                    "direction": "I",
-                    "left": "7",
-                    "right": "0"
-                  },
-                  "MISO_OUT": {
+                  "outp": {
                     "direction": "O",
-                    "left": "7",
+                    "left": "2",
                     "right": "0"
+                  }
+                }
+              },
+              "duplicate_mosi": {
+                "vlnv": "xilinx.com:module_ref:duplicate:1.0",
+                "xci_name": "zusys_duplicate_0_1",
+                "xci_path": "ip/zusys_duplicate_0_1/zusys_duplicate_0_1.xci",
+                "inst_hier_path": "uz_analog_adapter/A3_adapter/duplicate_mosi",
+                "reference_info": {
+                  "ref_type": "hdl",
+                  "ref_name": "duplicate",
+                  "boundary_crc": "0x0"
+                },
+                "ports": {
+                  "inp": {
+                    "direction": "I"
                   },
-                  "SCLK_IN": {
-                    "direction": "I",
-                    "left": "0",
-                    "right": "0"
-                  },
-                  "SCLK_OUT": {
+                  "outp": {
                     "direction": "O",
-                    "left": "1",
+                    "left": "2",
+                    "right": "0"
+                  }
+                }
+              },
+              "duplicate_cs": {
+                "vlnv": "xilinx.com:module_ref:duplicate:1.0",
+                "xci_name": "zusys_duplicate_1_0",
+                "xci_path": "ip/zusys_duplicate_1_0/zusys_duplicate_1_0.xci",
+                "inst_hier_path": "uz_analog_adapter/A3_adapter/duplicate_cs",
+                "reference_info": {
+                  "ref_type": "hdl",
+                  "ref_name": "duplicate",
+                  "boundary_crc": "0x0"
+                },
+                "ports": {
+                  "inp": {
+                    "direction": "I"
+                  },
+                  "outp": {
+                    "direction": "O",
+                    "left": "2",
                     "right": "0"
                   }
                 }
               }
             },
             "interface_nets": {
-              "smartconnect_0_M02_AXI": {
+              "Conn1": {
                 "interface_ports": [
                   "S00_AXI",
-                  "A3_ADC_LTC2311/S00_AXI"
+                  "ADC_MAX11331_top_0/s_axi_lite"
                 ]
               }
             },
             "nets": {
-              "A2_inv_input1_dout": {
+              "A3_MISO_1": {
                 "ports": [
-                  "A3_inv_input/dout",
-                  "iobufds_inst_2/INVERT_OUTPUT"
+                  "A3_MISO",
+                  "ADC_MAX11331_top_0/miso"
                 ]
               },
-              "A3_ADC_LTC2311_SCLK": {
+              "ADC_MAX11331_top_0_mosi": {
                 "ports": [
-                  "A3_ADC_LTC2311/SCLK",
-                  "iobufds_inst_2/SCLK_IN"
+                  "ADC_MAX11331_top_0/mosi",
+                  "duplicate_mosi/inp"
                 ]
               },
-              "A3_IN_1": {
+              "ADC_MAX11331_top_0_raw_measured_data": {
                 "ports": [
-                  "A3_IN",
-                  "iobufds_inst_2/MISO_IN"
+                  "ADC_MAX11331_top_0/raw_measured_data",
+                  "raw_measured_data"
                 ]
               },
-              "ADC_LTC2311_2_RAW_VALUE": {
+              "ADC_MAX11331_top_0_sclk": {
                 "ports": [
-                  "A3_ADC_LTC2311/RAW_VALUE",
-                  "RAW_VALUE"
+                  "ADC_MAX11331_top_0/sclk",
+                  "duplicate_clk/inp"
                 ]
               },
-              "ADC_LTC2311_2_SS_N": {
+              "ADC_MAX11331_top_0_ss_n": {
                 "ports": [
-                  "A3_ADC_LTC2311/SS_N",
-                  "A3_OUT_CNV_1"
+                  "ADC_MAX11331_top_0/ss_n",
+                  "duplicate_cs/inp"
                 ]
               },
-              "Interrupt_muxed": {
+              "TRIGGER_CNV_1": {
                 "ports": [
                   "TRIGGER_CNV",
-                  "A3_ADC_LTC2311/TRIGGER_CNV"
+                  "ADC_MAX11331_top_0/enable_measure"
                 ]
               },
-              "iobufds_inst_2_MISO_OUT": {
+              "duplicate_clk_outp": {
                 "ports": [
-                  "iobufds_inst_2/MISO_OUT",
-                  "A3_ADC_LTC2311/MISO"
+                  "duplicate_clk/outp",
+                  "A3_SCLK"
                 ]
               },
-              "iobufds_inst_2_SCLK_OUT": {
+              "duplicate_cs_outp": {
                 "ports": [
-                  "iobufds_inst_2/SCLK_OUT",
-                  "A3_OUT_CLK"
+                  "duplicate_cs/outp",
+                  "A3_CS"
                 ]
               },
-              "proc_sys_reset_1_peripheral_aresetn": {
+              "duplicate_mosi_outp": {
                 "ports": [
-                  "s00_axi_aresetn",
-                  "A3_ADC_LTC2311/s00_axi_aresetn"
+                  "duplicate_mosi/outp",
+                  "A3_MOSI"
                 ]
               },
-              "zynq_ultra_ps_e_0_pl_clk1": {
+              "s00_axi_aclk_1": {
                 "ports": [
                   "s00_axi_aclk",
-                  "A3_ADC_LTC2311/s00_axi_aclk"
+                  "ADC_MAX11331_top_0/clk",
+                  "ADC_MAX11331_top_0/s_axi_lite_aclk"
+                ]
+              },
+              "s00_axi_aresetn_1": {
+                "ports": [
+                  "s00_axi_aresetn",
+                  "ADC_MAX11331_top_0/reset_n",
+                  "ADC_MAX11331_top_0/s_axi_lite_aresetn"
                 ]
               }
             }
@@ -1397,16 +1421,34 @@
               "RAW_VALUE1"
             ]
           },
-          "A3_IN_1": {
+          "A3_MISO_1": {
             "ports": [
-              "A3_IN",
-              "A3_adapter/A3_IN"
+              "A3_MISO",
+              "A3_adapter/A3_MISO"
             ]
           },
-          "A3_adapter_RAW_VALUE": {
+          "A3_adapter_A3_CS": {
             "ports": [
-              "A3_adapter/RAW_VALUE",
-              "RAW_VALUE"
+              "A3_adapter/A3_CS",
+              "A3_CS"
+            ]
+          },
+          "A3_adapter_A3_MOSI": {
+            "ports": [
+              "A3_adapter/A3_MOSI",
+              "A3_MOSI"
+            ]
+          },
+          "A3_adapter_A3_SCLK": {
+            "ports": [
+              "A3_adapter/A3_SCLK",
+              "A3_SCLK"
+            ]
+          },
+          "A3_adapter_raw_measured_data": {
+            "ports": [
+              "A3_adapter/raw_measured_data",
+              "raw_measured_data"
             ]
           },
           "ADC_LTC2311_0_SS_N": {
@@ -1419,12 +1461,6 @@
             "ports": [
               "A1_adapter/A1_OUT_CNV_1",
               "A1_OUT_CNV_1"
-            ]
-          },
-          "ADC_LTC2311_2_SS_N": {
-            "ports": [
-              "A3_adapter/A3_OUT_CNV_1",
-              "A3_OUT_CNV_1"
             ]
           },
           "Interrupt_muxed": {
@@ -1445,12 +1481,6 @@
             "ports": [
               "A2_adapter/A2_OUT_CLK",
               "A2_OUT_CLK"
-            ]
-          },
-          "iobufds_inst_2_SCLK_OUT": {
-            "ports": [
-              "A3_adapter/A3_OUT_CLK",
-              "A3_OUT_CLK"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -3487,7 +3517,7 @@
           },
           "ADC_A3": {
             "direction": "I",
-            "left": "127",
+            "left": "383",
             "right": "0"
           },
           "D1_OUT_26": {
@@ -3614,7 +3644,7 @@
               },
               "ADC_A3": {
                 "direction": "I",
-                "left": "127",
+                "left": "383",
                 "right": "0"
               },
               "Op2": {
@@ -3649,7 +3679,7 @@
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_0",
                 "parameters": {
                   "C_M00_NUMBER_of_ADCs": {
-                    "value": "24"
+                    "value": "40"
                   }
                 },
                 "interface_ports": {
@@ -8843,15 +8873,15 @@
           "uz_system/ADC_A2"
         ]
       },
-      "A3_IN_1": {
+      "A3_MISO_1": {
         "ports": [
-          "A3_IN",
-          "uz_analog_adapter/A3_IN"
+          "A3_MISO",
+          "uz_analog_adapter/A3_MISO"
         ]
       },
-      "A3_adapter_RAW_VALUE": {
+      "ADC_A3_1": {
         "ports": [
-          "uz_analog_adapter/RAW_VALUE",
+          "uz_analog_adapter/raw_measured_data",
           "uz_system/ADC_A3"
         ]
       },
@@ -8867,13 +8897,6 @@
           "uz_analog_adapter/A1_OUT_CNV_1",
           "A1_OUT_CNV_0",
           "A1_OUT_CNV_1"
-        ]
-      },
-      "ADC_LTC2311_2_SS_N": {
-        "ports": [
-          "uz_analog_adapter/A3_OUT_CNV_1",
-          "A3_OUT_CNV_0",
-          "A3_OUT_CNV_1"
         ]
       },
       "Dig_11_Ch5_1": {
@@ -8983,18 +9006,30 @@
           "A2_OUT_CLK"
         ]
       },
-      "iobufds_inst_2_SCLK_OUT": {
-        "ports": [
-          "uz_analog_adapter/A3_OUT_CLK",
-          "A3_OUT_CLK"
-        ]
-      },
       "proc_sys_reset_1_peripheral_aresetn": {
         "ports": [
           "uz_system/peripheral_aresetn",
           "uz_analog_adapter/s00_axi_aresetn",
           "uz_digital_adapter/RESETN",
           "uz_user/aresetn"
+        ]
+      },
+      "uz_analog_adapter_A3_CS": {
+        "ports": [
+          "uz_analog_adapter/A3_CS",
+          "A3_CS"
+        ]
+      },
+      "uz_analog_adapter_A3_MOSI": {
+        "ports": [
+          "uz_analog_adapter/A3_MOSI",
+          "A3_MOSI"
+        ]
+      },
+      "uz_analog_adapter_A3_SCLK": {
+        "ports": [
+          "uz_analog_adapter/A3_SCLK",
+          "A3_SCKL"
         ]
       },
       "uz_system_wdt_interrupt": {
@@ -9097,12 +9132,10 @@
                 "offset_base_param": "C_S00_AXI_BASEADDR",
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
               },
-              "SEG_A3_ADC_LTC2311_S00_AXI_reg": {
-                "address_block": "/uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI/S00_AXI_reg",
+              "SEG_ADC_MAX11331_top_0_reg0": {
+                "address_block": "/uz_analog_adapter/A3_adapter/ADC_MAX11331_top_0/s_axi_lite/reg0",
                 "offset": "0x0080020000",
-                "range": "64K",
-                "offset_base_param": "C_S00_AXI_BASEADDR",
-                "offset_high_param": "C_S00_AXI_HIGHADDR"
+                "range": "64K"
               },
               "SEG_Incremental_Encoder_0_reg0": {
                 "address_block": "/uz_digital_adapter/D5_adapter/Incremental_Encoder_0/AXI4_Lite/reg0",

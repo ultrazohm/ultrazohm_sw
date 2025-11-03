@@ -58,6 +58,7 @@ Adapter Cards
 
     adapter_cards/analog/LTC2311_16
     adapter_cards/analog/uz_dac8831/uz_dac8831
+    adapter_cards/analog/uz_a_max11331/uz_a_max11331
 
 
 .. toctree::

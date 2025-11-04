@@ -15,7 +15,7 @@ void uz_adcMax11331_ip_core_init(void)
 {
    //Parameter set for one MAX11331 chip, thus one master
    struct uz_adcMax11331_config_t default_configuration = {
-        .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_ADC_MAX11331_A3_BASEADDR,
+        .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_ADC_MAX11331_TOP_0_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A3_ADC_MAX11331_IP_CORE_FREQUENCY,
         .channel_config = {
             .conversion_factor = DEFAULT_MAX11331_CONVERSION_FACTOR,

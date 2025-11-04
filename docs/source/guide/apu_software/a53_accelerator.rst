@@ -42,7 +42,7 @@ the process.
       subgraph A53: Transfer_ipc_Intr_Handler
           C --> F[A53: crunch the numbers <br> with user data from OCM Bank 1, <br> write results to OCM Bank 2]
           style F fill:#f9f
-          W(Handle Javascope data <br> for ethernet <br> transmission)
+          W(Handle Javascope data <br> for Ethernet <br> transmission)
       end
           F -->|finished, set ack| G(R5: Invalidate <br> OCM Bank 2)
       subgraph R5: Javascope_update
@@ -173,7 +173,7 @@ Use uz library functions on the A53 processor
 All uz library functions are only accessible to the R5 processor and are located 
 in the folder ``\vitis\software\Baremetal\src\uz``. If you need one of them, 
 copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the 
-vitis workspace via the tcl script. Afterwards the sources are available on the 
+vitis workspace via the Tcl script. Afterwards the sources are available on the 
 A53 processor.
 
 Share data of types that are part of uz library functions

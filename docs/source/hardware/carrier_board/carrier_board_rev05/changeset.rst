@@ -6,7 +6,7 @@ Associated Repositories w/ toplevel issues
 
 * `CarrierBoard <https://bitbucket.org/ultrazohm/uz_carrierboard/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
 
-  * `Issue #128 (Changeset for Rev05) <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_: Detailed overview of (mostly electric?) changes that are scheduled for Rev05 of the carrier board
+  * `Issue #128 (Changeset for Rev05) <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_: Detailed overview of (mostly electric) changes that are implemented on Rev05 of the carrier board
   * For technical details, please refer to above link or :ref:`changeset_rev05uzc`
 
 * `FrontPanel (aka FP) <https://bitbucket.org/ultrazohm/uz_frontpanel/issues?status=new&status=open&status=submitted&is_spam=!spam>`_: "Z" PCB with assemblies
@@ -74,7 +74,7 @@ Overview of Change Issues vs. Repositories
    * - Move PSU to far-right corner of chassis
      - `136 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/136/>`_
      - `branch H repo <https://bitbucket.org/ultrazohm/housing/branch/feature/redesign_rev05>`_
-   * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev3_slotpower>`)
+   * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev03_slotpower>`)
      - `146 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/146/>`_
      -
    * - Make PL MGT transceivers usable

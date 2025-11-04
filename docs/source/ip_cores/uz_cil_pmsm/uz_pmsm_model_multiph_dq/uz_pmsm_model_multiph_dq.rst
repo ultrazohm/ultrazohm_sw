@@ -6,23 +6,23 @@ Multi-phase PMSM Model
 
 Important:
 
- - The multi-phase PMSM IP-cores are based on the three-phase :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained)
- - There are two mulit-phase IP-cores, a six-phase and a nine-phase one
+ - The multi-phase PMSM IP cores are based on the three-phase :ref:`uz_pmsmModel` IP core, where the basics (e.g. working principle of the integrations is explained)
+ - There are two mulit-phase IP cores, a six-phase and a nine-phase one
 
-Differences to the three-phase PMSM model IP-core:
+Differences to the three-phase PMSM model IP core:
 
- - IP-Cores model a six-phase and nine-phase PMSM
+ - IP cores model a six-phase and nine-phase PMSM
  - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
- - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
- - All calculations in the IP-Core are done in double precision
+ - IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+ - All calculations in the IP core are done in double precision
  - Interfaces to PL are realized in fixedpoint, while interfaces to the PS use single precision float values
 
 System description
 ==================
 The modelling of the multi-phase machine is based on [[#Slunjski_Diss]_].
 The general idea in this work and also the common approach to model multi-phase machines is, to transform the phase variables with the VSD and Park transformations, as shown and done in :ref:`uz_vsd_transformation` and :ref:`uz_transformation`.
-Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
-This IP-core contains the electric differential equations and the mechanical part, where the torque is calculated.
+Transformed voltages are used as input for this IP core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
+This IP core contains the electric differential equations and the mechanical part, where the torque is calculated.
 Additionally, either a torque load or a fixed speed can be set to test the machine model.
 While the equations are mostly similar to the ones of the three-phase :ref:`uz_pmsmModel`, they will be shown here again for the sake of completeness.
 To obtain more details about the equations and integrators, reading :ref:`uz_pmsmModel` is advised.
@@ -80,9 +80,9 @@ Nine-phase model
     \nonumber\textrm{with } i&=1,2,3
   \end{align}
 
-IP-core interfaces
+IP core interfaces
 ==================
-.. csv-table:: Interface of nine-phase PMSM Model IP-Core
+.. csv-table:: Interface of nine-phase PMSM Model IP core
    :file: uz_pmsm_model_multiph_dq_interfaces.csv
    :widths: 50 40 80 60 60 190
    :header-rows: 1
@@ -172,18 +172,18 @@ Nine-phase model
 
 Example usage (standalone)
 ==========================
-The IP-core has two intended use cases:
+The IP core has two intended use cases:
 
  - Using the model in the dq domain only with inputs coming from the PS
  - Simulating a complete multi-phase drive system including the :ref:`uz_inverter_3ph`, :ref:`uz_vsd_transformation` (see the CIL examples in :ref:`uz_cil_pmsm`)
 
-Using the IP-core in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
-The placement of the IP-core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
+Using the IP core in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
+The placement of the IP core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
 For the example the nine-phase model is used, but the same can also be applied for the six-phase model.
 
 .. figure:: open_loop_ps.jpg
 
-   Test setup for IP-core PS test in Vivado
+   Test setup for IP core PS test in Vivado
 
 The following code is used in ``main.c`` (initialization) and ``isr.c`` (application):
 

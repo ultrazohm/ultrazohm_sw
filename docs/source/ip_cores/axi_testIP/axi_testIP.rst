@@ -4,12 +4,12 @@
 AXI Test IP
 ===========
 
-This IP-Core is used for testing the AXI communication between PS and PL.
-The IP-Core calculates :math:`C=A \cdot B` with different data types.
+This IP core is used for testing the AXI communication between PS and PL.
+The IP core calculates :math:`C=A \cdot B` with different data types.
 For all data types except for the ``float`` calculation, the input and output values are scalar.
 The ``float`` calculation input and output is a ``2x2`` matrix.
 
-Use this IP-Core to test read/write operations by AXI between PL and PS using the :ref:`HAL`.
+Use this IP core to test read/write operations by AXI between PL and PS using the :ref:`HAL`.
 
 .. _AXI_testIP_ModuleOverview:
 

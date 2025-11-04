@@ -51,15 +51,15 @@ As already mentioned in the diagrams above, there are different types of CPLDs
 in the different revisions of the UltraZohm. 
 Below is a rough overview.
 
-*****************************************************
-ispMACH series (:ref:`carrier_board_rev4` and before)
-*****************************************************
+******************************************************
+ispMACH series (:ref:`carrier_board_rev04` and before)
+******************************************************
 
 UltraZohms :math:`\leq` ``Rev04`` are equipped with CPLDs of the ispMACH series (LA4128V or LC4256V).
 
-****************************************************
-MachXO2 series (:ref:`carrier_board_rev5` and later)
-****************************************************
+*****************************************************
+MachXO2 series (:ref:`carrier_board_rev05` and later)
+*****************************************************
 
 UltraZohms :math:`\geq` ``Rev05`` and later are equipped with CPLDs of MachXO2 series. The D-Slots employ the type ``LCMXO2-2000HC-4TG100C``, 
 whereas the S3C CPLD for overall system control is of type ``LCMXO2-4000HC-4TG144C``.

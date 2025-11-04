@@ -15,23 +15,23 @@
 //// Slave addresses (currently fixed, but code ready for dynamic assignment)
 /// NB: UZ_PLATFORM_I2CADDR_EEPROM is defined in uz_platform_eeprom.h
 // 16-bit I/O expander (PCA....)
-#define UZ_PLATFORM_I2CADDR_GPIO	(0x20)
+#define UZ_PLATFORM_I2CADDR_GPIO	(0x20U)
 // EEPROMs with MAC addresses for Ethernet
-#define UZ_PLATFORM_I2CADDR_MACEE0	(0x50)		// On SoM or(/and!) on the extension board for UZ Rev04
-#define UZ_PLATFORM_I2CADDR_MACEE1	(0x52)		// On UZ >=Rev05 or on the extension board for UZ Rev04
+#define UZ_PLATFORM_I2CADDR_MACEE0	(0x50U)		// On SoM or(/and!) on the extension board for UZ Rev04
+#define UZ_PLATFORM_I2CADDR_MACEE1	(0x52U)		// On UZ >=Rev05 or on the extension board for UZ Rev04
 
 #if (UZ_PLATFORM_CARDID==1)
  //// Bus instance ID (set to 1 for the "user I²C" and bound to PS I²C *0*)
  #define UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS	(1U)
  // I²C mux on Rev05 carriers
- #define UZ_PLATFORM_I2CADDR_USRMUX	(0x77)
- #define UZ_PLATFORM_USRMUXC_FPIOs	(0)
- #define UZ_PLATFORM_USRMUXC_ACARDS	(1)
- #define UZ_PLATFORM_USRMUXC_DCPLDS	(2)
- #define UZ_PLATFORM_USRMUXC_DCARDS	(3)
- #define UZ_PLATFORM_USRMUXC_BPB	(4)
- #define UZ_PLATFORM_USRMUXC_S3CSEC	(5)
- #define UZ_PLATFORM_USRMUXC_BPT	(6)
+ #define UZ_PLATFORM_I2CADDR_USRMUX	(0x77U)
+ #define UZ_PLATFORM_USRMUXC_FPIOs	(0U)
+ #define UZ_PLATFORM_USRMUXC_ACARDS	(1U)
+ #define UZ_PLATFORM_USRMUXC_DCPLDS	(2U)
+ #define UZ_PLATFORM_USRMUXC_DCARDS	(3U)
+ #define UZ_PLATFORM_USRMUXC_BPB	(4U)
+ #define UZ_PLATFORM_USRMUXC_S3CSEC	(5U)
+ #define UZ_PLATFORM_USRMUXC_BPT	(6U)
 #endif
 
 typedef enum uz_platform_gpiodrv_ {
@@ -142,7 +142,7 @@ static uz_platform_iomap uzp_iomap_UltraZohmRev04withExtensionBoardRev02 = {
 	}
 };
 
-static uz_platform_iomap uzp_iomap_UltraZohmRev05 = {
+static uz_platform_iomap uzp_iomap_UltraZohmRev06downto05 = {
 	{
 		// Cf. uz_platform_gpo_id in uz_platform.h:
 		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP1RDY
@@ -269,7 +269,10 @@ int32_t uz_platform_init(uint32_t default_revision) {
 					uzp.iomap = &uzp_iomap_UltraZohmRev04downto02;
 					break;
 				case 5U:
-					uzp.iomap = &uzp_iomap_UltraZohmRev05;
+					uzp.iomap = &uzp_iomap_UltraZohmRev06downto05;
+					break;
+				case 6U: // 5 and 6 is identical
+					uzp.iomap = &uzp_iomap_UltraZohmRev06downto05;
 					break;
 				default:
 					uz_printf("APU: Carrier revision not supported!\r\n");
@@ -277,7 +280,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 					break;
 			}
 
-			uzp.maceeprom_primary = 1;
+			uzp.maceeprom_primary = 1U;
 
 #if (UZ_PLATFORM_CARDID==1)
 			if ( 4U < uzp.data.hw_revision )
@@ -288,7 +291,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
-			uzp.maceeprom_primary = 0;
+			uzp.maceeprom_primary = 0U;
 			break;
 
 		case UZP_HWGROUP_PERIPH:
@@ -318,7 +321,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 						break;
 				}
 
-				uzp.maceeprom_primary = 1;
+				uzp.maceeprom_primary = 1U;
 
 			} else {
 					uz_printf("APU: Unknown peripheral %03i!\r\n", uzp.data.hw_model);
@@ -428,7 +431,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 int32_t uz_platform_gpoupdate() {
-	const uint8_t pca9535a9655e_regaddr_out0 = 2;
+	const uint8_t pca9535a9655e_regaddr_out0 = 2U;
 
 	return( uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror) );
 }
@@ -491,10 +494,10 @@ int32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_g
 		case UZP_GPIOTYPE_PS:
 			switch(uzpgpo_op) {
 				case UZP_GPO_ASSERT:
-					XGpioPs_WritePin(&uzp.gpiops, pin, 1);
+					XGpioPs_WritePin(&uzp.gpiops, pin, 1U);
 					break;
 				case UZP_GPO_DEASSERT:
-					XGpioPs_WritePin(&uzp.gpiops, pin, 0);
+					XGpioPs_WritePin(&uzp.gpiops, pin, 0U);
 					break;
 				case UZP_GPO_DISABLE2TRISTATED:
 					XGpioPs_SetOutputEnablePin(&uzp.gpiops, pin, GPIOPS_OUTPUTENABLE_DISABLEOP);	// FIXME: Not thread-safe → Replace via uz_platform_gpiops.c?
@@ -528,8 +531,8 @@ int32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	uz_assert(uzp.is_ready);
 	uz_assert(eeprom < sizeof(uzp.maceeprom)/sizeof(uzp.maceeprom[0]));
 
-	const uint8_t maceeprom_addroffset = 0xFA;
-	const uint8_t maceeprom_addrlength = 6;
+	const uint8_t maceeprom_addroffset = 0xFAU;
+	const uint8_t maceeprom_addrlength = 6U;
 
 	return( uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
 }

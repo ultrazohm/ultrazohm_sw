@@ -5,9 +5,6 @@
 
 #include "uz_platform_cardeeprom.h"		// models_t → API; Header located in same directory as uz_platform_eeprom.h (cf. include in uz_platform.c)
 
-// (De)Activate UZ auto-platform detection and platform-specific I/O-HAL framework (NB: disabling it turns most of its hooks into failing NOPs...)
-
-
 // (De)Activate run-time warnings for (currently) unsupported GPIO operations
 #define UZ_PLATFORM_OPWARN	(0U)
 

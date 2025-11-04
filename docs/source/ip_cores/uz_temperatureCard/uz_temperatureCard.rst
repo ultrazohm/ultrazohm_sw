@@ -1,20 +1,20 @@
 .. _temperature_card_IPcore_v1:
 
 ===========================
-Temperature Card IP-Core V1 
+Temperature Card IP Core V1
 ===========================
 
 Detailed Description
 --------------------
-This IP-Core is designed for the LTC2983 temperature measurement system.
+This IP core is designed for the LTC2983 temperature measurement system.
 With the ability to measure different sensor types and built-in data preparation, this card extends the functionality of the UltraZohm.
 The total amount of 60-Channels (40 on the frontpanel, 20 internal) could be wired directly on the card or in the plug for different kind of sensors.
 The documentation for the Temperature Card can be e.g. found under :ref:`temperature_card_rev02` or newer.
 
-IP-Core
+IP Core
 -------
-The temperature card is provided with an IP-core, which handles the configuration, triggers periodical measurements, and provides the results that are 
-collected afterwards by the software driver. The figure below shows the IP-Core in a Vivado block design environment.
+The temperature card is provided with an IP core, which handles the configuration, triggers periodical measurements, and provides the results that are 
+collected afterwards by the software driver. The figure below shows the IP core in a Vivado block design environment.
 
 .. _ip_core_temperature_card:
 
@@ -22,12 +22,12 @@ collected afterwards by the software driver. The figure below shows the IP-Core 
    :width: 600
    :align: center
 
-   IP-Core ``Temperature Card V1``
+   IP Core ``Temperature Card V1``
 
-Depending on the physical adapter board slot that you are using for the adapter board, the IP-Core has to be connected to the pins of the proper adapter board slot. 
+Depending on the physical adapter board slot that you are using for the adapter board, the IP core has to be connected to the pins of the proper adapter board slot.
 Here it is shown at the example of adapter board slot ``D4``, where ``_Ch4`` refers to adapter board slot ``D4``. Pay attention 
 that no other pins regarding ``_Ch4`` are present in the block design. Delete them to avoid errors during the build or damage to the hardware. Since all three channelgroups ``A-C`` share the common 
-reset signal ``LTC_resetn_1``, all other reset signals are left unconnected. For a more detailed description on how to implement the IP-Core into your block design, refer to :ref:`temperature_card_rev02`.
+reset signal ``LTC_resetn_1``, all other reset signals are left unconnected. For a more detailed description on how to implement the IP core into your block design, refer to :ref:`temperature_card_rev02`.
 
 .. _ip_core_temperature_card_and_pins:
 
@@ -47,7 +47,7 @@ Inside the ``uz_temperaturecard.h`` the defines from Analog Devices (producer of
 With those defines, simply use bitwise-or to create the configuration-word for different kind of sensors or use examples below.
 It is necessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_ carefully, especially page 16 to 54 for understanding how the LTC2983 needs to be configured when not using provided examples.
 
-Regardless of what type of sensor configuration you want to use, some general steps for creating an instance of the IP_Core driver are similar for all use-cases. 
+Regardless of what type of sensor configuration you want to use, some general steps for creating an instance of the IP core driver are similar for all use-cases.
 Below the necessary steps are shown at the example of one temperature adapter board mounted in adapter board slot ``D4``.
 
 1. In Vitis, in the Baremetal project under ``src/uz/`` open the file ``uz_global_configuration.h`` and make sure, that the maximum allowed instances define for this driver is at least ``1U``
@@ -122,7 +122,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  ...
  } actualValues;
 
-7. In ``main.c``, initialize an instance of the driver and assign it to the object pointer structure in the Global_Data inside the ``init_ip_cores`` case. Also ``Reset`` and ``Start`` the IP-Core by calling respective functions:
+7. In ``main.c``, initialize an instance of the driver and assign it to the object pointer structure in the Global_Data inside the ``init_ip_cores`` case. Also ``Reset`` and ``Start`` the IP core by calling respective functions:
 
 .. code-block:: c
  :caption: Example of init in main.c

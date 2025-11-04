@@ -18,8 +18,8 @@ omegaNOTB, Output, sfix24_En11, External Signal, omega calculated using only neg
 new_measurement, Output,bool , External Signal, indicates that an omega measurement of a Line has been completed
 position_wOffset, Output, uint16_t, External Signal, Outputs the position shifted by ``Position_offset_AXI4`` of the encoder with a range of 0 to increments 
 Index_found, Output, bool , External Signal, Indicates whether the I-lane of the encoder has been found
-Reset, Input, bool, AXI, Resets the IP-Core
-Enable, Input, bool, AXI, Enables the IP-Core
+Reset, Input, bool, AXI, Resets the IP core
+Enable, Input, bool, AXI, Enables the IP core
 Timestamp, Output, uint32_t, AXI, Returns unique IP timestamp
 omega_AXI4, Output, sfix24_En11, AXI, same signal as omega
 omega_MA_N4_AXI4, Output, sfix24_En11, AXI, omega but with an moving average over the last 4 measurements

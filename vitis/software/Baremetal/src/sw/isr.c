@@ -58,7 +58,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     // set 30tx
-    sawtooth = uz_wavegen_sawtooth(1.0f, 3.0f);
+    sawtooth = uz_wavegen_sawtooth(1.0f, 5.0f);
     if(fabs(sawtooth-sawtooth_old) > 0.5f)
     	{
       	if (pin_counter == 0U)

@@ -51,6 +51,8 @@ float sawtooth = 0.0f;
 float sawtooth_old = 0.0f;
 uint32_t pin_counter = 0U;
 
+#define DIGOPT_MODE	(0U)
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -65,15 +67,36 @@ void ISR_Control(void *data)
       	{
         		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter, true);
         		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, 29U, false);
+#if DIGOPT_MODE
+		} else if (pin_counter == 1U) {
+				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter, true);
+				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, 28U, false);
+#endif
         } else {
         		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter, true);
+#if DIGOPT_MODE
+				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter-2U, false);
+#else
         		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter-1U, false);
+#endif
         }
+#if DIGOPT_MODE
+		pin_counter += 2;
+		if(pin_counter == 30)
+		{
+			pin_counter = 1U;
+		}
+		if(pin_counter == 31)
+		{
+			pin_counter = 0U;
+		}
+#else
     	pin_counter++;
     	if(pin_counter == 30)
     	{
     		pin_counter = 0U;
     	}
+#endif
 
 
     }

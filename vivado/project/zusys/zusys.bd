@@ -1221,6 +1221,9 @@
                 "xci_path": "ip/zusys_ADC_MAX11331_top_0_0/zusys_ADC_MAX11331_top_0_0.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/ADC_MAX11331_top_0",
                 "parameters": {
+                  "DIFFERENTIAL_SAMPLING": {
+                    "value": "true"
+                  },
                   "NUMBER_OF_ADCS": {
                     "value": "3"
                   }

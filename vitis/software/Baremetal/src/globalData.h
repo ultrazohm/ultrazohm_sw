@@ -16,6 +16,7 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 enum current_control_select {
 		PI_FOC,
@@ -182,6 +183,8 @@ typedef struct{
 	uz_pmsmModel_t* pmsm_cil;
 	uz_Trajectory_t* speed_traj;
 	uz_Trajectory_t* current_traj;
+	uz_axi_gpio_t* output_gpio;
+	uz_axi_gpio_t* input_gpio;
 }object_pointers_t;
 
 

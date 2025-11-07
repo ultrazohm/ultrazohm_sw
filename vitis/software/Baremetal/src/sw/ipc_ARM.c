@@ -25,6 +25,7 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern uz_3ph_dq_t i_dq_integrated_error_left;
 extern uz_3ph_dq_t i_dq_integrated_error_right;
 extern bool ddpg_ext_clamping;
+extern bool reset_button;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -312,9 +313,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4): // switching between control plants only possible in idle state
-				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.ctrl_plant_select = CIL;
-				}
+				reset_button = true;
 			break;
 
 		case (My_Button_5): // switching between control plants only possible in idle state
@@ -403,7 +402,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 7 - My_Button_4 */
-	 if (data->rasv.ctrl_plant_select == CIL) {
+	 if (reset_button == true) {
 		 js_status_BareToRTOS |= (1 << 7);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 7);

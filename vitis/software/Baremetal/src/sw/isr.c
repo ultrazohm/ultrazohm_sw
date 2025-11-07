@@ -43,6 +43,7 @@ extern DS_Data Global_Data;
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
+#define		CURRENT_CONV_HASS_50 40.0f // 50.0f / 0.625f datasheet
 #define		MAX_CURRENT			15.0f
 #define		RATED_CURRENT		8.0f
 #define		DC_VOLTAGE			48.0f
@@ -83,6 +84,25 @@ uz_matrix_t* matrix_output;
 
 bool ddpg_ext_clamping = false;
 
+bool HB_ok = false;
+bool OC_ok = false;
+bool reset_button = false;
+bool reset_button_was_pressed = false;
+
+enum inverter_type
+{
+	adapter_inverter,
+	dhg_inverter,
+	none
+};
+
+enum inverter_type inverter_right_machine = dhg_inverter;
+
+/*
+Fragen:
+- check ADC for dhg inverter
+ */
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -99,12 +119,10 @@ void ISR_Control(void *data)
     // update speed and position of resolvers
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
     Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
-    // update status of both inverters
+    // update status of adapter inverter left machine
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
-    uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);
     // assign status to Global_Data
     Global_Data.av.inverter_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_left);
-    Global_Data.av.inverter_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_right);
 
 	// assign measurements to Global_Data
 	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
@@ -116,14 +134,56 @@ void ISR_Control(void *data)
 	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
 
-	Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+    // check platform state machine
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+	// update status of right inverter
+	switch (inverter_right_machine) {
+		case adapter_inverter:
+			// update status of adapter inverter right machine
+			uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);
+			// assign status to Global_Data
+			Global_Data.av.inverter_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_right);
+			// calculate mean temperature values over all measured temperatures of each inverter
+			Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3) * 0.33333f;
+			// assign measurements to Global_Data
+			Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+			Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+			Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+			Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+			Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+			break;
+		case dhg_inverter:
+			// Reset button
+		    if (reset_button == true) {
+		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,1);
+		    	reset_button_was_pressed = true;
+		    	reset_button = false;
+//		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
+		    } else {
+		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
+		    }
+		    // read in status of hardware switch off of inverter
+		    HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio,0);
+		    OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio,1);
+//		    if ((HB_ok == false || OC_ok == false) && reset_button_was_pressed == true) {
+//		    	ultrazohm_state_machine_set_stop(true);
+//		    }
+			// assign measurements to Global_Data
+			Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A1 * CURRENT_CONV_HASS_50 - 0.15f;
+			Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A2* CURRENT_CONV_HASS_50 + 0.1f;
+			Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_CONV_HASS_50 - 0.05f;
+			Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B8 * CURRENT_CONV_HASS_50;
+			Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B5 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+			Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A4 * VOLTAGE_2_SI_VOLTS;
+			break;
+		default: break;
+	}
 
 	// assign measurements from global_data to motor control structs
     i_abc_left.a = Global_Data.av.i_a_left;
@@ -140,8 +200,7 @@ void ISR_Control(void *data)
     }
 
     // calculate mean temperature values over all measured temperatures of each inverter
-    Global_Data.av.mean_temp_inv_left = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L3) * 0.1667;
-    Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
+    Global_Data.av.mean_temp_inv_left = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3) * 0.33333;
 
 	//read axi values from mpc ip for debug
 //	fcs_mpc_debug();
@@ -150,15 +209,23 @@ void ISR_Control(void *data)
     Global_Data.av.traj_speed_ref = uz_Trajectory_Step(Global_Data.objects.speed_traj);
     Global_Data.av.traj_current_ref = uz_Trajectory_Step(Global_Data.objects.current_traj);
 
-    // check platform state machine
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+
 
     // if "STOP"
     if (current_state==idle_state)
     {
     	// disable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_left, false);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, false);
+    	switch (inverter_right_machine) {
+    		case adapter_inverter:
+    	    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, false);
+    			break;
+    		case dhg_inverter:
+    			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+    			break;
+    		default: break;
+    	}
+
     	// reset controllers
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
@@ -185,7 +252,15 @@ void ISR_Control(void *data)
     {
     	// enable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_left, true);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, true);
+    	switch (inverter_right_machine) {
+    		case adapter_inverter:
+    			uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, true);
+    			break;
+    		case dhg_inverter:
+    			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+    			break;
+    		default: break;
+    	}
     }
 
     // if "ENABLE CONTROL"

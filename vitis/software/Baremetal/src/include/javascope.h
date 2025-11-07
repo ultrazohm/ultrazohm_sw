@@ -260,7 +260,7 @@ enum gui_button_mapping {
 	PI_FOC_right,
 	Traj_ref,
 	DDPG-CC_right,
-	CIL,
+	RESET,
 	REAL,
 	TrajStart,
 	TrajStop,

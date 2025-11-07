@@ -41,6 +41,20 @@ DS_Data Global_Data = {
     }
 };
 
+struct uz_axi_gpio_config_t output_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_0_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
+            .number_of_pins=1,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+};
+
+struct uz_axi_gpio_config_t input_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_1_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_1_DEVICE_ID,
+            .number_of_pins=2,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+};
+
 enum init_chain
 {
     init_assertions = 0,
@@ -117,6 +131,8 @@ int main(void)
             Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
             Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
+            Global_Data.objects.output_gpio=uz_axi_gpio_init(output_config);
+            Global_Data.objects.input_gpio=uz_axi_gpio_init(input_config);
             //MPC init
             //uz_debug_ip
             fcs_mpc_real_or_debug_inputs(true); //false=debug, true=real

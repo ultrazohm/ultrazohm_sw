@@ -1,11 +1,9 @@
-###Digital Adapter Board D5
-# Author: Sebastian Wendel
-# Date: 21.03.2019
-# Updated: 10.02.2022, Eyke Liegmann
-# Updated: 02.11.2022, Michael Hoerner
-# Updated: 14.11.2025, Andreas Geiger
+### Digital Adapter Board D5
+# Author: Andreas Geiger
+# Date: 14.11.2025
+# 
 # 16 I/Os are available
-# All Digital-Pins are 1,8 Volt on Bank47 and Bank66
+# All Digital-Pins are 1.8 Volt on Bank47 and Bank66
 # Bank47 are High-Density Banks (HD). HD pins have NOT the internal 100R termination resistors and support NO LVDS
 # Bank66 are High-Performance Banks (HP).
 

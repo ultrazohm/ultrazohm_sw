@@ -55,6 +55,8 @@
 
 #include "include/pwm_init.h"
 
+#include "include/resolver.h"
+#include "xparameters.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

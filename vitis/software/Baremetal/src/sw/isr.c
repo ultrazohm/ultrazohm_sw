@@ -69,6 +69,9 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    // read position from resolver IP Core
+    Global_Data.av.theta_elec = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

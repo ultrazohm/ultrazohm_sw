@@ -95,7 +95,7 @@ The following two measurements show the switch-on and switch-off signal curves w
 - CH3 (blue): nOE_Supervisor
 - CH4 (red): Digital Output
 
-The measurement results show that the level shifter outputs will we be disables as long as the supply rails are in their accepted range:
+The measurement results show that the level shifter outputs will we be disabled as long as the supply rails are in their accepted range:
 
 .. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_uz_switched_on.png
 	:width: 80%
@@ -129,7 +129,7 @@ An optional front panel with integrated voltage indication LEDs is available for
 .. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_blend.svg
 	:align: center
 
-To utilize this functionality, a corresponding software extension must be activated manually in the Vitis development environment.
+To utilize the indication LEDs, a corresponding software extension must be activated manually in the Vitis development environment.
 It is part of the demo integrated in the :ref:`uzpA53`'s :ref:`uzpA53_cardid` feature and is enabled by means of the ``UZ_PLATFORM_CARDID`` preprocessor ``#define`` as described :ref:`here <uzpA53_init>`.
 Once enabled, the demo reads the card's voltage configuration at boot-up and drives the LED accordingly.
 As of mid 2025, no error reporting has been defined, i.e., the red LED is still unused.

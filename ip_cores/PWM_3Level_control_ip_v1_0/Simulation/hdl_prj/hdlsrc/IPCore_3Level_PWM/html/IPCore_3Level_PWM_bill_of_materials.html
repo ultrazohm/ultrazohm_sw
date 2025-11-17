@@ -1,0 +1,3267 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for IPCore_3Level_PWM
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Subtractor_3_4');hdlTableShrink(this, 'Register_3_8');hdlTableShrink(this, 'Multiplexer_3_2');hdlTableShrink(this, 'Multiplexer_3_6');hdlTableShrink(this, 'Multiplexer_3_7');hdlTableShrink(this, 'Multiplexer_3_8');hdlTableShrink(this, 'Adder_4_1');hdlTableShrink(this, 'Subtractor_4_1');hdlTableShrink(this, 'Multiplexer_4_1');hdlTableShrink(this, 'Multiplexer_4_2');hdlTableShrink(this, 'Adder_5_1');hdlTableShrink(this, 'Subtractor_5_1');hdlTableShrink(this, 'Subtractor_5_2');hdlTableShrink(this, 'Register_5_1');hdlTableShrink(this, 'Register_5_2');hdlTableShrink(this, 'Multiplexer_5_1');hdlTableShrink(this, 'Adder_6_1');hdlTableShrink(this, 'Adder_6_2');hdlTableShrink(this, 'Subtractor_6_1');hdlTableShrink(this, 'Register_6_1');hdlTableShrink(this, 'Register_6_2');hdlTableShrink(this, 'Register_6_3');hdlTableShrink(this, 'Multiplexer_6_1');hdlTableShrink(this, 'Subtractor_7_1');hdlTableShrink(this, 'Subtractor_7_2');hdlTableShrink(this, 'Register_7_1');hdlTableShrink(this, 'Multiplexer_7_1');hdlTableShrink(this, 'Subtractor_8_1');hdlTableShrink(this, 'Register_8_1');hdlTableShrink(this, 'Multiplexer_8_1');hdlTableShrink(this, 'Multiplexer_8_2');hdlTableShrink(this, 'Multiplexer_8_3');hdlTableShrink(this, 'Multiplexer_8_4');hdlTableShrink(this, 'Adder_9_1');hdlTableShrink(this, 'Subtractor_9_1');hdlTableShrink(this, 'Multiplexer_9_1');hdlTableShrink(this, 'Multiplexer_9_2');hdlTableShrink(this, 'Subtractor_10_1');hdlTableShrink(this, 'Subtractor_10_2');hdlTableShrink(this, 'Multiplexer_10_1');hdlTableShrink(this, 'Adder_11_1');hdlTableShrink(this, 'Subtractor_11_1');hdlTableShrink(this, 'Multiplexer_11_1');hdlTableShrink(this, 'Subtractor_12_1');hdlTableShrink(this, 'Subtractor_12_2');hdlTableShrink(this, 'Multiplexer_12_1');hdlTableShrink(this, 'Multiplexer_13_2');hdlTableShrink(this, 'Adder_14_1');hdlTableShrink(this, 'Adder_14_2');hdlTableShrink(this, 'Subtractor_14_1');hdlTableShrink(this, 'Subtractor_14_2');hdlTableShrink(this, 'Register_14_1');hdlTableShrink(this, 'Register_14_2');hdlTableShrink(this, 'Register_14_3');hdlTableShrink(this, 'Register_14_4');hdlTableShrink(this, 'Register_14_5');hdlTableShrink(this, 'Register_14_6');hdlTableShrink(this, 'Register_14_7');hdlTableShrink(this, 'Multiplexer_14_1');hdlTableShrink(this, 'Multiplexer_14_2');hdlTableShrink(this, 'Multiplexer_14_3');hdlTableShrink(this, 'Multiplexer_14_4');hdlTableShrink(this, 'Multiplexer_14_5');hdlTableShrink(this, 'Static Shift Left_14_1');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for IPCore_3Level_PWM
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+117
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+530
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+14401
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+161
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+187
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:1')" name="code2model" class="code2model">
+IP_Core_3-Level_PWM
+</a>
+
+</h5>
+<h5>
+Number of I/O Bits (187)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 182
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul>
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:4')" name="code2model" class="code2model">
+PWM_en_AXI
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:6')" name="code2model" class="code2model">
+Scal_f_carrier_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:7')" name="code2model" class="code2model">
+Scal_T_carrier_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:543')" name="code2model" class="code2model">
+Scal_carrier_arrangement
+</a>
+: 64 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:9')" name="code2model" class="code2model">
+m_u1_norm
+</a>
+: 64 bits
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 5
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:28')" name="code2model" class="code2model">
+SS0_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:29')" name="code2model" class="code2model">
+SS1_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:30')" name="code2model" class="code2model">
+SS2_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:31')" name="code2model" class="code2model">
+SS3_OUT
+</a>
+: 1 bit
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:40')" name="code2model" class="code2model">
+GenPWM
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+37x37-bit Adder 							: 1
+</span>
+<span name="Adder_2_1" id="Adder_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:579')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:914')" name="code2model" class="code2model">
+Triangle_shift2
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (4)
+</h5>
+<span style="font-family:monospace">
+12x12-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+13-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+57-bit Subtractor 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_3_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_3_4" id="Subtractor_3_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:979')" name="code2model" class="code2model">
+Sum10
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (17)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+11-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+12-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+52-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+55-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+56-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+19-bit Register 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_8')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 2
+</span>
+<span name="Register_3_8" id="Register_3_8">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:244')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:245')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (20)
+</h5>
+<span style="font-family:monospace">
+16-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_3_2" id="Multiplexer_3_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:924')" name="code2model" class="code2model">
+Relational Operator1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:925')" name="code2model" class="code2model">
+Relational Operator7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:980')" name="code2model" class="code2model">
+or
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+12-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+55-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+56-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_6')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_3_6" id="Multiplexer_3_6">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:985')" name="code2model" class="code2model">
+sw4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_3_7" id="Multiplexer_3_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:984')" name="code2model" class="code2model">
+sw3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:983')" name="code2model" class="code2model">
+sw2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_8')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_3_8" id="Multiplexer_3_8">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:982')" name="code2model" class="code2model">
+sw1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of Shift operators (2)
+</h5>
+<span style="font-family:monospace">
+55-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+55-bit Dynamic Shift Right 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:968')" name="code2model" class="code2model">
+Subsystem3
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<span name="Adder_4_1" id="Adder_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:975')" name="code2model" class="code2model">
+Sum4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Subtractor 							: 2
+</span>
+<span name="Subtractor_4_1" id="Subtractor_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:974')" name="code2model" class="code2model">
+Sum3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:973')" name="code2model" class="code2model">
+Sum2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (40)
+</h5>
+<span style="font-family:monospace">
+20-bit Register 							: 40
+</span>
+<br /><h5>
+Multiplexers (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:972')" name="code2model" class="code2model">
+Relational Operator6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_4_2" id="Multiplexer_4_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:976')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:977')" name="code2model" class="code2model">
+sw
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:956')" name="code2model" class="code2model">
+Subsystem2
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Adder 							: 1
+</span>
+<span name="Adder_5_1" id="Adder_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:205')" name="code2model" class="code2model">
+Sum5_stage2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_5_1" id="Subtractor_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:963')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_5_2" id="Subtractor_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:964')" name="code2model" class="code2model">
+Sum5_stage3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (80)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 40
+</span>
+<span name="Register_5_1" id="Register_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:208')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23-bit Register 							: 40
+</span>
+<span name="Register_5_2" id="Register_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:209')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_5_1" id="Multiplexer_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:962')" name="code2model" class="code2model">
+Relational Operator9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:965')" name="code2model" class="code2model">
+and
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:940')" name="code2model" class="code2model">
+Subsystem1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Adder 							: 1
+</span>
+<span name="Adder_6_1" id="Adder_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:949')" name="code2model" class="code2model">
+Sum6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Adder 							: 1
+</span>
+<span name="Adder_6_2" id="Adder_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:187')" name="code2model" class="code2model">
+Sum11_stage2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_6_1" id="Subtractor_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:948')" name="code2model" class="code2model">
+Sum11_stage3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (120)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 40
+</span>
+<span name="Register_6_1" id="Register_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:192')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23-bit Register 							: 40
+</span>
+<span name="Register_6_2" id="Register_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:193')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 40
+</span>
+<span name="Register_6_3" id="Register_6_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:194')" name="code2model" class="code2model">
+delayMatch2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_6_1" id="Multiplexer_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:947')" name="code2model" class="code2model">
+Relational Operator2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:950')" name="code2model" class="code2model">
+and1_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:951')" name="code2model" class="code2model">
+and1_2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:926')" name="code2model" class="code2model">
+Subsystem
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_7_1" id="Subtractor_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:934')" name="code2model" class="code2model">
+Unary Minus
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_7_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_7_2" id="Subtractor_7_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:933')" name="code2model" class="code2model">
+Sum8
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (80)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 80
+</span>
+<span name="Register_7_1" id="Register_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:176')" name="code2model" class="code2model">
+delayMatch2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_7_1" id="Multiplexer_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:932')" name="code2model" class="code2model">
+Relational Operator11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:935')" name="code2model" class="code2model">
+and2_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:936')" name="code2model" class="code2model">
+and2_2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:799')" name="code2model" class="code2model">
+Triangle_shift1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_8_1" id="Subtractor_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:864')" name="code2model" class="code2model">
+Sum10
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 2
+</span>
+<span name="Register_8_1" id="Register_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:153')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_IPCore_3Level_PWM:154')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_8_1" id="Multiplexer_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:809')" name="code2model" class="code2model">
+Relational Operator1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:810')" name="code2model" class="code2model">
+Relational Operator7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:865')" name="code2model" class="code2model">
+or
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_8_2" id="Multiplexer_8_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:870')" name="code2model" class="code2model">
+sw4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_8_3" id="Multiplexer_8_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:869')" name="code2model" class="code2model">
+sw3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:868')" name="code2model" class="code2model">
+sw2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_8_4" id="Multiplexer_8_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:867')" name="code2model" class="code2model">
+sw1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:853')" name="code2model" class="code2model">
+Subsystem3
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<span name="Adder_9_1" id="Adder_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:860')" name="code2model" class="code2model">
+Sum4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Subtractor 							: 2
+</span>
+<span name="Subtractor_9_1" id="Subtractor_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:859')" name="code2model" class="code2model">
+Sum3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:858')" name="code2model" class="code2model">
+Sum2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_9_1" id="Multiplexer_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:857')" name="code2model" class="code2model">
+Relational
+Operator6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_9_2" id="Multiplexer_9_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:861')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:862')" name="code2model" class="code2model">
+sw
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:841')" name="code2model" class="code2model">
+Subsystem2
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+24x24-bit Adder 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_10_1" id="Subtractor_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:848')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_10_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_10_2" id="Subtractor_10_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:849')" name="code2model" class="code2model">
+Sum5_stage3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_10_1" id="Multiplexer_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:847')" name="code2model" class="code2model">
+Relational
+Operator9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:850')" name="code2model" class="code2model">
+and
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:825')" name="code2model" class="code2model">
+Subsystem1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Adder 							: 1
+</span>
+<span name="Adder_11_1" id="Adder_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:834')" name="code2model" class="code2model">
+Sum6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_11_1" id="Subtractor_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:833')" name="code2model" class="code2model">
+Sum11_stage3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_11_1" id="Multiplexer_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:832')" name="code2model" class="code2model">
+Relational
+Operator2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:835')" name="code2model" class="code2model">
+and1_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:836')" name="code2model" class="code2model">
+and1_2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:811')" name="code2model" class="code2model">
+Subsystem
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_12_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_12_1" id="Subtractor_12_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:819')" name="code2model" class="code2model">
+Unary Minus
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_12_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_12_2" id="Subtractor_12_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:818')" name="code2model" class="code2model">
+Sum8
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_12_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_12_1" id="Multiplexer_12_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:817')" name="code2model" class="code2model">
+Relational
+Operator11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:820')" name="code2model" class="code2model">
+and2_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:821')" name="code2model" class="code2model">
+and2_2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:436')" name="code2model" class="code2model">
+PWM_Direct_Comparison
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+20x1-bit Adder 							: 0
+</span>
+<br /><span style="font-family:monospace">
+12x12-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+13-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+58-bit Subtractor 							: 1
+</span>
+<br /><h5>
+Registers (55)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+11-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+12-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+52-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+56-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+57-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+20-bit Register 							: 41
+</span>
+<br /><h5>
+Multiplexers (13)
+</h5>
+<span style="font-family:monospace">
+16-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_13_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 6
+</span>
+<span name="Multiplexer_13_2" id="Multiplexer_13_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:583')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:584')" name="code2model" class="code2model">
+Relational Operator1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:589')" name="code2model" class="code2model">
+Relational Operator2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:592')" name="code2model" class="code2model">
+Relational Operator3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+12-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+56-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+57-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (2)
+</h5>
+<span style="font-family:monospace">
+56-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+56-bit Dynamic Shift Right 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:459')" name="code2model" class="code2model">
+CarrierGen
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (86)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 1
+</span>
+<span name="Adder_14_1" id="Adder_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+adder1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_14_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+45x45-bit Adder 							: 42
+</span>
+<span name="Adder_14_2" id="Adder_14_2">
+<ul class="SystemdefinedCollapse" id="1aee97a5-fd57-4089-a150-f38ac75f0057" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_3_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_4_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_5_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_6_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_7_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_8_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_9_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_10_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_11_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_12_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_13_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_14_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_15_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_16_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_17_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_18_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_19_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_20_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_21_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_22_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_23_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_24_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_25_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_26_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_27_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_28_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_29_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_30_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_31_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_32_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_33_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_34_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_35_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_36_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_37_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_38_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_39_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_40_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_41_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+temp_42_1
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '1aee97a5-fd57-4089-a150-f38ac75f0057')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_14_1" id="Subtractor_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_14_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+46-bit Subtractor 							: 42
+</span>
+<span name="Subtractor_14_2" id="Subtractor_14_2">
+<ul class="SystemdefinedCollapse" id="cbd33e18-a982-45b1-9695-9eb9a91adf12" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_74
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_76
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_78
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_80
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_neg_82
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'cbd33e18-a982-45b1-9695-9eb9a91adf12')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><h5>
+Registers (136)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 46
+</span>
+<span name="Register_14_1" id="Register_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:475')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+initFlagDelay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 2
+</span>
+<span name="Register_14_2" id="Register_14_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+z_p
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+86-bit Register 							: 43
+</span>
+<span name="Register_14_3" id="Register_14_3">
+<ul class="SystemdefinedCollapse" id="6f36096b-00a2-4ec5-a963-b2f68998d54a" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+corrected_z_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+r_reg_41
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '6f36096b-00a2-4ec5-a963-b2f68998d54a')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25-bit Register 							: 1
+</span>
+<span name="Register_14_4" id="Register_14_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_p
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+45-bit Register 							: 42
+</span>
+<span name="Register_14_5" id="Register_14_5">
+<ul class="SystemdefinedCollapse" id="412745bf-400f-4780-86eb-61b7827e5a67" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+corrected_d_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+d_reg_40
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '412745bf-400f-4780-86eb-61b7827e5a67')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_6')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+42-bit Register 							: 1
+</span>
+<span name="Register_14_6" id="Register_14_6">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+qtempExt_p
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_14_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 1
+</span>
+<span name="Register_14_7" id="Register_14_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+q
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (94)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 46
+</span>
+<span name="Multiplexer_14_1" id="Multiplexer_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:473')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:470')" name="code2model" class="code2model">
+Relational Operator1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:468')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:472')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Compare_To_Constant
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_14_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_14_2" id="Multiplexer_14_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+switchDirection
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:458')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_14_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+45-bit 2-to-1 Multiplexer 							: 41
+</span>
+<span name="Multiplexer_14_3" id="Multiplexer_14_3">
+<ul class="SystemdefinedCollapse" id="366f8970-6939-4574-9284-01df3a797b55" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_74
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_76
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_78
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+y_80
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '366f8970-6939-4574-9284-01df3a797b55')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_14_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+42-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_14_4" id="Multiplexer_14_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Data_Type_Conversion1_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Switch1_1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_14_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_14_5" id="Multiplexer_14_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Data_Type_Conversion1_3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of Shift operators (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Static Shift Left_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Static Shift Left 							: 1
+</span>
+<span name="Static Shift Left_14_1" id="Static Shift Left_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IPCore_3Level_PWM:905')" name="code2model" class="code2model">
+Bit_Shift
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

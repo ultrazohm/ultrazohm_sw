@@ -64,7 +64,8 @@ typedef struct _actualValues_ {
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
+	float V_DC_PLUS; 		// DC-Link voltage in V
+	float V_DC_MINUS;
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)

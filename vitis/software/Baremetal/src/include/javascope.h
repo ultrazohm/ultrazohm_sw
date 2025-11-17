@@ -35,6 +35,8 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
+	JSO_vdc_plus,
+	JSO_vdc_minus,
 	JSO_Speed_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
@@ -126,9 +128,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	dutycycle_hb1,
+	dutycycle_hb2,
+	dutycycle_hb2,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -153,9 +155,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
+	-,
+	-,
+	-,
 	A,
 	A,
 	A,

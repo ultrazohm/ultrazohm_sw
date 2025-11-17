@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -45,6 +46,16 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+uz_3ph_abc_t wavegen_duty={0};
+float wavegen_amp=0.2f;
+float wavegen_frq=200.0f;
+
+float dutycycle_hb1 = 0.0f;
+float dutycycle_hb2 = 0.0f;
+float dutycycle_hb3 = 0.0f;
+
+#define CURRENT_2_SI_AMPERE 19.68f;
+#define VOLTAGE_2_SI_VOLTS 250.0f;
 
 void ISR_Control(void *data)
 {
@@ -52,13 +63,30 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // assign measurements to Global_Data
+    Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_A1 * CURRENT_2_SI_AMPERE;
+    Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+    Global_Data.av.I_W = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+    Global_Data.av.V_DC_PLUS = Global_Data.aa.A1.me.ADC_B5 * VOLTAGE_2_SI_VOLTS;
+    Global_Data.av.V_DC_MINUS = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,true,true,true);
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+    //wavegen_duty=uz_wavegen_three_phase_sample(wavegen_amp,wavegen_frq,0.5f);
     if (current_state==control_state)
     {
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,false,false,false);
         // Start: Control algorithm - only if ultrazohm is in control state
+        //Global_Data.rasv.halfBridge1DutyCycle=wavegen_duty.a;
+        //Global_Data.rasv.halfBridge2DutyCycle=wavegen_duty.b;
+        //Global_Data.rasv.halfBridge3DutyCycle=wavegen_duty.c;
+        Global_Data.rasv.halfBridge1DutyCycle=dutycycle_hb1;
+        Global_Data.rasv.halfBridge2DutyCycle=dutycycle_hb2;
+        Global_Data.rasv.halfBridge3DutyCycle=dutycycle_hb3;
+    } else
+    {
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,true,true,true);
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

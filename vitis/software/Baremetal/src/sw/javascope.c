@@ -74,6 +74,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
 	js_ch_observable[JSO_ic] 					= &data->av.I_W;
+	js_ch_observable[JSO_vdc_plus] 				= &data->av.V_DC_PLUS;
+	js_ch_observable[JSO_vdc_minus] 			= &data->av.V_DC_MINUS;
 	js_ch_observable[JSO_ua] 					= &data->av.U_U;
 	js_ch_observable[JSO_ub] 					= &data->av.U_V;
 	js_ch_observable[JSO_uc] 					= &data->av.U_W;

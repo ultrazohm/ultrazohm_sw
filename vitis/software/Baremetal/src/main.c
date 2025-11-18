@@ -72,6 +72,11 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             xcp_interface_init();
+
+            // --- init Simulink model ---
+            init_control_functions();
+            // ---------------------------
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

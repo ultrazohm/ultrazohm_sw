@@ -57,6 +57,9 @@
 
 #include "include/resolver.h"
 #include "xparameters.h"
+
+#include "sw/control.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

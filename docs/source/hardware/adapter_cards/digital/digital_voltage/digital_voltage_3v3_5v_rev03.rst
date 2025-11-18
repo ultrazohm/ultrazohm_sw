@@ -19,7 +19,8 @@ Like with the original Digital Voltage 5V card, signal directions can be set in 
 The board supports voltage level shifting, supply rail monitoring, and I²C-based readout of the hardware configuration.
 
 .. important::
-   This card can be ordered with either 10 kΩ or 100 kΩ pull-down resistors on the digital I/O pins.
+   This card can be ordered with either 10 kΩ or 100 kΩ pull-down resistors on the digital I/O pins. 
+   Choose according to your application. 
 
 
 Functionality
@@ -70,12 +71,20 @@ As with some of the previous Digital Voltage cards, all internal rails -- that a
 Configuration
 --------------
 
-Prior to first use, ensure that the card is correctly configured according to the target system's requirements.
-This includes setting DIP (i.e., I/O directions) and non-DIP (e.g., voltage selection) switches appropriately for the target voltage revision (e.g., Rev04 with a supervisor switch).
+Prior to first use, ensure that the card is correctly configured according to the target system's requirements:
 
-.. TODOs: Clarify "Rev04 with a supervisor switch" above and add pictures as per belowe
+* Set I/O directions with SW1 
+* Select interface voltage with S1 (3.3 V/ 5 V)
+* For Rev04 carrier boards, S2 must be set to *use Supervisors*. For Carrier boards :math:`\geq` Rev05, S2 is set to *use CarrierBoard*.
 
-2 Pictures for Rev04 and Rev05
+.. _use_carrier_supervisor:
+
+.. figure:: digital_voltage_3v3_5v_rev03/use_carrier_supervisor.jpg
+   :width: 80%
+   :align: center
+
+   Configuration of S2 for Rev04 (top) and :math:`\geq` Rev05 (bottom) carrier boards.
+
 
 Measurements and technical background
 ----------------------------------------

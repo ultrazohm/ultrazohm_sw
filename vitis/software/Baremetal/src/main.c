@@ -52,6 +52,8 @@ enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshak
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+PWM_3L_handle PWM_3L_main_inst;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -104,6 +106,9 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            PWM_3L_main_inst = uz_PWM_3L_staticAllocator();
+            uz_PWM_3L_hw_enable_IP_core(PWM_3L_main_inst->base_address);
+
             initialization_chain = print_msg;
             break;
         case print_msg:

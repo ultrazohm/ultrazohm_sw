@@ -4,6 +4,11 @@
 
 #include "uz_PWM_3L_hw.h"
 
+#include "test_assert_with_exception.h"
+#include "mock_uz_AXI.h"
+#include "uz_PWM_3L_hwAddresses.h"
+#define TEST_BASE_ADDRESS 0x00000000F
+
 void setUp(void)
 {
 }

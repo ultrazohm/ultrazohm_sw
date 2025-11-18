@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_PWM_3L/uz_PWM_3L_staticAllocator.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

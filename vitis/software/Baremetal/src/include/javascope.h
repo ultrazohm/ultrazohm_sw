@@ -38,6 +38,7 @@ enum JS_OberservableData {
 	JSO_ssi0_debug_post_slice,
 	JSO_ssi1_pos_raw,
 	JSO_ssi1_pos_multiturn_raw,
+	JSO_ssi1_pos_multiturn,
 	JSO_ssi1_pos_mech_si,
 	JSO_ssi1_pos_el_si,
 	JSO_ssi1_pos_raw_dec,

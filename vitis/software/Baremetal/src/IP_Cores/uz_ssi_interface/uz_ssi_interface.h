@@ -77,6 +77,7 @@ void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self);
 
 uint32_t uz_ssi_interface_get_position_raw_single_turn(uz_ssi_interface_t *self);
 uint32_t uz_ssi_interface_get_position_raw_multi_turn(uz_ssi_interface_t *self);
+uint32_t uz_ssi_interface_get_position_multi_turn(uz_ssi_interface_t *self);
 float uz_ssi_interface_get_position_mech_si_single_turn(uz_ssi_interface_t *self);
 float uz_ssi_interface_get_position_el_si_single_turn(uz_ssi_interface_t *self); 
 float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self);

@@ -12,10 +12,11 @@ void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_add
 void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on);
 void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll);
 void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs);
-void uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(uint32_t base_address, float mech_offset_si);
+void uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn);
 
 uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address);
 uint32_t uz_ssi_interface_hw_read_position_raw_multi_turn(uint32_t base_address);
+uint32_t uz_ssi_interface_hw_read_position_multi_turn(uint32_t base_address);
 uint32_t uz_ssi_interface_hw_read_ssi_encoder_status(uint32_t base_address);
 float uz_ssi_interface_hw_read_position_mech_si_single_turn(uint32_t base_address);
 float uz_ssi_interface_hw_read_position_el_si_single_turn(uint32_t base_address);

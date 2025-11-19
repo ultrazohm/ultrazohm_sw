@@ -7,7 +7,7 @@ vcom  uz_ssi_interface_src_S_R_Flip_Flop.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive_block.vhd
 vcom  uz_ssi_interface_src_gray_to_bin.vhd
 vcom  uz_ssi_interface_src_Gray_code_to_binary.vhd
-vcom  uz_ssi_interface_src_int_div_floor_pow2.vhd
+vcom  uz_ssi_interface_src_floor_div_pow2.vhd
 vcom  uz_ssi_interface_src_Sine_HDL_Optimized1.vhd
 vcom  uz_ssi_interface_src_fixed_point_floor.vhd
 vcom  uz_ssi_interface_src_Sine_HDL_Optimized.vhd

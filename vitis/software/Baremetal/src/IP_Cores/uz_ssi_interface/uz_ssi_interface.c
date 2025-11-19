@@ -72,7 +72,8 @@ void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
     uz_ssi_interface_hw_write_position_is_binary_or_gray_code(self->config.base_address, self->config.position_encoding);
     uz_ssi_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_ssi_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
-    uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(self->config.base_address, self->config.position_mech_offset_si_single_turn);
+//    uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(self->config.base_address, self->config.position_mech_offset_ticks_single_turn);
+    uz_ssi_interface_set_mechanical_offset_ssi_single_turn(self, self->config.position_mech_offset_si_single_turn);
 }
 
 void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self) {
@@ -98,6 +99,12 @@ uint32_t uz_ssi_interface_get_position_raw_multi_turn(uz_ssi_interface_t *self) 
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return (uz_ssi_interface_hw_read_position_raw_multi_turn(self->config.base_address));
+}
+
+uint32_t uz_ssi_interface_get_position_multi_turn(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_position_multi_turn(self->config.base_address));
 }
 
 float uz_ssi_interface_get_position_mech_si_single_turn(uz_ssi_interface_t *self) {
@@ -139,7 +146,10 @@ void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on) {
 void uz_ssi_interface_set_mechanical_offset_ssi_single_turn(uz_ssi_interface_t *self, float position_mech_offset_si_single_turn) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);   
-    uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(self->config.base_address, position_mech_offset_si_single_turn);
+
+    uint32_t bit_count_single_turn = (1U << self->config.ssi_encoder_bit_width_single_turn) - 1U;
+    int32_t position_mech_offset_ticks_single_turn = (float)(bit_count_single_turn) / (2.0f * UZ_PIf) * position_mech_offset_si_single_turn;
+    uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(self->config.base_address, position_mech_offset_ticks_single_turn);
 }
 
 uint32_t ceil_div(uint32_t a, uint32_t b) {

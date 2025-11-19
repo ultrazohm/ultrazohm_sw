@@ -97,6 +97,7 @@ typedef struct _actualValues_ {
 	float ssi0_speed_mech_rpm;
 	float ssi1_position_raw;
 	float ssi1_position_multiturn_raw;
+	float ssi1_position_multiturn;
 	float ssi1_position_el_si;
 	float ssi1_position_mech_si;
 	float ssi1_speed_mech_rad_s;

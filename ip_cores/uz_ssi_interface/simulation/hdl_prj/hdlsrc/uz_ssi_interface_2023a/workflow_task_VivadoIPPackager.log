@@ -8,10 +8,10 @@ Generated logfile:
 
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_7/prj_ip'
+Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_8/prj_ip'
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_7/prj_ip'.)
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_8/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -48,8 +48,8 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_gray_to_bin.vhd"
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_gray_to_bin.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_int_div_floor_pow2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_int_div_floor_pow2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_floor_div_pow2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_floor_div_pow2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_src_fixed_point_floor.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -114,6 +114,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_axi_lite.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_ssi_interface.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Sep 16 18:41:03 2025...
+INFO: [Common 17-206] Exiting Vivado at Wed Nov 19 16:17:08 2025...
 
-Elapsed time is 15.0042 seconds.
+Elapsed time is 14.783 seconds.

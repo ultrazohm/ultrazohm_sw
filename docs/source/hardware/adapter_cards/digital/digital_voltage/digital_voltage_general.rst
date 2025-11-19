@@ -10,7 +10,6 @@ Digital Voltage
 
 	digital_voltage_3u
 	digital_voltage_3v3_rev01
-	digital_voltage_3v3_5v
 	digital_voltage_3v3_5v_rev03
 
 Source:

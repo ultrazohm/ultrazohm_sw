@@ -89,7 +89,7 @@ Prior to first use, ensure that the card is correctly configured according to th
 Measurements and technical background
 ----------------------------------------
 
-As described :ref:`here <dig_3v3_5v_rev02_Supervisor>` the board features supervisor monitor devices to disable all digital outputs of the level shifter at undervoltage error state. 
+As described :ref:`here <dig_3v3_5v_rev03_Supervisor>` the board features supervisor monitor devices to disable all digital outputs of the level shifter at undervoltage error state. 
 
 .. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_block_diagram.png
 	:width: 100%

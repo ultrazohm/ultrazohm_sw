@@ -1,13 +1,13 @@
-.. _digitalVoltage_3v3_5v_rev03:
+.. _digitalVoltage_3v3_5v:
 
 =============================
-Digital Voltage 3V3/5V Rev03
+Digital Voltage 3V3/5V Rev02
 =============================
 
 
-.. _uz_d_voltage_3v3_5v_rev03_functions:
+.. _uz_d_voltage_3v3_5v_functions:
 
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_rev03.jpg
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_functional.svg
 	:width: 100%
 	:align: center
 
@@ -18,11 +18,6 @@ It, therefore, crosses between two voltage domains and is an extension of both t
 Like with the original Digital Voltage 5V card, signal directions can be set in groups of eight I/O pins.
 The board supports voltage level shifting, supply rail monitoring, and I²C-based readout of the hardware configuration.
 
-.. important::
-   This card can be ordered with either 10 kΩ or 100 kΩ pull-down resistors on the digital I/O pins. 
-   Choose according to your application. 
-
-
 Functionality
 -------------
 
@@ -31,7 +26,7 @@ The functionality of the adapter card is segmented into several key areas, as de
 1. Four 8-Bit Level Shifters
 
    - The adapter card includes four 8-bit bidirectional level shifters, enabling voltage translation between the 3.3 V and 5 V domains.
-   - Each digital I/O pin features an integrated 10 kΩ/100 kΩ pulldown resistor to ensure a defined logic low state when the pin is not actively driven.
+   - Each digital I/O pin features an integrated 10 kΩ pulldown resistor to ensure a defined logic low state when the pin is not actively driven.
 
 2. Signal direction
 
@@ -48,7 +43,7 @@ The functionality of the adapter card is segmented into several key areas, as de
 
    .. note:: Direction control is only available on a per-group basis. For fully flexible pin assignment, refer to :ref:`digitalVoltage3v3rev01`.
 
-   .. _dig_3v3_5v_rev03_Supervisor:
+   .. _dig_3v3_5v_rev02_Supervisor:
 3. Supply Rail Monitoring, Output Enable Logic, and Source Control
 
    The card monitors both the 3.3 V and 5 V supply rails provided by the carrier board.
@@ -71,27 +66,19 @@ As with some of the previous Digital Voltage cards, all internal rails -- that a
 Configuration
 --------------
 
-Prior to first use, ensure that the card is correctly configured according to the target system's requirements:
+Prior to first use, ensure that the card is correctly configured according to the target system's requirements.
+This includes setting DIP (i.e., I/O directions) and non-DIP (e.g., voltage selection) switches appropriately for the target voltage revision (e.g., Rev04 with a supervisor switch).
 
-* Set I/O directions with SW1 
-* Select interface voltage with S1 (3.3 V/ 5 V)
-* For Rev04 carrier boards, S2 must be set to *use Supervisors*. For Carrier boards :math:`\geq` Rev05, S2 is set to *use CarrierBoard*.
+.. TODOs: Clarify "Rev04 with a supervisor switch" above and add pictures as per belowe
 
-.. _use_carrier_supervisor:
-
-.. figure:: digital_voltage_3v3_5v_rev03/use_carrier_supervisor.jpg
-   :width: 80%
-   :align: center
-
-   Configuration of S2 for Rev04 (top) and :math:`\geq` Rev05 (bottom) carrier boards.
-
+2 Pictures for Rev04 and Rev05
 
 Measurements and technical background
 ----------------------------------------
 
 As described :ref:`here <dig_3v3_5v_rev02_Supervisor>` the board features supervisor monitor devices to disable all digital outputs of the level shifter at undervoltage error state. 
 
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_block_diagram.png
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_block_diagram.png
 	:width: 100%
 	:align: center
 
@@ -104,16 +91,16 @@ The following two measurements show the switch-on and switch-off signal curves w
 - CH3 (blue): nOE_Supervisor
 - CH4 (red): Digital Output
 
-The measurement results show that the level shifter outputs will we be disabled as long as the supply rails are in their accepted range:
+The measurement results show that the level shifter outputs will we be disables as long as the supply rails are in their accepted range:
 
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_uz_switched_on.png
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_uz_switched_on.png
 	:width: 80%
 	:align: center
 
 	Measurement during switch on of the UltraZohm system
 
 
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_uz_switched_off.png
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_uz_switched_off.png
 	:width: 80%
 	:align: center
 
@@ -121,8 +108,8 @@ The measurement results show that the level shifter outputs will we be disabled 
 
 Attention: there is an exceptional situation where the output disable function does not work intuitively. It occurs only in an unrelevant situation where the output voltage is selected to 3.3V and the 5V supply rail on the adapter card fails. In that case the 5V voltage supervisor asserts the output disable function as long as the 5V supply rail voltage decrease under the power-on reset voltage (V_POR = 0.7 V) of the supervisor IC. Thus the open-drain NRESET output jumps back to HIGH level because the 3.3V supervisor IC states healthy condition and all level shifter outputs will be enabled again. This edge case is therefore irrelevant for safety issues, because the 5V rail has no functional meaning when using 3.3V as output voltage. It is recommended to stop inverter operation when this situation occurs. Measurements are shown in following:
 
-.. _uz_d_voltage_3v3_5v_rev03_edge_case:
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_edge_case.png
+.. _uz_d_voltage_3v3_5v_edge_case:
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_edge_case.png
 	:width: 80%
 	:align: center
 
@@ -135,10 +122,10 @@ Accessoires
 
 An optional front panel with integrated voltage indication LEDs is available for enhanced usability.
 
-.. figure:: digital_voltage_3v3_5v_rev03/uz_d_voltage_3v3_5v_blend.svg
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_blend.svg
 	:align: center
 
-To utilize the indication LEDs, a corresponding software extension must be activated manually in the Vitis development environment.
+To utilize this functionality, a corresponding software extension must be activated manually in the Vitis development environment.
 It is part of the demo integrated in the :ref:`uzpA53`'s :ref:`uzpA53_cardid` feature and is enabled by means of the ``UZ_PLATFORM_CARDID`` preprocessor ``#define`` as described :ref:`here <uzpA53_init>`.
 Once enabled, the demo reads the card's voltage configuration at boot-up and drives the LED accordingly.
 As of mid 2025, no error reporting has been defined, i.e., the red LED is still unused.
@@ -149,7 +136,7 @@ References/Source
 
 .. _dig_3v3_5v_rev02_references:
 
-* :download:`Schematic Rev02 <digital_voltage_3v3_5v_rev03/SCH_UZ_D_Voltage_3V3_5V_Default_Rev03.pdf>`
+* :download:`Schematic Rev02 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev02.pdf>`
 * `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
 
 Compatibility

@@ -14,4 +14,4 @@ RS Flip Flop
 
 .. figure:: simulink.jpg
 
-   Implementation of IP-core
+   Implementation of IP core

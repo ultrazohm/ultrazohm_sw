@@ -69,8 +69,11 @@ int main(void)
             initialization_chain = init_gpios;
             break;
         case init_gpios:
-            Initialize_AXI_GPIO();               // This has to be the second line of code in main.c since the assertion callback uses the AXI_GPIO to disable the system
-            uz_frontplane_button_and_led_init(); // This has to be the third line of code since the assertion callback uses the LEDs to indicate an error
+        	uz_sleep_seconds(5);
+            Initialize_AXI_GPIO();
+            uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
+            uz_frontpanel_button_and_led_init(apu_version_final);
+            ultrazohm_state_machine_init(apu_version_final);
             initialization_chain = init_software;
             break;
         case init_software:

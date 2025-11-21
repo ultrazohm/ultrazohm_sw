@@ -19,7 +19,7 @@ It provides many useful features:
 Hardware Interface Definition
 =============================
 
-Usage of the IP-core requires a defined pin mapping on the respective inverter adapter board, as shown in the table below.
+Usage of the IP core requires a defined pin mapping on the respective inverter adapter board, as shown in the table below.
 
 .. _ipCore_uz_inverter_adapter_interfaces:
 
@@ -42,9 +42,9 @@ Organization of the sources
 Folder structure of the sources in ``ip_cores/uz_d_inverter_adapter/``:
 
 - ``constraint_files`` contains ready to use Vivado constraint files for usage of the adapter board interface in any digital slot D1..D4
-- ``driver_ip_core`` contains the ip-core with which the user communicates via the software driver
+- ``driver_ip_core`` contains the IP core with which the user communicates via the software driver
 - ``interface_definition`` contains the Vivado interface definition using the pin names from the constraint files
-- ``mapping_ip_core`` contains the ip-core that maps and organizes signals from the adapter board
+- ``mapping_ip_core`` contains the IP core that maps and organizes signals from the adapter board
 - ``temperature_calculation`` contains excel sheets for determination of the linear interpolation equation to get temperatures in degrees celsius from a duty cycle value of a PWM signal.
   The parameters of the equation depend on the circuit design and/or the used power electronic switch and have to be determined by the adapter board developer carefully
 
@@ -53,18 +53,18 @@ Example Usage
 
 .. _inverter_adapter_usage:
 
-The following step-by-step description shall guide the user in order to properly implement the ip-core and the respective interface and software drivers
+The following step-by-step description shall guide the user in order to properly implement the IP core and the respective interface and software drivers
 
 Vivado Block Design
 -------------------
 
-First, ip cores have to be added to the block design in vivado:
+First, IP cores have to be added to the block design in vivado:
 
 1. Create a hierarchy (e.g. inside the already existing ``uz_user`` hierarchy) in the block design ``right click -> Create Hierarchy...`` in order to keep the block design clean and name it ``uz_inverter_adapter``
-2. Inside this new hierarchy click on the plus (``+``) button to add new ip and first add the ``uz_d_inverter_adapter`` ip-core
-3. Next, ``right click -> Add IP...`` and add the ``uz_inverter_adapter_mapping_v1_0`` ip-core
-4. Connect all signals between those two ip-cores that have equal names
-5. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` ip-core and connect it to the ``uz_d_inverter_adapter`` ip-core, as well as clocks and resets. The ip-core is designed for a 100 MHz clock rate. Do not forget to assign a base address in the Address Editor.
+2. Inside this new hierarchy click on the plus (``+``) button to add new ip and first add the ``uz_d_inverter_adapter`` IP core
+3. Next, ``right click -> Add IP...`` and add the ``uz_inverter_adapter_mapping_v1_0`` IP core
+4. Connect all signals between those two IP cores that have equal names
+5. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` IP core and connect it to the ``uz_d_inverter_adapter`` IP core, as well as clocks and resets. The IP core is designed for a 100 MHz clock rate. Do not forget to assign a base address in the Address Editor.
 6. Provide gate signals to the ``uz_inverter_adapter_mapping_v1_0`` (e.g. by slicing them from the D1_OUT port of the ``uz_digital_adapter`` hierarchy)
 
 After those steps the block design looks like this:
@@ -82,12 +82,12 @@ After those steps the block design looks like this:
 Vivado Interface
 ----------------
 
-Second, the interface between the ip-cores and the physical pins has to be implemented:
+Second, the interface between the IP cores and the physical pins has to be implemented:
 
 1. Inside the top level block design ``right click -> Create Interface Pin...``
 2. Name the interface according to the digital slot where you plan to use the inverter adapter board (e.g. ``D1``)
 3. In the search fiel type in ``inverter``. There should be a result called ``uz_inverter_adapter_rtl:1.0`` in the ``VLNV`` column. Select it and press ``OK``
-4. Connect the interface pin ``D1`` with ``uz_inverter_adapter`` interface port at the ``uz_inverter_adapter_mapping_v1_0`` ip-core (unfolding the hierarchies with the ``+`` buttons in their upper left corner makes it really easy)
+4. Connect the interface pin ``D1`` with ``uz_inverter_adapter`` interface port at the ``uz_inverter_adapter_mapping_v1_0`` IP core (unfolding the hierarchies with the ``+`` buttons in their upper left corner makes it really easy)
 
 After those steps the block design inside your hierarchy looks like this:
 
@@ -116,7 +116,7 @@ Due to our interface using all 30 pins of one digital slot, make sure no other p
 Constraints
 -----------
 Third, the interface definition we connected in the step before uses specific names for the signals and pins. Those have to match the names of the respective constraint file of the respective digital slot. 
-In the subfolder ``constraint_files`` inside the ip-core sources (see :numref:`folder_structure_picture`) ready to use constraint files are prepared for this purpose:
+In the subfolder ``constraint_files`` inside the IP core sources (see :numref:`folder_structure_picture`) ready to use constraint files are prepared for this purpose:
 
 1. Open the respective constraint file (in our example the one for D1: ``Digital_D1_packed.xdc``)
 2. Copy everything inside the file
@@ -141,7 +141,7 @@ under ``uz_d_3ph_inverter``
 
 Software driver
 ---------------
-For interacting with the ip-core, the following step-by-step example shows a way of implementing one instance of the software driver.
+For interacting with the IP core, the following step-by-step example shows a way of implementing one instance of the software driver.
 
 1. In Vitis, in the Baremetal project under the folder ``hw_init`` create a new file ``uz_inverter_adapter_init.c`` 
 2. Include necessary files and create ``config`` and ``output`` structs as well as an init function for one or more instances:
@@ -199,8 +199,8 @@ For interacting with the ip-core, the following step-by-step example shows a way
  }
 
 
-3. When using the pwm measurement feature of the ip core (e.g. for measuring temperatures), set the values in the above ``linear_interpolation_params`` struct according to the linear interpolation function that calculates readable 
-SI-values from the duty cycle information. The example values above of ``162.35`` and ``20.107`` are valid for the uz_d_gan_inverter adapter board and the respective TI LMG3425 GaN switch. See also the folder ``temperature_calculation`` in the sources of this ip-core driver for details. 
+3. When using the pwm measurement feature of the IP core (e.g. for measuring temperatures), set the values in the above ``linear_interpolation_params`` struct according to the linear interpolation function that calculates readable 
+SI-values from the duty cycle information. The example values above of ``162.35`` and ``20.107`` are valid for the uz_d_gan_inverter adapter board and the respective TI LMG3425 GaN switch. See also the folder ``temperature_calculation`` in the sources of this IP core driver for details.
 
 .. _linear_interpolation:
 
@@ -269,7 +269,7 @@ SI-values from the duty cycle information. The example values above of ``162.35`
 
 
 
-10. For reading signals and states of the ip-core use the function ``uz_inverter_adapter_get_outputs`` which updates the states and returns them in the form of a ``uz_inverter_adapter_outputs_t`` struct. This 
+10. For reading signals and states of the IP core use the function ``uz_inverter_adapter_get_outputs`` which updates the states and returns them in the form of a ``uz_inverter_adapter_outputs_t`` struct. This 
 way you can get the states of the status signals of the driver e.g. for assigning them into the ``Global_Data`` struct. 
 
 .. code-block:: c

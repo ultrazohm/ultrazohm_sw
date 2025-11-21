@@ -121,5 +121,16 @@ uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
 	return self->weights;
 }
 
-
+/**
+ * @brief Returns a pointer to the activation function of the layer
+ * 
+ * @param self 
+ * @return float(*)(float) 
+ */
+float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->activation_function);
+}
 #endif

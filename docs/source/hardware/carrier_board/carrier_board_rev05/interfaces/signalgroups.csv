@@ -1,0 +1,7 @@
+Color,Conceptual name,Direction,Rail,Explanation
+Black,5x PILOT_OUT / Output-Enable,S3C → Slot connector,3V3,Final “enable the card`s outputs” to the slot signal. One line per slot
+Blue,FLT (Safe-state request),S3C → Slot Controller,1V8,Asserted whenever any fault or the external stop asks the whole system to go safe. All slot controllers must react to it
+Purple,CarrierRdy (x1),S3C → Slot Controller,1V8,Tells the slot controller that the main carrier (SoC + power rails etc.) is up and running
+Red,5x !FLT / per-slot fault,Slot Controller → S3C,1V8,Each slot pulls its own line low to request a safe state (over-current/temperature/firmware error …)
+Green,5x OE,Slot Controller → S3C,1V8,The slot’s internal AND of PILOT_IN (card`s “I’m ready” signal) and its own health. High = “it is safe to enable my outputs”
+Grey,PILOT_IN (becomes FLT after fusion in slot c.),Slot connector → Slot Controller,3V3,just reminds you that the raw card contact is OK; used locally inside each slot controller when it builds its OE and fault logic

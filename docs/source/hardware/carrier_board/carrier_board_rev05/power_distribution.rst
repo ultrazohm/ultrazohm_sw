@@ -3,7 +3,7 @@ Power Distribution
 ==================
 
 .. warning::
-	Please note that in Rev05 the :ref:`carrier_board_rev5_s3c` is responsible for the Powersequence of the Carrierboard. If the configuration is changed this graph is no longer valid.
+	Please note that, in Rev05, the :ref:`carrier_board_rev05_s3c` is responsible for the power sequence of the carrier board. If the configuration is changed, this graph is no longer valid.
 
 
 Power Distribution Dependency

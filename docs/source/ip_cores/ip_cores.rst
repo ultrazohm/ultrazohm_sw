@@ -1,7 +1,7 @@
 .. _ip_cores:
 
 ========
-IP-Cores
+IP Cores
 ========
 
 
@@ -26,3 +26,5 @@ IP-Cores
     uz_temperatureCard/uz_temperatureCard
     uz_encoder_interfaces/uz_encoder_interfaces
     uz_axi_gpio/uz_axi_gpio
+    uz_NN_acc/uz_NN_acc
+    uz_adc_max11331/uz_adc_max11331

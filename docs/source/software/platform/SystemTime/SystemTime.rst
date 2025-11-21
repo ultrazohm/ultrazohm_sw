@@ -50,12 +50,12 @@ The variable ``IsrExectionTimeInUs`` holds the execution time of the ISR, which 
     }
 
 
-IP-Core
+IP Core
 -------
 
-- The AXI Timer v2.0 IP-Core is abstracted by ``uz_AxiTimer64Bit.h`` which wraps the Xilinx drivers (``xtmrctr.h``)
+- The AXI Timer v2.0 IP core is abstracted by ``uz_AxiTimer64Bit.h`` which wraps the Xilinx drivers (``xtmrctr.h``)
 - Timer is called ``timer_uptime_64bit`` in Vivado Block Design
 
 .. figure:: SystemTime_CounterVivado.png
 
-   ``timer_uptime_64bit`` IP-Core for system time
+   ``timer_uptime_64bit`` IP core for system time

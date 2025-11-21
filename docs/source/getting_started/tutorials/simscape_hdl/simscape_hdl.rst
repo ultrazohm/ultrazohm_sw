@@ -15,8 +15,8 @@ The goal of this tutorial is to provide a starting point for the user and showca
 This tutorial consists of:
   
 - Generating HDL-Code from a `Simulink Simscape Modell <https://de.mathworks.com/products/simscape.html>`_
-- Implementation of the IP-Core
-- Integration of the IP-Core in the UltraZohm Vivado project
+- Implementation of the IP core
+- Integration of the IP core in the UltraZohm Vivado project
 - Follows this Mathworks example: `Generate HDL Code for Simscape Models <https://de.mathworks.com/help/hdlcoder/ug/generate-hdl-code-from-simscape-model.html>`_
 
 .. note:: 
@@ -28,7 +28,7 @@ This tutorial consists of:
 Simscape
 --------
 
-Generate IP-Core
+Generate IP core
 ****************
 
 1. Follow this `Generate HDL Code for Simscape Models <https://de.mathworks.com/help/hdlcoder/ug/generate-hdl-code-from-simscape-model.html>`_ until the step that opens the HDL version of the model
@@ -36,16 +36,16 @@ Generate IP-Core
 3. Right-click the subsystem -> HDL Code -> HDL Workflow Advisor
 4. Settings in HDL Workflow Advisor:
 
-  - ``Zynq Ultrascale`` & ``IP-Core``
-  - Target Interface: ``AXI4-Lite``
-  - Reset: ``Synchronous``
-  - Enable native floating point
-  - Run Workflow to the last point
+   - ``Zynq Ultrascale`` & ``IP core``
+   - Target Interface: ``AXI4-Lite``
+   - Reset: ``Synchronous``
+   - Enable native floating point
+   - Run Workflow to the last point
 
-5. The IP-Core is now generated
-6. Copy the IP-Core to the IP-Core folder in the ultrazohm_sw repository. **Note**: the IP-Core is already present in the repository.
-7. Add IP-Core to Vivado, wire the Core to Clocks, Reset and AXI
-8. Assign an address to the IP-Core (``Address Editor``)
+5. The IP core is now generated
+6. Copy the IP core to the IP core folder in the ultrazohm_sw repository. **Note**: the IP core is already present in the repository.
+7. Add IP core to Vivado, wire the core to Clocks, Reset and AXI
+8. Assign an address to the IP core (``Address Editor``)
 9. Build bitstream & export XSA
 
 Video
@@ -58,13 +58,13 @@ Software
 
 #. Open Vitis
 #. Generate Workspace 
-#. The software driver for the IP-core is located in ``Vitis/software/Baremetal/src/IP_Cores/uz_simscapeExample/``
+#. The software driver for the IP core is located in ``Vitis/software/Baremetal/src/IP_Cores/uz_simscapeExample/``
 #. Add the following code to ``main.c`` (of R5) to the ``init_ip_cores`` section of the switch-case.
 
    .. code-block:: c
       :linenos:
       :emphasize-lines: 34
-      :caption: Snippet of ``main.c`` with initialization of the simscape IP-Core. ``//....`` marks left out code
+      :caption: Snippet of ``main.c`` with initialization of the simscape IP core. ``//....`` marks left-out code
  
        #include "IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h"
        uz_simscapeExample_handle sim_halfWaveRectifier;
@@ -136,7 +136,7 @@ Software
      #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample_private.h"
      extern uz_simscapeExample_handle sim_halfWaveRectifier;
 
-   * Assign the GUI variables ``JSO_ISR_ExecTime_us``, ``JSO_lifecheck``, and ``JSO_ISR_Period_us`` to the output variables of the IP-Core:
+   * Assign the GUI variables ``JSO_ISR_ExecTime_us``, ``JSO_lifecheck``, and ``JSO_ISR_Period_us`` to the output variables of the IP core:
 
    .. code-block:: c
 

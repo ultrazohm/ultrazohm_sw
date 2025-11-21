@@ -11,6 +11,15 @@ Digital Inverter Rev02
   :align: center
 
 
+
+Components
+==========
+
+Additional to the :ref:`components all version share <dig_si_inverter_all_components>`, the following components are used:
+
+- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
+
+
 References
 ==========
 

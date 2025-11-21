@@ -56,7 +56,7 @@ Only information are included about the different schematic sheets, which should
 
 4. If you want you can change the color of the boxes, but not necessary.
 
-5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is defined as an IO Port. If it is only a port in one direction define whether it is an input or an output. This might be helpful by compiling the project.)
+5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is defined as an I/O Port. If it is only a port in one direction define whether it is an input or an output. This might be helpful by compiling the project.)
 
 .. _172_Properties:
 

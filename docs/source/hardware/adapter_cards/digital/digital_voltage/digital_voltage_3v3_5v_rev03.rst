@@ -1,7 +1,7 @@
 .. _digitalVoltage_3v3_5v_rev03:
 
 =============================
-Digital Voltage 3V3/5V Rev03
+Digital Voltage 3V3/5V Rev0
 =============================
 
 
@@ -77,7 +77,7 @@ Prior to first use, ensure that the card is correctly configured according to th
 * Select interface voltage with S1 (3.3 V/ 5 V)
 * For Rev04 carrier boards, S2 must be set to *use Supervisors*. For Carrier boards :math:`\geq` Rev05, S2 is set to *use CarrierBoard*.
 
-.. _use_carrier_supervisor:
+.. _use_carrier_supervisor_rev03:
 
 .. figure:: digital_voltage_3v3_5v_rev03/use_carrier_supervisor.jpg
    :width: 80%

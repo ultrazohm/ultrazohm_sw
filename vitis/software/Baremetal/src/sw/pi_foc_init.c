@@ -12,7 +12,7 @@ extern DS_Data Global_Data;
       .Psi_PM_Vs = 0.140f, //54V/1000rpm -> (54V*sqrt(2)*60/1000) / (3*sqrt(3)*2*pi) = 0.140 Vs
 	  .polePairs = 3.0f,
 	  .I_max_Ampere = 12.5f, //15.0f?
-	  .J_kg_m_squared = 0.00010f // from datasheet
+	  .J_kg_m_squared = 0.0002506f // 0.00010f per motor from datasheet, value calculated from 2*motor,2*coupling and 1x torque sensor
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
     	      .type = UZ_PI_PARALLEL,
@@ -27,8 +27,8 @@ extern DS_Data Global_Data;
 		      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
    };
    const struct uz_PI_Controller_config config_speed_left = {
-		   .Kp = 0.1f,
-		   .Ki = 2.0f,
+		   .Kp = 0.06f,//0.1
+		   .Ki = 8.0f,//2.0
 		   .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
 		   .upper_limit = 9.0f,
 		   .lower_limit = -9.0f

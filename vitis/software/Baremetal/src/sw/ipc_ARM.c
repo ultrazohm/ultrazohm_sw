@@ -21,6 +21,8 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+extern float Kp_current;
+extern float Ki_current;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -208,7 +210,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		//data->av.snd_fld[6] = value;
+		Kp_current = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -267,7 +270,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+		//data->av.snd_fld[18] = value;
+		Ki_current = value;
 			break;
 
 		case (Set_Send_Field_19):

@@ -15,8 +15,13 @@
 
 // Includes from own files
 #include "main.h"
+#include "Codegen/uz_codegen.h"
+
 
 extern const struct uz_PMSM_t Siemens_1FK7043;
+
+uz_codegen codegenInstance;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -86,6 +91,10 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+
+            //Initialize codegen
+            uz_codegen_init(&codegenInstance);
+
             Global_Data.av.polepairs_left = Siemens_1FK7043.polePairs;
             Global_Data.av.polepairs_right = Siemens_1FK7043.polePairs;
             Global_Data.objects.current_ctrl_left = current_ctrl_left_init();

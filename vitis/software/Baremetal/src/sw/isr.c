@@ -40,6 +40,8 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+extern uz_codegen codegenInstance;
+
 //defines and limits
 #define		MAX_CURRENT_AMP		  15.0f
 #define		MAX_SPEED 			3200.0f
@@ -68,6 +70,15 @@ static void control_right_motor();
 static void measured_to_si_values();
 static void check_constraints_current_voltage_temperature();
 static inline float wrap_2pi(float x);
+
+float Te = 0.0f;
+float Kp_current = 0.8f;
+float Ki_current = 40.0f;
+float da = 0.0f;
+float db = 0.0f;
+float dc = 0.0f;
+
+
 
 void ISR_Control(void *data)
 {
@@ -130,13 +141,64 @@ void ISR_Control(void *data)
     	// calculate control algorithm for right motor
     	control_right_motor();
 
-    	// set dutycycles
+    	// Control Algorithm: Input
+    	codegenInstance.input.ia = i_abc_right.a;
+		codegenInstance.input.ib = i_abc_right.b;
+		codegenInstance.input.ic = i_abc_right.c;
+		codegenInstance.input.id_ref = i_dq_ref_right.d;
+		codegenInstance.input.iq_ref = i_dq_ref_right.q;
+		codegenInstance.input.theta_e = Global_Data.av.position_el_2pi_d4_1;
+		codegenInstance.input.w_e = Global_Data.av.omega_el_right;
+		codegenInstance.input.Comp_PM = 1.0f;
+		codegenInstance.input.Rs_PM = 1.2f;
+		codegenInstance.input.Psi_PM = 0.14f;
+		//codegenInstance.input.Psi_PM = 0.140f;
+		codegenInstance.input.Ts = Global_Data.av.isr_samplerate_s;
+		codegenInstance.input.V_dc_nom_PM = Global_Data.av.v_dc_left;
+		codegenInstance.input.Ld_PM = 0.0136f;
+		codegenInstance.input.Lq_PM = 0.0136f;
+		codegenInstance.input.Lambda = 0.0f;
+		//codegenInstance.input.Lambda = 0.00001f;
+		codegenInstance.input.Np = 3.0f;
+		codegenInstance.input.Kp_current = Kp_current;
+		codegenInstance.input.Ki_current = Ki_current;
+
+		codegenInstance.input.id_ref_left = Global_Data.rasv.i_dq_ref_left.d;
+		codegenInstance.input.iq_ref_left = Global_Data.rasv.i_dq_ref_left.q;
+		codegenInstance.input.id_left = Global_Data.av.i_d_left;
+		codegenInstance.input.iq_left = Global_Data.av.i_q_left;
+		codegenInstance.input.theta_left = Global_Data.av.position_el_2pi_d3_1;
+		codegenInstance.input.we_left = Global_Data.av.omega_el_left;
+
+
+
+    	Te = 1.5f*codegenInstance.input.Np*codegenInstance.input.Psi_PM*i_dq_right.q;
+		// Control Algorithm: Execution
+    	uz_codegen_step(&codegenInstance);
+
+    	da = codegenInstance.output.da;
+    	db = codegenInstance.output.db;
+    	dc = codegenInstance.output.dc;
+
+    	// Control Algorithm: Output/Set dutycycles
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
     	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
     	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
-    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+    	//Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.da_left;
+    	//Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.db_left;
+    	//Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.dc_left;
+    	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.da;
+    	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.db;
+    	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.dc;
+    	//Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+    	//Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+    	//Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+    	//Global_Data.rasv.halfBridge1DutyCycle = 1.0f;
+    	//Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	//Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	//Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+    	//Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+    	//Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -285,15 +347,20 @@ static void control_left_motor() {
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.omega_mech_left, Global_Data.rasv.n_ref_left_filt);
 	// calculate current setpoints i_dq_ref for left motor
 	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left,Global_Data.av.omega_mech_left, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+
 	// calculate reference voltages for current control
 	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_el_left);
+
 	// get integrator clamping flag from current control
 	Global_Data.av.currentcontrol_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
+
 	// set clamping of integrators of speed control when current control is clamped
 	uz_SpeedControl_set_ext_clamping(Global_Data.objects.speed_ctrl_left, Global_Data.av.currentcontrol_clamping_left);
+
 	// write v_dq_ref_left to Global_Data
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
+
 	// calculate SVPMW dutycycles
 	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.position_el_2pi_d3_1);
 };
@@ -332,14 +399,14 @@ Global_Data.av.torque = (Global_Data.aa.A1.me.ADC_B5 * 20.0f) + Global_Data.rasv
 Global_Data.av.torque_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_torque, Global_Data.av.torque);
 
 // assign inverter measurements - Conversion factors from Michi
-Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A1 * 199.3266f) - 0.03954f;
-Global_Data.av.i_b_left = (Global_Data.aa.A1.me.ADC_A2 * 199.3347f) - 0.00550f;
-Global_Data.av.i_c_left = (Global_Data.aa.A1.me.ADC_A3 * -198.6403f) - 0.01849f;
-Global_Data.av.v_dc_left = (Global_Data.aa.A1.me.ADC_A4 * 2004.1883f) -0.26683f;
+Global_Data.av.i_a_left = (Global_Data.aa.A1.me.ADC_A1 * 92.713f) + 0.186f;
+Global_Data.av.i_b_left = (Global_Data.aa.A1.me.ADC_A2 * 92.688f) + 0.159f;
+Global_Data.av.i_c_left = (Global_Data.aa.A1.me.ADC_A3 * -92.861f) + 0.076f;
+Global_Data.av.v_dc_left = (Global_Data.aa.A1.me.ADC_A4 * 4153.408f) - 0.138f;
 
-Global_Data.av.i_a_right = (Global_Data.aa.A1.me.ADC_B8 * 199.3266f) - 0.03954f;
-Global_Data.av.i_b_right = (Global_Data.aa.A1.me.ADC_B6 * 199.3347f) - 0.00550f;
-Global_Data.av.i_c_right = (Global_Data.aa.A1.me.ADC_B7 * -198.6403f) - 0.01849f;
+Global_Data.av.i_a_right = (Global_Data.aa.A1.me.ADC_B8 * 92.593f) + 0.186f;
+Global_Data.av.i_b_right = (Global_Data.aa.A1.me.ADC_B6 * 92.822f) + 0.229f;
+Global_Data.av.i_c_right = (Global_Data.aa.A1.me.ADC_B7 * -92.681f) + 0.088f;
 //
 //
 //Global_Data.av.v_dc_right = (Global_Data.aa.A1.me.ADC_B5  * 2004.1883f) -0.26683f;

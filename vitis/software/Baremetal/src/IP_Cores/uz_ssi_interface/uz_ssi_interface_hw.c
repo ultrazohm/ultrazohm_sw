@@ -6,7 +6,6 @@
 #define FRAC_SAMPLING_INTERVAL 24
 #define FRAC_KP_PLL 5
 #define FRAC_KI_PLL 0
-#define FRAC_MECH_OFFSET 23
 #define FRAC_POSITION_SI 24
 #define FRAC_SPEED_MECH_SI 16
 #define FRAC_SPEED_EL_SI 12
@@ -101,11 +100,8 @@ void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_
 
 void uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-//    uz_assert(mech_offset_si >= -7.999f); // fixed-point data type sfix27_En23 is limited -8 ... +7.999.
-//    uz_assert(mech_offset_si <= 7.999f);
-
-//    int32_t mech_offset_si_fp = uz_convert_float_to_sfixed(mech_offset_si, FRAC_MECH_OFFSET);
-//    uz_axi_write_int32(base_address + position_mech_offset_si_AXI_Data_uz_ssi_interface, mech_offset_si_fp);
+    uz_assert(mech_offset_ticks_single_turn <= 2147483647);
+    uz_assert(mech_offset_ticks_single_turn >= -2147483647);
     uz_axi_write_int32(base_address + position_mech_offset_ticks_AXI_Data_uz_ssi_interface, mech_offset_ticks_single_turn);
 }
 

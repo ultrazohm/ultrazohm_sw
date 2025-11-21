@@ -17,6 +17,8 @@ IIR filter
 
 .. doxygenfunction:: uz_signals_IIR_Filter_reverse_sample
 
+.. doxygenfunction:: uz_signals_IIR_Filter_reset
+    
 Example
 =======
 

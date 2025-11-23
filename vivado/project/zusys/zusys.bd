@@ -8796,8 +8796,8 @@
       },
       "PWM_3Level_control_0": {
         "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
-        "xci_name": "zusys_PWM_3Level_control_0_0",
-        "xci_path": "ip\\zusys_PWM_3Level_control_0_0\\zusys_PWM_3Level_control_0_0.xci",
+        "xci_name": "zusys_PWM_3Level_control_0_1",
+        "xci_path": "ip\\zusys_PWM_3Level_control_0_1\\zusys_PWM_3Level_control_0_1.xci",
         "inst_hier_path": "PWM_3Level_control_0"
       }
     },
@@ -9088,8 +9088,8 @@
           "uz_analog_adapter/s00_axi_aresetn",
           "uz_digital_adapter/RESETN",
           "uz_user/aresetn",
-          "PWM_3Level_control_0/IPCORE_RESETN",
-          "PWM_3Level_control_0/AXI4_Lite_ARESETN"
+          "PWM_3Level_control_0/AXI4_Lite_ARESETN",
+          "PWM_3Level_control_0/IPCORE_RESETN"
         ]
       },
       "uz_system_wdt_interrupt": {

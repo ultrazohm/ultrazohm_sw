@@ -879,6 +879,34 @@
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114355138">
+		</CoreRevision>
+		<ComponentPath value="PWM_3Level_control_ip_v1_0/ipcore/PWM_3Level_control_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:PWM_3Level_control:1.0">
+		</VLNV>
+		<DisplayName value="PWM_3Level_control">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
 		<CoreRevision value="2114352217">

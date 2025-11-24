@@ -113,10 +113,10 @@
       },
       "uz_user": {
         "smartconnect_1": "",
-        "uz_axi_testIP_0": ""
+        "uz_axi_testIP_0": "",
+        "PWM_3Level_control_0": ""
       },
-      "zynq_ultra_ps_e_0": "",
-      "PWM_3Level_control_0": ""
+      "zynq_ultra_ps_e_0": ""
     },
     "ports": {
       "A1_IN": {
@@ -3473,11 +3473,6 @@
             "mode": "Slave",
             "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "M14_AXI": {
-            "mode": "Master",
-            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           }
         },
         "ports": {
@@ -4106,7 +4101,7 @@
                 "value": "3"
               },
               "NUM_MI": {
-                "value": "16"
+                "value": "14"
               },
               "NUM_SI": {
                 "value": "1"
@@ -4139,9 +4134,7 @@
                   "M10_AXI",
                   "M11_AXI",
                   "M12_AXI",
-                  "M13_AXI",
-                  "M14_AXI",
-                  "M15_AXI"
+                  "M13_AXI"
                 ]
               },
               "M00_AXI": {
@@ -4577,42 +4570,6 @@
                     "value": "0"
                   }
                 }
-              },
-              "M14_AXI": {
-                "mode": "Master",
-                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "1"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_READ_THREADS": {
-                    "value": "1"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_THREADS": {
-                    "value": "1"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              },
-              "M15_AXI": {
-                "mode": "Master",
-                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
               }
             }
           },
@@ -5359,12 +5316,6 @@
               "smartconnect_0/M13_AXI"
             ]
           },
-          "smartconnect_0_M14_AXI": {
-            "interface_ports": [
-              "M14_AXI",
-              "smartconnect_0/M14_AXI"
-            ]
-          },
           "smartconnect_1_M00_AXI": {
             "interface_ports": [
               "AXI4_Lite_PWM_2",
@@ -5596,6 +5547,9 @@
             "xci_path": "ip\\zusys_smartconnect_1_1\\zusys_smartconnect_1_1.xci",
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
+              "NUM_CLKS": {
+                "value": "1"
+              },
               "NUM_MI": {
                 "value": "2"
               },
@@ -5617,7 +5571,8 @@
                   }
                 },
                 "bridges": [
-                  "M00_AXI"
+                  "M00_AXI",
+                  "M01_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5657,7 +5612,7 @@
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
                 "parameters": {
                   "MAX_BURST_LENGTH": {
-                    "value": "256"
+                    "value": "1"
                   },
                   "NUM_READ_OUTSTANDING": {
                     "value": "8"
@@ -5689,6 +5644,12 @@
             "xci_name": "zusys_uz_axi_testIP_0_0",
             "xci_path": "ip\\zusys_uz_axi_testIP_0_0\\zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
+          },
+          "PWM_3Level_control_0": {
+            "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
+            "xci_name": "zusys_PWM_3Level_control_0_3",
+            "xci_path": "ip\\zusys_PWM_3Level_control_0_3\\zusys_PWM_3Level_control_0_3.xci",
+            "inst_hier_path": "uz_user/PWM_3Level_control_0"
           }
         },
         "interface_nets": {
@@ -5703,6 +5664,12 @@
               "smartconnect_1/M00_AXI",
               "uz_axi_testIP_0/AXI4"
             ]
+          },
+          "smartconnect_1_M01_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M01_AXI",
+              "PWM_3Level_control_0/AXI4_Lite"
+            ]
           }
         },
         "nets": {
@@ -5711,7 +5678,9 @@
               "aresetn",
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
-              "uz_axi_testIP_0/IPCORE_RESETN"
+              "uz_axi_testIP_0/IPCORE_RESETN",
+              "PWM_3Level_control_0/AXI4_Lite_ARESETN",
+              "PWM_3Level_control_0/IPCORE_RESETN"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5719,7 +5688,9 @@
               "aclk",
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
-              "uz_axi_testIP_0/IPCORE_CLK"
+              "uz_axi_testIP_0/IPCORE_CLK",
+              "PWM_3Level_control_0/IPCORE_CLK",
+              "PWM_3Level_control_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -8793,12 +8764,6 @@
             }
           }
         }
-      },
-      "PWM_3Level_control_0": {
-        "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
-        "xci_name": "zusys_PWM_3Level_control_0_1",
-        "xci_path": "ip\\zusys_PWM_3Level_control_0_1\\zusys_PWM_3Level_control_0_1.xci",
-        "inst_hier_path": "PWM_3Level_control_0"
       }
     },
     "interface_nets": {
@@ -8828,8 +8793,8 @@
       },
       "S00_AXI_1": {
         "interface_ports": [
-          "uz_system/M09_AXI",
-          "uz_user/S00_AXI"
+          "uz_user/S00_AXI",
+          "uz_system/M09_AXI"
         ]
       },
       "S00_AXI_2": {
@@ -8890,12 +8855,6 @@
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite1",
           "uz_system/M13_AXI1"
-        ]
-      },
-      "uz_system_M14_AXI": {
-        "interface_ports": [
-          "uz_system/M14_AXI",
-          "PWM_3Level_control_0/AXI4_Lite"
         ]
       },
       "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
@@ -9087,9 +9046,7 @@
           "uz_system/peripheral_aresetn",
           "uz_analog_adapter/s00_axi_aresetn",
           "uz_digital_adapter/RESETN",
-          "uz_user/aresetn",
-          "PWM_3Level_control_0/AXI4_Lite_ARESETN",
-          "PWM_3Level_control_0/IPCORE_RESETN"
+          "uz_user/aresetn"
         ]
       },
       "uz_system_wdt_interrupt": {
@@ -9134,9 +9091,7 @@
           "uz_system/clk",
           "uz_user/aclk",
           "zynq_ultra_ps_e_0/maxihpm0_lpd_aclk",
-          "zynq_ultra_ps_e_0/saxi_lpd_aclk",
-          "PWM_3Level_control_0/IPCORE_CLK",
-          "PWM_3Level_control_0/AXI4_Lite_ACLK"
+          "zynq_ultra_ps_e_0/saxi_lpd_aclk"
         ]
       }
     },
@@ -9201,7 +9156,7 @@
                 "range": "64K"
               },
               "SEG_PWM_3Level_control_0_reg0": {
-                "address_block": "/PWM_3Level_control_0/AXI4_Lite/reg0",
+                "address_block": "/uz_user/PWM_3Level_control_0/AXI4_Lite/reg0",
                 "offset": "0x0080120000",
                 "range": "64K"
               },

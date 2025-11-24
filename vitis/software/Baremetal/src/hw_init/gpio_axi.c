@@ -43,10 +43,8 @@ void Initialize_AXI_GPIO(void)
 {
     int status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
     if (XST_SUCCESS == status){
-    	uz_printf("succes\n");
     }
     uz_assert(XST_SUCCESS == status);
-    uz_printf("succes2\n");
     XGpio_SetDataDirection(&Gpio_OUT, AXI_GPIO_CHANNEL, 0x00U); //SW: First eight signals are outputs by setting the bitmask to zero for these
 }
 

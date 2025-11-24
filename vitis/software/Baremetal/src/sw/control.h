@@ -13,8 +13,25 @@
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
+#ifndef __control_h__
+#define __control_h__
+
+#include "../main.h"
 #include "../FOC_CodeGen/FOC_FCF.h"
 
+/* public variables */
 extern RT_MODEL_FOC_FCF_T *const FOC_FCF_MPtr;
 
+extern uint8_t Control_FLAG_1ms;
+extern uint8_t Control_FLAG_10ms;
+extern uint8_t Control_FLAG_100ms;
+
+
+/* public functions */
 void init_control_functions(void);
+extern void Control_Task_1ms(void);
+extern void Control_Task_10ms(void);
+extern void Control_Task_100ms(void);
+extern void Control_Task_Idle(void);
+
+#endif /* __control_h__ */

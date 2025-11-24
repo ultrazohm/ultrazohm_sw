@@ -46,6 +46,10 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+uint8_t Control_timer_1ms;
+uint8_t Control_timer_10ms;
+uint8_t Control_timer_100ms;
+
 typedef struct {
 	struct {
 		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
@@ -80,6 +84,7 @@ float PWM_DutyCycle_2;
 uint32_t inverter_status_RDY;
 uint32_t inverter_status_FLT;
 uint8_t inverter_GateDriverEnable;
+float I_dq_Ref[2];
 
 
 //==============================================================================================================================================================
@@ -98,6 +103,17 @@ void ISR_Control(void *data)
     // read position from resolver IP Core
     Global_Data.av.theta_elec = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
 
+	// write inputs to fast control function of simulink model
+	FOC_FCF_MPtr->inputs->U_DC = 12;
+	FOC_FCF_MPtr->inputs->FOC_Enable = 1;
+	FOC_FCF_MPtr->inputs->phi_elrad = Global_Data.av.theta_elec;
+	FOC_FCF_MPtr->inputs->I_phA[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+	FOC_FCF_MPtr->inputs->I_phA[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+	FOC_FCF_MPtr->inputs->I_phA[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = I_dq_Ref[0];
+	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = I_dq_Ref[1];
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
@@ -107,9 +123,6 @@ void ISR_Control(void *data)
 //    	ctrl_data.fcf_in.
 
 
-    	// write inputs to fast control function of simulink model
-    	FOC_FCF_MPtr->inputs->U_DC = 123;
-    	FOC_FCF_MPtr->inputs->FOC_Enable = 1;
 
     	FOC_FCF_step(FOC_FCF_MPtr);
 
@@ -147,6 +160,26 @@ void ISR_Control(void *data)
 
 	xcp_irq();
     JavaScope_update(&Global_Data);
+
+    // @ToDo: increment timer in a fixed timed task by system trigger (e.g. general purpose interrupt) instead of calling in ISR_Control() function that is related to PWM frequency. --> can lead to wrong timing if PWM frequency is not an integer divisor of 1ms
+    if(++Control_timer_1ms >= (0.001f * UZ_PWM_FREQUENCY))
+    {
+    	Control_timer_1ms = 0;
+    	Control_FLAG_1ms = 1;
+
+    	if(++Control_timer_10ms >= 10)
+    	{
+    		Control_timer_10ms = 0;
+    		Control_FLAG_10ms = 1;
+
+    		if(++Control_timer_100ms >= 10)
+    		{
+    			Control_timer_100ms = 0;
+    			Control_FLAG_100ms = 1;
+    		}
+    	}
+    }
+
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

@@ -24,6 +24,12 @@ ExtU_FOC_FCF_T FOC_FCF_U;       /* External inputs */
 ExtY_FOC_FCF_T FOC_FCF_Y;       /* External outputs */
 // ----------------------
 
+// system variables that are set by a timer and deleted after function processing
+uint8_t Control_FLAG_1ms;
+uint8_t Control_FLAG_10ms;
+uint8_t Control_FLAG_100ms;
+
+uint8_t cnt_1ms;
 
 void init_control_functions(void)
 {
@@ -38,3 +44,34 @@ void init_control_functions(void)
 
 }
 
+/**
+ * Control Task 1ms
+ */
+void Control_Task_1ms(void)
+{
+	++cnt_1ms;
+}
+
+/**
+ * Control Task 10ms
+ */
+void Control_Task_10ms(void)
+{
+
+}
+
+/**
+ * Control Task 100ms
+ */
+void Control_Task_100ms(void)
+{
+
+}
+
+/**
+ * Control Task Idle
+ */
+void Control_Task_Idle(void)
+{
+
+}

@@ -80,8 +80,8 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_left);
     Global_Data.av.inverter_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_right);
 
-	// Torque Sensor measurement auf A3 (analog zum Standard: ADC_A1, aber Karte A3)
-	Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * (-1.0f); // positive q-current = positive torque
+	// Torque Sensor measurement (A3)
+	//Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * (-1.0f); // positive q-current = positive torque
 
 
 	// assign inverter measurements LEFT (A1)
@@ -121,21 +121,15 @@ void ISR_Control(void *data)
     // calculate mean temperature values over all measured temperatures of each inverter
     Global_Data.av.mean_temp_inv_left = (
             Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1 +
-            Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L1 +
             Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2 +
-            Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L2 +
-            Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3 +
-            Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L3
-    ) * 0.1667f;
+            Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3
+    ) * 0.3333f;
 
     Global_Data.av.mean_temp_inv_right = (
             Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1 +
-            Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1 +
             Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2 +
-            Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2 +
-            Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3 +
-            Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3
-    ) * 0.1667f;
+            Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3
+    ) * 0.3333f;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 

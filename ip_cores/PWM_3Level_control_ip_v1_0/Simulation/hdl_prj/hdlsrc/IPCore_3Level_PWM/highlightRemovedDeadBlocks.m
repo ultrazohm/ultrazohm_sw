@@ -1,9 +1,0 @@
-cs.HiliteType = 'user1';
-cs.ForegroundColor = 'black';
-cs.BackgroundColor = 'red';
-set_param(0, 'HiliteAncestorsData', cs);
-hilite_system('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/Subsystem','user1');
-hilite_system('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/Subsystem/Delay1','user1');
-hilite_system('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/Subsystem/Delay2','user1');
-hilite_system('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/Subsystem/Relational Operator1','user1');
-hilite_system('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/Subsystem/Relational Operator7','user1');

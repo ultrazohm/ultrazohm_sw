@@ -108,6 +108,8 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 		uz_printf("Hw variant:      %02i\r\n", eeprom->serialdata.uzhw_variantandserial.vv);
 		if ( (UZP_HWGROUP_ADCARD == eeprom->hw_group) && (UZP_HWGROUP_ADCARD_DIGOPT == eeprom->hw_model) )
 			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model004variants_enum2label(eeprom->serialdata.uzhw_variantandserial.vv));
+		if ( (UZP_HWGROUP_ADCARD == eeprom->hw_group) && (UZP_HWGROUP_ADCARD_DIGVOLT335 == eeprom->hw_model) )
+			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model015variants_enum2label(eeprom->serialdata.uzhw_variantandserial.vv));
 		uz_printf("Hw serial:     %04i\r\n", eeprom->serialdata.uzhw_variantandserial.sn);
 	}
 	uz_printf("\\=================/\r\n");

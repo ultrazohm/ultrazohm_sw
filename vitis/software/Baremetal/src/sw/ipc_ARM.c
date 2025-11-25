@@ -24,6 +24,10 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+// custom
+extern float PWM_3L_input_freq;
+extern float PWM_3L_input_duty_cycle;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -186,11 +190,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		PWM_3L_input_freq = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		PWM_3L_input_duty_cycle = value;
 			break;
 
 		case (Set_Send_Field_3):

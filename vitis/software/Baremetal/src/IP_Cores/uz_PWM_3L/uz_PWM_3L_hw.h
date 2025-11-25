@@ -12,7 +12,7 @@ typedef struct PWM_3L* PWM_3L_handle;
 void uz_PWM_3L_hw_set_carrier_f(uint32_t base_address, uint32_t f_carrier_hz);
 void uz_PWM_3L_hw_enable_IP_core(uint32_t base_address);
 void uz_PWM_3L_hw_set_u1(uint32_t base_address, float u1);
-void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t *states);
+void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t states[][4]);
 uint32_t uz_PWM_3L_hw_enable_IP_core_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_u1_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_get_carrier(uint32_t base_address);

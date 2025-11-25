@@ -38,6 +38,12 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+extern PWM_3L_handle PWM_3L_instance;
+
+// Custom Variables
+float PWM_3L_input_freq;
+float PWM_3L_input_duty_cycle;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -56,6 +62,15 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, PWM_3L_input_freq);
+    	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, PWM_3L_input_duty_cycle);
+    	uint8_t SS3L_out [3][4];
+    	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
+    	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];
+    	PWM_3L_instance->switchStates[0][1] = (float)SS3L_out[0][1];
+    	PWM_3L_instance->switchStates[0][2] = (float)SS3L_out[0][2];
+    	PWM_3L_instance->switchStates[0][3] = (float)SS3L_out[0][3];
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

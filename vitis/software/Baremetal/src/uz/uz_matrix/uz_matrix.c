@@ -23,7 +23,8 @@
 uz_matrix_t *uz_matrix_init(uz_matrix_t *self, float *data, uint32_t length_of_data, uint32_t rows, uint32_t columns)
 {
     uz_assert_not_NULL(self);
-    uz_assert_false(self->length_of_data);
+    uz_assert_not_NULL(data);
+    uz_assert_not_zero_unsigned_int(length_of_data);
     uz_assert_not_zero_unsigned_int(rows);
     uz_assert_not_zero_unsigned_int(columns);
     uz_assert(length_of_data == (rows * columns));

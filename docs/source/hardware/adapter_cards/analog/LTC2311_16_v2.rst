@@ -121,7 +121,7 @@ References
 * :download:`Assembly Drawing 2v03 <LTC2311_16_v2/ASM_LTC2311_16_2v03.pdf>`
 * :download:`LTSpice simulation 2v03 <LTC2311_16_v2/ADC_LT2311_16_sim.asc>`
 * :download:`Measurements of Variants and their linearity 2v03 <LTC2311_16_v2/ADC_LTC2311_16_v2_Testing.xlsx>`
-* IP Core ADC :ref:`ipCore_LTC23`
+* IP Core ADC :ref:`ipCore_LTC2311_v3`
 
 Designed by 
 """""""""""

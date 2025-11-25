@@ -28,12 +28,11 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2022-02-16_10-27-23.csv';
+% file_name = 'Log_2024-03-11_99-99-99.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
-opts.VariableNamesLine = 4;
-opts.VariableDescriptionsLine = 5;
+opts.VariableNamesLine = 1;
 opts = setvartype(opts, 'double');
 
 log = readtable(file_name, opts);
@@ -67,7 +66,14 @@ n_samples_full = size(log.time,1);
 log.time(:) = log.time - log.time(1);
 
 % get names of entries in log table
-channel_names  = log.Properties.VariableNames;
+for i=1:length(log.Properties.VariableNames)   
+    if i==1
+        channel_names(i) = {'time'};
+    else
+        channel_names(i) = {strtok(log.Properties.VariableNames{i},'_')};
+    end
+end
+log.Properties.VariableNames = channel_names;
 variable_names = log.Properties.VariableDescriptions;
 
 %% Plot all channels

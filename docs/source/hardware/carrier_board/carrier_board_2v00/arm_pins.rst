@@ -1,3 +1,5 @@
+.. _carrier_board_rev02_mios:
+
 ========================
 Overview of the ARM Pins
 ========================
@@ -6,7 +8,7 @@ In the following table you will find an overview of the pin mapping of the SoC M
 All accessible MIO pins through a connector are labeled with the appropriate carrier board schematic label in column **Schematic Connector Label** and the connector pin in column **CB-Pin** (CB --> Carrier Board).
 The connectivity between MIO pin and the four user LEDs is shown by column **LED**.
 
-.. csv-table:: Overview of the MIO Pins
+.. csv-table:: Overview of the MIO Pins (2v00)
   :file: interfaces/MIO_Pinout.csv
   :widths: 5 8 8 5 10 5 5
   :header-rows: 1

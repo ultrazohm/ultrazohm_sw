@@ -49,7 +49,8 @@ It is equipped with an 16 bit ADC of +-5 V and an OPV to adjust the incoming sig
 To use the basic configuration without setting up the OPV on the adapter card, scale your voltage signals to +-5 V. 
 An overview of possible signal types is listed below. 
 Please refer to the documentation of the latest analog adapter card for more technical details. 
-The adapter card is equipped with two RJ45-Sockets. See :ref:`analogAdapters` for pinout configuration.
+The adapter card is equipped with two RJ45-Sockets.
+See :ref:`Analog_LTC2311_16` for pinout configuration.
 
 - Voltage signals
     - Single ended with offset voltage

@@ -2,7 +2,7 @@
 Overview
 ========
 
-An overview about interfaces is shown in chapter  :ref:`label_carrier_board_overview`.
+An overview of the carrier's interfaces is shown in chapter :ref:`label_carrier_board_overview`.
 
 
 Downloads

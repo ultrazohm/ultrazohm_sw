@@ -9,10 +9,10 @@
 
 typedef struct
 {
-	bool readyLED;
-	bool runningLED;
-	bool errorLED;
-	bool userLED;
+    bool readyLED;
+    bool runningLED;
+    bool errorLED;
+    bool userLED;
 } uz_led_states_t;
 
 typedef struct
@@ -25,6 +25,7 @@ typedef struct
     bool enable_control;
     bool stop_flag;
     bool error_flag;
+    uint32_t platform_revision;
 } ultrazohm_state_t;
 
 ultrazohm_state_t ultrazohm_state = {
@@ -38,7 +39,6 @@ static void ultrazohm_state_machine_event_handled(void);
 static void ready_LED_blink_slow(void);
 static void ready_LED_blink_fast(void);
 
-
 static void idle_entry(void);
 static void running_entry(void);
 static void control_entry(void);
@@ -47,6 +47,13 @@ static void idle_during(void);
 static void running_during(void);
 static void control_during(void);
 static void error_during(void);
+
+void ultrazohm_state_machine_init(uint32_t ultrazohm_revision)
+{
+    uz_assert(ultrazohm_revision > 0U);
+    uz_assert(ultrazohm_revision <= UZ_HARDWARE_VERSION_MAX);
+    ultrazohm_state.platform_revision = ultrazohm_revision;
+}
 
 void ultrazohm_state_machine_step(void)
 {
@@ -106,13 +113,16 @@ void ultrazohm_state_machine_set_stop(bool stop)
 
 void ultrazohm_state_machine_set_userLED(bool onoff)
 {
-	if(onoff==true) {
-		uz_led_set_userLED_on();
-		ultrazohm_state.uz_led_states.userLED = true;
-	} else {
-		uz_led_set_userLED_off();
-		ultrazohm_state.uz_led_states.userLED = false;
-	}
+    if (onoff == true)
+    {
+        uz_led_set_userLED_on();
+        ultrazohm_state.uz_led_states.userLED = true;
+    }
+    else
+    {
+        uz_led_set_userLED_off();
+        ultrazohm_state.uz_led_states.userLED = false;
+    }
 }
 
 void ultrazohm_state_machine_set_error(bool error)
@@ -268,25 +278,33 @@ static void ready_LED_blink_slow(void)
 
 void poll_buttons(void)
 {
-#ifndef UZ_HARDWARE_VERSION
-#error Hardware version of the UltraZohm is not defined!
-#else
-#if (UZ_HARDWARE_VERSION > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
-    ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
-    ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
-    ultrazohm_state.stop_flag = !uz_GetPushButtonStop(); // internal stop or external stop are both low-active, either of them sets stop flag
+    uz_assert(ultrazohm_state.platform_revision > 0U);
+    uz_assert(ultrazohm_state.platform_revision <= UZ_HARDWARE_VERSION_MAX);
+    if (ultrazohm_state.platform_revision > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
+    {
+        ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
+        ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
+        if (ultrazohm_state.platform_revision > 4U)
+        {
+            ultrazohm_state.stop_flag = uz_GetPushButtonStop();
+        }
+        else
+        {
+            ultrazohm_state.stop_flag = !uz_GetPushButtonStop();
+        }
+    }
 
-#if UZ_USE_EXTERNAL_STOP_ON_V4
+
+#if UZ_USE_EXTERNAL_STOP
     ultrazohm_state.stop_flag = (ultrazohm_state.stop_flag) || (!uz_GetExternalStop());
 #endif
 
-#endif
-#if (UZ_HARDWARE_VERSION == 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
-    ultrazohm_state.enable_system = 0;
-    ultrazohm_state.enable_control = 0;
-    ultrazohm_state.stop_flag = 0; // If 0, stop is pressed
-#endif
-#endif
+    if (ultrazohm_state.platform_revision == 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
+    {
+        ultrazohm_state.enable_system = 0;
+        ultrazohm_state.enable_control = 0;
+        ultrazohm_state.stop_flag = 0; // If 0, stop is pressed
+    }
 }
 
 static void ultrazohm_state_machine_event_handled(void)
@@ -308,15 +326,19 @@ platform_state_t ultrazohm_state_machine_get_state(void)
     return (ultrazohm_state.current_state);
 }
 
-bool ultrazohm_state_get_led_running(void){
+bool ultrazohm_state_get_led_running(void)
+{
     return (ultrazohm_state.uz_led_states.runningLED);
 }
-bool ultrazohm_state_get_led_ready(void){
+bool ultrazohm_state_get_led_ready(void)
+{
     return (ultrazohm_state.uz_led_states.readyLED);
 }
-bool ultrazohm_state_get_led_error(void){
+bool ultrazohm_state_get_led_error(void)
+{
     return (ultrazohm_state.uz_led_states.errorLED);
 }
-bool ultrazohm_state_get_led_user(void){
+bool ultrazohm_state_get_led_user(void)
+{
     return (ultrazohm_state.uz_led_states.userLED);
 }

@@ -1,0 +1,3 @@
+Bit(s),Name,Default Value,Access,Description
+3-0,clk_division,0,Read/Write, The SPI sclk is generated internally by using a clock divider. The divider can be parameterized by the R5 processor. Clock divider 1 set the SPI SCK to 50Mhz. Divider 2 to 25Mhz. Divider 3 to 16.6Mhz and so on. The SPI SCK frequency will be given by: IP-Core clk frequency / (2 up (clock divider)).
+

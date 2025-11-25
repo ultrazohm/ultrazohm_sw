@@ -39,6 +39,22 @@ void test_uz_matrix_init_zero_rows(void)
     TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
+void test_uz_matrix_init_data_NULL(void)
+{
+    uint32_t rows = 0U;
+    uint32_t columns = 3U;
+    float mat[5] = {0};
+    TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(NULL, UZ_MATRIX_SIZE(mat), rows, columns));
+}
+
+void test_uz_matrix_init_length_of_data_zero(void)
+{
+    uint32_t rows = 0U;
+    uint32_t columns = 3U;
+    float mat[5] = {0};
+    TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, 0U, rows, columns));
+}
+
 void test_uz_matrix_init_zero_columns(void)
 {
     uint32_t rows = 3U;

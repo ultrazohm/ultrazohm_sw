@@ -1,0 +1,8 @@
+vlib work
+vmap -c
+vcom  PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd
+vcom  PWM_3Level_control_src_Divide.vhd
+vcom  PWM_3Level_control_src_CarrierGen.vhd
+vcom  PWM_3Level_control_src_PWM_Direct_Comparison.vhd
+vcom  PWM_3Level_control_src_GenPWM.vhd
+vcom  PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd

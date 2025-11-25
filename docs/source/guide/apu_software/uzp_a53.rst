@@ -112,7 +112,7 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
   * ``UZP_HWGROUP_ADCARD_DAC8831``,
   * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
   * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
-  * ``UZP_HWGROUP_ADCARD_DIGVOLT335``(with two variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model014variants_t``),
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT335`` (with two variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model014variants_t``),
   * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
   * ``UZP_HWGROUP_ADCARD_DIGABSENC``
 
@@ -209,11 +209,13 @@ D cards
     * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX12TX`` (18 TX + 12 TX), and
     * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX12RX`` (18 RX + 12 RX).
 
-* :ref:`digitalVoltage_3v3_5v` card: The UZP provides the enum ``uz_platform_eeprom_group000model014variants_t`` that holds the card's variants, which -- as of end 2025 -- are
+* :ref:`digitalVoltage_3v3_5v` card: The UZP provides
 
-  * ``UZP_HWGROUP_ADCARD_DIGVOLT335_10KPD`` (10k Pulldown IO),
-  * ``UZP_HWGROUP_ADCARD_DIGVOLT335_100KPD`` (100k Pulldown IO),
-  * furthermore it provides two more functionalities
+  * the enum ``uz_platform_eeprom_group000model014variants_t`` that holds the card's variants, which -- as of end 2025 -- are
+
+    * ``UZP_HWGROUP_ADCARD_DIGVOLT335_10KPD`` (10k Pulldown IO), or
+    * ``UZP_HWGROUP_ADCARD_DIGVOLT335_100KPD`` (100k Pulldown IO),
+
   * ``uz_platform_printcard_model015()`` to decode the card's configuration as set by its switches (i.e., output voltage level and signal directions for all I/O groups) into a user-readable description, and
   * ``uz_platform_configcard_model015_voltageled()`` to read the selected output voltage level and set the RGB LED on the card's frontpanel accordingly (which is part of the demo if the feature is enabled).
 

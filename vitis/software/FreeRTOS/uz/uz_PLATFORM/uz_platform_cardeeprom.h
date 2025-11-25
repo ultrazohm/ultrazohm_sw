@@ -91,6 +91,17 @@
 		return('D');
  }
 
+ char* uz_platform_getcardvariant(uint16_t hw_model, uint8_t vv) {
+	switch(hw_model) {
+		case UZP_HWGROUP_ADCARD_DIGOPT:
+			return(uz_platform_eeprom_group000model004variants_enum2label(vv));
+		case UZP_HWGROUP_ADCARD_DIGVOLT335:
+			return(uz_platform_eeprom_group000model015variants_enum2label(vv));
+		default:
+			return(NULL);
+	}
+ }
+
  void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
 	if ( (slot < 3) || (slot > 7) ) {
 		uz_printf("Invalid D slot (%i)\r\n", slot);
@@ -110,9 +121,9 @@
 	return;
  }
 
-
 #else
  char uz_platform_getcardtype(uint8_t slot);
+ char* uz_platform_getcardvariant(uint16_t hw_model, uint8_t vv);
  void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin);
 #endif
 

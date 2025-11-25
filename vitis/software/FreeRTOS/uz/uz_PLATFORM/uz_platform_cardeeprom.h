@@ -53,7 +53,7 @@
  #define UZ_NUMENUM_NOHELPER
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM)		/* NB: Update /docs/source/guide/apu_software/uzp_a53.rst, too */ \
-	ENUMNAME(uz_platform_eeprom_group000model014variants) 														/* Variants in Group 0 (Adapter cards), Model 14 (Digital Voltage) */ \
+	ENUMNAME(uz_platform_eeprom_group000model015variants) 														/* Variants in Group 0 (Adapter cards), Model 15 (Digital Voltage 3V3/5V) */ \
 	ENUMITEM( 0,	UZP_HWGROUP_ADCARD_DIGVOLT335_10KPD,						"10k Pulldown IO")						/*  */ \
 	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGVOLT335_100KPD,						"100k Pulldown IO")				/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"

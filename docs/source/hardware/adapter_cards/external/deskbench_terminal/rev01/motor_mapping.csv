@@ -1,0 +1,7 @@
+﻿Absolute Encoder, Pin Terminal, PIN Inverter
+GND, A, Phase A
+DATA+, B, Phase B
+DATA-, C, Phase C
+CLK-, PE, NC
+V+, Brake+, NC
+CLK+, Brake-, NC

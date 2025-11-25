@@ -112,7 +112,7 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
   * ``UZP_HWGROUP_ADCARD_DAC8831``,
   * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
   * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
-  * ``UZP_HWGROUP_ADCARD_DIGVOLT335`` (with two variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model014variants_t``),
+  * ``UZP_HWGROUP_ADCARD_DIGVOLT335`` (with two variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model015variants_t``),
   * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
   * ``UZP_HWGROUP_ADCARD_DIGABSENC``
 
@@ -211,7 +211,7 @@ D cards
 
 * :ref:`digitalVoltage_3v3_5v` card: The UZP provides
 
-  * the enum ``uz_platform_eeprom_group000model014variants_t`` that holds the card's variants, which -- as of end 2025 -- are
+  * the enum ``uz_platform_eeprom_group000model015variants_t`` that holds the card's variants, which -- as of end 2025 -- are
 
     * ``UZP_HWGROUP_ADCARD_DIGVOLT335_10KPD`` (10k Pulldown IO), or
     * ``UZP_HWGROUP_ADCARD_DIGVOLT335_100KPD`` (100k Pulldown IO),

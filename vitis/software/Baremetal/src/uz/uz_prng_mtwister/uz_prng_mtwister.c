@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
 #include "../uz_global_configuration.h"
-#if UZ_MTWISTER_MAX_INSTANCES > 0U
+#if UZ_PRNG_MTWISTER_MAX_INSTANCES > 0U
 
 #include <math.h>
 #include <stdbool.h>

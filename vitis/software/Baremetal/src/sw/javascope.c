@@ -19,7 +19,6 @@
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 
-
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
 // define the size of the cache to flush
@@ -49,7 +48,6 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-extern uint8_t switchStates_out [4];
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -100,8 +98,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
-	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &switchStates_out[0];
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &switchStates_out[1];
+	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
 	return Status;

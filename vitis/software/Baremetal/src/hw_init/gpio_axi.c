@@ -42,8 +42,6 @@ static XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 void Initialize_AXI_GPIO(void)
 {
     int status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
-    if (XST_SUCCESS == status){
-    }
     uz_assert(XST_SUCCESS == status);
     XGpio_SetDataDirection(&Gpio_OUT, AXI_GPIO_CHANNEL, 0x00U); //SW: First eight signals are outputs by setting the bitmask to zero for these
 }

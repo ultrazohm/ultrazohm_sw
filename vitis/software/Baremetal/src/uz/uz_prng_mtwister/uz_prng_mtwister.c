@@ -29,12 +29,12 @@ struct uz_prng_mtwister_t
 };
 
 static uint32_t instance_counterrand = 0U;
-static uz_prng_mtwister_t instancesrand[UZ_MTWISTER_MAX_INSTANCES] = {0};
+static uz_prng_mtwister_t instancesrand[UZ_PRNG_MTWISTER_MAX_INSTANCES] = {0};
 static uz_prng_mtwister_t *uz_prng_mtwister_allocation(void);
 
 static uz_prng_mtwister_t *uz_prng_mtwister_allocation(void)
 {
-    uz_assert(instance_counterrand < UZ_MTWISTER_MAX_INSTANCES);
+    uz_assert(instance_counterrand < UZ_PRNG_MTWISTER_MAX_INSTANCES);
     uz_prng_mtwister_t *self = &instancesrand[instance_counterrand];
     uz_assert_false(self->is_ready);
     instance_counterrand++;

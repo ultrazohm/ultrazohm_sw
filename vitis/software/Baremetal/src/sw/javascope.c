@@ -69,30 +69,36 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia_left] 			= &data->av.i_a_left;
-	js_ch_observable[JSO_ib_left] 			= &data->av.i_b_left;
-	js_ch_observable[JSO_ic_left] 			= &data->av.i_c_left;
-	js_ch_observable[JSO_ia_right] 			= &data->av.i_a_right;
-	js_ch_observable[JSO_ib_right] 			= &data->av.i_b_right;
-	js_ch_observable[JSO_ic_right] 			= &data->av.i_c_right;
-	js_ch_observable[JSO_va_left] 			= &data->av.v_a_left;
-	js_ch_observable[JSO_vb_left] 			= &data->av.v_b_left;
-	js_ch_observable[JSO_vc_left] 			= &data->av.v_c_left;
-	js_ch_observable[JSO_va_right] 			= &data->av.v_a_right;
-	js_ch_observable[JSO_vb_right] 			= &data->av.v_b_right;
-	js_ch_observable[JSO_vc_right] 			= &data->av.v_c_right;
-	js_ch_observable[JSO_id_left] 			= &data->av.i_d_left;
-	js_ch_observable[JSO_iq_left] 			= &data->av.i_q_left;
-	js_ch_observable[JSO_id_right] 			= &data->av.i_d_right;
-	js_ch_observable[JSO_iq_right] 			= &data->av.i_q_right;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
-	js_ch_observable[JSO_vd_left]			= &data->av.v_d_left;
-	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
-	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;
-	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
+	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
+	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.resolver_pl_outputs_right.n_mech_rpm;
+	js_ch_observable[JSO_ia_left] 				= &data->av.i_a_left;
+	js_ch_observable[JSO_ib_left] 				= &data->av.i_b_left;
+	js_ch_observable[JSO_ic_left] 				= &data->av.i_c_left;
+	js_ch_observable[JSO_ia_right] 				= &data->av.i_a_right;
+	js_ch_observable[JSO_ib_right] 				= &data->av.i_b_right;
+	js_ch_observable[JSO_ic_right] 				= &data->av.i_c_right;
+	js_ch_observable[JSO_va_left] 				= &data->av.v_a_left;
+	js_ch_observable[JSO_vb_left] 				= &data->av.v_b_left;
+	js_ch_observable[JSO_vc_left] 				= &data->av.v_c_left;
+	js_ch_observable[JSO_va_right] 				= &data->av.v_a_right;
+	js_ch_observable[JSO_vb_right] 				= &data->av.v_b_right;
+	js_ch_observable[JSO_vc_right] 				= &data->av.v_c_right;
+	js_ch_observable[JSO_id_left] 				= &data->av.i_d_left;
+	js_ch_observable[JSO_iq_left] 				= &data->av.i_q_left;
+	js_ch_observable[JSO_id_right] 				= &data->av.i_d_right;
+	js_ch_observable[JSO_iq_right] 				= &data->av.i_q_right;
+	js_ch_observable[JSO_theta_el_left] 		= &data->av.resolver_pl_outputs_left.position_el_2pi;
+	js_ch_observable[JSO_theta_el_right] 		= &data->av.resolver_pl_outputs_right.position_el_2pi;
+	js_ch_observable[JSO_theta_mech_left] 		= &data->av.resolver_pl_outputs_left.position_mech_2pi;
+	js_ch_observable[JSO_theta_mech_right] 		= &data->av.resolver_pl_outputs_right.position_mech_2pi;
+	js_ch_observable[JSO_vd_ref_left]			= &data->av.v_d_ref_left;
+	js_ch_observable[JSO_vq_ref_left]			= &data->av.v_q_ref_left;
+	js_ch_observable[JSO_vd_ref_right]			= &data->av.v_d_ref_right;
+	js_ch_observable[JSO_vq_ref_right]			= &data->av.v_q_ref_right;
+	js_ch_observable[JSO_i_dc_right]			= &data->av.i_dc_right;
+	js_ch_observable[JSO_i_dc_left]				= &data->av.i_dc_left;
+	js_ch_observable[JSO_v_dc_right]			= &data->av.v_dc_right;
+	js_ch_observable[JSO_v_dc_left]				= &data->av.v_dc_left;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -101,20 +107,20 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_vd_left] 			    = &(data->av.v_d_left);
-	js_slowDataArray[JSSD_FLOAT_vq_left] 			    = &(data->av.v_q_left);
-	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_left);
-	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_left);
-	js_slowDataArray[JSSD_FLOAT_vd_right] 			    = &(data->av.v_d_right);
-	js_slowDataArray[JSSD_FLOAT_vq_right] 			    = &(data->av.v_q_right);
-	js_slowDataArray[JSSD_FLOAT_id_right] 			    = &(data->av.i_d_right);
-	js_slowDataArray[JSSD_FLOAT_iq_right] 			    = &(data->av.i_q_right);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
-	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
-	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
-	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_vd_ref_left] 			    = &(data->av.v_d_ref_left);
+	js_slowDataArray[JSSD_FLOAT_vq_ref_left] 			    = &(data->av.v_q_ref_left);
+	js_slowDataArray[JSSD_FLOAT_id_left] 			    	= &(data->av.i_d_left);
+	js_slowDataArray[JSSD_FLOAT_iq_left] 			    	= &(data->av.i_q_left);
+	js_slowDataArray[JSSD_FLOAT_vd_ref_right] 			    = &(data->av.v_d_ref_right);
+	js_slowDataArray[JSSD_FLOAT_vq_ref_right] 			    = &(data->av.v_q_ref_right);
+	js_slowDataArray[JSSD_FLOAT_v_dc_left]					= &(data->av.v_dc_left);
+	js_slowDataArray[JSSD_FLOAT_id_right] 			    	= &(data->av.i_d_right);
+	js_slowDataArray[JSSD_FLOAT_iq_right] 			    	= &(data->av.i_q_right);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         		= &(data->av.resolver_pl_outputs_left.n_mech_rpm);
+	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]	= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 			= &ISR_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 				= &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]				= &System_UpTime_ms;
 
 	return Status;
 }

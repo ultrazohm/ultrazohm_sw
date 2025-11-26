@@ -58,7 +58,7 @@
 
 #include "include/resolver.h"
 
-#include "include/pmsm_cil.h"
+#include "include/pi_control_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

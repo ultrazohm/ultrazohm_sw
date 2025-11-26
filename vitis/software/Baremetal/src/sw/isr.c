@@ -31,6 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -43,6 +45,18 @@ extern DS_Data Global_Data;
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT			15.0f
 
+struct uz_3ph_abc_t i_abc_left = {0.0f};
+struct uz_3ph_abc_t i_abc_right = {0.0f};
+struct uz_3ph_dq_t i_dq_left = {0.0f};
+struct uz_3ph_dq_t i_dq_right = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_right = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
+struct uz_DutyCycle_t dutycyc_left = {0.0f};
+struct uz_DutyCycle_t dutycyc_right = {0.0f};
+struct uz_pmsmModel_inputs_t pmsm_cil_inputs = {0.0f};
+struct uz_pmsmModel_outputs_t pmsm_cil_outputs = {0.0f};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -50,11 +64,17 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+static void control_left_motor();
+static void control_right_motor();
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+
+    // update speed and position of resolvers// update speed and position of resolvers
+    Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
+    Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
 
 	// assign measurements to Global_Data
 	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
@@ -115,12 +135,39 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
+    // assign measurements from global_data to motor control structs
+	i_abc_left.a = Global_Data.av.i_a_left;
+	i_abc_left.b = Global_Data.av.i_b_left;
+	i_abc_left.c = Global_Data.av.i_c_left;
+	i_abc_right.a = Global_Data.av.i_a_right;
+	i_abc_right.b = Global_Data.av.i_b_right;
+	i_abc_right.c = Global_Data.av.i_c_right;
+
     // if "STOP"
     if (current_state==idle_state)
     {
     	// disable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_left, false);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, false);
+
+    	// reset controllers
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
+		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
+		Global_Data.rasv.n_ref_left = 0.0f;
+		Global_Data.rasv.M_ref_left = 0.0f;
+		Global_Data.rasv.i_dq_ref_left.d = 0.0f;
+		Global_Data.rasv.i_dq_ref_left.q = 0.0f;
+		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
+		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+
+		// write zero dutycycle
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
     }
 
     // if "ENABLE SYSTEM"
@@ -136,6 +183,49 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
+    	if (Global_Data.rasv.ctrl_plant_select == CIL) {
+    		// calculations necessary for all control algorithms
+    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
+    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
+    		pmsm_cil_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil);
+    		i_dq_right.d = pmsm_cil_outputs.i_d_A;
+    		i_dq_right.q = pmsm_cil_outputs.i_q_A;
+    		Global_Data.av.omega_mech_right = pmsm_cil_outputs.omega_mech_1_s;
+    		Global_Data.av.i_d_right = i_dq_right.d;
+    		Global_Data.av.i_q_right = i_dq_right.q;
+
+    		// calculate selected control algorithm for cil motor model
+    		control_right_motor();
+    	}
+
+    	if (Global_Data.rasv.ctrl_plant_select == REAL) {
+			// get reference currents from Global_Data
+			i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
+
+			// park transformation of measured currents
+			i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+			i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+			Global_Data.av.i_d_left = i_dq_left.d;
+			Global_Data.av.i_q_left = i_dq_left.q;
+			Global_Data.av.i_d_right = i_dq_right.d;
+			Global_Data.av.i_q_right = i_dq_right.q;
+			Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
+			Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
+
+			// calculate control (speed and current) of left motor
+			control_left_motor();
+
+			// calculate control algorithm for right motor
+			control_right_motor();
+
+			// set dutycycles
+			Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
+			Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
+			Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
+			Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+			Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+			Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+		}
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -272,4 +362,36 @@ u32 Rpu_IpiInit(u16 DeviceId)
 static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
+};
+
+static void control_left_motor() {
+	// filter speed setpoint signal
+	//Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
+	// calculate reference torque from speed ctrl of left motor
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
+	// calculate current setpoints i_dq_ref for left motor
+	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+	// calculate reference voltages for current control
+	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left);
+	Global_Data.av.v_d_ref_left = v_dq_ref_left.d;
+	Global_Data.av.v_q_ref_left = v_dq_ref_left.q;
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+};
+
+static void control_right_motor() {
+    // calculate reference voltages for current control
+    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
+    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
+    if(Global_Data.rasv.ctrl_plant_select == REAL) {
+		// calculate duty cycles from reference dq voltages
+		dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	}
+	if(Global_Data.rasv.ctrl_plant_select == CIL) {
+		// write inputs into CIL model
+		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
+		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
+		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
+		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
+	}
 };

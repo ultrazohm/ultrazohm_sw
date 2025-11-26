@@ -186,15 +186,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.n_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		data->rasv.i_dq_ref_right.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.i_dq_ref_right.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -265,16 +265,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+		case (My_Button_1): // switching between control plants only possible in idle state
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.ctrl_plant_select = CIL;
+				}
 			break;
 
-		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+		case (My_Button_2): // switching between control plants only possible in idle state
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+				data->rasv.ctrl_plant_select = REAL;
+			}
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+
 			break;
 
 		case (My_Button_4):
@@ -342,14 +346,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (data->rasv.ctrl_plant_select == CIL) {
+		 js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	 if (data->rasv.ctrl_plant_select == REAL) {
+		 js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);

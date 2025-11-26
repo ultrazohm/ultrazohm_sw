@@ -11,6 +11,14 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+
+enum control_plant {
+	CIL,
+	REAL
+};
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -76,22 +84,20 @@ typedef struct _actualValues_ {
 	float i_q_left;
 	float i_d_right;
 	float i_q_right;
-	float v_d_left;
-	float v_q_left;
-	float v_d_right;
-	float v_q_right;
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
+	float v_d_ref_right;
+	float v_q_ref_right;
+	float v_d_ref_left;
+	float v_q_ref_left;
+	float omega_mech_right;
+	float omega_mech_left;
+	float speed_rpm_left;
+	float speed_rpm_right;
+	float polepairs_left;
+	float polepairs_right;
 	struct uz_inverter_adapter_outputs_t inverter_d1_left_status;
 	struct uz_inverter_adapter_outputs_t inverter_d2_right_status;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
@@ -111,6 +117,12 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float M_ref_left;
+	float n_ref_left;
+	float n_ref_left_filt;
+	uz_3ph_dq_t i_dq_ref_right;
+	uz_3ph_dq_t i_dq_ref_left;
+	enum control_plant ctrl_plant_select;
 } referenceAndSetValues;
 
 typedef struct{
@@ -131,6 +143,10 @@ typedef struct{
 	uz_inverter_adapter_t* inverter_d1_left;
 	uz_inverter_adapter_t* inverter_d2_right;
 	uz_pmsmModel_t* pmsm_cil;
+	uz_CurrentControl_t* current_ctrl_left;
+	uz_CurrentControl_t* current_ctrl_right;
+	uz_SpeedControl_t* speed_ctrl_left;
+	uz_SetPoint_t* setpoint_ctrl_left;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -16,6 +16,8 @@
 // Includes from own files
 #include "main.h"
 
+extern const struct uz_PMSM_t Beckhoff_AM8141;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -85,6 +87,10 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -104,6 +110,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.pmsm_cil = init_pmsm_cil();
+            Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
+            Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
             Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
             Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();

@@ -41,15 +41,15 @@ struct uz_pmsm_control_configuration_t
     float error_lower_bound_speed_in_rpm;
     float disturbance_input_lower_bound_in_Nm;
     float disturbance_input_upper_bound_in_Nm;
-    float setpoint_filter_i_dq_cutoff_frequency;  // Do not use setpoint filter if 0
-    float setpoint_filter_speed_cutoff_frequency; // Do not use setpoint filter if 0
+    float setpoint_filter_i_dq_cutoff_frequency;      // Do not use setpoint filter if 0
+    float setpoint_filter_speed_cutoff_frequency;     // Do not use setpoint filter if 0
     float speed_actual_value_filter_cutoff_frequency; // Do not use filter if 0
     enum uz_CurrentControl_decoupling_select decoupling_method;
     enum uz_Setpoint_motor_type motor_type;
     bool enable_field_weakening;
     float relative_torque_tolerance;
-    float theta_sampling_compensation; // multiple of sampling time
-    float voltage_theta_shift; // Multiple of sampling time for shifting the measured voltages used in dq transformation v_abc to v_dq
+    float theta_sampling_compensation;        // multiple of sampling time
+    float voltage_theta_shift;                // Multiple of sampling time for shifting the measured voltages used in dq transformation v_abc to v_dq
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };
 
@@ -101,7 +101,6 @@ float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *self);
 void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
-
 
 void uz_pmsm_controller_current_control_tune_magnitude_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
 void uz_pmsm_controller_current_control_tune_symmetric_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);

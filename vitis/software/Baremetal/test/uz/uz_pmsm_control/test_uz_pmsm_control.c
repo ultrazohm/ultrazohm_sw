@@ -91,7 +91,7 @@ struct uz_pmsm_control_configuration_t pmsm_controller_config = {
     .relative_torque_tolerance = 0.1f,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .theta_sampling_compensation = 1.0f,
-    .voltage_theta_shift=0.0f,
+    .voltage_theta_shift = 0.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
@@ -103,7 +103,6 @@ struct uz_PMSM_t machine_config = {
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.000108f,
     .I_max_Ampere = 12.0f};
-
 
 void test_uz_pmsm_control_call_init(void)
 {
@@ -122,7 +121,8 @@ void test_uz_pmsm_control_get_safe_area(void)
     // use a if construct to check if violation is present
 }
 
-void test_uz_pmsm_control_sample(void){
+void test_uz_pmsm_control_sample(void)
+{
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
 
     struct uz_pmsm_measurement_values measurements = {
@@ -131,16 +131,14 @@ void test_uz_pmsm_control_sample(void){
         .omega_mech_rad_per_sec = 1.0f,
         .theta_mech = 1.56f,
         .v_dc_from_adc_volt_per_volt = 12.0f,
-        .i_dc_from_adc_ampere_per_volt = 1.0f
-    };
+        .i_dc_from_adc_ampere_per_volt = 1.0f};
 
-    float reference_speed_in_rpm=1.0f;
-    uz_3ph_dq_t reference_currents={
-        .d=0.0f,
-        .q=0.0f,
-        .zero=0.0f
-    };
-    float disturbance_input_in_Nm=0.0f;
+    float reference_speed_in_rpm = 1.0f;
+    uz_3ph_dq_t reference_currents = {
+        .d = 0.0f,
+        .q = 0.0f,
+        .zero = 0.0f};
+    float disturbance_input_in_Nm = 0.0f;
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
 }
 
@@ -170,6 +168,5 @@ void test_uz_pmsm_enable_speed_control(void)
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
     uz_pmsm_controller_enable_speed_control(controller, true);
 }
-
 
 #endif // TEST

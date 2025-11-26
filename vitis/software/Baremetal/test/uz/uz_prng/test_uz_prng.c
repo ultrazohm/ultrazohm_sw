@@ -221,11 +221,11 @@ void test_uz_prng_export_many_seeds(void)
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_mtwister);
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_pcg);
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_xoshiro);
-        export_helper_float(halton_array, seed_index, "halton");
-        export_helper_float(pcg_array, seed_index, "pcg");
-        export_helper_float(mtwister_array, seed_index, "mtwister");
-        export_helper_float(squares_array, seed_index, "squares");
-        export_helper_float(xoshiro_array, seed_index, "xoshiro");
+        export_helper_float(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton");
+        export_helper_float(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg");
+        export_helper_float(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister");
+        export_helper_float(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares");
+        export_helper_float(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro");
     }
 }
 
@@ -285,11 +285,11 @@ void test_uz_prng_export_many_seeds_biased_uint1000(void)
             xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(xoshiro, 9U);
             mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(mtwister, 9U);
         }
-        export_helper_uint32(halton_array, seed_index, "halton_biased1000");
-        export_helper_uint32(pcg_array, seed_index, "pcg_biased1000");
-        export_helper_uint32(mtwister_array, seed_index, "mtwister_biased1000");
-        export_helper_uint32(squares_array, seed_index, "squares_biased1000");
-        export_helper_uint32(xoshiro_array, seed_index, "xoshiro_biased1000");
+        export_helper_uint32(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton_biased1000");
+        export_helper_uint32(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg_biased1000");
+        export_helper_uint32(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister_biased1000");
+        export_helper_uint32(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares_biased1000");
+        export_helper_uint32(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro_biased1000");
     }
 }
 
@@ -349,11 +349,11 @@ void test_uz_prng_export_many_seeds_unbiased_uint1000(void)
             xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(xoshiro, 9U);
             mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(mtwister, 9U);
         }
-        export_helper_uint32(halton_array, seed_index, "halton_unbiased1000");
-        export_helper_uint32(pcg_array, seed_index, "pcg_unbiased1000");
-        export_helper_uint32(mtwister_array, seed_index, "mtwister_unbiased1000");
-        export_helper_uint32(squares_array, seed_index, "squares_unbiased1000");
-        export_helper_uint32(xoshiro_array, seed_index, "xoshiro_unbiased1000");
+        export_helper_uint32(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton_unbiased1000");
+        export_helper_uint32(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg_unbiased1000");
+        export_helper_uint32(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister_unbiased1000");
+        export_helper_uint32(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares_unbiased1000");
+        export_helper_uint32(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro_unbiased1000");
     }
 }
 

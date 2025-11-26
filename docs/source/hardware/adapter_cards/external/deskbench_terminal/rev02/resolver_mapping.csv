@@ -1,7 +1,7 @@
-﻿Color, Pin Terminal, PIN DSUB 9
-Yellow,COS-, 4
-Green,COS, 3
-Brown,SIN-, 2
-White,SIN, 1
-Pink,EXC-, 6
-Grey,EXC, 5
+﻿Absolute Encoder, Resolver, PIN DSUB 9
+GND,COS-, 4
+DATA+,COS, 3
+DATA-,SIN-, 2
+CLK-,SIN, 1
+V+,EXC-, 6
+CLK+,EXC, 5

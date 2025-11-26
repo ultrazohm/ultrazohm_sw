@@ -39,6 +39,10 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+#define 	CURRENT_2_SI_AMPERE	12.5f
+#define		VOLTAGE_2_SI_VOLTS	12.0f
+#define		MAX_CURRENT			15.0f
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -46,57 +50,99 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
-uz_3ph_abc_t wavegen_duty={0};
-float wavegen_amp=0.2f;
-float wavegen_frq=200.0f;
-
-float dutycycle_hb1 = 0.0f;
-float dutycycle_hb2 = 0.0f;
-float dutycycle_hb3 = 0.0f;
-
-#define CURRENT_2_SI_AMPERE 19.68f;
-#define VOLTAGE_2_SI_VOLTS 250.0f;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    // assign measurements to Global_Data
-    Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_A1 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.I_W = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.V_DC_PLUS = Global_Data.aa.A1.me.ADC_B5 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.V_DC_MINUS = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	// assign measurements to Global_Data
+	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_left = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_left = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_left = Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_left = Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_left = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+
+	Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+
+    // check for current limit
+    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
+   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT) {
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+    // update status of inverter adapters
+    Global_Data.av.inverter_d1_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_left);
+    Global_Data.av.inverter_d2_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_right);
+
+    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    // Inverter on D1 (left machine)
+    //Overtemperature for H1
+    if (!Global_Data.av.inverter_d1_left_status.FAULT_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H2
+    if (!Global_Data.av.inverter_d1_left_status.FAULT_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H3
+    if (!Global_Data.av.inverter_d1_left_status.FAULT_H3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    // Inverter on D2 (right machine)
+    //Overtemperature for H1
+    if (!Global_Data.av.inverter_d2_right_status.FAULT_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H2
+    if (!Global_Data.av.inverter_d2_right_status.FAULT_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H3
+    if (!Global_Data.av.inverter_d2_right_status.FAULT_H3) {
+       ultrazohm_state_machine_set_error(true);
+    }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
-    //wavegen_duty=uz_wavegen_three_phase_sample(wavegen_amp,wavegen_frq,0.5f);
+
+    // if "STOP"
+    if (current_state==idle_state)
+    {
+    	// disable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_left, false);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, false);
+    }
+
+    // if "ENABLE SYSTEM"
+    if (current_state==running_state)
+    {
+    	// enable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_left, true);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, true);
+    }
+
+    // if "ENABLE CONTROL"
     if (current_state==control_state)
     {
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,false,false,false);
         // Start: Control algorithm - only if ultrazohm is in control state
-        //Global_Data.rasv.halfBridge1DutyCycle=wavegen_duty.a;
-        //Global_Data.rasv.halfBridge2DutyCycle=wavegen_duty.b;
-        //Global_Data.rasv.halfBridge3DutyCycle=wavegen_duty.c;
-        Global_Data.rasv.halfBridge1DutyCycle=dutycycle_hb1;
-        Global_Data.rasv.halfBridge2DutyCycle=dutycycle_hb2;
-        Global_Data.rasv.halfBridge3DutyCycle=dutycycle_hb3;
-    } else
-    {
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,true,true,true);
 
     }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     // uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     // uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

@@ -1,11 +1,11 @@
 .. _deskbench_terminal:
 
 ======================
-Deskbench terminal PCB
+Deskbench Terminal PCB
 ======================
    
 .. figure:: Terminal_Box.jpg
-   :width: 80%
+   :width: 100%
 
    uz_per_deskbench_terminal PCB
 

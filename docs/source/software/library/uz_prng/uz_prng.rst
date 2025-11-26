@@ -125,7 +125,7 @@ See the following for more information:
 - https://github.com/imneme/bounded-rands
 
 Note that the bias happens rarely.
-I.e., in the Ceedling tests, 50000 random samples for different seeds and generatores do not yield any different between biased and unbiased transformation to bounded integers.
+I.e., in the Ceedling tests, 50000 random samples for different seeds and generators do not yield any difference between biased and unbiased transformation to bounded integers.
 A loop generating random integers like so:
 
 .. code-block:: c
@@ -147,7 +147,7 @@ A loop generating random integers like so:
     }
     #pragma GCC pop_options
 
-Will fail the tetst, i.e., some random numbers differ between biased and unbiased versions.
+Will fail the test, i.e., some random numbers differ between biased and unbiased versions.
 Note that the GCC options are required to prevent that the loop is not executed since both variables are unused for the compiler.
 
 .. plot:: software/library/uz_prng/density_plot_multipe_seeds_biased_uint1000.py

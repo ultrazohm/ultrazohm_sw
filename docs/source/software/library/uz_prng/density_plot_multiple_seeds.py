@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-mtwister=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng/mtwister_density.csv')
-halton=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng/halton_density.csv')
-squares=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng/squares_density.csv')
-xoshiro=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng/xoshiro_density.csv')
-pcg=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng/pcg_density.csv')
+mtwister=pd.read_csv('mtwister_density.csv')
+halton=pd.read_csv('halton_density.csv')
+squares=pd.read_csv('squares_density.csv')
+xoshiro=pd.read_csv('xoshiro_density.csv')
+pcg=pd.read_csv('pcg_density.csv')
 
 fig, axs = plt.subplots(1, 5,layout='constrained')
 

@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 import plotly.graph_objects as go
 
 def read_data(distribution_name):
-    base_path='../../../../../vitis/software/Baremetal/test/uz/uz_prng/'
+    base_path='density_plot_multipe_seeds_biased_uint1000/'
     ending_string='_seed_index_'
     
     data={}

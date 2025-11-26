@@ -32,7 +32,7 @@ The specific pattern and distribution depends on the random seed.
    import pandas as pd
 
    columns=['index','number']
-   df=pd.read_csv('../../../../../../vitis/software/Baremetal/test/uz/uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
+   df=pd.read_csv('uz_prng_mtwister_uint32.csv', header=None, names=columns)
    mean=df.loc[:,'number'].mean()
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()

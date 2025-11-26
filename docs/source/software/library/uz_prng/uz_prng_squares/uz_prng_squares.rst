@@ -31,7 +31,7 @@ Additionally, the histogram of the generated values is shown.
    import pandas as pd
 
    columns=['index','number']
-   df=pd.read_csv('../../../../../../vitis/software/Baremetal/test/uz/uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
+   df=pd.read_csv('uz_prng_squares_uint32.csv', header=None, names=columns)
    mean=df.loc[:,'number'].mean()
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()

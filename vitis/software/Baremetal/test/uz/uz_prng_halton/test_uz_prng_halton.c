@@ -30,7 +30,7 @@ void test_uz_prng_halton_float(void)
     }
     float mean = uz_math_mean(random_array);
     TEST_ASSERT_FLOAT_WITHIN(0.01,0.5f, mean);
-    char filepath[] = "test/uz/uz_prng_halton/uz_prng_halton_float.csv";
+    char filepath[] = "../../../docs/source/software/library/uz_prng/uz_prng_halton/uz_prng_halton_float.csv";
     export_array_float(random_array, filepath);
 }
 
@@ -46,7 +46,7 @@ void test_uz_prng_halton_uint32(void)
     {
         random_array.data[i] = (uint32_t)(uz_prng_halton_get_uniform_float(halton) * (float)UINT32_MAX);
     }
-    char filepath[] = "test/uz/uz_prng_halton/uz_prng_halton_uint32.csv";
+    char filepath[] = "../../../docs/source/software/library/uz_prng/uz_prng_halton/uz_prng_halton_uint32.csv";
     export_array_uint32(random_array, filepath);
 }
 
@@ -66,9 +66,9 @@ void test_uz_prng_halton_2d_float(void)
     {
         uz_prng_halton_get_uniform_float_2d(halton, &random_array_x.data[i], &random_array_y.data[i]);
     }
-    char filepath[] = "test/uz/uz_prng_halton/uz_prng_halton_2d_float_x.csv";
+    char filepath[] = "../../../docs/source/software/library/uz_prng/uz_prng_halton/uz_prng_halton_2d_float_x.csv";
     export_array_float(random_array_x, filepath);
-    char filepath2[] = "test/uz/uz_prng_halton/uz_prng_halton_2d_float_y.csv";
+    char filepath2[] = "../../../docs/source/software/library/uz_prng/uz_prng_halton/uz_prng_halton_2d_float_y.csv";
     export_array_float(random_array_y, filepath2);
 }
 

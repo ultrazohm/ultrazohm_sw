@@ -419,7 +419,7 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_1[] = "test/uz/uz_prng/uz_prng_normal_distribution_1.csv";
+    char filepath_1[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_1.csv";
     export_array_float(squares_array, filepath_1);
 
     uz_prng_reset(squares, 1U);
@@ -427,7 +427,7 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_2[] = "test/uz/uz_prng/uz_prng_normal_distribution_2.csv";
+    char filepath_2[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_2.csv";
     export_array_float(squares_array, filepath_2);
 
     uz_prng_reset(squares, 2U);
@@ -435,7 +435,7 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_3[] = "test/uz/uz_prng/uz_prng_normal_distribution_3.csv";
+    char filepath_3[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_3.csv";
     export_array_float(squares_array, filepath_3);
 }
 
@@ -644,7 +644,7 @@ void export_helper_float(uz_array_float_t export_array, uint32_t seed_index, cha
     strcat(str, generator_type);
     strcat(str, str2);
 
-    char absolute_path[1000] = "test/uz/uz_prng/";
+    char absolute_path[1000] = "../../../docs/source/software/library/uz_prng/";
     strcat(absolute_path, str);
     export_array_float(export_array, absolute_path);
 }
@@ -658,7 +658,7 @@ void export_helper_uint32(uz_array_uint32_t export_array, uint32_t seed_index, c
     strcat(str, generator_type);
     strcat(str, str2);
 
-    char absolute_path[1000] = "test/uz/uz_prng/";
+    char absolute_path[1000] = "../../../docs/source/software/library/uz_prng/";
     strcat(absolute_path, str);
     export_array_uint32(export_array, absolute_path);
 }

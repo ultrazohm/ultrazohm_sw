@@ -1,74 +1,103 @@
-import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import glob
+from scipy.stats import gaussian_kde
+import matplotlib.pyplot as plt
 
-mtwister=pd.read_csv('mtwister_density.csv')
-halton=pd.read_csv('halton_density.csv')
-squares=pd.read_csv('squares_density.csv')
-xoshiro=pd.read_csv('xoshiro_density.csv')
-pcg=pd.read_csv('pcg_density.csv')
 
-fig, axs = plt.subplots(1, 5,layout='constrained')
+# ============================================================
+# Helper functions taken from the second script
+# ============================================================
 
-axs[0].set_title("MTwister")
-axs[0].plot(mtwister.mtwister_density_x_1,mtwister.mtwister_density_y_1)
-axs[0].plot(mtwister.mtwister_density_x_2,mtwister.mtwister_density_y_2)
-axs[0].plot(mtwister.mtwister_density_x_3,mtwister.mtwister_density_y_3)
-axs[0].plot(mtwister.mtwister_density_x_4,mtwister.mtwister_density_y_4)
-axs[0].plot(mtwister.mtwister_density_x_5,mtwister.mtwister_density_y_5)
-axs[0].plot(mtwister.mtwister_density_x_6,mtwister.mtwister_density_y_6)
-axs[0].plot(mtwister.mtwister_density_x_7,mtwister.mtwister_density_y_7)
-axs[0].plot(mtwister.mtwister_density_x_8,mtwister.mtwister_density_y_8)
-axs[0].plot(mtwister.mtwister_density_x_9,mtwister.mtwister_density_y_9)
-axs[0].plot(mtwister.mtwister_density_x_10,mtwister.mtwister_density_y_10)
+def load_csv_group(pattern):
+    """Loads all CSV files matching the pattern and vertically stacks them."""
+    files = sorted(glob.glob(pattern))
+    mats = [np.loadtxt(f, delimiter=",") for f in files]
+    if len(mats) == 0:
+        return None
+    return np.vstack(mats)
 
-axs[1].set_title("Halton")
-axs[1].plot(halton.halton_density_x_1,halton.halton_density_y_1)
-axs[1].plot(halton.halton_density_x_2,halton.halton_density_y_2)
-axs[1].plot(halton.halton_density_x_3,halton.halton_density_y_3)
-axs[1].plot(halton.halton_density_x_4,halton.halton_density_y_4)
-axs[1].plot(halton.halton_density_x_5,halton.halton_density_y_5)
-axs[1].plot(halton.halton_density_x_6,halton.halton_density_y_6)
-axs[1].plot(halton.halton_density_x_7,halton.halton_density_y_7)
-axs[1].plot(halton.halton_density_x_8,halton.halton_density_y_8)
-axs[1].plot(halton.halton_density_x_9,halton.halton_density_y_9)
-axs[1].plot(halton.halton_density_x_10,halton.halton_density_y_10)
 
-axs[2].set_title("Squares")
-axs[2].plot(squares.squares_density_x_1,squares.squares_density_y_1)
-axs[2].plot(squares.squares_density_x_2,squares.squares_density_y_2)
-axs[2].plot(squares.squares_density_x_3,squares.squares_density_y_3)
-axs[2].plot(squares.squares_density_x_4,squares.squares_density_y_4)
-axs[2].plot(squares.squares_density_x_5,squares.squares_density_y_5)
-axs[2].plot(squares.squares_density_x_6,squares.squares_density_y_6)
-axs[2].plot(squares.squares_density_x_7,squares.squares_density_y_7)
-axs[2].plot(squares.squares_density_x_8,squares.squares_density_y_8)
-axs[2].plot(squares.squares_density_x_9,squares.squares_density_y_9)
-axs[2].plot(squares.squares_density_x_10,squares.squares_density_y_10)
+def get_density(mat):
+    """Computes kernel-density estimations for all columns except column 0."""
+    cols = list(range(1, mat.shape[1]))
+    
+    xs, ys = [], []
 
-axs[3].set_title("Xoshiro128++")
-axs[3].plot(xoshiro.xoshiro_density_x_1,xoshiro.xoshiro_density_y_1)
-axs[3].plot(xoshiro.xoshiro_density_x_2,xoshiro.xoshiro_density_y_2)
-axs[3].plot(xoshiro.xoshiro_density_x_3,xoshiro.xoshiro_density_y_3)
-axs[3].plot(xoshiro.xoshiro_density_x_4,xoshiro.xoshiro_density_y_4)
-axs[3].plot(xoshiro.xoshiro_density_x_5,xoshiro.xoshiro_density_y_5)
-axs[3].plot(xoshiro.xoshiro_density_x_6,xoshiro.xoshiro_density_y_6)
-axs[3].plot(xoshiro.xoshiro_density_x_7,xoshiro.xoshiro_density_y_7)
-axs[3].plot(xoshiro.xoshiro_density_x_8,xoshiro.xoshiro_density_y_8)
-axs[3].plot(xoshiro.xoshiro_density_x_9,xoshiro.xoshiro_density_y_9)
-axs[3].plot(xoshiro.xoshiro_density_x_10,xoshiro.xoshiro_density_y_10)
+    for c in cols:
+        data = mat[:, c]
+        kde = gaussian_kde(data, bw_method="scott")
 
-axs[4].set_title("PCG")
-axs[4].plot(pcg.pcg_density_x_1,pcg.pcg_density_y_1)
-axs[4].plot(pcg.pcg_density_x_2,pcg.pcg_density_y_2)
-axs[4].plot(pcg.pcg_density_x_3,pcg.pcg_density_y_3)
-axs[4].plot(pcg.pcg_density_x_4,pcg.pcg_density_y_4)
-axs[4].plot(pcg.pcg_density_x_5,pcg.pcg_density_y_5)
-axs[4].plot(pcg.pcg_density_x_6,pcg.pcg_density_y_6)
-axs[4].plot(pcg.pcg_density_x_7,pcg.pcg_density_y_7)
-axs[4].plot(pcg.pcg_density_x_8,pcg.pcg_density_y_8)
-axs[4].plot(pcg.pcg_density_x_9,pcg.pcg_density_y_9)
-axs[4].plot(pcg.pcg_density_x_10,pcg.pcg_density_y_10)
+        x_grid = np.linspace(0, 1, 200)
+        y_grid = kde(x_grid)
 
-for axs in axs.flat:
-        axs.grid(True,which='both')
-        axs.set_ylim(0.85,1.15)
+        xs.append(x_grid)
+        ys.append(y_grid)
+
+    return xs, ys
+
+
+# ============================================================
+# Function that replaces "read_csv" in density_plot_multiple_seeds
+# ============================================================
+
+def load_density_from_seeds(folder_path, prefix):
+    """
+    Instead of reading a precomputed CSV, compute the density directly
+    from all seed files in the folder.
+    """
+    pattern = f"{folder_path}/{prefix}_seed*.csv"
+    mat = load_csv_group(pattern)
+
+    if mat is None:
+        raise ValueError(f"No files found for {pattern}")
+
+    dx, dy = get_density(mat)
+
+    # Return a structure similar to the DataFrame from the original CSV
+    # but wrapped in a dict so that attribute access remains simple.
+    result = {}
+    for i in range(len(dx)):
+        result[f"{prefix}_density_x_{i+1}"] = dx[i]
+        result[f"{prefix}_density_y_{i+1}"] = dy[i]
+
+    return result
+
+
+# ============================================================
+# Load all PRNG families using the new function
+# ============================================================
+
+folder = "density_plot_multipe_seeds_biased_uint1000"
+
+mtwister = load_density_from_seeds(folder, "mtwister")
+halton   = load_density_from_seeds(folder, "halton")
+squares  = load_density_from_seeds(folder, "squares")
+xoshiro  = load_density_from_seeds(folder, "xoshiro")
+pcg      = load_density_from_seeds(folder, "pcg")
+
+
+# ============================================================
+# Plot (same layout as in the FIRST SCRIPT)
+# ============================================================
+
+fig, axs = plt.subplots(1, 5, layout="constrained")
+
+def plot_family(ax, prefix, data_dict):
+    ax.set_title(prefix.capitalize())
+    i = 1
+    while f"{prefix}_density_x_{i}" in data_dict:
+        ax.plot(data_dict[f"{prefix}_density_x_{i}"],
+                data_dict[f"{prefix}_density_y_{i}"])
+        i += 1
+    ax.grid(True, which="both")
+    ax.set_ylim(0.85, 1.15)
+
+
+plot_family(axs[0], "mtwister", mtwister)
+plot_family(axs[1], "halton", halton)
+plot_family(axs[2], "squares", squares)
+plot_family(axs[3], "xoshiro", xoshiro)
+plot_family(axs[4], "pcg", pcg)
+
+plt.show()

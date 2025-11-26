@@ -64,7 +64,7 @@ The distributions of the generated numbers tend towards a uniform distribution f
      import matplotlib.pyplot as plt
      import pandas as pd
      import matplotlib.ticker as mtick
-     path_to_tests='../../../../../vitis/software/Baremetal/test/uz/'
+     path_to_tests=''
      columns=['index','number']
      xoshiro=pd.read_csv(path_to_tests+'uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
      twister=pd.read_csv(path_to_tests+'uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)

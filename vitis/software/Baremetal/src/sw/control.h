@@ -18,14 +18,54 @@
 
 #include "../main.h"
 #include "../FOC_CodeGen/FOC_FCF.h"
+#include "../FOC_CodeGen/FOC_SCF.h"
 
 /* public variables */
 extern RT_MODEL_FOC_FCF_T *const FOC_FCF_MPtr;
+extern RT_MODEL_FOC_SCF_T *const FOC_SCF_MPtr;
 
 extern uint8_t Control_FLAG_1ms;
 extern uint8_t Control_FLAG_10ms;
 extern uint8_t Control_FLAG_100ms;
 
+typedef struct {
+	struct {
+		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
+		real32_T I_phA[6];                   /* '<Root>/I_ph [A]' */
+		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
+		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
+		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
+		real32_T FOC_Enable;                 /* '<Root>/FOC_Enable' */
+		real32_T w_el_Ref_IfStarter;         /* '<Root>/w_el_Ref_IfStarter' */
+		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
+	} fcf_in;
+	struct {
+		real32_T DutyCycles01[6];            /* '<Root>/DutyCycles [0..1]' */
+		real32_T I_dq_ActA[4];               /* '<Root>/I_dq_Act [A]' */
+		real32_T ModInd[2];                  /* '<Root>/ModInd' */
+		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
+		real32_T FOC_Error;                  /* '<Root>/FOC_Error' */
+	} fcf_out;
+	struct {
+		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
+		real32_T ModInd[2];                  /* '<Root>/ModInd' */
+		real32_T w_el_rad_s;                 /* '<Root>/w_el [rad//s]' */
+		real32_T I_dq_Act[4];                /* '<Root>/I_dq_Act [A]' */
+		real32_T MotTempdegC;                /* '<Root>/MotTemp [degC]' */
+		real32_T InvTempdegC;                /* '<Root>/InvTemp [degC]' */
+		real32_T EXT_Torque_Request;         /* '<Root>/ExtTorqReq [Nm]' */
+		real32_T SPEED_CTRL_Enable;          /* '<Root>/SpeedCtrl_Enable' */
+		real32_T ExtTorqLimNm[2];            /* '<Root>/ExtTorqLim [Nm]' */
+		real32_T EXT_Speed_Request;          /* '<Root>/ExtSpeedReq [rpm]' */
+	} scf_in;
+	struct {
+		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
+		real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
+		real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
+	} scf_out;
+} ctrl_data_t;
+
+extern ctrl_data_t ctrl_data;
 
 /* public functions */
 void init_control_functions(void);

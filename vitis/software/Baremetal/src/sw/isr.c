@@ -50,28 +50,28 @@ uint8_t Control_timer_1ms;
 uint8_t Control_timer_10ms;
 uint8_t Control_timer_100ms;
 
-typedef struct {
-	struct {
-		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-		real32_T I_phA[6];                   /* '<Root>/I_ph [A]' */
-		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
-		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
-		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
-		real32_T FOC_Enable;                 /* '<Root>/FOC_Enable' */
-		real32_T w_el_Ref_IfStarter;         /* '<Root>/w_el_Ref_IfStarter' */
-		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
-	} fcf_in;
-	struct {
-		real32_T DutyCycles01[6];            /* '<Root>/DutyCycles [0..1]' */
-		real32_T I_dq_ActA[4];               /* '<Root>/I_dq_Act [A]' */
-		real32_T ModInd[2];                  /* '<Root>/ModInd' */
-		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
-		real_T FOC_Error;                    /* '<Root>/FOC_Error' */
-	} fcf_out;
-} ctrl_data_t;
-
-
-ctrl_data_t ctrl_data;
+//typedef struct {
+//	struct {
+//		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
+//		real32_T I_phA[6];                   /* '<Root>/I_ph [A]' */
+//		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
+//		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
+//		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
+//		real32_T FOC_Enable;                 /* '<Root>/FOC_Enable' */
+//		real32_T w_el_Ref_IfStarter;         /* '<Root>/w_el_Ref_IfStarter' */
+//		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
+//	} fcf_in;
+//	struct {
+//		real32_T DutyCycles01[6];            /* '<Root>/DutyCycles [0..1]' */
+//		real32_T I_dq_ActA[4];               /* '<Root>/I_dq_Act [A]' */
+//		real32_T ModInd[2];                  /* '<Root>/ModInd' */
+//		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
+//		real_T FOC_Error;                    /* '<Root>/FOC_Error' */
+//	} fcf_out;
+//} ctrl_data_t;
+//
+//
+//ctrl_data_t ctrl_data;
 
 float DutyCycleMeas_Value;
 uint32_t PWMin_HighTicks;
@@ -84,7 +84,6 @@ float PWM_DutyCycle_2;
 uint32_t inverter_status_RDY;
 uint32_t inverter_status_FLT;
 uint8_t inverter_GateDriverEnable;
-float I_dq_Ref[2];
 
 
 //==============================================================================================================================================================
@@ -101,17 +100,29 @@ void ISR_Control(void *data)
     ReadAllADC();
 
     // read position from resolver IP Core
-    Global_Data.av.theta_elec = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+    ctrl_data.fcf_in.phi_elrad = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+
+    // get intermediate circuit voltage measurement value
+    ctrl_data.fcf_in.U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
+
+    // get phase currents measurement values
+    ctrl_data.fcf_in.I_phA[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+    ctrl_data.fcf_in.I_phA[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+    ctrl_data.fcf_in.I_phA[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+
+    // get values from Slow Control Function
+    ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
+	ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
 
 	// write inputs to fast control function of simulink model
-	FOC_FCF_MPtr->inputs->U_DC = 12;
+	FOC_FCF_MPtr->inputs->U_DC = ctrl_data.fcf_in.U_DC;
 	FOC_FCF_MPtr->inputs->FOC_Enable = 1;
-	FOC_FCF_MPtr->inputs->phi_elrad = Global_Data.av.theta_elec;
-	FOC_FCF_MPtr->inputs->I_phA[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-	FOC_FCF_MPtr->inputs->I_phA[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-	FOC_FCF_MPtr->inputs->I_phA[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = I_dq_Ref[0];
-	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = I_dq_Ref[1];
+	FOC_FCF_MPtr->inputs->phi_elrad = ctrl_data.fcf_in.phi_elrad;
+	FOC_FCF_MPtr->inputs->I_phA[0] = ctrl_data.fcf_in.I_phA[0];
+	FOC_FCF_MPtr->inputs->I_phA[1] = ctrl_data.fcf_in.I_phA[1];
+	FOC_FCF_MPtr->inputs->I_phA[2] = ctrl_data.fcf_in.I_phA[2];
+	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
+	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -121,7 +132,6 @@ void ISR_Control(void *data)
 
     	// write measurement data to control model interface struct
 //    	ctrl_data.fcf_in.
-
 
 
     	FOC_FCF_step(FOC_FCF_MPtr);
@@ -145,6 +155,15 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+    // write values from Fast Control Function to data exchange struct
+    ctrl_data.fcf_out.I_dq_ActA[0] = FOC_FCF_MPtr->outputs->I_dq_ActA[0];
+    ctrl_data.fcf_out.I_dq_ActA[1] = FOC_FCF_MPtr->outputs->I_dq_ActA[1];
+    ctrl_data.fcf_out.ModInd[0]    = FOC_FCF_MPtr->outputs->ModInd[0];
+	ctrl_data.fcf_out.w_elrads     = FOC_FCF_MPtr->outputs->w_elrads;
+	ctrl_data.fcf_out.FOC_Error    = FOC_FCF_MPtr->outputs->FOC_Error;
+
+
 
 //    PWMin_HighTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_hightime_Data_uz_dutycyclemeas_ip);
 //    PWMin_PeriodTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_period_Data_uz_dutycyclemeas_ip);

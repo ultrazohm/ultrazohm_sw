@@ -22,6 +22,13 @@ B_FOC_FCF_T FOC_FCF_B;          /* Observable signals */
 DW_FOC_FCF_T FOC_FCF_DW;        /* Observable states */
 ExtU_FOC_FCF_T FOC_FCF_U;       /* External inputs */
 ExtY_FOC_FCF_T FOC_FCF_Y;       /* External outputs */
+
+RT_MODEL_FOC_SCF_T FOC_SCF_M_;
+RT_MODEL_FOC_SCF_T *const FOC_SCF_MPtr = &FOC_SCF_M_;
+B_FOC_SCF_T FOC_SCF_B;          /* Observable signals */
+DW_FOC_SCF_T FOC_SCF_DW;        /* Observable states */
+ExtU_FOC_SCF_T FOC_SCF_U;       /* External inputs */
+ExtY_FOC_SCF_T FOC_SCF_Y;       /* External outputs */
 // ----------------------
 
 // system variables that are set by a timer and deleted after function processing
@@ -29,7 +36,8 @@ uint8_t Control_FLAG_1ms;
 uint8_t Control_FLAG_10ms;
 uint8_t Control_FLAG_100ms;
 
-uint8_t cnt_1ms;
+ctrl_data_t ctrl_data;
+
 
 void init_control_functions(void)
 {
@@ -42,6 +50,14 @@ void init_control_functions(void)
 	/* Initialize model */
 	FOC_FCF_initialize(FOC_FCF_MPtr);
 
+	/* Pack model data into RTM */
+	FOC_SCF_MPtr->blockIO = &FOC_SCF_B;
+	FOC_SCF_MPtr->dwork = &FOC_SCF_DW;
+	FOC_SCF_MPtr->inputs = &FOC_SCF_U;
+	FOC_SCF_MPtr->outputs = &FOC_SCF_Y;
+
+	/* Initialize model */
+	FOC_SCF_initialize(FOC_SCF_MPtr);
 }
 
 /**
@@ -49,7 +65,24 @@ void init_control_functions(void)
  */
 void Control_Task_1ms(void)
 {
-	++cnt_1ms;
+	ctrl_data.scf_in.U_DC = ctrl_data.fcf_in.U_DC;
+	ctrl_data.scf_in.ModInd[0] = ctrl_data.fcf_out.ModInd[0];
+	ctrl_data.scf_in.w_el_rad_s = ctrl_data.fcf_out.w_elrads;
+	ctrl_data.scf_in.I_dq_Act[0] = ctrl_data.fcf_out.I_dq_ActA[0];
+	ctrl_data.scf_in.I_dq_Act[1] = ctrl_data.fcf_out.I_dq_ActA[1];
+
+	FOC_SCF_MPtr->inputs->U_DC        = ctrl_data.scf_in.U_DC;
+	FOC_SCF_MPtr->inputs->ModInd[0]   = ctrl_data.scf_in.ModInd[0];
+	FOC_SCF_MPtr->inputs->w_el_rad_s  = ctrl_data.scf_in.w_el_rad_s;
+	FOC_SCF_MPtr->inputs->I_dq_Act[0] = ctrl_data.scf_in.I_dq_Act[0];
+	FOC_SCF_MPtr->inputs->I_dq_Act[1] = ctrl_data.scf_in.I_dq_Act[1];
+
+	FOC_SCF_step(FOC_SCF_MPtr);
+
+	ctrl_data.scf_out.I_dq_RefA[0]       = FOC_SCF_MPtr->outputs->I_dq_RefA[0];
+	ctrl_data.scf_out.I_dq_RefA[1]       = FOC_SCF_MPtr->outputs->I_dq_RefA[1];
+	ctrl_data.scf_out.TorqueEstNm        = FOC_SCF_MPtr->outputs->TorqueEstNm;
+	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_SCF_MPtr->outputs->TorqueRefDeratedNm;
 }
 
 /**

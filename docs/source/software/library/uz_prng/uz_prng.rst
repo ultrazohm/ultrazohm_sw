@@ -380,7 +380,7 @@ Halton timing
 -------------
 
 The calculation time for ``uz_prng_generator_halton`` increases with the number of samples taken from the Halton sequence.
-This seems to be related to the fact that the implementation relies on a loop to find the :math:`n`th value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
+This seems to be related to the fact that the implementation relies on a loop to find the nth value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
 The following figure shows the execution time of ``uz_prng_generator_halton`` for 874,821,900 samples, which did not result in a settled calculation time.
 The seed is set to 7 in this experiment; the behavior probably depends on the starting prime number.
 Usage of ``uz_prng_generator_halton`` in long-running applications (multiple days) should be handled carefully.

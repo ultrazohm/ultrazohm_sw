@@ -59,7 +59,7 @@ Thus, this approach is favorable if the plant model is simple or the required sa
 
 Fig. :numref:`cil_plant_in_pl` shows the scheme that is recommended, which implements the plant model in the PL.
 Moving the plant model to the PL allows for higher sampling frequencies, frees the processor from calculating the model, and enables the emulation of more complex as well as multiple parallel plant models.
-Implementing IP-Cores on the FPGA is generally thought of as more challenging compared to writing code for the CPU.
+Implementing IP cores on the FPGA is generally thought of as more challenging compared to writing code for the CPU.
 This is mitigated by using aMATLAB HDL Coder, allowing easy integration into the UltraZohm FPGA design.
 
 
@@ -112,8 +112,8 @@ See the following docs pages for more information:
   \node[name=ps, below = 0.1cm of mpsoc] {PS};
   \node[block,name=plant, below = 0.2cm of ps,drop shadow] {Controller};
   \node[block,name=controller, below of=plant,drop shadow] {Plant model};
-  \node[block,name=dacip, right=1.0cm of controller,drop shadow] {DAC IP-Core};
-  \node[block,name=adcip, right=1.0cm of dacip,drop shadow] {ADC IP-Core};
+  \node[block,name=dacip, right=1.0cm of controller,drop shadow] {DAC IP core};
+  \node[block,name=adcip, right=1.0cm of dacip,drop shadow] {ADC IP core};
   \node[block,name=adc, below=1.2cm of adcip,drop shadow] {ADC};
   \node[block,name=dac, below=1.2cm of dacip,drop shadow] {DAC};
   \node[name=pl, below = 0.1cm of controller] {PL};
@@ -137,7 +137,7 @@ See the following docs pages for more information:
 Implemented PL Plant models
 ---------------------------
 
-The following IP-Cores are intended to be used for CIL:
+The following IP cores are intended to be used for CIL:
 
 - :ref:`uz_pmsmModel`
 - :ref:`uz_plantModel_pt1`

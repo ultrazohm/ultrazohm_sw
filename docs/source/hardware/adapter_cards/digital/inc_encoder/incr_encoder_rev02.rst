@@ -66,10 +66,10 @@ B14              Dig_12_Ch5   Encoder_1_B
 * :download:`Example constraint file for te0808<incr_encoder_rev02/Digital_AdapterBoard_D5_Rev02.xdc>`
 
 
-Vivado block design with three IP-Cores on D5
+Vivado block design with three IP cores on D5
 ---------------------------------------------
 
-* Fo using all channels of the card, the user has to change the block design in vivado (three IP-Cores on D5 connected).
+* Fo using all channels of the card, the user has to change the block design in vivado (three IP cores on D5 connected).
 
 .. image:: incr_encoder_rev02/vivado_block.jpg
    :height: 500
@@ -78,7 +78,7 @@ Compatibility
 -------------
 
 * Slots D1 to D5 can be used without limitations, D5 is suggested. 
-* Block design in vivado has to be adapted with three IP-Cores for reading out.
+* Block design in vivado has to be adapted with three IP cores for reading out.
 
 
 See also

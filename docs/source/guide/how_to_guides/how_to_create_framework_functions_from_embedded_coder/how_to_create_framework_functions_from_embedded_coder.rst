@@ -44,212 +44,212 @@ Create framework function
 1. Open ``ultrazohm_sw`` with VSCode and remote container (see :ref:`vscode_remote_container`)
 2. Create a new module ``uz_sum`` using Ceedling
 
-::
+   ::
 
-    cd vitis/software/Baremetal
-    ceedling module:create[uz/uz_sum/uz_sum]
+       cd vitis/software/Baremetal
+       ceedling module:create[uz/uz_sum/uz_sum]
 
 3. Ceedling creates the header, source, and test files
 4. Copy the generated files to ``uz_sum``, e.g., by using the following command:
 
-::
+   ::
 
-    cp -R src/Codegen/uz_codegen0_ert_rtw/ src/uz/uz_sum/
+       cp -R src/Codegen/uz_codegen0_ert_rtw/ src/uz/uz_sum/
 
-.. warning:: Re-using this module with the same name breaks the software. In the finished code of this how to guide, everything in ``uz_sum`` folder is protected by ``#ifdef TEST`` such that it can only be used in the ceedling unit tests.
+   .. warning:: Re-using this module with the same name breaks the software. In the finished code of this how to guide, everything in ``uz_sum`` folder is protected by ``#ifdef TEST`` such that it can only be used in the ceedling unit tests.
 
 
 5. Create the allocation scheme using the allocation snippet (see :ref:`static_memory_allocation`)
 
-.. code-block::
+   .. code-block::
 
-    #include "../uz_global_configuration.h"
-    #if UZ_SUM_MAX_INSTANCES > 0U
-    
-    #include <stdbool.h> 
-    #include "../../uz_HAL.h"
-    #include "uz_sum.h" 
-    
-    struct uz_sum_t {
-        bool is_ready;
-    };
-    
-    static uint32_t instance_counter = 0U;
-    static uz_sum_t instances[UZ_SUM_MAX_INSTANCES] = { 0 };
-    
-    static uz_sum_t* uz_sum_allocation(void);
-    
-    static uz_sum_t* uz_sum_allocation(void){
-        uz_assert(instance_counter < UZ_SUM_MAX_INSTANCES);
-        uz_sum_t* self = &instances[instance_counter];
-        uz_assert_false(self->is_ready);
-        instance_counter++;
-        self->is_ready = true;
-        return (self);
-    }
-    
-    uz_sum_t* uz_sum_init(void) {
-        uz_sum_t* self = uz_sum_allocation();
-        return (self);
-    }
-    
-    #endif
+       #include "../uz_global_configuration.h"
+       #if UZ_SUM_MAX_INSTANCES > 0U
+       
+       #include <stdbool.h> 
+       #include "../../uz_HAL.h"
+       #include "uz_sum.h" 
+       
+       struct uz_sum_t {
+           bool is_ready;
+       };
+       
+       static uint32_t instance_counter = 0U;
+       static uz_sum_t instances[UZ_SUM_MAX_INSTANCES] = { 0 };
+       
+       static uz_sum_t* uz_sum_allocation(void);
+       
+       static uz_sum_t* uz_sum_allocation(void){
+           uz_assert(instance_counter < UZ_SUM_MAX_INSTANCES);
+           uz_sum_t* self = &instances[instance_counter];
+           uz_assert_false(self->is_ready);
+           instance_counter++;
+           self->is_ready = true;
+           return (self);
+       }
+       
+       uz_sum_t* uz_sum_init(void) {
+           uz_sum_t* self = uz_sum_allocation();
+           return (self);
+       }
+       
+       #endif
 
 6. Call the module ``uz_sum``
 7. Add ``UZ_SUM_MAX_INSTANCES`` to ``uz_global_configuration.h`` and set it to 5
 8. Add the typedef for the ``uz_sum_t`` to ``uz_sum.h`` as well as the function declaration for the init function:
 
-.. code-block:: c
+   .. code-block:: c
 
-    typedef struct uz_sum_t uz_sum_t;
-    uz_sum_t* uz_sum_init(void);
+       typedef struct uz_sum_t uz_sum_t;
+       uz_sum_t* uz_sum_init(void);
 
 
 9. In ``test_uz_sum.c``, change the existing test to:
 
-.. code-block:: c
+   .. code-block:: c
 
-    void test_uz_sum_NeedToImplement(void)
-    {
-        uz_sum_init();
-    }
+       void test_uz_sum_NeedToImplement(void)
+       {
+           uz_sum_init();
+       }
 
 10. Run the tests, they compile but ``test_uz_sum.c`` does not perform any real tests
 11. Create the interface for stepping the model once (one integration / time step) with the given summand in ``uz_sum.h``:
 
-.. code-block:: c
+    .. code-block:: c
 
-    void uz_sum_step(uz_sum_t* self, float a, float b, float c);
+        void uz_sum_step(uz_sum_t* self, float a, float b, float c);
 
 
 12. Add an interface for reading the results from the module in ``uz_sum.h``
 
-.. code-block:: c
+    .. code-block:: c
 
-    float uz_sum_get_sum(uz_sum_t* self);
-    float uz_sum_get_integral_over_sum(uz_sum_t* self);
+        float uz_sum_get_sum(uz_sum_t* self);
+        float uz_sum_get_integral_over_sum(uz_sum_t* self);
 
 13. Write empty functions for the defined interface in ``uz_sum.c``
 
-.. code-block:: c
+    .. code-block:: c
 
-    void uz_sum_step(uz_sum_t* self, float a, float b, float c){
+        void uz_sum_step(uz_sum_t* self, float a, float b, float c){
+        
+        }
     
-    }
-
-
-    float uz_sum_get_sum(uz_sum_t* self){
-
-    }
-
-    float uz_sum_get_integral_over_sum(uz_sum_t* self){
-
-    }
+    
+        float uz_sum_get_sum(uz_sum_t* self){
+    
+        }
+    
+        float uz_sum_get_integral_over_sum(uz_sum_t* self){
+    
+        }
 
 14. Write a test that checks for the summation of three values:
 
-.. code-block:: c
+    .. code-block:: c
 
-    void test_uz_sum_add_numbers(void)
-    {
-       uz_sum_t* test_instance=uz_sum_init();
-        float a=1.1f;
-        float b=2.2f;
-        float c=3.3f;
-        float expected_result=6.6f;
-
-        uz_sum_step(test_instance,a,b,c);
-        float result=uz_sum_get_sum(test_instance);
-        TEST_ASSERT_EQUAL_FLOAT(expected_result, result);
-
-    }
+        void test_uz_sum_add_numbers(void)
+        {
+           uz_sum_t* test_instance=uz_sum_init();
+            float a=1.1f;
+            float b=2.2f;
+            float c=3.3f;
+            float expected_result=6.6f;
+    
+            uz_sum_step(test_instance,a,b,c);
+            float result=uz_sum_get_sum(test_instance);
+            TEST_ASSERT_EQUAL_FLOAT(expected_result, result);
+    
+        }
 
 15. Run the tests. They will compile, but fail.
 16. Add the include for the generated code as well as private data to ``uz_sum.c`` (note: this has to be in the ``.c`` file!)
 
-.. code-block:: c
+    .. code-block:: c
 
-    #include "uz_codegen0_ert_rtw/uz_codegen0.h"
-
-    struct uz_sum_t {
-        bool is_ready;
-        ExtY output;
-        ExtU input;
-        DW rtDW;                        /* Observable states */
-        RT_MODEL modelData;
-        RT_MODEL *PtrToModelData;
-    };
+        #include "uz_codegen0_ert_rtw/uz_codegen0.h"
+    
+        struct uz_sum_t {
+            bool is_ready;
+            ExtY output;
+            ExtU input;
+            DW rtDW;                        /* Observable states */
+            RT_MODEL modelData;
+            RT_MODEL *PtrToModelData;
+        };
 
 17. Implement the initialization of the code-generated software in ``uz_sum_init.c``
 
-.. code-block:: c
+    .. code-block:: c
 
-    uz_sum_t* uz_sum_init(void) {
-        uz_sum_t* self = uz_sum_allocation();
-        self->PtrToModelData=&self->modelData;
-        self->PtrToModelData->dwork=&self->rtDW;
-        self->PtrToModelData->inputs=&self->input;
-        self->PtrToModelData->outputs=&self->output;
-        return (self);
-    }
+        uz_sum_t* uz_sum_init(void) {
+            uz_sum_t* self = uz_sum_allocation();
+            self->PtrToModelData=&self->modelData;
+            self->PtrToModelData->dwork=&self->rtDW;
+            self->PtrToModelData->inputs=&self->input;
+            self->PtrToModelData->outputs=&self->output;
+            return (self);
+        }
 
 18. Note that ``uz_sum_init`` is just *wiring* of private variables of the module to meet the interface of the generated code and to be able to pass all data of the model to the *step* function by a single pointer.
 19. Add ``#include "uz_codegen0_ert_rtw/uz_codegen0.h"`` to ``test_uz_sum.c`` to enable calling the generated code in the tests
 20. Implement the function ``uz_sum_step`` in ``uz_sum.c``:
 
-.. code-block:: c
+    .. code-block:: c
 
-    void uz_sum_step(uz_sum_t* self, float a, float b, float c){
-        self->input.summand1=a;
-        self->input.summand2=b;
-        self->input.summand3=c;
-        uz_codegen0_step(self->PtrToModelData);
-    }
+        void uz_sum_step(uz_sum_t* self, float a, float b, float c){
+            self->input.summand1=a;
+            self->input.summand2=b;
+            self->input.summand3=c;
+            uz_codegen0_step(self->PtrToModelData);
+        }
 
 21. Run the tests, they still fail.
 22. Implement ``uz_sum_get_sum`` in ``uz_sum.c``
 
-.. code-block:: c
+    .. code-block:: c
 
-    float uz_sum_get_sum(uz_sum_t* self){
-        return self->output.sum;
-    }
+        float uz_sum_get_sum(uz_sum_t* self){
+            return self->output.sum;
+        }
 
 23. Run tests, they pass.
 24. Write a test for the integration
 
-.. code-block:: c
+    .. code-block:: c
 
-    void test_uz_sum_integrate(void)
-    {
-        uz_sum_t* test_instance=uz_sum_init();
-        float a=1.1f;
-        float b=2.2f;
-        float c=3.3f;
-        float expected_result=0.00198f;
-
-        // Call step four times with sum=6.6, integration time Ts is 1/10000
-        // First call: y(0)=0
-        // Second call: y(1)= 1/10000*6.6=0.00066
-        // Third call: y(2)=0.00066+0.00066=0.00132
-        // Last call: y(3)=0.00132+0.00066=0.00198
-        // Step four times - no loop to make it explicit
-        uz_sum_step(test_instance,a,b,c);
-        uz_sum_step(test_instance,a,b,c);
-        uz_sum_step(test_instance,a,b,c);
-        uz_sum_step(test_instance,a,b,c);
-        float result=uz_sum_get_integral_over_sum(test_instance);
-        TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
-    }
+        void test_uz_sum_integrate(void)
+        {
+            uz_sum_t* test_instance=uz_sum_init();
+            float a=1.1f;
+            float b=2.2f;
+            float c=3.3f;
+            float expected_result=0.00198f;
+    
+            // Call step four times with sum=6.6, integration time Ts is 1/10000
+            // First call: y(0)=0
+            // Second call: y(1)= 1/10000*6.6=0.00066
+            // Third call: y(2)=0.00066+0.00066=0.00132
+            // Last call: y(3)=0.00132+0.00066=0.00198
+            // Step four times - no loop to make it explicit
+            uz_sum_step(test_instance,a,b,c);
+            uz_sum_step(test_instance,a,b,c);
+            uz_sum_step(test_instance,a,b,c);
+            uz_sum_step(test_instance,a,b,c);
+            float result=uz_sum_get_integral_over_sum(test_instance);
+            TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
+        }
 
 25. Run tests, they fail.
 26. Implement ``uz_sum_get_integral_over_sum``
 
-.. code-block:: c
+    .. code-block:: c
 
-    float uz_sum_get_integral_over_sum(uz_sum_t* self){
-        return self->output.IntegrationOfSum;
-    }
+        float uz_sum_get_integral_over_sum(uz_sum_t* self){
+            return self->output.IntegrationOfSum;
+        }
 
 27. Run tests, they pass.
 28. Implement tests and interface for the chirp functionality

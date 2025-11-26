@@ -23,42 +23,42 @@ Git-flow is supported by the `gitflow extension <https://github.com/nvie/gitflow
 :numref:`gitflow_picture` shows the gitflow.
 The following branches are used:
 
-  * ``main``
+* ``main``
 
-    * Exists forever
-    * Stable Version
-    * Version **tag** after each merge
+  * Exists forever
+  * Stable Version
+  * Version **tag** after each merge
 
-  * ``develop``
+* ``develop``
 
-    * Exists forever
-    * Current development version
-    * Pull request to merge to ``main``
-    * Increment the second number of the version tag by one
+  * Exists forever
+  * Current development version
+  * Pull request to merge to ``main``
+  * Increment the second number of the version tag by one
 
-  * ``feature``
+* ``feature``
 
-    * Created by contributors to implement features
-    * Pull request to merge into develop
-    * Deleted after pull request is accepted
+  * Created by contributors to implement features
+  * Pull request to merge into develop
+  * Deleted after pull request is accepted
 
-  * ``hotfix``
+* ``hotfix``
 
-    * Created by maintainers to fix **bugs** in ``main``
-    * Pull request to merge to ``main``
-    * Increment the last number of the version tag by one
-    * Pull request to merge to ``develop``
-    * Deleted after both pull requests are accepted
+  * Created by maintainers to fix **bugs** in ``main``
+  * Pull request to merge to ``main``
+  * Increment the last number of the version tag by one
+  * Pull request to merge to ``develop``
+  * Deleted after both pull requests are accepted
 
-  * ``release``
+* ``release``
 
-    * Created by maintainers for major releases
-    * Created by maintainers if merge conflicts occur in pull request from ``develop`` to ``main``
-    * Resolve merge conflicts 
-    * Pull request to merge to ``main``
-    * Increment the first number of the version tag by one
-    * Pull request to merge to ``develop``
-    * Deleted after both pull requests are accepted
+  * Created by maintainers for major releases
+  * Created by maintainers if merge conflicts occur in pull request from ``develop`` to ``main``
+  * Resolve merge conflicts 
+  * Pull request to merge to ``main``
+  * Increment the first number of the version tag by one
+  * Pull request to merge to ``develop``
+  * Deleted after both pull requests are accepted
 
 .. warning::
 
@@ -69,23 +69,23 @@ Branch names
 
 The naming convention for the branches is as follows:
 
-  * ``feature/featurename``
+* ``feature/featurename``
 
-    * Branch of type ``feature``
-    * ``featurename`` describes what feature is implemented
-    * Example: ``feature/pwm_module``
+  * Branch of type ``feature``
+  * ``featurename`` describes what feature is implemented
+  * Example: ``feature/pwm_module``
 
-  * ``hotfix/hotfixname`` 
-  
-    * Branch of type ``hotfix``
-    * ``hotfixname`` refers to the bug which the contribution fixes
-    * Example: ``hotfix/fix_pwm_counter_overflow``
-  
-  * ``release/releasename_v000``
+* ``hotfix/hotfixname`` 
 
-    * Branch of type ``release``
-    * ``releasename`` should describe what features are released
-    * Contains the version number that will be the new tag for the ``main`` branch
+  * Branch of type ``hotfix``
+  * ``hotfixname`` refers to the bug which the contribution fixes
+  * Example: ``hotfix/fix_pwm_counter_overflow``
+
+* ``release/releasename_v000``
+
+  * Branch of type ``release``
+  * ``releasename`` should describe what features are released
+  * Contains the version number that will be the new tag for the ``main`` branch
 
 Version number
 **************
@@ -106,7 +106,7 @@ Additional information
 
 Relevant resources for git-flow can be found here:
 
-  * <https://nvie.com/posts/a-successful-git-branching-model/>
-  * <https://danielkummer.github.io/git-flow-cheatsheet/index.html>
-  * <https://m.infos.seibert-media.net/Productivity/Git-Workflows+-+Der+Gitflow-Workflow.html> (German)
-  * <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
+* <https://nvie.com/posts/a-successful-git-branching-model/>
+* <https://danielkummer.github.io/git-flow-cheatsheet/index.html>
+* <https://m.infos.seibert-media.net/Productivity/Git-Workflows+-+Der+Gitflow-Workflow.html> (German)
+* <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>

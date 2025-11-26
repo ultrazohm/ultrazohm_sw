@@ -30,7 +30,7 @@ None.
 Compatibility
 -------------
 
-Connect it with two Ethernet ethernet cable according to **T568B** with the ADC Adaptercard.
+Connect it with two Ethernet cables according to **T568B** with the ADC Adaptercard.
 
 See also
 """"""""

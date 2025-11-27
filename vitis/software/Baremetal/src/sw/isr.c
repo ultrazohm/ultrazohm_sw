@@ -44,6 +44,7 @@ extern DS_Data Global_Data;
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT			15.0f
+#define		V_DC				48.0f
 
 struct uz_3ph_abc_t i_abc_left = {0.0f};
 struct uz_3ph_abc_t i_abc_right = {0.0f};
@@ -105,34 +106,6 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_d1_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_left);
     Global_Data.av.inverter_d2_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_right);
 
-    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-    // Inverter on D1 (left machine)
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_d1_left_status.FAULT_H1) {
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_d1_left_status.FAULT_H2) {
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_d1_left_status.FAULT_H3) {
-       ultrazohm_state_machine_set_error(true);
-    }
-    // Inverter on D2 (right machine)
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_d2_right_status.FAULT_H1) {
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_d2_right_status.FAULT_H2) {
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_d2_right_status.FAULT_H3) {
-       ultrazohm_state_machine_set_error(true);
-    }
-
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
     // assign measurements from global_data to motor control structs
@@ -184,6 +157,8 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 
     	if (Global_Data.rasv.ctrl_plant_select == CIL) {
+    		// get reference currents from Global_Data
+    		i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     		// calculations necessary for all control algorithms
     		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
     		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
@@ -191,6 +166,8 @@ void ISR_Control(void *data)
     		i_dq_right.d = pmsm_cil_outputs.i_d_A;
     		i_dq_right.q = pmsm_cil_outputs.i_q_A;
     		Global_Data.av.omega_mech_right = pmsm_cil_outputs.omega_mech_1_s;
+    		Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
+    		Global_Data.av.speed_rpm_left = Global_Data.av.speed_rpm_right; // left because in real left motor is speed controlled
     		Global_Data.av.i_d_right = i_dq_right.d;
     		Global_Data.av.i_q_right = i_dq_right.q;
 
@@ -211,6 +188,8 @@ void ISR_Control(void *data)
 			Global_Data.av.i_q_right = i_dq_right.q;
 			Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 			Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
+			Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
+			Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
 
 			// calculate control (speed and current) of left motor
 			control_left_motor();
@@ -365,8 +344,6 @@ static void ReadAllADC()
 };
 
 static void control_left_motor() {
-	// filter speed setpoint signal
-	//Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
 	// calculate reference torque from speed ctrl of left motor
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor
@@ -379,15 +356,19 @@ static void control_left_motor() {
 };
 
 static void control_right_motor() {
-    // calculate reference voltages for current control
-    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
-    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
-    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
     if(Global_Data.rasv.ctrl_plant_select == REAL) {
+        // calculate reference voltages for current control
+        v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+        Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
+        Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
 		// calculate duty cycles from reference dq voltages
 		dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	}
 	if(Global_Data.rasv.ctrl_plant_select == CIL) {
+	    // calculate reference voltages for current control
+	    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, V_DC, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+	    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
+	    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
 		// write inputs into CIL model
 		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
 		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;

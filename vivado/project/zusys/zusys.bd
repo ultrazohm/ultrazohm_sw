@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x7BED20881D8D032B",
+      "boundary_crc": "0x306A50624F3B68AD",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -127,7 +127,9 @@
           "Resolver_Interface_v_0": "",
           "uz_resolver_pl_inter_0": "",
           "uz_resolver_pl_inter_1": ""
-        }
+        },
+        "xlslice_2": "",
+        "xlslice_3": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -473,11 +475,6 @@
         "left": "0",
         "right": "0"
       },
-      "D3_OUT": {
-        "direction": "O",
-        "left": "25",
-        "right": "0"
-      },
       "D3_OUT_26": {
         "direction": "O",
         "left": "0",
@@ -594,6 +591,16 @@
       },
       "Dig_23_Ch5": {
         "direction": "I"
+      },
+      "D3_OUT_inv": {
+        "direction": "O",
+        "left": "5",
+        "right": "0"
+      },
+      "D3_OUT_inv_aux": {
+        "direction": "O",
+        "left": "5",
+        "right": "0"
       }
     },
     "components": {
@@ -5860,6 +5867,16 @@
           },
           "SDI_2": {
             "direction": "I"
+          },
+          "D3_OUT_inv": {
+            "direction": "O",
+            "left": "5",
+            "right": "0"
+          },
+          "D3_OUT_inv_aux": {
+            "direction": "O",
+            "left": "5",
+            "right": "0"
           }
         },
         "components": {
@@ -6655,6 +6672,43 @@
                 ]
               }
             }
+          },
+          "xlslice_2": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_2_1",
+            "xci_path": "ip\\zusys_xlslice_2_1\\zusys_xlslice_2_1.xci",
+            "inst_hier_path": "uz_user/xlslice_2",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "17"
+              },
+              "DIN_TO": {
+                "value": "12"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              }
+            }
+          },
+          "xlslice_3": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_3_1",
+            "xci_path": "ip\\zusys_xlslice_3_1\\zusys_xlslice_3_1.xci",
+            "inst_hier_path": "uz_user/xlslice_3",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "23"
+              },
+              "DIN_TO": {
+                "value": "18"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "6"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -6724,7 +6778,9 @@
             "ports": [
               "Din",
               "xlslice_0/Din",
-              "xlslice_1/Din"
+              "xlslice_1/Din",
+              "xlslice_2/Din",
+              "xlslice_3/Din"
             ]
           },
           "Resolver_Interface_v_0_AD2S1210_mode_A0": {
@@ -6861,6 +6917,18 @@
             "ports": [
               "xlslice_1/Dout",
               "uz_inverter_adapter/Gates1"
+            ]
+          },
+          "xlslice_2_Dout": {
+            "ports": [
+              "xlslice_2/Dout",
+              "D3_OUT_inv"
+            ]
+          },
+          "xlslice_3_Dout": {
+            "ports": [
+              "xlslice_3/Dout",
+              "D3_OUT_inv_aux"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -10285,6 +10353,18 @@
           "Dig_22_Ch5"
         ]
       },
+      "uz_user_D3_OUT_inv": {
+        "ports": [
+          "uz_user/D3_OUT_inv",
+          "D3_OUT_inv"
+        ]
+      },
+      "uz_user_D3_OUT_inv_aux": {
+        "ports": [
+          "uz_user/D3_OUT_inv_aux",
+          "D3_OUT_inv_aux"
+        ]
+      },
       "uz_user_F_SYNC_1": {
         "ports": [
           "uz_user/F_SYNC_1",
@@ -10343,12 +10423,6 @@
         "ports": [
           "uz_user/SDO_2",
           "Dig_16_Ch5"
-        ]
-      },
-      "vio_D2_test_probe_out0": {
-        "ports": [
-          "uz_digital_adapter/D3_OUT",
-          "D3_OUT"
         ]
       },
       "xlconcat_0_dout": {

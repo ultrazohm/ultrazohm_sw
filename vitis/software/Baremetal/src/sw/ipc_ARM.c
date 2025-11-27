@@ -347,16 +347,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 4 - My_Button_1 */
 	 if (data->rasv.ctrl_plant_select == CIL) {
-		 js_status_BareToRTOS |= (1 << 8);
+		 js_status_BareToRTOS |= (1 << 4);
 	 } else {
-		 js_status_BareToRTOS &= ~(1 << 8);
+		 js_status_BareToRTOS &= ~(1 << 4);
 	 }
 
 	/* Bit 5 - My_Button_2 */
 	 if (data->rasv.ctrl_plant_select == REAL) {
-		 js_status_BareToRTOS |= (1 << 8);
+		 js_status_BareToRTOS |= (1 << 5);
 	 } else {
-		 js_status_BareToRTOS &= ~(1 << 8);
+		 js_status_BareToRTOS &= ~(1 << 5);
 	 }
 
 	/* Bit 6 - My_Button_3 */

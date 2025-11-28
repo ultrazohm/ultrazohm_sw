@@ -29,6 +29,12 @@ B_FOC_SCF_T FOC_SCF_B;          /* Observable signals */
 DW_FOC_SCF_T FOC_SCF_DW;        /* Observable states */
 ExtU_FOC_SCF_T FOC_SCF_U;       /* External inputs */
 ExtY_FOC_SCF_T FOC_SCF_Y;       /* External outputs */
+
+RT_MODEL_FOC_SMF_T FOC_SMF_M_;
+RT_MODEL_FOC_SMF_T *const FOC_SMF_MPtr = &FOC_SMF_M_;/* Real-time model */
+DW_FOC_SMF_T FOC_SMF_DW;        /* Observable states */
+ExtU_FOC_SMF_T FOC_SMF_U;       /* External inputs */
+ExtY_FOC_SMF_T FOC_SMF_Y;       /* External outputs */
 // ----------------------
 
 // system variables that are set by a timer and deleted after function processing
@@ -58,6 +64,14 @@ void init_control_functions(void)
 
 	/* Initialize model */
 	FOC_SCF_initialize(FOC_SCF_MPtr);
+
+	/* Pack model data into RTM */
+	FOC_SMF_MPtr->dwork = &FOC_SMF_DW;
+	FOC_SMF_MPtr->inputs = &FOC_SMF_U;
+	FOC_SMF_MPtr->outputs = &FOC_SMF_Y;
+
+	/* Initialize model */
+	FOC_SMF_initialize(FOC_SMF_MPtr);
 }
 
 /**
@@ -65,9 +79,10 @@ void init_control_functions(void)
  */
 void Control_Task_1ms(void)
 {
-	ctrl_data.scf_in.U_DC = ctrl_data.fcf_in.U_DC;
-	ctrl_data.scf_in.ModInd[0] = ctrl_data.fcf_out.ModInd[0];
-	ctrl_data.scf_in.w_el_rad_s = ctrl_data.fcf_out.w_elrads;
+	/* --- execute Simulink Slow Control Function --- */
+	ctrl_data.scf_in.U_DC        = ctrl_data.fcf_in.U_DC;
+	ctrl_data.scf_in.ModInd[0]   = ctrl_data.fcf_out.ModInd[0];
+	ctrl_data.scf_in.w_el_rad_s  = ctrl_data.fcf_out.w_elrads;
 	ctrl_data.scf_in.I_dq_Act[0] = ctrl_data.fcf_out.I_dq_ActA[0];
 	ctrl_data.scf_in.I_dq_Act[1] = ctrl_data.fcf_out.I_dq_ActA[1];
 
@@ -83,6 +98,7 @@ void Control_Task_1ms(void)
 	ctrl_data.scf_out.I_dq_RefA[1]       = FOC_SCF_MPtr->outputs->I_dq_RefA[1];
 	ctrl_data.scf_out.TorqueEstNm        = FOC_SCF_MPtr->outputs->TorqueEstNm;
 	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_SCF_MPtr->outputs->TorqueRefDeratedNm;
+	/* --- End of Simulink Slow Control Function --- */
 }
 
 /**
@@ -91,6 +107,21 @@ void Control_Task_1ms(void)
 void Control_Task_10ms(void)
 {
 
+	/* --- execute Simulink State Machine Function --- */
+	ctrl_data.smf_in.FastCtrl_Error = ctrl_data.fcf_out.FOC_Error;
+
+	FOC_SMF_MPtr->inputs->FastCtrl_Error = ctrl_data.smf_in.FastCtrl_Error;
+
+	FOC_SMF_step(FOC_SMF_MPtr);
+
+	ctrl_data.smf_out.SysStateAct = FOC_SMF_MPtr->outputs->SysStateAct;
+	ctrl_data.smf_out.FOC_Mode = FOC_SMF_MPtr->outputs->FOC_Mode;
+	ctrl_data.smf_out.StateFOC = FOC_SMF_MPtr->outputs->StateFOC;
+	ctrl_data.smf_out.FOC_Enable_PWM = FOC_SMF_MPtr->outputs->FOC_Enable_PWM;
+	ctrl_data.smf_out.global_reset_errors = FOC_SMF_MPtr->outputs->global_reset_errors;
+	ctrl_data.smf_out.SPEED_CTRL_Enable = FOC_SMF_MPtr->outputs->SPEED_CTRL_Enable;
+
+	/* --- End of Simulink State Machine Function --- */
 }
 
 /**

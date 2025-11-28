@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.11
+ * Model version                  : 5.13
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Nov 24 14:15:51 2025
+ * C/C++ source code generated on : Wed Nov 26 12:18:47 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -523,7 +523,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->TrafoProd2 = FOC_FCF_B->TrafoMatrixuvwalphabeta[0] *
     FOC_FCF_B->TrigonometricFunction;
 
-  /* Sum: '<S19>/TrafoSum1' */
+  /* Sum: '<S19>/I_q1_Act' */
   FOC_FCF_B->I_q1_Act = FOC_FCF_B->TrafoProd1 - FOC_FCF_B->TrafoProd2;
 
   /* SignalConversion generated from: '<S19>/Discrete FIR Filter 20th order' */

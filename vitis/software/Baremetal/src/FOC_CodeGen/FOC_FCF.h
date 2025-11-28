@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.11
+ * Model version                  : 5.13
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Nov 24 14:15:51 2025
+ * C/C++ source code generated on : Wed Nov 26 12:18:47 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -75,7 +75,7 @@ typedef struct {
   real32_T I_d1_Act;                   /* '<S19>/I_d1_Act' */
   real32_T TrafoProd1;                 /* '<S19>/TrafoProd1' */
   real32_T TrafoProd2;                 /* '<S19>/TrafoProd2' */
-  real32_T I_q1_Act;                   /* '<S19>/TrafoSum1' */
+  real32_T I_q1_Act;                   /* '<S19>/I_q1_Act' */
   real32_T TmpSignalConversionAtDiscreteFI[2];
   real32_T IdqErr[2];                  /* '<S17>/IdqErr' */
   real32_T KPek1[2];                   /* '<S22>/KP*e[k]1' */

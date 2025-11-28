@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.11
+ * Model version                  : 5.13
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Nov 24 14:15:51 2025
+ * C/C++ source code generated on : Wed Nov 26 12:18:47 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -91,7 +91,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S22>/FOC_KI'
    *   '<S26>/FOC_KI'
    */
-  1000.0F,
+  100.0F,
 
   /* Variable: FOC_KP
    * Referenced by:
@@ -103,7 +103,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_LIMIT_Overcurrent_I_uvw
    * Referenced by: '<S29>/Constant'
    */
-  150.0F,
+  10.0F,
 
   /* Variable: FOC_LIMIT_Overvoltage_U_DC
    * Referenced by: '<S34>/Constant'

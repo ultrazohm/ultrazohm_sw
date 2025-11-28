@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: rt_nonfinite.h
+ * File: FOC_SMF_private.h
  *
- * Code generated for Simulink model 'FOC_FCF'.
+ * Code generated for Simulink model 'FOC_SMF'.
  *
  * Model version                  : 5.13
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Nov 26 12:18:47 2025
+ * C/C++ source code generated on : Wed Nov 26 12:19:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -17,22 +17,11 @@
  * Validation result: Not run
  */
 
-#ifndef rt_nonfinite_h_
-#define rt_nonfinite_h_
+#ifndef FOC_SMF_private_h_
+#define FOC_SMF_private_h_
 #include "rtwtypes.h"
-
-extern real_T rtInf;
-extern real_T rtMinusInf;
-extern real_T rtNaN;
-extern real32_T rtInfF;
-extern real32_T rtMinusInfF;
-extern real32_T rtNaNF;
-extern boolean_T rtIsInf(real_T value);
-extern boolean_T rtIsInfF(real32_T value);
-extern boolean_T rtIsNaN(real_T value);
-extern boolean_T rtIsNaNF(real32_T value);
-
-#endif                                 /* rt_nonfinite_h_ */
+#include "FOC_SMF_types.h"
+#endif                                 /* FOC_SMF_private_h_ */
 
 /*
  * File trailer for generated code.

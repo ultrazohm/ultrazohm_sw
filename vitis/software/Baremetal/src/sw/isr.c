@@ -37,7 +37,6 @@
 #include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hwAddresses.h"
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hwAddresses.h"
 
-//#include "control.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -49,29 +48,6 @@ extern DS_Data Global_Data;
 uint8_t Control_timer_1ms;
 uint8_t Control_timer_10ms;
 uint8_t Control_timer_100ms;
-
-//typedef struct {
-//	struct {
-//		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-//		real32_T I_phA[6];                   /* '<Root>/I_ph [A]' */
-//		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
-//		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
-//		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
-//		real32_T FOC_Enable;                 /* '<Root>/FOC_Enable' */
-//		real32_T w_el_Ref_IfStarter;         /* '<Root>/w_el_Ref_IfStarter' */
-//		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
-//	} fcf_in;
-//	struct {
-//		real32_T DutyCycles01[6];            /* '<Root>/DutyCycles [0..1]' */
-//		real32_T I_dq_ActA[4];               /* '<Root>/I_dq_Act [A]' */
-//		real32_T ModInd[2];                  /* '<Root>/ModInd' */
-//		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
-//		real_T FOC_Error;                    /* '<Root>/FOC_Error' */
-//	} fcf_out;
-//} ctrl_data_t;
-//
-//
-//ctrl_data_t ctrl_data;
 
 float DutyCycleMeas_Value;
 uint32_t PWMin_HighTicks;
@@ -114,43 +90,44 @@ void ISR_Control(void *data)
     ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
 	ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
 
+	// get values from Stateflow Function
+	ctrl_data.fcf_in.FOC_Mode   = ctrl_data.smf_out.FOC_Mode;
+	ctrl_data.fcf_in.FOC_Enable = ctrl_data.smf_out.FOC_Enable_PWM;
+
 	// write inputs to fast control function of simulink model
-	FOC_FCF_MPtr->inputs->U_DC = ctrl_data.fcf_in.U_DC;
-	FOC_FCF_MPtr->inputs->FOC_Enable = 1;
-	FOC_FCF_MPtr->inputs->phi_elrad = ctrl_data.fcf_in.phi_elrad;
-	FOC_FCF_MPtr->inputs->I_phA[0] = ctrl_data.fcf_in.I_phA[0];
-	FOC_FCF_MPtr->inputs->I_phA[1] = ctrl_data.fcf_in.I_phA[1];
-	FOC_FCF_MPtr->inputs->I_phA[2] = ctrl_data.fcf_in.I_phA[2];
+	FOC_FCF_MPtr->inputs->U_DC         = ctrl_data.fcf_in.U_DC;
+	FOC_FCF_MPtr->inputs->I_phA[0]     = ctrl_data.fcf_in.I_phA[0];
+	FOC_FCF_MPtr->inputs->I_phA[1]     = ctrl_data.fcf_in.I_phA[1];
+	FOC_FCF_MPtr->inputs->I_phA[2]     = ctrl_data.fcf_in.I_phA[2];
 	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
 	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
+	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
+	FOC_FCF_MPtr->inputs->FOC_Mode     = ctrl_data.fcf_in.FOC_Mode;
+	FOC_FCF_MPtr->inputs->FOC_Enable   = ctrl_data.fcf_in.FOC_Enable;
 
+	FOC_FCF_step(FOC_FCF_MPtr);
+
+	ctrl_data.fcf_out.DutyCycles01[0] = FOC_FCF_MPtr->outputs->DutyCycles01[0];
+	ctrl_data.fcf_out.DutyCycles01[1] = FOC_FCF_MPtr->outputs->DutyCycles01[1];
+	ctrl_data.fcf_out.DutyCycles01[2] = FOC_FCF_MPtr->outputs->DutyCycles01[2];
+	ctrl_data.fcf_out.DutyCycles01[3] = FOC_FCF_MPtr->outputs->DutyCycles01[3];
+	ctrl_data.fcf_out.DutyCycles01[4] = FOC_FCF_MPtr->outputs->DutyCycles01[4];
+	ctrl_data.fcf_out.DutyCycles01[5] = FOC_FCF_MPtr->outputs->DutyCycles01[5];
+
+	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.fcf_out.DutyCycles01[0];
+	Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.fcf_out.DutyCycles01[1];
+	Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.fcf_out.DutyCycles01[2];
+//    	Global_Data.rasv.halfBridge1DutyCycle = PWM_DutyCycle_0;//[0];
+//    	Global_Data.rasv.halfBridge2DutyCycle = PWM_DutyCycle_1;//[1];
+//		Global_Data.rasv.halfBridge3DutyCycle = PWM_DutyCycle_2;//[2];
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
-    	// write measurement data to control model interface struct
-//    	ctrl_data.fcf_in.
-
-
-    	FOC_FCF_step(FOC_FCF_MPtr);
-
-    	ctrl_data.fcf_out.DutyCycles01[0] = FOC_FCF_MPtr->outputs->DutyCycles01[0];
-    	ctrl_data.fcf_out.DutyCycles01[1] = FOC_FCF_MPtr->outputs->DutyCycles01[1];
-    	ctrl_data.fcf_out.DutyCycles01[2] = FOC_FCF_MPtr->outputs->DutyCycles01[2];
-    	ctrl_data.fcf_out.DutyCycles01[3] = FOC_FCF_MPtr->outputs->DutyCycles01[3];
-    	ctrl_data.fcf_out.DutyCycles01[4] = FOC_FCF_MPtr->outputs->DutyCycles01[4];
-    	ctrl_data.fcf_out.DutyCycles01[5] = FOC_FCF_MPtr->outputs->DutyCycles01[5];
-
-
-    	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.fcf_out.DutyCycles01[0];
-    	Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.fcf_out.DutyCycles01[1];
-		Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.fcf_out.DutyCycles01[2];
-//    	Global_Data.rasv.halfBridge1DutyCycle = PWM_DutyCycle_0;//[0];
-//    	Global_Data.rasv.halfBridge2DutyCycle = PWM_DutyCycle_1;//[1];
-//		Global_Data.rasv.halfBridge3DutyCycle = PWM_DutyCycle_2;//[2];
     }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

@@ -19,10 +19,12 @@
 #include "../main.h"
 #include "../FOC_CodeGen/FOC_FCF.h"
 #include "../FOC_CodeGen/FOC_SCF.h"
+#include "../FOC_CodeGen/FOC_SMF.h"
 
 /* public variables */
 extern RT_MODEL_FOC_FCF_T *const FOC_FCF_MPtr;
 extern RT_MODEL_FOC_SCF_T *const FOC_SCF_MPtr;
+extern RT_MODEL_FOC_SMF_T *const FOC_SMF_MPtr;
 
 extern uint8_t Control_FLAG_1ms;
 extern uint8_t Control_FLAG_10ms;
@@ -63,6 +65,20 @@ typedef struct {
 		real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
 		real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
 	} scf_out;
+	struct {
+		real32_T EXT_State_Request;          /* '<Root>/<EXT_State_Request>' */
+		real32_T EXT_Torque_Request;         /* '<Root>/<EXT_Torque_Request>' */
+		real32_T EXT_Speed_Request;          /* '<Root>/<EXT_Speed_Request>' */
+boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
+	} smf_in;
+	struct {
+		real32_T SysStateAct;                /* '<Root>/SysStateAct' */
+		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
+		real32_T StateFOC;                   /* '<Root>/StateFOC' */
+		real32_T FOC_Enable_PWM;             /* '<Root>/FOC_Enable_PWM' */
+		real32_T global_reset_errors;        /* '<Root>/global_reset_errors' */
+		real32_T SPEED_CTRL_Enable;          /* '<Root>/SPEED_CTRL_Enable' */
+	} smf_out;
 } ctrl_data_t;
 
 extern ctrl_data_t ctrl_data;

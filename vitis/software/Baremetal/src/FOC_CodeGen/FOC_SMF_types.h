@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: FOC_FCF_private.h
+ * File: FOC_SMF_types.h
  *
- * Code generated for Simulink model 'FOC_FCF'.
+ * Code generated for Simulink model 'FOC_SMF'.
  *
  * Model version                  : 5.13
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Nov 26 12:18:47 2025
+ * C/C++ source code generated on : Wed Nov 26 12:19:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -17,11 +17,16 @@
  * Validation result: Not run
  */
 
-#ifndef FOC_FCF_private_h_
-#define FOC_FCF_private_h_
-#include "rtwtypes.h"
-#include "FOC_FCF_types.h"
-#endif                                 /* FOC_FCF_private_h_ */
+#ifndef FOC_SMF_types_h_
+#define FOC_SMF_types_h_
+
+/* Parameters (default storage) */
+typedef struct P_FOC_SMF_T_ P_FOC_SMF_T;
+
+/* Forward declaration for rtModel */
+typedef struct tag_RTM_FOC_SMF_T RT_MODEL_FOC_SMF_T;
+
+#endif                                 /* FOC_SMF_types_h_ */
 
 /*
  * File trailer for generated code.

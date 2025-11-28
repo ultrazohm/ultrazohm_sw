@@ -17,6 +17,7 @@ annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_c
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/AND', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/NOT2', 0, 1, '');
 annotate_port('uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/S-R Flip-Flop', 1, 1, '');
+annotate_port('uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/S-R Flip-Flop1', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/Detect Rise Positive2/FixPt Relational Operator', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/Detect Rise Positive2/Positive', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/position_to_speed_pll/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 0, 1, '');

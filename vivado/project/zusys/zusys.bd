@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x6F7633A3C9601FA0",
+      "boundary_crc": "0x36352503ECE599AE",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -114,8 +114,9 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
+        "ila_0": "",
         "uz_endat_interface_0": "",
-        "ila_0": ""
+        "uz_endat_interface_1": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -313,6 +314,21 @@
       },
       "Dig_07_Ch5": {
         "direction": "I"
+      },
+      "Dig_06_Ch5": {
+        "direction": "I"
+      },
+      "Dig_14_Ch5": {
+        "direction": "O"
+      },
+      "Dig_16_Ch5": {
+        "direction": "O"
+      },
+      "Dig_10_Ch5": {
+        "direction": "O"
+      },
+      "Dig_09_Ch5": {
+        "direction": "O"
       }
     },
     "components": {
@@ -5525,6 +5541,21 @@
           },
           "Dig_08_Ch5": {
             "direction": "O"
+          },
+          "Dig_06_Ch5": {
+            "direction": "I"
+          },
+          "Dig_14_Ch5": {
+            "direction": "O"
+          },
+          "Dig_16_Ch5": {
+            "direction": "O"
+          },
+          "Dig_10_Ch5": {
+            "direction": "O"
+          },
+          "Dig_09_Ch5": {
+            "direction": "O"
           }
         },
         "components": {
@@ -5535,7 +5566,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "2"
+                "value": "3"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5556,7 +5587,8 @@
                 },
                 "bridges": [
                   "M00_AXI",
-                  "M01_AXI"
+                  "M01_AXI",
+                  "M02_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5620,6 +5652,37 @@
                     "value": "0"
                   }
                 }
+              },
+              "M02_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             }
           },
@@ -5628,12 +5691,6 @@
             "xci_name": "zusys_uz_axi_testIP_0_0",
             "xci_path": "ip\\zusys_uz_axi_testIP_0_0\\zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
-          },
-          "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.1",
-            "xci_name": "zusys_uz_endat_interface_0_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_0_0\\zusys_uz_endat_interface_0_0.xci",
-            "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "ila_0": {
             "vlnv": "xilinx.com:ip:ila:6.2",
@@ -5648,15 +5705,30 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "9"
+                "value": "10"
               },
               "C_PROBE7_WIDTH": {
                 "value": "32"
               },
               "C_PROBE8_WIDTH": {
                 "value": "32"
+              },
+              "C_PROBE9_WIDTH": {
+                "value": "32"
               }
             }
+          },
+          "uz_endat_interface_0": {
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.2",
+            "xci_name": "zusys_uz_endat_interface_0_1",
+            "xci_path": "ip\\zusys_uz_endat_interface_0_1\\zusys_uz_endat_interface_0_1.xci",
+            "inst_hier_path": "uz_user/uz_endat_interface_0"
+          },
+          "uz_endat_interface_1": {
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.2",
+            "xci_name": "zusys_uz_endat_interface_1_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_1_0\\zusys_uz_endat_interface_1_0.xci",
+            "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
         "interface_nets": {
@@ -5674,17 +5746,29 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "uz_endat_interface_0/AXI4_Lite",
-              "smartconnect_1/M01_AXI"
+              "smartconnect_1/M01_AXI",
+              "uz_endat_interface_0/AXI4_Lite"
+            ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "uz_endat_interface_1/AXI4_Lite",
+              "smartconnect_1/M02_AXI"
             ]
           }
         },
         "nets": {
+          "Dig_06_Ch5_1": {
+            "ports": [
+              "Dig_06_Ch5",
+              "uz_endat_interface_1/endat_data_in"
+            ]
+          },
           "Dig_07_Ch5_1": {
             "ports": [
               "Dig_07_Ch5",
-              "uz_endat_interface_0/endat_data_in",
-              "ila_0/probe5"
+              "ila_0/probe5",
+              "uz_endat_interface_0/endat_data_in"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -5693,15 +5777,24 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
+              "uz_endat_interface_0/AXI4_Lite_ARESETN",
               "uz_endat_interface_0/IPCORE_RESETN",
-              "uz_endat_interface_0/AXI4_Lite_ARESETN"
+              "uz_endat_interface_1/IPCORE_RESETN",
+              "uz_endat_interface_1/AXI4_Lite_ARESETN"
             ]
           },
           "trigger_endat_1": {
             "ports": [
               "trigger_endat",
+              "ila_0/probe0",
               "uz_endat_interface_0/trigger_endat_read",
-              "ila_0/probe0"
+              "uz_endat_interface_1/trigger_endat_read"
+            ]
+          },
+          "uz_endat_interface_0_CRC_raw": {
+            "ports": [
+              "uz_endat_interface_0/CRC_raw",
+              "ila_0/probe9"
             ]
           },
           "uz_endat_interface_0_RW_clk": {
@@ -5734,13 +5827,13 @@
           "uz_endat_interface_0_endat_received_data_out_SH": {
             "ports": [
               "uz_endat_interface_0/endat_received_data_out_SH",
-              "ila_0/probe4"
+              "ila_0/probe6"
             ]
           },
           "uz_endat_interface_0_endat_transaction_done": {
             "ports": [
               "uz_endat_interface_0/endat_transaction_done",
-              "ila_0/probe6"
+              "ila_0/probe4"
             ]
           },
           "uz_endat_interface_0_position_raw_multi_turn": {
@@ -5755,15 +5848,41 @@
               "ila_0/probe7"
             ]
           },
+          "uz_endat_interface_1_RW_clk": {
+            "ports": [
+              "uz_endat_interface_1/RW_clk",
+              "Dig_16_Ch5"
+            ]
+          },
+          "uz_endat_interface_1_RW_data": {
+            "ports": [
+              "uz_endat_interface_1/RW_data",
+              "Dig_10_Ch5"
+            ]
+          },
+          "uz_endat_interface_1_endat_clk": {
+            "ports": [
+              "uz_endat_interface_1/endat_clk",
+              "Dig_14_Ch5"
+            ]
+          },
+          "uz_endat_interface_1_endat_mode_data_out": {
+            "ports": [
+              "uz_endat_interface_1/endat_mode_data_out",
+              "Dig_09_Ch5"
+            ]
+          },
           "zynq_ultra_ps_e_0_pl_clk1": {
             "ports": [
               "aclk",
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
+              "ila_0/clk",
               "uz_endat_interface_0/IPCORE_CLK",
               "uz_endat_interface_0/AXI4_Lite_ACLK",
-              "ila_0/clk"
+              "uz_endat_interface_1/IPCORE_CLK",
+              "uz_endat_interface_1/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9012,6 +9131,12 @@
           "A3_OUT_CNV_1"
         ]
       },
+      "Dig_06_Ch5_1": {
+        "ports": [
+          "Dig_06_Ch5",
+          "uz_user/Dig_06_Ch5"
+        ]
+      },
       "Dig_07_Ch5_1": {
         "ports": [
           "Dig_07_Ch5",
@@ -9134,16 +9259,40 @@
           "Dig_08_Ch5"
         ]
       },
+      "uz_user_Dig_09_Ch5": {
+        "ports": [
+          "uz_user/Dig_09_Ch5",
+          "Dig_09_Ch5"
+        ]
+      },
+      "uz_user_Dig_10_Ch5": {
+        "ports": [
+          "uz_user/Dig_10_Ch5",
+          "Dig_10_Ch5"
+        ]
+      },
       "uz_user_Dig_11_Ch5": {
         "ports": [
           "uz_user/Dig_11_Ch5",
           "Dig_11_Ch5"
         ]
       },
+      "uz_user_Dig_14_Ch5": {
+        "ports": [
+          "uz_user/Dig_14_Ch5",
+          "Dig_14_Ch5"
+        ]
+      },
       "uz_user_Dig_15_Ch5": {
         "ports": [
           "uz_user/Dig_15_Ch5",
           "Dig_15_Ch5"
+        ]
+      },
+      "uz_user_Dig_16_Ch5": {
+        "ports": [
+          "uz_user/Dig_16_Ch5",
+          "Dig_16_Ch5"
         ]
       },
       "uz_user_Dig_17_Ch5": {
@@ -9319,6 +9468,11 @@
               "SEG_uz_endat_interface_0_reg0": {
                 "address_block": "/uz_user/uz_endat_interface_0/AXI4_Lite/reg0",
                 "offset": "0x0080120000",
+                "range": "64K"
+              },
+              "SEG_uz_endat_interface_1_reg0": {
+                "address_block": "/uz_user/uz_endat_interface_1/AXI4_Lite/reg0",
+                "offset": "0x0080130000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {

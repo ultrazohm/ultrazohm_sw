@@ -53,10 +53,13 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_1, send_position);
-//    uz_axi_write_uint32(XPAR_UZ_USER_UZ_ENDAT_INTERFACE_0_BASEADDR + 0x118, 7U);
-    Global_Data.av.endat_pos_mech_si = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_pos_raw_st = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_pos_raw_mt = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_pos_mech_si_d5_1 = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_pos_raw_st_d5_1 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_pos_raw_mt_d5_1 = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
+    uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_3, send_position);
+    Global_Data.av.endat_pos_mech_si_d5_3 = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_pos_raw_st_d5_3 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_pos_raw_mt_d5_3 = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_3);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

@@ -80,9 +80,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq] 					= &data->av.I_q;
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.endat_pos_mech_si;
-	js_ch_observable[JSO_single_turn_raw]		= &data->av.endat_pos_raw_st;
-	js_ch_observable[JSO_multi_turn_raw]		= &data->av.endat_pos_raw_mt;
+	js_ch_observable[JSO_theta_mech_d5_1] 		= &data->av.endat_pos_mech_si_d5_1;
+	js_ch_observable[JSO_single_turn_raw_d5_1]	= &data->av.endat_pos_raw_st_d5_1;
+	js_ch_observable[JSO_multi_turn_raw_d5_1]	= &data->av.endat_pos_raw_mt_d5_1;
+	js_ch_observable[JSO_theta_mech_d5_3] 		= &data->av.endat_pos_mech_si_d5_3;
+	js_ch_observable[JSO_single_turn_raw_d5_3]	= &data->av.endat_pos_raw_st_d5_3;
+	js_ch_observable[JSO_multi_turn_raw_d5_3]	= &data->av.endat_pos_raw_mt_d5_3;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;

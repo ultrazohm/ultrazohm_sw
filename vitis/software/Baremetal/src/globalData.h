@@ -87,9 +87,12 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-	float endat_pos_mech_si;
-	float endat_pos_raw_st;
-	float endat_pos_raw_mt;
+	float endat_pos_mech_si_d5_1;
+	float endat_pos_raw_st_d5_1;
+	float endat_pos_raw_mt_d5_1;
+	float endat_pos_mech_si_d5_3;
+	float endat_pos_raw_st_d5_3;
+	float endat_pos_raw_mt_d5_3;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -119,6 +122,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_endat_interface_t* endat_encoder_d5_1;
+	uz_endat_interface_t* endat_encoder_d5_3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

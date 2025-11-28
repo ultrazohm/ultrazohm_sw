@@ -13,6 +13,14 @@ enum position_encoding_t {
 };
 
 /**
+ * @brief Enumeration of the EnDat MODE commands
+ *
+ */
+enum mode_commands_t {
+    send_position=7U
+};
+
+/**
  * @brief Data type for object uz_endat_interface
  *
  */
@@ -93,6 +101,14 @@ float uz_endat_interface_get_speed_mech_rpm(uz_endat_interface_t *self);
  * @param ip_core_off_on Flag to enable the IP core, false=off, true=enabled
  */
 void uz_endat_interface_enable_ip(uz_endat_interface_t *self, bool ip_core_off_on);
+
+/**
+ * @brief Writes the MODE command to the IP-core, that will be sent to the encoder.
+ *
+ * @param self Pointer to the instance
+ * @param MODE command
+ */
+void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mode_command);
 
 /**
  * @brief Sets a new mechanical offset value for the single-turn position 

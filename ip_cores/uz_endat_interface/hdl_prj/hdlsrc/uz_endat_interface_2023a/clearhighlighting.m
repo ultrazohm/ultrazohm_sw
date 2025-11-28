@@ -28,10 +28,10 @@ annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communicati
 annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');
 annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/endat_clock_enable_controller/S-R Flip-Flop', 1, 1, '');
 annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/endat_clock_enable_controller/S-R Flip-Flop1', 1, 1, '');
-annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_ssi_data/Bitwise Operator1', 1, 1, '');
-annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_ssi_data/Bitwise Operator1', 1, 1, '');
-annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_ssi_data/shift arithmetic', 1, 1, '');
-annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_ssi_data/Shift Arithmetic', 1, 1, '');
+annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Bitwise Operator1', 1, 1, '');
+annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Bitwise Operator1', 1, 1, '');
+annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/shift arithmetic', 1, 1, '');
+annotate_port('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Shift Arithmetic', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/ssi_clock_generator/Detect Rise Positive1', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/ssi_clock_generator/base_counter', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication/ssi_clock_generator/AND', 0, 1, '');

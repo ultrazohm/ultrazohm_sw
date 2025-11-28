@@ -28,7 +28,7 @@ vcom  uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd
 vcom  uz_endat_interface_src_Detect_Rise_Positive2_block.vhd
 vcom  uz_endat_interface_src_Model.vhd
 vcom  uz_endat_interface_src_Sample_and_Hold1.vhd
-vcom  uz_endat_interface_src_sample_serial_ssi_data.vhd
+vcom  uz_endat_interface_src_sample_serial_endat_data.vhd
 vcom  uz_endat_interface_src_Detect_Rise_Positive_block2.vhd
 vcom  uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd
 vcom  uz_endat_interface_src_S_R_Flip_Flop_block3.vhd

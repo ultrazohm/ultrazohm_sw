@@ -15,7 +15,7 @@ t_plant = 1/f_plant;    % Plant sample time in s
 
 % divider for the 100 MHz supply clock
 % e.g. 100 MHz / (2*25) = 2 MHz
-endat_clk_divider = 10; % 10 = 5 MHz 
+endat_clk_divider = 25; % 10 = 5 MHz 
 
 
 % bit width of the connected endat encoder

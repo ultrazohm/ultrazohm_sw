@@ -5,7 +5,7 @@
 
 #define  IPCore_Reset_uz_endat_interface                                   0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_endat_interface                                  0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_endat_interface                               0x8  //contains unique IP timestamp (yymmddHHMM): 2511271317: 2511271321
+#define  IPCore_Timestamp_uz_endat_interface                               0x8  //contains unique IP timestamp (yymmddHHMM): 2511280951
 #define  endat_clk_divider_AXI_Data_uz_endat_interface                     0x100  //data register for Inport endat_clk_divider_AXI
 #define  endat_encoder_bit_width_single_turn_AXI_Data_uz_endat_interface   0x104  //data register for Inport endat_encoder_bit_width_single_turn_AXI
 #define  endat_encoder_bit_width_multi_turn_AXI_Data_uz_endat_interface    0x108  //data register for Inport endat_encoder_bit_width_multi_turn_AXI
@@ -25,7 +25,7 @@
 #define  sampling_delay_clk_ticks_AXI_Data_uz_endat_interface              0x140  //data register for Inport sampling_delay_clk_ticks_AXI
 #define  position_raw_single_turn_AXI_Data_uz_endat_interface              0x144  //data register for Outport position_raw_single_turn_AXI
 #define  position_raw_multi_turn_AXI_Data_uz_endat_interface               0x148  //data register for Outport position_raw_multi_turn_AXI
-#define  status_raw_AXI_Data_uz_endat_interface                            0x14C  //data register for Outport status_raw_AXI
+#define  CRC_raw_AXI_Data_uz_endat_interface                               0x14C  //data register for Outport CRC_raw_AXI
 #define  position_mech_SI_single_turn_AXI_Data_uz_endat_interface          0x150  //data register for Outport position_mech_SI_single_turn_AXI
 #define  position_el_SI_AXI_Data_uz_endat_interface                        0x154  //data register for Outport position_el_SI_AXI
 #define  position_multi_turn_AXI_Data_uz_endat_interface                   0x158  //data register for Outport position_multi_turn_AXI

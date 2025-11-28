@@ -151,6 +151,12 @@ void uz_endat_interface_set_mechanical_offset_endat_single_turn(uz_endat_interfa
     uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(self->config.base_address, position_mech_offset_ticks_single_turn);
 }
 
+void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mode_command) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_endat_interface_hw_write_endat_mode_command(self->config.base_address, mode_command);
+}
+
 uint32_t ceil_div(uint32_t a, uint32_t b) {
     uz_assert(b !=0U);
     return (a + b - 1U) / b;

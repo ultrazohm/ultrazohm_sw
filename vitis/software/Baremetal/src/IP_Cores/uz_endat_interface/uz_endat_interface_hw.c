@@ -56,6 +56,13 @@ void uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(uint32_t base_
     uz_axi_write_uint32(base_address + endat_encoder_number_of_CRC_bits_AXI_Data_uz_endat_interface, endat_encoder_number_of_CRC_bits);
 }
 
+void uz_endat_interface_hw_write_endat_mode_command(uint32_t base_address, uint32_t endat_mode_command) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert(endat_mode_command == 7U); //only receiving position information is implemented in the IP-core (mode command 000111b -> 7U)
+
+	uz_axi_write_uint32(base_address + endat_mode_command_in_AXI_Data_uz_endat_interface, endat_mode_command);
+}
+
 void uz_endat_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding) {
     uz_assert_not_zero_uint32(base_address);
 
@@ -119,7 +126,7 @@ uint32_t uz_endat_interface_hw_read_position_multi_turn(uint32_t base_address) {
 
 uint32_t uz_endat_interface_hw_read_endat_encoder_status(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
-    return(uz_axi_read_uint32(base_address + status_raw_AXI_Data_uz_endat_interface));
+    return(uz_axi_read_uint32(base_address + CRC_raw_AXI_Data_uz_endat_interface));
 }
 
 float uz_endat_interface_hw_read_position_mech_si_single_turn(uint32_t base_address) {

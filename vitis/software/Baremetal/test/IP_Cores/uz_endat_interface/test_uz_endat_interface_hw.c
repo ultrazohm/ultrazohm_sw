@@ -162,7 +162,7 @@ void test_uz_endat_interface_hw_read_position_speed_status(void)
     TEST_ASSERT_EQUAL_UINT32(expected_position_raw_multi_turn, returned_position_multi_turn);
 
     // test status
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + status_raw_AXI_Data_uz_endat_interface, expected_status);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + CRC_raw_AXI_Data_uz_endat_interface, expected_status);
     returned_status = uz_endat_interface_hw_read_endat_encoder_status(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT32(expected_status, returned_status);
 

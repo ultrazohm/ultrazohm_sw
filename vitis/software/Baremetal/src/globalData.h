@@ -78,6 +78,8 @@ typedef struct _actualValues_ {
 	float v_c_right;
 	float v_dc_left;
 	float v_dc_right;
+	float v_dc_right_plus;
+	float v_dc_right_minus;
 	float i_dc_left;
 	float i_dc_right;
 	float i_d_left;

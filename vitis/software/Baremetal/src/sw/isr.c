@@ -41,8 +41,10 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-#define 	CURRENT_2_SI_AMPERE	12.5f
-#define		VOLTAGE_2_SI_VOLTS	12.0f
+#define 	CURRENT_2_SI_AMPERE_UZ	12.5f
+#define		VOLTAGE_2_SI_VOLTS_UZ	12.0f
+#define		CURRENT_2_SI_AMPERE_LEE 19.68f;
+#define 	VOLTAGE_2_SI_VOLTS_LEE 250.0f;
 #define		MAX_CURRENT			15.0f
 #define		V_DC				48.0f
 
@@ -57,6 +59,16 @@ struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
 struct uz_pmsmModel_inputs_t pmsm_cil_inputs = {0.0f};
 struct uz_pmsmModel_outputs_t pmsm_cil_outputs = {0.0f};
+
+enum inverter_type
+{
+	uz_adapter_inverter,
+	lee_inverter,
+	none
+};
+
+enum inverter_type inverter_right_machine = lee_inverter;
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -73,38 +85,58 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    // update speed and position of resolvers// update speed and position of resolvers
+    // update speed and position of resolvers
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
     Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
 
-	// assign measurements to Global_Data
-	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_b_left = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_c_left = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_dc_left = Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.v_a_left = Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_b_left = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+    // update status of inverter adapters
+    Global_Data.av.inverter_d1_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_left);
+    Global_Data.av.inverter_d2_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_right);
 
-	Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+	// assign measurements to Global_Data
+    // left machine
+	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE_UZ;
+	Global_Data.av.i_b_left = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE_UZ;
+	Global_Data.av.i_c_left = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE_UZ;
+	Global_Data.av.i_dc_left = Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE_UZ;
+	Global_Data.av.v_a_left = Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS_UZ;
+	Global_Data.av.v_b_left = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS_UZ;
+	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS_UZ;
+	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS_UZ;
+	// right machine
+	switch (inverter_right_machine) {
+		case uz_adapter_inverter:
+			// assign measurements right machine to Global_Data
+			Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE_UZ;
+			Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE_UZ;
+			Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE_UZ;
+			Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE_UZ;
+			Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS_UZ;
+			Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS_UZ;
+			Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS_UZ;
+			Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS_UZ;
+			break;
+		case lee_inverter:
+		    // assign measurements to Global_Data
+		    Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A1 * CURRENT_2_SI_AMPERE_LEE;
+		    Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE_LEE;
+		    Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE_LEE;
+		    Global_Data.av.i_dc_right = 0.0f;
+		    Global_Data.av.v_a_right = 0.0f;
+		    Global_Data.av.v_b_right = 0.0f;
+		    Global_Data.av.v_c_right = 0.0f;
+		    Global_Data.av.v_dc_right_plus = Global_Data.aa.A2.me.ADC_B5 * VOLTAGE_2_SI_VOLTS_LEE;
+		    Global_Data.av.v_dc_right_minus = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS_LEE;
+		    Global_Data.av.v_dc_right = Global_Data.av.v_dc_right_plus + Global_Data.av.v_dc_right_minus;
+			break;
+		default: break;
+	}
 
     // check for current limit
     if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
    		fabs(Global_Data.av.i_a_right) > MAX_CURRENT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT) {
     	ultrazohm_state_machine_set_stop(true);
     }
-
-    // update status of inverter adapters
-    Global_Data.av.inverter_d1_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_left);
-    Global_Data.av.inverter_d2_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_right);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -122,6 +154,8 @@ void ISR_Control(void *data)
     	// disable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_left, false);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17,true,true,true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_18_to_23, true, true, true);
 
     	// reset controllers
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
@@ -141,6 +175,12 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge10DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge11DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge12DutyCycle = 0.0f;
     }
 
     // if "ENABLE SYSTEM"
@@ -148,7 +188,15 @@ void ISR_Control(void *data)
     {
     	// enable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_left, true);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, true);
+    	switch (inverter_right_machine) {
+    		case uz_adapter_inverter:
+    			uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_right, true);
+    			break;
+    		case lee_inverter:
+    			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17,false,false,false);
+    			break;
+    		default: break;
+    	}
     }
 
     // if "ENABLE CONTROL"
@@ -198,19 +246,31 @@ void ISR_Control(void *data)
 			control_right_motor();
 
 			// set dutycycles
+			// left machine
 			Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
 			Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
 			Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
-			Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
-			Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
-			Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+			// right machine
+			switch (inverter_right_machine) {
+				case uz_adapter_inverter:
+					Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+					Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+					Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+					break;
+				case lee_inverter:
+					Global_Data.rasv.halfBridge7DutyCycle = dutycyc_right.DutyCycle_A;
+					Global_Data.rasv.halfBridge8DutyCycle = dutycyc_right.DutyCycle_B;
+					Global_Data.rasv.halfBridge9DutyCycle = dutycyc_right.DutyCycle_C;
+					break;
+				default: break;
+			}
 		}
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    // uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    // uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

@@ -5719,15 +5719,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.2",
-            "xci_name": "zusys_uz_endat_interface_0_1",
-            "xci_path": "ip\\zusys_uz_endat_interface_0_1\\zusys_uz_endat_interface_0_1.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.3",
+            "xci_name": "zusys_uz_endat_interface_2_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_2_0\\zusys_uz_endat_interface_2_0.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.2",
-            "xci_name": "zusys_uz_endat_interface_1_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_1_0\\zusys_uz_endat_interface_1_0.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.3",
+            "xci_name": "zusys_uz_endat_interface_3_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_3_0\\zusys_uz_endat_interface_3_0.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5752,8 +5752,8 @@
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "uz_endat_interface_1/AXI4_Lite",
-              "smartconnect_1/M02_AXI"
+              "smartconnect_1/M02_AXI",
+              "uz_endat_interface_1/AXI4_Lite"
             ]
           }
         },
@@ -5777,8 +5777,8 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_endat_interface_0/AXI4_Lite_ARESETN",
               "uz_endat_interface_0/IPCORE_RESETN",
+              "uz_endat_interface_0/AXI4_Lite_ARESETN",
               "uz_endat_interface_1/IPCORE_RESETN",
               "uz_endat_interface_1/AXI4_Lite_ARESETN"
             ]
@@ -5789,12 +5789,6 @@
               "ila_0/probe0",
               "uz_endat_interface_0/trigger_endat_read",
               "uz_endat_interface_1/trigger_endat_read"
-            ]
-          },
-          "uz_endat_interface_0_CRC_raw": {
-            "ports": [
-              "uz_endat_interface_0/CRC_raw",
-              "ila_0/probe9"
             ]
           },
           "uz_endat_interface_0_RW_clk": {
@@ -5824,49 +5818,55 @@
               "ila_0/probe2"
             ]
           },
-          "uz_endat_interface_0_endat_received_data_out_SH": {
+          "uz_endat_interface_2_CRC_raw": {
+            "ports": [
+              "uz_endat_interface_0/CRC_raw",
+              "ila_0/probe9"
+            ]
+          },
+          "uz_endat_interface_2_endat_received_data_out_SH": {
             "ports": [
               "uz_endat_interface_0/endat_received_data_out_SH",
               "ila_0/probe6"
             ]
           },
-          "uz_endat_interface_0_endat_transaction_done": {
+          "uz_endat_interface_2_endat_transaction_done": {
             "ports": [
               "uz_endat_interface_0/endat_transaction_done",
               "ila_0/probe4"
             ]
           },
-          "uz_endat_interface_0_position_raw_multi_turn": {
+          "uz_endat_interface_2_position_raw_multi_turn": {
             "ports": [
               "uz_endat_interface_0/position_raw_multi_turn",
               "ila_0/probe8"
             ]
           },
-          "uz_endat_interface_0_position_raw_single_turn": {
+          "uz_endat_interface_2_position_raw_single_turn": {
             "ports": [
               "uz_endat_interface_0/position_raw_single_turn",
               "ila_0/probe7"
             ]
           },
-          "uz_endat_interface_1_RW_clk": {
+          "uz_endat_interface_3_RW_clk": {
             "ports": [
               "uz_endat_interface_1/RW_clk",
               "Dig_16_Ch5"
             ]
           },
-          "uz_endat_interface_1_RW_data": {
+          "uz_endat_interface_3_RW_data": {
             "ports": [
               "uz_endat_interface_1/RW_data",
               "Dig_10_Ch5"
             ]
           },
-          "uz_endat_interface_1_endat_clk": {
+          "uz_endat_interface_3_endat_clk": {
             "ports": [
               "uz_endat_interface_1/endat_clk",
               "Dig_14_Ch5"
             ]
           },
-          "uz_endat_interface_1_endat_mode_data_out": {
+          "uz_endat_interface_3_endat_mode_data_out": {
             "ports": [
               "uz_endat_interface_1/endat_mode_data_out",
               "Dig_09_Ch5"

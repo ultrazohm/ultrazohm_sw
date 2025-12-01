@@ -13,7 +13,7 @@ vcom  uz_endat_interface_src_Sine_HDL_Optimized.vhd
 vcom  uz_endat_interface_src_position_to_speed_pll.vhd
 vcom  uz_endat_interface_src_floor_div_pow2.vhd
 vcom  uz_endat_interface_src_set_offset_to_raw_position_and_wrap.vhd
-vcom  uz_endat_interface_src_slice_position_and_status.vhd
+vcom  uz_endat_interface_src_slice_position_and_CRC.vhd
 vcom  uz_endat_interface_src_fixed_point_floor_block.vhd
 vcom  uz_endat_interface_src_wrap_2pi.vhd
 vcom  uz_endat_interface_src_Detect_Rise_Positive2.vhd

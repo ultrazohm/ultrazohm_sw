@@ -19,7 +19,7 @@ Implementation
 The module ``uz_prng`` is a generic implementation for PRNGs.
 The actual generation of the random numbers is facilitated by the `Implemented generators`_, each with specific properties.
 Other software modules can depend on ``uz_prng`` instead of the individual generators, which enables changing the generator for experiments without code changes.
-In addition to generating uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded generation of ``uint32_t`` as well as ``float`` are supported.
+In addition to generating uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded ``uint32_t`` as well as ``float`` are supported.
 
 Seeds
 -----
@@ -59,7 +59,7 @@ The following figure compares the distributions of the different implemented PRN
 The distributions of the generated numbers tend towards a uniform distribution for an increasing number of samples.
 
 .. plot:: 
-    :caption: Histogram for different number of samples taken from the implemented generators. Samples are generated using ``uz_prng_X_get_uniform_uint32``, where X is the name of the specific generator. For increasing number of taken samples, the distribution tends towards uniform data. However, for small number of samples, the generated random numbers can deviate from a uniform distribution considerably (as is the case with *real* randomness, i.e., law of large numbers). As can be seen, the Halton sequence produces uniform distributed values already for low number of samples.
+    :caption: Histogram for different numbers of samples taken from the implemented generators. Samples are generated using ``uz_prng_X_get_uniform_uint32``, where X is the name of the specific generator. For an increasing number of taken samples, the distribution tends towards uniform data. However, for a small number of samples, the generated random numbers can deviate from a uniform distribution considerably (as is the case with *real* randomness, i.e., law of large numbers). As can be seen, the Halton sequence produces uniformly distributed values already for a low number of samples.
     
      import matplotlib.pyplot as plt
      import pandas as pd
@@ -151,7 +151,7 @@ Will fail the test, i.e., some random numbers differ between biased and unbiased
 Note that the GCC options are required to prevent that the loop is not executed since both variables are unused for the compiler.
 
 .. plot:: software/library/uz_prng/density_plot_multipe_seeds_biased_uint1000.py
-    :caption:  Histogram of ``uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(X,9U)`` (left) and ``uz_prng_get_uniform_uint32_zero_to_range_int_mult(X,9U)`` (right) for the implemented generators for 10 different random seeds. The different distributions of the generators as well as the random seeds results in varying distributions of random numbers. Within this test, no difference between biased and unbiased version is observed. Note that this bias is more pronounced for large numbers for the range.
+    :caption: Histogram of ``uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(X,9U)`` (left) and ``uz_prng_get_uniform_uint32_zero_to_range_int_mult(X,9U)`` (right) for the implemented generators for 10 different random seeds. The different distributions of the generators, as well as the random seeds, result in varying distributions of random numbers. Within this test, no difference between the biased and unbiased versions is observed. Note that this bias is more pronounced for large numbers in the range.
     
 
 Uniform distribution float [0,1)
@@ -169,7 +169,7 @@ As can be seen, the specific distribution generated varies for the given seed an
 Normal distribution
 -------------------
 
-Generating normal distributions is implemented by the polar method [[#polar_method]_], which is a variation of the Box Mueller transformation [[#box_mueller]_].
+Generating normal distributions is implemented by the polar method [[#polar_method]_], which is a variation of the Box-Muller transformation [[#box_mueller]_].
 
 
 .. plot:: software/library/uz_prng/density_plot_normal_distribution.py
@@ -207,9 +207,9 @@ The measurement is based on generating 20 values per ISR over 4000 ISR cycles by
 
 Results:
 
-  - ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators
-  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls, resulting in a spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
-  - ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`_.
+- ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators
+- ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls, resulting in a spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
+- ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`_.
 
 
 .. plot::
@@ -334,7 +334,7 @@ uint32_t in range [0,range)
 ---------------------------
 
 - int multi is the fastest but is biased
-- unbiased opt is unbiased and faster than unbias
+- unbiased opt is unbiased and faster than unbiased
 - No reason to use float multiplication version
 - Use unbiased mean if comparability with other Frameworks that use Lemire's method (https://arxiv.org/abs/1805.10941) is desired
 
@@ -380,7 +380,7 @@ Halton timing
 -------------
 
 The calculation time for ``uz_prng_generator_halton`` increases with the number of samples taken from the Halton sequence.
-This seems to be related to the fact that the implementation relies on a loop to find the nth value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
+This seems to be related to the fact that the implementation relies on a loop to find the nth value of the Halton sequence, which requires more passes for increasing numbers of :math:`n`.
 The following figure shows the execution time of ``uz_prng_generator_halton`` for 874,821,900 samples, which did not result in a settled calculation time.
 The seed is set to 7 in this experiment; the behavior probably depends on the starting prime number.
 Usage of ``uz_prng_generator_halton`` in long-running applications (multiple days) should be handled carefully.

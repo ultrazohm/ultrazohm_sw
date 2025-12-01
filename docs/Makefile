@@ -34,7 +34,6 @@ ceedling_clean:
 	(cd ../vitis/software/Baremetal/; ceedling clobber)
 
 docs:
-	make ceedling_tests
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 

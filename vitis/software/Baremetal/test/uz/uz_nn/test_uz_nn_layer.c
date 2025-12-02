@@ -19,20 +19,18 @@
 #define NUMBER_OF_INPUTS 3U
 #define NUMBER_OF_NEURONS_IN_LAYER 4U
 
-
 float x[NUMBER_OF_INPUTS] = {1.0f, 2.0f, 3.0f};
 float w[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
                                                           0.3188f, -1.3077f, -0.4336f, 0.3426f,
                                                           3.5784f, 2.7694f, -1.3499f, 3.0349f};
 float b[NUMBER_OF_NEURONS_IN_LAYER] = {1.0f, -2.0f, 3.0f, -4.0f};
 float out[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float e[NUMBER_OF_NEURONS_IN_LAYER]={0};
+float e[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 float T[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 float s[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 float delta[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 float cacheg[NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
 float g[NUMBER_OF_NEURONS_IN_LAYER + NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
-
 
 void setUp(void)
 {
@@ -69,8 +67,7 @@ void test_uz_nn_layer_init_trainable(void)
         .temporarybackprop = T,
         .gradients = g,
         .cachegradients = cacheg,
-        .error = e
-};
+        .error = e};
     uz_nn_layer_init_trainable(config);
 }
 void test_uz_nn_layer_init(void)
@@ -86,11 +83,9 @@ void test_uz_nn_layer_init(void)
         .weights = w,
         .bias = b,
         .output = out,
-        .sumout = s
-};
+        .sumout = s};
     uz_nn_layer_init(config);
 }
-
 
 void test_uz_nn_layer_matrix_multiply_zero_bias(void)
 {

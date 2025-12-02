@@ -57,38 +57,18 @@ struct uz_nn_layer_config config[3] = {
         .bias = b_1,
         .output = y_1,
         .sumout = s_1},
-    [1] = {.activation_function = activation_ReLU,      
-      .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-      .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-      .length_of_weights = UZ_MATRIX_SIZE(w_2),
-      .length_of_bias = UZ_MATRIX_SIZE(b_2),
-      .length_of_output = UZ_MATRIX_SIZE(y_2),
-      .length_of_sumout = UZ_MATRIX_SIZE(s_2),
-      .weights = w_2,
-      .bias = b_2,
-      .output = y_2,
-      .sumout = s_2},
-    [2] = {.activation_function = activation_linear,    
-   .number_of_neurons = NUMBER_OF_OUTPUTS,
-   .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-   .length_of_weights = UZ_MATRIX_SIZE(w_3),
-   .length_of_bias = UZ_MATRIX_SIZE(b_3),
-   .length_of_output = UZ_MATRIX_SIZE(y_3),
-   .length_of_sumout = UZ_MATRIX_SIZE(s_3),
-   .weights = w_3,
-   .bias = b_3,
-   .output = y_3,
-   .sumout = s_3}};
+    [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2},
+    [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(s_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3}};
 void test_uz_nn_init(void)
 {
-    uz_nn_init(config, 3,false);
+    uz_nn_init(config, 3, false);
 }
 
 void test_uz_nn_ff(void)
 {
     struct uz_matrix_t input_matrix = {0};
     uz_matrix_t *input = uz_matrix_init(&input_matrix, x, UZ_MATRIX_SIZE(x), 1, 2);
-    uz_nn_t *test = uz_nn_init(config, 3,false);
+    uz_nn_t *test = uz_nn_init(config, 3, false);
     uz_nn_ff(test, input);
     float expected_result_first_layer[3] = {10, 14, 18};
     float expected_result_second_layer[3] = {28, 23, 0};
@@ -104,22 +84,25 @@ void test_uz_nn_ff(void)
     TEST_ASSERT_EQUAL_FLOAT(expected_result, result);
 }
 
-void test_uz_nn_get_number_of_layer(void){
-    uz_nn_t *test = uz_nn_init(config, 3,false);
-    uint32_t number_of_layer=uz_nn_get_number_of_layer(test);
-    TEST_ASSERT_EQUAL(number_of_layer,3);
+void test_uz_nn_get_number_of_layer(void)
+{
+    uz_nn_t *test = uz_nn_init(config, 3, false);
+    uint32_t number_of_layer = uz_nn_get_number_of_layer(test);
+    TEST_ASSERT_EQUAL(number_of_layer, 3);
 }
 
-void test_uz_nn_get_number_of_inputs(void){
-    uz_nn_t *test = uz_nn_init(config, 3,false);
-    uint32_t number_of_inputs=uz_nn_get_number_of_inputs(test);
-    TEST_ASSERT_EQUAL(number_of_inputs,NUMBER_OF_INPUTS);
+void test_uz_nn_get_number_of_inputs(void)
+{
+    uz_nn_t *test = uz_nn_init(config, 3, false);
+    uint32_t number_of_inputs = uz_nn_get_number_of_inputs(test);
+    TEST_ASSERT_EQUAL(number_of_inputs, NUMBER_OF_INPUTS);
 }
 
-void test_uz_nn_get_number_of_outputs(void){
-    uz_nn_t *test = uz_nn_init(config, 3,false);
-    uint32_t number_of_outputs=uz_nn_get_number_of_outputs(test);
-    TEST_ASSERT_EQUAL(number_of_outputs,NUMBER_OF_OUTPUTS);
+void test_uz_nn_get_number_of_outputs(void)
+{
+    uz_nn_t *test = uz_nn_init(config, 3, false);
+    uint32_t number_of_outputs = uz_nn_get_number_of_outputs(test);
+    TEST_ASSERT_EQUAL(number_of_outputs, NUMBER_OF_OUTPUTS);
 }
 
 #endif // TEST

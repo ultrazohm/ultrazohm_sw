@@ -38,35 +38,28 @@ float cacheg_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
 float cacheg_2[NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
-float g_2[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float g_2[NUMBER_OF_OUTPUTS + NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
 float x[NUMBER_OF_INPUTS] = {
-0.05f, 0.1f
-};
+    0.05f, 0.1f};
 
-float reference_output[NUMBER_OF_OUTPUTS]= {
-0.01f, 0.99f
-};
+float reference_output[NUMBER_OF_OUTPUTS] = {
+    0.01f, 0.99f};
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-0.15f,0.25f,0.2f,0.3f
-};
+    0.15f, 0.25f, 0.2f, 0.3f};
 float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-0.35f,0.35f
-};
+    0.35f, 0.35f};
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
-
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_OUTPUTS] = {
-0.4f,0.5f,0.45f,0.55f
-};
+    0.4f, 0.5f, 0.45f, 0.55f};
 float b_2[NUMBER_OF_OUTPUTS] = {
-0.6f,0.6f
-};
+    0.6f, 0.6f};
 float y_2[NUMBER_OF_OUTPUTS] = {0};
 // error
-float e_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER]={0.0f};
-float e_2[NUMBER_OF_OUTPUTS]={0.0f};
+float e_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0.0f};
+float e_2[NUMBER_OF_OUTPUTS] = {0.0f};
 
 // Temporary buffer storage
 
@@ -74,9 +67,9 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T2[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
 //
-float msetest [NUMBER_OF_EPOCHS] = {0.0f};
-float msederv [NUMBER_OF_EPOCHS] = {0.0f};
-float msebatch [NUMBER_OF_EPOCHS] = {0.0f};
+float msetest[NUMBER_OF_EPOCHS] = {0.0f};
+float msederv[NUMBER_OF_EPOCHS] = {0.0f};
+float msebatch[NUMBER_OF_EPOCHS] = {0.0f};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_sigmoid,
@@ -104,33 +97,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .gradients = g_1,
         .cachegradients = cacheg_1,
         .error = e_1},
-    [1] = {
-      .activation_function = activation_sigmoid, 
-      .number_of_neurons = NUMBER_OF_OUTPUTS,
-      .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-      .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
-      .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-      .number_of_temporarycolumns = 2,
-      .number_of_temporaryrows = 2,
-      .length_of_weights = UZ_MATRIX_SIZE(w_2),
-      .length_of_bias = UZ_MATRIX_SIZE(b_2),
-      .length_of_output = UZ_MATRIX_SIZE(y_2),
-      .length_of_sumout = UZ_MATRIX_SIZE(s_2),
-      .length_of_delta = UZ_MATRIX_SIZE(delta_2),
-      .length_of_gradients = UZ_MATRIX_SIZE(g_2),
-      .length_of_error = UZ_MATRIX_SIZE(e_2),
-      .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2),
-      .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2),
-      .weights = w_2,
-      .bias = b_2,
-      .output = y_2,
-      .sumout = s_2,
-      .delta = delta_2,
-      .temporarybackprop = T2,
-      .gradients = g_2,
-      .cachegradients = cacheg_2,
-      .error=e_2}
-  };
+    [1] = {.activation_function = activation_sigmoid, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .number_of_cachegradrows = NUMBER_OF_OUTPUTS, .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .number_of_temporarycolumns = 2, .number_of_temporaryrows = 2, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .length_of_delta = UZ_MATRIX_SIZE(delta_2), .length_of_gradients = UZ_MATRIX_SIZE(g_2), .length_of_error = UZ_MATRIX_SIZE(e_2), .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2), .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .delta = delta_2, .temporarybackprop = T2, .gradients = g_2, .cachegradients = cacheg_2, .error = e_2}};
 
 void setUp(void)
 {
@@ -140,27 +107,26 @@ void tearDown(void)
 {
 }
 
-
 void test_uz_nn_train_checkgradients(void)
 {
-uz_nn_t *backnn = uz_nn_init(config,2,true);
-struct uz_matrix_t refmatrix={0};
-uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
-struct uz_matrix_t x_matrix={0};
-uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
-{
-  uz_nn_ff(backnn,input);
-  uz_matrix_t* output=uz_nn_get_output_data(backnn);
-  msetest[i] = uz_nn_mse(output,refout);
-  float error[NUMBER_OF_OUTPUTS] = {0.0f};
-  uz_nn_mse_derv_mult(output,refout,error);
-  uz_nn_backward_pass(backnn,error,input);
-  uz_nn_gradient_descent_no_bias(backnn,lernrate);
-}
-uz_matrix_t* output=uz_nn_get_output_data(backnn);
-TEST_ASSERT_FLOAT_WITHIN(1e-06f, 0.015914185034957f, uz_matrix_get_element_zero_based(output,0,0));
-TEST_ASSERT_FLOAT_WITHIN(1e-06f, 0.984063712303357f, uz_matrix_get_element_zero_based(output,0,1));
+  uz_nn_t *backnn = uz_nn_init(config, 2, true);
+  struct uz_matrix_t refmatrix = {0};
+  uz_matrix_t *refout = uz_matrix_init(&refmatrix, reference_output, UZ_MATRIX_SIZE(reference_output), 1, UZ_MATRIX_SIZE(reference_output));
+  struct uz_matrix_t x_matrix = {0};
+  uz_matrix_t *input = uz_matrix_init(&x_matrix, x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
+  for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+  {
+    uz_nn_ff(backnn, input);
+    uz_matrix_t *output = uz_nn_get_output_data(backnn);
+    msetest[i] = uz_nn_mse(output, refout);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+    uz_nn_mse_derv_mult(output, refout, error);
+    uz_nn_backward_pass(backnn, error, input);
+    uz_nn_gradient_descent_no_bias(backnn, lernrate);
+  }
+  uz_matrix_t *output = uz_nn_get_output_data(backnn);
+  TEST_ASSERT_FLOAT_WITHIN(1e-06f, 0.015914185034957f, uz_matrix_get_element_zero_based(output, 0, 0));
+  TEST_ASSERT_FLOAT_WITHIN(1e-06f, 0.984063712303357f, uz_matrix_get_element_zero_based(output, 0, 1));
 }
 
 #endif // TEST

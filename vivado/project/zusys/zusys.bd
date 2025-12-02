@@ -110,6 +110,7 @@
           "xlslice_Enable_Gate_Bit1": "",
           "xlslice_Enable_Inverter_Bit0": ""
         },
+        "xlconstant_0": "",
         "PWM_3Level_control_0": ""
       },
       "uz_user": {
@@ -5250,10 +5251,24 @@
               }
             }
           },
+          "xlconstant_0": {
+            "vlnv": "xilinx.com:ip:xlconstant:1.1",
+            "xci_name": "zusys_xlconstant_0_1",
+            "xci_path": "ip\\zusys_xlconstant_0_1\\zusys_xlconstant_0_1.xci",
+            "inst_hier_path": "uz_system/xlconstant_0",
+            "parameters": {
+              "CONST_VAL": {
+                "value": "2867"
+              },
+              "CONST_WIDTH": {
+                "value": "14"
+              }
+            }
+          },
           "PWM_3Level_control_0": {
             "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
-            "xci_name": "zusys_PWM_3Level_control_0_0",
-            "xci_path": "ip\\zusys_PWM_3Level_control_0_0\\zusys_PWM_3Level_control_0_0.xci",
+            "xci_name": "zusys_PWM_3Level_control_0_1",
+            "xci_path": "ip\\zusys_PWM_3Level_control_0_1\\zusys_PWM_3Level_control_0_1.xci",
             "inst_hier_path": "uz_system/PWM_3Level_control_0"
           }
         },
@@ -5356,8 +5371,8 @@
           },
           "smartconnect_0_M14_AXI": {
             "interface_ports": [
-              "PWM_3Level_control_0/AXI4_Lite",
-              "smartconnect_0/M14_AXI"
+              "smartconnect_0/M14_AXI",
+              "PWM_3Level_control_0/AXI4_Lite"
             ]
           },
           "smartconnect_1_M00_AXI": {
@@ -5487,8 +5502,8 @@
               "smartconnect_1/aresetn",
               "timer_uptime_64bit/s_axi_aresetn",
               "uz_enable/s_axi_aresetn",
-              "PWM_3Level_control_0/AXI4_Lite_ARESETN",
-              "PWM_3Level_control_0/IPCORE_RESETN"
+              "PWM_3Level_control_0/IPCORE_RESETN",
+              "PWM_3Level_control_0/AXI4_Lite_ARESETN"
             ]
           },
           "resetn_1": {
@@ -5551,6 +5566,12 @@
             "ports": [
               "Interrupt/Interrupt_vector",
               "D4_OUT"
+            ]
+          },
+          "xlconstant_0_dout": {
+            "ports": [
+              "xlconstant_0/dout",
+              "PWM_3Level_control_0/m_u1_norm"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {

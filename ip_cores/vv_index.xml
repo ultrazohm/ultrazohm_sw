@@ -881,7 +881,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114362644">
+		<CoreRevision value="2114372428">
 		</CoreRevision>
 		<ComponentPath value="PWM_3Level_control_ip_v1_0/ipcore/PWM_3Level_control_v1_0/component.xml">
 		</ComponentPath>

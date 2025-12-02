@@ -92,6 +92,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_SS2]					= &PWM_3L_instance->switchStates[0][1];
 	js_ch_observable[JSO_SS3]					= &PWM_3L_instance->switchStates[0][2];
 	js_ch_observable[JSO_SS4]					= &PWM_3L_instance->switchStates[0][3];
+	js_ch_observable[JSO_carrier]						= &PWM_3L_instance->carrier;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

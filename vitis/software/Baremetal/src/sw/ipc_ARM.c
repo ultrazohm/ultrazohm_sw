@@ -18,6 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../IP_Cores/uz_PWM_3L/uz_PWM_3L_private.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -25,8 +26,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern uint32_t js_status_BareToRTOS;
 
 // custom
-extern float PWM_3L_input_freq;
-extern float PWM_3L_input_duty_cycle;
+extern PWM_3L_GUI_Inputs GUI_Inputs;
+
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -190,19 +191,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		PWM_3L_input_freq = value;
+		GUI_Inputs.input_freq = value;
 			break;
 
 		case (Set_Send_Field_2):
-		PWM_3L_input_duty_cycle = value;
+		GUI_Inputs.input_duty_cycle = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		GUI_Inputs.mode = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		GUI_Inputs.samplePoint = value;
 			break;
 
 		case (Set_Send_Field_5):

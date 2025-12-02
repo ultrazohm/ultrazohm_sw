@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_PWM_3L/uz_PWM_3L_private.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -41,9 +42,7 @@ extern DS_Data Global_Data;
 extern PWM_3L_handle PWM_3L_instance;
 
 // Custom Variables
-float PWM_3L_input_freq;
-float PWM_3L_input_duty_cycle;
-
+PWM_3L_GUI_Inputs GUI_Inputs;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -62,8 +61,13 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, PWM_3L_input_freq);
-    	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, PWM_3L_input_duty_cycle);
+    	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, GUI_Inputs.input_freq);
+    	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, GUI_Inputs.input_duty_cycle);
+    	uz_PWM_3L_hw_set_mode(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.mode);
+    	uz_PWM_3L_hw_set_sampligPoint(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.samplePoint);
+    	uint32_t carrier;
+		carrier = uz_PWM_3L_hw_get_carrier(PWM_3L_instance->base_address);
+		PWM_3L_instance->carrier = (float)carrier;
     	uint8_t SS3L_out [3][4];
     	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
     	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];

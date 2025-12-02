@@ -53,6 +53,7 @@ enum JS_OberservableData {
 	JSO_SS2,
 	JSO_SS3,
 	JSO_SS4,
+	JSO_carrier,
 	JSO_ENDMARKER
 };
 
@@ -132,8 +133,8 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	Carrier_f,
 	duty_cycle,
-	send_field_3,
-	send_field_4,
+	mode,
+	samplingPoint,
 	send_field_5,
 	send_field_6,
 	send_field_7,
@@ -158,9 +159,9 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	Hz,
-	norm,
-	A,
-	A,
+	x,
+	x,
+	x,
 	A,
 	A,
 	-,

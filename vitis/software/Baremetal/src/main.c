@@ -111,7 +111,7 @@ int main(void)
             /* init 3L PWM */
             uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, PWM_3L_instance->carrier_freq);
             uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, PWM_3L_instance->u1);
-            uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address);
+            uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, true);
 
 
             initialization_chain = print_msg;

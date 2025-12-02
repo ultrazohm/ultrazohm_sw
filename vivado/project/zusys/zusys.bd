@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x36352503ECE599AE",
+      "boundary_crc": "0x4D8A92BE9AC56F8",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -315,19 +315,19 @@
       "Dig_07_Ch5": {
         "direction": "I"
       },
-      "Dig_06_Ch5": {
+      "Dig_18_Ch5": {
         "direction": "I"
       },
-      "Dig_14_Ch5": {
+      "Dig_22_Ch5": {
         "direction": "O"
       },
-      "Dig_16_Ch5": {
+      "Dig_23_Ch5": {
         "direction": "O"
       },
-      "Dig_10_Ch5": {
+      "Dig_20_Ch5": {
         "direction": "O"
       },
-      "Dig_09_Ch5": {
+      "Dig_12_Ch5": {
         "direction": "O"
       }
     },
@@ -5530,31 +5530,31 @@
           "Dig_07_Ch5": {
             "direction": "I"
           },
-          "Dig_15_Ch5": {
+          "CLK_Dig_15_Ch5": {
             "direction": "O"
           },
-          "Dig_17_Ch5": {
+          "RW_CLK_Dig_17_Ch5": {
             "direction": "O"
           },
-          "Dig_11_Ch5": {
+          "RW_DATA_Dig_11_Ch5": {
             "direction": "O"
           },
-          "Dig_08_Ch5": {
+          "TX_DATA_Dig_08_Ch5": {
             "direction": "O"
           },
-          "Dig_06_Ch5": {
+          "Dig_18_Ch5": {
             "direction": "I"
           },
-          "Dig_14_Ch5": {
+          "CLK_Dig_22_Ch5": {
             "direction": "O"
           },
-          "Dig_16_Ch5": {
+          "RW_CLK_Dig_23_Ch5": {
             "direction": "O"
           },
-          "Dig_10_Ch5": {
+          "RW_DATA_Dig_20_Ch5": {
             "direction": "O"
           },
-          "Dig_09_Ch5": {
+          "TX_DATA_Dig_12_Ch5": {
             "direction": "O"
           }
         },
@@ -5719,15 +5719,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.3",
-            "xci_name": "zusys_uz_endat_interface_2_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_2_0\\zusys_uz_endat_interface_2_0.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.4",
+            "xci_name": "zusys_uz_endat_interface_0_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_0_0\\zusys_uz_endat_interface_0_0.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.3",
-            "xci_name": "zusys_uz_endat_interface_3_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_3_0\\zusys_uz_endat_interface_3_0.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.4",
+            "xci_name": "zusys_uz_endat_interface_1_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_1_0\\zusys_uz_endat_interface_1_0.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5746,29 +5746,29 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "smartconnect_1/M01_AXI",
-              "uz_endat_interface_0/AXI4_Lite"
+              "uz_endat_interface_0/AXI4_Lite",
+              "smartconnect_1/M01_AXI"
             ]
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "smartconnect_1/M02_AXI",
-              "uz_endat_interface_1/AXI4_Lite"
+              "uz_endat_interface_1/AXI4_Lite",
+              "smartconnect_1/M02_AXI"
             ]
           }
         },
         "nets": {
-          "Dig_06_Ch5_1": {
-            "ports": [
-              "Dig_06_Ch5",
-              "uz_endat_interface_1/endat_data_in"
-            ]
-          },
           "Dig_07_Ch5_1": {
             "ports": [
               "Dig_07_Ch5",
               "ila_0/probe5",
               "uz_endat_interface_0/endat_data_in"
+            ]
+          },
+          "Dig_18_Ch5_1": {
+            "ports": [
+              "Dig_18_Ch5",
+              "uz_endat_interface_1/endat_data_in"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -5791,85 +5791,85 @@
               "uz_endat_interface_1/trigger_endat_read"
             ]
           },
+          "uz_endat_interface_0_CRC_raw": {
+            "ports": [
+              "uz_endat_interface_0/CRC_raw",
+              "ila_0/probe9"
+            ]
+          },
           "uz_endat_interface_0_RW_clk": {
             "ports": [
               "uz_endat_interface_0/RW_clk",
-              "Dig_17_Ch5"
+              "RW_CLK_Dig_17_Ch5"
             ]
           },
           "uz_endat_interface_0_RW_data": {
             "ports": [
               "uz_endat_interface_0/RW_data",
-              "Dig_11_Ch5",
+              "RW_DATA_Dig_11_Ch5",
               "ila_0/probe3"
             ]
           },
           "uz_endat_interface_0_endat_clk": {
             "ports": [
               "uz_endat_interface_0/endat_clk",
-              "Dig_15_Ch5",
+              "CLK_Dig_15_Ch5",
               "ila_0/probe1"
             ]
           },
           "uz_endat_interface_0_endat_mode_data_out": {
             "ports": [
               "uz_endat_interface_0/endat_mode_data_out",
-              "Dig_08_Ch5",
+              "TX_DATA_Dig_08_Ch5",
               "ila_0/probe2"
             ]
           },
-          "uz_endat_interface_2_CRC_raw": {
-            "ports": [
-              "uz_endat_interface_0/CRC_raw",
-              "ila_0/probe9"
-            ]
-          },
-          "uz_endat_interface_2_endat_received_data_out_SH": {
+          "uz_endat_interface_0_endat_received_data_out_SH": {
             "ports": [
               "uz_endat_interface_0/endat_received_data_out_SH",
               "ila_0/probe6"
             ]
           },
-          "uz_endat_interface_2_endat_transaction_done": {
+          "uz_endat_interface_0_endat_transaction_done": {
             "ports": [
               "uz_endat_interface_0/endat_transaction_done",
               "ila_0/probe4"
             ]
           },
-          "uz_endat_interface_2_position_raw_multi_turn": {
+          "uz_endat_interface_0_position_raw_multi_turn": {
             "ports": [
               "uz_endat_interface_0/position_raw_multi_turn",
               "ila_0/probe8"
             ]
           },
-          "uz_endat_interface_2_position_raw_single_turn": {
+          "uz_endat_interface_0_position_raw_single_turn": {
             "ports": [
               "uz_endat_interface_0/position_raw_single_turn",
               "ila_0/probe7"
             ]
           },
-          "uz_endat_interface_3_RW_clk": {
+          "uz_endat_interface_1_RW_clk": {
             "ports": [
               "uz_endat_interface_1/RW_clk",
-              "Dig_16_Ch5"
+              "RW_CLK_Dig_23_Ch5"
             ]
           },
-          "uz_endat_interface_3_RW_data": {
+          "uz_endat_interface_1_RW_data": {
             "ports": [
               "uz_endat_interface_1/RW_data",
-              "Dig_10_Ch5"
+              "RW_DATA_Dig_20_Ch5"
             ]
           },
-          "uz_endat_interface_3_endat_clk": {
+          "uz_endat_interface_1_endat_clk": {
             "ports": [
               "uz_endat_interface_1/endat_clk",
-              "Dig_14_Ch5"
+              "CLK_Dig_22_Ch5"
             ]
           },
-          "uz_endat_interface_3_endat_mode_data_out": {
+          "uz_endat_interface_1_endat_mode_data_out": {
             "ports": [
               "uz_endat_interface_1/endat_mode_data_out",
-              "Dig_09_Ch5"
+              "TX_DATA_Dig_12_Ch5"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5880,9 +5880,9 @@
               "uz_axi_testIP_0/IPCORE_CLK",
               "ila_0/clk",
               "uz_endat_interface_0/IPCORE_CLK",
-              "uz_endat_interface_0/AXI4_Lite_ACLK",
               "uz_endat_interface_1/IPCORE_CLK",
-              "uz_endat_interface_1/AXI4_Lite_ACLK"
+              "uz_endat_interface_1/AXI4_Lite_ACLK",
+              "uz_endat_interface_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9131,16 +9131,16 @@
           "A3_OUT_CNV_1"
         ]
       },
-      "Dig_06_Ch5_1": {
-        "ports": [
-          "Dig_06_Ch5",
-          "uz_user/Dig_06_Ch5"
-        ]
-      },
       "Dig_07_Ch5_1": {
         "ports": [
           "Dig_07_Ch5",
           "uz_user/Dig_07_Ch5"
+        ]
+      },
+      "Dig_18_Ch5_1": {
+        "ports": [
+          "Dig_18_Ch5",
+          "uz_user/Dig_18_Ch5"
         ]
       },
       "Enable_Gates_CPLD_High_dout": {
@@ -9253,52 +9253,52 @@
           "zynq_ultra_ps_e_0/pl_ps_irq1"
         ]
       },
+      "uz_user_CLK_Dig_22_Ch5": {
+        "ports": [
+          "uz_user/CLK_Dig_22_Ch5",
+          "Dig_22_Ch5"
+        ]
+      },
       "uz_user_Dig_08_Ch5": {
         "ports": [
-          "uz_user/Dig_08_Ch5",
+          "uz_user/TX_DATA_Dig_08_Ch5",
           "Dig_08_Ch5"
-        ]
-      },
-      "uz_user_Dig_09_Ch5": {
-        "ports": [
-          "uz_user/Dig_09_Ch5",
-          "Dig_09_Ch5"
-        ]
-      },
-      "uz_user_Dig_10_Ch5": {
-        "ports": [
-          "uz_user/Dig_10_Ch5",
-          "Dig_10_Ch5"
         ]
       },
       "uz_user_Dig_11_Ch5": {
         "ports": [
-          "uz_user/Dig_11_Ch5",
+          "uz_user/RW_DATA_Dig_11_Ch5",
           "Dig_11_Ch5"
-        ]
-      },
-      "uz_user_Dig_14_Ch5": {
-        "ports": [
-          "uz_user/Dig_14_Ch5",
-          "Dig_14_Ch5"
         ]
       },
       "uz_user_Dig_15_Ch5": {
         "ports": [
-          "uz_user/Dig_15_Ch5",
+          "uz_user/CLK_Dig_15_Ch5",
           "Dig_15_Ch5"
-        ]
-      },
-      "uz_user_Dig_16_Ch5": {
-        "ports": [
-          "uz_user/Dig_16_Ch5",
-          "Dig_16_Ch5"
         ]
       },
       "uz_user_Dig_17_Ch5": {
         "ports": [
-          "uz_user/Dig_17_Ch5",
+          "uz_user/RW_CLK_Dig_17_Ch5",
           "Dig_17_Ch5"
+        ]
+      },
+      "uz_user_RW_CLK_Dig_23_Ch5": {
+        "ports": [
+          "uz_user/RW_CLK_Dig_23_Ch5",
+          "Dig_23_Ch5"
+        ]
+      },
+      "uz_user_RW_DATA_Dig_20_Ch5": {
+        "ports": [
+          "uz_user/RW_DATA_Dig_20_Ch5",
+          "Dig_20_Ch5"
+        ]
+      },
+      "uz_user_TX_DATA_Dig_12_Ch5": {
+        "ports": [
+          "uz_user/TX_DATA_Dig_12_Ch5",
+          "Dig_12_Ch5"
         ]
       },
       "vio_D2_test_probe_out0": {

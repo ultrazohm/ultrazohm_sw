@@ -48,7 +48,8 @@ struct uz_pmsm_control_configuration_t
     enum uz_Setpoint_motor_type motor_type;
     bool enable_field_weakening;
     float relative_torque_tolerance;
-    float theta_sampling_compensation;        // multiple of sampling time
+    float theta_sampling_compensation;        // Shifts the angle of the rotor after the readout by multiplying a multiple of sampling time with the rotational speed of the angle used for all transformations
+    float theta_svm_delay_compensation;        // Shifts the angle of the rotor in the reverse dq-transformation for SVM to compensate for the calculation and PWM delay. Set to 1.5 for single-edged sampling and to 1.0 for double-edge sampling
     float voltage_theta_shift;                // Multiple of sampling time for shifting the measured voltages used in dq transformation v_abc to v_dq
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };

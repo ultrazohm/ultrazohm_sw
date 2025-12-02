@@ -188,7 +188,7 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
     self->actual_values.theta_el = self->actual_values.theta_el + (self->config.theta_sampling_compensation * self->actual_values.omega_el_rad_per_sec * self->config.sample_time);
     float angle_for_voltage_measurement = self->actual_values.theta_el - (self->config.voltage_theta_shift * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
     self->actual_values.theta_el = uz_signals_wrap(self->actual_values.theta_el, 2.0f * UZ_PIf);
-    self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
+    self->actual_values.theta_el_advanced = self->actual_values.theta_el + (self->config.theta_svm_delay_compensation * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
     self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->actual_values.i_abc_in_A, self->actual_values.theta_el);
     self->actual_values.v_dq_in_V = uz_transformation_3ph_abc_to_dq(self->actual_values.v_abc_in_V, angle_for_voltage_measurement);
 }
@@ -210,12 +210,10 @@ void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self)
     }
     if (self->actual_values.speed_in_rpm > self->config.error_upper_bound_speed_in_rpm)
     {
-        // Too fast
         self->safe_operating_region_violation = true;
     }
     if (self->actual_values.speed_in_rpm < self->config.error_lower_bound_speed_in_rpm)
     {
-        // Too slow
         self->safe_operating_region_violation = true;
     }
 }
@@ -234,8 +232,7 @@ void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_of
     self->config.theta_el_offset = theta_offset;
 }
 
-struct uz_DutyCycle_t
-uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
+struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
 {
     uz_assert(self->is_ready);
     uz_assert_not_NULL(self);

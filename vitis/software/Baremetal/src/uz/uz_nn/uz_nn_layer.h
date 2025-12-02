@@ -211,4 +211,6 @@ void uz_adam_reset(adam_optimizer_t *self, float learn_rate);
 void adam_layer_reset(uz_nn_layer_t *layer);
 void uz_nn_layer_set_zero(uz_nn_layer_t *layer);
 
+float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float);
+
 #endif // UZ_NN_LAYER_H

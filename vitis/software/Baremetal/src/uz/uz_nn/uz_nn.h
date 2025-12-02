@@ -216,4 +216,6 @@ void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *con
 void uz_nn_reset_parameter_random(uz_nn_t *self, uz_prng_t *prng);
 void adam_optimizer_reset(adam_optimizer_t *optimizer, uz_nn_t *network);
 
+float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float);
+
 #endif // UZ_NN_H

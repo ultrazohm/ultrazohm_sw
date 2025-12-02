@@ -12,6 +12,17 @@
 #include "mock_xil_cache.h"
 #include "test_assert_with_exception.h"
 
+#include "uz_prng.h"
+#include "uz_prng_squares.h"
+#include "uz_prng_halton.h"
+#include "uz_prng_pcg.h"
+#include "uz_prng_mtwister.h"
+#include "mt19937.h"
+#include "uz_prng_pcg.h"
+#include "uz_prng_xoshiro.h"
+#include "splitmix64.h"
+#include "xoshiro128plusplus.h"
+
 void setUp(void)
 {
 }
@@ -159,7 +170,7 @@ struct uz_NN_acc_config_t config = {
 
 uz_NN_acc_t *successful_init_5_layer(void);
 uz_NN_acc_t *successful_init_5_layer(void) {
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS); 
     uz_NN_acc_hw_set_L_1_Weights_Data_Expect(BASE_ADDRESS,&w_1[0]);
@@ -190,7 +201,7 @@ uz_NN_acc_t *successful_init_5_layer(void) {
 }
 uz_NN_acc_t *successful_init_4_layer(void);
 uz_NN_acc_t *successful_init_4_layer(void) {
-    config.software_network = uz_nn_init(software_nn_config_4N, 5);
+    config.software_network = uz_nn_init(software_nn_config_4N, 5,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS); 
     uz_NN_acc_hw_set_L_1_Weights_Data_Expect(BASE_ADDRESS,&w_1[0]);
@@ -219,7 +230,7 @@ uz_NN_acc_t *successful_init_4_layer(void) {
 }
 uz_NN_acc_t *successful_init_3_layer(void);
 uz_NN_acc_t *successful_init_3_layer(void) {
-    config.software_network = uz_nn_init(software_nn_config_3N, 4);
+    config.software_network = uz_nn_init(software_nn_config_3N, 4,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS); 
     uz_NN_acc_hw_set_L_1_Weights_Data_Expect(BASE_ADDRESS,&w_1[0]);
@@ -246,7 +257,7 @@ uz_NN_acc_t *successful_init_3_layer(void) {
 }
 uz_NN_acc_t *successful_init_2_layer(void);
 uz_NN_acc_t *successful_init_2_layer(void) {
-    config.software_network = uz_nn_init(software_nn_config_2N, 3);
+    config.software_network = uz_nn_init(software_nn_config_2N, 3,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS); 
     uz_NN_acc_hw_set_L_1_Weights_Data_Expect(BASE_ADDRESS,&w_1[0]);
@@ -271,7 +282,7 @@ uz_NN_acc_t *successful_init_2_layer(void) {
 }
 uz_NN_acc_t *successful_init_1_layer(void);
 uz_NN_acc_t *successful_init_1_layer(void) {
-    config.software_network = uz_nn_init(software_nn_config_1N, 2);
+    config.software_network = uz_nn_init(software_nn_config_1N, 2,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS); 
     uz_NN_acc_hw_set_L_1_Weights_Data_Expect(BASE_ADDRESS,&w_1[0]);
@@ -302,7 +313,7 @@ void test_uz_NN_acc_init_successful(void) {
 
 void test_uz_NN_acc_init_assert_base_address_ZERO(void) {
     config.base_address = ZERO_BASE_ADDRESS;
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
@@ -315,13 +326,13 @@ void test_uz_NN_acc_init_assert_Software_Network_NULL(void) {
 }
 
 void test_uz_NN_acc_init_assert_Observation_Null(void) {
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,NULL,output));
 }
 
 void test_uz_NN_acc_init_assert_Action_Null(void) {
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,NULL));
 }
@@ -371,7 +382,7 @@ void test_uz_NN_acc_init_assert_Action_Null(void) {
 
 void test_uz_NN_acc_init_assert_Observation_size(void) {
     config.base_address = BASE_ADDRESS;
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     float x_test[30] = {0};
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x_test,UZ_MATRIX_SIZE(x_test),1U,30U);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
@@ -381,7 +392,7 @@ void test_uz_NN_acc_init_assert_Observation_size(void) {
 
 void test_uz_NN_acc_init_assert_Action_size(void) {
     config.base_address = BASE_ADDRESS;
-    config.software_network = uz_nn_init(software_nn_config_5N, 6);
+    config.software_network = uz_nn_init(software_nn_config_5N, 6,false);
     float y_test[30] = {0};
     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_test,UZ_MATRIX_SIZE(y_test),1U,30U);

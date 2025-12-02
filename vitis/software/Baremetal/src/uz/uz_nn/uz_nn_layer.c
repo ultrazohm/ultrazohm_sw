@@ -98,17 +98,15 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.weights);
     uz_assert_not_NULL(layer_config.bias);
     uz_assert_not_NULL(layer_config.output);
-    uz_assert_not_NULL(layer_config.sumout);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
-    uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
     self->number_of_neurons = layer_config.number_of_neurons;
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
-    self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
+    self->sumout = NULL;
     self->m = NULL;
     self->v = NULL;
     self->delta = NULL;
@@ -292,7 +290,9 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
-    uz_matrix_copy(self->output, self->sumout);
+    if(self->sumout != NULL){ // If sumout is not NULL, the network is assumed to be trainable. Bit hacky
+        uz_matrix_copy(self->output, self->sumout); // This line should probably be guarded by if(is_trainable such that the nn module behaves unchanged to the current state if it is not trainable.)
+    }
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
@@ -485,5 +485,18 @@ uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return (self->gradients);
+}
+
+/**
+ * @brief Returns a pointer to the activation function of the layer
+ *
+ * @param self
+ * @return float(*)(float)
+ */
+float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->activation_function);
 }
 #endif

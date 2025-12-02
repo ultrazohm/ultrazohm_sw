@@ -401,4 +401,11 @@ uint32_t adam_get_number_of_updates(adam_optimizer_t *self)
     return self->traincounter;
 }
 
+float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_nn_layer_get_activation_function(self->layer[layer - 1]));
+}
+
 #endif

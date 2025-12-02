@@ -44,6 +44,7 @@ struct uz_nn_layer_t
     float *v;
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
+    enum activation_function activation_function_name;
     bool is_ready;
 };
 
@@ -79,12 +80,17 @@ static adam_optimizer_t *uz_nn_optimizer_allocation(void)
 adam_optimizer_t *uz_adam_init(float learnrate)
 {
     adam_optimizer_t *self = uz_nn_optimizer_allocation();
+    uz_adam_reset(self, learnrate);
+    return (self);
+}
+
+void uz_adam_reset(adam_optimizer_t *self, float learn_rate)
+{
     self->beta1 = 0.9f;
     self->beta2 = 0.999f;
     self->epsilon = 1e-8f;
-    self->learnrate = learnrate;
+    self->learnrate = learn_rate;
     self->traincounter = 0U;
-    return (self);
 }
 
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
@@ -110,6 +116,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->temporarybackprop = NULL;
     self->gradients = NULL;
     self->cachegradients = NULL;
+    self->activation_function_name = layer_config.activation_function;
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -171,6 +178,8 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     self->cachegradients = uz_matrix_init(&self->cachegradients_matrix, layer_config.cachegradients, layer_config.length_of_cachegradients, layer_config.number_of_cachegradrows, layer_config.number_of_cachegradcolumns);
     self->m = layer_config.m;
     self->v = layer_config.v;
+    self->activation_function_name = layer_config.activation_function;
+
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -200,7 +209,7 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     return (self);
 }
 
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
+void uz_nn_layer_init_Glorot_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(prng);
@@ -210,7 +219,7 @@ void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, fl
     }
 }
 
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
+void uz_nn_layer_init_He_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(prng);
@@ -220,19 +229,25 @@ void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float 
     }
 }
 
-void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct uz_nn_layer_config layer_config)
+void uz_nn_layer_set_zero(uz_nn_layer_t* layer){
+    uz_assert_not_NULL(layer);
+    uz_matrix_set_zero(layer->bias);
+    uz_matrix_set_zero(layer->weights);
+}
+
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_t length_of_output)
 {
     uz_assert_not_NULL(layer);
     uz_assert_not_NULL(prng);
-    switch ((layer_config.activation_function))
+    switch ((layer->activation_function_name))
     {
     case (activation_linear || activation_sigmoid || activation_tanh || activation_sigmoid2):
     {
         // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
-        float std = sqrtf(2.0f / (float)((layer->number_of_neurons + layer_config.length_of_output)));
+        float std = sqrtf(2.0f / (float)((layer->number_of_neurons + length_of_output)));
         float mean = 0.0f;
         // uz_nn_layer_init_Glorot(layer->bias,self);
-        uz_nn_layer_init_Glorot_uniform(layer->weights, prng, mean, std);
+        uz_nn_layer_init_Glorot_normal(layer->weights, prng, mean, std);
         break;
     }
     case activation_ReLU:
@@ -242,7 +257,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct 
         float mean = 0.0f;
         // float fanin = (float)(layer->number_of_neurons);
         // uz_nn_layer_init_He(layer->bias,self);
-        uz_nn_layer_init_He_uniform(layer->weights, prng, mean, std);
+        uz_nn_layer_init_He_normal(layer->weights, prng, mean, std);
         break;
     }
     default:
@@ -371,6 +386,19 @@ void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer)
     }
 }
 
+void adam_layer_reset(uz_nn_layer_t *layer)
+{
+    uint32_t bias_index = layer->bias->length_of_data;
+    uint32_t weight_index = layer->weights->length_of_data;
+    // get number of params from layer
+    uint32_t params = bias_index + weight_index;
+    for (uint32_t i = 0; i < params; i++)
+    {
+        layer->m[i] = 0.0f;
+        layer->v[i] = 0.0f;
+    }
+}
+
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize)
 {
     uint32_t bias_index = self->bias->length_of_data;
@@ -386,8 +414,6 @@ void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernra
         self->bias->data[i - weight_index] = self->bias->data[i - weight_index] + (lernrate / (float)minibatchsize * (-1.0f * self->gradients->data[i]));
     }
 }
-
-
 
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate)
 {
@@ -440,18 +466,7 @@ uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const *const self)
     return self->weights;
 }
 
-/**
- * @brief Returns a pointer to the activation function of the layer
- * 
- * @param self 
- * @return float(*)(float) 
- */
-float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return (self->activation_function);
-}uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const *const self)
+uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

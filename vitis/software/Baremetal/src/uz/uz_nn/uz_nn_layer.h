@@ -71,41 +71,18 @@ struct uz_nn_layer_config
     float *const cachegradients;                  /** Pointer to an array that stores the cache values for the gradient*/
 };
 /**
- * @brief Initializes a layer of a neural network, which is not trainable.
+ * @brief Initializes a layer of a neural network.
  *
  * @param layer_config Configuration struct
  * @return uz_nn_layer_t*
  */
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
-/**
- * @brief Initializes a layer of a neural network, which is trainable.
- *
- * @param layer_config Configuration struct
- * @return uz_nn_layer_t*
- */
 uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config);
-/**
- * @brief Initializes a layer of a neural network with the HE method, data are uniformly distributed
- *
- * @param parameter uz_matrix pointer, which is initialized
- * @param prng Random instance
- * @param mean Mean value for initialization
- * @param std Standard deviation for initialization
+void uz_nn_layer_init_He_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
+void uz_nn_layer_init_Glorot_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
 
- */
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
-/**
- * @brief Initializes a layer of a neural network with the Glorot method, data are uniformly distributed
- *
- * @param parameter uz_matrix pointer, which is initialized
- * @param prng Random instance
- * @param mean Mean value for initialization
- * @param std Standard deviation for initialization
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_t length_of_output);
 
- */
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
-
-void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct uz_nn_layer_config layer_config);
 /**
  * @brief Calculates one forward pass of a network layer with the given input value (column vector)
  *
@@ -113,27 +90,8 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct 
  * @param input Column vector of inputs (rows==1 !)
  */
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input);
-/**
- * @brief Copy data from the sourcelayer to the destinationlayer
- *
- * @param sourcelayer Source layer, where the data are copied from
- * @param destinationlayer Destination layer, where the data are copied to
- */
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer);
-/**
- * @brief Copy data from the sourcelayer to the destinationlayer
- *
- * @param sourcelayer Source layer, where the data are copied from
- * @param destinationlayer Destination layer, where the data are copied to
- * @param smoothfact Smoothfactor for copying data
- */
 void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float smoothfact);
-/**
- * @brief Update the weight parameters of a neural network, bias are not updated
- *
- * @param self Source layer, where the data are copied from
- * @param lernrate Lernrate for optimizer
- */
 void uz_nn_update_layer_param_no_bias(uz_nn_layer_t *const self, float lernrate);
 /**
  * @brief Calculates one backward pass of a the output layer with the given error value
@@ -184,8 +142,6 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
  */
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize);
 
-
-
 /**
  * @brief Set gradient in layer to a uz_matrix_t instance with the same dimension
  *
@@ -200,80 +156,59 @@ void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *c
  */
 void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self);
 /**
- * @brief Returns a pointer to the output data of the layer
- *        Intended to be used by the following layer as input data
+ * @brief Returns a pointer to the output data of the layer.
+ *        Intended to be used by the following layer as input data.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the sumout data of the layer
+ * @brief Returns a pointer to the sumout data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the bias data of the layer
+ * @brief Returns a pointer to the bias data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_bias_matrix(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the weight data of the layer
+ * @brief Returns a pointer to the weight data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the delta data of the layer
+ * @brief Returns a pointer to the delta data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the gradient data of the layer
+ * @brief Returns a pointer to the gradient data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the cachegradient data of the layer
+ * @brief Returns a pointer to the cachegradient data of the layer.
  *
  * @param self
  * @return uz_matrix*
  */
-uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
-
-/**
- * @brief Returns the function pointer to the activation function of that layer
- *
- * @param self
- * @return float (*activation_function)(float)
- */
-float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float);
-
-uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
-uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
-
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
-/**
- * @brief Initializes the adam optimizer object
- *
- * @param lernrate Lernrate for optimization algorithm
- * @return adam_optimizer_t*
- */
 adam_optimizer_t *uz_adam_init(float learnrate);
-/**
- * @brief Make one optimization step with the gradients of the layer with the adam GD algorithm
- *
- * @param optimizer Pointer to adam optimizer instance
- * @param layer Layer, which gradients are taken for the optimization step
- */
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer);
+void uz_adam_reset(adam_optimizer_t *self, float learn_rate);
+void adam_layer_reset(uz_nn_layer_t *layer);
+void uz_nn_layer_set_zero(uz_nn_layer_t *layer);
+
 #endif // UZ_NN_LAYER_H

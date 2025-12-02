@@ -87,10 +87,20 @@ uz_nn_t *uz_nn_init_with_rand(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER],
         for (uint32_t i = 0U; i < number_of_layer; i++)
         {
             self->layer[i] = uz_nn_layer_init_trainable(config[i]);
-            uz_nn_layer_param_init(self->layer[i], prng, config[i]);
         }
+        uz_nn_reset_parameter_random(self, prng);
     }
     return (self);
+}
+
+void uz_nn_reset_parameter_random(uz_nn_t *self, uz_prng_t *prng)
+{
+
+    for (uint32_t i = 0U; i < self->number_of_layer; i++)
+    {
+        uz_nn_layer_set_zero(self->layer[i]);
+        uz_nn_layer_param_init(self->layer[i], prng, self->number_of_outputs);
+    }
 }
 
 void uz_nn_copy(uz_nn_t *source, uz_nn_t *destination)
@@ -271,8 +281,6 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_
     uz_nn_layer_calc_gradients_mini_batch(self->layer[0], input);
 }
 
-
-
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);
@@ -291,8 +299,6 @@ void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix,
     uz_assert(self->is_trainable);
     uz_nn_set_gradient_in_layer(self->layer[layer - 1], gradientmatrix);
 }
-
-
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {
@@ -380,15 +386,19 @@ void adam_optimizer_step(adam_optimizer_t *optimizer, uz_nn_t *network)
     }
 }
 
-uint32_t adam_get_number_of_updates(adam_optimizer_t *self){
-    uz_assert_not_NULL(self);
-    return self->traincounter;
+void adam_optimizer_reset(adam_optimizer_t *optimizer, uz_nn_t *network)
+{
+    optimizer->traincounter = 0U;
+    for (uint32_t i = 0U; i < network->number_of_layer; i++)
+    {
+        adam_layer_reset(network->layer[i]);
+    }
 }
 
-float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float) {
+uint32_t adam_get_number_of_updates(adam_optimizer_t *self)
+{
     uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return (uz_nn_layer_get_activation_function(self->layer[layer - 1]));
+    return self->traincounter;
 }
 
 #endif

@@ -34,7 +34,6 @@ ceedling_clean:
 	(cd ../vitis/software/Baremetal/; ceedling clobber)
 
 docs:
-	make ceedling_tests
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 
@@ -44,4 +43,4 @@ docs:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 livehtml:
-	sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) --open-browser 
+	sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

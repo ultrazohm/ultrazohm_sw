@@ -39,7 +39,7 @@ void test_uz_prng_xoshiro_uint32(void)
     }
     float mean = uz_math_mean_uint32_t(random_array);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean / (float)UINT32_MAX);
-    char filepath[] = "test/uz/uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv";
+    char filepath[] = "../../../docs/source/software/library/uz_prng/uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv";
     export_array_uint32(random_array, filepath);
 }
 

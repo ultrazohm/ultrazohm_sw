@@ -4,8 +4,6 @@
 UltraZohm Setup
 ===============
 
-.. toctree::
-   :maxdepth: 2
 
 Requirements
 ************
@@ -20,7 +18,7 @@ Requirements
 Aim
 ***
 
-- Setup the physical connections of the UltraZohm
+- Set up the physical connections of the UltraZohm
 - :ref:`clone`
 - Generate the bitstream with Vivado
 - Generate the Vitis workspace
@@ -30,7 +28,7 @@ Aim
 
 .. _clone:
 
-Clone the UltraZohm Repositories
+Clone the UltraZohm repositories
 ********************************
 
 - Create a folder ``ultrazohm``
@@ -41,7 +39,7 @@ Clone the UltraZohm Repositories
    git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-After executing the ``git clone`` commands, the following directory structure exists.
+After executing the ``git clone`` command, the following directory structure exists.
 
 ::
 
@@ -145,10 +143,10 @@ Export Bitstream
 .. image:: ./img_exp_bit/9_load.png
 
 
-Export Bitstream tcl-script
+Export Bitstream Tcl script
 ---------------------------
 
-A TCL script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
+A Tcl script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
 
 - ``Tools -> Custom Commands -> Customize Commands``
 - Click on the `plus` and enter a name, e.g., export_xsa
@@ -166,14 +164,9 @@ Generate the Vitis workspace
 
 - See pictures below for all steps!
 - Navigate to ``~/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/uz``
-- Copy the file ``default_uz_global_configuration.h`` (same folder)
-- Rename the file to ``uz_global_configuration.h``
+- Check that the configuration in ``uz_global_configuration.h`` matches your setup (see :ref:`global_configuration` for details)
 
-.. warning:: Do not rename the file directly! Copy the file and rename the copy!
-
-- Check that the configuration file matches your setup (see :ref:`global_configuration` for details)
-
-.. important:: You probably have to adjust the UltraZohm version in uz_global_configuration.h by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``, ...)
+.. important:: You might have to adjust the UltraZohm version in ``uz_global_configuration.h`` by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``, ...)
 
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
@@ -218,9 +211,9 @@ Physical Setup of the UltraZohm
 - Connect the UltraZohm to the grid
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
-- For UltraZohm :ref:`carrier_board_rev3`: Plug an external stop or the external stop dummy into the front panel
-- For UltraZohm :ref:`carrier_board_rev4`: An external stop / dummy is not required
-- Turn on the UltraZohm
+- For UltraZohm :ref:`carrier_board_rev03`: Plug an external stop or the external stop dummy into the front panel
+- For UltraZohm :ref:`carrier_board_rev04` and newer: An external stop / dummy is not required
+- Turn on the UltraZohm -- NB: See :ref:`here <hardware>` for important differences between an older (i.e., pre-Rev05) and newer (Rev05 ff.) system w.r.t. power-on/off
 - All four LEDs are turned on
 
 .. image:: ./img_physical/physical_setup.png
@@ -229,9 +222,9 @@ Program (Debug)
 ***************
 
 - Click on the red-marked windows to see the design perspective in Vitis.
-- Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
+- Click the arrow next to the debug-icon and choose ``Debug Configurations``.
 - Choose the appropriate debug config.
-  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>` .
+  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>`.
 
 .. note:: There are two different debug configurations:
    
@@ -254,14 +247,14 @@ Program (Debug)
 Javascope
 *********
 
-- Setup the network settings of the Ethernet adapter, which is connected to the UltraZohm
+- Setup the network settings of the Ethernet adapter that is connected to the UltraZohm
 
 ::
 
    IP: 192.168.1.1
    Subnet-Mask: 255.255.255.0
 
-- See :ref:`gui`
+- See :ref:`JavaScope`
 - Go to the folder
 - Start the Javascope
 

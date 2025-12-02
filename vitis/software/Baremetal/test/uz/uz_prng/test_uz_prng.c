@@ -221,11 +221,11 @@ void test_uz_prng_export_many_seeds(void)
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_mtwister);
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_pcg);
         TEST_ASSERT_FLOAT_WITHIN(0.01, 0.5f, mean_xoshiro);
-        export_helper_float(halton_array, seed_index, "halton");
-        export_helper_float(pcg_array, seed_index, "pcg");
-        export_helper_float(mtwister_array, seed_index, "mtwister");
-        export_helper_float(squares_array, seed_index, "squares");
-        export_helper_float(xoshiro_array, seed_index, "xoshiro");
+        export_helper_float(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton");
+        export_helper_float(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg");
+        export_helper_float(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister");
+        export_helper_float(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares");
+        export_helper_float(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro");
     }
 }
 
@@ -280,16 +280,16 @@ void test_uz_prng_export_many_seeds_biased_uint1000(void)
         for (uint32_t i = 0; i < squares_array.length; i++)
         {
             halton_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(halton, 9U);
-            squares_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(squares,9U);
-            pcg_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(pcg,9U);
-            xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(xoshiro,9U);
-            mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(mtwister,9U);
+            squares_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(squares, 9U);
+            pcg_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(pcg, 9U);
+            xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(xoshiro, 9U);
+            mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(mtwister, 9U);
         }
-        export_helper_uint32(halton_array, seed_index, "halton_biased1000");
-        export_helper_uint32(pcg_array, seed_index, "pcg_biased1000");
-        export_helper_uint32(mtwister_array, seed_index, "mtwister_biased1000");
-        export_helper_uint32(squares_array, seed_index, "squares_biased1000");
-        export_helper_uint32(xoshiro_array, seed_index, "xoshiro_biased1000");
+        export_helper_uint32(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton_biased1000");
+        export_helper_uint32(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg_biased1000");
+        export_helper_uint32(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister_biased1000");
+        export_helper_uint32(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares_biased1000");
+        export_helper_uint32(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro_biased1000");
     }
 }
 
@@ -343,17 +343,17 @@ void test_uz_prng_export_many_seeds_unbiased_uint1000(void)
 
         for (uint32_t i = 0; i < squares_array.length; i++)
         {
-            halton_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(halton,9U);
-            squares_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(squares,9U);
-            pcg_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(pcg,9U);
-            xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(xoshiro,9U);
-            mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(mtwister,9U);
+            halton_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(halton, 9U);
+            squares_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(squares, 9U);
+            pcg_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(pcg, 9U);
+            xoshiro_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(xoshiro, 9U);
+            mtwister_array.data[i] = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(mtwister, 9U);
         }
-        export_helper_uint32(halton_array, seed_index, "halton_unbiased1000");
-        export_helper_uint32(pcg_array, seed_index, "pcg_unbiased1000");
-        export_helper_uint32(mtwister_array, seed_index, "mtwister_unbiased1000");
-        export_helper_uint32(squares_array, seed_index, "squares_unbiased1000");
-        export_helper_uint32(xoshiro_array, seed_index, "xoshiro_unbiased1000");
+        export_helper_uint32(halton_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/halton_unbiased1000");
+        export_helper_uint32(pcg_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/pcg_unbiased1000");
+        export_helper_uint32(mtwister_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/mtwister_unbiased1000");
+        export_helper_uint32(squares_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/squares_unbiased1000");
+        export_helper_uint32(xoshiro_array, seed_index, "density_plot_multipe_seeds_biased_uint1000/xoshiro_unbiased1000");
     }
 }
 
@@ -419,7 +419,7 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_1[] = "test/uz/uz_prng/uz_prng_normal_distribution_1.csv";
+    char filepath_1[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_1.csv";
     export_array_float(squares_array, filepath_1);
 
     uz_prng_reset(squares, 1U);
@@ -427,7 +427,7 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_2[] = "test/uz/uz_prng/uz_prng_normal_distribution_2.csv";
+    char filepath_2[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_2.csv";
     export_array_float(squares_array, filepath_2);
 
     uz_prng_reset(squares, 2U);
@@ -435,9 +435,205 @@ void test_uz_prng_normal_distribution_plot(void)
     {
         squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
     }
-    char filepath_3[] = "test/uz/uz_prng/uz_prng_normal_distribution_3.csv";
+    char filepath_3[] = "../../../docs/source/software/library/uz_prng/uz_prng_normal_distribution_3.csv";
     export_array_float(squares_array, filepath_3);
 }
+
+void test_uz_prng_squares_equal_after_reset(void)
+{
+    uint64_t seed=0U;
+    uz_prng_t *prng = uz_prng_init(uz_prng_generator_squares, uz_prng_float_scale_fp_multiply, seed);
+
+    uint32_t first_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t first_run_array = {
+        .data = first_run,
+        .length = UZ_ARRAY_SIZE(first_run)};
+
+    uint32_t second_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t second_run_array = {
+        .data = second_run,
+        .length = UZ_ARRAY_SIZE(second_run)};
+
+    uint32_t third_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t third_run_array = {
+        .data = third_run,
+        .length = UZ_ARRAY_SIZE(third_run)};
+
+    for (uint32_t i = 0; i < first_run_array.length; i++)
+    {
+        first_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng,seed);
+    for (uint32_t i = 0; i < second_run_array.length; i++)
+    {
+        second_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < third_run_array.length; i++)
+    {
+        third_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, second_run, NUMBER_OF_CALLS);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, third_run, NUMBER_OF_CALLS);
+}
+
+void test_uz_prng_twister_equal_after_reset(void)
+{
+    uint64_t seed = 0U;
+    uz_prng_t *prng = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, seed);
+
+    uint32_t first_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t first_run_array = {
+        .data = first_run,
+        .length = UZ_ARRAY_SIZE(first_run)};
+
+    uint32_t second_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t second_run_array = {
+        .data = second_run,
+        .length = UZ_ARRAY_SIZE(second_run)};
+
+    uint32_t third_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t third_run_array = {
+        .data = third_run,
+        .length = UZ_ARRAY_SIZE(third_run)};
+
+    for (uint32_t i = 0; i < first_run_array.length; i++)
+    {
+        first_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < second_run_array.length; i++)
+    {
+        second_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < third_run_array.length; i++)
+    {
+        third_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, second_run, NUMBER_OF_CALLS);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, third_run, NUMBER_OF_CALLS);
+}
+
+void test_uz_prng_pcg_equal_after_reset(void)
+{
+    uint64_t seed = 0U;
+    uz_prng_t *prng = uz_prng_init(uz_prng_generator_pcg, uz_prng_float_scale_fp_multiply, seed);
+
+    uint32_t first_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t first_run_array = {
+        .data = first_run,
+        .length = UZ_ARRAY_SIZE(first_run)};
+
+    uint32_t second_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t second_run_array = {
+        .data = second_run,
+        .length = UZ_ARRAY_SIZE(second_run)};
+
+    uint32_t third_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t third_run_array = {
+        .data = third_run,
+        .length = UZ_ARRAY_SIZE(third_run)};
+
+    for (uint32_t i = 0; i < first_run_array.length; i++)
+    {
+        first_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < second_run_array.length; i++)
+    {
+        second_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < third_run_array.length; i++)
+    {
+        third_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, second_run, NUMBER_OF_CALLS);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, third_run, NUMBER_OF_CALLS);
+}
+
+void test_uz_prng_halton_equal_after_reset(void)
+{
+    uint64_t seed = 7U;
+    uz_prng_t *prng = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, seed);
+
+    uint32_t first_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t first_run_array = {
+        .data = first_run,
+        .length = UZ_ARRAY_SIZE(first_run)};
+
+    uint32_t second_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t second_run_array = {
+        .data = second_run,
+        .length = UZ_ARRAY_SIZE(second_run)};
+
+    uint32_t third_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t third_run_array = {
+        .data = third_run,
+        .length = UZ_ARRAY_SIZE(third_run)};
+
+    for (uint32_t i = 0; i < first_run_array.length; i++)
+    {
+        first_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < second_run_array.length; i++)
+    {
+        second_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < third_run_array.length; i++)
+    {
+        third_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, second_run, NUMBER_OF_CALLS);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, third_run, NUMBER_OF_CALLS);
+}
+
+void test_uz_prng_xoshiro_equal_after_reset(void)
+{
+    uint64_t seed = 5642U;
+    uz_prng_t *prng = uz_prng_init(uz_prng_generator_xoshiro, uz_prng_float_scale_fp_multiply, seed);
+
+    uint32_t first_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t first_run_array = {
+        .data = first_run,
+        .length = UZ_ARRAY_SIZE(first_run)};
+
+    uint32_t second_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t second_run_array = {
+        .data = second_run,
+        .length = UZ_ARRAY_SIZE(second_run)};
+
+    uint32_t third_run[NUMBER_OF_CALLS];
+    uz_array_uint32_t third_run_array = {
+        .data = third_run,
+        .length = UZ_ARRAY_SIZE(third_run)};
+
+    for (uint32_t i = 0; i < first_run_array.length; i++)
+    {
+        first_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < second_run_array.length; i++)
+    {
+        second_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+    uz_prng_reset(prng, seed);
+    for (uint32_t i = 0; i < third_run_array.length; i++)
+    {
+        third_run_array.data[i] = uz_prng_get_uniform_uint32_zero_to_uint32_max(prng);
+    }
+
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, second_run, NUMBER_OF_CALLS);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(first_run, third_run, NUMBER_OF_CALLS);
+}
+
 
 void export_helper_float(uz_array_float_t export_array, uint32_t seed_index, char generator_type[])
 {
@@ -448,7 +644,7 @@ void export_helper_float(uz_array_float_t export_array, uint32_t seed_index, cha
     strcat(str, generator_type);
     strcat(str, str2);
 
-    char absolute_path[1000] = "test/uz/uz_prng/";
+    char absolute_path[1000] = "../../../docs/source/software/library/uz_prng/";
     strcat(absolute_path, str);
     export_array_float(export_array, absolute_path);
 }
@@ -462,7 +658,7 @@ void export_helper_uint32(uz_array_uint32_t export_array, uint32_t seed_index, c
     strcat(str, generator_type);
     strcat(str, str2);
 
-    char absolute_path[1000] = "test/uz/uz_prng/";
+    char absolute_path[1000] = "../../../docs/source/software/library/uz_prng/";
     strcat(absolute_path, str);
     export_array_uint32(export_array, absolute_path);
 }

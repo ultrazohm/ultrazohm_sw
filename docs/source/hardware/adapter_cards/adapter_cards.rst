@@ -5,16 +5,8 @@ Adapter Cards
 =============
 
 
-..	toctree::
-	:maxdepth: 2
-	   
-	analog/index
-	digital/index
-	external/index
-	
-
 .. image:: adapter_cards.png
-	:width: 800
+    :width: 800
 
 Create your own adapter cards
 =============================

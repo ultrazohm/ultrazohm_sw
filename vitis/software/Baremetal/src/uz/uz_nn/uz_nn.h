@@ -158,6 +158,15 @@ float uz_nn_mse_derv(uz_matrix_t const *const output, uz_matrix_t const *const e
  * @return uz_matrix_t*
  */
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
+
+/**
+ * @brief Returns a pointer to the activation function of the specified layer
+ * 
+ * @param self 
+ * @param layer Number of layer
+ * @return float(*)(float) 
+ */
+float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float);
 /**
  * @brief Returns a matrix of dimension 1xOutput of a specific layer
  *

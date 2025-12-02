@@ -248,6 +248,19 @@ uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
  * @param self
  * @return uz_matrix*
  */
+uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
+
+/**
+ * @brief Returns the function pointer to the activation function of that layer
+ *
+ * @param self
+ * @return float (*activation_function)(float)
+ */
+float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float);
+
+uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
+uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
+
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
 /**
  * @brief Initializes the adam optimizer object

@@ -92,6 +92,12 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
  * @return wrapped number
  */
 float uz_signals_wrap(float number, float limit);
+/**
+ * @brief resets the internal values of a Filter instance
+ * 
+ * @param self pointer instance of uz_IIR_Filter_t
+ */
+void uz_signals_IIR_Filter_reset(uz_IIR_Filter_t *self);
 
 #endif // UZ_SIGNALS_H
 

@@ -1,0 +1,5 @@
+Motor 1 (left), Motor 2 (right)
+Phase A => D1 A, Phase A => D2 A
+Phase B => D1 B, Phase B => D2 B
+Phase C => D1 C, Phase C => D2 C
+Resolver => D4 1, Resolver => D4 3

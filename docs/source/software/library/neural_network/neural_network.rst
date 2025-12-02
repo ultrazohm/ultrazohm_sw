@@ -394,7 +394,7 @@ Minibatch implementation
 *************************
 
 For the minibatch implementation, the example dataset `bodyfat <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_ ,from matlab is used. 
-The advantage over the previous example is the correlation between input and output data, so the training example with Backpropagation $. 
+The advantage over the previous example is the correlation between input and output data. 
 
 
 .. _comparison_matlab_c:

@@ -208,11 +208,10 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self);
  * @param minibatchsize Minibatchsize of trainingsdata set
  * @param numberofepochs Number of epochs to train the network
  */
-
 void uz_nn_train_minibatch(uz_nn_t *self, float *mse, uz_matrix_t const *const input, uz_matrix_t const *const refout, uz_matrix_t const *const rowvec, uz_matrix_t const *const ref, float const learnrate, uint32_t minibatchsize, uint32_t numberofepochs);
+
 void adam_optimizer_step(adam_optimizer_t *optimizer, uz_nn_t *network);
 void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput, float *error);
-
 void uz_nn_reset_parameter_random(uz_nn_t *self, uz_prng_t *prng);
 void adam_optimizer_reset(adam_optimizer_t *optimizer, uz_nn_t *network);
 

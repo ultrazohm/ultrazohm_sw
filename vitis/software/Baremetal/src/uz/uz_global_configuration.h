@@ -74,6 +74,12 @@
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_SSI_INTERFACE_MAX_INSTANCES                  3U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
+#define UZ_PRNG_SQUARES_MAX_INSTANCES 0U
+#define UZ_PRNG_MTWISTER_MAX_INSTANCES 0U
+#define UZ_PRNG_PCG_MAX_INSTANCES 0U
+#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 0U
+#define UZ_PRNG_HALTON_MAX_INSTANCES 0U
+#define UZ_PRNG_MAX_INSTANCES 0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -125,4 +131,10 @@
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES                  10U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
+#define UZ_PRNG_SQUARES_MAX_INSTANCES 50U
+#define UZ_PRNG_MTWISTER_MAX_INSTANCES 50U
+#define UZ_PRNG_PCG_MAX_INSTANCES 50U
+#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 50U
+#define UZ_PRNG_HALTON_MAX_INSTANCES 50U
+#define UZ_PRNG_MAX_INSTANCES 50U
 #endif

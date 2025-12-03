@@ -120,7 +120,7 @@ void ISR_Control(void *data)
 //            pos = (N - 1) - pos;
 //        }
 //
-//        return pos;  // corrected binary position (0…8191)
+//        return pos;  // corrected binary position
 //    }
 //
 //    gray_pos = binary_to_gray(Global_Data.av.ssi1_position_raw);

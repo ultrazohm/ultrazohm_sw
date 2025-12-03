@@ -107,7 +107,7 @@ int main(void)
             // ssi init for testing
             Global_Data.objects.ssi_0_encoder = ssi_encoder_init_ssi0(); //D5_1
             Global_Data.objects.ssi_1_encoder = ssi_encoder_init_ssi1(); //D5_2
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_1_BASEADDR + 0x13C, 40U); //write delay ticks 40 to ssi_1, since it is required for the Kübler encoder
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_1_BASEADDR + 0x13C, 40U); //write delay ticks 40 to ssi_1, since it is required for the Kuebler encoder
             uz_ssi_interface_enable_ip(Global_Data.objects.ssi_0_encoder, true);
             uz_ssi_interface_enable_ip(Global_Data.objects.ssi_1_encoder, true);
             initialization_chain = print_msg;

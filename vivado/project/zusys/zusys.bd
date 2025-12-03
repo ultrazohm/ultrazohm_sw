@@ -1880,11 +1880,6 @@
             "left": "0",
             "right": "0"
           },
-          "D1_28_OUT_RELAY3_CLOSE": {
-            "direction": "O",
-            "left": "0",
-            "right": "0"
-          },
           "D2_06_OUT_RESET_UVW": {
             "direction": "O",
             "left": "0",
@@ -1952,6 +1947,11 @@
           },
           "D3_06_OUT_RESET_UVW": {
             "direction": "O"
+          },
+          "D2_28_OUT_CS_SQUIB3": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -2640,11 +2640,6 @@
                 "left": "0",
                 "right": "0"
               },
-              "D1_28_OUT_RELAY3_CLOSE": {
-                "direction": "O",
-                "left": "0",
-                "right": "0"
-              },
               "D2_06_OUT_RESET_UVW": {
                 "direction": "O",
                 "left": "0",
@@ -2712,6 +2707,11 @@
               },
               "D3_06_OUT_RESET_UVW": {
                 "direction": "O"
+              },
+              "D2_28_OUT_CS_SQUIB3": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -2812,11 +2812,6 @@
                     "left": "0",
                     "right": "0"
                   },
-                  "D1_28_OUT_RELAY3_CLOSE": {
-                    "direction": "O",
-                    "left": "0",
-                    "right": "0"
-                  },
                   "D2_06_OUT_RESET_UVW": {
                     "direction": "O",
                     "left": "0",
@@ -2879,6 +2874,11 @@
                   },
                   "D3_06_OUT_RESET_UVW": {
                     "direction": "O"
+                  },
+                  "D2_28_OUT_CS_SQUIB3": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
                   }
                 },
                 "components": {
@@ -3620,10 +3620,10 @@
                       "PWM_and_SS_control_V_2/SS5_IN_External"
                     ]
                   },
-                  "vio_Inverter_Test_probe_out4": {
+                  "vio_Inverter_Test_probe_out5": {
                     "ports": [
-                      "vio_Inverter_Test/probe_out4",
-                      "D1_28_OUT_RELAY3_CLOSE"
+                      "vio_Inverter_Test/probe_out5",
+                      "D2_28_OUT_CS_SQUIB3"
                     ]
                   },
                   "vio_Inverter_Test_probe_out6": {
@@ -4347,12 +4347,6 @@
                   "D1_06_OUT_RESET_UVW"
                 ]
               },
-              "Gates_D1_28_OUT_RELAY3_CLOSE": {
-                "ports": [
-                  "Gates/D1_28_OUT_RELAY3_CLOSE",
-                  "D1_28_OUT_RELAY3_CLOSE"
-                ]
-              },
               "Gates_D1_OUT_PWM": {
                 "ports": [
                   "Gates/D1_OUT_PWM",
@@ -4387,6 +4381,12 @@
                 "ports": [
                   "Gates/D2_27_OUT_CS_SQUIB2",
                   "D2_27_OUT_CS_SQUIB2"
+                ]
+              },
+              "Gates_D2_28_OUT_CS_SQUIB3": {
+                "ports": [
+                  "Gates/D2_28_OUT_CS_SQUIB3",
+                  "D2_28_OUT_CS_SQUIB3"
                 ]
               },
               "Gates_D2_OUT_PWM": {
@@ -4573,12 +4573,6 @@
               "D1_06_OUT_RESET_UVW"
             ]
           },
-          "Inverter_Interface_D1_28_OUT_RELAY3_CLOSE": {
-            "ports": [
-              "Inverter_Interface/D1_28_OUT_RELAY3_CLOSE",
-              "D1_28_OUT_RELAY3_CLOSE"
-            ]
-          },
           "Inverter_Interface_D1_OUT_PWM": {
             "ports": [
               "Inverter_Interface/D1_OUT_PWM",
@@ -4613,6 +4607,12 @@
             "ports": [
               "Inverter_Interface/D2_27_OUT_CS_SQUIB2",
               "D2_27_OUT_CS_SQUIB2"
+            ]
+          },
+          "Inverter_Interface_D2_28_OUT_CS_SQUIB3": {
+            "ports": [
+              "Inverter_Interface/D2_28_OUT_CS_SQUIB3",
+              "D2_28_OUT_CS_SQUIB3"
             ]
           },
           "Inverter_Interface_D2_OUT_PWM": {
@@ -6917,11 +6917,6 @@
             "left": "0",
             "right": "0"
           },
-          "D2_28_OUT_CS_SQUIB3": {
-            "direction": "O",
-            "left": "0",
-            "right": "0"
-          },
           "D1_23_IN_KL15_PG": {
             "direction": "I",
             "left": "0",
@@ -6939,6 +6934,11 @@
           },
           "D1_29_IN_RELAY3_NOT_CLOSED": {
             "direction": "I",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_28_OUT_RELAY3_CLOSE": {
+            "direction": "O",
             "left": "0",
             "right": "0"
           }
@@ -7496,7 +7496,7 @@
           "xlslice_3_Dout": {
             "ports": [
               "xlslice_3/Dout",
-              "D2_28_OUT_CS_SQUIB3"
+              "D1_28_OUT_RELAY3_CLOSE"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -10915,12 +10915,6 @@
           "D1_06_OUT_RESET_UVW"
         ]
       },
-      "uz_digital_adapter_D1_28_OUT_RELAY3_CLOSE": {
-        "ports": [
-          "uz_digital_adapter/D1_28_OUT_RELAY3_CLOSE",
-          "D1_28_OUT_RELAY3_CLOSE"
-        ]
-      },
       "uz_digital_adapter_D1_OUT_PWM1": {
         "ports": [
           "uz_digital_adapter/D1_OUT_PWM",
@@ -10955,6 +10949,12 @@
         "ports": [
           "uz_digital_adapter/D2_27_OUT_CS_SQUIB2",
           "D2_27_OUT_CS_SQUIB2"
+        ]
+      },
+      "uz_digital_adapter_D2_28_OUT_CS_SQUIB3": {
+        "ports": [
+          "uz_digital_adapter/D2_28_OUT_CS_SQUIB3",
+          "D2_28_OUT_CS_SQUIB3"
         ]
       },
       "uz_digital_adapter_D2_OUT_PWM": {
@@ -11035,10 +11035,10 @@
           "D1_26_OUT_RELAY2_CLOSE"
         ]
       },
-      "uz_user_D2_28_OUT_CS_SQUIB3": {
+      "uz_user_D1_28_OUT_RELAY3_CLOSE": {
         "ports": [
-          "uz_user/D2_28_OUT_CS_SQUIB3",
-          "D2_28_OUT_CS_SQUIB3"
+          "uz_user/D1_28_OUT_RELAY3_CLOSE",
+          "D1_28_OUT_RELAY3_CLOSE"
         ]
       },
       "uz_user_F_SYNC_1": {

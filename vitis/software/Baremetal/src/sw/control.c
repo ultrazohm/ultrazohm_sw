@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 #include "control.h"
+#include "misc_IO.h"
 
 // --- Simulink model variables ---
 RT_MODEL_FOC_FCF_T FOC_FCF_M_;
@@ -44,6 +45,15 @@ uint8_t Control_FLAG_100ms;
 
 ctrl_data_t ctrl_data;
 
+uint8_t OUT_KL15;
+uint8_t OUT_PYRO_TRIGGER;
+uint8_t OUT_RELAY2_CLOSE;
+uint8_t OUT_RELAY3_CLOSE;
+uint32_t IN_AXI_GPIO_bit_word;
+uint8_t IN_KL_15_PG;
+uint8_t IN_IGNITION_SUCCESS;
+uint8_t IN_RELAY2_NOT_CLOSED;
+uint8_t IN_RELAY3_NOT_CLOSED;
 
 void init_control_functions(void)
 {
@@ -107,6 +117,7 @@ void Control_Task_1ms(void)
 void Control_Task_10ms(void)
 {
 
+
 	/* --- execute Simulink State Machine Function --- */
 	ctrl_data.smf_in.FastCtrl_Error = ctrl_data.fcf_out.FOC_Error;
 
@@ -129,7 +140,13 @@ void Control_Task_10ms(void)
  */
 void Control_Task_100ms(void)
 {
+	IN_AXI_GPIO_bit_word = uz_get_misc_inputs();
+	IN_KL_15_PG          = (IN_AXI_GPIO_bit_word >> 0) & 0x01;
+	IN_IGNITION_SUCCESS  = (IN_AXI_GPIO_bit_word >> 1) & 0x01;
+	IN_RELAY2_NOT_CLOSED = (IN_AXI_GPIO_bit_word >> 2) & 0x01;
+	IN_RELAY3_NOT_CLOSED = (IN_AXI_GPIO_bit_word >> 3) & 0x01;
 
+	uz_set_misc_outputs(OUT_KL15, OUT_PYRO_TRIGGER, OUT_RELAY2_CLOSE, OUT_RELAY3_CLOSE);
 }
 
 /**

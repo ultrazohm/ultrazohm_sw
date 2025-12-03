@@ -27,6 +27,7 @@ void test_uz_ssi_interface_hw_write_zero_base_address(void)
     float ki_pll = 98696.0f;
     uint32_t machine_pole_pairs = 4U;
     int32_t mech_offset_ticks = -42;
+    uint32_t delay_ticks = 40U;
 
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_clock_divider(0U, clock_divider));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(0U, encoder_bit_width_single_turn));
@@ -37,6 +38,7 @@ void test_uz_ssi_interface_hw_write_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_pll_parameters(0U, sampling_interval, kp_pll, ki_pll));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(0U, machine_pole_pairs));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(0U, mech_offset_ticks));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_data_sampling_delay_clock_ticks(0U, delay_ticks));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw_multi_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_ssi_encoder_status(0U));
@@ -135,6 +137,13 @@ void test_uz_ssi_interface_hw_write_machine_pole_pair_limits(void)
 
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs_too_low));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs_too_high));
+}
+
+void test_uz_ssi_interface_hw_write_sampling_delay_clock_ticks_limit(void)
+{
+    uint32_t delay_ticks_too_high = 142U;
+
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_data_sampling_delay_clock_ticks(TEST_BASE_ADDRESS, delay_ticks_too_high));
 }
 
 void test_uz_ssi_interface_hw_read_position_speed_status(void)

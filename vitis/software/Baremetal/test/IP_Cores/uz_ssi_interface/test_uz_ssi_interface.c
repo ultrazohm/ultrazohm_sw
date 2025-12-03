@@ -22,6 +22,7 @@ struct uz_ssi_interface_config_t config = {
     .ssi_encoder_number_of_status_bits = 2U,
     .position_encoding = gray_code,
     .machine_polepairs = 4U,
+    .encoder_data_sampling_delay_in_clock_ticks = 40U,
     .sampling_interval_seconds = TEST_SAMPLING_INTERVAL,
     .kp_pll = TEST_KP_PLL,
     .ki_pll = TEST_KI_PLL,
@@ -96,6 +97,7 @@ void test_uz_ssi_inteface_set_config(void)
     float expected_kp_pll = 628.0f;
     float expected_ki_pll = 98696.0f;
     uint32_t expected_pole_pairs = 4U;
+    uint32_t expected_sampling_delay_ticks = 40U;
     int32_t expected_mech_offset_ticks = -106473; //equals the ticks for SI_offset=-1.276f and a 19bit encoder calculated by the uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn function
     enum position_encoding_t expected_encoding = gray_code;
 
@@ -106,6 +108,7 @@ void test_uz_ssi_inteface_set_config(void)
     uz_ssi_interface_hw_write_position_is_binary_or_gray_code_Expect(TEST_BASE_ADDRESS, expected_encoding);
     uz_ssi_interface_hw_write_pll_parameters_Expect(TEST_BASE_ADDRESS, expected_sampling_interval, expected_kp_pll, expected_ki_pll);
     uz_ssi_interface_hw_write_machine_pole_pairs_Expect(TEST_BASE_ADDRESS, expected_pole_pairs);
+    uz_ssi_interface_hw_write_data_sampling_delay_clock_ticks_Expect(TEST_BASE_ADDRESS, expected_sampling_delay_ticks);
     uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn_Expect(TEST_BASE_ADDRESS, expected_mech_offset_ticks);
     uz_ssi_interface_init(config, outputs);
 }

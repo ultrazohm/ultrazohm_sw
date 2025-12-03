@@ -33,6 +33,7 @@ struct uz_ssi_interface_config_t{
                                                                                          binary or \n 
                                                                                          gray_code */
     uint32_t machine_polepairs; /**< Pole pairs of the machine, only positive values >=1 are allowed */
+    uint32_t encoder_data_sampling_delay_in_clock_ticks;/**< Number of FPGA clock ticks (e.g. 1U tick equals 10ns at 100MHz) that will be waited after a falling edge of the SSI clock before the data line is sampled. This is vital when long encoder cables are used that are more than a few metres long */
     float sampling_interval_seconds; /**< Sampling interval for the integration employed in the PLL for speed calculation */
     float kp_pll; /**< Proportional gain for the PI within the PLL */
     float ki_pll; /**< Integral gain for the PI within the PLL */
@@ -103,6 +104,19 @@ void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on);
  */
 void uz_ssi_interface_set_mechanical_offset_ssi_single_turn(uz_ssi_interface_t *self, float position_mech_offset_si_single_turn);
 
+/**
+ * @brief Sets the delay value in FPGA clock ticks, that has to pass until the data line is sampled.
+ * @brief Its purpose is to compensate the delay that occurs when long encoder cables are used.
+ * @brief After a rising edge of the SSI clock, the encoder sets the next bit of the position data on the data line.
+ * @brief At the next falling edge of the SSI clock the data line is sampled. When it takes too long for the data to reach 
+ * @brief the data input of the IP-core, one would miss the bit of the present clock cycle. To compensate for this, the user 
+ * @brief can set a delay. The delay tick value can be determined heuristically or when employing an integrated logic analyzer (ILA) 
+ * @brief in the FPGA.
+ *
+ * @param self Pointer to the instance
+ * @param delay_ticks Positive unsigned integer value of the FPGA clock ticks to which the sampling is delayed after a falling edge of the SSI clock. Default is 0U, values up to 100U are valid.
+ */
+void uz_ssi_interface_set_data_sampling_delay_clock_ticks(uz_ssi_interface_t *self, uint32_t delay_ticks);
 
 /**
  * @brief Calculates the ceiled value of an unsigned integer division.

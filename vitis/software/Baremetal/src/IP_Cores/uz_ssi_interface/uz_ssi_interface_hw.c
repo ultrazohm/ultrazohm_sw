@@ -105,6 +105,12 @@ void uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t b
     uz_axi_write_int32(base_address + position_mech_offset_ticks_AXI_Data_uz_ssi_interface, mech_offset_ticks_single_turn);
 }
 
+void uz_ssi_interface_hw_write_data_sampling_delay_clock_ticks(uint32_t base_address, uint32_t delay_ticks) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(delay_ticks <= 100U); // variable delay in the IP-Core has a limit of 100 clock ticks for the delay
+    uz_axi_write_uint32(base_address + sampling_delay_clk_ticks_AXI_Data_uz_ssi_interface, delay_ticks);
+}
+
 uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
     return(uz_axi_read_uint32(base_address + position_raw_single_turn_AXI_Data_uz_ssi_interface));

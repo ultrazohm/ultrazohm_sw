@@ -215,7 +215,6 @@ void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uin
 void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput, float *error)
 {
     uz_assert(expectedoutput->length_of_data == output->length_of_data);
-    float z = 0.0f;
     for (uint32_t i = 0; i < output->length_of_data; i++)
     {
         error[i] = -(expectedoutput->data[i] - output->data[i]);

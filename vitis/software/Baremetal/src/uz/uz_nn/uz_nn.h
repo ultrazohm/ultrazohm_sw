@@ -210,11 +210,46 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self);
  */
 void uz_nn_train_minibatch(uz_nn_t *self, float *mse, uz_matrix_t const *const input, uz_matrix_t const *const refout, uz_matrix_t const *const rowvec, uz_matrix_t const *const ref, float const learnrate, uint32_t minibatchsize, uint32_t numberofepochs);
 
+/**
+ * @brief Performs one update step using the Adam optimizer based on the internally stored gradients
+ * 
+ * @param optimizer 
+ * @param network 
+ */
 void adam_optimizer_step(adam_optimizer_t *optimizer, uz_nn_t *network);
+
+/**
+ * @brief Calculates the derivitive of the mean squared error between the output data of a neural network and the expected output, writes the result of the calculation to "error"
+ * 
+ * @param output Output matrix of a neural network after a forward pass
+ * @param expectedoutput Matrix of expected outputs of a neural network matching the sample fed to the network where output is calculated from
+ * @param error Derivitive of the mean squared error between output and expected output
+ */
 void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput, float *error);
+
+/**
+ * @brief Sets all parameters of a neural network to random values as used in the initialization based on Glorot/He init schemes using normal distributions. Bias is set to zero for all layers.
+ *
+ * @param self
+ * @param prng
+ */
 void uz_nn_reset_parameter_random(uz_nn_t *self, uz_prng_t *prng);
+
+/**
+ * @brief Resets the Adam optimizer, setting all internal values to zero
+ * 
+ * @param optimizer 
+ * @param network 
+ */
 void adam_optimizer_reset(adam_optimizer_t *optimizer, uz_nn_t *network);
 
+/**
+ * @brief Returns the function pointer used as the activation function of the specified layer
+ * 
+ * @param self 
+ * @param layer 
+ * @return float(*)(float) 
+ */
 float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float);
 
 #endif // UZ_NN_H

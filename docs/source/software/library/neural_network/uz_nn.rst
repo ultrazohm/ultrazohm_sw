@@ -200,6 +200,8 @@ Reference
 
 .. doxygentypedef:: uz_nn_t
 
+.. doxygentypedef:: adam_optimizer_t
+
 .. doxygenfunction:: uz_nn_init
 
 .. doxygenfunction:: uz_nn_ff
@@ -238,6 +240,12 @@ Reference
 
 .. doxygenfunction:: uz_nn_train_minibatch
 
-.. ..  doxygenfunction:: calc_epsilon_greedy
+.. doxygenfunction:: adam_optimizer_step
+
+.. doxygenfunction:: uz_nn_mse_derv_mult
+
+.. doxygenfunction:: uz_nn_reset_parameter_random
+
+.. doxygenfunction:: adam_optimizer_reset
 
 .. doxygendefine:: UZ_NN_MAX_LAYER

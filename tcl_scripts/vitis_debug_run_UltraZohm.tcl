@@ -165,3 +165,7 @@ targets -set -nocase -filter {name =~ "*R5*#0"}
 con
 puts "INFO: connected to 'psu_cortexr5_0'."
 #####################################################
+
+puts "\n\n=========================================="
+puts "INFO: UltraZohm successfully programmed."
+puts "==========================================\n\n"

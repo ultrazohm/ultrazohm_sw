@@ -52,6 +52,16 @@ void test_uz_pos_to_speed_pll_get_functions_argument_null(void)
     TEST_ASSERT_FAIL_ASSERT(uz_pos_to_speed_pll_get_omega_el_si(NULL));
 }
 
+void test_uz_pos_to_speed_pll_violate_input_boundaries_of_step(void)
+{
+    uz_pos_to_speed_pll_t* test_instance = uz_pos_to_speed_pll_init(config);
+    float position_mech_SI_input_too_high = 6.290f;
+    float position_mech_SI_input_too_low = -0.001f;
+
+    TEST_ASSERT_FAIL_ASSERT(uz_pos_to_speed_pll_step(test_instance, position_mech_SI_input_too_low));
+    TEST_ASSERT_FAIL_ASSERT(uz_pos_to_speed_pll_step(test_instance, position_mech_SI_input_too_high));
+}
+
 void test_uz_pos_to_speed_pll_step_test(void)
 {
     uz_pos_to_speed_pll_t* test_instance = uz_pos_to_speed_pll_init(config);

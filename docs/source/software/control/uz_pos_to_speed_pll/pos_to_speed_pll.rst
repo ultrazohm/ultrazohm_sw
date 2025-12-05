@@ -58,7 +58,7 @@ Position to Speed PLL reference
 .. doxygenstruct:: uz_pos_to_speed_pll_t
   :members:  
 
-.. doxygentypedef:: uz_pos_to_speed_pll
+.. doxygentypedef:: uz_pos_to_speed_pll_t
 
 .. doxygenfunction:: uz_pos_to_speed_pll_init
 

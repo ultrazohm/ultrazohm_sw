@@ -2,8 +2,6 @@
 
 #include "../globalData.h"
 
-struct uz_6ph_dq_t uz_CurrentControl_sample_6ph(uz_CurrentControl_t* self1, uz_CurrentControl_t* self2, uz_6ph_dq_t i_dq_6ph_ref, uz_6ph_dq_t i_dq_6ph_meas, float u_dc1, float u_dc2, float omega_el_rad_per_sec);
-
 void update_current_measurements(AnalogAdapters* aa, uz_3ph_abc_t* i_abc_inverter1, uz_3ph_abc_t* i_abc_inverter2, uz_3ph_abc_t* i_abc_inverter3);
 void update_dc_current_measurements(AnalogAdapters* aa, float* i_dc1, float* i_dc2, float* i_dc3);
 

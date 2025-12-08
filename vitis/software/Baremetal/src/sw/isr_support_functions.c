@@ -2,25 +2,6 @@
 
 static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, float L3);
 
-struct uz_6ph_dq_t uz_CurrentControl_sample_6ph(struct uz_CurrentControl_t* self1, struct uz_CurrentControl_t* self2, struct uz_6ph_dq_t i_dq_6ph_ref, struct uz_6ph_dq_t i_dq_6ph_meas, float u_dc1, float u_dc2, float omega_el_rad_per_sec) {
-	struct uz_3ph_dq_t i_dq_3ph_meas = { .d = i_dq_6ph_meas.d, .q = i_dq_6ph_meas.q };
-	struct uz_3ph_dq_t i_xy_3ph_meas = { .d = i_dq_6ph_meas.x, .q = i_dq_6ph_meas.y	};
-
-	struct uz_3ph_dq_t i_dq_3ph_soll = { .d = i_dq_6ph_ref.d, .q = i_dq_6ph_ref.q};
-	struct uz_3ph_dq_t i_xy_3ph_soll = { .d = i_dq_6ph_ref.x, .q = i_dq_6ph_ref.y};
-
-
-	struct uz_3ph_dq_t u_dq_3ph_soll = uz_CurrentControl_sample(self1, i_dq_3ph_soll, i_dq_3ph_meas, u_dc1, omega_el_rad_per_sec);
-	struct uz_3ph_dq_t u_xy_3ph_soll = uz_CurrentControl_sample(self2, i_xy_3ph_soll, i_xy_3ph_meas, u_dc2, omega_el_rad_per_sec);
-
-	return ((struct uz_6ph_dq_t) {
-		.d = u_dq_3ph_soll.d,
-		.q = u_dq_3ph_soll.q,
-		.x = u_xy_3ph_soll.d,
-		.y = u_xy_3ph_soll.q,
-	});
-}
-
 void update_current_measurements(AnalogAdapters* aa, uz_3ph_abc_t* i_abc_inverter1, uz_3ph_abc_t* i_abc_inverter2, uz_3ph_abc_t* i_abc_inverter3) {
 	*i_abc_inverter1 = ((uz_3ph_abc_t) {
 		.a = aa->A1.me.ADC_A4 * PHASE_CURRENT_CONV_A1 + PHASE_CURRENT_OFFSET_A1,

@@ -61,40 +61,10 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	// float I_L1; 		// Grid side current in A
-	// float I_L2; 		// Grid side current in A
-	// float I_L3; 		// Grid side current in A
-	// float U_L1; 		// Grid side voltage in V
-	// float U_L2; 		// Grid side voltage in V
-	// float U_L3; 		// Grid side voltage in V
-	// float I_U; 		// Machine side current in A
-	// float I_V; 		// Machine side current in A
-	// float I_W; 		// Machine side current in A
-	// float U_U; 		// Machine side voltage in V
-	// float U_V; 		// Machine side voltage in V
-	// float U_W; 		// Machine side voltage in V
-	// float U_ZK; 		// DC-Link voltage in V
-	// float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
 	float mechanicalRotorSpeed_filtered; // in rpm
-	// float mechanicalPosition; 		// in m
-	// float mechanicalTorque; 			// in Nm
-	// float mechanicalTorqueSensitive; // in Nm
-	// float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	// float Id_3ph;
-	// float Iq_3ph;
-	// float Id_6ph;
-	// float Iq_6ph;
-	// float Ix_6ph;
-	// float Iy_6ph;
-	// float Ud_3ph;
-	// float Uq_3ph;
-	// float Ud_6ph;
-	// float Uq_6ph;
-	// float Ux_6ph;
-	// float Uy_6ph;
 	float theta_elec;
 	float theta_el_Last_deg;
 	float theta_mech_Last_deg;
@@ -132,6 +102,21 @@ typedef struct _actualValues_ {
 	float i_dc1, i_dc2, i_dc3;
 	float u_dc1, u_dc2, u_dc3;
 	float temp_VSI_1, temp_VSI_2, temp_VSI_3;
+
+	float shift_a1;
+	float shift_b1;
+	float shift_c1;
+	float shift_a2;
+	float shift_b2;
+	float shift_c2;
+
+	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
+
+	float testSineAmplitude;
+	float testSineFreq;
+	bool activeTestSine;
+	bool activeConstDuty;
+	float constDuty;
 
 } actualValues;
 

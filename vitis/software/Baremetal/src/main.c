@@ -33,6 +33,17 @@ DS_Data Global_Data = {
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+	.av.testSineFreq = 1.0f,
+	.av.activeTestSine = false,
+	.av.testSineAmplitude = 0.01f,
+	.av.activeConstDuty = false,
+	.av.constDuty = 0.0f,
+	.av.shift_a1 = 0.0f,
+	.av.shift_b1 = 0.0f,
+	.av.shift_c1 = 0.0f,
+	.av.shift_a2 = 0.0f,
+	.av.shift_b2 = 0.0f,
+	.av.shift_c2 = 0.0f,
     .aa = {
     	.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		.A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
@@ -89,20 +100,6 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            Global_Data.objects.current_control_dq_6ph_Pruef_object = uz_current_control_dq_Pruef_init();
-            uz_CurrentControl_reset(Global_Data.objects.current_control_dq_6ph_Pruef_object);
-            Global_Data.objects.current_control_xy_6ph_Pruef_object = uz_current_control_xy_Pruef_init();
-            uz_CurrentControl_reset(Global_Data.objects.current_control_xy_6ph_Pruef_object);
-            Global_Data.objects.current_control_3ph_Last_object = uz_current_control_Last_init();
-            uz_CurrentControl_reset(Global_Data.objects.current_control_3ph_Last_object);
-            Global_Data.objects.speed_prefilter_Last = uz_speed_prefilter_Last_init();
-            Global_Data.objects.speed_prefilter_Pruef = uz_speed_prefilter_Pruef_init();
-            Global_Data.objects.speed_control_3ph_Last_object = uz_speed_control_Last_init();
-            uz_SpeedControl_reset(Global_Data.objects.speed_control_3ph_Last_object);
-            Global_Data.objects.speed_control_6ph_Pruef_object = uz_speed_control_Pruef_init();
-            uz_SpeedControl_reset(Global_Data.objects.speed_control_6ph_Pruef_object);
-            Global_Data.objects.torque_to_current_dq_3ph_Last_object = uz_torque_to_current_converter_Last_init();
-            Global_Data.objects.torque_to_current_dq_6ph_Pruef_object = uz_torque_to_current_converter_Pruef_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

@@ -186,65 +186,61 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->rasv.n_mech_Last_soll = value;
-		//data->av.snd_fld[1] = value;
+			data->av.testSineAmplitude = value;
+			if(data->av.testSineAmplitude <=0.0f){
+				data->av.testSineAmplitude = 0.01;
+			}
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.i_dq_6ph_Pruef_soll.d = value;
-		//data->av.snd_fld[2] = value;
+			data->av.testSineFreq = value;
+			if(data->av.testSineFreq <= 0.0f){
+				data->av.testSineFreq = 1;
+			}
+
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.i_dq_6ph_Pruef_soll.q = value;
-		//data->av.snd_fld[3] = value;
+			data->av.shift_a1 = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->rasv.i_dq_6ph_Pruef_soll.x = value;
-		//data->av.snd_fld[4] = value;
+			data->av.shift_b1 = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->rasv.i_dq_6ph_Pruef_soll.y = value;
-		//data->av.snd_fld[5] = value;
+			data->av.shift_c1 = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+				data->av.constDuty = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->rasv.i_dq_3ph_Last_soll.d = value;
+		//data->av.snd_fld[7] = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->rasv.i_dq_3ph_Last_soll.q = value;
 		//data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->rasv.i_dq_6ph_Pruef_soll.d = value;
 		//data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->rasv.i_dq_6ph_Pruef_soll.q = value;
 		//data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->rasv.i_dq_6ph_Pruef_soll.x = value;
 		//data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->rasv.i_dq_6ph_Pruef_soll.y = value;
 		//data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->rasv.n_mech_Pruef_soll = value;
 		//data->av.snd_fld[13] = value;
 			break;
 
@@ -277,32 +273,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			data->rasv.speed_control_3ph_Last = true;
-			data->rasv.speed_control_6ph_Pruef = false;
+			data->av.activeTestSine = true;
 			break;
 
 		case (My_Button_2):
-			data->rasv.speed_control_3ph_Last = false;
-			data->rasv.speed_control_6ph_Pruef = true;
+			data->av.activeTestSine = false;
 			break;
 
 		case (My_Button_3):
-			if(data->rasv.speed_control_3ph_Last)
-				data->rasv.current_control_6ph_Pruef = true;
-			else if(data->rasv.speed_control_6ph_Pruef)
-				data->rasv.current_control_3ph_Last = true;
+			data->av.activeConstDuty = true;
 			break;
 
 		case (My_Button_4):
-			if(data->rasv.speed_control_6ph_Pruef && !(data->rasv.current_control_3ph_Last))
-				data->rasv.speed_control_6ph_Pruef = false;
-			if(data->rasv.speed_control_3ph_Last && !(data->rasv.current_control_6ph_Pruef))
-				data->rasv.speed_control_3ph_Last = false;
+			data->av.activeConstDuty = false;
 			break;
 
 		case (My_Button_5):
-			data->rasv.current_control_3ph_Last = false;
-			data->rasv.current_control_6ph_Pruef = false;
+
 			break;
 
 		case (My_Button_6):

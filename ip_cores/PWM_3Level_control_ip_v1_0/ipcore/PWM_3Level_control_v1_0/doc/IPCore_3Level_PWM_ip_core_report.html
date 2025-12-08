@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">4.5
+<td class="summaryTableSndColOddRow">4.8
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">01-Dec-2025 21:43:46
+<td class="summaryTableSndColOddRow">08-Dec-2025 00:33:47
 </td>
 </tr>
 <tr>
@@ -280,25 +280,25 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1249')">Carrier_OUT_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1258')">Carrier_OUT</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
 <td class="distinctCellColor">sfix18_En16
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"118"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1258')">Carrier_OUT</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:28')">SS0_OUT</a>
 </td>
 <td>Outport
 </td>
-<td>sfix18_En16
+<td>boolean
 </td>
 <td>External Port
 </td>
@@ -308,57 +308,113 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:28')">SS0_OUT</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1280')">SS1_OUT</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">ufix1
+<td class="distinctCellColor">boolean
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"128"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1280')">SS1_OUT</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1281')">SS2_OUT</a>
 </td>
 <td>Outport
 </td>
-<td>ufix1
+<td>boolean
 </td>
-<td>AXI4-Lite
+<td>External Port
 </td>
-<td>x"138"
+<td>
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1281')">SS2_OUT</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1282')">SS3_OUT</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">ufix1
+<td class="distinctCellColor">boolean
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"148"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1282')">SS3_OUT</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1249')">Carrier_OUT_AXI</a>
 </td>
 <td>Outport
 </td>
-<td>ufix1
+<td>sfix18_En16
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"158"
+<td>x"118"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1364')">AXI_SS0_OUT</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"120"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1365')">AXI_SS1_OUT</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"12C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1366')">AXI_SS2_OUT</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"130"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IPCore_3Level_PWM:1367')">AXI_SS3_OUT</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"134"
 </td>
 <td>
 </td>
@@ -403,7 +459,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2512012143
+<td>contains unique IP timestamp (yymmddHHMM): 2512080033
 </td>
 </tr>
 <tr>
@@ -471,43 +527,43 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">m_u1_norm_AXI_Data
+<td class="distinctCellColor">AXI_SS0_OUT_Data
 </td>
-<td class="distinctCellColor">0x124
+<td class="distinctCellColor">0x120
 </td>
-<td class="distinctCellColor">data register for Inport m_u1_norm_AXI
-</td>
-</tr>
-<tr>
-<td>SS0_OUT_Data
-</td>
-<td>0x128
-</td>
-<td>data register for Outport SS0_OUT
+<td class="distinctCellColor">data register for Outport AXI_SS0_OUT
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">SS1_OUT_Data
+<td>m_u1_norm_AXI_Data
 </td>
-<td class="distinctCellColor">0x138
+<td>0x124
 </td>
-<td class="distinctCellColor">data register for Outport SS1_OUT
-</td>
-</tr>
-<tr>
-<td>SS2_OUT_Data
-</td>
-<td>0x148
-</td>
-<td>data register for Outport SS2_OUT
+<td>data register for Inport m_u1_norm_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">SS3_OUT_Data
+<td class="distinctCellColor">AXI_SS1_OUT_Data
 </td>
-<td class="distinctCellColor">0x158
+<td class="distinctCellColor">0x12C
 </td>
-<td class="distinctCellColor">data register for Outport SS3_OUT
+<td class="distinctCellColor">data register for Outport AXI_SS1_OUT
+</td>
+</tr>
+<tr>
+<td>AXI_SS2_OUT_Data
+</td>
+<td>0x130
+</td>
+<td>data register for Outport AXI_SS2_OUT
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_SS3_OUT_Data
+</td>
+<td class="distinctCellColor">0x134
+</td>
+<td class="distinctCellColor">data register for Outport AXI_SS3_OUT
 </td>
 </tr>
 </tbody>

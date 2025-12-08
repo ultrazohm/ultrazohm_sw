@@ -31,6 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../IP_Cores/uz_PWM_3L/uz_PWM_3L_private.h"
+#include "../IP_Cores/uz_InterlockDeadtime3L/uz_InterlockDeadtime3L_private.h"
+#include "../IP_Cores/uz_SS_Debug/uz_SS_Debug_private.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +42,11 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 extern PWM_3L_handle PWM_3L_instance;
+extern SSDebug_handle SSDebug_inst_after_int;
+extern SSDebug_handle SSDebug_inst_before_int;
+extern IntDead3L_handle IntDead3L_instance;
+
+uint8_t SS3L_out [3][4];
 
 // Custom Variables
 PWM_3L_GUI_Inputs GUI_Inputs;
@@ -60,21 +67,10 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
+    	uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, true);
         // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, GUI_Inputs.input_freq);
-    	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, GUI_Inputs.input_duty_cycle);
-    	uz_PWM_3L_hw_set_mode(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.mode);
-    	uz_PWM_3L_hw_set_sampligPoint(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.samplePoint);
-    	uint32_t carrier;
-		carrier = uz_PWM_3L_hw_get_carrier(PWM_3L_instance->base_address);
-		PWM_3L_instance->carrier = (float)carrier;
-    	uint8_t SS3L_out [3][4];
-    	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
-    	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];
-    	PWM_3L_instance->switchStates[0][1] = (float)SS3L_out[0][1];
-    	PWM_3L_instance->switchStates[0][2] = (float)SS3L_out[0][2];
-    	PWM_3L_instance->switchStates[0][3] = (float)SS3L_out[0][3];
-
+    } else{
+    	uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, false);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -85,6 +81,23 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+
+	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, GUI_Inputs.input_freq);
+	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, GUI_Inputs.input_duty_cycle);
+	uz_PWM_3L_hw_set_mode(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.mode);
+	uz_PWM_3L_hw_set_sampligPoint(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.samplePoint);
+	uint32_t carrier;
+	carrier = uz_PWM_3L_hw_get_carrier(PWM_3L_instance->base_address);
+	PWM_3L_instance->carrier = (float)carrier;
+
+	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
+	uz_SS_Debug_get(SSDebug_inst_before_int->base_address, SSDebug_inst_before_int->SS_out);
+	uz_SS_Debug_get(SSDebug_inst_after_int->base_address, SSDebug_inst_after_int->SS_out);
+	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];
+	PWM_3L_instance->switchStates[0][3] = (float)SS3L_out[0][1];
+	PWM_3L_instance->switchStates[0][2] = (float)SS3L_out[0][2];
+	PWM_3L_instance->switchStates[0][1] = (float)SS3L_out[0][3];
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

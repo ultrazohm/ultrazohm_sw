@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:15 . Memory (MB): peak = 377.934 ; gain = 64.156
+create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:12 . Memory (MB): peak = 377.250 ; gain = 52.652
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Ultrazohm/ultrazohm_sw/ip_cores/PWM_3Level_control_ip_v1_0/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Ultrazohm/ultrazohm_sw/ip_cores/PWM_3Level_control_ip_v1_0/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Ultrazohm/ultrazohm_sw/ip_cores/PWM_3Level_control_ip_v1_0/ipcore/PWM_3Level_control_v1_0/prj_ip'.)
@@ -51,6 +51,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/PWM_3Level_control_axi_lite.vhd" alre
 WARNING: [IP_Flow 19-1971] File named "hdl/PWM_3Level_control_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/PWM_3Level_control.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/PWM_3Level_control.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Dec  1 21:44:27 2025...
+INFO: [Common 17-206] Exiting Vivado at Mon Dec  8 00:34:15 2025...
 
-Elapsed time is 32.2736 seconds.
+Elapsed time is 23.2096 seconds.

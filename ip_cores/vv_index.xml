@@ -779,6 +779,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:Interlock_ip:1.0">
+		</VLNV>
+		<DisplayName value="Interlock_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114374080">
+		</CoreRevision>
+		<ComponentPath value="InterlockDeadtime3L/ipcore/Interlock_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="ELSYS:InterLock_Lib:InterLock_Module:2.0">
 		</VLNV>
 		<DisplayName value="InterLock_Module">
@@ -881,7 +909,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114372428">
+		<CoreRevision value="2114381673">
 		</CoreRevision>
 		<ComponentPath value="PWM_3Level_control_ip_v1_0/ipcore/PWM_3Level_control_v1_0/component.xml">
 		</ComponentPath>
@@ -1537,6 +1565,62 @@
 		</Taxonomies>
 		<LockPrevVersions value="false">
 		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:SS_Debug:1.0">
+		</VLNV>
+		<DisplayName value="SS_Debug">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114374120">
+		</CoreRevision>
+		<ComponentPath value="SS_debug_block/ipcore/SS_Debug_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:Subsystem_ip:1.0">
+		</VLNV>
+		<DisplayName value="Subsystem_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114374119">
+		</CoreRevision>
+		<ComponentPath value="SS_debug_block/ipcore/Subsystem_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
 		<Interfaces>
 			<Interface value="AXI4">
 			</Interface>

@@ -19,10 +19,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        1640588889,
-        3738486834,
-        2278975454,
-        2177679333
+        3469859041,
+        3455159638,
+        2570191700,
+        1534416041
       ],
       "MarkedUnique": false
     },
@@ -141,7 +141,7 @@
           "Latency": -1
         },
         {
-          "Name": "Carrier_OUT_AXI",
+          "Name": "Carrier_OUT",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 3,
@@ -151,7 +151,7 @@
           "Latency": -1
         },
         {
-          "Name": "Carrier_OUT",
+          "Name": "SS0_OUT",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 4,
@@ -161,7 +161,7 @@
           "Latency": -1
         },
         {
-          "Name": "SS0_OUT",
+          "Name": "SS1_OUT",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 5,
@@ -171,7 +171,7 @@
           "Latency": -1
         },
         {
-          "Name": "SS1_OUT",
+          "Name": "SS2_OUT",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 6,
@@ -181,7 +181,7 @@
           "Latency": -1
         },
         {
-          "Name": "SS2_OUT",
+          "Name": "SS3_OUT",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 7,
@@ -191,10 +191,50 @@
           "Latency": -1
         },
         {
-          "Name": "SS3_OUT",
+          "Name": "Carrier_OUT_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_SS0_OUT",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_SS1_OUT",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_SS2_OUT",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_SS3_OUT",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 12,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -212,6 +252,10 @@
     0,
     0,
     0,
+    0,
+    0,
+    0,
+    0,
     0
   ],
   "ResourceSummary": {
@@ -221,7 +265,7 @@
     "oneBitRegisters": 8625,
     "rams": 0,
     "multiplexers": 106,
-    "IOBits": 154,
+    "IOBits": 158,
     "staticShiftOperators": 1,
     "dynamicShiftOperators": 0
   }

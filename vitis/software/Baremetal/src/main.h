@@ -58,6 +58,10 @@
 // Custom includes
 #include "IP_Cores/uz_PWM_3L/uz_PWM_3L_hw.h"
 #include "IP_Cores/uz_PWM_3L/uz_PWM_3L_staticAllocator.h"
+#include "IP_Cores/uz_InterlockDeadtime3L/uz_InterlockDeadtime3L_hw.h"
+#include "IP_Cores/uz_InterlockDeadtime3L/uz_InterlockDeadtime3L_staticAllocator.h"
+#include "IP_Cores/uz_SS_Debug/uz_SS_Debug_hw.h"
+#include "IP_Cores/uz_SS_Debug/uz_SS_Debug_staticAllocator.h"
 
 
 //----------------------------------------------------

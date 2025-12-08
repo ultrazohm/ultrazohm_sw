@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-154
+158
 </td>
 
 </tr>
@@ -257,7 +257,7 @@ Registers (138)
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:95\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:97\')'})"  name="code2model" class="code2model">
 delayMatch
 </a>
 
@@ -275,7 +275,7 @@ delayMatch
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:96\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:98\')'})"  name="code2model" class="code2model">
 delayMatch1
 </a>
 
@@ -293,7 +293,7 @@ delayMatch1
 <span name="Register_1_3" id="Register_1_3">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:97\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:99\')'})"  name="code2model" class="code2model">
 delayMatch2
 </a>
 
@@ -324,7 +324,7 @@ Multiport Switch
 
 </span>
 <br /><h5>
-Number of I/O Bits (154)
+Number of I/O Bits (158)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -387,10 +387,10 @@ m_u1_norm_AXI
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 81
+Number of Output Bits: 85
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul>
+<ul class="SystemdefinedCollapse" id="709adb8d-f239-482e-932b-bd6dff060ce8" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -411,12 +411,6 @@ Scal_T_carrier_AXI_readback
 m_u1_norm_readback
 </a>
 : 14 bits
-</li>
-<li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1249\')'})"  name="code2model" class="code2model">
-Carrier_OUT_AXI
-</a>
-: 18 bits
 </li>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1258\')'})"  name="code2model" class="code2model">
@@ -448,9 +442,42 @@ SS3_OUT
 </a>
 : 1 bit
 </li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1249\')'})"  name="code2model" class="code2model">
+Carrier_OUT_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1364\')'})"  name="code2model" class="code2model">
+AXI_SS0_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1365\')'})"  name="code2model" class="code2model">
+AXI_SS1_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1366\')'})"  name="code2model" class="code2model">
+AXI_SS2_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1367\')'})"  name="code2model" class="code2model">
+AXI_SS3_OUT
+</a>
+: 1 bit
+</li>
 
 </ul>
-
+<span class="SDCollapseControl" onclick="collapseSD(this, '709adb8d-f239-482e-932b-bd6dff060ce8')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:40\')'})"  name="code2model" class="code2model">
@@ -465,12 +492,12 @@ Adders/Subtractors (1)
 [+]
 </span>
 <span style="font-family:monospace">
-37x37-bit Adder 							: 1
+19x19-bit Adder 							: 1
 </span>
 <span name="Adder_2_1" id="Adder_2_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:579\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:1554\')'})"  name="code2model" class="code2model">
 Sum
 </a>
 
@@ -491,7 +518,7 @@ Registers (47)
 <span name="Register_2_1" id="Register_2_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:91\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'gm_IPCore_3Level_PWM:93\')'})"  name="code2model" class="code2model">
 delayMatch
 </a>
 
@@ -660,7 +687,7 @@ adder
 45x45-bit Adder 							: 42
 </span>
 <span name="Adder_4_2" id="Adder_4_2">
-<ul class="SystemdefinedCollapse" id="b90d27e5-06ca-4bed-b81b-99cbc0b9caa9" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="00801baf-1df4-410f-8366-219112c272c1" dataCollapse="off">
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:905\')'})"  name="code2model" class="code2model">
 temp_1
@@ -915,7 +942,7 @@ temp_42_1
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'b90d27e5-06ca-4bed-b81b-99cbc0b9caa9')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '00801baf-1df4-410f-8366-219112c272c1')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -945,7 +972,7 @@ adder_1
 46-bit Subtractor 							: 42
 </span>
 <span name="Subtractor_4_2" id="Subtractor_4_2">
-<ul class="SystemdefinedCollapse" id="b3e2bb07-a22a-4637-886c-edcacdabdb61" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="a9d6ecbc-b016-4a1e-babe-cc4e1f16e426" dataCollapse="off">
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:905\')'})"  name="code2model" class="code2model">
 d_neg
@@ -1200,7 +1227,7 @@ d_neg_82
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'b3e2bb07-a22a-4637-886c-edcacdabdb61')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a9d6ecbc-b016-4a1e-babe-cc4e1f16e426')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1263,7 +1290,7 @@ z_p
 86-bit Register 							: 43
 </span>
 <span name="Register_4_3" id="Register_4_3">
-<ul class="SystemdefinedCollapse" id="691e941c-69ba-4451-b971-0d66e1dcd99d" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="4d52b40a-12b1-4b8e-aa66-3d2423e5dd38" dataCollapse="off">
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:905\')'})"  name="code2model" class="code2model">
 corrected_z_p
@@ -1524,7 +1551,7 @@ r_reg_41
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '691e941c-69ba-4451-b971-0d66e1dcd99d')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '4d52b40a-12b1-4b8e-aa66-3d2423e5dd38')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1554,7 +1581,7 @@ d_p
 45-bit Register 							: 42
 </span>
 <span name="Register_4_5" id="Register_4_5">
-<ul class="SystemdefinedCollapse" id="080566a0-b830-4a71-aa53-52ae4c6c5998" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="394606bd-1890-46e7-aa1e-d82796e9c02a" dataCollapse="off">
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:905\')'})"  name="code2model" class="code2model">
 corrected_d_p
@@ -1809,7 +1836,7 @@ d_reg_40
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '080566a0-b830-4a71-aa53-52ae4c6c5998')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '394606bd-1890-46e7-aa1e-d82796e9c02a')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1932,7 +1959,7 @@ switchReset
 45-bit 2-to-1 Multiplexer 							: 41
 </span>
 <span name="Multiplexer_4_3" id="Multiplexer_4_3">
-<ul class="SystemdefinedCollapse" id="c2583cca-e4bc-4efd-a70d-6ef3013db5fa" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="5986b393-d097-4933-a167-d0bb005812a5" dataCollapse="off">
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'IPCore_3Level_PWM:905\')'})"  name="code2model" class="code2model">
 y
@@ -2181,7 +2208,7 @@ y_80
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'c2583cca-e4bc-4efd-a70d-6ef3013db5fa')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '5986b393-d097-4933-a167-d0bb005812a5')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

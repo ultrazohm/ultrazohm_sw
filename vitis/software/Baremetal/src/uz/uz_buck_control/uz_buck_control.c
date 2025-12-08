@@ -45,25 +45,27 @@ uz_buck_control_t* uz_buck_control_init(struct buck_control_config external_conf
 void uz_buck_control_controller_config(uz_buck_control_t* self) {
     // initialize all PI controllers
     // i_HS controller config
-    self->controller_config.i_HS_controller_config.Ki = 1.0f;
-    self->controller_config.i_HS_controller_config.Kp = 100.0f;
+    self->controller_config.i_HS_controller_config.Kp = 1.0f;
+    self->controller_config.i_HS_controller_config.Ki = 100.0f;
     self->controller_config.i_HS_controller_config.lower_limit = 0.0f;
     self->controller_config.i_HS_controller_config.upper_limit = 50.0f;
-    self->controller_config.i_HS_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.i_HS_controller_config.samplingTime_sec = 0.0001f;
     self->controller_config.i_HS_controller_config.type = UZ_PI_PARALLEL;
+
     // u_UC controller config
-    self->controller_config.u_UC_controller_config.Ki = 10.0f;
-    self->controller_config.u_UC_controller_config.Kp = 2.5;
+    self->controller_config.u_UC_controller_config.Kp = 10.0f;
+    self->controller_config.u_UC_controller_config.Ki = 2.5;
     self->controller_config.u_UC_controller_config.lower_limit = -50.0f;
     self->controller_config.u_UC_controller_config.upper_limit = 50.0f;
-    self->controller_config.u_UC_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.u_UC_controller_config.samplingTime_sec = 0.0001f;
     self->controller_config.u_UC_controller_config.type = UZ_PI_PARALLEL;    
+
     // i_UC controller config
-    self->controller_config.i_UC_controller_config.Ki = 0.01;
-    self->controller_config.i_UC_controller_config.Kp = 0.2f;
+    self->controller_config.i_UC_controller_config.Kp = 0.01;
+    self->controller_config.i_UC_controller_config.Ki = 0.2f;
     self->controller_config.i_UC_controller_config.lower_limit = -10.0f;
     self->controller_config.i_UC_controller_config.upper_limit = 10.0f;
-    self->controller_config.i_UC_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.i_UC_controller_config.samplingTime_sec = 0.0001f;
     self->controller_config.i_UC_controller_config.type = UZ_PI_PARALLEL;    
 }
 
@@ -77,6 +79,8 @@ void uz_buck_control_controller_init(uz_buck_control_t* self) {
 float uz_buck_control_sample(uz_buck_control_t* self, struct buck_control_ref_val ref_val, struct buck_control_act_val act_val) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert_not_zero(act_val.u_BUS_V_meas);
+    uz_assert_not_zero(act_val.u_UC_V_meas);
     if(self->first_call){
         self->first_call = false;
         self->duty_cycle = 0.0f;
@@ -138,13 +142,15 @@ float uz_buck_i_UC_control(uz_buck_control_t* self, struct buck_control_ref_val 
     //PI controller for i_UC control. output is delta duty cycle whic is added to the precalculated dutycycle
     self->duty_cycle = uz_PI_Controller_sample(self->i_UC_Controller, buck_control_ref_val.i_UC_A_ref, buck_control_act_val.i_UC_V_meas, false);
     // add ratio of nominal bus voltage to actual bus voltage to duty cycle
-    self->duty_cycle += (buck_control_act_val.u_BUS_V_meas / self->config.u_BUS_V_nominal);
+    self->duty_cycle += (buck_control_act_val.u_UC_V_meas / buck_control_act_val.u_BUS_V_meas);
     //limit duty cycle to max and min values
     if (self->duty_cycle > self->config.max_duty_cycle) {
         self->duty_cycle = self->config.max_duty_cycle;
     } else if (self->duty_cycle < self->config.min_duty_cycle) {
         self->duty_cycle = self->config.min_duty_cycle;
     }
+    uz_assert(!isnan(self->duty_cycle));
+    uz_assert(self->duty_cycle >= 0.0f && self->duty_cycle <= 1.0f);
     return(self->duty_cycle);
 }
 

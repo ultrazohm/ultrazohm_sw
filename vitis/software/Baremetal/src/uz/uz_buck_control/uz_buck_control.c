@@ -4,10 +4,17 @@
 #include "../uz_HAL.h"
 #include "uz_buck_control.h" 
 
-struct uz_buck_control_t {
+typedef struct uz_buck_control_t {
     bool is_ready;
     struct buck_control_config config;
-};
+    float duty_cycle;
+    enum bc_state control_modi;
+    bool first_call;
+    struct uz_buck_control_Controller_config controller_config;
+    struct uz_PI_Controller* i_HS_Controller;
+    struct uz_PI_Controller* u_UC_Controller;
+    struct uz_PI_Controller* i_UC_Controller;
+}uz_buck_control_t;
 
 static uint32_t instance_counter = 0U;
 static uz_buck_control_t instances[UZ_BUCK_CONTROL_MAX_INSTANCES] = { 0 };
@@ -23,19 +30,77 @@ static uz_buck_control_t* uz_buck_control_allocation(void){
     return (self);
 }
 
-uz_buck_control_t* uz_buck_control_init(struct buck_control_config config) {
+uz_buck_control_t* uz_buck_control_init(struct buck_control_config external_config) {
     uz_buck_control_t* self = uz_buck_control_allocation();
-    self->config = config;
+    self->config = external_config;
+    //configure all PI controllers
+    uz_buck_control_controller_config(self);
+    // initialize all PI controllers
+    uz_buck_control_controller_init(self);   
     return (self);
 }
 
+void uz_buck_control_controller_config(uz_buck_control_t* self) {
+    // initialize all PI controllers
+    self->controller_config.i_HS_controller_config.Ki = 1.0f;
+    self->controller_config.i_HS_controller_config.Kp = 1.0f;
+    self->controller_config.i_HS_controller_config.lower_limit = -10.0f;
+    self->controller_config.i_HS_controller_config.upper_limit = 10.0f;
+    self->controller_config.i_HS_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.i_HS_controller_config.type = UZ_PI_IDEAL;
 
-float uz_buck_control_sample(uz_buck_control_t* self) {
+    self->controller_config.u_UC_controller_config.Ki = 1.0f;
+    self->controller_config.u_UC_controller_config.Kp = 1.0f;
+    self->controller_config.u_UC_controller_config.lower_limit = -10.0f;
+    self->controller_config.u_UC_controller_config.upper_limit = 10.0f;
+    self->controller_config.u_UC_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.u_UC_controller_config.type = UZ_PI_IDEAL;    
+
+    self->controller_config.i_UC_controller_config.Ki = 1.0f;
+    self->controller_config.i_UC_controller_config.Kp = 1.0f;
+    self->controller_config.i_UC_controller_config.lower_limit = -10.0f;
+    self->controller_config.i_UC_controller_config.upper_limit = 10.0f;
+    self->controller_config.i_UC_controller_config.samplingTime_sec = 0.05f;
+    self->controller_config.i_UC_controller_config.type = UZ_PI_IDEAL;    
+}
+
+void uz_buck_control_controller_init(uz_buck_control_t* self) {
+    // initialize all PI controllers
+    self->i_HS_Controller = uz_PI_Controller_init(self->controller_config.i_HS_controller_config);
+    self->u_UC_Controller = uz_PI_Controller_init(self->controller_config.u_UC_controller_config);
+    self->i_UC_Controller = uz_PI_Controller_init(self->controller_config.i_UC_controller_config);
+}
+
+float uz_buck_control_sample(uz_buck_control_t* self, enum bc_state set_control_mode) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert((self->config.i_HS_control + self->config.u_UC_control + self->config.i_UC_control) == 1);
+    if(self->first_call){
+        self->first_call = false;
+        self->duty_cycle = 0.0f;
+        self->control_modi = set_control_mode;
+    } else{
     //To be implemented
-    return (0.0f);
+        switch (self->control_modi)
+        {
+        case i_HS_control:
+            /* code */
+            break;
+        
+        case u_UC_control:
+            /* code */
+            break;    
+
+        case i_UC_control:
+            /* code */
+            break;   
+
+        default:
+            break;
+    }
+    }
+
+    return (self->duty_cycle);
 }
 
 

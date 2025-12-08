@@ -18,9 +18,9 @@ void setUp(void)
     config.u_BUS_V_nominal = 48.0f;
     config.i_dcdc_upper_lim_A = 10.0f;
     config.i_dcdc_lower_lim_A = -10.0f;
-    config.i_HS_control = true;
+    config.i_HS_control = false;
     config.u_UC_control = false;
-    config.i_UC_control = false;
+    config.i_UC_control = true;
 }
 
 void test_uz_buck_control_init(void){
@@ -31,7 +31,8 @@ void test_uz_buck_control_init(void){
 void test_uz_buck_control_sample(void){
     uz_buck_control_t* instance = uz_buck_control_init(config);
     float duty_cycle = 0.0f;
-    duty_cycle = uz_buck_control_sample(instance);
+    duty_cycle = uz_buck_control_sample(instance, i_UC_control);
+    TEST_ASSERT(duty_cycle==0.0f);
 }
 
 

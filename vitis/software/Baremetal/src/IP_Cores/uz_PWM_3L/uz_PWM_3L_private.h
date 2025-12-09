@@ -14,5 +14,7 @@ typedef struct PWM_3L_GUI_Inputs_t {
     float input_duty_cycle;
     float mode;
     float samplePoint;
+    float deadTime_ns;
+    float minPulseWidth_ns;
 } PWM_3L_GUI_Inputs;
 

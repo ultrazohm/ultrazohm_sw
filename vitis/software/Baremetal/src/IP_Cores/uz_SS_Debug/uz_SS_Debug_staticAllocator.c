@@ -17,14 +17,15 @@ static SSDebug SSDebug_instance_1 = {
 SSDebug_handle uz_SS_Debug_staticAllocator(void){
 	switch (instance_counter){
 		case 0:
+			instance_counter ++;
 			return(&SSDebug_instance_0);
 			break;
 		case 1:
+			instance_counter ++;
 			return(&SSDebug_instance_1);
 			break;
 		default:
 			instance_counter = 0;
 			return 0;
 	}
-	instance_counter ++;
 }

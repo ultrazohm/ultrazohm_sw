@@ -1,12 +1,17 @@
 {
   "CodeGenStatus": [],
-  "CriticalPathDelay": 5.5299999999999994,
+  "CriticalPathDelay": 9.766,
   "GenFileList": [
     "PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd",
     "PWM_3Level_control_src_Divide.vhd",
     "PWM_3Level_control_src_CarrierGen.vhd",
     "PWM_3Level_control_src_PWM_carrier_comparison.vhd",
     "PWM_3Level_control_src_GenPWM.vhd",
+    "PWM_3Level_control_src_range_checker4.vhd",
+    "PWM_3Level_control_src_range_checker3.vhd",
+    "PWM_3Level_control_src_range_checker1.vhd",
+    "PWM_3Level_control_src_range_checker.vhd",
+    "PWM_3Level_control_src_MinPWM.vhd",
     "PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd"
   ],
   "Latency": 46,
@@ -19,10 +24,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        3469859041,
-        3455159638,
-        2570191700,
-        1534416041
+        1050179070,
+        3270994034,
+        432688318,
+        152384428
       ],
       "MarkedUnique": false
     },
@@ -103,6 +108,16 @@
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "min_pwm_norm",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 6,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -260,12 +275,12 @@
   ],
   "ResourceSummary": {
     "multipliers": 0,
-    "addersSubtractors": 87,
-    "registers": 413,
-    "oneBitRegisters": 8625,
+    "addersSubtractors": 96,
+    "registers": 460,
+    "oneBitRegisters": 8703,
     "rams": 0,
-    "multiplexers": 106,
-    "IOBits": 158,
+    "multiplexers": 154,
+    "IOBits": 171,
     "staticShiftOperators": 1,
     "dynamicShiftOperators": 0
   }

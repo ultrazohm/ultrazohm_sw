@@ -33,6 +33,7 @@ void uz_PWM_3L_hw_set_mode(uint32_t base_address, uint8_t mode);
  */
 void uz_PWM_3L_hw_set_sampligPoint(uint32_t base_address, uint8_t samplingMode);
 void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t states[][4]);
+void uz_PWM_3L_hw_set_min_PW(uint32_t base_address, uint32_t min_pw_ns);
 uint32_t uz_PWM_3L_hw_enable_IP_core_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_u1_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_get_carrier(uint32_t base_address);

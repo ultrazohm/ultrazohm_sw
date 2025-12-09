@@ -118,11 +118,12 @@ int main(void)
             uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, PWM_3L_instance->carrier_freq);
             uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, PWM_3L_instance->u1);
             uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, true);
+            uz_PWM_3L_hw_set_min_PW(PWM_3L_instance->base_address, 2*1e6);
 
             /* init 3L Interlock and deadtime module */
             uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, IntDead3L_instance->en);
-            uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, IntDead3L_instance->delay_ns);
-            uz_InterlockDeadtime3L_hw_set_mode(IntDead3L_instance->base_address, IntDead3L_instance->mode);
+            uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, 2*1e6);
+            uz_InterlockDeadtime3L_hw_set_mode(IntDead3L_instance->base_address, 3);
 
 
 

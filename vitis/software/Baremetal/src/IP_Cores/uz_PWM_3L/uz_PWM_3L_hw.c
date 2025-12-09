@@ -3,6 +3,8 @@
 #include "../../uz/uz_AXI.h"
 #include "../../uz/uz_HAL.h"
 
+uint32_t carrier_freq_hz = 0;
+
 void uz_PWM_3L_hw_set_carrier_f(uint32_t base_address, uint32_t f_carrier_hz)
 {
     uz_assert_not_zero_uint32(base_address);
@@ -12,7 +14,9 @@ void uz_PWM_3L_hw_set_carrier_f(uint32_t base_address, uint32_t f_carrier_hz)
     if(f_carrier_hz < 100){
     	f_carrier_hz = 100;
     }
-    uint32_t scal_t_carrier = (uint32_t)50000000*(1.0/f_carrier_hz); //amount of IPcore clock cycles per carrier cycle
+    carrier_freq_hz = f_carrier_hz;
+    //amount of IPcore clock cycles per carrier cycle
+    uint32_t scal_t_carrier = (uint32_t)50000000*(1.0/f_carrier_hz);
     uz_axi_write_uint32(base_address + Scal_T_carrier_AXI_Data_PWM_3Level_control, scal_t_carrier);
 }
 
@@ -53,6 +57,21 @@ void uz_PWM_3L_hw_set_sampligPoint(uint32_t base_address, uint8_t samplingMode){
 		samplingMode = 4;
 	}
 	uz_axi_write_uint32(base_address + Sampling_AXI_Data_PWM_3Level_control, samplingMode);
+}
+
+void uz_PWM_3L_hw_set_min_PW(uint32_t base_address, uint32_t min_pw_ns){
+	uz_assert_not_zero_uint32(base_address);
+	// minimum pulse width cant't be greater than width of half a carrier
+	if (min_pw_ns > 1e9/(carrier_freq_hz*2)){
+		min_pw_ns = 1e9/(carrier_freq_hz*2);
+	}
+	// to calculate normalised value (between 0-1, representing the min allowed dutycycle)
+	// one needs to take the ratio MinPulseWidth (s) / HalfMolationPeriod (s)
+	float min_pw_norm;
+	min_pw_norm = (float)min_pw_ns*(1e-9)*(float)carrier_freq_hz/2;
+	min_pw_norm = min_pw_norm*pow(2,12);
+	uint32_t min_pw_norm_cast = (uint32_t)min_pw_norm;
+	uz_axi_write_uint32(base_address + min_pwm_norm_Data_PWM_3Level_control, min_pw_norm_cast);
 }
 
 void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t states[][4]){

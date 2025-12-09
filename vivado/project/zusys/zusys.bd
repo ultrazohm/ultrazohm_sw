@@ -111,10 +111,10 @@
           "xlslice_Enable_Inverter_Bit0": ""
         },
         "SS_Debug_0": "",
-        "Interlock_ip_0": "",
-        "PWM_3Level_control_0": "",
         "SS_Debug_1": "",
-        "xlconstant_0": ""
+        "xlconstant_0": "",
+        "Interlock_ip_0": "",
+        "PWM_3Level_control_0": ""
       },
       "uz_user": {
         "smartconnect_1": "",
@@ -5356,18 +5356,6 @@
             "xci_path": "ip\\zusys_SS_Debug_0_0\\zusys_SS_Debug_0_0.xci",
             "inst_hier_path": "uz_system/SS_Debug_0"
           },
-          "Interlock_ip_0": {
-            "vlnv": "xilinx.com:ip:Interlock_ip:1.0",
-            "xci_name": "zusys_Interlock_ip_0_0",
-            "xci_path": "ip\\zusys_Interlock_ip_0_0\\zusys_Interlock_ip_0_0.xci",
-            "inst_hier_path": "uz_system/Interlock_ip_0"
-          },
-          "PWM_3Level_control_0": {
-            "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
-            "xci_name": "zusys_PWM_3Level_control_0_4",
-            "xci_path": "ip\\zusys_PWM_3Level_control_0_4\\zusys_PWM_3Level_control_0_4.xci",
-            "inst_hier_path": "uz_system/PWM_3Level_control_0"
-          },
           "SS_Debug_1": {
             "vlnv": "xilinx.com:ip:SS_Debug:1.0",
             "xci_name": "zusys_SS_Debug_0_1",
@@ -5387,6 +5375,18 @@
                 "value": "14"
               }
             }
+          },
+          "Interlock_ip_0": {
+            "vlnv": "xilinx.com:ip:Interlock_ip:1.0",
+            "xci_name": "zusys_Interlock_ip_0_0",
+            "xci_path": "ip\\zusys_Interlock_ip_0_0\\zusys_Interlock_ip_0_0.xci",
+            "inst_hier_path": "uz_system/Interlock_ip_0"
+          },
+          "PWM_3Level_control_0": {
+            "vlnv": "xilinx.com:ip:PWM_3Level_control:1.0",
+            "xci_name": "zusys_PWM_3Level_control_0_4",
+            "xci_path": "ip\\zusys_PWM_3Level_control_0_4\\zusys_PWM_3Level_control_0_4.xci",
+            "inst_hier_path": "uz_system/PWM_3Level_control_0"
           }
         },
         "interface_nets": {
@@ -5641,29 +5641,29 @@
           "PWM_3Level_control_0_SS0_OUT": {
             "ports": [
               "PWM_3Level_control_0/SS0_OUT",
-              "Interlock_ip_0/u1_s0",
-              "SS_Debug_1/SS0_in"
+              "SS_Debug_1/SS0_in",
+              "Interlock_ip_0/u1_s0"
             ]
           },
           "PWM_3Level_control_0_SS1_OUT": {
             "ports": [
               "PWM_3Level_control_0/SS1_OUT",
-              "Interlock_ip_0/u1_s1",
-              "SS_Debug_1/SS1_in"
+              "SS_Debug_1/SS1_in",
+              "Interlock_ip_0/u1_s1"
             ]
           },
           "PWM_3Level_control_0_SS2_OUT": {
             "ports": [
               "PWM_3Level_control_0/SS2_OUT",
-              "Interlock_ip_0/u1_s2",
-              "SS_Debug_1/SS2_in"
+              "SS_Debug_1/SS2_in",
+              "Interlock_ip_0/u1_s2"
             ]
           },
           "PWM_3Level_control_0_SS3_OUT": {
             "ports": [
               "PWM_3Level_control_0/SS3_OUT",
-              "Interlock_ip_0/u1_s3",
-              "SS_Debug_1/SS3_in"
+              "SS_Debug_1/SS3_in",
+              "Interlock_ip_0/u1_s3"
             ]
           },
           "Trigger_AXI2TCM_1": {
@@ -5689,14 +5689,14 @@
               "smartconnect_1/aresetn",
               "timer_uptime_64bit/s_axi_aresetn",
               "uz_enable/s_axi_aresetn",
-              "PWM_3Level_control_0/AXI4_Lite_ARESETN",
-              "PWM_3Level_control_0/IPCORE_RESETN",
-              "Interlock_ip_0/IPCORE_RESETN",
-              "Interlock_ip_0/AXI4_Lite_ARESETN",
               "SS_Debug_0/IPCORE_RESETN",
               "SS_Debug_0/AXI4_Lite_ARESETN",
               "SS_Debug_1/AXI4_Lite_ARESETN",
-              "SS_Debug_1/IPCORE_RESETN"
+              "SS_Debug_1/IPCORE_RESETN",
+              "Interlock_ip_0/IPCORE_RESETN",
+              "Interlock_ip_0/AXI4_Lite_ARESETN",
+              "PWM_3Level_control_0/IPCORE_RESETN",
+              "PWM_3Level_control_0/AXI4_Lite_ARESETN"
             ]
           },
           "resetn_1": {
@@ -5779,13 +5779,13 @@
               "uz_clocks/clk_in1",
               "uz_enable/s_axi_aclk",
               "SS_Debug_0/IPCORE_CLK",
+              "SS_Debug_0/AXI4_Lite_ACLK",
+              "SS_Debug_1/IPCORE_CLK",
+              "SS_Debug_1/AXI4_Lite_ACLK",
               "Interlock_ip_0/IPCORE_CLK",
               "Interlock_ip_0/AXI4_Lite_ACLK",
-              "SS_Debug_0/AXI4_Lite_ACLK",
               "PWM_3Level_control_0/IPCORE_CLK",
-              "PWM_3Level_control_0/AXI4_Lite_ACLK",
-              "SS_Debug_1/IPCORE_CLK",
-              "SS_Debug_1/AXI4_Lite_ACLK"
+              "PWM_3Level_control_0/AXI4_Lite_ACLK"
             ]
           }
         }

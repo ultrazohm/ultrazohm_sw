@@ -18,10 +18,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        396539338,
-        4117061351,
-        1057213931,
-        33745622
+        4266272694,
+        123575012,
+        1845479519,
+        3341334736
       ],
       "MarkedUnique": false
     },
@@ -203,7 +203,7 @@
     "multipliers": 0,
     "addersSubtractors": 4,
     "registers": 19,
-    "oneBitRegisters": 93,
+    "oneBitRegisters": 181,
     "rams": 0,
     "multiplexers": 36,
     "IOBits": 94,

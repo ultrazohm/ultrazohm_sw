@@ -7,6 +7,11 @@ add_files -norecurse {../hdl/PWM_3Level_control_src_Divide.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_CarrierGen.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_GenPWM.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker4.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker3.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker1.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_MinPWM.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_pkg.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_reset_sync.vhd}
@@ -34,7 +39,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114381673 [ipx::current_core]
+set_property core_revision 2114383158 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -57,6 +62,26 @@ ipx::add_file {hdl/PWM_3Level_control_src_GenPWM.vhd} [ipx::get_file_groups xili
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_GenPWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_GenPWM.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_GenPWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_range_checker.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_range_checker.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_MinPWM.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_MinPWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_MinPWM.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_MinPWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

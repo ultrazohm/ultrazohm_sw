@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 377.570 ; gain = 52.738
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:15 . Memory (MB): peak = 378.594 ; gain = 61.531
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Ultrazohm/ultrazohm_sw/ip_cores/InterlockDeadtime3L/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Ultrazohm/ultrazohm_sw/ip_cores/InterlockDeadtime3L/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Ultrazohm/ultrazohm_sw/ip_cores/InterlockDeadtime3L/ipcore/Interlock_ip_v1_0/prj_ip'.)
@@ -49,6 +49,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/Interlock_ip_axi_lite.vhd" already ex
 WARNING: [IP_Flow 19-1971] File named "hdl/Interlock_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Interlock_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Interlock_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Dec  2 18:00:49 2025...
+INFO: [Common 17-206] Exiting Vivado at Tue Dec  9 01:36:38 2025...
 
-Elapsed time is 15.546 seconds.
+Elapsed time is 38.4973 seconds.

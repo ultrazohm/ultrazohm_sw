@@ -131,9 +131,7 @@ module in the ``ultrazohm_sw`` framework:
     initialization_chain = init_ip_cores;
    break;
 
-6. Use the instance in ``isr.c`` by calling the step-function and assigning an existing mechanical rotor position signal to the module. 
-Be reminded that the range of the position signal has to be within :math:`0...2\pi`. 
-Afterwards read out the electrical and the mechanical speed and assign it to a variable of your choice for further usage:
+6. Use the instance in ``isr.c`` by calling the step-function and assigning an existing mechanical rotor position signal to the module. Be reminded that the range of the position signal has to be within :math:`0...2\pi`. Afterwards read out the electrical and the mechanical speed and assign it to a variable of your choice for further usage:
 
 .. code-block:: c
   :linenos:

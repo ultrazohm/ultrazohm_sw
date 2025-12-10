@@ -27,8 +27,6 @@ static uz_buck_control_t *uz_buck_control_allocation(void)
     uz_buck_control_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
-    self->duty_cycle = 0.0f;
-    self->config.control_mode = none;
     self->is_ready = true;
     return (self);
 }

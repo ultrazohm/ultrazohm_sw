@@ -121,6 +121,7 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(actual_values.input_voltage_Volt > 0.0f);
     self->duty_cycle = uz_PI_Controller_sample(self->output_current_controller, reference_values.ref_output_current_Ampere, actual_values.output_current_Ampere, false);
 
     // add ratio of nominal bus voltage to actual bus voltage to duty cycle as a open-loop controller. Change this and just scale to V_dc voltage

@@ -10,8 +10,7 @@ typedef struct uz_buck_control_t
     bool is_ready;
     struct buck_control_config config;
     float duty_cycle;
-    struct uz_buck_control_Controller_config controller_config;
-    struct uz_PI_Controller *i_HS_Controller;
+    struct uz_PI_Controller *input_current_controller;
     struct uz_PI_Controller *u_UC_Controller;
     struct uz_PI_Controller *i_UC_Controller;
 } uz_buck_control_t;
@@ -32,18 +31,18 @@ static uz_buck_control_t *uz_buck_control_allocation(void)
 }
 
 static void uz_buck_control_controller_config(uz_buck_control_t *self);
-static void uz_buck_control_controller_init(uz_buck_control_t *self);
-
-
 
 uz_buck_control_t *uz_buck_control_init(struct buck_control_config external_config)
 {
     uz_buck_control_t *self = uz_buck_control_allocation();
     self->config = external_config;
-    self->controller_config=external_config.controller_configuration;
-    self->duty_cycle = 0.0f;
     uz_buck_control_controller_config(self);
-    uz_buck_control_controller_init(self);
+    
+    self->input_current_controller = uz_PI_Controller_init(self->config.input_current_controller_config);
+    self->u_UC_Controller = uz_PI_Controller_init(self->config.output_voltage_controller_config);
+    self->duty_cycle = 0.0f;
+    self->i_UC_Controller = uz_PI_Controller_init(self->config.output_current_controller_config);
+
     return (self);
 }
 
@@ -51,36 +50,28 @@ static void uz_buck_control_controller_config(uz_buck_control_t *self)
 {
     // initialize all PI controllers
     // i_HS controller config
-    self->controller_config.i_HS_controller_config.Kp = 1.0f;
-    self->controller_config.i_HS_controller_config.Ki = 100.0f;
-    self->controller_config.i_HS_controller_config.lower_limit = 0.0f;
-    self->controller_config.i_HS_controller_config.upper_limit = 50.0f;
-    self->controller_config.i_HS_controller_config.samplingTime_sec = 0.0001f;
-    self->controller_config.i_HS_controller_config.type = UZ_PI_PARALLEL;
+    self->config.input_current_controller_config.Kp = 1.0f;
+    self->config.input_current_controller_config.Ki = 100.0f;
+    self->config.input_current_controller_config.lower_limit = 0.0f;
+    self->config.input_current_controller_config.upper_limit = 50.0f;
+    self->config.input_current_controller_config.samplingTime_sec = 0.0001f;
+    self->config.input_current_controller_config.type = UZ_PI_PARALLEL;
 
     // u_UC controller config
-    self->controller_config.u_UC_controller_config.Kp = 10.0f;
-    self->controller_config.u_UC_controller_config.Ki = 2.5;
-    self->controller_config.u_UC_controller_config.lower_limit = -50.0f;
-    self->controller_config.u_UC_controller_config.upper_limit = 50.0f;
-    self->controller_config.u_UC_controller_config.samplingTime_sec = 0.0001f;
-    self->controller_config.u_UC_controller_config.type = UZ_PI_PARALLEL;
+    self->config.output_voltage_controller_config.Kp = 10.0f;
+    self->config.output_voltage_controller_config.Ki = 2.5;
+    self->config.output_voltage_controller_config.lower_limit = -50.0f;
+    self->config.output_voltage_controller_config.upper_limit = 50.0f;
+    self->config.output_voltage_controller_config.samplingTime_sec = 0.0001f;
+    self->config.output_voltage_controller_config.type = UZ_PI_PARALLEL;
 
     // i_UC controller config
-    self->controller_config.i_UC_controller_config.Kp = 0.01;
-    self->controller_config.i_UC_controller_config.Ki = 0.2f;
-    self->controller_config.i_UC_controller_config.lower_limit = -10.0f;
-    self->controller_config.i_UC_controller_config.upper_limit = 10.0f;
-    self->controller_config.i_UC_controller_config.samplingTime_sec = 0.0001f;
-    self->controller_config.i_UC_controller_config.type = UZ_PI_PARALLEL;
-}
-
-static void uz_buck_control_controller_init(uz_buck_control_t *self)
-{
-    // initialize all PI controllers
-    self->i_HS_Controller = uz_PI_Controller_init(self->controller_config.i_HS_controller_config);
-    self->u_UC_Controller = uz_PI_Controller_init(self->controller_config.u_UC_controller_config);
-    self->i_UC_Controller = uz_PI_Controller_init(self->controller_config.i_UC_controller_config);
+    self->config.output_current_controller_config.Kp = 0.01;
+    self->config.output_current_controller_config.Ki = 0.2f;
+    self->config.output_current_controller_config.lower_limit = -10.0f;
+    self->config.output_current_controller_config.upper_limit = 10.0f;
+    self->config.output_current_controller_config.samplingTime_sec = 0.0001f;
+    self->config.output_current_controller_config.type = UZ_PI_PARALLEL;
 }
 
 float uz_buck_control_sample(uz_buck_control_t *self, struct buck_control_ref_val ref_val, struct buck_control_act_val act_val)
@@ -88,78 +79,62 @@ float uz_buck_control_sample(uz_buck_control_t *self, struct buck_control_ref_va
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    if (self->config.control_mode == uz_buck_input_current_mode)
+    switch (self->config.control_mode)
     {
-        ref_val.ref_output_voltage_Volt = uz_buck_input_current_control(self, ref_val, act_val);
+    case uz_buck_input_current_mode:
+        ref_val.ref_output_voltage_Volt = uz_buck_input_current_control(self, ref_val.ref_input_current_Ampere, act_val.input_current_Ampere);
         ref_val.ref_output_current_Ampere = uz_buck_output_voltage_control(self, ref_val, act_val);
         self->duty_cycle = uz_buck_output_current_control(self, ref_val, act_val);
-    }
-    else if (self->config.control_mode == uz_buck_output_voltage_mode)
-    {
+        break;
+    case uz_buck_output_voltage_mode:
         ref_val.ref_output_current_Ampere = uz_buck_output_voltage_control(self, ref_val, act_val);
         self->duty_cycle = uz_buck_output_current_control(self, ref_val, act_val);
-    }
-    else if (self->config.control_mode == uz_buck_output_current_mode)
-    {
+        break;
+    case uz_buck_output_current_mode:
         self->duty_cycle = uz_buck_output_current_control(self, ref_val, act_val);
-    }
-    else
-    {
+        break;
+    default:
         uz_assert(false);
     }
 
     return (self->duty_cycle);
 }
 
-float uz_buck_input_current_control(uz_buck_control_t *self, struct buck_control_ref_val buck_control_ref_val, struct buck_control_act_val buck_control_act_val)
+float uz_buck_input_current_control(uz_buck_control_t *self, float input_current_reference, float input_current_actual)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // PI controller for i_HS control
-    buck_control_ref_val.ref_output_voltage_Volt = uz_PI_Controller_sample(self->i_HS_Controller, buck_control_ref_val.ref_input_current_Ampere, buck_control_act_val.input_current_Ampere, false);
-    return (buck_control_ref_val.ref_output_voltage_Volt);
+    // add input limit
+    input_current_reference = uz_signals_saturation(input_current_reference, self->config.input_current_max_reference, self->config.input_current_min_reference);
+    float control_voltage = uz_PI_Controller_sample(self->input_current_controller, input_current_reference, input_current_actual, false);
+    return control_voltage;
 }
 
-float uz_buck_output_voltage_control(uz_buck_control_t *self, struct buck_control_ref_val buck_control_ref_val, struct buck_control_act_val buck_control_act_val)
+float uz_buck_output_voltage_control(uz_buck_control_t *self, struct buck_control_ref_val reference_values, struct buck_control_act_val actual_values)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    // adds actual voltage to the reference voltage
-    buck_control_ref_val.ref_output_voltage_Volt += buck_control_act_val.output_voltage_Volt;
-    // limits the reference voltage to the allowed voltage limits
-    if (buck_control_ref_val.ref_output_voltage_Volt > self->config.i_dcdc_upper_lim_A)
-    {
-        buck_control_ref_val.ref_output_voltage_Volt = self->config.i_dcdc_upper_lim_A;
-    }
-    else if (buck_control_ref_val.ref_output_voltage_Volt < self->config.i_dcdc_lower_lim_A)
-    {
-        buck_control_ref_val.ref_output_voltage_Volt = self->config.i_dcdc_lower_lim_A;
-    }
-    // PI controller for u_UC control
-    buck_control_ref_val.ref_output_current_Ampere = uz_PI_Controller_sample(self->u_UC_Controller, buck_control_ref_val.ref_output_voltage_Volt, buck_control_act_val.output_voltage_Volt, false);
-    return (buck_control_ref_val.ref_output_current_Ampere);
+    // Why is this the case here? Always required?
+    reference_values.ref_output_voltage_Volt += actual_values.output_voltage_Volt;
+
+    reference_values.ref_output_voltage_Volt = uz_signals_saturation(reference_values.ref_output_voltage_Volt, self->config.i_dcdc_upper_lim_A, self->config.i_dcdc_lower_lim_A);
+    reference_values.ref_output_current_Ampere = uz_PI_Controller_sample(self->u_UC_Controller, reference_values.ref_output_voltage_Volt, actual_values.output_voltage_Volt, false);
+    return (reference_values.ref_output_current_Ampere);
 }
 
-float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_control_ref_val buck_control_ref_val, struct buck_control_act_val buck_control_act_val)
+float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_control_ref_val reference_values, struct buck_control_act_val actual_values)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // PI controller for i_UC control. output is delta duty cycle whic is added to the precalculated dutycycle
-    self->duty_cycle = uz_PI_Controller_sample(self->i_UC_Controller, buck_control_ref_val.ref_output_current_Ampere, buck_control_act_val.output_current_Ampere, false);
-    // add ratio of nominal bus voltage to actual bus voltage to duty cycle
-    self->duty_cycle += (buck_control_act_val.output_voltage_Volt / buck_control_act_val.input_voltage_Volt);
-    // limit duty cycle to max and min values
-    if (self->duty_cycle > self->config.max_duty_cycle)
-    {
-        self->duty_cycle = self->config.max_duty_cycle;
-    }
-    else if (self->duty_cycle < self->config.min_duty_cycle)
-    {
-        self->duty_cycle = self->config.min_duty_cycle;
-    }
+    self->duty_cycle = uz_PI_Controller_sample(self->i_UC_Controller, reference_values.ref_output_current_Ampere, actual_values.output_current_Ampere, false);
+   
+    // add ratio of nominal bus voltage to actual bus voltage to duty cycle as a open-loop controller. Change this and just scale to V_dc voltage
+    self->duty_cycle += (actual_values.output_voltage_Volt / actual_values.input_voltage_Volt);
+    self->duty_cycle=uz_signals_saturation(self->duty_cycle,self->config.max_duty_cycle,self->config.min_duty_cycle);
     uz_assert(!isnan(self->duty_cycle));
-    uz_assert(self->duty_cycle >= 0.0f && self->duty_cycle <= 1.0f);
+    uz_assert(self->duty_cycle >= 0.0f);
+    uz_assert(self->duty_cycle <= 1.0f);
     return (self->duty_cycle);
 }
 

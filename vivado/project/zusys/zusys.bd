@@ -1,12 +1,12 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x7BED20881D8D032B",
+      "boundary_crc": "0x548E9B1FCDCAA9D",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2",
+      "tool_version": "2022.2.2",
       "validated": "true"
     },
     "design_tree": {
@@ -121,13 +121,13 @@
         },
         "xlslice_0": "",
         "xlslice_1": "",
-        "uz_pmsm_model_0": "",
         "uz_resolver_interface": {
           "Resolver_Interface_v_1": "",
           "Resolver_Interface_v_0": "",
           "uz_resolver_pl_inter_0": "",
           "uz_resolver_pl_inter_1": ""
-        }
+        },
+        "Incremental_Encoder_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -498,37 +498,6 @@
         "left": "0",
         "right": "0"
       },
-      "D4_OUT": {
-        "direction": "O",
-        "left": "7",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
-            "value_src": "default_prop"
-          }
-        }
-      },
-      "D4_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_29": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
       "Dig_06_Ch5": {
         "direction": "O"
       },
@@ -593,6 +562,15 @@
         "direction": "I"
       },
       "Dig_23_Ch5": {
+        "direction": "I"
+      },
+      "D4_13": {
+        "direction": "I"
+      },
+      "D4_12": {
+        "direction": "I"
+      },
+      "D4_14": {
         "direction": "I"
       }
     },
@@ -5860,6 +5838,15 @@
           },
           "SDI_2": {
             "direction": "I"
+          },
+          "D4_12": {
+            "direction": "I"
+          },
+          "D4_13": {
+            "direction": "I"
+          },
+          "D4_14": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5998,7 +5985,7 @@
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
                 "parameters": {
                   "MAX_BURST_LENGTH": {
-                    "value": "256"
+                    "value": "1"
                   },
                   "NUM_READ_OUTSTANDING": {
                     "value": "8"
@@ -6340,12 +6327,6 @@
               }
             }
           },
-          "uz_pmsm_model_0": {
-            "vlnv": "xilinx.com:ip:uz_pmsm_model:1.0",
-            "xci_name": "zusys_uz_pmsm_model_0_0",
-            "xci_path": "ip\\zusys_uz_pmsm_model_0_0\\zusys_uz_pmsm_model_0_0.xci",
-            "inst_hier_path": "uz_user/uz_pmsm_model_0"
-          },
           "uz_resolver_interface": {
             "interface_ports": {
               "s00_axi": {
@@ -6655,6 +6636,12 @@
                 ]
               }
             }
+          },
+          "Incremental_Encoder_0": {
+            "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
+            "xci_name": "zusys_Incremental_Encoder_0_2",
+            "xci_path": "ip\\zusys_Incremental_Encoder_0_2\\zusys_Incremental_Encoder_0_2.xci",
+            "inst_hier_path": "uz_user/Incremental_Encoder_0"
           }
         },
         "interface_nets": {
@@ -6697,7 +6684,7 @@
           "smartconnect_1_M03_AXI": {
             "interface_ports": [
               "smartconnect_1/M03_AXI",
-              "uz_pmsm_model_0/AXI4"
+              "Incremental_Encoder_0/AXI4_Lite"
             ]
           },
           "smartconnect_1_M04_AXI": {
@@ -6720,6 +6707,24 @@
           }
         },
         "nets": {
+          "D4_12_1": {
+            "ports": [
+              "D4_12",
+              "Incremental_Encoder_0/I"
+            ]
+          },
+          "D4_13_1": {
+            "ports": [
+              "D4_13",
+              "Incremental_Encoder_0/A"
+            ]
+          },
+          "D4_14_1": {
+            "ports": [
+              "D4_14",
+              "Incremental_Encoder_0/B"
+            ]
+          },
           "Din_1": {
             "ports": [
               "Din",
@@ -6840,9 +6845,9 @@
               "aresetn",
               "smartconnect_1/aresetn",
               "uz_inverter_adapter/aresetn",
-              "uz_pmsm_model_0/IPCORE_RESETN",
-              "uz_pmsm_model_0/AXI4_ARESETN",
-              "uz_resolver_interface/aresetn"
+              "uz_resolver_interface/aresetn",
+              "Incremental_Encoder_0/IPCORE_RESETN",
+              "Incremental_Encoder_0/AXI4_Lite_ARESETN"
             ]
           },
           "sample_trigger_1": {
@@ -6868,9 +6873,9 @@
               "aclk",
               "smartconnect_1/aclk",
               "uz_inverter_adapter/aclk",
-              "uz_pmsm_model_0/IPCORE_CLK",
-              "uz_pmsm_model_0/AXI4_ACLK",
-              "uz_resolver_interface/aclk"
+              "uz_resolver_interface/aclk",
+              "Incremental_Encoder_0/IPCORE_CLK",
+              "Incremental_Encoder_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -10131,6 +10136,24 @@
           "A3_OUT_CNV_1"
         ]
       },
+      "D4_12_1": {
+        "ports": [
+          "D4_12",
+          "uz_user/D4_12"
+        ]
+      },
+      "D4_13_1": {
+        "ports": [
+          "D4_13",
+          "uz_user/D4_13"
+        ]
+      },
+      "D4_14_1": {
+        "ports": [
+          "D4_14",
+          "uz_user/D4_14"
+        ]
+      },
       "Dig_11_Ch5_1": {
         "ports": [
           "xlconstant_0/dout",
@@ -10154,17 +10177,14 @@
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
           "uz_system/D1_OUT_28",
-          "D3_OUT_28",
-          "D4_OUT_28"
+          "D3_OUT_28"
         ]
       },
       "Enable_Gates_CPLD_Low_dout": {
         "ports": [
           "uz_system/D1_OUT_26",
           "D3_OUT_26",
-          "D3_OUT_27",
-          "D4_OUT_26",
-          "D4_OUT_27"
+          "D3_OUT_27"
         ]
       },
       "Gates_3L_Interrupt_Center": {
@@ -10354,15 +10374,13 @@
       "xlconcat_0_dout": {
         "ports": [
           "uz_system/D4_OUT",
-          "D4_OUT",
           "zynq_ultra_ps_e_0/pl_ps_irq0"
         ]
       },
       "xlslice_Enable_Gate_Dout": {
         "ports": [
           "uz_system/D1_OUT_29",
-          "D3_OUT_29",
-          "D4_OUT_29"
+          "D3_OUT_29"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {
@@ -10449,6 +10467,11 @@
                 "offset": "0x0080110000",
                 "range": "64K"
               },
+              "SEG_Incremental_Encoder_0_reg0_1": {
+                "address_block": "/uz_user/Incremental_Encoder_0/AXI4_Lite/reg0",
+                "offset": "0x0080100000",
+                "range": "64K"
+              },
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",
                 "offset": "0x00800B0000",
@@ -10532,11 +10555,6 @@
               "SEG_uz_interlockDeadtime_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4/reg0",
                 "offset": "0x00800A0000",
-                "range": "64K"
-              },
-              "SEG_uz_pmsm_model_0_reg0": {
-                "address_block": "/uz_user/uz_pmsm_model_0/AXI4/reg0",
-                "offset": "0x0080140000",
                 "range": "64K"
               },
               "SEG_uz_resolver_pl_inter_0_reg0": {

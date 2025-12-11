@@ -28,8 +28,8 @@
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
-#define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
+#define UZ_D4_INCREMENTAL_ENCODER_RESOLUTION    2000.0f
+#define UZ_D4_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
 // Configuration defines for the number of used instances
@@ -73,6 +73,7 @@
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
+#define UZ_HARMONICCURRENTINJECTION_MAX_INSTANCES  		0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

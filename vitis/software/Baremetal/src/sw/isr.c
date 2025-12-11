@@ -75,7 +75,9 @@ void ISR_Control(void *data)
 
     // update speed and position of resolvers// update speed and position of resolvers
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
-    Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    //Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    update_speed_and_position_of_encoder_on_D4(&Global_Data);
+    Global_Data.av.theta_elec=Global_Data.av.theta_elec-1.63f;
 
 	// assign measurements to Global_Data
 	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
@@ -157,22 +159,22 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 
     	if (Global_Data.rasv.ctrl_plant_select == CIL) {
-    		// get reference currents from Global_Data
-    		i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
-    		// calculations necessary for all control algorithms
-    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
-    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
-    		pmsm_cil_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil);
-    		i_dq_right.d = pmsm_cil_outputs.i_d_A;
-    		i_dq_right.q = pmsm_cil_outputs.i_q_A;
-    		Global_Data.av.omega_mech_right = pmsm_cil_outputs.omega_mech_1_s;
-    		Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
-    		Global_Data.av.speed_rpm_left = Global_Data.av.speed_rpm_right; // left because in real left motor is speed controlled
-    		Global_Data.av.i_d_right = i_dq_right.d;
-    		Global_Data.av.i_q_right = i_dq_right.q;
-
-    		// calculate selected control algorithm for cil motor model
-    		control_right_motor();
+//    		// get reference currents from Global_Data
+//    		i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
+//    		// calculations necessary for all control algorithms
+//    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
+//    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil);
+//    		pmsm_cil_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil);
+//    		i_dq_right.d = pmsm_cil_outputs.i_d_A;
+//    		i_dq_right.q = pmsm_cil_outputs.i_q_A;
+//    		Global_Data.av.omega_mech_right = pmsm_cil_outputs.omega_mech_1_s;
+//    		Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
+//    		Global_Data.av.speed_rpm_left = Global_Data.av.speed_rpm_right; // left because in real left motor is speed controlled
+//    		Global_Data.av.i_d_right = i_dq_right.d;
+//    		Global_Data.av.i_q_right = i_dq_right.q;
+//
+//    		// calculate selected control algorithm for cil motor model
+//    		control_right_motor();
     	}
 
     	if (Global_Data.rasv.ctrl_plant_select == REAL) {
@@ -181,15 +183,15 @@ void ISR_Control(void *data)
 
 			// park transformation of measured currents
 			i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
-			i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+			i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right,Global_Data.av.theta_elec);
 			Global_Data.av.i_d_left = i_dq_left.d;
 			Global_Data.av.i_q_left = i_dq_left.q;
 			Global_Data.av.i_d_right = i_dq_right.d;
 			Global_Data.av.i_q_right = i_dq_right.q;
-			Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
+			Global_Data.av.speed_rpm_right = Global_Data.av.mechanicalRotorSpeed;
+			Global_Data.av.omega_mech_right = (Global_Data.av.speed_rpm_right*2.0f*UZ_PIf)/(60.0f);
 			Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
 			Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
-			Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
 
 			// calculate control (speed and current) of left motor
 			control_left_motor();
@@ -362,17 +364,17 @@ static void control_right_motor() {
         Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
         Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
 		// calculate duty cycles from reference dq voltages
-		dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+		dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.theta_elec);
 	}
 	if(Global_Data.rasv.ctrl_plant_select == CIL) {
-	    // calculate reference voltages for current control
-	    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, V_DC, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
-	    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
-	    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
-		// write inputs into CIL model
-		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
-		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
-		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
-		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
+//	    // calculate reference voltages for current control
+//	    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, V_DC, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+//	    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
+//	    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
+//		// write inputs into CIL model
+//		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
+//		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
+//		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
+//		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
 	}
 };

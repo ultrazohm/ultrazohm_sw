@@ -99,6 +99,11 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	uint32_t  heartbeatframe_content;
+
+    float theta_elec;                    // encoder
+    float mechanicalRotorSpeed;          // encoder
+    float mechanicalRotorSpeed_filtered; // encoder
+
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
@@ -134,7 +139,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
+	uz_incrementalEncoder_t* encoder_D4;
 	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
 	uz_resolver_pl_interface_t* resolver_pl_interface_left;
@@ -142,7 +147,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_d1_left;
 	uz_inverter_adapter_t* inverter_d2_right;
-	uz_pmsmModel_t* pmsm_cil;
+	//uz_pmsmModel_t* pmsm_cil;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;

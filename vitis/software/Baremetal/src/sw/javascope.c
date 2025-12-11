@@ -88,9 +88,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_right] 				= &data->av.i_d_right;
 	js_ch_observable[JSO_iq_right] 				= &data->av.i_q_right;
 	js_ch_observable[JSO_theta_el_left] 		= &data->av.resolver_pl_outputs_left.position_el_2pi;
-	js_ch_observable[JSO_theta_el_right] 		= &data->av.resolver_pl_outputs_right.position_el_2pi;
+	js_ch_observable[JSO_theta_el_right] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech_left] 		= &data->av.resolver_pl_outputs_left.position_mech_2pi;
-	js_ch_observable[JSO_theta_mech_right] 		= &data->av.resolver_pl_outputs_right.position_mech_2pi;
+	js_ch_observable[JSO_theta_mech_right] 		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_vd_ref_left]			= &data->av.v_d_ref_left;
 	js_ch_observable[JSO_vq_ref_left]			= &data->av.v_q_ref_left;
 	js_ch_observable[JSO_vd_ref_right]			= &data->av.v_d_ref_right;

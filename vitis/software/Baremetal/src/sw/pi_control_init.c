@@ -16,6 +16,16 @@ const struct uz_PMSM_t Beckhoff_AM8141 = {
   .J_kg_m_squared = 0.000108
 };
 
+const struct uz_PMSM_t Hoerner = {
+  .R_ph_Ohm = 0.249,
+  .Ld_Henry = 0.00049f,
+  .Lq_Henry = 0.0021f,
+  .Psi_PM_Vs = 0.020f,
+  .polePairs = 4.0f,
+  .I_max_Ampere = 20.0f,
+  .J_kg_m_squared = 0.00009	//? Mittelwert
+};
+
 // config structs left motor (speed control + current control)
 const struct uz_PI_Controller_config config_id_left = {
   .Kp = 5.0f,
@@ -52,15 +62,15 @@ const struct uz_SpeedControl_config config_speed_ctrl_left = {
 
 // config structs right motor (current control)
 const struct uz_PI_Controller_config config_id_right = {
- .Kp = 5.0f,
- .Ki = 255.0f,
+ .Kp = 1.1f, //1.6333f,
+ .Ki = 622.5f, //830.0f,
  .samplingTime_sec = 0.0001f,
  .upper_limit = 48.0f,
  .lower_limit = -48.0f
 };
 const struct uz_PI_Controller_config config_iq_right = {
- .Kp = 5.0f,
- .Ki = 255.0f,
+ .Kp = 6.125f, // 7.0f,
+ .Ki = 622.5f, //830.0f,
  .samplingTime_sec = 0.0001f,
  .upper_limit = 48.0f,
  .lower_limit = -48.0f
@@ -77,7 +87,7 @@ struct uz_CurrentControl_config config_current_ctrl_left = {
 
 // current control config right machine
 struct uz_CurrentControl_config config_current_ctrl_right = {
-  .config_PMSM = Beckhoff_AM8141,
+  .config_PMSM = Hoerner,
   .config_id = config_id_right,
   .config_iq = config_iq_right,
   .decoupling_select = no_decoupling,
@@ -101,19 +111,19 @@ uz_CurrentControl_t* current_ctrl_right_init(void) {
 }
 
 // PMSM IP-Core init
-struct uz_pmsmModel_config_t pmsm_ip_config={
-           .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
-           .ip_core_frequency_Hz=100000000,
-           .simulate_mechanical_system = false,
-           .r_1 = Beckhoff_AM8141.R_ph_Ohm,
-           .L_d = Beckhoff_AM8141.Ld_Henry,
-           .L_q = Beckhoff_AM8141.Lq_Henry,
-           .psi_pm = Beckhoff_AM8141.Psi_PM_Vs,
-           .polepairs = Beckhoff_AM8141.polePairs,
-           .inertia = Beckhoff_AM8141.J_kg_m_squared,
-           .coulomb_friction_constant = 0.01f,
-           .friction_coefficient = 0.001f};
-
-uz_pmsmModel_t* init_pmsm_cil(void) {
-   	return(uz_pmsmModel_init(pmsm_ip_config));
-   }
+//struct uz_pmsmModel_config_t pmsm_ip_config={
+//           .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
+//           .ip_core_frequency_Hz=100000000,
+//           .simulate_mechanical_system = false,
+//           .r_1 = Beckhoff_AM8141.R_ph_Ohm,
+//           .L_d = Beckhoff_AM8141.Ld_Henry,
+//           .L_q = Beckhoff_AM8141.Lq_Henry,
+//           .psi_pm = Beckhoff_AM8141.Psi_PM_Vs,
+//           .polepairs = Beckhoff_AM8141.polePairs,
+//           .inertia = Beckhoff_AM8141.J_kg_m_squared,
+//           .coulomb_friction_constant = 0.01f,
+//           .friction_coefficient = 0.001f};
+//
+//uz_pmsmModel_t* init_pmsm_cil(void) {
+//   	return(uz_pmsmModel_init(pmsm_ip_config));
+//   }

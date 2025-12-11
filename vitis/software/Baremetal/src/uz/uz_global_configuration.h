@@ -25,12 +25,12 @@
  * 5 for Interrupt_3L_center
  * 6 for Interrupt_timer_fcc
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        20.0e3f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
@@ -46,7 +46,7 @@
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     6U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
@@ -60,25 +60,28 @@
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
-#define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
+#define UZ_TEMPERATURE_CARD_MAX_INSTANCES               1U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
-#define UZ_AXI_GPIO_MAX_INSTANCES                       0U
+#define UZ_AXI_GPIO_MAX_INSTANCES                       3U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
-#define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
+#define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             2U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
-#define UZ_PRNG_SQUARES_MAX_INSTANCES 0U
-#define UZ_PRNG_MTWISTER_MAX_INSTANCES 0U
-#define UZ_PRNG_PCG_MAX_INSTANCES 0U
-#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 0U
-#define UZ_PRNG_HALTON_MAX_INSTANCES 0U
-#define UZ_PRNG_MAX_INSTANCES 0U
+#define UZ_PRNG_SQUARES_MAX_INSTANCES 					0U
+#define UZ_PRNG_MTWISTER_MAX_INSTANCES 					0U
+#define UZ_PRNG_PCG_MAX_INSTANCES 						0U
+#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 					0U
+#define UZ_PRNG_HALTON_MAX_INSTANCES 					0U
+#define UZ_PRNG_MAX_INSTANCES 							0U
+#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                1U
+#define UZ_PARAMETERID_RC_MAX_INSTANCES                 1U
+#define UZ_PARAMETERID_RS_MAX_INSTANCES                 1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -129,10 +132,13 @@
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
-#define UZ_PRNG_SQUARES_MAX_INSTANCES 50U
-#define UZ_PRNG_MTWISTER_MAX_INSTANCES 50U
-#define UZ_PRNG_PCG_MAX_INSTANCES 50U
-#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 50U
-#define UZ_PRNG_HALTON_MAX_INSTANCES 50U
-#define UZ_PRNG_MAX_INSTANCES 50U
+	#define UZ_PRNG_SQUARES_MAX_INSTANCES 50U
+	#define UZ_PRNG_MTWISTER_MAX_INSTANCES 50U
+	#define UZ_PRNG_PCG_MAX_INSTANCES 50U
+	#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 50U
+	#define UZ_PRNG_HALTON_MAX_INSTANCES 50U
+	#define UZ_PRNG_MAX_INSTANCES 50U
+	#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                10U
+    #define UZ_PARAMETERID_RC_MAX_INSTANCES                 10U
+    #define UZ_PARAMETERID_RS_MAX_INSTANCES                 10U
 #endif

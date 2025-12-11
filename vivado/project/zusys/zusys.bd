@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x15467AAB2C33FE7E",
+      "boundary_crc": "0x48EA5D27B9AC24B1",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -70,8 +70,7 @@
         },
         "D3_adapter": {
           "vio_D3_test": ""
-        },
-        "D5_adapter": {}
+        }
       },
       "uz_system": {
         "DataMover": {
@@ -302,23 +301,35 @@
           }
         }
       },
+      "D3_IN_10": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
       "D3_IN_2": {
-        "direction": "I"
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       },
       "D3_IN_4": {
-        "direction": "I"
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       },
       "D3_IN_8": {
-        "direction": "I"
-      },
-      "D3_IN_10": {
-        "direction": "I"
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       },
       "D3_IN_14": {
-        "direction": "I"
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       },
       "D3_IN_16": {
-        "direction": "I"
+        "direction": "I",
+        "left": "0",
+        "right": "0"
       }
     },
     "components": {
@@ -3049,8 +3060,7 @@
                 ]
               }
             }
-          },
-          "D5_adapter": {}
+          }
         },
         "interface_nets": {
           "AXI4_Lite1_1": {

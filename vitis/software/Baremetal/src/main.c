@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#define ISR_SAMPLE_FREQ_HZ 40000.0f
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -34,6 +35,50 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+
+const struct uz_IIR_Filter_config config_filter = {
+  .selection = LowPass_first_order,
+  .cutoff_frequency_Hz = 200.0f,
+  .sample_frequency_Hz = ISR_SAMPLE_FREQ_HZ};
+
+struct uz_dq_setpoint_filter_config config = {
+  .config_filter_d = config_filter,
+  .config_filter_q = config_filter};
+
+struct uz_IIR_Filter_config reverse_filter_config = {
+    .selection = LowPass_first_order,
+    .cutoff_frequency_Hz = 4270.0f,
+    .sample_frequency_Hz = 40000.0f //ISR_SAMPLE_FREQ_HZ
+};
+
+
+struct uz_parameterid_rs_config_t config_rs_meas = {
+		.n_start_rpm = 200.0f,
+	    .n_end_rpm = 1400.0f,
+	    .n_steps = 6.0f,
+	    .i_pos_Amps = 50.0f,
+	    .i_neg_Amps = -50.0f,
+	    .i_repeats = 5.0f, // W
+	    .i_steptime = 3.0f,
+	    .wait_time = 20.0f,
+	    .isr_steptime = (1.0f / ISR_SAMPLE_FREQ_HZ),
+		.abs_iq_max_Amps = 50.0f,
+		.check_temp = 1U
+};
+
+
+const struct uz_parameterID_rc_config_t rc_meas_config = {
+  	.abs_id_max_Amps = 150.0f,
+  	.abs_iq_max_Amps = 150.0f,
+	.n_start_rpm = 1000.0f,
+	.n_stop_rpm = 1000.0f,
+	.id_steps = 5U,
+	.iq_steps = 5U,
+	.n_steps = 0U,
+	.check_temp=1
+  };
+
+
 
 enum init_chain
 {
@@ -85,10 +130,55 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            struct uz_PMSM_t config_PMSM = {
+               .Ld_Henry = 0.00003f,				// 0.000027 fuer seg-rotor
+               .Lq_Henry = 0.00003f,				// 0.000042 fuer seg_rotor
+               .Psi_PM_Vs = 0.0041f,				// Leerlauf 80°C,  0.0071f (SM) oder 0.0073 (SEG) im Strang --> Umrechnung Sternschaltung fuer Umrichter
+               .polePairs = 21.0f,
+               .J_kg_m_squared = 0.032972f,			// J_motor = 0.00156 kgm2 + J_T40B = 0.0015 + J_Kupplung= 0.005 + J_Last = 0.0249
+               .R_ph_Ohm = 0.013f,					// Only motor
+               .I_max_Ampere = 250.0f
+             };//these parameters are only needed if linear decoupling is selected
+
+             struct uz_PI_Controller_config config_id = {
+               .Kp = 0.08f,						// 0.1 seg-rotor
+               .Ki = 87.0f,					// 173.3 seg-rotor
+			   .type = UZ_PI_PARALLEL,
+               .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
+            };
+
+            struct uz_PI_Controller_config config_iq = {
+               .Kp = 0.08f,						// 0.2 seg-rotor
+			   .Ki = 87.0f,						// 173.3 seg-rotor
+			   .type = UZ_PI_PARALLEL,
+               .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
+            };
+            struct uz_CurrentControl_config FOC_config = {
+               .decoupling_select = linear_decoupling,
+               .config_PMSM = config_PMSM,
+               .config_id = config_id,
+               .config_iq = config_iq,
+               .max_modulation_index = 1.0f/sqrt(3.0f)
+            };
+            Global_Data.objects.FOC_instance = uz_CurrentControl_init(FOC_config);
+            struct uz_SetPoint_config SP_config = {
+                  .config_PMSM = config_PMSM,
+                  .motor_type = SMPMSM,
+                  .is_field_weakening_enabled = false,
+                  .id_ref_Ampere = 0.0f,
+                  .relative_torque_tolerance = 0.001f
+            };
+            Global_Data.objects.current_setpoint_obj = uz_SetPoint_init(SP_config);
+            Global_Data.rasv.flg_use_setpoint_calculation = 0.0f;
+            Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
+            Global_Data.av.theta_offset = 0.0f;
+            Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
+            Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+            // PWM
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -101,9 +191,45 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+
+            // AXI GPIOs
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            struct uz_axi_gpio_config_t config_input = {
+                        		.base_address = XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_0_BASEADDR ,
+                        		.device_id = XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_0_DEVICE_ID,
+                        		.number_of_pins = 4,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+                        };
+            struct uz_axi_gpio_config_t config_output = {
+                        		.base_address = XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_BASEADDR ,
+                        		.device_id = XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID,
+                        		.number_of_pins = 8,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+                        };
+            struct uz_axi_gpio_config_t config_output_LMG = {
+                        		.base_address = XPAR_UZ_USER_AXI_GPIO_D2OUTS_BASEADDR ,
+                        		.device_id = XPAR_UZ_USER_AXI_GPIO_D2OUTS_DEVICE_ID,
+                        		.number_of_pins = 6,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+                        };
+            Global_Data.objects.input_gpio = uz_axi_gpio_init(config_input);
+            Global_Data.objects.output_gpio = uz_axi_gpio_init(config_output);
+            Global_Data.objects.output_gpio_LMG = uz_axi_gpio_init(config_output_LMG);
+            uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, 1U);
+
+            // Temperature Card
+            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
+            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
+            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
+
+            // Filterkompensation Spannung
+            Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+
+            // EnDat
+            Global_Data.objects.endat_encoder_d5_3 = endat_encoder_init_endat_d5_3();
+            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_3, true);
             initialization_chain = print_msg;
             break;
         case print_msg:

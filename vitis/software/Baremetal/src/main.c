@@ -54,8 +54,8 @@ uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
 struct buck_control_config buck_config = {
-    .input_current_controller_max_reference=1.0f,
-    .input_current_controller_min_reference=0.0f,
+    .input_current_controller_max_reference = 1.0f,
+    .input_current_controller_min_reference = 0.0f,
     .control_mode = uz_buck_output_current_mode,
     .rated_input_voltage_Volt = 12.0f,
     .input_current_max_reference = 1.0f,
@@ -132,6 +132,14 @@ int main(void)
             Global_Data.objects.buck_controller = uz_buck_control_init(buck_config);
 
             Global_Data.turn_on_main_relay = false;
+            Global_Data.ref_val.ref_input_current_Ampere = 0.0f;
+            Global_Data.ref_val.ref_output_current_Ampere = 0.0f;
+            Global_Data.ref_val.ref_output_voltage_Volt = 0.0f;
+            Global_Data.act_val.input_current_Ampere = 0.0f;
+            Global_Data.act_val.input_voltage_Volt = 0.0f;
+            Global_Data.act_val.output_current_Ampere = 0.0f;
+            Global_Data.act_val.output_voltage_Volt = 0.0f;
+
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

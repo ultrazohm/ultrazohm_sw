@@ -133,6 +133,14 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
     return (self->duty_cycle);
 }
 
+float uz_buck_control_reset(uz_buck_control_t *self){
+    uz_assert_not_NULL(self);
+    self->duty_cycle=0.0f;
+    uz_PI_Controller_reset(self->output_current_controller);
+    uz_PI_Controller_reset(self->input_current_controller);
+    uz_PI_Controller_reset(self->output_voltage_controller);
+}
+
 /*
 Ablaufplan:
 

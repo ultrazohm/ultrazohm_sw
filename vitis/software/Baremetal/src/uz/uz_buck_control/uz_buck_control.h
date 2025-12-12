@@ -58,7 +58,7 @@ struct buck_control_config
 uz_buck_control_t *uz_buck_control_init(struct buck_control_config external_config);
 
 float uz_buck_control_sample(uz_buck_control_t *self, struct buck_control_ref_val ref_val, struct buck_control_act_val act_val);
-// Write reset function
+float uz_buck_control_reset(uz_buck_control_t *self);
 
 float uz_buck_input_current_control(uz_buck_control_t *self, float input_current_reference, float input_current_actual);
 float uz_buck_output_voltage_control(uz_buck_control_t *self, struct buck_control_ref_val reference_values, struct buck_control_act_val actual_values);

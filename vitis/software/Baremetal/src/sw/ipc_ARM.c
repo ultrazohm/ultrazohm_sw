@@ -266,7 +266,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			Global_Data.turn_on_main_relay = !Global_Data.turn_on_main_relay;
+			data->turn_on_main_relay = !data->turn_on_main_relay;
 			break;
 
 		case (My_Button_2):
@@ -342,7 +342,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-		if (Global_Data.turn_on_main_relay == true)
+		if (data->turn_on_main_relay == true)
 		{
 			js_status_BareToRTOS |= (1 << 4);
 		}

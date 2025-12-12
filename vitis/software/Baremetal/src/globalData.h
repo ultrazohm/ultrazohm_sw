@@ -125,7 +125,8 @@ struct pov_actual_values
 	float output_current_box_after_relay_ampere;
 	float output_voltage_before_relay;
 	float output_voltage_after_relay;
-} 
+};
+
 typedef struct _DS_Data_
 {
 	referenceAndSetValues rasv;

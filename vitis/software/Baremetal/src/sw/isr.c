@@ -67,14 +67,14 @@ void ISR_Control(void *data)
     Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A1.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
     Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A1.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
 
-    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_B5 - LEM_OFFSET) * LEM_GAIN;
-    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_B6 - LEM_OFFSET) * LEM_GAIN;
+    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A4 - LEM_OFFSET) * LEM_GAIN;
+    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET) * LEM_GAIN;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        Global_Data.rasv.halfBridge1DutyCycle=data->av.snd_fld[1];
+        Global_Data.rasv.halfBridge1DutyCycle=Global_Data.av.snd_fld[1];
         
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
         if (Global_Data.turn_on_main_relay == true)

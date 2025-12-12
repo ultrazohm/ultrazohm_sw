@@ -116,11 +116,25 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
 
-typedef struct _DS_Data_ {
+struct pov_actual_values
+{
+	float input_current_box_ampere;
+	float input_current_lem_ampere;
+	float input_voltage_volt;
+	float output_current_lem_before_relay_ampere;
+	float output_current_box_after_relay_ampere;
+	float output_voltage_before_relay;
+	float output_voltage_after_relay;
+} 
+typedef struct _DS_Data_
+{
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	struct pov_actual_values pov_actual_values;
+	bool turn_on_main_relay; // If system is in control state, the main switch is switched by this variable and the relay is open otherwise (i.e., in case of error)
+
 } DS_Data;
 
 #endif

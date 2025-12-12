@@ -60,7 +60,7 @@ int main(void)
         switch (initialization_chain)
         {
         case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
+            uz_assert_configuration();
             write_rpu_version(0U);
             do
             {
@@ -75,10 +75,10 @@ int main(void)
             initialization_chain = init_gpios;
             break;
         case init_gpios:
-        	uz_sleep_seconds(5);
+            uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
-            uz_frontplane_button_and_led_init(apu_version_final); 
+            uz_frontplane_button_and_led_init(apu_version_final);
             ultrazohm_state_machine_init(apu_version_final);
             initialization_chain = init_software;
             break;
@@ -103,6 +103,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            Global_Data.turn_on_main_relay = false;
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

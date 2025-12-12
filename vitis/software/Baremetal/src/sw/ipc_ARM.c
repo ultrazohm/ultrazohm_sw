@@ -266,7 +266,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			Global_Data.turn_on_main_relay = !Global_Data.turn_on_main_relay;
 			break;
 
 		case (My_Button_2):

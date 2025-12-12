@@ -46,22 +46,51 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+#define CURRENT_MEASUREMENT_BOX_GAIN 0.025f
+#define CURRENT_MEASUREMENT_BOX_OFFSET 0.0f
+
+#define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f
+#define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
+
+#define LEM_GAIN 1.0f
+#define LEM_OFFSET 2.5f
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A1.me.ADC_A1 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A1.me.ADC_A2 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
+
+    Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A1.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A1.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A1.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
+
+    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_B5 - LEM_OFFSET) * LEM_GAIN;
+    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_B6 - LEM_OFFSET) * LEM_GAIN;
+
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false,false,false);
-    }else{
-    	Global_Data.rasv.halfBridge1DutyCycle=0.0f;
-    	Global_Data.rasv.halfBridge2DutyCycle=0.0f;
-    	Global_Data.rasv.halfBridge3DutyCycle=0.0f;
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true,true,true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+        if (Global_Data.turn_on_main_relay == true)
+        {
+            Global_Data.rasv.halfBridge2DutyCycle = 1.0f;
+        }
+        else
+        {
+            Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        }
+    }
+    else
+    {
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+        Global_Data.turn_on_main_relay = false;
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -107,14 +136,13 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------

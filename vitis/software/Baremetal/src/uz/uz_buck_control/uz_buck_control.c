@@ -98,8 +98,7 @@ float uz_buck_input_current_control(uz_buck_control_t *self, float input_current
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // add input limit
-    input_current_reference = uz_signals_saturation(input_current_reference, self->config.input_current_max_reference, self->config.input_current_min_reference);
+    input_current_reference = uz_signals_saturation(input_current_reference, self->config.input_current_controller_max_reference, self->config.input_current_controller_min_reference);
     float control_voltage = uz_PI_Controller_sample(self->input_current_controller, input_current_reference, input_current_actual, false);
     return control_voltage;
 }
@@ -110,9 +109,9 @@ float uz_buck_output_voltage_control(uz_buck_control_t *self, struct buck_contro
     uz_assert(self->is_ready);
 
     // Why is this the case here? Always required?
-    reference_values.ref_output_voltage_Volt += actual_values.output_voltage_Volt;
+    // reference_values.ref_output_voltage_Volt += actual_values.output_voltage_Volt;
 
-    reference_values.ref_output_voltage_Volt = uz_signals_saturation(reference_values.ref_output_voltage_Volt, self->config.i_dcdc_upper_lim_A, self->config.i_dcdc_lower_lim_A);
+    reference_values.ref_output_voltage_Volt = uz_signals_saturation(reference_values.ref_output_voltage_Volt, self->config.output_voltage_controller_max_reference, self->config.output_voltage_controller_min_reference);
     reference_values.ref_output_current_Ampere = uz_PI_Controller_sample(self->output_voltage_controller, reference_values.ref_output_voltage_Volt, actual_values.output_voltage_Volt, false);
     return (reference_values.ref_output_current_Ampere);
 }
@@ -122,11 +121,12 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(actual_values.input_voltage_Volt > 0.0f);
-    self->duty_cycle = uz_PI_Controller_sample(self->output_current_controller, reference_values.ref_output_current_Ampere, actual_values.output_current_Ampere, false);
+    reference_values.ref_output_current_Ampere=uz_signals_saturation(reference_values.ref_output_current_Ampere,self->config.output_current_controller_max_reference,self->config.output_current_controller_min_reference);
+    float control_voltage = uz_PI_Controller_sample(self->output_current_controller, reference_values.ref_output_current_Ampere, actual_values.output_current_Ampere, false);
+    // control_voltage += actual_values.output_voltage_Volt; // Open loop control for improved controller performance
+    control_voltage = uz_signals_saturation(control_voltage, actual_values.input_voltage_Volt, actual_values.input_voltage_Volt);
 
-    // add ratio of nominal bus voltage to actual bus voltage to duty cycle as a open-loop controller. Change this and just scale to V_dc voltage
-    self->duty_cycle += (actual_values.output_voltage_Volt / actual_values.input_voltage_Volt);
-    self->duty_cycle = uz_signals_saturation(self->duty_cycle, self->config.max_duty_cycle, self->config.min_duty_cycle);
+    self->duty_cycle = control_voltage / actual_values.input_voltage_Volt;
     uz_assert(!isnan(self->duty_cycle));
     uz_assert(self->duty_cycle >= 0.0f);
     uz_assert(self->duty_cycle <= 1.0f);

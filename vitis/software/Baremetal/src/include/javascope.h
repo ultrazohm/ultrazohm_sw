@@ -19,11 +19,26 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData{
+enum JS_OberservableData
+{
 	JSO_ZEROVALUE=0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
+	JSO_input_current_box_ampere,
+	JSO_input_current_lem_ampere,
+	JSO_input_voltage_volt,
+	JSO_output_current_lem_before_relay_ampere,
+	JSO_output_current_box_after_relay_ampere,
+	JSO_output_voltage_before_relay,
+	JSO_output_voltage_after_relay,
+	JSO_ref_input_current_Ampere,
+	JSO_ref_output_voltage_Volt,
+	JSO_ref_output_current_Ampere,
+	JSO_input_current_Ampere,
+	JSO_output_voltage_Volt,
+	JSO_input_voltage_Volt,
+	JSO_output_current_Ampere,
 	JSO_A1_A1,
 	JSO_A1_A2,
 	JSO_A1_A3,
@@ -126,9 +141,9 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	dutyCycle,
-	send_field_2,
-	send_field_3,
-	send_field_4,
+	input_current_A,
+	output_current_A,
+	output_voltage_V,
 	send_field_5,
 	send_field_6,
 	send_field_7,
@@ -153,9 +168,9 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	-,
-	Nm,
 	A,
 	A,
+	V,
 	A,
 	A,
 	-,

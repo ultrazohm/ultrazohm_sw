@@ -69,7 +69,21 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_A1_A1]=&data->aa.A1.me.ADC_A1;
+	js_ch_observable[JSO_input_current_box_ampere]=&data->pov_actual_values.input_current_box_ampere;
+	js_ch_observable[JSO_input_current_lem_ampere]=&data->pov_actual_values.input_current_lem_ampere;
+	js_ch_observable[JSO_input_voltage_volt]=&data->pov_actual_values.input_voltage_volt;
+	js_ch_observable[JSO_output_current_lem_before_relay_ampere]=&data->pov_actual_values.output_current_lem_before_relay_ampere;
+	js_ch_observable[JSO_output_current_box_after_relay_amp]=&data->pov_actual_values.output_current_box_after_relay_amp;
+	js_ch_observable[JSO_output_voltage_before_relay]=&data->pov_actual_values.output_voltage_before_relay;
+	js_ch_observable[JSO_output_voltage_after_relay]=&data->pov_actual_values.output_voltage_after_relay;
+	js_ch_observable[JSO_ref_input_current_Ampere]=&data->ref_val.ref_input_current_Ampere;
+	js_ch_observable[JSO_ref_output_voltage_Volt]=&data->ref_val.ref_output_voltage_Volt;
+	js_ch_observable[JSO_ref_output_current_Ampere]=&data->ref_val.ref_output_current_Ampere;
+	js_ch_observable[JSO_input_current_Ampere]=&data->act_val.input_current_Ampere;
+	js_ch_observable[JSO_output_voltage_Volt]=&data->act_val.output_voltage_Volt;
+	js_ch_observable[JSO_input_voltage_Volt]=&data->act_val.input_voltage_Volt;
+	js_ch_observable[JSO_output_current_Ampere]=&data->act_val.output_current_Ampere;
+	js_ch_observable[JSO_A1_A1] = &data->aa.A1.me.ADC_A1;
 	js_ch_observable[JSO_A1_A2]=&data->aa.A1.me.ADC_A2;
 	js_ch_observable[JSO_A1_A3]=&data->aa.A1.me.ADC_A3;
 	js_ch_observable[JSO_A1_A4]=&data->aa.A1.me.ADC_A4;

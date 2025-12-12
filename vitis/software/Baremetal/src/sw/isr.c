@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_buck_control/uz_buck_control.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -55,6 +55,11 @@ static void ReadAllADC();
 #define LEM_GAIN 1.0f
 #define LEM_OFFSET 2.5f
 
+bool manual_dutycycle = true;
+
+#define MAX_INPUT_CURRENT 5.0f
+#define MAX_OUTPUT_CURRENT 5.0f
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -70,12 +75,35 @@ void ISR_Control(void *data)
     Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A4 - LEM_OFFSET) * LEM_GAIN;
     Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET) * LEM_GAIN;
 
+    // if limit violation, 
+    if(Global_Data.pov_actual_values.input_current_box_ampere>MAX_INPUT_CURRENT){
+        ultrazohm_state_machine_set_error(true);
+    }
+    if (Global_Data.pov_actual_values.input_current_lem_ampere > MAX_INPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+
+    if (Global_Data.pov_actual_values.output_current_lem_before_relay_ampere > MAX_OUTPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+    if (Global_Data.pov_actual_values.output_current_box_after_relay_ampere > MAX_OUTPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        Global_Data.rasv.halfBridge1DutyCycle=Global_Data.av.snd_fld[1];
-        
+        if (manual_dutycycle)
+        {
+            Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.snd_fld[1];
+        }else{
+            Global_Data.rasv.halfBridge1DutyCycle=uz_buck_control_sample(Global_Data.objects.buck_controller)
+        }
+
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
         if (Global_Data.turn_on_main_relay == true)
         {

@@ -48,9 +48,35 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "uz/uz_buck_control/uz_buck_control.h"
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
+
+struct buck_control_config buck_config = {
+    .input_current_controller_max_reference=1.0f,
+    .input_current_controller_min_reference=0.0f,
+    .control_mode = uz_buck_output_current_mode,
+    .rated_input_voltage_Volt = 12.0f,
+    .input_current_max_reference = 1.0f,
+    .input_current_min_reference = 0.0f,
+    .input_current_controller_max_control_signal = 12.0f,
+    .input_current_controller_min_control_signal = 0.0f,
+    .input_current_controller_ki = 0.0f,
+    .input_current_controller_kp = 0.01f,
+    .output_voltage_controller_max_control_signal = 1.0f,
+    .output_voltage_controller_min_control_signal = 0.0f,
+    .output_voltage_controller_max_reference = 12.0f,
+    .output_voltage_controller_min_reference = 0.0f,
+    .output_voltage_controller_kp = 0.01f,
+    .output_voltage_controller_ki = 0.0f,
+    .output_current_controller_max_control_signal = 1.0f,
+    .output_current_controller_min_control_signal = 0.0f,
+    .output_current_controller_max_reference = 1.0f,
+    .output_current_controller_min_reference = 0.0f,
+    .output_current_controller_kp = 0.01f,
+    .output_current_controller_ki = 0.0f,
+    .sampling_frequency_Hz = 10000.0f};
 
 int main(void)
 {
@@ -103,6 +129,8 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            Global_Data.objects.buck_controller = uz_buck_control_init(buck_config);
+
             Global_Data.turn_on_main_relay = false;
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;

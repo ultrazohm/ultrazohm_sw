@@ -30,8 +30,6 @@ enum uz_buck_control_mode
 
 struct buck_control_config
 {
-    float max_duty_cycle;
-    float min_duty_cycle;
     float rated_input_voltage_Volt;
     float input_current_max_reference;
     float input_current_min_reference;

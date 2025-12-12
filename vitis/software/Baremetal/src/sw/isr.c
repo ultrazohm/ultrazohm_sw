@@ -52,16 +52,16 @@ static void ReadAllADC();
 #define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f
 #define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
 
-#define LEM_GAIN 1.0f
-#define LEM_OFFSET 2.5f
+#define LEM_GAIN 0.0125f
+#define LEM_OFFSET 2.51f
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A1.me.ADC_A1 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
-    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A1.me.ADC_A2 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A1.me.ADC_A3 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A1.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
 
     Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A1.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
     Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A1.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;

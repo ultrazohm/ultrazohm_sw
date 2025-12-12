@@ -19,9 +19,8 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData
-{
-	JSO_ZEROVALUE = 0,
+enum JS_OberservableData{
+	JSO_ZEROVALUE=0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -126,7 +125,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
+	dutyCycle,
 	send_field_2,
 	send_field_3,
 	send_field_4,
@@ -153,7 +152,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
+	-,
 	Nm,
 	A,
 	A,

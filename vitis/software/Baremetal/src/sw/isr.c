@@ -74,6 +74,8 @@ void ISR_Control(void *data)
     if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        Global_Data.rasv.halfBridge1DutyCycle=data->av.snd_fld[1];
+        
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
         if (Global_Data.turn_on_main_relay == true)
         {

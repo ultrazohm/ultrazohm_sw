@@ -1,0 +1,86 @@
+clocks = 25;
+error1 = 0;
+error2 = 1;
+endat22 = 0;
+highpos = 0;
+lowpos = [25546830,25546831,25546832,25546833,25546834,25546835,25546836,25546837,25546838,25546839,25546840,25546841,25546842,25546843,25546844];
+
+number = zeros(1,length(lowpos));
+reversed_number = zeros(1,length(lowpos));
+for i=1:length(lowpos)
+number(i) = MakeCrcPos(clocks,error1,error2,endat22,highpos,lowpos(i));
+tmp = number;
+for k = 1:32
+    reversed_number(i) = bitshift(reversed_number(i),1) + bitand(tmp(i),1);
+    tmp(i) = bitshift(tmp(i),-1);
+end
+
+reversed_number(i) = bitshift(reversed_number(i),-(32-5));
+end
+
+comp_numbers = [lowpos',number',reversed_number']
+
+
+error1 = 1;
+number_e = zeros(1,length(lowpos));
+reversed_number_e = zeros(1,length(lowpos));
+for i=1:length(lowpos)
+number_e(i) = MakeCrcPos(clocks,error1,error2,endat22,highpos,lowpos(i));
+tmp = number_e;
+for k = 1:32
+    reversed_number_e(i) = bitshift(reversed_number_e(i),1) + bitand(tmp(i),1);
+    tmp(i) = bitshift(tmp(i),-1);
+end
+
+reversed_number_e(i) = bitshift(reversed_number_e(i),-(32-5));
+end
+
+comp_numbers = [lowpos',number',reversed_number', reversed_number_e']
+
+function crc = MakeCrcPos(clocks, error1, error2, endat22, highpos, lowpos)
+    % Initialize Flip-Flops
+    ff = ones(1,5);  % 5 flip-flops set to 1
+    code = zeros(1,66); % data bit array
+    
+    % Load alarm bits into code array
+    if endat22
+        code(1) = error1;
+        code(2) = error2;
+        startIdx = 1;
+    else
+        code(2) = error1;
+        startIdx = 2;
+    end
+    
+    % Load lowpos bits into code array
+    for i = 3:34
+        code(i) = bitand(lowpos, 1);
+        lowpos = bitshift(lowpos, -1);
+    end
+    
+    % Load highpos bits into code array
+    for i = 35:66
+        code(i) = bitand(highpos, 1);
+        highpos = bitshift(highpos, -1);
+    end
+    
+    % CRC calculation
+    for i = startIdx:(clocks+2)  % adjust because MATLAB 1-based
+        ex = xor(ff(5), code(i));
+        ff_new = ff;
+        ff_new(5) = ff(4);
+        ff_new(4) = xor(ff(3), ex);
+        ff_new(3) = ff(2);
+        ff_new(2) = xor(ff(1), ex);
+        ff_new(1) = ex;
+        ff = ff_new;
+    end
+    
+    % Store CRC in variable
+    crc = 0;
+    for i = 5:-1:1
+        bitVal = ~ff(i);
+        crc = bitshift(crc,1);
+        crc = bitor(crc, bitVal);
+    end
+end

@@ -9,9 +9,6 @@ annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/From33', 0, 1, '')
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control', 1, 1, '');
 annotate_port('uz_endat_interface_2023a/uz_endat_interface/S-R Flip-Flop1', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/serial_communication', 0, 1, '');
-annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/shift arithmetic', 1, 1, '');
-annotate_port('uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/Shift Arithmetic', 1, 1, '');
-annotate_port('uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/S-R Flip-Flop', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/Detect Rise Positive2', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/HDL Counter1', 1, 2, '');
 annotate_port('gm_uz_endat_interface_2023a/uz_endat_interface/RW_data_and_mode_command_control/AND', 0, 1, '');

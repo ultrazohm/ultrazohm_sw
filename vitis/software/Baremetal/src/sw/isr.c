@@ -37,6 +37,14 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+unsigned int MakeCrcPos(
+unsigned int clocks,
+unsigned int error1,
+unsigned int error2,
+unsigned int endat22,
+unsigned long highpos,
+unsigned long lowpos);
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -205,3 +213,47 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+unsigned int MakeCrcPos(unsigned int clocks, unsigned int error1,
+		unsigned int error2, unsigned int endat22, unsigned long highpos,
+		unsigned long lowpos) {
+	unsigned int ff[5]; // Zustand der 5 Flip-Flops
+	unsigned int code[66]; // Datenbit-Array
+	unsigned int ex; // Hilfsvariable
+	unsigned int crc = 0; // ermittelter CRC-Code
+	signed int i; // Laufvariable für Schleifen
+
+	for (i = 0; i < 5; i++) // alle Flip-Flops auf 1 setzen
+		ff[i] = 1;
+	if (endat22) // alarm-Bits ins code-Array einlesen
+	{
+		code[0] = error1;
+		code[1] = error2;
+	} else
+		code[1] = error1;
+	for (i = 2; i < 34; i++) // lowpos-Bits ins code-Array einlesen
+			{
+		code[i] = (lowpos & 0x00000001L) ? 1 : 0;
+		lowpos >>= 1;
+	}
+	for (i = 34; i < 66; i++) // highpos-Bits ins code-Array einlesen
+			{
+		code[i] = (highpos & 0x00000001L) ? 1 : 0;
+		highpos >>= 1;
+	}
+	for (i = (endat22 ? 0 : 1); i <= (clocks + 1); i++) { // CRC berechnen, analog zur
+		ex = ff[4] ^ code[i]; // beschriebenen Generator-Hardware
+		ff[4] = ff[3];
+		ff[3] = ff[2] ^ ex;
+		ff[2] = ff[1];
+		ff[1] = ff[0] ^ ex;
+		ff[0] = ex;
+	}
+	for (i = 4; i >= 0; i--) // CRC in Variable ablegen
+			{
+		ff[i] = ff[i] ? 0 : 1; // Bits invertieren
+		crc <<= 1;
+		crc |= ff[i];
+	}
+	return crc;
+}

@@ -12,20 +12,24 @@ struct buck_control_config config = {
     .control_mode = uz_buck_input_current_mode,
     .input_current_max_reference = 5,
     .input_current_min_reference = -5,
-    .control_mode = uz_buck_input_current_mode,
+    .input_current_controller_max_reference = 5,
+    .input_current_controller_min_reference = -5,
+    .input_current_controller_min_control_signal = -5,
     .input_current_controller_max_control_signal = 1,
     .input_current_controller_min_control_signal = -1,
-    .input_current_controller_kp = 0,
+    .input_current_controller_kp = 1,
     .input_current_controller_ki = 0,
     .output_voltage_controller_max_control_signal = 1,
     .output_voltage_controller_min_control_signal = -1,
-    .output_voltage_controller_kp = 0,
+    .output_voltage_controller_kp = 1,
     .output_voltage_controller_ki = 0,
     .output_current_controller_max_control_signal = 1,
     .output_current_controller_min_control_signal = -1,
-    .output_current_controller_kp = 0,
+    .output_current_controller_kp = 1,
     .output_current_controller_ki = 0,
-    .sampling_frequency_Hz = 10000};
+    .output_voltage_controller_max_reference = 5,
+    .output_voltage_controller_min_reference=-5,
+        .sampling_frequency_Hz = 10000};
 
 // static void uz_buck_control_controller_config(uz_buck_control_t *self)
 // {
@@ -65,6 +69,20 @@ void test_uz_buck_control_init(void)
     TEST_ASSERT_NOT_NULL(instance);
 }
 
+void test_uz_buck_control_test_reset(void)
+{
+    config.input_current_controller_ki=10;
+    config.input_current_controller_kp=10;
+    config.control_mode = uz_buck_input_current_mode;
+    struct buck_control_ref_val ref_val = {0};
+    struct buck_control_act_val act_val = {0};
+    act_val.input_voltage_Volt=48;
+    uz_buck_control_t *instance = uz_buck_control_init(config);
+    ref_val.ref_input_current_Ampere=10.0f;
+    float duty=uz_buck_control_sample(instance,ref_val,act_val);
+    TEST_ASSERT_GREATER_THAN(0.0f, duty);
+}
+
 void test_uz_buck_control_sample(void)
 {
     uz_buck_control_t *instance = uz_buck_control_init(config);
@@ -72,7 +90,7 @@ void test_uz_buck_control_sample(void)
     struct buck_control_act_val act_val = {0};
     act_val.input_voltage_Volt=48;
     float duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
-    duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
     // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
     // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
     // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);

@@ -79,7 +79,7 @@ float uz_buck_control_sample(uz_buck_control_t *self, struct buck_control_ref_va
     case uz_buck_input_current_mode:
         ref_val.ref_output_voltage_Volt = uz_buck_input_current_control(self, ref_val.ref_input_current_Ampere, act_val.input_current_Ampere);
         ref_val.ref_output_current_Ampere = uz_buck_output_voltage_control(self, ref_val, act_val);
-        self->duty_cycle = uz_buck_output_current_control(self, ref_val, act_val);
+        self->duty_cycle = uz_buck_output_current_control(self, ref_val, act_val); // LOC triggers an assertion
         break;
     case uz_buck_output_voltage_mode:
         ref_val.ref_output_current_Ampere = uz_buck_output_voltage_control(self, ref_val, act_val);

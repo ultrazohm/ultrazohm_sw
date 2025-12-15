@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_buck_control.h"
-#include "uz_signals/uz_signals.h"
+#include "../uz_signals/uz_signals.h"
 
 typedef struct uz_buck_control_t
 {

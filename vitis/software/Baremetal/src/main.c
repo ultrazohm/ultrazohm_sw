@@ -57,7 +57,6 @@ struct buck_control_config buck_config = {
     .input_current_controller_max_reference = 1.0f,
     .input_current_controller_min_reference = 0.0f,
     .control_mode = uz_buck_output_current_mode,
-    .rated_input_voltage_Volt = 12.0f,
     .input_current_max_reference = 1.0f,
     .input_current_min_reference = 0.0f,
     .input_current_controller_max_control_signal = 12.0f,

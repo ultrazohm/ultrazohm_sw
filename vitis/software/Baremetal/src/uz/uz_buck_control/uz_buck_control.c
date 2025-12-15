@@ -35,6 +35,7 @@ uz_buck_control_t *uz_buck_control_init(struct buck_control_config external_conf
     uz_buck_control_t *self = uz_buck_control_allocation();
     self->config = external_config;
     uz_assert(self->config.sampling_frequency_Hz > 0.0f);
+    uz_assert(self->config.control_mode != 0); // User must select available control mode
 
     struct uz_PI_Controller_config input_current_controller_config = {
         .Kp = self->config.input_current_controller_kp,
@@ -133,8 +134,9 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
     return (self->duty_cycle);
 }
 
-float uz_buck_control_reset(uz_buck_control_t *self){
+void uz_buck_control_reset(uz_buck_control_t *self){
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     self->duty_cycle=0.0f;
     uz_PI_Controller_reset(self->output_current_controller);
     uz_PI_Controller_reset(self->input_current_controller);

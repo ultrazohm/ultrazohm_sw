@@ -112,7 +112,7 @@ void ISR_Control(void *data)
             Global_Data.ref_val.ref_input_current_Ampere = Global_Data.av.snd_fld[2];
             Global_Data.ref_val.ref_output_current_Ampere = Global_Data.av.snd_fld[3];
             Global_Data.ref_val.ref_output_voltage_Volt = Global_Data.av.snd_fld[4];
-            Global_Data.rasv.halfBridge1DutyCycle = uz_buck_control_sample(Global_Data.objects.buck_controller, Global_Data.ref_val, Global_Data.act_val)
+            Global_Data.rasv.halfBridge1DutyCycle = uz_buck_control_sample(Global_Data.objects.buck_controller, Global_Data.ref_val, Global_Data.act_val);
         }
 
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);

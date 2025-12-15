@@ -73,7 +73,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_input_current_lem_ampere]=&data->pov_actual_values.input_current_lem_ampere;
 	js_ch_observable[JSO_input_voltage_volt]=&data->pov_actual_values.input_voltage_volt;
 	js_ch_observable[JSO_output_current_lem_before_relay_ampere]=&data->pov_actual_values.output_current_lem_before_relay_ampere;
-	js_ch_observable[JSO_output_current_box_after_relay_amp]=&data->pov_actual_values.output_current_box_after_relay_amp;
+	js_ch_observable[JSO_output_current_box_after_relay_ampere]=&data->pov_actual_values.output_current_box_after_relay_ampere;
 	js_ch_observable[JSO_output_voltage_before_relay]=&data->pov_actual_values.output_voltage_before_relay;
 	js_ch_observable[JSO_output_voltage_after_relay]=&data->pov_actual_values.output_voltage_after_relay;
 	js_ch_observable[JSO_ref_input_current_Ampere]=&data->ref_val.ref_input_current_Ampere;

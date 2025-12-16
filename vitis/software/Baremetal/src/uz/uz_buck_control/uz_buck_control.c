@@ -125,7 +125,7 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
     reference_values.ref_output_current_Ampere=uz_signals_saturation(reference_values.ref_output_current_Ampere,self->config.output_current_controller_max_reference,self->config.output_current_controller_min_reference);
     float control_voltage = uz_PI_Controller_sample(self->output_current_controller, reference_values.ref_output_current_Ampere, actual_values.output_current_Ampere, false);
     // control_voltage += actual_values.output_voltage_Volt; // Open loop control for improved controller performance
-    control_voltage = uz_signals_saturation(control_voltage, actual_values.input_voltage_Volt, actual_values.input_voltage_Volt);
+    // control_voltage = uz_signals_saturation(control_voltage, actual_values.input_voltage_Volt, 0.0f);
 
     self->duty_cycle = control_voltage / actual_values.input_voltage_Volt;
     uz_assert(!isnan(self->duty_cycle));

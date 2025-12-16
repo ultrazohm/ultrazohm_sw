@@ -23,13 +23,15 @@ struct buck_control_config config = {
     .output_voltage_controller_min_control_signal = -1,
     .output_voltage_controller_kp = 1,
     .output_voltage_controller_ki = 0,
+    .output_current_controller_max_reference = 1,
+    .output_current_controller_min_reference = -1,
     .output_current_controller_max_control_signal = 1,
     .output_current_controller_min_control_signal = -1,
     .output_current_controller_kp = 1,
     .output_current_controller_ki = 0,
     .output_voltage_controller_max_reference = 5,
-    .output_voltage_controller_min_reference=-5,
-        .sampling_frequency_Hz = 10000};
+    .output_voltage_controller_min_reference = -5,
+    .sampling_frequency_Hz = 10000};
 
 // static void uz_buck_control_controller_config(uz_buck_control_t *self)
 // {
@@ -61,6 +63,27 @@ struct buck_control_config config = {
 
 void setUp(void)
 {
+    // config.control_mode = uz_buck_input_current_mode;
+    // config.input_current_max_reference = 5;
+    // config.input_current_min_reference = -5;
+    // config.input_current_controller_max_reference = 5;
+    // config.input_current_controller_min_reference = -5;
+    // config.input_current_controller_min_control_signal = -5;
+    // config.input_current_controller_max_control_signal = 1;
+    // config.input_current_controller_min_control_signal = -1;
+    // config.input_current_controller_kp = 1;
+    // config.input_current_controller_ki = 0;
+    // config.output_voltage_controller_max_control_signal = 1;
+    // config.output_voltage_controller_min_control_signal = -1;
+    // config.output_voltage_controller_kp = 1;
+    // config.output_voltage_controller_ki = 0;
+    // config.output_current_controller_max_control_signal = 1;
+    // config.output_current_controller_min_control_signal = -1;
+    // config.output_current_controller_kp = 1;
+    // config.output_current_controller_ki = 0;
+    // config.output_voltage_controller_max_reference = 5;
+    // config.output_voltage_controller_min_reference = -5;
+    // config.sampling_frequency_Hz = 10000;
 }
 
 void test_uz_buck_control_init(void)
@@ -71,24 +94,42 @@ void test_uz_buck_control_init(void)
 
 void test_uz_buck_control_test_reset(void)
 {
-    config.input_current_controller_ki=10;
-    config.input_current_controller_kp=10;
+    config.control_mode = uz_buck_input_current_mode;
+    config.input_current_controller_ki = 10;
+    config.input_current_controller_kp = 10;
     config.control_mode = uz_buck_input_current_mode;
     struct buck_control_ref_val ref_val = {0};
     struct buck_control_act_val act_val = {0};
-    act_val.input_voltage_Volt=48;
+    act_val.input_voltage_Volt = 48;
     uz_buck_control_t *instance = uz_buck_control_init(config);
-    ref_val.ref_input_current_Ampere=10.0f;
-    float duty=uz_buck_control_sample(instance,ref_val,act_val);
-    TEST_ASSERT_GREATER_THAN(0.0f, duty);
+    ref_val.ref_input_current_Ampere = 10.0f;
+    float duty = uz_buck_control_sample(instance, ref_val, act_val);
+    TEST_ASSERT(duty > 0.0f);
 }
 
 void test_uz_buck_control_sample(void)
 {
+    config.control_mode = uz_buck_input_current_mode;
     uz_buck_control_t *instance = uz_buck_control_init(config);
     struct buck_control_ref_val ref_val = {0};
     struct buck_control_act_val act_val = {0};
-    act_val.input_voltage_Volt=48;
+    act_val.input_voltage_Volt = 48;
+    float duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
+    // TEST_ASSERT(duty_cycle==1.0f);
+}
+
+void test_uz_buck_control_test_current_control(void)
+{
+    config.control_mode = uz_buck_output_current_mode;
+    uz_buck_control_t *instance = uz_buck_control_init(config);
+    struct buck_control_ref_val ref_val = {0};
+    struct buck_control_act_val act_val = {0};
+    act_val.input_voltage_Volt = 48;
     float duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
     // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);
     // duty_cycle = uz_buck_control_sample(instance, ref_val, act_val);

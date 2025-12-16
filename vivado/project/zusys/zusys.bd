@@ -5719,15 +5719,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.4",
-            "xci_name": "zusys_uz_endat_interface_0_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_0_0\\zusys_uz_endat_interface_0_0.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.5",
+            "xci_name": "zusys_uz_endat_interface_0_1",
+            "xci_path": "ip\\zusys_uz_endat_interface_0_1\\zusys_uz_endat_interface_0_1.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.4",
-            "xci_name": "zusys_uz_endat_interface_1_0",
-            "xci_path": "ip\\zusys_uz_endat_interface_1_0\\zusys_uz_endat_interface_1_0.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.5",
+            "xci_name": "zusys_uz_endat_interface_1_1",
+            "xci_path": "ip\\zusys_uz_endat_interface_1_1\\zusys_uz_endat_interface_1_1.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5777,10 +5777,10 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
+              "uz_endat_interface_1/AXI4_Lite_ARESETN",
               "uz_endat_interface_0/IPCORE_RESETN",
               "uz_endat_interface_0/AXI4_Lite_ARESETN",
-              "uz_endat_interface_1/IPCORE_RESETN",
-              "uz_endat_interface_1/AXI4_Lite_ARESETN"
+              "uz_endat_interface_1/IPCORE_RESETN"
             ]
           },
           "trigger_endat_1": {
@@ -5879,10 +5879,10 @@
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
               "ila_0/clk",
-              "uz_endat_interface_0/IPCORE_CLK",
-              "uz_endat_interface_1/IPCORE_CLK",
               "uz_endat_interface_1/AXI4_Lite_ACLK",
-              "uz_endat_interface_0/AXI4_Lite_ACLK"
+              "uz_endat_interface_0/IPCORE_CLK",
+              "uz_endat_interface_0/AXI4_Lite_ACLK",
+              "uz_endat_interface_1/IPCORE_CLK"
             ]
           }
         }

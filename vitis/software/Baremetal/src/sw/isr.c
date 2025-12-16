@@ -49,7 +49,7 @@ static void ReadAllADC();
 #define CURRENT_MEASUREMENT_BOX_GAIN 0.025f
 #define CURRENT_MEASUREMENT_BOX_OFFSET 0.0f
 
-#define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f
+#define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f // 15.3846153846
 #define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
 
 #define LEM_GAIN 0.0125f
@@ -65,12 +65,12 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A1.me.ADC_A3 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
-    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A1.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET) * CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A1.me.ADC_A3 - CURRENT_MEASUREMENT_BOX_OFFSET) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A1.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
 
-    Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A1.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
-    Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A1.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
-    Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A1.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A1.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A1.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A1.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
 
     Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A4 - LEM_OFFSET) * LEM_GAIN;
     Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET) * LEM_GAIN;
@@ -128,7 +128,7 @@ void ISR_Control(void *data)
     else
     {
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-        Global_Data.rasv.halfBridge1DutyCycle = uz_buck_control_reset(Global_Data.objects.buck_controller);
+        uz_buck_control_reset(Global_Data.objects.buck_controller);
 
         Global_Data.ref_val.ref_input_current_Ampere = 0.0f;
         Global_Data.ref_val.ref_output_current_Ampere = 0.0f;

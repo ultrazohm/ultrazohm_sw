@@ -34,6 +34,7 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -64,12 +65,12 @@ extern DS_Data Global_Data;
 
 #define ISR_SAMPLE_FREQ				40000
 
-#define MAX_CURRENT_ASSERTION 		300.0f
-#define MAX_SPEED_ASSERTION			2300.0f
+#define MAX_CURRENT_ASSERTION 		100.0f
+#define MAX_SPEED_ASSERTION			500.0f
 #define MAX_TEMP_ASSERTION			80.0f
-#define MAX_MOTOR_TEMP_ASSERTION	115.0f
+#define MAX_MOTOR_TEMP_ASSERTION	100.0f
 #define U_DC_MAX					55.0f
-#define U_DC_MIN					40.0f
+#define U_DC_MIN					15.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
@@ -95,10 +96,8 @@ float temp_coef_a = 0.0173f;
 float temp_coef_b = 7.64f;
 float temp_coef_c = 0;
 
-bool flg_compensate_age = 1U;
-bool flg_pred_theta_el = 1U;
 bool flg_volt_reverse_filter = 1U;
-flg_correct_motor_temp = 1U;
+bool flg_correct_motor_temp = 1U;
 
 float theta_elec_pred = 0.0f;
 
@@ -108,9 +107,10 @@ enum control_state_list
     FOC_i_dq_setpoint,
 	manual_dq_voltage,
 	rs_measurement,
-	rc_fingerprint
+	rc_fingerprint,
+	offset_estimation
 };
-enum control_state_list control_mode = FOC_i_dq_setpoint;
+enum control_state_list control_mode = manual;
 
 
 // Variables for Current Control and Speed Control
@@ -135,6 +135,7 @@ struct uz_DutyCycle_t output_dutycycle = {
 
 struct uz_parameterid_output actual_output;
 struct uz_parameterID_rc_ref_val_t ref_rc_meas;
+struct uz_encoder_offset_estimation_status status;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -152,11 +153,12 @@ void ISR_Control(void *data)
     // Read position sensor
     uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_3, send_position);
     Global_Data.av.theta_mech = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_3);
-    Global_Data.av.endat_pos_raw_st_d5_3 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_3);
-    Global_Data.av.omega_mech = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_3);
-    Global_Data.av.mechanicalRotorSpeed = uz_endat_interface_get_speed_mech_rpm(Global_Data.objects.endat_encoder_d5_3);
+    //Global_Data.av.endat_pos_raw_st_d5_3 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.omega_mech = uz_pos_to_speed_pll_get_omega_mech_si(Global_Data.objects.pll_0);
+    Global_Data.av.omega_el = uz_pos_to_speed_pll_get_omega_el_si(Global_Data.objects.pll_0);
+    Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech*60.0f/(2.0f*M_PI);
     Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * (1.0f/ISR_SAMPLE_FREQ);
-    Global_Data.av.theta_elec = Global_Data.av.theta_mech_comp * 21.0f;
+    Global_Data.av.theta_elec = Global_Data.av.theta_mech_comp * 21.0f  - Global_Data.av.theta_offset;
 
     // Read ADC-Values
     Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_U) - PHASE_CURRENT_OFFS_U;
@@ -250,6 +252,10 @@ void ISR_Control(void *data)
     	dq_reference_current.q = Global_Data.rasv.Ipeak_ref * sin(Global_Data.rasv.Iphase_ref_deg * M_PI / 180.0f);
     	Global_Data.rasv.Id_ref = dq_reference_current.d;
     	Global_Data.rasv.Iq_ref = dq_reference_current.q;
+    }
+
+    if (control_mode == offset_estimation){
+    	status = uz_encoder_offset_estimation_get_status(Global_Data.objects.encoder_offset_obj);
     }
 
 
@@ -376,7 +382,24 @@ void ISR_Control(void *data)
 
   					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
   					break;
+  				case offset_estimation:
+  				    if(!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_obj)){         // if not finished
+  				    	dq_reference_current = uz_encoder_offset_estimation_step(Global_Data.objects.encoder_offset_obj);//receive current controller setpoint current from stepping function
+  				    }else{
+  				    	dq_reference_current.d = 0.0f;                                              // else: it is finished, setpoints are 0
+  				    	dq_reference_current.q = 0.0f;
+  				    }
+  				    Global_Data.rasv.Id_ref = dq_reference_current.d;
+  				    Global_Data.rasv.Iq_ref = dq_reference_current.q;
+  					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+  					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
+  					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
 
+  					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
+  					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+
+  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					break;
   				}
       		} else{
       			// Umrichter in Fehlermodus
@@ -410,7 +433,6 @@ void ISR_Control(void *data)
           dq_reference_current.q = 0.0f;
           dq_reference_current.zero = 0.0f;
       }
-
 
       Global_Data.rasv.SKAI_nERROUT = SKAI_nERROUT;
       Global_Data.rasv.flg_reset_SKAI = flg_reset_SKAI;

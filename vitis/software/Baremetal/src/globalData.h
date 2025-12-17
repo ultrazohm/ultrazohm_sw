@@ -16,6 +16,8 @@
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 
 
 // union allows to access the values as array and individual variables
@@ -164,6 +166,8 @@ typedef struct{
 	uz_IIR_Filter_t *phase_a_lowpass;
 	uz_IIR_Filter_t *phase_b_lowpass;
 	uz_IIR_Filter_t *phase_c_lowpass;
+	uz_encoder_offset_estimation_t* encoder_offset_obj;
+	uz_pos_to_speed_pll_t* pll_0;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

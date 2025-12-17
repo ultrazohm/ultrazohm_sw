@@ -53,8 +53,6 @@ uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
 PWM_3L_handle PWM_3L_instance;
-SSDebug_handle SSDebug_inst_after_int;
-SSDebug_handle SSDebug_inst_before_int;
 IntDead3L_handle IntDead3L_instance;
 
 int main(void)
@@ -91,8 +89,6 @@ int main(void)
             uz_SystemTime_init();
             PWM_3L_instance = uz_PWM_3L_staticAllocator();//has to happen befor initialization of Javascope, because it needs the correct pointer
             IntDead3L_instance = uz_InterlockDeadtime3L_staticAllocator();
-            SSDebug_inst_after_int = uz_SS_Debug_staticAllocator();
-            SSDebug_inst_before_int = uz_SS_Debug_staticAllocator();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -116,13 +112,14 @@ int main(void)
 
             /* init 3L PWM */
             uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, PWM_3L_instance->carrier_freq);
-            uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, PWM_3L_instance->u1);
             uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, true);
             uz_PWM_3L_hw_set_min_PW(PWM_3L_instance->base_address, 2*1e6);
+            uz_PWM_3L_hw_set_mode(PWM_3L_instance->base_address, 1);
+            uz_PWM_3L_hw_set_sampligPoint(PWM_3L_instance->base_address, 1);
 
             /* init 3L Interlock and deadtime module */
             uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, IntDead3L_instance->en);
-            uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, 2*1e6);
+            uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, 0);
             uz_InterlockDeadtime3L_hw_set_mode(IntDead3L_instance->base_address, 3);
 
 

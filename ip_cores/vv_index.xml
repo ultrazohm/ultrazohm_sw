@@ -787,7 +787,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114383175">
+		<CoreRevision value="2114393976">
 		</CoreRevision>
 		<ComponentPath value="InterlockDeadtime3L/ipcore/Interlock_ip_v1_0/component.xml">
 		</ComponentPath>
@@ -909,7 +909,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114383158">
+		<CoreRevision value="2114393897">
 		</CoreRevision>
 		<ComponentPath value="PWM_3Level_control_ip_v1_0/ipcore/PWM_3Level_control_v1_0/component.xml">
 		</ComponentPath>

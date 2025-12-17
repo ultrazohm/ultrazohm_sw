@@ -1,5 +1,13 @@
 InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock --> Interlock_ip_src_NPC_Interlock
+InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock1 --> Interlock_ip_src_NPC_Interlock1
+InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock2 --> Interlock_ip_src_NPC_Interlock2
 InterlockDeadtime3L/InterlockDeadtime3L/TNPC_Interlock --> Interlock_ip_src_TNPC_Interlock
+InterlockDeadtime3L/InterlockDeadtime3L/TNPC_Interlock1 --> Interlock_ip_src_TNPC_Interlock1
+InterlockDeadtime3L/InterlockDeadtime3L/TNPC_Interlock2 --> Interlock_ip_src_TNPC_Interlock2
 InterlockDeadtime3L/InterlockDeadtime3L/DeadTime/Detect Fall Nonpositive2 --> Interlock_ip_src_Detect_Fall_Nonpositive2
 InterlockDeadtime3L/InterlockDeadtime3L/DeadTime --> Interlock_ip_src_DeadTime
+InterlockDeadtime3L/InterlockDeadtime3L/DeadTime1/Detect Fall Nonpositive2 --> Interlock_ip_src_Detect_Fall_Nonpositive2_block
+InterlockDeadtime3L/InterlockDeadtime3L/DeadTime1 --> Interlock_ip_src_DeadTime1
+InterlockDeadtime3L/InterlockDeadtime3L/DeadTime2/Detect Fall Nonpositive2 --> Interlock_ip_src_Detect_Fall_Nonpositive2_block1
+InterlockDeadtime3L/InterlockDeadtime3L/DeadTime2 --> Interlock_ip_src_DeadTime2
 InterlockDeadtime3L/InterlockDeadtime3L --> Interlock_ip_src_InterlockDeadtime3L

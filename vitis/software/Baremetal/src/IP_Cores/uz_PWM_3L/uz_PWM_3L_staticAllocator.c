@@ -5,9 +5,11 @@
 
 static PWM_3L PWM_3L_instance = {
 	.base_address = XPAR_PWM_3LEVEL_CONTROL_0_BASEADDR,
-	.carrier_freq = 100U,
+	.carrier_freq = 100000U,
 	.phase_shift = 0,
-	.u1 = 0.7
+	.u_desired[0] = 0,
+	.u_desired[1] = 0,
+	.u_desired[2] = 0,
 };
 
 PWM_3L_handle uz_PWM_3L_staticAllocator(void){

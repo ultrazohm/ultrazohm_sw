@@ -6,6 +6,7 @@ add_files -norecurse {../hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_Divide.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_CarrierGen.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd}
+add_files -norecurse {../hdl/PWM_3Level_control_src_SS_gen.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_GenPWM.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker4.vhd}
 add_files -norecurse {../hdl/PWM_3Level_control_src_range_checker3.vhd}
@@ -39,7 +40,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114383158 [ipx::current_core]
+set_property core_revision 2114393897 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -58,6 +59,10 @@ ipx::add_file {hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd} [ipx::get_
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_PWM_carrier_comparison.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_SS_gen.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_SS_gen.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/PWM_3Level_control_src_SS_gen.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_SS_gen.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_GenPWM.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/PWM_3Level_control_src_GenPWM.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/PWM_3Level_control_src_GenPWM.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

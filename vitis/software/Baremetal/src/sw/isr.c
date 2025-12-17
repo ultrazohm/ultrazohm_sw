@@ -67,12 +67,10 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, true);
-    	uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, true);
         // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, true);
+    	uz_PWM_3L_hw_set_test_sin_freq(PWM_3L_instance->base_address, (uint32_t)GUI_Inputs.input_freq, PWM_3L_instance->u_desired);
     } else{
-    	//uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, false);
-    	uz_PWM_3L_hw_enable_IP_core(PWM_3L_instance->base_address, false);
     	uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, false);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -85,23 +83,10 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
-	uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, GUI_Inputs.input_freq);
-	uz_PWM_3L_hw_set_u1(PWM_3L_instance->base_address, GUI_Inputs.input_duty_cycle);
-	uz_PWM_3L_hw_set_mode(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.mode);
-	uz_PWM_3L_hw_set_sampligPoint(PWM_3L_instance->base_address, (uint8_t)GUI_Inputs.samplePoint);
-	uz_PWM_3L_hw_set_min_PW(PWM_3L_instance->base_address, (uint32_t)GUI_Inputs.minPulseWidth_ns);
-
-	uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, (uint32_t)GUI_Inputs.deadTime_ns);
-	uint32_t carrier;
-	carrier = uz_PWM_3L_hw_get_carrier(PWM_3L_instance->base_address);
-	PWM_3L_instance->carrier = (float)carrier;
-
 	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
-	uz_SS_Debug_get(SSDebug_inst_before_int->base_address, SSDebug_inst_before_int->SS_out);
-	uz_SS_Debug_get(SSDebug_inst_after_int->base_address, SSDebug_inst_after_int->SS_out);
 	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];
-	PWM_3L_instance->switchStates[0][1] = (float)SSDebug_inst_before_int->SS_out[0];
-	PWM_3L_instance->switchStates[0][2] = (float)SSDebug_inst_after_int->SS_out[0];
+	PWM_3L_instance->switchStates[0][1] = (float)SS3L_out[0][1];
+	PWM_3L_instance->switchStates[0][2] = (float)SS3L_out[0][2];
 	PWM_3L_instance->switchStates[0][3] = (float)SS3L_out[0][3];
 
     JavaScope_update(&Global_Data);

@@ -1,7 +1,15 @@
 vlib work
 vmap -c
 vcom  Interlock_ip_src_NPC_Interlock.vhd
+vcom  Interlock_ip_src_NPC_Interlock1.vhd
+vcom  Interlock_ip_src_NPC_Interlock2.vhd
 vcom  Interlock_ip_src_TNPC_Interlock.vhd
+vcom  Interlock_ip_src_TNPC_Interlock1.vhd
+vcom  Interlock_ip_src_TNPC_Interlock2.vhd
 vcom  Interlock_ip_src_Detect_Fall_Nonpositive2.vhd
 vcom  Interlock_ip_src_DeadTime.vhd
+vcom  Interlock_ip_src_Detect_Fall_Nonpositive2_block.vhd
+vcom  Interlock_ip_src_DeadTime1.vhd
+vcom  Interlock_ip_src_Detect_Fall_Nonpositive2_block1.vhd
+vcom  Interlock_ip_src_DeadTime2.vhd
 vcom  Interlock_ip_src_InterlockDeadtime3L.vhd

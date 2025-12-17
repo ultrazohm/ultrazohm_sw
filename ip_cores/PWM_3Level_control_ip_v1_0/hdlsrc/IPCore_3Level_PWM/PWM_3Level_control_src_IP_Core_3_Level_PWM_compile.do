@@ -4,6 +4,7 @@ vcom  PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg.vhd
 vcom  PWM_3Level_control_src_Divide.vhd
 vcom  PWM_3Level_control_src_CarrierGen.vhd
 vcom  PWM_3Level_control_src_PWM_carrier_comparison.vhd
+vcom  PWM_3Level_control_src_SS_gen.vhd
 vcom  PWM_3Level_control_src_GenPWM.vhd
 vcom  PWM_3Level_control_src_range_checker4.vhd
 vcom  PWM_3Level_control_src_range_checker3.vhd

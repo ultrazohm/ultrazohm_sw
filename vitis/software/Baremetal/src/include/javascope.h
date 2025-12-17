@@ -54,6 +54,9 @@ enum JS_OberservableData {
 	JSO_SS3,
 	JSO_SS4,
 	JSO_carrier,
+	JSO_ua_desired,
+	JSO_ub_desired,
+	JSO_uc_desired,
 	JSO_ENDMARKER
 };
 

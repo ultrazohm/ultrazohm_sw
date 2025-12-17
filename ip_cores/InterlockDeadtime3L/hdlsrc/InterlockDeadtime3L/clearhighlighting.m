@@ -5,11 +5,11 @@ annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/DeadTime_instance1', 0
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/t', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/concatenate', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/Delay2', 0, 1, '');
-annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/t', 0, 1, '');
+annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/t3', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/Logical Operator', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/Switch', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/Switch1', 0, 1, '');
-annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/t', 0, 1, '');
+annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/t1', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/Logical Operator', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/Logical Operator1', 0, 1, '');
 annotate_port('gm_InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/Logical Operator5', 0, 1, '');

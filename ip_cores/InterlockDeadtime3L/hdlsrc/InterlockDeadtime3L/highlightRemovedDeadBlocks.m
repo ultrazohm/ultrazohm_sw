@@ -3,3 +3,5 @@ cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'red';
 set_param(0, 'HiliteAncestorsData', cs);
 hilite_system('InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock/Demux','user1');
+hilite_system('InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock1/Demux','user1');
+hilite_system('InterlockDeadtime3L/InterlockDeadtime3L/NPC_Interlock2/Demux','user1');

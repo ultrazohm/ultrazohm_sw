@@ -12,6 +12,8 @@ typedef struct PWM_3L* PWM_3L_handle;
 void uz_PWM_3L_hw_set_carrier_f(uint32_t base_address, uint32_t f_carrier_hz);
 void uz_PWM_3L_hw_enable_IP_core(uint32_t base_address, bool enable);
 void uz_PWM_3L_hw_set_u1(uint32_t base_address, float u1);
+void uz_PWM_3L_hw_set_u2(uint32_t base_address, float u2);
+void uz_PWM_3L_hw_set_u3(uint32_t base_address, float u3);
 
 /**
  * @brief sets input source for duty cycle.
@@ -34,6 +36,7 @@ void uz_PWM_3L_hw_set_mode(uint32_t base_address, uint8_t mode);
 void uz_PWM_3L_hw_set_sampligPoint(uint32_t base_address, uint8_t samplingMode);
 void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t states[][4]);
 void uz_PWM_3L_hw_set_min_PW(uint32_t base_address, uint32_t min_pw_ns);
+void uz_PWM_3L_hw_set_test_sin_freq(uint32_t base_address, uint32_t freq_hz, float sin_waves[]);
 uint32_t uz_PWM_3L_hw_enable_IP_core_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_u1_readback(uint32_t base_address);
 uint32_t uz_PWM_3L_hw_get_carrier(uint32_t base_address);

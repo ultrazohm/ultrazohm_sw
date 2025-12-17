@@ -1,7 +1,8 @@
  --> PWM_3Level_control_src_IP_Core_3_Level_PWM_pkg
 IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen/Divide --> PWM_3Level_control_src_Divide
 IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen --> PWM_3Level_control_src_CarrierGen
-IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/PWM_carrier_comparison --> PWM_3Level_control_src_PWM_carrier_comparison
+IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/SS_gen/PWM_carrier_comparison --> PWM_3Level_control_src_PWM_carrier_comparison
+IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/SS_gen --> PWM_3Level_control_src_SS_gen
 IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM --> PWM_3Level_control_src_GenPWM
 IPCore_3Level_PWM/IP_Core_3-Level_PWM/MinPWM/range checker4 --> PWM_3Level_control_src_range_checker4
 IPCore_3Level_PWM/IP_Core_3-Level_PWM/MinPWM/range checker3 --> PWM_3Level_control_src_range_checker3

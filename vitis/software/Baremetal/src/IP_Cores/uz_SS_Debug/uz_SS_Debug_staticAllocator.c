@@ -6,11 +6,11 @@
 uint8_t instance_counter = 0;
 
 static SSDebug SSDebug_instance_0 = {
-	.base_address = XPAR_SS_DEBUG_0_BASEADDR
+	.base_address = 0//XPAR_SS_DEBUG_0_BASEADDR
 };
 
 static SSDebug SSDebug_instance_1 = {
-	.base_address = XPAR_SS_DEBUG_1_BASEADDR
+	.base_address = 0//XPAR_SS_DEBUG_1_BASEADDR
 };
 
 // could be generalized in future, just did it like this because its meant for testing of another ip block

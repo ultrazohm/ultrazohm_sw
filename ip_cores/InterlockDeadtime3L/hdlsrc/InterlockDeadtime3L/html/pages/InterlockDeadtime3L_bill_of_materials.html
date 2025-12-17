@@ -5,7 +5,7 @@ High-level Resource Utilization Report for InterlockDeadtime3L
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_4_1');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Adder_4_1');hdlTableShrink(this, 'Register_4_1');hdlTableShrink(this, 'Register_4_2');hdlTableShrink(this, 'Multiplexer_4_1');hdlTableShrink(this, 'Multiplexer_4_2');hdlTableShrink(this, 'Multiplexer_5_1');hdlTableShrink(this, 'Adder_6_1');hdlTableShrink(this, 'Register_6_1');hdlTableShrink(this, 'Register_6_2');hdlTableShrink(this, 'Multiplexer_6_1');hdlTableShrink(this, 'Multiplexer_6_2');hdlTableShrink(this, 'Multiplexer_7_1');hdlTableShrink(this, 'Multiplexer_8_1');hdlTableShrink(this, 'Multiplexer_9_1');hdlTableShrink(this, 'Multiplexer_10_1');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-4
+12
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-19
+51
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-181
+461
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-36
+108
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-94
+110
 </td>
 
 </tr>
@@ -252,13 +252,13 @@ Registers (3)
 [+]
 </span>
 <span style="font-family:monospace">
-8-bit Register 							: 1
+32-bit Register 							: 1
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:91\')'})"  name="code2model" class="code2model">
-Delay1
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:88\')'})"  name="code2model" class="code2model">
+Delay2
 </a>
 
 </li>
@@ -270,13 +270,13 @@ Delay1
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 1
+8-bit Register 							: 1
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:88\')'})"  name="code2model" class="code2model">
-Delay2
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:91\')'})"  name="code2model" class="code2model">
+Delay1
 </a>
 
 </li>
@@ -303,13 +303,13 @@ Delay3
 
 </span>
 <br /><h5>
-Multiplexers (6)
+Multiplexers (18)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 6
+1-bit 2-to-1 Multiplexer 							: 18
 </span>
 <span name="Multiplexer_1_1" id="Multiplexer_1_1">
 <ul>
@@ -325,21 +325,45 @@ Switch1
 </a>
 
 </li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:146\')'})"  name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:147\')'})"  name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:196\')'})"  name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:197\')'})"  name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
 
 </ul>
 
 </span>
 <br /><h5>
-Number of I/O Bits (94)
+Number of I/O Bits (110)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 48
+Number of Input Bits: 56
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul>
+<ul class="SystemdefinedCollapse" id="590cfa6b-f4ad-49c4-8672-580990eedf52" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -348,6 +372,24 @@ reset: 1 bit
 </li>
 <li>
 clk_enable: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:42\')'})"  name="code2model" class="code2model">
+AXI_Type
+</a>
+: 8 bits
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:40\')'})"  name="code2model" class="code2model">
+AXI_DelayCycles
+</a>
+: 32 bits
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:85\')'})"  name="code2model" class="code2model">
+AXI_EnableOutput
+</a>
+: 1 bit
 </li>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:4\')'})"  name="code2model" class="code2model">
@@ -374,37 +416,88 @@ u1_s3
 : 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:40\')'})"  name="code2model" class="code2model">
-AXI_DelayCycles
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:104\')'})"  name="code2model" class="code2model">
+u2_s1
 </a>
-: 32 bits
+: 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:42\')'})"  name="code2model" class="code2model">
-AXI_Type
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:103\')'})"  name="code2model" class="code2model">
+u2_s0
 </a>
-: 8 bits
+: 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:85\')'})"  name="code2model" class="code2model">
-AXI_EnableOutput
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:105\')'})"  name="code2model" class="code2model">
+u2_s2
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:106\')'})"  name="code2model" class="code2model">
+u2_s3
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:107\')'})"  name="code2model" class="code2model">
+u3_s0
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:108\')'})"  name="code2model" class="code2model">
+u3_s1
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:109\')'})"  name="code2model" class="code2model">
+u3_s2
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:110\')'})"  name="code2model" class="code2model">
+u3_s3
 </a>
 : 1 bit
 </li>
 
 </ul>
-
+<span class="SDCollapseControl" onclick="collapseSD(this, '590cfa6b-f4ad-49c4-8672-580990eedf52')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 46
+Number of Output Bits: 54
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul>
+<ul class="SystemdefinedCollapse" id="4067d16d-01de-4f95-8b8e-71f972f0f2a9" dataCollapse="off">
 <li>
 ce_out: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:89\')'})"  name="code2model" class="code2model">
+AXI_DelayCycles_readback
+</a>
+: 32 bits
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:90\')'})"  name="code2model" class="code2model">
+AXI_Type_readback
+</a>
+: 8 bits
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:92\')'})"  name="code2model" class="code2model">
+AXI_EnableOutput_readback
+</a>
+: 1 bit
 </li>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:8\')'})"  name="code2model" class="code2model">
@@ -431,30 +524,63 @@ u1_s3_out
 : 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:89\')'})"  name="code2model" class="code2model">
-AXI_DelayCycles_readback
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:214\')'})"  name="code2model" class="code2model">
+u2_s0_out
 </a>
-: 32 bits
+: 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:90\')'})"  name="code2model" class="code2model">
-AXI_Type_readback
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:215\')'})"  name="code2model" class="code2model">
+u2_s1_out
 </a>
-: 8 bits
+: 1 bit
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:92\')'})"  name="code2model" class="code2model">
-AXI_EnableOutput_readback
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:216\')'})"  name="code2model" class="code2model">
+u2_s2_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:217\')'})"  name="code2model" class="code2model">
+u2_s3_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:219\')'})"  name="code2model" class="code2model">
+u3_s0_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:220\')'})"  name="code2model" class="code2model">
+u3_s1_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:221\')'})"  name="code2model" class="code2model">
+u3_s2_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:222\')'})"  name="code2model" class="code2model">
+u3_s3_out
 </a>
 : 1 bit
 </li>
 
 </ul>
-
+<span class="SDCollapseControl" onclick="collapseSD(this, '4067d16d-01de-4f95-8b8e-71f972f0f2a9')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><p><hr /></p><h5>
-Report for For Each Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:13\')'})"  name="code2model" class="code2model">
-DeadTime
+Report for For Each Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:162\')'})"  name="code2model" class="code2model">
+DeadTime2
 </a>
 , with 4 instantiations
 </h5>
@@ -470,7 +596,7 @@ Adders/Subtractors (4)
 <span name="Adder_2_1" id="Adder_2_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:168\')'})"  name="code2model" class="code2model">
 adder
 </a>
 
@@ -491,13 +617,13 @@ Registers (12)
 <span name="Register_2_1" id="Register_2_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:26\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:170\')'})"  name="code2model" class="code2model">
 PipelineDelay1
 </a>
 
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:21\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:165\')'})"  name="code2model" class="code2model">
 Delay2
 </a>
 
@@ -515,7 +641,7 @@ Delay2
 <span name="Register_2_2" id="Register_2_2">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:168\')'})"  name="code2model" class="code2model">
 HDL Counter
 </a>
 
@@ -536,13 +662,13 @@ Multiplexers (20)
 <span name="Multiplexer_2_1" id="Multiplexer_2_1">
 <ul>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:168\')'})"  name="code2model" class="code2model">
 switchEnable
 </a>
 
 </li>
 <li>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:168\')'})"  name="code2model" class="code2model">
 switchReset
 </a>
 
@@ -558,6 +684,352 @@ switchReset
 1-bit 2-to-1 Multiplexer 							: 12
 </span>
 <span name="Multiplexer_2_2" id="Multiplexer_2_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:171\')'})"  name="code2model" class="code2model">
+Relational
+Operator
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:165\')'})"  name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:172\')'})"  name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:166\')'})"  name="code2model" class="code2model">
+Detect Fall
+Nonpositive2
+</a>
+, contained inside of For Each Subsystem <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:162\')'})"  name="code2model" class="code2model">
+DeadTime2
+</a>
+, with 4 instantiations
+</h5>
+<h5>
+Registers (4)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 4
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:166:4\')'})"  name="code2model" class="code2model">
+Nonpositive
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:166:3\')'})"  name="code2model" class="code2model">
+FixPt_Relational_Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for For Each Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:112\')'})"  name="code2model" class="code2model">
+DeadTime1
+</a>
+, with 4 instantiations
+</h5>
+<h5>
+Adders/Subtractors (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 4
+</span>
+<span name="Adder_4_1" id="Adder_4_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:118\')'})"  name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (12)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 8
+</span>
+<span name="Register_4_1" id="Register_4_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:120\')'})"  name="code2model" class="code2model">
+PipelineDelay1
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:115\')'})"  name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 4
+</span>
+<span name="Register_4_2" id="Register_4_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:118\')'})"  name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (20)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:118\')'})"  name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:118\')'})"  name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<span name="Multiplexer_4_2" id="Multiplexer_4_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:121\')'})"  name="code2model" class="code2model">
+Relational
+Operator
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:115\')'})"  name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:122\')'})"  name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:116\')'})"  name="code2model" class="code2model">
+Detect Fall
+Nonpositive2
+</a>
+, contained inside of For Each Subsystem <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:112\')'})"  name="code2model" class="code2model">
+DeadTime1
+</a>
+, with 4 instantiations
+</h5>
+<h5>
+Registers (4)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 4
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_5_1" id="Multiplexer_5_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:116:4\')'})"  name="code2model" class="code2model">
+Nonpositive
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:116:3\')'})"  name="code2model" class="code2model">
+FixPt_Relational_Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for For Each Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:13\')'})"  name="code2model" class="code2model">
+DeadTime
+</a>
+, with 4 instantiations
+</h5>
+<h5>
+Adders/Subtractors (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 4
+</span>
+<span name="Adder_6_1" id="Adder_6_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (12)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 8
+</span>
+<span name="Register_6_1" id="Register_6_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:26\')'})"  name="code2model" class="code2model">
+PipelineDelay1
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:21\')'})"  name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 4
+</span>
+<span name="Register_6_2" id="Register_6_2">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (20)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_6_1" id="Multiplexer_6_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:24\')'})"  name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<span name="Multiplexer_6_2" id="Multiplexer_6_2">
 <ul>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:27\')'})"  name="code2model" class="code2model">
@@ -601,13 +1073,13 @@ Registers (4)
 <br /><h5>
 Multiplexers (8)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 8
 </span>
-<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<span name="Multiplexer_7_1" id="Multiplexer_7_1">
 <ul>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:22:4\')'})"  name="code2model" class="code2model">
@@ -626,6 +1098,60 @@ FixPt_Relational_Operator
 
 </span>
 <br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:177\')'})"  name="code2model" class="code2model">
+NPC_Interlock2
+</a>
+
+</h5>
+<h5>
+Multiplexers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_8_1" id="Multiplexer_8_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:193\')'})"  name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:127\')'})"  name="code2model" class="code2model">
+NPC_Interlock1
+</a>
+
+</h5>
+<h5>
+Multiplexers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_9_1" id="Multiplexer_9_1">
+<ul>
+<li>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:143\')'})"  name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:62\')'})"  name="code2model" class="code2model">
 NPC_Interlock
 </a>
@@ -634,13 +1160,13 @@ NPC_Interlock
 <h5>
 Multiplexers (2)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_10_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 2
 </span>
-<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<span name="Multiplexer_10_1" id="Multiplexer_10_1">
 <ul>
 <li>
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'InterlockDeadtime3L:75\')'})"  name="code2model" class="code2model">

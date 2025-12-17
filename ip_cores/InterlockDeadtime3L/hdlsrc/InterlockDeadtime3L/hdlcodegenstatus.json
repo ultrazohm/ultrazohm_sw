@@ -3,9 +3,17 @@
   "CriticalPathDelay": 6.6270000000000007,
   "GenFileList": [
     "Interlock_ip_src_NPC_Interlock.vhd",
+    "Interlock_ip_src_NPC_Interlock1.vhd",
+    "Interlock_ip_src_NPC_Interlock2.vhd",
     "Interlock_ip_src_TNPC_Interlock.vhd",
+    "Interlock_ip_src_TNPC_Interlock1.vhd",
+    "Interlock_ip_src_TNPC_Interlock2.vhd",
     "Interlock_ip_src_Detect_Fall_Nonpositive2.vhd",
     "Interlock_ip_src_DeadTime.vhd",
+    "Interlock_ip_src_Detect_Fall_Nonpositive2_block.vhd",
+    "Interlock_ip_src_DeadTime1.vhd",
+    "Interlock_ip_src_Detect_Fall_Nonpositive2_block1.vhd",
+    "Interlock_ip_src_DeadTime2.vhd",
     "Interlock_ip_src_InterlockDeadtime3L.vhd"
   ],
   "Latency": 0,
@@ -18,10 +26,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        4266272694,
-        123575012,
-        1845479519,
-        3341334736
+        3074418222,
+        974134952,
+        1610094756,
+        971131045
       ],
       "MarkedUnique": false
     },
@@ -46,40 +54,10 @@
     "TopNetworkPortInfo": {
       "inputPorts": [
         {
-          "Name": "u1_s0",
+          "Name": "AXI_Type",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 0,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "u1_s1",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 1,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "u1_s2",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 2,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "u1_s3",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 3,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -89,17 +67,7 @@
           "Name": "AXI_DelayCycles",
           "Rate": 1E-8,
           "Kind": "data",
-          "PortIndex": 4,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "AXI_Type",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 5,
+          "PortIndex": 1,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -109,38 +77,6 @@
           "Name": "AXI_EnableOutput",
           "Rate": 1E-8,
           "Kind": "data",
-          "PortIndex": 6,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        }
-      ],
-      "outputPorts": [
-        {
-          "Name": "u1_s0_out",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 0,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "u1_s1_out",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 1,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "u1_s2_out",
-          "Rate": 1E-8,
-          "Kind": "data",
           "PortIndex": 2,
           "IsComplex": false,
           "Testpoint": false,
@@ -148,7 +84,7 @@
           "Latency": -1
         },
         {
-          "Name": "u1_s3_out",
+          "Name": "u1_s0",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 3,
@@ -158,7 +94,7 @@
           "Latency": -1
         },
         {
-          "Name": "AXI_DelayCycles_readback",
+          "Name": "u1_s1",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 4,
@@ -168,7 +104,7 @@
           "Latency": -1
         },
         {
-          "Name": "AXI_Type_readback",
+          "Name": "u1_s2",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 5,
@@ -178,10 +114,242 @@
           "Latency": -1
         },
         {
-          "Name": "AXI_EnableOutput_readback",
+          "Name": "u1_s3",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s1",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s0",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s2",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s3",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s0",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s1",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 12,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s2",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 13,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s3",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 14,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        }
+      ],
+      "outputPorts": [
+        {
+          "Name": "AXI_DelayCycles_readback",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 0,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_Type_readback",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 1,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "AXI_EnableOutput_readback",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 2,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u1_s0_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 3,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u1_s1_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 4,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u1_s2_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u1_s3_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s0_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s1_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s2_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u2_s3_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s0_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s1_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 12,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s2_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 13,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "u3_s3_out",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 14,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -197,16 +365,24 @@
     0,
     0,
     0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0
   ],
   "ResourceSummary": {
     "multipliers": 0,
-    "addersSubtractors": 4,
-    "registers": 19,
-    "oneBitRegisters": 181,
+    "addersSubtractors": 12,
+    "registers": 51,
+    "oneBitRegisters": 461,
     "rams": 0,
-    "multiplexers": 36,
-    "IOBits": 94,
+    "multiplexers": 108,
+    "IOBits": 110,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0
   }

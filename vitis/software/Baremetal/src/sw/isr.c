@@ -430,6 +430,7 @@ void ISR_Control(void *data)
    	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
    	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_17n,observation_ip_17n[i],0U,i);
    	        }
+#if NN_IP_CORE==0
    	        uz_nn_ff(Global_Data.objects.nn_layer_17n,Global_Data.objects.matrix_input_17n);
    	        matrix_output_17n = uz_nn_get_output_data(Global_Data.objects.nn_layer_17n);
    	        uz_matrix_multiply_by_scalar(matrix_output_17n,U_max); // scaling layer of nn
@@ -437,6 +438,15 @@ void ISR_Control(void *data)
    	        v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,1U);
    	        v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,2U);
    	        v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,3U);
+#else
+   	        uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+  	        uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_17n,U_max); // scaling layer of nn
+  	        v_dq_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,0U);
+  	        v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,1U);
+  	        v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,2U);
+  	        v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,3U);
+#endif
+
 #endif
 
            	v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_dq_meas, &ext_clamping_dq);
@@ -552,6 +562,7 @@ void ISR_Control(void *data)
            		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
            			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_17n,observation_ip_17n[i],0U,i);
            		}
+#if NN_IP_CORE==0
            		uz_nn_ff(Global_Data.objects.nn_layer_17n,Global_Data.objects.matrix_input_17n);
            		matrix_output_17n = uz_nn_get_output_data(Global_Data.objects.nn_layer_17n);
            		uz_matrix_multiply_by_scalar(matrix_output_17n,U_max); // scaling layer of nn
@@ -559,6 +570,14 @@ void ISR_Control(void *data)
            		v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,1U);
            		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,2U);
            		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,3U);
+#else
+           		uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+           		uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_17n,U_max); // scaling layer of nn
+           		v_dq_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,0U);
+           		v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,1U);
+           		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,2U);
+           		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,3U);
+#endif
 #endif
            		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_dq_meas, &ext_clamping_dq);
            		v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_xy_meas, &ext_clamping_xy);

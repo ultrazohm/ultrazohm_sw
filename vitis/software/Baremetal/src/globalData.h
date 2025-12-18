@@ -12,6 +12,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_NN_acc/uz_NN_acc.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -141,9 +142,11 @@ typedef struct{
 	uz_matrix_t* matrix_input_15n;
 	uz_nn_t* nn_layer_15n;
 	uz_matrix_t* matrix_input_17n;
+	uz_matrix_t* matrix_output_17n;
 	uz_nn_t* nn_layer_17n;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
+	uz_NN_acc_t* NN_acc_Instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

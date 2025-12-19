@@ -60,6 +60,8 @@
 
 #include "include/pi_control_init.h"
 
+#include "uz/uz_HarmonicCurrentInjection/uz_HarmonicCurrentInjection.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

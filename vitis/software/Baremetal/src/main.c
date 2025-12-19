@@ -17,6 +17,7 @@
 #include "main.h"
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
+extern const struct uz_PMSM_t Hoerner;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -36,6 +37,9 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+
+uz_HarmonicCurrentInjection_t* HCI_instance_5th_1;
+uz_HarmonicCurrentInjection_t* HCI_instance_7th_1;
 
 enum init_chain
 {
@@ -57,6 +61,78 @@ uint32_t rpu_version_final = 0;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    // Configuration of HCI
+    struct uz_IIR_Filter_config BP_config_1 = {
+      	   .selection = BandPass_second_order,
+           .pass_frequency_Hz = 360.0f,
+           .sample_frequency_Hz = 10000.0f,
+       	   .damping = 0.05f
+    };
+    struct uz_IIR_Filter_config LP_config_1 = {
+       	   .selection = LowPass_first_order,
+    	   .cutoff_frequency_Hz = 6.0f,
+    	   .sample_frequency_Hz = 10000.0f
+    };
+    struct uz_PI_Controller_config config_id_5th_1 = {
+      	   .Kp = 2.0f, // nach BO
+		   .Ki = 5.0f, //nach BO
+           .samplingTime_sec = 0.0001f,
+       	   .upper_limit = 1.0f,
+       	   .lower_limit = -1.0f
+    };
+    struct uz_PI_Controller_config config_iq_5th_1 = {
+           .Kp = 2.0f,
+           .Ki = 5.0f,
+           .samplingTime_sec = 0.0001f,
+           .upper_limit = 1.0f,
+           .lower_limit = -1.0f
+    };
+    struct uz_CurrentControl_config CC_config_5th_1 = {
+           .decoupling_select = no_decoupling,
+           .config_PMSM = Hoerner,
+           .config_id = config_id_5th_1,
+           .config_iq = config_iq_5th_1,
+           .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+    struct uz_PI_Controller_config config_id_7th_1 = {
+      	   .Kp = 2.0f, // nach BO
+    	   .Ki = 5.0f, //nach BO
+           .samplingTime_sec = 0.0001f,
+		   .upper_limit = 1.0f,
+    	   .lower_limit = -1.0f
+    };
+    struct uz_PI_Controller_config config_iq_7th_1 = {
+           .Kp = 2.0f,
+           .Ki = 5.0f,
+           .samplingTime_sec = 0.0001f,
+           .upper_limit = 1.0f,
+           .lower_limit = -1.0f
+    };
+    struct uz_CurrentControl_config CC_config_7th_1 = {
+           .decoupling_select = no_decoupling,
+           .config_PMSM = Hoerner,
+           .config_id = config_id_7th_1,
+           .config_iq = config_iq_7th_1,
+           .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+    struct uz_HarmonicCurrentInjection_config HCI_config_5th_1 = {
+    		.order_harmonic = -5.0f,
+			.selection = dq_to_dqn,
+			.config_bandpass_dq = BP_config_1,
+			.config_lowpass_dq = LP_config_1,
+			.config_currentcontroller = CC_config_5th_1,
+			.sampling_frequency_Hz = 10000.0f
+    };
+    struct uz_HarmonicCurrentInjection_config HCI_config_7th_1 = {
+        	.order_harmonic = 7.0f,
+    		.selection = dq_to_dqn,
+    		.config_bandpass_dq = BP_config_1,
+    		.config_lowpass_dq = LP_config_1,
+    		.config_currentcontroller = CC_config_7th_1,
+			.sampling_frequency_Hz = 10000.0f
+    };
+
     while (1)
     {
         switch (initialization_chain)
@@ -91,6 +167,8 @@ int main(void)
 			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
 			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
 			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			HCI_instance_5th_1 = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
+			HCI_instance_7th_1 = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -114,7 +192,7 @@ int main(void)
             Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
             Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
             Global_Data.objects.resolver_left = initialize_resolver_left();
-            Global_Data.objects.resolver_right = initialize_resolver_right();
+            //Global_Data.objects.resolver_right = initialize_resolver_right();
             Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
             //Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
             Global_Data.objects.inverter_d1_left = initialize_uz_inverter_on_D1_left();

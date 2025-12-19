@@ -70,7 +70,7 @@ int JavaScope_initialize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
-	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.resolver_pl_outputs_right.n_mech_rpm;
+	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_ia_left] 				= &data->av.i_a_left;
 	js_ch_observable[JSO_ib_left] 				= &data->av.i_b_left;
 	js_ch_observable[JSO_ic_left] 				= &data->av.i_c_left;
@@ -90,7 +90,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_el_left] 		= &data->av.resolver_pl_outputs_left.position_el_2pi;
 	js_ch_observable[JSO_theta_el_right] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech_left] 		= &data->av.resolver_pl_outputs_left.position_mech_2pi;
-	js_ch_observable[JSO_theta_mech_right] 		= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_i_dqn_filtered_5th_d] 	= &data->av.i_dqn_filtered_5th_d;
+	js_ch_observable[JSO_i_dqn_filtered_5th_q] 	= &data->av.i_dqn_filtered_5th_q;
+	js_ch_observable[JSO_i_dqn_filtered_7th_d] 	= &data->av.i_dqn_filtered_7th_d;
+	js_ch_observable[JSO_i_dqn_filtered_7th_q]	= &data->av.i_dqn_filtered_7th_q;
+	js_ch_observable[JSO_v_dq_ref_5th_d] 		= &data->av.v_dq_ref_5th_d;
+	js_ch_observable[JSO_v_dq_ref_5th_q] 		= &data->av.v_dq_ref_5th_q;
+	js_ch_observable[JSO_v_dq_ref_7th_d] 		= &data->av.v_dq_ref_7th_d;
+	js_ch_observable[JSO_v_dq_ref_7th_q] 		= &data->av.v_dq_ref_7th_q;
 	js_ch_observable[JSO_vd_ref_left]			= &data->av.v_d_ref_left;
 	js_ch_observable[JSO_vq_ref_left]			= &data->av.v_q_ref_left;
 	js_ch_observable[JSO_vd_ref_right]			= &data->av.v_d_ref_right;

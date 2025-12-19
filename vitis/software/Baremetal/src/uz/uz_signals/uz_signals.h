@@ -5,7 +5,8 @@
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {
 	LowPass_first_order = 0,
-    HighPass_first_order
+    HighPass_first_order,
+	BandPass_second_order
 };
 
 /**
@@ -15,7 +16,9 @@ enum uz_IIR_Filter_selection {
 struct uz_IIR_Filter_config {
 	enum uz_IIR_Filter_selection selection; /**< Filter selection \n */
     float cutoff_frequency_Hz; /**< cutoff frequency in Hz of the filter */
+    float pass_frequency_Hz; /**< pass frequency in Hz of bandpass filter */
 	float sample_frequency_Hz; /**< sample frequency in Hz of the signal */
+	float damping; /**< damping of bandpass filter */
 };
 
 
@@ -83,6 +86,23 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  * @return float unfiltered signal
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+
+/**
+ * @brief Function to change the cutoff frequency of a LowPass filter
+	 *
+ * @param self pointer instance of uz_IIR_Filter_t
+ * @param cutoff_frequency_Hz new cutoff frequency
+ */
+void uz_signals_IIR_Filter_set_lowpass(uz_IIR_Filter_t* self, float cutoff_frequency_Hz);
+
+/**
+ * @brief Function to change the pass frequency and damping of a BandPass filter
+	 *
+ * @param self pointer instance of uz_IIR_Filter_t
+ * @param pass_frequency_Hz new pass frequency
+ * @param damping new damping
+ */
+void uz_signals_IIR_Filter_set_bandpass(uz_IIR_Filter_t* self, float pass_frequency_Hz, float damping);
 
 /**
  * @brief wraps a number to the range of [0, limit] 

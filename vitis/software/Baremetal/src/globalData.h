@@ -16,8 +16,8 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 enum control_plant {
-	CIL,
-	REAL
+	HCI,
+	foc
 };
 
 // union allows to access the values as array and individual variables
@@ -97,12 +97,27 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_d1_left_status;
 	struct uz_inverter_adapter_outputs_t inverter_d2_right_status;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
-	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
+	//struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	uint32_t  heartbeatframe_content;
 
     float theta_elec;                    // encoder
     float mechanicalRotorSpeed;          // encoder
     float mechanicalRotorSpeed_filtered; // encoder
+
+
+	float i_dqn_filtered_5th_d;
+	float i_dqn_filtered_5th_q;
+	float i_dqn_filtered_7th_d;
+	float i_dqn_filtered_7th_q;
+	float v_dq_ref_5th_d;
+	float v_dq_ref_5th_q;
+	float v_dq_ref_7th_d;
+	float v_dq_ref_7th_q;
+
+	float i_dqn_ref_5th_d;
+	float i_dqn_ref_5th_q;
+	float i_dqn_ref_7th_d;
+	float i_dqn_ref_7th_q;
 
 	float electricalRotorSpeed;
 	float snd_fld[21];
@@ -127,6 +142,11 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
+	float HCI_faktor;
+	float i_dqn_ref_5th_d;
+	float i_dqn_ref_5th_q;
+	float i_dqn_ref_7th_d;
+	float i_dqn_ref_7th_q;
 	enum control_plant ctrl_plant_select;
 } referenceAndSetValues;
 
@@ -141,9 +161,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D4;
 	uz_resolverIP_t* resolver_left;
-	uz_resolverIP_t* resolver_right;
+	//uz_resolverIP_t* resolver_right;
 	uz_resolver_pl_interface_t* resolver_pl_interface_left;
-	uz_resolver_pl_interface_t* resolver_pl_interface_right;
+	//uz_resolver_pl_interface_t* resolver_pl_interface_right;
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_d1_left;
 	uz_inverter_adapter_t* inverter_d2_right;

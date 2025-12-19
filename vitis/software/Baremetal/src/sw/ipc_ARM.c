@@ -198,23 +198,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->rasv.HCI_faktor = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->rasv.i_dqn_ref_5th_d = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		data->rasv.i_dqn_ref_5th_q = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		data->rasv.i_dqn_ref_7th_d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		data->rasv.i_dqn_ref_7th_q = value;
 			break;
 
 		case (Set_Send_Field_9):
@@ -267,13 +267,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_1): // switching between control plants only possible in idle state
 				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.ctrl_plant_select = CIL;
+					data->rasv.ctrl_plant_select = HCI;
 				}
 			break;
 
 		case (My_Button_2): // switching between control plants only possible in idle state
 			if (ultrazohm_state_machine_get_state() == idle_state) {
-				data->rasv.ctrl_plant_select = REAL;
+				data->rasv.ctrl_plant_select = foc;
 			}
 			break;
 
@@ -346,14 +346,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (data->rasv.ctrl_plant_select == CIL) {
+	 if (data->rasv.ctrl_plant_select == HCI) {
 		 js_status_BareToRTOS |= (1 << 4);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 4);
 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (data->rasv.ctrl_plant_select == REAL) {
+	 if (data->rasv.ctrl_plant_select == foc) {
 		 js_status_BareToRTOS |= (1 << 5);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 5);

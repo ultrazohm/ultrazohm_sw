@@ -108,6 +108,9 @@ uz_3ph_dq_t uz_HarmonicCurrentInjection_filter(uz_HarmonicCurrentInjection_t* se
         i_dqn_bp_filtered_Ampere = uz_transformation_3ph_harmonic_dq_to_dqn(i_dq_bp_filtered_Ampere, theta_el_rad, self->config.order_harmonic);
         i_dqn_lp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Lowpass_d_axis, i_dqn_bp_filtered_Ampere.d);
         i_dqn_lp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Lowpass_q_axis, i_dqn_bp_filtered_Ampere.q);
+
+
+
         break;
     default: ;
         break;

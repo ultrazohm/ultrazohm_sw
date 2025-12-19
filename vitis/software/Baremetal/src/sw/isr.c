@@ -43,7 +43,8 @@ extern DS_Data Global_Data;
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
-#define		MAX_CURRENT			15.0f
+#define		MAX_CURRENT_LEFT	10.0f
+#define		MAX_CURRENT_RIGHT	12.0f
 #define		V_DC				48.0f
 
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -55,8 +56,28 @@ struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
-struct uz_pmsmModel_inputs_t pmsm_cil_inputs = {0.0f};
-struct uz_pmsmModel_outputs_t pmsm_cil_outputs = {0.0f};
+
+extern uz_HarmonicCurrentInjection_t* HCI_instance_5th_1;
+extern uz_HarmonicCurrentInjection_t* HCI_instance_7th_1;
+extern const struct uz_PMSM_t Hoerner;
+
+//int mode = 0;
+struct uz_3ph_dq_t i_dqn_ref_5th = {0};
+struct uz_3ph_dq_t i_dqn_ref_7th = {0};
+struct uz_3ph_dq_t i_dqn_filtered_5th = {0};
+struct uz_3ph_dq_t i_dqn_filtered_7th = {0};
+struct uz_3ph_dq_t v_dq_ref_5th = {0};
+struct uz_3ph_dq_t v_dq_ref_7th = {0};
+struct uz_3ph_dq_t v_dq_ref_HCI = {0};
+struct uz_3ph_dq_t i_dq_ref_5th = {0};
+struct uz_3ph_dq_t i_dq_ref_7th = {0};
+
+
+float omega_el_rad_per_sec_right = 0.0f;
+float HCI_faktor = 0.0f;
+
+
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -99,11 +120,10 @@ void ISR_Control(void *data)
 	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
 
     // check for current limit
-    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
-   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT) {
+    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT_LEFT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT_LEFT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT_LEFT ||
+   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT_RIGHT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT_RIGHT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT_RIGHT) {
     	ultrazohm_state_machine_set_stop(true);
     }
-
     // update status of inverter adapters
     Global_Data.av.inverter_d1_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_left);
     Global_Data.av.inverter_d2_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_right);
@@ -136,6 +156,8 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
 
+		Global_Data.rasv.HCI_faktor = 0.0f;
+
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -157,8 +179,50 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	  // get reference currents from Global_Data
+    	  i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
 
-    	if (Global_Data.rasv.ctrl_plant_select == CIL) {
+    	  //get HCI_faktor from global Data
+
+    	  HCI_faktor = Global_Data.rasv.HCI_faktor;
+
+    	  i_dqn_ref_5th.d = 0.0f; // -1.0f; // Global_Data.rasv.i_dqn_ref_5th_d;
+    	  i_dqn_ref_5th.q = 0.0f; //1.2f; //Global_Data.rasv.i_dqn_ref_5th_q;
+    	  i_dqn_ref_7th.d = 0.0f; //0.4f; //Global_Data.rasv.i_dqn_ref_7th_d;
+    	  i_dqn_ref_7th.q = 0.0f; //-0.25f; //Global_Data.rasv.i_dqn_ref_7th_q;
+
+    	  // park transformation of measured currents
+    	   i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+    	   i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.theta_elec);
+
+    	   Global_Data.av.i_d_left = i_dq_left.d;
+ 	       Global_Data.av.i_q_left = i_dq_left.q;
+ 	       Global_Data.av.i_d_right = i_dq_right.d;
+    	   Global_Data.av.i_q_right = i_dq_right.q;
+
+    	   // speed (right from encoder)
+    	   Global_Data.av.speed_rpm_right = Global_Data.av.mechanicalRotorSpeed;
+    	   Global_Data.av.omega_mech_right = (Global_Data.av.speed_rpm_right*2.0f*UZ_PIf)/(60.0f);
+
+    	   // speed (left from resolver interface)
+    	   Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
+    	   Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
+
+           // calculate control (speed and current) of left motor
+           control_left_motor();
+
+           // calculate control right motor (foc / HCI)
+           control_right_motor();
+
+           // set dutycycles
+           Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
+           Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
+           Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
+           Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+           Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+           Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+
+//    	if (Global_Data.rasv.ctrl_plant_select == CIL) {
 //    		// get reference currents from Global_Data
 //    		i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
 //    		// calculations necessary for all control algorithms
@@ -175,38 +239,38 @@ void ISR_Control(void *data)
 //
 //    		// calculate selected control algorithm for cil motor model
 //    		control_right_motor();
-    	}
-
-    	if (Global_Data.rasv.ctrl_plant_select == REAL) {
-			// get reference currents from Global_Data
-			i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
-
-			// park transformation of measured currents
-			i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
-			i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right,Global_Data.av.theta_elec);
-			Global_Data.av.i_d_left = i_dq_left.d;
-			Global_Data.av.i_q_left = i_dq_left.q;
-			Global_Data.av.i_d_right = i_dq_right.d;
-			Global_Data.av.i_q_right = i_dq_right.q;
-			Global_Data.av.speed_rpm_right = Global_Data.av.mechanicalRotorSpeed;
-			Global_Data.av.omega_mech_right = (Global_Data.av.speed_rpm_right*2.0f*UZ_PIf)/(60.0f);
-			Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
-			Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
-
-			// calculate control (speed and current) of left motor
-			control_left_motor();
-
-			// calculate control algorithm for right motor
-			control_right_motor();
-
-			// set dutycycles
-			Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
-			Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
-			Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
-			Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
-			Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
-			Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
-		}
+//    	}
+//
+//    	if (Global_Data.rasv.ctrl_plant_select == REAL) {
+//			// get reference currents from Global_Data
+//			i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
+//
+//			// park transformation of measured currents
+//			i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+//			i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right,Global_Data.av.theta_elec);
+//			Global_Data.av.i_d_left = i_dq_left.d;
+//			Global_Data.av.i_q_left = i_dq_left.q;
+//			Global_Data.av.i_d_right = i_dq_right.d;
+//			Global_Data.av.i_q_right = i_dq_right.q;
+//			Global_Data.av.speed_rpm_right = Global_Data.av.mechanicalRotorSpeed;
+//			Global_Data.av.omega_mech_right = (Global_Data.av.speed_rpm_right*2.0f*UZ_PIf)/(60.0f);
+//			Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
+//			Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
+//
+//			// calculate control (speed and current) of left motor
+//			control_left_motor();
+//
+//			// calculate control algorithm for right motor
+//			control_right_motor();
+//
+//			// set dutycycles
+//			Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
+//			Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
+//			Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
+//			Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+//			Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+//			Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+//		}
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -358,23 +422,84 @@ static void control_left_motor() {
 };
 
 static void control_right_motor() {
-    if(Global_Data.rasv.ctrl_plant_select == REAL) {
-        // calculate reference voltages for current control
-        v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
-        Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
-        Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
-		// calculate duty cycles from reference dq voltages
-		dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.theta_elec);
-	}
-	if(Global_Data.rasv.ctrl_plant_select == CIL) {
-//	    // calculate reference voltages for current control
-//	    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, V_DC, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
-//	    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
-//	    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
-//		// write inputs into CIL model
-//		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
-//		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
-//		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
-//		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
-	}
-};
+	omega_el_rad_per_sec_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
+    v_dq_ref_right = uz_CurrentControl_sample(
+            Global_Data.objects.current_ctrl_right,
+            i_dq_ref_right,
+            i_dq_right,
+            Global_Data.av.v_dc_right,
+			omega_el_rad_per_sec_right);
+
+    Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
+    Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
+
+    if (Global_Data.rasv.ctrl_plant_select == HCI) {
+
+    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_right);
+    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_right);
+    	i_dqn_filtered_5th = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_right, Global_Data.av.theta_elec);
+    	i_dqn_filtered_7th = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_right, Global_Data.av.theta_elec);
+
+    	uz_HarmonicCurrentInjection_set_controllers(HCI_instance_5th_1, Hoerner, omega_el_rad_per_sec_right);
+    	uz_HarmonicCurrentInjection_set_controllers(HCI_instance_7th_1, Hoerner, omega_el_rad_per_sec_right);
+
+    	v_dq_ref_5th = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th, i_dqn_filtered_5th, Global_Data.av.v_dc_right, omega_el_rad_per_sec_right,  Global_Data.av.theta_elec);
+    	v_dq_ref_7th = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th, i_dqn_filtered_7th, Global_Data.av.v_dc_right, omega_el_rad_per_sec_right,  Global_Data.av.theta_elec);
+    	v_dq_ref_HCI.d = v_dq_ref_right.d +  (v_dq_ref_5th.d + v_dq_ref_7th.d)*HCI_faktor;
+    	v_dq_ref_HCI.q = v_dq_ref_right.q +  (v_dq_ref_5th.q + v_dq_ref_7th.q)*HCI_faktor;
+
+    	dutycyc_right = uz_Space_Vector_Modulation(
+    					v_dq_ref_HCI,
+    	                Global_Data.av.v_dc_right,
+    	                Global_Data.av.theta_elec);
+
+    	//Übergaben an GlobalData für Javascope
+
+    	Global_Data.av.i_dqn_filtered_5th_d = i_dqn_filtered_5th.d;
+    	Global_Data.av.i_dqn_filtered_5th_q = i_dqn_filtered_5th.q;
+    	Global_Data.av.i_dqn_filtered_7th_d = i_dqn_filtered_7th.d;
+    	Global_Data.av.i_dqn_filtered_7th_q = i_dqn_filtered_7th.q;
+    	Global_Data.av.v_dq_ref_5th_d = v_dq_ref_5th.d;
+    	Global_Data.av.v_dq_ref_5th_q = v_dq_ref_5th.q;
+    	Global_Data.av.v_dq_ref_7th_d = v_dq_ref_7th.d;
+    	Global_Data.av.v_dq_ref_7th_q = v_dq_ref_7th.q;
+
+//    	//ALT
+//        uz_HarmonicCurrentInjection_set_filters(Global_Data.objects.hci_right, Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right);
+//        uz_HarmonicCurrentInjection_set_controllers(Global_Data.objects.hci_right, Hoerner, Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right);
+//
+//        i_dqn_filtered_right = uz_HarmonicCurrentInjection_filter(
+//                Global_Data.objects.hci_right,
+//                i_abc_right,
+//                Global_Data.av.theta_elec);
+//
+//        v_dq_hci_right = uz_HarmonicCurrentInjection_sample(
+//                Global_Data.objects.hci_right,
+//                Global_Data.rasv.i_dqn_ref_harmonic_right,
+//                i_dqn_filtered_right,
+//                Global_Data.av.v_dc_right,
+//				Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right,
+//                Global_Data.av.theta_elec);
+//
+//        Global_Data.av.i_d_hci_dqn_filtered_right = i_dqn_filtered_right.d;
+//        Global_Data.av.i_q_hci_dqn_filtered_right = i_dqn_filtered_right.q;
+//        Global_Data.av.v_d_hci_right = v_dq_hci_right.d;
+//        Global_Data.av.v_q_hci_right = v_dq_hci_right.q;
+//
+//        v_dq_total_right.d = v_dq_ref_right.d;// + v_dq_hci_right.d;
+//        v_dq_total_right.q = v_dq_ref_right.q;// + v_dq_hci_right.q;
+//
+//        dutycyc_right = uz_Space_Vector_Modulation(
+//                v_dq_total_right,
+//                Global_Data.av.v_dc_right,
+//                Global_Data.av.theta_elec);
+    }
+
+  if (Global_Data.rasv.ctrl_plant_select == foc) {
+	  	dutycyc_right = uz_Space_Vector_Modulation(
+            v_dq_ref_right,
+            Global_Data.av.v_dc_right,
+            Global_Data.av.theta_elec);
+}
+}
+

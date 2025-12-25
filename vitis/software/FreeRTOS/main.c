@@ -24,6 +24,7 @@
 //Includes for CAN
 #define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 #include "include/can.h"
+#include "include/can_tasks.h"
 
 //Includes from own files
 #include "main.h"
@@ -157,10 +158,20 @@ void network_thread(void *p)
 
 #if CAN_ACTIVE==1
 	uz_printf(" Init CAN \n\r"); //CAN interface
-	hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
+	int rc_status = hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
+
 //	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
 
+	if (rc_status != XST_SUCCESS) {
+	    uz_printf("hal_can_init failed rc_status=%d\n\r", rc_status);
+	} else {
+	    uz_printf("hal_can_init OK\n\r");
+	}
+
 	can_frame_t can_frame_rx; //CAN interface
+
+	/* start CAN tasks to handle RX/TX */
+    CAN_app_init();
 #endif
 
 #if LWIP_DHCP==1
@@ -333,9 +344,6 @@ void can_send_1(void)
 {
 	static uint8_t tick;
 	tick++;
-	if(tick > 250){
-		tick =0;
-	}
 
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
@@ -360,10 +368,7 @@ void can_send_1(void)
 void can_send_2(void)
 {
 	static uint8_t tick;
-	tick=tick+10;
-	if(tick > 250){
-		tick =0;
-	}
+	tick++;
 
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);

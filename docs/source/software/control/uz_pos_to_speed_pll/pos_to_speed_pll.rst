@@ -5,7 +5,7 @@ Position to Speed PLL
 =====================
 
 .. tip::
-  Huge thanks to Maximilian Schenke and Barnabas Haucke-Korber from Paderborn University for providing their implementation as a basis for this software module. 
+  Huge thanks to the Department of Power Electronics and Electrical Drives, Paderborn University for providing their implementation as a basis for this software module. 
   The respective literature reference is listed at the bottom of this page.
 
 Description

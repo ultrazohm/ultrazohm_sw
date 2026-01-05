@@ -5,7 +5,7 @@
 
 #define  IPCore_Reset_uz_endat_interface                                   0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_endat_interface                                  0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_endat_interface                               0x8  //contains unique IP timestamp (yymmddHHMM): 2511280951
+#define  IPCore_Timestamp_uz_endat_interface                               0x8  //contains unique IP timestamp (yymmddHHMM): 2512141944: 2512141953
 #define  endat_clk_divider_AXI_Data_uz_endat_interface                     0x100  //data register for Inport endat_clk_divider_AXI
 #define  endat_encoder_bit_width_single_turn_AXI_Data_uz_endat_interface   0x104  //data register for Inport endat_encoder_bit_width_single_turn_AXI
 #define  endat_encoder_bit_width_multi_turn_AXI_Data_uz_endat_interface    0x108  //data register for Inport endat_encoder_bit_width_multi_turn_AXI

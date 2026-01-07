@@ -10,7 +10,8 @@
 
 typedef struct {
     volatile uint32_t sequence;
-    volatile uint8_t  SignalRx;
+    volatile uint8_t  SignalRx1;
+    volatile uint8_t  SignalRx2;
     volatile uint8_t  SignalTx;
     uint8_t reserved[2];
 } shared_CAN_Data_t;
@@ -27,7 +28,7 @@ static void can_rx_task(void *pv)
         if (!hal_can_is_rx_empty()) {
             if (hal_can_receive_frame_blocking(&frame) == XST_SUCCESS) {
                 if (frame.std_id == 0x123 && frame.dlc >= 1) {
-                    shared_CAN_Data.SignalRx = frame.data[0];
+                    shared_CAN_Data.SignalRx1 = frame.data[0];
                     shared_CAN_Data.sequence++;
                 }
             }
@@ -42,12 +43,13 @@ static void can_task_1ms(void *pv)
     can_frame_t tx;
     (void)pv;
     for (;;) {
-        vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
         /* Example: periodic heartbeat on 1ms (can be replaced with real data) */
         tx.std_id = 0x100;
         tx.dlc = 1;
         tx.data[0] = 0xAA;
         hal_can_send_frame_blocking(&tx);
+
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
     }
 }
 
@@ -55,17 +57,43 @@ static void can_task_10ms(void *pv)
 {
     TickType_t last = xTaskGetTickCount();
     can_frame_t tx;
+    can_frame_t rx;
     (void)pv;
     for (;;) {
-        vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
         /* Read value written by R5 and send on CAN ID 0x45 */
         uint8_t val = shared_CAN_Data.SignalTx;
         tx.std_id = 0x45;
         tx.dlc = 1;
         tx.data[0] = val;
         hal_can_send_frame_blocking(&tx);
+
+        /* Limit processing CAN receive messages up to 64 frames per task to avoid blocking */
+        uint8_t drained = 0;
+        const uint8_t max_drain = 64;
+        while (!hal_can_is_rx_empty() && (drained < max_drain)) {
+            if (hal_can_receive_frame_blocking(&rx) == XST_SUCCESS) {
+            	/* Message 1 */
+                if (rx.std_id == 0x111 && rx.dlc >= 1) {
+                    shared_CAN_Data.SignalRx1 = rx.data[0];
+                    shared_CAN_Data.sequence++;
+                }
+
+                /* Message 2 */
+                if (rx.std_id == 0x112 && rx.dlc >= 1) {
+                    shared_CAN_Data.SignalRx2 = rx.data[0];
+                    shared_CAN_Data.sequence++;
+                }
+            } else {
+                break; /* receive failed, stop trying */
+            }
+            drained++;
+        }
+
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(10));
     }
 }
+
+
 
 static void can_task_100ms(void *pv)
 {
@@ -73,13 +101,14 @@ static void can_task_100ms(void *pv)
     can_frame_t tx;
     (void)pv;
     for (;;) {
-        vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
         /* Status packet containing both signals */
         tx.std_id = 0x200;
         tx.dlc = 2;
-        tx.data[0] = shared_CAN_Data.SignalRx;
-        tx.data[1] = shared_CAN_Data.SignalTx;
+        tx.data[0] = shared_CAN_Data.SignalRx1;
+        tx.data[1] = shared_CAN_Data.SignalRx2;
         hal_can_send_frame_blocking(&tx);
+
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
     }
 }
 

@@ -30,8 +30,8 @@ struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
 // Unidirectional data structures
-struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x100);
-struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0x120);
+struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
+struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
 float val1;
 
 // Javascope Queue parameters
@@ -78,7 +78,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	if (XIpiPsu_TriggerIpi(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK) != (u32)XST_SUCCESS) {
 		// optional: handle error
 	}
-
+#if 0
 	// ======== Read data from R5 to A53 ========
 	// Invalidate cache to read fresh data from R5
 	Xil_DCacheInvalidateRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
@@ -87,7 +87,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	val1 = data_R5_2_A53->Data1;
 	// float val2 = data_R5_2_A53->Data2;
 	// float val3 = data_R5_2_A53->Data3;
-
+#endif
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{

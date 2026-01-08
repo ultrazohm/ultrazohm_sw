@@ -48,10 +48,12 @@ uint8_t Control_FLAG_100ms;
 
 ctrl_data_t ctrl_data;
 
-// Pointer auf die Shared-OCM-Daten, A53 schreibt an diese Adresse
-struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x100);
-// Pointer auf die Shared-OCM-Daten, R5 schreibt an diese Adresse (A53 liest)
-struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0x120);
+
+// Pointer to variables in shared OCM, (A53 writes / R5 reads)
+struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
+// Pointer to variables in shared OCM, (R5 writes / A53 reads)
+struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
+
 
 // IPI instance from ISR module (defined elsewhere)
 extern XIpiPsu INTCInst_IPI;
@@ -141,11 +143,8 @@ void Control_Task_10ms(void)
 	a53_Data1 = data_A53_2_R5->Data1;
 	a53_Data2 = data_A53_2_R5->Data2;
 	a53_Data3 = data_A53_2_R5->Data3;
+	/* --- End of read A53 -> R5 shared data (OCM) --- */
 
-	// Map or copy into local control inputs as required
-	// Here we update the FCF input value U_DC with Data1 as an example.
-	// Adjust mapping if your application requires different fields.
-	ctrl_data.fcf_in.U_DC = a53_Data1;
 
 	/* --- execute Simulink State Machine Function --- */
 	ctrl_data.smf_in.FastCtrl_Error = ctrl_data.fcf_out.FOC_Error;
@@ -162,7 +161,7 @@ void Control_Task_10ms(void)
 	ctrl_data.smf_out.SPEED_CTRL_Enable = FOC_SMF_MPtr->outputs->SPEED_CTRL_Enable;
 
 	/* --- End of Simulink State Machine Function --- */
-
+#if 0
 	/* --- Write R5 -> A53 shared data and notify A53 --- */
 	// Map SMF outputs into the shared R5->A53 structure (example mapping)
 	data_R5_2_A53->Data1 = cnt_r5++;//ctrl_data.smf_out.SysStateAct;
@@ -179,6 +178,7 @@ void Control_Task_10ms(void)
 	if (XIpiPsu_TriggerIpi(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK) != (u32)XST_SUCCESS) {
 		// optional: handle error (e.g., retry or log)
 	}
+#endif
 }
 
 /**

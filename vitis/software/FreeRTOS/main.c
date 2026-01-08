@@ -134,7 +134,7 @@ int main()
 
 
 		case initialization_rtos:
-			// SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
+				// SW: Initialize the Interrupt Handler in main, because by doing it in the network-threat, there were always problems that the thread was killed.
 			Initialize_InterruptHandler();
 
 			// Start the main-threat

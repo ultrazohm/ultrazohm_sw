@@ -26,7 +26,7 @@ void uz_phy_reset(void)
 	uz_platform_gposet(RST_PHY1, UZP_GPO_DISABLE2TRISTATED);
 
 
-	uz_printf("PHY reset done\r\n");
+	uz_printf("APU: PHY reset done\r\n");
 }
 
 

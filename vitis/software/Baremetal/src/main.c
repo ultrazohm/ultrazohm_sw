@@ -101,7 +101,6 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
@@ -110,13 +109,14 @@ int main(void)
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
+            uz_printf("RPU Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
 
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-            Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
+            Initialize_ISR();
+            Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:

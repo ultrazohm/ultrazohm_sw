@@ -102,7 +102,7 @@ float observation_ip_15n[NUMBER_OF_INPUTS_15N] = {0};
 float observation_ip_17n[NUMBER_OF_INPUTS_17N] = {0};
 int reset = 0U;
 //Offset from Valentin
-float theta_offset = 5.4843f;
+float theta_offset = 5.93f;    //5.4843f;Encoder was changed
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
 

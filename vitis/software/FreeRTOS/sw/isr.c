@@ -29,6 +29,11 @@
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
+// Unidirectional data structures
+struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x100);
+struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0x120);
+float val1;
+
 // Javascope Queue parameters
 QueueHandle_t js_queue;
 int js_queue_full = 0;
@@ -45,7 +50,6 @@ XScuGic_Config *IntcConfig;
  *
  * @IpiInstPtr		Pointer to the IPI instance
  */
-// Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
 	ocm_eth_adapter_irq();
@@ -57,6 +61,32 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+
+	// ======== Write data A53 -> R5 ========
+	// Example: forward a status/value to R5 via the shared structure
+	data_A53_2_R5->Data1 = i_LifeCheck_Transfer_ipc;//(float)ControlData.id;      // example mapping
+	data_A53_2_R5->Data2 = 20.0f;//(float)ControlData.value;
+	data_A53_2_R5->Data3 = 30.0f;
+
+	// Flush the cache for the small data struct so R5 will see the update
+	Xil_DCacheFlushRange((u32)data_A53_2_R5, sizeof(struct data_A53_2_R5_t));
+
+	// Ensure all memory operations complete before triggering the IPI
+	__asm__ volatile ("dmb ish" ::: "memory");
+
+	// Trigger an IPI to inform R5 that new data is available
+	if (XIpiPsu_TriggerIpi(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK) != (u32)XST_SUCCESS) {
+		// optional: handle error
+	}
+
+	// ======== Read data from R5 to A53 ========
+	// Invalidate cache to read fresh data from R5
+	Xil_DCacheInvalidateRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
+	
+	// Now data from R5 is available:
+	val1 = data_R5_2_A53->Data1;
+	// float val2 = data_R5_2_A53->Data2;
+	// float val3 = data_R5_2_A53->Data3;
 
 	// if javascope connection is established
 	if(js_connection_established!=0)

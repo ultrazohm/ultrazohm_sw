@@ -26,3 +26,19 @@ struct APU_to_RPU_t
 	uint32_t id;
 	float value;
 };
+
+// Unidirectional data transfer A53 (APU) -> R5 (RPU)
+struct data_A53_2_R5_t
+{
+	float Data1;
+	float Data2;
+	float Data3;
+};
+
+// Unidirectional data transfer R5 (RPU) -> A53 (APU)
+struct data_R5_2_A53_t
+{
+	float Data1;
+	float Data2;
+	float Data3;
+};

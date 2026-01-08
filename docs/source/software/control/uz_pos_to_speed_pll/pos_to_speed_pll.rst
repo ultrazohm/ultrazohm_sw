@@ -12,8 +12,10 @@ Description
 ===========
 
 The Position to Speed PLL calculates a rotational speed from a rotor position. 
-The calculation is based on a phase-locked loop (PLL). Rotor position sensors often only provide the position signal, but information about the mechanical and electrical rotational speed is also required for control purposes. 
-This software module offers a possible solution for this task. Below, :ref:`simulink_source_pos_to_speed_pll` shows a schematic diagram of the software module with its inputs and outputs.
+The calculation is based on a phase-locked loop (PLL). 
+Rotor position sensors often only provide the position signal, but information about the mechanical and electrical rotational speed is also required for control purposes. 
+This software module offers a possible solution for this task. 
+Below, :ref:`simulink_source_pos_to_speed_pll` shows a schematic diagram of the software module with its inputs and outputs.
 
 .. _simulink_source_pos_to_speed_pll:
 
@@ -36,7 +38,7 @@ Table :ref:`pos_to_speed_pll_interface_table` lists all input and output variabl
    :widths: 50 80 80 50 200
    :header-rows: 1
 
-It is important to note that the input signal for the position, ``position_mech_SI``, must be in rad and must be in the range :math:`0...2\pi`. 
+It is important to note that the input signal for the position, ``position_mech_SI``, must be in **rad** and must be in the range :math:`0...2\pi`. 
 Furthermore, the ``pole_pairs`` and ``sampling_time_seconds`` must not be :math:`0`.
 
 Example configuration

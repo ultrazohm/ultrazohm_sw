@@ -142,7 +142,7 @@ puts "INFO: 'catch {psu_protection}' command is executed."
 targets -set -nocase -filter {name =~ "*A53*#0"}
 puts "INFO: Context for processor 'psu_cortexa53_0' is selected."
 #####################################################
-rst -cores -clear-registers
+rst -processor -clear-registers
 puts "INFO: Processor reset is completed for 'psu_cortexa53_0'."
 #####################################################
 dow FreeRTOS/Debug/FreeRTOS.elf
@@ -154,9 +154,9 @@ puts "INFO: Context for processor 'psu_cortexr5_0' is selected."
 #####################################################
 # Reset R5 core(s) and clear registers (recommended after power-on / to avoid bootloop warnings)
 if {$UZ_FPGA_FAST_RESTART == 1} {
-    rst -cores -clear-registers
+    rst -processor -clear-registers
 } else {
-    rst -cores
+    rst -processor
 }
 puts "INFO: Processor reset is completed for 'psu_cortexr5_0'."
 #####################################################

@@ -30,9 +30,10 @@ struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
 // Unidirectional data structures
-struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
-struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
-float r5_val1;
+struct data_A2R_t volatile * const data_A2R = (struct data_A2R_t *)(MEM_SHARED_START_APP_A2R);
+struct data_R2A_t volatile * const data_R2A = (struct data_R2A_t *)(MEM_SHARED_START_APP_R2A);
+//struct data_A2R_t data_A2R_localAPU;
+struct data_R2A_t data_R2A_localAPU;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
@@ -61,16 +62,16 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
-	Xil_DCacheFlushRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
+	Xil_DCacheFlushRange((u32)data_R2A, sizeof(struct data_R2A_t));
 
 	// ======== Write data A53 -> R5 ========
 	// Example: forward a status/value to R5 via the shared structure
-	data_A53_2_R5->Data1 = i_LifeCheck_Transfer_ipc;//(float)ControlData.id;      // example mapping
-	data_A53_2_R5->Data2 = 20.0f;//(float)ControlData.value;
-	data_A53_2_R5->Data3 = 30.0f;
+	data_A2R->LifeCheck_Cnt_A2R = (uint32_t)i_LifeCheck_Transfer_ipc;
+	data_A2R->Speed_Request = 20.0f;
+	data_A2R->Torque_Request = 30.0f;
 
 	// Flush the cache for the small data struct so R5 will see the update
-	Xil_DCacheFlushRange((u32)data_A53_2_R5, sizeof(struct data_A53_2_R5_t));
+	Xil_DCacheFlushRange((u32)data_A2R, sizeof(struct data_A2R_t));
 
 	// Ensure all memory operations complete before triggering the IPI
 	__asm__ volatile ("dmb ish" ::: "memory");
@@ -82,10 +83,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 #if 0
 	// ======== Read data from R5 to A53 ========
 	// Invalidate cache to read fresh data from R5
-	Xil_DCacheInvalidateRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
+	Xil_DCacheInvalidateRange((u32)data_R2A, sizeof(struct data_R2A_t));
 #endif
-	// Now data from R5 is available:
-	r5_val1 = data_R5_2_A53->Data1;
+	// Now data from R5 is available, write to local struct:
+	data_R2A_localAPU = *data_R2A;
 	// float val2 = data_R5_2_A53->Data2;
 	// float val3 = data_R5_2_A53->Data3;
 

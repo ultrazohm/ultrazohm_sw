@@ -27,7 +27,8 @@ u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler,vo
 u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId);	//Init Hardware for IPI-ISR
 int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);			// Init InterruptHandler for ISR
 
-extern float r5_val1;
+//extern struct data_A2R_t data_A2R_localAPU;
+extern struct data_R2A_t data_R2A_localAPU;
 
 
 #endif /* ISR_H_ */

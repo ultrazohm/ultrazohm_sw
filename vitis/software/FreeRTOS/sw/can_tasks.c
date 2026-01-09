@@ -6,6 +6,7 @@
 #include "../defines.h"
 #include "../uz/uz_HAL.h"
 #include "../include/isr.h"
+#include "APU_RPU_shared.h"
 #include <xstatus.h>               /* XST_SUCCESS */
 #include <string.h>
 
@@ -66,7 +67,7 @@ static void can_task_10ms(void *pv)
         tx.std_id = 0x45;
         tx.dlc = 2;
         tx.data[0] = val;
-        tx.data[1] = (uint8_t)r5_val1;
+        tx.data[1] = (uint8_t)data_R2A_localAPU.Diag_Warning_Status;
         hal_can_send_frame_blocking(&tx);
 
         /* Limit processing CAN receive messages up to 64 frames per task to avoid blocking */

@@ -50,9 +50,9 @@ ctrl_data_t ctrl_data;
 
 
 // Pointer to variables in shared OCM, (A53 writes / R5 reads)
-struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
+struct data_A2R_t volatile * const data_A2R = (struct data_A2R_t *)(MEM_SHARED_START_APP_A2R);
 // Pointer to variables in shared OCM, (R5 writes / A53 reads)
-//struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
+//struct data_R2A_t volatile * const data_R2A = (struct data_R2A_t *)(MEM_SHARED_START_APP_R2A);
 
 
 // IPI instance from ISR module (defined elsewhere)
@@ -137,12 +137,12 @@ void Control_Task_10ms(void)
 {
 	/* --- Read A53 -> R5 shared data (OCM) --- */
 	// Invalidate CPU data cache for the shared area so we read fresh values
-	Xil_DCacheInvalidateRange((u32)data_A53_2_R5, sizeof(struct data_A53_2_R5_t));
+	Xil_DCacheInvalidateRange((u32)data_A2R, sizeof(struct data_A2R_t));
 
 	// Read values written by A53
-	a53_Data1 = data_A53_2_R5->Data1;
-	a53_Data2 = data_A53_2_R5->Data2;
-	a53_Data3 = data_A53_2_R5->Data3;
+	a53_Data1 = data_A2R->LifeCheck_Cnt_A2R;
+	a53_Data2 = data_A2R->Speed_Request;
+	a53_Data3 = data_A2R->Torque_Request;
 	/* --- End of read A53 -> R5 shared data (OCM) --- */
 
 
@@ -161,15 +161,16 @@ void Control_Task_10ms(void)
 	ctrl_data.smf_out.SPEED_CTRL_Enable = FOC_SMF_MPtr->outputs->SPEED_CTRL_Enable;
 
 	/* --- End of Simulink State Machine Function --- */
+
 #if 0
 	/* --- Write R5 -> A53 shared data and notify A53 --- */
 	// Map SMF outputs into the shared R5->A53 structure (example mapping)
-	data_R5_2_A53->Data1 = cnt_r5++;//ctrl_data.smf_out.SysStateAct;
-	data_R5_2_A53->Data2 = 2;//ctrl_data.smf_out.FOC_Mode;
-	data_R5_2_A53->Data3 = 3;//ctrl_data.smf_out.StateFOC;
+	data_R2A->Data1 = cnt_r5++;//ctrl_data.smf_out.SysStateAct;
+	data_R2A->Data2 = 2;//ctrl_data.smf_out.FOC_Mode;
+	data_R2A->Data3 = 3;//ctrl_data.smf_out.StateFOC;
 
 	// Flush cache so A53 sees updated values
-	Xil_DCacheFlushRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
+	Xil_DCacheFlushRange((u32)data_R2A, sizeof(struct data_R2A_t));
 
 	// Ensure memory operations complete before IPI
 	__asm__ volatile ("dmb ish" ::: "memory");

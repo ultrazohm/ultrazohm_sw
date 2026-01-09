@@ -38,7 +38,7 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 // Pointer to variables in shared OCM, (R5 writes / A53 reads)
-struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
+struct data_R2A_t volatile * const data_R2A = (struct data_R2A_t *)(MEM_SHARED_START_APP_R2A);
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -123,10 +123,11 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
 
-	data_R5_2_A53->Data1 = (float) i_fetchDataLifeCheck;
+	/* write application specific data to shared memory */
+	data_R2A->Diag_Warning_Status = i_fetchDataLifeCheck;
 
 	// Flush cache so A53 sees updated values
-	Xil_DCacheFlushRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
+	Xil_DCacheFlushRange((u32)data_R2A, sizeof(struct data_R2A_t));
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

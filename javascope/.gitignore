@@ -1,2 +1,9 @@
 *.csv
 *.mat
+!NN_IP_30us_before.mat
+!NN_IP_20us_before.mat
+!NN_IP_15us_before.mat
+!NN_IP_30us_after.mat
+!NN_IP_20us_after.mat
+!NN_IP_15us_after.mat
+!NN_SW_normal.mat

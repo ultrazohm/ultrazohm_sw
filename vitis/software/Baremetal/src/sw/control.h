@@ -83,6 +83,9 @@ boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
 
 extern ctrl_data_t ctrl_data;
 
+extern struct data_A2R_t data_A2R_localRPU;
+extern struct data_R2A_t data_R2A_localRPU;
+
 /* public functions */
 void init_control_functions(void);
 extern void Control_Task_1ms(void);

@@ -19,7 +19,7 @@ typedef struct {
 } shared_CAN_Data_t;
 //static volatile shared_CAN_Data_t * const shared_CAN_Data = (shared_CAN_Data_t *)SHARED_MEM_BASE;
 static shared_CAN_Data_t shared_CAN_Data;
-
+uint8_t msgStateActual_cnt=0;
 
 static void can_rx_task(void *pv)
 {
@@ -62,13 +62,46 @@ static void can_task_10ms(void *pv)
     can_frame_t rx;
     (void)pv;
     for (;;) {
-        /* Read value written by R5 and send on CAN ID 0x45 */
-        uint8_t val = shared_CAN_Data.SignalTx;
-        tx.std_id = 0x45;
-        tx.dlc = 2;
-        tx.data[0] = val;
-        tx.data[1] = (uint8_t)data_R2A_localAPU.Diag_Warning_Status;
+    	/* ============================== */
+        /* Send Message MCU4_ActualValues */
+    	// prepare data according to specification in DBC file
+    	int16_t s16_tmp_TorqueActual = (int16_t)(data_R2A_localAPU.Torque_Actual*25.0f);
+    	uint16_t u16_tmp_SpeedActual = (uint16_t)(data_R2A_localAPU.Speed_Actual*4.0f);
+    	uint16_t u16_tmp_Voltage_DC_Link = (uint16_t)(data_R2A_localAPU.Voltage_DC_Link*50.0f);
+
+    	// load data to CAN frame
+        tx.std_id = 0x331;
+        tx.dlc = 8;
+        tx.data[0] = (uint8_t)(s16_tmp_TorqueActual);		// low byte
+        tx.data[1] = (uint8_t)(s16_tmp_TorqueActual>>8);	// high byte
+        tx.data[2] = (uint8_t)(u16_tmp_SpeedActual);		// low byte
+        tx.data[3] = (uint8_t)(u16_tmp_SpeedActual>>8);		// high byte
+        tx.data[4] = (uint8_t)(u16_tmp_Voltage_DC_Link);	// low byte
+        tx.data[5] = (uint8_t)(u16_tmp_Voltage_DC_Link>>8);	// high byte
+        tx.data[6] = 0;
+        tx.data[7] = 0;
         hal_can_send_frame_blocking(&tx);
+
+
+    	/* ================================ */
+        /* Send Message MCU11_Diag_Failures */
+        // prepare data
+        uint32_t u32_tmp_Diag_GateDriver_Status = data_R2A_localAPU.Diag_GateDriver_Status;
+        uint32_t u32_tmp_Diag_Limits_Status     = data_R2A_localAPU.Diag_Limits_Status;
+
+    	// load data to CAN frame
+        tx.std_id = 0x335;
+        tx.dlc = 8;
+        tx.data[0] = (uint8_t)(u32_tmp_Diag_GateDriver_Status);		// low byte
+        tx.data[1] = (uint8_t)(u32_tmp_Diag_GateDriver_Status>>8);	// ...
+        tx.data[2] = (uint8_t)(u32_tmp_Diag_GateDriver_Status>>16);	// ...
+        tx.data[3] = (uint8_t)(u32_tmp_Diag_GateDriver_Status>>24);	// high byte
+        tx.data[4] = (uint8_t)(u32_tmp_Diag_Limits_Status);			// low byte
+        tx.data[5] = (uint8_t)(u32_tmp_Diag_Limits_Status>>8);		// ...
+        tx.data[6] = (uint8_t)(u32_tmp_Diag_Limits_Status>>16);		// ...
+        tx.data[7] = (uint8_t)(u32_tmp_Diag_Limits_Status>>24);		// high byte
+        hal_can_send_frame_blocking(&tx);
+
 
         /* Limit processing CAN receive messages up to 64 frames per task to avoid blocking */
         uint8_t drained = 0;
@@ -104,12 +137,53 @@ static void can_task_100ms(void *pv)
     can_frame_t tx;
     (void)pv;
     for (;;) {
-        /* Status packet containing both signals */
-        tx.std_id = 0x200;
-        tx.dlc = 2;
-        tx.data[0] = shared_CAN_Data.SignalRx1;
-        tx.data[1] = shared_CAN_Data.SignalRx2;
+    	/* ============================= */
+        /* Send Message MCU6_StateActual */
+    	// load data to CAN frame
+        tx.std_id = 0x333;
+        tx.dlc = 8;
+        tx.data[0] = (++msgStateActual_cnt & 0x0F);		// 4-Bit Counter
+        tx.data[1] = data_R2A_localAPU.SysState_Actual;
+        tx.data[2] = data_R2A_localAPU.SysState_Requested;
+        tx.data[3] = data_R2A_localAPU.SysState_Ack;
+        tx.data[4] = 0;
+        tx.data[5] = 0;
+        tx.data[6] = 0;
+        tx.data[7] = 0;
         hal_can_send_frame_blocking(&tx);
+
+
+    	/* ======================================= */
+        /* Send Message MCU5_Temperatures_Inverter */
+    	// load data to CAN frame
+        tx.std_id = 0x533;
+        tx.dlc = 8;
+        tx.data[0] = data_R2A_localAPU.Temp_Inv_Phase_1;
+        tx.data[1] = data_R2A_localAPU.Temp_Inv_Phase_2;
+        tx.data[2] = data_R2A_localAPU.Temp_Inv_Phase_3;
+        tx.data[3] = data_R2A_localAPU.Temp_Inv_Phase_4;
+        tx.data[4] = data_R2A_localAPU.Temp_Inv_Phase_5;
+        tx.data[5] = data_R2A_localAPU.Temp_Inv_Phase_6;
+        tx.data[6] = 0;
+        tx.data[7] = 0;
+        hal_can_send_frame_blocking(&tx);
+
+
+    	/* ==================================== */
+        /* Send Message MCU7_Temperatures_Motor */
+    	// load data to CAN frame
+        tx.std_id = 0x534;
+        tx.dlc = 8;
+        tx.data[0] = data_R2A_localAPU.Temp_Mot_Phase_1;
+        tx.data[1] = data_R2A_localAPU.Temp_Mot_Phase_2;
+        tx.data[2] = data_R2A_localAPU.Temp_Mot_Phase_3;
+        tx.data[3] = data_R2A_localAPU.Temp_Mot_Phase_4;
+        tx.data[4] = data_R2A_localAPU.Temp_Mot_Phase_5;
+        tx.data[5] = data_R2A_localAPU.Temp_Mot_Phase_6;
+        tx.data[6] = 0;
+        tx.data[7] = 0;
+        hal_can_send_frame_blocking(&tx);
+
 
         vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
     }

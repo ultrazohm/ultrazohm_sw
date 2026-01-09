@@ -168,7 +168,7 @@ void network_thread(void *p)
 	    uz_printf("hal_can_init OK\n\r");
 	}
 
-	can_frame_t can_frame_rx; //CAN interface
+//	can_frame_t can_frame_rx; //CAN interface
 
 	/* start CAN tasks to handle RX/TX */
     CAN_app_init();
@@ -182,28 +182,28 @@ void network_thread(void *p)
       		lifeCheck_networkThread =0;
       	}
 
-		#if CAN_ACTIVE==1
-			if( ! hal_can_is_rx_empty() ){
-				hal_can_receive_frame_blocking(&can_frame_rx);
-				if(can_frame_rx.std_id == 0x22) {
-				//	XcpCommand( (uint32_t *) can_frame_rx.data );
-					can_send_2();
-				} else {
-
-					//hal_can_debug_print_frame(&can_frame_rx);
-					//uz_printf("received a not XCP related CAN frame \n\r");
-				}
-				//usleep(1000 * 500);
-			}else{
-				can_send_1();
-				//usleep(1000 * 500);
-			}
-
-			// no tx message pending
-			if( hal_can_is_tx_done()) {
-				//XcpSendCallBack();
-			}
-		#endif
+//		#if CAN_ACTIVE==1
+//			if( ! hal_can_is_rx_empty() ){
+//				hal_can_receive_frame_blocking(&can_frame_rx);
+//				if(can_frame_rx.std_id == 0x22) {
+//				//	XcpCommand( (uint32_t *) can_frame_rx.data );
+//					can_send_2();
+//				} else {
+//
+//					//hal_can_debug_print_frame(&can_frame_rx);
+//					//uz_printf("received a not XCP related CAN frame \n\r");
+//				}
+//				//usleep(1000 * 500);
+//			}else{
+//				can_send_1();
+//				//usleep(1000 * 500);
+//			}
+//
+//			// no tx message pending
+//			if( hal_can_is_tx_done()) {
+//				//XcpSendCallBack();
+//			}
+//		#endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		dhcp_fine_tmr();

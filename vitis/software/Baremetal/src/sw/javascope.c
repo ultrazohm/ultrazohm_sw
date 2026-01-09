@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "control.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -124,7 +125,8 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->status 			= js_status_BareToRTOS;
 
 	/* write application specific data to shared memory */
-	data_R2A->Diag_Warning_Status = i_fetchDataLifeCheck;
+	*data_R2A = data_R2A_localRPU;
+	data_R2A->LifeCheck_Cnt_R2A = i_fetchDataLifeCheck;
 
 	// Flush cache so A53 sees updated values
 	Xil_DCacheFlushRange((u32)data_R2A, sizeof(struct data_R2A_t));

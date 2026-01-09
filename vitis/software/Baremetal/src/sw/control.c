@@ -53,7 +53,8 @@ ctrl_data_t ctrl_data;
 struct data_A2R_t volatile * const data_A2R = (struct data_A2R_t *)(MEM_SHARED_START_APP_A2R);
 // Pointer to variables in shared OCM, (R5 writes / A53 reads)
 //struct data_R2A_t volatile * const data_R2A = (struct data_R2A_t *)(MEM_SHARED_START_APP_R2A);
-
+struct data_A2R_t data_A2R_localRPU;
+struct data_R2A_t data_R2A_localRPU;
 
 // IPI instance from ISR module (defined elsewhere)
 extern XIpiPsu INTCInst_IPI;
@@ -68,10 +69,6 @@ uint8_t IN_IGNITION_SUCCESS;
 uint8_t IN_RELAY2_NOT_CLOSED;
 uint8_t IN_RELAY3_NOT_CLOSED;
 
-float a53_Data1;
-float a53_Data2;
-float a53_Data3;
-float cnt_r5;
 
 
 void init_control_functions(void)
@@ -128,6 +125,12 @@ void Control_Task_1ms(void)
 	ctrl_data.scf_out.TorqueEstNm        = FOC_SCF_MPtr->outputs->TorqueEstNm;
 	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_SCF_MPtr->outputs->TorqueRefDeratedNm;
 	/* --- End of Simulink Slow Control Function --- */
+
+	/* --- provide data for CAN communication via R5 --- */
+	data_R2A_localRPU.Torque_Actual = FOC_SCF_MPtr->outputs->TorqueEstNm;
+	data_R2A_localRPU.Speed_Actual = 12345.67;
+	data_R2A_localRPU.Voltage_DC_Link = ctrl_data.fcf_in.U_DC;
+	/* --- End of provide data for CAN communication --- */
 }
 
 /**
@@ -139,10 +142,8 @@ void Control_Task_10ms(void)
 	// Invalidate CPU data cache for the shared area so we read fresh values
 	Xil_DCacheInvalidateRange((u32)data_A2R, sizeof(struct data_A2R_t));
 
-	// Read values written by A53
-	a53_Data1 = data_A2R->LifeCheck_Cnt_A2R;
-	a53_Data2 = data_A2R->Speed_Request;
-	a53_Data3 = data_A2R->Torque_Request;
+	// Read values written by A53 and save to local struct to provide data to R5 functions
+	data_A2R_localRPU = *data_A2R;
 	/* --- End of read A53 -> R5 shared data (OCM) --- */
 
 

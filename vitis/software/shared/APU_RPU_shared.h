@@ -48,6 +48,7 @@ struct data_A2R_t
 	float MeasValue_Speed_Actual;
 	float MeasValue_Torque_Actual;
 	uint32_t LifeCheck_Cnt_A2R;
+	uint8_t CAN_Timeout_Status;
 };
 
 // Unidirectional data transfer R5 (RPU) -> A53 (APU)

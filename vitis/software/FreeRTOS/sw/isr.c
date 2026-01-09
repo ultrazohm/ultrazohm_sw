@@ -32,7 +32,7 @@ extern int js_connection_established;
 // Unidirectional data structures
 struct data_A2R_t volatile * const data_A2R = (struct data_A2R_t *)(MEM_SHARED_START_APP_A2R);
 struct data_R2A_t volatile * const data_R2A = (struct data_R2A_t *)(MEM_SHARED_START_APP_R2A);
-//struct data_A2R_t data_A2R_localAPU;
+struct data_A2R_t data_A2R_localAPU;
 struct data_R2A_t data_R2A_localAPU;
 
 // Javascope Queue parameters
@@ -65,10 +65,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheFlushRange((u32)data_R2A, sizeof(struct data_R2A_t));
 
 	// ======== Write data A53 -> R5 ========
-	// Example: forward a status/value to R5 via the shared structure
-	data_A2R->LifeCheck_Cnt_A2R = (uint32_t)i_LifeCheck_Transfer_ipc;
-	data_A2R->Speed_Request = 20.0f;
-	data_A2R->Torque_Request = 30.0f;
+	// write local data struct to shared memory
+	*data_A2R = data_A2R_localAPU;
+	data_A2R->LifeCheck_Cnt_A2R = i_LifeCheck_Transfer_ipc;
 
 	// Flush the cache for the small data struct so R5 will see the update
 	Xil_DCacheFlushRange((u32)data_A2R, sizeof(struct data_A2R_t));
@@ -87,8 +86,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 #endif
 	// Now data from R5 is available, write to local struct:
 	data_R2A_localAPU = *data_R2A;
-	// float val2 = data_R5_2_A53->Data2;
-	// float val3 = data_R5_2_A53->Data3;
 
 	// if javascope connection is established
 	if(js_connection_established!=0)

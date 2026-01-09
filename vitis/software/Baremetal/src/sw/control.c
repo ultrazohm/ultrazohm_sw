@@ -52,7 +52,7 @@ ctrl_data_t ctrl_data;
 // Pointer to variables in shared OCM, (A53 writes / R5 reads)
 struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
 // Pointer to variables in shared OCM, (R5 writes / A53 reads)
-struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
+//struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
 
 
 // IPI instance from ISR module (defined elsewhere)

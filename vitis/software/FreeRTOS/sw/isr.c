@@ -32,7 +32,7 @@ extern int js_connection_established;
 // Unidirectional data structures
 struct data_A53_2_R5_t volatile * const data_A53_2_R5 = (struct data_A53_2_R5_t *)(MEM_SHARED_START + 0x800);
 struct data_R5_2_A53_t volatile * const data_R5_2_A53 = (struct data_R5_2_A53_t *)(MEM_SHARED_START + 0xA00);
-float val1;
+float r5_val1;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
@@ -61,6 +61,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
 
 	// ======== Write data A53 -> R5 ========
 	// Example: forward a status/value to R5 via the shared structure
@@ -82,12 +83,12 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// ======== Read data from R5 to A53 ========
 	// Invalidate cache to read fresh data from R5
 	Xil_DCacheInvalidateRange((u32)data_R5_2_A53, sizeof(struct data_R5_2_A53_t));
-	
+#endif
 	// Now data from R5 is available:
-	val1 = data_R5_2_A53->Data1;
+	r5_val1 = data_R5_2_A53->Data1;
 	// float val2 = data_R5_2_A53->Data2;
 	// float val3 = data_R5_2_A53->Data3;
-#endif
+
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{

@@ -5,6 +5,7 @@
 #include "../include/can.h"        /* can_frame_t, hal_can_* */
 #include "../defines.h"
 #include "../uz/uz_HAL.h"
+#include "../include/isr.h"
 #include <xstatus.h>               /* XST_SUCCESS */
 #include <string.h>
 
@@ -63,8 +64,9 @@ static void can_task_10ms(void *pv)
         /* Read value written by R5 and send on CAN ID 0x45 */
         uint8_t val = shared_CAN_Data.SignalTx;
         tx.std_id = 0x45;
-        tx.dlc = 1;
+        tx.dlc = 2;
         tx.data[0] = val;
+        tx.data[1] = (uint8_t)r5_val1;
         hal_can_send_frame_blocking(&tx);
 
         /* Limit processing CAN receive messages up to 64 frames per task to avoid blocking */

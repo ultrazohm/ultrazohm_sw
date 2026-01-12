@@ -137,7 +137,7 @@ float theta_offset = 5.93f;    //5.4843f;Encoder was changed
 
 // software limits
 #define MAX_PHASE_CURRENT_AMP  30.0f
-#define MAX_DC_VOLT 50.0f
+#define MAX_DC_VOLT 45.0f
 #define MAX_TEMP_DEG 90.0f
 //neutral config
 #define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N
@@ -255,15 +255,15 @@ void ISR_Control(void *data)
         // check current limit
         if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
         	fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-        		uz_assert(0);
+        		ultrazohm_state_machine_set_stop(true);
         }
            // check DC Bus
            if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
-        	   uz_assert(0);
+        	   ultrazohm_state_machine_set_stop(true);
            }
            // check inverter temp
            if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
-        	   uz_assert(0);
+        	   ultrazohm_state_machine_set_stop(true);
            }
 
            //write to structs

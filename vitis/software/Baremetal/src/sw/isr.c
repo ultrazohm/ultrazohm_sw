@@ -165,6 +165,9 @@ uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
 bool automatic_idiq_lock=false; // hack to only do it once
 float start_marker=0.0f;
+bool start_angle_found = false;
+float theta_el_old = 0.0f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -184,36 +187,6 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-
-    if( (select_automatic_idiq) ){
-    	start_marker=1.0f;
-    	i_dq_reference.d=id_setpoints[setpoint_index];
-    	i_dq_reference.q=iq_setpoints[setpoint_index];
-    	i_xy_reference.d=ix_setpoints[setpoint_index];
-		i_xy_reference.q=iy_setpoints[setpoint_index];
-
-    	// step throught the array
-    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    	if(current_uptime>(old_uptime +300 ) ){
-    		old_uptime=current_uptime;
-
-    		if(setpoint_index<21){
-    			setpoint_index++;
-    		}else{
-    			setpoint_index=0;
-    			select_automatic_idiq=false;
-    			start_marker=0.0f;
-    		}
-    	}
-		
-    }else{
-       	i_dq_reference.d = i_d_ref;
-       	i_dq_reference.q = i_q_ref;
-       	i_xy_reference.d = i_X_ref;
-       	i_xy_reference.q = i_Y_ref;
-    }
-
-
 
     //Take measurements independent of control_state
     if(select_Real) {
@@ -319,6 +292,40 @@ void ISR_Control(void *data)
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
            }
        }
+
+    if( (select_automatic_idiq) ){
+    	if ((((theta_el_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f))&& (!start_angle_found)) {
+    		start_angle_found = true;
+    	}
+    	if (start_angle_found || select_CIL ) {
+    		start_marker=1.0f;
+    		i_dq_reference.d=id_setpoints[setpoint_index];
+    		i_dq_reference.q=iq_setpoints[setpoint_index];
+    		i_xy_reference.d=ix_setpoints[setpoint_index];
+    		i_xy_reference.q=iy_setpoints[setpoint_index];
+
+    		// step throught the array
+    		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+    		if(current_uptime>(old_uptime +300 ) ){
+    			old_uptime=current_uptime;
+    			if(setpoint_index<21){
+    				setpoint_index++;
+    			}else{
+    				setpoint_index=0;
+    				select_automatic_idiq=false;
+    				start_angle_found = false;
+    				start_marker=0.0f;
+    			}
+    		}
+    	}
+    }else{
+       	i_dq_reference.d = i_d_ref;
+       	i_dq_reference.q = i_q_ref;
+       	i_xy_reference.d = i_X_ref;
+       	i_xy_reference.q = i_Y_ref;
+    }
+    theta_el_old = Global_Data.av.theta_elec;
+
 
 
    //-----------------------------------------------------------------------------------------------------------------------------//
@@ -571,12 +578,22 @@ void ISR_Control(void *data)
            		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,2U);
            		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,3U);
 #else
+           		usleep(30);
            		uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
            		uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_17n,U_max); // scaling layer of nn
            		v_dq_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,0U);
            		v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,1U);
            		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,2U);
            		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_17n,0U,3U);
+
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+
 #endif
 #endif
            		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_dq_meas, &ext_clamping_dq);

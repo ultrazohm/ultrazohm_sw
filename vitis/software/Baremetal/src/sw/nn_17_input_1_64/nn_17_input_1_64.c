@@ -14,19 +14,19 @@ extern DS_Data Global_Data;
 //for 15 observations
 float x_17[NUMBER_OF_INPUTS_17N] = {0};
 static float w_1_17[NUMBER_OF_INPUTS_17N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_weights.csv"
+	#include "Weights_Layer_1.csv"
 };
 
 static float b_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_bias.csv"
+	#include "Bias_Layer_1.csv"
 };
 
 static float y_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 static float w_2_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_weights.csv"
+	#include "Weights_Layer_out.csv"
 };
 static float b_2_17[NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_bias.csv"
+	#include "Bias_Layer_out.csv"
 };
 
 static float y_2_17[NUMBER_OF_OUTPUTS] = {0};
@@ -70,19 +70,19 @@ Global_Data.objects.nn_layer_17n = uz_nn_init(config_17nn, 2U); //Warning is a G
 #else
 float x_17[NUMBER_OF_INPUTS_17N] MEMORY_ALIGN  = {0};
 static float w_1_17[NUMBER_OF_INPUTS_17N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "ac_layer1_weights.csv"
+	#include "Weights_Layer_1.csv"
 };
 
 static float b_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "ac_layer1_bias.csv"
+	#include "Bias_Layer_1.csv"
 };
 
 static float y_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {0};
 static float w_2_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
-	#include "ac_layer_out_weights.csv"
+	#include "Weights_Layer_out.csv"
 };
 static float b_2_17[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
-	#include "ac_layer_out_bias.csv"
+	#include "Bias_Layer_out.csv"
 };
 
 static float y_2_17[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {0};

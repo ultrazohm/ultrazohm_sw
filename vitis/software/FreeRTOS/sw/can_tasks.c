@@ -108,16 +108,38 @@ static void can_task_10ms(void *pv)
         const uint8_t max_drain = 64;
         while (!hal_can_is_rx_empty() && (drained < max_drain)) {
             if (hal_can_receive_frame_blocking(&rx) == XST_SUCCESS) {
-            	/* Message 1 */
-                if (rx.std_id == 0x111 && rx.dlc >= 1) {
-                    shared_CAN_Data.SignalRx1 = rx.data[0];
-                    shared_CAN_Data.sequence++;
+            	/* =============================== */
+            	/* Receive Message toMCU2_Requests */
+                if (rx.std_id == 0x131 && rx.dlc >= 1) {
+                	// create temporary variables to construct signals byte-wise
+                	int16_t s16_tmp[2] = {0,0};
+
+                	data_A2R_localAPU.Shutdown_Request = rx.data[0]>>7;
+
+                	s16_tmp[0] = (rx.data[2]<<8) + rx.data[1];
+                	data_A2R_localAPU.Torque_Request   = ((float)s16_tmp[0])*0.01f;
+
+                	s16_tmp[1] = (rx.data[4]<<8) + rx.data[3];
+                	data_A2R_localAPU.Speed_Request    = (float)s16_tmp[1];
+
+                	data_A2R_localAPU.Torque_Limit_Pos = (float)rx.data[5];
+					data_A2R_localAPU.Torque_Limit_Neg = (float)rx.data[6];
+
+					data_A2R_localAPU.State_Request    = rx.data[7];
+
                 }
 
-                /* Message 2 */
-                if (rx.std_id == 0x112 && rx.dlc >= 1) {
-                    shared_CAN_Data.SignalRx2 = rx.data[0];
-                    shared_CAN_Data.sequence++;
+            	/* ========================================== */
+            	/* Receive Message toMCU9_TestbenchMeasValues */
+                if (rx.std_id == 0x431 && rx.dlc >= 1) {
+                	// create temporary variables to construct signals byte-wise
+                	int32_t s32_tmp[2] = {0,0};
+
+                	s32_tmp[0] = (rx.data[3]<<24) + (rx.data[2]<<16) + (rx.data[1]<<8) + rx.data[0];
+                	data_A2R_localAPU.MeasValue_Speed_Actual  = ((float)s32_tmp[0])*0.01f;
+
+                	s32_tmp[1] = (rx.data[7]<<24) + (rx.data[6]<<16) + (rx.data[5]<<8) + rx.data[4];
+					data_A2R_localAPU.MeasValue_Torque_Actual = ((float)s32_tmp[1])*0.0001f;
                 }
             } else {
                 break; /* receive failed, stop trying */

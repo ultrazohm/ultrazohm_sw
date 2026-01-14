@@ -70,7 +70,8 @@
 // Network definition
 #define NN_15_INPUT_1_64  0
 #define NN_17_INPUT_1_64  1
-#define NN_IP_CORE		  1
+#define NN_IP_CORE_1_64	 1
+#define NN_IP_CORE_3_64	 0
 
 //----------------------------------------------------
 // FUNCTIONS

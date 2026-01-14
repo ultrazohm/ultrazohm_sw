@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>05f4d1a4</spirit:value>
+            <spirit:value>323a03f2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>05f4d1a4</spirit:value>
+            <spirit:value>323a03f2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -400,7 +400,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>u2_s1</spirit:name>
+        <spirit:name>u2_s0</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -413,7 +413,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>u2_s0</spirit:name>
+        <spirit:name>u2_s1</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1045,7 +1045,7 @@
       <spirit:file>
         <spirit:name>hdl/Interlock_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_2df7c8de</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_daf76e54</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1204,15 +1204,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Interlock_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114393976</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-12-16T12:36:56Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114434367</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-01-13T13:48:17Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a3671ad7"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="e83757e0"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d05595af"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="f4907993"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d0738c9f"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

@@ -125,10 +125,10 @@ void uz_PWM_3L_get_switch_states(uint32_t base_address, uint8_t states[][4]){
 	states[1][2] = uz_axi_read_uint32(base_address + AXI_U2_SS2_OUT_Data_PWM_3Level_control);
 	states[1][3] = uz_axi_read_uint32(base_address + AXI_U2_SS3_OUT_Data_PWM_3Level_control);
 
-	states[3][0] = uz_axi_read_uint32(base_address + AXI_U3_SS0_OUT_Data_PWM_3Level_control);
-	states[3][1] = uz_axi_read_uint32(base_address + AXI_U3_SS1_OUT_Data_PWM_3Level_control);
-	states[3][2] = uz_axi_read_uint32(base_address + AXI_U3_SS2_OUT_Data_PWM_3Level_control);
-	states[3][3] = uz_axi_read_uint32(base_address + AXI_U3_SS3_OUT_Data_PWM_3Level_control);
+	states[2][0] = uz_axi_read_uint32(base_address + AXI_U3_SS0_OUT_Data_PWM_3Level_control);
+	states[2][1] = uz_axi_read_uint32(base_address + AXI_U3_SS1_OUT_Data_PWM_3Level_control);
+	states[2][2] = uz_axi_read_uint32(base_address + AXI_U3_SS2_OUT_Data_PWM_3Level_control);
+	states[2][3] = uz_axi_read_uint32(base_address + AXI_U3_SS3_OUT_Data_PWM_3Level_control);
 }
 
 void uz_PWM_3L_hw_set_test_sin_freq(uint32_t base_address, uint32_t freq_hz, float sin_waves[]){
@@ -142,8 +142,8 @@ void uz_PWM_3L_hw_set_test_sin_freq(uint32_t base_address, uint32_t freq_hz, flo
 	sin_waves[1] = (float)sin(freq_hz*2*UZ_PId*(time_s+(1.0/3)*(1.0/(float)freq_hz)));
 	sin_waves[2] = (float)sin(freq_hz*2*UZ_PId*(time_s+(2.0/3)*(1.0/(float)freq_hz)));
 	uz_PWM_3L_hw_set_u1(base_address, sin_waves[0]);
-	uz_PWM_3L_hw_set_u2(base_address, sin_waves[0]);
-	uz_PWM_3L_hw_set_u3(base_address, sin_waves[0]);
+	uz_PWM_3L_hw_set_u2(base_address, sin_waves[1]);
+	uz_PWM_3L_hw_set_u3(base_address, sin_waves[2]);
 }
 
 uint32_t uz_PWM_3L_hw_enable_IP_core_readback(uint32_t base_address){

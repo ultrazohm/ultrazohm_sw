@@ -26,10 +26,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        3074418222,
-        974134952,
-        1610094756,
-        971131045
+        3818409077,
+        4084778621,
+        2535049944,
+        2212748711
       ],
       "MarkedUnique": false
     },
@@ -124,7 +124,7 @@
           "Latency": -1
         },
         {
-          "Name": "u2_s1",
+          "Name": "u2_s0",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 7,
@@ -134,7 +134,7 @@
           "Latency": -1
         },
         {
-          "Name": "u2_s0",
+          "Name": "u2_s1",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 8,

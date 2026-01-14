@@ -69,7 +69,7 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, true);
-    	uz_PWM_3L_hw_set_test_sin_freq(PWM_3L_instance->base_address, (uint32_t)GUI_Inputs.input_freq, PWM_3L_instance->u_desired);
+    	uz_PWM_3L_hw_set_test_sin_freq(PWM_3L_instance->base_address, (uint32_t)GUI_Inputs.input_duty_cycle, PWM_3L_instance->u_desired);
     } else{
     	uz_InterlockDeadtime3L_hw_enable_output(IntDead3L_instance->base_address, false);
     }
@@ -82,6 +82,11 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+
+    uz_PWM_3L_hw_set_carrier_f(PWM_3L_instance->base_address, GUI_Inputs.input_freq);
+    uz_PWM_3L_hw_set_min_PW(PWM_3L_instance->base_address, GUI_Inputs.minPulseWidth_ns);
+
+    uz_InterlockDeadtime3L_hw_set_delay_ns(IntDead3L_instance->base_address, GUI_Inputs.deadTime_ns);
 
 	uz_PWM_3L_get_switch_states(PWM_3L_instance->base_address, SS3L_out);
 	PWM_3L_instance->switchStates[0][0] = (float)SS3L_out[0][0];

@@ -10,4 +10,3 @@ annotate_port('gm_IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen/Relati
 annotate_port('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen/Relational Operator2', 0, 1, '');
 annotate_port('gm_IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen/Relational Operator3', 0, 1, '');
 annotate_port('IPCore_3Level_PWM/IP_Core_3-Level_PWM/GenPWM/CarrierGen/Relational Operator3', 0, 1, '');
-annotate_port('gm_IPCore_3Level_PWM/IP_Core_3-Level_PWM/MinPWM_instance1/range checker1', 0, 1, '');

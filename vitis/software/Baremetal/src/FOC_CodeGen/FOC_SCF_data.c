@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.9
+ * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Nov 18 15:25:56 2025
+ * C/C++ source code generated on : Thu Jan 15 19:48:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -424,11 +424,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   6.0F,
 
-  /* Computed Parameter: uph_to_6ph_factor_Gain
-   * Referenced by: '<S4>/3ph_to_6ph_factor'
-   */
-  2.0F,
-
   /* Computed Parameter: Constant_Value_g
    * Referenced by: '<S25>/Constant'
    */
@@ -565,11 +560,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   0.0F,
 
-  /* Computed Parameter: usrpm_Gain
-   * Referenced by: '<S2>/[1//s] => [rpm]'
-   */
-  2.38732409F,
-
   /* Computed Parameter: Switch1_Threshold_l
    * Referenced by: '<S1>/Switch1'
    */
@@ -589,6 +579,11 @@ P_FOC_SCF_T FOC_SCF_P = {
    * Referenced by: '<S4>/TorqEst_Nm'
    */
   1.0F,
+
+  /* Computed Parameter: usrpm_Gain
+   * Referenced by: '<S1>/[1//s] => [rpm]'
+   */
+  2.38732409F,
 
   /* Computed Parameter: Counter_Start_Value
    * Referenced by: '<S1>/Counter_Start'

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.13
+ * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Nov 26 12:19:33 2025
+ * C/C++ source code generated on : Thu Jan 15 19:21:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -56,6 +56,7 @@ typedef struct {
   real32_T EXT_Torque_Request;         /* '<Root>/<EXT_Torque_Request>' */
   real32_T EXT_Speed_Request;          /* '<Root>/<EXT_Speed_Request>' */
   boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
+  boolean_T EXT_KL15_PG;               /* '<Root>/EXT_KL15_PG' */
 } ExtU_FOC_SMF_T;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -70,42 +71,6 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct P_FOC_SMF_T_ {
-  real_T enumState_CTRL_IDLE;          /* Variable: enumState_CTRL_IDLE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_CTRL_INIT;          /* Variable: enumState_CTRL_INIT
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_ERROR_MODE;         /* Variable: enumState_ERROR_MODE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_FOC_IDLE;           /* Variable: enumState_FOC_IDLE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_FOC_OFF;            /* Variable: enumState_FOC_OFF
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_FOC_SPEED;          /* Variable: enumState_FOC_SPEED
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_FOC_STANDBY;        /* Variable: enumState_FOC_STANDBY
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_FOC_TORQUE;         /* Variable: enumState_FOC_TORQUE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_RUN_MODE;           /* Variable: enumState_RUN_MODE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_SPEED_MODE;         /* Variable: enumState_SPEED_MODE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_SYS_INIT;           /* Variable: enumState_SYS_INIT
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
-  real_T enumState_TORQUE_MODE;        /* Variable: enumState_TORQUE_MODE
-                                        * Referenced by: '<S1>/FOC_Statemachine'
-                                        */
   real32_T FOC_MANUAL_State_Request;   /* Variable: FOC_MANUAL_State_Request
                                         * Referenced by: '<S1>/MANUAL_StateReq'
                                         */
@@ -114,6 +79,42 @@ struct P_FOC_SMF_T_ {
                                         */
   real32_T SPEED_CTRL_MANUAL_n_RPM;    /* Variable: SPEED_CTRL_MANUAL_n_RPM
                                         * Referenced by: '<S1>/OmegaRot2'
+                                        */
+  real32_T enumState_CTRL_IDLE;        /* Variable: enumState_CTRL_IDLE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_CTRL_INIT;        /* Variable: enumState_CTRL_INIT
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_ERROR_MODE;       /* Variable: enumState_ERROR_MODE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_FOC_IDLE;         /* Variable: enumState_FOC_IDLE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_FOC_OFF;          /* Variable: enumState_FOC_OFF
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_FOC_SPEED;        /* Variable: enumState_FOC_SPEED
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_FOC_STANDBY;      /* Variable: enumState_FOC_STANDBY
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_FOC_TORQUE;       /* Variable: enumState_FOC_TORQUE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_RUN_MODE;         /* Variable: enumState_RUN_MODE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_SPEED_MODE;       /* Variable: enumState_SPEED_MODE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_SYS_INIT;         /* Variable: enumState_SYS_INIT
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real32_T enumState_TORQUE_MODE;      /* Variable: enumState_TORQUE_MODE
+                                        * Referenced by: '<S1>/FOC_Statemachine'
                                         */
   uint8_T SELECT_DataSource;           /* Variable: SELECT_DataSource
                                         * Referenced by: '<S1>/SELECT_DataSource'

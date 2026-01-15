@@ -85,6 +85,13 @@ void ISR_Control(void *data)
     ctrl_data.fcf_in.I_phA[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
     ctrl_data.fcf_in.I_phA[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
     ctrl_data.fcf_in.I_phA[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+//    ctrl_data.fcf_in.I_phA[3] =
+//    ctrl_data.fcf_in.I_phA[4] =
+//    ctrl_data.fcf_in.I_phA[5] =
+//    ctrl_data.fcf_in.I_phA[6] =
+//    ctrl_data.fcf_in.I_phA[7] =
+//    ctrl_data.fcf_in.I_phA[8] =
+
 
     // get values from Slow Control Function
     ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
@@ -99,6 +106,12 @@ void ISR_Control(void *data)
 	FOC_FCF_MPtr->inputs->I_phA[0]     = ctrl_data.fcf_in.I_phA[0];
 	FOC_FCF_MPtr->inputs->I_phA[1]     = ctrl_data.fcf_in.I_phA[1];
 	FOC_FCF_MPtr->inputs->I_phA[2]     = ctrl_data.fcf_in.I_phA[2];
+	FOC_FCF_MPtr->inputs->I_phA[3]     = ctrl_data.fcf_in.I_phA[3];
+	FOC_FCF_MPtr->inputs->I_phA[4]     = ctrl_data.fcf_in.I_phA[4];
+	FOC_FCF_MPtr->inputs->I_phA[5]     = ctrl_data.fcf_in.I_phA[5];
+	FOC_FCF_MPtr->inputs->I_phA[6]     = ctrl_data.fcf_in.I_phA[6];
+	FOC_FCF_MPtr->inputs->I_phA[7]     = ctrl_data.fcf_in.I_phA[7];
+	FOC_FCF_MPtr->inputs->I_phA[8]     = ctrl_data.fcf_in.I_phA[8];
 	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
 	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
 	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
@@ -113,13 +126,19 @@ void ISR_Control(void *data)
 	ctrl_data.fcf_out.DutyCycles01[3] = FOC_FCF_MPtr->outputs->DutyCycles01[3];
 	ctrl_data.fcf_out.DutyCycles01[4] = FOC_FCF_MPtr->outputs->DutyCycles01[4];
 	ctrl_data.fcf_out.DutyCycles01[5] = FOC_FCF_MPtr->outputs->DutyCycles01[5];
+	ctrl_data.fcf_out.DutyCycles01[6] = FOC_FCF_MPtr->outputs->DutyCycles01[6];
+	ctrl_data.fcf_out.DutyCycles01[7] = FOC_FCF_MPtr->outputs->DutyCycles01[7];
+	ctrl_data.fcf_out.DutyCycles01[8] = FOC_FCF_MPtr->outputs->DutyCycles01[8];
 
 	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.fcf_out.DutyCycles01[0];
 	Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.fcf_out.DutyCycles01[1];
 	Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.fcf_out.DutyCycles01[2];
-//    	Global_Data.rasv.halfBridge1DutyCycle = PWM_DutyCycle_0;//[0];
-//    	Global_Data.rasv.halfBridge2DutyCycle = PWM_DutyCycle_1;//[1];
-//		Global_Data.rasv.halfBridge3DutyCycle = PWM_DutyCycle_2;//[2];
+	Global_Data.rasv.halfBridge4DutyCycle = ctrl_data.fcf_out.DutyCycles01[3];
+	Global_Data.rasv.halfBridge5DutyCycle = ctrl_data.fcf_out.DutyCycles01[4];
+	Global_Data.rasv.halfBridge6DutyCycle = ctrl_data.fcf_out.DutyCycles01[5];
+	Global_Data.rasv.halfBridge7DutyCycle = ctrl_data.fcf_out.DutyCycles01[6];
+	Global_Data.rasv.halfBridge8DutyCycle = ctrl_data.fcf_out.DutyCycles01[7];
+	Global_Data.rasv.halfBridge9DutyCycle = ctrl_data.fcf_out.DutyCycles01[8];
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -136,7 +155,13 @@ void ISR_Control(void *data)
     // write values from Fast Control Function to data exchange struct
     ctrl_data.fcf_out.I_dq_ActA[0] = FOC_FCF_MPtr->outputs->I_dq_ActA[0];
     ctrl_data.fcf_out.I_dq_ActA[1] = FOC_FCF_MPtr->outputs->I_dq_ActA[1];
+    ctrl_data.fcf_out.I_dq_ActA[2] = FOC_FCF_MPtr->outputs->I_dq_ActA[2];
+    ctrl_data.fcf_out.I_dq_ActA[3] = FOC_FCF_MPtr->outputs->I_dq_ActA[3];
+    ctrl_data.fcf_out.I_dq_ActA[4] = FOC_FCF_MPtr->outputs->I_dq_ActA[4];
+    ctrl_data.fcf_out.I_dq_ActA[5] = FOC_FCF_MPtr->outputs->I_dq_ActA[5];
     ctrl_data.fcf_out.ModInd[0]    = FOC_FCF_MPtr->outputs->ModInd[0];
+    ctrl_data.fcf_out.ModInd[1]    = FOC_FCF_MPtr->outputs->ModInd[1];
+    ctrl_data.fcf_out.ModInd[2]    = FOC_FCF_MPtr->outputs->ModInd[2];
 	ctrl_data.fcf_out.w_elrads     = FOC_FCF_MPtr->outputs->w_elrads;
 	ctrl_data.fcf_out.FOC_Error    = FOC_FCF_MPtr->outputs->FOC_Error;
 

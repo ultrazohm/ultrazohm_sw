@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.9
+ * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Nov 18 15:25:56 2025
+ * C/C++ source code generated on : Thu Jan 15 19:48:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -89,6 +89,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   DW_FOC_SCF_T *FOC_SCF_DW = FOC_SCF_M->dwork;
   ExtU_FOC_SCF_T *FOC_SCF_U = (ExtU_FOC_SCF_T *) FOC_SCF_M->inputs;
   ExtY_FOC_SCF_T *FOC_SCF_Y = (ExtY_FOC_SCF_T *) FOC_SCF_M->outputs;
+  int32_T i;
   real32_T u0;
   real32_T u1;
   real32_T u2;
@@ -630,6 +631,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* MinMax: '<S2>/MinMax' */
   u0 = FOC_SCF_U->ModInd[0];
   u0 = fmaxf(u0, FOC_SCF_U->ModInd[1]);
+  u0 = fmaxf(u0, FOC_SCF_U->ModInd[2]);
 
   /* MinMax: '<S2>/MinMax' */
   FOC_SCF_B->MinMax_n = u0;
@@ -1138,9 +1140,6 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Sum: '<S9>/TorqCtrlSum1' */
   FOC_SCF_B->TorqCtrlSum1 = FOC_SCF_B->TorqCtrlSwitch3 + FOC_SCF_B->TorqCtrlSum4;
 
-  /* Gain: '<S2>/[1//s] => [rpm]' */
-  FOC_SCF_B->n_Act = FOC_SCF_P.usrpm_Gain * FOC_SCF_U->w_el_rad_s;
-
   /* Switch: '<S1>/Switch1' incorporates:
    *  Constant: '<S1>/0: P_Udc 1: Udc_measured'
    */
@@ -1156,35 +1155,19 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
   /* End of Switch: '<S1>/Switch1' */
 
-  /* Product: '<S4>/Product' */
-  u0 = FOC_SCF_U->I_dq_Act[0];
-
-  /* Product: '<S4>/Product' */
-  FOC_SCF_B->Product_h[0] = u0 * u0;
-
-  /* Product: '<S4>/Product' */
-  u0 = FOC_SCF_U->I_dq_Act[1];
-
-  /* Product: '<S4>/Product' */
-  FOC_SCF_B->Product_h[1] = u0 * u0;
-
-  /* Product: '<S4>/Product' */
-  u0 = FOC_SCF_U->I_dq_Act[2];
-
-  /* Product: '<S4>/Product' */
-  FOC_SCF_B->Product_h[2] = u0 * u0;
-
-  /* Product: '<S4>/Product' */
-  u0 = FOC_SCF_U->I_dq_Act[3];
-
-  /* Product: '<S4>/Product' */
-  FOC_SCF_B->Product_h[3] = u0 * u0;
-
   /* Sum: '<S4>/Subtract2' */
-  u0 = FOC_SCF_B->Product_h[0];
-  u0 += FOC_SCF_B->Product_h[1];
-  u0 += FOC_SCF_B->Product_h[2];
-  u0 += FOC_SCF_B->Product_h[3];
+  u0 = -0.0F;
+  for (i = 0; i < 6; i++) {
+    /* Product: '<S4>/Product' */
+    u1 = FOC_SCF_U->I_dq_Act[i];
+
+    /* Product: '<S4>/Product' */
+    u1 *= u1;
+    FOC_SCF_B->Product_h[i] = u1;
+
+    /* Sum: '<S4>/Subtract2' */
+    u0 += u1;
+  }
 
   /* Sum: '<S4>/Subtract2' */
   FOC_SCF_B->Subtract2 = u0;
@@ -1210,14 +1193,28 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     break;
 
    case 1:
+    /* Product: '<S31>/Product3' incorporates:
+     *  Constant: '<S31>/FOC_Psi_PM'
+     */
+    FOC_SCF_B->Product3 = FOC_SCF_U->I_dq_Act[5] * FOC_SCF_P.FOC_Psi_PM;
+
     /* Sum: '<S31>/Sum' incorporates:
      *  Constant: '<S31>/FOC_L_sd'
      *  Constant: '<S31>/FOC_L_sq'
      */
     FOC_SCF_B->Sum_a = FOC_SCF_P.FOC_L_sd - FOC_SCF_P.FOC_L_sq;
 
-    /* Product: '<S31>/Product2' */
-    FOC_SCF_B->Product2 = FOC_SCF_U->I_dq_Act[3] * FOC_SCF_B->Sum_a;
+    /* Product: '<S31>/product_1' */
+    FOC_SCF_B->product_1 = FOC_SCF_B->Sum_a * FOC_SCF_U->I_dq_Act[4] *
+      FOC_SCF_U->I_dq_Act[5];
+
+    /* Sum: '<S31>/add3' */
+    FOC_SCF_B->add3 = FOC_SCF_B->product_1 + FOC_SCF_B->Product3;
+
+    /* Product: '<S31>/Product2' incorporates:
+     *  Constant: '<S31>/FOC_Psi_PM'
+     */
+    FOC_SCF_B->Product2 = FOC_SCF_U->I_dq_Act[3] * FOC_SCF_P.FOC_Psi_PM;
 
     /* Product: '<S31>/product_2' */
     FOC_SCF_B->product_2 = FOC_SCF_B->Sum_a * FOC_SCF_U->I_dq_Act[2] *
@@ -1239,17 +1236,13 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     FOC_SCF_B->add1 = FOC_SCF_B->product + FOC_SCF_B->Product1_m;
 
     /* Sum: '<S31>/Add' */
-    FOC_SCF_B->Add = FOC_SCF_B->add1 + FOC_SCF_B->add2;
+    FOC_SCF_B->Add = (FOC_SCF_B->add1 + FOC_SCF_B->add2) + FOC_SCF_B->add3;
 
     /* Gain: '<S31>/3*Z_p//2' */
     FOC_SCF_B->uZ_p2 = FOC_SCF_P.uZ_p2_Gain * FOC_SCF_B->Add;
 
-    /* Gain: '<S4>/3ph_to_6ph_factor' */
-    FOC_SCF_B->uph_to_6ph_factor = FOC_SCF_P.uph_to_6ph_factor_Gain *
-      FOC_SCF_B->uZ_p2;
-
     /* Outport: '<Root>/TorqueEst [Nm]' */
-    FOC_SCF_Y->TorqueEstNm = FOC_SCF_B->uph_to_6ph_factor;
+    FOC_SCF_Y->TorqueEstNm = FOC_SCF_B->uZ_p2;
     break;
 
    case 2:
@@ -1267,6 +1260,9 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
   /* Gain: '<S4>/TorqEst_Nm' */
   FOC_SCF_B->M_est = FOC_SCF_P.TorqEst_Nm_Gain * FOC_SCF_Y->TorqueEstNm;
+
+  /* Gain: '<S1>/[1//s] => [rpm]' */
+  FOC_SCF_B->n_Act = FOC_SCF_P.usrpm_Gain * FOC_SCF_U->w_el_rad_s;
 
   /* UnitDelay: '<S1>/SCF_Cnt' */
   FOC_SCF_B->SCF_Cnt = FOC_SCF_DW->SCF_Cnt_DSTATE;
@@ -1320,6 +1316,9 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Outport: '<Root>/I_dq_Ref [A]' */
   FOC_SCF_Y->I_dq_RefA[0] = FOC_SCF_B->Switch2_ae;
   FOC_SCF_Y->I_dq_RefA[1] = FOC_SCF_B->I_q_Ref_limited;
+
+  /* Outport: '<Root>/n_Act [rpm]' */
+  FOC_SCF_Y->n_Actrpm = FOC_SCF_B->n_Act;
 }
 
 /* Model initialize function */

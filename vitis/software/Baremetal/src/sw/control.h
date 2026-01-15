@@ -33,7 +33,7 @@ extern uint8_t Control_FLAG_100ms;
 typedef struct {
 	struct {
 		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-		real32_T I_phA[6];                   /* '<Root>/I_ph [A]' */
+		real32_T I_phA[9];                   /* '<Root>/I_ph [A]' */
 		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
 		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
 		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
@@ -42,17 +42,17 @@ typedef struct {
 		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
 	} fcf_in;
 	struct {
-		real32_T DutyCycles01[6];            /* '<Root>/DutyCycles [0..1]' */
-		real32_T I_dq_ActA[4];               /* '<Root>/I_dq_Act [A]' */
-		real32_T ModInd[2];                  /* '<Root>/ModInd' */
+		real32_T DutyCycles01[9];            /* '<Root>/DutyCycles [0..1]' */
+		real32_T I_dq_ActA[6];               /* '<Root>/I_dq_Act [A]' */
+		real32_T ModInd[3];                  /* '<Root>/ModInd' */
 		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
 		real32_T FOC_Error;                  /* '<Root>/FOC_Error' */
 	} fcf_out;
 	struct {
 		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-		real32_T ModInd[2];                  /* '<Root>/ModInd' */
+		real32_T ModInd[3];                  /* '<Root>/ModInd' */
 		real32_T w_el_rad_s;                 /* '<Root>/w_el [rad//s]' */
-		real32_T I_dq_Act[4];                /* '<Root>/I_dq_Act [A]' */
+		real32_T I_dq_Act[6];                /* '<Root>/I_dq_Act [A]' */
 		real32_T MotTempdegC;                /* '<Root>/MotTemp [degC]' */
 		real32_T InvTempdegC;                /* '<Root>/InvTemp [degC]' */
 		real32_T EXT_Torque_Request;         /* '<Root>/ExtTorqReq [Nm]' */
@@ -64,12 +64,14 @@ typedef struct {
 		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
 		real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
 		real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
+		real32_T n_Actrpm;                   /* '<Root>/n_Act [rpm]' */
 	} scf_out;
 	struct {
 		real32_T EXT_State_Request;          /* '<Root>/<EXT_State_Request>' */
 		real32_T EXT_Torque_Request;         /* '<Root>/<EXT_Torque_Request>' */
 		real32_T EXT_Speed_Request;          /* '<Root>/<EXT_Speed_Request>' */
-boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
+		boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
+		boolean_T EXT_KL15_PG;               /* '<Root>/EXT_KL15_PG' */
 	} smf_in;
 	struct {
 		real32_T SysStateAct;                /* '<Root>/SysStateAct' */

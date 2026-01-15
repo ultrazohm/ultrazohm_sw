@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.9
+ * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Nov 18 15:25:56 2025
+ * C/C++ source code generated on : Thu Jan 15 19:48:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -118,17 +118,20 @@ typedef struct {
   real32_T TorqCtrlSwitch3;            /* '<S9>/TorqCtrlSwitch3' */
   real32_T TorqCtrlSum4;               /* '<S9>/TorqCtrlSum4' */
   real32_T TorqCtrlSum1;               /* '<S9>/TorqCtrlSum1' */
-  real32_T n_Act;                      /* '<S2>/[1//s] => [rpm]' */
   real32_T U_DC_scf;                   /* '<S1>/Switch1' */
-  real32_T Product_h[4];               /* '<S4>/Product' */
+  real32_T Product_h[6];               /* '<S4>/Product' */
   real32_T Subtract2;                  /* '<S4>/Subtract2' */
   real32_T Sqrt_b;                     /* '<S4>/Sqrt' */
   real32_T I_ph_peak_Act;              /* '<S4>/I_ph_peak' */
   real32_T I_ph_rms_Act;               /* '<S4>/I_ph_rms' */
   real32_T M_est;                      /* '<S4>/TorqEst_Nm' */
+  real32_T n_Act;                      /* '<S1>/[1//s] => [rpm]' */
   real32_T SCF_Cnt;                    /* '<S1>/SCF_Cnt' */
   real32_T Sum_o;                      /* '<S1>/Sum' */
+  real32_T Product3;                   /* '<S31>/Product3' */
   real32_T Sum_a;                      /* '<S31>/Sum' */
+  real32_T product_1;                  /* '<S31>/product_1' */
+  real32_T add3;                       /* '<S31>/add3' */
   real32_T Product2;                   /* '<S31>/Product2' */
   real32_T product_2;                  /* '<S31>/product_2' */
   real32_T add2;                       /* '<S31>/add2' */
@@ -137,7 +140,6 @@ typedef struct {
   real32_T add1;                       /* '<S31>/add1' */
   real32_T Add;                        /* '<S31>/Add' */
   real32_T uZ_p2;                      /* '<S31>/3*Z_p//2' */
-  real32_T uph_to_6ph_factor;          /* '<S4>/3ph_to_6ph_factor' */
   real32_T Switch2_d;                  /* '<S1>/Switch2' */
   real32_T TORQUE_REQ_LIMIT;           /* '<S1>/TORQUE_REQ_LIMIT' */
   real32_T deltariselimit_h;           /* '<S29>/delta rise limit' */
@@ -217,9 +219,9 @@ typedef struct {
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-  real32_T ModInd[2];                  /* '<Root>/ModInd' */
+  real32_T ModInd[3];                  /* '<Root>/ModInd' */
   real32_T w_el_rad_s;                 /* '<Root>/w_el [rad//s]' */
-  real32_T I_dq_Act[4];                /* '<Root>/I_dq_Act [A]' */
+  real32_T I_dq_Act[6];                /* '<Root>/I_dq_Act [A]' */
   real32_T MotTempdegC;                /* '<Root>/MotTemp [degC]' */
   real32_T InvTempdegC;                /* '<Root>/InvTemp [degC]' */
   real32_T EXT_Torque_Request;         /* '<Root>/ExtTorqReq [Nm]' */
@@ -233,6 +235,7 @@ typedef struct {
   real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
   real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
   real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
+  real32_T n_Actrpm;                   /* '<Root>/n_Act [rpm]' */
 } ExtY_FOC_SCF_T;
 
 /* Parameters (default storage) */
@@ -491,9 +494,6 @@ struct P_FOC_SCF_T_ {
   real32_T uZ_p2_Gain;                 /* Computed Parameter: uZ_p2_Gain
                                         * Referenced by: '<S31>/3*Z_p//2'
                                         */
-  real32_T uph_to_6ph_factor_Gain; /* Computed Parameter: uph_to_6ph_factor_Gain
-                                    * Referenced by: '<S4>/3ph_to_6ph_factor'
-                                    */
   real32_T Constant_Value_g;           /* Computed Parameter: Constant_Value_g
                                         * Referenced by: '<S25>/Constant'
                                         */
@@ -582,9 +582,6 @@ struct P_FOC_SCF_T_ {
                                 /* Computed Parameter: TorqCtrlSwitch3_Threshold
                                  * Referenced by: '<S9>/TorqCtrlSwitch3'
                                  */
-  real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
-                                        * Referenced by: '<S2>/[1//s] => [rpm]'
-                                        */
   real32_T Switch1_Threshold_l;       /* Computed Parameter: Switch1_Threshold_l
                                        * Referenced by: '<S1>/Switch1'
                                        */
@@ -596,6 +593,9 @@ struct P_FOC_SCF_T_ {
                                         */
   real32_T TorqEst_Nm_Gain;            /* Computed Parameter: TorqEst_Nm_Gain
                                         * Referenced by: '<S4>/TorqEst_Nm'
+                                        */
+  real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
+                                        * Referenced by: '<S1>/[1//s] => [rpm]'
                                         */
   real32_T Counter_Start_Value;       /* Computed Parameter: Counter_Start_Value
                                        * Referenced by: '<S1>/Counter_Start'

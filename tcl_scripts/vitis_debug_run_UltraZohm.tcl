@@ -98,6 +98,12 @@ if {$UZ_FPGA_FAST_RESTART == 0} {
     after 1000 
 } else {
     #####################################################
+    # # stop axi2tcm 
+    # targets -set -nocase -filter {name =~ "*R5*#0"}
+    # configparams force-mem-access 1
+    # catch {mwr 0x00800F0000 0x0}
+    # # todo: stop all interrupts by disabeling their source (in PL) -> tricky in general way via tcl
+    #####################################################
     puts "INFO: Fast restart selected: skip FPGA reprogramming and PS init."
     # Stop R5_0
     targets -set -nocase -filter {name =~ "*R5*#0"}
@@ -121,10 +127,6 @@ if {$UZ_FPGA_FAST_RESTART == 0} {
         }
         error "Stopping one or more processors failed, see log above."
     }
-    # # stop axi2tcm 
-    # targets -set -nocase -filter {name =~ "*R5*#0"}
-    # configparams force-mem-access 1
-    # catch {mwr 0x00800F0000 0x0}
 }
 #####################################################
 set return_code_PL_reset [catch {psu_ps_pl_reset_config} errMsg_PL_reset]

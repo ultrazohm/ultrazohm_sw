@@ -14,12 +14,12 @@ The intended use of the three UltraZohm launch configurations is:
 - ``Debug_UltraZohm`` via **Debug** (bug)
 - ``Debug_UltraZohm_fast_restart_PL_reset`` (DEBUG_WARM_START) via **Debug** (bug)
 
-.. figure:: images_vitis_programming_modes/vitis_launch_modes_run.jpg
+.. figure:: images_vitis_programming_modes/programming_modes_run.jpg
    :width: 50%
 
    Vitis **Run** dropdown for launch configurations ``Run_UltraZohm`` 
 
-.. figure:: images_vitis_programming_modes/vitis_launch_modes_debug.jpg
+.. figure:: images_vitis_programming_modes/programming_modes_debug.jpg
    :width: 50%
 
    Vitis **Debug** dropdown for launch configurations ``Debug_UltraZohm`` and ``Debug_UltraZohm_fast_restart_PL_reset``

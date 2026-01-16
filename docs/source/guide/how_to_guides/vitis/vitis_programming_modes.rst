@@ -66,4 +66,4 @@ Additional notes
 - To enable ``Debug_UltraZohm_fast_restart_PL_reset``, the interrupt initialization was adjusted to handle the case where a processor is reset while an interrupt is active. 
   In this case, the interrupt **ACTIVE** state can remain latched across a core-level reset because the GIC is not reset by a core reset.
   As a remedy, the **ACTIVE** register is checked during startup and maunally cleared by the EOIR (End-of-Interrupt-Register). 
-  This applies to both processors, R5:0 and A53:0. See PR532 for details.
+  This applies to both processors, R5:0 and A53:0. See :pr:`532` for details.

@@ -134,7 +134,7 @@ set return_code_PL_reset [catch {psu_ps_pl_reset_config} errMsg_PL_reset]
 if {$return_code_PL_reset != 0} {
     error "ERROR: psu_ps_pl_reset_config failed (return_code_PL_reset=$return_code_PL_reset): $errMsg_PL_reset"
 } else {
-    puts "INFO: 'psu_ps_pl_reset_config' command is executed successfully."
+    puts "INFO: PL Reset via 'psu_ps_pl_reset_config' successfully."
 }
 after 1000 
 #####################################################

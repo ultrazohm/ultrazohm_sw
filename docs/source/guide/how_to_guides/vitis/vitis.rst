@@ -8,7 +8,7 @@ Vitis
     :maxdepth: 1
     :caption: Vitis
 
-    program_ultrazohm
+    vitis_programming_modes
     connect_terminal
     include_math_lib
     qemu/qemu

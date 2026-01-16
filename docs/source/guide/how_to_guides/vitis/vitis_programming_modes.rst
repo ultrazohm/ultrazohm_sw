@@ -15,11 +15,13 @@ The intended use of the three UltraZohm launch configurations is:
 - ``Debug_UltraZohm_fast_restart_PL_reset`` (DEBUG_WARM_START) via **Debug** (bug)
 
 .. figure:: images_vitis_programming_modes/vitis_launch_modes_run.jpg
-   :width: 70%
+   :width: 50%
+
    Vitis **Run** dropdown for launch configurations ``Run_UltraZohm`` 
 
 .. figure:: images_vitis_programming_modes/vitis_launch_modes_debug.jpg
-   :width: 70%
+   :width: 50%
+
    Vitis **Debug** dropdown for launch configurations ``Debug_UltraZohm`` and ``Debug_UltraZohm_fast_restart_PL_reset``
 
 
@@ -57,7 +59,8 @@ Additional notes
 - Using separate launch configurations for ``Run_UltraZohm`` and ``Debug_UltraZohm`` ensures the active launch session is terminated when switching between them.
 
 .. figure:: images_vitis_programming_modes/launch_session_terminate.jpg
-   :width: 70%
+   :width: 50%
+
    When prompted, choose ``Yes`` to terminate the existing launch session.
 
 - To enable ``Debug_UltraZohm_fast_restart_PL_reset``, the interrupt initialization was adjusted to handle the case where a processor is reset while an interrupt is active. 

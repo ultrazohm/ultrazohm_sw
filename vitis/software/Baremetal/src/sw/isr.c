@@ -37,7 +37,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+extern struct uz_DutyCycle_t DutyCycle;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -53,9 +53,23 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
+    if (current_state == running_state || current_state == control_state) {
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+	} else {
+		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+	}
+
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.rasv.halfBridge1DutyCycle = DutyCycle.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = DutyCycle.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = DutyCycle.DutyCycle_C;
+    } else {
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

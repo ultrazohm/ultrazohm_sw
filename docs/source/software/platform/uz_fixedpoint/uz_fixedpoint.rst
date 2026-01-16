@@ -10,8 +10,8 @@ This software module only supports a total bit number of 32.
 The fixed-point library provides a data type definition for the PS to ease the handling of them.
 
 This software module is not intended to do fixed-point math on the processor and does not provide functions for it!
-It is only intended to be used in the lowest software layer of IP-Core drivers to read/write to and from the PL (i.e., functions that are named with ``_hw``).
-The aim is to provide a clean way to interact with IP-Cores that use fixed-point data representation.
+It is only intended to be used in the lowest software layer of IP core drivers to read/write to and from the PL (i.e., functions that are named with ``_hw``).
+The aim is to provide a clean way to interact with IP cores that use fixed-point data representation.
 Thus, all functions accept ``float`` values as their inputs and return ``float`` values, all fixed point handling is done internally.
 The read and write functions check against boundaries of the fixed-point data type - the data itself is always a 32-bit integer internally on the PS, which is not exposed to the user.
 The 32-bit limitation is due to the AXI data width of 32-bit.
@@ -168,7 +168,7 @@ Examples
 Write
 *****
 
-Write a value that is a ``float`` in the processor to an IP-Core that expects signed fixed-point data with 3 integer and 4 fraction bits.
+Write a value that is a ``float`` in the processor to an IP core that expects signed fixed-point data with 3 integer and 4 fraction bits.
 
 .. code-block:: c
 
@@ -187,7 +187,7 @@ Write a value that is a ``float`` in the processor to an IP-Core that expects si
 Read
 ****
 
-Read a value from an IP-Core that is an unsigned fixed-point with 10 integer bits and 2 fractional bits and pass it to the processor as a ``float``.
+Read a value from an IP core that is an unsigned fixed-point with 10 integer bits and 2 fractional bits and pass it to the processor as a ``float``.
 
 
 .. code-block:: c

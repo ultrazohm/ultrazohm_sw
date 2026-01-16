@@ -26,4 +26,4 @@ Change the optimization level by following the steps:
 3. Optimization Level -> pull down menu to chose the desired level
 4. Apply and Close
 
-..	image:: ./images_problems/gcc_optimization_level.png
+   ..	image:: ./images_problems/gcc_optimization_level.png

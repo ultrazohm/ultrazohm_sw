@@ -10,7 +10,7 @@ Introduction
 The IP core ADC_LVDS_LTC2311 in version 3 is designed to read the ADCs which are located on the :ref:`analog adapter board <Analog_LTC2311_16_v3>` and to further process the values obtained from the ADCs.
 The IP core features an AXI4 Lite interface for settings and software control.
 The conversion can be triggered by using the hardware port ``TRIGGER_CONV`` for real-time control.
-The IP-Core adds an offset value to the raw value and multiplies the result with a conversion factor, which in turn is available on the hardware port ``SI_VALUE``.
+The IP core adds an offset value to the raw value and multiplies the result with a conversion factor, which in turn is available on the hardware port ``SI_VALUE``.
 The raw value from the ADC and the processed value are ``std_logic_vectors`` at the hardware interface of the IP core.
 For a thorough project description please refer to the project report which is available in the :ref:`Downloads section <downloads>`.
 
@@ -18,7 +18,7 @@ Features
 --------
 
 - Up to 32 independent Serial Peripheral Interface (SPI) Masters with each up to 32 synchronous channels.
-  In total up to 1024 individual ADCs are theoretically possible with one IP-Core instance.
+  In total up to 1024 individual ADCs are theoretically possible with one IP core instance.
 - Pipelined addition with an offset value and subsequent multiplication with a conversion factor with the following features:
 
   + Low resource footprint due to pipelined setup
@@ -52,8 +52,8 @@ Features
 Software Driver
 ===============
 
-The configuration of the IP-Core settings by software use the control register, the SPI-Master, and the channel selection to distribute the configuration values from one AXI register to the internal configuration registers in the IP-Core.
-The control register is used to set the trigger mode, trigger the conversion, reset the IP-Core or determine to which register in the IP-Core the value in the ``Configuration Value Register`` AXI register should be written.
+The configuration of the IP core settings by software use the control register, the SPI-Master, and the channel selection to distribute the configuration values from one AXI register to the internal configuration registers in the IP core.
+The control register is used to set the trigger mode, trigger the conversion, reset the IP core or determine to which register in the IP core the value in the ``Configuration Value Register`` AXI register should be written.
 This control is facilitated by writing different bit patterns to the control register (see table :ref:`table_adc_cr`).
 
 To write a config value to a specific ADC channel, the number of the SPI master and the desired channel has to be written to the master channel selection and ADC channel selection AXI registers.
@@ -78,7 +78,7 @@ The test bench function below displays an example of how to configure and use th
 In this example the software trigger is used but instead the hardware trigger in the FPGA can be used as well.
 The functions are further explained in the section :ref:`Representation in Software <uz_adcLtc2311_software_driver>`.
 
-The following settings are set globally for each IP-Core instance:
+The following settings are set globally for each IP core instance:
 
 - base_address
 - ip_clk_frequency_Hz
@@ -90,7 +90,7 @@ The following settings are set globally for each IP-Core instance:
 - max_attempts
 - mode (either triggered or continuous sampling)
 
-The following settings are set on a per master basis within one IP-Core instance:
+The following settings are set on a per master basis within one IP core instance:
 
 - sleeping_spi_masters
 - napping_spi_masters
@@ -99,17 +99,17 @@ The following settings are set on a per master basis within one IP-Core instance
 - sample_time
 - Trigger mode (software, PL, continuous)
 
-The following settings are set on a per channel basis of one SPI master within an IP-Core instance:
+The following settings are set on a per channel basis of one SPI master within an IP core instance:
 
 - conversion_factor
 - offset
 
 Additionally, the trigger as well as the software trigger affects all ADC channels of one SPI master.
 
-Example initialization of three IP-Core driver instances:
+Example initialization of three IP core driver instances:
 
 .. code-block:: c
-  :caption: Initialization of IP-Core driver instances
+  :caption: Initialization of IP core driver instances
 
    #define XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY 100000000U
    #define DEFAULT_CONVERSION_FACTOR 1.0f
@@ -185,9 +185,9 @@ Change conversion factor of ADC1, ADC2, and ADC3 of SPI-Master 1 to ``2.0`` and 
    uz_adcLtc2311_set_channel_config(test_instance, UZ_ADCLTC2311_MASTER1, UZ_ADCLTC2311_CH4, adc_4_config);
 
 
-.. note:: The conversion factor only affects the output of the IP-Core ``SI_VALUE``.
+.. note:: The conversion factor only affects the output of the IP core ``SI_VALUE``.
           Additionally, the number of fractional bits of the conversion factor implicitly determine the number of fractional bits of the ``SI_VALUE`` port.
-          Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP-Core settings and an conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
+          Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP core settings and an conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
 
 
 .. _uz_adcLtc2311_software_driver:
@@ -496,7 +496,7 @@ Design Parameters
 I/O Signals (Interface)
 =======================
 
-:numref:`adcltc_interface_picture` shows the interface of the IP-Core and the mapping of using multiple SPI-Master / Channels to the interface.
+:numref:`adcltc_interface_picture` shows the interface of the IP core and the mapping of using multiple SPI-Master / Channels to the interface.
 ALl signals from the SPI-Master and individual channels are concated into one vector for each signal.
 For differential signals, all even bit number is the P signal, the odd bit numbers are the N signal.
 
@@ -508,7 +508,7 @@ For differential signals, all even bit number is the P signal, the odd bit numbe
    :width: 800px
    :align: center
 
-   Example interfaces for IP-Core configuration with 8 Channels and 3 SPI-Master. Note that is not the way the IP-Core is used in the default case!
+   Example interfaces for IP core configuration with 8 Channels and 3 SPI-Master. Note that is not the way the IP core is used in the default case!
 
 
 Clock and Reset
@@ -545,7 +545,7 @@ Other I/O Signals
    :width: 400px
    :align: center
 
-   ADC LTC2311 IP-Core.
+   ADC LTC2311 IP Core.
 
 Terminology
 ===========
@@ -563,10 +563,10 @@ This distinction is done in the description of the individual register.
 
 Example
 =======
-Example of using SI-Value output of ADC-IP-Core with sfix18_En11 output data type
+Example of using SI-Value output of ADC-IP core with sfix18_En11 output data type
 ---------------------------------------------------------------------------------
 
-In this example the ``SI_VALUE`` output vector of the ADC-IP-Core is used.
+In this example the ``SI_VALUE`` output vector of the ADC-IP core is used.
 This vector contains the output values of all channels successively.
 The fixed point datatype (the number of integer and fractional bits) of the SI-Values of each channel can be set in software on a per channel basis.
 To get the output values of a single channel the output-vector needs to be sliced.
@@ -575,14 +575,14 @@ The LSBs (of each output value) are the fractional bits.
 
 In this example the datatype ``sfix18_En11`` is required for the SI-values.
 This datatype contains 7 integer bits and 11 fractional bits, so a total of 18 bits.
-These values have to be configured in the IP-Core driver initialization.
+These values have to be configured in the IP core driver initialization.
 The first value in the SI-Value-vector is contained in the bits 0 to 17.
 The second value is in the bits 18 to 24, and so on for the rest of the values.
 The number of bits per values depending on the configured datatype, in this case ``sfix18_En11`` with a length of 18 bit.
 
 Besides the datatype the conversion factor and offset have to be configured.
 The SI-Value is calculated by adding an offset to the raw-value of the ADC and afterwards multiplying the result with the conversion factor.
-The conversion factor and offset are also configured in the initialization of the ADC-IP-Core.
+The conversion factor and offset are also configured in the initialization of the ADC-IP core.
 
 In this example following offset and conversion factor are used:
 
@@ -595,7 +595,7 @@ The measurement range of the ADC is from :math:`-5\,V`` to :math:`5\,V`.
 As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
 For scaling is a factor of 100 necessary, which hast to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
 
-In the listing the configuration for the IP-Core initialization can be seen.
+In the listing the configuration for the IP core initialization can be seen.
 The configuration contains the discussed values of the conversion factor, offset and datatype with integer and fractional bits.
 All channels are configured with the same parameters.
 
@@ -637,7 +637,7 @@ All channels are configured with the same parameters.
   }
 
 
-In the vivado block-design the ``SI_VALUE`` output vector can be accessed and used. The structure of the vector depends on the ip-core configuration, that can be seen in the next figure. 
+In the vivado block-design the ``SI_VALUE`` output vector can be accessed and used. The structure of the vector depends on the IP core configuration, that can be seen in the next figure.
 
 .. figure:: adc_ip_core_config_vivado.png
    :width: 600px
@@ -658,7 +658,7 @@ To get the first SI-Value the first 18 bit of the vector have to be slice, for t
 
    Slicing of the SI-Value output vector
 
-In the Vivado block-design the ``SI_VALUE`` can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels.
+In the Vivado block-design the ``SI_VALUE`` can be sliced with Slice IP cores to get access to the SI-Values of the ADC-channels.
 In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
 
 .. figure:: Si_Slicing.png

@@ -39,7 +39,7 @@ The direction of the signals can be determined with your user CPLD software code
 X4: Ethernet
 ------------
 
-This RJ45 connector is used for ethernet communication. You can use standard LAN cables.
+This RJ45 connector is used for Ethernet communication. You can use standard LAN cables.
 
 X5: Analog adapter
 ------------------
@@ -101,9 +101,9 @@ X6: Digital adapter
 -------------------
 
 The board connector X6 is used to connect digital adapter boards to the carrier board.
-X6 has 30 IOs (DIG_IO_01 to DIG_IO_30) with a voltage level of 3.3 V which are routed to a CPLD for each digital interface.
-The IO signals from X6A, X6B, X6C, X6D are routed via the CPLD to the SoM (J1 to J4).
-X6E features 30 IOs of which 12 (DIG_01 to DIG_06 and DIG_25 to DIG_30) are routed from the CPLD to X3 and the other 18 IOs are routed to the FPGA.
+X6 has 30 I/Os (DIG_IO_01 to DIG_IO_30) with a voltage level of 3.3 V which are routed to a CPLD for each digital interface.
+The I/O signals from X6A, X6B, X6C, X6D are routed via the CPLD to the SoM (J1 to J4).
+X6E features 30 I/Os of which 12 (DIG_01 to DIG_06 and DIG_25 to DIG_30) are routed from the CPLD to X3 and the other 18 I/Os are routed to the FPGA.
 
 .. csv-table:: X6 - Power connection
   :file: interfaces/x6_pwr.csv

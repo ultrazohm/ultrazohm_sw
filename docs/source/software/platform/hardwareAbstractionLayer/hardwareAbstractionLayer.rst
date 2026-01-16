@@ -5,7 +5,7 @@ Hardware Abstraction Layer
 ==========================
 
 The UltraZohm uses a hardware abstraction layer (HAL) to make the code portable and enable the development in a local sandbox (your PC).
-All IP-core drivers and bare-metal software has to use the HAL (``uz_HAL.h``).
+All IP core drivers and bare-metal software has to use the HAL (``uz_HAL.h``).
 We use simple defines to facilitate the HAL.
 The header is located in ``ultrazohm_sw/vitis/software/Baremetal/src/uz/uz_HAL.h``.
 Furthermore, the HAL defines functions to read and write values from and to the PL via AXI.
@@ -15,7 +15,7 @@ Furthermore, the HAL defines functions to read and write values from and to the 
 * Use ``int`` or ``float`` for variables
 * Do not use ``unsigned int`` to prevent negative values
 * Use ``assert >0`` to make sure a variable is positive instead
-* Do use fixed length unsigned variables for hardware addresses (e.g. base addresses of IP-cores)
+* Do use fixed length unsigned variables for hardware addresses (e.g. base addresses of IP cores)
 * Only use fixed length variables (e.g., ``int32_t``) for function that write to hardware registers
 * Do not use platform specific data types
 

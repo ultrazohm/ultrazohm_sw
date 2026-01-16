@@ -12,7 +12,7 @@
 #error The UZ_USE_EXTERNAL_STOP flag must not be used on hardware version 3 or earlier. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
-#define UZ_HARDWARE_VERSION_MAX 5U // highest supported revision
+#define UZ_HARDWARE_VERSION_MAX 6U // highest supported revision
 
 /** ISR trigger source
  *
@@ -73,6 +73,12 @@
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
+#define UZ_PRNG_SQUARES_MAX_INSTANCES 0U
+#define UZ_PRNG_MTWISTER_MAX_INSTANCES 0U
+#define UZ_PRNG_PCG_MAX_INSTANCES 0U
+#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 0U
+#define UZ_PRNG_HALTON_MAX_INSTANCES 0U
+#define UZ_PRNG_MAX_INSTANCES 0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -123,4 +129,10 @@
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
+#define UZ_PRNG_SQUARES_MAX_INSTANCES 50U
+#define UZ_PRNG_MTWISTER_MAX_INSTANCES 50U
+#define UZ_PRNG_PCG_MAX_INSTANCES 50U
+#define UZ_PRNG_XOSHIRO_MAX_INSTANCES 50U
+#define UZ_PRNG_HALTON_MAX_INSTANCES 50U
+#define UZ_PRNG_MAX_INSTANCES 50U
 #endif

@@ -106,7 +106,7 @@ Example usage
 
 In this example usage, flux-linkages of a example motor are getting approximated.
 
-- There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
+- There needs to be a Excel data sheet in the same directory as the PMSM IP core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
 
 - The naming in the script has to be adjusted. 
 
@@ -135,7 +135,7 @@ In this example usage, flux-linkages of a example motor are getting approximated
     ...
 
 - To run the approximation script, first the ``uz_pmsm_model_init_parameter.m file has to be ran``.
-- If the the script ran successfully the fitting parameters are in the MATLAB workspace an can be used in the IP-Core for nonlinear behavior or for different use in the sw-framework. 
+- If the the script ran successfully the fitting parameters are in the MATLAB workspace an can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
 
 Sources
 -------

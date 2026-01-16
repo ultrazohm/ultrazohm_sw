@@ -1,0 +1,91 @@
+.. _Analog_MAX11331_Rev03:
+
+=====================
+Analog MAX11331 Rev03
+=====================
+
+
+Filters
+-------
+
+1. The front-end filter is necessary to protect the subsequent impedance converter from exceeding the voltage rails due to EMC peaks. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the frond-end first-order low-pass filter is formed by the capacitor
+:math:`C_\mathrm{pt1}` and the series resistor :math:`{R_\mathrm{pt1}}` with 
+
+.. math:: 
+   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_\mathrm{pt1} C_\mathrm{pt1}} =
+                            \frac{1}{2\pi 100\,\Omega \cdot 1.5\,\mathrm{nF}} \approx \, 1.06 \mathrm{MHz}
+
+.. image:: PT1Filter.png
+   :width: 800
+
+2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
+
+.. math:: 
+   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} =
+                            \frac{1}{2\pi 6650\,\Omega \cdot 56\,\mathrm{pF}} \approx \, 428 \mathrm{kHz}
+
+3. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
+:math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first-order low-pass filter with the series resistors :math:`{R_0}` with 
+
+.. math:: 
+   f_\mathrm{aliasing,-3dB}=  \frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = 
+                              \frac{1}{2\pi\ 51\,\Omega \cdot (2\cdot10\,\mathrm{nF}  + 200\,\mathrm{pF}) } = 156\, \mathrm{kHz} \,\,.
+
+.. image:: op_amp_schematic.jpg
+   :width: 800
+
+Adjust measurement gains 
+------------------------
+
+For all types of measurements, described in :ref:`Analog_max11331_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 3.3}` V. Since the input voltage is :math:`{\pm 5}` V and the ADC voltage :math:`{\pm 3.3}` V, the gain is set in default to
+
+.. math:: 
+
+   g=\frac{R_f}{R_g} = \frac{6.65\,\mathrm{k\Omega}}{10\,\mathrm{k\Omega}} = 0.665 \,\,. 
+
+.. note ::
+   **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
+
+.. note ::
+   :math:`{C_\mathrm{Diff}}` must have at least :math:`{10\,\mathrm{nF}}` so that the voltage does not drop when switching the MAX11331 multiplexer. This ensures that the measuring channel remains stable.
+
+**The pre-assembled values are**
+
+==========================       =====================================
+:math:`{R_\mathrm{pt1}}`         :math:`{100\,\mathrm{\Omega}}`
+:math:`{C_\mathrm{pt1}}`         :math:`{1.5\,\mathrm{nF}}` 
+:math:`{R_f}`                    :math:`{6.65\,\mathrm{k\Omega}}`
+:math:`{R_g}`                    :math:`{10\,\mathrm{k\Omega}}`
+:math:`{C_f}`                    :math:`{56\,\mathrm{pF}}` 
+:math:`{R_0}`                    :math:`{51\,\mathrm{\Omega}}` 
+:math:`{C_\mathrm{CM}}`          :math:`{200\,\mathrm{pF}}` 
+:math:`{C_\mathrm{Diff}}`        :math:`{10\,\mathrm{nF}}` 
+==========================       =====================================
+
+.. note :: 
+   You can also use the LTSpice simulation to find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
+
+
+Known issues
+------------
+
+.. warning::
+   * for each :ref:`Analog_max11331_meas_modes`, i.e., single-ended and fully differential, the ground of a possible external ADC power supply must be referenced to the ground of the UltraZohm. Otherwise, the analog front-end may be outside the voltage rails, resulting in offsets in the measured values.
+
+Compatibility 
+-------------
+
+* Slots A1 to A3 can be used without limitations. However, slot A3 is used for MAX11331 adapter board in the default UltraZohm software project.
+ 
+References
+----------
+
+* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
+* :download:`LTSpice simulation Rev02 <Rev03/ltspice_MAX11331_Rev02.zip>`
+* IP Core ADC :ref:`ipCore_adc_max11331`
+
+Designed by 
+"""""""""""
+
+Andreas Geiger (ZC), Eyke Aufderheide (TUM) in 01/2025
+

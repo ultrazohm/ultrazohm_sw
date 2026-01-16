@@ -7,8 +7,8 @@ CIL PMSM
 General description
 ===================
 
-To use the CIL method for controller development for PMSM, as described in [[#uz_cil_paper1]_][[#uz_cil_paper2]_], several IP-Cores have been created.
-A general overview of the available IP-Cores is given here.
+To use the CIL method for controller development for PMSM, as described in [[#uz_cil_paper1]_][[#uz_cil_paper2]_], several IP cores have been created.
+A general overview of the available IP cores is given here.
 Links to the individual Docs pages can be found below, as well as examples for the usage.
 Models are available for six-phase and nine-phase PMSM.
 
@@ -25,8 +25,8 @@ General setup
     Example CIL setup
 
 
-The "X" for the transformation and PMSM IP-Core serves as a placeholder and the respective IP-Cores for the number of phases should be used.
-Individual documentation of the IP-Cores is linked below.
+The "X" for the transformation and PMSM IP core serves as a placeholder and the respective IP cores for the number of phases should be used.
+Individual documentation of the IP cores is linked below.
 
 ..  toctree::
     :maxdepth: 1

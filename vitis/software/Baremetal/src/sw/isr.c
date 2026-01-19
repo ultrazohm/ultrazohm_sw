@@ -32,11 +32,14 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
 // Initialize the Interrupt structure
-XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
-XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+XScuGic GIC_instance;
+XIpiPsu IPI_instance;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+static void ReadAllADC();
+static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -44,8 +47,6 @@ extern DS_Data Global_Data;
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
-static void ReadAllADC();
-
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -92,72 +93,66 @@ int Initialize_ISR()
     }
 
     // Initialize interrupt controller for the GIC
-    Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG);
+    Status = Rpu_GicInit(&GIC_instance, INTERRUPT_ID_SCUG);
     if (Status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: GIC initialization failed\r\n");
         return XST_FAILURE;
     }
 
-    // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    // Enable interrupt on CPU level
+    Xil_ExceptionEnable();
 
     return Status;
 }
 
 
-//==============================================================================================================================================================
-//----------------------------------------------------
-// Rpu_GicInit() - This function initializes RPU GIC and connects
-// 					interrupts with the associated handlers
-// @IntcInstPtr		Pointer to the GIC instance
-// @IntId			Interrupt ID to be connected and enabled
-// @Handler			Associated handler for the Interrupt ID
-// @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
-//----------------------------------------------------
-int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId)
+/**
+ * @brief Initialize the R5 GIC and connect/enable the PL-to-PS interrupt used by the RPU.
+ *
+ * @param[in,out] GIC_instance_ptr Pointer to an XScuGic instance to initialize.
+ * @param[in]     DeviceId    GIC device ID (typically XPAR_SCUGIC_0_DEVICE_ID).
+ *
+ * @return XST_SUCCESS on success. This implementation asserts on failures.
+ */
+int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
 {
-    XScuGic_Config *IntcConfig;
+    XScuGic_Config *GIC_config;
     int status;
 
-    // Interrupt controller initialization
-    IntcConfig = XScuGic_LookupConfig(DeviceId);
-    status = XScuGic_CfgInitialize(IntcInstPtr, IntcConfig, IntcConfig->CpuBaseAddress);
-    if (status != XST_SUCCESS)
-        return XST_FAILURE;
+    // Disable all interrupts
+    Xil_ExceptionDisable();
 
-    // Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
-    Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntcInstPtr);
+    GIC_config = XScuGic_LookupConfig(DeviceId);
 
-    /* Enable interrupts in the processor */
-    Xil_ExceptionEnable(); // Enable interrupts in the ARM
+    uz_assert_not_NULL(GIC_config);
 
-    // setting interrupt trigger sensitivity
-    // b01	Active HIGH level sensitive
-    // b11 	Rising edge sensitive
+    status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
+	uz_assert(status == XST_SUCCESS);
+
+    Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, GIC_instance_ptr);
+
+    // Clear latched active interrupt register - for UZ warm start
+    uz_r5_gic_reset_active_pl_interrupts(GIC_instance_ptr);
+
+    // Configure trigger/priority
     // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-    XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
-    // XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
+    XScuGic_SetPriorityTriggerType(GIC_instance_ptr, Interrupt_ISR_ID, 0x0, 0b11); // Trigger 0b11 = rising-edge, Trigger 0b01 = active-high
 
-    // Make the connection between the IntId of the interrupt source and the
-    // associated handler that is to run when the interrupt is recognized.
-    status = XScuGic_Connect(IntcInstPtr,
+    // Connect handler
+    status = XScuGic_Connect(GIC_instance_ptr,
                              Interrupt_ISR_ID,
                              (Xil_ExceptionHandler)ISR_Control,
-                             (void *)IntcInstPtr);
-    if (status != XST_SUCCESS)
-        return XST_FAILURE;
+                             NULL);
+	uz_assert(status == XST_SUCCESS);
 
-    // Enable GPIO and timer interrupts in the controller
-    XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
-    XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
+    // Enable only the connected interrupt
+    XScuGic_Enable(GIC_instance_ptr, Interrupt_ISR_ID);
 
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
     return XST_SUCCESS;
 }
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -167,28 +162,28 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId)
 //----------------------------------------------------
 u32 Rpu_IpiInit(u16 DeviceId)
 {
-    XIpiPsu_Config *IntcConfig_IPI;
+    XIpiPsu_Config *IPI_config;
     int status;
 
     // Interrupt controller configuration
-    IntcConfig_IPI = XIpiPsu_LookupConfig(DeviceId);
-    if (IntcConfig_IPI == NULL)
+    IPI_config = XIpiPsu_LookupConfig(DeviceId);
+    if (IPI_config == NULL)
     {
         xil_printf("RPU: Error: Ipi Init failed\r\n");
         return XST_FAILURE;
     }
 
     // Interrupt controller initialization
-    status = XIpiPsu_CfgInitialize(&INTCInst_IPI, IntcConfig_IPI, IntcConfig_IPI->BaseAddress);
+    status = XIpiPsu_CfgInitialize(&IPI_instance, IPI_config, IPI_config->BaseAddress);
     if (status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: IPI Config failed\r\n");
         return XST_FAILURE;
     }
 
-    XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+    XIpiPsu_InterruptEnable(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-    xil_printf("RPU: RPU_IpiInit: Done\r\n");
+    xil_printf("RPU: Rpu_IpiInit: Done\r\n");
     return XST_SUCCESS;
 }
 
@@ -196,3 +191,58 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+
+
+
+static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
+{
+    /* Active status is in Distributor ACTIVE banked registers */
+    const u32 reg = XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_ACTIVE_OFFSET, IntId); /* ACTIVE + (IntId/32)*4 */
+    const u32 bit = (u32)1U << (IntId % 32U);
+
+    const u32 act = XScuGic_DistReadReg(Gic, reg);
+    return ((act & bit) != 0U);
+}
+
+
+/**
+ * @brief Clears stuck ACTIVE PL interrupts by writing GICC_EOIR (End Of Interrupt Register)
+ * with the active interrupt ID, to enable soft restart without resetting entire system.
+ *
+ * Equivalent to XSCT: mwr (CpuBaseAddress + 0x10) <intid>
+ *
+ * Call during GIC init, before enabling IRQ delivery on the R5.
+ *
+ */
+static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
+{
+	// list of all PL Interrupt IDs
+	const uint16_t uz_fpga_spi_ids[] = {
+	    XPS_FPGA0_INT_ID,  XPS_FPGA1_INT_ID,  XPS_FPGA2_INT_ID,  XPS_FPGA3_INT_ID,
+	    XPS_FPGA4_INT_ID,  XPS_FPGA5_INT_ID,  XPS_FPGA6_INT_ID,  XPS_FPGA7_INT_ID,
+	    XPS_FPGA8_INT_ID,  XPS_FPGA9_INT_ID,  XPS_FPGA10_INT_ID, XPS_FPGA11_INT_ID,
+	    XPS_FPGA12_INT_ID, XPS_FPGA13_INT_ID, XPS_FPGA14_INT_ID, XPS_FPGA15_INT_ID
+	};
+
+	uz_assert_not_NULL(Gic);
+	uz_assert_not_NULL(Gic->Config);
+
+    // iterate over all PL interrupts
+	for (uint32_t i = 0U; i < (uint32_t)(sizeof(uz_fpga_spi_ids)/sizeof(uz_fpga_spi_ids[0])); ++i)
+	{
+		const uint32_t id = (uint32_t)uz_fpga_spi_ids[i];
+
+		// check if id-interrupt is stuck on active
+		if (uz_gic_is_active_id(Gic, id)) {
+
+			/* Writing IntId to EOIR to clear the stuck ACTIVE state */
+			XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
+			uz_printf("RPU GIC: Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
+
+		}
+    }
+}
+
+
+

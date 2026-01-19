@@ -129,33 +129,33 @@ A Tcl script can be added to the Vivado icons to automate the process of exporti
 Export Bitstream manually (deprecated method)
 ---------------------------------------------
 
-- Export the bitstream in ``File -> Export -> Export Hardware``
-- Choose ``Fixed``
-- Choose ``Include bitstream``
-- Choose the path to which the bitstream will be exported
-- Path: ``~/ultrazohm/ultrazohm_sw/vitis/vivado_exported_xsa``
-- Override the existing file
-- Vivado exports the file
+.. dropdown:: Show steps (collapsed by default)
 
+   - Export the bitstream in ``File -> Export -> Export Hardware``
+   - Choose ``Fixed``
+   - Choose ``Include bitstream``
+   - Choose the path to which the bitstream will be exported
+   - Path: ``~/ultrazohm/ultrazohm_sw/vitis/vivado_exported_xsa``
+   - Override the existing file
+   - Vivado exports the file
 
-.. image:: ./img_exp_bit/1_export.png
+   .. image:: ./img_exp_bit/1_export.png
 
-.. image:: ./img_exp_bit/2_export_fixed.png
+   .. image:: ./img_exp_bit/2_export_fixed.png
 
-.. image:: ./img_exp_bit/3_inc_bitstream.png
+   .. image:: ./img_exp_bit/3_inc_bitstream.png
 
-.. image:: ./img_exp_bit/4_choose_path.png
+   .. image:: ./img_exp_bit/4_choose_path.png
 
-.. image:: ./img_exp_bit/5_path.png
+   .. image:: ./img_exp_bit/5_path.png
 
-.. image:: ./img_exp_bit/6_next.png
+   .. image:: ./img_exp_bit/6_next.png
 
-.. image:: ./img_exp_bit/7_override.png
+   .. image:: ./img_exp_bit/7_override.png
 
-.. image:: ./img_exp_bit/8_finish.png
+   .. image:: ./img_exp_bit/8_finish.png
 
-.. image:: ./img_exp_bit/9_load.png
-
+   .. image:: ./img_exp_bit/9_load.png
 
 
 

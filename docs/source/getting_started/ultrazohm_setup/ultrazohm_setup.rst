@@ -52,7 +52,7 @@ After executing the ``git clone`` command, the following directory structure exi
 
 .. _gen_bitstream:
 
-Generate the bitstream with Vivado
+Generate the Bitstream with Vivado 
 **********************************
 
 Open the block design
@@ -112,8 +112,22 @@ Generate Bitstream
 .. image:: ./img_gen_bitstream/6_open_design.png
 
 
-Export Bitstream
-----------------
+
+Export Bitstream via Tcl script
+-------------------------------
+
+A Tcl script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
+
+- ``Tools -> Custom Commands -> Customize Commands``
+- Click on the `plus` and enter a name, e.g., export_xsa
+- Click on ``Source Tcl file``
+- Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
+- Click ok
+
+.. image:: https://images2.imgbox.com/20/97/ltbV6vKQ_o.gif
+
+Export Bitstream manually (deprecated method)
+---------------------------------------------
 
 - Export the bitstream in ``File -> Export -> Export Hardware``
 - Choose ``Fixed``
@@ -143,18 +157,6 @@ Export Bitstream
 .. image:: ./img_exp_bit/9_load.png
 
 
-Export Bitstream Tcl script
----------------------------
-
-A Tcl script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
-
-- ``Tools -> Custom Commands -> Customize Commands``
-- Click on the `plus` and enter a name, e.g., export_xsa
-- Click on ``Source Tcl file``
-- Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
-- Click ok
-
-.. image:: https://images2.imgbox.com/20/97/ltbV6vKQ_o.gif
 
 
 .. _genvitis:
@@ -208,7 +210,7 @@ Generate the Vitis workspace
 Physical Setup of the UltraZohm
 *******************************
 
-- Connect the UltraZohm to the grid
+- Connect the UltraZohm to 230V AC 
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
 - For UltraZohm :ref:`carrier_board_rev03`: Plug an external stop or the external stop dummy into the front panel
@@ -218,8 +220,8 @@ Physical Setup of the UltraZohm
 
 .. image:: ./img_physical/physical_setup.png
 
-Program (Debug)
-***************
+Program UltraZohm (Debug)
+*************************
 
 - Click on the red-marked windows to see the design perspective in Vitis.
 - Click the arrow next to the debug-icon and choose ``Debug Configurations``.
@@ -228,8 +230,9 @@ Program (Debug)
 
 .. note:: There are two different debug configurations:
    
-          - To debug the code and use breakpoints, click on the debug-icon (red) and select the ``Debug-UltraZohm`` config.
-          - To run the code and ignore all breakpoints, click on the run-icon (green) and select the ``Run-UltraZohm`` config.
+          - To debug the code and use breakpoints, click on the debug-icon (red) and select the ``Debug_UltraZohm`` config.
+          - To run the code and ignore all breakpoints, click on the run-icon (green) and select the ``Run_UltraZohm`` config.
+          - :ref:`Vitis Programming Modes <vitis_programming_modes>` for more details about the different programming modes.     
  
           .. image:: ./img_debug/4_debug_buttons.png
 

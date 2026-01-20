@@ -4,7 +4,7 @@
 Incremental Encoder
 ===================
 
-The incremental encoder IP-Core (``IncreEncoder_V26``) evaluates signals of an incremental encoder and is compatible to :ref:`dig_encoder_v1`.
+The incremental encoder IP core (``IncreEncoder_V26``) evaluates signals of an incremental encoder and is compatible to :ref:`dig_encoder_v1`.
 It features multiple possibilities to calculate the rotor position and the rotational speed of the encoder.
 
 Position
@@ -19,10 +19,10 @@ Position (electrical)
   If ``drive_pole_pair`` is an integer multiple of increments per turn, the electrical angle can be used and read by calling ``uz_incrementalEncoder_get_theta_el``.
   If ``drive_pole_pair`` is set to ``0``, the function can not be called (assertion fires if it is called).
   If ``drive_pole_pair`` is not ``0`` and not an integer multiple of increments per turn, the initialization of the driver fails with an assertion.
-  Note that the FPGA output port of the IP-Core outputs the (potentially false!) electrical position regardless of this setting!
+  Note that the FPGA output port of the IP core outputs the (potentially false!) electrical position regardless of this setting!
 
 Rotational speed
-  Calculates the rotational speed of the drive by counting the time between two consecutive rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.
+  Calculates the rotational speed of the drive by counting the time between two consecutive rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP core.
   The oversampling mechanism allows to skip edges to improve the measurement at higher speeds.
 
 Direction of rotation
@@ -43,32 +43,32 @@ Whenever ``new_measurement`` is ``true``, the current value of :math:`\omega_{sc
 After six (:math:`S_{factor}=6`) measurements the internal storage is reset to zero, restarting the averaging.
 The value of the internal storage is divided by the number of samples that are currently in the internal storage and output.
 
-IP-Core Hardware
+IP Core Hardware
 ================
 
-The IP-Core is generated using Matlab/Simulink HDL-Coder based on the model ``inc_enc_v26.slx`` (in ``ultrazohm_sw/ip-cores/IncreEncoder_V26_ip/Simulation/``).
+The IP core is generated using Matlab/Simulink HDL-Coder based on the model ``inc_enc_v26.slx`` (in ``ultrazohm_sw/ip-cores/IncreEncoder_V26_ip/Simulation/``).
 
 Vivado integration
 ------------------
 
 .. figure:: increEncoder_vivado.png
 
-  Vivado block design of incremental encoder IP-Core.
+  Vivado block design of incremental encoder IP core.
 
-.. warning:: The IP-Core (IPCORE_CLK) has to be sourced by a clock with :math:`100 MHz`! For lower frequencies the accuracy of the encoder result is not tested.
+.. warning:: The IP core (IPCORE_CLK) has to be sourced by a clock with :math:`100 MHz`! For lower frequencies the accuracy of the encoder result is not tested.
 
 
 
 Configuration registers (AXI)
 -----------------------------
 
-The following configuration registers are available for the IP-Core.
+The following configuration registers are available for the IP core.
 The software driver writes to the registers based on the configuration that is provided to the initialization function.
 
 
 PI2_Inc_AXI
   Scales the output theta_el to :math:`0..2\pi`.
-  Is calculated in the processor and written to the IP-Core.
+  Is calculated in the processor and written to the IP core.
   Calculation: :math:`\frac{2 \cdot \pi}{IncPerTurn \cdot QudratureFactor} \cdot PolePair` with ``PolePair`` being the pole pairs of the drive. 
 
 Timer_FPGA_ms
@@ -86,7 +86,7 @@ OverSamplingFactor
   Calculation of the rotational speed omega is based on measuring the time between rising edges of the A-lane.
   If ``OverSampleFactor=1``, every rising edge is used.
   For ``OverSampleFactor=n``, every n-th rising ege is used.
-  Based on the setting, the IP-Core adapts the OverSampleFactor over the operating range of the drive.
+  Based on the setting, the IP core adapts the OverSampleFactor over the operating range of the drive.
   The ``OverSamplingFactor`` is set by ``OmegaPerOverSampl_AXI4`` in ``rad/s``.
   Default value is :math:`500 \frac{1}{min} \cdot \frac{2\pi}{60 s}=52.3599 s^{-1}`.
 
@@ -107,9 +107,9 @@ CountingDirection
   Sets the counting direction of the angle and rotation. Can be configured via an enum. Default is clock_wise.
 
 
-Table *Interfaces of the incremental encoder IP-Core* lists all input and output ports (AXI and external port) that are present in the IP-Core.
+Table *Interfaces of the incremental encoder IP core* lists all input and output ports (AXI and external port) that are present in the IP core.
 
-.. csv-table:: Interfaces of the incremental encoder IP-Core
+.. csv-table:: Interfaces of the incremental encoder IP core
    :file: incrementalEncoder_register_mapping.csv
    :widths: 50 50 50 50 200
    :header-rows: 1
@@ -117,7 +117,7 @@ Table *Interfaces of the incremental encoder IP-Core* lists all input and output
 Software driver
 ===============
 
-The software driver for the IP-Core handles the configuration of the aforementioned registers.
+The software driver for the IP core handles the configuration of the aforementioned registers.
 
 .. code-block:: c
   :caption: Initialization of an encoder

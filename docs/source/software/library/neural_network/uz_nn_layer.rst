@@ -165,6 +165,7 @@ The enum ``activation_function`` and the struct ``uz_nn_layer_config`` are direc
 
 .. doxygenfunction:: uz_nn_layer_get_output_data
 
+
 Sources
 =======
 

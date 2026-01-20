@@ -1,7 +1,7 @@
 .. _ipCore_dq_transformation:
 
 =========================
-dq-Transformation IP-Core
+dq-Transformation IP core
 =========================
 
 - Transforms three input quantities from a three phase system to dq-coordinates
@@ -9,14 +9,14 @@ dq-Transformation IP-Core
 - Transformation can only be triggered by a PL signal, but not by the software driver
 - Output is supplied to PL-ports as well as AXI4-Lite
 - Inputs have to be fixed point and match the interface description of :ref:`ipCore_dq_tranformation_interfaces`
-- The inputs are transformed on each rising edge on the IP-Core input ``CurrentValid_in``
-- ``dq_Done`` indicates that the output values are valid to subsequent IP-Cores
+- The inputs are transformed on each rising edge on the IP core input ``CurrentValid_in``
+- ``dq_Done`` indicates that the output values are valid to subsequent IP cores
 
-Table :ref:`ipCore_dq_tranformation_interfaces` lists all input and output ports (AXI and external port) that are present in the IP-Core.
+Table :ref:`ipCore_dq_tranformation_interfaces` lists all input and output ports (AXI and external port) that are present in the IP core.
 
 .. _ipCore_dq_tranformation_interfaces:
 
-.. csv-table:: Interface of dq-Transformation IP-Core
+.. csv-table:: Interface of dq-Transformation IP Core
    :file: dq_transformation_register_mapping.csv
    :widths: 50 50 50 50 50 50 200
    :header-rows: 1
@@ -62,7 +62,7 @@ Vivado
 
 The only tested clock frequency for ``IPCORE_CLK`` and ``AXI4_Lie_ACLK`` is 50 Mhz.
 
-.. csv-table:: Vivado block design interfaces of dq-transformation IP-Core
+.. csv-table:: Vivado block design interfaces of dq-transformation IP core
    :file: ./dq_VivadoInterface.csv
    :widths: 50 50 50
    :header-rows: 1

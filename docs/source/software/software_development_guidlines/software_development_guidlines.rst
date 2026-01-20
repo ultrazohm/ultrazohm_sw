@@ -184,7 +184,7 @@ Single-instance module
 **********************
 
 Encapsulates an object if only one instance of the module can be present in the system.
-This only applies to software modules that are hard-coupled to specific hardware and does **not** apply to IP-Core drivers!
+This only applies to software modules that are hard-coupled to specific hardware and does **not** apply to IP core drivers!
 This means all initialization is done inside the module function, there is no initialization in code and nothing is passed to init except for configuration if necessary.
 All required data of the module is declared in the implementation and no data is leaked outside of the module.
 Functions that are only required internally are declared ``static``.
@@ -208,7 +208,7 @@ Multiple-instance module
 ************************
 
 Encapsulates a module of which multiple instances can be used.
-This is the default for IP-core drivers.
+This is the default for IP core drivers.
 A full example implementation is located at ``ultrazohm_sw/vitis/software/Baremetal/src/IP_Cores/uz_myIP2`` (see :ref:`how_to_create_ipcore_driver`).
 
 - The implementation scheme uses  opaque data types to hide the data of the object

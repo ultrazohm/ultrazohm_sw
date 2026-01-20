@@ -47,7 +47,7 @@ The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_
 2. Pin header for measuring all signals
 3. Supply voltage state indicated by LEDs (3V3, 5V, 15V, 24V)
 4. State of gate signals indicated by LEDs
-5. State of remaining IOs indicated by LEDs
+5. State of remaining I/Os indicated by LEDs
 6. Low pass filter for filtering the gate signals
 7. Ethernet connector to ADC Card
    

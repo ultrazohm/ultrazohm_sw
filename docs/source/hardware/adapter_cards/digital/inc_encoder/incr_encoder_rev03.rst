@@ -95,10 +95,10 @@ E15              Dig_11_Ch5   Encoder_1_I
 ===============  ==========  ============
 
 
-Vivado block design with three IP-Cores on D5
+Vivado block design with three IP cores on D5
 ---------------------------------------------
 
-* For using all channels of the card, the user has to change the block design in vivado (three IP-Cores on D5 connected).
+* For using all channels of the card, the user has to change the block design in vivado (three IP cores on D5 connected).
 
 .. image:: incr_encoder_rev03/vivado_block_inc_enc_rev03.png
    :height: 700
@@ -107,7 +107,7 @@ Compatibility
 -------------
 
 * Slots D1 to D5 can be used without limitations, D5 is suggested. 
-* Block design in vivado has to be adapted with three IP-Cores for reading out.
+* Block design in vivado has to be adapted with three IP cores for reading out.
 
 
 See also

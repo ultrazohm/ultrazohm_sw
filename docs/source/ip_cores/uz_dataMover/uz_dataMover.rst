@@ -6,7 +6,7 @@ Data Mover / AXI2TCM
 
 - Moves data from PL to R5 (R5_0) by writing data directly to the BTCM
 - Data mover is intended for use with R5 in split mode
-- PL IP-Cores can write to TCM by AXI
+- PL IP cores can write to TCM by AXI
 - Fast possibility to move data from PL to R5
 - Used to read ADC values
 
@@ -34,18 +34,18 @@ Tightly Coupled Memory (TCM)
 - BTCM (64 KB) starts at address 0x0002_0000 and ends at 0x0002_FFFF for usage in software
 - Note that ATCM for R_0 starts at 0x000_0000 to 0x0000_FFFF, then there is a 64 KB gap (`see figure in TRM <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G6.381515>`_).
 
-IP-Core
+IP core
 =======
 
-The data mover uses the AXI2TCM IP-Core.
+The data mover uses the AXI2TCM IP core.
 
-.. table:: Settings of IP-Core
+.. table:: Settings of IP core
 
    ========================== =========== =========================================
    Name                       Default     Description
    ========================== =========== =========================================
    Number of 16 bit blocks    24          -
-   AXI TARGET SLAVE BASE ADDR 0xFFE20000  Address to which the IP-Core writes data.
+   AXI TARGET SLAVE BASE ADDR 0xFFE20000  Address to which the IP core writes data.
    AXI ID WIDTH               1           -
    AXI ADDR WIDTH             32          -
    ========================== =========== =========================================

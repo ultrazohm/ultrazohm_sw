@@ -135,7 +135,7 @@ Note that the function ``uz_axi_write_int32`` expects a call with the sum of bas
 
 .. note:: These tests rely on the usage of the HAL functions and AXI read/write functions.
 
-.. warning:: The unit test for IP-core drivers *only* tests if the software works as intended. Dedicated testing for the actual hardware of the IP-core is assumed here! The example above tests if the software driver reads and writes the correct registers, but this unit test does not test the function of the IP-core (the multiplication). 
+.. warning:: The unit test for IP core drivers *only* tests if the software works as intended. Dedicated testing for the actual hardware of the IP core is assumed here! The example above tests if the software driver reads and writes the correct registers, but this unit test does not test the function of the IP core (the multiplication).
 
 
 Testing assertions

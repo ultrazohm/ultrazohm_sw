@@ -4,10 +4,10 @@
 Inverter Model
 ==============
 
-- IP-Core of a 3 phase inverter
+- IP core of a 3 phase inverter
 - Simulates the inverter on the FPGA
 - Intended for controller-in-the-loop (CIL) on the UltraZohm
-- IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+- IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 
 Model Description
 =================
@@ -15,11 +15,11 @@ Model Description
 The Simscape model of the inverter is shown in the figure below.
 While in the light blue areas, only the inputs are handled (mainly switching between PS and PL inputs depending on the configuration) and in the yellow area the ouputs are realized, the central part of the model is placed in the dark blue areas.
 The power electronics part is modelled with six N-channel MOSFET from the Simscape parts library.
-Note that their electrical parameters are listed in the table below and can only be changed in the Simscape model but not after the IP-core generation.
+Note that their electrical parameters are listed in the table below and can only be changed in the Simscape model but not after the IP core generation.
 The MOSFETs are placed to model three half bridges (HB) and each of the switches can be controlled individually.
 There is no logic implemented to prevent short circuits, if top and bottom switch of one HB are closed simultaneously.
-Because the physical references of the Simscape model will be lost after the IP-core generation, the two controlled currents sources from phases ``a`` and ``b`` to phase ``c`` are placed.
-The usage of the IP-core demands the user to feed back the actual flowing currents in the current application to the inverter for it to determine the voltage drop across the switches and diodes.
+Because the physical references of the Simscape model will be lost after the IP core generation, the two controlled currents sources from phases ``a`` and ``b`` to phase ``c`` are placed.
+The usage of the IP core demands the user to feed back the actual flowing currents in the current application to the inverter for it to determine the voltage drop across the switches and diodes.
 If the user does not feed back any currents or sets the feedback to zero, no voltage drops will be considered for the ouput voltage.
 The voltages are output as line-to-line voltages :math:`u_{ab},u_{bc},u_{ca}`.
 
@@ -34,10 +34,10 @@ The voltages are output as line-to-line voltages :math:`u_{ab},u_{bc},u_{ca}`.
    :header-rows: 1
 
 
-IP-Core Interfaces
+IP Core Interfaces
 ==================
 
-.. csv-table:: IP-core Interfaces Switch
+.. csv-table:: IP core Interfaces Switch
    :file: ./inverter_interfaces.csv
    :widths: 50 40 60 50 60 210
    :header-rows: 1
@@ -72,15 +72,15 @@ Driver Reference
 Example Usage
 =============
 
-The inverter IP-core can be used in several different ways because the inputs and outputs can be accessed from PS or PL individually.
+The inverter IP core can be used in several different ways because the inputs and outputs can be accessed from PS or PL individually.
 For this example only the access via PS is shown.
-Using the IP-core in PL mainly demands the usage of other IP-cores to provide the inputs and utilize the outputs which is shown in :ref:`uz_pmsm_model_multiph_dq`.
-To use the IP-core with the PS only, the PL inputs do not need to be connected, although the ``u_abc_pl`` in the figure below is connected to an ILA in the greyed area.
+Using the IP core in PL mainly demands the usage of other IP cores to provide the inputs and utilize the outputs which is shown in :ref:`uz_pmsm_model_multiph_dq`.
+To use the IP core with the PS only, the PL inputs do not need to be connected, although the ``u_abc_pl`` in the figure below is connected to an ILA in the greyed area.
 This is not necessary and only done for verification purposes.
 
 .. figure:: ps_example.jpg
 
-   Placement of the IP-core in Vivado for PS only access
+   Placement of the IP core in Vivado for PS only access
 
 The following code is used in ``main.c`` (initialization) and ``isr.c`` (application):
 

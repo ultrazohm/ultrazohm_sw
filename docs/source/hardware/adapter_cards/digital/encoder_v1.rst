@@ -111,7 +111,7 @@ Absolute Encoder
 .. image:: encoder_v1/3D_View_Connectors_Absolute_Encoder.png
    :width: 1000
 
-Fully integrated absolute encoders with industrial standard interfaces like SSI can be connected to the absolute encoder interface of the board. On Hardware level this board provides two RS485 transceivers. Their direction is controlled by specific control lines and they can be used either as serial data, serial clock or other functions, depending on the encoder interface. The 5V level control and data lines to the transceivers are routed to a level shifter and then to the IO-connector.
+Fully integrated absolute encoders with industrial standard interfaces like SSI can be connected to the absolute encoder interface of the board. On Hardware level this board provides two RS485 transceivers. Their direction is controlled by specific control lines and they can be used either as serial data, serial clock or other functions, depending on the encoder interface. The 5V level control and data lines to the transceivers are routed to a level shifter and then to the I/O connector.
 
 .. image:: encoder_v1/Absolute_Encoder_Schematic.png
    :width: 1000

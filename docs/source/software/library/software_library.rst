@@ -13,3 +13,4 @@ Software Library
     newton_raphson/newton_raphson
     signals/signals
     wavegen/wavegen
+    uz_prng/uz_prng

@@ -16,7 +16,7 @@ Nr, Rule, Example, Comment
 16, Use typedef for ``struct`` and ``enum`` wich are used in an interface,,
 17, Use defined width types from ``<stdint.h>``, ``int32_t; uint32_t``, Only use fixed width integers if they are required; for example for hardware mapped registers. Data width below 32-bit is not useful in most cases
 18, Use ``static`` for all functions that are only used in their translation unit (the .c file), ``static float private_function_foo(float x);``, Behaves as "private function" (only usable in the translation unit) and `gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
-19, Use ``bool`` from <stdbool.h>,, "Useful for hardware/ip-cores that are off or on,  enable signals, valid/reay signals"
+19, Use ``bool`` from <stdbool.h>,, "Useful in hardware peripherals and IP cores for off or on, enable, valid/ready etc. signals"
 20, Use `float` versions of math functions when using ``float``, ``sinf()``,
 21, Use ``NULL`` to check for null pointers, Complaint: ``uz_assert_not_null(ptr)``,
 22, Check function arguments for validity,, Use assertions to communicate intend to the user of what the limits of function arguments are 

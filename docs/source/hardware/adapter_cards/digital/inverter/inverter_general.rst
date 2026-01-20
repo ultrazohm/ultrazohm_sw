@@ -23,7 +23,7 @@ When triggered, the OCP will only flag a FAULT bit in the corresponding software
 The inverter will not shut down automatically.
 Each half-bridge is designed in a non-bootstrap configuration. 
 Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended to differential transmission to reduce the susceptibility to interference.
-The measured signals are transmitted over ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
+The measured signals are transmitted over Ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 An additional heat sink can be fitted to increase heat dissipation and keep the switches cooler.
 For additional information or an in-depth look at the circuit design, please refer to the schematics in the :ref:`References <dig_si_inverter_references>` section.
 

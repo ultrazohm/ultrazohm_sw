@@ -18,7 +18,7 @@ Xilinx Toolchain
 
     .. note::
 
-      If the User Authentication in the installer results in an error, eventhough the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
+      If the User Authentication in the installer results in an error, even though the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
    
     .. image:: ./images_installation/vitis_website2_5_2022.png
 

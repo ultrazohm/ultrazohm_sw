@@ -32,7 +32,7 @@ global uzcfg
 # Hardware platform: [UltraZohm]
 set uzcfg(PLATFORM_NAME) 	UltraZohm
 
-## APU/FreeRTS Settings
+## APU/FreeRTOS Settings
 # Enable DHCP for automatic assignment of IPv4 address: true, [false]
 set uzcfg(ENABLE_DHCP)		false
 
@@ -286,16 +286,18 @@ proc vitis_main {} {
 file mkdir $filename_launches
 set DebugAll_TCL [file join $EXPORT_FOLDER Debug_UltraZohm.launch]
 set RunAll_TCL [file join $EXPORT_FOLDER Run_UltraZohm.launch]
+set DebugFast_TCL [file join $EXPORT_FOLDER Debug_UltraZohm_fast_restart_PL_reset.launch]
 #file copy ?-force? ?--? source ?source ...? targetDir
 #file copy -force -- $DebugBaremetal $filename_launches
 file copy -force -- $DebugAll_TCL $filename_launches
 file copy -force -- $RunAll_TCL $filename_launches
-puts "========================================"
+file copy -force -- $DebugFast_TCL $filename_launches
+puts "================================================================================"
 puts "Info (UltraZohm): debug files copied"
 puts "Info (UltraZohm): debug configurations are visible after restarting Vitis"
-puts "========================================"
+puts "================================================================================"
 puts "Info (UltraZohm): generate_UltraZohm_workspace.tcl script finished successfully"
-puts "========================================"
+puts "================================================================================"
 }
 
 

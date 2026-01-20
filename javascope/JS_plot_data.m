@@ -25,10 +25,10 @@ for logfile_list_index = size(Logfile_list,1):-1:1
         disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
     end
 end
-file_name = Logfile_list(logfile_list_index).name
+ file_name = Logfile_list(logfile_list_index).name;
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2024-03-11_99-99-99.csv';
+file_name = 'Meas_Platine.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

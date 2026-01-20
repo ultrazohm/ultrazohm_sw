@@ -180,7 +180,7 @@ Drone Runner and Vivado Docker image
 ************************************
 
 The Drone Runner starts a Docker Container for each pipeline step.
-To use Vivado and Vitis, we use a costum Vivado docker image (``vivado:2020.1``).
+To use Vivado and Vitis, we use a custom Vivado docker image (``vivado:2020.1``).
 There are two challenges with using Vivado and Vitis in a Docker container.
 
 * Xilinx license is locked to the MAC

@@ -18,7 +18,7 @@ The guidelines are based on concepts described by:
   - Test-Driveen Development for Embedded C [#TDD]_
   - `Video series on Clean Code <https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin>`_ by the author
   - Modern C [#ModernC]_
-  - MISRA guidlines [#misra]_
+  - MISRA guidelines [#misra]_
   - `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_ [#linuxCodingStyle]_
   - The C Programming Language [#TheCProgrammingLanguage]_
 

@@ -208,7 +208,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- Go to *HDL Code Generation* -> *Report* and enalbe the Optimization and timing reports
+- Go to *HDL Code Generation* -> *Report* and enable the Optimization and timing reports
 - Leave all other settings at default
 - Click *Apply* and then *Run This Task* in the HDL Workflow Advisor
 

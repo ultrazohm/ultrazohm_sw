@@ -14,7 +14,7 @@ The goal of this tutorial is to provide a starting point for the user and showca
 
 This tutorial consists of:
   
-- Generating HDL-Code from a `Simulink Simscape Modell <https://de.mathworks.com/products/simscape.html>`_
+- Generating HDL-Code from a `Simulink Simscape Model <https://de.mathworks.com/products/simscape.html>`_
 - Implementation of the IP core
 - Integration of the IP core in the UltraZohm Vivado project
 - Follows this Mathworks example: `Generate HDL Code for Simscape Models <https://de.mathworks.com/help/hdlcoder/ug/generate-hdl-code-from-simscape-model.html>`_

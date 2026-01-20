@@ -493,7 +493,7 @@ Copy all rows without editing
 
       DBeaver - Parameter -Part 2.
 
-5. Excute the sql statement
+5. Execute the sql statement
 
 .. _194_Execute_statement:
 

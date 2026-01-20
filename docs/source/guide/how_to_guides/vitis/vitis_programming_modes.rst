@@ -28,7 +28,7 @@ The intended use of the three UltraZohm launch configurations is:
 Modes
 -----
 
-In all modes, variables can be inspected via the Expressions view in Vitis and the proccesors can be suspended and resumed.
+In all modes, variables can be inspected via the Expressions view in Vitis and the processors can be suspended and resumed.
 Breakpoints are only supported when the **Debug** (green bug) button is used to start the programming procedure.
 
 

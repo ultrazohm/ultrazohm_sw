@@ -22,7 +22,7 @@ Prerequisites
 =============
 
 * Getting-Started completed and understood
-* A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
+* A `KR260 <https://www.xilinx.com/products/SoM/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
 * Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
 * Basic knowledge of the used tools.
 
@@ -37,7 +37,7 @@ Creating Fresh Project
 
 #.  Create a fresh project in Vivado 2022.2
 
-#.  When you were asked for the Default Part, select `Kria KR260 Robotics Starter Kit SOM`
+#.  When you were asked for the Default Part, select `Kria KR260 Robotics Starter Kit SoM`
 
     .. _Boardselection_KR260:
 
@@ -62,8 +62,8 @@ Creating Fresh Project
 
 #.  Create HDL-Wrapper and make sure its the Top-file.
 
-#.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
-    (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
+#.  Download the Constrain-file for the KR260 SoM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/SoM/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
+    (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SoM XDC File).
 
 #.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
 
@@ -158,7 +158,7 @@ Following those steps should lead to an HW-Design like this:
 Project with Tcl Scripts:
 ----------------------------
 
-#. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
+#. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SoM` board. 
 #. Add the missing VHDL-files:
 
     .. code-block::

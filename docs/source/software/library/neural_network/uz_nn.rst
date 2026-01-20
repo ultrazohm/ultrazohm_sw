@@ -158,7 +158,7 @@ Full example
 ============
 
 The following example is based on a basic `Matlb Example <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_.
-A network with 13 inputs, two hidden layer (50 neurons in the first, 20 neurons in the second), ReLU activatin and one output is trained on a existing data set.
+A network with 13 inputs, two hidden layer (50 neurons in the first, 20 neurons in the second), ReLU activation and one output is trained on a existing data set.
 Note that this example is not concerned with the accuracy of the network, it is just used to showcase the initialization of the network and as a test-case.
 The Matlab script ``uz_nn_full_example_script.m`` in ``~/ultrazohm_sw/vitis/software/Baremetal/test/uz/uz_nn`` trains the network and writes the weights and bias to a ``.csv`` file.
 Be aware that the Matlab neural network definition differs from the network definition used in :ref:`neural_network`, thus the data is transposed and reshaped before the write operation. 

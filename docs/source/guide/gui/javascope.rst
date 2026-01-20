@@ -20,7 +20,7 @@ The folder contains the following files
       :scale: 70 %
       :align: center
 
-      JavaScope folder strucuture
+      JavaScope folder structure
 
 Basics
 ------

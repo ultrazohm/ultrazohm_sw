@@ -12,7 +12,7 @@ The goal is to move sampled data from the R5 processor via the A53 to the host P
 Important requirements are 
 
 
-- no data is lost, all samples are transfered and logged
+- no data is lost, all samples are transferred and logged
 - on the R5 side, it has to run synchronous to the control ISR, since all the data is updated in each call of the ISR, i.e., in each time step.
 - the sampling frequency can be up 100kHz
 - minimal effort for R5 to avoid stealing computation time from the control ISR

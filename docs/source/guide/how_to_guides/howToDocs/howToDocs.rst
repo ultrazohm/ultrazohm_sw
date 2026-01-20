@@ -191,7 +191,7 @@ Figures
 
        Caption.
 
-Refernce:
+Reference:
 
 .. code-block:: rst
 
@@ -230,7 +230,7 @@ Math
       i_1=\sqrt{i_d^2 +i_q^2}
 
 - This text references :eq:`eq_example_number` by using ``:eq:`eq_example_number```
-- The build-in sphinx numbering can not label multiple equations, e.g., in align environments
+- The built-in sphinx numbering can not label multiple equations, e.g., in align environments
 - Alternative according to https://www.mail-archive.com/sphinx-users@googlegroups.com/msg04040.html
 
 .. code-block::
@@ -327,7 +327,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
  
 
 `sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
-  Adds a button to the code blocks that copys the content of the block.
+  Adds a button to the code blocks that copies the content of the block.
  
 `sphinxcontrib-tikz <https://github.com/sphinx-contrib/tikz>`_
   Adds the possibility to write tikz pictures in the documentation.
@@ -398,7 +398,7 @@ Adding the following line to a docs page:
 
    .. doxygenfunction:: uz_convert_sfixed_to_float
 
-Generates the following ouput in the docs:
+Generates the following output in the docs:
 
 .. figure:: img/doxygen_sample_output.png
    :scale: 70

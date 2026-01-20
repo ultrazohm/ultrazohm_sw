@@ -23,7 +23,7 @@ If you create an adapter card please make sure you follow the guidelines:
 
 * Discuss your idea in the community. Someone might be designing a similar PCB right now. 
 * Take the opportunity to get feedback from the community, e.g. using the issue tracker in the repo. 
-* Please test your PCB design thoroughly and provide matching software/IP core drivers, so that others can re-use your design.
+* Please test your PCB design thoroughly and provide matching software/IP core drivers, so that others can reuse your design.
 * Write a docs page documenting the intended use, technical specifications, limitations, and (if applicable) any known bugs.
 * We differentiate between **analog** and **digital** adapter cards. They differ in the number of pins available and how they are routed. For example, the **analog** adapter has 10 fully differential signals, whereas the **digital** adapter has 30 single-ended signals that are routed through a CPLD. Please check the Carrier Board for more details
 * Include a version number. It follows the scheme <major_revision>v<minor_revision>. The major revisions are typically produced in hardware and minor revisions are revisions in the layout without producing the PCB.

@@ -12,7 +12,7 @@ It is split into the following different parts:
 2. The processing system (PS) with R5 and A53.
 3. ``uz_system`` with clocks, interrupts, AXI infrastructure, and IP cores for system functions.
 4. The IP cores to interface the adapter cards on A1, A2, and A3.
-5. The ouput ports to digital and analog adapter cards.
+5. The output ports to digital and analog adapter cards.
 6. The ``uz_user`` subsystem where user specific IP cores should be placed.
 7. The IP cores to interface the digital adapter cards on D1, D2, D3, D4, and D5.
 

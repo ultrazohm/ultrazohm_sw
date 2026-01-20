@@ -26,7 +26,7 @@ Development goals
 Computational power
  The use of more complex control algorithms based on model predictive control and/or artificial intelligence, as well as the increased use of wide-band gap power electronics, require a real-time computing unit with sufficient processing power.
  The necessary processing power is provided by the UltraZohm.
- A heterogenous SoC is used due to the diverse requirements of different applications and control algorithms.
+ A heterogeneous SoC is used due to the diverse requirements of different applications and control algorithms.
  The UltraZohm project uses the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ on a SoM by `Trenz Electronics <https://shop.trenz-electronic.de/de/Produkte/Trenz-Electronic/TE08XX-Zynq-UltraScale/TE0808-Zynq-UltraScale/>`_.
 
 Hard real-time

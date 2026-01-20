@@ -195,7 +195,7 @@ Guideline
       //....
 
 #. To display the different chirp waves on the JavaScope, the ``javascope.c`` and ``javascope.h`` file will be modified. 
-#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum (e.g., JSO_Chirpwave1, etc.).
+#. Open the ``javascope.h`` file and add three new entries to the ``JS_OberservableData`` enum (e.g., JSO_Chirpwave1, etc.).
 
    * Here, the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.

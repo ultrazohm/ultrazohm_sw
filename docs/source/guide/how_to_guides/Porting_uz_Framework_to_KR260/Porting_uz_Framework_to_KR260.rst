@@ -207,7 +207,7 @@ This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII
 
 To create a suited software for the KR260, follow these steps:
 
-#.  Open Vitis 2022.2 and create the Workspace according to Ultrazohm Setup.
+#.  Open Vitis 2022.2 and create the Workspace according to UltraZohm Setup.
 
     * Open the XSCT Console in Vitis. Type the following commands:
 
@@ -286,7 +286,7 @@ To create a suited software for the KR260, follow these steps:
 
     * Control the Debug Configuration - Application and Target Setup.
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
-    * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
+    * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not UltraZohm file. 
 
 #.  Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
@@ -323,5 +323,4 @@ Some points and ideas for discussion on how the workflow could be better integra
         *  uz_assert( uz_gpio_get_enable_output(self) ); 
 
 *   Edit the ``vitis_generate_UltraZohm_workspace.tcl`` to work with the KR260.
-*   Enable an EMIO for one TTC to create a PWM-Signal to control the Fan of the SoM. Would perhaps also be an idea for the real Ultrazohm?
-
+*   Enable an EMIO for one TTC to create a PWM-Signal to control the Fan of the SoM. Would perhaps also be an idea for the real UltraZohm?

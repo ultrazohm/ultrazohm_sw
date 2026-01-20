@@ -4,12 +4,12 @@
 Resolver Interface
 ==================
 
-The ResolverIP interface implements communication between the Ultrazohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the Encoder Board.
+The ResolverIP interface implements communication between the UltraZohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the Encoder Board.
 
 Introduction
 ============
 
-The Ultrazohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
+The UltraZohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
 
 As illustrated by figure :numref:`structure`, the AD2S1210 continuously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IP core outputs. Also, raw values can be transferred to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
 

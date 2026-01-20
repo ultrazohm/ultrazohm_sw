@@ -10,7 +10,7 @@ The motivation for using Simscape Models on the UltraZohm is to use them as a vi
 Additionally, Simscape Models on the UltraZohm be used to accelerate specific Simulations compared to using a desktop computer.
 This is especially useful for simulating a system with low time constants that you want to simulate for a long time.
 However, this is the most basic Mathworks example applied to the UltraZohm, and there is no focus on usability for simulation, nor is the signal chain closed.
-The goal of this tutorial is to provide a starting point for the user and showcase the possibilities of using existing tooling with the Ultrazohm.
+The goal of this tutorial is to provide a starting point for the user and showcase the possibilities of using existing tooling with the UltraZohm.
 
 This tutorial consists of:
   

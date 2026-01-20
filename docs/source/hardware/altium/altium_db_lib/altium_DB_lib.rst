@@ -14,7 +14,7 @@ Before starting with the description and instructions on how to use the database
 
 The library system splits up in three different locations:
 
-1. The `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the Ultrazohm server is located in this repository
+1. The `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the UltraZohm server is located in this repository
 2. The UltraZohm server: All component parameters like Manufacturer Part Numbers etc. are managed by a MariaDB database on the server. In order to edit database records a separate database client (e.g. `DBeaver <https://dbeaver.io/>`_) is recommended.
 3. User's PC: The PC of the PCB developer gets access to the locations 1 and 2 and the developer is able to place the components. In case he has write access he can also edit and add components.
 
@@ -519,4 +519,3 @@ Therefore, open the "user.DbLib" file in Altium.
       Altium - Change database field.
 
 10. Save the new settings in the "user.DbLib" file and commit it to the Bitbucket system for all the other users.
-

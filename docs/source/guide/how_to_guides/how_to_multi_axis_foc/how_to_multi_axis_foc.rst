@@ -14,7 +14,7 @@ The following steps are required:
 - Physical connection of all components
 
   - Connect UltraZohm to gate signals of both inverters using :ref:`digitalVoltage` on D1
-  - Connect incremental encoders to the Ultrazohm using :ref:`dig_incEncoder` on D5 for first machine and one on D4 for the second machine
+  - Connect incremental encoders to the UltraZohm using :ref:`dig_incEncoder` on D5 for first machine and one on D4 for the second machine
   - Connect phase current measurement of the inverter to the UltraZohm using :ref:`Analog_LTC2311_16` on A1
 
 - Connect the input and outputs of the system with the required IP cores using the constraint files

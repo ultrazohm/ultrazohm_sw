@@ -592,6 +592,7 @@ void ISR_Control(void *data)
 
            	}
 
+
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
            	v_dqxy_limited_volts.x = v_xy_limited_volts.d;

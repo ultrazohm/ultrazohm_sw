@@ -72,40 +72,40 @@ Global_Data.objects.NN_acc_Instance = uz_NN_acc_init(IP_config, Global_Data.obje
 #elif NN_IP_CORE_3_64==1
 float x_17[NUMBER_OF_INPUTS_17N] MEMORY_ALIGN  = {0};
 static float w_1_17[NUMBER_OF_INPUTS_17N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Weights_Layer_1.csv"
+	#include "Weights_3_64_Layer_1.csv"
 };
 
 static float b_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Bias_Layer_1.csv"
+	#include "Bias_3_64_Layer_1.csv"
 };
 
 static float y_1_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {0};
 static float w_2_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Weights_Layer_2.csv"
+	#include "Weights_3_64_Layer_2.csv"
 };
 static float b_2_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Bias_Layer_2.csv"
+	#include "Bias_3_64_Layer_2.csv"
 };
 
 static float y_2_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {0};
 static float w_3_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Weights_Layer_3.csv"
+	#include "Weights_3_64_Layer_3.csv"
 };
 static float b_3_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {
-	#include "Bias_Layer_3.csv"
+	#include "Bias_3_64_Layer_3.csv"
 };
 
 static float y_3_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] MEMORY_ALIGN = {0};
 static float w_4_17[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
-	#include "Weights_Layer_out.csv"
+	#include "Weights_3_64_Layer_out.csv"
 };
 static float b_4_17[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
-	#include "Bias_Layer_out.csv"
+	#include "Bias_3_64_Layer_out.csv"
 };
 
 static float y_4_17[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {0};
 // initialize config struct and activation function
-struct uz_nn_layer_config config_17nn[2] = {
+struct uz_nn_layer_config config_17nn[4] = {
 [0] = {
     .activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,

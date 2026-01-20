@@ -12,7 +12,7 @@ import_data_to_simulink_datainspector = 1;
 overwrite_data_in_simulink_datainspector = 1;
 
 %% import latest csv
-Logfile_list = dir('foc_real.csv');
+Logfile_list = dir('NN_IP_3_64_normal.csv');
 %chose latest logfile which is not empty
 Logfile_list_size = Logfile_list.bytes;
 for logfile_list_index = size(Logfile_list,1):-1:1

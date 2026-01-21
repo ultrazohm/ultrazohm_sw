@@ -115,15 +115,15 @@
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
         "uz_inverter_adapter": {
-          "uz_d_inverter_adapter_0": "",
-          "uz_d_inverter_adapter_1": "",
-          "uz_d_inverter_adapter_2": "",
           "uz_inverter_adapter_0": "",
           "uz_inverter_adapter_2": "",
           "uz_inverter_adapter_1": "",
           "xlslice_0": "",
           "xlslice_1": "",
-          "xlslice_2": ""
+          "xlslice_2": "",
+          "uz_d_inverter_adapter_0": "",
+          "uz_d_inverter_adapter_1": "",
+          "uz_d_inverter_adapter_2": ""
         },
         "uz_resolver": {
           "Resolver_Interface_v_0": "",
@@ -6000,6 +6000,9 @@
           },
           "sample_trigger": {
             "direction": "I"
+          },
+          "PWM_UZ_Enable": {
+            "direction": "I"
           }
         },
         "components": {
@@ -6342,27 +6345,12 @@
                 "direction": "I",
                 "left": "23",
                 "right": "0"
+              },
+              "PWM_UZ_Enable": {
+                "direction": "I"
               }
             },
             "components": {
-              "uz_d_inverter_adapter_0": {
-                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_0_0",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_0_0\\zusys_uz_d_inverter_adapter_0_0.xci",
-                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_0"
-              },
-              "uz_d_inverter_adapter_1": {
-                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_1_0",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_1_0\\zusys_uz_d_inverter_adapter_1_0.xci",
-                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_1"
-              },
-              "uz_d_inverter_adapter_2": {
-                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_2_0",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_2_0\\zusys_uz_d_inverter_adapter_2_0.xci",
-                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_2"
-              },
               "uz_inverter_adapter_0": {
                 "vlnv": "xilinx.com:user:uz_inverter_adapter_mapping:1.0",
                 "xci_name": "zusys_uz_inverter_adapter_0_0",
@@ -6397,8 +6385,8 @@
               },
               "xlslice_1": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_0_1",
-                "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
+                "xci_name": "zusys_xlslice_1_0",
+                "xci_path": "ip\\zusys_xlslice_1_0\\zusys_xlslice_1_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter/xlslice_1",
                 "parameters": {
                   "DIN_FROM": {
@@ -6414,8 +6402,8 @@
               },
               "xlslice_2": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_0_2",
-                "xci_path": "ip\\zusys_xlslice_0_2\\zusys_xlslice_0_2.xci",
+                "xci_name": "zusys_xlslice_2_1",
+                "xci_path": "ip\\zusys_xlslice_2_1\\zusys_xlslice_2_1.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter/xlslice_2",
                 "parameters": {
                   "DIN_FROM": {
@@ -6428,31 +6416,49 @@
                     "value": "24"
                   }
                 }
+              },
+              "uz_d_inverter_adapter_0": {
+                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
+                "xci_name": "zusys_uz_d_inverter_adapter_0_1",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_0_1\\zusys_uz_d_inverter_adapter_0_1.xci",
+                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_0"
+              },
+              "uz_d_inverter_adapter_1": {
+                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
+                "xci_name": "zusys_uz_d_inverter_adapter_1_1",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_1_1\\zusys_uz_d_inverter_adapter_1_1.xci",
+                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_1"
+              },
+              "uz_d_inverter_adapter_2": {
+                "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
+                "xci_name": "zusys_uz_d_inverter_adapter_2_1",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_2_1\\zusys_uz_d_inverter_adapter_2_1.xci",
+                "inst_hier_path": "uz_user/uz_inverter_adapter/uz_d_inverter_adapter_2"
               }
             },
             "interface_nets": {
-              "Conn2": {
-                "interface_ports": [
-                  "D2",
-                  "uz_inverter_adapter_1/uz_inverter_adapter"
-                ]
-              },
-              "Conn4": {
-                "interface_ports": [
-                  "AXI4_Lite",
-                  "uz_d_inverter_adapter_0/AXI4_Lite"
-                ]
-              },
-              "Conn5": {
+              "AXI4_Lite1_1": {
                 "interface_ports": [
                   "AXI4_Lite1",
                   "uz_d_inverter_adapter_1/AXI4_Lite"
                 ]
               },
-              "Conn6": {
+              "AXI4_Lite2_1": {
                 "interface_ports": [
                   "AXI4_Lite2",
                   "uz_d_inverter_adapter_2/AXI4_Lite"
+                ]
+              },
+              "AXI4_Lite_1": {
+                "interface_ports": [
+                  "AXI4_Lite",
+                  "uz_d_inverter_adapter_0/AXI4_Lite"
+                ]
+              },
+              "Conn2": {
+                "interface_ports": [
+                  "D2",
+                  "uz_inverter_adapter_1/uz_inverter_adapter"
                 ]
               },
               "uz_inverter_adapter_0_uz_inverter_adapter": {
@@ -6477,26 +6483,34 @@
                   "xlslice_2/Din"
                 ]
               },
+              "PWM_UZ_Enable_1": {
+                "ports": [
+                  "PWM_UZ_Enable",
+                  "uz_d_inverter_adapter_0/PWM_UZ_Enable",
+                  "uz_d_inverter_adapter_1/PWM_UZ_Enable",
+                  "uz_d_inverter_adapter_2/PWM_UZ_Enable"
+                ]
+              },
               "aclk_1": {
                 "ports": [
                   "aclk",
-                  "uz_d_inverter_adapter_1/IPCORE_CLK",
-                  "uz_d_inverter_adapter_2/IPCORE_CLK",
                   "uz_d_inverter_adapter_0/IPCORE_CLK",
-                  "uz_d_inverter_adapter_2/AXI4_Lite_ACLK",
+                  "uz_d_inverter_adapter_0/AXI4_Lite_ACLK",
+                  "uz_d_inverter_adapter_1/IPCORE_CLK",
                   "uz_d_inverter_adapter_1/AXI4_Lite_ACLK",
-                  "uz_d_inverter_adapter_0/AXI4_Lite_ACLK"
+                  "uz_d_inverter_adapter_2/IPCORE_CLK",
+                  "uz_d_inverter_adapter_2/AXI4_Lite_ACLK"
                 ]
               },
               "aresetn_1": {
                 "ports": [
                   "aresetn",
-                  "uz_d_inverter_adapter_1/IPCORE_RESETN",
+                  "uz_d_inverter_adapter_0/AXI4_Lite_ARESETN",
                   "uz_d_inverter_adapter_0/IPCORE_RESETN",
-                  "uz_d_inverter_adapter_2/IPCORE_RESETN",
                   "uz_d_inverter_adapter_1/AXI4_Lite_ARESETN",
+                  "uz_d_inverter_adapter_1/IPCORE_RESETN",
                   "uz_d_inverter_adapter_2/AXI4_Lite_ARESETN",
-                  "uz_d_inverter_adapter_0/AXI4_Lite_ARESETN"
+                  "uz_d_inverter_adapter_2/IPCORE_RESETN"
                 ]
               },
               "uz_d_inverter_adapter_0_PWM_EN": {
@@ -6716,14 +6730,14 @@
               },
               "Resolver_Interface_v_1": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_Resolver_Interface_v_0_1",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_0_1\\zusys_Resolver_Interface_v_0_1.xci",
+                "xci_name": "zusys_Resolver_Interface_v_1_0",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_1_0\\zusys_Resolver_Interface_v_1_0.xci",
                 "inst_hier_path": "uz_user/uz_resolver/Resolver_Interface_v_1"
               },
               "uz_resolver_pl_inter_1": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_uz_resolver_pl_inter_0_1",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_1\\zusys_uz_resolver_pl_inter_0_1.xci",
+                "xci_name": "zusys_uz_resolver_pl_inter_1_0",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0\\zusys_uz_resolver_pl_inter_1_0.xci",
                 "inst_hier_path": "uz_user/uz_resolver/uz_resolver_pl_inter_1"
               }
             },
@@ -7021,6 +7035,12 @@
             "ports": [
               "Din",
               "uz_inverter_adapter/Din"
+            ]
+          },
+          "PWM_UZ_Enable_1": {
+            "ports": [
+              "PWM_UZ_Enable",
+              "uz_inverter_adapter/PWM_UZ_Enable"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -10502,6 +10522,12 @@
         "ports": [
           "uz_digital_adapter/D1_OUT",
           "uz_user/Din"
+        ]
+      },
+      "uz_system_D1_OUT_29": {
+        "ports": [
+          "uz_system/D1_OUT_29",
+          "uz_user/PWM_UZ_Enable"
         ]
       },
       "uz_system_wdt_interrupt": {

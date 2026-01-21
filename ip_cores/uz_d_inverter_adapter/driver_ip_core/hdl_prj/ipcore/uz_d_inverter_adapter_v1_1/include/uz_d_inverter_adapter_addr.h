@@ -1,9 +1,7 @@
-#pragma once
-
 /*
- * File Name:         hdl_prj\ipcore\uz_d_inverter_adapter_v1_0\include\uz_d_inverter_adapter_addr.h
+ * File Name:         hdl_prj\ipcore\uz_d_inverter_adapter_v1_1\include\uz_d_inverter_adapter_addr.h
  * Description:       C Header File
- * Created:           2022-05-31 17:55:13
+ * Created:           2026-01-21 09:27:59
 */
 
 #ifndef UZ_D_INVERTER_ADAPTER_H_

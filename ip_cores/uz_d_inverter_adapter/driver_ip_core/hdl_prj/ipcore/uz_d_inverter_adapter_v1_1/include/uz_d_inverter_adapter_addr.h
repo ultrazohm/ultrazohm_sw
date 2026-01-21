@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\uz_d_inverter_adapter_v1_1\include\uz_d_inverter_adapter_addr.h
  * Description:       C Header File
- * Created:           2026-01-21 08:57:31
+ * Created:           2026-01-21 09:27:59
 */
 
 #ifndef UZ_D_INVERTER_ADAPTER_H_
@@ -9,8 +9,7 @@
 
 #define  IPCore_Reset_uz_d_inverter_adapter               0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_d_inverter_adapter              0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_d_inverter_adapter           0x8  //contains unique IP timestamp (yymmddHHMM): 2601210857
-#define  AXI_en_in_Data_uz_d_inverter_adapter             0x100  //data register for Inport AXI_en_in
+#define  IPCore_Timestamp_uz_d_inverter_adapter           0x8  //contains unique IP timestamp (yymmddHHMM): 2601210927
 #define  AXI_Temp_1_period_Data_uz_d_inverter_adapter     0x104  //data register for Outport AXI_Temp_1_period
 #define  AXI_Temp_1_hightime_Data_uz_d_inverter_adapter   0x108  //data register for Outport AXI_Temp_1_hightime
 #define  AXI_Temp_1_lowtime_Data_uz_d_inverter_adapter    0x10C  //data register for Outport AXI_Temp_1_lowtime

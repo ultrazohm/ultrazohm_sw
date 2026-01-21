@@ -5,7 +5,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_d_inverter_adapter:234"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:236"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:400"] = "uz_d_inverter_adapter:7";
-    this.sidParentMap["uz_d_inverter_adapter:764"] = "uz_d_inverter_adapter:7";
+    this.sidParentMap["uz_d_inverter_adapter:838"] = "uz_d_inverter_adapter:7";
+    this.sidParentMap["uz_d_inverter_adapter:839"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:656"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:658"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:659"] = "uz_d_inverter_adapter:7";
@@ -16,12 +17,11 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_d_inverter_adapter:689"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:690"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:691"] = "uz_d_inverter_adapter:7";
-    this.sidParentMap["uz_d_inverter_adapter:765"] = "uz_d_inverter_adapter:7";
+    this.sidParentMap["uz_d_inverter_adapter:840"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:647"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:651"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:652"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:643"] = "uz_d_inverter_adapter:7";
-    this.sidParentMap["uz_d_inverter_adapter:771"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:639"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:10"] = "uz_d_inverter_adapter:7";
     this.sidParentMap["uz_d_inverter_adapter:186"] = "uz_d_inverter_adapter:7";
@@ -76,7 +76,6 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_d_inverter_adapter:662:1700"] = "uz_d_inverter_adapter:662";
     this.sidParentMap["uz_d_inverter_adapter:662:1701"] = "uz_d_inverter_adapter:662";
     this.sidParentMap["uz_d_inverter_adapter:640"] = "uz_d_inverter_adapter:639";
-    this.sidParentMap["uz_d_inverter_adapter:763"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:433"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:434"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:760"] = "uz_d_inverter_adapter:639";
@@ -131,7 +130,6 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_d_inverter_adapter:775"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:784"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:791"] = "uz_d_inverter_adapter:639";
-    this.sidParentMap["uz_d_inverter_adapter:830"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:447"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:449"] = "uz_d_inverter_adapter:639";
     this.sidParentMap["uz_d_inverter_adapter:827"] = "uz_d_inverter_adapter:639";

@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">9.0
+<td class="summaryTableSndColOddRow">9.1
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">21-Jan-2026 08:57:27
+<td class="summaryTableSndColOddRow">21-Jan-2026 09:27:57
 </td>
 </tr>
 <tr>
@@ -224,17 +224,17 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_d_inverter_adapter:764')">AXI_en_in</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_d_inverter_adapter:838')">PWM_UZ_Enable</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">boolean
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"100"
+<td class="distinctCellColor">
 </td>
-<td class="distinctCellColor">RegisterInitialValue 0
+<td class="distinctCellColor">
 </td>
 </tr>
 <tr>
@@ -585,191 +585,183 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2601210857
+<td>contains unique IP timestamp (yymmddHHMM): 2601210927
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_en_in_Data
+<td class="distinctCellColor">AXI_Temp_1_period_Data
 </td>
-<td class="distinctCellColor">0x100
+<td class="distinctCellColor">0x104
 </td>
-<td class="distinctCellColor">data register for Inport AXI_en_in
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_1_period_Data
-</td>
-<td>0x104
-</td>
-<td>data register for Outport AXI_Temp_1_period
+<td class="distinctCellColor">data register for Outport AXI_Temp_1_period
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_1_hightime_Data
+<td>AXI_Temp_1_hightime_Data
 </td>
-<td class="distinctCellColor">0x108
+<td>0x108
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_1_hightime
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_1_lowtime_Data
-</td>
-<td>0x10C
-</td>
-<td>data register for Outport AXI_Temp_1_lowtime
+<td>data register for Outport AXI_Temp_1_hightime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_2_period_Data
+<td class="distinctCellColor">AXI_Temp_1_lowtime_Data
 </td>
-<td class="distinctCellColor">0x114
+<td class="distinctCellColor">0x10C
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_2_period
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_2_hightime_Data
-</td>
-<td>0x118
-</td>
-<td>data register for Outport AXI_Temp_2_hightime
+<td class="distinctCellColor">data register for Outport AXI_Temp_1_lowtime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_2_lowtime_Data
+<td>AXI_Temp_2_period_Data
 </td>
-<td class="distinctCellColor">0x11C
+<td>0x114
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_2_lowtime
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_3_period_Data
-</td>
-<td>0x124
-</td>
-<td>data register for Outport AXI_Temp_3_period
+<td>data register for Outport AXI_Temp_2_period
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_3_hightime_Data
+<td class="distinctCellColor">AXI_Temp_2_hightime_Data
 </td>
-<td class="distinctCellColor">0x128
+<td class="distinctCellColor">0x118
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_3_hightime
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_3_lowtime_Data
-</td>
-<td>0x12C
-</td>
-<td>data register for Outport AXI_Temp_3_lowtime
+<td class="distinctCellColor">data register for Outport AXI_Temp_2_hightime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_4_period_Data
+<td>AXI_Temp_2_lowtime_Data
 </td>
-<td class="distinctCellColor">0x134
+<td>0x11C
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_4_period
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_4_hightime_Data
-</td>
-<td>0x138
-</td>
-<td>data register for Outport AXI_Temp_4_hightime
+<td>data register for Outport AXI_Temp_2_lowtime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_4_lowtime_Data
+<td class="distinctCellColor">AXI_Temp_3_period_Data
 </td>
-<td class="distinctCellColor">0x13C
+<td class="distinctCellColor">0x124
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_4_lowtime
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_5_period_Data
-</td>
-<td>0x144
-</td>
-<td>data register for Outport AXI_Temp_5_period
+<td class="distinctCellColor">data register for Outport AXI_Temp_3_period
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_5_hightime_Data
+<td>AXI_Temp_3_hightime_Data
 </td>
-<td class="distinctCellColor">0x148
+<td>0x128
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_5_hightime
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_5_lowtime_Data
-</td>
-<td>0x14C
-</td>
-<td>data register for Outport AXI_Temp_5_lowtime
+<td>data register for Outport AXI_Temp_3_hightime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_6_period_Data
+<td class="distinctCellColor">AXI_Temp_3_lowtime_Data
 </td>
-<td class="distinctCellColor">0x154
+<td class="distinctCellColor">0x12C
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_6_period
-</td>
-</tr>
-<tr>
-<td>AXI_Temp_6_hightime_Data
-</td>
-<td>0x158
-</td>
-<td>data register for Outport AXI_Temp_6_hightime
+<td class="distinctCellColor">data register for Outport AXI_Temp_3_lowtime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_Temp_6_lowtime_Data
+<td>AXI_Temp_4_period_Data
 </td>
-<td class="distinctCellColor">0x15C
+<td>0x134
 </td>
-<td class="distinctCellColor">data register for Outport AXI_Temp_6_lowtime
-</td>
-</tr>
-<tr>
-<td>AXI_FAULT_Data
-</td>
-<td>0x164
-</td>
-<td>data register for Outport AXI_FAULT
+<td>data register for Outport AXI_Temp_4_period
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_OC_Data
+<td class="distinctCellColor">AXI_Temp_4_hightime_Data
 </td>
-<td class="distinctCellColor">0x178
+<td class="distinctCellColor">0x138
 </td>
-<td class="distinctCellColor">data register for Outport AXI_OC
-</td>
-</tr>
-<tr>
-<td>AXI_I_DIAG_Data
-</td>
-<td>0x190
-</td>
-<td>data register for Outport AXI_I_DIAG
+<td class="distinctCellColor">data register for Outport AXI_Temp_4_hightime
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_PWM_Enable_Data
+<td>AXI_Temp_4_lowtime_Data
 </td>
-<td class="distinctCellColor">0x1A0
+<td>0x13C
 </td>
-<td class="distinctCellColor">data register for Inport AXI_PWM_Enable
+<td>data register for Outport AXI_Temp_4_lowtime
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_Temp_5_period_Data
+</td>
+<td class="distinctCellColor">0x144
+</td>
+<td class="distinctCellColor">data register for Outport AXI_Temp_5_period
+</td>
+</tr>
+<tr>
+<td>AXI_Temp_5_hightime_Data
+</td>
+<td>0x148
+</td>
+<td>data register for Outport AXI_Temp_5_hightime
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_Temp_5_lowtime_Data
+</td>
+<td class="distinctCellColor">0x14C
+</td>
+<td class="distinctCellColor">data register for Outport AXI_Temp_5_lowtime
+</td>
+</tr>
+<tr>
+<td>AXI_Temp_6_period_Data
+</td>
+<td>0x154
+</td>
+<td>data register for Outport AXI_Temp_6_period
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_Temp_6_hightime_Data
+</td>
+<td class="distinctCellColor">0x158
+</td>
+<td class="distinctCellColor">data register for Outport AXI_Temp_6_hightime
+</td>
+</tr>
+<tr>
+<td>AXI_Temp_6_lowtime_Data
+</td>
+<td>0x15C
+</td>
+<td>data register for Outport AXI_Temp_6_lowtime
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_FAULT_Data
+</td>
+<td class="distinctCellColor">0x164
+</td>
+<td class="distinctCellColor">data register for Outport AXI_FAULT
+</td>
+</tr>
+<tr>
+<td>AXI_OC_Data
+</td>
+<td>0x178
+</td>
+<td>data register for Outport AXI_OC
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">AXI_I_DIAG_Data
+</td>
+<td class="distinctCellColor">0x190
+</td>
+<td class="distinctCellColor">data register for Outport AXI_I_DIAG
+</td>
+</tr>
+<tr>
+<td>AXI_PWM_Enable_Data
+</td>
+<td>0x1A0
+</td>
+<td>data register for Inport AXI_PWM_Enable
 </td>
 </tr>
 </tbody>

@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_d_inverter_adapter
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_3');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_2_3');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_4_1');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -152,7 +152,7 @@ Summary
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-78
+0
 </td>
 
 </tr>
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-120
+12
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-940
+64
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-21683
+1193
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-78
+72
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-813
+621
 </td>
 
 </tr>
@@ -215,7 +215,7 @@ I/O Bits
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-24
+0
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-12
+0
 </td>
 
 </tr>
@@ -246,19 +246,70 @@ uz_d_inverter_adapter
 
 </h5>
 <h5>
-Registers (76)
+Registers (4)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
-6-bit Register 							: 38
+6-bit Register 							: 2
 </span>
-<br /><span style="font-family:monospace">
-4-bit Register 							: 19
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:406')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:689')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
 </span>
-<br /><span style="font-family:monospace">
-1-bit Register 							: 19
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+4-bit Register 							: 1
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:690')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:691')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><h5>
-Number of I/O Bits (813)
+Number of I/O Bits (621)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -321,10 +372,10 @@ AXI_en_in
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 786
+Number of Output Bits: 594
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="1e0a9781-2a57-4c7a-b592-7f0080dd69df" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="753eb607-4eaa-49ff-819a-19d26ab08f3b" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -347,12 +398,6 @@ AXI_Temp_1_lowtime
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:188')" name="code2model" class="code2model">
-AXI_Temp_1_dutycyc
-</a>
-: 32 bits
-</li>
-<li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:482')" name="code2model" class="code2model">
 AXI_Temp_2_period
 </a>
@@ -367,12 +412,6 @@ AXI_Temp_2_hightime
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:484')" name="code2model" class="code2model">
 AXI_Temp_2_lowtime
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:491')" name="code2model" class="code2model">
-AXI_Temp_2_dutycyc
 </a>
 : 32 bits
 </li>
@@ -395,12 +434,6 @@ AXI_Temp_3_lowtime
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:513')" name="code2model" class="code2model">
-AXI_Temp_3_dutycyc
-</a>
-: 32 bits
-</li>
-<li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:537')" name="code2model" class="code2model">
 AXI_Temp_4_period
 </a>
@@ -415,12 +448,6 @@ AXI_Temp_4_hightime
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:539')" name="code2model" class="code2model">
 AXI_Temp_4_lowtime
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:540')" name="code2model" class="code2model">
-AXI_Temp_4_dutycyc
 </a>
 : 32 bits
 </li>
@@ -443,12 +470,6 @@ AXI_Temp_5_lowtime
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:627')" name="code2model" class="code2model">
-AXI_Temp_5_dutycyc
-</a>
-: 32 bits
-</li>
-<li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:628')" name="code2model" class="code2model">
 AXI_Temp_6_period
 </a>
@@ -463,12 +484,6 @@ AXI_Temp_6_hightime
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:630')" name="code2model" class="code2model">
 AXI_Temp_6_lowtime
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:631')" name="code2model" class="code2model">
-AXI_Temp_6_dutycyc
 </a>
 : 32 bits
 </li>
@@ -498,7 +513,7 @@ PWM_EN
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '1e0a9781-2a57-4c7a-b592-7f0080dd69df')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '753eb607-4eaa-49ff-819a-19d26ab08f3b')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -510,46 +525,19 @@ PWMdutyFreqDetection
 , with 6 instantiations
 </h5>
 <h5>
-Multipliers (78)
-</h5>
-<span style="font-family:monospace">
-34x33-bit Multiply 							: 12
-</span>
-<br /><span style="font-family:monospace">
-36x32-bit Multiply 							: 54
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_2_3')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-32x32-bit Multiply 							: 12
-</span>
-<span name="Multiply_2_3" id="Multiply_2_3">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:836')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (120)
+Adders/Subtractors (12)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32x32-bit Adder 							: 24
+32x32-bit Adder 							: 12
 </span>
 <span name="Adder_2_1" id="Adder_2_1">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:821')" name="code2model" class="code2model">
-HDL Counter1
+adder
 </a>
 
 </li>
@@ -563,20 +551,14 @@ Sum1
 </ul>
 
 </span>
-<br /><span style="font-family:monospace">
-32x1-bit Adder 							: 78
-</span>
-<br /><span style="font-family:monospace">
-32x32-bit Subtractor 							: 18
-</span>
 <br /><h5>
-Registers (852)
+Registers (48)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 102
+1-bit Register 							: 12
 </span>
 <span name="Register_2_1" id="Register_2_1">
 <ul>
@@ -594,7 +576,7 @@ Delay15
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 648
+32-bit Register 							: 36
 </span>
 <span name="Register_2_2" id="Register_2_2">
 <ul>
@@ -605,8 +587,32 @@ HDL Counter1
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:817')" name="code2model" class="code2model">
-Delay14
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:812')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:814')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:813')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:815')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:816')" name="code2model" class="code2model">
+Delay13
 </a>
 
 </li>
@@ -614,41 +620,47 @@ Delay14
 </ul>
 
 </span>
-<br /><span style="font-family:monospace">
-5-bit Register 							: 102
-</span>
 <br /><h5>
-Multiplexers (54)
+Multiplexers (48)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 18
+</span>
+<span name="Multiplexer_2_1" id="Multiplexer_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:821')" name="code2model" class="code2model">
+compare
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit 3-to-1 Multiplexer 							: 6
+32-bit 2-to-1 Multiplexer 							: 30
 </span>
 <span name="Multiplexer_2_2" id="Multiplexer_2_2">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:821')" name="code2model" class="code2model">
-HDL Counter1
+switch
 </a>
 
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:821')" name="code2model" class="code2model">
+switchReset
+</a>
 
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_3')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-32-bit 2-to-1 Multiplexer 							: 24
-</span>
-<span name="Multiplexer_2_3" id="Multiplexer_2_3">
-<ul>
+</li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:825')" name="code2model" class="code2model">
 Switch10
@@ -664,24 +676,6 @@ Switch11
 
 </ul>
 
-</span>
-<br /><span style="font-family:monospace">
-5-bit 16-to-1 Multiplexer 							: 6
-</span>
-<br /><h5>
-Number of Shift operators (36)
-</h5>
-<span style="font-family:monospace">
-Static Shift Left 							: 6
-</span>
-<br /><span style="font-family:monospace">
-Static Shift Right 							: 18
-</span>
-<br /><span style="font-family:monospace">
-32-bit Dynamic Shift Left 							: 6
-</span>
-<br /><span style="font-family:monospace">
-47-bit Dynamic Shift Left 							: 6
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:819')" name="code2model" class="code2model">
@@ -702,8 +696,29 @@ Registers (6)
 <br /><h5>
 Multiplexers (12)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:819:4')" name="code2model" class="code2model">
+Nonpositive
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:819:3')" name="code2model" class="code2model">
+FixPt_Relational_Operator
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:820')" name="code2model" class="code2model">
@@ -724,8 +739,29 @@ Registers (6)
 <br /><h5>
 Multiplexers (12)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:820:4')" name="code2model" class="code2model">
+Positive_rsvd
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:820:3')" name="code2model" class="code2model">
+FixPt_Relational_Operator
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><p><hr /></p>
 </body>

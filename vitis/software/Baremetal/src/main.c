@@ -95,7 +95,6 @@ int main(void)
             Global_Data.objects.setpoint_ctrl_Last = setpoint_ctrl_Last_init();
             Global_Data.objects.speed_ctrl_Last= speed_ctrl_Last_init();
             Global_Data.objects.speed_prefilter_Last = uz_speed_prefilter_Last_init();
-            Global_Data.objects.speed_prefilter_Pruef = uz_speed_prefilter_Pruef_init();
         	initialization_chain = init_ip_cores;
         	break;
         case init_ip_cores:
@@ -113,7 +112,6 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.resolver_pl_d4_Last = initialize_resolver_pl_d4_Last();
             Global_Data.objects.resolver_pl_d4_Pruef = initialize_resolver_pl_d4_Pruef();
             Global_Data.objects.resolverIP_Last = initialize_resolverIP_Last();

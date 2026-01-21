@@ -36,7 +36,6 @@
 #include "globalData.h"
 #include "defines.h"
 #include "include/isr.h"
-#include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"
@@ -60,6 +59,7 @@
 #include "include/uz_resolverIP_init.h"
 #include "include/init_FOC.h"
 #include "include/uz_IIR_Filter_init.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

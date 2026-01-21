@@ -62,60 +62,26 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float i_a1; 		// Machine side current in A
-	float i_b1; 		// Machine side current in A
-	float i_c1; 		// Machine side current in A
-	float i_a2; 		// Machine side current in A
-	float i_b2; 		// Machine side current in A
-	float i_c2; 		// Machine side current in A
-	float i_a_Last; 		// Machine side current in A
-	float i_b_Last; 		// Machine side current in A
-	float i_c_Last; 		// Machine side current in A
 	float i_dc1;
 	float i_dc2;
 	float i_dc_Last;
-	float u_a1; 		// Machine side voltage in V
-	float u_b1; 		// Machine side voltage in V
-	float u_c1; 		// Machine side voltage in V
-	float u_a2; 		// Machine side voltage in V
-	float u_b2; 		// Machine side voltage in V
-	float u_c2; 		// Machine side voltage in V
-	float u_a_Last; 		// Machine side voltage in V
-	float u_b_Last; 		// Machine side voltage in V
-	float u_c_Last; 		// Machine side voltage in V
-	float u_dc_Last;
-	float u_dc1;
-	float u_dc2;
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
+	float v_dc_Last;
+	float v_dc1;
+	float v_dc2;
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float I_x;
-	float I_y;
-	float U_d_Pruef;
-	float U_q_Pruef;
-	float U_x_Pruef;
-	float U_y_Pruef;
-	float theta_elec;
+	float mechanicalRotorSpeed_Last; 		// in rpm
 	float theta_elec_Last;
 	float theta_mech_Last;
-	float theta_elec_Pruef;
-	float theta_mech_Pruef;
+	float theta_elec;
+	float theta_elec_advanced;
+	float theta_mech;
 	float theta_offset; //in rad/s
+	float omega_elec_Last;
+	float omega_mech_Last;
+	float omega_elec;
+	float omega_mech;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
@@ -129,32 +95,28 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
-	bool select_Current_Control_Last;
-	bool select_Speed_Control_Last;
-	bool select_Control_Pruef;
-	bool select_fixed_values;
-	bool enable_inv_pruef;
-	uz_6ph_dq_t u_dqxy_ref;
-	uz_3ph_dq_t u_dq_pruef_ref;
-	uz_3ph_dq_t i_dq_last_ref;
-	uz_3ph_dq_t u_dq_last_ref;
-	uz_3ph_abc_t i_abc_last_meas;
-	uz_3ph_dq_t i_dq_last_meas;
-	uz_6ph_abc_t i_abc_meas;
-	uz_6ph_abc_t u_abc_meas;
-	uz_6ph_abc_t u_abc_meas_filter_comp;
-	uz_6ph_dq_t i_dqxy_meas;
-	uz_6ph_dq_t u_dqxy_meas;
-	uz_3ph_dq_t i_dq_pruef_meas;
-	uz_3ph_dq_t i_dq_pruef_ref;
-	uz_6ph_alphabeta_t i_alphabeta_Pruef_meas;
-	struct uz_DutyCycle_2x3ph_t DutyCycle_output_Pruef;
-	struct uz_DutyCycle_t DutyCycle_output_Last;
 	float error;
+	//Pruef-machine
+	uz_6ph_abc_t i_abc;
+	uz_6ph_abc_t v_abc;
+	uz_6ph_abc_t v_abc_ref;
+	uz_6ph_dq_t i_dqxy;
+	uz_6ph_dq_t i_dqxy_ref;
+	uz_6ph_dq_t v_dqxy;
+	uz_6ph_dq_t v_dqxy_ref;
+	uz_6ph_dq_t v_dqxy_non_limited;
+	uz_6ph_dq_t u_dqxy_ref;
+	struct uz_DutyCycle_2x3ph_t DutyCycle;
+	//Last-machine
+	uz_3ph_abc_t i_abc_Last;
+	uz_3ph_abc_t v_abc_Last;
+	uz_3ph_dq_t i_dq_Last;
+	uz_3ph_dq_t v_dq_Last;
+	uz_3ph_dq_t i_dq_Last_ref;
+	uz_3ph_dq_t v_dq_Last_ref;
+	struct uz_DutyCycle_t DutyCycle_Last;
 	float n_ref_Last;
 	float M_ref_Last;
-	float magnitude;
-	float phi_filter_comp;
 
 } actualValues;
 
@@ -182,7 +144,6 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_resolver_pl_interface_t* resolver_pl_d4_Last;
 	uz_resolver_pl_interface_t* resolver_pl_d4_Pruef;
@@ -197,7 +158,6 @@ typedef struct{
 	uz_SpeedControl_t* speed_ctrl_Last;
 	uz_SetPoint_t* setpoint_ctrl_Last;
 	uz_IIR_Filter_t* speed_prefilter_Last;
-	uz_IIR_Filter_t* speed_prefilter_Pruef;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

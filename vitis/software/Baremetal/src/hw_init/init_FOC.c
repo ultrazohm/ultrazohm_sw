@@ -7,8 +7,6 @@ float Limitation_saftey_factor = 0.707106781f; //To represent the saftey factor 
 //#define LIMITATION_SAFETY_FACTOR 0.707106781186f   //(1/sqrtf(2.0f))
 #define TAU_SIGMA (1.5f * SAMPLE_TIME_SEC_CURRENT_CONTROL)
 
-
-
 static const struct uz_PMSM_t pmsm_config_Pruef_dq = {
         .Ld_Henry = 0.00058f,
         .Lq_Henry = 0.00071f,

@@ -63,7 +63,7 @@ struct uz_pmsmModel_6ph_dqxy_inputs_t
  * @brief Initialize an instance of the driver
  * 
  * @param config Config struct
- * @return uz_pmsmModel_t* Pointer to an initialized instance of the driver
+ * @return uz_pmsmModel_6ph_dqxy_t* Pointer to an initialized instance of the driver
  */
 uz_pmsmModel_6ph_dqxy_t *uz_pmsmModel_6ph_dqxy_init(struct uz_pmsmModel_6ph_dqxy_config_t config);
 
@@ -93,7 +93,7 @@ void uz_pmsmModel_6ph_dqxy_set_inputs(uz_pmsmModel_6ph_dqxy_t *self,struct uz_pm
  * @brief Returns current outputs of PMSM model IP-Core
  * 
  * @param self Pointer to driver instance
- * @return struct uz_pmsmModel_outputs_t Output values
+ * @return struct uz_pmsmModel_6ph_dqxy_outputs_t Output values
  */
 struct uz_pmsmModel_6ph_dqxy_outputs_t uz_pmsmModel_6ph_dqxy_get_outputs(uz_pmsmModel_6ph_dqxy_t *self);
 

@@ -30,7 +30,12 @@ hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/Goto6','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/endat_clock_enable_controller/Constant2','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/endat_clock_enable_controller/Relational Operator3','user1');
+hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Constant2','user1');
+hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Constant4','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/serial_communication/sample_serial_endat_data/Mux','user1');
+hilite_system('uz_endat_interface_2023a/uz_endat_interface/slice_position_and_CRC/Data Type Conversion','user1');
+hilite_system('uz_endat_interface_2023a/uz_endat_interface/slice_position_and_CRC/Data Type Conversion1','user1');
+hilite_system('uz_endat_interface_2023a/uz_endat_interface/slice_position_and_CRC/Data Type Conversion2','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/Detect Rise Positive/Delay Input1','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/Detect Rise Positive/FixPt Relational Operator','user1');
 hilite_system('uz_endat_interface_2023a/uz_endat_interface/Gray_code_to_binary/gray_to_bin/Detect Rise Positive/Positive','user1');

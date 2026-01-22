@@ -3,8 +3,9 @@ error1 = 0;
 error2 = 1;
 endat22 = 0;
 highpos = 0;
-lowpos = [25546830,25546831,25546832,25546833,25546834,25546835,25546836,25546837,25546838,25546839,25546840,25546841,25546842,25546843,25546844];
-
+lowpos = [25546825,25546826,25546827,25546828,25546829,25546830,25546831,25546832,25546833,25546834,25546835,25546836,25546837,25546838,25546839,25546840,25546841,25546842,25546843,25546844,25546845,25546846];
+offset = -4880;
+lowpos = lowpos + offset;
 number = zeros(1,length(lowpos));
 reversed_number = zeros(1,length(lowpos));
 for i=1:length(lowpos)
@@ -18,24 +19,25 @@ end
 reversed_number(i) = bitshift(reversed_number(i),-(32-5));
 end
 
-comp_numbers = [lowpos',number',reversed_number']
+% comp_numbers = [lowpos',number',reversed_number']
 
 
-error1 = 1;
-number_e = zeros(1,length(lowpos));
-reversed_number_e = zeros(1,length(lowpos));
-for i=1:length(lowpos)
-number_e(i) = MakeCrcPos(clocks,error1,error2,endat22,highpos,lowpos(i));
-tmp = number_e;
-for k = 1:32
-    reversed_number_e(i) = bitshift(reversed_number_e(i),1) + bitand(tmp(i),1);
-    tmp(i) = bitshift(tmp(i),-1);
-end
+% error1 = 1;
+% number_e = zeros(1,length(lowpos));
+% reversed_number_e = zeros(1,length(lowpos));
+% for i=1:length(lowpos)
+% number_e(i) = MakeCrcPos(clocks,error1,error2,endat22,highpos,lowpos(i));
+% tmp = number_e;
+% for k = 1:32
+%     reversed_number_e(i) = bitshift(reversed_number_e(i),1) + bitand(tmp(i),1);
+%     tmp(i) = bitshift(tmp(i),-1);
+% end
+% 
+% reversed_number_e(i) = bitshift(reversed_number_e(i),-(32-5));
+% end
 
-reversed_number_e(i) = bitshift(reversed_number_e(i),-(32-5));
-end
-
-comp_numbers = [lowpos',number',reversed_number', reversed_number_e']
+% comp_numbers = [lowpos',number',reversed_number', reversed_number_e']
+comp_numbers = [lowpos',number']
 
 function crc = MakeCrcPos(clocks, error1, error2, endat22, highpos, lowpos)
     % Initialize Flip-Flops

@@ -34,6 +34,6 @@ vcom  uz_endat_interface_src_S_R_Flip_Flop_block4.vhd
 vcom  uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd
 vcom  uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd
 vcom  uz_endat_interface_src_S_R_Flip_Flop_block5.vhd
-vcom  uz_endat_interface_src_ssi_clock_generator.vhd
+vcom  uz_endat_interface_src_endat_clock_generator.vhd
 vcom  uz_endat_interface_src_serial_communication.vhd
 vcom  uz_endat_interface_src_uz_endat_interface.vhd

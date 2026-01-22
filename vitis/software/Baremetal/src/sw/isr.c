@@ -82,21 +82,10 @@ float theta_offset = 5.93f;
 #define MAX_DC_VOLT 50.0f
 #define MAX_TEMP_DEG 90.0f
 
-enum ControllerApplication
-{
-	CIL=0,
-	REAL
-};
 
-enum ControllerSelection
-{
-	CC_FOC=0,
-	RL,
-	MPC
-};
 
-static enum ControllerApplication ConApplication;
-static enum ControllerSelection ConSelection;
+enum ControllerApplication ConApplication;
+enum ControllerSelection ConSelection;
 
 platform_state_t current_state;
 
@@ -117,7 +106,17 @@ void ISR_Control(void *data)
 
     switch(ConApplication) {
     case CIL:
-    	//CODE
+    	uz_pmsmModel_6ph_dqxy_trigger_input_strobe(Global_Data.objects.pmsm_model);
+    	uz_pmsmModel_6ph_dqxy_trigger_output_strobe(Global_Data.objects.pmsm_model);
+    	Global_Data.av.pmsm_outputs 		= uz_pmsmModel_6ph_dqxy_get_outputs(Global_Data.objects.pmsm_model);
+    	Global_Data.av.i_dqxy.d 			= Global_Data.av.pmsm_outputs.i_d_A;
+    	Global_Data.av.i_dqxy.q 			= Global_Data.av.pmsm_outputs.i_q_A;
+    	Global_Data.av.i_dqxy.x 			= Global_Data.av.pmsm_outputs.i_x_A;
+    	Global_Data.av.i_dqxy.y 			= Global_Data.av.pmsm_outputs.i_y_A;
+    	Global_Data.av.omega_mech 			= Global_Data.av.pmsm_outputs.omega_mech_1_s;
+    	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
+    	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * 5.0f;
+    	Global_Data.av.v_dc1				= 48.0f;
     	break;
 
     case REAL:
@@ -188,11 +187,11 @@ void ISR_Control(void *data)
         Global_Data.av.theta_elec 					= Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi;
         Global_Data.av.theta_mech 					= Global_Data.av.resolver_outputs_d4_Pruef.position_mech_2pi;
         Global_Data.av.omega_mech 					= Global_Data.av.resolver_outputs_d4_Pruef.omega_mech_rad_s;
-        Global_Data.av.omega_elec 					= Global_Data.av.resolver_outputs_d4_Pruef.omega_mech_rad_s * 5.0f;
+        Global_Data.av.omega_elec 					= Global_Data.av.omega_mech * 5.0f;
         Global_Data.av.theta_elec_Last 				= Global_Data.av.resolver_outputs_d4_Last.position_el_2pi;
         Global_Data.av.theta_mech_Last 				= Global_Data.av.resolver_outputs_d4_Last.position_mech_2pi;
         Global_Data.av.omega_mech_Last 				= Global_Data.av.resolver_outputs_d4_Last.omega_mech_rad_s;
-        Global_Data.av.omega_elec_Last 				= Global_Data.av.resolver_outputs_d4_Last.omega_mech_rad_s * 5.0f;
+        Global_Data.av.omega_elec_Last 				= Global_Data.av.omega_mech_Last * 5.0f;
         Global_Data.av.theta_elec_advanced 			= Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
         Global_Data.av.mechanicalRotorSpeed 		= Global_Data.av.omega_mech * 30.0f / UZ_PIf;
         Global_Data.av.mechanicalRotorSpeed_Last 	= Global_Data.av.omega_mech_Last * 30.0f / UZ_PIf;
@@ -216,9 +215,14 @@ void ISR_Control(void *data)
     // if "STOP"
     if (current_state==idle_state)
     {
+    	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance_Pruef);
+    	uz_CurrentControl_reset(Global_Data.objects.CC_xy_instance_Pruef);
+    	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance_Last);
+    	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_Last);
+    	Global_Data.av.n_ref_Last = 0.0f;
     	switch(ConApplication) {
     	    case CIL:
-    	    	//CODE
+    	    	uz_pmsmModel_6ph_dqxy_reset(Global_Data.objects.pmsm_model);
     	    	break;
 
     	    case REAL:
@@ -314,8 +318,13 @@ void ISR_Control(void *data)
 
     	switch(ConApplication) {
     		case CIL:
-    	    	//CODE
-    	    		break;
+    	    	Global_Data.av.pmsm_inputs.v_d_V = Global_Data.av.v_dqxy_ref.d;
+    	    	Global_Data.av.pmsm_inputs.v_q_V = Global_Data.av.v_dqxy_ref.q;
+    	    	Global_Data.av.pmsm_inputs.v_x_V = Global_Data.av.v_dqxy_ref.x;
+    	    	Global_Data.av.pmsm_inputs.v_y_V = Global_Data.av.v_dqxy_ref.y;
+    	    	Global_Data.av.pmsm_inputs.omega_mech_1_s = Global_Data.av.n_ref_Last / 30.0f * UZ_PIf;
+    	    	uz_pmsmModel_6ph_dqxy_set_inputs(Global_Data.objects.pmsm_model, Global_Data.av.pmsm_inputs);
+    	    	break;
 
     	    case REAL:
     	    	Global_Data.av.v_abc_ref =  uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec_advanced, (-1.0f * Global_Data.av.theta_elec_advanced));
@@ -331,21 +340,8 @@ void ISR_Control(void *data)
     	    default:
     	    	break;
     	    }
-    } else {
-    	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance_Pruef);
-    	uz_CurrentControl_reset(Global_Data.objects.CC_xy_instance_Pruef);
-    	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance_Last);
-		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_Last);
-		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
     }
+
     // assign DutyCycles lastmaschine
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge6DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
 

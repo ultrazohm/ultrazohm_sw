@@ -17,6 +17,7 @@
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -117,7 +118,8 @@ typedef struct _actualValues_ {
 	struct uz_DutyCycle_t DutyCycle_Last;
 	float n_ref_Last;
 	float M_ref_Last;
-
+	struct uz_pmsmModel_6ph_dqxy_outputs_t pmsm_outputs;
+	struct uz_pmsmModel_6ph_dqxy_inputs_t pmsm_inputs;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -158,6 +160,7 @@ typedef struct{
 	uz_SpeedControl_t* speed_ctrl_Last;
 	uz_SetPoint_t* setpoint_ctrl_Last;
 	uz_IIR_Filter_t* speed_prefilter_Last;
+	uz_pmsmModel_6ph_dqxy_t* pmsm_model;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

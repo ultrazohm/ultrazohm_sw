@@ -60,6 +60,20 @@
 #include "include/init_FOC.h"
 #include "include/uz_IIR_Filter_init.h"
 #include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+
+enum ControllerApplication
+{
+	CIL=0,
+	REAL
+};
+
+enum ControllerSelection
+{
+	CC_FOC=0,
+	RL,
+	MPC
+};
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

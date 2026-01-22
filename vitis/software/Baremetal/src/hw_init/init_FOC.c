@@ -36,6 +36,21 @@ static const struct uz_PMSM_t pmsm_config_Last_dq = {
         .polePairs = 5.0f,
         };
 
+struct uz_pmsmModel_6ph_dqxy_config_t pmsm_config={
+  .base_address=XPAR_UZ_PMSM_MODEL_6PH_DQXY_0_BASEADDR,
+  .ip_core_frequency_Hz=100000000,
+  .simulate_mechanical_system = false,
+  .r_1 = 0.2f,
+  .L_d = 0.00058f,
+  .L_q = 0.00071f,
+  .L_x = 0.00029f,
+  .L_y = 0.00027f,
+  .psi_pm = 0.0143f,
+  .polepairs = 5.0f,
+  .inertia = 0.001,
+  .coulomb_friction_constant = 0.01f,
+  .friction_coefficient = 0.001f};
+
 struct uz_PI_Controller_config config_id_Pruef = {
 		.Kp = pmsm_config_Pruef_dq.Ld_Henry / (2*TAU_SIGMA),
 		.Ki = pmsm_config_Pruef_dq.R_ph_Ohm / (2*TAU_SIGMA),
@@ -135,6 +150,10 @@ uz_SetPoint_t* setpoint_ctrl_Last_init(void) {
 
 uz_SpeedControl_t* speed_ctrl_Last_init(void) {
 	   return(uz_SpeedControl_init(config_speed_ctrl_Last));
+}
+
+uz_pmsmModel_6ph_dqxy_t* pmsmModel_init(void) {
+	return(uz_pmsmModel_6ph_dqxy_init(pmsm_config));
 }
 
 

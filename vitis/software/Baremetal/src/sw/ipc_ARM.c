@@ -21,7 +21,8 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-
+extern enum ControllerApplication ConApplication;
+extern enum ControllerSelection ConSelection;
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -186,21 +187,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+		data->av.n_ref_Last = value;
 			break;
 
 		case (Set_Send_Field_2):
+		data->av.i_dqxy_ref.d = value;
 				break;
 
 		case (Set_Send_Field_3):
+		data->av.i_dqxy_ref.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+		data->av.i_dqxy_ref.x = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+		data->av.i_dqxy_ref.y = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -251,18 +254,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
+		ConApplication = CIL;
 			break;
 
 		case (My_Button_2):
+		ConApplication = REAL;
 			break;
 
 		case (My_Button_3):
+		ConSelection = CC_FOC;
 			break;
 
 		case (My_Button_4):
+		ConSelection = RL;
 			break;
 
 		case (My_Button_5):
+		ConSelection = MPC;
 			break;
 
 		case (My_Button_6):
@@ -289,7 +297,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -320,23 +327,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (ConApplication == CIL) {
+		js_status_BareToRTOS |= (1 << 4);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	 }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	 if (ConApplication == REAL) {
+		js_status_BareToRTOS |= (1 << 5);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	 }
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	 if (ConSelection == CC_FOC) {
+		js_status_BareToRTOS |= (1 << 6);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	 }
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	 if (ConSelection == RL) {
+		js_status_BareToRTOS |= (1 << 7);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	 }
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	 if (ConSelection == MPC) {
+		js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);

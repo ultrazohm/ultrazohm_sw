@@ -5719,15 +5719,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.6",
-            "xci_name": "zusys_uz_endat_interface_0_2",
-            "xci_path": "ip\\zusys_uz_endat_interface_0_2\\zusys_uz_endat_interface_0_2.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.7",
+            "xci_name": "zusys_uz_endat_interface_0_1",
+            "xci_path": "ip\\zusys_uz_endat_interface_0_1\\zusys_uz_endat_interface_0_1.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.6",
-            "xci_name": "zusys_uz_endat_interface_1_2",
-            "xci_path": "ip\\zusys_uz_endat_interface_1_2\\zusys_uz_endat_interface_1_2.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.7",
+            "xci_name": "zusys_uz_endat_interface_1_1",
+            "xci_path": "ip\\zusys_uz_endat_interface_1_1\\zusys_uz_endat_interface_1_1.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5752,8 +5752,8 @@
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "uz_endat_interface_1/AXI4_Lite",
-              "smartconnect_1/M02_AXI"
+              "smartconnect_1/M02_AXI",
+              "uz_endat_interface_1/AXI4_Lite"
             ]
           }
         },
@@ -5777,10 +5777,10 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_endat_interface_0/IPCORE_RESETN",
-              "uz_endat_interface_0/AXI4_Lite_ARESETN",
               "uz_endat_interface_1/AXI4_Lite_ARESETN",
-              "uz_endat_interface_1/IPCORE_RESETN"
+              "uz_endat_interface_0/AXI4_Lite_ARESETN",
+              "uz_endat_interface_1/IPCORE_RESETN",
+              "uz_endat_interface_0/IPCORE_RESETN"
             ]
           },
           "trigger_endat_1": {

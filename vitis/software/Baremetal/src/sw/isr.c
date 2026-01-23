@@ -278,7 +278,7 @@ void ISR_Control(void *data)
     	    default:
     	    	break;
     }
-
+    }
     // if "ENABLE CONTROL"
     if (current_state==control_state) {
     	if(ConApplication == REAL) {
@@ -388,7 +388,7 @@ void ISR_Control(void *data)
     	    	break;
     	    }
     }
-    }
+
     // assign DutyCycles lastmaschine
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge6DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
 

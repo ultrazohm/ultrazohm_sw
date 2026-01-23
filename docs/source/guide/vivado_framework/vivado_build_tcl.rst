@@ -53,7 +53,6 @@ Workflow:
 .. code-block::
    :caption: Changed files after ``update_tcl_scripts_for_vc.tcl`` is called.
 
-   modified:   ip_cores/vv_index.xml
    modified:   vivado/_build.tcl
    modified:   vivado/bd/_zusys.tcl
    modified:   vivado/bd/zusys.tcl

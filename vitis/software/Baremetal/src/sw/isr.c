@@ -221,7 +221,7 @@ unsigned int MakeCrcPos(unsigned int clocks, unsigned int error1,
 	unsigned int code[66]; // Datenbit-Array
 	unsigned int ex; // Hilfsvariable
 	unsigned int crc = 0; // ermittelter CRC-Code
-	signed int i; // Laufvariable für Schleifen
+	signed int i; // Laufvariable fuer Schleifen
 
 	for (i = 0; i < 5; i++) // alle Flip-Flops auf 1 setzen
 		ff[i] = 1;

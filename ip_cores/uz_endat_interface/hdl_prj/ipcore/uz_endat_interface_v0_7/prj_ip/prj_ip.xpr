@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_clean/ip_cores/uz_endat_interface/hdl_prj/ipcore/uz_endat_interface_v0_7/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="cc8771e772734d3a84c612a56738fc00"/>
+    <Option Name="Id" Val="2b1c9e881f6a48119ab69cd3d9eff90c"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -211,6 +211,12 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -236,12 +242,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_endat_interface_src_sample_serial_endat_data.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

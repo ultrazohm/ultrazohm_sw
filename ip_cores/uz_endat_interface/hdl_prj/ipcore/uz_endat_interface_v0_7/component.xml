@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>473e1825</spirit:value>
+            <spirit:value>caee2719</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>473e1825</spirit:value>
+            <spirit:value>caee2719</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -791,6 +791,23 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>endat_raw_data_word</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_Lite_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1008,6 +1025,10 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1025,10 +1046,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_endat_interface_src_sample_serial_endat_data.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1086,7 +1103,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_endat_interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_2d1ca48d</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_4cfc1329</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1212,6 +1229,11 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1233,11 +1255,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_endat_interface_src_sample_serial_endat_data.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1361,15 +1378,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_endat_interface</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114447453</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-01-22T15:53:42Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114448943</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-01-23T16:43:43Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="6d685e63"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a852bef2"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="7443a6f1"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="47abcba2"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="31ca7ef3"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="922fff95"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

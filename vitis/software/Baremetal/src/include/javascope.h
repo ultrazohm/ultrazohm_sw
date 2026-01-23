@@ -161,7 +161,7 @@ enum gui_button_mapping {
 	i_q,
 	i_x,
 	i_y,
-	DutyCycle_c2,
+	send_field_5,
 	send_field_6,
 	send_field_7,
 	send_field_8,
@@ -269,7 +269,7 @@ enum gui_button_mapping {
 	RL,
 	MPC,
 	StepProfile,
-	Disable_Inv_Pruef,
+	MyButton7,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER
 
@@ -299,7 +299,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

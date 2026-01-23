@@ -17,8 +17,15 @@ Usage:
 #. Open Vivado
 #. Click on ``Window`` -> ``Tcl Console``
 #. A window on the bottom of Vivado appears (*Tcl Console*)
-#. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the Tcl console
+#. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the Tcl console (on Windows, wrap the path in ``{}``)
 #. Navigate to ``ultrazohm_sw/vivado`` in the Tcl console
+
+   Example (Windows):
+
+   .. code-block::
+
+      cd {C:\git\ultrazohm_sw\vivado}
+
 #. Call build.tcl with:
 
 .. code-block::
@@ -44,10 +51,10 @@ This script has to be called to incorporate changes to the default Vivado projec
 
 Workflow:
 
-#. Build Vivado project using ``build.tcl``
+#. Build Vivado project using ``source build.tcl``
 #. Make changes to Vivado Project
 #. Save project
-#. call ``update_tcl_scripts_for_vc.tcl``
+#. Run ``source update_tcl_scripts_for_vc.tcl``
 #. Commit the changes
 
 .. code-block::
@@ -60,6 +67,16 @@ Workflow:
    modified:   vivado/build.tcl
    modified:   vivado/project/ultrazohm.xpr
    modified:   vivado/project/zusys/zusys.bd
+
+#. Generate bitstream
+#. Export xsa as described in :ref:`vivado_export_xsa_tcl`.
+#. Commit the changes
+
+.. code-block::
+   :caption: Changed files after bitstream was build exported with ``vivado_export_xsa.tcl``.
+
+   modified:   vitis/vivado_exported_xsa/zusys_wrapper.xsa
+   modified:   vivado/DebugProbes.ltx
 
 
 .. figure:: make_vivado_change_with_tcl_script.gif

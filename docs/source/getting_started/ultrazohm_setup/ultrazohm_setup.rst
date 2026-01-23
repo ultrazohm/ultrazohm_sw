@@ -32,7 +32,7 @@ Clone the UltraZohm repositories
 ********************************
 
 - Create a folder ``ultrazohm``
-- Use git bash / terminal to clone the repositories
+- Use Git Bash or a terminal to clone the repositories
 
 ::
 
@@ -52,7 +52,7 @@ After executing the ``git clone`` command, the following directory structure exi
 
 .. _gen_bitstream:
 
-Generate the Bitstream with Vivado 
+Generate the Bitstream with Vivado
 **********************************
 
 Open the block design
@@ -90,7 +90,7 @@ Generate Bitstream
 - Click on ``Generate Bitstream``
 - Click ``Yes`` to launch synthesis and implementation
 - Choose the number of CPU jobs/cores that should be used by Vivado (leave a few unused, e.g., for your OS etc.)
-- Launch the run(s) by clicking ``Ok``
+- Launch the run(s) by clicking ``OK``
 - The bitstream is generated. This takes **20 to 60 minutes**, depending on your PC!
 - Open the implemented design after the bitstream generation is completed
 
@@ -122,7 +122,7 @@ A Tcl script can be added to the Vivado icons to automate the process of exporti
 - Click on the `plus` and enter a name, e.g., export_xsa
 - Click on ``Source Tcl file``
 - Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
-- Click ok
+- Click OK
 
 .. image:: https://images2.imgbox.com/20/97/ltbV6vKQ_o.gif
 

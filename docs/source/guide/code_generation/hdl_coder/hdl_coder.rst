@@ -1,11 +1,11 @@
 .. _hdl_coder:
 
 ===============
-HDL-Coder (HDL)
+HDL Coder (HDL)
 ===============
 
 This page includes introductory information about the usage of the `HDL Coder <https://www.mathworks.com/products/hdl-coder.html>`_.
-The HDL-Coder generates Verilog and VHDL code from MATLAB functions, Simulink models, and State flow charts to create IP cores for the FPGA of the UltraZohm.
+The HDL Coder generates Verilog and VHDL code from MATLAB functions, Simulink models, and Stateflow charts to create IP cores for the FPGA of the UltraZohm.
 Please refer to the official documentation for detailed descriptions:
 
 - https://de.mathworks.com/help/hdlcoder/
@@ -31,7 +31,7 @@ If the clock period is shorter than the required path delay, the timing is viola
 This is indicated by having a negative total slack time in Vivado.
 The HDL-Coder estimates the path delay with the *critical path estimation*, which is the chain of logic with the highest path delay.
 A common approach to fixing timing violations is adding delay blocks in Simulink (*pipeline*).
-A delay block acts as a buffer since the value is hold for one clock cycle.
+A delay block acts as a buffer since the value is held for one clock cycle.
 See https://www.mathworks.com/help/hdlcoder/speed-optimization.html for more details.
 
 The timing of the data makes sure that in a chain of operations, the correct values from the previous step are used.
@@ -53,7 +53,7 @@ Tutorial
 In this tutorial, an IP core is created that multiplies two integer values and returns the result.
 The result of this tutorial is the :ref:`AXI_testIP`.
 
-- Start Matlab (2022a used in the following)
+- Start MATLAB (2022a used in the following)
 - Set up the path to Vivado, see `Mathworks hdlsetuptoolpath <https://de.mathworks.com/help/deep-learning-hdl/ref/hdlsetuptoolpath.html>`_
 
 ::
@@ -80,7 +80,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
    
-- A new Simulink model opens which has the recommended settings for HDL-Code generation already applied (see `Mathworks hdlsetup <https://de.mathworks.com/help/hdlcoder/ref/hdlsetup.html>`_ 
+- A new Simulink model opens which has the recommended settings for HDL code generation already applied (see `Mathworks hdlsetup <https://de.mathworks.com/help/hdlcoder/ref/hdlsetup.html>`_)
 
 .. figure:: tutorial_img/4_blank_dut.png
    :width: 800px
@@ -132,7 +132,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 
 - To change the data type of the output of the product, double click the product
 - Set the output to ``int32``
-- Note: Setting the output to ``int32`` means that the result can overflow since the result of the multiplication of two ``int32`` values can be larger that the maximum representable value of ``int32``
+- Note: Setting the output to ``int32`` means that the result can overflow since the result of the multiplication of two ``int32`` values can be larger than the maximum representable value of ``int32``
 - Additionally, the ``Saturate on integer overflow`` is not checked. Thus, the value will wrap on overflow, i.e., ``max(int32)+1`` will be a large negative number
 - Take data type considerations into account when designing real IP cores!
 
@@ -141,7 +141,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :align: center
 
 - Simulink model is now ready to be generated
-- Right click on the ``uz_axi_mytestIP`` (that is the part of the model that will become an IP core), choose *HDL Coder* -> *HDL Workflow Advisor*
+- Right-click on the ``uz_axi_mytestIP`` (that is the part of the model that will become an IP core), choose *HDL Coder* -> *HDL Workflow Advisor*
 - In the Workflow Advisor, extend the menu on the left
 - In ``1.1 Set Target Device and Synthesis Tool``, the following basic settings are applied:
 
@@ -164,7 +164,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - This setting specifies the interfaces of the IP core
 - All input and outputs of the subsystem are possible as an interface
 - Usually, ``AXI4-Lite`` or ``AXI4`` is used as an interface between the IP core and the processor of the UltraZohm and ``External Port`` is used as an interface of the IP core towards the FPGA.
-- If one port is AXI4, the other ports can not be AXI4-Lite
+- If one port is AXI4, the other ports cannot be AXI4-Lite
 - ``AXI4`` and ``External Port`` can be mixed without problems
 - Click ``Run This Task``
 
@@ -172,7 +172,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- The property ``Target Frequency`` is not used in this tutorial, set  to ``O`` and click ``Run This Task``
+- The property ``Target Frequency`` is not used in this tutorial, set it to ``0`` and click ``Run This Task``
 
 .. figure:: tutorial_img/14_target_frequency.png
    :width: 800px
@@ -188,7 +188,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- Go to *Check for global reset setting for Xililnx and Altera devices*
+- Go to *Check for global reset setting for Xilinx and Altera devices*
 - Click on *Modify Settings* and *Run this Check* again, test passes now
 - Close the HDL Code Advisor
 

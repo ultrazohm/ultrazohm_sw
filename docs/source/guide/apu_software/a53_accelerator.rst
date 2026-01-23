@@ -1,7 +1,7 @@
 .. _A53accelerator:
 
 =============================
-A53 as accelerator for R5 ISR 
+A53 as accelerator for R5 ISR
 =============================
 
 .. warning::
@@ -19,7 +19,7 @@ for sharing user data between the R5 and the A53 via the on-chip memory (OCM).
 
 The flowchart below provides a brief overview of the process of one ISR cycle on the 
 R5 processor, including the datapath incorporating the A53 processor. 
-The purple colored blocks highlight the parts where the user has to interface with 
+The purple-colored blocks highlight the parts where the user has to interface with
 the process.
 
 .. mermaid::
@@ -73,7 +73,7 @@ In ``APU_RPU_shared.h`` set the respective ``#define`` to ``TRUE``
 
 Shared header file
 ******************
-In the :ref:`shared header file <datamoverSharedHeader>` are two ``structs``. 
+In the :ref:`shared header file <datamoverSharedHeader>` there are two ``structs``.
 One for sharing data from the R5 (RPU) to the A53 (APU) ``RPU_to_APU_user_data_t`` and 
 one for data from the A53 to the R5 ``APU_to_RPU_user_data_t``. Use those 
 ``structs`` and create variables within them as needed. As a basic example, an internal counter of 
@@ -82,8 +82,8 @@ First, to have a minimal working example, and second, to avoid empty structs, wh
 
 
 .. warning::
-    Each shared struct is allocated on its own OCM Bank. Each bank has a size
-    of 64 kB. User has to take care that both shared structs do not exceed this 
+    Each shared struct is allocated on its own OCM bank. Each bank has a size
+    of 64 kB. Users have to take care that both shared structs do not exceed this
     limit
 
 
@@ -120,8 +120,8 @@ the A53 to calculate faster.
    //...add further heavy calculations here
    
 
-After that, the interrupt acknowledge flag is set by the A53 to tell the R5 that it can 
-continue with it's own interrupt routine. Always keep in mind, that the R5 processor is waiting for this flag 
+After that, the interrupt acknowledge flag is set by the A53 to tell the R5 that it can
+continue with its own interrupt routine. Always keep in mind that the R5 processor is waiting for this flag
 and will not continue until it is set. Therefore, the user can easily crash the system if the overall computational load 
 becomes too high. It is the user's responsibility to make sure that this never happens. This makes the whole feature ``experimental``. 
 
@@ -156,24 +156,24 @@ your calculations from the shared memory.
 
 Hints and best practices
 ------------------------
-Here, one can find (and add) some hints and best practices for 
+Here, one can find (and add) some hints and best practices for
 using the feature for specific applications.
 
 Delay of one sample for the control signal
 ******************************************
 The A53 accelerator feature uses the Javascope data path. 
 The ``JavaScope_update`` function in the ``isr.c`` file on the R5 thus initiates all calculations outsourced to the A53. 
-As this is done by default at the end of the ISR on the R5, but the ``halfBridge$DutyCycle``  variables, i.e. the control signals for the PWM module, are already written in the R5 ISR,  an offset of one ISR cycle must be taken into account when a controller is implemented on the A53. 
+As this is done by default at the end of the ISR on the R5, but the ``halfBridge$DutyCycle`` variables, i.e. the control signals for the PWM module, are already written in the R5 ISR, an offset of one ISR cycle must be taken into account when a controller is implemented on the A53.
 To avoid this, the call to ``Javascope_update`` can be moved within ``isr.c`` on the R5, e.g. to a point before the control signals are written to the PWM module. 
-This means that the controller's control signals are first calculated on the A53 and output at the end of the current ISR cycle. 
+This means that the controller's control signals are first calculated on the A53 and output at the end of the current ISR cycle.
 In this case however, the logging data of the control signals now has a time delay of one ISR cycle.
 
 Use uz library functions on the A53 processor
 *********************************************
 All uz library functions are only accessible to the R5 processor and are located 
 in the folder ``\vitis\software\Baremetal\src\uz``. If you need one of them, 
-copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the 
-vitis workspace via the Tcl script. Afterwards the sources are available on the 
+copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the
+Vitis workspace via the Tcl script. Afterwards the sources are available on the
 A53 processor.
 
 Share data of types that are part of uz library functions

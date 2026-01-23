@@ -4,10 +4,10 @@
 How to use FOC for multiple machines
 ====================================
 
-The following example highlights some key aspects of the UltraZohm, it's flexibility due to the modular software and hardware as well as the synergy between processors and FPGA.
+The following example highlights some key aspects of the UltraZohm, its flexibility due to the modular software and hardware as well as the synergy between processors and FPGA.
 The example is tied to a specific hardware setup but is applicable to any inverter setup.
 The goal is to control two permanent magnet synchronous machines independent of each other.
-Each machine is supplied by a two level voltage source inverter and has an incremental encoder.
+Each machine is supplied by a two-level voltage source inverter and has an incremental encoder.
 
 The following steps are required:
 
@@ -74,7 +74,7 @@ Vivado
      :align: center
 
 - Create an input port for D4
-- Right click, than *Create Port*, direction is *Input*, Port name is ``D4_13``
+- Right-click, then *Create Port*, direction is *Input*, Port name is ``D4_13``
 
   .. figure:: img/5_port_name.png
      :width: 800
@@ -104,14 +104,14 @@ Vivado
 
 - Go to the connection between *uz_digital_adapter* and the output port ``D1_OUT[5:0]`` and delete the connection
 - Add a new IP core called *Concat*
-- Connect *in0* of  the Concat with *D1_out* of *uz_digital_adapter*
+- Connect *in0* of the Concat with *D1_out* of *uz_digital_adapter*
 - Connect *dout* of the Concat to ``D1_OUT[5:0]``
 
   .. figure:: img/9_concat.png
      :width: 800
      :align: center
 
-- Click on ``D1_OUT[5:0]``, go to the External Port Properties and select *Properties*. Change *Left* from ``5`` to ``11``. This increases the width of the output pins from 6 bit to 12 bit, effectively sending the gate signals of the first inverter to pin 1 to 6 and for the second inverter to pin 7 to 12 on D1.
+- Click on ``D1_OUT[5:0]``, go to the External Port Properties and select *Properties*. Change *Left* from ``5`` to ``11``. This increases the width of the output pins from 6-bit to 12-bit, effectively sending the gate signals of the first inverter to pin 1 to 6 and for the second inverter to pin 7 to 12 on D1.
 
   .. figure:: img/10_d1_out_extended.png
      :width: 800
@@ -125,7 +125,7 @@ Vivado
      :width: 800
      :align: center
 
-- Go the the *Address Editor*, right click on one of the unassigned signals and click *Assign all*
+- Go to the *Address Editor*, right-click on one of the unassigned signals and click *Assign all*
 
   .. figure:: img/12_axi_assigned.png
      :width: 800

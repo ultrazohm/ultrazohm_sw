@@ -19,8 +19,8 @@ Prerequisites
 - Install `remote container extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`_
 - Clone the ``ultrazohm_sw`` repository
 
-Running VS Code inside an Ubuntu distribution on Windows
-*******************************************************
+Running VS Code inside Ubuntu distribution on Windows
+*****************************************************
 
 Setup
 -----

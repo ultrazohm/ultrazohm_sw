@@ -6,17 +6,14 @@ Porting the UZ-Framework for the KR260
 
 In case you don't have access to an UltraZohm, various other evaluation kits can be used for preliminary developments.
 The goal of this how-to is to port the existing UltraZohm project to the KR260 board to create a small HiL environment for the first tests.
-Based on the getting-started the same workflow is used.
-First, a suitable hardware_design is created in Vivado, the required information is exported to Vitis, and then the UltraZohm project is created.
+Based on the getting-started guide, the same workflow is used.
+First, a suitable hardware design is created in Vivado, the required information is exported to Vitis, and then the UltraZohm project is created.
 Subsequently, minor changes are made to the source files, and the software is started on the KR260.
-This is the starting point for small Hil/Sil/PiL projects, which are compatible with the main UltraZohm-project.
+This is the starting point for small HiL/SiL/PiL projects, which are compatible with the main UltraZohm project.
 
-.. note :: This how-to is a good start for Porting the UZ-Framework for other evaluation kits, 
-            but this requires some knowledge about the tools and the board, the workflow and a 
-            general overview of how SoC systems work.  
+.. note:: This how-to is a good start for porting the UZ-Framework for other evaluation kits, but this requires some knowledge about the tools and the board, the workflow and a general overview of how SoC systems work.  
 
-.. note :: In the current state, with this how-to you can create your UZ-Port for the KR260.
-            This will do the job, but there are still some open issues and some space for improvements!
+.. note:: In the current state, with this how-to you can create your UZ port for the KR260. This will do the job, but there are still some open issues and some space for improvements!
 
 Prerequisites
 =============
@@ -30,14 +27,14 @@ Vivado
 ======
 
 To get the UltraZohm-Framework running on the KR260, first of all a valid Hardware-Design is needed.
-This can be done with the create a project from scratch or using mainly scripts. 
+This can be done by creating a project from scratch or mainly using scripts.
 
 Creating Fresh Project
 -----------------------
 
 #.  Create a fresh project in Vivado 2022.2
 
-#.  When you were asked for the Default Part, select `Kria KR260 Robotics Starter Kit SoM`
+#.  When you are asked for the Default Part, select `Kria KR260 Robotics Starter Kit SoM`
 
     .. _Boardselection_KR260:
 
@@ -47,7 +44,7 @@ Creating Fresh Project
 
         Boardselection UZ-KR260.
 
-#.  Add a new Block design and name with ``k26sys``
+#.  Add a new Block design and name it ``k26sys``
 
 #.  Add the UltraZohm IP-Repository to the project. 
 
@@ -60,9 +57,9 @@ Creating Fresh Project
 
     .. tip:: This is the only point where you need automated assistant from Vivado! "Do not click to auto connection within the following Steps, otherwise Vivado is going to address the unused pins before deleting and create more problems!"
 
-#.  Create HDL-Wrapper and make sure its the Top-file.
+#.  Create the HDL wrapper and make sure it is the top file.
 
-#.  Download the Constrain-file for the KR260 SoM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/SoM/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
+#.  Download the constraint file for the KR260 SoM directly from Xilinx `KR260-Constraints <https://www.xilinx.com/products/SoM/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SoM XDC File).
 
 #.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
@@ -85,7 +82,7 @@ Creating Fresh Project
         Re-customize IP → I/O Configuration → High Speed → Activate GEM1 and change I/O → Open GEM 1 → Activate MDIO1 and change I/O
     *  Activate I2C on MIO24-25
         Re-customize IP → I/O Configuration → Low Speed → I2C → Activate I2C1 → Open I2C → Activate I2C1 and change I/O
-    *  Active UART1 on MIO36-37
+    *  Activate UART1 on MIO36-37
         Re-customize IP → I/O Configuration → Low Speed → UART → Activate UART1 → Open UART → Activate UART1 and change I/O
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1

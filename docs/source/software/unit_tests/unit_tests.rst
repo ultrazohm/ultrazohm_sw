@@ -7,9 +7,9 @@ Unit tests (Ceedling)
 The software of the R5 uses unit tests.
 Unit tests make sure that the code works as expected.
 Unit tests are short and focused on a specific software module, e.g., testing one translation unit (``.c file``).
-They state how the software ought to behave and tests if it does.
-These tests are run on the local developer machine instead of a UltraZohm.
-Unit tests do not test the complete system and verified that it works (this would be system & integration test) but makes sure that individual modules work, i.e., all the small things.
+They state how the software ought to behave and test if it does.
+These tests are run on the local developer machine instead of an UltraZohm.
+Unit tests do not test the complete system and verify that it works (this would be system and integration tests) but make sure that individual modules work, i.e., all the small things.
 
 .. note:: Using Ceedling and unit tests for the UltraZohm requires that usage of :ref:`vscode_remote_container`. The remote container handles the installation of all required tools and paths such that no setup is required!
 
@@ -52,7 +52,7 @@ Ceedling
 ========
 
 The following section assumes the usage of :ref:`vscode_remote_container` and the successful completion of :ref:`how_to_create_ipcore_driver`.
-It is meant as a reference for specific situation that arise when using Ceedling.
+It is meant as a reference for specific situations that arise when using Ceedling.
 
 Run Tests from CLI
 ------------------
@@ -178,7 +178,7 @@ If the code is used in production (i.e., on the UltraZohm), the define ``TEST`` 
 Multiple source files with common header
 ----------------------------------------
 
-To test a software module with one interface header and multiple c-files, i.e.:
+To test a software module with one interface header and multiple C files, i.e.:
 
 .. code-block:: c
    :caption: ``my_function.h``

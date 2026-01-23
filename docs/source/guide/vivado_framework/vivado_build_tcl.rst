@@ -38,7 +38,7 @@ Calling the script leads to Vivado generating the project.
 
   Call build.tcl to build the Vivado project
 
-.. note:: The ``build.tcl`` script assumes that the UltraZohm is equipped with for the TE0808 SoM with an UltraScale 9EG.
+.. note:: The ``build.tcl`` script assumes that the UltraZohm is equipped with the TE0808 SoM with an UltraScale 9EG.
           This is true for all standard UltraZohm systems, i.e., only special development systems at TH Nürnberg and TU München use other SoMs.
 
 update_tcl_scripts_for_vc.tcl
@@ -46,7 +46,7 @@ update_tcl_scripts_for_vc.tcl
 
 This script has to be called to incorporate changes to the default Vivado project into the ``build.tcl`` script.
 
-.. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the changed project was build using ``build.tcl``.
+.. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the changed project was built using ``build.tcl``.
              Do not use it if you used another project or a project that was generated using ``build_selected_target.tcl``!
 
 Workflow:
@@ -73,7 +73,7 @@ Workflow:
 #. Commit the changes
 
    .. code-block::
-      :caption: Changed files after bitstream was build exported.
+      :caption: Changed files after bitstream was built and exported.
 
       modified:   vitis/vivado_exported_xsa/zusys_wrapper.xsa
       modified:   vivado/DebugProbes.ltx
@@ -91,8 +91,8 @@ Compatibility with TE0803
 
 The default Vivado project is compatible with TE0808 (default with 9EG).
 Additionally, TE0803 can be used.
-Both SoM are mostly pin compatible but some positive and negative pairs of differential signals that are used as LVDS for A1, A2, and A3 are swapped.
-To achieve compatibility, and external IOBUF is used instead of the internal IOBUF of the :ref:`ipCore_LTC2311_v3`.
+Both SoMs are mostly pin compatible but some positive and negative pairs of differential signals that are used as LVDS for A1, A2, and A3 are swapped.
+To achieve compatibility, an external IOBUF is used instead of the internal IOBUF of the :ref:`ipCore_LTC2311_v3`.
 Depending on the board version, some of the signals are inverted using a magic constant (``A1_inv_Input``) that is set when generating the Vivado project according to the selected SoM (by ``build_selected_target.tcl``).
 
 .. _adc_io_buff_compatibility:

@@ -106,10 +106,10 @@
           "Enable_Gates_CPLD_High": "",
           "Enable_Gates_CPLD_Low": "",
           "axi_gpio_2": "",
+          "uz_usr_access_bridge_0": "",
           "xlslice_Enable_AXI2TCM_Bit4": "",
           "xlslice_Enable_Gate_Bit1": "",
-          "xlslice_Enable_Inverter_Bit0": "",
-          "uz_usr_access_bridge_0": ""
+          "xlslice_Enable_Inverter_Bit0": ""
         }
       },
       "uz_user": {
@@ -381,6 +381,16 @@
             "left": "0",
             "right": "0"
           },
+          "A1_RAW_Valid": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "A1_RAW_Value": {
+            "direction": "O",
+            "left": "127",
+            "right": "0"
+          },
           "A2_IN": {
             "direction": "I",
             "left": "15",
@@ -394,6 +404,11 @@
           "A2_OUT_CNV_1": {
             "direction": "O",
             "left": "0",
+            "right": "0"
+          },
+          "A2_RAW_Value": {
+            "direction": "O",
+            "left": "127",
             "right": "0"
           },
           "A3_IN": {
@@ -411,28 +426,13 @@
             "left": "0",
             "right": "0"
           },
-          "A1_RAW_Value": {
-            "direction": "O",
-            "left": "127",
-            "right": "0"
-          },
           "A3_RAW_Value": {
-            "direction": "O",
-            "left": "127",
-            "right": "0"
-          },
-          "A2_RAW_Value": {
             "direction": "O",
             "left": "127",
             "right": "0"
           },
           "TRIGGER_CNV": {
             "direction": "I",
-            "left": "0",
-            "right": "0"
-          },
-          "A1_RAW_Valid": {
-            "direction": "O",
             "left": "0",
             "right": "0"
           },
@@ -470,6 +470,11 @@
                 "left": "0",
                 "right": "0"
               },
+              "A1_RAW_Valid": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
               "A1_RAW_Value": {
                 "direction": "O",
                 "left": "127",
@@ -478,11 +483,6 @@
               "clk": {
                 "type": "clk",
                 "direction": "I"
-              },
-              "A1_RAW_Valid": {
-                "direction": "O",
-                "left": "0",
-                "right": "0"
               },
               "probe5": {
                 "direction": "I",
@@ -1541,23 +1541,25 @@
             "left": "0",
             "right": "0"
           },
-          "D1_OUT": {
+          "Gate_Signals_2L": {
             "direction": "O",
             "left": "23",
             "right": "0"
           },
-          "D2_OUT": {
+          "Gate_Signals_3L": {
             "direction": "O",
             "left": "11",
             "right": "0"
           },
-          "D3_OUT": {
+          "VIO_D3": {
             "direction": "O",
             "left": "25",
             "right": "0"
           },
-          "Incr_Encoder_I": {
-            "direction": "I"
+          "Enable_Gate": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           },
           "Incr_Encoder_A": {
             "direction": "I"
@@ -1565,10 +1567,8 @@
           "Incr_Encoder_B": {
             "direction": "I"
           },
-          "Enable_Gate": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
+          "Incr_Encoder_I": {
+            "direction": "I"
           },
           "Interrupt_Center": {
             "direction": "O",
@@ -1661,7 +1661,7 @@
                 "left": "0",
                 "right": "0"
               },
-              "D1_OUT": {
+              "Gate_Signals_2L": {
                 "direction": "O",
                 "left": "23",
                 "right": "0"
@@ -2431,7 +2431,7 @@
               "Gates_dout_0": {
                 "ports": [
                   "Gates/Gate_Signals_2L",
-                  "D1_OUT"
+                  "Gate_Signals_2L"
                 ]
               },
               "proc_sys_reset_1_peripheral_aresetn": {
@@ -2465,7 +2465,7 @@
                 "type": "rst",
                 "direction": "I"
               },
-              "D2_OUT": {
+              "Gate_Signals_3L": {
                 "direction": "O",
                 "left": "11",
                 "right": "0"
@@ -3005,7 +3005,7 @@
               "Gates_3L_Gate_Signals_3L": {
                 "ports": [
                   "Gates_3L/Gate_Signals_3L",
-                  "D2_OUT"
+                  "Gate_Signals_3L"
                 ]
               },
               "Gates_3L_Interrupt_Center": {
@@ -3048,7 +3048,7 @@
           },
           "D3_adapter": {
             "ports": {
-              "D3_OUT": {
+              "VIO_D3": {
                 "direction": "O",
                 "left": "25",
                 "right": "0"
@@ -3081,7 +3081,7 @@
               "vio_D2_test_probe_out0": {
                 "ports": [
                   "vio_D3_test/probe_out0",
-                  "D3_OUT"
+                  "VIO_D3"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {
@@ -3101,13 +3101,13 @@
               }
             },
             "ports": {
-              "Incr_Encoder_I": {
-                "direction": "I"
-              },
               "Incr_Encoder_A": {
                 "direction": "I"
               },
               "Incr_Encoder_B": {
+                "direction": "I"
+              },
+              "Incr_Encoder_I": {
                 "direction": "I"
               },
               "PeriodEnd": {
@@ -3303,8 +3303,8 @@
           },
           "Gates_3L_Gate_Signals_3L": {
             "ports": [
-              "D2_adapter/D2_OUT",
-              "D2_OUT"
+              "D2_adapter/Gate_Signals_3L",
+              "Gate_Signals_3L"
             ]
           },
           "Gates_3L_Interrupt_Center": {
@@ -3345,8 +3345,8 @@
           },
           "Gates_dout_0": {
             "ports": [
-              "D1_adapter/D1_OUT",
-              "D1_OUT"
+              "D1_adapter/Gate_Signals_2L",
+              "Gate_Signals_2L"
             ]
           },
           "Incr_Encoder_I": {
@@ -3371,8 +3371,8 @@
           },
           "vio_D2_test_probe_out0": {
             "ports": [
-              "D3_adapter/D3_OUT",
-              "D3_OUT"
+              "D3_adapter/VIO_D3",
+              "VIO_D3"
             ]
           },
           "xlslice_Enable_Inverter_Dout": {
@@ -3506,11 +3506,6 @@
             "left": "0",
             "right": "0"
           },
-          "interrupt_vector": {
-            "direction": "O",
-            "left": "7",
-            "right": "0"
-          },
           "Enable_Inverter": {
             "direction": "O",
             "left": "0",
@@ -3558,6 +3553,11 @@
           "clk_50MHz": {
             "type": "clk",
             "direction": "O"
+          },
+          "interrupt_vector": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
           },
           "peripheral_aresetn": {
             "type": "rst",
@@ -3771,8 +3771,8 @@
               "Op2_1": {
                 "ports": [
                   "Enable_AXI2TCM",
-                  "util_vector_logic_0/Op2",
-                  "system_ila_0/probe5"
+                  "system_ila_0/probe5",
+                  "util_vector_logic_0/Op2"
                 ]
               },
               "init_axi2tcm": {
@@ -5047,17 +5047,17 @@
                 "left": "0",
                 "right": "0"
               },
+              "Enable_AXI2TCM": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
               "Enable_Gate": {
                 "direction": "O",
                 "left": "0",
                 "right": "0"
               },
               "Enable_Inverter": {
-                "direction": "O",
-                "left": "0",
-                "right": "0"
-              },
-              "Enable_AXI2TCM": {
                 "direction": "O",
                 "left": "0",
                 "right": "0"
@@ -5106,6 +5106,24 @@
                   },
                   "C_IS_DUAL": {
                     "value": "1"
+                  }
+                }
+              },
+              "uz_usr_access_bridge_0": {
+                "vlnv": "xilinx.com:module_ref:uz_usr_access_bridge:1.0",
+                "xci_name": "zusys_uz_usr_access_bridge_0_0",
+                "xci_path": "ip\\zusys_uz_usr_access_bridge_0_0\\zusys_uz_usr_access_bridge_0_0.xci",
+                "inst_hier_path": "uz_system/uz_enable/uz_usr_access_bridge_0",
+                "reference_info": {
+                  "ref_type": "hdl",
+                  "ref_name": "uz_usr_access_bridge",
+                  "boundary_crc": "0x0"
+                },
+                "ports": {
+                  "usr_access_out": {
+                    "direction": "O",
+                    "left": "31",
+                    "right": "0"
                   }
                 }
               },
@@ -5163,24 +5181,6 @@
                   },
                   "DIN_WIDTH": {
                     "value": "8"
-                  }
-                }
-              },
-              "uz_usr_access_bridge_0": {
-                "vlnv": "xilinx.com:module_ref:uz_usr_access_bridge:1.0",
-                "xci_name": "zusys_uz_usr_access_bridge_0_0",
-                "xci_path": "ip\\zusys_uz_usr_access_bridge_0_0\\zusys_uz_usr_access_bridge_0_0.xci",
-                "inst_hier_path": "uz_system/uz_enable/uz_usr_access_bridge_0",
-                "reference_info": {
-                  "ref_type": "hdl",
-                  "ref_name": "uz_usr_access_bridge",
-                  "boundary_crc": "0x0"
-                },
-                "ports": {
-                  "usr_access_out": {
-                    "direction": "O",
-                    "left": "31",
-                    "right": "0"
                   }
                 }
               }
@@ -8953,7 +8953,7 @@
       },
       "Gates_3L_Gate_Signals_3L": {
         "ports": [
-          "uz_digital_adapter/D2_OUT",
+          "uz_digital_adapter/Gate_Signals_3L",
           "D2_OUT"
         ]
       },
@@ -8995,7 +8995,7 @@
       },
       "Gates_dout_0": {
         "ports": [
-          "uz_digital_adapter/D1_OUT",
+          "uz_digital_adapter/Gate_Signals_2L",
           "D1_OUT"
         ]
       },
@@ -9040,7 +9040,7 @@
       },
       "vio_D2_test_probe_out0": {
         "ports": [
-          "uz_digital_adapter/D3_OUT",
+          "uz_digital_adapter/VIO_D3",
           "D3_OUT"
         ]
       },

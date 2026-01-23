@@ -1279,7 +1279,7 @@ proc create_hier_cell_D3_adapter { parentCell nameHier } {
   # Create interface pins
 
   # Create pins
-  create_bd_pin -dir O -from 25 -to 0 D3_OUT
+  create_bd_pin -dir O -from 25 -to 0 VIO_D3
   create_bd_pin -dir I -type clk clk
 
   # Create instance: vio_D3_test, and set properties
@@ -1292,7 +1292,7 @@ proc create_hier_cell_D3_adapter { parentCell nameHier } {
 
 
   # Create port connections
-  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins D3_OUT] [get_bd_pins vio_D3_test/probe_out0]
+  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins VIO_D3] [get_bd_pins vio_D3_test/probe_out0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins vio_D3_test/clk]
 
   # Restore current instance
@@ -1340,8 +1340,8 @@ proc create_hier_cell_D2_adapter { parentCell nameHier } {
   # Create pins
   create_bd_pin -dir I -type clk AXI4_Lite_ACLK
   create_bd_pin -dir I -type rst AXI4_Lite_ARESETN
-  create_bd_pin -dir O -from 11 -to 0 D2_OUT
   create_bd_pin -dir I -type rst Enable_Gates
+  create_bd_pin -dir O -from 11 -to 0 Gate_Signals_3L
   create_bd_pin -dir O -from 0 -to 0 Interrupt_Center
   create_bd_pin -dir O -from 0 -to 0 Interrupt_Start
   create_bd_pin -dir O -from 0 -to 0 Interrupt_Start_Center
@@ -1353,7 +1353,7 @@ proc create_hier_cell_D2_adapter { parentCell nameHier } {
   connect_bd_intf_net -intf_net smartconnect_0_M12_AXI [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins Gates_3L/AXI4_Lite]
 
   # Create port connections
-  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_pins D2_OUT] [get_bd_pins Gates_3L/Gate_Signals_3L]
+  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_pins Gate_Signals_3L] [get_bd_pins Gates_3L/Gate_Signals_3L]
   connect_bd_net -net Gates_3L_Interrupt_Center [get_bd_pins Interrupt_Center] [get_bd_pins Gates_3L/Interrupt_Center]
   connect_bd_net -net Gates_3L_Interrupt_Start [get_bd_pins Interrupt_Start] [get_bd_pins Gates_3L/Interrupt_Start]
   connect_bd_net -net Gates_3L_Interrupt_Start_Center [get_bd_pins Interrupt_Start_Center] [get_bd_pins Gates_3L/Interrupt_Start_Center]
@@ -1422,7 +1422,7 @@ proc create_hier_cell_D1_adapter { parentCell nameHier } {
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_min
-  create_bd_pin -dir O -from 23 -to 0 D1_OUT
+  create_bd_pin -dir O -from 23 -to 0 Gate_Signals_2L
   create_bd_pin -dir I -type rst RESETN
 
   # Create instance: Gates
@@ -1442,7 +1442,7 @@ proc create_hier_cell_D1_adapter { parentCell nameHier } {
   connect_bd_net -net Gates_Carrier_triangular_max1 [get_bd_pins Carrier_triangular_max] [get_bd_pins Gates/Carrier_triangular_max]
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins Carrier_triangular_max_min] [get_bd_pins Gates/Carrier_triangular_max_min]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Carrier_triangular_min] [get_bd_pins Gates/Carrier_triangular_min]
-  connect_bd_net -net Gates_dout_0 [get_bd_pins D1_OUT] [get_bd_pins Gates/Gate_Signals_2L]
+  connect_bd_net -net Gates_dout_0 [get_bd_pins Gate_Signals_2L] [get_bd_pins Gates/Gate_Signals_2L]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins Gates/RESETN]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins CLK] [get_bd_pins Gates/CLK]
 
@@ -2057,10 +2057,9 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_min
-  create_bd_pin -dir O -from 23 -to 0 D1_OUT
-  create_bd_pin -dir O -from 11 -to 0 D2_OUT
-  create_bd_pin -dir O -from 25 -to 0 D3_OUT
   create_bd_pin -dir I -from 0 -to 0 Enable_Gate
+  create_bd_pin -dir O -from 23 -to 0 Gate_Signals_2L
+  create_bd_pin -dir O -from 11 -to 0 Gate_Signals_3L
   create_bd_pin -dir I Incr_Encoder_A
   create_bd_pin -dir I Incr_Encoder_B
   create_bd_pin -dir I Incr_Encoder_I
@@ -2069,6 +2068,7 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   create_bd_pin -dir O -from 0 -to 0 Interrupt_Start_Center
   create_bd_pin -dir I PeriodEnd
   create_bd_pin -dir I -type rst RESETN
+  create_bd_pin -dir O -from 25 -to 0 VIO_D3
   create_bd_pin -dir I -type clk clk
 
   # Create instance: D1_adapter
@@ -2098,18 +2098,18 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   # Create port connections
   connect_bd_net -net Dig_12_Ch5_1 [get_bd_pins Incr_Encoder_A] [get_bd_pins D5_adapter/Incr_Encoder_A]
   connect_bd_net -net Dig_13_Ch5_1 [get_bd_pins Incr_Encoder_B] [get_bd_pins D5_adapter/Incr_Encoder_B]
-  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_pins D2_OUT] [get_bd_pins D2_adapter/D2_OUT]
+  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_pins Gate_Signals_3L] [get_bd_pins D2_adapter/Gate_Signals_3L]
   connect_bd_net -net Gates_3L_Interrupt_Center [get_bd_pins Interrupt_Center] [get_bd_pins D2_adapter/Interrupt_Center]
   connect_bd_net -net Gates_3L_Interrupt_Start [get_bd_pins Interrupt_Start] [get_bd_pins D2_adapter/Interrupt_Start]
   connect_bd_net -net Gates_3L_Interrupt_Start_Center [get_bd_pins Interrupt_Start_Center] [get_bd_pins D2_adapter/Interrupt_Start_Center]
   connect_bd_net -net Gates_Carrier_triangular_max1 [get_bd_pins Carrier_triangular_max] [get_bd_pins D1_adapter/Carrier_triangular_max]
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins Carrier_triangular_max_min] [get_bd_pins D1_adapter/Carrier_triangular_max_min]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Carrier_triangular_min] [get_bd_pins D1_adapter/Carrier_triangular_min]
-  connect_bd_net -net Gates_dout_0 [get_bd_pins D1_OUT] [get_bd_pins D1_adapter/D1_OUT]
+  connect_bd_net -net Gates_dout_0 [get_bd_pins Gate_Signals_2L] [get_bd_pins D1_adapter/Gate_Signals_2L]
   connect_bd_net -net Incr_Encoder_I [get_bd_pins Incr_Encoder_I] [get_bd_pins D5_adapter/Incr_Encoder_I]
   connect_bd_net -net PeriodEnd_1 [get_bd_pins PeriodEnd] [get_bd_pins D5_adapter/PeriodEnd]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN] [get_bd_pins D5_adapter/RESETN]
-  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins D3_OUT] [get_bd_pins D3_adapter/D3_OUT]
+  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins VIO_D3] [get_bd_pins D3_adapter/VIO_D3]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Enable_Gate] [get_bd_pins D2_adapter/Enable_Gates]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins D1_adapter/CLK] [get_bd_pins D2_adapter/AXI4_Lite_ACLK] [get_bd_pins D3_adapter/clk] [get_bd_pins D5_adapter/clk]
 
@@ -3353,21 +3353,21 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net Dig_13_Ch5_1 [get_bd_ports Dig_13_Ch5] [get_bd_pins uz_digital_adapter/Incr_Encoder_B]
   connect_bd_net -net Enable_Gates_CPLD_High_dout [get_bd_ports D1_OUT_28] [get_bd_ports D2_OUT_28] [get_bd_ports D3_OUT_28] [get_bd_ports D4_OUT_28] [get_bd_pins uz_system/D1_OUT_28]
   connect_bd_net -net Enable_Gates_CPLD_Low_dout [get_bd_ports D1_OUT_26] [get_bd_ports D1_OUT_27] [get_bd_ports D2_OUT_26] [get_bd_ports D2_OUT_27] [get_bd_ports D3_OUT_26] [get_bd_ports D3_OUT_27] [get_bd_ports D4_OUT_26] [get_bd_ports D4_OUT_27] [get_bd_pins uz_system/D1_OUT_26]
-  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_ports D2_OUT] [get_bd_pins uz_digital_adapter/D2_OUT]
+  connect_bd_net -net Gates_3L_Gate_Signals_3L [get_bd_ports D2_OUT] [get_bd_pins uz_digital_adapter/Gate_Signals_3L]
   connect_bd_net -net Gates_3L_Interrupt_Center [get_bd_pins uz_digital_adapter/Interrupt_Center] [get_bd_pins uz_system/Interrupt5]
   connect_bd_net -net Gates_3L_Interrupt_Start [get_bd_pins uz_digital_adapter/Interrupt_Start] [get_bd_pins uz_system/Interrupt4]
   connect_bd_net -net Gates_3L_Interrupt_Start_Center [get_bd_pins uz_digital_adapter/Interrupt_Start_Center] [get_bd_pins uz_system/Interrupt3]
   connect_bd_net -net Gates_Carrier_triangular_max1 [get_bd_pins uz_digital_adapter/Carrier_triangular_max] [get_bd_pins uz_system/Interrupt2]
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins uz_digital_adapter/Carrier_triangular_max_min] [get_bd_pins uz_system/Interrupt0]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins uz_digital_adapter/Carrier_triangular_min] [get_bd_pins uz_system/Interrupt1]
-  connect_bd_net -net Gates_dout_0 [get_bd_ports D1_OUT] [get_bd_pins uz_digital_adapter/D1_OUT]
+  connect_bd_net -net Gates_dout_0 [get_bd_ports D1_OUT] [get_bd_pins uz_digital_adapter/Gate_Signals_2L]
   connect_bd_net -net Interrupt_muxed [get_bd_pins uz_analog_adapter/TRIGGER_CNV] [get_bd_pins uz_digital_adapter/PeriodEnd] [get_bd_pins uz_system/trigger_conversions]
   connect_bd_net -net iobufds_inst_0_SCLK_OUT [get_bd_ports A1_OUT_CLK] [get_bd_pins uz_analog_adapter/A1_OUT_CLK]
   connect_bd_net -net iobufds_inst_1_SCLK_OUT [get_bd_ports A2_OUT_CLK] [get_bd_pins uz_analog_adapter/A2_OUT_CLK]
   connect_bd_net -net iobufds_inst_2_SCLK_OUT [get_bd_ports A3_OUT_CLK] [get_bd_pins uz_analog_adapter/A3_OUT_CLK]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins uz_analog_adapter/s00_axi_aresetn] [get_bd_pins uz_digital_adapter/RESETN] [get_bd_pins uz_system/peripheral_aresetn] [get_bd_pins uz_user/aresetn]
   connect_bd_net -net uz_system_wdt_interrupt [get_bd_pins uz_system/wdt_interrupt] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
-  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_ports D3_OUT] [get_bd_pins uz_digital_adapter/D3_OUT]
+  connect_bd_net -net vio_D2_test_probe_out0 [get_bd_ports D3_OUT] [get_bd_pins uz_digital_adapter/VIO_D3]
   connect_bd_net -net xlconcat_0_dout [get_bd_ports D4_OUT] [get_bd_pins uz_system/interrupt_vector] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
   connect_bd_net -net xlslice_Enable_Gate_Dout [get_bd_ports D1_OUT_29] [get_bd_ports D2_OUT_29] [get_bd_ports D3_OUT_29] [get_bd_ports D4_OUT_29] [get_bd_pins uz_system/Enable_Gate]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins uz_digital_adapter/Enable_Gate] [get_bd_pins uz_system/Enable_Inverter]

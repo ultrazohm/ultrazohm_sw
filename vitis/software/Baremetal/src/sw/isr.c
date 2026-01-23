@@ -388,7 +388,7 @@ void ISR_Control(void *data)
     	    	break;
     	    }
     }
-
+    }
     // assign DutyCycles lastmaschine
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge6DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
 
@@ -401,7 +401,7 @@ void ISR_Control(void *data)
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
-}
+
 }
 
 static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, float L3){

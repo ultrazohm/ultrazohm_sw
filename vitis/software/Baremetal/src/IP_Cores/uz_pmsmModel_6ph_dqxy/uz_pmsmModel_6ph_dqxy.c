@@ -34,7 +34,7 @@ static uz_pmsmModel_6ph_dqxy_t *uz_pmsmModel_6ph_dqxy_allocation(void);
 
 static uz_pmsmModel_6ph_dqxy_t *uz_pmsmModel_6ph_dqxy_allocation(void)
 {
-    uz_assert(instance_counter < UZ_PMSMMODEL_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES);
     uz_pmsmModel_6ph_dqxy_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;

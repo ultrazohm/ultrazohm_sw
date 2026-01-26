@@ -18,7 +18,7 @@ void setUp(void)
     fitting_config.ad1_parameter = 0.026620095524092f;
     fitting_config.ad2_parameter = 0.047133812840564f;
     fitting_config.ad3_parameter = -27.868596691410815f;
-    fitting_config.ad4_parameter = 0.026771852823277;
+    fitting_config.ad4_parameter = 0.026771852823277f;
     fitting_config.ad5_parameter = 0.032335709299499f;
     fitting_config.ad6_parameter = -27.939757152811232f;
     fitting_config.aq1_parameter = 0.006639611096337f;

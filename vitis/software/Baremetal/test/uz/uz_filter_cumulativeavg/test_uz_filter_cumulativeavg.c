@@ -14,7 +14,7 @@ void tearDown(void)
 
 void test_uz_filter_cumulativeavg_init(void)
 {
-    uz_filter_cumulativeavg_t *testinstance = uz_filter_cumulativeavg_init();
+    uz_filter_cumulativeavg_init();
 }
 
 void test_uz_filter_cumulativeavg_some_values(void)

@@ -19,9 +19,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_H1(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1(uint32_t base_address){
-	uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_1_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+	uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_1_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_PWMFreqTicks_L1(uint32_t base_address){
@@ -40,9 +39,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_L1(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1(uint32_t base_address){
-    uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_2_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+    uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_2_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_PWMFreqTicks_H2(uint32_t base_address){
@@ -61,9 +59,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_H2(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2(uint32_t base_address){
-	uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_3_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+	uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_3_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_PWMFreqTicks_L2(uint32_t base_address){
@@ -82,9 +79,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_L2(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2(uint32_t base_address){
-    uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_4_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+    uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_4_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_PWMFreqTicks_H3(uint32_t base_address){
@@ -103,9 +99,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_H3(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3(uint32_t base_address){
-	uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_5_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+	uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_5_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_PWMFreqTicks_L3(uint32_t base_address){
@@ -124,9 +119,8 @@ uint32_t uz_inverter_adapter_hw_get_PWMlowtimeTicks_L3(uint32_t base_address){
 }
 
 float uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3(uint32_t base_address){
-    uint32_t axi_read_tempAsDutyCyc;
-	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_6_dutycyc_Data_uz_d_inverter_adapter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
+    uint32_t axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Temp_6_dutycyc_Data_uz_d_inverter_adapter);
+	return(uz_convert_unsigned_fixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_inverter_adapter_hw_get_OC(uint32_t base_address) {

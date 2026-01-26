@@ -388,7 +388,7 @@ void ISR_Control(void *data)
     		i_xy_ref.d 	= Global_Data.av.i_dqxy_ref.x;
     		i_xy_ref.q 	= Global_Data.av.i_dqxy_ref.y;
     		uz_3ph_dq_t v_dq_non_limited = uz_CurrentControl_sample_no_Limit(Global_Data.objects.CC_dq_instance_Pruef, i_dq_ref, i_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
-    		uz_3ph_dq_t v_xy_non_limited = uz_CurrentControl_sample_no_Limit(Global_Data.objects.CC_xy_instance_Pruef, i_xy_ref, i_xy, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
+    		uz_3ph_dq_t v_xy_non_limited = uz_CurrentControl_xy_sample_no_Limit(Global_Data.objects.CC_xy_instance_Pruef, i_xy_ref, i_xy, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
     		Global_Data.av.v_dqxy_non_limited.d = v_dq_non_limited.d;
     		Global_Data.av.v_dqxy_non_limited.q = v_dq_non_limited.q;
     		Global_Data.av.v_dqxy_non_limited.x = v_xy_non_limited.d;

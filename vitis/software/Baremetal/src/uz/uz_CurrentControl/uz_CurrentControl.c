@@ -100,6 +100,16 @@ uz_3ph_dq_t uz_CurrentControl_sample_no_Limit(uz_CurrentControl_t* self, uz_3ph_
 	v_output_Volts.q += v_decoup_Volts.q;
 	return (v_output_Volts);
 }
+uz_3ph_dq_t uz_CurrentControl_xy_sample_no_Limit(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(V_dc_volts > 0.0f);
+	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_sample_pi_controllers(self, i_reference_Ampere, i_actual_Ampere);
+	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_linear_decoupling_xy(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	v_output_Volts.d += v_decoup_Volts.d;
+	v_output_Volts.q += v_decoup_Volts.q;
+	return (v_output_Volts);
+}
 
 uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);

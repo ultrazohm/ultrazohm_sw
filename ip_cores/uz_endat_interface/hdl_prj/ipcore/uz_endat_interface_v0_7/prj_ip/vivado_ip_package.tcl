@@ -3,8 +3,6 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/uz_endat_interface_src_uz_endat_interface_pkg.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive1.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_Sine_HDL_Optimized1.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_fixed_point_floor.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_Sine_HDL_Optimized.vhd}
@@ -14,32 +12,23 @@ add_files -norecurse {../hdl/uz_endat_interface_src_set_offset_to_raw_position_a
 add_files -norecurse {../hdl/uz_endat_interface_src_slice_position_and_CRC.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_fixed_point_floor_block.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_wrap_2pi.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive2.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive3.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block1.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive1_block.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive2_block.vhd}
+add_files -norecurse {../hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_Model.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_Sample_and_Hold1.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_sample_serial_endat_data.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive_block1.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block2.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block3.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_endat_clock_enable_controller.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive2_block2.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block4.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd}
-add_files -norecurse {../hdl/uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_S_R_Flip_Flop_block5.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_endat_clock_generator.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_serial_communication.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_src_uz_endat_interface.vhd}
+add_files -norecurse {../hdl/uz_endat_interface_pkg.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_reset_sync.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_dut.vhd}
 add_files -norecurse {../hdl/uz_endat_interface_addr_decoder.vhd}
@@ -65,21 +54,13 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114448943 [ipx::current_core]
+set_property core_revision 2114452910 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_endat_interface_src_uz_endat_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_uz_endat_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_uz_endat_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_uz_endat_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_Sine_HDL_Optimized1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Sine_HDL_Optimized1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_Sine_HDL_Optimized1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -116,14 +97,6 @@ ipx::add_file {hdl/uz_endat_interface_src_wrap_2pi.vhd} [ipx::get_file_groups xi
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_wrap_2pi.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_wrap_2pi.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_wrap_2pi.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -132,30 +105,14 @@ ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_fil
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_RW_data_and_mode_command_control.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_Model.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Model.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_Model.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -168,14 +125,6 @@ ipx::add_file {hdl/uz_endat_interface_src_sample_serial_endat_data.vhd} [ipx::ge
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_sample_serial_endat_data.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_sample_serial_endat_data.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_sample_serial_endat_data.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -188,10 +137,6 @@ ipx::add_file {hdl/uz_endat_interface_src_endat_clock_enable_controller.vhd} [ip
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_endat_clock_enable_controller.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_endat_clock_enable_controller.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_endat_clock_enable_controller.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive2_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -200,10 +145,6 @@ ipx::add_file {hdl/uz_endat_interface_src_clk_idle_and_delay_first_clock_functio
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_Detect_Rise_Positive1_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block5.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_S_R_Flip_Flop_block5.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_S_R_Flip_Flop_block5.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -220,6 +161,10 @@ ipx::add_file {hdl/uz_endat_interface_src_uz_endat_interface.vhd} [ipx::get_file
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_uz_endat_interface.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_src_uz_endat_interface.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_src_uz_endat_interface.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_endat_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_endat_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_endat_interface_reset_sync.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_endat_interface_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -328,22 +273,24 @@ set_property value {ACTIVE_LOW} [ipx::get_bus_parameters POLARITY -of_objects [i
 
 # Add report files
 ipx::add_file_group -type {product_guide} {} [ipx::current_core]
+ipx::add_file {doc/doc_arch_axi4_Pipeline_Register.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_Pipeline_Register.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4_lite.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_lite.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/free_running.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/free_running.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
-ipx::add_file {doc/uz_endat_interface_2023a_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
-set_property type {{html}} [ipx::get_files {doc/uz_endat_interface_2023a_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/uz_endat_interface_2025b_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{html}} [ipx::get_files {doc/uz_endat_interface_2025b_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 
 # Add C files
 ipx::add_file_group -type {misc} {} [ipx::current_core]
 ipx::add_file {include/uz_endat_interface_addr.h} [ipx::get_file_groups xilinx_miscfiles -of_objects [ipx::current_core]]
 set_property type {{cSource}} [ipx::get_files {include/uz_endat_interface_addr.h} -of_objects [ipx::get_file_groups xilinx_miscfiles -of_objects [ipx::current_core]]]
+
+# Package IP
 ipx::create_xgui_files [ipx::current_core]
 ipx::check_integrity -quiet [ipx::current_core]
 ipx::save_core [ipx::current_core]
-
-# Package IP
 ipx::archive_core {../uz_endat_interface_v0_7.zip} [ipx::current_core]
 close_project
 exit

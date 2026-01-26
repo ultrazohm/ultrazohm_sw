@@ -61,6 +61,7 @@
 #include "include/uz_IIR_Filter_init.h"
 #include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+#include "include/init_network_ip_core.h"
 
 enum ControllerApplication
 {

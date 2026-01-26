@@ -94,7 +94,8 @@ bool ext_clamping = false;
 float ts = 1.0f/UZ_PWM_FREQUENCY;
 float rated_current = 10.0f;
 float speed_weight = 1.0f/2000.0f;
-float Voltage_Scaling = 0.0f;
+float U_max = 27.7128f;
+float Voltage_Scaling = 1.0f/27.7128f;
 float Observation[17] = {0};
 //====================
 //==============================================================================================================================================================
@@ -352,11 +353,13 @@ void ISR_Control(void *data)
        			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
        		}
             uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+            //May need adjusting
+            uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc1/2.0f); // scaling layer of nn
             Global_Data.av.v_dqxy_non_limited.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
             Global_Data.av.v_dqxy_non_limited.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
             Global_Data.av.v_dqxy_non_limited.x = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
             Global_Data.av.v_dqxy_non_limited.y = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
-            Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.5f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
+            Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.57735f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
     		break;
 
     	case MPC:

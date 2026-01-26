@@ -314,7 +314,7 @@ void ISR_Control(void *data)
 
         	if (start_angle_found) {
 
-        		Global_Data.av.start_marker=1.0f;
+
         		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
@@ -324,7 +324,11 @@ void ISR_Control(void *data)
 
         		if((current_uptime>(old_uptime + 360) && (!change_speed)) ){
         			old_uptime=current_uptime;
-
+            		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
+            		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
+            		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
+            		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * rated_current;
+            		Global_Data.av.start_marker=1.0f;
         			if(setpoint_index<21){
         				setpoint_index++;
         			}else{

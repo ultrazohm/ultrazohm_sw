@@ -123,6 +123,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_i_c_Last] 				= &data->av.i_abc_Last.c;
 	js_ch_observable[JSO_i_d_Last]				= &data->av.i_dq_Last.d;
 	js_ch_observable[JSO_i_q_Last] 				= &data->av.i_dq_Last.q;
+	js_ch_observable[JSO_start_marker]			= &data->av.start_marker;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

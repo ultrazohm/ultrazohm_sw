@@ -101,6 +101,7 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
 	float error;
+	float start_marker;
 	//Pruef-machine
 	uz_6ph_abc_t i_abc;
 	uz_6ph_abc_t v_abc;

@@ -105,7 +105,6 @@ bool start_angle_found = false;
 bool change_speed = false;
 uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
-float start_marker=0.0f;
 float id_setpoints[22]={
 #include "id_setpoints.csv"
 };
@@ -315,7 +314,7 @@ void ISR_Control(void *data)
 
         	if (start_angle_found) {
 
-        		start_marker=1.0f;
+        		Global_Data.av.start_marker=1.0f;
         		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
@@ -330,7 +329,7 @@ void ISR_Control(void *data)
         				setpoint_index++;
         			}else{
         				setpoint_index = 0U;
-        				start_marker = 0.0f;
+        				Global_Data.av.start_marker = 0.0f;
         				change_speed = true;
         			}
 

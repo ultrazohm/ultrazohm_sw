@@ -94,9 +94,30 @@ bool ext_clamping = false;
 float ts = 1.0f/UZ_PWM_FREQUENCY;
 float rated_current = 10.0f;
 float speed_weight = 1.0f/2000.0f;
+float rated_speed = 2000.0f;
 float U_max = 27.7128f;
 float Voltage_Scaling = 1.0f/27.7128f;
 float Observation[17] = {0};
+
+//Stepprofile stuff
+extern bool StepProfile;
+bool start_angle_found = false;
+bool change_speed = false;
+uint64_t old_uptime=0U;
+uint32_t setpoint_index=0U;
+float start_marker=0.0f;
+float id_setpoints[22]={
+#include "id_setpoints.csv"
+};
+float iq_setpoints[22]={
+#include "iq_setpoints.csv"
+};
+float ix_setpoints[22]={
+#include "ix_setpoints.csv"
+};
+float iy_setpoints[22]={
+#include "iy_setpoints.csv"
+};
 //====================
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -282,6 +303,62 @@ void ISR_Control(void *data)
     }
     // if "ENABLE CONTROL"
     if (current_state==control_state) {
+        //Automatic evaluation profile
+        if( (StepProfile) ){
+        	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+        	if (((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f)) || ConApplication==CIL)&& (!start_angle_found)) {
+        		if(current_uptime>(old_uptime + 2360)) {
+        			start_angle_found = true;
+        		}
+
+        	}
+
+        	if (start_angle_found) {
+
+        		start_marker=1.0f;
+        		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
+        		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
+        		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
+        		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * rated_current;
+
+        		// step throught the array
+
+        		if((current_uptime>(old_uptime + 360) && (!change_speed)) ){
+        			old_uptime=current_uptime;
+
+        			if(setpoint_index<21){
+        				setpoint_index++;
+        			}else{
+        				setpoint_index = 0U;
+        				start_marker = 0.0f;
+        				change_speed = true;
+        			}
+
+        		}
+        		if (change_speed) {
+    				Global_Data.av.i_dqxy_ref.d = 0.0f;
+    				Global_Data.av.i_dqxy_ref.q = 0.0f;
+    				Global_Data.av.i_dqxy_ref.x = 0.0f;
+    				Global_Data.av.i_dqxy_ref.y = 0.0f;
+        			if(current_uptime>(old_uptime + 360)) {
+        				if(ConApplication == CIL) {
+        					Global_Data.av.n_ref_Last = Global_Data.av.n_ref_Last + 100.0f;
+        				} else {
+        					Global_Data.av.n_ref_Last = Global_Data.av.n_ref_Last - 100.0f;
+        				}
+        				change_speed = false;
+        				start_angle_found = false;
+        				//StepProfile = false;
+        			}
+        		}
+        		if(fabs(Global_Data.av.n_ref_Last) > rated_speed) {
+        			StepProfile = false;
+        			Global_Data.av.n_ref_Last = 0.0f;
+        		}
+        	}
+
+        }
+        Global_Data.av.theta_elec_old = Global_Data.av.theta_elec;
     	if(ConApplication == REAL) {
     		//Only use load machine when REAL
     	    float n_ref_Last_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_prefilter_Last, Global_Data.av.n_ref_Last);

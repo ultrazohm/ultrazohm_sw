@@ -80,6 +80,7 @@ typedef struct _actualValues_ {
 	float theta_mech_Last;
 	float theta_elec;
 	float theta_elec_advanced;
+	float theta_elec_old;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float omega_elec_Last;

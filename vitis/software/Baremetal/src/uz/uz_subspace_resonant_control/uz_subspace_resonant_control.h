@@ -68,7 +68,7 @@ void uz_subspace_resonant_control_reset(uz_subspace_resonant_control* self);
  *
  * @param self pointer to instance
  * @param gain1 new gain for resonant instance 1
- * @param gain1 new gain for resonant instance 2
+ * @param gain2 new gain for resonant instance 2
  */
 void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, float gain1, float gain2);
 

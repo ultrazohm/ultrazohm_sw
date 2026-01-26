@@ -13,10 +13,10 @@ Control
     flux_approximation/uz_flux_approximation_script
     linear_decoupling/linear_decoupling
     static_nonlinear_decoupling/static_nonlinear_decoupling
+    machine_config/machine_config
     movingAverage/movingAverage
     ParameterID/ParameterID
     piController/piController
-    PMSM_config/uz_PMSM_config
     SetPoint/SetPoint
     space_vector_limitation/space_vector_limitation
     space_vector_modulation/space_vector_modulation

@@ -4,7 +4,7 @@
 #pragma once
 
 /**
- * @brief Configuratin struct for a PMSM. Accessible by the user
+ * @brief Configuration struct for a PMSM. Accessible by the user
  * 
  */
 typedef struct uz_PMSM_t{

@@ -51,7 +51,7 @@ The purple-colored blocks highlight the parts where the user has to interface wi
 
 
 How to facilitate calculations on the A53
-----------------------------------------
+-----------------------------------------
 
 The following steps are required in order to use the feature.
 

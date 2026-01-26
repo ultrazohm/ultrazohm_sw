@@ -21,11 +21,11 @@ if {$::tcl_platform(platform) eq "windows"} {
   # Windows: assume Vivado sets RDI_PYTHON3 and it points to python.exe
   set py_exe [file join $::env(RDI_PYTHON3) python]
 } else {
-  # Unix: assume PYTHON_HOME points to .../python-3.8.3 and executable is in bin/
-  set py_exe [file join $::env(PYTHON_HOME) bin python]
+  # Unix: assume PYTHONHOME points to .../python-3.8.3 and executable is in bin/
+  set py_exe [file join $::env(PYTHONHOME) bin python]
   if {![file exists $py_exe]} {
     # Some installs may ship "python3" instead of "python"
-    set py_exe [file join $::env(PYTHON_HOME) bin python3]
+    set py_exe [file join $::env(PYTHONHOME) bin python3]
   }
 }
 

@@ -1,7 +1,7 @@
 .. _r5_interrupts:
 
 =============
-Interrupts R5
+R5 interrupts
 =============
 
 Software User Model
@@ -13,7 +13,7 @@ The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning 
 
 .. code-block:: c 
 
-    //chose here which of the above interrupt trigger you want to use:
+    // choose here which of the above interrupt triggers you want to use:
     #define Interrupt_ISR_source_user_choice	0
 
     
@@ -59,10 +59,10 @@ Structure in the PL
 
 The Interrupt module consists of:
 
-    * ``mux_axi``: chose source of ADC conversion trigger 
-    * ``delay_trigger``: adds delay to the ADC conversion trigger
-    * ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging
-    * ``adc_delay``: vio to set delay of ``delay_trigger``
+* ``mux_axi``: choose source of ADC conversion trigger
+* ``delay_trigger``: adds delay to the ADC conversion trigger
+* ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging
+* ``adc_delay``: vio to set delay of ``delay_trigger``
 
 .. _pl_interrupt_module:
 
@@ -82,5 +82,5 @@ Trigger of ADC Conversion
 In some applications, the ADC conversion needs to be delayed relative to the trigger from the PWM module. 
 This can be the case if you are using an IGBT, where the delay introduced by the driver and the IGBT itself are not negligible. 
 To ensure that the ADC sampling does not occur while switching, the delay can be added in PL. 
-At the moment this is done with a VIO (Virtual IO) in the Hardware Manager in Vivado.
+At the moment this is done with a VIO (Virtual I/O) in the Hardware Manager in Vivado.
 

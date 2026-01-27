@@ -1,0 +1,7 @@
+﻿Absolute Encoder, Resolver, PIN DSUB 9
+GND,COS-, 4
+DATA+,COS, 3
+DATA-,SIN-, 2
+CLK-,SIN, 1
+V+,EXC-, 6
+CLK+,EXC, 5

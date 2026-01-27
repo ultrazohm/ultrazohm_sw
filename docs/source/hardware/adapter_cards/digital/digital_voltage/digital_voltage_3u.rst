@@ -11,7 +11,7 @@ Digital Voltage 3U 2v01
 Source
 """"""
 
-- `Digital voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
+- `Digital Voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
 
 General description
 """""""""""""""""""
@@ -49,10 +49,10 @@ the mounted groups. You can find a description of the LED colors as well. The fu
 9. 15V Power supply
 10. Jumpers to bypass (5) if not required
 
-IO Interface
-------------
+I/O Interface
+-------------
 
-In order to enable maximal user flexibility and to save costs, the PCB comes without an IO interface connector. Originaly, the
+In order to enable maximal user flexibility and to save costs, the PCB comes without an I/O interface connector. Originally, the
 PCB has been designed for the Samtec `IPL1-120-01-L-D-RA-K <https://www.samtec.com/products/ipl1-120-01-l-d-ra-k>`_
 and `IPL1-115-01-L-D-RA-K <https://www.samtec.com/products/ipl1-115-01-l-d-ra-k>`_ connectors but any connector with
 a 1" (2.54mm) pin pitch can be used. 
@@ -120,7 +120,7 @@ are less critical because the have lower steepness.
 Since the adapter board is mainly designed for point to point connections and because the operational frequencies are relatively low, the simple serial termination
 technique can be applied. With serial termination the signal gets reflected at the far end of the transmission line and it is absorbed by a resistor 
 placed in series behind the driver that matches the characteristic impedance of the transmission line. In the waveform shown above this procedure can be observed:
-The output impedance of the driver in series with the termination resistor forms a 1:1 voltage devider with the transmission line. This creates the plateau at 50% of the
+The output impedance of the driver in series with the termination resistor forms a 1:1 voltage divider with the transmission line. This creates the plateau at 50% of the
 signal level. After one round trip the signal adds up to the full level. The two figures below show overcompensated (the termination resistor is too big) and
 undercompensated cases (the termination resistor is too small).
 

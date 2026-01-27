@@ -4,7 +4,7 @@
 Six-phase CIL Example
 =====================
 
-On this page, a description of a six-phase PMSM CIL model will be given, using the respective UZ IP-Cores.
+On this page, a description of a six-phase PMSM CIL model will be given, using the respective UZ IP cores.
 
 Vivado
 ======
@@ -12,14 +12,14 @@ Vivado
 In this example, PWM blocks have been placed individually for the CIL.
 Alternatively, the PWM blocks from the standard model can be used.
 The outputs of the PWM blocks are combined with a Concat block and routed to the inverter's gate inputs.
-Their voltage outputs are connected with the respective inputs of the Transformation IP-core, whose current outputs are fed back to the inverters.
+Their voltage outputs are connected with the respective inputs of the Transformation IP core, whose current outputs are fed back to the inverters.
 The transformation's transformed output is connected with the PMSM, while the PMSM's rotor angle and current outputs are connected with the Transformation.
 The trigger and refresh signals of the Transformation are connected with the RS-Flip-Flop as shown below.
 
 .. note:: 
 
-   To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP-Cores automatically and connects them.
-   To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
+   To simplify the usage of the CIL and to reduce possible errors, a Tcl script was created, that places all necessary IP cores automatically and connects them.
+   To use this, open the Vivado block design in a clean project and run the following commands separately in the Tcl console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
 
@@ -28,9 +28,9 @@ The trigger and refresh signals of the Transformation are connected with the RS-
 
     Vivado setup
 
-All individual connections of each IP-core are shown in the table below.
+All individual connections of each IP core are shown in the table below.
 
-.. csv-table:: Connection of IP-cores
+.. csv-table:: Connection of IP cores
    :file: uz_6ph_cil_connections.csv
    :widths: 50 50 50 50
    :header-rows: 1
@@ -38,8 +38,8 @@ All individual connections of each IP-core are shown in the table below.
 Vitis
 =====
 
-Each IP-core is initialized in ``main.c``, as well as a pointer with the respective type.
-The init functions are called during the init process of all IP-cores.
+Each IP core is initialized in ``main.c``, as well as a pointer with the respective type.
+The init functions are called during the init process of all IP cores.
 
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
@@ -147,7 +147,7 @@ The init functions are called during the init process of all IP-cores.
     ...
 
 
-To use the CIL setup, the IP-core's pointers have to be imported to the ``isr.c``.
+To use the CIL setup, the IP core's pointers have to be imported to the ``isr.c``.
 Also, variables to store the outputs of the CIL model are defined.
 In this example, a PI controller is used to control the PMSM.
 The usage is not necessary and the respective parts can be disregarded if other controllers are used.
@@ -206,7 +206,7 @@ Depending on the used controller, this might not be necessary.
     output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, setp_currents.d, transformed_currents.d, false);  // sample d-current controller
     output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, setp_currents.q, transformed_currents.q, false);  // sample q-current controller
     out_voltage_abc = uz_transformation_asym30deg_6ph_dq_to_abc(output_voltage_dq, theta_el);                     // transform setpoint voltages to phase voltages
-    out_voltage_abc1.a = out_voltage_abc.a1;                                                                      // seperate voltages into 3ph structs
+    out_voltage_abc1.a = out_voltage_abc.a1;                                                                      // separate voltages into 3ph structs
     out_voltage_abc1.b = out_voltage_abc.b1;
     out_voltage_abc1.c = out_voltage_abc.c1;
     out_voltage_abc2.a = out_voltage_abc.a2;

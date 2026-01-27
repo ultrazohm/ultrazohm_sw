@@ -46,6 +46,7 @@ void uz_OnlineID_step(uz_ParaID_OnlineID_t *self);
 The function is searching for measuring pairs which are closer than "eta_c" to their neighbors. In this case it is averaging these similar pairs to avoid measuring values containing the same information.
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param Data pointer to uz_ParameterID_Data_t struct
  */
 void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
@@ -53,13 +54,15 @@ void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t
  * @brief This function is calculating the regular flux maps out of the irregular scatter data array. The outputs is written onto the member FluxMap_Data of the uz_ParameterID_Data_t struct.
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param Data pointer to uz_ParameterID_Data_t struct
  */
 void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
 /**
- * @brief Calls an stateflow which automatically generates reference currents to speed up the measurement of the OnlineID flux maps. This is more like an extra and not needed for the OnlineID to work. 
+ * @brief Calls a stateflow which automatically generates reference currents to speed up the measurement of the OnlineID flux maps. This is more like an extra and not needed for the OnlineID to work. 
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param Data pointer to uz_ParameterID_Data_t struct
  */
 void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 

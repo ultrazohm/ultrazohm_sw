@@ -50,6 +50,7 @@ struct uz_resolver_pl_interface_outputs_t {
  * @brief Initializes an instance of the uz_resolver_pl_interface driver
  *
  * @param config Configuration values for the IP-Core
+ * @param outputs Output values for the IP-Core
  * @return Pointer to initialized instance
  */
 uz_resolver_pl_interface_t* uz_resolver_pl_interface_init(struct uz_resolver_pl_interface_config_t config, struct uz_resolver_pl_interface_outputs_t outputs);

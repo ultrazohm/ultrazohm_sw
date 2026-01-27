@@ -14,7 +14,7 @@ Optimization Levels of the Compiler
 **Step-by-step**
 ^^^^^^^^^^^^^^^^^^
 
-Open the project properties 
+Open the project properties.
 
 .. image:: ./images_problems/include_math_lib1.png
    :height: 400
@@ -23,7 +23,7 @@ Change the optimization level by following the steps:
 
 1. C/C++ build -> Settings
 2. ARM R5 gcc compiler -> Optimization
-3. Optimization Level -> pull down menu to chose the desired level
+3. Optimization Level -> pull-down menu to choose the desired level
 4. Apply and Close
 
-..	image:: ./images_problems/gcc_optimization_level.png
+   ..	image:: ./images_problems/gcc_optimization_level.png

@@ -3,6 +3,7 @@
 !/vitis/workspace/create_Vitis_workspace_here.txt
 
 ip_cores/*/simulation/slprj/*
+ip_cores/vv_index.xml
 
 
 

@@ -2,14 +2,14 @@
 AXI GPIO
 ========
 
-This IP-Core and software driver enables the PS to control individual input/output signals inside the PL.
-The core functionality of the AXI GPIO IP-Core is vendor provided:
+This IP core and software driver enables the PS to control individual input/output signals inside the PL.
+The core functionality of the AXI GPIO IP core is vendor provided:
 
 - https://www.xilinx.com/products/intellectual-property/axi_gpio.html
 - https://docs.xilinx.com/v/u/en-US/pg144-axi-gpio
 - https://docs.xilinx.com/v/u/1.01b-English/ds744_axi_gpio
 
-A software wrapper for the vendor IP-core and driver is implemented to facilitate a consistent interface with other UltraZohm IP-Cores.
+A software wrapper for the vendor IP core and driver is implemented to facilitate a consistent interface with other UltraZohm IP cores.
 Only a small subset of the capabilities is implemented in the wrapper to simplify the usage and focus on common use cases.
 
 Features:
@@ -18,7 +18,7 @@ Features:
 - I/O numbering is zero-based (first signal is bit ``0`` / LSB)
 - All input or all output is recommended for simplicity
 - Output or input configurable on a per-pin basis is supported
-- Only one channel (dual channel mode of the IP-Core is not supported)
+- Only one channel (dual channel mode of the IP core is not supported)
 - No interrupt support
 - Static partitioning of pins using the pins ``gpio_oi_o`` for outputs and ``gpio_oi_i`` for inputs is possible
 - Refer to AXI GPIO product guide if dynamic IO (i.e., changing inputs to outputs and vice versa during run-time) is required (i.e., correct handling of 3-state buffer)
@@ -124,8 +124,8 @@ Specifically, ``xgpio.h`` is added from the ``embeddedsw`` repository and modifi
 The include ``#include "xgpio_l.h"`` inside ``xgpio.h`` is deleted to break the dependency of ``xgpio.h`` to other vendor provided modules.
 This works since ``xgpio.h`` is never used directly but only mocked.
 
-In addition to the commonly used ``base address`` in the software driver that directs the driver to the memory address of the AXI interface of the IP-Core, the ``Device id`` is required.
-The ``Device id`` is defined in ``xparameters.h`` alongside the ``base address`` and numbers the different instances of the AXI GPIO IP-Core.
+In addition to the commonly used ``base address`` in the software driver that directs the driver to the memory address of the AXI interface of the IP core, the ``Device id`` is required.
+The ``Device id`` is defined in ``xparameters.h`` alongside the ``base address`` and numbers the different instances of the AXI GPIO IP core.
 
 
 

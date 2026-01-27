@@ -1,12 +1,12 @@
 function [rangeX,rangeY,grid] = interpol_flux_scatter_psid (array,rangeX,rangeY)
 % Author Philipp Gebhardt
-% Oktober 2019
+% October 2019
 %
 % This function is an inter- and extrapolation of an inregular scattered x y z measuring data, 
-% which generates a regular grid of a d-flux map of a permanent magnet synchonous machine.
+% which generates a regular grid of a d-flux map of a permanent magnet synchronous machine.
 % These machines usually have an linear flux map but can differ in
-% saturation from the linear model. Thats why this function approximates
-% the scattered data to a linear surface whichs deviation is assumed with
+% saturation from the linear model. That's why this function approximates
+% the scattered data to a linear surface whose deviation is assumed with
 % inverse distance weihting from the scattered data. 
 % 
 % Input "array" is from type single(100,3) = irregular scattered x y z data
@@ -44,7 +44,7 @@ N=single(zeros(3,100));
 grid=single(zeros(length(rangeX),length(rangeY)));
 
 
-%Calculate normal vecotr of Triangles between psi array values 
+%Calculate normal vector of Triangles between psi array values 
 for(k=single(1):single(n_curr))    
 
     %Find nearest neighbours 
@@ -83,7 +83,7 @@ for(k=single(1):single(n_curr))
         if(t~=i1 && t~=i2)
         
     
-        % Calculate scalarproduct of every possible triangle and divide throuh
+        % Calculate scalarproduct of every possible triangle and divide through
         % norm of vectors to get cos() of angle
          AB=[array(1,i2)-array(1,i1);array(2,i2)-array(2,i1);array(3,i2)-array(3,i1)];
          AC=[array(1,t)-array(1,i1);array(2,t)-array(2,i1);array(3,t)-array(3,i1)];
@@ -95,7 +95,7 @@ for(k=single(1):single(n_curr))
     end
 
     %find smallest cos() of angle because triangle should be as right-angled as
-    %possible and cos(90°)=0
+    %possible and cos(90)=0
     
     e=single(1e19);
     for(t=single(1):single(n_curr))

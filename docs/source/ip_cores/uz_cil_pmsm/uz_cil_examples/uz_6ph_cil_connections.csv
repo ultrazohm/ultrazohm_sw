@@ -1,4 +1,4 @@
-Typ,Port name,Target IP-core,Target port name
+Typ,Port name,Target IP core,Target port name
 Transformation,,,
 In,AXI4,smartconnect_1,M01_AXI
 In,x_in_dq,uz_pmsm_model_6ph_dq,currents_dq_out

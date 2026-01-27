@@ -1,4 +1,4 @@
-.. _carrier_board_rev4:
+.. _carrier_board_rev04:
 
 
 ===================

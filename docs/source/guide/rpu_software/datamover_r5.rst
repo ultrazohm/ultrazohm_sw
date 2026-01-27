@@ -9,12 +9,11 @@ Idea
 ----
 
 The goal is to move sampled data from the R5 processor via the A53 to the host PC running a GUI, which displays and logs the data.
-Important requirements are 
+Important requirements are:
 
-
-- no data is lost, all samples are transfered and logged
+- no data is lost, all samples are transferred and logged
 - on the R5 side, it has to run synchronous to the control ISR, since all the data is updated in each call of the ISR, i.e., in each time step.
-- the sampling frequency can be up 100kHz
+- the sampling frequency can be up to 100 kHz
 - minimal effort for R5 to avoid stealing computation time from the control ISR
 
 At the same time, a data path in the opposite direction GUI -> A53 -> R5 is needed to enable and disable the system and set references. This path is not time critical and is described in detail at the end of this section.
@@ -39,7 +38,7 @@ Shared header file
 ------------------
 .. _datamoverSharedHeader:
 
-To this end, the shared  header file ``APU_RPU_shared.h`` located at ``vitis/software/shared`` is included in both software projects, i.e., R5 and A53. 
+To this end, the shared header file ``APU_RPU_shared.h`` located at ``vitis/software/shared`` is included in both software projects, i.e., R5 and A53.
 The shared memory can be in OCM or DDR, here we use the `OCM (on-chip memory) <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.364401>`_ of the A53.
 The start address of the OCM is hard-coded into the software since it is specific to the `UltraScale+ memory map <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.375357>`_.
 
@@ -49,7 +48,7 @@ The start address of the OCM is hard-coded into the software since it is specifi
 It defines the following:
 
 - ``struct javascope_data_t`` which will be passed from R5 to A53, 
-- the number float channels ``JS_CHANNELS`` inside this struct, and 
+- the number of float channels ``JS_CHANNELS`` inside this struct, and
 - the start address of the shared memory ``MEM_SHARED_START`` used to pass data from R5 to A53. 
 
 
@@ -61,9 +60,9 @@ Inside  ``javascope.c`` a pointer to type ``struct javascope_data_t`` named ``ja
 In function ``js_fetchData()``,
 
 - the selected data in ``js_ch_selected`` is written to ``javascope_data``
-- Also ``slowDataID``, ``slowDataContent``, ``js_status_BareToRTOS`` are copied to to ``javascope_data``
-- The shared memory is cached and the above mentioned changes are not visible to the APU yet. Therefore, we have to flush the cache for the size of ``javascope_data``. This triggers the memory controller to write the updated ``javascope_data`` into the actual OCM.
-- Afterwards, with ``XIpiPsu_TriggerIpi``, the IPI (inter processor interrupt), is used to trigger the execution of ``Transfer_ipc_Intr_Handler`` on the APU, as described in the :ref:`section on the APU data mover<datamoverA53>`
+- Also ``slowDataID``, ``slowDataContent``, ``js_status_BareToRTOS`` are copied to ``javascope_data``
+- The shared memory is cached and the above-mentioned changes are not visible to the APU yet. Therefore, we have to flush the cache for the size of ``javascope_data``. This triggers the memory controller to write the updated ``javascope_data`` into the actual OCM.
+- Afterwards, with ``XIpiPsu_TriggerIpi``, the IPI (inter-processor interrupt) is used to trigger the execution of ``Transfer_ipc_Intr_Handler`` on the APU, as described in the :ref:`section on the APU data mover<datamoverA53>`
 
 .. code-block:: c
 
@@ -152,6 +151,5 @@ Known issues
 
 See also
 """""""""""""""
-
 
 

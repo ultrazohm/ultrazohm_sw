@@ -58,14 +58,14 @@ It is important to use the global data struct at least for the measured theta el
     uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;                      // object pointer
     ..
     // in loop
-    Global_Data.av.theta_offset = 5.4f;                                             // inital offset (USE OWN)
+    Global_Data.av.theta_offset = 5.4f;                                             // initial offset (USE OWN)
     encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
     ..
 
 .. code-block:: c
     :caption: ``isr.c``
 
-    // aboce loop
+    // above loop
     #include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
     uz_6ph_dq_t transformed_voltage = {0};
     uz_3ph_dq_t setpoint_current = {0};

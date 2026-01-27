@@ -8,7 +8,7 @@ Upgrades
 Standalone isoJTAG Module
 -------------------------
 
-In order to increase usability and user-friendliness, an upgrade for the JTAG module is available since early 2024 and is already fitted as standard in some :ref:`carrier_board_rev4` versions.
+In order to increase usability and user-friendliness, an upgrade for the JTAG module is available since early 2024 and is already fitted as standard (i.e., ex works) in some systems based on :ref:`carrier_board_rev04`.
 On this page, a step-by-step upgrade from the original `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_ to the :ref:`uz_per_jtag` is provided.
 
 Components
@@ -24,36 +24,36 @@ For the upgrade, different components are needed:
 Upgrade procedure
 ^^^^^^^^^^^^^^^^^
 
-1. Remove base, bottom and rear cover,  for better accessibility of the JTAG module.
+1. Remove base, bottom and rear cover for better accessibility of the JTAG module.
 
-2. Dismount old JTAG module  `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
+2. Dismount old JTAG module `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_.
 
-.. image:: upgrades/removejtag.jpg
-    :width: 500
+   .. image:: upgrades/removejtag.jpg
+       :width: 500
 
 3. Insert spacer and plug extension.
 
-.. image:: upgrades/addspacer.jpg
-    :width: 500
+   .. image:: upgrades/addspacer.jpg
+       :width: 500
 
 4. Connect ribbon cable on carrier near slot D4.
 
-.. image:: upgrades/mountcable.jpg
-    :width: 500
+   .. image:: upgrades/mountcable.jpg
+       :width: 500
 
 5. Connect ribbon cable on JTAG module.
 
-.. image:: upgrades/mountjtag.jpg
-    :width: 500
+   .. image:: upgrades/mountjtag.jpg
+       :width: 500
 
 6. Fasten cable on lower rail with cable ties.
 
-.. image:: upgrades/zipcable.jpg
-    :width: 500
+   .. image:: upgrades/zipcable.jpg
+       :width: 500
 
-7. Reconnect the USB Cable between the Front panel and the JTAG module. It is ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
+7. Reconnect the USB cable between the front panel and the JTAG module. It is ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
 
-.. image:: upgrades/readymountedjtag.jpg
-    :width: 500
+   .. image:: upgrades/readymountedjtag.jpg
+       :width: 500
 
 8. Program the CPLDs according to :ref:`label_cpld_programming`.

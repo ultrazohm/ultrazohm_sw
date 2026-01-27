@@ -5708,7 +5708,7 @@
                 "value": "11"
               },
               "C_PROBE10_WIDTH": {
-                "value": "32"
+                "value": "64"
               },
               "C_PROBE7_WIDTH": {
                 "value": "32"
@@ -5722,15 +5722,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.8",
-            "xci_name": "zusys_uz_endat_interface_0_2",
-            "xci_path": "ip/zusys_uz_endat_interface_0_2/zusys_uz_endat_interface_0_2.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.9",
+            "xci_name": "zusys_uz_endat_interface_0_3",
+            "xci_path": "ip/zusys_uz_endat_interface_0_3/zusys_uz_endat_interface_0_3.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.8",
-            "xci_name": "zusys_uz_endat_interface_1_2",
-            "xci_path": "ip/zusys_uz_endat_interface_1_2/zusys_uz_endat_interface_1_2.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:0.9",
+            "xci_name": "zusys_uz_endat_interface_1_3",
+            "xci_path": "ip/zusys_uz_endat_interface_1_3/zusys_uz_endat_interface_1_3.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5749,8 +5749,8 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "smartconnect_1/M01_AXI",
-              "uz_endat_interface_0/AXI4_Lite"
+              "uz_endat_interface_0/AXI4_Lite",
+              "smartconnect_1/M01_AXI"
             ]
           },
           "smartconnect_1_M02_AXI": {
@@ -5790,8 +5790,8 @@
             "ports": [
               "trigger_endat",
               "ila_0/probe0",
-              "uz_endat_interface_0/trigger_endat_read",
-              "uz_endat_interface_1/trigger_endat_read"
+              "uz_endat_interface_1/trigger_endat_read",
+              "uz_endat_interface_0/trigger_endat_read"
             ]
           },
           "uz_endat_interface_0_CRC_raw": {

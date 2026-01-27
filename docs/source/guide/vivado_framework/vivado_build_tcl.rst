@@ -60,7 +60,6 @@ Workflow:
    .. code-block::
       :caption: Changed files after ``update_tcl_scripts_for_vc.tcl`` is called.
 
-      modified:   ip_cores/vv_index.xml
       modified:   vivado/_build.tcl
       modified:   vivado/bd/_zusys.tcl
       modified:   vivado/bd/zusys.tcl
@@ -77,13 +76,6 @@ Workflow:
 
       modified:   vitis/vivado_exported_xsa/zusys_wrapper.xsa
       modified:   vivado/DebugProbes.ltx
-
-   modified:   vivado/_build.tcl
-   modified:   vivado/bd/_zusys.tcl
-   modified:   vivado/bd/zusys.tcl
-   modified:   vivado/build.tcl
-   modified:   vivado/project/ultrazohm.xpr
-   modified:   vivado/project/zusys/zusys.bd
 
 
 .. figure:: make_vivado_change_with_tcl_script.gif

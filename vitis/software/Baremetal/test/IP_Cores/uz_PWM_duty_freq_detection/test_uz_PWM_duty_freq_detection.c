@@ -11,20 +11,13 @@
 
 struct uz_PWM_duty_freq_detection_config_t config = {
     .base_address = BASE_ADDRESS,
-    .ip_clk_frequency_Hz = IP_FRQ,
-    .linear_interpolation_parameters_t = {
-        .a = 100.0f,
-        .b = -50.0f
-    }
-    };
-struct uz_PWM_duty_freq_detection_outputs_t outputs = {
-    .PWMdutyCycNormalized = 0.0f,
-    .TempDegreesCelsius = 0.0f,
-    .PWMFreq = 0U,
-    .PWMhightime = 0U,
-    .PWMlowtime = 0U
+    .ip_clk_frequency_Hz = IP_FRQ
     };
 
+struct linear_interpolation_parameters_t lin_inter_param= {
+    .a = 100.0f,
+    .b = -50.0f
+};
 
 void setUp(void)
 {
@@ -36,7 +29,7 @@ void tearDown(void)
 uz_PWM_duty_freq_detection_t *successful_init(struct uz_PWM_duty_freq_detection_config_t configuration);
 uz_PWM_duty_freq_detection_t *successful_init(struct uz_PWM_duty_freq_detection_config_t configuration)
 {   
-    return(uz_PWM_duty_freq_detection_init(configuration,outputs));
+    return(uz_PWM_duty_freq_detection_init(configuration));
 }
 
 void test_uz_PWM_duty_freq_detection_successful_init(void)
@@ -49,90 +42,55 @@ void test_uz_PWM_duty_freq_detection_init_base_address_zero(void)
 {
     struct uz_PWM_duty_freq_detection_config_t configuration = config;
     configuration.base_address = 0U;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(configuration,outputs));
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(configuration));
 }
 
 void test_uz_PWM_duty_freq_detection_init_ip_clk_frequency_Hz_zero(void)
 {
     struct uz_PWM_duty_freq_detection_config_t configuration = config;
     configuration.ip_clk_frequency_Hz = 0U;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(configuration,outputs));
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(configuration));
 }
 
-void test_uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius_assert_self_NULL(void)
-{
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(NULL, 0.5f));
+void test_uz_PWM_duty_freq_detection_get_frequency_in_Hz_assert(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_frequency_in_Hz(NULL));
 }
 
-void test_uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(void) {
+void test_uz_PWM_duty_freq_detection_get_frequency_in_Hz(void) {
     uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
-    float dutyCycleNormalized = 0.75f; // Example duty cycle
-    float expected_temperature = dutyCycleNormalized * config.linear_interpolation_parameters_t.a + config.linear_interpolation_parameters_t.b;
-    float temperature = uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(test_instance, dutyCycleNormalized);
-    TEST_ASSERT_EQUAL_FLOAT(expected_temperature, temperature);
+    float expected_freq = 12500.0f;
+    float expected_period_ticks = config.ip_clk_frequency_Hz / (uint32_t)expected_freq;
+    uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, expected_period_ticks);
+    float output = uz_PWM_duty_freq_detection_get_frequency_in_Hz(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected_freq, output);
 }
 
-void test_uz_PWM_duty_freq_detection_update_states_assert_self_NULL(void)
-{
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_update_states(NULL));
+void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent_assert(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(NULL));
 }
 
-void test_uz_PWM_duty_freq_detection_update_states(void) {
+void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(void) {
     uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
-
-    uint32_t expected_PWMFreq = 2000U;
-    uint32_t expected_PWMhightime = 1500U;
-    float expected_dutyCycleNormalized = (float)expected_PWMhightime / (float)expected_PWMFreq;
-    float expected_temperature = expected_dutyCycleNormalized * config.linear_interpolation_parameters_t.a + config.linear_interpolation_parameters_t.b;
-
-    uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMFreq);
-    uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMhightime);
-
-    outputs = uz_PWM_duty_freq_detection_get_outputs(test_instance);
-
-
-    TEST_ASSERT_EQUAL_UINT32(expected_PWMFreq, outputs.PWMFreq);
-    TEST_ASSERT_EQUAL_UINT32(expected_PWMhightime, outputs.PWMhightime);
-    TEST_ASSERT_EQUAL_FLOAT(expected_dutyCycleNormalized, outputs.PWMdutyCycNormalized);
-    TEST_ASSERT_EQUAL_FLOAT(expected_temperature, outputs.TempDegreesCelsius);
+    float expected_duty_cycle = 0.743f;
+    uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, 10000U);
+    uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks_ExpectAndReturn(BASE_ADDRESS, 7430U);
+    float output = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected_duty_cycle,output);
 }
 
-void test_uz_PWM_duty_freq_detection_get_outputs(void) {
-    uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
-
-    uint32_t expected_PWMFreq = 2000U;
-    uint32_t expected_PWMhightime = 1500U;
-    float expected_dutyCycleNormalized = (float)expected_PWMhightime / (float)expected_PWMFreq;
-    float expected_temperature = expected_dutyCycleNormalized * config.linear_interpolation_parameters_t.a + config.linear_interpolation_parameters_t.b;
-
-    uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMFreq);
-    uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMhightime);
-
-    outputs = uz_PWM_duty_freq_detection_get_outputs(test_instance);
-
-    TEST_ASSERT_EQUAL_UINT32(expected_PWMFreq, outputs.PWMFreq);
-    TEST_ASSERT_EQUAL_UINT32(expected_PWMhightime, outputs.PWMhightime);
-    TEST_ASSERT_EQUAL_FLOAT(expected_dutyCycleNormalized, outputs.PWMdutyCycNormalized);
-    TEST_ASSERT_EQUAL_FLOAT(expected_temperature, outputs.TempDegreesCelsius);
+void test_uz_PWM_duty_freq_detection_get_Temperature_in_degree_C_assert_negative(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(-1.0f,lin_inter_param));
 }
 
-void test_uz_PWM_duty_freq_detection_get_Temperature(void) {
-    uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
-
-    uint32_t expected_PWMFreq = 2000U;
-    uint32_t expected_PWMhightime = 1500U;
-    float expected_dutyCycleNormalized = (float)expected_PWMhightime / (float)expected_PWMFreq;
-    float expected_temperature = expected_dutyCycleNormalized * config.linear_interpolation_parameters_t.a + config.linear_interpolation_parameters_t.b;
-
-    uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMFreq);
-    uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks_ExpectAndReturn(BASE_ADDRESS, expected_PWMhightime);
-
-    // First, update the states to ensure the temperature is calculated
-    uz_PWM_duty_freq_detection_update_states(test_instance);
-
-    float temperature = uz_PWM_duty_freq_detection_get_Temperature(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(expected_temperature, temperature);
+void test_uz_PWM_duty_freq_detection_get_Temperature_in_degree_C_assert_too_high(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(1.1f,lin_inter_param));
 }
 
+void test_uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(void) {
+    float duty_cycle = 0.678f;
+    float expected_temp = duty_cycle* lin_inter_param.a + lin_inter_param.b;
+    float output = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(duty_cycle,lin_inter_param);
+    TEST_ASSERT_EQUAL_FLOAT(expected_temp,output);
+}
 
 #endif

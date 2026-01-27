@@ -28,64 +28,41 @@ typedef struct linear_interpolation_parameters_t{
 struct uz_PWM_duty_freq_detection_config_t{
     uint32_t base_address;                                      /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_clk_frequency_Hz;                               /**< Clock frequency of the IP-Core */
-    linear_interpolation_parameters_t linear_interpolation_parameters_t;  /**< Parameters for linear interpolation of temperature measurement */
-};
-
-/**
- * @brief Struct to return and read the outputs of uz_PWM_duty_freq_detection
- *
- */
-struct uz_PWM_duty_freq_detection_outputs_t{
-    float PWMdutyCycNormalized;
-    float TempDegreesCelsius; /**< temperature from PWM to degrees celsius */
-    uint32_t PWMFreq;
-    uint32_t PWMhightime;
-    uint32_t PWMlowtime;
 };
 
 /**
  * @brief Initializes an instance of the uz_PWM_duty_freq_detection driver
  *
  * @param config Configuration values for the IP-Core
- * @param outputs Output values of the IP-Core
  *
  * @return Pointer to initialized instance
  */
-uz_PWM_duty_freq_detection_t* uz_PWM_duty_freq_detection_init(struct uz_PWM_duty_freq_detection_config_t config, struct uz_PWM_duty_freq_detection_outputs_t outputs);
+uz_PWM_duty_freq_detection_t* uz_PWM_duty_freq_detection_init(struct uz_PWM_duty_freq_detection_config_t config);
 
 /**
- * @brief Calculates chip temperature from duty cycle,  
- *        called by uz_PWM_duty_freq_detection_get_outputs function
- *
- * @param dutyCycleNormalized is the measured duty cycle of the
- *        PWM temperature signal
- * @return float value of chip temperature in degrees celsius
- */
- float uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(uz_PWM_duty_freq_detection_t *self, float dutyCycleNormalized);
-
-
-/**
- * @brief updates the states and signals read from the ip-core, 
- *        called by uz_PWM_duty_freq_detection_get_outputs function
+ * @brief returns the detected frequency of the PWM signal
  * 
- * @param self Pointer to the instance
+ * @param self pointer to initialized instance
+ * @return uint32_t frequency in Hz
  */
- void uz_PWM_duty_freq_detection_update_states(uz_PWM_duty_freq_detection_t *self);
-
-
-/** 
- * @brief returns the state and signals of the output struct
- *        
- * @param self Pointer to the instance
- */ 
- struct uz_PWM_duty_freq_detection_outputs_t uz_PWM_duty_freq_detection_get_outputs(uz_PWM_duty_freq_detection_t *self);
+float uz_PWM_duty_freq_detection_get_frequency_in_Hz(uz_PWM_duty_freq_detection_t *self);
 
 /**
- * @brief Returns the temperature in degrees Celsius
- *
- * @param self Pointer to the instance
+ * @brief returns the detected duty cycle of the PWM signal
+ * 
+ * @param self pointer to initialized instance
+ * @return float duty cycle in percent
  */
-float uz_PWM_duty_freq_detection_get_Temperature(uz_PWM_duty_freq_detection_t *self);
+float uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(uz_PWM_duty_freq_detection_t *self);
+
+
+/**
+ * @brief Returns the temperature 
+ * 
+ * @param self pointer to initialized instance
+ * @return float temperature in degree Celsius
+ */
+float uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(float Duty_cycle_in_percent, struct linear_interpolation_parameters_t lin_interp_param);
 
 
 #endif // UZ_PWM_DUTY_FREQ_DETECTION_H

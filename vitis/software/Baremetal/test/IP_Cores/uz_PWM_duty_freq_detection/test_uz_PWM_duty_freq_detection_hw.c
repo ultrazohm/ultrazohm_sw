@@ -16,36 +16,36 @@ void tearDown(void)
 {
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks(0U));
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(0U));
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks(void) {
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(void) {
     uint32_t expected_return = 1234U;
     uz_axi_read_uint32_ExpectAndReturn(BASE_ADDRESS + AXI_period_Data_uz_pwmdutyfreqdetection, expected_return);
-    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks(BASE_ADDRESS);
+    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(BASE_ADDRESS);
     TEST_ASSERT_EQUAL(expected_return, actual_return);
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks(0U));
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks(0U));
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks(void) {
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks(void) {
     uint32_t expected_return = 1234U;
     uz_axi_read_uint32_ExpectAndReturn(BASE_ADDRESS + AXI_hightime_Data_uz_pwmdutyfreqdetection, expected_return);
-    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks(BASE_ADDRESS);
+    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks(BASE_ADDRESS);
     TEST_ASSERT_EQUAL(expected_return, actual_return);
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMlowtimeTicks_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWMlowtimeTicks(0U));
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks(0U));
 }
 
-void test_uz_PWM_duty_freq_detection_hw_get_PWMlowtimeTicks(void) {
+void test_uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks(void) {
     uint32_t expected_return = 1234U;
     uz_axi_read_uint32_ExpectAndReturn(BASE_ADDRESS + AXI_lowtime_Data_uz_pwmdutyfreqdetection, expected_return);
-    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWMlowtimeTicks(BASE_ADDRESS);
+    uint32_t actual_return = uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks(BASE_ADDRESS);
     TEST_ASSERT_EQUAL(expected_return, actual_return);
 }
 

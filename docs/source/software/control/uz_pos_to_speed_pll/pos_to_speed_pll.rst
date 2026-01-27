@@ -163,9 +163,6 @@ Driver references
 .. doxygenstruct:: uz_pos_to_speed_pll_config_t
   :members:
 
-.. doxygenstruct:: uz_pos_to_speed_pll_t
-  :members:  
-
 .. doxygentypedef:: uz_pos_to_speed_pll_t
 
 .. doxygenfunction:: uz_pos_to_speed_pll_init

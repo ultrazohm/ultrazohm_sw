@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  * 
- * Special thanks to Maximilian Schenke and Barnabas Haucke-Korber of Paderborn University 
+ * Special thanks the Department of Power Electronics and Electrical Drives, Paderborn University 
  * for sharing their implementation of the PLL algorithm.
  ******************************************************************************/
 

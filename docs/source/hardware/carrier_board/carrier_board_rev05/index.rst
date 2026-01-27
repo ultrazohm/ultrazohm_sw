@@ -14,6 +14,6 @@ Carrier Board Rev05
 	power_distribution
 	s3c
 	frontpanel_rev01
-	frontpanel_rev02
+	../carrier_board_rev06/i2c
 	dcplds
 	arm_pins

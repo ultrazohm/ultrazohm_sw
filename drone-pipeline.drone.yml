@@ -148,7 +148,6 @@ steps:
    - apk add git-lfs
    - git status
    - git add -f vitis/vivado_exported_xsa/zusys_wrapper.xsa
-   - git add -f ip_cores/vv_index.xml
    - git add -f vivado/project/ultrazohm.xpr
    - git add -f vivado/project/zusys/hdl/zusys_wrapper.vhd
    - git add -f vivado/project/zusys/zusys.bd

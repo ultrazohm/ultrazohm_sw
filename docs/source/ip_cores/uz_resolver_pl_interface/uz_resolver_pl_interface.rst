@@ -4,20 +4,20 @@
 Resolver PL Interface
 =====================
 
-This IP Core is designed as an add-on to the Resolver Interface ``uz_resolverIP``. There are three intended use-cases.
+This IP core is designed as an add-on to the Resolver Interface ``uz_resolverIP``. There are three intended use-cases.
 
-1. This IP Core provides angle and speed outputs in fixed-point SI values in the FPGA for control applications in the FPGA. 
+1. This IP core provides angle and speed outputs in fixed-point SI values in the FPGA for control applications in the FPGA.
 It handles all dependencies to the number of polepairs of the resolver and the machine, as well as angle zero point offset between resolver and machine. 
 The electrical and mechanical angle are limited to the range of :math:`0..2{\pi}`.
 
 2. For control algorithms in the processor, saving every :math:`{\mu}s` of calculation effort is sometimes crucial. Therefore most of the software driver 
-functionality of the ``uz_resolverIP`` can be "outsourced" into this IP Core. Therefore, no calculations from raw values of the resolver with respect 
+functionality of the ``uz_resolverIP`` can be "outsourced" into this IP core. Therefore, no calculations from raw values of the resolver with respect 
 to polepairs and offsets will cause workload in the processor, just reading angles and speeds via AXI is necessary.
 
 3. Sometimes you might have a unfavorable combination of resolver polepairs and machine polepairs. E.g. machine polepairs :math:`p_m=5` and resolver polepairs :math:`p_r=2` 
 results in a fractional ratio between mechanical and electrical revolutions of the machine and the resolver. A strategy to deal with this is to convert the resolver revolutions 
 to one mechanical revolution of the machine and derive electrical revolutions from there. This comes at the cost of loosing absolute position information in the beginning and requires 
-a defined mechanical init position of the machine at startup. The IP Core handles these complicated sounding calculations. The user just has to provide all the polepair numbers 
+a defined mechanical init position of the machine at startup. The IP core handles these complicated sounding calculations. The user just has to provide all the polepair numbers 
 and has to define the rotational position of the machine at the testbench at startup. Subsequently, all angle and speed information can be used as usual by reading them via AXI.
 
 Interface Definition
@@ -31,11 +31,11 @@ Interface Definition
 
    Simulink source of ``uz_resolver_pl_interface``
 
-Table :ref:`ipCore_resolver_pl_interfaces` lists all input and output ports (AXI and external port) that are present in the IP-Core.
+Table :ref:`ipCore_resolver_pl_interfaces` lists all input and output ports (AXI and external port) that are present in the IP core.
 
 .. _ipCore_resolver_pl_interfaces:
 
-.. csv-table:: Interface of resolver_pl_interface IP-Core
+.. csv-table:: Interface of resolver_pl_interface IP core
    :file: uz_resolver_pl_interface_port_mapping.csv
    :widths: 50 50 50 50 50 50 200
    :header-rows: 1
@@ -43,16 +43,16 @@ Table :ref:`ipCore_resolver_pl_interfaces` lists all input and output ports (AXI
 Example Usage
 =============
 
-The following step-by-step description shall guide the user in order to properly implement the IP Core and the respective interface and software drivers.
+The following step-by-step description shall guide the user in order to properly implement the IP core and the respective interface and software drivers.
 
 Vivado Block Design
 -------------------
 
-First, the ip core has to be added to the block design in vivado:
+First, the IP core has to be added to the block design in vivado:
 
 1. Go to the place where the Resolver Interface IP Core ``uz_resolverIP`` is located (e.g. inside the already existing ``uz_user`` hierarchy) in the block design.
 2. Add the Resolver PL Interface IP Core ``uz_resolver_pl_interface``.
-3. Connect the signals as shown below. Pay attention that ``position_out_m``, ``velocity_out_m`` and ``valid_m`` are output signals of the Resolver Interface IP Core and serve as the inputs for all calculations inside the ``uz_resolver_pl_interface`` IP Core.
+3. Connect the signals as shown below. Pay attention that ``position_out_m``, ``velocity_out_m`` and ``valid_m`` are output signals of the Resolver Interface IP core and serve as the inputs for all calculations inside the ``uz_resolver_pl_interface`` IP core.
 4. Now the output ports ``to your IP`` can be used inside the FPGA block design. In parallel, the AXI4-Lite values are also available.
 
 .. _ip_core:
@@ -61,12 +61,12 @@ First, the ip core has to be added to the block design in vivado:
     :width: 800
     :align: center
 
-    IP Core in the Vivado block design
+    IP core in the Vivado block design
 
 Software driver
 ---------------
 
-For interacting with the IP Core, the following step-by-step example shows a way of implementing one instance of the software driver.
+For interacting with the IP core, the following step-by-step example shows a way of implementing one instance of the software driver.
 
 1. In Vitis, in the Baremetal project under the folder ``hw_init`` create a new file ``uz_resolver_pl_interface_init.c`` 
 2. Include necessary files and create ``config`` and ``output`` structs as well as an init function for one or more instances:
@@ -142,10 +142,10 @@ For interacting with the IP Core, the following step-by-step example shows a way
  break;
 
 7. In ``main.h``, include your init header file  ``#include "include/uz_resolver_pl_interface_init.h"``.
-8. In ``isr.c``, now you can read the AXI output values of the IP Core and use them e.g. for your control algorithm:
+8. In ``isr.c``, now you can read the AXI output values of the IP core and use them e.g. for your control algorithm:
 
 .. code-block:: c
- :caption: Example of reading IP Core outputs in isr.c
+ :caption: Example of reading IP core outputs in isr.c
 
  ...
  YourOutputStruct = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);

@@ -14,6 +14,6 @@ The basic toolchain consists of the following, please install all of them.
 
 Additional installations that are necessary at later point are 
 
-- :ref:`install_java`
+- Install :ref:`Java <install_java>`
 - :ref:`install_lattice` 
 - Install :ref:`vscode_remote_container`

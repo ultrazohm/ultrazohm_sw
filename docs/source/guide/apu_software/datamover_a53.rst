@@ -22,7 +22,7 @@ Please refer first to the :ref:`description of the RPU code <datamoverA53>`.
           H(FIFO)
       end
       subgraph process_request_thread
-          H-.waits.->K(restructure data)-->L(ethernet frame)
+          H-.waits.->K(restructure data)-->L(Ethernet frame)
           L-->M(lwip_write)
       end
 

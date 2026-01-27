@@ -17,6 +17,8 @@ if {[info exists ::UZ_PROGRAMMING_MODE]} {
 }
 
 set UZ_PROGRAMMING_MODE "RUN" 
+set UZ_FPGA_FAST_RESTART_ACTIVATED 0 ; 
+
 
 cd [getws]
 source {../../tcl_scripts/vitis_debug_run_UltraZohm.tcl}

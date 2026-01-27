@@ -1,0 +1,6 @@
+"Port Name,      	    CLK, Usage"
+s_axi_lite, 100 MHz, Slave AXI Lite bus to communicate with PS. Connect to AXI_smartconnect.
+clk, 100 MHz, IP-core general clock. It should be connected to 100 MHz.
+reset_n, 100 MHz, Active low reset. Reset the IP Core and its registers. When set to 1 the ip-core automatically start the initialization of ADC chips. Connect to 100 MHz reset. 
+s_axi_lite_aclk, 100 MHz, Slave AXI Lite clock. Connect to clk of 100 MHz.
+s_axi_lite_aresetn, 100 MHz, Active low reset for Slave AXI Lite module. Connect to reset_n.

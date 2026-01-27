@@ -7,8 +7,8 @@
 #include "uz_platform_cardeeprom.h"		// uz_platform_eeprom_group000models_enum2label()
 
 // Platform EEPROM
-#define UZ_PLATFORM_I2CADDR_EEPROM		(0x5B)
-#define UZ_PLATFORM_EEPROM_INFOOFFSET	(0x78)
+#define UZ_PLATFORM_I2CADDR_EEPROM		(0x5BU)
+#define UZ_PLATFORM_EEPROM_INFOOFFSET	(0x78U)
 
 enum uz_platform_eeprom_group {
 	UZP_HWGROUP_ADCARD =	  0,
@@ -49,7 +49,7 @@ typedef struct uz_platform_eeprom_ {
 #define UZ_PLATFORM_HWGROUP_MAX		(1023U)		// 10 bit
 #define UZ_PLATFORM_HWMODEL_MAX		(1023U)		// 10 bit
 #define UZ_PLATFORM_HWREVISION_MAX	(255U)		//  8 bit
-#define UZ_PLATFORM_EXTSERIAL_MAX	(0xFFFFFF)	// 24 bit
+#define UZ_PLATFORM_EXTSERIAL_MAX	(0xFFFFFFU)	// 24 bit
 
 #define UZ_PLATFORM_FFLAGS2STR(STR, FFLAGS)		\
 	char STR[7];								\
@@ -106,8 +106,13 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 		uz_printf("Ext. serial: %06i\r\n", eeprom->serialdata.externalhw_serialonly.sn);
 	} else {
 		uz_printf("Hw variant:      %02i\r\n", eeprom->serialdata.uzhw_variantandserial.vv);
-		if ( (UZP_HWGROUP_ADCARD == eeprom->hw_group) && (UZP_HWGROUP_ADCARD_DIGOPT == eeprom->hw_model) )
-			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model004variants_enum2label(eeprom->serialdata.uzhw_variantandserial.vv));
+		if (UZP_HWGROUP_ADCARD == eeprom->hw_group) {
+			char* varianttxt = uz_platform_getcardvariant(eeprom->hw_model, eeprom->serialdata.uzhw_variantandserial.vv);
+
+			if ( NULL != varianttxt )
+				uz_printf(" Card Setup: %s\r\n", varianttxt);
+		}
+
 		uz_printf("Hw serial:     %04i\r\n", eeprom->serialdata.uzhw_variantandserial.sn);
 	}
 	uz_printf("\\=================/\r\n");

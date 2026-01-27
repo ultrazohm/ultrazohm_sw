@@ -9,27 +9,28 @@ Setup IP address
 
 1. Configure a network adapter with a static IP address as follows.
 
-IP address:
+   IP address:
 
-::
+   ::
 
-   192.168.1.1
+      192.168.1.1
 
-Netmask:
+   Netmask:
 
-::
+   ::
 
-   255.255.255.0
+      255.255.255.0
 
-2. Usually a USB to network adapter is used. However, keep in mind, that these adapters commonly have only 100MBit/s.
+   ..	image:: ./images_network/network0.png
+
+2. Usually a USB to network adapter is used. However, keep in mind that these adapters commonly have only 100MBit/s.
 
 	a. Configure the used network adapter as shown in the figure.
-	
-	b. Connect this network adapter to the UltraZohm system by a standard RJ45 cable.
-	
-	..	image:: ./images_network/network0.png
 
-	
+	b. Connect this network adapter to the UltraZohm system by a standard RJ45 cable.
+
+.. _GUI_knownissues:
+
 Known issues
 ------------
 .. warning::

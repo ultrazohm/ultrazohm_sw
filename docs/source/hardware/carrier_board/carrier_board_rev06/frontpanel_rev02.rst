@@ -4,7 +4,7 @@
 Frontpanel Mainboard (Rev02)
 ============================
 
-The second revision of the PCB-based frontpanel for carrier boards :math:`\geq` Rev05 adds the following features in comparison to :ref:`frontpanelmainboard_rev01`:
+The second revision of the PCB-based frontpanel for carrier boards ≥ Rev05 adds the following features in comparison to :ref:`frontpanelmainboard_rev01`:
 
 - The ``3V3isoIOs`` supply has been extended from ~100mA to ~1A maximum output current (for the entire subsystem -- cf. below for connector limits)
 - All outgoing isoI/Os and 3V3 rails on ``X5`` (External STOP) and ``X6`` (isoIOs) are now protected against overcurrents

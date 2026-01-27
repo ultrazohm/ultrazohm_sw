@@ -7,7 +7,7 @@ Platform Architecture
 The UltraZohm is based on a `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_.
 The MPSoC features the following processing blocks (GPU omitted):
 
-- Programmable Logic (PL): FPGA with IP-Cores
+- Programmable Logic (PL): FPGA with IP cores
 - Application processing unit (APU): four ARM A53 processors
 - Real-time processing unit (RPU): two ARM R5 processors
 
@@ -38,22 +38,22 @@ Software design
 
   Software design of the R5 software. Each software layer ought to depend only on the layer directly below.
 
-IP-Core
+IP core
 *******
 
-IP-Cores are used in Programmable Logic (PL) aka FPGA. 
+IP cores are used in Programmable Logic (PL) aka FPGA.
 They are a reusable component of design logic with a defined interface and behavior that has been verified by its creator. 
 They are comparable to the use of a library for computer programming or a discrete integrated circuit component for printed circuit board design [#ug1228]_ .
 They can be used for cases, when the compute power of the RPU is not sufficient anymore and an acceleration via hardware is necessary. 
-E.g. deep-learning application are to resource intensive for the processor and can therefore be accelerated on the FPGA with an IP-Core.
+E.g. deep-learning application are to resource intensive for the processor and can therefore be accelerated on the FPGA with an IP core.
 
 * For further information on the default Vivado project see :ref:`default_vivado_project`.
-* For further information on the existing IP-Cores of the UltraZohm project see :ref:`ip_cores`.
+* For further information on the existing IP cores of the UltraZohm project see :ref:`ip_cores`.
 
-IP-Core driver
+IP core driver
 **************
 
-IP-Core drivers include higher level functionality to communicate and control the corresponding IP-Core. They are a special and highly relevant case since the flexible usage of IP-cores is a main advantage of the MPSoC.
+IP core drivers include higher level functionality to communicate and control the corresponding IP core. They are a special and highly relevant case since the flexible usage of IP cores is a main advantage of the MPSoC.
 Refer to :ref:`software_development_guidelines` for an example implementation.
 
 
@@ -96,4 +96,4 @@ Sources
 -------
 
 .. [#ug1228] `Software Guide UG1228 <https://www.xilinx.com/support/documentation/sw_manuals/ug1228-ultrafast-embedded-design-methodology-guide.pdf>`_
-.. [#wiki] `Semiconductor intellectual property core <https://en.wikipedia.org/wiki/Semiconductor_intellectual_property_core>`
+.. [#wiki] `Semiconductor intellectual property core <https://en.wikipedia.org/wiki/Semiconductor_intellectual_property_core>`_

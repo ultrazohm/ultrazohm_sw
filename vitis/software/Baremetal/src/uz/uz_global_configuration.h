@@ -79,7 +79,7 @@
 #define UZ_PRNG_XOSHIRO_MAX_INSTANCES                   0U
 #define UZ_PRNG_HALTON_MAX_INSTANCES                    0U
 #define UZ_PRNG_MAX_INSTANCES                           0U
-#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               1U
+#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

@@ -79,14 +79,13 @@ Vitis
    .. code-block:: c
       :caption: Code for ``main.c`` file
 
-       struct uz_PWM_duty_freq_detection_outputs_t outputs = {0};
        struct uz_PWM_duty_freq_detection_config_t config = {
         .base_address = XPAR_UZ_USER_UZ_PWMDUTYFREQDETECT_0_BASEADDR,
         .ip_clk_frequency_Hz = 100000000U,
-        .linear_interpolation_parameters_t = {
-            .a = 2.0f,
-            .b = 3.0f
-        }
+       };
+       struct linear_interpolation_parameters_t lin_inter_param= {
+        .a = 100.0f,
+        .b = -50.0f
        };
        ...
        int main(void)
@@ -97,7 +96,7 @@ Vitis
            ...
            case init_ip_cores:
                ...
-               Global_Data.objects.PWM_Detect_instance = uz_PWM_duty_freq_detection_init(config,outputs);
+               Global_Data.objects.PWM_Detect_instance = uz_PWM_duty_freq_detection_init(config);
                ...
            }
            ...
@@ -112,8 +111,9 @@ Vitis
        ...
        void ISR_Control(void *data) {
         ...
-        outputs = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.PWM_Detect_instance);
-        float temp = outputs.TempDegreesCelsius;
+        float pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
+        float duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
+        float temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(duty_cycle,lin_inter_param);
         ...
 
 Driver reference
@@ -127,15 +127,10 @@ Driver reference
 .. doxygenstruct:: uz_PWM_duty_freq_detection_config_t
     :members:
 
-.. doxygenstruct:: uz_PWM_duty_freq_detection_outputs_t
-    :members:
-
 .. doxygenfunction:: uz_PWM_duty_freq_detection_init
 
-.. doxygenfunction:: uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius
+.. doxygenfunction:: uz_PWM_duty_freq_detection_get_frequency_in_Hz
 
-.. doxygenfunction:: uz_PWM_duty_freq_detection_update_states
+.. doxygenfunction:: uz_PWM_duty_freq_detection_get_duty_cycle_in_percent
 
-.. doxygenfunction:: uz_PWM_duty_freq_detection_get_outputs
-
-.. doxygenfunction:: uz_PWM_duty_freq_detection_get_Temperature
+.. doxygenfunction:: uz_PWM_duty_freq_detection_get_Temperature_in_degree_C

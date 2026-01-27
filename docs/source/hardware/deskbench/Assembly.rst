@@ -36,7 +36,7 @@ Below, the assembly instructions for the setting up the connection between UZ an
   :height: 350
   :align: center
 
-5. Connect the two Resolver to the Ultrazohm with the D-SUB 9 Cables. Ensure that the cable is a "straight through" cable with one to one connection of the pins!
+5. Connect the two Resolver to the UltraZohm with the D-SUB 9 Cables. Ensure that the cable is a "straight through" cable with one to one connection of the pins!
 
 .. image:: Deskbench/5th_step.jpg
   :height: 350

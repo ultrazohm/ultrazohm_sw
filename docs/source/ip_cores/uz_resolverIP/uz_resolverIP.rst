@@ -4,14 +4,14 @@
 Resolver Interface
 ==================
 
-The ResolverIP interface implements communication between the Ultrazohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the Encoder Board.
+The ResolverIP interface implements communication between the UltraZohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the Encoder Board.
 
 Introduction
 ============
 
-The Ultrazohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
+The UltraZohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
 
-As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IP core outputs. Also, raw values can be transfered to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
+As illustrated by figure :numref:`structure`, the AD2S1210 continuously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IP core outputs. Also, raw values can be transferred to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
 
 .. _structure:
 
@@ -23,7 +23,7 @@ As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs a
 
 
 
-The ResolverIP interface also allows for reading and writing register values of the AD2S1210. This fuctionality can be used to modify i.e. the resolver excitation frequency. For more details on register functionalities, 
+The ResolverIP interface also allows for reading and writing register values of the AD2S1210. This functionality can be used to modify i.e. the resolver excitation frequency. For more details on register functionalities, 
 er to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ and the documentation :ref:`below <FunctionList>`.
 
 
@@ -124,7 +124,7 @@ An example conversion triggered by sample_trigger with the IP core in ``POSITION
 
 Note that the conversion is triggered by a 1 tick long HIGH on sample_trigger. The next tick, AD2S1210_n_sample is pulled LOW for a defined time and the busy indicator is HIGH. Valid_m goes LOW. After a defined time, the data is available for SPI read out. SPI communication starts with AD2S1210_n_fsync going LOW and data being clocked out of the AD2S1210 on SPI_MISO with SPI_CLK. As soon as all data is transmitted, the new value is made available on position_out_m or velocity_out_m and valid_m goes HIGH.
 
-In ``POSITION_VELOCITY_MODE``, the ResolverIP interface can also read out both position and velocity with one SPI interaction. An example conversion is shown below in figure :numref:`pic_Conversion`. Note that AD2S1210_n_sample goes to zero only once. This means that position and velocity values are both sampled by the AD2S1210 at the moment of tiggering via sample_trigger. Then both velocity and position registers of the AD2S1210 are read out with two 16 bit transmissions. Between the two transmissions the AD2S1210 pin A1 is switched to make velocity register entries available via the SPI Interface. Valid_m only goes high after both values are transmitted. 
+In ``POSITION_VELOCITY_MODE``, the ResolverIP interface can also read out both position and velocity with one SPI interaction. An example conversion is shown below in figure :numref:`pic_Conversion`. Note that AD2S1210_n_sample goes to zero only once. This means that position and velocity values are both sampled by the AD2S1210 at the moment of triggering via sample_trigger. Then both velocity and position registers of the AD2S1210 are read out with two 16 bit transmissions. Between the two transmissions the AD2S1210 pin A1 is switched to make velocity register entries available via the SPI Interface. Valid_m only goes high after both values are transmitted. 
 
 .. _pic_Conversion:
 
@@ -154,7 +154,7 @@ Important constant configuration parameters are stored in the struct ``uz_resolv
 	:members:
 
 .. note:: 
-   - The member ``base_address`` needs to be set to the AXI base address assgined to the IP core by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
+   - The member ``base_address`` needs to be set to the AXI base address assigned to the IP core by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
    - The member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
    - The member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
    - The member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
@@ -224,7 +224,7 @@ A pointer to an  instance of type uz_resolverIP_t can be stored in ``GlobalData.
 Data Aquistition
 ^^^^^^^^^^^^^^^^
 
-The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IP core with the same trigger, that calls the corresponding data aquistition function. The data aquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s.
+The ResolverIP interface was designed for time critical applications like motor control. As illustrated by figure :numref:`pic_timing3`, it is recommended to trigger the conversion via the sample_trigger input of the IP core with the same trigger, that calls the corresponding data aquistition function. The data acquisition function will load in position and/or velocity values as soon as new values are valid. For ``uz_resolverIP_readMechanicalPosition`` and ``uz_resolverIP_readMechanicalVelocity``, this is after :math:`2.48 \mu s` which allows for a maximal sampling frequency of 400kS/s, for ``uz_resolverIP_readMechanicalPositionAndVelocity`` it is after :math:`4.98 \mu s` which allows for a maximal sampling frequency of 200kS/s.
 
 .. _pic_timing3:
 
@@ -246,7 +246,7 @@ The function ``uz_resolverIP_readMechanicalPositionAndVelocity`` returns a struc
 
 .. doxygenfunction:: uz_resolverIP_readMechanicalPositionAndVelocity
 
-Note that similar functions for aquisition of electrical position and/or velocity are available:
+Note that similar functions for acquisition of electrical position and/or velocity are available:
 
 .. doxygenfunction:: uz_resolverIP_readElectricalPosition
 
@@ -289,10 +289,10 @@ A list of all registers can be seen in figure :numref:`fig_registers`.
 
    List of all configuration registers of the AD2S1210
 
-For all possible read and write operations, high level functions have been implemented. For applicable write funcitons, the user only needs to input the desired value in float format, the function will take over the conversion to the 8 bit register value. For applicable read functions, values are returned in float format. A list of all functions is given :ref:`below <FunctionList>`.
+For all possible read and write operations, high level functions have been implemented. For applicable write functions, the user only needs to input the desired value in float format, the function will take over the conversion to the 8 bit register value. For applicable read functions, values are returned in float format. A list of all functions is given :ref:`below <FunctionList>`.
 
 
-If the user wants to manually write a definded integer value to a register, the function ``writeRegister`` can be used.
+If the user wants to manually write a defined integer value to a register, the function ``writeRegister`` can be used.
 
 .. doxygenfunction:: uz_resolverIP_writeRegister
 

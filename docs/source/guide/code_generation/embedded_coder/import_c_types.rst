@@ -20,7 +20,7 @@ In your ``init.m`` Matlab script for your Simulink model include the following c
 .. tip:: Use a relative path to link back to the ``ultrazohm_sw`` library. This way changes to the C-source-code are reflected in your model. 
 
 This will create a bus object in your workspace with the appropriate types (i.e. float -> single).
-Theses buses can then be used in your Simulink object as normal data type.
+These buses can then be used in your Simulink object as normal data type.
 
 .. warning:: For this to properly work all ``structs`` and ``enums``, which are used in the Simulink model, have to be ``typedef``. 
              Otherwise, Simulink generates bus objects with incompatible names, which, if code generated, are not compatible with the initially included header-file

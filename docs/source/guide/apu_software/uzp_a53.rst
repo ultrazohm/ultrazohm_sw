@@ -37,7 +37,7 @@ The UZP behaves differently depending on the UltraZohm version:
 
 - Rev04 build in *2024* with IIC/SSD extension board
 
-  - UZP features a re fully available but depend on the external IIC/SSD Extension Board
+  - UZP features are fully available but depend on the external IIC/SSD Extension Board
 
 - Rev05 or newer
 
@@ -66,11 +66,11 @@ Initialization
 The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()``.
 The activation of the adapter card identification feature depends on the ``UZ_PLATFORM_CARDID`` C preprocessor ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
 
-* In all cases, ``uz_platform_init()`` is called at bootup to
+* In all cases, ``uz_platform_init()`` is called at boot up to
 
   * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
   * retrieve the platform identification from the external EEPROM,
-  * communicates the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
+  * communicate the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
   * initialize internal data structures (for instance, the I/O map for the given platform), and
   * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
   * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
@@ -95,7 +95,7 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
 
   * the enum identified by ``model_p`` with the (integer-encoded) model number,
   * the integer behind ``revision_p`` with the revision number, and
-  * the integer pointed to by ``serial_p`` with the serial  of the adapter card selected.
+  * the integer pointed to by ``serial_p`` with the serial of the adapter card selected.
 
 * The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of mid 2025) may have one of the following values
 
@@ -171,7 +171,7 @@ Examples:
 * ``uz_platform_gposet(I2CLED_FPRING, UZP_GPO_TOGGLE_QUEUED);`` to toggle the output on the next update,
 * ``uz_platform_gpoupdate();`` to flush all queued output changes to hardware.
 
-Predefined inputs on an UltraZohm Rev04 with IIC/SSD extension (enum ``uz_platform_gpi_id``:
+Predefined inputs on an UltraZohm Rev04 with IIC/SSD extension (enum ``uz_platform_gpi_id``):
 
 * ``I2CKEY_FP5ENABLESYS``
 * ``I2CKEY_FP6ENABLECTL``

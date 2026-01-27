@@ -39,7 +39,7 @@ Changes in the simulation model
 
     .. image:: ../images/chart_first_look.png
 
-#. The ParameterID is shipped with a ``.mat`` file which includes all necessary busses. Open it with the bus editor.
+#. The ParameterID is shipped with a ``.mat`` file which includes all necessary buses. Open it with the bus editor.
 
    .. note::
 

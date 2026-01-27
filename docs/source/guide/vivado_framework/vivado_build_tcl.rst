@@ -78,6 +78,12 @@ Workflow:
       modified:   vitis/vivado_exported_xsa/zusys_wrapper.xsa
       modified:   vivado/DebugProbes.ltx
 
+   modified:   vivado/_build.tcl
+   modified:   vivado/bd/_zusys.tcl
+   modified:   vivado/bd/zusys.tcl
+   modified:   vivado/build.tcl
+   modified:   vivado/project/ultrazohm.xpr
+   modified:   vivado/project/zusys/zusys.bd
 
 
 .. figure:: make_vivado_change_with_tcl_script.gif

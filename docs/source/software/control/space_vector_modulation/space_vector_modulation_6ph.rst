@@ -17,7 +17,7 @@ General
 
 SVM for multi-phase works similar to :ref:`uz_spacevectormodulation`.
 However, in a multi-phase network, more switching combinations are available (for six-phase :math:`2^6=64`).
-Furthermore, switching combination has simultaniously one space vector (SV) in the :math:`\alpha\beta`- and one in the :math:`XY`-subspace.
+Furthermore, switching combination has simultaneously one space vector (SV) in the :math:`\alpha\beta`- and one in the :math:`XY`-subspace.
 During the calculations, both have to be taken account of and it has to be noted, that a combination with a large SV (high absolute value) in :math:`\alpha\beta` means usually a small SV in :math:`XY`.
 Since an online choosing of SV is not feasible, a preselection from all possible SVs was done and 24 sequences of five active switching combinations is used. [[#Eldeeb_diss]_]
 
@@ -165,7 +165,7 @@ Limitation
 To test the limitation, a list of :math:`\alpha\beta`-SVs and :math:`XY`-SVs was created with :math:`k \cdot e^{i \cdot \phi}` and :math:`k=0, 0.001, ... 1` und :math:`\phi=0, 0.001, ... 2\pi`.
 Each :math:`\alpha\beta`-SV was combined with each :math:`XY`-SV and applied to the SVM.
 Using no limitation, the SVM threw an error for a Duty Cycle out of range (negative or greater 1).
-Using the limitation, no error occured and the relative limit of :math:`XY`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
+Using the limitation, no error occurred and the relative limit of :math:`XY`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
 
 
 Open loop simulation

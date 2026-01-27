@@ -3,17 +3,17 @@
 Default Vivado project
 ======================
 
-The default Vivado project uses vendor IP cores as well as IP cores from the Ultrazohm repository (:ref:`ip_cores`) to provide a starting point for users.
-It is located in ``ultrazohm_sw/vivado/project/ultrazohm.xpr`` and can be generated using the ``build.tcl`` script (see :ref:`viavdo_build_tcl`).
+The default Vivado project uses vendor IP cores as well as IP cores from the UltraZohm repository (:ref:`ip_cores`) to provide a starting point for users.
+It is located in ``ultrazohm_sw/vivado/project/ultrazohm.xpr`` and can be generated using the ``build.tcl`` script (see :ref:`vivado_build_tcl`).
 :numref:`default_vivado_project_picture` shows the default project.
 It is split into the following different parts:
 
-1. Inputs ports from the digital and analog adapter cards
+1. Input ports from the digital and analog adapter cards
 2. The processing system (PS) with R5 and A53.
 3. ``uz_system`` with clocks, interrupts, AXI infrastructure, and IP cores for system functions.
 4. The IP cores to interface the adapter cards on A1, A2, and A3.
-5. The ouput ports to digital and analog adapter cards.
-6. The ``uz_user`` subsystem where user specific IP cores should be placed.
+5. The output ports to digital and analog adapter cards.
+6. The ``uz_user`` subsystem where user-specific IP cores should be placed.
 7. The IP cores to interface the digital adapter cards on D1, D2, D3, D4, and D5.
 
 .. _default_vivado_project_picture:

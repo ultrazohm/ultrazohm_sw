@@ -26,7 +26,7 @@ The initialization of the system is not part of the state machine and is done in
         state "Control" as Control: Blink ready LED <br> Turn on running LED <br> Enable control algorithm
         state "Error" as Error: Disable FPGA outputs <br> Turn on error LED
 
-The figure above shows the four state of the UltraZohm:
+The figure above shows the four states of the UltraZohm:
 
 - Idle
 - Running
@@ -34,7 +34,7 @@ The figure above shows the four state of the UltraZohm:
 - Error
 
 The implicit state *assertion* is not shown (see :ref:`assertions`).
-If in any state an execution is triggered, the error state is executed once, the system is hold and can only be used after a restart (power cycle).
+If in any state an execution is triggered, the error state is executed once, the system is held and can only be used after a restart (power cycle).
 The state machine has the following input variables:
 
 - Enable system
@@ -43,7 +43,7 @@ The state machine has the following input variables:
 - Error
 
 The inputs are set using the set functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
-For all UltraZohm versions >2, enable system, enable control, and stop are available as buttons on the frontpanel.
+For all UltraZohm versions >2, enable system, enable control, and stop are available as buttons on the front panel.
 Additionally, the signals can be set using the :ref:`JavaScope`.
 The input ``Error`` is only set from software functions.
 

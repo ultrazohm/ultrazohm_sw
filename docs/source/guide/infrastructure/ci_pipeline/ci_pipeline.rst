@@ -4,19 +4,19 @@
 Continuous Integration
 ======================
 
-The UltraZohm-Project uses two different build pipelines to test the builds of the UltraZohm software as well as the documentation (docs).
+The UltraZohm project uses two different build pipelines to test the builds of the UltraZohm software as well as the documentation (docs).
 
-* The Bitbucket pipeline tests & deploys the docs
+* The Bitbucket pipeline tests and deploys the docs
   
-  * Tests the build of the sphinx docs
+  * Tests the build of the Sphinx docs
   * Deploys the docs of the main branch to docs.ultrazohm.com
   * Mirrors the branch to https://github.com/ultrazohm/ultrazohm_sw
 
-* The Drone test pipeline builds UltraZohm Vivado and Vitis Project
+* The Drone test pipeline builds UltraZohm Vivado and Vitis projects
 
   * Builds bitstream in Vivado (only main & develop branch)
-  * Commits the vivado binarys (.xsa) to the repository and pushes the change (only on main)
-  * Creates a new tag and a changelog, commits them to the repository and pushes the changes to bitbucket (only on main)
+  * Commits the Vivado binaries (.xsa) to the repository and pushes the change (only on main)
+  * Creates a new tag and a changelog, commits them to the repository and pushes the changes to Bitbucket (only on main)
   * Exports the bitstream
   * Generates the Vitis workspace
   * Builds the software
@@ -27,7 +27,7 @@ Bitbucket pipeline (docs)
 -------------------------
 
 * ``bitbucket-pipelines.yml`` configures the Bitbucket pipeline
-* Pipeline steps to build the sphinx documentation on **every** *push* to the repository (for all branches)
+* Pipeline steps to build the Sphinx documentation on **every** *push* to the repository (for all branches)
 * Pipeline steps to deploy the documentation to the UltraZohm-Server (docs.ultrazohm.com) after every merged pull request on *main*
 * Pipeline reports success or failure to Bitbucket repository (green / red symbol next to branch in Bitbucket)
 
@@ -52,15 +52,15 @@ The build pipeline:
 * If the pipeline is triggered from ``main``:
 
   * The ``build`` folder after ``make html`` is copied to the web server
-  * Done with rsync deploy pipe 
+  * Done with rsync deploy pipe
   * Variables for username, password and server path are stored as secret repository variables
   * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
 
 .. literalinclude:: ../../../../../bitbucket-pipelines.yml
     :linenos:
 
-Unit tets (Ceedling)
-********************
+Unit tests (Ceedling)
+*********************
 
 * All unit tests (see :ref:`unit_tests` are run in the Bitbucket pipeline.
 * If one test fails, the pipeline fails.
@@ -68,11 +68,11 @@ Unit tets (Ceedling)
 Bitbucket pipeline (GitHub-Mirror)
 **********************************
 
-* Adds Github repository as remote repo
+* Adds GitHub repository as remote repo
 * Pushes current branch to https://github.com/ultrazohm/ultrazohm_sw
-* A special UltraZohm Github Account (Login information in Keepass) pushes to the Github repository
-* The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to Github
-* Github.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
+* A special UltraZohm GitHub account (login information in Keepass) pushes to the GitHub repository
+* The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to GitHub
+* GitHub.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
 
 .. _ci_static_code_check:
 
@@ -109,14 +109,14 @@ UltraZohm development container
 
 To reduce the time the CI steps spend on installing dependencies, we use a docker image for the UltraZohm development container.
 
-- `UltraZohm development container on Dockerhub <https://hub.docker.com/r/ultrazohm/ultrazohm_remote_container>`_
+- `UltraZohm development container on Docker Hub <https://hub.docker.com/r/ultrazohm/ultrazohm_remote_container>`_
 - The container is based on the :ref:`vscode_remote_container`
-- Updating the docker image on dockerhub is a manual process
+- Updating the Docker image on Docker Hub is a manual process
 
 Update:
 
-1.. Rebuild the container with VS Code locally (to also run the post-build steps!)
-2. Login to docker.io on the CLI with your credentials (account has to be part of ultrazohm team on Dockerhub):
+1. Rebuild the container with VS Code locally (to also run the post-build steps!)
+2. Login to docker.io on the CLI with your credentials (account has to be part of ultrazohm team on Docker Hub):
 
 ::
 
@@ -128,7 +128,7 @@ Update:
 
    podman image tag localhost/vsc-ultrazohm_sw-ad6053a7600060d35be6bf639d2373c4:latest ultrazohm/ultrazohm_remote_container
 
-4. Push the image to dockerhub
+4. Push the image to Docker Hub
 
 ::
 
@@ -138,7 +138,7 @@ Update:
 Drone pipeline (Software)
 -------------------------
 
-* Drone pipeline builds 
+* Drone pipeline builds
 
 
 * Uses `Drone <www.drone.io>`_
@@ -180,7 +180,7 @@ Drone Runner and Vivado Docker image
 ************************************
 
 The Drone Runner starts a Docker Container for each pipeline step.
-To use Vivado and Vitis, we use a costum Vivado docker image (``vivado:2020.1``).
+To use Vivado and Vitis, we use a custom Vivado docker image (``vivado:2020.1``).
 There are two challenges with using Vivado and Vitis in a Docker container.
 
 * Xilinx license is locked to the MAC

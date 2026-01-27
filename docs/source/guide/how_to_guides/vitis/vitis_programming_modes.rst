@@ -28,7 +28,7 @@ The intended use of the three UltraZohm launch configurations is:
 Modes
 -----
 
-In all modes, variables can be inspected via the Expressions view in Vitis and the proccesors can be suspended and resumed.
+In all modes, variables can be inspected via the Expressions view in Vitis and the processors can be suspended and resumed.
 Breakpoints are only supported when the **Debug** (green bug) button is used to start the programming procedure.
 
 
@@ -65,5 +65,5 @@ Additional notes
 
 - To enable ``Debug_UltraZohm_fast_restart_PL_reset``, the interrupt initialization was adjusted to handle the case where a processor is reset while an interrupt is active. 
   In this case, the interrupt **ACTIVE** state can remain latched across a core-level reset because the GIC is not reset by a core reset.
-  As a remedy, the **ACTIVE** register is checked during startup and maunally cleared by the EOIR (End-of-Interrupt-Register). 
+  As a remedy, the **ACTIVE** register is checked during startup and manually cleared by the EOIR (End-of-Interrupt-Register).
   This applies to both processors, R5:0 and A53:0. See :pr:`532` for details.

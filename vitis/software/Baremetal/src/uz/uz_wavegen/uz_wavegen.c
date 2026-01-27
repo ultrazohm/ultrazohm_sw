@@ -124,9 +124,82 @@ uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, 
     uz_assert(frequency_Hz > 0.0f);
     float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
     float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
+
+
+    // uz_3ph_abc_t sine_output = {
+   //     .a = amplitude * sinf(angle) + offset,
+   //      .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset,
+   //      .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset};
+
+    float v1 = amplitude * sinf(angle) + offset;
+    float v2 = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset;
+    float v3 = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset;
+
+    int PWM_mode = 1; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
+
+    if (PWM_mode == 0) // 0 SPWM
+    {
+       //
+    }
+    else if (PWM_mode == 1) // 1 Negative-DPWM
+    {
+        //float cm = (v1 < v2) ? ((v1 < v3) ? v1 : v3) : ((v2 < v3) ? v2 : v3); to find the minimum, did not work
+        float cm = fminf(fminf(v1, v2), v3);
+        v1 = v1 - cm;
+        v2 = v2 - cm;
+        v3 = v3 - cm;
+
+    }
+    else // 2 Positive-Negative DPWM
+    {
+
+    	    float v1_bid = v1*2.0f-1.0f;
+    	    float v2_bid = v2*2.0f-1.0f;
+    	    float v3_bid = v3*2.0f-1.0f;
+
+    	    float u_min = fminf(fminf(v1_bid, v2_bid), v3_bid);
+    	    float u_max = fmaxf(fmaxf(v1_bid, v2_bid), v3_bid);
+
+    	    float u_max_abs = fmaxf(fmaxf(fabsf(v1_bid), fabsf(v2_bid)), fabsf(v3_bid));
+
+    	    float val = u_max - fabsf(u_min);
+    	   // float sign_value = 1.0f;
+
+    	    //if (val < 0) {sign_value = -1.0f;}
+    	   float sign_value = (val > 0.0f) ? 1.0f : ((val < 0.0f) ? -1.0f : 0.0f);
+    	    float cm_pn_clamping = 0.5f+(0.5f-u_max_abs)*sign_value;
+
+    	    if (cm_pn_clamping >= 0.5f) {cm_pn_clamping = cm_pn_clamping -1.0f;}
+
+    	    //cm_pn_clamping = cm_pn_clamping*0.5f+0.5f;
+
+
+    	  float v1_final = v1_bid + cm_pn_clamping;
+    	  float v2_final = v2_bid + cm_pn_clamping;
+    	  float v3_final = v3_bid + cm_pn_clamping;
+
+    	  float v1_final_final = v1_final*0.5+0.5;
+    	   float v2_final_final = v2_final*0.5+0.5;
+    	   float v3_final_final = v3_final*0.5+0.5;
+
+
+    	   v1_final_final = fminf(fmaxf(v1_final_final, 0.0f), 1.0f);
+    	   v2_final_final = fminf(fmaxf(v2_final_final, 0.0f), 1.0f);
+    	   v3_final_final = fminf(fmaxf(v3_final_final, 0.0f), 1.0f);
+
+           v1 = v1_final_final;
+           v2 = v2_final_final;
+           v3 = v3_final_final;
+
+    }
+
+
     uz_3ph_abc_t sine_output = {
-        .a = amplitude * sinf(angle) + offset,
-        .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset,
-        .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset};
+    	.a = v1,
+        .b = v2,
+        .c = v3};
+
     return sine_output;
 }
+
+

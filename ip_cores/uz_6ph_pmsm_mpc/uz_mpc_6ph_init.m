@@ -1,8 +1,8 @@
 clear
 clc
 
-%hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
-% 'C:\Xilinx\Vivado\2020.1\bin\vivado.bat');
+hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
+ 'C:\Xilinx\Vivado\2022.2\bin\vivado.bat');
 
 f_clock = 100e6;        % IP core clock freq in Hz
 t_clock = 1/f_clock;    % IP core sample time in s

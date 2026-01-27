@@ -21,9 +21,8 @@ endat_clk_divider = 25; % 10 = 5 MHz
 % bit width of the connected endat encoder
 % sum of single-turn, multi-turn, and status <= 64 bit
 endat_encoder_bit_width_single_turn = uint32(25);
-% endat_encoder_bit_width_multi_turn = uint32(12);
-endat_encoder_bit_width_multi_turn = uint32(0);
-endat_encoder_number_of_CRC_bits = uint32(0);
+endat_encoder_bit_width_multi_turn = uint32(12);
+endat_encoder_number_of_CRC_bits = uint32(5);
 bit_sum = endat_encoder_bit_width_multi_turn+endat_encoder_bit_width_single_turn+endat_encoder_number_of_CRC_bits;
 
 % encoding: false=binary, true=gray

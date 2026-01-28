@@ -24,6 +24,7 @@
 #include "../main.h"
 
 extern QueueHandle_t js_queue;
+extern QueueHandle_t cmd_queue;
 extern struct APU_to_RPU_t ControlData;
 
 int js_connection_established = 0;
@@ -114,28 +115,47 @@ void process_request_thread(void *p)
 		}
 		asm("nop");
 
-		// read a max of RECV_BUF_SIZE bytes from socket /
+		// Check if data is available before reading (non-blocking)
 		if (nwrote > 0){
-			// read a max of RECV_BUF_SIZE bytes from socket /
-			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
-			if (nread < 0) {
-				uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
-				js_connection_established = 0;
-				break;
-			}
-			//asm(" nop");
-			if ( nread == sizeof(ControlData) ){
-				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
-				ControlData.id 		= Received_Data->id;
-				ControlData.value 	= Received_Data->value;
-			}
+			fd_set readfds;
+			struct timeval nonblocking_timeout = {0, 0};
 
-			// break if client closed connection /
-			if (nread <= 0){
-				close(clientfd);
+			FD_ZERO(&readfds);
+			FD_SET(clientfd, &readfds);
+
+			int ready = select(clientfd + 1, &readfds, NULL, NULL, &nonblocking_timeout);
+
+			if (ready > 0) {
+				// Data available - read exactly one command
+				nread = read(clientfd, (char *)recv_buf, sizeof(struct APU_to_RPU_t));
+				if (nread < 0) {
+					uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+					js_connection_established = 0;
+					break;
+				}
+				if (nread == 0) {
+					// Connection closed by peer
+					close(clientfd);
+					js_connection_established = 0;
+					break;
+				}
+				if (nread == sizeof(struct APU_to_RPU_t)) {
+					Received_Data = (struct APU_to_RPU_t*)recv_buf;
+					// Skip empty commands (id=0 means no-op)
+					if (Received_Data->id != 0) {
+						// Add command to queue (non-blocking, drop if queue full)
+						if (xQueueSend(cmd_queue, Received_Data, 0) != pdTRUE) {
+							uz_printf("APU: Command queue full, command dropped\r\n");
+						}
+					}
+				}
+			} else if (ready < 0) {
+				// select() error
+				uz_printf("APU: %s: select error on socket %d\r\n", __FUNCTION__, clientfd);
 				js_connection_established = 0;
 				break;
 			}
+			// else: ready == 0, no data available, continue sending
 		}else{
 			close(clientfd);
 			js_connection_established = 0;

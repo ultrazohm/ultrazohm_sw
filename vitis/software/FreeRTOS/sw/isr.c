@@ -39,6 +39,10 @@ extern uint32_t javascope_data_status;
 QueueHandle_t js_queue;
 int js_queue_full = 0;
 
+// Command queue for JavaScope commands (APU -> RPU)
+QueueHandle_t cmd_queue;
+#define CMD_QUEUE_SIZE 100
+
 int i_LifeCheck_Transfer_ipc = 0;
 
 // Initialize the Interrupt structure
@@ -83,6 +87,17 @@ void Transfer_ipc_Intr_Handler(void *data)
 	javascope_data_status = javascope_data->status;
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
+
+	// Dequeue one command if available (non-blocking from ISR context)
+	struct APU_to_RPU_t cmd_from_queue;
+	if (xQueueReceiveFromISR(cmd_queue, &cmd_from_queue, &xHigherPriorityTaskWoken) == pdTRUE) {
+		ControlData.id = cmd_from_queue.id;
+		ControlData.value = cmd_from_queue.value;
+	} else {
+		// No command in queue - send zeros (no-op)
+		ControlData.id = 0;
+		ControlData.value = 0;
+	}
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
@@ -170,6 +185,13 @@ int Initialize_ISR(){
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
+		return XST_FAILURE;
+	}
+
+	// create queue for JavaScope commands (ethernet -> IPI -> RPU)
+	cmd_queue = xQueueCreate( CMD_QUEUE_SIZE, sizeof(struct APU_to_RPU_t) );
+	if (cmd_queue == NULL){
+		uz_printf("APU: Error: Command queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 

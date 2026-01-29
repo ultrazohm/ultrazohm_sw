@@ -5705,9 +5705,12 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "11"
+                "value": "12"
               },
               "C_PROBE10_WIDTH": {
+                "value": "32"
+              },
+              "C_PROBE11_WIDTH": {
                 "value": "64"
               },
               "C_PROBE7_WIDTH": {
@@ -5722,15 +5725,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.9",
-            "xci_name": "zusys_uz_endat_interface_0_3",
-            "xci_path": "ip/zusys_uz_endat_interface_0_3/zusys_uz_endat_interface_0_3.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:1.0",
+            "xci_name": "zusys_uz_endat_interface_0_4",
+            "xci_path": "ip/zusys_uz_endat_interface_0_4/zusys_uz_endat_interface_0_4.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:0.9",
-            "xci_name": "zusys_uz_endat_interface_1_3",
-            "xci_path": "ip/zusys_uz_endat_interface_1_3/zusys_uz_endat_interface_1_3.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:1.0",
+            "xci_name": "zusys_uz_endat_interface_1_4",
+            "xci_path": "ip/zusys_uz_endat_interface_1_4/zusys_uz_endat_interface_1_4.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5790,8 +5793,14 @@
             "ports": [
               "trigger_endat",
               "ila_0/probe0",
-              "uz_endat_interface_1/trigger_endat_read",
-              "uz_endat_interface_0/trigger_endat_read"
+              "uz_endat_interface_0/trigger_endat_read",
+              "uz_endat_interface_1/trigger_endat_read"
+            ]
+          },
+          "uz_endat_interface_0_CRC_calc": {
+            "ports": [
+              "uz_endat_interface_0/CRC_calc",
+              "ila_0/probe10"
             ]
           },
           "uz_endat_interface_0_CRC_raw": {
@@ -5830,7 +5839,7 @@
           "uz_endat_interface_0_endat_raw_data_word": {
             "ports": [
               "uz_endat_interface_0/endat_raw_data_word",
-              "ila_0/probe10"
+              "ila_0/probe11"
             ]
           },
           "uz_endat_interface_0_endat_received_data_out_SH": {

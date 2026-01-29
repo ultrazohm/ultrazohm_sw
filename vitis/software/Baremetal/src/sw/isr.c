@@ -370,7 +370,11 @@ void ISR_Control(void *data)
     	if(ConApplication == REAL && ConSelection != manual) {
     		//Only use load machine when REAL
     	    float n_ref_Last_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_prefilter_Last, Global_Data.av.n_ref_Last);
+    	    //Approximates required torque based on dq-Setpoints of DUT machine
+    	    Global_Data.av.M_vor_Last = 3.0f * Global_Data.av.pmsm_config_Pruef_dq.polePairs * (Global_Data.av.pmsm_config_Pruef_dq.Psi_PM_Vs * Global_Data.av.i_dqxy_ref.q +
+    	    		(Global_Data.av.pmsm_config_Pruef_dq.Ld_Henry - Global_Data.av.pmsm_config_Pruef_dq.Lq_Henry) * Global_Data.av.i_dqxy_ref.q * Global_Data.av.i_dqxy_ref.d);
     	    Global_Data.av.M_ref_Last = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_Last, Global_Data.av.omega_mech_Last, n_ref_Last_filtered);
+    	    Global_Data.av.M_ref_Last += Global_Data.av.M_vor_Last;
     	    Global_Data.av.i_dq_Last_ref = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_Last, Global_Data.av.omega_mech_Last, Global_Data.av.M_ref_Last, Global_Data.av.v_dc_Last, Global_Data.av.i_dq_Last);
     	    Global_Data.av.v_dq_Last_ref = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance_Last, Global_Data.av.i_dq_Last_ref, Global_Data.av.i_dq_Last, Global_Data.av.v_dc_Last, Global_Data.av.omega_elec_Last);
     	    Global_Data.av.DutyCycle_Last = uz_Space_Vector_Modulation(Global_Data.av.v_dq_Last_ref, Global_Data.av.v_dc_Last, Global_Data.av.theta_elec_Last);

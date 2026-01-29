@@ -76,6 +76,7 @@ enum JS_OberservableData {
 	JSO_i_d_Last,
 	JSO_i_q_Last,
 	JSO_start_marker,
+	JSO_M_vor_Last,
 	JSO_ENDMARKER
 };
 

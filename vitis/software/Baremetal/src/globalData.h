@@ -125,6 +125,7 @@ typedef struct _actualValues_ {
 	struct uz_DutyCycle_t DutyCycle_Last;
 	float n_ref_Last;
 	float M_ref_Last;
+	float M_vor_Last;
 	struct uz_pmsmModel_6ph_dqxy_outputs_t pmsm_outputs;
 	struct uz_pmsmModel_6ph_dqxy_inputs_t pmsm_inputs;
 	struct uz_PMSM_t pmsm_config_Pruef_dq;

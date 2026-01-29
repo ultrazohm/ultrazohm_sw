@@ -278,11 +278,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+		uz_endat_interface_enable_ip(data->objects.endat_encoder_d5_1, true);
 			break;
 
 		case (My_Button_5):
-
+		uz_endat_interface_enable_ip(data->objects.endat_encoder_d5_1, false);
 			break;
 
 		case (My_Button_6):

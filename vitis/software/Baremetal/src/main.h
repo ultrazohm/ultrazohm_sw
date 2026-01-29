@@ -73,7 +73,8 @@ enum ControllerSelection
 {
 	CC_FOC=0,
 	RL,
-	MPC
+	MPC,
+	manual
 };
 //----------------------------------------------------
 // FUNCTIONS

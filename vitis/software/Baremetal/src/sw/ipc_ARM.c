@@ -211,21 +211,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
+		data->av.DutyCycle.system1.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_8):
+		data->av.DutyCycle.system1.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_9):
+		data->av.DutyCycle.system1.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_10):
+		data->av.DutyCycle.system2.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_11):
+		data->av.DutyCycle.system2.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_12):
+		data->av.DutyCycle.system2.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_13):
@@ -275,10 +281,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-		StepProfile=true;
+		ConSelection = manual;
 			break;
 
 		case (My_Button_7):
+		StepProfile=true;
 			break;
 
 		case (My_Button_8):
@@ -364,14 +371,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 9 - My_Button_6 */
-	 if (StepProfile == true) {
+	 if (ConSelection == manual) {
 		js_status_BareToRTOS |= (1 << 9);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 9);
 	 }
 
-	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	 /* Bit 10 - My_Button_7 */
+	 if (StepProfile == true) {
+	 	js_status_BareToRTOS |= (1 << 10);
+	 } else {
+	 	js_status_BareToRTOS &= ~(1 << 10);
+	 }
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

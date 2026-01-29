@@ -394,6 +394,8 @@ void ISR_Control(void *data)
     		Global_Data.av.v_dqxy_non_limited.x = v_xy_non_limited.d;
     		Global_Data.av.v_dqxy_non_limited.y = v_xy_non_limited.q;
     		Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.5f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
+	    	Global_Data.av.v_abc_ref =  uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec_advanced, (-1.0f * Global_Data.av.theta_elec_advanced));
+	    	Global_Data.av.DutyCycle = uz_spwm_abc_6ph(Global_Data.av.v_abc_ref, Global_Data.av.v_dc1);
     		break;
 
     	case RL:
@@ -440,9 +442,17 @@ void ISR_Control(void *data)
             Global_Data.av.v_dqxy_non_limited.x = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
             Global_Data.av.v_dqxy_non_limited.y = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
             Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.57735f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
-    		break;
+	    	Global_Data.av.v_abc_ref =  uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec_advanced, (-1.0f * Global_Data.av.theta_elec_advanced));
+	    	Global_Data.av.DutyCycle = uz_spwm_abc_6ph(Global_Data.av.v_abc_ref, Global_Data.av.v_dc1);
+            break;
 
     	case MPC:
+    		break;
+
+    	case manual:
+    		//Give DutyCycles of load machine manual via GUI
+    		//Disable inverter of load machine
+    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, true, true, true);
     		break;
     	}
 
@@ -457,8 +467,7 @@ void ISR_Control(void *data)
     	    	break;
 
     	    case REAL:
-    	    	Global_Data.av.v_abc_ref =  uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec_advanced, (-1.0f * Global_Data.av.theta_elec_advanced));
-    	    	Global_Data.av.DutyCycle = uz_spwm_abc_6ph(Global_Data.av.v_abc_ref, Global_Data.av.v_dc1);
+
     	    	Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.DutyCycle.system1.DutyCycle_A;
     	        Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.DutyCycle.system1.DutyCycle_B;
     	        Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.DutyCycle.system1.DutyCycle_C;

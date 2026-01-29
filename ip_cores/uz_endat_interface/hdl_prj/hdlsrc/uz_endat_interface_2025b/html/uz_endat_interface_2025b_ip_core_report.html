@@ -58,19 +58,19 @@ thead.reportTableHeader {
 <tr>
 <td>IP core version
 </td>
-<td class="summaryTableSndColEvenRow">0.9
+<td class="summaryTableSndColEvenRow">1.0
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\*.*\')'})" >hdl_prj\ipcore\uz_endat_interface_v0_9</a>
+<td class="summaryTableSndColOddRow"><a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\*.*\')'})" >hdl_prj\ipcore\uz_endat_interface_v1_0</a>
 </td>
 </tr>
 <tr>
 <td>IP core zip file name
 </td>
-<td class="summaryTableSndColEvenRow">uz_endat_interface_v0_9.zip
+<td class="summaryTableSndColEvenRow">uz_endat_interface_v1_0.zip
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">10.8
+<td class="summaryTableSndColOddRow">10.33
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">27-Jan-2026 19:08:37
+<td class="summaryTableSndColOddRow">29-Jan-2026 15:18:29
 </td>
 </tr>
 <tr>
@@ -574,6 +574,34 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_endat_interface_2025b:2699\')'})" >CRC_calc</a>
+</td>
+<td>Outport
+</td>
+<td>uint32
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_endat_interface_2025b:2700\')'})" >CRC_calc_AXI</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">uint32
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"150"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
 <td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_endat_interface_2025b:666\')'})" >endat_received_data_out_SH</a>
 </td>
 <td>Outport
@@ -610,7 +638,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"150"
+<td>x"154"
 </td>
 <td>
 </td>
@@ -638,7 +666,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"154"
+<td>x"158"
 </td>
 <td>
 </td>
@@ -666,7 +694,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"158"
+<td>x"15C"
 </td>
 <td>
 </td>
@@ -694,7 +722,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"15C"
+<td>x"160"
 </td>
 <td>
 </td>
@@ -722,7 +750,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"160"
+<td>x"164"
 </td>
 <td>
 </td>
@@ -750,7 +778,7 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"164"
+<td>x"168"
 </td>
 <td>
 </td>
@@ -809,7 +837,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2601271908
+<td>contains unique IP timestamp (yymmddHHMM): 2601291518
 </td>
 </tr>
 <tr>
@@ -973,51 +1001,59 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">position_mech_SI_single_turn_AXI_Data
+<td class="distinctCellColor">CRC_calc_AXI_Data
 </td>
 <td class="distinctCellColor">0x150
 </td>
-<td class="distinctCellColor">data register for Outport position_mech_SI_single_turn_AXI
+<td class="distinctCellColor">data register for Outport CRC_calc_AXI
 </td>
 </tr>
 <tr>
-<td>position_el_SI_AXI_Data
+<td>position_mech_SI_single_turn_AXI_Data
 </td>
 <td>0x154
 </td>
-<td>data register for Outport position_el_SI_AXI
+<td>data register for Outport position_mech_SI_single_turn_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">position_multi_turn_AXI_Data
+<td class="distinctCellColor">position_el_SI_AXI_Data
 </td>
 <td class="distinctCellColor">0x158
 </td>
-<td class="distinctCellColor">data register for Outport position_multi_turn_AXI
+<td class="distinctCellColor">data register for Outport position_el_SI_AXI
 </td>
 </tr>
 <tr>
-<td>speed_mech_SI_AXI_Data
+<td>position_multi_turn_AXI_Data
 </td>
 <td>0x15C
 </td>
-<td>data register for Outport speed_mech_SI_AXI
+<td>data register for Outport position_multi_turn_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">speed_el_SI_AXI_Data
+<td class="distinctCellColor">speed_mech_SI_AXI_Data
 </td>
 <td class="distinctCellColor">0x160
 </td>
-<td class="distinctCellColor">data register for Outport speed_el_SI_AXI
+<td class="distinctCellColor">data register for Outport speed_mech_SI_AXI
 </td>
 </tr>
 <tr>
-<td>speed_mech_rpm_AXI_Data
+<td>speed_el_SI_AXI_Data
 </td>
 <td>0x164
 </td>
-<td>data register for Outport speed_mech_rpm_AXI
+<td>data register for Outport speed_el_SI_AXI
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">speed_mech_rpm_AXI_Data
+</td>
+<td class="distinctCellColor">0x168
+</td>
+<td class="distinctCellColor">data register for Outport speed_mech_rpm_AXI
 </td>
 </tr>
 </tbody>
@@ -1027,7 +1063,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\include\\uz_endat_interface_addr.h\')'})" >include\uz_endat_interface_addr.h</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\include\\uz_endat_interface_addr.h\')'})" >include\uz_endat_interface_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -1049,7 +1085,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The "Register Interface Read Pipeline" was specified as 0 for the IP core. The default read delay for the AXI4 register inteface is one clock cycle. 
 Depending on the selected "Register Interface Read Pipeline" value and IO connected to the AXI4 interface, register pipelining is introduced in the read adress decoder logic.
-For this model readable AXI4 slave registers are 10 and read delay for each AXI4 register is n = 1 clock cycles. The following diagram depicts the read functionality of the AXI4 registers.
+For this model readable AXI4 slave registers are 11 and read delay for each AXI4 register is n = 1 clock cycles. The following diagram depicts the read functionality of the AXI4 registers.
 <br/><br/>
 <img src="doc_arch_axi4_Pipeline_Register.jpg"/>
 <br/><br/>
@@ -1090,92 +1126,94 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\*.*\')'})" >hdl_prj\ipcore\uz_endat_interface_v0_9</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\*.*\')'})" >hdl_prj\ipcore\uz_endat_interface_v1_0</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\*.*\')'})" >uz_endat_interface_v0_9.zip</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\*.*\')'})" >uz_endat_interface_v1_0.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'web(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\doc\\uz_endat_interface_2025b_ip_core_report.html\')'})" >doc\uz_endat_interface_2025b_ip_core_report.html</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'web(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\doc\\uz_endat_interface_2025b_ip_core_report.html\')'})" >doc\uz_endat_interface_2025b_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_uz_endat_interface_pkg.vhd\')'})" >hdl\uz_endat_interface_src_uz_endat_interface_pkg.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_uz_endat_interface_pkg.vhd\')'})" >hdl\uz_endat_interface_src_uz_endat_interface_pkg.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_Sine_HDL_Optimized1.vhd\')'})" >hdl\uz_endat_interface_src_Sine_HDL_Optimized1.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_Sine_HDL_Optimized1.vhd\')'})" >hdl\uz_endat_interface_src_Sine_HDL_Optimized1.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_fixed_point_floor.vhd\')'})" >hdl\uz_endat_interface_src_fixed_point_floor.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_fixed_point_floor.vhd\')'})" >hdl\uz_endat_interface_src_fixed_point_floor.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_Sine_HDL_Optimized.vhd\')'})" >hdl\uz_endat_interface_src_Sine_HDL_Optimized.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_Sine_HDL_Optimized.vhd\')'})" >hdl\uz_endat_interface_src_Sine_HDL_Optimized.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_position_to_speed_pll.vhd\')'})" >hdl\uz_endat_interface_src_position_to_speed_pll.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_position_to_speed_pll.vhd\')'})" >hdl\uz_endat_interface_src_position_to_speed_pll.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_floor_div_pow2.vhd\')'})" >hdl\uz_endat_interface_src_floor_div_pow2.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_floor_div_pow2.vhd\')'})" >hdl\uz_endat_interface_src_floor_div_pow2.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_set_offset_to_raw_position_and_wrap.vhd\')'})" >hdl\uz_endat_interface_src_set_offset_to_raw_position_and_wrap.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_set_offset_to_raw_position_and_wrap.vhd\')'})" >hdl\uz_endat_interface_src_set_offset_to_raw_position_and_wrap.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_slice_position_and_CRC.vhd\')'})" >hdl\uz_endat_interface_src_slice_position_and_CRC.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_slice_position_and_CRC.vhd\')'})" >hdl\uz_endat_interface_src_slice_position_and_CRC.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_fixed_point_floor_block.vhd\')'})" >hdl\uz_endat_interface_src_fixed_point_floor_block.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_fixed_point_floor_block.vhd\')'})" >hdl\uz_endat_interface_src_fixed_point_floor_block.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_wrap_2pi.vhd\')'})" >hdl\uz_endat_interface_src_wrap_2pi.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_wrap_2pi.vhd\')'})" >hdl\uz_endat_interface_src_wrap_2pi.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block1.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block1.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block1.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block1.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_RW_data_and_mode_command_control.vhd\')'})" >hdl\uz_endat_interface_src_RW_data_and_mode_command_control.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_RW_data_and_mode_command_control.vhd\')'})" >hdl\uz_endat_interface_src_RW_data_and_mode_command_control.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_Model.vhd\')'})" >hdl\uz_endat_interface_src_Model.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_Model.vhd\')'})" >hdl\uz_endat_interface_src_Model.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_Sample_and_Hold1.vhd\')'})" >hdl\uz_endat_interface_src_Sample_and_Hold1.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_Sample_and_Hold1.vhd\')'})" >hdl\uz_endat_interface_src_Sample_and_Hold1.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block2.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block2.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block2.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block2.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_sample_serial_endat_data.vhd\')'})" >hdl\uz_endat_interface_src_sample_serial_endat_data.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_sample_serial_endat_data.vhd\')'})" >hdl\uz_endat_interface_src_sample_serial_endat_data.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block3.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block3.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_MATLAB_Function1.vhd\')'})" >hdl\uz_endat_interface_src_MATLAB_Function1.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block4.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block4.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block3.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block3.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_endat_clock_enable_controller.vhd\')'})" >hdl\uz_endat_interface_src_endat_clock_enable_controller.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block4.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block4.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block5.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block5.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_endat_clock_enable_controller.vhd\')'})" >hdl\uz_endat_interface_src_endat_clock_enable_controller.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd\')'})" >hdl\uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block5.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block5.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block6.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block6.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd\')'})" >hdl\uz_endat_interface_src_clk_idle_and_delay_first_clock_function.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_endat_clock_generator.vhd\')'})" >hdl\uz_endat_interface_src_endat_clock_generator.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_S_R_Flip_Flop_block6.vhd\')'})" >hdl\uz_endat_interface_src_S_R_Flip_Flop_block6.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_serial_communication.vhd\')'})" >hdl\uz_endat_interface_src_serial_communication.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_endat_clock_generator.vhd\')'})" >hdl\uz_endat_interface_src_endat_clock_generator.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_src_uz_endat_interface.vhd\')'})" >hdl\uz_endat_interface_src_uz_endat_interface.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_serial_communication.vhd\')'})" >hdl\uz_endat_interface_src_serial_communication.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_pkg.vhd\')'})" >hdl\uz_endat_interface_pkg.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_src_uz_endat_interface.vhd\')'})" >hdl\uz_endat_interface_src_uz_endat_interface.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_reset_sync.vhd\')'})" >hdl\uz_endat_interface_reset_sync.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_pkg.vhd\')'})" >hdl\uz_endat_interface_pkg.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_dut.vhd\')'})" >hdl\uz_endat_interface_dut.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_reset_sync.vhd\')'})" >hdl\uz_endat_interface_reset_sync.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_addr_decoder.vhd\')'})" >hdl\uz_endat_interface_addr_decoder.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_dut.vhd\')'})" >hdl\uz_endat_interface_dut.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_axi_lite_module.vhd\')'})" >hdl\uz_endat_interface_axi_lite_module.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_addr_decoder.vhd\')'})" >hdl\uz_endat_interface_addr_decoder.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface_axi_lite.vhd\')'})" >hdl\uz_endat_interface_axi_lite.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_axi_lite_module.vhd\')'})" >hdl\uz_endat_interface_axi_lite_module.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\hdl\\uz_endat_interface.vhd\')'})" >hdl\uz_endat_interface.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface_axi_lite.vhd\')'})" >hdl\uz_endat_interface_axi_lite.vhd</a>
+<br/>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\hdl\\uz_endat_interface.vhd\')'})" >hdl\uz_endat_interface.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v0_9\\include\\uz_endat_interface_addr.h\')'})" >include\uz_endat_interface_addr.h</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'hdl_prj\\ipcore\\uz_endat_interface_v1_0\\include\\uz_endat_interface_addr.h\')'})" >include\uz_endat_interface_addr.h</a>
 </div>
 <script>function postParentWindowMessage(message) {window.parent.postMessage(message, "*");}</script>
 </body>

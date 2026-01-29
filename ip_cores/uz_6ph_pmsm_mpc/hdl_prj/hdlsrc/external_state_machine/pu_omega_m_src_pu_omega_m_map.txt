@@ -1,3 +1,0 @@
- --> pu_omega_m_src_pu_omega_m_pkg
-external_state_machine/pu_omega_m/Detect Rise Positive --> pu_omega_m_src_Detect_Rise_Positive
-external_state_machine/pu_omega_m --> pu_omega_m_src_pu_omega_m

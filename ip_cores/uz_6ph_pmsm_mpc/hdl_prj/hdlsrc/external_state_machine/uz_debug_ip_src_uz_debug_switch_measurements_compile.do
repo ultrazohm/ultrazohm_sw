@@ -1,3 +1,0 @@
-vlib work
-vcom  uz_debug_ip_src_uz_debug_switch_measurements_pkg.vhd
-vcom  uz_debug_ip_src_uz_debug_switch_measurements.vhd

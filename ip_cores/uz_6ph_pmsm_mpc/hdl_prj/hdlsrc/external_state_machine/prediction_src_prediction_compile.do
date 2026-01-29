@@ -1,5 +1,0 @@
-vlib work
-vcom  prediction_src_prediction_pkg.vhd
-vcom  prediction_src_Detect_Rise_Positive.vhd
-vcom  prediction_src_Detect_Rise_Positive1.vhd
-vcom  prediction_src_prediction.vhd

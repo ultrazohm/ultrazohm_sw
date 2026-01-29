@@ -1,6 +1,0 @@
-vlib work
-vcom  uz_cur_lim_src_Detect_Rise_Positive.vhd
-vcom  uz_cur_lim_src_Detect_Rise_Positive1.vhd
-vcom  uz_cur_lim_src_Detect_Rise_Positive2.vhd
-vcom  uz_cur_lim_src_RS_flipflop.vhd
-vcom  uz_cur_lim_src_uz_current_limit.vhd

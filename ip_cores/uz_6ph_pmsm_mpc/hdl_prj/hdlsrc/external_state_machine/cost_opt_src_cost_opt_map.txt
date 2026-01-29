@@ -1,6 +1,0 @@
- --> cost_opt_src_cost_opt_pkg
-external_state_machine/cost_opt/Detect Rise Positive --> cost_opt_src_Detect_Rise_Positive
-external_state_machine/cost_opt/FiniteControlSetSwitchingTable --> cost_opt_src_FiniteControlSetSwitchingTable
-external_state_machine/cost_opt/MATLAB Function --> cost_opt_src_MATLAB_Function
-external_state_machine/cost_opt/iterativesearch --> cost_opt_src_iterativesearch
-external_state_machine/cost_opt --> cost_opt_src_cost_opt

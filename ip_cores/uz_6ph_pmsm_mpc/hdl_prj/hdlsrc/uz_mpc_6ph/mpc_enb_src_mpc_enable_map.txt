@@ -1,5 +1,0 @@
-uz_mpc_6ph/mpc_enable/Detect Rise Positive --> mpc_enb_src_Detect_Rise_Positive
-uz_mpc_6ph/mpc_enable/Detect Rise Positive1 --> mpc_enb_src_Detect_Rise_Positive1
-uz_mpc_6ph/mpc_enable/Detect Rise Positive2 --> mpc_enb_src_Detect_Rise_Positive2
-uz_mpc_6ph/mpc_enable/Subsystem2 --> mpc_enb_src_Subsystem2
-uz_mpc_6ph/mpc_enable --> mpc_enb_src_mpc_enable

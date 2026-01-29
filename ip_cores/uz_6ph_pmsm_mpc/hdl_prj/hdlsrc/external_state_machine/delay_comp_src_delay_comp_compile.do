@@ -1,5 +1,0 @@
-vlib work
-vcom  delay_comp_src_delay_comp_pkg.vhd
-vcom  delay_comp_src_Detect_Rise_Positive.vhd
-vcom  delay_comp_src_Detect_Rise_Positive1.vhd
-vcom  delay_comp_src_delay_comp.vhd

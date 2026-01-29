@@ -29,7 +29,7 @@ static const struct uz_PMSM_t pmsm_config_Last_dq = {
         .Ld_Henry = 0.00058f,
         .Lq_Henry = 0.00071f,
         .Psi_PM_Vs = 0.0143f,
-		.I_max_Ampere = 15.0f,
+		.I_max_Ampere = 30.0f,
 		.R_ph_Ohm = 0.1f,
         .polePairs = 5.0f,
         };
@@ -114,7 +114,7 @@ uz_CurrentControl_t* init_dq_FOC_Last(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_id_Last,
 	    .config_iq = config_iq_Last,
-	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,
+	    .max_modulation_index = (1.0f / sqrt(3.0f)),
 		.config_PMSM = pmsm_config_Last_dq
 	};
 	return(uz_CurrentControl_init(CC_dq_config_Last));

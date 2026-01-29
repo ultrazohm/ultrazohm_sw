@@ -79,6 +79,7 @@ float theta_offset = 5.93f;
 
 // software limits
 #define MAX_PHASE_CURRENT_AMP  15.0f
+#define MAX_PHASE_CURRENT_LAST_AMP 30.0f
 #define MAX_DC_VOLT 50.0f
 #define MAX_TEMP_DEG 90.0f
 
@@ -195,7 +196,7 @@ void ISR_Control(void *data)
         // check current limit
         if(fabs(Global_Data.av.i_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc.c1) > MAX_PHASE_CURRENT_AMP ||
         		fabs(Global_Data.av.i_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc.c2) > MAX_PHASE_CURRENT_AMP||
-				fabs(Global_Data.av.i_abc_Last.a) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc_Last.b) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_abc_Last.c) > MAX_PHASE_CURRENT_AMP) {
+				fabs(Global_Data.av.i_abc_Last.a) > MAX_PHASE_CURRENT_LAST_AMP || fabs(Global_Data.av.i_abc_Last.b) > MAX_PHASE_CURRENT_LAST_AMP || fabs(Global_Data.av.i_abc_Last.c) > MAX_PHASE_CURRENT_LAST_AMP) {
         		ultrazohm_state_machine_set_stop(true);
         		Global_Data.av.error = 1;
                 }

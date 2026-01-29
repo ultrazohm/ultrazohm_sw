@@ -1,7 +1,6 @@
 #include "../include/uz_IIR_Filter_init.h"
 
 static const struct uz_IIR_Filter_config speed_prefilter_Last_config;
-static const struct uz_IIR_Filter_config speed_prefilter_Pruef_config;
 
 
 struct uz_IIR_Filter_t* uz_speed_prefilter_Last_init(void) {

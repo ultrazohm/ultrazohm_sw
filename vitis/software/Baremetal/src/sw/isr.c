@@ -57,7 +57,7 @@ float theta_offset = 5.93f;
 
 #define PHASE_CURRENT_OFFSET_A1	0.012f
 #define PHASE_CURRENT_OFFSET_B1	0.004f
-#define PHASE_CURRENT_OFFSET_C1	0.006f
+#define PHASE_CURRENT_OFFSET_C1	-0.1f
 #define PHASE_CURRENT_OFFSET_A2	-0.012f
 #define PHASE_CURRENT_OFFSET_B2	-0.01f
 #define PHASE_CURRENT_OFFSET_C2	0.019f
@@ -362,7 +362,7 @@ void ISR_Control(void *data)
 
         }
         Global_Data.av.theta_elec_old = Global_Data.av.theta_elec;
-    	if(ConApplication == REAL) {
+    	if(ConApplication == REAL && ConSelection != manual) {
     		//Only use load machine when REAL
     	    float n_ref_Last_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_prefilter_Last, Global_Data.av.n_ref_Last);
     	    Global_Data.av.M_ref_Last = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_Last, Global_Data.av.omega_mech_Last, n_ref_Last_filtered);
@@ -452,7 +452,7 @@ void ISR_Control(void *data)
     	case manual:
     		//Give DutyCycles of load machine manual via GUI
     		//Disable inverter of load machine
-    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, true, true, true);
+    		//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, true, true, true);
     		break;
     	}
 
@@ -482,7 +482,7 @@ void ISR_Control(void *data)
     }
 
     // assign DutyCycles lastmaschine
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge6DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
 
     // assign Duty Cycles pruef
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

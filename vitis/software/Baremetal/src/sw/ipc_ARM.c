@@ -235,9 +235,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_13):
+		uz_SpeedControl_set_Kp(data->objects.speed_ctrl_Last, value);
 			break;
 
 		case (Set_Send_Field_14):
+		uz_SpeedControl_set_Ki(data->objects.speed_ctrl_Last, value);
 			break;
 
 		case (Set_Send_Field_15):

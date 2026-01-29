@@ -121,7 +121,7 @@ uz_CurrentControl_t* init_dq_FOC_Last(void) {
 }
 
 const struct uz_PI_Controller_config config_speed_Last = {
-		   .Kp = 0.01f,
+		   .Kp = 0.07f,
 		   .Ki = 16.6667f,
 		   .samplingTime_sec = SAMPLE_TIME_SEC_SPEED_CONTROL,
 		   .upper_limit = 2.4f,

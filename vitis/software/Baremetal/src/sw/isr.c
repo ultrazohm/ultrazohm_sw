@@ -247,6 +247,10 @@ void ISR_Control(void *data)
     	uz_CurrentControl_reset(Global_Data.objects.CC_xy_instance_Pruef);
     	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance_Last);
     	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_Last);
+    	StepProfile = false;
+    	change_speed = false;
+    	setpoint_index = 0U;
+    	start_angle_found = false;
     	Global_Data.av.n_ref_Last = 0.0f;
     	switch(ConApplication) {
     	    case CIL:
@@ -307,7 +311,7 @@ void ISR_Control(void *data)
         if( (StepProfile) ){
         	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
         	if (((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f)) || ConApplication==CIL)&& (!start_angle_found)) {
-        		if(current_uptime>(old_uptime + 2360)) {
+        		if(current_uptime>(old_uptime + 4360)) {
         			start_angle_found = true;
         		}
 

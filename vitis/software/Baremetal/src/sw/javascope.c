@@ -139,6 +139,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_error] 			    	= &(data->av.error);
+	js_slowDataArray[JSSD_FLOAT_Temp_Inv1]				= &data->av.temp_VSI_1;
+	js_slowDataArray[JSSD_FLOAT_Temp_Inv2]				= &data->av.temp_VSI_2;
+	js_slowDataArray[JSSD_FLOAT_Temp_Inv3]				= &data->av.temp_VSI_3;
 	return Status;
 }
 

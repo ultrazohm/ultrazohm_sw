@@ -25,7 +25,7 @@ static const struct uz_PMSM_t pmsm_config_Pruef_xy = {
         .polePairs = 5.0f
         };
 
-static const struct uz_PMSM_t pmsm_config_Last_dq = {
+static const struct uz_PMSM_t pmsm_config_Last = {
         .Ld_Henry = 0.00058f,
         .Lq_Henry = 0.00071f,
         .Psi_PM_Vs = 0.0143f,
@@ -75,14 +75,14 @@ struct uz_PI_Controller_config config_iy_Pruef = {
 
 
 struct uz_PI_Controller_config config_id_Last = {
-		.Kp = pmsm_config_Last_dq.Ld_Henry / (2*TAU_SIGMA),
-		.Ki = pmsm_config_Last_dq.R_ph_Ohm / (2*TAU_SIGMA),
+		.Kp = pmsm_config_Last.Ld_Henry / (2*TAU_SIGMA),
+		.Ki = pmsm_config_Last.R_ph_Ohm / (2*TAU_SIGMA),
 		.samplingTime_sec = SAMPLE_TIME_SEC_CURRENT_CONTROL,
         };
 
 struct uz_PI_Controller_config config_iq_Last = {
-		.Kp = pmsm_config_Last_dq.Lq_Henry / (2*TAU_SIGMA),
-		.Ki = pmsm_config_Last_dq.R_ph_Ohm / (2*TAU_SIGMA),
+		.Kp = pmsm_config_Last.Lq_Henry / (2*TAU_SIGMA),
+		.Ki = pmsm_config_Last.R_ph_Ohm / (2*TAU_SIGMA),
 		.samplingTime_sec = SAMPLE_TIME_SEC_CURRENT_CONTROL,
         };
 
@@ -92,9 +92,10 @@ uz_CurrentControl_t* init_xy_FOC_Pruef(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_ix_Pruef,
 	    .config_iq = config_iy_Pruef,
-	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,
+	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,//not used
 		.config_PMSM = pmsm_config_Pruef_xy
 	};
+	Global_Data.av.pmsm_config_Pruef_xy = pmsm_config_Pruef_xy;
 	return(uz_CurrentControl_init(CC_xy_config_Pruef));
 }
 
@@ -103,9 +104,10 @@ uz_CurrentControl_t* init_dq_FOC_Pruef(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_id_Pruef,
 	    .config_iq = config_iq_Pruef,
-	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,
+	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,//not used
 		.config_PMSM = pmsm_config_Pruef_dq
 	};
+	Global_Data.av.pmsm_config_Pruef_dq = pmsm_config_Pruef_dq;
 	return(uz_CurrentControl_init(CC_dq_config_Pruef));
 }
 
@@ -115,8 +117,9 @@ uz_CurrentControl_t* init_dq_FOC_Last(void) {
 	    .config_id = config_id_Last,
 	    .config_iq = config_iq_Last,
 	    .max_modulation_index = (1.0f / sqrt(3.0f)),
-		.config_PMSM = pmsm_config_Last_dq
+		.config_PMSM = pmsm_config_Last
 	};
+	Global_Data.av.pmsm_config_Last = pmsm_config_Last;
 	return(uz_CurrentControl_init(CC_dq_config_Last));
 }
 
@@ -134,7 +137,7 @@ const struct uz_SpeedControl_config config_speed_ctrl_Last = {
 	   };
 
 const struct uz_SetPoint_config config_setpoint_Last = {
-			.config_PMSM = pmsm_config_Last_dq,
+			.config_PMSM = pmsm_config_Last,
 			.control_type = FOC,
 		    .id_ref_Ampere = 0.0f,
 		    .is_field_weakening_enabled = false,

@@ -143,7 +143,7 @@ void ISR_Control(void *data)
     	Global_Data.av.i_dqxy.y 			= Global_Data.av.pmsm_outputs.i_y_A;
     	Global_Data.av.omega_mech 			= Global_Data.av.pmsm_outputs.omega_mech_1_s;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
-    	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * 5.0f;
+    	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.pmsm_config_Pruef_dq.polePairs;
     	Global_Data.av.v_dc1				= 48.0f;
     	break;
 
@@ -215,11 +215,11 @@ void ISR_Control(void *data)
         Global_Data.av.theta_elec 					= Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi;
         Global_Data.av.theta_mech 					= Global_Data.av.resolver_outputs_d4_Pruef.position_mech_2pi;
         Global_Data.av.omega_mech 					= Global_Data.av.resolver_outputs_d4_Pruef.omega_mech_rad_s;
-        Global_Data.av.omega_elec 					= Global_Data.av.omega_mech * 5.0f;
+        Global_Data.av.omega_elec 					= Global_Data.av.omega_mech * Global_Data.av.pmsm_config_Pruef_dq.polePairs;
         Global_Data.av.theta_elec_Last 				= Global_Data.av.resolver_outputs_d4_Last.position_el_2pi;
         Global_Data.av.theta_mech_Last 				= Global_Data.av.resolver_outputs_d4_Last.position_mech_2pi;
         Global_Data.av.omega_mech_Last 				= Global_Data.av.resolver_outputs_d4_Last.omega_mech_rad_s;
-        Global_Data.av.omega_elec_Last 				= Global_Data.av.omega_mech_Last * 5.0f;
+        Global_Data.av.omega_elec_Last 				= Global_Data.av.omega_mech_Last * Global_Data.av.pmsm_config_Pruef_dq.polePairs;
         Global_Data.av.theta_elec_advanced 			= Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
         Global_Data.av.mechanicalRotorSpeed 		= Global_Data.av.omega_mech * 30.0f / UZ_PIf;
         Global_Data.av.mechanicalRotorSpeed_Last 	= Global_Data.av.omega_mech_Last * 30.0f / UZ_PIf;

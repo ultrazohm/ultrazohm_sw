@@ -127,6 +127,9 @@ typedef struct _actualValues_ {
 	float M_ref_Last;
 	struct uz_pmsmModel_6ph_dqxy_outputs_t pmsm_outputs;
 	struct uz_pmsmModel_6ph_dqxy_inputs_t pmsm_inputs;
+	struct uz_PMSM_t pmsm_config_Pruef_dq;
+	struct uz_PMSM_t pmsm_config_Pruef_xy;
+	struct uz_PMSM_t pmsm_config_Last;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -108,8 +108,7 @@ int main(void)
             Global_Data.objects.endat_encoder_d5_3 = endat_encoder_init_endat_d5_3();
             uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_3, true);
             Global_Data.objects.endat_encoder_d5_1 = endat_encoder_init_endat_d5_1();
-//            uz_sleep_seconds(2);
-//            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
+            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
 
             initialization_chain = print_msg;
             break;

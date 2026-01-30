@@ -24,6 +24,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+extern enum control_state_list control_mode;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -291,37 +293,34 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_3):
 			//ultrazohm_state_machine_set_userLED(false);
-				data->rasv.flg_start_meas = 1.0f;
+			//data->rasv.flg_start_meas = 1.0f;
+			control_mode = rc_fingerprint;
 			break;
 
 		case (My_Button_4):
-//			ultrazohm_state_machine_set_userLED(true);
+			control_mode = FOC_i_dq_setpoint;
+			break;
+
+		case (My_Button_5):
+			control_mode = offset_estimation;
+			break;
+
+		case (My_Button_6):
+
+			break;
+
+		case (My_Button_7):
+			control_mode = manual;
 			data->rasv.halfBridge1DutyCycle = 0.0;
 			data->rasv.halfBridge2DutyCycle = 0.0;
 			data->rasv.halfBridge3DutyCycle = 0.0;
 			break;
 
-		case (My_Button_5):
-//			ultrazohm_state_machine_set_userLED(false);
-				data->rasv.halfBridge1DutyCycle = 0.53;
-				data->rasv.halfBridge2DutyCycle = 0.5;
-				data->rasv.halfBridge3DutyCycle = 0.5;
-			break;
-
-		case (My_Button_6):
-				data->rasv.halfBridge1DutyCycle = 0.5;
-				data->rasv.halfBridge2DutyCycle = 0.53;
-				data->rasv.halfBridge3DutyCycle = 0.5;
-			break;
-
-		case (My_Button_7):
+		case (My_Button_8):
+			control_mode = manual;
 			data->rasv.halfBridge1DutyCycle = 0.5;
 			data->rasv.halfBridge2DutyCycle = 0.5;
-			data->rasv.halfBridge3DutyCycle = 0.53;
-			break;
-
-		case (My_Button_8):
-
+			data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (Error_Reset):

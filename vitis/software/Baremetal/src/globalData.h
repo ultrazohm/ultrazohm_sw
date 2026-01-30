@@ -19,7 +19,6 @@
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 
-
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {

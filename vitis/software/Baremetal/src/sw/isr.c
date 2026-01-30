@@ -65,12 +65,12 @@ extern DS_Data Global_Data;
 
 #define ISR_SAMPLE_FREQ				40000
 
-#define MAX_CURRENT_ASSERTION 		100.0f
-#define MAX_SPEED_ASSERTION			500.0f
+#define MAX_CURRENT_ASSERTION 		250.0f
+#define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
 #define MAX_MOTOR_TEMP_ASSERTION	100.0f
 #define U_DC_MAX					55.0f
-#define U_DC_MIN					15.0f
+#define U_DC_MIN					10.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
@@ -97,20 +97,11 @@ float temp_coef_b = 7.64f;
 float temp_coef_c = 0;
 
 bool flg_volt_reverse_filter = 1U;
-bool flg_correct_motor_temp = 1U;
+bool flg_correct_motor_temp = 0U;
 
 float theta_elec_pred = 0.0f;
 
-enum control_state_list
-{
-    manual = 0,
-    FOC_i_dq_setpoint,
-	manual_dq_voltage,
-	rs_measurement,
-	rc_fingerprint,
-	offset_estimation
-};
-enum control_state_list control_mode = manual;
+enum control_state_list control_mode = FOC_i_dq_setpoint;
 
 
 // Variables for Current Control and Speed Control
@@ -154,10 +145,11 @@ void ISR_Control(void *data)
     uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_3, send_position);
     Global_Data.av.theta_mech = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_3);
     //Global_Data.av.endat_pos_raw_st_d5_3 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    uz_pos_to_speed_pll_step(Global_Data.objects.pll_0, Global_Data.av.theta_mech);
     Global_Data.av.omega_mech = uz_pos_to_speed_pll_get_omega_mech_si(Global_Data.objects.pll_0);
     Global_Data.av.omega_el = uz_pos_to_speed_pll_get_omega_el_si(Global_Data.objects.pll_0);
     Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech*60.0f/(2.0f*M_PI);
-    Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * (1.0f/ISR_SAMPLE_FREQ);
+    Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * (1.0f/ISR_SAMPLE_FREQ) - 5.69415f;
     Global_Data.av.theta_elec = Global_Data.av.theta_mech_comp * 21.0f  - Global_Data.av.theta_offset;
 
     // Read ADC-Values
@@ -203,10 +195,11 @@ void ISR_Control(void *data)
     	Global_Data.av.temperature_motor = Global_Data.av.channel_A_data.temperature[19];
     }
 
-    // Assertion check
+    // Assertion check (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)
+    // || (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN)
     if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION)
     		|| (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION)
-			|| (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN)  || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) ) {
+			) {
 
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
@@ -238,9 +231,9 @@ void ISR_Control(void *data)
     Global_Data.av.U_d = dq_measurement_voltage.d;
     Global_Data.av.U_q = dq_measurement_voltage.q;
 
-    if (Global_Data.rasv.flg_start_meas == 1.0f && control_mode != rc_fingerprint){
-    	control_mode = rc_fingerprint;
-    }
+    //if (Global_Data.rasv.flg_start_meas == 1.0f && control_mode != rc_fingerprint){
+    //	control_mode = rc_fingerprint;
+    //}
 
     if (Global_Data.rasv.flg_use_setpoint_calculation == 0.0f) {
         dq_reference_current.d = Global_Data.rasv.Id_ref;
@@ -284,7 +277,7 @@ void ISR_Control(void *data)
       					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
       				}
       				// Precharge for minimum 1 ms -> Set bottom gate to high
-      				if ((flg_precharge_SKAI == 1U) && ((reset_counter - delta_counter) <= 2.0f*0.001f*ISR_SAMPLE_FREQ) ){
+      				if ((flg_precharge_SKAI == 1U) && ((reset_counter - delta_counter) <= 4.0f*0.001f*ISR_SAMPLE_FREQ) ){
       					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
   						Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
   						Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
@@ -423,7 +416,7 @@ void ISR_Control(void *data)
       	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
       	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
       	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-      	control_mode = FOC_i_dq_setpoint;
+      	//control_mode = FOC_i_dq_setpoint;
       	output_dutycycle.DutyCycle_A = 0.0f;
       	output_dutycycle.DutyCycle_B = 0.0f;
       	output_dutycycle.DutyCycle_C = 0.0f;

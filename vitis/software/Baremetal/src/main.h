@@ -54,6 +54,16 @@
 
 #include "include/pwm_init.h"
 
+enum control_state_list
+{
+    manual = 0,
+    FOC_i_dq_setpoint,
+	manual_dq_voltage,
+	rs_measurement,
+	rc_fingerprint,
+	offset_estimation
+};
+
 
 //----------------------------------------------------
 // FUNCTIONS

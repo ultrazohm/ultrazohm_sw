@@ -22,5 +22,6 @@ void uz_axigpio_disable_pwm_and_power_electronics(void);
 void uz_axigpio_enable_pwm_and_power_electronics(void);
 void uz_axigpio_disable_datamover(void);
 void uz_axigpio_enable_datamover(void);
+void uz_print_bitstream_timestamp(void);
 
 #endif /* GPIO_H_ */

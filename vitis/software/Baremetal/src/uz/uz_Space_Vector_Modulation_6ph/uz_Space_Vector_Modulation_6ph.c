@@ -133,6 +133,12 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     return out;
 }
 
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq_xy(uz_6ph_dq_t u_ref_V, float V_dc, float theta_el_dq, float theta_el_xy){
+	uz_6ph_alphabeta_t temp = uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(u_ref_V, theta_el_dq, theta_el_xy);
+	struct uz_svm_asym_6ph_CSVPWM24_out output = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(temp, V_dc);
+	return (output);
+}
+
 // get sector of alphabeta setpoint
 static int uz_svm_6ph_get_sector(float alpha, float beta){
     uz_complex_cartesian_t sv_setpoint_cartesian = {                                                // convert setpoint to cartesian

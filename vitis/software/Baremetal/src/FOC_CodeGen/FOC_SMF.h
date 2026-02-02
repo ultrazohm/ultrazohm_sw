@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Jan 15 19:21:59 2026
+ * C/C++ source code generated on : Fri Jan 16 12:03:28 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -41,6 +41,7 @@
 /* Block signals (default storage) */
 typedef struct {
   real32_T DataSourceSwitch[3];        /* '<S1>/DataSourceSwitch' */
+  boolean_T KL15_PG_SourceSwitch;      /* '<S1>/KL15_PG_SourceSwitch' */
 } B_FOC_SMF_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -116,8 +117,14 @@ struct P_FOC_SMF_T_ {
   real32_T enumState_TORQUE_MODE;      /* Variable: enumState_TORQUE_MODE
                                         * Referenced by: '<S1>/FOC_Statemachine'
                                         */
+  boolean_T FOC_MANUAL_KL15_PG;        /* Variable: FOC_MANUAL_KL15_PG
+                                        * Referenced by: '<S1>/FOC_MANUAL_KL15_PG'
+                                        */
   uint8_T SELECT_DataSource;           /* Variable: SELECT_DataSource
                                         * Referenced by: '<S1>/SELECT_DataSource'
+                                        */
+  uint8_T SELECT_KL15_PG;              /* Variable: SELECT_KL15_PG
+                                        * Referenced by: '<S1>/SELECT_KL15_PG'
                                         */
 };
 

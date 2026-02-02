@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Jan 15 19:21:59 2026
+ * C/C++ source code generated on : Fri Jan 16 12:03:28 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -96,8 +96,18 @@ P_FOC_SMF_T FOC_SMF_P = {
    */
   41.0F,
 
+  /* Variable: FOC_MANUAL_KL15_PG
+   * Referenced by: '<S1>/FOC_MANUAL_KL15_PG'
+   */
+  false,
+
   /* Variable: SELECT_DataSource
    * Referenced by: '<S1>/SELECT_DataSource'
+   */
+  0U,
+
+  /* Variable: SELECT_KL15_PG
+   * Referenced by: '<S1>/SELECT_KL15_PG'
    */
   0U
 };

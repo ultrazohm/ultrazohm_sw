@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Jan 15 19:21:22 2026
+ * C/C++ source code generated on : Fri Jan 16 11:31:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -43,6 +43,21 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   boolean_T tmp_idx_1;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
+  /* MultiPortSwitch: '<S1>/ModeSwitch' incorporates:
+   *  Constant: '<S1>/FOC_SELECT_Mode_Intern'
+   */
+  if (FOC_FCF_P.FOC_SELECT_Mode_Intern == 0) {
+    /* MultiPortSwitch: '<S1>/ModeSwitch' */
+    FOC_FCF_B->ModeSwitch = FOC_FCF_U->FOC_Mode;
+  } else {
+    /* MultiPortSwitch: '<S1>/ModeSwitch' incorporates:
+     *  Constant: '<S1>/FOC_Mode_Intern'
+     */
+    FOC_FCF_B->ModeSwitch = FOC_FCF_P.FOC_Mode_Intern;
+  }
+
+  /* End of MultiPortSwitch: '<S1>/ModeSwitch' */
+
   /* Switch: '<S1>/Switch1' incorporates:
    *  Constant: '<S1>/0: P_Udc 1: Udc_measured'
    */
@@ -58,8 +73,8 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* End of Switch: '<S1>/Switch1' */
 
-  /* RelationalOperator: '<S39>/Compare' incorporates:
-   *  Constant: '<S39>/Constant'
+  /* RelationalOperator: '<S42>/Compare' incorporates:
+   *  Constant: '<S42>/Constant'
    */
   FOC_FCF_B->Compare_b = (FOC_FCF_B->U_DC_fcf <
     FOC_FCF_P.FOC_LIMIT_Undervoltage_U_DC);
@@ -70,32 +85,32 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->LogicalOperator1 = ((FOC_FCF_P.FOC_Enable != 0.0F) &&
     (FOC_FCF_U->FOC_Enable != 0.0F));
 
-  /* Logic: '<S7>/Logical Operator2' */
+  /* Logic: '<S9>/Logical Operator2' */
   FOC_FCF_B->LogicalOperator2 = (FOC_FCF_B->Compare_b &&
     FOC_FCF_B->LogicalOperator1);
 
-  /* MultiPortSwitch: '<S7>/Selectphicalc3' incorporates:
-   *  Constant: '<S7>/FOC_ENABLE_Undervoltage_U_DC1'
+  /* MultiPortSwitch: '<S9>/Selectphicalc3' incorporates:
+   *  Constant: '<S9>/FOC_ENABLE_Undervoltage_U_DC1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Undervoltage_U_DC == 0) {
-    /* MultiPortSwitch: '<S7>/Selectphicalc3' incorporates:
-     *  Constant: '<S7>/Constant2'
+    /* MultiPortSwitch: '<S9>/Selectphicalc3' incorporates:
+     *  Constant: '<S9>/Constant2'
      */
     FOC_FCF_B->Selectphicalc3 = FOC_FCF_P.Constant2_Value_j;
   } else {
-    /* Logic: '<S7>/Logical Operator1' */
+    /* Logic: '<S9>/Logical Operator1' */
     FOC_FCF_B->LogicalOperator1_o = !FOC_FCF_B->LogicalOperator1;
 
-    /* MultiPortSwitch: '<S7>/Selectphicalc3' */
+    /* MultiPortSwitch: '<S9>/Selectphicalc3' */
     FOC_FCF_B->Selectphicalc3 = FOC_FCF_B->LogicalOperator1_o;
   }
 
-  /* End of MultiPortSwitch: '<S7>/Selectphicalc3' */
+  /* End of MultiPortSwitch: '<S9>/Selectphicalc3' */
 
-  /* Memory: '<S42>/Memory' */
+  /* Memory: '<S45>/Memory' */
   FOC_FCF_B->Memory = FOC_FCF_DW->Memory_PreviousInput;
 
-  /* CombinatorialLogic: '<S42>/Logic' */
+  /* CombinatorialLogic: '<S45>/Logic' */
   tmp_1 = FOC_FCF_B->LogicalOperator2;
   i = tmp_1;
   tmp_1 = FOC_FCF_B->Selectphicalc3;
@@ -105,65 +120,65 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Logic[0U] = FOC_FCF_P.Logic_table[(uint32_T)i];
   FOC_FCF_B->Logic[1U] = FOC_FCF_P.Logic_table[(uint32_T)i + 8U];
 
-  /* MultiPortSwitch: '<S7>/Selectphicalc1' incorporates:
-   *  Constant: '<S7>/FOC_ENABLE_Undervoltage_U_DC1'
+  /* MultiPortSwitch: '<S9>/Selectphicalc1' incorporates:
+   *  Constant: '<S9>/FOC_ENABLE_Undervoltage_U_DC1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Undervoltage_U_DC == 0) {
-    /* MultiPortSwitch: '<S7>/Selectphicalc1' incorporates:
-     *  Constant: '<S7>/Constant3'
+    /* MultiPortSwitch: '<S9>/Selectphicalc1' incorporates:
+     *  Constant: '<S9>/Constant3'
      */
     FOC_FCF_B->Selectphicalc1 = FOC_FCF_P.Constant3_Value_i;
   } else {
-    /* MultiPortSwitch: '<S7>/Selectphicalc1' */
+    /* MultiPortSwitch: '<S9>/Selectphicalc1' */
     FOC_FCF_B->Selectphicalc1 = FOC_FCF_B->Logic[1];
   }
 
-  /* End of MultiPortSwitch: '<S7>/Selectphicalc1' */
+  /* End of MultiPortSwitch: '<S9>/Selectphicalc1' */
 
-  /* RelationalOperator: '<S40>/Compare' incorporates:
-   *  Constant: '<S40>/Constant'
+  /* RelationalOperator: '<S43>/Compare' incorporates:
+   *  Constant: '<S43>/Constant'
    */
   FOC_FCF_B->Compare_br = (FOC_FCF_B->U_DC_fcf >
     FOC_FCF_P.FOC_LIMIT_Overvoltage_U_DC);
 
-  /* RelationalOperator: '<S44>/Compare' incorporates:
-   *  Constant: '<S44>/Constant'
-   *  Constant: '<S7>/Reset_OV_Error'
+  /* RelationalOperator: '<S47>/Compare' incorporates:
+   *  Constant: '<S47>/Constant'
+   *  Constant: '<S9>/Reset_OV_Error'
    */
   FOC_FCF_B->Compare_n = (FOC_FCF_P.FOC_RESET_OV_Error >
     FOC_FCF_P.Constant_Value_o);
 
-  /* UnitDelay: '<S41>/Delay Input1'
+  /* UnitDelay: '<S44>/Delay Input1'
    *
-   * Block description for '<S41>/Delay Input1':
+   * Block description for '<S44>/Delay Input1':
    *
    *  Store in Global RAM
    */
   FOC_FCF_B->Uk1 = FOC_FCF_DW->DelayInput1_DSTATE;
 
-  /* MultiPortSwitch: '<S7>/Selectphicalc4' incorporates:
-   *  Constant: '<S7>/FOC_ENABLE_Overvoltage_U_DC1'
+  /* MultiPortSwitch: '<S9>/Selectphicalc4' incorporates:
+   *  Constant: '<S9>/FOC_ENABLE_Overvoltage_U_DC1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Overvoltage_U_DC == 0) {
-    /* MultiPortSwitch: '<S7>/Selectphicalc4' incorporates:
-     *  Constant: '<S7>/Constant4'
+    /* MultiPortSwitch: '<S9>/Selectphicalc4' incorporates:
+     *  Constant: '<S9>/Constant4'
      */
     FOC_FCF_B->Selectphicalc4 = FOC_FCF_P.Constant4_Value_b;
   } else {
-    /* RelationalOperator: '<S41>/FixPt Relational Operator' */
+    /* RelationalOperator: '<S44>/FixPt Relational Operator' */
     FOC_FCF_B->FixPtRelationalOperator = ((int32_T)FOC_FCF_B->Compare_n >
       (int32_T)FOC_FCF_B->Uk1);
 
-    /* MultiPortSwitch: '<S7>/Selectphicalc4' */
+    /* MultiPortSwitch: '<S9>/Selectphicalc4' */
     FOC_FCF_B->Selectphicalc4 = FOC_FCF_B->FixPtRelationalOperator;
   }
 
-  /* End of MultiPortSwitch: '<S7>/Selectphicalc4' */
+  /* End of MultiPortSwitch: '<S9>/Selectphicalc4' */
 
-  /* Memory: '<S43>/Memory' */
+  /* Memory: '<S46>/Memory' */
   FOC_FCF_B->Memory_k = FOC_FCF_DW->Memory_PreviousInput_o;
 
-  /* CombinatorialLogic: '<S43>/Logic' */
+  /* CombinatorialLogic: '<S46>/Logic' */
   tmp_1 = FOC_FCF_B->Compare_br;
   i = tmp_1;
   tmp_1 = FOC_FCF_B->Selectphicalc4;
@@ -173,84 +188,84 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Logic_g[0U] = FOC_FCF_P.Logic_table_m[(uint32_T)i];
   FOC_FCF_B->Logic_g[1U] = FOC_FCF_P.Logic_table_m[(uint32_T)i + 8U];
 
-  /* MultiPortSwitch: '<S7>/Selectphicalc2' incorporates:
-   *  Constant: '<S7>/FOC_ENABLE_Overvoltage_U_DC1'
+  /* MultiPortSwitch: '<S9>/Selectphicalc2' incorporates:
+   *  Constant: '<S9>/FOC_ENABLE_Overvoltage_U_DC1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Overvoltage_U_DC == 0) {
-    /* MultiPortSwitch: '<S7>/Selectphicalc2' incorporates:
-     *  Constant: '<S7>/Constant1'
+    /* MultiPortSwitch: '<S9>/Selectphicalc2' incorporates:
+     *  Constant: '<S9>/Constant1'
      */
     FOC_FCF_B->Selectphicalc2_m = FOC_FCF_P.Constant1_Value_j;
   } else {
-    /* MultiPortSwitch: '<S7>/Selectphicalc2' */
+    /* MultiPortSwitch: '<S9>/Selectphicalc2' */
     FOC_FCF_B->Selectphicalc2_m = FOC_FCF_B->Logic_g[1];
   }
 
-  /* End of MultiPortSwitch: '<S7>/Selectphicalc2' */
+  /* End of MultiPortSwitch: '<S9>/Selectphicalc2' */
 
-  /* Logic: '<S7>/Logical Operator' */
+  /* Logic: '<S9>/Logical Operator' */
   FOC_FCF_B->LogicalOperator = (FOC_FCF_B->Selectphicalc1 &&
     FOC_FCF_B->Selectphicalc2_m);
   for (i = 0; i < 9; i++) {
-    /* Abs: '<S6>/Abs' */
+    /* Abs: '<S8>/Abs' */
     FOC_FCF_B->Abs[i] = fabsf(FOC_FCF_U->I_phA[i]);
   }
 
-  /* MinMax: '<S6>/MinMax' incorporates:
-   *  Abs: '<S6>/Abs'
+  /* MinMax: '<S8>/MinMax' incorporates:
+   *  Abs: '<S8>/Abs'
    */
   tmp_0 = FOC_FCF_B->Abs[0];
   for (i = 0; i < 8; i++) {
     tmp_0 = fmaxf(tmp_0, FOC_FCF_B->Abs[i + 1]);
   }
 
-  /* MinMax: '<S6>/MinMax' */
+  /* MinMax: '<S8>/MinMax' */
   FOC_FCF_B->MinMax = tmp_0;
 
-  /* RelationalOperator: '<S35>/Compare' incorporates:
-   *  Constant: '<S35>/Constant'
+  /* RelationalOperator: '<S38>/Compare' incorporates:
+   *  Constant: '<S38>/Constant'
    */
   FOC_FCF_B->Compare_a = (FOC_FCF_B->MinMax >=
     FOC_FCF_P.FOC_LIMIT_Overcurrent_I_uvw);
 
-  /* RelationalOperator: '<S38>/Compare' incorporates:
-   *  Constant: '<S38>/Constant'
-   *  Constant: '<S6>/Reset_OC_Error'
+  /* RelationalOperator: '<S41>/Compare' incorporates:
+   *  Constant: '<S41>/Constant'
+   *  Constant: '<S8>/Reset_OC_Error'
    */
   FOC_FCF_B->Compare_l = (FOC_FCF_P.FOC_RESET_OC_Error >
     FOC_FCF_P.Constant_Value);
 
-  /* UnitDelay: '<S36>/Delay Input1'
+  /* UnitDelay: '<S39>/Delay Input1'
    *
-   * Block description for '<S36>/Delay Input1':
+   * Block description for '<S39>/Delay Input1':
    *
    *  Store in Global RAM
    */
   FOC_FCF_B->Uk1_k = FOC_FCF_DW->DelayInput1_DSTATE_c;
 
-  /* MultiPortSwitch: '<S6>/Selectphicalc2' incorporates:
-   *  Constant: '<S6>/FOC_ENABLE_Overcurrent_I_uvw1'
+  /* MultiPortSwitch: '<S8>/Selectphicalc2' incorporates:
+   *  Constant: '<S8>/FOC_ENABLE_Overcurrent_I_uvw1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Overcurrent_I_uvw == 0) {
-    /* MultiPortSwitch: '<S6>/Selectphicalc2' incorporates:
-     *  Constant: '<S6>/Constant1'
+    /* MultiPortSwitch: '<S8>/Selectphicalc2' incorporates:
+     *  Constant: '<S8>/Constant1'
      */
     FOC_FCF_B->Selectphicalc2_i = FOC_FCF_P.Constant1_Value_gm;
   } else {
-    /* RelationalOperator: '<S36>/FixPt Relational Operator' */
+    /* RelationalOperator: '<S39>/FixPt Relational Operator' */
     FOC_FCF_B->FixPtRelationalOperator_e = ((int32_T)FOC_FCF_B->Compare_l >
       (int32_T)FOC_FCF_B->Uk1_k);
 
-    /* MultiPortSwitch: '<S6>/Selectphicalc2' */
+    /* MultiPortSwitch: '<S8>/Selectphicalc2' */
     FOC_FCF_B->Selectphicalc2_i = FOC_FCF_B->FixPtRelationalOperator_e;
   }
 
-  /* End of MultiPortSwitch: '<S6>/Selectphicalc2' */
+  /* End of MultiPortSwitch: '<S8>/Selectphicalc2' */
 
-  /* Memory: '<S37>/Memory' */
+  /* Memory: '<S40>/Memory' */
   FOC_FCF_B->Memory_p = FOC_FCF_DW->Memory_PreviousInput_p;
 
-  /* CombinatorialLogic: '<S37>/Logic' */
+  /* CombinatorialLogic: '<S40>/Logic' */
   tmp_1 = FOC_FCF_B->Compare_a;
   i = tmp_1;
   tmp_1 = FOC_FCF_B->Selectphicalc2_i;
@@ -260,20 +275,20 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Logic_gq[0U] = FOC_FCF_P.Logic_table_f[(uint32_T)i];
   FOC_FCF_B->Logic_gq[1U] = FOC_FCF_P.Logic_table_f[(uint32_T)i + 8U];
 
-  /* MultiPortSwitch: '<S6>/Selectphicalc1' incorporates:
-   *  Constant: '<S6>/FOC_ENABLE_Overcurrent_I_uvw1'
+  /* MultiPortSwitch: '<S8>/Selectphicalc1' incorporates:
+   *  Constant: '<S8>/FOC_ENABLE_Overcurrent_I_uvw1'
    */
   if ((int32_T)FOC_FCF_P.FOC_ENABLE_Overcurrent_I_uvw == 0) {
-    /* MultiPortSwitch: '<S6>/Selectphicalc1' incorporates:
-     *  Constant: '<S6>/Constant2'
+    /* MultiPortSwitch: '<S8>/Selectphicalc1' incorporates:
+     *  Constant: '<S8>/Constant2'
      */
     FOC_FCF_B->Selectphicalc1_j = FOC_FCF_P.Constant2_Value_o;
   } else {
-    /* MultiPortSwitch: '<S6>/Selectphicalc1' */
+    /* MultiPortSwitch: '<S8>/Selectphicalc1' */
     FOC_FCF_B->Selectphicalc1_j = FOC_FCF_B->Logic_gq[1];
   }
 
-  /* End of MultiPortSwitch: '<S6>/Selectphicalc1' */
+  /* End of MultiPortSwitch: '<S8>/Selectphicalc1' */
 
   /* Logic: '<S1>/Logical Operator' */
   FOC_FCF_B->LogicalOperator_n = (FOC_FCF_B->LogicalOperator &&
@@ -281,21 +296,6 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Switch: '<S1>/Switch' */
   if (FOC_FCF_B->LogicalOperator_n) {
-    /* MultiPortSwitch: '<S1>/ModeSwitch' incorporates:
-     *  Constant: '<S1>/FOC_SELECT_Mode_Intern'
-     */
-    if (FOC_FCF_P.FOC_SELECT_Mode_Intern == 0) {
-      /* MultiPortSwitch: '<S1>/ModeSwitch' */
-      FOC_FCF_B->ModeSwitch = FOC_FCF_U->FOC_Mode;
-    } else {
-      /* MultiPortSwitch: '<S1>/ModeSwitch' incorporates:
-       *  Constant: '<S1>/FOC_Mode_Intern'
-       */
-      FOC_FCF_B->ModeSwitch = FOC_FCF_P.FOC_Mode_Intern;
-    }
-
-    /* End of MultiPortSwitch: '<S1>/ModeSwitch' */
-
     /* Switch: '<S1>/Switch' */
     FOC_FCF_B->FOC_Mode_after_checks = FOC_FCF_B->ModeSwitch;
   } else {
@@ -307,35 +307,35 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* End of Switch: '<S1>/Switch' */
 
-  /* DiscreteTransferFcn: '<S9>/Discrete Transfer Fcn' */
+  /* DiscreteTransferFcn: '<S11>/Discrete Transfer Fcn' */
   tmp_0 = FOC_FCF_P.DiscreteTransferFcn_NumCoef *
     FOC_FCF_DW->DiscreteTransferFcn_states;
 
-  /* DiscreteTransferFcn: '<S9>/Discrete Transfer Fcn' */
+  /* DiscreteTransferFcn: '<S11>/Discrete Transfer Fcn' */
   FOC_FCF_B->DiscreteTransferFcn = tmp_0;
 
-  /* Gain: '<S9>/f_2_w_el' incorporates:
-   *  Constant: '<S9>/Uf_w_el'
+  /* Gain: '<S11>/f_2_w_el' incorporates:
+   *  Constant: '<S11>/Uf_w_el'
    */
   FOC_FCF_B->f_2_w_el = FOC_FCF_P.f_2_w_el_Gain * FOC_FCF_P.FOC_Uf_f_el;
 
-  /* Product: '<S45>/Product' incorporates:
-   *  Constant: '<S45>/FOC_T_fast'
+  /* Product: '<S48>/Product' incorporates:
+   *  Constant: '<S48>/FOC_T_fast'
    */
   FOC_FCF_B->Product = FOC_FCF_B->f_2_w_el * FOC_FCF_P.FOC_T_fast_Value;
 
-  /* UnitDelay: '<S45>/Unit Delay' */
+  /* UnitDelay: '<S48>/Unit Delay' */
   FOC_FCF_B->UnitDelay = FOC_FCF_DW->UnitDelay_DSTATE;
 
-  /* Sum: '<S45>/Add' */
+  /* Sum: '<S48>/Add' */
   FOC_FCF_B->Add = FOC_FCF_B->Product + FOC_FCF_B->UnitDelay;
 
-  /* Gain: '<S20>/TrafoMatrix uvw->alphabeta' */
+  /* Gain: '<S22>/TrafoMatrix uvw->alphabeta' */
   tmp_0 = FOC_FCF_U->I_phA[0];
   I_phA = FOC_FCF_U->I_phA[1];
   I_phA_0 = FOC_FCF_U->I_phA[2];
   for (i_0 = 0; i_0 < 2; i_0++) {
-    /* Gain: '<S20>/TrafoMatrix uvw->alphabeta' */
+    /* Gain: '<S22>/TrafoMatrix uvw->alphabeta' */
     TrafoMatrixuvwalphabeta = FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain[i_0] *
       tmp_0;
     TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain[i_0 + 2] *
@@ -344,6 +344,11 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
       I_phA_0;
     FOC_FCF_B->TrafoMatrixuvwalphabeta[i_0] = TrafoMatrixuvwalphabeta;
   }
+
+  /* RelationalOperator: '<S6>/Compare' incorporates:
+   *  Constant: '<S6>/Constant'
+   */
+  FOC_FCF_B->Compare_lu = (FOC_FCF_B->ModeSwitch == FOC_FCF_P.enumState_FOC_IF);
 
   /* Saturate: '<S3>/ResolverOffsetLimitation' */
   if (FOC_FCF_P.FOC_phi_offset > FOC_FCF_P.ResolverOffsetLimitation_UpperS) {
@@ -365,246 +370,276 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* Sum: '<S3>/Sum1' */
   FOC_FCF_B->Sum1 = FOC_FCF_B->ResolverOffsetLimitation + FOC_FCF_U->phi_elrad;
 
-  /* UnitDelay: '<S14>/Unit Delay1' */
+  /* UnitDelay: '<S16>/Unit Delay1' */
   FOC_FCF_B->w_el = FOC_FCF_DW->UnitDelay1_DSTATE;
 
-  /* Gain: '<S11>/DeadTimeCompensation' */
+  /* Gain: '<S13>/DeadTimeCompensation' */
   FOC_FCF_B->DeadTimeCompensation = FOC_FCF_P.FOC_PhiSensorTdead *
     FOC_FCF_B->w_el;
 
-  /* Sum: '<S11>/Sum3' */
+  /* Sum: '<S13>/Sum3' */
   FOC_FCF_B->Sum3 = FOC_FCF_B->Sum1 + FOC_FCF_B->DeadTimeCompensation;
 
-  /* UnitDelay: '<S13>/Unit Delay' */
+  /* UnitDelay: '<S15>/Unit Delay' */
   FOC_FCF_B->UnitDelay_l = FOC_FCF_DW->UnitDelay_DSTATE_h;
 
-  /* Sum: '<S13>/Sum' */
+  /* Sum: '<S15>/Sum' */
   FOC_FCF_B->Sum = FOC_FCF_B->Sum3 - FOC_FCF_B->UnitDelay_l;
 
-  /* RelationalOperator: '<S13>/Sprung?' incorporates:
-   *  Constant: '<S13>/Constant3'
+  /* RelationalOperator: '<S15>/Sprung?' incorporates:
+   *  Constant: '<S15>/Constant3'
    */
   FOC_FCF_B->Sprung = (FOC_FCF_B->Sum < FOC_FCF_P.Constant3_Value);
 
-  /* Switch: '<S13>/Switch' */
+  /* Switch: '<S15>/Switch' */
   if (FOC_FCF_B->Sprung) {
-    /* Switch: '<S13>/Switch' incorporates:
-     *  Constant: '<S13>/Constant2'
+    /* Switch: '<S15>/Switch' incorporates:
+     *  Constant: '<S15>/Constant2'
      */
     FOC_FCF_B->Switch = FOC_FCF_P.Constant2_Value;
   } else {
-    /* Switch: '<S13>/Switch' incorporates:
-     *  Constant: '<S13>/Constant4'
+    /* Switch: '<S15>/Switch' incorporates:
+     *  Constant: '<S15>/Constant4'
      */
     FOC_FCF_B->Switch = FOC_FCF_P.Constant4_Value;
   }
 
-  /* End of Switch: '<S13>/Switch' */
+  /* End of Switch: '<S15>/Switch' */
 
-  /* RelationalOperator: '<S13>/Sprung?1' incorporates:
-   *  Constant: '<S13>/Constant1'
+  /* RelationalOperator: '<S15>/Sprung?1' incorporates:
+   *  Constant: '<S15>/Constant1'
    */
   FOC_FCF_B->Sprung1 = (FOC_FCF_B->Sum > FOC_FCF_P.Constant1_Value_ep);
 
-  /* Switch: '<S13>/Switch1' */
+  /* Switch: '<S15>/Switch1' */
   if (FOC_FCF_B->Sprung1) {
-    /* Switch: '<S13>/Switch1' incorporates:
-     *  Constant: '<S13>/Constant5'
+    /* Switch: '<S15>/Switch1' incorporates:
+     *  Constant: '<S15>/Constant5'
      */
     FOC_FCF_B->Switch1 = FOC_FCF_P.Constant5_Value;
   } else {
-    /* Switch: '<S13>/Switch1' incorporates:
-     *  Constant: '<S13>/Constant6'
+    /* Switch: '<S15>/Switch1' incorporates:
+     *  Constant: '<S15>/Constant6'
      */
     FOC_FCF_B->Switch1 = FOC_FCF_P.Constant6_Value;
   }
 
-  /* End of Switch: '<S13>/Switch1' */
+  /* End of Switch: '<S15>/Switch1' */
 
-  /* Sum: '<S13>/Sum2' */
+  /* Sum: '<S15>/Sum2' */
   FOC_FCF_B->Sum2 = FOC_FCF_B->Switch + FOC_FCF_B->Switch1;
 
-  /* UnitDelay: '<S11>/Unit Delay3' */
+  /* UnitDelay: '<S13>/Unit Delay3' */
   FOC_FCF_B->UnitDelay3 = FOC_FCF_DW->UnitDelay3_DSTATE;
 
-  /* Sum: '<S11>/Sum7' */
+  /* Sum: '<S13>/Sum7' */
   FOC_FCF_B->phi_el_observer = FOC_FCF_B->UnitDelay3 - FOC_FCF_B->Sum2;
 
-  /* Product: '<S8>/Product' incorporates:
-   *  Constant: '<S8>/FOC_T_fast'
+  /* Product: '<S10>/Product' incorporates:
+   *  Constant: '<S10>/FOC_T_fast'
    */
   FOC_FCF_B->Product_e = FOC_FCF_U->w_el_Ref_IfStarter *
     FOC_FCF_P.FOC_T_fast_Value_d;
 
-  /* UnitDelay: '<S8>/Unit Delay' */
+  /* UnitDelay: '<S10>/Unit Delay' */
   FOC_FCF_B->UnitDelay_a = FOC_FCF_DW->UnitDelay_DSTATE_p;
 
-  /* Sum: '<S8>/Add' */
+  /* Sum: '<S10>/Add' */
   FOC_FCF_B->Add_m = FOC_FCF_B->Product_e + FOC_FCF_B->UnitDelay_a;
 
-  /* MultiPortSwitch: '<S1>/Use_If_Starter' */
-  if ((int32_T)FOC_FCF_U->IfStarter_Active == 0) {
-    /* MultiPortSwitch: '<S3>/Selectphicalc2' incorporates:
-     *  Constant: '<S3>/Constant3'
-     */
-    if (FOC_FCF_P.FOC_SELECT_phi == 1) {
-      /* MultiPortSwitch: '<S3>/Selectphicalc2' */
-      FOC_FCF_B->Selectphicalc2 = FOC_FCF_B->Sum1;
-    } else {
-      /* MultiPortSwitch: '<S3>/Selectphicalc2' */
-      FOC_FCF_B->Selectphicalc2 = FOC_FCF_B->phi_el_observer;
-    }
+  /* Gain: '<S7>/f_2_w_el' incorporates:
+   *  Constant: '<S7>/If_f_el'
+   */
+  FOC_FCF_B->f_2_w_el_b = FOC_FCF_P.f_2_w_el_Gain_j * FOC_FCF_P.FOC_If_f_el;
 
-    /* End of MultiPortSwitch: '<S3>/Selectphicalc2' */
+  /* Product: '<S37>/Product' incorporates:
+   *  Constant: '<S37>/FOC_T_fast'
+   */
+  FOC_FCF_B->Product_h = FOC_FCF_B->f_2_w_el_b * FOC_FCF_P.FOC_T_fast_Value_f;
 
-    /* Switch: '<S12>/Switch1' */
-    if (FOC_FCF_B->Selectphicalc2 > FOC_FCF_P.Switch1_Threshold) {
-      /* Sum: '<S12>/Sum2' incorporates:
-       *  Constant: '<S12>/Constant'
-       */
-      FOC_FCF_B->Sum2_l = FOC_FCF_B->Selectphicalc2 - FOC_FCF_P.Constant_Value_e;
+  /* UnitDelay: '<S37>/Unit Delay' */
+  FOC_FCF_B->UnitDelay_j = FOC_FCF_DW->UnitDelay_DSTATE_f;
 
-      /* Switch: '<S12>/Switch1' */
-      FOC_FCF_B->Switch1_d = FOC_FCF_B->Sum2_l;
-    } else {
-      /* Switch: '<S12>/Switch1' */
-      FOC_FCF_B->Switch1_d = FOC_FCF_B->Selectphicalc2;
-    }
+  /* Sum: '<S37>/Add' */
+  FOC_FCF_B->Add_mp = FOC_FCF_B->Product_h + FOC_FCF_B->UnitDelay_j;
 
-    /* End of Switch: '<S12>/Switch1' */
-
-    /* Switch: '<S12>/Switch2' */
-    if (FOC_FCF_B->Switch1_d > FOC_FCF_P.Switch2_Threshold) {
-      /* Switch: '<S12>/Switch2' */
-      FOC_FCF_B->Switch2_f = FOC_FCF_B->Switch1_d;
-    } else {
-      /* Sum: '<S12>/Sum3' incorporates:
-       *  Constant: '<S12>/Constant1'
-       */
-      FOC_FCF_B->Sum3_h = FOC_FCF_B->Switch1_d + FOC_FCF_P.Constant1_Value_g;
-
-      /* Switch: '<S12>/Switch2' */
-      FOC_FCF_B->Switch2_f = FOC_FCF_B->Sum3_h;
-    }
-
-    /* End of Switch: '<S12>/Switch2' */
-
+  /* MultiPortSwitch: '<S1>/Use_If_Mode' */
+  if (!FOC_FCF_B->Compare_lu) {
     /* MultiPortSwitch: '<S1>/Use_If_Starter' */
-    FOC_FCF_B->phi_el_I_trafo = FOC_FCF_B->Switch2_f;
+    if ((int32_T)FOC_FCF_U->IfStarter_Active == 0) {
+      /* MultiPortSwitch: '<S3>/Selectphicalc2' incorporates:
+       *  Constant: '<S3>/Constant3'
+       */
+      if (FOC_FCF_P.FOC_SELECT_phi == 1) {
+        /* MultiPortSwitch: '<S3>/Selectphicalc2' */
+        FOC_FCF_B->Selectphicalc2 = FOC_FCF_B->Sum1;
+      } else {
+        /* MultiPortSwitch: '<S3>/Selectphicalc2' */
+        FOC_FCF_B->Selectphicalc2 = FOC_FCF_B->phi_el_observer;
+      }
+
+      /* End of MultiPortSwitch: '<S3>/Selectphicalc2' */
+
+      /* Switch: '<S14>/Switch1' */
+      if (FOC_FCF_B->Selectphicalc2 > FOC_FCF_P.Switch1_Threshold) {
+        /* Sum: '<S14>/Sum2' incorporates:
+         *  Constant: '<S14>/Constant'
+         */
+        FOC_FCF_B->Sum2_l = FOC_FCF_B->Selectphicalc2 -
+          FOC_FCF_P.Constant_Value_e;
+
+        /* Switch: '<S14>/Switch1' */
+        FOC_FCF_B->Switch1_d = FOC_FCF_B->Sum2_l;
+      } else {
+        /* Switch: '<S14>/Switch1' */
+        FOC_FCF_B->Switch1_d = FOC_FCF_B->Selectphicalc2;
+      }
+
+      /* End of Switch: '<S14>/Switch1' */
+
+      /* Switch: '<S14>/Switch2' */
+      if (FOC_FCF_B->Switch1_d > FOC_FCF_P.Switch2_Threshold) {
+        /* Switch: '<S14>/Switch2' */
+        FOC_FCF_B->Switch2_f = FOC_FCF_B->Switch1_d;
+      } else {
+        /* Sum: '<S14>/Sum3' incorporates:
+         *  Constant: '<S14>/Constant1'
+         */
+        FOC_FCF_B->Sum3_h = FOC_FCF_B->Switch1_d + FOC_FCF_P.Constant1_Value_g;
+
+        /* Switch: '<S14>/Switch2' */
+        FOC_FCF_B->Switch2_f = FOC_FCF_B->Sum3_h;
+      }
+
+      /* End of Switch: '<S14>/Switch2' */
+
+      /* MultiPortSwitch: '<S1>/Use_If_Starter' */
+      FOC_FCF_B->Use_If_Starter = FOC_FCF_B->Switch2_f;
+    } else {
+      /* MultiPortSwitch: '<S1>/Use_If_Starter' */
+      FOC_FCF_B->Use_If_Starter = FOC_FCF_B->Add_m;
+    }
+
+    /* End of MultiPortSwitch: '<S1>/Use_If_Starter' */
+
+    /* MultiPortSwitch: '<S1>/Use_If_Mode' */
+    FOC_FCF_B->Use_If_Mode[0] = FOC_FCF_B->Use_If_Starter;
+    FOC_FCF_B->Use_If_Mode[1] = FOC_FCF_B->w_el;
   } else {
-    /* MultiPortSwitch: '<S1>/Use_If_Starter' */
-    FOC_FCF_B->phi_el_I_trafo = FOC_FCF_B->Add_m;
+    /* MultiPortSwitch: '<S1>/Use_If_Mode' */
+    FOC_FCF_B->Use_If_Mode[0] = FOC_FCF_B->Add_mp;
+    FOC_FCF_B->Use_If_Mode[1] = FOC_FCF_B->f_2_w_el_b;
   }
 
-  /* End of MultiPortSwitch: '<S1>/Use_If_Starter' */
+  /* End of MultiPortSwitch: '<S1>/Use_If_Mode' */
 
-  /* Trigonometry: '<S20>/Trigonometric Function1' */
-  FOC_FCF_B->TrigonometricFunction1 = cosf(FOC_FCF_B->phi_el_I_trafo);
+  /* Trigonometry: '<S22>/Trigonometric Function1' */
+  FOC_FCF_B->TrigonometricFunction1 = cosf(FOC_FCF_B->Use_If_Mode[0]);
 
-  /* Product: '<S20>/TrafoProd' */
+  /* Product: '<S22>/TrafoProd' */
   FOC_FCF_B->TrafoProd = FOC_FCF_B->TrafoMatrixuvwalphabeta[0] *
     FOC_FCF_B->TrigonometricFunction1;
 
-  /* Trigonometry: '<S20>/Trigonometric Function' */
-  FOC_FCF_B->TrigonometricFunction = sinf(FOC_FCF_B->phi_el_I_trafo);
+  /* Trigonometry: '<S22>/Trigonometric Function' */
+  FOC_FCF_B->TrigonometricFunction = sinf(FOC_FCF_B->Use_If_Mode[0]);
 
-  /* Product: '<S20>/TrafoProd3' */
+  /* Product: '<S22>/TrafoProd3' */
   FOC_FCF_B->TrafoProd3 = FOC_FCF_B->TrigonometricFunction *
     FOC_FCF_B->TrafoMatrixuvwalphabeta[1];
 
-  /* Sum: '<S20>/I_d1_Act' */
+  /* Sum: '<S22>/I_d1_Act' */
   FOC_FCF_B->I_d1_Act = FOC_FCF_B->TrafoProd + FOC_FCF_B->TrafoProd3;
 
-  /* Product: '<S20>/TrafoProd1' */
+  /* Product: '<S22>/TrafoProd1' */
   FOC_FCF_B->TrafoProd1 = FOC_FCF_B->TrigonometricFunction1 *
     FOC_FCF_B->TrafoMatrixuvwalphabeta[1];
 
-  /* Product: '<S20>/TrafoProd2' */
+  /* Product: '<S22>/TrafoProd2' */
   FOC_FCF_B->TrafoProd2 = FOC_FCF_B->TrafoMatrixuvwalphabeta[0] *
     FOC_FCF_B->TrigonometricFunction;
 
-  /* Sum: '<S20>/I_q1_Act' */
+  /* Sum: '<S22>/I_q1_Act' */
   FOC_FCF_B->I_q1_Act = FOC_FCF_B->TrafoProd1 - FOC_FCF_B->TrafoProd2;
 
-  /* SignalConversion generated from: '<S20>/Discrete FIR Filter 20th order' */
+  /* SignalConversion generated from: '<S22>/Discrete FIR Filter 20th order' */
   FOC_FCF_B->TmpSignalConversionAtDiscreteFI[0] = FOC_FCF_B->I_d1_Act;
   FOC_FCF_B->TmpSignalConversionAtDiscreteFI[1] = FOC_FCF_B->I_q1_Act;
 
-  /* Sum: '<S17>/IdqErr' */
+  /* Sum: '<S19>/IdqErr' */
   tmp_0 = FOC_FCF_U->I_dq_RefA[0] - FOC_FCF_B->TmpSignalConversionAtDiscreteFI[0];
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->IdqErr[0] = tmp_0;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S24>/KP*e[k]1' incorporates:
-   *  Constant: '<S24>/FOC_KP1'
+  /* Product: '<S26>/KP*e[k]1' incorporates:
+   *  Constant: '<S26>/FOC_KP1'
    */
   FOC_FCF_B->KPek1[0] = tmp_0 * FOC_FCF_P.FOC_KP;
 
-  /* UnitDelay: '<S24>/IntegDelay1' */
+  /* UnitDelay: '<S26>/IntegDelay1' */
   FOC_FCF_B->IntegDelay1[0] = FOC_FCF_DW->IntegDelay1_DSTATE[0];
 
-  /* Sum: '<S17>/IdqErr' */
+  /* Sum: '<S19>/IdqErr' */
   tmp_0 = FOC_FCF_U->I_dq_RefA[1] - FOC_FCF_B->TmpSignalConversionAtDiscreteFI[1];
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->IdqErr[1] = tmp_0;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S24>/KP*e[k]1' incorporates:
-   *  Constant: '<S24>/FOC_KP1'
+  /* Product: '<S26>/KP*e[k]1' incorporates:
+   *  Constant: '<S26>/FOC_KP1'
    */
   FOC_FCF_B->KPek1[1] = tmp_0 * FOC_FCF_P.FOC_KP;
 
-  /* UnitDelay: '<S24>/IntegDelay1' */
+  /* UnitDelay: '<S26>/IntegDelay1' */
   FOC_FCF_B->IntegDelay1[1] = FOC_FCF_DW->IntegDelay1_DSTATE[1];
 
-  /* Product: '<S24>/Product1' incorporates:
-   *  Constant: '<S24>/FOC_KI'
-   *  Constant: '<S24>/FOC_T_fast'
+  /* Product: '<S26>/Product1' incorporates:
+   *  Constant: '<S26>/FOC_KI'
+   *  Constant: '<S26>/FOC_T_fast'
    */
   FOC_FCF_B->Product1 = FOC_FCF_P.FOC_KI * FOC_FCF_P.FOC_T_fast_Value_n;
 
-  /* Switch: '<S24>/IntegEnaSwitch1' */
+  /* Switch: '<S26>/IntegEnaSwitch1' */
   if (FOC_FCF_B->LogicalOperator1) {
-    /* Product: '<S24>/Product2' */
+    /* Product: '<S26>/Product2' */
     tmp_0 = FOC_FCF_B->IntegDelay1[0] * FOC_FCF_B->Product1;
     FOC_FCF_B->Product2_j[0] = tmp_0;
 
-    /* Sum: '<S24>/IntSum1' */
+    /* Sum: '<S26>/IntSum1' */
     tmp_0 += FOC_FCF_B->KPek1[0];
     FOC_FCF_B->IntSum1_p[0] = tmp_0;
 
-    /* Switch: '<S24>/IntegEnaSwitch1' */
+    /* Switch: '<S26>/IntegEnaSwitch1' */
     FOC_FCF_B->IntegEnaSwitch1[0] = tmp_0;
 
-    /* Product: '<S24>/Product2' */
+    /* Product: '<S26>/Product2' */
     tmp_0 = FOC_FCF_B->IntegDelay1[1] * FOC_FCF_B->Product1;
     FOC_FCF_B->Product2_j[1] = tmp_0;
 
-    /* Sum: '<S24>/IntSum1' */
+    /* Sum: '<S26>/IntSum1' */
     tmp_0 += FOC_FCF_B->KPek1[1];
     FOC_FCF_B->IntSum1_p[1] = tmp_0;
 
-    /* Switch: '<S24>/IntegEnaSwitch1' */
+    /* Switch: '<S26>/IntegEnaSwitch1' */
     FOC_FCF_B->IntegEnaSwitch1[1] = tmp_0;
   } else {
-    /* Switch: '<S24>/IntegEnaSwitch1' incorporates:
-     *  Constant: '<S24>/Zero'
+    /* Switch: '<S26>/IntegEnaSwitch1' incorporates:
+     *  Constant: '<S26>/Zero'
      */
     FOC_FCF_B->IntegEnaSwitch1[0] = FOC_FCF_P.Zero_Value;
     FOC_FCF_B->IntegEnaSwitch1[1] = FOC_FCF_P.Zero_Value;
   }
 
-  /* End of Switch: '<S24>/IntegEnaSwitch1' */
+  /* End of Switch: '<S26>/IntegEnaSwitch1' */
 
-  /* Gain: '<S21>/TrafoMatrix uvw->alphabeta' */
+  /* Gain: '<S23>/TrafoMatrix uvw->alphabeta' */
   tmp_0 = FOC_FCF_U->I_phA[3];
   I_phA = FOC_FCF_U->I_phA[4];
   I_phA_0 = FOC_FCF_U->I_phA[5];
   for (i_0 = 0; i_0 < 2; i_0++) {
-    /* Gain: '<S21>/TrafoMatrix uvw->alphabeta' */
+    /* Gain: '<S23>/TrafoMatrix uvw->alphabeta' */
     TrafoMatrixuvwalphabeta = FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_p[i_0] *
       tmp_0;
     TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_p[i_0 + 2]
@@ -617,72 +652,122 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* Sum: '<S5>/Sum1' incorporates:
    *  Constant: '<S5>/FOC_9ph_AngleShift'
    */
-  FOC_FCF_B->Sum1_d = FOC_FCF_B->phi_el_I_trafo + FOC_FCF_P.FOC_9ph_AngleShift;
+  FOC_FCF_B->Sum1_d = FOC_FCF_B->Use_If_Mode[0] + FOC_FCF_P.FOC_9ph_AngleShift;
 
-  /* Trigonometry: '<S21>/Trigonometric Function1' */
+  /* Trigonometry: '<S23>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_b = cosf(FOC_FCF_B->Sum1_d);
 
-  /* Product: '<S21>/TrafoProd' */
+  /* Product: '<S23>/TrafoProd' */
   FOC_FCF_B->TrafoProd_a = FOC_FCF_B->TrafoMatrixuvwalphabeta_h[0] *
     FOC_FCF_B->TrigonometricFunction1_b;
 
-  /* Trigonometry: '<S21>/Trigonometric Function' */
+  /* Trigonometry: '<S23>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_l = sinf(FOC_FCF_B->Sum1_d);
 
-  /* Product: '<S21>/TrafoProd3' */
+  /* Product: '<S23>/TrafoProd3' */
   FOC_FCF_B->TrafoProd3_i = FOC_FCF_B->TrigonometricFunction_l *
     FOC_FCF_B->TrafoMatrixuvwalphabeta_h[1];
 
-  /* Sum: '<S21>/TrafoSum' */
+  /* Sum: '<S23>/TrafoSum' */
   FOC_FCF_B->TrafoSum = FOC_FCF_B->TrafoProd_a + FOC_FCF_B->TrafoProd3_i;
 
-  /* Product: '<S21>/TrafoProd1' */
+  /* Product: '<S23>/TrafoProd1' */
   FOC_FCF_B->TrafoProd1_b = FOC_FCF_B->TrigonometricFunction1_b *
     FOC_FCF_B->TrafoMatrixuvwalphabeta_h[1];
 
-  /* Product: '<S21>/TrafoProd2' */
+  /* Product: '<S23>/TrafoProd2' */
   FOC_FCF_B->TrafoProd2_b = FOC_FCF_B->TrafoMatrixuvwalphabeta_h[0] *
     FOC_FCF_B->TrigonometricFunction_l;
 
-  /* Sum: '<S21>/TrafoSum1' */
+  /* Sum: '<S23>/TrafoSum1' */
   FOC_FCF_B->TrafoSum1 = FOC_FCF_B->TrafoProd1_b - FOC_FCF_B->TrafoProd2_b;
 
-  /* SignalConversion generated from: '<S21>/Discrete FIR Filter 20th order' */
+  /* SignalConversion generated from: '<S23>/Discrete FIR Filter 20th order' */
   FOC_FCF_B->TmpSignalConversionAtDiscrete_k[0] = FOC_FCF_B->TrafoSum;
   FOC_FCF_B->TmpSignalConversionAtDiscrete_k[1] = FOC_FCF_B->TrafoSum1;
 
-  /* Product: '<S28>/Product1' incorporates:
-   *  Constant: '<S28>/FOC_KI'
-   *  Constant: '<S28>/FOC_T_fast'
+  /* Sum: '<S20>/IdqErr' */
+  tmp_0 = FOC_FCF_U->I_dq_RefA[0] - FOC_FCF_B->TmpSignalConversionAtDiscrete_k[0];
+
+  /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
+  FOC_FCF_B->IdqErr_l[0] = tmp_0;
+
+  /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
+  /* Product: '<S30>/KP*e[k]1' incorporates:
+   *  Constant: '<S30>/FOC_KP1'
+   */
+  FOC_FCF_B->KPek1_l[0] = tmp_0 * FOC_FCF_P.FOC_KP;
+
+  /* UnitDelay: '<S30>/IntegDelay1' */
+  FOC_FCF_B->IntegDelay1_o[0] = FOC_FCF_DW->IntegDelay1_DSTATE_p[0];
+
+  /* Sum: '<S20>/IdqErr' */
+  tmp_0 = FOC_FCF_U->I_dq_RefA[1] - FOC_FCF_B->TmpSignalConversionAtDiscrete_k[1];
+
+  /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
+  FOC_FCF_B->IdqErr_l[1] = tmp_0;
+
+  /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
+  /* Product: '<S30>/KP*e[k]1' incorporates:
+   *  Constant: '<S30>/FOC_KP1'
+   */
+  FOC_FCF_B->KPek1_l[1] = tmp_0 * FOC_FCF_P.FOC_KP;
+
+  /* UnitDelay: '<S30>/IntegDelay1' */
+  FOC_FCF_B->IntegDelay1_o[1] = FOC_FCF_DW->IntegDelay1_DSTATE_p[1];
+
+  /* Product: '<S30>/Product1' incorporates:
+   *  Constant: '<S30>/FOC_KI'
+   *  Constant: '<S30>/FOC_T_fast'
    */
   FOC_FCF_B->Product1_k = FOC_FCF_P.FOC_KI * FOC_FCF_P.FOC_T_fast_Value_e;
 
-  /* Gain: '<S22>/TrafoMatrix uvw->alphabeta' */
+  /* Switch: '<S30>/IntegEnaSwitch1' */
+  if (FOC_FCF_B->LogicalOperator1) {
+    /* Product: '<S30>/Product2' */
+    tmp_0 = FOC_FCF_B->IntegDelay1_o[0] * FOC_FCF_B->Product1_k;
+    FOC_FCF_B->Product2_b[0] = tmp_0;
+
+    /* Sum: '<S30>/IntSum1' */
+    tmp_0 += FOC_FCF_B->KPek1_l[0];
+    FOC_FCF_B->IntSum1_l[0] = tmp_0;
+
+    /* Switch: '<S30>/IntegEnaSwitch1' */
+    FOC_FCF_B->IntegEnaSwitch1_n[0] = tmp_0;
+
+    /* Product: '<S30>/Product2' */
+    tmp_0 = FOC_FCF_B->IntegDelay1_o[1] * FOC_FCF_B->Product1_k;
+    FOC_FCF_B->Product2_b[1] = tmp_0;
+
+    /* Sum: '<S30>/IntSum1' */
+    tmp_0 += FOC_FCF_B->KPek1_l[1];
+    FOC_FCF_B->IntSum1_l[1] = tmp_0;
+
+    /* Switch: '<S30>/IntegEnaSwitch1' */
+    FOC_FCF_B->IntegEnaSwitch1_n[1] = tmp_0;
+  } else {
+    /* Switch: '<S30>/IntegEnaSwitch1' incorporates:
+     *  Constant: '<S30>/Zero'
+     */
+    FOC_FCF_B->IntegEnaSwitch1_n[0] = FOC_FCF_P.Zero_Value_o;
+    FOC_FCF_B->IntegEnaSwitch1_n[1] = FOC_FCF_P.Zero_Value_o;
+  }
+
+  /* End of Switch: '<S30>/IntegEnaSwitch1' */
+
+  /* Gain: '<S24>/TrafoMatrix uvw->alphabeta' */
   tmp_0 = FOC_FCF_U->I_phA[6];
   I_phA = FOC_FCF_U->I_phA[7];
   I_phA_0 = FOC_FCF_U->I_phA[8];
-  for (i = 0; i < 2; i++) {
-    /* Sum: '<S18>/IdqErr' */
-    TrafoMatrixuvwalphabeta = FOC_FCF_U->I_dq_RefA[i] -
-      FOC_FCF_B->TmpSignalConversionAtDiscrete_k[i];
-    FOC_FCF_B->IdqErr_l[i] = TrafoMatrixuvwalphabeta;
-
-    /* Product: '<S28>/KP*e[k]1' incorporates:
-     *  Constant: '<S28>/FOC_KP1'
-     */
-    FOC_FCF_B->KPek1_l[i] = TrafoMatrixuvwalphabeta * FOC_FCF_P.FOC_KP;
-
-    /* UnitDelay: '<S28>/IntegDelay1' */
-    FOC_FCF_B->IntegDelay1_o[i] = FOC_FCF_DW->IntegDelay1_DSTATE_p[i];
-
-    /* Gain: '<S22>/TrafoMatrix uvw->alphabeta' */
-    TrafoMatrixuvwalphabeta = FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i] *
+  for (i_0 = 0; i_0 < 2; i_0++) {
+    /* Gain: '<S24>/TrafoMatrix uvw->alphabeta' */
+    TrafoMatrixuvwalphabeta = FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i_0] *
       tmp_0;
-    TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i + 2] *
-      I_phA;
-    TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i + 4] *
-      I_phA_0;
-    FOC_FCF_B->TrafoMatrixuvwalphabeta_m[i] = TrafoMatrixuvwalphabeta;
+    TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i_0 + 2]
+      * I_phA;
+    TrafoMatrixuvwalphabeta += FOC_FCF_P.TrafoMatrixuvwalphabeta_Gain_j[i_0 + 4]
+      * I_phA_0;
+    FOC_FCF_B->TrafoMatrixuvwalphabeta_m[i_0] = TrafoMatrixuvwalphabeta;
   }
 
   /* Sum: '<S5>/Sum2' incorporates:
@@ -690,115 +775,148 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    */
   FOC_FCF_B->Sum2_m = FOC_FCF_B->Sum1_d + FOC_FCF_P.FOC_9ph_AngleShift;
 
-  /* Trigonometry: '<S22>/Trigonometric Function1' */
+  /* Trigonometry: '<S24>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_k = cosf(FOC_FCF_B->Sum2_m);
 
-  /* Product: '<S22>/TrafoProd' */
+  /* Product: '<S24>/TrafoProd' */
   FOC_FCF_B->TrafoProd_n = FOC_FCF_B->TrafoMatrixuvwalphabeta_m[0] *
     FOC_FCF_B->TrigonometricFunction1_k;
 
-  /* Trigonometry: '<S22>/Trigonometric Function' */
+  /* Trigonometry: '<S24>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_k = sinf(FOC_FCF_B->Sum2_m);
 
-  /* Product: '<S22>/TrafoProd3' */
+  /* Product: '<S24>/TrafoProd3' */
   FOC_FCF_B->TrafoProd3_o = FOC_FCF_B->TrigonometricFunction_k *
     FOC_FCF_B->TrafoMatrixuvwalphabeta_m[1];
 
-  /* Sum: '<S22>/TrafoSum' */
+  /* Sum: '<S24>/TrafoSum' */
   FOC_FCF_B->TrafoSum_n = FOC_FCF_B->TrafoProd_n + FOC_FCF_B->TrafoProd3_o;
 
-  /* Product: '<S22>/TrafoProd1' */
+  /* Product: '<S24>/TrafoProd1' */
   FOC_FCF_B->TrafoProd1_e = FOC_FCF_B->TrigonometricFunction1_k *
     FOC_FCF_B->TrafoMatrixuvwalphabeta_m[1];
 
-  /* Product: '<S22>/TrafoProd2' */
+  /* Product: '<S24>/TrafoProd2' */
   FOC_FCF_B->TrafoProd2_h = FOC_FCF_B->TrafoMatrixuvwalphabeta_m[0] *
     FOC_FCF_B->TrigonometricFunction_k;
 
-  /* Sum: '<S22>/TrafoSum1' */
+  /* Sum: '<S24>/TrafoSum1' */
   FOC_FCF_B->TrafoSum1_p = FOC_FCF_B->TrafoProd1_e - FOC_FCF_B->TrafoProd2_h;
 
-  /* SignalConversion generated from: '<S22>/Discrete FIR Filter 20th order' */
+  /* SignalConversion generated from: '<S24>/Discrete FIR Filter 20th order' */
   FOC_FCF_B->TmpSignalConversionAtDiscrete_c[0] = FOC_FCF_B->TrafoSum_n;
   FOC_FCF_B->TmpSignalConversionAtDiscrete_c[1] = FOC_FCF_B->TrafoSum1_p;
 
-  /* Sum: '<S19>/IdqErr' */
+  /* Sum: '<S21>/IdqErr' */
   tmp_0 = FOC_FCF_U->I_dq_RefA[0] - FOC_FCF_B->TmpSignalConversionAtDiscrete_c[0];
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->IdqErr_e[0] = tmp_0;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S32>/KP*e[k]1' incorporates:
-   *  Constant: '<S32>/FOC_KP1'
+  /* Product: '<S34>/KP*e[k]1' incorporates:
+   *  Constant: '<S34>/FOC_KP1'
    */
   FOC_FCF_B->KPek1_h[0] = tmp_0 * FOC_FCF_P.FOC_KP;
 
-  /* UnitDelay: '<S32>/IntegDelay1' */
+  /* UnitDelay: '<S34>/IntegDelay1' */
   FOC_FCF_B->IntegDelay1_d[0] = FOC_FCF_DW->IntegDelay1_DSTATE_h[0];
 
-  /* Sum: '<S19>/IdqErr' */
+  /* Sum: '<S21>/IdqErr' */
   tmp_0 = FOC_FCF_U->I_dq_RefA[1] - FOC_FCF_B->TmpSignalConversionAtDiscrete_c[1];
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->IdqErr_e[1] = tmp_0;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S32>/KP*e[k]1' incorporates:
-   *  Constant: '<S32>/FOC_KP1'
+  /* Product: '<S34>/KP*e[k]1' incorporates:
+   *  Constant: '<S34>/FOC_KP1'
    */
   FOC_FCF_B->KPek1_h[1] = tmp_0 * FOC_FCF_P.FOC_KP;
 
-  /* UnitDelay: '<S32>/IntegDelay1' */
+  /* UnitDelay: '<S34>/IntegDelay1' */
   FOC_FCF_B->IntegDelay1_d[1] = FOC_FCF_DW->IntegDelay1_DSTATE_h[1];
 
-  /* Product: '<S32>/Product1' incorporates:
-   *  Constant: '<S32>/FOC_KI'
-   *  Constant: '<S32>/FOC_T_fast'
+  /* Product: '<S34>/Product1' incorporates:
+   *  Constant: '<S34>/FOC_KI'
+   *  Constant: '<S34>/FOC_T_fast'
    */
   FOC_FCF_B->Product1_b = FOC_FCF_P.FOC_KI * FOC_FCF_P.FOC_T_fast_Value_er;
+
+  /* Switch: '<S34>/IntegEnaSwitch1' */
+  if (FOC_FCF_B->LogicalOperator1) {
+    /* Product: '<S34>/Product2' */
+    tmp_0 = FOC_FCF_B->IntegDelay1_d[0] * FOC_FCF_B->Product1_b;
+    FOC_FCF_B->Product2_e[0] = tmp_0;
+
+    /* Sum: '<S34>/IntSum1' */
+    tmp_0 += FOC_FCF_B->KPek1_h[0];
+    FOC_FCF_B->IntSum1[0] = tmp_0;
+
+    /* Switch: '<S34>/IntegEnaSwitch1' */
+    FOC_FCF_B->IntegEnaSwitch1_h[0] = tmp_0;
+
+    /* Product: '<S34>/Product2' */
+    tmp_0 = FOC_FCF_B->IntegDelay1_d[1] * FOC_FCF_B->Product1_b;
+    FOC_FCF_B->Product2_e[1] = tmp_0;
+
+    /* Sum: '<S34>/IntSum1' */
+    tmp_0 += FOC_FCF_B->KPek1_h[1];
+    FOC_FCF_B->IntSum1[1] = tmp_0;
+
+    /* Switch: '<S34>/IntegEnaSwitch1' */
+    FOC_FCF_B->IntegEnaSwitch1_h[1] = tmp_0;
+  } else {
+    /* Switch: '<S34>/IntegEnaSwitch1' incorporates:
+     *  Constant: '<S34>/Zero'
+     */
+    FOC_FCF_B->IntegEnaSwitch1_h[0] = FOC_FCF_P.Zero_Value_n;
+    FOC_FCF_B->IntegEnaSwitch1_h[1] = FOC_FCF_P.Zero_Value_n;
+  }
+
+  /* End of Switch: '<S34>/IntegEnaSwitch1' */
 
   /* Product: '<S4>/Product' incorporates:
    *  Constant: '<S4>/FOC_T_fast'
    *  Constant: '<S4>/FOC_output_trafo_delay'
    */
-  FOC_FCF_B->Product_c = FOC_FCF_P.FOC_output_trafo_delay * FOC_FCF_B->w_el *
-    FOC_FCF_P.FOC_T_fast_Value_m;
+  FOC_FCF_B->Product_c = FOC_FCF_P.FOC_output_trafo_delay *
+    FOC_FCF_B->Use_If_Mode[1] * FOC_FCF_P.FOC_T_fast_Value_m;
 
   /* Sum: '<S4>/Sum' */
-  FOC_FCF_B->Sum_k = FOC_FCF_B->phi_el_I_trafo + FOC_FCF_B->Product_c;
+  FOC_FCF_B->Sum_k = FOC_FCF_B->Use_If_Mode[0] + FOC_FCF_B->Product_c;
 
-  /* Switch: '<S16>/Switch1' */
+  /* Switch: '<S18>/Switch1' */
   if (FOC_FCF_B->Sum_k > FOC_FCF_P.Switch1_Threshold_a) {
-    /* Sum: '<S16>/Sum2' incorporates:
-     *  Constant: '<S16>/Constant'
+    /* Sum: '<S18>/Sum2' incorporates:
+     *  Constant: '<S18>/Constant'
      */
     FOC_FCF_B->Sum2_ez = FOC_FCF_B->Sum_k - FOC_FCF_P.Constant_Value_n;
 
-    /* Switch: '<S16>/Switch1' */
+    /* Switch: '<S18>/Switch1' */
     FOC_FCF_B->Switch1_k = FOC_FCF_B->Sum2_ez;
   } else {
-    /* Switch: '<S16>/Switch1' */
+    /* Switch: '<S18>/Switch1' */
     FOC_FCF_B->Switch1_k = FOC_FCF_B->Sum_k;
   }
 
-  /* End of Switch: '<S16>/Switch1' */
+  /* End of Switch: '<S18>/Switch1' */
 
-  /* Switch: '<S16>/Switch2' */
+  /* Switch: '<S18>/Switch2' */
   if (FOC_FCF_B->Switch1_k > FOC_FCF_P.Switch2_Threshold_o) {
-    /* Switch: '<S16>/Switch2' */
+    /* Switch: '<S18>/Switch2' */
     FOC_FCF_B->Switch2 = FOC_FCF_B->Switch1_k;
   } else {
-    /* Sum: '<S16>/Sum3' incorporates:
-     *  Constant: '<S16>/Constant1'
+    /* Sum: '<S18>/Sum3' incorporates:
+     *  Constant: '<S18>/Constant1'
      */
     FOC_FCF_B->Sum3_d = FOC_FCF_B->Switch1_k + FOC_FCF_P.Constant1_Value_d;
 
-    /* Switch: '<S16>/Switch2' */
+    /* Switch: '<S18>/Switch2' */
     FOC_FCF_B->Switch2 = FOC_FCF_B->Sum3_d;
   }
 
-  /* End of Switch: '<S16>/Switch2' */
+  /* End of Switch: '<S18>/Switch2' */
 
   /* Sum: '<S4>/Sum2' incorporates:
    *  Constant: '<S4>/FOC_9ph_AngleShift'
@@ -831,56 +949,56 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     break;
 
    case 2:
-    /* Gain: '<S46>/Gain' */
+    /* Gain: '<S49>/Gain' */
     FOC_FCF_B->Gain_fw = FOC_FCF_P.FOC_Uf_m * FOC_FCF_B->DiscreteTransferFcn;
 
-    /* Signum: '<S46>/Sign' */
+    /* Signum: '<S49>/Sign' */
     tmp_0 = FOC_FCF_B->Gain_fw;
     if (rtIsNaNF(tmp_0)) {
-      /* Signum: '<S46>/Sign' */
+      /* Signum: '<S49>/Sign' */
       FOC_FCF_B->Sign_p = (rtNaNF);
     } else if (tmp_0 < 0.0F) {
-      /* Signum: '<S46>/Sign' */
+      /* Signum: '<S49>/Sign' */
       FOC_FCF_B->Sign_p = -1.0F;
     } else {
-      /* Signum: '<S46>/Sign' */
+      /* Signum: '<S49>/Sign' */
       FOC_FCF_B->Sign_p = (real32_T)(tmp_0 > 0.0F);
     }
 
-    /* End of Signum: '<S46>/Sign' */
+    /* End of Signum: '<S49>/Sign' */
 
-    /* Abs: '<S46>/Abs' */
+    /* Abs: '<S49>/Abs' */
     FOC_FCF_B->Abs_d = fabsf(FOC_FCF_B->Gain_fw);
 
-    /* Saturate: '<S46>/Saturation1' */
+    /* Saturate: '<S49>/Saturation1' */
     if (FOC_FCF_B->Abs_d > FOC_FCF_P.FOC_Uf_U_max) {
-      /* Saturate: '<S46>/Saturation1' */
+      /* Saturate: '<S49>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_P.FOC_Uf_U_max;
     } else if (FOC_FCF_B->Abs_d < FOC_FCF_P.FOC_Uf_U_min) {
-      /* Saturate: '<S46>/Saturation1' */
+      /* Saturate: '<S49>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_P.FOC_Uf_U_min;
     } else {
-      /* Saturate: '<S46>/Saturation1' */
+      /* Saturate: '<S49>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_B->Abs_d;
     }
 
-    /* End of Saturate: '<S46>/Saturation1' */
+    /* End of Saturate: '<S49>/Saturation1' */
 
-    /* Product: '<S46>/Product' */
+    /* Product: '<S49>/Product' */
     FOC_FCF_B->Product_j = FOC_FCF_B->Saturation1 * FOC_FCF_B->Sign_p;
 
-    /* Sum: '<S9>/Sum1' incorporates:
-     *  Constant: '<S9>/FOC_9ph_AngleShift'
+    /* Sum: '<S11>/Sum1' incorporates:
+     *  Constant: '<S11>/FOC_9ph_AngleShift'
      */
     FOC_FCF_B->Sum1_n = FOC_FCF_B->Add + FOC_FCF_P.FOC_9ph_AngleShift;
 
-    /* Sum: '<S9>/Sum2' incorporates:
-     *  Constant: '<S9>/FOC_9ph_AngleShift'
+    /* Sum: '<S11>/Sum2' incorporates:
+     *  Constant: '<S11>/FOC_9ph_AngleShift'
      */
     FOC_FCF_B->Sum2_d = FOC_FCF_B->Sum1_n + FOC_FCF_P.FOC_9ph_AngleShift;
 
     /* MultiPortSwitch: '<S1>/SelectControlMode' incorporates:
-     *  Constant: '<S9>/Uf_Ud'
+     *  Constant: '<S11>/Uf_Ud'
      */
     FOC_FCF_B->SelectControlMode[0] = FOC_FCF_P.FOC_Uf_Ud;
     FOC_FCF_B->SelectControlMode[1] = FOC_FCF_B->Product_j;
@@ -893,70 +1011,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_B->SelectControlMode[8] = FOC_FCF_B->Sum2_d;
     break;
 
-   default:
-    /* Switch: '<S28>/IntegEnaSwitch1' incorporates:
-     *  Switch: '<S32>/IntegEnaSwitch1'
-     */
-    if (FOC_FCF_B->LogicalOperator1) {
-      /* Product: '<S28>/Product2' */
-      tmp_0 = FOC_FCF_B->IntegDelay1_o[0] * FOC_FCF_B->Product1_k;
-      FOC_FCF_B->Product2_b[0] = tmp_0;
-
-      /* Sum: '<S28>/IntSum1' */
-      tmp_0 += FOC_FCF_B->KPek1_l[0];
-      FOC_FCF_B->IntSum1_l[0] = tmp_0;
-
-      /* Switch: '<S28>/IntegEnaSwitch1' */
-      FOC_FCF_B->IntegEnaSwitch1_n[0] = tmp_0;
-
-      /* Product: '<S28>/Product2' */
-      tmp_0 = FOC_FCF_B->IntegDelay1_o[1] * FOC_FCF_B->Product1_k;
-      FOC_FCF_B->Product2_b[1] = tmp_0;
-
-      /* Sum: '<S28>/IntSum1' */
-      tmp_0 += FOC_FCF_B->KPek1_l[1];
-      FOC_FCF_B->IntSum1_l[1] = tmp_0;
-
-      /* Switch: '<S28>/IntegEnaSwitch1' */
-      FOC_FCF_B->IntegEnaSwitch1_n[1] = tmp_0;
-
-      /* Product: '<S32>/Product2' */
-      tmp_0 = FOC_FCF_B->IntegDelay1_d[0] * FOC_FCF_B->Product1_b;
-      FOC_FCF_B->Product2_e[0] = tmp_0;
-
-      /* Sum: '<S32>/IntSum1' */
-      tmp_0 += FOC_FCF_B->KPek1_h[0];
-      FOC_FCF_B->IntSum1[0] = tmp_0;
-
-      /* Switch: '<S32>/IntegEnaSwitch1' */
-      FOC_FCF_B->IntegEnaSwitch1_h[0] = tmp_0;
-
-      /* Product: '<S32>/Product2' */
-      tmp_0 = FOC_FCF_B->IntegDelay1_d[1] * FOC_FCF_B->Product1_b;
-      FOC_FCF_B->Product2_e[1] = tmp_0;
-
-      /* Sum: '<S32>/IntSum1' */
-      tmp_0 += FOC_FCF_B->KPek1_h[1];
-      FOC_FCF_B->IntSum1[1] = tmp_0;
-
-      /* Switch: '<S32>/IntegEnaSwitch1' */
-      FOC_FCF_B->IntegEnaSwitch1_h[1] = tmp_0;
-    } else {
-      /* Switch: '<S28>/IntegEnaSwitch1' incorporates:
-       *  Constant: '<S28>/Zero'
-       */
-      FOC_FCF_B->IntegEnaSwitch1_n[0] = FOC_FCF_P.Zero_Value_o;
-      FOC_FCF_B->IntegEnaSwitch1_n[1] = FOC_FCF_P.Zero_Value_o;
-
-      /* Switch: '<S32>/IntegEnaSwitch1' incorporates:
-       *  Constant: '<S32>/Zero'
-       */
-      FOC_FCF_B->IntegEnaSwitch1_h[0] = FOC_FCF_P.Zero_Value_n;
-      FOC_FCF_B->IntegEnaSwitch1_h[1] = FOC_FCF_P.Zero_Value_n;
-    }
-
-    /* End of Switch: '<S28>/IntegEnaSwitch1' */
-
+   case 3:
     /* MultiPortSwitch: '<S1>/SelectControlMode' */
     FOC_FCF_B->SelectControlMode[0] = FOC_FCF_B->IntegEnaSwitch1[0];
     FOC_FCF_B->SelectControlMode[2] = FOC_FCF_B->IntegEnaSwitch1_n[0];
@@ -968,17 +1023,39 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_B->SelectControlMode[7] = FOC_FCF_B->Sum2_p;
     FOC_FCF_B->SelectControlMode[8] = FOC_FCF_B->Sum1_l;
     break;
+
+   case 4:
+    /* MultiPortSwitch: '<S1>/SelectControlMode' */
+    FOC_FCF_B->SelectControlMode[0] = FOC_FCF_B->IntegEnaSwitch1[0];
+    FOC_FCF_B->SelectControlMode[2] = FOC_FCF_B->IntegEnaSwitch1_n[0];
+    FOC_FCF_B->SelectControlMode[4] = FOC_FCF_B->IntegEnaSwitch1_h[0];
+    FOC_FCF_B->SelectControlMode[1] = FOC_FCF_B->IntegEnaSwitch1[1];
+    FOC_FCF_B->SelectControlMode[3] = FOC_FCF_B->IntegEnaSwitch1_n[1];
+    FOC_FCF_B->SelectControlMode[5] = FOC_FCF_B->IntegEnaSwitch1_h[1];
+    FOC_FCF_B->SelectControlMode[6] = FOC_FCF_B->Switch2;
+    FOC_FCF_B->SelectControlMode[7] = FOC_FCF_B->Sum2_p;
+    FOC_FCF_B->SelectControlMode[8] = FOC_FCF_B->Sum1_l;
+    break;
+
+   default:
+    /* MultiPortSwitch: '<S1>/SelectControlMode' incorporates:
+     *  Constant: '<S1>/Null'
+     */
+    for (i = 0; i < 9; i++) {
+      FOC_FCF_B->SelectControlMode[i] = FOC_FCF_P.Null_Value[i];
+    }
+    break;
   }
 
   /* End of MultiPortSwitch: '<S1>/SelectControlMode' */
 
-  /* Trigonometry: '<S55>/Trigonometric Function' */
+  /* Trigonometry: '<S58>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_n = sinf(FOC_FCF_B->SelectControlMode[6]);
 
-  /* Trigonometry: '<S55>/Trigonometric Function1' */
+  /* Trigonometry: '<S58>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_j = cosf(FOC_FCF_B->SelectControlMode[6]);
 
-  /* Gain: '<S55>/Gain1' */
+  /* Gain: '<S58>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[0] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -986,16 +1063,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S55>/Gain' */
+  /* Gain: '<S58>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain[0] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain[0] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S55>/Sum1' incorporates:
-   *  Gain: '<S55>/Gain'
-   *  Gain: '<S55>/Gain1'
+  /* Sum: '<S58>/Sum1' incorporates:
+   *  Gain: '<S58>/Gain'
+   *  Gain: '<S58>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1003,12 +1080,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S55>/Product' incorporates:
-   *  Sum: '<S55>/Sum1'
+  /* Product: '<S58>/Product' incorporates:
+   *  Sum: '<S58>/Sum1'
    */
   I_phA_0 = Sum1_lz;
 
-  /* Gain: '<S55>/Gain1' */
+  /* Gain: '<S58>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[1] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1016,16 +1093,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S55>/Gain' */
+  /* Gain: '<S58>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain[1] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain[1] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S55>/Sum1' incorporates:
-   *  Gain: '<S55>/Gain'
-   *  Gain: '<S55>/Gain1'
+  /* Sum: '<S58>/Sum1' incorporates:
+   *  Gain: '<S58>/Gain'
+   *  Gain: '<S58>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1033,12 +1110,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S55>/Product' incorporates:
-   *  Sum: '<S55>/Sum1'
+  /* Product: '<S58>/Product' incorporates:
+   *  Sum: '<S58>/Sum1'
    */
   tmp_0 = Sum1_lz;
 
-  /* Gain: '<S55>/Gain1' */
+  /* Gain: '<S58>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[2] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1046,16 +1123,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S55>/Gain' */
+  /* Gain: '<S58>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain[2] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain[2] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S55>/Sum1' incorporates:
-   *  Gain: '<S55>/Gain'
-   *  Gain: '<S55>/Gain1'
+  /* Sum: '<S58>/Sum1' incorporates:
+   *  Gain: '<S58>/Gain'
+   *  Gain: '<S58>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1063,12 +1140,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S55>/Product' incorporates:
-   *  Sum: '<S55>/Sum1'
+  /* Product: '<S58>/Product' incorporates:
+   *  Sum: '<S58>/Sum1'
    */
   I_phA = Sum1_lz;
 
-  /* Gain: '<S55>/Gain1' */
+  /* Gain: '<S58>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[3] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1076,16 +1153,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S55>/Gain' */
+  /* Gain: '<S58>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain[3] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain[3] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S55>/Sum1' incorporates:
-   *  Gain: '<S55>/Gain'
-   *  Gain: '<S55>/Gain1'
+  /* Sum: '<S58>/Sum1' incorporates:
+   *  Gain: '<S58>/Gain'
+   *  Gain: '<S58>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1093,24 +1170,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S55>/Product' */
+  /* Product: '<S58>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[0];
   Gain = FOC_FCF_B->SelectControlMode[1];
   I_phA_0 *= TrafoMatrixuvwalphabeta;
   I_phA_0 += I_phA * Gain;
 
-  /* Product: '<S55>/Product' */
+  /* Product: '<S58>/Product' */
   FOC_FCF_B->Product_c0[0] = I_phA_0;
 
-  /* Product: '<S55>/Product' */
+  /* Product: '<S58>/Product' */
   I_phA_0 = tmp_0 * TrafoMatrixuvwalphabeta;
   I_phA_0 += Sum1_lz * Gain;
 
-  /* Product: '<S55>/Product' */
+  /* Product: '<S58>/Product' */
   FOC_FCF_B->Product_c0[1] = I_phA_0;
 
-  /* Product: '<S52>/Product' incorporates:
-   *  Constant: '<S52>/Constant'
+  /* Product: '<S55>/Product' incorporates:
+   *  Constant: '<S55>/Constant'
    */
   for (i_0 = 0; i_0 < 6; i_0++) {
     tmp[i_0] = FOC_FCF_P.Constant_Value_d[i_0];
@@ -1122,36 +1199,36 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     I_phA_0 = tmp[i_0] * TrafoMatrixuvwalphabeta;
     I_phA_0 += tmp[i_0 + 3] * Gain;
 
-    /* Product: '<S52>/Product' */
+    /* Product: '<S55>/Product' */
     FOC_FCF_B->U_uvw1[i_0] = I_phA_0;
   }
 
-  /* End of Product: '<S52>/Product' */
+  /* End of Product: '<S55>/Product' */
 
-  /* Trigonometry: '<S56>/Trigonometric Function' */
+  /* Trigonometry: '<S59>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_j = sinf(FOC_FCF_B->SelectControlMode[7]);
 
-  /* Trigonometry: '<S56>/Trigonometric Function1' */
+  /* Trigonometry: '<S59>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_h = cosf(FOC_FCF_B->SelectControlMode[7]);
 
-  /* Gain: '<S56>/Gain1' */
-  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_c[0] *
+  /* Gain: '<S59>/Gain1' */
+  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[0] *
     FOC_FCF_B->TrigonometricFunction_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain1_i[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S56>/Gain' */
+  /* Gain: '<S59>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_l[0] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[0] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S56>/Sum1' incorporates:
-   *  Gain: '<S56>/Gain'
-   *  Gain: '<S56>/Gain1'
+  /* Sum: '<S59>/Sum1' incorporates:
+   *  Gain: '<S59>/Gain'
+   *  Gain: '<S59>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1159,29 +1236,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S56>/Product' incorporates:
-   *  Sum: '<S56>/Sum1'
+  /* Product: '<S59>/Product' incorporates:
+   *  Sum: '<S59>/Sum1'
    */
   I_phA_0 = Sum1_lz;
 
-  /* Gain: '<S56>/Gain1' */
-  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_c[1] *
+  /* Gain: '<S59>/Gain1' */
+  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[1] *
     FOC_FCF_B->TrigonometricFunction_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain1_i[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S56>/Gain' */
+  /* Gain: '<S59>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_l[1] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[1] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S56>/Sum1' incorporates:
-   *  Gain: '<S56>/Gain'
-   *  Gain: '<S56>/Gain1'
+  /* Sum: '<S59>/Sum1' incorporates:
+   *  Gain: '<S59>/Gain'
+   *  Gain: '<S59>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1189,29 +1266,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S56>/Product' incorporates:
-   *  Sum: '<S56>/Sum1'
+  /* Product: '<S59>/Product' incorporates:
+   *  Sum: '<S59>/Sum1'
    */
   tmp_0 = Sum1_lz;
 
-  /* Gain: '<S56>/Gain1' */
-  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_c[2] *
+  /* Gain: '<S59>/Gain1' */
+  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[2] *
     FOC_FCF_B->TrigonometricFunction_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain1_i[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S56>/Gain' */
+  /* Gain: '<S59>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_l[2] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[2] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S56>/Sum1' incorporates:
-   *  Gain: '<S56>/Gain'
-   *  Gain: '<S56>/Gain1'
+  /* Sum: '<S59>/Sum1' incorporates:
+   *  Gain: '<S59>/Gain'
+   *  Gain: '<S59>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1219,29 +1296,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S56>/Product' incorporates:
-   *  Sum: '<S56>/Sum1'
+  /* Product: '<S59>/Product' incorporates:
+   *  Sum: '<S59>/Sum1'
    */
   I_phA = Sum1_lz;
 
-  /* Gain: '<S56>/Gain1' */
-  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_c[3] *
+  /* Gain: '<S59>/Gain1' */
+  TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[3] *
     FOC_FCF_B->TrigonometricFunction_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain1_i[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S56>/Gain' */
+  /* Gain: '<S59>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_l[3] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[3] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S56>/Sum1' incorporates:
-   *  Gain: '<S56>/Gain'
-   *  Gain: '<S56>/Gain1'
+  /* Sum: '<S59>/Sum1' incorporates:
+   *  Gain: '<S59>/Gain'
+   *  Gain: '<S59>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1249,24 +1326,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S56>/Product' */
+  /* Product: '<S59>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[2];
   Gain = FOC_FCF_B->SelectControlMode[3];
   I_phA_0 *= TrafoMatrixuvwalphabeta;
   I_phA_0 += I_phA * Gain;
 
-  /* Product: '<S56>/Product' */
+  /* Product: '<S59>/Product' */
   FOC_FCF_B->Product_f[0] = I_phA_0;
 
-  /* Product: '<S56>/Product' */
+  /* Product: '<S59>/Product' */
   I_phA_0 = tmp_0 * TrafoMatrixuvwalphabeta;
   I_phA_0 += Sum1_lz * Gain;
 
-  /* Product: '<S56>/Product' */
+  /* Product: '<S59>/Product' */
   FOC_FCF_B->Product_f[1] = I_phA_0;
 
-  /* Product: '<S53>/Product' incorporates:
-   *  Constant: '<S53>/Constant'
+  /* Product: '<S56>/Product' incorporates:
+   *  Constant: '<S56>/Constant'
    */
   for (i_0 = 0; i_0 < 6; i_0++) {
     tmp[i_0] = FOC_FCF_P.Constant_Value_g[i_0];
@@ -1278,19 +1355,19 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     I_phA_0 = tmp[i_0] * TrafoMatrixuvwalphabeta;
     I_phA_0 += tmp[i_0 + 3] * Gain;
 
-    /* Product: '<S53>/Product' */
+    /* Product: '<S56>/Product' */
     FOC_FCF_B->Product_f3[i_0] = I_phA_0;
   }
 
-  /* End of Product: '<S53>/Product' */
+  /* End of Product: '<S56>/Product' */
 
-  /* Trigonometry: '<S57>/Trigonometric Function' */
+  /* Trigonometry: '<S60>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_h = sinf(FOC_FCF_B->SelectControlMode[8]);
 
-  /* Trigonometry: '<S57>/Trigonometric Function1' */
+  /* Trigonometry: '<S60>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_hh = cosf(FOC_FCF_B->SelectControlMode[8]);
 
-  /* Gain: '<S57>/Gain1' */
+  /* Gain: '<S60>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[0] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1298,16 +1375,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S57>/Gain' */
+  /* Gain: '<S60>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_j[0] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[0] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S57>/Sum1' incorporates:
-   *  Gain: '<S57>/Gain'
-   *  Gain: '<S57>/Gain1'
+  /* Sum: '<S60>/Sum1' incorporates:
+   *  Gain: '<S60>/Gain'
+   *  Gain: '<S60>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1315,12 +1392,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S57>/Product' incorporates:
-   *  Sum: '<S57>/Sum1'
+  /* Product: '<S60>/Product' incorporates:
+   *  Sum: '<S60>/Sum1'
    */
   I_phA_0 = Sum1_lz;
 
-  /* Gain: '<S57>/Gain1' */
+  /* Gain: '<S60>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[1] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1328,16 +1405,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S57>/Gain' */
+  /* Gain: '<S60>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_j[1] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[1] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S57>/Sum1' incorporates:
-   *  Gain: '<S57>/Gain'
-   *  Gain: '<S57>/Gain1'
+  /* Sum: '<S60>/Sum1' incorporates:
+   *  Gain: '<S60>/Gain'
+   *  Gain: '<S60>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1345,12 +1422,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S57>/Product' incorporates:
-   *  Sum: '<S57>/Sum1'
+  /* Product: '<S60>/Product' incorporates:
+   *  Sum: '<S60>/Sum1'
    */
   tmp_0 = Sum1_lz;
 
-  /* Gain: '<S57>/Gain1' */
+  /* Gain: '<S60>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[2] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1358,16 +1435,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S57>/Gain' */
+  /* Gain: '<S60>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_j[2] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[2] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S57>/Sum1' incorporates:
-   *  Gain: '<S57>/Gain'
-   *  Gain: '<S57>/Gain1'
+  /* Sum: '<S60>/Sum1' incorporates:
+   *  Gain: '<S60>/Gain'
+   *  Gain: '<S60>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1375,12 +1452,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S57>/Product' incorporates:
-   *  Sum: '<S57>/Sum1'
+  /* Product: '<S60>/Product' incorporates:
+   *  Sum: '<S60>/Sum1'
    */
   I_phA = Sum1_lz;
 
-  /* Gain: '<S57>/Gain1' */
+  /* Gain: '<S60>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[3] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1388,16 +1465,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S57>/Gain' */
+  /* Gain: '<S60>/Gain' */
   Gain = FOC_FCF_P.Gain_Gain_j[3] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[3] = Gain;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S57>/Sum1' incorporates:
-   *  Gain: '<S57>/Gain'
-   *  Gain: '<S57>/Gain1'
+  /* Sum: '<S60>/Sum1' incorporates:
+   *  Gain: '<S60>/Gain'
+   *  Gain: '<S60>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain;
 
@@ -1405,24 +1482,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S57>/Product' */
+  /* Product: '<S60>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[4];
   Gain = FOC_FCF_B->SelectControlMode[5];
   I_phA_0 *= TrafoMatrixuvwalphabeta;
   I_phA_0 += I_phA * Gain;
 
-  /* Product: '<S57>/Product' */
+  /* Product: '<S60>/Product' */
   FOC_FCF_B->Product_i[0] = I_phA_0;
 
-  /* Product: '<S57>/Product' */
+  /* Product: '<S60>/Product' */
   I_phA_0 = tmp_0 * TrafoMatrixuvwalphabeta;
   I_phA_0 += Sum1_lz * Gain;
 
-  /* Product: '<S57>/Product' */
+  /* Product: '<S60>/Product' */
   FOC_FCF_B->Product_i[1] = I_phA_0;
 
-  /* Product: '<S54>/Product' incorporates:
-   *  Constant: '<S54>/Constant'
+  /* Product: '<S57>/Product' incorporates:
+   *  Constant: '<S57>/Constant'
    */
   for (i_0 = 0; i_0 < 6; i_0++) {
     tmp[i_0] = FOC_FCF_P.Constant_Value_oq[i_0];
@@ -1431,26 +1508,26 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   TrafoMatrixuvwalphabeta = FOC_FCF_B->Product_i[0];
   Gain = FOC_FCF_B->Product_i[1];
 
-  /* Outputs for Atomic SubSystem: '<S10>/NormalizedVoltage' */
-  /* Gain: '<S49>/U_DC//2' */
+  /* Outputs for Atomic SubSystem: '<S12>/NormalizedVoltage' */
+  /* Gain: '<S52>/U_DC//2' */
   FOC_FCF_B->U_DC2 = FOC_FCF_P.U_DC2_Gain_p * FOC_FCF_B->U_DC_fcf;
 
-  /* MinMax: '<S49>/AvoidDivBy0' incorporates:
-   *  Constant: '<S49>/Constant2'
+  /* MinMax: '<S52>/AvoidDivBy0' incorporates:
+   *  Constant: '<S52>/Constant2'
    */
   tmp_0 = fmaxf(FOC_FCF_P.Constant2_Value_g, FOC_FCF_B->U_DC2);
 
-  /* MinMax: '<S49>/AvoidDivBy0' */
+  /* MinMax: '<S52>/AvoidDivBy0' */
   FOC_FCF_B->AvoidDivBy0 = tmp_0;
   for (i = 0; i < 3; i++) {
-    /* Product: '<S54>/Product' */
+    /* Product: '<S57>/Product' */
     tmp_0 = tmp[i] * TrafoMatrixuvwalphabeta;
     tmp_0 += tmp[i + 3] * Gain;
 
-    /* Product: '<S54>/Product' */
+    /* Product: '<S57>/Product' */
     FOC_FCF_B->Product_fb[i] = tmp_0;
 
-    /* Product: '<S49>/DutyCycle_normalized' */
+    /* Product: '<S52>/DutyCycle_normalized' */
     FOC_FCF_B->DutyCycle_normed[i] = FOC_FCF_B->U_uvw1[i] /
       FOC_FCF_B->AvoidDivBy0;
     FOC_FCF_B->DutyCycle_normed[i + 3] = FOC_FCF_B->Product_f3[i] /
@@ -1458,32 +1535,32 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_B->DutyCycle_normed[i + 6] = tmp_0 / FOC_FCF_B->AvoidDivBy0;
   }
 
-  /* End of Outputs for SubSystem: '<S10>/NormalizedVoltage' */
+  /* End of Outputs for SubSystem: '<S12>/NormalizedVoltage' */
 
-  /* Outputs for Atomic SubSystem: '<S10>/Super_Sinus_Modulation' */
-  /* MinMax: '<S51>/MinMax2' */
+  /* Outputs for Atomic SubSystem: '<S12>/Super_Sinus_Modulation' */
+  /* MinMax: '<S54>/MinMax2' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[0];
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[1]);
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[2]);
 
-  /* MinMax: '<S51>/MinMax2' */
+  /* MinMax: '<S54>/MinMax2' */
   FOC_FCF_B->MinMax2 = tmp_0;
 
-  /* MinMax: '<S51>/MinMax3' */
+  /* MinMax: '<S54>/MinMax3' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[0];
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[1]);
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[2]);
 
-  /* MinMax: '<S51>/MinMax3' */
+  /* MinMax: '<S54>/MinMax3' */
   FOC_FCF_B->MinMax3 = tmp_0;
 
-  /* Sum: '<S51>/Sum1' */
+  /* Sum: '<S54>/Sum1' */
   FOC_FCF_B->Sum1_o = FOC_FCF_B->MinMax2 + FOC_FCF_B->MinMax3;
 
-  /* Gain: '<S51>/Factor' */
+  /* Gain: '<S54>/Factor' */
   FOC_FCF_B->Factor = FOC_FCF_P.Factor_Gain * FOC_FCF_B->Sum1_o;
 
-  /* Sum: '<S51>/DutyCycle_SuperSinus_1' */
+  /* Sum: '<S54>/DutyCycle_SuperSinus_1' */
   FOC_FCF_B->DutyCycle_SuperSinus_1[0] = FOC_FCF_B->DutyCycle_normed[0] -
     FOC_FCF_B->Factor;
   FOC_FCF_B->DutyCycle_SuperSinus_1[1] = FOC_FCF_B->DutyCycle_normed[1] -
@@ -1491,29 +1568,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->DutyCycle_SuperSinus_1[2] = FOC_FCF_B->DutyCycle_normed[2] -
     FOC_FCF_B->Factor;
 
-  /* MinMax: '<S51>/MinMax1' */
+  /* MinMax: '<S54>/MinMax1' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[3];
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[4]);
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[5]);
 
-  /* MinMax: '<S51>/MinMax1' */
+  /* MinMax: '<S54>/MinMax1' */
   FOC_FCF_B->MinMax1 = tmp_0;
 
-  /* MinMax: '<S51>/MinMax4' */
+  /* MinMax: '<S54>/MinMax4' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[3];
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[4]);
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[5]);
 
-  /* MinMax: '<S51>/MinMax4' */
+  /* MinMax: '<S54>/MinMax4' */
   FOC_FCF_B->MinMax4 = tmp_0;
 
-  /* Sum: '<S51>/Sum2' */
+  /* Sum: '<S54>/Sum2' */
   FOC_FCF_B->Sum2_i = FOC_FCF_B->MinMax1 + FOC_FCF_B->MinMax4;
 
-  /* Gain: '<S51>/Factor1' */
+  /* Gain: '<S54>/Factor1' */
   FOC_FCF_B->Factor1 = FOC_FCF_P.Factor1_Gain * FOC_FCF_B->Sum2_i;
 
-  /* Sum: '<S51>/DutyCycle_SuperSinus_2' */
+  /* Sum: '<S54>/DutyCycle_SuperSinus_2' */
   FOC_FCF_B->DutyCycle_SuperSinus_2[0] = FOC_FCF_B->DutyCycle_normed[3] -
     FOC_FCF_B->Factor1;
   FOC_FCF_B->DutyCycle_SuperSinus_2[1] = FOC_FCF_B->DutyCycle_normed[4] -
@@ -1521,29 +1598,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->DutyCycle_SuperSinus_2[2] = FOC_FCF_B->DutyCycle_normed[5] -
     FOC_FCF_B->Factor1;
 
-  /* MinMax: '<S51>/MinMax5' */
+  /* MinMax: '<S54>/MinMax5' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[6];
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[7]);
   tmp_0 = fminf(tmp_0, FOC_FCF_B->DutyCycle_normed[8]);
 
-  /* MinMax: '<S51>/MinMax5' */
+  /* MinMax: '<S54>/MinMax5' */
   FOC_FCF_B->MinMax5 = tmp_0;
 
-  /* MinMax: '<S51>/MinMax6' */
+  /* MinMax: '<S54>/MinMax6' */
   tmp_0 = FOC_FCF_B->DutyCycle_normed[6];
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[7]);
   tmp_0 = fmaxf(tmp_0, FOC_FCF_B->DutyCycle_normed[8]);
 
-  /* MinMax: '<S51>/MinMax6' */
+  /* MinMax: '<S54>/MinMax6' */
   FOC_FCF_B->MinMax6 = tmp_0;
 
-  /* Sum: '<S51>/Sum3' */
+  /* Sum: '<S54>/Sum3' */
   FOC_FCF_B->Sum3_k = FOC_FCF_B->MinMax5 + FOC_FCF_B->MinMax6;
 
-  /* Gain: '<S51>/Factor2' */
+  /* Gain: '<S54>/Factor2' */
   FOC_FCF_B->Factor2 = FOC_FCF_P.Factor2_Gain * FOC_FCF_B->Sum3_k;
 
-  /* Sum: '<S51>/DutyCycle_SuperSinus_3' */
+  /* Sum: '<S54>/DutyCycle_SuperSinus_3' */
   FOC_FCF_B->DutyCycle_SuperSinus_3[0] = FOC_FCF_B->DutyCycle_normed[6] -
     FOC_FCF_B->Factor2;
   FOC_FCF_B->DutyCycle_SuperSinus_3[1] = FOC_FCF_B->DutyCycle_normed[7] -
@@ -1551,18 +1628,18 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->DutyCycle_SuperSinus_3[2] = FOC_FCF_B->DutyCycle_normed[8] -
     FOC_FCF_B->Factor2;
 
-  /* End of Outputs for SubSystem: '<S10>/Super_Sinus_Modulation' */
+  /* End of Outputs for SubSystem: '<S12>/Super_Sinus_Modulation' */
 
-  /* MultiPortSwitch: '<S10>/SelectModulation' incorporates:
-   *  Constant: '<S10>/Enable_SuperSinMod'
+  /* MultiPortSwitch: '<S12>/SelectModulation' incorporates:
+   *  Constant: '<S12>/Enable_SuperSinMod'
    */
   if (FOC_FCF_P.FOC_SELECT_Modulation == 0) {
-    /* MultiPortSwitch: '<S10>/SelectModulation' */
+    /* MultiPortSwitch: '<S12>/SelectModulation' */
     for (i = 0; i < 9; i++) {
       FOC_FCF_B->SelMod_DutyCycles[i] = FOC_FCF_B->DutyCycle_normed[i];
     }
   } else {
-    /* MultiPortSwitch: '<S10>/SelectModulation' */
+    /* MultiPortSwitch: '<S12>/SelectModulation' */
     FOC_FCF_B->SelMod_DutyCycles[0] = FOC_FCF_B->DutyCycle_SuperSinus_1[0];
     FOC_FCF_B->SelMod_DutyCycles[3] = FOC_FCF_B->DutyCycle_SuperSinus_2[0];
     FOC_FCF_B->SelMod_DutyCycles[6] = FOC_FCF_B->DutyCycle_SuperSinus_3[0];
@@ -1574,189 +1651,189 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_B->SelMod_DutyCycles[8] = FOC_FCF_B->DutyCycle_SuperSinus_3[2];
   }
 
-  /* End of MultiPortSwitch: '<S10>/SelectModulation' */
+  /* End of MultiPortSwitch: '<S12>/SelectModulation' */
   for (i = 0; i < 9; i++) {
-    /* Bias: '<S47>/Scale [0..2]' */
+    /* Bias: '<S50>/Scale [0..2]' */
     tmp_0 = FOC_FCF_B->SelMod_DutyCycles[i] + FOC_FCF_P.Scale02_Bias;
     FOC_FCF_B->Scale02[i] = tmp_0;
 
-    /* Gain: '<S47>/Scale  [0..1]' */
+    /* Gain: '<S50>/Scale  [0..1]' */
     tmp_0 *= FOC_FCF_P.Scale01_Gain;
     FOC_FCF_B->Scale01[i] = tmp_0;
 
-    /* Saturate: '<S47>/Limit [0..1]' */
+    /* Saturate: '<S50>/Limit [0..1]' */
     if (tmp_0 > FOC_FCF_P.Limit01_UpperSat) {
       tmp_0 = FOC_FCF_P.Limit01_UpperSat;
     } else if (tmp_0 < FOC_FCF_P.Limit01_LowerSat) {
       tmp_0 = FOC_FCF_P.Limit01_LowerSat;
     }
 
-    /* Saturate: '<S47>/Limit [0..1]' */
+    /* Saturate: '<S50>/Limit [0..1]' */
     FOC_FCF_B->Limit01[i] = tmp_0;
   }
 
-  /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' incorporates:
-   *  Constant: '<S50>/Constant6'
+  /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' incorporates:
+   *  Constant: '<S53>/Constant6'
    */
   switch ((int32_T)FOC_FCF_P.FOC_SELECT_Voltage_Assignment_UVW) {
    case 1:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[2];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[5];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[8];
     break;
 
    case 2:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[1];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[4];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[7];
     break;
 
    case 3:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[2];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[5];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[8];
     break;
 
    case 4:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[0];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[3];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[6];
     break;
 
    case 5:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[1];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[4];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[7];
     break;
 
    default:
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[0];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[3];
 
-    /* MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[6];
     break;
   }
 
-  /* End of MultiPortSwitch: '<S50>/Select_GateDriver_Assignment_1' */
+  /* End of MultiPortSwitch: '<S53>/Select_GateDriver_Assignment_1' */
 
-  /* Sum: '<S11>/Deviation' */
+  /* Sum: '<S13>/Deviation' */
   FOC_FCF_B->Deviation = FOC_FCF_B->Sum3 - FOC_FCF_B->phi_el_observer;
 
-  /* Product: '<S11>/Product2' incorporates:
-   *  Constant: '<S11>/Constant'
-   *  Constant: '<S11>/Constant1'
+  /* Product: '<S13>/Product2' incorporates:
+   *  Constant: '<S13>/Constant'
+   *  Constant: '<S13>/Constant1'
    */
   FOC_FCF_B->Product2 = FOC_FCF_P.FOC_AngleObserver_w0 *
     FOC_FCF_P.FOC_AngleObserver_D * FOC_FCF_B->Deviation;
 
-  /* Gain: '<S11>/Gain' */
+  /* Gain: '<S13>/Gain' */
   FOC_FCF_B->Gain_g = FOC_FCF_P.Gain_Gain_k * FOC_FCF_B->Product2;
 
-  /* Gain: '<S11>/Gain4' */
+  /* Gain: '<S13>/Gain4' */
   FOC_FCF_B->winkelimpuls = FOC_FCF_P.FOC_OmegaObs3 * FOC_FCF_B->Deviation;
 
-  /* Sum: '<S11>/Sum1' */
+  /* Sum: '<S13>/Sum1' */
   FOC_FCF_B->Sum1_g4 = FOC_FCF_B->Gain_g + FOC_FCF_B->w_el;
 
-  /* Product: '<S11>/Product' incorporates:
-   *  Constant: '<S11>/FOC_T_fast'
+  /* Product: '<S13>/Product' incorporates:
+   *  Constant: '<S13>/FOC_T_fast'
    */
   FOC_FCF_B->Product_o = FOC_FCF_B->Sum1_g4 * FOC_FCF_P.FOC_T_fast_Value_df;
 
-  /* Product: '<S11>/Product1' incorporates:
-   *  Constant: '<S11>/Constant'
+  /* Product: '<S13>/Product1' incorporates:
+   *  Constant: '<S13>/Constant'
    */
   FOC_FCF_B->Product1_bi = FOC_FCF_P.FOC_AngleObserver_w0 *
     FOC_FCF_P.FOC_AngleObserver_w0 * FOC_FCF_B->Deviation;
 
-  /* UnitDelay: '<S15>/Unit Delay1' */
+  /* UnitDelay: '<S17>/Unit Delay1' */
   FOC_FCF_B->UnitDelay1 = FOC_FCF_DW->UnitDelay1_DSTATE_i;
 
-  /* Sum: '<S11>/Sum2' */
+  /* Sum: '<S13>/Sum2' */
   FOC_FCF_B->Sum2_mq = FOC_FCF_B->Product1_bi + FOC_FCF_B->UnitDelay1;
 
-  /* Sum: '<S11>/Sum6' */
+  /* Sum: '<S13>/Sum6' */
   FOC_FCF_B->Sum6 = FOC_FCF_B->Product_o + FOC_FCF_B->phi_el_observer;
 
-  /* Product: '<S14>/Product' incorporates:
-   *  Constant: '<S14>/FOC_T_fast'
+  /* Product: '<S16>/Product' incorporates:
+   *  Constant: '<S16>/FOC_T_fast'
    */
   FOC_FCF_B->Product_n = FOC_FCF_B->Sum2_mq * FOC_FCF_P.FOC_T_fast_Value_c;
 
-  /* Sum: '<S14>/Sum2' */
+  /* Sum: '<S16>/Sum2' */
   FOC_FCF_B->Sum2_e = FOC_FCF_B->Product_n + FOC_FCF_B->w_el;
 
-  /* Product: '<S15>/Product' incorporates:
-   *  Constant: '<S15>/FOC_T_fast'
+  /* Product: '<S17>/Product' incorporates:
+   *  Constant: '<S17>/FOC_T_fast'
    */
   FOC_FCF_B->Product_cd = FOC_FCF_B->winkelimpuls * FOC_FCF_P.FOC_T_fast_Value_k;
 
-  /* Sum: '<S15>/Sum2' */
+  /* Sum: '<S17>/Sum2' */
   FOC_FCF_B->Sum2_j = FOC_FCF_B->Product_cd + FOC_FCF_B->UnitDelay1;
 
   /* Gain: '<S4>/Gain1' */
@@ -1764,99 +1841,99 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->phi_el_U_trafo[1] = FOC_FCF_P.Gain1_Gain_kl * FOC_FCF_B->Sum2_p;
   FOC_FCF_B->phi_el_U_trafo[2] = FOC_FCF_P.Gain1_Gain_kl * FOC_FCF_B->Sum1_l;
 
-  /* Outputs for Atomic SubSystem: '<S10>/Calc_Modulation_Index' */
-  /* Gain: '<S48>/U_DC//2' */
+  /* Outputs for Atomic SubSystem: '<S12>/Calc_Modulation_Index' */
+  /* Gain: '<S51>/U_DC//2' */
   FOC_FCF_B->U_DC2_l = FOC_FCF_P.U_DC2_Gain * FOC_FCF_B->U_DC_fcf;
 
-  /* MinMax: '<S48>/AvoidDivBy0' incorporates:
-   *  Constant: '<S48>/Constant2'
+  /* MinMax: '<S51>/AvoidDivBy0' incorporates:
+   *  Constant: '<S51>/Constant2'
    */
   tmp_0 = fmaxf(FOC_FCF_P.Constant2_Value_d, FOC_FCF_B->U_DC2_l);
 
-  /* MinMax: '<S48>/AvoidDivBy0' */
+  /* MinMax: '<S51>/AvoidDivBy0' */
   FOC_FCF_B->AvoidDivBy0_f = tmp_0;
 
-  /* Math: '<S48>/Square' */
+  /* Math: '<S51>/Square' */
   tmp_0 = FOC_FCF_B->Product_c0[0];
 
-  /* Math: '<S48>/Square' */
+  /* Math: '<S51>/Square' */
   FOC_FCF_B->Square[0] = tmp_0 * tmp_0;
 
-  /* Math: '<S48>/Square' */
+  /* Math: '<S51>/Square' */
   tmp_0 = FOC_FCF_B->Product_c0[1];
 
-  /* Math: '<S48>/Square' */
+  /* Math: '<S51>/Square' */
   FOC_FCF_B->Square[1] = tmp_0 * tmp_0;
 
-  /* Sum: '<S48>/Sum' */
+  /* Sum: '<S51>/Sum' */
   tmp_0 = FOC_FCF_B->Square[0];
 
-  /* Math: '<S48>/Square1' */
+  /* Math: '<S51>/Square1' */
   I_phA = FOC_FCF_B->Product_f[0];
 
-  /* Math: '<S48>/Square1' */
+  /* Math: '<S51>/Square1' */
   FOC_FCF_B->Square1[0] = I_phA * I_phA;
 
-  /* Sum: '<S48>/Sum' */
+  /* Sum: '<S51>/Sum' */
   tmp_0 += FOC_FCF_B->Square[1];
 
-  /* Math: '<S48>/Square1' */
+  /* Math: '<S51>/Square1' */
   I_phA = FOC_FCF_B->Product_f[1];
 
-  /* Math: '<S48>/Square1' */
+  /* Math: '<S51>/Square1' */
   FOC_FCF_B->Square1[1] = I_phA * I_phA;
 
-  /* Sum: '<S48>/Sum' */
+  /* Sum: '<S51>/Sum' */
   FOC_FCF_B->Sum_kr = tmp_0;
 
-  /* Sqrt: '<S48>/Sqrt' */
+  /* Sqrt: '<S51>/Sqrt' */
   FOC_FCF_B->Sqrt = sqrtf(FOC_FCF_B->Sum_kr);
 
-  /* Sum: '<S48>/Sum1' */
+  /* Sum: '<S51>/Sum1' */
   tmp_0 = FOC_FCF_B->Square1[0];
 
-  /* Math: '<S48>/Square2' */
+  /* Math: '<S51>/Square2' */
   I_phA = FOC_FCF_B->Product_i[0];
 
-  /* Math: '<S48>/Square2' */
+  /* Math: '<S51>/Square2' */
   FOC_FCF_B->Square2[0] = I_phA * I_phA;
 
-  /* Sum: '<S48>/Sum1' */
+  /* Sum: '<S51>/Sum1' */
   tmp_0 += FOC_FCF_B->Square1[1];
 
-  /* Math: '<S48>/Square2' */
+  /* Math: '<S51>/Square2' */
   I_phA = FOC_FCF_B->Product_i[1];
 
-  /* Math: '<S48>/Square2' */
+  /* Math: '<S51>/Square2' */
   FOC_FCF_B->Square2[1] = I_phA * I_phA;
 
-  /* Sum: '<S48>/Sum1' */
+  /* Sum: '<S51>/Sum1' */
   FOC_FCF_B->Sum1_a = tmp_0;
 
-  /* Sqrt: '<S48>/Sqrt1' */
+  /* Sqrt: '<S51>/Sqrt1' */
   FOC_FCF_B->Sqrt1 = sqrtf(FOC_FCF_B->Sum1_a);
 
-  /* Sum: '<S48>/Sum2' */
+  /* Sum: '<S51>/Sum2' */
   tmp_0 = FOC_FCF_B->Square2[0];
   tmp_0 += FOC_FCF_B->Square2[1];
 
-  /* Sum: '<S48>/Sum2' */
+  /* Sum: '<S51>/Sum2' */
   FOC_FCF_B->Sum2_iq = tmp_0;
 
-  /* Sqrt: '<S48>/Sqrt2' */
+  /* Sqrt: '<S51>/Sqrt2' */
   FOC_FCF_B->Sqrt2 = sqrtf(FOC_FCF_B->Sum2_iq);
 
-  /* Product: '<S48>/Divide3' */
+  /* Product: '<S51>/Divide3' */
   FOC_FCF_B->ModInd[0] = FOC_FCF_B->Sqrt / FOC_FCF_B->AvoidDivBy0_f;
   FOC_FCF_B->ModInd[1] = FOC_FCF_B->Sqrt1 / FOC_FCF_B->AvoidDivBy0_f;
   FOC_FCF_B->ModInd[2] = FOC_FCF_B->Sqrt2 / FOC_FCF_B->AvoidDivBy0_f;
 
-  /* End of Outputs for SubSystem: '<S10>/Calc_Modulation_Index' */
+  /* End of Outputs for SubSystem: '<S12>/Calc_Modulation_Index' */
 
   /* Switch: '<S2>/ASC_Switch' incorporates:
-   *  Switch: '<S24>/IntegStopSwitch2'
-   *  Switch: '<S28>/IntegStopSwitch2'
-   *  Switch: '<S32>/IntegStopSwitch2'
+   *  Switch: '<S26>/IntegStopSwitch2'
+   *  Switch: '<S30>/IntegStopSwitch2'
+   *  Switch: '<S34>/IntegStopSwitch2'
    */
   if (FOC_FCF_B->LogicalOperator1) {
     /* Outport: '<Root>/DutyCycles [0..1]' */
@@ -1870,325 +1947,325 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_Y->DutyCycles01[5] = FOC_FCF_B->Select_GateDriver_Assignment_2[2];
     FOC_FCF_Y->DutyCycles01[8] = FOC_FCF_B->Select_GateDriver_Assignment_3[2];
 
-    /* RelationalOperator: '<S23>/AntiWindupLE' incorporates:
-     *  Constant: '<S23>/FOC_MaxModInd'
+    /* RelationalOperator: '<S25>/AntiWindupLE' incorporates:
+     *  Constant: '<S25>/FOC_MaxModInd'
      */
     FOC_FCF_B->AntiWindupLE_l = (FOC_FCF_B->ModInd[0] <= FOC_FCF_P.FOC_MaxModInd);
 
-    /* Switch: '<S24>/IntegStopSwitch3' */
+    /* Switch: '<S26>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1[0];
     if (FOC_FCF_B->Product1 > FOC_FCF_P.IntegStopSwitch3_Threshold) {
-      /* Switch: '<S24>/IntegStopSwitch3' */
+      /* Switch: '<S26>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S24>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S24>/Zero1'
+      /* Switch: '<S26>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S26>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value[0];
     }
 
-    /* Switch: '<S24>/IntegStopSwitch3' */
+    /* Switch: '<S26>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3_h[0] = I_phA;
 
-    /* Sum: '<S24>/IntSum2' */
+    /* Sum: '<S26>/IntSum2' */
     FOC_FCF_B->IntSum2_j[0] = FOC_FCF_B->KPek1[0] + I_phA;
 
-    /* Gain: '<S24>/FOC_IntegDamp' */
+    /* Gain: '<S26>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp_c[0] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S23>/antiWindupProd' */
+    /* Product: '<S25>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd_o[0] = FOC_FCF_B->IdqErr[0] * tmp_0;
 
-    /* Switch: '<S24>/IntegStopSwitch3' */
+    /* Switch: '<S26>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1[1];
     if (FOC_FCF_B->Product1 > FOC_FCF_P.IntegStopSwitch3_Threshold) {
-      /* Switch: '<S24>/IntegStopSwitch3' */
+      /* Switch: '<S26>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S24>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S24>/Zero1'
+      /* Switch: '<S26>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S26>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value[1];
     }
 
-    /* Switch: '<S24>/IntegStopSwitch3' */
+    /* Switch: '<S26>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3_h[1] = I_phA;
 
-    /* Sum: '<S24>/IntSum2' */
+    /* Sum: '<S26>/IntSum2' */
     FOC_FCF_B->IntSum2_j[1] = FOC_FCF_B->KPek1[1] + I_phA;
 
-    /* Gain: '<S24>/FOC_IntegDamp' */
+    /* Gain: '<S26>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp_c[1] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S23>/antiWindupProd' */
+    /* Product: '<S25>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd_o[1] = FOC_FCF_B->IdqErr[1] * tmp_0;
 
-    /* RelationalOperator: '<S26>/Compare' incorporates:
-     *  Constant: '<S26>/Constant'
+    /* RelationalOperator: '<S28>/Compare' incorporates:
+     *  Constant: '<S28>/Constant'
      */
     FOC_FCF_B->Compare_o = (uint8_T)(FOC_FCF_B->antiWindupProd_o[1] <
       FOC_FCF_P.AntiWindupGT_q_const);
 
-    /* Logic: '<S23>/AntiWindupOR_q' */
+    /* Logic: '<S25>/AntiWindupOR_q' */
     FOC_FCF_B->AntiWindupOR_q_o = (FOC_FCF_B->AntiWindupLE_l ||
       (FOC_FCF_B->Compare_o != 0));
 
-    /* RelationalOperator: '<S25>/Compare' incorporates:
-     *  Constant: '<S25>/Constant'
+    /* RelationalOperator: '<S27>/Compare' incorporates:
+     *  Constant: '<S27>/Constant'
      */
     FOC_FCF_B->Compare_f = (uint8_T)(FOC_FCF_B->antiWindupProd_o[0] <
       FOC_FCF_P.AntiWindupGT_d_const);
 
-    /* Logic: '<S23>/AntiWindupOR_d' */
+    /* Logic: '<S25>/AntiWindupOR_d' */
     FOC_FCF_B->AntiWindupOR_d_e = ((FOC_FCF_B->Compare_f != 0) ||
       FOC_FCF_B->AntiWindupLE_l);
 
-    /* Switch: '<S24>/IntegStopSwitch1' */
+    /* Switch: '<S26>/IntegStopSwitch1' */
     tmp_1 = FOC_FCF_B->AntiWindupOR_d_e;
     tmp_idx_1 = FOC_FCF_B->AntiWindupOR_q_o;
     if (tmp_1) {
       tmp_0 = FOC_FCF_B->IntSum2_j[0];
 
-      /* Switch: '<S24>/IntegStopSwitch1' */
+      /* Switch: '<S26>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_f[0] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp_c[0];
 
-      /* Switch: '<S24>/IntegStopSwitch1' */
+      /* Switch: '<S26>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_f[0] = tmp_0;
     }
 
-    /* Switch: '<S24>/IntegStopSwitch2' */
+    /* Switch: '<S26>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2[0] = tmp_0;
 
-    /* Switch: '<S24>/IntegStopSwitch1' */
+    /* Switch: '<S26>/IntegStopSwitch1' */
     if (tmp_idx_1) {
       tmp_0 = FOC_FCF_B->IntSum2_j[1];
 
-      /* Switch: '<S24>/IntegStopSwitch1' */
+      /* Switch: '<S26>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_f[1] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp_c[1];
 
-      /* Switch: '<S24>/IntegStopSwitch1' */
+      /* Switch: '<S26>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_f[1] = tmp_0;
     }
 
-    /* Switch: '<S24>/IntegStopSwitch2' */
+    /* Switch: '<S26>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2[1] = tmp_0;
 
-    /* RelationalOperator: '<S27>/AntiWindupLE' incorporates:
-     *  Constant: '<S27>/FOC_MaxModInd'
+    /* RelationalOperator: '<S29>/AntiWindupLE' incorporates:
+     *  Constant: '<S29>/FOC_MaxModInd'
      */
     FOC_FCF_B->AntiWindupLE_f = (FOC_FCF_B->ModInd[1] <= FOC_FCF_P.FOC_MaxModInd);
 
-    /* Switch: '<S28>/IntegStopSwitch3' */
+    /* Switch: '<S30>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1_o[0];
     if (FOC_FCF_B->Product1_k > FOC_FCF_P.IntegStopSwitch3_Threshold_a) {
-      /* Switch: '<S28>/IntegStopSwitch3' */
+      /* Switch: '<S30>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S28>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S28>/Zero1'
+      /* Switch: '<S30>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S30>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value_l[0];
     }
 
-    /* Switch: '<S28>/IntegStopSwitch3' */
+    /* Switch: '<S30>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3_n[0] = I_phA;
 
-    /* Sum: '<S28>/IntSum2' */
+    /* Sum: '<S30>/IntSum2' */
     FOC_FCF_B->IntSum2_f[0] = FOC_FCF_B->KPek1_l[0] + I_phA;
 
-    /* Gain: '<S28>/FOC_IntegDamp' */
+    /* Gain: '<S30>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp_g[0] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S27>/antiWindupProd' */
+    /* Product: '<S29>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd_d[0] = FOC_FCF_B->IdqErr_l[0] * tmp_0;
 
-    /* Switch: '<S28>/IntegStopSwitch3' */
+    /* Switch: '<S30>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1_o[1];
     if (FOC_FCF_B->Product1_k > FOC_FCF_P.IntegStopSwitch3_Threshold_a) {
-      /* Switch: '<S28>/IntegStopSwitch3' */
+      /* Switch: '<S30>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S28>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S28>/Zero1'
+      /* Switch: '<S30>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S30>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value_l[1];
     }
 
-    /* Switch: '<S28>/IntegStopSwitch3' */
+    /* Switch: '<S30>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3_n[1] = I_phA;
 
-    /* Sum: '<S28>/IntSum2' */
+    /* Sum: '<S30>/IntSum2' */
     FOC_FCF_B->IntSum2_f[1] = FOC_FCF_B->KPek1_l[1] + I_phA;
 
-    /* Gain: '<S28>/FOC_IntegDamp' */
+    /* Gain: '<S30>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp_g[1] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S27>/antiWindupProd' */
+    /* Product: '<S29>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd_d[1] = FOC_FCF_B->IdqErr_l[1] * tmp_0;
 
-    /* RelationalOperator: '<S30>/Compare' incorporates:
-     *  Constant: '<S30>/Constant'
+    /* RelationalOperator: '<S32>/Compare' incorporates:
+     *  Constant: '<S32>/Constant'
      */
     FOC_FCF_B->Compare_g = (uint8_T)(FOC_FCF_B->antiWindupProd_d[1] <
       FOC_FCF_P.AntiWindupGT_q_const_h);
 
-    /* Logic: '<S27>/AntiWindupOR_q' */
+    /* Logic: '<S29>/AntiWindupOR_q' */
     FOC_FCF_B->AntiWindupOR_q_l = (FOC_FCF_B->AntiWindupLE_f ||
       (FOC_FCF_B->Compare_g != 0));
 
-    /* RelationalOperator: '<S29>/Compare' incorporates:
-     *  Constant: '<S29>/Constant'
+    /* RelationalOperator: '<S31>/Compare' incorporates:
+     *  Constant: '<S31>/Constant'
      */
     FOC_FCF_B->Compare_i = (uint8_T)(FOC_FCF_B->antiWindupProd_d[0] <
       FOC_FCF_P.AntiWindupGT_d_const_n);
 
-    /* Logic: '<S27>/AntiWindupOR_d' */
+    /* Logic: '<S29>/AntiWindupOR_d' */
     FOC_FCF_B->AntiWindupOR_d_m = ((FOC_FCF_B->Compare_i != 0) ||
       FOC_FCF_B->AntiWindupLE_f);
 
-    /* Switch: '<S28>/IntegStopSwitch1' */
+    /* Switch: '<S30>/IntegStopSwitch1' */
     tmp_1 = FOC_FCF_B->AntiWindupOR_d_m;
     tmp_idx_1 = FOC_FCF_B->AntiWindupOR_q_l;
     if (tmp_1) {
       tmp_0 = FOC_FCF_B->IntSum2_f[0];
 
-      /* Switch: '<S28>/IntegStopSwitch1' */
+      /* Switch: '<S30>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_g[0] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp_g[0];
 
-      /* Switch: '<S28>/IntegStopSwitch1' */
+      /* Switch: '<S30>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_g[0] = tmp_0;
     }
 
-    /* Switch: '<S28>/IntegStopSwitch2' */
+    /* Switch: '<S30>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2_o[0] = tmp_0;
 
-    /* Switch: '<S28>/IntegStopSwitch1' */
+    /* Switch: '<S30>/IntegStopSwitch1' */
     if (tmp_idx_1) {
       tmp_0 = FOC_FCF_B->IntSum2_f[1];
 
-      /* Switch: '<S28>/IntegStopSwitch1' */
+      /* Switch: '<S30>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_g[1] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp_g[1];
 
-      /* Switch: '<S28>/IntegStopSwitch1' */
+      /* Switch: '<S30>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1_g[1] = tmp_0;
     }
 
-    /* Switch: '<S28>/IntegStopSwitch2' */
+    /* Switch: '<S30>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2_o[1] = tmp_0;
 
-    /* RelationalOperator: '<S31>/AntiWindupLE' incorporates:
-     *  Constant: '<S31>/FOC_MaxModInd'
+    /* RelationalOperator: '<S33>/AntiWindupLE' incorporates:
+     *  Constant: '<S33>/FOC_MaxModInd'
      */
     FOC_FCF_B->AntiWindupLE = (FOC_FCF_B->ModInd[2] <= FOC_FCF_P.FOC_MaxModInd);
 
-    /* Switch: '<S32>/IntegStopSwitch3' */
+    /* Switch: '<S34>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1_d[0];
     if (FOC_FCF_B->Product1_b > FOC_FCF_P.IntegStopSwitch3_Threshold_ad) {
-      /* Switch: '<S32>/IntegStopSwitch3' */
+      /* Switch: '<S34>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S32>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S32>/Zero1'
+      /* Switch: '<S34>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S34>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value_o[0];
     }
 
-    /* Switch: '<S32>/IntegStopSwitch3' */
+    /* Switch: '<S34>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3[0] = I_phA;
 
-    /* Sum: '<S32>/IntSum2' */
+    /* Sum: '<S34>/IntSum2' */
     FOC_FCF_B->IntSum2[0] = FOC_FCF_B->KPek1_h[0] + I_phA;
 
-    /* Gain: '<S32>/FOC_IntegDamp' */
+    /* Gain: '<S34>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp[0] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S31>/antiWindupProd' */
+    /* Product: '<S33>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd[0] = FOC_FCF_B->IdqErr_e[0] * tmp_0;
 
-    /* Switch: '<S32>/IntegStopSwitch3' */
+    /* Switch: '<S34>/IntegStopSwitch3' */
     tmp_0 = FOC_FCF_B->IntegDelay1_d[1];
     if (FOC_FCF_B->Product1_b > FOC_FCF_P.IntegStopSwitch3_Threshold_ad) {
-      /* Switch: '<S32>/IntegStopSwitch3' */
+      /* Switch: '<S34>/IntegStopSwitch3' */
       I_phA = tmp_0;
     } else {
-      /* Switch: '<S32>/IntegStopSwitch3' incorporates:
-       *  Constant: '<S32>/Zero1'
+      /* Switch: '<S34>/IntegStopSwitch3' incorporates:
+       *  Constant: '<S34>/Zero1'
        */
       I_phA = FOC_FCF_P.Zero1_Value_o[1];
     }
 
-    /* Switch: '<S32>/IntegStopSwitch3' */
+    /* Switch: '<S34>/IntegStopSwitch3' */
     FOC_FCF_B->IntegStopSwitch3[1] = I_phA;
 
-    /* Sum: '<S32>/IntSum2' */
+    /* Sum: '<S34>/IntSum2' */
     FOC_FCF_B->IntSum2[1] = FOC_FCF_B->KPek1_h[1] + I_phA;
 
-    /* Gain: '<S32>/FOC_IntegDamp' */
+    /* Gain: '<S34>/FOC_IntegDamp' */
     FOC_FCF_B->FOC_IntegDamp[1] = FOC_FCF_P.FOC_IntegDamp * I_phA;
 
-    /* Product: '<S31>/antiWindupProd' */
+    /* Product: '<S33>/antiWindupProd' */
     FOC_FCF_B->antiWindupProd[1] = FOC_FCF_B->IdqErr_e[1] * tmp_0;
 
-    /* RelationalOperator: '<S34>/Compare' incorporates:
-     *  Constant: '<S34>/Constant'
+    /* RelationalOperator: '<S36>/Compare' incorporates:
+     *  Constant: '<S36>/Constant'
      */
     FOC_FCF_B->Compare = (uint8_T)(FOC_FCF_B->antiWindupProd[1] <
       FOC_FCF_P.AntiWindupGT_q_const_l);
 
-    /* Logic: '<S31>/AntiWindupOR_q' */
+    /* Logic: '<S33>/AntiWindupOR_q' */
     FOC_FCF_B->AntiWindupOR_q = (FOC_FCF_B->AntiWindupLE || (FOC_FCF_B->Compare
       != 0));
 
-    /* RelationalOperator: '<S33>/Compare' incorporates:
-     *  Constant: '<S33>/Constant'
+    /* RelationalOperator: '<S35>/Compare' incorporates:
+     *  Constant: '<S35>/Constant'
      */
     FOC_FCF_B->Compare_k = (uint8_T)(FOC_FCF_B->antiWindupProd[0] <
       FOC_FCF_P.AntiWindupGT_d_const_f);
 
-    /* Logic: '<S31>/AntiWindupOR_d' */
+    /* Logic: '<S33>/AntiWindupOR_d' */
     FOC_FCF_B->AntiWindupOR_d = ((FOC_FCF_B->Compare_k != 0) ||
       FOC_FCF_B->AntiWindupLE);
 
-    /* Switch: '<S32>/IntegStopSwitch1' */
+    /* Switch: '<S34>/IntegStopSwitch1' */
     tmp_1 = FOC_FCF_B->AntiWindupOR_d;
     tmp_idx_1 = FOC_FCF_B->AntiWindupOR_q;
     if (tmp_1) {
       tmp_0 = FOC_FCF_B->IntSum2[0];
 
-      /* Switch: '<S32>/IntegStopSwitch1' */
+      /* Switch: '<S34>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1[0] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp[0];
 
-      /* Switch: '<S32>/IntegStopSwitch1' */
+      /* Switch: '<S34>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1[0] = tmp_0;
     }
 
-    /* Switch: '<S32>/IntegStopSwitch2' */
+    /* Switch: '<S34>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2_h[0] = tmp_0;
 
-    /* Switch: '<S32>/IntegStopSwitch1' */
+    /* Switch: '<S34>/IntegStopSwitch1' */
     if (tmp_idx_1) {
       tmp_0 = FOC_FCF_B->IntSum2[1];
 
-      /* Switch: '<S32>/IntegStopSwitch1' */
+      /* Switch: '<S34>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1[1] = tmp_0;
     } else {
       tmp_0 = FOC_FCF_B->FOC_IntegDamp[1];
 
-      /* Switch: '<S32>/IntegStopSwitch1' */
+      /* Switch: '<S34>/IntegStopSwitch1' */
       FOC_FCF_B->IntegStopSwitch1[1] = tmp_0;
     }
 
-    /* Switch: '<S32>/IntegStopSwitch2' */
+    /* Switch: '<S34>/IntegStopSwitch2' */
     FOC_FCF_B->IntegStopSwitch2_h[1] = tmp_0;
   } else {
     /* MultiPortSwitch: '<S2>/ASC Switch' incorporates:
@@ -2230,20 +2307,20 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
       FOC_FCF_Y->DutyCycles01[i] = FOC_FCF_B->ASCSwitch[i];
     }
 
-    /* Switch: '<S24>/IntegStopSwitch2' incorporates:
-     *  Constant: '<S24>/Zero1'
+    /* Switch: '<S26>/IntegStopSwitch2' incorporates:
+     *  Constant: '<S26>/Zero1'
      */
     FOC_FCF_B->IntegStopSwitch2[0] = FOC_FCF_P.Zero1_Value[0];
     FOC_FCF_B->IntegStopSwitch2[1] = FOC_FCF_P.Zero1_Value[1];
 
-    /* Switch: '<S28>/IntegStopSwitch2' incorporates:
-     *  Constant: '<S28>/Zero1'
+    /* Switch: '<S30>/IntegStopSwitch2' incorporates:
+     *  Constant: '<S30>/Zero1'
      */
     FOC_FCF_B->IntegStopSwitch2_o[0] = FOC_FCF_P.Zero1_Value_l[0];
     FOC_FCF_B->IntegStopSwitch2_o[1] = FOC_FCF_P.Zero1_Value_l[1];
 
-    /* Switch: '<S32>/IntegStopSwitch2' incorporates:
-     *  Constant: '<S32>/Zero1'
+    /* Switch: '<S34>/IntegStopSwitch2' incorporates:
+     *  Constant: '<S34>/Zero1'
      */
     FOC_FCF_B->IntegStopSwitch2_h[0] = FOC_FCF_P.Zero1_Value_o[0];
     FOC_FCF_B->IntegStopSwitch2_h[1] = FOC_FCF_P.Zero1_Value_o[1];
@@ -2251,13 +2328,13 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* End of Switch: '<S2>/ASC_Switch' */
 
-  /* Gain: '<S17>/Gain1' */
+  /* Gain: '<S19>/Gain1' */
   FOC_FCF_B->U_d1_CC = FOC_FCF_P.Gain1_Gain_cs * FOC_FCF_B->IntegEnaSwitch1[0];
 
-  /* Gain: '<S17>/Gain2' */
+  /* Gain: '<S19>/Gain2' */
   FOC_FCF_B->U_q1_CC = FOC_FCF_P.Gain2_Gain * FOC_FCF_B->IntegEnaSwitch1[1];
 
-  /* DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+  /* DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
   i = 1;
   tmp_0 = FOC_FCF_B->TmpSignalConversionAtDiscreteFI[0] *
     FOC_FCF_P.DiscreteFIRFilter20thorder_Coef[0];
@@ -2295,9 +2372,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   FOC_FCF_B->I_dq1_Act_filt[1] = tmp_0;
 
-  /* End of DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+  /* End of DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
 
-  /* DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+  /* DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
   i = 1;
   tmp_0 = FOC_FCF_B->TmpSignalConversionAtDiscrete_k[0] *
     FOC_FCF_P.DiscreteFIRFilter20thorder_Co_a[0];
@@ -2335,9 +2412,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   FOC_FCF_B->DiscreteFIRFilter20thorder[1] = tmp_0;
 
-  /* End of DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+  /* End of DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
 
-  /* DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+  /* DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
   i = 1;
   tmp_0 = FOC_FCF_B->TmpSignalConversionAtDiscrete_c[0] *
     FOC_FCF_P.DiscreteFIRFilter20thorder_Co_l[0];
@@ -2375,148 +2452,185 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   FOC_FCF_B->DiscreteFIRFilter20thorder_l[1] = tmp_0;
 
-  /* End of DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+  /* End of DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
 
-  /* DataTypeConversion: '<S6>/Data Type Conversion' */
+  /* Abs: '<S37>/Abs' */
+  FOC_FCF_B->Abs_e = fabsf(FOC_FCF_B->Add_mp);
+
+  /* Switch: '<S37>/Switch' */
+  if (FOC_FCF_B->Abs_e >= FOC_FCF_P.Switch_Threshold) {
+    /* Signum: '<S37>/Sign' */
+    tmp_0 = FOC_FCF_B->Product_h;
+    if (rtIsNaNF(tmp_0)) {
+      /* Signum: '<S37>/Sign' */
+      FOC_FCF_B->Sign_d = (rtNaNF);
+    } else if (tmp_0 < 0.0F) {
+      /* Signum: '<S37>/Sign' */
+      FOC_FCF_B->Sign_d = -1.0F;
+    } else {
+      /* Signum: '<S37>/Sign' */
+      FOC_FCF_B->Sign_d = (real32_T)(tmp_0 > 0.0F);
+    }
+
+    /* End of Signum: '<S37>/Sign' */
+
+    /* Gain: '<S37>/Gain1' */
+    FOC_FCF_B->Gain1_j = FOC_FCF_P.Gain1_Gain * FOC_FCF_B->Sign_d;
+
+    /* Switch: '<S37>/Switch' */
+    FOC_FCF_B->Switch_d = FOC_FCF_B->Gain1_j;
+  } else {
+    /* Switch: '<S37>/Switch' incorporates:
+     *  Constant: '<S37>/Constant1'
+     */
+    FOC_FCF_B->Switch_d = FOC_FCF_P.Constant1_Value_c;
+  }
+
+  /* End of Switch: '<S37>/Switch' */
+
+  /* Sum: '<S37>/Add1' */
+  FOC_FCF_B->Add1 = FOC_FCF_B->Add_mp - FOC_FCF_B->Switch_d;
+
+  /* DataTypeConversion: '<S8>/Data Type Conversion' */
   FOC_FCF_B->DataTypeConversion = FOC_FCF_B->Logic_gq[0];
 
-  /* Gain: '<S6>/Gain1' */
+  /* Gain: '<S8>/Gain1' */
   FOC_FCF_B->FOC_Overcurrent_I_uvw = FOC_FCF_P.Gain1_Gain_f *
     FOC_FCF_B->DataTypeConversion;
 
-  /* DataTypeConversion: '<S7>/Data Type Conversion' */
+  /* DataTypeConversion: '<S9>/Data Type Conversion' */
   FOC_FCF_B->DataTypeConversion_i = FOC_FCF_B->Logic[0];
 
-  /* DataTypeConversion: '<S7>/Data Type Conversion1' */
+  /* DataTypeConversion: '<S9>/Data Type Conversion1' */
   FOC_FCF_B->DataTypeConversion1 = FOC_FCF_B->Logic_g[0];
 
-  /* Gain: '<S7>/Gain1' */
+  /* Gain: '<S9>/Gain1' */
   FOC_FCF_B->FOC_Undervoltage_U_DC = FOC_FCF_P.Gain1_Gain_g *
     FOC_FCF_B->DataTypeConversion_i;
 
-  /* Gain: '<S7>/Gain2' */
+  /* Gain: '<S9>/Gain2' */
   FOC_FCF_B->FOC_Overvoltage_U_DC = FOC_FCF_P.Gain2_Gain_n *
     FOC_FCF_B->DataTypeConversion1;
 
-  /* Abs: '<S8>/Abs' */
+  /* Abs: '<S10>/Abs' */
   FOC_FCF_B->Abs_b = fabsf(FOC_FCF_B->Add_m);
 
-  /* Switch: '<S8>/Switch' */
-  if (FOC_FCF_B->Abs_b >= FOC_FCF_P.Switch_Threshold) {
-    /* Signum: '<S8>/Sign' */
+  /* Switch: '<S10>/Switch' */
+  if (FOC_FCF_B->Abs_b >= FOC_FCF_P.Switch_Threshold_b) {
+    /* Signum: '<S10>/Sign' */
     tmp_0 = FOC_FCF_B->Product_e;
     if (rtIsNaNF(tmp_0)) {
-      /* Signum: '<S8>/Sign' */
+      /* Signum: '<S10>/Sign' */
       FOC_FCF_B->Sign_n = (rtNaNF);
     } else if (tmp_0 < 0.0F) {
-      /* Signum: '<S8>/Sign' */
+      /* Signum: '<S10>/Sign' */
       FOC_FCF_B->Sign_n = -1.0F;
     } else {
-      /* Signum: '<S8>/Sign' */
+      /* Signum: '<S10>/Sign' */
       FOC_FCF_B->Sign_n = (real32_T)(tmp_0 > 0.0F);
     }
 
-    /* End of Signum: '<S8>/Sign' */
+    /* End of Signum: '<S10>/Sign' */
 
-    /* Gain: '<S8>/Gain1' */
-    FOC_FCF_B->Gain1_h = FOC_FCF_P.Gain1_Gain * FOC_FCF_B->Sign_n;
+    /* Gain: '<S10>/Gain1' */
+    FOC_FCF_B->Gain1_h = FOC_FCF_P.Gain1_Gain_c * FOC_FCF_B->Sign_n;
 
-    /* Switch: '<S8>/Switch' */
+    /* Switch: '<S10>/Switch' */
     FOC_FCF_B->Switch_l = FOC_FCF_B->Gain1_h;
   } else {
-    /* Switch: '<S8>/Switch' incorporates:
-     *  Constant: '<S8>/Constant1'
+    /* Switch: '<S10>/Switch' incorporates:
+     *  Constant: '<S10>/Constant1'
      */
     FOC_FCF_B->Switch_l = FOC_FCF_P.Constant1_Value_k;
   }
 
-  /* End of Switch: '<S8>/Switch' */
+  /* End of Switch: '<S10>/Switch' */
 
-  /* Sum: '<S8>/Add1' */
-  FOC_FCF_B->Add1 = FOC_FCF_B->Add_m - FOC_FCF_B->Switch_l;
+  /* Sum: '<S10>/Add1' */
+  FOC_FCF_B->Add1_j = FOC_FCF_B->Add_m - FOC_FCF_B->Switch_l;
 
-  /* Abs: '<S45>/Abs' */
+  /* Abs: '<S48>/Abs' */
   FOC_FCF_B->Abs_f = fabsf(FOC_FCF_B->Add);
 
-  /* Switch: '<S45>/Switch' */
+  /* Switch: '<S48>/Switch' */
   if (FOC_FCF_B->Abs_f >= FOC_FCF_P.Switch_Threshold_c) {
-    /* Signum: '<S45>/Sign' */
+    /* Signum: '<S48>/Sign' */
     tmp_0 = FOC_FCF_B->Product;
     if (rtIsNaNF(tmp_0)) {
-      /* Signum: '<S45>/Sign' */
+      /* Signum: '<S48>/Sign' */
       FOC_FCF_B->Sign = (rtNaNF);
     } else if (tmp_0 < 0.0F) {
-      /* Signum: '<S45>/Sign' */
+      /* Signum: '<S48>/Sign' */
       FOC_FCF_B->Sign = -1.0F;
     } else {
-      /* Signum: '<S45>/Sign' */
+      /* Signum: '<S48>/Sign' */
       FOC_FCF_B->Sign = (real32_T)(tmp_0 > 0.0F);
     }
 
-    /* End of Signum: '<S45>/Sign' */
+    /* End of Signum: '<S48>/Sign' */
 
-    /* Gain: '<S45>/Gain1' */
+    /* Gain: '<S48>/Gain1' */
     FOC_FCF_B->Gain1_o = FOC_FCF_P.Gain1_Gain_a * FOC_FCF_B->Sign;
 
-    /* Switch: '<S45>/Switch' */
+    /* Switch: '<S48>/Switch' */
     FOC_FCF_B->Switch_n = FOC_FCF_B->Gain1_o;
   } else {
-    /* Switch: '<S45>/Switch' incorporates:
-     *  Constant: '<S45>/Constant1'
+    /* Switch: '<S48>/Switch' incorporates:
+     *  Constant: '<S48>/Constant1'
      */
     FOC_FCF_B->Switch_n = FOC_FCF_P.Constant1_Value_e;
   }
 
-  /* End of Switch: '<S45>/Switch' */
+  /* End of Switch: '<S48>/Switch' */
 
-  /* Sum: '<S45>/Add1' */
+  /* Sum: '<S48>/Add1' */
   FOC_FCF_B->Add1_c = FOC_FCF_B->Add - FOC_FCF_B->Switch_n;
 
-  /* Gain: '<S10>/Gain' */
+  /* Gain: '<S12>/Gain' */
   FOC_FCF_B->U_d1 = FOC_FCF_P.Gain_Gain_jm * FOC_FCF_B->SelectControlMode[0];
 
-  /* Gain: '<S10>/Gain1' */
+  /* Gain: '<S12>/Gain1' */
   FOC_FCF_B->U_q1 = FOC_FCF_P.Gain1_Gain_e * FOC_FCF_B->SelectControlMode[1];
 
-  /* Gain: '<S10>/Gain2' */
+  /* Gain: '<S12>/Gain2' */
   FOC_FCF_B->U_alpha1 = FOC_FCF_P.Gain2_Gain_f * FOC_FCF_B->Product_c0[0];
 
-  /* Gain: '<S10>/Gain3' */
+  /* Gain: '<S12>/Gain3' */
   FOC_FCF_B->U_beta1 = FOC_FCF_P.Gain3_Gain * FOC_FCF_B->Product_c0[1];
 
-  /* Gain: '<S50>/DutyCycle_u1' */
+  /* Gain: '<S53>/DutyCycle_u1' */
   FOC_FCF_B->DutyCycle_u1 = FOC_FCF_P.DutyCycle_u1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[0];
 
-  /* Gain: '<S50>/DutyCycle_u2' */
+  /* Gain: '<S53>/DutyCycle_u2' */
   FOC_FCF_B->DutyCycle_u2 = FOC_FCF_P.DutyCycle_u2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[0];
 
-  /* Gain: '<S50>/DutyCycle_u3' */
+  /* Gain: '<S53>/DutyCycle_u3' */
   FOC_FCF_B->DutyCycle_u3 = FOC_FCF_P.DutyCycle_u3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[0];
 
-  /* Gain: '<S50>/DutyCycle_v1' */
+  /* Gain: '<S53>/DutyCycle_v1' */
   FOC_FCF_B->DutyCycle_v1 = FOC_FCF_P.DutyCycle_v1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[1];
 
-  /* Gain: '<S50>/DutyCycle_v2' */
+  /* Gain: '<S53>/DutyCycle_v2' */
   FOC_FCF_B->DutyCycle_v2 = FOC_FCF_P.DutyCycle_v2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[1];
 
-  /* Gain: '<S50>/DutyCycle_v3' */
+  /* Gain: '<S53>/DutyCycle_v3' */
   FOC_FCF_B->DutyCycle_v3 = FOC_FCF_P.DutyCycle_v3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[1];
 
-  /* Gain: '<S50>/DutyCycle_w1' */
+  /* Gain: '<S53>/DutyCycle_w1' */
   FOC_FCF_B->DutyCycle_w1 = FOC_FCF_P.DutyCycle_w1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[2];
 
-  /* Gain: '<S50>/DutyCycle_w2' */
+  /* Gain: '<S53>/DutyCycle_w2' */
   FOC_FCF_B->DutyCycle_w2 = FOC_FCF_P.DutyCycle_w2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[2];
 
-  /* Gain: '<S50>/DutyCycle_w3' */
+  /* Gain: '<S53>/DutyCycle_w3' */
   FOC_FCF_B->DutyCycle_w3 = FOC_FCF_P.DutyCycle_w3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[2];
 
@@ -2528,75 +2642,78 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    */
   FOC_FCF_B->Sum_o = FOC_FCF_P.Counter_Start_Value + FOC_FCF_B->FCF_Cnt;
 
-  /* Update for Memory: '<S42>/Memory' */
+  /* Update for Memory: '<S45>/Memory' */
   FOC_FCF_DW->Memory_PreviousInput = FOC_FCF_B->Logic[0];
 
-  /* Update for UnitDelay: '<S41>/Delay Input1'
+  /* Update for UnitDelay: '<S44>/Delay Input1'
    *
-   * Block description for '<S41>/Delay Input1':
+   * Block description for '<S44>/Delay Input1':
    *
    *  Store in Global RAM
    */
   FOC_FCF_DW->DelayInput1_DSTATE = FOC_FCF_B->Compare_n;
 
-  /* Update for Memory: '<S43>/Memory' */
+  /* Update for Memory: '<S46>/Memory' */
   FOC_FCF_DW->Memory_PreviousInput_o = FOC_FCF_B->Logic_g[0];
 
-  /* Update for UnitDelay: '<S36>/Delay Input1'
+  /* Update for UnitDelay: '<S39>/Delay Input1'
    *
-   * Block description for '<S36>/Delay Input1':
+   * Block description for '<S39>/Delay Input1':
    *
    *  Store in Global RAM
    */
   FOC_FCF_DW->DelayInput1_DSTATE_c = FOC_FCF_B->Compare_l;
 
-  /* Update for Memory: '<S37>/Memory' */
+  /* Update for Memory: '<S40>/Memory' */
   FOC_FCF_DW->Memory_PreviousInput_p = FOC_FCF_B->Logic_gq[0];
 
-  /* Update for DiscreteTransferFcn: '<S9>/Discrete Transfer Fcn' */
+  /* Update for DiscreteTransferFcn: '<S11>/Discrete Transfer Fcn' */
   tmp_0 = FOC_FCF_B->f_2_w_el;
   tmp_0 -= FOC_FCF_P.DiscreteTransferFcn_DenCoef[1] *
     FOC_FCF_DW->DiscreteTransferFcn_states;
   tmp_0 /= FOC_FCF_P.DiscreteTransferFcn_DenCoef[0];
   FOC_FCF_DW->DiscreteTransferFcn_states = tmp_0;
 
-  /* Update for UnitDelay: '<S45>/Unit Delay' */
+  /* Update for UnitDelay: '<S48>/Unit Delay' */
   FOC_FCF_DW->UnitDelay_DSTATE = FOC_FCF_B->Add1_c;
 
-  /* Update for UnitDelay: '<S14>/Unit Delay1' */
+  /* Update for UnitDelay: '<S16>/Unit Delay1' */
   FOC_FCF_DW->UnitDelay1_DSTATE = FOC_FCF_B->Sum2_e;
 
-  /* Update for UnitDelay: '<S13>/Unit Delay' */
+  /* Update for UnitDelay: '<S15>/Unit Delay' */
   FOC_FCF_DW->UnitDelay_DSTATE_h = FOC_FCF_B->Sum3;
 
-  /* Update for UnitDelay: '<S11>/Unit Delay3' */
+  /* Update for UnitDelay: '<S13>/Unit Delay3' */
   FOC_FCF_DW->UnitDelay3_DSTATE = FOC_FCF_B->Sum6;
 
-  /* Update for UnitDelay: '<S8>/Unit Delay' */
-  FOC_FCF_DW->UnitDelay_DSTATE_p = FOC_FCF_B->Add1;
+  /* Update for UnitDelay: '<S10>/Unit Delay' */
+  FOC_FCF_DW->UnitDelay_DSTATE_p = FOC_FCF_B->Add1_j;
 
-  /* Update for UnitDelay: '<S24>/IntegDelay1' */
+  /* Update for UnitDelay: '<S37>/Unit Delay' */
+  FOC_FCF_DW->UnitDelay_DSTATE_f = FOC_FCF_B->Add1;
+
+  /* Update for UnitDelay: '<S26>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE[0] = FOC_FCF_B->IntegStopSwitch2[0];
 
-  /* Update for UnitDelay: '<S28>/IntegDelay1' */
+  /* Update for UnitDelay: '<S30>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE_p[0] = FOC_FCF_B->IntegStopSwitch2_o[0];
 
-  /* Update for UnitDelay: '<S32>/IntegDelay1' */
+  /* Update for UnitDelay: '<S34>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE_h[0] = FOC_FCF_B->IntegStopSwitch2_h[0];
 
-  /* Update for UnitDelay: '<S24>/IntegDelay1' */
+  /* Update for UnitDelay: '<S26>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE[1] = FOC_FCF_B->IntegStopSwitch2[1];
 
-  /* Update for UnitDelay: '<S28>/IntegDelay1' */
+  /* Update for UnitDelay: '<S30>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE_p[1] = FOC_FCF_B->IntegStopSwitch2_o[1];
 
-  /* Update for UnitDelay: '<S32>/IntegDelay1' */
+  /* Update for UnitDelay: '<S34>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE_h[1] = FOC_FCF_B->IntegStopSwitch2_h[1];
 
-  /* Update for UnitDelay: '<S15>/Unit Delay1' */
+  /* Update for UnitDelay: '<S17>/Unit Delay1' */
   FOC_FCF_DW->UnitDelay1_DSTATE_i = FOC_FCF_B->Sum2_j;
 
-  /* Update for DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+  /* Update for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
   /* Update circular buffer index */
   FOC_FCF_DW->DiscreteFIRFilter20thorder_circ--;
   if (FOC_FCF_DW->DiscreteFIRFilter20thorder_circ < 0) {
@@ -2611,9 +2728,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     [FOC_FCF_DW->DiscreteFIRFilter20thorder_circ + 19] =
     FOC_FCF_B->TmpSignalConversionAtDiscreteFI[1];
 
-  /* End of Update for DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+  /* End of Update for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
 
-  /* Update for DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+  /* Update for DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
   /* Update circular buffer index */
   FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_m--;
   if (FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_m < 0) {
@@ -2628,9 +2745,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     [FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_m + 19] =
     FOC_FCF_B->TmpSignalConversionAtDiscrete_k[1];
 
-  /* End of Update for DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+  /* End of Update for DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
 
-  /* Update for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+  /* Update for DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
   /* Update circular buffer index */
   FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_c--;
   if (FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_c < 0) {
@@ -2641,7 +2758,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* Update circular buffer */
   FOC_FCF_DW->FCF_Cnt_DSTATE = FOC_FCF_B->Sum_o;
 
-  /* Update for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+  /* Update for DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
   FOC_FCF_DW->DiscreteFIRFilter20thorder_st_p
     [FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_c] =
     FOC_FCF_B->TmpSignalConversionAtDiscrete_c[0];
@@ -2654,7 +2771,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_Y->I_dq_ActA[4] = FOC_FCF_B->DiscreteFIRFilter20thorder_l[0];
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Update for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+  /* Update for DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
   FOC_FCF_DW->DiscreteFIRFilter20thorder_st_p
     [FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_c + 19] =
     FOC_FCF_B->TmpSignalConversionAtDiscrete_c[1];
@@ -2708,94 +2825,97 @@ void FOC_FCF_initialize(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     int32_T i;
 
     /* SystemInitialize for Atomic SubSystem: '<Root>/FOC_FCF' */
-    /* InitializeConditions for Memory: '<S42>/Memory' */
+    /* InitializeConditions for Memory: '<S45>/Memory' */
     FOC_FCF_DW->Memory_PreviousInput = FOC_FCF_P.SRFlipFlop_initial_condition;
 
-    /* InitializeConditions for UnitDelay: '<S41>/Delay Input1'
+    /* InitializeConditions for UnitDelay: '<S44>/Delay Input1'
      *
-     * Block description for '<S41>/Delay Input1':
+     * Block description for '<S44>/Delay Input1':
      *
      *  Store in Global RAM
      */
     FOC_FCF_DW->DelayInput1_DSTATE = FOC_FCF_P.DetectRisePositive_vinit;
 
-    /* InitializeConditions for Memory: '<S43>/Memory' */
+    /* InitializeConditions for Memory: '<S46>/Memory' */
     FOC_FCF_DW->Memory_PreviousInput_o = FOC_FCF_P.SRFlipFlop1_initial_condition;
 
-    /* InitializeConditions for UnitDelay: '<S36>/Delay Input1'
+    /* InitializeConditions for UnitDelay: '<S39>/Delay Input1'
      *
-     * Block description for '<S36>/Delay Input1':
+     * Block description for '<S39>/Delay Input1':
      *
      *  Store in Global RAM
      */
     FOC_FCF_DW->DelayInput1_DSTATE_c = FOC_FCF_P.DetectRisePositive_vinit_o;
 
-    /* InitializeConditions for Memory: '<S37>/Memory' */
+    /* InitializeConditions for Memory: '<S40>/Memory' */
     FOC_FCF_DW->Memory_PreviousInput_p =
       FOC_FCF_P.SRFlipFlop_initial_condition_a;
 
-    /* InitializeConditions for DiscreteTransferFcn: '<S9>/Discrete Transfer Fcn' */
+    /* InitializeConditions for DiscreteTransferFcn: '<S11>/Discrete Transfer Fcn' */
     FOC_FCF_DW->DiscreteTransferFcn_states =
       FOC_FCF_P.DiscreteTransferFcn_InitialStat;
 
-    /* InitializeConditions for UnitDelay: '<S45>/Unit Delay' */
+    /* InitializeConditions for UnitDelay: '<S48>/Unit Delay' */
     FOC_FCF_DW->UnitDelay_DSTATE = FOC_FCF_P.UnitDelay_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S14>/Unit Delay1' */
+    /* InitializeConditions for UnitDelay: '<S16>/Unit Delay1' */
     FOC_FCF_DW->UnitDelay1_DSTATE = FOC_FCF_P.FOC_AngleObs_w_InitVal;
 
-    /* InitializeConditions for UnitDelay: '<S13>/Unit Delay' */
+    /* InitializeConditions for UnitDelay: '<S15>/Unit Delay' */
     FOC_FCF_DW->UnitDelay_DSTATE_h = FOC_FCF_P.UnitDelay_InitialCondition_b;
 
-    /* InitializeConditions for UnitDelay: '<S11>/Unit Delay3' */
+    /* InitializeConditions for UnitDelay: '<S13>/Unit Delay3' */
     FOC_FCF_DW->UnitDelay3_DSTATE = FOC_FCF_P.UnitDelay3_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S8>/Unit Delay' */
+    /* InitializeConditions for UnitDelay: '<S10>/Unit Delay' */
     FOC_FCF_DW->UnitDelay_DSTATE_p = FOC_FCF_P.UnitDelay_InitialCondition_p;
 
-    /* InitializeConditions for UnitDelay: '<S24>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S37>/Unit Delay' */
+    FOC_FCF_DW->UnitDelay_DSTATE_f = FOC_FCF_P.UnitDelay_InitialCondition_d;
+
+    /* InitializeConditions for UnitDelay: '<S26>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE[0] = FOC_FCF_P.IntegDelay1_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S28>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S30>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE_p[0] =
       FOC_FCF_P.IntegDelay1_InitialCondition_m;
 
-    /* InitializeConditions for UnitDelay: '<S32>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S34>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE_h[0] =
       FOC_FCF_P.IntegDelay1_InitialCondition_p;
 
-    /* InitializeConditions for UnitDelay: '<S24>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S26>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE[1] = FOC_FCF_P.IntegDelay1_InitialCondition;
 
-    /* InitializeConditions for UnitDelay: '<S28>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S30>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE_p[1] =
       FOC_FCF_P.IntegDelay1_InitialCondition_m;
 
-    /* InitializeConditions for UnitDelay: '<S32>/IntegDelay1' */
+    /* InitializeConditions for UnitDelay: '<S34>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE_h[1] =
       FOC_FCF_P.IntegDelay1_InitialCondition_p;
 
-    /* InitializeConditions for UnitDelay: '<S15>/Unit Delay1' */
+    /* InitializeConditions for UnitDelay: '<S17>/Unit Delay1' */
     FOC_FCF_DW->UnitDelay1_DSTATE_i = FOC_FCF_P.UnitDelay1_InitialCondition;
 
-    /* InitializeConditions for DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+    /* InitializeConditions for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
     FOC_FCF_DW->DiscreteFIRFilter20thorder_circ = 0;
 
-    /* InitializeConditions for DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+    /* InitializeConditions for DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
     FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_m = 0;
 
-    /* InitializeConditions for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+    /* InitializeConditions for DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
     FOC_FCF_DW->DiscreteFIRFilter20thorder_ci_c = 0;
     for (i = 0; i < 38; i++) {
-      /* InitializeConditions for DiscreteFir: '<S20>/Discrete FIR Filter 20th order' */
+      /* InitializeConditions for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
       FOC_FCF_DW->DiscreteFIRFilter20thorder_stat[i] =
         FOC_FCF_P.DiscreteFIRFilter20thorder_Init;
 
-      /* InitializeConditions for DiscreteFir: '<S21>/Discrete FIR Filter 20th order' */
+      /* InitializeConditions for DiscreteFir: '<S23>/Discrete FIR Filter 20th order' */
       FOC_FCF_DW->DiscreteFIRFilter20thorder_st_g[i] =
         FOC_FCF_P.DiscreteFIRFilter20thorder_In_k;
 
-      /* InitializeConditions for DiscreteFir: '<S22>/Discrete FIR Filter 20th order' */
+      /* InitializeConditions for DiscreteFir: '<S24>/Discrete FIR Filter 20th order' */
       FOC_FCF_DW->DiscreteFIRFilter20thorder_st_p[i] =
         FOC_FCF_P.DiscreteFIRFilter20thorder_In_n;
     }

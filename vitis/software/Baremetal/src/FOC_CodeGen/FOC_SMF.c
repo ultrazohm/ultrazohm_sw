@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.21
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Jan 15 19:21:59 2026
+ * C/C++ source code generated on : Fri Jan 16 12:03:28 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -61,6 +61,21 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   }
 
   /* End of MultiPortSwitch: '<S1>/DataSourceSwitch' */
+
+  /* MultiPortSwitch: '<S1>/KL15_PG_SourceSwitch' incorporates:
+   *  Constant: '<S1>/SELECT_KL15_PG'
+   */
+  if (FOC_SMF_P.SELECT_KL15_PG == 0) {
+    /* MultiPortSwitch: '<S1>/KL15_PG_SourceSwitch' */
+    FOC_SMF_B->KL15_PG_SourceSwitch = FOC_SMF_U->EXT_KL15_PG;
+  } else {
+    /* MultiPortSwitch: '<S1>/KL15_PG_SourceSwitch' incorporates:
+     *  Constant: '<S1>/FOC_MANUAL_KL15_PG'
+     */
+    FOC_SMF_B->KL15_PG_SourceSwitch = FOC_SMF_P.FOC_MANUAL_KL15_PG;
+  }
+
+  /* End of MultiPortSwitch: '<S1>/KL15_PG_SourceSwitch' */
 
   /* Chart: '<S1>/FOC_Statemachine' */
   if (FOC_SMF_DW->is_active_c1_FOC_SMF == 0U) {
@@ -256,7 +271,8 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
         /* Outport: '<Root>/SysStateAct' */
         FOC_SMF_Y->SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
       } else if ((FOC_SMF_B->DataSourceSwitch[0] ==
-                  FOC_SMF_P.enumState_CTRL_IDLE) && FOC_SMF_U->EXT_KL15_PG) {
+                  FOC_SMF_P.enumState_CTRL_IDLE) &&
+                 FOC_SMF_B->KL15_PG_SourceSwitch) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_INIT;
 
         /* Outport: '<Root>/SysStateAct' */

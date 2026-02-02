@@ -18,6 +18,8 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 #include "../include/ipc_ARM.h"
+#include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hw.h"
+#include "../IP_Cores/uz_DutyCycleMeas/uz_DutyCycleMeas_hwAddresses.h"
 
 // --- Simulink model variables ---
 RT_MODEL_FOC_FCF_T FOC_FCF_M_;
@@ -69,6 +71,11 @@ uint8_t IN_IGNITION_SUCCESS;
 uint8_t IN_RELAY2_NOT_CLOSED;
 uint8_t IN_RELAY3_NOT_CLOSED;
 
+// variables for inverter temperature measurement
+float DutyCycleMeas_Value;
+uint32_t PWMin_HighTicks;
+uint32_t PWMin_PeriodTicks;
+uint32_t DutyCycleIPcoreTimestamp;
 
 
 void init_control_functions(void)
@@ -237,6 +244,17 @@ void Control_Task_10ms(void)
  */
 void Control_Task_100ms(void)
 {
+
+
+	//    PWMin_HighTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_hightime_Data_uz_dutycyclemeas_ip);
+	//    PWMin_PeriodTicks = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + AXI_period_Data_uz_dutycyclemeas_ip);
+	PWMin_HighTicks   = uz_DutyCycleMeas_hw_get_PWMhightimeTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+	PWMin_PeriodTicks = uz_DutyCycleMeas_hw_get_PWMperiodTicks(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+
+	DutyCycleMeas_Value = uz_DutyCycleMeas_hw_get_DutyCycle(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR);
+	DutyCycleIPcoreTimestamp = (uint32_t*) (XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_INV_TEMP_UZ_DUTYCYCLEMEAS_IP_0_BASEADDR + IPCore_Timestamp_uz_dutycyclemeas_ip);
+
+
 	/* === provide data for CAN communication via R5 === */
 	data_R2A_localRPU.Temp_Inv_Phase_1 = 1;
 	data_R2A_localRPU.Temp_Inv_Phase_2 = 2;

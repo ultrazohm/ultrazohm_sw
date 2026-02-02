@@ -1,7 +1,7 @@
 // This is an automatically generated file 
 // Do not edit 
 
-// Creation Date: 15-Jan-2026 19:49:12 
+// Creation Date: 16-Jan-2026 12:03:40 
 
 #ifndef VER_SIMULINK_H_
 #define VER_SIMULINK_H_
@@ -10,7 +10,7 @@
 /******************************** Macros and Definitions **********************************/
 /******************************************************************************************/
 
-static unsigned char VER_SimulinkTimestamp[] = "15.01.2026 19:49:12";
+static unsigned char VER_SimulinkTimestamp[] = "16.01.2026 12:03:40";
 static unsigned char VER_SimulinkMDL[] = "hedrive_control";
 
 /******************************************************************************************/

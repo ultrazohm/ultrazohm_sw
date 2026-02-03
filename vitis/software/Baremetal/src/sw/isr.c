@@ -33,6 +33,7 @@
 #include "xcp/xcp_interface.h"
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hw.h"
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hwAddresses.h"
+#include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
 
 
 // Initialize the Interrupt structure
@@ -50,6 +51,23 @@ uint32_t inverter_status_RDY;
 uint32_t inverter_status_FLT;
 uint8_t inverter_GateDriverEnable;
 
+// ~~~~~~~~~~~
+extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
+struct uz_pmsm_model9ph_dq_outputs_general_t out_general = {0};   // stores general outputs
+uz_9ph_dq_t in_voltages = {                                       // stores input voltages (set random voltages for testing)
+              .d = 1.0f,
+              .q = 2.0f,
+              .x1 = 3.0f,
+              .y1 = 4.0f,
+              .x2 = 5.0f,
+              .y2 = 6.0f,
+              .x3 = 7.0f,
+              .y3 = 8.0f,
+              .zero = 9.0f};
+uz_9ph_dq_t out_currents = {0};                                   // stores output currents
+float omega_mech = 10.0f;                                         // fixed speed can be set from Expressions with this variable
+int pmsm_model_reset = 0;                                         // use reset variable to reset integrators from Expressions
+// ~~~~~~~~~~~
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -158,6 +176,18 @@ void ISR_Control(void *data)
     inverter_status_FLT = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
     inverter_status_RDY = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
     uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, inverter_GateDriverEnable, 0);
+
+
+    /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */
+    if(pmsm_model_reset)
+      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions
+
+    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+    uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
+    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
+    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
+    /* ~~~~~~~~~~~~~~ End of MOTOR MODEL ~~~~~~~~~~~~~~ */
+
 
 	xcp_irq();
     JavaScope_update(&Global_Data);

@@ -52,6 +52,30 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
+uz_pmsm_model9ph_dq_t *pmsm=NULL;
+struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
+  .base_address=XPAR_UZ_PMSM_MODEL_9PH_DQ_0_BASEADDR,
+  .ip_core_frequency_Hz = 100000000U,
+  .polepairs = 3.0f,
+  .r_1 = 31.3f,
+  .inductance.d = 0.46f,
+  .inductance.q = 0.46f,
+  .inductance.x1 = 0.08f,
+  .inductance.y1 = 0.08f,
+  .inductance.x2 = 0.08f,
+  .inductance.y2 = 0.08f,
+  .inductance.x3 = 0.08f,
+  .inductance.y3 = 0.08f,
+  .inductance.zero = 0.08f,
+  .psi_pm = 0.072f,
+  .friction_coefficient = 0.001f,
+  .coulomb_friction_constant = 0.001f,
+  .inertia = 0.001f,
+  .simulate_mechanical_system = false,	// Determine if mechanical system is simulated or speed is an input
+  .switch_pspl = true};					// true (--> use inputs from PS), false (--> use inputs from PL)
+// HeDrive: Psi_PM = 0.067 Vs
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -97,6 +121,8 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
+            pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:

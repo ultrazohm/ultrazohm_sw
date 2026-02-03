@@ -9,7 +9,50 @@ Delay Balancing Report for uz_d_inverter_adapter
 <font SIZE="+2" COLOR="#000066">
 Delay Balancing Report for uz_d_inverter_adapter
 </font>
-<br /><br /><br /><table width="100%" border="1">
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br />'BalanceDelays' is set to 'off' for the following subsystems. This option is deprecated and no longer recommended since it can introduce functional differences between the HDL code and original model. Click on the link to <a href="matlab:hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection/Detect Fall
+Nonpositive1', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection/Detect Rise
+Positive1', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance6', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance5', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance4', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance3', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance2', 'BalanceDelays', 'inherit');hdlset_param('uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance1', 'BalanceDelays', 'inherit');">enable delay balancing for all subsystems</a>. See the documentation for recommended workflows on scoping delay balancing for DUT inputs and outputs and leveraging delay absorption to avoid introducing extra latency.<br /><br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance1
+</b>
+<br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance2
+</b>
+<br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance3
+</b>
+<br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance4
+</b>
+<br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance5
+</b>
+<br /><b>
+Subsystem: uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection_instance6
+</b>
+<br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:820')" name="code2model" class="code2model">
+uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection/Detect Rise
+Positive1
+</a>
+
+</b>
+<br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('uz_d_inverter_adapter:819')" name="code2model" class="code2model">
+uz_d_inverter_adapter/uz_d_inverter_adapter/PWMdutyFreqDetection/Detect Fall
+Nonpositive1
+</a>
+
+</b>
+<br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeee">
 <th align="left" valign="top" style="border-style: none">
 <b>
@@ -36,7 +79,7 @@ Phase Delay
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -48,7 +91,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_period
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -60,7 +103,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_hightime
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -68,35 +111,11 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_lowtime
 
 </tr>
 <tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_1_dutycyc
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
 0
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_hightime
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -105,10 +124,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_hightime
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_lowtime
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -117,10 +136,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_lowtime
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_dutycyc
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -132,7 +151,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_2_dutycyc
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -144,7 +163,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_period
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -156,7 +175,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_hightime
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -164,35 +183,11 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_lowtime
 
 </tr>
 <tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_3_dutycyc
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
 0
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_hightime
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -201,10 +196,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_hightime
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_lowtime
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -213,10 +208,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_lowtime
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_dutycyc
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -228,7 +223,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_4_dutycyc
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -240,7 +235,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_period
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -252,7 +247,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_hightime
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -260,35 +255,11 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_lowtime
 
 </tr>
 <tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_5_dutycyc
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_period
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
-</td>
-<td align="left" valign="top" style="border-style: none">
 0
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_hightime
-</td>
-<td align="left" valign="top" style="border-style: none">
-18
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -297,10 +268,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_hightime
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_lowtime
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_hightime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -309,10 +280,10 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_lowtime
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_dutycyc
+uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_lowtime
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -324,7 +295,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_Temp_6_dutycyc
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_FAULT
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -336,7 +307,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_FAULT
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_OC
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -348,7 +319,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_OC
 uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_I_DIAG
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -360,7 +331,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/AXI_I_DIAG
 uz_d_inverter_adapter/uz_d_inverter_adapter/PWM_EN
 </td>
 <td align="left" valign="top" style="border-style: none">
-18
+0
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -369,28 +340,7 @@ uz_d_inverter_adapter/uz_d_inverter_adapter/PWM_EN
 </tr>
 
 </table>
-<br /><br /><br /><a name="Generated Model">
-<font size="+1" color="#000066">
-<b class="midprod">
-Generated Model
-</b>
-
-</font>
-
-</a>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Generated model after the transformation:
-</td>
-<td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_d_inverter_adapter')" class="callMATLAB" name="callMATLAB">gm_uz_d_inverter_adapter</a>
-</td>
-
-</tr>
-
-</table>
-<br />
+<br /><br /><br />
 </body>
 
 </html>

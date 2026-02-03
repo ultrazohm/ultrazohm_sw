@@ -8,7 +8,8 @@ This IP core provides a well defined and highly sophisticated interface for inve
 It provides many useful features:
 
    - 6 gate signal outputs
-   - 1 gate enable signal output
+   - 1 gate enable signal output. 
+     The output gate enable is only high, when **both** the ``software enable`` **and** the ``UZ-PWM-Enable`` are high.
    - 6 over current (OC) input signals
    - 6 fault (FAULT) input signals
    - 6  pwm input signals for measuring e.g. chip temperatures.
@@ -78,11 +79,27 @@ After those steps the block design looks like this:
    Block design after steps above
 
 
+PWM Enable
+----------
+
+Second, the PWM-Enable of the UZ has to be connected to the IP core.
+
+1. In the top hierarchy (``Diagram``) expand the ``uz_user`` and ``uz_inverter_adapter`` hierarchy with the (``+``) in the top left corner.
+2. Connect the ``PWM_UZ_Enable`` Port with the ``D1_OUT_29`` Port of the uz_system hierarchy. This is the PWM-Enable port of the UZ.
+
+.. _block_design_PWM_picture:
+
+.. figure:: img/blockdesign_PWM_enable.png
+   :width: 600
+   :align: center
+
+   Block design after steps above
+
 
 Vivado Interface
 ----------------
 
-Second, the interface between the IP cores and the physical pins has to be implemented:
+Third, the interface between the IP cores and the physical pins has to be implemented:
 
 1. Inside the top level block design ``right click -> Create Interface Pin...``
 2. Name the interface according to the digital slot where you plan to use the inverter adapter board (e.g. ``D1``)

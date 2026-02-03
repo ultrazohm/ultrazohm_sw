@@ -67,15 +67,6 @@ void tearDown(void)
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_H1(0));
     }
 
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_1_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
-    }
-
     void test_uz_inverter_adapter_hw_get_PWMFreqTicks_L1(void)
     {
         uint32_t PWMFreqTicks_L1 = 11000;
@@ -125,15 +116,6 @@ void tearDown(void)
         uz_axi_read_uint32_IgnoreAndReturn(PWMlowtimeTicks_L1);
         // Test passes if an assert fails in the function under test
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_L1(0));
-    }
-
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_2_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
     }
 
        void test_uz_inverter_adapter_hw_get_PWMFreqTicks_H2(void)
@@ -187,15 +169,6 @@ void tearDown(void)
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_H2(0));
     }
 
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_3_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
-    }
-
        void test_uz_inverter_adapter_hw_get_PWMFreqTicks_L2(void)
     {
         uint32_t PWMFreqTicks_L2 = 11000;
@@ -245,15 +218,6 @@ void tearDown(void)
         uz_axi_read_uint32_IgnoreAndReturn(PWMlowtimeTicks_L2);
         // Test passes if an assert fails in the function under test
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_L2(0));
-    }
-
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_4_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
     }
 
        void test_uz_inverter_adapter_hw_get_PWMFreqTicks_H3(void)
@@ -307,15 +271,6 @@ void tearDown(void)
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_H3(0));
     }
 
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_5_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
-    }
-
        void test_uz_inverter_adapter_hw_get_PWMFreqTicks_L3(void)
     {
         uint32_t PWMFreqTicks_L3 = 11000;
@@ -366,15 +321,6 @@ void tearDown(void)
         // Test passes if an assert fails in the function under test
         TEST_ASSERT_FAIL_ASSERT(uz_inverter_adapter_hw_get_PWMlowtimeTicks_L3(0));
     }
-
-    void test_uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3(void)
-    {
-        uint32_t axi_read_tempAsDutyCyc = 139586437; //value in Q31 format
-        float tempAsDutyCyc_returnedFloat = 0.065f;
-        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Temp_6_dutycyc_Data_uz_d_inverter_adapter, axi_read_tempAsDutyCyc);
-        float tempAsDutyCyc_returnedFloat_readback = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3(TEST_BASE_ADDRESS);
-        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
-    } 
 
     void test_uz_inverter_adapter_hw_get_OC(void)
     {

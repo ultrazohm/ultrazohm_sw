@@ -252,6 +252,10 @@ void ISR_Control(void *data)
     	setpoint_index = 0U;
     	start_angle_found = false;
     	Global_Data.av.n_ref_Last = 0.0f;
+    	Global_Data.av.i_dqxy_integrated_error.d = 0.0f;
+    	Global_Data.av.i_dqxy_integrated_error.q = 0.0f;
+    	Global_Data.av.i_dqxy_integrated_error.x = 0.0f;
+    	Global_Data.av.i_dqxy_integrated_error.y = 0.0f;
     	switch(ConApplication) {
     	    case CIL:
     	    	uz_pmsmModel_6ph_dqxy_reset(Global_Data.objects.pmsm_model);

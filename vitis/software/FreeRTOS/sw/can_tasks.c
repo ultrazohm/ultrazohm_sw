@@ -229,7 +229,7 @@ void CAN_app_init(void)
     ret = xTaskCreate(can_task_10ms, "can_10ms", configMINIMAL_STACK_SIZE + 200, NULL, tskIDLE_PRIORITY + 4, NULL);
     if (ret != pdPASS) uz_printf("xTaskCreate can_10ms failed=%d free=%u\n\r", (int)ret, (unsigned)xPortGetFreeHeapSize());
 
-    ret = xTaskCreate(can_task_100ms,"can_100ms",configMINIMAL_STACK_SIZE + 200, NULL, tskIDLE_PRIORITY + 2, NULL);
+    ret = xTaskCreate(can_task_100ms,"can_100ms",configMINIMAL_STACK_SIZE + 200, NULL, tskIDLE_PRIORITY + 1, NULL);
     if (ret != pdPASS) uz_printf("xTaskCreate can_100ms failed=%d free=%u\n\r", (int)ret, (unsigned)xPortGetFreeHeapSize());
 
     uz_printf("CAN_app_init: end reached\n\r");

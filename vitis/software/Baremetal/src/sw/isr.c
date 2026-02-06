@@ -44,7 +44,6 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 
 //Offset from Valentin
-float theta_offset = 5.93f;
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
 
@@ -282,10 +281,6 @@ void ISR_Control(void *data)
     	    default:
     	    	break;
     	}
-
-
-
-
     }
 
    // if "ENABLE SYSTEM"
@@ -307,8 +302,9 @@ void ISR_Control(void *data)
 
     	    default:
     	    	break;
+    	}
     }
-    }
+
     // if "ENABLE CONTROL"
     if (current_state==control_state) {
         //Automatic evaluation profile
@@ -318,19 +314,14 @@ void ISR_Control(void *data)
         		if(current_uptime>(old_uptime + 4360)) {
         			start_angle_found = true;
         		}
-
         	}
-
         	if (start_angle_found) {
-
-
         		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
         		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * rated_current;
 
         		// step throught the array
-
         		if((current_uptime>(old_uptime + 360) && (!change_speed)) ){
         			old_uptime=current_uptime;
             		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;

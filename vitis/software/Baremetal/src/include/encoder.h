@@ -17,6 +17,7 @@
 #define ENCODER_H_
 
 #include "../uz/controlToolbox/control_toolbox.h"
+#include "../uz/uz_signals/uz_signals.h"
 #include "../globalData.h"
 
 //Defines for averaging the speed from the encoder

@@ -53,8 +53,27 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "include/init_FOC.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+#include "include/init_network_ip_core.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+#include "uz/uz_spwm/uz_spwm.h"
 
+enum ControllerApplication
+{
+	CIL=0,
+	REAL
+};
 
+enum ControllerSelection
+{
+	CC_FOC=0,
+	RL,
+	MPC,
+	manual
+};
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

@@ -7,6 +7,14 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_pmsmModel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_NN_acc/uz_NN_acc.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -52,38 +60,42 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
+	float i_dc1;
+	float i_dc2;
+	float v_dc1;
+	float v_dc2;
 	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
 	float theta_elec;
+	float theta_elec_advanced;
+	float theta_elec_old;
 	float theta_mech;
 	float theta_offset; //in rad/s
+	float omega_elec;
+	float omega_mech;
 	float temperature;
-	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
+	float temp_VSI_1;
+	float temp_VSI_2;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	float error;
+	float start_marker;
+	uz_6ph_abc_t i_abc;
+	uz_6ph_abc_t v_abc;
+	uz_6ph_abc_t v_abc_ref;
+	uz_6ph_dq_t i_dqxy;
+	uz_6ph_dq_t i_dqxy_ref;
+	uz_6ph_dq_t i_dqxy_integrated_error;
+	uz_6ph_dq_t i_dqxy_error;
+	uz_6ph_dq_t v_dqxy;
+	uz_6ph_dq_t v_dqxy_ref;
+	uz_6ph_dq_t v_dqxy_non_limited;
+	uz_6ph_dq_t u_dqxy_ref;
+	float n_ref_CIL;
+	struct uz_DutyCycle_2x3ph_t DutyCycle;
+	struct uz_pmsmModel_6ph_dqxy_outputs_t pmsm_outputs;
+	struct uz_pmsmModel_6ph_dqxy_inputs_t pmsm_inputs;
+	struct uz_PMSM_t pmsm_config_dq;
+	struct uz_PMSM_t pmsm_config_xy;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
@@ -114,6 +126,15 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
+	uz_CurrentControl_t* CC_dq_instance;
+	uz_CurrentControl_t* CC_xy_instance;
+	uz_pmsmModel_6ph_dqxy_t* pmsm_model;
+	uz_matrix_t* matrix_input_acc;
+	uz_matrix_t* matrix_output_acc;
+	uz_nn_t* nn_layer_acc;
+	uz_NN_acc_t* NN_acc_Instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

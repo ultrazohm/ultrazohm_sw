@@ -14,4 +14,13 @@
  */
 uz_3ph_dq_t uz_CurrentControl_linear_decoupling(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 
+/**
+ * @brief function to calculate linear decoupling values for rotating x- and y-axis of 6ph pmsm
+ *
+ * @param config uz_PMSM_t_config struct
+ * @param i_actual_Ampere uz_dq_t struct with the measured x- and y-currents in ampere
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
+ * @return uz_dq_t outputs latest values
+ */
+uz_3ph_dq_t uz_CurrentControl_linear_decoupling_xy(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 #endif // UZ_LINEAR_DECOUPPLING_H

@@ -131,7 +131,7 @@ void ISR_Control(void *data)
     	Global_Data.av.omega_mech 			= Global_Data.av.pmsm_outputs.omega_mech_1_s;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.pmsm_config_dq.polePairs;
-    	Global_Data.av.v_dc1				= 48.0f;
+    	Global_Data.av.v_dc1				= 36.0f;
     	break;
 
     case REAL:
@@ -301,7 +301,7 @@ void ISR_Control(void *data)
     				Global_Data.av.i_dqxy_ref.q = 0.0f;
     				Global_Data.av.i_dqxy_ref.x = 0.0f;
     				Global_Data.av.i_dqxy_ref.y = 0.0f;
-        			if(current_uptime>(old_uptime + 360)) {
+        			if(current_uptime>(old_uptime + 200)) {
         				Global_Data.av.n_ref_CIL = Global_Data.av.n_ref_CIL + 100.0f;
         				change_speed = false;
         				start_angle_found = false;
@@ -383,7 +383,7 @@ void ISR_Control(void *data)
             Global_Data.av.v_dqxy_non_limited.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
             Global_Data.av.v_dqxy_non_limited.x = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
             Global_Data.av.v_dqxy_non_limited.y = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
-            Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.57735f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
+            Global_Data.av.v_dqxy_ref = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited, Global_Data.av.v_dc1, 0.5f, Global_Data.av.omega_elec, Global_Data.av.i_dqxy_ref, &ext_clamping);
 	    	Global_Data.av.v_abc_ref =  uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec_advanced, (-1.0f * Global_Data.av.theta_elec_advanced));
 	    	Global_Data.av.DutyCycle = uz_spwm_abc_6ph(Global_Data.av.v_abc_ref, Global_Data.av.v_dc1);
             break;

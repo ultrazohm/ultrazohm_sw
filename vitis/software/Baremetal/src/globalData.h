@@ -108,6 +108,7 @@ typedef struct _actualValues_ {
 	uz_temperaturecard_OneGroup channel_C_data;
 	float theta_elec_pred;
 	float error_num;
+	float temp_gradient;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -95,6 +95,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q_ref,
 	JSSD_FLOAT_temp_mosfet,
 	JSSD_FLOAT_temp_motor,
+	JSSD_FLOAT_temp_gradient,
 	JSSD_ENDMARKER
 };
 
@@ -256,12 +257,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	Enable_dqRef,
-	Disable_dqRef,
+	I_peak, I_phase ref.
+	I_dq ref.,
 	Start RC-Meas,
 	FOC_control,
 	Offset_est.,
-	Button,
+	Manual_dq_volt,
 	dutyC:0.0,
 	dutyC:0.5,
 	MYBUTTONS_LABELS_ENDMARKER

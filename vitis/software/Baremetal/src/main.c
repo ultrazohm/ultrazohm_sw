@@ -77,8 +77,8 @@ struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               
     .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
     .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
     .ptr_actual_u_q_V = &Global_Data.rasv.Uq_ref,                                    // pointer to q-setpoint voltage
-    .min_omega_el = 400.0f,                                                     // target electric rotor angular speed (USE OWN)
-    .setpoint_current = 10.0f};                                                  // current setpoint to reach speed (USE OWN)
+    .min_omega_el = 1300.0f,                                                     // target electric rotor angular speed (USE OWN)
+    .setpoint_current = 30.0f};                                                  // current setpoint to reach speed (USE OWN)
 
 
 enum init_chain
@@ -132,25 +132,25 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             struct uz_PMSM_t config_PMSM = {
-               .Ld_Henry = 0.0000216f,				// 0.000027 fuer seg-rotor
-               .Lq_Henry = 0.0000366f,				// 0.000042 fuer seg_rotor
+               .Ld_Henry = 0.00001159f,				// 0.000027 fuer seg-rotor
+               .Lq_Henry = 0.000016663f,				// 0.000042 fuer seg_rotor
                .Psi_PM_Vs = 0.0041939f,				// Leerlauf 80°C,  0.0071f (SM) oder 0.0073 (SEG) im Strang --> Umrechnung Sternschaltung fuer Umrichter
                .polePairs = 21.0f,
                .J_kg_m_squared = 0.032972f,			// J_motor = 0.00156 kgm2 + J_T40B = 0.0015 + J_Kupplung= 0.005 + J_Last = 0.0249
-               .R_ph_Ohm = 0.013f,					// Only motor
+               .R_ph_Ohm = 0.0071f,					// Gemessen aus Sollspannugn UZ
                .I_max_Ampere = 250.0f
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.2f,						// 0.1 seg-rotor, 0.08 SM-PMSM
-               .Ki = 100.0f,					// 173.3 seg-rotor, 87 SM-PMSM
+               .Kp = 0.1f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
+               .Ki = 100.0f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.25f,						// 0.2 seg-rotor, 0.08 SM-PMSM
-			   .Ki = 100.0f,						// 173.3 seg-rotor, 87 SM-PMSM
+               .Kp = 0.1f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
+			   .Ki = 100.0f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
@@ -172,7 +172,7 @@ int main(void)
             Global_Data.objects.current_setpoint_obj = uz_SetPoint_init(SP_config);
             Global_Data.rasv.flg_use_setpoint_calculation = 0.0f;
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
-            Global_Data.av.theta_offset = 0.0f;
+            Global_Data.av.theta_offset = -0.01999986f;
             Global_Data.objects.encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
             Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
             Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);

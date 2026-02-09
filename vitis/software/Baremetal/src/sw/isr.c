@@ -65,11 +65,11 @@ extern DS_Data Global_Data;
 
 #define ISR_SAMPLE_FREQ				40000
 
-#define MAX_CURRENT_ASSERTION 		250.0f
+#define MAX_CURRENT_ASSERTION 		380.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
 #define MAX_MOTOR_TEMP_ASSERTION	100.0f
-#define U_DC_MAX					55.0f
+#define U_DC_MAX					61.0f
 #define U_DC_MIN					10.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
@@ -95,6 +95,10 @@ float faulty_motortemp = 0.0f;
 float temp_coef_a = 0.0173f;
 float temp_coef_b = 7.64f;
 float temp_coef_c = 0;
+
+float gradient_T1 = 20.0f;
+float gradient_T2 = 20.0f;
+int ticks_gradient = 0;
 
 bool flg_volt_reverse_filter = 1U;
 bool flg_correct_motor_temp = 0U;
@@ -181,10 +185,10 @@ void ISR_Control(void *data)
     }
 
     // Read temperature
-    float volt_temp = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
-    resistor_temp = polycoef_a * pow(volt_temp, 3) + polycoef_b * pow(volt_temp, 2) + polycoef_c * volt_temp + polycoef_d;
-    Global_Data.av.temperature_mosfet = temp_ref + (-temp_coef_b + sqrt(temp_coef_b*temp_coef_b - (4*temp_coef_a*(resistor_ref - resistor_temp))))/(2*temp_coef_a);
-    //Global_Data.av.temperature_mosfet = 20.0f;
+    //float volt_temp = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
+    //resistor_temp = polycoef_a * pow(volt_temp, 3) + polycoef_b * pow(volt_temp, 2) + polycoef_c * volt_temp + polycoef_d;
+    //Global_Data.av.temperature_mosfet = temp_ref + (-temp_coef_b + sqrt(temp_coef_b*temp_coef_b - (4*temp_coef_a*(resistor_ref - resistor_temp))))/(2*temp_coef_a);
+    Global_Data.av.temperature_mosfet = 20.0f;
 
     uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
     Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
@@ -195,11 +199,20 @@ void ISR_Control(void *data)
     	Global_Data.av.temperature_motor = Global_Data.av.channel_A_data.temperature[19];
     }
 
+    if(ticks_gradient >= 4800000){
+    	gradient_T1 = gradient_T2;
+    	gradient_T2 = Global_Data.av.temperature_motor;
+    	Global_Data.av.temp_gradient = 60.0f * (gradient_T2 - gradient_T1)/2.0f;
+    	ticks_gradient = 0.0f;
+    } else{
+    	ticks_gradient++;
+    }
     // Assertion check (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)
-    // || (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN)
+    //
     if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION)
-    		|| (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION)
-			) {
+    		|| (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION
+    				|| (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) )
+					){
 
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;

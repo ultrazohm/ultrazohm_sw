@@ -306,7 +306,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			control_mode = manual_dq_voltage;
+			data->rasv.Ud_ref = 0.0f;
+			data->rasv.Uq_ref = 0.0f;
 			break;
 
 		case (My_Button_7):

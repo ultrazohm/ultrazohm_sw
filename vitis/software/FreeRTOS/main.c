@@ -171,7 +171,7 @@ void network_thread(void *p)
 //	can_frame_t can_frame_rx; //CAN interface
 
 	/* start CAN tasks to handle RX/TX */
-    CAN_app_init();
+//    CAN_app_init();
 #endif
 
 #if LWIP_DHCP==1

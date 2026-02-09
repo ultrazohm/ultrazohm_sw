@@ -53,6 +53,8 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~ PMSM model in FPGA ~~~~~~~~~
 uz_pmsm_model9ph_dq_t *pmsm=NULL;
 struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
   .base_address=XPAR_UZ_PMSM_MODEL_9PH_DQ_0_BASEADDR,
@@ -73,8 +75,43 @@ struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
   .coulomb_friction_constant = 0.001f,
   .inertia = 0.001f,
   .simulate_mechanical_system = false,	// Determine if mechanical system is simulated or speed is an input
-  .switch_pspl = true};					// true (--> use inputs from PS), false (--> use inputs from PL)
+  .switch_pspl = false};				// true (--> use inputs from PS), false (--> use inputs from PL)
 // HeDrive: Psi_PM = 0.067 Vs
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~ DQ Trafo for PMSM model in FPGA ~~~~~~~~~
+uz_pmsm9ph_transformation_t *cil_dq_trafo = NULL;
+struct uz_pmsm9ph_config_t cil_dq_trafo_config = {
+  .base_address = XPAR_UZ_NINEPHASE_VSD_TRANSFORMATION_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~ Inverter model in FPGA ~~~~~~~~~~
+uz_inverter_3ph_t *cil_inv1 = NULL;
+uz_inverter_3ph_t *cil_inv2 = NULL;
+uz_inverter_3ph_t *cil_inv3 = NULL;
+struct uz_inverter_3ph_config_t cil_inv1_config = {
+    .base_address = XPAR_UZ_INVERTER_3PH_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .switch_pspl_abc = false,
+    .switch_pspl_gate = false,
+    .udc = 800.0f};
+struct uz_inverter_3ph_config_t cil_inv2_config = {
+    .base_address = XPAR_UZ_INVERTER_3PH_1_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .switch_pspl_abc = false,
+    .switch_pspl_gate = false,
+    .udc = 800.0f};
+struct uz_inverter_3ph_config_t cil_inv3_config = {
+    .base_address = XPAR_UZ_INVERTER_3PH_1_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .switch_pspl_abc = false,
+    .switch_pspl_gate = false,
+    .udc = 800.0f};
+
+
 
 int main(void)
 {
@@ -121,7 +158,14 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
+
+            // CIL model inits
             pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
+            cil_dq_trafo = uz_pmsm9ph_transformation_init(cil_dq_trafo_config);
+            cil_inv1 = uz_inverter_3ph_init(cil_inv1_config);
+            cil_inv2 = uz_inverter_3ph_init(cil_inv2_config);
+            cil_inv3 = uz_inverter_3ph_init(cil_inv3_config);
+            // end of CIL model inits
 
             initialization_chain = print_msg;
             break;

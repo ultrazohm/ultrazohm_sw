@@ -56,6 +56,8 @@
 #include "include/pwm_init.h"
 
 #include "IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+#include "IP_Cores/uz_pmsm9ph_transformation/uz_pmsm9ph_transformation.h"
+#include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 
 #include "include/resolver.h"
 #include "xparameters.h"

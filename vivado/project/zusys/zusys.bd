@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xCEED813B4AA8EBC9",
+      "boundary_crc": "0x7F893608F22EB2F2",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -227,11 +227,6 @@
         "left": "0",
         "right": "0"
       },
-      "D3_OUT": {
-        "direction": "O",
-        "left": "25",
-        "right": "0"
-      },
       "D3_OUT_26": {
         "direction": "O",
         "left": "0",
@@ -331,12 +326,12 @@
       "Dig_8_Ch5": {
         "direction": "I"
       },
-      "D1_OUT_inv": {
+      "D3_OUT_inv": {
         "direction": "O",
         "left": "5",
         "right": "0"
       },
-      "D1_OUT_06": {
+      "D3_OUT_06": {
         "direction": "O",
         "left": "0",
         "right": "0"
@@ -351,10 +346,10 @@
         "left": "0",
         "right": "0"
       },
-      "D1_IN_14": {
+      "D3_IN_14": {
         "direction": "I"
       },
-      "D1_IN_16": {
+      "D3_IN_16": {
         "direction": "I"
       }
     },
@@ -5634,7 +5629,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "4"
+                "value": "5"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5754,6 +5749,37 @@
                 }
               },
               "M03_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M04_AXI": {
                 "mode": "Master",
                 "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -9280,13 +9306,13 @@
       },
       "D1_IN_14_1": {
         "ports": [
-          "D1_IN_14",
+          "D3_IN_14",
           "uz_user/D1_IN_14"
         ]
       },
       "D1_IN_16_1": {
         "ports": [
-          "D1_IN_16",
+          "D3_IN_16",
           "uz_user/D1_IN_16"
         ]
       },
@@ -9414,13 +9440,13 @@
       "uz_user_D3_OUT_inv": {
         "ports": [
           "uz_user/D3_OUT_inv",
-          "D1_OUT_inv"
+          "D3_OUT_inv"
         ]
       },
       "uz_user_Inverter_Enable": {
         "ports": [
           "uz_user/Inverter_Enable",
-          "D1_OUT_06"
+          "D3_OUT_06"
         ]
       },
       "uz_user_LMG_Trigger_1": {
@@ -9433,12 +9459,6 @@
         "ports": [
           "uz_user/LMG_Trigger_2",
           "D2_OUT_01"
-        ]
-      },
-      "vio_D2_test_probe_out0": {
-        "ports": [
-          "uz_digital_adapter/VIO_D3",
-          "D3_OUT"
         ]
       },
       "xlconcat_0_dout": {

@@ -3,6 +3,7 @@
 
 /*
 !zusys/
+zusys/*
 !zusys/zusys.bd
 !zusys/hdl/
 !zusys/hdl/zusys_wrapper.vhd

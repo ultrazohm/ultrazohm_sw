@@ -2,7 +2,6 @@
 # short gitignore for UltraZohm vivado project 
 
 /*
-!zusys/
 !zusys/zusys.bd
 !zusys/hdl/
 !zusys/hdl/zusys_wrapper.vhd

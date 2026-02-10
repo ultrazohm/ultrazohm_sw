@@ -47,9 +47,10 @@ uint8_t Control_timer_1ms;
 uint8_t Control_timer_10ms;
 uint8_t Control_timer_100ms;
 
-uint32_t inverter_status_RDY;
-uint32_t inverter_status_FLT;
+uint32_t inverter_status_RDY[3] = {0};
+uint32_t inverter_status_FLT[3] = {0};
 uint8_t inverter_GateDriverEnable;
+bus_BSW_FCF_t bus_BSW_FCF;
 
 // ~~~~~~~~~~~
 extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
@@ -81,6 +82,13 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+
+    /* get inverter status */
+    inverter_status_FLT[0] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+    inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+
+    bus_BSW_FCF.Gate_Driver_Status_FLT = (inverter_status_FLT[2] << 12) | (inverter_status_FLT[1] << 6) | inverter_status_FLT[0];
+    bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];
 
     // read position from resolver IP Core
     ctrl_data.fcf_in.phi_elrad = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
@@ -123,7 +131,8 @@ void ISR_Control(void *data)
 	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
 	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
 	FOC_FCF_MPtr->inputs->FOC_Mode     = ctrl_data.fcf_in.FOC_Mode;
-	FOC_FCF_MPtr->inputs->FOC_Enable   = ctrl_data.fcf_in.FOC_Enable;
+	FOC_FCF_MPtr->inputs->FOC_Enable_PWM   = ctrl_data.fcf_in.FOC_Enable;
+	FOC_FCF_MPtr->inputs->bus_BSW_FCF = bus_BSW_FCF;
 
 	FOC_FCF_step(FOC_FCF_MPtr);
 
@@ -173,8 +182,6 @@ void ISR_Control(void *data)
 	ctrl_data.fcf_out.FOC_Error    = FOC_FCF_MPtr->outputs->FOC_Error;
 
 
-    inverter_status_FLT = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
-    inverter_status_RDY = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
     uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, inverter_GateDriverEnable, 0);
 
 

@@ -82,6 +82,9 @@ float uz_LUT_1D_get_value(uz_LUT_1D_t* self, float input) {
         float x1 = self->breakpoints->data[idx + 1U];
         float y0 = self->data->data[idx];
         float y1 = self->data->data[idx + 1U];
+        if(x1 == x0) {
+            uz_assert(false); // Avoid division by zero, return y0 if breakpoints are the same
+        }
         float slope = (y1 - y0) / (x1 - x0);
         output = y0 + slope * (input - x0);
     } else {

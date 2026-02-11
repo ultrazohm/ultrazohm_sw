@@ -16,6 +16,7 @@
 #include "uz/uz_PMSM_config/uz_PMSM_config.h"
 #include "uz/uz_LUT_1D/uz_LUT_1D.h"
 #include "uz/uz_approximate_flux/uz_approximate_flux.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -118,13 +119,15 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	uz_LUT_1D_t* LUT_CIL_angle;
+	uz_LUT_1D_t* LUT_CIL_current_angle;
 	uz_LUT_1D_t* LUT_CIL_Is;
-	uz_LUT_1D_t* LUT_bench_angle;
+	uz_LUT_1D_t* LUT_bench_current_angle;
 	uz_LUT_1D_t* LUT_bench_Is;
 	uz_pmsmModel_t* pmsmModel;
 	uz_CurrentControl_t* CurrentControl;
 	uz_approximate_flux_t* FluxApproximation;
+	uz_axi_gpio_t* GPIO_output;
+	uz_axi_gpio_t* GPIO_input;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

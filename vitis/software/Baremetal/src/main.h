@@ -56,6 +56,7 @@
 #include "include/init_FOC.h"
 #include "uz/uz_array/uz_array.h"
 
+#include "include/init_GPIO_custom.h"
 
 //----------------------------------------------------
 // FUNCTIONS

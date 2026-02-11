@@ -78,18 +78,7 @@ struct uz_PI_Controller_config config_iq = {
 		.type = UZ_PI_PARALLEL
 };
 
-uz_CurrentControl_t* init_FOC(void) {
-	struct uz_CurrentControl_config CC_config = {
-			.decoupling_select = static_nonlinear_decoupling,
-			.config_id = config_id,
-			.config_iq = config_iq,
-			.config_PMSM = SynRM_config,
-			.Kp_adjustment_flag = true,
-			.max_modulation_index = 1.0f/sqrt(3.0f)
-	};
-	Global_Data.av.pmsm_config = SynRM_config;
-	return(uz_CurrentControl_init(CC_config));
-}
+
 
 //Arrays for LUTs
 static float LUT_breakpoints_array[11] = {
@@ -130,7 +119,18 @@ uz_array_float_t LUT_bench_Is = {
 		.data = &LUT_bench_Is_array[0]
 };
 
-
+uz_CurrentControl_t* init_FOC(void) {
+	struct uz_CurrentControl_config CC_config = {
+			.decoupling_select = static_nonlinear_decoupling,
+			.config_id = config_id,
+			.config_iq = config_iq,
+			.config_PMSM = SynRM_config,
+			.Kp_adjustment_flag = true,
+			.max_modulation_index = 1.0f/sqrt(3.0f)
+	};
+	Global_Data.av.pmsm_config = SynRM_config;
+	return(uz_CurrentControl_init(CC_config));
+}
 
 uz_pmsmModel_t* init_pmsmModel(void) {
 	return(uz_pmsmModel_init(IP_SynRM_config));

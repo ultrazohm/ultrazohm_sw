@@ -41,6 +41,22 @@ extern DS_Data Global_Data;
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
+//Added stuff
+#define CURRENT_CONV_HASS_50 40.0f
+#define VOLTAGE_2_SI_VOLTS_DHG_CH1 363.6f
+#define VOLTAGE_2_SI_VOLTS_DHG_CH2 363.6f
+#define VOLTAGE_2_SI_VOLTS_DHG_CH3 37.037f
+#define VOLTAGE_2_SI_VOLTS_DHG_CH4 142.3f
+
+#define DC_VOLTAGE 565.0f
+#define	MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
+#define	MAX_VOLTAGE			 (DC_VOLTAGE * MAX_MODULATION_INDEX)
+
+enum ControllerApplication ConApplication;
+enum ControllerSelection ConSelection;
+float ts = 1.0f/UZ_PWM_FREQUENCY;
+float Observation[10] = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,12 +67,102 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    switch(ConApplication) {
+    case CIL:
+    	uz_pmsmModel_trigger_input_strobe(Global_Data.objects.SynRM_Model);
+    	uz_pmsmModel_trigger_output_strobe(Global_Data.objects.SynRM_Model);
+    	Global_Data.av.SynRM_outputs 		= uz_pmsmModel_get_outputs(Global_Data.objects.SynRM_Model);
+    	Global_Data.av.i_dq.d 				= Global_Data.av.SynRM_outputs.i_d_A;
+    	Global_Data.av.i_dq.q 				= Global_Data.av.SynRM_outputs.i_q_A;
+    	Global_Data.av.omega_mech			= Global_Data.av.SynRM_outputs.omega_mech_1_s;
+    	Global_Data.av.Torque				= Global_Data.av.SynRM_outputs.torque_Nm;
+    	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
+    	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
+    	Global_Data.av.v_dc					= DC_VOLTAGE;
+    	break;
+
+    case REAL:
+    	update_speed_and_position_of_encoder_on_D5(&Global_Data);//get theta_elec and omega_mech
+    	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    	Global_Data.av.theta_mech = Global_Data.av.theta_elec / Global_Data.av.SynRM_config.polePairs;
+    	Global_Data.av.omega_elec = Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
+    	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
+    	Global_Data.av.theta_elec_advanced = Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
+    	//Todo
+    	break;
+    }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    // if "STOP"
+    if (current_state==idle_state)
+    {
+    	uz_CurrentControl_reset(Global_Data.objects.CurrentControl);
+    	Global_Data.av.n_ref_CIL = 0.0f;
+    	switch(ConApplication) {
+    	    case CIL:
+    	    	uz_pmsmModel_reset(Global_Data.objects.SynRM_Model);
+    	    	break;
+
+    	    case REAL:
+    	    	// disable inverters
+    	    	//Todo
+    	    	// write zero dutycycle
+    	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+    	    	break;
+
+    	    default:
+    	    	break;
+    	}
+    }
+
+    // if "ENABLE SYSTEM"
+	if (current_state==running_state)
+	{
+		switch(ConApplication) {
+			case CIL:
+				//CODE
+				break;
+
+			case REAL:
+     	    	// enable inverters
+				//TODO
+     	    	break;
+
+     	    default:
+     	    	break;
+     	}
+    }
+
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        switch(ConSelection) {
+        case CC_FOC:
+        	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);
+        	Global_Data.av.flux_approx_reference = uz_approximate_flux_reference_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq_ref, Global_Data.av.i_dq);
+        	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);
+        	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, TAU_SIGMA);
+
+        	//Global_Data.av.i_dq_ref = uz_
+        	//TODO custom SpaceVectorLimiation aus Simulink Model
+        	Global_Data.av.v_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
+        	break;
+
+        case RL:
+        	break;
+
+        case manual:
+        	break;
+
+        default:
+        	break;
+        }
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

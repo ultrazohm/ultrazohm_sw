@@ -1,9 +1,6 @@
 #include "../main.h"
 extern DS_Data Global_Data;
 
-#define SAMPLE_TIME_SEC_CURRENT_CONTROL   1.0f/UZ_PWM_FREQUENCY
-#define TAU_SIGMA (3.0f * SAMPLE_TIME_SEC_CURRENT_CONTROL)
-
 
 static const struct uz_PMSM_t SynRM_config = {
         .Ld_Henry = 0.021f,
@@ -128,7 +125,7 @@ uz_CurrentControl_t* init_FOC(void) {
 			.Kp_adjustment_flag = true,
 			.max_modulation_index = 1.0f/sqrt(3.0f)
 	};
-	Global_Data.av.pmsm_config = SynRM_config;
+	Global_Data.av.SynRM_config = SynRM_config;
 	return(uz_CurrentControl_init(CC_config));
 }
 

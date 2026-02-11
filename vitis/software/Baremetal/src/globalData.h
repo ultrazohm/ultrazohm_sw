@@ -68,7 +68,10 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t v_dq_ref;
 	uz_3ph_dq_t v_dq;
-	float M_ref;
+	float Torque_ref;
+	float Torque;
+	float v_dc;
+	float n_ref_CIL;
 	float Is_ref;
 	float Is;
 	float current_angle;
@@ -81,11 +84,15 @@ typedef struct _actualValues_ {
 	float theta_mech;
 	float theta_elec_advanced;
 	float theta_offset; //in rad/s
+	uz_3ph_dq_t flux_approx_real;
+	uz_3ph_dq_t flux_approx_reference;
 	struct uz_DutyCycle_t DutyCycle;
-	struct uz_PMSM_t pmsm_config;
+	struct uz_PMSM_t SynRM_config;
 	struct uz_PMSM_flux_fitting_parameter_config_t fitting_parameter;
-	struct uz_pmsmModel_outputs_t pmsm_outputs;
-	struct uz_pmsmModel_inputs_t pmsm_inputs;
+	struct uz_pmsmModel_outputs_t SynRM_outputs;
+	struct uz_pmsmModel_inputs_t SynRM_inputs;
+	bool HB_ok;
+	bool OC_ok;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
@@ -94,6 +101,11 @@ typedef struct _actualValues_ {
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
+	uint32_t HB_ok_Pin_Number; // PIN 0 for status HB_ok
+	uint32_t OC_ok_Pin_Number; // PIN 1 for status OC_ok
+	uint32_t Inv_Reset_Pin_Number; 	// PIN 0 for reset DHG inverter
+	uint32_t LMG_continues_Pin_Number; // Pin 1 for start/stop continues measurement on LMG
+	uint32_t LMG_transient_Pin_Number; // Pin 2 for start/stop transient measurement on LMG
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
@@ -123,7 +135,7 @@ typedef struct{
 	uz_LUT_1D_t* LUT_CIL_Is;
 	uz_LUT_1D_t* LUT_bench_current_angle;
 	uz_LUT_1D_t* LUT_bench_Is;
-	uz_pmsmModel_t* pmsmModel;
+	uz_pmsmModel_t* SynRM_Model;
 	uz_CurrentControl_t* CurrentControl;
 	uz_approximate_flux_t* FluxApproximation;
 	uz_matrix_t* matrix_input_acc;

@@ -91,6 +91,7 @@ int main(void)
             Global_Data.objects.LUT_bench_current_angle = init_LUT_bench_current_angle();
             Global_Data.objects.CurrentControl = init_FOC();
             Global_Data.objects.FluxApproximation = init_FluxApproximation();
+            Global_Data.av.theta_offset = 2.398694800f; //To be checked if this is the correct one from ControlS_SRM_22 branch
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -103,7 +104,7 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pmsmModel = init_pmsmModel();
+            Global_Data.objects.SynRM_Model = init_pmsmModel();
             Global_Data.objects.GPIO_input = init_axi_gpio_input();
             Global_Data.objects.GPIO_output = init_axi_gpio_output();
             init_NN_network_IP_core();

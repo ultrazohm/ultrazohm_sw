@@ -126,6 +126,10 @@ typedef struct{
 	uz_pmsmModel_t* pmsmModel;
 	uz_CurrentControl_t* CurrentControl;
 	uz_approximate_flux_t* FluxApproximation;
+	uz_matrix_t* matrix_input_acc;
+	uz_matrix_t* matrix_output_acc;
+	uz_nn_t* nn_layer_acc;
+	uz_NN_acc_t* NN_acc_Instance;
 	uz_axi_gpio_t* GPIO_output;
 	uz_axi_gpio_t* GPIO_input;
 }object_pointers_t;

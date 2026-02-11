@@ -15,6 +15,9 @@ typedef struct uz_PMSM_t{
     float polePairs; /**< number of polePairs of the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
     float J_kg_m_squared; /**< inertia of the PMSM. Must be greater than 0.0f */
     float I_max_Ampere; /**< max allowed current per phase. Must be greater than 0.0f */
+    float I_rated_Ampere; /**< rated current per phase. Must be greater than 0.0f */
+    float M_rated_Nm; /**< rated torque of the machine. Must be greater than 0.0f */
+    float n_rated_rpm; /**< rated speed of the machine. Must be greater than 0.0f */
 }uz_PMSM_t;
 
 typedef struct uz_PMSM_flux_fitting_parameter_config_t{

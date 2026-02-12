@@ -157,7 +157,7 @@ void ISR_Control(void *data)
         	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
         	Global_Data.av.i_dq_ref.d = cosf(Global_Data.av.current_angle_ref) * Global_Data.av.Is_ref;
         	Global_Data.av.i_dq_ref.q = sinf(Global_Data.av.current_angle_ref) * Global_Data.av.Is_ref;
-        	Global_Data.av.v_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
+        	Global_Data.av.v_dq_ref = uz_CurrentControl_sample_SynRM(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
         	break;
 
         case RL:

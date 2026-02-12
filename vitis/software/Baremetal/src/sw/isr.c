@@ -80,6 +80,8 @@ void ISR_Control(void *data)
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.v_dc					= DC_VOLTAGE;
+    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
     	break;
 
     case REAL:
@@ -90,8 +92,11 @@ void ISR_Control(void *data)
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.theta_elec_advanced = Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
     	//Todo
+    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
     	break;
     }
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -148,9 +153,10 @@ void ISR_Control(void *data)
         	Global_Data.av.flux_approx_reference = uz_approximate_flux_reference_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq_ref, Global_Data.av.i_dq);
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);
         	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, TAU_SIGMA);
-
-        	//Global_Data.av.i_dq_ref = uz_
-        	//TODO custom SpaceVectorLimiation aus Simulink Model
+        	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
+        	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
+        	Global_Data.av.i_dq_ref.d = cosf(Global_Data.av.current_angle_ref) * Global_Data.av.Is_ref;
+        	Global_Data.av.i_dq_ref.q = sinf(Global_Data.av.current_angle_ref) * Global_Data.av.Is_ref;
         	Global_Data.av.v_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
         	break;
 
@@ -163,16 +169,29 @@ void ISR_Control(void *data)
         default:
         	break;
         }
+
+    	switch(ConApplication) {
+    		case CIL:
+    	    	Global_Data.av.SynRM_inputs.v_d_V = Global_Data.av.v_dq_ref.d;
+    	    	Global_Data.av.SynRM_inputs.v_q_V = Global_Data.av.v_dq_ref.q;
+    	    	Global_Data.av.SynRM_inputs.omega_mech_1_s = Global_Data.av.n_ref_CIL / 30.0f * UZ_PIf;
+    	    	uz_pmsmModel_set_inputs(Global_Data.objects.SynRM_Model, Global_Data.av.SynRM_inputs);
+    	    	break;
+
+    	    case REAL:
+            	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
+    	    	Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.DutyCycle.DutyCycle_A;
+    	        Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.DutyCycle.DutyCycle_B;
+    	        Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.DutyCycle.DutyCycle_C;
+    	    	break;
+
+    	    default:
+    	    	break;
+    	    }
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

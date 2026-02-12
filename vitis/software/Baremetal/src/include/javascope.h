@@ -73,6 +73,12 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_vf_frequency_setpoint_Hz,
+	JSSD_FLOAT_vf_ratio_V_per_Hz,
+	JSSD_FLOAT_vf_boost_voltage_V,
+	JSSD_FLOAT_vf_max_frequency_Hz,
+	JSSD_FLOAT_vf_max_voltage_V,
+	JSSD_FLOAT_U_DC,
 	JSSD_ENDMARKER
 };
 
@@ -127,11 +133,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
+	VF_Freq_Setpoint,
+	VF_Ratio,
+	VF_Boost_Voltage,
+	VF_Max_Freq,
+	VF_Max_Voltage,
 	send_field_6,
 	send_field_7,
 	send_field_8,
@@ -154,12 +160,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
-	A,
-	A,
+	Hz,
+	V/Hz,
+	V,
+	Hz,
+	V,
+	-,
 	-,
 	-,
 	-,
@@ -181,11 +187,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
+	RotorSpeed,
+	Torque,
+	Id,
+	Iq,
+	Vdc,
 	receive_field_6,
 	receive_field_7,
 	receive_field_8,
@@ -251,11 +257,11 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_torque,
+	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_U_DC,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

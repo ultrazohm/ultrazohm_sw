@@ -24,6 +24,13 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+// V/f Control Parameters from isr.c
+extern float vf_frequency_setpoint_Hz;
+extern float vf_ratio_V_per_Hz;
+extern float vf_boost_voltage_V;
+extern float vf_max_frequency_Hz;
+extern float vf_max_voltage_V;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -375,5 +382,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
+
+	// Sync V/f control parameters with send fields for real-time tuning via GUI
+	// Send Field 1: Frequency setpoint (Hz)
+	// Send Field 2: V/f ratio (V/Hz)
+	// Send Field 3: Boost voltage (V)
+	// Send Field 4: Max frequency (Hz)
+	// Send Field 5: Max voltage (V)
+	if (data->av.snd_fld[1] > 0.0f) {
+		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
+	}
+	if (data->av.snd_fld[2] > 0.0f) {
+		vf_ratio_V_per_Hz = data->av.snd_fld[2];
+	}
+	if (data->av.snd_fld[3] >= 0.0f) {  // Allow 0 for no boost
+		vf_boost_voltage_V = data->av.snd_fld[3];
+	}
+	if (data->av.snd_fld[4] > 0.0f) {
+		vf_max_frequency_Hz = data->av.snd_fld[4];
+	}
+	if (data->av.snd_fld[5] > 0.0f) {
+		vf_max_voltage_V = data->av.snd_fld[5];
+	}
 
 }

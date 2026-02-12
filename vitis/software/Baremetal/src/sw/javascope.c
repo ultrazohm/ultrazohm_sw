@@ -48,6 +48,13 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+// V/f Control Parameters from isr.c
+extern float vf_frequency_setpoint_Hz;
+extern float vf_ratio_V_per_Hz;
+extern float vf_boost_voltage_V;
+extern float vf_max_frequency_Hz;
+extern float vf_max_voltage_V;
+
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -102,6 +109,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+
+	// V/f Control Parameters - can be tuned in real-time via JavaScope
+	js_slowDataArray[JSSD_FLOAT_vf_frequency_setpoint_Hz] = &vf_frequency_setpoint_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_ratio_V_per_Hz]        = &vf_ratio_V_per_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_boost_voltage_V]       = &vf_boost_voltage_V;
+	js_slowDataArray[JSSD_FLOAT_vf_max_frequency_Hz]      = &vf_max_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]         = &vf_max_voltage_V;
+	js_slowDataArray[JSSD_FLOAT_U_DC]                      = &(data->av.U_DC);
 
 	return Status;
 }

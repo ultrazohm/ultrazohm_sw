@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(\"/c/Xilinx/Vitis/2022.2/bin/xsct\" -eval \"setws .; app build Baremetal\")",
+      "Bash(\"/c/Xilinx/Vitis/2022.2/bin/xsct\" -nodisp build_baremetal_only.tcl)",
+      "Bash(\"C:/Xilinx/Vitis/2022.2/bin/xsct.bat\" build_baremetal_only.tcl)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-tree:*)"
+    ]
+  }
+}

@@ -19,17 +19,17 @@ static const struct uz_PMSM_flux_fitting_parameter_config_t fitting_parameter = 
 		.ad1_parameter = 0.782989081743603f,
 		.ad2_parameter = 0.036743796432364f,
 		.ad3_parameter = 0.030581766186054f,
-		.ad4_parameter = 0.792326765531242f,
-		.ad5_parameter = 0.032425308612038f,
-		.ad6_parameter = 0.032333635046391f,
+		.ad4_parameter = 0.793989813908777f,
+		.ad5_parameter = 0.030895875141629f,
+		.ad6_parameter = 0.033912323161004f,
 		.aq1_parameter = 0.024334722246215f,
 		.aq2_parameter = 0.999999915866979f,
 		.aq3_parameter = 0.001825546424756f,
-		.aq4_parameter = 0.007795446741636f,
-		.aq5_parameter = 0.150130363856926f,
-		.aq6_parameter = 0.001627574058652f,
-		.F1G1_parameter = 1.367830576025495f,
-		.F2G2_parameter = 1.368910728161520f
+		.aq4_parameter = 0.007244391913678f,
+		.aq5_parameter = 0.999999928301763f,
+		.aq6_parameter = 0.001584744059919f,
+		.F1G1_parameter = 2.125947878739074f,
+		.F2G2_parameter = 2.036686946290850f
 };
 
 struct uz_pmsmModel_config_t IP_SynRM_config = {

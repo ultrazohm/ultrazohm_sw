@@ -71,10 +71,32 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_Theta_mech] 			= &data->av.theta_mech;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_va]					= &data->av.v_abc.a;
+	js_ch_observable[JSO_vb]					= &data->av.v_abc.b;
+	js_ch_observable[JSO_vc]					= &data->av.v_abc.c;
+	js_ch_observable[JSO_ia]					= &data->av.i_abc.c;
+	js_ch_observable[JSO_ib]					= &data->av.i_abc.c;
+	js_ch_observable[JSO_ic]					= &data->av.i_abc.c;
+	js_ch_observable[JSO_id]					= &data->av.i_dq.d;
+	js_ch_observable[JSO_iq]					= &data->av.i_dq.q;
+	js_ch_observable[JSO_id_ref]				= &data->av.i_dq_ref.d;
+	js_ch_observable[JSO_iq_ref]				= &data->av.i_dq_ref.q;
+	js_ch_observable[JSO_vd]					= &data->av.v_dq.d;
+	js_ch_observable[JSO_vq]					= &data->av.v_dq.q;
+	js_ch_observable[JSO_vd_ref]				= &data->av.v_dq_ref.d;
+	js_ch_observable[JSO_vq_ref]				= &data->av.v_dq_ref.q;
+	js_ch_observable[JSO_current_angle]			= &data->av.current_angle;
+	js_ch_observable[JSO_current_angle_ref]		= &data->av.current_angle_ref;
+	js_ch_observable[JSO_is]					= &data->av.Is;
+	js_ch_observable[JSO_is_ref]				= &data->av.Is_ref;
+	js_ch_observable[JSO_torque]				= &data->av.Torque;
+	js_ch_observable[JSO_torque_ref]			= &data->av.Torque_ref;
+	js_ch_observable[JSO_n_ref_CIL]				= &data->av.n_ref_CIL;
+	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

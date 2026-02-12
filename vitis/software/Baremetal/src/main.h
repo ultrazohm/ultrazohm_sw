@@ -66,7 +66,7 @@ enum ControllerApplication
 
 enum ControllerSelection
 {
-	CC_FOC=0,
+	LUT_FOC=0,
 	RL,
 	manual
 };

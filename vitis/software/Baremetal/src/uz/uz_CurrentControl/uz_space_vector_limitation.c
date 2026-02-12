@@ -27,16 +27,11 @@ uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, 
   	float V_SV_max = V_dc_volts * max_modulation_index;
 	float V_SV_max_squared = V_SV_max * V_SV_max;
 	float V_SV_abs = sqrtf(v_input_Volts.d * v_input_Volts.d + v_input_Volts.q * v_input_Volts.q);
-	bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_ref_Ampere.q));
 
 	if ( V_SV_abs > V_SV_max ){
 		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_3ph_dq_t
 		*ext_clamping = true;
-		if (if_omega_equal_q_current == true) {
-			v_output_Volts = uz_limit_dq_prio_d_axis(v_input_Volts, V_SV_max, V_SV_max_squared);
-		} else {
-			v_output_Volts = uz_limit_dq_prio_q_axis(v_input_Volts, V_SV_max, V_SV_max_squared);
-		}
+		v_output_Volts = uz_limit_dq_prio_d_axis(v_input_Volts, V_SV_max, V_SV_max_squared);
 	} else {
 		v_output_Volts.d = v_input_Volts.d;
 		v_output_Volts.q = v_input_Volts.q;
@@ -47,8 +42,8 @@ uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, 
 
 static uz_3ph_dq_t uz_limit_dq_prio_d_axis(uz_3ph_dq_t v_input_Volts, float V_SV_max, float V_SV_max_squared){
 	uz_3ph_dq_t v_output_Volts = {0};
-	if ( (fabsf(v_input_Volts.d) ) > (0.95f * V_SV_max) ) {
-		v_output_Volts.d = uz_signals_get_sign_of_value(v_input_Volts.d) * 0.95f * V_SV_max;
+	if ( (fabsf(v_input_Volts.d) ) > (0.8f * V_SV_max) ) {
+		v_output_Volts.d = uz_signals_get_sign_of_value(v_input_Volts.d) * 0.8f * V_SV_max;
 		v_output_Volts.q = uz_signals_get_sign_of_value(v_input_Volts.q) * sqrtf(V_SV_max_squared- (v_output_Volts.d * v_output_Volts.d));
 	} else {
 		v_output_Volts.d = v_input_Volts.d;

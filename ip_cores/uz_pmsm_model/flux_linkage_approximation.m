@@ -7,15 +7,18 @@ set(0,'defaulttextinterpreter','latex')
 %% extract Lookup table data
 %For nonlinear Model to work LUTs have to be implemented
 % Import the data from csv for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_D');
+load('SRM_Michi_FEM_V2.mat');
 
+[Xsoll,Ysoll] = meshgrid(-80:1:80);
+Psi_d_fine = interp2(i_d,i_q,Psi_d,Xsoll,Ysoll,'spline');
+Psi_q_fine = interp2(i_d,i_q,Psi_q,Xsoll,Ysoll,'spline');
 % Currents
-id = FluxMapData{1,1:20};
-iq = FluxMapData{22:41,1};
+id = Xsoll;
+iq = Ysoll;
 %Psi_d
-psi_d = FluxMapData{43:62,1:20}*(1e-3);
+psi_d = Psi_d_fine;
 %Psi_q
-psi_q = FluxMapData{108:127,1:20}*(1e-3);
+psi_q = Psi_q_fine;
 
 figure;
 surf(id,iq,psi_d)
@@ -31,11 +34,10 @@ q_current = iq(:,1);
 [~,iq_null] = min(abs(q_current));
 
 %The setpoints with the best results might differ for diffrent flux-linkages
-id1 = id_null-1;   %This is the overall point with the best results for all flux linkages 
+id1 = id_null-30;%8;   %This is the overall point with the best results for all flux linkages 
 %[~,id1] = max(abs(id))
 [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
 % [~,id1] = max(id)
-
 
 %% start of the fitting procedure
 

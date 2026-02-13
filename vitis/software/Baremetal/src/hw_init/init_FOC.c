@@ -16,20 +16,20 @@ static const struct uz_PMSM_t SynRM_config = {
         };
 
 static const struct uz_PMSM_flux_fitting_parameter_config_t fitting_parameter = {
-		.ad1_parameter = 0.782989081743603f,
-		.ad2_parameter = 0.036743796432364f,
-		.ad3_parameter = 0.030581766186054f,
-		.ad4_parameter = 0.793989813908777f,
-		.ad5_parameter = 0.030895875141629f,
-		.ad6_parameter = 0.033912323161004f,
-		.aq1_parameter = 0.024334722246215f,
-		.aq2_parameter = 0.999999915866979f,
-		.aq3_parameter = 0.001825546424756f,
-		.aq4_parameter = 0.007244391913678f,
-		.aq5_parameter = 0.999999928301763f,
-		.aq6_parameter = 0.001584744059919f,
-		.F1G1_parameter = 2.125947878739074f,
-		.F2G2_parameter = 2.036686946290850f
+		.ad1_parameter = 0.777709334189273f,
+		.ad2_parameter = 0.037293931812404f,
+		.ad3_parameter = 0.029572509005890f,
+		.ad4_parameter = 0.789947543693834f,
+		.ad5_parameter = 0.031210683229544f,
+		.ad6_parameter = 0.033110127631900f,
+		.aq1_parameter = 0.025871332328636f,
+		.aq2_parameter = 0.133010686201756f,
+		.aq3_parameter = 0.001800617208246f,
+		.aq4_parameter = 0.007327814203467f,
+		.aq5_parameter = 0.151520315466501f,
+		.aq6_parameter = 0.001800653233784f,
+		.F1G1_parameter = 1.382067045529586f,
+		.F2G2_parameter = 1.216653141864647f
 };
 
 struct uz_pmsmModel_config_t IP_SynRM_config = {

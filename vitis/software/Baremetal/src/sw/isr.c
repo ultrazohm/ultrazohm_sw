@@ -152,7 +152,7 @@ void ISR_Control(void *data)
         	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);
         	Global_Data.av.flux_approx_reference = uz_approximate_flux_reference_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq_ref, Global_Data.av.i_dq);
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);
-        	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, TAU_SIGMA);
+        	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, BO_FACTOR);
         	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
         	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
         	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180*UZ_PIf) * Global_Data.av.Is_ref;
@@ -164,6 +164,7 @@ void ISR_Control(void *data)
         	break;
 
         case manual:
+        	//Set Global_Data.av.v_dq_ref via GUI
         	break;
 
         default:

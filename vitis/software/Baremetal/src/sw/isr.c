@@ -80,7 +80,8 @@ void ISR_Control(void *data)
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.v_dc					= DC_VOLTAGE;
-    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d)/UZ_PIf * 180.0f;
+    	Global_Data.av.current_angle_rad	= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.current_angle_deg 	= Global_Data.av.current_angle_rad /UZ_PIf * 180.0f;
     	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
     	break;
 
@@ -92,7 +93,7 @@ void ISR_Control(void *data)
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.theta_elec_advanced = Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
     	//Todo
-    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.current_angle_rad		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
     	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
     	break;
     }
@@ -161,6 +162,26 @@ void ISR_Control(void *data)
         	break;
 
         case RL:
+        	Observation[0] = Global_Data.av.Torque_ref / Global_Data.av.SynRM_config.M_rated_Nm;
+        	Observation[1] = Global_Data.av.i_dq.d / Global_Data.av.SynRM_config.I_max_Ampere;
+        	Observation[2] = Global_Data.av.i_dq.q / Global_Data.av.SynRM_config.I_max_Ampere;
+        	Observation[3] = Global_Data.av.Is / Global_Data.av.SynRM_config.I_max_Ampere;
+        	Observation[4] = uz_signals_wrap(Global_Data.av.current_angle_rad, 2.0f * UZ_PIf) / (2.0f * UZ_PIf);
+        	Observation[5] = Global_Data.av.mechanicalRotorSpeed / Global_Data.av.SynRM_config.n_rated_rpm;
+        	Observation[6] = Global_Data.av.v_dq_ref.d / MAX_VOLTAGE;
+        	Observation[7] = Global_Data.av.v_dq_ref.q / MAX_VOLTAGE;
+        	Observation[8] = Global_Data.av.v_dq_ref_k2.d / MAX_VOLTAGE;
+        	Observation[9] = Global_Data.av.v_dq_ref_k2.q / MAX_VOLTAGE;
+        	//Code for v_dq_ref k-2
+        	Global_Data.av.v_dq_ref_k2 = Global_Data.av.v_dq_ref;
+
+        	for (uint32_t i = 0; i < 10; i++) {
+        		uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+        	}
+        	uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+        	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc * MAX_MODULATION_INDEX);
+        	Global_Data.av.v_dq_ref.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+        	Global_Data.av.v_dq_ref.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
         	break;
 
         case manual:
@@ -200,7 +221,6 @@ void ISR_Control(void *data)
 }
 
 //==============================================================================================================================================================
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs

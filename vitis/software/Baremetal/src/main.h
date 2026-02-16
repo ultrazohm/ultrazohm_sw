@@ -57,6 +57,7 @@
 #include "uz/uz_array/uz_array.h"
 #include "include/init_NN_network_ip_core.h"
 #include "include/init_GPIO_custom.h"
+#include "uz/uz_signals/uz_signals.h"
 
 enum ControllerApplication
 {

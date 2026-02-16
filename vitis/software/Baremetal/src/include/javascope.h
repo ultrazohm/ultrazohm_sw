@@ -38,7 +38,7 @@ enum JS_OberservableData {
 	JSO_vq,
 	JSO_vd_ref,
 	JSO_vq_ref,
-	JSO_current_angle,
+	JSO_current_angle_deg,
 	JSO_current_angle_ref,
 	JSO_is,
 	JSO_is_ref,

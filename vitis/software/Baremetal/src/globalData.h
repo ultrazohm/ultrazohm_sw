@@ -67,6 +67,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq;
 	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t v_dq_ref;
+	uz_3ph_dq_t v_dq_ref_k2;
 	uz_3ph_dq_t v_dq;
 	float Torque_ref;
 	float Torque;
@@ -74,7 +75,8 @@ typedef struct _actualValues_ {
 	float n_ref_CIL;
 	float Is_ref;
 	float Is;
-	float current_angle;
+	float current_angle_deg;
+	float current_angle_rad;
 	float current_angle_ref;
 	float omega_mech;
 	float omega_elec;

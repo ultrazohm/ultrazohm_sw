@@ -58,7 +58,7 @@ uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation_SynRM(uz_3ph_dq_t v_input_V
 	if ( V_SV_abs > V_SV_max ){
 		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_3ph_dq_t
 		*ext_clamping = true;
-		v_output_Volts = uz_limit_dq_prio_d_axis(v_input_Volts, V_SV_max, V_SV_max_squared);
+		v_output_Volts = uz_limit_dq_prio_d_axis_SynRM(v_input_Volts, V_SV_max, V_SV_max_squared);
 	} else {
 		v_output_Volts.d = v_input_Volts.d;
 		v_output_Volts.q = v_input_Volts.q;

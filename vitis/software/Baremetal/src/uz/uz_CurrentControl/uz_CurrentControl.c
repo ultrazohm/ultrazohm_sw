@@ -138,7 +138,6 @@ void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t fl
 void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, float BO_factor){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_3ph_dq_t kp_adjusted = {0};
 	uz_3ph_dq_t current_error = {0};
 	current_error.d = i_reference_Ampere.d - i_actual_Ampere.d;
 	  if (current_error.d == 0.0f) {
@@ -148,11 +147,11 @@ void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_refere
 	  if (current_error.q == 0.0f) {
     	current_error.q = 1.1920929E-7f;
   		}
-	kp_adjusted.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
-	kp_adjusted.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
+	self->kp_adjustment_parameter.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
+	self->kp_adjustment_parameter.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
 	if(self->config.Kp_adjustment_flag) {
-		uz_CurrentControl_set_Kp_id(self, kp_adjusted.d);
-		uz_CurrentControl_set_Kp_iq(self, kp_adjusted.q);
+		uz_CurrentControl_set_Kp_id(self, self->kp_adjustment_parameter.d);
+		uz_CurrentControl_set_Kp_iq(self, self->kp_adjustment_parameter.q);
 	}
 }
 

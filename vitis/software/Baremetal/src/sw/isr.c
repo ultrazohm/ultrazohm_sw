@@ -80,7 +80,7 @@ void ISR_Control(void *data)
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.v_dc					= DC_VOLTAGE;
-    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.current_angle		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d)/UZ_PIf * 180.0f;
     	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
     	break;
 

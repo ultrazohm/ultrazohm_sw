@@ -143,7 +143,7 @@ uz_LUT_1D_t* init_LUT_CIL_current_angle(void) {
 }
 
 uz_LUT_1D_t* init_LUT_CIL_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 12U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_Is, 12U));
 }
 
 uz_LUT_1D_t* init_LUT_bench_current_angle(void) {

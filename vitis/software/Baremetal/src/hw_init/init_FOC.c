@@ -78,19 +78,19 @@ struct uz_PI_Controller_config config_iq = {
 
 
 //Arrays for LUTs
-static float LUT_breakpoints_array[11] = {
+static float LUT_breakpoints_array[12] = {
 #include "LUT_Breakpoints.csv"
 };
-static float LUT_CIL_current_angle_array[11] = {
+static float LUT_CIL_current_angle_array[12] = {
 #include "LUT_CIL_current_angle.csv"
 };
-static float LUT_CIL_Is_array[11] = {
+static float LUT_CIL_Is_array[12] = {
 #include "LUT_CIL_Is.csv"
 };
-static float LUT_bench_current_angle_array[11] = {
+static float LUT_bench_current_angle_array[12] = {
 #include "LUT_bench_current_angle.csv"
 };
-static float LUT_bench_Is_array[11] = {
+static float LUT_bench_Is_array[12] = {
 #include "LUT_bench_Is.csv"
 };
 
@@ -139,18 +139,18 @@ uz_approximate_flux_t* init_FluxApproximation(void) {
 }
 
 uz_LUT_1D_t* init_LUT_CIL_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_current_angle, 11U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_current_angle, 12U));
 }
 
 uz_LUT_1D_t* init_LUT_CIL_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 11U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 12U));
 }
 
 uz_LUT_1D_t* init_LUT_bench_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_current_angle, 11U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_current_angle, 12U));
 }
 uz_LUT_1D_t* init_LUT_bench_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 11U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 12U));
 }
 
 

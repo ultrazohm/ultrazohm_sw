@@ -184,32 +184,34 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+			
+			/* --- Start of Task Scheduler --- */
+			if(Control_FLAG_1ms)
+			{
+				Control_FLAG_1ms = 0;
+				Control_Task_1ms();
+			}
+
+			if(Control_FLAG_10ms)
+			{
+				Control_FLAG_10ms = 0;
+				Control_Task_10ms();
+			}
+
+			if(Control_FLAG_100ms)
+			{
+				Control_FLAG_100ms = 0;
+				Control_Task_100ms();
+			}
+
+			Control_Task_Idle();
+			/* --- End of Task Scheduler --- */
+			
             break;
         default:
             break;
         }
 
-        /* --- Start of Task Scheduler --- */
-        if(Control_FLAG_1ms)
-        {
-        	Control_FLAG_1ms = 0;
-        	Control_Task_1ms();
-        }
-
-        if(Control_FLAG_10ms)
-        {
-        	Control_FLAG_10ms = 0;
-        	Control_Task_10ms();
-        }
-
-        if(Control_FLAG_100ms)
-        {
-        	Control_FLAG_100ms = 0;
-        	Control_Task_100ms();
-        }
-
-        Control_Task_Idle();
-        /* --- End of Task Scheduler --- */
     }
     return (status);
 }

@@ -95,6 +95,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
 
+	// A1 Channel B analog inputs
+	js_ch_observable[JSO_A1_B5]					= &data->aa.A1.me.ADC_B5;
+	js_ch_observable[JSO_A1_B6]					= &data->aa.A1.me.ADC_B6;
+	js_ch_observable[JSO_A1_B7]					= &data->aa.A1.me.ADC_B7;
+	js_ch_observable[JSO_A1_B8]					= &data->aa.A1.me.ADC_B8;
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -104,7 +110,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorque);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

@@ -26,10 +26,13 @@ extern uint32_t js_status_BareToRTOS;
 
 // V/f Control Parameters from isr.c
 extern float vf_frequency_setpoint_Hz;
-extern float vf_ratio_V_per_Hz;
-extern float vf_boost_voltage_V;
-extern float vf_max_frequency_Hz;
-extern float vf_max_voltage_V;
+
+// FOC Control Parameters from isr.c
+extern bool use_foc;
+extern bool use_speed_control;
+extern float id_ref_A;
+extern float iq_ref_A;
+extern float speed_ref_rpm;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -285,11 +288,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			use_foc = !use_foc;
 			break;
 
 		case (My_Button_5):
-
+			use_speed_control = !use_speed_control;
 			break;
 
 		case (My_Button_6):
@@ -361,11 +364,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
 
-	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	/* Bit 7 - My_Button_4 (Toggle_FOC) */
+	if (use_foc) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
-	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	/* Bit 8 - My_Button_5 (Toggle_Speed_Ctrl) */
+	if (use_speed_control) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
@@ -383,26 +394,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
 
-	// Sync V/f control parameters with send fields for real-time tuning via GUI
-	// Send Field 1: Frequency setpoint (Hz)
-	// Send Field 2: V/f ratio (V/Hz)
-	// Send Field 3: Boost voltage (V)
-	// Send Field 4: Max frequency (Hz)
-	// Send Field 5: Max voltage (V)
+	// Sync control parameters with send fields for real-time tuning via GUI
+	// Send Field 1: V/f frequency setpoint (Hz)
+	// Send Field 2: Id reference (A) - flux current for FOC
+	// Send Field 3: Iq reference (A) - torque current for FOC (direct mode)
+	// Send Field 4: Speed reference (RPM) - for FOC speed control mode
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
 	}
-	if (data->av.snd_fld[2] > 0.0f) {
-		vf_ratio_V_per_Hz = data->av.snd_fld[2];
-	}
-	if (data->av.snd_fld[3] >= 0.0f) {  // Allow 0 for no boost
-		vf_boost_voltage_V = data->av.snd_fld[3];
-	}
-	if (data->av.snd_fld[4] > 0.0f) {
-		vf_max_frequency_Hz = data->av.snd_fld[4];
-	}
-	if (data->av.snd_fld[5] > 0.0f) {
-		vf_max_voltage_V = data->av.snd_fld[5];
-	}
+	id_ref_A = data->av.snd_fld[2];
+	iq_ref_A = data->av.snd_fld[3];
+	speed_ref_rpm = data->av.snd_fld[4];
 
 }

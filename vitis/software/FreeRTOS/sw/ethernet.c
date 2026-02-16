@@ -80,7 +80,6 @@ void process_request_thread(void *p)
 	int nread = 0;
 	int nwrote = 0;
 	uint32_t session_start_ms = debug_now_ms();
-	uint32_t last_heartbeat_ms = session_start_ms;
 	uint32_t tx_packet_count = 0;
 	uint32_t tx_byte_count = 0;
 	uint32_t rx_byte_count = 0;
@@ -213,26 +212,6 @@ void process_request_thread(void *p)
 					__FUNCTION__, nwrote, clientfd, (unsigned long)debug_now_ms());
 			close(clientfd);
 			js_connection_established = 0;
-		}
-
-		{
-			uint32_t now_ms = debug_now_ms();
-			if ((uint32_t)(now_ms - last_heartbeat_ms) >= 30000U) {
-				uz_printf("APU: JS heartbeat t=%lu ms up=%lu ms fd=%d txPkts=%lu txB=%lu rxB=%lu ctrlOk=%lu ctrlBad=%lu qAvail=%lu qEmpty=%lu life=%d status=0x%08lX\r\n",
-						(unsigned long)now_ms,
-						(unsigned long)(now_ms - session_start_ms),
-						clientfd,
-						(unsigned long)tx_packet_count,
-						(unsigned long)tx_byte_count,
-						(unsigned long)rx_byte_count,
-						(unsigned long)ctrl_packet_count,
-						(unsigned long)ctrl_bad_size_count,
-						(unsigned long)uxQueueMessagesWaiting(js_queue),
-						(unsigned long)queue_empty_count,
-						i_LifeCheck_process_Ethernet,
-						(unsigned long)last_status);
-				last_heartbeat_ms = now_ms;
-			}
 		}
 	}
 

@@ -88,10 +88,12 @@ float U_DC_offset = 2.5f;
 
 // V/f Control Parameters for 2-pole induction motor (1 pole pair)
 float vf_frequency_setpoint_Hz = 20.0f;      // Start frequency (Hz) - start low! (10Hz = 600 RPM sync speed)
-float vf_ratio_V_per_Hz = 8.0f;              // V/f ratio - ADJUST FOR YOUR MOTOR (e.g., 400V/50Hz = 8 V/Hz)
-float vf_boost_voltage_V = 10.0f;            // Low-frequency voltage boost (V) to overcome stator resistance
+float vf_ratio_V_per_Hz = 5.0f;              // V/f ratio - ADJUST FOR YOUR MOTOR (e.g., 400V/50Hz = 8 V/Hz)
+float vf_boost_voltage_V = 5.0f;             // Low-frequency boost voltage (V)
 float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 50Hz = 3000 RPM synchronous speed
 float vf_max_voltage_V = 400.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
+float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
+static float vf_frequency_command_Hz = 0.0f;
 
 // Induction machine parameters — set to your motor values!
 uz_IM_t IM_config = {
@@ -112,12 +114,19 @@ static float psi_r_beta = 0.0f;
 static float theta_flux_rad = 0.0f;
 static float psi_r_mag = 0.0f;
 
+// Estimated stator current fundamental frequency (Hz)
+float stator_current_fundamental_frequency_Hz = 0.0f;
+static float stator_current_theta_prev_rad = 0.0f;
+static bool stator_current_theta_valid = false;
+
 // FOC control mode (false = V/f, true = FOC)
 bool use_foc = false;
 bool use_speed_control = false;
 float id_ref_A = 0.0f;
 float iq_ref_A = 0.0f;
 float speed_ref_rpm = 0.0f;
+float id_cmd = 0.0f;
+float iq_cmd = 0.0f;
 static uz_PI_Controller* PI_id = NULL;
 static uz_PI_Controller* PI_iq = NULL;
 static uz_PI_Controller* PI_speed = NULL;
@@ -184,6 +193,41 @@ void ISR_Control(void *data)
         uz_3ph_abc_t i_abc = {.a = Global_Data.av.I_U, .b = Global_Data.av.I_V, .c = Global_Data.av.I_W};
         uz_3ph_alphabeta_t i_ab = uz_transformation_3ph_abc_to_alphabeta(i_abc);
 
+        // Estimate fundamental stator current frequency from current-vector angle
+        {
+            float const Ts_freq = fmaxf(Ts, 1.0e-6f);
+            float const i_mag_sq = i_ab.alpha * i_ab.alpha + i_ab.beta * i_ab.beta;
+            float const i_mag_min_A = 0.1f; // Below this magnitude, use fallback in V/f mode
+            float const i_mag_min_sq = i_mag_min_A * i_mag_min_A;
+            float const lpf_tau_s = 0.05f;
+            float const lpf_alpha = Ts_freq / (lpf_tau_s + Ts_freq);
+
+            if (i_mag_sq > i_mag_min_sq) {
+                float const theta_i_rad = atan2f(i_ab.beta, i_ab.alpha);
+                if (stator_current_theta_valid) {
+                    float dtheta = theta_i_rad - stator_current_theta_prev_rad;
+                    if (dtheta > UZ_PIf) {
+                        dtheta -= 2.0f * UZ_PIf;
+                    } else if (dtheta < -UZ_PIf) {
+                        dtheta += 2.0f * UZ_PIf;
+                    }
+                    float const freq_inst_Hz = fabsf(dtheta) / (2.0f * UZ_PIf * Ts_freq);
+                    stator_current_fundamental_frequency_Hz += lpf_alpha * (freq_inst_Hz - stator_current_fundamental_frequency_Hz);
+                } else {
+                    stator_current_theta_valid = true;
+                }
+                stator_current_theta_prev_rad = theta_i_rad;
+            } else {
+                stator_current_theta_valid = false;
+                // In low-current operation, keep readback meaningful in V/f by
+                // blending toward commanded frequency instead of dropping to zero.
+                if (!use_foc) {
+                    float const freq_fallback_Hz = fabsf(vf_frequency_command_Hz);
+                    stator_current_fundamental_frequency_Hz += lpf_alpha * (freq_fallback_Hz - stator_current_fundamental_frequency_Hz);
+                }
+            }
+        }
+
         // Electrical rotor speed from encoder [RPM -> rad/s electrical]
         omega_el_rad_s = Global_Data.av.mechanicalRotorSpeed * (2.0f * UZ_PIf / 60.0f) * IM_config.polePairs;
 
@@ -224,6 +268,13 @@ void ISR_Control(void *data)
     }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    bool const vf_active = (current_state == control_state) && (!use_foc);
+
+    if (!vf_active) {
+        // Keep current command through brief non-V/f phases to avoid
+        // a drop-before-rise behavior on setpoint changes.
+        vf_frequency_command_Hz = fminf(fmaxf(vf_frequency_command_Hz, 0.0f), vf_max_frequency_Hz);
+    }
 
     if(current_state==control_state)
     {
@@ -239,8 +290,8 @@ void ISR_Control(void *data)
                 float sigma_Ls = sigma * Ls;
                 float Ts = Global_Data.av.isr_samplerate_s;
                 // Bandwidth-based tuning: Kp = sigma*Ls / (2*Ts), Ki = Rs / (2*Ts)
-                float Kp = sigma_Ls / (2.0f * Ts);
-                float Ki = IM_config.Rs_Ohm / (2.0f * Ts);
+                float Kp = sigma_Ls / (2.0f * Ts) * 0.1;
+                float Ki = IM_config.Rs_Ohm / (2.0f * Ts) * 0.2;
                 struct uz_PI_Controller_config pi_cfg = {
                     .type = UZ_PI_PARALLEL,
                     .Kp = Kp,
@@ -255,8 +306,8 @@ void ISR_Control(void *data)
                 // Speed controller: output is iq reference, limited to I_max
                 struct uz_PI_Controller_config speed_cfg = {
                     .type = UZ_PI_PARALLEL,
-                    .Kp = 0.5f,
-                    .Ki = 5.0f,
+                    .Kp = 0.05f,
+                    .Ki = .50f,
                     .samplingTime_sec = Ts,
                     .upper_limit = IM_config.I_max_Ampere,
                     .lower_limit = -IM_config.I_max_Ampere,
@@ -265,7 +316,7 @@ void ISR_Control(void *data)
             }
 
             // Determine iq reference: speed control or direct current control
-            float iq_cmd;
+            id_cmd = id_ref_A;
             if (use_speed_control) {
                 iq_cmd = uz_PI_Controller_sample(PI_speed, speed_ref_rpm, Global_Data.av.mechanicalRotorSpeed, false);
             } else {
@@ -303,20 +354,36 @@ void ISR_Control(void *data)
             Global_Data.rasv.halfBridge3DutyCycle = duty.DutyCycle_C;
 
             // Store abc reference voltages for JavaScope (JSO_ua/ub/uc)
-            uz_3ph_abc_t v_abc_ref = uz_transformation_3ph_dq_to_abc(v_dq_ref, theta_flux_rad);
-            Global_Data.av.U_U = v_abc_ref.a;
-            Global_Data.av.U_V = v_abc_ref.b;
-            Global_Data.av.U_W = v_abc_ref.c;
+//            uz_3ph_abc_t v_abc_ref = uz_transformation_3ph_dq_to_abc(v_dq_ref, theta_flux_rad);
+//            Global_Data.av.U_U = v_abc_ref.a;
+//            Global_Data.av.U_V = v_abc_ref.b;
+//            Global_Data.av.U_W = v_abc_ref.c;
         }
         else
         {
             /* --- V/f open-loop control -------------------------------------- */
+            id_cmd = 0.0f;
+            iq_cmd = 0.0f;
+
+            // Slew-limited V/f frequency command: used on enable and on setpoint updates
+            float const Ts = fmaxf(Global_Data.av.isr_samplerate_s, 1.0e-6f);
+            float freq_target_limited = fminf(fmaxf(vf_frequency_setpoint_Hz, 0.0f), vf_max_frequency_Hz);
+            float const freq_step_max = fmaxf(vf_frequency_ramp_Hz_per_s, 0.1f) * Ts;
+            float const freq_error = freq_target_limited - vf_frequency_command_Hz;
+            if (freq_error > freq_step_max) {
+                vf_frequency_command_Hz += freq_step_max;
+            } else if (freq_error < -freq_step_max) {
+                vf_frequency_command_Hz -= freq_step_max;
+            } else {
+                vf_frequency_command_Hz = freq_target_limited;
+            }
 
             // Limit frequency to maximum
-            float freq_limited = fminf(vf_frequency_setpoint_Hz, vf_max_frequency_Hz);
+            float freq_limited = vf_frequency_command_Hz;
 
-            // Calculate voltage magnitude based on V/f ratio with boost
-            float voltage_magnitude_V = (vf_ratio_V_per_Hz * freq_limited) + vf_boost_voltage_V;
+            // V/f with boost: add boost only when frequency is above standstill
+            float boost_voltage_V = (freq_limited > 0.1f) ? vf_boost_voltage_V : 0.0f;
+            float voltage_magnitude_V = (vf_ratio_V_per_Hz * freq_limited) + boost_voltage_V;
             voltage_magnitude_V = fminf(voltage_magnitude_V, vf_max_voltage_V);
 
             // Normalize voltage to DC-link to get duty cycle amplitude
@@ -331,12 +398,6 @@ void ISR_Control(void *data)
             Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
             Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.c;
 
-            // Store abc reference voltages for JavaScope (JSO_ua/ub/uc)
-            // V/f duty cycles are normalized; scale back to voltage for display
-            Global_Data.av.U_U = (three_phase_sine.a - duty_offset) * Global_Data.av.U_DC;
-            Global_Data.av.U_V = (three_phase_sine.b - duty_offset) * Global_Data.av.U_DC;
-            Global_Data.av.U_W = (three_phase_sine.c - duty_offset) * Global_Data.av.U_DC;
-
             // Reset PI integrators so FOC starts clean on switch
             if (PI_id != NULL) uz_PI_Controller_reset(PI_id);
             if (PI_iq != NULL) uz_PI_Controller_reset(PI_iq);
@@ -348,6 +409,9 @@ void ISR_Control(void *data)
     }
     else
     {
+        id_cmd = 0.0f;
+        iq_cmd = 0.0f;
+        vf_frequency_command_Hz = 0.0f;
         // Disable PWM outputs when not in control state
         Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
         Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
@@ -359,6 +423,11 @@ void ISR_Control(void *data)
         if (PI_iq != NULL) uz_PI_Controller_reset(PI_iq);
         if (PI_speed != NULL) uz_PI_Controller_reset(PI_speed);
     }
+
+    // Store abc duty cycles for JavaScope (JSO_ua/ub/uc)
+    Global_Data.av.U_U = Global_Data.rasv.halfBridge1DutyCycle;
+    Global_Data.av.U_V = Global_Data.rasv.halfBridge2DutyCycle;
+    Global_Data.av.U_W = Global_Data.rasv.halfBridge3DutyCycle;
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

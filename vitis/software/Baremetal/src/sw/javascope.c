@@ -36,6 +36,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float Error_Code;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -54,6 +55,10 @@ extern float vf_ratio_V_per_Hz;
 extern float vf_boost_voltage_V;
 extern float vf_max_frequency_Hz;
 extern float vf_max_voltage_V;
+extern float stator_current_fundamental_frequency_Hz;
+extern float id_cmd;
+extern float iq_cmd;
+extern volatile uint32_t isr_error_reason;
 
 
 int JavaScope_initialize(DS_Data* data)
@@ -100,6 +105,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_A1_B6]					= &data->aa.A1.me.ADC_B6;
 	js_ch_observable[JSO_A1_B7]					= &data->aa.A1.me.ADC_B7;
 	js_ch_observable[JSO_A1_B8]					= &data->aa.A1.me.ADC_B8;
+	js_ch_observable[JSO_id_cmd]				= &id_cmd;
+	js_ch_observable[JSO_iq_cmd]				= &iq_cmd;
+
+
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -107,6 +116,8 @@ int JavaScope_initialize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_u_d_ref]		        = &id_cmd;
+	js_slowDataArray[JSSD_FLOAT_u_q_ref]		        = &iq_cmd;
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
@@ -115,6 +126,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_FreqReadback]            = &stator_current_fundamental_frequency_Hz;
 
 	// V/f Control Parameters - can be tuned in real-time via JavaScope
 	js_slowDataArray[JSSD_FLOAT_vf_frequency_setpoint_Hz] = &vf_frequency_setpoint_Hz;
@@ -123,6 +135,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vf_max_frequency_Hz]      = &vf_max_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]         = &vf_max_voltage_V;
 	js_slowDataArray[JSSD_FLOAT_U_DC]                      = &(data->av.U_DC);
+	js_slowDataArray[JSSD_FLOAT_Error_Code]                = &Error_Code;
 
 	return Status;
 }
@@ -153,6 +166,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	Error_Code				= (float)isr_error_reason;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

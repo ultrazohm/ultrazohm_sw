@@ -49,8 +49,8 @@ uint8_t Control_timer_100ms;
 
 uint32_t inverter_status_RDY[3] = {0};
 uint32_t inverter_status_FLT[3] = {0};
-uint8_t inverter_GateDriverEnable;
 bus_BSW_FCF_t bus_BSW_FCF;
+bus_FCF_out_t bus_FCF_out;
 
 // ~~~~~~~~~~~
 extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
@@ -179,10 +179,15 @@ void ISR_Control(void *data)
     ctrl_data.fcf_out.ModInd[1]    = FOC_FCF_MPtr->outputs->ModInd[1];
     ctrl_data.fcf_out.ModInd[2]    = FOC_FCF_MPtr->outputs->ModInd[2];
 	ctrl_data.fcf_out.w_elrads     = FOC_FCF_MPtr->outputs->w_elrads;
-	ctrl_data.fcf_out.FOC_Error    = FOC_FCF_MPtr->outputs->FOC_Error;
 
+	bus_FCF_out = FOC_FCF_MPtr->outputs->bus_FCF_out;
+	ctrl_data.fcf_out.FOC_Error    = bus_FCF_out.FCF_Error;
 
-    uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, inverter_GateDriverEnable, 0);
+	/* ~~~ Gate Driver Enable Control ~~~ */
+	if(bus_FCF_out.FOC_Enable_PWM)
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 1, 0);
+	else
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 0, 0);
 
 
     /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */

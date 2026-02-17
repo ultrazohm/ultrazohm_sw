@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.40
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:58 2026
+ * C/C++ source code generated on : Mon Feb 16 13:26:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,6 +21,11 @@
 
 /* Block parameters (default storage) */
 P_FOC_SMF_T FOC_SMF_P = {
+  /* Variable: enumState_CTRL_RE_INIT
+   * Referenced by: '<S1>/FOC_Statemachine'
+   */
+  5.0,
+
   /* Variable: FOC_MANUAL_State_Request
    * Referenced by: '<S1>/MANUAL_StateReq'
    */
@@ -99,17 +104,17 @@ P_FOC_SMF_T FOC_SMF_P = {
   /* Variable: FOC_MANUAL_KL15_PG
    * Referenced by: '<S1>/FOC_MANUAL_KL15_PG'
    */
-  false,
+  true,
 
   /* Variable: SELECT_DataSource
    * Referenced by: '<S1>/SELECT_DataSource'
    */
-  0U,
+  1U,
 
   /* Variable: SELECT_KL15_PG
    * Referenced by: '<S1>/SELECT_KL15_PG'
    */
-  0U
+  1U
 };
 
 /*

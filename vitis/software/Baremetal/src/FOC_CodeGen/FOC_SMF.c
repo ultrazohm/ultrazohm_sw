@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.40
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:58 2026
+ * C/C++ source code generated on : Mon Feb 16 13:26:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -24,14 +24,15 @@
 /* Named constants for Chart: '<S1>/FOC_Statemachine' */
 #define FOC_SMF_IN_CTRL_IDLE           ((uint8_T)1U)
 #define FOC_SMF_IN_CTRL_INIT           ((uint8_T)2U)
-#define FOC_SMF_IN_ERROR_MODE          ((uint8_T)3U)
+#define FOC_SMF_IN_CTRL_RE_INIT        ((uint8_T)3U)
+#define FOC_SMF_IN_ERROR_MODE          ((uint8_T)4U)
 #define FOC_SMF_IN_FOC_IDLE            ((uint8_T)1U)
 #define FOC_SMF_IN_FOC_SPEED           ((uint8_T)2U)
 #define FOC_SMF_IN_FOC_STANDBY         ((uint8_T)3U)
 #define FOC_SMF_IN_FOC_TORQUE          ((uint8_T)4U)
 #define FOC_SMF_IN_NO_ACTIVE_CHILD     ((uint8_T)0U)
-#define FOC_SMF_IN_RUN_MODE            ((uint8_T)4U)
-#define FOC_SMF_IN_SYS_INIT            ((uint8_T)5U)
+#define FOC_SMF_IN_RUN_MODE            ((uint8_T)5U)
+#define FOC_SMF_IN_SYS_INIT            ((uint8_T)6U)
 
 /* Model step function */
 void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
@@ -142,10 +143,11 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
       }
       break;
 
-     case FOC_SMF_IN_ERROR_MODE:
+     case FOC_SMF_IN_CTRL_RE_INIT:
       /* Outport: '<Root>/SysStateAct' */
-      FOC_SMF_Y->SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
-      if (FOC_SMF_B->DataSourceSwitch[0] == FOC_SMF_P.enumState_CTRL_IDLE) {
+      FOC_SMF_Y->SysStateAct = (real32_T)FOC_SMF_P.enumState_CTRL_RE_INIT;
+      if ((FOC_SMF_B->DataSourceSwitch[0] == FOC_SMF_P.enumState_CTRL_IDLE) && (
+           !FOC_SMF_U->FastCtrl_Error)) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_SYS_INIT;
 
         /* Outport: '<Root>/SysStateAct' */
@@ -153,6 +155,27 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
 
         /* Outport: '<Root>/FOC_Mode' */
         FOC_SMF_Y->FOC_Mode = 1.0F;
+
+        /* Outport: '<Root>/global_reset_errors' */
+        FOC_SMF_Y->global_reset_errors = 1.0F;
+      } else if (FOC_SMF_U->FastCtrl_Error) {
+        /* Outport: '<Root>/global_reset_errors' */
+        FOC_SMF_Y->global_reset_errors = 0.0F;
+        FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
+
+        /* Outport: '<Root>/SysStateAct' */
+        FOC_SMF_Y->SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+      }
+      break;
+
+     case FOC_SMF_IN_ERROR_MODE:
+      /* Outport: '<Root>/SysStateAct' */
+      FOC_SMF_Y->SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+      if (FOC_SMF_B->DataSourceSwitch[0] == FOC_SMF_P.enumState_CTRL_IDLE) {
+        FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_RE_INIT;
+
+        /* Outport: '<Root>/SysStateAct' */
+        FOC_SMF_Y->SysStateAct = (real32_T)FOC_SMF_P.enumState_CTRL_RE_INIT;
 
         /* Outport: '<Root>/global_reset_errors' */
         FOC_SMF_Y->global_reset_errors = 1.0F;

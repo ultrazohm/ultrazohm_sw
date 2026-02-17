@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.40
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:58 2026
+ * C/C++ source code generated on : Mon Feb 16 13:26:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

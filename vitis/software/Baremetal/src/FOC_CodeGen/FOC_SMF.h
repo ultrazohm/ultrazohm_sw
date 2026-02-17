@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.40
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:58 2026
+ * C/C++ source code generated on : Mon Feb 16 13:26:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -72,6 +72,9 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct P_FOC_SMF_T_ {
+  real_T enumState_CTRL_RE_INIT;       /* Variable: enumState_CTRL_RE_INIT
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
   real32_T FOC_MANUAL_State_Request;   /* Variable: FOC_MANUAL_State_Request
                                         * Referenced by: '<S1>/MANUAL_StateReq'
                                         */

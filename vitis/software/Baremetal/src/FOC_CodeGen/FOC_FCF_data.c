@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.38
+ * Model version                  : 5.42
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 16:30:06 2026
+ * C/C++ source code generated on : Tue Feb 17 10:28:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,13 +21,19 @@
 
 /* Block parameters (default storage) */
 P_FOC_FCF_T FOC_FCF_P = {
-  /* Variable: ENABLE_GateDriver_FLT_Error
-   * Referenced by: '<S7>/ENABLE_GateDriver_FLT_Error'
+  /* Variable: ENABLE_GateDriver_FLT_Error_Sys1
+   * Referenced by:
+   *   '<S39>/ENABLE_GateDriver_FLT_Error_Sys1'
+   *   '<S39>/ENABLE_GateDriver_FLT_Error_Sys2'
+   *   '<S39>/ENABLE_GateDriver_FLT_Error_Sys3'
    */
   1.0F,
 
-  /* Variable: ENABLE_GateDriver_RDY_Error
-   * Referenced by: '<S7>/ENABLE_GateDriver_RDY_Error'
+  /* Variable: ENABLE_GateDriver_RDY_Error_Sys1
+   * Referenced by:
+   *   '<S39>/ENABLE_GateDriver_RDY_Error_Sys1'
+   *   '<S39>/ENABLE_GateDriver_RDY_Error_Sys2'
+   *   '<S39>/ENABLE_GateDriver_RDY_Error_Sys3'
    */
   0.0F,
 
@@ -60,7 +66,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   200.0F,
 
   /* Variable: FOC_ENABLE_Overcurrent_I_uvw
-   * Referenced by: '<S48>/FOC_ENABLE_Overcurrent_I_uvw1'
+   * Referenced by: '<S53>/FOC_ENABLE_Overcurrent_I_uvw1'
    */
   1.0F,
 
@@ -70,12 +76,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   1.0F,
 
   /* Variable: FOC_ENABLE_Overvoltage_U_DC
-   * Referenced by: '<S49>/FOC_ENABLE_Overvoltage_U_DC1'
+   * Referenced by: '<S54>/FOC_ENABLE_Overvoltage_U_DC1'
    */
   1.0F,
 
   /* Variable: FOC_ENABLE_Undervoltage_U_DC
-   * Referenced by: '<S49>/FOC_ENABLE_Undervoltage_U_DC1'
+   * Referenced by: '<S54>/FOC_ENABLE_Undervoltage_U_DC1'
    */
   0.0F,
 
@@ -83,6 +89,21 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by: '<S1>/Enable'
    */
   1.0F,
+
+  /* Variable: FOC_Enable_Sys1
+   * Referenced by: '<S5>/FOC_Enable_Sys1'
+   */
+  1.0F,
+
+  /* Variable: FOC_Enable_Sys2
+   * Referenced by: '<S5>/FOC_Enable_Sys2'
+   */
+  0.0F,
+
+  /* Variable: FOC_Enable_Sys3
+   * Referenced by: '<S5>/FOC_Enable_Sys3'
+   */
+  0.0F,
 
   /* Variable: FOC_If_f_el
    * Referenced by: '<S9>/If_f_el'
@@ -115,18 +136,18 @@ P_FOC_FCF_T FOC_FCF_P = {
 
   /* Variable: FOC_LIMIT_Overcurrent_I_uvw
    * Referenced by:
-   *   '<S50>/Constant'
-   *   '<S51>/Constant'
+   *   '<S55>/Constant'
+   *   '<S56>/Constant'
    */
   10.0F,
 
   /* Variable: FOC_LIMIT_Overvoltage_U_DC
-   * Referenced by: '<S66>/Constant'
+   * Referenced by: '<S71>/Constant'
    */
   900.0F,
 
   /* Variable: FOC_LIMIT_Undervoltage_U_DC
-   * Referenced by: '<S65>/Constant'
+   * Referenced by: '<S70>/Constant'
    */
   50.0F,
 
@@ -164,7 +185,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_RESET_OC_Error
-   * Referenced by: '<S48>/Reset_OC_Error'
+   * Referenced by: '<S53>/Reset_OC_Error'
    */
   0.0F,
 
@@ -174,27 +195,27 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_RESET_OV_Error
-   * Referenced by: '<S49>/Reset_OV_Error'
+   * Referenced by: '<S54>/Reset_OV_Error'
    */
   0.0F,
 
   /* Variable: FOC_RESET_UV_Error
-   * Referenced by: '<S49>/Reset_UV_Error'
+   * Referenced by: '<S54>/Reset_UV_Error'
    */
   0.0F,
 
   /* Variable: FOC_SELECT_Voltage_Assignment_UVW
-   * Referenced by: '<S82>/Constant6'
+   * Referenced by: '<S87>/Constant6'
    */
   1.0F,
 
   /* Variable: FOC_Uf_U_max
-   * Referenced by: '<S78>/Saturation1'
+   * Referenced by: '<S83>/Saturation1'
    */
   0.0F,
 
   /* Variable: FOC_Uf_U_min
-   * Referenced by: '<S78>/Saturation1'
+   * Referenced by: '<S83>/Saturation1'
    */
   0.0F,
 
@@ -209,7 +230,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_Uf_m
-   * Referenced by: '<S78>/Gain'
+   * Referenced by: '<S83>/Gain'
    */
   0.0F,
 
@@ -224,7 +245,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   1.794F,
 
   /* Variable: LIMIT_MAX_Overspeed
-   * Referenced by: '<S73>/Constant'
+   * Referenced by: '<S78>/Constant'
    */
   8000.0F,
 
@@ -232,6 +253,11 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by: '<S6>/Constant'
    */
   33.0F,
+
+  /* Variable: FOC_SELECT_MANUAL_DutyCycles
+   * Referenced by: '<S2>/FOC_SELECT_MANUAL_DutyCycles'
+   */
+  0U,
 
   /* Variable: FOC_SELECT_Mode_Intern
    * Referenced by: '<S1>/FOC_SELECT_Mode_Intern'
@@ -289,32 +315,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   63U,
 
   /* Mask Parameter: MaskBit0_BitMask
-   * Referenced by: '<S41>/MaskBit0'
+   * Referenced by: '<S40>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask
-   * Referenced by: '<S41>/MaskBit1'
+   * Referenced by: '<S40>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask
-   * Referenced by: '<S41>/MaskBit2'
+   * Referenced by: '<S40>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask
-   * Referenced by: '<S41>/MaskBit3'
+   * Referenced by: '<S40>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask
-   * Referenced by: '<S41>/MaskBit4'
+   * Referenced by: '<S40>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask
-   * Referenced by: '<S41>/MaskBit5'
+   * Referenced by: '<S40>/MaskBit5'
    */
   32U,
 
@@ -324,32 +350,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   63U,
 
   /* Mask Parameter: MaskBit0_BitMask_b
-   * Referenced by: '<S42>/MaskBit0'
+   * Referenced by: '<S41>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask_j
-   * Referenced by: '<S42>/MaskBit1'
+   * Referenced by: '<S41>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask_m
-   * Referenced by: '<S42>/MaskBit2'
+   * Referenced by: '<S41>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask_i
-   * Referenced by: '<S42>/MaskBit3'
+   * Referenced by: '<S41>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask_d
-   * Referenced by: '<S42>/MaskBit4'
+   * Referenced by: '<S41>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask_a
-   * Referenced by: '<S42>/MaskBit5'
+   * Referenced by: '<S41>/MaskBit5'
    */
   32U,
 
@@ -359,32 +385,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   4032U,
 
   /* Mask Parameter: MaskBit0_BitMask_g
-   * Referenced by: '<S43>/MaskBit0'
+   * Referenced by: '<S42>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask_n
-   * Referenced by: '<S43>/MaskBit1'
+   * Referenced by: '<S42>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask_n
-   * Referenced by: '<S43>/MaskBit2'
+   * Referenced by: '<S42>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask_c
-   * Referenced by: '<S43>/MaskBit3'
+   * Referenced by: '<S42>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask_o
-   * Referenced by: '<S43>/MaskBit4'
+   * Referenced by: '<S42>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask_h
-   * Referenced by: '<S43>/MaskBit5'
+   * Referenced by: '<S42>/MaskBit5'
    */
   32U,
 
@@ -394,32 +420,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   4032U,
 
   /* Mask Parameter: MaskBit0_BitMask_bn
-   * Referenced by: '<S44>/MaskBit0'
+   * Referenced by: '<S43>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask_a
-   * Referenced by: '<S44>/MaskBit1'
+   * Referenced by: '<S43>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask_o
-   * Referenced by: '<S44>/MaskBit2'
+   * Referenced by: '<S43>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask_h
-   * Referenced by: '<S44>/MaskBit3'
+   * Referenced by: '<S43>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask_e
-   * Referenced by: '<S44>/MaskBit4'
+   * Referenced by: '<S43>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask_l
-   * Referenced by: '<S44>/MaskBit5'
+   * Referenced by: '<S43>/MaskBit5'
    */
   32U,
 
@@ -429,32 +455,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   258048U,
 
   /* Mask Parameter: MaskBit0_BitMask_m
-   * Referenced by: '<S45>/MaskBit0'
+   * Referenced by: '<S44>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask_d
-   * Referenced by: '<S45>/MaskBit1'
+   * Referenced by: '<S44>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask_b
-   * Referenced by: '<S45>/MaskBit2'
+   * Referenced by: '<S44>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask_l
-   * Referenced by: '<S45>/MaskBit3'
+   * Referenced by: '<S44>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask_b
-   * Referenced by: '<S45>/MaskBit4'
+   * Referenced by: '<S44>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask_e
-   * Referenced by: '<S45>/MaskBit5'
+   * Referenced by: '<S44>/MaskBit5'
    */
   32U,
 
@@ -464,117 +490,132 @@ P_FOC_FCF_T FOC_FCF_P = {
   258048U,
 
   /* Mask Parameter: MaskBit0_BitMask_l
-   * Referenced by: '<S46>/MaskBit0'
+   * Referenced by: '<S45>/MaskBit0'
    */
   1U,
 
   /* Mask Parameter: MaskBit1_BitMask_dr
-   * Referenced by: '<S46>/MaskBit1'
+   * Referenced by: '<S45>/MaskBit1'
    */
   2U,
 
   /* Mask Parameter: MaskBit2_BitMask_bx
-   * Referenced by: '<S46>/MaskBit2'
+   * Referenced by: '<S45>/MaskBit2'
    */
   4U,
 
   /* Mask Parameter: MaskBit3_BitMask_it
-   * Referenced by: '<S46>/MaskBit3'
+   * Referenced by: '<S45>/MaskBit3'
    */
   8U,
 
   /* Mask Parameter: MaskBit4_BitMask_a
-   * Referenced by: '<S46>/MaskBit4'
+   * Referenced by: '<S45>/MaskBit4'
    */
   16U,
 
   /* Mask Parameter: MaskBit5_BitMask_b
-   * Referenced by: '<S46>/MaskBit5'
+   * Referenced by: '<S45>/MaskBit5'
    */
   32U,
 
+  /* Mask Parameter: CompareToConstant_const
+   * Referenced by: '<S47>/Constant'
+   */
+  63U,
+
+  /* Mask Parameter: CompareToConstant_const_n
+   * Referenced by: '<S49>/Constant'
+   */
+  63U,
+
+  /* Mask Parameter: CompareToConstant_const_h
+   * Referenced by: '<S51>/Constant'
+   */
+  63U,
+
   /* Mask Parameter: SRFlipFlop_initial_condition
-   * Referenced by: '<S69>/Memory'
+   * Referenced by: '<S74>/Memory'
    */
   false,
 
   /* Mask Parameter: SRFlipFlop1_initial_condition
-   * Referenced by: '<S70>/Memory'
-   */
-  false,
-
-  /* Mask Parameter: SRFlipFlop_initial_condition_d
-   * Referenced by: '<S54>/Memory'
-   */
-  false,
-
-  /* Mask Parameter: SRFlipFlop_initial_condition_k
    * Referenced by: '<S75>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_1_initial_con
-   * Referenced by: '<S56>/Memory'
-   */
-  false,
-
-  /* Mask Parameter: OverTemp_Latching_2_initial_con
-   * Referenced by: '<S57>/Memory'
-   */
-  false,
-
-  /* Mask Parameter: OverTemp_Latching_3_initial_con
-   * Referenced by: '<S58>/Memory'
-   */
-  false,
-
-  /* Mask Parameter: OverTemp_Latching_4_initial_con
+  /* Mask Parameter: SRFlipFlop_initial_condition_d
    * Referenced by: '<S59>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_5_initial_con
-   * Referenced by: '<S60>/Memory'
+  /* Mask Parameter: SRFlipFlop_initial_condition_k
+   * Referenced by: '<S80>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_6_initial_con
+  /* Mask Parameter: OverTemp_Latching_1_initial_con
    * Referenced by: '<S61>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_7_initial_con
+  /* Mask Parameter: OverTemp_Latching_2_initial_con
    * Referenced by: '<S62>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_8_initial_con
+  /* Mask Parameter: OverTemp_Latching_3_initial_con
    * Referenced by: '<S63>/Memory'
    */
   false,
 
-  /* Mask Parameter: OverTemp_Latching_9_initial_con
+  /* Mask Parameter: OverTemp_Latching_4_initial_con
    * Referenced by: '<S64>/Memory'
    */
   false,
 
+  /* Mask Parameter: OverTemp_Latching_5_initial_con
+   * Referenced by: '<S65>/Memory'
+   */
+  false,
+
+  /* Mask Parameter: OverTemp_Latching_6_initial_con
+   * Referenced by: '<S66>/Memory'
+   */
+  false,
+
+  /* Mask Parameter: OverTemp_Latching_7_initial_con
+   * Referenced by: '<S67>/Memory'
+   */
+  false,
+
+  /* Mask Parameter: OverTemp_Latching_8_initial_con
+   * Referenced by: '<S68>/Memory'
+   */
+  false,
+
+  /* Mask Parameter: OverTemp_Latching_9_initial_con
+   * Referenced by: '<S69>/Memory'
+   */
+  false,
+
   /* Mask Parameter: DetectRisePositive1_vinit
-   * Referenced by: '<S68>/Delay Input1'
+   * Referenced by: '<S73>/Delay Input1'
    */
   false,
 
   /* Mask Parameter: DetectRisePositive_vinit
-   * Referenced by: '<S67>/Delay Input1'
+   * Referenced by: '<S72>/Delay Input1'
    */
   false,
 
   /* Mask Parameter: DetectRisePositive_vinit_g
-   * Referenced by: '<S52>/Delay Input1'
+   * Referenced by: '<S57>/Delay Input1'
    */
   false,
 
   /* Mask Parameter: DetectRisePositive_vinit_f
-   * Referenced by: '<S74>/Delay Input1'
+   * Referenced by: '<S79>/Delay Input1'
    */
   false,
 
@@ -590,6 +631,11 @@ P_FOC_FCF_T FOC_FCF_P = {
 
   /* Computed Parameter: ASC_LSHS_Value
    * Referenced by: '<S2>/ASC_LSHS'
+   */
+  { 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F },
+
+  /* Computed Parameter: FOC_Manual_DutyCycles_Value
+   * Referenced by: '<S2>/FOC_Manual_DutyCycles'
    */
   { 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F },
 
@@ -654,22 +700,22 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: Gain1_Gain
-   * Referenced by: '<S47>/Gain1'
+   * Referenced by: '<S52>/Gain1'
    */
   6.28318548F,
 
   /* Computed Parameter: Constant1_Value_c
-   * Referenced by: '<S47>/Constant1'
+   * Referenced by: '<S52>/Constant1'
    */
   0.0F,
 
   /* Computed Parameter: Constant3_Value
-   * Referenced by: '<S49>/Constant3'
+   * Referenced by: '<S54>/Constant3'
    */
   0.0F,
 
   /* Computed Parameter: Constant1_Value_b
-   * Referenced by: '<S49>/Constant1'
+   * Referenced by: '<S54>/Constant1'
    */
   0.0F,
 
@@ -709,52 +755,52 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: Gain1_Gain_a
-   * Referenced by: '<S77>/Gain1'
+   * Referenced by: '<S82>/Gain1'
    */
   6.28318548F,
 
   /* Computed Parameter: Constant1_Value_e
-   * Referenced by: '<S77>/Constant1'
+   * Referenced by: '<S82>/Constant1'
    */
   0.0F,
 
   /* Computed Parameter: Constant2_Value_d
-   * Referenced by: '<S80>/Constant2'
+   * Referenced by: '<S85>/Constant2'
    */
   1.0F,
 
   /* Computed Parameter: U_DC2_Gain
-   * Referenced by: '<S80>/U_DC//2'
+   * Referenced by: '<S85>/U_DC//2'
    */
   0.5F,
 
   /* Computed Parameter: Constant2_Value_g
-   * Referenced by: '<S81>/Constant2'
+   * Referenced by: '<S86>/Constant2'
    */
   1.0F,
 
   /* Computed Parameter: U_DC2_Gain_p
-   * Referenced by: '<S81>/U_DC//2'
+   * Referenced by: '<S86>/U_DC//2'
    */
   0.5F,
 
   /* Computed Parameter: Factor_Gain
-   * Referenced by: '<S83>/Factor'
+   * Referenced by: '<S88>/Factor'
    */
   0.5F,
 
   /* Computed Parameter: Factor1_Gain
-   * Referenced by: '<S83>/Factor1'
+   * Referenced by: '<S88>/Factor1'
    */
   0.5F,
 
   /* Computed Parameter: Factor2_Gain
-   * Referenced by: '<S83>/Factor2'
+   * Referenced by: '<S88>/Factor2'
    */
   0.5F,
 
   /* Computed Parameter: Constant_Value_d
-   * Referenced by: '<S84>/Constant'
+   * Referenced by: '<S89>/Constant'
    */
   { 1.0F, -0.5F, -0.5F, 0.0F, 0.866025388F, -0.866025388F },
 
@@ -784,12 +830,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   6.28318548F,
 
   /* Computed Parameter: FOC_T_fast_Value
-   * Referenced by: '<S77>/FOC_T_fast'
+   * Referenced by: '<S82>/FOC_T_fast'
    */
   0.0001F,
 
   /* Computed Parameter: UnitDelay_InitialCondition
-   * Referenced by: '<S77>/Unit Delay'
+   * Referenced by: '<S82>/Unit Delay'
    */
   0.0F,
 
@@ -845,12 +891,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   6.28318548F,
 
   /* Computed Parameter: FOC_T_fast_Value_f
-   * Referenced by: '<S47>/FOC_T_fast'
+   * Referenced by: '<S52>/FOC_T_fast'
    */
   0.0001F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_d
-   * Referenced by: '<S47>/Unit Delay'
+   * Referenced by: '<S52>/Unit Delay'
    */
   0.0F,
 
@@ -912,62 +958,62 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: Gain1_Gain_h
-   * Referenced by: '<S87>/Gain1'
+   * Referenced by: '<S92>/Gain1'
    */
   { 0.0F, 1.0F, -1.0F, 0.0F },
 
   /* Computed Parameter: Gain_Gain
-   * Referenced by: '<S87>/Gain'
+   * Referenced by: '<S92>/Gain'
    */
   { 1.0F, 0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: Constant_Value_g
-   * Referenced by: '<S85>/Constant'
+   * Referenced by: '<S90>/Constant'
    */
   { 1.0F, -0.5F, -0.5F, 0.0F, 0.866025388F, -0.866025388F },
 
   /* Computed Parameter: Gain1_Gain_ck
-   * Referenced by: '<S88>/Gain1'
+   * Referenced by: '<S93>/Gain1'
    */
   { 0.0F, 1.0F, -1.0F, 0.0F },
 
   /* Computed Parameter: Gain_Gain_l
-   * Referenced by: '<S88>/Gain'
+   * Referenced by: '<S93>/Gain'
    */
   { 1.0F, 0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: Constant_Value_o
-   * Referenced by: '<S86>/Constant'
+   * Referenced by: '<S91>/Constant'
    */
   { 1.0F, -0.5F, -0.5F, 0.0F, 0.866025388F, -0.866025388F },
 
   /* Computed Parameter: Gain1_Gain_k
-   * Referenced by: '<S89>/Gain1'
+   * Referenced by: '<S94>/Gain1'
    */
   { 0.0F, 1.0F, -1.0F, 0.0F },
 
   /* Computed Parameter: Gain_Gain_j
-   * Referenced by: '<S89>/Gain'
+   * Referenced by: '<S94>/Gain'
    */
   { 1.0F, 0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: Scale02_Bias
-   * Referenced by: '<S79>/Scale [0..2]'
+   * Referenced by: '<S84>/Scale [0..2]'
    */
   1.0F,
 
   /* Computed Parameter: Scale01_Gain
-   * Referenced by: '<S79>/Scale  [0..1]'
+   * Referenced by: '<S84>/Scale  [0..1]'
    */
   0.5F,
 
   /* Computed Parameter: Limit01_UpperSat
-   * Referenced by: '<S79>/Limit [0..1]'
+   * Referenced by: '<S84>/Limit [0..1]'
    */
   1.0F,
 
   /* Computed Parameter: Limit01_LowerSat
-   * Referenced by: '<S79>/Limit [0..1]'
+   * Referenced by: '<S84>/Limit [0..1]'
    */
   0.0F,
 
@@ -1000,6 +1046,16 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by: '<S4>/Gain1'
    */
   1.0F,
+
+  /* Computed Parameter: usrpm_Gain
+   * Referenced by: '<S11>/[1//s] => [rpm]'
+   */
+  2.38732409F,
+
+  /* Computed Parameter: NO_ERROR_Value
+   * Referenced by: '<S39>/NO_ERROR'
+   */
+  0.0F,
 
   /* Computed Parameter: Zero1_Value
    * Referenced by: '<S28>/Zero1'
@@ -1059,18 +1115,8 @@ P_FOC_FCF_T FOC_FCF_P = {
   { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
     0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
 
-  /* Computed Parameter: NO_ERROR_Value
-   * Referenced by: '<S7>/NO_ERROR'
-   */
-  0.0F,
-
-  /* Computed Parameter: usrpm_Gain
-   * Referenced by: '<S11>/[1//s] => [rpm]'
-   */
-  2.38732409F,
-
   /* Computed Parameter: Switch_Threshold
-   * Referenced by: '<S47>/Switch'
+   * Referenced by: '<S52>/Switch'
    */
   6.28318548F,
 
@@ -1080,7 +1126,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   6.28318548F,
 
   /* Computed Parameter: Switch_Threshold_c
-   * Referenced by: '<S77>/Switch'
+   * Referenced by: '<S82>/Switch'
    */
   6.28318548F,
 
@@ -1105,47 +1151,47 @@ P_FOC_FCF_T FOC_FCF_P = {
   1.0F,
 
   /* Computed Parameter: DutyCycle_u1_Gain
-   * Referenced by: '<S82>/DutyCycle_u1'
+   * Referenced by: '<S87>/DutyCycle_u1'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_u2_Gain
-   * Referenced by: '<S82>/DutyCycle_u2'
+   * Referenced by: '<S87>/DutyCycle_u2'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_u3_Gain
-   * Referenced by: '<S82>/DutyCycle_u3'
+   * Referenced by: '<S87>/DutyCycle_u3'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_v1_Gain
-   * Referenced by: '<S82>/DutyCycle_v1'
+   * Referenced by: '<S87>/DutyCycle_v1'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_v2_Gain
-   * Referenced by: '<S82>/DutyCycle_v2'
+   * Referenced by: '<S87>/DutyCycle_v2'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_v3_Gain
-   * Referenced by: '<S82>/DutyCycle_v3'
+   * Referenced by: '<S87>/DutyCycle_v3'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_w1_Gain
-   * Referenced by: '<S82>/DutyCycle_w1'
+   * Referenced by: '<S87>/DutyCycle_w1'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_w2_Gain
-   * Referenced by: '<S82>/DutyCycle_w2'
+   * Referenced by: '<S87>/DutyCycle_w2'
    */
   1.0F,
 
   /* Computed Parameter: DutyCycle_w3_Gain
-   * Referenced by: '<S82>/DutyCycle_w3'
+   * Referenced by: '<S87>/DutyCycle_w3'
    */
   1.0F,
 
@@ -1159,13 +1205,18 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   0.0F,
 
-  /* Computed Parameter: Constant_Value_d2
-   * Referenced by: '<S39>/Constant'
+  /* Computed Parameter: Constant_Value_l
+   * Referenced by: '<S46>/Constant'
    */
   0U,
 
-  /* Computed Parameter: Constant_Value_a
-   * Referenced by: '<S40>/Constant'
+  /* Computed Parameter: Constant_Value_eg
+   * Referenced by: '<S48>/Constant'
+   */
+  0U,
+
+  /* Computed Parameter: Constant_Value_f
+   * Referenced by: '<S50>/Constant'
    */
   0U,
 
@@ -1175,22 +1226,22 @@ P_FOC_FCF_T FOC_FCF_P = {
   false,
 
   /* Computed Parameter: Constant2_Value_f
-   * Referenced by: '<S48>/Constant2'
+   * Referenced by: '<S53>/Constant2'
    */
   false,
 
   /* Computed Parameter: Constant1_Value_d
-   * Referenced by: '<S48>/Constant1'
+   * Referenced by: '<S53>/Constant1'
    */
   true,
 
   /* Computed Parameter: Constant2_Value_c
-   * Referenced by: '<S49>/Constant2'
+   * Referenced by: '<S54>/Constant2'
    */
   true,
 
   /* Computed Parameter: Constant4_Value_f
-   * Referenced by: '<S49>/Constant4'
+   * Referenced by: '<S54>/Constant4'
    */
   true,
 
@@ -1205,39 +1256,45 @@ P_FOC_FCF_T FOC_FCF_P = {
   true,
 
   /* Computed Parameter: Constant_Value_j
-   * Referenced by: '<S55>/Constant'
+   * Referenced by: '<S60>/Constant'
    */
   false,
 
   /* Computed Parameter: Constant_Value_dc
-   * Referenced by: '<S71>/Constant'
-   */
-  false,
-
-  /* Computed Parameter: Constant_Value_eo
-   * Referenced by: '<S72>/Constant'
-   */
-  false,
-
-  /* Computed Parameter: Constant_Value_ep
    * Referenced by: '<S76>/Constant'
    */
   false,
 
+  /* Computed Parameter: Constant_Value_eo
+   * Referenced by: '<S77>/Constant'
+   */
+  false,
+
+  /* Computed Parameter: Constant_Value_ep
+   * Referenced by: '<S81>/Constant'
+   */
+  false,
+
   /* Computed Parameter: Logic_table
-   * Referenced by: '<S69>/Logic'
+   * Referenced by: '<S74>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
 
   /* Computed Parameter: Logic_table_l
-   * Referenced by: '<S70>/Logic'
+   * Referenced by: '<S75>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
 
   /* Computed Parameter: Logic_table_o
-   * Referenced by: '<S54>/Logic'
+   * Referenced by: '<S59>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_lc
+   * Referenced by: '<S80>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
@@ -1247,62 +1304,56 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   true,
 
-  /* Computed Parameter: Logic_table_lc
-   * Referenced by: '<S75>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
   /* Computed Parameter: Logic_table_l5
-   * Referenced by: '<S56>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
-  /* Computed Parameter: Logic_table_p
-   * Referenced by: '<S57>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
-  /* Computed Parameter: Logic_table_j
-   * Referenced by: '<S58>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
-  /* Computed Parameter: Logic_table_o1
-   * Referenced by: '<S59>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
-  /* Computed Parameter: Logic_table_i
-   * Referenced by: '<S60>/Logic'
-   */
-  { false, true, false, false, true, true, false, false, true, false, true, true,
-    false, false, false, false },
-
-  /* Computed Parameter: Logic_table_c
    * Referenced by: '<S61>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
 
-  /* Computed Parameter: Logic_table_ij
+  /* Computed Parameter: Logic_table_p
    * Referenced by: '<S62>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
 
-  /* Computed Parameter: Logic_table_pd
+  /* Computed Parameter: Logic_table_j
    * Referenced by: '<S63>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
 
-  /* Computed Parameter: Logic_table_a
+  /* Computed Parameter: Logic_table_o1
    * Referenced by: '<S64>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_i
+   * Referenced by: '<S65>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_c
+   * Referenced by: '<S66>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_ij
+   * Referenced by: '<S67>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_pd
+   * Referenced by: '<S68>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false },
+
+  /* Computed Parameter: Logic_table_a
+   * Referenced by: '<S69>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false }

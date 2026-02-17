@@ -35,6 +35,7 @@
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_piController/uz_piController.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -94,6 +95,7 @@ float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 5
 float vf_max_voltage_V = 400.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
 float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
 static float vf_frequency_command_Hz = 0.0f;
+static float vf_electrical_phase_rad = 0.0f;
 
 // Induction machine parameters — set to your motor values!
 uz_IM_t IM_config = {
@@ -116,8 +118,7 @@ static float psi_r_mag = 0.0f;
 
 // Estimated stator current fundamental frequency (Hz)
 float stator_current_fundamental_frequency_Hz = 0.0f;
-static float stator_current_theta_prev_rad = 0.0f;
-static bool stator_current_theta_valid = false;
+static uz_pos_to_speed_pll_t* stator_frequency_pll = NULL;
 
 // FOC control mode (false = V/f, true = FOC)
 bool use_foc = false;
@@ -193,41 +194,6 @@ void ISR_Control(void *data)
         uz_3ph_abc_t i_abc = {.a = Global_Data.av.I_U, .b = Global_Data.av.I_V, .c = Global_Data.av.I_W};
         uz_3ph_alphabeta_t i_ab = uz_transformation_3ph_abc_to_alphabeta(i_abc);
 
-        // Estimate fundamental stator current frequency from current-vector angle
-        {
-            float const Ts_freq = fmaxf(Ts, 1.0e-6f);
-            float const i_mag_sq = i_ab.alpha * i_ab.alpha + i_ab.beta * i_ab.beta;
-            float const i_mag_min_A = 0.1f; // Below this magnitude, use fallback in V/f mode
-            float const i_mag_min_sq = i_mag_min_A * i_mag_min_A;
-            float const lpf_tau_s = 0.05f;
-            float const lpf_alpha = Ts_freq / (lpf_tau_s + Ts_freq);
-
-            if (i_mag_sq > i_mag_min_sq) {
-                float const theta_i_rad = atan2f(i_ab.beta, i_ab.alpha);
-                if (stator_current_theta_valid) {
-                    float dtheta = theta_i_rad - stator_current_theta_prev_rad;
-                    if (dtheta > UZ_PIf) {
-                        dtheta -= 2.0f * UZ_PIf;
-                    } else if (dtheta < -UZ_PIf) {
-                        dtheta += 2.0f * UZ_PIf;
-                    }
-                    float const freq_inst_Hz = fabsf(dtheta) / (2.0f * UZ_PIf * Ts_freq);
-                    stator_current_fundamental_frequency_Hz += lpf_alpha * (freq_inst_Hz - stator_current_fundamental_frequency_Hz);
-                } else {
-                    stator_current_theta_valid = true;
-                }
-                stator_current_theta_prev_rad = theta_i_rad;
-            } else {
-                stator_current_theta_valid = false;
-                // In low-current operation, keep readback meaningful in V/f by
-                // blending toward commanded frequency instead of dropping to zero.
-                if (!use_foc) {
-                    float const freq_fallback_Hz = fabsf(vf_frequency_command_Hz);
-                    stator_current_fundamental_frequency_Hz += lpf_alpha * (freq_fallback_Hz - stator_current_fundamental_frequency_Hz);
-                }
-            }
-        }
-
         // Electrical rotor speed from encoder [RPM -> rad/s electrical]
         omega_el_rad_s = Global_Data.av.mechanicalRotorSpeed * (2.0f * UZ_PIf / 60.0f) * IM_config.polePairs;
 
@@ -250,6 +216,30 @@ void ISR_Control(void *data)
             psi_r_mag = 0.0f;
             isr_error_reason |= ERR_NAN_OBSERVER;
             ultrazohm_state_machine_set_error(true);
+        }
+
+        // Estimate stator current fundamental frequency from rotor flux angle via PLL
+        if (stator_frequency_pll == NULL) {
+            struct uz_pos_to_speed_pll_config_t pll_cfg = {
+                .machine_polepairs = fmaxf(IM_config.polePairs, 1.0e-3f),
+                .kp_pll = 628.3185f,
+                .ki_pll = 98696.0f,
+                .sampling_time_in_seconds = fmaxf(Ts, 1.0e-6f),
+            };
+            stator_frequency_pll = uz_pos_to_speed_pll_init(pll_cfg);
+        }
+        if (stator_frequency_pll != NULL) {
+            float theta_flux_wrapped = theta_flux_rad;
+            if (theta_flux_wrapped < 0.0f) {
+                theta_flux_wrapped += 2.0f * UZ_PIf;
+            }
+            theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
+            uz_pos_to_speed_pll_step(stator_frequency_pll, theta_flux_wrapped);
+            float const omega_el_pll_rad_s = uz_pos_to_speed_pll_get_omega_el_si(stator_frequency_pll);
+            stator_current_fundamental_frequency_Hz = fabsf(omega_el_pll_rad_s) / (2.0f * UZ_PIf);
+            if (!isfinite(stator_current_fundamental_frequency_Hz)) {
+                stator_current_fundamental_frequency_Hz = 0.0f;
+            }
         }
 
         // ABC -> DQ in rotor flux frame
@@ -391,8 +381,34 @@ void ISR_Control(void *data)
             duty_amplitude_vf = fminf(duty_amplitude_vf, 0.45f);
             duty_amplitude_vf = fmaxf(duty_amplitude_vf, 0.0f);
 
-            // Generate three-phase sine waves
-            three_phase_sine = uz_wavegen_three_phase_sample(duty_amplitude_vf, freq_limited, duty_offset);
+            // Generate three-phase voltage with phase integration.
+            // Do not use angle = 2*pi*t*f when f is ramped, because that causes
+            // frequency distortion for time-varying f.
+            float const omega_cmd_rad_per_s = 2.0f * UZ_PIf * freq_limited;
+            vf_electrical_phase_rad += omega_cmd_rad_per_s * Ts;
+            vf_electrical_phase_rad = fmodf(vf_electrical_phase_rad, 2.0f * UZ_PIf);
+            if (vf_electrical_phase_rad < 0.0f) {
+                vf_electrical_phase_rad += 2.0f * UZ_PIf;
+            }
+
+            float v1 = duty_amplitude_vf * sinf(vf_electrical_phase_rad) + duty_offset;
+            float v2 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (2.0f * UZ_PIf / 3.0f)) + duty_offset;
+            float v3 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (4.0f * UZ_PIf / 3.0f)) + duty_offset;
+
+            int PWM_mode = 0; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
+
+            if (PWM_mode == 1) {
+
+            float const cm = fminf(fminf(v1, v2), v3);
+            v1 -= cm;
+            v2 -= cm;
+            v3 -= cm;
+            }
+
+            v1 = fminf(fmaxf(v1, 0.0f), 1.0f);
+            v2 = fminf(fmaxf(v2, 0.0f), 1.0f);
+            v3 = fminf(fmaxf(v3, 0.0f), 1.0f);
+            three_phase_sine = (uz_3ph_abc_t){ .a = v1, .b = v2, .c = v3 };
 
             Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.a;
             Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
@@ -412,6 +428,7 @@ void ISR_Control(void *data)
         id_cmd = 0.0f;
         iq_cmd = 0.0f;
         vf_frequency_command_Hz = 0.0f;
+        vf_electrical_phase_rad = 0.0f;
         // Disable PWM outputs when not in control state
         Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
         Global_Data.rasv.halfBridge2DutyCycle = 0.5f;

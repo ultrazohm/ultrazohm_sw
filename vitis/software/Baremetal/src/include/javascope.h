@@ -197,7 +197,7 @@ enum gui_button_mapping {
 		Id,
 		Iq,
 		Vdc,
-		IstatorFundFreq,
+		StatorFundFreq,
 		receive_field_7,
 		receive_field_8,
 		receive_field_9,

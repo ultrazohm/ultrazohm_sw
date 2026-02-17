@@ -43,14 +43,24 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 //Added stuff
 #define CURRENT_CONV_HASS_50 40.0f
+#define CURRENT_OFF_HASS_CH1 -0.15f
+#define CURRENT_OFF_HASS_CH2 0.1f
+#define CURRENT_OFF_HASS_CH3 -0.05f
+#define CURRENT_OFF_HASS_CH4 -0.3f
 #define VOLTAGE_2_SI_VOLTS_DHG_CH1 363.6f
 #define VOLTAGE_2_SI_VOLTS_DHG_CH2 363.6f
 #define VOLTAGE_2_SI_VOLTS_DHG_CH3 37.037f
 #define VOLTAGE_2_SI_VOLTS_DHG_CH4 142.3f
+#define VOLTAGE_OFFSET_CH1	0.0f
+#define VOLTAGE_OFFSET_CH2 	0.0f
+#define VOLTAGE_OFFSET_CH3	0.0f
+#define VOLTAGE_OFFSET_CH4	0.0f
 
 #define DC_VOLTAGE 565.0f
 #define	MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
 #define	MAX_VOLTAGE			 (DC_VOLTAGE * MAX_MODULATION_INDEX)
+
+#define VOLTAGE_LIMIT DC_VOLTAGE * 1.03f //allow 3 higher VDC before error
 
 enum ControllerApplication ConApplication;
 enum ControllerSelection ConSelection;
@@ -86,15 +96,41 @@ void ISR_Control(void *data)
     	break;
 
     case REAL:
-    	update_speed_and_position_of_encoder_on_D5(&Global_Data);//get theta_elec and omega_mech
-    	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-    	Global_Data.av.theta_mech = Global_Data.av.theta_elec / Global_Data.av.SynRM_config.polePairs;
-    	Global_Data.av.omega_elec = Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
+	    //Read measurements
+	    update_speed_and_position_of_encoder_on_D5(&Global_Data);//get theta_elec and omega_mech
+    	Global_Data.av.theta_elec 			= Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    	Global_Data.av.theta_mech 			= Global_Data.av.theta_elec / Global_Data.av.SynRM_config.polePairs;
+    	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
-    	Global_Data.av.theta_elec_advanced = Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
-    	//Todo
-    	Global_Data.av.current_angle_rad		= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.theta_elec_advanced 	= Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
+    	//TODO check pinning of current sensors % voltages (may change with new revision)
+    	Global_Data.av.i_abc.a 				= Global_Data.aa.A2.me.ADC_A1 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH1;
+    	Global_Data.av.i_abc.b 				= Global_Data.aa.A2.me.ADC_A2 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH2;
+    	Global_Data.av.i_abc.c 				= Global_Data.aa.A2.me.ADC_A3 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH3;
+    	Global_Data.av.i_dc					= Global_Data.aa.A2.me.ADC_B8 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH4;
+		Global_Data.av.v_abc.a 				= Global_Data.aa.A2.me.ADC_B5 * VOLTAGE_2_SI_VOLTS_DHG_CH1 + VOLTAGE_OFFSET_CH1;
+		Global_Data.av.v_abc.b 				= Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS_DHG_CH2 + VOLTAGE_OFFSET_CH2;
+		Global_Data.av.v_abc.c 				= Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS_DHG_CH3 + VOLTAGE_OFFSET_CH3;
+		Global_Data.av.v_dc 				= Global_Data.aa.A2.me.ADC_A4  * VOLTAGE_2_SI_VOLTS_DHG_CH4 + VOLTAGE_OFFSET_CH4;
+
+		//Safety checks
+	    Global_Data.av.HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.HB_ok_Pin_Number);
+	    Global_Data.av.OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.OC_ok_Pin_Number);
+	    if ((Global_Data.av.HB_ok == false || Global_Data.av.OC_ok == false) && Global_Data.rasv.ResetInverter_was_pressed == true) {
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+	    if((Global_Data.av.i_abc.a > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.b > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.c > Global_Data.av.SynRM_config.I_max_Ampere)
+	    		|| (Global_Data.av.i_dc > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.v_dc > VOLTAGE_LIMIT)) {
+	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+
+	    //Calculations and transformations
+    	Global_Data.av.current_angle_rad	= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
+    	Global_Data.av.current_angle_deg 	= Global_Data.av.current_angle_rad /UZ_PIf * 180.0f;
     	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
+    	Global_Data.av.i_dq					= uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc, Global_Data.av.theta_elec);
+    	Global_Data.av.v_dq					= uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc, Global_Data.av.theta_elec);
     	break;
     }
 
@@ -106,6 +142,8 @@ void ISR_Control(void *data)
     {
     	uz_CurrentControl_reset(Global_Data.objects.CurrentControl);
     	Global_Data.av.n_ref_CIL = 0.0f;
+    	Global_Data.av.v_dq_ref.d = 0.0f;
+    	Global_Data.av.v_dq_ref.q = 0.0f;
     	switch(ConApplication) {
     	    case CIL:
     	    	uz_pmsmModel_reset(Global_Data.objects.SynRM_Model);
@@ -137,8 +175,14 @@ void ISR_Control(void *data)
 				break;
 
 			case REAL:
-     	    	// enable inverters
-				//TODO
+		    	//Enable logic DHG inverter
+			    if (Global_Data.rasv.ResetInverter == true) {
+			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,true);
+			    	Global_Data.rasv.ResetInverter_was_pressed = true;
+			    	Global_Data.rasv.ResetInverter = false;
+			    } else {
+			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,false);
+			    }
      	    	break;
 
      	    default:
@@ -159,6 +203,7 @@ void ISR_Control(void *data)
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);
         	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, BO_FACTOR);
         	Global_Data.av.v_dq_ref = uz_CurrentControl_sample_SynRM(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
+        	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
         	break;
 
         case RL:
@@ -182,10 +227,12 @@ void ISR_Control(void *data)
         	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc * MAX_MODULATION_INDEX);
         	Global_Data.av.v_dq_ref.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
         	Global_Data.av.v_dq_ref.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
         	break;
 
         case manual:
-        	//Set Global_Data.av.v_dq_ref via GUI
+        	//Set Global_Data.av.v_dq_ref via GUI == CIL
+        	//Set DutyCycles via GUI == REAL
         	break;
 
         default:
@@ -201,7 +248,6 @@ void ISR_Control(void *data)
     	    	break;
 
     	    case REAL:
-            	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
     	    	Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.DutyCycle.DutyCycle_A;
     	        Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.DutyCycle.DutyCycle_B;
     	        Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.DutyCycle.DutyCycle_C;

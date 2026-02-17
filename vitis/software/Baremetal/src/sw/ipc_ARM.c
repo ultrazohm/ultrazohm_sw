@@ -213,15 +213,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		data->av.DutyCycle.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		data->av.DutyCycle.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		data->av.DutyCycle.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_10):
@@ -289,7 +289,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			data->rasv.ResetInverter = true;
 			break;
 
 		case (My_Button_7):
@@ -380,7 +380,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	 if (data->av.HB_ok && data->av.OC_ok) {
+		js_status_BareToRTOS |= (1 << 9);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	 }
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

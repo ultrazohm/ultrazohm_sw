@@ -75,6 +75,7 @@ typedef struct _actualValues_ {
 	float n_ref_CIL;
 	float Is_ref;
 	float Is;
+	float i_dc;
 	float current_angle_deg;
 	float current_angle_rad;
 	float current_angle_ref;
@@ -108,6 +109,8 @@ typedef struct _referenceAndSetValues_ {
 	uint32_t Inv_Reset_Pin_Number; 	// PIN 0 for reset DHG inverter
 	uint32_t LMG_continues_Pin_Number; // Pin 1 for start/stop continues measurement on LMG
 	uint32_t LMG_transient_Pin_Number; // Pin 2 for start/stop transient measurement on LMG
+	bool ResetInverter;
+	bool ResetInverter_was_pressed;
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;

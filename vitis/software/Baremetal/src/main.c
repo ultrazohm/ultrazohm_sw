@@ -91,7 +91,11 @@ int main(void)
             Global_Data.objects.LUT_bench_current_angle = init_LUT_bench_current_angle();
             Global_Data.objects.CurrentControl = init_FOC();
             Global_Data.objects.FluxApproximation = init_FluxApproximation();
-            Global_Data.av.theta_offset = 2.398694800f; //To be checked if this is the correct one from ControlS_SRM_22 branch
+            Global_Data.rasv.Inv_Reset_Pin_Number = 0U;
+            Global_Data.rasv.HB_ok_Pin_Number = 0U;
+            Global_Data.rasv.OC_ok_Pin_Number = 1U;
+            //TODO//To be checked if this is the correct one from ControlS_SRM_22 branch
+            Global_Data.av.theta_offset = 2.398694800f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

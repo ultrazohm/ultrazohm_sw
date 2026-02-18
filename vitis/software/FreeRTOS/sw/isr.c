@@ -28,6 +28,12 @@
 // define the size of the cache to flush
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+// Avoid forcing a context switch on every high-rate IPI interrupt.
+// Any value >= 1 is supported.
+#define UZ_IPI_ISR_YIELD_DECIMATION (NETWORK_SEND_FIELD_SIZE)
+#if (UZ_IPI_ISR_YIELD_DECIMATION == 0U)
+#error "UZ_IPI_ISR_YIELD_DECIMATION must be >= 1."
+#endif
 
 struct APU_to_RPU_t ControlData;
 extern volatile int js_connection_established;
@@ -40,6 +46,7 @@ QueueHandle_t js_queue;
 int js_queue_full = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
+static uint32_t i_ipi_isr_yield_counter = 0U;
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -113,8 +120,11 @@ void Transfer_ipc_Intr_Handler(void *data)
 		i_LifeCheck_Transfer_ipc =0;
 	}
 
-	// force context switch after ISR finishes -> switching to ethernet task
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	// Decimate ISR-triggered reschedules at high sample rates to avoid scheduler thrash.
+	if ((xHigherPriorityTaskWoken == pdTRUE) &&
+		((i_ipi_isr_yield_counter++ % UZ_IPI_ISR_YIELD_DECIMATION) == 0U)) {
+		portYIELD_FROM_ISR(pdTRUE);
+	}
 }
 
 

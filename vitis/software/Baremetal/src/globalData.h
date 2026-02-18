@@ -69,6 +69,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t v_dq_ref;
 	uz_3ph_dq_t v_dq_ref_k2;
 	uz_3ph_dq_t v_dq;
+	uz_3ph_dq_t v_dq_ref_manual;
 	float Torque_ref;
 	float Torque;
 	float v_dc;
@@ -90,6 +91,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t flux_approx_real;
 	uz_3ph_dq_t flux_approx_reference;
 	struct uz_DutyCycle_t DutyCycle;
+	struct uz_DutyCycle_t DutyCycle_manual;
 	struct uz_PMSM_t SynRM_config;
 	struct uz_PMSM_flux_fitting_parameter_config_t fitting_parameter;
 	struct uz_pmsmModel_outputs_t SynRM_outputs;

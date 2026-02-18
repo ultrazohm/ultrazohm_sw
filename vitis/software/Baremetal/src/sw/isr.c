@@ -231,8 +231,10 @@ void ISR_Control(void *data)
         	break;
 
         case manual:
-        	//Set Global_Data.av.v_dq_ref via GUI == CIL
-        	//Set DutyCycles via GUI == REAL
+        	//CIL set v_dq_ref manual via GUI
+        	Global_Data.av.v_dq_ref = Global_Data.av.v_dq_ref_manual;
+        	//REAL set DutyCycles manual via GUI
+        	Global_Data.av.DutyCycle = Global_Data.av.DutyCycle_manual;
         	break;
 
         default:

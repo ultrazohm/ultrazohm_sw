@@ -197,11 +197,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.v_dq_ref.d = value;
+		data->av.v_dq_ref_manual.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.v_dq_ref.q = value;
+		data->av.v_dq_ref_manual.q = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -213,15 +213,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.DutyCycle.DutyCycle_A = value;
+		data->av.DutyCycle_manual.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.DutyCycle.DutyCycle_B = value;
+		data->av.DutyCycle_manual.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.DutyCycle.DutyCycle_C = value;
+		data->av.DutyCycle_manual.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_10):

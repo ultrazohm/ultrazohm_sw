@@ -25,6 +25,8 @@
 
 extern QueueHandle_t js_queue;
 extern struct APU_to_RPU_t ControlData;
+extern volatile int js_queue_overflow_dropped_samples;
+extern volatile int js_queue_purge_requested;
 
 volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -100,10 +102,31 @@ void process_request_thread(void *p)
 	int nwrote = 0;
 
 	xQueueReset(js_queue); //purge queue once new connection is established
+	taskENTER_CRITICAL();
+	js_queue_overflow_dropped_samples = 0;
+	js_queue_purge_requested = 0;
+	taskEXIT_CRITICAL();
 
 	while (1) {
 		if (js_is_active_client(clientfd) == pdFALSE) {
 			break;
+		}
+
+		if (js_queue_purge_requested != 0) {
+			int dropped_samples_from_overflow = 0;
+			UBaseType_t queued_samples_to_purge = uxQueueMessagesWaiting(js_queue);
+			taskENTER_CRITICAL();
+			dropped_samples_from_overflow = js_queue_overflow_dropped_samples;
+			js_queue_overflow_dropped_samples = 0;
+			js_queue_purge_requested = 0;
+			taskEXIT_CRITICAL();
+
+			xQueueReset(js_queue);
+			uz_printf("APU: Javascope queue overflow -> purged %lu queued + %d overflow-dropped\r\n",
+					(unsigned long)queued_samples_to_purge,
+					dropped_samples_from_overflow);
+			taskYIELD();
+			continue;
 		}
 
 		if (uxQueueMessagesWaiting(js_queue) < NETWORK_SEND_FIELD_SIZE) {
@@ -193,11 +216,12 @@ void process_request_thread(void *p)
 				}
 			}
 
-				// break if client closed connection /
-				if (nread <= 0){
-					break;
-				}
-			}else{
+					// read() == 0 means the peer performed an orderly TCP close.
+					if (nread == 0){
+						uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+						break;
+					}
+				}else{
 				break;
 			}
 		}

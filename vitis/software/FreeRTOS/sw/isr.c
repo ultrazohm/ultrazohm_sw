@@ -37,7 +37,8 @@ extern uint32_t javascope_data_status;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
-int js_queue_full = 0;
+volatile int js_queue_overflow_dropped_samples = 0;
+volatile int js_queue_purge_requested = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
 
@@ -73,8 +74,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 		if (queue_status == errQUEUE_FULL)
 		{
-			js_queue_full++;
-			// uz_printf("OsziData_queue is full\r\n");
+			js_queue_overflow_dropped_samples++;
+			js_queue_purge_requested = 1;
 		}
 		// info: queue is purged when new connection is established in 'ethernet.c'
 	}

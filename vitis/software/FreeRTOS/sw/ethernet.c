@@ -203,9 +203,8 @@ void process_request_thread(void *p)
 		}
 
 	// close connection
-	if (js_release_active_client_if_owner(clientfd) == pdTRUE) {
-		close(clientfd);
-	}
+	(void)js_release_active_client_if_owner(clientfd);
+	close(clientfd);
 	vTaskDelete(NULL);
 }
 
@@ -246,9 +245,7 @@ void application_thread()
 
 			const int old_clientfd = js_replace_active_client(new_clientfd);
 			if ((old_clientfd != 0) && (old_clientfd != new_clientfd)) {
-				uz_printf("APU: Replacing old Javascope client with connection #%lu\r\n", (unsigned long)connection_count);
-				lwip_shutdown(old_clientfd, SHUT_RDWR);
-				close(old_clientfd);
+				uz_printf("APU: Replacing old Javascope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
 			}
 
 			sys_thread_new("echos", process_request_thread,

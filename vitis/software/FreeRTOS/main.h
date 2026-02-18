@@ -47,7 +47,7 @@ extern "C" {
 
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
-#define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
+#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U 
 
 
 // ========== Definitions =========================================================================

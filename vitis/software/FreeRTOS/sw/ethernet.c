@@ -26,7 +26,7 @@
 extern QueueHandle_t js_queue;
 extern struct APU_to_RPU_t ControlData;
 
-int js_connection_established = 0;
+volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 
 
@@ -64,6 +64,11 @@ void process_request_thread(void *p)
 	xQueueReset(js_queue); //purge queue once new connection is established
 
 	while (1) {
+
+		if (uxQueueMessagesWaiting(js_queue) < NETWORK_SEND_FIELD_SIZE) {
+			taskYIELD();
+			continue;
+		}
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 

@@ -30,7 +30,7 @@
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
 struct APU_to_RPU_t ControlData;
-extern int js_connection_established;
+extern volatile int js_connection_established;
 
 // cf. main.c
 extern uint32_t javascope_data_status;

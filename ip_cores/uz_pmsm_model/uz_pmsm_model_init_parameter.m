@@ -7,7 +7,7 @@ L_d=0.021;
 L_q=0.0014;
 psi_pm=0.00;
 polepair=2;
-ts=1/10e5;
+ts=1/5e5;
 I_max = 80;
 
 % Controller parameter

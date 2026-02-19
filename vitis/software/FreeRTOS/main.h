@@ -48,6 +48,7 @@ extern "C" {
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
 #define JS_QUEUE_RECEIVE_TICKS2WAIT 0U 
+#define JS_CONTROL_QUEUE_SIZE_ELEMENTS 256U
 
 
 // ========== Definitions =========================================================================

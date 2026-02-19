@@ -37,6 +37,7 @@ extern uint32_t javascope_data_status;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
+QueueHandle_t js_control_queue;
 volatile int js_queue_overflow_dropped_samples = 0;
 volatile int js_queue_purge_requested = 0;
 
@@ -63,8 +64,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 
-	// flush cache of shared memory for javascope data
-	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	// R5 writes this shared region; invalidate A53 cache lines before reading it.
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -82,6 +83,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// Maintain APU-local copy of status word (cf. main.c)
 	javascope_data_status = javascope_data->status;
+
+	// Consume at most one pending control command per ISR to preserve ordering.
+	(void)xQueueReceiveFromISR(js_control_queue, &ControlData, &xHigherPriorityTaskWoken);
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
@@ -117,7 +121,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// Not required in the current design: the Ethernet task polls queue depth and
 	// uses non-blocking queue receive, so it is usually not blocked waiting to be
 	// woken by this ISR.
-	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 
@@ -173,6 +177,13 @@ int Initialize_ISR(){
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
+		return XST_FAILURE;
+	}
+
+	// create queue for buffering JavaScope control commands -> ISR/RPU path
+	js_control_queue = xQueueCreate(JS_CONTROL_QUEUE_SIZE_ELEMENTS, sizeof(struct APU_to_RPU_t));
+	if (js_control_queue == NULL){
+		uz_printf("APU: Error: Control queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 

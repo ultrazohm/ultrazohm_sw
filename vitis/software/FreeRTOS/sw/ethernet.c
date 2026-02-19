@@ -14,6 +14,7 @@
 ******************************************************************************/
 
 #include <string.h>
+#include <errno.h>
 #include "lwip/sockets.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"
@@ -24,9 +25,11 @@
 #include "../main.h"
 
 extern QueueHandle_t js_queue;
-extern struct APU_to_RPU_t ControlData;
+extern QueueHandle_t js_control_queue;
 extern volatile int js_queue_overflow_dropped_samples;
 extern volatile int js_queue_purge_requested;
+
+#define JS_TX_STALL_TIMEOUT_TICKS pdMS_TO_TICKS(200U)
 
 volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -100,8 +103,12 @@ void process_request_thread(void *p)
 	int clientfd = (int)p;
 	int nread = 0;
 	int nwrote = 0;
+	size_t tx_pending_len = 0U;
+	size_t tx_pending_offset = 0U;
+	TickType_t tx_last_progress_tick = xTaskGetTickCount();
 
 	xQueueReset(js_queue); //purge queue once new connection is established
+	xQueueReset(js_control_queue); // purge pending control commands from old connection
 	taskENTER_CRITICAL();
 	js_queue_overflow_dropped_samples = 0;
 	js_queue_purge_requested = 0;
@@ -109,6 +116,59 @@ void process_request_thread(void *p)
 
 	while (1) {
 		if (js_is_active_client(clientfd) == pdFALSE) {
+			break;
+		}
+
+		// Probe socket state every loop iteration, independent of queue level.
+		// This detects remote close quickly and prevents prolonged queue growth.
+		char probe_byte = 0;
+		int probe_nread = lwip_recv(clientfd, &probe_byte, 1, MSG_PEEK | MSG_DONTWAIT);
+		if (probe_nread == 0) {
+			uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+			break;
+		}
+		if (probe_nread < 0) {
+			const int probe_error = errno;
+			if ((probe_error != 0) && (probe_error != EAGAIN) && (probe_error != EWOULDBLOCK)) {
+				uz_printf("APU: %s: socket %d probe failed (errno=%d), closing Javascope socket\r\n", __FUNCTION__, clientfd, probe_error);
+				break;
+			}
+		}
+
+		// Always service incoming control stream, independent of TX readiness.
+		nread = lwip_recv(clientfd, (char *)recv_buf + recv_buf_fill, TCPPACKETSIZE - recv_buf_fill, MSG_DONTWAIT);
+		if (nread < 0) {
+			if (js_is_active_client(clientfd) == pdFALSE) {
+				break;
+			}
+			const int socket_error = errno;
+			// On some lwIP ports errno may remain 0 for non-blocking "try again".
+			if ((socket_error != 0) && (socket_error != EAGAIN) && (socket_error != EWOULDBLOCK)) {
+				uz_printf("APU: %s: error reading from socket %d (errno=%d), closing Javascope socket\r\n", __FUNCTION__, clientfd, socket_error);
+				break;
+			}
+		}
+		if (nread > 0) {
+			recv_buf_fill += (size_t)nread;
+
+			// Parse all complete control messages in the TCP stream.
+			size_t complete_bytes = (recv_buf_fill / control_data_bytes) * control_data_bytes;
+			for (size_t offset = 0U; offset < complete_bytes; offset += control_data_bytes) {
+				memcpy(&received_data, recv_buf + offset, control_data_bytes);
+				if (xQueueSendToBack(js_control_queue, &received_data, 0U) != pdPASS) {
+					uz_printf("APU: Control queue full, dropping command id=%lu\r\n", (unsigned long)received_data.id);
+				}
+			}
+
+			// Keep partial trailing bytes for the next read().
+			recv_buf_fill -= complete_bytes;
+			if (recv_buf_fill > 0U) {
+				memmove(recv_buf, recv_buf + complete_bytes, recv_buf_fill);
+			}
+		}
+		// read() == 0 means the peer performed an orderly TCP close.
+		if (nread == 0){
+			uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
 			break;
 		}
 
@@ -122,108 +182,98 @@ void process_request_thread(void *p)
 			taskEXIT_CRITICAL();
 
 			xQueueReset(js_queue);
-			uz_printf("APU: Javascope queue overflow -> purged %lu queued + %d overflow-dropped\r\n",
+			tx_pending_len = 0U;
+			tx_pending_offset = 0U;
+			uz_printf("APU: Javascope queue overflow -> purged %lu queued + %d overflow-dropped samples\r\n",
 					(unsigned long)queued_samples_to_purge,
 					dropped_samples_from_overflow);
 			taskYIELD();
 			continue;
 		}
 
-		if (uxQueueMessagesWaiting(js_queue) < NETWORK_SEND_FIELD_SIZE) {
-			taskYIELD();
-			continue;
-		}
+			if (tx_pending_len == 0U) {
+				if (uxQueueMessagesWaiting(js_queue) < NETWORK_SEND_FIELD_SIZE) {
+					taskYIELD();
+					continue;
+				}
 
-		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
+				for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
-			// Take one element from queue
-			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
+					// Take one element from queue
+					// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
+					xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
-			// copy data into nwsend struct
-			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
-			nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
-			nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
-			nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
-			nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
-			nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
-			nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];
-			nwsend.val_08[i] 	= javascope_data_sending.scope_ch[7];
-			nwsend.val_09[i] 	= javascope_data_sending.scope_ch[8];
-			nwsend.val_10[i] 	= javascope_data_sending.scope_ch[9];
-			nwsend.val_11[i]  	= javascope_data_sending.scope_ch[10];
-			nwsend.val_12[i]  	= javascope_data_sending.scope_ch[11];
-			nwsend.val_13[i]  	= javascope_data_sending.scope_ch[12];
-			nwsend.val_14[i] 	= javascope_data_sending.scope_ch[13];
-			nwsend.val_15[i] 	= javascope_data_sending.scope_ch[14];
-			nwsend.val_16[i] 	= javascope_data_sending.scope_ch[15];
-			nwsend.val_17[i] 	= javascope_data_sending.scope_ch[16];
-			nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
-			nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
-			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
-			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
-			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
-		}
-		nwsend.status = javascope_data_sending.status;
+					// copy data into nwsend struct
+					nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
+					nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
+					nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
+					nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
+					nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
+					nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
+					nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];
+					nwsend.val_08[i] 	= javascope_data_sending.scope_ch[7];
+					nwsend.val_09[i] 	= javascope_data_sending.scope_ch[8];
+					nwsend.val_10[i] 	= javascope_data_sending.scope_ch[9];
+					nwsend.val_11[i]  	= javascope_data_sending.scope_ch[10];
+					nwsend.val_12[i]  	= javascope_data_sending.scope_ch[11];
+					nwsend.val_13[i]  	= javascope_data_sending.scope_ch[12];
+					nwsend.val_14[i] 	= javascope_data_sending.scope_ch[13];
+					nwsend.val_15[i] 	= javascope_data_sending.scope_ch[14];
+					nwsend.val_16[i] 	= javascope_data_sending.scope_ch[15];
+					nwsend.val_17[i] 	= javascope_data_sending.scope_ch[16];
+					nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
+					nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
+					nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
+					nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
+					nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
+				}
+				// TODO(robust framing): prepend a small header (magic, payload_len, seq, crc)
+				// so the receiver can verify framing, detect loss, and re-sync after reconnects.
+				nwsend.status = javascope_data_sending.status;
+				tx_pending_len = sizeof(nwsend);
+				tx_pending_offset = 0U;
+			}
 
-		// At this point, Ethernet Package is full and ready to be sent
-		i_LifeCheck_process_Ethernet++;
-		if(i_LifeCheck_process_Ethernet > 2500){
-			i_LifeCheck_process_Ethernet =0;
-		}
-
-		// write the data -> handle request /
-		// The data is sent here
-			if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
+			nwrote = lwip_send(clientfd,
+					((const char *)&nwsend) + tx_pending_offset,
+					tx_pending_len - tx_pending_offset,
+					MSG_DONTWAIT);
+			if (nwrote < 0) {
 				if (js_is_active_client(clientfd) == pdFALSE) {
 					break;
 				}
-				uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
-				__FUNCTION__, nread, nwrote);
-				uz_printf("APU: Closing socket %d\r\n", clientfd);
+				const int socket_error = errno;
+				// On some lwIP ports errno may remain 0 for non-blocking "try again".
+				if ((socket_error != 0) && (socket_error != EAGAIN) && (socket_error != EWOULDBLOCK)) {
+					uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d (errno=%d)\r\n",
+							__FUNCTION__, nread, nwrote, socket_error);
+					uz_printf("APU: Closing socket %d\r\n", clientfd);
+					break;
+				}
+				taskYIELD();
+			} else if (nwrote == 0) {
+				uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+				break;
+			} else {
+				tx_pending_offset += (size_t)nwrote;
+				tx_last_progress_tick = xTaskGetTickCount();
+				if (tx_pending_offset >= tx_pending_len) {
+					tx_pending_len = 0U;
+					tx_pending_offset = 0U;
+
+					// At this point, one full Ethernet packet has been transmitted.
+					i_LifeCheck_process_Ethernet++;
+					if(i_LifeCheck_process_Ethernet > 2500){
+						i_LifeCheck_process_Ethernet =0;
+					}
+				}
+			}
+			if ((tx_pending_len > 0U) &&
+				((xTaskGetTickCount() - tx_last_progress_tick) > JS_TX_STALL_TIMEOUT_TICKS)) {
+				uz_printf("APU: TX stalled on socket %d, closing stale Javascope socket\r\n", clientfd);
 				break;
 			}
 			asm("nop");
-
-		// read a max of RECV_BUF_SIZE bytes from socket /
-		if (nwrote > 0){
-				// read a max of RECV_BUF_SIZE bytes from socket /
-				nread = read(clientfd, (char *)recv_buf + recv_buf_fill, TCPPACKETSIZE - recv_buf_fill);
-				if (nread < 0) {
-					if (js_is_active_client(clientfd) == pdFALSE) {
-						break;
-					}
-					uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
-					break;
-				}
-			//asm(" nop");
-			if (nread > 0) {
-				recv_buf_fill += (size_t)nread;
-
-				// Parse all complete control messages in the TCP stream.
-				size_t complete_bytes = (recv_buf_fill / control_data_bytes) * control_data_bytes;
-				for (size_t offset = 0U; offset < complete_bytes; offset += control_data_bytes) {
-					memcpy(&received_data, recv_buf + offset, control_data_bytes);
-					taskENTER_CRITICAL();
-					ControlData = received_data;
-					taskEXIT_CRITICAL();
-				}
-
-				// Keep partial trailing bytes for the next read().
-				recv_buf_fill -= complete_bytes;
-				if (recv_buf_fill > 0U) {
-					memmove(recv_buf, recv_buf + complete_bytes, recv_buf_fill);
-				}
-			}
-
-					// read() == 0 means the peer performed an orderly TCP close.
-					if (nread == 0){
-						uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
-						break;
-					}
-				}else{
-				break;
-			}
 		}
 
 	// close connection

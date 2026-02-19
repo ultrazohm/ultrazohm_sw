@@ -132,7 +132,7 @@ void ISR_Control(void *data)
 //	FOC_FCF_MPtr->inputs->FOC_Enable_PWM   = ctrl_data.fcf_in.FOC_Enable;
 	FOC_FCF_MPtr->inputs->bus_BSW_FCF = ctrl_data.bus_BSW_FCF;
 	FOC_FCF_MPtr->inputs->bus_SCF     = ctrl_data.bus_SCF;
-	FOC_FCF_MPtr->inputs->bus_SMF     = ctrl_data.bus_SMF;
+	FOC_FCF_MPtr->inputs->bus_SCF_p     = ctrl_data.bus_SMF;
 
 	FOC_FCF_step(FOC_FCF_MPtr);
 

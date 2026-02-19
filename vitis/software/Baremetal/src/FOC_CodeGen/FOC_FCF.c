@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.64
+ * Model version                  : 5.43
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Feb 19 10:17:57 2026
+ * C/C++ source code generated on : Thu Feb 19 15:24:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -94,7 +94,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    */
   if (FOC_FCF_P.FOC_SELECT_Mode_Intern == 0) {
     /* MultiPortSwitch: '<S1>/ModeSwitch' */
-    FOC_FCF_B->FOC_Mode_Request = FOC_FCF_U->bus_SMF.FOC_Mode;
+    FOC_FCF_B->FOC_Mode_Request = FOC_FCF_U->bus_SCF_p.FOC_Mode;
   } else {
     /* MultiPortSwitch: '<S1>/ModeSwitch' incorporates:
      *  Constant: '<S1>/FOC_Mode_Intern'
@@ -112,13 +112,13 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Logic: '<S57>/Logical Operator2' */
   FOC_FCF_B->LogicalOperator2 = (FOC_FCF_B->Compare_e &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.FOC_Enable_PWM != 0.0F));
 
   /* Logic: '<S57>/Logical Operator4' incorporates:
    *  Constant: '<S57>/Reset_UV_Error'
    */
   FOC_FCF_B->LogicalOperator4 = ((FOC_FCF_P.FOC_RESET_UV_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.global_reset_errors != 0.0F));
 
   /* RelationalOperator: '<S80>/Compare' incorporates:
    *  Constant: '<S80>/Constant'
@@ -191,7 +191,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S57>/Reset_OV_Error'
    */
   FOC_FCF_B->LogicalOperator3 = ((FOC_FCF_P.FOC_RESET_OV_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.global_reset_errors != 0.0F));
 
   /* RelationalOperator: '<S79>/Compare' incorporates:
    *  Constant: '<S79>/Constant'
@@ -279,7 +279,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S56>/Reset_OC_Error'
    */
   FOC_FCF_B->LogicalOperator3_i = ((FOC_FCF_P.FOC_RESET_OC_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.global_reset_errors != 0.0F));
 
   /* RelationalOperator: '<S63>/Compare' incorporates:
    *  Constant: '<S63>/Constant'
@@ -359,7 +359,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S1>/Enable'
    */
   FOC_FCF_B->LogicalOperator1 = ((FOC_FCF_P.FOC_Enable != 0.0F) &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.FOC_Enable_PWM != 0.0F));
 
   /* Logic: '<S1>/Logical Operator' */
   FOC_FCF_B->LogicalOperator = (FOC_FCF_B->LogicalOperator2_a &&
@@ -2275,7 +2275,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S12>/Reset_OS_Error'
    */
   FOC_FCF_B->LogicalOperator3_p = ((FOC_FCF_P.FOC_RESET_OS_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.global_reset_errors != 0.0F));
 
   /* RelationalOperator: '<S84>/Compare' incorporates:
    *  Constant: '<S84>/Constant'
@@ -2961,7 +2961,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Logic: '<S8>/Enable_PWM_' */
   FOC_FCF_B->FOC_Enable_PWM = (FOC_FCF_B->LogicalOperator3_pp &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    (FOC_FCF_U->bus_SCF_p.FOC_Enable_PWM != 0.0F));
 
   /* Logic: '<S8>/Logical Operator6' */
   FOC_FCF_B->FCF_Error = !FOC_FCF_B->LogicalOperator3_pp;

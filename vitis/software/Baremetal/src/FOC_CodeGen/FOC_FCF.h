@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.64
+ * Model version                  : 5.43
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Feb 19 10:17:57 2026
+ * C/C++ source code generated on : Thu Feb 19 15:24:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -518,7 +518,7 @@ typedef struct {
 typedef struct {
   bus_BSW_FCF_t bus_BSW_FCF;           /* '<Root>/bus_BSW_FCF' */
   bus_SCF_t bus_SCF;                   /* '<Root>/bus_SCF' */
-  bus_SMF_t bus_SMF;                   /* '<Root>/bus_SMF' */
+  bus_SMF_t bus_SCF_p;                 /* '<Root>/bus_SMF' */
 } ExtU_FOC_FCF_T;
 
 /* External outputs (root outports fed by signals with default storage) */

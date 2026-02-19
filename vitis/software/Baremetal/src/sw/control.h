@@ -31,56 +31,11 @@ extern uint8_t Control_FLAG_10ms;
 extern uint8_t Control_FLAG_100ms;
 
 typedef struct {
-	struct {
-		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-		real32_T I_phA[9];                   /* '<Root>/I_ph [A]' */
-		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
-		real32_T phi_elrad;                  /* '<Root>/phi_el [rad]' */
-		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
-		real32_T FOC_Enable;                 /* '<Root>/FOC_Enable' */
-		real32_T w_el_Ref_IfStarter;         /* '<Root>/w_el_Ref_IfStarter' */
-		real32_T IfStarter_Active;           /* '<Root>/IfStarter_Active' */
-	} fcf_in;
-	struct {
-		real32_T DutyCycles01[9];            /* '<Root>/DutyCycles [0..1]' */
-		real32_T I_dq_ActA[6];               /* '<Root>/I_dq_Act [A]' */
-		real32_T ModInd[3];                  /* '<Root>/ModInd' */
-		real32_T w_elrads;                   /* '<Root>/w_el [rad//s]' */
-		real32_T FOC_Error;                  /* '<Root>/FOC_Error' */
-	} fcf_out;
-	struct {
-		real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-		real32_T ModInd[3];                  /* '<Root>/ModInd' */
-		real32_T w_el_rad_s;                 /* '<Root>/w_el [rad//s]' */
-		real32_T I_dq_Act[6];                /* '<Root>/I_dq_Act [A]' */
-		real32_T MotTempdegC;                /* '<Root>/MotTemp [degC]' */
-		real32_T InvTempdegC;                /* '<Root>/InvTemp [degC]' */
-		real32_T EXT_Torque_Request;         /* '<Root>/ExtTorqReq [Nm]' */
-		real32_T SPEED_CTRL_Enable;          /* '<Root>/SpeedCtrl_Enable' */
-		real32_T ExtTorqLimNm[2];            /* '<Root>/ExtTorqLim [Nm]' */
-		real32_T EXT_Speed_Request;          /* '<Root>/ExtSpeedReq [rpm]' */
-	} scf_in;
-	struct {
-		real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
-		real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
-		real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
-		real32_T n_Actrpm;                   /* '<Root>/n_Act [rpm]' */
-	} scf_out;
-	struct {
-		real32_T EXT_State_Request;          /* '<Root>/<EXT_State_Request>' */
-		real32_T EXT_Torque_Request;         /* '<Root>/<EXT_Torque_Request>' */
-		real32_T EXT_Speed_Request;          /* '<Root>/<EXT_Speed_Request>' */
-		boolean_T FastCtrl_Error;            /* '<Root>/<FastCtrl_Error>' */
-		boolean_T EXT_KL15_PG;               /* '<Root>/EXT_KL15_PG' */
-	} smf_in;
-	struct {
-		real32_T SysStateAct;                /* '<Root>/SysStateAct' */
-		real32_T FOC_Mode;                   /* '<Root>/FOC_Mode' */
-		real32_T StateFOC;                   /* '<Root>/StateFOC' */
-		real32_T FOC_Enable_PWM;             /* '<Root>/FOC_Enable_PWM' */
-		real32_T global_reset_errors;        /* '<Root>/global_reset_errors' */
-		real32_T SPEED_CTRL_Enable;          /* '<Root>/SPEED_CTRL_Enable' */
-	} smf_out;
+	bus_FCF_t bus_FCF;                   /* '<Root>/bus_FCF' */
+	bus_BSW_FCF_t bus_BSW_FCF;           /* '<Root>/bus_BSW_FCF' */
+	bus_SCF_t bus_SCF;                   /* '<Root>/bus_SCF' */
+	bus_SMF_t bus_SMF;                   /* '<Root>/bus_SMF' */
+	bus_BSW_SMF_t bus_BSW_SMF;           /* '<Root>/bus_BSW_SCF' */
 } ctrl_data_t;
 
 extern ctrl_data_t ctrl_data;

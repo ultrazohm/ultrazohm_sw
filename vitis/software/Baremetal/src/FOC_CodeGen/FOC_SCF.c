@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.64
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:45 2026
+ * C/C++ source code generated on : Thu Feb 19 10:18:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,8 +21,15 @@
 #include <math.h>
 #include "rt_nonfinite.h"
 #include "rtwtypes.h"
+#include "FOC_SCF_types.h"
 #include <string.h>
 #include "FOC_SCF_private.h"
+
+const bus_SCF_t FOC_SCF_rtZbus_SCF_t = { { 0.0F, 0.0F },/* I_dq_Ref */
+  0.0F,                                /* TorqueEst */
+  0.0F,                                /* TorqueRefDerated */
+  0.0F                                 /* n_Act */
+};
 
 real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
   table[], uint32_T maxIndex)
@@ -95,6 +102,13 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   real32_T u2;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_SCF' */
+  /* Product: '<S12>/delta rise limit' incorporates:
+   *  Constant: '<S11>/Constant6'
+   *  Constant: '<S12>/Constant6'
+   */
+  FOC_SCF_B->deltariselimit_m = (real32_T)
+    (FOC_SCF_P.FOC_LIMIT_Idq_Ref_SlewRate_Up * FOC_SCF_P.Constant6_Value);
+
   /* Bias: '<S5>/Bias' incorporates:
    *  Constant: '<S2>/FOC_ENABLE_Idq_Ref'
    */
@@ -135,12 +149,12 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
    *  Constant: '<S7>/Constant6'
    */
   FOC_SCF_B->deltariselimit_o = (real32_T)
-    (FOC_SCF_P.FOC_LIMIT_Torque_Ref_SlewRate_Up * FOC_SCF_P.Constant6_Value);
+    (FOC_SCF_P.FOC_LIMIT_Torque_Ref_SlewRate_Up * FOC_SCF_P.Constant6_Value_e);
 
   /* Outputs for Enabled SubSystem: '<S1>/SPEED_CONTROLLER' incorporates:
    *  EnablePort: '<S3>/Enable'
    */
-  if (FOC_SCF_U->SPEED_CTRL_Enable > 0.0F) {
+  if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable > 0.0F) {
     if (!FOC_SCF_DW->SPEED_CONTROLLER_MODE) {
       /* InitializeConditions for UnitDelay: '<S29>/Delay Input2'
        *
@@ -173,7 +187,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
       FOC_SCF_B->n_Ref_Source = FOC_SCF_P.SPEED_CTRL_MANUAL_n_RPM;
     } else {
       /* MultiPortSwitch: '<S3>/n_Ref_Source' */
-      FOC_SCF_B->n_Ref_Source = FOC_SCF_U->EXT_Speed_Request;
+      FOC_SCF_B->n_Ref_Source = FOC_SCF_U->bus_BSW_SMF.EXT_Speed_Request;
     }
 
     /* End of MultiPortSwitch: '<S3>/n_Ref_Source' */
@@ -272,7 +286,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     FOC_SCF_B->w_el_Ref_SpeedCtrl = FOC_SCF_P.RPMw_el_Gain * FOC_SCF_B->n_Ref;
 
     /* Sum: '<S3>/Add' */
-    FOC_SCF_B->Add_e = FOC_SCF_B->w_el_Ref_SpeedCtrl - FOC_SCF_U->w_el_rad_s;
+    FOC_SCF_B->Add_e = FOC_SCF_B->w_el_Ref_SpeedCtrl - FOC_SCF_U->bus_FCF.w_el;
 
     /* Product: '<S3>/Product6' incorporates:
      *  Constant: '<S3>/Constant14'
@@ -300,8 +314,10 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
      case 1:
       /* MultiPortSwitch: '<S3>/TorqLimitSource' */
-      FOC_SCF_B->TorqLimitSource[0] = FOC_SCF_U->ExtTorqLimNm[0];
-      FOC_SCF_B->TorqLimitSource[1] = FOC_SCF_U->ExtTorqLimNm[1];
+      FOC_SCF_B->TorqLimitSource[0] =
+        FOC_SCF_U->bus_BSW_SMF.EXT_Torque_Limit_Pos;
+      FOC_SCF_B->TorqLimitSource[1] =
+        FOC_SCF_U->bus_BSW_SMF.EXT_Torque_Limit_Neg;
       break;
 
      default:
@@ -408,10 +424,11 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     FOC_SCF_B->Add1 = FOC_SCF_B->Divide + FOC_SCF_B->UnitDelay_k;
 
     /* Product: '<S3>/Product' */
-    FOC_SCF_B->Product_p = FOC_SCF_B->Add1 * FOC_SCF_U->SPEED_CTRL_Enable;
+    FOC_SCF_B->Product_p = FOC_SCF_B->Add1 *
+      FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable;
 
     /* Switch: '<S3>/Switch1' */
-    if (FOC_SCF_U->SPEED_CTRL_Enable > FOC_SCF_P.Switch1_Threshold) {
+    if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable > FOC_SCF_P.Switch1_Threshold) {
       /* Switch: '<S3>/Switch1' */
       FOC_SCF_B->M_Ref_SpeedCtrl = FOC_SCF_B->Switch2_b;
     } else {
@@ -440,13 +457,13 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* End of Outputs for SubSystem: '<S1>/SPEED_CONTROLLER' */
 
   /* MultiPortSwitch: '<S1>/TorqRef_Source' */
-  if ((int32_T)FOC_SCF_U->SPEED_CTRL_Enable == 0) {
+  if ((int32_T)FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable == 0) {
     /* Switch: '<S1>/Switch2' incorporates:
      *  Constant: '<S1>/Constant2'
      */
     if (FOC_SCF_P.FOC_SELECT_ExtTrqReq > FOC_SCF_P.Switch2_Threshold) {
       /* Switch: '<S1>/Switch2' */
-      FOC_SCF_B->Switch2_d = FOC_SCF_U->EXT_Torque_Request;
+      FOC_SCF_B->Switch2_d = FOC_SCF_U->bus_BSW_SMF.EXT_Torque_Request;
     } else {
       /* Switch: '<S1>/Switch2' incorporates:
        *  Constant: '<S1>/Constant'
@@ -506,7 +523,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
    *  Constant: '<S7>/Constant7'
    */
   FOC_SCF_B->deltafalllimit_a = (real32_T)
-    (FOC_SCF_P.FOC_LIMIT_Torque_Ref_SlewRate_Down * FOC_SCF_P.Constant6_Value);
+    (FOC_SCF_P.FOC_LIMIT_Torque_Ref_SlewRate_Down * FOC_SCF_P.Constant6_Value_e);
 
   /* RelationalOperator: '<S21>/UpperRelop' */
   FOC_SCF_B->UpperRelop = (FOC_SCF_B->UkYk1_k < FOC_SCF_B->deltafalllimit_a);
@@ -628,10 +645,12 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* UnitDelay: '<S9>/TorqCtrlDelay' */
   FOC_SCF_B->TorqCtrlDelay = FOC_SCF_DW->TorqCtrlDelay_DSTATE;
 
-  /* MinMax: '<S2>/MinMax' */
-  u0 = FOC_SCF_U->ModInd[0];
-  u0 = fmaxf(u0, FOC_SCF_U->ModInd[1]);
-  u0 = fmaxf(u0, FOC_SCF_U->ModInd[2]);
+  /* MinMax: '<S2>/MinMax' incorporates:
+   *  Inport: '<Root>/bus_FCF'
+   */
+  u0 = FOC_SCF_U->bus_FCF.ModInd[0];
+  u0 = fmaxf(u0, FOC_SCF_U->bus_FCF.ModInd[1]);
+  u0 = fmaxf(u0, FOC_SCF_U->bus_FCF.ModInd[2]);
 
   /* MinMax: '<S2>/MinMax' */
   FOC_SCF_B->MinMax_n = u0;
@@ -666,18 +685,8 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
   /* End of Saturate: '<S9>/Saturation' */
 
-  /* Outport: '<Root>/TorqueRefDerated [Nm]' incorporates:
-   *  Product: '<S9>/TorqCtrlProduct'
-   */
-  FOC_SCF_Y->TorqueRefDeratedNm = FOC_SCF_B->Switch_l * FOC_SCF_B->Saturation_d;
-
-  /* UnitDelay: '<S12>/Delay Input2'
-   *
-   * Block description for '<S12>/Delay Input2':
-   *
-   *  Store in Global RAM
-   */
-  FOC_SCF_B->Yk1_b = FOC_SCF_DW->DelayInput2_DSTATE_h;
+  /* Product: '<S9>/TorqCtrlProduct' */
+  FOC_SCF_B->TorqCtrlProduct = FOC_SCF_B->Switch_l * FOC_SCF_B->Saturation_d;
 
   /* MultiPortSwitch: '<S5>/Multiport Switch' incorporates:
    *  Constant: '<S5>/Constant3'
@@ -706,7 +715,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
    case 4:
     /* Gain: '<S5>/Gain' */
-    FOC_SCF_B->Gain_i = FOC_SCF_P.Gain_Gain * FOC_SCF_Y->TorqueRefDeratedNm;
+    FOC_SCF_B->Gain_i = FOC_SCF_P.Gain_Gain * FOC_SCF_B->TorqCtrlProduct;
 
     /* Abs: '<S10>/Abs2' */
     FOC_SCF_B->Abs2_l = fabsf(FOC_SCF_B->Gain_i);
@@ -751,6 +760,14 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
   /* End of MultiPortSwitch: '<S5>/Multiport Switch1' */
 
+  /* UnitDelay: '<S12>/Delay Input2'
+   *
+   * Block description for '<S12>/Delay Input2':
+   *
+   *  Store in Global RAM
+   */
+  FOC_SCF_B->Yk1_b = FOC_SCF_DW->DelayInput2_DSTATE_h;
+
   /* Sum: '<S12>/Difference Inputs1'
    *
    * Block description for '<S12>/Difference Inputs1':
@@ -758,13 +775,6 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
    *  Add in CPU
    */
   FOC_SCF_B->UkYk1_l = FOC_SCF_B->MultiportSwitch1_o - FOC_SCF_B->Yk1_b;
-
-  /* Product: '<S12>/delta rise limit' incorporates:
-   *  Constant: '<S11>/Constant6'
-   *  Constant: '<S12>/Constant6'
-   */
-  FOC_SCF_B->deltariselimit_m = (real32_T)
-    (FOC_SCF_P.FOC_LIMIT_Idq_Ref_SlewRate_Up * FOC_SCF_P.Constant6_Value_d);
 
   /* RelationalOperator: '<S13>/LowerRelop1' */
   FOC_SCF_B->LowerRelop1_i = (FOC_SCF_B->UkYk1_l > FOC_SCF_B->deltariselimit_m);
@@ -774,7 +784,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
    *  Constant: '<S12>/Constant6'
    */
   FOC_SCF_B->deltafalllimit_o = (real32_T)
-    (FOC_SCF_P.FOC_LIMIT_Idq_Ref_SlewRate_Down * FOC_SCF_P.Constant6_Value_d);
+    (FOC_SCF_P.FOC_LIMIT_Idq_Ref_SlewRate_Down * FOC_SCF_P.Constant6_Value);
 
   /* RelationalOperator: '<S13>/UpperRelop' */
   FOC_SCF_B->UpperRelop_d = (FOC_SCF_B->UkYk1_l < FOC_SCF_B->deltafalllimit_o);
@@ -822,20 +832,20 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
   /* End of Switch: '<S11>/Switch2' */
 
-  /* Bias: '<S6>/Bias' incorporates:
-   *  Constant: '<S2>/FOC_ENABLE_Idq_Ref'
-   */
-  FOC_SCF_B->Bias_h = FOC_SCF_P.FOC_ENABLE_Idq_Ref + FOC_SCF_P.Bias_Bias_k;
-
-  /* Gain: '<S6>/Gain' */
-  FOC_SCF_B->Gain = FOC_SCF_P.Gain_Gain_d * FOC_SCF_Y->TorqueRefDeratedNm;
-
   /* Product: '<S18>/delta rise limit' incorporates:
    *  Constant: '<S17>/Constant6'
    *  Constant: '<S18>/Constant6'
    */
   FOC_SCF_B->deltariselimit = FOC_SCF_P.FOC_LIMIT_Idq_Ref_SlewRate_Up *
     FOC_SCF_P.Constant6_Value_f;
+
+  /* Bias: '<S6>/Bias' incorporates:
+   *  Constant: '<S2>/FOC_ENABLE_Idq_Ref'
+   */
+  FOC_SCF_B->Bias_h = FOC_SCF_P.FOC_ENABLE_Idq_Ref + FOC_SCF_P.Bias_Bias_k;
+
+  /* Gain: '<S6>/Gain' */
+  FOC_SCF_B->Gain = FOC_SCF_P.Gain_Gain_d * FOC_SCF_B->TorqCtrlProduct;
 
   /* Abs: '<S16>/Abs2' */
   FOC_SCF_B->Abs2 = fabsf(FOC_SCF_B->Gain);
@@ -877,7 +887,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
 
    case 2:
     /* Gain: '<S14>/Gain' */
-    FOC_SCF_B->Gain_e = FOC_SCF_P.Gain_Gain_n * FOC_SCF_Y->TorqueRefDeratedNm;
+    FOC_SCF_B->Gain_e = FOC_SCF_P.Gain_Gain_n * FOC_SCF_B->TorqCtrlProduct;
 
     /* Sum: '<S14>/Add' incorporates:
      *  Constant: '<S14>/Constant1'
@@ -1049,6 +1059,109 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* MinMax: '<S15>/MinMax1' */
   FOC_SCF_B->I_q_Ref_limited = u0;
 
+  /* SignalConversion generated from: '<S1>/Bus Creator' */
+  FOC_SCF_B->I_dq_Ref[0] = FOC_SCF_B->Switch2_ae;
+  FOC_SCF_B->I_dq_Ref[1] = FOC_SCF_B->I_q_Ref_limited;
+
+  /* MultiPortSwitch: '<S4>/Selectphicalc1' incorporates:
+   *  Constant: '<S4>/Constant4'
+   */
+  switch (FOC_SCF_P.FOC_SELECT_TorqEstMdl) {
+   case 0:
+    /* MultiPortSwitch: '<S4>/Selectphicalc1' incorporates:
+     *  Constant: '<S4>/Constant'
+     */
+    FOC_SCF_B->Selectphicalc1 = FOC_SCF_P.Constant_Value_n;
+    break;
+
+   case 1:
+    /* Product: '<S31>/Product3' incorporates:
+     *  Constant: '<S31>/FOC_Psi_PM'
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->Product3 = FOC_SCF_U->bus_FCF.I_dq_Act[5] * FOC_SCF_P.FOC_Psi_PM;
+
+    /* Sum: '<S31>/Sum' incorporates:
+     *  Constant: '<S31>/FOC_L_sd'
+     *  Constant: '<S31>/FOC_L_sq'
+     */
+    FOC_SCF_B->Sum_a = FOC_SCF_P.FOC_L_sd - FOC_SCF_P.FOC_L_sq;
+
+    /* Product: '<S31>/product_1' incorporates:
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->product_1 = FOC_SCF_B->Sum_a * FOC_SCF_U->bus_FCF.I_dq_Act[4] *
+      FOC_SCF_U->bus_FCF.I_dq_Act[5];
+
+    /* Sum: '<S31>/add3' */
+    FOC_SCF_B->add3 = FOC_SCF_B->product_1 + FOC_SCF_B->Product3;
+
+    /* Product: '<S31>/Product2' incorporates:
+     *  Constant: '<S31>/FOC_Psi_PM'
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->Product2 = FOC_SCF_U->bus_FCF.I_dq_Act[3] * FOC_SCF_P.FOC_Psi_PM;
+
+    /* Product: '<S31>/product_2' incorporates:
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->product_2 = FOC_SCF_B->Sum_a * FOC_SCF_U->bus_FCF.I_dq_Act[2] *
+      FOC_SCF_U->bus_FCF.I_dq_Act[3];
+
+    /* Sum: '<S31>/add2' */
+    FOC_SCF_B->add2 = FOC_SCF_B->product_2 + FOC_SCF_B->Product2;
+
+    /* Product: '<S31>/Product1' incorporates:
+     *  Constant: '<S31>/FOC_Psi_PM'
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->Product1_m = FOC_SCF_U->bus_FCF.I_dq_Act[1] *
+      FOC_SCF_P.FOC_Psi_PM;
+
+    /* Product: '<S31>/product' incorporates:
+     *  Inport: '<Root>/bus_FCF'
+     */
+    FOC_SCF_B->product = FOC_SCF_B->Sum_a * FOC_SCF_U->bus_FCF.I_dq_Act[0] *
+      FOC_SCF_U->bus_FCF.I_dq_Act[1];
+
+    /* Sum: '<S31>/add1' */
+    FOC_SCF_B->add1 = FOC_SCF_B->product + FOC_SCF_B->Product1_m;
+
+    /* Sum: '<S31>/Add' */
+    FOC_SCF_B->Add = (FOC_SCF_B->add1 + FOC_SCF_B->add2) + FOC_SCF_B->add3;
+
+    /* Gain: '<S31>/3*Z_p//2' */
+    FOC_SCF_B->uZ_p2 = FOC_SCF_P.uZ_p2_Gain * FOC_SCF_B->Add;
+
+    /* MultiPortSwitch: '<S4>/Selectphicalc1' */
+    FOC_SCF_B->Selectphicalc1 = FOC_SCF_B->uZ_p2;
+    break;
+
+   case 2:
+    /* MultiPortSwitch: '<S4>/Selectphicalc1' */
+    FOC_SCF_B->Selectphicalc1 = 0.0F;
+    break;
+
+   default:
+    /* MultiPortSwitch: '<S4>/Selectphicalc1' */
+    FOC_SCF_B->Selectphicalc1 = 0.0F;
+    break;
+  }
+
+  /* End of MultiPortSwitch: '<S4>/Selectphicalc1' */
+
+  /* Gain: '<S1>/[1//s] => [rpm]' */
+  FOC_SCF_B->n_Act = FOC_SCF_P.usrpm_Gain * FOC_SCF_U->bus_FCF.w_el;
+
+  /* BusCreator: '<S1>/Bus Creator' incorporates:
+   *  Outport: '<Root>/bus_SCF'
+   */
+  FOC_SCF_Y->bus_SCF.I_dq_Ref[0] = FOC_SCF_B->I_dq_Ref[0];
+  FOC_SCF_Y->bus_SCF.I_dq_Ref[1] = FOC_SCF_B->I_dq_Ref[1];
+  FOC_SCF_Y->bus_SCF.TorqueEst = FOC_SCF_B->Selectphicalc1;
+  FOC_SCF_Y->bus_SCF.TorqueRefDerated = FOC_SCF_B->TorqCtrlProduct;
+  FOC_SCF_Y->bus_SCF.n_Act = FOC_SCF_B->n_Act;
+
   /* Sum: '<S15>/Subtract' */
   FOC_SCF_B->FOC_IqDiff = FOC_SCF_B->Switch2_i - FOC_SCF_B->I_q_Ref_limited;
 
@@ -1056,12 +1169,13 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   FOC_SCF_B->UnitDelay_i = FOC_SCF_DW->UnitDelay_DSTATE_m;
 
   /* Gain: '<S8>/Gain1' */
-  FOC_SCF_B->FOC_MotTemp_PSM = FOC_SCF_P.Gain1_Gain_i * FOC_SCF_U->MotTempdegC;
+  FOC_SCF_B->FOC_MotTemp_PSM = FOC_SCF_P.Gain1_Gain_i *
+    FOC_SCF_U->bus_SMF.MaxMotTemp;
 
   /* RelationalOperator: '<S26>/Compare' incorporates:
    *  Constant: '<S26>/Constant'
    */
-  FOC_SCF_B->Compare = (uint8_T)(FOC_SCF_U->MotTempdegC <=
+  FOC_SCF_B->Compare = (uint8_T)(FOC_SCF_U->bus_SMF.MaxMotTemp <=
     FOC_SCF_P.FOC_LIMIT_Torque_Derating_Temp);
 
   /* Sum: '<S23>/Sum' incorporates:
@@ -1090,8 +1204,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     FOC_SCF_B->Sum1;
 
   /* Gain: '<S9>/Gain' */
-  FOC_SCF_B->Torq_Ref_PSM = FOC_SCF_P.Gain_Gain_j *
-    FOC_SCF_Y->TorqueRefDeratedNm;
+  FOC_SCF_B->Torq_Ref_PSM = FOC_SCF_P.Gain_Gain_j * FOC_SCF_B->TorqCtrlProduct;
 
   /* Gain: '<S9>/Gain1' */
   FOC_SCF_B->Torq_Ref_IqDiff = FOC_SCF_P.Gain1_Gain_c *
@@ -1140,26 +1253,13 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Sum: '<S9>/TorqCtrlSum1' */
   FOC_SCF_B->TorqCtrlSum1 = FOC_SCF_B->TorqCtrlSwitch3 + FOC_SCF_B->TorqCtrlSum4;
 
-  /* Switch: '<S1>/Switch1' incorporates:
-   *  Constant: '<S1>/0: P_Udc 1: Udc_measured'
-   */
-  if (FOC_SCF_P.SCF_SELECT_U_DC_INPUT > FOC_SCF_P.Switch1_Threshold_l) {
-    /* Switch: '<S1>/Switch1' */
-    FOC_SCF_B->U_DC_scf = FOC_SCF_U->U_DC;
-  } else {
-    /* Switch: '<S1>/Switch1' incorporates:
-     *  Constant: '<S1>/Udc2'
-     */
-    FOC_SCF_B->U_DC_scf = FOC_SCF_P.SCF_MANUAL_U_DC;
-  }
-
-  /* End of Switch: '<S1>/Switch1' */
-
   /* Sum: '<S4>/Subtract2' */
   u0 = -0.0F;
   for (i = 0; i < 6; i++) {
-    /* Product: '<S4>/Product' */
-    u1 = FOC_SCF_U->I_dq_Act[i];
+    /* Product: '<S4>/Product' incorporates:
+     *  Inport: '<Root>/bus_FCF'
+     */
+    u1 = FOC_SCF_U->bus_FCF.I_dq_Act[i];
 
     /* Product: '<S4>/Product' */
     u1 *= u1;
@@ -1181,88 +1281,8 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Gain: '<S4>/I_ph_rms' */
   FOC_SCF_B->I_ph_rms_Act = FOC_SCF_P.I_ph_rms_Gain * FOC_SCF_B->Sqrt_b;
 
-  /* MultiPortSwitch: '<S4>/Selectphicalc1' incorporates:
-   *  Constant: '<S4>/Constant4'
-   */
-  switch (FOC_SCF_P.FOC_SELECT_TorqEstMdl) {
-   case 0:
-    /* Outport: '<Root>/TorqueEst [Nm]' incorporates:
-     *  Constant: '<S4>/Constant'
-     */
-    FOC_SCF_Y->TorqueEstNm = FOC_SCF_P.Constant_Value_n;
-    break;
-
-   case 1:
-    /* Product: '<S31>/Product3' incorporates:
-     *  Constant: '<S31>/FOC_Psi_PM'
-     */
-    FOC_SCF_B->Product3 = FOC_SCF_U->I_dq_Act[5] * FOC_SCF_P.FOC_Psi_PM;
-
-    /* Sum: '<S31>/Sum' incorporates:
-     *  Constant: '<S31>/FOC_L_sd'
-     *  Constant: '<S31>/FOC_L_sq'
-     */
-    FOC_SCF_B->Sum_a = FOC_SCF_P.FOC_L_sd - FOC_SCF_P.FOC_L_sq;
-
-    /* Product: '<S31>/product_1' */
-    FOC_SCF_B->product_1 = FOC_SCF_B->Sum_a * FOC_SCF_U->I_dq_Act[4] *
-      FOC_SCF_U->I_dq_Act[5];
-
-    /* Sum: '<S31>/add3' */
-    FOC_SCF_B->add3 = FOC_SCF_B->product_1 + FOC_SCF_B->Product3;
-
-    /* Product: '<S31>/Product2' incorporates:
-     *  Constant: '<S31>/FOC_Psi_PM'
-     */
-    FOC_SCF_B->Product2 = FOC_SCF_U->I_dq_Act[3] * FOC_SCF_P.FOC_Psi_PM;
-
-    /* Product: '<S31>/product_2' */
-    FOC_SCF_B->product_2 = FOC_SCF_B->Sum_a * FOC_SCF_U->I_dq_Act[2] *
-      FOC_SCF_U->I_dq_Act[3];
-
-    /* Sum: '<S31>/add2' */
-    FOC_SCF_B->add2 = FOC_SCF_B->product_2 + FOC_SCF_B->Product2;
-
-    /* Product: '<S31>/Product1' incorporates:
-     *  Constant: '<S31>/FOC_Psi_PM'
-     */
-    FOC_SCF_B->Product1_m = FOC_SCF_U->I_dq_Act[1] * FOC_SCF_P.FOC_Psi_PM;
-
-    /* Product: '<S31>/product' */
-    FOC_SCF_B->product = FOC_SCF_B->Sum_a * FOC_SCF_U->I_dq_Act[0] *
-      FOC_SCF_U->I_dq_Act[1];
-
-    /* Sum: '<S31>/add1' */
-    FOC_SCF_B->add1 = FOC_SCF_B->product + FOC_SCF_B->Product1_m;
-
-    /* Sum: '<S31>/Add' */
-    FOC_SCF_B->Add = (FOC_SCF_B->add1 + FOC_SCF_B->add2) + FOC_SCF_B->add3;
-
-    /* Gain: '<S31>/3*Z_p//2' */
-    FOC_SCF_B->uZ_p2 = FOC_SCF_P.uZ_p2_Gain * FOC_SCF_B->Add;
-
-    /* Outport: '<Root>/TorqueEst [Nm]' */
-    FOC_SCF_Y->TorqueEstNm = FOC_SCF_B->uZ_p2;
-    break;
-
-   case 2:
-    /* Outport: '<Root>/TorqueEst [Nm]' */
-    FOC_SCF_Y->TorqueEstNm = 0.0F;
-    break;
-
-   default:
-    /* Outport: '<Root>/TorqueEst [Nm]' */
-    FOC_SCF_Y->TorqueEstNm = 0.0F;
-    break;
-  }
-
-  /* End of MultiPortSwitch: '<S4>/Selectphicalc1' */
-
   /* Gain: '<S4>/TorqEst_Nm' */
-  FOC_SCF_B->M_est = FOC_SCF_P.TorqEst_Nm_Gain * FOC_SCF_Y->TorqueEstNm;
-
-  /* Gain: '<S1>/[1//s] => [rpm]' */
-  FOC_SCF_B->n_Act = FOC_SCF_P.usrpm_Gain * FOC_SCF_U->w_el_rad_s;
+  FOC_SCF_B->M_est = FOC_SCF_P.TorqEst_Nm_Gain * FOC_SCF_B->Selectphicalc1;
 
   /* UnitDelay: '<S1>/SCF_Cnt' */
   FOC_SCF_B->SCF_Cnt = FOC_SCF_DW->SCF_Cnt_DSTATE;
@@ -1312,13 +1332,6 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   FOC_SCF_DW->SCF_Cnt_DSTATE = FOC_SCF_B->Sum_o;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_SCF' */
-
-  /* Outport: '<Root>/I_dq_Ref [A]' */
-  FOC_SCF_Y->I_dq_RefA[0] = FOC_SCF_B->Switch2_ae;
-  FOC_SCF_Y->I_dq_RefA[1] = FOC_SCF_B->I_q_Ref_limited;
-
-  /* Outport: '<Root>/n_Act [rpm]' */
-  FOC_SCF_Y->n_Actrpm = FOC_SCF_B->n_Act;
 }
 
 /* Model initialize function */
@@ -1343,7 +1356,7 @@ void FOC_SCF_initialize(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   (void)memset(FOC_SCF_U, 0, sizeof(ExtU_FOC_SCF_T));
 
   /* external outputs */
-  (void)memset(FOC_SCF_Y, 0, sizeof(ExtY_FOC_SCF_T));
+  FOC_SCF_Y->bus_SCF = FOC_SCF_rtZbus_SCF_t;
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/FOC_SCF' */
   /* InitializeConditions for UnitDelay: '<S23>/Unit Delay' */

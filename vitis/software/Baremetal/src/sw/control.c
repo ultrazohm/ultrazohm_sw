@@ -112,57 +112,62 @@ void init_control_functions(void)
 void Control_Task_1ms(void)
 {
 	/* --- execute Simulink Slow Control Function --- */
-	ctrl_data.scf_in.U_DC               = ctrl_data.fcf_in.U_DC;
-	ctrl_data.scf_in.ModInd[0]          = ctrl_data.fcf_out.ModInd[0];
-	ctrl_data.scf_in.ModInd[1]          = ctrl_data.fcf_out.ModInd[1];
-	ctrl_data.scf_in.ModInd[2]          = ctrl_data.fcf_out.ModInd[2];
-	ctrl_data.scf_in.w_el_rad_s         = ctrl_data.fcf_out.w_elrads;
-	ctrl_data.scf_in.I_dq_Act[0]        = ctrl_data.fcf_out.I_dq_ActA[0];
-	ctrl_data.scf_in.I_dq_Act[1]        = ctrl_data.fcf_out.I_dq_ActA[1];
-	ctrl_data.scf_in.I_dq_Act[2]        = ctrl_data.fcf_out.I_dq_ActA[2];
-	ctrl_data.scf_in.I_dq_Act[3]        = ctrl_data.fcf_out.I_dq_ActA[3];
-	ctrl_data.scf_in.I_dq_Act[4]        = ctrl_data.fcf_out.I_dq_ActA[4];
-	ctrl_data.scf_in.I_dq_Act[5]        = ctrl_data.fcf_out.I_dq_ActA[5];
-//	ctrl_data.scf_in.MotTempdegC        =
-//	ctrl_data.scf_in.InvTempdegC        =
-	ctrl_data.scf_in.EXT_Torque_Request = data_A2R_localRPU.Torque_Request;
-	ctrl_data.scf_in.SPEED_CTRL_Enable  = ctrl_data.smf_out.SPEED_CTRL_Enable;
-	ctrl_data.scf_in.ExtTorqLimNm[0]    = data_A2R_localRPU.Torque_Limit_Pos;
-	ctrl_data.scf_in.ExtTorqLimNm[1]    = data_A2R_localRPU.Torque_Limit_Neg;
-	ctrl_data.scf_in.EXT_Speed_Request  = data_A2R_localRPU.Speed_Request;
+//	ctrl_data.scf_in.U_DC               = ctrl_data.fcf_in.U_DC;
+//	ctrl_data.scf_in.ModInd[0]          = ctrl_data.bus_FCF_out.ModInd[0];
+//	ctrl_data.scf_in.ModInd[1]          = ctrl_data.bus_FCF_out.ModInd[1];
+//	ctrl_data.scf_in.ModInd[2]          = ctrl_data.bus_FCF_out.ModInd[2];
+//	ctrl_data.scf_in.w_el_rad_s         = ctrl_data.bus_FCF_out.w_el;
+//	ctrl_data.scf_in.I_dq_Act[0]        = ctrl_data.bus_FCF_out.I_dq_Act[0];
+//	ctrl_data.scf_in.I_dq_Act[1]        = ctrl_data.bus_FCF_out.I_dq_Act[1];
+//	ctrl_data.scf_in.I_dq_Act[2]        = ctrl_data.bus_FCF_out.I_dq_Act[2];
+//	ctrl_data.scf_in.I_dq_Act[3]        = ctrl_data.bus_FCF_out.I_dq_Act[3];
+//	ctrl_data.scf_in.I_dq_Act[4]        = ctrl_data.bus_FCF_out.I_dq_Act[4];
+//	ctrl_data.scf_in.I_dq_Act[5]        = ctrl_data.bus_FCF_out.I_dq_Act[5];
+////	ctrl_data.scf_in.MotTempdegC        =
+////	ctrl_data.scf_in.InvTempdegC        =
+//	ctrl_data.scf_in.EXT_Torque_Request = data_A2R_localRPU.Torque_Request;
+//	ctrl_data.scf_in.SPEED_CTRL_Enable  = ctrl_data.smf_out.SPEED_CTRL_Enable;
+//	ctrl_data.scf_in.ExtTorqLimNm[0]    = data_A2R_localRPU.Torque_Limit_Pos;
+//	ctrl_data.scf_in.ExtTorqLimNm[1]    = data_A2R_localRPU.Torque_Limit_Neg;
+//	ctrl_data.scf_in.EXT_Speed_Request  = data_A2R_localRPU.Speed_Request;
 
-	FOC_SCF_MPtr->inputs->U_DC               = ctrl_data.scf_in.U_DC;
-	FOC_SCF_MPtr->inputs->ModInd[0]          = ctrl_data.scf_in.ModInd[0];
-	FOC_SCF_MPtr->inputs->ModInd[1]          = ctrl_data.scf_in.ModInd[1];
-	FOC_SCF_MPtr->inputs->ModInd[2]          = ctrl_data.scf_in.ModInd[2];
-	FOC_SCF_MPtr->inputs->w_el_rad_s         = ctrl_data.scf_in.w_el_rad_s;
-	FOC_SCF_MPtr->inputs->I_dq_Act[0]        = ctrl_data.scf_in.I_dq_Act[0];
-	FOC_SCF_MPtr->inputs->I_dq_Act[1]        = ctrl_data.scf_in.I_dq_Act[1];
-	FOC_SCF_MPtr->inputs->I_dq_Act[2]        = ctrl_data.scf_in.I_dq_Act[2];
-	FOC_SCF_MPtr->inputs->I_dq_Act[3]        = ctrl_data.scf_in.I_dq_Act[3];
-	FOC_SCF_MPtr->inputs->I_dq_Act[4]        = ctrl_data.scf_in.I_dq_Act[4];
-	FOC_SCF_MPtr->inputs->I_dq_Act[5]        = ctrl_data.scf_in.I_dq_Act[5];
-//	FOC_SCF_MPtr->inputs->MotTempdegC        =
-//	FOC_SCF_MPtr->inputs->InvTempdegC        =
-	FOC_SCF_MPtr->inputs->EXT_Torque_Request = ctrl_data.scf_in.EXT_Torque_Request;
-	FOC_SCF_MPtr->inputs->SPEED_CTRL_Enable  = ctrl_data.scf_in.SPEED_CTRL_Enable;
-	FOC_SCF_MPtr->inputs->ExtTorqLimNm[0]    = ctrl_data.scf_in.ExtTorqLimNm[0];
-	FOC_SCF_MPtr->inputs->ExtTorqLimNm[1]    = ctrl_data.scf_in.ExtTorqLimNm[1];
-	FOC_SCF_MPtr->inputs->EXT_Speed_Request  = ctrl_data.scf_in.EXT_Speed_Request;
+//	FOC_SCF_MPtr->inputs->U_DC               = ctrl_data.scf_in.U_DC;
+//	FOC_SCF_MPtr->inputs->ModInd[0]          = ctrl_data.scf_in.ModInd[0];
+//	FOC_SCF_MPtr->inputs->ModInd[1]          = ctrl_data.scf_in.ModInd[1];
+//	FOC_SCF_MPtr->inputs->ModInd[2]          = ctrl_data.scf_in.ModInd[2];
+//	FOC_SCF_MPtr->inputs->w_el_rad_s         = ctrl_data.scf_in.w_el_rad_s;
+//	FOC_SCF_MPtr->inputs->I_dq_Act[0]        = ctrl_data.scf_in.I_dq_Act[0];
+//	FOC_SCF_MPtr->inputs->I_dq_Act[1]        = ctrl_data.scf_in.I_dq_Act[1];
+//	FOC_SCF_MPtr->inputs->I_dq_Act[2]        = ctrl_data.scf_in.I_dq_Act[2];
+//	FOC_SCF_MPtr->inputs->I_dq_Act[3]        = ctrl_data.scf_in.I_dq_Act[3];
+//	FOC_SCF_MPtr->inputs->I_dq_Act[4]        = ctrl_data.scf_in.I_dq_Act[4];
+//	FOC_SCF_MPtr->inputs->I_dq_Act[5]        = ctrl_data.scf_in.I_dq_Act[5];
+////	FOC_SCF_MPtr->inputs->MotTempdegC        =
+////	FOC_SCF_MPtr->inputs->InvTempdegC        =
+//	FOC_SCF_MPtr->inputs->EXT_Torque_Request = ctrl_data.scf_in.EXT_Torque_Request;
+//	FOC_SCF_MPtr->inputs->SPEED_CTRL_Enable  = ctrl_data.scf_in.SPEED_CTRL_Enable;
+//	FOC_SCF_MPtr->inputs->ExtTorqLimNm[0]    = ctrl_data.scf_in.ExtTorqLimNm[0];
+//	FOC_SCF_MPtr->inputs->ExtTorqLimNm[1]    = ctrl_data.scf_in.ExtTorqLimNm[1];
+//	FOC_SCF_MPtr->inputs->EXT_Speed_Request  = ctrl_data.scf_in.EXT_Speed_Request;
+
+	FOC_SCF_MPtr->inputs->bus_FCF     = ctrl_data.bus_FCF;
+	FOC_SCF_MPtr->inputs->bus_SMF     = ctrl_data.bus_SMF;
+	FOC_SCF_MPtr->inputs->bus_BSW_SMF = ctrl_data.bus_BSW_SMF;
 
 	FOC_SCF_step(FOC_SCF_MPtr);
 
-	ctrl_data.scf_out.I_dq_RefA[0]       = FOC_SCF_MPtr->outputs->I_dq_RefA[0];
-	ctrl_data.scf_out.I_dq_RefA[1]       = FOC_SCF_MPtr->outputs->I_dq_RefA[1];
-	ctrl_data.scf_out.TorqueEstNm        = FOC_SCF_MPtr->outputs->TorqueEstNm;
-	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_SCF_MPtr->outputs->TorqueRefDeratedNm;
-	ctrl_data.scf_out.n_Actrpm           = FOC_SCF_MPtr->outputs->n_Actrpm;
+	ctrl_data.bus_SCF = FOC_SCF_MPtr->outputs->bus_SCF;
+//	ctrl_data.scf_out.I_dq_RefA[0]       = FOC_SCF_MPtr->outputs->I_dq_RefA[0];
+//	ctrl_data.scf_out.I_dq_RefA[1]       = FOC_SCF_MPtr->outputs->I_dq_RefA[1];
+//	ctrl_data.scf_out.TorqueEstNm        = FOC_SCF_MPtr->outputs->TorqueEstNm;
+//	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_SCF_MPtr->outputs->TorqueRefDeratedNm;
+//	ctrl_data.scf_out.n_Actrpm           = FOC_SCF_MPtr->outputs->n_Actrpm;
 	/* --- End of Simulink Slow Control Function --- */
 
 	/* === provide data for CAN communication via R5 === */
-	data_R2A_localRPU.Torque_Actual   = ctrl_data.scf_out.TorqueEstNm;
-	data_R2A_localRPU.Speed_Actual    = ctrl_data.scf_out.n_Actrpm;
-	data_R2A_localRPU.Voltage_DC_Link = ctrl_data.fcf_in.U_DC;
+	data_R2A_localRPU.Torque_Actual   = ctrl_data.bus_SCF.TorqueEst;
+	data_R2A_localRPU.Speed_Actual    = ctrl_data.bus_SCF.n_Act;
+	data_R2A_localRPU.Voltage_DC_Link = ctrl_data.bus_FCF.U_DC;
 	/* === End of provide data for CAN communication === */
 }
 
@@ -190,26 +195,28 @@ void Control_Task_10ms(void)
 
 
 	/* === Start of Simulink State Machine Function === */
-	ctrl_data.smf_in.EXT_State_Request  = data_A2R_localRPU.State_Request;
-	ctrl_data.smf_in.EXT_Torque_Request = data_A2R_localRPU.Torque_Request;
-	ctrl_data.smf_in.EXT_Speed_Request  = data_A2R_localRPU.Speed_Request;
-	ctrl_data.smf_in.FastCtrl_Error     = ctrl_data.fcf_out.FOC_Error;
-	ctrl_data.smf_in.EXT_KL15_PG        = IN_KL_15_PG;
+	ctrl_data.bus_BSW_SMF.EXT_State_Request  = data_A2R_localRPU.State_Request;
+	ctrl_data.bus_BSW_SMF.EXT_Torque_Request = data_A2R_localRPU.Torque_Request;
+	ctrl_data.bus_BSW_SMF.EXT_Speed_Request  = data_A2R_localRPU.Speed_Request;
+	ctrl_data.bus_BSW_SMF.EXT_KL15_PG        = IN_KL_15_PG;
 
-	FOC_SMF_MPtr->inputs->FastCtrl_Error     = ctrl_data.smf_in.FastCtrl_Error;
-	FOC_SMF_MPtr->inputs->EXT_State_Request  = ctrl_data.smf_in.EXT_State_Request;
-	FOC_SMF_MPtr->inputs->EXT_Torque_Request = ctrl_data.smf_in.EXT_Torque_Request;
-	FOC_SMF_MPtr->inputs->EXT_Speed_Request  = ctrl_data.smf_in.EXT_Speed_Request;
-	FOC_SMF_MPtr->inputs->EXT_KL15_PG        = ctrl_data.smf_in.EXT_KL15_PG;
+//	FOC_SMF_MPtr->inputs->FastCtrl_Error     = ctrl_data.smf_in.FastCtrl_Error;
+//	FOC_SMF_MPtr->inputs->EXT_State_Request  = ctrl_data.smf_in.EXT_State_Request;
+//	FOC_SMF_MPtr->inputs->EXT_Torque_Request = ctrl_data.smf_in.EXT_Torque_Request;
+//	FOC_SMF_MPtr->inputs->EXT_Speed_Request  = ctrl_data.smf_in.EXT_Speed_Request;
+//	FOC_SMF_MPtr->inputs->EXT_KL15_PG        = ctrl_data.smf_in.EXT_KL15_PG;
+	FOC_SMF_MPtr->inputs->bus_BSW_SMF = ctrl_data.bus_BSW_SMF;
+	FOC_SMF_MPtr->inputs->bus_FCF     = ctrl_data.bus_FCF;
 
 	FOC_SMF_step(FOC_SMF_MPtr);
 
-	ctrl_data.smf_out.SysStateAct         = FOC_SMF_MPtr->outputs->SysStateAct;
-	ctrl_data.smf_out.FOC_Mode            = FOC_SMF_MPtr->outputs->FOC_Mode;
-	ctrl_data.smf_out.StateFOC            = FOC_SMF_MPtr->outputs->StateFOC;
-	ctrl_data.smf_out.FOC_Enable_PWM      = FOC_SMF_MPtr->outputs->FOC_Enable_PWM;
-	ctrl_data.smf_out.global_reset_errors = FOC_SMF_MPtr->outputs->global_reset_errors;
-	ctrl_data.smf_out.SPEED_CTRL_Enable   = FOC_SMF_MPtr->outputs->SPEED_CTRL_Enable;
+	ctrl_data.bus_SMF = FOC_SMF_MPtr->outputs->bus_SMF;
+//	ctrl_data.smf_out.SysStateAct         = FOC_SMF_MPtr->outputs->SysStateAct;
+//	ctrl_data.smf_out.FOC_Mode            = FOC_SMF_MPtr->outputs->FOC_Mode;
+//	ctrl_data.smf_out.StateFOC            = FOC_SMF_MPtr->outputs->StateFOC;
+//	ctrl_data.smf_out.FOC_Enable_PWM      = FOC_SMF_MPtr->outputs->FOC_Enable_PWM;
+//	ctrl_data.smf_out.global_reset_errors = FOC_SMF_MPtr->outputs->global_reset_errors;
+//	ctrl_data.smf_out.SPEED_CTRL_Enable   = FOC_SMF_MPtr->outputs->SPEED_CTRL_Enable;
 	/* === End of Simulink State Machine Function === */
 
 
@@ -267,6 +274,7 @@ void Control_Task_100ms(void)
 	data_R2A_localRPU.Temp_Mot_Phase_4 = 4;
 	data_R2A_localRPU.Temp_Mot_Phase_5 = 5;
 	data_R2A_localRPU.Temp_Mot_Phase_6 = 6;
+//	data_R2A_localRPU.Temp_Mot_Rotor = 1;
 	/* === End of provide data for CAN communication === */
 }
 

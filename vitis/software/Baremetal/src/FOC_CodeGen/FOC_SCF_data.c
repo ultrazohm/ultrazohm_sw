@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.64
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:45 2026
+ * C/C++ source code generated on : Thu Feb 19 10:18:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -171,16 +171,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   0.1F,
 
-  /* Variable: SCF_MANUAL_U_DC
-   * Referenced by: '<S1>/Udc2'
-   */
-  0.0F,
-
-  /* Variable: SCF_SELECT_U_DC_INPUT
-   * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
-   */
-  1.0F,
-
   /* Variable: SPEED_CTRL_K_AWU
    * Referenced by: '<S3>/Gain1'
    */
@@ -269,12 +259,17 @@ P_FOC_SCF_T FOC_SCF_P = {
   0.001,
 
   /* Expression: FOC_T_slow
+   * Referenced by: '<S12>/Constant6'
+   */
+  0.001,
+
+  /* Expression: FOC_T_slow
    * Referenced by: '<S20>/Constant6'
    */
   0.001,
 
   /* Expression: FOC_T_slow
-   * Referenced by: '<S12>/Constant6'
+   * Referenced by: '<S18>/Constant6'
    */
   0.001,
 
@@ -282,11 +277,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    * Referenced by: '<S6>/IqRefZero'
    */
   0.0,
-
-  /* Expression: FOC_T_slow
-   * Referenced by: '<S18>/Constant6'
-   */
-  0.001,
 
   /* Expression: 0
    * Referenced by: '<S18>/Delay Input2'
@@ -434,6 +424,11 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   1.0F,
 
+  /* Computed Parameter: IdRefZero1_Value
+   * Referenced by: '<S5>/IdRefZero1'
+   */
+  0.0F,
+
   /* Computed Parameter: UnitDelay_InitialCondition_e
    * Referenced by: '<S23>/Unit Delay'
    */
@@ -474,11 +469,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   0.0F,
 
-  /* Computed Parameter: IdRefZero1_Value
-   * Referenced by: '<S5>/IdRefZero1'
-   */
-  0.0F,
-
   /* Computed Parameter: DelayInput2_InitialCondition_g
    * Referenced by: '<S12>/Delay Input2'
    */
@@ -514,6 +504,11 @@ P_FOC_SCF_T FOC_SCF_P = {
    * Referenced by: '<S15>/PsiReduceGain1'
    */
   -1.0F,
+
+  /* Computed Parameter: usrpm_Gain
+   * Referenced by: '<S1>/[1//s] => [rpm]'
+   */
+  2.38732409F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_l
    * Referenced by: '<S15>/Unit Delay'
@@ -560,11 +555,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   0.0F,
 
-  /* Computed Parameter: Switch1_Threshold_l
-   * Referenced by: '<S1>/Switch1'
-   */
-  0.0F,
-
   /* Computed Parameter: I_ph_peak_Gain
    * Referenced by: '<S4>/I_ph_peak'
    */
@@ -579,11 +569,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    * Referenced by: '<S4>/TorqEst_Nm'
    */
   1.0F,
-
-  /* Computed Parameter: usrpm_Gain
-   * Referenced by: '<S1>/[1//s] => [rpm]'
-   */
-  2.38732409F,
 
   /* Computed Parameter: Counter_Start_Value
    * Referenced by: '<S1>/Counter_Start'

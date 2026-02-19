@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.37
+ * Model version                  : 5.64
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 10 14:30:45 2026
+ * C/C++ source code generated on : Thu Feb 19 10:18:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -51,6 +51,7 @@ typedef struct {
   real_T Switch;                       /* '<S19>/Switch' */
   real_T Switch2;                      /* '<S19>/Switch2' */
   real_T DifferenceInputs2;            /* '<S18>/Difference Inputs2' */
+  real32_T deltariselimit_m;           /* '<S12>/delta rise limit' */
   real32_T Bias;                       /* '<S5>/Bias' */
   real32_T UnitDelay;                  /* '<S23>/Unit Delay' */
   real32_T Saturation;                 /* '<S23>/Saturation' */
@@ -78,11 +79,11 @@ typedef struct {
   real32_T FOC_TORQ_REDUC_PGAIN;       /* '<S9>/FOC_TORQ_REDUC_PGAIN' */
   real32_T TorqCtrlSum3;               /* '<S9>/TorqCtrlSum3' */
   real32_T Saturation_d;               /* '<S9>/Saturation' */
-  real32_T Yk1_b;                      /* '<S12>/Delay Input2' */
+  real32_T TorqCtrlProduct;            /* '<S9>/TorqCtrlProduct' */
   real32_T Id_Ref_raw;                 /* '<S5>/Multiport Switch' */
   real32_T MultiportSwitch1_o;         /* '<S5>/Multiport Switch1' */
+  real32_T Yk1_b;                      /* '<S12>/Delay Input2' */
   real32_T UkYk1_l;                    /* '<S12>/Difference Inputs1' */
-  real32_T deltariselimit_m;           /* '<S12>/delta rise limit' */
   real32_T deltafalllimit_o;           /* '<S12>/delta fall limit' */
   real32_T Switch_m;                   /* '<S13>/Switch' */
   real32_T Switch2_e;                  /* '<S13>/Switch2' */
@@ -102,6 +103,9 @@ typedef struct {
   real32_T mcrPsiRef1;                 /* '<S15>/mcrPsiRef1' */
   real32_T PsiReduceGain1;             /* '<S15>/PsiReduceGain1' */
   real32_T I_q_Ref_limited;            /* '<S15>/MinMax1' */
+  real32_T I_dq_Ref[2];                /* '<S1>/FOC_I_dqRef_Calculation' */
+  real32_T Selectphicalc1;             /* '<S4>/Selectphicalc1' */
+  real32_T n_Act;                      /* '<S1>/[1//s] => [rpm]' */
   real32_T FOC_IqDiff;                 /* '<S15>/Subtract' */
   real32_T UnitDelay_i;                /* '<S15>/Unit Delay' */
   real32_T FOC_MotTemp_PSM;            /* '<S8>/Gain1' */
@@ -118,14 +122,12 @@ typedef struct {
   real32_T TorqCtrlSwitch3;            /* '<S9>/TorqCtrlSwitch3' */
   real32_T TorqCtrlSum4;               /* '<S9>/TorqCtrlSum4' */
   real32_T TorqCtrlSum1;               /* '<S9>/TorqCtrlSum1' */
-  real32_T U_DC_scf;                   /* '<S1>/Switch1' */
   real32_T Product_h[6];               /* '<S4>/Product' */
   real32_T Subtract2;                  /* '<S4>/Subtract2' */
   real32_T Sqrt_b;                     /* '<S4>/Sqrt' */
   real32_T I_ph_peak_Act;              /* '<S4>/I_ph_peak' */
   real32_T I_ph_rms_Act;               /* '<S4>/I_ph_rms' */
   real32_T M_est;                      /* '<S4>/TorqEst_Nm' */
-  real32_T n_Act;                      /* '<S1>/[1//s] => [rpm]' */
   real32_T SCF_Cnt;                    /* '<S1>/SCF_Cnt' */
   real32_T Sum_o;                      /* '<S1>/Sum' */
   real32_T Product3;                   /* '<S31>/Product3' */
@@ -218,24 +220,14 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T U_DC;                       /* '<Root>/U_DC [V]' */
-  real32_T ModInd[3];                  /* '<Root>/ModInd' */
-  real32_T w_el_rad_s;                 /* '<Root>/w_el [rad//s]' */
-  real32_T I_dq_Act[6];                /* '<Root>/I_dq_Act [A]' */
-  real32_T MotTempdegC;                /* '<Root>/MotTemp [degC]' */
-  real32_T InvTempdegC;                /* '<Root>/InvTemp [degC]' */
-  real32_T EXT_Torque_Request;         /* '<Root>/ExtTorqReq [Nm]' */
-  real32_T SPEED_CTRL_Enable;          /* '<Root>/SpeedCtrl_Enable' */
-  real32_T ExtTorqLimNm[2];            /* '<Root>/ExtTorqLim [Nm]' */
-  real32_T EXT_Speed_Request;          /* '<Root>/ExtSpeedReq [rpm]' */
+  bus_FCF_t bus_FCF;                   /* '<Root>/bus_FCF' */
+  bus_SMF_t bus_SMF;                   /* '<Root>/bus_SMF' */
+  bus_BSW_SMF_t bus_BSW_SMF;           /* '<Root>/bus_BSW_SMF' */
 } ExtU_FOC_SCF_T;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T I_dq_RefA[2];               /* '<Root>/I_dq_Ref [A]' */
-  real32_T TorqueEstNm;                /* '<Root>/TorqueEst [Nm]' */
-  real32_T TorqueRefDeratedNm;         /* '<Root>/TorqueRefDerated [Nm]' */
-  real32_T n_Actrpm;                   /* '<Root>/n_Act [rpm]' */
+  bus_SCF_t bus_SCF;                   /* '<Root>/bus_SCF' */
 } ExtY_FOC_SCF_T;
 
 /* Parameters (default storage) */
@@ -342,12 +334,6 @@ struct P_FOC_SCF_T_ {
                                       /* Variable: FOC_Torque_Derating_Temp_Gain
                                        * Referenced by: '<S23>/Constant1'
                                        */
-  real32_T SCF_MANUAL_U_DC;            /* Variable: SCF_MANUAL_U_DC
-                                        * Referenced by: '<S1>/Udc2'
-                                        */
-  real32_T SCF_SELECT_U_DC_INPUT;      /* Variable: SCF_SELECT_U_DC_INPUT
-                                        * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
-                                        */
   real32_T SPEED_CTRL_K_AWU;           /* Variable: SPEED_CTRL_K_AWU
                                         * Referenced by: '<S3>/Gain1'
                                         */
@@ -402,16 +388,16 @@ struct P_FOC_SCF_T_ {
                                         * Referenced by: '<S29>/FOC_T_slow'
                                         */
   real_T Constant6_Value;              /* Expression: FOC_T_slow
-                                        * Referenced by: '<S20>/Constant6'
-                                        */
-  real_T Constant6_Value_d;            /* Expression: FOC_T_slow
                                         * Referenced by: '<S12>/Constant6'
                                         */
-  real_T IqRefZero_Value;              /* Expression: 0
-                                        * Referenced by: '<S6>/IqRefZero'
+  real_T Constant6_Value_e;            /* Expression: FOC_T_slow
+                                        * Referenced by: '<S20>/Constant6'
                                         */
   real_T Constant6_Value_f;            /* Expression: FOC_T_slow
                                         * Referenced by: '<S18>/Constant6'
+                                        */
+  real_T IqRefZero_Value;              /* Expression: 0
+                                        * Referenced by: '<S6>/IqRefZero'
                                         */
   real_T DelayInput2_InitialCondition; /* Expression: 0
                                         * Referenced by: '<S18>/Delay Input2'
@@ -500,6 +486,9 @@ struct P_FOC_SCF_T_ {
   real32_T Bias_Bias;                  /* Computed Parameter: Bias_Bias
                                         * Referenced by: '<S5>/Bias'
                                         */
+  real32_T IdRefZero1_Value;           /* Computed Parameter: IdRefZero1_Value
+                                        * Referenced by: '<S5>/IdRefZero1'
+                                        */
   real32_T UnitDelay_InitialCondition_e;
                              /* Computed Parameter: UnitDelay_InitialCondition_e
                               * Referenced by: '<S23>/Unit Delay'
@@ -527,9 +516,6 @@ struct P_FOC_SCF_T_ {
   real32_T Saturation_LowerSat_e;   /* Computed Parameter: Saturation_LowerSat_e
                                      * Referenced by: '<S9>/Saturation'
                                      */
-  real32_T IdRefZero1_Value;           /* Computed Parameter: IdRefZero1_Value
-                                        * Referenced by: '<S5>/IdRefZero1'
-                                        */
   real32_T DelayInput2_InitialCondition_g;
                            /* Computed Parameter: DelayInput2_InitialCondition_g
                             * Referenced by: '<S12>/Delay Input2'
@@ -551,6 +537,9 @@ struct P_FOC_SCF_T_ {
   real32_T PsiReduceGain1_Gain;       /* Computed Parameter: PsiReduceGain1_Gain
                                        * Referenced by: '<S15>/PsiReduceGain1'
                                        */
+  real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
+                                        * Referenced by: '<S1>/[1//s] => [rpm]'
+                                        */
   real32_T UnitDelay_InitialCondition_l;
                              /* Computed Parameter: UnitDelay_InitialCondition_l
                               * Referenced by: '<S15>/Unit Delay'
@@ -582,9 +571,6 @@ struct P_FOC_SCF_T_ {
                                 /* Computed Parameter: TorqCtrlSwitch3_Threshold
                                  * Referenced by: '<S9>/TorqCtrlSwitch3'
                                  */
-  real32_T Switch1_Threshold_l;       /* Computed Parameter: Switch1_Threshold_l
-                                       * Referenced by: '<S1>/Switch1'
-                                       */
   real32_T I_ph_peak_Gain;             /* Computed Parameter: I_ph_peak_Gain
                                         * Referenced by: '<S4>/I_ph_peak'
                                         */
@@ -593,9 +579,6 @@ struct P_FOC_SCF_T_ {
                                         */
   real32_T TorqEst_Nm_Gain;            /* Computed Parameter: TorqEst_Nm_Gain
                                         * Referenced by: '<S4>/TorqEst_Nm'
-                                        */
-  real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
-                                        * Referenced by: '<S1>/[1//s] => [rpm]'
                                         */
   real32_T Counter_Start_Value;       /* Computed Parameter: Counter_Start_Value
                                        * Referenced by: '<S1>/Counter_Start'
@@ -635,6 +618,9 @@ struct tag_RTM_FOC_SCF_T {
 
 /* Block parameters (default storage) */
 extern P_FOC_SCF_T FOC_SCF_P;
+
+/* External data declarations for dependent source files */
+extern const bus_SCF_t FOC_SCF_rtZbus_SCF_t;/* bus_SCF_t ground */
 
 /* Model entry point functions */
 extern void FOC_SCF_initialize(RT_MODEL_FOC_SCF_T *const FOC_SCF_M);

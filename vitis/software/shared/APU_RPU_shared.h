@@ -75,5 +75,6 @@ struct data_R2A_t
 	float Temp_Mot_Phase_4;
 	float Temp_Mot_Phase_5;
 	float Temp_Mot_Phase_6;
+//	float Temp_Mot_Rotor;
 	uint32_t LifeCheck_Cnt_R2A;
 };

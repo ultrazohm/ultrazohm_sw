@@ -49,8 +49,6 @@ uint8_t Control_timer_100ms;
 
 uint32_t inverter_status_RDY[3] = {0};
 uint32_t inverter_status_FLT[3] = {0};
-bus_BSW_FCF_t bus_BSW_FCF;
-bus_FCF_out_t bus_FCF_out;
 
 // ~~~~~~~~~~~
 extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
@@ -87,19 +85,19 @@ void ISR_Control(void *data)
     inverter_status_FLT[0] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
     inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
 
-    bus_BSW_FCF.Gate_Driver_Status_FLT = (inverter_status_FLT[2] << 12) | (inverter_status_FLT[1] << 6) | inverter_status_FLT[0];
-    bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];
+    ctrl_data.bus_BSW_FCF.Gate_Driver_Status_FLT = (inverter_status_FLT[2] << 12) | (inverter_status_FLT[1] << 6) | inverter_status_FLT[0];
+    ctrl_data.bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];
 
     // read position from resolver IP Core
-    ctrl_data.fcf_in.phi_elrad = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
 
     // get intermediate circuit voltage measurement value
-    ctrl_data.fcf_in.U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
+    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
 
     // get phase currents measurement values
-    ctrl_data.fcf_in.I_phA[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-    ctrl_data.fcf_in.I_phA[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-    ctrl_data.fcf_in.I_phA[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+    ctrl_data.bus_BSW_FCF.ADC_I_ph[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+    ctrl_data.bus_BSW_FCF.ADC_I_ph[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+    ctrl_data.bus_BSW_FCF.ADC_I_ph[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
 //    ctrl_data.fcf_in.I_phA[3] =
 //    ctrl_data.fcf_in.I_phA[4] =
 //    ctrl_data.fcf_in.I_phA[5] =
@@ -109,52 +107,47 @@ void ISR_Control(void *data)
 
 
     // get values from Slow Control Function
-    ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
-	ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
+//    ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
+//	ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
 
 	// get values from Stateflow Function
-	ctrl_data.fcf_in.FOC_Mode   = ctrl_data.smf_out.FOC_Mode;
-	ctrl_data.fcf_in.FOC_Enable = ctrl_data.smf_out.FOC_Enable_PWM;
+//	ctrl_data.fcf_in.FOC_Mode   = ctrl_data.smf_out.FOC_Mode;
+//	ctrl_data.fcf_in.FOC_Enable = ctrl_data.smf_out.FOC_Enable_PWM;
 
 	// write inputs to fast control function of simulink model
-	FOC_FCF_MPtr->inputs->U_DC         = ctrl_data.fcf_in.U_DC;
-	FOC_FCF_MPtr->inputs->I_phA[0]     = ctrl_data.fcf_in.I_phA[0];
-	FOC_FCF_MPtr->inputs->I_phA[1]     = ctrl_data.fcf_in.I_phA[1];
-	FOC_FCF_MPtr->inputs->I_phA[2]     = ctrl_data.fcf_in.I_phA[2];
-	FOC_FCF_MPtr->inputs->I_phA[3]     = ctrl_data.fcf_in.I_phA[3];
-	FOC_FCF_MPtr->inputs->I_phA[4]     = ctrl_data.fcf_in.I_phA[4];
-	FOC_FCF_MPtr->inputs->I_phA[5]     = ctrl_data.fcf_in.I_phA[5];
-	FOC_FCF_MPtr->inputs->I_phA[6]     = ctrl_data.fcf_in.I_phA[6];
-	FOC_FCF_MPtr->inputs->I_phA[7]     = ctrl_data.fcf_in.I_phA[7];
-	FOC_FCF_MPtr->inputs->I_phA[8]     = ctrl_data.fcf_in.I_phA[8];
-	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
-	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
-	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
-	FOC_FCF_MPtr->inputs->FOC_Mode     = ctrl_data.fcf_in.FOC_Mode;
-	FOC_FCF_MPtr->inputs->FOC_Enable_PWM   = ctrl_data.fcf_in.FOC_Enable;
-	FOC_FCF_MPtr->inputs->bus_BSW_FCF = bus_BSW_FCF;
+//	FOC_FCF_MPtr->inputs->U_DC         = ctrl_data.fcf_in.U_DC;
+//	FOC_FCF_MPtr->inputs->I_phA[0]     = ctrl_data.fcf_in.I_phA[0];
+//	FOC_FCF_MPtr->inputs->I_phA[1]     = ctrl_data.fcf_in.I_phA[1];
+//	FOC_FCF_MPtr->inputs->I_phA[2]     = ctrl_data.fcf_in.I_phA[2];
+//	FOC_FCF_MPtr->inputs->I_phA[3]     = ctrl_data.fcf_in.I_phA[3];
+//	FOC_FCF_MPtr->inputs->I_phA[4]     = ctrl_data.fcf_in.I_phA[4];
+//	FOC_FCF_MPtr->inputs->I_phA[5]     = ctrl_data.fcf_in.I_phA[5];
+//	FOC_FCF_MPtr->inputs->I_phA[6]     = ctrl_data.fcf_in.I_phA[6];
+//	FOC_FCF_MPtr->inputs->I_phA[7]     = ctrl_data.fcf_in.I_phA[7];
+//	FOC_FCF_MPtr->inputs->I_phA[8]     = ctrl_data.fcf_in.I_phA[8];
+//	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
+//	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
+//	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
+//	FOC_FCF_MPtr->inputs->FOC_Mode     = ctrl_data.fcf_in.FOC_Mode;
+//	FOC_FCF_MPtr->inputs->FOC_Enable_PWM   = ctrl_data.fcf_in.FOC_Enable;
+	FOC_FCF_MPtr->inputs->bus_BSW_FCF = ctrl_data.bus_BSW_FCF;
+	FOC_FCF_MPtr->inputs->bus_SCF     = ctrl_data.bus_SCF;
+	FOC_FCF_MPtr->inputs->bus_SMF     = ctrl_data.bus_SMF;
 
 	FOC_FCF_step(FOC_FCF_MPtr);
 
-	ctrl_data.fcf_out.DutyCycles01[0] = FOC_FCF_MPtr->outputs->DutyCycles01[0];
-	ctrl_data.fcf_out.DutyCycles01[1] = FOC_FCF_MPtr->outputs->DutyCycles01[1];
-	ctrl_data.fcf_out.DutyCycles01[2] = FOC_FCF_MPtr->outputs->DutyCycles01[2];
-	ctrl_data.fcf_out.DutyCycles01[3] = FOC_FCF_MPtr->outputs->DutyCycles01[3];
-	ctrl_data.fcf_out.DutyCycles01[4] = FOC_FCF_MPtr->outputs->DutyCycles01[4];
-	ctrl_data.fcf_out.DutyCycles01[5] = FOC_FCF_MPtr->outputs->DutyCycles01[5];
-	ctrl_data.fcf_out.DutyCycles01[6] = FOC_FCF_MPtr->outputs->DutyCycles01[6];
-	ctrl_data.fcf_out.DutyCycles01[7] = FOC_FCF_MPtr->outputs->DutyCycles01[7];
-	ctrl_data.fcf_out.DutyCycles01[8] = FOC_FCF_MPtr->outputs->DutyCycles01[8];
+	// write simulink outputs to control data exchange structure
+	ctrl_data.bus_FCF = FOC_FCF_MPtr->outputs->bus_FCF;
 
-	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.fcf_out.DutyCycles01[0];
-	Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.fcf_out.DutyCycles01[1];
-	Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.fcf_out.DutyCycles01[2];
-	Global_Data.rasv.halfBridge4DutyCycle = ctrl_data.fcf_out.DutyCycles01[3];
-	Global_Data.rasv.halfBridge5DutyCycle = ctrl_data.fcf_out.DutyCycles01[4];
-	Global_Data.rasv.halfBridge6DutyCycle = ctrl_data.fcf_out.DutyCycles01[5];
-	Global_Data.rasv.halfBridge7DutyCycle = ctrl_data.fcf_out.DutyCycles01[6];
-	Global_Data.rasv.halfBridge8DutyCycle = ctrl_data.fcf_out.DutyCycles01[7];
-	Global_Data.rasv.halfBridge9DutyCycle = ctrl_data.fcf_out.DutyCycles01[8];
+	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.bus_FCF.DutyCycles[0];
+	Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.bus_FCF.DutyCycles[1];
+	Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.bus_FCF.DutyCycles[2];
+	Global_Data.rasv.halfBridge4DutyCycle = ctrl_data.bus_FCF.DutyCycles[3];
+	Global_Data.rasv.halfBridge5DutyCycle = ctrl_data.bus_FCF.DutyCycles[4];
+	Global_Data.rasv.halfBridge6DutyCycle = ctrl_data.bus_FCF.DutyCycles[5];
+	Global_Data.rasv.halfBridge7DutyCycle = ctrl_data.bus_FCF.DutyCycles[6];
+	Global_Data.rasv.halfBridge8DutyCycle = ctrl_data.bus_FCF.DutyCycles[7];
+	Global_Data.rasv.halfBridge9DutyCycle = ctrl_data.bus_FCF.DutyCycles[8];
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -168,23 +161,9 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // write values from Fast Control Function to data exchange struct
-    ctrl_data.fcf_out.I_dq_ActA[0] = FOC_FCF_MPtr->outputs->I_dq_ActA[0];
-    ctrl_data.fcf_out.I_dq_ActA[1] = FOC_FCF_MPtr->outputs->I_dq_ActA[1];
-    ctrl_data.fcf_out.I_dq_ActA[2] = FOC_FCF_MPtr->outputs->I_dq_ActA[2];
-    ctrl_data.fcf_out.I_dq_ActA[3] = FOC_FCF_MPtr->outputs->I_dq_ActA[3];
-    ctrl_data.fcf_out.I_dq_ActA[4] = FOC_FCF_MPtr->outputs->I_dq_ActA[4];
-    ctrl_data.fcf_out.I_dq_ActA[5] = FOC_FCF_MPtr->outputs->I_dq_ActA[5];
-    ctrl_data.fcf_out.ModInd[0]    = FOC_FCF_MPtr->outputs->ModInd[0];
-    ctrl_data.fcf_out.ModInd[1]    = FOC_FCF_MPtr->outputs->ModInd[1];
-    ctrl_data.fcf_out.ModInd[2]    = FOC_FCF_MPtr->outputs->ModInd[2];
-	ctrl_data.fcf_out.w_elrads     = FOC_FCF_MPtr->outputs->w_elrads;
-
-	bus_FCF_out = FOC_FCF_MPtr->outputs->bus_FCF_out;
-	ctrl_data.fcf_out.FOC_Error    = bus_FCF_out.FCF_Error;
 
 	/* ~~~ Gate Driver Enable Control ~~~ */
-	if(bus_FCF_out.FOC_Enable_PWM)
+	if(ctrl_data.bus_FCF.FOC_Enable_PWM)
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 1, 0);
 	else
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 0, 0);

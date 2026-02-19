@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.42
+ * Model version                  : 5.64
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Tue Feb 17 10:28:17 2026
+ * C/C++ source code generated on : Thu Feb 19 10:17:57 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,22 +23,59 @@
 #ifndef DEFINED_TYPEDEF_FOR_bus_BSW_FCF_t_
 #define DEFINED_TYPEDEF_FOR_bus_BSW_FCF_t_
 
-/* Basis Software Signals from Fast Control Function */
+/* Basis Software Signals of Fast Control Function */
 typedef struct {
+  real32_T ADC_U_DC;
+  real32_T ADC_I_ph[9];
+  real32_T phi;
   uint32_T Gate_Driver_Status_RDY;
   uint32_T Gate_Driver_Status_FLT;
 } bus_BSW_FCF_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_bus_FCF_out_t_
-#define DEFINED_TYPEDEF_FOR_bus_FCF_out_t_
+#ifndef DEFINED_TYPEDEF_FOR_bus_SCF_t_
+#define DEFINED_TYPEDEF_FOR_bus_SCF_t_
+
+/* Slow Control Function Output Signals */
+typedef struct {
+  real32_T I_dq_Ref[2];
+  real32_T TorqueEst;
+  real32_T TorqueRefDerated;
+  real32_T n_Act;
+} bus_SCF_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_bus_SMF_t_
+#define DEFINED_TYPEDEF_FOR_bus_SMF_t_
+
+/* Statemachine Function Output Signals */
+typedef struct {
+  real32_T SysStateAct;
+  real32_T FOC_Mode;
+  real32_T StateFOC;
+  real32_T FOC_Enable_PWM;
+  real32_T global_reset_errors;
+  real32_T SPEED_CTRL_Enable;
+  real32_T MaxMotTemp;
+} bus_SMF_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_bus_FCF_t_
+#define DEFINED_TYPEDEF_FOR_bus_FCF_t_
 
 /* Fast Control Function Output Signals */
 typedef struct {
+  real32_T DutyCycles[9];
+  real32_T U_DC;
+  real32_T I_dq_Act[6];
+  real32_T ModInd[3];
+  real32_T w_el;
   boolean_T FOC_Enable_PWM;
   boolean_T FCF_Error;
-} bus_FCF_out_t;
+} bus_FCF_t;
 
 #endif
 

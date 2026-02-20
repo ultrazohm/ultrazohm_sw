@@ -20,7 +20,7 @@ PMSM Model Nonlinear
 System description
 ==================
 
-This model is based on the linear model. 
+This IP core is based on the linear :ref:`uz_pmsmModel` and extends the model by taking saturation and cross-coupling effects into consideration.
 
 Electrical System
 ------------------

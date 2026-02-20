@@ -271,15 +271,15 @@ Vitis
   struct uz_pmsmModel_config_t pmsm_config={
     .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
     .ip_core_frequency_Hz=100000000,
-      .simulate_mechanical_system = true,
-      .r_1 = 2.1f,
-      .L_d = 0.03f,
-      .L_q = 0.05f,
-      .psi_pm = 0.05f,
-      .polepairs = 2.0f,
-      .inertia = 0.001,
-      .coulomb_friction_constant = 0.01f,
-      .friction_coefficient = 0.001f};
+    .simulate_mechanical_system = true,
+    .r_1 = 2.1f,
+    .L_d = 0.03f,
+    .L_q = 0.05f,
+    .psi_pm = 0.05f,
+    .polepairs = 2.0f,
+    .inertia = 0.001,
+    .coulomb_friction_constant = 0.01f,
+    .friction_coefficient = 0.001f};
   
   pmsm=uz_pmsmModel_init(pmsm_config);
   // before ISR Init!
@@ -314,7 +314,7 @@ Vitis
   void ISR_Control(void *data){
   // other code
   uz_pmsmModel_trigger_input_strobe(pmsm);
-	uz_pmsmModel_trigger_output_strobe(pmsm);
+  uz_pmsmModel_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
   pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;

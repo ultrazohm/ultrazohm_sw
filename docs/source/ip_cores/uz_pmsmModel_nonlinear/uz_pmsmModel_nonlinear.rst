@@ -1,20 +1,26 @@
 .. _uz_pmsmModel:
 
-==========
-PMSM Model
-==========
+====================
+Nonlinear PMSM Model
+====================
 
-- IP core of a PMSM model
-- Simulates a PMSM on the FPGA
-- Intended for controller-in-the-loop (CIL) on the UltraZohm
-- Time discrete transformation is done by *zero order hold* transformation
-- Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
-- IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
-- IP core has single precision AXI ports
-- All calculations in the IP core are done in single precision!
+.. note::
+   - IP core of a nonlinear PMSM model
+   - The model is based on the equations of the PMSM in the dq-plane, taking saturation and cross-coupling effects into consideration
+   - Prototype functions are used to approximate the flux-linkages based on the currents
+   - Simulates a PMSM on the FPGA
+   - Intended for controller-in-the-loop (CIL) on the UltraZohm
+   - Time discrete transformation is done by *zero order hold* transformation
+   - Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
+   - IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+   - IP core has single precision AXI ports
+   - All calculations in the IP core are done in **single** precision!
+- 
 
 System description
 ==================
+
+This model is based on the linear model. 
 
 Electrical System
 ------------------
@@ -22,32 +28,16 @@ Electrical System
 The model assumes a symmetric machine with a sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
 Small letter values indicate time dependency without explicitly stating it.
 
-Linear model
-------------
+Model
+-----
 
-In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
+The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
 
-    \frac{d \psi_d}{dt} &= u_d - R_1 i_d + \omega_{el} \psi_q
+    \frac{d \psi_d^{\left(i_{d},i_{q}\right)}}{dt} &= u_d - R_1 i_d + \omega_{el} \psi_q^{\left(i_{d},i_{q}\right)}
 
-    \frac{d \psi_q}{dt} &= u_q - R_1 i_q - \omega_{el} \psi_d
-
-The flux-linkages of the direct and quadrature axis are given by [[#Schroeder_Regelung]_, p. 1092]:
-
-.. math::
-
-    \psi_d &= \psi_{pm} + L_d i_d
-
-    \psi_q &= L_q i_q
-
-Rearranging to calculate the current from the flux-linkage:
-
-.. math::
-
-    i_d &= \frac{\psi_d - \psi_{pm}}{L_d}
-
-    i_q &= \frac{\psi_q}{L_q}
+    \frac{d \psi_q^{\left(i_{d},i_{q}\right)}}{dt} &= u_q - R_1 i_q - \omega_{el} \psi_d^{\left(i_{d},i_{q}\right)}
 
 With the rotational speed linked to the electrical rotation speed in dq-coordinates by the number of pole pairs [[#Schroeder_Regelung]_, p. 1092]:
 
@@ -55,22 +45,7 @@ With the rotational speed linked to the electrical rotation speed in dq-coordina
 
     \omega_{el}=p \cdot \omega_{mech}
 
-The PMSM generates an inner torque :math:`T_I` according to:
-
-.. math::
-
-    T_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
-
-This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. Note that the flux-based equation above is implemented in the model.
-
-.. math::
-
-    T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
-
-Model with non-linear effects
------------------------------
-
-This model takes saturation and cross-coupling effects into consideration. The flux-linkage is now dependent on the dq-currrents. 
+This model takes saturation and cross-coupling effects into consideration. The flux-linkage is dependent on the dq-currrents. 
 
 .. math::
 
@@ -78,7 +53,7 @@ This model takes saturation and cross-coupling effects into consideration. The f
 
     \frac{d\psi_q}{dt} = \frac{\partial \psi_q}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_q}{\partial i_q}\frac{di_q}{dt}
 
-For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These are called differential self-inductances :math:`L_{dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}`.
+For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These differential self-inductances :math:`L_{dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}` are defined by.
 
 .. math::
   
@@ -90,19 +65,20 @@ For the partial derivatives of the flux with respect to the currents, abbreviati
     
     L_{qd} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}} 
 
-Rearranging the equations again to calculate the current from the flux-linkage:
+Rearranging the equations to calculate the currents from the flux-linkage:
 
 .. math::
 
-    \frac{di_{d}}{dt}=\frac{u_{d}-R_{s}\cdot i_{d}-L_{dq} \frac{di_{q}}{dt}+\omega_{el} \psi_{q}}{L_{dd}}
+    \frac{di_{d}}{dt}=\frac{u_{d}-R_{s}\cdot i_{d}-L_{dq} \frac{di_{q}}{dt}+\omega_{el} \psi_{q}^{\left(i_{d},i_{q}\right)}}{L_{dd}}
     
-    \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}}{L_{qq}}
+    \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}^{\left(i_{d},i_{q}\right)}}{L_{qq}}
 
 The inner torque :math:`T_I`  is calculated using the flux-linkages.
 
 .. math::
 
-    T_I=\frac{3}{2}p(\psi_d(i_d,i_q) i_q - \psi_q(i_d,i_q) i_d)
+    T_I=\frac{3}{2}p(\psi_d^{\left(i_{d},i_{q}\right)} i_q - \psi_q^{\left(i_{d},i_{q}\right)} i_d)
+
 
 Mechanical system
 -----------------

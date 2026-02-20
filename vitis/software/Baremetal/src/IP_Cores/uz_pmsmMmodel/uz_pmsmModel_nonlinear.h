@@ -1,5 +1,5 @@
-#ifndef UZ_PMSMMODEL_H
-#define UZ_PMSMMODEL_H
+#ifndef UZ_PMSMMODEL_NONLINEAR_H
+#define UZ_PMSMMODEL_NONLINEAR_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -8,13 +8,13 @@
  * @brief Object data type definition of the PMSM model IP-Core driver
  * 
  */
-typedef struct uz_pmsmModel_t uz_pmsmModel_t;
+typedef struct uz_pmsmModel_nonlinear_t uz_pmsmModel_nonlinear_t;
 
 /**
  * @brief Configuration struct for the PMSM model IP-Core driver
  * 
  */
-struct uz_pmsmModel_config_t
+struct uz_pmsmModel_nonlinear_config_t
 {
     uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
@@ -48,7 +48,7 @@ struct uz_pmsmModel_config_t
  * @brief Struct to return and read the outputs of the PMSM Model
  * 
  */
-struct uz_pmsmModel_outputs_t
+struct uz_pmsmModel_nonlinear_outputs_t
 {
     float i_d_A; /**< Current in d-axis in A */
     float i_q_A; /**< Current in q-Axis in A */
@@ -60,7 +60,7 @@ struct uz_pmsmModel_outputs_t
  * @brief Struct to be used to pass inputs to the PMSM Model
  * 
  */
-struct uz_pmsmModel_inputs_t
+struct uz_pmsmModel_nonlinear_inputs_t
 {
     float v_d_V; /**< Voltage in d-axis in V */
     float v_q_V; /**< Voltage in q-axis in V */
@@ -73,23 +73,23 @@ struct uz_pmsmModel_inputs_t
  * @brief Initialize an instance of the driver
  * 
  * @param config Config struct
- * @return uz_pmsmModel_t* Pointer to an initialized instance of the driver
+ * @return uz_pmsmModel_nonlinear_t* Pointer to an initialized instance of the driver
  */
-uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config);
+uz_pmsmModel_nonlinear_t *uz_pmsmModel_nonlinear_init(struct uz_pmsmModel_nonlinear_config_t config);
 
 /**
  * @brief Takes the values of the AXI shadow register and pass them to the actual input.
  * 
  * @param self 
  */
-void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self);
+void uz_pmsmModel_nonlinear_trigger_input_strobe(uz_pmsmModel_nonlinear_t *self);
 
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
  * 
  * @param self 
  */
-void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
+void uz_pmsmModel_nonlinear_trigger_output_strobe(uz_pmsmModel_nonlinear_t *self);
 
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
@@ -97,7 +97,7 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
  * @param self 
  */
 
-void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self);
+void uz_pmsmModel_nonlinear_trigger_fitting_parameter_strobe(uz_pmsmModel_nonlinear_t *self);
 
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
@@ -105,15 +105,15 @@ void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self);
  * @param self Pointer to the instance
  * @param inputs Input values to set
  */
-void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self,struct uz_pmsmModel_inputs_t inputs);
+void uz_pmsmModel_nonlinear_set_inputs(uz_pmsmModel_nonlinear_t *self,struct uz_pmsmModel_nonlinear_inputs_t inputs);
 
 /**
  * @brief Returns current outputs of PMSM model IP-Core
  * 
  * @param self Pointer to driver instance
- * @return struct uz_pmsmModel_outputs_t Output values
+ * @return struct uz_pmsmModel_nonlinear_outputs_t Output values
  */
-struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
+struct uz_pmsmModel_nonlinear_outputs_t uz_pmsmModel_nonlinear_get_outputs(uz_pmsmModel_nonlinear_t *self);
 
 /**
  * @brief Resets the PMSM model by writing zero to all inputs and sets integrators to zero
@@ -122,7 +122,7 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  */
 
 
-void uz_pmsmModel_reset(uz_pmsmModel_t *self);
+void uz_pmsmModel_nonlinear_reset(uz_pmsmModel_nonlinear_t *self);
 
 
-#endif // UZ_PMSMMODEL_H
+#endif // UZ_PMSMMODEL_NONLINEAR_H

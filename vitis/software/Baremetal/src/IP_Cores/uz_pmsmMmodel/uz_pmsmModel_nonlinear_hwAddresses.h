@@ -4,8 +4,8 @@
  * Created:           2021-07-23 16:46:03
 */
 
-#ifndef UZ_PMSM_MODEL_H_
-#define UZ_PMSM_MODEL_H_
+#ifndef UZ_PMSM_MODEL_NONLINEAR_H_
+#define UZ_PMSM_MODEL_NONLINEAR_H_
 
 #define  IPCore_Reset_uz_pmsm_model               0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model              0x4  //enabled (by default) when bit 0 is 0x1

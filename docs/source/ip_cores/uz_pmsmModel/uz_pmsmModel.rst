@@ -402,9 +402,9 @@ Resource utilization
 Resource utilization after synthesis in Vivado 2022.2.
 
 ====== ====== ====== ====== ======
-BRAM    DSP   FF      LUT   LUTRAM
+BRAM   DSP    FF     LUT    LUTRAM
 ====== ====== ====== ====== ======
-48     81     45k    32k    1557
+0      153    23k    34k    140
 ====== ====== ====== ====== ======
 
 Driver reference

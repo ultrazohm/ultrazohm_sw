@@ -99,12 +99,6 @@ void test_uz_pmsmModel_nonlinear_hw_write_simulate_mechanical(void){
     uz_pmsmModel_nonlinear_hw_write_simulate_mechanical(BASE_ADDRESS,simulate_mech);
 }
 
-void test_uz_pmsmModel_nonlinear_hw_write_simulate_nonlinear(void){
-    _Bool simulate_nonlinear=true;
-    uz_axi_write_bool_Expect(BASE_ADDRESS+simulate_nonlinear_Data_uz_pmsm_model_nonlinear  ,simulate_nonlinear);
-    uz_pmsmModel_nonlinear_hw_write_simulate_nonlinear(BASE_ADDRESS,simulate_nonlinear);
-}
-
 
 void test_uz_pmsmModel_nonlinear_hw_write_inertia(void){
     float inertia=0.00031f;

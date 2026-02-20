@@ -1,4 +1,4 @@
-.. _uz_pmsmModel:
+.. _uz_pmsmModel_nonlinear:
 
 ====================
 Nonlinear PMSM Model
@@ -15,7 +15,7 @@ Nonlinear PMSM Model
    - IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
    - IP core has single precision AXI ports
    - All calculations in the IP core are done in **single** precision!
-- 
+
 
 System description
 ==================
@@ -215,7 +215,7 @@ IP Core Hardware
 - The sample time is fixed!
 - The IP core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
 - Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP core uses an oversampling factor of 200
+- The IP core uses an oversampling factor of 126
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 
@@ -261,7 +261,7 @@ Vivado
 - Assign address to IP core
 - Build bitstream, export .xsa, update Vitis platform
 
-.. figure:: pmsm_vivado.png
+.. figure:: pmsm_vivado_nonlinear.png
    :width: 800
    :align: center
 
@@ -293,19 +293,19 @@ Vitis
     .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f,
     .ad1 = 0.0f,
-		.ad2 = 0.0f,
-	  .ad3 = 0.0f,
-		.ad4 = 0.0f,
-		.ad5 = 0.0f,
-		.ad6 = 0.0f,
-		.aq1 = 0.0f,
-		.aq2 = 0.0f,
-		.aq3 = 0.0f,
-		.aq4 = 0.0f,
-		.aq5 = 0.0f,
-		.aq6 = 0.0f,
-		.F1G1 = 0.0f,
-		.F2G2 = 0.0f};
+    .ad2 = 0.0f,
+    .ad3 = 0.0f,
+    .ad4 = 0.0f,
+    .ad5 = 0.0f,
+    .ad6 = 0.0f,
+    .aq1 = 0.0f,
+    .aq2 = 0.0f,
+    .aq3 = 0.0f,
+    .aq4 = 0.0f,
+    .aq5 = 0.0f,
+    .aq6 = 0.0f,
+    .F1G1 = 0.0f,
+    .F2G2 = 0.0f};
   
   pmsm=uz_pmsmModel_nonlinear_init(pmsm_config);
   // before ISR Init!
@@ -341,14 +341,13 @@ Vitis
   void ISR_Control(void *data){
   // other code
   uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
-	uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
+  uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
   pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
   uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
   // [...]
   }
-
 
 - Change the Javascope  ``enum`` to transfer the required measurement data
 
@@ -388,14 +387,36 @@ Vitis
     return Status;
     }
 
-Javascope
----------
+Closed loop
+-----------
 
-- Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 100`` is set
+.. code-block:: c
+
+    uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
+    uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
+    pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
+    referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
+    pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
+    pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
+    pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
+    pmsm_inputs.v_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
+    uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
+    pmsm_outputs_old=pmsm_outputs;
+
+Resource utilization
+====================
+
+Resource utilization after synthesis in Vivado 2022.2.
+
+====== ====== ====== ====== ======
+BRAM    DSP   FF      LUT   LUTRAM
+====== ====== ====== ====== ======
+48     81     45k    32k    1557
+====== ====== ====== ====== ======
 
 
 Flux approximation
-------------------
+==================
 
 The flux-linkages are approximated using analytic-Prototype functions.
 This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
@@ -448,23 +469,19 @@ In this example usage, flux-linkages of an example motor are getting approximate
 
 - To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
 - If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
+- It may be helpful to interpolate the flux-linkage maps for better accuracy.
+- It may be helpful to change the setpoints for the cross-coupling. To facilitate this adjust the indices of the currents :math:`I_{d1}` and :math:`I_{q1}` in the script.
 
-Closed loop
------------
+.. code-block:: matlab
+    :linenos:
+    :caption: Example to run the approximation script.
 
-
-.. code-block:: c
-
-    uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
-    uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
-    pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
-    referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
-    pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
-    pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
-    pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
-    pmsm_inputs.v_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
-    uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
-    pmsm_outputs_old=pmsm_outputs;
+    ...
+    %The setpoints with the best results might differ for diffrent flux-linkages
+    %Adjust indices for id1 and iq1 if necessary
+    id1 = id_null-1;    %Setpoint of flux-linkage with cross-coupling
+    [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
+    ...
 
 Driver reference
 ================

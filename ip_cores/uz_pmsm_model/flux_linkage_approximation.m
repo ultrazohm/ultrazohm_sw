@@ -31,10 +31,9 @@ q_current = iq(:,1);
 [~,iq_null] = min(abs(q_current));
 
 %The setpoints with the best results might differ for diffrent flux-linkages
-id1 = id_null-1;   %This is the overall point with the best results for all flux linkages 
-%[~,id1] = max(abs(id))
+%Adjust indices for id1 and iq1 if necessary
+id1 = id_null-1;    %Setpoint of flux-linkage with cross-coupling
 [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
-% [~,id1] = max(id)
 
 
 %% start of the fitting procedure

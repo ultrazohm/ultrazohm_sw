@@ -16,6 +16,7 @@ IP Cores
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1
     uz_pmsmModel_nonlinear/uz_pmsmModel_nonlinear
+    uz_pmsmModel/uz_pmsmModel
     uz_inverter_3ph/uz_inverter_3ph
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation

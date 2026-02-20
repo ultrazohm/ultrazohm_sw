@@ -42,6 +42,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
 #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            0U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
@@ -97,6 +98,7 @@
 	#define UZ_PWM_SS_2L_MAX_INSTANCES                      50U
 	#define UZ_MATRIX_MAX_INSTANCES                         201U
     #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            11U
+    #define UZ_PMSMMODEL_MAX_INSTANCES                      11U
     #define UZ_PLANTPT1_MAX_INSTANCES                       6U
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
     #define UZ_FILTER_1ST_ORDER_INSTANCES                   20U

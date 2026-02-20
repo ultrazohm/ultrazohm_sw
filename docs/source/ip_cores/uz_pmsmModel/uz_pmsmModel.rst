@@ -1,43 +1,50 @@
-.. _uz_pmsmModel_nonlinear:
+.. _uz_pmsmModel:
 
-====================
-PMSM Model Nonlinear 
-====================
+==========
+PMSM Model
+==========
 
 .. note::
-   - IP core of a **nonlinear** PMSM model
-   - The model is based on the equations of the PMSM in the dq-plane, taking saturation and cross-coupling effects into consideration
-   - Prototype functions are used to approximate the flux-linkages based on the currents
+   - IP-Core of a **linear** PMSM model
    - Simulates a PMSM on the FPGA
    - Intended for controller-in-the-loop (CIL) on the UltraZohm
    - Time discrete transformation is done by *zero order hold* transformation
-   - Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
-   - IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
-   - IP core has single precision AXI ports
-   - All calculations in the IP core are done in **single** precision!
-
+   - Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
+   - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+   - IP-Core has single precision AXI ports
+   - All calculations in the IP-Core are done in double precision!
 
 System description
 ==================
-
-This model is based on the linear model. 
 
 Electrical System
 ------------------
 
 The model assumes a symmetric machine with a sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
 Small letter values indicate time dependency without explicitly stating it.
-
-Model
------
-
 The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
 
-    \frac{d \psi_d^{\left(i_{d},i_{q}\right)}}{dt} &= u_d - R_1 i_d + \omega_{el} \psi_q^{\left(i_{d},i_{q}\right)}
+    \frac{d \psi_d}{dt} &= u_d - R_1 i_d + \omega_{el} \psi_q
 
-    \frac{d \psi_q^{\left(i_{d},i_{q}\right)}}{dt} &= u_q - R_1 i_q - \omega_{el} \psi_d^{\left(i_{d},i_{q}\right)}
+    \frac{d \psi_q}{dt} &= u_q - R_1 i_q - \omega_{el} \psi_d
+
+The flux-linkages of the direct and quadrature axis are given by [[#Schroeder_Regelung]_, p. 1092]:
+
+.. math::
+
+    \psi_d &= \psi_{pm} + L_d i_d
+
+    \psi_q &= L_q i_q
+
+Rearranging to calculate the current from the flux-linkage:
+
+.. math::
+
+    i_d &= \frac{\psi_d - \psi_{pm}}{L_d}
+
+    i_q &= \frac{\psi_q}{L_q}
 
 With the rotational speed linked to the electrical rotation speed in dq-coordinates by the number of pole pairs [[#Schroeder_Regelung]_, p. 1092]:
 
@@ -45,40 +52,17 @@ With the rotational speed linked to the electrical rotation speed in dq-coordina
 
     \omega_{el}=p \cdot \omega_{mech}
 
-This model takes saturation and cross-coupling effects into consideration. The flux-linkage is dependent on the dq-currrents. 
+The PMSM generates an inner torque :math:`T_I` according to:
 
 .. math::
 
-    \frac{d\psi_d}{dt} = \frac{\partial \psi_d}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_d}{\partial i_q}\frac{di_q}{dt}
+    T_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
 
-    \frac{d\psi_q}{dt} = \frac{\partial \psi_q}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_q}{\partial i_q}\frac{di_q}{dt}
-
-For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These differential self-inductances :math:`L_{dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}` are defined by.
-
-.. math::
-  
-    L_{dd} = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}}
-    
-    L_{qq} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
-    
-    L_{dq} = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
-    
-    L_{qd} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}} 
-
-Rearranging the equations to calculate the currents from the flux-linkage:
+This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. Note that the flux-based equation above is implemented in the model.
 
 .. math::
 
-    \frac{di_{d}}{dt}=\frac{u_{d}-R_{s}\cdot i_{d}-L_{dq} \frac{di_{q}}{dt}+\omega_{el} \psi_{q}^{\left(i_{d},i_{q}\right)}}{L_{dd}}
-    
-    \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}^{\left(i_{d},i_{q}\right)}}{L_{qq}}
-
-The inner torque :math:`T_I`  is calculated using the flux-linkages.
-
-.. math::
-
-    T_I=\frac{3}{2}p(\psi_d^{\left(i_{d},i_{q}\right)} i_q - \psi_q^{\left(i_{d},i_{q}\right)} i_d)
-
+    T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
 
 Mechanical system
 -----------------
@@ -136,10 +120,10 @@ With the constant coulomb friction :math:`M_c`, and the friction coefficient :ma
   \draw[->,dashed] (-0.1,0) -- node[left] {$M_C$} (-0.1,1);
   \end{tikzpicture}
 
-IP core overview
+IP-Core overview
 ================
 
-.. tikz:: Block diagram of IP core
+.. tikz:: Block diagram of IP-Core
   :libs: shapes, arrows, positioning, calc
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -168,22 +152,22 @@ IP core overview
 All time-dependent variables are either inputs or outputs that are written/read by AXI4-full.
 That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are inputs.
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
-The IP core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
+The IP-Core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
 Furthermore, all machine parameters, e.g., stator resistance, can be written by AXI at runtime.
-All AXI-transactions use single-precision variables.
+All AXI-transactions use single-precision variables, which the IP-Core converts to and from double precision.
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
-Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
+Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
 The inputs and outputs are implemented as an vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
 Note that :math:`\omega_{mech}` is an input as well as an output.
-The IP core has two modes regarding the rotational speed :math:`\omega_{mech}`:
+The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
-1. Simulate the mechanical system and calculate :math:`\omega_{mech}` according to the equations in `Friction`_.
+1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
 2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
-When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP core, and the input value of the rotational speed has no effect.
+When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
-This behavior is implemented in the hardware of the IP core with switches.
+This behavior is implemented in the hardware of the IP-Core with switches.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
 In addition to the time-dependent values, the PMSM model parameters are configured by AXI.
@@ -193,7 +177,7 @@ Integration
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
-The new value at time :math:`k+1` of the state variable is calculated for every time step based on the *old* values (:math:`k`):
+The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
 
 .. math:: 
 
@@ -207,43 +191,44 @@ For the mechanical system:
 
     \omega_{mech}(k+1) =ts \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
-IP Core Hardware
+IP-Core Hardware
 ----------------
 
-- The module uses single precision. 
+- The module takes all inputs and converts them from single precision to double precision.
+- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
 - All input values are adjustable at run-time
 - The sample time is fixed!
-- The IP core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
+- The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
 - Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP core uses an oversampling factor of 126
+- The IP-Core uses an oversampling factor of 50
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 
-.. figure:: pmsm_model_nonlinear.svg
+.. figure:: pmsm_model.svg
   :width: 800
   :align: center
 
   Test bench of PMSM plant model
 
-.. figure:: pmsm_model_nonlinear_inside.svg
+.. figure:: pmsm_model_inside.svg
   :width: 800
   :align: center
 
-  Overview of PMSM IP core
+  Overview of PMSM IP-Core
 
-.. figure:: pmsm_model_nonlinear_inside_pmsm.svg
+.. figure:: pmsm_model_inside_pmsm.svg
   :width: 800
   :align: center
 
   Calculation of PMSM subsystem
 
-.. figure:: pmsm_model_nonlinear_inside_torque.svg
+.. figure:: pmsm_model_inside_torque.svg
   :width: 800
   :align: center
 
   Torque calculation subsystem
 
-.. figure:: pmsm_model_nonlinear_inside_mechanical.svg
+.. figure:: pmsm_model_inside_mechanical.svg
   :width: 800
   :align: center
 
@@ -255,17 +240,17 @@ Example usage
 Vivado
 ------
 
-- Add IP core to Vivado and connect to AXI (smartconnect)
+- Add IP-Core to Vivado and connect to AXI (smartconnect)
 - Source IPCORE_CLK with a :math:`100\,MHz` clock!
 - Connect other ports accordingly
-- Assign address to IP core
+- Assign address to IP-Core
 - Build bitstream, export .xsa, update Vitis platform
 
-.. figure:: pmsm_vivado_nonlinear.png
+.. figure:: pmsm_vivado.png
    :width: 800
    :align: center
 
-   Example connection of PMSM IP core
+   Example connection of PMSM IP-Core
 
 
 Vitis
@@ -276,42 +261,30 @@ Vitis
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
 
-  #include "IP_Cores/uz_pmsmmodel/uz_pmsmModel_nonlinear.h"
+  #include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
   #include "xparameters.h"
-  uz_pmsmModel_nonlinear_t *pmsm=NULL;
+  uz_pmsmModel_t *pmsm=NULL;
 
   int main(void) {
   // other code...
 
-  struct uz_pmsmModel_nonlinear_config_t pmsm_config={
+  struct uz_pmsmModel_config_t pmsm_config={
     .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
     .ip_core_frequency_Hz=100000000,
-    .simulate_mechanical_system = true,
-    .r_1 = 2.1f,
-    .polepairs = 2.0f,
-    .inertia = 0.001,
-    .coulomb_friction_constant = 0.01f,
-    .friction_coefficient = 0.001f,
-    .ad1 = 0.0f,
-    .ad2 = 0.0f,
-    .ad3 = 0.0f,
-    .ad4 = 0.0f,
-    .ad5 = 0.0f,
-    .ad6 = 0.0f,
-    .aq1 = 0.0f,
-    .aq2 = 0.0f,
-    .aq3 = 0.0f,
-    .aq4 = 0.0f,
-    .aq5 = 0.0f,
-    .aq6 = 0.0f,
-    .F1G1 = 0.0f,
-    .F2G2 = 0.0f};
+      .simulate_mechanical_system = true,
+      .r_1 = 2.1f,
+      .L_d = 0.03f,
+      .L_q = 0.05f,
+      .psi_pm = 0.05f,
+      .polepairs = 2.0f,
+      .inertia = 0.001,
+      .coulomb_friction_constant = 0.01f,
+      .friction_coefficient = 0.001f};
   
-  pmsm=uz_pmsmModel_nonlinear_init(pmsm_config);
+  pmsm=uz_pmsmModel_init(pmsm_config);
   // before ISR Init!
   // more code of main
 
-- To determine the fitting parameters see :ref:`uz_flux_approximation_script`.
 - Read and write the inputs in ``isr.c``
 - Add before ISR with global scope to use the driver and :ref:`wave_generator`:
 
@@ -319,19 +292,19 @@ Vitis
   :caption: Changes in ``isr.c``
 
   #include "../uz/uz_wavegen/uz_wavegen.h"
-  #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel_nonlinear.h"
-  extern uz_pmsmModel_nonlinear_t *pmsm;
+  #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
+  extern uz_pmsmModel_t *pmsm;
 
   float i_d_soll=0.0f;
   float i_q_soll=0.0f;
-  struct uz_pmsmModel_nonlinear_inputs_t pmsm_inputs={
+  struct uz_pmsmModel_inputs_t pmsm_inputs={
       .omega_mech_1_s=0.0f,
       .v_d_V=0.0f,
       .v_q_V=0.0f,
       .load_torque=0.0f
   };
   
-  struct uz_pmsmModel_nonlinear_outputs_t pmsm_outputs={
+  struct uz_pmsmModel_outputs_t pmsm_outputs={
       .i_d_A=0.0f,
       .i_q_A=0.0f,
       .torque_Nm=0.0f,
@@ -340,14 +313,15 @@ Vitis
 
   void ISR_Control(void *data){
   // other code
-  uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
-  uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
-  pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
+  uz_pmsmModel_trigger_input_strobe(pmsm);
+	uz_pmsmModel_trigger_output_strobe(pmsm);
+  pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
   pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
-  uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
+  uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
   // [...]
   }
+
 
 - Change the Javascope  ``enum`` to transfer the required measurement data
 
@@ -369,9 +343,9 @@ Vitis
 .. code-block:: c
   :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
     
-    #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel_nonlinear.h"
-    extern struct uz_pmsmModel_nonlinear_outputs_t pmsm_outputs;
-    extern struct uz_pmsmModel_nonlinear_inputs_t pmsm_inputs;
+    #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
+    extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+    extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
     int JavaScope_initalize(DS_Data* data){
     // existing code
@@ -387,20 +361,39 @@ Vitis
     return Status;
     }
 
+Comparison between reference and IP-Core
+----------------------------------------
+
+- Program UltraZohm with included PMSM IP-Core and software as described above
+- Start Javascope
+- Connect to javascope, set scope to running and time scale to 100x
+- Start logging of data after a falling edge on the setpoint and stop at the next fallning edge
+- Copy measured ``.csv`` data to ``ultrazohm_sw/ip-cores/uz_pmsm_model``
+- Rename it to ``open_loop_mearuement.csv``
+- Run ``compare_simulation_to_measurement.m`` in ``ultrazohm_sw/ip-cores/uz_pmsm_model``
+
+.. figure:: ref_open_loop_compare.svg
+   :width: 800
+   :align: center
+
+   Comparison of step response between the reference model and IP-Core implementation measured by Javascope
+
+
 Closed loop
 -----------
 
+
 .. code-block:: c
 
-    uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
-    uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
-    pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
+    uz_pmsmModel_trigger_input_strobe(pmsm);
+    uz_pmsmModel_trigger_output_strobe(pmsm);
+    pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
     referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
     pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
     pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
     pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
     pmsm_inputs.v_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
-    uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
+    uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     pmsm_outputs_old=pmsm_outputs;
 
 Resource utilization
@@ -414,100 +407,31 @@ BRAM    DSP   FF      LUT   LUTRAM
 48     81     45k    32k    1557
 ====== ====== ====== ====== ======
 
-
-Flux approximation
-==================
-
-The flux-linkages are approximated using analytic-Prototype functions.
-This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
-For a more in depth look at the derivation, see [ [#Philipp_Doelger_MA]_, p. 30 ].
-
-The entire range of the flux-linkages can be approximated with the following equations. 
-Note that the terms :math:`\int \hat{\psi}_{cross}^{q,s1}(I_{q1}) di_{q}` and :math:`\int \hat{\psi}_{cross}^{d,s1}(I_{d1}) di_{d}` are constant values and will be used in the fitting parameters.
-
-.. math::
-
-    \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{d,self}(i_{d}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q}} \left( \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) \right) \left( \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} \right)}_{=\hat{\psi}_{cross}^{d}(i_{d},i_{q})}
-
-.. math::
-
-    \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{q,self}(i_{q}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d}} \left( \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) \right) \left( \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} \right)}_{=\hat{\psi}_{cross}^{q}(i_{d},i_{q})}
-
-
-Approximation Example usage
----------------------------
-
-In this example usage, flux-linkages of an example motor are getting approximated.
-
-- There needs to be a Excel data sheet in the same directory as the PMSM IP core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
-
-- The naming in the script has to be adjusted. 
-
-.. code-block:: matlab
-    :linenos:
-    :caption: Example to get data out of a Excel data sheet.
-
-    ...
-    FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_');
-    ...
-
-- Afterwards the area where the Array is in the excel sheet has to be specified. 
-  
-.. code-block:: matlab
-    :linenos:
-    :caption: Example to specify array location and size.
-
-    ...
-    % Currents
-    id = FluxMapData{1,1:20};
-    iq = FluxMapData{22:41,1};
-    %Psi_d
-    psi_d = FluxMapData{43:62,1:20}*(1e-3);
-    %Psi_q
-    psi_q = FluxMapData{108:127,1:20}*(1e-3);
-    ...
-
-- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
-- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
-- It may be helpful to interpolate the flux-linkage maps for better accuracy.
-- It may be helpful to change the setpoints for the cross-coupling. To facilitate this adjust the indices of the currents :math:`I_{d1}` and :math:`I_{q1}` in the script.
-
-.. code-block:: matlab
-    :linenos:
-    :caption: Example to run the approximation script.
-
-    ...
-    %The setpoints with the best results might differ for diffrent flux-linkages
-    %Adjust indices for id1 and iq1 if necessary
-    id1 = id_null-1;    %Setpoint of flux-linkage with cross-coupling
-    [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
-    ...
-
 Driver reference
 ================
 
-.. doxygentypedef:: uz_pmsmModel_nonlinear_t
+.. doxygentypedef:: uz_pmsmModel_t
 
-.. doxygenstruct:: uz_pmsmModel_nonlinear_config_t
+.. doxygenstruct:: uz_pmsmModel_config_t
   :members:
 
-.. doxygenstruct:: uz_pmsmModel_nonlinear_outputs_t
+.. doxygenstruct:: uz_pmsmModel_outputs_t
   :members:
 
-.. doxygenstruct:: uz_pmsmModel_nonlinear_inputs_t
+.. doxygenstruct:: uz_pmsmModel_inputs_t
   :members:  
   
-.. doxygenfunction:: uz_pmsmModel_nonlinear_init
+.. doxygenfunction:: uz_pmsmModel_init
 
-.. doxygenfunction:: uz_pmsmModel_nonlinear_set_inputs
+.. doxygenfunction:: uz_pmsmModel_set_inputs
 
-.. doxygenfunction:: uz_pmsmModel_nonlinear_get_outputs
+.. doxygenfunction:: uz_pmsmModel_get_outputs
 
-.. doxygenfunction:: uz_pmsmModel_nonlinear_reset
+.. doxygenfunction:: uz_pmsmModel_reset
 
-.. doxygenfunction:: uz_pmsmModel_nonlinear_trigger_input_strobe
+.. doxygenfunction:: uz_pmsmModel_trigger_input_strobe
 
-.. doxygenfunction:: uz_pmsmModel_nonlinear_trigger_output_strobe
+.. doxygenfunction:: uz_pmsmModel_trigger_output_strobe
 
 Sources
 -------
@@ -515,5 +439,3 @@ Sources
 .. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
-.. [#Shih_Wei_Su_flux_approximation] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336
-.. [#Philipp_Doelger_MA] Feldorientierte Regelung von hoch ausgenutzten permanenterregten Synchronmaschinen, Philipp Dölger (German)

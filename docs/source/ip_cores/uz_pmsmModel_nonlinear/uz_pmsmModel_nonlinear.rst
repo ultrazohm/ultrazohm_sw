@@ -184,9 +184,6 @@ The IP core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP core with switches.
-The IP core also has a mode regarding saturation and cross-coupling effects.
-When the flag ``simulate_nonlinear`` is true, the flux-linkages :math:`\psi_d` and :math:`\psi_q` are dependent on the currents with the equations in `Model with non-linear effects`_.
-When the flag ``simulate_nonlinear`` is false, the flux-linkages are used as state values with the equations in `Linear model`_.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
 In addition to the time-dependent values, the PMSM model parameters are configured by AXI.
@@ -222,31 +219,31 @@ IP Core Hardware
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 
-.. figure:: pmsm_model.svg
+.. figure:: pmsm_model_nonlinear.svg
   :width: 800
   :align: center
 
   Test bench of PMSM plant model
 
-.. figure:: pmsm_model_inside.svg
+.. figure:: pmsm_model_nonlinear_inside.svg
   :width: 800
   :align: center
 
   Overview of PMSM IP core
 
-.. figure:: pmsm_model_inside_pmsm.svg
+.. figure:: pmsm_model_nonlinear_inside_pmsm.svg
   :width: 800
   :align: center
 
   Calculation of PMSM subsystem
 
-.. figure:: pmsm_model_inside_torque.svg
+.. figure:: pmsm_model_nonlinear_inside_torque.svg
   :width: 800
   :align: center
 
   Torque calculation subsystem
 
-.. figure:: pmsm_model_inside_mechanical.svg
+.. figure:: pmsm_model_nonlinear_inside_mechanical.svg
   :width: 800
   :align: center
 
@@ -279,42 +276,38 @@ Vitis
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
 
-  #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+  #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel_nonlinear.h"
   #include "xparameters.h"
-  uz_pmsmModel_t *pmsm=NULL;
+  uz_pmsmModel_nonlinear_t *pmsm=NULL;
 
   int main(void) {
   // other code...
 
-  struct uz_pmsmModel_config_t pmsm_config={
+  struct uz_pmsmModel_nonlinear_config_t pmsm_config={
     .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
     .ip_core_frequency_Hz=100000000,
-      .simulate_mechanical_system = true,
-      .r_1 = 2.1f,
-      .L_d = 0.03f,
-      .L_q = 0.05f,
-      .psi_pm = 0.05f,
-      .polepairs = 2.0f,
-      .inertia = 0.001,
-      .coulomb_friction_constant = 0.01f,
-      .friction_coefficient = 0.001f,
-      .simulate_nonlinear = false;
-      .ad1 = 0.0f,
-			.ad2 = 0.0f,
-	    .ad3 = 0.0f,
-			.ad4 = 0.0f,
-			.ad5 = 0.0f,
-			.ad6 = 0.0f,
-			.aq1 = 0.0f,
-			.aq2 = 0.0f,
-			.aq3 = 0.0f,
-			.aq4 = 0.0f,
-			.aq5 = 0.0f,
-			.aq6 = 0.0f,
-			.F1G1 = 0.0f,
-			.F2G2 = 0.0f};
+    .simulate_mechanical_system = true,
+    .r_1 = 2.1f,
+    .polepairs = 2.0f,
+    .inertia = 0.001,
+    .coulomb_friction_constant = 0.01f,
+    .friction_coefficient = 0.001f,
+    .ad1 = 0.0f,
+		.ad2 = 0.0f,
+	  .ad3 = 0.0f,
+		.ad4 = 0.0f,
+		.ad5 = 0.0f,
+		.ad6 = 0.0f,
+		.aq1 = 0.0f,
+		.aq2 = 0.0f,
+		.aq3 = 0.0f,
+		.aq4 = 0.0f,
+		.aq5 = 0.0f,
+		.aq6 = 0.0f,
+		.F1G1 = 0.0f,
+		.F2G2 = 0.0f};
   
-  pmsm=uz_pmsmModel_init(pmsm_config);
+  pmsm=uz_pmsmModel_nonlinear_init(pmsm_config);
   // before ISR Init!
   // more code of main
 
@@ -326,19 +319,19 @@ Vitis
   :caption: Changes in ``isr.c``
 
   #include "../uz/uz_wavegen/uz_wavegen.h"
-  #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
-  extern uz_pmsmModel_t *pmsm;
+  #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel_nonlinear.h"
+  extern uz_pmsmModel_nonlinear_t *pmsm;
 
   float i_d_soll=0.0f;
   float i_q_soll=0.0f;
-  struct uz_pmsmModel_inputs_t pmsm_inputs={
+  struct uz_pmsmModel_nonlinear_inputs_t pmsm_inputs={
       .omega_mech_1_s=0.0f,
       .v_d_V=0.0f,
       .v_q_V=0.0f,
       .load_torque=0.0f
   };
   
-  struct uz_pmsmModel_outputs_t pmsm_outputs={
+  struct uz_pmsmModel_nonlinear_outputs_t pmsm_outputs={
       .i_d_A=0.0f,
       .i_q_A=0.0f,
       .torque_Nm=0.0f,
@@ -347,12 +340,12 @@ Vitis
 
   void ISR_Control(void *data){
   // other code
-  uz_pmsmModel_trigger_input_strobe(pmsm);
-	uz_pmsmModel_trigger_output_strobe(pmsm);
-  pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+  uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
+	uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
+  pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
   pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
-  uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+  uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
   // [...]
   }
 
@@ -377,9 +370,9 @@ Vitis
 .. code-block:: c
   :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
     
-    #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
-    extern struct uz_pmsmModel_outputs_t pmsm_outputs;
-    extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+    #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel_nonlinear.h"
+    extern struct uz_pmsmModel_nonlinear_outputs_t pmsm_outputs;
+    extern struct uz_pmsmModel_nonlinear_inputs_t pmsm_inputs;
 
     int JavaScope_initalize(DS_Data* data){
     // existing code
@@ -398,7 +391,7 @@ Vitis
 Javascope
 ---------
 
-- Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 50`` is set
+- Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 100`` is set
 
 
 Flux approximation
@@ -456,67 +449,48 @@ In this example usage, flux-linkages of an example motor are getting approximate
 - To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
 - If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP core for nonlinear behavior or for different use in the sw-framework.
 
-
-Comparison between reference and IP core
-----------------------------------------
-
-- Program UltraZohm with included PMSM IP core and software as described above
-- Start Javascope
-- Connect to javascope, set scope to running and time scale to 100x
-- Start logging of data after a falling edge on the setpoint and stop at the next fallning edge
-- Copy measured ``.csv`` data to ``ultrazohm_sw/ip-cores/uz_pmsm_model``
-- Rename it to ``open_loop_mearuement.csv``
-- Run ``compare_simulation_to_measurement.m`` in ``ultrazohm_sw/ip-cores/uz_pmsm_model``
-
-.. figure:: ref_open_loop_compare.svg
-   :width: 800
-   :align: center
-
-   Comparison of step response between the reference model and IP core implementation measured by Javascope
-
-
 Closed loop
 -----------
 
 
 .. code-block:: c
 
-    uz_pmsmModel_trigger_input_strobe(pmsm);
-    uz_pmsmModel_trigger_output_strobe(pmsm);
-    pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    uz_pmsmModel_nonlinear_trigger_input_strobe(pmsm);
+    uz_pmsmModel_nonlinear_trigger_output_strobe(pmsm);
+    pmsm_outputs=uz_pmsmModel_nonlinear_get_outputs(pmsm);
     referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
     pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
     pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
     pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
     pmsm_inputs.v_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
-    uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    uz_pmsmModel_nonlinear_set_inputs(pmsm, pmsm_inputs);
     pmsm_outputs_old=pmsm_outputs;
 
 Driver reference
 ================
 
-.. doxygentypedef:: uz_pmsmModel_t
+.. doxygentypedef:: uz_pmsmModel_nonlinear_t
 
-.. doxygenstruct:: uz_pmsmModel_config_t
+.. doxygenstruct:: uz_pmsmModel_nonlinear_config_t
   :members:
 
-.. doxygenstruct:: uz_pmsmModel_outputs_t
+.. doxygenstruct:: uz_pmsmModel_nonlinear_outputs_t
   :members:
 
-.. doxygenstruct:: uz_pmsmModel_inputs_t
+.. doxygenstruct:: uz_pmsmModel_nonlinear_inputs_t
   :members:  
   
-.. doxygenfunction:: uz_pmsmModel_init
+.. doxygenfunction:: uz_pmsmModel_nonlinear_init
 
-.. doxygenfunction:: uz_pmsmModel_set_inputs
+.. doxygenfunction:: uz_pmsmModel_nonlinear_set_inputs
 
-.. doxygenfunction:: uz_pmsmModel_get_outputs
+.. doxygenfunction:: uz_pmsmModel_nonlinear_get_outputs
 
-.. doxygenfunction:: uz_pmsmModel_reset
+.. doxygenfunction:: uz_pmsmModel_nonlinear_reset
 
-.. doxygenfunction:: uz_pmsmModel_trigger_input_strobe
+.. doxygenfunction:: uz_pmsmModel_nonlinear_trigger_input_strobe
 
-.. doxygenfunction:: uz_pmsmModel_trigger_output_strobe
+.. doxygenfunction:: uz_pmsmModel_nonlinear_trigger_output_strobe
 
 Sources
 -------

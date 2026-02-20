@@ -12,7 +12,7 @@ PMSM Model
    - Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
    - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
    - IP-Core has single precision AXI ports
-   - All calculations in the IP-Core are done in double precision!
+   - All calculations in the IP-Core are done in **double** precision!
 
 System description
 ==================

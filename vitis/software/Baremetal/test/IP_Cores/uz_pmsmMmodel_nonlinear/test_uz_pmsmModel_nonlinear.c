@@ -15,9 +15,6 @@ struct uz_pmsmModel_nonlinear_config_t config = {
     .simulate_mechanical_system = true,
     .simulate_nonlinear = false,
     .r_1 = 2.1f,
-    .L_d = 0.00005f,
-    .L_q = 0.00005f,
-    .psi_pm = 0.05f,
     .polepairs = 2.0f,
     .inertia = 0.001f,
     .coulomb_friction_constant = 0.01f,
@@ -52,9 +49,6 @@ uz_pmsmModel_nonlinear_t *successful_init(struct uz_pmsmModel_nonlinear_config_t
     // This function is called by tests who require an successful initialized instance
     uz_pmsmModel_nonlinear_hw_write_polepairs_Expect(BASE_ADDRESS, configuration.polepairs);
     uz_pmsmModel_nonlinear_hw_write_r_1_Expect(BASE_ADDRESS, configuration.r_1);
-    uz_pmsmModel_nonlinear_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
-    uz_pmsmModel_nonlinear_hw_write_L_d_Expect(BASE_ADDRESS, configuration.L_d);
-    uz_pmsmModel_nonlinear_hw_write_L_q_Expect(BASE_ADDRESS, configuration.L_q);
     if (configuration.simulate_mechanical_system)
     {
         uz_pmsmModel_nonlinear_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
@@ -69,60 +63,29 @@ uz_pmsmModel_nonlinear_t *successful_init(struct uz_pmsmModel_nonlinear_config_t
         uz_pmsmModel_nonlinear_hw_write_inertia_Expect(BASE_ADDRESS, 1.0f);
     }
     uz_pmsmModel_nonlinear_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, configuration.simulate_mechanical_system);
-    if (configuration.simulate_nonlinear)
-    {
-        uz_pmsmModel_nonlinear_hw_write_ad1_Expect(BASE_ADDRESS, configuration.ad1);
-        uz_pmsmModel_nonlinear_hw_write_ad2_Expect(BASE_ADDRESS, configuration.ad2);
-        uz_pmsmModel_nonlinear_hw_write_ad3_Expect(BASE_ADDRESS, configuration.ad3);
-        uz_pmsmModel_nonlinear_hw_write_ad4_Expect(BASE_ADDRESS, configuration.ad4);
-        uz_pmsmModel_nonlinear_hw_write_ad5_Expect(BASE_ADDRESS, configuration.ad5);
-        uz_pmsmModel_nonlinear_hw_write_ad6_Expect(BASE_ADDRESS, configuration.ad6);
-        uz_pmsmModel_nonlinear_hw_write_aq1_Expect(BASE_ADDRESS, configuration.aq1);
-        uz_pmsmModel_nonlinear_hw_write_aq2_Expect(BASE_ADDRESS, configuration.aq2);
-        uz_pmsmModel_nonlinear_hw_write_aq3_Expect(BASE_ADDRESS, configuration.aq3);
-        uz_pmsmModel_nonlinear_hw_write_aq4_Expect(BASE_ADDRESS, configuration.aq4);
-        uz_pmsmModel_nonlinear_hw_write_aq5_Expect(BASE_ADDRESS, configuration.aq5);
-        uz_pmsmModel_nonlinear_hw_write_aq6_Expect(BASE_ADDRESS, configuration.aq6);
-        uz_pmsmModel_nonlinear_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, configuration.F1G1);
-        uz_pmsmModel_nonlinear_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, configuration.F2G2);
-        uz_pmsmModel_nonlinear_hw_write_ad4_mul_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
-        uz_pmsmModel_nonlinear_hw_write_ad1_mul_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
-        uz_pmsmModel_nonlinear_hw_write_aq4_mul_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
-        uz_pmsmModel_nonlinear_hw_write_aq1_mul_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
-        uz_pmsmModel_nonlinear_hw_write_aq4_div_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
-        uz_pmsmModel_nonlinear_hw_write_aq1_div_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
-        uz_pmsmModel_nonlinear_hw_write_ad4_div_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
-        uz_pmsmModel_nonlinear_hw_write_ad1_div_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
-        uz_pmsmModel_nonlinear_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, configuration.aq3, configuration.aq6);
-    }
-    else
-    {
-        // if nonlinear model is not simulated, expect the hw write functions to be called with the default values
-        uz_pmsmModel_nonlinear_hw_write_ad1_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad2_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad3_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad4_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad5_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad6_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq1_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq2_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq3_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq4_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq5_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq6_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad4_mul_ad5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad1_mul_ad2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq4_mul_aq5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq1_mul_aq2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq4_div_aq5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq1_div_aq2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad4_div_ad5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_ad1_div_ad2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-        uz_pmsmModel_nonlinear_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, 1.0f, 1.0f);
-    }   
-    uz_pmsmModel_nonlinear_hw_write_simulate_nonlinear_Expect(BASE_ADDRESS, configuration.simulate_nonlinear);
+    uz_pmsmModel_nonlinear_hw_write_ad1_Expect(BASE_ADDRESS, configuration.ad1);
+    uz_pmsmModel_nonlinear_hw_write_ad2_Expect(BASE_ADDRESS, configuration.ad2);
+    uz_pmsmModel_nonlinear_hw_write_ad3_Expect(BASE_ADDRESS, configuration.ad3);
+    uz_pmsmModel_nonlinear_hw_write_ad4_Expect(BASE_ADDRESS, configuration.ad4);
+    uz_pmsmModel_nonlinear_hw_write_ad5_Expect(BASE_ADDRESS, configuration.ad5);
+    uz_pmsmModel_nonlinear_hw_write_ad6_Expect(BASE_ADDRESS, configuration.ad6);
+    uz_pmsmModel_nonlinear_hw_write_aq1_Expect(BASE_ADDRESS, configuration.aq1);
+    uz_pmsmModel_nonlinear_hw_write_aq2_Expect(BASE_ADDRESS, configuration.aq2);
+    uz_pmsmModel_nonlinear_hw_write_aq3_Expect(BASE_ADDRESS, configuration.aq3);
+    uz_pmsmModel_nonlinear_hw_write_aq4_Expect(BASE_ADDRESS, configuration.aq4);
+    uz_pmsmModel_nonlinear_hw_write_aq5_Expect(BASE_ADDRESS, configuration.aq5);
+    uz_pmsmModel_nonlinear_hw_write_aq6_Expect(BASE_ADDRESS, configuration.aq6);
+    uz_pmsmModel_nonlinear_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, configuration.F1G1);
+    uz_pmsmModel_nonlinear_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, configuration.F2G2);
+    uz_pmsmModel_nonlinear_hw_write_ad4_mul_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
+    uz_pmsmModel_nonlinear_hw_write_ad1_mul_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
+    uz_pmsmModel_nonlinear_hw_write_aq4_mul_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
+    uz_pmsmModel_nonlinear_hw_write_aq1_mul_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
+    uz_pmsmModel_nonlinear_hw_write_aq4_div_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
+    uz_pmsmModel_nonlinear_hw_write_aq1_div_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
+    uz_pmsmModel_nonlinear_hw_write_ad4_div_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
+    uz_pmsmModel_nonlinear_hw_write_ad1_div_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
+    uz_pmsmModel_nonlinear_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, configuration.aq3, configuration.aq6);  
     uz_pmsmModel_nonlinear_hw_trigger_fitting_parameter_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_nonlinear_t *instance = uz_pmsmModel_nonlinear_init(configuration);
     return (instance);

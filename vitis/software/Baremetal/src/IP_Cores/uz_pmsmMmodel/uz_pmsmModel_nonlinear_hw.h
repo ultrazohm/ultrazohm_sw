@@ -24,9 +24,6 @@ void uz_pmsmModel_nonlinear_hw_trigger_fitting_parameter_strobe(uint32_t base_ad
 // Electrical configuration parameters
 void uz_pmsmModel_nonlinear_hw_write_polepairs(uint32_t base_address, float polepairs);
 void uz_pmsmModel_nonlinear_hw_write_r_1(uint32_t base_address, float r_1);
-void uz_pmsmModel_nonlinear_hw_write_psi_pm(uint32_t base_address, float psi_pm);
-void uz_pmsmModel_nonlinear_hw_write_L_d(uint32_t base_address,float L_d);
-void uz_pmsmModel_nonlinear_hw_write_L_q(uint32_t base_address, float L_q);
 
 // Mechanical configuration parameters
 void uz_pmsmModel_nonlinear_hw_write_friction_coefficient(uint32_t base_address, float mu);
@@ -70,7 +67,7 @@ float uz_pmsmModel_nonlinear_hw_read_Ldq_approx(uint32_t base_address);
 
 // Determine if omega mech is a input or the mechanical system is simulated with a simple friction model
 void uz_pmsmModel_nonlinear_hw_write_simulate_mechanical(uint32_t base_address, bool simulate_mechanical);
-void uz_pmsmModel_nonlinear_hw_write_simulate_nonlinear(uint32_t base_address, bool simulate_nonlinear);
+
 
 // Reset
 void uz_pmsmModel_nonlinear_hw_write_reset(uint32_t base_address, bool reset);

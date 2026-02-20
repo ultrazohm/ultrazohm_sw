@@ -20,9 +20,6 @@ struct uz_pmsmModel_nonlinear_config_t
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
     float polepairs; /**< Pole pairs of the PMSM */
     float r_1; /**< Stator resistance in ohm */
-    float L_d; /**< Direct inductance in Henry */
-    float L_q; /**< Quadrature inductance in Henry */
-    float psi_pm; /**< Linked magnetic flux of PM magnets */
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */

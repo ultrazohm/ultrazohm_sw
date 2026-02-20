@@ -42,6 +42,7 @@ volatile int js_queue_overflow_dropped_samples = 0;
 volatile int js_queue_purge_requested = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
+static uint16_t js_a53_scope_ch1_counter = 0U;
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -70,8 +71,17 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{
+		struct javascope_data_t sample_for_queue = *javascope_data;
+		// Diagnostic marker: overwrite CH1 with an A53 ISR-local counter (0..1000).
+		sample_for_queue.scope_ch[0] = (float)js_a53_scope_ch1_counter;
+		if (js_a53_scope_ch1_counter > 1000U) {
+			js_a53_scope_ch1_counter = 0U;
+		} else {
+			js_a53_scope_ch1_counter++;
+		}
+
 		// append sample to queue
-		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
+		size_t queue_status = xQueueSendToBackFromISR(js_queue, &sample_for_queue, &xHigherPriorityTaskWoken);
 
 		if (queue_status == errQUEUE_FULL)
 		{

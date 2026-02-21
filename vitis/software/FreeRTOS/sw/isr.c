@@ -29,7 +29,7 @@
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
-struct APU_to_RPU_t ControlData;
+struct APU_to_RPU_t ControlData = {0};
 extern volatile int js_connection_established;
 
 // cf. main.c
@@ -74,7 +74,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 		struct javascope_data_t sample_for_queue = *javascope_data;
 		// Diagnostic marker: overwrite CH1 with an A53 ISR-local counter (0..1000).
 		sample_for_queue.scope_ch[0] = (float)js_a53_scope_ch1_counter;
-		if (js_a53_scope_ch1_counter > 1000U) {
+		if (js_a53_scope_ch1_counter >= 1000U) {
 			js_a53_scope_ch1_counter = 0U;
 		} else {
 			js_a53_scope_ch1_counter++;
@@ -95,9 +95,14 @@ void Transfer_ipc_Intr_Handler(void *data)
 	javascope_data_status = javascope_data->status;
 
 	// Consume at most one pending control command per ISR to preserve ordering.
-	(void)xQueueReceiveFromISR(js_control_queue, &ControlData, &xHigherPriorityTaskWoken);
+	// If no command is pending, send an explicit no-op (id=0) to avoid re-sending old commands.
+	BaseType_t control_command_available = xQueueReceiveFromISR(js_control_queue, &ControlData, &xHigherPriorityTaskWoken);
+	if (control_command_available != pdTRUE) {
+		ControlData.id = 0U;
+		ControlData.value = 0.0f;
+	}
 
-	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
+	u32_t ControlData_length = sizeof(ControlData)/sizeof(uint32_t); // XIpiPsu_WriteMessage expects number of 32-bit words as message length
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
@@ -131,7 +136,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// Not required in the current design: the Ethernet task polls queue depth and
 	// uses non-blocking queue receive, so it is usually not blocked waiting to be
 	// woken by this ISR.
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 

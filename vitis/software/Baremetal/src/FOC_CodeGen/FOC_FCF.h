@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.43
+ * Model version                  : 5.72
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Feb 19 15:24:35 2026
+ * C/C++ source code generated on : Thu Feb 19 21:00:25 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -267,6 +267,7 @@ typedef struct {
   real32_T I_dq_Act[6];                /* '<S1>/Current_Controller' */
   real32_T usrpm;                      /* '<S12>/[1//s] => [rpm]' */
   real32_T Abs_d;                      /* '<S12>/Abs' */
+  real32_T DataSourceSwitch;           /* '<S8>/DataSourceSwitch' */
   real32_T EN_FLT_Switch_1;            /* '<S42>/EN_FLT_Switch_1' */
   real32_T EN_FLT_Switch_2;            /* '<S42>/EN_FLT_Switch_2' */
   real32_T EN_FLT_Switch_3;            /* '<S42>/EN_FLT_Switch_3' */
@@ -424,7 +425,6 @@ typedef struct {
   boolean_T Memory_k;                  /* '<S83>/Memory' */
   boolean_T Logic_e[2];                /* '<S83>/Logic' */
   boolean_T Overspeed_Error;           /* '<S12>/Selectphicalc1' */
-  boolean_T DataSourceSwitch;          /* '<S8>/DataSourceSwitch' */
   boolean_T Compare_lv;                /* '<S49>/Compare' */
   boolean_T Compare_fp;                /* '<S50>/Compare' */
   boolean_T Compare_g1;                /* '<S51>/Compare' */
@@ -518,7 +518,7 @@ typedef struct {
 typedef struct {
   bus_BSW_FCF_t bus_BSW_FCF;           /* '<Root>/bus_BSW_FCF' */
   bus_SCF_t bus_SCF;                   /* '<Root>/bus_SCF' */
-  bus_SMF_t bus_SCF_p;                 /* '<Root>/bus_SMF' */
+  bus_SMF_t bus_SMF;                   /* '<Root>/bus_SMF' */
 } ExtU_FOC_FCF_T;
 
 /* External outputs (root outports fed by signals with default storage) */

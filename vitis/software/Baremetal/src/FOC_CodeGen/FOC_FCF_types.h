@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.43
+ * Model version                  : 5.72
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Feb 19 15:24:35 2026
+ * C/C++ source code generated on : Thu Feb 19 21:00:25 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -59,6 +59,7 @@ typedef struct {
   real32_T global_reset_errors;
   real32_T SPEED_CTRL_Enable;
   real32_T MaxMotTemp;
+  boolean_T Collective_Over_Temp_Error;
 } bus_SMF_t;
 
 #endif

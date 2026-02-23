@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.66
+ * Model version                  : 5.73
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Feb 19 20:41:53 2026
+ * C/C++ source code generated on : Thu Feb 19 21:04:02 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -42,7 +42,8 @@ const bus_SMF_t FOC_SMF_rtZbus_SMF_t = { 0.0F,/* SysStateAct */
   0.0F,                                /* FOC_Enable_PWM */
   0.0F,                                /* global_reset_errors */
   0.0F,                                /* SPEED_CTRL_Enable */
-  0.0F                                 /* MaxMotTemp */
+  0.0F,                                /* MaxMotTemp */
+  false                                /* Collective_Over_Temp_Error */
 };
 
 /* Model step function */
@@ -254,6 +255,11 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   FOC_SMF_Y->bus_SMF.MaxMotTemp = tmp;
 
   /* End of MinMax: '<S4>/MinMax1' */
+
+  /* BusCreator: '<S1>/Bus Creator' incorporates:
+   *  Outport: '<Root>/bus_SMF'
+   */
+  FOC_SMF_Y->bus_SMF.Collective_Over_Temp_Error = false;
 
   /* MinMax: '<S4>/MinMax' incorporates:
    *  Inport: '<Root>/bus_BSW_SCF'

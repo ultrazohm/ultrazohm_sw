@@ -53,7 +53,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -49,6 +49,9 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_pwm_freq,
+	JSO_duty_cycle,
+	JSO_temp,
 	JSO_ENDMARKER
 };
 

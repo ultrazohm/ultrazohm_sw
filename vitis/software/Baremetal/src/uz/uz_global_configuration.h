@@ -30,7 +30,7 @@
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        25.0e3f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
@@ -80,7 +80,7 @@
 #define UZ_PRNG_HALTON_MAX_INSTANCES                    0U
 #define UZ_PRNG_MAX_INSTANCES                           0U
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
-#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        0U
+#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        2U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

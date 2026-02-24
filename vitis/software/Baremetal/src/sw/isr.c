@@ -92,44 +92,29 @@ void ISR_Control(void *data)
     ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
 
     // get intermediate circuit voltage measurement value
-    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
+//    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
+    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4;
+//	Global_Data.aa.A1.me.ADC_B8;
+//	Global_Data.aa.A2.me.ADC_A4;
 
     // get phase currents measurement values
-    ctrl_data.bus_BSW_FCF.ADC_I_ph[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-    ctrl_data.bus_BSW_FCF.ADC_I_ph[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-    ctrl_data.bus_BSW_FCF.ADC_I_ph[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
-//    ctrl_data.fcf_in.I_phA[3] =
-//    ctrl_data.fcf_in.I_phA[4] =
-//    ctrl_data.fcf_in.I_phA[5] =
-//    ctrl_data.fcf_in.I_phA[6] =
-//    ctrl_data.fcf_in.I_phA[7] =
-//    ctrl_data.fcf_in.I_phA[8] =
+//    ctrl_data.bus_BSW_FCF.ADC_I_ph[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+//    ctrl_data.bus_BSW_FCF.ADC_I_ph[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+//    ctrl_data.bus_BSW_FCF.ADC_I_ph[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[0] = Global_Data.aa.A1.me.ADC_A1;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[1] = Global_Data.aa.A1.me.ADC_A2;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[2] = Global_Data.aa.A1.me.ADC_A3;
 
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[3] = Global_Data.aa.A1.me.ADC_B5;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[4] = Global_Data.aa.A1.me.ADC_B6;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[5] = Global_Data.aa.A1.me.ADC_B7;
 
-    // get values from Slow Control Function
-//    ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
-//	ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[6] = Global_Data.aa.A2.me.ADC_A1;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[7] = Global_Data.aa.A2.me.ADC_A2;
+	ctrl_data.bus_BSW_FCF.ADC_I_ph[8] = Global_Data.aa.A2.me.ADC_A3;
 
-	// get values from Stateflow Function
-//	ctrl_data.fcf_in.FOC_Mode   = ctrl_data.smf_out.FOC_Mode;
-//	ctrl_data.fcf_in.FOC_Enable = ctrl_data.smf_out.FOC_Enable_PWM;
 
 	// write inputs to fast control function of simulink model
-//	FOC_FCF_MPtr->inputs->U_DC         = ctrl_data.fcf_in.U_DC;
-//	FOC_FCF_MPtr->inputs->I_phA[0]     = ctrl_data.fcf_in.I_phA[0];
-//	FOC_FCF_MPtr->inputs->I_phA[1]     = ctrl_data.fcf_in.I_phA[1];
-//	FOC_FCF_MPtr->inputs->I_phA[2]     = ctrl_data.fcf_in.I_phA[2];
-//	FOC_FCF_MPtr->inputs->I_phA[3]     = ctrl_data.fcf_in.I_phA[3];
-//	FOC_FCF_MPtr->inputs->I_phA[4]     = ctrl_data.fcf_in.I_phA[4];
-//	FOC_FCF_MPtr->inputs->I_phA[5]     = ctrl_data.fcf_in.I_phA[5];
-//	FOC_FCF_MPtr->inputs->I_phA[6]     = ctrl_data.fcf_in.I_phA[6];
-//	FOC_FCF_MPtr->inputs->I_phA[7]     = ctrl_data.fcf_in.I_phA[7];
-//	FOC_FCF_MPtr->inputs->I_phA[8]     = ctrl_data.fcf_in.I_phA[8];
-//	FOC_FCF_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
-//	FOC_FCF_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
-//	FOC_FCF_MPtr->inputs->phi_elrad    = ctrl_data.fcf_in.phi_elrad;
-//	FOC_FCF_MPtr->inputs->FOC_Mode     = ctrl_data.fcf_in.FOC_Mode;
-//	FOC_FCF_MPtr->inputs->FOC_Enable_PWM   = ctrl_data.fcf_in.FOC_Enable;
 	FOC_FCF_MPtr->inputs->bus_BSW_FCF = ctrl_data.bus_BSW_FCF;
 	FOC_FCF_MPtr->inputs->bus_SCF     = ctrl_data.bus_SCF;
 	FOC_FCF_MPtr->inputs->bus_SMF     = ctrl_data.bus_SMF;

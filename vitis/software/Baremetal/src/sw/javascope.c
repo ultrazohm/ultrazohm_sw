@@ -89,6 +89,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_pwm_freq]				= &data->av.pwm_freq;
 	js_ch_observable[JSO_duty_cycle]			= &data->av.duty_cycle;
 	js_ch_observable[JSO_temp]			  		= &data->av.temp;
+	js_ch_observable[JSO_OCP]			  		= &data->av.OCP_INVERTER;
+	js_ch_observable[JSO_FAULT]			  		= &data->av.FAULT_INVERTER;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

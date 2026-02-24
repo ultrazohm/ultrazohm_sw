@@ -52,6 +52,8 @@ enum JS_OberservableData {
 	JSO_pwm_freq,
 	JSO_duty_cycle,
 	JSO_temp,
+	JSO_OCP,
+	JSO_FAULT,
 	JSO_ENDMARKER
 };
 

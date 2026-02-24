@@ -52,6 +52,12 @@ struct uz_PWM_duty_freq_detection_config_t config = {
 
 };
 
+struct uz_axi_gpio_config_t d1_gpi_config={
+            .base_address=XPAR_UZ_USER_AXI_GPI_D1_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPI_D1_DEVICE_ID,
+            .number_of_pins=3,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+};
 struct linear_interpolation_parameters_t lin_inter_param= {
  .a = 100.0f,
  .b = -50.0f
@@ -103,6 +109,7 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.PWM_Detect_instance = uz_PWM_duty_freq_detection_init(config);
+            Global_Data.objects.d1_gpi_ch15_17	= uz_axi_gpio_init(d1_gpi_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -89,6 +90,8 @@ typedef struct _actualValues_ {
 	float pwm_freq;
 	float duty_cycle;
 	float temp;
+	float OCP_INVERTER;
+	float FAULT_INVERTER;
 	uint32_t slowDataCounter;
 } actualValues;
 
@@ -109,6 +112,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_PWM_duty_freq_detection_t* PWM_Detect_instance;
+	uz_axi_gpio_t* d1_gpi_ch15_17;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -1,0 +1,9 @@
+#ifndef UZ_PWM_DUTY_FREQ_DETECTION_HW_H
+#define UZ_PWM_DUTY_FREQ_DETECTION_HW_H
+#include <stdint.h>
+
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(uint32_t base_address);
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks(uint32_t base_address);
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks(uint32_t base_address);
+
+#endif // UZ_PWM_DUTY_FREQ_DETECTION_HW_H

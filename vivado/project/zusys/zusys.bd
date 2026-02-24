@@ -79,11 +79,23 @@
             "uz_dutycyclemeas_ip_0": "",
             "ila_DutyCycle": "",
             "smartconnect_0": "",
-            "xlslice_0": "",
+            "getBit0_1": "",
             "uz_dutycyclemeas_ip_1": "",
-            "xlslice_1": "",
+            "getBit1_1": "",
             "uz_dutycyclemeas_ip_2": "",
-            "xlslice_2": ""
+            "getBit2_1": "",
+            "uz_dutycyclemeas_ip_3": "",
+            "uz_dutycyclemeas_ip_4": "",
+            "uz_dutycyclemeas_ip_5": "",
+            "uz_dutycyclemeas_ip_6": "",
+            "uz_dutycyclemeas_ip_7": "",
+            "uz_dutycyclemeas_ip_8": "",
+            "getBit0_2": "",
+            "getBit1_2": "",
+            "getBit2_2": "",
+            "getBit0_3": "",
+            "getBit1_3": "",
+            "getBit2_3": ""
           },
           "smartconnect_0": ""
         }
@@ -1961,6 +1973,16 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "D2_IN_NTC": {
+            "direction": "I",
+            "left": "2",
+            "right": "0"
+          },
+          "D3_IN_NTC": {
+            "direction": "I",
+            "left": "2",
+            "right": "0"
           }
         },
         "components": {
@@ -2720,6 +2742,16 @@
               "D2_28_OUT_CS_SQUIB3": {
                 "direction": "O",
                 "left": "0",
+                "right": "0"
+              },
+              "D2_IN_NTC": {
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "D3_IN_NTC": {
+                "direction": "I",
+                "left": "2",
                 "right": "0"
               }
             },
@@ -3756,6 +3788,16 @@
                     "direction": "I",
                     "left": "2",
                     "right": "0"
+                  },
+                  "D2_IN_NTC": {
+                    "direction": "I",
+                    "left": "2",
+                    "right": "0"
+                  },
+                  "D3_IN_NTC": {
+                    "direction": "I",
+                    "left": "2",
+                    "right": "0"
                   }
                 },
                 "components": {
@@ -3789,7 +3831,7 @@
                     "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/smartconnect_0",
                     "parameters": {
                       "NUM_MI": {
-                        "value": "3"
+                        "value": "9"
                       },
                       "NUM_SI": {
                         "value": "1"
@@ -3811,7 +3853,13 @@
                         "bridges": [
                           "M00_AXI",
                           "M01_AXI",
-                          "M02_AXI"
+                          "M02_AXI",
+                          "M03_AXI",
+                          "M04_AXI",
+                          "M05_AXI",
+                          "M06_AXI",
+                          "M07_AXI",
+                          "M08_AXI"
                         ]
                       },
                       "M00_AXI": {
@@ -3906,14 +3954,200 @@
                             "value": "0"
                           }
                         }
+                      },
+                      "M03_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
+                      },
+                      "M04_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
+                      },
+                      "M05_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
+                      },
+                      "M06_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
+                      },
+                      "M07_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
+                      },
+                      "M08_AXI": {
+                        "mode": "Master",
+                        "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                        "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                        "parameters": {
+                          "MAX_BURST_LENGTH": {
+                            "value": "1"
+                          },
+                          "NUM_READ_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_READ_THREADS": {
+                            "value": "1"
+                          },
+                          "NUM_WRITE_OUTSTANDING": {
+                            "value": "8"
+                          },
+                          "NUM_WRITE_THREADS": {
+                            "value": "1"
+                          },
+                          "RUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          },
+                          "SUPPORTS_NARROW_BURST": {
+                            "value": "0"
+                          },
+                          "WUSER_BITS_PER_BYTE": {
+                            "value": "0"
+                          }
+                        }
                       }
                     }
                   },
-                  "xlslice_0": {
+                  "getBit0_1": {
                     "vlnv": "xilinx.com:ip:xlslice:1.0",
                     "xci_name": "zusys_xlslice_0_0",
                     "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/xlslice_0",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit0_1",
                     "parameters": {
                       "DIN_WIDTH": {
                         "value": "3"
@@ -3926,11 +4160,11 @@
                     "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_0_1\\zusys_uz_dutycyclemeas_ip_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_1"
                   },
-                  "xlslice_1": {
+                  "getBit1_1": {
                     "vlnv": "xilinx.com:ip:xlslice:1.0",
                     "xci_name": "zusys_xlslice_0_1",
                     "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
-                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/xlslice_1",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit1_1",
                     "parameters": {
                       "DIN_FROM": {
                         "value": "1"
@@ -3949,11 +4183,137 @@
                     "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_1_0\\zusys_uz_dutycyclemeas_ip_1_0.xci",
                     "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_2"
                   },
-                  "xlslice_2": {
+                  "getBit2_1": {
                     "vlnv": "xilinx.com:ip:xlslice:1.0",
                     "xci_name": "zusys_xlslice_1_0",
                     "xci_path": "ip\\zusys_xlslice_1_0\\zusys_xlslice_1_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/xlslice_2",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit2_1",
+                    "parameters": {
+                      "DIN_FROM": {
+                        "value": "2"
+                      },
+                      "DIN_TO": {
+                        "value": "2"
+                      },
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "uz_dutycyclemeas_ip_3": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_0",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_0\\zusys_uz_dutycyclemeas_ip_2_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_3"
+                  },
+                  "uz_dutycyclemeas_ip_4": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_1",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_1\\zusys_uz_dutycyclemeas_ip_2_1.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_4"
+                  },
+                  "uz_dutycyclemeas_ip_5": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_2",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_2\\zusys_uz_dutycyclemeas_ip_2_2.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_5"
+                  },
+                  "uz_dutycyclemeas_ip_6": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_3",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_3\\zusys_uz_dutycyclemeas_ip_2_3.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_6"
+                  },
+                  "uz_dutycyclemeas_ip_7": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_4",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_4\\zusys_uz_dutycyclemeas_ip_2_4.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_7"
+                  },
+                  "uz_dutycyclemeas_ip_8": {
+                    "vlnv": "xilinx.com:ip:uz_dutycyclemeas_ip:1.0",
+                    "xci_name": "zusys_uz_dutycyclemeas_ip_2_5",
+                    "xci_path": "ip\\zusys_uz_dutycyclemeas_ip_2_5\\zusys_uz_dutycyclemeas_ip_2_5.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_8"
+                  },
+                  "getBit0_2": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_xlslice_0_4",
+                    "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit0_2",
+                    "parameters": {
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "getBit1_2": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_getBit1_1_0",
+                    "xci_path": "ip\\zusys_getBit1_1_0\\zusys_getBit1_1_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit1_2",
+                    "parameters": {
+                      "DIN_FROM": {
+                        "value": "1"
+                      },
+                      "DIN_TO": {
+                        "value": "1"
+                      },
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "getBit2_2": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_getBit2_1_0",
+                    "xci_path": "ip\\zusys_getBit2_1_0\\zusys_getBit2_1_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit2_2",
+                    "parameters": {
+                      "DIN_FROM": {
+                        "value": "2"
+                      },
+                      "DIN_TO": {
+                        "value": "2"
+                      },
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "getBit0_3": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_getBit0_2_0",
+                    "xci_path": "ip\\zusys_getBit0_2_0\\zusys_getBit0_2_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit0_3",
+                    "parameters": {
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "getBit1_3": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_getBit1_2_0",
+                    "xci_path": "ip\\zusys_getBit1_2_0\\zusys_getBit1_2_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit1_3",
+                    "parameters": {
+                      "DIN_FROM": {
+                        "value": "1"
+                      },
+                      "DIN_TO": {
+                        "value": "1"
+                      },
+                      "DIN_WIDTH": {
+                        "value": "3"
+                      }
+                    }
+                  },
+                  "getBit2_3": {
+                    "vlnv": "xilinx.com:ip:xlslice:1.0",
+                    "xci_name": "zusys_getBit2_2_0",
+                    "xci_path": "ip\\zusys_getBit2_2_0\\zusys_getBit2_2_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Inv_Temp/getBit2_3",
                     "parameters": {
                       "DIN_FROM": {
                         "value": "2"
@@ -3991,6 +4351,42 @@
                       "uz_dutycyclemeas_ip_2/AXI4_Lite",
                       "smartconnect_0/M02_AXI"
                     ]
+                  },
+                  "smartconnect_0_M03_AXI": {
+                    "interface_ports": [
+                      "uz_dutycyclemeas_ip_3/AXI4_Lite",
+                      "smartconnect_0/M03_AXI"
+                    ]
+                  },
+                  "smartconnect_0_M04_AXI": {
+                    "interface_ports": [
+                      "uz_dutycyclemeas_ip_4/AXI4_Lite",
+                      "smartconnect_0/M04_AXI"
+                    ]
+                  },
+                  "smartconnect_0_M05_AXI": {
+                    "interface_ports": [
+                      "uz_dutycyclemeas_ip_5/AXI4_Lite",
+                      "smartconnect_0/M05_AXI"
+                    ]
+                  },
+                  "smartconnect_0_M06_AXI": {
+                    "interface_ports": [
+                      "uz_dutycyclemeas_ip_6/AXI4_Lite",
+                      "smartconnect_0/M06_AXI"
+                    ]
+                  },
+                  "smartconnect_0_M07_AXI": {
+                    "interface_ports": [
+                      "smartconnect_0/M07_AXI",
+                      "uz_dutycyclemeas_ip_7/AXI4_Lite"
+                    ]
+                  },
+                  "smartconnect_0_M08_AXI": {
+                    "interface_ports": [
+                      "smartconnect_0/M08_AXI",
+                      "uz_dutycyclemeas_ip_8/AXI4_Lite"
+                    ]
                   }
                 },
                 "nets": {
@@ -3998,9 +4394,61 @@
                     "ports": [
                       "D1_IN_NTC",
                       "ila_DutyCycle/probe1",
-                      "xlslice_0/Din",
-                      "xlslice_1/Din",
-                      "xlslice_2/Din"
+                      "getBit0_1/Din",
+                      "getBit1_1/Din",
+                      "getBit2_1/Din"
+                    ]
+                  },
+                  "D2_IN_NTC_1": {
+                    "ports": [
+                      "D2_IN_NTC",
+                      "getBit0_2/Din",
+                      "getBit1_2/Din",
+                      "getBit2_2/Din"
+                    ]
+                  },
+                  "D3_IN_NTC_1": {
+                    "ports": [
+                      "D3_IN_NTC",
+                      "getBit0_3/Din",
+                      "getBit1_3/Din",
+                      "getBit2_3/Din"
+                    ]
+                  },
+                  "getBit0_2_Dout": {
+                    "ports": [
+                      "getBit0_2/Dout",
+                      "uz_dutycyclemeas_ip_3/PWMin"
+                    ]
+                  },
+                  "getBit0_3_Dout": {
+                    "ports": [
+                      "getBit0_3/Dout",
+                      "uz_dutycyclemeas_ip_6/PWMin"
+                    ]
+                  },
+                  "getBit1_2_Dout": {
+                    "ports": [
+                      "getBit1_2/Dout",
+                      "uz_dutycyclemeas_ip_4/PWMin"
+                    ]
+                  },
+                  "getBit1_3_Dout": {
+                    "ports": [
+                      "getBit1_3/Dout",
+                      "uz_dutycyclemeas_ip_7/PWMin"
+                    ]
+                  },
+                  "getBit2_2_Dout": {
+                    "ports": [
+                      "getBit2_2/Dout",
+                      "uz_dutycyclemeas_ip_5/PWMin"
+                    ]
+                  },
+                  "getBit2_3_Dout": {
+                    "ports": [
+                      "getBit2_3/Dout",
+                      "uz_dutycyclemeas_ip_8/PWMin"
                     ]
                   },
                   "proc_sys_reset_1_peripheral_aresetn": {
@@ -4012,25 +4460,37 @@
                       "uz_dutycyclemeas_ip_1/IPCORE_RESETN",
                       "uz_dutycyclemeas_ip_1/AXI4_Lite_ARESETN",
                       "uz_dutycyclemeas_ip_2/IPCORE_RESETN",
-                      "uz_dutycyclemeas_ip_2/AXI4_Lite_ARESETN"
+                      "uz_dutycyclemeas_ip_2/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_3/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_3/IPCORE_RESETN",
+                      "uz_dutycyclemeas_ip_4/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_4/IPCORE_RESETN",
+                      "uz_dutycyclemeas_ip_8/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_8/IPCORE_RESETN",
+                      "uz_dutycyclemeas_ip_7/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_7/IPCORE_RESETN",
+                      "uz_dutycyclemeas_ip_6/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_6/IPCORE_RESETN",
+                      "uz_dutycyclemeas_ip_5/AXI4_Lite_ARESETN",
+                      "uz_dutycyclemeas_ip_5/IPCORE_RESETN"
                     ]
                   },
                   "xlslice_0_Dout": {
                     "ports": [
-                      "xlslice_0/Dout",
+                      "getBit0_1/Dout",
                       "ila_DutyCycle/probe0",
                       "uz_dutycyclemeas_ip_0/PWMin"
                     ]
                   },
                   "xlslice_1_Dout": {
                     "ports": [
-                      "xlslice_1/Dout",
+                      "getBit1_1/Dout",
                       "uz_dutycyclemeas_ip_1/PWMin"
                     ]
                   },
                   "xlslice_2_Dout": {
                     "ports": [
-                      "xlslice_2/Dout",
+                      "getBit2_1/Dout",
                       "uz_dutycyclemeas_ip_2/PWMin"
                     ]
                   },
@@ -4044,7 +4504,19 @@
                       "uz_dutycyclemeas_ip_1/IPCORE_CLK",
                       "uz_dutycyclemeas_ip_1/AXI4_Lite_ACLK",
                       "uz_dutycyclemeas_ip_2/IPCORE_CLK",
-                      "uz_dutycyclemeas_ip_2/AXI4_Lite_ACLK"
+                      "uz_dutycyclemeas_ip_2/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_3/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_8/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_3/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_4/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_4/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_5/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_5/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_6/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_6/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_7/IPCORE_CLK",
+                      "uz_dutycyclemeas_ip_7/AXI4_Lite_ACLK",
+                      "uz_dutycyclemeas_ip_8/AXI4_Lite_ACLK"
                     ]
                   }
                 }
@@ -4314,6 +4786,12 @@
                   "Gates/D2_IN_FLT"
                 ]
               },
+              "D2_IN_NTC_1": {
+                "ports": [
+                  "D2_IN_NTC",
+                  "Inv_Temp/D2_IN_NTC"
+                ]
+              },
               "D2_IN_RDY_1": {
                 "ports": [
                   "D2_IN_RDY",
@@ -4324,6 +4802,12 @@
                 "ports": [
                   "D3_IN_FLT",
                   "Gates/D3_IN_FLT"
+                ]
+              },
+              "D3_IN_NTC_1": {
+                "ports": [
+                  "D3_IN_NTC",
+                  "Inv_Temp/D3_IN_NTC"
                 ]
               },
               "D3_IN_RDY_1": {
@@ -4522,6 +5006,12 @@
               "Inverter_Interface/D2_IN_FLT"
             ]
           },
+          "D2_IN_NTC_1": {
+            "ports": [
+              "D2_IN_NTC",
+              "Inverter_Interface/D2_IN_NTC"
+            ]
+          },
           "D2_IN_RDY_1": {
             "ports": [
               "D2_IN_RDY",
@@ -4532,6 +5022,12 @@
             "ports": [
               "D3_IN_FLT",
               "Inverter_Interface/D3_IN_FLT"
+            ]
+          },
+          "D3_IN_NTC_1": {
+            "ports": [
+              "D3_IN_NTC",
+              "Inverter_Interface/D3_IN_NTC"
             ]
           },
           "D3_IN_RDY_1": {
@@ -11242,6 +11738,12 @@
           "uz_digital_adapter/D2_IN_FLT"
         ]
       },
+      "D2_IN_NTC_1": {
+        "ports": [
+          "D2_IN_NTC",
+          "uz_digital_adapter/D2_IN_NTC"
+        ]
+      },
       "D2_IN_RDY_1": {
         "ports": [
           "D2_IN_RDY",
@@ -11252,6 +11754,12 @@
         "ports": [
           "D3_IN_FLT",
           "uz_digital_adapter/D3_IN_FLT"
+        ]
+      },
+      "D3_IN_NTC_1": {
+        "ports": [
+          "D3_IN_NTC",
+          "uz_digital_adapter/D3_IN_NTC"
         ]
       },
       "D3_IN_RDY_1": {
@@ -11727,6 +12235,36 @@
               "SEG_uz_dutycyclemeas_ip_2_reg0": {
                 "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_2/AXI4_Lite/reg0",
                 "offset": "0x0080140000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_3_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_3/AXI4_Lite/reg0",
+                "offset": "0x0080200000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_4_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_4/AXI4_Lite/reg0",
+                "offset": "0x0080210000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_5_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_5/AXI4_Lite/reg0",
+                "offset": "0x0080220000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_6_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_6/AXI4_Lite/reg0",
+                "offset": "0x0080230000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_7_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_7/AXI4_Lite/reg0",
+                "offset": "0x0080240000",
+                "range": "64K"
+              },
+              "SEG_uz_dutycyclemeas_ip_8_reg0": {
+                "address_block": "/uz_digital_adapter/Inverter_Interface/Inv_Temp/uz_dutycyclemeas_ip_8/AXI4_Lite/reg0",
+                "offset": "0x0080250000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {

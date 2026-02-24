@@ -215,9 +215,12 @@ void Control_Task_100ms(void)
 	data_R2A_localRPU.Temp_Inv_Phase_1 = Inv_SiC_Temp.T_Sys1_Ph1;
 	data_R2A_localRPU.Temp_Inv_Phase_2 = Inv_SiC_Temp.T_Sys1_Ph2;
 	data_R2A_localRPU.Temp_Inv_Phase_3 = Inv_SiC_Temp.T_Sys1_Ph3;
-	data_R2A_localRPU.Temp_Inv_Phase_4 = 4;
-	data_R2A_localRPU.Temp_Inv_Phase_5 = 5;
-	data_R2A_localRPU.Temp_Inv_Phase_6 = 6;
+	data_R2A_localRPU.Temp_Inv_Phase_4 = Inv_SiC_Temp.T_Sys2_Ph1;
+	data_R2A_localRPU.Temp_Inv_Phase_5 = Inv_SiC_Temp.T_Sys2_Ph2;
+	data_R2A_localRPU.Temp_Inv_Phase_6 = Inv_SiC_Temp.T_Sys2_Ph3;
+	data_R2A_localRPU.Temp_Inv_Phase_7 = Inv_SiC_Temp.T_Sys3_Ph1;
+	data_R2A_localRPU.Temp_Inv_Phase_8 = Inv_SiC_Temp.T_Sys3_Ph2;
+	data_R2A_localRPU.Temp_Inv_Phase_9 = Inv_SiC_Temp.T_Sys3_Ph3;
 	data_R2A_localRPU.Temp_Mot_Phase_1 = 1;
 	data_R2A_localRPU.Temp_Mot_Phase_2 = 2;
 	data_R2A_localRPU.Temp_Mot_Phase_3 = 3;

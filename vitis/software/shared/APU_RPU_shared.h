@@ -69,6 +69,9 @@ struct data_R2A_t
 	float Temp_Inv_Phase_4;
 	float Temp_Inv_Phase_5;
 	float Temp_Inv_Phase_6;
+	float Temp_Inv_Phase_7;
+	float Temp_Inv_Phase_8;
+	float Temp_Inv_Phase_9;
 	float Temp_Mot_Phase_1;
 	float Temp_Mot_Phase_2;
 	float Temp_Mot_Phase_3;

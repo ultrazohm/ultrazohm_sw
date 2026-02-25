@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b6cbe483</spirit:value>
+            <spirit:value>46791c17</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b6cbe483</spirit:value>
+            <spirit:value>46791c17</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -668,6 +668,10 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_pkg.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -685,10 +689,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection_dut.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -706,11 +706,16 @@
       <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_b3e8bd25</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_3c2318ad</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>hdl/uz_pwmdutyfreqdetection_pkg.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
@@ -733,11 +738,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pwmdutyfreqdetection_dut.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pwmdutyfreqdetection_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -786,6 +786,10 @@
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>doc/vector_strobe.jpg</spirit:name>
+        <spirit:userFileType>image</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>doc/uz_pwmdutyfreqdetection_ip_core_report.html</spirit:name>
         <spirit:userFileType>html</spirit:userFileType>
       </spirit:file>
@@ -815,14 +819,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pwmdutyfreqdetection</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114307304</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-10-17T07:05:09Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114496004</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-02-25T09:05:09Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="da69ce62"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="aa145291"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="07124df9"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="bb0ef15c"/>
     </xilinx:packagingInfo>

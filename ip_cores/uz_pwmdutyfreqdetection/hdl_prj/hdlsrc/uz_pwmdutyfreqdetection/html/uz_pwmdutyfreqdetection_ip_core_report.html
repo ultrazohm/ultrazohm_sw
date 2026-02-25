@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">14.3
+<td class="summaryTableSndColOddRow">14.6
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">17-Oct-2025 09:04:41
+<td class="summaryTableSndColOddRow">25-Feb-2026 10:04:40
 </td>
 </tr>
 <tr>
@@ -168,43 +168,15 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:154')">AXI_period</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:155')">AXI_output</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">uint32
+<td class="distinctCellColor">uint32 (3)
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
 <td class="distinctCellColor">x"100"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:155')">AXI_hightime</a>
-</td>
-<td>Outport
-</td>
-<td>uint32
-</td>
-<td>AXI4-Lite
-</td>
-<td>x"104"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:156')">AXI_lowtime</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">uint32
-</td>
-<td class="distinctCellColor">AXI4-Lite
-</td>
-<td class="distinctCellColor">x"108"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -249,31 +221,23 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2510170904
+<td>contains unique IP timestamp (yymmddHHMM): 2602251004
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">AXI_period_Data
+<td class="distinctCellColor">AXI_output_Data
 </td>
 <td class="distinctCellColor">0x100
 </td>
-<td class="distinctCellColor">data register for Outport AXI_period
+<td class="distinctCellColor">data register for Outport AXI_output. Vector with 3 elements. Register is split across a total of 3 addresses, last address is 0x108.
 </td>
 </tr>
 <tr>
-<td>AXI_hightime_Data
+<td>AXI_output_Strobe
 </td>
-<td>0x104
+<td>0x110
 </td>
-<td>data register for Outport AXI_hightime
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">AXI_lowtime_Data
-</td>
-<td class="distinctCellColor">0x108
-</td>
-<td class="distinctCellColor">data register for Outport AXI_lowtime
+<td>strobe register for port AXI_output
 </td>
 </tr>
 </tbody>
@@ -317,6 +281,17 @@ The
 mode means there is no explicit synchronization between embedded processor software execution (SW) and the IP core (HW). SW and HW runs independently. The data written from the processor to IP core takes effect immediately, and the data read from the IP core is the latest data available on the IP core output ports. 
 <br/><br/>
 <img src="free_running.jpg"/>
+<br/><br/>
+<b>Vector Data Read/Write with Strobe Synchronization</b>
+<br/><br/>
+Vector data and data whose bit width is wider than the AXI4 register width (32 bits) use multiple registers and therefore require multiple sequential AXI4 reads/writes. All such data is treated as synchronous to the IP core algorithm logic. Additional strobe registers added for each such input and output port maintain this synchronization across multiple sequential AXI4 reads/writes. For input ports, the strobe register controls the enables on a set of shadow registers, allowing the IP core logic to see all the updated data elements simultaneously. For output ports, the strobe register controls the synchronous capturing of data elements to be read.
+<br/><br/>
+To read a data port that uses multiple registers, first write the strobe address with 0x1, then read each desired data element from corresponding address range. To write a data port that uses multiple registers, first write each desired data element, then write 0x1 to the strobe address to complete the transaction.
+<br/><br/>
+To read data whose bit width is wider than the AXI4 register width (32 bits), the individual 32-bit data elements should be concatenated after reading. For write operations, the data should be sliced into 32-bit sections before writing.
+<br/><br/>
+<img src="vector_strobe.jpg"/>
+<br/><br/>
 <br/><br/>
 <b>Xilinx Vivado Environment Integration</b>
 <br/><br/>

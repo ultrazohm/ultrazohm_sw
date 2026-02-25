@@ -14,6 +14,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_pwmdutyfreqdetection:141"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:143"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:165"] = "uz_pwmdutyfreqdetection:129";
+    this.sidParentMap["uz_pwmdutyfreqdetection:198"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:146"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:166"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:148"] = "uz_pwmdutyfreqdetection:129";
@@ -24,9 +25,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_pwmdutyfreqdetection:152"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:153"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:151"] = "uz_pwmdutyfreqdetection:129";
-    this.sidParentMap["uz_pwmdutyfreqdetection:154"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:155"] = "uz_pwmdutyfreqdetection:129";
-    this.sidParentMap["uz_pwmdutyfreqdetection:156"] = "uz_pwmdutyfreqdetection:129";
     this.sidParentMap["uz_pwmdutyfreqdetection:140:1"] = "uz_pwmdutyfreqdetection:140";
     this.sidParentMap["uz_pwmdutyfreqdetection:140:2"] = "uz_pwmdutyfreqdetection:140";
     this.sidParentMap["uz_pwmdutyfreqdetection:140:3"] = "uz_pwmdutyfreqdetection:140";

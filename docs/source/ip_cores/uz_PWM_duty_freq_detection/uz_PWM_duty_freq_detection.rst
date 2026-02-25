@@ -14,6 +14,7 @@ However, the IP core can also be used to simply measure any PWM signal's duty cy
 To save FPGA resources, the calculation of the duty cycle shown below is done on the PS.
 The IP core ensures synchronization of the outputs by updating all output values simultaneously whenever a new rise of the PWM is detected.
 The IP-core counts the number of clock cycles the PWM signal is high (:math:`N_{high}`) and the total number of clock cycles in one period (:math:`N_{period}`).
+The outputs are synchronized with a strobe signal.
 From these two values, the duty cycle is calculated as:
 
 .. math::

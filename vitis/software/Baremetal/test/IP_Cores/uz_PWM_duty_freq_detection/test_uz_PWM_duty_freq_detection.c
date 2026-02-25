@@ -60,6 +60,7 @@ void test_uz_PWM_duty_freq_detection_get_frequency_in_Hz(void) {
     uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
     float expected_freq = 12500.0f;
     float expected_period_ticks = config.ip_clk_frequency_Hz / (uint32_t)expected_freq;
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
     uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, expected_period_ticks);
     float output = uz_PWM_duty_freq_detection_get_frequency_in_Hz(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(expected_freq, output);
@@ -72,6 +73,7 @@ void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent_assert(void) {
 void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(void) {
     uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
     float expected_duty_cycle = 0.743f;
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
     uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, 10000U);
     uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks_ExpectAndReturn(BASE_ADDRESS, 7430U);
     float output = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(test_instance);

@@ -49,5 +49,14 @@ void test_uz_PWM_duty_freq_detection_hw_get_PWM_lowtime_ticks(void) {
     TEST_ASSERT_EQUAL(expected_return, actual_return);
 }
 
+void test_uz_PWM_duty_freq_detection_hw_trigger_output_strobe_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_hw_trigger_output_strobe(0U));
+}
+
+void test_uz_PWM_duty_freq_detection_hw_trigger_output_strobe(void) {
+    uz_axi_write_bool_Expect(BASE_ADDRESS + AXI_output_Strobe_uz_pwmdutyfreqdetection, true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + AXI_output_Strobe_uz_pwmdutyfreqdetection, false);
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe(BASE_ADDRESS);
+}
 
 #endif

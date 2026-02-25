@@ -36,6 +36,7 @@ uz_PWM_duty_freq_detection_t* uz_PWM_duty_freq_detection_init(struct uz_PWM_duty
 float uz_PWM_duty_freq_detection_get_frequency_in_Hz(uz_PWM_duty_freq_detection_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe(self->config.base_address); 
     float PWM_period_ticks = (float)uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(self->config.base_address);
     return((float)self->config.ip_clk_frequency_Hz / PWM_period_ticks);
 }
@@ -43,6 +44,7 @@ float uz_PWM_duty_freq_detection_get_frequency_in_Hz(uz_PWM_duty_freq_detection_
 float uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(uz_PWM_duty_freq_detection_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe(self->config.base_address);
     uint32_t PWM_period_ticks = uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks(self->config.base_address);
     uint32_t PWM_high_ticks = uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks(self->config.base_address);
     return((float)PWM_high_ticks / (float)PWM_period_ticks);

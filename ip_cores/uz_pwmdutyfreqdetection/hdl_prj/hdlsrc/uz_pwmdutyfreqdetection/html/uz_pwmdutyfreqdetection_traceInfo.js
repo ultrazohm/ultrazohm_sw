@@ -1,48 +1,50 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/Delay1 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:134"] = "msg=&block=uz_pwmdutyfreqdetection:134";
+	this.urlHashMap["uz_pwmdutyfreqdetection:134"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:220,221,222,223,224,225,226,227,228,229";
 	/* <S1>/Delay2 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:135"] = "msg=&block=uz_pwmdutyfreqdetection:135";
+	this.urlHashMap["uz_pwmdutyfreqdetection:135"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:274,275,276,277,278,279,280,281,282,283";
 	/* <S1>/Delay3 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:136"] = "msg=&block=uz_pwmdutyfreqdetection:136";
+	this.urlHashMap["uz_pwmdutyfreqdetection:136"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:240,241,242,243,244,245,246,247,248,249";
 	/* <S1>/Delay4 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:137"] = "msg=&block=uz_pwmdutyfreqdetection:137";
+	this.urlHashMap["uz_pwmdutyfreqdetection:137"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:308,309,310,311,312,313,314,315,316,317";
 	/* <S1>/Delay5 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:138"] = "msg=&block=uz_pwmdutyfreqdetection:138";
+	this.urlHashMap["uz_pwmdutyfreqdetection:138"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:342,343,344,345,346,347,348,349,350,351";
 	/* <S1>/Delay6 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:176"] = "msg=&block=uz_pwmdutyfreqdetection:176";
+	this.urlHashMap["uz_pwmdutyfreqdetection:176"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:258,259,260,261,262,263,264,265,266,267";
 	/* <S1>/Delay7 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:160"] = "msg=&block=uz_pwmdutyfreqdetection:160";
+	this.urlHashMap["uz_pwmdutyfreqdetection:160"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:142,143,144,145,146,147,148,149,150,151";
 	/* <S1>/Delay8 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:178"] = "msg=&block=uz_pwmdutyfreqdetection:178";
+	this.urlHashMap["uz_pwmdutyfreqdetection:178"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:292,293,294,295,296,297,298,299,300,301";
 	/* <S1>/Delay9 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:184"] = "msg=&block=uz_pwmdutyfreqdetection:184";
+	this.urlHashMap["uz_pwmdutyfreqdetection:184"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:326,327,328,329,330,331,332,333,334,335";
 	/* <S1>/Detect Fall
 Nonpositive */
-	this.urlHashMap["uz_pwmdutyfreqdetection:140"] = "msg=&block=uz_pwmdutyfreqdetection:140";
+	this.urlHashMap["uz_pwmdutyfreqdetection:140"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:132,133,134,135,136,137,138";
 	/* <S1>/Detect Rise
 Positive */
-	this.urlHashMap["uz_pwmdutyfreqdetection:141"] = "msg=&block=uz_pwmdutyfreqdetection:141";
+	this.urlHashMap["uz_pwmdutyfreqdetection:141"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:124,125,126,127,128,129,130";
 	/* <S1>/HDL Counter */
-	this.urlHashMap["uz_pwmdutyfreqdetection:143"] = "msg=&block=uz_pwmdutyfreqdetection:143";
+	this.urlHashMap["uz_pwmdutyfreqdetection:143"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:178,179,180,181,182,186,188,190,193,194,197,198,201,202,204,205,206,207,208,209,210,211,212,213";
 	/* <S1>/Logical
 Operator */
-	this.urlHashMap["uz_pwmdutyfreqdetection:165"] = "msg=&block=uz_pwmdutyfreqdetection:165";
+	this.urlHashMap["uz_pwmdutyfreqdetection:165"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:184";
+	/* <S1>/Mux */
+	this.urlHashMap["uz_pwmdutyfreqdetection:198"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:274,275,276,277,278,279,280,281,282,283";
 	/* <S1>/Scope */
 	this.urlHashMap["uz_pwmdutyfreqdetection:146"] = "msg=rtwMsg_notTraceable&block=uz_pwmdutyfreqdetection:146";
 	/* <S1>/Sum1 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:166"] = "msg=&block=uz_pwmdutyfreqdetection:166";
+	this.urlHashMap["uz_pwmdutyfreqdetection:166"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:256";
 	/* <S1>/Switch */
-	this.urlHashMap["uz_pwmdutyfreqdetection:148"] = "msg=&block=uz_pwmdutyfreqdetection:148";
+	this.urlHashMap["uz_pwmdutyfreqdetection:148"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:233,234";
 	/* <S1>/Switch1 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:149"] = "msg=&block=uz_pwmdutyfreqdetection:149";
+	this.urlHashMap["uz_pwmdutyfreqdetection:149"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:253,254";
 	/* <S1>/Switch2 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:175"] = "msg=&block=uz_pwmdutyfreqdetection:175";
+	this.urlHashMap["uz_pwmdutyfreqdetection:175"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:271,272";
 	/* <S1>/Switch3 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:177"] = "msg=&block=uz_pwmdutyfreqdetection:177";
+	this.urlHashMap["uz_pwmdutyfreqdetection:177"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:305,306";
 	/* <S1>/Switch4 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:185"] = "msg=&block=uz_pwmdutyfreqdetection:185";
+	this.urlHashMap["uz_pwmdutyfreqdetection:185"] = "uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd:339,340";
 	/* <S1>/high time in counts */
 	this.urlHashMap["uz_pwmdutyfreqdetection:152"] = "msg=rtwMsg_notTraceable&block=uz_pwmdutyfreqdetection:152";
 	/* <S1>/low time in counts */
@@ -50,21 +52,21 @@ Operator */
 	/* <S1>/period counts */
 	this.urlHashMap["uz_pwmdutyfreqdetection:151"] = "msg=rtwMsg_notTraceable&block=uz_pwmdutyfreqdetection:151";
 	/* <S2>/Delay Input1 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:140:2"] = "msg=&block=uz_pwmdutyfreqdetection:140:2";
+	this.urlHashMap["uz_pwmdutyfreqdetection:140:2"] = "uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S2>/FixPt
 Relational
 Operator */
-	this.urlHashMap["uz_pwmdutyfreqdetection:140:3"] = "msg=&block=uz_pwmdutyfreqdetection:140:3";
+	this.urlHashMap["uz_pwmdutyfreqdetection:140:3"] = "uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd:62,63";
 	/* <S2>/Nonpositive */
-	this.urlHashMap["uz_pwmdutyfreqdetection:140:4"] = "msg=&block=uz_pwmdutyfreqdetection:140:4";
+	this.urlHashMap["uz_pwmdutyfreqdetection:140:4"] = "uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd:45,46";
 	/* <S3>/Delay Input1 */
-	this.urlHashMap["uz_pwmdutyfreqdetection:141:2"] = "msg=&block=uz_pwmdutyfreqdetection:141:2";
+	this.urlHashMap["uz_pwmdutyfreqdetection:141:2"] = "uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S3>/FixPt
 Relational
 Operator */
-	this.urlHashMap["uz_pwmdutyfreqdetection:141:3"] = "msg=&block=uz_pwmdutyfreqdetection:141:3";
+	this.urlHashMap["uz_pwmdutyfreqdetection:141:3"] = "uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd:62,63";
 	/* <S3>/Positive */
-	this.urlHashMap["uz_pwmdutyfreqdetection:141:4"] = "msg=&block=uz_pwmdutyfreqdetection:141:4";
+	this.urlHashMap["uz_pwmdutyfreqdetection:141:4"] = "uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd:45,46";
 	/* <S4>/Constant */
 	this.urlHashMap["uz_pwmdutyfreqdetection:143:212"] = "msg=rtwMsg_notTraceable&block=uz_pwmdutyfreqdetection:143:212";
 	/* <S4>/Count_reg */
@@ -177,6 +179,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_pwmdutyfreqdetection:143"] = {rtwname: "<S1>/HDL Counter"};
 	this.rtwnameHashMap["<S1>/Logical Operator"] = {sid: "uz_pwmdutyfreqdetection:165"};
 	this.sidHashMap["uz_pwmdutyfreqdetection:165"] = {rtwname: "<S1>/Logical Operator"};
+	this.rtwnameHashMap["<S1>/Mux"] = {sid: "uz_pwmdutyfreqdetection:198"};
+	this.sidHashMap["uz_pwmdutyfreqdetection:198"] = {rtwname: "<S1>/Mux"};
 	this.rtwnameHashMap["<S1>/Scope"] = {sid: "uz_pwmdutyfreqdetection:146"};
 	this.sidHashMap["uz_pwmdutyfreqdetection:146"] = {rtwname: "<S1>/Scope"};
 	this.rtwnameHashMap["<S1>/Sum1"] = {sid: "uz_pwmdutyfreqdetection:166"};
@@ -197,12 +201,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_pwmdutyfreqdetection:153"] = {rtwname: "<S1>/low time in counts"};
 	this.rtwnameHashMap["<S1>/period counts"] = {sid: "uz_pwmdutyfreqdetection:151"};
 	this.sidHashMap["uz_pwmdutyfreqdetection:151"] = {rtwname: "<S1>/period counts"};
-	this.rtwnameHashMap["<S1>/AXI_period"] = {sid: "uz_pwmdutyfreqdetection:154"};
-	this.sidHashMap["uz_pwmdutyfreqdetection:154"] = {rtwname: "<S1>/AXI_period"};
-	this.rtwnameHashMap["<S1>/AXI_hightime"] = {sid: "uz_pwmdutyfreqdetection:155"};
-	this.sidHashMap["uz_pwmdutyfreqdetection:155"] = {rtwname: "<S1>/AXI_hightime"};
-	this.rtwnameHashMap["<S1>/AXI_lowtime"] = {sid: "uz_pwmdutyfreqdetection:156"};
-	this.sidHashMap["uz_pwmdutyfreqdetection:156"] = {rtwname: "<S1>/AXI_lowtime"};
+	this.rtwnameHashMap["<S1>/AXI_output"] = {sid: "uz_pwmdutyfreqdetection:155"};
+	this.sidHashMap["uz_pwmdutyfreqdetection:155"] = {rtwname: "<S1>/AXI_output"};
 	this.rtwnameHashMap["<S2>/U"] = {sid: "uz_pwmdutyfreqdetection:140:1"};
 	this.sidHashMap["uz_pwmdutyfreqdetection:140:1"] = {rtwname: "<S2>/U"};
 	this.rtwnameHashMap["<S2>/Delay Input1"] = {sid: "uz_pwmdutyfreqdetection:140:2"};

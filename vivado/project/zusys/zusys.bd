@@ -77,9 +77,9 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
-        "uz_pwmdutyfreqdetect_0": "",
         "axi_gpi_D1": "",
-        "xlconcat_0": ""
+        "xlconcat_0": "",
+        "uz_pwmdutyfreqdetect": ""
       },
       "zynq_ultra_ps_e_0": "",
       "uz_digital_adapter": {
@@ -1713,8 +1713,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_3",
-                "xci_path": "ip/zusys_system_ila_0_3/zusys_system_ila_0_3.xci",
+                "xci_name": "zusys_system_ila_0_1",
+                "xci_path": "ip/zusys_system_ila_0_1/zusys_system_ila_0_1.xci",
                 "inst_hier_path": "uz_system/DataMover/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -1730,8 +1730,8 @@
               },
               "util_vector_logic_0": {
                 "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                "xci_name": "zusys_util_vector_logic_0_1",
-                "xci_path": "ip/zusys_util_vector_logic_0_1/zusys_util_vector_logic_0_1.xci",
+                "xci_name": "zusys_util_vector_logic_0_0",
+                "xci_path": "ip/zusys_util_vector_logic_0_0/zusys_util_vector_logic_0_0.xci",
                 "inst_hier_path": "uz_system/DataMover/util_vector_logic_0",
                 "parameters": {
                   "C_SIZE": {
@@ -1741,8 +1741,8 @@
               },
               "xlconcat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_xlconcat_0_2",
-                "xci_path": "ip/zusys_xlconcat_0_2/zusys_xlconcat_0_2.xci",
+                "xci_name": "zusys_xlconcat_0_0",
+                "xci_path": "ip/zusys_xlconcat_0_0/zusys_xlconcat_0_0.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -1967,8 +1967,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_4",
-                "xci_path": "ip/zusys_system_ila_0_4/zusys_system_ila_0_4.xci",
+                "xci_name": "zusys_system_ila_0_2",
+                "xci_path": "ip/zusys_system_ila_0_2/zusys_system_ila_0_2.xci",
                 "inst_hier_path": "uz_system/Interrupt/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -3611,16 +3611,10 @@
             "xci_path": "ip/zusys_uz_axi_testIP_0_0/zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "uz_pwmdutyfreqdetect_0": {
-            "vlnv": "xilinx.com:ip:uz_pwmdutyfreqdetection:1.0",
-            "xci_name": "zusys_uz_pwmdutyfreqdetect_0_0",
-            "xci_path": "ip/zusys_uz_pwmdutyfreqdetect_0_0/zusys_uz_pwmdutyfreqdetect_0_0.xci",
-            "inst_hier_path": "uz_user/uz_pwmdutyfreqdetect_0"
-          },
           "axi_gpi_D1": {
             "vlnv": "xilinx.com:ip:axi_gpio:2.0",
-            "xci_name": "zusys_axi_gpio_0_0",
-            "xci_path": "ip/zusys_axi_gpio_0_0/zusys_axi_gpio_0_0.xci",
+            "xci_name": "zusys_axi_gpi_D1_0",
+            "xci_path": "ip/zusys_axi_gpi_D1_0/zusys_axi_gpi_D1_0.xci",
             "inst_hier_path": "uz_user/axi_gpi_D1",
             "parameters": {
               "C_ALL_INPUTS": {
@@ -3633,14 +3627,20 @@
           },
           "xlconcat_0": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_0_3",
-            "xci_path": "ip/zusys_xlconcat_0_3/zusys_xlconcat_0_3.xci",
+            "xci_name": "zusys_xlconcat_0_1",
+            "xci_path": "ip/zusys_xlconcat_0_1/zusys_xlconcat_0_1.xci",
             "inst_hier_path": "uz_user/xlconcat_0",
             "parameters": {
               "NUM_PORTS": {
                 "value": "3"
               }
             }
+          },
+          "uz_pwmdutyfreqdetect": {
+            "vlnv": "xilinx.com:ip:uz_pwmdutyfreqdetection:1.0",
+            "xci_name": "zusys_uz_pwmdutyfreqdetect_1_0",
+            "xci_path": "ip/zusys_uz_pwmdutyfreqdetect_1_0/zusys_uz_pwmdutyfreqdetect_1_0.xci",
+            "inst_hier_path": "uz_user/uz_pwmdutyfreqdetect"
           }
         },
         "interface_nets": {
@@ -3658,8 +3658,8 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "smartconnect_1/M01_AXI",
-              "uz_pwmdutyfreqdetect_0/AXI4_Lite"
+              "uz_pwmdutyfreqdetect/AXI4_Lite",
+              "smartconnect_1/M01_AXI"
             ]
           },
           "smartconnect_1_M02_AXI": {
@@ -3673,7 +3673,7 @@
           "Dig_14_Ch1_1": {
             "ports": [
               "Dig_14_Ch1",
-              "uz_pwmdutyfreqdetect_0/PWMin"
+              "uz_pwmdutyfreqdetect/PWMin"
             ]
           },
           "Dig_15_Ch1_1": {
@@ -3700,9 +3700,9 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_pwmdutyfreqdetect_0/IPCORE_RESETN",
-              "uz_pwmdutyfreqdetect_0/AXI4_Lite_ARESETN",
-              "axi_gpi_D1/s_axi_aresetn"
+              "axi_gpi_D1/s_axi_aresetn",
+              "uz_pwmdutyfreqdetect/AXI4_Lite_ARESETN",
+              "uz_pwmdutyfreqdetect/IPCORE_RESETN"
             ]
           },
           "xlconcat_0_dout": {
@@ -3717,9 +3717,9 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
-              "uz_pwmdutyfreqdetect_0/IPCORE_CLK",
-              "uz_pwmdutyfreqdetect_0/AXI4_Lite_ACLK",
-              "axi_gpi_D1/s_axi_aclk"
+              "axi_gpi_D1/s_axi_aclk",
+              "uz_pwmdutyfreqdetect/IPCORE_CLK",
+              "uz_pwmdutyfreqdetect/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -7022,8 +7022,8 @@
                   },
                   "util_vector_logic_0": {
                     "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                    "xci_name": "zusys_util_vector_logic_0_0",
-                    "xci_path": "ip/zusys_util_vector_logic_0_0/zusys_util_vector_logic_0_0.xci",
+                    "xci_name": "zusys_util_vector_logic_0_1",
+                    "xci_path": "ip/zusys_util_vector_logic_0_1/zusys_util_vector_logic_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/util_vector_logic_0",
                     "parameters": {
                       "C_OPERATION": {
@@ -7062,8 +7062,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_0",
-                    "xci_path": "ip/zusys_xlconcat_0_0/zusys_xlconcat_0_0.xci",
+                    "xci_name": "zusys_xlconcat_0_2",
+                    "xci_path": "ip/zusys_xlconcat_0_2/zusys_xlconcat_0_2.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -7592,8 +7592,8 @@
                   },
                   "system_ila_0": {
                     "vlnv": "xilinx.com:ip:system_ila:1.1",
-                    "xci_name": "zusys_system_ila_0_1",
-                    "xci_path": "ip/zusys_system_ila_0_1/zusys_system_ila_0_1.xci",
+                    "xci_name": "zusys_system_ila_0_3",
+                    "xci_path": "ip/zusys_system_ila_0_3/zusys_system_ila_0_3.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/system_ila_0",
                     "parameters": {
                       "C_DATA_DEPTH": {
@@ -7732,8 +7732,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_1",
-                    "xci_path": "ip/zusys_xlconcat_0_1/zusys_xlconcat_0_1.xci",
+                    "xci_name": "zusys_xlconcat_0_3",
+                    "xci_path": "ip/zusys_xlconcat_0_3/zusys_xlconcat_0_3.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -8139,8 +8139,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_2",
-                "xci_path": "ip/zusys_system_ila_0_2/zusys_system_ila_0_2.xci",
+                "xci_name": "zusys_system_ila_0_4",
+                "xci_path": "ip/zusys_system_ila_0_4/zusys_system_ila_0_4.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -8828,8 +8828,8 @@
                 "offset": "0x0080060000",
                 "range": "64K"
               },
-              "SEG_uz_pwmdutyfreqdetect_0_reg0": {
-                "address_block": "/uz_user/uz_pwmdutyfreqdetect_0/AXI4_Lite/reg0",
+              "SEG_uz_pwmdutyfreqdetect_reg0": {
+                "address_block": "/uz_user/uz_pwmdutyfreqdetect/AXI4_Lite/reg0",
                 "offset": "0x00800F0000",
                 "range": "64K"
               }

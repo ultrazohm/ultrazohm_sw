@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.74
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 10:30:19 2026
+ * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -74,7 +74,7 @@ typedef struct {
   real32_T I_dq_Act[6];
   real32_T ModInd[3];
   real32_T w_el;
-  boolean_T FOC_Enable_PWM;
+  boolean_T FOC_Enable_PWM[3];
   boolean_T FCF_Error;
 } bus_FCF_t;
 

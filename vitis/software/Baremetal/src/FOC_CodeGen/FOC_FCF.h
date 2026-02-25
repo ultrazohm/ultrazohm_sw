@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.74
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 10:30:19 2026
+ * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -456,7 +456,11 @@ typedef struct {
   boolean_T Compare_cf;                /* '<S60>/Compare' */
   boolean_T LogicalOperator3_c;        /* '<S48>/Logical Operator3' */
   boolean_T LogicalOperator3_pp;       /* '<S8>/Logical Operator3' */
-  boolean_T FOC_Enable_PWM;            /* '<S8>/Enable_PWM_' */
+  boolean_T Enable_PWM_;               /* '<S8>/Enable_PWM_' */
+  boolean_T LogicalOperator1_e;        /* '<S8>/Logical Operator1' */
+  boolean_T LogicalOperator2_f;        /* '<S8>/Logical Operator2' */
+  boolean_T LogicalOperator4_h;        /* '<S8>/Logical Operator4' */
+  boolean_T FOC_Enable_PWM[3];         /* '<S1>/Error_Handling' */
   boolean_T FCF_Error;                 /* '<S8>/Logical Operator6' */
   boolean_T Compare_gv[9];             /* '<S65>/Compare' */
   boolean_T Memory_f;                  /* '<S70>/Memory' */
@@ -613,6 +617,15 @@ struct P_FOC_FCF_T_ {
                                          */
   real32_T FOC_Enable;                 /* Variable: FOC_Enable
                                         * Referenced by: '<S1>/Enable'
+                                        */
+  real32_T FOC_Enable_PWM_Sys1;        /* Variable: FOC_Enable_PWM_Sys1
+                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys1'
+                                        */
+  real32_T FOC_Enable_PWM_Sys2;        /* Variable: FOC_Enable_PWM_Sys2
+                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys2'
+                                        */
+  real32_T FOC_Enable_PWM_Sys3;        /* Variable: FOC_Enable_PWM_Sys3
+                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys3'
                                         */
   real32_T FOC_Enable_Sys1;            /* Variable: FOC_Enable_Sys1
                                         * Referenced by: '<S6>/FOC_Enable_Sys1'

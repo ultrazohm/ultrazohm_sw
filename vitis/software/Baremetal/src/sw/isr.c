@@ -148,10 +148,23 @@ void ISR_Control(void *data)
 
 
 	/* ~~~ Gate Driver Enable Control ~~~ */
-	if(ctrl_data.bus_FCF.FOC_Enable_PWM)
+    /* INVERTER 1 */
+	if(ctrl_data.bus_FCF.FOC_Enable_PWM[0])
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 1, 0);
 	else
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR, 0, 0);
+
+    /* INVERTER 2 */
+	if(ctrl_data.bus_FCF.FOC_Enable_PWM[1])
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR, 1, 0);
+	else
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR, 0, 0);
+
+    /* INVERTER 3 */
+	if(ctrl_data.bus_FCF.FOC_Enable_PWM[2])
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR, 1, 0);
+	else
+		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR, 0, 0);
 
 
     /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */

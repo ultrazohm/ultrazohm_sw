@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.74
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 10:30:19 2026
+ * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -108,6 +108,21 @@ P_FOC_FCF_T FOC_FCF_P = {
 
   /* Variable: FOC_Enable
    * Referenced by: '<S1>/Enable'
+   */
+  1.0F,
+
+  /* Variable: FOC_Enable_PWM_Sys1
+   * Referenced by: '<S8>/FOC_Enable_PWM_Sys1'
+   */
+  1.0F,
+
+  /* Variable: FOC_Enable_PWM_Sys2
+   * Referenced by: '<S8>/FOC_Enable_PWM_Sys2'
+   */
+  1.0F,
+
+  /* Variable: FOC_Enable_PWM_Sys3
+   * Referenced by: '<S8>/FOC_Enable_PWM_Sys3'
    */
   1.0F,
 

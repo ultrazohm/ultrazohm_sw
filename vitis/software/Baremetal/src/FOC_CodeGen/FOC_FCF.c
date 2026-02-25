@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.74
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 10:30:19 2026
+ * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -32,7 +32,8 @@ const bus_FCF_t FOC_FCF_rtZbus_FCF_t = { { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
 
   { 0.0F, 0.0F, 0.0F },                /* ModInd */
   0.0F,                                /* w_el */
-  false,                               /* FOC_Enable_PWM */
+
+  { false, false, false },             /* FOC_Enable_PWM */
   false                                /* FCF_Error */
 };
 
@@ -3237,8 +3238,31 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     (!(FOC_FCF_B->DataSourceSwitch != 0.0F)) && (!FOC_FCF_B->LogicalOperator3_c));
 
   /* Logic: '<S8>/Enable_PWM_' */
-  FOC_FCF_B->FOC_Enable_PWM = (FOC_FCF_B->LogicalOperator3_pp &&
+  FOC_FCF_B->Enable_PWM_ = (FOC_FCF_B->LogicalOperator3_pp &&
     (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+
+  /* Logic: '<S8>/Logical Operator1' incorporates:
+   *  Constant: '<S8>/FOC_Enable_PWM_Sys1'
+   */
+  FOC_FCF_B->LogicalOperator1_e = ((FOC_FCF_P.FOC_Enable_PWM_Sys1 != 0.0F) &&
+    FOC_FCF_B->Enable_PWM_);
+
+  /* Logic: '<S8>/Logical Operator2' incorporates:
+   *  Constant: '<S8>/FOC_Enable_PWM_Sys2'
+   */
+  FOC_FCF_B->LogicalOperator2_f = ((FOC_FCF_P.FOC_Enable_PWM_Sys2 != 0.0F) &&
+    FOC_FCF_B->Enable_PWM_);
+
+  /* Logic: '<S8>/Logical Operator4' incorporates:
+   *  Constant: '<S8>/FOC_Enable_PWM_Sys3'
+   */
+  FOC_FCF_B->LogicalOperator4_h = ((FOC_FCF_P.FOC_Enable_PWM_Sys3 != 0.0F) &&
+    FOC_FCF_B->Enable_PWM_);
+
+  /* SignalConversion generated from: '<S1>/Bus Creator' */
+  FOC_FCF_B->FOC_Enable_PWM[0] = FOC_FCF_B->LogicalOperator1_e;
+  FOC_FCF_B->FOC_Enable_PWM[1] = FOC_FCF_B->LogicalOperator2_f;
+  FOC_FCF_B->FOC_Enable_PWM[2] = FOC_FCF_B->LogicalOperator4_h;
 
   /* Logic: '<S8>/Logical Operator6' */
   FOC_FCF_B->FCF_Error = !FOC_FCF_B->LogicalOperator3_pp;
@@ -3251,11 +3275,13 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_Y->bus_FCF.I_dq_Act[i] = FOC_FCF_B->I_dq_Act[i];
   }
 
-  FOC_FCF_Y->bus_FCF.ModInd[0] = FOC_FCF_B->ModInd[0];
-  FOC_FCF_Y->bus_FCF.ModInd[1] = FOC_FCF_B->ModInd[1];
-  FOC_FCF_Y->bus_FCF.ModInd[2] = FOC_FCF_B->ModInd[2];
   FOC_FCF_Y->bus_FCF.w_el = FOC_FCF_B->w_el;
-  FOC_FCF_Y->bus_FCF.FOC_Enable_PWM = FOC_FCF_B->FOC_Enable_PWM;
+  FOC_FCF_Y->bus_FCF.ModInd[0] = FOC_FCF_B->ModInd[0];
+  FOC_FCF_Y->bus_FCF.FOC_Enable_PWM[0] = FOC_FCF_B->FOC_Enable_PWM[0];
+  FOC_FCF_Y->bus_FCF.ModInd[1] = FOC_FCF_B->ModInd[1];
+  FOC_FCF_Y->bus_FCF.FOC_Enable_PWM[1] = FOC_FCF_B->FOC_Enable_PWM[1];
+  FOC_FCF_Y->bus_FCF.ModInd[2] = FOC_FCF_B->ModInd[2];
+  FOC_FCF_Y->bus_FCF.FOC_Enable_PWM[2] = FOC_FCF_B->FOC_Enable_PWM[2];
   FOC_FCF_Y->bus_FCF.FCF_Error = FOC_FCF_B->FCF_Error;
 
   /* End of BusCreator: '<S1>/Bus Creator' */

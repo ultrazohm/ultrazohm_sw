@@ -47,7 +47,7 @@ uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
 struct uz_PWM_duty_freq_detection_config_t config = {
- .base_address = XPAR_UZ_USER_UZ_PWMDUTYFREQDETECT_0_BASEADDR,
+ .base_address = XPAR_UZ_USER_UZ_PWMDUTYFREQDETECT_BASEADDR,
  .ip_clk_frequency_Hz = 100000000U,
 
 };

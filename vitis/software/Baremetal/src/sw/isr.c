@@ -58,7 +58,7 @@ void ISR_Control(void *data)
 //    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     // test for duty_freq-detect
-    Global_Data.rasv.halfBridge1DutyCycle = 0.2f;
+    Global_Data.rasv.halfBridge1DutyCycle = 0.4f;
     Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
     Global_Data.av.FAULT_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
  //  not used yet = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);

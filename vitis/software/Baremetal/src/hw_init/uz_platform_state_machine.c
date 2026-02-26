@@ -24,6 +24,13 @@ typedef struct
     bool enable_system;
     bool enable_control;
     bool stop_flag;
+    bool enable_system_button;
+    bool enable_control_button;
+    bool stop_button;
+    // JavaScope-triggered requests from IPC/ISR.
+    volatile bool enable_system_javascope;
+    volatile bool enable_control_javascope;
+    volatile bool stop_javascope;
     bool error_flag;
     uint32_t platform_revision;
 } ultrazohm_state_t;
@@ -34,6 +41,7 @@ ultrazohm_state_t ultrazohm_state = {
     .entry = true};
 
 static void poll_buttons(void);
+static void update_state_machine_inputs(void);
 static void ultrazohm_state_machine_switch_to_state(platform_state_t new_state);
 static void ultrazohm_state_machine_event_handled(void);
 static void ready_LED_blink_slow(void);
@@ -79,6 +87,7 @@ void ultrazohm_state_machine_step(void)
         break;
     }
     poll_buttons();
+    update_state_machine_inputs();
 }
 
 bool ultrazohm_state_machine_is_control_state(void)
@@ -98,17 +107,17 @@ bool ultrazohm_state_machine_get_enable_control(void)
 
 void ultrazohm_state_machine_set_enable_system(bool enable_system)
 {
-    ultrazohm_state.enable_system = enable_system;
+    ultrazohm_state.enable_system_javascope = enable_system;
 }
 
 void ultrazohm_state_machine_set_enable_control(bool enable_control)
 {
-    ultrazohm_state.enable_control = enable_control;
+    ultrazohm_state.enable_control_javascope = enable_control;
 }
 
 void ultrazohm_state_machine_set_stop(bool stop)
 {
-    ultrazohm_state.stop_flag = stop;
+    ultrazohm_state.stop_javascope = stop;
 }
 
 void ultrazohm_state_machine_set_userLED(bool onoff)
@@ -144,6 +153,12 @@ static void idle_entry(void)
         ultrazohm_state.enable_control = false; // Resets the flags
         ultrazohm_state.enable_system = false;
         ultrazohm_state.stop_flag = false;
+        ultrazohm_state.enable_control_button = false;
+        ultrazohm_state.enable_system_button = false;
+        ultrazohm_state.stop_button = false;
+        ultrazohm_state.enable_control_javascope = false;
+        ultrazohm_state.enable_system_javascope = false;
+        ultrazohm_state.stop_javascope = false;
         ultrazohm_state.error_flag = false;
         uz_led_set_errorLED_off();
         ultrazohm_state.uz_led_states.errorLED = false;
@@ -280,31 +295,48 @@ void poll_buttons(void)
 {
     uz_assert(ultrazohm_state.platform_revision > 0U);
     uz_assert(ultrazohm_state.platform_revision <= UZ_HARDWARE_VERSION_MAX);
-    if (ultrazohm_state.platform_revision > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
+    ultrazohm_state.enable_control_button = false;
+    ultrazohm_state.enable_system_button = false;
+    ultrazohm_state.stop_button = false;
+
+    if (ultrazohm_state.platform_revision > 2U) // in CarrierBoard_v2 there are no buttons.
     {
-        ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
-        ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
+        ultrazohm_state.enable_control_button = uz_GetPushButtonEnableControl();
+        ultrazohm_state.enable_system_button = uz_GetPushButtonEnableSystem();
         if (ultrazohm_state.platform_revision > 4U)
         {
-            ultrazohm_state.stop_flag = uz_GetPushButtonStop();
+            ultrazohm_state.stop_button = uz_GetPushButtonStop();
         }
         else
         {
-            ultrazohm_state.stop_flag = !uz_GetPushButtonStop();
+            ultrazohm_state.stop_button = !uz_GetPushButtonStop();
         }
     }
 
 
 #if UZ_USE_EXTERNAL_STOP
-    ultrazohm_state.stop_flag = (ultrazohm_state.stop_flag) || (!uz_GetExternalStop());
+    ultrazohm_state.stop_button = ultrazohm_state.stop_button || (!uz_GetExternalStop());
 #endif
+}
 
-    if (ultrazohm_state.platform_revision == 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
+static void update_state_machine_inputs(void)
+{
+    const bool enable_control_allowed = (ultrazohm_state.current_state == running_state) && (!ultrazohm_state.entry);
+
+    if (ultrazohm_state.current_state == idle_state)
     {
-        ultrazohm_state.enable_system = 0;
-        ultrazohm_state.enable_control = 0;
-        ultrazohm_state.stop_flag = 0; // If 0, stop is pressed
+        ultrazohm_state.stop_javascope = false;
     }
+
+    if (!enable_control_allowed)
+    {
+        ultrazohm_state.enable_control_javascope = false;
+    }
+
+    ultrazohm_state.enable_system = ultrazohm_state.enable_system_button || ultrazohm_state.enable_system_javascope;
+    ultrazohm_state.enable_control = enable_control_allowed
+                                     && (ultrazohm_state.enable_control_button || ultrazohm_state.enable_control_javascope);
+    ultrazohm_state.stop_flag = ultrazohm_state.stop_button || ultrazohm_state.stop_javascope;
 }
 
 static void ultrazohm_state_machine_event_handled(void)

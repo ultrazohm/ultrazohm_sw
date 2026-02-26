@@ -28,6 +28,10 @@
 // define the size of the cache to flush
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+// Set to 1 to inject an A53-local counter on Javascope CH1 for debug diagnostics.
+#ifndef DEBUG_A53_IPI_ISR_INJECT_CH1_COUNTER
+#define DEBUG_A53_IPI_ISR_INJECT_CH1_COUNTER 0
+#endif
 
 struct APU_to_RPU_t ControlData = {0};
 extern volatile int js_connection_established;
@@ -42,7 +46,9 @@ volatile int js_queue_overflow_dropped_samples = 0;
 volatile int js_queue_purge_requested = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
+#if DEBUG_A53_IPI_ISR_INJECT_CH1_COUNTER
 static uint16_t js_a53_scope_ch1_counter = 0U;
+#endif
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -71,6 +77,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{
+#if DEBUG_A53_IPI_ISR_INJECT_CH1_COUNTER
 		struct javascope_data_t sample_for_queue = *javascope_data;
 		// Diagnostic marker: overwrite CH1 with an A53 ISR-local counter (0..1000).
 		sample_for_queue.scope_ch[0] = (float)js_a53_scope_ch1_counter;
@@ -82,6 +89,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 		// append sample to queue
 		size_t queue_status = xQueueSendToBackFromISR(js_queue, &sample_for_queue, &xHigherPriorityTaskWoken);
+#else
+		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
+#endif
 
 		if (queue_status == errQUEUE_FULL)
 		{

@@ -109,6 +109,7 @@ Vitis
       :caption: Code for ``isr.c`` file
 
        extern struct uz_PWM_duty_freq_detection_outputs_t outputs;
+       extern struct linear_interpolation_parameters_t lin_inter_param;
        ...
        void ISR_Control(void *data) {
         ...

@@ -34,7 +34,8 @@ The figure above shows the four states of the UltraZohm:
 - Error
 
 The implicit state *assertion* is not shown (see :ref:`assertions`).
-If in any state an execution is triggered, the error state is executed once, the system is held and can only be used after a restart (power cycle).
+If an assertion is triggered in any state, the state machine enters the error state.
+From error state, the system returns to idle when a stop input is present.
 The state machine has the following input variables:
 
 - Enable system
@@ -42,9 +43,15 @@ The state machine has the following input variables:
 - Stop
 - Error
 
-The inputs are set using the set functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
 For all UltraZohm versions >2, enable system, enable control, and stop are available as buttons on the front panel.
-Additionally, the signals can be set using the :ref:`JavaScope`.
+Additionally, these signals can be set using the :ref:`JavaScope` setter functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
+The effective state machine inputs are updated in every ``ultrazohm_state_machine_step`` by merging both sources:
+
+- Enable system = front-panel button ``OR`` JavaScope request
+- Enable control = front-panel button ``OR`` JavaScope request (only considered in running state)
+- Stop = front-panel stop ``OR`` JavaScope request (plus optional external stop, if enabled at compile time)
+
+This merged handling avoids race conditions where asynchronous JavaScope commands could otherwise be overwritten by button polling.
 The input ``Error`` is only set from software functions.
 
 The different states are indicated by the status of the LEDs on the front panel.
@@ -52,6 +59,7 @@ The main difference between the states is that no output signals are routed thro
 Likewise, the control algorithm in the ISR is not executed, if the system is not in the state *Control*.
 
 The following table shows the complete state table.
+In this table, ``Enable System``, ``Enable Control``, and ``Stop`` refer to the merged effective inputs described above.
 
 .. csv-table:: State table with inputs and outputs of the UltraZohm
     :file: r5_statemachine_table.csv

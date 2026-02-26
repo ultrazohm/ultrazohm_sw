@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 #include "lwip/sockets.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"
@@ -30,6 +31,12 @@ extern volatile int js_queue_overflow_dropped_samples;
 extern volatile int js_queue_purge_requested;
 
 #define JS_TX_STALL_TIMEOUT_TICKS pdMS_TO_TICKS(200U)
+#define JS_CMD_TRACE_ENABLE 0U
+#if JS_CMD_TRACE_ENABLE
+#define JS_CMD_TRACE_BUFFER_BYTES 512U
+#else
+#define JS_CMD_TRACE_BUFFER_BYTES 0U
+#endif
 
 volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -73,6 +80,63 @@ static BaseType_t js_is_active_client(const int clientfd)
 	return is_active;
 }
 
+#if JS_CMD_TRACE_ENABLE
+
+static void js_cmd_trace_flush(char *trace_buf, size_t *trace_fill)
+{
+	if (*trace_fill == 0U) {
+		return;
+	}
+
+	trace_buf[*trace_fill] = '\0';
+	uz_printf("%s", trace_buf);
+	*trace_fill = 0U;
+}
+
+static void js_cmd_trace_append(char *trace_buf, size_t *trace_fill, struct APU_to_RPU_t const *cmd, char const *queue_state)
+{
+	if (cmd->id == 0U) {
+		return;
+	}
+
+	uint32_t value_bits = 0U;
+	memcpy(&value_bits, &cmd->value, sizeof(value_bits));
+
+	for (size_t attempt = 0U; attempt < 2U; attempt++) {
+		size_t const remaining = JS_CMD_TRACE_BUFFER_BYTES - *trace_fill;
+		int const chars_written = snprintf(
+				trace_buf + *trace_fill,
+				remaining + 1U,
+				"APU: CMD rx id=%lu value_bits=0x%08lx %s\r\n",
+				(unsigned long)cmd->id,
+				(unsigned long)value_bits,
+				queue_state);
+		if (chars_written < 0) {
+			return;
+		}
+		if ((size_t)chars_written <= remaining) {
+			*trace_fill += (size_t)chars_written;
+			return;
+		}
+		js_cmd_trace_flush(trace_buf, trace_fill);
+	}
+}
+#else
+static inline void js_cmd_trace_flush(char *trace_buf, size_t *trace_fill)
+{
+	(void)trace_buf;
+	(void)trace_fill;
+}
+
+static inline void js_cmd_trace_append(char *trace_buf, size_t *trace_fill, struct APU_to_RPU_t const *cmd, char const *queue_state)
+{
+	(void)trace_buf;
+	(void)trace_fill;
+	(void)cmd;
+	(void)queue_state;
+}
+#endif
+
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -96,8 +160,10 @@ void process_request_thread(void *p)
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
+	char cmd_trace_buf[JS_CMD_TRACE_BUFFER_BYTES + 1U] = {0};
 	struct APU_to_RPU_t received_data = {0};
 	size_t recv_buf_fill = 0U;
+	size_t cmd_trace_fill = 0U;
 	const size_t control_data_bytes = sizeof(struct APU_to_RPU_t);
 
 	int clientfd = (int)p;
@@ -157,8 +223,12 @@ void process_request_thread(void *p)
 				memcpy(&received_data, recv_buf + offset, control_data_bytes);
 				if (xQueueSendToBack(js_control_queue, &received_data, 0U) != pdPASS) {
 					uz_printf("APU: Control queue full, dropping command id=%lu\r\n", (unsigned long)received_data.id);
+					js_cmd_trace_append(cmd_trace_buf, &cmd_trace_fill, &received_data, "drop");
+				} else {
+					js_cmd_trace_append(cmd_trace_buf, &cmd_trace_fill, &received_data, "enq");
 				}
 			}
+			js_cmd_trace_flush(cmd_trace_buf, &cmd_trace_fill);
 
 			// Keep partial trailing bytes for the next read().
 			recv_buf_fill -= complete_bytes;
@@ -277,6 +347,7 @@ void process_request_thread(void *p)
 		}
 
 	// close connection
+	js_cmd_trace_flush(cmd_trace_buf, &cmd_trace_fill);
 	(void)js_release_active_client_if_owner(clientfd);
 	close(clientfd);
 	vTaskDelete(NULL);

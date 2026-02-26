@@ -103,6 +103,15 @@ int JavaScope_initialize(DS_Data* data)
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_i_d]					= &data->av.i_dq.d;
+	js_slowDataArray[JSSD_FLOAT_i_q]					= &data->av.i_dq.q;
+	js_slowDataArray[JSSD_FLOAT_v_d]					= &data->av.v_dq.d;
+	js_slowDataArray[JSSD_FLOAT_v_q]					= &data->av.v_dq.q;
+	js_slowDataArray[JSSD_FLOAT_v_d_ref]				= &data->av.v_dq_ref.d;
+	js_slowDataArray[JSSD_FLOAT_v_q_ref]				= &data->av.v_dq_ref.q;
+	js_slowDataArray[JSSD_FLOAT_torque]					= &data->av.Torque;
+	js_slowDataArray[JSSD_FLOAT_angle_degree]			= &data->av.current_angle_deg;
+	js_slowDataArray[JSSD_FLOAT_Is]						= &data->av.Is;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

@@ -119,6 +119,17 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_input_current_lem_ampere]=&data->pov_actual_values.input_current_lem_ampere;
+	js_slowDataArray[JSSD_FLOAT_input_voltage_volt]=&data->pov_actual_values.input_voltage_volt;
+	js_slowDataArray[JSSD_FLOAT_output_current_lem_before_relay_ampere]=&data->pov_actual_values.output_current_lem_before_relay_ampere;
+	js_slowDataArray[JSSD_FLOAT_output_voltage_before_relay]=&data->pov_actual_values.output_voltage_before_relay;
+	js_slowDataArray[JSSD_FLOAT_output_voltage_after_relay]=&data->pov_actual_values.output_voltage_after_relay;
+	js_slowDataArray[JSSD_FLOAT_ref_input_current_Ampere]=&data->ref_val.ref_input_current_Ampere;
+	js_slowDataArray[JSSD_FLOAT_ref_output_voltage_Volt]=&data->ref_val.ref_output_voltage_Volt;
+	js_slowDataArray[JSSD_FLOAT_ref_output_current_Ampere]=&data->ref_val.ref_output_current_Ampere;
+	js_slowDataArray[JSSD_FLOAT_input_current_Ampere]=&data->act_val.input_current_Ampere;
+	js_slowDataArray[JSSD_FLOAT_output_voltage_Volt]=&data->act_val.output_voltage_Volt;
+	js_slowDataArray[JSSD_FLOAT_output_current_Ampere]=&data->act_val.output_current_Ampere;
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

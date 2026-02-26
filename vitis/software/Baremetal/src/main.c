@@ -53,6 +53,13 @@ enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshak
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+
+struct uz_IIR_Filter_config duty_cycle_filter_config={
+		.selection=LowPass_first_order,
+		.cutoff_frequency_Hz=0.5f,
+		.sample_frequency_Hz=10000.0f
+};
+
 struct buck_control_config buck_config = {
     .control_mode = uz_buck_output_current_mode,
     .input_current_max_reference =0.0f,
@@ -125,6 +132,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.duty_cycle_filter=uz_signals_IIR_Filter_init(duty_cycle_filter_config);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.buck_controller = uz_buck_control_init(buck_config);

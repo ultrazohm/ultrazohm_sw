@@ -68,7 +68,8 @@ enum JS_OberservableData
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
-enum JS_SlowData {
+enum JS_SlowData
+{
 	JSSD_ZEROVALUE=0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
@@ -81,6 +82,17 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_input_current_lem_ampere,
+	JSSD_FLOAT_output_current_lem_before_relay_ampere,
+	JSSD_FLOAT_output_voltage_before_relay,
+	JSSD_FLOAT_output_voltage_after_relay,
+	JSSD_FLOAT_ref_input_current_Ampere,
+	JSSD_FLOAT_ref_output_voltage_Volt,
+	JSSD_FLOAT_ref_output_current_Ampere,
+	JSSD_FLOAT_input_current_Ampere,
+	JSSD_FLOAT_output_voltage_Volt,
+	JSSD_FLOAT_input_voltage_volt,
+	JSSD_FLOAT_output_current_Ampere,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_encoderOffset,
@@ -194,10 +206,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
+	V_in,
+	V_out,
+	I_in,
+	I_out,
 	receive_field_5,
 	receive_field_6,
 	receive_field_7,
@@ -221,12 +233,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
 	V,
 	V,
+	A,
+	A,
+	-,
+	-,
 	-,
 	-,
 	-,
@@ -264,11 +276,11 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_input_voltage_volt,
+	JSSD_FLOAT_output_voltage_before_relay,
+	JSSD_FLOAT_input_current_lem_ampere,
+	JSSD_FLOAT_output_current_lem_before_relay_ampere,
+	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
@@ -287,7 +299,6 @@ enum gui_button_mapping {
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
-
 
 int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

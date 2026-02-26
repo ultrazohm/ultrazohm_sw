@@ -31,6 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_buck_control/uz_buck_control.h"
+#include "../uz/uz_signals/uz_signals.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -53,14 +55,25 @@ static void ReadAllADC();
 #define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f // 15.3846153846
 #define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
 
-#define LEM_GAIN 0.0125f
-#define LEM_OFFSET_INPUT_CURRENT 2.5175f
-#define LEM_OFFSET_DC_CURRENT 2.517f
+//offset_input_current =
+//    2.5210
+//offset_output_current =
+//    2.5164
+//gain_output =
+//   39.2084
+//gain_input =
+//   16.0359
+
+#define LEM_INPUT_CURRENT_GAIN 16.0359f
+#define LEM_OUTPUT_CURRENT_GAIN 39.2084f
+#define LEM_OFFSET_INPUT_CURRENT 2.5210f
+#define LEM_OFFSET_DC_CURRENT 2.5164f
 
 bool manual_dutycycle = true;
+float reference_duty_cycle_filtered=0.0f;
 
-#define MAX_INPUT_CURRENT 5.0f
-#define MAX_OUTPUT_CURRENT 5.0f
+#define MAX_INPUT_CURRENT 10.0f
+#define MAX_OUTPUT_CURRENT 10.0f
 
 void ISR_Control(void *data)
 {
@@ -68,14 +81,14 @@ void ISR_Control(void *data)
     ReadAllADC();
 
 //    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A3.me.ADC_A3 - CURRENT_MEASUREMENT_BOX_OFFSET_INPUT_CURRENT) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
-//    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A3.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A3.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
 
     Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A2.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
     Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A2.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
     Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A2.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
 
-    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET_INPUT_CURRENT) * 0.2f/LEM_GAIN;
-    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET_DC_CURRENT) * 0.5f/LEM_GAIN;
+    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET_INPUT_CURRENT) * LEM_INPUT_CURRENT_GAIN; // 5 windings
+    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A4 - LEM_OFFSET_DC_CURRENT) * LEM_OUTPUT_CURRENT_GAIN; // 2 windings
 
     // if limit violation,
 //    if (Global_Data.pov_actual_values.input_current_box_ampere > MAX_INPUT_CURRENT)
@@ -91,11 +104,12 @@ void ISR_Control(void *data)
     {
         ultrazohm_state_machine_set_error(true);
     }
-//    if (Global_Data.pov_actual_values.output_current_box_after_relay_ampere > MAX_OUTPUT_CURRENT)
-//    {
-//        ultrazohm_state_machine_set_error(true);
-//    }
+    if (Global_Data.pov_actual_values.output_current_box_after_relay_ampere > MAX_OUTPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
 
+    reference_duty_cycle_filtered=uz_signals_IIR_Filter_sample(Global_Data.objects.duty_cycle_filter, Global_Data.av.snd_fld[1]);
     Global_Data.act_val.input_current_Ampere = Global_Data.pov_actual_values.input_current_lem_ampere;
     Global_Data.act_val.input_voltage_Volt = Global_Data.pov_actual_values.input_voltage_volt;
     Global_Data.act_val.output_current_Ampere = Global_Data.pov_actual_values.output_current_lem_before_relay_ampere;
@@ -107,7 +121,7 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
         if (manual_dutycycle)
         {
-            Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.snd_fld[1];
+            Global_Data.rasv.halfBridge1DutyCycle = reference_duty_cycle_filtered;
         }
         else
         {

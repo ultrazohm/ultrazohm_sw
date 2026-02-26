@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "uz/uz_buck_control/uz_buck_control.h"
+#include "uz/uz_signals/uz_signals.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -116,6 +117,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_buck_control_t *buck_controller;
+	uz_IIR_Filter_t *duty_cycle_filter;
 }object_pointers_t;
 
 struct pov_actual_values

@@ -194,8 +194,13 @@ void ISR_Control(void *data)
     {
         switch(ConSelection) {
         case LUT_FOC:
-        	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
-        	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
+        	if(ConApplication==CIL) {
+        		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
+        		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
+        	} else {
+        		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_current_angle, Global_Data.av.Torque_ref);
+        		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_Is, Global_Data.av.Torque_ref);
+        	}
         	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180*UZ_PIf) * Global_Data.av.Is_ref;
         	Global_Data.av.i_dq_ref.q = sinf((Global_Data.av.current_angle_ref)/180*UZ_PIf) * Global_Data.av.Is_ref;
         	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);

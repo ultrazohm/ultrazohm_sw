@@ -158,7 +158,7 @@ Full example
 ============
 
 The following example is based on a basic `Matlb Example <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_.
-A network with 13 inputs, two hidden layer (50 neurons in the first, 20 neurons in the second), ReLU activatin and one output is trained on a existing data set.
+A network with 13 inputs, two hidden layer (50 neurons in the first, 20 neurons in the second), ReLU activation and one output is trained on a existing data set.
 Note that this example is not concerned with the accuracy of the network, it is just used to showcase the initialization of the network and as a test-case.
 The Matlab script ``uz_nn_full_example_script.m`` in ``~/ultrazohm_sw/vitis/software/Baremetal/test/uz/uz_nn`` trains the network and writes the weights and bias to a ``.csv`` file.
 Be aware that the Matlab neural network definition differs from the network definition used in :ref:`neural_network`, thus the data is transposed and reshaped before the write operation. 
@@ -170,16 +170,13 @@ Execution time on R5
 
 The following lists the expected execution time for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR of the R5 processors (takes 2.6 us without feedforward calculation).
 
-- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU takes 5.0 us
-- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU ten times takes 25.5 us
-- (5.0us-2.6us)*10+2.6us is approx. 25.5us, which means that the calculation is actually happening 10 times (compiler does not optimize it away)
-- 4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 89 us.
-- 4 inputs, 8 outputs, 64 neurons, one hidden layer with ReLU takes 24.7 us.
-- 4 inputs, 8 outputs, 128 neurons, one hidden layer with ReLU takes 44 us.
-- 7 inputs, 2 outputs, 100 neurons ReLU, 30.2 us.
-- 5 inputs, 8 outputs, three hidden layer with 64 neurons, ReLU, takes 200 us.
-- 13 inputs, 1 output, one hidden layer with 20 neurons ReLU, takes 11 us.
-- 13 inputs, 1 output, two hidden layer (50 neurons in the first, 20 neurons in the second hidden layer) with 
+.. csv-table:: Execution time on R5 (feedforward in empty ISR)
+   :file: uz_nn_execution_time_r5.csv
+   :header-rows: 1
+   :widths: 8 8 10 12 12 10 30
+
+.. [#calc] (5.0 us - 2.6 us) * 10 + 2.6 us is approx. 25.5 us ; confirms no optimization.
+
 
 Optimization
 ************

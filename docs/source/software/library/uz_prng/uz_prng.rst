@@ -397,7 +397,7 @@ Usage of ``uz_prng_generator_halton`` in long-running applications (multiple day
     df = pd.read_csv("generator_isr_halton_long_log.csv")
 
     fig, ax = plt.subplots(1,1,layout='constrained',figsize=(13,5))
-    # Dataset is without offset and for 20 rand numbers -> substract offset of 16.2us and divide by number of generated rand numbers
+    # Dataset is without offset and for 20 rand numbers -> subtract offset of 16.2us and divide by number of generated rand numbers
     ax.plot(df.Var1, (df.y-16.2)/20) 
     fig.suptitle('Execution time to generate one random uint32_t')
     ax.grid(True,which='both')

@@ -128,7 +128,7 @@ Attention: there is an exceptional situation where the output disable function d
 	
 
 
-Accessoires
+Accessories
 ------------
 
 An optional front panel with integrated voltage indication LEDs is available for enhanced usability.

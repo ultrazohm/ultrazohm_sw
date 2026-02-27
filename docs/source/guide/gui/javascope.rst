@@ -4,13 +4,13 @@
 JavaScope
 =========
 
-The JavaScope is located in the main ultrazohm_sw repository in the folder  ``ultrazohm_sw\javascope``.
-The folder contains the following files
+The JavaScope is located in the main ultrazohm_sw repository in the folder ``ultrazohm_sw/javascope``.
+The folder contains the following files:
 
 - ``javascope_run.bat`` is the executable for Windows, start it by double-clicking
-- ``UZ_GUI.jar`` is the binary build file of the JavaScope, the sources are in a separate repository
+- ``UZ_GUI.jar`` is the binary file of the JavaScope, the sources are in a separate repository
 - ``properties.ini`` is the configuration file that is loaded when starting the JavaScope
-- ``JS_plot_data.m`` is a Matlab script that reads and plots the measurement data
+- ``JS_plot_data.m`` is a MATLAB script that reads and plots the measurement data
 - ``lib`` is the folder including the required Java libraries
 - ``Log_yyyy-mm-dd_hh-mm-ss.csv`` is a log file that is created at every startup of the GUI
 
@@ -20,7 +20,7 @@ The folder contains the following files
       :scale: 70 %
       :align: center
 
-      JavaScope folder strucuture
+      JavaScope folder structure
 
 Basics
 ------
@@ -37,11 +37,11 @@ The GUI is shown in :numref:`javascope_gui`.
 
 #. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 #. You will see some moving signs at (2) if the connection was successful.
-#. The ``Stop`` (3) respectively ``Run`` button stops or restarts the scope. After the connection has been established, the scope will be put into the ``Run`` mode automatically.
+#. The ``Stop`` (3) or ``Run`` button stops or restarts the scope. After the connection has been established, the scope will be put into the ``Run`` mode automatically.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
-#. In the top-panel it is possible to configure the data logging and time scale.
+#. In the top panel it is possible to configure the data logging and time scale.
 
 Description of the buttons and pages
 ------------------------------------
@@ -51,7 +51,7 @@ Description of the buttons and pages
 Setup Scope page
 """"""""""""""""
 
-The Setup Scope page is used to adjust the scope settings during operation. 
+The Setup Scope page is used to adjust the scope settings during operation.
 
 ..  _javascope_setup:
 
@@ -64,7 +64,7 @@ The Setup Scope page is used to adjust the scope settings during operation.
 #. Up to 20 channels, out of a predefined variable selection, can be chosen and displayed.
 
    If other variables than the predefined ones are necessary, just change them in the ``ipc_ARM.c`` file of the R5 processor (see :ref:`javascope_customizing`).
-   Do not forget to press the ``sendSelectData (all)`` button always after selecting signals from the drop-down menus if you want to change them! 
+   Do not forget to press the ``sendSelectData (all)`` button after selecting signals from the drop-down menus if you want to change them!
 
 #. Each channel can have a specific scale factor and an offset.
 
@@ -94,7 +94,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``Enable Control`` button has the same functionality as the hardware button on the main front panel.
 
-   a. It sets the system state to enable control, which mainly executes a part of the ISR of the R5 where the user should place its real-time application code.
+   a. It sets the system state to enable control, which mainly executes a part of the ISR of the R5 where the user should place their real-time application code.
 
    b. When the enable is confirmed by the R5 of the UltraZohm, the ``Running`` LED on the front panel as well as its mirrored twin in the GUI will turn on in addition to the blinking ``Ready`` LED.
 
@@ -106,7 +106,7 @@ The control page is used to step through the state-machine of the system and for
 
    .. admonition:: Note for :ref:`≥Rev05-based UltraZohm systems <hardware>`
 
-      With ≥Rev05 carrier boards, the STOP and Enable buttons on the frontpanel have an effect beyond the UZ software that has to be considered when using the Javascope.
+      With ≥Rev05 carrier boards, the STOP and Enable buttons on the front panel have an effect beyond the UZ software that has to be considered when using the JavaScope.
       Please refer to the "Warning" info-box in the :ref:`"Powerbutton Functionality" documentation of the Rev05 carrier board <carrier_board_rev05_s3cpwr>` for details.
 
 #. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm, no data are transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
@@ -160,7 +160,7 @@ The control page is used to step through the state-machine of the system and for
 Logging panel
 """""""""""""
 
-The logging panel is used to setup the data logger of the GUI.
+The logging panel is used to set up the data logger of the GUI.
 
 ..  figure:: ./images_javascope/loggingpanel.png
     :align: center
@@ -168,12 +168,12 @@ The logging panel is used to setup the data logger of the GUI.
     logging panel
 
 #. The ``setTime`` button sets the time base of the scope. It simply scales the time base of the scope by the selected value.
-#. After zooming in on one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
+#. After zooming in on one or both axes, the ``fixAxis`` button reverts the axis limits to the default value.
 #. Here, the trigger level for a manual trigger can be set (e.g., 1V).
-#. With this slider, the preTrigger can be configured (e.g., how much time is visible before the trigger event happens).
+#. With this slider, the ``preTrigger`` can be configured (e.g., how much time is visible before the trigger event happens).
 #. The button ``setTrigger`` sets the selection for rising or falling edge for CH1->Ch4. Choose the desired setting in the dropdown menu above.
 #. The button ``SingleShot`` triggers the scope once.
-#. The button ``SaveScreen XLS`` saves the visible scope content in a xls file.
+#. The button ``SaveScreen XLS`` saves the visible scope content in an XLS file.
 #. The button ``Logging OFF`` respectively ``Logging ON`` toggles the data logger. 
    If the button reads ``Logging OFF``, pressing it will turn on the logger. 
    If the button reads ``Logging ON`` and is highlighted green, pressing the button again will turn off the logger.
@@ -201,7 +201,7 @@ The logging panel is used to setup the data logger of the GUI.
        //   js_status_BareToRTOS &= ~(1 << 12);
        // }
 
-#. Status indicator to display, if the logging is active. 
+#. Status indicator to display if the logging is active.
    It is highlighted green and displays ``Log ON`` if either the logging through the GUI-button press or via the external signal is active. 
    If no logging is active, the text states ``Log OFF``.
 
@@ -310,4 +310,3 @@ Known issues
 Designed by
 """""""""""
 Philipp Loehdefink (THN), Sebastian Wendel (THN), Eyke Liegmann (TUM), Michael Hoerner (THN), Dennis Hufnagel (THN) in 04/2022
-

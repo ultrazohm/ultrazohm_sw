@@ -185,6 +185,6 @@ PJTAG
 Pin capabilities
 ----------------
 
-For detailed information see the `Xilinx Technical Refrence Manual UG1085 (v2.2) for the Zynq UltraScale+ <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G30.498111>`_
+For detailed information see the `Xilinx Technical Reference Manual UG1085 (v2.2) for the Zynq UltraScale+ <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G30.498111>`_
 
 The MIO interface description can be found on page under chapter 28 *Multiplexed I/O* (*Table 28-3: MIO Interfaces*).

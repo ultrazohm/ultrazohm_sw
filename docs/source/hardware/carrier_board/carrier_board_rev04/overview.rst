@@ -10,7 +10,7 @@ Short summary of new features
 -----------------------------
 
 * New connector for front panel buttons and LEDs to provide the isolated GPIO interface available for other purposes (e.g., interaction with external systems)
-* External stop circuitry integrated on isolated GPIO interface. It is for the default UltraZohm system software usage not neccessary any more to connect the dummy connector to keep the safety loop closed. The external stop function now can be used independently of the front panel button.
+* External stop circuitry integrated on isolated GPIO interface. It is for the default UltraZohm system software usage not necessary any more to connect the dummy connector to keep the safety loop closed. The external stop function now can be used independently of the front panel button.
 * Isolated GPIO interface extended to 12 I/Os available at connector X12. The external stop functionality is dedicated to isoGPIO12, but could also be freely used if required. 
 * Second Ethernet port accessible
 * GTH lanes on analog socket A1 available

@@ -67,7 +67,7 @@ If you have access to licenses (e.g., students at TUM, THN), you can send the fo
    :scale: 50
 
 
-3. Send the screenshot your supervisor / responsible person in your company / university and request a license
+3. Send the screenshot to your supervisor or responsible person at your company or university and request a license
 
 4. You will receive a license file which you can load here:
 

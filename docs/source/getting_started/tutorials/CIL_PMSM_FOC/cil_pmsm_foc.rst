@@ -43,7 +43,7 @@ Initial steps
 
        Block design in Vivado.
 
-#. Click on the *Adress Editor* tab and assign the new IP-Block an address by right clicking on the entry and selecting *Assign*.
+#. Click on the *Address Editor* tab and assign the new IP-Block an address by right clicking on the entry and selecting *Assign*.
 
    ..  _Vivado_ip_address:
    ..  figure:: ./img/Vivado3.png

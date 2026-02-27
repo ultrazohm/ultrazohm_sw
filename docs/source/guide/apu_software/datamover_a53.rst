@@ -1,11 +1,11 @@
 .. _datamoverA53:
 
 =====================
-Data mover for scope 
+Data mover for scope
 =====================
 
 
-Please refer first to the :ref:`description of the RPU code <datamoverA53>`.
+Please refer first to the :ref:`description of the RPU code <datamoverR5>`.
 
 .. mermaid::
     :align: center
@@ -32,12 +32,12 @@ Please refer first to the :ref:`description of the RPU code <datamoverA53>`.
 Shared header file
 ------------------
 
-Please refer to :ref:`description of the shared header file <datamoverSharedHeader>` on more information about ``javascope_data_t``.
+Please refer to the :ref:`description of the shared header file <datamoverSharedHeader>` for more information about ``javascope_data_t``.
 
 Modification on A53
 -------------------
 
-in ``isr.c``
+In ``isr.c``:
 
 .. code-block:: c
 

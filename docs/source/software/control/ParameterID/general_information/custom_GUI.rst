@@ -178,7 +178,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :caption: Changes to the send fiels in the ``javascope.h`` file. Only replace the first three entries.
+        :caption: Changes to the send fields in the ``javascope.h`` file. Only replace the first three entries.
 
         /* Visualization Config for GUI*/
         // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
@@ -207,7 +207,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :caption: Changes to the receive fiels in the ``javascope.h`` file. Only replace the first six entries.
+        :caption: Changes to the receive fields in the ``javascope.h`` file. Only replace the first six entries.
 
         // Description (printed text) for the receive_fields top to bottom
         // Do not change the first (zero) and last (end) entries.

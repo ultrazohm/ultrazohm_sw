@@ -41,55 +41,55 @@ struct uz_resonantController_config
 
 /**
  * @brief init function for the resonant controller
- * @param struct uz_resonantController_config, config for the resonant controller
+ * @param config configuration for the resonant controller
  * @return uz_resonant_controller*, pointer to the resonant controller
  */
 uz_resonantController_t *uz_resonantController_init(struct uz_resonantController_config config);
 
 /**
  * @brief step function of the resonant controller, steps the controller once
- * @param self pointer to uz_resonantController_t* object
- * @param float in_reference_value, input reference value for the controller
- * @param float in_measured_value, input measured value for the controller
- * @param float fundamental_frequency, current angular velocity for the controller
+ * @param self pointer to uz_resonantController_t object
+ * @param in_reference_value input reference value for the controller
+ * @param in_measured_value input measured value for the controller
+ * @param fundamental_frequency current angular velocity for the controller
  * @return float outputvalue of the resonant controller
  */
 float uz_resonantController_step(uz_resonantController_t *self, float in_reference_value, float in_measured_value, float fundamental_frequency);
 
 /**
  * @brief reset function of the resonant controller
- * @param self pointer to uz_resonantController_t* object
+ * @param self pointer to uz_resonantController_t object
  * @return void
  */
 void uz_resonantController_reset(uz_resonantController_t *self);
 
 /**
  * @brief returns output of the resonant controller
- * @param self pointer to uz_resonantController_t* object
+ * @param self pointer to uz_resonantController_t object
  * @return float output value
  */
 float uz_resonantController_get_output(uz_resonantController_t *self);
 
 /**
  * @brief sets config of resonant controller
- * @param self pointer to uz_resonantController_t* object
- * @param struct uz_resonantController_config, new config for the resonant controller
+ * @param self pointer to uz_resonantController_t object
+ * @param config new configuration for the resonant controller
  * @return void
  */
 void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config);
 
 /**
  * @brief sets gain of resonant controller
- * @param self pointer to uz_resonantController_t* object
- * @param float new gain
+ * @param self pointer to uz_resonantController_t object
+ * @param gain new gain value
  * @return void
  */
 void uz_resonantController_set_gain(uz_resonantController_t *self, float gain);
 
 /**
  * @brief sets harmonic order of resonant controller
- * @param self pointer to uz_resonantController_t* object
- * @param float new harmonic order
+ * @param self pointer to uz_resonantController_t object
+ * @param harmonic_order new harmonic order value
  * @return void
  */
 void uz_resonantController_set_harmonic_order(uz_resonantController_t *self, float harmonic_order);

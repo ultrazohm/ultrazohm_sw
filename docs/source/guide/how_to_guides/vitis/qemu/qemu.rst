@@ -10,7 +10,7 @@ This guide adapts the `Standalone Application Debug using System Debugger on QEM
 1. Launch Vitis IDE
 2. Open the UltraZohm workspace: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
 3. Select **Run > Debug Configurations**
-4. Right click on ``Debug_FreeRTOS_Baremetal_FPGA`` and select **duplicate**
+4. Right-click on ``Debug_FreeRTOS_Baremetal_FPGA`` and select **duplicate**
 
    .. image:: Debug_config_create.png
 
@@ -19,12 +19,12 @@ This guide adapts the `Standalone Application Debug using System Debugger on QEM
 
    .. image:: Debug_config_project.png
 
-7. Check the **Emulation** box. The **connection** should automatically change to ``QMEU``
+7. Check the **Emulation** box. The **connection** should automatically change to ``QEMU``
 
    .. image:: Debug_config_emulator.png
 
 8. Don't change any other settings
-9. Click **Apply** and then **run**
+9. Click **Apply** and then **Run**
 10. Click **Start Emulator and Run**
 11. View after the emulation and debug have started.
 
@@ -35,20 +35,20 @@ This guide adapts the `Standalone Application Debug using System Debugger on QEM
 
  
 
-Further information to setup the QEMU emulation for vitis 2020.1
-****************************************************************
+Further information to set up the QEMU emulation for Vitis 2020.1
+*****************************************************************
 
-Documentation using QEMU with the Vitis IDE is sparse. The following links mostly reference the old SKD environment. 
+Documentation using QEMU with the Vitis IDE is sparse. The following links mostly reference the old SDK environment.
 
 
 1. `Xilinx Quick Emulator User Guide QEMU (v2020.1) <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug1169-xilinx-qemu.pdf>`_ . To use this system emulation model you must be familiar with:
   
-   * Uses **Xilinx® PetaLinux** and Software DevelopmentKit (SDK) tools
+   * Uses **Xilinx® PetaLinux** and Software Development Kit (SDK) tools
 
 2. `Introduction to QEMU <https://www.xilinx.com/video/soc/introduction-to-qemu.html>`_
 
-   * Short explanation how QEMU works and for what you can use it
-   * No information how to set up/start the emulator
+   * Short explanation of how QEMU works and for what you can use it
+   * No information on how to set up/start the emulator
 
 3. `Running an RPU Application using QEMU <https://www.xilinx.com/video/soc/running-an-rpu-application-using-qemu.html>`_ 
   

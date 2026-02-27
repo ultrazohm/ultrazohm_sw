@@ -50,13 +50,13 @@ It returns reference currents of a circular determined current map to quickly cy
   \draw[<-]($(inject.east)-(0em,1em)$)to node[right,align=left]{}($(check.west)-(0em,1em)$);
   \draw[->, bend angle=20, bend right](linParablock.north)to node[below,align=center]{Steady state \\ has been left}(steady.north east);
   \draw[->](Stromgrenze.east)to node[above,align=left]{fulfilled}(linParablock.west);
-  \draw[->](linParablock.south-|linear)to node[right,align=center]{Sucessfully\\injected}(linear.north);
+  \draw[->](linParablock.south-|linear)to node[right,align=center]{Successfully\\injected}(linear.north);
   \draw[->](Stromgrenze.south west)to node[above,align=center]{Not fulfilled}(steady.south east|-Stromgrenze.south);
   \node[block, left=10em of linear.west,text width=1.25in ](flux){Calculate $\psi_\mathrm d$ and $\psi_\mathrm q$ from shift-\\registervalues  and fill $\Psi$ \\\textbf{503}};
   \draw[->](linear.west)to node[above,align=center]{Identification\\inside the\\ current limit}(flux.east);
   \draw[->](Stromgrenze.south east)to node[above,align=center]{After\\defined\\time }(linParablock.south west);
   \draw[->](linear.north west) |- (steady.east)node[below right=0em and 13em,align=center]{Identification outside \\the current limit};
-  \node[block,left=3em of flux, anchor=east, ](Diff){Calulate $\vartheta_W $ and \\fill $\Delta \Psi$\\\textbf{504}};
+  \node[block,left=3em of flux, anchor=east, ](Diff){Calculate $\vartheta_W $ and \\fill $\Delta \Psi$\\\textbf{504}};
   \draw[->](flux.west)to node[below,align=left]{ }(Diff.east);
   \node[block,left=3em of Diff, anchor=east, ](Entf){Delete shift-\\register\\values};
   \draw[->](Diff.west)to node[below,align=left]{ }(Entf.east);

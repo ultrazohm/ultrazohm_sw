@@ -1,7 +1,7 @@
 .. _r5_interrupts:
 
 =============
-Interrupts R5
+R5 interrupts
 =============
 
 Software User Model
@@ -13,7 +13,7 @@ The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning 
 
 .. code-block:: c 
 
-    //chose here which of the above interrupt trigger you want to use:
+    // choose here which of the above interrupt triggers you want to use:
     #define Interrupt_ISR_source_user_choice	0
 
     
@@ -59,7 +59,7 @@ Structure in the PL
 
 The Interrupt module consists of:
 
-* ``mux_axi``: chose source of ADC conversion trigger 
+* ``mux_axi``: choose source of ADC conversion trigger
 * ``delay_trigger``: adds delay to the ADC conversion trigger
 * ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging
 * ``adc_delay``: vio to set delay of ``delay_trigger``

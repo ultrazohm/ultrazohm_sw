@@ -5,8 +5,8 @@ Contribution Workflow
 =====================
 
 The UltraZohm community uses the git-flow branching model since it is easy to apply (more info: `Atlassian <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_, `Gitflow cheat sheet <https://danielkummer.github.io/git-flow-cheatsheet/index.html>`_).
-In addition to the git-flow model, :ref:`bitbucket_pull_request` are used for all merges.
-See  the `Atlassian tutorial <https://www.atlassian.com/en/git/tutorials/making-a-pull-request>`_ for additional information.
+In addition to the git-flow model, :ref:`bitbucket_pull_request` is used for all merges.
+See the `Atlassian tutorial <https://www.atlassian.com/en/git/tutorials/making-a-pull-request>`_ for additional information.
 It is not possible to merge into the ``main`` or ``develop`` branches without a pull request.
 
 UltraZohm Workflow
@@ -20,13 +20,13 @@ Git-flow is supported by the `gitflow extension <https://github.com/nvie/gitflow
 
   Visualization of git-flow.
 
-:numref:`gitflow_picture` shows the gitflow.
+:numref:`gitflow_picture` shows the git-flow workflow.
 The following branches are used:
 
 * ``main``
 
   * Exists forever
-  * Stable Version
+  * Stable version
   * Version **tag** after each merge
 
 * ``develop``
@@ -53,7 +53,7 @@ The following branches are used:
 * ``release``
 
   * Created by maintainers for major releases
-  * Created by maintainers if merge conflicts occur in pull request from ``develop`` to ``main``
+  * Created by maintainers if merge conflicts occur in a pull request from ``develop`` to ``main``
   * Resolve merge conflicts 
   * Pull request to merge to ``main``
   * Increment the first number of the version tag by one

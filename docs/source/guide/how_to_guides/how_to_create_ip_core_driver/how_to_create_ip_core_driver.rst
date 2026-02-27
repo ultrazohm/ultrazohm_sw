@@ -1,8 +1,8 @@
 .. _how_to_create_ipcore_driver:
 
-==============================
-How to create a IP core driver
-==============================
+===============================
+How to create an IP core driver
+===============================
 
 This tutorial creates a software driver for the :ref:`AXI_testIP`.
 Only a part of the functionality of :ref:`AXI_testIP` is implemented here, i.e., the multiplication of two integer values on the PL.
@@ -11,7 +11,7 @@ The implementation is done in a way that implements the driver and the :ref:`uni
 
 .. note:: This example is purely for understanding how to write the driver. Using the PL for simple integer multiplication is much slower than just doing it on the PS.
 
-.. tip:: Sometimes, Ceedling fails to build, and unclear errors are present. Try to use ``ceedling clean`` to delete temporary files of Ceedling or commenting out the last test, running `ceedling clean``, running all tests again, and comment in the last test again. If this does not work, run ``ceedling clobber`` to delete more temporary files and run the tests again.
+.. tip:: Sometimes, Ceedling fails to build, and unclear errors are present. Try to use ``ceedling clean`` to delete temporary files of Ceedling or commenting out the last test, running ``ceedling clean``, running all tests again, and comment in the last test again. If this does not work, run ``ceedling clobber`` to delete more temporary files and run the tests again.
 
 Video
 =====
@@ -60,7 +60,7 @@ Setup
 
 11. Rename the existing test ``test_uz_myIP_hw_NeedToImplement`` to ``test_uz_myIP_hw_write_to_A``
 12. Run the tests by typing ``ceedling test:all`` in the terminal
-13. The tests pass, but a message a ignore message is printed
+13. The tests pass, but an ignore message is printed
 
     ::
 
@@ -97,7 +97,7 @@ Write the test for this behavior:
           uz_myIP_hw_write_A(TEST_BASE_ADDRESS,a);
       }
 
-1. Run the tests (type ``ceedling test:all`` in terminal)
+1. Run the tests (type ``ceedling test:all`` in the terminal)
 2. Tests fail with a warning that ``uz_myIP_hw_write_to_A`` has an implicit declaration
 3. Declare the required functions to read and write from the IP core in ``uz_myIP_hw.h``
 

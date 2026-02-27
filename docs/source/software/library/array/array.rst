@@ -6,7 +6,7 @@ Array
 
 A collection of array data types that are boxed in a ``struct``.
 The ``struct`` holds the length of the array such that this can be passed as an argument and received from functions.
-The header also provides a makro to determine the size of arrays.
+The header also provides a macro to determine the size of arrays.
 
 Reference
 =========
@@ -43,7 +43,7 @@ Take the `storage duration <https://iso-9899.info/wiki/Storage_Duration>`_ into 
     void examplefunction(void){
         float data[5] = {1.12f, 2.87f, 3.3f, 4.6f, 51.5f};
         uz_array_float_t testarray = {
-            .length = UZ_ARRAY_SIZE(data), // ALWAYS use the UZ_ARRAY_SIZE makro in the initialization of the length of the array
+            .length = UZ_ARRAY_SIZE(data), // ALWAYS use the UZ_ARRAY_SIZE macro in the initialization of the length of the array
             .data = &data[0] // Pointer to the first element of the actual data of the array    
         }; 
         float sum=sum_over_array(testarray); // enables to pass array with length of array

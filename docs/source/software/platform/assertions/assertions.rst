@@ -73,11 +73,11 @@ Implementation
 --------------
 
 The implementation relies on ``xil_assert.h`` (part of libmetal).
-While ``xil_assert.h`` provides assert makros (e.g., ``Xil_AssertVoid``), these use ``return`` in the marko.
+While ``xil_assert.h`` provides assert macros (e.g., ``Xil_AssertVoid``), these use ``return`` in the marko.
 This results in multiple warnings, MISRA violations and causes bugs in functions that return a ``struct``.
 Thus, we do not use them!
-The ``uz_assert`` makro is *function like* but has to be implemented as a makro to use ``__FILE__`` and ``__LINE``.
-The ``uz_assert`` makro is wraped in a ``do{..}while(0)`` statement to ensure the right behavior regarding ``;``
+The ``uz_assert`` macro is *function like* but has to be implemented as a macro to use ``__FILE__`` and ``__LINE``.
+The ``uz_assert`` macro is wrapped in a ``do{..}while(0)`` statement to ensure the right behavior regarding ``;``
 
 Further information:
 

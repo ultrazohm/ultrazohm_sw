@@ -62,7 +62,7 @@ Next, attach them to the respective pads of X9 as shown below.
 .. image:: pictures/PHYfixBOT.png
    :width: 600
 
-A proper software driver for toggeling the PHY reset pins is shipped by default with ultrazohm_sw ``v1.0.2`` and newer.
+A proper software driver for toggling the PHY reset pins is shipped by default with ultrazohm_sw ``v1.0.2`` and newer.
 
 This issues is present in version ``1v5`` to ``Rev04`` and is resolved in revisions newer than that.
 For further technical details, see `Carrier Board Issue 122 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/122/gpio-to-toggle-phy-reset-might-solve-phy>`_

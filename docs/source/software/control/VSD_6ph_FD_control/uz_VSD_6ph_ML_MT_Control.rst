@@ -6,7 +6,7 @@ ML-MT-Optimized control during OPF
 The VSD-currents during pre-fault operation in multiphase machines are independent from each other and can be controlled separately e.g. by using PI- and resonant controller in the three VSD-subsystems.
 During one or more open-phase-faults (OPF) the VSD-currents are no longer independent from each other, as the system looses a degree of freedom per faulted phase, resulting in a coupling between the systems.
 The coupling between the systems depend on the specific fault scenario and can be calculated.
-The generated torque of the six phase machine depends only on the alpha-beta current, because through the VSD-Transformation alle torque producing components are mapped into the :math:`\alpha\beta`-plane.
+The generated torque of the six phase machine depends only on the alpha-beta current, because through the VSD-Transformation all torque producing components are mapped into the :math:`\alpha\beta`-plane.
 To generate constant torque, in pre-fault and the post-fault case, the alpha-beta-currents :math:`\mathbf{i}^{\alpha\beta}` have to be controlled accordingly.
 In a PMSM the alpha-beta-currents should take the following form
 

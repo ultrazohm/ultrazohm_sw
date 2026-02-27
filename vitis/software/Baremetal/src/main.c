@@ -103,6 +103,13 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_pl_d4_Last = initialize_resolver_pl_d4_Last();
+            Global_Data.objects.resolver_pl_d4_Pruef = initialize_resolver_pl_d4_Pruef();
+            Global_Data.objects.resolverIP_Last = initialize_resolverIP_Last();
+            Global_Data.objects.resolverIP_Pruef = initialize_resolverIP_Pruef();
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();
             initialization_chain = print_msg;
             break;
         case print_msg:

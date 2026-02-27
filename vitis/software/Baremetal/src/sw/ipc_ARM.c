@@ -186,23 +186,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.n_mech_Last_soll = value;
+		//data->av.snd_fld[1] = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		//data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		//data->av.snd_fld[3] = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		//data->av.snd_fld[4] = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		//data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -210,31 +215,37 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		data->rasv.i_dq_3ph_Last_soll.d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		data->rasv.i_dq_3ph_Last_soll.q = value;
+		//data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		//data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		//data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		//data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		//data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+		data->rasv.n_mech_Pruef_soll = value;
+		//data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
@@ -266,23 +277,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.speed_control_3ph_Last = true;
+			data->rasv.speed_control_6ph_Pruef = false;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.speed_control_3ph_Last = false;
+			data->rasv.speed_control_6ph_Pruef = true;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			if(data->rasv.speed_control_3ph_Last)
+				data->rasv.current_control_6ph_Pruef = true;
+			else if(data->rasv.speed_control_6ph_Pruef)
+				data->rasv.current_control_3ph_Last = true;
 			break;
 
 		case (My_Button_4):
-
+			if(data->rasv.speed_control_6ph_Pruef && !(data->rasv.current_control_3ph_Last))
+				data->rasv.speed_control_6ph_Pruef = false;
+			if(data->rasv.speed_control_3ph_Last && !(data->rasv.current_control_6ph_Pruef))
+				data->rasv.speed_control_3ph_Last = false;
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.current_control_3ph_Last = false;
+			data->rasv.current_control_6ph_Pruef = false;
 			break;
 
 		case (My_Button_6):

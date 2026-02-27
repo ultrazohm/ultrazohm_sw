@@ -69,20 +69,52 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 					= &data->av.I_U;
-	js_ch_observable[JSO_ib] 					= &data->av.I_V;
-	js_ch_observable[JSO_ic] 					= &data->av.I_W;
-	js_ch_observable[JSO_ua] 					= &data->av.U_U;
-	js_ch_observable[JSO_ub] 					= &data->av.U_V;
-	js_ch_observable[JSO_uc] 					= &data->av.U_W;
-	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-	js_ch_observable[JSO_id] 					= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]					= &data->av.U_d;
-	js_ch_observable[JSO_uq]					= &data->av.U_q;
+	js_ch_observable[JSO_n_mech_Last]			= &data->av.resolver_outputs_d4_Last.n_mech_rpm;
+	js_ch_observable[JSO_n_mech_Pruef]			= &data->av.resolver_outputs_d4_Pruef.n_mech_rpm;
+	js_ch_observable[JSO_theta_el_Last_rad] 	= &data->av.resolver_outputs_d4_Last.position_el_2pi;
+	js_ch_observable[JSO_theta_el_Pruef_rad] 	= &data->av.resolver_outputs_d4_Pruef.position_el_2pi;
+	js_ch_observable[JSO_theta_mech_Last] 		= &data->av.resolver_outputs_d4_Last.position_mech_2pi;
+	js_ch_observable[JSO_theta_mech_Pruef] 		= &data->av.resolver_outputs_d4_Pruef.position_mech_2pi;
+	js_ch_observable[JSO_theta_el_Last_deg] 	= &data->av.theta_el_Last_deg;
+	js_ch_observable[JSO_theta_mech_Last_deg] 	= &data->av.theta_mech_Last_deg;
+	js_ch_observable[JSO_theta_el_Pruef_deg]	= &data->av.theta_el_Pruef_deg;
+	js_ch_observable[JSO_theta_mech_Pruef_deg]	= &data->av.theta_mech_Pruef_deg;
+	js_ch_observable[JSO_ua_3ph] 				= &data->av.u_abc_3ph_Last_meas.a;
+	js_ch_observable[JSO_ub_3ph] 				= &data->av.u_abc_3ph_Last_meas.b;
+	js_ch_observable[JSO_uc_3ph] 				= &data->av.u_abc_3ph_Last_meas.c;
+	js_ch_observable[JSO_ua1_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.a1;
+	js_ch_observable[JSO_ub1_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.b1;
+	js_ch_observable[JSO_uc1_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.c1;
+	js_ch_observable[JSO_ua2_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.a2;
+	js_ch_observable[JSO_ub2_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.b2;
+	js_ch_observable[JSO_uc2_6ph] 				= &data->av.u_abc_6ph_Pruef_meas.c2;
+	js_ch_observable[JSO_u_dc1] 				= &data->av.u_dc1;
+	js_ch_observable[JSO_u_dc2] 				= &data->av.u_dc2;
+	js_ch_observable[JSO_u_dc3] 				= &data->av.u_dc3;
+	js_ch_observable[JSO_ia_3ph] 				= &data->av.i_abc_3ph_Last_meas.a;
+	js_ch_observable[JSO_ib_3ph] 				= &data->av.i_abc_3ph_Last_meas.b;
+	js_ch_observable[JSO_ic_3ph] 				= &data->av.i_abc_3ph_Last_meas.c;
+	js_ch_observable[JSO_ia1_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.a1;
+	js_ch_observable[JSO_ib1_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.b1;
+	js_ch_observable[JSO_ic1_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.c1;
+	js_ch_observable[JSO_ia2_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.a2;
+	js_ch_observable[JSO_ib2_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.b2;
+	js_ch_observable[JSO_ic2_6ph] 				= &data->av.i_abc_6ph_Pruef_meas.c2;
+	js_ch_observable[JSO_i_dc1] 				= &data->av.i_dc1;
+	js_ch_observable[JSO_i_dc2] 				= &data->av.i_dc2;
+	js_ch_observable[JSO_i_dc3] 				= &data->av.i_dc3;
+	js_ch_observable[JSO_ud_3ph]				= &data->av.u_dq_3ph_Last_meas.d;
+	js_ch_observable[JSO_uq_3ph]				= &data->av.u_dq_3ph_Last_meas.q;
+	js_ch_observable[JSO_ud_6ph]				= &data->av.u_dq_6ph_Pruef_meas.d;
+	js_ch_observable[JSO_uq_6ph]				= &data->av.u_dq_6ph_Pruef_meas.q;
+	js_ch_observable[JSO_ux_6ph]				= &data->av.u_dq_6ph_Pruef_meas.x;
+	js_ch_observable[JSO_uy_6ph]				= &data->av.u_dq_6ph_Pruef_meas.y;
+	js_ch_observable[JSO_id_3ph] 				= &data->av.i_dq_3ph_Last_meas.d;
+	js_ch_observable[JSO_iq_3ph] 				= &data->av.i_dq_3ph_Last_meas.q;
+	js_ch_observable[JSO_id_6ph] 				= &data->av.i_dq_6ph_Pruef_meas.d;
+	js_ch_observable[JSO_iq_6ph] 				= &data->av.i_dq_6ph_Pruef_meas.q;
+	js_ch_observable[JSO_ix_6ph] 				= &data->av.i_dq_6ph_Pruef_meas.x;
+	js_ch_observable[JSO_iy_6ph] 				= &data->av.i_dq_6ph_Pruef_meas.y;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -91,17 +123,30 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+
+	js_slowDataArray[JSSD_FLOAT_ud_3ph] 			    = &(data->av.u_dq_3ph_Last_meas.d);
+	js_slowDataArray[JSSD_FLOAT_uq_3ph] 			    = &(data->av.u_dq_3ph_Last_meas.q);
+	js_slowDataArray[JSSD_FLOAT_ud_6ph] 				= &(data->av.u_dq_6ph_Pruef_meas.d);
+	js_slowDataArray[JSSD_FLOAT_uq_6ph] 				= &(data->av.u_dq_6ph_Pruef_meas.q);
+	js_slowDataArray[JSSD_FLOAT_ux_6ph] 				= &(data->av.u_dq_6ph_Pruef_meas.x);
+	js_slowDataArray[JSSD_FLOAT_uy_6ph] 				= &(data->av.u_dq_6ph_Pruef_meas.y);
+	js_slowDataArray[JSSD_FLOAT_id_3ph] 				= &(data->av.i_dq_3ph_Last_meas.d);
+	js_slowDataArray[JSSD_FLOAT_iq_3ph] 				= &(data->av.i_dq_3ph_Last_meas.q);
+	js_slowDataArray[JSSD_FLOAT_id_6ph] 				= &(data->av.i_dq_6ph_Pruef_meas.d);
+	js_slowDataArray[JSSD_FLOAT_iq_6ph] 				= &(data->av.i_dq_6ph_Pruef_meas.q);
+	js_slowDataArray[JSSD_FLOAT_ix_6ph] 				= &(data->av.i_dq_6ph_Pruef_meas.x);
+	js_slowDataArray[JSSD_FLOAT_iy_6ph] 				= &(data->av.i_dq_6ph_Pruef_meas.y);
+	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_1] 			= &(data->av.temp_VSI_1);
+	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_2] 			= &(data->av.temp_VSI_2);
+	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_3] 			= &(data->av.temp_VSI_3);
+	js_slowDataArray[JSSD_FLOAT_theta_el_Last]			= &(data->av.theta_el_Last_deg);
+	js_slowDataArray[JSSD_FLOAT_theta_el_Pruef]			= &(data->av.theta_el_Pruef_deg);
+	js_slowDataArray[JSSD_FLOAT_theta_mech_Last]		= &(data->av.theta_mech_Last_deg);
+	js_slowDataArray[JSSD_FLOAT_theta_mech_Pruef]		= &(data->av.theta_mech_Pruef_deg);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
 	return Status;
 }
 

@@ -1,5 +1,5 @@
-#ifndef UZ_6PH_SVPWM_OPT_H
-#define UZ_6PH_SVPWM_OPT_H
+#ifndef UZ_6PH_SVPWM_H
+#define UZ_6PH_SVPWM_H
 
 #include "uz_6ph_SVPWM_LUT.h"
 
@@ -49,4 +49,4 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_abc1abc2(uz
 
 
 
-#endif //UZ_6PH_SVPWM_OPT_H
+#endif //UZ_6PH_SVPWM_H

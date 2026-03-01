@@ -4,6 +4,18 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
+
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt{
+    struct uz_DutyCycle_2x3ph_t Dutycles;
+    int phaseshiftoption;
+};
+
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt_more_info{
+    struct uz_DutyCycle_2x3ph_PhaseShiftOpt Dutycles_PhaseShift;
+
+};
+
+
 struct uz_DutyCycle_2x3ph_t uz_add_zerosequence_and_saturate_6ph(uz_6ph_abc_t u_abc1abc2_ref, float u_n1, float u_n2, float V_dc_volts);
 
 /*

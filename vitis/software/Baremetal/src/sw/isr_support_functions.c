@@ -9,7 +9,6 @@ struct uz_6ph_dq_t uz_CurrentControl_sample_6ph(struct uz_CurrentControl_t* self
 	struct uz_3ph_dq_t i_dq_3ph_soll = { .d = i_dq_6ph_ref.d, .q = i_dq_6ph_ref.q};
 	struct uz_3ph_dq_t i_xy_3ph_soll = { .d = i_dq_6ph_ref.x, .q = i_dq_6ph_ref.y};
 
-
 	struct uz_3ph_dq_t u_dq_3ph_soll = uz_CurrentControl_sample(self1, i_dq_3ph_soll, i_dq_3ph_meas, u_dc1, omega_el_rad_per_sec);
 	struct uz_3ph_dq_t u_xy_3ph_soll = uz_CurrentControl_sample(self2, i_xy_3ph_soll, i_xy_3ph_meas, u_dc2, omega_el_rad_per_sec);
 

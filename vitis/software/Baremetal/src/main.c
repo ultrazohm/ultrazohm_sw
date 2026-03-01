@@ -30,9 +30,19 @@ DS_Data Global_Data = {
         .halfBridge9DutyCycle = 0.0f,
         .halfBridge10DutyCycle = 0.0f,
         .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f},
+        .halfBridge12DutyCycle = 0.0f,
+		.i_dq_Pruef_soll_from_M_soll = false},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+	.av.kappa = 1.0f,
+    .av.phi_rad = 0.0f,
+    .av.is_scaled = false,
+    .av.dual_3ph_PWM_selected = false,
+    .av.SVPWM_4active_selected = false,
+    .av.SVPWM_5active_selected = false,
+    .av.SVPWM_4active_opt_selected = false,
+    .av.SVPWM_5active_opt_selected = false,
+    .av.d_opt_selected = false,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
@@ -84,6 +94,20 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+            Global_Data.objects.current_control_dq_6ph_Pruef = uz_current_control_dq_Pruef_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_dq_6ph_Pruef);
+            Global_Data.objects.current_control_xy_6ph_Pruef = uz_current_control_xy_Pruef_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_xy_6ph_Pruef);
+            Global_Data.objects.current_control_3ph_Last = uz_current_control_Last_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_3ph_Last);
+            Global_Data.objects.speed_prefilter_Last = uz_speed_prefilter_Last_init();
+            Global_Data.objects.speed_prefilter_Pruef = uz_speed_prefilter_Pruef_init();
+            Global_Data.objects.speed_control_3ph_Last = uz_speed_control_Last_init();
+            uz_SpeedControl_reset(Global_Data.objects.speed_control_3ph_Last);
+            Global_Data.objects.speed_control_6ph_Pruef = uz_speed_control_Pruef_init();
+            uz_SpeedControl_reset(Global_Data.objects.speed_control_6ph_Pruef);
+            Global_Data.objects.torque_to_current_dq_3ph_Last = uz_torque_to_current_converter_Last_init();
+            Global_Data.objects.torque_to_current_dq_6ph_Pruef = uz_torque_to_current_converter_Pruef_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

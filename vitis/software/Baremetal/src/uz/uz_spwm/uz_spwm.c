@@ -39,6 +39,10 @@ struct uz_DutyCycle_2x3ph_t uz_spwm_dq_6ph(uz_6ph_dq_t input, float V_dc_volts, 
 	return uz_spwm_abc_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(input, theta_el_rad), V_dc_volts);
 }
 
+struct uz_DutyCycle_2x3ph_t uz_spwm_dqxy_6ph(uz_6ph_dq_t input, float V_dc_volts, float theta_el_rad_dq, float theta_el_rad_xy){
+	return uz_spwm_abc_6ph(uz_transformation_asym30deg_6ph_dq_xy_to_abc(input, theta_el_rad_dq, theta_el_rad_xy), V_dc_volts);
+}
+
 struct uz_DutyCycle_2x3ph_t uz_spwm_abc_6ph(uz_6ph_abc_t input, float V_dc_volts){
 	uz_3ph_abc_t abc_system1 = {
 		.a = input.a1,

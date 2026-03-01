@@ -17,16 +17,16 @@
 
 
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_abc1abc2(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts, svpwm_4active_2zero_24sector_SV_sequence_t version, float kappa){
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_abc1abc2(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts, svpwm_4active_2zero_24sector_SV_sequence_t version, float kappa, bool scaled){
 	// reference in abc1abc2
 
 	uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts = uz_transformation_asym30deg_6ph_abc_to_alphabeta(u_6ph_abc1abc2_ref_Volts);
 
-	return   uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_alphabeta(u_6ph_alphabeta_ref_Volts, V_DC_Volts,  version, kappa);
+	return   uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_alphabeta(u_6ph_alphabeta_ref_Volts, V_DC_Volts,  version, kappa,scaled);
 }
 
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_alphabeta(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts, svpwm_4active_2zero_24sector_SV_sequence_t version, float kappa){
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_alphabeta(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts, svpwm_4active_2zero_24sector_SV_sequence_t version, float kappa, bool scaled){
 	struct uz_DutyCycle_2x3ph_PhaseShiftOpt output = {0};
 
 	uz_3ph_alphabeta_t u_alphabeta_ref;
@@ -45,7 +45,16 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_al
 	int sector_24 = getSector24(theta);
 
 	// get z1z2
-	u_z1z2 u_z1z2_result = return_svpwm_4active_optz1z2(version, theta, kappa, M, sector_24);
+	u_z1z2 u_z1z2_result = {0};
+
+	if(scaled){
+		u_z1z2_result = return_svpwm_4active_optz1z2_scaled(version, theta, M, sector_24);
+	}
+	else{
+		u_z1z2_result = return_svpwm_4active_optz1z2(version, theta, kappa, M, sector_24);
+	}
+
+
 
 
 	uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(u_6ph_alphabeta_ref_Volts);
@@ -80,16 +89,16 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_al
 
 
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_abc1abc2(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts, svpwm_5active_2zero_24sector_SV_sequence_t version, float kappa, C_D1_D2 CD1D2){
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_abc1abc2(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts, svpwm_5active_2zero_24sector_SV_sequence_t version, float kappa, C_D1_D2 CD1D2, bool scaled){
 	// reference in abc1abc2
 
 	uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts = uz_transformation_asym30deg_6ph_abc_to_alphabeta(u_6ph_abc1abc2_ref_Volts);
 
-	return   uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_alphabeta(u_6ph_alphabeta_ref_Volts, V_DC_Volts,  version, kappa, CD1D2);
+	return   uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_alphabeta(u_6ph_alphabeta_ref_Volts, V_DC_Volts,  version, kappa, CD1D2, scaled);
 }
 
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_alphabeta(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts, svpwm_5active_2zero_24sector_SV_sequence_t version, float kappa, C_D1_D2 CD1D2){
+struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_alphabeta(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts, svpwm_5active_2zero_24sector_SV_sequence_t version, float kappa, C_D1_D2 CD1D2, bool scaled){
 	struct uz_DutyCycle_2x3ph_PhaseShiftOpt output = {0};
 
 	uz_3ph_alphabeta_t u_alphabeta_ref;
@@ -112,7 +121,12 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_al
 	u_z1z2 u_z1z2_result = {0};
 
 	if (CD1D2 == CONTINIOUS){
-		u_z1z2_result = return_svpwm_5active_optz1z2(version, theta, kappa, M, sector_24);
+
+		if(scaled){
+			u_z1z2_result = return_svpwm_5active_optz1z2_scaled(version, theta, kappa, M, sector_24);
+		}else{
+			u_z1z2_result = return_svpwm_5active_optz1z2(version, theta, kappa, M, sector_24);
+		}
 	}
 	else if (CD1D2 == DISCONTINIOUS1){
 		u_z1z2_result = return_svpwm_5active_optz1z2_D1(version, theta, kappa, M, sector_24);

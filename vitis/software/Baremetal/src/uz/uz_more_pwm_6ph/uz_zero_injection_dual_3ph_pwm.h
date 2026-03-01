@@ -6,6 +6,26 @@
 #include "../uz_Transformation/uz_Transformation.h"
 
 
+typedef enum {
+
+	// Dual 3ph
+	Dual_PWM_THI_1_4_alphabeta_6ph,
+	Dual_PWM_THI_1_6_alphabeta_6ph,
+	Dual_SVM_alphabeta_6ph,
+	Dual_GDPWM_alphabeta_6ph,
+	Dual_GDPWM_alphabeta_6ph_V2,
+	Dual_DPWM0_alphabeta_6ph,
+	Dual_DPWM1_alphabeta_6ph,
+	Dual_DPWM1PHI_alphabeta_6ph,
+	Dual_DPWM2_alphabeta_6ph,
+	Dual_DPWM3_alphabeta_6ph,
+	Dual_DPWM3PHI_alphabeta_6ph,
+	Dual_DPWM_MAX_alphabeta_6ph,
+	Dual_DPWM_MIN_alphabeta_6ph,
+
+} Dual_3ph_PWM_Verfahren;
+
+
 /**
  * @brief PWM for 2x3 phase Systems with zero sequence injection of 3. Harmonic with 1/4 amplitude with abc inputs
  *

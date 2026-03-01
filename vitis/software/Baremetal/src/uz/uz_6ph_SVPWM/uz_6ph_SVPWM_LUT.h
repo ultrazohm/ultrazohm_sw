@@ -80,15 +80,7 @@ typedef enum {
     DISCONTINIOUS2
 } C_D1_D2;
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt{
-    struct uz_DutyCycle_2x3ph_t Dutycles;
-    int phaseshiftoption;
-};
 
-struct uz_DutyCycle_2x3ph_PhaseShiftOpt_more_info{
-    struct uz_DutyCycle_2x3ph_PhaseShiftOpt Dutycles_PhaseShift;
-
-};
 
 float return_svpwm_4active_opt_d(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M);
 

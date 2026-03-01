@@ -191,22 +191,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.d = value;
 		//data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.q = value;
 		//data->av.snd_fld[3] = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.x = value;
 		//data->av.snd_fld[4] = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.y = value;
 		//data->av.snd_fld[5] = value;
 			break;
 
@@ -224,22 +224,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_9):
-		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.d = value;
 		//data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.q = value;
 		//data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.x = value;
 		//data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		data->rasv.i_dqxy_6ph_Pruef_soll.y = value;
 		//data->av.snd_fld[12] = value;
 			break;
 

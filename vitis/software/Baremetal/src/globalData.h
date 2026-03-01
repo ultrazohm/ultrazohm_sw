@@ -17,6 +17,9 @@
 #include "uz/uz_piController/uz_piController.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_6ph_SVPWM/uz_6ph_SVPWM_LUT.h"
+#include "uz/uz_6ph_SVPWM/uz_pwm_help_functions.h"
+#include "uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -98,8 +101,8 @@ typedef struct _actualValues_ {
 	struct uz_6ph_abc_t i_abc_6ph_Pruef_meas;
 	struct uz_3ph_dq_t  u_dq_3ph_Last_meas;
 	struct uz_3ph_dq_t  i_dq_3ph_Last_meas;
-	struct uz_6ph_dq_t  u_dq_6ph_Pruef_meas;
-	struct uz_6ph_dq_t  i_dq_6ph_Pruef_meas;
+	struct uz_6ph_dq_t  u_dqxy_6ph_Pruef_meas;
+	struct uz_6ph_dq_t  i_dqxy_6ph_Pruef_meas;
 	float i_dc1, i_dc2, i_dc3;
 	float u_dc1, u_dc2, u_dc3;
 	float temp_VSI_1, temp_VSI_2, temp_VSI_3;
@@ -125,6 +128,29 @@ typedef struct _actualValues_ {
 	float testfloat_2;
 	float testfloat_3;
 
+	struct uz_DutyCycle_2x3ph_PhaseShiftOpt PWM_6ph_DutyCycle_PhaseShift_output;
+    struct uz_DutyCycle_2x3ph_t PWM_6ph_DutyCycle_output;
+    int PhaseShift_output;
+    C_D1_D2 CD1D2;
+
+    svpwm_4active_2zero_24sector_SV_sequence_t selected_4active_PWM_version;
+    svpwm_5active_2zero_24sector_SV_sequence_t selected_5active_PWM_version;
+    Dual_3ph_PWM_Verfahren Selected_Dual_3ph_PWMVerfahren;
+
+    float kappa;
+    float phi_rad;
+
+    bool is_scaled;
+    bool dual_3ph_PWM_selected;
+    bool SVPWM_4active_selected;
+    bool SVPWM_5active_selected;
+    bool SVPWM_4active_opt_selected;
+    bool SVPWM_5active_opt_selected;
+    bool d_opt_selected;
+
+    float V_DC_Volts;
+
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -146,8 +172,20 @@ typedef struct _referenceAndSetValues_ {
 
 	struct uz_3ph_dq_t u_dq_3ph_Last_soll;
 	struct uz_3ph_dq_t i_dq_3ph_Last_soll;
+	struct uz_6ph_dq_t u_dqxy_6ph_Pruef_soll;   // beide Systeme rotieren
+	struct uz_6ph_dq_t i_dqxy_6ph_Pruef_soll;	// beide Systeme rotieren
 	struct uz_6ph_dq_t u_dq_6ph_Pruef_soll;
 	struct uz_6ph_dq_t i_dq_6ph_Pruef_soll;
+
+	struct uz_6ph_dq_t u_dqxy_6ph_ref_JS;
+	struct uz_6ph_dq_t i_dqxy_6ph_ref_JS;
+
+	float V_DC_Volts_ref_JS;
+	float theta_el_rad_ref_JS;
+	float freq_el_Hz_ref_JS;
+
+	struct uz_6ph_alphabeta_t u_ref_6ph_alphabeta;
+
 	float n_mech_Last_soll;
 	float M_Last_soll;
 	float n_mech_Pruef_soll;
@@ -157,6 +195,7 @@ typedef struct _referenceAndSetValues_ {
 	bool speed_control_6ph_Pruef;
 	bool current_control_3ph_Last;
 	bool current_control_6ph_Pruef;
+	bool i_dq_Pruef_soll_from_M_soll;
 
 } referenceAndSetValues;
 

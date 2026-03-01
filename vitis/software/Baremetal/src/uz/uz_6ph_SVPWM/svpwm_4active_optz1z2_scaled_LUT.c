@@ -158,8 +158,8 @@ u_z1z2 return_svpwm_4active_optz1z2_scaled(svpwm_4active_2zero_24sector_SV_seque
 	float theta_pi_12 = fmodf(theta, (float)M_PI / 12.0f);
 
 	if (sector_8 == 1){
-		u_z1 = uz_interp1_uniform(theta_min, theta_max, 65 , svpwm_4active_optz1z2_scaled_LUT[1], theta_pi_12);
-		u_z2 = uz_interp1_uniform(theta_min, theta_max, 65 , svpwm_4active_optz1z2_scaled_LUT[2], theta_pi_12);
+		u_z1 = uz_interp1_uniform(theta_min, theta_max, 65 , svpwm_4active_optz1z2_scaled_LUT[version][1], theta_pi_12);
+		u_z2 = uz_interp1_uniform(theta_min, theta_max, 65 , svpwm_4active_optz1z2_scaled_LUT[version][2], theta_pi_12);
 		u_z1 = u_z1 * M;
 		u_z2 = u_z2 * M;
 	}
@@ -212,5 +212,3 @@ u_z1z2 return_svpwm_4active_optz1z2_scaled(svpwm_4active_2zero_24sector_SV_seque
 
 	return (u_z1z2) {u_z1, u_z2};;
 }
-
-

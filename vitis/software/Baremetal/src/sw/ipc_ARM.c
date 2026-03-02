@@ -33,6 +33,7 @@ extern bool use_speed_control;
 extern float id_ref_A;
 extern float iq_ref_A;
 extern float speed_ref_rpm;
+extern float RRC_Operating_Point;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -216,7 +217,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		if (value < 1.0f) {
+			RRC_Operating_Point = 1.0f;
+		} else if (value > 12.0f) {
+			RRC_Operating_Point = 12.0f;
+		} else {
+			RRC_Operating_Point = value;
+		}
+		data->av.snd_fld[6] = RRC_Operating_Point;
 			break;
 
 		case (Set_Send_Field_7):

@@ -126,6 +126,7 @@ bool use_speed_control = false;
 float id_ref_A = 0.0f;
 float iq_ref_A = 0.0f;
 float speed_ref_rpm = 0.0f;
+float RRC_Operating_Point = 1.0f;
 float id_cmd = 0.0f;
 float iq_cmd = 0.0f;
 static uz_PI_Controller* PI_id = NULL;

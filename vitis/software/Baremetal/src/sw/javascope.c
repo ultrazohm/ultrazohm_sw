@@ -58,6 +58,7 @@ extern float vf_max_voltage_V;
 extern float stator_current_fundamental_frequency_Hz;
 extern float id_cmd;
 extern float iq_cmd;
+extern float RRC_Operating_Point;
 extern volatile uint32_t isr_error_reason;
 
 
@@ -136,6 +137,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]         = &vf_max_voltage_V;
 	js_slowDataArray[JSSD_FLOAT_U_DC]                      = &(data->av.U_DC);
 	js_slowDataArray[JSSD_FLOAT_Error_Code]                = &Error_Code;
+	js_slowDataArray[JSSD_FLOAT_RRC_Operating_Point]       = &RRC_Operating_Point;
 
 	return Status;
 }

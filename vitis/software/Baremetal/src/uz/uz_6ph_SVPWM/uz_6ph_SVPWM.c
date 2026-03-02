@@ -249,3 +249,38 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_abc1abc2(uz
 	return  uz_6ph_SVPWM_24_5_active_SV_alphabeta(u_6ph_alphabeta_ref_Volts, V_DC_Volts, version, CD1D2);
 }
 
+
+struct carrier_shift_values uz_svm_6ph_calc_carrier_shift_value(int phaseshiftoption){
+
+	struct carrier_shift_values output;
+
+	if(phaseshiftoption == 1){ // SV01 = 7
+		output.carrier_shift_1 = 0.5f;
+		output.carrier_shift_2 = 0.0f;
+
+	}else if(phaseshiftoption == 2){ // SV01 = 0
+		output.carrier_shift_1 = 0.0f;
+		output.carrier_shift_2 = 0.0f;
+
+	}else if(phaseshiftoption == 3){ // SV01 = 56
+		output.carrier_shift_1 = 0.0f;
+		output.carrier_shift_2 = 0.5f;
+
+	}else if(phaseshiftoption == 4){ // SV01 = 63
+		output.carrier_shift_1 = 0.5f;
+		output.carrier_shift_2 = 0.5f;
+
+	}else{
+		output.carrier_shift_1 = 0.0f;
+		output.carrier_shift_2 = 0.0f;
+	}
+
+
+
+
+	return output;
+
+
+}
+
+

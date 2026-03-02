@@ -20,6 +20,7 @@
 #include "uz/uz_6ph_SVPWM/uz_6ph_SVPWM_LUT.h"
 #include "uz/uz_6ph_SVPWM/uz_pwm_help_functions.h"
 #include "uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
+#include "uz/uz_6ph_SVPWM/uz_6ph_SVPWM.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -130,7 +131,13 @@ typedef struct _actualValues_ {
 
 	struct uz_DutyCycle_2x3ph_PhaseShiftOpt PWM_6ph_DutyCycle_PhaseShift_output;
     struct uz_DutyCycle_2x3ph_t PWM_6ph_DutyCycle_output;
+    struct uz_6ph_abc_t PWM_6ph_DutyCycle_abc1abc2_output;
+    struct uz_6ph_alphabeta_t PWM_6ph_DutyCycle_VSD_output;
+
     int PhaseShift_output;
+    struct carrier_shift_values carrier_shift_val;
+    float shift_system_1;
+	float shift_system_2;
     C_D1_D2 CD1D2;
 
     svpwm_4active_2zero_24sector_SV_sequence_t selected_4active_PWM_version;
@@ -147,6 +154,7 @@ typedef struct _actualValues_ {
     bool SVPWM_4active_opt_selected;
     bool SVPWM_5active_opt_selected;
     bool d_opt_selected;
+    bool More_PWM_active;
 
     float V_DC_Volts;
 
@@ -178,7 +186,6 @@ typedef struct _referenceAndSetValues_ {
 	struct uz_6ph_dq_t i_dq_6ph_Pruef_soll;
 
 	struct uz_6ph_dq_t u_dqxy_6ph_ref_JS;
-	struct uz_6ph_dq_t i_dqxy_6ph_ref_JS;
 
 	float V_DC_Volts_ref_JS;
 	float theta_el_rad_ref_JS;
@@ -196,6 +203,9 @@ typedef struct _referenceAndSetValues_ {
 	bool current_control_3ph_Last;
 	bool current_control_6ph_Pruef;
 	bool i_dq_Pruef_soll_from_M_soll;
+
+	int PWM_Settings;
+	int PWM_Versionsnummer;
 
 } referenceAndSetValues;
 

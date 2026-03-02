@@ -47,6 +47,12 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_alphabeta(u
 struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_abc1abc2(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts, svpwm_5active_2zero_24sector_SV_sequence_t version, C_D1_D2 CD1D2);
 
 
+struct carrier_shift_values{
+    float carrier_shift_1;
+    float carrier_shift_2;
+};
+
+struct carrier_shift_values uz_svm_6ph_calc_carrier_shift_value(int phaseshiftoption);
 
 
 #endif //UZ_6PH_SVPWM_H

@@ -250,30 +250,41 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_14):
 		data->av.snd_fld[14] = value;
+		data->rasv.u_dqxy_6ph_ref_JS.d = value;
 			break;
 
 		case (Set_Send_Field_15):
 		data->av.snd_fld[15] = value;
+		data->rasv.u_dqxy_6ph_ref_JS.q = value;
 			break;
 
 		case (Set_Send_Field_16):
 		data->av.snd_fld[16] = value;
+		data->rasv.u_dqxy_6ph_ref_JS.x = value;
 			break;
 
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
+		data->rasv.u_dqxy_6ph_ref_JS.y = value;
 			break;
 
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
+		// PWM-Verfahren
+		data->rasv.PWM_Versionsnummer = (int)value;
 			break;
 
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
+		data->rasv.PWM_Settings = (int)value;
 			break;
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
+		 int temp = (int)value;
+		 if(temp < 4 && temp > 0){
+			 data->av.CD1D2 = temp;
+		 }
 			break;
 
 		case (My_Button_1):
@@ -306,11 +317,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			data->av.More_PWM_active = true;
 			break;
 
 		case (My_Button_7):
-
+			data->av.More_PWM_active = false;
 			break;
 
 		case (My_Button_8):

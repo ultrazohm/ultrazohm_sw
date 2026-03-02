@@ -29,7 +29,7 @@ extern QueueHandle_t js_control_queue;
 extern volatile int js_queue_overflow_dropped_samples;
 extern volatile int js_queue_purge_requested;
 
-#define JS_TX_STALL_TIMEOUT_TICKS pdMS_TO_TICKS(200U)
+#define JS_TX_STALL_TIMEOUT_TICKS pdMS_TO_TICKS(4000U)
 
 volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;

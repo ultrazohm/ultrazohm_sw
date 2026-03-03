@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:44:54 2026
+ * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -144,12 +144,12 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: FOC_SELECT_Id_Ref
    * Referenced by: '<S5>/Constant3'
    */
-  4.0F,
+  1.0F,
 
   /* Variable: FOC_SELECT_Iq_Ref
    * Referenced by: '<S6>/Constant5'
    */
-  4.0F,
+  1.0F,
 
   /* Variable: FOC_TORQ_REDUC_GAIN
    * Referenced by: '<S9>/FOC_TORQ_REDUC_GAIN'
@@ -179,7 +179,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: SPEED_CTRL_LIMIT_n_Ref_MAX
    * Referenced by: '<S3>/limit T2'
    */
-  7000.0F,
+  2000.0F,
 
   /* Variable: SPEED_CTRL_LIMIT_n_Ref_MIN
    * Referenced by: '<S3>/limit T2'
@@ -194,12 +194,12 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: SPEED_CTRL_TORQLIMNEG
    * Referenced by: '<S3>/Constant5'
    */
-  -205.0F,
+  -2.0F,
 
   /* Variable: SPEED_CTRL_TORQLIMPOS
    * Referenced by: '<S3>/Constant4'
    */
-  205.0F,
+  2.0F,
 
   /* Variable: SPEED_CTRL_T_N
    * Referenced by: '<S3>/Constant'
@@ -241,12 +241,12 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: SPEED_CTRL_SELECT_TorqLimit
    * Referenced by: '<S3>/OmegaRot3'
    */
-  1U,
+  0U,
 
   /* Variable: SPEED_CTRL_SELECT_n_Ref
    * Referenced by: '<S3>/OmegaRot1'
    */
-  1U,
+  0U,
 
   /* Mask Parameter: CompareToConstant_const
    * Referenced by: '<S24>/Constant'
@@ -393,11 +393,6 @@ P_FOC_SCF_T FOC_SCF_P = {
    * Referenced by: '<S3>/Constant3'
    */
   0.0001F,
-
-  /* Computed Parameter: Switch1_Threshold
-   * Referenced by: '<S3>/Switch1'
-   */
-  0.0F,
 
   /* Computed Parameter: Switch2_Threshold
    * Referenced by: '<S1>/Switch2'
@@ -580,7 +575,7 @@ P_FOC_SCF_T FOC_SCF_P = {
    */
   0.0F,
 
-  /* Computed Parameter: Switch1_Threshold_k
+  /* Computed Parameter: Switch1_Threshold
    * Referenced by: '<S22>/Switch1'
    */
   0U,

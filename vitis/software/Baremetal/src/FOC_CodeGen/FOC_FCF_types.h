@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
+ * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -52,12 +52,12 @@ typedef struct {
 
 /* Statemachine Function Output Signals */
 typedef struct {
-  real32_T SysStateAct;
-  real32_T FOC_Mode;
-  real32_T StateFOC;
-  real32_T FOC_Enable_PWM;
-  real32_T global_reset_errors;
-  real32_T SPEED_CTRL_Enable;
+  uint8_T SysStateAct;
+  uint8_T FOC_Mode;
+  uint8_T StateFOC;
+  boolean_T FOC_Enable_PWM;
+  boolean_T global_reset_errors;
+  boolean_T SPEED_CTRL_Enable;
   real32_T MaxMotTemp;
   boolean_T Collective_Over_Temp_Error;
 } bus_SMF_t;

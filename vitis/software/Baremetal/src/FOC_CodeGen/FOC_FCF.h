@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
+ * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -275,6 +275,7 @@ typedef struct {
   real32_T Product_cd;                 /* '<S28>/Product' */
   real32_T Sum2_j;                     /* '<S28>/Sum2' */
   real32_T phi_el_U_trafo[3];          /* '<S5>/Gain1' */
+  real32_T phi_el_I_trafo;             /* '<S5>/Gain2' */
   real32_T I_dq1_Act_filt[2];       /* '<S33>/Discrete FIR Filter 20th order' */
   real32_T DiscreteFIRFilter20thorder[2];
                                     /* '<S34>/Discrete FIR Filter 20th order' */
@@ -1355,6 +1356,9 @@ struct P_FOC_FCF_T_ {
   real32_T Gain1_Gain_kl;              /* Computed Parameter: Gain1_Gain_kl
                                         * Referenced by: '<S5>/Gain1'
                                         */
+  real32_T Gain2_Gain;                 /* Computed Parameter: Gain2_Gain
+                                        * Referenced by: '<S5>/Gain2'
+                                        */
   real32_T DiscreteFIRFilter20thorder_Init;
                           /* Computed Parameter: DiscreteFIRFilter20thorder_Init
                            * Referenced by: '<S33>/Discrete FIR Filter 20th order'
@@ -1391,7 +1395,7 @@ struct P_FOC_FCF_T_ {
   real32_T Gain1_Gain_cs;              /* Computed Parameter: Gain1_Gain_cs
                                         * Referenced by: '<S30>/Gain1'
                                         */
-  real32_T Gain2_Gain;                 /* Computed Parameter: Gain2_Gain
+  real32_T Gain2_Gain_f;               /* Computed Parameter: Gain2_Gain_f
                                         * Referenced by: '<S30>/Gain2'
                                         */
   real32_T Zero1_Value_l[2];           /* Computed Parameter: Zero1_Value_l
@@ -1415,7 +1419,7 @@ struct P_FOC_FCF_T_ {
   real32_T Gain1_Gain_e;               /* Computed Parameter: Gain1_Gain_e
                                         * Referenced by: '<S15>/Gain1'
                                         */
-  real32_T Gain2_Gain_f;               /* Computed Parameter: Gain2_Gain_f
+  real32_T Gain2_Gain_fg;              /* Computed Parameter: Gain2_Gain_fg
                                         * Referenced by: '<S15>/Gain2'
                                         */
   real32_T Gain3_Gain;                 /* Computed Parameter: Gain3_Gain

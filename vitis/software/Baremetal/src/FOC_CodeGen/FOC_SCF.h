@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:44:54 2026
+ * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -468,9 +468,6 @@ struct P_FOC_SCF_T_ {
   real32_T Constant3_Value;            /* Computed Parameter: Constant3_Value
                                         * Referenced by: '<S3>/Constant3'
                                         */
-  real32_T Switch1_Threshold;          /* Computed Parameter: Switch1_Threshold
-                                        * Referenced by: '<S3>/Switch1'
-                                        */
   real32_T Switch2_Threshold;          /* Computed Parameter: Switch2_Threshold
                                         * Referenced by: '<S1>/Switch2'
                                         */
@@ -587,9 +584,9 @@ struct P_FOC_SCF_T_ {
                                  /* Computed Parameter: SCF_Cnt_InitialCondition
                                   * Referenced by: '<S1>/SCF_Cnt'
                                   */
-  uint8_T Switch1_Threshold_k;        /* Computed Parameter: Switch1_Threshold_k
-                                       * Referenced by: '<S22>/Switch1'
-                                       */
+  uint8_T Switch1_Threshold;           /* Computed Parameter: Switch1_Threshold
+                                        * Referenced by: '<S22>/Switch1'
+                                        */
   uint8_T Switch2_Threshold_l;        /* Computed Parameter: Switch2_Threshold_l
                                        * Referenced by: '<S27>/Switch2'
                                        */

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
+ * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -160,7 +160,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S41>/FOC_KI'
    *   '<S45>/FOC_KI'
    */
-  100.0F,
+  250.0F,
 
   /* Variable: FOC_KP
    * Referenced by:
@@ -168,7 +168,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S41>/FOC_KP1'
    *   '<S45>/FOC_KP1'
    */
-  1.0F,
+  0.3F,
 
   /* Variable: FOC_LIMIT_Overcurrent_I_uvw
    * Referenced by:
@@ -195,7 +195,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_MANUAL_U_DC
    * Referenced by: '<S17>/Udc1'
    */
-  0.0F,
+  12.0F,
 
   /* Variable: FOC_MaxModInd
    * Referenced by:
@@ -243,12 +243,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_SELECT_Phase_Assignment_UVW
    * Referenced by: '<S19>/Selektierung Phase'
    */
-  1.0F,
+  3.0F,
 
   /* Variable: FOC_SELECT_Voltage_Assignment_UVW
    * Referenced by: '<S96>/Constant6'
    */
-  1.0F,
+  3.0F,
 
   /* Variable: FOC_Uf_U_max
    * Referenced by: '<S92>/Saturation1'
@@ -948,32 +948,32 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: Offset_ADC_bits_Ph4_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph4'
    */
-  2.5F,
+  2.45F,
 
   /* Computed Parameter: Offset_ADC_bits_Ph5_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph5'
    */
-  2.5F,
+  2.41F,
 
   /* Computed Parameter: Offset_ADC_bits_Ph6_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph6'
    */
-  2.5F,
+  2.45F,
 
   /* Computed Parameter: Offset_ADC_bits_Ph7_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph7'
    */
-  2.5F,
+  2.454F,
 
   /* Computed Parameter: Offset_ADC_bits_Ph8_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph8'
    */
-  2.5F,
+  2.453F,
 
   /* Computed Parameter: Offset_ADC_bits_Ph9_Value
    * Referenced by: '<S20>/Offset_ADC_bits_Ph9'
    */
-  2.5F,
+  2.458F,
 
   /* Computed Parameter: Gain_Gain_k
    * Referenced by: '<S2>/Gain'
@@ -1233,6 +1233,11 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   1.0F,
 
+  /* Computed Parameter: Gain2_Gain
+   * Referenced by: '<S5>/Gain2'
+   */
+  1.0F,
+
   /* Computed Parameter: DiscreteFIRFilter20thorder_Init
    * Referenced by: '<S33>/Discrete FIR Filter 20th order'
    */
@@ -1286,7 +1291,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   1.0F,
 
-  /* Computed Parameter: Gain2_Gain
+  /* Computed Parameter: Gain2_Gain_f
    * Referenced by: '<S30>/Gain2'
    */
   1.0F,
@@ -1326,7 +1331,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   1.0F,
 
-  /* Computed Parameter: Gain2_Gain_f
+  /* Computed Parameter: Gain2_Gain_fg
    * Referenced by: '<S15>/Gain2'
    */
   1.0F,

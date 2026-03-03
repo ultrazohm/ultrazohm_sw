@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:43:44 2026
+ * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -389,13 +389,13 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Logic: '<S63>/Logical Operator2' */
   FOC_FCF_B->LogicalOperator2 = (FOC_FCF_B->Compare_e &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    FOC_FCF_U->bus_SMF.FOC_Enable_PWM);
 
   /* Logic: '<S63>/Logical Operator4' incorporates:
    *  Constant: '<S63>/Reset_UV_Error'
    */
   FOC_FCF_B->LogicalOperator4 = ((FOC_FCF_P.FOC_RESET_UV_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    FOC_FCF_U->bus_SMF.global_reset_errors);
 
   /* RelationalOperator: '<S86>/Compare' incorporates:
    *  Constant: '<S86>/Constant'
@@ -468,7 +468,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S63>/Reset_OV_Error'
    */
   FOC_FCF_B->LogicalOperator3 = ((FOC_FCF_P.FOC_RESET_OV_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    FOC_FCF_U->bus_SMF.global_reset_errors);
 
   /* RelationalOperator: '<S85>/Compare' incorporates:
    *  Constant: '<S85>/Constant'
@@ -556,7 +556,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S62>/Reset_OC_Error'
    */
   FOC_FCF_B->LogicalOperator3_i = ((FOC_FCF_P.FOC_RESET_OC_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    FOC_FCF_U->bus_SMF.global_reset_errors);
 
   /* RelationalOperator: '<S69>/Compare' incorporates:
    *  Constant: '<S69>/Constant'
@@ -636,7 +636,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S1>/Enable'
    */
   FOC_FCF_B->LogicalOperator1 = ((FOC_FCF_P.FOC_Enable != 0.0F) &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    FOC_FCF_U->bus_SMF.FOC_Enable_PWM);
 
   /* Logic: '<S1>/Logical Operator' */
   FOC_FCF_B->LogicalOperator = (FOC_FCF_B->LogicalOperator2_a &&
@@ -2310,6 +2310,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->phi_el_U_trafo[1] = FOC_FCF_P.Gain1_Gain_kl * FOC_FCF_B->Sum2_p;
   FOC_FCF_B->phi_el_U_trafo[2] = FOC_FCF_P.Gain1_Gain_kl * FOC_FCF_B->Sum1_l;
 
+  /* Gain: '<S5>/Gain2' */
+  FOC_FCF_B->phi_el_I_trafo = FOC_FCF_P.Gain2_Gain * FOC_FCF_B->Use_If_Mode[0];
+
   /* DiscreteFir: '<S33>/Discrete FIR Filter 20th order' */
   cff = 1;
   UnitDelay1_p = FOC_FCF_B->TmpSignalConversionAtDiscreteFI[0] *
@@ -2552,7 +2555,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    *  Constant: '<S12>/Reset_OS_Error'
    */
   FOC_FCF_B->LogicalOperator3_p = ((FOC_FCF_P.FOC_RESET_OS_Error != 0.0F) ||
-    (FOC_FCF_U->bus_SMF.global_reset_errors != 0.0F));
+    FOC_FCF_U->bus_SMF.global_reset_errors);
 
   /* RelationalOperator: '<S90>/Compare' incorporates:
    *  Constant: '<S90>/Constant'
@@ -3239,7 +3242,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Logic: '<S8>/Enable_PWM_' */
   FOC_FCF_B->Enable_PWM_ = (FOC_FCF_B->LogicalOperator3_pp &&
-    (FOC_FCF_U->bus_SMF.FOC_Enable_PWM != 0.0F));
+    FOC_FCF_U->bus_SMF.FOC_Enable_PWM);
 
   /* Logic: '<S8>/Logical Operator1' incorporates:
    *  Constant: '<S8>/FOC_Enable_PWM_Sys1'
@@ -3408,7 +3411,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->U_d1_CC = FOC_FCF_P.Gain1_Gain_cs * FOC_FCF_B->IntegEnaSwitch1[0];
 
   /* Gain: '<S30>/Gain2' */
-  FOC_FCF_B->U_q1_CC = FOC_FCF_P.Gain2_Gain * FOC_FCF_B->IntegEnaSwitch1[1];
+  FOC_FCF_B->U_q1_CC = FOC_FCF_P.Gain2_Gain_f * FOC_FCF_B->IntegEnaSwitch1[1];
 
   /* Switch: '<S41>/IntegStopSwitch2' */
   if (FOC_FCF_B->LogicalOperator2_n) {
@@ -3888,7 +3891,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->U_q1 = FOC_FCF_P.Gain1_Gain_e * FOC_FCF_B->SelectControlMode[1];
 
   /* Gain: '<S15>/Gain2' */
-  FOC_FCF_B->U_alpha1 = FOC_FCF_P.Gain2_Gain_f * FOC_FCF_B->Product_c0[0];
+  FOC_FCF_B->U_alpha1 = FOC_FCF_P.Gain2_Gain_fg * FOC_FCF_B->Product_c0[0];
 
   /* Gain: '<S15>/Gain3' */
   FOC_FCF_B->U_beta1 = FOC_FCF_P.Gain3_Gain * FOC_FCF_B->Product_c0[1];

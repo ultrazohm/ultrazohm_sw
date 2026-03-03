@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.74
+ * Model version                  : 5.79
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Feb 25 11:44:54 2026
+ * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -154,7 +154,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Outputs for Enabled SubSystem: '<S1>/SPEED_CONTROLLER' incorporates:
    *  EnablePort: '<S3>/Enable'
    */
-  if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable > 0.0F) {
+  if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable) {
     if (!FOC_SCF_DW->SPEED_CONTROLLER_MODE) {
       /* InitializeConditions for UnitDelay: '<S29>/Delay Input2'
        *
@@ -424,11 +424,11 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     FOC_SCF_B->Add1 = FOC_SCF_B->Divide + FOC_SCF_B->UnitDelay_k;
 
     /* Product: '<S3>/Product' */
-    FOC_SCF_B->Product_p = FOC_SCF_B->Add1 *
+    FOC_SCF_B->Product_p = FOC_SCF_B->Add1 * (real32_T)
       FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable;
 
     /* Switch: '<S3>/Switch1' */
-    if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable > FOC_SCF_P.Switch1_Threshold) {
+    if (FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable) {
       /* Switch: '<S3>/Switch1' */
       FOC_SCF_B->M_Ref_SpeedCtrl = FOC_SCF_B->Switch2_b;
     } else {
@@ -457,7 +457,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* End of Outputs for SubSystem: '<S1>/SPEED_CONTROLLER' */
 
   /* MultiPortSwitch: '<S1>/TorqRef_Source' */
-  if ((int32_T)FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable == 0) {
+  if (!FOC_SCF_U->bus_SMF.SPEED_CTRL_Enable) {
     /* Switch: '<S1>/Switch2' incorporates:
      *  Constant: '<S1>/Constant2'
      */
@@ -604,7 +604,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
       FOC_SCF_P.CompareToConstant_const);
 
     /* Switch: '<S22>/Switch1' */
-    if (FOC_SCF_B->Compare_d > FOC_SCF_P.Switch1_Threshold_k) {
+    if (FOC_SCF_B->Compare_d > FOC_SCF_P.Switch1_Threshold) {
       /* Gain: '<S22>/Gain' */
       FOC_SCF_B->Gain_n = FOC_SCF_P.Gain_Gain_l * FOC_SCF_B->MinMax;
 

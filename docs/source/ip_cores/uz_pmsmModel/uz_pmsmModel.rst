@@ -202,7 +202,7 @@ The inputs and outputs are implemented as an vector, therefore the HDL-Coder add
 Note that :math:`\omega_{mech}` is an input as well as an output.
 The IP core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
-1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
+1. Simulate the mechanical system and calculate :math:`\omega_{mech}` according to the equations in `Friction`_.
 2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP core, and the input value of the rotational speed has no effect.
@@ -220,7 +220,7 @@ Integration
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
-The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
+The new value at time :math:`k+1` of the state variable is calculated for every time step based on the *old* values (:math:`k`):
 
 .. math:: 
 

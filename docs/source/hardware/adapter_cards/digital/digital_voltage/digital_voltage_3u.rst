@@ -120,7 +120,7 @@ are less critical because the have lower steepness.
 Since the adapter board is mainly designed for point to point connections and because the operational frequencies are relatively low, the simple serial termination
 technique can be applied. With serial termination the signal gets reflected at the far end of the transmission line and it is absorbed by a resistor 
 placed in series behind the driver that matches the characteristic impedance of the transmission line. In the waveform shown above this procedure can be observed:
-The output impedance of the driver in series with the termination resistor forms a 1:1 voltage devider with the transmission line. This creates the plateau at 50% of the
+The output impedance of the driver in series with the termination resistor forms a 1:1 voltage divider with the transmission line. This creates the plateau at 50% of the
 signal level. After one round trip the signal adds up to the full level. The two figures below show overcompensated (the termination resistor is too big) and
 undercompensated cases (the termination resistor is too small).
 

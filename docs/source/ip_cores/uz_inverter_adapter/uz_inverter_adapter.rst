@@ -103,7 +103,7 @@ Third, the interface between the IP cores and the physical pins has to be implem
 
 1. Inside the top level block design ``right click -> Create Interface Pin...``
 2. Name the interface according to the digital slot where you plan to use the inverter adapter board (e.g. ``D1``)
-3. In the search fiel type in ``inverter``. There should be a result called ``uz_inverter_adapter_rtl:1.0`` in the ``VLNV`` column. Select it and press ``OK``
+3. In the search field type in ``inverter``. There should be a result called ``uz_inverter_adapter_rtl:1.0`` in the ``VLNV`` column. Select it and press ``OK``
 4. Connect the interface pin ``D1`` with ``uz_inverter_adapter`` interface port at the ``uz_inverter_adapter_mapping_v1_0`` IP core (unfolding the hierarchies with the ``+`` buttons in their upper left corner makes it really easy)
 
 After those steps the block design inside your hierarchy looks like this:
@@ -128,7 +128,7 @@ The top level block design looks like this
 
    Top level block design after steps above
 
-Due to our interface using all 30 pins of one digital slot, make sure no other pins (e.g. ``D1_OUT_26`` to ``D1_OUT_29`` in our case) are present in the block design. If yes, simply delet them.
+Due to our interface using all 30 pins of one digital slot, make sure no other pins (e.g. ``D1_OUT_26`` to ``D1_OUT_29`` in our case) are present in the block design. If yes, simply delete them.
 
 Constraints
 -----------

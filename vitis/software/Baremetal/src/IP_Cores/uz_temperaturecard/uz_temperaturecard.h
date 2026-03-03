@@ -441,7 +441,7 @@ float uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channelg
 /**
  * @brief Averages all valid channels in the specified range. If one channel gets invalid during measurement, average will not be affected since it will no longer be included in the calculation.
  *
- * @param self Pointer to driver instance
+ * @param channeldata Data for the group of channels
  * @param lower lowest channel to include (minimum 0)
  * @param upper highest channel to include (maximum 19)
  * @return average of all valid temperatures in specified channel range

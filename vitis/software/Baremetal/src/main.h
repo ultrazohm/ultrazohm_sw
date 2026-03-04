@@ -42,6 +42,7 @@
 #include "sw/xcp/xcp_interface.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "include/uz_temperature_card_init.h"
 
 #include "uz/uz_HAL.h"
 

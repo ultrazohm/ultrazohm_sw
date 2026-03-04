@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -85,6 +86,9 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
+	uz_temperaturecard_OneGroup channel_A_data;
+	uz_temperaturecard_OneGroup channel_B_data;
+	uz_temperaturecard_OneGroup channel_C_data;
 	//struct
 } actualValues;
 
@@ -115,6 +119,7 @@ typedef struct{
 	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
 	uz_mux_axi_t* mux_axi;
+	uz_temperaturecard_t* temperature_card_d4;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

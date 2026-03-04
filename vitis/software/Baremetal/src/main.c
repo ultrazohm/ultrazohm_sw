@@ -159,6 +159,11 @@ int main(void)
             Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
 
+            /* init UZ_D_Temperature card */
+            Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
+            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
+            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);
+
             // CIL model inits
             pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
             cil_dq_trafo = uz_pmsm9ph_transformation_init(cil_dq_trafo_config);

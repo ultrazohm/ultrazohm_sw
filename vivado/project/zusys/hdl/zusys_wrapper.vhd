@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Feb 23 15:59:18 2026
+--Date        : Tue Mar  3 13:07:15 2026
 --Host        : NB-GEIGER running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -55,11 +55,22 @@ entity zusys_wrapper is
     D3_IN_NTC : in STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_IN_RDY : in STD_LOGIC_VECTOR ( 5 downto 0 );
     D3_OUT_PWM : out STD_LOGIC_VECTOR ( 5 downto 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D4_00 : out STD_LOGIC;
+    D4_01 : out STD_LOGIC;
+    D4_02 : in STD_LOGIC;
+    D4_03 : out STD_LOGIC;
+    D4_04 : in STD_LOGIC;
+    D4_06 : out STD_LOGIC;
+    D4_07 : out STD_LOGIC;
+    D4_08 : in STD_LOGIC;
+    D4_09 : out STD_LOGIC;
+    D4_10 : in STD_LOGIC;
+    D4_12 : out STD_LOGIC;
+    D4_13 : out STD_LOGIC;
+    D4_14 : in STD_LOGIC;
+    D4_15 : out STD_LOGIC;
+    D4_16 : in STD_LOGIC;
+    D4_18 : out STD_LOGIC;
     D5_06 : out STD_LOGIC;
     D5_07 : out STD_LOGIC;
     D5_08 : out STD_LOGIC;
@@ -98,11 +109,6 @@ architecture STRUCTURE of zusys_wrapper is
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_PWM : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D2_OUT_PWM : out STD_LOGIC_VECTOR ( 5 downto 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_06_OUT_RESET_UVW : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_IN_FLT : in STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_IN_RDY : in STD_LOGIC_VECTOR ( 5 downto 0 );
@@ -148,7 +154,23 @@ architecture STRUCTURE of zusys_wrapper is
     D3_IN_FLT : in STD_LOGIC_VECTOR ( 5 downto 0 );
     D3_IN_NTC : in STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_IN_RDY : in STD_LOGIC_VECTOR ( 5 downto 0 );
-    D3_06_OUT_RESET_UVW : out STD_LOGIC_VECTOR ( 0 to 0 )
+    D3_06_OUT_RESET_UVW : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D4_02 : in STD_LOGIC;
+    D4_14 : in STD_LOGIC;
+    D4_08 : in STD_LOGIC;
+    D4_04 : in STD_LOGIC;
+    D4_16 : in STD_LOGIC;
+    D4_10 : in STD_LOGIC;
+    D4_01 : out STD_LOGIC;
+    D4_13 : out STD_LOGIC;
+    D4_07 : out STD_LOGIC;
+    D4_00 : out STD_LOGIC;
+    D4_12 : out STD_LOGIC;
+    D4_06 : out STD_LOGIC;
+    D4_03 : out STD_LOGIC;
+    D4_15 : out STD_LOGIC;
+    D4_09 : out STD_LOGIC;
+    D4_18 : out STD_LOGIC
   );
   end component zusys;
 begin
@@ -196,11 +218,22 @@ zusys_i: component zusys
       D3_IN_NTC(2 downto 0) => D3_IN_NTC(2 downto 0),
       D3_IN_RDY(5 downto 0) => D3_IN_RDY(5 downto 0),
       D3_OUT_PWM(5 downto 0) => D3_OUT_PWM(5 downto 0),
-      D4_OUT(7 downto 0) => D4_OUT(7 downto 0),
-      D4_OUT_26(0) => D4_OUT_26(0),
-      D4_OUT_27(0) => D4_OUT_27(0),
-      D4_OUT_28(0) => D4_OUT_28(0),
-      D4_OUT_29(0) => D4_OUT_29(0),
+      D4_00 => D4_00,
+      D4_01 => D4_01,
+      D4_02 => D4_02,
+      D4_03 => D4_03,
+      D4_04 => D4_04,
+      D4_06 => D4_06,
+      D4_07 => D4_07,
+      D4_08 => D4_08,
+      D4_09 => D4_09,
+      D4_10 => D4_10,
+      D4_12 => D4_12,
+      D4_13 => D4_13,
+      D4_14 => D4_14,
+      D4_15 => D4_15,
+      D4_16 => D4_16,
+      D4_18 => D4_18,
       D5_06 => D5_06,
       D5_07 => D5_07,
       D5_08 => D5_08,

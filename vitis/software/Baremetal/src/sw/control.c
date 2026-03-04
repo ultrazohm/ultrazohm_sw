@@ -49,6 +49,8 @@ uint8_t Control_FLAG_100ms;
 
 ctrl_data_t ctrl_data;
 
+// Global variable structure
+extern DS_Data Global_Data;
 
 // Pointer to variables in shared OCM, (A53 writes / R5 reads)
 struct data_A2R_t volatile * const data_A2R = (struct data_A2R_t *)(MEM_SHARED_START_APP_A2R);
@@ -209,6 +211,11 @@ void Control_Task_100ms(void)
 	//	T_Rotor = ADC_V * 41.6667f;
 	// else()
 	//  T_Rotor = 0;
+
+	/* read measurement values of UZ_D_Temperature card */
+	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
+	Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+	Global_Data.av.channel_B_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'B');
 
 
 	/* === provide data for CAN communication via R5 === */

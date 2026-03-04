@@ -48,6 +48,8 @@ enum JS_OberservableData {
 	JSO_Speed_rpm,
 	JSO_Theta_el,
 	JSO_Theta_mech,
+	JSO_i_dc,
+	JSO_v_dc,
 	JSO_ENDMARKER
 };
 

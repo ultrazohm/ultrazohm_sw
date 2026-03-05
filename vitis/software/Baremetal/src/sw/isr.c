@@ -117,12 +117,15 @@ void ISR_Control(void *data)
 	    Global_Data.av.HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.HB_ok_Pin_Number);
 	    Global_Data.av.OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.OC_ok_Pin_Number);
 	    if ((Global_Data.av.HB_ok == false || Global_Data.av.OC_ok == false) && Global_Data.rasv.ResetInverter_was_pressed == true) {
-	    	ultrazohm_state_machine_set_stop(true);
+			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+			Global_Data.rasv.EnableTristate=true;
+			ultrazohm_state_machine_set_stop(true);
 	    }
 	    if((Global_Data.av.i_abc.a > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.b > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.c > Global_Data.av.SynRM_config.I_max_Ampere)
 	    		|| (Global_Data.av.i_dc > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.v_dc > VOLTAGE_LIMIT)) {
 	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-	    	ultrazohm_state_machine_set_stop(true);
+			Global_Data.rasv.EnableTristate = true;
+			ultrazohm_state_machine_set_stop(true);
 	    }
 
 	    //Calculations and transformations
@@ -156,19 +159,20 @@ void ISR_Control(void *data)
     	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-    	    	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-    	    	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-    	    	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-    	    	break;
+				uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+				Global_Data.rasv.EnableTristate = true;
+				break;
 
     	    default:
     	    	break;
     	}
-    }
+
+	}
 
     // if "ENABLE SYSTEM"
 	if (current_state==running_state)
 	{
+
 		switch(ConApplication) {
 			case CIL:
 				//CODE
@@ -180,7 +184,15 @@ void ISR_Control(void *data)
 			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,true);
 			    	Global_Data.rasv.ResetInverter_was_pressed = true;
 			    	Global_Data.rasv.ResetInverter = false;
-			    } else {
+					if (Global_Data.rasv.EnableTristate)
+					{
+						uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+					}
+					else
+					{
+						uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+					}
+				} else {
 			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,false);
 			    }
      	    	break;
@@ -201,8 +213,8 @@ void ISR_Control(void *data)
         		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_current_angle, Global_Data.av.Torque_ref);
         		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_Is, Global_Data.av.Torque_ref);
         	}
-        	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180*UZ_PIf) * Global_Data.av.Is_ref;
-        	Global_Data.av.i_dq_ref.q = sinf((Global_Data.av.current_angle_ref)/180*UZ_PIf) * Global_Data.av.Is_ref;
+        	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
+        	Global_Data.av.i_dq_ref.q = sinf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
         	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);
         	Global_Data.av.flux_approx_reference = uz_approximate_flux_reference_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq_ref, Global_Data.av.i_dq);
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);

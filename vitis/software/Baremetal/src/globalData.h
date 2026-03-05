@@ -112,6 +112,7 @@ typedef struct _referenceAndSetValues_ {
 	uint32_t LMG_continues_Pin_Number; // Pin 1 for start/stop continues measurement on LMG
 	uint32_t LMG_transient_Pin_Number; // Pin 2 for start/stop transient measurement on LMG
 	bool ResetInverter;
+	bool EnableTristate;
 	bool ResetInverter_was_pressed;
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;

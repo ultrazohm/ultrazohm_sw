@@ -240,7 +240,7 @@ enum gui_button_mapping {
 	RL,
 	manual,
 	ResetInverter,
-	MyButton7,
+	EnableTristate,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER
 

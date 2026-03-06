@@ -15,6 +15,16 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_piController/uz_piController.h"
+
+struct uz_PI_Controller_config speed_config={
+		.type=UZ_PI_PARALLEL,
+		.Kp=0.05f, /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
+		.Ki=0.05f, /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
+		.samplingTime_sec=0.0001, /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+		.upper_limit=5.0f, /**< Upper limit for the output limitation. Must be greater than lower limit */
+		.lower_limit=-5.0f /**< Lower limit for the output limitation */
+};
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -109,6 +119,7 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
             Global_Data.objects.SynRM_Model = init_pmsmModel();
+            Global_Data.objects.speed_control=uz_PI_Controller_init(speed_config);
             Global_Data.objects.GPIO_input = init_axi_gpio_input();
             Global_Data.objects.GPIO_output = init_axi_gpio_output();
             init_NN_network_IP_core();

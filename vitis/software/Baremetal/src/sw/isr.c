@@ -64,7 +64,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 enum ControllerApplication ConApplication;
 enum ControllerSelection ConSelection;
-float ts = 1.0f/UZ_PWM_FREQUENCY;
+float ts = 1.0f / UZ_CONTROL_FREQUENCY;
 float Observation[10] = {0};
 
 //==============================================================================================================================================================
@@ -77,7 +77,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-
     switch(ConApplication) {
     case CIL:
     	uz_pmsmModel_trigger_input_strobe(Global_Data.objects.SynRM_Model);
@@ -102,8 +101,8 @@ void ISR_Control(void *data)
     	Global_Data.av.theta_mech 			= Global_Data.av.theta_elec / Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
-    	Global_Data.av.theta_elec_advanced 	= Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_PWM_FREQUENCY);
-    	//TODO check pinning of current sensors % voltages (may change with new revision)
+		Global_Data.av.theta_elec_advanced = Global_Data.av.theta_elec + ((1.5f * Global_Data.av.omega_elec) / UZ_CONTROL_FREQUENCY);
+		//TODO check pinning of current sensors % voltages (may change with new revision)
     	Global_Data.av.i_abc.a 				= Global_Data.aa.A2.me.ADC_A1 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH1;
     	Global_Data.av.i_abc.b 				= Global_Data.aa.A2.me.ADC_A2 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH2;
     	Global_Data.av.i_abc.c 				= Global_Data.aa.A2.me.ADC_A3 * CURRENT_CONV_HASS_50 + CURRENT_OFF_HASS_CH3;
@@ -112,6 +111,7 @@ void ISR_Control(void *data)
 		Global_Data.av.v_abc.b 				= Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS_DHG_CH2 + VOLTAGE_OFFSET_CH2;
 		Global_Data.av.v_abc.c 				= Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS_DHG_CH3 + VOLTAGE_OFFSET_CH3;
 		Global_Data.av.v_dc 				= Global_Data.aa.A2.me.ADC_A4  * VOLTAGE_2_SI_VOLTS_DHG_CH4 + VOLTAGE_OFFSET_CH4;
+	    Global_Data.av.v_dq_amp_max=Global_Data.av.v_dc * MAX_MODULATION_INDEX;
 
 		//Safety checks
 	    Global_Data.av.HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.HB_ok_Pin_Number);
@@ -144,6 +144,7 @@ void ISR_Control(void *data)
     if (current_state==idle_state)
     {
     	uz_CurrentControl_reset(Global_Data.objects.CurrentControl);
+    	uz_PI_Controller_reset(Global_Data.objects.speed_control);
     	Global_Data.av.n_ref_CIL = 0.0f;
     	Global_Data.av.v_dq_ref.d = 0.0f;
     	Global_Data.av.v_dq_ref.q = 0.0f;
@@ -184,17 +185,19 @@ void ISR_Control(void *data)
 			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,true);
 			    	Global_Data.rasv.ResetInverter_was_pressed = true;
 			    	Global_Data.rasv.ResetInverter = false;
-					if (Global_Data.rasv.EnableTristate)
-					{
-						uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-					}
-					else
-					{
-						uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-					}
 				} else {
 			    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.GPIO_output,Global_Data.rasv.Inv_Reset_Pin_Number,false);
 			    }
+				if (Global_Data.rasv.EnableTristate)
+				{
+					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+					Global_Data.rasv.EnableTristate=true;
+				}
+				else
+				{
+					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+					Global_Data.rasv.EnableTristate=false;
+				}
      	    	break;
 
      	    default:
@@ -206,6 +209,7 @@ void ISR_Control(void *data)
     {
         switch(ConSelection) {
         case LUT_FOC:
+        	Global_Data.av.Torque_ref=uz_PI_Controller_sample(Global_Data.objects.speed_control, Global_Data.av.n_ref_CIL, Global_Data.av.mechanicalRotorSpeed, false);
         	if(ConApplication==CIL) {
         		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
         		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
@@ -220,6 +224,7 @@ void ISR_Control(void *data)
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);
         	uz_CurrentControl_adjust_Kp(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, BO_FACTOR);
         	Global_Data.av.v_dq_ref = uz_CurrentControl_sample_SynRM(Global_Data.objects.CurrentControl, Global_Data.av.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc, Global_Data.av.omega_elec);
+        	Global_Data.av.v_dq_ref_amp=sqrtf(Global_Data.av.v_dq_ref.d*Global_Data.av.v_dq_ref.d+Global_Data.av.v_dq_ref.q*Global_Data.av.v_dq_ref.q);
         	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
         	break;
 

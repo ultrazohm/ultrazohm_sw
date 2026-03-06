@@ -67,12 +67,14 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq;
 	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t v_dq_ref;
+	float v_dq_ref_amp;
 	uz_3ph_dq_t v_dq_ref_k2;
 	uz_3ph_dq_t v_dq;
 	uz_3ph_dq_t v_dq_ref_manual;
 	float Torque_ref;
 	float Torque;
 	float v_dc;
+	float v_dq_amp_max;
 	float n_ref_CIL;
 	float Is_ref;
 	float Is;
@@ -144,6 +146,7 @@ typedef struct{
 	uz_LUT_1D_t* LUT_bench_current_angle;
 	uz_LUT_1D_t* LUT_bench_Is;
 	uz_pmsmModel_t* SynRM_Model;
+	uz_PI_Controller* speed_control;
 	uz_CurrentControl_t* CurrentControl;
 	uz_approximate_flux_t* FluxApproximation;
 	uz_matrix_t* matrix_input_acc;

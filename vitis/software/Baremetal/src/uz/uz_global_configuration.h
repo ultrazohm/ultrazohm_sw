@@ -1,4 +1,19 @@
 #pragma once
+
+/* Enable/disable available machine parameter sets (1U = enabled, 0U = disabled) */
+#ifndef UZ_MACHINE_ENABLE_IM_SIEMENS
+#define UZ_MACHINE_ENABLE_IM_SIEMENS 1U
+#endif
+#ifndef UZ_MACHINE_ENABLE_VOESTALPINE
+#define UZ_MACHINE_ENABLE_VOESTALPINE 1U
+#endif
+#ifndef UZ_MACHINE_ENABLE_IM_THN
+#define UZ_MACHINE_ENABLE_IM_THN 0U
+#endif
+#ifndef UZ_MACHINE_ENABLE_IM_TUM
+#define UZ_MACHINE_ENABLE_IM_TUM 0U
+#endif
+
 #ifndef TEST
 
 // Hardware version of the UltraZohm
@@ -28,9 +43,9 @@
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
-#define ASM_INCREMENTAL_ENCODER_RESOLUTION    			1024.0f
+#define IM_INCREMENTAL_ENCODER_RESOLUTION    			1024.0f
 #define VOEST_ALPINE_INCREMENTAL_ENCODER_RESOLUTION    	5000.0f
-#define ASM_POLE_PAIR_NUMBER            				1.0f
+#define IM_POLE_PAIR_NUMBER            				1.0f
 #define VOEST_ALPINE_POLE_PAIR_NUMBER            		2.0f
 #define UZ_PWM_FREQUENCY                        		10.0e3f
 

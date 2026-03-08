@@ -40,23 +40,23 @@ XIpiPsu IPI_instance;
 //defines and limits
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
-#define		MAX_CURRENT_AMP		15.0f
-
+#define		MAX_CURRENT_VA		15.0f
+#define		MAX_CURRENT_IM		8.0f
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_VA = {0.0f};
-struct uz_3ph_abc_t i_abc_ASM = {0.0f};
-struct uz_3ph_abc_t v_abc_ASM = {0.0f};
+struct uz_3ph_abc_t i_abc_IM = {0.0f};
+struct uz_3ph_abc_t v_abc_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_VA = {0.0f};
-struct uz_3ph_dq_t i_dq_ASM = {0.0f};
-struct uz_3ph_dq_t i_dq_ref_ASM = {0.0f};
+struct uz_3ph_dq_t i_dq_IM = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_VA = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_VA = {0.0f};
-struct uz_3ph_dq_t v_dq_ref_ASM = {0.0f};
-struct uz_3ph_dq_t v_dq_meas_ASM = {0.0f};
-struct uz_3ph_dq_t v_dq_meas_ASM_rev_filt = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_IM = {0.0f};
+struct uz_3ph_dq_t v_dq_meas_IM = {0.0f};
+struct uz_3ph_dq_t v_dq_meas_IM_rev_filt = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_VA = {0.0f};
-struct uz_DutyCycle_t dutycyc_ASM = {0.0f};
+struct uz_DutyCycle_t dutycyc_IM = {0.0f};
 
 
 // Global variable structure
@@ -64,8 +64,10 @@ extern DS_Data Global_Data;
 extern struct uz_PWM_duty_freq_detection_outputs_t outputs;
 extern struct linear_interpolation_parameters_t lin_inter_param;
 static void ReadAllADC();
+static void im_control();
 static void speed_control_VA();
 static void current_control_VA();
+static void safety_check_wolfspeed();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 //==============================================================================================================================================================
@@ -80,23 +82,88 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
+    // update status of inverter
+
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-    Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
-    Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
-//    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
+    safety_check_wolfspeed();
+
+	// assign inverter measurements
+	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+
+	// assign measurements from global_data to motor control structs
+    i_abc_VA.a = Global_Data.av.VA_ia;
+    i_abc_VA.b = Global_Data.av.VA_ib;
+    i_abc_VA.c = Global_Data.av.VA_ic;
+
+    // check for current limit
+    if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+    // calculate mean temperature values over all measured temperatures of each inverter
+    Global_Data.av.mean_temp_inv_d2 = (Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3) * 0.1667;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    // test for duty_freq-detect
-    Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
-    Global_Data.av.FAULT_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
 
-    //  not used yet = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
+	// park transformation of measured currents
+	i_dq_VA = uz_transformation_3ph_abc_to_dq(i_abc_VA, Global_Data.av.VA_theta_elec);
+	Global_Data.av.VA_I_d = i_dq_VA.d;
+	Global_Data.av.VA_I_q = i_dq_VA.q;
 
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    // if "STOP"
+    if (current_state==idle_state)
+    {
+    	// disable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+    	// reset controllers
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_VA);
+		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_VA);
+		Global_Data.rasv.n_ref_VA = 0.0f;
+		Global_Data.rasv.n_ref_filt_VA = 0.0f;
+
+		Global_Data.rasv.M_ref_VA = 0.0f;
+		Global_Data.rasv.i_dq_ref_VA.d = 0.0f;
+		Global_Data.rasv.i_dq_ref_VA.q = 0.0f;
+		// set dutycycle
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+//		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+//		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+//		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+//		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+//		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+//		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+    }
+
+    // if "ENABLE SYSTEM"
+    if (current_state==running_state)
+    {
+    	// enable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    	// reset tristate
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+
+    }
+
+
     if (current_state==control_state)
     {
-        // enable inverter
-//        Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	speed_control_VA();
+
+    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
+    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
+    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
+    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -230,6 +297,11 @@ static void ReadAllADC()
     ADC_readCardALL(&Global_Data);
 };
 
+static void im_control(){
+
+};
+
+
 static void current_control_VA() {
 	// calculate reference voltages for current control
 	v_dq_ref_VA = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_VA, Global_Data.rasv.i_dq_ref_VA, i_dq_VA, Global_Data.av.VA_vdc, Global_Data.av.VA_omega_mech*Global_Data.av.VA_polepairs);
@@ -239,6 +311,17 @@ static void current_control_VA() {
 	dutycyc_VA = uz_Space_Vector_Modulation(v_dq_ref_VA, Global_Data.av.VA_vdc, Global_Data.av.VA_theta_elec_advanced);
 };
 
+static void safety_check_wolfspeed() {
+    //  not used yet = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
+    Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
+    Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
+//    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    // test for duty_freq-detect
+    Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
+    Global_Data.av.FAULT_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
+
+};
 
 static void speed_control_VA() {
 	// filter speed setpoint signal

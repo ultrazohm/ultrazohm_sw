@@ -24,6 +24,12 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+static inline void set_hb456_duty(DS_Data *data, float hb4, float hb5, float hb6) {
+	data->rasv.halfBridge4DutyCycle = hb4;
+	data->rasv.halfBridge5DutyCycle = hb5;
+	data->rasv.halfBridge6DutyCycle = hb6;
+}
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -265,36 +271,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+		case (My_Button_1): // HB4 = 5%, HB5 = 0%, HB6 = 0%
+			set_hb456_duty(data, 0.05f, 0.0f, 0.0f);
 			break;
 
-		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+		case (My_Button_2): // HB4 = 0%, HB5 = 5%, HB6 = 0%
+			set_hb456_duty(data, 0.0f, 0.05f, 0.0f);
 			break;
 
-		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+		case (My_Button_3): // HB4 = 0%, HB5 = 0%, HB6 = 5%
+			set_hb456_duty(data, 0.0f, 0.0f, 0.05f);
 			break;
 
-		case (My_Button_4):
-
+		case (My_Button_4): // HB4 = HB5 = HB6 = 0%
+			set_hb456_duty(data, 0.0f, 0.0f, 0.0f);
 			break;
 
-		case (My_Button_5):
-
+		case (My_Button_5): // reserved
 			break;
 
-		case (My_Button_6):
-
+		case (My_Button_6): // reserved
 			break;
 
-		case (My_Button_7):
-
+		case (My_Button_7): // reserved
 			break;
 
-		case (My_Button_8):
-
+		case (My_Button_8): // reserved
 			break;
 
 		case (Error_Reset):

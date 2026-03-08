@@ -68,13 +68,14 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_3(float inc
 	return(uz_incrementalEncoder_init(encoder_D5_config));
 }
 void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// update speed and position in global data struct
-	data->av.ASM_theta_elec = uz_incrementalEncoder_get_theta_el(data->objects.encoder_ASM);
-	data->av.ASM_mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_ASM) * 60.0f / (2.0f*M_PI);
-
+	data->av.IM_theta_elec = uz_incrementalEncoder_get_theta_el(data->objects.encoder_IM);
+	data->av.IM_mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_IM) * 60.0f / (2.0f*M_PI);
+	data->av.IM_omega_mech = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_IM);
+	data->av.IM_omega_elec = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_IM) * data->av.IM_polepairs;
 	//low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.ASM_mechanicalRotorSpeed_filtered = LPF1(data->av.ASM_mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
+	data->av.IM_mechanicalRotorSpeed_filtered = LPF1(data->av.IM_mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }
@@ -82,7 +83,8 @@ void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// updat
 void update_speed_and_position_of_encoder_on_D5_2(DS_Data* const data){	// update speed and position in global data struct
 	data->av.VA_theta_elec=uz_incrementalEncoder_get_theta_el(data->objects.encoder_VA);
 	data->av.VA_mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_VA) * 60.0f / (2.0f*M_PI);
-
+	data->av.VA_omega_mech = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_VA);
+	data->av.VA_omega_elec = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_VA) * data->av.VA_polepairs;
 	//low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;

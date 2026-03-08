@@ -111,7 +111,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_ASM = initialize_incremental_encoder_ipcore_on_D5_1(ASM_INCREMENTAL_ENCODER_RESOLUTION, ASM_POLE_PAIR_NUMBER);
+            Global_Data.objects.encoder_IM = initialize_incremental_encoder_ipcore_on_D5_1(IM_INCREMENTAL_ENCODER_RESOLUTION, IM_POLE_PAIR_NUMBER);
             Global_Data.objects.encoder_VA = initialize_incremental_encoder_ipcore_on_D5_2(VOEST_ALPINE_INCREMENTAL_ENCODER_RESOLUTION, VOEST_ALPINE_POLE_PAIR_NUMBER);
             Global_Data.objects.PWM_Detect_instance = uz_PWM_duty_freq_detection_init(config);
             Global_Data.objects.d1_gpi_ch15_17	= uz_axi_gpio_init(d1_gpi_config);

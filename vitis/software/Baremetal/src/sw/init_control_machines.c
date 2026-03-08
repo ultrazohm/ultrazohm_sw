@@ -5,7 +5,8 @@
 
 extern DS_Data Global_Data;
 
-    const struct uz_PMSM_t ASM_Siemens = {
+#if UZ_MACHINE_ENABLE_IM_SIEMENS
+    const struct uz_PMSM_t IM_Siemens = {
       .R_ph_Ohm = 0.51,
       .Ld_Henry = 0.002f,
       .Lq_Henry = 0.002f,
@@ -14,7 +15,9 @@ extern DS_Data Global_Data;
 	  .I_max_Ampere = 5.0f,
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
+#endif
 
+#if UZ_MACHINE_ENABLE_VOESTALPINE
     const struct uz_PMSM_t Voestalpine = {
       .R_ph_Ohm = 0.157,
       .Ld_Henry = 585e-6f,
@@ -24,6 +27,35 @@ extern DS_Data Global_Data;
 	  .I_max_Ampere = 8.0f,
 	  .J_kg_m_squared = 0.000108,
     };//these parameters are only needed if linear decoupling is selected
+#endif
+
+#if UZ_MACHINE_ENABLE_IM_THN
+    const struct uz_PMSM_t IM_THN = {
+      .R_ph_Ohm = 0.72f,
+      .Ld_Henry = 2.8e-3f,
+      .Lq_Henry = 2.8e-3f,
+      .Psi_PM_Vs = 0.040f,
+	  .polePairs = 2.0f,
+	  .I_max_Ampere = 6.0f,
+	  .J_kg_m_squared = 0.000150f
+    };
+#endif
+
+#if UZ_MACHINE_ENABLE_IM_TUM
+    const struct uz_PMSM_t IM_TUM = {
+      .R_ph_Ohm = 0.63f,
+      .Ld_Henry = 2.4e-3f,
+      .Lq_Henry = 2.4e-3f,
+      .Psi_PM_Vs = 0.038f,
+	  .polePairs = 2.0f,
+	  .I_max_Ampere = 7.0f,
+	  .J_kg_m_squared = 0.000120f
+    };
+#endif
+
+#if !UZ_MACHINE_ENABLE_VOESTALPINE
+#error "Current VA control configuration in init_control_machines.c requires UZ_MACHINE_ENABLE_VOESTALPINE = 1U."
+#endif
 
     const struct uz_PI_Controller_config config_id_VA = {
     	      .type = UZ_PI_PARALLEL,

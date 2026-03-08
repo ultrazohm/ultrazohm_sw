@@ -59,33 +59,41 @@ typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
 	float VA_polepairs;
-	float ASM_ia; 		// asm
-	float ASM_ib; 		// asm
-	float ASM_ic; 		// asm
+	float IM_polepairs;
+	float IM_ia; 		// im
+	float IM_ib; 		// im
+	float IM_ic; 		// im
 	float VA_ia; 		// va
 	float VA_ib; 		// va
 	float VA_ic; 		// va
 	float VA_vd;
 	float VA_vq;
-	float ASM_vdc; 		// DC-Link asm
+	float VA_ua;
+	float VA_ub;
+	float VA_uc;
+	float VA_idc;
+	float IM_vdc; 		// DC-Link im
 	float VA_vdc;// DC-Link va
-	float ASM_mechanicalRotorSpeed; 		// in rpm
-	float ASM_mechanicalRotorSpeed_filtered; // in rpm
-	float ASM_mechanicalPosition; 		// in m
+	float IM_mechanicalRotorSpeed; 		// in rpm
+	float IM_mechanicalRotorSpeed_filtered; // in rpm
+	float IM_mechanicalPosition; 		// in m
 	float VA_mechanicalRotorSpeed; 		// in rpm
 	float VA_mechanicalRotorSpeed_filtered; // in rpm
 	float VA_mechanicalPosition; 		// in m
-	float VA_omega_mech;
-	float ASM_I_d;
-	float ASM_I_q;
+	float IM_I_d;
+	float IM_I_q;
 	float VA_I_d;
 	float VA_I_q;
-	float ASM_theta_elec;
-	float ASM_theta_mech;
-	float ASM_theta_offset;
-	float ASM_theta_elec_advanced;
+	float IM_theta_elec;
+	float IM_theta_mech;
+	float IM_omega_mech;
+	float IM_omega_elec;
+	float IM_theta_offset;
+	float IM_theta_elec_advanced;
 	float VA_theta_elec;
 	float VA_theta_mech;
+	float VA_omega_mech;
+	float VA_omega_elec;
 	float VA_theta_offset;
 	float VA_theta_elec_advanced;
 	float snd_fld[21];
@@ -96,6 +104,7 @@ typedef struct _actualValues_ {
 	float FAULT_INVERTER;
 	uint32_t slowDataCounter;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	float mean_temp_inv_d2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -116,7 +125,7 @@ typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
-	uz_incrementalEncoder_t* encoder_ASM;
+	uz_incrementalEncoder_t* encoder_IM;
 	uz_incrementalEncoder_t* encoder_VA;
 	uz_mux_axi_t* mux_axi;
 	uz_PWM_duty_freq_detection_t* PWM_Detect_instance;

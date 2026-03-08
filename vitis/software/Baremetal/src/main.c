@@ -62,7 +62,7 @@ struct linear_interpolation_parameters_t lin_inter_param= {
  .a = 100.0f,
  .b = -50.0f
 };
-
+extern const struct uz_PMSM_t Voestalpine;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -96,6 +96,10 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.VA_polepairs = Voestalpine.polePairs;
+            Global_Data.objects.setpoint_ctrl_VA = current_ctrl_VA);
+            Global_Data.objects.setpoint_ctrl_VA = setpoint_ctrl_VA();
+            Global_Data.objects.speed_ctrl_VA = speed_ctrl_VA();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -107,9 +111,12 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.encoder_ASM = initialize_incremental_encoder_ipcore_on_D5_1(ASM_INCREMENTAL_ENCODER_RESOLUTION, ASM_POLE_PAIR_NUMBER);
+            Global_Data.objects.encoder_VA = initialize_incremental_encoder_ipcore_on_D5_2(VOEST_ALPINE_INCREMENTAL_ENCODER_RESOLUTION, VOEST_ALPINE_POLE_PAIR_NUMBER);
             Global_Data.objects.PWM_Detect_instance = uz_PWM_duty_freq_detection_init(config);
             Global_Data.objects.d1_gpi_ch15_17	= uz_axi_gpio_init(d1_gpi_config);
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+			Global_Data.objects.iir_filter_ref_speed_VA= speed_filt_VA_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

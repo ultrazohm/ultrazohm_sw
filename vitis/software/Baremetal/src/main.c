@@ -97,9 +97,9 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             Global_Data.av.VA_polepairs = Voestalpine.polePairs;
-            Global_Data.objects.setpoint_ctrl_VA = current_ctrl_VA);
-            Global_Data.objects.setpoint_ctrl_VA = setpoint_ctrl_VA();
-            Global_Data.objects.speed_ctrl_VA = speed_ctrl_VA();
+            Global_Data.objects.current_ctrl_VA = current_ctrl_VA_init();
+            Global_Data.objects.setpoint_ctrl_VA = setpoint_ctrl_VA_init();
+            Global_Data.objects.speed_ctrl_VA = speed_ctrl_VA_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

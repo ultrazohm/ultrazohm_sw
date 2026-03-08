@@ -68,13 +68,13 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_3(float inc
 	return(uz_incrementalEncoder_init(encoder_D5_config));
 }
 void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// update speed and position in global data struct
-	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(data->objects.encoder_ASM);
-	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_ASM) * 60.0f / (2.0f*M_PI);
+	data->av.ASM_theta_elec = uz_incrementalEncoder_get_theta_el(data->objects.encoder_ASM);
+	data->av.ASM_mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_ASM) * 60.0f / (2.0f*M_PI);
 
 	//low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.mechanicalRotorSpeed_filtered = LPF1(data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
+	data->av.ASM_mechanicalRotorSpeed_filtered = LPF1(data->av.ASM_mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }

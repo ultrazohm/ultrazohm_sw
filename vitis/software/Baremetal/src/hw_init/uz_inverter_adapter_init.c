@@ -4,13 +4,13 @@
 #include "xparameters.h"
 
 static struct uz_inverter_adapter_config_t uz_inverter_adapter_config_d1_DUT = {
-               .base_address = XPAR_UZ_USER_UZ_INVERTER_ADAPTER_UZ_D_INVERTER_ADAPTER_0_BASEADDR,
+               .base_address = XPAR_UZ_USER_UZ_D_INVERTER_ADAPTER_0_BASEADDR,
                .ip_clk_frequency_Hz = 100000000,
 			   .linear_interpolation_params = {-289.01f, 218.72f}
 };
 
 static struct uz_inverter_adapter_config_t uz_inverter_adapter_config_d2_Load = {
-               .base_address = XPAR_UZ_USER_UZ_INVERTER_ADAPTER_UZ_D_INVERTER_ADAPTER_1_BASEADDR,
+               .base_address = XPAR_UZ_USER_UZ_D_INVERTER_ADAPTER_1_BASEADDR,
                .ip_clk_frequency_Hz = 100000000,
 			   .linear_interpolation_params = {-289.01f, 218.72f}
 };

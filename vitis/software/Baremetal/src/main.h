@@ -69,6 +69,11 @@
 #include "uz/uz_approximate_flux/uz_approximate_flux.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "include/uz_resolver_pl_IP_init.h"
+#include "include/uz_resolver_IP_init.h"
+#include "include/init_FOC.h"
+#include "include/uz_inverter_adapter_init.h"
+
 
 
 #define SAMPLE_TIME_SEC_CURRENT_CONTROL 1.0f / UZ_CONTROL_FREQUENCY

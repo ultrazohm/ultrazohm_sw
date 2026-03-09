@@ -24,6 +24,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+// V/f Control Parameters from isr.c
+extern float vf_frequency_setpoint_Hz;
+
 static inline void set_hb456_duty(DS_Data *data, float hb4, float hb5, float hb6) {
 	data->rasv.halfBridge4DutyCycle = hb4;
 	data->rasv.halfBridge5DutyCycle = hb5;
@@ -377,5 +380,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
-
+	// Sync control parameters with send fields for real-time tuning via GUI
+	// Send Field 1: V/f frequency setpoint (Hz)
+	// Send Field 2: Id reference (A) - flux current for FOC
+	// Send Field 3: Iq reference (A) - torque current for FOC (direct mode)
+	// Send Field 4: Speed reference (RPM) - for FOC speed control mode
+	if (data->av.snd_fld[1] > 0.0f) {
+		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
+	}
+//	id_ref_A = data->av.snd_fld[2];
+//	iq_ref_A = data->av.snd_fld[3];
+//	speed_ref_rpm = data->av.snd_fld[4];
 }

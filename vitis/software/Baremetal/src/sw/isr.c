@@ -38,10 +38,9 @@ XScuGic GIC_instance;
 XIpiPsu IPI_instance;
 
 //defines and limits
-#define 	CURRENT_2_SI_AMPERE	12.5f
-#define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT_VA		15.0f
 #define		MAX_CURRENT_IM		8.0f
+
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_VA = {0.0f};
 struct uz_3ph_abc_t i_abc_IM = {0.0f};
@@ -58,6 +57,16 @@ struct uz_3ph_dq_t v_dq_meas_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_IM = {0.0f};
 
+// V/f Control Parameters for 2-pole induction motor (1 pole pair)
+float vf_frequency_setpoint_Hz = 10.0f;      // Start frequency (Hz) - start low! (10Hz = 600 RPM sync speed)
+float vf_ratio_V_per_Hz = 5.0f;              // V/f ratio - ADJUST FOR YOUR MOTOR (e.g., 400V/50Hz = 8 V/Hz)
+float vf_boost_voltage_V = 5.0f;             // Low-frequency boost voltage (V)
+float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 50Hz = 3000 RPM synchronous speed
+float vf_max_voltage_V = 20.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
+float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
+static float vf_frequency_command_Hz = 0.0f;
+static float vf_electrical_phase_rad = 0.0f;
+float const duty_offset 		=   0.5f;
 
 // Global variable structure
 extern DS_Data Global_Data;
@@ -86,16 +95,23 @@ void ISR_Control(void *data)
 
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
     safety_check_wolfspeed();
+    // assign wolfspeed measurements
+
+
+    Global_Data.av.IM_vdc = Global_Data.aa.A1.me.ADC_A4;
+    Global_Data.av.IM_ia  = Global_Data.aa.A1.me.ADC_A1;
+    Global_Data.av.IM_ib  = Global_Data.aa.A1.me.ADC_A2;
+    Global_Data.av.IM_ic  = Global_Data.aa.A1.me.ADC_A3;
 
 	// assign inverter measurements
-	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;
+	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3;
+	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2;
+	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5;
+	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8;
+	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7;
+	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6;
+	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1;
 
 	// assign measurements from global_data to motor control structs
     i_abc_VA.a = Global_Data.av.VA_ia;
@@ -103,9 +119,9 @@ void ISR_Control(void *data)
     i_abc_VA.c = Global_Data.av.VA_ic;
 
     // check for current limit
-    if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
-    	ultrazohm_state_machine_set_stop(true);
-    }
+//    if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
+//    	ultrazohm_state_machine_set_stop(true);
+//    }
 
     // calculate mean temperature values over all measured temperatures of each inverter
     Global_Data.av.mean_temp_inv_d2 = (Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3) * 0.1667;
@@ -140,6 +156,8 @@ void ISR_Control(void *data)
 //		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
 //		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
 //		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+        vf_frequency_command_Hz = 0.0f;
+        vf_electrical_phase_rad = 0.0f;
     }
 
     // if "ENABLE SYSTEM"
@@ -156,14 +174,15 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	speed_control_VA();
-
-    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
-    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
+//    	speed_control_VA();
+//
+//    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
+//    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
+//    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
+//    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
+//    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
+//    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
+    	im_control();
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -299,6 +318,62 @@ static void ReadAllADC()
 
 static void im_control(){
 
+	// Slew-limited V/f frequency command: used on enable and on setpoint updates
+    float const Ts = fmaxf(Global_Data.av.isr_samplerate_s, 1.0e-6f);
+    float freq_target_limited = fminf(fmaxf(vf_frequency_setpoint_Hz, 0.0f), vf_max_frequency_Hz);
+    float const freq_step_max = fmaxf(vf_frequency_ramp_Hz_per_s, 0.1f) * Ts;
+    float const freq_error = freq_target_limited - vf_frequency_command_Hz;
+    if (freq_error > freq_step_max) {
+        vf_frequency_command_Hz += freq_step_max;
+    } else if (freq_error < -freq_step_max) {
+        vf_frequency_command_Hz -= freq_step_max;
+    } else {
+        vf_frequency_command_Hz = freq_target_limited;
+    }
+
+    // Limit frequency to maximum
+    float freq_limited = vf_frequency_command_Hz;
+
+    // V/f with boost: add boost only when frequency is above standstill
+    float boost_voltage_V = (freq_limited > 0.1f) ? vf_boost_voltage_V : 0.0f;
+    float voltage_magnitude_V = (vf_ratio_V_per_Hz * freq_limited) + boost_voltage_V;
+    voltage_magnitude_V = fminf(voltage_magnitude_V, vf_max_voltage_V);
+
+    // Normalize voltage to DC-link to get duty cycle amplitude
+    float duty_amplitude_vf = voltage_magnitude_V / fmaxf(Global_Data.av.IM_vdc, 1.0f);
+    duty_amplitude_vf = fminf(duty_amplitude_vf, 0.45f);
+    duty_amplitude_vf = fmaxf(duty_amplitude_vf, 0.0f);
+
+    // Generate three-phase voltage with phase integration.
+    // Do not use angle = 2*pi*t*f when f is ramped, because that causes
+    // frequency distortion for time-varying f.
+    float const omega_cmd_rad_per_s = 2.0f * UZ_PIf * freq_limited;
+    vf_electrical_phase_rad += omega_cmd_rad_per_s * Ts;
+    vf_electrical_phase_rad = fmodf(vf_electrical_phase_rad, 2.0f * UZ_PIf);
+    if (vf_electrical_phase_rad < 0.0f) {
+        vf_electrical_phase_rad += 2.0f * UZ_PIf;
+    }
+
+    float v1 = duty_amplitude_vf * sinf(vf_electrical_phase_rad) + duty_offset;
+    float v2 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (2.0f * UZ_PIf / 3.0f)) + duty_offset;
+    float v3 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (4.0f * UZ_PIf / 3.0f)) + duty_offset;
+
+    int PWM_mode = 0; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
+
+    if (PWM_mode == 1) {
+
+    float const cm = fminf(fminf(v1, v2), v3);
+    v1 -= cm;
+    v2 -= cm;
+    v3 -= cm;
+    }
+
+    dutycyc_IM.DutyCycle_A = fminf(fmaxf(v1, 0.0f), 1.0f);
+    dutycyc_IM.DutyCycle_B = fminf(fmaxf(v2, 0.0f), 1.0f);
+    dutycyc_IM.DutyCycle_C = fminf(fmaxf(v3, 0.0f), 1.0f);
+    Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
+    Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
+    Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
 };
 
 

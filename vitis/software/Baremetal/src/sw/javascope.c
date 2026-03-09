@@ -123,6 +123,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_VA_theta_mech]			= &data->av.VA_theta_mech;
 	js_ch_observable[JSO_VA_theta_offset]		= &data->av.VA_theta_offset;
 	js_ch_observable[JSO_VA_theta_elec_advanced] = &data->av.VA_theta_elec_advanced;
+	js_ch_observable[JSO_VA_i_d_ref]			= &data->rasv.i_dq_ref_VA.d;
+	js_ch_observable[JSO_VA_i_q_ref]			= &data->rasv.i_dq_ref_VA.q;
 	js_ch_observable[JSO_snd_fld_1]				= &data->av.snd_fld[1];
 	js_ch_observable[JSO_snd_fld_2]				= &data->av.snd_fld[2];
 	js_ch_observable[JSO_snd_fld_3]				= &data->av.snd_fld[3];

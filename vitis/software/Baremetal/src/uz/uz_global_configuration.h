@@ -45,8 +45,8 @@
 
 #define IM_INCREMENTAL_ENCODER_RESOLUTION    			1024.0f
 #define VOEST_ALPINE_INCREMENTAL_ENCODER_RESOLUTION    	5000.0f
-#define IM_POLE_PAIR_NUMBER            				1.0f
-#define VOEST_ALPINE_POLE_PAIR_NUMBER            		2.0f
+#define IM_POLE_PAIR_NUMBER            					1.0f
+#define VOEST_ALPINE_POLE_PAIR_NUMBER            		4.0f
 #define UZ_PWM_FREQUENCY                        		10.0e3f
 
 // Configuration defines for the number of used instances

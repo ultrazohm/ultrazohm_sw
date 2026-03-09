@@ -41,6 +41,11 @@ XIpiPsu IPI_instance;
 #define		MAX_CURRENT_VA		15.0f
 #define		MAX_CURRENT_IM		8.0f
 
+// theta offset
+
+float VA_theta_el_offset = 0.0f;
+float IM_theta_el_offset = 0.0f;
+
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_VA = {0.0f};
 struct uz_3ph_abc_t i_abc_IM = {0.0f};
@@ -103,7 +108,7 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
-
+    Global_Data.av.VA_theta_elec = uz_signals_wrap((Global_Data.av.VA_theta_elec - VA_theta_el_offset), 2.0f*UZ_PIf);
     if(!calibrate_current_measurement_done)
     {
         totalU += Global_Data.aa.A1.me.ADC_A1;
@@ -121,7 +126,7 @@ void ISR_Control(void *data)
 	}
     // assign wolfspeed measurements
 
-    Global_Data.av.IM_vdc = 48.0f; //Global_Data.aa.A1.me.ADC_A4 - U_DC_offset;
+    Global_Data.av.IM_vdc = 48.0f;
     Global_Data.av.IM_ia  = Global_Data.aa.A1.me.ADC_A1 - I_U_offset;
     Global_Data.av.IM_ib  = Global_Data.aa.A1.me.ADC_A2 - I_V_offset;
     Global_Data.av.IM_ic  = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
@@ -201,14 +206,8 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-//    	speed_control_VA();
-//
-//    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
-//    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
-//    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
-//    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
-//    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
-//    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
+    	speed_control_VA();
+//    	current_control_VA();
     	im_control();
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -411,6 +410,9 @@ static void current_control_VA() {
 	Global_Data.av.VA_vq = v_dq_ref_VA.q;
 	Global_Data.av.VA_theta_elec_advanced =  Global_Data.av.VA_theta_elec + (1.5f * (Global_Data.av.VA_omega_mech*Global_Data.av.VA_polepairs) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
 	dutycyc_VA = uz_Space_Vector_Modulation(v_dq_ref_VA, Global_Data.av.VA_vdc, Global_Data.av.VA_theta_elec_advanced);
+	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
+	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
+	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
 };
 
 static void safety_check_wolfspeed() {
@@ -418,7 +420,6 @@ static void safety_check_wolfspeed() {
     Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
     Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
 //    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
     // test for duty_freq-detect
     Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
     Global_Data.av.FAULT_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);

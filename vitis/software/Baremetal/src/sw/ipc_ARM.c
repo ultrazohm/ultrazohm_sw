@@ -27,12 +27,6 @@ extern uint32_t js_status_BareToRTOS;
 // V/f Control Parameters from isr.c
 extern float vf_frequency_setpoint_Hz;
 
-static inline void set_hb456_duty(DS_Data *data, float hb4, float hb5, float hb6) {
-	data->rasv.halfBridge4DutyCycle = hb4;
-	data->rasv.halfBridge5DutyCycle = hb5;
-	data->rasv.halfBridge6DutyCycle = hb6;
-}
-
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -274,32 +268,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1): // HB4 = 5%, HB5 = 0%, HB6 = 0%
-			set_hb456_duty(data, 0.05f, 0.0f, 0.0f);
-			break;
-
-		case (My_Button_2): // HB4 = 0%, HB5 = 5%, HB6 = 0%
-			set_hb456_duty(data, 0.0f, 0.05f, 0.0f);
-			break;
-
-		case (My_Button_3): // HB4 = 0%, HB5 = 0%, HB6 = 5%
-			set_hb456_duty(data, 0.0f, 0.0f, 0.05f);
-			break;
-
-		case (My_Button_4): // HB4 = HB5 = HB6 = 0%
-			set_hb456_duty(data, 0.0f, 0.0f, 0.0f);
-			break;
-
-		case (My_Button_5): // reserved
-			break;
-
-		case (My_Button_6): // reserved
-			break;
-
-		case (My_Button_7): // reserved
-			break;
-
-		case (My_Button_8): // reserved
+		case (My_Button_1):
+		case (My_Button_2):
+		case (My_Button_3):
+		case (My_Button_4):
+		case (My_Button_5):
+		case (My_Button_6):
+		case (My_Button_7):
+		case (My_Button_8):
+			// Buttons intentionally disabled
 			break;
 
 		case (Error_Reset):
@@ -388,7 +365,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
 	}
-//	id_ref_A = data->av.snd_fld[2];
-//	iq_ref_A = data->av.snd_fld[3];
-//	speed_ref_rpm = data->av.snd_fld[4];
+	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[2];
+	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[3];
+	data->rasv.n_ref_VA = data->av.snd_fld[4];
 }

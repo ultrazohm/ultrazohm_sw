@@ -266,7 +266,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->turn_on_main_relay = !data->turn_on_main_relay;
 			break;
 
 		case (My_Button_2):
@@ -342,11 +342,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+		if (data->turn_on_main_relay == true)
+		{
+			js_status_BareToRTOS |= (1 << 4);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 4);
+		}
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

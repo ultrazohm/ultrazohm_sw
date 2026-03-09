@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2025-12-16_14-53-07.csv';
+% file_name = 'offsets_with_LEM_loop.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

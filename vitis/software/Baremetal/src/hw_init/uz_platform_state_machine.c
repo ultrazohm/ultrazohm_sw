@@ -6,6 +6,7 @@
 #include "../uz/uz_PushButton/uz_PushButton_facade.h"
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
+#include "../globalData.h"
 
 typedef struct
 {
@@ -183,6 +184,7 @@ static void error_entry(void)
     if (ultrazohm_state.entry)
     {
         uz_axigpio_disable_pwm_and_power_electronics();
+       // uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
         uz_led_set_errorLED_on();
         ultrazohm_state.uz_led_states.errorLED = true;
         uz_led_set_runningLED_off();

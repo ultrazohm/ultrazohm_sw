@@ -25,7 +25,7 @@
  * 5 for Interrupt_3L_center
  * 6 for Interrupt_timer_fcc
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        2U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
@@ -72,6 +72,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
+#define UZ_BUCK_CONTROL_MAX_INSTANCES                   1U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
 #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
@@ -137,4 +138,5 @@
     #define UZ_PRNG_HALTON_MAX_INSTANCES                    50U
     #define UZ_PRNG_MAX_INSTANCES                           50U
     #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               50U
+    #define UZ_BUCK_CONTROL_MAX_INSTANCES                   100U
 #endif

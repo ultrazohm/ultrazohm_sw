@@ -48,10 +48,34 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "uz/uz_buck_control/uz_buck_control.h"
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+struct buck_control_config buck_config = {
+    .control_mode = uz_buck_output_current_mode,
+    .input_current_max_reference =0.0f,
+    .input_current_min_reference =0.0f,
+    .input_current_controller_max_reference =0.0f,
+    .input_current_controller_min_reference =0.0f,
+    .input_current_controller_max_control_signal =0.1f,
+    .input_current_controller_min_control_signal =-0.1f,
+    .input_current_controller_kp =0.0f,
+    .input_current_controller_ki =0.0f,
+    .output_voltage_controller_max_control_signal =0.10f,
+    .output_voltage_controller_min_control_signal =-0.10f,
+    .output_voltage_controller_max_reference =0.0f,
+    .output_voltage_controller_min_reference =0.0f,
+    .output_voltage_controller_kp =0.0f,
+    .output_voltage_controller_ki =0.0f,
+    .output_current_controller_max_control_signal =5.0f,
+    .output_current_controller_min_control_signal =-5.0f,
+    .output_current_controller_max_reference =2.0f,
+    .output_current_controller_min_reference =0.0f,
+    .output_current_controller_kp =0.1f,
+    .output_current_controller_ki =0.0f,
+    .sampling_frequency_Hz = 10000.0f};
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -60,7 +84,7 @@ int main(void)
         switch (initialization_chain)
         {
         case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
+            uz_assert_configuration();
             write_rpu_version(0U);
             do
             {
@@ -75,7 +99,7 @@ int main(void)
             initialization_chain = init_gpios;
             break;
         case init_gpios:
-        	uz_sleep_seconds(5);
+            uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontpanel_button_and_led_init(apu_version_final);
@@ -102,6 +126,17 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            Global_Data.objects.buck_controller = uz_buck_control_init(buck_config);
+
+            Global_Data.turn_on_main_relay = false;
+            Global_Data.ref_val.ref_input_current_Ampere = 0.0f;
+            Global_Data.ref_val.ref_output_current_Ampere = 0.0f;
+            Global_Data.ref_val.ref_output_voltage_Volt = 0.0f;
+            Global_Data.act_val.input_current_Ampere = 0.0f;
+            Global_Data.act_val.input_voltage_Volt = 0.0f;
+            Global_Data.act_val.output_current_Ampere = 0.0f;
+            Global_Data.act_val.output_voltage_Volt = 0.0f;
+
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

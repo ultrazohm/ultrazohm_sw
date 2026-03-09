@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_buck_control/uz_buck_control.h"
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
@@ -47,17 +47,103 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
+static void ReadAllADC();
+
+#define CURRENT_MEASUREMENT_BOX_GAIN 0.025f
+#define CURRENT_MEASUREMENT_BOX_OFFSET_INPUT_CURRENT -0.001f
+#define CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT 0.0071f
+
+#define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f // 15.3846153846
+#define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
+
+#define LEM_GAIN 0.0125f
+#define LEM_OFFSET_INPUT_CURRENT 2.5175f
+#define LEM_OFFSET_DC_CURRENT 2.517f
+
+bool manual_dutycycle = true;
+
+#define MAX_INPUT_CURRENT 5.0f
+#define MAX_OUTPUT_CURRENT 5.0f
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+//    Global_Data.pov_actual_values.input_current_box_ampere = (Global_Data.aa.A3.me.ADC_A3 - CURRENT_MEASUREMENT_BOX_OFFSET_INPUT_CURRENT) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
+//    Global_Data.pov_actual_values.output_current_box_after_relay_ampere = (Global_Data.aa.A3.me.ADC_A4 - CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT) * 1.0f/CURRENT_MEASUREMENT_BOX_GAIN;
+
+    Global_Data.pov_actual_values.input_voltage_volt = (Global_Data.aa.A2.me.ADC_B7 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_after_relay = (Global_Data.aa.A2.me.ADC_B6 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
+    Global_Data.pov_actual_values.output_voltage_before_relay = (Global_Data.aa.A2.me.ADC_B5 - VOLTAGE_MEASUREMENT_BOX_OFFSET) * 1.0f/VOLTAGE_MEASUREMENT_BOX_GAIN;
+
+    Global_Data.pov_actual_values.input_current_lem_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET_INPUT_CURRENT) * 0.2f/LEM_GAIN;
+    Global_Data.pov_actual_values.output_current_lem_before_relay_ampere = (Global_Data.aa.A2.me.ADC_A3 - LEM_OFFSET_DC_CURRENT) * 0.5f/LEM_GAIN;
+
+    // if limit violation,
+//    if (Global_Data.pov_actual_values.input_current_box_ampere > MAX_INPUT_CURRENT)
+//    {
+//        ultrazohm_state_machine_set_error(true);
+//    }
+    if (Global_Data.pov_actual_values.input_current_lem_ampere > MAX_INPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+
+    if (Global_Data.pov_actual_values.output_current_lem_before_relay_ampere > MAX_OUTPUT_CURRENT)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+//    if (Global_Data.pov_actual_values.output_current_box_after_relay_ampere > MAX_OUTPUT_CURRENT)
+//    {
+//        ultrazohm_state_machine_set_error(true);
+//    }
+
+    Global_Data.act_val.input_current_Ampere = Global_Data.pov_actual_values.input_current_lem_ampere;
+    Global_Data.act_val.input_voltage_Volt = Global_Data.pov_actual_values.input_voltage_volt;
+    Global_Data.act_val.output_current_Ampere = Global_Data.pov_actual_values.output_current_lem_before_relay_ampere;
+    Global_Data.act_val.output_voltage_Volt = Global_Data.pov_actual_values.output_voltage_before_relay;
+
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        if (manual_dutycycle)
+        {
+            Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.snd_fld[1];
+        }
+        else
+        {
+            Global_Data.ref_val.ref_input_current_Ampere = Global_Data.av.snd_fld[2];
+            Global_Data.ref_val.ref_output_current_Ampere = Global_Data.av.snd_fld[3];
+            Global_Data.ref_val.ref_output_voltage_Volt = Global_Data.av.snd_fld[4];
+            Global_Data.rasv.halfBridge1DutyCycle = uz_buck_control_sample(Global_Data.objects.buck_controller, Global_Data.ref_val, Global_Data.act_val);
+        }
+
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+        if (Global_Data.turn_on_main_relay == true)
+        {
+            Global_Data.rasv.halfBridge2DutyCycle = 1.0f;
+        }
+        else
+        {
+            Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        }
     }
+    else
+    {
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+        uz_buck_control_reset(Global_Data.objects.buck_controller);
+
+        Global_Data.ref_val.ref_input_current_Ampere = 0.0f;
+        Global_Data.ref_val.ref_output_current_Ampere = 0.0f;
+        Global_Data.ref_val.ref_output_voltage_Volt = 0.0f;
+        Global_Data.turn_on_main_relay = false;
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

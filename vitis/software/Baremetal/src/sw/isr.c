@@ -156,7 +156,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
 
-		Global_Data.rasv.HCI_faktor = 0.0f;
+		Global_Data.rasv.HCI_faktor = 0.2f;
 
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
@@ -183,13 +183,22 @@ void ISR_Control(void *data)
     	  i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
 
     	  //get HCI_faktor from global Data
-
     	  HCI_faktor = Global_Data.rasv.HCI_faktor;
 
-    	  i_dqn_ref_5th.d = 0.0f; // -1.0f; // Global_Data.rasv.i_dqn_ref_5th_d;
-    	  i_dqn_ref_5th.q = 0.0f; //1.2f; //Global_Data.rasv.i_dqn_ref_5th_q;
-    	  i_dqn_ref_7th.d = 0.0f; //0.4f; //Global_Data.rasv.i_dqn_ref_7th_d;
-    	  i_dqn_ref_7th.q = 0.0f; //-0.25f; //Global_Data.rasv.i_dqn_ref_7th_q;
+//    	  i_dqn_ref_5th.d = 0.0f;
+//    	  i_dqn_ref_5th.q = 0.0f;
+//    	  i_dqn_ref_7th.d = 0.0f;
+//    	  i_dqn_ref_7th.q = 0.0f;
+
+    	  i_dqn_ref_5th.d = -1.0f;
+    	  i_dqn_ref_5th.q = 1.2f;
+    	  i_dqn_ref_7th.d = 0.4f;
+    	  i_dqn_ref_7th.q = -0.25f;
+
+//    	  i_dqn_ref_5th.d = Global_Data.rasv.i_dqn_ref_5th_d;
+  //  	  i_dqn_ref_5th.q = Global_Data.rasv.i_dqn_ref_5th_q;
+    //	  i_dqn_ref_7th.d = Global_Data.rasv.i_dqn_ref_7th_d;
+      //  i_dqn_ref_7th.q = Global_Data.rasv.i_dqn_ref_7th_q;
 
     	  // park transformation of measured currents
     	   i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
@@ -433,12 +442,21 @@ static void control_right_motor() {
     Global_Data.av.v_d_ref_right = v_dq_ref_right.d;
     Global_Data.av.v_q_ref_right = v_dq_ref_right.q;
 
+	uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_right);
+	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_right);
+	i_dqn_filtered_5th = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_right, Global_Data.av.theta_elec);
+	i_dqn_filtered_7th = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_right, Global_Data.av.theta_elec);
+
+	//Übergaben an GlobalData für Javascope
+
+	Global_Data.av.i_dqn_filtered_5th_d = i_dqn_filtered_5th.d;
+	Global_Data.av.i_dqn_filtered_5th_q = i_dqn_filtered_5th.q;
+	Global_Data.av.i_dqn_filtered_7th_d = i_dqn_filtered_7th.d;
+	Global_Data.av.i_dqn_filtered_7th_q = i_dqn_filtered_7th.q;
+
+
     if (Global_Data.rasv.ctrl_plant_select == HCI) {
 
-    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_right);
-    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_right);
-    	i_dqn_filtered_5th = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_right, Global_Data.av.theta_elec);
-    	i_dqn_filtered_7th = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_right, Global_Data.av.theta_elec);
 
     	uz_HarmonicCurrentInjection_set_controllers(HCI_instance_5th_1, Hoerner, omega_el_rad_per_sec_right);
     	uz_HarmonicCurrentInjection_set_controllers(HCI_instance_7th_1, Hoerner, omega_el_rad_per_sec_right);
@@ -455,10 +473,6 @@ static void control_right_motor() {
 
     	//Übergaben an GlobalData für Javascope
 
-    	Global_Data.av.i_dqn_filtered_5th_d = i_dqn_filtered_5th.d;
-    	Global_Data.av.i_dqn_filtered_5th_q = i_dqn_filtered_5th.q;
-    	Global_Data.av.i_dqn_filtered_7th_d = i_dqn_filtered_7th.d;
-    	Global_Data.av.i_dqn_filtered_7th_q = i_dqn_filtered_7th.q;
     	Global_Data.av.v_dq_ref_5th_d = v_dq_ref_5th.d;
     	Global_Data.av.v_dq_ref_5th_q = v_dq_ref_5th.q;
     	Global_Data.av.v_dq_ref_7th_d = v_dq_ref_7th.d;

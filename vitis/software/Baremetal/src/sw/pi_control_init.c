@@ -22,7 +22,7 @@ const struct uz_PMSM_t Hoerner = {
   .Lq_Henry = 0.0021f,
   .Psi_PM_Vs = 0.020f,
   .polePairs = 4.0f,
-  .I_max_Ampere = 20.0f,
+  .I_max_Ampere = 10.0f,
   .J_kg_m_squared = 0.00009	//? Mittelwert
 };
 

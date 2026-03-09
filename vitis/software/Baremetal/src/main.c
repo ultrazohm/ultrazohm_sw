@@ -65,7 +65,7 @@ int main(void)
     // Configuration of HCI
     struct uz_IIR_Filter_config BP_config_1 = {
       	   .selection = BandPass_second_order,
-           .pass_frequency_Hz = 360.0f,
+           .pass_frequency_Hz = 600.0f,//360.0f
            .sample_frequency_Hz = 10000.0f,
        	   .damping = 0.05f
     };

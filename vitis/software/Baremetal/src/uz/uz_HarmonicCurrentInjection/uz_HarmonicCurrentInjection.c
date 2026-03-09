@@ -147,20 +147,20 @@ void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self
 	if (fabsf(omega_el_rad_per_sec)<1.0f){
 			omega_el_rad_per_sec=1.0f;
 		}
-	float cutoff_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf * 10.0f));
+	float cutoff_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf * 20.0f)); //10
 	float pass_frequency_Hz = 0.0f;
     switch (self->config.selection)
     {
     case abc_to_dqn:
        	pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * self->config.order_harmonic);
-       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_a, pass_frequency_Hz, 0.05f);
-       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_b, pass_frequency_Hz, 0.05f);
-       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_c, pass_frequency_Hz, 0.05f);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_a, pass_frequency_Hz, 0.1f); //0.05
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_b, pass_frequency_Hz, 0.1f); //0.05
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_c, pass_frequency_Hz, 0.1f); //0.05
        	break;
     case dq_to_dqn:
        	pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * (self->config.order_harmonic - 1.0f));
-       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_d_axis, pass_frequency_Hz, 0.05f);
-       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_q_axis, pass_frequency_Hz, 0.05f);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_d_axis, pass_frequency_Hz, 0.1f); //0.05
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_q_axis, pass_frequency_Hz, 0.1f); //0.05
        	break;
     default:
         break;
@@ -193,10 +193,10 @@ void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* 
 		uz_assert(false);
 		break;
 	}
-	float Kp_id = (T_N + T_V) / (2.0f * T_sigma_d * V_s);
-	float Ki_id = 1.0f / (2.0f * T_sigma_d * V_s);
-	float Kp_iq = (T_N + T_V) / (2.0f * T_sigma_q * V_s);
-	float Ki_iq = 1.0f / (2.0f * T_sigma_d * V_s);
+	float Kp_id = 0.02f* (T_N + T_V) / (2.0f * T_sigma_d * V_s);
+	float Ki_id = 0.02f* 1.0f / (2.0f * T_sigma_d * V_s);
+	float Kp_iq = 0.02f* (T_N + T_V) / (2.0f * T_sigma_q * V_s);
+	float Ki_iq = 0.02f* 1.0f / (2.0f * T_sigma_d * V_s);
 	uz_assert(Kp_id >= 0.0f);
 	uz_assert(Ki_id >= 0.0f);
 	uz_assert(Kp_iq >= 0.0f);

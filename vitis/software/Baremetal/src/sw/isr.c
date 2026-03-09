@@ -62,11 +62,23 @@ float vf_frequency_setpoint_Hz = 10.0f;      // Start frequency (Hz) - start low
 float vf_ratio_V_per_Hz = 5.0f;              // V/f ratio - ADJUST FOR YOUR MOTOR (e.g., 400V/50Hz = 8 V/Hz)
 float vf_boost_voltage_V = 5.0f;             // Low-frequency boost voltage (V)
 float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 50Hz = 3000 RPM synchronous speed
-float vf_max_voltage_V = 20.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
+float vf_max_voltage_V = 50.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
 float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
 static float vf_frequency_command_Hz = 0.0f;
 static float vf_electrical_phase_rad = 0.0f;
 float const duty_offset 		=   0.5f;
+float I_U_offset;
+float I_V_offset;
+float I_W_offset;
+float U_DC_offset = 2.5f;
+int calibrate_current_measurement_done = 0;
+int calibrate_current_measurement_counter = 0;
+int calibrate_current_measurement_counter_stop = 1000;
+
+//zeroing for current value 0 (getting rid of the offset)
+double totalU = 0;
+double totalV = 0;
+double totalW = 0;
 
 // Global variable structure
 extern DS_Data Global_Data;
@@ -91,17 +103,32 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
-    // update status of inverter
 
-    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-    safety_check_wolfspeed();
+    if(!calibrate_current_measurement_done)
+    {
+        totalU += Global_Data.aa.A1.me.ADC_A1;
+		totalV += Global_Data.aa.A1.me.ADC_A2;
+		totalW += Global_Data.aa.A1.me.ADC_A3;
+
+        calibrate_current_measurement_counter++;
+		if(calibrate_current_measurement_counter==calibrate_current_measurement_counter_stop)
+		{
+			I_U_offset = totalU/calibrate_current_measurement_counter_stop;
+			I_V_offset = totalV/calibrate_current_measurement_counter_stop;
+			I_W_offset = totalW/calibrate_current_measurement_counter_stop;
+			calibrate_current_measurement_done = 1;
+		}
+	}
     // assign wolfspeed measurements
 
+    Global_Data.av.IM_vdc = 48.0f; //Global_Data.aa.A1.me.ADC_A4 - U_DC_offset;
+    Global_Data.av.IM_ia  = Global_Data.aa.A1.me.ADC_A1 - I_U_offset;
+    Global_Data.av.IM_ib  = Global_Data.aa.A1.me.ADC_A2 - I_V_offset;
+    Global_Data.av.IM_ic  = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
 
-    Global_Data.av.IM_vdc = Global_Data.aa.A1.me.ADC_A4;
-    Global_Data.av.IM_ia  = Global_Data.aa.A1.me.ADC_A1;
-    Global_Data.av.IM_ib  = Global_Data.aa.A1.me.ADC_A2;
-    Global_Data.av.IM_ic  = Global_Data.aa.A1.me.ADC_A3;
+    // update status of inverter
+    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+    safety_check_wolfspeed();
 
 	// assign inverter measurements
 	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;

@@ -60,7 +60,7 @@ The user wants to have a PWM frequency of 100 kHz and an ISR frequency of 20 kHz
    
    #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
    #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-   #define UZ_PWM_FREQUENCY                        10.0e3f
+   #define UZ_PWM_FREQUENCY                        100.0e3f
 
 These settings result in the behavior depicted in :numref:`example_trigger_picture` (ADC interrupt in the upper subplot, interrupt of R5 in the lower subplot):
 

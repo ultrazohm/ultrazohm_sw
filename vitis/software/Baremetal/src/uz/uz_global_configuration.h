@@ -31,23 +31,24 @@
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_CONTROL_FREQUENCY                    10.0e3f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  5U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
-#define UZ_NN_LAYER_MAX_INSTANCES                       0U
-#define UZ_NN_MAX_INSTANCES                             0U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_NN_LAYER_MAX_INSTANCES                       4U
+#define UZ_NN_MAX_INSTANCES                             1U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_PARAMETERID_MAX_INSTANCES					1U
+#define UZ_PARAMETERID_MAX_INSTANCES					0U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
@@ -55,15 +56,14 @@
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               0U
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
-#define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
-#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
+#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               2U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
-#define UZ_RESOLVERIP_MAX_INSTANCES                     3U
+#define UZ_RESOLVERIP_MAX_INSTANCES                     1U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
-#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
+#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          1U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       0U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U

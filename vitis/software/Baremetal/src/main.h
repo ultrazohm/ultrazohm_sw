@@ -55,6 +55,26 @@
 #include "include/pwm_init.h"
 
 
+//Added stuff
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_NN_acc/uz_NN_acc.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_PMSM_config/uz_PMSM_config.h"
+#include "uz/uz_LUT_1D/uz_LUT_1D.h"
+#include "uz/uz_approximate_flux/uz_approximate_flux.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+
+
+#define SAMPLE_TIME_SEC_CURRENT_CONTROL 1.0f / UZ_CONTROL_FREQUENCY
+#define BO_FACTOR 3.0f
+#define TAU_SIGMA (BO_FACTOR * SAMPLE_TIME_SEC_CURRENT_CONTROL)
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

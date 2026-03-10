@@ -93,6 +93,7 @@ int main(void)
             init_LUT_current_angle();
             init_FluxApproximation_DUT();
             Global_Data.objects.Speed_Filter_Load = init_SpeedFilter_Load();
+            Global_Data.av.theta_offset_DUT = -1.63f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

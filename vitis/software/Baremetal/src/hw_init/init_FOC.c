@@ -2,8 +2,8 @@
 extern DS_Data Global_Data;
 
 static const struct uz_PMSM_t PMSM_DUT_config = { //Hoerner Prototyp
-        .Ld_Henry = 0.00245f,
-        .Lq_Henry = 0.00044f,
+        .Ld_Henry = 0.00044f,
+        .Lq_Henry = 0.00245f,
         .Psi_PM_Vs = 0.02f,
 		.I_max_Ampere = 20.0f,
 		.R_ph_Ohm = 0.249f,
@@ -25,20 +25,20 @@ static const struct uz_PMSM_t PMSM_Load_config = {//Beckhoff AM8141
 		.n_rated_rpm = 1000.0f};
 
 static const struct uz_PMSM_flux_fitting_parameter_config_t Fitting_parameter_DUT = {
-		.ad1_parameter = 0.024902304986954f,
-		.ad2_parameter = 0.048665691154496f,
-		.ad3_parameter = -21.728878362536314f,
+		.ad1_parameter = 0.024902266251059f,
+		.ad2_parameter = 0.048665940747155f,
+		.ad3_parameter = -21.728876200244958f,
 		.ad4_parameter = 0.025686294208918f,
 		.ad5_parameter = 0.021304623129277f,
 		.ad6_parameter = -24.167153248173516f,
 		.aq1_parameter = 0.011336899936001f,
 		.aq2_parameter = 0.126154283521831f,
 		.aq3_parameter = 3.179837653870588e-04f,
-		.aq4_parameter = 0.006703090098816f,
-		.aq5_parameter = 0.052003800456740f,
-		.aq6_parameter = 2.892289932176348e-04f,
-		.F1G1_parameter = 0.173486033645328f,
-		.F2G2_parameter = 0.266836529373517f
+		.aq4_parameter = -0.335577016710544f,
+		.aq5_parameter = -0.010955695783842f,
+		.aq6_parameter = -0.003063536538741f,
+		.F1G1_parameter =0.174087113205129f,
+		.F2G2_parameter = 0.266836735631787f
 };
 
 struct uz_pmsmModel_config_t IP_PMSM_config = {
@@ -127,7 +127,7 @@ uz_CurrentControl_t* init_FOC_DUT(void) {
 			.config_iq = config_iq_DUT,
 			.config_PMSM = PMSM_DUT_config,
 			.Kp_adjustment_flag = true,
-			.max_modulation_index = 1.0f/sqrt(3.0f)
+			.max_modulation_index = 1.0f/sqrtf(3.0f)
 	};
 	Global_Data.rasv.PMSM_DUT_config = PMSM_DUT_config;
 	return(uz_CurrentControl_init(CC_config_DUT));
@@ -140,7 +140,7 @@ uz_CurrentControl_t* init_FOC_Load(void) {
 			.config_iq = config_iq_Load,
 			.config_PMSM = PMSM_Load_config,
 			.Kp_adjustment_flag = false,
-			.max_modulation_index = 1.0f/sqrt(3.0f)
+			.max_modulation_index = 1.0f/sqrtf(3.0f)
 	};
 	Global_Data.rasv.PMSM_Load_config = PMSM_Load_config;
 	return(uz_CurrentControl_init(CC_config_Load));

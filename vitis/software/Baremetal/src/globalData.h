@@ -21,6 +21,7 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_signals/uz_signals.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -66,8 +67,77 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
+
+	//DUT values
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1_DUT;
+	struct uz_pmsmModel_outputs_t PMSM_outputs;
+	struct uz_pmsmModel_inputs_t PMSM_inputs;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_Load;
+	float i_dc_DUT;
+	float v_dc_DUT;
+	float mechanicalRotorSpeed_DUT; 		// in rpm
+	float theta_mech_DUT;
+	float theta_elec_DUT;
+	float theta_elec_advanced_DUT;
+	float theta_elec_old_DUT;
+	float theta_offset_DUT; //in rad/s
+	float omega_elec_DUT;
+	float omega_mech_DUT;
+	float temp_VSI_DUT;
+	uz_3ph_dq_t i_dq_DUT;
+	uz_3ph_dq_t i_ref_dq_DUT;
+	uz_3ph_abc_t i_abc_DUT;
+	uz_3ph_dq_t v_dq_DUT;
+	uz_3ph_dq_t v_ref_dq_DUT;
+	uz_3ph_abc_t v_abc_DUT;
+	struct uz_DutyCycle_t DutyCycle_DUT;
+	struct uz_DutyCycle_t DutyCycle_manual_DUT;
+	float is_DUT;
+	float is_ref_DUT;
+	float current_angle_degree_DUT;
+	float current_angle_ref_degree_DUT;
+	float Torque_DUT;
+	float Torque_ref_DUT;
+	uz_3ph_dq_t flux_approx_real_DUT;
+	uz_3ph_dq_t flux_approx_reference_DUT;
+	uz_3ph_dq_t v_dq_ref_CIL_manual;
+
+
+	//Load values
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_Load;
+	float i_dc_Load;
+	float v_dc_Load;
+	float mechanicalRotorSpeed_Load; 		// in rpm
+	float theta_elec_Load;
+	float theta_mech_Load;
+	float theta_elec_advanced_Load;
+	float theta_elec_old_Load;
+	float omega_elec_Load;
+	float omega_mech_Load;
+	float temp_VSI_Load;
+	uz_3ph_dq_t i_dq_Load;
+	uz_3ph_dq_t i_ref_dq_Load;
+	uz_3ph_abc_t i_abc_Load;
+	uz_3ph_dq_t v_dq_Load;
+	uz_3ph_dq_t v_ref_dq_Load;
+	uz_3ph_abc_t v_abc_Load;
+	float is_Load;
+	float Torque_Load;
+	float Torque_expected_Load;
+	float Torque_ref_Load;
+	float speed_ref_Load;
+	float speed_ref_filtered_Load;
+	struct uz_DutyCycle_t DutyCycle_Load;
+
+
+	//other stuff
+	float start_marker;
+
+
+
+
+
+	//old stuff
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
 	float I_L3; 		// Grid side current in A
@@ -96,10 +166,8 @@ typedef struct _actualValues_ {
 	float U_q;
 	float theta_elec;
 	float theta_mech;
-	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
@@ -140,7 +208,7 @@ typedef struct{
 	uz_LUT_1D_t* LUT_current_angle;
 	uz_LUT_1D_t* LUT_Is;
 	uz_pmsmModel_t* PMSM_Model;
-	uz_PI_Controller* SpeedControl_Load;
+	uz_SpeedControl_t* SpeedControl_Load;
 	uz_CurrentControl_t* CurrentControl_Load;
 	uz_SetPoint_t* SetPoint_Load;
 	uz_CurrentControl_t* CurrentControl_DUT;
@@ -149,6 +217,7 @@ typedef struct{
 	uz_matrix_t* matrix_output_acc;
 	uz_nn_t* nn_layer_acc;
 	uz_NN_acc_t* NN_acc_Instance;
+	uz_IIR_Filter_t* Speed_Filter_Load;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -72,7 +72,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               1U
-#define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
+#define UZ_NN_ACC_IP_MAX_INSTANCES                  	1U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
 #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
 #define UZ_PRNG_PCG_MAX_INSTANCES                       0U

@@ -5705,13 +5705,13 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "12"
+                "value": "10"
               },
               "C_PROBE10_WIDTH": {
-                "value": "32"
+                "value": "1"
               },
               "C_PROBE11_WIDTH": {
-                "value": "64"
+                "value": "1"
               },
               "C_PROBE7_WIDTH": {
                 "value": "32"
@@ -5725,15 +5725,15 @@
             }
           },
           "uz_endat_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:1.0",
-            "xci_name": "zusys_uz_endat_interface_0_4",
-            "xci_path": "ip/zusys_uz_endat_interface_0_4/zusys_uz_endat_interface_0_4.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:1.1",
+            "xci_name": "zusys_uz_endat_interface_0_5",
+            "xci_path": "ip/zusys_uz_endat_interface_0_5/zusys_uz_endat_interface_0_5.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "uz_endat_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_endat_interface:1.0",
-            "xci_name": "zusys_uz_endat_interface_1_4",
-            "xci_path": "ip/zusys_uz_endat_interface_1_4/zusys_uz_endat_interface_1_4.xci",
+            "vlnv": "xilinx.com:ip:uz_endat_interface:1.1",
+            "xci_name": "zusys_uz_endat_interface_1_5",
+            "xci_path": "ip/zusys_uz_endat_interface_1_5/zusys_uz_endat_interface_1_5.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_1"
           }
         },
@@ -5758,8 +5758,8 @@
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "smartconnect_1/M02_AXI",
-              "uz_endat_interface_1/AXI4_Lite"
+              "uz_endat_interface_1/AXI4_Lite",
+              "smartconnect_1/M02_AXI"
             ]
           }
         },
@@ -5783,24 +5783,18 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_endat_interface_1/AXI4_Lite_ARESETN",
-              "uz_endat_interface_1/IPCORE_RESETN",
+              "uz_endat_interface_0/IPCORE_RESETN",
               "uz_endat_interface_0/AXI4_Lite_ARESETN",
-              "uz_endat_interface_0/IPCORE_RESETN"
+              "uz_endat_interface_1/IPCORE_RESETN",
+              "uz_endat_interface_1/AXI4_Lite_ARESETN"
             ]
           },
           "trigger_endat_1": {
             "ports": [
               "trigger_endat",
               "ila_0/probe0",
-              "uz_endat_interface_0/trigger_endat_read",
-              "uz_endat_interface_1/trigger_endat_read"
-            ]
-          },
-          "uz_endat_interface_0_CRC_calc": {
-            "ports": [
-              "uz_endat_interface_0/CRC_calc",
-              "ila_0/probe10"
+              "uz_endat_interface_1/trigger_endat_read",
+              "uz_endat_interface_0/trigger_endat_read"
             ]
           },
           "uz_endat_interface_0_CRC_raw": {
@@ -5834,12 +5828,6 @@
               "uz_endat_interface_0/endat_mode_data_out",
               "TX_DATA_Dig_08_Ch5",
               "ila_0/probe2"
-            ]
-          },
-          "uz_endat_interface_0_endat_raw_data_word": {
-            "ports": [
-              "uz_endat_interface_0/endat_raw_data_word",
-              "ila_0/probe11"
             ]
           },
           "uz_endat_interface_0_endat_received_data_out_SH": {

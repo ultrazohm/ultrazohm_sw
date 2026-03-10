@@ -107,6 +107,8 @@ void ISR_Control(void *data)
     	Global_Data.av.v_dc_DUT					= DC_VOLTAGE;
     	Global_Data.av.current_angle_degree_DUT = atan2f(Global_Data.av.i_dq_DUT.q,Global_Data.av.i_dq_DUT.d) /UZ_PIf * 180.0f;
     	Global_Data.av.is_DUT					= sqrtf((Global_Data.av.i_dq_DUT.d * Global_Data.av.i_dq_DUT.d) + (Global_Data.av.i_dq_DUT.q * Global_Data.av.i_dq_DUT.q));
+    	Global_Data.av.v_dq_DUT.d				= Global_Data.av.PMSM_inputs.v_d_V;
+    	Global_Data.av.v_dq_DUT.q				= Global_Data.av.PMSM_inputs.v_q_V;
     	break;
 
     case REAL:
@@ -143,6 +145,8 @@ void ISR_Control(void *data)
 		Global_Data.av.v_abc_Load.b 			= (Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2) + PHASE_VOLT_OFFSET_B2;
 		Global_Data.av.v_abc_Load.c 			= (Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2) + PHASE_VOLT_OFFSET_C2;
 		Global_Data.av.v_dc_Load 				= (Global_Data.aa.A2.me.ADC_A1 * DC_VOLT_CONV);
+
+		//TODO ADC Measurement of Torque
 
 		 //Read out inverter temp
 		 Global_Data.av.temp_VSI_DUT = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1_DUT.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1_DUT.ChipTempDegreesCelsius_L1,
@@ -235,11 +239,9 @@ void ISR_Control(void *data)
     		//Only use load machine when REAL
     		Global_Data.av.speed_ref_filtered_Load 	= uz_signals_IIR_Filter_sample(Global_Data.objects.Speed_Filter_Load, Global_Data.av.speed_ref_Load);
     	    //Approximates required torque based on dq-Setpoints of DUT machine
-    		Global_Data.av.Torque_expected_Load 	= 1.5f * Global_Data.rasv.PMSM_DUT_config.polePairs * (Global_Data.rasv.PMSM_DUT_config.Psi_PM_Vs * Global_Data.av.i_ref_dq_DUT.q +
-    	    		(Global_Data.rasv.PMSM_DUT_config.Ld_Henry - Global_Data.rasv.PMSM_DUT_config.Lq_Henry) * Global_Data.av.i_ref_dq_DUT.q * Global_Data.av.i_ref_dq_DUT.d);
     		Global_Data.av.Torque_ref_Load 			= uz_SpeedControl_sample(Global_Data.objects.SpeedControl_Load, Global_Data.av.omega_mech_Load, Global_Data.av.speed_ref_filtered_Load);
     		//Adds required torque of DUT as Vorsteuerung
-    		Global_Data.av.Torque_ref_Load 			+= Global_Data.av.Torque_expected_Load;
+    		Global_Data.av.Torque_ref_Load 			+= Global_Data.av.Torque_ref_DUT;
     		Global_Data.av.i_ref_dq_Load 			= uz_SetPoint_sample(Global_Data.objects.SetPoint_Load, Global_Data.av.omega_mech_Load, Global_Data.av.Torque_ref_Load, Global_Data.av.v_dc_Load, Global_Data.av.i_dq_Load);
     		Global_Data.av.v_ref_dq_Load 			= uz_CurrentControl_sample(Global_Data.objects.CurrentControl_Load, Global_Data.av.i_ref_dq_Load, Global_Data.av.i_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.omega_elec_Load);
     		Global_Data.av.DutyCycle_Load 			= uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.theta_elec_advanced_Load);

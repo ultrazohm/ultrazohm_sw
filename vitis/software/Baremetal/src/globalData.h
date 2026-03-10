@@ -123,7 +123,6 @@ typedef struct _actualValues_ {
 	uz_3ph_abc_t v_abc_Load;
 	float is_Load;
 	float Torque_Load;
-	float Torque_expected_Load;
 	float Torque_ref_Load;
 	float speed_ref_Load;
 	float speed_ref_filtered_Load;

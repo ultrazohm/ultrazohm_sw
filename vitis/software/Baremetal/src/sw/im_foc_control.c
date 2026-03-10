@@ -95,7 +95,7 @@ void im_foc_control_reset(im_foc_control_state_t *state)
     state->resonant_omega_filtered = 0.0f;
 }
 
-void im_foc_control_step(const actualValues *av,
+void im_foc_control_step(actualValues *av,
                           referenceAndSetValues *rasv,
                           const uz_IM_t *im_config,
                           const im_foc_control_input_t *input,

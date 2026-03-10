@@ -73,7 +73,9 @@
 #include "include/uz_resolver_IP_init.h"
 #include "include/init_FOC.h"
 #include "include/uz_inverter_adapter_init.h"
-
+#include "include/init_NN_network_ip_core.h"
+#include "include/uz_IIR_Filter_init.h"
+#include "uz/uz_math_constants.h"
 
 
 #define SAMPLE_TIME_SEC_CURRENT_CONTROL 1.0f / UZ_CONTROL_FREQUENCY

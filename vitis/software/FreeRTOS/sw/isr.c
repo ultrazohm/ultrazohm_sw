@@ -30,14 +30,15 @@
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
 struct APU_to_RPU_t ControlData;
-extern int js_connection_established;
+extern volatile int js_connection_established;
 
 // cf. main.c
 extern uint32_t javascope_data_status;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
-int js_queue_full = 0;
+volatile int js_queue_overflow_dropped_samples = 0;
+volatile int js_queue_purge_requested = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
 
@@ -59,7 +60,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
-	BaseType_t xHigherPriorityTaskWoken;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 
 	// flush cache of shared memory for javascope data
@@ -73,8 +74,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 		if (queue_status == errQUEUE_FULL)
 		{
-			js_queue_full++;
-			// uz_printf("OsziData_queue is full\r\n");
+			js_queue_overflow_dropped_samples++;
+			js_queue_purge_requested = 1;
 		}
 		// info: queue is purged when new connection is established in 'ethernet.c'
 	}
@@ -113,8 +114,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 		i_LifeCheck_Transfer_ipc =0;
 	}
 
-	// force context switch after ISR finishes -> switching to ethernet task
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	// Not required in the current design: the Ethernet task polls queue depth and
+	// uses non-blocking queue receive, so it is usually not blocked waiting to be
+	// woken by this ISR.
+	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 

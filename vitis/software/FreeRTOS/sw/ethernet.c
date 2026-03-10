@@ -14,41 +14,60 @@
 ******************************************************************************/
 
 #include <string.h>
-#include <stdint.h>
-#include <errno.h>
 #include "lwip/sockets.h"
-#include "lwip/def.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "queue.h"
 #include "APU_RPU_shared.h"
 
 #include "../main.h"
 
 extern QueueHandle_t js_queue;
 extern struct APU_to_RPU_t ControlData;
+extern volatile int js_queue_overflow_dropped_samples;
+extern volatile int js_queue_purge_requested;
 
-int js_connection_established = 0;
+volatile int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 
-static uint32_t debug_now_ms(void)
+static int js_replace_active_client(const int new_clientfd)
 {
-	return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);
+	int old_clientfd = 0;
+
+	taskENTER_CRITICAL();
+	old_clientfd = js_connection_established;
+	js_connection_established = new_clientfd;
+	taskEXIT_CRITICAL();
+
+	return old_clientfd;
 }
 
-static void print_peer_info(int clientfd, const struct sockaddr_in *remote)
+static BaseType_t js_release_active_client_if_owner(const int clientfd)
 {
-	uint32_t ip_host = lwip_ntohl(remote->sin_addr.s_addr);
-	unsigned int b1 = (ip_host >> 24U) & 0xFFU;
-	unsigned int b2 = (ip_host >> 16U) & 0xFFU;
-	unsigned int b3 = (ip_host >> 8U) & 0xFFU;
-	unsigned int b4 = ip_host & 0xFFU;
-	unsigned int port = lwip_ntohs(remote->sin_port);
+	BaseType_t is_owner = pdFALSE;
 
-	uz_printf("APU: Javascope peer %u.%u.%u.%u:%u fd=%d at %lu ms\r\n",
-			b1, b2, b3, b4, port, clientfd, (unsigned long)debug_now_ms());
+	taskENTER_CRITICAL();
+	if (js_connection_established == clientfd) {
+		js_connection_established = 0;
+		is_owner = pdTRUE;
+	}
+	taskEXIT_CRITICAL();
+
+	return is_owner;
+}
+
+static BaseType_t js_is_active_client(const int clientfd)
+{
+	BaseType_t is_active = pdFALSE;
+
+	taskENTER_CRITICAL();
+	if (js_connection_established == clientfd) {
+		is_active = pdTRUE;
+	}
+	taskEXIT_CRITICAL();
+
+	return is_active;
 }
 
 
@@ -74,34 +93,52 @@ void process_request_thread(void *p)
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
-	struct APU_to_RPU_t* Received_Data = {0};
+	struct APU_to_RPU_t received_data = {0};
+	size_t recv_buf_fill = 0U;
+	const size_t control_data_bytes = sizeof(struct APU_to_RPU_t);
 
 	int clientfd = (int)p;
 	int nread = 0;
 	int nwrote = 0;
-	uint32_t session_start_ms = debug_now_ms();
-	uint32_t tx_packet_count = 0;
-	uint32_t tx_byte_count = 0;
-	uint32_t rx_byte_count = 0;
-	uint32_t ctrl_packet_count = 0;
-	uint32_t ctrl_bad_size_count = 0;
-	uint32_t queue_empty_count = 0;
-	uint32_t last_status = 0;
-
-	uz_printf("APU: Javascope connected fd=%d at %lu ms\r\n", clientfd, (unsigned long)session_start_ms);
-	js_connection_established = clientfd;
 
 	xQueueReset(js_queue); //purge queue once new connection is established
+	taskENTER_CRITICAL();
+	js_queue_overflow_dropped_samples = 0;
+	js_queue_purge_requested = 0;
+	taskEXIT_CRITICAL();
 
 	while (1) {
+		if (js_is_active_client(clientfd) == pdFALSE) {
+			break;
+		}
+
+		if (js_queue_purge_requested != 0) {
+			int dropped_samples_from_overflow = 0;
+			UBaseType_t queued_samples_to_purge = uxQueueMessagesWaiting(js_queue);
+			taskENTER_CRITICAL();
+			dropped_samples_from_overflow = js_queue_overflow_dropped_samples;
+			js_queue_overflow_dropped_samples = 0;
+			js_queue_purge_requested = 0;
+			taskEXIT_CRITICAL();
+
+			xQueueReset(js_queue);
+			uz_printf("APU: Javascope queue overflow -> purged %lu queued + %d overflow-dropped\r\n",
+					(unsigned long)queued_samples_to_purge,
+					dropped_samples_from_overflow);
+			taskYIELD();
+			continue;
+		}
+
+		if (uxQueueMessagesWaiting(js_queue) < NETWORK_SEND_FIELD_SIZE) {
+			taskYIELD();
+			continue;
+		}
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
 			// Take one element from queue
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			if (xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT) != pdTRUE) {
-				queue_empty_count++;
-			}
+			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
 			// copy data into nwsend struct
 			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
@@ -128,7 +165,6 @@ void process_request_thread(void *p)
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 		}
 		nwsend.status = javascope_data_sending.status;
-		last_status = nwsend.status;
 
 		// At this point, Ethernet Package is full and ready to be sent
 		i_LifeCheck_process_Ethernet++;
@@ -138,87 +174,61 @@ void process_request_thread(void *p)
 
 		// write the data -> handle request /
 		// The data is sent here
-		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
-			int saved_errno = errno;
-			uz_printf("APU: %s: WRITE drop fd=%d err=%d recv=%d write=%d t=%lu ms up=%lu ms txPkts=%lu txB=%lu rxB=%lu qAvail=%lu qEmpty=%lu status=0x%08lX\r\n",
-					__FUNCTION__, clientfd, saved_errno, nread, nwrote,
-					(unsigned long)debug_now_ms(),
-					(unsigned long)(debug_now_ms() - session_start_ms),
-					(unsigned long)tx_packet_count,
-					(unsigned long)tx_byte_count,
-					(unsigned long)rx_byte_count,
-					(unsigned long)uxQueueMessagesWaiting(js_queue),
-					(unsigned long)queue_empty_count,
-					(unsigned long)last_status);
-			uz_printf("APU: Closing socket %d\r\n", clientfd);
-			js_connection_established = 0;
-			break;
-		}
-		tx_packet_count++;
-		tx_byte_count += (uint32_t)nwrote;
-		asm("nop");
+			if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
+				if (js_is_active_client(clientfd) == pdFALSE) {
+					break;
+				}
+				uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
+				__FUNCTION__, nread, nwrote);
+				uz_printf("APU: Closing socket %d\r\n", clientfd);
+				break;
+			}
+			asm("nop");
 
 		// read a max of RECV_BUF_SIZE bytes from socket /
 		if (nwrote > 0){
-			// read a max of RECV_BUF_SIZE bytes from socket /
-			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
-			if (nread < 0) {
-				int saved_errno = errno;
-				uz_printf("APU: %s: READ drop fd=%d err=%d t=%lu ms up=%lu ms txPkts=%lu txB=%lu rxB=%lu ctrlOk=%lu ctrlBad=%lu qAvail=%lu qEmpty=%lu status=0x%08lX\r\n",
-						__FUNCTION__, clientfd, saved_errno,
-						(unsigned long)debug_now_ms(),
-						(unsigned long)(debug_now_ms() - session_start_ms),
-						(unsigned long)tx_packet_count,
-						(unsigned long)tx_byte_count,
-						(unsigned long)rx_byte_count,
-						(unsigned long)ctrl_packet_count,
-						(unsigned long)ctrl_bad_size_count,
-						(unsigned long)uxQueueMessagesWaiting(js_queue),
-						(unsigned long)queue_empty_count,
-						(unsigned long)last_status);
-				js_connection_established = 0;
-				break;
-			}
-			rx_byte_count += (uint32_t)nread;
+				// read a max of RECV_BUF_SIZE bytes from socket /
+				nread = read(clientfd, (char *)recv_buf + recv_buf_fill, TCPPACKETSIZE - recv_buf_fill);
+				if (nread < 0) {
+					if (js_is_active_client(clientfd) == pdFALSE) {
+						break;
+					}
+					uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+					break;
+				}
 			//asm(" nop");
-			if ( nread == sizeof(ControlData) ){
-				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
-				ControlData.id 		= Received_Data->id;
-				ControlData.value 	= Received_Data->value;
-				ctrl_packet_count++;
-			} else if (nread > 0) {
-				ctrl_bad_size_count++;
+			if (nread > 0) {
+				recv_buf_fill += (size_t)nread;
+
+				// Parse all complete control messages in the TCP stream.
+				size_t complete_bytes = (recv_buf_fill / control_data_bytes) * control_data_bytes;
+				for (size_t offset = 0U; offset < complete_bytes; offset += control_data_bytes) {
+					memcpy(&received_data, recv_buf + offset, control_data_bytes);
+					taskENTER_CRITICAL();
+					ControlData = received_data;
+					taskEXIT_CRITICAL();
+				}
+
+				// Keep partial trailing bytes for the next read().
+				recv_buf_fill -= complete_bytes;
+				if (recv_buf_fill > 0U) {
+					memmove(recv_buf, recv_buf + complete_bytes, recv_buf_fill);
+				}
 			}
 
-			// break if client closed connection /
-			if (nread <= 0){
-				uz_printf("APU: %s: peer closed fd=%d (nread=%d) at %lu ms up=%lu ms txPkts=%lu txB=%lu rxB=%lu ctrlOk=%lu ctrlBad=%lu qAvail=%lu qEmpty=%lu\r\n",
-						__FUNCTION__, clientfd, nread,
-						(unsigned long)debug_now_ms(),
-						(unsigned long)(debug_now_ms() - session_start_ms),
-						(unsigned long)tx_packet_count,
-						(unsigned long)tx_byte_count,
-						(unsigned long)rx_byte_count,
-						(unsigned long)ctrl_packet_count,
-						(unsigned long)ctrl_bad_size_count,
-						(unsigned long)uxQueueMessagesWaiting(js_queue),
-						(unsigned long)queue_empty_count);
-				close(clientfd);
-				js_connection_established = 0;
+					// read() == 0 means the peer performed an orderly TCP close.
+					if (nread == 0){
+						uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+						break;
+					}
+				}else{
 				break;
 			}
-		}else{
-			uz_printf("APU: %s: write returned %d, closing fd=%d at %lu ms\r\n",
-					__FUNCTION__, nwrote, clientfd, (unsigned long)debug_now_ms());
-			close(clientfd);
-			js_connection_established = 0;
 		}
-	}
 
 	// close connection
-	uz_printf("APU: Javascope disconnected fd=%d at %lu ms\r\n", clientfd, (unsigned long)debug_now_ms());
+	(void)js_release_active_client_if_owner(clientfd);
 	close(clientfd);
-	js_connection_established = 0;
 	vTaskDelete(NULL);
 }
 
@@ -236,6 +246,7 @@ void application_thread()
 	int new_clientfd;
 	struct sockaddr_in address, remote;
 	int size;
+	uint32_t connection_count = 0U;
 
 	if ((sock = lwip_socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		return;
@@ -247,13 +258,20 @@ void application_thread()
 	if (lwip_bind(sock, (struct sockaddr *)&address, sizeof (address)) < 0)
 		return;
 
-	lwip_listen(sock, 0);
+	lwip_listen(sock, 1);
 
 	size = sizeof(remote);
 
 	while (1) {
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-			print_peer_info(new_clientfd, &remote);
+			connection_count++;
+			uz_printf("APU: Javascope connected #%lu (socket 0x%x)\r\n", (unsigned long)connection_count, new_clientfd);
+
+			const int old_clientfd = js_replace_active_client(new_clientfd);
+			if ((old_clientfd != 0) && (old_clientfd != new_clientfd)) {
+				uz_printf("APU: Replacing old Javascope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
+			}
+
 			sys_thread_new("echos", process_request_thread,
 				(void*)new_clientfd,
 				THREAD_STACKSIZE,

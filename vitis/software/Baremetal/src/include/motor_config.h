@@ -1,0 +1,73 @@
+#pragma once
+/******************************************************************************
+ * Motor / machine configuration
+ *
+ * Select the active machine by changing MOTOR_CONFIG_SELECT below.
+ * To support a new machine, define a new MOTOR_CONFIG_<NAME> constant and
+ * add a corresponding #if block with all required parameters.
+ *
+ * Parameters collected here are those that differ between machines:
+ *   - Electrical nameplate (Rs, Rr, Lm, leakage inductances, pole pairs)
+ *   - Mechanical (inertia J)
+ *   - Rated operating point (Psi_rated, I_max)
+ *   - Protection limits (Vdc_max, Iphase_max, Speed_max)
+ *   - Control tuning (Speed PI gains, resonant gain scale, KF noise defaults)
+ *
+ * Hardware-specific settings (PWM frequency, encoder resolution, deadtime,
+ * IP instance counts) remain in uz_global_configuration.h.
+ ******************************************************************************/
+
+/* ===== Available configurations ===== */
+#define MOTOR_CONFIG_LINDNER_3KW    1
+/* Add further configurations here:
+ * #define MOTOR_CONFIG_MY_NEW_MACHINE  2
+ */
+
+/* ===== Select active motor configuration ===== */
+#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_LINDNER_3KW
+
+
+/* ============================================================
+ * Lindner 3 kW IM — Wolfspeed adapter board testbed
+ * ============================================================ */
+#if (MOTOR_CONFIG_SELECT == MOTOR_CONFIG_LINDNER_3KW)
+
+/* Electrical nameplate */
+#define MOTOR_Rs_Ohm              2.1f
+#define MOTOR_Rr_Ohm              2.4f
+#define MOTOR_Lm_H                0.350f        /* magnetizing inductance */
+#define MOTOR_Lsigma_s_H          8.5e-3f       /* stator leakage inductance */
+#define MOTOR_Lsigma_r_H          8.5e-3f       /* rotor leakage — assumed equal to stator leakage */
+#define MOTOR_PolePairs           1.0f
+
+/* Mechanical */
+#define MOTOR_J_kgm2              0.01f         /* rotor inertia [kg·m²] */
+
+/* Rated operating point */
+#define MOTOR_Psi_rated_Vs        0.85f         /* rated rotor flux magnitude [Vs] */
+#define MOTOR_I_max_A             10.0f         /* maximum phase current (observer / speed ctrl limit) */
+
+/* Protection limits — hardware-level fault thresholds */
+#define MOTOR_Vdc_max_V           700.0f
+#define MOTOR_Iphase_max_A        20.0f
+#define MOTOR_Speed_max_rpm       3300.0f
+
+/* Current PI gains — scaling factors applied on top of the symmetric-optimum base:
+ *   kp_base = sigma_ls / (2*Ts),  ki_base = Rs / (2*Ts)
+ * Reduce these factors if current overshoots; increase for faster response. */
+#define MOTOR_Current_Kp_scale    0.1f
+#define MOTOR_Current_Ki_scale    0.2f
+
+/* Speed PI gains — re-tune for your load inertia and bandwidth requirement */
+#define MOTOR_Speed_Kp            0.01f
+#define MOTOR_Speed_Ki            0.50f
+
+/* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
+#define MOTOR_Resonant_gain_scale 0.3f
+
+/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
+#define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
+#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+#define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
+
+#endif /* MOTOR_CONFIG_SELECT */

@@ -59,6 +59,7 @@
 #define Control_ISR_clear_pending_interrupt_reg		(XPAR_PSU_RCPU_GIC_DIST_BASEADDR + (XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_PENDING_CLR_OFFSET, Interrupt_ISR_ID)) )
 
 void ISR_Control(void *baseaddr_p);
+void Initialize_ISR_Software(DS_Data *data);
 
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm

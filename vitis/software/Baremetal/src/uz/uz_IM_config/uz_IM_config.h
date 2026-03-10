@@ -70,4 +70,61 @@ float uz_IM_get_sigma(uz_IM_t config);
  */
 float uz_IM_get_tau_r(uz_IM_t config);
 
+/**
+ * @brief Calculates the steady-state d-axis current required for a desired rotor flux.
+ *
+ * For the rotor-flux model used here, the steady-state relation is psi_r = Lm * i_d.
+ *
+ * @param config    uz_IM_t configuration struct
+ * @param psi_r_Vs  Desired rotor flux linkage in Volt-seconds. Must be greater than 0.0f
+ * @return float    Required d-axis current in Ampere
+ */
+float uz_IM_get_id_ref_for_psi_r(uz_IM_t config, float psi_r_Vs);
+
+/**
+ * @brief Discretized state-space matrices for an induction machine observer.
+ *
+ * Precomputed from uz_IM_t + sample period Ts using Forward Euler discretization.
+ * All matrices use the state vector x = [i_alpha, i_beta, Psi_r_alpha, Psi_r_beta].
+ * Ts is fixed at runtime (set at ISR init) but may differ between runs.
+ */
+typedef struct {
+    /** Speed-independent skeleton of A = I + F*Ts.
+     *  Four speed-dependent elements (A[0][3], A[1][2], A[2][3], A[3][2]) are zero
+     *  here and must be filled per ISR step using x_m_D_Ts and Ts. */
+    float A_base[4][4];
+    /** Input matrix B = Ts/sigmaLs * P_ab (rows 0-1), zeros (rows 2-3).
+     *  Absorbs the Clarke abc->alphabeta transform so 3-phase voltages [V] are
+     *  passed directly as input u_abc. */
+    float B[4][3];
+    /** Process noise diagonal Q_diag.
+     *  Default values are configured in uz_global_configuration.h. */
+    float Q_diag[4];
+    /** Measurement noise diagonal R_diag [A^2].
+     *  Default values are configured in uz_global_configuration.h. */
+    float R_diag[2];
+    /** Combined speed-coupling coefficient c*Ts = Lm*Ts/(sigmaLs*Lr).
+     *  Used to update A[0][3] and A[1][2] each ISR step. */
+    float x_m_D_Ts;
+    /** Sample period Ts [s]. Used to update A[2][3] and A[3][2] each ISR step. */
+    float Ts;
+    /** Slip coefficient Lm*Rr/Lr = Lm/tau_r.
+     *  Used to compute slip_estimate = x_m_tau_r_inv * i_q / psi_r_mag. */
+    float x_m_tau_r_inv;
+    /** Number of pole pairs, copied from uz_IM_t for use in omega_el computation. */
+    float polePairs;
+} uz_IM_ss_t;
+
+/**
+ * @brief Compute discretized state-space matrices from motor parameters and sample period.
+ *
+ * Compute once after the ISR sample rate is known (e.g. after measurement calibration).
+ * The returned struct is small and passed by value.
+ *
+ * @param config  Motor electrical parameters (validated internally)
+ * @param Ts      ISR sample period in seconds (e.g. 100e-6 for 10 kHz). Must be > 0.
+ * @return        Fully populated uz_IM_ss_t
+ */
+uz_IM_ss_t uz_IM_ss_compute(uz_IM_t config, float Ts);
+
 #endif // UZ_IM_CONFIG_H

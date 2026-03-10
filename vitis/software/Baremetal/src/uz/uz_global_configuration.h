@@ -31,6 +31,8 @@
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    1024.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            1.0f
 #define UZ_PWM_FREQUENCY                        25.0e3f
+#define INVERTER_DEADTIME_US                    0.3f    // Hardware deadtime [µs] of uz_interlockDeadtime2L IP core
+#define UZ_MIN_PULSE_WIDTH                      0.01f   // Minimum on-time duty cycle clamped by PWM IP hardware
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
@@ -57,7 +59,7 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
-#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
+#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            2U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
@@ -138,3 +140,5 @@
 #define UZ_PRNG_MAX_INSTANCES 50U
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES 50U
 #endif
+
+

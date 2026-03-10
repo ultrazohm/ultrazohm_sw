@@ -135,7 +135,7 @@ uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, 
     float v2 = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset;
     float v3 = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset;
 
-    int PWM_mode = 1; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
+    int PWM_mode = 0; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
 
     if (PWM_mode == 0) // 0 SPWM
     {

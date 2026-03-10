@@ -56,10 +56,36 @@ extern float vf_boost_voltage_V;
 extern float vf_max_frequency_Hz;
 extern float vf_max_voltage_V;
 extern float stator_current_fundamental_frequency_Hz;
+extern float psi_r_mag_Vs;
+extern float omega_s_rad_s;
+extern float kf_innov_alpha;
+extern float kf_innov_beta;
+extern float kf_S_00;
+extern float kf_S_11;
+extern float kf_K_00;
+extern float kf_K_11;
+extern float det_psi_r_alpha;
+extern float det_psi_r_beta;
+extern float kf_q_i;
+extern float kf_q_psi;
+extern float kf_r_i;
 extern float id_cmd;
 extern float iq_cmd;
 extern float RRC_Operating_Point;
-extern volatile uint32_t isr_error_reason;
+extern volatile uint32_t error_reason;
+extern float ud_pi_V;
+extern float uq_pi_V;
+extern float ud_decoup_V;
+extern float uq_decoup_V;
+extern float ud_res_V;
+extern float uq_res_V;
+extern float omega_slip_rad_s_diag;
+extern float estimated_active_power_W;
+extern float estimated_reactive_power_var;
+extern float speed_ref_rpm;
+extern float id_meas_raw_dq;
+extern float iq_meas_raw_dq;
+extern float min_pulse_width;
 
 
 int JavaScope_initialize(DS_Data* data)
@@ -82,7 +108,7 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
@@ -91,8 +117,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ua] 					= &data->av.U_U;
 	js_ch_observable[JSO_ub] 					= &data->av.U_V;
 	js_ch_observable[JSO_uc] 					= &data->av.U_W;
-	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-	js_ch_observable[JSO_id] 					= &data->av.I_d;
+	js_ch_observable[JSO_id] 					= &id_meas_raw_dq;    // raw measured, no observer smoothing
+	js_ch_observable[JSO_iq] 					= &iq_meas_raw_dq;    // raw measured, no observer smoothing
+	js_ch_observable[JSO_id_est]				= &data->av.I_d;      // observer-estimated (KF or det)
+	js_ch_observable[JSO_iq_est]				= &data->av.I_q;      // observer-estimated (KF or det)
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
@@ -108,6 +136,25 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_A1_B8]					= &data->aa.A1.me.ADC_B8;
 	js_ch_observable[JSO_id_cmd]				= &id_cmd;
 	js_ch_observable[JSO_iq_cmd]				= &iq_cmd;
+	js_ch_observable[JSO_torque]				= &data->av.mechanicalTorque;
+	js_ch_observable[JSO_psi_r_mag]			= &psi_r_mag_Vs;
+	js_ch_observable[JSO_omega_s_rad_s]		= &omega_s_rad_s;
+	js_ch_observable[JSO_kf_innov_alpha]		= &kf_innov_alpha;
+	js_ch_observable[JSO_kf_innov_beta]		= &kf_innov_beta;
+	js_ch_observable[JSO_kf_S_00]				= &kf_S_00;
+	js_ch_observable[JSO_kf_S_11]				= &kf_S_11;
+	js_ch_observable[JSO_kf_K_00]				= &kf_K_00;
+	js_ch_observable[JSO_kf_K_11]				= &kf_K_11;
+	js_ch_observable[JSO_det_psi_r_alpha]		= &det_psi_r_alpha;
+	js_ch_observable[JSO_det_psi_r_beta]		= &det_psi_r_beta;
+	js_ch_observable[JSO_ud_pi]				= &ud_pi_V;
+	js_ch_observable[JSO_uq_pi]				= &uq_pi_V;
+	js_ch_observable[JSO_ud_decoup]			= &ud_decoup_V;
+	js_ch_observable[JSO_uq_decoup]			= &uq_decoup_V;
+	js_ch_observable[JSO_omega_slip_rad_s]	= &omega_slip_rad_s_diag;
+	js_ch_observable[JSO_speed_ref_rpm]		= &speed_ref_rpm;
+	js_ch_observable[JSO_ud_res]			= &ud_res_V;
+	js_ch_observable[JSO_uq_res]			= &uq_res_V;
 
 
 
@@ -117,12 +164,19 @@ int JavaScope_initialize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_u_d_ref]		        = &id_cmd;
-	js_slowDataArray[JSSD_FLOAT_u_q_ref]		        = &iq_cmd;
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_id_cmd]		        = &id_cmd;
+	js_slowDataArray[JSSD_FLOAT_iq_cmd]		        = &iq_cmd;
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &id_meas_raw_dq;  // raw measured
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &iq_meas_raw_dq;  // raw measured
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed_filtered);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorque);
+	js_slowDataArray[JSSD_FLOAT_kf_q_i]                 = &kf_q_i;
+	js_slowDataArray[JSSD_FLOAT_kf_q_psi]               = &kf_q_psi;
+	js_slowDataArray[JSSD_FLOAT_kf_r_i]                 = &kf_r_i;
+	js_slowDataArray[JSSD_FLOAT_ud_res]                 = &ud_res_V;
+	js_slowDataArray[JSSD_FLOAT_uq_res]                 = &uq_res_V;
+	js_slowDataArray[JSSD_FLOAT_estimated_active_power_W] = &estimated_active_power_W;
+	js_slowDataArray[JSSD_FLOAT_estimated_reactive_power_var] = &estimated_reactive_power_var;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
@@ -136,6 +190,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vf_max_frequency_Hz]      = &vf_max_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]         = &vf_max_voltage_V;
 	js_slowDataArray[JSSD_FLOAT_U_DC]                      = &(data->av.U_DC);
+	js_slowDataArray[JSSD_FLOAT_min_pulse_width]           = &min_pulse_width;
 	js_slowDataArray[JSSD_FLOAT_Error_Code]                = &Error_Code;
 	js_slowDataArray[JSSD_FLOAT_RRC_Operating_Point]       = &RRC_Operating_Point;
 
@@ -168,7 +223,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
-	Error_Code				= (float)isr_error_reason;
+	Error_Code				= (float)error_reason;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

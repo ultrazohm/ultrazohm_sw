@@ -1,6 +1,7 @@
 #include "../include/pwm_init.h"
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L_hw.h"
 #include "xparameters.h"
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
@@ -9,7 +10,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width = UZ_MIN_PULSE_WIDTH,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -29,7 +30,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width = UZ_MIN_PULSE_WIDTH,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -49,7 +50,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width = UZ_MIN_PULSE_WIDTH,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -69,7 +70,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width = UZ_MIN_PULSE_WIDTH,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -97,4 +98,11 @@ uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_12_to_17(void){
 
 uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_18_to_23(void){
 	return (uz_PWM_SS_2L_init(pwm_config_d1_pin_18_to_23));
+}
+
+void pwm_set_min_pulse_width(float value)
+{
+    if (value < 0.0f) value = 0.0f;
+    if (value > 0.1f) value = 0.1f;
+    uz_PWM_SS_2L_hw_SetMinimumPulseWidth(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR, value);
 }

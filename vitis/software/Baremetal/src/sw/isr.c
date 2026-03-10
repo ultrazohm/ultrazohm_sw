@@ -18,24 +18,21 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include <math.h>
-#include <xtmrctr.h>
 #include "../include/javascope.h"
-#include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
-#include "../IP_Cores/mux_axi_ip_addr.h"
-#include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-#include "../include/uz_platform_state_machine.h"
-#include "../Codegen/uz_codegen.h"
-#include "../include/mux_axi.h"
-#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../uz/uz_IM_config/uz_IM_config.h"  // uz_IM_t struct only (functions need .c added to build)
-#include "../uz/uz_math_constants.h"
-#include "../uz/uz_piController/uz_piController.h"
-#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-#include "../uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
+#include "../include/uz_platform_state_machine.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_IM_config/uz_IM_config.h"
+#include "../include/measurement_calibration.h"
+#include "../include/error_checks.h"
+#include "../include/im_observer.h"
+#include "../include/im_uf_control.h"
+#include "../include/im_foc_control.h"
+#include "../include/motor_config.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -46,6 +43,9 @@ extern DS_Data Global_Data;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+static void isr_init_dc_link_voltage_filter(DS_Data *data);
+static void isr_filter_dc_link_voltage(DS_Data *data);
+static void isr_update_estimated_power(float u_a, float u_b, float u_c, const im_rotor_flux_observer_output_t *observer_output);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -54,38 +54,20 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 // - start of the control period
 //----------------------------------------------------
 
-// safety thresholds
-float Vdc_max = 1100.0f;
-float Iphase_max = 30.0f;
+static error_checks_config_t error_checks_config = {
+    .vdc_max = MOTOR_Vdc_max_V,
+    .iphase_max = MOTOR_Iphase_max_A,
+    .max_mechanical_speed_rpm = MOTOR_Speed_max_rpm
+};
 
-// Error reason bitmask (set in ISR, read from main loop)
-volatile uint32_t isr_error_reason = 0U;
-#define ERR_OVERVOLTAGE_DC   (1U << 0)
-#define ERR_OVERCURRENT_U    (1U << 1)
-#define ERR_OVERCURRENT_V    (1U << 2)
-#define ERR_OVERCURRENT_W    (1U << 3)
-#define ERR_OVERSPEED        (1U << 4)
-#define ERR_NAN_OBSERVER     (1U << 5)
-#define ERR_NAN_MEASUREMENT  (1U << 6)
+static uint32_t const measurement_calibration_sample_counter_stop = 10000U;
+static float const measurement_calibration_u_dc_offset = 2.5f;
+static measurement_calibration_t measurement_calibration_state = {0};
 
-float const duty_offset 		=   0.5f;
-uz_3ph_abc_t three_phase_sine;
+static uz_IIR_Filter_t *dc_link_voltage_filter = NULL;
+static float const dc_link_voltage_filter_cutoff_Hz = 2000.0f;
 
-int isr_use_sinwave_gen = 1;
-
-int calibrate_current_measurement_done = 0;
-int calibrate_current_measurement_counter = 0;
-int calibrate_current_measurement_counter_stop = 1000;
-
-//zeroing for current value 0 (getting rid of the offset)
-double totalU = 0;
-double totalV = 0;
-double totalW = 0;
-
-float I_U_offset;
-float I_V_offset;
-float I_W_offset;
-float U_DC_offset = 2.5f;
+float const duty_offset = 0.5f;
 
 // V/f Control Parameters for 2-pole induction motor (1 pole pair)
 float vf_frequency_setpoint_Hz = 20.0f;      // Start frequency (Hz) - start low! (10Hz = 600 RPM sync speed)
@@ -94,331 +76,241 @@ float vf_boost_voltage_V = 5.0f;             // Low-frequency boost voltage (V)
 float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 50Hz = 3000 RPM synchronous speed
 float vf_max_voltage_V = 400.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
 float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
-static float vf_frequency_command_Hz = 0.0f;
-static float vf_electrical_phase_rad = 0.0f;
+static im_uf_control_state_t uf_control_state = {0};
 
-// Induction machine parameters — set to your motor values!
+// Induction machine parameters — change motor_config.h to adapt to a new machine
 uz_IM_t IM_config = {
-    .Rs_Ohm = 2.1f,
-    .Rr_Ohm = 2.4f,
-    .Lsigma_s_Henry = 10e-3f,
-    .Lsigma_r_Henry = 10e-3f,    // assumed equal to stator leakage
-    .Lm_Henry = 340e-3f,
-    .polePairs = 1.0f,
-    .J_kg_m_squared = 0.01f,
-    .I_max_Ampere = 10.0f,
-    .Psi_rated_Vs = 0.85f,
+    .Rs_Ohm          = MOTOR_Rs_Ohm,
+    .Rr_Ohm          = MOTOR_Rr_Ohm,
+    .Lsigma_s_Henry  = MOTOR_Lsigma_s_H,
+    .Lsigma_r_Henry  = MOTOR_Lsigma_r_H,
+    .Lm_Henry        = MOTOR_Lm_H,
+    .polePairs       = MOTOR_PolePairs,
+    .J_kg_m_squared  = MOTOR_J_kgm2,
+    .I_max_Ampere    = MOTOR_I_max_A,
+    .Psi_rated_Vs    = MOTOR_Psi_rated_Vs,
 };
 
-// Rotor flux observer state (alpha-beta frame)
-static float psi_r_alpha = 0.0f;
-static float psi_r_beta = 0.0f;
-static float theta_flux_rad = 0.0f;
-static float psi_r_mag = 0.0f;
+static im_rotor_flux_observer_state_t rotor_flux_observer_state = {0};
+
+// Kalman Filter observer — selectable alternative to the rotor flux observer
+bool use_kalman_filter = false;
+static im_kf_observer_state_t kf_observer_state = {
+    .x = {0.0f, 0.0f, 0.0f, 0.0f},
+    .P = {{1.0f, 0.0f, 0.0f, 0.0f},
+          {0.0f, 1.0f, 0.0f, 0.0f},
+          {0.0f, 0.0f, 1.0f, 0.0f},
+          {0.0f, 0.0f, 0.0f, 1.0f}}
+};
+static uz_IM_ss_t im_ss = {0};
+static bool im_ss_computed = false;
 
 // Estimated stator current fundamental frequency (Hz)
 float stator_current_fundamental_frequency_Hz = 0.0f;
-static uz_pos_to_speed_pll_t* stator_frequency_pll = NULL;
+// Observer outputs exposed for fast-data logging
+float psi_r_mag_Vs = 0.0f;
+float omega_s_rad_s = 0.0f;
+// Deterministic observer flux components — diagnostic: check for 257 Hz oscillation in theta
+float det_psi_r_alpha = 0.0f;
+float det_psi_r_beta  = 0.0f;
+// Det observer PLL omega_s — always updated, used for resonant controller frequency.
+// Much smoother than KF slip-estimate omega_s (std ≈ 0.056 vs 0.37 rad/s).
+float det_omega_s_rad_s = 0.0f;
+
+// Minimum on-time (duty cycle fraction, 0–0.1) — settable at runtime via Send Field 16.
+// Mirrors the hardware PWM IP clamp; also used in the KF voltage model (lines below).
+float min_pulse_width = UZ_MIN_PULSE_WIDTH;
+
+// KF tuning — initialized from uz_global_configuration.h and modifiable at runtime
+// via send fields 9 (Q_i), 7 (Q_psi), 8 (R_i).
+// R_i >> 6th-harmonic current variance (~0.029 A²) so KF trusts model over measurements
+// Q_psi << R_i: flux changes slowly (Rr/Lr·Ts ≈ 2.8e-4/step), tau_r = 0.145 s
+// Q_i: residual unmodeled current dynamics (e.g. deadtime steps)
+float kf_q_i   = MOTOR_KF_Q_i;
+float kf_q_psi = MOTOR_KF_Q_psi;
+float kf_r_i   = MOTOR_KF_R_i;
+
+// KF diagnostics for JavaScope (populated after each KF step)
+float kf_innov_alpha = 0.0f;
+float kf_innov_beta  = 0.0f;
+float kf_S_00        = 0.0f;
+float kf_S_11        = 0.0f;
+float kf_K_00        = 0.0f;
+float kf_K_11        = 0.0f;
 
 // FOC control mode (false = V/f, true = FOC)
 bool use_foc = false;
 bool use_speed_control = false;
+bool use_resonant_6th = false;
 float id_ref_A = 0.0f;
 float iq_ref_A = 0.0f;
 float speed_ref_rpm = 0.0f;
 float RRC_Operating_Point = 1.0f;
 float id_cmd = 0.0f;
 float iq_cmd = 0.0f;
-static uz_PI_Controller* PI_id = NULL;
-static uz_PI_Controller* PI_iq = NULL;
-static uz_PI_Controller* PI_speed = NULL;
+static im_foc_control_state_t foc_control_state = {0};
+
+// Raw measured dq currents — abc→dq at active flux angle, updated every ISR regardless of mode.
+// Used for JavaScope (always shows measured, not observer-estimated) and resonant controller.
+float id_meas_raw_dq = 0.0f;
+float iq_meas_raw_dq = 0.0f;
+
+// FOC diagnostics — updated each ISR when FOC is active, held at last value otherwise
+float ud_pi_V    = 0.0f;   // d-axis PI output (no decoupling): ≈ Rs*id at steady state
+float uq_pi_V    = 0.0f;   // q-axis PI output (no decoupling): ≈ Rs*iq at steady state
+float ud_decoup_V = 0.0f;  // d-axis feedforward: -omega_s * sigma_ls * iq
+float uq_decoup_V = 0.0f;  // q-axis feedforward: omega_s * sigma_ls * id + omega_s*(Lm/Lr)*psi_r
+float ud_res_V   = 0.0f;   // d-axis resonant controller output (zero when disabled)
+float uq_res_V   = 0.0f;   // q-axis resonant controller output (zero when disabled)
+float omega_slip_rad_s_diag = 0.0f;  // slip frequency = omega_s - omega_el (rotor)
+float estimated_active_power_W = 0.0f;
+float estimated_reactive_power_var = 0.0f;
+
+void Initialize_ISR_Software(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    uz_assert(data->av.isr_samplerate_s > 0.0f);
+
+    measurement_calibration_state = measurement_calibration_init(measurement_calibration_sample_counter_stop,
+                                                                     measurement_calibration_u_dc_offset);
+    im_uf_control_reset(&uf_control_state);
+    kf_observer_state = (im_kf_observer_state_t){
+        .x = {0.0f, 0.0f, 0.0f, 0.0f},
+        .P = {{1.0f, 0.0f, 0.0f, 0.0f},
+              {0.0f, 1.0f, 0.0f, 0.0f},
+              {0.0f, 0.0f, 1.0f, 0.0f},
+              {0.0f, 0.0f, 0.0f, 1.0f}}
+    };
+    isr_init_dc_link_voltage_filter(data);
+    im_ss = uz_IM_ss_compute(IM_config, data->av.isr_samplerate_s);
+    im_ss_computed = true;
+    id_ref_A = uz_IM_get_id_ref_for_psi_r(IM_config, IM_config.Psi_rated_Vs);
+    data->av.snd_fld[2] = id_ref_A;
+    im_rotor_flux_observer_init(&IM_config, data->av.isr_samplerate_s, &rotor_flux_observer_state);
+    im_foc_control_init(&IM_config, data->av.isr_samplerate_s, &foc_control_state);
+    im_foc_control_reset(&foc_control_state);
+}
 
 void ISR_Control(void *data)
 {
+    (void)data;
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    if(!calibrate_current_measurement_done)
-    {
-        totalU += Global_Data.aa.A1.me.ADC_A1;
-		totalV += Global_Data.aa.A1.me.ADC_A2;
-		totalW += Global_Data.aa.A1.me.ADC_A3;
+    measurement_calibration_step(&measurement_calibration_state, &Global_Data.aa, &Global_Data.av);
+    isr_filter_dc_link_voltage(&Global_Data);
+    error_checks_step(&Global_Data.av, &error_checks_config);
 
-        calibrate_current_measurement_counter++;
-		if(calibrate_current_measurement_counter==calibrate_current_measurement_counter_stop)
-		{
-			I_U_offset = totalU/calibrate_current_measurement_counter_stop;
-			I_V_offset = totalV/calibrate_current_measurement_counter_stop;
-			I_W_offset = totalW/calibrate_current_measurement_counter_stop;
-			calibrate_current_measurement_done = 1;
-		}
-	}
-
-    Global_Data.av.U_DC = Global_Data.aa.A1.me.ADC_A4  - U_DC_offset;
-    Global_Data.av.I_U  = Global_Data.aa.A1.me.ADC_A1  - I_U_offset; //including adjustment upwards by the offset
-    Global_Data.av.I_V  = Global_Data.aa.A1.me.ADC_A2  - I_V_offset; //including adjustment upwards by the offset
-    Global_Data.av.I_W  = Global_Data.aa.A1.me.ADC_A3  - I_W_offset; //including adjustment upwards by the offset
-
-    /* --- limit checks ------------------------------------------------------- */
-    // NaN defeats float comparisons (NaN > x is always false), so check explicitly
-    bool nan_meas = !isfinite(Global_Data.av.U_DC) || !isfinite(Global_Data.av.I_U)
-                 || !isfinite(Global_Data.av.I_V) || !isfinite(Global_Data.av.I_W)
-                 || !isfinite(Global_Data.av.mechanicalRotorSpeed);
-    bool ov_dc  =  Global_Data.av.U_DC          > Vdc_max;     // over-voltage (DC link)
-    bool oc_IU  =  fabsf(Global_Data.av.I_U)    > Iphase_max;  // over-current phase U
-    bool oc_IV  =  fabsf(Global_Data.av.I_V)    > Iphase_max;  // over-current phase V
-    bool oc_IW  =  fabsf(Global_Data.av.I_W)    > Iphase_max;  // over-current phase W
-    bool overspeed = fabsf(Global_Data.av.mechanicalRotorSpeed) > 3500.0f; // overspeed (3500 RPM)
-
-    /* --- act on any error --------------------------------------------------- */
-    if (ov_dc || oc_IU || oc_IV || oc_IW || overspeed || nan_meas) {
-        if (ov_dc)     isr_error_reason |= ERR_OVERVOLTAGE_DC;
-        if (oc_IU)     isr_error_reason |= ERR_OVERCURRENT_U;
-        if (oc_IV)     isr_error_reason |= ERR_OVERCURRENT_V;
-        if (oc_IW)     isr_error_reason |= ERR_OVERCURRENT_W;
-        if (overspeed) isr_error_reason |= ERR_OVERSPEED;
-        if (nan_meas)  isr_error_reason |= ERR_NAN_MEASUREMENT;
-        ultrazohm_state_machine_set_error(true);
+    // Apply runtime-tunable Q/R (overrides values set by uz_IM_ss_compute each ISR)
+    if (im_ss_computed) {
+        im_ss.Q_diag[0] = kf_q_i;
+        im_ss.Q_diag[1] = kf_q_i;
+        im_ss.Q_diag[2] = kf_q_psi;
+        im_ss.Q_diag[3] = kf_q_psi;
+        im_ss.R_diag[0] = kf_r_i;
+        im_ss.R_diag[1] = kf_r_i;
     }
 
-    /* --- Rotor flux observer (current model, runs every ISR cycle) -------- */
-    float omega_el_rad_s;
+    // Phase voltages applied in the previous ISR step (read before control overwrites duty cycles).
+    // Apply the same hardware min-pulse-width clamp that the FPGA PWM IP enforces,
+    // so the KF voltage model matches the actual inverter output.
+    float const u_a = (fmaxf(min_pulse_width, fminf(1.0f - min_pulse_width, Global_Data.rasv.halfBridge1DutyCycle)) - duty_offset) * Global_Data.av.U_DC;
+    float const u_b = (fmaxf(min_pulse_width, fminf(1.0f - min_pulse_width, Global_Data.rasv.halfBridge2DutyCycle)) - duty_offset) * Global_Data.av.U_DC;
+    float const u_c = (fmaxf(min_pulse_width, fminf(1.0f - min_pulse_width, Global_Data.rasv.halfBridge3DutyCycle)) - duty_offset) * Global_Data.av.U_DC;
+
+    im_observer_result_t const obs = im_observer_step(
+        &Global_Data.av, &IM_config, u_a, u_b, u_c,
+        im_ss_computed && measurement_calibration_state.done,
+        use_kalman_filter,
+        &rotor_flux_observer_state, &im_ss, &kf_observer_state);
+    im_rotor_flux_observer_output_t const observer_output = obs.output;
+    det_psi_r_alpha   = obs.det_psi_r_alpha;
+    det_psi_r_beta    = obs.det_psi_r_beta;
+    det_omega_s_rad_s = obs.det_omega_s_rad_s;
+    kf_innov_alpha    = obs.kf_innov_alpha;
+    kf_innov_beta     = obs.kf_innov_beta;
+    kf_S_00           = obs.kf_S_00;
+    kf_S_11           = obs.kf_S_11;
+    kf_K_00           = obs.kf_K_00;
+    kf_K_11           = obs.kf_K_11;
+
+    // Raw measured dq: abc measured currents rotated into the active flux frame.
+    // Always updated — used for JavaScope display and resonant controller.
     {
-        float const Ts = Global_Data.av.isr_samplerate_s;
-        float const Lr = IM_config.Lsigma_r_Henry + IM_config.Lm_Henry;
-        float const tau_r = Lr / IM_config.Rr_Ohm;
-        float const one_over_tau_r = 1.0f / tau_r;
-        float const Lm_over_tau_r = IM_config.Lm_Henry * one_over_tau_r;
-
-        // ABC -> alpha-beta (stator currents)
-        uz_3ph_abc_t i_abc = {.a = Global_Data.av.I_U, .b = Global_Data.av.I_V, .c = Global_Data.av.I_W};
-        uz_3ph_alphabeta_t i_ab = uz_transformation_3ph_abc_to_alphabeta(i_abc);
-
-        // Electrical rotor speed from encoder [RPM -> rad/s electrical]
-        omega_el_rad_s = Global_Data.av.mechanicalRotorSpeed * (2.0f * UZ_PIf / 60.0f) * IM_config.polePairs;
-
-        // Forward-Euler integration of rotor flux
-        float dpsi_alpha = Lm_over_tau_r * i_ab.alpha - one_over_tau_r * psi_r_alpha - omega_el_rad_s * psi_r_beta;
-        float dpsi_beta  = Lm_over_tau_r * i_ab.beta  - one_over_tau_r * psi_r_beta  + omega_el_rad_s * psi_r_alpha;
-        psi_r_alpha += Ts * dpsi_alpha;
-        psi_r_beta  += Ts * dpsi_beta;
-
-        // Rotor flux angle and magnitude
-        theta_flux_rad = atan2f(psi_r_beta, psi_r_alpha);
-        psi_r_mag = sqrtf(psi_r_alpha * psi_r_alpha + psi_r_beta * psi_r_beta);
-
-        // NaN/Inf guard: forward Euler can diverge from encoder glitches
-        if (!isfinite(psi_r_alpha) || !isfinite(psi_r_beta) ||
-            !isfinite(theta_flux_rad) || !isfinite(psi_r_mag)) {
-            psi_r_alpha = 0.0f;
-            psi_r_beta  = 0.0f;
-            theta_flux_rad = 0.0f;
-            psi_r_mag = 0.0f;
-            isr_error_reason |= ERR_NAN_OBSERVER;
-            ultrazohm_state_machine_set_error(true);
-        }
-
-        // Estimate stator current fundamental frequency from rotor flux angle via PLL
-        if (stator_frequency_pll == NULL) {
-            struct uz_pos_to_speed_pll_config_t pll_cfg = {
-                .machine_polepairs = fmaxf(IM_config.polePairs, 1.0e-3f),
-                .kp_pll = 628.3185f,
-                .ki_pll = 98696.0f,
-                .sampling_time_in_seconds = fmaxf(Ts, 1.0e-6f),
-            };
-            stator_frequency_pll = uz_pos_to_speed_pll_init(pll_cfg);
-        }
-        if (stator_frequency_pll != NULL) {
-            float theta_flux_wrapped = theta_flux_rad;
-            if (theta_flux_wrapped < 0.0f) {
-                theta_flux_wrapped += 2.0f * UZ_PIf;
-            }
-            theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
-            uz_pos_to_speed_pll_step(stator_frequency_pll, theta_flux_wrapped);
-            float const omega_el_pll_rad_s = uz_pos_to_speed_pll_get_omega_el_si(stator_frequency_pll);
-            stator_current_fundamental_frequency_Hz = fabsf(omega_el_pll_rad_s) / (2.0f * UZ_PIf);
-            if (!isfinite(stator_current_fundamental_frequency_Hz)) {
-                stator_current_fundamental_frequency_Hz = 0.0f;
-            }
-        }
-
-        // ABC -> DQ in rotor flux frame
-        uz_3ph_dq_t i_dq = uz_transformation_3ph_abc_to_dq(i_abc, theta_flux_rad);
-        Global_Data.av.I_d = i_dq.d;
-        Global_Data.av.I_q = i_dq.q;
-        Global_Data.av.theta_elec = theta_flux_rad;
+        uz_3ph_abc_t const i_abc_raw = {.a = Global_Data.av.I_U,
+                                        .b = Global_Data.av.I_V,
+                                        .c = Global_Data.av.I_W};
+        uz_3ph_dq_t const i_dq_raw = uz_transformation_3ph_abc_to_dq(i_abc_raw, observer_output.theta_flux_rad);
+        id_meas_raw_dq = i_dq_raw.d;
+        iq_meas_raw_dq = i_dq_raw.q;
     }
+
+    Global_Data.av.I_d        = observer_output.i_d;
+    Global_Data.av.I_q        = observer_output.i_q;
+    Global_Data.av.theta_elec = observer_output.theta_elec_rad;
+    stator_current_fundamental_frequency_Hz = observer_output.stator_current_fundamental_frequency_Hz;
+    psi_r_mag_Vs = observer_output.psi_r_mag;
+    omega_s_rad_s = 2.0f * (float)M_PI * observer_output.stator_current_fundamental_frequency_Hz;
+    omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_el_rad_s;
+    isr_update_estimated_power(u_a, u_b, u_c, &observer_output);
 
     // Torque estimation: T_e = 1.5 * p * (Lm/Lr) * |psi_r| * i_q
     {
-        float Lr = IM_config.Lsigma_r_Henry + IM_config.Lm_Henry;
+        float const lr = IM_config.Lsigma_r_Henry + IM_config.Lm_Henry;
         Global_Data.av.mechanicalTorque = 1.5f * IM_config.polePairs
-                                        * (IM_config.Lm_Henry / Lr)
-                                        * psi_r_mag * Global_Data.av.I_q;
+                                        * (IM_config.Lm_Henry / lr)
+                                        * observer_output.psi_r_mag * Global_Data.av.I_q;
     }
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    bool const vf_active = (current_state == control_state) && (!use_foc);
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
 
-    if (!vf_active) {
-        // Keep current command through brief non-V/f phases to avoid
-        // a drop-before-rise behavior on setpoint changes.
-        vf_frequency_command_Hz = fminf(fmaxf(vf_frequency_command_Hz, 0.0f), vf_max_frequency_Hz);
-    }
-
-    if(current_state==control_state)
+    if (current_state == control_state)
     {
         if (use_foc)
         {
-            /* --- FOC current control ---------------------------------------- */
-
-            // Lazy-init PI controllers (once)
-            if (PI_id == NULL) {
-                float Ls = IM_config.Lsigma_s_Henry + IM_config.Lm_Henry;
-                float Lr = IM_config.Lsigma_r_Henry + IM_config.Lm_Henry;
-                float sigma = 1.0f - (IM_config.Lm_Henry * IM_config.Lm_Henry) / (Ls * Lr);
-                float sigma_Ls = sigma * Ls;
-                float Ts = Global_Data.av.isr_samplerate_s;
-                // Bandwidth-based tuning: Kp = sigma*Ls / (2*Ts), Ki = Rs / (2*Ts)
-                float Kp = sigma_Ls / (2.0f * Ts) * 0.1;
-                float Ki = IM_config.Rs_Ohm / (2.0f * Ts) * 0.2;
-                struct uz_PI_Controller_config pi_cfg = {
-                    .type = UZ_PI_PARALLEL,
-                    .Kp = Kp,
-                    .Ki = Ki,
-                    .samplingTime_sec = Ts,
-                    .upper_limit = 400.0f,
-                    .lower_limit = -400.0f,
-                };
-                PI_id = uz_PI_Controller_init(pi_cfg);
-                PI_iq = uz_PI_Controller_init(pi_cfg);
-
-                // Speed controller: output is iq reference, limited to I_max
-                struct uz_PI_Controller_config speed_cfg = {
-                    .type = UZ_PI_PARALLEL,
-                    .Kp = 0.05f,
-                    .Ki = .50f,
-                    .samplingTime_sec = Ts,
-                    .upper_limit = IM_config.I_max_Ampere,
-                    .lower_limit = -IM_config.I_max_Ampere,
-                };
-                PI_speed = uz_PI_Controller_init(speed_cfg);
-            }
-
-            // Determine iq reference: speed control or direct current control
-            id_cmd = id_ref_A;
-            if (use_speed_control) {
-                iq_cmd = uz_PI_Controller_sample(PI_speed, speed_ref_rpm, Global_Data.av.mechanicalRotorSpeed, false);
-            } else {
-                iq_cmd = iq_ref_A;
-                if (PI_speed != NULL) uz_PI_Controller_reset(PI_speed);
-            }
-
-            // PI current controllers
-            float ud_pi = uz_PI_Controller_sample(PI_id, id_ref_A, Global_Data.av.I_d, false);
-            float uq_pi = uz_PI_Controller_sample(PI_iq, iq_cmd, Global_Data.av.I_q, false);
-
-            // IM decoupling feedforward
-            float Ls = IM_config.Lsigma_s_Henry + IM_config.Lm_Henry;
-            float Lr = IM_config.Lsigma_r_Henry + IM_config.Lm_Henry;
-            float sigma = 1.0f - (IM_config.Lm_Henry * IM_config.Lm_Henry) / (Ls * Lr);
-            float sigma_Ls = sigma * Ls;
-            float ud_decoup = -omega_el_rad_s * sigma_Ls * Global_Data.av.I_q;
-            float uq_decoup =  omega_el_rad_s * sigma_Ls * Global_Data.av.I_d
-                              + omega_el_rad_s * (IM_config.Lm_Henry / Lr) * psi_r_mag;
-
-            uz_3ph_dq_t v_dq_ref = {
-                .d = ud_pi + ud_decoup,
-                .q = uq_pi + uq_decoup,
-                .zero = 0.0f
+            im_foc_control_input_t foc_input = {
+                .use_speed_control = use_speed_control,
+                .use_resonant_6th = use_resonant_6th,
+                .id_ref_A = id_ref_A,
+                .iq_ref_A = iq_ref_A,
+                .speed_ref_rpm = speed_ref_rpm,
+                .id_meas_A = id_meas_raw_dq,
+                .iq_meas_A = iq_meas_raw_dq,
+                .omega_s_for_resonant_rad_s = det_omega_s_rad_s
             };
-
-            // Store dq reference voltages
-            Global_Data.av.U_d = v_dq_ref.d;
-            Global_Data.av.U_q = v_dq_ref.q;
-
-            // SVM: dq → duty cycles
-            struct uz_DutyCycle_t duty = uz_Space_Vector_Modulation(v_dq_ref, Global_Data.av.U_DC, theta_flux_rad);
-            Global_Data.rasv.halfBridge1DutyCycle = duty.DutyCycle_A;
-            Global_Data.rasv.halfBridge2DutyCycle = duty.DutyCycle_B;
-            Global_Data.rasv.halfBridge3DutyCycle = duty.DutyCycle_C;
-
-            // Store abc reference voltages for JavaScope (JSO_ua/ub/uc)
-//            uz_3ph_abc_t v_abc_ref = uz_transformation_3ph_dq_to_abc(v_dq_ref, theta_flux_rad);
-//            Global_Data.av.U_U = v_abc_ref.a;
-//            Global_Data.av.U_V = v_abc_ref.b;
-//            Global_Data.av.U_W = v_abc_ref.c;
+            im_foc_control_output_t foc_output = {0};
+            im_foc_control_step(&Global_Data.av, &Global_Data.rasv,
+                                 &IM_config,
+                                 &foc_input,
+                                 omega_s_rad_s,  // stator frequency (IM needs omega_s, not omega_r)
+                                 observer_output.psi_r_mag,
+                                 observer_output.theta_flux_rad,
+                                 &foc_control_state,
+                                 &foc_output);
+            id_cmd = foc_output.id_cmd_A;
+            iq_cmd = foc_output.iq_cmd_A;
+            ud_pi_V     = foc_output.ud_pi;
+            uq_pi_V     = foc_output.uq_pi;
+            ud_decoup_V  = foc_output.ud_decoup;
+            uq_decoup_V  = foc_output.uq_decoup;
+            ud_res_V     = foc_output.ud_res;
+            uq_res_V     = foc_output.uq_res;
         }
         else
         {
-            /* --- V/f open-loop control -------------------------------------- */
             id_cmd = 0.0f;
             iq_cmd = 0.0f;
-
-            // Slew-limited V/f frequency command: used on enable and on setpoint updates
-            float const Ts = fmaxf(Global_Data.av.isr_samplerate_s, 1.0e-6f);
-            float freq_target_limited = fminf(fmaxf(vf_frequency_setpoint_Hz, 0.0f), vf_max_frequency_Hz);
-            float const freq_step_max = fmaxf(vf_frequency_ramp_Hz_per_s, 0.1f) * Ts;
-            float const freq_error = freq_target_limited - vf_frequency_command_Hz;
-            if (freq_error > freq_step_max) {
-                vf_frequency_command_Hz += freq_step_max;
-            } else if (freq_error < -freq_step_max) {
-                vf_frequency_command_Hz -= freq_step_max;
-            } else {
-                vf_frequency_command_Hz = freq_target_limited;
-            }
-
-            // Limit frequency to maximum
-            float freq_limited = vf_frequency_command_Hz;
-
-            // V/f with boost: add boost only when frequency is above standstill
-            float boost_voltage_V = (freq_limited > 0.1f) ? vf_boost_voltage_V : 0.0f;
-            float voltage_magnitude_V = (vf_ratio_V_per_Hz * freq_limited) + boost_voltage_V;
-            voltage_magnitude_V = fminf(voltage_magnitude_V, vf_max_voltage_V);
-
-            // Normalize voltage to DC-link to get duty cycle amplitude
-            float duty_amplitude_vf = voltage_magnitude_V / fmaxf(Global_Data.av.U_DC, 1.0f);
-            duty_amplitude_vf = fminf(duty_amplitude_vf, 0.45f);
-            duty_amplitude_vf = fmaxf(duty_amplitude_vf, 0.0f);
-
-            // Generate three-phase voltage with phase integration.
-            // Do not use angle = 2*pi*t*f when f is ramped, because that causes
-            // frequency distortion for time-varying f.
-            float const omega_cmd_rad_per_s = 2.0f * UZ_PIf * freq_limited;
-            vf_electrical_phase_rad += omega_cmd_rad_per_s * Ts;
-            vf_electrical_phase_rad = fmodf(vf_electrical_phase_rad, 2.0f * UZ_PIf);
-            if (vf_electrical_phase_rad < 0.0f) {
-                vf_electrical_phase_rad += 2.0f * UZ_PIf;
-            }
-
-            float v1 = duty_amplitude_vf * sinf(vf_electrical_phase_rad) + duty_offset;
-            float v2 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (2.0f * UZ_PIf / 3.0f)) + duty_offset;
-            float v3 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (4.0f * UZ_PIf / 3.0f)) + duty_offset;
-
-            int PWM_mode = 0; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
-
-            if (PWM_mode == 1) {
-
-            float const cm = fminf(fminf(v1, v2), v3);
-            v1 -= cm;
-            v2 -= cm;
-            v3 -= cm;
-            }
-
-            v1 = fminf(fmaxf(v1, 0.0f), 1.0f);
-            v2 = fminf(fmaxf(v2, 0.0f), 1.0f);
-            v3 = fminf(fmaxf(v3, 0.0f), 1.0f);
-            three_phase_sine = (uz_3ph_abc_t){ .a = v1, .b = v2, .c = v3 };
-
-            Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.a;
-            Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
-            Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.c;
-
-            // Reset PI integrators so FOC starts clean on switch
-            if (PI_id != NULL) uz_PI_Controller_reset(PI_id);
-            if (PI_iq != NULL) uz_PI_Controller_reset(PI_iq);
-            if (PI_speed != NULL) uz_PI_Controller_reset(PI_speed);
+            im_uf_control_config_t vf_config = {
+                .frequency_setpoint_Hz = vf_frequency_setpoint_Hz,
+                .ratio_V_per_Hz = vf_ratio_V_per_Hz,
+                .boost_voltage_V = vf_boost_voltage_V,
+                .max_frequency_Hz = vf_max_frequency_Hz,
+                .max_voltage_V = vf_max_voltage_V,
+                .frequency_ramp_Hz_per_s = vf_frequency_ramp_Hz_per_s
+            };
+            (void)im_uf_control_step(&Global_Data.av, &Global_Data.rasv, &vf_config, &uf_control_state, duty_offset);
+            im_foc_control_reset(&foc_control_state);
         }
 
         // Enable inverter
@@ -428,18 +320,14 @@ void ISR_Control(void *data)
     {
         id_cmd = 0.0f;
         iq_cmd = 0.0f;
-        vf_frequency_command_Hz = 0.0f;
-        vf_electrical_phase_rad = 0.0f;
+        im_uf_control_reset(&uf_control_state);
         // Disable PWM outputs when not in control state
         Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
         Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
         Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
         Global_Data.rasv.halfBridge7DutyCycle = 1.0f;
 
-        // Reset PI integrators
-        if (PI_id != NULL) uz_PI_Controller_reset(PI_id);
-        if (PI_iq != NULL) uz_PI_Controller_reset(PI_iq);
-        if (PI_speed != NULL) uz_PI_Controller_reset(PI_speed);
+        im_foc_control_reset(&foc_control_state);
     }
 
     // Store abc duty cycles for JavaScope (JSO_ua/ub/uc)
@@ -448,14 +336,8 @@ void ISR_Control(void *data)
     Global_Data.av.U_W = Global_Data.rasv.halfBridge3DutyCycle;
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
- //   PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
- //                       Global_Data.rasv.halfBridge2DutyCycle,
- //                       Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -580,6 +462,44 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+static void isr_init_dc_link_voltage_filter(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    uz_assert(data->av.isr_samplerate_s > 0.0f);
+
+    if (dc_link_voltage_filter == NULL) {
+        struct uz_IIR_Filter_config const filter_config = {
+            .selection = LowPass_first_order,
+            .cutoff_frequency_Hz = dc_link_voltage_filter_cutoff_Hz,
+            .sample_frequency_Hz = 1.0f / data->av.isr_samplerate_s
+        };
+        dc_link_voltage_filter = uz_signals_IIR_Filter_init(filter_config);
+    }
+}
+
+static void isr_update_estimated_power(float u_a, float u_b, float u_c, const im_rotor_flux_observer_output_t *observer_output)
+{
+    uz_assert_not_NULL(observer_output);
+
+    uz_3ph_abc_t const u_abc = {
+        .a = u_a,
+        .b = u_b,
+        .c = u_c
+    };
+    uz_3ph_dq_t const u_dq = uz_transformation_3ph_abc_to_dq(u_abc, observer_output->theta_flux_rad);
+
+    // Estimate electrical power from the actually applied stator voltage and observer currents.
+    estimated_active_power_W = 1.5f * ((u_dq.d * observer_output->i_d) + (u_dq.q * observer_output->i_q));
+    estimated_reactive_power_var = 1.5f * ((u_dq.q * observer_output->i_d) - (u_dq.d * observer_output->i_q));
+}
+
+static void isr_filter_dc_link_voltage(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    uz_assert_not_NULL(dc_link_voltage_filter);
+    data->av.U_DC = uz_signals_IIR_Filter_sample(dc_link_voltage_filter, data->av.U_DC);
+}
 
 
 

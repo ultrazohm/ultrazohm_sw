@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
-#include <string.h>
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/pwm_init.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -30,10 +30,16 @@ extern float vf_frequency_setpoint_Hz;
 // FOC Control Parameters from isr.c
 extern bool use_foc;
 extern bool use_speed_control;
+extern bool use_kalman_filter;
+extern bool use_resonant_6th;
+extern float kf_q_i;
+extern float kf_q_psi;
+extern float kf_r_i;
 extern float id_ref_A;
 extern float iq_ref_A;
 extern float speed_ref_rpm;
 extern float RRC_Operating_Point;
+extern float min_pulse_width;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -228,15 +234,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		if (value > 0.0f) { kf_q_psi = value; }
+		data->av.snd_fld[7] = kf_q_psi;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		if (value > 0.0f) { kf_r_i = value; }
+		data->av.snd_fld[8] = kf_r_i;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		if (value > 0.0f) { kf_q_i = value; }
+		data->av.snd_fld[9] = kf_q_i;
 			break;
 
 		case (Set_Send_Field_10):
@@ -264,7 +273,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+		if (value < 0.0f) value = 0.0f;
+		if (value > 0.1f) value = 0.1f;
+		min_pulse_width = value;
+		pwm_set_min_pulse_width(value);
+		data->av.snd_fld[16] = min_pulse_width;
 			break;
 
 		case (Set_Send_Field_17):
@@ -304,15 +317,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			use_kalman_filter = !use_kalman_filter;
 			break;
 
 		case (My_Button_7):
-
+			// Reserved: deadtime runtime toggle removed.
 			break;
 
 		case (My_Button_8):
-
+			use_resonant_6th = !use_resonant_6th;
 			break;
 
 		case (Error_Reset):
@@ -329,7 +342,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -386,14 +398,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 8);
 	}
 
-	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	/* Bit 9 - My_Button_6 (Toggle_KF) */
+	if (use_kalman_filter) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
-	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	/* Bit 10 - My_Button_7 (unused) */
+	js_status_BareToRTOS &= ~(1 << 10);
 
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	if (use_resonant_6th) {
+		js_status_BareToRTOS |= (1 << 11);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	}
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

@@ -6,10 +6,8 @@
 #include "../uz/uz_PushButton/uz_PushButton_facade.h"
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
+#include "../include/error_checks.h"
 #include "../uz/uz_HAL.h"
-
-// Error reason bitmask from ISR (defined in isr.c)
-extern volatile uint32_t isr_error_reason;
 
 typedef struct
 {
@@ -202,21 +200,21 @@ static void error_entry(void)
 static void error_during(void)
 {
     static bool error_printed = false;
-    if (!error_printed && isr_error_reason != 0U) {
-        uz_printf("ERROR triggered! Reason flags: 0x%08X\r\n", (unsigned)isr_error_reason);
-        if (isr_error_reason & (1U << 0)) uz_printf("  - DC-link overvoltage\r\n");
-        if (isr_error_reason & (1U << 1)) uz_printf("  - Overcurrent phase U\r\n");
-        if (isr_error_reason & (1U << 2)) uz_printf("  - Overcurrent phase V\r\n");
-        if (isr_error_reason & (1U << 3)) uz_printf("  - Overcurrent phase W\r\n");
-        if (isr_error_reason & (1U << 4)) uz_printf("  - Overspeed (>3500 RPM)\r\n");
-        if (isr_error_reason & (1U << 5)) uz_printf("  - NaN in flux observer\r\n");
-        if (isr_error_reason & (1U << 6)) uz_printf("  - NaN in ADC measurement\r\n");
+    if (!error_printed && error_reason != 0U) {
+        uz_printf("ERROR triggered! Reason flags: 0x%08X\r\n", (unsigned)error_reason);
+        if (error_reason & ERR_OVERVOLTAGE_DC) uz_printf("  - DC-link overvoltage\r\n");
+        if (error_reason & ERR_OVERCURRENT_U) uz_printf("  - Overcurrent phase U\r\n");
+        if (error_reason & ERR_OVERCURRENT_V) uz_printf("  - Overcurrent phase V\r\n");
+        if (error_reason & ERR_OVERCURRENT_W) uz_printf("  - Overcurrent phase W\r\n");
+        if (error_reason & ERR_OVERSPEED) uz_printf("  - Overspeed (>3500 RPM)\r\n");
+        if (error_reason & ERR_NAN_OBSERVER) uz_printf("  - NaN in flux observer\r\n");
+        if (error_reason & ERR_NAN_MEASUREMENT) uz_printf("  - NaN in ADC measurement\r\n");
         error_printed = true;
     }
     if (ultrazohm_state.stop_flag)
     {
         error_printed = false;
-        isr_error_reason = 0U;
+        error_reason = 0U;
         ultrazohm_state_machine_switch_to_state(idle_state);
     }
 }

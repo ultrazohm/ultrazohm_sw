@@ -85,6 +85,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Initialize_ISR_Software(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

@@ -1,54 +1,32 @@
 %Fitting_flux_approximation
 
 close all;
-clear;
 set(0,'defaulttextinterpreter','latex')
 %% LUT Fitting
 
 %% extract Lookup table data
 %For nonlinear Model to work LUTs have to be implemented
 % Import the data from csv for lookup table
-%% SynRM
-% load('SRM_Michi_FEM_V2.mat');
-% 
-% [Xsoll,Ysoll] = meshgrid(-80:1:80);
-% Psi_d_fine = interp2(i_d,i_q,Psi_d,Xsoll,Ysoll,'spline');
-% Psi_q_fine = interp2(i_d,i_q,Psi_q,Xsoll,Ysoll,'spline');
-% % Currents
-% id = Xsoll;
-% iq = Ysoll;
-% %Psi_d
-% psi_d = Psi_d_fine;
-% %Psi_q
-% psi_q = Psi_q_fine;
 
-%% Hoerner PMSM
-load('test_Hoerner.mat')
-id = i_d;
-iq = i_q;
-psi_d = Psi_d;
-psi_q = Psi_q;
+load('kennfeld_klein_Imax.mat')
+
+[Xsoll,Ysoll] = meshgrid(0:1:150);
+Psi_d_fine = interp2(i_d_sim,i_q_sim,psi_d_sim,Xsoll,Ysoll,'spline');
+Psi_q_fine = interp2(i_d_sim,i_q_sim,psi_q_sim,Xsoll,Ysoll,'spline');
+% Currents
+id = Xsoll;
+iq = Ysoll;
+%Psi_d
+psi_d = Psi_d_fine;
+%Psi_q
+psi_q = Psi_q_fine;
 
 figure;
 surf(id,iq,psi_d)
 figure;
 surf(id,iq,psi_q)
 
-%% Preparation for the fitting SynRM
-% options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt'); 
-% d_current = id(1,:);
-% q_current = iq(:,1);
-% %Setpoints where the flux-linkage does not have 
-% [~,id_null] = min(abs(d_current));
-% [~,iq_null] = min(abs(q_current));
-% 
-% %The setpoints with the best results might differ for diffrent flux-linkages
-% id1 = id_null-30;%8;   %This is the overall point with the best results for all flux linkages 
-% %[~,id1] = max(abs(id))
-% [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
-% % [~,id1] = max(id)
-
-%% Preparation for the fitting Hoerner PMSM
+%% Preparation for the fitting
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt'); 
 d_current = id(1,:);
 q_current = iq(:,1);
@@ -57,11 +35,12 @@ q_current = iq(:,1);
 [~,iq_null] = min(abs(q_current));
 
 %The setpoints with the best results might differ for diffrent flux-linkages
-id1 = 1;   %This is the overall point with the best results for all flux linkages 
+id1 = 151;   %This is the overall point with the best results for all flux linkages 
 %[~,id1] = max(abs(id))
 [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
 % [~,id1] = max(id)
-iq1=61;
+iq1=151
+
 
 %% start of the fitting procedure
 
@@ -69,7 +48,7 @@ iq1=61;
 % 1. Self-axis flux linkage d-axis
 psi_d_iq_null = psi_d(iq_null,:);
 fun0=@(ad) psi_d_iq_null-(ad(1).*tanh(ad(2)*(d_current-ad(3))));
-beta1 = [0.0305;0.0402; -16.4812]; %set starting parameters for the following function
+beta1 = [0.305;0.402; 0.5]; %set starting parameters for the following function
 ad_self = lsqnonlin(fun0,beta1,[],[],options);
 ad1 = ad_self(1);
 ad2 = ad_self(2);
@@ -78,7 +57,7 @@ ad3 = ad_self(3);
 % 2. Self-axis flux linkage q-axis
 psi_q_id_null = psi_q(:,id_null);
 fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
-beta2 = [1;1;1]; %random starting parameters for the following function
+beta2 = [0.05;0.05;0.05]; %random starting parameters for the following function
 aq_self = lsqnonlin(fun2,beta2,[],[],options);
 aq1 = aq_self(1);
 aq2 = aq_self(2);
@@ -87,7 +66,7 @@ aq3 = aq_self(3);
 % 3. flux linkage d-axis with cross-coupling
 psi_d_iq1 = psi_d(iq1,:);
 fun3=@(ad_cross)psi_d_iq1-(ad_cross(1).*(tanh(ad_cross(2)*(d_current-ad_cross(3)))));
-beta3 = [0.0305;0.0402; -16.4812];  %set starting parameters for the following function
+beta3 = [0.305;0.402; 0.5];  %set starting parameters for the following function
 ad_4_6 = lsqnonlin(fun3,beta3,[],[],options);
 ad4 = ad_4_6(1);
 ad5 = ad_4_6(2);
@@ -96,7 +75,7 @@ ad6 = ad_4_6(3);
 % 4. flux linkage q-axis with cross-coupling
 psi_q_id1 = psi_q(:,id1);
 fun4=@(aq_cross)psi_q_id1-((aq_cross(1).*(tanh(aq_cross(2).*q_current)))+(aq_cross(3).*q_current));
-beta4 = [-2;-0.0402;-0.01]; %random starting parameters for the following function
+beta4 = [0.05;0.05;0.05]; %random starting parameters for the following function
 aq_4_6 = lsqnonlin(fun4,beta4,[],[],options);
 aq4 = aq_4_6(1);
 aq5 = aq_4_6(2);

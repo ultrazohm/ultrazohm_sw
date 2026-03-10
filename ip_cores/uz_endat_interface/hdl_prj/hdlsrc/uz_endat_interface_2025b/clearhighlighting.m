@@ -70,10 +70,6 @@ annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/position_to_speed_
 annotate_port('uz_endat_interface_2025b/uz_endat_interface/position_to_speed_pll/Delay22', 0, 1, '');
 annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/position_to_speed_pll/Delay23', 0, 1, '');
 annotate_port('uz_endat_interface_2025b/uz_endat_interface/position_to_speed_pll/Delay23', 0, 1, '');
-annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/serial_communication/MATLAB Function1', 0, 1, '');
-annotate_port('uz_endat_interface_2025b/uz_endat_interface/serial_communication/MATLAB Function1', 0, 1, '');
-annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/serial_communication/MATLAB Function1', 1, 1, '');
-annotate_port('uz_endat_interface_2025b/uz_endat_interface/serial_communication/MATLAB Function1', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/serial_communication/endat_clock_generator', 0, 1, '');
 annotate_port('uz_endat_interface_2025b/uz_endat_interface/serial_communication/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');
 annotate_port('gm_uz_endat_interface_2025b/uz_endat_interface/serial_communication/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');

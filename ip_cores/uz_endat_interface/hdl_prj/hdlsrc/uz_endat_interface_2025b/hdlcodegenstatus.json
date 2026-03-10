@@ -42,12 +42,6 @@
           "domain": -1
         },
         {
-          "signalName": "pos_is_binary_or_gray_AXI",
-          "clockingName": "ce_out",
-          "sampleTime": 1E-8,
-          "domain": -1
-        },
-        {
           "signalName": "endat_data_in",
           "clockingName": "ce_out",
           "sampleTime": 1E-8,
@@ -194,18 +188,6 @@
           "domain": -1
         },
         {
-          "signalName": "CRC_calc",
-          "clockingName": "ce_out",
-          "sampleTime": 1E-8,
-          "domain": -1
-        },
-        {
-          "signalName": "CRC_calc_AXI",
-          "clockingName": "ce_out",
-          "sampleTime": 1E-8,
-          "domain": -1
-        },
-        {
           "signalName": "endat_received_data_out_SH",
           "clockingName": "ce_out",
           "sampleTime": 1E-8,
@@ -282,12 +264,6 @@
           "clockingName": "ce_out",
           "sampleTime": 1E-8,
           "domain": -1
-        },
-        {
-          "signalName": "endat_raw_data_word",
-          "clockingName": "ce_out",
-          "sampleTime": 1E-8,
-          "domain": -1
         }
       ],
       "clockEnableData": []
@@ -313,7 +289,6 @@
     "uz_endat_interface_src_Sample_and_Hold1.vhd",
     "uz_endat_interface_src_S_R_Flip_Flop_block2.vhd",
     "uz_endat_interface_src_sample_serial_endat_data.vhd",
-    "uz_endat_interface_src_MATLAB_Function1.vhd",
     "uz_endat_interface_src_S_R_Flip_Flop_block3.vhd",
     "uz_endat_interface_src_S_R_Flip_Flop_block4.vhd",
     "uz_endat_interface_src_endat_clock_enable_controller.vhd",
@@ -334,10 +309,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        2185730478,
-        1369603618,
-        1990816661,
-        3935397190
+        1590744072,
+        2840971597,
+        4130834443,
+        1180049000
       ],
       "MarkedUnique": false
     },
@@ -347,7 +322,7 @@
       "IPCoreName",
       "uz_endat_interface",
       "IPCoreVersion",
-      "1.0",
+      "1.1",
       "ProcessorFPGASynchronization",
       "Free running"
     ],
@@ -416,7 +391,7 @@
           "Latency": -1
         },
         {
-          "Name": "pos_is_binary_or_gray_AXI",
+          "Name": "endat_data_in",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 5,
@@ -426,7 +401,7 @@
           "Latency": -1
         },
         {
-          "Name": "endat_data_in",
+          "Name": "endat_mode_command_in_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 6,
@@ -436,7 +411,7 @@
           "Latency": -1
         },
         {
-          "Name": "endat_mode_command_in_AXI",
+          "Name": "endat_com_enable_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 7,
@@ -446,7 +421,7 @@
           "Latency": -1
         },
         {
-          "Name": "endat_com_enable_AXI",
+          "Name": "trigger_endat_read",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 8,
@@ -456,7 +431,7 @@
           "Latency": -1
         },
         {
-          "Name": "trigger_endat_read",
+          "Name": "reciprocal_bit_width_single_turn_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 9,
@@ -466,7 +441,7 @@
           "Latency": -1
         },
         {
-          "Name": "reciprocal_bit_width_single_turn_AXI",
+          "Name": "t_sample_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 10,
@@ -476,7 +451,7 @@
           "Latency": -1
         },
         {
-          "Name": "t_sample_AXI",
+          "Name": "kp_pll_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 11,
@@ -486,7 +461,7 @@
           "Latency": -1
         },
         {
-          "Name": "kp_pll_AXI",
+          "Name": "ki_pll_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 12,
@@ -496,7 +471,7 @@
           "Latency": -1
         },
         {
-          "Name": "ki_pll_AXI",
+          "Name": "debug_off_on_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 13,
@@ -506,7 +481,7 @@
           "Latency": -1
         },
         {
-          "Name": "debug_off_on_AXI",
+          "Name": "position_mech_SI_debug_in_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 14,
@@ -516,7 +491,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_mech_SI_debug_in_AXI",
+          "Name": "machine_polepairs_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 15,
@@ -526,7 +501,7 @@
           "Latency": -1
         },
         {
-          "Name": "machine_polepairs_AXI",
+          "Name": "position_mech_offset_ticks_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 16,
@@ -536,20 +511,10 @@
           "Latency": -1
         },
         {
-          "Name": "position_mech_offset_ticks_AXI",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 17,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
           "Name": "sampling_delay_clk_ticks_AXI",
           "Rate": 1E-8,
           "Kind": "data",
-          "PortIndex": 18,
+          "PortIndex": 17,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -668,7 +633,7 @@
           "Latency": -1
         },
         {
-          "Name": "CRC_calc",
+          "Name": "endat_received_data_out_SH",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 11,
@@ -678,7 +643,7 @@
           "Latency": -1
         },
         {
-          "Name": "CRC_calc_AXI",
+          "Name": "position_mech_SI_single_turn",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 12,
@@ -688,7 +653,7 @@
           "Latency": -1
         },
         {
-          "Name": "endat_received_data_out_SH",
+          "Name": "position_mech_SI_single_turn_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 13,
@@ -698,7 +663,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_mech_SI_single_turn",
+          "Name": "position_el_SI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 14,
@@ -708,7 +673,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_mech_SI_single_turn_AXI",
+          "Name": "position_el_SI_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 15,
@@ -718,7 +683,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_el_SI",
+          "Name": "position_multi_turn",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 16,
@@ -728,7 +693,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_el_SI_AXI",
+          "Name": "position_multi_turn_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 17,
@@ -738,7 +703,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_multi_turn",
+          "Name": "speed_mech_SI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 18,
@@ -748,7 +713,7 @@
           "Latency": -1
         },
         {
-          "Name": "position_multi_turn_AXI",
+          "Name": "speed_mech_SI_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 19,
@@ -758,7 +723,7 @@
           "Latency": -1
         },
         {
-          "Name": "speed_mech_SI",
+          "Name": "speed_el_SI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 20,
@@ -768,7 +733,7 @@
           "Latency": -1
         },
         {
-          "Name": "speed_mech_SI_AXI",
+          "Name": "speed_el_SI_AXI",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 21,
@@ -778,7 +743,7 @@
           "Latency": -1
         },
         {
-          "Name": "speed_el_SI",
+          "Name": "speed_mech_rpm",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 22,
@@ -788,40 +753,10 @@
           "Latency": -1
         },
         {
-          "Name": "speed_el_SI_AXI",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 23,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "speed_mech_rpm",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 24,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
           "Name": "speed_mech_rpm_AXI",
           "Rate": 1E-8,
           "Kind": "data",
-          "PortIndex": 25,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "endat_raw_data_word",
-          "Rate": 1E-8,
-          "Kind": "data",
-          "PortIndex": 26,
+          "PortIndex": 23,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -854,20 +789,17 @@
     0,
     0,
     0,
-    0,
-    0,
-    0,
     0
   ],
   "ResourceSummary": {
     "multipliers": 18,
-    "addersSubtractors": 48,
-    "registers": 512,
-    "oneBitRegisters": 5102,
+    "addersSubtractors": 47,
+    "registers": 501,
+    "oneBitRegisters": 4686,
     "rams": 0,
-    "multiplexers": 238,
-    "IOBits": 1034,
-    "staticShiftOperators": 69,
+    "multiplexers": 198,
+    "IOBits": 905,
+    "staticShiftOperators": 4,
     "dynamicShiftOperators": 10
   }
 }

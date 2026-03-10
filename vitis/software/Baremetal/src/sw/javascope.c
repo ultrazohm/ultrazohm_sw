@@ -160,6 +160,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_IM_vdc]				= &(data->av.IM_vdc);
+	js_slowDataArray[JSSD_FLOAT_VA_vdc]				= &(data->av.VA_vdc);
+	js_slowDataArray[JSSD_FLOAT_VA_i_d]				= &(data->av.VA_I_d);
+	js_slowDataArray[JSSD_FLOAT_VA_i_q]				= &(data->av.VA_I_q);
+	js_slowDataArray[JSSD_FLOAT_VA_speed]				= &(data->av.VA_mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_VA_theta_elec]			= &(data->av.VA_theta_elec);
+	js_slowDataArray[JSSD_FLOAT_IM_ia]					= &(data->av.IM_ia);
+	js_slowDataArray[JSSD_FLOAT_IM_ib]					= &(data->av.IM_ib);
+	js_slowDataArray[JSSD_FLOAT_IM_ic]					= &(data->av.IM_ic);
+	js_slowDataArray[JSSD_FLOAT_VA_ia]					= &(data->av.VA_ia);
+	js_slowDataArray[JSSD_FLOAT_VA_ib]					= &(data->av.VA_ib);
+	js_slowDataArray[JSSD_FLOAT_VA_ic]					= &(data->av.VA_ic);
 
 	return Status;
 }

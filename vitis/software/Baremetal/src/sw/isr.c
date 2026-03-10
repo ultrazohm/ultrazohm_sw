@@ -43,7 +43,6 @@ XIpiPsu IPI_instance;
 
 // theta offset
 
-float VA_theta_el_offset = 0.0f;
 float IM_theta_el_offset = 0.0f;
 
 // measurement structs for motor control
@@ -61,6 +60,9 @@ struct uz_3ph_dq_t v_dq_meas_IM_rev_filt = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_IM = {0.0f};
+bool enable_controller_VA = false;
+bool enable_controller_IM = false;
+bool va_use_speed_control = false;
 
 // V/f Control Parameters for 2-pole induction motor (1 pole pair)
 float vf_frequency_setpoint_Hz = 10.0f;      // Start frequency (Hz) - start low! (10Hz = 600 RPM sync speed)
@@ -95,6 +97,11 @@ static void speed_control_VA();
 static void current_control_VA();
 static void safety_check_wolfspeed();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+static void calibrate_current_offsets(void);
+static void update_measurements_from_adc(void);
+static void update_va_current_feedback(void);
+void reset_asm(void);
+void reset_im(void);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -108,107 +115,34 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
-    Global_Data.av.VA_theta_elec = uz_signals_wrap((Global_Data.av.VA_theta_elec - VA_theta_el_offset), 2.0f*UZ_PIf);
-    if(!calibrate_current_measurement_done)
-    {
-        totalU += Global_Data.aa.A1.me.ADC_A1;
-		totalV += Global_Data.aa.A1.me.ADC_A2;
-		totalW += Global_Data.aa.A1.me.ADC_A3;
+    calibrate_current_offsets();
+    update_measurements_from_adc();
+    update_va_current_feedback();
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
 
-        calibrate_current_measurement_counter++;
-		if(calibrate_current_measurement_counter==calibrate_current_measurement_counter_stop)
-		{
-			I_U_offset = totalU/calibrate_current_measurement_counter_stop;
-			I_V_offset = totalV/calibrate_current_measurement_counter_stop;
-			I_W_offset = totalW/calibrate_current_measurement_counter_stop;
-			calibrate_current_measurement_done = 1;
-		}
-	}
-    // assign wolfspeed measurements
-
-    Global_Data.av.IM_vdc = 48.0f;
-    Global_Data.av.IM_ia  = Global_Data.aa.A1.me.ADC_A1 - I_U_offset;
-    Global_Data.av.IM_ib  = Global_Data.aa.A1.me.ADC_A2 - I_V_offset;
-    Global_Data.av.IM_ic  = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
-
-    // update status of inverter
-    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-    safety_check_wolfspeed();
-
-	// assign inverter measurements
-	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;
-	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3;
-	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2;
-	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5;
-	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8;
-	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7;
-	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6;
-	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1;
-
-	// assign measurements from global_data to motor control structs
-    i_abc_VA.a = Global_Data.av.VA_ia;
-    i_abc_VA.b = Global_Data.av.VA_ib;
-    i_abc_VA.c = Global_Data.av.VA_ic;
-
-    // check for current limit
-//    if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA || fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
-//    	ultrazohm_state_machine_set_stop(true);
-//    }
-
-    // calculate mean temperature values over all measured temperatures of each inverter
-    Global_Data.av.mean_temp_inv_d2 = (Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3) * 0.1667;
-
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-
-	// park transformation of measured currents
-	i_dq_VA = uz_transformation_3ph_abc_to_dq(i_abc_VA, Global_Data.av.VA_theta_elec);
-	Global_Data.av.VA_I_d = i_dq_VA.d;
-	Global_Data.av.VA_I_q = i_dq_VA.q;
-
-    // if "STOP"
-    if (current_state==idle_state)
-    {
-    	// disable inverters
+    if (current_state == idle_state) {
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
-    	// reset controllers
-		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_VA);
-		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_VA);
-		Global_Data.rasv.n_ref_VA = 0.0f;
-		Global_Data.rasv.n_ref_filt_VA = 0.0f;
-
-		Global_Data.rasv.M_ref_VA = 0.0f;
-		Global_Data.rasv.i_dq_ref_VA.d = 0.0f;
-		Global_Data.rasv.i_dq_ref_VA.q = 0.0f;
-		// set dutycycle
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
-//		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-//		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-//		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-//		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-//		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-//		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-        vf_frequency_command_Hz = 0.0f;
-        vf_electrical_phase_rad = 0.0f;
-    }
-
-    // if "ENABLE SYSTEM"
-    if (current_state==running_state)
-    {
-    	// enable inverters
+    	reset_asm();
+    	reset_im();
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+    	enable_controller_VA = false;
+    	enable_controller_IM = false;
+    } else if (current_state == running_state) {
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
-    	// reset tristate
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
-
-    }
-
-
-    if (current_state==control_state)
-    {
-    	speed_control_VA();
-//    	current_control_VA();
-    	im_control();
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+    } else if (current_state == control_state) {
+    	if (enable_controller_VA) {
+    		if (va_use_speed_control) {
+    			speed_control_VA();
+    		} else {
+    			current_control_VA();
+    		}
+    	}
+    	if (enable_controller_IM) {
+    		im_control();
+    	}
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -342,6 +276,94 @@ static void ReadAllADC()
     ADC_readCardALL(&Global_Data);
 };
 
+static void calibrate_current_offsets(void) {
+	if (calibrate_current_measurement_done) {
+		return;
+	}
+
+	totalU += Global_Data.aa.A1.me.ADC_A1;
+	totalV += Global_Data.aa.A1.me.ADC_A2;
+	totalW += Global_Data.aa.A1.me.ADC_A3;
+	calibrate_current_measurement_counter++;
+
+	if (calibrate_current_measurement_counter == calibrate_current_measurement_counter_stop) {
+		I_U_offset = totalU / calibrate_current_measurement_counter_stop;
+		I_V_offset = totalV / calibrate_current_measurement_counter_stop;
+		I_W_offset = totalW / calibrate_current_measurement_counter_stop;
+		calibrate_current_measurement_done = 1;
+	}
+}
+
+static void update_measurements_from_adc(void) {
+	// IM measurements
+	Global_Data.av.IM_vdc = (Global_Data.aa.A1.me.ADC_A4 * 100.0f / 0.3764f) - U_DC_offset;
+	Global_Data.av.IM_ia = Global_Data.aa.A1.me.ADC_A1 - I_U_offset;
+	Global_Data.av.IM_ib = Global_Data.aa.A1.me.ADC_A2 - I_V_offset;
+	Global_Data.av.IM_ic = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
+
+	// VA measurements
+	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;
+	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3;
+	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2;
+	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5;
+	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8;
+	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7;
+	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6;
+	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1;
+
+	// status, safety and derived values
+	Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+	safety_check_wolfspeed();
+	Global_Data.av.mean_temp_inv_d2 =
+			(Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1 +
+			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1 +
+			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2 +
+			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2 +
+			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3 +
+			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3) * 0.1667f;
+
+	i_abc_VA.a = Global_Data.av.VA_ia;
+	i_abc_VA.b = Global_Data.av.VA_ib;
+	i_abc_VA.c = Global_Data.av.VA_ic;
+
+	if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA ||
+		fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA ||
+		fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
+		ultrazohm_state_machine_set_stop(true);
+	}
+}
+
+static void update_va_current_feedback(void) {
+	i_dq_VA = uz_transformation_3ph_abc_to_dq(i_abc_VA, Global_Data.av.VA_theta_elec);
+	Global_Data.av.VA_I_d = i_dq_VA.d;
+	Global_Data.av.VA_I_q = i_dq_VA.q;
+}
+
+void reset_asm(void) {
+	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_VA);
+	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_VA);
+	Global_Data.rasv.n_ref_VA = 0.0f;
+	Global_Data.rasv.n_ref_filt_VA = 0.0f;
+	Global_Data.rasv.M_ref_VA = 0.0f;
+	Global_Data.rasv.i_dq_ref_VA.d = 0.0f;
+	Global_Data.rasv.i_dq_ref_VA.q = 0.0f;
+	Global_Data.av.VA_vd = 0.0f;
+	Global_Data.av.VA_vq = 0.0f;
+	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+}
+
+void reset_im(void) {
+	i_dq_ref_IM.d = 0.0f;
+	i_dq_ref_IM.q = 0.0f;
+	vf_frequency_command_Hz = 0.0f;
+	vf_electrical_phase_rad = 0.0f;
+	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+}
+
 static void im_control(){
 
 	// Slew-limited V/f frequency command: used on enable and on setpoint updates
@@ -416,13 +438,11 @@ static void current_control_VA() {
 };
 
 static void safety_check_wolfspeed() {
-    //  not used yet = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
+	// Dig 14: Temperatur
     Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
     Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
 //    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
-    // test for duty_freq-detect
     Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
-    Global_Data.av.FAULT_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,1);
 
 };
 
@@ -433,7 +453,6 @@ static void speed_control_VA() {
 	Global_Data.rasv.M_ref_VA = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_VA, Global_Data.av.VA_omega_mech, Global_Data.rasv.n_ref_filt_VA);
 	// calculate current setpoints i_dq_ref for VA motor
 	Global_Data.rasv.i_dq_ref_VA = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_VA, Global_Data.av.VA_omega_mech, Global_Data.rasv.M_ref_VA, Global_Data.av.VA_vdc, i_dq_VA);
-	//
 	current_control_VA();
 };
 

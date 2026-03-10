@@ -26,6 +26,11 @@ extern uint32_t js_status_BareToRTOS;
 
 // V/f Control Parameters from isr.c
 extern float vf_frequency_setpoint_Hz;
+extern bool enable_controller_VA;
+extern bool enable_controller_IM;
+extern bool va_use_speed_control;
+extern void reset_asm(void);
+extern void reset_im(void);
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -38,6 +43,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);
+			enable_controller_VA = false;
+			enable_controller_IM = false;
+			reset_asm();
+			reset_im();
 			break;
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
@@ -184,6 +193,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Enable_Control): // ControlEnable
+			enable_controller_VA = true;
+			enable_controller_IM = true;
 			ultrazohm_state_machine_set_enable_control(true);
 
 			break;
@@ -268,15 +279,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1):
-		case (My_Button_2):
-		case (My_Button_3):
+		case (My_Button_1): // Toggle VA controller enable/disable
+			enable_controller_VA = !enable_controller_VA;
+			if (!enable_controller_VA) {
+				reset_asm();
+			}
+			break;
+
+		case (My_Button_2): // Toggle IM controller enable/disable
+			enable_controller_IM = !enable_controller_IM;
+			if (!enable_controller_IM) {
+				reset_im();
+			}
+			break;
+
+		case (My_Button_3): // Toggle VA control mode: speed/current
+			va_use_speed_control = !va_use_speed_control;
+			break;
+
 		case (My_Button_4):
 		case (My_Button_5):
 		case (My_Button_6):
 		case (My_Button_7):
 		case (My_Button_8):
-			// Buttons intentionally disabled
+			// Buttons reserved
 			break;
 
 		case (Error_Reset):
@@ -323,21 +349,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	/* Bit 4 - My_Button_1 (VA enabled) */
+	if (enable_controller_VA) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
-	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 5 - My_Button_2 (IM enabled) */
+	if (enable_controller_IM) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
-	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	/* Bit 6 - My_Button_3 (VA speed mode active) */
+	if (va_use_speed_control) {
+		js_status_BareToRTOS |= (1 << 6);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);

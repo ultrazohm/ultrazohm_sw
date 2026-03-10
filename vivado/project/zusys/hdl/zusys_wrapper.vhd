@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Mar  9 16:07:05 2026
+--Date        : Tue Mar 10 11:27:35 2026
 --Host        : LAPTOP-68C4B02L running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -125,6 +125,66 @@ end zusys_wrapper;
 architecture STRUCTURE of zusys_wrapper is
   component zusys is
   port (
+    D1_l1_fault : in STD_LOGIC;
+    D1_h2_oc : in STD_LOGIC;
+    D1_h3_fault : in STD_LOGIC;
+    D1_dig_io_17 : in STD_LOGIC;
+    D1_i3_diag : in STD_LOGIC;
+    D1_h3_temp : in STD_LOGIC;
+    D1_l3_fault : in STD_LOGIC;
+    D1_i_diag : in STD_LOGIC;
+    D1_l3_temp : in STD_LOGIC;
+    D1_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_en : out STD_LOGIC;
+    D1_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_l1_oc : in STD_LOGIC;
+    D1_l3_oc : in STD_LOGIC;
+    D1_h1_fault : in STD_LOGIC;
+    D1_i1_diag : in STD_LOGIC;
+    D1_h2_temp : in STD_LOGIC;
+    D1_h1_oc : in STD_LOGIC;
+    D1_h3_oc : in STD_LOGIC;
+    D1_l1_temp : in STD_LOGIC;
+    D1_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_l2_fault : in STD_LOGIC;
+    D1_h2_fault : in STD_LOGIC;
+    D1_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_i2_diag : in STD_LOGIC;
+    D1_h1_temp : in STD_LOGIC;
+    D1_l2_oc : in STD_LOGIC;
+    D1_l2_temp : in STD_LOGIC;
+    D2_l1_fault : in STD_LOGIC;
+    D2_h2_oc : in STD_LOGIC;
+    D2_h3_fault : in STD_LOGIC;
+    D2_dig_io_17 : in STD_LOGIC;
+    D2_i3_diag : in STD_LOGIC;
+    D2_h3_temp : in STD_LOGIC;
+    D2_l3_fault : in STD_LOGIC;
+    D2_i_diag : in STD_LOGIC;
+    D2_l3_temp : in STD_LOGIC;
+    D2_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_pwm_en : out STD_LOGIC;
+    D2_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_l1_oc : in STD_LOGIC;
+    D2_l3_oc : in STD_LOGIC;
+    D2_h1_fault : in STD_LOGIC;
+    D2_i1_diag : in STD_LOGIC;
+    D2_h2_temp : in STD_LOGIC;
+    D2_h1_oc : in STD_LOGIC;
+    D2_h3_oc : in STD_LOGIC;
+    D2_l1_temp : in STD_LOGIC;
+    D2_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_l2_fault : in STD_LOGIC;
+    D2_h2_fault : in STD_LOGIC;
+    D2_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_i2_diag : in STD_LOGIC;
+    D2_h1_temp : in STD_LOGIC;
+    D2_l2_oc : in STD_LOGIC;
+    D2_l2_temp : in STD_LOGIC;
     A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -170,67 +230,7 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_06_Ch4 : out STD_LOGIC;
     Dig_07_Ch4 : out STD_LOGIC;
     Dig_01_Ch4 : out STD_LOGIC;
-    Dig_08_Ch4 : in STD_LOGIC;
-    D2_l1_fault : in STD_LOGIC;
-    D2_h2_oc : in STD_LOGIC;
-    D2_h3_fault : in STD_LOGIC;
-    D2_dig_io_17 : in STD_LOGIC;
-    D2_i3_diag : in STD_LOGIC;
-    D2_h3_temp : in STD_LOGIC;
-    D2_l3_fault : in STD_LOGIC;
-    D2_i_diag : in STD_LOGIC;
-    D2_l3_temp : in STD_LOGIC;
-    D2_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_pwm_en : out STD_LOGIC;
-    D2_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_l1_oc : in STD_LOGIC;
-    D2_l3_oc : in STD_LOGIC;
-    D2_h1_fault : in STD_LOGIC;
-    D2_i1_diag : in STD_LOGIC;
-    D2_h2_temp : in STD_LOGIC;
-    D2_h1_oc : in STD_LOGIC;
-    D2_h3_oc : in STD_LOGIC;
-    D2_l1_temp : in STD_LOGIC;
-    D2_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_l2_fault : in STD_LOGIC;
-    D2_h2_fault : in STD_LOGIC;
-    D2_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_i2_diag : in STD_LOGIC;
-    D2_h1_temp : in STD_LOGIC;
-    D2_l2_oc : in STD_LOGIC;
-    D2_l2_temp : in STD_LOGIC;
-    D1_l1_fault : in STD_LOGIC;
-    D1_h2_oc : in STD_LOGIC;
-    D1_h3_fault : in STD_LOGIC;
-    D1_dig_io_17 : in STD_LOGIC;
-    D1_i3_diag : in STD_LOGIC;
-    D1_h3_temp : in STD_LOGIC;
-    D1_l3_fault : in STD_LOGIC;
-    D1_i_diag : in STD_LOGIC;
-    D1_l3_temp : in STD_LOGIC;
-    D1_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_pwm_en : out STD_LOGIC;
-    D1_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_l1_oc : in STD_LOGIC;
-    D1_l3_oc : in STD_LOGIC;
-    D1_h1_fault : in STD_LOGIC;
-    D1_i1_diag : in STD_LOGIC;
-    D1_h2_temp : in STD_LOGIC;
-    D1_h1_oc : in STD_LOGIC;
-    D1_h3_oc : in STD_LOGIC;
-    D1_l1_temp : in STD_LOGIC;
-    D1_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_l2_fault : in STD_LOGIC;
-    D1_h2_fault : in STD_LOGIC;
-    D1_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_i2_diag : in STD_LOGIC;
-    D1_h1_temp : in STD_LOGIC;
-    D1_l2_oc : in STD_LOGIC;
-    D1_l2_temp : in STD_LOGIC
+    Dig_08_Ch4 : in STD_LOGIC
   );
   end component zusys;
 begin

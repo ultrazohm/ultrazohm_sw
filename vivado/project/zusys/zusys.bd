@@ -123,7 +123,8 @@
         "xlslice_0": "",
         "xlslice_1": "",
         "Resolver_Interface_v_0": "",
-        "uz_resolver_pl_inter_0": ""
+        "uz_resolver_pl_inter_0": "",
+        "uz_NN_5_64_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5826,6 +5827,11 @@
             "mode": "Master",
             "vlnv_bus_definition": "th-nuernberg.de:user:uz_inverter_adapter:1.0",
             "vlnv": "th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0"
+          },
+          "m_axi_arrays1": {
+            "mode": "Master",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           }
         },
         "ports": {
@@ -5884,7 +5890,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "6"
+                "value": "7"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5909,7 +5915,8 @@
                   "M02_AXI",
                   "M03_AXI",
                   "M04_AXI",
-                  "M05_AXI"
+                  "M05_AXI",
+                  "M06_AXI"
                 ]
               },
               "M00_AXI": {
@@ -6097,6 +6104,37 @@
                     "value": "0"
                   }
                 }
+              },
+              "M06_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             }
           },
@@ -6198,6 +6236,32 @@
             "xci_name": "zusys_uz_resolver_pl_inter_0_0",
             "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_0_1\\zusys_uz_resolver_pl_inter_0_0.xci",
             "inst_hier_path": "uz_user/uz_resolver_pl_inter_0"
+          },
+          "uz_NN_5_64_0": {
+            "vlnv": "xilinx.com:hls:uz_NN_5_64:1.0",
+            "xci_name": "zusys_uz_NN_5_64_0_0",
+            "xci_path": "ip\\zusys_uz_NN_5_64_0_0\\zusys_uz_NN_5_64_0_0.xci",
+            "inst_hier_path": "uz_user/uz_NN_5_64_0",
+            "interface_ports": {
+              "m_axi_arrays": {
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "mode": "Master",
+                "address_space_ref": "Data_m_axi_arrays",
+                "base_address": {
+                  "minimum": "0x00000000",
+                  "maximum": "0xFFFFFFFF",
+                  "width": "32"
+                }
+              }
+            },
+            "addressing": {
+              "address_spaces": {
+                "Data_m_axi_arrays": {
+                  "range": "4G",
+                  "width": "32"
+                }
+              }
+            }
           }
         },
         "interface_nets": {
@@ -6217,6 +6281,12 @@
             "interface_ports": [
               "D1",
               "uz_inverter_adapter_0/uz_inverter_adapter"
+            ]
+          },
+          "Conn4": {
+            "interface_ports": [
+              "m_axi_arrays1",
+              "uz_NN_5_64_0/m_axi_arrays"
             ]
           },
           "smartconnect_0_M10_AXI": {
@@ -6259,6 +6329,12 @@
             "interface_ports": [
               "uz_resolver_pl_inter_0/AXI4_Lite",
               "smartconnect_1/M05_AXI"
+            ]
+          },
+          "smartconnect_1_M06_AXI": {
+            "interface_ports": [
+              "uz_NN_5_64_0/s_axi_control",
+              "smartconnect_1/M06_AXI"
             ]
           }
         },
@@ -6362,7 +6438,8 @@
               "uz_d_inverter_adapter_1/AXI4_Lite_ARESETN",
               "uz_resolver_pl_inter_0/IPCORE_RESETN",
               "uz_resolver_pl_inter_0/AXI4_Lite_ARESETN",
-              "Resolver_Interface_v_0/s00_axi_aresetn"
+              "Resolver_Interface_v_0/s00_axi_aresetn",
+              "uz_NN_5_64_0/ap_rst_n"
             ]
           },
           "sample_trigger_1": {
@@ -6456,7 +6533,8 @@
               "uz_d_inverter_adapter_1/AXI4_Lite_ACLK",
               "uz_resolver_pl_inter_0/IPCORE_CLK",
               "uz_resolver_pl_inter_0/AXI4_Lite_ACLK",
-              "Resolver_Interface_v_0/s00_axi_aclk"
+              "Resolver_Interface_v_0/s00_axi_aclk",
+              "uz_NN_5_64_0/ap_clk"
             ]
           }
         }
@@ -8973,7 +9051,7 @@
             ]
           },
           "PSU__PROTECTION__MASTERS": {
-            "value": "USB1:NonSecure;0|USB0:NonSecure;0|S_AXI_LPD:NA;1|S_AXI_HPC1_FPD:NA;0|S_AXI_HPC0_FPD:NA;0|S_AXI_HP3_FPD:NA;0|S_AXI_HP2_FPD:NA;0|S_AXI_HP1_FPD:NA;0|S_AXI_HP0_FPD:NA;1|S_AXI_ACP:NA;0|S_AXI_ACE:NA;0|SD1:NonSecure;1|SD0:NonSecure;0|SATA1:NonSecure;0|SATA0:NonSecure;0|RPU1:Secure;1|RPU0:Secure;1|QSPI:NonSecure;1|PMU:NA;1|PCIe:NonSecure;0|NAND:NonSecure;0|LDMA:NonSecure;1|GPU:NonSecure;1|GEM3:NonSecure;1|GEM2:NonSecure;0|GEM1:NonSecure;0|GEM0:NonSecure;0|FDMA:NonSecure;1|DP:NonSecure;0|DAP:NA;1|Coresight:NA;1|CSU:NA;1|APU:NA;1"
+            "value": "USB1:NonSecure;0|USB0:NonSecure;0|S_AXI_LPD:NA;1|S_AXI_HPC1_FPD:NA;0|S_AXI_HPC0_FPD:NA;0|S_AXI_HP3_FPD:NA;0|S_AXI_HP2_FPD:NA;0|S_AXI_HP1_FPD:NA;1|S_AXI_HP0_FPD:NA;1|S_AXI_ACP:NA;0|S_AXI_ACE:NA;0|SD1:NonSecure;1|SD0:NonSecure;0|SATA1:NonSecure;0|SATA0:NonSecure;0|RPU1:Secure;1|RPU0:Secure;1|QSPI:NonSecure;1|PMU:NA;1|PCIe:NonSecure;0|NAND:NonSecure;0|LDMA:NonSecure;1|GPU:NonSecure;1|GEM3:NonSecure;1|GEM2:NonSecure;0|GEM1:NonSecure;0|GEM0:NonSecure;0|FDMA:NonSecure;1|DP:NonSecure;0|DAP:NA;1|Coresight:NA;1|CSU:NA;1|APU:NA;1"
           },
           "PSU__PROTECTION__MASTERS_TZ": {
             "value": "GEM0:NonSecure|SD1:NonSecure|GEM2:NonSecure|GEM1:NonSecure|GEM3:NonSecure|PCIe:NonSecure|DP:NonSecure|NAND:NonSecure|GPU:NonSecure|RPU1:Secure|RPU0:Secure|SATA0:NonSecure|SATA1:NonSecure|USB1:NonSecure|USB0:NonSecure|LDMA:NonSecure|FDMA:NonSecure|QSPI:NonSecure|SD0:NonSecure"
@@ -9042,6 +9120,9 @@
             "value": "0"
           },
           "PSU__SAXIGP2__DATA_WIDTH": {
+            "value": "32"
+          },
+          "PSU__SAXIGP3__DATA_WIDTH": {
             "value": "32"
           },
           "PSU__SAXIGP6__DATA_WIDTH": {
@@ -9357,7 +9438,7 @@
             "value": "1"
           },
           "PSU__USE__S_AXI_GP3": {
-            "value": "0"
+            "value": "1"
           },
           "PSU__USE__S_AXI_GP4": {
             "value": "0"
@@ -9461,6 +9542,11 @@
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
             "mode": "Slave",
             "memory_map_ref": "SAXIGP2"
+          },
+          "S_AXI_HP1_FPD": {
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "mode": "Slave",
+            "memory_map_ref": "SAXIGP3"
           },
           "S_AXI_LPD": {
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -9647,6 +9733,12 @@
         "interface_ports": [
           "zynq_ultra_ps_e_0/S_AXI_HP0_FPD",
           "uz_user/m_axi_arrays"
+        ]
+      },
+      "uz_user_m_axi_arrays1": {
+        "interface_ports": [
+          "zynq_ultra_ps_e_0/S_AXI_HP1_FPD",
+          "uz_user/m_axi_arrays1"
         ]
       },
       "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
@@ -9925,7 +10017,8 @@
           "uz_user/aclk",
           "zynq_ultra_ps_e_0/maxihpm0_lpd_aclk",
           "zynq_ultra_ps_e_0/saxi_lpd_aclk",
-          "zynq_ultra_ps_e_0/saxihp0_fpd_aclk"
+          "zynq_ultra_ps_e_0/saxihp0_fpd_aclk",
+          "zynq_ultra_ps_e_0/saxihp1_fpd_aclk"
         ]
       },
       "zynq_ultra_ps_e_0_pl_resetn0": {
@@ -9988,6 +10081,36 @@
               },
               "SEG_zynq_ultra_ps_e_0_HP0_QSPI": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_QSPI",
+                "offset": "0xC0000000",
+                "range": "512M"
+              }
+            }
+          }
+        }
+      },
+      "/uz_user/uz_NN_5_64_0": {
+        "address_spaces": {
+          "Data_m_axi_arrays": {
+            "segments": {
+              "SEG_zynq_ultra_ps_e_0_HP1_DDR_HIGH": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP3/HP1_DDR_HIGH",
+                "offset": "0x00000000",
+                "range": "1",
+                "is_excluded": "TRUE"
+              },
+              "SEG_zynq_ultra_ps_e_0_HP1_DDR_LOW": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP3/HP1_DDR_LOW",
+                "offset": "0x00000000",
+                "range": "2G"
+              },
+              "SEG_zynq_ultra_ps_e_0_HP1_LPS_OCM": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP3/HP1_LPS_OCM",
+                "offset": "0xFF000000",
+                "range": "16M",
+                "is_excluded": "TRUE"
+              },
+              "SEG_zynq_ultra_ps_e_0_HP1_QSPI": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP3/HP1_QSPI",
                 "offset": "0xC0000000",
                 "range": "512M"
               }
@@ -10078,6 +10201,13 @@
               "SEG_uz_NN_3_64_acc_0_Reg": {
                 "address_block": "/uz_user/uz_NN_3_64_acc_0/s_axi_control/Reg",
                 "offset": "0x0080120000",
+                "range": "64K",
+                "offset_base_param": "C_S_AXI_CONTROL_BASEADDR",
+                "offset_high_param": "C_S_AXI_CONTROL_HIGHADDR"
+              },
+              "SEG_uz_NN_5_64_0_Reg": {
+                "address_block": "/uz_user/uz_NN_5_64_0/s_axi_control/Reg",
+                "offset": "0x0080170000",
                 "range": "64K",
                 "offset_base_param": "C_S_AXI_CONTROL_BASEADDR",
                 "offset_high_param": "C_S_AXI_CONTROL_HIGHADDR"

@@ -105,6 +105,7 @@ int main(void)
             Global_Data.objects.inverter_d2_Load = init_uz_inverter_adapter_on_D2_Load();
             Global_Data.objects.resolver_IP = init_resolver_IP();
             Global_Data.objects.resolver_pl_IP = init_resolver_pl_IP();
+            init_NN_network_IP_core();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);

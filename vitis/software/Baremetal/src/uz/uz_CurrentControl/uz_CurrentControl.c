@@ -138,6 +138,12 @@ void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_refere
   		}
 	kp_adjusted.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
 	kp_adjusted.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
+	if(kp_adjusted.d < 0.0f) {
+		kp_adjusted.d = 0.0f;
+	}
+	if(kp_adjusted.q < 0.0f) {
+		kp_adjusted.q = 0.0f;
+	}
 	if(self->config.Kp_adjustment_flag) {
 		uz_CurrentControl_set_Kp_id(self, kp_adjusted.d);
 		uz_CurrentControl_set_Kp_iq(self, kp_adjusted.q);

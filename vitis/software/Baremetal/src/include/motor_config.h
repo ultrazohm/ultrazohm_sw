@@ -37,7 +37,7 @@
 #define MOTOR_CONFIG_SIEMENS_1LA7073    2   /* Siemens 1LA7073-4AB10-Z, 0.37 kW, delta 230V / star 400V */
 
 /* ===== Select active motor configuration ===== */
-#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_LINDNER_3KW
+#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_SIEMENS_1LA7073
 
 
 /* ============================================================

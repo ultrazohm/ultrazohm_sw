@@ -205,8 +205,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Enable_Control): // ControlEnable
-			enable_controller_VA = true;
-			enable_controller_IM = true;
+//			enable_controller_VA = true;
+//			enable_controller_IM = true;
 			ultrazohm_state_machine_set_enable_control(true);
 
 			break;

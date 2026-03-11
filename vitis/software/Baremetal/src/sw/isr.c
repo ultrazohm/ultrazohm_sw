@@ -474,9 +474,9 @@ void reset_asm(void) {
 	Global_Data.rasv.i_dq_ref_VA.q = 0.0f;
 	Global_Data.av.VA_vd = 0.0f;
 	Global_Data.av.VA_vq = 0.0f;
-	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
 }
 
 void reset_im(void) {

@@ -10,7 +10,8 @@ static const struct uz_PMSM_t PMSM_DUT_config = { //Hoerner Prototyp
         .polePairs = 4.0f,
 		.M_rated_Nm = 1.6f,
 		.I_rated_Ampere = 15.0f,
-		.n_rated_rpm = 1500.0f};
+		.n_rated_rpm = 1500.0f,
+		.V_DC_Volts = 48.0f};
 
 static const struct uz_PMSM_t PMSM_Load_config = {//Beckhoff AM8141
         .Ld_Henry = 0.002f,
@@ -22,7 +23,8 @@ static const struct uz_PMSM_t PMSM_Load_config = {//Beckhoff AM8141
 		.M_rated_Nm = 1.6f,
 		.J_kg_m_squared = 0.000108f,
 		.I_rated_Ampere = 11.3f,
-		.n_rated_rpm = 1000.0f};
+		.n_rated_rpm = 1000.0f,
+		.V_DC_Volts = 48.0f};
 
 static const struct uz_PMSM_flux_fitting_parameter_config_t Fitting_parameter_DUT = {
 		.ad1_parameter = 0.024902266251059f,

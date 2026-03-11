@@ -18,6 +18,7 @@ typedef struct uz_PMSM_t{
     float I_rated_Ampere; /**< rated current per phase. Must be greater than 0.0f */
     float M_rated_Nm; /**< rated torque of the machine. Must be greater than 0.0f */
     float n_rated_rpm; /**< rated speed of the machine. Must be greater than 0.0f */
+    float V_DC_Volts;
 }uz_PMSM_t;
 
 typedef struct uz_PMSM_flux_fitting_parameter_config_t{

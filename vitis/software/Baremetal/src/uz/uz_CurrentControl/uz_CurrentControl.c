@@ -222,6 +222,12 @@ bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
 	return(self->ext_clamping);
 }
 
+float uz_CurrentControl_get_max_modulation_index(uz_CurrentControl_t* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->config.max_modulation_index);
+}
+
 static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	uz_3ph_dq_t decouple_voltage={0};
 	switch (self->config.decoupling_select)

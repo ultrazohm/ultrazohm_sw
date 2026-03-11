@@ -175,6 +175,14 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
 /**
+ * @brief Returns the current value of the max_modulation_index
+ *
+ * @param self uz_CurrentControl_t instance
+ * @return current value as floaz
+ */
+float uz_CurrentControl_get_max_modulation_index(uz_CurrentControl_t* self);
+
+/**
  * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the magnitude optimum
  * 
  * @param self uz_CurrentControl_t instance

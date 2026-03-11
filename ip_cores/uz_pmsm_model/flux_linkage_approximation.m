@@ -23,7 +23,7 @@ set(0,'defaulttextinterpreter','latex')
 % psi_q = Psi_q_fine;
 
 %% Hoerner PMSM
-load('test_Hoerner.mat')
+load('Hoerner_PMSM_original.mat')
 id = i_d;
 iq = i_q;
 psi_d = Psi_d;
@@ -57,11 +57,11 @@ q_current = iq(:,1);
 [~,iq_null] = min(abs(q_current));
 
 %The setpoints with the best results might differ for diffrent flux-linkages
-id1 = 1;   %This is the overall point with the best results for all flux linkages 
+id1 = 121;   %This is the overall point with the best results for all flux linkages 
 %[~,id1] = max(abs(id))
 [~,iq1] = max(abs(q_current));  %Setpoint of flux-linkage with cross-coupling
 % [~,id1] = max(id)
-iq1=61;
+iq1=121;
 
 %% start of the fitting procedure
 

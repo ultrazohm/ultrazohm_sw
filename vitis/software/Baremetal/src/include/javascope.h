@@ -108,6 +108,9 @@ enum JS_OberservableData {
 	JSO_snd_fld_18,
 	JSO_snd_fld_19,
 	JSO_snd_fld_20,
+	JSO_DUT1,
+	JSO_DUT2,
+	JSO_DUT3,
 	// IM observer / FOC diagnostics
 	JSO_IM_psi_r_mag,            // rotor flux magnitude (Vs)
 	JSO_IM_omega_s_rad_s,        // stator angular frequency (rad/s)
@@ -123,6 +126,7 @@ enum JS_OberservableData {
 	JSO_IM_uq_res,               // q-axis resonant controller output
 	JSO_IM_omega_slip,           // slip frequency = omega_s - omega_el (rad/s)
 	JSO_IM_speed_ref,            // IM speed setpoint (rpm)
+	JSO_IM_speed,				 // IM speed -1.0f* speed load machine (rpm)
 	JSO_IM_vd,                   // IM d-axis voltage reference (FOC output)
 	JSO_IM_vq,                   // IM q-axis voltage reference (FOC output)
 	JSO_IM_id_ref,               // d-axis current reference (A) — FOC flux setpoint

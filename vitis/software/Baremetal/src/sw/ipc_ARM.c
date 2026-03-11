@@ -31,7 +31,6 @@ extern bool enable_controller_IM;
 extern bool va_use_speed_control;
 extern void reset_asm(void);
 extern void reset_im(void);
-
 // FOC / observer control parameters from isr.c
 extern bool use_foc;
 extern bool use_speed_control;
@@ -253,6 +252,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_10):
+		speed_ref_rpm = value;
 		data->av.snd_fld[10] = value;
 			break;
 

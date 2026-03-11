@@ -46,8 +46,7 @@ XIpiPsu IPI_instance;
 
 //defines and limits
 #define		MAX_CURRENT_VA		15.0f
-#define		MAX_CURRENT_IM		8.0f
-#define		max_voltage_vdc_Im	350.0f
+#define		max_voltage_vdc_Im	410.0f
 #define		max_voltage_vdc_va	52.0f
 
 // theta offset
@@ -74,10 +73,10 @@ bool va_use_speed_control = false;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
-float vf_ratio_V_per_Hz = 5.0f;
+float vf_ratio_V_per_Hz = 230.0f/50.0f;
 float vf_boost_voltage_V = 5.0f;
 float vf_max_frequency_Hz = 50.0f;
-float vf_max_voltage_V = 50.0f;
+float vf_max_voltage_V = 300.0f;
 float vf_frequency_ramp_Hz_per_s = 5.0f;
 
 // FOC / observer mode selection — settable at runtime via JavaScope
@@ -224,6 +223,7 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
+    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
     calibrate_current_offsets();
     update_measurements_from_adc();
     safety_check_vdc_limits();

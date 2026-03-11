@@ -47,7 +47,7 @@ extern DS_Data Global_Data;
       .Lq_Henry = 770e-6f,
       .Psi_PM_Vs = 0.0167f,
 	  .polePairs = 4.0f,
-	  .I_max_Ampere = 8.0f,
+	  .I_max_Ampere = 12.0f,
 	  .J_kg_m_squared = 0.000108,
     };//these parameters are only needed if linear decoupling is selected
 #endif

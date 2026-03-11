@@ -173,6 +173,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_snd_fld_18]			= &data->av.snd_fld[18];
 	js_ch_observable[JSO_snd_fld_19]			= &data->av.snd_fld[19];
 	js_ch_observable[JSO_snd_fld_20]			= &data->av.snd_fld[20];
+	// Debug V/f
+	js_ch_observable[JSO_DUT1]			= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_DUT2]			= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_DUT3]			= &data->rasv.halfBridge3DutyCycle;
 
 	// IM observer / FOC diagnostics
 	js_ch_observable[JSO_IM_psi_r_mag]			= &psi_r_mag_Vs;
@@ -189,6 +193,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_uq_res]				= &uq_res_V;
 	js_ch_observable[JSO_IM_omega_slip]			= &omega_slip_rad_s_diag;
 	js_ch_observable[JSO_IM_speed_ref]			= &speed_ref_rpm;
+	js_ch_observable[JSO_IM_speed]			= &data->av.IM_mechanicalRotorSpeed;
 	js_ch_observable[JSO_IM_vd]				= &data->av.IM_vd;
 	js_ch_observable[JSO_IM_vq]				= &data->av.IM_vq;
 	js_ch_observable[JSO_IM_id_ref]			= &id_ref_A;

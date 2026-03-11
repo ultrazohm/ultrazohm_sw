@@ -13,6 +13,21 @@
  *   - Protection limits (Vdc_max, Iphase_max, Speed_max)
  *   - Control tuning (Speed PI gains, resonant gain scale, KF noise defaults)
  *
+ * ALL electrical parameters are STAR-EQUIVALENT (per-phase, referred to neutral).
+ * The firmware drives line-to-neutral voltages and measures line currents; the
+ * Clarke/Park transforms and the observer operate in the star-equivalent domain.
+ *
+ *   Star-connected motor  — use nameplate values directly.
+ *   Delta-connected motor — convert: R_star = R_delta / 3,  L_star = L_delta / 3.
+ *
+ *   If you use identify_motor_params.py to extract Rs/Lm/Rr from JavaScope logs
+ *   the result is already star-equivalent regardless of motor connection.
+ *
+ *   Psi_rated (rotor flux at rated operating point):
+ *     Psi_rated ≈ V_rated_line_to_line / (sqrt(3) * 2*pi * f_rated)
+ *   This formula is the same for both star and delta motor connections because
+ *   the inverter always presents line-to-neutral voltage to the star-equivalent model.
+ *
  * Hardware-specific settings (PWM frequency, encoder resolution, deadtime,
  * IP instance counts) remain in uz_global_configuration.h.
  ******************************************************************************/

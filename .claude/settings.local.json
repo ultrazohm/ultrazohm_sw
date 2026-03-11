@@ -6,7 +6,8 @@
       "Bash(\"/c/Xilinx/Vitis/2022.2/bin/xsct\" -nodisp build_baremetal_only.tcl)",
       "Bash(\"C:/Xilinx/Vitis/2022.2/bin/xsct.bat\" build_baremetal_only.tcl)",
       "Bash(git fetch:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(python3 -c \":*)"
     ]
   }
 }

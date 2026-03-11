@@ -63,6 +63,7 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "IP_Cores/uz_NN_acc/uz_NN_acc.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_PMSM_config/uz_PMSM_config.h"
 #include "uz/uz_LUT_1D/uz_LUT_1D.h"

@@ -82,6 +82,7 @@ enum ControllerApplication ConApplication;
 enum ControllerSelection ConSelection;
 float ts = 1.0f / UZ_CONTROL_FREQUENCY;
 float Observation[7] = {0};
+bool ext_clamping = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -189,6 +190,7 @@ void ISR_Control(void *data)
 //     	setpoint_index = 0U;
 //     	start_angle_found = false;
      	Global_Data.av.speed_ref_Load = 0.0f;
+     	ext_clamping = false;
      	switch(ConApplication) {
      	    case CIL:
      	    	uz_pmsmModel_reset(Global_Data.objects.PMSM_Model);
@@ -274,8 +276,9 @@ void ISR_Control(void *data)
         	}
         	uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
         	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc_DUT * MAX_MODULATION_INDEX);
-        	Global_Data.av.v_ref_dq_DUT.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
-        	Global_Data.av.v_ref_dq_DUT.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	Global_Data.av.v_ref_dq_pre_limit_DUT.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+        	Global_Data.av.v_ref_dq_pre_limit_DUT.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	Global_Data.av.v_ref_dq_DUT = uz_CurrentControl_SpaceVector_Limitation(Global_Data.av.v_ref_dq_pre_limit_DUT, Global_Data.av.v_dc_DUT, MAX_MODULATION_INDEX, Global_Data.av.omega_elec_DUT, Global_Data.av.i_ref_dq_DUT, &ext_clamping);
         	Global_Data.av.DutyCycle_DUT = uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_DUT, Global_Data.av.v_dc_DUT, Global_Data.av.theta_elec_advanced_DUT);
         	break;
 

@@ -38,6 +38,8 @@ enum JS_OberservableData {
 	JSO_vq_DUT,
 	JSO_vd_ref_DUT,
 	JSO_vq_ref_DUT,
+	JSO_vd_ref_pre_limit_DUT,
+	JSO_vq_ref_pre_limit_DUT,
 	JSO_current_angle_deg_DUT,
 	JSO_current_angle_ref_DUT,
 	JSO_is_DUT,

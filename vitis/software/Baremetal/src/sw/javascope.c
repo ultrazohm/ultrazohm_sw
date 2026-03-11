@@ -88,6 +88,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_DUT]					= &data->av.v_dq_DUT.q;
 	js_ch_observable[JSO_vd_ref_DUT]				= &data->av.v_ref_dq_DUT.d;
 	js_ch_observable[JSO_vq_ref_DUT]				= &data->av.v_ref_dq_DUT.q;
+	js_ch_observable[JSO_vd_ref_pre_limit_DUT]		= &data->av.v_ref_dq_pre_limit_DUT.d;
+	js_ch_observable[JSO_vq_ref_pre_limit_DUT]		= &data->av.v_ref_dq_pre_limit_DUT.q;
 	js_ch_observable[JSO_current_angle_deg_DUT]		= &data->av.current_angle_degree_DUT;
 	js_ch_observable[JSO_current_angle_ref_DUT]		= &data->av.current_angle_ref_degree_DUT;
 	js_ch_observable[JSO_is_DUT]					= &data->av.is_DUT;

@@ -89,6 +89,7 @@ typedef struct _actualValues_ {
 	uz_3ph_abc_t i_abc_DUT;
 	uz_3ph_dq_t v_dq_DUT;
 	uz_3ph_dq_t v_ref_dq_DUT;
+	uz_3ph_dq_t v_ref_dq_pre_limit_DUT;
 	uz_3ph_abc_t v_abc_DUT;
 	struct uz_DutyCycle_t DutyCycle_DUT;
 	struct uz_DutyCycle_t DutyCycle_manual_DUT;
@@ -101,7 +102,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t flux_approx_real_DUT;
 	uz_3ph_dq_t flux_approx_reference_DUT;
 	uz_3ph_dq_t v_dq_ref_CIL_manual;
-
+	uz_3ph_dq_t v_dq_ref_pre_limit_DUT;
 
 	//Load values
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_Load;
@@ -128,44 +129,9 @@ typedef struct _actualValues_ {
 	float speed_ref_filtered_Load;
 	struct uz_DutyCycle_t DutyCycle_Load;
 
-
 	//other stuff
 	float start_marker;
 
-
-
-
-
-	//old stuff
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float temperature;
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
 	uint32_t slowDataCounter;

@@ -32,6 +32,13 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
+// Modular IM control
+#include "../include/motor_config.h"
+#include "../include/error_checks.h"
+#include "../include/im_observer.h"
+#include "../include/im_uf_control.h"
+#include "../include/im_foc_control.h"
+#include "../uz/uz_IM_config/uz_IM_config.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -44,7 +51,6 @@ XIpiPsu IPI_instance;
 #define		max_voltage_vdc_va	52.0f
 
 // theta offset
-
 float IM_theta_el_offset = 0.0f;
 
 // measurement structs for motor control
@@ -66,16 +72,39 @@ bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
 
-// V/f Control Parameters for 2-pole induction motor (1 pole pair)
-float vf_frequency_setpoint_Hz = 10.0f;      // Start frequency (Hz) - start low! (10Hz = 600 RPM sync speed)
-float vf_ratio_V_per_Hz = 5.0f;              // V/f ratio - ADJUST FOR YOUR MOTOR (e.g., 400V/50Hz = 8 V/Hz)
-float vf_boost_voltage_V = 5.0f;             // Low-frequency boost voltage (V)
-float vf_max_frequency_Hz = 50.0f;           // Maximum frequency limit (Hz) - 50Hz = 3000 RPM synchronous speed
-float vf_max_voltage_V = 50.0f;             // Maximum voltage limit (V) - should be < DC-link voltage
-float vf_frequency_ramp_Hz_per_s = 5.0f;     // Frequency slew rate for enable and setpoint changes
-static float vf_frequency_command_Hz = 0.0f;
-static float vf_electrical_phase_rad = 0.0f;
-float const duty_offset 		=   0.5f;
+// V/f control parameters — user-settable (e.g. via JavaScope send fields)
+float vf_frequency_setpoint_Hz = 10.0f;
+float vf_ratio_V_per_Hz = 5.0f;
+float vf_boost_voltage_V = 5.0f;
+float vf_max_frequency_Hz = 50.0f;
+float vf_max_voltage_V = 50.0f;
+float vf_frequency_ramp_Hz_per_s = 5.0f;
+
+// FOC / observer mode selection — settable at runtime via JavaScope
+bool use_foc = false;
+bool use_speed_control = false;
+bool use_resonant_6th = false;
+bool use_kalman_filter = false;
+float id_ref_A = 0.0f;
+float iq_ref_A = 0.0f;
+float speed_ref_rpm = 0.0f;
+
+// KF tuning — overridable at runtime
+float kf_q_i   = MOTOR_KF_Q_i;
+float kf_q_psi = MOTOR_KF_Q_psi;
+float kf_r_i   = MOTOR_KF_R_i;
+
+// KF diagnostics (populated after each KF step)
+float kf_innov_alpha = 0.0f;
+float kf_innov_beta  = 0.0f;
+
+// Observer outputs exposed for JavaScope
+float psi_r_mag_Vs = 0.0f;
+float omega_s_rad_s = 0.0f;
+float det_omega_s_rad_s = 0.0f;
+float stator_current_fundamental_frequency_Hz = 0.0f;
+
+float const duty_offset = 0.5f;
 float I_U_offset;
 float I_V_offset;
 float I_W_offset;
@@ -84,15 +113,61 @@ int calibrate_current_measurement_done = 0;
 int calibrate_current_measurement_counter = 0;
 int calibrate_current_measurement_counter_stop = 1000;
 
-//zeroing for current value 0 (getting rid of the offset)
 double totalU = 0;
 double totalV = 0;
 double totalW = 0;
+
+// Induction machine parameters — configured via motor_config.h
+static uz_IM_t IM_config = {
+    .Rs_Ohm         = MOTOR_Rs_Ohm,
+    .Rr_Ohm         = MOTOR_Rr_Ohm,
+    .Lsigma_s_Henry = MOTOR_Lsigma_s_H,
+    .Lsigma_r_Henry = MOTOR_Lsigma_r_H,
+    .Lm_Henry       = MOTOR_Lm_H,
+    .polePairs      = MOTOR_PolePairs,
+    .J_kg_m_squared = MOTOR_J_kgm2,
+    .I_max_Ampere   = MOTOR_I_max_A,
+    .Psi_rated_Vs   = MOTOR_Psi_rated_Vs,
+};
+
+static error_checks_config_t error_checks_config = {
+    .vdc_max                  = MOTOR_Vdc_max_V,
+    .iphase_max               = MOTOR_Iphase_max_A,
+    .max_mechanical_speed_rpm = MOTOR_Speed_max_rpm,
+};
+
+// IM control module states
+static im_uf_control_state_t uf_control_state = {0};
+static im_foc_control_state_t foc_control_state = {0};
+static im_rotor_flux_observer_state_t rotor_flux_observer_state = {0};
+static im_kf_observer_state_t kf_observer_state = {
+    .x = {0.0f, 0.0f, 0.0f, 0.0f},
+    .P = {{1.0f, 0.0f, 0.0f, 0.0f},
+          {0.0f, 1.0f, 0.0f, 0.0f},
+          {0.0f, 0.0f, 1.0f, 0.0f},
+          {0.0f, 0.0f, 0.0f, 1.0f}}
+};
+static uz_IM_ss_t im_ss = {0};
+static bool im_ss_computed = false;
+
+// Measured dq in flux frame — for JavaScope and resonant controller
+float id_meas_raw_dq = 0.0f;
+float iq_meas_raw_dq = 0.0f;
+
+// FOC diagnostics for JavaScope
+float ud_pi_V    = 0.0f;
+float uq_pi_V    = 0.0f;
+float ud_decoup_V = 0.0f;
+float uq_decoup_V = 0.0f;
+float ud_res_V   = 0.0f;
+float uq_res_V   = 0.0f;
+float omega_slip_rad_s_diag = 0.0f;
 
 // Global variable structure
 extern DS_Data Global_Data;
 extern struct uz_PWM_duty_freq_detection_outputs_t outputs;
 extern struct linear_interpolation_parameters_t lin_inter_param;
+
 static void ReadAllADC();
 static void im_control();
 static void speed_control_VA();
@@ -105,6 +180,37 @@ static void update_va_current_feedback(void);
 static void safety_check_vdc_limits(void);
 void reset_asm(void);
 void reset_im(void);
+
+//==============================================================================================================================================================
+//----------------------------------------------------
+// Initialize_ISR_Software() — call once from main after isr_samplerate_s is set
+//----------------------------------------------------
+void Initialize_ISR_Software(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    uz_assert(data->av.isr_samplerate_s > 0.0f);
+
+    im_uf_control_reset(&uf_control_state);
+
+    im_rotor_flux_observer_init(&IM_config, data->av.isr_samplerate_s, &rotor_flux_observer_state);
+
+    im_foc_control_init(&IM_config, data->av.isr_samplerate_s, &foc_control_state);
+    im_foc_control_reset(&foc_control_state);
+
+    kf_observer_state = (im_kf_observer_state_t){
+        .x = {0.0f, 0.0f, 0.0f, 0.0f},
+        .P = {{1.0f, 0.0f, 0.0f, 0.0f},
+              {0.0f, 1.0f, 0.0f, 0.0f},
+              {0.0f, 0.0f, 1.0f, 0.0f},
+              {0.0f, 0.0f, 0.0f, 1.0f}}
+    };
+
+    im_ss = uz_IM_ss_compute(IM_config, data->av.isr_samplerate_s);
+    im_ss_computed = true;
+
+    id_ref_A = uz_IM_get_id_ref_for_psi_r(IM_config, IM_config.Psi_rated_Vs);
+    data->av.snd_fld[2] = id_ref_A;
+}
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -376,73 +482,99 @@ void reset_asm(void) {
 void reset_im(void) {
 	i_dq_ref_IM.d = 0.0f;
 	i_dq_ref_IM.q = 0.0f;
-	vf_frequency_command_Hz = 0.0f;
-	vf_electrical_phase_rad = 0.0f;
-	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+	im_uf_control_reset(&uf_control_state);
+	im_foc_control_reset(&foc_control_state);
+	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
 }
 
-static void im_control(){
+static void im_control(void) {
+	// Apply runtime-tunable KF noise matrices
+	if (im_ss_computed) {
+		im_ss.Q_diag[0] = kf_q_i;
+		im_ss.Q_diag[1] = kf_q_i;
+		im_ss.Q_diag[2] = kf_q_psi;
+		im_ss.Q_diag[3] = kf_q_psi;
+		im_ss.R_diag[0] = kf_r_i;
+		im_ss.R_diag[1] = kf_r_i;
+	}
 
-	// Slew-limited V/f frequency command: used on enable and on setpoint updates
-    float const Ts = fmaxf(Global_Data.av.isr_samplerate_s, 1.0e-6f);
-    float freq_target_limited = fminf(fmaxf(vf_frequency_setpoint_Hz, 0.0f), vf_max_frequency_Hz);
-    float const freq_step_max = fmaxf(vf_frequency_ramp_Hz_per_s, 0.1f) * Ts;
-    float const freq_error = freq_target_limited - vf_frequency_command_Hz;
-    if (freq_error > freq_step_max) {
-        vf_frequency_command_Hz += freq_step_max;
-    } else if (freq_error < -freq_step_max) {
-        vf_frequency_command_Hz -= freq_step_max;
-    } else {
-        vf_frequency_command_Hz = freq_target_limited;
-    }
+	// Phase voltages applied in the previous ISR step — used by KF voltage model.
+	// Apply the same hardware min-pulse-width clamp that the FPGA PWM IP enforces.
+	float const u_a = (fmaxf(UZ_MIN_PULSE_WIDTH, fminf(1.0f - UZ_MIN_PULSE_WIDTH, Global_Data.rasv.halfBridge1DutyCycle)) - duty_offset) * Global_Data.av.IM_vdc;
+	float const u_b = (fmaxf(UZ_MIN_PULSE_WIDTH, fminf(1.0f - UZ_MIN_PULSE_WIDTH, Global_Data.rasv.halfBridge2DutyCycle)) - duty_offset) * Global_Data.av.IM_vdc;
+	float const u_c = (fmaxf(UZ_MIN_PULSE_WIDTH, fminf(1.0f - UZ_MIN_PULSE_WIDTH, Global_Data.rasv.halfBridge3DutyCycle)) - duty_offset) * Global_Data.av.IM_vdc;
 
-    // Limit frequency to maximum
-    float freq_limited = vf_frequency_command_Hz;
+	bool const kf_ready = im_ss_computed && (calibrate_current_measurement_done != 0);
 
-    // V/f with boost: add boost only when frequency is above standstill
-    float boost_voltage_V = (freq_limited > 0.1f) ? vf_boost_voltage_V : 0.0f;
-    float voltage_magnitude_V = (vf_ratio_V_per_Hz * freq_limited) + boost_voltage_V;
-    voltage_magnitude_V = fminf(voltage_magnitude_V, vf_max_voltage_V);
+	im_observer_result_t const obs = im_observer_step(&Global_Data.av, &IM_config, u_a, u_b, u_c,
+	                                                   kf_ready, use_kalman_filter,
+	                                                   &rotor_flux_observer_state, &im_ss, &kf_observer_state);
 
-    // Normalize voltage to DC-link to get duty cycle amplitude
-    float duty_amplitude_vf = voltage_magnitude_V / fmaxf(Global_Data.av.IM_vdc, 1.0f);
-    duty_amplitude_vf = fminf(duty_amplitude_vf, 0.45f);
-    duty_amplitude_vf = fmaxf(duty_amplitude_vf, 0.0f);
+	im_rotor_flux_observer_output_t const observer_output = obs.output;
+	det_omega_s_rad_s = obs.det_omega_s_rad_s;
+	kf_innov_alpha    = obs.kf_innov_alpha;
+	kf_innov_beta     = obs.kf_innov_beta;
 
-    // Generate three-phase voltage with phase integration.
-    // Do not use angle = 2*pi*t*f when f is ramped, because that causes
-    // frequency distortion for time-varying f.
-    float const omega_cmd_rad_per_s = 2.0f * UZ_PIf * freq_limited;
-    vf_electrical_phase_rad += omega_cmd_rad_per_s * Ts;
-    vf_electrical_phase_rad = fmodf(vf_electrical_phase_rad, 2.0f * UZ_PIf);
-    if (vf_electrical_phase_rad < 0.0f) {
-        vf_electrical_phase_rad += 2.0f * UZ_PIf;
-    }
+	// Measured dq in flux frame — for JavaScope and resonant controller
+	uz_3ph_abc_t const i_abc_raw = {.a = Global_Data.av.IM_ia, .b = Global_Data.av.IM_ib, .c = Global_Data.av.IM_ic};
+	uz_3ph_dq_t const i_dq_raw = uz_transformation_3ph_abc_to_dq(i_abc_raw, observer_output.theta_flux_rad);
+	id_meas_raw_dq = i_dq_raw.d;
+	iq_meas_raw_dq = i_dq_raw.q;
 
-    float v1 = duty_amplitude_vf * sinf(vf_electrical_phase_rad) + duty_offset;
-    float v2 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (2.0f * UZ_PIf / 3.0f)) + duty_offset;
-    float v3 = duty_amplitude_vf * sinf(vf_electrical_phase_rad - (4.0f * UZ_PIf / 3.0f)) + duty_offset;
+	// Write observer results into global data
+	Global_Data.av.IM_I_d        = observer_output.i_d;
+	Global_Data.av.IM_I_q        = observer_output.i_q;
+	Global_Data.av.IM_theta_elec = observer_output.theta_elec_rad;
+	stator_current_fundamental_frequency_Hz = observer_output.stator_current_fundamental_frequency_Hz;
+	psi_r_mag_Vs  = observer_output.psi_r_mag;
+	omega_s_rad_s = 2.0f * UZ_PIf * observer_output.stator_current_fundamental_frequency_Hz;
+	omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_el_rad_s;
 
-    int PWM_mode = 0; // 0 SPWM // 1 Negative-DPWM // 2 Positive-Negative DPWM
+	// Error checks for IM motor (overcurrent, overvoltage, overspeed)
+	error_checks_step(&Global_Data.av, &error_checks_config);
 
-    if (PWM_mode == 1) {
-
-    float const cm = fminf(fminf(v1, v2), v3);
-    v1 -= cm;
-    v2 -= cm;
-    v3 -= cm;
-    }
-
-    dutycyc_IM.DutyCycle_A = fminf(fmaxf(v1, 0.0f), 1.0f);
-    dutycyc_IM.DutyCycle_B = fminf(fmaxf(v2, 0.0f), 1.0f);
-    dutycyc_IM.DutyCycle_C = fminf(fmaxf(v3, 0.0f), 1.0f);
-    Global_Data.rasv.halfBridge1DutyCycle = dutycyc_IM.DutyCycle_A;
-    Global_Data.rasv.halfBridge2DutyCycle = dutycyc_IM.DutyCycle_B;
-    Global_Data.rasv.halfBridge3DutyCycle = dutycyc_IM.DutyCycle_C;
-};
-
+	// Control law selection
+	if (use_foc) {
+		im_foc_control_input_t foc_input = {
+			.use_speed_control          = use_speed_control,
+			.use_resonant_6th           = use_resonant_6th,
+			.id_ref_A                   = id_ref_A,
+			.iq_ref_A                   = iq_ref_A,
+			.speed_ref_rpm              = speed_ref_rpm,
+			.id_meas_A                  = id_meas_raw_dq,
+			.iq_meas_A                  = iq_meas_raw_dq,
+			.omega_s_for_resonant_rad_s = det_omega_s_rad_s,
+		};
+		im_foc_control_output_t foc_output = {0};
+		im_foc_control_step(&Global_Data.av, &Global_Data.rasv,
+		                    &IM_config,
+		                    &foc_input,
+		                    omega_s_rad_s,
+		                    observer_output.psi_r_mag,
+		                    observer_output.theta_flux_rad,
+		                    &foc_control_state,
+		                    &foc_output);
+		ud_pi_V      = foc_output.ud_pi;
+		uq_pi_V      = foc_output.uq_pi;
+		ud_decoup_V  = foc_output.ud_decoup;
+		uq_decoup_V  = foc_output.uq_decoup;
+		ud_res_V     = foc_output.ud_res;
+		uq_res_V     = foc_output.uq_res;
+	} else {
+		im_uf_control_config_t vf_config = {
+			.frequency_setpoint_Hz   = vf_frequency_setpoint_Hz,
+			.ratio_V_per_Hz          = vf_ratio_V_per_Hz,
+			.boost_voltage_V         = vf_boost_voltage_V,
+			.max_frequency_Hz        = vf_max_frequency_Hz,
+			.max_voltage_V           = vf_max_voltage_V,
+			.frequency_ramp_Hz_per_s = vf_frequency_ramp_Hz_per_s,
+		};
+		(void)im_uf_control_step(&Global_Data.av, &Global_Data.rasv, &vf_config, &uf_control_state, duty_offset);
+		im_foc_control_reset(&foc_control_state);
+	}
+}
 
 static void current_control_VA() {
 	// calculate reference voltages for current control
@@ -457,12 +589,11 @@ static void current_control_VA() {
 };
 
 static void safety_check_wolfspeed() {
-	// Dig 14: Temperatur
+	// Dig 14: Temperature
     Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
     Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
 //    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
     Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
-
 };
 
 static void speed_control_VA() {

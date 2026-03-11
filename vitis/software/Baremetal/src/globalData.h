@@ -105,6 +105,8 @@ typedef struct _actualValues_ {
 	uint32_t slowDataCounter;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	float mean_temp_inv_d2;
+	float IM_vd;   // d-axis voltage reference (FOC output)
+	float IM_vq;   // q-axis voltage reference (FOC output)
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

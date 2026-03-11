@@ -32,6 +32,18 @@ extern bool va_use_speed_control;
 extern void reset_asm(void);
 extern void reset_im(void);
 
+// FOC / observer control parameters from isr.c
+extern bool use_foc;
+extern bool use_speed_control;
+extern bool use_kalman_filter;
+extern bool use_resonant_6th;
+extern float kf_q_i;
+extern float kf_q_psi;
+extern float kf_r_i;
+extern float id_ref_A;
+extern float iq_ref_A;
+extern float speed_ref_rpm;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -215,24 +227,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[4] = value;
 			break;
 
-		case (Set_Send_Field_5):
+		case (Set_Send_Field_5): // IM id reference (A) — FOC flux current
+		id_ref_A = value;
 		data->av.snd_fld[5] = value;
 			break;
 
-		case (Set_Send_Field_6):
+		case (Set_Send_Field_6): // IM iq reference (A) — FOC torque current
+		iq_ref_A = value;
 		data->av.snd_fld[6] = value;
 			break;
 
-		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		case (Set_Send_Field_7): // KF Q_psi noise covariance
+		if (value > 0.0f) { kf_q_psi = value; }
+		data->av.snd_fld[7] = kf_q_psi;
 			break;
 
-		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		case (Set_Send_Field_8): // KF R_i noise covariance
+		if (value > 0.0f) { kf_r_i = value; }
+		data->av.snd_fld[8] = kf_r_i;
 			break;
 
-		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		case (Set_Send_Field_9): // KF Q_i noise covariance
+		if (value > 0.0f) { kf_q_i = value; }
+		data->av.snd_fld[9] = kf_q_i;
 			break;
 
 		case (Set_Send_Field_10):
@@ -297,12 +314,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			va_use_speed_control = !va_use_speed_control;
 			break;
 
-		case (My_Button_4):
-		case (My_Button_5):
-		case (My_Button_6):
+		case (My_Button_4): // Toggle FOC on/off for IM
+			use_foc = !use_foc;
+			break;
+
+		case (My_Button_5): // Toggle IM speed control on/off
+			use_speed_control = !use_speed_control;
+			break;
+
+		case (My_Button_6): // Toggle Kalman filter observer
+			use_kalman_filter = !use_kalman_filter;
+			break;
+
 		case (My_Button_7):
-		case (My_Button_8):
-			// Buttons reserved
+			// Reserved
+			break;
+
+		case (My_Button_8): // Toggle 6th harmonic resonant controller
+			use_resonant_6th = !use_resonant_6th;
 			break;
 
 		case (Error_Reset):
@@ -370,20 +399,36 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
 
-	/* Bit 7 - My_Button_4 */
-	js_status_BareToRTOS &= ~(1 << 7);
+	/* Bit 7 - My_Button_4 (Toggle_FOC) */
+	if (use_foc) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
-	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	/* Bit 8 - My_Button_5 (Toggle_IM_Speed_Ctrl) */
+	if (use_speed_control) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
-	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	/* Bit 9 - My_Button_6 (Toggle_KalmanFilter) */
+	if (use_kalman_filter) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
-	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	/* Bit 10 - My_Button_7 (unused) */
+	js_status_BareToRTOS &= ~(1 << 10);
 
-	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	/* Bit 11 - My_Button_8 (Toggle_Resonant6th) */
+	if (use_resonant_6th) {
+		js_status_BareToRTOS |= (1 << 11);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	}
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {
@@ -392,10 +437,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
 	// Sync control parameters with send fields for real-time tuning via GUI
-	// Send Field 1: V/f frequency setpoint (Hz)
-	// Send Field 2: Id reference (A) - flux current for FOC
-	// Send Field 3: Iq reference (A) - torque current for FOC (direct mode)
-	// Send Field 4: Speed reference (RPM) - for FOC speed control mode
+	// SF1: IM V/f frequency setpoint (Hz)
+	// SF2: VA id reference (A)
+	// SF3: VA iq reference (A)
+	// SF4: VA speed reference (RPM)
+	// SF5: IM id_ref_A — handled in Set_Send_Field_5 case above
+	// SF6: IM iq_ref_A — handled in Set_Send_Field_6 case above
+	// SF7-9: KF tuning — handled in Set_Send_Field_7/8/9 cases above
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
 	}

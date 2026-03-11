@@ -36,6 +36,32 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float Error_Code;
+
+// IM observer / FOC diagnostic variables from isr.c
+extern float vf_frequency_setpoint_Hz;
+extern float vf_ratio_V_per_Hz;
+extern float vf_boost_voltage_V;
+extern float vf_max_frequency_Hz;
+extern float vf_max_voltage_V;
+extern float stator_current_fundamental_frequency_Hz;
+extern float psi_r_mag_Vs;
+extern float omega_s_rad_s;
+extern float kf_innov_alpha;
+extern float kf_innov_beta;
+extern float kf_q_i;
+extern float kf_q_psi;
+extern float kf_r_i;
+extern float id_meas_raw_dq;
+extern float iq_meas_raw_dq;
+extern float ud_pi_V;
+extern float uq_pi_V;
+extern float ud_decoup_V;
+extern float uq_decoup_V;
+extern float ud_res_V;
+extern float uq_res_V;
+extern float omega_slip_rad_s_diag;
+extern float speed_ref_rpm;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -146,6 +172,24 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_snd_fld_19]			= &data->av.snd_fld[19];
 	js_ch_observable[JSO_snd_fld_20]			= &data->av.snd_fld[20];
 
+	// IM observer / FOC diagnostics
+	js_ch_observable[JSO_IM_psi_r_mag]			= &psi_r_mag_Vs;
+	js_ch_observable[JSO_IM_omega_s_rad_s]		= &omega_s_rad_s;
+	js_ch_observable[JSO_IM_kf_innov_alpha]		= &kf_innov_alpha;
+	js_ch_observable[JSO_IM_kf_innov_beta]		= &kf_innov_beta;
+	js_ch_observable[JSO_IM_id_raw]				= &id_meas_raw_dq;
+	js_ch_observable[JSO_IM_iq_raw]				= &iq_meas_raw_dq;
+	js_ch_observable[JSO_IM_ud_pi]				= &ud_pi_V;
+	js_ch_observable[JSO_IM_uq_pi]				= &uq_pi_V;
+	js_ch_observable[JSO_IM_ud_decoup]			= &ud_decoup_V;
+	js_ch_observable[JSO_IM_uq_decoup]			= &uq_decoup_V;
+	js_ch_observable[JSO_IM_ud_res]				= &ud_res_V;
+	js_ch_observable[JSO_IM_uq_res]				= &uq_res_V;
+	js_ch_observable[JSO_IM_omega_slip]			= &omega_slip_rad_s_diag;
+	js_ch_observable[JSO_IM_speed_ref]			= &speed_ref_rpm;
+	js_ch_observable[JSO_IM_vd]				= &data->av.IM_vd;
+	js_ch_observable[JSO_IM_vq]				= &data->av.IM_vq;
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -172,6 +216,22 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_VA_ia]					= &(data->av.VA_ia);
 	js_slowDataArray[JSSD_FLOAT_VA_ib]					= &(data->av.VA_ib);
 	js_slowDataArray[JSSD_FLOAT_VA_ic]					= &(data->av.VA_ic);
+	// KF tuning
+	js_slowDataArray[JSSD_FLOAT_kf_q_i]				= &kf_q_i;
+	js_slowDataArray[JSSD_FLOAT_kf_q_psi]				= &kf_q_psi;
+	js_slowDataArray[JSSD_FLOAT_kf_r_i]				= &kf_r_i;
+	// V/f parameters
+	js_slowDataArray[JSSD_FLOAT_vf_frequency_setpoint_Hz]	= &vf_frequency_setpoint_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_ratio_V_per_Hz]			= &vf_ratio_V_per_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_boost_voltage_V]			= &vf_boost_voltage_V;
+	js_slowDataArray[JSSD_FLOAT_vf_max_frequency_Hz]		= &vf_max_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]			= &vf_max_voltage_V;
+	// IM observer diagnostics
+	js_slowDataArray[JSSD_FLOAT_psi_r_mag]				= &psi_r_mag_Vs;
+	js_slowDataArray[JSSD_FLOAT_IM_id]					= &(data->av.IM_I_d);
+	js_slowDataArray[JSSD_FLOAT_IM_iq]					= &(data->av.IM_I_q);
+	js_slowDataArray[JSSD_FLOAT_FreqReadback]			= &stator_current_fundamental_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &Error_Code;
 
 	return Status;
 }
@@ -202,6 +262,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	Error_Code				= (float)ultrazohm_state_machine_get_state();
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

@@ -62,6 +62,8 @@ extern float ud_res_V;
 extern float uq_res_V;
 extern float omega_slip_rad_s_diag;
 extern float speed_ref_rpm;
+extern float id_ref_A;
+extern float iq_ref_A;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -189,6 +191,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_speed_ref]			= &speed_ref_rpm;
 	js_ch_observable[JSO_IM_vd]				= &data->av.IM_vd;
 	js_ch_observable[JSO_IM_vq]				= &data->av.IM_vq;
+	js_ch_observable[JSO_IM_id_ref]			= &id_ref_A;
+	js_ch_observable[JSO_IM_iq_ref]			= &iq_ref_A;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

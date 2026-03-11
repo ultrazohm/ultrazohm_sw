@@ -484,6 +484,27 @@ void reset_im(void) {
 	i_dq_ref_IM.q = 0.0f;
 	im_uf_control_reset(&uf_control_state);
 	im_foc_control_reset(&foc_control_state);
+
+	// Re-initialize observer states so re-enable starts with a clean flux estimate.
+	// Without this, stale psi_r_alpha/beta would give a wrong initial flux angle.
+	im_rotor_flux_observer_init(&IM_config, Global_Data.av.isr_samplerate_s, &rotor_flux_observer_state);
+	kf_observer_state = (im_kf_observer_state_t){
+	    .x = {0.0f, 0.0f, 0.0f, 0.0f},
+	    .P = {{1.0f, 0.0f, 0.0f, 0.0f},
+	          {0.0f, 1.0f, 0.0f, 0.0f},
+	          {0.0f, 0.0f, 1.0f, 0.0f},
+	          {0.0f, 0.0f, 0.0f, 1.0f}}
+	};
+
+	// Clear observer diagnostic outputs
+	psi_r_mag_Vs       = 0.0f;
+	omega_s_rad_s      = 0.0f;
+	det_omega_s_rad_s  = 0.0f;
+	kf_innov_alpha     = 0.0f;
+	kf_innov_beta      = 0.0f;
+	id_meas_raw_dq     = 0.0f;
+	iq_meas_raw_dq     = 0.0f;
+
 	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;

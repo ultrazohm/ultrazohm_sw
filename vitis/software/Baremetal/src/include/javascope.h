@@ -125,6 +125,8 @@ enum JS_OberservableData {
 	JSO_IM_speed_ref,            // IM speed setpoint (rpm)
 	JSO_IM_vd,                   // IM d-axis voltage reference (FOC output)
 	JSO_IM_vq,                   // IM q-axis voltage reference (FOC output)
+	JSO_IM_id_ref,               // d-axis current reference (A) — FOC flux setpoint
+	JSO_IM_iq_ref,               // q-axis current reference (A) — FOC torque setpoint
 	JSO_ENDMARKER
 };
 

@@ -141,6 +141,7 @@ typedef struct _referenceAndSetValues_ {
 	struct uz_PMSM_t PMSM_DUT_config;
 	struct uz_PMSM_t PMSM_Load_config;
 	struct uz_PMSM_flux_fitting_parameter_config_t Fitting_parameter_DUT;
+	float StartMarker;
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;

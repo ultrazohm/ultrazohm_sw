@@ -118,7 +118,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_is_Load]					= &data->av.is_Load;
 	js_ch_observable[JSO_torque_Load]				= &data->av.Torque_Load;
 	js_ch_observable[JSO_torque_ref_Load]			= &data->av.Torque_ref_Load;
-
+	js_ch_observable[JSO_start_maker]				= &data->rasv.StartMarker;
 	js_ch_observable[JSO_ISR_ExecTime_us] 			= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   				= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]				= &ISR_period_us;

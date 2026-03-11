@@ -79,6 +79,15 @@ float ts = 1.0f / UZ_CONTROL_FREQUENCY;
 float Observation[7] = {0};
 bool ext_clamping = 0.0f;
 
+//Stepprofile stuff
+float M_ref_setpoints[9]={
+#include "StepProfile.csv"
+};
+uint64_t old_uptime=0U;
+uint32_t setpoint_index=0U;
+bool StepProfile=false; // hack to only do it once
+bool start_angle_found = false;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -181,10 +190,9 @@ void ISR_Control(void *data)
      	uz_CurrentControl_reset(Global_Data.objects.CurrentControl_DUT);
      	uz_CurrentControl_reset(Global_Data.objects.CurrentControl_Load);
      	uz_SpeedControl_reset(Global_Data.objects.SpeedControl_Load);
-//     	StepProfile = false;
-//     	change_speed = false;
-//     	setpoint_index = 0U;
-//     	start_angle_found = false;
+     	StepProfile = false;
+     	setpoint_index = 0U;
+     	start_angle_found = false;
      	Global_Data.av.speed_ref_Load = 0.0f;
      	ext_clamping = false;
      	switch(ConApplication) {
@@ -244,6 +252,31 @@ void ISR_Control(void *data)
     		Global_Data.av.v_ref_dq_Load 			= uz_CurrentControl_sample(Global_Data.objects.CurrentControl_Load, Global_Data.av.i_ref_dq_Load, Global_Data.av.i_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.omega_elec_Load);
     		Global_Data.av.DutyCycle_Load 			= uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.theta_elec_advanced_Load);
     	}
+        if( (StepProfile) ){
+        	if ((((Global_Data.av.theta_elec_old_DUT - Global_Data.av.theta_elec_DUT) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_DUT < 10.0f))&& (!start_angle_found)) {
+        		start_angle_found = true;
+        	}
+        	if (start_angle_found || ConApplication == CIL ) {
+        		Global_Data.rasv.StartMarker=1.0f;
+        		Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index] * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
+
+        		// step throught the array
+        		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+        		if(current_uptime>(old_uptime +1000 ) ){
+        			old_uptime=current_uptime;
+        			if(setpoint_index < 9){
+        				setpoint_index++;
+        			}else{
+        				setpoint_index=0;
+        				StepProfile=false;
+        				start_angle_found = false;
+        				Global_Data.rasv.StartMarker=0.0f;
+        				Global_Data.av.Torque_ref_DUT = 0.0f;
+        			}
+        		}
+        	}
+        }
+        Global_Data.av.theta_elec_old_DUT = Global_Data.av.theta_elec_DUT;
 
     	switch(ConSelection) {
     	case LUT_FOC:

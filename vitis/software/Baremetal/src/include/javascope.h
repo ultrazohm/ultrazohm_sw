@@ -73,6 +73,7 @@ enum JS_OberservableData {
 	JSO_Theta_mech_Load,
 	JSO_i_dc_Load,
 	JSO_v_dc_Load,
+	JSO_start_maker,
 	JSO_ENDMARKER
 };
 
@@ -271,7 +272,7 @@ enum gui_button_mapping {
 	FOC,
 	RL,
 	manual,
-	MyButton6,
+	StepProfile,
 	MyButton7,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER

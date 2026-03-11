@@ -29,17 +29,15 @@
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
-struct APU_to_RPU_t ControlData = {0};
-extern volatile int js_connection_established;
+struct APU_to_RPU_t ControlData;
+extern int js_connection_established;
 
 // cf. main.c
 extern uint32_t javascope_data_status;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
-QueueHandle_t js_control_queue;
-volatile int js_queue_overflow_dropped_samples = 0;
-volatile int js_queue_purge_requested = 0;
+int js_queue_full = 0;
 
 int i_LifeCheck_Transfer_ipc = 0;
 
@@ -61,21 +59,22 @@ void Transfer_ipc_Intr_Handler(void *data)
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	BaseType_t xHigherPriorityTaskWoken;
 
 
-	// R5 writes this shared region; invalidate A53 cache lines before reading it.
-	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	// flush cache of shared memory for javascope data
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{
+		// append sample to queue
 		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
 
 		if (queue_status == errQUEUE_FULL)
 		{
-			js_queue_overflow_dropped_samples++;
-			js_queue_purge_requested = 1;
+			js_queue_full++;
+			// uz_printf("OsziData_queue is full\r\n");
 		}
 		// info: queue is purged when new connection is established in 'ethernet.c'
 	}
@@ -83,15 +82,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// Maintain APU-local copy of status word (cf. main.c)
 	javascope_data_status = javascope_data->status;
 
-	// Consume at most one pending control command per ISR to preserve ordering.
-	// If no command is pending, send an explicit no-op (id=0) to avoid re-sending old commands.
-	BaseType_t control_command_available = xQueueReceiveFromISR(js_control_queue, &ControlData, &xHigherPriorityTaskWoken);
-	if (control_command_available != pdTRUE) {
-		ControlData.id = 0U;
-		ControlData.value = 0.0f;
-	}
-
-	u32_t ControlData_length = sizeof(ControlData)/sizeof(uint32_t); // XIpiPsu_WriteMessage expects number of 32-bit words as message length
+	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
@@ -122,10 +113,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 		i_LifeCheck_Transfer_ipc =0;
 	}
 
-	// Not required in the current design: the Ethernet task polls queue depth and
-	// uses non-blocking queue receive, so it is usually not blocked waiting to be
-	// woken by this ISR.
-	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	// force context switch after ISR finishes -> switching to ethernet task
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 
@@ -181,13 +170,6 @@ int Initialize_ISR(){
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
-		return XST_FAILURE;
-	}
-
-	// create queue for buffering JavaScope control commands -> ISR/RPU path
-	js_control_queue = xQueueCreate(JS_CONTROL_QUEUE_SIZE_ELEMENTS, sizeof(struct APU_to_RPU_t));
-	if (js_control_queue == NULL){
-		uz_printf("APU: Error: Control queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 

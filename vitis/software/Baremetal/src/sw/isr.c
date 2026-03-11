@@ -193,6 +193,7 @@ void ISR_Control(void *data)
      	StepProfile = false;
      	setpoint_index = 0U;
      	start_angle_found = false;
+     	Global_Data.rasv.StartMarker = 0.0f;
      	Global_Data.av.speed_ref_Load = 0.0f;
      	ext_clamping = false;
      	switch(ConApplication) {

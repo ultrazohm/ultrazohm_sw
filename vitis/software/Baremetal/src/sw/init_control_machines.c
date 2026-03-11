@@ -4,7 +4,30 @@
 #include "../main.h"
 
 extern DS_Data Global_Data;
-
+// parameter masterarbeit
+//uz_IM_t IM_config = {
+//    .Rs_Ohm = 21.22f,
+//    .Rr_Ohm = 18.78f,
+//    .Lsigma_s_Henry = 91e-3f,
+//    .Lsigma_r_Henry = 102e-3f,
+//    .Lm_Henry = 809e-3f,
+//    .polePairs = 2.0f,
+//    .J_kg_m_squared = 0.000826f,
+//    .I_max_Ampere = 2.0f,
+//    .Psi_rated_Vs = 0.599f,
+//};
+// parameter projektarbeit
+//uz_IM_t IM_config = {
+//    .Rs_Ohm = 7.05f,
+//    .Rr_Ohm = 6.23f,
+//    .Lsigma_s_Henry = 31e-3f,
+//    .Lsigma_r_Henry = 36e-3f,
+//    .Lm_Henry = 271e-3f,
+//    .polePairs = 2.0f,
+//    .J_kg_m_squared = 0.000826f,
+//    .I_max_Ampere = 2.0f,
+//    .Psi_rated_Vs = 0.599f,
+//};
 #if UZ_MACHINE_ENABLE_IM_SIEMENS
     const struct uz_PMSM_t IM_Siemens = {
       .R_ph_Ohm = 0.51,

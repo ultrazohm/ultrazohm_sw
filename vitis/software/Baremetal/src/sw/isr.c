@@ -40,6 +40,8 @@ XIpiPsu IPI_instance;
 //defines and limits
 #define		MAX_CURRENT_VA		15.0f
 #define		MAX_CURRENT_IM		8.0f
+#define		max_voltage_vdc_Im	350.0f
+#define		max_voltage_vdc_va	52.0f
 
 // theta offset
 
@@ -100,6 +102,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 static void calibrate_current_offsets(void);
 static void update_measurements_from_adc(void);
 static void update_va_current_feedback(void);
+static void safety_check_vdc_limits(void);
 void reset_asm(void);
 void reset_im(void);
 
@@ -117,6 +120,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     calibrate_current_offsets();
     update_measurements_from_adc();
+    safety_check_vdc_limits();
     update_va_current_feedback();
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 
@@ -337,6 +341,21 @@ static void update_va_current_feedback(void) {
 	i_dq_VA = uz_transformation_3ph_abc_to_dq(i_abc_VA, Global_Data.av.VA_theta_elec);
 	Global_Data.av.VA_I_d = i_dq_VA.d;
 	Global_Data.av.VA_I_q = i_dq_VA.q;
+}
+
+static void safety_check_vdc_limits(void) {
+	if ((Global_Data.av.IM_vdc >= max_voltage_vdc_Im) ||
+		(Global_Data.av.VA_vdc >= max_voltage_vdc_va)) {
+		ultrazohm_state_machine_set_stop(true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+		Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+	}
 }
 
 void reset_asm(void) {

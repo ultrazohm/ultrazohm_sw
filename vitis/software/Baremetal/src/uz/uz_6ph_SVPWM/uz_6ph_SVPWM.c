@@ -38,7 +38,7 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_alphabeta(u
 	inv_T_tv = get_inv_T_tv_Matrix_4active_sector_24(version, sector_24);
 	//inv_T_tv[a][b];
 
-	//-calculate On-Tiems-----------------------------------------------------
+	//-calculate On-Times-----------------------------------------------------
 
 	uz_6ph_alphabeta_t u_6ph_alphabeta_ref_norm;
 

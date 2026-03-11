@@ -159,6 +159,32 @@ typedef struct _actualValues_ {
     float V_DC_Volts;
 
 
+    float testvar1;
+    float testvar2;
+    float testvar3;
+    float testvar4;
+    float testvar5;
+    float testvar6;
+    float testvar7;
+    float testvar8;
+    float testvar9;
+    float testvar10;
+
+
+	float temp_float_4_svpwm_Version;
+	float temp_float_5_svpwm_Version;
+	float temp_float_dual_3ph_Version;
+
+	float temp_float_scaled;
+	float temp_float_dual_3ph;
+	float temp_float_4_act;
+	float temp_float_5_act;
+	float temp_float_4_opt;
+	float temp_float_5_opt;
+	float temp_float_d_opt;
+	float temp_float_More_PWM;
+
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -204,8 +230,8 @@ typedef struct _referenceAndSetValues_ {
 	bool current_control_6ph_Pruef;
 	bool i_dq_Pruef_soll_from_M_soll;
 
-	int PWM_Settings;
-	int PWM_Versionsnummer;
+	float PWM_Settings;
+	float PWM_Versionsnummer;
 
 } referenceAndSetValues;
 

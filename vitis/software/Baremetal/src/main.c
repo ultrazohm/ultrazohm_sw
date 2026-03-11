@@ -32,7 +32,7 @@ DS_Data Global_Data = {
         .halfBridge11DutyCycle = 0.0f,
         .halfBridge12DutyCycle = 0.0f,
 		.i_dq_Pruef_soll_from_M_soll = false,
-		.V_DC_Volts_ref_JS = 1.0f,
+		.V_DC_Volts_ref_JS = 48.0f,
 		.theta_el_rad_ref_JS = 0.0f,
 		.freq_el_Hz_ref_JS = 50.0f,
     },

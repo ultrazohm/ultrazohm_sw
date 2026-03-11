@@ -252,7 +252,7 @@ float return_svpwm_4active_opt_d(svpwm_4active_2zero_24sector_SV_sequence_t vers
     int kappa_idx = find_nearest_index(kappa_ar, 4, kappa);
 
 	// check version
-    uz_assert(version > 0 && version <= 18);
+    uz_assert(version >= 0 && version < 18);
 
 	// angle over one sector
 	float theta_pi_12 = fmodf(theta, (float)M_PI / 12.0f);

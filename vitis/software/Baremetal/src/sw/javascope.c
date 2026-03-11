@@ -130,6 +130,21 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_Testvar1] 				= &data->av.testvar1;
+	js_ch_observable[JSO_Testvar2] 				= &data->av.testvar2;
+	js_ch_observable[JSO_Testvar3] 				= &data->av.testvar3;
+	js_ch_observable[JSO_Testvar4] 				= &data->av.testvar4;
+	js_ch_observable[JSO_Testvar5] 				= &data->av.testvar5;
+	js_ch_observable[JSO_Testvar6] 				= &data->av.testvar6;
+	js_ch_observable[JSO_Testvar7] 				= &data->av.testvar7;
+	js_ch_observable[JSO_Testvar8] 				= &data->av.testvar8;
+	js_ch_observable[JSO_Testvar9] 				= &data->av.testvar9;
+	js_ch_observable[JSO_Testvar10] 				= &data->av.testvar10;
+
+	js_ch_observable[JSO_u_ref_alpha] = &(data->rasv.u_ref_6ph_alphabeta.alpha);
+	js_ch_observable[JSO_u_ref_beta] = &(data->rasv.u_ref_6ph_alphabeta.beta);
+	js_ch_observable[JSO_u_ref_x] = &(data->rasv.u_ref_6ph_alphabeta.x);
+	js_ch_observable[JSO_u_ref_y] = &(data->rasv.u_ref_6ph_alphabeta.y);
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -159,6 +174,28 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+
+	data->av.temp_float_4_svpwm_Version			= (float)(data->rasv.PWM_Versionsnummer);
+	data->av.temp_float_5_svpwm_Version			= (float)(data->rasv.PWM_Versionsnummer);
+	data->av.temp_float_dual_3ph_Version			= (float)(data->rasv.PWM_Versionsnummer);
+
+	js_slowDataArray[JSSD_FLOAT_4_svpwm_Version] = &(data->av.temp_float_4_svpwm_Version);
+	js_slowDataArray[JSSD_FLOAT_5_svpwm_Version] = &(data->av.temp_float_5_svpwm_Version);
+	js_slowDataArray[JSSD_FLOAT_dual_3ph_Version] = &(data->av.temp_float_dual_3ph_Version);
+	js_slowDataArray[JSSD_FLOAT_Scaled] = &(data->av.temp_float_scaled);
+	js_slowDataArray[JSSD_FLOAT_dual_3ph] = &(data->av.temp_float_dual_3ph);
+	js_slowDataArray[JSSD_FLOAT_4_svpwm] = &(data->av.temp_float_4_act);
+	js_slowDataArray[JSSD_FLOAT_5_svpwm] = &(data->av.temp_float_5_act);
+	js_slowDataArray[JSSD_FLOAT_4_opt] = &(data->av.temp_float_4_opt);
+	js_slowDataArray[JSSD_FLOAT_5_opt] = &(data->av.temp_float_5_opt);
+	js_slowDataArray[JSSD_FLOAT_d_opt] = &(data->av.temp_float_d_opt);
+	js_slowDataArray[JSSD_FLOAT_MorePWM] = &(data->av.temp_float_More_PWM);
+
+
+	js_slowDataArray[JSSD_FLOAT_V_DC_Volts] = &(data->av.V_DC_Volts);
+	js_slowDataArray[JSSD_FLOAT_PWM_Settings] = &(data->rasv.PWM_Settings);
+	js_slowDataArray[JSSD_FLOAT_PWM_Versionsnummer] = &(data->rasv.PWM_Versionsnummer);
+
 	return Status;
 }
 

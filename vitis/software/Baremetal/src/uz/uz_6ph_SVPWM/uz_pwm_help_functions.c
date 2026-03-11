@@ -1,10 +1,13 @@
 #include "uz_pwm_help_functions.h"
 #include "../uz_math_constants.h"
+#include "../uz_HAL.h"
+#include "../uz_signals/uz_signals.h"
 
 
 struct uz_DutyCycle_t uz_add_zerosequence_and_saturate_3ph(uz_3ph_abc_t u_abc_ref, float u_n, float V_dc_volts){
 	struct uz_DutyCycle_t output = {0};
 	// adding zero sequence
+	uz_assert(V_dc_volts != 0.0f);
 	output.DutyCycle_A = (u_abc_ref.a + u_n) / V_dc_volts + 0.5f;
 	output.DutyCycle_B = (u_abc_ref.b + u_n) / V_dc_volts + 0.5f;
 	output.DutyCycle_C = (u_abc_ref.c + u_n) / V_dc_volts + 0.5f;

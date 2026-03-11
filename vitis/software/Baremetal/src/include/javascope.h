@@ -82,6 +82,20 @@ enum JS_OberservableData {
 	JSO_theta_mech_Last_deg,
 	JSO_theta_el_Pruef_deg,
 	JSO_theta_mech_Pruef_deg,
+	JSO_Testvar1,
+	JSO_Testvar2,
+	JSO_Testvar3,
+	JSO_Testvar4,
+	JSO_Testvar5,
+	JSO_Testvar6,
+	JSO_Testvar7,
+	JSO_Testvar8,
+	JSO_Testvar9,
+	JSO_Testvar10,
+	JSO_u_ref_alpha,
+	JSO_u_ref_beta,
+	JSO_u_ref_x,
+	JSO_u_ref_y,
 	JSO_ENDMARKER
 };
 
@@ -116,6 +130,20 @@ enum JS_SlowData {
 	JSSD_FLOAT_theta_el_Last,
 	JSSD_FLOAT_theta_el_Pruef,
 	JSSD_FLOAT_encoderOffset,
+	JSSD_FLOAT_4_svpwm_Version,
+	JSSD_FLOAT_5_svpwm_Version,
+	JSSD_FLOAT_dual_3ph_Version,
+	JSSD_FLOAT_Scaled,
+	JSSD_FLOAT_dual_3ph,
+	JSSD_FLOAT_4_svpwm,
+	JSSD_FLOAT_5_svpwm,
+	JSSD_FLOAT_4_opt,
+	JSSD_FLOAT_5_opt,
+	JSSD_FLOAT_d_opt,
+	JSSD_FLOAT_MorePWM,
+	JSSD_FLOAT_V_DC_Volts,
+	JSSD_FLOAT_PWM_Settings,
+	JSSD_FLOAT_PWM_Versionsnummer,
 	JSSD_ENDMARKER
 };
 
@@ -187,8 +215,8 @@ enum gui_button_mapping {
 	uq_6ph_soll,
 	ux_6ph_soll,
 	uy_6ph_soll,
-	send_field_18,
-	send_field_19,
+	PWM_Nummer,
+	PWM_Setting,
 	send_field_20,
 	SND_FLD_ENDMARKER
 

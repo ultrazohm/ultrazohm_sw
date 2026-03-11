@@ -484,7 +484,7 @@ u_z1z2 return_svpwm_5active_optz1z2_D1(svpwm_5active_2zero_24sector_SV_sequence_
     int kappa_idx = find_nearest_index(kappa_ar, 4, kappa);
 
 	// check version
-    uz_assert(version > 0 && version <= 16);
+    uz_assert(version >= 0 && version < 16);
 
     float u_z1 = 0;
     float u_z2 = 0;

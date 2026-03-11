@@ -271,12 +271,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
 		// PWM-Verfahren
-		data->rasv.PWM_Versionsnummer = (int)value;
+		data->rasv.PWM_Versionsnummer = value;
 			break;
 
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
-		data->rasv.PWM_Settings = (int)value;
+		data->rasv.PWM_Settings = value;
 			break;
 
 		case (Set_Send_Field_20):

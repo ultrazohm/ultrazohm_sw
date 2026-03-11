@@ -2803,58 +2803,58 @@ const float (*get_inv_T_tv_Matrix_4active_sector_24(svpwm_4active_2zero_24sector
 
 	switch(version){
 	case CSVPWM_24_2L_1ML_1M_M2_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_1ML_1M_M2[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_1ML_1M_M2[sector24-1];
 		break;
 	case CSVPWM_24_2L_1ML_1M_M3_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_1ML_1M_M3[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_1ML_1M_M3[sector24-1];
 		break;
 	case CSVPWM_24_2L_2M_M24_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_2M_M24[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_2M_M24[sector24-1];
 		break;
 	case CSVPWM_24_2L_2M_M34_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_2M_M34[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_2M_M34[sector24-1];
 		break;
 	case CSVPWM_24_3L_1M_M2_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_3L_1M_M2[sector24];
+		return inverse_T_tv_CSVPWM_24_3L_1M_M2[sector24-1];
 		break;
 	case CSVPWM_24_3L_1M_M3_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_3L_1M_M3[sector24];
+		return inverse_T_tv_CSVPWM_24_3L_1M_M3[sector24-1];
 		break;
 	case CSVPWM_24_1L_3M_L1_M314_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_3M_L1_M314[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_3M_L1_M314[sector24-1];
 		break;
 	case CSVPWM_24_1L_3M_L2_M214_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_3M_L2_M214[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_3M_L2_M214[sector24-1];
 		break;
 	case CSVPWM_24_1L_3M_L3_M123_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_3M_L3_M123[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_3M_L3_M123[sector24-1];
 		break;
 	case CSVPWM_24_1ML_3M_M123_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1ML_3M_M123[sector24];
+		return inverse_T_tv_CSVPWM_24_1ML_3M_M123[sector24-1];
 		break;
 	case CSVPWM_24_1L_1ML_2M_M13_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_1ML_2M_M13[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_1ML_2M_M13[sector24-1];
 		break;
 	case CSVPWM_24_1L_1ML_2M_L2_M12_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_1ML_2M_L2_M12[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_1ML_2M_L2_M12[sector24-1];
 		break;
 	case CSVPWM_24_2L_2M_L13_M13_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_2M_L13_M13[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_2M_L13_M13[sector24-1];
 		break;
 	case CSVPWM_24_2L_2M_L23_M12_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_2M_L23_M12[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_2M_L23_M12[sector24-1];
 		break;
 	case CSVPWM_24_4M_M3241_A_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_4M_M3241_A[sector24];
+		return inverse_T_tv_CSVPWM_24_4M_M3241_A[sector24-1];
 		break;
 	case CSVPWM_24_4M_M4132_B_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_4M_M4132_B[sector24];
+		return inverse_T_tv_CSVPWM_24_4M_M4132_B[sector24-1];
 		break;
 	case CSVPWM_24_4M_M3214_C_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_4M_M3214_C[sector24];
+		return inverse_T_tv_CSVPWM_24_4M_M3214_C[sector24-1];
 		break;
 	case CSVPWM_24_4M_M1432_D_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_4M_M1432_D[sector24];
+		return inverse_T_tv_CSVPWM_24_4M_M1432_D[sector24-1];
 		break;
 
 	default:
@@ -2877,7 +2877,7 @@ const float (*get_inv_T_tv_Matrix_5active_sector_24(svpwm_5active_2zero_24sector
 		return zero4x4Matrix;
 	break;
 	case CSVPWM_24_2L_1ML_2M_M23_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_1ML_2M_M23[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_1ML_2M_M23[sector24-1];
 	break;
 	case CSVPWM_24_3L_2M_M12_SV_SEQUENCE:
 		uz_assert(0);
@@ -2888,7 +2888,7 @@ const float (*get_inv_T_tv_Matrix_5active_sector_24(svpwm_5active_2zero_24sector
 		return zero4x4Matrix;
 	break;
 	case CSVPWM_24_3L_2M_M32_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_3L_2M_M32[sector24];
+		return inverse_T_tv_CSVPWM_24_3L_2M_M32[sector24-1];
 	break;
 	case CSVPWM_24_2L_1ML_2M_L13_M13_SV_SEQUENCE:
 		uz_assert(0);
@@ -2899,7 +2899,7 @@ const float (*get_inv_T_tv_Matrix_5active_sector_24(svpwm_5active_2zero_24sector
 		return zero4x4Matrix;
 	break;
 	case CSVPWM_24_2L_3M_L13_M123_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_2L_3M_L13_M123[sector24];
+		return inverse_T_tv_CSVPWM_24_2L_3M_L13_M123[sector24-1];
 	break;
 	case CSVPWM_24_2L_3M_M214_SV_SEQUENCE:
 		uz_assert(0);
@@ -2910,7 +2910,7 @@ const float (*get_inv_T_tv_Matrix_5active_sector_24(svpwm_5active_2zero_24sector
 		return zero4x4Matrix;
 	break;
 	case CSVPWM_24_1L_1ML_3M_L2_M132_SV_SEQUENCE:
-		return inverse_T_tv_CSVPWM_24_1L_1ML_3M_L2_M132[sector24];
+		return inverse_T_tv_CSVPWM_24_1L_1ML_3M_L2_M132[sector24-1];
 	break;
 	case CSVPWM_24_1ML_4M_M1432_SV_SEQUENCE:
 		uz_assert(0);

@@ -1,13 +1,13 @@
 %% clean Matlab Workspace
 close all
-clear all
+%clear all
 format compact
 
 %% settings
 delete_empty_log_files = 0;
-save_all_logged_data = 0; 
+save_all_logged_data = 1; 
 plot_all_channels = 0;
-rename_channels_manually = 0;
+rename_channels_manually = 1;
 import_data_to_simulink_datainspector = 1;
 overwrite_data_in_simulink_datainspector = 1;
 
@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2024-03-11_99-99-99.csv';
+ file_name = 'RL_CIL_test2.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
@@ -112,26 +112,26 @@ if(plot_all_channels ~= 0)
 end
 %% rename channels - if needed - done manually by user!
 if (rename_channels_manually ~= 0)
-    log = renamevars(log, "CH1",  "CH1" );
-    log = renamevars(log, "CH2",  "CH2" );
-    log = renamevars(log, "CH3",  "CH3" );
-    log = renamevars(log, "CH4",  "CH4" );
-    log = renamevars(log, "CH5",  "CH5" );
-    log = renamevars(log, "CH6",  "CH6" );
-    log = renamevars(log, "CH7",  "CH7" );
-    log = renamevars(log, "CH8",  "CH8" );
-    log = renamevars(log, "CH9",  "CH9" );
-    log = renamevars(log, "CH10", "CH10");
-    log = renamevars(log, "CH11", "CH11");
-    log = renamevars(log, "CH12", "CH12");
-    log = renamevars(log, "CH13", "CH13");
-    log = renamevars(log, "CH14", "CH14");
-    log = renamevars(log, "CH15", "CH15");
-    log = renamevars(log, "CH16", "CH16");
-    log = renamevars(log, "CH17", "CH17");
-    log = renamevars(log, "CH18", "CH18");
-    log = renamevars(log, "CH19", "CH19");
-    log = renamevars(log, "CH20", "CH20");
+    log = renamevars(log, "CH1",  "i_d" );
+    log = renamevars(log, "CH2",  "i_q" );
+    log = renamevars(log, "CH3",  "i_d_ref" );
+    log = renamevars(log, "CH4",  "i_q_ref" );
+    log = renamevars(log, "CH5",  "i_s" );
+    log = renamevars(log, "CH6",  "i_s_ref" );
+    log = renamevars(log, "CH7",  "torque" );
+    log = renamevars(log, "CH8",  "v_d_ref" );
+    log = renamevars(log, "CH9",  "v_q_ref" );
+    log = renamevars(log, "CH10", "torque_ref");
+    log = renamevars(log, "CH11", "n_rpm");
+    log = renamevars(log, "CH12", "current_angle");
+    log = renamevars(log, "CH13", "current_angle_ref");
+    log = renamevars(log, "CH14", "i_a");
+    log = renamevars(log, "CH15", "i_b");
+    log = renamevars(log, "CH16", "i_c");
+    log = renamevars(log, "CH17", "torque_load");
+    log = renamevars(log, "CH18", "i_d_load");
+    log = renamevars(log, "CH19", "i_q_load");
+    log = renamevars(log, "CH20", "start_marker");
     channel_names  = log.Properties.VariableNames;
 end
 

@@ -33,10 +33,8 @@
  ******************************************************************************/
 
 /* ===== Available configurations ===== */
-#define MOTOR_CONFIG_LINDNER_3KW    1
-/* Add further configurations here:
- * #define MOTOR_CONFIG_MY_NEW_MACHINE  2
- */
+#define MOTOR_CONFIG_LINDNER_3KW        1
+#define MOTOR_CONFIG_SIEMENS_1LA7073    2   /* Siemens 1LA7073-4AB10-Z, 0.37 kW, delta 230V / star 400V */
 
 /* ===== Select active motor configuration ===== */
 #define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_LINDNER_3KW
@@ -85,4 +83,66 @@
 #define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
 
-#endif /* MOTOR_CONFIG_SELECT */
+#endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_LINDNER_3KW */
+
+
+/* ============================================================
+ * Siemens 1LA7073-4AB10-Z  0.37 kW IM
+ * Δ/Y: 230 V / 400 V,  50 Hz,  2 pole pairs
+ * ============================================================
+ *
+ * Source: SINAMICS STARTER equivalent-circuit parameters (star-equivalent).
+ *   Table 4 / English datasheet:  R1=7.05 Ω, R2=6.23 Ω, Lm=271 mH,
+ *                                  L1σ=31.3 mH, L2σ=35.6 mH
+ *   These are already star-equivalent values — use directly.
+ *   (The German Tab. 15 lists delta-circuit values, which are ×3 larger.)
+ *
+ * Rated operating point:
+ *   Rated line current (Δ at 230 V): 1.82 A (line current = Δ phase current × √3)
+ *   Magnetising current I_μ: 1.26 A  (from STARTER table)
+ *   Psi_rated = Lm × I_μ = 0.271 × 1.26 ≈ 0.341 Vs
+ *     (preferred over voltage formula: large σLs = 62.7 mH causes
+ *      significant stator-leakage voltage drop, making V_LL/√3·2πf inaccurate)
+ *   id_ref = Psi_rated / Lm ≈ 1.26 A
+ *
+ * PI gains: run calc_pi_gains.py after setting MOTOR_CONFIG_SELECT = 2.
+ * ============================================================ */
+#if (MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073)
+
+/* Electrical nameplate — all STAR-EQUIVALENT (from STARTER Table 4) */
+#define MOTOR_Rs_Ohm              7.05f
+#define MOTOR_Rr_Ohm              6.23f
+#define MOTOR_Lm_H                0.271f        /* magnetizing inductance */
+#define MOTOR_Lsigma_s_H          31.3e-3f      /* stator leakage inductance */
+#define MOTOR_Lsigma_r_H          35.6e-3f      /* rotor leakage inductance */
+#define MOTOR_PolePairs           2.0f
+
+/* Mechanical */
+#define MOTOR_J_kgm2              8.12e-4f      /* rotor inertia [kg·m²] (from datasheet) */
+
+/* Rated operating point */
+#define MOTOR_Psi_rated_Vs        0.341f        /* = Lm × I_mu = 0.271 × 1.26 A */
+#define MOTOR_I_max_A             3.0f          /* observer / speed-ctrl current limit */
+
+/* Protection limits — hardware-level fault thresholds */
+#define MOTOR_Vdc_max_V           700.0f
+#define MOTOR_Iphase_max_A        6.0f          /* 3× rated line current */
+#define MOTOR_Speed_max_rpm       1800.0f       /* 1.2× synchronous speed (1500 rpm) */
+
+/* Current PI gains — run calc_pi_gains.py for best values; conservative start */
+#define MOTOR_Current_Kp_scale    0.1f
+#define MOTOR_Current_Ki_scale    0.2f
+
+/* Speed PI gains — run calc_pi_gains.py; start very conservatively */
+#define MOTOR_Speed_Kp            0.001f
+#define MOTOR_Speed_Ki            0.05f
+
+/* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
+#define MOTOR_Resonant_gain_scale 0.3f
+
+/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
+#define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
+#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+#define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
+
+#endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073 */

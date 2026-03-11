@@ -9818,22 +9818,22 @@
           "uz_user/SDI"
         ]
       },
-      "Dig_11_Ch5_1": {
-        "ports": [
-          "Dig_11_Ch5",
-          "uz_digital_adapter/Incr_Encoder_I"
-        ]
-      },
       "Dig_12_Ch5_1": {
         "ports": [
           "Dig_12_Ch5",
-          "uz_digital_adapter/Incr_Encoder_A"
+          "uz_digital_adapter/Incr_Encoder_B"
         ]
       },
       "Dig_13_Ch5_1": {
         "ports": [
           "Dig_13_Ch5",
-          "uz_digital_adapter/Incr_Encoder_B"
+          "uz_digital_adapter/Incr_Encoder_A"
+        ]
+      },
+      "Dig_14_Ch5_1": {
+        "ports": [
+          "Dig_14_Ch5",
+          "uz_digital_adapter/Incr_Encoder_I"
         ]
       },
       "Enable_Gates_CPLD_High_dout": {

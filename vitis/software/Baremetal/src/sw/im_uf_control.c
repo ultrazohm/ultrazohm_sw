@@ -49,10 +49,7 @@ uz_3ph_abc_t im_uf_control_step(const actualValues *av,
     }
 
     float const freq_limited = state->frequency_command_Hz;
-    /* Boost tapers linearly from boost_voltage_V at low speed to zero at max_frequency_Hz,
-     * so the V/f line hits exactly ratio_V_per_Hz * max_frequency_Hz at rated frequency. */
-    float const boost_taper = 1.0f - freq_limited / fmaxf(config->max_frequency_Hz, 0.1f);
-    float const boost_voltage = (freq_limited > 0.1f) ? config->boost_voltage_V * boost_taper : 0.0f;
+    float const boost_voltage = (freq_limited > 0.1f) ? config->boost_voltage_V : 0.0f;
     float voltage_magnitude = (config->ratio_V_per_Hz * freq_limited) + boost_voltage;
     voltage_magnitude = fminf(voltage_magnitude, config->max_voltage_V);
 

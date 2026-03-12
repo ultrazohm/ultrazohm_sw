@@ -81,6 +81,7 @@ float vf_boost_voltage_V         = MOTOR_UF_boost_voltage_V;
 float vf_max_frequency_Hz        = MOTOR_UF_max_frequency_Hz;
 float vf_max_voltage_V           = MOTOR_UF_max_voltage_V;
 float vf_frequency_ramp_Hz_per_s = MOTOR_UF_frequency_ramp_Hz_per_s;
+float vf_voltage_magnitude_V = 0.0f; /* diagnostic: last commanded voltage in RMS L-L */
 
 // FOC / observer mode selection — settable at runtime via JavaScope
 bool use_foc = false;
@@ -620,6 +621,7 @@ static void im_control(void) {
 			.frequency_ramp_Hz_per_s = vf_frequency_ramp_Hz_per_s,
 		};
 		(void)im_uf_control_step(&Global_Data.av, &Global_Data.rasv, &vf_config, &uf_control_state);
+		vf_voltage_magnitude_V = uf_control_state.applied_voltage_magnitude_V;
 		im_foc_control_reset(&foc_control_state);
 	}
 }

@@ -52,6 +52,7 @@ uz_3ph_abc_t im_uf_control_step(const actualValues *av,
     float const boost_voltage = (freq_limited > 0.1f) ? config->boost_voltage_V : 0.0f;
     float voltage_magnitude = (config->ratio_V_per_Hz * freq_limited) + boost_voltage;
     voltage_magnitude = fminf(voltage_magnitude, config->max_voltage_V);
+    state->applied_voltage_magnitude_V = voltage_magnitude;
 
     float const omega_cmd_rad_s = 2.0f * UZ_PIf * freq_limited;
     state->electrical_phase_rad += omega_cmd_rad_s * ts;

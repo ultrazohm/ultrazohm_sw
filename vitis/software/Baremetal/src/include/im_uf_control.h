@@ -31,6 +31,7 @@ typedef struct {
 typedef struct {
     float frequency_command_Hz;
     float electrical_phase_rad;
+    float applied_voltage_magnitude_V; /* last commanded voltage in RMS L-L — read-only, for diagnostics */
 } im_uf_control_state_t;
 
 void im_uf_control_reset(im_uf_control_state_t *state);

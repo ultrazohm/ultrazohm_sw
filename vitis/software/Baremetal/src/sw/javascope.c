@@ -44,6 +44,7 @@ extern float vf_ratio_V_per_Hz;
 extern float vf_boost_voltage_V;
 extern float vf_max_frequency_Hz;
 extern float vf_max_voltage_V;
+extern float vf_voltage_magnitude_V;
 extern float stator_current_fundamental_frequency_Hz;
 extern float psi_r_mag_Vs;
 extern float omega_s_rad_s;
@@ -146,6 +147,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DUT1]			= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_DUT2]			= &data->rasv.halfBridge2DutyCycle;
 	js_ch_observable[JSO_DUT3]			= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_UF_voltage_magnitude_V] = &vf_voltage_magnitude_V;
 
 	// IM observer / FOC diagnostics
 	js_ch_observable[JSO_IM_psi_r_mag]			= &psi_r_mag_Vs;
@@ -204,6 +206,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vf_boost_voltage_V]			= &vf_boost_voltage_V;
 	js_slowDataArray[JSSD_FLOAT_vf_max_frequency_Hz]		= &vf_max_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_vf_max_voltage_V]			= &vf_max_voltage_V;
+	js_slowDataArray[JSSD_FLOAT_vf_applied_voltage_magnitude_V]	= &vf_voltage_magnitude_V;
 	// IM observer diagnostics
 	js_slowDataArray[JSSD_FLOAT_psi_r_mag]				= &psi_r_mag_Vs;
 	js_slowDataArray[JSSD_FLOAT_IM_id]					= &(data->av.IM_I_d);

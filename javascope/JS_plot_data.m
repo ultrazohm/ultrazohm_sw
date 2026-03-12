@@ -1,6 +1,6 @@
 %% clean Matlab Workspace
 close all
-clear all
+%clear all
 format compact
 
 %% settings

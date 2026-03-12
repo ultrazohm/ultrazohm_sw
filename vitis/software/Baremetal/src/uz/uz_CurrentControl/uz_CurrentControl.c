@@ -121,6 +121,12 @@ static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* 
 
 }
 
+float uz_CurrentControl_get_max_modulation_index(uz_CurrentControl_t* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->config.max_modulation_index);
+}
+
 void uz_CurrentControl_reset(uz_CurrentControl_t* self){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

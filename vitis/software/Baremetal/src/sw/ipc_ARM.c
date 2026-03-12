@@ -193,7 +193,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		//data->av.Torque_ref = value;
+		data->av.Torque_ref = value;
 			break;
 
 		case (Set_Send_Field_3):

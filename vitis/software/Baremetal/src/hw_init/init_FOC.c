@@ -3,33 +3,33 @@ extern DS_Data Global_Data;
 
 
 static const struct uz_PMSM_t SynRM_config = {
-        .Ld_Henry = 0.021f,
-        .Lq_Henry = 0.0014f,
+        .Ld_Henry = 0.00025f,
+        .Lq_Henry = 0.0001f,
         .Psi_PM_Vs = 0.0f,
-		.I_max_Ampere = 80.0f,
-		.R_ph_Ohm = 0.0555f,
+		.I_max_Ampere = 150.0f,
+		.R_ph_Ohm = 0.0216f,
         .polePairs = 2.0f,
-		.M_rated_Nm = 95.5f,
-		.I_rated_Ampere = 66.0f,
-		.n_rated_rpm = 2300.0f,
-
+		.M_rated_Nm = 2.5f,
+		.I_rated_Ampere = 100.0f,
+		.n_rated_rpm = 6000.0f,
+		.V_DC_Volts = 48.0f
         };
 
 static const struct uz_PMSM_flux_fitting_parameter_config_t fitting_parameter = {
-		.ad1_parameter = 0.777709334189273f,
-		.ad2_parameter = 0.037293931812404f,
-		.ad3_parameter = 0.029572509005890f,
-		.ad4_parameter = 0.789947543693834f,
-		.ad5_parameter = 0.031210683229544f,
-		.ad6_parameter = 0.033110127631900f,
-		.aq1_parameter = 0.025871332328636f,
-		.aq2_parameter = 0.133010686201756f,
-		.aq3_parameter = 0.001800617208246f,
-		.aq4_parameter = 0.007327814203467f,
-		.aq5_parameter = 0.151520315466501f,
-		.aq6_parameter = 0.001800653233784f,
-		.F1G1_parameter = 1.382067045529586f,
-		.F2G2_parameter = 1.216653141864647f
+		.ad1_parameter = 0.021844678923593f,
+		.ad2_parameter = 0.015691946267988f,
+		.ad3_parameter = 2.774655647742554f,
+		.ad4_parameter = 0.021452939521217f,
+		.ad5_parameter = 0.012851474250756f,
+		.ad6_parameter = 2.544082676540874f,
+		.aq1_parameter = 0.002055465770391f,
+		.aq2_parameter = 0.060293284387075f,
+		.aq3_parameter = 4.427388728224799e-05f,
+		.aq4_parameter = 6.984208751521990e-04f,
+		.aq5_parameter = 0.049312248321942f,
+		.aq6_parameter = 4.146443160651400e-05f,
+		.F1G1_parameter = 0.221350145237161f,
+		.F2G2_parameter = 0.221214979405608f
 };
 
 struct uz_pmsmModel_config_t IP_SynRM_config = {
@@ -78,20 +78,14 @@ struct uz_PI_Controller_config config_iq = {
 
 
 //Arrays for LUTs
-static float LUT_breakpoints_array[12] = {
+static float LUT_breakpoints_array[26] = {
 #include "LUT_Breakpoints.csv"
 };
-static float LUT_CIL_current_angle_array[12] = {
+static float LUT_CIL_current_angle_array[26] = {
 #include "LUT_CIL_current_angle.csv"
 };
-static float LUT_CIL_Is_array[12] = {
+static float LUT_CIL_Is_array[26] = {
 #include "LUT_CIL_Is.csv"
-};
-static float LUT_bench_current_angle_array[12] = {
-#include "LUT_bench_current_angle.csv"
-};
-static float LUT_bench_Is_array[12] = {
-#include "LUT_bench_Is.csv"
 };
 
 //Create uz_arrays
@@ -106,14 +100,6 @@ uz_array_float_t LUT_CIL_current_angle = {
 uz_array_float_t LUT_CIL_Is = {
 		.length = UZ_ARRAY_SIZE(LUT_CIL_Is_array),
 		.data = &LUT_CIL_Is_array[0]
-};
-uz_array_float_t LUT_bench_current_angle = {
-		.length = UZ_ARRAY_SIZE(LUT_bench_current_angle_array),
-		.data = &LUT_bench_current_angle_array[0]
-};
-uz_array_float_t LUT_bench_Is = {
-		.length = UZ_ARRAY_SIZE(LUT_bench_Is_array),
-		.data = &LUT_bench_Is_array[0]
 };
 
 uz_CurrentControl_t* init_FOC(void) {
@@ -139,18 +125,11 @@ uz_approximate_flux_t* init_FluxApproximation(void) {
 }
 
 uz_LUT_1D_t* init_LUT_CIL_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_current_angle, 12U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_current_angle, 26U));
 }
 
 uz_LUT_1D_t* init_LUT_CIL_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_Is, 12U));
-}
-
-uz_LUT_1D_t* init_LUT_bench_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_current_angle, 12U));
-}
-uz_LUT_1D_t* init_LUT_bench_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_bench_Is, 12U));
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_Is, 26U));
 }
 
 

@@ -58,6 +58,12 @@
 #include "include/init_NN_network_ip_core.h"
 #include "include/init_GPIO_custom.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+
+//only one can be used
+#define NN_3_64_SETUP 1
+#define NN_5_64_SETUP 0
+
 
 enum ControllerApplication
 {

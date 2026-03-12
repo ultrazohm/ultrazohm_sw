@@ -178,6 +178,8 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float max_modulation_index);
 
+
+float uz_CurrentControl_get_max_modulation_index(uz_CurrentControl_t* self);
 /**
  * @brief Returns the current value of the external clamping signal
  * 

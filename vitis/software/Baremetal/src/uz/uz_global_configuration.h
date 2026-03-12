@@ -6,7 +6,7 @@
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
-#define UZ_USE_EXTERNAL_STOP 1U
+#define UZ_USE_EXTERNAL_STOP 0U
 
 #if (UZ_HARDWARE_VERSION < 4U) && (UZ_USE_EXTERNAL_STOP == 1U)
 #error The UZ_USE_EXTERNAL_STOP flag must not be used on hardware version 3 or earlier. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
@@ -41,7 +41,7 @@
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
-#define UZ_NN_LAYER_MAX_INSTANCES                       4U
+#define UZ_NN_LAYER_MAX_INSTANCES                       6U
 #define UZ_NN_MAX_INSTANCES                             1U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U

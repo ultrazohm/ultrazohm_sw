@@ -70,6 +70,7 @@ typedef struct _actualValues_ {
 	float v_dq_ref_amp;
 	uz_3ph_dq_t v_dq_ref_k2;
 	uz_3ph_dq_t v_dq;
+	uz_3ph_dq_t v_dq_ref_pre_limit;
 	uz_3ph_dq_t v_dq_ref_manual;
 	float Torque_ref;
 	float Torque;

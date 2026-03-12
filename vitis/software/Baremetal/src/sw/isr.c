@@ -65,8 +65,8 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 enum ControllerApplication ConApplication;
 enum ControllerSelection ConSelection;
 float ts = 1.0f / UZ_CONTROL_FREQUENCY;
-float Observation[10] = {0};
-
+float Observation[7] = {0};
+bool ext_clamping;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -88,7 +88,7 @@ void ISR_Control(void *data)
     	Global_Data.av.Torque				= Global_Data.av.SynRM_outputs.torque_Nm;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.SynRM_config.polePairs;
-    	Global_Data.av.v_dc					= DC_VOLTAGE;
+    	Global_Data.av.v_dc					= Global_Data.av.SynRM_config.V_DC_Volts;
     	Global_Data.av.current_angle_rad	= atan2f(Global_Data.av.i_dq.q,Global_Data.av.i_dq.d);
     	Global_Data.av.current_angle_deg 	= Global_Data.av.current_angle_rad /UZ_PIf * 180.0f;
     	Global_Data.av.Is					= sqrtf((Global_Data.av.i_dq.d * Global_Data.av.i_dq.d) + (Global_Data.av.i_dq.q * Global_Data.av.i_dq.q));
@@ -116,13 +116,15 @@ void ISR_Control(void *data)
 		//Safety checks
 	    Global_Data.av.HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.HB_ok_Pin_Number);
 	    Global_Data.av.OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.GPIO_input,Global_Data.rasv.OC_ok_Pin_Number);
+		float V_Limit = Global_Data.av.SynRM_config.V_DC_Volts * 1.03f;//allow 3 percent higher VDC before error
+
 	    if ((Global_Data.av.HB_ok == false || Global_Data.av.OC_ok == false) && Global_Data.rasv.ResetInverter_was_pressed == true) {
 			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 			Global_Data.rasv.EnableTristate=true;
 			ultrazohm_state_machine_set_stop(true);
 	    }
 	    if((Global_Data.av.i_abc.a > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.b > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.i_abc.c > Global_Data.av.SynRM_config.I_max_Ampere)
-	    		|| (Global_Data.av.i_dc > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.v_dc > VOLTAGE_LIMIT)) {
+	    		|| (Global_Data.av.i_dc > Global_Data.av.SynRM_config.I_max_Ampere) || (Global_Data.av.v_dc > V_Limit)) {
 	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 			Global_Data.rasv.EnableTristate = true;
 			ultrazohm_state_machine_set_stop(true);
@@ -209,14 +211,8 @@ void ISR_Control(void *data)
     {
         switch(ConSelection) {
         case LUT_FOC:
-        	Global_Data.av.Torque_ref=uz_PI_Controller_sample(Global_Data.objects.speed_control, Global_Data.av.n_ref_CIL, Global_Data.av.mechanicalRotorSpeed, false);
-        	if(ConApplication==CIL) {
-        		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
-        		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
-        	} else {
-        		Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_current_angle, Global_Data.av.Torque_ref);
-        		Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_bench_Is, Global_Data.av.Torque_ref);
-        	}
+        	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
+        	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
         	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
         	Global_Data.av.i_dq_ref.q = sinf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
         	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);
@@ -229,26 +225,23 @@ void ISR_Control(void *data)
         	break;
 
         case RL:
+        	float V_max = Global_Data.av.SynRM_config.V_DC_Volts * uz_CurrentControl_get_max_modulation_index(Global_Data.objects.CurrentControl);
         	Observation[0] = Global_Data.av.Torque_ref / Global_Data.av.SynRM_config.M_rated_Nm;
         	Observation[1] = Global_Data.av.i_dq.d / Global_Data.av.SynRM_config.I_max_Ampere;
         	Observation[2] = Global_Data.av.i_dq.q / Global_Data.av.SynRM_config.I_max_Ampere;
         	Observation[3] = Global_Data.av.Is / Global_Data.av.SynRM_config.I_max_Ampere;
-        	Observation[4] = uz_signals_wrap(Global_Data.av.current_angle_rad, 2.0f * UZ_PIf) / (2.0f * UZ_PIf);
-        	Observation[5] = Global_Data.av.mechanicalRotorSpeed / Global_Data.av.SynRM_config.n_rated_rpm;
-        	Observation[6] = Global_Data.av.v_dq_ref.d / MAX_VOLTAGE;
-        	Observation[7] = Global_Data.av.v_dq_ref.q / MAX_VOLTAGE;
-        	Observation[8] = Global_Data.av.v_dq_ref_k2.d / MAX_VOLTAGE;
-        	Observation[9] = Global_Data.av.v_dq_ref_k2.q / MAX_VOLTAGE;
-        	//Code for v_dq_ref k-2
-        	Global_Data.av.v_dq_ref_k2 = Global_Data.av.v_dq_ref;
+        	Observation[4] = Global_Data.av.mechanicalRotorSpeed / Global_Data.av.SynRM_config.n_rated_rpm;
+        	Observation[5] = Global_Data.av.v_dq_ref.d / V_max;
+        	Observation[6] = Global_Data.av.v_dq_ref.q / V_max;
 
-        	for (uint32_t i = 0; i < 10; i++) {
+        	for (uint32_t i = 0; i < 7; i++) {
         		uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
         	}
         	uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
-        	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc * MAX_MODULATION_INDEX);
-        	Global_Data.av.v_dq_ref.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
-        	Global_Data.av.v_dq_ref.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,V_max);
+        	Global_Data.av.v_dq_ref_pre_limit.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+        	Global_Data.av.v_dq_ref_pre_limit.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	Global_Data.av.v_dq_ref = uz_CurrentControl_SpaceVector_Limitation_linear(Global_Data.av.v_dq_ref_pre_limit, Global_Data.av.v_dc, uz_CurrentControl_get_max_modulation_index(Global_Data.objects.CurrentControl), &ext_clamping);
         	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
         	break;
 

@@ -97,8 +97,6 @@ int main(void)
             JavaScope_initialize(&Global_Data);
             Global_Data.objects.LUT_CIL_current_angle = init_LUT_CIL_current_angle();
             Global_Data.objects.LUT_CIL_Is = init_LUT_CIL_Is();
-            Global_Data.objects.LUT_bench_Is = init_LUT_bench_Is();
-            Global_Data.objects.LUT_bench_current_angle = init_LUT_bench_current_angle();
             Global_Data.objects.CurrentControl = init_FOC();
             Global_Data.objects.FluxApproximation = init_FluxApproximation();
             Global_Data.rasv.Inv_Reset_Pin_Number = 0U;

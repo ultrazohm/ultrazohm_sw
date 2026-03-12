@@ -67,26 +67,25 @@ enum JS_OberservableData {
 	JSO_DUT1,
 	JSO_DUT2,
 	JSO_DUT3,
-	// IM observer / FOC diagnostics
-	JSO_IM_psi_r_mag,            // rotor flux magnitude (Vs)
-	JSO_IM_omega_s_rad_s,        // stator angular frequency (rad/s)
-	JSO_IM_kf_innov_alpha,       // KF innovation α component
-	JSO_IM_kf_innov_beta,        // KF innovation β component
-	JSO_IM_id_raw,               // raw measured id (abc→dq, no observer)
-	JSO_IM_iq_raw,               // raw measured iq (abc→dq, no observer)
-	JSO_IM_ud_pi,                // d-axis PI output voltage
-	JSO_IM_uq_pi,                // q-axis PI output voltage
-	JSO_IM_ud_decoup,            // d-axis decoupling feedforward
-	JSO_IM_uq_decoup,            // q-axis decoupling feedforward
-	JSO_IM_ud_res,               // d-axis resonant controller output
-	JSO_IM_uq_res,               // q-axis resonant controller output
-	JSO_IM_omega_slip,           // slip frequency = omega_s - omega_el (rad/s)
-	JSO_IM_speed_ref,            // IM speed setpoint (rpm)
-	JSO_IM_speed,				 // IM speed -1.0f* speed load machine (rpm)
-	JSO_IM_vd,                   // IM d-axis voltage reference (FOC output)
-	JSO_IM_vq,                   // IM q-axis voltage reference (FOC output)
-	JSO_IM_id_ref,               // d-axis current reference (A) — FOC flux setpoint
-	JSO_IM_iq_ref,               // q-axis current reference (A) — FOC torque setpoint
+	JSO_IM_psi_r_mag,         
+	JSO_IM_omega_s_rad_s,     
+	JSO_IM_kf_innov_alpha,    
+	JSO_IM_kf_innov_beta,     
+	JSO_IM_id_raw,            
+	JSO_IM_iq_raw,           
+	JSO_IM_ud_pi,            
+	JSO_IM_uq_pi,            
+	JSO_IM_ud_decoup,        
+	JSO_IM_uq_decoup,      
+	JSO_IM_ud_res,         
+	JSO_IM_uq_res,         
+	JSO_IM_omega_slip,     
+	JSO_IM_speed_ref,      
+	JSO_IM_speed,			
+	JSO_IM_vd,              
+	JSO_IM_vq,              
+	JSO_IM_id_ref,          
+	JSO_IM_iq_ref,          
 	JSO_ENDMARKER
 };
 
@@ -124,17 +123,14 @@ enum JS_SlowData {
 	JSSD_FLOAT_VA_ia,
 	JSSD_FLOAT_VA_ib,
 	JSSD_FLOAT_VA_ic,
-	// KF tuning (runtime-adjustable via SF7/8/9)
 	JSSD_FLOAT_kf_q_i,
 	JSSD_FLOAT_kf_q_psi,
 	JSSD_FLOAT_kf_r_i,
-	// V/f parameters (runtime-adjustable via SF1)
 	JSSD_FLOAT_vf_frequency_setpoint_Hz,
 	JSSD_FLOAT_vf_ratio_V_per_Hz,
 	JSSD_FLOAT_vf_boost_voltage_V,
 	JSSD_FLOAT_vf_max_frequency_Hz,
 	JSSD_FLOAT_vf_max_voltage_V,
-	// IM observer diagnostics
 	JSSD_FLOAT_psi_r_mag,
 	JSSD_FLOAT_IM_id,
 	JSSD_FLOAT_IM_iq,
@@ -335,7 +331,6 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_ZEROVALUE,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

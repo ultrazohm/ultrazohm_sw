@@ -76,11 +76,11 @@ float js_error_max_current_va = 0.0f;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
-float vf_ratio_V_per_Hz = 2.3f; // 4.6f 230V/50Hz
-float vf_boost_voltage_V = 5.0f;
-float vf_max_frequency_Hz = 50.0f;
-float vf_max_voltage_V = 325.0f/sqrtf(3);
-float vf_frequency_ramp_Hz_per_s = 5.0f;
+float vf_ratio_V_per_Hz          = MOTOR_UF_ratio_V_per_Hz;
+float vf_boost_voltage_V         = MOTOR_UF_boost_voltage_V;
+float vf_max_frequency_Hz        = MOTOR_UF_max_frequency_Hz;
+float vf_max_voltage_V           = MOTOR_UF_max_voltage_V;
+float vf_frequency_ramp_Hz_per_s = MOTOR_UF_frequency_ramp_Hz_per_s;
 
 // FOC / observer mode selection — settable at runtime via JavaScope
 bool use_foc = false;
@@ -262,10 +262,7 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

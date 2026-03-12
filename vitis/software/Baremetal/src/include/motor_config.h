@@ -12,6 +12,7 @@
  *   - Rated operating point (Psi_rated, I_max)
  *   - Protection limits (Vdc_max, Iphase_max, Speed_max)
  *   - Control tuning (Speed PI gains, resonant gain scale, KF noise defaults)
+ *   - U/f open-loop parameters (V/f ratio, boost, frequency limits)
  *
  * ALL electrical parameters are STAR-EQUIVALENT (per-phase, referred to neutral).
  * The firmware drives line-to-neutral voltages and measures line currents; the
@@ -83,6 +84,16 @@
 #define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
 
+/* ADC current scaling for IM phase current channels on the Wolfspeed v1.1 board */
+#define MOTOR_CURRENT_2_SI            0.0242f
+
+/* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention) */
+#define MOTOR_UF_ratio_V_per_Hz       8.0f      /* 400 V / 50 Hz — confirm rated voltage on nameplate */
+#define MOTOR_UF_boost_voltage_V      5.0f    
+#define MOTOR_UF_max_voltage_V        400.0f    /* rated RMS L-L — caps voltage at any frequency */
+#define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
+
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_LINDNER_3KW */
 
 
@@ -144,5 +155,16 @@
 #define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
 #define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
+
+/* ADC current scaling for IM phase current channels on the Wolfspeed v2.0 board */
+#define MOTOR_CURRENT_2_SI            0.03993f
+
+/* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention)
+ * Motor is delta-connected at 230 V / 50 Hz. */
+#define MOTOR_UF_ratio_V_per_Hz       4.6f      /* 230 V / 50 Hz */
+#define MOTOR_UF_boost_voltage_V      5.0f     
+#define MOTOR_UF_max_voltage_V        230.0f    /* rated RMS L-L (delta at 230 V) */
+#define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073 */

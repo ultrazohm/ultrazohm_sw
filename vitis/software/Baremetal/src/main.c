@@ -15,10 +15,10 @@
 
 // Includes from own files
 #include "main.h"
+#include "include/motor_config.h"
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
-#define 	WOLFSPEEDREV02_CURRENT_2_SI 0.03993f
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -31,7 +31,7 @@ DS_Data Global_Data = {
         .halfBridge6DutyCycle = 0.0f,},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f/WOLFSPEEDREV02_CURRENT_2_SI, .cf.ADC_A2 = 10.0f/WOLFSPEEDREV02_CURRENT_2_SI, .cf.ADC_A3 = 10.0f/WOLFSPEEDREV02_CURRENT_2_SI, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_A2 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A3 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A4 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B5 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B6 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B7 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B8 = 10.0f*VOLTAGE_2_SI_VOLTS}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A2 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A3 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_A2 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A3 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A4 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B5 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B6 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B7 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B8 = 10.0f*VOLTAGE_2_SI_VOLTS}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
 {

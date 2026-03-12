@@ -244,24 +244,14 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	if(ConApplication == REAL && ConSelection != manual) {
-    		//Only use load machine when REAL
-    		Global_Data.av.speed_ref_filtered_Load 	= uz_signals_IIR_Filter_sample(Global_Data.objects.Speed_Filter_Load, Global_Data.av.speed_ref_Load);
-    	    //Approximates required torque based on dq-Setpoints of DUT machine
-    		Global_Data.av.Torque_ref_Load 			= uz_SpeedControl_sample(Global_Data.objects.SpeedControl_Load, Global_Data.av.omega_mech_Load, Global_Data.av.speed_ref_filtered_Load);
-    		//Adds required torque of DUT as Vorsteuerung
-    		Global_Data.av.Torque_ref_Load 			+= Global_Data.av.Torque_ref_DUT;
-    		Global_Data.av.i_ref_dq_Load 			= uz_SetPoint_sample(Global_Data.objects.SetPoint_Load, Global_Data.av.omega_mech_Load, Global_Data.av.Torque_ref_Load, Global_Data.av.v_dc_Load, Global_Data.av.i_dq_Load);
-    		Global_Data.av.v_ref_dq_Load 			= uz_CurrentControl_sample(Global_Data.objects.CurrentControl_Load, Global_Data.av.i_ref_dq_Load, Global_Data.av.i_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.omega_elec_Load);
-    		Global_Data.av.DutyCycle_Load 			= uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.theta_elec_advanced_Load);
-    	}
+
         if( (StepProfile) ){
         	if ((((Global_Data.av.theta_elec_old_DUT - Global_Data.av.theta_elec_DUT) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_DUT < 10.0f))&& (!start_angle_found)) {
         		start_angle_found = true;
         	}
         	if (start_angle_found || ConApplication == CIL ) {
         		Global_Data.rasv.StartMarker=1.0f;
-        		Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index] * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
+        		Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index];// * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
 
         		// step throught the array
         		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
@@ -280,6 +270,19 @@ void ISR_Control(void *data)
         	}
         }
         Global_Data.av.theta_elec_old_DUT = Global_Data.av.theta_elec_DUT;
+
+
+    	if(ConApplication == REAL && ConSelection != manual) {
+    		//Only use load machine when REAL
+    		Global_Data.av.speed_ref_filtered_Load 	= uz_signals_IIR_Filter_sample(Global_Data.objects.Speed_Filter_Load, Global_Data.av.speed_ref_Load);
+    	    //Approximates required torque based on dq-Setpoints of DUT machine
+    		Global_Data.av.Torque_ref_Load 			= uz_SpeedControl_sample(Global_Data.objects.SpeedControl_Load, Global_Data.av.omega_mech_Load, Global_Data.av.speed_ref_filtered_Load);
+    		//Adds required torque of DUT as Vorsteuerung
+    		Global_Data.av.Torque_ref_Load 			-= Global_Data.av.Torque_ref_DUT;
+    		Global_Data.av.i_ref_dq_Load 			= uz_SetPoint_sample(Global_Data.objects.SetPoint_Load, Global_Data.av.omega_mech_Load, Global_Data.av.Torque_ref_Load, Global_Data.av.v_dc_Load, Global_Data.av.i_dq_Load);
+    		Global_Data.av.v_ref_dq_Load 			= uz_CurrentControl_sample(Global_Data.objects.CurrentControl_Load, Global_Data.av.i_ref_dq_Load, Global_Data.av.i_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.omega_elec_Load);
+    		Global_Data.av.DutyCycle_Load 			= uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.theta_elec_advanced_Load);
+    	}
 
     	switch(ConSelection) {
     	case LUT_FOC:

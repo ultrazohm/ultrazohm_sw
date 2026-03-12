@@ -622,7 +622,7 @@ static void im_control(void) {
 			.max_voltage_V           = vf_max_voltage_V,
 			.frequency_ramp_Hz_per_s = vf_frequency_ramp_Hz_per_s,
 		};
-		(void)im_uf_control_step(&Global_Data.av, &Global_Data.rasv, &vf_config, &uf_control_state, duty_offset);
+		(void)im_uf_control_step(&Global_Data.av, &Global_Data.rasv, &vf_config, &uf_control_state);
 		im_foc_control_reset(&foc_control_state);
 	}
 }

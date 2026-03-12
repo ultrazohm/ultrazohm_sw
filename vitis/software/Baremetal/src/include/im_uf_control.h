@@ -37,7 +37,6 @@ void im_uf_control_reset(im_uf_control_state_t *state);
 uz_3ph_abc_t im_uf_control_step(const actualValues *av,
                                  referenceAndSetValues *rasv,
                                  const im_uf_control_config_t *config,
-                                 im_uf_control_state_t *state,
-                                 float duty_offset);
+                                 im_uf_control_state_t *state);
 
 #endif /* IM_UF_CONTROL_H_ */

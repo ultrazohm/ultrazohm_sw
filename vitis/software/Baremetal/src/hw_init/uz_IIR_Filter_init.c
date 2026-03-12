@@ -3,7 +3,7 @@
 
 static const struct uz_IIR_Filter_config Config_SpeedFilter_Load = {
 	.selection = LowPass_first_order,
-	.cutoff_frequency_Hz = 10.0f,
+	.cutoff_frequency_Hz = 1.0f,
 	.sample_frequency_Hz = UZ_CONTROL_FREQUENCY
 };
 

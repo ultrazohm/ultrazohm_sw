@@ -42,6 +42,6 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5(float incre
 }
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
-	data->av.theta_elec_DUT=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5);
+	data->av.theta_mech_DUT=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5);
 	data->av.omega_mech_DUT = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5);
 }

@@ -74,6 +74,7 @@ enum JS_OberservableData {
 	JSO_i_dc_Load,
 	JSO_v_dc_Load,
 	JSO_start_maker,
+	JSO_speed_ref_filtered,
 	JSO_ENDMARKER
 };
 
@@ -169,7 +170,7 @@ enum gui_button_mapping {
 	DUT_DutyCycle_A,
 	DUT_DutyCycle_B,
 	DUT_DutyCycle_C,
-	send_field_10,
+	theta_offset,
 	send_field_11,
 	send_field_12,
 	send_field_13,

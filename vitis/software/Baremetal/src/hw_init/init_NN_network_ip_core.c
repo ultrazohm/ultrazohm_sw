@@ -6,7 +6,7 @@ extern DS_Data Global_Data;
 
 
 #if NN_3_64_SETUP==1
-#define NUMBER_OF_INPUTS 10U  //Might need adjusting
+#define NUMBER_OF_INPUTS 7U  //Might need adjusting
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U
@@ -80,7 +80,7 @@ void init_NN_network_IP_core(void){
 #endif
 
 #if NN_5_64_SETUP==1
-#define NUMBER_OF_INPUTS 10U  //Might need adjusting
+#define NUMBER_OF_INPUTS 7U  //Might need adjusting
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U

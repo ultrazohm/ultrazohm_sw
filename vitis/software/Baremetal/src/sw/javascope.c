@@ -36,7 +36,6 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-static float Error_Code;
 
 // IM observer / FOC diagnostic variables from isr.c
 extern float vf_frequency_setpoint_Hz;
@@ -245,8 +244,6 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
-	Error_Code				= (float)ultrazohm_state_machine_get_state();
-
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
 		javascope_data->scope_ch[j] = *js_ch_selected[j];

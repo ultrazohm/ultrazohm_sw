@@ -50,6 +50,7 @@ static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, 
 #define PHASE_CURRENT_CONV_B2	12.551f
 #define PHASE_CURRENT_CONV_C2	12.544f
 #define DC_CURRENT_CONV 		12.5f
+#define TORQUE_NM_CONV 			2.0f
 
 #define PHASE_CURRENT_OFFSET_A1	0.0078201f
 #define PHASE_CURRENT_OFFSET_B1	0.0029715f
@@ -150,6 +151,7 @@ void ISR_Control(void *data)
 		Global_Data.av.v_abc_Load.b 			= (Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2) + PHASE_VOLT_OFFSET_B2;
 		Global_Data.av.v_abc_Load.c 			= (Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2) + PHASE_VOLT_OFFSET_C2;
 		Global_Data.av.v_dc_Load 				= (Global_Data.aa.A2.me.ADC_A1 * DC_VOLT_CONV);
+		Global_Data.av.Torque_DUT				= (Global_Data.aa.A3.me.ADC_A4 * TORQUE_NM_CONV);
 
 		//TODO ADC Measurement of Torque
 

@@ -29,8 +29,9 @@ extern float vf_frequency_setpoint_Hz;
 extern bool enable_controller_VA;
 extern bool enable_controller_IM;
 extern bool va_use_speed_control;
-extern void reset_asm(void);
+extern void reset_VA(void);
 extern void reset_im(void);
+extern void reset_error_latches(void);
 // FOC / observer control parameters from isr.c
 extern bool use_foc;
 extern bool use_speed_control;
@@ -56,7 +57,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			ultrazohm_state_machine_set_stop(true);
 			enable_controller_VA = false;
 			enable_controller_IM = false;
-			reset_asm();
+			reset_VA();
 			reset_im();
 			break;
 		case (201): // SELECT_DATA_CH1_bits
@@ -299,7 +300,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_1): // Toggle VA controller enable/disable
 			enable_controller_VA = !enable_controller_VA;
 			if (!enable_controller_VA) {
-				reset_asm();
+				reset_VA();
 			}
 			break;
 
@@ -335,7 +336,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
-
+			reset_error_latches();
 			break;
 
 		case (0xFFFF):

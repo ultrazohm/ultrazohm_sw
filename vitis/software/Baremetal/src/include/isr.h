@@ -68,6 +68,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 void reset_asm(void);
 void reset_im(void);
+void reset_error_latches(void);
 
 
 #endif /* ISR_H_ */

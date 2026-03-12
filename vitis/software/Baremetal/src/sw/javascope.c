@@ -64,6 +64,9 @@ extern float omega_slip_rad_s_diag;
 extern float speed_ref_rpm;
 extern float id_ref_A;
 extern float iq_ref_A;
+extern float js_error_vdc_im;
+extern float js_error_vdc_va;
+extern float js_error_max_current_va;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -97,20 +100,6 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.VA_mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.VA_omega_mech;
-	js_ch_observable[JSO_ia] 					= &data->av.VA_ia;
-	js_ch_observable[JSO_ib] 					= &data->av.VA_ib;
-	js_ch_observable[JSO_ic] 					= &data->av.VA_ic;
-	js_ch_observable[JSO_ua] 					= &data->av.VA_vd;
-	js_ch_observable[JSO_ub] 					= &data->av.VA_vq;
-	js_ch_observable[JSO_uc] 					= &data->av.VA_vdc;
-	js_ch_observable[JSO_iq] 					= &data->av.VA_I_q;
-	js_ch_observable[JSO_id] 					= &data->av.VA_I_d;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.VA_theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.VA_theta_mech;
-	js_ch_observable[JSO_ud]					= &data->av.VA_vd;
-	js_ch_observable[JSO_uq]					= &data->av.VA_vq;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -153,26 +142,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_VA_theta_elec_advanced] = &data->av.VA_theta_elec_advanced;
 	js_ch_observable[JSO_VA_i_d_ref]			= &data->rasv.i_dq_ref_VA.d;
 	js_ch_observable[JSO_VA_i_q_ref]			= &data->rasv.i_dq_ref_VA.q;
-	js_ch_observable[JSO_snd_fld_1]				= &data->av.snd_fld[1];
-	js_ch_observable[JSO_snd_fld_2]				= &data->av.snd_fld[2];
-	js_ch_observable[JSO_snd_fld_3]				= &data->av.snd_fld[3];
-	js_ch_observable[JSO_snd_fld_4]				= &data->av.snd_fld[4];
-	js_ch_observable[JSO_snd_fld_5]				= &data->av.snd_fld[5];
-	js_ch_observable[JSO_snd_fld_6]				= &data->av.snd_fld[6];
-	js_ch_observable[JSO_snd_fld_7]				= &data->av.snd_fld[7];
-	js_ch_observable[JSO_snd_fld_8]				= &data->av.snd_fld[8];
-	js_ch_observable[JSO_snd_fld_9]				= &data->av.snd_fld[9];
-	js_ch_observable[JSO_snd_fld_10]			= &data->av.snd_fld[10];
-	js_ch_observable[JSO_snd_fld_11]			= &data->av.snd_fld[11];
-	js_ch_observable[JSO_snd_fld_12]			= &data->av.snd_fld[12];
-	js_ch_observable[JSO_snd_fld_13]			= &data->av.snd_fld[13];
-	js_ch_observable[JSO_snd_fld_14]			= &data->av.snd_fld[14];
-	js_ch_observable[JSO_snd_fld_15]			= &data->av.snd_fld[15];
-	js_ch_observable[JSO_snd_fld_16]			= &data->av.snd_fld[16];
-	js_ch_observable[JSO_snd_fld_17]			= &data->av.snd_fld[17];
-	js_ch_observable[JSO_snd_fld_18]			= &data->av.snd_fld[18];
-	js_ch_observable[JSO_snd_fld_19]			= &data->av.snd_fld[19];
-	js_ch_observable[JSO_snd_fld_20]			= &data->av.snd_fld[20];
 	// Debug V/f
 	js_ch_observable[JSO_DUT1]			= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_DUT2]			= &data->rasv.halfBridge2DutyCycle;
@@ -239,8 +208,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_psi_r_mag]				= &psi_r_mag_Vs;
 	js_slowDataArray[JSSD_FLOAT_IM_id]					= &(data->av.IM_I_d);
 	js_slowDataArray[JSSD_FLOAT_IM_iq]					= &(data->av.IM_I_q);
+	js_slowDataArray[JSSD_FLOAT_error_vdc_im]			= &js_error_vdc_im;
+	js_slowDataArray[JSSD_FLOAT_error_vdc_va]			= &js_error_vdc_va;
+	js_slowDataArray[JSSD_FLOAT_error_max_current_va]	= &js_error_max_current_va;
 	js_slowDataArray[JSSD_FLOAT_FreqReadback]			= &stator_current_fundamental_frequency_Hz;
-	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &Error_Code;
 
 	return Status;
 }

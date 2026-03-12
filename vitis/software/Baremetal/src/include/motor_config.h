@@ -122,11 +122,11 @@
 
 /* Rated operating point */
 #define MOTOR_Psi_rated_Vs        0.341f        /* = Lm × I_mu = 0.271 × 1.26 A */
-#define MOTOR_I_max_A             3.0f          /* observer / speed-ctrl current limit */
+#define MOTOR_I_max_A             10.0f          /* observer / speed-ctrl current limit */
 
 /* Protection limits — hardware-level fault thresholds */
 #define MOTOR_Vdc_max_V           700.0f
-#define MOTOR_Iphase_max_A        6.0f          /* 3× rated line current */
+#define MOTOR_Iphase_max_A        10.0f          /* 3× rated line current */
 #define MOTOR_Speed_max_rpm       1800.0f       /* 1.2× synchronous speed (1500 rpm) */
 
 /* Current PI gains — run calc_pi_gains.py for best values; conservative start */

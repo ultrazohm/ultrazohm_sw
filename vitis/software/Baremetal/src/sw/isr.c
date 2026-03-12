@@ -70,13 +70,16 @@ struct uz_DutyCycle_t dutycyc_IM = {0.0f};
 bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
+float js_error_vdc_im = 0.0f;
+float js_error_vdc_va = 0.0f;
+float js_error_max_current_va = 0.0f;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
-float vf_ratio_V_per_Hz = 230.0f/50.0f;
+float vf_ratio_V_per_Hz = 2.3f; // 4.6f 230V/50Hz
 float vf_boost_voltage_V = 5.0f;
 float vf_max_frequency_Hz = 50.0f;
-float vf_max_voltage_V = 300.0f;
+float vf_max_voltage_V = 325.0f/sqrtf(3);
 float vf_frequency_ramp_Hz_per_s = 5.0f;
 
 // FOC / observer mode selection — settable at runtime via JavaScope
@@ -177,8 +180,10 @@ static void calibrate_current_offsets(void);
 static void update_measurements_from_adc(void);
 static void update_va_current_feedback(void);
 static void safety_check_vdc_limits(void);
-void reset_asm(void);
+static void trip_all_inverters_on_error(void);
+void reset_VA(void);
 void reset_im(void);
+void reset_error_latches(void);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -232,7 +237,7 @@ void ISR_Control(void *data)
 
     if (current_state == idle_state) {
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
-    	reset_asm();
+    	reset_VA();
     	reset_im();
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
@@ -436,11 +441,6 @@ static void update_measurements_from_adc(void) {
 	i_abc_VA.b = Global_Data.av.VA_ib;
 	i_abc_VA.c = Global_Data.av.VA_ic;
 
-	if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA ||
-		fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA ||
-		fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
-		ultrazohm_state_machine_set_stop(true);
-	}
 }
 
 static void update_va_current_feedback(void) {
@@ -450,21 +450,45 @@ static void update_va_current_feedback(void) {
 }
 
 static void safety_check_vdc_limits(void) {
-	if ((Global_Data.av.IM_vdc >= max_voltage_vdc_Im) ||
-		(Global_Data.av.VA_vdc >= max_voltage_vdc_va)) {
-		ultrazohm_state_machine_set_stop(true);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
-		Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+	bool trigger_error = false;
+
+	if (Global_Data.av.IM_vdc >= max_voltage_vdc_Im) {
+		js_error_vdc_im = 1.0f;
+		trigger_error = true;
+	}
+
+	if (Global_Data.av.VA_vdc >= max_voltage_vdc_va) {
+		js_error_vdc_va = 1.0f;
+		trigger_error = true;
+	}
+
+	if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA ||
+		fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA ||
+		fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
+		js_error_max_current_va = 1.0f;
+		trigger_error = true;
+	}
+
+	if (trigger_error) {
+		trip_all_inverters_on_error();
 	}
 }
 
-void reset_asm(void) {
+static void trip_all_inverters_on_error(void) {
+	enable_controller_VA = false;
+	enable_controller_IM = false;
+	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+	ultrazohm_state_machine_set_error(true);
+}
+
+void reset_VA(void) {
 	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_VA);
 	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_VA);
 	Global_Data.rasv.n_ref_VA = 0.0f;
@@ -508,6 +532,12 @@ void reset_im(void) {
 	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+}
+
+void reset_error_latches(void) {
+	js_error_vdc_im = 0.0f;
+	js_error_vdc_va = 0.0f;
+	js_error_max_current_va = 0.0f;
 }
 
 static void im_control(void) {

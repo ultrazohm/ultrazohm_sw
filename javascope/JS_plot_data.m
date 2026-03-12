@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
- file_name = 'RL_CIL_test2.csv';
+% file_name = 'RL_CIL_LB66_56.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

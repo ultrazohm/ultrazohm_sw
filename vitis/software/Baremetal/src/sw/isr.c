@@ -118,9 +118,9 @@ void ISR_Control(void *data)
 
     case REAL:
 	    //Read/Calculate Angle
-	    update_speed_and_position_of_encoder_on_D5(&Global_Data);//get theta_elec and omega_mech
-    	Global_Data.av.theta_elec_DUT 			= Global_Data.av.theta_elec_DUT - Global_Data.av.theta_offset_DUT;
-    	Global_Data.av.theta_mech_DUT 			= Global_Data.av.theta_elec_DUT / Global_Data.rasv.PMSM_DUT_config.polePairs;
+	    update_speed_and_position_of_encoder_on_D5(&Global_Data);//get theta_mech and omega_mech
+
+    	Global_Data.av.theta_elec_DUT 			= uz_signals_wrap((Global_Data.av.theta_mech_DUT * Global_Data.rasv.PMSM_DUT_config.polePairs - Global_Data.av.theta_offset_DUT), 2.0f*UZ_PIf);
     	Global_Data.av.omega_elec_DUT			= Global_Data.av.omega_mech_DUT * Global_Data.rasv.PMSM_DUT_config.polePairs;
     	Global_Data.av.mechanicalRotorSpeed_DUT = Global_Data.av.omega_mech_DUT * 30.0f / UZ_PIf;
 		Global_Data.av.theta_elec_advanced_DUT  = Global_Data.av.theta_elec_DUT + ((1.5f * Global_Data.av.omega_elec_DUT) / UZ_CONTROL_FREQUENCY);
@@ -263,7 +263,7 @@ void ISR_Control(void *data)
 
         		// step throught the array
         		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-        		if(current_uptime>(old_uptime +1000 ) ){
+        		if(current_uptime>(old_uptime +100 ) ){
         			old_uptime=current_uptime;
         			if(setpoint_index < 9){
         				setpoint_index++;

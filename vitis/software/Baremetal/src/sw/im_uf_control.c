@@ -15,6 +15,7 @@
 
 #include "../include/im_uf_control.h"
 #include "../uz/uz_HAL.h"
+#include "../uz/uz_global_configuration.h"
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include <math.h>
@@ -64,10 +65,15 @@ uz_3ph_abc_t im_uf_control_step(const actualValues *av,
     /* voltage_magnitude is RMS L-L (nameplate convention).
      * SVM expects peak L-N: V_peak_LN = V_rms_LL * sqrt(2/3).
      * Applying as v_d with v_q=0 in the frame aligned to electrical_phase_rad
-     * produces a rotating voltage vector of the correct magnitude and angle. */
-    float const V_peak_LN = voltage_magnitude * sqrtf(2.0f / 3.0f);
+     * produces a rotating voltage vector of the correct magnitude and angle.
+     * Cap V_peak_LN so that SVM duty cycles stay within [UZ_MIN_PULSE_WIDTH, 1-UZ_MIN_PULSE_WIDTH]:
+     * at full SVM modulation (V_peak_LN = V_dc/sqrt(3)) duties reach [0, 1]; scaling by
+     * (1 - 2*UZ_MIN_PULSE_WIDTH) shrinks the swing proportionally. */
+    float const V_dc = fmaxf(av->IM_vdc, 1.0f);
+    float const V_peak_LN_max = V_dc * (1.0f - 2.0f * UZ_MIN_PULSE_WIDTH) / sqrtf(3.0f);
+    float const V_peak_LN = fminf(voltage_magnitude * sqrtf(2.0f / 3.0f), V_peak_LN_max);
     uz_3ph_dq_t const v_ref = {.d = V_peak_LN, .q = 0.0f, .zero = 0.0f};
-    struct uz_DutyCycle_t const svm_duty_cycles = uz_Space_Vector_Modulation(v_ref, fmaxf(av->IM_vdc, 1.0f), state->electrical_phase_rad);
+    struct uz_DutyCycle_t const svm_duty_cycles = uz_Space_Vector_Modulation(v_ref, V_dc, state->electrical_phase_rad);
 
     uz_3ph_abc_t const three_phase_duty = {.a = svm_duty_cycles.DutyCycle_A, .b = svm_duty_cycles.DutyCycle_B, .c = svm_duty_cycles.DutyCycle_C};
     rasv->halfBridge1DutyCycle = three_phase_duty.a;

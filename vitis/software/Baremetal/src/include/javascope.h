@@ -98,6 +98,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_error_max_current_im,
 	JSSD_FLOAT_error_vdc_im,
 	JSSD_FLOAT_error_vdc_va,
 	JSSD_FLOAT_error_max_current_va,
@@ -131,6 +132,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_psi_r_mag,
 	JSSD_FLOAT_IM_id,
 	JSSD_FLOAT_IM_iq,
+	JSSD_FLOAT_Error_Code,
 	JSSD_ENDMARKER
 };
 
@@ -330,9 +332,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_kf_r_i,
 	JSSD_FLOAT_vf_ratio_V_per_Hz,
 	JSSD_FLOAT_vf_boost_voltage_V,
-	JSSD_FLOAT_vf_max_frequency_Hz,
-	JSSD_FLOAT_vf_max_voltage_V,
-	JSSD_FLOAT_vf_applied_voltage_magnitude_V,
+	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

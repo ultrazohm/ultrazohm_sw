@@ -17,6 +17,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/error_checks.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -31,7 +32,6 @@ extern bool enable_controller_IM;
 extern bool va_use_speed_control;
 extern void reset_VA(void);
 extern void reset_im(void);
-extern void reset_error_latches(void);
 // FOC / observer control parameters from isr.c
 extern bool use_foc;
 extern bool use_speed_control;
@@ -340,7 +340,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
-			reset_error_latches();
+			enable_controller_VA = false;
+			enable_controller_IM = false;
+			reset_VA();
+			reset_im();
+			error_checks_reset();
+			ultrazohm_state_machine_set_stop(true);
+			ultrazohm_state_machine_set_error(false);
 			break;
 
 		case (0xFFFF):

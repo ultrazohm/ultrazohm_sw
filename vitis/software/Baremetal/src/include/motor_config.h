@@ -9,8 +9,8 @@
  * Parameters collected here are those that differ between machines:
  *   - Electrical nameplate (Rs, Rr, Lm, leakage inductances, pole pairs)
  *   - Mechanical (inertia J)
- *   - Rated operating point (Psi_rated, I_max)
- *   - Protection limits (Vdc_max, Iphase_max, Speed_max)
+ *   - Rated operating point (Psi_rated, control current limit)
+ *   - Protection limits (Vdc_max, phase-current trip limit, Speed_max)
  *   - Control tuning (Speed PI gains, resonant gain scale, KF noise defaults)
  *   - U/f open-loop parameters (V/f ratio, boost, frequency limits)
  *
@@ -39,7 +39,11 @@
 #define MOTOR_CONFIG_SIEMENS_1C4164B    3
 
 /* ===== Select active motor configuration ===== */
-#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_SIEMENS_1LA7073
+#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_LINDNER_3KW
+
+/* VA hardware protection limits are board-specific and independent of the IM under test. */
+#define VA_VDC_MAX_V              52.0f
+#define VA_IPHASE_MAX_A           15.0f
 
 
 /* ============================================================
@@ -59,13 +63,13 @@
 #define MOTOR_J_kgm2              0.01f         /* rotor inertia [kg·m²] */
 
 /* Rated operating point */
-#define MOTOR_Psi_rated_Vs        0.85f         /* rated rotor flux magnitude [Vs] */
-#define MOTOR_I_max_A             10.0f         /* maximum phase current (observer / speed ctrl limit) */
+#define MOTOR_Psi_rated_Vs                0.85f   /* rated rotor flux magnitude [Vs] */
+#define MOTOR_Control_current_max_A      10.0f   /* soft limit used by IM control and speed-loop output saturation */
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V           700.0f
-#define MOTOR_Iphase_max_A        20.0f
-#define MOTOR_Speed_max_rpm       3300.0f
+#define MOTOR_Vdc_max_V                    500.0f
+#define MOTOR_Protection_phase_max_A       20.0f   /* hard trip threshold checked against measured phase currents */
+#define MOTOR_Speed_max_rpm               3300.0f
 
 /* Current PI gains — scaling factors applied on top of the symmetric-optimum base:
  *   kp_base = sigma_ls / (2*Ts),  ki_base = Rs / (2*Ts)
@@ -133,13 +137,13 @@
 #define MOTOR_J_kgm2              8.12e-4f      /* rotor inertia [kg·m²] (from datasheet) */
 
 /* Rated operating point */
-#define MOTOR_Psi_rated_Vs        0.341f        /* = Lm × I_mu = 0.271 × 1.26 A */
-#define MOTOR_I_max_A             6.0f          /* observer / speed-ctrl current limit */
+#define MOTOR_Psi_rated_Vs                0.341f  /* = Lm × I_mu = 0.271 × 1.26 A */
+#define MOTOR_Control_current_max_A       6.0f    /* soft limit used by IM control and speed-loop output saturation */
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V           700.0f
-#define MOTOR_Iphase_max_A        6.0f          /* 3× rated line current */
-#define MOTOR_Speed_max_rpm       1800.0f       /* 1.2× synchronous speed (1500 rpm) */
+#define MOTOR_Vdc_max_V                    600.0f
+#define MOTOR_Protection_phase_max_A       6.0f    /* hard trip threshold checked against measured phase currents */
+#define MOTOR_Speed_max_rpm               1800.0f /* 1.2× synchronous speed (1500 rpm) */
 
 /* Current PI gains — run calc_pi_gains.py for best values; conservative start */
 #define MOTOR_Current_Kp_scale    0.1f
@@ -184,13 +188,13 @@
 #define MOTOR_J_kgm2              0.0990      /* rotor inertia [kg·m²] (from datasheet) */
 
 /* Rated operating point */
-#define MOTOR_Psi_rated_Vs        1.0f	/* MOTOR_Lm_H* I_ma/I_D = 13.4A * sqrt(2) = 52.1e-3f* 19A */
-#define MOTOR_I_max_A             50.0f
+#define MOTOR_Psi_rated_Vs                1.0f    /* MOTOR_Lm_H* I_ma/I_D = 13.4A * sqrt(2) = 52.1e-3f* 19A */
+#define MOTOR_Control_current_max_A      50.0f
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V           800.0f
-#define MOTOR_Iphase_max_A        50.0f          /* 3× rated line current */
-#define MOTOR_Speed_max_rpm       1600.0f       /* 1.2× synchronous speed (1500 rpm) */
+#define MOTOR_Vdc_max_V                    800.0f
+#define MOTOR_Protection_phase_max_A       50.0f   /* hard trip threshold checked against measured phase currents */
+#define MOTOR_Speed_max_rpm               1600.0f  /* 1.2× synchronous speed (1500 rpm) */
 
 /* Current PI gains — run calc_pi_gains.py for best values; conservative start */
 #define MOTOR_Current_Kp_scale    0.1f

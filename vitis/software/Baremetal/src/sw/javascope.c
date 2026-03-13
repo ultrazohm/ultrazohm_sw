@@ -17,6 +17,7 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
+#include "../include/error_checks.h"
 #include "xil_cache.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
@@ -36,6 +37,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float js_error_code = 0.0f;
 
 // IM observer / FOC diagnostic variables from isr.c
 extern float vf_frequency_setpoint_Hz;
@@ -64,6 +66,7 @@ extern float omega_slip_rad_s_diag;
 extern float speed_ref_rpm;
 extern float id_ref_A;
 extern float iq_ref_A;
+extern float js_error_max_current_im;
 extern float js_error_vdc_im;
 extern float js_error_vdc_va;
 extern float js_error_max_current_va;
@@ -183,6 +186,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_error_max_current_im]	= &js_error_max_current_im;
 	js_slowDataArray[JSSD_FLOAT_IM_vdc]				= &(data->av.IM_vdc);
 	js_slowDataArray[JSSD_FLOAT_VA_vdc]				= &(data->av.VA_vdc);
 	js_slowDataArray[JSSD_FLOAT_VA_i_d]				= &(data->av.VA_I_d);
@@ -214,6 +218,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_error_vdc_va]			= &js_error_vdc_va;
 	js_slowDataArray[JSSD_FLOAT_error_max_current_va]	= &js_error_max_current_va;
 	js_slowDataArray[JSSD_FLOAT_FreqReadback]			= &stator_current_fundamental_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &js_error_code;
 
 	return Status;
 }
@@ -244,6 +249,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+//	js_error_code           = (float)error_reason;
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
 		javascope_data->scope_ch[j] = *js_ch_selected[j];

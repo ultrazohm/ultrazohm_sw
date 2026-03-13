@@ -44,10 +44,6 @@
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
 
-//defines and limits
-#define		MAX_CURRENT_VA		15.0f
-#define		max_voltage_vdc_Im	410.0f
-#define		max_voltage_vdc_va	52.0f
 #define RR_ID_SCALE 1 // Defines the max points for the paraid in ampere. E.g., if set to 5, the grid is +/- 5A iq and 0 to -5 A ID.
 #define RR_IQ_SCALE 1 // Defines the max points for the paraid in ampere.
 float id_setpoints[] = {
@@ -77,9 +73,6 @@ struct uz_DutyCycle_t dutycyc_VA = {0.0f};
 bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
-float js_error_vdc_im = 0.0f;
-float js_error_vdc_va = 0.0f;
-float js_error_max_current_va = 0.0f;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
@@ -137,14 +130,16 @@ static uz_IM_t IM_config = {
     .Lm_Henry       = MOTOR_Lm_H,
     .polePairs      = MOTOR_PolePairs,
     .J_kg_m_squared = MOTOR_J_kgm2,
-    .I_max_Ampere   = MOTOR_I_max_A,
+    .I_max_Ampere   = MOTOR_Control_current_max_A,
     .Psi_rated_Vs   = MOTOR_Psi_rated_Vs,
 };
 
 static error_checks_config_t error_checks_config = {
-    .vdc_max                  = MOTOR_Vdc_max_V,
-    .iphase_max               = MOTOR_Iphase_max_A,
-    .max_mechanical_speed_rpm = MOTOR_Speed_max_rpm,
+    .im_vdc_max                  = MOTOR_Vdc_max_V,
+    .im_iphase_max               = MOTOR_Protection_phase_max_A,
+    .im_max_mechanical_speed_rpm = MOTOR_Speed_max_rpm,
+    .va_vdc_max                  = VA_VDC_MAX_V,
+    .va_iphase_max               = VA_IPHASE_MAX_A,
 };
 
 // IM control module states
@@ -183,16 +178,13 @@ static void ReadAllADC();
 static void im_control();
 static void speed_control_VA();
 static void current_control_VA();
-static void safety_check_wolfspeed();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 static void calibrate_current_offsets(void);
 static void update_measurements_from_adc(void);
 static void update_va_current_feedback(void);
-static void safety_check_vdc_limits(void);
 static void trip_all_inverters_on_error(void);
 void reset_VA(void);
 void reset_im(void);
-void reset_error_latches(void);
 void rr_profile(void);
 
 //==============================================================================================================================================================
@@ -243,7 +235,10 @@ void ISR_Control(void *data)
     Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
     calibrate_current_offsets();
     update_measurements_from_adc();
-    safety_check_vdc_limits();
+    (void)error_checks_step(&Global_Data.av, &error_checks_config);
+    if (error_checks_trip_pending()) {
+		trip_all_inverters_on_error();
+    }
     update_va_current_feedback();
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 
@@ -272,6 +267,9 @@ void ISR_Control(void *data)
     	    // RR Profile
     	    rr_profile();
     	}
+    }
+    if (error_checks_trip_pending()) {
+		trip_all_inverters_on_error();
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -439,7 +437,6 @@ static void update_measurements_from_adc(void) {
 
 	// status, safety and derived values
 	Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-	safety_check_wolfspeed();
 	Global_Data.av.mean_temp_inv_d2 =
 			(Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1 +
 			 Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1 +
@@ -458,31 +455,6 @@ static void update_va_current_feedback(void) {
 	i_dq_VA = uz_transformation_3ph_abc_to_dq(i_abc_VA, Global_Data.av.VA_theta_elec);
 	Global_Data.av.VA_I_d = i_dq_VA.d;
 	Global_Data.av.VA_I_q = i_dq_VA.q;
-}
-
-static void safety_check_vdc_limits(void) {
-	bool trigger_error = false;
-
-	if (Global_Data.av.IM_vdc >= max_voltage_vdc_Im) {
-		js_error_vdc_im = 1.0f;
-		trigger_error = true;
-	}
-
-	if (Global_Data.av.VA_vdc >= max_voltage_vdc_va) {
-		js_error_vdc_va = 1.0f;
-		trigger_error = true;
-	}
-
-	if (fabs(Global_Data.av.VA_ia) > MAX_CURRENT_VA ||
-		fabs(Global_Data.av.VA_ib) > MAX_CURRENT_VA ||
-		fabs(Global_Data.av.VA_ic) > MAX_CURRENT_VA) {
-		js_error_max_current_va = 1.0f;
-		trigger_error = true;
-	}
-
-	if (trigger_error) {
-		trip_all_inverters_on_error();
-	}
 }
 
 static void trip_all_inverters_on_error(void) {
@@ -545,12 +517,6 @@ void reset_im(void) {
 	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
 }
 
-void reset_error_latches(void) {
-	js_error_vdc_im = 0.0f;
-	js_error_vdc_va = 0.0f;
-	js_error_max_current_va = 0.0f;
-}
-
 static void im_control(void) {
 	// Apply runtime-tunable KF noise matrices
 	if (im_ss_computed) {
@@ -593,9 +559,6 @@ static void im_control(void) {
 	psi_r_mag_Vs  = observer_output.psi_r_mag;
 	omega_s_rad_s = 2.0f * UZ_PIf * observer_output.stator_current_fundamental_frequency_Hz;
 	omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_el_rad_s;
-
-	// Error checks for IM motor (overcurrent, overvoltage, overspeed)
-	error_checks_step(&Global_Data.av, &error_checks_config);
 
 	// Control law selection
 	if (use_foc) {
@@ -649,14 +612,6 @@ static void current_control_VA() {
 	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_VA.DutyCycle_A;
 	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_VA.DutyCycle_B;
 	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_VA.DutyCycle_C;
-};
-
-static void safety_check_wolfspeed() {
-	// Dig 14: Temperature
-    Global_Data.av.pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
-    Global_Data.av.duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
-//    Global_Data.av.temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(Global_Data.av.duty_cycle ,lin_inter_param);
-    Global_Data.av.OCP_INVERTER = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.d1_gpi_ch15_17,0);
 };
 
 static void speed_control_VA() {

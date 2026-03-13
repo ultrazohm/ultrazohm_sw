@@ -106,6 +106,7 @@ float psi_r_mag_Vs = 0.0f;
 float omega_s_rad_s = 0.0f;
 float det_omega_s_rad_s = 0.0f;
 float stator_current_fundamental_frequency_Hz = 0.0f;
+float electric_torque_estimate_Nm = 0.0f;
 
 float const duty_offset = 0.5f;
 float I_U_offset;
@@ -507,6 +508,7 @@ void reset_im(void) {
 	psi_r_mag_Vs       = 0.0f;
 	omega_s_rad_s      = 0.0f;
 	det_omega_s_rad_s  = 0.0f;
+	electric_torque_estimate_Nm = 0.0f;
 	kf_innov_alpha     = 0.0f;
 	kf_innov_beta      = 0.0f;
 	id_meas_raw_dq     = 0.0f;
@@ -542,6 +544,7 @@ static void im_control(void) {
 
 	im_rotor_flux_observer_output_t const observer_output = obs.output;
 	det_omega_s_rad_s = obs.det_omega_s_rad_s;
+	electric_torque_estimate_Nm = obs.electric_torque_estimate_Nm;
 	kf_innov_alpha    = obs.kf_innov_alpha;
 	kf_innov_beta     = obs.kf_innov_beta;
 

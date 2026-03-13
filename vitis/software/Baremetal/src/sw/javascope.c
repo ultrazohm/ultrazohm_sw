@@ -51,6 +51,7 @@ extern float psi_r_mag_Vs;
 extern float omega_s_rad_s;
 extern float kf_innov_alpha;
 extern float kf_innov_beta;
+extern float electric_torque_estimate_Nm;
 extern float kf_q_i;
 extern float kf_q_psi;
 extern float kf_r_i;
@@ -82,7 +83,6 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -106,45 +106,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-	js_ch_observable[JSO_pwm_freq]				= &data->av.pwm_freq;
-	js_ch_observable[JSO_duty_cycle]			= &data->av.duty_cycle;
-	js_ch_observable[JSO_temp]			  		= &data->av.temp;
-	js_ch_observable[JSO_OCP]			  		= &data->av.OCP_INVERTER;
-	js_ch_observable[JSO_FAULT]			  		= &data->av.FAULT_INVERTER;
-	js_ch_observable[JSO_pwm_frequency_hz]		= &data->av.pwm_frequency_hz;
-	js_ch_observable[JSO_isr_samplerate_s]		= &data->av.isr_samplerate_s;
 	js_ch_observable[JSO_IM_ia]				= &data->av.IM_ia;
 	js_ch_observable[JSO_IM_ib]				= &data->av.IM_ib;
 	js_ch_observable[JSO_IM_ic]				= &data->av.IM_ic;
 	js_ch_observable[JSO_IM_vdc]				= &data->av.IM_vdc;
 	js_ch_observable[JSO_IM_mechanicalRotorSpeed] = &data->av.IM_mechanicalRotorSpeed;
 	js_ch_observable[JSO_IM_mechanicalRotorSpeed_filtered] = &data->av.IM_mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_IM_mechanicalPosition] = &data->av.IM_mechanicalPosition;
 	js_ch_observable[JSO_IM_I_d]				= &data->av.IM_I_d;
 	js_ch_observable[JSO_IM_I_q]				= &data->av.IM_I_q;
-	js_ch_observable[JSO_IM_theta_elec]		= &data->av.IM_theta_elec;
-	js_ch_observable[JSO_IM_theta_mech]		= &data->av.IM_theta_mech;
-	js_ch_observable[JSO_IM_theta_offset]		= &data->av.IM_theta_offset;
-	js_ch_observable[JSO_IM_theta_elec_advanced] = &data->av.IM_theta_elec_advanced;
-	js_ch_observable[JSO_VA_polepairs]			= &data->av.VA_polepairs;
-	js_ch_observable[JSO_VA_ia]					= &data->av.VA_ia;
-	js_ch_observable[JSO_VA_ib]					= &data->av.VA_ib;
-	js_ch_observable[JSO_VA_ic]					= &data->av.VA_ic;
-	js_ch_observable[JSO_VA_vd]					= &data->av.VA_vd;
-	js_ch_observable[JSO_VA_vq]					= &data->av.VA_vq;
-	js_ch_observable[JSO_VA_vdc]				= &data->av.VA_vdc;
-	js_ch_observable[JSO_VA_mechanicalRotorSpeed] = &data->av.VA_mechanicalRotorSpeed;
-	js_ch_observable[JSO_VA_mechanicalRotorSpeed_filtered] = &data->av.VA_mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_VA_mechanicalPosition] = &data->av.VA_mechanicalPosition;
-	js_ch_observable[JSO_VA_omega_mech]			= &data->av.VA_omega_mech;
-	js_ch_observable[JSO_VA_I_d]				= &data->av.VA_I_d;
-	js_ch_observable[JSO_VA_I_q]				= &data->av.VA_I_q;
-	js_ch_observable[JSO_VA_theta_elec]			= &data->av.VA_theta_elec;
-	js_ch_observable[JSO_VA_theta_mech]			= &data->av.VA_theta_mech;
-	js_ch_observable[JSO_VA_theta_offset]		= &data->av.VA_theta_offset;
-	js_ch_observable[JSO_VA_theta_elec_advanced] = &data->av.VA_theta_elec_advanced;
-	js_ch_observable[JSO_VA_i_d_ref]			= &data->rasv.i_dq_ref_VA.d;
-	js_ch_observable[JSO_VA_i_q_ref]			= &data->rasv.i_dq_ref_VA.q;
 	// Debug V/f
 	js_ch_observable[JSO_DUT1]			= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_DUT2]			= &data->rasv.halfBridge2DutyCycle;
@@ -166,39 +135,43 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_uq_res]				= &uq_res_V;
 	js_ch_observable[JSO_IM_omega_slip]			= &omega_slip_rad_s_diag;
 	js_ch_observable[JSO_IM_speed_ref]			= &speed_ref_rpm;
-	js_ch_observable[JSO_IM_speed]			= &data->av.IM_mechanicalRotorSpeed;
 	js_ch_observable[JSO_IM_vd]				= &data->av.IM_vd;
 	js_ch_observable[JSO_IM_vq]				= &data->av.IM_vq;
 	js_ch_observable[JSO_IM_id_ref]			= &id_ref_A;
 	js_ch_observable[JSO_IM_iq_ref]			= &iq_ref_A;
+	// VA signals kept at the end of the fast observable list on purpose.
+	js_ch_observable[JSO_VA_ia]					= &data->av.VA_ia;
+	js_ch_observable[JSO_VA_ib]					= &data->av.VA_ib;
+	js_ch_observable[JSO_VA_ic]					= &data->av.VA_ic;
+	js_ch_observable[JSO_VA_vd]					= &data->av.VA_vd;
+	js_ch_observable[JSO_VA_vq]					= &data->av.VA_vq;
+	js_ch_observable[JSO_VA_vdc]				= &data->av.VA_vdc;
+	js_ch_observable[JSO_VA_mechanicalRotorSpeed] = &data->av.VA_mechanicalRotorSpeed;
+	js_ch_observable[JSO_VA_mechanicalRotorSpeed_filtered] = &data->av.VA_mechanicalRotorSpeed_filtered;
+	js_ch_observable[JSO_VA_omega_mech]			= &data->av.VA_omega_mech;
+	js_ch_observable[JSO_VA_I_d]				= &data->av.VA_I_d;
+	js_ch_observable[JSO_VA_I_q]				= &data->av.VA_I_q;
+	js_ch_observable[JSO_VA_theta_elec]			= &data->av.VA_theta_elec;
+	js_ch_observable[JSO_VA_theta_elec_advanced] = &data->av.VA_theta_elec_advanced;
+	js_ch_observable[JSO_VA_i_d_ref]			= &data->rasv.i_dq_ref_VA.d;
+	js_ch_observable[JSO_VA_i_q_ref]			= &data->rasv.i_dq_ref_VA.q;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.VA_vd);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.VA_vq);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.VA_I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.VA_I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.VA_mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &zerovalue;
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &electric_torque_estimate_Nm;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_pwm_frequency_hz]		= &(data->av.pwm_frequency_hz);
+	js_slowDataArray[JSSD_FLOAT_isr_samplerate_s]		= &(data->av.isr_samplerate_s);
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_error_max_current_im]	= &js_error_max_current_im;
 	js_slowDataArray[JSSD_FLOAT_IM_vdc]				= &(data->av.IM_vdc);
-	js_slowDataArray[JSSD_FLOAT_VA_vdc]				= &(data->av.VA_vdc);
-	js_slowDataArray[JSSD_FLOAT_VA_i_d]				= &(data->av.VA_I_d);
-	js_slowDataArray[JSSD_FLOAT_VA_i_q]				= &(data->av.VA_I_q);
-	js_slowDataArray[JSSD_FLOAT_VA_speed]				= &(data->av.VA_mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_VA_theta_elec]			= &(data->av.VA_theta_elec);
 	js_slowDataArray[JSSD_FLOAT_IM_ia]					= &(data->av.IM_ia);
 	js_slowDataArray[JSSD_FLOAT_IM_ib]					= &(data->av.IM_ib);
 	js_slowDataArray[JSSD_FLOAT_IM_ic]					= &(data->av.IM_ic);
-	js_slowDataArray[JSSD_FLOAT_VA_ia]					= &(data->av.VA_ia);
-	js_slowDataArray[JSSD_FLOAT_VA_ib]					= &(data->av.VA_ib);
-	js_slowDataArray[JSSD_FLOAT_VA_ic]					= &(data->av.VA_ic);
 	// KF tuning
 	js_slowDataArray[JSSD_FLOAT_kf_q_i]				= &kf_q_i;
 	js_slowDataArray[JSSD_FLOAT_kf_q_psi]				= &kf_q_psi;
@@ -214,18 +187,36 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_psi_r_mag]				= &psi_r_mag_Vs;
 	js_slowDataArray[JSSD_FLOAT_IM_id]					= &(data->av.IM_I_d);
 	js_slowDataArray[JSSD_FLOAT_IM_iq]					= &(data->av.IM_I_q);
+	js_slowDataArray[JSSD_FLOAT_IM_speed]				= &(data->av.IM_mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_IM_vd]					= &(data->av.IM_vd);
+	js_slowDataArray[JSSD_FLOAT_IM_vq]					= &(data->av.IM_vq);
+	js_slowDataArray[JSSD_FLOAT_IM_omega_s_rad_s]		= &omega_s_rad_s;
+	js_slowDataArray[JSSD_FLOAT_IM_ud_pi]				= &ud_pi_V;
+	js_slowDataArray[JSSD_FLOAT_IM_uq_pi]				= &uq_pi_V;
+	js_slowDataArray[JSSD_FLOAT_IM_omega_slip]			= &omega_slip_rad_s_diag;
+	js_slowDataArray[JSSD_FLOAT_IM_speed_filt]			= &(data->av.IM_mechanicalRotorSpeed_filtered);
 	js_slowDataArray[JSSD_FLOAT_error_vdc_im]			= &js_error_vdc_im;
 	js_slowDataArray[JSSD_FLOAT_error_vdc_va]			= &js_error_vdc_va;
 	js_slowDataArray[JSSD_FLOAT_error_max_current_va]	= &js_error_max_current_va;
-	js_slowDataArray[JSSD_FLOAT_FreqReadback]			= &stator_current_fundamental_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_IM_stator_current_fundamental_frequency_Hz]	= &stator_current_fundamental_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &js_error_code;
+	// VA slow data kept at the end of the slow-data list on purpose.
+	js_slowDataArray[JSSD_FLOAT_VA_ia]					= &(data->av.VA_ia);
+	js_slowDataArray[JSSD_FLOAT_VA_ib]					= &(data->av.VA_ib);
+	js_slowDataArray[JSSD_FLOAT_VA_ic]					= &(data->av.VA_ic);
+	js_slowDataArray[JSSD_FLOAT_VA_vd]					= &(data->av.VA_vd);
+	js_slowDataArray[JSSD_FLOAT_VA_vq]					= &(data->av.VA_vq);
+	js_slowDataArray[JSSD_FLOAT_VA_vdc]				= &(data->av.VA_vdc);
+	js_slowDataArray[JSSD_FLOAT_VA_i_d]				= &(data->av.VA_I_d);
+	js_slowDataArray[JSSD_FLOAT_VA_i_q]				= &(data->av.VA_I_q);
+	js_slowDataArray[JSSD_FLOAT_VA_speed]				= &(data->av.VA_mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_VA_theta_elec]			= &(data->av.VA_theta_elec);
 
 	return Status;
 }
 
 
 void JavaScope_update(DS_Data* data){
-
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	struct APU_to_RPU_t Received_Data_from_A53 = {0};
@@ -249,7 +240,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
-//	js_error_code           = (float)error_reason;
+	js_error_code           = (float)error_reason;
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
 		javascope_data->scope_ch[j] = *js_ch_selected[j];

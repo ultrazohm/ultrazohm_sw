@@ -67,7 +67,7 @@
 #define MOTOR_Control_current_max_A      10.0f   /* soft limit used by IM control and speed-loop output saturation */
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V                    500.0f
+#define MOTOR_Vdc_max_V                    700.0f
 #define MOTOR_Protection_phase_max_A       20.0f   /* hard trip threshold checked against measured phase currents */
 #define MOTOR_Speed_max_rpm               3300.0f
 
@@ -78,8 +78,8 @@
 #define MOTOR_Current_Ki_scale    0.2f
 
 /* Speed PI gains — re-tune for your load inertia and bandwidth requirement */
-#define MOTOR_Speed_Kp            0.01f
-#define MOTOR_Speed_Ki            0.50f
+#define MOTOR_Speed_Kp            0.005f
+#define MOTOR_Speed_Ki            0.05f
 
 /* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
 #define MOTOR_Resonant_gain_scale 0.3f

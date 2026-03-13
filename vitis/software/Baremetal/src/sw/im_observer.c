@@ -16,6 +16,22 @@
 #include "../include/im_observer.h"
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_math_constants.h"
+#include <math.h>
+
+static float im_observer_estimate_electric_torque_Nm(
+    const uz_IM_t *im_config,
+    const im_rotor_flux_observer_output_t *output)
+{
+    uz_assert_not_NULL(im_config);
+    uz_assert_not_NULL(output);
+
+    float const lr = im_config->Lsigma_r_Henry + im_config->Lm_Henry;
+    if ((lr <= 0.0f) || !isfinite(output->psi_r_mag) || !isfinite(output->i_q)) {
+        return 0.0f;
+    }
+
+    return 1.5f * im_config->polePairs * (im_config->Lm_Henry / lr) * output->psi_r_mag * output->i_q;
+}
 
 im_observer_result_t im_observer_step(
     const actualValues              *av,
@@ -47,6 +63,7 @@ im_observer_result_t im_observer_step(
 
     if (!kf_ready) {
         result.output = det_output;
+        result.electric_torque_estimate_Nm = im_observer_estimate_electric_torque_Nm(im_config, &result.output);
         return result;
     }
 
@@ -61,5 +78,6 @@ im_observer_result_t im_observer_step(
     result.kf_K_11        = kf_state->K_diag[1];
 
     result.output = use_kalman_filter ? kf_output : det_output;
+    result.electric_torque_estimate_Nm = im_observer_estimate_electric_torque_Nm(im_config, &result.output);
     return result;
 }

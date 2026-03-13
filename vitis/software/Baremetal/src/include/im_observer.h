@@ -45,6 +45,7 @@ typedef struct {
     float kf_S_11;
     float kf_K_00;
     float kf_K_11;
+    float electric_torque_estimate_Nm;
 } im_observer_result_t;
 
 /**

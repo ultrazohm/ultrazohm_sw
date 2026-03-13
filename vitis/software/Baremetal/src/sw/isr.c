@@ -228,7 +228,9 @@ void Initialize_ISR_Software(DS_Data *data)
     im_ss_computed = true;
 
     id_ref_A = uz_IM_get_id_ref_for_psi_r(IM_config, IM_config.Psi_rated_Vs);
-    data->av.snd_fld[2] = id_ref_A;
+    data->av.snd_fld[2] = speed_ref_rpm;
+    data->av.snd_fld[3] = id_ref_A;
+    data->av.snd_fld[4] = iq_ref_A;
 }
 
 //==============================================================================================================================================================

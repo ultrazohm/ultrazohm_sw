@@ -449,9 +449,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
 	}
-	speed_ref_rpm = data->av.snd_fld[2];
-	id_ref_A = data->av.snd_fld[3];
-	iq_ref_A = data->av.snd_fld[4];
+	if (data->rr_profile.setpoints_from_javascope) {
+		speed_ref_rpm = data->av.snd_fld[2];
+		id_ref_A = data->av.snd_fld[3];
+		iq_ref_A = data->av.snd_fld[4];
+	}
 	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[10];
 	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[11];
 	data->rasv.n_ref_VA = data->av.snd_fld[12];

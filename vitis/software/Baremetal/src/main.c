@@ -20,7 +20,7 @@
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define 	VMB_1000_SENS	 	0.003934422f // 60/1000V * old sens 0.0655737f
-//#define 	DC_VOLTAGE_2_SI  	37.64f
+#define 	DC_VOLTAGE_2_SI  	0.003764f
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -42,7 +42,7 @@ DS_Data Global_Data = {
                 .ADC_A1 = 10.0f / MOTOR_CURRENT_2_SI,
                 .ADC_A2 = 10.0f / MOTOR_CURRENT_2_SI,
                 .ADC_A3 = 10.0f / MOTOR_CURRENT_2_SI,
-                .ADC_A4 = 10.0f / 0.3764f * 100.0f,
+                .ADC_A4 = 10.0f / DC_VOLTAGE_2_SI,
                 .ADC_B5 = 10.0f,
                 .ADC_B6 = 10.0f,
                 .ADC_B7 = 10.0f,

@@ -86,11 +86,14 @@ float vf_voltage_magnitude_V = 0.0f; /* diagnostic: last commanded voltage in RM
 // FOC / observer mode selection — settable at runtime via JavaScope
 bool use_foc = false;
 bool use_speed_control = false;
+
 bool use_resonant_6th = false;
 bool use_kalman_filter = false;
 float id_ref_A = 0.0f;
 float iq_ref_A = 0.0f;
 float speed_ref_rpm = 0.0f;
+float im_speed_pi_kp = MOTOR_Speed_Kp;
+float im_speed_pi_ki = MOTOR_Speed_Ki;
 
 // KF tuning — overridable at runtime
 float kf_q_i   = MOTOR_KF_Q_i;
@@ -188,6 +191,28 @@ void reset_VA(void);
 void reset_im(void);
 void rr_profile(void);
 
+void set_im_speed_pi_kp(float new_kp)
+{
+	if (new_kp < 0.0f) {
+		return;
+	}
+	im_speed_pi_kp = new_kp;
+	if (foc_control_state.pi_speed != NULL) {
+		uz_PI_Controller_set_Kp(foc_control_state.pi_speed, new_kp);
+	}
+}
+
+void set_im_speed_pi_ki(float new_ki)
+{
+	if (new_ki < 0.0f) {
+		return;
+	}
+	im_speed_pi_ki = new_ki;
+	if (foc_control_state.pi_speed != NULL) {
+		uz_PI_Controller_set_Ki(foc_control_state.pi_speed, new_ki);
+	}
+}
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // Initialize_ISR_Software() — call once from main after isr_samplerate_s is set
@@ -202,6 +227,8 @@ void Initialize_ISR_Software(DS_Data *data)
     im_rotor_flux_observer_init(&IM_config, data->av.isr_samplerate_s, &rotor_flux_observer_state);
 
     im_foc_control_init(&IM_config, data->av.isr_samplerate_s, &foc_control_state);
+    set_im_speed_pi_kp(im_speed_pi_kp);
+    set_im_speed_pi_ki(im_speed_pi_ki);
     im_foc_control_reset(&foc_control_state);
 
     kf_observer_state = (im_kf_observer_state_t){
@@ -216,9 +243,6 @@ void Initialize_ISR_Software(DS_Data *data)
     im_ss_computed = true;
 
     id_ref_A = uz_IM_get_id_ref_for_psi_r(IM_config, IM_config.Psi_rated_Vs);
-    data->av.snd_fld[2] = speed_ref_rpm;
-    data->av.snd_fld[3] = id_ref_A;
-    data->av.snd_fld[4] = iq_ref_A;
 }
 
 //==============================================================================================================================================================

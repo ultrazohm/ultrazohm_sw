@@ -29,6 +29,7 @@ extern uint32_t js_status_BareToRTOS;
 extern float vf_frequency_setpoint_Hz;
 extern bool enable_controller_VA;
 extern bool enable_controller_IM;
+
 extern bool va_use_speed_control;
 extern void reset_VA(void);
 extern void reset_im(void);
@@ -43,6 +44,10 @@ extern float kf_r_i;
 extern float id_ref_A;
 extern float iq_ref_A;
 extern float speed_ref_rpm;
+extern float im_speed_pi_kp;
+extern float im_speed_pi_ki;
+extern void set_im_speed_pi_kp(float new_kp);
+extern void set_im_speed_pi_ki(float new_ki);
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -249,13 +254,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[9] = kf_q_i;
 			break;
 
-		case (Set_Send_Field_10):
-
-		data->av.snd_fld[10] = value;
+		case (Set_Send_Field_10): // IM speed PI Kp
+		if (value >= 0.0f) { set_im_speed_pi_kp(value); }
+		data->av.snd_fld[10] = im_speed_pi_kp;
 			break;
 
-		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		case (Set_Send_Field_11): // IM speed PI Ki
+		if (value >= 0.0f) { set_im_speed_pi_ki(value); }
+		data->av.snd_fld[11] = im_speed_pi_ki;
 			break;
 
 		case (Set_Send_Field_12):
@@ -459,7 +465,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		id_ref_A = data->av.snd_fld[3];
 		iq_ref_A = data->av.snd_fld[4];
 	}
-	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[10];
-	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[11];
-	data->rasv.n_ref_VA = data->av.snd_fld[12];
+	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[12];
+	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[13];
+	data->rasv.n_ref_VA = data->av.snd_fld[14];
 }

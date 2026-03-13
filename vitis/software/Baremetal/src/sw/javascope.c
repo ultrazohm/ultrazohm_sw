@@ -55,6 +55,8 @@ extern float electric_torque_estimate_Nm;
 extern float kf_q_i;
 extern float kf_q_psi;
 extern float kf_r_i;
+extern float im_speed_pi_kp;
+extern float im_speed_pi_ki;
 extern float id_meas_raw_dq;
 extern float iq_meas_raw_dq;
 extern float ud_pi_V;
@@ -176,6 +178,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_kf_q_i]				= &kf_q_i;
 	js_slowDataArray[JSSD_FLOAT_kf_q_psi]				= &kf_q_psi;
 	js_slowDataArray[JSSD_FLOAT_kf_r_i]				= &kf_r_i;
+	js_slowDataArray[JSSD_FLOAT_IM_speed_Kp]			= &im_speed_pi_kp;
+	js_slowDataArray[JSSD_FLOAT_IM_speed_Ki]			= &im_speed_pi_ki;
 	// V/f parameters
 	js_slowDataArray[JSSD_FLOAT_vf_frequency_setpoint_Hz]	= &vf_frequency_setpoint_Hz;
 	js_slowDataArray[JSSD_FLOAT_vf_ratio_V_per_Hz]			= &vf_ratio_V_per_Hz;

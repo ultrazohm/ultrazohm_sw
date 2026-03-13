@@ -5,6 +5,27 @@ from plotly_resampler import FigureResampler
 
 app = Dash(__name__)
 fig = FigureResampler()
+df = pd.DataFrame()
+
+
+def load_dataframe(filename):
+    if get_file_extension(filename) == 'parquet':
+        loaded_df = pd.read_parquet(filename)
+    else:
+        loaded_df = pd.read_csv(filename, sep=';', low_memory=False)
+
+    # Remove repeated header rows that may be embedded in concatenated log files.
+    if 'time' in loaded_df.columns:
+        loaded_df = loaded_df[loaded_df['time'].astype(str).str.strip() != 'time'].copy()
+
+    for col in loaded_df.columns:
+        loaded_df[col] = pd.to_numeric(loaded_df[col], errors='ignore')
+
+    if 'time' in loaded_df.columns:
+        loaded_df['time'] = pd.to_numeric(loaded_df['time'], errors='coerce')
+        loaded_df = loaded_df.dropna(subset=['time']).copy()
+
+    return loaded_df
 
 app.layout = html.Div([
     html.H1(children='UltraZohm Data Viewer', style={'textAlign': 'center'}),
@@ -34,13 +55,10 @@ app.layout = html.Div([
 )
 def update_options(filename):
     global df 
-    filetype=get_file_extension(filename)
-    if filetype=='parquet':
-        df = pd.read_parquet(filename)
-    else:
-        df = pd.read_csv(filename,sep=';')
+    df = load_dataframe(filename)
     dropdown_options = [{'label': col, 'value': col} for col in df.columns]
-    return dropdown_options, [df.columns[0]] if dropdown_options else None  # Select the first column by default if options available
+    default_value = ['time'] if 'time' in df.columns else ([df.columns[0]] if dropdown_options else None)
+    return dropdown_options, default_value
 
 @app.callback(
     Output('graph-content', 'figure'),
@@ -51,11 +69,17 @@ def update_options(filename):
 def update_graph(value, filename):
     global fig
     global df
-    # df = pd.read_parquet(filename)
     fig.replace(go.Figure())  # Clear the existing figure
-    if value:
+    if value and 'time' in df.columns:
         for col in value:
-            fig.add_trace(go.Scattergl(name=col, x=df['time'], y=df[col]))
+            if col == 'time' or col not in df.columns:
+                continue
+            plot_df = df[['time', col]].copy()
+            plot_df[col] = pd.to_numeric(plot_df[col], errors='coerce')
+            plot_df = plot_df.dropna(subset=['time', col])
+            if plot_df.empty:
+                continue
+            fig.add_trace(go.Scattergl(name=col, x=plot_df['time'], y=plot_df[col]))
 
     fig.update_layout(template="simple_white", xaxis=dict(showgrid=True), yaxis=dict(showgrid=True))
 
@@ -75,4 +99,4 @@ def get_file_extension(filename):
     return parts[-1]
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)

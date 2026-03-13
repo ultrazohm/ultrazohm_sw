@@ -67,19 +67,13 @@ float IM_theta_el_offset = 0.0f;
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_VA = {0.0f};
-struct uz_3ph_abc_t i_abc_IM = {0.0f};
-struct uz_3ph_abc_t v_abc_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_VA = {0.0f};
 struct uz_3ph_dq_t i_dq_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_VA = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_VA = {0.0f};
-struct uz_3ph_dq_t v_dq_ref_IM = {0.0f};
-struct uz_3ph_dq_t v_dq_meas_IM = {0.0f};
-struct uz_3ph_dq_t v_dq_meas_IM_rev_filt = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_VA = {0.0f};
 struct uz_DutyCycle_t dutycyc_VA = {0.0f};
-struct uz_DutyCycle_t dutycyc_IM = {0.0f};
 bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
@@ -125,6 +119,7 @@ float I_U_offset;
 float I_V_offset;
 float I_W_offset;
 float U_DC_offset = 2.5f;
+
 int calibrate_current_measurement_done = 0;
 int calibrate_current_measurement_counter = 0;
 int calibrate_current_measurement_counter_stop = 1000;

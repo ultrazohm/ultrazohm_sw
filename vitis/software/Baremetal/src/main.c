@@ -19,6 +19,8 @@
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
+#define 	VMB_1000_SENS	 	0.003934422f // 60/1000V * old sens 0.0655737f
+//#define 	DC_VOLTAGE_2_SI  	37.64f
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -28,10 +30,58 @@ DS_Data Global_Data = {
         .halfBridge3DutyCycle = 0.0f,
         .halfBridge4DutyCycle = 0.0f,
         .halfBridge5DutyCycle = 0.0f,
-        .halfBridge6DutyCycle = 0.0f,},
-    .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A2 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A3 = 10.0f/MOTOR_CURRENT_2_SI, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_A2 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A3 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_A4 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B5 = 10.0f*CURRENT_2_SI_AMPERE, .cf.ADC_B6 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B7 = 10.0f*VOLTAGE_2_SI_VOLTS, .cf.ADC_B8 = 10.0f*VOLTAGE_2_SI_VOLTS}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+        .halfBridge6DutyCycle = 0.0f,
+    },
+    .av = {
+        .pwm_frequency_hz = UZ_PWM_FREQUENCY,
+        .isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
+    },
+    .aa = {
+        .A1 = {
+            .cf = {
+                .ADC_A1 = 10.0f / MOTOR_CURRENT_2_SI,
+                .ADC_A2 = 10.0f / MOTOR_CURRENT_2_SI,
+                .ADC_A3 = 10.0f / MOTOR_CURRENT_2_SI,
+                .ADC_A4 = 10.0f / 0.3764f * 100.0f,
+                .ADC_B5 = 10.0f,
+                .ADC_B6 = 10.0f,
+                .ADC_B7 = 10.0f,
+                .ADC_B8 = 10.0f,
+            },
+        },
+        .A2 = {
+            .cf = {
+                .ADC_A1 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_A2 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_A3 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_A4 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_B5 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_B6 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_B7 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_B8 = 10.0f * VOLTAGE_2_SI_VOLTS,
+            },
+        },
+        .A3 = {
+            .cf = {
+                .ADC_A1 = 10.0f,
+                .ADC_A2 = 10.0f,
+                .ADC_A3 = 10.0f,
+                .ADC_A4 = 10.0f,
+                .ADC_B5 = 10.0f,
+                .ADC_B6 = 10.0f,
+                .ADC_B7 = 10.0f,
+                .ADC_B8 = 10.0f,
+            },
+        },
+    },
+    .rr_profile = {
+        .select_automatic_idiq = false,
+        .setpoints_from_javascope = true,
+        .start_marker = 0.0f,
+        .dut_reference_currents_in_A = {0.0f},
+        .setpoint_index = 0U,
+    },
+};
 
 enum init_chain
 {
@@ -100,6 +150,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.IM_polepairs = MOTOR_PolePairs;
             Global_Data.av.VA_polepairs = Voestalpine.polePairs;
             Global_Data.objects.current_ctrl_VA = current_ctrl_VA_init();
             Global_Data.objects.setpoint_ctrl_VA = setpoint_ctrl_VA_init();

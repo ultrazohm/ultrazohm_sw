@@ -122,6 +122,14 @@ typedef struct _referenceAndSetValues_ {
 	uz_3ph_dq_t i_dq_ref_VA;
 } referenceAndSetValues;
 
+typedef struct {
+	bool select_automatic_idiq;
+	bool setpoints_from_javascope;
+	float start_marker;
+	uz_3ph_dq_t dut_reference_currents_in_A;
+	uint32_t setpoint_index;
+} rr_profile_data_t;
+
 typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
 	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
@@ -144,7 +152,7 @@ typedef struct _DS_Data_ {
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	rr_profile_data_t rr_profile;
 } DS_Data;
 
 #endif
-

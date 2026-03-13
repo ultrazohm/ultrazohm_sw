@@ -36,6 +36,7 @@
 /* ===== Available configurations ===== */
 #define MOTOR_CONFIG_LINDNER_3KW        1
 #define MOTOR_CONFIG_SIEMENS_1LA7073    2   /* Siemens 1LA7073-4AB10-Z, 0.37 kW, delta 230V / star 400V */
+#define MOTOR_CONFIG_SIEMENS_1C4164B    3
 
 /* ===== Select active motor configuration ===== */
 #define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_SIEMENS_1LA7073
@@ -133,11 +134,11 @@
 
 /* Rated operating point */
 #define MOTOR_Psi_rated_Vs        0.341f        /* = Lm × I_mu = 0.271 × 1.26 A */
-#define MOTOR_I_max_A             10.0f          /* observer / speed-ctrl current limit */
+#define MOTOR_I_max_A             6.0f          /* observer / speed-ctrl current limit */
 
 /* Protection limits — hardware-level fault thresholds */
 #define MOTOR_Vdc_max_V           700.0f
-#define MOTOR_Iphase_max_A        10.0f          /* 3× rated line current */
+#define MOTOR_Iphase_max_A        6.0f          /* 3× rated line current */
 #define MOTOR_Speed_max_rpm       1800.0f       /* 1.2× synchronous speed (1500 rpm) */
 
 /* Current PI gains — run calc_pi_gains.py for best values; conservative start */
@@ -163,8 +164,65 @@
  * Motor is delta-connected at 230 V / 50 Hz. */
 #define MOTOR_UF_ratio_V_per_Hz       4.6f      /* 230 V / 50 Hz */
 #define MOTOR_UF_boost_voltage_V      5.0f     
-#define MOTOR_UF_max_voltage_V        230.0f    /* rated RMS L-L (delta at 230 V) */
+#define MOTOR_UF_max_voltage_V        225.0f    /* rated RMS L-L (delta at 230 V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073 */
+
+#if (MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B)
+
+/* From Calculations */
+#define MOTOR_Rs_Ohm              178.5e-3f
+#define MOTOR_Rr_Ohm              122.4e-3f
+#define MOTOR_Lm_H                52.1e-3f       /* magnetizing inductance */
+#define MOTOR_Lsigma_s_H          1.48e-3f      /* stator leakage inductance */
+#define MOTOR_Lsigma_r_H          2.23e-3f      /* rotor leakage inductance */
+#define MOTOR_PolePairs           2.0f
+
+/* Mechanical */
+#define MOTOR_J_kgm2              0.0990      /* rotor inertia [kg·m²] (from datasheet) */
+
+/* Rated operating point */
+#define MOTOR_Psi_rated_Vs        1.0f	/* MOTOR_Lm_H* I_ma/I_D = 13.4A * sqrt(2) = 52.1e-3f* 19A */
+#define MOTOR_I_max_A             50.0f
+
+/* Protection limits — hardware-level fault thresholds */
+#define MOTOR_Vdc_max_V           800.0f
+#define MOTOR_Iphase_max_A        50.0f          /* 3× rated line current */
+#define MOTOR_Speed_max_rpm       1600.0f       /* 1.2× synchronous speed (1500 rpm) */
+
+/* Current PI gains — run calc_pi_gains.py for best values; conservative start */
+#define MOTOR_Current_Kp_scale    0.1f
+#define MOTOR_Current_Ki_scale    0.2f
+
+/* Speed PI gains — run calc_pi_gains.py; start very conservatively */
+#define MOTOR_Speed_Kp            0.001f
+#define MOTOR_Speed_Ki            0.05f
+
+/* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
+#define MOTOR_Resonant_gain_scale 0.3f
+
+/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
+#define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
+#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+#define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
+
+/* ADC current scaling for IM phase current channels on the Wolfspeed v2.0 board */
+#define MOTOR_CURRENT_2_SI            0.03993f
+
+/* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention)
+ * Motor is delta-connected at 230 V / 50 Hz. */
+#define MOTOR_UF_ratio_V_per_Hz       8.0f      /* 230 V / 50 Hz */
+#define MOTOR_UF_boost_voltage_V      5.0f
+#define MOTOR_UF_max_voltage_V        395.0f    /* rated RMS L-L (delta at 230 V) */
+#define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
+
+#endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
+
+#if (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_LINDNER_3KW) && \
+    (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_SIEMENS_1LA7073) && \
+    (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_SIEMENS_1C4164B)
+#error "Unknown MOTOR_CONFIG_SELECT in motor_config.h"
+#endif

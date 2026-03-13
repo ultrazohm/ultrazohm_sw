@@ -48,7 +48,20 @@ XIpiPsu IPI_instance;
 #define		MAX_CURRENT_VA		15.0f
 #define		max_voltage_vdc_Im	410.0f
 #define		max_voltage_vdc_va	52.0f
+#define RR_ID_SCALE 1 // Defines the max points for the paraid in ampere. E.g., if set to 5, the grid is +/- 5A iq and 0 to -5 A ID.
+#define RR_IQ_SCALE 1 // Defines the max points for the paraid in ampere.
+float id_setpoints[] = {
+#include "id_setpoints_rr.csv"
+};
 
+float iq_setpoints[] = {
+#include "iq_setpoints_rr.csv"
+};
+
+float speed_setpoints[] = {
+#include "speed_setpoints_rr.csv"
+};
+#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 50000U //5s als test
 // theta offset
 float IM_theta_el_offset = 0.0f;
 
@@ -185,6 +198,7 @@ static void trip_all_inverters_on_error(void);
 void reset_VA(void);
 void reset_im(void);
 void reset_error_latches(void);
+void rr_profile(void);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -258,6 +272,8 @@ void ISR_Control(void *data)
     	}
     	if (enable_controller_IM) {
     		im_control();
+    	    // RR Profile
+    	    rr_profile();
     	}
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -409,7 +425,7 @@ static void calibrate_current_offsets(void) {
 
 static void update_measurements_from_adc(void) {
 	// IM measurements
-	Global_Data.av.IM_vdc = (Global_Data.aa.A1.me.ADC_A4 * 100.0f / 0.3764f) - U_DC_offset;
+	Global_Data.av.IM_vdc = Global_Data.aa.A1.me.ADC_A4 - U_DC_offset;
 	Global_Data.av.IM_ia = Global_Data.aa.A1.me.ADC_A1 - I_U_offset;
 	Global_Data.av.IM_ib = Global_Data.aa.A1.me.ADC_A2 - I_V_offset;
 	Global_Data.av.IM_ic = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
@@ -656,6 +672,93 @@ static void speed_control_VA() {
 	current_control_VA();
 };
 
+void rr_profile(void)
+{
+	static uint64_t old_uptime = 0U;
+	static bool rr_profile_was_active = false;
+	uint32_t active_index = 0U;
+	uint32_t setpoint_count = 0U;
+	uint64_t current_uptime = 0U;
+
+	if (!Global_Data.rr_profile.select_automatic_idiq) {
+		Global_Data.rr_profile.start_marker = 0.0f;
+		Global_Data.rr_profile.setpoints_from_javascope = true;
+		rr_profile_was_active = false;
+		return;
+	}
+
+	if (!rr_profile_was_active) {
+		Global_Data.rr_profile.setpoint_index = 0U;
+		Global_Data.rr_profile.start_marker = 1.0f;
+		Global_Data.rr_profile.setpoints_from_javascope = false;
+		use_speed_control = true;
+		old_uptime = uz_SystemTime_GetInterruptCounter();
+		rr_profile_was_active = true;
+	}
+
+	if (use_speed_control) {
+		setpoint_count = UZ_ARRAY_SIZE(speed_setpoints);
+	} else {
+		uint32_t const id_count = UZ_ARRAY_SIZE(id_setpoints);
+		uint32_t const iq_count = UZ_ARRAY_SIZE(iq_setpoints);
+		setpoint_count = (id_count < iq_count) ? id_count : iq_count;
+	}
+
+	if (setpoint_count == 0U) {
+		Global_Data.rr_profile.select_automatic_idiq = false;
+		Global_Data.rr_profile.setpoints_from_javascope = true;
+		Global_Data.rr_profile.start_marker = 0.0f;
+		Global_Data.rr_profile.dut_reference_currents_in_A.d = 0.0f;
+		Global_Data.rr_profile.dut_reference_currents_in_A.q = 0.0f;
+		id_ref_A = 0.0f;
+		iq_ref_A = 0.0f;
+		speed_ref_rpm = 0.0f;
+		rr_profile_was_active = false;
+		return;
+	}
+
+	if (Global_Data.rr_profile.setpoint_index >= setpoint_count) {
+		Global_Data.rr_profile.setpoint_index = 0U;
+	}
+	active_index = Global_Data.rr_profile.setpoint_index;
+
+	if (use_speed_control) {
+		speed_ref_rpm = speed_setpoints[active_index];
+		Global_Data.av.snd_fld[2] = speed_ref_rpm;
+	} else {
+		Global_Data.rr_profile.dut_reference_currents_in_A.d =
+			RR_ID_SCALE * id_setpoints[active_index];
+		Global_Data.rr_profile.dut_reference_currents_in_A.q =
+			RR_IQ_SCALE * iq_setpoints[active_index];
+		id_ref_A = Global_Data.rr_profile.dut_reference_currents_in_A.d;
+		iq_ref_A = Global_Data.rr_profile.dut_reference_currents_in_A.q;
+		Global_Data.av.snd_fld[3] = id_ref_A;
+		Global_Data.av.snd_fld[4] = iq_ref_A;
+	}
+
+	current_uptime = uz_SystemTime_GetInterruptCounter();
+	if (current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION_IN_ISR_TICKS)) {
+		old_uptime = current_uptime;
+		Global_Data.rr_profile.setpoint_index++;
+
+		if (Global_Data.rr_profile.setpoint_index >= setpoint_count) {
+			Global_Data.rr_profile.setpoint_index = 0U;
+			Global_Data.rr_profile.select_automatic_idiq = false;
+			Global_Data.rr_profile.setpoints_from_javascope = true;
+			Global_Data.rr_profile.start_marker = 0.0f;
+			Global_Data.rr_profile.dut_reference_currents_in_A.d = 0.0f;
+			Global_Data.rr_profile.dut_reference_currents_in_A.q = 0.0f;
+			id_ref_A = 0.0f;
+			iq_ref_A = 0.0f;
+			speed_ref_rpm = 0.0f;
+			Global_Data.av.snd_fld[2] = 0.0f;
+			Global_Data.av.snd_fld[3] = 0.0f;
+			Global_Data.av.snd_fld[4] = 0.0f;
+			ultrazohm_state_machine_set_stop(true);
+			rr_profile_was_active = false;
+		}
+	}
+}
 static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
 {
     /* Active status is in Distributor ACTIVE banked registers */

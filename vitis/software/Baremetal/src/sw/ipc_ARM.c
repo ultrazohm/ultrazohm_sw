@@ -227,13 +227,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[4] = value;
 			break;
 
-		case (Set_Send_Field_5): // IM id reference (A) — FOC flux current
-		id_ref_A = value;
+		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
 			break;
 
-		case (Set_Send_Field_6): // IM iq reference (A) — FOC torque current
-		iq_ref_A = value;
+		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
 			break;
 
@@ -253,7 +251,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_10):
-		speed_ref_rpm = value;
+
 		data->av.snd_fld[10] = value;
 			break;
 
@@ -327,12 +325,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			use_kalman_filter = !use_kalman_filter;
 			break;
 
-		case (My_Button_7):
-			// Reserved
+		case (My_Button_7): // Toggle 6th harmonic resonant controller
+			use_resonant_6th = !use_resonant_6th;
 			break;
 
-		case (My_Button_8): // Toggle 6th harmonic resonant controller
-			use_resonant_6th = !use_resonant_6th;
+		case (My_Button_8): // Toggle RR profile for IM
+			data->rr_profile.select_automatic_idiq = !data->rr_profile.select_automatic_idiq;
+			data->rr_profile.setpoints_from_javascope = !data->rr_profile.select_automatic_idiq;
+			data->rr_profile.start_marker = data->rr_profile.select_automatic_idiq ? 1.0f : 0.0f;
+			data->rr_profile.setpoint_index = 0U;
+			if (data->rr_profile.select_automatic_idiq) {
+				use_speed_control = true;
+			}
 			break;
 
 		case (Error_Reset):
@@ -421,11 +425,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 9);
 	}
 
-	/* Bit 10 - My_Button_7 (unused) */
-	js_status_BareToRTOS &= ~(1 << 10);
-
-	/* Bit 11 - My_Button_8 (Toggle_Resonant6th) */
+	/* Bit 10 - My_Button_7 (Toggle_Resonant6th) */
 	if (use_resonant_6th) {
+		js_status_BareToRTOS |= (1 << 10);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}
+
+	/* Bit 11 - My_Button_8 (Toggle_RR_Profile) */
+	if (data->rr_profile.select_automatic_idiq) {
 		js_status_BareToRTOS |= (1 << 11);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 11);
@@ -437,18 +445,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
-	// Sync control parameters with send fields for real-time tuning via GUI
-	// SF1: IM V/f frequency setpoint (Hz)
-	// SF2: VA id reference (A)
-	// SF3: VA iq reference (A)
-	// SF4: VA speed reference (RPM)
-	// SF5: IM id_ref_A — handled in Set_Send_Field_5 case above
-	// SF6: IM iq_ref_A — handled in Set_Send_Field_6 case above
-	// SF7-9: KF tuning — handled in Set_Send_Field_7/8/9 cases above
+
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
 	}
-	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[2];
-	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[3];
-	data->rasv.n_ref_VA = data->av.snd_fld[4];
+	speed_ref_rpm = data->av.snd_fld[2];
+	id_ref_A = data->av.snd_fld[3];
+	iq_ref_A = data->av.snd_fld[4];
+	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[10];
+	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[11];
+	data->rasv.n_ref_VA = data->av.snd_fld[12];
 }

@@ -57,12 +57,12 @@ uint32_t error_checks_step(const actualValues *av, const error_checks_config_t *
 
     bool const nan_meas = !isfinite(av->IM_vdc) || !isfinite(av->IM_ia) ||
                           !isfinite(av->IM_ib) || !isfinite(av->IM_ic) ||
-                          !isfinite(av->IM_mechanicalRotorSpeed_filtered);
+                          !isfinite(av->IM_mechanicalRotorSpeed);
     bool const im_ov_dc = av->IM_vdc > config->im_vdc_max;
     bool const im_oc_iu = fabsf(av->IM_ia) > config->im_iphase_max;
     bool const im_oc_iv = fabsf(av->IM_ib) > config->im_iphase_max;
     bool const im_oc_iw = fabsf(av->IM_ic) > config->im_iphase_max;
-    bool const im_overspeed = fabsf(av->IM_mechanicalRotorSpeed_filtered) > config->im_max_mechanical_speed_rpm;
+    bool const im_overspeed = fabsf(av->IM_mechanicalRotorSpeed) > config->im_max_mechanical_speed_rpm;
     bool const va_ov_dc = av->VA_vdc > config->va_vdc_max;
     bool const va_oc_iu = fabsf(av->VA_ia) > config->va_iphase_max;
     bool const va_oc_iv = fabsf(av->VA_ib) > config->va_iphase_max;

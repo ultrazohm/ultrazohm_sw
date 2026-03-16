@@ -16,7 +16,7 @@
 #include "../include/uz_ramp_test.h"
 
 static struct uz_ramp_config ramp_test_config = {
-	.maximum_slope_per_second = 10.0f,
+	.maximum_slope_per_second = 100.0f,
 	.sample_time_seconds = 0.0f,
 	.initial_value = 0.0f
 };

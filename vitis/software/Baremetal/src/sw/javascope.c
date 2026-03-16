@@ -101,6 +101,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_torque_ref]			= &data->av.Torque_ref;
 	js_ch_observable[JSO_n_ref_CIL]				= &data->av.n_ref_CIL;
 	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_start_marker]			= &data->rasv.StartMarker;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

@@ -52,6 +52,7 @@ enum JS_OberservableData {
 	JSO_v_dc,
 	JSO_v_dq_ref_amp,
 	JSO_v_dq_max_amp,
+	JSO_start_marker,
 	JSO_ENDMARKER
 };
 

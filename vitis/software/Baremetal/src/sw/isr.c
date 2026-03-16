@@ -76,6 +76,7 @@ uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
 bool StepProfile=false; // hack to only do it once
 bool start_angle_found = false;
+bool change_speed = false;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -223,26 +224,45 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         if( (StepProfile) ){
-        	if ((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f))&& (!start_angle_found)) {
-        		start_angle_found = true;
+    		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+        	if ((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f) || ConApplication==CIL)&& (!start_angle_found)) {
+        		if(current_uptime>(old_uptime + 4360)) {
+        			start_angle_found = true;
+        		}
         	}
-        	if (start_angle_found || ConApplication == CIL ) {
-        		Global_Data.rasv.StartMarker=1.0f;
+        	if (start_angle_found) {
         		Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
 
         		// step throught the array
-        		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-        		if(current_uptime>(old_uptime +100 ) ){
+        		if((current_uptime > (old_uptime +100)) && (!change_speed) ){
         			old_uptime=current_uptime;
+        			Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
+        			Global_Data.rasv.StartMarker=1.0f;
         			if(setpoint_index < 9){
         				setpoint_index++;
         			}else{
-        				setpoint_index=0;
-        				StepProfile=false;
-        				start_angle_found = false;
+        				setpoint_index=0U;
+        				//StepProfile=false;
+        				//start_angle_found = false;
         				Global_Data.rasv.StartMarker=0.0f;
-        				Global_Data.av.Torque_ref = 0.0f;
+        				change_speed = true;
+        				//Global_Data.av.Torque_ref = 0.0f;
         			}
+        		}
+        		if (change_speed) {
+        			Global_Data.av.Torque_ref = 0.0f;
+        			if(current_uptime > (old_uptime + 1000)) {
+        				if(ConApplication == CIL) {
+        					Global_Data.av.n_ref_CIL = Global_Data.av.n_ref_CIL + 100.0f;
+        				}
+        				change_speed = false;
+        				start_angle_found = false;
+        				//StepProfile = false;
+        			}
+        		}
+        		if(fabs(Global_Data.av.n_ref_CIL) > Global_Data.av.SynRM_config.n_rated_rpm) {
+        			StepProfile = false;
+        			Global_Data.av.n_ref_CIL = 0.0f;
         		}
         	}
         }

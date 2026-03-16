@@ -91,8 +91,8 @@ void im_rotor_flux_observer_step(const actualValues *av,
     }
     theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
     uz_pos_to_speed_pll_step(state->stator_frequency_pll, theta_flux_wrapped);
-    float const omega_el_pll_rad_s = uz_pos_to_speed_pll_get_omega_el_si(state->stator_frequency_pll);
-    output->stator_current_fundamental_frequency_Hz = fabsf(omega_el_pll_rad_s) / (2.0f * UZ_PIf);
+    float const omega_s_pll_rad_s = uz_pos_to_speed_pll_get_omega_mech_si(state->stator_frequency_pll);
+    output->stator_current_fundamental_frequency_Hz = fabsf(omega_s_pll_rad_s) / (2.0f * UZ_PIf);
     if (!isfinite(output->stator_current_fundamental_frequency_Hz)) {
         output->stator_current_fundamental_frequency_Hz = 0.0f;
     }

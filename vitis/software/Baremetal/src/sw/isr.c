@@ -162,8 +162,10 @@ void ISR_Control(void *data)
      	setpoint_index = 0U;
      	start_angle_found = false;
     	Global_Data.av.n_ref_CIL = 0.0f;
+    	Global_Data.rasv.StartMarker=0.0f;
     	Global_Data.av.v_dq_ref.d = 0.0f;
     	Global_Data.av.v_dq_ref.q = 0.0f;
+    	Global_Data.av.Torque_ref = 0.0f;
     	switch(ConApplication) {
     	    case CIL:
     	    	uz_pmsmModel_reset(Global_Data.objects.SynRM_Model);
@@ -242,11 +244,8 @@ void ISR_Control(void *data)
         				setpoint_index++;
         			}else{
         				setpoint_index=0U;
-        				//StepProfile=false;
-        				//start_angle_found = false;
         				Global_Data.rasv.StartMarker=0.0f;
         				change_speed = true;
-        				//Global_Data.av.Torque_ref = 0.0f;
         			}
         		}
         		if (change_speed) {
@@ -263,6 +262,7 @@ void ISR_Control(void *data)
         		if(fabs(Global_Data.av.n_ref_CIL) > Global_Data.av.SynRM_config.n_rated_rpm) {
         			StepProfile = false;
         			Global_Data.av.n_ref_CIL = 0.0f;
+        			Global_Data.av.Torque_ref = 0.0f;
         		}
         	}
         }

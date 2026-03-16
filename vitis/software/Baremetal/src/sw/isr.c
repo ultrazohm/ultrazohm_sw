@@ -67,6 +67,16 @@ enum ControllerSelection ConSelection;
 float ts = 1.0f / UZ_CONTROL_FREQUENCY;
 float Observation[7] = {0};
 bool ext_clamping;
+
+//Stepprofile stuff
+float M_ref_setpoints[9]={
+#include "StepProfile.csv"
+};
+uint64_t old_uptime=0U;
+uint32_t setpoint_index=0U;
+bool StepProfile=false; // hack to only do it once
+bool start_angle_found = false;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -147,6 +157,9 @@ void ISR_Control(void *data)
     {
     	uz_CurrentControl_reset(Global_Data.objects.CurrentControl);
     	uz_PI_Controller_reset(Global_Data.objects.speed_control);
+     	StepProfile = false;
+     	setpoint_index = 0U;
+     	start_angle_found = false;
     	Global_Data.av.n_ref_CIL = 0.0f;
     	Global_Data.av.v_dq_ref.d = 0.0f;
     	Global_Data.av.v_dq_ref.q = 0.0f;
@@ -209,6 +222,31 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
+        if( (StepProfile) ){
+        	if ((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f))&& (!start_angle_found)) {
+        		start_angle_found = true;
+        	}
+        	if (start_angle_found || ConApplication == CIL ) {
+        		Global_Data.rasv.StartMarker=1.0f;
+        		Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
+
+        		// step throught the array
+        		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+        		if(current_uptime>(old_uptime +100 ) ){
+        			old_uptime=current_uptime;
+        			if(setpoint_index < 9){
+        				setpoint_index++;
+        			}else{
+        				setpoint_index=0;
+        				StepProfile=false;
+        				start_angle_found = false;
+        				Global_Data.rasv.StartMarker=0.0f;
+        				Global_Data.av.Torque_ref = 0.0f;
+        			}
+        		}
+        	}
+        }
+        Global_Data.av.theta_elec_old = Global_Data.av.theta_elec;
         switch(ConSelection) {
         case LUT_FOC:
         	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);

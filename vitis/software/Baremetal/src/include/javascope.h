@@ -245,7 +245,7 @@ enum gui_button_mapping {
 	manual,
 	ResetInverter,
 	EnableTristate,
-	MyButton8,
+	StepProfile,
 	MYBUTTONS_LABELS_ENDMARKER
 
 // Slow Data values that are displayed in the receive_fields top to bottom

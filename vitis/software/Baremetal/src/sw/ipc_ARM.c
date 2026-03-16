@@ -26,7 +26,7 @@ extern uint32_t js_status_BareToRTOS;
 
 extern enum ControllerApplication ConApplication;
 extern enum ControllerSelection ConSelection;
-
+bool extern StepProfile;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -297,7 +297,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-
+		StepProfile = true;
 			break;
 
 		case (Error_Reset):
@@ -396,7 +396,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		 js_status_BareToRTOS &= ~(1 << 10);
 	 }
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	 if (StepProfile) {
+		js_status_BareToRTOS |= (1 << 11);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	 }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

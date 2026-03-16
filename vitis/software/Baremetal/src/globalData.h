@@ -88,6 +88,7 @@ typedef struct _actualValues_ {
 	float mechanicalRotorSpeed; 		// in rpm
 	float mechanicalRotorSpeed_filtered; // in rpm
 	float theta_elec;
+	float theta_elec_old;
 	float theta_mech;
 	float theta_elec_advanced;
 	float theta_offset; //in rad/s
@@ -117,6 +118,7 @@ typedef struct _referenceAndSetValues_ {
 	bool ResetInverter;
 	bool EnableTristate;
 	bool ResetInverter_was_pressed;
+	float StartMarker;
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;

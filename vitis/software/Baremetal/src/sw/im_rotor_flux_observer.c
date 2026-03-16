@@ -65,10 +65,40 @@ void im_rotor_flux_observer_step(const actualValues *av,
 
     output->omega_el_rad_s = av->IM_mechanicalRotorSpeed * (2.0f * UZ_PIf / 60.0f) * im_config->polePairs;
 
-    float const dpsi_alpha = lm_over_tau_r * i_ab.alpha - one_over_tau_r * state->psi_r_alpha - output->omega_el_rad_s * state->psi_r_beta;
-    float const dpsi_beta = lm_over_tau_r * i_ab.beta - one_over_tau_r * state->psi_r_beta + output->omega_el_rad_s * state->psi_r_alpha;
-    state->psi_r_alpha += ts * dpsi_alpha;
-    state->psi_r_beta += ts * dpsi_beta;
+    // Bilinear/Tustin discretization of:
+    //   psi_dot = A(omega_el) * psi + (Lm/tau_r) * i_ab
+    float const half_ts = 0.5f * ts;
+    float const alpha = one_over_tau_r;
+    float const omega_el = output->omega_el_rad_s;
+
+    float const m00 = 1.0f + half_ts * alpha;
+    float const m01 = half_ts * omega_el;
+    float const m10 = -half_ts * omega_el;
+    float const m11 = 1.0f + half_ts * alpha;
+
+    float const n00 = 1.0f - half_ts * alpha;
+    float const n01 = -half_ts * omega_el;
+    float const n10 = half_ts * omega_el;
+    float const n11 = 1.0f - half_ts * alpha;
+
+    float const rhs_alpha = n00 * state->psi_r_alpha
+                          + n01 * state->psi_r_beta
+                          + ts * lm_over_tau_r * i_ab.alpha;
+    float const rhs_beta = n10 * state->psi_r_alpha
+                         + n11 * state->psi_r_beta
+                         + ts * lm_over_tau_r * i_ab.beta;
+
+    float const det_m = m00 * m11 - m01 * m10;
+    if (fabsf(det_m) < 1.0e-12f) {
+        state->psi_r_alpha = 0.0f;
+        state->psi_r_beta = 0.0f;
+        state->theta_flux_rad = 0.0f;
+        state->psi_r_mag = 0.0f;
+        error_checks_report(ERR_NAN_OBSERVER);
+    } else {
+        state->psi_r_alpha = (m11 * rhs_alpha - m01 * rhs_beta) / det_m;
+        state->psi_r_beta = (-m10 * rhs_alpha + m00 * rhs_beta) / det_m;
+    }
 
     state->theta_flux_rad = atan2f(state->psi_r_beta, state->psi_r_alpha);
     state->psi_r_mag = sqrtf(state->psi_r_alpha * state->psi_r_alpha + state->psi_r_beta * state->psi_r_beta);

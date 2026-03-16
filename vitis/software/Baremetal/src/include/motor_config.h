@@ -189,12 +189,12 @@
 
 /* Rated operating point */
 #define MOTOR_Psi_rated_Vs                1.0f    /* MOTOR_Lm_H* I_ma/I_D = 13.4A * sqrt(2) = 52.1e-3f* 19A */
-#define MOTOR_Control_current_max_A      20.0f //50.0f
+#define MOTOR_Control_current_max_A      50.0f //50.0f
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V                    400.0f //800.0f
-#define MOTOR_Protection_phase_max_A       20.0f //50.0f   /* hard trip threshold checked against measured phase currents */
-#define MOTOR_Speed_max_rpm               1600.0f  /* 1.2× synchronous speed (1500 rpm) */
+#define MOTOR_Vdc_max_V                    800.0f //800.0f
+#define MOTOR_Protection_phase_max_A       50.0f //50.0f   /* hard trip threshold checked against measured phase currents */
+#define MOTOR_Speed_max_rpm               5000.0f  /* 1.2× synchronous speed (1500 rpm) */
 
 /* Current PI gains — run calc_pi_gains.py for best values; conservative start */
 #define MOTOR_Current_Kp_scale    0.1f
@@ -218,10 +218,10 @@
 /* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention)
  * Motor is delta-connected at 230 V / 50 Hz. */
 #define MOTOR_UF_ratio_V_per_Hz       8.0f      /* 400 V / 50 Hz */
-#define MOTOR_UF_boost_voltage_V      5.0f
-#define MOTOR_UF_max_voltage_V        395.0f    /* rated RMS L-L (star at 400 V, phase Voltage 230V) */
+#define MOTOR_UF_boost_voltage_V      1.0f
+#define MOTOR_UF_max_voltage_V        399.0f    /* rated RMS L-L (star at 400 V, phase Voltage 230V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
-#define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 1.0f  /* conservative ramp for commissioning */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
 

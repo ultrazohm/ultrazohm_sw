@@ -49,28 +49,60 @@ extern float im_speed_pi_ki;
 extern void set_im_speed_pi_kp(float new_kp);
 extern void set_im_speed_pi_ki(float new_ki);
 
+static const unsigned int IPC_TOGGLE_DEBOUNCE_MS = 100U;
+
+static bool ipc_toggle_button_debounce_allows_toggle(uint32_t msgId)
+{
+	static unsigned int last_toggle_time_ms[My_Button_8 - My_Button_1 + 1U] = {0U};
+	static bool has_last_toggle_time[My_Button_8 - My_Button_1 + 1U] = {false};
+	uint32_t button_index = 0U;
+	unsigned int current_uptime_ms = 0U;
+
+	if ((msgId < My_Button_1) || (msgId > My_Button_8)) {
+		return true;
+	}
+
+	button_index = msgId - My_Button_1;
+	current_uptime_ms = uz_SystemTime_GetUptimeInMs();
+
+	if (has_last_toggle_time[button_index] &&
+		((current_uptime_ms - last_toggle_time_ms[button_index]) < IPC_TOGGLE_DEBOUNCE_MS)) {
+		return false;
+	}
+
+	last_toggle_time_ms[button_index] = current_uptime_ms;
+	has_last_toggle_time[button_index] = true;
+	return true;
+}
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
 	if (msgId != 0)
 	{
-		// GENERAL VARIABLES
-		switch (msgId)
-		{
+		bool handle_message = true;
+		if ((msgId >= My_Button_1) && (msgId <= My_Button_8)) {
+			handle_message = ipc_toggle_button_debounce_allows_toggle(msgId);
+		}
 
-		case (Stop): // Stop
-			ultrazohm_state_machine_set_stop(true);
-			enable_controller_VA = false;
-			enable_controller_IM = false;
-			reset_VA();
-			reset_im();
-			break;
-		case (201): // SELECT_DATA_CH1_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
+		if (handle_message) {
+			// GENERAL VARIABLES
+			switch (msgId)
 			{
-				js_ch_selected[0] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+
+			case (Stop): // Stop
+				ultrazohm_state_machine_set_stop(true);
+				enable_controller_VA = false;
+				enable_controller_IM = false;
+				reset_VA();
+				reset_im();
+				break;
+			case (201): // SELECT_DATA_CH1_bits
+				if (value >= 0 && value < JSO_ENDMARKER)
+				{
+					js_ch_selected[0] = js_ch_observable[(uint32_t)value];
+				}
+				break;
 
 		case (202): // SELECT_DATA_CH2_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
@@ -344,23 +376,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			}
 			break;
 
-		case (Error_Reset):
-			enable_controller_VA = false;
-			enable_controller_IM = false;
-			reset_VA();
-			reset_im();
-			error_checks_reset();
-			ultrazohm_state_machine_set_stop(true);
-			ultrazohm_state_machine_set_error(false);
-			break;
+			case (Error_Reset):
+				enable_controller_VA = false;
+				enable_controller_IM = false;
+				reset_VA();
+				reset_im();
+				error_checks_reset();
+				ultrazohm_state_machine_set_stop(true);
+				ultrazohm_state_machine_set_error(false);
+				break;
 
-		case (0xFFFF):
-			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
-			break;
+			case (0xFFFF):
+				// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
+				break;
 
-		default:
-			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
-			uz_assert(0); // unknown command -> throw error
+			default:
+				break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
+				uz_assert(0); // unknown command -> throw error
+			}
 		}
 	}
 

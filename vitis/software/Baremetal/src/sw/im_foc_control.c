@@ -119,7 +119,7 @@ void im_foc_control_step(actualValues *av,
 
     output->id_cmd_A = input->id_ref_A;
     if (input->use_speed_control) {
-        output->iq_cmd_A = uz_PI_Controller_sample(state->pi_speed, input->speed_ref_rpm, av->IM_mechanicalRotorSpeed, false);
+        output->iq_cmd_A = uz_PI_Controller_sample(state->pi_speed, input->speed_ref_rpm, av->IM_mechanicalRotorSpeed_filtered, false);
     } else {
         output->iq_cmd_A = input->iq_ref_A;
         if (state->pi_speed != NULL) {

@@ -126,8 +126,11 @@ extern DS_Data Global_Data;
    };
 
 
-   struct uz_IIR_Filter_config config_IIR = { .selection = LowPass_first_order,
+   struct uz_IIR_Filter_config config_IIR_VA = { .selection = LowPass_first_order,
    		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+
+   struct uz_IIR_Filter_config config_IIR_IM_speed = { .selection = LowPass_first_order,
+   		.cutoff_frequency_Hz = 50.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    uz_CurrentControl_t* current_ctrl_VA_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_VA));
@@ -144,7 +147,9 @@ extern DS_Data Global_Data;
    }
 
    uz_IIR_Filter_t* speed_filt_VA_init(void) {
-	   return(uz_signals_IIR_Filter_init(config_IIR));
+	   return(uz_signals_IIR_Filter_init(config_IIR_VA));
    }
 
-
+   uz_IIR_Filter_t* speed_filt_IM_init(void) {
+	   return(uz_signals_IIR_Filter_init(config_IIR_IM_speed));
+   }

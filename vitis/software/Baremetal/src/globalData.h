@@ -145,6 +145,7 @@ typedef struct{
 	uz_SpeedControl_t* speed_ctrl_VA;
 	uz_SetPoint_t* setpoint_ctrl_VA;
 	uz_IIR_Filter_t* iir_filter_ref_speed_VA;
+	uz_IIR_Filter_t* iir_filter_speed_IM;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

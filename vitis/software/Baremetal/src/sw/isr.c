@@ -257,7 +257,10 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
-    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
+//    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
+    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A1.me.ADC_B5;
+    Global_Data.av.IM_mechanicalRotorSpeed_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM, Global_Data.av.IM_mechanicalRotorSpeed);
+
     calibrate_current_offsets();
     update_measurements_from_adc();
     (void)error_checks_step(&Global_Data.av, &error_checks_config);
@@ -451,15 +454,19 @@ static void update_measurements_from_adc(void) {
 	Global_Data.av.IM_ic = Global_Data.aa.A1.me.ADC_A3 - I_W_offset;
 
 	// VA measurements
-	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;
-	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3;
-	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2;
-	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5;
-	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8;
-	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7;
-	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6;
-	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1;
+//	Global_Data.av.VA_ia = Global_Data.aa.A2.me.ADC_A4;
+//	Global_Data.av.VA_ib = Global_Data.aa.A2.me.ADC_A3;
+//	Global_Data.av.VA_ic = Global_Data.aa.A2.me.ADC_A2;
+//	Global_Data.av.VA_idc = Global_Data.aa.A2.me.ADC_B5;
+//	Global_Data.av.VA_ua = Global_Data.aa.A2.me.ADC_B8;
+//	Global_Data.av.VA_ub = Global_Data.aa.A2.me.ADC_B7;
+//	Global_Data.av.VA_uc = Global_Data.aa.A2.me.ADC_B6;
+//	Global_Data.av.VA_vdc = Global_Data.aa.A2.me.ADC_A1;
 
+	Global_Data.av.VA_vdc = 48.0f;
+	Global_Data.av.VA_ia =  0.0f;
+	Global_Data.av.VA_ib = 	0.0f;
+	Global_Data.av.VA_ic =  0.0f;
 	// status, safety and derived values
 	Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 	Global_Data.av.mean_temp_inv_d2 =

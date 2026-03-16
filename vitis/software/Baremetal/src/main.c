@@ -43,7 +43,7 @@ DS_Data Global_Data = {
                 .ADC_A2 = 10.0f / MOTOR_CURRENT_2_SI,
                 .ADC_A3 = 10.0f / MOTOR_CURRENT_2_SI,
                 .ADC_A4 = 10.0f / DC_VOLTAGE_2_SI,
-                .ADC_B5 = 10.0f,
+                .ADC_B5 = 10000.0f / 1.25f,
                 .ADC_B6 = 10.0f,
                 .ADC_B7 = 10.0f,
                 .ADC_B8 = 10.0f,
@@ -172,6 +172,7 @@ int main(void)
             Global_Data.objects.d1_gpi_ch15_17	= uz_axi_gpio_init(d1_gpi_config);
             Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
 			Global_Data.objects.iir_filter_ref_speed_VA= speed_filt_VA_init();
+			Global_Data.objects.iir_filter_speed_IM= speed_filt_IM_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

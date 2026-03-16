@@ -186,6 +186,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
+		data->av.ramp_test_input = value;
 		data->av.snd_fld[1] = value;
 			break;
 

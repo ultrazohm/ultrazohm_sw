@@ -85,6 +85,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.ramp_test = initialize_uz_ramp_test(Global_Data.av.isr_samplerate_s);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

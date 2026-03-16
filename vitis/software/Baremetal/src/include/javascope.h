@@ -49,6 +49,8 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_ramp_test_input,
+	JSO_ramp_test_output,
 	JSO_ENDMARKER
 };
 
@@ -72,6 +74,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_ramp_test_input,
+	JSSD_FLOAT_ramp_test_output,
 	JSSD_ENDMARKER
 };
 
@@ -126,7 +130,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
+	ramp_test_input,
 	send_field_2,
 	send_field_3,
 	send_field_4,
@@ -153,7 +157,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
+	-,
 	Nm,
 	A,
 	A,
@@ -180,7 +184,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
+	ramp_test_output,
 	receive_field_2,
 	receive_field_3,
 	receive_field_4,
@@ -207,7 +211,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
+	-,
 	Nm,
 	A,
 	A,
@@ -250,13 +254,13 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
+	JSSD_FLOAT_ramp_test_output,
+	JSSD_FLOAT_ramp_test_input,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

@@ -34,7 +34,7 @@ void im_kf_observer_step(const actualValues *av,
     // -------------------------------------------------------------------------
     // 1. Electrical angular velocity from encoder
     // -------------------------------------------------------------------------
-    float const omega_el = av->IM_mechanicalRotorSpeed
+    float const omega_el = av->IM_mechanicalRotorSpeed_filtered
                            * (2.0f * UZ_PIf / 60.0f)
                            * ss->polePairs;
     output->omega_el_rad_s = omega_el;

@@ -63,7 +63,7 @@ void im_rotor_flux_observer_step(const actualValues *av,
     uz_3ph_abc_t const i_abc = {.a = av->IM_ia, .b = av->IM_ib, .c = av->IM_ic};
     uz_3ph_alphabeta_t const i_ab = uz_transformation_3ph_abc_to_alphabeta(i_abc);
 
-    output->omega_el_rad_s = av->IM_mechanicalRotorSpeed * (2.0f * UZ_PIf / 60.0f) * im_config->polePairs;
+    output->omega_el_rad_s = av->IM_mechanicalRotorSpeed_filtered * (2.0f * UZ_PIf / 60.0f) * im_config->polePairs;
 
     float const dpsi_alpha = lm_over_tau_r * i_ab.alpha - one_over_tau_r * state->psi_r_alpha - output->omega_el_rad_s * state->psi_r_beta;
     float const dpsi_beta = lm_over_tau_r * i_ab.beta - one_over_tau_r * state->psi_r_beta + output->omega_el_rad_s * state->psi_r_alpha;

@@ -1,6 +1,6 @@
-=======
-uz_ramp
-=======
+====
+Ramp
+====
 
 .. doxygentypedef:: uz_ramp_t
 
@@ -18,7 +18,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example ramp usage for a reference signal
+  :caption: Example ramp usage for a speed reference signal
 
   #include "uz_signals.h"
 
@@ -38,11 +38,17 @@ Description
 
 ``uz_ramp`` limits the rate of change of a signal.
 On every call, the output moves linearly from the current output value towards the requested reference value.
-The maximum change per call is given by:
+The maximum change per call :math:`\Delta_{max}` is given by:
 
 .. math::
 
-    \Delta_{max} = slope_{max} \cdot T_s
+    \Delta_{max} = slope_{max} \cdot T_s,
 
+where :math:`slope_{max}` is the configured maximum slope per second, and :math:`T_s` is the sample time. 
 If the remaining distance to the target is smaller than :math:`\Delta_{max}`, the output is set directly to the target value.
 Otherwise, the output changes by exactly :math:`\Delta_{max}` in the direction of the target.
+Changing the input reference_value during execution of the ramp, this changed input becomes the new target, and the ramp 
+will re-aim toward the new reference_value.
+
+.. warning::
+  When not reset by calling ``uz_ramp_reset(uz_ramp_t *self, float value)``, the ramp will keep its last output value. 

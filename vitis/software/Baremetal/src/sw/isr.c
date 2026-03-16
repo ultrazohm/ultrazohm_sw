@@ -65,7 +65,6 @@ float IM_theta_el_offset = 0.0f;
 struct uz_3ph_abc_t i_abc_VA = {0.0f};
 struct uz_3ph_dq_t i_dq_VA = {0.0f};
 struct uz_3ph_dq_t i_dq_IM = {0.0f};
-struct uz_3ph_dq_t i_dq_ref_IM = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_VA = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_VA = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_VA = {0.0f};
@@ -519,8 +518,8 @@ void reset_VA(void) {
 }
 
 void reset_im(void) {
-	i_dq_ref_IM.d = 0.0f;
-	i_dq_ref_IM.q = 0.0f;
+	Global_Data.av.IM_I_d = 0.0f;
+	Global_Data.av.IM_I_q = 0.0f;
 	im_uf_control_reset(&uf_control_state);
 	im_foc_control_reset(&foc_control_state);
 

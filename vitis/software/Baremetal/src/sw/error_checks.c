@@ -24,6 +24,8 @@ float js_error_max_current_im = 0.0f;
 float js_error_vdc_im = 0.0f;
 float js_error_vdc_va = 0.0f;
 float js_error_max_current_va = 0.0f;
+float js_error_nan_observer = 0.0f;
+float js_error_nan_measurement = 0.0f;
 
 static void error_checks_update_visualization_latches(uint32_t error_mask)
 {
@@ -38,6 +40,12 @@ static void error_checks_update_visualization_latches(uint32_t error_mask)
     }
     if ((error_mask & (ERR_VA_OVERCURRENT_U | ERR_VA_OVERCURRENT_V | ERR_VA_OVERCURRENT_W)) != 0U) {
         js_error_max_current_va = 1.0f;
+    }
+    if ((error_mask & ERR_NAN_OBSERVER) != 0U) {
+        js_error_nan_observer = 1.0f;
+    }
+    if ((error_mask & ERR_NAN_MEASUREMENT) != 0U) {
+        js_error_nan_measurement = 1.0f;
     }
 }
 
@@ -116,4 +124,6 @@ void error_checks_reset(void)
     js_error_vdc_im = 0.0f;
     js_error_vdc_va = 0.0f;
     js_error_max_current_va = 0.0f;
+    js_error_nan_observer = 0.0f;
+    js_error_nan_measurement = 0.0f;
 }

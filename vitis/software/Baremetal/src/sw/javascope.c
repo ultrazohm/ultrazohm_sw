@@ -73,6 +73,8 @@ extern float js_error_max_current_im;
 extern float js_error_vdc_im;
 extern float js_error_vdc_va;
 extern float js_error_max_current_va;
+extern float js_error_nan_observer;
+extern float js_error_nan_measurement;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -202,6 +204,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_error_vdc_im]			= &js_error_vdc_im;
 	js_slowDataArray[JSSD_FLOAT_error_vdc_va]			= &js_error_vdc_va;
 	js_slowDataArray[JSSD_FLOAT_error_max_current_va]	= &js_error_max_current_va;
+	js_slowDataArray[JSSD_FLOAT_error_nan_observer]		= &js_error_nan_observer;
+	js_slowDataArray[JSSD_FLOAT_error_nan_measurement]	= &js_error_nan_measurement;
+	js_slowDataArray[JSSD_FLOAT_id_ref]					= &id_ref_A;
+	js_slowDataArray[JSSD_FLOAT_iq_ref]					= &iq_ref_A;
 	js_slowDataArray[JSSD_FLOAT_IM_stator_current_fundamental_frequency_Hz]	= &stator_current_fundamental_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &js_error_code;
 	// VA slow data kept at the end of the slow-data list on purpose.

@@ -166,7 +166,7 @@ void init_NN_network_IP_core(void){
 
    struct uz_NN_acc_config_t IP_config = {
                    .software_network = Global_Data.objects.nn_layer_acc,
-                   .base_address = XPAR_UZ_USER_UZ_NN_5_64_0_S_AXI_CONTROL_BASEADDR //May needs adjusting
+                   .base_address = XPAR_UZ_USER_UZ_NN_5X64_0_S_AXI_CONTROL_BASEADDR //May needs adjusting
    };
    Global_Data.objects.NN_acc_Instance = uz_NN_acc_init(IP_config, Global_Data.objects.matrix_input_acc, Global_Data.objects.matrix_output_acc);
  }

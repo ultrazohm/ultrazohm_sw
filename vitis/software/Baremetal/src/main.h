@@ -61,8 +61,8 @@
 #include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 //only one can be used
-#define NN_3_64_SETUP 1
-#define NN_5_64_SETUP 0
+#define NN_3_64_SETUP 0
+#define NN_5_64_SETUP 1
 
 
 enum ControllerApplication

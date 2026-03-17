@@ -247,7 +247,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
 //    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
-    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A2.me.ADC_B5;
+    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A1.me.ADC_B5;
     Global_Data.av.IM_mechanicalRotorSpeed_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM, Global_Data.av.IM_mechanicalRotorSpeed);
 
     calibrate_current_offsets();

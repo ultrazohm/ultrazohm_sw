@@ -130,7 +130,7 @@ extern DS_Data Global_Data;
    		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    struct uz_IIR_Filter_config config_IIR_IM_speed = { .selection = LowPass_first_order,
-   		.cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+   		.cutoff_frequency_Hz = 0.2f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 //        .cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    uz_CurrentControl_t* current_ctrl_VA_init(void) {

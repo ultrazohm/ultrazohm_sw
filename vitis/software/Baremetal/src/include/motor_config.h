@@ -221,7 +221,7 @@
 #define MOTOR_UF_boost_voltage_V      1.0f
 #define MOTOR_UF_max_voltage_V        399.0f    /* rated RMS L-L (star at 400 V, phase Voltage 230V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
-#define MOTOR_UF_frequency_ramp_Hz_per_s 1.0f  /* conservative ramp for commissioning */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 2.5f  /* conservative ramp for commissioning */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
 

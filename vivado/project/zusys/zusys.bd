@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x48EA5D27B9AC24B1",
+      "boundary_crc": "0x87F5E9AF08DBEA12",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -116,11 +116,13 @@
         "uz_endat_interface_0": "",
         "axi_gpio_D2Outs": "",
         "Temperature_Card_Int_0": "",
-        "xlconcat_0": ""
+        "xlconcat_0": "",
+        "uz_EnDat_ABZ_addon_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlslice_0": "",
-      "xlconcat_0": ""
+      "xlconcat_0": "",
+      "xlconcat_1": ""
     },
     "ports": {
       "A1_IN": {
@@ -285,11 +287,6 @@
         "left": "3",
         "right": "0"
       },
-      "D2_OUT": {
-        "direction": "O",
-        "left": "5",
-        "right": "0"
-      },
       "D3_Temperature_OUT": {
         "direction": "O",
         "left": "9",
@@ -330,6 +327,17 @@
         "direction": "I",
         "left": "0",
         "right": "0"
+      },
+      "D2_OUT": {
+        "direction": "O",
+        "left": "8",
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "9",
+            "value_src": "ip_prop"
+          }
+        }
       }
     },
     "components": {
@@ -5544,6 +5552,15 @@
           },
           "D3_IN_16": {
             "direction": "I"
+          },
+          "ATRACK": {
+            "direction": "O"
+          },
+          "BTRACK": {
+            "direction": "O"
+          },
+          "ZTRACK": {
+            "direction": "O"
           }
         },
         "components": {
@@ -5748,6 +5765,12 @@
                 "value": "10"
               }
             }
+          },
+          "uz_EnDat_ABZ_addon_0": {
+            "vlnv": "xilinx.com:ip:uz_EnDat_ABZ_addon:10.0",
+            "xci_name": "zusys_uz_EnDat_ABZ_addon_0_0",
+            "xci_path": "ip\\zusys_uz_EnDat_ABZ_addon_0_0\\zusys_uz_EnDat_ABZ_addon_0_0.xci",
+            "inst_hier_path": "uz_user/uz_EnDat_ABZ_addon_0"
           }
         },
         "interface_nets": {
@@ -5906,7 +5929,26 @@
               "uz_endat_interface_0/IPCORE_RESETN",
               "uz_endat_interface_0/AXI4_Lite_ARESETN",
               "axi_gpio_D2Outs/s_axi_aresetn",
-              "Temperature_Card_Int_0/s00_axi_aresetn"
+              "Temperature_Card_Int_0/s00_axi_aresetn",
+              "uz_EnDat_ABZ_addon_0/IPCORE_RESETN"
+            ]
+          },
+          "uz_EnDat_ABZ_addon_0_ATRACK": {
+            "ports": [
+              "uz_EnDat_ABZ_addon_0/ATRACK",
+              "ATRACK"
+            ]
+          },
+          "uz_EnDat_ABZ_addon_0_BTRACK": {
+            "ports": [
+              "uz_EnDat_ABZ_addon_0/BTRACK",
+              "BTRACK"
+            ]
+          },
+          "uz_EnDat_ABZ_addon_0_ZTRACK": {
+            "ports": [
+              "uz_EnDat_ABZ_addon_0/ZTRACK",
+              "ZTRACK"
             ]
           },
           "uz_endat_interface_0_RW_clk": {
@@ -5933,6 +5975,12 @@
               "Dig_12_Ch5"
             ]
           },
+          "uz_endat_interface_0_position_raw_single_turn": {
+            "ports": [
+              "uz_endat_interface_0/position_raw_single_turn",
+              "uz_EnDat_ABZ_addon_0/POS"
+            ]
+          },
           "xlconcat_0_dout": {
             "ports": [
               "xlconcat_0/dout",
@@ -5948,7 +5996,8 @@
               "uz_endat_interface_0/IPCORE_CLK",
               "uz_endat_interface_0/AXI4_Lite_ACLK",
               "axi_gpio_D2Outs/s_axi_aclk",
-              "Temperature_Card_Int_0/s00_axi_aclk"
+              "Temperature_Card_Int_0/s00_axi_aclk",
+              "uz_EnDat_ABZ_addon_0/IPCORE_CLK"
             ]
           }
         }
@@ -9047,6 +9096,17 @@
             "value": "3"
           }
         }
+      },
+      "xlconcat_1": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_1_0",
+        "xci_path": "ip\\zusys_xlconcat_1_0\\zusys_xlconcat_1_0.xci",
+        "inst_hier_path": "xlconcat_1",
+        "parameters": {
+          "NUM_PORTS": {
+            "value": "4"
+          }
+        }
       }
     },
     "interface_nets": {
@@ -9359,10 +9419,22 @@
           "zynq_ultra_ps_e_0/pl_ps_irq1"
         ]
       },
+      "uz_user_ATRACK": {
+        "ports": [
+          "uz_user/ATRACK",
+          "xlconcat_1/In1"
+        ]
+      },
+      "uz_user_BTRACK": {
+        "ports": [
+          "uz_user/BTRACK",
+          "xlconcat_1/In2"
+        ]
+      },
       "uz_user_D2_Out_GPIOs": {
         "ports": [
           "uz_user/D2_Out_GPIOs",
-          "D2_OUT"
+          "xlconcat_1/In0"
         ]
       },
       "uz_user_Dig_12_Ch5": {
@@ -9395,6 +9467,12 @@
           "D3_Temperature_OUT"
         ]
       },
+      "uz_user_ZTRACK": {
+        "ports": [
+          "uz_user/ZTRACK",
+          "xlconcat_1/In3"
+        ]
+      },
       "xlconcat_0_dout": {
         "ports": [
           "uz_system/D4_OUT",
@@ -9406,6 +9484,12 @@
         "ports": [
           "xlconcat_0/dout",
           "D1_OUT"
+        ]
+      },
+      "xlconcat_1_dout": {
+        "ports": [
+          "xlconcat_1/dout",
+          "D2_OUT"
         ]
       },
       "xlslice_0_Dout": {

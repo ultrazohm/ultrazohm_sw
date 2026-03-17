@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Wed Dec 10 08:18:17 2025
+--Date        : Tue Mar 17 09:37:19 2026
 --Host        : LAPTOP-GLAIOUMT running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -31,7 +31,7 @@ entity zusys_wrapper is
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 8 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -91,14 +91,14 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_12_Ch5 : out STD_LOGIC;
     D1_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
     D1_IN : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D3_Temperature_OUT : out STD_LOGIC_VECTOR ( 9 downto 0 );
     D3_IN_10 : in STD_LOGIC_VECTOR ( 0 to 0 );
     D3_IN_2 : in STD_LOGIC_VECTOR ( 0 to 0 );
     D3_IN_4 : in STD_LOGIC_VECTOR ( 0 to 0 );
     D3_IN_8 : in STD_LOGIC_VECTOR ( 0 to 0 );
     D3_IN_14 : in STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_IN_16 : in STD_LOGIC_VECTOR ( 0 to 0 )
+    D3_IN_16 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 8 downto 0 )
   );
   end component zusys;
 begin
@@ -122,7 +122,7 @@ zusys_i: component zusys
       D1_OUT_27(0) => D1_OUT_27(0),
       D1_OUT_28(0) => D1_OUT_28(0),
       D1_OUT_29(0) => D1_OUT_29(0),
-      D2_OUT(5 downto 0) => D2_OUT(5 downto 0),
+      D2_OUT(8 downto 0) => D2_OUT(8 downto 0),
       D2_OUT_26(0) => D2_OUT_26(0),
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),

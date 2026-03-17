@@ -18,6 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include "../include/error_checks.h"
+#include "../include/speed_ol_filter.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -297,12 +298,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[11] = im_speed_pi_ki;
 			break;
 
-		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+		case (Set_Send_Field_12): // Speed OL gate: THR_SCALE
+		if (value > 0.0f) { speed_ol_thr_scale = value; }
+		data->av.snd_fld[12] = speed_ol_thr_scale;
 			break;
 
-		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+		case (Set_Send_Field_13): // Speed OL gate: THR_MIN_RPM
+		if (value >= 80.0f) { speed_ol_thr_min_rpm = value; }
+		data->av.snd_fld[13] = speed_ol_thr_min_rpm;
 			break;
 
 		case (Set_Send_Field_14):
@@ -333,23 +336,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1): // Toggle VA controller enable/disable
-			enable_controller_VA = !enable_controller_VA;
-			if (!enable_controller_VA) {
-				reset_VA();
-			}
+		case (My_Button_1): // Toggle speed outlier-rejection gate
+			enable_speed_outlier_rejection = !enable_speed_outlier_rejection;
 			break;
 
-		case (My_Button_2): // Toggle IM controller enable/disable
-			enable_controller_IM = !enable_controller_IM;
-			if (!enable_controller_IM) {
-				reset_im();
-			}
-			break;
+		case (My_Button_2):
+			break; /* unused */
 
-		case (My_Button_3): // Toggle VA control mode: speed/current
-			va_use_speed_control = !va_use_speed_control;
-			break;
+		case (My_Button_3):
+			break; /* unused */
 
 		case (My_Button_4): // Toggle FOC on/off for IM
 			use_foc = !use_foc;
@@ -429,26 +424,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1 (VA enabled) */
-	if (enable_controller_VA) {
+	/* Bit 4 - My_Button_1 (Toggle_SpeedOL) */
+	if (enable_speed_outlier_rejection) {
 		js_status_BareToRTOS |= (1 << 4);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - My_Button_2 (IM enabled) */
-	if (enable_controller_IM) {
-		js_status_BareToRTOS |= (1 << 5);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 5);
-	}
+	/* Bit 5 - unused */
+	js_status_BareToRTOS &= ~(1 << 5);
 
-	/* Bit 6 - My_Button_3 (VA speed mode active) */
-	if (va_use_speed_control) {
-		js_status_BareToRTOS |= (1 << 6);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 6);
-	}
+	/* Bit 6 - unused */
+	js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 (Toggle_FOC) */
 	if (use_foc) {
@@ -500,7 +487,4 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		id_ref_A = data->av.snd_fld[3];
 		iq_ref_A = data->av.snd_fld[4];
 	}
-	data->rasv.i_dq_ref_VA.d = data->av.snd_fld[12];
-	data->rasv.i_dq_ref_VA.q = data->av.snd_fld[13];
-	data->rasv.n_ref_VA = data->av.snd_fld[14];
 }

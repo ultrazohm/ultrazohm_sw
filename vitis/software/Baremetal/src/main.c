@@ -173,6 +173,7 @@ int main(void)
             Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
 			Global_Data.objects.iir_filter_ref_speed_VA= speed_filt_VA_init();
 			Global_Data.objects.iir_filter_speed_IM= speed_filt_IM_init();
+			Global_Data.objects.iir_filter_slip_pct= slip_pct_filt_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

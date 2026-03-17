@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 #include "../include/isr.h"
+#include "../include/speed_ol_filter.h"
 #include "../defines.h"
 #include "../main.h"
 #include "../include/ipc_ARM.h"
@@ -72,6 +73,9 @@ struct uz_DutyCycle_t dutycyc_VA = {0.0f};
 bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
+bool  enable_speed_outlier_rejection = false;
+float speed_ol_thr_scale             = MOTOR_SPEED_OL_THR_SCALE;
+float speed_ol_thr_min_rpm           = MOTOR_SPEED_OL_THR_MIN_RPM;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
@@ -167,6 +171,7 @@ float uq_decoup_V = 0.0f;
 float ud_res_V   = 0.0f;
 float uq_res_V   = 0.0f;
 float omega_slip_rad_s_diag = 0.0f;
+float slip_pct_diag         = 0.0f;
 
 // Global variable structure
 extern DS_Data Global_Data;
@@ -247,8 +252,22 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
 //    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
-    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A1.me.ADC_B5;
-    Global_Data.av.IM_mechanicalRotorSpeed_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM, Global_Data.av.IM_mechanicalRotorSpeed);
+    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A2.me.ADC_B5;
+//    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A2.me.ADC_B5;
+    {
+        float const raw_rpm = Global_Data.av.IM_mechanicalRotorSpeed;
+        float const y_prev  = Global_Data.av.IM_mechanicalRotorSpeed_filtered;
+        float input;
+        if (enable_speed_outlier_rejection) {
+            float const thr   = fmaxf(speed_ol_thr_min_rpm,
+                                      speed_ol_thr_scale * fabsf(y_prev));
+            input = (fabsf(raw_rpm - y_prev) <= thr) ? raw_rpm : y_prev;
+        } else {
+            input = raw_rpm;
+        }
+        Global_Data.av.IM_mechanicalRotorSpeed_filtered =
+            uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM, input);
+    }
 
     calibrate_current_offsets();
     update_measurements_from_adc();
@@ -279,11 +298,9 @@ void ISR_Control(void *data)
     			current_control_VA();
     		}
     	}
-    	if (enable_controller_IM) {
-    		im_control();
-    	    // RR Profile
-    	    rr_profile();
-    	}
+		im_control();
+		// RR Profile
+		rr_profile();
     }
     if (error_checks_trip_pending()) {
 		trip_all_inverters_on_error();
@@ -528,6 +545,11 @@ void reset_im(void) {
 	id_meas_raw_dq     = 0.0f;
 	iq_meas_raw_dq     = 0.0f;
 
+	uz_signals_IIR_Filter_reset(Global_Data.objects.iir_filter_speed_IM);
+	Global_Data.av.IM_mechanicalRotorSpeed_filtered = 0.0f;
+	uz_signals_IIR_Filter_reset(Global_Data.objects.iir_filter_slip_pct);
+	slip_pct_diag = 0.0f;
+
 	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
@@ -580,7 +602,9 @@ static void im_control(void) {
 	stator_current_fundamental_frequency_Hz = observer_output.stator_current_fundamental_frequency_Hz;
 	psi_r_mag_Vs  = observer_output.psi_r_mag;
 	omega_s_rad_s = 2.0f * UZ_PIf * observer_output.stator_current_fundamental_frequency_Hz;
-	omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_el_rad_s;
+	omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_r_el_rad_s;
+	float const slip_pct_raw = (fabsf(omega_s_rad_s) > 0.1f) ? (omega_slip_rad_s_diag / omega_s_rad_s * 100.0f) : 0.0f;
+	slip_pct_diag = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_slip_pct, slip_pct_raw);
 	float const omega_s_for_resonant_rad_s = obs.deterministic_observer_active ? det_omega_s_rad_s : omega_s_rad_s;
 
 	// Control law selection

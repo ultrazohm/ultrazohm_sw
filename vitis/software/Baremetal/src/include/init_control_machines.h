@@ -10,3 +10,4 @@
  uz_SpeedControl_t* speed_ctrl_VA_init(void);
  uz_IIR_Filter_t* speed_filt_VA_init(void);
  uz_IIR_Filter_t* speed_filt_IM_init(void);
+ uz_IIR_Filter_t* slip_pct_filt_init(void);

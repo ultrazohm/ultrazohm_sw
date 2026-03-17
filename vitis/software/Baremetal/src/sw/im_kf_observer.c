@@ -69,10 +69,10 @@ void im_kf_observer_step(const actualValues *av,
     // -------------------------------------------------------------------------
     // 1. Electrical angular velocity from encoder
     // -------------------------------------------------------------------------
-    float const omega_el = av->IM_mechanicalRotorSpeed_filtered
+    float const omega_r_el = av->IM_mechanicalRotorSpeed_filtered
                            * (2.0f * UZ_PIf / 60.0f)
                            * ss->polePairs;
-    output->omega_el_rad_s = omega_el;
+    output->omega_r_el_rad_s = omega_r_el;
 
     // -------------------------------------------------------------------------
     // 2. Build A: copy speed-independent skeleton, fill 4 speed-dependent terms
@@ -83,8 +83,8 @@ void im_kf_observer_step(const actualValues *av,
             A[i][j] = ss->A_base[i][j];
         }
     }
-    float const wr_Ts      = omega_el * ss->Ts;
-    float const wr_Ts_xmD  = omega_el * ss->x_m_D_Ts;
+    float const wr_Ts      = omega_r_el * ss->Ts;
+    float const wr_Ts_xmD  = omega_r_el * ss->x_m_D_Ts;
     A[0][3] =  wr_Ts_xmD;
     A[1][2] = -wr_Ts_xmD;
     A[2][3] = -wr_Ts;

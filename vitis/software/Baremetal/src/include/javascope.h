@@ -290,9 +290,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	VA_Controller_on,
-	IM_Controller_on,
-	VA_Speedcontrol_on,
+	mybutton_1,
+	mybutton_2,
+	mybutton_3,
 	Toggle_FOC,
 	Toggle_IM_Speed_Ctrl,
 	Toggle_KalmanFilter,

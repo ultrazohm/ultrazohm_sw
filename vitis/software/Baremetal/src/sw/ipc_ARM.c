@@ -333,23 +333,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1): // Toggle VA controller enable/disable
-			enable_controller_VA = !enable_controller_VA;
-			if (!enable_controller_VA) {
-				reset_VA();
-			}
-			break;
+		case (My_Button_1):
+			break; /* unused */
 
-		case (My_Button_2): // Toggle IM controller enable/disable
-			enable_controller_IM = !enable_controller_IM;
-			if (!enable_controller_IM) {
-				reset_im();
-			}
-			break;
+		case (My_Button_2):
+			break; /* unused */
 
-		case (My_Button_3): // Toggle VA control mode: speed/current
-			va_use_speed_control = !va_use_speed_control;
-			break;
+		case (My_Button_3):
+			break; /* unused */
 
 		case (My_Button_4): // Toggle FOC on/off for IM
 			use_foc = !use_foc;
@@ -429,26 +420,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1 (VA enabled) */
-	if (enable_controller_VA) {
-		js_status_BareToRTOS |= (1 << 4);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}
+	/* Bit 4 - unused */
+	js_status_BareToRTOS &= ~(1 << 4);
 
-	/* Bit 5 - My_Button_2 (IM enabled) */
-	if (enable_controller_IM) {
-		js_status_BareToRTOS |= (1 << 5);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 5);
-	}
+	/* Bit 5 - unused */
+	js_status_BareToRTOS &= ~(1 << 5);
 
-	/* Bit 6 - My_Button_3 (VA speed mode active) */
-	if (va_use_speed_control) {
-		js_status_BareToRTOS |= (1 << 6);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 6);
-	}
+	/* Bit 6 - unused */
+	js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 (Toggle_FOC) */
 	if (use_foc) {

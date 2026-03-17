@@ -279,11 +279,9 @@ void ISR_Control(void *data)
     			current_control_VA();
     		}
     	}
-    	if (enable_controller_IM) {
-    		im_control();
-    	    // RR Profile
-    	    rr_profile();
-    	}
+		im_control();
+		// RR Profile
+		rr_profile();
     }
     if (error_checks_trip_pending()) {
 		trip_all_inverters_on_error();

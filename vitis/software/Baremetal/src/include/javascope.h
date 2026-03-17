@@ -96,6 +96,8 @@ enum JS_OberservableData {
 	JSO_u_ref_beta,
 	JSO_u_ref_x,
 	JSO_u_ref_y,
+	JSO_sector24,
+	JS_theta_el_rad_ref_JS,
 	JSO_ENDMARKER
 };
 
@@ -217,7 +219,7 @@ enum gui_button_mapping {
 	uy_6ph_soll,
 	PWM_Nummer,
 	PWM_Setting,
-	send_field_20,
+	C_D1_D2,
 	SND_FLD_ENDMARKER
 
 

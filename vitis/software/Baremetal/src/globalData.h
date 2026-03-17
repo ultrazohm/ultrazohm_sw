@@ -21,6 +21,7 @@
 #include "uz/uz_6ph_SVPWM/uz_pwm_help_functions.h"
 #include "uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "uz/uz_6ph_SVPWM/uz_6ph_SVPWM.h"
+#include "uz/uz_wavegen/uz_wavegen_2.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -170,6 +171,8 @@ typedef struct _actualValues_ {
     float testvar9;
     float testvar10;
 
+    float sector24;
+
 
 	float temp_float_4_svpwm_Version;
 	float temp_float_5_svpwm_Version;
@@ -266,6 +269,11 @@ typedef struct{
 
 	uz_IIR_Filter_t* speed_prefilter_Last;
 	uz_IIR_Filter_t* speed_prefilter_Pruef;
+
+	uz_wavegen_2*  wavegen2_1;
+	uz_wavegen_2*  wavegen2_2;
+	uz_wavegen_2*  wavegen2_3;
+
 }object_pointers_t;
 
 

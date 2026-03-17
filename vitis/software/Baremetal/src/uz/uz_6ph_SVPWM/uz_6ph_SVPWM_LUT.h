@@ -85,17 +85,17 @@ typedef enum {
 float return_svpwm_4active_opt_d(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M);
 
 
-u_z1z2 return_svpwm_4active_optz1z2(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24);
+u_z1z2 return_svpwm_4active_optz1z2(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts);
 
-u_z1z2 return_svpwm_4active_optz1z2_scaled(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float M, int sector_24);
+u_z1z2 return_svpwm_4active_optz1z2_scaled(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float M, int sector_24, float V_DC_Volts);
 
-u_z1z2 return_svpwm_5active_optz1z2_D1(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24);
+u_z1z2 return_svpwm_5active_optz1z2_D1(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts);
 
-u_z1z2 return_svpwm_5active_optz1z2_D2(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24);
+u_z1z2 return_svpwm_5active_optz1z2_D2(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts);
 
-u_z1z2 return_svpwm_5active_optz1z2(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24);
+u_z1z2 return_svpwm_5active_optz1z2(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts);
 
-u_z1z2 return_svpwm_5active_optz1z2_scaled(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24);
+u_z1z2 return_svpwm_5active_optz1z2_scaled(svpwm_5active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts);
 
 
 

@@ -36,10 +36,9 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_al
 
 	// get theta from alpha-beta reference
 	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
-	theta = fmod(theta, 2.0f*M_PI);
 
 	// get Modulation index
-	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2));
+	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2)) / (V_DC_Volts/2.0f);
 
 	// get sector 24
 	int sector_24 = getSector24(theta);
@@ -48,10 +47,10 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_al
 	u_z1z2 u_z1z2_result = {0};
 
 	if(scaled){
-		u_z1z2_result = return_svpwm_4active_optz1z2_scaled(version, theta, M, sector_24);
+		u_z1z2_result = return_svpwm_4active_optz1z2_scaled(version, theta, M, sector_24, V_DC_Volts);
 	}
 	else{
-		u_z1z2_result = return_svpwm_4active_optz1z2(version, theta, kappa, M, sector_24);
+		u_z1z2_result = return_svpwm_4active_optz1z2(version, theta, kappa, M, sector_24, V_DC_Volts);
 	}
 
 
@@ -111,7 +110,7 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_al
 	theta = fmod(theta, 2.0f*M_PI);
 
 	// get Modulation index
-	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2));
+	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2)) / (V_DC_Volts/2.0f);
 
 	// get sector 24
 	int sector_24 = getSector24(theta);
@@ -123,16 +122,16 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_opt_z1z2_al
 	if (CD1D2 == CONTINIOUS){
 
 		if(scaled){
-			u_z1z2_result = return_svpwm_5active_optz1z2_scaled(version, theta, kappa, M, sector_24);
+			u_z1z2_result = return_svpwm_5active_optz1z2_scaled(version, theta, kappa, M, sector_24, V_DC_Volts);
 		}else{
-			u_z1z2_result = return_svpwm_5active_optz1z2(version, theta, kappa, M, sector_24);
+			u_z1z2_result = return_svpwm_5active_optz1z2(version, theta, kappa, M, sector_24, V_DC_Volts);
 		}
 	}
 	else if (CD1D2 == DISCONTINIOUS1){
-		u_z1z2_result = return_svpwm_5active_optz1z2_D1(version, theta, kappa, M, sector_24);
+		u_z1z2_result = return_svpwm_5active_optz1z2_D1(version, theta, kappa, M, sector_24, V_DC_Volts);
 	}
 	else{// if (CD1D2 == DISCONTINIOUS2){
-		u_z1z2_result = return_svpwm_5active_optz1z2_D2(version, theta, kappa, M, sector_24);
+		u_z1z2_result = return_svpwm_5active_optz1z2_D2(version, theta, kappa, M, sector_24, V_DC_Volts);
 	}
 
 	uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(u_6ph_alphabeta_ref_Volts);
@@ -176,7 +175,7 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt uz_6ph_SVPWM_24_4_active_SV_opt_d_alphab
 	u_alphabeta_ref.beta = u_6ph_alphabeta_ref_Volts.beta;
 
 	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
-	theta = fmod(theta, 2.0f*UZ_PIf);
+
 
 
 	//-get sector-----------------------------------------------------
@@ -212,9 +211,11 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt uz_6ph_SVPWM_24_4_active_SV_opt_d_alphab
 	float T_V4 = inv_T_tv[3][0] * u_6ph_alphabeta_ref_norm.alpha + inv_T_tv[3][1] * u_6ph_alphabeta_ref_norm.beta + inv_T_tv[3][2] * u_6ph_alphabeta_ref_norm.x + inv_T_tv[3][3] * u_6ph_alphabeta_ref_norm.y;
 	float T_V0 = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
 
-	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2));
+	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2)) / (V_DC_Volts/2.0f);
 
-	float d_opt = return_svpwm_4active_opt_d(version, theta, kappa, M);
+	float theta_pi_12 = theta - (sector_24 - 1)* (UZ_PIf / 12.0f);
+
+	float d_opt = return_svpwm_4active_opt_d(version, theta_pi_12, kappa, M);
 
 	float T_V01 = T_V0 * d_opt;
 	float T_V02 = T_V0 * (1.0f-d_opt);

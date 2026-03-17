@@ -112,6 +112,9 @@ int main(void)
             uz_SpeedControl_reset(Global_Data.objects.speed_control_6ph_Pruef);
             Global_Data.objects.torque_to_current_dq_3ph_Last = uz_torque_to_current_converter_Last_init();
             Global_Data.objects.torque_to_current_dq_6ph_Pruef = uz_torque_to_current_converter_Pruef_init();
+            Global_Data.objects.wavegen2_1 = init_wavgen_1();
+            Global_Data.objects.wavegen2_2 = init_wavgen_2();
+            Global_Data.objects.wavegen2_3 = init_wavgen_3();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

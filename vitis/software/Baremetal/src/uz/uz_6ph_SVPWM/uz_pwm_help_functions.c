@@ -36,19 +36,9 @@ struct uz_DutyCycle_2x3ph_t uz_add_zerosequence_and_saturate_6ph(uz_6ph_abc_t u_
 
 
 
-int getSector24(float theta){
-
-	theta = uz_bring_angle_between_0_2_pi(theta);
-
-	int sector_24 = floor( theta/(M_PI/12.0f) - fmod(theta, M_PI/12.0f) ) + 1;
-	if(sector_24 > 24){
-		sector_24 = 1;
-	}
-	return sector_24;
-}
 
 
-
+/*
 int getSector12(float theta){
 
 	theta = uz_bring_angle_between_0_2_pi(theta);
@@ -59,18 +49,63 @@ int getSector12(float theta){
 	}
 	return sector_12;
 }
+*/
+int getSector12(float theta){
+
+    theta = uz_bring_angle_between_0_2_pi(theta);
+
+    int sector = (int)(theta * (12.0f/(2.0f*M_PI))) + 1;
+
+    if(sector > 12){   // abfangen Sektor 25 falls theta 2pi wäre, dürfte aber eigentlich nicht vorkommen
+        sector = 12;
+    }
+
+    return sector;
+}
+
+/*
+int getSector24(float theta){
+
+	theta = uz_bring_angle_between_0_2_pi(theta);
+
+	int sector_24 = floor( theta/(M_PI/12.0f) - fmod(theta, M_PI/12.0f) ) + 1;
+	if(sector_24 > 24){
+		sector_24 = 1;
+	}
+	return sector_24;
+}
+*/
+
+int getSector24(float theta){
+
+    theta = uz_bring_angle_between_0_2_pi(theta);
+
+    int sector = (int)(theta * (24.0f/(2.0f*M_PI))) + 1;
+
+    if(sector > 24){   // abfangen Sektor 25 falls theta 2pi wäre
+        sector = 24;
+    }
+
+    return sector;
+}
 
 
 float uz_bring_angle_between_0_2_pi(float theta_rad){
+	/*
 	while(theta_rad < 0.0f){
 		theta_rad = theta_rad + 2.0f*M_PI;
 	}
 	theta_rad = fmod(theta_rad, 2.0f*M_PI);
-
+	*/
+	theta_rad = fmodf(theta_rad, 2.0f*M_PI); // bring between -2pi...2pi
+    if(theta_rad < 0.0f){					 // make positive
+    	theta_rad += 2.0f*M_PI;
+    }
 	return theta_rad;
 }
 
 float uz_get_angle_3ph_alphabeta_reference(uz_3ph_alphabeta_t u_alphabeta_ref){
-	return fmod(  atan2f(u_alphabeta_ref.beta, u_alphabeta_ref.alpha)+2.0f*M_PI, 2.0f*M_PI);
+	float theta = atan2f(u_alphabeta_ref.beta, u_alphabeta_ref.alpha)+2.0f*M_PI;
+	return uz_bring_angle_between_0_2_pi(theta);
 }
 

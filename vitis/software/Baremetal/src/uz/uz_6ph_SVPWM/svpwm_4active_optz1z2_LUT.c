@@ -527,10 +527,10 @@ static const float svpwm_4active_optz1z2_LUT[4][18][2][65][47] = {
 
 
 
-u_z1z2 return_svpwm_4active_optz1z2(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24){
+u_z1z2 return_svpwm_4active_optz1z2(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M, int sector_24, float V_DC_Volts){
 
 	const float theta_min = 0.0f;
-	const float theta_max = 2*UZ_PIf/24;
+	const float theta_max = UZ_PIf/12.0f;
 	const float M_min = 0.0f;
 	const float M_max = 1.15f;
 
@@ -552,61 +552,64 @@ u_z1z2 return_svpwm_4active_optz1z2(svpwm_4active_2zero_24sector_SV_sequence_t v
 	int sector_8 = ((sector_24 - 1) % 8) + 1;
 
 	// angle over one sector
-	float theta_pi_12 = fmodf(theta, (float)M_PI / 12.0f);
+	//float theta_pi_12 = fmodf(theta, (float)M_PI / 12.0f);
+	float theta_pi_12 = theta - (sector_24 - 1)* (UZ_PIf / 12.0f);
 
 	if (sector_8 == 1){
-
-		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
-		u_z1 = u_z1 * M;
-		u_z2 = u_z2 * M;
+		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
+		u_z1 = u_z1 - 0.5f;
+		u_z2 = u_z2 - 0.5f;
 	}
 	else if (sector_8 == 2){
-		theta_pi_12 = UZ_PIf/12 - theta_pi_12;
+		theta_pi_12 = UZ_PIf/12.0f - theta_pi_12;
 		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
 	    u_z1 = u_z1 - 0.5f;
 	    u_z2 = u_z2 - 0.5f;
 	}
 	else if (sector_8 == 3){
 		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
-		u_z1 = -(u_z1) - 0.5f;
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+		u_z1 = -(u_z1 - 0.5f);
 		u_z2 = u_z2 - 0.5f;
 	}
 	else if (sector_8 == 4){
-		theta_pi_12 = UZ_PIf/12 - theta_pi_12;
-		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
-	    u_z1 = -(u_z1) - 0.5f;
+		theta_pi_12 = UZ_PIf/12.0f - theta_pi_12;
+		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
+	    u_z1 = -(u_z1 - 0.5f);
 	    u_z2 = u_z2 - 0.5f;
 	}
 	else if (sector_8 == 5){
-		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
-		u_z1 = -(u_z1) - 0.5f;
-		u_z2 = -(u_z2) - 0.5f;
+		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
+		u_z1 = -(u_z1 - 0.5f);
+		u_z2 = -(u_z2 - 0.5f);
 	}
 	else if (sector_8 == 6){
-		theta_pi_12 = UZ_PIf/12 - theta_pi_12;
+		theta_pi_12 = UZ_PIf/12.0f - theta_pi_12;
 		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
-	    u_z1 = -(u_z1) - 0.5f;
-	    u_z2 = -(u_z2) - 0.5f;
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+	    u_z1 = -(u_z1 - 0.5f);
+	    u_z2 = -(u_z2 - 0.5f);
 	}
 	else if (sector_8 == 7){
 		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
 		u_z1 = u_z1  - 0.5f;
-		u_z2 = -(u_z2) - 0.5f;
+		u_z2 = -(u_z2 - 0.5f);
 	}
 	else {//if (sector_8 == 8)
-		theta_pi_12 = UZ_PIf/12 - theta_pi_12;
-		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
-		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][2], M, theta_pi_12);
+		theta_pi_12 = UZ_PIf/12.0f - theta_pi_12;
+		u_z1 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][0], M, theta_pi_12);
+		u_z2 = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_optz1z2_LUT[kappa_idx][version][1], M, theta_pi_12);
 		u_z1 = u_z1 - 0.5f;
-		u_z2 = -(u_z2) - 0.5f;
+		u_z2 = -(u_z2 - 0.5f);
 	}
+
+	u_z1 = u_z1 * V_DC_Volts;
+	u_z2 = u_z2 * V_DC_Volts;
 
 	return (u_z1z2) {u_z1, u_z2};;
 }

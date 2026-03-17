@@ -58,6 +58,7 @@
 #include "include/uz_inverter_adapter_init.h"
 #include "include/uz_resolver_pl_interface_init.h"
 #include "include/uz_resolverIP_init.h"
+#include "include/uz_wavegen_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

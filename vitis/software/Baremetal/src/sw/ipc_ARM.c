@@ -282,7 +282,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
 		 int temp = (int)value;
-		 if(temp < 4 && temp > 0){
+		 if(temp < 3 && temp >= 0){
 			 data->av.CD1D2 = temp;
 		 }
 			break;

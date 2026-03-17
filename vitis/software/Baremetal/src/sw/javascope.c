@@ -146,6 +146,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_u_ref_x] = &(data->rasv.u_ref_6ph_alphabeta.x);
 	js_ch_observable[JSO_u_ref_y] = &(data->rasv.u_ref_6ph_alphabeta.y);
 
+	js_ch_observable[JSO_sector24] = &(data->av.sector24);
+
+	js_ch_observable[JS_theta_el_rad_ref_JS] = &(data->rasv.theta_el_rad_ref_JS );
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

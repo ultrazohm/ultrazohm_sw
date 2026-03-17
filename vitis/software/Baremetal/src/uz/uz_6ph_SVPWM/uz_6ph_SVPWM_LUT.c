@@ -163,7 +163,7 @@ const uint8_t svpwm_5active_2zero_24sector_SV_sequence[NUM_METHODS_6PH_SVPWM_MET
 	{7,23,22,54,52,48,56},
 	{56,60,52,54,22,6,7},
 	{63,62,54,52,36,4,0},
-	{0,4,36,52,54,55,63},
+	{0,32,36,52,54,55,63},
 	{56,48,52,36,37,39,7},
 	{7,5,37,36,52,60,56},
 	{0,4,36,37,45,61,63},
@@ -2959,12 +2959,4 @@ int find_nearest_index(const float *arr, size_t n, float value)
 
 
 
-
-/*
-TODO:
-- Opt-LUT zugriff
-- Dutycycleberechnung, z1z2-Generierung
-- Max-M Tabelle
-- Unittests...
-*/
 

@@ -17,8 +17,7 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_4_active_SV_alphabeta(u
 	u_alphabeta_ref.beta = u_6ph_alphabeta_ref_Volts.beta;
 
 	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
-	theta = fmod(theta, 2.0f*UZ_PIf);
-
+	theta = uz_bring_angle_between_0_2_pi(theta);
 
 	//-get sector-----------------------------------------------------
 	int sector_24 = getSector24(theta);
@@ -138,7 +137,7 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt  uz_6ph_SVPWM_24_5_active_SV_alphabeta(u
 	u_alphabeta_ref.beta = u_6ph_alphabeta_ref_Volts.beta;
 
 	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
-	theta = fmod(theta, 2.0f*UZ_PIf);
+	theta = uz_bring_angle_between_0_2_pi(theta);
 
 
 	//-get sector-----------------------------------------------------

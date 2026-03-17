@@ -37,6 +37,7 @@
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "../uz/uz_6ph_SVPWM/uz_6ph_SVPWM_opt.h"
 #include "../uz/uz_6ph_SVPWM/uz_6ph_SVPWM.h"
+#include "../uz/uz_6ph_SVPWM/uz_pwm_help_functions.h"
 
 
 
@@ -87,6 +88,12 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+
+    uz_wavegen_2_sample(Global_Data.objects.wavegen2_1);
+	uz_wavegen_2_sample(Global_Data.objects.wavegen2_2);
+	uz_wavegen_2_sample(Global_Data.objects.wavegen2_3);
+
+
     Global_Data.av.resolver_outputs_d4_Pruef = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_Pruef);
     Global_Data.av.resolver_outputs_d4_Last = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_Last);
 
@@ -96,6 +103,13 @@ void ISR_Control(void *data)
     Global_Data.av.theta_mech_Pruef_deg = Global_Data.av.resolver_outputs_d4_Pruef.position_mech_2pi * RAD_TO_DEG;
 
     Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_sawtooth(2.0f*UZ_PIf, Global_Data.rasv.freq_el_Hz_ref_JS);
+
+    Global_Data.av.testvar4 = uz_wavegen_sawtooth_return_float_with_offset_and_amplitude(Global_Data.objects.wavegen2_1);
+
+    Global_Data.av.testvar5 = uz_wavegen_triangle_return_float_with_offset_and_amplitude(Global_Data.objects.wavegen2_1);
+
+    Global_Data.av.testvar6 = uz_wavegen_pulse_return_float(Global_Data.objects.wavegen2_1);
+
 
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
@@ -557,7 +571,6 @@ void ISR_Control(void *data)
 			Global_Data.av.selected_5active_PWM_version = 0;
 		}
 
-
     	// Input mit Regelung
     	if (current_state==control_state){
 
@@ -571,6 +584,8 @@ void ISR_Control(void *data)
 			Global_Data.av.V_DC_Volts = Global_Data.rasv.V_DC_Volts_ref_JS;
 
     	}
+
+    	Global_Data.av.sector24 = (float)getSector24(Global_Data.rasv.theta_el_rad_ref_JS);
 
     	// switch zwischen den Verschiedenen Varianten
     	// PWM-Verfahren Switch-Case
@@ -674,6 +689,19 @@ void ISR_Control(void *data)
         		Global_Data.av.PWM_6ph_DutyCycle_PhaseShift_output = uz_6ph_SVPWM_24_4_active_SV_opt_z1z2_alphabeta(Global_Data.rasv.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts, Global_Data.av.selected_4active_PWM_version, Global_Data.av.kappa, Global_Data.av.is_scaled);
         		Global_Data.av.PWM_6ph_DutyCycle_output = Global_Data.av.PWM_6ph_DutyCycle_PhaseShift_output.Dutycles;
         		Global_Data.av.PhaseShift_output = Global_Data.av.PWM_6ph_DutyCycle_PhaseShift_output.phaseshiftoption;
+
+
+        		u_z1z2 u_z1z2_result = {0};
+        		int test_sector = getSector24(Global_Data.rasv.theta_el_rad_ref_JS);
+
+
+        		u_z1z2_result = return_svpwm_4active_optz1z2(0, Global_Data.rasv.theta_el_rad_ref_JS,1.0f, 0.5, test_sector, 1.0f);
+
+        		Global_Data.av.testvar1 = u_z1z2_result.u_z1;
+				Global_Data.av.testvar2 = u_z1z2_result.u_z2;
+				Global_Data.av.testvar3 = test_sector;
+
+
        		}
 
        	}else if(Global_Data.av.SVPWM_5active_opt_selected){

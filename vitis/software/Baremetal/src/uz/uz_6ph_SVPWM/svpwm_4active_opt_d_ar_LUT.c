@@ -3,7 +3,7 @@
 #include "../uz_LUT_interpolate/uz_LUT_interpolate.h"
 #include "../uz_Hal.h"
 #include "../uz_signals/uz_signals.h"
-
+#include "uz_pwm_help_functions.h"
 
 
 
@@ -240,10 +240,12 @@ static const float svpwm_4active_opt_d_ar_LUT[4][18][65][47] = {
 
 
 
+
+
 float return_svpwm_4active_opt_d(svpwm_4active_2zero_24sector_SV_sequence_t version, float theta, float kappa, float M){
 
 	const float theta_min = 0.0f;
-	const float theta_max = 2*UZ_PIf/24;
+	const float theta_max = UZ_PIf/12.0f;
 	const float M_min = 0.0f;
 	const float M_max = 1.15f;
 
@@ -254,12 +256,23 @@ float return_svpwm_4active_opt_d(svpwm_4active_2zero_24sector_SV_sequence_t vers
 	// check version
     uz_assert(version >= 0 && version < 18);
 
-	// angle over one sector
-	float theta_pi_12 = fmodf(theta, (float)M_PI / 12.0f);
+    // Sector
+    int sector_24_ = getSector24(theta);
+    int sector_12_ = getSector12(theta);
 
+    // in jedem zweiten Sektor muss der Winkel gespiegelt werden
+    float theta_2_pi_12 = theta - (sector_12_ - 1)* (UZ_PIf / 6.0f);
+    float theta_pi_12 = theta - (sector_24_ - 1)* (UZ_PIf / 12.0f);
+
+    if (theta_2_pi_12 > theta_pi_12){
+        theta_pi_12 = UZ_PIf/12.0f - theta_pi_12;
+    }
+
+    // interpolation mit LUT
 	float d_opt = uz_interp2_uniform(M_min, M_max, 47, theta_min, theta_max, 65, svpwm_4active_opt_d_ar_LUT[kappa_idx][version], M, theta_pi_12);
 
-
-	return uz_signals_saturation(d_opt, 1.0f, 0.0f);;
+	return d_opt;
 }
+
+
 

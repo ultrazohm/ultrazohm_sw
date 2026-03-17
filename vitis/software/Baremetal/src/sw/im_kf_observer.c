@@ -252,17 +252,11 @@ void im_kf_observer_step(const actualValues *av,
     float const psi_r_mag = sqrtf(x_k[2] * x_k[2] + x_k[3] * x_k[3]);
     float const theta_flux = atan2f(x_k[3], x_k[2]);
 
-    float theta_flux_wrapped = theta_flux;
-    if (theta_flux_wrapped < 0.0f) {
-        theta_flux_wrapped += 2.0f * UZ_PIf;
-    }
-    theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
-    uz_pos_to_speed_pll_step(state->stator_frequency_pll, theta_flux_wrapped);
-    // The PLL block expects a mechanical position input. We feed the electrical
-    // flux angle directly, so the "mechanical" getter returns the electrical
-    // fundamental frequency tracked from theta_flux_rad.
-    float const omega_s_pll_rad_s = uz_pos_to_speed_pll_get_omega_mech_si(state->stator_frequency_pll);
-    output->stator_current_fundamental_frequency_Hz = fabsf(omega_s_pll_rad_s) / (2.0f * UZ_PIf);
+    // NOTE: PLL step (sinf/cosf) is intentionally NOT called here.
+    // im_kf_observer_step has ~312 bytes of Kalman matrix locals on the stack;
+    // calling sinf/cosf from inside would overflow the ISR stack.
+    // Call im_kf_observer_pll_step() from the caller after this function returns.
+    output->stator_current_fundamental_frequency_Hz = 0.0f;
 
     // Rotate corrected current estimate into d-q frame
     float i_d = 0.0f;
@@ -280,4 +274,21 @@ void im_kf_observer_step(const actualValues *av,
     output->psi_r_mag      = psi_r_mag;
     output->i_d = i_d;
     output->i_q = i_q;
+}
+
+void im_kf_observer_pll_step(im_kf_observer_state_t *state,
+                               im_rotor_flux_observer_output_t *output)
+{
+    uz_assert_not_NULL(state);
+    uz_assert_not_NULL(output);
+    uz_assert_not_NULL(state->stator_frequency_pll);
+
+    float theta_flux_wrapped = output->theta_flux_rad;
+    if (theta_flux_wrapped < 0.0f) {
+        theta_flux_wrapped += 2.0f * UZ_PIf;
+    }
+    theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
+    uz_pos_to_speed_pll_step(state->stator_frequency_pll, theta_flux_wrapped);
+    float const omega_s_pll_rad_s = uz_pos_to_speed_pll_get_omega_mech_si(state->stator_frequency_pll);
+    output->stator_current_fundamental_frequency_Hz = fabsf(omega_s_pll_rad_s) / (2.0f * UZ_PIf);
 }

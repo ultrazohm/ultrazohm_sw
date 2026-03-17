@@ -73,6 +73,9 @@ im_observer_result_t im_observer_step(
     // KF observer runs when the state-space matrices are valid and calibration is done.
     im_rotor_flux_observer_output_t kf_output = {0};
     im_kf_observer_step(av, im_ss, u_a, u_b, u_c, kf_state, &kf_output);
+    // PLL step is split out to keep sinf/cosf off the ISR stack while the KF
+    // matrix locals (~312 bytes) are live — see im_kf_observer_pll_step().
+    im_kf_observer_pll_step(kf_state, &kf_output);
     result.kf_innov_alpha = kf_state->innov[0];
     result.kf_innov_beta  = kf_state->innov[1];
     result.kf_S_00        = kf_state->S_diag[0];

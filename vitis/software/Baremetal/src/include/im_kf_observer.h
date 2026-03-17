@@ -72,4 +72,16 @@ void im_kf_observer_step(const actualValues *av,
                            im_kf_observer_state_t *state,
                            im_rotor_flux_observer_output_t *output);
 
+/**
+ * @brief Run the PLL to update stator_current_fundamental_frequency_Hz.
+ *
+ * Must be called AFTER im_kf_observer_step() has returned so the large Kalman
+ * matrix locals are no longer on the ISR stack when sinf/cosf execute.
+ *
+ * @param state   KF state (owns the PLL)
+ * @param output  Observer output populated by im_kf_observer_step() (updated in-place)
+ */
+void im_kf_observer_pll_step(im_kf_observer_state_t *state,
+                               im_rotor_flux_observer_output_t *output);
+
 #endif // IM_KF_OBSERVER_H

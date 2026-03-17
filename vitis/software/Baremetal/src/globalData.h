@@ -146,6 +146,7 @@ typedef struct{
 	uz_SetPoint_t* setpoint_ctrl_VA;
 	uz_IIR_Filter_t* iir_filter_ref_speed_VA;
 	uz_IIR_Filter_t* iir_filter_speed_IM;
+	uz_IIR_Filter_t* iir_filter_slip_pct;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

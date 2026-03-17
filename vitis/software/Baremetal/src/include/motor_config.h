@@ -94,10 +94,14 @@
 
 /* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention) */
 #define MOTOR_UF_ratio_V_per_Hz       8.0f      /* 400 V / 50 Hz — confirm rated voltage on nameplate */
-#define MOTOR_UF_boost_voltage_V      5.0f    
+#define MOTOR_UF_boost_voltage_V      5.0f
 #define MOTOR_UF_max_voltage_V        400.0f    /* rated RMS L-L — caps voltage at any frequency */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
+
+/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
+#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
+#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_LINDNER_3KW */
 
@@ -167,10 +171,14 @@
 /* U/f open-loop parameters (all voltages in RMS line-to-line, nameplate convention)
  * Motor is delta-connected at 230 V / 50 Hz. */
 #define MOTOR_UF_ratio_V_per_Hz       4.6f      /* 230 V / 50 Hz */
-#define MOTOR_UF_boost_voltage_V      5.0f     
+#define MOTOR_UF_boost_voltage_V      5.0f
 #define MOTOR_UF_max_voltage_V        225.0f    /* rated RMS L-L (delta at 230 V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
+
+/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
+#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
+#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073 */
 
@@ -222,6 +230,10 @@
 #define MOTOR_UF_max_voltage_V        399.0f    /* rated RMS L-L (star at 400 V, phase Voltage 230V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 1.0f  /* conservative ramp for commissioning */
+
+/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
+#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
+#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
 

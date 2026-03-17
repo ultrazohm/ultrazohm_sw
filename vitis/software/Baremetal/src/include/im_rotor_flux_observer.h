@@ -29,7 +29,7 @@ typedef struct {
 } im_rotor_flux_observer_state_t;
 
 typedef struct {
-    float omega_el_rad_s;
+    float omega_r_el_rad_s;
     float theta_flux_rad;
     float theta_elec_rad;
     float psi_r_mag;

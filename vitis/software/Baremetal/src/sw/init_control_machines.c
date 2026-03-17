@@ -133,6 +133,9 @@ extern DS_Data Global_Data;
    		.cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 //        .cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
+   struct uz_IIR_Filter_config config_IIR_slip_pct = { .selection = LowPass_first_order,
+   		.cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+
    uz_CurrentControl_t* current_ctrl_VA_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_VA));
    }
@@ -153,4 +156,8 @@ extern DS_Data Global_Data;
 
    uz_IIR_Filter_t* speed_filt_IM_init(void) {
 	   return(uz_signals_IIR_Filter_init(config_IIR_IM_speed));
+   }
+
+   uz_IIR_Filter_t* slip_pct_filt_init(void) {
+	   return(uz_signals_IIR_Filter_init(config_IIR_slip_pct));
    }

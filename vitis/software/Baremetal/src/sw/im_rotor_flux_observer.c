@@ -63,22 +63,22 @@ void im_rotor_flux_observer_step(const actualValues *av,
     uz_3ph_abc_t const i_abc = {.a = av->IM_ia, .b = av->IM_ib, .c = av->IM_ic};
     uz_3ph_alphabeta_t const i_ab = uz_transformation_3ph_abc_to_alphabeta(i_abc);
 
-    output->omega_el_rad_s = av->IM_mechanicalRotorSpeed_filtered * (2.0f * UZ_PIf / 60.0f) * im_config->polePairs;
+    output->omega_r_el_rad_s = av->IM_mechanicalRotorSpeed_filtered * (2.0f * UZ_PIf / 60.0f) * im_config->polePairs;
 
     // Bilinear/Tustin discretization of:
-    //   psi_dot = A(omega_el) * psi + (Lm/tau_r) * i_ab
+    //   psi_dot = A(omega_r_el) * psi + (Lm/tau_r) * i_ab
     float const half_ts = 0.5f * ts;
     float const alpha = one_over_tau_r;
-    float const omega_el = output->omega_el_rad_s;
+    float const omega_r_el = output->omega_r_el_rad_s;
 
     float const m00 = 1.0f + half_ts * alpha;
-    float const m01 = half_ts * omega_el;
-    float const m10 = -half_ts * omega_el;
+    float const m01 = half_ts * omega_r_el;
+    float const m10 = -half_ts * omega_r_el;
     float const m11 = 1.0f + half_ts * alpha;
 
     float const n00 = 1.0f - half_ts * alpha;
-    float const n01 = -half_ts * omega_el;
-    float const n10 = half_ts * omega_el;
+    float const n01 = -half_ts * omega_r_el;
+    float const n10 = half_ts * omega_r_el;
     float const n11 = 1.0f - half_ts * alpha;
 
     float const rhs_alpha = n00 * state->psi_r_alpha

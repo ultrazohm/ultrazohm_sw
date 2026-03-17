@@ -51,6 +51,8 @@ extern float js_error_max_current_im;
 extern float js_error_vdc_im;
 extern float js_error_vdc_va;
 extern float js_error_max_current_va;
+extern float js_error_nan_observer;
+extern float js_error_nan_measurement;
 
 uint32_t error_checks_step(const actualValues *av, const error_checks_config_t *config);
 void error_checks_report(uint32_t error_mask);

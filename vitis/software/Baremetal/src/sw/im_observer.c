@@ -41,6 +41,7 @@ im_observer_result_t im_observer_step(
     float                            u_c,
     bool                             kf_ready,
     bool                             use_kalman_filter,
+    bool                             use_deterministic_observer,
     im_rotor_flux_observer_state_t  *det_state,
     const uz_IM_ss_t                *im_ss,
     im_kf_observer_state_t          *kf_state)
@@ -52,14 +53,16 @@ im_observer_result_t im_observer_step(
     uz_assert_not_NULL(kf_state);
 
     im_observer_result_t result = {0};
+    bool const deterministic_observer_required = !kf_ready || !use_kalman_filter;
+    result.deterministic_observer_active = use_deterministic_observer || deterministic_observer_required;
 
-    // Deterministic observer always runs — provides the smooth PLL-based stator
-    // frequency used by the resonant controller.
     im_rotor_flux_observer_output_t det_output = {0};
-    im_rotor_flux_observer_step(av, im_config, det_state, &det_output);
-    result.det_psi_r_alpha  = det_state->psi_r_alpha;
-    result.det_psi_r_beta   = det_state->psi_r_beta;
-    result.det_omega_s_rad_s = 2.0f * UZ_PIf * det_output.stator_current_fundamental_frequency_Hz;
+    if (result.deterministic_observer_active) {
+        im_rotor_flux_observer_step(av, im_config, det_state, &det_output);
+        result.det_psi_r_alpha = det_state->psi_r_alpha;
+        result.det_psi_r_beta = det_state->psi_r_beta;
+        result.det_omega_s_rad_s = 2.0f * UZ_PIf * det_output.stator_current_fundamental_frequency_Hz;
+    }
 
     if (!kf_ready) {
         result.output = det_output;

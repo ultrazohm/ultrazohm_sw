@@ -87,7 +87,8 @@ bool use_foc = false;
 bool use_speed_control = false;
 
 bool use_resonant_6th = false;
-bool use_kalman_filter = false;
+bool use_kalman_filter = true;
+bool use_deterministic_observer = false;
 float id_ref_A = 0.0f;
 float iq_ref_A = 0.0f;
 float speed_ref_rpm = 0.0f;
@@ -149,15 +150,10 @@ static error_checks_config_t error_checks_config = {
 static im_uf_control_state_t uf_control_state = {0};
 static im_foc_control_state_t foc_control_state = {0};
 static im_rotor_flux_observer_state_t rotor_flux_observer_state = {0};
-static im_kf_observer_state_t kf_observer_state = {
-    .x = {0.0f, 0.0f, 0.0f, 0.0f},
-    .P = {{1.0f, 0.0f, 0.0f, 0.0f},
-          {0.0f, 1.0f, 0.0f, 0.0f},
-          {0.0f, 0.0f, 1.0f, 0.0f},
-          {0.0f, 0.0f, 0.0f, 1.0f}}
-};
+static im_kf_observer_state_t kf_observer_state = {0};
 static uz_IM_ss_t im_ss = {0};
 static bool im_ss_computed = false;
+static bool deterministic_observer_enabled_last = false;
 
 // Measured dq in flux frame — for JavaScope and resonant controller
 float id_meas_raw_dq = 0.0f;
@@ -230,13 +226,7 @@ void Initialize_ISR_Software(DS_Data *data)
     set_im_speed_pi_ki(im_speed_pi_ki);
     im_foc_control_reset(&foc_control_state);
 
-    kf_observer_state = (im_kf_observer_state_t){
-        .x = {0.0f, 0.0f, 0.0f, 0.0f},
-        .P = {{1.0f, 0.0f, 0.0f, 0.0f},
-              {0.0f, 1.0f, 0.0f, 0.0f},
-              {0.0f, 0.0f, 1.0f, 0.0f},
-              {0.0f, 0.0f, 0.0f, 1.0f}}
-    };
+    im_kf_observer_init(&IM_config, data->av.isr_samplerate_s, &kf_observer_state);
 
     im_ss = uz_IM_ss_compute(IM_config, data->av.isr_samplerate_s);
     im_ss_computed = true;
@@ -526,13 +516,7 @@ void reset_im(void) {
 	// Re-initialize observer states so re-enable starts with a clean flux estimate.
 	// Without this, stale psi_r_alpha/beta would give a wrong initial flux angle.
 	im_rotor_flux_observer_init(&IM_config, Global_Data.av.isr_samplerate_s, &rotor_flux_observer_state);
-	kf_observer_state = (im_kf_observer_state_t){
-	    .x = {0.0f, 0.0f, 0.0f, 0.0f},
-	    .P = {{1.0f, 0.0f, 0.0f, 0.0f},
-	          {0.0f, 1.0f, 0.0f, 0.0f},
-	          {0.0f, 0.0f, 1.0f, 0.0f},
-	          {0.0f, 0.0f, 0.0f, 1.0f}}
-	};
+	im_kf_observer_init(&IM_config, Global_Data.av.isr_samplerate_s, &kf_observer_state);
 
 	// Clear observer diagnostic outputs
 	psi_r_mag_Vs       = 0.0f;
@@ -550,6 +534,11 @@ void reset_im(void) {
 }
 
 static void im_control(void) {
+    if (use_deterministic_observer && !deterministic_observer_enabled_last) {
+        im_rotor_flux_observer_init(&IM_config, Global_Data.av.isr_samplerate_s, &rotor_flux_observer_state);
+    }
+    deterministic_observer_enabled_last = use_deterministic_observer;
+
 	// Apply runtime-tunable KF noise matrices
 	if (im_ss_computed) {
 		im_ss.Q_diag[0] = kf_q_i;
@@ -569,7 +558,7 @@ static void im_control(void) {
 	bool const kf_ready = im_ss_computed && (calibrate_current_measurement_done != 0);
 
 	im_observer_result_t const obs = im_observer_step(&Global_Data.av, &IM_config, u_a, u_b, u_c,
-	                                                   kf_ready, use_kalman_filter,
+	                                                   kf_ready, use_kalman_filter, use_deterministic_observer,
 	                                                   &rotor_flux_observer_state, &im_ss, &kf_observer_state);
 
 	im_rotor_flux_observer_output_t const observer_output = obs.output;
@@ -592,6 +581,7 @@ static void im_control(void) {
 	psi_r_mag_Vs  = observer_output.psi_r_mag;
 	omega_s_rad_s = 2.0f * UZ_PIf * observer_output.stator_current_fundamental_frequency_Hz;
 	omega_slip_rad_s_diag = omega_s_rad_s - observer_output.omega_el_rad_s;
+	float const omega_s_for_resonant_rad_s = obs.deterministic_observer_active ? det_omega_s_rad_s : omega_s_rad_s;
 
 	// Control law selection
 	if (use_foc) {
@@ -603,7 +593,7 @@ static void im_control(void) {
 			.speed_ref_rpm              = speed_ref_rpm,
 			.id_meas_A                  = id_meas_raw_dq,
 			.iq_meas_A                  = iq_meas_raw_dq,
-			.omega_s_for_resonant_rad_s = det_omega_s_rad_s,
+			.omega_s_for_resonant_rad_s = omega_s_for_resonant_rad_s,
 		};
 		im_foc_control_output_t foc_output = {0};
 		im_foc_control_step(&Global_Data.av, &Global_Data.rasv,

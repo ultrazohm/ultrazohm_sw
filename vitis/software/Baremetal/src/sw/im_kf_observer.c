@@ -20,6 +20,40 @@
 #include "../uz/uz_math_constants.h"
 #include <math.h>
 
+void im_kf_observer_init(const uz_IM_t *im_config,
+                           float sampling_time_s,
+                           im_kf_observer_state_t *state)
+{
+    uz_assert_not_NULL(im_config);
+    uz_assert_not_NULL(state);
+    uz_assert(sampling_time_s > 0.0f);
+
+    state->innov[0] = 0.0f;
+    state->innov[1] = 0.0f;
+    state->S_diag[0] = 0.0f;
+    state->S_diag[1] = 0.0f;
+    state->K_diag[0] = 0.0f;
+    state->K_diag[1] = 0.0f;
+    for (int i = 0; i < 4; i++) {
+        state->x[i] = 0.0f;
+        for (int j = 0; j < 4; j++) {
+            state->P[i][j] = (i == j) ? 1.0f : 0.0f;
+        }
+    }
+
+    if (state->stator_frequency_pll == NULL) {
+        struct uz_pos_to_speed_pll_config_t const pll_cfg = {
+            .machine_polepairs = fmaxf(im_config->polePairs, 1.0e-3f),
+            .kp_pll = 628.3185f,
+            .ki_pll = 98696.0f,
+            .sampling_time_in_seconds = fmaxf(sampling_time_s, 1.0e-6f),
+        };
+        state->stator_frequency_pll = uz_pos_to_speed_pll_init(pll_cfg);
+    } else {
+        uz_pos_to_speed_pll_reset(state->stator_frequency_pll);
+    }
+}
+
 void im_kf_observer_step(const actualValues *av,
                            const uz_IM_ss_t *ss,
                            float u_a, float u_b, float u_c,
@@ -30,6 +64,7 @@ void im_kf_observer_step(const actualValues *av,
     uz_assert_not_NULL(ss);
     uz_assert_not_NULL(state);
     uz_assert_not_NULL(output);
+    uz_assert_not_NULL(state->stator_frequency_pll);
 
     // -------------------------------------------------------------------------
     // 1. Electrical angular velocity from encoder
@@ -212,10 +247,22 @@ void im_kf_observer_step(const actualValues *av,
     }
 
     // -------------------------------------------------------------------------
-    // 14. Post-processing: flux angle, i_d/i_q, slip, stator frequency
+    // 14. Post-processing: flux angle, i_d/i_q, stator frequency
     // -------------------------------------------------------------------------
     float const psi_r_mag = sqrtf(x_k[2] * x_k[2] + x_k[3] * x_k[3]);
     float const theta_flux = atan2f(x_k[3], x_k[2]);
+
+    float theta_flux_wrapped = theta_flux;
+    if (theta_flux_wrapped < 0.0f) {
+        theta_flux_wrapped += 2.0f * UZ_PIf;
+    }
+    theta_flux_wrapped = fminf(fmaxf(theta_flux_wrapped, 0.0f), 2.0f * UZ_PIf);
+    uz_pos_to_speed_pll_step(state->stator_frequency_pll, theta_flux_wrapped);
+    // The PLL block expects a mechanical position input. We feed the electrical
+    // flux angle directly, so the "mechanical" getter returns the electrical
+    // fundamental frequency tracked from theta_flux_rad.
+    float const omega_s_pll_rad_s = uz_pos_to_speed_pll_get_omega_mech_si(state->stator_frequency_pll);
+    output->stator_current_fundamental_frequency_Hz = fabsf(omega_s_pll_rad_s) / (2.0f * UZ_PIf);
 
     // Rotate corrected current estimate into d-q frame
     float i_d = 0.0f;
@@ -226,12 +273,6 @@ void im_kf_observer_step(const actualValues *av,
         float const sinphi = x_k[3] * psi_r_mag_inv;
         i_d =  x_k[0] * cosphi + x_k[1] * sinphi;
         i_q = -x_k[0] * sinphi + x_k[1] * cosphi;
-
-        float const slip = ss->x_m_tau_r_inv * i_q * psi_r_mag_inv;
-        float const omega_s = omega_el + slip;
-        output->stator_current_fundamental_frequency_Hz = fabsf(omega_s) / (2.0f * UZ_PIf);
-    } else {
-        output->stator_current_fundamental_frequency_Hz = 0.0f;
     }
 
     output->theta_flux_rad = theta_flux;

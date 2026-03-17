@@ -37,6 +37,7 @@ extern void reset_im(void);
 extern bool use_foc;
 extern bool use_speed_control;
 extern bool use_kalman_filter;
+extern bool use_deterministic_observer;
 extern bool use_resonant_6th;
 extern float kf_q_i;
 extern float kf_q_psi;
@@ -360,6 +361,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_6): // Toggle Kalman filter observer
 			use_kalman_filter = !use_kalman_filter;
+			use_deterministic_observer = !use_kalman_filter;
 			break;
 
 		case (My_Button_7): // Toggle 6th harmonic resonant controller

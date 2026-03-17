@@ -34,8 +34,9 @@ typedef struct {
     float id_meas_A;
     float iq_meas_A;
     /** Stator angular frequency [rad/s] for resonant controller frequency tracking.
-     *  Must come from the deterministic observer PLL (smooth, std≈0.056 rad/s),
-     *  NOT from the KF slip estimate (noisy, std≈0.37 rad/s → ±0.36 Hz at 6th harmonic). */
+     *  Prefer the deterministic observer PLL when available because it is
+     *  smoother than the KF slip estimate. If the deterministic observer is
+     *  disabled, the caller may fall back to the selected observer omega_s. */
     float omega_s_for_resonant_rad_s;
 } im_foc_control_input_t;
 

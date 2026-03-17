@@ -133,7 +133,8 @@ void im_foc_control_step(actualValues *av,
     float uq_res = 0.0f;
 
     if (input->use_resonant_6th) {
-        // Use the det PLL omega_s (smooth) not KF omega_s (noisy) for frequency tracking.
+        // Prefer the det PLL omega_s (smooth). If the deterministic observer is
+        // disabled, the caller may fall back to the selected observer omega_s.
         float const omega_raw = fmaxf(fabsf(input->omega_s_for_resonant_rad_s), 1.0f);
         // IIR low-pass filter on the fundamental frequency fed to the resonant controller.
         // fc ≈ 8 Hz at 25 kHz ISR (alpha = 0.002). Prevents abrupt omega_s jumps during

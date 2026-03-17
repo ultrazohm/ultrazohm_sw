@@ -25,7 +25,8 @@
 /**
  * @brief Dynamic state of the Kalman Filter observer.
  *
- * Contains only the time-varying quantities (state estimate and covariance).
+ * Contains the time-varying KF quantities together with the owned PLL instance
+ * used to derive stator frequency from the KF flux angle.
  * All precomputed motor-model matrices live in uz_IM_ss_t.
  *
  * Initialize P to identity and x to zeros before first use:
@@ -38,7 +39,12 @@ typedef struct {
     float innov[2];   /**< Innovation y_e = meas - pred for [i_alpha, i_beta] */
     float S_diag[2];  /**< Innovation covariance diagonal: S[0][0], S[1][1] */
     float K_diag[2];  /**< Kalman gain diagonal: K[0][0], K[1][1] */
+    uz_pos_to_speed_pll_t *stator_frequency_pll; /**< PLL driven by KF theta_flux_rad */
 } im_kf_observer_state_t;
+
+void im_kf_observer_init(const uz_IM_t *im_config,
+                           float sampling_time_s,
+                           im_kf_observer_state_t *state);
 
 /**
  * @brief Execute one Kalman Filter observer step.
@@ -48,7 +54,7 @@ typedef struct {
  * the MATLAB reference KF_obs_FPGA.m.
  *
  * Populates output->i_d, output->i_q, output->theta_elec_rad together with
- * flux magnitude/angle and frequency estimates.
+ * flux magnitude/angle and PLL-based stator frequency estimates.
  *
  * @param av        Measured values (reads I_U/V/W, mechanicalRotorSpeed_filtered)
  * @param ss        Precomputed discretized motor model (from uz_IM_ss_compute())

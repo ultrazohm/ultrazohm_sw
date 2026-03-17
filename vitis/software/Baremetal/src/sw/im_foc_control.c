@@ -99,7 +99,7 @@ void im_foc_control_step(actualValues *av,
                           referenceAndSetValues *rasv,
                           const uz_IM_t *im_config,
                           const im_foc_control_input_t *input,
-                          float omega_r_el_rad_s,
+                          float omega_s_rad_s,
                           float psi_r_mag,
                           float theta_flux_rad,
                           im_foc_control_state_t *state,
@@ -156,9 +156,9 @@ void im_foc_control_step(actualValues *av,
     float const lr = im_config->Lsigma_r_Henry + im_config->Lm_Henry;
     float const sigma = 1.0f - (im_config->Lm_Henry * im_config->Lm_Henry) / (ls * lr);
     float const sigma_ls = sigma * ls;
-    float const ud_decoup = -omega_r_el_rad_s * sigma_ls * av->IM_I_q;
-    float const uq_decoup = omega_r_el_rad_s * sigma_ls * av->IM_I_d +
-                            omega_r_el_rad_s * (im_config->Lm_Henry / lr) * psi_r_mag;
+    float const ud_decoup = -omega_s_rad_s * sigma_ls * av->IM_I_q;
+    float const uq_decoup = omega_s_rad_s * sigma_ls * av->IM_I_d +
+                            omega_s_rad_s * (im_config->Lm_Henry / lr) * psi_r_mag;
 
     output->ud_pi    = ud_pi;
     output->uq_pi    = uq_pi;

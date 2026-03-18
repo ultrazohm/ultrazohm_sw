@@ -634,6 +634,7 @@ static void im_control(void) {
 		uq_decoup_V  = foc_output.uq_decoup;
 		ud_res_V     = foc_output.ud_res;
 		uq_res_V     = foc_output.uq_res;
+		iq_ref_A     = foc_output.iq_cmd_A;
 	} else {
 		im_uf_control_config_t vf_config = {
 			.frequency_setpoint_Hz   = vf_frequency_setpoint_Hz,
@@ -723,7 +724,6 @@ void rr_profile(void)
 
 	if (use_speed_control) {
 		speed_ref_rpm = speed_setpoints[active_index];
-		Global_Data.av.snd_fld[2] = speed_ref_rpm;
 	} else {
 		Global_Data.rr_profile.dut_reference_currents_in_A.d =
 			RR_ID_SCALE * id_setpoints[active_index];
@@ -731,8 +731,6 @@ void rr_profile(void)
 			RR_IQ_SCALE * iq_setpoints[active_index];
 		id_ref_A = Global_Data.rr_profile.dut_reference_currents_in_A.d;
 		iq_ref_A = Global_Data.rr_profile.dut_reference_currents_in_A.q;
-		Global_Data.av.snd_fld[3] = id_ref_A;
-		Global_Data.av.snd_fld[4] = iq_ref_A;
 	}
 
 	current_uptime = uz_SystemTime_GetInterruptCounter();
@@ -750,9 +748,6 @@ void rr_profile(void)
 			id_ref_A = 0.0f;
 			iq_ref_A = 0.0f;
 			speed_ref_rpm = 0.0f;
-			Global_Data.av.snd_fld[2] = 0.0f;
-			Global_Data.av.snd_fld[3] = 0.0f;
-			Global_Data.av.snd_fld[4] = 0.0f;
 			ultrazohm_state_machine_set_stop(true);
 			rr_profile_was_active = false;
 		}

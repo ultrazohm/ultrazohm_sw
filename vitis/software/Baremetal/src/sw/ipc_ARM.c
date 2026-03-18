@@ -253,16 +253,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[1] = value;
 			break;
 
-		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		case (Set_Send_Field_2): // IM speed reference
+		speed_ref_rpm = value;
 			break;
 
-		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		case (Set_Send_Field_3): // IM id reference current
+		if (value >= 0.0f) { id_ref_A = value; }
 			break;
 
-		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		case (Set_Send_Field_4): // IM iq reference current
+		iq_ref_A = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -275,37 +275,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7): // KF Q_psi noise covariance
 		if (value > 0.0f) { kf_q_psi = value; }
-		data->av.snd_fld[7] = kf_q_psi;
 			break;
 
 		case (Set_Send_Field_8): // KF R_i noise covariance
 		if (value > 0.0f) { kf_r_i = value; }
-		data->av.snd_fld[8] = kf_r_i;
 			break;
 
 		case (Set_Send_Field_9): // KF Q_i noise covariance
 		if (value > 0.0f) { kf_q_i = value; }
-		data->av.snd_fld[9] = kf_q_i;
 			break;
 
 		case (Set_Send_Field_10): // IM speed PI Kp
 		if (value >= 0.0f) { set_im_speed_pi_kp(value); }
-		data->av.snd_fld[10] = im_speed_pi_kp;
 			break;
 
 		case (Set_Send_Field_11): // IM speed PI Ki
 		if (value >= 0.0f) { set_im_speed_pi_ki(value); }
-		data->av.snd_fld[11] = im_speed_pi_ki;
 			break;
 
 		case (Set_Send_Field_12): // Speed OL gate: THR_SCALE
 		if (value > 0.0f) { speed_ol_thr_scale = value; }
-		data->av.snd_fld[12] = speed_ol_thr_scale;
 			break;
 
 		case (Set_Send_Field_13): // Speed OL gate: THR_MIN_RPM
 		if (value >= 80.0f) { speed_ol_thr_min_rpm = value; }
-		data->av.snd_fld[13] = speed_ol_thr_min_rpm;
 			break;
 
 		case (Set_Send_Field_14):
@@ -481,10 +474,5 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	if (data->av.snd_fld[1] > 0.0f) {
 		vf_frequency_setpoint_Hz = data->av.snd_fld[1];
-	}
-	if (data->rr_profile.setpoints_from_javascope) {
-		speed_ref_rpm = data->av.snd_fld[2];
-		id_ref_A = data->av.snd_fld[3];
-		iq_ref_A = data->av.snd_fld[4];
 	}
 }

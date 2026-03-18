@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_count_switching', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_count_switching', 'handle'));
+annotate_port('gm_uz_count_switching/uz_count_switching/Count_Changes1', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Delay', 1, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage2', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage3', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage4', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage5', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage6', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage7', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage8', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Add_stage9', 0, 1, '');
+annotate_port('gm_uz_count_switching/uz_count_switching/Count_Changes1/HDL Counter', 0, 1, '');

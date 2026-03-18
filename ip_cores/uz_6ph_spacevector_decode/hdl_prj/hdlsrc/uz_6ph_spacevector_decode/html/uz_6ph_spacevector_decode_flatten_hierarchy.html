@@ -1,0 +1,312 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Hierarchy Flattening Report for uz_6ph_spacevector_decode
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdFlattenHierarchy'); else local_onload();}} catch(err) {};">
+<font SIZE="+2" COLOR="#000066">
+Hierarchy Flattening Report for uz_6ph_spacevector_decode
+</font>
+<br /><br /><br /><script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<a name="List of subsystems:">
+<font size="+1" color="#000066">
+<b class="midprod">
+List of subsystems:
+</b>
+
+</font>
+
+</a>
+<br /><br /><b>
+<li>'FlattenHierarchy' turned 'on':</li>
+</b>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'onList')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span name="onList" id="onList" style="display: none;">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:277')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><br /><b>
+<li>'FlattenHierarchy' turned 'off':</li>
+</b>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'offList')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span name="offList" id="offList" style="display: none;">
+<ul class="SystemdefinedCollapse" id="5a118cd6-c156-44d9-a344-e3e8056ca614" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:177')" name="code2model" class="code2model">
+Register_9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:168')" name="code2model" class="code2model">
+Register_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:159')" name="code2model" class="code2model">
+Register_7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:150')" name="code2model" class="code2model">
+Register_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:141')" name="code2model" class="code2model">
+Register_5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:132')" name="code2model" class="code2model">
+Register_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:123')" name="code2model" class="code2model">
+Register_3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:114')" name="code2model" class="code2model">
+Register_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:222')" name="code2model" class="code2model">
+Register_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:213')" name="code2model" class="code2model">
+Register_13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:204')" name="code2model" class="code2model">
+Register_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:195')" name="code2model" class="code2model">
+Register_11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:186')" name="code2model" class="code2model">
+Register_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:109')" name="code2model" class="code2model">
+Register_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:107')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_6ph_spacevector_decode:7')" name="code2model" class="code2model">
+uz_6ph_spacevector_decode
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '5a118cd6-c156-44d9-a344-e3e8056ca614')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><br /><a name="Flattening Status:">
+<font size="+1" color="#000066">
+<b class="midprod">
+Flattening Status:
+</b>
+
+</font>
+
+</a>
+<br /><br />'Hierarchical flattening' was successful.<br /><br /><a name="Generated Model">
+<font size="+1" color="#000066">
+<b class="midprod">
+Generated Model
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Generated model after the transformation
+</td>
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:open_system('C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_6ph_spacevector_decode\C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_6ph_spacevector_decode\hdl_prj\hdlsrc\uz_6ph_spacevector_decode\gm_uz_6ph_spacevector_decode')" class="callMATLAB" name="callMATLAB">gm_uz_6ph_spacevector_decode</a>
+</td>
+
+</tr>
+
+</table>
+<br />
+</body>
+
+</html>

@@ -1,0 +1,1659 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_count_switching
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Adder_3_1');hdlTableShrink(this, 'Register_3_1');hdlTableShrink(this, 'Register_3_2');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_3_2');hdlTableShrink(this, 'Adder_4_1');hdlTableShrink(this, 'Register_4_1');hdlTableShrink(this, 'Register_4_2');hdlTableShrink(this, 'Multiplexer_4_1');hdlTableShrink(this, 'Multiplexer_4_2');hdlTableShrink(this, 'Adder_5_1');hdlTableShrink(this, 'Register_5_1');hdlTableShrink(this, 'Register_5_2');hdlTableShrink(this, 'Multiplexer_5_1');hdlTableShrink(this, 'Multiplexer_5_2');hdlTableShrink(this, 'Adder_6_1');hdlTableShrink(this, 'Register_6_1');hdlTableShrink(this, 'Register_6_2');hdlTableShrink(this, 'Multiplexer_6_1');hdlTableShrink(this, 'Multiplexer_6_2');hdlTableShrink(this, 'Adder_7_1');hdlTableShrink(this, 'Register_7_1');hdlTableShrink(this, 'Register_7_2');hdlTableShrink(this, 'Multiplexer_7_1');hdlTableShrink(this, 'Multiplexer_7_2');hdlTableShrink(this, 'Adder_8_1');hdlTableShrink(this, 'Register_8_1');hdlTableShrink(this, 'Register_8_2');hdlTableShrink(this, 'Multiplexer_8_1');hdlTableShrink(this, 'Multiplexer_8_2');hdlTableShrink(this, 'Adder_9_1');hdlTableShrink(this, 'Register_9_1');hdlTableShrink(this, 'Register_9_2');hdlTableShrink(this, 'Multiplexer_9_1');hdlTableShrink(this, 'Multiplexer_9_2');hdlTableShrink(this, 'Adder_10_1');hdlTableShrink(this, 'Register_10_1');hdlTableShrink(this, 'Register_10_2');hdlTableShrink(this, 'Multiplexer_10_1');hdlTableShrink(this, 'Multiplexer_10_2');hdlTableShrink(this, 'Adder_11_1');hdlTableShrink(this, 'Register_11_1');hdlTableShrink(this, 'Register_11_2');hdlTableShrink(this, 'Multiplexer_11_1');hdlTableShrink(this, 'Multiplexer_11_2');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_count_switching
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+17
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+30
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+340
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+38
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+333
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:7')" name="code2model" class="code2model">
+uz_count_switching
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 8
+</span>
+<span name="Adder_1_1" id="Adder_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:107')" name="code2model" class="code2model">
+Add_stage2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:108')" name="code2model" class="code2model">
+Add_stage3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:109')" name="code2model" class="code2model">
+Add_stage4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:110')" name="code2model" class="code2model">
+Add_stage5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:111')" name="code2model" class="code2model">
+Add_stage6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:112')" name="code2model" class="code2model">
+Add_stage7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_count_switching:113')" name="code2model" class="code2model">
+Add_stage8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:146')" name="code2model" class="code2model">
+Add_stage9
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (11)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 10
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:128')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:137')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:136')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:135')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:134')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:133')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:132')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:131')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:130')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:129')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:180')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (333)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 12
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="17a3ec05-4d41-40fe-bf44-8b52f3f166d1" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset_x: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:30')" name="code2model" class="code2model">
+ss_in_0
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:32')" name="code2model" class="code2model">
+ss_in_2
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:33')" name="code2model" class="code2model">
+ss_in_3
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:34')" name="code2model" class="code2model">
+ss_in_4
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:35')" name="code2model" class="code2model">
+ss_in_5
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:36')" name="code2model" class="code2model">
+ss_in_6
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:37')" name="code2model" class="code2model">
+ss_in_7
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:38')" name="code2model" class="code2model">
+ss_in_8
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:40')" name="code2model" class="code2model">
+bResetAXI
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '17a3ec05-4d41-40fe-bf44-8b52f3f166d1')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 321
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="fc692fec-80ed-45f9-8007-e2b8fb45ed85" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:10')" name="code2model" class="code2model">
+count_out_0_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:138')" name="code2model" class="code2model">
+count_out_1_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:139')" name="code2model" class="code2model">
+count_out_2_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:140')" name="code2model" class="code2model">
+count_out_3_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:141')" name="code2model" class="code2model">
+count_out_4_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:142')" name="code2model" class="code2model">
+count_out_5_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:143')" name="code2model" class="code2model">
+count_out_6_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:144')" name="code2model" class="code2model">
+count_out_7_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:145')" name="code2model" class="code2model">
+count_out_8_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:147')" name="code2model" class="code2model">
+count_out_sum_AXI1
+</a>
+: 32 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'fc692fec-80ed-45f9-8007-e2b8fb45ed85')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:127')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_2_1" id="Multiplexer_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:127:4')" name="code2model" class="code2model">
+Positive_rsvd
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:127:3')" name="code2model" class="code2model">
+FixPt_Relational_Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:118')" name="code2model" class="code2model">
+Count_Changes8
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_3_1" id="Adder_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:122')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_3_1" id="Register_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:121')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_3_2" id="Register_3_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:122')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:124')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:123')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_3_2" id="Multiplexer_3_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:122')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:122')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:109')" name="code2model" class="code2model">
+Count_Changes7
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_4_1" id="Adder_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:113')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_4_1" id="Register_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:112')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_4_2" id="Register_4_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:113')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:115')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:114')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_4_2" id="Multiplexer_4_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:113')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:113')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:100')" name="code2model" class="code2model">
+Count_Changes6
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_5_1" id="Adder_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:104')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_5_1" id="Register_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:103')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_5_2" id="Register_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:104')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_5_1" id="Multiplexer_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:106')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:105')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_5_2" id="Multiplexer_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:104')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:104')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:91')" name="code2model" class="code2model">
+Count_Changes5
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_6_1" id="Adder_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:95')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_6_1" id="Register_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:94')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_6_2" id="Register_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:95')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_6_1" id="Multiplexer_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:97')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:96')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_6_2" id="Multiplexer_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:95')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:95')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:82')" name="code2model" class="code2model">
+Count_Changes4
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_7_1" id="Adder_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:86')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_7_1" id="Register_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:85')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_7_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_7_2" id="Register_7_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:86')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_7_1" id="Multiplexer_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:88')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:87')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_7_2" id="Multiplexer_7_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:86')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:86')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:73')" name="code2model" class="code2model">
+Count_Changes3
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_8_1" id="Adder_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:77')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_8_1" id="Register_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:76')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_8_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_8_2" id="Register_8_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:77')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_8_1" id="Multiplexer_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:79')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:78')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_8_2" id="Multiplexer_8_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:77')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:77')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:64')" name="code2model" class="code2model">
+Count_Changes2
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_9_1" id="Adder_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:68')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_9_1" id="Register_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:67')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_9_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_9_2" id="Register_9_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:68')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_9_1" id="Multiplexer_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:70')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:69')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_9_2" id="Multiplexer_9_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:68')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:68')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:55')" name="code2model" class="code2model">
+Count_Changes1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_10_1" id="Adder_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:59')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_10_1" id="Register_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:58')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_10_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_10_2" id="Register_10_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:59')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_10_1" id="Multiplexer_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:61')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:60')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_10_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_10_2" id="Multiplexer_10_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:59')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:59')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_count_switching:50')" name="code2model" class="code2model">
+Count_Changes
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 1
+</span>
+<span name="Adder_11_1" id="Adder_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:49')" name="code2model" class="code2model">
+adder
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_11_1" id="Register_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:47')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_11_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_11_2" id="Register_11_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:49')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_11_1" id="Multiplexer_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:48')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:46')" name="code2model" class="code2model">
+Relational Operator
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_11_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_11_2" id="Multiplexer_11_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:49')" name="code2model" class="code2model">
+switchEnable
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_count_switching:49')" name="code2model" class="code2model">
+switchReset
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

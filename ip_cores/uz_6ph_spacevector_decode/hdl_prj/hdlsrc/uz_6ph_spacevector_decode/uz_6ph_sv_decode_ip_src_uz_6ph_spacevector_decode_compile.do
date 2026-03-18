@@ -1,0 +1,17 @@
+vlib work
+vcom  uz_6ph_sv_decode_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_1.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_10.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_11.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_12.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_13.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_14.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_2.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_3.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_4.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_5.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_6.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_7.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_8.vhd
+vcom  uz_6ph_sv_decode_ip_src_Register_9.vhd
+vcom  uz_6ph_sv_decode_ip_src_uz_6ph_spacevector_decode.vhd

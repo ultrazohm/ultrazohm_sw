@@ -1,0 +1,12 @@
+vlib work
+vcom  uz_count_ip_src_Count_Changes.vhd
+vcom  uz_count_ip_src_Count_Changes1.vhd
+vcom  uz_count_ip_src_Count_Changes2.vhd
+vcom  uz_count_ip_src_Count_Changes3.vhd
+vcom  uz_count_ip_src_Count_Changes4.vhd
+vcom  uz_count_ip_src_Count_Changes5.vhd
+vcom  uz_count_ip_src_Count_Changes6.vhd
+vcom  uz_count_ip_src_Count_Changes7.vhd
+vcom  uz_count_ip_src_Count_Changes8.vhd
+vcom  uz_count_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_count_ip_src_uz_count_switching.vhd

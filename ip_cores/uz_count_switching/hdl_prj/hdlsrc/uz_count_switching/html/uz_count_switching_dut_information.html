@@ -1,0 +1,512 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level DUT Information Report for uz_count_switching
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Code Interface Report for uz_count_switching
+</font>
+<h3>
+Input ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+reset_x
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk_enable
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:30')" name="code2model" class="code2model">
+ss_in_0
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:32')" name="code2model" class="code2model">
+ss_in_2
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:33')" name="code2model" class="code2model">
+ss_in_3
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:34')" name="code2model" class="code2model">
+ss_in_4
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:35')" name="code2model" class="code2model">
+ss_in_5
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:36')" name="code2model" class="code2model">
+ss_in_6
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:37')" name="code2model" class="code2model">
+ss_in_7
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:38')" name="code2model" class="code2model">
+ss_in_8
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:40')" name="code2model" class="code2model">
+bResetAXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<h3>
+Output ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ce_out
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:10')" name="code2model" class="code2model">
+count_out_0_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:138')" name="code2model" class="code2model">
+count_out_1_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:139')" name="code2model" class="code2model">
+count_out_2_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:140')" name="code2model" class="code2model">
+count_out_3_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:141')" name="code2model" class="code2model">
+count_out_4_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:142')" name="code2model" class="code2model">
+count_out_5_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:143')" name="code2model" class="code2model">
+count_out_6_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:144')" name="code2model" class="code2model">
+count_out_7_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:145')" name="code2model" class="code2model">
+count_out_8_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_count_switching:147')" name="code2model" class="code2model">
+count_out_sum_AXI1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

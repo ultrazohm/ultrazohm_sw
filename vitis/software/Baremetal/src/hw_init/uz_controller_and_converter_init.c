@@ -1,8 +1,8 @@
 #include "../include/uz_controller_and_converter_init.h"
 #include "../uz/uz_global_configuration.h"
 
-#define SAMPLE_TIME_SEC_CURRENT_CONTROL   UZ_ISR_FREQUENCY
-#define SAMPLE_TIME_SEC_SPEED_CONTROL     (SAMPLE_TIME_SEC_CURRENT_CONTROL)*1
+#define SAMPLE_TIME_SEC_CURRENT_CONTROL   1.0f/UZ_ISR_FREQUENCY
+#define SAMPLE_TIME_SEC_SPEED_CONTROL     (SAMPLE_TIME_SEC_CURRENT_CONTROL)
 //#define LIMITATION_SAFETY_FACTOR 0.707106781186f   //(1/sqrtf(2.0f))
 #define TAU_SIGMA (1.5f * SAMPLE_TIME_SEC_CURRENT_CONTROL)
 
@@ -55,20 +55,20 @@ struct uz_SetPoint_t* uz_torque_to_current_converter_Pruef_init(void) {
 
 static const struct uz_PMSM_t config_PMSM_Last = {
 	//these parameters are only needed if linear decoupling is selected
-	.Ld_Henry = 0.000588604f,
-	.Lq_Henry = 0.000801443f,
-	.Psi_PM_Vs = 0.01427f,
-	.I_max_Ampere = 20.0f, // max Ampere peak
+	.Ld_Henry = 0.00058f,//0.000588604f,
+	.Lq_Henry = 0.00071f,// 0.000801443f,
+	.Psi_PM_Vs = 0.0143f,
+	.I_max_Ampere = 30.0f, // max Ampere peak
 	.R_ph_Ohm = 0.1f,
 	.polePairs = 5.0f,
 };
 
 static const struct uz_PMSM_t config_PMSM_Pruef = {
 	//these parameters are only needed if linear decoupling is selected
-	.Ld_Henry = 0.000588604f,
-	.Lq_Henry = 0.000801443f,
-	.Psi_PM_Vs = 0.01427f,
-	.I_max_Ampere = 10.0f, // max Ampere peak
+	.Ld_Henry = 0.00058f,//0.000588604f,
+	.Lq_Henry = 0.00071f,//0.000801443f,
+	.Psi_PM_Vs = 0.0143f,
+	.I_max_Ampere = 15.0f, // max Ampere peak
 	.R_ph_Ohm = 0.2f,
 	.polePairs = 5.0f,
 };
@@ -122,7 +122,7 @@ static const struct uz_IIR_Filter_config speed_prefilter_Pruef_config = {
 };
 
 static const struct uz_SpeedControl_config speed_control_Last_config = {
-	.config_controller.Kp = 0.01f,
+	.config_controller.Kp = 0.07f,//0.01f,
 	.config_controller.Ki = 16.6667f,
 	.config_controller.samplingTime_sec = SAMPLE_TIME_SEC_SPEED_CONTROL,
 	.config_controller.upper_limit = 2.4f,
@@ -131,7 +131,7 @@ static const struct uz_SpeedControl_config speed_control_Last_config = {
 };
 
 static const struct uz_SpeedControl_config speed_control_Pruef_config = {
-	.config_controller.Kp = 0.01f,
+	.config_controller.Kp = 0.07f,//0.01f,
 	.config_controller.Ki = 16.6667f,
 	.config_controller.samplingTime_sec = SAMPLE_TIME_SEC_SPEED_CONTROL,
 	.config_controller.upper_limit = 2.4f,

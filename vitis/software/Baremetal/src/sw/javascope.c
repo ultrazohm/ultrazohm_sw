@@ -139,7 +139,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Testvar7] 				= &data->av.testvar7;
 	js_ch_observable[JSO_Testvar8] 				= &data->av.testvar8;
 	js_ch_observable[JSO_Testvar9] 				= &data->av.testvar9;
-	js_ch_observable[JSO_Testvar10] 				= &data->av.testvar10;
+	js_ch_observable[JSO_Testvar10] 			= &data->av.testvar10;
 
 	js_ch_observable[JSO_u_ref_alpha] = &(data->rasv.u_ref_6ph_alphabeta.alpha);
 	js_ch_observable[JSO_u_ref_beta] = &(data->rasv.u_ref_6ph_alphabeta.beta);
@@ -155,6 +155,7 @@ int JavaScope_initialize(DS_Data* data)
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
 
+	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &(data->av.error);
 	js_slowDataArray[JSSD_FLOAT_ud_3ph] 			    = &(data->av.u_dq_3ph_Last_meas.d);
 	js_slowDataArray[JSSD_FLOAT_uq_3ph] 			    = &(data->av.u_dq_3ph_Last_meas.q);
 	js_slowDataArray[JSSD_FLOAT_ud_6ph] 				= &(data->av.u_dqxy_6ph_Pruef_meas.d);
@@ -170,6 +171,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_1] 			= &(data->av.temp_VSI_1);
 	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_2] 			= &(data->av.temp_VSI_2);
 	js_slowDataArray[JSSD_FLOAT_VSI_TEMP_3] 			= &(data->av.temp_VSI_3);
+	js_slowDataArray[JSSD_FLOAT_u_dc_1] 				= &(data->av.u_dc1);
+	js_slowDataArray[JSSD_FLOAT_u_dc_2] 				= &(data->av.u_dc2);
+	js_slowDataArray[JSSD_FLOAT_u_dc_3] 				= &(data->av.u_dc3);
 	js_slowDataArray[JSSD_FLOAT_theta_el_Last]			= &(data->av.theta_el_Last_deg);
 	js_slowDataArray[JSSD_FLOAT_theta_el_Pruef]			= &(data->av.theta_el_Pruef_deg);
 	js_slowDataArray[JSSD_FLOAT_theta_mech_Last]		= &(data->av.theta_mech_Last_deg);

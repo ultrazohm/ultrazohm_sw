@@ -213,9 +213,9 @@ struct uz_DutyCycle_2x3ph_PhaseShiftOpt uz_6ph_SVPWM_24_4_active_SV_opt_d_alphab
 
 	float M = sqrtf(powf(u_alphabeta_ref.alpha,2) + powf(u_alphabeta_ref.beta,2)) / (V_DC_Volts/2.0f);
 
-	float theta_pi_12 = theta - (sector_24 - 1)* (UZ_PIf / 12.0f);
 
-	float d_opt = return_svpwm_4active_opt_d(version, theta_pi_12, kappa, M);
+
+	float d_opt = return_svpwm_4active_opt_d(version, theta, kappa, M);
 
 	float T_V01 = T_V0 * d_opt;
 	float T_V02 = T_V0 * (1.0f-d_opt);

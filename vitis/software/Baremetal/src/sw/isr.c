@@ -50,8 +50,8 @@ extern DS_Data Global_Data;
 
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP_LAST  16.0f
-#define MAX_PHASE_CURRENT_AMP_PRUEF 7.0f
+#define MAX_PHASE_CURRENT_AMP_LAST  30.0f
+#define MAX_PHASE_CURRENT_AMP_PRUEF 15.0f
 #define MAX_DC_VOLT 50.0f
 #define MAX_TEMP_DEG 90.0f
 
@@ -91,7 +91,7 @@ void ISR_Control(void *data)
 
     uz_wavegen_2_sample(Global_Data.objects.wavegen2_1);
 	uz_wavegen_2_sample(Global_Data.objects.wavegen2_2);
-	uz_wavegen_2_sample(Global_Data.objects.wavegen2_3);
+	uz_wavegen_2_sample(Global_Data.objects.wavegen2_theta);
 
 
     Global_Data.av.resolver_outputs_d4_Pruef = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_Pruef);
@@ -102,13 +102,18 @@ void ISR_Control(void *data)
     Global_Data.av.theta_el_Pruef_deg = Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi * RAD_TO_DEG;
     Global_Data.av.theta_mech_Pruef_deg = Global_Data.av.resolver_outputs_d4_Pruef.position_mech_2pi * RAD_TO_DEG;
 
-    Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_sawtooth(2.0f*UZ_PIf, Global_Data.rasv.freq_el_Hz_ref_JS);
+
 
     Global_Data.av.testvar4 = uz_wavegen_sawtooth_return_float_with_offset_and_amplitude(Global_Data.objects.wavegen2_1);
 
     Global_Data.av.testvar5 = uz_wavegen_triangle_return_float_with_offset_and_amplitude(Global_Data.objects.wavegen2_1);
 
     Global_Data.av.testvar6 = uz_wavegen_pulse_return_float(Global_Data.objects.wavegen2_1);
+
+    //Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_sawtooth(2.0f*UZ_PIf, Global_Data.rasv.freq_el_Hz_ref_JS);
+
+    Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_pulse_return_float(Global_Data.objects.wavegen2_theta);
+
 
 
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
@@ -268,6 +273,8 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	// Start: Control algorithm - only if Ultrazohm is in control state
+
+    	//Global_Data.rasv.current_control_3ph_Last = true;
 
     	/*=============== Last Start ===============*/
     	if(Global_Data.rasv.speed_control_3ph_Last) {

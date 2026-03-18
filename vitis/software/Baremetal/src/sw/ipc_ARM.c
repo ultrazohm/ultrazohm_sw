@@ -373,17 +373,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (data->rasv.speed_control_3ph_Last == true) {
+		js_status_BareToRTOS |= (1 << 4);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	 }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	 if (data->rasv.speed_control_6ph_Pruef == true) {
+		js_status_BareToRTOS |= (1 << 5);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	 }
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	 if ((data->rasv.current_control_6ph_Pruef || data->rasv.current_control_6ph_Pruef) == true) {
+		js_status_BareToRTOS |= (1 << 6);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	 }
 
 	/* Bit 7 - My_Button_4 */
 	// js_status_BareToRTOS &= ~(1 << 7);
@@ -392,7 +400,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 8);
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	 if (data->av.More_PWM_active == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	 }
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

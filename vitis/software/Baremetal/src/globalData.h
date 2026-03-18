@@ -272,7 +272,7 @@ typedef struct{
 
 	uz_wavegen_2*  wavegen2_1;
 	uz_wavegen_2*  wavegen2_2;
-	uz_wavegen_2*  wavegen2_3;
+	uz_wavegen_2*  wavegen2_theta;
 
 }object_pointers_t;
 

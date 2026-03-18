@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 24.1 (R2024a) at 10:59:45 on 18/03/2026
+% Generated with MATLAB 24.1 (R2024a) at 13:27:11 on 18/03/2026
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_count_switching\hdlworkflow.m'
 %     Overwrite : true
@@ -25,7 +25,7 @@ hdlset_param('uz_count_switching', 'ProjectFolder', 'C:\utrazohm_sw_2\ultrazohm_
 hdlset_param('uz_count_switching', 'ResetInputPort', 'reset_x');
 hdlset_param('uz_count_switching', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('uz_count_switching', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
-hdlset_param('uz_count_switching', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
+hdlset_param('uz_count_switching', 'SynthesisToolDeviceName', 'xqzu7ev-ffrc1156-2-i');
 hdlset_param('uz_count_switching', 'SynthesisToolPackageName', '');
 hdlset_param('uz_count_switching', 'SynthesisToolSpeedValue', '');
 hdlset_param('uz_count_switching', 'TargetDirectory', 'C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_count_switching\hdl_prj\hdlsrc');
@@ -69,8 +69,8 @@ hdlset_param('uz_count_switching/uz_count_switching/ss_in_8', 'IOInterface', 'Ex
 hdlset_param('uz_count_switching/uz_count_switching/ss_in_8', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('uz_count_switching/uz_count_switching/bResetAXI', 'IOInterface', 'External Port');
-hdlset_param('uz_count_switching/uz_count_switching/bResetAXI', 'IOInterfaceMapping', '');
+hdlset_param('uz_count_switching/uz_count_switching/bResetAXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_count_switching/uz_count_switching/bResetAXI', 'IOInterfaceMapping', 'x"128"');
 
 % Set Outport HDL parameters
 hdlset_param('uz_count_switching/uz_count_switching/count_out_0_AXI', 'IOInterface', 'AXI4');

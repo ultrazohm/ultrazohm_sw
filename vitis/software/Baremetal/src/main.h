@@ -79,7 +79,7 @@ enum ControllerSelection
 };
 
 #define SAMPLE_TIME_SEC_CURRENT_CONTROL 1.0f / UZ_CONTROL_FREQUENCY
-#define BO_FACTOR 3.0f
+#define BO_FACTOR 1.5f
 #define TAU_SIGMA (BO_FACTOR * SAMPLE_TIME_SEC_CURRENT_CONTROL)
 
 //----------------------------------------------------

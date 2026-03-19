@@ -1,4 +1,4 @@
-create_project prj_ip {} -part xqzu7ev-ffrc1156-2-i -force
+create_project prj_ip {} -part xqzu9eg-ffrb1156-2-i -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
@@ -43,7 +43,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114526446 [ipx::current_core]
+set_property core_revision 2114527640 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_count_ip_src_Count_Changes.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]

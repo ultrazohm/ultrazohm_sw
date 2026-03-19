@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>82804cd3</spirit:value>
+            <spirit:value>77649d17</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>82804cd3</spirit:value>
+            <spirit:value>77649d17</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -493,6 +493,19 @@
       </spirit:port>
       <spirit:port>
         <spirit:name>ss_in_0</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ss_in_1</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1318,7 +1331,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_count_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_03910975</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_b0628d3b</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1484,15 +1497,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_count_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114526446</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-03-18T12:26:54Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114527640</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-03-19T08:20:37Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="49b2c6d2"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="227bec45"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="05ee383f"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="3735cfc8"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d5f3b5ab"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

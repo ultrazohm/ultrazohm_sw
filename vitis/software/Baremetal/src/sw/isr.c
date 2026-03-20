@@ -235,12 +235,12 @@ void ISR_Control(void *data)
         	}
         	if (start_angle_found) {
         		Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
+    			Global_Data.rasv.StartMarker=1.0f;
 
         		// step throught the array
-        		if((current_uptime > (old_uptime +100)) && (!change_speed) ){
+        		if((current_uptime > (old_uptime +200)) && (!change_speed) ){
         			old_uptime=current_uptime;
         			Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
-        			Global_Data.rasv.StartMarker=1.0f;
         			if(setpoint_index < 50){
         				setpoint_index++;
         			}else{

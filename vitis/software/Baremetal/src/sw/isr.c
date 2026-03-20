@@ -255,8 +255,6 @@ void ISR_Control(void *data)
         		}
         	}
         	if (start_angle_found) {
-        		Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index] * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
-
         		// step throught the array
         		if((current_uptime > (old_uptime +200)) && (!change_speed) ){
         			old_uptime=current_uptime;

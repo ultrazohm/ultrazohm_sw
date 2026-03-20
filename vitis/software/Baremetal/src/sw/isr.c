@@ -69,7 +69,7 @@ float Observation[7] = {0};
 bool ext_clamping;
 
 //Stepprofile stuff
-float M_ref_setpoints[9]={
+float M_ref_setpoints[50]={
 #include "StepProfile.csv"
 };
 uint64_t old_uptime=0U;
@@ -230,6 +230,7 @@ void ISR_Control(void *data)
         	if ((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f) || ConApplication==CIL)&& (!start_angle_found)) {
         		if(current_uptime>(old_uptime + 4360)) {
         			start_angle_found = true;
+        			old_uptime=current_uptime;
         		}
         	}
         	if (start_angle_found) {
@@ -240,7 +241,7 @@ void ISR_Control(void *data)
         			old_uptime=current_uptime;
         			Global_Data.av.Torque_ref = M_ref_setpoints[setpoint_index] * Global_Data.av.SynRM_config.M_rated_Nm;
         			Global_Data.rasv.StartMarker=1.0f;
-        			if(setpoint_index < 9){
+        			if(setpoint_index < 50){
         				setpoint_index++;
         			}else{
         				setpoint_index=0U;
@@ -252,7 +253,7 @@ void ISR_Control(void *data)
         			Global_Data.av.Torque_ref = 0.0f;
         			if(current_uptime > (old_uptime + 1000)) {
         				if(ConApplication == CIL) {
-        					Global_Data.av.n_ref_CIL = Global_Data.av.n_ref_CIL + 100.0f;
+        					Global_Data.av.n_ref_CIL = Global_Data.av.n_ref_CIL + 400.0f;
         				}
         				change_speed = false;
         				start_angle_found = false;

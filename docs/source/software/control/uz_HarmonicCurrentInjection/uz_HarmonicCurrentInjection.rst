@@ -7,10 +7,11 @@ HarmonicCurrentInjection
 Toolbox for the implementation of parallel control loops to control user-defined current harmonics.
 The user can chose between the following two control schemes:
 
-.. tikz:: HarmonicCurrentInjection schematic
+.. tikz:: HarmonicCurrentInjection schematic abc
   :align: center
 
   \usetikzlibrary{arrows.meta, calc, positioning, shapes}
+  \begin{tikzpicture}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Define Blocks
 	\tikzstyle{PMSM} = [circle, draw, fill=red!30, text width=1.4cm, text centered, minimum height=1.4cm]
@@ -71,8 +72,6 @@ The user can chose between the following two control schemes:
 	\node[right=of DQ1, xshift=-1cm, yshift=0.7cm] (Ua) {$U_U$};
 	\node[right=of DQ1, xshift=-1cm, yshift=0.2cm] (Ub) {$U_V$};
 	\node[right=of DQ1, xshift=-1cm, yshift=-0.3cm] (Uc) {$U_W$};
-	\node[left=of DQ2, xshift=0.5cm, yshift=0.5cm] (Id) {$I_d$};
-	\node[left=of DQ2, xshift=0.5cm, yshift=-0.1cm] (Iq) {$I_q$};
 	\node[below=of PMSM, xshift=-5cm, yshift=0.9cm] (thetael) {$\theta_{el}$};
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,12 +134,16 @@ The user can chose between the following two control schemes:
 	\node[right=of DQ3, xshift=-1cm, yshift=0.7cm] (Id5) {$I_{dn}$};
 	\node[right=of DQ3, xshift=-1cm, yshift=-0.3cm] (Iq5) {$I_{qn}$};
 	\node[above=of Add3, xshift=-0.6cm, yshift=-1cm] (Id5ref) {$I_{dn,ref}$};
-	\node[above=of Add4, xshift=-0.6cm, yshift=-1cm] (Id5ref) {$I_{qn,ref}$};
+	\node[above=of Add4, xshift=-0.6cm, yshift=-1cm] (Iq5ref) {$I_{qn,ref}$};
 	\node[right=of PI3, xshift=-1cm, yshift=0.2cm] (Ud5) {$U_{dn}$};
 	\node[right=of PI4, xshift=-1cm, yshift=0.2cm] (Uq5) {$U_{qn}$};
 	\node[above=of LP1, xshift=1.6cm, yshift=-0.5cm] (thetael2) {$\theta_{el}$};
   \end{tikzpicture}
 
+.. tikz:: HarmonicCurrentInjection schematic dq
+  :align: center
+
+  \usetikzlibrary{arrows.meta, calc, positioning, shapes}
   \begin{tikzpicture}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Define Blocks
@@ -202,8 +205,6 @@ The user can chose between the following two control schemes:
 	\node[right=of DQ1, xshift=-1cm, yshift=0.7cm] (Ua) {$U_U$};
 	\node[right=of DQ1, xshift=-1cm, yshift=0.2cm] (Ub) {$U_V$};
 	\node[right=of DQ1, xshift=-1cm, yshift=-0.3cm] (Uc) {$U_W$};
-	\node[left=of DQ2, xshift=0.5cm, yshift=0.5cm] (Id) {$I_d$};
-	\node[left=of DQ2, xshift=0.5cm, yshift=-0.1cm] (Iq) {$I_q$};
 	\node[below=of PMSM, xshift=-5cm, yshift=0.9cm] (thetael) {$\theta_{el}$};
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HCI %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,7 +263,7 @@ The user can chose between the following two control schemes:
 	\node[right=of DQ3, xshift=-1cm, yshift=0.7cm] (Id5) {$I_{dn}$};
 	\node[right=of DQ3, xshift=-1cm, yshift=-0.3cm] (Iq5) {$I_{qn}$};
 	\node[above=of Add3, xshift=-0.6cm, yshift=-1cm] (Id5ref) {$I_{dn,ref}$};
-	\node[above=of Add4, xshift=-0.6cm, yshift=-1cm] (Id5ref) {$I_{qn,ref}$};
+	\node[above=of Add4, xshift=-0.6cm, yshift=-1cm] (Iq5ref) {$I_{qn,ref}$};
 	\node[right=of PI3, xshift=-1cm, yshift=0.2cm] (Ud5) {$U_{dn}$};
 	\node[right=of PI4, xshift=-1cm, yshift=0.2cm] (Uq5) {$U_{qn}$};
 	\node[above=of LP1, xshift=1.6cm, yshift=-0.5cm] (thetael2) {$\theta_{el}$};
@@ -276,7 +277,7 @@ Setup
 Configuration
 -------------
 
-In order to configure the CurrentControl, multiple configuration structs have to be initialized.
+In order to configure the Harmonic Current Injection, multiple configuration structs have to be initialized.
 
 .. doxygenenum:: uz_HarmonicCurrentInjection_mode_select
 
@@ -405,9 +406,7 @@ Calculates one sample of the CurrentControl.
 Set filters function
 --------------------
 
-.. doxygenfunction:: uz_HarmonicCurrentInjection_set_filters_abc
-
-.. doxygenfunction:: uz_HarmonicCurrentInjection_set_filters_dq
+.. doxygenfunction:: uz_HarmonicCurrentInjection_set_filters
 
 Example
 ^^^^^^^
@@ -418,18 +417,11 @@ Example
 
   int main(void) {
     float omega_el_rad_per_sec = 60.0f;
-    uz_HarmonicCurrentInjection_set_filters_abc(HCI_instance, omega_el_rad_per_sec);
-    uz_HarmonicCurrentInjection_set_filters_dq(HCI_instance, omega_el_rad_per_sec);
+    uz_HarmonicCurrentInjection_set_filters(HCI_instance, omega_el_rad_per_sec)
   }
 
 Description
 ^^^^^^^^^^^
 
 Updates the filters of a HarmonicCurrentInjection-Instance according to a given electrical rotational speed.
-
-.. note::
-
-  Either the ``uz_HarmonicCurrentInjection_set_filters_abc`` function or the ``uz_HarmonicCurrentInjection_set_filters_dq`` function has to be called depending on the control scheme chosen in the mode selection.
-
-
 

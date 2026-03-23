@@ -170,11 +170,11 @@ uz_pmsmModel_t* init_pmsmModel(void) {
 static float LUT_breakpoints_array[17] = {
 #include "LUT_Breakpoints.csv"
 };
-static float LUT_current_angle_array[17] = {
-#include "LUT_current_angle.csv"
+static float LUT_id_array[17] = {
+#include "LUT_id.csv"
 };
-static float LUT_Is_array[17] = {
-#include "LUT_Is.csv"
+static float LUT_iq_array[17] = {
+#include "LUT_iq.csv"
 };
 
 //Create uz_arrays
@@ -182,20 +182,20 @@ uz_array_float_t LUT_breakpoints = {
 		.length = UZ_ARRAY_SIZE(LUT_breakpoints_array),
 		.data = &LUT_breakpoints_array[0]
 };
-uz_array_float_t LUT_current_angle = {
-		.length = UZ_ARRAY_SIZE(LUT_current_angle_array),
-		.data = &LUT_current_angle_array[0]
+uz_array_float_t LUT_id = {
+		.length = UZ_ARRAY_SIZE(LUT_id_array),
+		.data = &LUT_id_array[0]
 };
-uz_array_float_t LUT_Is = {
-		.length = UZ_ARRAY_SIZE(LUT_Is_array),
-		.data = &LUT_Is_array[0]
+uz_array_float_t LUT_iq = {
+		.length = UZ_ARRAY_SIZE(LUT_iq_array),
+		.data = &LUT_iq_array[0]
 };
 
-uz_LUT_1D_t* init_LUT_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_current_angle, 17U));
+uz_LUT_1D_t* init_LUT_id(void) {
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_id, 17U));
 }
-uz_LUT_1D_t* init_LUT_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_Is, 17U));
+uz_LUT_1D_t* init_LUT_iq(void) {
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_iq, 17U));
 }
 
 

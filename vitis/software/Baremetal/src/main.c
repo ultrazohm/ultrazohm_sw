@@ -89,8 +89,8 @@ int main(void)
             Global_Data.objects.CurrentControl_Load = init_FOC_Load();
             Global_Data.objects.SetPoint_Load = init_SetPoint_Load();
             Global_Data.objects.SpeedControl_Load = init_SpeedControl_Load();
-            Global_Data.objects.LUT_Is = init_LUT_Is();
-            Global_Data.objects.LUT_current_angle = init_LUT_current_angle();
+            Global_Data.objects.LUT_id = init_LUT_id();
+            Global_Data.objects.LUT_iq = init_LUT_iq();
             Global_Data.objects.FluxApproximation_DUT = init_FluxApproximation_DUT();
             Global_Data.objects.Speed_Filter_Load = init_SpeedFilter_Load();
             Global_Data.av.theta_offset_DUT = 0.1f;//1.63f;

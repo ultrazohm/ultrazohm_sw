@@ -171,8 +171,8 @@ typedef struct{
 	uz_resolverIP_t* resolver_IP;
 	uz_inverter_adapter_t* inverter_d1_DUT;
 	uz_inverter_adapter_t* inverter_d2_Load;
-	uz_LUT_1D_t* LUT_current_angle;
-	uz_LUT_1D_t* LUT_Is;
+	uz_LUT_1D_t* LUT_id;
+	uz_LUT_1D_t* LUT_iq;
 	uz_pmsmModel_t* PMSM_Model;
 	uz_SpeedControl_t* SpeedControl_Load;
 	uz_CurrentControl_t* CurrentControl_Load;

@@ -13,13 +13,14 @@
 #include <stdbool.h> 
 #include "../uz_HAL.h"
 TEST_FILE("uz_signals_iir_filter.c")
+TEST_FILE("uz_static_nonlinear_decoupling.c")
 
 struct uz_HarmonicCurrentInjection_config config = { 0 };
 
 void setUp(void)
 {
     config.order_harmonic = -5.0f;
-    config.selection = abc_to_dq;
+    config.selection = abc_to_dqn;
     config.config_currentcontroller.decoupling_select = no_decoupling;
     config.config_currentcontroller.config_id.Kp = 0.05f;
     config.config_currentcontroller.config_id.Ki = 10.0f;
@@ -97,7 +98,15 @@ void test_uz_HarmonicCurrentInjection_sample_abc_negative_order(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+        uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
     }
 }
@@ -151,7 +160,15 @@ void test_uz_HarmonicCurrentInjection_sample_abc_positive_order(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+        uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
     }
 }
@@ -204,7 +221,15 @@ void test_uz_HarmonicCurrentInjection_sample_dq_negative_order(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+        uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
     }
 }
@@ -258,7 +283,15 @@ void test_uz_HarmonicCurrentInjection_sample_dq_positive_order(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+        uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
     }
 }
@@ -310,12 +343,20 @@ void test_uz_HarmonicCurrentInjection_set_filters_abc(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+       uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
         if (i == 10)
         {
             float omega_el_rad_per_sec = 30.0f * 2.0f * UZ_PIf;
-            uz_HarmonicCurrentInjection_set_filters_abc(instance, omega_el_rad_per_sec);
+            uz_HarmonicCurrentInjection_set_filters(instance, omega_el_rad_per_sec);
         }
     }
 }
@@ -369,12 +410,20 @@ void test_uz_HarmonicCurrentInjection_set_filters_dq(void){
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[0][i], i_abc_actual_Ampere.a);
        // TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[1][i], i_abc_actual_Ampere.b);
        // TEST_ASSERT_FLOAT_WITHIN(1e-03f, HCI_phase_expected[2][i], i_abc_actual_Ampere.c);
-        uz_3ph_dq_t HCI_dq = uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere, i_abc_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad[i]);
+        uz_3ph_dq_t i_dqn_filtered_Ampere =
+    uz_HarmonicCurrentInjection_filter(instance, i_abc_actual_Ampere, theta_el_rad[i]);
+
+uz_3ph_dq_t HCI_dq =
+    uz_HarmonicCurrentInjection_sample(instance, i_ref_harmonic_Ampere,
+                                       i_dqn_filtered_Ampere,
+                                       V_dc_volts,
+                                       omega_el_rad_per_sec,
+                                       theta_el_rad[i]);
         HCI_abc = uz_transformation_3ph_dq_to_abc(HCI_dq, theta_el_rad[i]);
-        if (i == 10)
+                                       if (i == 10)
         {
             float omega_el_rad_per_sec = 30.0f * 2.0f * UZ_PIf;
-            uz_HarmonicCurrentInjection_set_filters_dq(instance, omega_el_rad_per_sec);
+            uz_HarmonicCurrentInjection_set_filters(instance, omega_el_rad_per_sec);
         }
     }
 }

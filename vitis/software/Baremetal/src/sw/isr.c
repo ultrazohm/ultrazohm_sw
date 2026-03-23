@@ -40,6 +40,8 @@ extern DS_Data Global_Data;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+static uint32_t Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId); // Init Hardware for ISR
+static uint32_t Rpu_IpiInit(u16 DeviceId);                       // Init Hardware for IPI-ISR
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -79,13 +81,10 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
-int Initialize_ISR()
+uint32_t Initialize_ISR(void)
 {
-
-    int Status = 0;
-
     // Initialize interrupt controller for the IPI -> Initialize RPU IPI
-    Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
+    uint32_t Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
     if (Status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: IPI initialization failed\r\n");
@@ -115,20 +114,16 @@ int Initialize_ISR()
  *
  * @return XST_SUCCESS on success. This implementation asserts on failures.
  */
-int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
+uint32_t Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
 {
-    XScuGic_Config *GIC_config;
-    int status;
-
     // Disable all interrupts
     Xil_ExceptionDisable();
 
-    GIC_config = XScuGic_LookupConfig(DeviceId);
-
+    XScuGic_Config *GIC_config = XScuGic_LookupConfig(DeviceId);
     uz_assert_not_NULL(GIC_config);
 
-    status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
-	uz_assert(status == XST_SUCCESS);
+    uint32_t status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
+    uz_assert(status == XST_SUCCESS);
 
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, GIC_instance_ptr);
 
@@ -160,13 +155,9 @@ int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
 //
 // @IpiInstPtr		Pointer to the IPI instance
 //----------------------------------------------------
-u32 Rpu_IpiInit(u16 DeviceId)
+uint32_t Rpu_IpiInit(u16 DeviceId)
 {
-    XIpiPsu_Config *IPI_config;
-    int status;
-
-    // Interrupt controller configuration
-    IPI_config = XIpiPsu_LookupConfig(DeviceId);
+    XIpiPsu_Config *IPI_config = XIpiPsu_LookupConfig(DeviceId);
     if (IPI_config == NULL)
     {
         xil_printf("RPU: Error: Ipi Init failed\r\n");
@@ -174,7 +165,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
     }
 
     // Interrupt controller initialization
-    status = XIpiPsu_CfgInitialize(&IPI_instance, IPI_config, IPI_config->BaseAddress);
+    uint32_t status = XIpiPsu_CfgInitialize(&IPI_instance, IPI_config, IPI_config->BaseAddress);
     if (status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: IPI Config failed\r\n");

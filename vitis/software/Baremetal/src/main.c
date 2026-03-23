@@ -115,7 +115,8 @@ int main(void)
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-            Initialize_ISR();
+            uint32_t interrupt_status = Initialize_ISR();
+            uz_assert(interrupt_status == UZ_SUCCESS);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;

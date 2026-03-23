@@ -115,6 +115,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_n_ref_rc_meas]	= &data->rasv.rc_meas_output.n_ref_rpm;
 	js_ch_observable[JSO_theta_mech_comp] 		= &data->av.theta_mech_comp;
 	js_ch_observable[JSO_theta_offset] 			= &data->av.theta_offset;
+	js_ch_observable[JSO_ud_ref_RContr] 		= &data->rasv.Ud_ref_RContr;
+	js_ch_observable[JSO_uq_ref_RContr] 		= &data->rasv.Uq_ref_RContr;
+	js_ch_observable[JSO_udq_ref] 				= &data->rasv.Udq_ref;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

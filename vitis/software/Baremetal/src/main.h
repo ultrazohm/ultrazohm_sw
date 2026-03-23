@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+
 enum control_state_list
 {
     manual = 0,
@@ -61,7 +63,8 @@ enum control_state_list
 	manual_dq_voltage,
 	rs_measurement,
 	rc_fingerprint,
-	offset_estimation
+	offset_estimation,
+	chirp_signal
 };
 
 

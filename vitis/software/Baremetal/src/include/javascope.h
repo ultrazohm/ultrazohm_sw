@@ -47,6 +47,8 @@ enum JS_OberservableData {
 	JSO_iq_ref,
 	JSO_ud_ref,
 	JSO_uq_ref,
+	JSO_ud_ref_RContr,
+	JSO_uq_ref_RContr,
 	JSO_Speed_rpm,
 	JSO_SoC_init,
 	JSO_SKAI_nERROUT,
@@ -69,6 +71,7 @@ enum JS_OberservableData {
 	JSO_id_ref_rc_meas,
 	JSO_iq_ref_rc_meas,
 	JSO_n_ref_rc_meas,
+	JSO_udq_ref,
 	JSO_ENDMARKER
 };
 
@@ -163,7 +166,7 @@ enum gui_button_mapping {
 	Torque_ref,
 	Ud_ref,
 	Uq_ref,
-	send_field_14,
+	Kr_gain,
 	send_field_15,
 	send_field_16,
 	send_field_17,
@@ -262,9 +265,9 @@ enum gui_button_mapping {
 	Start RC-Meas,
 	FOC_control,
 	Offset_est.,
-	Manual_dq_volt,
+	ResonantContr,
 	dutyC:0.0,
-	dutyC:0.5,
+	chirp_signal,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

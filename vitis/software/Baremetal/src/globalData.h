@@ -18,6 +18,8 @@
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -131,6 +133,8 @@ typedef struct _referenceAndSetValues_ {
 	float Id_ref;
 	float Ud_ref;
 	float Uq_ref;
+	float Ud_ref_RContr;
+	float Uq_ref_RContr;
 	float torque_ref;
 	float flg_use_setpoint_calculation;
 	float Ipeak_ref;
@@ -139,6 +143,8 @@ typedef struct _referenceAndSetValues_ {
 	struct uz_parameterID_rc_ref_val_t rc_meas_output;
 	float operatingpoints_rc_meas;
 	float flg_start_meas;
+	float flg_use_ResonantController;
+	float Udq_ref;
 } referenceAndSetValues;
 
 typedef struct{
@@ -168,6 +174,9 @@ typedef struct{
 	uz_IIR_Filter_t *phase_c_lowpass;
 	uz_encoder_offset_estimation_t* encoder_offset_obj;
 	uz_pos_to_speed_pll_t* pll_0;
+	uz_wavegen_chirp* chirp_instance;
+	uz_resonantController_t* R_controller_instance_d;
+	uz_resonantController_t* R_controller_instance_q;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

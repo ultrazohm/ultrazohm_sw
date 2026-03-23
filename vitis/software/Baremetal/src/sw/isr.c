@@ -35,6 +35,7 @@
 #include "../uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -63,12 +64,12 @@ extern DS_Data Global_Data;
 #define PHASE_VOLT_OFFS_W 			0.0011f
 #define MOSFET_TEMP_CONV_U 			1
 
-#define ISR_SAMPLE_FREQ				40000
+#define ISR_SAMPLE_FREQ				20000
 
 #define MAX_CURRENT_ASSERTION 		380.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
-#define MAX_MOTOR_TEMP_ASSERTION	100.0f
+#define MAX_MOTOR_TEMP_ASSERTION	115.0f
 #define U_DC_MAX					61.0f
 #define U_DC_MIN					10.0f
 
@@ -79,6 +80,7 @@ platform_state_t last_state;
 platform_state_t current_state;
 int reset_counter=0;
 int delta_counter=0;
+int chirp_counter=0;
 uint16_t trigger = 0U;
 float cnt_trigger = 1.0f;
 float data_valid_old = 0.0f;
@@ -192,12 +194,7 @@ void ISR_Control(void *data)
 
     uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
     Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
-    if (flg_correct_motor_temp){
-    	faulty_motortemp =Global_Data.av.channel_A_data.temperature[19];
-    	Global_Data.av.temperature_motor = -0.000324f * faulty_motortemp*faulty_motortemp + 0.490982f * faulty_motortemp +24.728f;
-    } else{
-    	Global_Data.av.temperature_motor = Global_Data.av.channel_A_data.temperature[19];
-    }
+	Global_Data.av.temperature_motor = Global_Data.av.channel_A_data.temperature[19];
 
     if(ticks_gradient >= 4800000){
     	gradient_T1 = gradient_T2;
@@ -207,11 +204,11 @@ void ISR_Control(void *data)
     } else{
     	ticks_gradient++;
     }
-    // Assertion check (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)
+    // Assertion check
     //
     if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION)
     		|| (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION
-    				|| (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) )
+    				|| (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION))
 					){
 
     	// Assertion to Stop Machine if max. Current or max. Speed
@@ -319,6 +316,18 @@ void ISR_Control(void *data)
   					uz_3ph_dq_t current_setpoints_filtered = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
   					//uz_3ph_dq_t current_setpoints_filtered = dq_reference_current;
   					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, current_setpoints_filtered, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+
+  					if (Global_Data.rasv.flg_use_ResonantController == 1.0f){
+  						Global_Data.rasv.Ud_ref_RContr = uz_resonantController_step(Global_Data.objects.R_controller_instance_d, 0.0f, dq_measurement_current.d, Global_Data.av.omega_el);
+  						Global_Data.rasv.Uq_ref_RContr= uz_resonantController_step(Global_Data.objects.R_controller_instance_q, 0.0f, dq_measurement_current.q, Global_Data.av.omega_el);
+  						dq_reference_voltage.d = dq_reference_voltage.d + Global_Data.rasv.Ud_ref_RContr;
+  						dq_reference_voltage.q = dq_reference_voltage.q + Global_Data.rasv.Uq_ref_RContr;
+  					}
+
+  					float max_modulation = 1.0/sqrt(3.0f);
+  					bool ext_clamping = false;
+  					dq_reference_voltage = uz_CurrentControl_SpaceVector_Limitation(dq_reference_voltage, Global_Data.av.U_ZK, max_modulation, Global_Data.av.omega_el, current_setpoints_filtered, &ext_clamping);
+
   					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
   					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
 
@@ -406,6 +415,28 @@ void ISR_Control(void *data)
 
   					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
   					break;
+  				case chirp_signal:
+  					Global_Data.rasv.Id_ref = uz_wavegen_chirp_sample(Global_Data.objects.chirp_instance);
+  					dq_reference_current.d = Global_Data.rasv.Id_ref;
+  					dq_reference_current.q = 0.0f;
+  					chirp_counter++;
+
+  					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+  					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
+  					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
+
+  					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
+  					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+
+  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+
+  					if(chirp_counter >= 12.0f * ISR_SAMPLE_FREQ){
+  						uz_wavegen_chirp_reset(Global_Data.objects.chirp_instance);
+  						chirp_counter = 0;
+  						Global_Data.rasv.Id_ref = 0.0f;
+  						Global_Data.rasv.Iq_ref = 0.0f;
+  						control_mode = FOC_i_dq_setpoint;
+  					}
   				}
       		} else{
       			// Umrichter in Fehlermodus
@@ -443,6 +474,7 @@ void ISR_Control(void *data)
       Global_Data.rasv.SKAI_nERROUT = SKAI_nERROUT;
       Global_Data.rasv.flg_reset_SKAI = flg_reset_SKAI;
       Global_Data.rasv.SKAI_reset_counter = reset_counter;
+      Global_Data.rasv.Udq_ref = sqrt(Global_Data.rasv.Ud_ref*Global_Data.rasv.Ud_ref + Global_Data.rasv.Uq_ref*Global_Data.rasv.Uq_ref);
 /*
       for(int i=0; i<1000; i++){
     	  asm("nop");

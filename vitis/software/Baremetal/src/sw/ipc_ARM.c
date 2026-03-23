@@ -256,7 +256,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+			uz_resonantController_set_gain(data->objects.R_controller_instance_d, value);
+			uz_resonantController_reset(data->objects.R_controller_instance_d);
+			uz_resonantController_set_gain(data->objects.R_controller_instance_q, value);
+			uz_resonantController_reset(data->objects.R_controller_instance_q);
 			break;
 
 		case (Set_Send_Field_15):
@@ -306,9 +309,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
+			if (data->rasv.flg_use_ResonantController == 0.0f){
+				data->rasv.flg_use_ResonantController = 1.0f;
+				uz_resonantController_reset(data->objects.R_controller_instance_d);
+				uz_resonantController_reset(data->objects.R_controller_instance_q);
+			} else{
+				data->rasv.flg_use_ResonantController = 0.0f;
+				uz_resonantController_reset(data->objects.R_controller_instance_d);
+				uz_resonantController_reset(data->objects.R_controller_instance_q);
+			}
+			/*
 			control_mode = manual_dq_voltage;
 			data->rasv.Ud_ref = 0.0f;
-			data->rasv.Uq_ref = 0.0f;
+			data->rasv.Uq_ref = 0.0f; */
 			break;
 
 		case (My_Button_7):
@@ -319,10 +332,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-			control_mode = manual;
-			data->rasv.halfBridge1DutyCycle = 0.5;
-			data->rasv.halfBridge2DutyCycle = 0.5;
-			data->rasv.halfBridge3DutyCycle = 0.5;
+			control_mode = chirp_signal;
 			break;
 
 		case (Error_Reset):

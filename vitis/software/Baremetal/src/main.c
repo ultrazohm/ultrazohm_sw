@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#define ISR_SAMPLE_FREQ_HZ 40000.0f
+#define ISR_SAMPLE_FREQ_HZ 20000.0f
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -78,7 +78,28 @@ struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               
     .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
     .ptr_actual_u_q_V = &Global_Data.rasv.Uq_ref,                                    // pointer to q-setpoint voltage
     .min_omega_el = 1300.0f,                                                     // target electric rotor angular speed (USE OWN)
-    .setpoint_current = 30.0f};                                                  // current setpoint to reach speed (USE OWN)
+    .setpoint_current = 30.0f};    // current setpoint to reach speed (USE OWN)
+
+struct uz_wavegen_chirp_config config_chirp = {
+        .amplitude = 10.0f,
+        .start_frequency_Hz = 1.0f,
+        .end_frequency_Hz = 7000.0f,
+        .duration_sec = 5.0f,
+        .initial_delay_sec = 2.0f,
+        .offset = 15.0f
+};
+
+const struct uz_resonantController_config config_R = {
+    .sampling_time = 1/ISR_SAMPLE_FREQ_HZ,
+    .gain = 1.0f,
+    .harmonic_order = 6.0f,
+    .fundamental_frequency = 0.0f,
+    .lower_limit = -8.0f,
+    .upper_limit = 8.0f,
+    .antiwindup_gain = 1.0f,
+    .in_reference_value = 0.0f,
+    .in_measured_value = 0.0f,
+};
 
 
 enum init_chain
@@ -177,6 +198,10 @@ int main(void)
             Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
             Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
             Global_Data.objects.pll_0 = pll_0_init();
+            Global_Data.objects.chirp_instance = uz_wavegen_chirp_init(config_chirp);
+            Global_Data.objects.R_controller_instance_d = uz_resonantController_init(config_R);
+            Global_Data.objects.R_controller_instance_q = uz_resonantController_init(config_R);
+            Global_Data.rasv.flg_use_ResonantController = 0.0f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

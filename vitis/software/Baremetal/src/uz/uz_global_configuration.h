@@ -25,7 +25,7 @@
  * 5 for Interrupt_3L_center
  * 6 for Interrupt_timer_fcc
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
@@ -57,7 +57,7 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
-#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
+#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            2U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               1U

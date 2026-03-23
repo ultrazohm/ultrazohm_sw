@@ -81,11 +81,11 @@ struct uz_PI_Controller_config config_iq = {
 static float LUT_breakpoints_array[26] = {
 #include "LUT_Breakpoints.csv"
 };
-static float LUT_CIL_current_angle_array[26] = {
-#include "LUT_CIL_current_angle.csv"
+static float LUT_CIL_id_array[26] = {
+#include "LUT_CIL_id.csv"
 };
-static float LUT_CIL_Is_array[26] = {
-#include "LUT_CIL_Is.csv"
+static float LUT_CIL_iq_array[26] = {
+#include "LUT_CIL_iq.csv"
 };
 
 //Create uz_arrays
@@ -93,13 +93,13 @@ uz_array_float_t LUT_breakpoints = {
 		.length = UZ_ARRAY_SIZE(LUT_breakpoints_array),
 		.data = &LUT_breakpoints_array[0]
 };
-uz_array_float_t LUT_CIL_current_angle = {
-		.length = UZ_ARRAY_SIZE(LUT_CIL_current_angle_array),
-		.data = &LUT_CIL_current_angle_array[0]
+uz_array_float_t LUT_CIL_id = {
+		.length = UZ_ARRAY_SIZE(LUT_CIL_id_array),
+		.data = &LUT_CIL_id_array[0]
 };
-uz_array_float_t LUT_CIL_Is = {
-		.length = UZ_ARRAY_SIZE(LUT_CIL_Is_array),
-		.data = &LUT_CIL_Is_array[0]
+uz_array_float_t LUT_CIL_iq = {
+		.length = UZ_ARRAY_SIZE(LUT_CIL_iq_array),
+		.data = &LUT_CIL_iq_array[0]
 };
 
 uz_CurrentControl_t* init_FOC(void) {
@@ -124,12 +124,12 @@ uz_approximate_flux_t* init_FluxApproximation(void) {
 	return(uz_approximate_flux_init(fitting_parameter));
 }
 
-uz_LUT_1D_t* init_LUT_CIL_current_angle(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_current_angle, 26U));
+uz_LUT_1D_t* init_LUT_CIL_id(void) {
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_id, 26U));
 }
 
-uz_LUT_1D_t* init_LUT_CIL_Is(void) {
-	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_Is, 26U));
+uz_LUT_1D_t* init_LUT_CIL_iq(void) {
+	return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_CIL_iq, 26U));
 }
 
 

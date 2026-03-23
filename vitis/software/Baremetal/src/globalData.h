@@ -144,8 +144,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	uz_LUT_1D_t* LUT_CIL_current_angle;
-	uz_LUT_1D_t* LUT_CIL_Is;
+	uz_LUT_1D_t* LUT_CIL_id;
+	uz_LUT_1D_t* LUT_CIL_iq;
 	uz_LUT_1D_t* LUT_bench_current_angle;
 	uz_LUT_1D_t* LUT_bench_Is;
 	uz_pmsmModel_t* SynRM_Model;

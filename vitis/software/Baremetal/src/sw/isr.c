@@ -268,10 +268,9 @@ void ISR_Control(void *data)
         Global_Data.av.theta_elec_old = Global_Data.av.theta_elec;
         switch(ConSelection) {
         case LUT_FOC:
-        	Global_Data.av.current_angle_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_current_angle, Global_Data.av.Torque_ref);
-        	Global_Data.av.Is_ref = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_Is, Global_Data.av.Torque_ref);
-        	Global_Data.av.i_dq_ref.d = cosf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
-        	Global_Data.av.i_dq_ref.q = sinf((Global_Data.av.current_angle_ref)/180.0f*UZ_PIf) * Global_Data.av.Is_ref;
+        	Global_Data.av.i_dq_ref.d = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_id, Global_Data.av.Torque_ref);
+        	Global_Data.av.i_dq_ref.q = uz_LUT_1D_get_value(Global_Data.objects.LUT_CIL_iq, Global_Data.av.Torque_ref);
+        	Global_Data.av.Is_ref = sqrtf(Global_Data.av.i_dq_ref.d * Global_Data.av.i_dq_ref.d + Global_Data.av.i_dq_ref.q * Global_Data.av.i_dq_ref.q);
         	Global_Data.av.flux_approx_real = uz_approximate_flux_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq);
         	Global_Data.av.flux_approx_reference = uz_approximate_flux_reference_step(Global_Data.objects.FluxApproximation, Global_Data.av.i_dq_ref, Global_Data.av.i_dq);
         	uz_CurrentControl_set_flux_approx(Global_Data.objects.CurrentControl, Global_Data.av.flux_approx_real, Global_Data.av.flux_approx_reference);

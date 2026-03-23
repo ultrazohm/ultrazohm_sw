@@ -95,8 +95,8 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            Global_Data.objects.LUT_CIL_current_angle = init_LUT_CIL_current_angle();
-            Global_Data.objects.LUT_CIL_Is = init_LUT_CIL_Is();
+            Global_Data.objects.LUT_CIL_id = init_LUT_CIL_id();
+            Global_Data.objects.LUT_CIL_iq = init_LUT_CIL_iq();
             Global_Data.objects.CurrentControl = init_FOC();
             Global_Data.objects.FluxApproximation = init_FluxApproximation();
             Global_Data.rasv.Inv_Reset_Pin_Number = 0U;

@@ -116,7 +116,7 @@ Vitis
             .Tristate_HB1 = false,
             .Tristate_HB2 = false,
             .Tristate_HB3 = false,
-            .min_pulse_width = 0.01f,
+            .min_pulse_width_in_microseconds   = 1.0f,
             .PWM_freq_Hz = UZ_PWM_FREQUENCY,
             .PWM_mode = normalized_input_via_AXI,
             .PWM_en = true,

@@ -127,8 +127,8 @@ void test_uz_PWM_SS_2L_hw_SetCarrierFrequency_with_zero_base_address(void)
 void test_uz_PWM_SS_2L_hw_set_min_pulse_width(void)
 {
     float min_pulse_width_percent = 0.01001f;
-    uint32_t min_pulse_width_percent_Q12_expected = 41; //41 equals Q12 value of 0.01001
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, min_pulse_width_percent_Q12_expected);
+    uint32_t min_pulse_width_percent_Q16_expected = 656; // 656 equals Q16 value of 0.01001 (stored integer)
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, min_pulse_width_percent_Q16_expected);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth(TEST_BASE_ADDRESS, min_pulse_width_percent);
 }
 

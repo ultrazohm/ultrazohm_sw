@@ -23,7 +23,6 @@
 
 //Includes for CAN
 #define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
-#include "include/can.h"
 
 //Includes from own files
 #include "main.h"
@@ -31,6 +30,21 @@
 #include "include/isr.h"
 #include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
+
+#include "uz/uz_can/uz_can.h"
+
+struct uz_can_config_t can_config_0 = {
+	.base_address = XPAR_PSU_CAN_0_BASEADDR,
+	.ip_core_frequency_Hz = 100000000U, // 100 MHz
+	.can_device_id = XPAR_PSU_CAN_0_DEVICE_ID};
+
+struct uz_can_config_t can_config_1 = {
+	.base_address = XPAR_PSU_CAN_1_BASEADDR,
+	.ip_core_frequency_Hz = 100000000U, // 100 MHz
+	.can_device_id = XPAR_PSU_CAN_1_DEVICE_ID};
+
+uz_can_t* can_instance_0 = NULL;
+uz_can_t* can_instance_1 = NULL;
 
 
 size_t lifecheck_mainThread = 0;
@@ -223,10 +237,10 @@ void network_thread(void *p)
 
 #if CAN_ACTIVE==1
 	uz_printf(" Init CAN \n\r"); //CAN interface
-	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
+	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
+	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
-	can_frame_t can_frame_rx; //CAN interface
+	uz_can_frame_t can_frame_rx; //CAN interface
 #endif
 
 /*	// Enable (currently not required for I²C-based GPOs)
@@ -275,8 +289,9 @@ void network_thread(void *p)
 #endif
 
 #if CAN_ACTIVE==1
-		if( ! hal_can_is_rx_empty() ){
-			hal_can_receive_frame_blocking(&can_frame_rx);
+		if (!uz_can_is_rx_empty(can_instance_0))
+		{
+			uz_can_receive_frame_blocking(can_instance_0, &can_frame_rx);
 			if(can_frame_rx.std_id == 0x22) {
 			//	XcpCommand( (uint32_t *) can_frame_rx.data );
 				can_send_2();
@@ -286,13 +301,15 @@ void network_thread(void *p)
 				//uz_printf("received a not XCP related CAN frame \n\r");
 			}
 			//usleep(1000 * 500);
-		}else{
+		}
+		else
+		{
 			can_send_1();
 			//usleep(1000 * 500);
 		}
 
 		// no tx message pending
-		if( hal_can_is_tx_done()) {
+		if( uz_can_is_tx_done(can_instance_0)) {
 			//XcpSendCallBack();
 		}
 #endif
@@ -456,7 +473,7 @@ int main_thread()
  * Description:
  *      CAN interface for testing
  *---------------------------------------------------------------------------*/
-void hal_can_debug_print_frame(can_frame_t *can_frame_p)
+void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p)
 {
 	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
 			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
@@ -481,13 +498,13 @@ void can_send_1(void)
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
-	can_frame_t can_frame_tx;
+	uz_can_frame_t can_frame_tx;
 	can_frame_tx.std_id = 0x123;
 	can_frame_tx.dlc = 2;
 	can_frame_tx.data[0] = 0x13;
 	can_frame_tx.data[1] = tick;
 
-	hal_can_send_frame_blocking(&can_frame_tx);
+	uz_can_send_frame_blocking(can_instance_0, &can_frame_tx);
 }
 
 
@@ -509,11 +526,11 @@ void can_send_2(void)
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
-	can_frame_t can_frame_tx;
+	uz_can_frame_t can_frame_tx;
 	can_frame_tx.std_id = 0x52;
 	can_frame_tx.dlc = 2;
 	can_frame_tx.data[0] = 0x12;
 	can_frame_tx.data[1] = tick;
 
-	hal_can_send_frame_blocking(&can_frame_tx);
+	uz_can_send_frame_blocking(can_instance_0, &can_frame_tx);
 }

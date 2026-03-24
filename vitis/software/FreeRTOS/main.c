@@ -32,6 +32,7 @@
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
 #include "uz/uz_can/uz_can.h"
+#include "include/can.h"
 
 struct uz_can_config_t can_config_0 = {
 	.base_address = XPAR_PSU_CAN_0_BASEADDR,
@@ -236,7 +237,7 @@ void network_thread(void *p)
             DEFAULT_THREAD_PRIO);
 
 #if CAN_ACTIVE==1
-	uz_printf(" Init CAN \n\r"); //CAN interface
+	uz_printf(" Init CAN \n\r"); // CAN interface
 	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
 	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
@@ -414,6 +415,10 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
+	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
+				   THREAD_STACKSIZE,
+				   DEFAULT_THREAD_PRIO);
+	xil_printf("CAN-Thread0 started\n\r");
 
 #if LWIP_DHCP==1
     while (1) {

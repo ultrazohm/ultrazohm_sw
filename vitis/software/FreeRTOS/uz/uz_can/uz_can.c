@@ -91,16 +91,21 @@ uz_can_t *uz_can_init(struct uz_can_config_t config)
 
 uint32_t uz_can_is_rx_empty(uz_can_t* self)
 {
+    uz_assert_not_NULL(self);
     return XCanPs_IsRxEmpty(&self->can_inst);
 }
 
 uint32_t uz_can_is_tx_done(uz_can_t* self)
 {
+    uz_assert_not_NULL(self);
+
     return XCanPs_IsTxDone(&self->can_inst);
 }
 
 uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx_p)
 {
+    uz_assert_not_NULL(self);
+
     uint32_t tx_frame[4]= {0};
 
     // set identifier
@@ -135,6 +140,8 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
 
 uint32_t uz_can_send_frame_blocking_wrapper(uz_can_t *self,uint16_t std_id, uint8_t dlc, uint8_t *data)
 {
+    uz_assert_not_NULL(self);
+
     uz_can_frame_t can_frame_tx = {0};
 
     can_frame_tx.std_id = std_id;
@@ -152,6 +159,8 @@ uint32_t uz_can_send_frame_blocking_wrapper(uz_can_t *self,uint16_t std_id, uint
 
 uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_rx_p)
 {
+    uz_assert_not_NULL(self);
+
     while (XCanPs_IsRxEmpty(&self->can_inst) == TRUE){
     }
 

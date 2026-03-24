@@ -19,7 +19,8 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData {
+enum JS_OberservableData
+{
 	JSO_ZEROVALUE=0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
@@ -49,6 +50,14 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_can_rpu_poti_p0,
+	JSO_can_rpu_poti_p1,
+	JSO_can_rpu_poti_p2,
+	JSO_can_rpu_poti_p3,
+	JSO_can_apu_poti_p0,
+	JSO_can_apu_poti_p1,
+	JSO_can_apu_poti_p2,
+	JSO_can_apu_poti_p3,
 	JSO_ENDMARKER
 };
 

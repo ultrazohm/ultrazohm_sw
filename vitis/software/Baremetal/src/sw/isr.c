@@ -51,6 +51,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 extern struct CAN_values can_values_from_apu_rpu_local;
 extern struct CAN_values can_values_from_rpu_rpu_local;
 
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 void ISR_Control(void *data)
 {
@@ -63,6 +64,9 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
         can_values_from_rpu_rpu_local = can_values_from_apu_rpu_local;
+        if(can_values_from_apu_rpu_local.btn0){
+            can_values_from_rpu_rpu_local.poti_p0 = can_values_from_apu_rpu_local.poti_p0 + uz_wavegen_sine(0.5f,100.0f);
+        }
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

@@ -89,6 +89,14 @@ struct CAN_values can_values_from_rpu_rpu_local = {0};
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_can_rpu_poti_p0]			= &can_values_from_rpu_rpu_local.poti_p0;
+	js_ch_observable[JSO_can_rpu_poti_p1]			= &can_values_from_rpu_rpu_local.poti_p1;
+	js_ch_observable[JSO_can_rpu_poti_p2]			= &can_values_from_rpu_rpu_local.poti_p2;
+	js_ch_observable[JSO_can_rpu_poti_p3]			= &can_values_from_rpu_rpu_local.poti_p3;
+	js_ch_observable[JSO_can_apu_poti_p0]			= &can_values_from_apu_rpu_local.poti_p0;
+	js_ch_observable[JSO_can_apu_poti_p1]			= &can_values_from_apu_rpu_local.poti_p1;
+	js_ch_observable[JSO_can_apu_poti_p2]			= &can_values_from_apu_rpu_local.poti_p2;
+	js_ch_observable[JSO_can_apu_poti_p3]			= &can_values_from_apu_rpu_local.poti_p3;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

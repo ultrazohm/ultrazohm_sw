@@ -60,7 +60,7 @@ This way the user can add an almost infinite number of observable variables to t
 
 .. _javascope_scopedata:
 
-.. figure:: ./images_javascope/addscopevariable.png
+.. figure:: ./images_javascope_legacy/addscopevariable.png
    :align: center
 
    Correlation of ``javascope.c``, ``javascope.h`` and the GUI for adding scope data
@@ -79,7 +79,7 @@ The longer the table, the slower it is updated because the slow data are sent on
 
 .. _javascope_slowdata:
 
-.. figure:: ./images_javascope/addslowdatavariable.png
+.. figure:: ./images_javascope_legacy/addslowdatavariable.png
    :align: center
 
    Correlation of ``javascope.c``, ``javascope.h`` and the GUI for adding slow data
@@ -95,7 +95,7 @@ The eight individual buttons can be labeled in the same way.
 
 .. _javascope_customcontrol:
 
-.. figure:: ./images_javascope/customizingGUI.png
+.. figure:: ./images_javascope_legacy/customizingGUI.png
    :align: center
 
    Correlation of ``javascope.h`` and text entries in the GUI
@@ -107,7 +107,7 @@ The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text fiel
 
 .. _javascope_selectslowdata:
 
-.. figure:: ./images_javascope/customizationslowdata.png
+.. figure:: ./images_javascope_legacy/customizationslowdata.png
    :align: center
 
    Correlation of ``javascope.h`` and the slow data displayed in the control page

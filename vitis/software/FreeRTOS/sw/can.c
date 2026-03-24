@@ -24,15 +24,16 @@
 #include "../include/can.h"
 #include "../uz/uz_can/uz_can.h"
 
-uint32_t can_received[8] = {0U};
+uint32_t can_received_0[8] = {0U};
 
 extern uz_can_t *can_instance_0;
 extern uz_can_t *can_instance_1;
+uint32_t i_LifeCheck_CAN_Thread0 = 0;
 
 void CAN_Thread_CAN0(void *p)
 {
 
-    uint32_t i_LifeCheck_CAN_Thread0 = 0;
+
     uz_can_frame_t can_framebuffer_rx;
     uz_can_frame_t can_framebuffer_tx;
 
@@ -44,12 +45,12 @@ void CAN_Thread_CAN0(void *p)
 
             if (can_framebuffer_rx.std_id == 0x22)
             {
-                can_received[0] = can_framebuffer_rx.data[0];
-                can_received[1] = can_framebuffer_rx.data[1];
-                can_received[2] = can_framebuffer_rx.data[2];
-                can_received[3] = can_framebuffer_rx.data[3];
-                can_received[4] = can_framebuffer_rx.data[4];
-                can_received[5] = can_framebuffer_rx.data[5];
+                can_received_0[0] = can_framebuffer_rx.data[0];
+                can_received_0[1] = can_framebuffer_rx.data[1];
+                can_received_0[2] = can_framebuffer_rx.data[2];
+                can_received_0[3] = can_framebuffer_rx.data[3];
+                can_received_0[4] = can_framebuffer_rx.data[4];
+                can_received_0[5] = can_framebuffer_rx.data[5];
             }
         }
 

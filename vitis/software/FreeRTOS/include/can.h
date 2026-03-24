@@ -16,6 +16,9 @@
 // DEBUG-DEFINES----------------------------------------------------------------------------------------------
 #define DEBUG_ThreadAlive_CAN_Thread0 0    // Debug-Variable. Tells the Thread to signalize if he is active.
 #define DEBUG_ThreadDelay_CAN_Thread0 1000 // time in ms. Controlls the period of the Thread (Debug only / active when ThreadAlive_CAN_Thread1 is 1)
+
+#define DEBUG_ThreadAlive_CAN_Thread1 0    // Debug-Variable. Tells the Thread to signalize if he is active.
+#define DEBUG_ThreadDelay_CAN_Thread1 1000 // time in ms. Controlls the period of the Thread (Debug only / active when ThreadAlive_CAN_Thread1 is 1)
 // DEBUG-DEFINES----------------------------------------------------------------------------------------------
 
 // Defines for the Thread
@@ -26,6 +29,7 @@
  * @param   Value time in ms between the CAN-Send-Bursts
  */
 #define ThreadDelay_CAN_Thread0 10 // delays the Thread for 50 ms
+#define ThreadDelay_CAN_Thread1 10 // delays the Thread for 50 ms
 
 /**
  * @brief   CAN-ID for the Control-Message

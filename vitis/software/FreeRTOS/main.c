@@ -391,6 +391,12 @@ int main_thread()
 				   DEFAULT_THREAD_PRIO);
 	xil_printf("CAN-Thread0 started\n\r");
 
+	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
+				   THREAD_STACKSIZE,
+				   DEFAULT_THREAD_PRIO);
+
+	xil_printf("CAN-Thread1 started\n\r");
+	
 #if LWIP_DHCP==1
     while (1) {
 

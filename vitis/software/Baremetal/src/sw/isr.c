@@ -47,6 +47,11 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
+
+extern struct CAN_values can_values_from_apu_rpu_local;
+extern struct CAN_values can_values_from_rpu_rpu_local;
+
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -57,6 +62,7 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        can_values_from_rpu_rpu_local = can_values_from_apu_rpu_local;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

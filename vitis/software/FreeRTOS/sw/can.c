@@ -23,6 +23,9 @@
 
 #include "../include/can.h"
 #include "../uz/uz_can/uz_can.h"
+#include "../shared/APU_RPU_shared.h"
+
+static void process_can_frame(const uz_can_frame_t *can_framebuffer_rx);
 
 uint32_t can_received_0[8] = {0U};
 uint32_t can_received_1[8] = {0U};
@@ -47,12 +50,7 @@ void CAN_Thread_CAN0(void *p)
 
             if (can_framebuffer_rx.std_id == 0x22)
             {
-                can_received_0[0] = can_framebuffer_rx.data[0];
-                can_received_0[1] = can_framebuffer_rx.data[1];
-                can_received_0[2] = can_framebuffer_rx.data[2];
-                can_received_0[3] = can_framebuffer_rx.data[3];
-                can_received_0[4] = can_framebuffer_rx.data[4];
-                can_received_0[5] = can_framebuffer_rx.data[5];
+                process_can_frame(&can_framebuffer_rx);
             }
         }
 
@@ -88,12 +86,7 @@ void CAN_Thread_CAN1(void *p)
 
             if (can_framebuffer_rx.std_id == 0x22)
             {
-                can_received_1[0] = can_framebuffer_rx.data[0];
-                can_received_1[1] = can_framebuffer_rx.data[1];
-                can_received_1[2] = can_framebuffer_rx.data[2];
-                can_received_1[3] = can_framebuffer_rx.data[3];
-                can_received_1[4] = can_framebuffer_rx.data[4];
-                can_received_1[5] = can_framebuffer_rx.data[5];
+               // process_can_frame(&can_framebuffer_rx); // only do it on CAN0 due to thread safety
             }
         }
 
@@ -113,4 +106,43 @@ void CAN_Thread_CAN1(void *p)
         // Delays the Thread to decrease busload-----------------------------------------------------------------------------------------------------
         vTaskDelay(ThreadDelay_CAN_Thread1 / portTICK_RATE_MS);
     }
+}
+
+struct CAN_values can_values = {0};
+struct CAN_values can_values_from_rpu = {0};
+
+void process_can_frame(const uz_can_frame_t *can_framebuffer_rx)
+{
+    // uz_assert(can_framebuffer_rx == NULL);
+
+    can_values.poti_p0 = ((float)can_framebuffer_rx->data[2]) / 255.0f;
+    if (can_values.poti_p0 >= 0.9960937f)
+    {
+        can_values.poti_p0 = 1.0f;
+    }
+    can_values.poti_p1 = ((float)can_framebuffer_rx->data[3]) / 255.0f;
+    if (can_values.poti_p1 >= 0.9960937f)
+    {
+        can_values.poti_p1 = 1.0f;
+    }
+    can_values.poti_p2 = ((float)can_framebuffer_rx->data[4]) / 255.0f;
+    if (can_values.poti_p2 >= 0.9960937f)
+    {
+        can_values.poti_p2 = 1.0f;
+    }
+    can_values.poti_p3 = ((float)can_framebuffer_rx->data[5]) / 255.0f;
+    if (can_values.poti_p3 >= 0.9960937f)
+    {
+        can_values.poti_p3 = 1.0f;
+    }
+
+    // Buttons and switches
+    can_values.sw0 = (bool)((can_framebuffer_rx->data[1] & (1U << 7)) >> 7);
+    can_values.sw1 = (bool)((can_framebuffer_rx->data[1] & (1U << 6)) >> 6);
+    can_values.sw2 = (bool)((can_framebuffer_rx->data[1] & (1U << 5)) >> 5);
+    can_values.sw3 = (bool)((can_framebuffer_rx->data[1] & (1U << 4)) >> 4);
+    can_values.btn0 = (bool)((can_framebuffer_rx->data[1] & (1U << 3)) >> 3);
+    can_values.btn1 = (bool)((can_framebuffer_rx->data[1] & (1U << 2)) >> 2);
+    can_values.btn2 = (bool)((can_framebuffer_rx->data[1] & (1U << 1)) >> 1);
+    can_values.btn3 = (bool)((can_framebuffer_rx->data[1] & (1U << 0)) >> 0);
 }

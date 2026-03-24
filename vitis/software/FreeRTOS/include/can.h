@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
+#include <stdbool.h>
+
 // DEBUG-DEFINES----------------------------------------------------------------------------------------------
 #define DEBUG_ThreadAlive_CAN_Thread0 0    // Debug-Variable. Tells the Thread to signalize if he is active.
 #define DEBUG_ThreadDelay_CAN_Thread0 1000 // time in ms. Controlls the period of the Thread (Debug only / active when ThreadAlive_CAN_Thread1 is 1)
@@ -50,5 +52,8 @@
  */
 #define CAN_Msg_DecimalPlaces 1000 // Decimal Places, check with your DBF/DBC! enter for example 1000 for 3 decimal places
 
+
+
 void CAN_Thread_CAN0(void *p);
 void CAN_Thread_CAN1(void *p);
+

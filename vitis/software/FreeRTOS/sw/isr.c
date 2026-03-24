@@ -44,8 +44,11 @@ int i_LifeCheck_Transfer_ipc = 0;
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
+extern struct CAN_values can_values;
+extern struct CAN_values can_values_from_rpu;
 
-static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
+static void
+uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
 
 /**
  * Interrupt handler for IPI
@@ -89,13 +92,13 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
-	// some_variable  = rpu_to_apu_user_data->...
+	can_values_from_rpu = rpu_to_apu_user_data->can_values_from_rpu;
 
 	/* do your computations that you want to accelerate here... */
 
 	// write data to r5 in shared memory and flush cache
-	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
-
+	apu_to_rpu_user_data->slowDataCounter = rpu_to_apu_user_data->slowDataCounter; // just an example
+	apu_to_rpu_user_data->can_values_from_apu=can_values;
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	/* ...until here */

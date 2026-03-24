@@ -1,5 +1,6 @@
 //APU_RPU_shared.h
 #pragma once
+#include <stdbool.h>
 // OCM Bank Adresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 #define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
@@ -11,7 +12,7 @@
 #define JAVASCOPE_DATA_SIZE_2POW  	128
 
 // Experimental feature - read docs before use
-#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		TRUE
 
 struct javascope_data_t
 {
@@ -19,6 +20,22 @@ struct javascope_data_t
 	float	    slowDataContent;
 	uint32_t    slowDataID;
 	float       scope_ch[JS_CHANNELS];
+};
+
+struct CAN_values
+{
+    float poti_p0;
+    float poti_p1;
+    float poti_p2;
+    float poti_p3;
+    bool sw0;
+    bool sw1;
+    bool sw2;
+    bool sw3;
+    bool btn0;
+    bool btn1;
+    bool btn2;
+    bool btn3;
 };
 
 struct APU_to_RPU_t
@@ -31,12 +48,14 @@ struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
 	uint32_t slowDataCounter;
+    struct CAN_values can_values_from_apu;
 };
 
 struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
 	uint32_t slowDataCounter;
+    struct CAN_values can_values_from_rpu;
 };
 
 

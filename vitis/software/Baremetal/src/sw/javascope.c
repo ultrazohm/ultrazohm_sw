@@ -48,8 +48,11 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+struct CAN_values can_values_from_apu_rpu_local = {0};
+struct CAN_values can_values_from_rpu_rpu_local = {0};
 
-int JavaScope_initialize(DS_Data* data)
+	int
+	JavaScope_initialize(DS_Data *data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -120,7 +123,7 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
-	// add further data...
+	rpu_to_apu_user_data->can_values_from_rpu = can_values_from_rpu_rpu_local;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
@@ -182,8 +185,9 @@ void JavaScope_update(DS_Data* data){
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
 	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
+	 can_values_from_apu_rpu_local = apu_to_rpu_user_data->can_values_from_apu;
 #endif
 
-	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
+		 ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 
 }

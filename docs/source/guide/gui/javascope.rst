@@ -97,9 +97,9 @@ Logging
 
 - ``Logging OFF/ON`` starts or stops writing log files.
 - ``Log FastData`` includes fast scope samples in the log file.
-- ``Log SlowData`` includes slow-data values in the log file.
+- ``Log SlowData`` includes ``SlowData`` values in the log file. All received ``SlowData`` is logged.
 - ``ext. log trigger`` allows the UltraZohm software to control logging via its status bit.
-- ``Log every N`` reduces the logging rate by saving only every Nth sample group.
+- ``Log every N`` reduces the logging rate of FastData by saving only every Nth sample group. If enabled, ``SlowData`` is logged at full rate.
 - ``Log state`` shows whether logging is active.
 - Each logging start creates a new ``Log_yyyy-mm-dd_hh-mm-ss.csv`` file.
 
@@ -122,68 +122,120 @@ Footer and connection area
 - ``Sampling rate`` shows the configured or detected acquisition rate.
 - ``Throughput`` shows the fraction of the expected data stream received. If throughput drops below 95 % of the expected rate, the text turns red.
 
-Description of pages and controls
----------------------------------
+Description of tabs and controls
+--------------------------------
 
 .. _javascope_setup_scope:
 
-Setup Scope page
-""""""""""""""""
+Setup Scope tab
+"""""""""""""""
 
-The ``Setup Scope`` page selects displayed signals and adjusts per-channel vertical scaling.
+The ``Setup Scope`` tab selects displayed signals and adjusts per-channel vertical scaling.
 
 .. _javascope_setup:
 
 .. figure:: ./images_javascope/setup_scope.png
    :align: center
 
-   ``Setup Scope`` tab
+   JavaScope Setup Scope tab
 
-#. Signal selection for 20 scope channels. Use num-pad for quick access.
-#. Per-channel enable toggles by clicking on ``CHx``.
-#. Per-channel scaling with direct entry and ``+``/``-`` buttons.
-#. Per-channel offset entry.
+Each of the 20 scope channels provides the following options:
+
+#. ``Enable`` toggles by clicking on ``CHx``. Colored when active, gray when disabled.
+#. ``Signal`` selection. Use num-pad for quick access in the drop-down menu.
+#. ``Scaling`` with direct entry and ``+``/``-`` buttons. The displayed value is scaled by ``1/scaling``.
+#. ``Offset`` entry to shift the signal on the y-axis.
 #. ``Enable All`` and ``Disable All`` for global channel visibility control.
 
 Available signal names are parsed from ``JS_ObservableData`` in ``javascope.h``.
-Channel selection changes are applied immediately while connected.
 On connection, the GUI sends the preselected channel configuration automatically.
+Channel selection changes are applied immediately while connected.
+Scaling and offset are applied when you press ``Enter`` or move focus away from the input field.
 
 .. _javascope_control:
 
-Control page
-""""""""""""
+Control tab
+"""""""""""
 
-The ``Control`` page is the main interface for state-machine control, user inputs, and selected slow data.
+The ``Control`` tab is the main interface for state-machine control, user inputs, and selected ``SlowData``.
 
-.. figure:: ./images_javascope/control.png
+.. figure:: ./images_javascope/control_panel.png
    :align: center
 
-   ``Control`` tab
+   JavaScope Control tab
 
-#. ``receive_field_1`` to ``receive_field_6`` display selected slow data.
-#. ``send_field_1`` to ``send_field_6`` transmit user-defined values.
-#. ``Enable System``, ``Enable Control``, and ``STOP`` map to the front-panel state-machine buttons.
-#. ``Ready``, ``Running``, ``Error``, and ``User`` map to the front-panel status LEDs.
+#. ``Enable System``, ``Enable Control``, and ``STOP`` map to the front-panel state-machine buttons. For details on the R5 states and transitions, see :ref:`r5_statemachine`.
+
+   .. admonition:: Note for :ref:`≥Rev05-based UltraZohm systems <hardware>`
+
+      With ≥Rev05 carrier boards, the STOP and Enable buttons on the front panel affect functions beyond the UZ software and must be considered when using JavaScope.
+      See the "Warning" info-box in the :ref:`"Powerbutton Functionality" documentation of the Rev05 carrier board <carrier_board_rev05_s3cpwr>` for details.
+
+#. ``Ready``, ``Running``, ``Error``, and ``User`` map to the front-panel status LEDs. If an ``assert`` occurs in the UltraZohm, JavaScope disconnects, and the ``Error`` LED may only be visible on the hardware front panel.
+
+#. The ``receive_fields``
+
+   a. Selected user-defined ``SlowData`` values can be shown more prominently here than in the ``SlowData`` table.
+
+   b. For configuring which values are shown here, see :ref:`javascope_customizing`.
+
+   c. If not all of the up to 20 channels are required, they can be set to ``JSSD_FLOAT_ZEROVALUE``.
+
+#. The ``send_fields``
+
+   a. 20 values are available as references or setpoints for the user application.
+
+   b. After entering a value, press ``enter`` or the ``set`` button to send it to the R5. In ``ipc_ARM.c``, you can define how the value is used in the application.
+
+   .. _javascope_sendfields:
+
+   .. figure:: ./images_javascope_legacy/ipcSend.png
+      :align: center
+
+      Part of ``ipc_ARM.c`` code path where ``send_field_x`` values are received
+
+#. The ``mybuttons``
+
+   a. In addition to the ``send_field`` values, eight user buttons are available. In ``ipc_ARM.c``, you can define what happens when the buttons are pressed.
+
+   b. Each button has a status indicator below it. This indicator can also be set in ``ipc_ARM.c`` to provide feedback for button actions.
+      See ``/* Bit 4 - My_Button_1 */`` in the right picture below for an example.
+
+   .. _javascope_mybuttons:
+
+   .. figure:: ./images_javascope_legacy/buttons.png
+      :align: center
+
+      left: further use of the buttons; right: control of the button status indicators
+
+
+#. The ``SlowData`` table lists all parsed ``SlowData`` entries from ``javascope.h`` (see :ref:`javascope_customizing`).
+   Rows in the ``SlowData`` table can be copied via ``Ctrl+C`` or the context menu.
+   The more values are displayed, the longer it takes until they are updated.
 #. ``Error Reset`` and the ``error code`` field provide fault handling.
-#. The ``SlowData`` table lists all parsed slow-data entries.
+
+   a. The behavior of ``Error Reset`` must also be programmed in ``ipc_ARM.c``.
+   b. To send error codes to the GUI for display in the ``error code`` field, use the ``SlowData`` variable ``JSSD_FLOAT_Error_Code``.
+
+   .. warning::
+      Error detection and handling have to be implemented by the user. The GUI just provides an interface.
+
 
 Vitis-side user C-code integration is unchanged:
 ``send_field_x`` values, ``receive_field_x`` mappings, error-code handling, button labels, and the eight ``my buttons`` are configured in ``javascope.h`` and ``javascope.c``.
 
-Rows in the ``SlowData`` table can be copied via ``Ctrl+C`` or the context menu.
 
-MoreSendAndReceive page
-"""""""""""""""""""""""
+More Send and Receive tab
+"""""""""""""""""""""""""
 
-The ``MoreSendAndReceive`` page extends ``Control`` with the remaining receive and send fields.
+The ``MoreSendAndReceive`` tab extends ``Control`` with the remaining receive and send fields.
 
 .. _javascope_more_send_receive:
 
 .. figure:: ./images_javascope/more_send_receive.png
    :align: center
 
-   ``MoreSendAndReceive`` tab
+   JavaScope More Send and Receive tab
 
 #. ``receive_field_7`` to ``receive_field_20``.
 #. ``send_field_7`` to ``send_field_20``.
@@ -204,5 +256,5 @@ It covers:
 - the shared ``properties.ini`` settings
 - optional settings such as trigger defaults, automatic sampling-rate detection, ``sendZeroAckCommand``, and ``ScopeDevTab``
 - adding observable scope signals in ``javascope.h`` and ``javascope.c``
-- adding slow data variables
+- adding ``SlowData`` variables
 - configuring receive fields, send fields, and button labels in ``javascope.h``

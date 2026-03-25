@@ -1,8 +1,8 @@
 .. _javascope_legacy:
 
-====================
-JavaScope Legacy GUI
-====================
+=================================
+JavaScope Legacy GUI (deprecated)
+=================================
 
 This page preserves the documentation of the legacy JavaScope GUI in the folder ``ultrazohm_sw/javascope``.
 

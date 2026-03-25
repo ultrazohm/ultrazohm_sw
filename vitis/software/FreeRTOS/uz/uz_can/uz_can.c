@@ -50,7 +50,6 @@ static uz_can_t *uz_can_allocation(void)
     return (self);
 }
 
-// private function declarations
 static void write_config_to_pl(uz_can_t *self);
 
 uz_can_t *uz_can_init(struct uz_can_config_t config)
@@ -126,13 +125,6 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
         // do nothing, just wait until there is room in the TX FIFO
     }
 
-    /*
-     * Now send the frame.
-     *
-     * Another way to send a frame is keep calling XCan_Send() until it
-     * returns XST_SUCCESS. No check on if TX FIFO is full is needed anymore
-     * in that case.
-     */
     uint32_t status = XCanPs_Send(&self->can_inst, tx_frame);
 
     return status;

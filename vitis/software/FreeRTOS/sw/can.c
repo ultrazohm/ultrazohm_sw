@@ -34,10 +34,8 @@ uint32_t i_LifeCheck_CAN_Thread1 = 0;
 
 void CAN_Thread_CAN0(void *p)
 {
-
-
-    uz_can_frame_t can_framebuffer_rx;
-    uz_can_frame_t can_framebuffer_tx;
+    uz_can_frame_t can_framebuffer_rx={0};
+    uz_can_frame_t can_framebuffer_tx={0};
 
     while (1)
     {
@@ -76,9 +74,8 @@ void CAN_Thread_CAN0(void *p)
 
 void CAN_Thread_CAN1(void *p)
 {
-
-    uz_can_frame_t can_framebuffer_rx;
-    uz_can_frame_t can_framebuffer_tx;
+    uz_can_frame_t can_framebuffer_rx={0};
+    uz_can_frame_t can_framebuffer_tx={0};
 
     while (1)
     {

@@ -11,6 +11,7 @@ Adjusting the properties.ini file
 ---------------------------------
 
 Some settings can be configured in ``properties.ini`` before GUI startup.
+In the GUI, ``Save Settings`` writes the current settings to ``properties.ini`` and overwrites the previous values.
 
 Common settings used by both GUI generations
 """"""""""""""""""""""""""""""""""""""""""""

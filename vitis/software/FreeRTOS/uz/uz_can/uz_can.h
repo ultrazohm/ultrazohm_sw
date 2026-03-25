@@ -35,5 +35,6 @@ uint32_t uz_can_is_tx_done(uz_can_t *self);
 uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx_p);
 uint32_t uz_can_send_frame_blocking_wrapper(uz_can_t *self, uint16_t std_id, uint8_t dlc, uint8_t *data);
 uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_rx_p);
+void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p);
 
 #endif // UZ_CAN_H

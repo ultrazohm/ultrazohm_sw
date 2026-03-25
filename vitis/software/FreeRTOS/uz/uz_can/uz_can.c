@@ -166,3 +166,9 @@ uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame
 
     return status;
 }
+
+void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p)
+{
+    uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+              can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
+}

@@ -22,7 +22,7 @@
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
+#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
 
 //Includes from own files
 #include "main.h"
@@ -386,6 +386,7 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
+#if CAN_ACTIVE == 1
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
@@ -396,7 +397,8 @@ int main_thread()
 				   DEFAULT_THREAD_PRIO);
 
 	xil_printf("CAN-Thread1 started\n\r");
-	
+#endif
+
 #if LWIP_DHCP==1
     while (1) {
 
@@ -445,19 +447,3 @@ int main_thread()
     vTaskDelete(NULL);
     return 0;
 }
-
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  hal_can_debug_print_frame
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p)
-{
-	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
-			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
-}
-

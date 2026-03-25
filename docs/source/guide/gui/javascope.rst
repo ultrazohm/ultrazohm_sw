@@ -251,10 +251,3 @@ Configuration and customization
 -------------------------------
 
 Customization is documented in :ref:`javascope_customizing`.
-It covers:
-
-- the shared ``properties.ini`` settings
-- optional settings such as trigger defaults, automatic sampling-rate detection, ``sendZeroAckCommand``, and ``ScopeDevTab``
-- adding observable scope signals in ``javascope.h`` and ``javascope.c``
-- adding ``SlowData`` variables
-- configuring receive fields, send fields, and button labels in ``javascope.h``

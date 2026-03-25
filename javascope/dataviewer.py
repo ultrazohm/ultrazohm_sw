@@ -95,6 +95,16 @@ app.layout = html.Div([
             style={'margin': 'auto', 'textAlign': 'center'}
         ),
     ], style={'width': '80%', 'margin': '20px auto'}),
+    html.Div([
+        dcc.Checklist(
+            id='time-axis-lock-toggle',
+            options=[{'label': ' Lock time axis across all graphs', 'value': 'lock'}],
+            value=[],
+            style={'width': '90%', 'margin': '0 auto 10px auto'},
+            inputStyle={'marginRight': '6px'},
+        ),
+        dcc.Store(id='shared-xaxis-store'),
+    ]),
     dcc.Loading(
         html.Div(id='status-message', style={'width': '90%', 'margin': '0 auto 20px auto'}),
         type='circle',
@@ -131,6 +141,7 @@ app.layout = html.Div([
     Output('viewport-store-2', 'data', allow_duplicate=True),
     Output('viewport-store-3', 'data', allow_duplicate=True),
     Output('viewport-store-4', 'data', allow_duplicate=True),
+    Output('shared-xaxis-store', 'data'),
     Output('status-message', 'children'),
     Input('upload-data', 'contents'),
     Input('upload-data', 'filename'),
@@ -147,11 +158,11 @@ def update_options(contents, filename):
     global df
 
     if not contents or not filename:
-        return [], [], [], [], [], [], [], [], None, None, None, None, None, None, None, None, ''
+        return [], [], [], [], [], [], [], [], None, None, None, None, None, None, None, None, None, ''
 
     df, error = parse_uploaded_file(contents, filename)
     if error:
-        return [], [], [], [], [], [], [], [], None, None, None, None, None, None, None, None, html.Div(error, style={'color': '#b00020'})
+        return [], [], [], [], [], [], [], [], None, None, None, None, None, None, None, None, None, html.Div(error, style={'color': '#b00020'})
 
     selectable_columns = [col for col in df.columns if col != 'time']
     dropdown_options = [{'label': col, 'value': col} for col in selectable_columns]
@@ -177,6 +188,7 @@ def update_options(contents, filename):
         None,
         None,
         None,
+        None,
         status_message,
     )
 
@@ -186,10 +198,12 @@ def update_options(contents, filename):
     Input('cursor-toggle-1', 'value'),
     Input('cursor-store-1', 'data'),
     State('viewport-store-1', 'data'),
+    State('time-axis-lock-toggle', 'value'),
+    State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_1(value, cursor_toggle, cursor_positions, viewport_data):
-    return update_graph_common('graph-content-1', value, cursor_toggle, cursor_positions, viewport_data)
+def update_graph_1(value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
+    return update_graph_common('graph-content-1', value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data)
 
 
 @app.callback(
@@ -198,10 +212,12 @@ def update_graph_1(value, cursor_toggle, cursor_positions, viewport_data):
     Input('cursor-toggle-2', 'value'),
     Input('cursor-store-2', 'data'),
     State('viewport-store-2', 'data'),
+    State('time-axis-lock-toggle', 'value'),
+    State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_2(value, cursor_toggle, cursor_positions, viewport_data):
-    return update_graph_common('graph-content-2', value, cursor_toggle, cursor_positions, viewport_data)
+def update_graph_2(value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
+    return update_graph_common('graph-content-2', value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data)
 
 
 @app.callback(
@@ -210,10 +226,12 @@ def update_graph_2(value, cursor_toggle, cursor_positions, viewport_data):
     Input('cursor-toggle-3', 'value'),
     Input('cursor-store-3', 'data'),
     State('viewport-store-3', 'data'),
+    State('time-axis-lock-toggle', 'value'),
+    State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_3(value, cursor_toggle, cursor_positions, viewport_data):
-    return update_graph_common('graph-content-3', value, cursor_toggle, cursor_positions, viewport_data)
+def update_graph_3(value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
+    return update_graph_common('graph-content-3', value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data)
 
 
 @app.callback(
@@ -222,21 +240,23 @@ def update_graph_3(value, cursor_toggle, cursor_positions, viewport_data):
     Input('cursor-toggle-4', 'value'),
     Input('cursor-store-4', 'data'),
     State('viewport-store-4', 'data'),
+    State('time-axis-lock-toggle', 'value'),
+    State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_4(value, cursor_toggle, cursor_positions, viewport_data):
-    return update_graph_common('graph-content-4', value, cursor_toggle, cursor_positions, viewport_data)
+def update_graph_4(value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
+    return update_graph_common('graph-content-4', value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data)
 
 
-def update_graph_common(graph_id, value, cursor_toggle, cursor_positions, viewport_data):
+def update_graph_common(graph_id, value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
     triggered_id = callback_context.triggered_id
     if triggered_id == graph_id.replace('graph-content', 'cursor-store'):
         return patch_cursor_shapes(cursor_toggle, cursor_positions)
 
-    return build_figure(graph_id, value, cursor_toggle, cursor_positions, viewport_data)
+    return build_figure(graph_id, value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data)
 
 
-def build_figure(graph_id, value, cursor_toggle, cursor_positions, viewport_data):
+def build_figure(graph_id, value, cursor_toggle, cursor_positions, viewport_data, time_axis_lock, shared_xaxis_data):
     global df
     fig = figures[graph_id]
     cursor_enabled = 'show' in (cursor_toggle or [])
@@ -293,6 +313,8 @@ def build_figure(graph_id, value, cursor_toggle, cursor_positions, viewport_data
         margin=dict(l=60, r=20, t=40, b=110),
     )
     preserve_axis_ranges(fig, viewport_data)
+    if 'lock' in (time_axis_lock or []):
+        apply_shared_xaxis(fig, shared_xaxis_data)
 
     return fig
 
@@ -448,6 +470,61 @@ def update_viewport_store_3(relayout_data, viewport_data):
 )
 def update_viewport_store_4(relayout_data, viewport_data):
     return extract_viewport_data(relayout_data, viewport_data)
+
+
+@app.callback(
+    Output('shared-xaxis-store', 'data', allow_duplicate=True),
+    Input('time-axis-lock-toggle', 'value'),
+    Input('graph-content-1', 'relayoutData'),
+    Input('graph-content-2', 'relayoutData'),
+    Input('graph-content-3', 'relayoutData'),
+    Input('graph-content-4', 'relayoutData'),
+    State('shared-xaxis-store', 'data'),
+    prevent_initial_call=True
+)
+def update_shared_xaxis_store(time_axis_lock, relayout_1, relayout_2, relayout_3, relayout_4, current_shared_xaxis):
+    if 'lock' not in (time_axis_lock or []):
+        return None
+
+    trigger = callback_context.triggered_id
+    relayout_map = {
+        'graph-content-1': relayout_1,
+        'graph-content-2': relayout_2,
+        'graph-content-3': relayout_3,
+        'graph-content-4': relayout_4,
+    }
+    relayout_data = relayout_map.get(trigger)
+    if not relayout_data:
+        return no_update
+
+    shared_xaxis_data = extract_xaxis_data(relayout_data)
+    if not shared_xaxis_data:
+        return no_update
+
+    if shared_xaxis_data == (current_shared_xaxis or {}):
+        return no_update
+
+    return shared_xaxis_data
+
+
+@app.callback(
+    Output('graph-content-1', 'figure', allow_duplicate=True),
+    Output('graph-content-2', 'figure', allow_duplicate=True),
+    Output('graph-content-3', 'figure', allow_duplicate=True),
+    Output('graph-content-4', 'figure', allow_duplicate=True),
+    Input('shared-xaxis-store', 'data'),
+    Input('time-axis-lock-toggle', 'value'),
+    prevent_initial_call=True
+)
+def sync_time_axis(shared_xaxis_data, time_axis_lock):
+    if 'lock' not in (time_axis_lock or []) or not shared_xaxis_data:
+        return no_update, no_update, no_update, no_update
+
+    patch = build_shared_xaxis_patch(shared_xaxis_data)
+    if not patch:
+        return no_update, no_update, no_update, no_update
+
+    return patch, patch, patch, patch
 
 
 @app.callback(
@@ -705,6 +782,59 @@ def preserve_axis_ranges(fig, viewport_data):
         fig.update_yaxes(autorange=True)
     elif 'yaxis.range[0]' in viewport_data and 'yaxis.range[1]' in viewport_data:
         fig.update_yaxes(range=[viewport_data['yaxis.range[0]'], viewport_data['yaxis.range[1]']])
+
+
+def apply_shared_xaxis(fig, shared_xaxis_data):
+    if not shared_xaxis_data:
+        return
+
+    if shared_xaxis_data.get('xaxis.autorange'):
+        fig.update_xaxes(autorange=True)
+    elif 'xaxis.range[0]' in shared_xaxis_data and 'xaxis.range[1]' in shared_xaxis_data:
+        fig.update_xaxes(range=[shared_xaxis_data['xaxis.range[0]'], shared_xaxis_data['xaxis.range[1]']])
+
+
+def extract_xaxis_data(relayout_data):
+    if not relayout_data:
+        return None
+
+    # Ignore shape drag events to avoid syncing x-axis while moving cursors.
+    if 'shapes' in relayout_data or any(key.startswith('shapes[') for key in relayout_data):
+        return None
+
+    shared_xaxis_data = {}
+
+    if 'xaxis.range[0]' in relayout_data and 'xaxis.range[1]' in relayout_data:
+        shared_xaxis_data['xaxis.range[0]'] = relayout_data['xaxis.range[0]']
+        shared_xaxis_data['xaxis.range[1]'] = relayout_data['xaxis.range[1]']
+        shared_xaxis_data['xaxis.autorange'] = False
+        return shared_xaxis_data
+
+    if 'xaxis.autorange' in relayout_data:
+        shared_xaxis_data['xaxis.autorange'] = relayout_data['xaxis.autorange']
+        return shared_xaxis_data
+
+    return None
+
+
+def build_shared_xaxis_patch(shared_xaxis_data):
+    if not shared_xaxis_data:
+        return None
+
+    patched_figure = Patch()
+
+    if shared_xaxis_data.get('xaxis.autorange'):
+        patched_figure['layout']['xaxis']['autorange'] = True
+    elif 'xaxis.range[0]' in shared_xaxis_data and 'xaxis.range[1]' in shared_xaxis_data:
+        patched_figure['layout']['xaxis']['autorange'] = False
+        patched_figure['layout']['xaxis']['range'] = [
+            shared_xaxis_data['xaxis.range[0]'],
+            shared_xaxis_data['xaxis.range[1]'],
+        ]
+    else:
+        return None
+
+    return patched_figure
 
 
 def extract_viewport_data(relayout_data, viewport_data):

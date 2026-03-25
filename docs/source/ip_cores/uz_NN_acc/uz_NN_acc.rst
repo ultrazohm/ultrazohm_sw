@@ -436,33 +436,44 @@ This guide will walk you through the process.
 #. Save the file and navigate to  ``ip_cores\uz_NN_acc``
 
    .. note::
-      - Up to 5 custom IP cores can be generated and stored.
-      - To facilitate this, 5 different synthesis solutions are provided.
+      - An unlimited amount of different configurations with **an unique name** can be generated.
       - The name of the IP core can be configured in this solution. This is necessary to avoid clashes in Vivado.
       - Example for description: ``5x128_setup``
       - Example for IP core display name: ``uz_NN_5_128_acc``
       - Example for IP core name: ``uz_NN_5_128``
 
 #. Configure solution1 by opening the file ``uz_NN/solution1/script.tcl``.
-#. Edit the entry in line 27
+#. Edit the entry in line 8-11
 
    .. code-block:: c
       :caption: Changes to ``script.tcl``
 
-      -description XxYYY_setup -display_name uz_NN_X_YYY_acc -ipname uz_NN_X_YYY
+      set ip_name "uz_NN_X_YYY"
+      set ip_version "1.0"
+      set ip_description "XxYY_setup"
+      set ip_display_name "uz_NN_X_YYY_acc"
       ...
 
-#. Give the IP core an appropriate name and description. E.g., ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
+#. Give the IP core an appropriate name and description. E.g.,
+
+   .. code-block:: c
+      :caption: Changes to ``script.tcl``
+
+      set ip_name "uz_NN_5_128"
+      set ip_version "1.0"
+      set ip_description "5x128_setup"
+      set ip_display_name "uz_NN_5_128_acc"
+      ...
+
+
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
 #. After you see ``[HLS 200-111] Finished Command export_design``, the synthesis and export are finished.
-#. A resource estimation can be found in ``uz_NN_acc\uz_NN\solution1\syn\report`` under ``csynth.rpt``.
-   In Vivado, the resource usage (except for DSP Slices) is a bit lower than stated in HLS.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
 #. In Vivado, open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the IP core to the block design<uz_NN_vivado>`.
-#. [Optional] You can now generate another IP core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Modify ``uz_MMult_MaxSize.h`` again and then use solution2-5.
+#. [Optional] You can now generate another IP core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>` again. Modify ``uz_MMult_MaxSize.h`` again and give the new configuration a unique name.
 
 Resource utilization
 ====================

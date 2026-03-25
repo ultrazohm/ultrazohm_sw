@@ -5,15 +5,16 @@
 # -----------------------------
 # USER-CONFIGURABLE PARAMETERS
 # -----------------------------
-set ip_name "uz_NN_2_64"
+set ip_name "uz_NN_X_YYY"
 set ip_version "1.0"
-set ip_description "2x64_setup"
-set ip_display_name "uz_NN_2_64_acc"
-set solution_name "solution1"
+set ip_description "XxYY_setup"
+set ip_display_name "uz_NN_X_YYY_acc"
+
 
 # -----------------------------
 # PROJECT SETUP
 # -----------------------------
+set solution_name "solution1"
 open_project uz_NN
 set_top uz_NN_acc
 

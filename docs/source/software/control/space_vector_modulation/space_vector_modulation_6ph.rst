@@ -43,6 +43,8 @@ Function references
 
 .. doxygenfunction:: uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq
 
+.. doxygenfunction:: uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq_xy
+
 
 Minimum code example
 --------------------

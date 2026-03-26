@@ -8,11 +8,11 @@ This IP core implements a **configurable MLP network**, which was developed usin
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
-   - Variable layer setup of up to **5 hidden layers** with :ref:`activation_function_relu` activation function for hidden layers.
+   - Variable layer setup of up to **10 hidden layers** with :ref:`activation_function_relu` activation function for hidden layers.
    - Output in the IP core is hard coded to use :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
    - The number of **neurons** in the hidden layers is variable.
-   - Variable number of up to **24 Observations**.
-   - Variable number of up to **12 Actions**.
+   - Variable number of up to **32 Observations**.
+   - Variable number of up to **16 Actions**.
    - Execution time of **~11-12µs** for 3x64 setup.
    - Change of layer or neuron count :ref:`requires resynthesis of the IP core in Vitis HLS<uz_NN_customize_setup>`.
    - Synthesis configuration to prioritize performance or reduce resources.
@@ -411,11 +411,11 @@ This guide will walk you through the process.
 #. Change the user-definable variable to your needs.
 
    .. note::
-      - A maximum of **5** hidden layers can be configured.
+      - A maximum of **10** hidden layers can be configured.
+      - **Advice: Increasing the number of layers is more resource-efficient in terms of FPGA usage than increasing the neuron count in each layer.**
       - Neurons can be configured on a per-hidden-layer basis as desired.
-        The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5).
-        Note, however, that increasing the neuron count increases the resource usage significantly.
-        **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
+      - **Advice: For better resource-efficiency keep the neuron count in each hidden layer the same.** 
+        The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 10).       
       - The ``Performance_Target`` variable can be used if the generated IP core resources are too much for your specific FPGA.
         Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance.
         A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
@@ -431,6 +431,11 @@ This guide will walk you through the process.
       #define Neurons_3rd_Hidden_Layer 96
       #define Neurons_4th_Hidden_Layer 32
       #define Neurons_5th_Hidden_Layer 64
+      #define Neurons_6th_Hidden_Layer 64
+      #define Neurons_7th_Hidden_Layer 64
+      #define Neurons_8th_Hidden_Layer 64
+      #define Neurons_9th_Hidden_Layer 64
+      #define Neurons_10th_Hidden_Layer 64
       #define Performance_Target 1
 
 #. Save the file and navigate to  ``ip_cores\uz_NN_acc``
@@ -493,6 +498,7 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 1x64   47     321    27k    24k    729
 3x64   112    321    34k    32k    542
 5x64   177    321    39k    39k    1097
+10x64  344    321    64k    53k    1494
 1x128  80     641    50k    45k    783
 5x128  338    641    72k    74k    1469
 1x256  147    1281   95k    93k    658

@@ -21,7 +21,7 @@ Software
 ========
 
 - The internal struct of the uz_nn object holds an array of pointer to layers
-- This array is always of length ``UZ_NN_MAX_LAYER``, which is arbitrarily set to 10.
+- This array is always of length ``UZ_NN_MAX_LAYER``, which is arbitrarily set to 11.
 - The define can be changed, which changes the size of the array for all instances of uz_nn
 - This solution makes it possible to have different number of layers for different instances of uz_nn
 - uz_nn_init uses the config struct of :ref:`uz_nn_layer`

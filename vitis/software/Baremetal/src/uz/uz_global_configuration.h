@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -16,7 +16,8 @@
 
 /** ISR trigger source
  *
- * chose here which of the above interrupt trigger you want to use:
+ * Choose here which interrupt trigger you want to use.
+ * If a 2L PWM trigger is selected, ensure that uz_PWM_SS_2L_config_t.trigger_source is aligned.
  * 0 for Interrupt_2L_max_min
  * 1 for Interrupt_2L_min
  * 2 for Interrupt_2L_max
@@ -32,7 +33,7 @@
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 #define UZ_PWM_DEADTIME_IN_US                   1.0f
-#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US		0.5f
+#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        0.5f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U

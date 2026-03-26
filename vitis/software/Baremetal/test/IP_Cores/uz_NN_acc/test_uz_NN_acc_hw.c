@@ -19,12 +19,22 @@ float L_2_Bias[64] = {0};
 float L_3_Bias[64] = {0};
 float L_4_Bias[64] = {0};
 float L_5_Bias[64] = {0};
+float L_6_Bias[64] = {0};
+float L_7_Bias[64] = {0};
+float L_8_Bias[64] = {0};
+float L_9_Bias[64] = {0};
+float L_10_Bias[64] = {0};
 float L_Output_Bias[64] = {0};
 float L_1_Weights[64] = {0};
 float L_2_Weights[64] = {0};
 float L_3_Weights[64] = {0};
 float L_4_Weights[64] = {0};
 float L_5_Weights[64] = {0};
+float L_6_Weights[64] = {0};
+float L_7_Weights[64] = {0};
+float L_8_Weights[64] = {0};
+float L_9_Weights[64] = {0};
+float L_10_Weights[64] = {0};
 float L_Output_Weights[64] = {0};
 void setUp(void)
 {
@@ -159,6 +169,82 @@ void test_uz_NN_acc_hw_set_L_5_Bias_Data(void) {
     uz_NN_acc_hw_set_L_5_Bias_Data(BASE_ADDRESS, &L_5_Bias[0]);
 }
 
+void test_uz_NN_acc_hw_set_L_6_Bias_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_6_Bias_Data(ZERO_BASE_ADDRESS, &L_6_Bias[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_6_Bias_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_6_Bias_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_6_Bias_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_6_Bias;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_6_BIAS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_6_Bias_Data(BASE_ADDRESS, &L_6_Bias[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_7_Bias_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_7_Bias_Data(ZERO_BASE_ADDRESS, &L_7_Bias[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_7_Bias_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_7_Bias_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_7_Bias_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_7_Bias;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_7_BIAS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_7_Bias_Data(BASE_ADDRESS, &L_7_Bias[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_8_Bias_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_8_Bias_Data(ZERO_BASE_ADDRESS, &L_8_Bias[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_8_Bias_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_8_Bias_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_8_Bias_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_8_Bias;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_8_BIAS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_8_Bias_Data(BASE_ADDRESS, &L_8_Bias[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_9_Bias_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_9_Bias_Data(ZERO_BASE_ADDRESS, &L_9_Bias[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_9_Bias_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_9_Bias_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_9_Bias_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_9_Bias;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_9_BIAS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_9_Bias_Data(BASE_ADDRESS, &L_9_Bias[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_10_Bias_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_10_Bias_Data(ZERO_BASE_ADDRESS, &L_10_Bias[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_10_Bias_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_10_Bias_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_10_Bias_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_10_Bias;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_10_BIAS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_10_Bias_Data(BASE_ADDRESS, &L_10_Bias[0]);
+}
+
+
 void test_uz_NN_acc_hw_set_L_Output_Bias_Data_assert_base_address(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_Output_Bias_Data(ZERO_BASE_ADDRESS, &L_Output_Bias[0]));
 }
@@ -247,6 +333,81 @@ void test_uz_NN_acc_hw_set_L_5_Weights_Data(void) {
 	uint32_t address = (uint32_t)pointer;
     uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_5_WEIGHTS_INPUT_DATA, address);
     uz_NN_acc_hw_set_L_5_Weights_Data(BASE_ADDRESS, &L_5_Weights[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_6_Weights_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_6_Weights_Data(ZERO_BASE_ADDRESS, &L_6_Weights[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_6_Weights_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_6_Weights_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_6_Weights_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_6_Weights;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_6_WEIGHTS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_6_Weights_Data(BASE_ADDRESS, &L_6_Weights[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_7_Weights_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_7_Weights_Data(ZERO_BASE_ADDRESS, &L_7_Weights[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_7_Weights_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_7_Weights_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_7_Weights_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_7_Weights;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_7_WEIGHTS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_7_Weights_Data(BASE_ADDRESS, &L_7_Weights[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_8_Weights_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_8_Weights_Data(ZERO_BASE_ADDRESS, &L_8_Weights[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_8_Weights_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_8_Weights_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_8_Weights_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_8_Weights;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_8_WEIGHTS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_8_Weights_Data(BASE_ADDRESS, &L_8_Weights[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_9_Weights_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_9_Weights_Data(ZERO_BASE_ADDRESS, &L_9_Weights[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_9_Weights_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_9_Weights_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_9_Weights_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_9_Weights;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_9_WEIGHTS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_9_Weights_Data(BASE_ADDRESS, &L_9_Weights[0]);
+}
+
+void test_uz_NN_acc_hw_set_L_10_Weights_Data_assert_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_10_Weights_Data(ZERO_BASE_ADDRESS, &L_10_Weights[0]));
+}
+
+void test_uz_NN_acc_hw_set_L_10_Weights_Data_assert_array_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_L_10_Weights_Data(BASE_ADDRESS, NULL));
+}
+
+void test_uz_NN_acc_hw_set_L_10_Weights_Data(void) {
+    uint32_t* pointer = (uint32_t*)L_10_Weights;
+	uint32_t address = (uint32_t)pointer;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_L_10_WEIGHTS_INPUT_DATA, address);
+    uz_NN_acc_hw_set_L_10_Weights_Data(BASE_ADDRESS, &L_10_Weights[0]);
 }
 
 void test_uz_NN_acc_hw_set_L_Output_Weights_Data_assert_base_address(void) {

@@ -10,7 +10,7 @@
 
 #define MAX_SIZE_OBSERVATION 32U
 #define MAX_SIZE_ACTIONS 16U 
-#define MAX_AMOUNT_OF_HIDDEN_LAYERS 10U //5 Hidden Layers 
+#define MAX_AMOUNT_OF_HIDDEN_LAYERS 10U //10 Hidden Layers 
 
 //Flush and Invalidate Size must be multiple of 32byte
 //I.e. MAX_OBS and MAX_ACTION must be divisible by 4

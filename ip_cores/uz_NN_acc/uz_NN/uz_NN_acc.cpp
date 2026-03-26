@@ -1,8 +1,8 @@
 #include "uz_NN_acc.h"
 
 
-void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_Weights_input, float *L_3_Weights_input, float *L_4_Weights_input, float *L_5_Weights_input, float *L_Output_Weights_input, float *Action_output,
-		float *L_1_Bias_input, float *L_2_Bias_input, float *L_3_Bias_input, float *L_4_Bias_input, float *L_5_Bias_input, float *L_Output_Bias_input, volatile bool *copy_mats_flag, uint_fast32_t Observation_size_input, uint_fast32_t Action_size_input,
+void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_Weights_input, float *L_3_Weights_input, float *L_4_Weights_input, float *L_5_Weights_input, float *L_6_Weights_input, float *L_7_Weights_input, float *L_8_Weights_input, float *L_9_Weights_input, float *L_10_Weights_input, float *L_Output_Weights_input, float *Action_output,
+		float *L_1_Bias_input, float *L_2_Bias_input, float *L_3_Bias_input, float *L_4_Bias_input, float *L_5_Bias_input, float *L_6_Bias_input, float *L_7_Bias_input, float *L_8_Bias_input, float *L_9_Bias_input, float *L_10_Bias_input, float *L_Output_Bias_input, volatile bool *copy_mats_flag, uint_fast32_t Observation_size_input, uint_fast32_t Action_size_input,
 		volatile bool *copy_flag_out, volatile bool *matrices_updated_out, volatile bool *compute_flag) {
 #pragma HLS INTERFACE m_axi port=Observation_Input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_1_Weights_input bundle=arrays depth=32
@@ -10,12 +10,22 @@ void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_We
 #pragma HLS INTERFACE m_axi port=L_3_Weights_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_4_Weights_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_5_Weights_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_6_Weights_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_7_Weights_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_8_Weights_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_9_Weights_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_10_Weights_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_Output_Weights_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_1_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_2_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_3_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_4_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_5_Bias_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_6_Bias_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_7_Bias_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_8_Bias_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_9_Bias_input bundle=arrays depth=32
+#pragma HLS INTERFACE m_axi port=L_10_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=L_Output_Bias_input bundle=arrays depth=32
 #pragma HLS INTERFACE m_axi port=Action_output bundle=arrays depth=32
 #pragma HLS INTERFACE s_axilite mode=ap_none port=Observation_size_input
@@ -36,5 +46,15 @@ void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_We
 	uz_4_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
 #elif Hidden_Layers==5
 	uz_5_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
+#elif Hidden_Layers==6
+	uz_6_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_6_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_6_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
+#elif Hidden_Layers==7
+	uz_7_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_6_Weights_input, L_7_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_6_Bias_input, L_7_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
+#elif Hidden_Layers==8
+	uz_8_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_6_Weights_input, L_7_Weights_input, L_8_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_6_Bias_input, L_7_Bias_input, L_8_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
+#elif Hidden_Layers==9
+	uz_9_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_6_Weights_input, L_7_Weights_input, L_8_Weights_input, L_9_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_6_Bias_input, L_7_Bias_input, L_8_Bias_input, L_9_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
+#elif Hidden_Layers==10
+	uz_10_layers(Observation_Input, L_1_Weights_input, L_2_Weights_input, L_3_Weights_input, L_4_Weights_input, L_5_Weights_input, L_6_Weights_input, L_7_Weights_input, L_8_Weights_input, L_9_Weights_input, L_10_Weights_input, L_Output_Weights_input, Action_output, L_1_Bias_input, L_2_Bias_input, L_3_Bias_input, L_4_Bias_input, L_5_Bias_input, L_6_Bias_input, L_7_Bias_input, L_8_Bias_input, L_9_Bias_input, L_10_Bias_input, L_Output_Bias_input, copy_mats_flag, Observation_size_input, Action_size_input, copy_flag_out, matrices_updated_out, compute_flag);
 #endif
 }

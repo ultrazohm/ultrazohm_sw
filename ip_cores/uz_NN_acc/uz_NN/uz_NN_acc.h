@@ -7,7 +7,6 @@
 #include "uz_copy_L_Output_Weights.h"
 #include "uz_layers.h"
 
-void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_Weights_input, float *L_3_Weights_input, float *L_4_Weights_input, float *L_5_Weights_input, float *L_Output_Weights_input, float *Action_output,
-		float *L_1_Bias_input, float *L_2_Bias_input, float *L_3_Bias_input, float *L_4_Bias_input, float *L_5_Bias_input, float *L_Output_Bias_input,
-		volatile bool *copy_mats_flag, uint_fast32_t Observation_size_input, uint_fast32_t Action_size_input,
+void uz_NN_acc(float *Observation_Input, float *L_1_Weights_input, float *L_2_Weights_input, float *L_3_Weights_input, float *L_4_Weights_input, float *L_5_Weights_input, float *L_6_Weights_input, float *L_7_Weights_input, float *L_8_Weights_input, float *L_9_Weights_input, float *L_10_Weights_input, float *L_Output_Weights_input, float *Action_output,
+		float *L_1_Bias_input, float *L_2_Bias_input, float *L_3_Bias_input, float *L_4_Bias_input, float *L_5_Bias_input, float *L_6_Bias_input, float *L_7_Bias_input, float *L_8_Bias_input, float *L_9_Bias_input, float *L_10_Bias_input, float *L_Output_Bias_input, volatile bool *copy_mats_flag, uint_fast32_t Observation_size_input, uint_fast32_t Action_size_input,
 		volatile bool *copy_flag_out, volatile bool *matrices_updated_out, volatile bool *compute_flag);

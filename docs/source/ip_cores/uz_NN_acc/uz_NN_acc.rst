@@ -21,7 +21,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
 
 .. figure:: uz_NN_acc_layers.svg
    :align: center
-   :width: 500px
+   :width: 800px
 
 
 
@@ -415,7 +415,7 @@ This guide will walk you through the process.
       - **Advice: Increasing the number of layers is more resource-efficient in terms of FPGA usage than increasing the neuron count in each layer.**
       - Neurons can be configured on a per-hidden-layer basis as desired.
       - **Advice: For better resource-efficiency keep the neuron count in each hidden layer the same.** 
-        The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 10).       
+      - The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 10).       
       - The ``Performance_Target`` variable can be used if the generated IP core resources are too much for your specific FPGA.
         Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance.
         A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
@@ -474,7 +474,7 @@ This guide will walk you through the process.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
-#. After you see ``[HLS 200-111] Finished Command export_design``, the synthesis and export are finished.
+#. After you see ``IP successfully extracted to $outdir``, the synthesis and export are finished.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
 #. In Vivado, open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the IP core to the block design<uz_NN_vivado>`.
@@ -495,10 +495,11 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 ====== ====== ====== ====== ====== ======
 1x32   30.5   161    16k    15k    707
 5x32   96.5   161    22k    23k    1081
+10x32  183    161    30k    37k    1463
 1x64   47     321    27k    24k    729
-3x64   112    321    34k    32k    542
+3x64   112    321    34k    33k    542
 5x64   177    321    39k    39k    1097
-10x64  344    321    64k    53k    1494
+10x64  344    321    54k    64k    1494
 1x128  80     641    50k    45k    783
 5x128  338    641    72k    74k    1469
 1x256  147    1281   95k    93k    658
@@ -511,6 +512,7 @@ By adjusting the ``#define Performance_Target 1`` to, e.g., ``4``, the resources
 Setup  BRAM    DSP   FF      LUT   LUTRAM
 ====== ====== ====== ====== ====== ======
 5x64   48     81     45k    32k    1557
+10x64  91.5   81     80k    53k    1333
 5x128  89     161    83k    59k    2371
 5x256  302    321    169k   122k   13005
 ====== ====== ====== ====== ====== ======

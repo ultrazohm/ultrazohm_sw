@@ -54,10 +54,46 @@
     \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenE13) at (10,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenE12] {$\bm{\vdots}$};
 
+    % Optionaler Hidden Layer F (blass, gestrichelt)
+    \foreach \i in {1,...,12} {
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenF\i) at (12,-\i*1) {\i};
+    }
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenF13) at (12,-14*1) {\textbf{x}};
+    \node[align=center] ()[below=-0cm of hiddenF12] {$\bm{\vdots}$};
+
+    % Optionaler Hidden Layer G (blass, gestrichelt)
+    \foreach \i in {1,...,12} {
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenG\i) at (14,-\i*1) {\i};
+    }
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenG13) at (14,-14*1) {\textbf{x}};
+    \node[align=center] ()[below=-0cm of hiddenG12] {$\bm{\vdots}$};
+
+    % Optionaler Hidden Layer H (blass, gestrichelt)
+    \foreach \i in {1,...,12} {
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenH\i) at (16,-\i*1) {\i};
+    }
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenH13) at (16,-14*1) {\textbf{x}};
+    \node[align=center] ()[below=-0cm of hiddenH12] {$\bm{\vdots}$};
+
+    % Optionaler Hidden Layer I (blass, gestrichelt)
+    \foreach \i in {1,...,12} {
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenI\i) at (18,-\i*1) {\i};
+    }
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenI13) at (18,-14*1) {\textbf{x}};
+    \node[align=center] ()[below=-0cm of hiddenI12] {$\bm{\vdots}$};
+
+    % Optionaler Hidden Layer J (blass, gestrichelt)
+    \foreach \i in {1,...,12} {
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenJ\i) at (20,-\i*1) {\i};
+    }
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenJ13) at (20,-14*1) {\textbf{x}};
+    \node[align=center] ()[below=-0cm of hiddenJ12] {$\bm{\vdots}$};
+
     % Ausgabeschicht (12 Neuronen)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (output\i) at (12,-\i*0.8-1) {};
+        \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (output\i) at (22,-\i*0.8-1) {};
     }
+    \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (output13) at (22,-14*0.8-0.8) {};
 
     % Verbindungen: Eingabe -> Hidden A (gestrichelt)
     \foreach \i in {1,...,13} {
@@ -94,10 +130,45 @@
         }
     }
 
-    % Hidden E -> Ausgabe (gestrichelt)
+    % Hidden E -> Hidden F (gestrichelt)
     \foreach \i in {1,...,13} {
-        \foreach \j in {1,...,12} {
-            \draw[-latex, dashed, draw=black!50] (hiddenE\i.east) -- (output\j.west);
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenE\i.east) -- (hiddenF\j.west);
+        }
+    }
+
+    % Hidden F -> Hidden G (gestrichelt)
+    \foreach \i in {1,...,13} {
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenF\i.east) -- (hiddenG\j.west);
+        }
+    }
+
+    % Hidden G -> Hidden H (gestrichelt)
+    \foreach \i in {1,...,13} {
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenG\i.east) -- (hiddenH\j.west);
+        }
+    }
+
+    % Hidden H -> Hidden I (gestrichelt)
+    \foreach \i in {1,...,13} {
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenH\i.east) -- (hiddenI\j.west);
+        }
+    }
+
+    % Hidden I -> Hidden J (gestrichelt)
+    \foreach \i in {1,...,13} {
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenI\i.east) -- (hiddenJ\j.west);
+        }
+    }
+
+    % Hidden J -> Ausgabe (gestrichelt)
+    \foreach \i in {1,...,13} {
+        \foreach \j in {1,...,13} {
+            \draw[-latex, dashed, draw=black!50] (hiddenJ\i.east) -- (output\j.west);
         }
     }
 
@@ -105,16 +176,17 @@
     \foreach \i in {1,...,12} {
         \draw[-latex] ([xshift=-1cm]input\i.west) -- node[yshift=0.2cm] {$x_{\i}$}(input\i.west);
     }
-    \draw[-latex] ([xshift=-1cm]input13.west) -- node[yshift=0.2cm] {$x_{24}$}(input13.west);
+    \draw[-latex] ([xshift=-1cm]input13.west) -- node[yshift=0.2cm] {$x_{32}$}(input13.west);
 
     % Ausgangs y-Beschriftungen
     \foreach \i in {1,...,12} {
         \draw[-latex] (output\i.east) -- node[yshift=0.2cm] {$y_{\i}$}([xshift=1cm]output\i.east);
     }
-
+    \draw[-latex] (output13.east) -- node[yshift=0.2cm] {$y_{16}$}([xshift=1cm]output13.east);
+    \node[align=center] ()[below=-0.1cm of output12] {$\bm{\vdots}$};
     % Hinweistext für optionale Schichten
     \draw [decorate,decoration={brace,amplitude=5pt}]
-  (3.5,-0.4) -- (10.5,-0.4) node[midway,yshift=1em]{optional hidden layers};
+  (3.5,-0.4) -- (20.5,-0.4) node[midway,yshift=1em]{optional hidden layers};
 
 \end{tikzpicture}
 

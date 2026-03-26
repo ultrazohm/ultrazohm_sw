@@ -425,7 +425,7 @@ This guide will walk you through the process.
       :caption: User-definable variables in ``uz_MMult_MaxSize.h``
 
       //User define
-      #define Hidden_Layers 3 //max 5
+      #define Hidden_Layers 3 //max 10
       #define Neurons_1st_Hidden_Layer 64
       #define Neurons_2nd_Hidden_Layer 32
       #define Neurons_3rd_Hidden_Layer 96

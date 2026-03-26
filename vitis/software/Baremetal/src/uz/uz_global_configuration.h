@@ -31,6 +31,8 @@
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_DEADTIME_IN_US                   1.0f
+#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US		0.5f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U

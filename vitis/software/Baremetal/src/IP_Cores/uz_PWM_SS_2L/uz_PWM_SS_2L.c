@@ -45,9 +45,7 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
 
     uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, self->config.init_dutyCyc_HB1, self->config.init_dutyCyc_HB2, self->config.init_dutyCyc_HB3);
 
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 1U, self->config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2U, self->config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 3U, self->config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, self->config.Tristate_HB1, self->config.Tristate_HB2, self->config.Tristate_HB3);
 
     uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, self->config.triangle_shift_HB1, self->config.triangle_shift_HB2, self->config.triangle_shift_HB3);
 
@@ -70,9 +68,7 @@ void uz_PWM_SS_2L_set_tristate(struct uz_PWM_SS_2L_t *self, bool Tristate_HB1, b
     self->config.Tristate_HB1 = Tristate_HB1;
     self->config.Tristate_HB2 = Tristate_HB2;
     self->config.Tristate_HB3 = Tristate_HB3;
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 1U, Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2U, Tristate_HB2);    
-    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 3U, Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, Tristate_HB1, Tristate_HB2, Tristate_HB3);
 }
 
 void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, enum uz_PWM_SS_2L_PWM_mode PWM_mode) {

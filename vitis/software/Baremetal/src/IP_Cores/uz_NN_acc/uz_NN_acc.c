@@ -8,15 +8,14 @@
 #include "xil_cache.h"
 
 
-#define MAX_SIZE_OBSERVATION 24U
-#define MAX_SIZE_ACTIONS 12U 
-#define MAX_AMOUNT_OF_HIDDEN_LAYERS 5U //5 Hidden Layers 
-#define FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER 64U
+#define MAX_SIZE_OBSERVATION 32U
+#define MAX_SIZE_ACTIONS 16U 
+#define MAX_AMOUNT_OF_HIDDEN_LAYERS 10U //5 Hidden Layers 
 
 //Flush and Invalidate Size must be multiple of 32byte
 //I.e. MAX_OBS and MAX_ACTION must be divisible by 4
 #define FLUSH_SIZE MAX_SIZE_OBSERVATION*4U //sizeof(float)==4
-#define INVALIDATE_SIZE MAX_SIZE_ACTIONS*4U+16U //sizeof(float)==4
+#define INVALIDATE_SIZE MAX_SIZE_ACTIONS*4U //sizeof(float)==4
 
 struct uz_NN_acc_t {
     bool is_ready;
@@ -96,6 +95,31 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
                     //Fifth Layer
                     uz_NN_acc_hw_set_L_5_Weights_Data(config.base_address, weights[i]->data);
                     uz_NN_acc_hw_set_L_5_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 5:
+                    //Sixth Layer
+                    uz_NN_acc_hw_set_L_6_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_6_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 6:
+                    //Seventh Layer
+                    uz_NN_acc_hw_set_L_7_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_7_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 7:
+                    //Eighth Layer
+                    uz_NN_acc_hw_set_L_8_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_8_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 8:
+                    //Ninth Layer
+                    uz_NN_acc_hw_set_L_9_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_9_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 9:
+                    //Tenth Layer
+                    uz_NN_acc_hw_set_L_10_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_10_Bias_Data(config.base_address, biases[i]->data);
                     break;
                 default:
                     uz_assert(false);

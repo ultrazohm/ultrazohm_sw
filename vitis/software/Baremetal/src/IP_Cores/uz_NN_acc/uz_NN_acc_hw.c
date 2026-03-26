@@ -67,12 +67,53 @@ void uz_NN_acc_hw_set_L_4_Weights_Data(uint32_t base_address, float * const L_4_
 	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_4_WEIGHTS_INPUT_DATA, address);
 }
+
 void uz_NN_acc_hw_set_L_5_Weights_Data(uint32_t base_address, float * const L_5_Weights_Data) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_5_Weights_Data);
 	uint32_t* pointer = (uint32_t*)L_5_Weights_Data;
 	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_5_WEIGHTS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_6_Weights_Data(uint32_t base_address, float * const L_6_Weights_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_6_Weights_Data);
+	uint32_t* pointer = (uint32_t*)L_6_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_6_WEIGHTS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_7_Weights_Data(uint32_t base_address, float * const L_7_Weights_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_7_Weights_Data);
+	uint32_t* pointer = (uint32_t*)L_7_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_7_WEIGHTS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_8_Weights_Data(uint32_t base_address, float * const L_8_Weights_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_8_Weights_Data);
+	uint32_t* pointer = (uint32_t*)L_8_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_8_WEIGHTS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_9_Weights_Data(uint32_t base_address, float * const L_9_Weights_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_9_Weights_Data);
+	uint32_t* pointer = (uint32_t*)L_9_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_9_WEIGHTS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_10_Weights_Data(uint32_t base_address, float * const L_10_Weights_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_10_Weights_Data);
+	uint32_t* pointer = (uint32_t*)L_10_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_10_WEIGHTS_INPUT_DATA, address);
 }
 
 void uz_NN_acc_hw_set_L_Output_Weights_Data(uint32_t base_address, float * const L_Output_Weights_Data) {
@@ -122,12 +163,53 @@ void uz_NN_acc_hw_set_L_4_Bias_Data(uint32_t base_address, float * const L_4_Bia
 	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_4_BIAS_INPUT_DATA, address);
 }
+
 void uz_NN_acc_hw_set_L_5_Bias_Data(uint32_t base_address, float * const L_5_Bias_Data) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_5_Bias_Data);
 	uint32_t* pointer = (uint32_t*)L_5_Bias_Data;
 	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_5_BIAS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_6_Bias_Data(uint32_t base_address, float * const L_6_Bias_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_6_Bias_Data);
+	uint32_t* pointer = (uint32_t*)L_6_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_6_BIAS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_7_Bias_Data(uint32_t base_address, float * const L_7_Bias_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_7_Bias_Data);
+	uint32_t* pointer = (uint32_t*)L_7_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_7_BIAS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_8_Bias_Data(uint32_t base_address, float * const L_8_Bias_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_8_Bias_Data);
+	uint32_t* pointer = (uint32_t*)L_8_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_8_BIAS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_9_Bias_Data(uint32_t base_address, float * const L_9_Bias_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_9_Bias_Data);
+	uint32_t* pointer = (uint32_t*)L_9_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_9_BIAS_INPUT_DATA, address);
+}
+
+void uz_NN_acc_hw_set_L_10_Bias_Data(uint32_t base_address, float * const L_10_Bias_Data) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(L_10_Bias_Data);
+	uint32_t* pointer = (uint32_t*)L_10_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_10_BIAS_INPUT_DATA, address);
 }
 
 void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, float * const L_Output_Bias_Data) {

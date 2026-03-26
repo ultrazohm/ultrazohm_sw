@@ -137,11 +137,11 @@ uz_ramp_t *uz_ramp_init(struct uz_ramp_config config);
 float uz_ramp(uz_ramp_t *self, float reference_value);
 
 /**
- * @brief Resets the current ramp output to a defined value.
+ * @brief Sets the current ramp output to a defined value instantly without the ramp.
  * 
  * @param self Pointer instance of uz_ramp_t
  * @param value New current ramp output
  */
-void uz_ramp_reset(uz_ramp_t *self, float value);
+void uz_ramp_set_to_value_instant(uz_ramp_t *self, float value);
 
 #endif // UZ_SIGNALS_H

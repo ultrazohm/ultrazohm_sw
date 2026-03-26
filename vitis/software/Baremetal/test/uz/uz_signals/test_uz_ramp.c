@@ -67,12 +67,12 @@ void test_uz_ramp_passes_reference_if_inside_maximum_step(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.8f, uz_ramp(self, 0.8f));
 }
 
-void test_uz_ramp_reset_sets_current_output(void)
+void test_uz_ramp_sets_current_output(void)
 {
 	uz_ramp_t *self = uz_ramp_init(config);
 
 	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp(self, 3.0f));
-	uz_ramp_reset(self, -2.0f);
+	uz_ramp_set_to_value_instant(self, -2.0f);
 	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp(self, 3.0f));
 }
 

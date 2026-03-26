@@ -11,7 +11,7 @@ Ramp
 
 .. doxygenfunction:: uz_ramp
 
-.. doxygenfunction:: uz_ramp_reset
+.. doxygenfunction:: uz_ramp_set_to_value_instant
 
 Example
 =======

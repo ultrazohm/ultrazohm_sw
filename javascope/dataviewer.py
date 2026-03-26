@@ -1180,11 +1180,12 @@ def update_cursor_info_4(value, cursor_toggle, cursor_positions, selected_file, 
     State('cursor-store-1', 'data'),
     State('export-relative-time-1', 'value'),
     State('file-selection-1', 'value'),
+    State('overlay-compare-1', 'value'),
     State('secondary-axis-selection-1', 'value'),
     prevent_initial_call=True
 )
-def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 1, selected_file, secondary_axis_value)
+def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 1, selected_file, overlay_compare, secondary_axis_value)
 
 
 @app.callback(
@@ -1197,11 +1198,12 @@ def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('cursor-store-2', 'data'),
     State('export-relative-time-2', 'value'),
     State('file-selection-2', 'value'),
+    State('overlay-compare-2', 'value'),
     State('secondary-axis-selection-2', 'value'),
     prevent_initial_call=True
 )
-def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 2, selected_file, secondary_axis_value)
+def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 2, selected_file, overlay_compare, secondary_axis_value)
 
 
 @app.callback(
@@ -1214,11 +1216,12 @@ def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('cursor-store-3', 'data'),
     State('export-relative-time-3', 'value'),
     State('file-selection-3', 'value'),
+    State('overlay-compare-3', 'value'),
     State('secondary-axis-selection-3', 'value'),
     prevent_initial_call=True
 )
-def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 3, selected_file, secondary_axis_value)
+def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 3, selected_file, overlay_compare, secondary_axis_value)
 
 
 @app.callback(
@@ -1231,11 +1234,12 @@ def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('cursor-store-4', 'data'),
     State('export-relative-time-4', 'value'),
     State('file-selection-4', 'value'),
+    State('overlay-compare-4', 'value'),
     State('secondary-axis-selection-4', 'value'),
     prevent_initial_call=True
 )
-def export_data_4(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 4, selected_file, secondary_axis_value)
+def export_data_4(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 4, selected_file, overlay_compare, secondary_axis_value)
 
 
 def extract_cursor_positions(relayout_data, cursor_positions, selected_file):
@@ -1367,9 +1371,10 @@ def format_value(value):
     return str(value)
 
 
-def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, graph_index, selected_file, secondary_axis_value):
+def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, graph_index, selected_file, overlay_compare, secondary_axis_value):
     selected_file_key = get_selected_file_key(selected_file)
     active_df = datasets.get(selected_file_key)
+    overlay_enabled = 'overlay' in (overlay_compare or [])
 
     if not n_clicks or active_df is None or 'time' not in active_df.columns:
         return no_update, False, 'Enable cursors first!'
@@ -1390,6 +1395,8 @@ def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_
         (active_df['time'] >= start_time) & (active_df['time'] <= stop_time),
         ['time', *selected_channels],
     ].copy()
+    if export_df is None:
+        return no_update, True, 'No data points found between the cursors.'
     if export_df.empty:
         return no_update, True, 'No data points found between the cursors.'
 
@@ -1400,12 +1407,34 @@ def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_
 
     filename_suffix = 'relative' if 'relative' in (relative_time or []) else 'absolute'
     file_suffix = selected_file_key if selected_file_key in {'file1', 'file2'} else 'file1'
-    default_filename = f'graph_{graph_index}_{file_suffix}_cursor_export_{filename_suffix}.csv'
-    export_payload = {
+    export_files = [{
         'content': export_df.to_csv(index=False),
-        'filename': default_filename,
+        'filename': f'graph_{graph_index}_{file_suffix}_cursor_export_{filename_suffix}.csv',
         'mime_type': 'text/csv',
-    }
+    }]
+
+    if overlay_enabled:
+        compare_file_key = get_compare_file_key(selected_file_key)
+        compare_df = datasets.get(compare_file_key) if compare_file_key else None
+        if compare_df is None or 'time' not in compare_df.columns:
+            return no_update, True, 'Overlay export needs 2 uploaded files.'
+
+        compare_export_df = compare_df.loc[
+            (compare_df['time'] >= start_time) & (compare_df['time'] <= stop_time),
+            ['time', *selected_channels],
+        ].copy()
+        if compare_export_df is not None and not compare_export_df.empty:
+            if 'relative' in (relative_time or []):
+                compare_export_df['time'] = compare_export_df['time'] - compare_export_df['time'].iloc[0]
+            compare_export_df['time'] = compare_export_df['time'].round(12)
+            compare_file_suffix = compare_file_key if compare_file_key in {'file1', 'file2'} else 'file1'
+            export_files.append({
+                'content': compare_export_df.to_csv(index=False),
+                'filename': f'graph_{graph_index}_{compare_file_suffix}_cursor_export_{filename_suffix}.csv',
+                'mime_type': 'text/csv',
+            })
+
+    export_payload = export_files[0] if len(export_files) == 1 else {'files': export_files}
     return export_payload, False, 'Enable cursors first!'
 
 

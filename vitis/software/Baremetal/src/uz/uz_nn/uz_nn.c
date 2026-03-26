@@ -47,7 +47,7 @@ static uz_nn_t *uz_nn_allocation(void)
 
 uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer)
 {
-    uz_assert(number_of_layer < UZ_NN_MAX_LAYER);
+    uz_assert(number_of_layer <= UZ_NN_MAX_LAYER);
     uz_assert(number_of_layer > 1U);
     uz_nn_t *self = uz_nn_allocation();
     self->number_of_layer = number_of_layer;

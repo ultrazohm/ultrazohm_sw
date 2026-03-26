@@ -6,7 +6,7 @@
  * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
  * 
  */
-#define UZ_NN_MAX_LAYER 10U
+#define UZ_NN_MAX_LAYER 11U
 
 /**
  * @brief Object definition for one neural network

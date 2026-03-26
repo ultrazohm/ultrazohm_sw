@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.10 (R2021a) at 14:48:53 on 29/09/2021
+% Generated with MATLAB 9.14 (R2023a) at 16:06:13 on 26/03/2026
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\GIT\UltraZohm\Software\ultrazohm_sw_PullRequests\ip_cores\PWM_and_SS_control_ip_v3_0\Simulation\hdlworkflow.m'
+%     Filename  : '/home/ts/Documents/pr_review/can/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -24,19 +24,12 @@ hdlset_param('IP_Core_SS_Switch_and_PWM', 'HDLSubsystem', 'IP_Core_SS_Switch_and
 hdlset_param('IP_Core_SS_Switch_and_PWM', 'OptimizationReport', 'on');
 hdlset_param('IP_Core_SS_Switch_and_PWM', 'ResetType', 'Synchronous');
 hdlset_param('IP_Core_SS_Switch_and_PWM', 'ResourceReport', 'on');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'SynthesisTool', 'Xilinx Vivado');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'SynthesisToolDeviceName', 'xczu9cg-ffvc900-1-e');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'SynthesisToolPackageName', '');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'SynthesisToolSpeedValue', '');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'TargetDirectory', 'hdl_prj\hdlsrc');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'TargetPlatform', 'Generic Xilinx Platform');
+hdlset_param('IP_Core_SS_Switch_and_PWM', 'TargetDirectory', 'hdl_prj/hdlsrc');
 hdlset_param('IP_Core_SS_Switch_and_PWM', 'Traceability', 'on');
-hdlset_param('IP_Core_SS_Switch_and_PWM', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control', 'IPCoreName', 'PWM_and_SS_control_V4_ip');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control', 'IPCoreVersion', '4.0');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control', 'IPCoreVersion', '4.4');
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
@@ -108,24 +101,36 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/SS5_IN_
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/SS5_IN_External', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB1_AXI', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB_AXI', 'IOInterfaceMapping', 'x"120"');
 
 % Set Inport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB2_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB2_AXI', 'IOInterfaceMapping', 'x"124"');
-
-% Set Inport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB3_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/TriState_HB3_AXI', 'IOInterfaceMapping', 'x"128"');
-
-% Set Inport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_in', 'IOInterface', 'External Port');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_in', 'IOInterfaceMapping', '');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_in', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_src_ext_AXI', 'IOInterface', 'AXI4-Lite');
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_src_ext_AXI', 'IOInterfaceMapping', 'x"130"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB1_AXI', 'IOInterfaceMapping', 'x"12C"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB2_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB2_AXI', 'IOInterfaceMapping', 'x"134"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB3_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_shift_HB3_AXI', 'IOInterfaceMapping', 'x"138"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_trigger_source_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_trigger_source_AXI', 'IOInterfaceMapping', 'x"13C"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/pwm_counter_rst', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/pwm_counter_rst', 'IOInterfaceMapping', '');
 
 % Set SubSystem HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM', 'InputPipeline', 1);
@@ -162,12 +167,32 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/U3_norm', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_in', 'IOInterface', 'External Port');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_in', 'IOInterfaceMapping', '');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_in', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_src_ext_AXI', 'IOInterface', 'AXI4-Lite');
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_src_ext_AXI', 'IOInterfaceMapping', 'x"100"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB1_AXI', 'IOInterfaceMapping', 'x"104"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB2_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB2_AXI', 'IOInterfaceMapping', 'x"104"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB3_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_shift_HB3_AXI', 'IOInterfaceMapping', 'x"104"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/PWM_trigger_source_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/PWM_trigger_source_AXI', 'IOInterfaceMapping', 'x"100"');
+
+% Set Inport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/counter_reset', 'IOInterface', 'AXI4-Lite');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/counter_reset', 'IOInterfaceMapping', 'x"100"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/S1', 'IOInterface', 'External Port');
@@ -214,8 +239,8 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/enb_out', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_out', 'IOInterface', 'External Port');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/count_out', 'IOInterfaceMapping', '');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_out', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/triangle_out', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/dir_out', 'IOInterface', 'External Port');
@@ -259,19 +284,19 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/SS5_OUT
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_en_rd_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_en_rd_AXI', 'IOInterfaceMapping', 'x"134"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_en_rd_AXI', 'IOInterfaceMapping', 'x"140"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_f_carrier_kHz_rd_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_f_carrier_kHz_rd_AXI', 'IOInterfaceMapping', 'x"138"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_f_carrier_kHz_rd_AXI', 'IOInterfaceMapping', 'x"144"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_T_carrier_us_rd_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_T_carrier_us_rd_AXI', 'IOInterfaceMapping', 'x"13C"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_T_carrier_us_rd_AXI', 'IOInterfaceMapping', 'x"148"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_min_pulse_width_rd_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_min_pulse_width_rd_AXI', 'IOInterfaceMapping', 'x"140"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_min_pulse_width_rd_AXI', 'IOInterfaceMapping', 'x"14C"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_enb_out', 'IOInterface', 'External Port');
@@ -279,7 +304,7 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/PWM_enb
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Mode_rd_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Mode_rd_AXI', 'IOInterfaceMapping', 'x"144"');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Mode_rd_AXI', 'IOInterfaceMapping', 'x"150"');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Triangular_Max', 'IOInterface', 'External Port');
@@ -290,58 +315,57 @@ hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Triangu
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Triangular_Min', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_out', 'IOInterface', 'External Port');
-hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/count_out', 'IOInterfaceMapping', '');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_out', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/triangle_out', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/dir_out', 'IOInterface', 'External Port');
 hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/dir_out', 'IOInterfaceMapping', '');
 
+% Set Outport HDL parameters
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/applied_new_reference_value', 'IOInterface', 'External Port');
+hdlset_param('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/applied_new_reference_value', 'IOInterfaceMapping', '');
+
 
 %% Workflow Configuration Settings
 % Construct the Workflow Configuration Object with default settings
-hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','IP Core Generation');
+hWC = hdlcoder.WorkflowConfig('SynthesisTool','No synthesis tool specified','TargetWorkflow','Generic ASIC/FPGA');
 
 % Specify the top level project directory
 hWC.ProjectFolder = 'hdl_prj';
-hWC.ReferenceDesignToolVersion = '';
-hWC.IgnoreToolVersionMismatch = false;
 
 % Set Workflow tasks to run
-hWC.RunTaskGenerateRTLCodeAndIPCore = true;
-hWC.RunTaskCreateProject = false;
-hWC.RunTaskGenerateSoftwareInterface = false;
-hWC.RunTaskBuildFPGABitstream = false;
-hWC.RunTaskProgramTargetDevice = false;
+hWC.RunTaskGenerateRTLCodeAndTestbench = true;
+hWC.RunTaskVerifyWithHDLCosimulation = false;
+hWC.RunTaskCreateProject = true;
+hWC.RunTaskPerformLogicSynthesis = true;
+hWC.RunTaskPerformMapping = true;
+hWC.RunTaskPerformPlaceAndRoute = false;
+hWC.RunTaskAnnotateModelWithSynthesisResult = true;
 
-% Set properties related to 'RunTaskGenerateRTLCodeAndIPCore' Task
-hWC.IPCoreRepository = '';
-hWC.GenerateIPCoreReport = true;
+% Set properties related to 'RunTaskGenerateRTLCodeAndTestbench' Task
+hWC.GenerateRTLCode = true;
+hWC.GenerateTestbench = false;
+hWC.GenerateValidationModel = false;
 
 % Set properties related to 'RunTaskCreateProject' Task
 hWC.Objective = hdlcoder.Objective.None;
 hWC.AdditionalProjectCreationTclFiles = '';
-hWC.EnableIPCaching = false;
 
-% Set properties related to 'RunTaskGenerateSoftwareInterface' Task
-hWC.GenerateSoftwareInterfaceModel = true;
-hWC.OperatingSystem = '';
-hWC.GenerateSoftwareInterfaceScript = true;
+% Set properties related to 'RunTaskPerformMapping' Task
+hWC.SkipPreRouteTimingAnalysis = false;
 
-% Set properties related to 'RunTaskBuildFPGABitstream' Task
-hWC.RunExternalBuild = false;
-hWC.EnableDesignCheckpoint = false;
-hWC.TclFileForSynthesisBuild = hdlcoder.BuildOption.Default;
-hWC.CustomBuildTclFile = '';
-hWC.DefaultCheckpointFile = 'Default';
-hWC.RoutedDesignCheckpointFilePath = '';
-hWC.MaxNumOfCoresForBuild = '';
+% Set properties related to 'RunTaskPerformPlaceAndRoute' Task
+hWC.IgnorePlaceAndRouteErrors = false;
 
-% Set properties related to 'RunTaskProgramTargetDevice' Task
-hWC.ProgrammingMethod = hdlcoder.ProgrammingMethod.JTAG;
-hWC.IPAddress = '';
-hWC.SSHUsername = '';
-hWC.SSHPassword = '';
+% Set properties related to 'RunTaskAnnotateModelWithSynthesisResult' Task
+hWC.CriticalPathSource = 'pre-route';
+hWC.CriticalPathNumber =  1;
+hWC.ShowAllPaths = false;
+hWC.ShowDelayData = true;
+hWC.ShowUniquePaths = false;
+hWC.ShowEndsOnly = false;
+hWC.AnnotateModel = 'generated';
 
 % Validate the Workflow Configuration Object
 hWC.validate;

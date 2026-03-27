@@ -58,13 +58,6 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping);
 
 /**
- * @brief Reverts the last integrator update performed by uz_PI_Controller_sample
- *
- * @param self uz_PI_Controller instance
- */
-void uz_PI_Controller_undo_last_integration(uz_PI_Controller* self);
-
-/**
  * @brief Resets the PI-Controller
  *
  * @param self uz_PI_Controller instance

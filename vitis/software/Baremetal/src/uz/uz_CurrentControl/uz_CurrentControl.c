@@ -82,16 +82,11 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
-	bool ext_clamping_before_limitation = self->ext_clamping;
 	uz_3ph_dq_t v_pre_limit_Volts = uz_CurrentControl_sample_pi_controllers(self, i_reference_Ampere, i_actual_Ampere);
 	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self, i_actual_Ampere, omega_el_rad_per_sec);
 	v_pre_limit_Volts.d += v_decoup_Volts.d;
 	v_pre_limit_Volts.q += v_decoup_Volts.q;
 	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &self->ext_clamping);
-	if ((!ext_clamping_before_limitation) && self->ext_clamping) {
-		uz_PI_Controller_undo_last_integration(self->Controller_id);
-		uz_PI_Controller_undo_last_integration(self->Controller_iq);
-	}
 	return (v_output_Volts);
 }
 

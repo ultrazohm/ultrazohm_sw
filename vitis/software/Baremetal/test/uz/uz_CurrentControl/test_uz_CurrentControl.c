@@ -293,23 +293,6 @@ void test_uz_CurrentControl_get_ext_clamping_output(void){
     TEST_ASSERT_EQUAL_INT(1,uz_CurrentControl_get_ext_clamping(instance));
 }
 
-void test_uz_CurrentControl_sample_does_not_integrate_on_first_ext_clamping(void){
-    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
-    i_reference_Ampere.d = 10.0f;
-    i_reference_Ampere.q = 10.0f;
-    i_actual_Ampere.d = 0.0f;
-    i_actual_Ampere.q = 0.0f;
-    V_dc_volts = 2.0f;
-    omega_el_rad_per_sec = 0.0f;
-
-    uz_3ph_dq_t first_output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
-    uz_3ph_dq_t second_output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
-
-    TEST_ASSERT_EQUAL_INT(1, uz_CurrentControl_get_ext_clamping(instance));
-    TEST_ASSERT_FLOAT_WITHIN(1e-06f, first_output.d, second_output.d);
-    TEST_ASSERT_FLOAT_WITHIN(1e-06f, first_output.q, second_output.q);
-}
-
 void test_uz_CurrentControl_sample_no_decoupling(void) {
     config.decoupling_select = no_decoupling;
     config.config_PMSM.Ld_Henry = 0.0f;

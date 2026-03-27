@@ -55,9 +55,7 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(config.base_address, config.ip_clk_frequency_Hz, config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(config.base_address, 0.01f);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(config.base_address, config.init_dutyCyc_HB1, config.init_dutyCyc_HB2, config.init_dutyCyc_HB3);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, config.Tristate_HB1, config.Tristate_HB2, config.Tristate_HB3);
     uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
     uz_PWM_SS_2L_hw_SetTriggerSource_Expect(config.base_address, config.trigger_source);
 
@@ -97,9 +95,7 @@ void test_uz_PWM_SS_2L_set_tristate(void)
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(config.base_address, config.ip_clk_frequency_Hz, config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(config.base_address, 0.01f);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(config.base_address, config.init_dutyCyc_HB1, config.init_dutyCyc_HB2, config.init_dutyCyc_HB3);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, config.Tristate_HB1, config.Tristate_HB2, config.Tristate_HB3);
     uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
     uz_PWM_SS_2L_hw_SetTriggerSource_Expect(config.base_address, config.trigger_source);
 
@@ -109,9 +105,7 @@ void test_uz_PWM_SS_2L_set_tristate(void)
     bool tristate_hb2 = true;
     bool tristate_hb3 = true;
 
-    uz_PWM_SS_2L_hw_SetTristate_Expect(self->config.base_address, 1,tristate_hb1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(self->config.base_address, 2,tristate_hb2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(self->config.base_address, 3,tristate_hb3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(self->config.base_address, tristate_hb1, tristate_hb2, tristate_hb3);
     uz_PWM_SS_2L_set_tristate(self, tristate_hb1, tristate_hb2, tristate_hb3);
 }
 
@@ -143,9 +137,7 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(config.base_address, config.ip_clk_frequency_Hz, config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(config.base_address, 0.01f);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(config.base_address, config.init_dutyCyc_HB1, config.init_dutyCyc_HB2, config.init_dutyCyc_HB3);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, config.Tristate_HB1, config.Tristate_HB2, config.Tristate_HB3);
     uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
     uz_PWM_SS_2L_hw_SetTriggerSource_Expect(config.base_address, config.trigger_source);
 
@@ -186,9 +178,7 @@ void test_uz_PWM_SS_2L_init(void)
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(config.base_address, config.ip_clk_frequency_Hz, config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(config.base_address, 0.01f);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(config.base_address, config.init_dutyCyc_HB1, config.init_dutyCyc_HB2, config.init_dutyCyc_HB3);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, config.Tristate_HB1, config.Tristate_HB2, config.Tristate_HB3);
     uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
     uz_PWM_SS_2L_hw_SetTriggerSource_Expect(config.base_address, config.trigger_source);
 
@@ -249,9 +239,7 @@ void test_uz_PWM_SS_2L_set_triangle_shift(void) {
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(config.base_address, config.ip_clk_frequency_Hz, config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(config.base_address, 0.01f);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(config.base_address, config.init_dutyCyc_HB1, config.init_dutyCyc_HB2, config.init_dutyCyc_HB3);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
+    uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, config.Tristate_HB1, config.Tristate_HB2, config.Tristate_HB3);
     uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
     uz_PWM_SS_2L_hw_SetTriggerSource_Expect(config.base_address, config.trigger_source);
 

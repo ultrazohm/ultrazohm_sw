@@ -35,12 +35,12 @@ void test_uz_PWM_SS_2L_hw_SetDutyCycle(void)
     float dutyCyc_HB1 = 0.3f;
     float dutyCyc_HB2 = 0.5f;
     float dutyCyc_HB3 = 0.7f;
-    uint32_t dutyCyc_HB1_Q12 = 1228U;
-    uint32_t dutyCyc_HB2_Q12 = 2048U;
-    uint32_t dutyCyc_HB3_Q12 = 2867U;
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u1_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB1_Q12);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u2_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB2_Q12);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB3_Q12);
+    uint32_t dutyCyc_HB1_Q16 = 19660U;
+    uint32_t dutyCyc_HB2_Q16 = 32768U;
+    uint32_t dutyCyc_HB3_Q16 = 45875U;
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u1_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB1_Q16);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u2_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB2_Q16);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB3_Q16);
     uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_HB1,dutyCyc_HB2,dutyCyc_HB3);
 }
 
@@ -146,31 +146,19 @@ void test_uz_PWM_SS_2L_hw_set_min_pulse_width_with_zero_base_address(void)
 
 void test_uz_PWM_SS_2L_hw_set_Tristate_all_halfBridges(void)
 {
-    bool TriState_HB1 = true;
-    bool TriState_HB2 = true;
-    bool TriState_HB3 = true;
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB1_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB1);
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB2_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB2);
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB3);
-    uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 1U, TriState_HB1);
-    uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 2U, TriState_HB2);
-    uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 3U, TriState_HB3);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + TriState_HB_AXI_Data_PWM_and_SS_control_V4_ip, 0xFFFFU);
+    uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, true, true, true);
 }
 
-void test_uz_PWM_SS_2L_hw_SetTristate_with_invalid_halfBridgeNumber(void)
+void test_uz_PWM_SS_2L_hw_SetTristate_none_tristated(void)
 {
-    bool TriState = true;
-    uint32_t halfBridgeNumber = 0U;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS,halfBridgeNumber,TriState));
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + TriState_HB_AXI_Data_PWM_and_SS_control_V4_ip, 0xFFF8U);
+    uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, false, false, false);
 }
 
 void test_uz_PWM_SS_2L_hw_SetTristate_with_zero_base_address(void)
 {
-    bool TriState = true;
-    // Tell the test that we do not care how often this function is called
-    uz_axi_write_bool_Ignore();
-    // Test passes if an assert fails in the function under test
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(0U,0U,TriState));
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(0U, true, true, true));
 }
 
 void test_uz_PWM_SS_2L_hw_SetTriangleShift_with_zero_base_address(void)

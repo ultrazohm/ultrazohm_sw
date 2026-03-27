@@ -149,7 +149,7 @@ Software
       uz_NN_acc_t* NN_acc_Instance;
       }object_pointers_t;
 
-#. Create a header file (e.g., ``init_network_ip_core.h``) for the ``init_network`` function:
+#. Create a header file (e.g., ``init_network_ip_core.h``) for the ``init_network`` function in the ``include`` folder:
 
    .. code-block:: c
       :caption: Code for ``init_network_ip_core.h``
@@ -161,7 +161,7 @@ Software
 
       #endif /* INIT_NETWORK_IP_CORE_H */
 
-#. Create an initialization C file (e.g., ``init_network_ip_core.c``) for the ``init_network`` function:
+#. Create an initialization C file (e.g., ``init_network_ip_core.c``) for the ``init_network`` function in the ``hw_init`` folder:
 
    .. warning::
       **Every array and uz_matrix_t object** has to be declared with the **MEMORY_ALIGN** attribute.
@@ -173,8 +173,8 @@ Software
 
       #include "../uz/uz_nn/uz_nn.h"
       #include "../IP_Cores/uz_NN_acc/uz_NN_acc.h"
-      #include "../../main.h"
-      #include "init_network_ip_core.h"
+      #include "../main.h"
+      #include "../include/init_network_ip_core.h"
       extern DS_Data Global_Data;
 
       #define NUMBER_OF_INPUTS 13U

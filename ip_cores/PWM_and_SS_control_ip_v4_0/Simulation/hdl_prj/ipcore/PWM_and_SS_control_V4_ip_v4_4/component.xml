@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>user.org</spirit:vendor>
+  <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>ip</spirit:library>
   <spirit:name>PWM_and_SS_control_V4_ip</spirit:name>
   <spirit:version>4.4</spirit:version>
@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c3ad5412</spirit:value>
+            <spirit:value>fe0743e6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c3ad5412</spirit:value>
+            <spirit:value>fe0743e6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -299,7 +299,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f92e9879</spirit:value>
+            <spirit:value>f64a5dae</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1092,7 +1092,7 @@
       <spirit:file>
         <spirit:name>hdl/PWM_and_SS_control_V4_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_3c2824b4</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_83ac1184</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1253,7 +1253,7 @@
       <spirit:file>
         <spirit:name>xgui/PWM_and_SS_control_V4_ip_v4_4.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f92e9879</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f64a5dae</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1298,13 +1298,13 @@
       <xilinx:displayName>PWM_and_SS_control_V4_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>2114539236</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-03-27T09:37:02Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2026-03-27T10:05:28Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2022.2.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="87d8bfd6"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a5cdf5b4"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d7f84a18"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="cb82f282"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f1bd2612"/>
     </xilinx:packagingInfo>

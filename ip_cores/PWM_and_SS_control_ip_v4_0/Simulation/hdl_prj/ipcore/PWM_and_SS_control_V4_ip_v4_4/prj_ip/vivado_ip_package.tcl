@@ -45,6 +45,7 @@ set_property name PWM_and_SS_control_V4_ip [ipx::current_core]
 set_property display_name PWM_and_SS_control_V4_ip [ipx::current_core]
 set_property version {4.4} [ipx::current_core]
 set_property library {ip} [ipx::current_core]
+set_property vendor {xilinx.com} [ipx::current_core]
 set Families [split [lsort -uniq [get_property C_FAMILY [get_parts]]]]
 set IPSupportedFamily {}
 foreach family $Families {append IPSupportedFamily "{$family} {Production} "}

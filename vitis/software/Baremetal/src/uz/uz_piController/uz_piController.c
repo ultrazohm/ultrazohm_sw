@@ -92,6 +92,12 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	return (output);
 }
 
+void uz_PI_Controller_undo_last_integration(uz_PI_Controller* self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->I_sum -= self->preIntegrator * self->config.samplingTime_sec;
+}
+
 void uz_PI_Controller_reset(uz_PI_Controller* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

@@ -517,13 +517,6 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 5x256  302    321    169k   122k   13005
 ====== ====== ====== ====== ====== ======
 
-Further improvements
-====================
-
-Further improvements are planned for the IP core and in development:
-
-- Updating weights & bias during runtime.
-
 Driver reference
 ----------------
 
@@ -539,3 +532,6 @@ Driver reference
 .. doxygenfunction:: uz_NN_acc_ff_non_blocking
 
 .. doxygenfunction:: uz_NN_acc_get_result_blocking
+
+
+Designed by Dennis Hufnagel.

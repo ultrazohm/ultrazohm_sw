@@ -86,8 +86,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-	js_ch_observable[JSO_ramp_test_input]		= &data->av.ramp_test_input;
-	js_ch_observable[JSO_ramp_test_output]		= &data->av.ramp_test_output;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -103,8 +101,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_ramp_test_input]		= &(data->av.ramp_test_input);
-	js_slowDataArray[JSSD_FLOAT_ramp_test_output]		= &(data->av.ramp_test_output);
 
 	return Status;
 }

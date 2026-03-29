@@ -49,8 +49,6 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-	JSO_ramp_test_input,
-	JSO_ramp_test_output,
 	JSO_ENDMARKER
 };
 
@@ -74,8 +72,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
-	JSSD_FLOAT_ramp_test_input,
-	JSSD_FLOAT_ramp_test_output,
 	JSSD_ENDMARKER
 };
 
@@ -254,8 +250,6 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_ramp_test_output,
-	JSSD_FLOAT_ramp_test_input,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,

@@ -33,9 +33,9 @@ void test_uz_ramp_init_asserts_on_non_positive_sample_time(void)
 	TEST_ASSERT_FAIL_ASSERT(uz_ramp_init(config));
 }
 
-void test_uz_ramp_asserts_on_null_pointer(void)
+void test_uz_ramp_step_asserts_on_null_pointer(void)
 {
-	TEST_ASSERT_FAIL_ASSERT(uz_ramp(NULL, 1.0f));
+	TEST_ASSERT_FAIL_ASSERT(uz_ramp_step(NULL, 1.0f));
 }
 
 void test_uz_ramp_reset_asserts_on_null_pointer(void)
@@ -53,45 +53,45 @@ void test_uz_ramp_init_sets_initial_value(void)
 	config.initial_value = 1.5f;
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp(self, 1.5f));
+	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp_step(self, 1.5f));
 }
 
-void test_uz_ramp_increases_with_limited_slope(void)
+void test_uz_ramp_step_increases_with_limited_slope(void)
 {
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp(self, 3.0f));
-	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp(self, 3.0f));
-	TEST_ASSERT_EQUAL_FLOAT(3.0f, uz_ramp(self, 3.0f));
-	TEST_ASSERT_EQUAL_FLOAT(3.0f, uz_ramp(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp_step(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp_step(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(3.0f, uz_ramp_step(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(3.0f, uz_ramp_step(self, 3.0f));
 }
 
-void test_uz_ramp_decreases_with_limited_slope(void)
+void test_uz_ramp_step_decreases_with_limited_slope(void)
 {
 	config.initial_value = 3.0f;
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp(self, -1.0f));
-	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp(self, -1.0f));
-	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_ramp(self, -1.0f));
-	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp(self, -1.0f));
+	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp_step(self, -1.0f));
+	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp_step(self, -1.0f));
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_ramp_step(self, -1.0f));
+	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp_step(self, -1.0f));
 }
 
-void test_uz_ramp_passes_reference_if_inside_maximum_step(void)
+void test_uz_ramp_step_passes_reference_if_inside_maximum_step(void)
 {
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(0.4f, uz_ramp(self, 0.4f));
-	TEST_ASSERT_EQUAL_FLOAT(0.8f, uz_ramp(self, 0.8f));
+	TEST_ASSERT_EQUAL_FLOAT(0.4f, uz_ramp_step(self, 0.4f));
+	TEST_ASSERT_EQUAL_FLOAT(0.8f, uz_ramp_step(self, 0.8f));
 }
 
 void test_uz_ramp_sets_current_output(void)
 {
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp_step(self, 3.0f));
 	uz_ramp_set_to_value_instant(self, -2.0f);
-	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp(self, 3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp_step(self, 3.0f));
 }
 
 void test_uz_ramp_reset_sets_current_output_to_zero(void)
@@ -99,19 +99,19 @@ void test_uz_ramp_reset_sets_current_output_to_zero(void)
 	config.initial_value = 3.0f;
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp(self, -1.0f));
+	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp_step(self, -1.0f));
 	uz_ramp_reset(self);
-	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_ramp(self, 0.0f));
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_ramp_step(self, 0.0f));
 }
 
-void test_uz_ramp_with_zero_slope_keeps_output_constant(void)
+void test_uz_ramp_step_with_zero_slope_keeps_output_constant(void)
 {
 	config.maximum_slope_per_second = 0.0f;
 	config.initial_value = 1.5f;
 	uz_ramp_t *self = uz_ramp_init(config);
 
-	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp(self, 5.0f));
-	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp(self, -3.0f));
+	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp_step(self, 5.0f));
+	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp_step(self, -3.0f));
 }
 
 #endif // TEST

@@ -53,7 +53,7 @@ uz_ramp_t *uz_ramp_init(struct uz_ramp_config config)
 	return (self);
 }
 
-float uz_ramp(uz_ramp_t *self, float reference_value)
+float uz_ramp_step(uz_ramp_t *self, float reference_value)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

@@ -128,13 +128,13 @@ float uz_signals_threshold_Evaluation(float input, float threshold);
 uz_ramp_t *uz_ramp_init(struct uz_ramp_config config);
 
 /**
- * @brief Ramps the internal output linearly towards the reference value.
+ * @brief Executes one ramp step and updates the internal output linearly towards the reference value.
  * 
  * @param self Pointer instance of uz_ramp_t
  * @param reference_value Target value for the ramp output
  * @return float Current ramp output
  */
-float uz_ramp(uz_ramp_t *self, float reference_value);
+float uz_ramp_step(uz_ramp_t *self, float reference_value);
 
 /**
  * @brief Sets the current ramp output to a defined value instantly without the ramp.

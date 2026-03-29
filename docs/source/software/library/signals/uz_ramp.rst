@@ -9,7 +9,7 @@ Ramp
 
 .. doxygenfunction:: uz_ramp_init
 
-.. doxygenfunction:: uz_ramp
+.. doxygenfunction:: uz_ramp_step
 
 .. doxygenfunction:: uz_ramp_set_to_value_instant
 
@@ -32,13 +32,13 @@ Example
      };
      uz_ramp_t *speed_reference_ramp = uz_ramp_init(config);
      float reference_value = 500.0f;
-     float ramped_reference = uz_ramp(speed_reference_ramp, reference_value);
+     float ramped_reference = uz_ramp_step(speed_reference_ramp, reference_value);
   }
 
 Description
 ===========
 
-``uz_ramp`` limits the rate of change of a signal.
+``uz_ramp_step`` limits the rate of change of a signal.
 On every call, the output moves linearly from the current output value towards the requested reference value.
 The maximum change per call :math:`\Delta_{max}` is given by:
 

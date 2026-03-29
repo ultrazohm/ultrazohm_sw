@@ -29,5 +29,5 @@ uz_ramp_t *initialize_uz_ramp_test(float sample_time_seconds)
 
 void update_uz_ramp_test(DS_Data *data)
 {
-	data->av.ramp_test_output = uz_ramp(data->objects.ramp_test, data->av.ramp_test_input);
+	data->av.ramp_test_output = uz_ramp_step(data->objects.ramp_test, data->av.ramp_test_input);
 }

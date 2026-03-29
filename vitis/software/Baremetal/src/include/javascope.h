@@ -126,7 +126,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	ramp_test_input,
+	send_field_1,
 	send_field_2,
 	send_field_3,
 	send_field_4,
@@ -153,7 +153,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	-,
+	RPM,
 	Nm,
 	A,
 	A,
@@ -180,7 +180,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	ramp_test_output,
+	receive_field_1,
 	receive_field_2,
 	receive_field_3,
 	receive_field_4,
@@ -207,7 +207,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	-,
+	RPM,
 	Nm,
 	A,
 	A,
@@ -255,6 +255,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

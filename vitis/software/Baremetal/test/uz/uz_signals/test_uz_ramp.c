@@ -38,6 +38,24 @@ void test_uz_ramp_asserts_on_null_pointer(void)
 	TEST_ASSERT_FAIL_ASSERT(uz_ramp(NULL, 1.0f));
 }
 
+void test_uz_ramp_reset_asserts_on_null_pointer(void)
+{
+	TEST_ASSERT_FAIL_ASSERT(uz_ramp_reset(NULL));
+}
+
+void test_uz_ramp_set_to_value_instant_asserts_on_null_pointer(void)
+{
+	TEST_ASSERT_FAIL_ASSERT(uz_ramp_set_to_value_instant(NULL, 1.0f));
+}
+
+void test_uz_ramp_init_sets_initial_value(void)
+{
+	config.initial_value = 1.5f;
+	uz_ramp_t *self = uz_ramp_init(config);
+
+	TEST_ASSERT_EQUAL_FLOAT(1.5f, uz_ramp(self, 1.5f));
+}
+
 void test_uz_ramp_increases_with_limited_slope(void)
 {
 	uz_ramp_t *self = uz_ramp_init(config);
@@ -74,6 +92,16 @@ void test_uz_ramp_sets_current_output(void)
 	TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_ramp(self, 3.0f));
 	uz_ramp_set_to_value_instant(self, -2.0f);
 	TEST_ASSERT_EQUAL_FLOAT(-1.0f, uz_ramp(self, 3.0f));
+}
+
+void test_uz_ramp_reset_sets_current_output_to_zero(void)
+{
+	config.initial_value = 3.0f;
+	uz_ramp_t *self = uz_ramp_init(config);
+
+	TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_ramp(self, -1.0f));
+	uz_ramp_reset(self);
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_ramp(self, 0.0f));
 }
 
 void test_uz_ramp_with_zero_slope_keeps_output_constant(void)

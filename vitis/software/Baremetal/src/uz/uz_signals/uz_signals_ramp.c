@@ -79,4 +79,10 @@ void uz_ramp_set_to_value_instant(uz_ramp_t *self, float value)
 	self->current_output = value;
 }
 
+void uz_ramp_reset(uz_ramp_t *self)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->current_output = 0.0f;
+}
 #endif

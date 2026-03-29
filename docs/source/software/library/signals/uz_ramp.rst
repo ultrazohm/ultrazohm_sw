@@ -13,6 +13,8 @@ Ramp
 
 .. doxygenfunction:: uz_ramp_set_to_value_instant
 
+.. doxygenfunction:: uz_ramp_reset
+
 Example
 =======
 
@@ -64,4 +66,4 @@ will re-aim toward the new reference_value.
    Result of the test scenario above, where during execution of the ramp a new input value of 200 is provided.
 
 .. warning::
-  When not reset by calling ``uz_ramp_reset(uz_ramp_t *self, float value)``, the ramp will keep its last output value. 
+  When not reset by calling ``uz_ramp_reset(uz_ramp_t *self)``, the ramp will keep its last output value.

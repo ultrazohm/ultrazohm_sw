@@ -144,4 +144,10 @@ float uz_ramp(uz_ramp_t *self, float reference_value);
  */
 void uz_ramp_set_to_value_instant(uz_ramp_t *self, float value);
 
+/**
+ * @brief Resets the current ramp output to zero.
+ * 
+ * @param self Pointer instance of uz_ramp_t
+ */
+void uz_ramp_reset(uz_ramp_t *self);
 #endif // UZ_SIGNALS_H

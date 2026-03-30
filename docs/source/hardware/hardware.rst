@@ -19,7 +19,6 @@ Hardware
 
     adapter_cards/analog/LTC2311_16
     adapter_cards/analog/uz_dac8831/uz_dac8831
-    adapter_cards/analog/CurrentMeasurementPCB/index
 
 .. toctree::
     :maxdepth: 1
@@ -42,6 +41,7 @@ Hardware
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
+    adapter_cards/analog/CurrentMeasurementPCB/index
 
 .. toctree::
     :maxdepth: 1

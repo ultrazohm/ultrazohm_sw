@@ -13,7 +13,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
    - The number of **neurons** in the hidden layers is variable.
    - Variable number of up to **32 Observations**.
    - Variable number of up to **16 Actions**.
-   - Execution time of **~11-12µs** for 3x64 setup.
+   - Execution time for different setups can be found in the :ref:`resource utilization section<uz_NN_resources>`.
    - Change of layer or neuron count :ref:`requires resynthesis of the IP core in Vitis HLS<uz_NN_customize_setup>`.
    - Synthesis configuration to prioritize performance or reduce resources.
    - One default IP core with 3x64 setup is provided.
@@ -34,7 +34,6 @@ Features
 - IP core is configured and triggered exclusively by the PS
 - Blocking and non-blocking operation (see :ref:`Execution<uz_NN_execution>`)
 - Correct size of the observation, weights, bias and action arrays will be asserted
-- Execution time for a 3x64 setup, with 20 observations and 4 actions takes roughly **~11µs**
 - Unsafe math optimization in Vitis HLS is used
 
 
@@ -489,33 +488,36 @@ The resource utilization depends heavily on the configuration of the IP core.
 The following table shows the resource usage in Vivado for different configurations.
 Generally, more hidden layers is more resource efficient than more neurons per layer.
 Yours may vary slightly.
+The estimated execution time includes the time for the calculation in the IP core and the driver overhead.
 
-====== ====== ====== ====== ====== ======
-Setup  BRAM    DSP   FF      LUT   LUTRAM
-====== ====== ====== ====== ====== ======
-1x32   30.5   161    16k    15k    707
-5x32   96.5   161    22k    23k    1081
-10x32  183    161    30k    37k    1463
-1x64   47     321    27k    24k    729
-3x64   112    321    34k    33k    542
-5x64   177    321    39k    39k    1097
-10x64  344    321    54k    64k    1494
-1x128  80     641    50k    45k    783
-5x128  338    641    72k    74k    1469
-1x256  147    1281   95k    93k    658
-5x256  665    1281   170k   153k   848
-====== ====== ====== ====== ====== ======
+========== ====== ====== ====== ====== ==============
+Setup      BRAM   DSP    FF     LUT    Execution time
+========== ====== ====== ====== ====== ==============
+**1x32**   31     161    16k    15k    12µs
+**5x32**   97     161    22k    23k    16µs
+**10x32**  183    161    30k    37k    21µs
+**1x64**   47     321    27k    24k    13µs
+**3x64**   112    321    34k    33k    16µs
+**5x64**   177    321    39k    39k    20µs
+**10x64**  344    321    54k    64k    29µs
+**1x128**  80     641    50k    45k    14µs
+**5x128**  338    641    72k    74k    26µs
+**10x128** 665    641    98k    127k   41µs
+**1x256**  147    1281   95k    93k    16µs
+**5x256**  665    1281   170k   153k   40µs
+========== ====== ====== ====== ====== ==============
 
 By adjusting the ``#define Performance_Target 1`` to, e.g., ``4``, the resources for BRAM, LUTs and DSP slices are reduced at the cost of higher latency.
 
-====== ====== ====== ====== ====== ======
-Setup  BRAM    DSP   FF      LUT   LUTRAM
-====== ====== ====== ====== ====== ======
-5x64   48     81     45k    32k    1557
-10x64  91.5   81     80k    53k    1333
-5x128  89     161    83k    59k    2371
-5x256  302    321    169k   122k   13005
-====== ====== ====== ====== ====== ======
+========== ====== ====== ====== ====== ==============
+Setup      BRAM   DSP    FF     LUT    Execution time
+========== ====== ====== ====== ====== ==============
+**5x64**   48     81     45k    32k    30µs
+**10x64**  92     81     80k    53k    49µs
+**5x128**  89     161    83k    59k    45µs
+**10x128** 173    161    147k   100k   81µs
+**5x256**  167    321    169k   122k   78µs
+========== ====== ====== ====== ====== ==============
 
 Driver reference
 ----------------

@@ -33,3 +33,28 @@ for csv_file in csv_files:
     df.to_parquet(parquet_path)
 
     print(f"{csv_file} converted to {parquet_file}")
+
+import matplotlib.pyplot as plt
+
+# Check if the required columns exist in the DataFrame
+# Plot the data
+plt.figure(figsize=(10, 16))
+plt.plot(df['time'], df[' CH8=(7) ia_right'], label='CH8=(7)ia_right')
+plt.plot(df['time'], df[' CH9=(8) ib_right'], label='CH9=(8)ib_right')
+plt.plot(df['time'], df[' CH10=(9) ic_right'], label='CH10=(9)ic_right')
+# Add labels, title, and legend
+
+
+plt.plot(df["time"], -1*8/2* df[" CH3=(34) idc_right"], label="I_a")
+plt.plot(df["time"], -1*8/2* df[" CH4=(19) vc_right"], label="I_b")
+plt.plot(df["time"], -1*8/2* df[" CH5=(18) vb_right"], label="I_c")
+# Add labels, title, and legend
+
+plt.xlabel("Time")
+plt.ylabel("Values")
+plt.xlim(df["time"].min(), df["time"].min() + 0.08)
+plt.title("CH8, CH9, CH10 over Time")
+plt.legend()
+plt.grid()
+# Show the plot
+plt.show()

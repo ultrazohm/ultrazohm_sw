@@ -17,7 +17,7 @@ def encode_id_value(id_input, value_input):
     return struct.pack('If', id_input, value_input)
 
 class ultrazohm:
-    def __init__(self, ip, port, cmd_queue_size=100, from_ethernet_queue_size=1000000, max_buffer_size=1000):
+    def __init__(self, ip, port, cmd_queue_size=100, from_ethernet_queue_size=1000000, max_buffer_size=1000,debug=False):
         self.ip = ip
         self.port = port
         self.cmd_queue_size = cmd_queue_size
@@ -37,7 +37,7 @@ class ultrazohm:
         self.manager = multiprocessing.Manager()
         self.cmd_queue = self.manager.Queue(maxsize=cmd_queue_size)
         self.from_ethernet_queue = self.manager.Queue(maxsize=from_ethernet_queue_size)
-        self.debug = False
+        self.debug = debug
 
     def connect(self, ip=None, port=None):
         if ip is not None:
@@ -85,8 +85,13 @@ class ultrazohm:
         elif enable and not self.logfile_slow_name:
             self.create_logfile_slow()
 
-    def comms_task(self, ip, port, cmd_queue, from_ethernet_queue, stop_event, debug):
+    def comms_task(self, ip, port, cmd_queue, from_ethernet_queue, stop_event):
         sock = None
+        if self.debug:
+            timeout_value=1
+        else:
+            timeout_value=0.000001
+
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
@@ -96,11 +101,11 @@ class ultrazohm:
             while not stop_event.is_set():
                 try:
                     try:
-                        id_input, value_input = cmd_queue.get(timeout=0.000001)
+                        id_input, value_input = cmd_queue.get(timeout=timeout_value)
                     except queue.Empty:
                         id_input, value_input = 0, 0.0
                     packet = encode_id_value(id_input, value_input)
-                    if debug:
+                    if self.debug:
                         print(f"[DEBUG] Sending packet: id={id_input}, value={value_input}, raw={packet.hex()}")
                     sock.sendall(packet)
                     data = b''
@@ -111,7 +116,7 @@ class ultrazohm:
                         data += chunk
                     float_values = decode_floats(data)
                     try:
-                        from_ethernet_queue.put(float_values, timeout=0.000001)
+                        from_ethernet_queue.put(float_values, timeout=timeout_value)
                     except queue.Full:
                         pass
                 except Exception as e:
@@ -151,14 +156,13 @@ class ultrazohm:
         except Exception as e:
             print(f"Error in raw_to_table_task: {e}")
 
-    def start_communication(self, enable, debug=False):
-        self.debug = debug
+    def start_communication(self, enable):
         if enable:
             self.stop_event.clear()
             if self.comms_process is None or not self.comms_process.is_alive():
                 self.comms_process = multiprocessing.Process(
                     target=self.comms_task,
-                    args=(self.ip, self.port, self.cmd_queue, self.from_ethernet_queue, self.stop_event, self.debug),
+                    args=(self.ip, self.port, self.cmd_queue, self.from_ethernet_queue, self.stop_event),
                     daemon=True
                 )
                 self.comms_process.start()

@@ -54,6 +54,22 @@ def graph_panel(graph_index):
         ),
         html.Div([
             html.Button(
+                'Fit cursor into plot',
+                id=f'fit-cursor-button-{graph_index}',
+                n_clicks=0,
+                style={
+                    'backgroundColor': '#f3f4f6',
+                    'color': '#222222',
+                    'border': '1px solid #c7c9cc',
+                    'padding': '8px 16px',
+                    'fontSize': '14px',
+                    'cursor': 'pointer',
+                    'borderRadius': '5px',
+                    'marginRight': '16px',
+                    'display': 'none',
+                },
+            ),
+            html.Button(
                 'Export data',
                 id=f'export-button-{graph_index}',
                 n_clicks=0,
@@ -78,6 +94,7 @@ def graph_panel(graph_index):
         ], style={'margin': '0 0 12px 0', 'display': 'flex', 'alignItems': 'center', 'flexWrap': 'wrap'}),
         dcc.Store(id=f'cursor-store-{graph_index}'),
         dcc.Store(id=f'viewport-store-{graph_index}'),
+        dcc.Store(id=f'layout-store-{graph_index}'),
         dcc.Store(id=f'secondary-axis-enabled-{graph_index}', data=False),
         dcc.Dropdown(
             id=f'dropdown-selection-{graph_index}',
@@ -122,6 +139,7 @@ def graph_panel(graph_index):
                 'fontFamily': 'monospace',
                 'fontSize': '14px',
                 'whiteSpace': 'pre-wrap',
+                'display': 'none',
             }
         ),
         dcc.Store(id=f'export-payload-{graph_index}'),
@@ -150,7 +168,7 @@ app.layout = html.Div([
                 {'label': '2 plots', 'value': 2},
                 {'label': '4 plots', 'value': 4},
             ],
-            value=4,
+            value=1,
             inline=True,
             inputStyle={'marginRight': '6px', 'marginLeft': '14px'},
             labelStyle={'cursor': 'pointer'},
@@ -634,6 +652,46 @@ def render_compare_controls_4(file_options, overlay_value):
 
 
 @app.callback(
+    Output('fit-cursor-button-1', 'style'),
+    Output('cursor-info-1', 'style'),
+    Input('cursor-toggle-1', 'value'),
+    Input('file-selection-1', 'value'),
+)
+def render_cursor_controls_1(cursor_toggle, selected_file):
+    return render_cursor_controls_state(cursor_toggle, selected_file)
+
+
+@app.callback(
+    Output('fit-cursor-button-2', 'style'),
+    Output('cursor-info-2', 'style'),
+    Input('cursor-toggle-2', 'value'),
+    Input('file-selection-2', 'value'),
+)
+def render_cursor_controls_2(cursor_toggle, selected_file):
+    return render_cursor_controls_state(cursor_toggle, selected_file)
+
+
+@app.callback(
+    Output('fit-cursor-button-3', 'style'),
+    Output('cursor-info-3', 'style'),
+    Input('cursor-toggle-3', 'value'),
+    Input('file-selection-3', 'value'),
+)
+def render_cursor_controls_3(cursor_toggle, selected_file):
+    return render_cursor_controls_state(cursor_toggle, selected_file)
+
+
+@app.callback(
+    Output('fit-cursor-button-4', 'style'),
+    Output('cursor-info-4', 'style'),
+    Input('cursor-toggle-4', 'value'),
+    Input('file-selection-4', 'value'),
+)
+def render_cursor_controls_4(cursor_toggle, selected_file):
+    return render_cursor_controls_state(cursor_toggle, selected_file)
+
+
+@app.callback(
     Output('graph-content-1', 'figure'),
     Input('dropdown-selection-1', 'value'),
     Input('cursor-toggle-1', 'value'),
@@ -642,11 +700,12 @@ def render_compare_controls_4(file_options, overlay_value):
     Input('overlay-compare-1', 'value'),
     Input('secondary-axis-selection-1', 'value'),
     State('viewport-store-1', 'data'),
+    State('layout-store-1', 'data'),
     State('time-axis-lock-toggle', 'value'),
     State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_1(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, time_axis_lock, shared_xaxis_data):
+def update_graph_1(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, layout_data, time_axis_lock, shared_xaxis_data):
     return update_graph_common(
         'graph-content-1',
         value,
@@ -656,6 +715,7 @@ def update_graph_1(value, cursor_toggle, cursor_positions, selected_file, overla
         overlay_compare,
         secondary_axis_value,
         viewport_data,
+        layout_data,
         time_axis_lock,
         shared_xaxis_data,
     )
@@ -670,11 +730,12 @@ def update_graph_1(value, cursor_toggle, cursor_positions, selected_file, overla
     Input('overlay-compare-2', 'value'),
     Input('secondary-axis-selection-2', 'value'),
     State('viewport-store-2', 'data'),
+    State('layout-store-2', 'data'),
     State('time-axis-lock-toggle', 'value'),
     State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_2(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, time_axis_lock, shared_xaxis_data):
+def update_graph_2(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, layout_data, time_axis_lock, shared_xaxis_data):
     return update_graph_common(
         'graph-content-2',
         value,
@@ -684,6 +745,7 @@ def update_graph_2(value, cursor_toggle, cursor_positions, selected_file, overla
         overlay_compare,
         secondary_axis_value,
         viewport_data,
+        layout_data,
         time_axis_lock,
         shared_xaxis_data,
     )
@@ -698,11 +760,12 @@ def update_graph_2(value, cursor_toggle, cursor_positions, selected_file, overla
     Input('overlay-compare-3', 'value'),
     Input('secondary-axis-selection-3', 'value'),
     State('viewport-store-3', 'data'),
+    State('layout-store-3', 'data'),
     State('time-axis-lock-toggle', 'value'),
     State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_3(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, time_axis_lock, shared_xaxis_data):
+def update_graph_3(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, layout_data, time_axis_lock, shared_xaxis_data):
     return update_graph_common(
         'graph-content-3',
         value,
@@ -712,6 +775,7 @@ def update_graph_3(value, cursor_toggle, cursor_positions, selected_file, overla
         overlay_compare,
         secondary_axis_value,
         viewport_data,
+        layout_data,
         time_axis_lock,
         shared_xaxis_data,
     )
@@ -726,11 +790,12 @@ def update_graph_3(value, cursor_toggle, cursor_positions, selected_file, overla
     Input('overlay-compare-4', 'value'),
     Input('secondary-axis-selection-4', 'value'),
     State('viewport-store-4', 'data'),
+    State('layout-store-4', 'data'),
     State('time-axis-lock-toggle', 'value'),
     State('shared-xaxis-store', 'data'),
     prevent_initial_call=True
 )
-def update_graph_4(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, time_axis_lock, shared_xaxis_data):
+def update_graph_4(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value, viewport_data, layout_data, time_axis_lock, shared_xaxis_data):
     return update_graph_common(
         'graph-content-4',
         value,
@@ -740,6 +805,7 @@ def update_graph_4(value, cursor_toggle, cursor_positions, selected_file, overla
         overlay_compare,
         secondary_axis_value,
         viewport_data,
+        layout_data,
         time_axis_lock,
         shared_xaxis_data,
     )
@@ -754,6 +820,7 @@ def update_graph_common(
     overlay_compare,
     secondary_axis_value,
     viewport_data,
+    layout_data,
     time_axis_lock,
     shared_xaxis_data,
 ):
@@ -770,6 +837,7 @@ def update_graph_common(
         overlay_compare,
         secondary_axis_value,
         viewport_data,
+        layout_data,
         time_axis_lock,
         shared_xaxis_data,
     )
@@ -784,11 +852,12 @@ def build_figure(
     overlay_compare,
     secondary_axis_value,
     viewport_data,
+    layout_data,
     time_axis_lock,
     shared_xaxis_data,
 ):
     base_file_key = get_selected_file_key(selected_file)
-    active_df = datasets.get(base_file_key)
+    active_df = get_selected_dataset(base_file_key)
     fig = figures[graph_id]
     cursor_enabled = 'show' in (cursor_toggle or [])
     overlay_enabled = 'overlay' in (overlay_compare or [])
@@ -809,7 +878,7 @@ def build_figure(
 
     base_label = dataset_filenames.get(base_file_key) or base_file_key
     compare_file_key = get_compare_file_key(base_file_key) if overlay_enabled else None
-    compare_df = datasets.get(compare_file_key) if compare_file_key else None
+    compare_df = get_selected_dataset(compare_file_key) if compare_file_key else None
     compare_label = dataset_filenames.get(compare_file_key) if compare_file_key else None
     selected_channels = get_displayed_channels(value, secondary_axis_value, active_df.columns)
 
@@ -823,19 +892,23 @@ def build_figure(
             trace_kwargs = {}
             if col in secondary_axis_channels:
                 trace_kwargs['yaxis'] = 'y2'
-            fig.add_trace(go.Scattergl(name=base_name, x=active_df['time'], y=active_df[col], **trace_kwargs))
+            base_x, base_y = get_trace_xy(active_df, col)
+            if base_x is not None and base_y is not None:
+                fig.add_trace(go.Scattergl(name=base_name, x=base_x, y=base_y, **trace_kwargs))
         if overlay_enabled and compare_df is not None and col in compare_df.columns and 'time' in compare_df.columns:
             trace_kwargs = {'line': {'dash': 'dot'}}
             if col in secondary_axis_channels:
                 trace_kwargs['yaxis'] = 'y2'
-            fig.add_trace(
-                go.Scattergl(
-                    name=f'{col} ({compare_label})',
-                    x=compare_df['time'],
-                    y=compare_df[col],
-                    **trace_kwargs,
+            compare_x, compare_y = get_trace_xy(compare_df, col)
+            if compare_x is not None and compare_y is not None:
+                fig.add_trace(
+                    go.Scattergl(
+                        name=f'{col} ({compare_label})',
+                        x=compare_x,
+                        y=compare_y,
+                        **trace_kwargs,
+                    )
                 )
-            )
 
     if cursor_enabled:
         cursor_x1, cursor_x2 = get_cursor_positions(cursor_positions, active_df)
@@ -863,6 +936,7 @@ def build_figure(
         ),
         margin=dict(l=60, r=20, t=40, b=110),
     )
+    apply_layout_metadata(fig, layout_data)
     preserve_axis_ranges(fig, viewport_data)
     if 'lock' in (time_axis_lock or []):
         apply_shared_xaxis(fig, shared_xaxis_data)
@@ -927,7 +1001,8 @@ def build_cursor_shapes(cursor_x1, cursor_x2):
             'x1': cursor_x1,
             'y0': 0,
             'y1': 1,
-            'line': {'color': '#d62728', 'width': 2},
+            'layer': 'above',
+            'line': {'color': '#ff0000', 'width': 5},
         },
         {
             'type': 'line',
@@ -937,7 +1012,8 @@ def build_cursor_shapes(cursor_x1, cursor_x2):
             'x1': cursor_x2,
             'y0': 0,
             'y1': 1,
-            'line': {'color': '#1f77b4', 'width': 2},
+            'layer': 'above',
+            'line': {'color': '#0057ff', 'width': 5},
         },
     ]
 
@@ -946,29 +1022,73 @@ for graph_id, figure in figures.items():
     figure.register_update_graph_callback(app=app, graph_id=graph_id)
 
 
+EXPORT_CLIENTSIDE_FUNCTION = """
+function(payload) {
+  if (!payload) {
+    return window.dash_clientside.no_update;
+  }
+
+  function ensureCsvExtension(filename) {
+    if (!filename) {
+      return "export.csv";
+    }
+    return filename.toLowerCase().endsWith(".csv") ? filename : filename + ".csv";
+  }
+
+  var files = Array.isArray(payload.files) ? payload.files : [payload];
+
+  for (var i = 0; i < files.length; i++) {
+    var filePayload = files[i];
+    var suggestedName = filePayload.filename || "export.csv";
+    var enteredName = window.prompt("Enter export filename", suggestedName);
+    if (enteredName === null) {
+      return window.dash_clientside.no_update;
+    }
+
+    var finalName = ensureCsvExtension((enteredName || "").trim() || suggestedName);
+    var blob = new Blob([filePayload.content], {
+      type: filePayload.mime_type || "text/csv"
+    });
+
+    var url = URL.createObjectURL(blob);
+    var anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = finalName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(function(currentUrl) {
+      URL.revokeObjectURL(currentUrl);
+    }, 0, url);
+  }
+
+  return window.dash_clientside.no_update;
+}
+"""
+
 app.clientside_callback(
-    "function(payload) { return window.dash_clientside.dataviewer.save_export(payload); }",
+    EXPORT_CLIENTSIDE_FUNCTION,
     Output('export-save-trigger-1', 'children'),
     Input('export-payload-1', 'data'),
     prevent_initial_call=True,
 )
 
 app.clientside_callback(
-    "function(payload) { return window.dash_clientside.dataviewer.save_export(payload); }",
+    EXPORT_CLIENTSIDE_FUNCTION,
     Output('export-save-trigger-2', 'children'),
     Input('export-payload-2', 'data'),
     prevent_initial_call=True,
 )
 
 app.clientside_callback(
-    "function(payload) { return window.dash_clientside.dataviewer.save_export(payload); }",
+    EXPORT_CLIENTSIDE_FUNCTION,
     Output('export-save-trigger-3', 'children'),
     Input('export-payload-3', 'data'),
     prevent_initial_call=True,
 )
 
 app.clientside_callback(
-    "function(payload) { return window.dash_clientside.dataviewer.save_export(payload); }",
+    EXPORT_CLIENTSIDE_FUNCTION,
     Output('export-save-trigger-4', 'children'),
     Input('export-payload-4', 'data'),
     prevent_initial_call=True,
@@ -980,10 +1100,11 @@ app.clientside_callback(
     Input('graph-content-1', 'relayoutData'),
     State('cursor-store-1', 'data'),
     State('file-selection-1', 'value'),
+    State('cursor-toggle-1', 'value'),
     prevent_initial_call=True
 )
-def update_cursor_store_1(relayout_data, cursor_positions, selected_file):
-    return extract_cursor_positions(relayout_data, cursor_positions, selected_file)
+def update_cursor_store_1(relayout_data, cursor_positions, selected_file, cursor_toggle):
+    return extract_cursor_positions(relayout_data, cursor_positions, selected_file, cursor_toggle)
 
 
 @app.callback(
@@ -991,10 +1112,11 @@ def update_cursor_store_1(relayout_data, cursor_positions, selected_file):
     Input('graph-content-2', 'relayoutData'),
     State('cursor-store-2', 'data'),
     State('file-selection-2', 'value'),
+    State('cursor-toggle-2', 'value'),
     prevent_initial_call=True
 )
-def update_cursor_store_2(relayout_data, cursor_positions, selected_file):
-    return extract_cursor_positions(relayout_data, cursor_positions, selected_file)
+def update_cursor_store_2(relayout_data, cursor_positions, selected_file, cursor_toggle):
+    return extract_cursor_positions(relayout_data, cursor_positions, selected_file, cursor_toggle)
 
 
 @app.callback(
@@ -1002,10 +1124,11 @@ def update_cursor_store_2(relayout_data, cursor_positions, selected_file):
     Input('graph-content-3', 'relayoutData'),
     State('cursor-store-3', 'data'),
     State('file-selection-3', 'value'),
+    State('cursor-toggle-3', 'value'),
     prevent_initial_call=True
 )
-def update_cursor_store_3(relayout_data, cursor_positions, selected_file):
-    return extract_cursor_positions(relayout_data, cursor_positions, selected_file)
+def update_cursor_store_3(relayout_data, cursor_positions, selected_file, cursor_toggle):
+    return extract_cursor_positions(relayout_data, cursor_positions, selected_file, cursor_toggle)
 
 
 @app.callback(
@@ -1013,10 +1136,11 @@ def update_cursor_store_3(relayout_data, cursor_positions, selected_file):
     Input('graph-content-4', 'relayoutData'),
     State('cursor-store-4', 'data'),
     State('file-selection-4', 'value'),
+    State('cursor-toggle-4', 'value'),
     prevent_initial_call=True
 )
-def update_cursor_store_4(relayout_data, cursor_positions, selected_file):
-    return extract_cursor_positions(relayout_data, cursor_positions, selected_file)
+def update_cursor_store_4(relayout_data, cursor_positions, selected_file, cursor_toggle):
+    return extract_cursor_positions(relayout_data, cursor_positions, selected_file, cursor_toggle)
 
 
 @app.callback(
@@ -1030,6 +1154,16 @@ def update_viewport_store_1(relayout_data, viewport_data):
 
 
 @app.callback(
+    Output('layout-store-1', 'data'),
+    Input('graph-content-1', 'relayoutData'),
+    State('layout-store-1', 'data'),
+    prevent_initial_call=True
+)
+def update_layout_store_1(relayout_data, layout_data):
+    return extract_layout_metadata(relayout_data, layout_data)
+
+
+@app.callback(
     Output('viewport-store-2', 'data'),
     Input('graph-content-2', 'relayoutData'),
     State('viewport-store-2', 'data'),
@@ -1037,6 +1171,16 @@ def update_viewport_store_1(relayout_data, viewport_data):
 )
 def update_viewport_store_2(relayout_data, viewport_data):
     return extract_viewport_data(relayout_data, viewport_data)
+
+
+@app.callback(
+    Output('layout-store-2', 'data'),
+    Input('graph-content-2', 'relayoutData'),
+    State('layout-store-2', 'data'),
+    prevent_initial_call=True
+)
+def update_layout_store_2(relayout_data, layout_data):
+    return extract_layout_metadata(relayout_data, layout_data)
 
 
 @app.callback(
@@ -1050,6 +1194,16 @@ def update_viewport_store_3(relayout_data, viewport_data):
 
 
 @app.callback(
+    Output('layout-store-3', 'data'),
+    Input('graph-content-3', 'relayoutData'),
+    State('layout-store-3', 'data'),
+    prevent_initial_call=True
+)
+def update_layout_store_3(relayout_data, layout_data):
+    return extract_layout_metadata(relayout_data, layout_data)
+
+
+@app.callback(
     Output('viewport-store-4', 'data'),
     Input('graph-content-4', 'relayoutData'),
     State('viewport-store-4', 'data'),
@@ -1057,6 +1211,16 @@ def update_viewport_store_3(relayout_data, viewport_data):
 )
 def update_viewport_store_4(relayout_data, viewport_data):
     return extract_viewport_data(relayout_data, viewport_data)
+
+
+@app.callback(
+    Output('layout-store-4', 'data'),
+    Input('graph-content-4', 'relayoutData'),
+    State('layout-store-4', 'data'),
+    prevent_initial_call=True
+)
+def update_layout_store_4(relayout_data, layout_data):
+    return extract_layout_metadata(relayout_data, layout_data)
 
 
 @app.callback(
@@ -1171,6 +1335,66 @@ def update_cursor_info_4(value, cursor_toggle, cursor_positions, selected_file, 
 
 
 @app.callback(
+    Output('graph-content-1', 'figure', allow_duplicate=True),
+    Output('viewport-store-1', 'data', allow_duplicate=True),
+    Output('shared-xaxis-store', 'data', allow_duplicate=True),
+    Input('fit-cursor-button-1', 'n_clicks'),
+    State('cursor-toggle-1', 'value'),
+    State('cursor-store-1', 'data'),
+    State('file-selection-1', 'value'),
+    State('time-axis-lock-toggle', 'value'),
+    prevent_initial_call=True,
+)
+def fit_cursor_into_plot_1(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock):
+    return fit_cursor_into_plot(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock)
+
+
+@app.callback(
+    Output('graph-content-2', 'figure', allow_duplicate=True),
+    Output('viewport-store-2', 'data', allow_duplicate=True),
+    Output('shared-xaxis-store', 'data', allow_duplicate=True),
+    Input('fit-cursor-button-2', 'n_clicks'),
+    State('cursor-toggle-2', 'value'),
+    State('cursor-store-2', 'data'),
+    State('file-selection-2', 'value'),
+    State('time-axis-lock-toggle', 'value'),
+    prevent_initial_call=True,
+)
+def fit_cursor_into_plot_2(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock):
+    return fit_cursor_into_plot(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock)
+
+
+@app.callback(
+    Output('graph-content-3', 'figure', allow_duplicate=True),
+    Output('viewport-store-3', 'data', allow_duplicate=True),
+    Output('shared-xaxis-store', 'data', allow_duplicate=True),
+    Input('fit-cursor-button-3', 'n_clicks'),
+    State('cursor-toggle-3', 'value'),
+    State('cursor-store-3', 'data'),
+    State('file-selection-3', 'value'),
+    State('time-axis-lock-toggle', 'value'),
+    prevent_initial_call=True,
+)
+def fit_cursor_into_plot_3(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock):
+    return fit_cursor_into_plot(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock)
+
+
+@app.callback(
+    Output('graph-content-4', 'figure', allow_duplicate=True),
+    Output('viewport-store-4', 'data', allow_duplicate=True),
+    Output('shared-xaxis-store', 'data', allow_duplicate=True),
+    Input('fit-cursor-button-4', 'n_clicks'),
+    State('cursor-toggle-4', 'value'),
+    State('cursor-store-4', 'data'),
+    State('file-selection-4', 'value'),
+    State('time-axis-lock-toggle', 'value'),
+    prevent_initial_call=True,
+)
+def fit_cursor_into_plot_4(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock):
+    return fit_cursor_into_plot(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock)
+
+
+@app.callback(
     Output('export-payload-1', 'data'),
     Output('export-warning-1', 'displayed'),
     Output('export-warning-1', 'message'),
@@ -1182,10 +1406,11 @@ def update_cursor_info_4(value, cursor_toggle, cursor_positions, selected_file, 
     State('file-selection-1', 'value'),
     State('overlay-compare-1', 'value'),
     State('secondary-axis-selection-1', 'value'),
+    State('graph-content-1', 'figure'),
     prevent_initial_call=True
 )
-def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 1, selected_file, overlay_compare, secondary_axis_value)
+def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value, figure_state):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 1, selected_file, overlay_compare, secondary_axis_value, figure_state)
 
 
 @app.callback(
@@ -1200,10 +1425,11 @@ def export_data_1(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('file-selection-2', 'value'),
     State('overlay-compare-2', 'value'),
     State('secondary-axis-selection-2', 'value'),
+    State('graph-content-2', 'figure'),
     prevent_initial_call=True
 )
-def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 2, selected_file, overlay_compare, secondary_axis_value)
+def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value, figure_state):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 2, selected_file, overlay_compare, secondary_axis_value, figure_state)
 
 
 @app.callback(
@@ -1218,10 +1444,11 @@ def export_data_2(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('file-selection-3', 'value'),
     State('overlay-compare-3', 'value'),
     State('secondary-axis-selection-3', 'value'),
+    State('graph-content-3', 'figure'),
     prevent_initial_call=True
 )
-def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 3, selected_file, overlay_compare, secondary_axis_value)
+def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value, figure_state):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 3, selected_file, overlay_compare, secondary_axis_value, figure_state)
 
 
 @app.callback(
@@ -1236,15 +1463,21 @@ def export_data_3(n_clicks, value, cursor_toggle, cursor_positions, relative_tim
     State('file-selection-4', 'value'),
     State('overlay-compare-4', 'value'),
     State('secondary-axis-selection-4', 'value'),
+    State('graph-content-4', 'figure'),
     prevent_initial_call=True
 )
-def export_data_4(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value):
-    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 4, selected_file, overlay_compare, secondary_axis_value)
+def export_data_4(n_clicks, value, cursor_toggle, cursor_positions, relative_time, selected_file, overlay_compare, secondary_axis_value, figure_state):
+    return export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, 4, selected_file, overlay_compare, secondary_axis_value, figure_state)
 
 
-def extract_cursor_positions(relayout_data, cursor_positions, selected_file):
+def extract_cursor_positions(relayout_data, cursor_positions, selected_file, cursor_toggle):
     active_df = get_selected_dataset(selected_file)
-    if not relayout_data or active_df is None or 'time' not in active_df.columns:
+    if (
+        not relayout_data
+        or 'show' not in (cursor_toggle or [])
+        or active_df is None
+        or 'time' not in active_df.columns
+    ):
         return no_update
 
     current_positions = get_cursor_positions(cursor_positions, active_df)
@@ -1272,9 +1505,40 @@ def extract_cursor_positions(relayout_data, cursor_positions, selected_file):
         found_cursor_update = True
 
     if not found_cursor_update:
-        return no_update
+        viewport_positions = cursor_positions_for_viewport(relayout_data, active_df)
+        if viewport_positions is None or tuple(viewport_positions) == tuple(current_positions):
+            return no_update
+        return viewport_positions
 
     return updated_positions
+
+
+def cursor_positions_for_viewport(relayout_data, active_df):
+    if relayout_data.get('xaxis.autorange'):
+        return default_cursor_positions(active_df)
+
+    if 'xaxis.range[0]' in relayout_data and 'xaxis.range[1]' in relayout_data:
+        range_start = relayout_data['xaxis.range[0]']
+        range_stop = relayout_data['xaxis.range[1]']
+    elif 'xaxis.range' in relayout_data and len(relayout_data['xaxis.range']) >= 2:
+        range_start = relayout_data['xaxis.range'][0]
+        range_stop = relayout_data['xaxis.range'][1]
+    else:
+        return None
+
+    if range_start is None or range_stop is None:
+        return None
+
+    visible_start = snap_cursor_to_time(min(range_start, range_stop), active_df)
+    visible_stop = snap_cursor_to_time(max(range_start, range_stop), active_df)
+    if visible_start is None or visible_stop is None:
+        return None
+
+    span = visible_stop - visible_start
+    return [
+        snap_cursor_to_time(visible_start + 0.25 * span, active_df),
+        snap_cursor_to_time(visible_start + 0.75 * span, active_df),
+    ]
 
 
 def build_cursor_info(value, cursor_toggle, cursor_positions, selected_file, overlay_compare, secondary_axis_value):
@@ -1296,11 +1560,16 @@ def build_cursor_info(value, cursor_toggle, cursor_positions, selected_file, ove
     cursor_x1, cursor_x2 = get_cursor_positions(cursor_positions, active_df)
     index_1 = nearest_time_index(cursor_x1, active_df)
     index_2 = nearest_time_index(cursor_x2, active_df)
+    time_1 = active_df["time"].iloc[index_1]
+    time_2 = active_df["time"].iloc[index_2]
+    start_time, end_time = sorted((time_1, time_2))
 
     lines = [
-        f'Cursor A: x={format_value(active_df["time"].iloc[index_1])}',
-        f'Cursor B: x={format_value(active_df["time"].iloc[index_2])}',
-        f'Delta X: {format_value(active_df["time"].iloc[index_2] - active_df["time"].iloc[index_1])}',
+        f'Cursor A: x={format_value(time_1)}',
+        f'Cursor B: x={format_value(time_2)}',
+        f'Start time: {format_value(start_time)}',
+        f'End time: {format_value(end_time)}',
+        f'Delta X: {format_value(time_2 - time_1)}',
     ]
 
     compare_file_key = get_compare_file_key(base_file_key) if overlay_enabled else None
@@ -1371,7 +1640,7 @@ def format_value(value):
     return str(value)
 
 
-def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, graph_index, selected_file, overlay_compare, secondary_axis_value):
+def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_time, graph_index, selected_file, overlay_compare, secondary_axis_value, figure_state=None):
     selected_file_key = get_selected_file_key(selected_file)
     active_df = datasets.get(selected_file_key)
     overlay_enabled = 'overlay' in (overlay_compare or [])
@@ -1404,17 +1673,20 @@ def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_
         export_df['time'] = export_df['time'] - export_df['time'].iloc[0]
 
     export_df['time'] = export_df['time'].round(12)
+    compare_file_key = get_compare_file_key(selected_file_key) if overlay_enabled else None
+    metadata_prefix = build_log_metadata_prefix(figure_state, selected_file_key, compare_file_key)
 
-    filename_suffix = 'relative' if 'relative' in (relative_time or []) else 'absolute'
+    filename_suffix = build_export_timestamp_suffix(start_time, stop_time, 'relative' in (relative_time or []))
     file_suffix = selected_file_key if selected_file_key in {'file1', 'file2'} else 'file1'
+    export_name = get_export_name(figure_state, f'graph_{graph_index}_{file_suffix}')
     export_files = [{
-        'content': export_df.to_csv(index=False),
-        'filename': f'graph_{graph_index}_{file_suffix}_cursor_export_{filename_suffix}.csv',
+        'content': metadata_prefix + export_df.to_csv(index=False),
+        'filename': f'{export_name}_{filename_suffix}.csv',
         'mime_type': 'text/csv',
+        'request_id': f'{graph_index}_{n_clicks}_base',
     }]
 
     if overlay_enabled:
-        compare_file_key = get_compare_file_key(selected_file_key)
         compare_df = datasets.get(compare_file_key) if compare_file_key else None
         if compare_df is None or 'time' not in compare_df.columns:
             return no_update, True, 'Overlay export needs 2 uploaded files.'
@@ -1428,13 +1700,15 @@ def export_plot_data(n_clicks, value, cursor_toggle, cursor_positions, relative_
                 compare_export_df['time'] = compare_export_df['time'] - compare_export_df['time'].iloc[0]
             compare_export_df['time'] = compare_export_df['time'].round(12)
             compare_file_suffix = compare_file_key if compare_file_key in {'file1', 'file2'} else 'file1'
+            compare_export_name = get_export_name(figure_state, f'graph_{graph_index}_{compare_file_suffix}', compare_file_suffix)
             export_files.append({
-                'content': compare_export_df.to_csv(index=False),
-                'filename': f'graph_{graph_index}_{compare_file_suffix}_cursor_export_{filename_suffix}.csv',
+                'content': metadata_prefix + compare_export_df.to_csv(index=False),
+                'filename': f'{compare_export_name}_{filename_suffix}.csv',
                 'mime_type': 'text/csv',
+                'request_id': f'{graph_index}_{n_clicks}_{compare_file_suffix}',
             })
 
-    export_payload = export_files[0] if len(export_files) == 1 else {'files': export_files}
+    export_payload = export_files[0] if len(export_files) == 1 else {'files': export_files, 'request_id': f'{graph_index}_{n_clicks}_multi'}
     return export_payload, False, 'Enable cursors first!'
 
 
@@ -1556,6 +1830,152 @@ def extract_viewport_data(relayout_data, viewport_data):
     return updated_viewport
 
 
+def extract_layout_metadata(relayout_data, layout_data):
+    if not relayout_data:
+        return no_update
+
+    updated_layout = dict(layout_data or {})
+    found_layout_update = False
+    for key in ('title.text', 'title.subtitle.text', 'xaxis.title.text', 'yaxis.title.text', 'yaxis2.title.text'):
+        if key in relayout_data:
+            updated_layout[key] = relayout_data[key]
+            found_layout_update = True
+
+    if not found_layout_update:
+        return no_update
+
+    return updated_layout
+
+
+def apply_layout_metadata(fig, layout_data):
+    if not layout_data:
+        return
+
+    if 'title.text' in layout_data:
+        title_layout = {'text': layout_data['title.text']}
+        if 'title.subtitle.text' in layout_data:
+            title_layout['subtitle'] = {'text': layout_data['title.subtitle.text']}
+        fig.update_layout(title=title_layout)
+    elif 'title.subtitle.text' in layout_data:
+        fig.update_layout(title={'subtitle': {'text': layout_data['title.subtitle.text']}})
+    if 'xaxis.title.text' in layout_data:
+        fig.update_xaxes(title=layout_data['xaxis.title.text'])
+    if 'yaxis.title.text' in layout_data:
+        fig.update_yaxes(title=layout_data['yaxis.title.text'])
+    if 'yaxis2.title.text' in layout_data:
+        fig.update_layout(yaxis2=dict(title=layout_data['yaxis2.title.text']))
+
+
+def get_export_name(figure_state, fallback_name, compare_suffix=None):
+    title_text = extract_figure_title(figure_state)
+    if title_text:
+        sanitized_title = sanitize_filename_part(title_text)
+        if sanitized_title:
+            if compare_suffix:
+                return f'{sanitized_title}_{compare_suffix}'
+            return sanitized_title
+    return fallback_name
+
+
+def build_log_metadata_prefix(figure_state, selected_file_key=None, compare_file_key=None):
+    title_text, subtitle_text = extract_figure_title_parts(figure_state)
+    metadata_lines = []
+    original_logfile = dataset_filenames.get(selected_file_key) if selected_file_key else None
+    compare_logfile = dataset_filenames.get(compare_file_key) if compare_file_key else None
+    if title_text or subtitle_text or original_logfile or compare_logfile:
+        metadata_lines.append('# Export metadata')
+    if title_text:
+        metadata_lines.append(f'# Title: {title_text}')
+    if subtitle_text:
+        metadata_lines.append(f'# Subtitle: {subtitle_text}')
+    if original_logfile:
+        metadata_lines.append(f'# Original log file: {original_logfile}')
+    if compare_logfile:
+        metadata_lines.append(f'# Compare log file: {compare_logfile}')
+    if not metadata_lines:
+        return ''
+    return '\n'.join(metadata_lines) + '\n#\n'
+
+
+def build_export_timestamp_suffix(start_time, stop_time, relative_time_enabled):
+    if relative_time_enabled:
+        return f't_{sanitize_filename_part(format_timestamp_for_filename(stop_time - start_time))}'
+    return (
+        f't_{sanitize_filename_part(format_timestamp_for_filename(start_time))}'
+        f'_to_{sanitize_filename_part(format_timestamp_for_filename(stop_time))}'
+    )
+
+
+def format_timestamp_for_filename(value):
+    if isinstance(value, pd.Timestamp):
+        return value.strftime('%Y%m%d_%H%M%S_%f').rstrip('0').rstrip('_')
+    if hasattr(value, 'isoformat'):
+        try:
+            return value.isoformat()
+        except TypeError:
+            pass
+    if isinstance(value, float):
+        return f'{value:.6g}'
+    return str(value)
+
+
+def extract_figure_title(figure_state):
+    title_text, _ = extract_figure_title_parts(figure_state)
+    return title_text
+
+
+def extract_figure_title_parts(figure_state):
+    if not isinstance(figure_state, dict):
+        return None, None
+
+    layout = figure_state.get('layout')
+    if not isinstance(layout, dict):
+        return None, None
+
+    title = layout.get('title')
+    if isinstance(title, dict):
+        title_value = title.get('text')
+        subtitle_value = None
+        subtitle = title.get('subtitle')
+        if isinstance(subtitle, dict):
+            subtitle_value = subtitle.get('text')
+        elif isinstance(subtitle, str):
+            subtitle_value = subtitle
+    elif isinstance(title, str):
+        title_value = title
+        subtitle_value = None
+    else:
+        title_value = None
+        subtitle_value = None
+
+    if not title_value and not subtitle_value:
+        return None, None
+
+    split_title = re.split(r'<br\s*/?>', str(title_value), maxsplit=1, flags=re.IGNORECASE) if title_value else []
+    main_title = strip_html_tags(split_title[0]).strip() if split_title else None
+    subtitle_text = strip_html_tags(subtitle_value).strip() if subtitle_value else None
+    if not subtitle_text and len(split_title) > 1:
+        subtitle_text = strip_html_tags(split_title[1]).strip()
+    subtitle_text = re.sub(r'^\s*Subtitle:\s*', '', subtitle_text, flags=re.IGNORECASE) if subtitle_text else None
+    subtitle_text = subtitle_text or None
+
+    return main_title or None, subtitle_text
+
+
+def strip_html_tags(value):
+    return re.sub(r'<[^>]+>', '', value or '')
+
+
+def sanitize_filename_part(value):
+    if value is None:
+        return None
+
+    sanitized = re.sub(r'\s+', '_', str(value).strip())
+    sanitized = re.sub(r'[^A-Za-z0-9._-]', '_', sanitized)
+    sanitized = re.sub(r'_+', '_', sanitized).strip('._-')
+    return sanitized or None
+
+
 def get_displayed_channels(primary_value, secondary_axis_value, available_columns):
     ordered_channels = []
     for col in (primary_value or []) + (secondary_axis_value or []):
@@ -1587,6 +2007,88 @@ def render_compare_controls_state(file_options, overlay_value):
     if has_multiple_files:
         return visible_style, visible_style, overlay_value or []
     return hidden_style, hidden_style, []
+
+
+def render_cursor_controls_state(cursor_toggle, selected_file):
+    active_df = get_selected_dataset(selected_file)
+    cursor_enabled = (
+        'show' in (cursor_toggle or [])
+        and active_df is not None
+        and 'time' in active_df.columns
+        and not active_df.empty
+    )
+
+    button_style = {
+        'backgroundColor': '#f3f4f6',
+        'color': '#222222',
+        'border': '1px solid #c7c9cc',
+        'padding': '8px 16px',
+        'fontSize': '14px',
+        'cursor': 'pointer',
+        'borderRadius': '5px',
+        'marginRight': '16px',
+        'display': 'inline-block' if cursor_enabled else 'none',
+    }
+    info_style = {
+        'marginTop': '10px',
+        'fontFamily': 'monospace',
+        'fontSize': '14px',
+        'whiteSpace': 'pre-wrap',
+        'display': 'block' if cursor_enabled else 'none',
+    }
+    return button_style, info_style
+
+
+def fit_cursor_into_plot(n_clicks, cursor_toggle, cursor_positions, selected_file, time_axis_lock):
+    active_df = get_selected_dataset(selected_file)
+    if (
+        not n_clicks
+        or 'show' not in (cursor_toggle or [])
+        or active_df is None
+        or 'time' not in active_df.columns
+        or active_df.empty
+    ):
+        return no_update, no_update, no_update
+
+    cursor_x1, cursor_x2 = get_cursor_positions(cursor_positions, active_df)
+    if cursor_x1 is None or cursor_x2 is None:
+        return no_update, no_update, no_update
+
+    start_time, stop_time = sorted((cursor_x1, cursor_x2))
+    span = stop_time - start_time
+    padding = span * 0.05 if span else default_cursor_padding(active_df)
+    viewport_data = {
+        'xaxis.range[0]': start_time - padding,
+        'xaxis.range[1]': stop_time + padding,
+        'xaxis.autorange': False,
+    }
+
+    patch = Patch()
+    patch['layout']['xaxis']['autorange'] = False
+    patch['layout']['xaxis']['range'] = [
+        viewport_data['xaxis.range[0]'],
+        viewport_data['xaxis.range[1]'],
+    ]
+
+    shared_xaxis_data = viewport_data if 'lock' in (time_axis_lock or []) else no_update
+    return patch, viewport_data, shared_xaxis_data
+
+
+def default_cursor_padding(active_df):
+    if active_df is None or 'time' not in active_df.columns or active_df.empty:
+        return 0
+
+    time_series = active_df['time']
+    span = time_series.iloc[-1] - time_series.iloc[0]
+    if span:
+        return span * 0.02
+
+    if len(time_series) > 1:
+        step = abs(time_series.iloc[1] - time_series.iloc[0])
+        if step:
+            return step
+
+    return 1
 
 
 def channel_sort_key(channel_name):
@@ -1623,6 +2125,8 @@ def parse_uploaded_file(contents, filename):
 
     if len(loaded_df.columns) == 0:
         return None, f'"{filename}" does not contain any columns.'
+
+    loaded_df = normalize_time_dataframe(loaded_df)
 
     return loaded_df, None
 
@@ -1666,6 +2170,63 @@ def get_compare_file_key(base_file_key):
     if base_file_key == 'file2' and datasets['file1'] is not None:
         return 'file1'
     return None
+
+
+def normalize_time_dataframe(dataframe):
+    if dataframe is None or 'time' not in dataframe.columns:
+        return dataframe
+
+    time_series = dataframe['time']
+    if (
+        time_series.notna().all()
+        and (pd.api.types.is_numeric_dtype(time_series) or pd.api.types.is_datetime64_any_dtype(time_series))
+        and time_series.is_monotonic_increasing
+    ):
+        return dataframe.reset_index(drop=True) if not dataframe.index.equals(pd.RangeIndex(len(dataframe))) else dataframe
+
+    normalized_df = dataframe.copy()
+    time_series = normalized_df['time']
+
+    numeric_time = pd.to_numeric(time_series, errors='coerce')
+    if numeric_time.notna().all():
+        normalized_time = numeric_time
+    else:
+        datetime_time = pd.to_datetime(time_series, errors='coerce')
+        if datetime_time.notna().all():
+            normalized_time = datetime_time
+        else:
+            normalized_time = time_series
+
+    normalized_df['time'] = normalized_time
+    normalized_df = normalized_df.loc[normalized_df['time'].notna()].copy()
+    if normalized_df.empty:
+        return normalized_df
+
+    normalized_df = normalized_df.sort_values(by='time', kind='stable').reset_index(drop=True)
+    return normalized_df
+
+
+def get_trace_xy(dataframe, column_name):
+    if dataframe is None or 'time' not in dataframe.columns or column_name not in dataframe.columns:
+        return None, None
+
+    if dataframe.empty:
+        return None, None
+
+    valid_rows = dataframe['time'].notna()
+    if not valid_rows.all():
+        trace_x = dataframe.loc[valid_rows, 'time']
+        trace_y = dataframe.loc[valid_rows, column_name]
+        if trace_x.empty:
+            return None, None
+        return trace_x, trace_y
+
+    trace_x = dataframe['time']
+    trace_y = dataframe[column_name]
+    if trace_x.empty:
+        return None, None
+
+    return trace_x, trace_y
 
 
 if __name__ == '__main__':

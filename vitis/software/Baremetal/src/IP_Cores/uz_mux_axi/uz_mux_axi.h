@@ -17,7 +17,7 @@ struct uz_mux_axi_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     uint32_t mux; /**< Select value for the mux */
     uint32_t n_th_interrupt; /**< Trigger ratio of adc_interrupt/isr_interrupt between 1 and 255 */
-    float delay_adc_trigger_in_us; /**< Delay of the ADC trigger in microseconds. Values that are not an integer multiple of the IP clock period are rounded up to the next clock cycle. Must represent between 0 and 1023 clock cycles after rounding. */
+    float delay_adc_trigger_in_us; /**< ADC trigger delay in us. Rounded up to 0..1023 clock cycles. */
 };
 
 /**
@@ -55,7 +55,7 @@ void uz_mux_axi_set_n_th_interrupt(struct uz_mux_axi_t *self, uint32_t n_th_inte
  * @brief Sets the ADC trigger delay in microseconds
  *
  * @param self Pointer to IP-Core instance that was initialized with init function
- * @param delay_adc_trigger_in_us Delay of the ADC trigger in microseconds. Values that are not an integer multiple of the IP clock period are rounded up to the next clock cycle.
+ * @param delay_adc_trigger_in_us ADC trigger delay in us. Rounded up to 0..1023 clock cycles.
  */
 void uz_mux_axi_set_delay_adc_trigger_in_us(struct uz_mux_axi_t *self, float delay_adc_trigger_in_us);
 

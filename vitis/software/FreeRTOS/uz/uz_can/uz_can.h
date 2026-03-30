@@ -6,13 +6,13 @@
 
 
 /**
- * @brief Object data type definition of the PMSM model IP-Core driver
+ * @brief Object data type definition of the CAN driver
  *
  */
 typedef struct uz_can_t uz_can_t;
 
 /**
- * @brief Configuration struct for the PMSM model IP-Core driver
+ * @brief Configuration struct for the CAN driver
  *
  */
 struct uz_can_config_t

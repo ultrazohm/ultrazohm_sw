@@ -83,6 +83,7 @@
 #define UZ_PARAMETERID_RC_MAX_INSTANCES                 1U
 #define UZ_PARAMETERID_RS_MAX_INSTANCES                 1U
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               1U
+#define UZ_VOLTAGE_COMPENSATION_MAX_INSTANCES           1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -143,4 +144,5 @@
     #define UZ_PARAMETERID_RC_MAX_INSTANCES                 10U
     #define UZ_PARAMETERID_RS_MAX_INSTANCES                 10U
 	#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               50U
+    #define UZ_VOLTAGE_COMPENSATION_MAX_INSTANCES            10U
 #endif

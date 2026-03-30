@@ -55,6 +55,7 @@
 #include "include/pwm_init.h"
 
 #include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_VoltageCompensation/uz_VoltageCompensation.h"
 
 enum control_state_list
 {

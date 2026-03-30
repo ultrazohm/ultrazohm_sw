@@ -20,6 +20,7 @@
 #include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_VoltageCompensation/uz_VoltageCompensation.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -177,6 +178,7 @@ typedef struct{
 	uz_wavegen_chirp* chirp_instance;
 	uz_resonantController_t* R_controller_instance_d;
 	uz_resonantController_t* R_controller_instance_q;
+	uz_VoltageCompensation_t* VoltageComp_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

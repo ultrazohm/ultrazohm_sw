@@ -24,3 +24,5 @@ control_algorithms/uz_FOC.slxc
 
 *.sw[a-p]
 ip_cores/uz_EnDat_IPCore/
+vitis/software/Baremetal/.vscode/settings.json
+vitis/software/Baremetal/src/uz/uz_VoltageCompensation/Modelling_and_model_based_compensation_of_non-ideal_characteristics_of_two-level_voltage_source_inverters_for_drive_control_application.pdf

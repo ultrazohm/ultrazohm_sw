@@ -102,6 +102,8 @@ const struct uz_resonantController_config config_R = {
 };
 
 
+
+
 enum init_chain
 {
     init_assertions_and_wait_for_apu_handshake = 0,
@@ -163,14 +165,14 @@ int main(void)
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.1f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
+               .Kp = 0.05f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
                .Ki = 100.0f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.1f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
+               .Kp = 0.05f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
 			   .Ki = 100.0f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ

@@ -55,7 +55,7 @@ extern DS_Data Global_Data;
 
 #define DC_LINK_VOLT_CONV 			18.27932f		// DC-Voltage 0...5 V -> 0...91.5 V
 #define DC_LINK_VOLT_OFFS			-0.01424f
-// Korrektur des Skaling-Faktoren noch einmal überprüfen/validieren: alt: 1/0.0546
+// Korrektur des Skaling-Faktoren noch einmal ï¿½berprï¿½fen/validieren: alt: 1/0.0546
 #define PHASE_VOLT_CONV_U 			17.1377		// Voltage DC_GND to Phase U
 #define PHASE_VOLT_CONV_V 			17.1280
 #define PHASE_VOLT_CONV_W 			17.1377

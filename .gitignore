@@ -24,3 +24,5 @@ vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
 control_algorithms/uz_FOC.slxc
 
 *.sw[a-p]
+*.slxc
+*cpAnnotation.mat

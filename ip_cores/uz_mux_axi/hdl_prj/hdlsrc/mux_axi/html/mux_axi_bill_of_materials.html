@@ -5,7 +5,7 @@ High-level Resource Utilization Report for mux_axi
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_2');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_2');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-6
+5
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-27
+19
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-31
+32
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-89
+109
 </td>
 
 </tr>
@@ -273,7 +273,7 @@ Multiport Switch
 1-bit 2-to-1 Multiplexer 							: 24
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
-<ul class="SystemdefinedCollapse" id="4d6d647c-60a9-4a9b-8e49-db558025d8bb" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="c96aa605-090f-4e73-86e8-ec3059d84870" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('mux_axi:294')" name="code2model" class="code2model">
 Compare To Constant7
@@ -372,19 +372,19 @@ Switch2
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '4d6d647c-60a9-4a9b-8e49-db558025d8bb')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
 </span>
 <br /><h5>
-Number of I/O Bits (89)
+Number of I/O Bits (109)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 75
+Number of Input Bits: 85
 </span>
 <span name="Input_Port" id="Input_Port">
 <ul>
@@ -415,6 +415,12 @@ interrupts_in
 </a>
 : 8 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('mux_axi:328')" name="code2model" class="code2model">
+delay_ADC_trigger_in_clk_cycles_AXI
+</a>
+: 10 bits
+</li>
 
 </ul>
 
@@ -423,7 +429,7 @@ interrupts_in
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 14
+Number of Output Bits: 24
 </span>
 <span name="Output_Port" id="Output_Port">
 <ul>
@@ -448,6 +454,12 @@ select_out
 </a>
 : 4 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('mux_axi:330')" name="code2model" class="code2model">
+delay_ADC_trigger_in_clk_cycles_OUT
+</a>
+: 10 bits
+</li>
 
 </ul>
 
@@ -461,26 +473,11 @@ Subsystem1
 <h5>
 Adders/Subtractors (1)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
 <span style="font-family:monospace">
 8x8-bit Adder 							: 1
 </span>
-<span name="Adder_2_1" id="Adder_2_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('mux_axi:119')" name="code2model" class="code2model">
-HDL Counter
-</a>
-
-</li>
-
-</ul>
-
-</span>
 <br /><h5>
-Registers (4)
+Registers (3)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -504,7 +501,7 @@ PipelineDelay
 [+]
 </span>
 <span style="font-family:monospace">
-8-bit Register 							: 3
+8-bit Register 							: 2
 </span>
 <span name="Register_2_2" id="Register_2_2">
 <ul>
@@ -525,22 +522,22 @@ HDL Counter
 
 </span>
 <br /><h5>
-Multiplexers (2)
+Multiplexers (3)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 1
+8-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 1
+1-bit 2-to-1 Multiplexer 							: 1
 </span>
 <span name="Multiplexer_2_2" id="Multiplexer_2_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('mux_axi:119')" name="code2model" class="code2model">
-HDL Counter
+<a href="matlab:coder.internal.code2model('gm_mux_axi:21')" name="code2model" class="code2model">
+Relational_Operator_1
 </a>
 
 </li>

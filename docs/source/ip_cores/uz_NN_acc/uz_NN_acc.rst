@@ -449,8 +449,8 @@ This guide will walk you through the process.
 #. Configure solution1 by opening the file ``uz_NN/solution1/script.tcl``.
 #. Edit the entry in line 8-11
 
-   .. code-block:: c
-      :caption: Changes to ``script.tcl``
+   .. code-block:: console
+      :caption: Default entry in ``script.tcl``
 
       set ip_name "uz_NN_X_YYY"
       set ip_version "1.0"
@@ -460,7 +460,7 @@ This guide will walk you through the process.
 
 #. Give the IP core an appropriate name and description. E.g.,
 
-   .. code-block:: c
+   .. code-block:: console
       :caption: Changes to ``script.tcl``
 
       set ip_name "uz_NN_5_128"
@@ -473,11 +473,50 @@ This guide will walk you through the process.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
-#. After you see ``IP successfully extracted to $outdir``, the synthesis and export are finished.
-#. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
+#. A resource estimation is printed in the terminal after synthesis. 
+   Note, that the stated BRAM, FF and LUT usage is higher than after Vivado synthesis.
+   To evaluate execution time, only the latency for ``uz_NN_acc_Pipeline_X``, ``uz_NN_acc_Pipeline_burst_Observation``, ``uz_NN_acc_Pipeline_dense_relu_outX``, ``uz_NN_acc_Pipeline_dense_out`` and ``uz_NN_acc_Pipeline_burst_Action`` should be considered.
+   The other modules are for the read of the weights and bias during initialization and are not relevant for the execution time of the network calculation.
+
+   .. code-block:: console
+      :caption: Example of resource estimation in Vitis HLS terminal output
+
+      + Performance & Resource Estimates:
+
+      PS: '+' for module; 'o' for loop; '*' for dataflow
+      +----------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+---------+---------+------------+------------+-----+
+      |                    Modules                   | Issue|      | Latency |  Latency  | Iteration|         | Trip |          |         |         |            |            |     |
+      |                    & Loops                   | Type | Slack| (cycles)|    (ns)   |  Latency | Interval| Count| Pipelined|  BRAM   |   DSP   |     FF     |     LUT    | URAM|
+      +----------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+---------+---------+------------+------------+-----+
+      |+ uz_NN_acc                                   |     -|  0.00|    10321|  1.032e+05|         -|    10322|     -|        no|  32 (1%)|  81 (3%)|  19177 (3%)|  18057 (6%)|    -|
+      | + uz_NN_acc_Pipeline_1                       |     -|  5.08|       34|    340.000|         -|       34|     -|        no|        -|        -|     8 (~0%)|    50 (~0%)|    -|
+      |  o Loop 1                                    |     -|  7.30|       32|    320.000|         1|        1|    32|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_2                       |     -|  5.08|       66|    660.000|         -|       66|     -|        no|        -|        -|     9 (~0%)|    52 (~0%)|    -|
+      |  o Loop 1                                    |     -|  7.30|       64|    640.000|         1|        1|    64|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_L_1_Weights       |     -|  0.00|     2051|  2.051e+04|         -|     2051|     -|        no|        -|        -|    92 (~0%)|   110 (~0%)|    -|
+      |  o burst_L_1_Weights                         |     -|  7.30|     2049|  2.049e+04|         3|        1|  2048|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_L_Output_Weights  |     -|  0.00|     1027|  1.027e+04|         -|     1027|     -|        no|        -|        -|    90 (~0%)|   110 (~0%)|    -|
+      |  o burst_L_Output_Weights                    |     -|  7.30|     1025|  1.025e+04|         3|        1|  1024|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_L_1_Bias          |     -|  0.00|       67|    670.000|         -|       67|     -|        no|        -|        -|    57 (~0%)|    76 (~0%)|    -|
+      |  o burst_L_1_Bias                            |     -|  7.30|       65|    650.000|         3|        1|    64|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_L_Output_Bias     |     -|  0.00|       19|    190.000|         -|       19|     -|        no|        -|        -|    78 (~0%)|   110 (~0%)|    -|
+      |  o burst_L_Output_Bias                       |     -|  7.30|       17|    170.000|         3|        1|    16|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_Observation       |     -|  0.00|       35|    350.000|         -|       35|     -|        no|        -|        -|    80 (~0%)|   110 (~0%)|    -|
+      |  o burst_Observation                         |     -|  7.30|       33|    330.000|         3|        1|    32|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_dense_relu_out          |     -|  1.28|      298|  2.980e+03|         -|      298|     -|        no|        -|        -|  2593 (~0%)|  1285 (~0%)|    -|
+      |  o dense_relu_out                            |     -|  7.30|      296|  2.960e+03|        45|        4|    64|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_dense_out               |     -|  0.49|      112|  1.120e+03|         -|      112|     -|        no|        -|  40 (1%)|   7383 (1%)|   4859 (1%)|    -|
+      |  o dense_out                                 |     -|  7.30|      110|  1.100e+03|        51|        4|    16|       yes|        -|        -|           -|           -|    -|
+      | + uz_NN_acc_Pipeline_burst_Action            |     -|  0.00|       19|    190.000|         -|       19|     -|        no|        -|        -|    70 (~0%)|   108 (~0%)|    -|
+      |  o burst_Action                              |     -|  7.30|       17|    170.000|         3|        1|    16|       yes|        -|        -|           -|           -|    -|
+      | o copy_L_Output_Weights                      |     -|  7.30|     6144|  6.144e+04|         6|        -|  1024|        no|        -|        -|           -|           -|    -|
+      +----------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+---------+---------+------------+------------+-----+
+
+#. After you see ``====SCRIPT FINISHED====``, the synthesis and export are finished.
 #. In Vivado, open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the IP core to the block design<uz_NN_vivado>`.
 #. [Optional] You can now generate another IP core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>` again. Modify ``uz_MMult_MaxSize.h`` again and give the new configuration a unique name.
+#. [Optional] The device can be adjusted to a different one by adjusting line 38 ``set_part {xczu9eg-ffvc900-1-e}`` in the ``script.tcl`` file. 
 
 Resource utilization
 ====================
@@ -488,7 +527,7 @@ The resource utilization depends heavily on the configuration of the IP core.
 The following table shows the resource usage in Vivado for different configurations.
 Generally, more hidden layers is more resource efficient than more neurons per layer.
 Yours may vary slightly.
-The estimated execution time includes the time for the calculation in the IP core and the driver overhead.
+The estimated execution time includes the time for the calculation in the IP core and the driver overhead (:math:`~10µs`).
 
 ========== ====== ====== ====== ====== ==============
 Setup      BRAM   DSP    FF     LUT    Execution time

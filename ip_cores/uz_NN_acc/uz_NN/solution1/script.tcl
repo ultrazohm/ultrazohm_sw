@@ -5,10 +5,10 @@
 # -----------------------------
 # USER-CONFIGURABLE PARAMETERS
 # -----------------------------
-set ip_name "uz_NN_X_YYY"
+set ip_name "uz_NN_XX_YYY"
 set ip_version "1.0"
-set ip_description "XxYY_setup"
-set ip_display_name "uz_NN_X_YYY_acc"
+set ip_description "XXxYYY_setup"
+set ip_display_name "uz_NN_XX_YYY_acc"
 
 
 # -----------------------------
@@ -103,8 +103,33 @@ if {$os eq "Windows NT"} {
     exec unzip -o "$zipfile" -d "$outdir"
 }
 
-puts "IP successfully extracted to $outdir"
+# ----------------------------------------
+# Print relevant part of csynth.rpt
+# ----------------------------------------
+set rpt_file "$proj_dir/uz_NN/$solution_name/syn/report/csynth.rpt"
+
+if {[file exists $rpt_file]} {
+    puts "----- CSYNTH SUMMARY (truncated) -----"
+
+    set fp [open $rpt_file r]
+
+    while {[gets $fp line] >= 0} {
+        # Stop when HW Interfaces section starts
+        if {[string match "*== HW Interfaces*" $line]} {
+            break
+        }
+        puts $line
+    }
+
+    close $fp
+    puts "--------------------------------------"
+} else {
+    puts "WARNING: csynth.rpt not found!"
+}
 
 #Delete folders so no duplicate IP-core is visible in vivado
 file delete -force "$proj_dir/uz_NN/$solution_name/impl" 
 file delete -force "$proj_dir/uz_NN/$solution_name/syn"
+
+puts "IP successfully extracted to $outdir"
+puts "====SCRIPT FINISHED===="

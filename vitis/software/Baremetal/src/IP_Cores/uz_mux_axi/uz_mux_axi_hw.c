@@ -19,3 +19,10 @@ void uz_mux_axi_hw_set_n_th_interrupt(uint32_t base_address, uint32_t n_th_inter
     uz_assert(n_th_interrupt<256U);
     uz_axi_write_uint32(base_address + select_n_th_adc_interrupt_Data_mux_axi_ip , n_th_interrupt);
 }
+
+void uz_mux_axi_hw_set_delay_adc_trigger_in_clk_cycles(uint32_t base_address, uint32_t delay_adc_trigger_in_clk_cycles) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(delay_adc_trigger_in_clk_cycles >= 0U);
+    uz_assert(delay_adc_trigger_in_clk_cycles <= (uint32_t) UZ_MUX_AXI_HW_MAX_DELAY_CYCLES);
+    uz_axi_write_uint32(base_address + delay_ADC_trigger_in_clk_cycles_AXI_Data_mux_axi_ip, delay_adc_trigger_in_clk_cycles);
+}

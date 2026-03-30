@@ -5,14 +5,19 @@
 -- Description:
 -- 1-bit rising-edge delay block with configurable output pulse width.
 -- - detects rising edges on a_in
--- - emits a pulse at a_out after delay_cycles samples
+-- - delay_cycles defines the observed delay from rising edge at a_in to
+--   rising edge at a_out
+-- - delay_cycles = 0 uses a combinational pass-through path
+-- - delay_cycles = 1..1023 emits a registered pulse after the exact requested
+--   number of clk cycles
 -- - pulse width is configured locally in this VHDL source
 -- - delay_cycles supports 0..1023 via a 10-bit input
 -- - pulse_width_cycles_c supports 1..64 clk cycles
 -- - resetN is an active-low synchronous reset input
 -- - changing delay_cycles clears any active operation
 -- - a second rising edge while one pulse is active is ignored
--- - pulse_pending is high while a trigger is waiting or being emitted
+-- - pulse_pending is high while a delayed trigger is waiting, being emitted,
+--   or while the zero-delay pass-through output is high
 ----------------------------------------------------------------------------------
 
 library IEEE;
@@ -47,12 +52,18 @@ signal pulse_state : pulse_state_t := IDLE;
 signal delay_counter : unsigned(9 downto 0) := (others => '0');
 -- Remaining extra high cycles after the first emitted output cycle.
 signal width_counter : unsigned(5 downto 0) := (others => '0');
--- Registered output for clean pulse_pending derivation.
+-- Registered output used for nonzero-delay operation.
 signal a_out_i : std_logic := '0';
 
 begin
-    a_out <= a_out_i;
-    pulse_pending <= '1' when (pulse_state /= IDLE) or (a_out_i = '1') else '0';
+    -- delay_cycles = 0 bypasses the registered logic so the output follows a_in
+    -- directly. Nonzero delays use the registered pulse-generation path below.
+    a_out <= '0' when (resetN = '0') else
+             a_in when (delay_cycles = to_unsigned(0, delay_cycles'length)) else
+             a_out_i;
+    pulse_pending <= '0' when (resetN = '0') else
+                     a_in when (delay_cycles = to_unsigned(0, delay_cycles'length)) else
+                     '1' when (pulse_state /= IDLE) or (a_out_i = '1') else '0';
 
 process(clk)
     variable delay_cycles_int : natural range 0 to 1023;
@@ -89,6 +100,8 @@ begin
 
                 if rise_pulse = '1' then
                     if delay_cycles_int = 0 then
+                        null;
+                    elsif delay_cycles_int = 1 then
                         a_out_i <= '1';
                         if pulse_width_int > 1 then
                             pulse_state <= OUTPUT_PULSE;
@@ -96,7 +109,7 @@ begin
                         end if;
                     else
                         pulse_state <= WAIT_DELAY;
-                        delay_counter <= to_unsigned(delay_cycles_int - 1, delay_counter'length);
+                        delay_counter <= to_unsigned(delay_cycles_int - 2, delay_counter'length);
                     end if;
                 end if;
             else
@@ -108,6 +121,8 @@ begin
 
                         if rise_pulse = '1' then
                             if delay_cycles_int = 0 then
+                                null;
+                            elsif delay_cycles_int = 1 then
                                 a_out_i <= '1';
                                 if pulse_width_int > 1 then
                                     pulse_state <= OUTPUT_PULSE;
@@ -115,7 +130,7 @@ begin
                                 end if;
                             else
                                 pulse_state <= WAIT_DELAY;
-                                delay_counter <= to_unsigned(delay_cycles_int - 1, delay_counter'length);
+                                delay_counter <= to_unsigned(delay_cycles_int - 2, delay_counter'length);
                             end if;
                         end if;
 

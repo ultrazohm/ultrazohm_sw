@@ -43,6 +43,16 @@ Ideal for refining motor control algorithms, the Deskbench supports the developm
 
    UZ with the required adapter cards
 
+The deskbench is equipped with following adapter cards:
+
+- 3x :ref:`Analog_LTC2311_16` in A1-A3
+- 2x :ref:`dig_si_inverter_rev03` in slot D1 and D2 for controlling the two PMSMs
+- 1x :ref:`dig_resolver_rev01` in D4 for reading out resolvers
+- 1x :ref:`dig_incEncoderRev03` in slot D5 for reading out incremental Encoders
+
+This documentation aims to demonstrate the typical configuration, which consists of two PMSMs with resolvers connected to D4. 
+Motors with encoders can also be used without restrictions, but the bitstream generation and software implementation will differ.
+
 .. toctree::
    :maxdepth: 1
 

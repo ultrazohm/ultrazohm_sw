@@ -138,5 +138,11 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t *self, float input)
     }
     return (output);
 }
-
+void uz_signals_IIR_Filter_reset(uz_IIR_Filter_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->old_input = 0.0f;
+    self->old_output = 0.0f;
+    self->first_step = true; // Call after the init is the first call
+}
 #endif

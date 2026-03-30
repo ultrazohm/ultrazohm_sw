@@ -44,7 +44,7 @@ void uz_mlp_three_layer_ff_blocking(uz_mlp_three_layer_ip_t *self, uz_matrix_t* 
 
 /**
  * @brief Triggers the calculation of one forward pass of the network.
- *        This function is not blocking and returns after the calculation is startet.
+ *        This function is not blocking and returns after the calculation is started.
  *        This enables the concurrent execution of code on the processor while the IP-Core calculates the result of the network.
  * 
  * @param self 

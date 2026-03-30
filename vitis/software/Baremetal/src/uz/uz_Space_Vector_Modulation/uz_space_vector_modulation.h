@@ -28,7 +28,7 @@ struct uz_DutyCycle_3x3ph_t{
  * @brief Generates a DutyCycle from dq-reference voltages via Space Vector Modulation for a carrier based PWM generation
  * 
  * @param v_ref_Volts reference voltages in Volts (e.g. from current controller)
- * @param V_dc_volts DC-Link voltage in volts
+ * @param V_DC_Volts DC-Link voltage in volts
  * @param theta_el_rad electrical rotor angle in rad
  * @return struct uz_DutyCycle_t generated DutyCycles
  */

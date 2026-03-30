@@ -12,7 +12,7 @@ Digital Inverter Rev03
 Changes from Rev02 to Rev03
 ----------------------------
 
-* changed gate resistors from 10Ohm to 47Ohm
+* changed gate resistors from 10 Ohm to 47 Ohm
 * unused pads from the 2.5V reference voltage source have been removed
 
 Changes from Rev03 to Rev03 production
@@ -20,6 +20,14 @@ Changes from Rev03 to Rev03 production
 
 * programmable EEPROM for identifying Inverter Cards
 * all components have been reviewed regarding their compatibility with JLCPCB parts
+
+
+Components
+----------
+
+Additional to the :ref:`components all version share <dig_si_inverter_all_components>`, the following components are used:
+
+- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
 
 
 Absolute maximum ratings
@@ -41,7 +49,7 @@ Additional ratings
   - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
   - DC-link capacitance :math:`C_{DC} = 570\mu F`
   - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
-  - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
+  - Cutoff frequency for voltage measurement :math:`f_g = 1745\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
   
 Pinout
@@ -61,7 +69,7 @@ Pinout
 Compatibility 
 -------------
 
-This digital adapter inverter board is directly compatible with the :ref:`uz_inverter_adapter` IP-Core.
+This digital adapter inverter board is directly compatible with the :ref:`uz_inverter_adapter` IP core.
 It can be used in any of the D1-D4 digital adapter card slots in the UltraZohm, provided the correct CPLD is flashed. 
 The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 
@@ -78,7 +86,7 @@ Although there is room for further optimization, the resulting switching behavio
    :align: right
 
 
-Setup before first use and implementation with Inverter Interface IP-Core
+Setup before first use and implementation with Inverter Interface IP core
 =========================================================================
 
 CPLD
@@ -92,8 +100,8 @@ Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct C
 Software implementation
 -----------------------
 
-This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP-Core and its associated driver.
-Follow :ref:`this guide <inverter_adapter_usage>` to integrate the IP-Core into the FPGA and to set up the software driver.
+This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP core and its associated driver.
+Follow :ref:`this guide <inverter_adapter_usage>` to integrate the IP core into the FPGA and to set up the software driver.
 While following this guide, be sure to adjust the `linear interpolation parameters` for the ``inverter_adapter_config``. 
 For this inverter card they should be:
 
@@ -132,7 +140,7 @@ Pay attention to this during your error handling.
  }
 
 
-To read out the measured current and voltage signals both ethernet cables have to be connected to an ADC-Card.
+To read out the measured current and voltage signals, both Ethernet cables have to be connected to an ADC-Card.
 In the ``isr.c`` add the following conversion factors to the measured signals.
 
 .. code-block:: c
@@ -150,6 +158,8 @@ In the ``isr.c`` add the following conversion factors to the measured signals.
  i_abc_Amps.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
  i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
  i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
+
+.. note:: These are the theoretical conversion factors. They might differ slightly in reality do to component tolerances.
 
 In order to use the over current and over temperature protection, the following code has to be added to the isr.c as well. 
 These are optional features and can be left out if they aren't required.

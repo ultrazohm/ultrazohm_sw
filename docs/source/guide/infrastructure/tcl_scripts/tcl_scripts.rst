@@ -9,11 +9,11 @@ See Xilinx `UG835 <https://www.xilinx.com/support/documentation/sw_manuals/xilin
 All Tcl scripts of the UltraZohm Community are located in the ``ultrazohm_sw`` repository in the folder ``tcl_scripts``.
 The three different kinds of Tcl scripts are differentiated by prefix:
 
-    * ci\_ marks scripts that are used for continuous integration
-    * vivado\_ marks scripts for Vivado
-    * vitis\_ marks scripts for Vitis
+* ci\_ marks scripts that are used for continuous integration
+* vivado\_ marks scripts for Vivado
+* vitis\_ marks scripts for Vitis
 
-The Vivado scripts can be called from Vivado tcl console (``Window -> Tcl console`` in Vivado) or choose a Tcl script (``Tools -> Run Tcl script...``) as well as the command line in batch mode on linux:
+The Vivado scripts can be called from Vivado Tcl console (``Window -> Tcl console`` in Vivado) or choose a Tcl script (``Tools -> Run Tcl script...``) as well as the command line in batch mode on linux:
 
 ::
 
@@ -26,7 +26,7 @@ The path depends on your install location (e.g. ``/opt/`` instead of ``/tools/``
 
   source /tools/Xilinx/Vivado/2020.1/settings64.sh
 
-The Vitis scripts can be called from the XSCT console from Vitis (see ref:`vitis_gen_workspace_tcl`) or from the command line:
+The Vitis scripts can be called from the XSCT console from Vitis (see :ref:`vitis_gen_workspace_tcl`) or from the command line:
 
 ::
 
@@ -47,11 +47,13 @@ The CI scripts draw from `this tutorial <https://vhdlwhiz.com/jenkins-for-fpga#v
 ci_generate_bitstream.tcl
 -------------------------
 
-Opens the ``ultrazohm.xpr`` Vivado project and runs to design flow to ``write_bitstream``.
+Opens the ``ultrazohm.xpr`` Vivado project and runs the design flow to ``write_bitstream``.
 Returns ``0`` if successful and ``1`` if not.
 
 vivado\_
 ********
+
+.. _vivado_export_xsa_tcl:
 
 vivado_export_xsa.tcl
 ---------------------
@@ -59,13 +61,13 @@ vivado_export_xsa.tcl
 Exports the Bitstream (``.xsa`` file) to the folder in which Vitis expects the current Bitstream (``ultrazohm_sw/vitis/vivado_exported_xsa``).
 Usage:
 
-Export Bitstream tcl-script
+Export Bitstream Tcl script
 ---------------------------
 
-A TCL script can be added to the Vivado icons to automate the process of exporting the Bitstream since it is a common task.
+A Tcl script can be added to the Vivado icons to automate the process of exporting the Bitstream since it is a common task.
 
 - ``Tools -> Custom Commands -> Customize Commands``
-- Click on the `plus` and ender a name, e.g., export_xsa
+- Click on the `plus` and enter a name, e.g., export_xsa
 - Click on ``Source Tcl file``
 - Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
 - Click ok
@@ -90,6 +92,9 @@ Usage:
 ::
 
    cd [getws]
+
+::
+
    source {../../tcl_scripts/vitis_update_platform.tcl}
 
 .. _vitis_gen_workspace_tcl:
@@ -109,4 +114,7 @@ Usage:
 ::
 
    cd [getws]
+
+::
+
    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}

@@ -83,9 +83,9 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
  * @brief Calculates chip temperature from duty cycle,  
  *        called by uz_inverter_adapter_get_outputs function
  *
- * @param dutyCycleNormalized is the measured duty cycle of the
- *        PWM temperature signal
- * @return float value of chip temperature in degrees celsius
+ * @param self Pointer to driver instance
+ * @param dutyCycleNormalized measured duty cycle of the PWM temperature signal
+ * @return float value of chip temperature in degrees Celsius
  */
  float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(uz_inverter_adapter_t *self, float dutyCycleNormalized);
 

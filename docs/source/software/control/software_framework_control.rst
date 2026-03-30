@@ -9,7 +9,10 @@ Control
     controller_setpoint_filter/controller_setpoint_filter
     CurrentControl/CurrentControl
     encoder_offset_estimation/encoder_offset_estimation
+    flux_approximation/flux_approximation
+    flux_approximation/uz_flux_approximation_script
     linear_decoupling/linear_decoupling
+    static_nonlinear_decoupling/static_nonlinear_decoupling
     movingAverage/movingAverage
     ParameterID/ParameterID
     piController/piController
@@ -27,3 +30,4 @@ Control
     uz_Trajectory/uz_Trajectory
     uz_Transformation/uz_Transformation
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
+    uz_pos_to_speed_pll/pos_to_speed_pll

@@ -36,7 +36,7 @@ Below, the assembly instructions for the setting up the connection between UZ an
   :height: 350
   :align: center
 
-5. Connect the two Resolver to the Ultrazohm with the D-SUB 9 Cables. Ensure that the cable is a "straight through" cable with one to one connection of the pins!
+5. Connect the two Resolver to the UltraZohm with the D-SUB 9 Cables. Ensure that the cable is a "straight through" cable with one to one connection of the pins!
 
 .. image:: Deskbench/5th_step.jpg
   :height: 350
@@ -63,7 +63,7 @@ Connect the torque sensor D-SUB 15 cable with the :ref:`torque_box` ``IN Torque 
   :height: 350
   :align: center
 
-8. Make sure that the deskbench is proper grounded. There is a fastener for the connection to ground in the top left-hand corner.
+8. Make sure that the deskbench is properly grounded. There is a fastener for the connection to ground in the top left-hand corner.
 
 .. image:: Deskbench/grounding_desk.jpg
   :height: 350

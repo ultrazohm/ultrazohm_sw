@@ -503,6 +503,6 @@ Sources
 -------
 
 .. [#Zoric_paper] I. Zoric, M. Jones and E. Levi, "Vector space decomposition algorithm for asymmetrical multiphase machines," 2017 International Symposium on Power Electronics (Ee), 2017, pp. 1-6, doi: 10.1109/PEE.2017.8171682.
-.. [#Zabaleta_diss] M. Zabaleta, "Permament Magnet Multiphase Machine Modeling and Control for MV Wind Energy Applications", Dissertation, Liverpool John Moores University, 2018, doi: 10.24377/LJMU.t.00008818.
+.. [#Zabaleta_diss] M. Zabaleta, "Permanent Magnet Multiphase Machine Modeling and Control for MV Wind Energy Applications", Dissertation, Liverpool John Moores University, 2018, doi: 10.24377/LJMU.t.00008818.
 .. [#Rockhill_gerneral] A. A. Rockhill and T. A. Lipo, "A generalized transformation methodology for polyphase electric machines and networks," 2015 IEEE International Electric Machines & Drives Conference (IEMDC), 2015, pp. 27-34, doi: 10.1109/IEMDC.2015.7409032.
 .. [#Rockhill_ninephase] A. A. Rockhill and T. A. Lipo, "A simplified model of a nine phase synchronous machine using vector space decomposition," 2009 IEEE Power Electronics and Machines in Wind Applications, 2009, pp. 1-5, doi: 10.1109/PEMWA.2009.5208335.

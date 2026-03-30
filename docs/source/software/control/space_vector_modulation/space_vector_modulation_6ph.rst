@@ -17,7 +17,7 @@ General
 
 SVM for multi-phase works similar to :ref:`uz_spacevectormodulation`.
 However, in a multi-phase network, more switching combinations are available (for six-phase :math:`2^6=64`).
-Furthermore, switching combination has simultaniously one space vector (SV) in the :math:`\alpha\beta`- and one in the :math:`XY`-subspace.
+Furthermore, switching combination has simultaneously one space vector (SV) in the :math:`\alpha\beta`- and one in the :math:`XY`-subspace.
 During the calculations, both have to be taken account of and it has to be noted, that a combination with a large SV (high absolute value) in :math:`\alpha\beta` means usually a small SV in :math:`XY`.
 Since an online choosing of SV is not feasible, a preselection from all possible SVs was done and 24 sequences of five active switching combinations is used. [[#Eldeeb_diss]_]
 
@@ -43,12 +43,14 @@ Function references
 
 .. doxygenfunction:: uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq
 
+.. doxygenfunction:: uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq_xy
+
 
 Minimum code example
 --------------------
 
 A minimal code example is given in the following.
-The SVM not only calculates Duty Cycles, it also yields phase shifts for the PWM IP-Cores.
+The SVM not only calculates Duty Cycles, it also yields phase shifts for the PWM IP cores.
 Applying them to the modules is vital.
 Additionally, the output struct contains two flags, indicating that either the :math:`\alpha\beta`- or :math:`XY`-setpoints or both have been limited.
 They can be used for a clamping feature, inhibiting integrators in the control algorithm to overflow.
@@ -165,14 +167,14 @@ Limitation
 To test the limitation, a list of :math:`\alpha\beta`-SVs and :math:`XY`-SVs was created with :math:`k \cdot e^{i \cdot \phi}` and :math:`k=0, 0.001, ... 1` und :math:`\phi=0, 0.001, ... 2\pi`.
 Each :math:`\alpha\beta`-SV was combined with each :math:`XY`-SV and applied to the SVM.
 Using no limitation, the SVM threw an error for a Duty Cycle out of range (negative or greater 1).
-Using the limitation, no error occured and the relative limit of :math:`XY`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
+Using the limitation, no error occurred and the relative limit of :math:`XY`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
 
 
 Open loop simulation
 --------------------
 
 To verify the SVM in open loop simulation, setpoint voltages for :math:`\alpha\beta` and :math:`XY` given to the SVM.
-The resulting Duty Cycles were fed into the PWM-IP-Core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
+The resulting Duty Cycles were fed into the PWM-IP core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
 
 Setpoints and measured output voltages are shown in the following figure for both subspaces.
 In the last row, the limit flags for both subspaces are shown.

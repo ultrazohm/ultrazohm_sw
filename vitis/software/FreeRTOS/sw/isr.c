@@ -39,19 +39,18 @@ extern uint32_t javascope_data_status;
 QueueHandle_t js_queue;
 int js_queue_full = 0;
 
-int i_LifeCheck_Transfer_ipc;
+int i_LifeCheck_Transfer_ipc = 0;
 
-//Initialize the Interrupt structure
-XScuGic INTCipc;	//Interrupt for IPC
-XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-XScuGic_Config *IntcConfig;
+// Initialize the Interrupt structure
+XScuGic GIC_instance;
+XIpiPsu IPI_instance;
+
+static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
 
 /**
- * Apu_IpiHandler() - Interrupt handler for IPI
- *
- * @IpiInstPtr		Pointer to the IPI instance
+ * Interrupt handler for IPI
+ * synchronous interrupt with ISR on R5 -> frequency depends on R5 and indirectly on chosen PWM-based ISR-trigger
  */
-// Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
@@ -77,8 +76,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 			js_queue_full++;
 			// uz_printf("OsziData_queue is full\r\n");
 		}
+		// info: queue is purged when new connection is established in 'ethernet.c'
 	}
-	// queue is purged when new connection is established
 
 	// Maintain APU-local copy of status word (cf. main.c)
 	javascope_data_status = javascope_data->status;
@@ -103,10 +102,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 #endif
 
 	// Write message for acknowledge of the interrupt to RPU
-	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_WriteMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
-	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+	XIpiPsu_ClearInterruptStatus(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
 	i_LifeCheck_Transfer_ipc++;
 
@@ -127,19 +126,26 @@ int Initialize_InterruptHandler(){
 
 	int Status = XST_SUCCESS;
 
+	XScuGic_Config *GIC_Config;
+
 	// Interrupt controller configuration
-	IntcConfig = XScuGic_LookupConfig(XPAR_SCUGIC_0_DEVICE_ID);
-		if(IntcConfig == NULL) {
-			uz_printf("APU: Error: GIC Config failed\r\n");
-			return XST_FAILURE;
-		}
+	GIC_Config = XScuGic_LookupConfig(XPAR_SCUGIC_0_DEVICE_ID);
+
+	if(GIC_Config == NULL) {
+		uz_printf("APU: Error: GIC Config failed\r\n");
+		return XST_FAILURE;
+	}
+
 
 	// Interrupt controller initialization
-	Status = XScuGic_CfgInitialize(&INTCipc, IntcConfig, IntcConfig->CpuBaseAddress);
+	Status = XScuGic_CfgInitialize(&GIC_instance, GIC_Config, GIC_Config->CpuBaseAddress);
 		if(Status != XST_SUCCESS) {
 			uz_printf("APU: Error: GIC initialization failed\r\n");
 			return XST_FAILURE;
 		}
+
+	// Clear latched active interrupt register - for UZ warm start
+	uz_a53_gic_reset_active_ipi_interrupts(&GIC_instance);
 
 	return Status;
 }
@@ -153,10 +159,10 @@ int Initialize_ISR(){
 
 	int Status = 0;
 
-	// Initialize RPU GIC and Connect IPI interrupt
-	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
+	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
+	Status = Apu_IpiInit(&IPI_instance, INTERRUPT_ID_IPI);
 	if(Status != XST_SUCCESS) {
-		uz_printf("APU: Error: GIC initialization failed\r\n");
+		uz_printf("APU: Error: IPI initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
@@ -167,13 +173,15 @@ int Initialize_ISR(){
 		return XST_FAILURE;
 	}
 
-	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
-	Status = Apu_IpiInit(&INTCInst_IPI, INTERRUPT_ID_IPI);
+	// Initialize RPU GIC and Connect IPI interrupt
+	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &IPI_instance);
 	if(Status != XST_SUCCESS) {
-		uz_printf("APU: Error: IPI initialization failed\r\n");
+		uz_printf("APU: Error: GIC initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
+	// Enable interrupt on CPU level
+	Xil_ExceptionEnable();
 
 	return Status;
 }
@@ -182,26 +190,25 @@ int Initialize_ISR(){
 /**
  * Apu_GicInit() - This function initializes APU GIC and connects
  * 					interrupts with the associated handlers
- * @IntcInstPtr		Pointer to the GIC instance
+ * @GIC_instance_ptr		Pointer to the GIC instance
  * @IntId			Interrupt ID to be connected and enabled
  * @Handler			Associated handler for the Interrupt ID
  * @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
  */
-u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler, void *PeriphInstPtr)
+u32 Apu_GicInit(XScuGic *GIC_instance_ptr, u32 IntId, Xil_ExceptionHandler Handler, void *PeriphInstPtr)
 {
 	u32 Status = XST_SUCCESS;
 
 	// Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler)XScuGic_InterruptHandler,IntcInstPtr);
-	Xil_ExceptionEnable();										//Enable interrupts in the ARM
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler)XScuGic_InterruptHandler,GIC_instance_ptr);
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
-	Status = XScuGic_Connect(IntcInstPtr, IntId, Handler, PeriphInstPtr);
+	Status = XScuGic_Connect(GIC_instance_ptr, IntId, Handler, PeriphInstPtr);
 
-	XScuGic_Enable(IntcInstPtr, IntId);
+	XScuGic_Enable(GIC_instance_ptr, IntId);
 
-	//uz_printf("APU: Apu_GicInit: Done\r\n");
+	uz_printf("APU: Apu_GicInit: Done\r\n");
 	return Status;
 }
 
@@ -212,27 +219,73 @@ u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler, v
  *
  * @IpiInstPtr		Pointer to the IPI instance
  */
-u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId)
+u32 Apu_IpiInit(XIpiPsu *IPI_instance_Ptr,u16 DeviceId)
 {
-	XIpiPsu_Config *IntcConfig_IPI;
+	XIpiPsu_Config *IPI_config;
 	int status;
 
 	// Interrupt controller configuration
-	IntcConfig_IPI = XIpiPsu_LookupConfig(DeviceId);
-		if (IntcConfig_IPI == NULL) {
+	IPI_config = XIpiPsu_LookupConfig(DeviceId);
+		if (IPI_config == NULL) {
 			uz_printf("APU: Error: Ipi Init failed\r\n");
 			return XST_FAILURE;
 		}
 
 	// Interrupt controller initialization
-	status = XIpiPsu_CfgInitialize(IntcInst_IPI_Ptr, IntcConfig_IPI, IntcConfig_IPI->BaseAddress);
+	status = XIpiPsu_CfgInitialize(IPI_instance_Ptr, IPI_config, IPI_config->BaseAddress);
 		if (status != XST_SUCCESS) {
 			uz_printf("APU: Error: IPI Config failed\r\n");
 			return XST_FAILURE;
 		}
 
-	XIpiPsu_InterruptEnable(IntcInst_IPI_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+	XIpiPsu_InterruptEnable(IPI_instance_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
 	uz_printf("APU: APU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
 }
+
+
+
+/* Return true if the distributor marks IntId as ACTIVE */
+static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
+{
+    const u32 reg_off = XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_ACTIVE_OFFSET, IntId); /* ACTIVE + (IntId/32)*4 */
+    const u32 bitmask = (u32)1U << (IntId % 32U);
+    const u32 act     = XScuGic_DistReadReg(Gic, reg_off);
+    return ((act & bitmask) != 0U);
+}
+
+/**
+ * @brief Clear latched (stuck ACTIVE) IPI interrupt(s) on the A53 by issuing EOIR (End Of Interrupt Register).
+ *
+ * Currently un-latches only XPAR_XIPIPSU_0_INT_ID, but is structured as a list so you can
+ * extend it to more interrupt IDs later.
+ */
+static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic)
+{
+    /* List is intentionally an array to make it easy to extend later */
+    static const u32 uz_ipi_int_ids[] = {
+        (u32)XPAR_XIPIPSU_0_INT_ID
+        /* add more IDs here if needed */
+    };
+
+    uz_assert_not_NULL(Gic);
+    uz_assert_not_NULL(Gic->Config);
+
+	for (u32 i = 0U; i < (u32)(sizeof(uz_ipi_int_ids) / sizeof(uz_ipi_int_ids[0])); ++i)
+	{
+		const u32 id = uz_ipi_int_ids[i];
+
+		// check if id-interrupt is stuck on active
+		if (uz_gic_is_active_id(Gic, id)) {
+
+			/* Writing IntId to EOIR to clear the stuck ACTIVE state */
+			XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
+			uz_printf("APU GIC: Cleared ACTIVE for IPI interrupt ID %u\r\n", (unsigned long)id);
+
+		}
+	}
+
+
+}
+

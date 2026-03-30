@@ -99,7 +99,7 @@ The init function initializes the required matrices and passes the pointer to th
 
 The following shows an example initialization and feedforward calculation of one layer.
 
-- ``length_of_weights``, ``length_of_bias``, and ``length_of_output`` have to be calculated by ``UZ_MATRIX_SIZE`` makro
+- ``length_of_weights``, ``length_of_bias``, and ``length_of_output`` have to be calculated by ``UZ_MATRIX_SIZE`` macro
 - three pointer to three arrays have to be provided in the config struct
 - ``number_of_neurons`` and ``number_of_inputs`` are freely configurable but have to be consistent with the dimensions of the provided arrays
 - ``activation_function`` determines the activation function of the layer
@@ -164,6 +164,7 @@ The enum ``activation_function`` and the struct ``uz_nn_layer_config`` are direc
 .. doxygenfunction:: uz_nn_layer_ff
 
 .. doxygenfunction:: uz_nn_layer_get_output_data
+
 
 Sources
 =======

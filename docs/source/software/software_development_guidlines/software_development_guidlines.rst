@@ -4,7 +4,7 @@
 Software Development Guidelines
 ===============================
 
-The software development guidelines for the UltraZohm consists of:
+The software development guidelines for the UltraZohm consist of:
 
 1. :ref:`codingGuidelines` on how to develop software
 2. :ref:`codingStyle` describes how to format the code visually
@@ -15,10 +15,10 @@ The guidelines are based on concepts described by:
 
   - Clean Code [#CleanCode]_
   - Making Embedded Systems [#MakingEmbedded]_
-  - Test-Driveen Development for Embedded C [#TDD]_
+  - Test-Driven Development for Embedded C [#TDD]_
   - `Video series on Clean Code <https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin>`_ by the author
   - Modern C [#ModernC]_
-  - MISRA guidlines [#misra]_
+  - MISRA guidelines [#misra]_
   - `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_ [#linuxCodingStyle]_
   - The C Programming Language [#TheCProgrammingLanguage]_
 
@@ -52,7 +52,7 @@ Guidelines
   - Interface hides implementation details!
   - Objects are self-contained
 
-- Object oriented programming in C
+- Object-oriented programming in C
 
   - Object orientation is a property of code, not of the language
   - Use object orientated programming
@@ -89,7 +89,7 @@ Names
   - Group composites of the object name with lower case camel case (*pwmModule*)
   - Use snake_case for everything else
   - Encode relationships with underscore (e.g., a method of an object)
-  - Everything is lower case except the capital latter in camel case and ``#defines`` which are in capital letters
+  - Everything is lower case except the capital letter in camel case and ``#defines`` which are in capital letters
 
 Interface function names
 
@@ -152,7 +152,7 @@ Static code analysis
 --------------------
 
 Static code analysis checks the source code for potential errors and problems.
-We use `cppcheck <https://github.com/danmar/cppcheck>`_ , which is also run in the bitbucket pipeline (see :ref:`ci_static_code_check`)
+We use `cppcheck <https://github.com/danmar/cppcheck>`_, which is also run in the Bitbucket pipeline (see :ref:`ci_static_code_check`)
 Usage with the :ref:`vscode_remote_container` in a terminal to check all files in `src` folder (recursive):
 
 ::
@@ -163,7 +163,7 @@ Usage with the :ref:`vscode_remote_container` in a terminal to check all files i
 
 You can specify a path to only check your currently developed files.
 Adding ``--addon=misra`` checks for violations of [#MISRA]_ coding rules.
-The output only gives the number of the violated rule, you have to obtain an copy to get readable information.
+The output only gives the number of the violated rule; you have to obtain a copy to get readable information.
 Adding ``--addon=cert`` checks for violations of [#CERT]_ coding rules.
 
 Additional static code analyser that are not implemented for the UltraZohm project:
@@ -184,7 +184,7 @@ Single-instance module
 **********************
 
 Encapsulates an object if only one instance of the module can be present in the system.
-This only applies to software modules that are hard-coupled to specific hardware and does **not** apply to IP-Core drivers!
+This only applies to software modules that are hard-coupled to specific hardware and does **not** apply to IP core drivers!
 This means all initialization is done inside the module function, there is no initialization in code and nothing is passed to init except for configuration if necessary.
 All required data of the module is declared in the implementation and no data is leaked outside of the module.
 Functions that are only required internally are declared ``static``.
@@ -208,7 +208,7 @@ Multiple-instance module
 ************************
 
 Encapsulates a module of which multiple instances can be used.
-This is the default for IP-core drivers.
+This is the default for IP core drivers.
 A full example implementation is located at ``ultrazohm_sw/vitis/software/Baremetal/src/IP_Cores/uz_myIP2`` (see :ref:`how_to_create_ipcore_driver`).
 
 - The implementation scheme uses  opaque data types to hide the data of the object
@@ -290,5 +290,4 @@ Sources
 .. [#cert] `SEI CERT C Coding Standard <https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations>`_
 .. [#linuxCodingStyle] `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_
 .. [#TheCProgrammingLanguage] The C Programming Language, Kernighan, Ritchie, 2000
-
 

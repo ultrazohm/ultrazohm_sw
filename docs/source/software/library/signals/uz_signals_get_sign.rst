@@ -19,7 +19,7 @@ Example
 Description
 ===========
 
-Evaluates the sign of the input value. Returns 0.0f, if the input is 0.0f. Returns 1.0f, if the input is positive and returns -1.0f if the input ist negative.
+Evaluates the sign of the input value. Returns 0.0f, if the input is 0.0f. Returns 1.0f, if the input is positive and returns -1.0f if the input is negative.
 
 .. tikz:: Get_sign function 
   :align: left

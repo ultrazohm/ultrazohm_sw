@@ -11,9 +11,9 @@ For higher phase numbers, multiple instances of this module can be used in the F
 For synchronizing multiple instances, the counter can be fed to subsequent instances.
 Furthermore, an interleaved operation is possible.
 Every half-bridge can be shifted individually.
-The IP-Core has a setting, at which point of the triangle signal the phase-shift and output of new inverter switching signals does happen.
+The IP core has a setting, at which point of the triangle signal the phase-shift and output of new inverter switching signals does happen.
 These features are the only difference between versions V3 and V4.
-In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up to 12 half-bridge phase legs.
+In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this IP core are present with respective software driver instances for controlling up to 12 half-bridge phase legs.
  
 The IP core provides two general modes of operation.
 
@@ -57,14 +57,14 @@ This is done internally by shifting the carrier wave itself.
 
    Shift of HB2 by ``triangle_shift_HB2 = 0.1f`` @10kHz.
 
-IP-Core Hardware
+IP Core Hardware
 ================
 
 .. figure:: ip_core_overview.png
    :width: 800
    :align: center
 
-   Test bench of PWM and SS Control IP-Core
+   Test bench of PWM and SS Control IP Core
 
 .. figure:: phase_leg.png
    :width: 800
@@ -105,7 +105,7 @@ Vitis
 
 
 .. note::
-   * If at least two synchronized ip cores are present, both have to be configured with ``use_external_counter = enable`` 
+   * If at least two synchronized IP cores are present, both have to be configured with ``use_external_counter = enable`` 
      and connected the way shown above for correct synchronization.
 
 .. code-block:: c

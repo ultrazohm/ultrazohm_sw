@@ -14,7 +14,7 @@ architecture tb of delay_trigger_tb is
     constant pulse_spacing_cycles : natural := 15;
 
     signal clk : std_logic := '1';
-    signal reset : std_logic := '0';
+    signal resetN : std_logic := '1';
     signal delay_cycles : unsigned(9 downto 0) := (others => '0');
     signal a_in : std_logic := '0';
     signal a_out : std_logic;
@@ -25,7 +25,7 @@ begin
     uut : entity work.delay_trigger
         port map (
             clk => clk,
-            reset => reset,
+            resetN => resetN,
             delay_cycles => delay_cycles,
             a_in => a_in,
             a_out => a_out,
@@ -36,25 +36,25 @@ begin
 
     stimulus : process
     begin
-        -- Hold reset active long enough to clear the delayed edge block.
-        reset <= '1';
+        -- Hold resetN active low long enough to clear the delayed edge block.
+        resetN <= '0';
         a_in <= '0';
         delay_cycles <= to_unsigned(test_delay_cycles, delay_cycles'length);
         for i in 1 to 2 loop
             wait until rising_edge(clk);
             wait for 1 ns;
-            assert a_out = '0' report "reset should clear the delayed edge output" severity failure;
-            assert pulse_pending = '0' report "reset should clear the delayed edge pending flag" severity failure;
+            assert a_out = '0' report "resetN should clear the delayed edge output" severity failure;
+            assert pulse_pending = '0' report "resetN should clear the delayed edge pending flag" severity failure;
         end loop;
 
-        -- Release reset and confirm the block stays idle.
+        -- Release resetN and confirm the block stays idle.
         wait until falling_edge(clk);
-        reset <= '0';
+        resetN <= '1';
         a_in <= '0';
         wait until rising_edge(clk);
         wait for 1 ns;
-        assert a_out = '0' report "output should stay low after reset release" severity failure;
-        assert pulse_pending = '0' report "pending flag should stay low after reset release" severity failure;
+        assert a_out = '0' report "output should stay low after resetN release" severity failure;
+        assert pulse_pending = '0' report "pending flag should stay low after resetN release" severity failure;
 
         -- Zero-delay pulse should pass through immediately.
         wait until falling_edge(clk);
@@ -122,30 +122,30 @@ begin
             assert pulse_pending = '0' report "pending flag should stay low between isolated pulses" severity failure;
         end loop;
 
-        -- Apply a pulse, then reset before the delayed pulse can emerge.
+        -- Apply a pulse, then assert resetN low before the delayed pulse can emerge.
         wait until falling_edge(clk);
         a_in <= '1';
         wait until rising_edge(clk);
         wait for 1 ns;
-        assert a_out = '0' report "reset-flush pulse appeared too early at the output" severity failure;
-        assert pulse_pending = '1' report "reset-flush test should arm the pending flag before reset" severity failure;
+        assert a_out = '0' report "resetN-flush pulse appeared too early at the output" severity failure;
+        assert pulse_pending = '1' report "resetN-flush test should arm the pending flag before resetN" severity failure;
 
         wait until falling_edge(clk);
         a_in <= '0';
-        reset <= '1';
+        resetN <= '0';
         wait until rising_edge(clk);
         wait for 1 ns;
-        assert a_out = '0' report "reset should force the output low" severity failure;
-        assert pulse_pending = '0' report "reset should clear the pending flag" severity failure;
+        assert a_out = '0' report "resetN should force the output low" severity failure;
+        assert pulse_pending = '0' report "resetN should clear the pending flag" severity failure;
 
         wait until falling_edge(clk);
-        reset <= '0';
+        resetN <= '1';
         a_in <= '0';
         for i in 1 to test_delay_cycles + 1 loop
             wait until rising_edge(clk);
             wait for 1 ns;
-            assert a_out = '0' report "reset should flush the pending delayed pulse" severity failure;
-            assert pulse_pending = '0' report "reset should keep the pending flag low" severity failure;
+            assert a_out = '0' report "resetN should flush the pending delayed pulse" severity failure;
+            assert pulse_pending = '0' report "resetN should keep the pending flag low" severity failure;
         end loop;
 
         -- Second isolated one-clock trigger pulse with the same delay.

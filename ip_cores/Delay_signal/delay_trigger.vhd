@@ -9,6 +9,7 @@
 -- - pulse width is configured locally in this VHDL source
 -- - delay_cycles supports 0..1023 via a 10-bit input
 -- - pulse_width_cycles_c supports 1..64 clk cycles
+-- - resetN is an active-low synchronous reset input
 -- - changing delay_cycles clears any active operation
 -- - a second rising edge while one pulse is active is ignored
 -- - pulse_pending is high while a trigger is waiting or being emitted
@@ -21,7 +22,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity delay_trigger is
     port(
         clk : in std_logic;
-        reset : in std_logic;
+        resetN : in std_logic;
         delay_cycles : in unsigned(9 downto 0);
         a_in : in std_logic;
         a_out : out std_logic := '0';
@@ -60,7 +61,7 @@ process(clk)
     variable config_changed : boolean;
 begin
     if rising_edge(clk) then
-        if reset = '1' then
+        if resetN = '0' then
             a_in_prev <= '0';
             delay_cycles_prev <= (others => '0');
             pulse_state <= IDLE;

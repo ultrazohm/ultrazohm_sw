@@ -8,21 +8,21 @@ typedef struct uz_LUT_1D_t uz_LUT_1D_t;
 
 /**
  * @brief Initializes a 1D Look-Up Table (LUT) instance with the provided breakpoints, data, and length.
- * 
+ *
  * @param breakpoints pointer to uz_array_float_t objects for breakpoints for the LUT. Breakpoints Array must be in ascending order and have the same length as data
  * @param data pointer to uz_array_float_t object for data values corresponding to the breakpoints. Data Array must be in ascending order and must have the same length as breakpoints
  * @param length length of arrays breakpoints and data, must be greater than 1
- * @return uz_LUT_1D_t* 
+ * @return uz_LUT_1D_t*
  */
-uz_LUT_1D_t* uz_LUT_1D_init(uz_array_float_t * breakpoints, uz_array_float_t * data, uint32_t length);
+uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *data);
 
 /**
  * @brief Returns the value from the LUT corresponding to the given input using linear interpolation. If the input is outside the bounds of the breakpoints, it returns the value of the nearest breakpoint.
- * 
+ *
  * @param self instance of the LUT_1D
  * @param input value corresponding to the breakpoints
- * @return float 
+ * @return float
  */
-float uz_LUT_1D_get_value(uz_LUT_1D_t* self, float input);
+float uz_LUT_1D_get_value(uz_LUT_1D_t *self, float input);
 
 #endif // UZ_LUT_1D_H

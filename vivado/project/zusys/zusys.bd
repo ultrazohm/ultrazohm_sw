@@ -86,11 +86,10 @@
         },
         "Interrupt": {
           "Concat_interrupts": "",
-          "adc_delay": "",
-          "delay_trigger_0": "",
-          "mux_axi_ip_1": "",
           "system_ila_0": "",
-          "vio_interrupt": ""
+          "vio_interrupt": "",
+          "mux_axi_ip_1": "",
+          "delay_trigger_0": ""
         },
         "axi_timebase_wdt_0": "",
         "smartconnect_0": "",
@@ -485,7 +484,7 @@
                 "type": "clk",
                 "direction": "I"
               },
-              "probe5": {
+              "TRIGGER_CNV": {
                 "direction": "I",
                 "left": "0",
                 "right": "0"
@@ -932,7 +931,7 @@
               },
               "Interrupt_muxed": {
                 "ports": [
-                  "probe5",
+                  "TRIGGER_CNV",
                   "A1_ADC_LTC2311/TRIGGER_CNV",
                   "adc_debug/probe5"
                 ]
@@ -1432,7 +1431,7 @@
           "Interrupt_muxed": {
             "ports": [
               "TRIGGER_CNV",
-              "A1_adapter/probe5",
+              "A1_adapter/TRIGGER_CNV",
               "A2_adapter/TRIGGER_CNV",
               "A3_adapter/TRIGGER_CNV"
             ]
@@ -1582,7 +1581,9 @@
             "right": "0"
           },
           "PeriodEnd": {
-            "direction": "I"
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           },
           "RESETN": {
             "type": "rst",
@@ -1670,6 +1671,11 @@
               "RESETN": {
                 "type": "rst",
                 "direction": "I"
+              },
+              "ADC_TriggerConversion": {
+                "direction": "I",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -1744,6 +1750,11 @@
                   "RESETN": {
                     "type": "rst",
                     "direction": "I"
+                  },
+                  "ADC_TriggerConversion": {
+                    "direction": "I",
+                    "left": "0",
+                    "right": "0"
                   }
                 },
                 "components": {
@@ -1872,7 +1883,7 @@
                         "value": "Native"
                       },
                       "C_NUM_OF_PROBES": {
-                        "value": "19"
+                        "value": "20"
                       }
                     }
                   }
@@ -1928,6 +1939,12 @@
                   }
                 },
                 "nets": {
+                  "ADC_TriggerConversion_1": {
+                    "ports": [
+                      "ADC_TriggerConversion",
+                      "ila_0/probe19"
+                    ]
+                  },
                   "AXI4_Lite_ARESETN_1": {
                     "ports": [
                       "RESETN",
@@ -2490,6 +2507,12 @@
                 "ports": [
                   "Gates/Gate_Signals_2L",
                   "Gate_Signals_2L"
+                ]
+              },
+              "TriggerConversion_1": {
+                "ports": [
+                  "ADC_TriggerConversion",
+                  "Gates/ADC_TriggerConversion"
                 ]
               },
               "proc_sys_reset_1_peripheral_aresetn": {
@@ -3169,7 +3192,9 @@
                 "direction": "I"
               },
               "PeriodEnd": {
-                "direction": "I"
+                "direction": "I",
+                "left": "0",
+                "right": "0"
               },
               "RESETN": {
                 "type": "rst",
@@ -3416,7 +3441,8 @@
           "PeriodEnd_1": {
             "ports": [
               "PeriodEnd",
-              "D5_adapter/PeriodEnd"
+              "D5_adapter/PeriodEnd",
+              "D1_adapter/ADC_TriggerConversion"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -3644,7 +3670,9 @@
             "direction": "O"
           },
           "trigger_conversions": {
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "wdt_interrupt": {
             "type": "intr",
@@ -3913,7 +3941,10 @@
                 "direction": "I"
               },
               "trigger_conversions": {
-                "direction": "O"
+                "type": "intr",
+                "direction": "O",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -3928,64 +3959,6 @@
                   }
                 }
               },
-              "adc_delay": {
-                "vlnv": "xilinx.com:ip:vio:3.0",
-                "xci_name": "zusys_adc_delay_0",
-                "xci_path": "ip\\zusys_adc_delay_0_1\\zusys_adc_delay_0.xci",
-                "inst_hier_path": "uz_system/Interrupt/adc_delay",
-                "parameters": {
-                  "C_NUM_PROBE_IN": {
-                    "value": "0"
-                  },
-                  "C_PROBE_OUT0_WIDTH": {
-                    "value": "11"
-                  }
-                }
-              },
-              "delay_trigger_0": {
-                "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
-                "xci_name": "zusys_delay_trigger_0_0",
-                "xci_path": "ip\\zusys_delay_trigger_0_0_1\\zusys_delay_trigger_0_0.xci",
-                "inst_hier_path": "uz_system/Interrupt/delay_trigger_0",
-                "reference_info": {
-                  "ref_type": "hdl",
-                  "ref_name": "delay_trigger",
-                  "boundary_crc": "0x0"
-                },
-                "ports": {
-                  "clk": {
-                    "type": "clk",
-                    "direction": "I",
-                    "parameters": {
-                      "FREQ_HZ": {
-                        "value": "100000000",
-                        "value_src": "user_prop"
-                      },
-                      "CLK_DOMAIN": {
-                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                        "value_src": "default_prop"
-                      }
-                    }
-                  },
-                  "delay_cycles": {
-                    "direction": "I",
-                    "left": "10",
-                    "right": "0"
-                  },
-                  "a_in": {
-                    "direction": "I"
-                  },
-                  "a_out": {
-                    "direction": "O"
-                  }
-                }
-              },
-              "mux_axi_ip_1": {
-                "vlnv": "xilinx.com:ip:mux_axi_ip:1.2",
-                "xci_name": "zusys_mux_axi_ip_1_0",
-                "xci_path": "ip\\zusys_mux_axi_ip_1_0_1\\zusys_mux_axi_ip_1_0.xci",
-                "inst_hier_path": "uz_system/Interrupt/mux_axi_ip_1"
-              },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
                 "xci_name": "zusys_system_ila_0_4",
@@ -3999,7 +3972,7 @@
                     "value": "NATIVE"
                   },
                   "C_NUM_OF_PROBES": {
-                    "value": "9"
+                    "value": "11"
                   }
                 }
               },
@@ -4011,6 +3984,67 @@
                 "parameters": {
                   "C_NUM_PROBE_IN": {
                     "value": "0"
+                  }
+                }
+              },
+              "mux_axi_ip_1": {
+                "vlnv": "mwn.de:ip:mux_axi_ip:1.3",
+                "xci_name": "zusys_mux_axi_ip_2_0",
+                "xci_path": "ip\\zusys_mux_axi_ip_2_0\\zusys_mux_axi_ip_2_0.xci",
+                "inst_hier_path": "uz_system/Interrupt/mux_axi_ip_1"
+              },
+              "delay_trigger_0": {
+                "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
+                "xci_name": "zusys_delay_trigger_0_2",
+                "xci_path": "ip\\zusys_delay_trigger_0_2\\zusys_delay_trigger_0_2.xci",
+                "inst_hier_path": "uz_system/Interrupt/delay_trigger_0",
+                "reference_info": {
+                  "ref_type": "hdl",
+                  "ref_name": "delay_trigger",
+                  "boundary_crc": "0x0"
+                },
+                "ports": {
+                  "clk": {
+                    "type": "clk",
+                    "direction": "I",
+                    "parameters": {
+                      "ASSOCIATED_RESET": {
+                        "value": "resetN",
+                        "value_src": "constant"
+                      },
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      },
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      }
+                    }
+                  },
+                  "resetN": {
+                    "type": "rst",
+                    "direction": "I",
+                    "parameters": {
+                      "POLARITY": {
+                        "value": "ACTIVE_LOW",
+                        "value_src": "constant"
+                      }
+                    }
+                  },
+                  "delay_cycles": {
+                    "direction": "I",
+                    "left": "9",
+                    "right": "0"
+                  },
+                  "a_in": {
+                    "direction": "I"
+                  },
+                  "a_out": {
+                    "direction": "O"
+                  },
+                  "pulse_pending": {
+                    "direction": "O"
                   }
                 }
               }
@@ -4078,33 +4112,40 @@
                   "Concat_interrupts/In6"
                 ]
               },
-              "adc_delay_probe_out0": {
-                "ports": [
-                  "adc_delay/probe_out0",
-                  "delay_trigger_0/delay_cycles"
-                ]
-              },
               "delay_trigger_0_a_out": {
                 "ports": [
                   "delay_trigger_0/a_out",
-                  "trigger_conversions",
-                  "system_ila_0/probe8"
+                  "system_ila_0/probe8",
+                  "trigger_conversions"
+                ]
+              },
+              "delay_trigger_0_pulse_pending": {
+                "ports": [
+                  "delay_trigger_0/pulse_pending",
+                  "system_ila_0/probe10"
                 ]
               },
               "mux_axi_ip_1_interrupt_out_adc": {
                 "ports": [
                   "mux_axi_ip_1/interrupt_out_adc",
-                  "delay_trigger_0/a_in",
-                  "system_ila_0/probe6"
+                  "system_ila_0/probe6",
+                  "delay_trigger_0/a_in"
                 ]
               },
-              "mux_axi_ip_1_interrupt_out_isr": {
+              "mux_axi_ip_2_delay_ADC_trigger_in_clk_cycles_OUT": {
+                "ports": [
+                  "mux_axi_ip_1/delay_ADC_trigger_in_clk_cycles_OUT",
+                  "system_ila_0/probe9",
+                  "delay_trigger_0/delay_cycles"
+                ]
+              },
+              "mux_axi_ip_2_interrupt_out_isr": {
                 "ports": [
                   "mux_axi_ip_1/interrupt_out_isr",
                   "Interrupt_vector"
                 ]
               },
-              "mux_axi_ip_1_select_out": {
+              "mux_axi_ip_2_select_out": {
                 "ports": [
                   "mux_axi_ip_1/select_out",
                   "system_ila_0/probe7"
@@ -4113,8 +4154,9 @@
               "proc_sys_reset_1_peripheral_aresetn": {
                 "ports": [
                   "IPCORE_RESETN",
+                  "mux_axi_ip_1/IPCORE_RESETN",
                   "mux_axi_ip_1/AXI4_Lite_ARESETN",
-                  "mux_axi_ip_1/IPCORE_RESETN"
+                  "delay_trigger_0/resetN"
                 ]
               },
               "vio_0_probe_out0": {
@@ -4126,12 +4168,11 @@
               "zynq_ultra_ps_e_0_pl_clk1": {
                 "ports": [
                   "clk",
-                  "adc_delay/clk",
-                  "delay_trigger_0/clk",
-                  "mux_axi_ip_1/AXI4_Lite_ACLK",
-                  "mux_axi_ip_1/IPCORE_CLK",
                   "system_ila_0/clk",
-                  "vio_interrupt/clk"
+                  "vio_interrupt/clk",
+                  "mux_axi_ip_1/IPCORE_CLK",
+                  "mux_axi_ip_1/AXI4_Lite_ACLK",
+                  "delay_trigger_0/clk"
                 ]
               }
             }
@@ -5506,7 +5547,7 @@
               "Interrupt/Interrupt6"
             ]
           },
-          "Interrupt_muxed": {
+          "Interrupt_trigger_conversions": {
             "ports": [
               "Interrupt/trigger_conversions",
               "trigger_conversions"

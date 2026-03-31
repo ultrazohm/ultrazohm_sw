@@ -66,10 +66,10 @@ void test_uz_LUT_1D_get_value_5values(void) {
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
     //out of bounds
     output = uz_LUT_1D_get_value(instance, -1.0f);
-    expected = 0.0f;//min value of data array
+    expected = 0.0f;//first value of data array
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
     output = uz_LUT_1D_get_value(instance, 5.0f);
-    expected = 8.0f;//Max value of data array
+    expected = 8.0f;//last value of data array
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
 }
 
@@ -88,10 +88,31 @@ void test_uz_LUT_1D_get_value_20values(void) {
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
     //out of bounds
     output = uz_LUT_1D_get_value(instance, -1.0f);
-    expected = 0.0f;//min value of data array
+    expected = 0.0f;//first value of data array
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
     output = uz_LUT_1D_get_value(instance, 22.0f);
-    expected = 38.0f;//Max value of data array
+    expected = 38.0f;//last value of data array
+    TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
+}
+
+void test_uz_LUT_1D_get_value_non_monotonic_data(void)
+{
+    float LUT_breakpoints_array[5] = {0.0f, 1.0f, 2.0f, 3.0f, 4.0f};
+    float LUT_data_array[5]        = {10.0f, 4.0f, 8.0f, -1.0f, 6.0f};
+    uz_array_float_t breakpoints_array = {.length = UZ_ARRAY_SIZE(LUT_breakpoints_array), .data = LUT_breakpoints_array};
+    uz_array_float_t data_array = {.length = UZ_ARRAY_SIZE(LUT_data_array), .data = LUT_data_array};
+    uz_LUT_1D_t *instance = uz_LUT_1D_init(&breakpoints_array, &data_array);
+
+    float output = uz_LUT_1D_get_value(instance, 1.5f);
+    float expected = 6.0f;
+    TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
+
+    output = uz_LUT_1D_get_value(instance, -1.0f);
+    expected = 10.0f;
+    TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
+
+    output = uz_LUT_1D_get_value(instance, 5.0f);
+    expected = 6.0f;
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
 }
 
@@ -107,16 +128,16 @@ void test_uz_LUT_1D_get_linear_interpolated_value(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
 }
 
-// void test_uz_LUT_1D_get_linear_interpolated_value_negative(void)
-// {
-//     float LUT_breakpoints_array[6] = {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f};
-//     float LUT_data_array[6] = {0.0f, -5.0f, -10.0f, -15.0f, -20.0f, -25.0f};
-//     uz_array_float_t breakpoints_array = {.length = UZ_ARRAY_SIZE(LUT_breakpoints_array), .data = LUT_breakpoints_array};
-//     uz_array_float_t data_array = {.length = UZ_ARRAY_SIZE(LUT_data_array), .data = LUT_data_array};
-//     uz_LUT_1D_t *instance = uz_LUT_1D_init(&breakpoints_array, &data_array);
-//     float output = uz_LUT_1D_get_value(instance, -1.5f);
-//     float expected = -7.5f;
-//     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
-// }
+void test_uz_LUT_1D_get_linear_interpolated_value_negative(void)
+{
+    float LUT_breakpoints_array[6] = {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f};
+    float LUT_data_array[6] = {0.0f, -5.0f, -10.0f, -15.0f, -20.0f, -25.0f};
+    uz_array_float_t breakpoints_array = {.length = UZ_ARRAY_SIZE(LUT_breakpoints_array), .data = LUT_breakpoints_array};
+    uz_array_float_t data_array = {.length = UZ_ARRAY_SIZE(LUT_data_array), .data = LUT_data_array};
+    uz_LUT_1D_t *instance = uz_LUT_1D_init(&breakpoints_array, &data_array);
+    float output = uz_LUT_1D_get_value(instance, 1.5f);
+    float expected = -7.5f;
+    TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
+}
 
 #endif // TEST

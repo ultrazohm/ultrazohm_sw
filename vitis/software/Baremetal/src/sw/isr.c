@@ -92,11 +92,6 @@ platform_state_t current_state;
 bool ext_clamping = false;
 
 float ts = 1.0f/UZ_PWM_FREQUENCY;
-float rated_current = 10.0f;
-float speed_weight = 1.0f/2000.0f;
-float rated_speed = 2000.0f;
-float U_max = 27.7128f;
-float Voltage_Scaling = 1.0f/27.7128f;
 float Observation[17] = {0};
 
 //Stepprofile stuff
@@ -143,7 +138,7 @@ void ISR_Control(void *data)
     	Global_Data.av.omega_mech 			= Global_Data.av.pmsm_outputs.omega_mech_1_s;
     	Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech * 30.0f / UZ_PIf;
     	Global_Data.av.omega_elec 			= Global_Data.av.omega_mech * Global_Data.av.pmsm_config_Pruef_dq.polePairs;
-    	Global_Data.av.v_dc1				= 48.0f;
+    	Global_Data.av.v_dc1				= Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
     	break;
 
     case REAL:
@@ -414,33 +409,33 @@ void ISR_Control(void *data)
     			Global_Data.av.i_dqxy_integrated_error.x += 0.0f;
     			Global_Data.av.i_dqxy_integrated_error.y += 0.0f;
     		}
-    		Global_Data.av.i_dqxy_error.d = (Global_Data.av.i_dqxy_ref.d - Global_Data.av.i_dqxy.d) / rated_current;
-    		Global_Data.av.i_dqxy_error.q = (Global_Data.av.i_dqxy_ref.q - Global_Data.av.i_dqxy.q) / rated_current;
-    		Global_Data.av.i_dqxy_error.x = (Global_Data.av.i_dqxy_ref.x - Global_Data.av.i_dqxy.x) / rated_current;
-    		Global_Data.av.i_dqxy_error.y = (Global_Data.av.i_dqxy_ref.y - Global_Data.av.i_dqxy.y) / rated_current;
+    		Global_Data.av.i_dqxy_error.d = (Global_Data.av.i_dqxy_ref.d - Global_Data.av.i_dqxy.d) / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+    		Global_Data.av.i_dqxy_error.q = (Global_Data.av.i_dqxy_ref.q - Global_Data.av.i_dqxy.q) / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+    		Global_Data.av.i_dqxy_error.x = (Global_Data.av.i_dqxy_ref.x - Global_Data.av.i_dqxy.x) / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+    		Global_Data.av.i_dqxy_error.y = (Global_Data.av.i_dqxy_ref.y - Global_Data.av.i_dqxy.y) / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
        		Observation[0] = Global_Data.av.i_dqxy_error.d;
        		Observation[1] = Global_Data.av.i_dqxy_integrated_error.d * UZ_PWM_FREQUENCY;
        		Observation[2] = Global_Data.av.i_dqxy_error.q;
        		Observation[3] = Global_Data.av.i_dqxy_integrated_error.q * UZ_PWM_FREQUENCY;
-       		Observation[4] = Global_Data.av.i_dqxy.d / rated_current;
-       		Observation[5] = Global_Data.av.i_dqxy.q / rated_current;
-       		Observation[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
-       		Observation[7] = Global_Data.av.v_dqxy_ref.d * Voltage_Scaling;
-       		Observation[8] = Global_Data.av.v_dqxy_ref.q * Voltage_Scaling;
+       		Observation[4] = Global_Data.av.i_dqxy.d / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+       		Observation[5] = Global_Data.av.i_dqxy.q / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+       		Observation[6] = Global_Data.av.mechanicalRotorSpeed / Global_Data.av.pmsm_config_Pruef_dq.n_rated_rpm;
+       		Observation[7] = Global_Data.av.v_dqxy_ref.d * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+       		Observation[8] = Global_Data.av.v_dqxy_ref.q * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
        		Observation[9] = Global_Data.av.i_dqxy_error.x;
        		Observation[10] = Global_Data.av.i_dqxy_integrated_error.x * UZ_PWM_FREQUENCY;
        		Observation[11] = Global_Data.av.i_dqxy_error.y;
        		Observation[12] = Global_Data.av.i_dqxy_integrated_error.y * UZ_PWM_FREQUENCY;
-       		Observation[13] = Global_Data.av.i_dqxy.x / rated_current;
-       		Observation[14] = Global_Data.av.i_dqxy.y / rated_current;
-       		Observation[15] = Global_Data.av.v_dqxy_ref.x * Voltage_Scaling;
-       		Observation[16] = Global_Data.av.v_dqxy_ref.y * Voltage_Scaling;
+       		Observation[13] = Global_Data.av.i_dqxy.x / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+       		Observation[14] = Global_Data.av.i_dqxy.y / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+       		Observation[15] = Global_Data.av.v_dqxy_ref.x * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+       		Observation[16] = Global_Data.av.v_dqxy_ref.y * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
        		for (uint32_t i = 0; i < 17; i++) {
        			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
        		}
             uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
             //May need adjusting
-            uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc1/2.0f); // scaling layer of nn
+            uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts/2.0f); // scaling layer of nn
             Global_Data.av.v_dqxy_non_limited.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
             Global_Data.av.v_dqxy_non_limited.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
             Global_Data.av.v_dqxy_non_limited.x = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);

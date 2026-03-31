@@ -12,6 +12,9 @@ static const struct uz_PMSM_t pmsm_config_Pruef_dq = {
         .Lq_Henry = 0.00071f,
         .Psi_PM_Vs = 0.0143f,
 		.I_max_Ampere = 15.0f,
+		.I_rated_Ampere = 10.0f,
+		.n_rated_rpm = 2000.0f,
+		.V_DC_Volts = 48.0f,
 		.R_ph_Ohm = 0.2f,
         .polePairs = 5.0f
         };
@@ -21,6 +24,9 @@ static const struct uz_PMSM_t pmsm_config_Pruef_xy = {
         .Lq_Henry = 0.00027f,
         .Psi_PM_Vs = 0.0f,
 		.I_max_Ampere = 15.0f,
+		.I_rated_Ampere = 10.0f,
+		.n_rated_rpm = 2000.0f,
+		.V_DC_Volts = 48.0f,
 		.R_ph_Ohm = 0.2f,
         .polePairs = 5.0f
         };
@@ -30,6 +36,9 @@ static const struct uz_PMSM_t pmsm_config_Last = {
         .Lq_Henry = 0.00071f,
         .Psi_PM_Vs = 0.0143f,
 		.I_max_Ampere = 30.0f,
+		.I_rated_Ampere = 20.0f,
+		.n_rated_rpm = 2000.0f,
+		.V_DC_Volts = 48.0f,
 		.R_ph_Ohm = 0.1f,
         .polePairs = 5.0f,
         };
@@ -38,13 +47,13 @@ struct uz_pmsmModel_6ph_dqxy_config_t pmsm_config={
   .base_address=XPAR_UZ_PMSM_MODEL_6PH_DQXY_0_BASEADDR,
   .ip_core_frequency_Hz=100000000,
   .simulate_mechanical_system = false,
-  .r_1 = 0.2f,
-  .L_d = 0.00058f,
-  .L_q = 0.00071f,
-  .L_x = 0.00029f,
-  .L_y = 0.00027f,
-  .psi_pm = 0.0143f,
-  .polepairs = 5.0f,
+  .r_1 = pmsm_config_Pruef_dq.R_ph_Ohm,
+  .L_d = pmsm_config_Pruef_dq.Ld_Henry,
+  .L_q = pmsm_config_Pruef_dq.Lq_Henry,
+  .L_x = pmsm_config_Pruef_xy.Ld_Henry,
+  .L_y = pmsm_config_Pruef_xy.Lq_Henry,
+  .psi_pm = pmsm_config_Pruef_dq.Psi_PM_Vs,
+  .polepairs = pmsm_config_Pruef_dq.polePairs,
   .inertia = 0.001,
   .coulomb_friction_constant = 0.01f,
   .friction_coefficient = 0.001f};
@@ -92,7 +101,7 @@ uz_CurrentControl_t* init_xy_FOC_Pruef(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_ix_Pruef,
 	    .config_iq = config_iy_Pruef,
-	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,//not used
+	    .max_modulation_index = (1.0f / 2.0f),//not used
 		.config_PMSM = pmsm_config_Pruef_xy
 	};
 	Global_Data.av.pmsm_config_Pruef_xy = pmsm_config_Pruef_xy;
@@ -104,7 +113,7 @@ uz_CurrentControl_t* init_dq_FOC_Pruef(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_id_Pruef,
 	    .config_iq = config_iq_Pruef,
-	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,//not used
+	    .max_modulation_index = (1.0f / 2.0f),//not used
 		.config_PMSM = pmsm_config_Pruef_dq
 	};
 	Global_Data.av.pmsm_config_Pruef_dq = pmsm_config_Pruef_dq;

@@ -11,7 +11,6 @@ typedef struct uz_LUT_1D_t uz_LUT_1D_t;
  *
  * @param breakpoints pointer to uz_array_float_t objects for breakpoints for the LUT. Breakpoints Array must be in ascending order and have the same length as data
  * @param data pointer to uz_array_float_t object for data values corresponding to the breakpoints. Data Array must be in ascending order and must have the same length as breakpoints
- * @param length length of arrays breakpoints and data, must be greater than 1
  * @return uz_LUT_1D_t*
  */
 uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *data);

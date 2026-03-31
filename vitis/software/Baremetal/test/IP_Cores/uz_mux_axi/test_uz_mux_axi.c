@@ -10,19 +10,15 @@
 
 #include "uz_mux_axi.h"
 
-    struct uz_mux_axi_config_t config = {
-        .base_address=TEST_BASE_ADDRESS,
-        .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
-        .mux=1,
-        .n_th_interrupt=1,
-        .delay_adc_trigger_in_us=0.0f
-    };
-
-    
-
+struct uz_mux_axi_config_t config;
 
 void setUp(void)
 {
+    config.base_address = TEST_BASE_ADDRESS;
+    config.ip_clk_frequency_Hz = TEST_IP_CORE_FRQ;
+    config.mux = 1;
+    config.n_th_interrupt = 1;
+    config.delay_adc_trigger_in_us = 0.0f;
 }
 
 void tearDown(void)

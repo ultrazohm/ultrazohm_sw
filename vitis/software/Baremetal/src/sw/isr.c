@@ -100,16 +100,16 @@ bool start_angle_found = false;
 bool change_speed = false;
 uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
-float id_setpoints[22]={
+float id_setpoints[50]={
 #include "id_setpoints.csv"
 };
-float iq_setpoints[22]={
+float iq_setpoints[50]={
 #include "iq_setpoints.csv"
 };
-float ix_setpoints[22]={
+float ix_setpoints[50]={
 #include "ix_setpoints.csv"
 };
-float iy_setpoints[22]={
+float iy_setpoints[50]={
 #include "iy_setpoints.csv"
 };
 //====================
@@ -308,23 +308,19 @@ void ISR_Control(void *data)
         	if (((((Global_Data.av.theta_elec_old - Global_Data.av.theta_elec) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed < 10.0f)) || ConApplication==CIL)&& (!start_angle_found)) {
         		if(current_uptime>(old_uptime + 4360)) {
         			start_angle_found = true;
+        			old_uptime=current_uptime;
         		}
         	}
         	if (start_angle_found) {
-        		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
-        		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
-        		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
-        		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * rated_current;
-
         		// step throught the array
-        		if((current_uptime>(old_uptime + 360) && (!change_speed)) ){
+        		if((current_uptime>(old_uptime + 144) && (!change_speed)) ){
         			old_uptime=current_uptime;
-            		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * rated_current;
-            		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * rated_current;
-            		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * rated_current;
-            		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * rated_current;
-            		Global_Data.av.start_marker=1.0f;
-        			if(setpoint_index<21){
+        			Global_Data.av.start_marker=1.0f;
+            		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+            		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+            		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+            		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+        			if(setpoint_index<49){
         				setpoint_index++;
         			}else{
         				setpoint_index = 0U;
@@ -349,9 +345,13 @@ void ISR_Control(void *data)
         				//StepProfile = false;
         			}
         		}
-        		if(fabs(Global_Data.av.n_ref_Last) > rated_speed) {
+        		if(fabs(Global_Data.av.n_ref_Last) > Global_Data.av.pmsm_config_Pruef_dq.n_rated_rpm) {
         			StepProfile = false;
         			Global_Data.av.n_ref_Last = 0.0f;
+    				Global_Data.av.i_dqxy_ref.d = 0.0f;
+    				Global_Data.av.i_dqxy_ref.q = 0.0f;
+    				Global_Data.av.i_dqxy_ref.x = 0.0f;
+    				Global_Data.av.i_dqxy_ref.y = 0.0f;
         		}
         	}
 

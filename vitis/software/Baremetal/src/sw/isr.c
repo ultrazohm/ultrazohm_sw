@@ -101,16 +101,16 @@ bool change_speed = false;
 uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
 float id_setpoints[50]={
-#include "id_setpoints.csv"
+#include "id_setpoints_50.csv"
 };
 float iq_setpoints[50]={
-#include "iq_setpoints.csv"
+#include "iq_setpoints_50.csv"
 };
 float ix_setpoints[50]={
-#include "ix_setpoints.csv"
+#include "ix_setpoints_50.csv"
 };
 float iy_setpoints[50]={
-#include "iy_setpoints.csv"
+#include "iy_setpoints_50.csv"
 };
 //====================
 //==============================================================================================================================================================
@@ -313,14 +313,18 @@ void ISR_Control(void *data)
         	}
         	if (start_angle_found) {
         		// step throught the array
-        		if((current_uptime>(old_uptime + 144) && (!change_speed)) ){
+#if DEPENGINE==1
+        		if((current_uptime>(old_uptime + 140) && (!change_speed)) ){
+#else
+        		if((current_uptime>(old_uptime + 36) && (!change_speed)) ){
+#endif
         			old_uptime=current_uptime;
         			Global_Data.av.start_marker=1.0f;
             		Global_Data.av.i_dqxy_ref.d=id_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
             		Global_Data.av.i_dqxy_ref.q=iq_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
             		Global_Data.av.i_dqxy_ref.x=ix_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
             		Global_Data.av.i_dqxy_ref.y=iy_setpoints[setpoint_index] * Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
-        			if(setpoint_index<49){
+        			if(setpoint_index<50){
         				setpoint_index++;
         			}else{
         				setpoint_index = 0U;
@@ -420,22 +424,36 @@ void ISR_Control(void *data)
        		Observation[4] = Global_Data.av.i_dqxy.d / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
        		Observation[5] = Global_Data.av.i_dqxy.q / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
        		Observation[6] = Global_Data.av.mechanicalRotorSpeed / Global_Data.av.pmsm_config_Pruef_dq.n_rated_rpm;
+#if DEPENGINE==1
+       		Observation[7] = Global_Data.av.v_dqxy_ref.d * 2.0f / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+       		Observation[8] = Global_Data.av.v_dqxy_ref.q * 2.0f / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+#else
        		Observation[7] = Global_Data.av.v_dqxy_ref.d * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
        		Observation[8] = Global_Data.av.v_dqxy_ref.q * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+#endif
        		Observation[9] = Global_Data.av.i_dqxy_error.x;
        		Observation[10] = Global_Data.av.i_dqxy_integrated_error.x * UZ_PWM_FREQUENCY;
        		Observation[11] = Global_Data.av.i_dqxy_error.y;
        		Observation[12] = Global_Data.av.i_dqxy_integrated_error.y * UZ_PWM_FREQUENCY;
        		Observation[13] = Global_Data.av.i_dqxy.x / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
        		Observation[14] = Global_Data.av.i_dqxy.y / Global_Data.av.pmsm_config_Pruef_dq.I_rated_Ampere;
+#if DEPENGINE==1
+       		Observation[15] = Global_Data.av.v_dqxy_ref.x * 2.0f / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+       		Observation[16] = Global_Data.av.v_dqxy_ref.y * 2.0f / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+#else
        		Observation[15] = Global_Data.av.v_dqxy_ref.x * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
        		Observation[16] = Global_Data.av.v_dqxy_ref.y * sqrtf(3) / Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts;
+#endif
        		for (uint32_t i = 0; i < 17; i++) {
        			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
        		}
             uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
             //May need adjusting
+#if DEPENGINE==1
+            uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts/sqrtf(3.0f)); // scaling layer of nn
+#else
             uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.pmsm_config_Pruef_dq.V_DC_Volts/2.0f); // scaling layer of nn
+#endif
             Global_Data.av.v_dqxy_non_limited.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
             Global_Data.av.v_dqxy_non_limited.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
             Global_Data.av.v_dqxy_non_limited.x = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);

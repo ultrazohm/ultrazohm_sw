@@ -11,6 +11,40 @@ extern DS_Data Global_Data;
 #define NUMBER_OF_OUTPUTS 4
 #define NUMBER_OF_HIDDEN_LAYER 3
 
+#if DEPENGINE==1
+float x[NUMBER_OF_INPUTS] MEMORY_ALIGN = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f};
+float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] MEMORY_ALIGN = {
+#include "Weights_Layer_1_Dep.csv"
+};
+float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] MEMORY_ALIGN = {
+#include "Bias_Layer_1_Dep.csv"
+};
+float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] MEMORY_ALIGN = {0};
+
+float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {
+#include "Weights_Layer_2_Dep.csv"
+};
+float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {
+#include "Bias_Layer_2_Dep.csv"
+};
+float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {0};
+
+float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {
+#include "Weights_Layer_3_Dep.csv"
+};
+float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] MEMORY_ALIGN = {
+#include "Bias_Layer_3_Dep.csv"
+};
+float y_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] MEMORY_ALIGN = {0};
+
+float w_4[NUMBER_OF_NEURONS_IN_THIRD_LAYER * NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
+#include "Weights_Layer_out_Dep.csv"
+};
+float b_4[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
+#include "Bias_Layer_out_Dep.csv"
+};
+float y_4[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {0};
+#else
 float x[NUMBER_OF_INPUTS] MEMORY_ALIGN = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f};
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] MEMORY_ALIGN = {
 #include "Weights_Layer_1.csv"
@@ -43,7 +77,7 @@ float b_4[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {
 #include "Bias_Layer_out.csv"
 };
 float y_4[NUMBER_OF_OUTPUTS] MEMORY_ALIGN = {0};
-
+#endif
 struct uz_nn_layer_config software_nn_config[4] = {
     [0] = {
         .activation_function = activation_ReLU,

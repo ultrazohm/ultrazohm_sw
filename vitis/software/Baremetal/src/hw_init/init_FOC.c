@@ -7,6 +7,32 @@ float Limitation_saftey_factor = 0.707106781f; //To represent the saftey factor 
 //#define LIMITATION_SAFETY_FACTOR 0.707106781186f   //(1/sqrtf(2.0f))
 #define TAU_SIGMA (1.5f * SAMPLE_TIME_SEC_CURRENT_CONTROL)
 
+
+#if DEPENGINE==1
+static const struct uz_PMSM_t pmsm_config_Pruef_dq = {
+        .Ld_Henry = 0.00174f,
+        .Lq_Henry = 0.0038f,
+        .Psi_PM_Vs = 0.194f,
+		.I_max_Ampere = 15.0f,
+		.I_rated_Ampere = 10.0f,
+		.n_rated_rpm = 1500.0f,
+		.V_DC_Volts = 565.0f,
+		.R_ph_Ohm = 0.27f,
+        .polePairs = 5.0f
+        };
+
+static const struct uz_PMSM_t pmsm_config_Pruef_xy = {
+        .Ld_Henry = 0.0028f,
+        .Lq_Henry = 0.00265f,
+        .Psi_PM_Vs = 0.0f,
+		.I_max_Ampere = 15.0f,
+		.I_rated_Ampere = 10.0f,
+		.n_rated_rpm = 1500.0f,
+		.V_DC_Volts = 565.0f,
+		.R_ph_Ohm = 0.27f,
+        .polePairs = 5.0f
+        };
+#else
 static const struct uz_PMSM_t pmsm_config_Pruef_dq = {
         .Ld_Henry = 0.00058f,
         .Lq_Henry = 0.00071f,
@@ -30,7 +56,7 @@ static const struct uz_PMSM_t pmsm_config_Pruef_xy = {
 		.R_ph_Ohm = 0.2f,
         .polePairs = 5.0f
         };
-
+#endif
 static const struct uz_PMSM_t pmsm_config_Last = {
         .Ld_Henry = 0.00058f,
         .Lq_Henry = 0.00071f,

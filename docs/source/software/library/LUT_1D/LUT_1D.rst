@@ -1,8 +1,8 @@
 .. _uz_LUT_1D:
 
-=====
+======
 LUT_1D
-=====
+======
 
 Description
 ===========
@@ -34,16 +34,16 @@ When the input is between two breakpoints, the output is linearly interpolated b
 		  .data = &LUT_data_array[0]
     };
 
-    uz_LUT_1D_t* init_LUT(void) {
-	    return(uz_LUT_1D_init(&LUT_breakpoints, &LUT_data, 6U));
-    }
+    uz_LUT_1D_t* lut_instance = uz_LUT_1D_init(&LUT_breakpoints, &LUT_data, 6U);
+    float input = 2.5f; 
+    float output = uz_LUT_1D_get_value(lut_instance, input);
 
 
 
 Reference
 =========
 
-.. doxygendefine:: uz_LUT_1D_t
+.. doxygentypedef:: uz_LUT_1D_t
 
 .. doxygenfunction:: uz_LUT_1D_init
 

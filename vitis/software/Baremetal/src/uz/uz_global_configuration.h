@@ -28,7 +28,7 @@
 */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
-#define ADC_TRIGGER_DELAY_IN_US                 0.0f
+#define ADC_TRIGGER_DELAY_IN_US                 0.01f // 1 cycle delay to keep same default behvaior as earlier delay_trigger.vhd versions
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f

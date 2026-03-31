@@ -10,6 +10,7 @@ Software User Model
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL.
 The trigger can be synchronized with the PWM (two- and three-level) modules or the ``axi2tcm`` data mover.
 The interrupt trigger is defined in ``uz_global_configuration.h`` by assigning a value to ``INTERRUPT_ISR_SOURCE_USER_CHOICE``.
+An additional delay for the ADC trigger path can be configured with ``ADC_TRIGGER_DELAY_IN_US``.
 
 .. code-block:: c 
 
@@ -93,5 +94,24 @@ Trigger of ADC Conversion
 In some applications, the ADC conversion needs to be delayed relative to the trigger from the PWM module. 
 This can be the case if you are using an IGBT, where the delay introduced by the driver and the IGBT itself are not negligible. 
 To ensure that the ADC sampling does not occur while switching, the delay can be added in PL. 
-At the moment this is done with a VIO (Virtual I/O) in the Hardware Manager in Vivado.
+The default software configuration exposes this delay through ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``.
+The software driver converts the configured value in microseconds to clock cycles and rounds up to the next achievable step.
+For more details on the register and driver interface, see :ref:`uz_mux_axi`.
+
+.. _delay_trigger_block:
+
+Delay Trigger Block
+~~~~~~~~~~~~~~~~~~~
+
+The PL delay is implemented by ``delay_trigger.vhd`` in ``ip_cores/Delay_signal``.
+The block behavior is:
+
+* ``delay_cycles = 0`` routes ``a_in`` directly to ``a_out``
+* ``delay_cycles = 1..1023`` emits a delayed output pulse after the configured number of ``clk`` cycles
+* the output pulse width is fixed locally in the VHDL source via ``pulse_width_cycles_c``
+* changing ``delay_cycles`` clears any pending delayed trigger
+* a second rising edge while a delayed pulse is pending or active is ignored
+* ``pulse_pending`` indicates that a delayed trigger is pending or currently being emitted
+
+With the default 100 MHz clock used in the interrupt path, the achievable delay range is ``0`` to ``10.23 us`` in ``10 ns`` steps.
 

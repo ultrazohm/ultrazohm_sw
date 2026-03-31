@@ -21,5 +21,26 @@ The configuration is used for:
 
 - :ref:`static_memory_allocation`
 - Set the hardware version specific settings (e.g., ``UZ_HARDWARE_VERSION`` for different front panels).
-- Configure the interrupt source (:ref:`r5_interrupts`)
 - Configure the use of an external stop button, depending on the hardware revision (:ref:`external_stop`)
+
+Timing-related defines
+======================
+
+The following defines in ``uz_global_configuration.h`` are commonly adjusted together. This section only lists the fields and points to the detailed documentation.
+
+.. list-table:: Timing-related global configuration defines
+   :widths: 35 65
+   :header-rows: 1
+
+   * - Define
+     - Description
+   * - ``INTERRUPT_ISR_SOURCE_USER_CHOICE``
+     - Selects the interrupt/trigger source. See :ref:`r5_interrupts` and :ref:`uz_mux_axi`.
+   * - ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE``
+     - Sets the ADC-to-ISR trigger ratio. See :ref:`uz_mux_axi`.
+   * - ``ADC_TRIGGER_DELAY_IN_US``
+     - Sets the additional ADC trigger delay. See :ref:`uz_mux_axi`.
+   * - ``UZ_PWM_DEADTIME_IN_US``
+     - Sets the initial deadtime of the 2-level interlock/deadtime blocks. See :ref:`uz_interlockDeadtime2L`.
+   * - ``UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US``
+     - Sets the initial minimum pulse width used by the 2-level PWM driver. See :ref:`uz_pwm_ss_2l`.

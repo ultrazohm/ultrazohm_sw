@@ -6,16 +6,20 @@
 #include <stdint.h>
 #include "../uz_HAL.h"
 #include "../uz_Transformation/uz_Transformation.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 /**
  * @brief Configuration struct for VoltageCompensation. Accessible by the user
  */
 struct uz_VoltageCompensation_config {
-    float dead_time_ns; /**< Dead time in nanoseconds */
+    float dead_time_us; /**< Dead time in microseconds */
     float switching_frequency_Hz; /**< Switching frequency in Hz */
     bool enable_dead_time_compensation; /**< Enable dead time compensation */
     bool enable_on_delay_time_compensation; /**< Enable compensation of on-delay-time of transistor and diode */
     bool enable_voltage_drop_compensation; /**< Enable diode and transistor voltage drop compensation */
+    bool enable_R_on_compensation;
+    float R_on_mOhm; // Resistance of R_ds,on and AC-Busbar
+    float threshold_current; // Half-width of the smooth sign transition around 0 A
     float* diode_currents_A; /**< Array of current values for diode voltage drop lookup */
     float* diode_voltages_V; /**< Array of corresponding voltage drop values for diode */
     int diode_table_size; /**< Size of the diode lookup table */
@@ -28,7 +32,6 @@ struct uz_VoltageCompensation_config {
     float* diode_delay_time_s; /**< Array of delay-time values for transistor */
     float* diode_delay_time_current_A; /**< Array of current values to delay times */
     int diode_delay_time_table_size; /**< Size of the transistor lookup table */
-    // Add more parameters as needed based on the paper
 };
 
 /**
@@ -53,6 +56,6 @@ uz_VoltageCompensation_t* uz_VoltageCompensation_init(struct uz_VoltageCompensat
  * @param dc_link_voltage_V DC link voltage in V
  * @return uz_3ph_abc_t Compensated duty cycles
  */
-uz_3ph_abc_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, uz_3ph_abc_t duty_cycle_ref, uz_3ph_abc_t i_actual_abc_A, float dc_link_voltage_V);
+struct uz_DutyCycle_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, struct uz_DutyCycle_t duty_cycle_ref, uz_3ph_abc_t i_actual_abc_A, float dc_link_voltage_V);
 
 #endif // UZ_VOLTAGECOMPENSATION_H

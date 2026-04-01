@@ -98,6 +98,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DutyCycle_1]			= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_DutyCycle_2]			= &data->rasv.halfBridge2DutyCycle;
 	js_ch_observable[JSO_DutyCycle_3]			= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_DutyCycle_comp_A]			= &data->rasv.dutycycle_comp_A;
+	js_ch_observable[JSO_DutyCycle_comp_B]			= &data->rasv.dutycycle_comp_B;
+	js_ch_observable[JSO_DutyCycle_comp_C]			= &data->rasv.dutycycle_comp_C;
 	js_ch_observable[JSO_U_DC]					= &data->av.U_ZK;
 	js_ch_observable[JSO_theta_mech_comp] 	    = &data->av.theta_mech_comp;
 	js_ch_observable[JSO_iq_ref] 				= &data->rasv.Iq_ref;

@@ -76,6 +76,7 @@ extern DS_Data Global_Data;
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
 bool flg_precharge_SKAI = 0U;
+bool flg_use_voltcomp = 0U;
 platform_state_t last_state;
 platform_state_t current_state;
 int reset_counter=0;
@@ -113,6 +114,7 @@ enum control_state_list control_mode = FOC_i_dq_setpoint;
 // Variables for Current Control and Speed Control
 
 struct uz_3ph_abc_t measurement_current = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
+struct uz_3ph_abc_t ref_abc_current = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
 struct uz_3ph_abc_t measurement_voltage = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
 
 struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
@@ -125,6 +127,12 @@ float torque_ref = 0.0f;
 struct uz_3ph_dq_t dq_decoup_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 
 struct uz_DutyCycle_t output_dutycycle = {
+		.DutyCycle_A = 0.0f,
+		.DutyCycle_B = 0.0f,
+		.DutyCycle_C = 0.0f,
+};
+
+struct uz_DutyCycle_t output_dutycycle_comp = {
 		.DutyCycle_A = 0.0f,
 		.DutyCycle_B = 0.0f,
 		.DutyCycle_C = 0.0f,
@@ -334,8 +342,23 @@ void ISR_Control(void *data)
   					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
   					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
-  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
-  					break;
+  					// Dead-Time compensation
+					uz_3ph_abc_t current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+  					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
+
+  					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+  					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+  					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+  					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
+  					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
+  					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+
+  					if (Global_Data.rasv.flg_use_voltComp){
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
+  					} else{
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					}
+					break;
   				case manual_dq_voltage:
   					dq_reference_voltage.d = Global_Data.rasv.Ud_ref;
   					dq_reference_voltage.q = Global_Data.rasv.Uq_ref;

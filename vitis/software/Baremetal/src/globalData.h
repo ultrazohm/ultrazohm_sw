@@ -145,7 +145,11 @@ typedef struct _referenceAndSetValues_ {
 	float operatingpoints_rc_meas;
 	float flg_start_meas;
 	float flg_use_ResonantController;
+	float flg_use_voltComp;
 	float Udq_ref;
+	float dutycycle_comp_A;
+	float dutycycle_comp_B;
+	float dutycycle_comp_C;
 } referenceAndSetValues;
 
 typedef struct{

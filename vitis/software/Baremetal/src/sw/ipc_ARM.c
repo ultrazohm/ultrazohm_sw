@@ -309,7 +309,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-			if (data->rasv.flg_use_ResonantController == 0.0f){
+		/*	if (data->rasv.flg_use_ResonantController == 0.0f){
 				data->rasv.flg_use_ResonantController = 1.0f;
 				uz_resonantController_reset(data->objects.R_controller_instance_d);
 				uz_resonantController_reset(data->objects.R_controller_instance_q);
@@ -317,7 +317,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				data->rasv.flg_use_ResonantController = 0.0f;
 				uz_resonantController_reset(data->objects.R_controller_instance_d);
 				uz_resonantController_reset(data->objects.R_controller_instance_q);
-			}
+			}*/
+		if (data->rasv.flg_use_voltComp == 0.0f){
+			data->rasv.flg_use_voltComp = 1.0f;
+		} else{
+			data->rasv.flg_use_voltComp = 0.0f;
+		}
 			/*
 			control_mode = manual_dq_voltage;
 			data->rasv.Ud_ref = 0.0f;

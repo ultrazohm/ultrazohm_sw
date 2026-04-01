@@ -54,10 +54,26 @@ static float uz_VoltageCompensation_interpolate_delay_time(float current, float*
     return 0.0f;
 }
 
-static float uz_VoltageCompensation_sign(float value) {
-    if (value > 0.0f) return 1.0f;
-    if (value < 0.0f) return -1.0f;
-    return 0.0f;
+static float uz_VoltageCompensation_sign(float value, float threshold) {
+    float abs_threshold = fabsf(threshold);
+    if (abs_threshold <= 0.0f) {
+        if (value > 0.0f) return 1.0f;
+        if (value < 0.0f) return -1.0f;
+        return 0.0f;
+    }
+
+    float x = value / abs_threshold;
+    if (x >= 1.0f) return 1.0f;
+    if (x <= -1.0f) return -1.0f;
+
+    // Cubic smooth-sign inside [-threshold, +threshold]: f(x) = 1.5x - 0.5x^3
+    return (1.5f * x) - (0.5f * x * x * x);
+}
+
+static float clamp01(float x) {
+    if (x < 0.0f) return 0.0f;
+    if (x > 1.0f) return 1.0f;
+    return x;
 }
 
 uz_VoltageCompensation_t* uz_VoltageCompensation_init(struct uz_VoltageCompensation_config config) {
@@ -70,11 +86,11 @@ uz_VoltageCompensation_t* uz_VoltageCompensation_init(struct uz_VoltageCompensat
     return self;
 }
 
-uz_3ph_abc_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, uz_3ph_abc_t duty_cycle_ref, uz_3ph_abc_t i_actual_abc_A, float dc_link_voltage_V) {
+struct uz_DutyCycle_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, struct uz_DutyCycle_t duty_cycle_ref, uz_3ph_abc_t i_actual_abc_A, float dc_link_voltage_V) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    uz_3ph_abc_t compensated_duty_cycle = duty_cycle_ref;
+    struct uz_DutyCycle_t compensated_duty_cycle = duty_cycle_ref;
 
     // Diode voltage drop compensation
     if (self->config.enable_voltage_drop_compensation) {
@@ -87,35 +103,47 @@ uz_3ph_abc_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, uz_3p
         float transistor_voltage_offset_c = uz_VoltageCompensation_interpolate_voltage_drop(i_actual_abc_A.c, self->config.transistor_currents_A, self->config.transistor_voltages_V, self->config.transistor_table_size);
 
         if (i_actual_abc_A.a > 0) {  
-            compensated_duty_cycle.a = ((compensated_duty_cycle.a * dc_link_voltage_V) + diode_voltage_offset_a) / 
+            compensated_duty_cycle.DutyCycle_A = ((compensated_duty_cycle.DutyCycle_A * dc_link_voltage_V) + diode_voltage_offset_a) /
             (dc_link_voltage_V + diode_voltage_offset_a - transistor_voltage_offset_a);
         } else if(i_actual_abc_A.a < 0){
-            compensated_duty_cycle.a = ((compensated_duty_cycle.a * dc_link_voltage_V) + transistor_voltage_offset_a) / 
+            compensated_duty_cycle.DutyCycle_A = ((compensated_duty_cycle.DutyCycle_A * dc_link_voltage_V) + transistor_voltage_offset_a) /
             (dc_link_voltage_V - diode_voltage_offset_a + transistor_voltage_offset_a);
         }
         if (i_actual_abc_A.b > 0) {  
-            compensated_duty_cycle.b = ((compensated_duty_cycle.b * dc_link_voltage_V) + diode_voltage_offset_b) / 
+            compensated_duty_cycle.DutyCycle_B = ((compensated_duty_cycle.DutyCycle_B * dc_link_voltage_V) + diode_voltage_offset_b) /
             (dc_link_voltage_V + diode_voltage_offset_b - transistor_voltage_offset_b);
         } else if(i_actual_abc_A.b < 0){
-            compensated_duty_cycle.b = ((compensated_duty_cycle.b * dc_link_voltage_V) + transistor_voltage_offset_b) / 
+            compensated_duty_cycle.DutyCycle_B = ((compensated_duty_cycle.DutyCycle_B * dc_link_voltage_V) + transistor_voltage_offset_b) /
             (dc_link_voltage_V - diode_voltage_offset_b + transistor_voltage_offset_b);
         }
         if (i_actual_abc_A.c > 0) {  
-            compensated_duty_cycle.c = ((compensated_duty_cycle.c * dc_link_voltage_V) + diode_voltage_offset_c) / 
+            compensated_duty_cycle.DutyCycle_C = ((compensated_duty_cycle.DutyCycle_C * dc_link_voltage_V) + diode_voltage_offset_c) /
             (dc_link_voltage_V + diode_voltage_offset_c - transistor_voltage_offset_c);
         } else if(i_actual_abc_A.c < 0){
-            compensated_duty_cycle.c = ((compensated_duty_cycle.c * dc_link_voltage_V) + transistor_voltage_offset_c) / 
+            compensated_duty_cycle.DutyCycle_C = ((compensated_duty_cycle.DutyCycle_C * dc_link_voltage_V) + transistor_voltage_offset_c) /
             (dc_link_voltage_V - diode_voltage_offset_c + transistor_voltage_offset_c);
         }
     }
 
+    if (self->config.enable_R_on_compensation){
+		if (fabs(i_actual_abc_A.a) > self->config.threshold_current){
+			compensated_duty_cycle.DutyCycle_A += (fabs(i_actual_abc_A.a) * self->config.R_on_mOhm / 1000.0f)/dc_link_voltage_V;
+		}
+		if (fabs(i_actual_abc_A.b) > self->config.threshold_current){
+			compensated_duty_cycle.DutyCycle_B += (fabs(i_actual_abc_A.b) * self->config.R_on_mOhm / 1000.0f)/dc_link_voltage_V;
+		}
+		if (fabs(i_actual_abc_A.a) > self->config.threshold_current){
+			compensated_duty_cycle.DutyCycle_C += (fabs(i_actual_abc_A.c) * self->config.R_on_mOhm / 1000.0f)/dc_link_voltage_V;
+		}
+    }
+
     // Dead time compensation
     if (self->config.enable_dead_time_compensation) {
-        float dead_time_duty_offset = (self->config.dead_time_ns * 1e-9f) * self->config.switching_frequency_Hz;
+        float dead_time_duty_offset = (self->config.dead_time_us * 1e-6f) * self->config.switching_frequency_Hz;
         // Simple compensation: adjust duty cycle based on current direction
-        compensated_duty_cycle.a += uz_VoltageCompensation_sign(i_actual_abc_A.a) * dead_time_duty_offset;
-        compensated_duty_cycle.b += uz_VoltageCompensation_sign(i_actual_abc_A.b) * dead_time_duty_offset;
-        compensated_duty_cycle.c += uz_VoltageCompensation_sign(i_actual_abc_A.c) * dead_time_duty_offset;
+        compensated_duty_cycle.DutyCycle_A += uz_VoltageCompensation_sign(i_actual_abc_A.a, self->config.threshold_current) * dead_time_duty_offset;
+        compensated_duty_cycle.DutyCycle_B += uz_VoltageCompensation_sign(i_actual_abc_A.b, self->config.threshold_current) * dead_time_duty_offset;
+        compensated_duty_cycle.DutyCycle_C += uz_VoltageCompensation_sign(i_actual_abc_A.c, self->config.threshold_current) * dead_time_duty_offset;
     }
 
     // Compensation of on-delay-time of transistor and diode
@@ -133,10 +161,15 @@ uz_3ph_abc_t uz_VoltageCompensation_sample(uz_VoltageCompensation_t* self, uz_3p
         float delay_time_transistor_b = uz_VoltageCompensation_interpolate_delay_time(i_actual_abc_A.b, self->config.transistor_delay_time_current_A, self->config.transistor_delay_time_s, self->config.transistor_delay_time_table_size);
         float delay_time_transistor_c = uz_VoltageCompensation_interpolate_delay_time(i_actual_abc_A.c, self->config.transistor_delay_time_current_A, self->config.transistor_delay_time_s, self->config.transistor_delay_time_table_size);
 
-        compensated_duty_cycle.a += uz_VoltageCompensation_sign(i_actual_abc_A.a) * (delay_time_transistor_a - delay_time_diode_a) * self->config.switching_frequency_Hz;
-        compensated_duty_cycle.b += uz_VoltageCompensation_sign(i_actual_abc_A.a) * (delay_time_transistor_b - delay_time_diode_b) * self->config.switching_frequency_Hz;
-        compensated_duty_cycle.c += uz_VoltageCompensation_sign(i_actual_abc_A.a) * (delay_time_transistor_c - delay_time_diode_c) * self->config.switching_frequency_Hz;
+        compensated_duty_cycle.DutyCycle_A += uz_VoltageCompensation_sign(i_actual_abc_A.a, self->config.threshold_current) * (delay_time_transistor_a - delay_time_diode_a) * self->config.switching_frequency_Hz;
+        compensated_duty_cycle.DutyCycle_B += uz_VoltageCompensation_sign(i_actual_abc_A.b, self->config.threshold_current) * (delay_time_transistor_b - delay_time_diode_b) * self->config.switching_frequency_Hz;
+        compensated_duty_cycle.DutyCycle_C += uz_VoltageCompensation_sign(i_actual_abc_A.c, self->config.threshold_current) * (delay_time_transistor_c - delay_time_diode_c) * self->config.switching_frequency_Hz;
     }
+
+    // Clamp to [0,1]
+    compensated_duty_cycle.DutyCycle_A = clamp01(compensated_duty_cycle.DutyCycle_A);
+    compensated_duty_cycle.DutyCycle_B = clamp01(compensated_duty_cycle.DutyCycle_B);
+    compensated_duty_cycle.DutyCycle_C = clamp01(compensated_duty_cycle.DutyCycle_C);
 
 
     return compensated_duty_cycle;

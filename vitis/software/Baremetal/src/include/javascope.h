@@ -72,6 +72,9 @@ enum JS_OberservableData {
 	JSO_iq_ref_rc_meas,
 	JSO_n_ref_rc_meas,
 	JSO_udq_ref,
+	JSO_DutyCycle_comp_A,
+	JSO_DutyCycle_comp_B,
+	JSO_DutyCycle_comp_C,
 	JSO_ENDMARKER
 };
 

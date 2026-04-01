@@ -47,11 +47,12 @@ For all UltraZohm versions >2, enable system, enable control, and stop are avail
 Additionally, these signals can be set using the :ref:`JavaScope` setter functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
 The effective state machine inputs are updated in every ``ultrazohm_state_machine_step`` by merging both sources:
 
-- Enable system = front-panel button ``OR`` JavaScope request
-- Enable control = front-panel button ``OR`` JavaScope request (only considered in running state)
-- Stop = front-panel stop ``OR`` JavaScope request (plus optional external stop, if enabled at compile time)
+- Enable system = front-panel button ``OR`` latched JavaScope request
+- Enable control = front-panel button ``OR`` latched JavaScope request (only considered in running state)
+- Stop = front-panel stop ``OR`` latched JavaScope request (plus optional external stop, if enabled at compile time)
 
-This merged handling avoids race conditions where asynchronous JavaScope commands could otherwise be overwritten by button polling.
+JavaScope requests are latched by the setter functions and consumed (cleared) once per ``ultrazohm_state_machine_step``.
+A stop input takes priority: any pending enable requests are discarded in the same step that stop is active.
 The input ``Error`` is only set from software functions.
 
 The different states are indicated by the status of the LEDs on the front panel.

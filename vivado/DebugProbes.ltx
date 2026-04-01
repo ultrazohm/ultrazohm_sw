@@ -5026,6 +5026,64 @@
                                         "isBus": false
                                     }
                                 ]
+                            },
+                            {
+                                "name": "probe11",
+                                "id": 97,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 11,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe11_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe12",
+                                "id": 98,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 7,
+                                "portIndex": 12,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe12_1[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ],
                         "native_ports": [
@@ -5057,6 +5115,38 @@
                                             "name": "probe10",
                                             "leftBit": 0,
                                             "width": 1
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe11",
+                                "connectedBus": "Interrupt6",
+                                "protocol": "PROBE",
+                                "port_maps": [
+                                    {
+                                        "logical_port": "probe11",
+                                        "physical_pin": {
+                                            "id": 97,
+                                            "name": "probe11",
+                                            "leftBit": 0,
+                                            "width": 1
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe12",
+                                "connectedBus": "D4_OUT",
+                                "protocol": "PROBE",
+                                "port_maps": [
+                                    {
+                                        "logical_port": "probe12",
+                                        "physical_pin": {
+                                            "id": 98,
+                                            "name": "probe12",
+                                            "leftBit": 0,
+                                            "width": 8
                                         }
                                     }
                                 ]
@@ -5221,7 +5311,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 97,
+                                "id": 99,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": false,

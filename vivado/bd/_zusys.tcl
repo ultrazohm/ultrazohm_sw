@@ -419,6 +419,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
 
 
   # Create pins
+  create_bd_pin -dir I -from 0 -to 0 ADC_TriggerConversion
   create_bd_pin -dir I -type clk CLK
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
@@ -443,7 +444,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_MONITOR_TYPE {Native} \
-    CONFIG.C_NUM_OF_PROBES {19} \
+    CONFIG.C_NUM_OF_PROBES {20} \
   ] $ila_0
 
 
@@ -504,6 +505,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins AXI4_interlock_0] [get_bd_intf_pins uz_interlockDeadtime_0/AXI4]
 
   # Create port connections
+  connect_bd_net -net ADC_TriggerConversion_1 [get_bd_pins ADC_TriggerConversion] [get_bd_pins ila_0/probe19]
   connect_bd_net -net AXI4_Lite_ARESETN_1 [get_bd_pins RESETN] [get_bd_pins PWM_and_SS_control_V_0/AXI4_Lite_ARESETN] [get_bd_pins PWM_and_SS_control_V_0/IPCORE_RESETN] [get_bd_pins PWM_and_SS_control_V_1/AXI4_Lite_ARESETN] [get_bd_pins PWM_and_SS_control_V_1/IPCORE_RESETN] [get_bd_pins PWM_and_SS_control_V_2/AXI4_Lite_ARESETN] [get_bd_pins PWM_and_SS_control_V_2/IPCORE_RESETN] [get_bd_pins PWM_and_SS_control_V_3/AXI4_Lite_ARESETN] [get_bd_pins PWM_and_SS_control_V_3/IPCORE_RESETN] [get_bd_pins uz_interlockDeadtime_0/AXI4_ARESETN] [get_bd_pins uz_interlockDeadtime_0/IPCORE_RESETN] [get_bd_pins uz_interlockDeadtime_1/AXI4_ARESETN] [get_bd_pins uz_interlockDeadtime_1/IPCORE_RESETN] [get_bd_pins uz_interlockDeadtime_2/AXI4_ARESETN] [get_bd_pins uz_interlockDeadtime_2/IPCORE_RESETN] [get_bd_pins uz_interlockDeadtime_3/AXI4_ARESETN] [get_bd_pins uz_interlockDeadtime_3/IPCORE_RESETN]
   connect_bd_net -net InterLock_Module_0_S0_OUT [get_bd_pins ila_0/probe12] [get_bd_pins uz_interlockDeadtime_0/s0_out] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net InterLock_Module_0_S1_OUT [get_bd_pins ila_0/probe13] [get_bd_pins uz_interlockDeadtime_0/s1_out] [get_bd_pins xlconcat_0/In1]
@@ -1045,7 +1047,7 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_MON_TYPE {NATIVE} \
-    CONFIG.C_NUM_OF_PROBES {11} \
+    CONFIG.C_NUM_OF_PROBES {13} \
   ] $system_ila_0
 
 
@@ -1065,12 +1067,12 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   connect_bd_net -net Gates_Carrier_triangular_max1 [get_bd_pins Interrupt2] [get_bd_pins Concat_interrupts/In2] [get_bd_pins system_ila_0/probe2]
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins Interrupt0] [get_bd_pins Concat_interrupts/In0] [get_bd_pins system_ila_0/probe0]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Interrupt1] [get_bd_pins Concat_interrupts/In1] [get_bd_pins system_ila_0/probe1]
-  connect_bd_net -net In6_1 [get_bd_pins Interrupt6] [get_bd_pins Concat_interrupts/In6]
+  connect_bd_net -net In6_1 [get_bd_pins Interrupt6] [get_bd_pins Concat_interrupts/In6] [get_bd_pins system_ila_0/probe11]
   connect_bd_net -net delay_trigger_0_a_out [get_bd_pins trigger_conversions] [get_bd_pins delay_trigger_0/a_out] [get_bd_pins system_ila_0/probe8]
   connect_bd_net -net delay_trigger_0_pulse_pending [get_bd_pins delay_trigger_0/pulse_pending] [get_bd_pins system_ila_0/probe10]
   connect_bd_net -net mux_axi_ip_1_interrupt_out_adc [get_bd_pins delay_trigger_0/a_in] [get_bd_pins mux_axi_ip_1/interrupt_out_adc] [get_bd_pins system_ila_0/probe6]
+  connect_bd_net -net mux_axi_ip_1_interrupt_out_isr [get_bd_pins Interrupt_vector] [get_bd_pins mux_axi_ip_1/interrupt_out_isr] [get_bd_pins system_ila_0/probe12]
   connect_bd_net -net mux_axi_ip_2_delay_ADC_trigger_in_clk_cycles_OUT [get_bd_pins delay_trigger_0/delay_cycles] [get_bd_pins mux_axi_ip_1/delay_ADC_trigger_in_clk_cycles_OUT] [get_bd_pins system_ila_0/probe9]
-  connect_bd_net -net mux_axi_ip_2_interrupt_out_isr [get_bd_pins Interrupt_vector] [get_bd_pins mux_axi_ip_1/interrupt_out_isr]
   connect_bd_net -net mux_axi_ip_2_select_out [get_bd_pins mux_axi_ip_1/select_out] [get_bd_pins system_ila_0/probe7]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins IPCORE_RESETN] [get_bd_pins delay_trigger_0/resetN] [get_bd_pins mux_axi_ip_1/AXI4_Lite_ARESETN] [get_bd_pins mux_axi_ip_1/IPCORE_RESETN]
   connect_bd_net -net vio_0_probe_out0 [get_bd_pins Concat_interrupts/In7] [get_bd_pins vio_interrupt/probe_out0]
@@ -1425,6 +1427,7 @@ proc create_hier_cell_D1_adapter { parentCell nameHier } {
 
 
   # Create pins
+  create_bd_pin -dir I -from 0 -to 0 ADC_TriggerConversion
   create_bd_pin -dir I -type clk CLK
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
@@ -1450,6 +1453,7 @@ proc create_hier_cell_D1_adapter { parentCell nameHier } {
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins Carrier_triangular_max_min] [get_bd_pins Gates/Carrier_triangular_max_min]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Carrier_triangular_min] [get_bd_pins Gates/Carrier_triangular_min]
   connect_bd_net -net Gates_dout_0 [get_bd_pins Gate_Signals_2L] [get_bd_pins Gates/Gate_Signals_2L]
+  connect_bd_net -net TriggerConversion_1 [get_bd_pins ADC_TriggerConversion] [get_bd_pins Gates/ADC_TriggerConversion]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins Gates/RESETN]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins CLK] [get_bd_pins Gates/CLK]
 
@@ -1983,7 +1987,7 @@ proc create_hier_cell_uz_system { parentCell nameHier } {
   connect_bd_net -net Gates_Carrier_triangular_max1 [get_bd_pins Interrupt2] [get_bd_pins Interrupt/Interrupt2]
   connect_bd_net -net Gates_Carrier_triangular_max_min [get_bd_pins Interrupt0] [get_bd_pins Interrupt/Interrupt0]
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Interrupt1] [get_bd_pins Interrupt/Interrupt1]
-  connect_bd_net -net In6_1 [get_bd_pins DataMover/write_done] [get_bd_pins Interrupt/Interrupt6]
+  connect_bd_net -net Interrupt6_1 [get_bd_pins DataMover/write_done] [get_bd_pins Interrupt/Interrupt6]
   connect_bd_net -net Interrupt_trigger_conversions [get_bd_pins trigger_conversions] [get_bd_pins Interrupt/trigger_conversions]
   connect_bd_net -net Trigger_AXI2TCM_1 [get_bd_pins Trigger_AXI2TCM] [get_bd_pins DataMover/Trigger_AXI2TCM]
   connect_bd_net -net axi_timebase_wdt_0_wdt_interrupt [get_bd_pins wdt_interrupt] [get_bd_pins axi_timebase_wdt_0/wdt_interrupt]
@@ -2114,7 +2118,7 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   connect_bd_net -net Gates_Carrier_triangular_min1 [get_bd_pins Carrier_triangular_min] [get_bd_pins D1_adapter/Carrier_triangular_min]
   connect_bd_net -net Gates_dout_0 [get_bd_pins Gate_Signals_2L] [get_bd_pins D1_adapter/Gate_Signals_2L]
   connect_bd_net -net Incr_Encoder_I [get_bd_pins Incr_Encoder_I] [get_bd_pins D5_adapter/Incr_Encoder_I]
-  connect_bd_net -net PeriodEnd_1 [get_bd_pins PeriodEnd] [get_bd_pins D5_adapter/PeriodEnd]
+  connect_bd_net -net PeriodEnd_1 [get_bd_pins PeriodEnd] [get_bd_pins D1_adapter/ADC_TriggerConversion] [get_bd_pins D5_adapter/PeriodEnd]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN] [get_bd_pins D5_adapter/RESETN]
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins VIO_D3] [get_bd_pins D3_adapter/VIO_D3]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Enable_Gate] [get_bd_pins D2_adapter/Enable_Gates]

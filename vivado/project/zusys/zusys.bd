@@ -88,8 +88,8 @@
           "Concat_interrupts": "",
           "system_ila_0": "",
           "vio_interrupt": "",
-          "mux_axi_ip_1": "",
-          "delay_trigger_0": ""
+          "delay_trigger_0": "",
+          "mux_axi_ip_1": ""
         },
         "axi_timebase_wdt_0": "",
         "smartconnect_0": "",
@@ -3972,7 +3972,7 @@
                     "value": "NATIVE"
                   },
                   "C_NUM_OF_PROBES": {
-                    "value": "11"
+                    "value": "13"
                   }
                 }
               },
@@ -3986,12 +3986,6 @@
                     "value": "0"
                   }
                 }
-              },
-              "mux_axi_ip_1": {
-                "vlnv": "mwn.de:ip:mux_axi_ip:1.3",
-                "xci_name": "zusys_mux_axi_ip_2_0",
-                "xci_path": "ip\\zusys_mux_axi_ip_2_0\\zusys_mux_axi_ip_2_0.xci",
-                "inst_hier_path": "uz_system/Interrupt/mux_axi_ip_1"
               },
               "delay_trigger_0": {
                 "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
@@ -4047,6 +4041,12 @@
                     "direction": "O"
                   }
                 }
+              },
+              "mux_axi_ip_1": {
+                "vlnv": "mwn.de:ip:mux_axi_ip:1.3",
+                "xci_name": "zusys_mux_axi_ip_2_0",
+                "xci_path": "ip\\zusys_mux_axi_ip_2_0\\zusys_mux_axi_ip_2_0.xci",
+                "inst_hier_path": "uz_system/Interrupt/mux_axi_ip_1"
               }
             },
             "interface_nets": {
@@ -4109,6 +4109,7 @@
               "In6_1": {
                 "ports": [
                   "Interrupt6",
+                  "system_ila_0/probe11",
                   "Concat_interrupts/In6"
                 ]
               },
@@ -4132,17 +4133,18 @@
                   "delay_trigger_0/a_in"
                 ]
               },
+              "mux_axi_ip_1_interrupt_out_isr": {
+                "ports": [
+                  "mux_axi_ip_1/interrupt_out_isr",
+                  "Interrupt_vector",
+                  "system_ila_0/probe12"
+                ]
+              },
               "mux_axi_ip_2_delay_ADC_trigger_in_clk_cycles_OUT": {
                 "ports": [
                   "mux_axi_ip_1/delay_ADC_trigger_in_clk_cycles_OUT",
                   "system_ila_0/probe9",
                   "delay_trigger_0/delay_cycles"
-                ]
-              },
-              "mux_axi_ip_2_interrupt_out_isr": {
-                "ports": [
-                  "mux_axi_ip_1/interrupt_out_isr",
-                  "Interrupt_vector"
                 ]
               },
               "mux_axi_ip_2_select_out": {
@@ -4154,9 +4156,9 @@
               "proc_sys_reset_1_peripheral_aresetn": {
                 "ports": [
                   "IPCORE_RESETN",
+                  "delay_trigger_0/resetN",
                   "mux_axi_ip_1/IPCORE_RESETN",
-                  "mux_axi_ip_1/AXI4_Lite_ARESETN",
-                  "delay_trigger_0/resetN"
+                  "mux_axi_ip_1/AXI4_Lite_ARESETN"
                 ]
               },
               "vio_0_probe_out0": {
@@ -4170,9 +4172,9 @@
                   "clk",
                   "system_ila_0/clk",
                   "vio_interrupt/clk",
+                  "delay_trigger_0/clk",
                   "mux_axi_ip_1/IPCORE_CLK",
-                  "mux_axi_ip_1/AXI4_Lite_ACLK",
-                  "delay_trigger_0/clk"
+                  "mux_axi_ip_1/AXI4_Lite_ACLK"
                 ]
               }
             }
@@ -5541,7 +5543,7 @@
               "Interrupt/Interrupt1"
             ]
           },
-          "In6_1": {
+          "Interrupt6_1": {
             "ports": [
               "DataMover/write_done",
               "Interrupt/Interrupt6"

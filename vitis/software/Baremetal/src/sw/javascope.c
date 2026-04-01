@@ -150,6 +150,31 @@ int JavaScope_initialize(DS_Data* data)
 
 	js_ch_observable[JS_theta_el_rad_ref_JS] = &(data->rasv.theta_el_rad_ref_JS );
 
+
+	js_ch_observable[JSO_SV1] = &data->av.SV1;
+	js_ch_observable[JSO_SV2] = &data->av.SV2;
+	js_ch_observable[JSO_SV3] = &data->av.SV3;
+	js_ch_observable[JSO_SV4] = &data->av.SV4;
+	js_ch_observable[JSO_SV5] = &data->av.SV5;
+	js_ch_observable[JSO_SV6] = &data->av.SV6;
+	js_ch_observable[JSO_SV7] = &data->av.SV7;
+	js_ch_observable[JSO_SV8] = &data->av.SV8;
+	js_ch_observable[JSO_SV9] = &data->av.SV9;
+	js_ch_observable[JSO_SV10] = &data->av.SV10;
+	js_ch_observable[JSO_SV11] = &data->av.SV11;
+	js_ch_observable[JSO_SV12] = &data->av.SV12;
+	js_ch_observable[JSO_SV13] = &data->av.SV13;
+	js_ch_observable[JSO_SV14] = &data->av.SV14;
+
+	js_ch_observable[JSO_count_a1] = &data->av.sw_count_a1;
+	js_ch_observable[JSO_count_b1] = &data->av.sw_count_b1;
+	js_ch_observable[JSO_count_c1] = &data->av.sw_count_c1;
+	js_ch_observable[JSO_count_a2] = &data->av.sw_count_a2;
+	js_ch_observable[JSO_count_b2] = &data->av.sw_count_b2;
+	js_ch_observable[JSO_count_c2] = &data->av.sw_count_c2;
+	js_ch_observable[JSO_count_sum] = &data->av.sw_count_sum;
+
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

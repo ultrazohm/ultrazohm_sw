@@ -141,6 +141,8 @@ int main(void)
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
             Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();
+            Global_Data.objects.spacevector_decoder = init_uz_6ph_spacevector_decoder_1();
+            Global_Data.objects.switching_counter = init_uz_count_switching_IP_1();
             initialization_chain = print_msg;
             break;
         case print_msg:

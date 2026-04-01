@@ -22,6 +22,8 @@
 #include "uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "uz/uz_6ph_SVPWM/uz_6ph_SVPWM.h"
 #include "uz/uz_wavegen/uz_wavegen_2.h"
+#include "IP_Cores/uz_6ph_spacevector_decoder/uz_6ph_spacevector_decoder.h"
+#include "IP_Cores/uz_count_switching/uz_count_switching_IP.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -187,6 +189,31 @@ typedef struct _actualValues_ {
 	float temp_float_d_opt;
 	float temp_float_More_PWM;
 
+	spacevector_decoder_output SV_List;
+	float SV1;
+	float SV2;
+	float SV3;
+	float SV4;
+	float SV5;
+	float SV6;
+	float SV7;
+	float SV8;
+	float SV9;
+	float SV10;
+	float SV11;
+	float SV12;
+	float SV13;
+	float SV14;
+
+	float sw_count_a1;
+	float sw_count_b1;
+	float sw_count_c1;
+	float sw_count_a2;
+	float sw_count_b2;
+	float sw_count_c2;
+	float sw_count_sum;
+
+	uint32_t isr_count_num_switch_counter;
 
 } actualValues;
 
@@ -273,6 +300,9 @@ typedef struct{
 	uz_wavegen_2*  wavegen2_1;
 	uz_wavegen_2*  wavegen2_2;
 	uz_wavegen_2*  wavegen2_theta;
+
+	uz_6ph_spacevector_decoder_t* spacevector_decoder;
+	uz_count_switching_IP_t* switching_counter;
 
 }object_pointers_t;
 

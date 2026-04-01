@@ -59,6 +59,7 @@
 #include "include/uz_resolver_pl_interface_init.h"
 #include "include/uz_resolverIP_init.h"
 #include "include/uz_wavegen_init.h"
+#include "include/uz_support_stuff_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -65,7 +65,7 @@ float u_n3 = 0.0f;
 
 #define RAD_TO_DEG (180.0f/M_PI)
 
-
+uint32_t isr_count = 0;
 
 
 
@@ -87,6 +87,49 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    // read spacevectors from previews cycle:
+    Global_Data.av.SV5 = uz_6ph_spacevector_decoder_get_spacevector_num(Global_Data.objects.spacevector_decoder, 5);
+    Global_Data.av.SV_List = uz_6ph_spacevector_decoder_get_all_spacevectors(Global_Data.objects.spacevector_decoder);
+
+    Global_Data.av.SV1 = (float)Global_Data.av.SV_List.sv1;
+    Global_Data.av.SV2 = (float)Global_Data.av.SV_List.sv2;
+    Global_Data.av.SV3 = (float)Global_Data.av.SV_List.sv3;
+    Global_Data.av.SV4 = (float)Global_Data.av.SV_List.sv4;
+//  Global_Data.av.SV5 = (float)Global_Data.av.SV_List.sv5;
+    Global_Data.av.SV6 = (float)Global_Data.av.SV_List.sv6;
+    Global_Data.av.SV7 = (float)Global_Data.av.SV_List.sv7;
+    Global_Data.av.SV8 = (float)Global_Data.av.SV_List.sv8;
+    Global_Data.av.SV9 = (float)Global_Data.av.SV_List.sv9;
+    Global_Data.av.SV10 = (float)Global_Data.av.SV_List.sv10;
+    Global_Data.av.SV11 = (float)Global_Data.av.SV_List.sv11;
+    Global_Data.av.SV12 = (float)Global_Data.av.SV_List.sv12;
+    Global_Data.av.SV13 = (float)Global_Data.av.SV_List.sv13;
+    Global_Data.av.SV14 = (float)Global_Data.av.SV_List.sv14;
+
+
+    // read switch count:
+    Global_Data.av.isr_count_num_switch_counter = 10;
+
+    if(isr_count < Global_Data.av.isr_count_num_switch_counter){
+    	isr_count = isr_count+1;
+    }
+    else{
+		uint32_t sw_count_a1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 0);
+		uint32_t sw_count_b1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 1);
+		uint32_t sw_count_c1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 2);
+		uint32_t sw_count_a2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 3);
+		uint32_t sw_count_b2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 4);
+		uint32_t sw_count_c2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 5);
+		uint32_t sw_count_sum = uz_count_switching_IP_get_count_sum(Global_Data.objects.switching_counter);
+
+		uz_count_switching_IP_set_reset(Global_Data.objects.switching_counter, true);
+		uz_count_switching_IP_set_reset(Global_Data.objects.switching_counter, false);
+		isr_count = 0;
+    }
+
+
 
 
     uz_wavegen_2_sample(Global_Data.objects.wavegen2_1);

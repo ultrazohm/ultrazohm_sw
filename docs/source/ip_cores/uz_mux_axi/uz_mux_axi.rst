@@ -20,23 +20,29 @@ PWM counter events
 Interrupt sources
 =================
 
-- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
-- The selected trigger source also triggers the ISR in the R5 processor (see also :ref:`r5_interrupts`)
-- Below, as well as in ``uz_global_configuration.h``, the user will find the valid interrupt source options:
+- The user selects the PWM trigger source for ADC triggering via ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
+- The trigger mode for the ISR is controlled by ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` (see :ref:`r5_interrupts`):
+
+  - ``0``: ISR fires directly on the selected PWM event
+  - ``1``: ISR fires on ``axi2tcm_write_done`` (ADC conversion complete + data in TCM), eliminating the race condition between ADC data transfer and ISR execution
+
+- Below, as well as in ``uz_global_configuration.h``, the user will find the valid PWM interrupt source options:
 
 .. code-block:: c
 
-   /** ISR trigger source
+   /** ISR trigger source (PWM counter event, used for ADC triggering and as base for the ISR trigger)
     *
-    * chose here which of the above interrupt trigger you want to use:
     * 0 for Interrupt_2L_max_min
     * 1 for Interrupt_2L_min
     * 2 for Interrupt_2L_max
     * 3 for Interrupt_3L_start_center
     * 4 for Interrupt_3L_start
     * 5 for Interrupt_3L_center
-    * 6 for Interrupt_timer_fcc
-   */
+    */
+   #define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+
+   /** ISR trigger mode: 0 = direct PWM event, 1 = axi2tcm_write_done (ADC data ready in TCM) */
+   #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 1U
 
 ADC/ISR trigger ratio
 =====================
@@ -50,6 +56,7 @@ ADC trigger delay
 - If necessary, the user can add an additional delay to the ADC trigger path
 - This is done by setting ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``
 - The configured delay value is applied by the ``delay_trigger`` block in the PL. For the block behavior, see :ref:`delay_trigger_block` in :ref:`r5_interrupts`.
+- This delay applies in both ISR trigger modes (``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` = 0 or 1): the ADC is always triggered by the selected PWM source, and when ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY = 1`` the ISR fires after the delayed ADC conversion completes
 
 Example
 =======
@@ -65,6 +72,7 @@ The user wants to have a PWM frequency of 100 kHz, an ISR frequency of 20 kHz, a
    :caption: Settings in uz_global_configuration.h for the example
 
    #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
+   #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U
    #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  5U
    #define UZ_PWM_FREQUENCY                        100.0e3f
    #define UZ_PWM_DEADTIME_IN_US                   0.30f

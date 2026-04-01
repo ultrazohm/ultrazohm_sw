@@ -8,27 +8,34 @@ Software User Model
 -------------------
 
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL.
-The trigger can be synchronized with the PWM (two- and three-level) modules or the ``axi2tcm`` data mover.
-The interrupt trigger is defined in ``uz_global_configuration.h`` by assigning a value to ``INTERRUPT_ISR_SOURCE_USER_CHOICE``.
+Two defines in ``uz_global_configuration.h`` control how the ISR is triggered:
+
+* ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` — selects which PWM counter event is used as the base trigger source.
+* ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` — selects the trigger mode:
+
+  * ``0``: ISR fires directly on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``.
+  * ``1``: ISR fires on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~0.9 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+
 An additional delay for the ADC trigger path can be configured with ``ADC_TRIGGER_DELAY_IN_US``.
 
-.. code-block:: c 
+.. code-block:: c
 
-    // choose here which of the above interrupt triggers you want to use:
-    #define INTERRUPT_ISR_SOURCE_USER_CHOICE  0U
+    // Select the PWM counter event used as the base trigger source:
+    #define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+    // Trigger the ISR on axi2tcm_write_done instead of directly on the PWM event:
+    #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 1U
 
-    
-.. csv-table:: Trigger sources for interrupt
+
+.. csv-table:: PWM trigger sources for ``INTERRUPT_ISR_SOURCE_USER_CHOICE``
    :header: "#","Define name", "Interrupt trigger"
    :widths: 10,20, 20
-   
+
     "0","Interrupt_2L_max_min","Two-Level PWM Module at **minimum** and **maximum** value of the triangular carrier"
     "1","Interrupt_2L_min","Two-Level PWM Module at **minimum** value of the triangular carrier"
     "2","Interrupt_2L_max","Two-Level PWM Module at **maximum** value of the triangular carrier"
     "3","Interrupt_3L_start_center","Three-Level PWM Module at **minimum** and **maximum** value of the triangular carrier"
     "4","Interrupt_3L_start","Three-Level PWM Module at **minimum** value of the triangular carrier"
     "5","Interrupt_3L_center","Three-Level PWM Module at **maximum** value of the triangular carrier"
-    "6","axi2tcm_write_done","Triggers when axi2tcm data mover signals ``write_done``"
 
 .. note::
    When one of the two-level PWM sources is selected, update
@@ -47,24 +54,26 @@ Structure of the Interrupt
 
 .. mermaid::
     :align: center
-    :caption: Usage of ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in source code
-    
+    :caption: Usage of interrupt configuration defines in source code
+
     graph TD
-      A[INTERRUPT_ISR_SOURCE_USER_CHOICE] -->|Sets interrupt source| B(Initialize_ISR)
-      B -->|Mux for ADC trigger source| D[Trigger source of ADC in PL]
+      A[INTERRUPT_ISR_SOURCE_USER_CHOICE] -->|Sets ADC trigger source| B(Initialize_ISR)
+      C[INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY] -->|Sets ISR trigger source| B
+      B -->|Mux for ADC trigger source| D[ADC trigger in PL]
       B -->|Rpu_GicInit| E[Trigger source of ISR_Control]
-		
+
 .. mermaid::
     :align: center
-    :caption: Signal flow in PL of interrupt and trigger ADC
+    :caption: Signal flow in PL for ADC trigger and ISR trigger
 
     graph LR
-        PWM2L --> Interrupt
-        PWM3L --> Interrupt
-        Interrupt --> Concat_interrupts
+        PWM2L --> Concat_interrupts
+        PWM3L --> Concat_interrupts
         Concat_interrupts --> mux_axi
-        mux_axi --> ADC_trigger_conversion
-        Concat_interrupts --> R5_Interrupt
+        mux_axi -->|"interrupt_out_adc (selected PWM source)"| delay_trigger
+        delay_trigger --> ADC_conversion
+        ADC_conversion -->|axi2tcm_write_done| Concat_interrupts
+        Concat_interrupts -->|"selected interrupt ID → R5 GIC"| R5_Interrupt
 
 Structure in the PL
 -------------------
@@ -90,11 +99,12 @@ Note that ``XPS_FPGAx_INT_ID`` is defined in ``xparameters_ps.h``.
 
 Trigger of ADC Conversion
 -------------------------
-In some applications, the ADC conversion needs to be delayed relative to the trigger from the PWM module. 
-This can be the case if you are using an IGBT, where the delay introduced by the driver and the IGBT itself are not negligible. 
-To ensure that the ADC sampling does not occur while switching, the delay can be added in PL. 
-The default software configuration exposes this delay through ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``.
+The ADC conversion is always triggered by the PWM source selected via ``INTERRUPT_ISR_SOURCE_USER_CHOICE``, regardless of the ISR trigger mode set by ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``.
+
+In some applications, the ADC conversion needs to be delayed relative to the PWM trigger — for example when using IGBTs, where the switching transient must settle before sampling.
+To prevent ADC sampling during a switching event, this delay can be added in PL via ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``.
 The software driver converts the configured value in microseconds to clock cycles and rounds up to the next achievable step.
+This delay applies in both ISR trigger modes: when ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY = 1``, the ISR fires after the (already delayed) ADC conversion completes and the data has been transferred to TCM.
 For more details on the register and driver interface, see :ref:`uz_mux_axi`.
 
 .. _delay_trigger_block:

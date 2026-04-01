@@ -35,7 +35,9 @@ The following defines in ``uz_global_configuration.h`` are commonly adjusted tog
    * - Define
      - Description
    * - ``INTERRUPT_ISR_SOURCE_USER_CHOICE``
-     - Selects the interrupt/trigger source. See :ref:`r5_interrupts` and :ref:`uz_mux_axi`.
+     - Selects the PWM counter event used as the base trigger source. See :ref:`r5_interrupts` and :ref:`uz_mux_axi`.
+   * - ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``
+     - Trigger mode: ``0`` fires the ISR directly on the PWM event; ``1`` fires on ``axi2tcm_write_done`` (ADC data ready in TCM). See :ref:`r5_interrupts`.
    * - ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE``
      - Sets the ADC-to-ISR trigger ratio. See :ref:`uz_mux_axi`.
    * - ``ADC_TRIGGER_DELAY_IN_US``

@@ -9,7 +9,7 @@ Description
 
 The ``uz_LUT_1D`` module provides a 1D look-up table with binary search, linear interpolation and value clamping.
 It uses the ``uz_array_float_t`` type from :ref:`uz_array` for breakpoints and data storage. 
-The breakpoints array must be in ascending order and have the same length as the data array. 
+The breakpoints array must be in **ascending** order and have the same length as the data array. 
 The data array may take arbitrary values as long as it has the same length as the breakpoints array. 
 
 When the input is below the first breakpoint, the first data value is returned.
@@ -33,7 +33,7 @@ When the input is between two breakpoints, the output is linearly interpolated b
 		  .data = &LUT_data_array[0]
     };
 
-    uz_LUT_1D_t* lut_instance = uz_LUT_1D_init(&LUT_breakpoints, &LUT_data, UZ_ARRAY_SIZE(LUT_breakpoints_array));
+    uz_LUT_1D_t* lut_instance = uz_LUT_1D_init(&LUT_breakpoints, &LUT_data);
     float input = 2.5f; 
     float output = uz_LUT_1D_get_value(lut_instance, input);
 

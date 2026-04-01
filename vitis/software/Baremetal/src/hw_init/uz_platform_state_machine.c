@@ -107,17 +107,26 @@ bool ultrazohm_state_machine_get_enable_control(void)
 
 void ultrazohm_state_machine_set_enable_system(bool enable_system)
 {
-    ultrazohm_state.enable_system_javascope = enable_system;
+    if (enable_system)
+    {
+        ultrazohm_state.enable_system_javascope = true;
+    }
 }
 
 void ultrazohm_state_machine_set_enable_control(bool enable_control)
 {
-    ultrazohm_state.enable_control_javascope = enable_control;
+    if (enable_control)
+    {
+        ultrazohm_state.enable_control_javascope = true;
+    }
 }
 
 void ultrazohm_state_machine_set_stop(bool stop)
 {
-    ultrazohm_state.stop_javascope = stop;
+    if (stop)
+    {
+        ultrazohm_state.stop_javascope = true;
+    }
 }
 
 void ultrazohm_state_machine_set_userLED(bool onoff)
@@ -323,20 +332,21 @@ static void update_state_machine_inputs(void)
 {
     const bool enable_control_allowed = (ultrazohm_state.current_state == running_state) && (!ultrazohm_state.entry);
 
-    if (ultrazohm_state.current_state == idle_state)
-    {
-        ultrazohm_state.stop_javascope = false;
-    }
+    // Consume one-shot JavaScope flags: read then clear so a new ISR event
+    // queued during this function is not lost.
+    const bool js_enable_system = ultrazohm_state.enable_system_javascope;
+    const bool js_enable_control = ultrazohm_state.enable_control_javascope;
+    const bool js_stop = ultrazohm_state.stop_javascope;
+    ultrazohm_state.enable_system_javascope = false;
+    ultrazohm_state.enable_control_javascope = false;
+    ultrazohm_state.stop_javascope = false;
 
-    if (!enable_control_allowed)
-    {
-        ultrazohm_state.enable_control_javascope = false;
-    }
-
-    ultrazohm_state.enable_system = ultrazohm_state.enable_system_button || ultrazohm_state.enable_system_javascope;
-    ultrazohm_state.enable_control = enable_control_allowed
-                                     && (ultrazohm_state.enable_control_button || ultrazohm_state.enable_control_javascope);
-    ultrazohm_state.stop_flag = ultrazohm_state.stop_button || ultrazohm_state.stop_javascope;
+    // Stop takes priority: discard any pending enable requests.
+    const bool stop_requested = ultrazohm_state.stop_button || js_stop;
+    ultrazohm_state.enable_system = !stop_requested && (ultrazohm_state.enable_system_button || js_enable_system);
+    ultrazohm_state.enable_control = !stop_requested && enable_control_allowed
+                                     && (ultrazohm_state.enable_control_button || js_enable_control);
+    ultrazohm_state.stop_flag = stop_requested;
 }
 
 static void ultrazohm_state_machine_event_handled(void)

@@ -11,6 +11,19 @@ This page preserves the documentation of the legacy JavaScope GUI in the folder 
    For the current GUI, see :ref:`JavaScope`.
    Shared configuration and customization of both GUI generations are documented in :ref:`javascope_customizing`.
 
+.. _javascope_legacy_upgrade_note:
+
+.. note::
+   Older branches can update the legacy JavaScope files directly from ``develop``.
+   Run the following commands from the repository root.
+
+   .. code-block:: bash
+
+      git fetch origin
+      git restore --source origin/develop -- javascope/UZ_GUI.jar javascope/lib
+
+   This upgrades all JavaScope files to the version that is currently in ``develop``, including added and removed libraries in ``javascope/lib``.
+
 The folder contains the following files:
 
 - ``javascope_run.bat`` is the executable for Windows, start it by double-clicking

@@ -10,6 +10,7 @@ This page documents the UltraZohm GUI in ``ultrazohm_sw/javascope``.
    The GUI layout changed, but the Vitis-side integration is unchanged.
    Customize ``javascope.h`` and ``javascope.c`` as described in :ref:`javascope_customizing`.
    For the legacy GUI, see :doc:`javascope_legacy`.
+   For updating legacy GUI files in older branches, see :ref:`the legacy JavaScope upgrade note <javascope_legacy_upgrade_note>`.
 
 .. toctree::
    :hidden:

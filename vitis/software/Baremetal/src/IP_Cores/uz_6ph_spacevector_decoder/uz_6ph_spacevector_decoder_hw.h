@@ -1,0 +1,24 @@
+#ifndef UZ_6PH_SPACEVECTOR_DECODER_HW_H
+#define UZ_6PH_SPACEVECTOR_DECODER_HW_H
+
+#include <stdint.h>
+
+
+uint32_t uz_6ph_spacevector_decoder_hw_read_out1(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out2(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out3(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out4(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out5(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out6(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out7(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out8(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out9(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out10(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out11(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out12(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out13(uint32_t base_address);
+uint32_t uz_6ph_spacevector_decoder_hw_read_out14(uint32_t base_address);
+
+
+
+#endif // UZ_6PH_SPACEVECTOR_DECODER_HW_H

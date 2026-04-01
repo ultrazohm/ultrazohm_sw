@@ -28,10 +28,10 @@ Furthermore, only the dq- and xy-subspace(park-transformed with :math:`-\theta_{
 The zero subspace is neglected, since only the 2N configuration is modeled.
 Small letter values indicate time dependency without explicitly stating it.
 
-Linear model
-------------
+Machine model
+-------------
 
-In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq- and xy-plane [[#Eldeeb]],[[#EDPC_SixPhase]]:
+In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq- and xy-plane [#Eldeeb]_,[#EDPC_SixPhase]_:
 
 .. math:: 
 
@@ -43,7 +43,7 @@ In the simplified linear case, the PMSM model is based on its differential equat
 
     \frac{d \psi_y}{dt} &= u_y - R_1 i_y + \omega_{el} \psi_x
 
-The flux-linkages of the direct and quadrature axis are given by [[#EDPC_SixPhase]]:
+The flux-linkages of the direct and quadrature axis are given by [#EDPC_SixPhase]_:
 
 .. math::
 
@@ -93,6 +93,7 @@ Mechanical system
 
 The mechanical system is modeled by the following equations.
 The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i.e., rigid coupling of the system is assumed.
+:math:`T_{L}` represents the load torque.
 
 .. math::
 
@@ -126,22 +127,22 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 Friction
 ^^^^^^^^
 
-The friction :math:`M_F(\omega)`  [ [#Ruderman_ZurModellierungReibung]_, p. 12 ff] is implemented with the simplified viscous friction model:
+The friction :math:`T_F(\omega)`  [ [#Ruderman_ZurModellierungReibung]_, p. 12 ff] is implemented with the simplified viscous friction model:
 
 .. math::
 
-  M_F = sign(\omega_{mech}) \cdot M_c + \sigma \omega_{mech}
+  T_F = sign(\omega_{mech}) \cdot T_c + \sigma \omega_{mech}
 
-With the constant coulomb friction :math:`M_c`, and the friction coefficient :math:`\sigma`.
+With the constant coulomb friction :math:`T_c`, and the friction coefficient :math:`\sigma`.
 
 .. tikz:: Friction model [ [#Ruderman_ZurModellierungReibung]_, p. 13]
   :libs: 
 
   \begin{tikzpicture}
-  \draw[->] (0,-2) -- node[above left,very near end] {$M_F$}(0,2);
+  \draw[->] (0,-2) -- node[above left,very near end] {$T_F$}(0,2);
   \draw[->] (-2,0) -- node[below right, near end] {$\omega_{mech}$} (2,0);
   \draw[-,thick] (-2,-2) -- (0,-1) -- (0,1) -- node[below right, near end] {$\sigma \omega_{mech}$} (2,2);
-  \draw[->,dashed] (-0.1,0) -- node[left] {$M_C$} (-0.1,1);
+  \draw[->,dashed] (-0.1,0) -- node[left] {$T_C$} (-0.1,1);
   \end{tikzpicture}
 
 IP-Core overview

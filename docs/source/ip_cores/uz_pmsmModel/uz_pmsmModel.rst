@@ -109,6 +109,7 @@ Mechanical system
 
 The mechanical system is modeled by the following equations.
 The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i.e., rigid coupling of the system is assumed.
+:math:`T_{L}` represents the load torque.
 
 .. math::
 
@@ -120,7 +121,7 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 
   \begin{tikzpicture}[auto, node distance=1.5cm,>=latex']
   \tikzstyle{block} = [draw, fill=black!10, rectangle, minimum height=3em, minimum width=3em]
-  \node[name=Mi]{$M_I$};
+  \node[name=Mi]{$T_I$};
   \node[draw,circle,name=torque_sum,right of=Mi] {};
   \node[name=load_torque,above of=torque_sum] {$T_L$};
   \node[block,name=inertia,right of=torque_sum] {$\frac{1}{J_{sum}}$};
@@ -146,18 +147,18 @@ The friction :math:`M_F(\omega)`  [ [#Ruderman_ZurModellierungReibung]_, p. 12 f
 
 .. math::
 
-  M_F = sign(\omega_{mech}) \cdot M_c + \sigma \omega_{mech}
+  T_F = sign(\omega_{mech}) \cdot T_c + \sigma \omega_{mech}
 
-With the constant coulomb friction :math:`M_c`, and the friction coefficient :math:`\sigma`.
+With the constant coulomb friction :math:`T_c`, and the friction coefficient :math:`\sigma`.
 
 .. tikz:: Friction model [ [#Ruderman_ZurModellierungReibung]_, p. 13]
   :libs: 
 
   \begin{tikzpicture}
-  \draw[->] (0,-2) -- node[above left,very near end] {$M_F$}(0,2);
+  \draw[->] (0,-2) -- node[above left,very near end] {$T_F$}(0,2);
   \draw[->] (-2,0) -- node[below right, near end] {$\omega_{mech}$} (2,0);
   \draw[-,thick] (-2,-2) -- (0,-1) -- (0,1) -- node[below right, near end] {$\sigma \omega_{mech}$} (2,2);
-  \draw[->,dashed] (-0.1,0) -- node[left] {$M_C$} (-0.1,1);
+  \draw[->,dashed] (-0.1,0) -- node[left] {$T_C$} (-0.1,1);
   \end{tikzpicture}
 
 IP core overview

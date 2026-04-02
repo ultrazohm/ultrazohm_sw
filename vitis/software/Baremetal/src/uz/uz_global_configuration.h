@@ -26,7 +26,7 @@
  * 5 for Interrupt_3L_center
 */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
-#define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 1U    // 0: ISR fires on selected PWM event. 1: ISR fires on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
+#define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U    // 0: ISR fires on selected PWM event. 1: ISR fires on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U    // Trigger the ADC every PWM event, but fire ISR_Control only every N-th:
 #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behvaior. See uz_mux_axi in docs.
 

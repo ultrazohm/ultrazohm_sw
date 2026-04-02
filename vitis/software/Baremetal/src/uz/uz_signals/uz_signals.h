@@ -20,6 +20,17 @@ struct uz_IIR_Filter_config {
 
 
 typedef struct uz_IIR_Filter_t uz_IIR_Filter_t;
+typedef struct uz_ramp_t uz_ramp_t;
+
+/**
+ * @brief Configuration struct for the ramp module.
+ *
+ */
+struct uz_ramp_config {
+	float maximum_slope_per_second; /**< Maximum output change per second in signal units */
+	float sample_time_seconds; /**< Sample time of the ramp call */
+	float initial_value; /**< Initial ramp output value */
+};
 /**
  * @brief Outputs zero, if signal is within the deadzone. Outputs input signal substracted by either the upper or lower threshold otherwise.
  *
@@ -99,8 +110,6 @@ float uz_signals_wrap(float number, float limit);
  */
 void uz_signals_IIR_Filter_reset(uz_IIR_Filter_t *self);
 
-#endif // UZ_SIGNALS_H
-
 /**
  * @brief Evaluates the input. sets the output to one if the input is bigger than the threshold value otherwise to zero
  * 
@@ -109,3 +118,36 @@ void uz_signals_IIR_Filter_reset(uz_IIR_Filter_t *self);
  * @return float evaluation value (0 or 1)
  */
 float uz_signals_threshold_Evaluation(float input, float threshold);
+
+/**
+ * @brief Initializes a ramp instance with configurable slope and sample time.
+ * 
+ * @param config Configuration struct of the ramp module
+ * @return uz_ramp_t* Pointer to ramp instance
+ */
+uz_ramp_t *uz_ramp_init(struct uz_ramp_config config);
+
+/**
+ * @brief Executes one ramp step and updates the internal output linearly towards the reference value.
+ * 
+ * @param self Pointer instance of uz_ramp_t
+ * @param reference_value Target value for the ramp output
+ * @return float Current ramp output
+ */
+float uz_ramp_step(uz_ramp_t *self, float reference_value);
+
+/**
+ * @brief Sets the current ramp output to a defined value instantly without the ramp.
+ * 
+ * @param self Pointer instance of uz_ramp_t
+ * @param value New current ramp output
+ */
+void uz_ramp_set_to_value_instant(uz_ramp_t *self, float value);
+
+/**
+ * @brief Resets the current ramp output to zero.
+ * 
+ * @param self Pointer instance of uz_ramp_t
+ */
+void uz_ramp_reset(uz_ramp_t *self);
+#endif // UZ_SIGNALS_H

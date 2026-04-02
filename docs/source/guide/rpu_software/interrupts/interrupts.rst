@@ -8,15 +8,16 @@ Software User Model
 -------------------
 
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL.
-Two defines in ``uz_global_configuration.h`` control how the ISR is triggered:
+Two defines in ``uz_global_configuration.h`` control how the **ISR** and the **ADC** conversion are triggered:
 
 * ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` — selects which PWM counter event is used as the base trigger source.
-* ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` — selects the trigger mode:
 
-  * ``0``: ISR fires directly on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``.
-  * ``1``: ISR fires on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~0.9 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+The **ISR** has an additional trigger mode ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``:
 
-An additional delay for the ADC trigger path can be configured with ``ADC_TRIGGER_DELAY_IN_US``.
+* ``0``: ISR triggers on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``. This results in a race condition between ADC data transfer and ISR execution.
+* ``1``: ISR triggers on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~0.9 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+
+The **ADC** trigger signal can be delayed relative to the original trigger signal using the ``ADC_TRIGGER_DELAY_IN_US`` define.
 
 .. code-block:: c
 
@@ -47,6 +48,9 @@ An additional delay for the ADC trigger path can be configured with ``ADC_TRIGGE
 
    This keeps PWM register updates, ADC triggering, and ``ISR_Control``
    synchronized to the same carrier event.
+
+
+
 
 
 Structure of the Interrupt
@@ -124,3 +128,30 @@ The block behavior is:
 
 With the default 100 MHz clock used in the interrupt path, the achievable delay range is ``0`` to ``10.23 us`` in ``10 ns`` steps.
 
+
+ILA Timing Example
+~~~~~~~~~~~~~~~~~~
+
+The following timing diagram is generated directly from ``interrupt_ila_data.csv`` and therefore stays in sync with the captured hardware data.
+It plots all recorded CSV signals over the full capture range in one figure, without selecting a subset of traces or creating zoomed views.
+
+.. plot:: guide/rpu_software/interrupts/interrupts_ila_plot.py
+  :caption: Timing diagram generated from ILA export in ``interrupt_ila_data.csv``. 
+
+
+.. code-block:: c
+  :caption: Settings of the timing diagram
+
+
+   #define UZ_SOURCE_Interrupt_2L_max_min 0
+   #define UZ_SOURCE_Interrupt_2L_max_min 1
+   #define UZ_SOURCE_Interrupt_2L_max_min 2
+   #define UZ_SOURCE_Interrupt_2L_max_min 3
+   #define UZ_SOURCE_Interrupt_2L_max_min 4
+   #define UZ_SOURCE_Interrupt_2L_max_min 5
+
+   #define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+
+   #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U // 0: ISR fires on selected PWM event. 1: ISR fires on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
+   #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	10U
+   #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behvaior. See uz_mux_axi in docs.

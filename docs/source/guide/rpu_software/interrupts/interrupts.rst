@@ -13,17 +13,18 @@ User can set the interrupt source
 Can choose every nth pwm event is a ISR event
 Can delay between pwm event and adc trigger
 
-
-Two defines in ``uz_global_configuration.h`` control how the **ISR** and the **ADC** conversion are triggered:
+Four defines in ``uz_global_configuration.h`` control how the **ISR** and the **ADC** conversion are triggered:
 
 * ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` selects the PWM counter event as the base trigger source.
 
-The **ISR** has an additional trigger mode ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``:
+* ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` selects the ISR trigger mode:
 
-* ``0``: ISR triggers on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``. This results in a race condition between ADC data transfer and ISR execution.
-* ``1``: ISR triggers on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~:math:`1.3 \mu s` delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+  * ``0``: ISR triggers on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``. This results in a race condition between ADC data transfer and ISR execution.
+  * ``1``: ISR triggers on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~:math:`1.3 \mu s` delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
 
-The **ADC** trigger signal can be delayed relative to the original trigger signal by setting the ``ADC_TRIGGER_DELAY_IN_US`` define.
+* ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` the ADC is triggered every PWM event, but ``ISR_Control`` fires only every N-th event. See :ref:`uz_mux_axi` for details.
+
+* ``ADC_TRIGGER_DELAY_IN_US`` adds an optional delay to the ADC trigger path. See :ref:`uz_mux_axi` for details.
 
 .. code-block:: c
 
@@ -31,6 +32,10 @@ The **ADC** trigger signal can be delayed relative to the original trigger signa
     #define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
     // Trigger the ISR on axi2tcm_write_done instead of directly on the PWM event:
     #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 1U
+    // Trigger the ADC every PWM event, but fire ISR_Control only every N-th:
+    #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U
+    // Optional delay added to the ADC trigger path (in microseconds):
+    #define ADC_TRIGGER_DELAY_IN_US                 0.0f
 
 
 .. csv-table:: PWM trigger sources for ``INTERRUPT_ISR_SOURCE_USER_CHOICE``
@@ -57,34 +62,26 @@ The **ADC** trigger signal can be delayed relative to the original trigger signa
    synchronized to the same carrier event.
 
 
-Structure of the Interrupt
+Structure of the Interrupt 
 --------------------------
-
-.. mermaid::
-    :align: center
-    :caption: Usage of interrupt configuration defines in source code
-
-    graph TD
-      A[INTERRUPT_ISR_SOURCE_USER_CHOICE] -->|Sets ADC trigger source| B(Initialize_ISR)
-      C[INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY] -->|Sets ISR trigger source| B
-      B -->|Mux for ADC trigger source| D[ADC trigger in PL]
-      B -->|Rpu_GicInit| E[Trigger source of ISR_Control]
 
 .. mermaid::
     :align: center
     :caption: Signal flow in PL for ADC trigger and ISR trigger
 
     graph LR
-        PWM2L --> Concat_interrupts
-        PWM3L --> Concat_interrupts
-        Concat_interrupts --> mux_axi
-        mux_axi -->|"interrupt_out_adc (selected PWM source)"| delay_trigger
-        delay_trigger --> ADC_conversion
-        ADC_conversion -->|axi2tcm_write_done| Concat_interrupts
-        Concat_interrupts -->|"selected interrupt ID → R5 GIC"| R5_Interrupt
+        PWM_2L --> B[interrupts_in]
+        PWM_3L --> B
+        VIO --> B
+        ATW(axi2tcm_write_done) --> B
+        B --> mux_axi
+        mux_axi -->|"interrupt_out_adc INTERRUPT_ISR_SOURCE"| delay_trigger
+        mux_axi -->|"interrupt_out_isr INTERRUPT_ADC_TO_ISR_RATIO"| IV[Interrupt_vector]
+        delay_trigger -->|"ADC_TRIGGER_DELAY_IN_US"| ADC_conversion
+        ADC_conversion --> ATW
+        ATW --> IV
+        IV -->|"INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY"| ISR_Control
 
-Structure in the PL
--------------------
 
 The Interrupt module consists of:
 
@@ -120,7 +117,7 @@ Trigger of ADC Conversion
 -------------------------
 The ADC conversion is always triggered by the PWM source selected via ``INTERRUPT_ISR_SOURCE_USER_CHOICE``, regardless of the ISR trigger mode set by ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``.
 
-In some applications, the ADC conversion needs to be delayed relative to the PWM trigger — for example when using IGBTs, where the switching transient must settle before sampling.
+In some applications, the ADC conversion needs to be delayed relative to the PWM trigger, for example when using IGBTs, where the switching transient must settle before sampling.
 To prevent ADC sampling during a switching event, this delay can be added in PL via ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``.
 The software driver converts the configured value in microseconds to clock cycles and rounds up to the next achievable step.
 This delay applies in both ISR trigger modes: when ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY = 1``, the ISR fires after the (already delayed) ADC conversion completes and the data has been transferred to TCM.

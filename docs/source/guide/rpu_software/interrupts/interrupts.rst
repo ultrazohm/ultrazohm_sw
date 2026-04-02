@@ -14,7 +14,7 @@ Two defines in ``uz_global_configuration.h`` control how the ISR is triggered:
 * ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` — selects the trigger mode:
 
   * ``0``: ISR fires directly on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``.
-  * ``1``: ISR fires on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~0.9 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+  * ``1``: ISR fires on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~1.3 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
 
 An additional delay for the ADC trigger path can be configured with ``ADC_TRIGGER_DELAY_IN_US``.
 

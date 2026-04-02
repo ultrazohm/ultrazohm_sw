@@ -8,6 +8,12 @@ Software User Model
 -------------------
 
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL.
+
+User can set the interrupt source
+Can choose every nth pwm event is a ISR event
+Can delay between pwm event and adc trigger
+
+
 Two defines in ``uz_global_configuration.h`` control how the **ISR** and the **ADC** conversion are triggered:
 
 * ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` selects the PWM counter event as the base trigger source.
@@ -37,6 +43,7 @@ The **ADC** trigger signal can be delayed relative to the original trigger signa
     "3","Interrupt_3L_start_center","Three-Level PWM Module at **minimum** and **maximum** value of the triangular carrier"
     "4","Interrupt_3L_start","Three-Level PWM Module at **minimum** value of the triangular carrier"
     "5","Interrupt_3L_center","Three-Level PWM Module at **maximum** value of the triangular carrier"
+
 
 .. note::
    When one of the two-level PWM sources is selected, update
@@ -84,6 +91,17 @@ The Interrupt module consists of:
 * ``mux_axi``: chooses the ADC conversion trigger source, the ADC-to-ISR ratio, and configures the ADC trigger delay
 * ``delay_trigger``: adds the configured delay to the ADC conversion trigger
 * ``vio_interrupt``: manually injects an interrupt trigger via Vivado hardware manager for debugging
+
+From an outside perspective, the interrupt gets six different sources for the interrupt and outputs the selected signal to the PS interrupt and to trigger_conversions for the ADC.
+
+
+.. _pl_interrupt_module:
+
+.. figure:: images_interrupt/pl_interrupt_module_top_view.png
+
+  Top view of the PL module of the interrupt structure. Interrupt6 is the signal from axi2tcm_write_done.
+
+
 
 .. _pl_interrupt_module:
 
@@ -135,6 +153,12 @@ It plots all recorded CSV signals over the full capture range in one figure, wit
 .. plot:: guide/rpu_software/interrupts/interrupts_ila_plot.py
   :caption: Timing diagram generated from ILA export in ``interrupt_ila_data.csv``. 
 
+The following additional timing diagram is generated directly from ``iladata.vcd``.
+It renders the same captured probes from the raw VCD waveform export, which is useful when only the VCD file is available.
+
+.. plot:: guide/rpu_software/interrupts/interrupts_ila_vcd_plot.py
+  :caption: Additional timing diagram generated from ILA export in ``iladata.vcd``. 
+
 
 .. code-block:: c
   :caption: Settings of the timing diagram
@@ -152,3 +176,4 @@ It plots all recorded CSV signals over the full capture range in one figure, wit
    #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U // 0: ISR fires on selected PWM event. 1: ISR fires on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
    #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	10U
    #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behvaior. See uz_mux_axi in docs.
+

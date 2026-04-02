@@ -10,14 +10,14 @@ Software User Model
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL.
 Two defines in ``uz_global_configuration.h`` control how the **ISR** and the **ADC** conversion are triggered:
 
-* ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` — selects which PWM counter event is used as the base trigger source.
+* ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` selects the PWM counter event as the base trigger source.
 
 The **ISR** has an additional trigger mode ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY``:
 
 * ``0``: ISR triggers on the PWM event selected by ``INTERRUPT_ISR_SOURCE_USER_CHOICE``. This results in a race condition between ADC data transfer and ISR execution.
-* ``1``: ISR triggers on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~0.9 µs delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
+* ``1``: ISR triggers on ``axi2tcm_write_done``, i.e. after the ADC conversion is complete and the data has been transferred to TCM (~:math:`1.3 \mu s` delay after the PWM event). This eliminates the race condition between ADC data transfer and ISR execution.
 
-The **ADC** trigger signal can be delayed relative to the original trigger signal using the ``ADC_TRIGGER_DELAY_IN_US`` define.
+The **ADC** trigger signal can be delayed relative to the original trigger signal by setting the ``ADC_TRIGGER_DELAY_IN_US`` define.
 
 .. code-block:: c
 
@@ -48,9 +48,6 @@ The **ADC** trigger signal can be delayed relative to the original trigger signa
 
    This keeps PWM register updates, ADC triggering, and ``ISR_Control``
    synchronized to the same carrier event.
-
-
-
 
 
 Structure of the Interrupt

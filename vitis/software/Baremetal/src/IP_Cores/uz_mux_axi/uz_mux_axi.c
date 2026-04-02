@@ -34,7 +34,7 @@ uz_mux_axi_t* uz_mux_axi_init(struct uz_mux_axi_config_t config) {
     uz_assert(config.n_th_interrupt<256U);
     uz_mux_axi_t* self = uz_mux_axi_allocation();
     self->config=config;
-    self->max_delay_adc_trigger_in_us = calculate_microseconds_from_delay_cycles(self->config.ip_clk_frequency_Hz, (uint32_t) UZ_MUX_AXI_HW_MAX_DELAY_CYCLES);
+    self->max_delay_adc_trigger_in_us = calculate_microseconds_from_delay_cycles(self->config.ip_clk_frequency_Hz, UZ_MUX_AXI_HW_MAX_DELAY_CYCLES);
     uz_assert(config.delay_adc_trigger_in_us >= 0.0F);
     uz_assert(config.delay_adc_trigger_in_us <= self->max_delay_adc_trigger_in_us);
     uz_assert_not_zero(self->is_ready);
@@ -80,7 +80,7 @@ static uint32_t calculate_delay_cycles_from_microseconds(uint32_t clock_frequenc
     uz_assert_not_zero_uint32(clock_frequency_Hz);
     const float clk_us = 1.0e6F / (float) clock_frequency_Hz;
     const uint32_t delay_cycles = (uint32_t) ceilf(delay_in_microseconds / clk_us);
-    uz_assert(delay_cycles <= (uint32_t) UZ_MUX_AXI_HW_MAX_DELAY_CYCLES);
+    uz_assert(delay_cycles <= UZ_MUX_AXI_HW_MAX_DELAY_CYCLES);
     return (delay_cycles);
 }
 

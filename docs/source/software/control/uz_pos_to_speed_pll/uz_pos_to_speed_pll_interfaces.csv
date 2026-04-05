@@ -1,0 +1,10 @@
+﻿Variable Name,Data Type,Valid Range,Unit,Function
+Inputs,,,,
+position_mech_SI,float,0...2pi,rad,Rotational position
+pole_pairs,float,>0...floatmax,1,Number of machine pole pairs
+kp_pll,float,0...floatmax,,Proportional gain of the PLL
+ki_pll,float,0...floatmax,,Integrator gain for the PLL
+sampling_time_seconds,float,>0...floatmax,seconds,Sampling time in seconds for the internal integrator
+Ouputs,,,,
+omega_mech,float,+/- floatmax,rad/s,mechanical speed in rad/s
+omega_el,float,+/- floatmax,rad/s,electrical speed in rad/s

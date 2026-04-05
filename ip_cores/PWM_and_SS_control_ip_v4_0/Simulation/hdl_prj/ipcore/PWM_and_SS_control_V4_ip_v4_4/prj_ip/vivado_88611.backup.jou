@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 04:59:54 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Fri Mar 27 10:30:21 2026
+# Process ID: 88611
+# Current directory: /home/ts/Documents/pr_review/can/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_4/prj_ip
+# Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: /home/ts/Documents/pr_review/can/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_4/prj_ip/vivado.log
+# Journal file: /home/ts/Documents/pr_review/can/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_4/prj_ip/vivado.jou
+# Running On: ts-laptop, OS: Linux, CPU Frequency: 3100.365 MHz, CPU Physical cores: 16, Host memory: 32347 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

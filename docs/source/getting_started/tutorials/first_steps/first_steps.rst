@@ -45,9 +45,9 @@ Initial steps
 
       This branch is only used locally for the tutorials. Do not push any changes to the remote repository.
 
-#. Start **Vitis** and open up the workspace folder (``ultrazohm_sw/vitis/workspace``) of the UltraZohm repository.
+#. Start **Vitis** and open the workspace folder (``ultrazohm_sw/vitis/workspace``) of the UltraZohm repository.
 
-   * Vitis is used to change the code for the Processor (PS). E.g., if you want to run a control algorithm on the ARM-Cortex processors of the UltraZohm, you have to make changes in Vitis.
+   * Vitis is used to change the code for the Processor (PS). For example, if you want to run a control algorithm on the ARM-Cortex processors of the UltraZohm, you have to make changes in Vitis.
    * Vivado is used to change the programmable logic (PL), i.e., the FPGA of the Zynq UltraScale. 
 
 #. Review the contents of ``uz_global_configuration.h`` before building the source code
@@ -71,7 +71,7 @@ Initial steps
 #. The build can fail, leading to errors as exemplarily depicted below.
 
    * Whenever you make changes to the codebase and the build leads to errors, they have to be fixed, otherwise, the UltraZohm cannot be flashed properly. This is because the errors stop the compiler from compiling the entire workspace.
-   * While Warnings do not prohibit the UltraZohm from working, they should be fixed nonetheless.
+   * While warnings do not prohibit the UltraZohm from working, they should be fixed nonetheless.
 
    ..  _workspace_error:
    ..  figure:: ./img/workspace_error.png
@@ -79,7 +79,7 @@ Initial steps
 
        Errors after building the workspace
 
-#. Our build is successful.
+#. The build is successful.
 #. Flash the UltraZohm by either pressing the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations...*. Vitis will remember the last selection, which means that for a future flashing operation, the last debug config is already preselected. 
 #. Use the ``Run_UltraZohm`` configuration for the debug/run selection.
 
@@ -110,5 +110,5 @@ Initial steps
 
        Visible signals after GUI has been connected.
 
-#. Get yourself familiar with the GUI by trying different things in the GUI. For further information, read the :ref:`sections about the Setup Scope Page, Control Page, and Logging Panel <JavaScope>`.
+#. Get familiar with the GUI by trying different things in the GUI. For further information, read the :ref:`sections about the Setup Scope Page, Control Page, and Logging Panel <JavaScope>`.
 #. In the next tutorial, changes will be made to the codebase, and the GUI will be customized.

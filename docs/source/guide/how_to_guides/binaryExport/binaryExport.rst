@@ -2,14 +2,14 @@
 Binary Export (to SD)
 =======================
 
-To be able to work with the UltraZohm without flashing it before each usage, a bootable binary can be generated. 
-This binary replaces the default ``BOOT.bin`` and the custom code executes after power-cycle of the UltraZohm. 
+To be able to work with the UltraZohm without flashing it before each usage, a bootable binary can be generated.
+This binary replaces the default ``BOOT.bin`` and the custom code executes after a power cycle of the UltraZohm.
 
 Generate boot image
 ===================
 
-1. Open the UltrZohm workspace in Vitis
-2. In the top menu, select``Xilinx`` -> ``Create Boot Image``
+1. Open the UltraZohm workspace in Vitis
+2. In the top menu, select ``Xilinx`` -> ``Create Boot Image``
 3. Select ``Import from existing BIF file`` (radio buttons)
 4. Set the ``Import BIF file path`` to ``~vitis\software\BootImage\GenerateBootImage.bif`` (see :numref:`gen_boot_gif`)
 
@@ -35,16 +35,16 @@ Generate boot image
   Adjust paths of boot image partitions. 
 
 
-8. Select ``create Image``
+8. Select ``Create Image``
 
 Change BOOT.bin on SD-Card
 ==========================
 
-1. Shut-down the UltraZohm
+1. Shut down the UltraZohm
 2. Unplug the power connection and make sure that power is off
-3. Remove the SD-Card
-4. Connect the SD-Card to the local machine
-5. Copy ``BOOT.bin`` from the ``uz-repo\vitis\software\BootImage`` folder to the SD-Card of the UltraZohm (replace the existing ``BOOT.bin``
+3. Remove the SD card
+4. Connect the SD card to the local machine
+5. Copy ``BOOT.bin`` from the ``uz-repo\vitis\software\BootImage`` folder to the SD card of the UltraZohm (replace the existing ``BOOT.bin``)
 6. Plug in the power connection and power-cycle the UltraZohm
 
 

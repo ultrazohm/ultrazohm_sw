@@ -67,7 +67,7 @@ Resolver
    :height: 300
 
 The resolver interface is equipped with AD2S1210 from Analog Devices. It features excitation signal generation, 10-/12-/14-/16-bit resolution ADC, SPI or parallel interface (currently only SPI is supported), incremental encoder emulation and simple configuration by pull-up/pull-down choices.
-The devices works in one of three modes selectable by hardware inputs A0 and A1. In position mode, the corresponding data can be obtained directly by toggling the clock line without sending register adresses first. The same applies for velocity mode. Those two are also called normal modes. In the third mode, the configuration mode, allows for further access on the devices registers and configuration. In this mode it is possible to change the excitation frequency or also read back position and velocity data. Only in this mode the ADC resolution can be changed, ignoring the external resistor configuration.
+The devices works in one of three modes selectable by hardware inputs A0 and A1. In position mode, the corresponding data can be obtained directly by toggling the clock line without sending register addresses first. The same applies for velocity mode. Those two are also called normal modes. In the third mode, the configuration mode, allows for further access on the devices registers and configuration. In this mode it is possible to change the excitation frequency or also read back position and velocity data. Only in this mode the ADC resolution can be changed, ignoring the external resistor configuration.
 
 .. figure:: encoder_v1/Position_Plot.png
   :width: 1000
@@ -79,7 +79,7 @@ The devices works in one of three modes selectable by hardware inputs A0 and A1.
   
   Velocity Data from Resolver
 
-When communicating with the controller, attention has to be payed on the SPI mode. The correct one is MODE1 with clock polarity idle low and clock phase one meaning falling edge.
+When communicating with the controller, attention has to be paid on the SPI mode. The correct one is MODE1 with clock polarity idle low and clock phase one meaning falling edge.
 
 .. figure:: encoder_v1/Resolver_Data_Transmission_Normal_Mode.png
   :width: 1000
@@ -124,7 +124,7 @@ Analog Hall
 .. image:: encoder_v1/3D_View_Connectors_Analog_Hall.png
    :width: 1000
 
-The analog hall interface is based on the UltraZohm analog board. It is equipped with four independant channels. Each ADC has a serial interface for reading data.
+The analog hall interface is based on the UltraZohm analog board. It is equipped with four independent channels. Each ADC has a serial interface for reading data.
 
 .. image:: encoder_v1/Analog_Graphic.png
    :width: 500

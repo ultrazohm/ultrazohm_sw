@@ -210,7 +210,7 @@ static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
  * @brief Clears stuck ACTIVE PL interrupts by writing GICC_EOIR (End Of Interrupt Register)
  * with the active interrupt ID, to enable soft restart without resetting entire system.
  *
- * Equivalent to XSCT: mwr (CpuBaseAddress + 0x10) <intid>
+ * Equivalent to XSCT: mwr (CpuBaseAddress + 0x10) intid
  *
  * Call during GIC init, before enabling IRQ delivery on the R5.
  *

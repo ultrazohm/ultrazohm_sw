@@ -19,7 +19,7 @@ The trigger and refresh signals of the Transformation are connected with the RS-
 .. note:: 
 
    To simplify the usage of the CIL and to reduce possible errors, a Tcl script was created, that places all necessary IP cores automatically and connects them.
-   To use this, open the Vivado block design in a clean project and run the following commands seperately in the Tcl console.
+   To use this, open the Vivado block design in a clean project and run the following commands separately in the Tcl console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
 
@@ -102,7 +102,7 @@ The init functions are called during the init process of all IP cores.
     .Tristate_HB1 = false,
     .Tristate_HB2 = false,
     .Tristate_HB3 = false,
-    .min_pulse_width = 0.01f,
+    .min_pulse_width_in_microseconds   = 1.0f,
     .PWM_freq_Hz = UZ_PWM_FREQUENCY,
     .PWM_mode = normalized_input_via_AXI,
     .PWM_en = true,
@@ -112,8 +112,8 @@ The init functions are called during the init process of all IP cores.
     .ip_clk_frequency_Hz=100000000.0f,
     .Tristate_HB1 = false,
     .Tristate_HB2 = false,
-    .Tristate_HB3 = false,
-    .min_pulse_width = 0.01f,
+    .Tristate_HB3 = false,  
+    .min_pulse_width_in_microseconds   = 1.0f,
     .PWM_freq_Hz = UZ_PWM_FREQUENCY,
     .PWM_mode = normalized_input_via_AXI,
     .PWM_en = true,
@@ -206,7 +206,7 @@ Depending on the used controller, this might not be necessary.
     output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, setp_currents.d, transformed_currents.d, false);  // sample d-current controller
     output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, setp_currents.q, transformed_currents.q, false);  // sample q-current controller
     out_voltage_abc = uz_transformation_asym30deg_6ph_dq_to_abc(output_voltage_dq, theta_el);                     // transform setpoint voltages to phase voltages
-    out_voltage_abc1.a = out_voltage_abc.a1;                                                                      // seperate voltages into 3ph structs
+    out_voltage_abc1.a = out_voltage_abc.a1;                                                                      // separate voltages into 3ph structs
     out_voltage_abc1.b = out_voltage_abc.b1;
     out_voltage_abc1.c = out_voltage_abc.c1;
     out_voltage_abc2.a = out_voltage_abc.a2;

@@ -55,7 +55,7 @@ Step-by-step
    .. figure:: images_diamond/07.png
      :width: 1000
 
-8. Add the renamed ``VHDL File`` to your project by right clicking the ``InputFiles`` - ``Add``- ``Existing File``.
+8. Add the renamed ``VHDL File`` to your project by right-clicking the ``InputFiles`` - ``Add`` - ``Existing File``.
 
    .. figure:: images_diamond/08.png
      :width: 1000
@@ -65,7 +65,7 @@ Step-by-step
    .. figure:: images_diamond/09.png
      :width: 1000
 
-10. Write VHDL Code for the CPLD and save it.
+10. Write VHDL code for the CPLD and save it.
 
     .. figure:: images_diamond/10.png
       :width: 1000
@@ -114,7 +114,7 @@ Step-by-step
      -- Output Port Example
      d_00 <= fpga_00 AND enable_forwarding; -- This port is an output
     
-    There is no dedicated enable logic between the S3C and the D-Slot CPLD for input signals. From the systems standpoint, signal validity should be handled by the SoM, so -- rather than adding complexity -- the signal is simply forwarded unchanged through every instance.
+    There is no dedicated enable logic between the S3C and the D-Slot CPLD for input signals. From the system's standpoint, signal validity should be handled by the SoM, so -- rather than adding complexity -- the signal is simply forwarded unchanged through every instance.
 
 11. When saving, Diamond automatically checks the code and gives feedback. If everything is fine, it looks as below.
 

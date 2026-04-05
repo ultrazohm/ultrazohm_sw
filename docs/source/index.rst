@@ -13,10 +13,10 @@ Having a common platform enables the active research community to focus on publi
 **High Computational Power**
 
 The UltraZohm is based on the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
-These offer four ARM A53, two ARM R5, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
+These offer four ARM A53 cores, two ARM R5 cores, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
 The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_.
-Specifically, the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
-Additionally, SoMs with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
+Specifically, the `TE0808 with a ZU9EG-1E <https://www.trenz-electronic.de/de/UltraSOM-MPSoC-Modul-mit-AMD-Zynq-UltraScale-ZU9EG-1E-4-GByte-DDR4-LP/TE0808-05-9BE21-F>`_ device is the default and strongly recommended.
+Additionally, SoMs with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`vivado_build_tcl`.
 
 **Hard Real-time**
 
@@ -40,27 +40,27 @@ Furthermore, IP cores and software components are developed and shared, and incl
 
 **Usability**
 
-The UltraZohm project thrives to be novice friendly with tutorials and an existing codebase.
+The UltraZohm project strives to be novice-friendly with tutorials and an existing codebase.
 This is especially relevant to onboard new users with different backgrounds, ranging from bachelor, master's, and PhD students to experienced engineers and developers.
-At the same time, the system is expert friendly with access *to the last bit* due to the lack of black boxes, access to the source code, and comprehensive documentation.
+At the same time, the system is expert-friendly with access *to the last bit* due to the lack of black boxes, access to the source code, and comprehensive documentation.
 In addition, there are multiple supported workflows for writing software (e.g., manually or using :ref:`embedded_coder`) and IP cores (manually, :ref:`hdl_coder`, Vitis HLS).
 
 **Community**
 
 The UltraZohm community aims to connect researchers working on the same platform and solve infrastructure problems only once!
-We write and review code together, design PCBs, and share our knowledge regarding the UltraZohm, Xilinx UltraScale, electronics, control approaches, and many more!
+We write and review code together, design PCBs, and share our knowledge regarding the UltraZohm, Xilinx UltraScale, electronics, control approaches, and more.
 We welcome researchers from all around the world with an interest in the control of power electronics and electrical drives.
 
 **Documentation**
 
-Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
+Comprehensive and ever-growing documentation for the UltraZohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
 
 **Repositories**
 
-The UltraZohm repositories are split in software and hardware:
+The UltraZohm repositories are split into software and hardware:
 
 - The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
-- The `PCB Designs page <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
+- The `PCB Designs page <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, each containing its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
 
 **Maintained & Funded**
 

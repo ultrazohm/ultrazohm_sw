@@ -85,7 +85,7 @@ IncPerTurn_elec
 OverSamplingFactor
   Calculation of the rotational speed omega is based on measuring the time between rising edges of the A-lane.
   If ``OverSampleFactor=1``, every rising edge is used.
-  For ``OverSampleFactor=n``, every n-th rising ege is used.
+  For ``OverSampleFactor=n``, every n-th rising edge is used.
   Based on the setting, the IP core adapts the OverSampleFactor over the operating range of the drive.
   The ``OverSamplingFactor`` is set by ``OmegaPerOverSampl_AXI4`` in ``rad/s``.
   Default value is :math:`500 \frac{1}{min} \cdot \frac{2\pi}{60 s}=52.3599 s^{-1}`.

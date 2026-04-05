@@ -16,9 +16,9 @@ void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_HB1, floa
     uz_assert(dutyCyc_HB2<=1.0f);
     uz_assert(dutyCyc_HB3>=0.0f);
     uz_assert(dutyCyc_HB3<=1.0f);        
-    int32_t m_u1_norm = uz_convert_float_to_sfixed(dutyCyc_HB1,12);
-    int32_t m_u2_norm = uz_convert_float_to_sfixed(dutyCyc_HB2,12);
-    int32_t m_u3_norm = uz_convert_float_to_sfixed(dutyCyc_HB3,12);
+    int32_t m_u1_norm = uz_convert_float_to_sfixed(dutyCyc_HB1,16);
+    int32_t m_u2_norm = uz_convert_float_to_sfixed(dutyCyc_HB2,16);
+    int32_t m_u3_norm = uz_convert_float_to_sfixed(dutyCyc_HB3,16);
     uz_axi_write_uint32(base_address + m_u1_norm_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)m_u1_norm);
     uz_axi_write_uint32(base_address + m_u2_norm_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)m_u2_norm);
     uz_axi_write_uint32(base_address + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)m_u3_norm);
@@ -53,32 +53,26 @@ void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_
 void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse_width_percent){
     uz_assert_not_zero_uint32(base_address);
     uz_assert(min_pulse_width_percent>=0.0f);
-    int32_t min_pulse_width_percent_Q12 = uz_convert_float_to_sfixed(min_pulse_width_percent,12);
-    uz_axi_write_uint32(base_address + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)min_pulse_width_percent_Q12);
+    int32_t min_pulse_width_percent_Q16 = uz_convert_float_to_sfixed(min_pulse_width_percent,16);
+    uz_axi_write_uint32(base_address + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)min_pulse_width_percent_Q16);
 }
 
-void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false){
+void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, bool Tristate_HB1, bool Tristate_HB2, bool Tristate_HB3)
+{
     uz_assert_not_zero_uint32(base_address);
-    uz_assert_not_zero_uint32(halfBridgeNumber);
-    uz_assert(halfBridgeNumber<=3U);
-    uint32_t halfBridgeAddress = 0U;
-    switch (halfBridgeNumber) {
-        case 1  :
-            halfBridgeAddress = TriState_HB1_AXI_Data_PWM_and_SS_control_V4_ip;
-            break;
+    uint32_t tristate_status = 0xFFFFU;
 
-        case 2  :
-            halfBridgeAddress = TriState_HB2_AXI_Data_PWM_and_SS_control_V4_ip;
-            break;
-
-        case 3  :
-            halfBridgeAddress = TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip;
-            break;
-
-        default :
-            break;
+    if (!Tristate_HB1) {
+        tristate_status &= ~(1U << 0);
     }
-    uz_axi_write_bool(base_address + halfBridgeAddress, TriState_true_false);
+    if (!Tristate_HB2) {
+        tristate_status &= ~(1U << 1);
+    }
+    if (!Tristate_HB3) {
+        tristate_status &= ~(1U << 2);
+    }
+
+    uz_axi_write_uint32(base_address + TriState_HB_AXI_Data_PWM_and_SS_control_V4_ip, tristate_status);
 }
 
 void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3){

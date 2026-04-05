@@ -47,11 +47,13 @@ The CI scripts draw from `this tutorial <https://vhdlwhiz.com/jenkins-for-fpga#v
 ci_generate_bitstream.tcl
 -------------------------
 
-Opens the ``ultrazohm.xpr`` Vivado project and runs to design flow to ``write_bitstream``.
+Opens the ``ultrazohm.xpr`` Vivado project and runs the design flow to ``write_bitstream``.
 Returns ``0`` if successful and ``1`` if not.
 
 vivado\_
 ********
+
+.. _vivado_export_xsa_tcl:
 
 vivado_export_xsa.tcl
 ---------------------
@@ -65,7 +67,7 @@ Export Bitstream Tcl script
 A Tcl script can be added to the Vivado icons to automate the process of exporting the Bitstream since it is a common task.
 
 - ``Tools -> Custom Commands -> Customize Commands``
-- Click on the `plus` and ender a name, e.g., export_xsa
+- Click on the `plus` and enter a name, e.g., export_xsa
 - Click on ``Source Tcl file``
 - Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
 - Click ok

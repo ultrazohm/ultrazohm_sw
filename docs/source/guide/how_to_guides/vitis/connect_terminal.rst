@@ -7,7 +7,7 @@ Connection with the Vitis Serial Terminal
 * The serial terminal connects the computer with the UZ using UART
 
 JTAG module :ref:`uz_per_jtag`
---------------------------------------
+------------------------------
 
 The  Iso_JTAG Debugger has 4 channels:
 
@@ -16,14 +16,14 @@ The  Iso_JTAG Debugger has 4 channels:
 3. UART Zynq-SoM
 4. UART not connected
 
-In the usual use case, the Channel 2 or Channel B is automatically mapped to the CPLD. 
-When connecting to the computer, three new COM channels appear in the windows device manager.
+In the usual use case, Channel 2 or Channel B is automatically mapped to the CPLD.
+When connecting to the computer, three new COM channels appear in the Windows device manager.
 
 .. image:: images_serial_terminal/com_ports.png
    :width: 500
 
-Usually the channel in the middle is the right one to connect to the serial terminal (in this case COM9). Click the **+** Button on the *Vitis Serial Terminal* section an select the right COM Port.
-The picture displays the connection in windows, in ubuntu the naming can be different see :ref:`linux_com`.
+Usually the channel in the middle is the right one to connect to the serial terminal (in this case COM9). Click the **+** button on the *Vitis Serial Terminal* section and select the right COM port.
+The picture displays the connection in Windows; in Ubuntu the naming can be different, see :ref:`linux_com`.
 
 .. image:: images_serial_terminal/connect_com.png
    :width: 500

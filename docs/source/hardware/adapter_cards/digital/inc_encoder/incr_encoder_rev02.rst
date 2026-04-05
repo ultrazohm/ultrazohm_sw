@@ -69,7 +69,7 @@ B14              Dig_12_Ch5   Encoder_1_B
 Vivado block design with three IP cores on D5
 ---------------------------------------------
 
-* Fo using all channels of the card, the user has to change the block design in vivado (three IP cores on D5 connected).
+* For using all channels of the card, the user has to change the block design in vivado (three IP cores on D5 connected).
 
 .. image:: incr_encoder_rev02/vivado_block.jpg
    :height: 500

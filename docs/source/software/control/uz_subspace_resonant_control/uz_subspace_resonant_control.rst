@@ -8,7 +8,7 @@ General
 -------
 
 This module packages two :ref:`uz_resonant_controller` together, so that it can be used easier for controlling a complete subspace.
-The idea is similar as for the :ref:`uz_CurrentControl`, as it is easier to just call one function instead of two seperate PI-Controllers or two seperate Resonant-Controllers in this case.
+The idea is similar as for the :ref:`uz_CurrentControl`, as it is easier to just call one function instead of two separate PI-Controllers or two separate Resonant-Controllers in this case.
 However this module adds no new math to the control and to understand the control scheme of the Resonant-Controller, please visit :ref:`uz_resonant_controller`.
 
 Functions
@@ -39,7 +39,7 @@ However, the user can set different gains for both controllers.
 The control is executed with the step function, which is available for either dq- or :math:`\alpha\beta`-setpoints.
 
 .. note::
-   Be advised that not only the UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES of this module must be high enough, but there also have to be enough UZ_RESONANT_CONTROLLER_MAX_INSTANCES, as two resonant controllers are initalized for each subsystem control object.
+   Be advised that not only the UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES of this module must be high enough, but there also have to be enough UZ_RESONANT_CONTROLLER_MAX_INSTANCES, as two resonant controllers are initialized for each subsystem control object.
 
 Example
 -------

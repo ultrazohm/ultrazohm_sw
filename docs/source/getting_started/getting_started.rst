@@ -49,7 +49,7 @@ The following steps set up your UltraZohm and provide tutorials to use different
 
 #. Refer to :ref:`SystemOverview` to get a high-level idea what the UltraZohm is about.
 #. Refer to :ref:`platform_architecture` to get a better understanding of the UltraZohm platform.
-#. Follow the :ref:`UltraZohmSetup` guide to setup a local workspace.
+#. Follow the :ref:`UltraZohmSetup` guide to set up a local workspace.
 #. Complete the UltraZohm Tutorials.
 
 Your UltraZohm is now set up and ready to be used.
@@ -98,7 +98,7 @@ Contribution to MPSoC FPGA
 **************************
 
 Contributions to the FPGA can either be an IP core or structural changes to the default Vivado project.
-Changes to the Vivado project (everything in ``ultrazohm_sw/vivado``) can not be merged into the project by creating a pull request! If you plan on changing the Vivado project you have to get in touch with the maintainers in Slack.
+Changes to the Vivado project (everything in ``ultrazohm_sw/vivado``) cannot be merged into the project by creating a pull request! If you plan on changing the Vivado project you have to get in touch with the maintainers in Slack.
 
 Contribution to Hardware (PCB)
 ******************************
@@ -116,7 +116,7 @@ Additional information
 
 #. Useful documents include:
   
-   * `Zynq UltraScale+ MPSoCSoftware Developer Guide <https://www.xilinx.com/support/documentation/user_guides/ug1137-zynq-ultrascale-mpsoc-swdev.pdf>`_
+   * `Zynq UltraScale+ MPSoC Software Developer Guide <https://www.xilinx.com/support/documentation/user_guides/ug1137-zynq-ultrascale-mpsoc-swdev.pdf>`_
    * `Zynq UltraScale+ Device Technical Reference Manual <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_
    * `UltraScale Architecture Memory Resources User Guide <https://www.xilinx.com/support/documentation/user_guides/ug573-ultrascale-memory-resources.pdf>`_
 

@@ -18,7 +18,7 @@ With the gain :math:`K` and time constant `T`.
 - IP core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - IP core has single precision AXI ports
 - All calculations in the IP core are done in double precision!
-- Rationale: the `machine epsilon <https://en.wikipedia.org/wiki/Machine_epsilon>`_ for single precision is approximately :math:`\epsilon=6e-08`. The time discrete integrator multiplies the input with :math:`\frac{1}{T_s}`, resulting in *small* numbers. This results in *noticable* rounding errors for the integration compared to double precision. This effect als consistent between the IP core and Simulink, thus double precision is used in the IP core. AXI is 32-bit by default, thus the input and output values are converted to single precision.
+- Rationale: the `machine epsilon <https://en.wikipedia.org/wiki/Machine_epsilon>`_ for single precision is approximately :math:`\epsilon=6e-08`. The time discrete integrator multiplies the input with :math:`\frac{1}{T_s}`, resulting in *small* numbers. This results in *noticeable* rounding errors for the integration compared to double precision. This effect is consistent between the IP core and Simulink, thus double precision is used in the IP core. AXI is 32-bit by default, thus the input and output values are converted to single precision.
 
 IP Core Hardware
 ================

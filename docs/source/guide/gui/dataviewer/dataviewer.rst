@@ -88,7 +88,7 @@ The following steps start the Python-based data viewer:
     :align: center
     :width: 500px
 
-    Start the Python data viewer by calling ``dataviewer.py``. A dash server is started, which can be open by typing the IP into the browser or clicking the pop-up (right corner).
+    Start the Python data viewer by calling ``dataviewer.py``. A dash server is started, which can be opened by typing the IP into the browser or clicking the pop-up (right corner).
 
 3. Open the web page of the data viewer
 4. Upload the log file that you want to inspect. Note that the data are only *uploaded* to your local machine since the dash app runs on a local server. I.e., all data are only present on your hard drive.

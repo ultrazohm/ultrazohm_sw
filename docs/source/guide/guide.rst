@@ -6,7 +6,7 @@ Guide
 
 * UltraZohm is a powerful real-time computation unit
 * The UltraZohm is used to control power electronics and electrical drives
-* The UltraZohm is work in progress
+* The UltraZohm is a work in progress
 * Funded by `BMBF/BMFTR project KI-Power <https://www.elektronikforschung.de/projekte/ki-power>`_
 
 .. _UltraZohmFront:
@@ -26,7 +26,7 @@ Development goals
 Computational power
  The use of more complex control algorithms based on model predictive control and/or artificial intelligence, as well as the increased use of wide-band gap power electronics, require a real-time computing unit with sufficient processing power.
  The necessary processing power is provided by the UltraZohm.
- A heterogenous SoC is used due to the diverse requirements of different applications and control algorithms.
+ A heterogeneous SoC is used due to the diverse requirements of different applications and control algorithms.
  The UltraZohm project uses the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ on a SoM by `Trenz Electronics <https://shop.trenz-electronic.de/de/Produkte/Trenz-Electronic/TE08XX-Zynq-UltraScale/TE0808-Zynq-UltraScale/>`_.
 
 Hard real-time
@@ -38,7 +38,7 @@ Hard real-time
 Modularity
  The UltraZohm is modular in terms of software and hardware.
  The system can be used with different devices within the UltraScale MPSoC family.
- Adapter cards are used as a flexible interface for analoge and digital signals such as ADC's and gate signals for power electronics.
+ Adapter cards are used as a flexible interface for analog and digital signals such as ADC's and gate signals for power electronics.
  Software modularity is achieved by using encapsulated design patterns combined with IP cores on the FPGA.
 
 Usability
@@ -46,7 +46,7 @@ Usability
  The UltraZohm is **novice friendly** since there are a lot of different tutorials, existing IP cores and adapter cards that are used by the community.
  Therefore, a new user does not have to start from scratch.
  The UltraZohm is **expert friendly** since there are **no black boxes** in the system.
- Due to project being open source, every user can investigate every line of code, every IP core and the complete signal chain in the schematics.
+ Due to the project being open source, every user can investigate every line of code, every IP core and the complete signal chain in the schematics.
  Furthermore, **everybody** is encouraged to :ref:`contribute <contribution>` to the UltraZohm and improve the system!
 
 Requirements
@@ -63,7 +63,7 @@ The following requirements are derived from the development goals of the UltraZo
 Overview of the project
 ***********************
 
-The UltraZohm project is hosted on a bitbucket `repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+The UltraZohm project is hosted on a Bitbucket `repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
 The repository is structured in the following way, with some important files highlighted.
 The source of this documentation is located in ``ultrazohm_sw/docs/source/``.
 The online version (docs.ultrazohm.com) is always the documentation of the current state of the ``main`` branch.

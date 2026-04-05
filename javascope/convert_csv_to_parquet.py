@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from pandas.errors import EmptyDataError
 
 # Get the current directory
 current_directory = os.getcwd()
@@ -27,7 +28,11 @@ for csv_file in csv_files:
         continue
     
     # Read the CSV file into a pandas DataFrame
-    df = pd.read_csv(os.path.join(csv_directory, csv_file),sep=';')
+    try:
+        df = pd.read_csv(os.path.join(csv_directory, csv_file), sep=';')
+    except EmptyDataError:
+        print(f"{csv_file} is empty. Skipping conversion")
+        continue
     
     # Convert the DataFrame to Parquet format and save it
     df.to_parquet(parquet_path)

@@ -32,7 +32,7 @@ DS_Data Global_Data = {
         .halfBridge11DutyCycle = 0.0f,
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
@@ -110,7 +110,7 @@ int main(void)
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
-
+            uz_print_bitstream_timestamp();
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

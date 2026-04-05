@@ -12,7 +12,7 @@ The basic toolchain consists of the following, please install all of them.
     git
     sourcetree
 
-Additional installations that are necessary at later point are 
+Additional installations that are necessary at a later point are:
 
 - Install :ref:`Java <install_java>`
 - :ref:`install_lattice` 

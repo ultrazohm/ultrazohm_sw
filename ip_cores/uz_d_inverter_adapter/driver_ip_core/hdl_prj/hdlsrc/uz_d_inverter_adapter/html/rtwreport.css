@@ -1,4 +1,4 @@
-/* Copyright 2011-2019 The MathWorks, Inc. */
+/* Copyright 2011-2023 The MathWorks, Inc. */
 body,p,table {font-family: calibri, verdana, sans-serif;}
 button,.buton {font-family: calibri, verdana, sans-serif;}  
 button,.button {font-size: small;}
@@ -105,6 +105,9 @@ table.FirstColumn td:first-child { font-weight:bold }
 /* table class="TotalRow" */
 table.TotalRow tr:last-child { font-weight:bold }
 table.TotalRow tr:last-child td { border-top: solid #4F81BD 1.0pt }
+
+/*******fixpt table*******/
+#fixptTable table.AltRow  tr.even td { background-color:#FFFFFF; border:none;}
 
 a.closeButton {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f9f9f9), color-stop(1, #e9e9e9) );

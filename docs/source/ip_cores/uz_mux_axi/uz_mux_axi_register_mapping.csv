@@ -5,3 +5,4 @@ interrupt_out_isr,Output,bool,External Signal,,,ISR trigger signal
 select_out,Output,ufix4,External Signal,0-6,,selected mux number
 select_AXI,Input,uint32,AXI4-Lite,0-6,,mux selector
 select_n_th_adc_interrupt,Input,uint32,AXI4-Lite,1-255,,ADC/ISR trigger ratio
+delay_ADC_trigger_in_clk_cycles_AXI,Input,uint32,AXI4-Lite,0-1023,clk cycles,ADC trigger delay in clock cycles

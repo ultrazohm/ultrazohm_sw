@@ -23,7 +23,6 @@
 
 //Includes for CAN
 #define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
-#include "include/can.h"
 
 //Includes from own files
 #include "main.h"
@@ -31,6 +30,22 @@
 #include "include/isr.h"
 #include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
+
+#include "uz/uz_can/uz_can.h"
+#include "include/can.h"
+
+struct uz_can_config_t can_config_0 = {
+	.base_address = XPAR_PSU_CAN_0_BASEADDR,
+	.ip_core_frequency_Hz = 100000000U, // 100 MHz
+	.can_device_id = XPAR_PSU_CAN_0_DEVICE_ID};
+
+struct uz_can_config_t can_config_1 = {
+	.base_address = XPAR_PSU_CAN_1_BASEADDR,
+	.ip_core_frequency_Hz = 100000000U, // 100 MHz
+	.can_device_id = XPAR_PSU_CAN_1_DEVICE_ID};
+
+uz_can_t* can_instance_0 = NULL;
+uz_can_t* can_instance_1 = NULL;
 
 
 size_t lifecheck_mainThread = 0;
@@ -136,7 +151,12 @@ int main()
 		case initialization_rtos:
 				// SW: Initialize the Interrupt Handler in main, because by doing it in the network-threat, there were always problems that the thread was killed.
 			Initialize_InterruptHandler();
+#if CAN_ACTIVE==1
+	uz_printf(" Init CAN \n\r"); // CAN interface
+	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
+	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
+#endif
 			// Start the main-threat
 			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
 						   THREAD_STACKSIZE,
@@ -221,14 +241,6 @@ void network_thread(void *p)
             THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
-#if CAN_ACTIVE==1
-	uz_printf(" Init CAN \n\r"); //CAN interface
-	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
-
-	can_frame_t can_frame_rx; //CAN interface
-#endif
-
 /*	// Enable (currently not required for I²C-based GPOs)
 	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
 	uz_platform_gposet(I2CLED_MZD10GREEN, UZP_GPO_ENABLE2PUSHPULLED);
@@ -271,29 +283,6 @@ void network_thread(void *p)
 		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
 			dhcp_coarse_tmr();
 			mscnt = 0;
-		}
-#endif
-
-#if CAN_ACTIVE==1
-		if( ! hal_can_is_rx_empty() ){
-			hal_can_receive_frame_blocking(&can_frame_rx);
-			if(can_frame_rx.std_id == 0x22) {
-			//	XcpCommand( (uint32_t *) can_frame_rx.data );
-				can_send_2();
-			} else {
-
-				//hal_can_debug_print_frame(&can_frame_rx);
-				//uz_printf("received a not XCP related CAN frame \n\r");
-			}
-			//usleep(1000 * 500);
-		}else{
-			can_send_1();
-			//usleep(1000 * 500);
-		}
-
-		// no tx message pending
-		if( hal_can_is_tx_done()) {
-			//XcpSendCallBack();
 		}
 #endif
 
@@ -397,6 +386,18 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
+#if CAN_ACTIVE == 1
+	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
+				   THREAD_STACKSIZE,
+				   DEFAULT_THREAD_PRIO);
+	xil_printf("CAN-Thread0 started\n\r");
+
+	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
+				   THREAD_STACKSIZE,
+				   DEFAULT_THREAD_PRIO);
+
+	xil_printf("CAN-Thread1 started\n\r");
+#endif
 
 #if LWIP_DHCP==1
     while (1) {
@@ -445,75 +446,4 @@ int main_thread()
 
     vTaskDelete(NULL);
     return 0;
-}
-
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  hal_can_debug_print_frame
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void hal_can_debug_print_frame(can_frame_t *can_frame_p)
-{
-	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
-			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
-}
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  can_send_1
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void can_send_1(void)
-{
-	static uint8_t tick;
-	tick++;
-	if(tick > 250){
-		tick =0;
-	}
-
-	//uz_printf("tick: 0x%02X \n\r", tick);
-	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
-
-	can_frame_t can_frame_tx;
-	can_frame_tx.std_id = 0x123;
-	can_frame_tx.dlc = 2;
-	can_frame_tx.data[0] = 0x13;
-	can_frame_tx.data[1] = tick;
-
-	hal_can_send_frame_blocking(&can_frame_tx);
-}
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  can_send_2
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void can_send_2(void)
-{
-	static uint8_t tick;
-	tick=tick+10;
-	if(tick > 250){
-		tick =0;
-	}
-
-	//uz_printf("tick: 0x%02X \n\r", tick);
-	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
-
-	can_frame_t can_frame_tx;
-	can_frame_tx.std_id = 0x52;
-	can_frame_tx.dlc = 2;
-	can_frame_tx.data[0] = 0x12;
-	can_frame_tx.data[1] = tick;
-
-	hal_can_send_frame_blocking(&can_frame_tx);
 }

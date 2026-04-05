@@ -2,7 +2,7 @@
 VSD Open-phase-fault detection
 ==============================
 
-This module provides functions for open phase fault (OPF) detection based on Vector Space Decompositon (VSD) for an asymmetric six phase machine.
+This module provides functions for open phase fault (OPF) detection based on Vector Space Decomposition (VSD) for an asymmetric six phase machine.
 Since the VSD transformation can be used for both PMSM and asynchronous machines, this module can be used for both machine types.
 The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines.
 However, this is not included in this module, since the underlying equations for the fault indices have to be adjusted for it according to the stator arrangement.
@@ -49,7 +49,7 @@ By filtering the fault indices, they can be converted so that only the fault ind
 For the filtering an hysteresis band filter followed by an moving average filter is used.
 The hysteresis band filter set the value of a fault index to zero if the value is not in a narrow band around one defined by an upper and lower hysteresis band limit.
 The moving average smoothes the fault indices so that short disturbances do not affect the fault detection.
-The length of the smoothing intervall is defined as a portion of one electrical period of the phase currents.
+The length of the smoothing interval is defined as a portion of one electrical period of the phase currents.
 The filtered fault indices are evaluated by a threshold value.
 A phase detected as faulted if its fault index exceeds this threshold.
 

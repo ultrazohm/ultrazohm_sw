@@ -7,14 +7,14 @@ First changes to the codebase
 Aim of the tutorial
 *******************
 
-In this tutorial, a multi-instances module from the :ref:`wave_generator` library of the UltraZohm project will be used and the output displayed in the GUI.
+In this tutorial, a multi-instance module from the :ref:`wave_generator` library of the UltraZohm project will be used and the output displayed in the GUI.
 
 Requirements
 ************
 
 The following tutorial requires:
 
-- Finished the tutorial :ref:`first_steps`.
+- Complete the tutorial :ref:`first_steps`.
 
 
 Guideline
@@ -24,7 +24,7 @@ Guideline
 #. Open the ``uz_global_configuration.h`` file and look at the ``#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES`` number. 
 
    * Currently, *two* instances of this module are allowed. This means that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
-   * This is done to ensure a proper static memory allocation for this module. Since the allocation of memory for 50 instances when only, e.g., three are needed is wasteful, the max amount of possible instances is limited by this define.
+   * This is done to ensure a proper static memory allocation for this module. Since the allocation of memory for 50 instances when only, e.g., three are needed is wasteful, the maximum number of possible instances is limited by this define.
    * This procedure is the same for every multiple-instance module (e.g., :ref:`IP core drivers<ip_cores>`, :ref:`uz_piController` etc.).
    * For further information, see :ref:`static_memory_allocation`.
 
@@ -120,10 +120,10 @@ Guideline
          return (status);
       }
 
-#. Open up the ``isr.c`` file of the R5 processor (Baremetal).
+#. Open the ``isr.c`` file of the R5 processor (Baremetal).
 
-   * This file is used to call the the sample functions (i.e., functions which calculate values for the current time step) of the wavegen module.
-   * This is done in the ISR and not the main since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models.
+   * This file is used to call the sample functions (i.e., functions which calculate values for the current time step) of the wavegen module.
+   * This is done in the ISR and not the main, since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models.
    * The ``while(1)`` loop in ``main.c`` does not run with a constant sample time. 
 
 #. Declare in the ``isr.c`` file the three instances again, but this time with the ``extern`` keyword in front.
@@ -195,7 +195,7 @@ Guideline
       //....
 
 #. To display the different chirp waves on the JavaScope, the ``javascope.c`` and ``javascope.h`` file will be modified. 
-#. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum (e.g., JSO_Chirpwave1, etc.).
+#. Open the ``javascope.h`` file and add three new entries to the ``JS_OberservableData`` enum (e.g., JSO_Chirpwave1, etc.).
 
    * Here, the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.

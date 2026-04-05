@@ -24,7 +24,7 @@ We use Bitbucket Cloud-hosted, so click ``Bitbucket`` (right).
 
 .. image:: ./images_git/sourcetree_anmeldung.png
 
-You will be asked to login to your Bitbucket account. If you do not have one, please `create one <https://www.bitbucket.com>`_ since it is required to access the software of the UltraZohm.
+You will be asked to log in to your Bitbucket account. If you do not have one, please `create one <https://www.bitbucket.com>`_ since it is required to access the software of the UltraZohm.
 
 .. image:: ./images_git/sourcetree_login.png
 
@@ -64,7 +64,7 @@ This will take some time. After the clone is complete, Sourcetree and the reposi
 
 .. image:: ./images_git/sourcetree_cloned.png
 
-You can and should change the language to **English** with ``Tools--> Options`` which is highly recommended or the specific git commands will be translated!
+You can and should change the language to **English** with ``Tools -> Options`` which is highly recommended or the specific git commands will be translated!
 
 .. image:: ./images_git/sourcetree_sprache.png
 
@@ -77,10 +77,10 @@ Sourcetree known issues
   To create a desktop shortcut, navigate to the install path which is:
   ::
 
-    C:Users\USERNAME\AppData\Local\SourceTree
+    C:\Users\USERNAME\AppData\Local\SourceTree
 
   Where ``USERNAME`` is the name of your Windows user account. Note that the path might be a hidden folder.
-  To create a shortcut, right-click the sourcetree.exe and click ``create desktop shortcut``.
+  To create a shortcut, right-click SourceTree.exe and click ``create desktop shortcut``.
 
 
 Sourcetree git-flow
@@ -92,7 +92,7 @@ To use git-flow for the first time, click the git-flow icon in Sourcetree.
 
 .. image:: ./images_git/gitflow1.png
 
-A window pops up which asks you to initialize the repository for git-flow. Just click ok.
+A window pops up which asks you to initialize the repository for git-flow. Just click OK.
 
 .. warning::
 
@@ -109,7 +109,7 @@ The only relevant action for users is ``Start New Feature`` - click it.
 
 .. image:: ./images_git/gitflow4.png
 
-You are asked to give a name for the feature, enter an expressive name, and click ok.
+You are asked to give a name for the feature, enter an expressive name, and click OK.
 Naming:
 
 * ``featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g., ``oversampling`` if the feature is about oversampling

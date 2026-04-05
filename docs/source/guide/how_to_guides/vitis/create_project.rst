@@ -18,11 +18,11 @@ Workspace configuration
 
    ..	image:: ./images_create/vitis_create2.png
 
-3. Afterwards a file "zusys_wrapper.xsa" will be created which describes the hardware description on the FPGA and includes the Bitstream (in older versions/before vitis/with SDK, this was called "zusys_wrapper.hdf")
+3. A file "zusys_wrapper.xsa" will be created which describes the hardware description on the FPGA and includes the Bitstream (in older versions/before Vitis/with SDK, this was called "zusys_wrapper.hdf")
 
    ..	image:: ./images_create/vitis_create3.png
 
-4. Afterwards we can start Vitis, which was in former days the SDK
+4. Start Vitis, which was formerly the SDK
 
    ..	image:: ./images_create/vitis_create4.png
 
@@ -48,7 +48,7 @@ The Platform Project
 
 4. Add the lwIP (Ethernet/IPvX) library
 
-   1. Right click on the FreeRTOS BSP
+   1. Right-click on the FreeRTOS BSP
    2. Modify BSP settings
 
       .. image:: ./images_create/vitis_create11.png
@@ -64,7 +64,7 @@ The Platform Project
 The Application Project
 -----------------------
 
-Next step will be to create an "Application Project" for each different solution. 
+The next step is to create an "Application Project" for each different solution.
 
 FreeRTOS
 ^^^^^^^^
@@ -87,15 +87,15 @@ FreeRTOS
 
    .. image:: ./images_create/vitis_create19.png
 
-5. You will see the name of the "Platform Project", on which the "Application Project" is based on, in the yellow brackets behind the application.
+5. You will see the name of the "Platform Project", which the "Application Project" is based on, in the yellow brackets behind the application.
 
 Bare Metal
 ^^^^^^^^^^
 
-We will use one processor of the R5 for the Bare Metal application
+We will use one processor of the R5 for the bare-metal application
 
 1. Since during creation of the "platform Design" we just created a "System project" for the A53_0, we now have to do the same manually for the R5
-2. Right click on the "Vitis_UltraZohm" and add a domain
+2. Right-click on the "Vitis_UltraZohm" and add a domain
 
    .. image:: ./images_create/vitis_create20.png
    .. image:: ./images_create/vitis_create21.png
@@ -110,8 +110,8 @@ We will use one processor of the R5 for the Bare Metal application
 
    .. image:: ./images_create/vitis_create23.png
 
-Side comment: If there is already another Platform and Application present in VITIS, it may happen, that the new domain is not visible.
-In this case, it is necessary to delete the old/other Platform and Application. Afterwards, the new domain, e.g. for BareMetal is visible.
+Side comment: If there is already another Platform and Application present in Vitis, it may happen that the new domain is not visible.
+In this case, it is necessary to delete the old/other Platform and Application. Afterwards, the new domain, e.g. BareMetal, is visible.
 
 .. image:: ./images_create/vitis_create24.png
 .. image:: ./images_create/vitis_create25.png
@@ -130,7 +130,7 @@ The project structure should be ready at this time.
 
    .. image:: ./images_create/vitis_create27.png
 
-3. At this moment the system is ready for modifications
+3. The system is now ready for modifications
 
    .. image:: ./images_create/vitis_create28.png
 

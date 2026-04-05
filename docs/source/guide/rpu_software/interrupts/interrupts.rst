@@ -87,7 +87,7 @@ The Interrupt module consists of:
 From an outside perspective, the interrupt gets six different sources for the interrupt and outputs the selected signal to the PS interrupt and to trigger_conversions for the ADC.
 
 
-.. _pl_interrupt_module:
+.. _pl_interrupt_module_top_view:
 
 .. figure:: images_interrupt/pl_interrupt_module_top_view.png
 

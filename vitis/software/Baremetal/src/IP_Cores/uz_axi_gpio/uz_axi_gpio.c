@@ -71,7 +71,8 @@ uz_axi_gpio_t *uz_axi_gpio_init(struct uz_axi_gpio_config_t config)
     uz_assert_not_zero_uint32(config.base_address);
     uz_axi_gpio_t *self = uz_axi_gpio_allocation();
     self->config = config;
-    uint32_t init_successful = XGpio_Initialize(&self->xinstance, self->config.device_id);
+    uint32_t init_successful = (uint32_t)XGpio_Initialize(&self->xinstance, (uint16_t)self->config.device_id);
+    uz_assert(init_successful == UZ_SUCCESS);
     uz_assert(self->xinstance.BaseAddress == self->config.base_address); // double check that the base address looked up by XGpio_Initialize matches the base address given by the user to prevent mismatch between used IP-Core instance and intended instance
     XGpio_SetDataDirection(&self->xinstance, CHANNEL_1, self->config.direction_of_pins);
 

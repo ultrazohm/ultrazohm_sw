@@ -4,7 +4,7 @@
 
 #include "uz_axi_gpio.h"
 #include "test_assert_with_exception.h"
-
+#include "uz_HAL.h"
 #include "mock_xgpio.h"
 #include "mock_xstatus.h"
 #include <stdint.h>
@@ -34,7 +34,7 @@ void test_uz_axi_gpio_configuration_with_32_outputs(void)
     // Notice that it is not possible to test that the driver actually calls XGpio_Initialize with the correct pointer, i.e., the pointer that points to the correct config
     // The test just tests that "some" pointer is passed but tests for the correct device ic
     // Regarding ReturnThruPtr, see: https://github.com/ThrowTheSwitch/CMock/issues/105
-    XGpio_Initialize_ExpectAndReturn(&xinstance, TEST_DEVICE_ID, 1);
+    XGpio_Initialize_ExpectAndReturn(&xinstance, TEST_DEVICE_ID, UZ_SUCCESS);
     XGpio_SetDataDirection_Expect(&xinstance, 1U, UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT);
     XGpio_Initialize_IgnoreArg_InstancePtr();
     XGpio_Initialize_ReturnThruPtr_InstancePtr(&xinstance);

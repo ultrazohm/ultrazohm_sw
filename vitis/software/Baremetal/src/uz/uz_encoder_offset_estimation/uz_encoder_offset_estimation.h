@@ -7,8 +7,10 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 
-#define OFFSET_STEP_RAD 0.01f                       // set stepsize to step through thetas
-#define OFFSET_RANGE_RAD 0.2f                       // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
+#define OFFSET_STEP_MILLI_RAD 10U                        // set stepsize in milliradians to step through thetas
+#define OFFSET_RANGE_MILLI_RAD 200U                      // set range in milliradians around initial theta
+#define OFFSET_STEP_RAD ((float)OFFSET_STEP_MILLI_RAD / 1000.0f) // set stepsize to step through thetas
+#define OFFSET_RANGE_RAD ((float)OFFSET_RANGE_MILLI_RAD / 1000.0f) // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
 
 
 /**

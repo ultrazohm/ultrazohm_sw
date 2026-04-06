@@ -19,7 +19,7 @@
 #if UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES > 0
 
 // arraysize is determined by the given range and stepsize for theta. sense making inputs from user are required
-#define OFFSET_ARRAYSIZE ((uint32_t) (2U*OFFSET_RANGE_RAD/OFFSET_STEP_RAD)+1U)
+#define OFFSET_ARRAYSIZE (((2U * OFFSET_RANGE_MILLI_RAD) / OFFSET_STEP_MILLI_RAD) + 1U)
 #define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f     // a delay between the rotations (positive, negative and next theta's positive)
 #define OFFSET_ACCELERATE_TIME_SEC 3.0f             // the time to let the motor accelerate with the given q-current
 

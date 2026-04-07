@@ -126,13 +126,13 @@ Update:
 
 ::
 
-   podman image tag localhost/vsc-ultrazohm_sw-ad6053a7600060d35be6bf639d2373c4:latest ultrazohm/ultrazohm_remote_container
+   podman image tag localhost/vsc-ultrazohm_sw-ad6053a7600060d35be6bf639d2373c4:latest ultrazohm/ultrazohm_remote_container_new
 
 4. Push the image to Docker Hub
 
 ::
 
-   podman push ultrazohm/ultrazohm_remote_container:latest
+   podman push ultrazohm/ultrazohm_remote_container_new:latest
 
 
 Drone pipeline (Software)

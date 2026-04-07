@@ -18,9 +18,11 @@ In addition, log files can be created, which can be further analyzed.
 :numref:`dataviewer_log` shows logging the lifecheck signal of the UltraZohm.
 Two options are available to further analyze this log file:
 
-   1. `Matlab Data Inspector`_
-   2. `Python Data Viewer`_
+    1. :ref:`Matlab Data Inspector <dataviewer_matlab_section>`
+    2. :ref:`Python Data Viewer <dataviewer_python_section>`
 
+
+.. _dataviewer_matlab_section:
 
 Matlab Data Inspector
 =====================
@@ -37,7 +39,7 @@ Call the script ``JS_plot_data.m``.
 
     Call ``JS_plot_data.m``.
 
-The script opens the latest log that is present in ``ultrazohm_sw/javascope`` in the `Matlab Data Inspector <https://de.mathworks.com/help/simulink/slref/simulationdatainspector.html>`_.
+The script opens the latest log that is present in ``ultrazohm_sw/javascope`` in the `Matlab Data Inspector documentation <https://de.mathworks.com/help/simulink/slref/simulationdatainspector.html>`_.
 The read data are also available in the Matlab workspace for further processing.
 
 ..  _dataviewer_matlab_dataviewer:
@@ -67,6 +69,8 @@ Additional settings, such as converting the log file to ``.mat`` for further usa
    rename_channels_manually = 0;
    import_data_to_simulink_datainspector = 1;
    overwrite_data_in_simulink_datainspector = 1;
+
+.. _dataviewer_python_section:
 
 Python Data Viewer
 ==================

@@ -591,7 +591,7 @@ In this example following offset and conversion factor are used:
     conversion factor = \frac{100}{2^{16}} = 0.001526
 
 The Raw-value of the 16-Bit-ADC is between 0 and 65635.
-The measurement range of the ADC is from :math:`-5\,V`` to :math:`5\,V`.
+The measurement range of the ADC is from :math:`-5\,V` to :math:`5\,V`.
 As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
 For scaling is a factor of 100 necessary, which hast to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
 

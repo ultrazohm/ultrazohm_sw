@@ -4,7 +4,7 @@
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
 
-TEST_FILE("uz_signals_ramp.c")
+TEST_SOURCE_FILE("src/uz/uz_signals/uz_signals_ramp.c")
 
 static struct uz_ramp_config config = {0};
 

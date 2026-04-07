@@ -6,7 +6,7 @@
 #include "mock_uz_SystemTime.h"
 #include "test_assert_with_exception.h"
 #include "uz_Transformation.h"
-TEST_FILE("uz_wavegen_three_phase.c")
+TEST_SOURCE_FILE("src/uz/uz_wavegen/uz_wavegen.c")
 
 void test_uz_wavegen_three_phase_negative_frequency(void)
 {

@@ -7,10 +7,13 @@
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include <stdbool.h>
 
+
+
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
 enum uz_CurrentControl_decoupling_select {
 	no_decoupling=0, 
-	linear_decoupling
+	linear_decoupling,
+	static_nonlinear_decoupling
 	}; 
 
 /**
@@ -23,6 +26,7 @@ struct uz_CurrentControl_config {
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
+	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps (gain scheduling) on or off */
 	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
 
@@ -47,7 +51,7 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
  * @return uz_dq_t Output dq-reference voltage struct
  */
 uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
@@ -59,8 +63,8 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
- * @param theta_el_rad electrical theta in rad
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
+ * @param theta_el_rad electrical rotor angle in rad
  * @return uz_3ph_abc_t Output abc-voltage struct
  */
 uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
@@ -70,6 +74,39 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t
  * @param self uz_CurrentControl_t instance
  */
 void uz_CurrentControl_reset(uz_CurrentControl_t* self);
+
+/**
+ * @brief Function to change the flux-linkage value during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ * @param flux_approx_real new flux-linkage value for measured current. 
+ * @param flux_approx_reference new flux-linkage for reference current. 
+ */
+void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx_real, uz_3ph_dq_t flux_approx_reference);
+
+/**
+ * @brief Function to adjust the Kp parameter of the PI-Controllers during runtime based on nonlinear flux-maps
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
+ * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
+ * @param BO_factor factor for magnitude optimum 
+ */
+void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, float BO_factor);
+
+/**
+ * @brief Function to get the Kp-value of the id-PI-Controller during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ */
+float uz_CurrentControl_get_Kp_id(uz_CurrentControl_t* self);
+
+/**
+ * @brief Function to get the Kp-value of the iq-PI-Controller during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ */
+float uz_CurrentControl_get_Kp_iq(uz_CurrentControl_t* self);
 
 /**
  * @brief Function to change the Kp-value of the id-PI-Controller during runtime
@@ -122,11 +159,51 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select);
 
 /**
+ * @brief Function to change the max_modulation_index of the Space Vector Limitation during runtime
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param max_modulation_index Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation
+ */
+void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float max_modulation_index);
+
+/**
  * @brief Returns the current value of the external clamping signal
  * 
  * @param self uz_CurrentControl_t instance
  * @return current value as bool 
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
+
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the magnitude optimum
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
+ */
+void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
+
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the symmetric optimum
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
+ */
+void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
+
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to a desired bandwidth
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ */
+void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, float bandwidth_rad_per_sec);
+
+/**
+ * @brief Sets the value for the Kp_adjustment_flag
+ *
+ * @param self uz_CurrentControl_t instance
+ * @param flag Turn on(true) or off to use gain scheduling during runtime
+ */
+void uz_CurrentControl_set_Kp_adjustment_flag(uz_CurrentControl_t *self, bool flag);
 
 #endif // UZ_CURRENTCONTROL_H

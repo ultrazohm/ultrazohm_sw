@@ -17,6 +17,13 @@ enum uz_PWM_SS_2L_PWM_mode {
   direct_control_via_FPGA
 };
 
+/*! enum for readable configuring of the PWM trigger source for the output of new DutyCycles and triangle shift in uz_PWM_SS_2L_hw_SetTriggerSource function */
+enum uz_PWM_SS_2L_PWM_trigger_source {
+    trigger_at_MIN=0,
+    trigger_at_MAX,
+    trigger_at_EITHER
+};
+
 /**
  * @brief Configuration struct for UZ_PWM_SS_2L
  *
@@ -27,7 +34,7 @@ struct uz_PWM_SS_2L_config_t{
     bool Tristate_HB1;                  /**< Tristate flag for half-bridge 1, true=on, false=off */
     bool Tristate_HB2;                  /**< Tristate flag for half-bridge 2, true=on, false=off */
     bool Tristate_HB3;                  /**< Tristate flag for half-bridge 3, true=on, false=off */
-    float min_pulse_width;              /**< Minimum pulse width in percent, e.g. 0.01 */
+    float min_pulse_width_in_microseconds;              /**< Minimum pulse width in microseconds. Note that the interlock time of the interlock module is substracted from this value, leading to shorter minimal pulse width ! */
     float PWM_freq_Hz;                  /**< Switching frequency of PWM mode in Hz */
     enum uz_PWM_SS_2L_PWM_mode PWM_mode;/**< PWM mode selector\n  
                                         0 = normalized input of reference signal via AXI\n
@@ -49,6 +56,10 @@ struct uz_PWM_SS_2L_config_t{
                                         1=shift by an entire period */
     float triangle_shift_HB2;           /**< Shift the triangle signal of HB2 to enable interleaved PWM operation. Input is fixed to 0-1. */
     float triangle_shift_HB3;           /**< Shift the triangle signal of HB3 to enable interleaved PWM operation. Input is fixed to 0-1. */
+    enum uz_PWM_SS_2L_PWM_trigger_source trigger_source; /**< Trigger source for new DutyCycles and triangle shifts\n
+                                                        0 = trigger at MIN of triangle\n
+                                                        1 = trigger at MAX of triangle\n 
+                                                        2 = trigger at EITHER MAX or MIN of triangle*/
 };
 
 /**

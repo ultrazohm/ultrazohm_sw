@@ -1,0 +1,24 @@
+# TCL Run script for FreeRTOS and BareMetal
+# Created by Eyke Aufderheide, Dennis Hufnagel 
+# Wrapper for vitis_debug_run_UltraZohm.tcl
+
+
+# check if UZ was run in DEBUG mode prior to this call
+if {[info exists ::UZ_PROGRAMMING_MODE]} {
+
+   if {$UZ_PROGRAMMING_MODE eq "DEBUG"} {
+    catch {bpremove -all}
+    catch {bpdisable -all}
+    puts "\n\n====================================================================================="
+    puts "INFO: UZ was run in DEBUG mode prior."
+    puts "Try to 'Disconnect' the current Debug Session and then 'Terminate/Disconnect All'."
+    puts "=====================================================================================\n\n"
+    }
+}
+
+set UZ_PROGRAMMING_MODE "RUN" 
+set UZ_FPGA_FAST_RESTART_ACTIVATED 0 ; 
+
+
+cd [getws]
+source {../../tcl_scripts/vitis_debug_run_UltraZohm.tcl}

@@ -1,9 +1,11 @@
 ### Xilinx Vivado ###
-# short gitignore for our project specific
+# short gitignore for UltraZohm vivado project 
 
 /*
+!zusys/
+zusys/*
 !zusys/zusys.bd
+!zusys/hdl/
 !zusys/hdl/zusys_wrapper.vhd
 !*.xpr
 !.gitignore
-

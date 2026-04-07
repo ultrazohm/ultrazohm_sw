@@ -53,7 +53,7 @@ uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
     uz_assert(config.samplingTime_sec > 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
-	uz_assert(config.type <= 1);//Asserts if neither parallel=0 nor ideal=1 has been selected
+	uz_assert(config.type <= 1);//Asserts if neither UZ_PI_PARALLEL=0 nor UZ_PI_IDEAL=1 has been selected
 	self->config = config;
 	return (self);
 }
@@ -76,7 +76,7 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	uz_assert(self->is_ready);
 	float error = referenceValue - actualValue;
 	float output_before_saturation = 0.0f;
-	if (self->config.type == parallel) {
+	if (self->config.type == UZ_PI_PARALLEL) {
 		output_before_saturation = uz_PI_Controller_parallel_calculation(self, error);
 	} else {
 		output_before_saturation = uz_PI_Controller_ideal_calculation(self, error);

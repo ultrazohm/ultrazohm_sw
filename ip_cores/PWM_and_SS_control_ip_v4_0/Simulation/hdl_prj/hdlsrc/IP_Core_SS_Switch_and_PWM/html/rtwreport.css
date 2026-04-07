@@ -255,3 +255,7 @@ select#fileSelector {
    overflow: hidden;
    width: 100%;
 }
+
+pre#RTWcode {
+  font-family: Courier;
+}

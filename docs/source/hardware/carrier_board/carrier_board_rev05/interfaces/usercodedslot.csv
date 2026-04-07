@@ -1,0 +1,8 @@
+User Code, CPLD Program, Digital Card, Notes
+ 01,tx30, Digital Voltage, 
+ 02,tx26_w_enable, Digital Voltage, Card is enabled via PL
+ 03,rx30,,
+ 04,optical_14tx_4rx, Digital Optical 14Tx4Rx Rev08, 
+ 05,uz_d_3ph_inverter, Digital Inverter Rev03, 
+ 06,uz_d_resolver_d1_to_d4, Digital Resolver Rev01,
+ 07,uz_d_resolver_d5, Digital Resolver Rev01,

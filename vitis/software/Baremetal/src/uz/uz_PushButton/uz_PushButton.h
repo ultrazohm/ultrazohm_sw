@@ -9,7 +9,7 @@ typedef struct uz_PushButton_{
 	uz_gpio *hw;
 }uz_PushButton;
 
-void uz_PushBotton_init(uz_PushButton *self, uz_gpio *hw);
+void uz_PushButton_init(uz_PushButton *self, uz_gpio *hw);
 _Bool uz_PushButton_GetValue(uz_PushButton *self);
 
 #endif

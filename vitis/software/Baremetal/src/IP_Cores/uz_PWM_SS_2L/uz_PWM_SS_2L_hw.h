@@ -55,13 +55,14 @@ void uz_PWM_SS_2L_hw_SetMode(uint32_t base_address, uint32_t PWM_mode);
 void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_frequency_Hz, float PWM_freq_Hz);
 
 /**
- * @brief sets a half-bridge in a non conducting high-Z tri state mode.
- * 
- * @param base_address          //base address of the instance
- * @param halfBridgeNumber      //number of the half bridge to set. 1,2 or 3.
- * @param TriState_true_false   //turns tri state mode on or off. true=on, false=off
+ * @brief sets half-bridges in a non conducting high-Z tri state mode.
+ *
+ * @param base_address  //base address of the instance
+ * @param Tristate_HB1  //turns tri state mode of HB1 on or off. true=on, false=off
+ * @param Tristate_HB2  //turns tri state mode of HB2 on or off. true=on, false=off
+ * @param Tristate_HB3  //turns tri state mode of HB3 on or off. true=on, false=off
  */
-void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false);
+void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, bool Tristate_HB1, bool Tristate_HB2, bool Tristate_HB3);
 
 /**
  * @brief sets the minimum amount of pulse width that is generated 
@@ -81,5 +82,17 @@ void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse
  * @param triangle_shift_HB3        //shift of HB3 fixed to 0-1, e.g. 0.25.  0 represents no shift and 1 represents a shift by an entire period.
  */
 void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3);
+
+/**
+ * @brief sets the trigger source to output new DutyCycles and apply the 
+ * 
+ * @param base_address      //base address of the instance
+ * @param trigger_source    //Trigger source for new DutyCycles and triangle shifts
+                            0 = trigger at MIN of triangle\n
+                            e.g. the PWM module will apply new values for triangle shift and DutyCycles respectively switch positions
+                            1 = trigger at MAX of triangle\n 
+                            2 = trigger at EITHER MAX or MIN of triangle
+ */
+void uz_PWM_SS_2L_hw_SetTriggerSource(uint32_t base_address, uint32_t trigger_source);
 
 #endif // UZ_PWM_SS_2L_HW_H

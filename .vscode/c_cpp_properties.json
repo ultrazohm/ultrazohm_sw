@@ -4,11 +4,17 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/var/lib/gems/2.5.0/gems/ceedling-0.31.0/**"
+                "/var/lib/gems/2.7.0/gems/ceedling-0.31.1/**",
+                "${workspaceFolder}/vitis/software/Baremetal/build/test/mocks",
+                "${workspaceFolder}/vitis/software/Baremetal/"
             ],
-            "forcedInclude": ["${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_HAL.h",
-                "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_AXI.h"],
-            "defines": ["TEST"], // This define is used to enable intellisense in ceedling test files!
+            "forcedInclude": [
+                "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_HAL.h",
+                "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_AXI.h"
+            ],
+            "defines": [
+                "TEST"
+            ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",

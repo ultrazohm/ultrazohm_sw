@@ -9,7 +9,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -19,7 +19,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .init_dutyCyc_HB3 = 0.0f,
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
-		.triangle_shift_HB3 = 0.0f
+		.triangle_shift_HB3 = 0.0f,
+		.trigger_source = trigger_at_MIN
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
@@ -28,7 +29,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -38,7 +39,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .init_dutyCyc_HB3 = 0.0f,
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
-		.triangle_shift_HB3 = 0.0f
+		.triangle_shift_HB3 = 0.0f,
+		.trigger_source = trigger_at_MIN
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
@@ -47,7 +49,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -57,7 +59,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
         .init_dutyCyc_HB3 = 0.0f,
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
-		.triangle_shift_HB3 = 0.0f
+		.triangle_shift_HB3 = 0.0f,
+		.trigger_source = trigger_at_MIN
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
@@ -66,7 +69,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
+        .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
@@ -76,7 +79,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
         .init_dutyCyc_HB3 = 0.0f,
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
-		.triangle_shift_HB3 = 0.0f
+		.triangle_shift_HB3 = 0.0f,
+		.trigger_source = trigger_at_MIN
 };
 
 uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_0_to_5(void){

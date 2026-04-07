@@ -1,0 +1,11 @@
+#ignore everything inside workspace folder except the txt file
+slprj/
+
+approximate_flux_ert_rtw/*
+!*.c
+!*.h
+
+*.slxc
+
+
+

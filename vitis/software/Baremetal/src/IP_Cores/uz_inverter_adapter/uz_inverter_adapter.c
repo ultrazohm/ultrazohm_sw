@@ -7,6 +7,7 @@
 
 struct uz_inverter_adapter_t {
     bool is_ready;
+    uint32_t temp_select_counter;
     struct uz_inverter_adapter_config_t config;
     struct uz_inverter_adapter_outputs_t outputs;
 };
@@ -75,21 +76,64 @@ void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self) {
     self->outputs.I2_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 2U);
     self->outputs.I3_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 3U);    
 
-    //get duty cycle information of each switch containing the chip temperature information
-    self->outputs.PWMdutyCycNormalized_H1 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1(self->config.base_address);
-    self->outputs.PWMdutyCycNormalized_L1 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1(self->config.base_address);
-    self->outputs.PWMdutyCycNormalized_H2 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2(self->config.base_address);
-    self->outputs.PWMdutyCycNormalized_L2 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2(self->config.base_address);
-    self->outputs.PWMdutyCycNormalized_H3 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3(self->config.base_address);
-    self->outputs.PWMdutyCycNormalized_L3 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3(self->config.base_address);
-
     //calculate chip temperatures in degrees celsius from the duty cycle information
-    self->outputs.ChipTempDegreesCelsius_H1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H1);
-    self->outputs.ChipTempDegreesCelsius_L1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L1);
-    self->outputs.ChipTempDegreesCelsius_H2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H2);
-    self->outputs.ChipTempDegreesCelsius_L2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L2);
-    self->outputs.ChipTempDegreesCelsius_H3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H3);
-    self->outputs.ChipTempDegreesCelsius_L3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L3);
+	//get duty cycle information of each switch containing the chip temperature information
+    //Only reads out 1 temperature per clock to reduces execution time
+    uint32_t PWMFreq = 0U;
+    uint32_t PWMHighTime = 0U;
+	switch(self->temp_select_counter) {
+        case (0U):
+        	PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_H1(self->config.base_address);
+        	PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_H1(self->config.base_address);
+            self->outputs.PWMdutyCycNormalized_H1 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_H1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H1);
+            self->temp_select_counter++;
+            break;
+        
+        case (1U):
+			PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_L1(self->config.base_address);
+		    PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_L1(self->config.base_address);
+		    self->outputs.PWMdutyCycNormalized_L1 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_L1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L1);
+            self->temp_select_counter++;
+            break;
+        
+        case (2U):
+			PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_H2(self->config.base_address);
+			PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_H2(self->config.base_address);
+			self->outputs.PWMdutyCycNormalized_H2 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_H2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H2);
+            self->temp_select_counter++;
+            break;
+        
+        case (3U):
+			PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_L2(self->config.base_address);
+			PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_L2(self->config.base_address);
+			self->outputs.PWMdutyCycNormalized_L2 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_L2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L2);
+            self->temp_select_counter++;
+            break;
+
+        case (4U):
+			PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_H3(self->config.base_address);
+			PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_H3(self->config.base_address);
+			self->outputs.PWMdutyCycNormalized_H3 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_H3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H3);
+            self->temp_select_counter++;
+            break;
+
+        case (5U):
+			PWMFreq = uz_inverter_adapter_hw_get_PWMFreqTicks_L3(self->config.base_address);
+			PWMHighTime = uz_inverter_adapter_hw_get_PWMhightimeTicks_L3(self->config.base_address);
+			self->outputs.PWMdutyCycNormalized_L3 = (float)PWMHighTime / (float)PWMFreq;
+            self->outputs.ChipTempDegreesCelsius_L3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L3);
+            self->temp_select_counter = 0U;
+            break;
+
+        default:
+            break;
+
+    }
 }
 
 struct uz_inverter_adapter_outputs_t uz_inverter_adapter_get_outputs(uz_inverter_adapter_t *self) {

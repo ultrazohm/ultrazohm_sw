@@ -66,6 +66,14 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  */
 uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
 
+/**
+ * @brief Returns the function pointer to the activation function of that layer
+ *
+ * @param self
+ * @return float (*activation_function)(float)
+ */
+float (*uz_nn_layer_get_activation_function(uz_nn_layer_t const *const self))(float);
+
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
 

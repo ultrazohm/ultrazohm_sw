@@ -9,19 +9,20 @@ clone:
 
 pipelines:
    default:
-      - step:
-        name: build and push docker
-        script:
-           - export BITBUCKET_COMMIT_SHORT="${BITBUCKET_COMMIT::7}" # https://community.atlassian.com/t5/Bitbucket-questions/BITBUCKET-COMMIT-variable-short-7digits-in-pipelines/qaq-p/752782
-           - echo $BITBUCKET_COMMIT_SHORT
-           - cd .devcontainer
-           - ls
-           - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-           - docker build -t ultrazohm/ultrazohm_remote_container_new:$BITBUCKET_COMMIT_SHORT .
-           - docker push ultrazohm/ultrazohm_remote_container_new:$BITBUCKET_COMMIT_SHORT
-        services:
-           - docker
+         - step:
+            name: build and push docker
+            script:
+               - export BITBUCKET_COMMIT_SHORT="${BITBUCKET_COMMIT::7}" # https://community.atlassian.com/t5/Bitbucket-questions/BITBUCKET-COMMIT-variable-short-7digits-in-pipelines/qaq-p/752782
+               - echo $BITBUCKET_COMMIT_SHORT
+               - cd .devcontainer
+               - ls
+               - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+               - docker build -t ultrazohm/ultrazohm_remote_container_new:$BITBUCKET_COMMIT_SHORT .
+               - docker push ultrazohm/ultrazohm_remote_container_new:$BITBUCKET_COMMIT_SHORT
+            services:
+               - docker
    branches:
+   #   develop:
       #   - step:
       #      name: Github-Mirror
       #      image: alpine/git
@@ -30,58 +31,58 @@ pipelines:
       #       - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
       #       - git lfs fetch --all
       #       - git push --all mirrorOrigin
-      main:
-         - step:
-               name: Deploy to Contabo Server
-               deployment: contabo
-               script:
-                  - apt-get update && apt-get -y install --no-install-recommends texlive
-                  - apt-get -y install --no-install-recommends texlive-latex-extra
-                  - apt-get -y install --no-install-recommends texlive-lang-german
-                  - apt-get -y install --no-install-recommends texlive-pictures
-                  - apt-get -y install --no-install-recommends texlive-science
-                  - apt-get -y install --no-install-recommends texlive-luatex
-                  - apt-get -y install --no-install-recommends texlive-plain-generic
-                  - apt-get -y install --no-install-recommends ghostscript
-                  - apt-get -y install --no-install-recommends pdf2svg
-                  - apt-get -y install --no-install-recommends doxygen
-                  - apt-get -y install --no-install-recommends libpcre3
-                  - apt-get -y install --no-install-recommends libpcre3-dev
-                  - python -m pip install -U pip
-                  - ls
-                  - cd docs
-                  - ls
-                  - pip install -r requirements.txt
-                  - make doxygen
-                  - make html SPHINXOPTS="-W --keep-going -n"
-                  - ls
-                  - echo "Deploying to test environment"
-                  - pipe: atlassian/rsync-deploy:0.4.3
-                     variables:
-                        USER: $ls_user
-                        SERVER: $hostname
-                        REMOTE_PATH: $docs_path
-                        LOCAL_PATH: ./build/html/
-                        # The --chmod causes the following
-                        # Directories: owner: rwx, group: r-x, other: r-x
-                        # Files: owner: rw-, group: r--, other: ---
-                        # +X: All files, the owner already had execution right on gets executable
-                        # for everybody and directories get accessable
-                        EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
-                        SSH_PORT: '22'
-         - step:
-               name: Github-Mirror
-               image: alpine/git
-               script:
-                  - apk add git-lfs
-                  - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-                  - git lfs fetch --all
-                  - git push --all mirrorOrigin
-         - step:
-               name: Gitlab-Mirror
-               image: alpine/git
-               script:
-                  - apk add git-lfs
-                  - git remote add git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
-                  - git lfs fetch --all
-                  - git push --all mirrorOrigin
+     main:
+      - step:
+         name: Deploy to Contabo Server
+         deployment: contabo
+         script:
+          - apt-get update && apt-get -y install --no-install-recommends texlive
+          - apt-get -y install --no-install-recommends texlive-latex-extra
+          - apt-get -y install --no-install-recommends texlive-lang-german
+          - apt-get -y install --no-install-recommends texlive-pictures
+          - apt-get -y install --no-install-recommends texlive-science
+          - apt-get -y install --no-install-recommends texlive-luatex
+          - apt-get -y install --no-install-recommends texlive-plain-generic
+          - apt-get -y install --no-install-recommends ghostscript
+          - apt-get -y install --no-install-recommends pdf2svg
+          - apt-get -y install --no-install-recommends doxygen
+          - apt-get -y install --no-install-recommends libpcre3
+          - apt-get -y install --no-install-recommends libpcre3-dev
+          - python -m pip install -U pip
+          - ls
+          - cd docs
+          - ls
+          - pip install -r requirements.txt
+          - make doxygen
+          - make html SPHINXOPTS="-W --keep-going -n"
+          - ls
+          - echo "Deploying to test environment"
+          - pipe: atlassian/rsync-deploy:0.4.3
+            variables:
+                 USER: $ls_user
+                 SERVER: $hostname
+                 REMOTE_PATH: $docs_path
+                 LOCAL_PATH: ./build/html/
+                 # The --chmod causes the following
+                 # Directories: owner: rwx, group: r-x, other: r-x
+                 # Files: owner: rw-, group: r--, other: ---
+                 # +X: All files, the owner already had execution right on gets executable
+                 # for everybody and directories get accessable
+                 EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
+                 SSH_PORT: '22'
+      - step:
+         name: Github-Mirror
+         image: alpine/git
+         script:
+          - apk add git-lfs
+          - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+          - git lfs fetch --all
+          - git push --all mirrorOrigin
+      - step:
+         name: Gitlab-Mirror
+         image: alpine/git
+         script:
+          - apk add git-lfs
+          - git remote add git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
+          - git lfs fetch --all
+          - git push --all mirrorOrigin

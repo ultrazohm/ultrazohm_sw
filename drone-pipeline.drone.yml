@@ -4,6 +4,7 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 kind: pipeline
+type: docker
 name: default
 
 
@@ -11,10 +12,27 @@ platform:
   os: linux
   arch: amd64
 
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
+- name: m2
+  temp: {}
+
 steps:
 
+ - name: build_local_ci_image
+   image: docker:cli
+   volumes:
+   - name: dockersock
+     path: /var/run/docker.sock
+   commands:
+   - docker build -t ultrazohm-ci:local -f .devcontainer/Dockerfile .
+
  - name: docs
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm-ci:local
+   pull: never
+   depends_on: [ build_local_ci_image ]
    commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
@@ -24,13 +42,17 @@ steps:
    - ls
   
  - name: Ceedling unit tests
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm-ci:local
+   pull: never
+   depends_on: [ build_local_ci_image ]
    commands:
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm-ci:local
+   pull: never
+   depends_on: [ build_local_ci_image ]
    commands:
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
@@ -222,7 +244,3 @@ steps:
    when:
      branch:
      - main
-
-volumes:
-- name: m2
-  temp: {}

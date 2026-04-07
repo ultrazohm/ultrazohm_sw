@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 24.1 (R2024a) at 22:49:54 on 17/03/2026
+% Generated with MATLAB 24.1 (R2024a) at 10:27:43 on 07/04/2026
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_6ph_spacevector_decode\hdlworkflow.m'
 %     Overwrite : true
@@ -65,60 +65,116 @@ hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/trigger', 'IOI
 hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/trigger', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2_AXI', 'IOInterfaceMapping', 'x"104"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3', 'IOInterfaceMapping', 'x"108"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3_AXI', 'IOInterfaceMapping', 'x"108"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4', 'IOInterfaceMapping', 'x"10C"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4_AXI', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5_AXI', 'IOInterfaceMapping', 'x"110"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6', 'IOInterfaceMapping', 'x"114"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6_AXI', 'IOInterfaceMapping', 'x"114"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7', 'IOInterfaceMapping', 'x"118"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7_AXI', 'IOInterfaceMapping', 'x"118"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8', 'IOInterfaceMapping', 'x"11C"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8_AXI', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9_AXI', 'IOInterfaceMapping', 'x"120"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10', 'IOInterfaceMapping', 'x"124"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10_AXI', 'IOInterfaceMapping', 'x"124"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11', 'IOInterfaceMapping', 'x"128"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11_AXI', 'IOInterfaceMapping', 'x"128"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12', 'IOInterfaceMapping', 'x"12C"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12_AXI', 'IOInterfaceMapping', 'x"12C"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13', 'IOInterfaceMapping', 'x"130"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13_AXI', 'IOInterfaceMapping', 'x"130"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14', 'IOInterface', 'AXI4');
-hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14', 'IOInterfaceMapping', 'x"134"');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14_AXI', 'IOInterfaceMapping', 'x"134"');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out1', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out2', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out3', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out4', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out5', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out6', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out7', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out8', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out9', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out10', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out11', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out12', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out13', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14', 'IOInterface', 'External Port');
+hdlset_param('uz_6ph_spacevector_decode/uz_6ph_spacevector_decode/out14', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings

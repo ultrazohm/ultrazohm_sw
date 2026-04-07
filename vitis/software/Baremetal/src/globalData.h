@@ -215,6 +215,8 @@ typedef struct _actualValues_ {
 
 	uint32_t isr_count_num_switch_counter;
 
+	uint32_t testieiie;
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

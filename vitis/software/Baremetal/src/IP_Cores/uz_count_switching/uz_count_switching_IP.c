@@ -28,6 +28,7 @@ static uz_count_switching_IP_t* uz_count_switching_IP_allocation(void){
 uz_count_switching_IP_t* uz_count_switching_IP_init(struct uz_count_switching_IP_config_t config) {
     uz_count_switching_IP_t* self = uz_count_switching_IP_allocation();
     self->config = config;
+
     return (self);
 }
 

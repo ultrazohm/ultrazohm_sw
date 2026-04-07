@@ -9,7 +9,7 @@ Generated logfile:
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
 Current project path is 'C:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_6ph_spacevector_decode/hdl_prj/ipcore/uz_6ph_sv_decode_ip_v1_0/prj_ip'
-create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:16 . Memory (MB): peak = 970.234 ; gain = 118.523
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:11 . Memory (MB): peak = 970.285 ; gain = 118.242
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_6ph_spacevector_decode/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_6ph_spacevector_decode/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_6ph_spacevector_decode/hdl_prj/ipcore/uz_6ph_sv_decode_ip_v1_0/prj_ip'.)
@@ -81,6 +81,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_6ph_sv_decode_ip_axi4.vhd" already
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_6ph_sv_decode_ip_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_6ph_sv_decode_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_6ph_sv_decode_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Mar 17 22:27:23 2026...
+INFO: [Common 17-206] Exiting Vivado at Tue Apr  7 14:45:19 2026...
 
-Elapsed time is 48.8995 seconds.
+Elapsed time is 34.8099 seconds.

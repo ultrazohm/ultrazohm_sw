@@ -97,7 +97,7 @@ enum JS_OberservableData {
 	JSO_u_ref_x,
 	JSO_u_ref_y,
 	JSO_sector24,
-	JS_theta_el_rad_ref_JS,
+	JSO_theta_el_rad_ref_JS,
 	JSO_SV1,
 	JSO_SV2,
 	JSO_SV3,

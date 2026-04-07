@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Thu Mar 19 09:20:21 2026
+# Process ID: 12992
+# Current directory: C:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_count_switching/hdl_prj/ipcore/uz_count_ip_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_count_switching/hdl_prj/ipcore/uz_count_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/utrazohm_sw_2/ultrazohm_sw/ip_cores/uz_count_switching/hdl_prj/ipcore/uz_count_ip_v1_0/prj_ip\vivado.jou
+# Running On: JK, OS: Windows, CPU Frequency: 2695 MHz, CPU Physical cores: 16, Host memory: 33038 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

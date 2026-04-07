@@ -39,7 +39,8 @@
 #include "../uz/uz_6ph_SVPWM/uz_6ph_SVPWM.h"
 #include "../uz/uz_6ph_SVPWM/uz_pwm_help_functions.h"
 
-
+#include "../uz/uz_AXI.h"
+#include "xparameters.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -116,21 +117,21 @@ void ISR_Control(void *data)
     	isr_count = isr_count+1;
     }
     else{
-		uint32_t sw_count_a1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 0);
-		uint32_t sw_count_b1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 1);
-		uint32_t sw_count_c1 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 2);
-		uint32_t sw_count_a2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 3);
-		uint32_t sw_count_b2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 4);
-		uint32_t sw_count_c2 = uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 5);
-		uint32_t sw_count_sum = uz_count_switching_IP_get_count_sum(Global_Data.objects.switching_counter);
+		Global_Data.av.sw_count_a1 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 0);
+		Global_Data.av.sw_count_b1 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 1);
+		Global_Data.av.sw_count_c1 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 2);
+		Global_Data.av.sw_count_a2 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 3);
+		Global_Data.av.sw_count_b2 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 4);
+		Global_Data.av.sw_count_c2 = (float)uz_count_switching_IP_get_count(Global_Data.objects.switching_counter, 5);
+		Global_Data.av.sw_count_sum = (float)uz_count_switching_IP_get_count_sum(Global_Data.objects.switching_counter);
 
 		uz_count_switching_IP_set_reset(Global_Data.objects.switching_counter, true);
 		uz_count_switching_IP_set_reset(Global_Data.objects.switching_counter, false);
-		isr_count = 0;
+		isr_count = 1;
     }
 
 
-
+    Global_Data.av.testieiie = uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_COUNTER_F_SW_V2_IP_0_BASEADDR + 0x104);
 
     uz_wavegen_2_sample(Global_Data.objects.wavegen2_1);
 	uz_wavegen_2_sample(Global_Data.objects.wavegen2_2);
@@ -155,7 +156,7 @@ void ISR_Control(void *data)
 
     //Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_sawtooth(2.0f*UZ_PIf, Global_Data.rasv.freq_el_Hz_ref_JS);
 
-    Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_pulse_return_float(Global_Data.objects.wavegen2_theta);
+    Global_Data.rasv.theta_el_rad_ref_JS = uz_wavegen_sawtooth_return_float_with_offset_and_amplitude(Global_Data.objects.wavegen2_theta);
 
 
 
@@ -183,7 +184,7 @@ void ISR_Control(void *data)
     || fabs(Global_Data.av.i_abc_inverter2.a) > MAX_PHASE_CURRENT_AMP_PRUEF || fabs(Global_Data.av.i_abc_inverter2.b) > MAX_PHASE_CURRENT_AMP_PRUEF || fabs(Global_Data.av.i_abc_inverter2.c) > MAX_PHASE_CURRENT_AMP_PRUEF
 	|| fabs(Global_Data.av.i_abc_inverter3.a) > MAX_PHASE_CURRENT_AMP_LAST || fabs(Global_Data.av.i_abc_inverter3.b) > MAX_PHASE_CURRENT_AMP_LAST || fabs(Global_Data.av.i_abc_inverter3.c) > MAX_PHASE_CURRENT_AMP_LAST)
     {
-        ultrazohm_state_machine_set_stop(true);
+        //ultrazohm_state_machine_set_stop(true);
         Global_Data.av.error = 1;
     }
 
@@ -192,7 +193,7 @@ void ISR_Control(void *data)
     || fabs(Global_Data.av.u_dc2) > MAX_DC_VOLT
 	|| fabs(Global_Data.av.u_dc3) > MAX_DC_VOLT)
     {
-    	ultrazohm_state_machine_set_stop(true);
+    	//ultrazohm_state_machine_set_stop(true);
     	Global_Data.av.error = 2;
     }
 
@@ -201,7 +202,7 @@ void ISR_Control(void *data)
     || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG
 	|| fabs(Global_Data.av.temp_VSI_3) > MAX_TEMP_DEG)
     {
-  	   ultrazohm_state_machine_set_stop(true);
+  	   //ultrazohm_state_machine_set_stop(true);
   	   Global_Data.av.error = 3;
     }
 
@@ -830,6 +831,12 @@ void ISR_Control(void *data)
     }
     /*=============== PWM Test Bereich End ===============*/
 
+    Global_Data.rasv.halfBridge1DutyCycle = 0.9f;
+	Global_Data.rasv.halfBridge2DutyCycle = 0.8f;
+	Global_Data.rasv.halfBridge3DutyCycle = 0.7f;
+	Global_Data.rasv.halfBridge4DutyCycle = 0.6f;
+	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+	Global_Data.rasv.halfBridge6DutyCycle = 0.4f;
 
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

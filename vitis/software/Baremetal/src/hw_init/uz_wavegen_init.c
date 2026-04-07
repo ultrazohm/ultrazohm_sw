@@ -30,7 +30,7 @@ struct uz_wavegen_2_config wavegen_config_2 = {
 };
 
 struct uz_wavegen_2_config wavegen_config_theta = {
-	.amplitude = 1,            /**< Amplitude*/
+	.amplitude = 2*M_PI,            /**< Amplitude*/
 	.sample_time_s = 1.0f/UZ_ISR_FREQUENCY,
 	.frequency_Hz = 50.0f,
 	.offset = 0.0f,     /**< Offset*/

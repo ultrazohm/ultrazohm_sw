@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 24.1 (R2024a) at 09:20:54 on 19/03/2026
+% Generated with MATLAB 24.1 (R2024a) at 16:55:34 on 02/04/2026
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_count_switching\hdlworkflow.m'
 %     Overwrite : true
@@ -25,7 +25,7 @@ hdlset_param('uz_count_switching', 'ProjectFolder', 'C:\utrazohm_sw_2\ultrazohm_
 hdlset_param('uz_count_switching', 'ResetInputPort', 'reset_x');
 hdlset_param('uz_count_switching', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('uz_count_switching', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
-hdlset_param('uz_count_switching', 'SynthesisToolDeviceName', 'xqzu9eg-ffrb1156-2-i');
+hdlset_param('uz_count_switching', 'SynthesisToolDeviceName', 'xczu9eg-ffvb1156-1LV-i');
 hdlset_param('uz_count_switching', 'SynthesisToolPackageName', '');
 hdlset_param('uz_count_switching', 'SynthesisToolSpeedValue', '');
 hdlset_param('uz_count_switching', 'TargetDirectory', 'C:\utrazohm_sw_2\ultrazohm_sw\ip_cores\uz_count_switching\hdl_prj\hdlsrc');
@@ -113,8 +113,48 @@ hdlset_param('uz_count_switching/uz_count_switching/count_out_8_AXI', 'IOInterfa
 hdlset_param('uz_count_switching/uz_count_switching/count_out_8_AXI', 'IOInterfaceMapping', 'x"120"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_count_switching/uz_count_switching/count_out_sum_AXI1', 'IOInterface', 'AXI4');
-hdlset_param('uz_count_switching/uz_count_switching/count_out_sum_AXI1', 'IOInterfaceMapping', 'x"124"');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_sum_AXI', 'IOInterface', 'AXI4');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_sum_AXI', 'IOInterfaceMapping', 'x"124"');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_0', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_0', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_1', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_1', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_2', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_2', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_3', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_3', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_4', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_4', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_5', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_5', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_6', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_6', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_7', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_7', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_8', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_8', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('uz_count_switching/uz_count_switching/count_out_sum', 'IOInterface', 'External Port');
+hdlset_param('uz_count_switching/uz_count_switching/count_out_sum', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings

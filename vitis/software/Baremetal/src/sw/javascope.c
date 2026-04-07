@@ -148,7 +148,7 @@ int JavaScope_initialize(DS_Data* data)
 
 	js_ch_observable[JSO_sector24] = &(data->av.sector24);
 
-	js_ch_observable[JS_theta_el_rad_ref_JS] = &(data->rasv.theta_el_rad_ref_JS );
+	js_ch_observable[JSO_theta_el_rad_ref_JS] = &(data->rasv.theta_el_rad_ref_JS );
 
 
 	js_ch_observable[JSO_SV1] = &data->av.SV1;

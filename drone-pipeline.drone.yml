@@ -32,13 +32,12 @@ steps:
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
-   when:
-     branch:
-     - main
-     - develop
+    - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
+    - cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
+  #  when:
+  #    branch:
+  #    - main
+  #    - develop
 
  - name: Vivado_build_tcl
    image: vivado:2022.2

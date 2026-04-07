@@ -23,12 +23,23 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 RUN gem install ceedling && ln -sf /usr/local/bin/ceedling /usr/bin/ceedling
 
+RUN wget -O pcre-8.45.tar.gz https://github.com/pfultz2/pcre/archive/refs/tags/8.45.tar.gz \
+     && echo "d6f7182602a775a7d500a0cedca6449af0400c6493951513046d17615ed0bf11  pcre-8.45.tar.gz" | sha256sum -c - \
+     && tar -xzf pcre-8.45.tar.gz \
+     && cd pcre-8.45 \
+     && ./configure \
+     && make -j"$(nproc)" \
+     && make install \
+     && ldconfig \
+     && cd / \
+     && rm -rf /pcre-8.45 /pcre-8.45.tar.gz
+
 RUN wget https://github.com/danmar/cppcheck/archive/refs/tags/2.20.0.tar.gz \
      && tar -xzf 2.20.0.tar.gz \
      && cmake -S cppcheck-2.20.0 -B cppcheck-2.20.0/build \
           -DCMAKE_BUILD_TYPE=Release \
           -DUSE_MATCHCOMPILER=On \
-          -DHAVE_RULES=OFF \
+          -DHAVE_RULES=On \
           -DFILESDIR=/usr/share/cppcheck \
      && cmake --build cppcheck-2.20.0/build -j"$(nproc)" \
      && cmake --install cppcheck-2.20.0/build \

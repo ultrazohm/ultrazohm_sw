@@ -14,7 +14,7 @@ platform:
 steps:
 
  - name: docs
-   image: ultrazohm/ultrazohm_remote_container_new
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
@@ -24,13 +24,13 @@ steps:
    - ls
   
  - name: Ceedling unit tests
-   image: ultrazohm/ultrazohm_remote_container_new
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
-   image: ultrazohm/ultrazohm_remote_container_new
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 

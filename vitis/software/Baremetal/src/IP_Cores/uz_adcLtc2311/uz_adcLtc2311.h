@@ -191,12 +191,12 @@ struct uz_adcLtc2311_config_t{
  * The function initializes the hardware by executing the following functions:
  * 
  * <UL>
- * <LI> @ref uz_adcLtc2311_set_triggered_mode </LI>
- * <LI> @ref uz_adcLtc2311_update_conversion_factor </LI>
- * <LI> @ref uz_adcLtc2311_update_offset </LI>
- * <LI> @ref uz_adcLtc2311_update_samples </LI>
- * <LI> @ref uz_adcLtc2311_update_sample_time </LI>
- * <LI> @ref uz_adcLtc2311_update_spi </LI>
+ * <LI> uz_adcLtc2311_set_triggered_mode </LI>
+ * <LI> uz_adcLtc2311_update_conversion_factor </LI>
+ * <LI> uz_adcLtc2311_update_offset </LI>
+ * <LI> uz_adcLtc2311_update_samples </LI>
+ * <LI> uz_adcLtc2311_update_sample_time </LI>
+ * <LI> uz_adcLtc2311_update_spi </LI>
  * </UL>
  *
  * @param config Configuration values for the IP-Core

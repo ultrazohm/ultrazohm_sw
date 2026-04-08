@@ -25,6 +25,15 @@ pipelines:
                - docker push ultrazohm/ultrazohm_remote_container_new:$BITBUCKET_COMMIT_SHORT
             services:
                - docker
+         - step:
+            name: Build javascope
+            condition:
+               changesets:
+                  includePaths:
+                     - javascope/
+            script:
+               - cd javascope
+               - ./build.sh -f
    branches:
      main:
       - step:

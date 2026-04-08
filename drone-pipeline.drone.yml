@@ -80,12 +80,12 @@ steps:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
-  #  when:
-  #    branch:
-  #    - main
-  #    - develop
-  #    ref:
-  #    - refs/tags/vivado*
+   when:
+     branch:
+     - main
+     - develop
+     ref:
+     - refs/tags/vivado*
 
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream

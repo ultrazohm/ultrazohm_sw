@@ -27,10 +27,10 @@ pipelines:
                - docker
          - step:
             name: Build javascope
-            condition:
-               changesets:
-                  includePaths:
-                     - javascope/
+            # condition:
+            #    changesets:
+            #       includePaths:
+            #          - javascope/
             script:
                - cd javascope
                - ./build.sh -f

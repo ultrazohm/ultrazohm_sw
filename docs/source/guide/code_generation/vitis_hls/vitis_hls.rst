@@ -34,11 +34,11 @@ Generation using tcl script
       ############################################################
       ## Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
       ############################################################
-      open_project uz_axi_myTestIP
-      set_top uz_axi_myTestIP
-      add_files ./uz_axi_myTestIP.cpp
-      add_files ./uz_axi_myTestIP.h
-      add_files -tb ./tb_uz_axi_myTestIP.cpp
+      open_project uz_HLS_testIP
+      set_top uz_HLS_testIP
+      add_files ./uz_HLS_testIP.cpp
+      add_files ./uz_HLS_testIP.h
+      add_files -tb ./tb_uz_HLS_testIP.cpp
       open_solution "testIP_solution" -flow_target vivado
       set_part {xczu9eg-ffvc900-1-e}
       create_clock -period 10 -name default
@@ -46,7 +46,6 @@ Generation using tcl script
       #source "./testIP_solution/directives.tcl"
       csim_design
       csynth_design
-      cosim_design
       export_design -rtl verilog -format ip_catalog
 
 - This script adds the necessary source and testbench files, sets the part, clock and export settings, and runs the C simulation, synthesis and RTL export.
@@ -80,7 +79,11 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - In the Project Configuration window, locate the field for the project name and update it with ``uz_axi_myTestIP``.
+   - In the Project Configuration window, locate the field for the project name and update it with ``uz_HLS_testIP``.
+   
+   .. note::
+     In the pictures the project name is ``uz_axi_myTestIP``. This was the name of the project before the tutorial was adjusted to ``uz_HLS_testIP``. The steps are the same, only the project name is different.
+
    - Next, find the related path field in the Project Configuration window. Update the path to ensure that the project files are stored in the desired location.
    
    .. figure:: tutorial_img/2_project_name.png
@@ -111,7 +114,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :align: center
    
    - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
-   - To create the new source file ``uz_axi_myTestIP.cpp``, enter the filename in the file window and click **Save**, and write the code to the file.
+   - To create the new source file ``uz_HLS_testIP.cpp``, enter the filename in the file window and click **Save**, and write the code to the file.
    
    .. figure:: tutorial_img/6_create_source.png
       :width: 500px
@@ -121,7 +124,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
    
       #include <stdint.h>
    
-      void uz_axi_myTestIP(int32_t a, int32_t b, int32_t *result) {
+      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result) {
    
          #pragma HLS INTERFACE ap_ctrl_none port=return
          #pragma HLS INTERFACE s_axilite port=a bundle=control
@@ -138,15 +141,15 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :align: center
    
    - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
-   - To create the new source file ``uz_axi_myTestIP.h``, enter the filename in the file window and click **Save**, and write the code to the file.
+   - To create the new source file ``uz_HLS_testIP.h``, enter the filename in the file window and click **Save**, and write the code to the file.
    
    .. figure:: tutorial_img/8_create_header.png
       :width: 500px
       :align: center
    
-   .. code-block::
+   .. code-block:: c
    
-   	void uz_axi_myTestIP(int32_t a, int32_t b, int32_t *result);
+   	void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
 
    - Now, let's move on to the port settings, AXI interface configuration, and other important modifications. HLS gives a space and chance to change the IP core according to the system needs. You can make modifications with Pragmas. 
    - The page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
@@ -171,7 +174,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
    
    - To create a test bench file, simply right-click on the **Test Bench** folder in your project and choose **New Test Bench File...** from the menu.
    - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.
-   - Create a new test bench file ``tb_uz_axi_myTestIP.cpp``.
+   - Create a new test bench file ``tb_uz_HLS_testIP.cpp``.
    - After reviewing the created files, the source file contains a simple function that performs multiplication and returns the result. On the other hand, the test bench ensures that the result from the source file matches the expected result. It generates random values for a specified number of iterations, compares the results, and prints **"Correct"** if they match, or **"Failed"** if they differ.
    
    .. figure:: tutorial_img/11_create_testbench.png
@@ -183,14 +186,14 @@ If you don't want to use a script to generate your design, this tutorial will gu
       #include <stdio.h>
       #include <stdint.h>
    
-      void uz_axi_myTestIP(int32_t a, int32_t b, int32_t *result);
+      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
    
       int main() {
          int32_t a = 5;
          int32_t b = 7;
          int32_t result;
    
-         uz_axi_myTestIP(a, b, &result);
+         uz_HLS_testIP(a, b, &result);
    
          printf("Multiplication result: %d\n", result);
    
@@ -224,7 +227,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 600px
       :align: center
    
-   - Choose ``uz_axi_myTestIP.cpp`` as top function.
+   - Choose ``uz_HLS_testIP.cpp`` as top function.
    
    .. figure:: tutorial_img/19_top_select.png
       :width: 600px
@@ -290,13 +293,13 @@ Drivers
 
 - Vitis HLS IP-Core generation yields automatically generated AXI-drivers.
 - The usage is not yet aligned with the UZ project's typical drivers and will be explained in the following.
-- The created files for the example project with the name uz_axi_myTestIP are:
+- The created files for the example project with the name uz_HLS_testIP are:
 
-   - xuz_axi_myTestIP_hw.h
-   - xuz_axi_myTestIP_linux.c
-   - xuz_axi_myTestIP_sinit.c
-   - xuz_axi_myTestIP.c
-   - xuz_axi_myTestIP.h
+   - xuz_HLS_testip_hw.h
+   - xuz_HLS_testip_linux.c
+   - xuz_HLS_testip_sinit.c
+   - xuz_HLS_testip.c
+   - xuz_HLS_testip.h
  
 While the ``_hw.h`` file is similar to the HDL-Coder generated hardware address file, the last two files include already usable drivers.
 These drivers can be used for operation or additional UZ-style drivers can be created around them.
@@ -311,16 +314,16 @@ To initialize an IP-core instance, the instance's define has to be taken from th
 
 .. code-block:: c
 
-      #include <xuz_axi_myTestIP.h>
+      #include <xuz_hls_testip.h>
       
-      XUz_axi_myTestIP xuz_axi_myTestIP_instance;
+      XUz_hls_testip XUz_hls_testip_instance;
       
       int32_t a = 0;
       int32_t b = 0;
 
       int main(void) {
    
-      XUz_axi_myTestIP_Initialize(&xuz_axi_myTestIP_instance, XPAR_UZ_USER_UZ_AXI_MYTESTIP_0_DEVICE_ID);
+      XUz_hls_testip_Initialize(&xuz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
    
    }
 
@@ -331,7 +334,7 @@ To use the write and read with set and get functions, place the initialization c
 
 .. code-block:: c
 
-      XUz_axi_mytestip xuz_axi_mytestip_instance;
+      XUz_hls_testip XUz_hls_testip_instance;
 
       int32_t a = 5;
       int32_t b = 10;
@@ -341,10 +344,10 @@ To use the write and read with set and get functions, place the initialization c
       int main(void) {
    
          //IP Core Initialisation
-         XUz_axi_mytestip_Initialize(&xuz_axi_mytestip_instance, XPAR_UZ_USER_UZ_AXI_MYTESTIP_0_DEVICE_ID);
-         XUz_axi_mytestip_Set_a(&xuz_axi_mytestip_instance, a);
-         XUz_axi_mytestip_Set_b(&xuz_axi_mytestip_instance, b);
-         result = XUz_axi_mytestip_Get_result(&xuz_axi_mytestip_instance);
+         XUz_hls_testip_Initialize(&XUz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
+         XUz_hls_testip_Set_a(&XUz_hls_testip_instance, a);
+         XUz_hls_testip_Set_b(&XUz_hls_testip_instance, b);
+         result = XUz_hls_testip_Get_result(&XUz_hls_testip_instance);
          uz_printf("The result of multiplication is %d\r\n", result);
    }
 
@@ -371,7 +374,7 @@ To use the write and read with set and get functions, place the initialization c
 How to create the driver
 ************************
 
-The driver is already provided in ``ultrazohm_sw/software/Baremetal/src/IP_Cores/uz_axi_myTestIP``.
+The driver is already provided in ``ultrazohm_sw/software/Baremetal/src/IP_Cores/uz_HLS_testIP``.
 To gain a better understanding of driver creation, you can follow the steps below to create a driver for the IP Core yourself.
 
 .. dropdown:: Show steps (collapsed by default)
@@ -379,134 +382,134 @@ To gain a better understanding of driver creation, you can follow the steps belo
    - The detailed explanation for AXI test IP created with HDL Coder can be found here. 
    - Our HLS IP scenario is similar to the example. To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
    - For that reason, we need set and get functions. You can also call them as write and read. 
-   - Create ``uz_axi_myTestIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
+   - Create ``uz_HLS_testIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
    - In the folder, create the files: 
       
-      * uz_axi_myTestIP.c
-      * uz_axi_myTestIP.h
-      * uz_axi_myTestIP_hw.c
-      * uz_axi_myTestIP_hw.h
-      * uz_axi_myTestIP_hwAddresses.h
+      * uz_HLS_testIP.c
+      * uz_HLS_testIP.h
+      * uz_HLS_testIP_hw.c
+      * uz_HLS_testIP_hw.h
+      * uz_HLS_testIP_hwAddresses.h
    
    .. code-block:: c
       :linenos:
-      :caption: ``uz_axi_myTestIP_hw.c``
+      :caption: ``uz_HLS_testIP_hw.c``
    
-      #include "uz_axi_myTestIP_hw.h"
-      #include "uz_axi_myTestIP_hwAddresses.h"
+      #include "uz_HLS_testIP_hw.h"
+      #include "uz_HLS_testIP_hwAddresses.h"
       #include "../../uz/uz_AXI.h"
 
-      void uz_axi_myTestIP_hw_write_A(uint32_t base_address,int32_t A){
+      void uz_HLS_testIP_hw_write_A(uint32_t base_address,int32_t A){
          uz_assert_not_zero_uint32(base_address);
-         uz_axi_write_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA,A);
+         uz_axi_write_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA,A);
       }
 
-      void uz_axi_myTestIP_hw_write_B(uint32_t base_address,int32_t B){
+      void uz_HLS_testIP_hw_write_B(uint32_t base_address,int32_t B){
          uz_assert_not_zero_uint32(base_address);
-         uz_axi_write_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA,B);
+         uz_axi_write_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA,B);
       }
 
-      int32_t uz_axi_myTestIP_hw_read_result(uint32_t base_address){
+      int32_t uz_HLS_testIP_hw_read_result(uint32_t base_address){
          uz_assert_not_zero_uint32(base_address);
-         return (uz_axi_read_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA));
+         return (uz_axi_read_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA));
       }
    
    .. code-block:: c
       :linenos:
-      :caption: ``uz_axi_myTestIP_hw.h``
+      :caption: ``uz_HLS_testIP_hw.h``
    
-      #ifndef UZ_AXI_MYTESTIP_HW_H
-      #define UZ_AXI_MYTESTIP_HW_H
+      #ifndef UZ_HLS_TESTIP_HW_H
+      #define UZ_HLS_TESTIP_HW_H
       #include <stdint.h>
 
-      void uz_axi_myTestIP_hw_write_A(uint32_t base_address,int32_t A);
-      void uz_axi_myTestIP_hw_write_B(uint32_t base_address,int32_t B);
-      int32_t uz_axi_myTestIP_hw_read_result(uint32_t base_address);
+      void uz_HLS_testIP_hw_write_A(uint32_t base_address,int32_t A);
+      void uz_HLS_testIP_hw_write_B(uint32_t base_address,int32_t B);
+      int32_t uz_HLS_testIP_hw_read_result(uint32_t base_address);
 
-      #endif // UZ_AXI_MYTESTIP_HW_H
+      #endif // UZ_HLS_TESTIP_HW_H
    
    .. code-block:: c
       :linenos:
-      :caption: ``uz_axi_myTestIP_hwAddresses.h``
+      :caption: ``uz_HLS_testIP_hwAddresses.h``
    
-      #ifndef UZ_AXI_MYTESTIP_HWADDRESSES_H
-      #define UZ_AXI_MYTESTIP_HWADDRESSES_H
+      #ifndef UZ_HLS_TESTIP_HWADDRESSES_H
+      #define UZ_HLS_TESTIP_HWADDRESSES_H
 
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA      0x10
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_A_DATA      32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA      0x18
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_B_DATA      32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA 0x20
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_RESULT_DATA 32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_CTRL 0x24
+      #define XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA      0x10
+      #define XUZ_HLS_TESTIP_CONTROL_BITS_A_DATA      32
+      #define XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA      0x18
+      #define XUZ_HLS_TESTIP_CONTROL_BITS_B_DATA      32
+      #define XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA 0x20
+      #define XUZ_HLS_TESTIP_CONTROL_BITS_RESULT_DATA 32
+      #define XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_CTRL 0x24
 
-      #endif // UZ_AXI_MYTESTIP_HWADDRESSES_H
+      #endif // UZ_HLS_TESTIP_HWADDRESSES_H
    
    .. code-block:: c
       :linenos:
-      :caption: ``uz_axi_myTestIP.c``
+      :caption: ``uz_HLS_testIP.c``
    
       #include "../../uz/uz_global_configuration.h"
-      #if UZ_AXI_MYTESTIP_MAX_INSTANCES > 0U
+      #if UZ_HLS_TESTIP_MAX_INSTANCES > 0U
       #include <stdbool.h>
       #include "../../uz/uz_HAL.h"
-      #include "uz_axi_myTestIP.h"
-      #include "uz_axi_myTestIP_hw.h"
+      #include "uz_HLS_testIP.h"
+      #include "uz_HLS_testIP_hw.h"
 
-      struct uz_axi_myTestIP {
+      struct uz_HLS_testIP {
          bool is_ready;
-         struct uz_axi_myTestIP_config_t config;
+         struct uz_HLS_testIP_config_t config;
       };
 
       static uint32_t instance_counter = 0U;
-      static uz_axi_myTestIP instances[UZ_AXI_MYTESTIP_MAX_INSTANCES] = { 0 };
+      static uz_HLS_testIP instances[UZ_HLS_TESTIP_MAX_INSTANCES] = { 0 };
 
-      static uz_axi_myTestIP* uz_axi_myTestIP_allocation(void);
+      static uz_HLS_testIP* uz_HLS_testIP_allocation(void);
 
-      static uz_axi_myTestIP* uz_axi_myTestIP_allocation(void){
-         uz_assert(instance_counter < UZ_AXI_MYTESTIP_MAX_INSTANCES);
-         uz_axi_myTestIP* self = &instances[instance_counter];
+      static uz_HLS_testIP* uz_HLS_testIP_allocation(void){
+         uz_assert(instance_counter < UZ_HLS_TESTIP_MAX_INSTANCES);
+         uz_HLS_testIP* self = &instances[instance_counter];
          uz_assert_false(self->is_ready);
          instance_counter++;
          self->is_ready = true;
          return (self);
       }
 
-      uz_axi_myTestIP* uz_axi_myTestIP_init(struct uz_axi_myTestIP_config_t config) {
-         uz_axi_myTestIP* self = uz_axi_myTestIP_allocation();
+      uz_HLS_testIP* uz_HLS_testIP_init(struct uz_HLS_testIP_config_t config) {
+         uz_HLS_testIP* self = uz_HLS_testIP_allocation();
          self->config = config;
          return (self);
       }
 
-      int32_t uz_axi_myTestIP_multiply(uz_axi_myTestIP* self, int32_t A, int32_t B){
+      int32_t uz_HLS_testIP_multiply(uz_HLS_testIP* self, int32_t A, int32_t B){
          uz_assert_not_NULL(self);
          uz_assert(self->is_ready);
-         uz_axi_myTestIP_hw_write_A(self->config.base_address,A);
-         uz_axi_myTestIP_hw_write_B(self->config.base_address,B);
-         return (uz_axi_myTestIP_hw_read_result(self->config.base_address));
+         uz_HLS_testIP_hw_write_A(self->config.base_address,A);
+         uz_HLS_testIP_hw_write_B(self->config.base_address,B);
+         return (uz_HLS_testIP_hw_read_result(self->config.base_address));
       }
       #endif
    
    
    .. code-block:: c
       :linenos:
-      :caption: ``uz_axi_myTestIP.h``
+      :caption: ``uz_HLS_testIP.h``
    
-      #ifndef UZ_AXI_MYTESTIP_H
-      #define UZ_AXI_MYTESTIP_H
+      #ifndef UZ_HLS_TESTIP_H
+      #define UZ_HLS_TESTIP_H
       #include <stdint.h>
 
       /**
-      * @brief Data type for object uz_axi_myTestIP
+      * @brief Data type for object uz_HLS_testIP
       *
       */
-      typedef struct uz_axi_myTestIP uz_axi_myTestIP;
+      typedef struct uz_HLS_testIP uz_HLS_testIP;
 
       /**
       * @brief Configuration struct for myTestIP
       *
       */
-      struct uz_axi_myTestIP_config_t{
+      struct uz_HLS_testIP_config_t{
          uint32_t base_address; /**< Base address of the IP-Core */
          uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
       };
@@ -517,7 +520,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
       * @param config Configuration values for the IP-Core
       * @return Pointer to initialized instance
       */
-      uz_axi_myTestIP* uz_axi_myTestIP_init(struct uz_axi_myTestIP_config_t config);
+      uz_HLS_testIP* uz_HLS_testIP_init(struct uz_HLS_testIP_config_t config);
 
       /**
       * @brief Calculates result=A*B
@@ -527,134 +530,137 @@ To gain a better understanding of driver creation, you can follow the steps belo
       * @param B Second factor
       * @return Product of A times B
       */
-      int32_t uz_axi_myTestIP_multiply(uz_axi_myTestIP* self, int32_t A, int32_t B);
+      int32_t uz_HLS_testIP_multiply(uz_HLS_testIP* self, int32_t A, int32_t B);
 
-      #endif // UZ_AXI_MYTESTIP_H
+      #endif // UZ_HLS_TESTIP_H
 
-   - Open ``uz_global_configuration.h`` and add ``#define UZ_AXI_MYTESTIP_MAX_INSTANCES 0U`` to the normal configuration section and ``#define UZ_AXI_MYTESTIP_MAX_INSTANCES 20U`` to the test configuration section.
-   - For the unit tests navigate to ``vitis/software/Baremetal/test/IP_Cores`` and create the folder ``uz_axi_myTestIP``.
-   - Within this folder create the file ``test_uz_axi_myTestIP.c`` and ``test_uz_axi_myTestIP_hw.c``.
+   - Open ``uz_global_configuration.h`` and add ``#define UZ_HLS_TESTIP_MAX_INSTANCES 0U`` to the normal configuration section and ``#define UZ_HLS_TESTIP_MAX_INSTANCES 20U`` to the test configuration section.
+   - For the unit tests navigate to ``vitis/software/Baremetal/test/IP_Cores`` and create the folder ``uz_HLS_testIP``.
+   - Within this folder create the file ``test_uz_HLS_testIP.c`` and ``test_uz_HLS_testIP_hw.c``.
 
    .. code-block:: c
       :linenos:
-      :caption: ``test_uz_axi_myTestIP_hw.h``
+      :caption: ``test_uz_HLS_testIP_hw.h``
 
       #include "unity.h"
-      #include "uz_axi_myTestIP_hw.h"
+      #include "uz_HLS_testIP_hw.h"
       #include <stdbool.h>
       #include <stdint.h>
       #include "test_assert_with_exception.h"
       #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
-      #include "uz_axi_myTestIP_hwAddresses.h"
+      #include "uz_HLS_testIP_hwAddresses.h"
 
       #define BASE_ADDRESS 0x0F0000000U // random hex value that represents a fictional base address
       #define ZERO_BASE_ADDRESS 0x00000000U
 
 
-      void test_uz_axi_myTestIP_hw_write_A_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_write_A(ZERO_BASE_ADDRESS, 10));
+      void test_uz_HLS_testIP_hw_write_A_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_write_A(ZERO_BASE_ADDRESS, 10));
       }
 
-      void test_uz_axi_myTestIP_hw_write_B_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_write_B(ZERO_BASE_ADDRESS, 10));
+      void test_uz_HLS_testIP_hw_write_B_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_write_B(ZERO_BASE_ADDRESS, 10));
       }
 
-      void test_uz_axi_myTestIP_hw_read_result_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_read_result(ZERO_BASE_ADDRESS));
+      void test_uz_HLS_testIP_hw_read_result_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_read_result(ZERO_BASE_ADDRESS));
       }
 
-      void test_uz_axi_myTestIP_hw_write_A(void) {
+      void test_uz_HLS_testIP_hw_write_A(void) {
       	int32_t testvalue = 10;
-      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA, testvalue);
-      	uz_axi_myTestIP_hw_write_A(BASE_ADDRESS, testvalue);
+      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA, testvalue);
+      	uz_HLS_testIP_hw_write_A(BASE_ADDRESS, testvalue);
       }
 
-      void test_uz_axi_myTestIP_hw_write_B(void) {
+      void test_uz_HLS_testIP_hw_write_B(void) {
       	int32_t testvalue = 10;
-      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA, testvalue);
-      	uz_axi_myTestIP_hw_write_B(BASE_ADDRESS, testvalue);
+      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA, testvalue);
+      	uz_HLS_testIP_hw_write_B(BASE_ADDRESS, testvalue);
       }
 
-      void test_uz_axi_myTestIP_hw_read_result(void) {
+      void test_uz_HLS_testIP_hw_read_result(void) {
       	int32_t expected_result = 42;
-      	uz_axi_read_int32_ExpectAndReturn(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA, expected_result);
-      	uz_axi_myTestIP_hw_read_result(BASE_ADDRESS);
+      	uz_axi_read_int32_ExpectAndReturn(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA, expected_result);
+      	uz_HLS_testIP_hw_read_result(BASE_ADDRESS);
       }
+
 
    .. code-block:: c
       :linenos:
-      :caption: ``test_uz_axi_myTestIP.h``
+      :caption: ``test_uz_HLS_testIP.h``
 
       #ifdef TEST
+
       #include "unity.h"
-      #include "uz_axi_myTestIP.h"
-      #include "mock_uz_axi_myTestIP_hw.h"
+      #include "uz_HLS_testIP.h"
+      #include "mock_uz_HLS_testIP_hw.h"
       #include "test_assert_with_exception.h"
 
       #define TEST_BASE_ADDRESS 0x000F0000
 
-      uz_axi_myTestIP* successful_init(void);
-      uz_axi_myTestIP* successful_init(void) {
-      	struct uz_axi_myTestIP_config_t config = {
+      uz_HLS_testIP* successful_init(void);
+      uz_HLS_testIP* successful_init(void) {
+      	struct uz_HLS_testIP_config_t config = {
       		.base_address = TEST_BASE_ADDRESS,
       		.ip_clk_frequency_Hz = 100000000U};
-      	uz_axi_myTestIP* instance = uz_axi_myTestIP_init(config);
+      	uz_HLS_testIP* instance = uz_HLS_testIP_init(config);
       	return(instance);
       }
 
-      void test_uz_axi_myTestIP_init_successful(void) {
+      void test_uz_HLS_testIP_init_successful(void) {
       	successful_init();
       }
 
-      void test_uz_axi_myTestIP_multiply_assert_NULL(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_multiply(NULL, 5, 10));
+      void test_uz_HLS_testIP_multiply_assert_NULL(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_multiply(NULL, 5, 10));
       }
 
-      void test_uz_axi_myTestIP_multiply(void) {
-      	uz_axi_myTestIP* instance = successful_init();
-      	uz_axi_myTestIP_hw_write_A_Expect(TEST_BASE_ADDRESS, 5);
-      	uz_axi_myTestIP_hw_write_B_Expect(TEST_BASE_ADDRESS, 10);
-      	uz_axi_myTestIP_hw_read_result_ExpectAndReturn(TEST_BASE_ADDRESS, 50);
-      	int32_t result = uz_axi_myTestIP_multiply(instance, 5, 10);
+      void test_uz_HLS_testIP_multiply(void) {
+      	uz_HLS_testIP* instance = successful_init();
+      	uz_HLS_testIP_hw_write_A_Expect(TEST_BASE_ADDRESS, 5);
+      	uz_HLS_testIP_hw_write_B_Expect(TEST_BASE_ADDRESS, 10);
+      	uz_HLS_testIP_hw_read_result_ExpectAndReturn(TEST_BASE_ADDRESS, 50);
+      	int32_t result = uz_HLS_testIP_multiply(instance, 5, 10);
       	TEST_ASSERT_EQUAL_INT32(50, result);
       }
 
       #endif // TEST
 
 
+
 Testing the IP core with the Vitis Serial Terminal
 **************************************************
 
-- Create the file ``uz_myTestIP.h`` in the ``include`` folder
+- Create the file ``uz_myHLSIP.h`` in the ``include`` folder
 
 .. code-block:: c
    :linenos:
-   :caption: ``uz_myTestIP.h``
+   :caption: ``uz_myHLSIP.h``
 
    #pragma once
 
    void uz_myIP(void);
 
-- Create the file ``uz_myTestIP.c`` in the ``sw`` folder.
+- Create the file ``uz_myHLSIP.c`` in the ``sw`` folder.
 
 .. code-block:: c
    :linenos:
-   :caption: ``uz_myTestIP.c``
+   :caption: ``uz_myHLSIP.c``
 
-   #include "../include/uz_myTestIP.h"
+   #include "../include/uz_myHLSIP.h"
    #include "../uz/uz_HAL.h"
-   #include "../IP_Cores/uz_axi_myTestIP/uz_axi_myTestIP.h"
+   #include "../IP_Cores/uz_HLS_testIP/uz_HLS_testIP.h"
    #include "xparameters.h"
 
-   void uz_myTestIP(void){
-      struct uz_axi_myTestIP_config_t config={
-            .base_address= XPAR_UZ_USER_UZ_AXI_myTestIP_0_S_AXI_CONTROL_BASEADDR,
+   void uz_myHLSIP(void){
+      struct uz_HLS_testIP_config_t config={
+            .base_address= XPAR_UZ_USER_UZ_HLS_TESTIP_0_S_AXI_CONTROL_BASEADDR,
             .ip_clk_frequency_Hz=100000000U
       };
-      uz_axi_myTestIP *instance = uz_axi_myTestIP_init(config);
+      uz_HLS_testIP *instance = uz_HLS_testIP_init(config);
       int32_t a = 5;
       int32_t b = 10;
-      int32_t c = uz_axi_myTestIP_multiply(instance, a, b);
+      int32_t c = uz_HLS_testIP_multiply(instance, a, b);
       uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
       if (c==a*b){
          uz_printf("Success: hardware and software multiply are equal! \n");
@@ -668,7 +674,7 @@ Testing the IP core with the Vitis Serial Terminal
    }
 
 - Build the software.
-- Include ``#include "include/uz_myTestIP.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myTestIP();`` before the ISR is initialized!
+- Include ``#include "include/uz_myHLSIP.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myHLSIP();`` before the ISR is initialized!
 - Connected the serial port to the Vitis Serial Terminal
 - Run the program, The success message should be printed to the Vitis Serial Terminal.
 

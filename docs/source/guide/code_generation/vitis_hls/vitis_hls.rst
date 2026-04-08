@@ -371,153 +371,260 @@ To use the write and read with set and get functions, place the initialization c
 How to create the driver
 ************************
 
-- The detailed explanation for AXI test IP created with HDL Coder can be found here. 
-- Our HLS IP scenario is similar to the example. To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
-- For that reason, we need set and get functions. You can also call them as write and read. 
-- Create ``uz_axi_myTestIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
-- In the folder, create the files: 
+The driver is already provided in ``ultrazohm_sw/software/Baremetal/src/IP_Cores/uz_axi_myTestIP``.
+To gain a better understanding of driver creation, you can follow the steps below to create a driver for the IP Core yourself.
+
+.. dropdown:: Show steps (collapsed by default)
+
+   - The detailed explanation for AXI test IP created with HDL Coder can be found here. 
+   - Our HLS IP scenario is similar to the example. To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
+   - For that reason, we need set and get functions. You can also call them as write and read. 
+   - Create ``uz_axi_myTestIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
+   - In the folder, create the files: 
+      
+      * uz_axi_myTestIP.c
+      * uz_axi_myTestIP.h
+      * uz_axi_myTestIP_hw.c
+      * uz_axi_myTestIP_hw.h
+      * uz_axi_myTestIP_hwAddresses.h
    
-   * uz_axi_myTestIP.c
-   * uz_axi_myTestIP.h
-   * uz_axi_myTestIP_hw.c
-   * uz_axi_myTestIP_hw.h
-   * uz_axi_myTestIP_hwAddresses.h
+   .. code-block:: c
+      :linenos:
+      :caption: ``uz_axi_myTestIP_hw.c``
+   
+      #include "uz_axi_myTestIP_hw.h"
+      #include "uz_axi_myTestIP_hwAddresses.h"
+      #include "../../uz/uz_AXI.h"
 
-- In the file ``uz_myTestIP_hwAddresses.h`` add an include guard to it (``#pragma once`` in first line)
+      void uz_axi_myTestIP_hw_write_A(uint32_t base_address,int32_t A){
+         uz_assert_not_zero_uint32(base_address);
+         uz_axi_write_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA,A);
+      }
 
-.. code-block:: c
-   :linenos:
-   :caption: ``uz_axi_myTestIP_hw.c``
+      void uz_axi_myTestIP_hw_write_B(uint32_t base_address,int32_t B){
+         uz_assert_not_zero_uint32(base_address);
+         uz_axi_write_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA,B);
+      }
 
-   #include "uz_axi_myTestIP_hw.h"
-   #include "uz_axi_myTestIP_hwAddresses.h"
-   #include "../../uz/uz_AXI.h"
+      int32_t uz_axi_myTestIP_hw_read_result(uint32_t base_address){
+         uz_assert_not_zero_uint32(base_address);
+         return (uz_axi_read_int32(base_address+XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA));
+      }
+   
+   .. code-block:: c
+      :linenos:
+      :caption: ``uz_axi_myTestIP_hw.h``
+   
+      #ifndef UZ_AXI_MYTESTIP_HW_H
+      #define UZ_AXI_MYTESTIP_HW_H
+      #include <stdint.h>
 
-   void uz_myTestIP_hw_write_A(uint32_t base_address,int32_t A){
-      uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_A_DATA,A);
-   }
+      void uz_axi_myTestIP_hw_write_A(uint32_t base_address,int32_t A);
+      void uz_axi_myTestIP_hw_write_B(uint32_t base_address,int32_t B);
+      int32_t uz_axi_myTestIP_hw_read_result(uint32_t base_address);
 
-   void uz_myTestIP_hw_write_B(uint32_t base_address,int32_t B){
-      uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_B_DATA,B);
-   }
+      #endif // UZ_AXI_MYTESTIP_HW_H
+   
+   .. code-block:: c
+      :linenos:
+      :caption: ``uz_axi_myTestIP_hwAddresses.h``
+   
+      #ifndef UZ_AXI_MYTESTIP_HWADDRESSES_H
+      #define UZ_AXI_MYTESTIP_HWADDRESSES_H
 
-   int32_t uz_myTestIP_hw_read_result(uint32_t base_address){
-      return (uz_axi_read_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_RESULT_DATA));
-   }
+      #define XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA      0x10
+      #define XUZ_AXI_myTestIP_CONTROL_BITS_A_DATA      32
+      #define XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA      0x18
+      #define XUZ_AXI_myTestIP_CONTROL_BITS_B_DATA      32
+      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA 0x20
+      #define XUZ_AXI_myTestIP_CONTROL_BITS_RESULT_DATA 32
+      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_CTRL 0x24
 
-.. code-block:: c
-   :linenos:
-   :caption: ``uz_axi_myTestIP_hw.h``
+      #endif // UZ_AXI_MYTESTIP_HWADDRESSES_H
+   
+   .. code-block:: c
+      :linenos:
+      :caption: ``uz_axi_myTestIP.c``
+   
+      #include "../../uz/uz_global_configuration.h"
+      #if UZ_AXI_MYTESTIP_MAX_INSTANCES > 0U
+      #include <stdbool.h>
+      #include "../../uz/uz_HAL.h"
+      #include "uz_axi_myTestIP.h"
+      #include "uz_axi_myTestIP_hw.h"
 
-   #ifndef UZ_MYTESTIP_HW_H
-   #define UZ_MYTESTIP_HW_H
-   #include <stdint.h>
+      struct uz_axi_myTestIP {
+         bool is_ready;
+         struct uz_axi_myTestIP_config_t config;
+      };
 
-   void uz_myTestIP_hw_write_A(uint32_t base_address,int32_t A);
-   void uz_myTestIP_hw_write_B(uint32_t base_address,int32_t B);
-   int32_t uz_myTestIP_hw_read_result(uint32_t base_address);
+      static uint32_t instance_counter = 0U;
+      static uz_axi_myTestIP instances[UZ_AXI_MYTESTIP_MAX_INSTANCES] = { 0 };
 
-   #endif // UZ_MYTESTIP_HW_H
+      static uz_axi_myTestIP* uz_axi_myTestIP_allocation(void);
 
-.. code-block:: c
-   :linenos:
-   :caption: ``uz_axi_myTestIP_hwAddresses.h``
+      static uz_axi_myTestIP* uz_axi_myTestIP_allocation(void){
+         uz_assert(instance_counter < UZ_AXI_MYTESTIP_MAX_INSTANCES);
+         uz_axi_myTestIP* self = &instances[instance_counter];
+         uz_assert_false(self->is_ready);
+         instance_counter++;
+         self->is_ready = true;
+         return (self);
+      }
 
-   #define XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA      0x10U
-   #define XUZ_AXI_myTestIP_CONTROL_BITS_A_DATA      32U
-   #define XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA      0x18U
-   #define XUZ_AXI_myTestIP_CONTROL_BITS_B_DATA      32U
-   #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA 0x20U
-   #define XUZ_AXI_myTestIP_CONTROL_BITS_RESULT_DATA 32U
-   #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_CTRL 0x24U
+      uz_axi_myTestIP* uz_axi_myTestIP_init(struct uz_axi_myTestIP_config_t config) {
+         uz_axi_myTestIP* self = uz_axi_myTestIP_allocation();
+         self->config = config;
+         return (self);
+      }
 
-.. code-block:: c
-   :linenos:
-   :caption: ``uz_axi_myTestIP.c``
+      int32_t uz_axi_myTestIP_multiply(uz_axi_myTestIP* self, int32_t A, int32_t B){
+         uz_assert_not_NULL(self);
+         uz_assert(self->is_ready);
+         uz_axi_myTestIP_hw_write_A(self->config.base_address,A);
+         uz_axi_myTestIP_hw_write_B(self->config.base_address,B);
+         return (uz_axi_myTestIP_hw_read_result(self->config.base_address));
+      }
+      #endif
+   
+   
+   .. code-block:: c
+      :linenos:
+      :caption: ``uz_axi_myTestIP.h``
+   
+      #ifndef UZ_AXI_MYTESTIP_H
+      #define UZ_AXI_MYTESTIP_H
+      #include <stdint.h>
 
-   #include "../../uz/uz_global_configuration.h"
-   #if UZ_MYTESTIP_MAX_INSTANCES > 0U
-   #include <stdbool.h>
-   #include "../../uz/uz_HAL.h"
-   #include "uz_axi_myTestIP.h"
+      /**
+      * @brief Data type for object uz_axi_myTestIP
+      *
+      */
+      typedef struct uz_axi_myTestIP uz_axi_myTestIP;
 
-   struct uz_myTestIP_t {
-      bool is_ready;
-   };
+      /**
+      * @brief Configuration struct for myTestIP
+      *
+      */
+      struct uz_axi_myTestIP_config_t{
+         uint32_t base_address; /**< Base address of the IP-Core */
+         uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+      };
 
-   static uint32_t instance_counter = 0U;
-   static uz_myTestIP_t instances[UZ_MYTESTIP_MAX_INSTANCES] = { 0 };
+      /**
+      * @brief Initializes an instance of the myTestIP driver
+      *
+      * @param config Configuration values for the IP-Core
+      * @return Pointer to initialized instance
+      */
+      uz_axi_myTestIP* uz_axi_myTestIP_init(struct uz_axi_myTestIP_config_t config);
 
-   static uz_myTestIP_t* uz_myTestIP_allocation(void);
+      /**
+      * @brief Calculates result=A*B
+      *
+      * @param self Pointer to IP-Core instance that was initialized with init function
+      * @param A First factor
+      * @param B Second factor
+      * @return Product of A times B
+      */
+      int32_t uz_axi_myTestIP_multiply(uz_axi_myTestIP* self, int32_t A, int32_t B);
 
-   static uz_myTestIP_t* uz_myTestIP_allocation(void){
-      uz_assert(instance_counter < UZ_MYTESTIP_MAX_INSTANCES);
-      uz_myTestIP_t* self = &instances[instance_counter];
-      uz_assert_false(self->is_ready);
-      instance_counter++;
-      self->is_ready = true;
-      return (self);
-   }
+      #endif // UZ_AXI_MYTESTIP_H
 
-   uz_myTestIP_t* uz_myTestIP_init() {
-      uz_myTestIP_t* self = uz_myTestIP_allocation();
-      return (self);
-   }
+   - Open ``uz_global_configuration.h`` and add ``#define UZ_AXI_MYTESTIP_MAX_INSTANCES 0U`` to the normal configuration section and ``#define UZ_AXI_MYTESTIP_MAX_INSTANCES 20U`` to the test configuration section.
+   - For the unit tests navigate to ``vitis/software/Baremetal/test/IP_Cores`` and create the folder ``uz_axi_myTestIP``.
+   - Within this folder create the file ``test_uz_axi_myTestIP.c`` and ``test_uz_axi_myTestIP_hw.c``.
 
-   int32_t uz_myTestIP_multiply(uz_myIP_t* self, int32_t A, int32_t B){
-   uz_assert(self->is_ready);
-   uz_myTestIP_hw_write_A(self->config.base_address,A);
-   uz_myTestIP_hw_write_B(self->config.base_address,B);
-   return (uz_myTestIP_hw_read_result(self->config.base_address));
-   }
-   #endif
+   .. code-block:: c
+      :linenos:
+      :caption: ``test_uz_axi_myTestIP_hw.h``
+
+      #include "unity.h"
+      #include "uz_axi_myTestIP_hw.h"
+      #include <stdbool.h>
+      #include <stdint.h>
+      #include "test_assert_with_exception.h"
+      #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
+      #include "uz_axi_myTestIP_hwAddresses.h"
+
+      #define BASE_ADDRESS 0x0F0000000U // random hex value that represents a fictional base address
+      #define ZERO_BASE_ADDRESS 0x00000000U
 
 
-.. code-block:: c
-   :linenos:
-   :caption: ``uz_axi_myTestIP.h``
+      void test_uz_axi_myTestIP_hw_write_A_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_write_A(ZERO_BASE_ADDRESS, 10));
+      }
 
-   #ifndef UZ_MYTESTIP_H
-   #define UZ_MYTESTIP_H
-   #include <stdint.h>
+      void test_uz_axi_myTestIP_hw_write_B_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_write_B(ZERO_BASE_ADDRESS, 10));
+      }
 
-   /**
-   * @brief Data type for object myTestIP
-   *
-   */
-   typedef struct uz_myTestIP_t uz_myTestIP_t;
+      void test_uz_axi_myTestIP_hw_read_result_base_address_zero(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_hw_read_result(ZERO_BASE_ADDRESS));
+      }
 
-   /**
-   * @brief Configuration struct for myTestIP
-   *
-   */
-   struct uz_myTestIP_config_t{
-      uint32_t base_address; /**< Base address of the IP-Core */
-      uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
-   };
+      void test_uz_axi_myTestIP_hw_write_A(void) {
+      	int32_t testvalue = 10;
+      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA, testvalue);
+      	uz_axi_myTestIP_hw_write_A(BASE_ADDRESS, testvalue);
+      }
 
-   /**
-   * @brief Initializes an instance of the myTestIP driver
-   *
-   * @param config Configuration values for the IP-Core
-   * @return Pointer to initialized instance
-   */
-   uz_myTestIP_t* uz_myTestIP_init(struct uz_myTestIP_config_t config);
+      void test_uz_axi_myTestIP_hw_write_B(void) {
+      	int32_t testvalue = 10;
+      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA, testvalue);
+      	uz_axi_myTestIP_hw_write_B(BASE_ADDRESS, testvalue);
+      }
 
-   /**
-   * @brief Calculates result=A*B
-   *
-   * @param self Pointer to IP-Core instance that was initialized with init function
-   * @param A First factor
-   * @param B Second factor
-   * @return Product of A times B
-   */
-   int32_t uz_myTestIP_multiply(uz_myTestIP_t* self, int32_t A, int32_t B);
+      void test_uz_axi_myTestIP_hw_read_result(void) {
+      	int32_t expected_result = 42;
+      	uz_axi_read_int32_ExpectAndReturn(BASE_ADDRESS + XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA, expected_result);
+      	uz_axi_myTestIP_hw_read_result(BASE_ADDRESS);
+      }
 
-   #endif // UZ_MYTESTIP_H
+   .. code-block:: c
+      :linenos:
+      :caption: ``test_uz_axi_myTestIP.h``
 
-- Open ``uz_global_configuration.h`` if you already renamed the sample configuration. If not, see :ref:`global_configuration`.
-- Add ``#define UZ_MYTESTIP_MAX_INSTANCES 5U`` to ``uz_global_configuration.h`` inside the test ifdef (at the bottom of the file). We can now use up to 5 instances of the IP-core driver for five different instances of the IP-Core in the tests.
+      #ifdef TEST
+      #include "unity.h"
+      #include "uz_axi_myTestIP.h"
+      #include "mock_uz_axi_myTestIP_hw.h"
+      #include "test_assert_with_exception.h"
+
+      #define TEST_BASE_ADDRESS 0x000F0000
+
+      uz_axi_myTestIP* successful_init(void);
+      uz_axi_myTestIP* successful_init(void) {
+      	struct uz_axi_myTestIP_config_t config = {
+      		.base_address = TEST_BASE_ADDRESS,
+      		.ip_clk_frequency_Hz = 100000000U};
+      	uz_axi_myTestIP* instance = uz_axi_myTestIP_init(config);
+      	return(instance);
+      }
+
+      void test_uz_axi_myTestIP_init_successful(void) {
+      	successful_init();
+      }
+
+      void test_uz_axi_myTestIP_multiply_assert_NULL(void) {
+      	TEST_ASSERT_FAIL_ASSERT(uz_axi_myTestIP_multiply(NULL, 5, 10));
+      }
+
+      void test_uz_axi_myTestIP_multiply(void) {
+      	uz_axi_myTestIP* instance = successful_init();
+      	uz_axi_myTestIP_hw_write_A_Expect(TEST_BASE_ADDRESS, 5);
+      	uz_axi_myTestIP_hw_write_B_Expect(TEST_BASE_ADDRESS, 10);
+      	uz_axi_myTestIP_hw_read_result_ExpectAndReturn(TEST_BASE_ADDRESS, 50);
+      	int32_t result = uz_axi_myTestIP_multiply(instance, 5, 10);
+      	TEST_ASSERT_EQUAL_INT32(50, result);
+      }
+
+      #endif // TEST
+
+
+Testing the IP core with the Vitis Serial Terminal
+**************************************************
+
 - Create the file ``uz_myTestIP.h`` in the ``include`` folder
 
 .. code-block:: c
@@ -540,14 +647,14 @@ How to create the driver
    #include "xparameters.h"
 
    void uz_myTestIP(void){
-      struct uz_myTestIP_config_t config={
+      struct uz_axi_myTestIP_config_t config={
             .base_address= XPAR_UZ_USER_UZ_AXI_myTestIP_0_S_AXI_CONTROL_BASEADDR,
             .ip_clk_frequency_Hz=100000000U
       };
-      uz_myIP_t *instance = uz_myIP_init(config);
+      uz_axi_myTestIP *instance = uz_axi_myTestIP_init(config);
       int32_t a = 5;
       int32_t b = 10;
-      int32_t c = uz_myIP_multiply(instance, a, b);
+      int32_t c = uz_axi_myTestIP_multiply(instance, a, b);
       uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
       if (c==a*b){
          uz_printf("Success: hardware and software multiply are equal! \n");
@@ -560,7 +667,6 @@ How to create the driver
       }
    }
 
-- Add ``#define UZ_MYTESTIP_MAX_INSTANCES 1U`` between ``ifndef TEST`` and the first ``#endif`` to use one instance of the module in the software.
 - Build the software.
 - Include ``#include "include/uz_myTestIP.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myTestIP();`` before the ISR is initialized!
 - Connected the serial port to the Vitis Serial Terminal

@@ -5,6 +5,7 @@
 ip_cores/*/simulation/slprj/*
 ip_cores/vv_index.xml
 
+javascope/build/
 
 
 vitis/software/Baremetal/src/slprj/

@@ -48,7 +48,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r docs/requirements.txt" // && chmod +x /workspaces/ultrazohm_sw/javascope/build.sh /workspaces/ultrazohm_sw/javascope/run.sh /workspaces/ultrazohm_sw/javascope/setup.sh /workspaces/ultrazohm_sw/javascope/run_with_test_server.sh
+	"postCreateCommand": "pip install -r docs/requirements.txt && chmod +x /workspaces/ultrazohm_sw/javascope/build.sh /workspaces/ultrazohm_sw/javascope/run.sh /workspaces/ultrazohm_sw/javascope/run_with_test_server.sh"
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"
 }

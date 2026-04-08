@@ -90,30 +90,36 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 600px
       :align: center
    
-   - Click **Next** to proceed to the Source and test bench file add sections. We will add these files later in the tutorial.
+   - Click **Next** to proceed to the source and test bench file add sections. 
+   - These files will be added later in the tutorial.
    - In the Solution Configuration section, you have the option to change the clock settings, board specification, and flow target.
-   - Adjust the clock settings based on your project requirements. Specify the clock frequency, and any relevant parameters. Select the appropriate flow target for your project, such as generating a bitstream for FPGA programming or producing simulation files for software testing.
+   - Adjust the clock settings based on your project requirements. 
+     Specify the clock frequency, and any relevant parameters. Select the appropriate flow target for your project, such as generating a bitstream for FPGA programming or producing simulation files for software testing.
    
    
    .. figure:: tutorial_img/3_project_settings.png
       :width: 500px
       :align: center
    
-   - Modify the board specification if needed in future applications, ensuring compatibility between the design and the physical board you're using. When you click the Device Selection Dialog, you will see a list of all the available boards from the Xilinx Library. This dialog allows you to choose the specific board that matches your hardware setup and requirements.
+   - Modify the board specification if needed in future applications, ensuring compatibility between the design and the physical board you're using. 
+     When you click the Device Selection Dialog, you will see a list of all the available boards from the Xilinx Library. 
+     This dialog allows you to choose the specific board that matches your hardware setup and requirements.
    - For this tutorial, set the device to ``xczu9eg-ffvc900-1-e``.
   
    .. figure:: tutorial_img/4_board_option.png
       :width: 500px
       :align: center
    
-   - After completing the configuration part, an empty project will be created. Now, the basic test IP, we will implement integer multiplication and write the test bench.
+   - After completing the configuration part, an empty project will be created. 
+     Now, the basic test IP, we will implement integer multiplication and write the test bench.
    - To create a source file, simply right-click on the **Source** folder in your project and choose **New Source File...** from the menu.
    
    .. figure:: tutorial_img/5_add_source.png
       :width: 400px
       :align: center
    
-   - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
+   - When the file window opens, make sure to check the path displayed. 
+     If the path is not the same as your project location, you should adjust it accordingly. 
    - To create the new source file ``uz_HLS_testIP.cpp``, enter the filename in the file window and click **Save**, and write the code to the file.
    
    .. figure:: tutorial_img/6_create_source.png
@@ -140,7 +146,8 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
+   - When the file window opens, make sure to check the path displayed. 
+     If the path is not the same as your project location, you should adjust it accordingly. 
    - To create the new source file ``uz_HLS_testIP.h``, enter the filename in the file window and click **Save**, and write the code to the file.
    
    .. figure:: tutorial_img/8_create_header.png
@@ -151,10 +158,10 @@ If you don't want to use a script to generate your design, this tutorial will gu
    
    	void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
 
-   - Now, let's move on to the port settings, AXI interface configuration, and other important modifications. HLS gives a space and chance to change the IP core according to the system needs. You can make modifications with Pragmas. 
+   - For port settings, AXI interface configuration, and other important modifications, HLS gives you the option to make modifications with ``#pragma``. 
    - The page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
    
-   - As additional way to check pragmas from code and add specific settings to it, you can use Directive section.
+   - Additionally, you can use the Directive section to add pragmas.
    
    .. figure:: tutorial_img/26_directive.png
       :width: 1200px
@@ -166,16 +173,19 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - For instance with right click to **a** variable, the tab that includes the pragmas as more visualized version.
+   - For instance with right click to **a** variable, the tab that includes the pragmas is a more visualized version.
    
    .. figure:: tutorial_img/28_directive_editor.png
       :width: 400px
       :align: center
    
    - To create a test bench file, simply right-click on the **Test Bench** folder in your project and choose **New Test Bench File...** from the menu.
-   - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.
+   - When the file window opens, make sure to check the path displayed. 
+     If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.
    - Create a new test bench file ``tb_uz_HLS_testIP.cpp``.
-   - After reviewing the created files, the source file contains a simple function that performs multiplication and returns the result. On the other hand, the test bench ensures that the result from the source file matches the expected result. It generates random values for a specified number of iterations, compares the results, and prints **"Correct"** if they match, or **"Failed"** if they differ.
+   - The source file contains a simple function that performs multiplication and returns the result. 
+     The test bench ensures that the result from the source file matches the expected result. 
+     It generates random values for a specified number of iterations, compares the results, and prints **"Correct"** if they match, or **"Failed"** if they differ.
    
    .. figure:: tutorial_img/11_create_testbench.png
       :width: 500px
@@ -200,28 +210,33 @@ If you don't want to use a script to generate your design, this tutorial will gu
          return 0;
       }
    
-   - To simulate the system, you can use the C simulation option. This allows you to execute the simulation using a C-based simulator, which provides an efficient and accurate representation of the system's behavior.
+   - To simulate the system, you can use the C simulation option. 
+     This allows you to execute the simulation using a C-based simulator, which provides an efficient and accurate representation of the system's behavior.
    
    .. figure:: tutorial_img/14_c_simulation.png
       :width: 400px
       :align: center
    
-   - As you can see from simulation box, there are several options to debug, clean, build and optimize. You can simply click the OK button to continue with the default settings for now.
+   - As you can see from simulation box, there are several options to debug, clean, build and optimize. 
+     You can simply click the OK button to continue with the default settings for now.
    
    .. figure:: tutorial_img/15_c_simulation_box.png
       :width: 400px
       :align: center
    
-   - Once the compilation process is complete, you can check the results either from the console output or from the log file. If the compilation is successful and there are no errors reported, it indicates that the compilation has passed.
-   - You have successfully created the necessary files and performed the simulation. Now, let's move on to the synthesis part to check the resource usage.
-   - During synthesis, the design is converted into a gate-level representation, and resource usage information is provided. This allows you to analyze the utilization of FPGA resources such as logic elements, memory blocks, and I/O pins.
+   - Once the compilation process is complete, you can check the results either from the console output or from the log file. 
+     If the compilation is successful and there are no errors reported, it indicates that the compilation has passed.
+   - During synthesis, the design is converted into a gate-level representation, and a resource usage estimation is provided.
+     The estimated resource usage is (except for DSP slices, I/O pins) generally a bit higher than after Vivado synthesis. 
+     This allows you to analyze the utilization of FPGA resources such as logic elements, memory blocks, and I/O pins.
    - Before proceeding with the synthesis step, it is important to specify the top file of your design.
      
    .. figure:: tutorial_img/17_top_setting.png
       :width: 400px
       :align: center
    
-   - Inside the Project settings, you have the ability to arrange various settings related to your project, including general, simulation, and synthesis settings. For the current task, let's focus on the synthesis part.
+   - Inside the Project settings, you have the ability to arrange various settings related to your project, including general, simulation, and synthesis settings. 
+     For the current task, let's focus on the synthesis part.
    
    .. figure:: tutorial_img/18_top_file.png
       :width: 600px
@@ -239,14 +254,18 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - At the beginning of project creation, we have seen the C synthesis parameters. Continue with the default parameter values. However, there may be specific cases where you need to modify these parameters to suit your project requirements.
+   - At the beginning of project creation, we have seen the C synthesis parameters. 
+     Continue with the default parameter values. 
+     However, there may be specific cases where you need to modify these parameters to suit your project requirements.
      
    .. figure:: tutorial_img/21_c_settings.png
       :width: 400px
       :align: center
    
-   - Once the synthesis process is complete, you can review the Summary Report of the design. This report provides comprehensive information about various aspects of the synthesized design, making it a valuable resource for analysis and evaluation.
-   - The Summary Report typically includes essential data such as resource utilization (logic elements, memory blocks, I/O pins), timing constraints, power estimation, and other relevant statistics. It offers insights into the efficiency and performance of the synthesized design.
+   - Once the synthesis process is complete, you can review the Summary Report of the design. 
+     This report provides comprehensive information about various aspects of the synthesized design, making it a valuable resource for analysis and evaluation.
+   - The Summary Report typically includes essential data such as resource utilization (logic elements, memory blocks, I/O pins), timing constraints, power estimation, and other relevant statistics. 
+     It offers insights into the efficiency and performance of the synthesized design.
    - Take the time to carefully examine the Summary Report to gain a better understanding of the design's resource usage, timing characteristics, and overall quality.
      
    .. figure:: tutorial_img/22_report.png
@@ -271,19 +290,19 @@ Vivado
 ------
 
 - To use your new IP in the UZ vivado project, make sure, you placed the generated IP at the ultrazohm_sw/ip_cores folder.
-- Open Vivado and the block design
-- Navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``
-- Extend uz_user subblock
-- Extend the smart connect by one master port to connect AXI ports to the processor
-- Add the new IP-Core and connect it to the system
+- Open Vivado and the block design.
+- Navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
+- Extend uz_user subblock.
+- Extend the smart connect by one master port to connect AXI ports to the processor.
+- Add the new IP-Core and connect it to the system.
 
 .. figure:: tutorial_img/32_vivado_ip_placement.png
    :width: 400px
    :align: center
 
-- Go to the Address editor and assign a base address to the new IP-Core
-- For video implementation of these steps check out :ref:`hdl_coder` last step.
-- Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`
+- Go to the Address editor and assign a base address to the new IP-Core.
+- For video implementation of these steps check out :ref:`hdl_coder` last step..
+- Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`.
 
 Vitis
 -----
@@ -380,8 +399,9 @@ To gain a better understanding of driver creation, you can follow the steps belo
 .. dropdown:: Show steps (collapsed by default)
 
    - The detailed explanation for AXI test IP created with HDL Coder can be found here. 
-   - Our HLS IP scenario is similar to the example. To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
-   - For that reason, we need set and get functions. You can also call them as write and read. 
+   - This HLS IP scenario is similar to the example. 
+     To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
+   - For that reason, we need set and get functions, also called write and read functions. 
    - Create ``uz_HLS_testIP`` folder and move to ``ultrazohm_sw -> software -> Baremetal -> src -> IP_Cores`` 
    - In the folder, create the files: 
       

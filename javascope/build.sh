@@ -4,6 +4,36 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
+FORCE_BUILD=0
+
+usage() {
+  cat <<'EOF'
+Usage: ./build.sh [--force|-f] [--help|-h]
+
+Options:
+  -f, --force    Rebuild even if UZ_GUI.jar is newer than src/ and lib/
+  -h, --help     Show this help text
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -f|--force)
+      FORCE_BUILD=1
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
     echo "Missing required command: $1" >&2
@@ -44,7 +74,7 @@ for lib in "${LIBS[@]}"; do
   fi
 done
 
-if [[ -f UZ_GUI.jar ]]; then
+if [[ "$FORCE_BUILD" -eq 0 && -f UZ_GUI.jar ]]; then
   if ! find src lib -type f -newer UZ_GUI.jar -print -quit | grep -q .; then
     echo "Build up to date; skipping."
     exit 0

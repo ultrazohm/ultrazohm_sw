@@ -242,14 +242,14 @@ void ISR_Control(void *data)
         	//Code for v_dq_ref k-2
         	Global_Data.av.v_dq_ref_k2 = Global_Data.av.v_dq_ref;
 
-        	for (uint32_t i = 0; i < 10; i++) {
-        		uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
-        	}
-        	uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
-        	uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc * MAX_MODULATION_INDEX);
-        	Global_Data.av.v_dq_ref.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
-        	Global_Data.av.v_dq_ref.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
-        	Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
+        	// for (uint32_t i = 0; i < 10; i++) {
+        		// uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+        	// }
+        	// uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+        	// uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc,Global_Data.av.v_dc * MAX_MODULATION_INDEX);
+        	// Global_Data.av.v_dq_ref.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+        	// Global_Data.av.v_dq_ref.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+        	// Global_Data.av.DutyCycle = uz_Space_Vector_Modulation(Global_Data.av.v_dq_ref, Global_Data.av.v_dc, Global_Data.av.theta_elec_advanced);
         	break;
 
         case manual:

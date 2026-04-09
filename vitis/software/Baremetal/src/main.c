@@ -122,7 +122,7 @@ int main(void)
             Global_Data.objects.speed_control=uz_PI_Controller_init(speed_config);
             Global_Data.objects.GPIO_input = init_axi_gpio_input();
             Global_Data.objects.GPIO_output = init_axi_gpio_output();
-            init_NN_network_IP_core();
+       //     init_NN_network_IP_core();
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();

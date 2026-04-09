@@ -21,7 +21,8 @@ static struct uz_mux_axi_config_t uz_mux_axi_config = {
         .base_address= XPAR_UZ_SYSTEM_INTERRUPT_MUX_AXI_IP_1_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
 		.mux=INTERRUPT_ISR_SOURCE_USER_CHOICE,
-        .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE
+        .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE,
+        .delay_adc_trigger_in_us=ADC_TRIGGER_DELAY_IN_US
 };
 
 uz_mux_axi_t* initialize_uz_mux_axi(void) {

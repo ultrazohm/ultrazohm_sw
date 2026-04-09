@@ -2,11 +2,11 @@
 Possible Structure of schematics
 ========================================
 
-Sheet Hierarchie
+Sheet Hierarchy
 ================
 
-To ensure a better structure and clarity within the individual schematics often a sheet hierarchie is used.
-This hierarchie could be designed differently depend on the aim. 
+To ensure a better structure and clarity within the individual schematics often a sheet hierarchy is used.
+This hierarchy could be designed differently depend on the aim. 
 
 One possible structure is shown below:
 
@@ -42,9 +42,9 @@ The Top Sheet includes and connects the interfaces of the sheets below and gives
 
       Altium - Example of a Top Sheet.
 
-The hierarchie can be designed as deep as the developer it defines, it must not end at the Middle Sheet (shown above). 
+The hierarchy can be designed as deep as the developer it defines, it must not end at the Middle Sheet (shown above). 
 
-To define this hierarchie, it is important that you add your necessary schematic sheets one a top sheet.
+To define this hierarchy, it is important that you add your necessary schematic sheets one a top sheet.
 On the top sheet there is often no information about the different components.
 Only information are included about the different schematic sheets, which should be connected.
 
@@ -56,7 +56,7 @@ Only information are included about the different schematic sheets, which should
 
 4. If you want you can change the color of the boxes, but not necessary.
 
-5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is defined as an IO Port. If it is only a port in one direction define whether it is an input or an output. This might be helpful by compiling the project.)
+5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is defined as an I/O Port. If it is only a port in one direction define whether it is an input or an output. This might be helpful by compiling the project.)
 
 .. _172_Properties:
 
@@ -93,14 +93,14 @@ Output definition of the port of a sheet entry (Top Sheet)
       Altium - Example of an output port in a sheet.
 
 
-Busses
+Buses
 ======
 
 Bus signals contain many individual signals, which are summarized to one bus system.
-With the help of busses the visible clearness is often higher than without.
+With the help of buses the visible clearness is often higher than without.
 But handling with bus systems is some times a little bit difficult and depends on the installed version of Altium.
 
-Because of that reason only the link to the documentation of Altium busses is here given.
+Because of that reason only the link to the documentation of Altium buses is here given.
 https://www.altium.com/documentation/altium-designer/sch-obj-busbus-ad
 
 

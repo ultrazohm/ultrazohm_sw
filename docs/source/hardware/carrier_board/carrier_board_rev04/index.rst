@@ -1,4 +1,4 @@
-.. _carrier_board_rev4:
+.. _carrier_board_rev04:
 
 
 ===================
@@ -11,3 +11,5 @@ Carrier Board Rev04
 
 	overview
 	power_distribution
+	arm_pins
+	upgrades

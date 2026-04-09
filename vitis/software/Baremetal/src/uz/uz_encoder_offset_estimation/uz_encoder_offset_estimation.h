@@ -79,7 +79,7 @@ bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* s
  * @brief Set (new) setpoint_current to object
  * 
  * @param self Pointer to instance
- * @param float setpoint_current
+ * @param setpoint_current Setpoint current value
  */
 void uz_encoder_offset_estimation_set_setpoint_current(uz_encoder_offset_estimation_t* self, float setpoint_current);
 
@@ -87,7 +87,7 @@ void uz_encoder_offset_estimation_set_setpoint_current(uz_encoder_offset_estimat
  * @brief Set (new) min_omega_el to object
  * 
  * @param self Pointer to instance
- * @param float min_omega_el
+ * @param min_omega_el Minimum omega_el value
  */
 void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_t* self, float min_omega_el);
 

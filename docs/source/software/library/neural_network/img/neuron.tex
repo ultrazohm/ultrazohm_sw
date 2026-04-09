@@ -1,0 +1,54 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{document}
+\begin{tikzpicture}[->,>=latex',shorten >=1pt,auto,node distance=2cm,
+    thick]
+\tikzstyle{komp}=[rectangle,thick,draw=black,minimum size=15mm]
+\tikzstyle{mot}=[circle,thick,draw=black,minimum size=15mm]
+\def\xspace{20mm}
+\def\yspace{12mm}
+
+\tikzset{%
+saturation/.style={%
+draw, fill=none,
+path picture={
+% Get the width and height of the path picture node
+\pgfpointdiff{\pgfpointanchor{path picture bounding box}{north east}}%
+{\pgfpointanchor{path picture bounding box}{south west}}
+\pgfgetlastxy\x\y
+% Scale the x and y vectors so that the range
+% -1 to 1 is slightly shorter than the size of the node
+\tikzset{x=\x*.4, y=\y*.4}
+%
+% Draw annotation
+%\draw [-](-1,0) -- (1,0) (0,-1) -- (0,1); 
+\draw [-](-1,-.7) -- (-.4,-.7) -- (.4,.7) -- (1,.7);
+}
+}
+}
+
+\node[mot, align=center] (sum) {$\sum$};
+\node[komp, align=center] (F)[right=\xspace of sum] {$\mathcal{F}(s)$};
+\node[align=center] (out)[right=\xspace of F] {};
+\node[align=center] (bias)[above=\yspace of sum] {$b^{(l)}_1$};
+\draw[->, thin](bias)-- (sum);
+
+\node[align=center] (dots)[left=\xspace of sum] {\vdots};
+\node[align=center] (u1)[above=\yspace of dots] {$y^{(l-1)}_1$};
+\node[align=center] (uj)[below=\yspace of dots] {$y^{(l-1)}_i$};
+
+
+\draw[->, thin](F)-- node[above] {$y^{(l)}_1$}(out);
+\draw[->, thin](sum)-- node[above]{$s^{l}_1$}(F);
+\draw[->, thin](u1)-- node[above]{$w_{11}^{(l)}$}(sum);
+\draw[->, thin](uj)-- node[below]{$w_{i1}^{(l)}$}(sum);
+
+%\node (input)[below=10mm of input1] {Input};
+\%node (hidden)[below=10mm of hidden2] {Hidden};
+\%node (outputText)[below=10mm of output] {Output};
+
+\end{tikzpicture}
+\end{document}

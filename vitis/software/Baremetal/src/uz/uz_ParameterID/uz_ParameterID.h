@@ -67,9 +67,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
  * This is meant as an example function, to ease the initial setup of the ParameterID. This function is however not essential to the ParamterID itself and can be replaced at will.
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
- * @param CC_instance pointer to uz_CurrentControl_t object
- * @param SC_instance pointer to uz_SpeedControl_t object
- * @param SP_instance pointer to uz_SetPoint_t object
+ * @param objects struct containing controller objects
  * @return struct uz_3ph_dq_t reference voltages of controller
  */
 uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);

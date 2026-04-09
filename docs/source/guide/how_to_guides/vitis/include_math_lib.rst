@@ -1,0 +1,26 @@
+.. _math_h_prob:
+
+==================
+Include math.h lib
+==================
+
+.. note:: In the standard UltraZohm software, this TCL script :ref:`vitis_gen_workspace_tcl` should take care of this step.
+
+If the compiler throws an error when using functions from ``math.h``, you will have to tell the compiler to link the standard math library.
+
+Open the project properties.
+
+.. image:: ./images_problems/include_math_lib1.png
+   :height: 400
+
+Add the math library by going through the steps.
+
+1. C/C++ build -> Settings
+2. ARM R5 gcc linker -> libraries
+3. Small button Add...
+4. Type in "m"
+5. OK
+6. **Apply**
+7. Apply and Close
+
+   ..	image:: ./images_problems/include_math_lib2.png

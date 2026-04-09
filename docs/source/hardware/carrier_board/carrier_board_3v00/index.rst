@@ -1,4 +1,4 @@
-.. _carrier_board_rev3:
+.. _carrier_board_rev03:
 
 ==================
 Carrier Board 3v00

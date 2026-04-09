@@ -14,7 +14,7 @@ Before starting with the description and instructions on how to use the database
 
 The library system splits up in three different locations:
 
-1. The `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the Ultrazohm server is located in this repository
+1. The `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the UltraZohm server is located in this repository
 2. The UltraZohm server: All component parameters like Manufacturer Part Numbers etc. are managed by a MariaDB database on the server. In order to edit database records a separate database client (e.g. `DBeaver <https://dbeaver.io/>`_) is recommended.
 3. User's PC: The PC of the PCB developer gets access to the locations 1 and 2 and the developer is able to place the components. In case he has write access he can also edit and add components.
 
@@ -322,7 +322,7 @@ not be accepted.
 
 .. note :: The extension of the file is written in capital letters.
 
-3. Check if the footprint symbol already exists in the Bitbucket system. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
+3. Check if the footprint symbol already exists in the Bitbucket system. Use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention when searching for the footprint. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one footprint**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _42_Explorer_PCB:
 
@@ -331,8 +331,14 @@ not be accepted.
 
       Explorer - footprints.
 
-4. Follow the naming convention for the ``.PcbLib`` file **PCB - <directory> - <description>.PCBLIB**
+4. Follow the naming convention for the ``.PcbLib`` file **PCB - <directory> - <description>.PCBLIB**. Try to use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention for **<description>** and make sure to use the same name for the footprint name property which is used as ``Footprint Ref`` in the MariaDB.
 
+.. _IPC-7351B_example:
+
+   .. figure:: img/IPC-7351B_example.png
+      :width: 300px
+
+      IPC-7351B name generation example for SOIC127P930X265-16.
 
 .. note :: The extension of the file is written in capital letters.
 
@@ -487,7 +493,7 @@ Copy all rows without editing
 
       DBeaver - Parameter -Part 2.
 
-5. Excute the sql statement
+5. Execute the sql statement
 
 .. _194_Execute_statement:
 
@@ -513,4 +519,3 @@ Therefore, open the "user.DbLib" file in Altium.
       Altium - Change database field.
 
 10. Save the new settings in the "user.DbLib" file and commit it to the Bitbucket system for all the other users.
-

@@ -4,7 +4,7 @@
 #include "uz_wavegen.h"
 #include "mock_uz_SystemTime.h"
 #include "test_assert_with_exception.h"
-TEST_FILE("uz_wavegen_chirp.c")
+TEST_SOURCE_FILE("src/uz/uz_wavegen/uz_wavegen_chirp.c")
 
 void setUp(void)
 {

@@ -34,7 +34,7 @@ struct uz_PWM_SS_2L_config_t{
     bool Tristate_HB1;                  /**< Tristate flag for half-bridge 1, true=on, false=off */
     bool Tristate_HB2;                  /**< Tristate flag for half-bridge 2, true=on, false=off */
     bool Tristate_HB3;                  /**< Tristate flag for half-bridge 3, true=on, false=off */
-    float min_pulse_width;              /**< Minimum pulse width in percent, e.g. 0.01 */
+    float min_pulse_width_in_microseconds;              /**< Minimum pulse width in microseconds. Note that the interlock time of the interlock module is substracted from this value, leading to shorter minimal pulse width ! */
     float PWM_freq_Hz;                  /**< Switching frequency of PWM mode in Hz */
     enum uz_PWM_SS_2L_PWM_mode PWM_mode;/**< PWM mode selector\n  
                                         0 = normalized input of reference signal via AXI\n

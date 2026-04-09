@@ -60,7 +60,7 @@ As general rule use only through-hole vias that drill from top to bottom, everyt
 
 2. Choose the register "Via types" (Below the layer stack table)
 
-3. Configure the types of possible via types for this project (through hole vias, blind vias or burried vias)
+3. Configure the types of possible via types for this project (through hole vias, blind vias or buried vias)
 
 .. _156_Via_Types:
 

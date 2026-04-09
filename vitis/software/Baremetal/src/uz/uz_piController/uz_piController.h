@@ -5,15 +5,15 @@
 
 /*! enum for readable configuring for the selection of PI-Controller structure */
 enum uz_PI_Controller_select {
-	parallel=0, 
-	ideal
+	UZ_PI_PARALLEL=0, 
+	UZ_PI_IDEAL
 	}; 
 
 /**
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user
  */
 struct uz_PI_Controller_config {
-	enum uz_PI_Controller_select type; /**< Selection for parallel or ideal PI-Controller*/
+	enum uz_PI_Controller_select type; /**< Selection for UZ_PI_PARALLEL or UZ_PI_IDEAL PI-Controller*/
 	float Kp; /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
 	float Ki; /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
 	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */

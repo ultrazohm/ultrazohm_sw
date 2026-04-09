@@ -33,7 +33,13 @@ extern "C" {
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 
+// Period (in ms) of the endless loop in i2cio_thread()
+#define I2CIO_THREAD_TIMER_MS	(50U)
+
 // ========== JavaScope-Ethernet =========================================================================
+// Period (in ms) of the endless loop in network_thread()
+#define NETWORK_LOOPPERIOD_MS	(500U)
+
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
 #define NETWORK_SEND_FIELD_SIZE 15
@@ -92,11 +98,6 @@ void print_echo_app_header();
 void application_thread();
 void lwip_init();
 
-#if CAN_ACTIVE==1
-	void can_send_1(void); 		//CAN interface: Test function for CAN
-	void can_send_2(void); 		//CAN interface: Test function for CAN
-	void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
-#endif
 
 #ifdef __cplusplus
 }

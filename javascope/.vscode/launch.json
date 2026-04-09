@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node-terminal",
+            "name": "Launch JavaScope (Scripts)",
+            "request": "launch",
+            "command": "cmd /c \"${workspaceFolder}\\javascope_run.bat\"",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build",
+            "windows": {
+                "command": "cmd /c \"${workspaceFolder}\\javascope_run.bat\""
+            },
+            "linux": {
+                "command": "${workspaceFolder}/run.sh"
+            }
+        }
+    ]
+}

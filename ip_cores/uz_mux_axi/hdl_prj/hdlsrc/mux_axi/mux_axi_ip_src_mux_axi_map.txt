@@ -1,4 +1,25 @@
 mux_axi/mux_axi/Subsystem1/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2
 mux_axi/mux_axi/Subsystem1/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive
 mux_axi/mux_axi/Subsystem1 --> mux_axi_ip_src_Subsystem1
+mux_axi/mux_axi/Subsystem2/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block
+mux_axi/mux_axi/Subsystem2/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block
+mux_axi/mux_axi/Subsystem2 --> mux_axi_ip_src_Subsystem2
+mux_axi/mux_axi/Subsystem3/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block1
+mux_axi/mux_axi/Subsystem3/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block1
+mux_axi/mux_axi/Subsystem3 --> mux_axi_ip_src_Subsystem3
+mux_axi/mux_axi/Subsystem4/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block2
+mux_axi/mux_axi/Subsystem4/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block2
+mux_axi/mux_axi/Subsystem4 --> mux_axi_ip_src_Subsystem4
+mux_axi/mux_axi/Subsystem5/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block3
+mux_axi/mux_axi/Subsystem5/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block3
+mux_axi/mux_axi/Subsystem5 --> mux_axi_ip_src_Subsystem5
+mux_axi/mux_axi/Subsystem6/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block4
+mux_axi/mux_axi/Subsystem6/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block4
+mux_axi/mux_axi/Subsystem6 --> mux_axi_ip_src_Subsystem6
+mux_axi/mux_axi/Subsystem7/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block5
+mux_axi/mux_axi/Subsystem7/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block5
+mux_axi/mux_axi/Subsystem7 --> mux_axi_ip_src_Subsystem7
+mux_axi/mux_axi/Subsystem8/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2_block6
+mux_axi/mux_axi/Subsystem8/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive_block6
+mux_axi/mux_axi/Subsystem8 --> mux_axi_ip_src_Subsystem8
 mux_axi/mux_axi --> mux_axi_ip_src_mux_axi

@@ -770,14 +770,14 @@ void ISR_Control(void *data)
        	}
 
     	// An die Umrichter Schreiben
-/* TODO, noch einfügen
+
 		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_B;
 		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_C;
-		Global_Data.rasv.halfBridge4DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_A;
-		Global_Data.rasv.halfBridge5DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_B;
-		Global_Data.rasv.halfBridge6DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system1.DutyCycle_C;
-*/
+		Global_Data.rasv.halfBridge4DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system2.DutyCycle_A;
+		Global_Data.rasv.halfBridge5DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system2.DutyCycle_B;
+		Global_Data.rasv.halfBridge6DutyCycle = Global_Data.av.PWM_6ph_DutyCycle_output.system2.DutyCycle_C;
+
 		// Umrichter aktivieren
 		//uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
 		//uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
@@ -830,14 +830,14 @@ void ISR_Control(void *data)
 
     }
     /*=============== PWM Test Bereich End ===============*/
-
+/*
     Global_Data.rasv.halfBridge1DutyCycle = 0.9f;
 	Global_Data.rasv.halfBridge2DutyCycle = 0.8f;
 	Global_Data.rasv.halfBridge3DutyCycle = 0.7f;
 	Global_Data.rasv.halfBridge4DutyCycle = 0.6f;
 	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
 	Global_Data.rasv.halfBridge6DutyCycle = 0.4f;
-
+*/
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

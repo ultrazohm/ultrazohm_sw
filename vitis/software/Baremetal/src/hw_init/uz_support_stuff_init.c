@@ -4,7 +4,7 @@
 
 
 struct uz_6ph_spacevector_decoder_config_t config_spacevector_decoder_1 = {
-    .base_address = XPAR_UZ_6PH_SV_DECODE_IP_0_BASEADDR,
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_6PH_SV_DECODE_IP_2_BASEADDR,
     .ip_clk_frequency_Hz = 100000000,
 };
 

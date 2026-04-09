@@ -63,8 +63,8 @@
             "vio_0": "",
             "system_ila_1": "",
             "vio_1": "",
-            "uz_6ph_sv_decode_ip_0": "",
-            "uz_6ph_sv_decode_ip_1": ""
+            "uz_6ph_sv_decode_ip_2": "",
+            "uz_6ph_sv_decode_ip_0": ""
           }
         },
         "D5_adapter": {
@@ -2523,17 +2523,17 @@
                       }
                     }
                   },
+                  "uz_6ph_sv_decode_ip_2": {
+                    "vlnv": "xilinx.com:ip:uz_6ph_sv_decode_ip:1.0",
+                    "xci_name": "zusys_uz_6ph_sv_decode_ip_2_0",
+                    "xci_path": "ip\\zusys_uz_6ph_sv_decode_ip_2_0\\zusys_uz_6ph_sv_decode_ip_2_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/uz_6ph_sv_decode_ip_2"
+                  },
                   "uz_6ph_sv_decode_ip_0": {
                     "vlnv": "xilinx.com:ip:uz_6ph_sv_decode_ip:1.0",
-                    "xci_name": "zusys_uz_6ph_sv_decode_ip_0_0",
-                    "xci_path": "ip\\zusys_uz_6ph_sv_decode_ip_0_0_1\\zusys_uz_6ph_sv_decode_ip_0_0.xci",
+                    "xci_name": "zusys_uz_6ph_sv_decode_ip_0_1",
+                    "xci_path": "ip\\zusys_uz_6ph_sv_decode_ip_0_1\\zusys_uz_6ph_sv_decode_ip_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/uz_6ph_sv_decode_ip_0"
-                  },
-                  "uz_6ph_sv_decode_ip_1": {
-                    "vlnv": "xilinx.com:ip:uz_6ph_sv_decode_ip:1.0",
-                    "xci_name": "zusys_uz_6ph_sv_decode_ip_1_1",
-                    "xci_path": "ip\\zusys_uz_6ph_sv_decode_ip_1_1\\zusys_uz_6ph_sv_decode_ip_1_1.xci",
-                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/uz_6ph_sv_decode_ip_1"
                   }
                 },
                 "interface_nets": {
@@ -2599,7 +2599,7 @@
                   },
                   "smartconnect_0_M00_AXI": {
                     "interface_ports": [
-                      "uz_6ph_sv_decode_ip_0/AXI4",
+                      "uz_6ph_sv_decode_ip_2/AXI4",
                       "smartconnect_0/M00_AXI"
                     ]
                   },
@@ -2617,8 +2617,8 @@
                   },
                   "smartconnect_0_M03_AXI": {
                     "interface_ports": [
-                      "smartconnect_0/M03_AXI",
-                      "uz_6ph_sv_decode_ip_1/AXI4"
+                      "uz_6ph_sv_decode_ip_0/AXI4",
+                      "smartconnect_0/M03_AXI"
                     ]
                   }
                 },
@@ -2649,10 +2649,10 @@
                       "uz_count_ip_2/AXI4_ARESETN",
                       "uz_count_ip_0/IPCORE_RESETN",
                       "uz_count_ip_0/AXI4_ARESETN",
+                      "uz_6ph_sv_decode_ip_2/AXI4_ARESETN",
+                      "uz_6ph_sv_decode_ip_2/IPCORE_RESETN",
                       "uz_6ph_sv_decode_ip_0/AXI4_ARESETN",
-                      "uz_6ph_sv_decode_ip_0/IPCORE_RESETN",
-                      "uz_6ph_sv_decode_ip_1/IPCORE_RESETN",
-                      "uz_6ph_sv_decode_ip_1/AXI4_ARESETN"
+                      "uz_6ph_sv_decode_ip_0/IPCORE_RESETN"
                     ]
                   },
                   "InterLock_Module_0_S0_OUT": {
@@ -2697,7 +2697,7 @@
                       "uz_interlockDeadtime_0/S0",
                       "Counter_f_sw_V2_ip_0/ss_in_0",
                       "uz_count_ip_0/ss_in_0",
-                      "uz_6ph_sv_decode_ip_0/in1"
+                      "uz_6ph_sv_decode_ip_2/in1"
                     ]
                   },
                   "PWM_and_SS_control_V_0_SS1_OUT": {
@@ -2712,7 +2712,7 @@
                       "uz_interlockDeadtime_0/S2",
                       "Counter_f_sw_V2_ip_0/ss_in_1",
                       "uz_count_ip_0/ss_in_1",
-                      "uz_6ph_sv_decode_ip_0/in2"
+                      "uz_6ph_sv_decode_ip_2/in2"
                     ]
                   },
                   "PWM_and_SS_control_V_0_SS3_OUT": {
@@ -2727,7 +2727,7 @@
                       "uz_interlockDeadtime_0/S4",
                       "Counter_f_sw_V2_ip_0/ss_in_2",
                       "uz_count_ip_0/ss_in_2",
-                      "uz_6ph_sv_decode_ip_0/in3"
+                      "uz_6ph_sv_decode_ip_2/in3"
                     ]
                   },
                   "PWM_and_SS_control_V_0_SS5_OUT": {
@@ -2765,7 +2765,7 @@
                       "uz_interlockDeadtime_1/S0",
                       "Counter_f_sw_V2_ip_0/ss_in_3",
                       "uz_count_ip_0/ss_in_3",
-                      "uz_6ph_sv_decode_ip_0/in4"
+                      "uz_6ph_sv_decode_ip_2/in4"
                     ]
                   },
                   "PWM_and_SS_control_V_1_SS1_OUT": {
@@ -2780,7 +2780,7 @@
                       "uz_interlockDeadtime_1/S2",
                       "Counter_f_sw_V2_ip_0/ss_in_4",
                       "uz_count_ip_0/ss_in_4",
-                      "uz_6ph_sv_decode_ip_0/in5"
+                      "uz_6ph_sv_decode_ip_2/in5"
                     ]
                   },
                   "PWM_and_SS_control_V_1_SS3_OUT": {
@@ -2795,7 +2795,7 @@
                       "uz_interlockDeadtime_1/S4",
                       "Counter_f_sw_V2_ip_0/ss_in_5",
                       "uz_count_ip_0/ss_in_5",
-                      "uz_6ph_sv_decode_ip_0/in6"
+                      "uz_6ph_sv_decode_ip_2/in6"
                     ]
                   },
                   "PWM_and_SS_control_V_1_SS5_OUT": {
@@ -2879,7 +2879,7 @@
                   "trigger_conversions_1": {
                     "ports": [
                       "trigger_conversions",
-                      "uz_6ph_sv_decode_ip_0/trigger"
+                      "uz_6ph_sv_decode_ip_2/trigger"
                     ]
                   },
                   "util_vector_logic_0_Res": {
@@ -2888,87 +2888,87 @@
                       "Carrier_triangular_max_min"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out1": {
+                  "uz_6ph_sv_decode_ip_0_out1": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out1",
+                      "uz_6ph_sv_decode_ip_0/out1",
                       "vio_1/probe_in0"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out2": {
+                  "uz_6ph_sv_decode_ip_0_out2": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out2",
+                      "uz_6ph_sv_decode_ip_0/out2",
                       "vio_1/probe_in1"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out3": {
+                  "uz_6ph_sv_decode_ip_0_out3": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out3",
+                      "uz_6ph_sv_decode_ip_0/out3",
                       "vio_1/probe_in2"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out4": {
+                  "uz_6ph_sv_decode_ip_0_out4": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out4",
+                      "uz_6ph_sv_decode_ip_0/out4",
                       "vio_1/probe_in3"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out5": {
+                  "uz_6ph_sv_decode_ip_0_out5": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out5",
+                      "uz_6ph_sv_decode_ip_0/out5",
                       "vio_1/probe_in4"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out6": {
+                  "uz_6ph_sv_decode_ip_0_out6": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out6",
+                      "uz_6ph_sv_decode_ip_0/out6",
                       "vio_1/probe_in5"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out7": {
+                  "uz_6ph_sv_decode_ip_0_out7": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out7",
+                      "uz_6ph_sv_decode_ip_0/out7",
                       "vio_1/probe_in6"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out8": {
+                  "uz_6ph_sv_decode_ip_0_out8": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out8",
+                      "uz_6ph_sv_decode_ip_0/out8",
                       "vio_1/probe_in7"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out9": {
+                  "uz_6ph_sv_decode_ip_0_out9": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out9",
+                      "uz_6ph_sv_decode_ip_0/out9",
                       "vio_1/probe_in8"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out10": {
+                  "uz_6ph_sv_decode_ip_0_out10": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out10",
+                      "uz_6ph_sv_decode_ip_0/out10",
                       "vio_1/probe_in9"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out11": {
+                  "uz_6ph_sv_decode_ip_0_out11": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out11",
+                      "uz_6ph_sv_decode_ip_0/out11",
                       "vio_1/probe_in10"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out12": {
+                  "uz_6ph_sv_decode_ip_0_out12": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out12",
+                      "uz_6ph_sv_decode_ip_0/out12",
                       "vio_1/probe_in11"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out13": {
+                  "uz_6ph_sv_decode_ip_0_out13": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out13",
+                      "uz_6ph_sv_decode_ip_0/out13",
                       "vio_1/probe_in12"
                     ]
                   },
-                  "uz_6ph_sv_decode_ip_1_out14": {
+                  "uz_6ph_sv_decode_ip_0_out14": {
                     "ports": [
-                      "uz_6ph_sv_decode_ip_1/out14",
+                      "uz_6ph_sv_decode_ip_0/out14",
                       "vio_1/probe_in13"
                     ]
                   },
@@ -3267,43 +3267,43 @@
                   "vio_1_probe_out0": {
                     "ports": [
                       "vio_1/probe_out0",
-                      "uz_6ph_sv_decode_ip_1/trigger"
+                      "uz_6ph_sv_decode_ip_0/trigger"
                     ]
                   },
                   "vio_1_probe_out1": {
                     "ports": [
                       "vio_1/probe_out1",
-                      "uz_6ph_sv_decode_ip_1/in1"
+                      "uz_6ph_sv_decode_ip_0/in1"
                     ]
                   },
                   "vio_1_probe_out2": {
                     "ports": [
                       "vio_1/probe_out2",
-                      "uz_6ph_sv_decode_ip_1/in2"
+                      "uz_6ph_sv_decode_ip_0/in2"
                     ]
                   },
                   "vio_1_probe_out3": {
                     "ports": [
                       "vio_1/probe_out3",
-                      "uz_6ph_sv_decode_ip_1/in3"
+                      "uz_6ph_sv_decode_ip_0/in3"
                     ]
                   },
                   "vio_1_probe_out4": {
                     "ports": [
                       "vio_1/probe_out4",
-                      "uz_6ph_sv_decode_ip_1/in4"
+                      "uz_6ph_sv_decode_ip_0/in4"
                     ]
                   },
                   "vio_1_probe_out5": {
                     "ports": [
                       "vio_1/probe_out5",
-                      "uz_6ph_sv_decode_ip_1/in5"
+                      "uz_6ph_sv_decode_ip_0/in5"
                     ]
                   },
                   "vio_1_probe_out6": {
                     "ports": [
                       "vio_1/probe_out6",
-                      "uz_6ph_sv_decode_ip_1/in6"
+                      "uz_6ph_sv_decode_ip_0/in6"
                     ]
                   },
                   "vio_Gates_2L_probe_out0": {
@@ -3431,10 +3431,10 @@
                       "vio_0/clk",
                       "system_ila_1/clk",
                       "vio_1/clk",
+                      "uz_6ph_sv_decode_ip_2/AXI4_ACLK",
+                      "uz_6ph_sv_decode_ip_2/IPCORE_CLK",
                       "uz_6ph_sv_decode_ip_0/AXI4_ACLK",
-                      "uz_6ph_sv_decode_ip_0/IPCORE_CLK",
-                      "uz_6ph_sv_decode_ip_1/IPCORE_CLK",
-                      "uz_6ph_sv_decode_ip_1/AXI4_ACLK"
+                      "uz_6ph_sv_decode_ip_0/IPCORE_CLK"
                     ]
                   }
                 }
@@ -11462,8 +11462,8 @@
                 "offset": "0x00801A0000",
                 "range": "64K"
               },
-              "SEG_uz_6ph_sv_decode_ip_1_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_6ph_sv_decode_ip_1/AXI4/reg0",
+              "SEG_uz_6ph_sv_decode_ip_2_reg0": {
+                "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_6ph_sv_decode_ip_2/AXI4/reg0",
                 "offset": "0x00801D0000",
                 "range": "64K"
               },

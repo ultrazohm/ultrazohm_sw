@@ -196,10 +196,10 @@ static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoin
 static void uz_SetPoint_determine_omega_cut_usage_torque_control(uz_SetPoint_t* self, float V_DC_Volts, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere, float omega_el_rad_per_sec) {
     float M_ref_hysteresis_output = 0.0f;
     if (self->old_M_ref_Nm > 0.0f) {
-                M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f);
+                M_ref_hysteresis_output = uz_signals_window_filter(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f);
             }
             else if (self->old_M_ref_Nm < 0.0f) {
-                M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f);
+                M_ref_hysteresis_output = uz_signals_window_filter(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f);
             }
             //Only recalculates w_c if a M_ref change occured or the speed dropped
             if ((M_ref_hysteresis_output == 0.0f) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) {

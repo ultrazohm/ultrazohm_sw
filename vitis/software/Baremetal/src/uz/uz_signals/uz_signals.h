@@ -61,14 +61,14 @@ float uz_signals_get_sign_of_value(float input);
 float uz_signals_saturation(float input, float upper_limit, float lower_limit);
 
 /**
- * @brief Passes the input signal through if it is inside the hysteresis band limited by the upper or lower limit, otherwise the output is zero
+ * @brief Passes the input signal through if it is inside the window band limited by the upper or lower limit, otherwise the output is zero
  * 
  * @param input Any input signal
- * @param upper_limit Upper limit of the hysteresis band
- * @param lower_limit Lower limit of the hysteresis band (needs to be smaller than the upper limit)
+ * @param upper_limit Upper limit of the window
+ * @param lower_limit Lower limit of the window (needs to be smaller than the upper limit)
  * @return float filtered signal
  */
-float uz_signals_hysteresisband_filter(float input, float upper_limit, float lower_limit);
+float uz_signals_window_filter(float input, float upper_limit, float lower_limit);
 
 /**
  * @brief Initialization of the filter 1st order object

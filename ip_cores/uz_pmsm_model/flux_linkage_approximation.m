@@ -7,7 +7,7 @@ set(0,'defaulttextinterpreter','latex')
 %% extract Lookup table data
 %For nonlinear Model to work LUTs have to be implemented
 % Import the data from csv for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_D');
+FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
 
 % Currents
 id = FluxMapData{1,1:20};

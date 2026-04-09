@@ -40,7 +40,7 @@ pipelines:
             script:
             - apk add git-lfs
             - git remote add mirrorOriginTwo git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
-            - git lfs fetch mirrorOriginTwo
+            - git lfs fetch --all
             - git push --all mirrorOriginTwo
    branches:
      main:

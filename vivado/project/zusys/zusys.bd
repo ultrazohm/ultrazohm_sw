@@ -5913,8 +5913,8 @@
           },
           "xlslice_1": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_1",
-            "xci_path": "ip/zusys_xlslice_0_1/zusys_xlslice_0_1.xci",
+            "xci_name": "zusys_xlslice_1_0",
+            "xci_path": "ip/zusys_xlslice_1_0/zusys_xlslice_1_0.xci",
             "inst_hier_path": "uz_user/xlslice_1",
             "parameters": {
               "DIN_WIDTH": {
@@ -5924,8 +5924,8 @@
           },
           "xlslice_2": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_2",
-            "xci_path": "ip/zusys_xlslice_0_2/zusys_xlslice_0_2.xci",
+            "xci_name": "zusys_xlslice_2_1",
+            "xci_path": "ip/zusys_xlslice_2_1/zusys_xlslice_2_1.xci",
             "inst_hier_path": "uz_user/xlslice_2",
             "parameters": {
               "DIN_FROM": {
@@ -5941,8 +5941,8 @@
           },
           "xlslice_3": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_3",
-            "xci_path": "ip/zusys_xlslice_0_3/zusys_xlslice_0_3.xci",
+            "xci_name": "zusys_xlslice_3_1",
+            "xci_path": "ip/zusys_xlslice_3_1/zusys_xlslice_3_1.xci",
             "inst_hier_path": "uz_user/xlslice_3",
             "parameters": {
               "DIN_FROM": {

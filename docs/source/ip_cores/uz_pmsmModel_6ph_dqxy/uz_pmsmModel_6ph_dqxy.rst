@@ -77,7 +77,7 @@ The PMSM generates an inner torque :math:`T_I` according to:
 
 .. math::
 
-    T_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
+    T_I=3p(\psi_d i_q - \psi_q i_d)
 
 This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. 
 Note that the flux-based equation above is implemented in the model.

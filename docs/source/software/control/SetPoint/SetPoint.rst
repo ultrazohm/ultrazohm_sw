@@ -81,7 +81,7 @@ Configuration
 
   Depending on the use case, a different value for the ``uz_Setpoint_usecase`` should be used. 
   ``SP_TorqueControl`` should be selected, if manual reference torque values will be the input argument of the setpoint module.
-  ``SP_SpeedControl`` should be selected, if a some sort of controller is used to set the reference torque. I.e. the output of the :ref:`uz_SpeedControl` is directly fed to setpoint module.
+  ``SP_SpeedControl`` should be selected, if some sort of controller is used to set the reference torque. I.e. the output of the :ref:`uz_SpeedControl` is directly fed to setpoint module.
 
 
 Example

@@ -15,6 +15,16 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_piController/uz_piController.h"
+
+struct uz_PI_Controller_config speed_config={
+		.type=UZ_PI_PARALLEL,
+		.Kp=0.05f, /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
+		.Ki=0.05f, /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
+		.samplingTime_sec=0.0001, /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+		.upper_limit=5.0f, /**< Upper limit for the output limitation. Must be greater than lower limit */
+		.lower_limit=-5.0f /**< Lower limit for the output limitation */
+};
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -85,6 +95,17 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.LUT_CIL_current_angle = init_LUT_CIL_current_angle();
+            Global_Data.objects.LUT_CIL_Is = init_LUT_CIL_Is();
+            Global_Data.objects.LUT_bench_Is = init_LUT_bench_Is();
+            Global_Data.objects.LUT_bench_current_angle = init_LUT_bench_current_angle();
+            Global_Data.objects.CurrentControl = init_FOC();
+            Global_Data.objects.FluxApproximation = init_FluxApproximation();
+            Global_Data.rasv.Inv_Reset_Pin_Number = 0U;
+            Global_Data.rasv.HB_ok_Pin_Number = 0U;
+            Global_Data.rasv.OC_ok_Pin_Number = 1U;
+            //TODO//To be checked if this is the correct one from ControlS_SRM_22 branch
+            Global_Data.av.theta_offset = 2.398694800f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -97,6 +118,11 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
+            Global_Data.objects.SynRM_Model = init_pmsmModel();
+            Global_Data.objects.speed_control=uz_PI_Controller_init(speed_config);
+            Global_Data.objects.GPIO_input = init_axi_gpio_input();
+            Global_Data.objects.GPIO_output = init_axi_gpio_output();
+            init_NN_network_IP_core();
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();

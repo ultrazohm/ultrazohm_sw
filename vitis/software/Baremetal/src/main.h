@@ -51,9 +51,30 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
 #include "uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "uz/uz_math_constants.h"
 #include "include/pwm_init.h"
+#include "include/init_FOC.h"
+#include "uz/uz_array/uz_array.h"
+#include "include/init_NN_network_ip_core.h"
+#include "include/init_GPIO_custom.h"
+#include "uz/uz_signals/uz_signals.h"
 
+enum ControllerApplication
+{
+	CIL=0,
+	REAL
+};
+
+enum ControllerSelection
+{
+	LUT_FOC=0,
+	RL,
+	manual
+};
+
+#define SAMPLE_TIME_SEC_CURRENT_CONTROL 1.0f / UZ_CONTROL_FREQUENCY
+#define BO_FACTOR 3.0f
+#define TAU_SIGMA (BO_FACTOR * SAMPLE_TIME_SEC_CURRENT_CONTROL)
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -90,6 +90,19 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
 	return (v_output_Volts);
 }
 
+uz_3ph_dq_t uz_CurrentControl_sample_SynRM(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(V_dc_volts > 0.0f);
+	uz_3ph_dq_t v_pre_limit_Volts = uz_CurrentControl_sample_pi_controllers(self, i_reference_Ampere, i_actual_Ampere);
+	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self, i_actual_Ampere, omega_el_rad_per_sec);
+	v_pre_limit_Volts.d += v_decoup_Volts.d;
+	v_pre_limit_Volts.q += v_decoup_Volts.q;
+	//uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation_SynRM(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &self->ext_clamping);
+	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation_linear(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, &self->ext_clamping);
+	return (v_output_Volts);
+}
+
 uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -126,7 +139,6 @@ void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t fl
 void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, float BO_factor){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_3ph_dq_t kp_adjusted = {0};
 	uz_3ph_dq_t current_error = {0};
 	current_error.d = i_reference_Ampere.d - i_actual_Ampere.d;
 	  if (current_error.d == 0.0f) {
@@ -136,11 +148,11 @@ void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_refere
 	  if (current_error.q == 0.0f) {
     	current_error.q = 1.1920929E-7f;
   		}
-	kp_adjusted.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
-	kp_adjusted.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
+	self->kp_adjustment_parameter.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
+	self->kp_adjustment_parameter.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
 	if(self->config.Kp_adjustment_flag) {
-		uz_CurrentControl_set_Kp_id(self, kp_adjusted.d);
-		uz_CurrentControl_set_Kp_iq(self, kp_adjusted.q);
+		uz_CurrentControl_set_Kp_id(self, self->kp_adjustment_parameter.d);
+		uz_CurrentControl_set_Kp_iq(self, self->kp_adjustment_parameter.q);
 	}
 }
 

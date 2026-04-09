@@ -649,7 +649,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
 
 
 Testing the IP core with the Vitis Serial Terminal
-**************************************************
+--------------------------------------------------
 
 - Create the file ``uz_myHLSIP.h`` in the ``include`` folder
 

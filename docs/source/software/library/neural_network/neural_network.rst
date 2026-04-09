@@ -5,7 +5,7 @@ Neural network
 ==============
 
 The following describes the basic theory and definitions for `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
-The software module :ref:`uz_nn` is based on the definitions on this page.
+The software module :ref:`uz_nn` is based on the definitions on this page. For an example of real-time neural-network inference on FPGAs in motor-control applications, see [#realTimeInference]_.
 
 Network and dimension definition
 ================================
@@ -69,7 +69,7 @@ The bias are not shown but represented as following:
    
    b^{(2)}_{j}=\left[ \begin{array}{rr} b_{1}\\ \end{array}\right]
 
-.. note:: The notation across the literature and different other software implementations (e.g., Tensorflow, Pytorch, Matlab) is not consistent. The definition of inputs, weights, and bias can be transposed and the calculation of :math:`s` rearranged (:math:`w^T y` instead of :math:`yw`) without changing the function of the network. Having the inputs as column or row vector is used by differend software modules, see this `article <https://medium.com/from-the-scratch/deep-learning-deep-guide-for-all-your-matrix-dimensions-and-calculations-415012de1568>`_ for example. 
+.. note:: The notation across the literature and different other software implementations (e.g., Tensorflow, Pytorch, Matlab) is not consistent. The definition of inputs, weights, and bias can be transposed and the calculation of :math:`s` rearranged (:math:`w^T y` instead of :math:`yw`) without changing the function of the network. Having the inputs as column or row vector is used by different software modules, see this `article <https://medium.com/from-the-scratch/deep-learning-deep-guide-for-all-your-matrix-dimensions-and-calculations-415012de1568>`_ for example. 
 
 Neurons
 =======

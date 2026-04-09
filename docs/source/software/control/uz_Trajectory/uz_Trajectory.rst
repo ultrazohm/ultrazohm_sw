@@ -81,7 +81,7 @@ Example
       .Sample_Amplitude_Y = {0.0f, 4.0f, 6.0f, 7.0f, 7.5f, 9.0f, 20.0f, 20.0f, -20.0f, 20.0f, 20.0f},
       .Sample_Duration_X = {1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f, 1000.0f , 1000.0f},
       .Repeats = 2,
-      .Stepwidth_ISR = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor)
+      .Stepwidth_ISR = Global_Data.av.isr_samplerate_s
     };
   }
 

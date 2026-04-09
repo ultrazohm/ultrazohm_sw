@@ -14,7 +14,7 @@ platform:
 steps:
 
  - name: docs
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
@@ -24,17 +24,16 @@ steps:
    - ls
   
  - name: Ceedling unit tests
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
+    - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
+    - cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
    when:
      branch:
      - main
@@ -148,7 +147,6 @@ steps:
    - apk add git-lfs
    - git status
    - git add -f vitis/vivado_exported_xsa/zusys_wrapper.xsa
-   - git add -f ip_cores/vv_index.xml
    - git add -f vivado/project/ultrazohm.xpr
    - git add -f vivado/project/zusys/hdl/zusys_wrapper.vhd
    - git add -f vivado/project/zusys/zusys.bd

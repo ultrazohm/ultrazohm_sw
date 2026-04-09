@@ -1,13 +1,13 @@
 .. _digitalVoltage_3v3_5v:
 
 =============================
-Digital Voltage 3V3/5V Rev02
+Digital Voltage 3V3/5V Rev03
 =============================
 
 
 .. _uz_d_voltage_3v3_5v_functions:
 
-.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_functional.svg
+.. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_rev03.jpg
 	:width: 100%
 	:align: center
 
@@ -17,6 +17,10 @@ The Voltage_3v3_5v adapter card enables general-purpose digital input/output (GP
 It, therefore, crosses between two voltage domains and is an extension of both the :ref:`digitalVoltage` and :ref:`digitalVoltage3v3rev01` cards, which have fixed voltages.
 Like with the original Digital Voltage 5V card, signal directions can be set in groups of eight I/O pins.
 The board supports voltage level shifting, supply rail monitoring, and I²C-based readout of the hardware configuration.
+
+.. important::
+   This card can be ordered with either 10 kΩ or 100 kΩ pull-down resistors on the digital I/O pins. 
+   Choose according to your application. 
 
 Functionality
 -------------
@@ -66,12 +70,19 @@ As with some of the previous Digital Voltage cards, all internal rails -- that a
 Configuration
 --------------
 
-Prior to first use, ensure that the card is correctly configured according to the target system's requirements.
-This includes setting DIP (i.e., I/O directions) and non-DIP (e.g., voltage selection) switches appropriately for the target voltage revision (e.g., Rev04 with a supervisor switch).
+Prior to first use, ensure that the card is correctly configured according to the target system's requirements:
 
-.. TODOs: Clarify "Rev04 with a supervisor switch" above and add pictures as per belowe
+* Set I/O directions with SW1 
+* Select interface voltage with S1 (3.3 V/ 5 V)
+* For Rev04 carrier boards, S2 must be set to *use Supervisors*. For Carrier boards :math:`\geq` Rev05, S2 is set to *use CarrierBoard*.
 
-2 Pictures for Rev04 and Rev05
+.. _use_carrier_supervisor:
+
+.. figure:: digital_voltage_3v3_5v/use_carrier_supervisor.jpg
+   :width: 80%
+   :align: center
+
+   Configuration of S2 for Rev04 (top) and :math:`\geq` Rev05 (bottom) carrier boards.
 
 Measurements and technical background
 ----------------------------------------
@@ -117,7 +128,7 @@ Attention: there is an exceptional situation where the output disable function d
 	
 
 
-Accessoires
+Accessories
 ------------
 
 An optional front panel with integrated voltage indication LEDs is available for enhanced usability.
@@ -125,7 +136,7 @@ An optional front panel with integrated voltage indication LEDs is available for
 .. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_blend.svg
 	:align: center
 
-To utilize this functionality, a corresponding software extension must be activated manually in the Vitis development environment.
+To utilize the indication LEDs, a corresponding software extension must be activated manually in the Vitis development environment.
 It is part of the demo integrated in the :ref:`uzpA53`'s :ref:`uzpA53_cardid` feature and is enabled by means of the ``UZ_PLATFORM_CARDID`` preprocessor ``#define`` as described :ref:`here <uzpA53_init>`.
 Once enabled, the demo reads the card's voltage configuration at boot-up and drives the LED accordingly.
 As of mid 2025, no error reporting has been defined, i.e., the red LED is still unused.
@@ -136,7 +147,7 @@ References/Source
 
 .. _dig_3v3_5v_rev02_references:
 
-* :download:`Schematic Rev02 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev02.pdf>`
+* :download:`Schematic Rev03 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev03.pdf>`
 * `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
 
 Compatibility

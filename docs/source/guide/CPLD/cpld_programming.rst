@@ -1,7 +1,7 @@
 .. _label_cpld_programming:
 
 ====================
-Programming the CPLD 
+Programming the CPLD
 ====================
 
 CPLD Versions
@@ -14,7 +14,7 @@ There are different versions available - for :math:`\leq` ``Rev04``:
 
 For UZ  :math:`\geq`  ``Rev05``:
 
-* `MachXO2 LCMXO2-2000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/>`_ 5x D-SLot CPLD
+* `MachXO2 LCMXO2-2000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/>`_ 5x D-slot CPLD
 * `MachXO2 LCMXO2-4000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/>`_ 1x S3C
 
 
@@ -71,11 +71,11 @@ Step-by-step for Trenz TE0790
       :width: 500
 
 
-5. Start the Diamond Programmer by Lattice and open the file in the git ``Programm_all5_CPLDs.xcf``
+5. Start the Diamond Programmer by Lattice and open the file in the git repository ``Programm_all5_CPLDs.xcf``
 
    .. image:: cpld_programming/diamond_programmer_getting_started2.png
 
-6. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
+6. Choose the proper CPLD software and choose which CPLDs you want to program. The standard configuration is:
 
    - D1-D4 with **30Tx**
    - D5 for the encoder with **30Rx** 
@@ -113,7 +113,7 @@ Step-by-step for IsoJTAG :ref:`uz_per_jtag`
 
 In this example the `CPLD LA4128V <https://www.mouser.de/ProductDetail/Lattice/LA4128V-75TN100E?qs=k0CM90KAVUoIZqpZ9HTArg%3D%3D>`_ is installed on the carrier board.
 
-3. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
+3. Choose the proper CPLD software and choose which CPLDs you want to program. The standard configuration is:
 
    - D1-D4 with **30Tx**
    - D5 for the encoder with **30Rx** 
@@ -138,8 +138,8 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 Step-by-step for MachXO2
 -------------------------
 
-For programming MachXO2 CPLDS, the settings must be equivalent to :ref:`label_cpld_programming_ftdi4ch`
-   * Setup a custom clock divider TCK 3. 
+For programming MachXO2 CPLDs, the settings must be equivalent to :ref:`label_cpld_programming_ftdi4ch`
+   * Set up a custom clock divider TCK 3.
    * Click **Detect cable** and set the right port for **UltraZohm B Location**. 
    * Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-1). 
 

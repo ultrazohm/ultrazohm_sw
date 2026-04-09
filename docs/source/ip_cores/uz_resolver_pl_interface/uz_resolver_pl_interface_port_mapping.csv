@@ -5,7 +5,7 @@ velocity_raw,Input,int16_t,External Signal,-32768..32767,1,raw value of speed
 trigger,Input,bool,External Signal, false..true,1,trigger calculations
 position_mech_raw,Output,uint16_t,External Signal,0..65535,1,raw mechanical position (theta_m_offset_rad not respected)
 position_mech_2pi,Output,sfix27_En20,External Signal,0..2pi,rad,mechanical position in rad
-position_el_2pi,Output,sfix27_En20,Exernal Signal,0..2pi,rad,electrical position in rad
+position_el_2pi,Output,sfix27_En20,External Signal,0..2pi,rad,electrical position in rad
 omega_mech_rad_s,Output,sfix24_En11,External Signal,-4096..4095.9995,rad/s,mechanical speed in rad/s
 n_mech_rpm,Output,sfix24_En11,External Signal,-4096..4095.9995,rounds per minute,mechanical speed in rpm
 done,Output,bool,External Signal,false..true,1,true if ip core calculations are finished

@@ -1,5 +1,6 @@
 %% Parameter for simulation of uz_pmsm_model.slx
 % This is called by a callback when uz_pmsm_model is opened
+hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:/Xilinx/Vivado/2022.2/bin')
 
 % Electrical parameters
 R_1=2.1;

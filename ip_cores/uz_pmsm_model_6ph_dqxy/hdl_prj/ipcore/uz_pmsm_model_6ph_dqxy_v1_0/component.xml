@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>47353227</spirit:value>
+            <spirit:value>33468abb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>47353227</spirit:value>
+            <spirit:value>33468abb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1214,7 +1214,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_6ph_dqxy.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7b97d88b</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_a04954b3</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1387,14 +1387,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model_6ph_dqxy</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114445931</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-01-21T14:31:37Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114557905</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-04-09T07:46:17Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="51226d6a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0dad7165"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="bde48031"/>
     </xilinx:packagingInfo>

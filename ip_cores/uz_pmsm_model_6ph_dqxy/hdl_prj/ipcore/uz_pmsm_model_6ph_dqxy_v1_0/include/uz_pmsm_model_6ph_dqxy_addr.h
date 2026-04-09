@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\uz_pmsm_model_6ph_dqxy_v1_0\include\uz_pmsm_model_6ph_dqxy_addr.h
  * Description:       C Header File
- * Created:           2026-01-21 15:31:16
+ * Created:           2026-04-09 09:45:51
 */
 
 #ifndef UZ_PMSM_MODEL_6PH_DQXY_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_model_6ph_dqxy               0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model_6ph_dqxy              0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model_6ph_dqxy           0x8  //contains unique IP timestamp (yymmddHHMM): 2601211531
+#define  IPCore_Timestamp_uz_pmsm_model_6ph_dqxy           0x8  //contains unique IP timestamp (yymmddHHMM): 2604090945
 #define  reset_integrators_Data_uz_pmsm_model_6ph_dqxy     0x100  //data register for Inport reset_integrators
 #define  simulate_mechanical_Data_uz_pmsm_model_6ph_dqxy   0x104  //data register for Inport simulate_mechanical
 #define  reciprocal_J_Data_uz_pmsm_model_6ph_dqxy          0x108  //data register for Inport reciprocal_J

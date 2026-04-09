@@ -1,8 +1,8 @@
-======================
-Hysteresis band filter
-======================
+=============
+Window filter
+=============
 
-.. doxygenfunction:: uz_signals_hysteresisband_filter
+.. doxygenfunction:: uz_signals_window_filter
 
 Example
 =======
@@ -16,13 +16,13 @@ Example
      float input = 2.0f;
      float upper_limit = 0.5f;
      float lower_limit = 0.2f;
-     float output = uz_signals_hysteresisband_filter(input, upper_limit, lower_limit);
+     float output = uz_signals_window_filter(input, upper_limit, lower_limit);
   }
 
 Description
 ===========
 
-Passes the input through if it is inside a hysteresis band limited by the upper and lower limit values.
+Passes the input through if it is inside a window limited by the upper and lower limit values.
 Otherwise the output is 0.
 
 

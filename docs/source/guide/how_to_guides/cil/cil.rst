@@ -6,7 +6,7 @@ Controller in the Loop
 
 Controller in the loop (CIL) refers to a setup in which the implementation of a control algorithm is tested with a plant model that is implemented on the UltraZohm.
 This is useful to make sure that implemented algorithms work as intended before testing on real hardware.
-There are multiple possibilities to implement on-chip CIL on the UltraZohm are shown in the following.
+The following sections show multiple possibilities to implement on-chip CIL on the UltraZohm.
 
 .. _cil_plant_in_ps:
 
@@ -29,7 +29,7 @@ There are multiple possibilities to implement on-chip CIL on the UltraZohm are s
   \draw[<-] ([xshift=0.3cm]controller.north) -- ([xshift=0.3cm]plant.south);
   \end{tikzpicture}
 
-Implementing the plant model in the PS and the control algorithm in the PL [#KLK20]_ is depicted in Fig. Fig. :numref:`cil_plant_in_ps`.
+Implementing the plant model in the PS and the control algorithm in the PL [#KLK20]_ is depicted in Fig. :numref:`cil_plant_in_ps`.
 This approach offers easy implementation of discretized plant models in C code.
 However, the sample time is limited to the range of kilohertz.
 The PS has to handle the interrupt, read from PL registers, and write back to them, resulting in an overhead of approximately :math:`1 \mu s` [#WGL19]_. 
@@ -60,7 +60,7 @@ Thus, this approach is favorable if the plant model is simple or the required sa
 Fig. :numref:`cil_plant_in_pl` shows the scheme that is recommended, which implements the plant model in the PL.
 Moving the plant model to the PL allows for higher sampling frequencies, frees the processor from calculating the model, and enables the emulation of more complex as well as multiple parallel plant models.
 Implementing IP cores on the FPGA is generally thought of as more challenging compared to writing code for the CPU.
-This is mitigated by using aMATLAB HDL Coder, allowing easy integration into the UltraZohm FPGA design.
+This is mitigated by using MATLAB HDL Coder, allowing easy integration into the UltraZohm FPGA design.
 
 
 .. _cil_controller_in_both:
@@ -94,7 +94,7 @@ Simulating the plant model in the PL can also be used for control algorithms whi
 Hardware in the loop
 --------------------
 
-Additionally to the CIL setup that closes the loop inside of the FPGA, Hardware in the Loop (HIL) closes the loop outside of the system.
+In addition to the CIL setup that closes the loop inside of the FPGA, Hardware in the Loop (HIL) closes the loop outside of the system.
 Specifically, the UltraZohm HIL concept uses the :ref:`uz_dac8831_pcb` adapter card to close the loop directly with the ADC.
 See the following docs pages for more information:
 

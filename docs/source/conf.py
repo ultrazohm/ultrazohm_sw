@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'UltraZohm'
-copyright = '2025, UltraZohm Community'
+copyright = '2026, UltraZohm Community'
 author = 'UltraZohm Community'
 
 # -- General configuration ---------------------------------------------------
@@ -15,7 +15,7 @@ author = 'UltraZohm Community'
 
 extensions = [
     "sphinxcontrib.mermaid",
-    "sphinxcontrib.yt",
+    "sphinxcontrib.youtube",
     "sphinx_issues",
     "sphinx_copybutton",
     "sphinxcontrib.tikz",
@@ -90,4 +90,4 @@ nitpick_ignore = [
     ("c:identifier", "bool"),
 ]
 
-tikz_latex_preamble = "\\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19
+tikz_latex_preamble = r"\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

@@ -47,7 +47,7 @@ Description
 ^^^^^^^^^^^
 
 With this fitting config struct one can approximate the flux-linkages for a specific machine.
-The fitting parameter can be found solving the nonlinear-square problems discribed in [[#Shih_Wei_Su_flux_approx]_].
+The fitting parameter can be found solving the nonlinear-square problems described in [[#Shih_Wei_Su_flux_approx]_].
 For more information of how to get the fitting parameter see :ref:`uz_flux_approximation_script`.
 
 .. _uz_flux_approximation_init:

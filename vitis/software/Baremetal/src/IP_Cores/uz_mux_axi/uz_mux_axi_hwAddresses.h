@@ -8,5 +8,6 @@
 #define  IPCore_Timestamp_mux_axi_ip                 0x8U  //contains unique IP timestamp (yymmddHHMM): 2110211105
 #define  select_AXI_Data_mux_axi_ip                  0x100U  //data register for Inport select_AXI
 #define  select_n_th_adc_interrupt_Data_mux_axi_ip   0x104U  //data register for Inport select_n_th_adc_interrupt
+#define  delay_ADC_trigger_in_clk_cycles_AXI_Data_mux_axi_ip   0x108U  //data register for Inport delay_ADC_trigger_in_clk_cycles_AXI
 
 #endif /* MUX_AXI_IP_H_ */

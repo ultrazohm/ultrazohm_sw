@@ -54,7 +54,7 @@ This is equivalent to :ref:`dig_encoder_v1`.
   
   Velocity Data from Resolver
 
-When communicating with the controller, attention has to be payed on the SPI mode. The correct one is MODE1 with clock polarity idle low and clock phase one meaning falling edge.
+When communicating with the controller, attention has to be paid on the SPI mode. The correct one is MODE1 with clock polarity idle low and clock phase one meaning falling edge.
 
 .. figure:: encoder_v1/Resolver_Data_Transmission_Normal_Mode.png
   :width: 1000
@@ -72,7 +72,7 @@ Before first use
 * Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channels
 * Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
 
-.. warning:: There are two different CPLD programms in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
+.. warning:: There are two different CPLD programs in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
 
 Known issues
 ------------
@@ -82,7 +82,7 @@ Known issues
 Compatibility 
 -------------
 
-* This Board is compatible with slots D1-D5. In Slot D5 only CH A/1 and CH B/2 are available. Also, there is a special CPLD programm needed for D5, D1 to D4 share a common CPLD programm
+* This Board is compatible with slots D1-D5. In Slot D5 only CH A/1 and CH B/2 are available. Also, there is a special CPLD program needed for D5, D1 to D4 share a common CPLD program
 
 Pinout
 ------

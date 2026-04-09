@@ -3,7 +3,7 @@ Constraints
 ===========
 
 The constraints are used to assign I/O ports to physical pins of the MPSoC by setting the property ``PACKAGE_PIN``.
-Refer to the Xilinx documentation for more information about pin planning `Xilinx information <https://www.xilinx.com/support/documentation-navigation/design-hubs/dh0007-vivado-pin-planning-hub.html>`_.
+Refer to the Xilinx documentation for more information about pin planning: `Xilinx information <https://www.xilinx.com/support/documentation-navigation/design-hubs/dh0007-vivado-pin-planning-hub.html>`_.
 
 .. _constraint_location:
 
@@ -20,7 +20,7 @@ Refer to the Xilinx documentation for more information about pin planning `Xilin
 Usage
 *****
 
-The I/O constraints (PIN Planning) are not meant to be changed since the pins of the MPSoC are routed to the adapter cards.
+The I/O constraints (pin planning) are not meant to be changed since the pins of the MPSoC are routed to the adapter cards.
 Use the output ports, e.g., D1_out if you want the signal of the PL to be routed to the digital adapter slot D1:
 
 .. _constraint_ld1:
@@ -45,7 +45,7 @@ The following code maps the ports D1_out to the PINs.
 Schematic names
 ***************
 
-The port name corresponds the signal name in the carrier board schematic and is routed to the digital and analog adapter card slots D1..D5 (X6) and A1..A3 (X5).
+The port name corresponds to the signal name in the carrier board schematic and is routed to the digital and analog adapter card slots D1..D5 (X6) and A1..A3 (X5).
 
 
 .. csv-table:: Mapping of Constraint to carrier board schematic version

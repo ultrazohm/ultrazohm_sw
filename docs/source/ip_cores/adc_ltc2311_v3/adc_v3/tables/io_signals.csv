@@ -1,8 +1,8 @@
 Port Name,Direction,Port Definition,Reset State,Description
-RAW_VALUE,O,std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0),'0',Raw value outputed by the ADC
+RAW_VALUE,O,std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0),'0',Raw value output by the ADC
 SI_VALUE,O,std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0),'0',Converted Value = (RAW_VALUE + OFFSET) * CONVERSION
-RAW_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port RAW_VALUE is valid. High activ
-SI_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port SI_VALUE is valid. High activ
+RAW_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port RAW_VALUE is valid. High active
+SI_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port SI_VALUE is valid. High active
 TRIGGER_CNV,I,std_logic_vector(SPI_MASTER - 1 downto 0),--,Hardware trigger input to trigger a conversion
 SCLK,O,std_logic_vector(SPI_MASTER - 1 downto 0),'1',SCLK signal for each individual SPI master. Only available if ``DIFFERENTIAL`` = ``true``
 SCLK_DIFF,O,std_logic_vector(2 * SPI_MASTER - 1 downto 0),logic 1,Differential SCLK signal for each individual SPI master. Only available if ``DIFFERENTIAL`` = ``true``

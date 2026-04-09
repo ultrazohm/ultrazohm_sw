@@ -5,7 +5,7 @@ trigger_new_values,Input,boolean,External Signal,,trigger to update outputs,y,y
 x_abc1_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 1 for transformation as line-to-line,y,y
 x_abc2_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 2 for transformation as line-to-line,y,y
 x_abc3_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 3 for transformation as line-to-line,n,y
-x_out_dq,Output,sfix27_En16 (6/9),External Signal,-1024 to +1023,output transfomed values,y,y
+x_out_dq,Output,sfix27_En16 (6/9),External Signal,-1024 to +1023,output transformed values,y,y
 x_in_dq,Input,sfix27_En18 (6/9),External Signal,-256 to +255,input dq values for inverse transformation,y,y
 x_abc_out_axi,Output,sfix27_En18 (6/9),AXI 0x140,-256 to +255,output inverse transformed abc values to AXI,y,y
 x_abc_1,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 1 values,y,y

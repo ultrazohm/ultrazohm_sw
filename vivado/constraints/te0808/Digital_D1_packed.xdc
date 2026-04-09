@@ -47,4 +47,3 @@ set_property PULLDOWN true [get_ports {D1_OUT[3]}]
 set_property PULLDOWN true [get_ports {D1_OUT[2]}]
 set_property PULLDOWN true [get_ports {D1_OUT[1]}]
 set_property PULLDOWN true [get_ports {D1_OUT[0]}]
-

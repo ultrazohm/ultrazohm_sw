@@ -67,8 +67,8 @@ const struct uz_parameterID_rc_config_t rc_meas_config = {
   	.abs_iq_max_Amps = 150.0f,
 	.n_start_rpm = 1000.0f,
 	.n_stop_rpm = 1000.0f,
-	.id_steps = 5U,
-	.iq_steps = 5U,
+	.id_steps = 10U,
+	.iq_steps = 10U,
 	.n_steps = 0U,
 	.check_temp=1
   };
@@ -107,8 +107,8 @@ struct uz_VoltageCompensation_config VoltComp_config = {
 	 .enable_dead_time_compensation = 1U,
 	 .enable_on_delay_time_compensation = 0U,
 	 .enable_voltage_drop_compensation = 0U,
-	 .enable_R_on_compensation = 1U,
-	 .switching_frequency_Hz = PWM_FREQ_HZ,
+	 .enable_R_on_compensation = 0U,
+	 .switching_frequency_Hz = UZ_PWM_FREQ_HZ,
 	 .threshold_current = 5.0f,
 	 .R_on_mOhm = 3.5f
 };

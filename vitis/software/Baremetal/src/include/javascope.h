@@ -268,7 +268,7 @@ enum gui_button_mapping {
 	Start RC-Meas,
 	FOC_control,
 	Offset_est.,
-	ResonantContr,
+	VoltComp.,
 	dutyC:0.0,
 	chirp_signal,
 	MYBUTTONS_LABELS_ENDMARKER

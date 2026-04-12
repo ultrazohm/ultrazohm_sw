@@ -128,6 +128,7 @@ float uz_buck_output_current_control(uz_buck_control_t *self, struct buck_contro
     // control_voltage = uz_signals_saturation(control_voltage, actual_values.input_voltage_Volt, 0.0f);
 
     self->duty_cycle = control_voltage / actual_values.input_voltage_Volt;
+    self->duty_cycle=uz_signals_saturation(self->duty_cycle, 1.0f, 0.0f);
     uz_assert(!isnan(self->duty_cycle));
     uz_assert(self->duty_cycle >= 0.0f);
     uz_assert(self->duty_cycle <= 1.0f);

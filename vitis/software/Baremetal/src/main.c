@@ -76,12 +76,12 @@ struct buck_control_config buck_config = {
     .output_voltage_controller_min_reference =0.0f,
     .output_voltage_controller_kp =0.0f,
     .output_voltage_controller_ki =0.0f,
-    .output_current_controller_max_control_signal =5.0f,
-    .output_current_controller_min_control_signal =-5.0f,
-    .output_current_controller_max_reference =2.0f,
-    .output_current_controller_min_reference =0.0f,
-    .output_current_controller_kp =0.1f,
-    .output_current_controller_ki =0.0f,
+    .output_current_controller_max_control_signal =20.0f,
+    .output_current_controller_min_control_signal =0.0f,
+    .output_current_controller_max_reference =5.0f,
+    .output_current_controller_min_reference =-5.0f,
+    .output_current_controller_kp =0.5f,
+    .output_current_controller_ki =2.0f,
     .sampling_frequency_Hz = 10000.0f};
 int main(void)
 {

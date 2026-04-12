@@ -50,19 +50,15 @@ static void ReadAllADC();
 
 #define CURRENT_MEASUREMENT_BOX_GAIN 0.025f
 #define CURRENT_MEASUREMENT_BOX_OFFSET_INPUT_CURRENT -0.001f
-#define CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT 0.0071f
+#define CURRENT_MEASUREMENT_BOX_OFFSET_OUTPUT_CURRENT 0.004f
 
 #define VOLTAGE_MEASUREMENT_BOX_GAIN 0.0655737f // 15.3846153846
 #define VOLTAGE_MEASUREMENT_BOX_OFFSET 0.0f
 
-//offset_input_current =
-//    2.5210
-//offset_output_current =
-//    2.5164
-//gain_output =
-//   39.2084
-//gain_input =
-//   16.0359
+//offset_input_current = 2.5210
+//offset_output_current = 2.5164
+//gain_output = 39.2084
+//gain_input = 16.0359
 
 #define LEM_INPUT_CURRENT_GAIN 16.0359f
 #define LEM_OUTPUT_CURRENT_GAIN 39.2084f
@@ -72,8 +68,8 @@ static void ReadAllADC();
 bool manual_dutycycle = true;
 float reference_duty_cycle_filtered=0.0f;
 
-#define MAX_INPUT_CURRENT 10.0f
-#define MAX_OUTPUT_CURRENT 10.0f
+#define MAX_INPUT_CURRENT 5.0f
+#define MAX_OUTPUT_CURRENT 5.0f
 
 void ISR_Control(void *data)
 {
@@ -112,7 +108,7 @@ void ISR_Control(void *data)
     reference_duty_cycle_filtered=uz_signals_IIR_Filter_sample(Global_Data.objects.duty_cycle_filter, Global_Data.av.snd_fld[1]);
     Global_Data.act_val.input_current_Ampere = Global_Data.pov_actual_values.input_current_lem_ampere;
     Global_Data.act_val.input_voltage_Volt = Global_Data.pov_actual_values.input_voltage_volt;
-    Global_Data.act_val.output_current_Ampere = Global_Data.pov_actual_values.output_current_lem_before_relay_ampere;
+    Global_Data.act_val.output_current_Ampere = Global_Data.pov_actual_values.output_current_box_after_relay_ampere;
     Global_Data.act_val.output_voltage_Volt = Global_Data.pov_actual_values.output_voltage_before_relay;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();

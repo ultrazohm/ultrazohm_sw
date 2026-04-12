@@ -7,6 +7,10 @@
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
 
+#include "../globalData.h"
+extern DS_Data Global_Data;
+
+
 typedef struct
 {
     bool readyLED;
@@ -125,6 +129,8 @@ void ultrazohm_state_machine_set_stop(bool stop)
 {
     if (stop)
     {
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+        Global_Data.rasv.EnableTristate = true;
         ultrazohm_state.js_stop = true;
     }
 }

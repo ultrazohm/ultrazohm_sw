@@ -7,6 +7,20 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_endat_interface/uz_endat_interface.h"
+#include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+#include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
+#include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_VoltageCompensation/uz_VoltageCompensation.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -65,7 +79,6 @@ typedef struct _actualValues_ {
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
@@ -81,11 +94,24 @@ typedef struct _actualValues_ {
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
-	float temperature;
+	float temperature_mosfet;
+	float temperature_motor;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float endat_pos_raw_st_d5_3;
+	float omega_mech;
+	float omega_mech_filtered;
+	float omega_el;
+	float omega_el_filtered;
+	float theta_mech_comp;
+	uz_temperaturecard_OneGroup channel_A_data;
+	uz_temperaturecard_OneGroup channel_B_data;
+	uz_temperaturecard_OneGroup channel_C_data;
+	float theta_elec_pred;
+	float error_num;
+	float temp_gradient;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -101,6 +127,29 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float SKAI_nERROUT;
+	float flg_reset_SKAI;
+	float SKAI_reset_counter;
+	float Iq_ref;
+	float Id_ref;
+	float Ud_ref;
+	float Uq_ref;
+	float Ud_ref_RContr;
+	float Uq_ref_RContr;
+	float torque_ref;
+	float flg_use_setpoint_calculation;
+	float Ipeak_ref;
+	float Iphase_ref_deg;
+	float n_ref;
+	struct uz_parameterID_rc_ref_val_t rc_meas_output;
+	float operatingpoints_rc_meas;
+	float flg_start_meas;
+	float flg_use_ResonantController;
+	float flg_use_voltComp;
+	float Udq_ref;
+	float dutycycle_comp_A;
+	float dutycycle_comp_B;
+	float dutycycle_comp_C;
 } referenceAndSetValues;
 
 typedef struct{
@@ -113,7 +162,27 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
+	uz_endat_interface_t* endat_encoder_d5_3;
 	uz_mux_axi_t* mux_axi;
+	uz_axi_gpio_t* output_gpio;
+	uz_axi_gpio_t* output_gpio_LMG;
+	uz_axi_gpio_t* input_gpio;
+	uz_CurrentControl_t* FOC_instance;
+	uz_temperaturecard_t* temperature_card_d3;
+	uz_dq_setpoint_filter* dq_setpoint_filter;
+	uz_SetPoint_t*	current_setpoint_obj;
+	uz_parameterID_rc_t* rc_meas_instance;
+	uz_parameterid_rs_t* rs_meas_instance;
+	uz_IIR_Filter_t *tracking_error_filter_prime_mover;
+	uz_IIR_Filter_t *phase_a_lowpass;
+	uz_IIR_Filter_t *phase_b_lowpass;
+	uz_IIR_Filter_t *phase_c_lowpass;
+	uz_encoder_offset_estimation_t* encoder_offset_obj;
+	uz_pos_to_speed_pll_t* pll_0;
+	uz_wavegen_chirp* chirp_instance;
+	uz_resonantController_t* R_controller_instance_d;
+	uz_resonantController_t* R_controller_instance_q;
+	uz_VoltageCompensation_t* VoltageComp_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

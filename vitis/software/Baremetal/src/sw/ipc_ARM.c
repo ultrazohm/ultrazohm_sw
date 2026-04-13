@@ -24,6 +24,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+extern enum control_state_list control_mode;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -184,61 +186,79 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			ultrazohm_state_machine_set_enable_control(true);
 
 			break;
-
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+			data->rasv.halfBridge1DutyCycle = value;
+
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		//data->rasv.halfBridge2DutyCycle = value;
+			data->rasv.Ipeak_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		//data->rasv.halfBridge3DutyCycle = value;
+			data->rasv.Iphase_ref_deg = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		// theta offset
+		//data->av.snd_fld[4] = value;
+		data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		// Iq_ref
+		data->rasv.Iq_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		// Id_ref
+		data->rasv.Id_ref = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		// Kp_Iq
+		uz_CurrentControl_set_Kp_iq(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		// Ki_Iq
+		uz_CurrentControl_set_Ki_iq(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		// Kp_Id
+		uz_CurrentControl_set_Kp_id(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+		// Ki_Id
+		uz_CurrentControl_set_Ki_id(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		// Torque-Ref
+		data->rasv.torque_ref = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+		data->rasv.Ud_ref = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+		data->rasv.Uq_ref = value;
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+			uz_resonantController_set_gain(data->objects.R_controller_instance_d, value);
+			uz_resonantController_reset(data->objects.R_controller_instance_d);
+			uz_resonantController_set_gain(data->objects.R_controller_instance_q, value);
+			uz_resonantController_reset(data->objects.R_controller_instance_q);
 			break;
 
 		case (Set_Send_Field_15):
@@ -266,35 +286,57 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.flg_use_setpoint_calculation = 1.0f;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.flg_use_setpoint_calculation = 0.0f;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			//ultrazohm_state_machine_set_userLED(false);
+			//data->rasv.flg_start_meas = 1.0f;
+			control_mode = rc_fingerprint;
 			break;
 
 		case (My_Button_4):
-
+			control_mode = FOC_i_dq_setpoint;
 			break;
 
 		case (My_Button_5):
-
+			control_mode = offset_estimation;
 			break;
 
 		case (My_Button_6):
-
+		/*	if (data->rasv.flg_use_ResonantController == 0.0f){
+				data->rasv.flg_use_ResonantController = 1.0f;
+				uz_resonantController_reset(data->objects.R_controller_instance_d);
+				uz_resonantController_reset(data->objects.R_controller_instance_q);
+			} else{
+				data->rasv.flg_use_ResonantController = 0.0f;
+				uz_resonantController_reset(data->objects.R_controller_instance_d);
+				uz_resonantController_reset(data->objects.R_controller_instance_q);
+			}*/
+		if (data->rasv.flg_use_voltComp == 0.0f){
+			data->rasv.flg_use_voltComp = 1.0f;
+		} else{
+			data->rasv.flg_use_voltComp = 0.0f;
+		}
+			/*
+			control_mode = manual_dq_voltage;
+			data->rasv.Ud_ref = 0.0f;
+			data->rasv.Uq_ref = 0.0f; */
 			break;
 
 		case (My_Button_7):
-
+			control_mode = manual;
+			data->rasv.halfBridge1DutyCycle = 0.0;
+			data->rasv.halfBridge2DutyCycle = 0.0;
+			data->rasv.halfBridge3DutyCycle = 0.0;
 			break;
 
 		case (My_Button_8):
-
+			control_mode = chirp_signal;
 			break;
 
 		case (Error_Reset):
@@ -361,7 +403,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 8);
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (data->rasv.flg_use_voltComp){
+		js_status_BareToRTOS |= 1 << 9;
+	}else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

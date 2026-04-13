@@ -70,22 +70,57 @@ int JavaScope_initialize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
 	js_ch_observable[JSO_ic] 					= &data->av.I_W;
 	js_ch_observable[JSO_ua] 					= &data->av.U_U;
 	js_ch_observable[JSO_ub] 					= &data->av.U_V;
 	js_ch_observable[JSO_uc] 					= &data->av.U_W;
+	js_ch_observable[JSO_ua_raw] 					= &data->av.U_L1;
+	js_ch_observable[JSO_ub_raw] 					= &data->av.U_L2;
+	js_ch_observable[JSO_uc_raw] 					= &data->av.U_L3;
 	js_ch_observable[JSO_iq] 					= &data->av.I_q;
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_omega_mech] 			= &data->av.omega_mech;
+	js_ch_observable[JSO_omega_el] 				= &data->av.omega_el;
+	js_ch_observable[JSO_omega_mech_filtered] 	= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_omega_el_filtered] 	= &data->av.omega_el_filtered;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_SKAI_nERROUT]			= &data->rasv.SKAI_nERROUT;
+	js_ch_observable[JSO_flg_reset_SKAI]		= &data->rasv.flg_reset_SKAI;
+	js_ch_observable[JSO_SKAI_reset_counter]	= &data->rasv.SKAI_reset_counter;
+	js_ch_observable[JSO_DutyCycle_1]			= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_DutyCycle_2]			= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_DutyCycle_3]			= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_DutyCycle_comp_A]			= &data->rasv.dutycycle_comp_A;
+	js_ch_observable[JSO_DutyCycle_comp_B]			= &data->rasv.dutycycle_comp_B;
+	js_ch_observable[JSO_DutyCycle_comp_C]			= &data->rasv.dutycycle_comp_C;
+	js_ch_observable[JSO_U_DC]					= &data->av.U_ZK;
+	js_ch_observable[JSO_theta_mech_comp] 	    = &data->av.theta_mech_comp;
+	js_ch_observable[JSO_iq_ref] 				= &data->rasv.Iq_ref;
+	js_ch_observable[JSO_id_ref] 				= &data->rasv.Id_ref;
+	js_ch_observable[JSO_uq_ref] 				= &data->rasv.Uq_ref;
+	js_ch_observable[JSO_ud_ref] 				= &data->rasv.Ud_ref;
+	js_ch_observable[JSO_temp_mosfet] 			= &data->av.temperature_mosfet;
+	js_ch_observable[JSO_temp_motor] 			= &data->av.temperature_motor;
+	js_ch_observable[JSO_theta_elec_pred] 		= &data->av.theta_elec_pred;
+	js_ch_observable[JSO_theta_el_offset] 		= &data->av.theta_offset;
+	js_ch_observable[JSO_op_rc_meas]			= &data->rasv.operatingpoints_rc_meas;
+	js_ch_observable[JSO_data_valid_rc_meas]	= &data->rasv.rc_meas_output.data_valid;
+	js_ch_observable[JSO_iq_ref_rc_meas]		= &data->rasv.rc_meas_output.iq_ref_Amps;
+	js_ch_observable[JSO_id_ref_rc_meas]	= &data->rasv.rc_meas_output.id_ref_Amps;
+	js_ch_observable[JSO_n_ref_rc_meas]	= &data->rasv.rc_meas_output.n_ref_rpm;
+	js_ch_observable[JSO_theta_mech_comp] 		= &data->av.theta_mech_comp;
+	js_ch_observable[JSO_theta_offset] 			= &data->av.theta_offset;
+	js_ch_observable[JSO_ud_ref_RContr] 		= &data->rasv.Ud_ref_RContr;
+	js_ch_observable[JSO_uq_ref_RContr] 		= &data->rasv.Uq_ref_RContr;
+	js_ch_observable[JSO_udq_ref] 				= &data->rasv.Udq_ref;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -97,6 +132,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_temp_mosfet] 		    = &(data->av.temperature_mosfet);
+	js_slowDataArray[JSSD_FLOAT_temp_motor] 		    = &(data->av.temperature_motor);
+	js_slowDataArray[JSSD_FLOAT_temp_gradient] 		    = &(data->av.temp_gradient);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

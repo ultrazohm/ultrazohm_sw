@@ -54,6 +54,20 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_VoltageCompensation/uz_VoltageCompensation.h"
+
+enum control_state_list
+{
+    manual = 0,
+    FOC_i_dq_setpoint,
+	manual_dq_voltage,
+	rs_measurement,
+	rc_fingerprint,
+	offset_estimation,
+	chirp_signal
+};
+
 
 //----------------------------------------------------
 // FUNCTIONS

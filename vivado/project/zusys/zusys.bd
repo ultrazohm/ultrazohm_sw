@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x2B96EC7D0B0E33B",
+      "boundary_crc": "0x2B96EC7607CCAA2",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -120,8 +120,6 @@
         "Temperature_Card_Int_0": "",
         "uz_d_inverter_adapter_0": "",
         "uz_inverter_adapter_0": "",
-        "xlslice_0": "",
-        "xlslice_1": "",
         "uz_d_inverter_adapter_1": "",
         "uz_inverter_adapter_1": "",
         "Resolver_Interface_v_0": "",
@@ -129,7 +127,9 @@
         "Resolver_Interface_v_1": "",
         "uz_resolver_pl_inter_1": "",
         "Resolver_Interface_v_2": "",
-        "uz_resolver_pl_inter_2": ""
+        "uz_resolver_pl_inter_2": "",
+        "xlslice_2": "",
+        "xlslice_1": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -592,7 +592,13 @@
         "direction": "O"
       },
       "Dig_04_Ch4": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_05_Ch4": {
         "direction": "O"
@@ -6779,37 +6785,6 @@
             "xci_path": "ip/zusys_uz_inverter_adapter_0_0/zusys_uz_inverter_adapter_0_0.xci",
             "inst_hier_path": "uz_user/uz_inverter_adapter_0"
           },
-          "xlslice_0": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_0",
-            "xci_path": "ip/zusys_xlslice_0_0/zusys_xlslice_0_0.xci",
-            "inst_hier_path": "uz_user/xlslice_0",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "5"
-              },
-              "DIN_WIDTH": {
-                "value": "24"
-              }
-            }
-          },
-          "xlslice_1": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_1_0",
-            "xci_path": "ip/zusys_xlslice_1_0/zusys_xlslice_1_0.xci",
-            "inst_hier_path": "uz_user/xlslice_1",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "11"
-              },
-              "DIN_TO": {
-                "value": "6"
-              },
-              "DIN_WIDTH": {
-                "value": "24"
-              }
-            }
-          },
           "uz_d_inverter_adapter_1": {
             "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
             "xci_name": "zusys_uz_d_inverter_adapter_1_0",
@@ -6857,6 +6832,40 @@
             "xci_name": "zusys_uz_resolver_pl_inter_2_0",
             "xci_path": "ip/zusys_uz_resolver_pl_inter_2_0/zusys_uz_resolver_pl_inter_2_0.xci",
             "inst_hier_path": "uz_user/uz_resolver_pl_inter_2"
+          },
+          "xlslice_2": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_2_1",
+            "xci_path": "ip/zusys_xlslice_2_1/zusys_xlslice_2_1.xci",
+            "inst_hier_path": "uz_user/xlslice_2",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "11"
+              },
+              "DIN_TO": {
+                "value": "6"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "6"
+              }
+            }
+          },
+          "xlslice_1": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_1_1",
+            "xci_path": "ip/zusys_xlslice_1_1/zusys_xlslice_1_1.xci",
+            "inst_hier_path": "uz_user/xlslice_1",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "5"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -6997,7 +7006,7 @@
           "Din_1": {
             "ports": [
               "Din",
-              "xlslice_0/Din",
+              "xlslice_2/Din",
               "xlslice_1/Din"
             ]
           },
@@ -7356,15 +7365,15 @@
               "uz_d_inverter_adapter_1/Temp"
             ]
           },
-          "xlslice_0_Dout": {
-            "ports": [
-              "xlslice_0/Dout",
-              "uz_inverter_adapter_0/Gates"
-            ]
-          },
           "xlslice_1_Dout": {
             "ports": [
               "xlslice_1/Dout",
+              "uz_inverter_adapter_0/Gates"
+            ]
+          },
+          "xlslice_2_Dout": {
+            "ports": [
+              "xlslice_2/Dout",
               "uz_inverter_adapter_1/Gates"
             ]
           },
@@ -10869,6 +10878,12 @@
           "Dig_01_Ch4"
         ]
       },
+      "uz_user_Dig_02_Ch4": {
+        "ports": [
+          "uz_user/Dig_02_Ch4",
+          "Dig_02_Ch4"
+        ]
+      },
       "uz_user_Dig_03_Ch3": {
         "ports": [
           "uz_user/Dig_03_Ch3",
@@ -10881,10 +10896,28 @@
           "Dig_03_Ch4"
         ]
       },
+      "uz_user_Dig_04_Ch4": {
+        "ports": [
+          "uz_user/Dig_04_Ch4",
+          "Dig_04_Ch4"
+        ]
+      },
+      "uz_user_Dig_05_Ch4": {
+        "ports": [
+          "uz_user/Dig_05_Ch4",
+          "Dig_05_Ch4"
+        ]
+      },
       "uz_user_Dig_06_Ch3": {
         "ports": [
           "uz_user/Dig_06_Ch3",
           "Dig_06_Ch3"
+        ]
+      },
+      "uz_user_Dig_06_Ch4": {
+        "ports": [
+          "uz_user/Dig_06_Ch4",
+          "Dig_06_Ch4"
         ]
       },
       "uz_user_Dig_07_Ch3": {

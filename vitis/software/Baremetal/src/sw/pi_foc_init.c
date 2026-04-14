@@ -27,7 +27,7 @@ extern DS_Data Global_Data;
     };//these parameters are only needed if linear decoupling is selected
 
     const struct uz_PI_Controller_config config_id_left = {
-    	      .type = parallel,
+    	      .type = UZ_PI_PARALLEL,
     		  .Kp = Voestalpine.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
     	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
     	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
@@ -35,7 +35,7 @@ extern DS_Data Global_Data;
 			  .lower_limit = -24.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
-			  .type = parallel,
+			  .type = UZ_PI_PARALLEL,
 			  .Kp = Voestalpine.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 		      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 		      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
@@ -85,7 +85,7 @@ extern DS_Data Global_Data;
    };
 
    const struct uz_PI_Controller_config config_id_right = {
-		  .type = parallel,
+		  .type = UZ_PI_PARALLEL,
 		  .Kp = Voestalpine.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
@@ -94,7 +94,7 @@ extern DS_Data Global_Data;
   };
 
   const struct uz_PI_Controller_config config_iq_right = {
-		  .type = parallel,
+		  .type = UZ_PI_PARALLEL,
 		  .Kp = Voestalpine.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,

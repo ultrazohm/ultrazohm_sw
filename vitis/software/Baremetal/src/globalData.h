@@ -15,8 +15,8 @@
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
-#include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
-#include "IP_Cores/uz_IncrementalEncoder/uz_incrementalEncoder.h"
+#include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 // union allows to access the values as array and individual variables

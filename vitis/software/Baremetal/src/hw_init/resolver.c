@@ -4,7 +4,7 @@
 #include "xparameters.h"
 
 struct uz_resolverIP_config_t resolver_config_left={
-        .base_address=XPAR_UZ_USER_RESOLVER_D4_RESOLVER_INTERFACE_V_0_BASEADDR,
+        .base_address=XPAR_UZ_USER_RESOLVER_INTERFACE_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
         .resolution = 16,
         .freq_clockin = 8192000,
@@ -15,7 +15,7 @@ struct uz_resolverIP_config_t resolver_config_left={
      };
 
 struct uz_resolverIP_config_t resolver_config_right={
-        .base_address=XPAR_UZ_USER_RESOLVER_D4_RESOLVER_INTERFACE_V_2_BASEADDR,
+        .base_address=XPAR_UZ_USER_RESOLVER_INTERFACE_V_1_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
         .resolution = 16,
         .freq_clockin = 8192000,
@@ -63,7 +63,7 @@ struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right = {
 };
 
 struct uz_incrementalEncoder_config encoder_D5_config_right={
-              .base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_D5_3_BASEADDR,
+              .base_address=XPAR_INCREMENTAL_ENCODER_V26_0_BASEADDR,
               .ip_core_frequency_Hz=100000000U,
               .line_number_per_turn_mech=5000U,
               .OmegaPerOverSample_in_rpm=400.0f,
@@ -74,7 +74,7 @@ struct uz_incrementalEncoder_config encoder_D5_config_right={
 };
 
 struct uz_incrementalEncoder_config encoder_D5_config_left={
-              .base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_D5_1_BASEADDR,
+              .base_address=XPAR_INCREMENTAL_ENCODER_V26_1_BASEADDR,
               .ip_core_frequency_Hz=100000000U,
               .line_number_per_turn_mech=5000U,
               .OmegaPerOverSample_in_rpm=400.0f,

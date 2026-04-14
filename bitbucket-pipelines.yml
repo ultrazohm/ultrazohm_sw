@@ -35,14 +35,7 @@ pipelines:
             script:
                - cd javascope
                - ./build.sh -f
-         - step:
-            name: Gitlab-Mirror
-            image: alpine/git
-            script:
-            - apk add git-lfs
-            - git remote add mirrorOriginTwo git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
-            - git lfs fetch --all
-            - git push --all mirrorOriginTwo
+
    branches:
      main:
       - step:
@@ -77,4 +70,12 @@ pipelines:
           - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
           - git lfs fetch --all
           - git push --all mirrorOrigin
+      - step:
+            name: Gitlab-Mirror
+            image: alpine/git
+            script:
+            - apk add git-lfs
+            - git remote add mirrorOriginTwo git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
+            - git lfs fetch --all
+            - git push --all mirrorOriginTwo
 

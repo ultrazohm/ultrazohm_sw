@@ -15,6 +15,9 @@
 
 // Includes from own files
 #include "main.h"
+;
+
+extern const struct uz_PMSM_t Beckhoff_AM8141;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -33,7 +36,10 @@ DS_Data Global_Data = {
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+           .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+           .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}
+        };
 
 enum init_chain
 {
@@ -52,9 +58,38 @@ enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshak
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+struct uz_IIR_Filter_config reverse_filter_config = {
+    .selection = LowPass_first_order,
+    .cutoff_frequency_Hz = 1750.0f,
+    .sample_frequency_Hz = 10000.0f};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    const struct uz_parameterID_rc_config_t rc_meas_config = {
+      	.abs_id_max_Amps = 4.0f,
+      	.abs_iq_max_Amps = 4.0f,
+    	.n_start_rpm = 500.0f,
+    	.n_stop_rpm = 2500.0f,
+    	.id_steps = 4U,
+    	.iq_steps = 4U,
+    	.n_steps = 2U,
+		.check_temp=1
+      };
+
+    struct uz_parameterid_rs_config_t config_rs_meas = {
+    	.n_start = 100.0f,
+        .n_end = 2500.0f,
+        .n_steps = 8.0f,
+        .i_start = -3.0f,
+        .i_diff = 6.0f,
+        .i_repeats = 10.0f,
+        .i_steptime = 1.2f,
+   	    .wait_time = 2.0f,
+        .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
+
     while (1)
     {
         switch (initialization_chain)
@@ -85,6 +120,19 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
+            Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+            Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+            Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
+            Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
+			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
+			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
+			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
+			Global_Data.objects.rs_meas_instance_left = uz_parameterid_rs_init(config_rs_meas);
+			Global_Data.objects.rs_meas_instance_right = uz_parameterid_rs_init(config_rs_meas);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -102,8 +150,24 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_left = initialize_resolver_left();
+            Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
+            Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
+            Global_Data.objects.encoder_right = initialize_encoder_right();
+            Global_Data.objects.encoder_left = initialize_encoder_left();
+            Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
+            Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;
+            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
+            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
+            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
+            Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             break;
         case print_msg:
             uz_printf("\r\n\r\n");
@@ -121,6 +185,11 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            // read temperature values from windings
+            uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
+            Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
+            Global_Data.av.average_temp_right = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 8U);
+            Global_Data.av.average_temp_left = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 9U, 14U);
             break;
         default:
             break;

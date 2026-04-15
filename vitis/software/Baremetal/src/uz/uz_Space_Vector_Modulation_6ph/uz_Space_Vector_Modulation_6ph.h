@@ -36,5 +36,14 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
  */
 struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t u_ref_V, float V_dc, float theta_el);
 
+/**
+ * @brief SVM 6ph with rotating input for dq- and xy-subsystem
+ *
+ * @param u_ref_V reference voltages (controller output)
+ * @param V_dc DC voltage (must be positive)
+ * @param theta_el electric rotor angle
+ * @return Duty cycles, limited flags and phase shift for PWM modules
+ */
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq_xy(uz_6ph_dq_t u_ref_V, float V_dc, float theta_el_dq, float theta_el_xy);
 
 #endif // UZ_SPACE_VECTOR_MODULATION_6PH_H

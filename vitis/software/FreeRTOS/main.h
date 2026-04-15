@@ -100,11 +100,6 @@ void print_echo_app_header();
 void application_thread();
 void lwip_init();
 
-#if CAN_ACTIVE==1
-	void can_send_1(void); 		//CAN interface: Test function for CAN
-	void can_send_2(void); 		//CAN interface: Test function for CAN
-	void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
-#endif
 
 #ifdef __cplusplus
 }

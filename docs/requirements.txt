@@ -1,9 +1,9 @@
-sphinx==7.2.6
+sphinx==9.1.0
 sphinx_rtd_theme
 sphinxcontrib-mermaid
-sphinxcontrib.yt
+sphinxcontrib.youtube
 six
-sphinx-autobuild==2024.2.4 # 2024.4.13 does not work as of 15.4.24 for some reason
+sphinx-autobuild
 sphinx-issues
 sphinx-copybutton
 sphinxcontrib-tikz
@@ -30,6 +30,6 @@ streamlit
 trace_updater
 sphinx-design
 sphinx-sitemap
-snowballstemmer==2.2.0 # https://github.com/sphinx-doc/sphinx/issues/13533
+snowballstemmer
 seaborn
 scipy

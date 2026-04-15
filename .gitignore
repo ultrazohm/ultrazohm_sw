@@ -5,6 +5,7 @@
 ip_cores/*/simulation/slprj/*
 ip_cores/vv_index.xml
 
+javascope/build/
 
 
 vitis/software/Baremetal/src/slprj/
@@ -25,3 +26,5 @@ control_algorithms/uz_FOC.slxc
 
 *.sw[a-p]
 vitis/Packages/*
+*.slxc
+*cpAnnotation.mat

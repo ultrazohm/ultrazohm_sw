@@ -119,22 +119,6 @@ void process_request_thread(void *p)
 			break;
 		}
 
-		// Probe socket state every loop iteration, independent of queue level.
-		// This detects remote close quickly and prevents prolonged queue growth.
-		char probe_byte = 0;
-		int probe_nread = lwip_recv(clientfd, &probe_byte, 1, MSG_PEEK | MSG_DONTWAIT);
-		if (probe_nread == 0) {
-			uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
-			break;
-		}
-		if (probe_nread < 0) {
-			const int probe_error = errno;
-			if ((probe_error != 0) && (probe_error != EAGAIN) && (probe_error != EWOULDBLOCK)) {
-				uz_printf("APU: %s: socket %d probe failed (errno=%d), closing Javascope socket\r\n", __FUNCTION__, clientfd, probe_error);
-				break;
-			}
-		}
-
 		// Always service incoming control stream, independent of TX readiness.
 		nread = lwip_recv(clientfd, (char *)recv_buf + recv_buf_fill, TCPPACKETSIZE - recv_buf_fill, MSG_DONTWAIT);
 		if (nread < 0) {
@@ -234,9 +218,10 @@ void process_request_thread(void *p)
 				tx_pending_offset = 0U;
 			}
 
+			const size_t tx_remaining_len = tx_pending_len - tx_pending_offset;
 			nwrote = lwip_send(clientfd,
 					((const char *)&nwsend) + tx_pending_offset,
-					tx_pending_len - tx_pending_offset,
+					tx_remaining_len,
 					MSG_DONTWAIT);
 			if (nwrote < 0) {
 				if (js_is_active_client(clientfd) == pdFALSE) {
@@ -250,7 +235,18 @@ void process_request_thread(void *p)
 					uz_printf("APU: Closing socket %d\r\n", clientfd);
 					break;
 				}
-				taskYIELD();
+				// TCP send buffer full: block until socket writable (ACK received) or
+				// readable (incoming control data). Avoids busy-spin and CPU starvation
+				// of the lwIP timer thread during the ~RTT wait for ACKs.
+				{
+					fd_set rset, wset;
+					FD_ZERO(&rset);
+					FD_ZERO(&wset);
+					FD_SET(clientfd, &rset);
+					FD_SET(clientfd, &wset);
+					struct timeval tv = {.tv_sec = 0, .tv_usec = 50000U}; // 50ms max
+					(void)lwip_select(clientfd + 1, &rset, &wset, NULL, &tv);
+				}
 			} else if (nwrote == 0) {
 				uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
 				break;
@@ -316,6 +312,8 @@ void application_thread()
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 			connection_count++;
 			uz_printf("APU: Javascope connected #%lu (socket 0x%x)\r\n", (unsigned long)connection_count, new_clientfd);
+
+			// TODO: set TCP_SND_BUF = 32768 and MEMP_NUM_TCP_SEG = 512 in lwipopts.h (BSP).
 
 			const int old_clientfd = js_replace_active_client(new_clientfd);
 			if ((old_clientfd != 0) && (old_clientfd != new_clientfd)) {

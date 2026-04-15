@@ -76,8 +76,17 @@ void Transfer_ipc_Intr_Handler(void *data)
 		{
 			js_queue_overflow_dropped_samples++;
 			js_queue_purge_requested = 1;
+			// info: queue is purged when new connection is established in 'ethernet.c'
 		}
-		// info: queue is purged when new connection is established in 'ethernet.c'
+		else
+		{
+			// Yield to ethernet task only when the queue just crossed the send
+			// threshold. Avoids a context switch on every ISR invocation while
+			// still waking the sender without busy-poll delay.
+			if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET) {
+				portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+			}
+		}
 	}
 
 	// Maintain APU-local copy of status word (cf. main.c)

@@ -81,7 +81,7 @@ In function ``js_fetchData()``,
       javascope_data->status          = js_status_BareToRTOS;
 
       // flush data cache of shared memory region to make sure shared memory is updated
-      Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+      Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE);
       
      //Trigger IPI interrupt to APU
      status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);

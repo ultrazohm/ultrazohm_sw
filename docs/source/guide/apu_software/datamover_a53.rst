@@ -48,7 +48,7 @@ In ``isr.c``:
 
    void Transfer_ipc_Intr_Handler(void *data){
      // flush data cache to make sure shared memory is updated
-     Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+     Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE);
      // copy JAVASCOPE_DATA into queue to ethernet thread
      xQueueSendToBackFromISR(OsziData_queue, JAVASCOPE_DATA, &xHigherPriorityTaskWoken);
    }

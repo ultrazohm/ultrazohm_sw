@@ -65,7 +65,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 
 	// R5 writes this shared region; invalidate A53 cache lines before reading it.
-	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)

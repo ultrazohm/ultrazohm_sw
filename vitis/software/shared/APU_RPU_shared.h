@@ -6,9 +6,10 @@
 #define MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU 	0xFFFE0000 // bank 2 is for a53->r5 user data
 #define MEM_SHARED_START_OCM_BANK_3_JAVASCOPE 	0xFFFF0000 // bank 3 is for r5->a53 javascope
 #define JS_CHANNELS 		20
-// update by hand when changing JS_CHANNELS
-// Bank 3 of OCM has 64 KB, thus a maximum of 16K float values can be stored
-#define JAVASCOPE_DATA_SIZE_2POW  	128
+// Cache flush/invalidate size for one javascope_data_t entry in OCM Bank 3.
+// Xil_DCacheInvalidateRange/FlushRange iterate in 64-byte cache-line steps and
+// do not require a power-of-2 length, so sizeof() is the correct value to use.
+#define JAVASCOPE_DATA_SIZE sizeof(struct javascope_data_t)
 
 // Experimental feature - read docs before use
 #define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE

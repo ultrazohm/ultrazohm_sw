@@ -18,7 +18,7 @@
 
 #include "../main.h"
 
-void Transfer_ipc_Intr_Handler(void *baseaddr_p);						// ISR von Timer-Control
+void Transfer_ipc_Intr_Handler(void *baseaddr_p);  // IPI interrupt handler triggered by R5 core (synchronous with R5 ISR)
 u32 Rpu_IpiHandler(XIpiPsu *IpiInstPtr);
 int Initialize_InterruptHandler();
 int Initialize_ISR();

@@ -1,14 +1,11 @@
 //APU_RPU_shared.h
 #pragma once
-// OCM Bank Adresses
+// OCM Bank Addresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 #define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
 #define MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU 	0xFFFE0000 // bank 2 is for a53->r5 user data
 #define MEM_SHARED_START_OCM_BANK_3_JAVASCOPE 	0xFFFF0000 // bank 3 is for r5->a53 javascope
 #define JS_CHANNELS 		20
-// Cache flush/invalidate size for one javascope_data_t entry in OCM Bank 3.
-// Xil_DCacheInvalidateRange/FlushRange iterate in 64-byte cache-line steps and
-// do not require a power-of-2 length, so sizeof() is the correct value to use.
 #define JAVASCOPE_DATA_SIZE sizeof(struct javascope_data_t)
 
 // Experimental feature - read docs before use

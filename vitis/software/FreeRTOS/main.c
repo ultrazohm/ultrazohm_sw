@@ -134,10 +134,11 @@ int main()
 
 
 		case initialization_rtos:
-				// SW: Initialize the Interrupt Handler in main, because by doing it in the network-threat, there were always problems that the thread was killed.
+				// Initialize the interrupt handler here in main() rather than in network_thread, to avoid the
+				// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
 
-			// Start the main-threat
+			// Start the main thread
 			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
 						   THREAD_STACKSIZE,
 						   DEFAULT_THREAD_PRIO);
@@ -368,14 +369,11 @@ void i2cio_thread()
  * Routine:  main_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Starts the network thread "network_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards the main thread starts and builds up
- *      the Ethernet communication. If it is not possible after a couple of
- *      seconds, a time-out will occur. If a communication is possible, the
- *      application thread "application_thread()" will be started.
- *      This thread runs only until the LifeCheck counter receives the value of 20
- *      with a step size of 0.25 second = 5 seconds (500us * 10000).
- *      This is also the time for the time-out (if no connection is available).
+ *      Resets the PHY, initializes lwIP, and starts the network thread
+ *      "network_thread()". If DHCP is enabled, waits up to 7.5 s for a
+ *      lease and then starts the TCP application thread. Starts the I2C I/O
+ *      thread for LED mirroring. Exits (vTaskDelete) after all child threads
+ *      are launched — it does not run continuously.
  *---------------------------------------------------------------------------*/
 int main_thread()
 {

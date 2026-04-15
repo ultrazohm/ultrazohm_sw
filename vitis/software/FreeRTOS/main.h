@@ -20,6 +20,7 @@ extern "C" {
 
 // ========== Include Files =========================================================================
 #include "lwip/sockets.h"
+#include "defines.h"
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
 #include "xstatus.h"
@@ -40,14 +41,14 @@ extern "C" {
 // Period (in ms) of the endless loop in network_thread()
 #define NETWORK_LOOPPERIOD_MS	(500U)
 
-#define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
+#define TCPPACKETSIZE 1460 // Maximum TCP packet size. Default: 1460. Jumbo frames would allow up to 8960.
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NETWORK_SEND_FIELD_SIZE 15
+#define NETWORK_SEND_FIELD_SIZE JS_SAMPLES_PER_PACKET
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
-#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U 
+#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U  // Non-blocking: the ethernet task polls queue depth before dequeuing, so a timeout is not needed
 #define JS_CONTROL_QUEUE_SIZE_ELEMENTS 256U
 
 

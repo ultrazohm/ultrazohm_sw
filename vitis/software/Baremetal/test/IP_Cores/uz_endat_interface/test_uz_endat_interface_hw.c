@@ -21,7 +21,6 @@ void test_uz_endat_interface_hw_write_zero_base_address(void)
     uint32_t encoder_bit_width_single_turn = 25U;
     uint32_t encoder_bit_width_multi_turn = 12U;
     uint32_t encoder_number_of_CRC_bits = 5U;
-    bool position_encoding = false;
     float sampling_interval = 0.0001f;
     float kp_pll = 628.0f;
     float ki_pll = 98696.0f;
@@ -32,7 +31,6 @@ void test_uz_endat_interface_hw_write_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(0U, encoder_bit_width_single_turn));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(0U, encoder_bit_width_multi_turn));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(0U, encoder_number_of_CRC_bits));
-    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_position_is_binary_or_gray_code(0U, position_encoding));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_ip_core_enable(0U, true));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_parameters(0U, sampling_interval, kp_pll, ki_pll));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_machine_pole_pairs(0U, machine_pole_pairs));

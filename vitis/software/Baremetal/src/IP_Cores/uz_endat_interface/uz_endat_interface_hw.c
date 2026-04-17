@@ -63,12 +63,6 @@ void uz_endat_interface_hw_write_endat_mode_command(uint32_t base_address, uint3
 	uz_axi_write_uint32(base_address + endat_mode_command_in_AXI_Data_uz_endat_interface, endat_mode_command);
 }
 
-void uz_endat_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding) {
-    uz_assert_not_zero_uint32(base_address);
-
-    uz_axi_write_bool(base_address + pos_is_binary_or_gray_AXI_Data_uz_endat_interface, position_encoding);
-}
-
 void uz_endat_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on) {
     uz_assert_not_zero_uint32(base_address);
 

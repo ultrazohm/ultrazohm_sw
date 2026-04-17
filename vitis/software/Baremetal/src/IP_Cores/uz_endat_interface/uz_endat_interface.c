@@ -69,7 +69,6 @@ void uz_endat_interface_set_config(uz_endat_interface_t *self) {
     uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(self->config.base_address, self->config.endat_encoder_bit_width_single_turn);
     uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(self->config.base_address, self->config.endat_encoder_bit_width_multi_turn);
     uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(self->config.base_address, self->config.endat_encoder_number_of_CRC_bits);
-    uz_endat_interface_hw_write_position_is_binary_or_gray_code(self->config.base_address, self->config.position_encoding);
     uz_endat_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
     uz_endat_interface_set_mechanical_offset_endat_single_turn(self, self->config.position_mech_offset_si_single_turn);

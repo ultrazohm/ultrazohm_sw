@@ -36,26 +36,12 @@ struct uz_endat_interface_config_t{
 };
 
 /**
- * @brief Output struct for uz_endat_interface
- *
- */
-struct uz_endat_interface_outputs_t {
-    uint32_t position_raw_single_turn; /**< raw position in bit ticks, ranging from 0..endat_encoder_bit_width_single_turn-1 */
-    uint32_t position_raw_multi_turn; /**< raw position in bit ticks, ranging from 0..endat_encoder_bit_width_multi_turn-1 */
-    float position_mech_si_single_turn; /**< mechanical angle in rad, ranging from 0..2pi */
-    float position_el_si_single_turn; /**< electrical angle in rad, ranging from 0..2pi */
-    float speed_mech_si; /**< mechanical rotational speed in rad/s */
-    float speed_el_si; /**< electrical rotational speed in rad/s */
-    float speed_mech_rpm; /**< mechanical rotational speed in rounds per minute */
-};
-
-/**
  * @brief Initializes an instance of the uz_endat_interface driver
  *
  * @param config Configuration values for the IP-Core
  * @return Pointer to initialized instance
  */
-uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t config, struct uz_endat_interface_outputs_t outputs);
+uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t config);
 
 /**
  * @brief Writes the config from the struct into the IP-Core
@@ -63,13 +49,6 @@ uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t
  * @param self Pointer to the instance
  */
 void uz_endat_interface_set_config(uz_endat_interface_t *self);
-
-/**
- * @brief Updates the output struct of the driver
- *
- * @param self Pointer to the instance
- */
-void uz_endat_interface_update_all_outputs(uz_endat_interface_t *self);
 
 uint32_t uz_endat_interface_get_position_raw_single_turn(uz_endat_interface_t *self);
 uint32_t uz_endat_interface_get_position_raw_multi_turn(uz_endat_interface_t *self);
@@ -107,16 +86,5 @@ void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mo
  */
 void uz_endat_interface_set_mechanical_offset_endat_single_turn(uz_endat_interface_t *self, float position_mech_offset_si_single_turn);
 
-
-/**
- * @brief Calculates the ceiled value of an unsigned integer division.
- * @brief Attention: Does not catch overflow of (a+b)>UINT32_MAX
- *
- * @param a Dividend
- * @param b Divisor
- *
- * @return Ceiled unsigned integer division
- */
-uint32_t ceil_div(uint32_t a, uint32_t b);
 
 #endif // UZ_ENDAT_INTERFACE_H

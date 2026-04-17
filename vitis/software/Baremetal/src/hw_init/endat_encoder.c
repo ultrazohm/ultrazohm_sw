@@ -28,16 +28,12 @@ struct uz_endat_interface_config_t endat_d5_1_config = {
 //		.sampling_interval_seconds = 0.0001f
 //};
 
-struct uz_endat_interface_outputs_t endat_d5_1_outputs = {0};
-
 uz_endat_interface_t* endat_encoder_init_endat_d5_1() {
 
-	return(uz_endat_interface_init(endat_d5_1_config, endat_d5_1_outputs));
+	return(uz_endat_interface_init(endat_d5_1_config));
 }
 
-//struct uz_endat_interface_outputs_t endat_d5_3_outputs = {0};
-//
 //uz_endat_interface_t* endat_encoder_init_endat_d5_3() {
 //
-//	return(uz_endat_interface_init(endat_d5_3_config, endat_d5_3_outputs));
+//	return(uz_endat_interface_init(endat_d5_3_config));
 //}

@@ -28,13 +28,13 @@
 struct uz_endat_interface_t {
     bool is_ready;
     struct uz_endat_interface_config_t config;
-    struct uz_endat_interface_outputs_t outputs;
 };
 
 static uint32_t instance_counter = 0U;
 static uz_endat_interface_t instances[UZ_ENDAT_INTERFACE_MAX_INSTANCES] = { 0 };
 
 static uz_endat_interface_t* uz_endat_interface_allocation(void);
+static uint32_t ceil_div(uint32_t a, uint32_t b);
 
 static uz_endat_interface_t* uz_endat_interface_allocation(void){
     uz_assert(instance_counter < UZ_ENDAT_INTERFACE_MAX_INSTANCES);
@@ -45,7 +45,7 @@ static uz_endat_interface_t* uz_endat_interface_allocation(void){
     return (self);
 }
 
-uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t config, struct uz_endat_interface_outputs_t outputs) {
+uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t config) {
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
     uz_assert_not_zero_uint32(config.endat_clk_frequency_Hz);
@@ -53,7 +53,6 @@ uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t
     uz_assert_not_zero_uint32(config.machine_polepairs);
     uz_endat_interface_t* self = uz_endat_interface_allocation();
     self->config=config;
-    self->outputs=outputs;
     uz_endat_interface_set_config(self);
     return (self);
 }
@@ -72,19 +71,6 @@ void uz_endat_interface_set_config(uz_endat_interface_t *self) {
     uz_endat_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
     uz_endat_interface_set_mechanical_offset_endat_single_turn(self, self->config.position_mech_offset_si_single_turn);
-}
-
-void uz_endat_interface_update_all_outputs(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);  
-
-    self->outputs.position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(self);
-    self->outputs.position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(self);
-    self->outputs.position_mech_si_single_turn = uz_endat_interface_get_position_mech_si_single_turn(self);
-    self->outputs.position_el_si_single_turn = uz_endat_interface_get_position_el_si_single_turn(self);
-    self->outputs.speed_mech_si = uz_endat_interface_get_speed_mech_si(self);
-    self->outputs.speed_el_si = uz_endat_interface_get_speed_el_si(self);
-    self->outputs.speed_mech_rpm = uz_endat_interface_get_speed_mech_rpm(self);
 }
 
 uint32_t uz_endat_interface_get_position_raw_single_turn(uz_endat_interface_t *self) {
@@ -156,7 +142,16 @@ void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mo
 	uz_endat_interface_hw_write_endat_mode_command(self->config.base_address, mode_command);
 }
 
-uint32_t ceil_div(uint32_t a, uint32_t b) {
+/**
+ * @brief Calculates the ceiled value of an unsigned integer division.
+ * @brief Attention: Does not catch overflow of (a+b)>UINT32_MAX.
+ *
+ * @param a Dividend
+ * @param b Divisor
+ *
+ * @return Ceiled unsigned integer division
+ */
+static uint32_t ceil_div(uint32_t a, uint32_t b) {
     uz_assert(b !=0U);
     return (a + b - 1U) / b;
 }

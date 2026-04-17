@@ -6,6 +6,7 @@ Mux Axi / ISR Trigger Control
 
 - Selects the PWM counter event that triggers ADC and the interrupt of the R5 processor
 - Selects ADC/ISR trigger ratio: trigger the ISR in the R5 every n-th ADC trigger event ``(n = 1,2,3,...)``
+- Adds an optional delay to the ADC trigger path
 
 
 PWM counter events
@@ -19,23 +20,29 @@ PWM counter events
 Interrupt sources
 =================
 
-- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
-- The selected trigger source also triggers the ISR in the R5 processor (see also :ref:`r5_interrupts`)
-- Below, as well as in ``uz_global_configuration.h``, the user will find the valid interrupt source options:
+- The user selects the PWM trigger source for ADC triggering via ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
+- The trigger mode for the ISR is controlled by ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` (see :ref:`r5_interrupts`):
+
+  - ``0``: ISR fires directly on the selected PWM event
+  - ``1``: ISR fires on ``axi2tcm_write_done`` (ADC conversion complete + data in TCM), eliminating the race condition between ADC data transfer and ISR execution
+
+- Below, as well as in ``uz_global_configuration.h``, the user will find the valid PWM interrupt source options:
 
 .. code-block:: c
 
-   /** ISR trigger source
+   /** ISR trigger source (PWM counter event, used for ADC triggering and as base for the ISR trigger)
     *
-    * chose here which of the above interrupt trigger you want to use:
     * 0 for Interrupt_2L_max_min
     * 1 for Interrupt_2L_min
     * 2 for Interrupt_2L_max
     * 3 for Interrupt_3L_start_center
     * 4 for Interrupt_3L_start
     * 5 for Interrupt_3L_center
-    * 6 for Interrupt_timer_fcc
-   */
+    */
+   #define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+
+   /** ISR trigger mode: 0 = direct PWM event, 1 = axi2tcm_write_done (ADC data ready in TCM) */
+   #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 1U
 
 ADC/ISR trigger ratio
 =====================
@@ -43,24 +50,33 @@ ADC/ISR trigger ratio
 - If necessary, the user can choose an integer multiple ratio between ADC and ISR triggering
 - This is done by setting the ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` ``#define`` in ``uz_global_configuration.h``
 
+ADC trigger delay
+=================
+
+- If necessary, the user can add an additional delay to the ADC trigger path
+- This is done by setting ``ADC_TRIGGER_DELAY_IN_US`` in ``uz_global_configuration.h``
+- The configured delay value is applied by the ``delay_trigger`` block in the PL. For the block behavior, see :ref:`delay_trigger_block` in :ref:`r5_interrupts`.
+- This delay applies in both ISR trigger modes (``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY`` = 0 or 1): the ADC is always triggered by the selected PWM source, and when ``INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY = 1`` the ISR fires after the delayed ADC conversion completes
+
 Example
 =======
 
-The user wants to have a PWM frequency of 100 kHz and an ISR frequency of 20 kHz:
+The user wants to have a PWM frequency of 100 kHz, an ISR frequency of 20 kHz, and an ADC trigger delay equal to half the PWM deadtime:
 
 - The user selects the PWM frequency of 100 kHz: the define ``UZ_PWM_FREQUENCY`` is set to ``100.0e3f`` in ``uz_global_configuration.h``
 - The trigger source is ``Interrupt_2L_min``: the define ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` is set to ``1U`` in ``uz_global_configuration.h``
 - The trigger ratio is set to 5 (100 kHz/20 kHz = 5): the define ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` is set to ``5U`` in ``uz_global_configuration.h``
+- The ADC trigger delay is set to ``UZ_PWM_DEADTIME_IN_US/2`` in ``uz_global_configuration.h``, i.e. ``0.15 us``
 
 .. code-block:: c
    :caption: Settings in uz_global_configuration.h for the example
 
    #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
+   #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U
    #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  5U
-   
-   #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-   #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-   #define UZ_PWM_FREQUENCY                        10.0e3f
+   #define UZ_PWM_FREQUENCY                        100.0e3f
+   #define UZ_PWM_DEADTIME_IN_US                   0.30f
+   #define ADC_TRIGGER_DELAY_IN_US (UZ_PWM_DEADTIME_IN_US/2)
 
 These settings result in the behavior depicted in :numref:`example_trigger_picture` (ADC interrupt in the upper subplot, interrupt of R5 in the lower subplot):
 
@@ -83,6 +99,7 @@ IP core
 The IP core takes up to 8 different interrupt sources as inputs (external port ``interrupts_in``).
 One of these inputs is selected by AXI configuration and routed directly routed to the ``interrupt_out_adc`` external port. 
 Additionally, all interrupt sources of ``interrupts_in`` are coupled with an internal counter that routes the signal of ``interrupts_in`` to ``interrupt_out_isr`` every n-th time the ``interrupt_out_adc`` signal is high.
+An additional AXI register delays the ADC trigger output by ``0`` to ``1023`` IP-core clock cycles.
 Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI and external port) that are present in the IP core.
 
 .. _ipCore_uz_mux_axi_interfaces:
@@ -106,7 +123,7 @@ Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI 
 Software driver
 ===============
 
-The software driver is initialized by default. The user just has to select the mux and the interrupt ratio ``#define`` in ``uz_global_configuration.h``
+The software driver is initialized by default. The user just has to select the mux, the interrupt ratio, and the ADC trigger delay in ``uz_global_configuration.h``.
 The IP core is initialized at the startup of the system. The software driver is not intended to change the settings at runtime.
 
 Reference
@@ -124,4 +141,6 @@ Reference
 .. doxygenfunction:: uz_mux_axi_set_mux
 
 .. doxygenfunction:: uz_mux_axi_set_n_th_interrupt
+
+.. doxygenfunction:: uz_mux_axi_set_delay_adc_trigger_in_us
 

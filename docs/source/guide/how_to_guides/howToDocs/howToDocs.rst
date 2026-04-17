@@ -5,12 +5,12 @@ How to docs
 ===========
 
 The documentation for the UltraZohm uses `<https://www.sphinx-doc.org>`_.
-Sphinx creates the documentation pages in html based on text files.
+Sphinx creates the documentation pages in HTML based on text files.
 These text files use `reStructuredText <https://rest-sphinx-memo.readthedocs.io/en/latest/ReST.html>`_ (RST) as a markup language.
-Sphinx takes the different RST files and builds them to the docs page.
-The documentation is hosted on a web server, the build and deployment is handled by the :ref:`build pipeline <CI bitbucketPipeline>`.
+Sphinx takes the different RST files and builds them into the docs pages.
+The documentation is hosted on a web server, and the build and deployment are handled by the :ref:`build pipeline <CI bitbucketPipeline>`.
 
-.. note :: The online version on docs.ultrazohm.com is always the documentation of the **main** branch.
+.. note:: The online version on docs.ultrazohm.com is always the documentation of the **main** branch.
            If you build the documentation locally, you build the documentation of the specific branch that you have checked out!
            Building the documentation locally is useful for writing the documentation and getting a preview of the changes.
 
@@ -22,20 +22,20 @@ Installation
 To build and edit the documentation on your native system, you need to:
 
 #. Install `Python <https://www.python.org/>`_ 
-#. Install pip (included in current python versions)
+#. Install pip (included in current Python versions)
 #. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
 #. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
   
    * As image processing ``suite`` you have to install `Ghostscript <https://www.ghostscript.com/>`_
-   * Assuming standard installation path the include path for Ghostscript is: ``C:\Program Files\gs\gs9.54.0\bin`` (Windows)
+   * Assuming a standard installation path, the include path for Ghostscript is: ``C:\Program Files\gs\gs9.54.0\bin`` (Windows)
 
-#. Install everything required for the extension ``Breathe`` (`connects Doxygen to sphinx <https://www.doxygen.nl/index.html>`_. `Install guide <https://github.com/michaeljones/breathe>`_!
+#. Install everything required for the extension ``Breathe`` (`connects Doxygen to Sphinx <https://www.doxygen.nl/index.html>`_). `Install guide <https://github.com/michaeljones/breathe>`_!
 #. Build Doxygen by invoking ``make doxygen`` in a shell inside ``/docs``
 #. Build the documentation by invoking ``make html``
 #. You can open the docs in ``/docs/build/html/index.html``
 #. You can edit the documentation by using a text editor of your choice
 
-.. tip:: Sometimes you might need to clean the output with ``make clean`` or generate clean build with ``make clean html``
+.. tip:: Sometimes you might need to clean the output with ``make clean`` or generate a clean build with ``make clean html``
 
 .. tip:: You can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally (uses `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_).
 
@@ -69,8 +69,8 @@ Command                Function
 Video
 *****
 
-This video shows how to install python, the requirements, and build the documentation.
-Please note that the installation steps for ``sphinxcontrib.tikz`` (i.e., Ghostscript and Latex) is not shown in the video since the installation steps depend on your OS.
+This video shows how to install Python, the requirements, and build the documentation.
+Please note that the installation steps for ``sphinxcontrib.tikz`` (i.e., Ghostscript and LaTeX) are not shown in the video since the installation steps depend on your OS.
 Please note that the installation steps for ``breathe`` (i.e., Doxygen) are not shown in the video since the installation steps depend on your OS.
 
 .. youtube:: dxAlD-VzE0c
@@ -105,7 +105,7 @@ Don't:
 * Write long and complicated sentences
 * Add unnecessary chatter
 * Chatter about what might change in the future (exception: roadmap)
-* Mix interface with rational
+* Mix interface with rationale
 * Mix implementation details and user interface
 * Have random download links in text blocks
 * Have random line breaks in the text
@@ -191,7 +191,7 @@ Figures
 
        Caption.
 
-Refernce:
+Reference:
 
 .. code-block:: rst
 
@@ -215,7 +215,7 @@ Math
 
   i_1=\sqrt{i_d^2 +i_q^2}
 
-- Numbering and referencing equations using sphinx build in reference system
+- Numbering and referencing equations using the Sphinx built-in reference system
 
 .. code-block::
 
@@ -230,7 +230,7 @@ Math
       i_1=\sqrt{i_d^2 +i_q^2}
 
 - This text references :eq:`eq_example_number` by using ``:eq:`eq_example_number```
-- The build-in sphinx numbering can not label multiple equations, e.g., in align environments
+- The built-in sphinx numbering can not label multiple equations, e.g., in align environments
 - Alternative according to https://www.mail-archive.com/sphinx-users@googlegroups.com/msg04040.html
 
 .. code-block::
@@ -313,7 +313,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 `sphinxcontrib-mermaid <https://github.com/mgaitan/sphinxcontrib-mermaid>`_
  Enables to embed `Mermaid <https://mermaid-js.github.io/mermaid/#/>`_ graphs.
 
-`sphinxcontrib.yt <https://github.com/divi255/sphinxcontrib.youtube>`_
+`sphinxcontrib.youtube <https://github.com/divi255/sphinxcontrib.youtube>`_
  Simple embedding of youtube videos.
 
 `six <https://github.com/benjaminp/six>`_
@@ -327,7 +327,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
  
 
 `sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
-  Adds a button to the code blocks that copys the content of the block.
+  Adds a button to the code blocks that copies the content of the block.
  
 `sphinxcontrib-tikz <https://github.com/sphinx-contrib/tikz>`_
   Adds the possibility to write tikz pictures in the documentation.
@@ -398,7 +398,7 @@ Adding the following line to a docs page:
 
    .. doxygenfunction:: uz_convert_sfixed_to_float
 
-Generates the following ouput in the docs:
+Generates the following output in the docs:
 
 .. figure:: img/doxygen_sample_output.png
    :scale: 70

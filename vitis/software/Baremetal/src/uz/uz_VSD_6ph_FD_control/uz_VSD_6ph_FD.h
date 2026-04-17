@@ -45,20 +45,19 @@ struct uz_VSD_6ph_FD_config
 
 /**
  * @brief Init function for the six phase OPF detection
- * @param uz_VSD_6ph_FD_t* pointer to OPF fault detection struct
- * @param struct uz_VSD_6ph_FD_config, config for the fault detection
- * @return uz_VSD_6ph_FD_t*, pointer to the fault detection
+ * @param config configuration for the fault detection
+ * @return uz_VSD_6ph_FD_t* pointer to the fault detection
 */
 uz_VSD_6ph_FD_t *uz_VSD_6ph_FD_init(struct uz_VSD_6ph_FD_config config);
 
 
 
 /**
- * @brief Function for six-phase open-phase-fault detection, has to be cyclicly called with a the frequency configured in sample_frequency_Hz
- * @param uz_VSD_6ph_FD_t* pointer to OPF fault detection struct
+ * @brief Function for six-phase open-phase-fault detection, has to be cyclicly called with the frequency configured in sample_frequency_Hz
+ * @param VSD_FD pointer to OPF fault detection struct
  * @param vsdcurrents VSD currents
  * @param omega_el_rad_per_sec omega_el in rad per seconds
- * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated 
+ * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated
  */
 uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec);
 

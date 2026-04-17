@@ -13,14 +13,14 @@ Model Description
 =================
 
 The Simscape model of the inverter is shown in the figure below.
-While in the light blue areas, only the inputs are handled (mainly switching between PS and PL inputs depending on the configuration) and in the yellow area the ouputs are realized, the central part of the model is placed in the dark blue areas.
+While in the light blue areas, only the inputs are handled (mainly switching between PS and PL inputs depending on the configuration) and in the yellow area the outputs are realized, the central part of the model is placed in the dark blue areas.
 The power electronics part is modelled with six N-channel MOSFET from the Simscape parts library.
 Note that their electrical parameters are listed in the table below and can only be changed in the Simscape model but not after the IP core generation.
 The MOSFETs are placed to model three half bridges (HB) and each of the switches can be controlled individually.
 There is no logic implemented to prevent short circuits, if top and bottom switch of one HB are closed simultaneously.
 Because the physical references of the Simscape model will be lost after the IP core generation, the two controlled currents sources from phases ``a`` and ``b`` to phase ``c`` are placed.
 The usage of the IP core demands the user to feed back the actual flowing currents in the current application to the inverter for it to determine the voltage drop across the switches and diodes.
-If the user does not feed back any currents or sets the feedback to zero, no voltage drops will be considered for the ouput voltage.
+If the user does not feed back any currents or sets the feedback to zero, no voltage drops will be considered for the output voltage.
 The voltages are output as line-to-line voltages :math:`u_{ab},u_{bc},u_{ca}`.
 
 ..	figure:: ./inverter_overview.svg

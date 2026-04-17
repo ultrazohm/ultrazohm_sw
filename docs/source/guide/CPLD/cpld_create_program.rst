@@ -1,7 +1,7 @@
 .. _label_cpld_create_program:
 
 ================================
-Create a CPLD program using ABEL 
+Create a CPLD program using ABEL
 ================================
 
 The main goal of this section is to describe the necessary steps for creating a simple program for the 
@@ -17,7 +17,7 @@ Step-by-step
 #. Create a new branch in the repository, e.g. ``feature/project_name``. 
 #. Inside the CPLD repository ``ispMACH/LA4128V/`` or ``ispMACH/LC4256V/``, create a copy of an existing project folder, e.g. ``optical_14tx_4rx``.
 #. Rename the folder to your project name, try to use a meaningful name.
-#. Delete all html and jed files from your project folder. Only ``top_level.abl`` and ``optical_14tx_4rx.syn`` should be left.
+#. Delete all HTML and JED files from your project folder. Only ``top_level.abl`` and ``optical_14tx_4rx.syn`` should be left.
 #. Rename the project file to match your project folder name: ``uz_cpld_project_name.syn``. 
 
    .. image:: create_cpld_program/folder_structure.jpg
@@ -52,7 +52,7 @@ Step-by-step
        fpga_29 = d_29; 
 
 
-#. Is it also possible to create combinational logic of multiple inputs. The word ``node`` is an ABEL keyword and creates a signal. This can simplify the logic. The compiler will usually resolve those signals to a combination of inputs only. In the example below, the output is enabled, if ``fpga_26`` and ``fpga_27`` are 0, while ``fpga_28`` and ``fpga_29`` are 1. 
+#. It is also possible to create combinational logic of multiple inputs. The word ``node`` is an ABEL keyword and creates a signal. This can simplify the logic. The compiler will usually resolve those signals to a combination of inputs only. In the example below, the output is enabled if ``fpga_26`` and ``fpga_27`` are 0, while ``fpga_28`` and ``fpga_29`` are 1.
 
    .. code-block::
 
@@ -65,7 +65,7 @@ Step-by-step
 #. Use the following logic to create an interlocking functionality, e.g. for the upper and lower switch of a half-bridge. In this case, the output 
    
    - ``d_00`` is high when ``fpga_00 = 1`` and ``fpga_01 = 0``
-   - ``d_00`` is low in all other cases, e.g. if ``fpga_00 = 1`` and ``fpga_00 = 1``
+   - ``d_00`` is low in all other cases, e.g. if ``fpga_00 = 1`` and ``fpga_01 = 1``
 
    .. code-block::
 
@@ -102,9 +102,9 @@ Step-by-step
     .. image:: create_cpld_program/isplever_input_output_signal_list.jpg
       :height: 800      
 
-#. The report also includes the resulting equations under the tap **PostFit_Equations**. As mentioned above, the ``enable_signal`` was resolved into a combination of input pins. 
+#. The report also includes the resulting equations under the tab **PostFit_Equations**. As mentioned above, the ``enable_signal`` was resolved into a combination of input pins.
 
    .. image:: create_cpld_program/isplever_postfit_equations.jpg
 
 #. If the report matches the expected outcome, the job in ispLEVER is done. You can program the CPLD as described in :ref:`label_cpld_programming`.
-#. After testing it on the UltraZohm, commit your new or modified project to the git repository and open a pull-request. 
+#. After testing it on the UltraZohm, commit your new or modified project to the git repository and open a pull request.

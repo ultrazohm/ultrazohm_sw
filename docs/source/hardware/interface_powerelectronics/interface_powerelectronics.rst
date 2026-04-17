@@ -5,9 +5,9 @@ Interface to power electronics
 ==============================
 
 
-To control an inverter with the UltraZohm, the power electronic should be controlled directly by the gate signals. 
+To control an inverter with the UltraZohm, the power electronics should be controlled directly by the gate signals.
 In order to get your inverter compatible with the UltraZohm platform, follow the instructions below. 
-The signals of concern include the gate signals, error-flags and current and/or voltage measurements. 
+The signals of concern include the gate signals, error flags, and current and/or voltage measurements.
 The following schematic shows the three different types of signals.
 
 .. tikz:: Signals between UltraZohm and inverter
@@ -36,8 +36,8 @@ Multiple options are available to handle input or output signals of your inverte
     - Logic HIGH = LED/Transmitter/Receiver ON
     - Logic LOW = LED/Transmitter/Receiver OFF
 - Voltage signals with digital voltage adapter card (:ref:`digitalVoltage`)
-    - Single ended signals from inverter to UltraZohm with 3.3 V or 5 V
-    - Single ended signals from UltraZohm to inverter with 3.3 V, 5 V or 15 V
+    - Single-ended signals from inverter to UltraZohm with 3.3 V or 5 V
+    - Single-ended signals from UltraZohm to inverter with 3.3 V, 5 V or 15 V
     - Differential signals with RS422 transmitter and receiver (Input and Output)
 
 
@@ -45,16 +45,16 @@ Analog Signals
 ==============
 
 For measurement of phase currents and voltages an analog adapter card is available. 
-It is equipped with an 16 bit ADC of +-5 V and an OPV to adjust the incoming signal. 
+It is equipped with a 16-bit ADC of +-5 V and an OPV to adjust the incoming signal.
 To use the basic configuration without setting up the OPV on the adapter card, scale your voltage signals to +-5 V. 
 An overview of possible signal types is listed below. 
 Please refer to the documentation of the latest analog adapter card for more technical details. 
-The adapter card is equipped with two RJ45-Sockets.
+The adapter card is equipped with two RJ45 sockets.
 See :ref:`Analog_LTC2311_16` for pinout configuration.
 
 - Voltage signals
-    - Single ended with offset voltage
-    - Single ended with ground potential
+    - Single-ended with offset voltage
+    - Single-ended with ground potential
     - Differential signal
 - Current signals
     - Using internal shunt resistor on adapter card

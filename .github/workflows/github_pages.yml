@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-        image: ultrazohm/ultrazohm_remote_container
+        image: ultrazohm/ultrazohm_remote_container_new:9750fb1
     steps:
       - uses: actions/checkout@v3
         with: 

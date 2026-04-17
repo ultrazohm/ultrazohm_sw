@@ -167,16 +167,16 @@ void ISR_Control(void *data)
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR, 0, 0);
 
 
-    /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */
-    if(pmsm_model_reset)
-      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions
-
-    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
-    //uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
-    in_voltages = uz_pmsm_model9ph_dq_get_input_voltages(pmsm);		// read input voltages to PMSM model set by dq-trafo FPGA model
-    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
-    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
-    /* ~~~~~~~~~~~~~~ End of MOTOR MODEL ~~~~~~~~~~~~~~ */
+//    /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */
+//    if(pmsm_model_reset)
+//      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions
+//
+//    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+//    //uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
+//    in_voltages = uz_pmsm_model9ph_dq_get_input_voltages(pmsm);		// read input voltages to PMSM model set by dq-trafo FPGA model
+//    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
+//    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
+//    /* ~~~~~~~~~~~~~~ End of MOTOR MODEL ~~~~~~~~~~~~~~ */
 
 
 	xcp_irq();

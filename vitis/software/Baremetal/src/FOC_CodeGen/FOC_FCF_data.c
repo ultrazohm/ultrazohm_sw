@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
+ * C/C++ source code generated on : Fri Apr 17 16:36:54 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -55,7 +55,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by:
    *   '<S5>/FOC_9ph_AngleShift'
    *   '<S6>/FOC_9ph_AngleShift'
-   *   '<S14>/FOC_9ph_AngleShift'
+   *   '<S13>/FOC_9ph_AngleShift'
    */
   0.0F,
 
@@ -67,22 +67,22 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_AngleObs_w_InitVal
    * Referenced by:
    *   '<S27>/Unit Delay1'
-   *   '<S23>/Unit Delay1'
+   *   '<S22>/Unit Delay1'
    */
   0.0F,
 
   /* Variable: FOC_AngleObserver_D
-   * Referenced by: '<S24>/Constant1'
+   * Referenced by: '<S23>/Constant1'
    */
   1.0F,
 
   /* Variable: FOC_AngleObserver_w0
-   * Referenced by: '<S24>/Constant'
+   * Referenced by: '<S23>/Constant'
    */
   200.0F,
 
   /* Variable: FOC_Calibrate_I_ph
-   * Referenced by: '<S20>/calibrateSensors'
+   * Referenced by: '<S19>/calibrateSensors'
    */
   0.0F,
 
@@ -92,7 +92,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   1.0F,
 
   /* Variable: FOC_ENABLE_Overspeed
-   * Referenced by: '<S12>/FOC_ENABLE_Overcurrent_I_uvw1'
+   * Referenced by: '<S11>/FOC_ENABLE_Overcurrent_I_uvw1'
    */
   1.0F,
 
@@ -112,17 +112,17 @@ P_FOC_FCF_T FOC_FCF_P = {
   1.0F,
 
   /* Variable: FOC_Enable_PWM_Sys1
-   * Referenced by: '<S8>/FOC_Enable_PWM_Sys1'
+   * Referenced by: '<S7>/FOC_Enable_PWM_Sys1'
    */
   1.0F,
 
   /* Variable: FOC_Enable_PWM_Sys2
-   * Referenced by: '<S8>/FOC_Enable_PWM_Sys2'
+   * Referenced by: '<S7>/FOC_Enable_PWM_Sys2'
    */
   1.0F,
 
   /* Variable: FOC_Enable_PWM_Sys3
-   * Referenced by: '<S8>/FOC_Enable_PWM_Sys3'
+   * Referenced by: '<S7>/FOC_Enable_PWM_Sys3'
    */
   1.0F,
 
@@ -142,7 +142,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_If_f_el
-   * Referenced by: '<S10>/If_f_el'
+   * Referenced by: '<S9>/If_f_el'
    */
   0.0F,
 
@@ -193,9 +193,9 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_MANUAL_U_DC
-   * Referenced by: '<S17>/Udc1'
+   * Referenced by: '<S16>/Udc1'
    */
-  12.0F,
+  30.0F,
 
   /* Variable: FOC_MaxModInd
    * Referenced by:
@@ -211,12 +211,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   3.0F,
 
   /* Variable: FOC_OmegaObs3
-   * Referenced by: '<S24>/Gain4'
+   * Referenced by: '<S23>/Gain4'
    */
   0.0F,
 
   /* Variable: FOC_PhiSensorTdead
-   * Referenced by: '<S24>/DeadTimeCompensation'
+   * Referenced by: '<S23>/DeadTimeCompensation'
    */
   0.0F,
 
@@ -226,7 +226,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_RESET_OS_Error
-   * Referenced by: '<S12>/Reset_OS_Error'
+   * Referenced by: '<S11>/Reset_OS_Error'
    */
   0.0F,
 
@@ -240,15 +240,20 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   0.0F,
 
-  /* Variable: FOC_SELECT_Phase_Assignment_UVW
-   * Referenced by: '<S19>/Selektierung Phase'
+  /* Variable: FOC_SELECT_InvertAngle
+   * Referenced by: '<S4>/FOC_Invert_Encoder'
    */
-  3.0F,
+  1.0F,
+
+  /* Variable: FOC_SELECT_Phase_Assignment_UVW
+   * Referenced by: '<S18>/Selektierung Phase'
+   */
+  1.0F,
 
   /* Variable: FOC_SELECT_Voltage_Assignment_UVW
    * Referenced by: '<S96>/Constant6'
    */
-  3.0F,
+  1.0F,
 
   /* Variable: FOC_Uf_U_max
    * Referenced by: '<S92>/Saturation1'
@@ -261,12 +266,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Variable: FOC_Uf_Ud
-   * Referenced by: '<S14>/Uf_Ud'
+   * Referenced by: '<S13>/Uf_Ud'
    */
   0.0F,
 
   /* Variable: FOC_Uf_f_el
-   * Referenced by: '<S14>/Uf_w_el'
+   * Referenced by: '<S13>/Uf_w_el'
    */
   0.0F,
 
@@ -290,53 +295,93 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   8000.0F,
 
-  /* Variable: enumState_FOC_IF
-   * Referenced by: '<S7>/Constant'
+  /* Variable: Offset_ADC_Ph1
+   * Referenced by: '<S19>/Offset_ADC_Ph1'
    */
-  33.0F,
+  2.448F,
+
+  /* Variable: Offset_ADC_Ph2
+   * Referenced by: '<S19>/Offset_ADC_Ph2'
+   */
+  2.458F,
+
+  /* Variable: Offset_ADC_Ph3
+   * Referenced by: '<S19>/Offset_ADC_Ph3'
+   */
+  2.46F,
+
+  /* Variable: Offset_ADC_Ph4
+   * Referenced by: '<S19>/Offset_ADC_Ph4'
+   */
+  2.45F,
+
+  /* Variable: Offset_ADC_Ph5
+   * Referenced by: '<S19>/Offset_ADC_Ph5'
+   */
+  2.41F,
+
+  /* Variable: Offset_ADC_Ph6
+   * Referenced by: '<S19>/Offset_ADC_Ph6'
+   */
+  2.45F,
+
+  /* Variable: Offset_ADC_Ph7
+   * Referenced by: '<S19>/Offset_ADC_Ph7'
+   */
+  2.454F,
+
+  /* Variable: Offset_ADC_Ph8
+   * Referenced by: '<S19>/Offset_ADC_Ph8'
+   */
+  2.453F,
+
+  /* Variable: Offset_ADC_Ph9
+   * Referenced by: '<S19>/Offset_ADC_Ph9'
+   */
+  2.458F,
 
   /* Variable: gain_current1
-   * Referenced by: '<S20>/Gain'
+   * Referenced by: '<S19>/Gain'
    */
   -400.0F,
 
   /* Variable: gain_current2
-   * Referenced by: '<S20>/Gain1'
+   * Referenced by: '<S19>/Gain1'
    */
   -400.0F,
 
   /* Variable: gain_current3
-   * Referenced by: '<S20>/Gain2'
+   * Referenced by: '<S19>/Gain2'
    */
   -400.0F,
 
   /* Variable: gain_current4
-   * Referenced by: '<S20>/Gain3'
+   * Referenced by: '<S19>/Gain3'
    */
   -400.0F,
 
   /* Variable: gain_current5
-   * Referenced by: '<S20>/Gain4'
+   * Referenced by: '<S19>/Gain4'
    */
   -400.0F,
 
   /* Variable: gain_current6
-   * Referenced by: '<S20>/Gain5'
+   * Referenced by: '<S19>/Gain5'
    */
   -400.0F,
 
   /* Variable: gain_current7
-   * Referenced by: '<S20>/Gain6'
+   * Referenced by: '<S19>/Gain6'
    */
   -400.0F,
 
   /* Variable: gain_current8
-   * Referenced by: '<S20>/Gain7'
+   * Referenced by: '<S19>/Gain7'
    */
   -400.0F,
 
   /* Variable: gain_current9
-   * Referenced by: '<S20>/Gain8'
+   * Referenced by: '<S19>/Gain8'
    */
   -400.0F,
 
@@ -351,12 +396,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   0U,
 
   /* Variable: FOC_SELECT_Modulation
-   * Referenced by: '<S15>/Enable_SuperSinMod'
+   * Referenced by: '<S14>/Enable_SuperSinMod'
    */
   1U,
 
   /* Variable: FOC_SELECT_U_DC_INPUT
-   * Referenced by: '<S17>/0: P_Udc 1: Udc_measured'
+   * Referenced by: '<S16>/0: P_Udc 1: Udc_measured'
    */
   1U,
 
@@ -396,7 +441,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Mask Parameter: Mask_6Bits_Inv1_FLT_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv1_FLT'
+   * Referenced by: '<S8>/Mask_6Bits_Inv1_FLT'
    */
   63U,
 
@@ -431,7 +476,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   32U,
 
   /* Mask Parameter: Mask_6Bits_Inv1_RDY_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv1_RDY'
+   * Referenced by: '<S8>/Mask_6Bits_Inv1_RDY'
    */
   63U,
 
@@ -466,7 +511,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   32U,
 
   /* Mask Parameter: Mask_6Bits_Inv2_FLT_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv2_FLT'
+   * Referenced by: '<S8>/Mask_6Bits_Inv2_FLT'
    */
   4032U,
 
@@ -501,7 +546,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   32U,
 
   /* Mask Parameter: Mask_6Bits_Inv2_RDY_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv2_RDY'
+   * Referenced by: '<S8>/Mask_6Bits_Inv2_RDY'
    */
   4032U,
 
@@ -536,7 +581,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   32U,
 
   /* Mask Parameter: Mask_6Bits_Inv3_FLT_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv3_FLT'
+   * Referenced by: '<S8>/Mask_6Bits_Inv3_FLT'
    */
   258048U,
 
@@ -571,7 +616,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   32U,
 
   /* Mask Parameter: Mask_6Bits_Inv3_RDY_BitMask
-   * Referenced by: '<S9>/Mask_6Bits_Inv3_RDY'
+   * Referenced by: '<S8>/Mask_6Bits_Inv3_RDY'
    */
   258048U,
 
@@ -706,42 +751,42 @@ P_FOC_FCF_T FOC_FCF_P = {
   false,
 
   /* Computed Parameter: cal_out_Y0
-   * Referenced by: '<S21>/cal_out'
+   * Referenced by: '<S20>/cal_out'
    */
   0.0F,
 
   /* Computed Parameter: Gain_Gain
-   * Referenced by: '<S22>/Gain'
+   * Referenced by: '<S21>/Gain'
    */
   1.0F,
 
   /* Computed Parameter: FOC_T_fast_Value
-   * Referenced by: '<S23>/FOC_T_fast'
+   * Referenced by: '<S22>/FOC_T_fast'
    */
   0.0001F,
 
   /* Computed Parameter: Tau_Value
-   * Referenced by: '<S22>/Tau'
+   * Referenced by: '<S21>/Tau'
    */
   0.1F,
 
   /* Computed Parameter: VermeidungDivisionDurchNull_Upp
-   * Referenced by: '<S22>/VermeidungDivisionDurchNull'
+   * Referenced by: '<S21>/VermeidungDivisionDurchNull'
    */
   10.0F,
 
   /* Computed Parameter: VermeidungDivisionDurchNull_Low
-   * Referenced by: '<S22>/VermeidungDivisionDurchNull'
+   * Referenced by: '<S21>/VermeidungDivisionDurchNull'
    */
   0.005F,
 
   /* Expression: MM_U_DC.OFFSET
-   * Referenced by: '<S17>/bias_udc'
+   * Referenced by: '<S16>/bias_udc'
    */
   55.0F,
 
   /* Expression: MM_U_DC.FACTOR
-   * Referenced by: '<S17>/gain_udc'
+   * Referenced by: '<S16>/gain_udc'
    */
   0.0972762629F,
 
@@ -786,6 +831,11 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: Constant_Value
+   * Referenced by: '<S24>/Constant'
+   */
+  6.28318548F,
+
+  /* Computed Parameter: Constant_Value_n
    * Referenced by: '<S29>/Constant'
    */
   6.28318548F,
@@ -846,12 +896,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: Gain1_Gain_c
-   * Referenced by: '<S13>/Gain1'
+   * Referenced by: '<S12>/Gain1'
    */
   6.28318548F,
 
   /* Computed Parameter: Constant1_Value_k
-   * Referenced by: '<S13>/Constant1'
+   * Referenced by: '<S12>/Constant1'
    */
   0.0F,
 
@@ -930,51 +980,6 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   0.5F,
 
-  /* Computed Parameter: Offset_ADC_bits_Ph1_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph1'
-   */
-  2.448F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph2_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph2'
-   */
-  2.458F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph3_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph3'
-   */
-  2.46F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph4_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph4'
-   */
-  2.45F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph5_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph5'
-   */
-  2.41F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph6_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph6'
-   */
-  2.45F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph7_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph7'
-   */
-  2.454F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph8_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph8'
-   */
-  2.453F,
-
-  /* Computed Parameter: Offset_ADC_bits_Ph9_Value
-   * Referenced by: '<S20>/Offset_ADC_bits_Ph9'
-   */
-  2.458F,
-
   /* Computed Parameter: Gain_Gain_k
    * Referenced by: '<S2>/Gain'
    */
@@ -991,22 +996,22 @@ P_FOC_FCF_T FOC_FCF_P = {
   { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F },
 
   /* Computed Parameter: DiscreteTransferFcn_NumCoef
-   * Referenced by: '<S14>/Discrete Transfer Fcn'
+   * Referenced by: '<S13>/Discrete Transfer Fcn'
    */
   0.005F,
 
   /* Computed Parameter: DiscreteTransferFcn_DenCoef
-   * Referenced by: '<S14>/Discrete Transfer Fcn'
+   * Referenced by: '<S13>/Discrete Transfer Fcn'
    */
   { 1.0F, -0.995F },
 
   /* Computed Parameter: DiscreteTransferFcn_InitialStat
-   * Referenced by: '<S14>/Discrete Transfer Fcn'
+   * Referenced by: '<S13>/Discrete Transfer Fcn'
    */
   0.0F,
 
   /* Computed Parameter: f_2_w_el_Gain
-   * Referenced by: '<S14>/f_2_w_el'
+   * Referenced by: '<S13>/f_2_w_el'
    */
   6.28318548F,
 
@@ -1052,7 +1057,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   3.14159274F,
 
   /* Computed Parameter: UnitDelay3_InitialCondition
-   * Referenced by: '<S24>/Unit Delay3'
+   * Referenced by: '<S23>/Unit Delay3'
    */
   0.0F,
 
@@ -1062,17 +1067,17 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: FOC_T_fast_Value_d
-   * Referenced by: '<S13>/FOC_T_fast'
+   * Referenced by: '<S12>/FOC_T_fast'
    */
   0.0001F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_p
-   * Referenced by: '<S13>/Unit Delay'
+   * Referenced by: '<S12>/Unit Delay'
    */
   0.0F,
 
   /* Computed Parameter: f_2_w_el_Gain_j
-   * Referenced by: '<S10>/f_2_w_el'
+   * Referenced by: '<S9>/f_2_w_el'
    */
   6.28318548F,
 
@@ -1204,12 +1209,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   0.0F,
 
   /* Computed Parameter: FOC_T_fast_Value_df
-   * Referenced by: '<S24>/FOC_T_fast'
+   * Referenced by: '<S23>/FOC_T_fast'
    */
   0.0001F,
 
   /* Computed Parameter: Gain_Gain_kc
-   * Referenced by: '<S24>/Gain'
+   * Referenced by: '<S23>/Gain'
    */
   2.0F,
 
@@ -1272,9 +1277,9 @@ P_FOC_FCF_T FOC_FCF_P = {
     0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: usrpm_Gain
-   * Referenced by: '<S12>/[1//s] => [rpm]'
+   * Referenced by: '<S11>/[1//s] => [rpm]'
    */
-  2.38732409F,
+  1.06103301F,
 
   /* Computed Parameter: NO_ERROR_Value
    * Referenced by: '<S48>/NO_ERROR'
@@ -1312,7 +1317,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   6.28318548F,
 
   /* Computed Parameter: Switch_Threshold_b
-   * Referenced by: '<S13>/Switch'
+   * Referenced by: '<S12>/Switch'
    */
   6.28318548F,
 
@@ -1322,22 +1327,22 @@ P_FOC_FCF_T FOC_FCF_P = {
   6.28318548F,
 
   /* Computed Parameter: Gain_Gain_jm
-   * Referenced by: '<S15>/Gain'
+   * Referenced by: '<S14>/Gain'
    */
   1.0F,
 
   /* Computed Parameter: Gain1_Gain_e
-   * Referenced by: '<S15>/Gain1'
+   * Referenced by: '<S14>/Gain1'
    */
   1.0F,
 
   /* Computed Parameter: Gain2_Gain_fg
-   * Referenced by: '<S15>/Gain2'
+   * Referenced by: '<S14>/Gain2'
    */
   1.0F,
 
   /* Computed Parameter: Gain3_Gain
-   * Referenced by: '<S15>/Gain3'
+   * Referenced by: '<S14>/Gain3'
    */
   1.0F,
 
@@ -1412,7 +1417,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   0U,
 
   /* Computed Parameter: NoError_Manual_Value
-   * Referenced by: '<S8>/NoError_Manual'
+   * Referenced by: '<S7>/NoError_Manual'
    */
   false,
 
@@ -1437,12 +1442,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   true,
 
   /* Computed Parameter: Constant2_Value_gw
-   * Referenced by: '<S12>/Constant2'
+   * Referenced by: '<S11>/Constant2'
    */
   false,
 
   /* Computed Parameter: Constant1_Value_n
-   * Referenced by: '<S12>/Constant1'
+   * Referenced by: '<S11>/Constant1'
    */
   true,
 
@@ -1491,7 +1496,7 @@ P_FOC_FCF_T FOC_FCF_P = {
     false, false, false, false },
 
   /* Computed Parameter: SELECT_DataSource_Value
-   * Referenced by: '<S8>/SELECT_DataSource'
+   * Referenced by: '<S7>/SELECT_DataSource'
    */
   true,
 

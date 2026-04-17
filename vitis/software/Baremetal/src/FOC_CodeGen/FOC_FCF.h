@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:37:36 2026
+ * C/C++ source code generated on : Fri Apr 17 16:36:54 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -42,8 +42,8 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  bus_InvStatus_t bus_InvStatus;       /* '<S9>/Bus Creator' */
-  uint32_T Mask_6Bits_Inv1_FLT;        /* '<S9>/Mask_6Bits_Inv1_FLT' */
+  bus_InvStatus_t bus_InvStatus;       /* '<S8>/Bus Creator' */
+  uint32_T Mask_6Bits_Inv1_FLT;        /* '<S8>/Mask_6Bits_Inv1_FLT' */
   uint32_T BitwiseNOT;                 /* '<S49>/Bitwise NOT' */
   uint32_T MaskBit0;                   /* '<S49>/MaskBit0' */
   uint32_T get_U_HS_FLT;               /* '<S49>/get_U_HS_FLT' */
@@ -57,7 +57,7 @@ typedef struct {
   uint32_T get_W_HS_FLT;               /* '<S49>/get_W_HS_FLT' */
   uint32_T MaskBit5;                   /* '<S49>/MaskBit5' */
   uint32_T get_W_LS_FLT;               /* '<S49>/get_W_LS_FLT' */
-  uint32_T Mask_6Bits_Inv1_RDY;        /* '<S9>/Mask_6Bits_Inv1_RDY' */
+  uint32_T Mask_6Bits_Inv1_RDY;        /* '<S8>/Mask_6Bits_Inv1_RDY' */
   uint32_T MaskBit0_c;                 /* '<S50>/MaskBit0' */
   uint32_T get_U_HS_RDY;               /* '<S50>/get_U_HS_RDY' */
   uint32_T MaskBit1_b;                 /* '<S50>/MaskBit1' */
@@ -70,7 +70,7 @@ typedef struct {
   uint32_T get_W_HS_RDY;               /* '<S50>/get_W_HS_RDY' */
   uint32_T MaskBit5_l;                 /* '<S50>/MaskBit5' */
   uint32_T get_W_LS_RDY;               /* '<S50>/get_W_LS_RDY' */
-  uint32_T Mask_6Bits_Inv2_FLT;        /* '<S9>/Mask_6Bits_Inv2_FLT' */
+  uint32_T Mask_6Bits_Inv2_FLT;        /* '<S8>/Mask_6Bits_Inv2_FLT' */
   uint32_T BitwiseNOT_j;               /* '<S51>/Bitwise NOT' */
   uint32_T MaskBit0_o;                 /* '<S51>/MaskBit0' */
   uint32_T get_U_HS_FLT_i;             /* '<S51>/get_U_HS_FLT' */
@@ -84,7 +84,7 @@ typedef struct {
   uint32_T get_W_HS_FLT_f;             /* '<S51>/get_W_HS_FLT' */
   uint32_T MaskBit5_o;                 /* '<S51>/MaskBit5' */
   uint32_T get_W_LS_FLT_l;             /* '<S51>/get_W_LS_FLT' */
-  uint32_T Mask_6Bits_Inv2_RDY;        /* '<S9>/Mask_6Bits_Inv2_RDY' */
+  uint32_T Mask_6Bits_Inv2_RDY;        /* '<S8>/Mask_6Bits_Inv2_RDY' */
   uint32_T MaskBit0_p;                 /* '<S52>/MaskBit0' */
   uint32_T get_U_HS_RDY_i;             /* '<S52>/get_U_HS_RDY' */
   uint32_T MaskBit1_m;                 /* '<S52>/MaskBit1' */
@@ -97,7 +97,7 @@ typedef struct {
   uint32_T get_W_HS_RDY_n;             /* '<S52>/get_W_HS_RDY' */
   uint32_T MaskBit5_lb;                /* '<S52>/MaskBit5' */
   uint32_T get_W_LS_RDY_l;             /* '<S52>/get_W_LS_RDY' */
-  uint32_T Mask_6Bits_Inv3_FLT;        /* '<S9>/Mask_6Bits_Inv3_FLT' */
+  uint32_T Mask_6Bits_Inv3_FLT;        /* '<S8>/Mask_6Bits_Inv3_FLT' */
   uint32_T BitwiseNOT_c;               /* '<S53>/Bitwise NOT' */
   uint32_T MaskBit0_ph;                /* '<S53>/MaskBit0' */
   uint32_T get_U_HS_FLT_m;             /* '<S53>/get_U_HS_FLT' */
@@ -111,7 +111,7 @@ typedef struct {
   uint32_T get_W_HS_FLT_m;             /* '<S53>/get_W_HS_FLT' */
   uint32_T MaskBit5_h;                 /* '<S53>/MaskBit5' */
   uint32_T get_W_LS_FLT_g;             /* '<S53>/get_W_LS_FLT' */
-  uint32_T Mask_6Bits_Inv3_RDY;        /* '<S9>/Mask_6Bits_Inv3_RDY' */
+  uint32_T Mask_6Bits_Inv3_RDY;        /* '<S8>/Mask_6Bits_Inv3_RDY' */
   uint32_T MaskBit0_k;                 /* '<S54>/MaskBit0' */
   uint32_T get_U_HS_RDY_e;             /* '<S54>/get_U_HS_RDY' */
   uint32_T MaskBit1_o;                 /* '<S54>/MaskBit1' */
@@ -124,53 +124,54 @@ typedef struct {
   uint32_T get_W_HS_RDY_h;             /* '<S54>/get_W_HS_RDY' */
   uint32_T MaskBit5_p;                 /* '<S54>/MaskBit5' */
   uint32_T get_W_LS_RDY_m;             /* '<S54>/get_W_LS_RDY' */
-  real32_T Sum[9];                     /* '<S20>/Sum' */
-  real32_T i_uvw_cal[9];               /* '<S20>/i_uvw_cal' */
-  real32_T Gain;                       /* '<S20>/Gain' */
-  real32_T Gain1;                      /* '<S20>/Gain1' */
-  real32_T Gain2;                      /* '<S20>/Gain2' */
+  real32_T Sum[9];                     /* '<S19>/Sum' */
+  real32_T i_uvw_cal[9];               /* '<S19>/i_uvw_cal' */
+  real32_T Gain;                       /* '<S19>/Gain' */
+  real32_T Gain1;                      /* '<S19>/Gain1' */
+  real32_T Gain2;                      /* '<S19>/Gain2' */
   real32_T Select_CurrentSensor_Assignment[3];
-                                 /* '<S19>/Select_CurrentSensor_Assignment_1' */
-  real32_T Gain3;                      /* '<S20>/Gain3' */
-  real32_T Gain4;                      /* '<S20>/Gain4' */
-  real32_T Gain5;                      /* '<S20>/Gain5' */
+                                 /* '<S18>/Select_CurrentSensor_Assignment_1' */
+  real32_T Gain3;                      /* '<S19>/Gain3' */
+  real32_T Gain4;                      /* '<S19>/Gain4' */
+  real32_T Gain5;                      /* '<S19>/Gain5' */
   real32_T Select_CurrentSensor_Assignme_o[3];
-                                 /* '<S19>/Select_CurrentSensor_Assignment_2' */
-  real32_T Gain6;                      /* '<S20>/Gain6' */
-  real32_T Gain7;                      /* '<S20>/Gain7' */
-  real32_T Gain8;                      /* '<S20>/Gain8' */
+                                 /* '<S18>/Select_CurrentSensor_Assignment_2' */
+  real32_T Gain6;                      /* '<S19>/Gain6' */
+  real32_T Gain7;                      /* '<S19>/Gain7' */
+  real32_T Gain8;                      /* '<S19>/Gain8' */
   real32_T Select_CurrentSensor_Assignm_on[3];
-                                 /* '<S19>/Select_CurrentSensor_Assignment_3' */
+                                 /* '<S18>/Select_CurrentSensor_Assignment_3' */
   real32_T I_ph[9];                    /* '<S2>/Gain' */
-  real32_T U_DC_fcf;                   /* '<S17>/U_DC_switch' */
+  real32_T U_DC_fcf;                   /* '<S16>/U_DC_switch' */
   real32_T FOC_Mode_Request;           /* '<S1>/ModeSwitch' */
   real32_T U_DC_Undervoltage_Error;    /* '<S63>/Selectphicalc1' */
   real32_T U_DC_Overvoltage_Error;     /* '<S63>/Selectphicalc2' */
   real32_T Abs[9];                     /* '<S62>/Abs' */
   real32_T MinMax;                     /* '<S62>/MinMax' */
   real32_T FOC_Mode_after_checks;      /* '<S1>/Switch' */
-  real32_T DiscreteTransferFcn;        /* '<S14>/Discrete Transfer Fcn' */
-  real32_T f_2_w_el;                   /* '<S14>/f_2_w_el' */
+  real32_T DiscreteTransferFcn;        /* '<S13>/Discrete Transfer Fcn' */
+  real32_T f_2_w_el;                   /* '<S13>/f_2_w_el' */
   real32_T Product;                    /* '<S91>/Product' */
   real32_T UnitDelay;                  /* '<S91>/Unit Delay' */
   real32_T Add;                        /* '<S91>/Add' */
   real32_T TrafoMatrixuvwalphabeta[2]; /* '<S33>/TrafoMatrix uvw->alphabeta' */
   real32_T ResolverOffsetLimitation;   /* '<S4>/ResolverOffsetLimitation' */
+  real32_T phi_raw_inv;                /* '<S24>/Switch' */
   real32_T Sum1;                       /* '<S4>/Sum1' */
   real32_T w_el;                       /* '<S27>/Unit Delay1' */
-  real32_T DeadTimeCompensation;       /* '<S24>/DeadTimeCompensation' */
-  real32_T Sum3;                       /* '<S24>/Sum3' */
+  real32_T DeadTimeCompensation;       /* '<S23>/DeadTimeCompensation' */
+  real32_T Sum3;                       /* '<S23>/Sum3' */
   real32_T UnitDelay_l;                /* '<S26>/Unit Delay' */
   real32_T Sum_d;                      /* '<S26>/Sum' */
   real32_T Switch;                     /* '<S26>/Switch' */
   real32_T Switch1;                    /* '<S26>/Switch1' */
   real32_T Sum2;                       /* '<S26>/Sum2' */
-  real32_T UnitDelay3;                 /* '<S24>/Unit Delay3' */
-  real32_T phi_el_observer;            /* '<S24>/Sum7' */
-  real32_T Product_e;                  /* '<S13>/Product' */
-  real32_T UnitDelay_a;                /* '<S13>/Unit Delay' */
-  real32_T Add_m;                      /* '<S13>/Add' */
-  real32_T f_2_w_el_b;                 /* '<S10>/f_2_w_el' */
+  real32_T UnitDelay3;                 /* '<S23>/Unit Delay3' */
+  real32_T phi_el_observer;            /* '<S23>/Sum7' */
+  real32_T Product_e;                  /* '<S12>/Product' */
+  real32_T UnitDelay_a;                /* '<S12>/Unit Delay' */
+  real32_T Add_m;                      /* '<S12>/Add' */
+  real32_T f_2_w_el_b;                 /* '<S9>/f_2_w_el' */
   real32_T Product_h;                  /* '<S61>/Product' */
   real32_T UnitDelay_j;                /* '<S61>/Unit Delay' */
   real32_T Add_mp;                     /* '<S61>/Add' */
@@ -249,7 +250,7 @@ typedef struct {
   real32_T Sum1_lz[4];                 /* '<S103>/Sum1' */
   real32_T Product_i[2];               /* '<S103>/Product' */
   real32_T Product_fb[3];              /* '<S100>/Product' */
-  real32_T SelMod_DutyCycles[9];       /* '<S15>/SelectModulation' */
+  real32_T SelMod_DutyCycles[9];       /* '<S14>/SelectModulation' */
   real32_T Scale02[9];                 /* '<S93>/Scale [0..2]' */
   real32_T Scale01[9];                 /* '<S93>/Scale  [0..1]' */
   real32_T Limit01[9];                 /* '<S93>/Limit [0..1]' */
@@ -260,16 +261,16 @@ typedef struct {
   real32_T Select_GateDriver_Assignment_3[3];
                                     /* '<S96>/Select_GateDriver_Assignment_3' */
   real32_T DutyCycles_switch[9];       /* '<S3>/Manual_DutyCycles_switch' */
-  real32_T Deviation;                  /* '<S24>/Deviation' */
-  real32_T Product2;                   /* '<S24>/Product2' */
-  real32_T Gain_g;                     /* '<S24>/Gain' */
-  real32_T winkelimpuls;               /* '<S24>/Gain4' */
-  real32_T Sum1_g4;                    /* '<S24>/Sum1' */
-  real32_T Product_o;                  /* '<S24>/Product' */
-  real32_T Product1_bi;                /* '<S24>/Product1' */
+  real32_T Deviation;                  /* '<S23>/Deviation' */
+  real32_T Product2;                   /* '<S23>/Product2' */
+  real32_T Gain_g;                     /* '<S23>/Gain' */
+  real32_T winkelimpuls;               /* '<S23>/Gain4' */
+  real32_T Sum1_g4;                    /* '<S23>/Sum1' */
+  real32_T Product_o;                  /* '<S23>/Product' */
+  real32_T Product1_bi;                /* '<S23>/Product1' */
   real32_T UnitDelay1;                 /* '<S28>/Unit Delay1' */
-  real32_T Sum2_mq;                    /* '<S24>/Sum2' */
-  real32_T Sum6;                       /* '<S24>/Sum6' */
+  real32_T Sum2_mq;                    /* '<S23>/Sum2' */
+  real32_T Sum6;                       /* '<S23>/Sum6' */
   real32_T Product_n;                  /* '<S27>/Product' */
   real32_T Sum2_e;                     /* '<S27>/Sum2' */
   real32_T Product_cd;                 /* '<S28>/Product' */
@@ -282,9 +283,9 @@ typedef struct {
   real32_T DiscreteFIRFilter20thorder_l[2];
                                     /* '<S35>/Discrete FIR Filter 20th order' */
   real32_T I_dq_Act[6];                /* '<S1>/Current_Controller' */
-  real32_T usrpm;                      /* '<S12>/[1//s] => [rpm]' */
-  real32_T Abs_d;                      /* '<S12>/Abs' */
-  real32_T DataSourceSwitch;           /* '<S8>/DataSourceSwitch' */
+  real32_T usrpm;                      /* '<S11>/[1//s] => [rpm]' */
+  real32_T Abs_d;                      /* '<S11>/Abs' */
+  real32_T DataSourceSwitch;           /* '<S7>/DataSourceSwitch' */
   real32_T EN_FLT_Switch_1;            /* '<S48>/EN_FLT_Switch_1' */
   real32_T EN_FLT_Switch_2;            /* '<S48>/EN_FLT_Switch_2' */
   real32_T EN_FLT_Switch_3;            /* '<S48>/EN_FLT_Switch_3' */
@@ -299,16 +300,16 @@ typedef struct {
   real32_T Abs_e;                      /* '<S61>/Abs' */
   real32_T Switch_d;                   /* '<S61>/Switch' */
   real32_T Add1;                       /* '<S61>/Add1' */
-  real32_T Abs_b;                      /* '<S13>/Abs' */
-  real32_T Switch_l;                   /* '<S13>/Switch' */
-  real32_T Add1_j;                     /* '<S13>/Add1' */
+  real32_T Abs_b;                      /* '<S12>/Abs' */
+  real32_T Switch_l;                   /* '<S12>/Switch' */
+  real32_T Add1_j;                     /* '<S12>/Add1' */
   real32_T Abs_f;                      /* '<S91>/Abs' */
   real32_T Switch_n;                   /* '<S91>/Switch' */
   real32_T Add1_c;                     /* '<S91>/Add1' */
-  real32_T U_d1;                       /* '<S15>/Gain' */
-  real32_T U_q1;                       /* '<S15>/Gain1' */
-  real32_T U_alpha1;                   /* '<S15>/Gain2' */
-  real32_T U_beta1;                    /* '<S15>/Gain3' */
+  real32_T U_d1;                       /* '<S14>/Gain' */
+  real32_T U_q1;                       /* '<S14>/Gain1' */
+  real32_T U_alpha1;                   /* '<S14>/Gain2' */
+  real32_T U_beta1;                    /* '<S14>/Gain3' */
   real32_T DutyCycle_u1;               /* '<S96>/DutyCycle_u1' */
   real32_T DutyCycle_u2;               /* '<S96>/DutyCycle_u2' */
   real32_T DutyCycle_u3;               /* '<S96>/DutyCycle_u3' */
@@ -363,10 +364,10 @@ typedef struct {
   real32_T Abs_d3;                     /* '<S92>/Abs' */
   real32_T Saturation1;                /* '<S92>/Saturation1' */
   real32_T Product_j;                  /* '<S92>/Product' */
-  real32_T Sum1_n;                     /* '<S14>/Sum1' */
-  real32_T Sum2_d;                     /* '<S14>/Sum2' */
-  real32_T Sign_n;                     /* '<S13>/Sign' */
-  real32_T Gain1_h;                    /* '<S13>/Gain1' */
+  real32_T Sum1_n;                     /* '<S13>/Sum1' */
+  real32_T Sum2_d;                     /* '<S13>/Sum2' */
+  real32_T Sign_n;                     /* '<S12>/Sign' */
+  real32_T Gain1_h;                    /* '<S12>/Gain1' */
   real32_T Sign_d;                     /* '<S61>/Sign' */
   real32_T Gain1_j;                    /* '<S61>/Gain1' */
   real32_T IntegStopSwitch3[2];        /* '<S45>/IntegStopSwitch3' */
@@ -392,16 +393,17 @@ typedef struct {
   real32_T IntSum1_p[2];               /* '<S37>/IntSum1' */
   real32_T Sum3_d;                     /* '<S29>/Sum3' */
   real32_T Sum2_ez;                    /* '<S29>/Sum2' */
+  real32_T PhiInverted;                /* '<S24>/PhiInverted' */
   real32_T ASCSwitch[9];               /* '<S3>/ASC Switch' */
-  real32_T bias_udc;                   /* '<S17>/bias_udc' */
-  real32_T gain_udc;                   /* '<S17>/gain_udc' */
-  real32_T UnitDelay1_p[9];            /* '<S23>/Unit Delay1' */
-  real32_T Gain_a[9];                  /* '<S22>/Gain' */
-  real32_T Add_p[9];                   /* '<S22>/Add' */
-  real32_T VermeidungDivisionDurchNull;/* '<S22>/VermeidungDivisionDurchNull' */
-  real32_T Divide[9];                  /* '<S22>/Divide' */
-  real32_T Product_cdf[9];             /* '<S23>/Product' */
-  real32_T Sum2_k[9];                  /* '<S23>/Sum2' */
+  real32_T bias_udc;                   /* '<S16>/bias_udc' */
+  real32_T gain_udc;                   /* '<S16>/gain_udc' */
+  real32_T UnitDelay1_p[9];            /* '<S22>/Unit Delay1' */
+  real32_T Gain_a[9];                  /* '<S21>/Gain' */
+  real32_T Add_p[9];                   /* '<S21>/Add' */
+  real32_T VermeidungDivisionDurchNull;/* '<S21>/VermeidungDivisionDurchNull' */
+  real32_T Divide[9];                  /* '<S21>/Divide' */
+  real32_T Product_cdf[9];             /* '<S22>/Product' */
+  real32_T Sum2_k[9];                  /* '<S22>/Sum2' */
   uint8_T Compare;                     /* '<S47>/Compare' */
   uint8_T Compare_k;                   /* '<S46>/Compare' */
   uint8_T Compare_g;                   /* '<S43>/Compare' */
@@ -431,38 +433,37 @@ typedef struct {
   boolean_T Memory_n;                  /* '<S68>/Memory' */
   boolean_T Logic_a[2];                /* '<S68>/Logic' */
   boolean_T I_ph_Overcurrent_Error;    /* '<S62>/Selectphicalc1' */
-  boolean_T OC_OV_UV_ERROR;            /* '<S11>/Logical Operator' */
+  boolean_T OC_OV_UV_ERROR;            /* '<S10>/Logical Operator' */
   boolean_T LogicalOperator2_a;        /* '<S1>/Logical Operator2' */
   boolean_T LogicalOperator1;          /* '<S1>/Logical Operator1' */
   boolean_T LogicalOperator;           /* '<S1>/Logical Operator' */
-  boolean_T Compare_l;                 /* '<S7>/Compare' */
   boolean_T Sprung;                    /* '<S26>/Sprung?' */
   boolean_T Sprung1;                   /* '<S26>/Sprung?1' */
   boolean_T LogicalOperator1_h;        /* '<S6>/Logical Operator1' */
   boolean_T LogicalOperator2_n;        /* '<S6>/Logical Operator2' */
   boolean_T LogicalOperator3_e;        /* '<S6>/Logical Operator3' */
   boolean_T Compare_c;                 /* '<S87>/Compare' */
-  boolean_T LogicalOperator3_p;        /* '<S12>/Logical Operator3' */
+  boolean_T LogicalOperator3_p;        /* '<S11>/Logical Operator3' */
   boolean_T Compare_gt;                /* '<S90>/Compare' */
   boolean_T Uk1_h;                     /* '<S88>/Delay Input1' */
-  boolean_T Selectphicalc2_d;          /* '<S12>/Selectphicalc2' */
+  boolean_T Selectphicalc2_d;          /* '<S11>/Selectphicalc2' */
   boolean_T Memory_k;                  /* '<S89>/Memory' */
   boolean_T Logic_e[2];                /* '<S89>/Logic' */
-  boolean_T Overspeed_Error;           /* '<S12>/Selectphicalc1' */
-  boolean_T Compare_lv;                /* '<S55>/Compare' */
+  boolean_T Overspeed_Error;           /* '<S11>/Selectphicalc1' */
+  boolean_T Compare_l;                 /* '<S55>/Compare' */
   boolean_T Compare_fp;                /* '<S56>/Compare' */
   boolean_T Compare_g1;                /* '<S57>/Compare' */
   boolean_T Compare_e0;                /* '<S58>/Compare' */
   boolean_T Compare_nd;                /* '<S59>/Compare' */
   boolean_T Compare_cf;                /* '<S60>/Compare' */
   boolean_T LogicalOperator3_c;        /* '<S48>/Logical Operator3' */
-  boolean_T LogicalOperator3_pp;       /* '<S8>/Logical Operator3' */
-  boolean_T Enable_PWM_;               /* '<S8>/Enable_PWM_' */
-  boolean_T LogicalOperator1_e;        /* '<S8>/Logical Operator1' */
-  boolean_T LogicalOperator2_f;        /* '<S8>/Logical Operator2' */
-  boolean_T LogicalOperator4_h;        /* '<S8>/Logical Operator4' */
+  boolean_T LogicalOperator3_pp;       /* '<S7>/Logical Operator3' */
+  boolean_T Enable_PWM_;               /* '<S7>/Enable_PWM_' */
+  boolean_T LogicalOperator1_e;        /* '<S7>/Logical Operator1' */
+  boolean_T LogicalOperator2_f;        /* '<S7>/Logical Operator2' */
+  boolean_T LogicalOperator4_h;        /* '<S7>/Logical Operator4' */
   boolean_T FOC_Enable_PWM[3];         /* '<S1>/Error_Handling' */
-  boolean_T FCF_Error;                 /* '<S8>/Logical Operator6' */
+  boolean_T FCF_Error;                 /* '<S7>/Logical Operator6' */
   boolean_T Compare_gv[9];             /* '<S65>/Compare' */
   boolean_T Memory_f;                  /* '<S70>/Memory' */
   boolean_T Logic_g[2];                /* '<S70>/Logic' */
@@ -499,12 +500,12 @@ typedef struct {
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTransferFcn_states; /* '<S14>/Discrete Transfer Fcn' */
+  real32_T DiscreteTransferFcn_states; /* '<S13>/Discrete Transfer Fcn' */
   real32_T UnitDelay_DSTATE;           /* '<S91>/Unit Delay' */
   real32_T UnitDelay1_DSTATE;          /* '<S27>/Unit Delay1' */
   real32_T UnitDelay_DSTATE_h;         /* '<S26>/Unit Delay' */
-  real32_T UnitDelay3_DSTATE;          /* '<S24>/Unit Delay3' */
-  real32_T UnitDelay_DSTATE_p;         /* '<S13>/Unit Delay' */
+  real32_T UnitDelay3_DSTATE;          /* '<S23>/Unit Delay3' */
+  real32_T UnitDelay_DSTATE_p;         /* '<S12>/Unit Delay' */
   real32_T UnitDelay_DSTATE_f;         /* '<S61>/Unit Delay' */
   real32_T IntegDelay1_DSTATE[2];      /* '<S37>/IntegDelay1' */
   real32_T IntegDelay1_DSTATE_p[2];    /* '<S41>/IntegDelay1' */
@@ -517,7 +518,7 @@ typedef struct {
   real32_T DiscreteFIRFilter20thorder_st_p[38];
                                     /* '<S35>/Discrete FIR Filter 20th order' */
   real32_T FCF_Cnt_DSTATE;             /* '<S1>/FCF_Cnt' */
-  real32_T UnitDelay1_DSTATE_c[9];     /* '<S23>/Unit Delay1' */
+  real32_T UnitDelay1_DSTATE_c[9];     /* '<S22>/Unit Delay1' */
   int32_T DiscreteFIRFilter20thorder_circ;
                                     /* '<S33>/Discrete FIR Filter 20th order' */
   int32_T DiscreteFIRFilter20thorder_ci_m;
@@ -585,7 +586,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by:
                                         *   '<S5>/FOC_9ph_AngleShift'
                                         *   '<S6>/FOC_9ph_AngleShift'
-                                        *   '<S14>/FOC_9ph_AngleShift'
+                                        *   '<S13>/FOC_9ph_AngleShift'
                                         */
   real32_T FOC_ASC_Mode;               /* Variable: FOC_ASC_Mode
                                         * Referenced by: '<S3>/FOC_AKS_Mode'
@@ -593,22 +594,22 @@ struct P_FOC_FCF_T_ {
   real32_T FOC_AngleObs_w_InitVal;     /* Variable: FOC_AngleObs_w_InitVal
                                         * Referenced by:
                                         *   '<S27>/Unit Delay1'
-                                        *   '<S23>/Unit Delay1'
+                                        *   '<S22>/Unit Delay1'
                                         */
   real32_T FOC_AngleObserver_D;        /* Variable: FOC_AngleObserver_D
-                                        * Referenced by: '<S24>/Constant1'
+                                        * Referenced by: '<S23>/Constant1'
                                         */
   real32_T FOC_AngleObserver_w0;       /* Variable: FOC_AngleObserver_w0
-                                        * Referenced by: '<S24>/Constant'
+                                        * Referenced by: '<S23>/Constant'
                                         */
   real32_T FOC_Calibrate_I_ph;         /* Variable: FOC_Calibrate_I_ph
-                                        * Referenced by: '<S20>/calibrateSensors'
+                                        * Referenced by: '<S19>/calibrateSensors'
                                         */
   real32_T FOC_ENABLE_Overcurrent_I_uvw;/* Variable: FOC_ENABLE_Overcurrent_I_uvw
                                          * Referenced by: '<S62>/FOC_ENABLE_Overcurrent_I_uvw1'
                                          */
   real32_T FOC_ENABLE_Overspeed;       /* Variable: FOC_ENABLE_Overspeed
-                                        * Referenced by: '<S12>/FOC_ENABLE_Overcurrent_I_uvw1'
+                                        * Referenced by: '<S11>/FOC_ENABLE_Overcurrent_I_uvw1'
                                         */
   real32_T FOC_ENABLE_Overvoltage_U_DC;/* Variable: FOC_ENABLE_Overvoltage_U_DC
                                         * Referenced by: '<S63>/FOC_ENABLE_Overvoltage_U_DC1'
@@ -620,13 +621,13 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S1>/Enable'
                                         */
   real32_T FOC_Enable_PWM_Sys1;        /* Variable: FOC_Enable_PWM_Sys1
-                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys1'
+                                        * Referenced by: '<S7>/FOC_Enable_PWM_Sys1'
                                         */
   real32_T FOC_Enable_PWM_Sys2;        /* Variable: FOC_Enable_PWM_Sys2
-                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys2'
+                                        * Referenced by: '<S7>/FOC_Enable_PWM_Sys2'
                                         */
   real32_T FOC_Enable_PWM_Sys3;        /* Variable: FOC_Enable_PWM_Sys3
-                                        * Referenced by: '<S8>/FOC_Enable_PWM_Sys3'
+                                        * Referenced by: '<S7>/FOC_Enable_PWM_Sys3'
                                         */
   real32_T FOC_Enable_Sys1;            /* Variable: FOC_Enable_Sys1
                                         * Referenced by: '<S6>/FOC_Enable_Sys1'
@@ -638,7 +639,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S6>/FOC_Enable_Sys3'
                                         */
   real32_T FOC_If_f_el;                /* Variable: FOC_If_f_el
-                                        * Referenced by: '<S10>/If_f_el'
+                                        * Referenced by: '<S9>/If_f_el'
                                         */
   real32_T FOC_IntegDamp;              /* Variable: FOC_IntegDamp
                                         * Referenced by:
@@ -673,7 +674,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S1>/FOC_MANUAL_Error'
                                         */
   real32_T FOC_MANUAL_U_DC;            /* Variable: FOC_MANUAL_U_DC
-                                        * Referenced by: '<S17>/Udc1'
+                                        * Referenced by: '<S16>/Udc1'
                                         */
   real32_T FOC_MaxModInd;              /* Variable: FOC_MaxModInd
                                         * Referenced by:
@@ -685,16 +686,16 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S1>/FOC_Mode_Intern'
                                         */
   real32_T FOC_OmegaObs3;              /* Variable: FOC_OmegaObs3
-                                        * Referenced by: '<S24>/Gain4'
+                                        * Referenced by: '<S23>/Gain4'
                                         */
   real32_T FOC_PhiSensorTdead;         /* Variable: FOC_PhiSensorTdead
-                                        * Referenced by: '<S24>/DeadTimeCompensation'
+                                        * Referenced by: '<S23>/DeadTimeCompensation'
                                         */
   real32_T FOC_RESET_OC_Error;         /* Variable: FOC_RESET_OC_Error
                                         * Referenced by: '<S62>/Reset_OC_Error'
                                         */
   real32_T FOC_RESET_OS_Error;         /* Variable: FOC_RESET_OS_Error
-                                        * Referenced by: '<S12>/Reset_OS_Error'
+                                        * Referenced by: '<S11>/Reset_OS_Error'
                                         */
   real32_T FOC_RESET_OV_Error;         /* Variable: FOC_RESET_OV_Error
                                         * Referenced by: '<S63>/Reset_OV_Error'
@@ -702,9 +703,12 @@ struct P_FOC_FCF_T_ {
   real32_T FOC_RESET_UV_Error;         /* Variable: FOC_RESET_UV_Error
                                         * Referenced by: '<S63>/Reset_UV_Error'
                                         */
+  real32_T FOC_SELECT_InvertAngle;     /* Variable: FOC_SELECT_InvertAngle
+                                        * Referenced by: '<S4>/FOC_Invert_Encoder'
+                                        */
   real32_T FOC_SELECT_Phase_Assignment_UVW;
                                     /* Variable: FOC_SELECT_Phase_Assignment_UVW
-                                     * Referenced by: '<S19>/Selektierung Phase'
+                                     * Referenced by: '<S18>/Selektierung Phase'
                                      */
   real32_T FOC_SELECT_Voltage_Assignment_UVW;
                                   /* Variable: FOC_SELECT_Voltage_Assignment_UVW
@@ -717,10 +721,10 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S92>/Saturation1'
                                         */
   real32_T FOC_Uf_Ud;                  /* Variable: FOC_Uf_Ud
-                                        * Referenced by: '<S14>/Uf_Ud'
+                                        * Referenced by: '<S13>/Uf_Ud'
                                         */
   real32_T FOC_Uf_f_el;                /* Variable: FOC_Uf_f_el
-                                        * Referenced by: '<S14>/Uf_w_el'
+                                        * Referenced by: '<S13>/Uf_w_el'
                                         */
   real32_T FOC_Uf_m;                   /* Variable: FOC_Uf_m
                                         * Referenced by: '<S92>/Gain'
@@ -734,35 +738,59 @@ struct P_FOC_FCF_T_ {
   real32_T LIMIT_MAX_Overspeed;        /* Variable: LIMIT_MAX_Overspeed
                                         * Referenced by: '<S87>/Constant'
                                         */
-  real32_T enumState_FOC_IF;           /* Variable: enumState_FOC_IF
-                                        * Referenced by: '<S7>/Constant'
+  real32_T Offset_ADC_Ph1;             /* Variable: Offset_ADC_Ph1
+                                        * Referenced by: '<S19>/Offset_ADC_Ph1'
+                                        */
+  real32_T Offset_ADC_Ph2;             /* Variable: Offset_ADC_Ph2
+                                        * Referenced by: '<S19>/Offset_ADC_Ph2'
+                                        */
+  real32_T Offset_ADC_Ph3;             /* Variable: Offset_ADC_Ph3
+                                        * Referenced by: '<S19>/Offset_ADC_Ph3'
+                                        */
+  real32_T Offset_ADC_Ph4;             /* Variable: Offset_ADC_Ph4
+                                        * Referenced by: '<S19>/Offset_ADC_Ph4'
+                                        */
+  real32_T Offset_ADC_Ph5;             /* Variable: Offset_ADC_Ph5
+                                        * Referenced by: '<S19>/Offset_ADC_Ph5'
+                                        */
+  real32_T Offset_ADC_Ph6;             /* Variable: Offset_ADC_Ph6
+                                        * Referenced by: '<S19>/Offset_ADC_Ph6'
+                                        */
+  real32_T Offset_ADC_Ph7;             /* Variable: Offset_ADC_Ph7
+                                        * Referenced by: '<S19>/Offset_ADC_Ph7'
+                                        */
+  real32_T Offset_ADC_Ph8;             /* Variable: Offset_ADC_Ph8
+                                        * Referenced by: '<S19>/Offset_ADC_Ph8'
+                                        */
+  real32_T Offset_ADC_Ph9;             /* Variable: Offset_ADC_Ph9
+                                        * Referenced by: '<S19>/Offset_ADC_Ph9'
                                         */
   real32_T gain_current1;              /* Variable: gain_current1
-                                        * Referenced by: '<S20>/Gain'
+                                        * Referenced by: '<S19>/Gain'
                                         */
   real32_T gain_current2;              /* Variable: gain_current2
-                                        * Referenced by: '<S20>/Gain1'
+                                        * Referenced by: '<S19>/Gain1'
                                         */
   real32_T gain_current3;              /* Variable: gain_current3
-                                        * Referenced by: '<S20>/Gain2'
+                                        * Referenced by: '<S19>/Gain2'
                                         */
   real32_T gain_current4;              /* Variable: gain_current4
-                                        * Referenced by: '<S20>/Gain3'
+                                        * Referenced by: '<S19>/Gain3'
                                         */
   real32_T gain_current5;              /* Variable: gain_current5
-                                        * Referenced by: '<S20>/Gain4'
+                                        * Referenced by: '<S19>/Gain4'
                                         */
   real32_T gain_current6;              /* Variable: gain_current6
-                                        * Referenced by: '<S20>/Gain5'
+                                        * Referenced by: '<S19>/Gain5'
                                         */
   real32_T gain_current7;              /* Variable: gain_current7
-                                        * Referenced by: '<S20>/Gain6'
+                                        * Referenced by: '<S19>/Gain6'
                                         */
   real32_T gain_current8;              /* Variable: gain_current8
-                                        * Referenced by: '<S20>/Gain7'
+                                        * Referenced by: '<S19>/Gain7'
                                         */
   real32_T gain_current9;              /* Variable: gain_current9
-                                        * Referenced by: '<S20>/Gain8'
+                                        * Referenced by: '<S19>/Gain8'
                                         */
   uint8_T FOC_SELECT_MANUAL_DutyCycles;/* Variable: FOC_SELECT_MANUAL_DutyCycles
                                         * Referenced by: '<S3>/FOC_SELECT_MANUAL_DutyCycles'
@@ -771,10 +799,10 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S1>/FOC_SELECT_Mode_Intern'
                                         */
   uint8_T FOC_SELECT_Modulation;       /* Variable: FOC_SELECT_Modulation
-                                        * Referenced by: '<S15>/Enable_SuperSinMod'
+                                        * Referenced by: '<S14>/Enable_SuperSinMod'
                                         */
   uint8_T FOC_SELECT_U_DC_INPUT;       /* Variable: FOC_SELECT_U_DC_INPUT
-                                        * Referenced by: '<S17>/0: P_Udc 1: Udc_measured'
+                                        * Referenced by: '<S16>/0: P_Udc 1: Udc_measured'
                                         */
   uint8_T FOC_SELECT_phi;              /* Variable: FOC_SELECT_phi
                                         * Referenced by: '<S4>/Constant3'
@@ -799,7 +827,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv1_FLT_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv1_FLT_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv1_FLT'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv1_FLT'
                                    */
   uint32_T MaskBit0_BitMask;           /* Mask Parameter: MaskBit0_BitMask
                                         * Referenced by: '<S49>/MaskBit0'
@@ -821,7 +849,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv1_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv1_RDY_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv1_RDY'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv1_RDY'
                                    */
   uint32_T MaskBit0_BitMask_b;         /* Mask Parameter: MaskBit0_BitMask_b
                                         * Referenced by: '<S50>/MaskBit0'
@@ -843,7 +871,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv2_FLT_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv2_FLT_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv2_FLT'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv2_FLT'
                                    */
   uint32_T MaskBit0_BitMask_g;         /* Mask Parameter: MaskBit0_BitMask_g
                                         * Referenced by: '<S51>/MaskBit0'
@@ -865,7 +893,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv2_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv2_RDY_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv2_RDY'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv2_RDY'
                                    */
   uint32_T MaskBit0_BitMask_bn;        /* Mask Parameter: MaskBit0_BitMask_bn
                                         * Referenced by: '<S52>/MaskBit0'
@@ -887,7 +915,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv3_FLT_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv3_FLT_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv3_FLT'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv3_FLT'
                                    */
   uint32_T MaskBit0_BitMask_m;         /* Mask Parameter: MaskBit0_BitMask_m
                                         * Referenced by: '<S53>/MaskBit0'
@@ -909,7 +937,7 @@ struct P_FOC_FCF_T_ {
                                         */
   uint32_T Mask_6Bits_Inv3_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv3_RDY_BitMask
-                                   * Referenced by: '<S9>/Mask_6Bits_Inv3_RDY'
+                                   * Referenced by: '<S8>/Mask_6Bits_Inv3_RDY'
                                    */
   uint32_T MaskBit0_BitMask_l;         /* Mask Parameter: MaskBit0_BitMask_l
                                         * Referenced by: '<S54>/MaskBit0'
@@ -1008,30 +1036,30 @@ struct P_FOC_FCF_T_ {
                                     * Referenced by: '<S88>/Delay Input1'
                                     */
   real32_T cal_out_Y0;                 /* Computed Parameter: cal_out_Y0
-                                        * Referenced by: '<S21>/cal_out'
+                                        * Referenced by: '<S20>/cal_out'
                                         */
   real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
-                                        * Referenced by: '<S22>/Gain'
+                                        * Referenced by: '<S21>/Gain'
                                         */
   real32_T FOC_T_fast_Value;           /* Computed Parameter: FOC_T_fast_Value
-                                        * Referenced by: '<S23>/FOC_T_fast'
+                                        * Referenced by: '<S22>/FOC_T_fast'
                                         */
   real32_T Tau_Value;                  /* Computed Parameter: Tau_Value
-                                        * Referenced by: '<S22>/Tau'
+                                        * Referenced by: '<S21>/Tau'
                                         */
   real32_T VermeidungDivisionDurchNull_Upp;
                           /* Computed Parameter: VermeidungDivisionDurchNull_Upp
-                           * Referenced by: '<S22>/VermeidungDivisionDurchNull'
+                           * Referenced by: '<S21>/VermeidungDivisionDurchNull'
                            */
   real32_T VermeidungDivisionDurchNull_Low;
                           /* Computed Parameter: VermeidungDivisionDurchNull_Low
-                           * Referenced by: '<S22>/VermeidungDivisionDurchNull'
+                           * Referenced by: '<S21>/VermeidungDivisionDurchNull'
                            */
   real32_T bias_udc_Bias;              /* Expression: MM_U_DC.OFFSET
-                                        * Referenced by: '<S17>/bias_udc'
+                                        * Referenced by: '<S16>/bias_udc'
                                         */
   real32_T gain_udc_Gain;              /* Expression: MM_U_DC.FACTOR
-                                        * Referenced by: '<S17>/gain_udc'
+                                        * Referenced by: '<S16>/gain_udc'
                                         */
   real32_T ASC_LS_Value[9];            /* Computed Parameter: ASC_LS_Value
                                         * Referenced by: '<S3>/ASC_LS'
@@ -1059,6 +1087,9 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S26>/Constant4'
                                         */
   real32_T Constant_Value;             /* Computed Parameter: Constant_Value
+                                        * Referenced by: '<S24>/Constant'
+                                        */
+  real32_T Constant_Value_n;           /* Computed Parameter: Constant_Value_n
                                         * Referenced by: '<S29>/Constant'
                                         */
   real32_T Constant1_Value;            /* Computed Parameter: Constant1_Value
@@ -1098,10 +1129,10 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S63>/Constant1'
                                         */
   real32_T Gain1_Gain_c;               /* Computed Parameter: Gain1_Gain_c
-                                        * Referenced by: '<S13>/Gain1'
+                                        * Referenced by: '<S12>/Gain1'
                                         */
   real32_T Constant1_Value_k;          /* Computed Parameter: Constant1_Value_k
-                                        * Referenced by: '<S13>/Constant1'
+                                        * Referenced by: '<S12>/Constant1'
                                         */
   real32_T Constant1_Value_bt;         /* Computed Parameter: Constant1_Value_bt
                                         * Referenced by: '<S1>/Constant1'
@@ -1149,42 +1180,6 @@ struct P_FOC_FCF_T_ {
   real32_T Factor2_Gain;               /* Computed Parameter: Factor2_Gain
                                         * Referenced by: '<S97>/Factor2'
                                         */
-  real32_T Offset_ADC_bits_Ph1_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph1_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph1'
-                                 */
-  real32_T Offset_ADC_bits_Ph2_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph2_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph2'
-                                 */
-  real32_T Offset_ADC_bits_Ph3_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph3_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph3'
-                                 */
-  real32_T Offset_ADC_bits_Ph4_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph4_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph4'
-                                 */
-  real32_T Offset_ADC_bits_Ph5_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph5_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph5'
-                                 */
-  real32_T Offset_ADC_bits_Ph6_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph6_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph6'
-                                 */
-  real32_T Offset_ADC_bits_Ph7_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph7_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph7'
-                                 */
-  real32_T Offset_ADC_bits_Ph8_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph8_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph8'
-                                 */
-  real32_T Offset_ADC_bits_Ph9_Value;
-                                /* Computed Parameter: Offset_ADC_bits_Ph9_Value
-                                 * Referenced by: '<S20>/Offset_ADC_bits_Ph9'
-                                 */
   real32_T Gain_Gain_k;                /* Computed Parameter: Gain_Gain_k
                                         * Referenced by: '<S2>/Gain'
                                         */
@@ -1196,18 +1191,18 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T DiscreteTransferFcn_NumCoef;
                               /* Computed Parameter: DiscreteTransferFcn_NumCoef
-                               * Referenced by: '<S14>/Discrete Transfer Fcn'
+                               * Referenced by: '<S13>/Discrete Transfer Fcn'
                                */
   real32_T DiscreteTransferFcn_DenCoef[2];
                               /* Computed Parameter: DiscreteTransferFcn_DenCoef
-                               * Referenced by: '<S14>/Discrete Transfer Fcn'
+                               * Referenced by: '<S13>/Discrete Transfer Fcn'
                                */
   real32_T DiscreteTransferFcn_InitialStat;
                           /* Computed Parameter: DiscreteTransferFcn_InitialStat
-                           * Referenced by: '<S14>/Discrete Transfer Fcn'
+                           * Referenced by: '<S13>/Discrete Transfer Fcn'
                            */
   real32_T f_2_w_el_Gain;              /* Computed Parameter: f_2_w_el_Gain
-                                        * Referenced by: '<S14>/f_2_w_el'
+                                        * Referenced by: '<S13>/f_2_w_el'
                                         */
   real32_T FOC_T_fast_Value_l;         /* Computed Parameter: FOC_T_fast_Value_l
                                         * Referenced by: '<S91>/FOC_T_fast'
@@ -1240,21 +1235,21 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T UnitDelay3_InitialCondition;
                               /* Computed Parameter: UnitDelay3_InitialCondition
-                               * Referenced by: '<S24>/Unit Delay3'
+                               * Referenced by: '<S23>/Unit Delay3'
                                */
   real32_T SMF_w_el_Ref_IfStarter_Value;
                              /* Computed Parameter: SMF_w_el_Ref_IfStarter_Value
                               * Referenced by: '<S1>/SMF_w_el_Ref_IfStarter'
                               */
   real32_T FOC_T_fast_Value_d;         /* Computed Parameter: FOC_T_fast_Value_d
-                                        * Referenced by: '<S13>/FOC_T_fast'
+                                        * Referenced by: '<S12>/FOC_T_fast'
                                         */
   real32_T UnitDelay_InitialCondition_p;
                              /* Computed Parameter: UnitDelay_InitialCondition_p
-                              * Referenced by: '<S13>/Unit Delay'
+                              * Referenced by: '<S12>/Unit Delay'
                               */
   real32_T f_2_w_el_Gain_j;            /* Computed Parameter: f_2_w_el_Gain_j
-                                        * Referenced by: '<S10>/f_2_w_el'
+                                        * Referenced by: '<S9>/f_2_w_el'
                                         */
   real32_T FOC_T_fast_Value_f;         /* Computed Parameter: FOC_T_fast_Value_f
                                         * Referenced by: '<S61>/FOC_T_fast'
@@ -1338,10 +1333,10 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S93>/Limit [0..1]'
                                         */
   real32_T FOC_T_fast_Value_df;       /* Computed Parameter: FOC_T_fast_Value_df
-                                       * Referenced by: '<S24>/FOC_T_fast'
+                                       * Referenced by: '<S23>/FOC_T_fast'
                                        */
   real32_T Gain_Gain_kc;               /* Computed Parameter: Gain_Gain_kc
-                                        * Referenced by: '<S24>/Gain'
+                                        * Referenced by: '<S23>/Gain'
                                         */
   real32_T UnitDelay1_InitialCondition;
                               /* Computed Parameter: UnitDelay1_InitialCondition
@@ -1384,7 +1379,7 @@ struct P_FOC_FCF_T_ {
                            * Referenced by: '<S35>/Discrete FIR Filter 20th order'
                            */
   real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
-                                        * Referenced by: '<S12>/[1//s] => [rpm]'
+                                        * Referenced by: '<S11>/[1//s] => [rpm]'
                                         */
   real32_T NO_ERROR_Value;             /* Computed Parameter: NO_ERROR_Value
                                         * Referenced by: '<S48>/NO_ERROR'
@@ -1408,22 +1403,22 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S61>/Switch'
                                         */
   real32_T Switch_Threshold_b;         /* Computed Parameter: Switch_Threshold_b
-                                        * Referenced by: '<S13>/Switch'
+                                        * Referenced by: '<S12>/Switch'
                                         */
   real32_T Switch_Threshold_c;         /* Computed Parameter: Switch_Threshold_c
                                         * Referenced by: '<S91>/Switch'
                                         */
   real32_T Gain_Gain_jm;               /* Computed Parameter: Gain_Gain_jm
-                                        * Referenced by: '<S15>/Gain'
+                                        * Referenced by: '<S14>/Gain'
                                         */
   real32_T Gain1_Gain_e;               /* Computed Parameter: Gain1_Gain_e
-                                        * Referenced by: '<S15>/Gain1'
+                                        * Referenced by: '<S14>/Gain1'
                                         */
   real32_T Gain2_Gain_fg;              /* Computed Parameter: Gain2_Gain_fg
-                                        * Referenced by: '<S15>/Gain2'
+                                        * Referenced by: '<S14>/Gain2'
                                         */
   real32_T Gain3_Gain;                 /* Computed Parameter: Gain3_Gain
-                                        * Referenced by: '<S15>/Gain3'
+                                        * Referenced by: '<S14>/Gain3'
                                         */
   real32_T DutyCycle_u1_Gain;          /* Computed Parameter: DutyCycle_u1_Gain
                                         * Referenced by: '<S96>/DutyCycle_u1'
@@ -1469,7 +1464,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S59>/Constant'
                                         */
   boolean_T NoError_Manual_Value;    /* Computed Parameter: NoError_Manual_Value
-                                      * Referenced by: '<S8>/NoError_Manual'
+                                      * Referenced by: '<S7>/NoError_Manual'
                                       */
   boolean_T Constant2_Value_f;         /* Computed Parameter: Constant2_Value_f
                                         * Referenced by: '<S62>/Constant2'
@@ -1484,10 +1479,10 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S63>/Constant4'
                                         */
   boolean_T Constant2_Value_gw;        /* Computed Parameter: Constant2_Value_gw
-                                        * Referenced by: '<S12>/Constant2'
+                                        * Referenced by: '<S11>/Constant2'
                                         */
   boolean_T Constant1_Value_n;         /* Computed Parameter: Constant1_Value_n
-                                        * Referenced by: '<S12>/Constant1'
+                                        * Referenced by: '<S11>/Constant1'
                                         */
   boolean_T Constant_Value_j;          /* Computed Parameter: Constant_Value_j
                                         * Referenced by: '<S69>/Constant'
@@ -1515,7 +1510,7 @@ struct P_FOC_FCF_T_ {
                                         */
   boolean_T SELECT_DataSource_Value;
                                   /* Computed Parameter: SELECT_DataSource_Value
-                                   * Referenced by: '<S8>/SELECT_DataSource'
+                                   * Referenced by: '<S7>/SELECT_DataSource'
                                    */
   boolean_T Logic_table_l5[16];        /* Computed Parameter: Logic_table_l5
                                         * Referenced by: '<S70>/Logic'
@@ -1590,24 +1585,24 @@ extern void FOC_FCF_terminate(RT_MODEL_FOC_FCF_T *const FOC_FCF_M);
  * '<S4>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption'
  * '<S5>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Lead'
  * '<S6>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller'
- * '<S7>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Enable_If_Mode'
- * '<S8>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Error_Handling'
- * '<S9>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status'
- * '<S10>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/I_f'
- * '<S11>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis'
- * '<S12>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis'
- * '<S13>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SubS_2pi_Integrator'
- * '<S14>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f'
- * '<S15>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output'
- * '<S16>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas'
- * '<S17>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/U_DC_meas'
- * '<S18>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement'
- * '<S19>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/Phase_Assignment'
- * '<S20>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere'
- * '<S21>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration'
- * '<S22>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration/LowPass'
- * '<S23>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration/LowPass/CurrentSensorAutoCalibration'
- * '<S24>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver'
+ * '<S7>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Error_Handling'
+ * '<S8>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status'
+ * '<S9>'   : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/I_f'
+ * '<S10>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis'
+ * '<S11>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis'
+ * '<S12>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SubS_2pi_Integrator'
+ * '<S13>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f'
+ * '<S14>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output'
+ * '<S15>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas'
+ * '<S16>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/U_DC_meas'
+ * '<S17>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement'
+ * '<S18>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/Phase_Assignment'
+ * '<S19>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere'
+ * '<S20>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration'
+ * '<S21>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration/LowPass'
+ * '<S22>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/ADC_to_SI_units/I_ph_meas/PhaseCurrentMeasurement/ADC_bin2ampere/Current_Sensor_Calibration/LowPass/CurrentSensorAutoCalibration'
+ * '<S23>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver'
+ * '<S24>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/InvertAngle'
  * '<S25>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/Modulo2Pi'
  * '<S26>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver/2PiKorr'
  * '<S27>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver/integrator'

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:26 2026
+ * C/C++ source code generated on : Fri Apr 17 13:36:23 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -43,7 +43,10 @@ typedef struct {
   real32_T DataSourceSwitch1[2];       /* '<S1>/DataSourceSwitch1' */
   real32_T MinMax;                     /* '<S4>/MinMax' */
   uint8_T DataSourceSwitch;            /* '<S1>/DataSourceSwitch' */
+  uint8_T State;                       /* '<S1>/FOC_Statemachine' */
+  uint8_T FOC_Mode;                    /* '<S1>/FOC_Statemachine' */
   boolean_T KL15_PG_SourceSwitch;      /* '<S1>/KL15_PG_SourceSwitch' */
+  boolean_T FOC_Enable_PWM;            /* '<S1>/FOC_Statemachine' */
 } B_FOC_SMF_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -55,7 +58,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  bus_BSW_SMF_t bus_BSW_SMF;           /* '<Root>/bus_BSW_SCF' */
+  bus_BSW_SMF_t bus_BSW_SMF;           /* '<Root>/bus_BSW_SMF' */
   bus_FCF_t bus_FCF;                   /* '<Root>/bus_FCF' */
 } ExtU_FOC_SMF_T;
 
@@ -66,6 +69,12 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct P_FOC_SMF_T_ {
+  real_T enumState_FOC_IF;             /* Variable: enumState_FOC_IF
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
+  real_T enumState_IF;                 /* Variable: enumState_IF
+                                        * Referenced by: '<S1>/FOC_Statemachine'
+                                        */
   real32_T FOC_MANUAL_Torque_Request;  /* Variable: FOC_MANUAL_Torque_Request
                                         * Referenced by: '<S1>/Constant'
                                         */

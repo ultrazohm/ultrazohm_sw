@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.89
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
+ * C/C++ source code generated on : Fri Apr 17 13:09:13 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -92,7 +92,6 @@ typedef struct {
   real32_T Bias_h;                     /* '<S6>/Bias' */
   real32_T Gain;                       /* '<S6>/Gain' */
   real32_T Abs2;                       /* '<S16>/Abs2' */
-  real32_T Iq_Ref_M_MTPC;              /* '<S16>/Iq_Ref_M_MTPC' */
   real32_T Sign;                       /* '<S16>/Sign' */
   real32_T I_q_Ref_MTPC;               /* '<S16>/Product1' */
   real32_T Switch2_i;                  /* '<S17>/Switch2' */
@@ -186,7 +185,6 @@ typedef struct {
   real32_T IqRefRaw_PSM;               /* '<S14>/IqRefRaw_PSM' */
   real32_T Gain_i;                     /* '<S5>/Gain' */
   real32_T Abs2_l;                     /* '<S10>/Abs2' */
-  real32_T Id_Ref_M_MTPC;              /* '<S10>/Id_Ref_M_MTPC' */
   uint8_T Compare;                     /* '<S26>/Compare' */
   uint8_T Compare_d;                   /* '<S24>/Compare' */
   boolean_T LowerRelop1;               /* '<S21>/LowerRelop1' */
@@ -408,14 +406,6 @@ struct P_FOC_SCF_T_ {
   real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
                                         * Referenced by: '<S5>/Gain'
                                         */
-  real32_T Id_Ref_M_MTPC_tableData[20];
-                                  /* Computed Parameter: Id_Ref_M_MTPC_tableData
-                                   * Referenced by: '<S10>/Id_Ref_M_MTPC'
-                                   */
-  real32_T Id_Ref_M_MTPC_bp01Data[20];
-                                   /* Computed Parameter: Id_Ref_M_MTPC_bp01Data
-                                    * Referenced by: '<S10>/Id_Ref_M_MTPC'
-                                    */
   real32_T zero_Current_Value_l;     /* Computed Parameter: zero_Current_Value_l
                                       * Referenced by: '<S6>/zero_Current'
                                       */
@@ -523,14 +513,6 @@ struct P_FOC_SCF_T_ {
   real32_T Gain_Gain_d;                /* Computed Parameter: Gain_Gain_d
                                         * Referenced by: '<S6>/Gain'
                                         */
-  real32_T Iq_Ref_M_MTPC_tableData[20];
-                                  /* Computed Parameter: Iq_Ref_M_MTPC_tableData
-                                   * Referenced by: '<S16>/Iq_Ref_M_MTPC'
-                                   */
-  real32_T Iq_Ref_M_MTPC_bp01Data[20];
-                                   /* Computed Parameter: Iq_Ref_M_MTPC_bp01Data
-                                    * Referenced by: '<S16>/Iq_Ref_M_MTPC'
-                                    */
   real32_T PsiReduceGain1_Gain;       /* Computed Parameter: PsiReduceGain1_Gain
                                        * Referenced by: '<S15>/PsiReduceGain1'
                                        */

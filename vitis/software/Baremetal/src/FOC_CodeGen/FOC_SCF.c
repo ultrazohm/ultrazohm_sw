@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.89
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
+ * C/C++ source code generated on : Fri Apr 17 13:09:13 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,71 +23,12 @@
 #include "rtwtypes.h"
 #include "FOC_SCF_types.h"
 #include <string.h>
-#include "FOC_SCF_private.h"
 
 const bus_SCF_t FOC_SCF_rtZbus_SCF_t = { { 0.0F, 0.0F },/* I_dq_Ref */
   0.0F,                                /* TorqueEst */
   0.0F,                                /* TorqueRefDerated */
   0.0F                                 /* n_Act */
 };
-
-real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
-  table[], uint32_T maxIndex)
-{
-  real32_T frac;
-  real32_T yL_0d0;
-  uint32_T iLeft;
-
-  /* Column-major Lookup 1-D
-     Search method: 'binary'
-     Use previous index: 'off'
-     Interpolation method: 'Linear point-slope'
-     Extrapolation method: 'Linear'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Remove protection against out-of-range input in generated code: 'off'
-   */
-  /* Prelookup - Index and Fraction
-     Index Search method: 'binary'
-     Extrapolation method: 'Linear'
-     Use previous index: 'off'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Remove protection against out-of-range input in generated code: 'off'
-   */
-  if (u0 <= bp0[0U]) {
-    iLeft = 0U;
-    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
-  } else if (u0 < bp0[maxIndex]) {
-    uint32_T bpIdx;
-    uint32_T iRght;
-
-    /* Binary Search */
-    bpIdx = maxIndex >> 1U;
-    iLeft = 0U;
-    iRght = maxIndex;
-    while (iRght - iLeft > 1U) {
-      if (u0 < bp0[bpIdx]) {
-        iRght = bpIdx;
-      } else {
-        iLeft = bpIdx;
-      }
-
-      bpIdx = (iRght + iLeft) >> 1U;
-    }
-
-    frac = (u0 - bp0[iLeft]) / (bp0[iLeft + 1U] - bp0[iLeft]);
-  } else {
-    iLeft = maxIndex - 1U;
-    frac = (u0 - bp0[maxIndex - 1U]) / (bp0[maxIndex] - bp0[maxIndex - 1U]);
-  }
-
-  /* Column-major Interpolation 1-D
-     Interpolation method: 'Linear point-slope'
-     Use last breakpoint for index at or above upper limit: 'off'
-     Overflow mode: 'portable wrapping'
-   */
-  yL_0d0 = table[iLeft];
-  return (table[iLeft + 1U] - yL_0d0) * frac + yL_0d0;
-}
 
 /* Model step function */
 void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
@@ -720,14 +661,8 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
     /* Abs: '<S10>/Abs2' */
     FOC_SCF_B->Abs2_l = fabsf(FOC_SCF_B->Gain_i);
 
-    /* Lookup_n-D: '<S10>/Id_Ref_M_MTPC' incorporates:
-     *  Abs: '<S10>/Abs2'
-     */
-    FOC_SCF_B->Id_Ref_M_MTPC = look1_iflf_binlxpw(FOC_SCF_B->Abs2_l,
-      FOC_SCF_P.Id_Ref_M_MTPC_bp01Data, FOC_SCF_P.Id_Ref_M_MTPC_tableData, 19U);
-
     /* MultiPortSwitch: '<S5>/Multiport Switch' */
-    FOC_SCF_B->Id_Ref_raw = FOC_SCF_B->Id_Ref_M_MTPC;
+    FOC_SCF_B->Id_Ref_raw = FOC_SCF_B->Abs2_l;
     break;
 
    case 5:
@@ -850,12 +785,6 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* Abs: '<S16>/Abs2' */
   FOC_SCF_B->Abs2 = fabsf(FOC_SCF_B->Gain);
 
-  /* Lookup_n-D: '<S16>/Iq_Ref_M_MTPC' incorporates:
-   *  Abs: '<S16>/Abs2'
-   */
-  FOC_SCF_B->Iq_Ref_M_MTPC = look1_iflf_binlxpw(FOC_SCF_B->Abs2,
-    FOC_SCF_P.Iq_Ref_M_MTPC_bp01Data, FOC_SCF_P.Iq_Ref_M_MTPC_tableData, 19U);
-
   /* Signum: '<S16>/Sign' */
   u0 = FOC_SCF_B->Gain;
   if (rtIsNaNF(u0)) {
@@ -872,7 +801,7 @@ void FOC_SCF_step(RT_MODEL_FOC_SCF_T *const FOC_SCF_M)
   /* End of Signum: '<S16>/Sign' */
 
   /* Product: '<S16>/Product1' */
-  FOC_SCF_B->I_q_Ref_MTPC = FOC_SCF_B->Iq_Ref_M_MTPC * FOC_SCF_B->Sign;
+  FOC_SCF_B->I_q_Ref_MTPC = FOC_SCF_B->Abs2 * FOC_SCF_B->Sign;
 
   /* MultiPortSwitch: '<S6>/Multiport Switch' incorporates:
    *  Constant: '<S6>/Constant5'

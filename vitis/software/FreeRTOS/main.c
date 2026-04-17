@@ -438,10 +438,11 @@ int main_thread()
 			DEFAULT_THREAD_PRIO);
 #endif
 
+	/*
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);
-
+*/
     vTaskDelete(NULL);
     return 0;
 }

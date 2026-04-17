@@ -20,7 +20,6 @@ struct uz_endat_interface_config_t config = {
     .endat_encoder_bit_width_single_turn = 19U,
     .endat_encoder_bit_width_multi_turn = 12U,
     .endat_encoder_number_of_CRC_bits = 5U,
-    .position_encoding = gray_code,
     .machine_polepairs = 4U,
     .sampling_interval_seconds = TEST_SAMPLING_INTERVAL,
     .kp_pll = TEST_KP_PLL,
@@ -97,13 +96,11 @@ void test_uz_endat_inteface_set_config(void)
     float expected_ki_pll = 98696.0f;
     uint32_t expected_pole_pairs = 4U;
     int32_t expected_mech_offset_ticks = -106473; //equals the ticks for SI_offset=-1.276f and a 19bit encoder calculated by the uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn function
-    enum position_encoding_t expected_encoding = gray_code;
 
     uz_endat_interface_hw_write_endat_clock_divider_Expect(TEST_BASE_ADDRESS, expected_clock_divider);
     uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn_Expect(TEST_BASE_ADDRESS, expected_encoder_bit_width_single_turn);
     uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn_Expect(TEST_BASE_ADDRESS, expected_encoder_bit_width_multi_turn);
     uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits_Expect(TEST_BASE_ADDRESS, expected_number_of_CRC_bits);
-    uz_endat_interface_hw_write_position_is_binary_or_gray_code_Expect(TEST_BASE_ADDRESS, expected_encoding);
     uz_endat_interface_hw_write_pll_parameters_Expect(TEST_BASE_ADDRESS, expected_sampling_interval, expected_kp_pll, expected_ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs_Expect(TEST_BASE_ADDRESS, expected_pole_pairs);
     uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn_Expect(TEST_BASE_ADDRESS, expected_mech_offset_ticks);

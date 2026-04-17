@@ -9,7 +9,6 @@ void uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(uint32_t ba
 void uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(uint32_t base_address, uint32_t endat_encoder_bit_width_multi_turn);
 void uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(uint32_t base_address, uint32_t endat_encoder_number_of_CRC_bits);
 void uz_endat_interface_hw_write_endat_mode_command(uint32_t base_address, uint32_t endat_mode_command);
-void uz_endat_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding);
 void uz_endat_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on);
 void uz_endat_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll);
 void uz_endat_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs);

@@ -4,15 +4,6 @@
 #include <stdbool.h>
 
 /**
- * @brief Enumeration of the encoding configurations for the position information
- *
- */
-enum position_encoding_t {
-    binary=0,
-    gray_code
-};
-
-/**
  * @brief Enumeration of the EnDat MODE commands
  *
  */
@@ -37,9 +28,6 @@ struct uz_endat_interface_config_t{
     uint32_t endat_encoder_bit_width_single_turn;/**< Number of single-turn position bits of the endat encoder, values up to 25 are allowed. Note that the sum of all bit widths (single-turn, multi-turn, and status) have to be less or equal than 64 */
     uint32_t endat_encoder_bit_width_multi_turn;/**< Number of multi-turn position bits of the endat encoder, values up to 25 are allowed */
     uint32_t endat_encoder_number_of_CRC_bits;/**< Number of CRC bits of the endat encoder, endat standard defines 5 bits */
-    enum position_encoding_t position_encoding;/**< Select if the position encoding of the endat encoder is \n
-                                                                                         binary or \n 
-                                                                                         gray_code */
     uint32_t machine_polepairs; /**< Pole pairs of the machine, only positive values >=1 are allowed */
     float sampling_interval_seconds; /**< Sampling interval for the integration employed in the PLL for speed calculation */
     float kp_pll; /**< Proportional gain for the PI within the PLL */

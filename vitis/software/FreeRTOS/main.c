@@ -88,10 +88,10 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 
 enum init_chain
 {
-	initialization_handshake = 0,
+	init_assertions_and_wait_for_rpu_handshake = 0,
 	initialization_rtos
 };
-enum init_chain initialization_chain = initialization_handshake;
+enum init_chain initialization_chain = init_assertions_and_wait_for_rpu_handshake;
 
 uint32_t apu_version_final = 0U;
 uint32_t rpu_version_final = 0U;
@@ -101,7 +101,8 @@ int main()
 {
 	switch (initialization_chain)
 	{
-		case initialization_handshake:
+		case init_assertions_and_wait_for_rpu_handshake:
+			uz_apu_assert_configuration();
 			write_apu_version(257U);
 			do
 			{

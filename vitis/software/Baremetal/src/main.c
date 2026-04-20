@@ -60,7 +60,7 @@ int main(void)
         switch (initialization_chain)
         {
         case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
+            uz_rpu_assert_configuration(); 
             write_rpu_version(0U);
             do
             {

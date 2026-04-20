@@ -94,6 +94,13 @@ typedef struct _actualValues_ {
 	float endat_speed_mech_si_d5_1;
 	float endat_speed_mech_rpm_d5_1;
 	float endat_speed_el_si_d5_1;
+	float endat_pos_raw_st_d5_2;
+	float endat_pos_raw_mt_d5_2;
+	float endat_pos_mech_si_d5_2;
+	float endat_pos_el_si_d5_2;
+	float endat_speed_mech_si_d5_2;
+	float endat_speed_mech_rpm_d5_2;
+	float endat_speed_el_si_d5_2;
 	float endat_pos_raw_st_d5_3;
 	float endat_pos_raw_mt_d5_3;
 	float endat_pos_mech_si_d5_3;
@@ -130,6 +137,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_endat_interface_t* endat_encoder_d5_1;
+	uz_endat_interface_t* endat_encoder_d5_2;
 	uz_endat_interface_t* endat_encoder_d5_3;
 }object_pointers_t;
 

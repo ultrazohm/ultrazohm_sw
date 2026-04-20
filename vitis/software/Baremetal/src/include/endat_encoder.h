@@ -2,4 +2,5 @@
 #include "xparameters.h"
 
 uz_endat_interface_t* endat_encoder_init_endat_d5_1();
+uz_endat_interface_t* endat_encoder_init_endat_d5_2();
 uz_endat_interface_t* endat_encoder_init_endat_d5_3();

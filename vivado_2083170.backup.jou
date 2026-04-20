@@ -1,0 +1,104 @@
+#-----------------------------------------------------------
+# Vivado v2022.2.2 (64-bit)
+# SW Build 3788238 on Tue Feb 21 19:59:23 MST 2023
+# IP Build 3783773 on Tue Feb 21 23:41:56 MST 2023
+# Start of session at: Fri Apr 17 11:05:39 2026
+# Process ID: 2083170
+# Current directory: /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean
+# Command line: vivado
+# Log file: /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado.log
+# Journal file: /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado.jou
+# Running On: lin1, OS: Linux, CPU Frequency: 800.000 MHz, CPU Physical cores: 4, Host memory: 33419 MB
+#-----------------------------------------------------------
+start_gui
+open_project /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado/project/ultrazohm.xpr
+update_compile_order -fileset sources_1
+open_bd_design {/home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado/project/zusys/zusys.bd}
+update_compile_order -fileset sources_1
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:uz_endat_interface:1.1 uz_user/uz_endat_interface_0
+endgroup
+create_bd_pin -dir I uz_user/trigger_endat
+create_bd_pin -dir I uz_user/Dig_07_Ch5
+connect_bd_net [get_bd_pins uz_user/Dig_07_Ch5] [get_bd_pins uz_user/uz_endat_interface_0/endat_data_in]
+connect_bd_net [get_bd_pins uz_user/trigger_endat] [get_bd_pins uz_user/uz_endat_interface_0/trigger_endat_read]
+startgroup
+set_property CONFIG.NUM_MI {2} [get_bd_cells uz_user/smartconnect_1]
+endgroup
+connect_bd_intf_net [get_bd_intf_pins uz_user/uz_endat_interface_0/AXI4_Lite] [get_bd_intf_pins uz_user/smartconnect_1/M01_AXI]
+connect_bd_net [get_bd_pins uz_user/aclk] [get_bd_pins uz_user/uz_endat_interface_0/IPCORE_CLK]
+connect_bd_net [get_bd_pins uz_user/aclk] [get_bd_pins uz_user/uz_endat_interface_0/AXI4_Lite_ACLK]
+connect_bd_net [get_bd_pins uz_user/aresetn] [get_bd_pins uz_user/uz_endat_interface_0/AXI4_Lite_ARESETN]
+connect_bd_net [get_bd_pins uz_user/aresetn] [get_bd_pins uz_user/uz_endat_interface_0/IPCORE_RESETN]
+create_bd_pin -dir O uz_user/CLK_Dig_15_Ch5
+connect_bd_net [get_bd_pins uz_user/CLK_Dig_15_Ch5] [get_bd_pins uz_user/uz_endat_interface_0/endat_clk]
+create_bd_pin -dir O uz_user/TX_DATA_Dig_08_Ch5
+create_bd_pin -dir O uz_user/RW_CLK_Dig_17_Ch5
+create_bd_pin -dir O uz_user/RW_DATA_Dig_11_Ch5
+connect_bd_net [get_bd_pins uz_user/TX_DATA_Dig_08_Ch5] [get_bd_pins uz_user/uz_endat_interface_0/endat_mode_data_out]
+connect_bd_net [get_bd_pins uz_user/RW_CLK_Dig_17_Ch5] [get_bd_pins uz_user/uz_endat_interface_0/RW_clk]
+connect_bd_net [get_bd_pins uz_user/RW_DATA_Dig_11_Ch5] [get_bd_pins uz_user/uz_endat_interface_0/RW_data]
+set_property location {625 229} [get_bd_pins uz_user/CLK_Dig_15_Ch5]
+set_property location {628 287} [get_bd_pins uz_user/TX_DATA_Dig_08_Ch5]
+set_property location {630 338} [get_bd_pins uz_user/RW_CLK_Dig_17_Ch5]
+set_property location {622 373} [get_bd_pins uz_user/RW_DATA_Dig_11_Ch5]
+save_bd_design
+create_bd_port -dir I Dig_07_Ch5
+set_property location {-71 414} [get_bd_ports Dig_07_Ch5]
+connect_bd_net [get_bd_ports Dig_07_Ch5] [get_bd_pins uz_user/Dig_07_Ch5]
+connect_bd_net [get_bd_pins uz_user/trigger_endat] [get_bd_pins uz_system/trigger_conversions] -boundary_type upper
+delete_bd_objs [get_bd_ports Dig_21_Ch5] [get_bd_ports Dig_15_Ch5] [get_bd_ports Dig_23_Ch5] [get_bd_ports Dig_10_Ch5] [get_bd_ports Dig_20_Ch5] [get_bd_ports Dig_17_Ch5] [get_bd_ports Dig_09_Ch5] [get_bd_ports Dig_19_Ch5] [get_bd_ports Dig_14_Ch5] [get_bd_ports Dig_16_Ch5] [get_bd_ports Dig_22_Ch5] [get_bd_ports Dig_8_Ch5]
+delete_bd_objs [get_bd_nets Dig_13_Ch5_1] [get_bd_nets Dig_12_Ch5_1] [get_bd_nets Dig_11_Ch5_1] [get_bd_ports Dig_11_Ch5] [get_bd_ports Dig_13_Ch5] [get_bd_ports Dig_12_Ch5]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0
+endgroup
+set_property CONFIG.CONST_VAL {0} [get_bd_cells xlconstant_0]
+connect_bd_net [get_bd_pins xlconstant_0/dout] [get_bd_pins uz_digital_adapter/Incr_Encoder_A]
+connect_bd_net [get_bd_pins uz_digital_adapter/Incr_Encoder_B] [get_bd_pins xlconstant_0/dout]
+connect_bd_net [get_bd_pins uz_digital_adapter/Incr_Encoder_I] [get_bd_pins xlconstant_0/dout]
+save_bd_design
+create_bd_port -dir O Dig_15_Ch5
+create_bd_port -dir O Dig_08_Ch5
+set_property location {2080 622} [get_bd_ports Dig_15_Ch5]
+set_property location {2087 642} [get_bd_ports Dig_08_Ch5]
+create_bd_port -dir O Dig_17_Ch5
+create_bd_port -dir O Dig_11_Ch5
+connect_bd_net [get_bd_ports Dig_11_Ch5] [get_bd_pins uz_user/RW_DATA_Dig_11_Ch5]
+connect_bd_net [get_bd_ports Dig_17_Ch5] [get_bd_pins uz_user/RW_CLK_Dig_17_Ch5]
+connect_bd_net [get_bd_ports Dig_08_Ch5] [get_bd_pins uz_user/TX_DATA_Dig_08_Ch5]
+connect_bd_net [get_bd_ports Dig_15_Ch5] [get_bd_pins uz_user/CLK_Dig_15_Ch5]
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_user/uz_endat_interface_0/AXI4_Lite/reg0] -force
+save_bd_design
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 uz_user/ila_0
+endgroup
+set_property -dict [list \
+  CONFIG.C_DATA_DEPTH {65536} \
+  CONFIG.C_MONITOR_TYPE {Native} \
+  CONFIG.C_NUM_OF_PROBES {10} \
+  CONFIG.C_PROBE7_WIDTH {32} \
+  CONFIG.C_PROBE8_WIDTH {32} \
+  CONFIG.C_PROBE9_WIDTH {32} \
+] [get_bd_cells uz_user/ila_0]
+set_property location {2.5 595 589} [get_bd_cells uz_user/ila_0]
+connect_bd_net [get_bd_pins uz_user/aclk] [get_bd_pins uz_user/ila_0/clk]
+connect_bd_net [get_bd_pins uz_user/trigger_endat] [get_bd_pins uz_user/ila_0/probe0]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe1] [get_bd_pins uz_user/uz_endat_interface_0/endat_clk]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe2] [get_bd_pins uz_user/uz_endat_interface_0/endat_mode_data_out]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe3] [get_bd_pins uz_user/uz_endat_interface_0/RW_data]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe4] [get_bd_pins uz_user/uz_endat_interface_0/endat_transaction_done]
+connect_bd_net [get_bd_pins uz_user/Dig_07_Ch5] [get_bd_pins uz_user/ila_0/probe5]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe6] [get_bd_pins uz_user/uz_endat_interface_0/endat_received_data_out_SH]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe7] [get_bd_pins uz_user/uz_endat_interface_0/position_raw_single_turn]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe8] [get_bd_pins uz_user/uz_endat_interface_0/position_raw_multi_turn]
+connect_bd_net [get_bd_pins uz_user/ila_0/probe9] [get_bd_pins uz_user/uz_endat_interface_0/CRC_raw]
+save_bd_design
+validate_bd_design
+save_bd_design
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+wait_on_run impl_1
+source /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/tcl_scripts/vivado_export_xsa.tcl
+open_bd_design {/home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado/project/zusys/zusys.bd}
+close_project
+open_project /home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado/project/ultrazohm.xpr
+open_bd_design {/home/hoernermi/git/ultrazohm/ultrazohm_sw_clean/vivado/project/zusys/zusys.bd}

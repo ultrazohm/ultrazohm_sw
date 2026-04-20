@@ -2,6 +2,7 @@ cs.HiliteType = 'user1';
 cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'red';
 set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('uz_endat_interface_2025b/uz_endat_interface/From15','user1');
 hilite_system('uz_endat_interface_2025b/uz_endat_interface/serial_communication/From12','user1');
 hilite_system('uz_endat_interface_2025b/uz_endat_interface/serial_communication/Goto6','user1');
 hilite_system('uz_endat_interface_2025b/uz_endat_interface/serial_communication/endat_clock_enable_controller/Constant2','user1');

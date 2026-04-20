@@ -309,10 +309,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        1590744072,
-        2840971597,
-        4130834443,
-        1180049000
+        3228959100,
+        1309158429,
+        3253023369,
+        1400740646
       ],
       "MarkedUnique": false
     },
@@ -322,7 +322,7 @@
       "IPCoreName",
       "uz_endat_interface",
       "IPCoreVersion",
-      "1.1",
+      "1.0",
       "ProcessorFPGASynchronization",
       "Free running"
     ],
@@ -794,10 +794,10 @@
   "ResourceSummary": {
     "multipliers": 18,
     "addersSubtractors": 47,
-    "registers": 501,
-    "oneBitRegisters": 4686,
+    "registers": 509,
+    "oneBitRegisters": 4798,
     "rams": 0,
-    "multiplexers": 198,
+    "multiplexers": 206,
     "IOBits": 905,
     "staticShiftOperators": 4,
     "dynamicShiftOperators": 10

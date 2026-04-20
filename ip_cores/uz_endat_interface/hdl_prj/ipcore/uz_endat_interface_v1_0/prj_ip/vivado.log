@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Thu Jan 29 15:18:37 2026
-# Process ID: 24384
+# Start of session at: Mon Apr 20 11:45:33 2026
+# Process ID: 21868
 # Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_clean/ip_cores/uz_endat_interface/hdl_prj/ipcore/uz_endat_interface_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_clean/ip_cores/uz_endat_interface/hdl_prj/ipcore/uz_endat_interface_v1_0/prj_ip/vivado.log
@@ -71,8 +71,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_S_R_Flip_Flop_
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_S_R_Flip_Flop_block2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_sample_serial_endat_data.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_sample_serial_endat_data.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_MATLAB_Function1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_MATLAB_Function1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_S_R_Flip_Flop_block3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_src_S_R_Flip_Flop_block4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -105,4 +103,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_axi_lite.vhd" alre
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_endat_interface.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Jan 29 15:18:51 2026...
+INFO: [Common 17-206] Exiting Vivado at Mon Apr 20 11:45:56 2026...

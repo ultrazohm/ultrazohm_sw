@@ -15,9 +15,10 @@
  ******************************************************************************/
 
 #include "uz_can.h"
-#include <stdbool.h>
 #include "../../uz/uz_HAL.h"
 #include "xcanps.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 #define UZ_CAN_MAX_INSTANCES 2U
 
@@ -27,9 +28,13 @@
 #define CAN_SECOND_TIMESEGMENT 2
 #define CAN_FIRST_TIMESEGMENT 5
 
+#define UZ_CAN_TX_TIMEOUT_MS 1000U
+
 struct uz_can_t
 {
     bool is_ready;
+    bool tx_timeout_logged; // one-shot flag: prevents flooding the console when the FIFO stays full
+    uint32_t instance_index;
     struct uz_can_config_t config;
     XCanPs can_inst;
     XCanPs_Config can_config;
@@ -38,19 +43,16 @@ struct uz_can_t
 static uint32_t instance_counter = 0U;
 static uz_can_t instances[UZ_CAN_MAX_INSTANCES] = {0};
 
-static uz_can_t *uz_can_allocation(void);
-
 static uz_can_t *uz_can_allocation(void)
 {
     uz_assert(instance_counter < UZ_CAN_MAX_INSTANCES);
     uz_can_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
+    self->instance_index = instance_counter;
     instance_counter++;
     self->is_ready = true;
     return (self);
 }
-
-static void write_config_to_pl(uz_can_t *self);
 
 uz_can_t *uz_can_init(struct uz_can_config_t config)
 {
@@ -109,7 +111,7 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
 
     // set identifier
     tx_frame[0] = XCanPs_CreateIdValue(can_frame_tx_p->std_id, 0, 0, 0, 0);
-
+    
     // set data length
     tx_frame[1] = XCanPs_CreateDlcValue(can_frame_tx_p->dlc);
 
@@ -120,11 +122,32 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
         *(data_frame_copy_pointer++) = (uint8_t)can_frame_tx_p->data[lc];
     }
 
-    // Wait until TX FIFO has room
+    // The TX FIFO fills up when frames cannot be transmitted, which happens when:
+    // - No other node is present to ACK (CAN protocol requires ACK from another node)
+    // - The controller is in Bus-Off state due to accumulated errors
+    // - Signal coupling causes self-ACK, keeping TEC=0 while the FIFO still fills
+    // taskYIELD() ensures lower-priority CAN threads do not starve higher-priority tasks
+    // while waiting. The timeout prevents an indefinite wait in any of these failure cases.
+    TickType_t deadline = xTaskGetTickCount() + pdMS_TO_TICKS(UZ_CAN_TX_TIMEOUT_MS);
     while (XCanPs_IsTxFifoFull(&self->can_inst) == TRUE){
-        // do nothing, just wait until there is room in the TX FIFO
+        if (xTaskGetTickCount() >= deadline) {
+            if (!self->tx_timeout_logged) {
+                u8 rx_err, tx_err;
+                XCanPs_GetBusErrorCounter(&self->can_inst, &rx_err, &tx_err);
+                uz_printf("APU: CAN%u TX timeout - FIFO full, dropping frames (TEC=%u REC=%u)\n\r",
+                          self->instance_index, tx_err, rx_err);
+                self->tx_timeout_logged = true;
+            }
+            return XST_FAILURE;
+        }
+        taskYIELD();
     }
 
+    if (self->tx_timeout_logged) {
+        uz_printf("APU: CAN%u TX recovered\n\r", self->instance_index);
+        self->tx_timeout_logged = false;
+    }
+    
     uint32_t status = XCanPs_Send(&self->can_inst, tx_frame);
 
     return status;
@@ -154,6 +177,7 @@ uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame
     uz_assert_not_NULL(self);
 
     while (XCanPs_IsRxEmpty(&self->can_inst) == TRUE){
+        taskYIELD();
     }
 
     uint32_t rx_data_block[4]= {0};

@@ -5,6 +5,7 @@
 
 #include "../uz/uz_HAL.h"
 #include "../include/uz_platform_state_machine.h"
+
 static void uz_rpu_assert_callback(const char8 *file, s32 line);
 
 void uz_rpu_assert_configuration(void)

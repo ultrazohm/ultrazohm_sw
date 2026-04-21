@@ -32,14 +32,14 @@ extern "C" {
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
-#define THREAD_PRIO_I2CIO 1U
-#define THREAD_PRIO_DEFAULT 2U
-#define THREAD_PRIO_MAIN THREAD_PRIO_DEFAULT
-#define THREAD_PRIO_ETHERNET_LWIP THREAD_PRIO_DEFAULT
-#define THREAD_PRIO_JAVASCOPE_SERVER THREAD_PRIO_DEFAULT
-#define THREAD_PRIO_CAN THREAD_PRIO_DEFAULT
-#define THREAD_PRIO_JAVASCOPE_CONNECTION 3U
-#define THREAD_PRIO_XEMACIF_INPUT 4U
+#define THREAD_PRIO_I2CIO                   1U
+#define THREAD_PRIO_CAN                     1U
+#define THREAD_PRIO_DEFAULT                 2U
+#define THREAD_PRIO_MAIN                    THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_ETHERNET_LWIP           THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_SERVER        THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_CONNECTION    3U
+#define THREAD_PRIO_XEMACIF_INPUT           4U
 
 // Period (in ms) of the endless loop in i2cio_thread()
 #define I2CIO_THREAD_TIMER_MS	(50U)

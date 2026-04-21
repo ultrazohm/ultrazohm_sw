@@ -14,7 +14,6 @@
 ******************************************************************************/
 
 #include <string.h>
-#include <errno.h>
 #include "lwip/sockets.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"

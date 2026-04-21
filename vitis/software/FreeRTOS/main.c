@@ -153,7 +153,7 @@ int main()
 				// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
 #if CAN_ACTIVE==1
-	uz_printf(" Init CAN \n\r"); // CAN interface
+	uz_printf("APU: Init CAN \n\r"); // CAN interface
 	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
 	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
@@ -394,13 +394,13 @@ int main_thread()
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
-	xil_printf("CAN-Thread0 started\n\r");
+	xil_printf("APU: CAN-Thread0 started\n\r");
 
 	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
 
-	xil_printf("CAN-Thread1 started\n\r");
+	xil_printf("APU: CAN-Thread1 started\n\r");
 #endif
 
 #if LWIP_DHCP==1

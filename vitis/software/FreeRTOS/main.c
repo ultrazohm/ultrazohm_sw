@@ -49,7 +49,7 @@ uz_can_t* can_instance_1 = NULL;
 
 
 size_t lifecheck_mainThread = 0;
-size_t lifeCheck_networkThread = 0;
+size_t lifeCheck_ethernetLwipThread = 0;
 
 // APU-local "mirror" of RPU status word: Written in isr.c, read below in i2cio_thread
 uint32_t javascope_data_status = 0;
@@ -149,7 +149,7 @@ int main()
 
 
 		case initialization_rtos:
-				// SW: Initialize the Interrupt Handler in main, because by doing it in the network-threat, there were always problems that the thread was killed.
+				// SW: Initialize the Interrupt Handler in main, because doing it in the Ethernet lwIP thread caused problems when the thread was killed.
 			Initialize_InterruptHandler();
 #if CAN_ACTIVE==1
 	uz_printf(" Init CAN \n\r"); // CAN interface
@@ -160,7 +160,7 @@ int main()
 			// Start the main-threat
 			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
 						   THREAD_STACKSIZE,
-						   DEFAULT_THREAD_PRIO);
+						   THREAD_PRIO_MAIN);
 			vTaskStartScheduler();
 			break;
 	}
@@ -171,16 +171,16 @@ int main()
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  network_thread
+ * Routine:  ethernet_lwip_thread
  *---------------------------------------------------------------------------*
  * Description:
  *      Initializes the InterruptServiceRoutine (ISR) in order to enable a
  *      Data transfer between the both processors in a deterministic time
- *      period. Afterwards the network thread enables the basic send and receive
+ *      period. Afterwards the Ethernet lwIP thread enables the basic send and receive
  *      functions for the Ethernet/TCP communication with the receive thread
  *      "xemacif_input_thread()". This thread runs always!
  *---------------------------------------------------------------------------*/
-void network_thread(void *p)
+void ethernet_lwip_thread(void *p)
 {
 	// Initialize the Interrupts
 	Initialize_ISR();
@@ -201,7 +201,7 @@ void network_thread(void *p)
     netif = &server_netif;
 
     uz_printf("\r\n\r\n");
-    uz_printf("APU: Network thread started\r\n");
+    uz_printf("APU: Ethernet lwIP thread started\r\n");
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
@@ -239,7 +239,7 @@ void network_thread(void *p)
     /* start packet receive thread - required for lwIP operation */
     sys_thread_new("xemacif_input_thread", (void(*)(void*))xemacif_input_thread, netif,
             THREAD_STACKSIZE,
-            DEFAULT_THREAD_PRIO);
+            THREAD_PRIO_XEMACIF_INPUT);
 
 /*	// Enable (currently not required for I²C-based GPOs)
 	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
@@ -256,26 +256,26 @@ void network_thread(void *p)
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
-    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
+    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of server_javascope_thread are performed in main_thread
 #else
     uz_printf("\r\n");
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
     uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
-    print_echo_app_header();
+    print_javascope_app_header();
     uz_printf("\r\n");
-    sys_thread_new("echod", application_thread, 0,
+    sys_thread_new("javascope_server", server_javascope_thread, 0,
 		THREAD_STACKSIZE,
-		DEFAULT_THREAD_PRIO);
+		THREAD_PRIO_JAVASCOPE_SERVER);
 #endif
 
     // Periodic (cf. DHCP_FINE_TIMER_MSECS) loop for "all things networking" (i.e., Ethernet DHCP and CAN demo)
     while (1) {
 
 #if LWIP_DHCP==1
-    	lifeCheck_networkThread++;
-      	if(lifeCheck_networkThread > 2500){
-      		lifeCheck_networkThread =0;
+		lifeCheck_ethernetLwipThread++;
+		if(lifeCheck_ethernetLwipThread > 2500){
+			lifeCheck_ethernetLwipThread =0;
       	}
 
 		dhcp_fine_tmr();
@@ -357,11 +357,11 @@ void i2cio_thread()
  * Routine:  main_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Starts the network thread "network_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards the main thread starts and builds up
+ *      Starts the Ethernet lwIP thread "ethernet_lwip_thread()" with priority
+ *      "THREAD_PRIO_ETHERNET_LWIP". Afterwards the main thread starts and builds up
  *      the Ethernet communication. If it is not possible after a couple of
  *      seconds, a time-out will occur. If a communication is possible, the
- *      application thread "application_thread()" will be started.
+ *      JavaScope server thread "server_javascope_thread()" will be started.
  *      This thread runs only until the LifeCheck counter receives the value of 20
  *      with a step size of 0.25 second = 5 seconds (500us * 10000).
  *      This is also the time for the time-out (if no connection is available).
@@ -381,20 +381,20 @@ int main_thread()
     lwip_init();
 
     /* any thread using lwIP should be created using sys_thread_new */
-    //Open thread for Ethernet communication
-    sys_thread_new("NW_THRD", network_thread, NULL,
+    // Open thread for Ethernet communication
+    sys_thread_new("ethernet_lwip", ethernet_lwip_thread, NULL,
 		THREAD_STACKSIZE,
-            DEFAULT_THREAD_PRIO);
+            THREAD_PRIO_ETHERNET_LWIP);
 
 #if CAN_ACTIVE == 1
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
-				   DEFAULT_THREAD_PRIO);
+				   THREAD_PRIO_CAN);
 	xil_printf("CAN-Thread0 started\n\r");
 
 	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
 				   THREAD_STACKSIZE,
-				   DEFAULT_THREAD_PRIO);
+				   THREAD_PRIO_CAN);
 
 	xil_printf("CAN-Thread1 started\n\r");
 #endif
@@ -432,17 +432,17 @@ int main_thread()
 		}
 	}	// while(1)
 
-	print_echo_app_header();
+	print_javascope_app_header();
 	uz_printf("\r\n");
 
-	sys_thread_new("echod", application_thread, 0,
+	sys_thread_new("javascope_server", server_javascope_thread, 0,
 			THREAD_STACKSIZE,
-			DEFAULT_THREAD_PRIO);
+			THREAD_PRIO_JAVASCOPE_SERVER);
 #endif
 
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
-			DEFAULT_THREAD_PRIO);
+			THREAD_PRIO_I2CIO);
 
     vTaskDelete(NULL);
     return 0;

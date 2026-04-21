@@ -32,12 +32,20 @@ extern "C" {
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
+#define THREAD_PRIO_I2CIO 1U
+#define THREAD_PRIO_DEFAULT 2U
+#define THREAD_PRIO_MAIN THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_ETHERNET_LWIP THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_SERVER THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_CAN THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_CONNECTION 3U
+#define THREAD_PRIO_XEMACIF_INPUT 4U
 
 // Period (in ms) of the endless loop in i2cio_thread()
 #define I2CIO_THREAD_TIMER_MS	(50U)
 
 // ========== JavaScope-Ethernet =========================================================================
-// Period (in ms) of the endless loop in network_thread()
+// Period (in ms) of the endless loop in ethernet_lwip_thread()
 #define NETWORK_LOOPPERIOD_MS	(500U)
 
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
@@ -94,8 +102,8 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 // ========== Functions and Threads ======================================================================
 void Transfer_ipc(void);
 int main_thread();
-void print_echo_app_header();
-void application_thread();
+void print_javascope_app_header(void);
+void server_javascope_thread(void *p);
 void lwip_init();
 
 

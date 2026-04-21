@@ -31,23 +31,23 @@ int i_LifeCheck_process_Ethernet = 0;
 
 
 //==============================================================================================================================================================
-void print_echo_app_header()
+void print_javascope_app_header(void)
 {
-    uz_printf("%20s %6d %s\r\n", "echo server",
+	uz_printf("%20s %6d %s\r\n", "JavaScope server",
     			TCPPORT,
 				"$ telnet <board_ip> 1000");
 }
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  process_request_thread
+ * Routine:  javascope_connection_thread
  *---------------------------------------------------------------------------*
  * Description:
  *      thread spawned for each connection  = tcpWorker
  *      This thread sends and receives the data, regarding the information
  *      in the shared RAM. This thread runs always!
  *---------------------------------------------------------------------------*/
-void process_request_thread(void *p)
+void javascope_connection_thread(void *p)
 {
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
@@ -106,7 +106,7 @@ void process_request_thread(void *p)
 		// write the data -> handle request /
 		// The data is sent here
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
-			uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
+			uz_printf("APU: %s: ERROR responding to client JavaScope request. received = %d, written = %d\r\n",
 			__FUNCTION__, nread, nwrote);
 			uz_printf("APU: Closing socket %d\r\n", clientfd);
 			js_connection_established = 0;
@@ -150,14 +150,15 @@ void process_request_thread(void *p)
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  application_thread
+ * Routine:  server_javascope_thread
  *---------------------------------------------------------------------------*
  * Description:
  *      This is the tcpHandler.
  *      Creates new Task to handle new TCP connections.
  *---------------------------------------------------------------------------*/
-void application_thread()
+void server_javascope_thread(void *p)
 {
+	(void)p;
 	int sock;
 	int new_clientfd;
 	struct sockaddr_in address, remote;
@@ -179,10 +180,10 @@ void application_thread()
 
 	while (1) {
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-			sys_thread_new("echos", process_request_thread,
+			sys_thread_new("javascope_connection", javascope_connection_thread,
 				(void*)new_clientfd,
 				THREAD_STACKSIZE,
-				DEFAULT_THREAD_PRIO);
+				THREAD_PRIO_JAVASCOPE_CONNECTION);
 		}
 	}
 }

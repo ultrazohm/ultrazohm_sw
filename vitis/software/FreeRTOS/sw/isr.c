@@ -28,6 +28,8 @@
 // define the size of the cache to flush
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+#define UZ_GIC_INTERRUPT_PRIORITY_FREERTOS_SAFE (0xA0U)
+#define UZ_GIC_TRIGGER_LEVEL_SENSITIVE (0x1U)
 
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
@@ -59,7 +61,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
-	BaseType_t xHigherPriorityTaskWoken;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 
 	// flush cache of shared memory for javascope data
@@ -204,6 +206,7 @@ u32 Apu_GicInit(XScuGic *GIC_instance_ptr, u32 IntId, Xil_ExceptionHandler Handl
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
+	XScuGic_SetPriorityTriggerType(GIC_instance_ptr, IntId, UZ_GIC_INTERRUPT_PRIORITY_FREERTOS_SAFE, UZ_GIC_TRIGGER_LEVEL_SENSITIVE);
 	Status = XScuGic_Connect(GIC_instance_ptr, IntId, Handler, PeriphInstPtr);
 
 	XScuGic_Enable(GIC_instance_ptr, IntId);

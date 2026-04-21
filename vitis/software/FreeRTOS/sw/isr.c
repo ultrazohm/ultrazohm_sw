@@ -235,7 +235,7 @@ u32 Apu_GicInit(XScuGic *GIC_instance_ptr, u32 IntId, Xil_ExceptionHandler Handl
 
 	XScuGic_Enable(GIC_instance_ptr, IntId);
 
-	uz_printf("APU: Apu_GicInit: Done\r\n");
+	uz_printf("APU: GIC initialized\r\n");
 	return Status;
 }
 
@@ -254,20 +254,20 @@ u32 Apu_IpiInit(XIpiPsu *IPI_instance_Ptr,u16 DeviceId)
 	// Interrupt controller configuration
 	IPI_config = XIpiPsu_LookupConfig(DeviceId);
 		if (IPI_config == NULL) {
-			uz_printf("APU: Error: Ipi Init failed\r\n");
+			uz_printf("APU: IPI initialization failed: no configuration found\r\n");
 			return XST_FAILURE;
 		}
 
 	// Interrupt controller initialization
 	status = XIpiPsu_CfgInitialize(IPI_instance_Ptr, IPI_config, IPI_config->BaseAddress);
 		if (status != XST_SUCCESS) {
-			uz_printf("APU: Error: IPI Config failed\r\n");
+			uz_printf("APU: IPI configuration failed\r\n");
 			return XST_FAILURE;
 		}
 
 	XIpiPsu_InterruptEnable(IPI_instance_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	uz_printf("APU: APU_IpiInit: Done\r\n");
+	uz_printf("APU: IPI initialized\r\n");
 	return XST_SUCCESS;
 }
 

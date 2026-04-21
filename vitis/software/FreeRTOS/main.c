@@ -67,19 +67,19 @@ uint32_t javascope_data_status = 0;
 static struct netif server_netif;
 
 //==============================================================================================================================================================
-void print_ip(char *msg, ip_addr_t *ip)
+static void print_ip(const char *label, ip_addr_t *ip)
 {
-	uz_printf(msg);
-	uz_printf("%d.%d.%d.%d\n\r", ip4_addr1(ip), ip4_addr2(ip),
+	uz_printf("%s", label);
+	uz_printf("%d.%d.%d.%d\r\n", ip4_addr1(ip), ip4_addr2(ip),
 			ip4_addr3(ip), ip4_addr4(ip));
 }
 
 //==============================================================================================================================================================
-void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
+static void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 
-	print_ip("Board IP: ", ip);
-	print_ip("Netmask : ", mask);
-	print_ip("Gateway : ", gw);
+	print_ip("APU: Board IP: ", ip);
+	print_ip("APU: Netmask : ", mask);
+	print_ip("APU: Gateway : ", gw);
 }
 
 
@@ -200,7 +200,7 @@ void network_thread(void *p)
     netif = &server_netif;
 
     uz_printf("\r\n\r\n");
-    uz_printf("APU: Network thread started\r\n");
+    uz_printf("APU: Network initialization started\r\n");
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
@@ -222,26 +222,30 @@ void network_thread(void *p)
 #endif
 
     /* Add network interface to the netif_list, and set it as default. */
+    uz_printf("APU: Initializing Ethernet MAC at 0x%08x\r\n",
+            (unsigned int)PLATFORM_EMAC_BASEADDR);
     struct netif *added_netif = xemac_add(netif, &ipaddr, &netmask, &gw,
             mac_ethernet_address, PLATFORM_EMAC_BASEADDR);
     if (added_netif == NULL) {
-		uz_printf("APU: Failed to add Ethernet network interface at 0x%08lx\r\n",
-				(unsigned long)PLATFORM_EMAC_BASEADDR);
+		uz_printf("APU: Failed to add Ethernet network interface at 0x%08x\r\n",
+				(unsigned int)PLATFORM_EMAC_BASEADDR);
 		return;
     }
     /*
      * Xilinx lwIP BSP xadapter.c, function xemac_add(), can print
      * "unable to determine type of EMAC" after successful GEM initialization
      * because the xemac_type_emacps case in the generated BSP file
-	 * falls through to default in
-     * vitis/workspace/UltraZohm/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/libsrc/lwip211_v1_8/src/contrib/ports/xilinx/netif/xadapter.c:167 
+     * vitis/workspace/UltraZohm/psu_cortexa53_0/FreeRTOS_domain/bsp/
+     * psu_cortexa53_0/libsrc/lwip211_v1_8/src/contrib/ports/xilinx/
+     * netif/xadapter.c:167 falls through to default at line 181.
      */
-    uz_printf("APU: Ethernet MAC initialized successfully at 0x%08lx\r\n",
-            (unsigned long)PLATFORM_EMAC_BASEADDR);
+    uz_printf("APU: Ethernet MAC initialized at 0x%08x "
+            "(previous Xilinx BSP EMAC warning is benign if present)\r\n",
+            (unsigned int)PLATFORM_EMAC_BASEADDR);
 
     netif_set_default(netif);
 
-    /* specify that the network if is up */
+    /* Enable the interface in lwIP; physical link state is tracked separately by the BSP. */
     netif_set_up(netif);
 
     /* start packet receive thread - required for lwIP operation */
@@ -266,7 +270,7 @@ void network_thread(void *p)
     dhcp_start(netif);
     // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
 #else
-    print_javascope_app_header();
+    print_javascope_app_header(&(server_netif.ip_addr));
     sys_thread_new("javascope_tcp", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
@@ -372,7 +376,7 @@ int main_thread()
 	int mscnt = 0;
 #endif
 
-	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+	uz_printf("\r\nAPU: Build date of main.c: %s %s\r\n", __DATE__, __TIME__);
 
 	// Reset PHY before lwIP initializes the network interface.
 	uz_phy_reset();
@@ -410,15 +414,14 @@ int main_thread()
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 
 		if (server_netif.ip_addr.addr) {
-			uz_printf("APU: DHCP request success\r\n");
+			uz_printf("APU: DHCP request succeeded\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
 		if (mscnt >=7500) { // DHCP timeout after 7.5 s.
-			uz_printf("APU: DHCP request timed out\r\n");
-			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
+			uz_printf("APU: DHCP request timed out; using static fallback IP address 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
 			IP4_ADDR(&(server_netif.gw),  192, 168, 1, 1);
@@ -427,7 +430,7 @@ int main_thread()
 		}
 	}	// while(1)
 
-	print_javascope_app_header();
+	print_javascope_app_header(&(server_netif.ip_addr));
 
 	sys_thread_new("javascope_tcp", application_thread, 0,
 			THREAD_STACKSIZE,

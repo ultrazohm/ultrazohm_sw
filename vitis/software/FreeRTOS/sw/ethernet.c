@@ -75,11 +75,11 @@ static BaseType_t js_is_active_client(const int clientfd)
 
 
 //==============================================================================================================================================================
-void print_javascope_app_header()
+void print_javascope_app_header(ip_addr_t *ip)
 {
     uz_printf("\r\n");
-    uz_printf("APU: JavaScope TCP server listening on port %d\r\n", TCPPORT);
-    uz_printf("APU: Connect with the JavaScope GUI\r\n");
+    uz_printf("APU: Connect JavaScope GUI to %d.%d.%d.%d:%d\r\n",
+            ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip), TCPPORT);
     uz_printf("\r\n");
 }
 

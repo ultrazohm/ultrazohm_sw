@@ -25,7 +25,7 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
-// define the size of the cache to flush
+// Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
@@ -35,7 +35,7 @@ extern volatile int js_connection_established;
 // cf. main.c
 extern uint32_t javascope_data_status;
 
-// Javascope Queue parameters
+// JavaScope queue handles and overflow state.
 QueueHandle_t js_queue;
 QueueHandle_t js_control_queue;
 volatile int js_queue_overflow_dropped_samples = 0;
@@ -50,8 +50,8 @@ XIpiPsu IPI_instance;
 static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
 
 /**
- * Interrupt handler for IPI
- * synchronous interrupt with ISR on R5 -> frequency depends on R5 and indirectly on chosen PWM-based ISR-trigger
+ * Interrupt handler for the R5 -> A53 IPI.
+ * Runs once per R5 JavaScope update and therefore at the R5 ISR-derived sample rate.
  */
 void Transfer_ipc_Intr_Handler(void *data)
 {
@@ -67,7 +67,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// R5 writes this shared region; invalidate A53 cache lines before reading it.
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
 
-	// if javascope connection is established
+	// Queue samples only while a JavaScope TCP client is active.
 	if(js_connection_established!=0)
 	{
 		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
@@ -76,7 +76,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 		{
 			js_queue_overflow_dropped_samples++;
 			js_queue_purge_requested = 1;
-			// info: queue is purged when new connection is established in 'ethernet.c'
+			// The TCP worker observes this flag and purges the queued backlog.
 		}
 		else
 		{
@@ -119,7 +119,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	/* ...until here */
 #endif
 
-	// Write message for acknowledge of the interrupt to RPU
+	// Return the next control command, or an explicit no-op, to the R5.
 	status = XIpiPsu_WriteMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
@@ -140,7 +140,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE THE INTERRUPT HAndler (from main)
+// INITIALIZE THE INTERRUPT HANDLER (from main)
 //----------------------------------------------------
 int Initialize_InterruptHandler(){
 
@@ -173,34 +173,34 @@ int Initialize_InterruptHandler(){
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE & SET THE INTERRUPTs and ISRs
+// INITIALIZE & SET THE INTERRUPTS and ISRs
 //----------------------------------------------------
 int Initialize_ISR(){
 
 	int Status = 0;
 
-	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
+	// Initialize the APU-side IPI instance used for R5 communication.
 	Status = Apu_IpiInit(&IPI_instance, INTERRUPT_ID_IPI);
 	if(Status != XST_SUCCESS) {
 		uz_printf("APU: Error: IPI initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
-	// create queue for buffering R5 interrupt -> ethernet thread
+	// Queue R5 JavaScope samples for the Ethernet worker.
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 
-	// create queue for buffering JavaScope control commands -> ISR/RPU path
+	// Queue JavaScope control commands for the ISR/R5 response path.
 	js_control_queue = xQueueCreate(JS_CONTROL_QUEUE_SIZE_ELEMENTS, sizeof(struct APU_to_RPU_t));
 	if (js_control_queue == NULL){
 		uz_printf("APU: Error: Control queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 
-	// Initialize RPU GIC and Connect IPI interrupt
+	// Connect and enable the APU GIC interrupt for incoming R5 IPIs.
 	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &IPI_instance);
 	if(Status != XST_SUCCESS) {
 		uz_printf("APU: Error: GIC initialization failed\r\n");
@@ -303,7 +303,7 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic)
 	{
 		const u32 id = uz_ipi_int_ids[i];
 
-		// check if id-interrupt is stuck on active
+		// Check whether this interrupt ID is stuck in ACTIVE state.
 		if (uz_gic_is_active_id(Gic, id)) {
 
 			/* Writing IntId to EOIR to clear the stuck ACTIVE state */

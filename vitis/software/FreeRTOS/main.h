@@ -42,9 +42,9 @@ extern "C" {
 #define NETWORK_LOOPPERIOD_MS	(500U)
 
 #define TCPPACKETSIZE 1460 // Maximum TCP packet size. Default: 1460. Jumbo frames would allow up to 8960.
-#define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
+#define TCPPORT 1000	   // JavaScope TCP service port
 #define NETWORK_SEND_FIELD_SIZE JS_SAMPLES_PER_PACKET
-//The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
+// IP address, netmask, and gateway are configured in main.c.
 
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
@@ -65,7 +65,7 @@ extern "C" {
 
 // ========== Structures =========================================================================
 
-typedef struct		// status + time + 20 elements (32bit) + 32 bit
+typedef struct		// One JavaScope TCP frame: status plus batched slow-data and 20 sampled channels.
 {
 	uint32_t status;
 	float slowDataContent[NETWORK_SEND_FIELD_SIZE];
@@ -96,7 +96,7 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 // ========== Functions and Threads ======================================================================
 void Transfer_ipc(void);
 int main_thread();
-void print_echo_app_header();
+void print_javascope_app_header();
 void application_thread();
 void lwip_init();
 

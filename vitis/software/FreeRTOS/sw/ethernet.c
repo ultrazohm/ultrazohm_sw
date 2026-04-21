@@ -75,11 +75,12 @@ static BaseType_t js_is_active_client(const int clientfd)
 
 
 //==============================================================================================================================================================
-void print_echo_app_header()
+void print_javascope_app_header()
 {
-    uz_printf("%20s %6d %s\r\n", "echo server",
-    			TCPPORT,
-				"$ telnet <board_ip> 1000");
+    uz_printf("\r\n");
+    uz_printf("APU: JavaScope TCP server listening on port %d\r\n", TCPPORT);
+    uz_printf("APU: Connect with the JavaScope GUI\r\n");
+    uz_printf("\r\n");
 }
 
 //==============================================================================================================================================================
@@ -87,9 +88,10 @@ void print_echo_app_header()
  * Routine:  process_request_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      thread spawned for each connection  = tcpWorker
- *      This thread sends and receives the data, regarding the information
- *      in the shared RAM. This thread runs always!
+ *      Worker task for one accepted JavaScope TCP connection. It streams
+ *      queued samples to the client and queues incoming control commands for
+ *      the A53 ISR/R5 response path. The task exits when the socket closes or
+ *      another connection becomes the active JavaScope client.
  *---------------------------------------------------------------------------*/
 void process_request_thread(void *p)
 {
@@ -107,8 +109,8 @@ void process_request_thread(void *p)
 	size_t tx_pending_offset = 0U;
 	TickType_t tx_last_progress_tick = xTaskGetTickCount();
 
-	xQueueReset(js_queue); //purge queue once new connection is established
-	xQueueReset(js_control_queue); // purge pending control commands from old connection
+	xQueueReset(js_queue); // Purge stale samples once a new connection is established.
+	xQueueReset(js_control_queue); // Purge pending control commands from the old connection.
 	taskENTER_CRITICAL();
 	js_queue_overflow_dropped_samples = 0;
 	js_queue_purge_requested = 0;
@@ -128,7 +130,7 @@ void process_request_thread(void *p)
 			const int socket_error = errno;
 			// On some lwIP ports errno may remain 0 for non-blocking "try again".
 			if ((socket_error != 0) && (socket_error != EAGAIN) && (socket_error != EWOULDBLOCK)) {
-				uz_printf("APU: %s: error reading from socket %d (errno=%d), closing Javascope socket\r\n", __FUNCTION__, clientfd, socket_error);
+				uz_printf("APU: %s: error reading from socket %d (errno=%d), closing JavaScope socket\r\n", __FUNCTION__, clientfd, socket_error);
 				break;
 			}
 		}
@@ -152,7 +154,7 @@ void process_request_thread(void *p)
 		}
 		// read() == 0 means the peer performed an orderly TCP close.
 		if (nread == 0){
-			uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+			uz_printf("APU: JavaScope disconnected from socket %d \r\n", clientfd);
 			break;
 		}
 
@@ -168,7 +170,7 @@ void process_request_thread(void *p)
 			xQueueReset(js_queue);
 			tx_pending_len = 0U;
 			tx_pending_offset = 0U;
-			uz_printf("APU: Javascope queue overflow -> purged %lu queued + %d overflow-dropped samples\r\n",
+			uz_printf("APU: JavaScope queue overflow -> purged %lu queued + %d overflow-dropped samples\r\n",
 					(unsigned long)queued_samples_to_purge,
 					dropped_samples_from_overflow);
 			taskYIELD();
@@ -183,11 +185,10 @@ void process_request_thread(void *p)
 
 				for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
-					// Take one element from queue
-					// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
+					// Queue depth was checked above, so this receive is non-blocking.
 					xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
-					// copy data into nwsend struct
+					// Pack one sample into the batched JavaScope TCP frame.
 					nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
 					nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
 					nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
@@ -230,7 +231,7 @@ void process_request_thread(void *p)
 				const int socket_error = errno;
 				// On some lwIP ports errno may remain 0 for non-blocking "try again".
 				if ((socket_error != 0) && (socket_error != EAGAIN) && (socket_error != EWOULDBLOCK)) {
-					uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d (errno=%d)\r\n",
+					uz_printf("APU: %s: ERROR sending JavaScope data. received = %d, written = %d (errno=%d)\r\n",
 							__FUNCTION__, nread, nwrote, socket_error);
 					uz_printf("APU: Closing socket %d\r\n", clientfd);
 					break;
@@ -248,7 +249,7 @@ void process_request_thread(void *p)
 					(void)lwip_select(clientfd + 1, &rset, &wset, NULL, &tv);
 				}
 			} else if (nwrote == 0) {
-				uz_printf("APU: Javascope disconnected from socket %d \r\n", clientfd);
+				uz_printf("APU: JavaScope disconnected from socket %d \r\n", clientfd);
 				break;
 			} else {
 				tx_pending_offset += (size_t)nwrote;
@@ -266,13 +267,13 @@ void process_request_thread(void *p)
 			}
 			if ((tx_pending_len > 0U) &&
 				((xTaskGetTickCount() - tx_last_progress_tick) > JS_TX_STALL_TIMEOUT_TICKS)) {
-				uz_printf("APU: TX stalled on socket %d, closing stale Javascope socket\r\n", clientfd);
+				uz_printf("APU: TX stalled on socket %d, closing stale JavaScope socket\r\n", clientfd);
 				break;
 			}
 			asm("nop");
 		}
 
-	// close connection
+	// Release ownership only if this worker still represents the active client.
 	(void)js_release_active_client_if_owner(clientfd);
 	close(clientfd);
 	vTaskDelete(NULL);
@@ -283,8 +284,9 @@ void process_request_thread(void *p)
  * Routine:  application_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      This is the tcpHandler.
- *      Creates new Task to handle new TCP connections.
+ *      Accepts JavaScope TCP clients and starts one worker task per accepted
+ *      socket. Only one client is active at a time; a new connection replaces
+ *      the previous active client.
  *---------------------------------------------------------------------------*/
 void application_thread()
 {
@@ -311,16 +313,16 @@ void application_thread()
 	while (1) {
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 			connection_count++;
-			uz_printf("APU: Javascope connected #%lu (socket 0x%x)\r\n", (unsigned long)connection_count, new_clientfd);
+			uz_printf("APU: JavaScope connected #%lu (socket 0x%x)\r\n", (unsigned long)connection_count, new_clientfd);
 
 			// TODO: set TCP_SND_BUF = 32768 and MEMP_NUM_TCP_SEG = 512 in lwipopts.h (BSP).
 
 			const int old_clientfd = js_replace_active_client(new_clientfd);
 			if ((old_clientfd != 0) && (old_clientfd != new_clientfd)) {
-				uz_printf("APU: Replacing old Javascope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
+				uz_printf("APU: Replacing old JavaScope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
 			}
 
-			sys_thread_new("echos", process_request_thread,
+			sys_thread_new("javascope_client", process_request_thread,
 				(void*)new_clientfd,
 				THREAD_STACKSIZE,
 				DEFAULT_THREAD_PRIO);

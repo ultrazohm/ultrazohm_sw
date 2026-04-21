@@ -51,7 +51,7 @@ uz_can_t* can_instance_1 = NULL;
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
 
-// APU-local "mirror" of RPU status word: Written in isr.c, read below in i2cio_thread
+// APU-local mirror of the RPU status word; used by i2cio_thread if LED mirroring is enabled.
 uint32_t javascope_data_status = 0;
 
 #if LWIP_DHCP==1
@@ -175,19 +175,17 @@ int main()
  * Routine:  network_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Initializes the InterruptServiceRoutine (ISR) in order to enable a
- *      Data transfer between the both processors in a deterministic time
- *      period. Afterwards the network thread enables the basic send and receive
- *      functions for the Ethernet/TCP communication with the receive thread
- *      "xemacif_input_thread()". This thread runs always!
+ *      Initializes the A53-side IPI ISR and JavaScope queues, configures the
+ *      Ethernet interface, starts the lwIP input thread, and starts the
+ *      JavaScope TCP server once an IP address is available.
  *---------------------------------------------------------------------------*/
 void network_thread(void *p)
 {
-	// Initialize the Interrupts
+	// Initialize the A53-side IPI handler and JavaScope queues.
 	Initialize_ISR();
 
     struct netif *netif;
-    /* the mac address of the board. this should be unique per board */
+    /* The MAC address is board-specific; fall back to the Xilinx default if EEPROM read fails. */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
     if ( XST_SUCCESS != uz_platform_macread_primary(mac_ethernet_address) )
         uz_printf("APU: Error fetching MAC address from EEPROM, using default\r\n");
@@ -206,17 +204,14 @@ void network_thread(void *p)
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
-    /* initialize IP addresses to be used */
+    /* Static IPv4 configuration used when DHCP is disabled. */
     IP4_ADDR(&ipaddr,  192, 168, 1, 233);
     IP4_ADDR(&netmask, 255, 255, 255,  0);
     IP4_ADDR(&gw,      192, 168, 1, 1);
 #endif
 
-    /* print out IP settings of the board */
-
 #if LWIP_DHCP==0
     print_ip_settings(&ipaddr, &netmask, &gw);
-    /* print all application headers */
 #endif
 
 #if LWIP_DHCP==1
@@ -226,11 +221,23 @@ void network_thread(void *p)
 #endif
 #endif
 
-    /* Add network interface to the netif_list, and set it as default */
-    if (!xemac_add(netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
-		uz_printf("APU: Error adding N/W interface\r\n");
+    /* Add network interface to the netif_list, and set it as default. */
+    struct netif *added_netif = xemac_add(netif, &ipaddr, &netmask, &gw,
+            mac_ethernet_address, PLATFORM_EMAC_BASEADDR);
+    if (added_netif == NULL) {
+		uz_printf("APU: Failed to add Ethernet network interface at 0x%08lx\r\n",
+				(unsigned long)PLATFORM_EMAC_BASEADDR);
 		return;
     }
+    /*
+     * Xilinx lwIP BSP xadapter.c, function xemac_add(), can print
+     * "unable to determine type of EMAC" after successful GEM initialization
+     * because the xemac_type_emacps case in the generated BSP file
+	 * falls through to default in
+     * vitis/workspace/UltraZohm/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/libsrc/lwip211_v1_8/src/contrib/ports/xilinx/netif/xadapter.c:167 
+     */
+    uz_printf("APU: Ethernet MAC initialized successfully at 0x%08lx\r\n",
+            (unsigned long)PLATFORM_EMAC_BASEADDR);
 
     netif_set_default(netif);
 
@@ -249,7 +256,7 @@ void network_thread(void *p)
 	uz_platform_gposet(I2CLED_MZD12YELLOW, UZP_GPO_ENABLE2PUSHPULLED);
 	uz_platform_gposet(I2CLED_MZD13BLUE, UZP_GPO_ENABLE2PUSHPULLED);
 */
-	// Set
+	// Initialize heartbeat LED states.
 	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ASSERT_QUEUED);
 	uint8_t mz_lscan = 0;
 	uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
@@ -259,18 +266,13 @@ void network_thread(void *p)
     dhcp_start(netif);
     // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
 #else
-    uz_printf("\r\n");
-    uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-    uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
-
-    print_echo_app_header();
-    uz_printf("\r\n");
-    sys_thread_new("echod", application_thread, 0,
+    print_javascope_app_header();
+    sys_thread_new("javascope_tcp", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
 #endif
 
-    // Periodic (cf. DHCP_FINE_TIMER_MSECS) loop for "all things networking" (i.e., Ethernet DHCP and CAN demo)
+    // Periodic loop for DHCP timers and heartbeat LEDs.
     while (1) {
 
 #if LWIP_DHCP==1
@@ -360,9 +362,9 @@ void i2cio_thread()
  * Description:
  *      Resets the PHY, initializes lwIP, and starts the network thread
  *      "network_thread()". If DHCP is enabled, waits up to 7.5 s for a
- *      lease and then starts the TCP application thread. Starts the I2C I/O
- *      thread for LED mirroring. Exits (vTaskDelete) after all child threads
- *      are launched — it does not run continuously.
+ *      lease and then starts the TCP application thread. Exits (vTaskDelete)
+ *      after all enabled child threads are launched; it does not run
+ *      continuously.
  *---------------------------------------------------------------------------*/
 int main_thread()
 {
@@ -372,14 +374,14 @@ int main_thread()
 
 	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
 
-	// reset phy
+	// Reset PHY before lwIP initializes the network interface.
 	uz_phy_reset();
 
 	/* initialize lwIP before calling sys_thread_new */
     lwip_init();
 
-    /* any thread using lwIP should be created using sys_thread_new */
-    //Open thread for Ethernet communication
+    /* Any thread using lwIP should be created using sys_thread_new. */
+    // Start Ethernet/DHCP/network-interface handling.
     sys_thread_new("NW_THRD", network_thread, NULL,
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
@@ -414,31 +416,25 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=7500) { // define timeout time here
+		if (mscnt >=7500) { // DHCP timeout after 7.5 s.
 			uz_printf("APU: DHCP request timed out\r\n");
 			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
 			IP4_ADDR(&(server_netif.gw),  192, 168, 1, 1);
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
-			/* print all application headers */
-			uz_printf("\r\n");
-			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
-
 			break;
 		}
 	}	// while(1)
 
-	print_echo_app_header();
-	uz_printf("\r\n");
+	print_javascope_app_header();
 
-	sys_thread_new("echod", application_thread, 0,
+	sys_thread_new("javascope_tcp", application_thread, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);
 #endif
 
-	/*
+	/* I2C LED mirroring thread is currently disabled.
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);

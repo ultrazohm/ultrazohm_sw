@@ -55,7 +55,6 @@ proc uz_vitis_apply_freertos_bsp_settings {enable_dhcp} {
 
   # Keep the FreeRTOS BSP limited to the libraries supported on A53.
   bsp setlib -name lwip211
-  bsp setlib -name libmetal
 
   foreach ip $disabled_ips {
     bsp setdriver -ip $ip -driver none
@@ -111,8 +110,6 @@ proc uz_vitis_apply_baremetal_bsp_settings {} {
     psu_ttc_0
     uz_system_axi_timebase_wdt_0
   }
-
-  bsp setlib -name libmetal
 
   # Hide peripherals used by FreeRTOS/Linux from Baremetal(_domain).
   foreach ip $disabled_ips {

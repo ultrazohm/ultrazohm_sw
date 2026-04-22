@@ -153,7 +153,7 @@ int main()
 				// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
 #if CAN_ACTIVE==1
-	uz_printf("APU: Init CAN \n\r"); // CAN interface
+	uz_printf("APU: Init CAN \r\n"); // CAN interface
 	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
 	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
@@ -222,7 +222,7 @@ void network_thread(void *p)
 #endif
 
     /* Add network interface to the netif_list, and set it as default. */
-    uz_printf("APU: Initializing Ethernet MAC at 0x%08x\r\n",
+    uz_printf("\r\nAPU: Initializing Ethernet MAC at 0x%08x\r\n",
             (unsigned int)PLATFORM_EMAC_BASEADDR);
     struct netif *added_netif = xemac_add(netif, &ipaddr, &netmask, &gw,
             mac_ethernet_address, PLATFORM_EMAC_BASEADDR);
@@ -394,13 +394,13 @@ int main_thread()
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
-	xil_printf("APU: CAN-Thread0 started\n\r");
+	xil_printf("APU: CAN-Thread0 started\r\n");
 
 	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
 
-	xil_printf("APU: CAN-Thread1 started\n\r");
+	xil_printf("APU: CAN-Thread1 started\r\n");
 #endif
 
 #if LWIP_DHCP==1

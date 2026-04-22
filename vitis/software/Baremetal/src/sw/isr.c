@@ -240,7 +240,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
 
 			/* Writing IntId to EOIR to clear the stuck ACTIVE state */
 			XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
-			uz_printf("RPU GIC: Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
+			uz_printf("RPU: GIC Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
 
 		}
     }

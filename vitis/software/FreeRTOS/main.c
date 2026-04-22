@@ -178,7 +178,7 @@ int main()
  *      Data transfer between the both processors in a deterministic time
  *      period. Afterwards the Ethernet lwIP thread enables the basic send and receive
  *      functions for the Ethernet/TCP communication with the receive thread
- *      "xemacif_input_thread()". This thread runs always!
+ *      "xemacif_input". This thread runs always!
  *---------------------------------------------------------------------------*/
 void ethernet_lwip_thread(void *p)
 {
@@ -237,7 +237,7 @@ void ethernet_lwip_thread(void *p)
     netif_set_up(netif);
 
     /* start packet receive thread - required for lwIP operation */
-    sys_thread_new("xemacif_input_thread", (void(*)(void*))xemacif_input_thread, netif,
+    sys_thread_new("xemacif_input", (void(*)(void*))xemacif_input_thread, netif,
             THREAD_STACKSIZE,
             THREAD_PRIO_XEMACIF_INPUT);
 
@@ -256,7 +256,7 @@ void ethernet_lwip_thread(void *p)
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
-    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of server_javascope_thread are performed in main_thread
+    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of javascope_server_thread are performed in main_thread
 #else
     uz_printf("\r\n");
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
@@ -264,7 +264,7 @@ void ethernet_lwip_thread(void *p)
 
     print_javascope_app_header();
     uz_printf("\r\n");
-    sys_thread_new("javascope_server", server_javascope_thread, 0,
+    sys_thread_new("js_server", javascope_server_thread, 0,
 		THREAD_STACKSIZE,
 		THREAD_PRIO_JAVASCOPE_SERVER);
 #endif
@@ -361,7 +361,7 @@ void i2cio_thread()
  *      "THREAD_PRIO_ETHERNET_LWIP". Afterwards the main thread starts and builds up
  *      the Ethernet communication. If it is not possible after a couple of
  *      seconds, a time-out will occur. If a communication is possible, the
- *      JavaScope server thread "server_javascope_thread()" will be started.
+ *      JavaScope server thread "javascope_server_thread()" will be started.
  *      This thread runs only until the LifeCheck counter receives the value of 20
  *      with a step size of 0.25 second = 5 seconds (500us * 10000).
  *      This is also the time for the time-out (if no connection is available).
@@ -435,7 +435,7 @@ int main_thread()
 	print_javascope_app_header();
 	uz_printf("\r\n");
 
-	sys_thread_new("javascope_server", server_javascope_thread, 0,
+	sys_thread_new("js_server", javascope_server_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SERVER);
 #endif

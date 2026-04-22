@@ -39,7 +39,7 @@ extern "C" {
 #define THREAD_PRIO_ETHERNET_LWIP           THREAD_PRIO_DEFAULT
 #define THREAD_PRIO_JAVASCOPE_SERVER        THREAD_PRIO_DEFAULT
 #define THREAD_PRIO_JAVASCOPE_CONNECTION    3U
-#define THREAD_PRIO_XEMACIF_INPUT           4U
+#define THREAD_PRIO_XEMACIF_INPUT           3U
 
 // Period (in ms) of the endless loop in i2cio_thread()
 #define I2CIO_THREAD_TIMER_MS	(50U)
@@ -103,7 +103,7 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 void Transfer_ipc(void);
 int main_thread();
 void print_javascope_app_header(void);
-void server_javascope_thread(void *p);
+void javascope_server_thread(void *p);
 void lwip_init();
 
 

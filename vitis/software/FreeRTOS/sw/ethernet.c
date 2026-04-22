@@ -150,13 +150,13 @@ void javascope_connection_thread(void *p)
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  server_javascope_thread
+ * Routine:  javascope_server_thread
  *---------------------------------------------------------------------------*
  * Description:
  *      This is the tcpHandler.
  *      Creates new Task to handle new TCP connections.
  *---------------------------------------------------------------------------*/
-void server_javascope_thread(void *p)
+void javascope_server_thread(void *p)
 {
 	(void)p;
 	int sock;
@@ -180,7 +180,7 @@ void server_javascope_thread(void *p)
 
 	while (1) {
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-			sys_thread_new("javascope_connection", javascope_connection_thread,
+			sys_thread_new("js_connection", javascope_connection_thread,
 				(void*)new_clientfd,
 				THREAD_STACKSIZE,
 				THREAD_PRIO_JAVASCOPE_CONNECTION);

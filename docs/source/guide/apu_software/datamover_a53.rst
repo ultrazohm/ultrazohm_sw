@@ -21,7 +21,7 @@ Please refer first to the :ref:`description of the RPU code <datamoverR5>`.
           G-->H
           H(FIFO)
       end
-      subgraph process_request_thread
+      subgraph javascope_connection_thread
           H-.waits.->K(restructure data)-->L(Ethernet frame)
           L-->M(lwip_write)
       end

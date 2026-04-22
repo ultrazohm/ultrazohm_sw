@@ -10,14 +10,25 @@
 #define FRAC_SPEED_MECH_SI 16
 #define FRAC_SPEED_EL_SI 12
 #define FRAC_SPEED_MECH_RPM 12
+#define ENDAT_NUMBER_OF_CRC_BITS 5U
+#define ENDAT_MODE_COMMAND_SEND_POSITION 7U
+#define ENDAT_CLOCK_DIVIDER_MIN 3U
+#define ENDAT_CLOCK_DIVIDER_MAX 500U
+#define ENDAT_ENCODER_BIT_WIDTH_MIN 1U
+#define ENDAT_ENCODER_BIT_WIDTH_MAX 31U
+#define MACHINE_POLEPAIRS_MIN 1U
+#define MACHINE_POLEPAIRS_MAX 255U
+#define SAMPLING_INTERVAL_MAX_SECONDS 0.0156f
+#define KP_PLL_MAX 8191.0f
+#define KI_PLL_MAX 262142.0f
 
 void uz_endat_interface_hw_write_endat_clock_divider(uint32_t base_address, uint32_t endat_clk_divider) {
     uz_assert_not_zero_uint32(base_address);
     // constraint from endat datasheet, endat clock frequency between 100 kHz and 16 MHz
     // endat clock frequency = (100 MHz)/(2.0 * endat_clk_divider).
     // This results in boundaries between 3 and 500 for the clock divider
-    uz_assert(endat_clk_divider >= 3U); 
-    uz_assert(endat_clk_divider <= 500U);
+    uz_assert(endat_clk_divider >= ENDAT_CLOCK_DIVIDER_MIN);
+    uz_assert(endat_clk_divider <= ENDAT_CLOCK_DIVIDER_MAX);
 
     // constraint from endat datasheet, for endat clock frequency 2...8 MHz
     // the first clock pulse has to be delayed after clock goes low for 2 microseconds
@@ -32,8 +43,8 @@ void uz_endat_interface_hw_write_endat_clock_divider(uint32_t base_address, uint
 
 void uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(uint32_t base_address, uint32_t endat_encoder_bit_width_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(endat_encoder_bit_width_single_turn > 0U);
-    uz_assert(endat_encoder_bit_width_single_turn <= 32U); // should suit for all available encoders
+    uz_assert(endat_encoder_bit_width_single_turn >= ENDAT_ENCODER_BIT_WIDTH_MIN);
+    uz_assert(endat_encoder_bit_width_single_turn <= ENDAT_ENCODER_BIT_WIDTH_MAX); // limited by 32-bit AXI parameter interface and shift operations
 
     uint32_t max_encoder_value_for_bit_width = (1U << endat_encoder_bit_width_single_turn) - 1U;
     float reciprocal_bit_width_single_turn = 1.0f/((float)(max_encoder_value_for_bit_width));
@@ -44,23 +55,23 @@ void uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(uint32_t ba
 
 void uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(uint32_t base_address, uint32_t endat_encoder_bit_width_multi_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(endat_encoder_bit_width_multi_turn <= 32U); // should suit for all available encoders
+    uz_assert(endat_encoder_bit_width_multi_turn <= ENDAT_ENCODER_BIT_WIDTH_MAX); // limited by 32-bit AXI parameter interface
  
     uz_axi_write_uint32(base_address + endat_encoder_bit_width_multi_turn_AXI_Data_uz_endat_interface, endat_encoder_bit_width_multi_turn);
 }
 
 void uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(uint32_t base_address, uint32_t endat_encoder_number_of_CRC_bits) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(endat_encoder_number_of_CRC_bits <= 5U); // endat specification has 5 CRC bits
+    uz_assert(endat_encoder_number_of_CRC_bits == ENDAT_NUMBER_OF_CRC_BITS); // endat specification has 5 CRC bits
 
     uz_axi_write_uint32(base_address + endat_encoder_number_of_CRC_bits_AXI_Data_uz_endat_interface, endat_encoder_number_of_CRC_bits);
 }
 
 void uz_endat_interface_hw_write_endat_mode_command(uint32_t base_address, uint32_t endat_mode_command) {
-	uz_assert_not_zero_uint32(base_address);
-	uz_assert(endat_mode_command == 7U); //only receiving position information is implemented in the IP-core (mode command 000111b -> 7U)
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(endat_mode_command == ENDAT_MODE_COMMAND_SEND_POSITION); // only receiving position information is implemented in the IP-core
 
-	uz_axi_write_uint32(base_address + endat_mode_command_in_AXI_Data_uz_endat_interface, endat_mode_command);
+    uz_axi_write_uint32(base_address + endat_mode_command_in_AXI_Data_uz_endat_interface, endat_mode_command);
 }
 
 void uz_endat_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on) {
@@ -72,11 +83,11 @@ void uz_endat_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_c
 void uz_endat_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll) {
     uz_assert_not_zero_uint32(base_address);
     uz_assert(sampling_interval > 0.0f);
-    uz_assert(sampling_interval < 0.0156f); // fixed point range of fixdt(0,18,24)
+    uz_assert(sampling_interval < SAMPLING_INTERVAL_MAX_SECONDS); // fixed point range of fixdt(0,18,24)
     uz_assert(kp_pll >= 0.0f);
-    uz_assert(kp_pll < 8191.0f); // fixed point range of fixdt(0,18,5)
+    uz_assert(kp_pll < KP_PLL_MAX); // fixed point range of fixdt(0,18,5)
     uz_assert(ki_pll >= 0.0f);
-    uz_assert(ki_pll < 262142.0f); // fixed point range of fixdt(0,18,0)
+    uz_assert(ki_pll < KI_PLL_MAX); // fixed point range of fixdt(0,18,0)
 
     uint32_t sampling_interval_fp = uz_convert_float_to_unsigned_fixed(sampling_interval, FRAC_SAMPLING_INTERVAL);
     uint32_t kp_pll_fp = uz_convert_float_to_unsigned_fixed(kp_pll, FRAC_KP_PLL);
@@ -89,16 +100,16 @@ void uz_endat_interface_hw_write_pll_parameters(uint32_t base_address, float sam
 
 void uz_endat_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(pole_pairs >= 1U);
-    uz_assert(pole_pairs <= 255U); // is uint8_t inside IP core. For higher pole pair numbers, fixed-point data types in subsequent multiplications might have overflow issues
+    uz_assert(pole_pairs >= MACHINE_POLEPAIRS_MIN);
+    uz_assert(pole_pairs <= MACHINE_POLEPAIRS_MAX); // is uint8_t inside IP core. For higher pole pair numbers, fixed-point data types in subsequent multiplications might have overflow issues
 
     uz_axi_write_uint32(base_address + machine_polepairs_AXI_Data_uz_endat_interface, pole_pairs);
 }
 
 void uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(mech_offset_ticks_single_turn <= 2147483647);
-    uz_assert(mech_offset_ticks_single_turn >= -2147483647);
+    uz_assert(mech_offset_ticks_single_turn <= INT32_MAX);
+    uz_assert(mech_offset_ticks_single_turn >= -INT32_MAX);
     uz_axi_write_int32(base_address + position_mech_offset_ticks_AXI_Data_uz_endat_interface, mech_offset_ticks_single_turn);
 }
 
@@ -114,13 +125,7 @@ uint32_t uz_endat_interface_hw_read_position_raw_multi_turn(uint32_t base_addres
 
 uint32_t uz_endat_interface_hw_read_position_multi_turn(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
-    return(uz_axi_read_uint32(base_address +position_multi_turn_AXI_Data_uz_endat_interface));
-}
-
-
-uint32_t uz_endat_interface_hw_read_endat_encoder_status(uint32_t base_address) {
-    uz_assert_not_zero_uint32(base_address);
-    return(uz_axi_read_uint32(base_address + CRC_raw_AXI_Data_uz_endat_interface));
+    return(uz_axi_read_uint32(base_address + position_multi_turn_AXI_Data_uz_endat_interface));
 }
 
 float uz_endat_interface_hw_read_position_mech_si_single_turn(uint32_t base_address) {

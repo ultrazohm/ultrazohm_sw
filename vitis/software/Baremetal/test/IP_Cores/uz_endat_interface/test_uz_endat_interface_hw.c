@@ -35,12 +35,15 @@ void test_uz_endat_interface_hw_write_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_parameters(0U, sampling_interval, kp_pll, ki_pll));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_machine_pole_pairs(0U, machine_pole_pairs));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(0U, mech_offset_ticks));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_mode_command(0U, 7U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_raw_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_raw_multi_turn(0U));
-    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_endat_encoder_status(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_multi_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_mech_si_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_el_si_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_speed_mech_si(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_speed_el_si(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_speed_mech_rpm(0U));
 }
 
 void test_uz_endat_interface_hw_write_endat_clock_divider_limits(void)
@@ -55,12 +58,21 @@ void test_uz_endat_interface_hw_write_endat_clock_divider_limits(void)
 void test_uz_endat_interface_hw_write_endat_encoder_bit_width_limits(void)
 {
     uint32_t encoder_bit_width_too_low = 0U;
-    uint32_t encoder_bit_width_too_high = 33U;
+    uint32_t encoder_bit_width_too_high = 32U;
 
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_low));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_high));
 
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_high));
+
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(TEST_BASE_ADDRESS, 4U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(TEST_BASE_ADDRESS, 6U));
+}
+
+void test_uz_endat_interface_hw_write_mode_command_limits(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_mode_command(TEST_BASE_ADDRESS, 6U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_mode_command(TEST_BASE_ADDRESS, 8U));
 }
 
 void test_uz_endat_interface_hw_write_endat_encoder_bit_width(void)
@@ -119,7 +131,34 @@ void test_uz_endat_interface_hw_write_machine_pole_pair_limits(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs_too_high));
 }
 
-void test_uz_endat_interface_hw_read_position_speed_status(void)
+void test_uz_endat_interface_hw_write_config_values(void)
+{
+    uint32_t clock_divider = 20U;
+    uint32_t encoder_number_of_CRC_bits = 5U;
+    uint32_t machine_pole_pairs = 4U;
+    int32_t mech_offset_ticks = -42;
+
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + delay_first_clk_on_off_AXI_Data_uz_endat_interface, true);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + endat_clk_divider_AXI_Data_uz_endat_interface, clock_divider);
+    uz_endat_interface_hw_write_endat_clock_divider(TEST_BASE_ADDRESS, clock_divider);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + endat_encoder_number_of_CRC_bits_AXI_Data_uz_endat_interface, encoder_number_of_CRC_bits);
+    uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(TEST_BASE_ADDRESS, encoder_number_of_CRC_bits);
+
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + endat_com_enable_AXI_Data_uz_endat_interface, true);
+    uz_endat_interface_hw_write_ip_core_enable(TEST_BASE_ADDRESS, true);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + machine_polepairs_AXI_Data_uz_endat_interface, machine_pole_pairs);
+    uz_endat_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs);
+
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS + position_mech_offset_ticks_AXI_Data_uz_endat_interface, mech_offset_ticks);
+    uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(TEST_BASE_ADDRESS, mech_offset_ticks);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + endat_mode_command_in_AXI_Data_uz_endat_interface, 7U);
+    uz_endat_interface_hw_write_endat_mode_command(TEST_BASE_ADDRESS, 7U);
+}
+
+void test_uz_endat_interface_hw_read_position_speed(void)
 {
     uint32_t expected_position_raw_single_turn = 424242U; 
     uint32_t expected_position_si_single_turn_unsigned_representation = 13575769U;
@@ -138,10 +177,10 @@ void test_uz_endat_interface_hw_read_position_speed_status(void)
     int32_t expected_speed_mech_rpm_signed_representation = 4096000;
     float expected_speed_mech_rpm = 1000.0f;
     float returned_speed_mech_rpm = 0.0f;        
-    uint32_t expected_status = 3U;
-    uint32_t returned_status = 0U;
     uint32_t expected_position_raw_multi_turn = 42U; 
     uint32_t returned_position_multi_turn = 0U;
+    uint32_t expected_position_multi_turn = 23U;
+    uint32_t returned_position_multi_turn_combined = 0U;
 
     // test single-turn position
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_raw_single_turn_AXI_Data_uz_endat_interface, expected_position_raw_single_turn);
@@ -159,10 +198,9 @@ void test_uz_endat_interface_hw_read_position_speed_status(void)
     returned_position_multi_turn = uz_endat_interface_hw_read_position_raw_multi_turn(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT32(expected_position_raw_multi_turn, returned_position_multi_turn);
 
-    // test status
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + CRC_raw_AXI_Data_uz_endat_interface, expected_status);
-    returned_status = uz_endat_interface_hw_read_endat_encoder_status(TEST_BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_UINT32(expected_status, returned_status);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_multi_turn_AXI_Data_uz_endat_interface, expected_position_multi_turn);
+    returned_position_multi_turn_combined = uz_endat_interface_hw_read_position_multi_turn(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(expected_position_multi_turn, returned_position_multi_turn_combined);
 
     // test speeds
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + speed_mech_SI_AXI_Data_uz_endat_interface, expected_speed_mech_si_signed_representation);

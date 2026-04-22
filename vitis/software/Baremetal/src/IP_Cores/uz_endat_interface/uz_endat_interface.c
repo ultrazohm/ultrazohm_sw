@@ -15,16 +15,26 @@
 ******************************************************************************/
 
 #include "uz_endat_interface.h"
-
 #include "../../uz/uz_global_configuration.h"
 #if UZ_ENDAT_INTERFACE_MAX_INSTANCES > 0U
 #include <stdbool.h> 
 #include "../../uz/uz_HAL.h"
-#include "uz_endat_interface.h" 
+#include "../../uz/uz_math_constants.h"
 #include "uz_endat_interface_hw.h" 
-#include "../../uz/uz_signals/uz_signals.h"
 
-#define RAD_PER_SECOND_TO_RPM (30.0f/UZ_PIf)
+#define ENDAT_NUMBER_OF_CRC_BITS 5U
+#define ENDAT_ENCODER_BIT_WIDTH_MAX 31U
+#define ENDAT_ENCODER_POSITION_BITS_MAX 48U
+#define ENDAT_FRAME_BITS_MAX 64U
+#define ENDAT_CLOCK_DIVIDER_MIN 3U
+#define ENDAT_CLOCK_DIVIDER_MAX 500U
+#define MACHINE_POLEPAIRS_MAX 255U
+#define SAMPLING_INTERVAL_MAX_SECONDS 0.0156f
+#define KP_PLL_MAX 8191.0f
+#define KI_PLL_MAX 262142.0f
+// Largest float below INT32_MAX that can be safely cast to int32_t.
+#define INT32_MAX_SAFE_FLOAT 2147483520.0f
+#define POSITION_MECH_OFFSET_LIMIT_RAD (2.0f * UZ_PIf)
 struct uz_endat_interface_t {
     bool is_ready;
     struct uz_endat_interface_config_t config;
@@ -34,6 +44,11 @@ static uint32_t instance_counter = 0U;
 static uz_endat_interface_t instances[UZ_ENDAT_INTERFACE_MAX_INSTANCES] = { 0 };
 
 static uz_endat_interface_t* uz_endat_interface_allocation(void);
+static void assert_self(uz_endat_interface_t *self);
+static void uz_endat_interface_set_config(uz_endat_interface_t *self);
+static void assert_config(struct uz_endat_interface_config_t config);
+static uint32_t calculate_endat_clock_divider(uint32_t ip_clk_frequency_Hz, uint32_t endat_clk_frequency_Hz);
+static int32_t calculate_position_mech_offset_ticks_single_turn(uint32_t endat_encoder_bit_width_single_turn, float position_mech_offset_si_single_turn);
 static uint32_t ceil_div(uint32_t a, uint32_t b);
 
 static uz_endat_interface_t* uz_endat_interface_allocation(void){
@@ -45,106 +60,138 @@ static uz_endat_interface_t* uz_endat_interface_allocation(void){
     return (self);
 }
 
+static void assert_self(uz_endat_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+}
+
 uz_endat_interface_t* uz_endat_interface_init(struct uz_endat_interface_config_t config) {
-    uz_assert_not_zero_uint32(config.base_address);
-    uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
-    uz_assert_not_zero_uint32(config.endat_clk_frequency_Hz);
-    uz_assert_not_zero_uint32(config.endat_encoder_bit_width_single_turn);
-    uz_assert_not_zero_uint32(config.machine_polepairs);
+    assert_config(config);
     uz_endat_interface_t* self = uz_endat_interface_allocation();
     self->config=config;
     uz_endat_interface_set_config(self);
     return (self);
 }
 
-void uz_endat_interface_set_config(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_assert((self->config.endat_encoder_bit_width_multi_turn + self->config.endat_encoder_bit_width_single_turn + self->config.endat_encoder_number_of_CRC_bits) <= 64U);
-    // calculate endat clock divider from ip core clock frequency and endat clock frequency
-    uint32_t endat_clk_divider = ceil_div(self->config.ip_clk_frequency_Hz, (2U*self->config.endat_clk_frequency_Hz));
-    // write configuration
+static void uz_endat_interface_set_config(uz_endat_interface_t *self) {
+    assert_self(self);
+    uint32_t endat_clk_divider = calculate_endat_clock_divider(self->config.ip_clk_frequency_Hz, self->config.endat_clk_frequency_Hz);
     uz_endat_interface_hw_write_endat_clock_divider(self->config.base_address, endat_clk_divider);
     uz_endat_interface_hw_write_endat_encoder_bit_width_single_turn(self->config.base_address, self->config.endat_encoder_bit_width_single_turn);
     uz_endat_interface_hw_write_endat_encoder_bit_width_multi_turn(self->config.base_address, self->config.endat_encoder_bit_width_multi_turn);
-    uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(self->config.base_address, self->config.endat_encoder_number_of_CRC_bits);
+    uz_endat_interface_hw_write_endat_encoder_number_of_CRC_bits(self->config.base_address, ENDAT_NUMBER_OF_CRC_BITS);
     uz_endat_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
     uz_endat_interface_set_mechanical_offset_endat_single_turn(self, self->config.position_mech_offset_si_single_turn);
 }
 
 uint32_t uz_endat_interface_get_position_raw_single_turn(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_position_raw_single_turn(self->config.base_address));
 }
 
 uint32_t uz_endat_interface_get_position_raw_multi_turn(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_position_raw_multi_turn(self->config.base_address));
 }
 
 uint32_t uz_endat_interface_get_position_multi_turn(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_position_multi_turn(self->config.base_address));
 }
 
 float uz_endat_interface_get_position_mech_si_single_turn(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_position_mech_si_single_turn(self->config.base_address));
 }
 
 float uz_endat_interface_get_position_el_si_single_turn(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_position_el_si_single_turn(self->config.base_address));
 }
 
 float uz_endat_interface_get_speed_mech_si(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_speed_mech_si(self->config.base_address));
 }
 
 float uz_endat_interface_get_speed_el_si(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_speed_el_si(self->config.base_address));
 }
 
 float uz_endat_interface_get_speed_mech_rpm(uz_endat_interface_t *self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     return (uz_endat_interface_hw_read_speed_mech_rpm(self->config.base_address));
 }
 
 void uz_endat_interface_enable_ip(uz_endat_interface_t *self, bool ip_core_off_on) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    assert_self(self);
     uz_endat_interface_hw_write_ip_core_enable(self->config.base_address, ip_core_off_on);
 }
 
 void uz_endat_interface_set_mechanical_offset_endat_single_turn(uz_endat_interface_t *self, float position_mech_offset_si_single_turn) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);   
+    assert_self(self);
 
-    uint32_t bit_count_single_turn = (1U << self->config.endat_encoder_bit_width_single_turn) - 1U;
-    int32_t position_mech_offset_ticks_single_turn = (float)(bit_count_single_turn) / (2.0f * UZ_PIf) * position_mech_offset_si_single_turn;
+    int32_t position_mech_offset_ticks_single_turn = calculate_position_mech_offset_ticks_single_turn(self->config.endat_encoder_bit_width_single_turn, position_mech_offset_si_single_turn);
     uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(self->config.base_address, position_mech_offset_ticks_single_turn);
 }
 
-void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mode_command) {
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	uz_endat_interface_hw_write_endat_mode_command(self->config.base_address, mode_command);
+void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, enum uz_endat_interface_mode_command_t mode_command) {
+    assert_self(self);
+    uz_endat_interface_hw_write_endat_mode_command(self->config.base_address, (uint32_t)mode_command);
+}
+
+static void assert_config(struct uz_endat_interface_config_t config) {
+    uz_assert_not_zero_uint32(config.base_address);
+    uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.endat_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.endat_encoder_bit_width_single_turn);
+    uz_assert_not_zero_uint32(config.machine_polepairs);
+
+    uint32_t endat_clk_divider = calculate_endat_clock_divider(config.ip_clk_frequency_Hz, config.endat_clk_frequency_Hz);
+    uz_assert(endat_clk_divider >= ENDAT_CLOCK_DIVIDER_MIN);
+    uz_assert(endat_clk_divider <= ENDAT_CLOCK_DIVIDER_MAX);
+
+    uz_assert(config.endat_encoder_bit_width_single_turn <= ENDAT_ENCODER_BIT_WIDTH_MAX);
+    uz_assert(config.endat_encoder_bit_width_multi_turn <= ENDAT_ENCODER_BIT_WIDTH_MAX);
+    uz_assert((config.endat_encoder_bit_width_multi_turn + config.endat_encoder_bit_width_single_turn) <= ENDAT_ENCODER_POSITION_BITS_MAX);
+    uz_assert((config.endat_encoder_bit_width_multi_turn + config.endat_encoder_bit_width_single_turn + ENDAT_NUMBER_OF_CRC_BITS) <= ENDAT_FRAME_BITS_MAX);
+    uz_assert(config.machine_polepairs <= MACHINE_POLEPAIRS_MAX);
+
+    uz_assert(config.sampling_interval_seconds > 0.0f);
+    uz_assert(config.sampling_interval_seconds < SAMPLING_INTERVAL_MAX_SECONDS);
+    uz_assert(config.kp_pll >= 0.0f);
+    uz_assert(config.kp_pll < KP_PLL_MAX);
+    uz_assert(config.ki_pll >= 0.0f);
+    uz_assert(config.ki_pll < KI_PLL_MAX);
+    uz_assert(config.position_mech_offset_si_single_turn <= POSITION_MECH_OFFSET_LIMIT_RAD);
+    uz_assert(config.position_mech_offset_si_single_turn >= -POSITION_MECH_OFFSET_LIMIT_RAD);
+    calculate_position_mech_offset_ticks_single_turn(config.endat_encoder_bit_width_single_turn, config.position_mech_offset_si_single_turn);
+}
+
+static uint32_t calculate_endat_clock_divider(uint32_t ip_clk_frequency_Hz, uint32_t endat_clk_frequency_Hz) {
+    uz_assert_not_zero_uint32(ip_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(endat_clk_frequency_Hz);
+    uz_assert(endat_clk_frequency_Hz <= (UINT32_MAX / 2U));
+    return ceil_div(ip_clk_frequency_Hz, (2U * endat_clk_frequency_Hz));
+}
+
+static int32_t calculate_position_mech_offset_ticks_single_turn(uint32_t endat_encoder_bit_width_single_turn, float position_mech_offset_si_single_turn) {
+    uz_assert(endat_encoder_bit_width_single_turn > 0U);
+    uz_assert(endat_encoder_bit_width_single_turn <= ENDAT_ENCODER_BIT_WIDTH_MAX);
+    uz_assert(position_mech_offset_si_single_turn <= POSITION_MECH_OFFSET_LIMIT_RAD);
+    uz_assert(position_mech_offset_si_single_turn >= -POSITION_MECH_OFFSET_LIMIT_RAD);
+
+    uint32_t bit_count_single_turn = (1U << endat_encoder_bit_width_single_turn) - 1U;
+    float position_mech_offset_ticks_single_turn = ((float)bit_count_single_turn / (2.0f * UZ_PIf)) * position_mech_offset_si_single_turn;
+    uz_assert(position_mech_offset_ticks_single_turn <= INT32_MAX_SAFE_FLOAT);
+    uz_assert(position_mech_offset_ticks_single_turn >= -INT32_MAX_SAFE_FLOAT);
+    return (int32_t)position_mech_offset_ticks_single_turn;
 }
 
 /**
  * @brief Calculates the ceiled value of an unsigned integer division.
- * @brief Attention: Does not catch overflow of (a+b)>UINT32_MAX.
  *
  * @param a Dividend
  * @param b Divisor
@@ -153,7 +200,7 @@ void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, uint32_t mo
  */
 static uint32_t ceil_div(uint32_t a, uint32_t b) {
     uz_assert(b !=0U);
-    return (a + b - 1U) / b;
+    return (a / b) + ((a % b) != 0U);
 }
 
 #endif

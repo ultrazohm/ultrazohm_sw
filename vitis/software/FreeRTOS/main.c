@@ -151,12 +151,6 @@ int main()
 		case initialization_rtos:
 				// SW: Initialize the Interrupt Handler in main, because by doing it in the network-threat, there were always problems that the thread was killed.
 			Initialize_InterruptHandler();
-#if CAN_ACTIVE==1
-	uz_printf(" Init CAN \n\r"); // CAN interface
-	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
-	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
-
-#endif
 			// Start the main-threat
 			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
 						   THREAD_STACKSIZE,
@@ -387,16 +381,20 @@ int main_thread()
             DEFAULT_THREAD_PRIO);
 
 #if CAN_ACTIVE == 1
+	uz_printf("APU: Init CAN \n\r"); // CAN interface
+	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
+	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
+
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
-	xil_printf("CAN-Thread0 started\n\r");
+	xil_printf("APU: CAN-Thread0 started\n\r");
 
 	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
 				   THREAD_STACKSIZE,
 				   DEFAULT_THREAD_PRIO);
 
-	xil_printf("CAN-Thread1 started\n\r");
+	xil_printf("APU: CAN-Thread1 started\n\r");
 #endif
 
 #if LWIP_DHCP==1

@@ -31,7 +31,7 @@ Small letter values indicate time dependency without explicitly stating it.
 Linear model
 ------------
 
-In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq- and xy-plane [[#Eldeeb]],[[#EDPC_SixPhase]]:
+In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq- and xy-plane [[#Eldeeb]_],[[#EDPC_SixPhase]_]:
 
 .. math:: 
 
@@ -43,7 +43,7 @@ In the simplified linear case, the PMSM model is based on its differential equat
 
     \frac{d \psi_y}{dt} &= u_y - R_1 i_y + \omega_{el} \psi_x
 
-The flux-linkages of the direct and quadrature axis are given by [[#EDPC_SixPhase]]:
+The flux-linkages of the direct and quadrature axis are given by [[#EDPC_SixPhase]_]:
 
 .. math::
 
@@ -456,4 +456,4 @@ Sources
 .. [#Eldeeb] Modelling, Control and Post-Fault Operation of Dual Three-phase Drives for Airborne Wind Energy, Hisham Eldeeb, Dissertation, TUM , 2019 
 .. [#EDPC_SixPhase] Reinforcement Learning Control of Six-Phase Permanent Magnet Synchronous Machines, L. Broghammer, D. Hufnagel et al., 13th EDPC, Regensburg 2023 
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk SchrÃ¶der, Springer, 2015, 4. Edition (German)
-.. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, ElÃ­as Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
+.. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elias Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219

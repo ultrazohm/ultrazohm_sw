@@ -18,6 +18,8 @@
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
 #include "xcanps.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 #define UZ_CAN_MAX_INSTANCES 2U
 
@@ -122,7 +124,8 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
 
     // Wait until TX FIFO has room
     while (XCanPs_IsTxFifoFull(&self->can_inst) == TRUE){
-        // do nothing, just wait until there is room in the TX FIFO
+        // taskYIELD() ensures CAN threads do not starve other tasks while waiting. 
+        taskYIELD();
     }
 
     uint32_t status = XCanPs_Send(&self->can_inst, tx_frame);
@@ -169,6 +172,6 @@ uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame
 
 void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p)
 {
-    uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+    uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \r\n",
               can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
 }

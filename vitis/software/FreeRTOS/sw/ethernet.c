@@ -322,7 +322,7 @@ void javascope_server_thread(void *p)
 				uz_printf("APU: Replacing old JavaScope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
 			}
 
-			sys_thread_new("javascope_client", process_request_thread,
+			sys_thread_new("js_connection", javascope_connection_thread,
 				(void*)new_clientfd,
 				THREAD_STACKSIZE,
 				THREAD_PRIO_JAVASCOPE_CONNECTION);

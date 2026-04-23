@@ -149,7 +149,7 @@ int main()
 
 
 		case initialization_rtos:
-				// Initialize the interrupt handler here in main() rather than in network_thread, to avoid the
+				// Initialize the interrupt handler here in main() rather than in ethernet_lwip_thread, to avoid the
 				// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
 #if CAN_ACTIVE==1
@@ -271,7 +271,7 @@ void ethernet_lwip_thread(void *p)
     // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of javascope_server_thread are performed in main_thread
 #else
     print_javascope_app_header(&(server_netif.ip_addr));
-    sys_thread_new("javascope_tcp", application_thread, 0,
+    sys_thread_new("js_server", javascope_server_thread, 0,
 		THREAD_STACKSIZE,
 		THREAD_PRIO_JAVASCOPE_SERVER);
 #endif
@@ -365,7 +365,7 @@ void i2cio_thread()
  *---------------------------------------------------------------------------*
  * Description:
  *      Resets the PHY, initializes lwIP, and starts the network thread
- *      "network_thread()". If DHCP is enabled, waits up to 7.5 s for a
+ *      "ethernet_lwip_thread()". If DHCP is enabled, waits up to 7.5 s for a
  *      lease and then starts the TCP application thread. Exits (vTaskDelete)
  *      after all enabled child threads are launched; it does not run
  *      continuously.
@@ -386,7 +386,7 @@ int main_thread()
 
     /* Any thread using lwIP should be created using sys_thread_new. */
     // Start Ethernet/DHCP/network-interface handling.
-    sys_thread_new("NW_THRD", network_thread, NULL,
+    sys_thread_new("ethernet_lwip", ethernet_lwip_thread, NULL,
 		THREAD_STACKSIZE,
             THREAD_PRIO_ETHERNET_LWIP);
 
@@ -432,7 +432,7 @@ int main_thread()
 
 	print_javascope_app_header(&(server_netif.ip_addr));
 
-	sys_thread_new("javascope_tcp", application_thread, 0,
+	sys_thread_new("js_server", javascope_server_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SERVER);
 #endif

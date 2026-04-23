@@ -104,7 +104,7 @@ typedef struct		// One JavaScope TCP frame: status plus batched slow-data and 20
 // ========== Functions and Threads ======================================================================
 int main_thread();
 void print_javascope_app_header(ip_addr_t *ip);
-void application_thread();
+void javascope_server_thread(void *p);
 void lwip_init();
 
 

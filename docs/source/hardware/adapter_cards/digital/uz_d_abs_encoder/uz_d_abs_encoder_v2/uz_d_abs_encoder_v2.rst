@@ -1,31 +1,19 @@
-.. _uz_d_abs_encoder_v2:
+.. _uz_d_absolute_encoder_v2:
 
-========================
-UZ_D_ABS_Encoder Rev02
-========================
+==============================
+Digital Absolute Encoder Rev02
+==============================
 
-.. note::
-   This page is a draft template.
-   Replace the ``TODO`` entries with verified data from the schematic, PCB layout, assembly drawing and commissioning measurements.
-
-The ``uz_d_abs_encoder`` adapter card interfaces absolute position encoders with the UltraZohm digital adapter card slot.
+The ``uz_d_absolute_encoder`` adapter card interfaces absolute position encoders with the UltraZohm digital adapter card slot.
 The second hardware revision is intended for encoders using EnDat and SSI-style differential serial communication.
 The adapter card provides the physical layer between the encoder connector and the FPGA pins on the UltraZohm carrier board.
 
-.. TODO: Add a photo or 3D render of the assembled PCB.
-..
-.. .. figure:: uz_d_abs_encoder_v2_pcb.jpg
-..    :width: 80%
-..    :align: center
-..
-..    UZ_D_ABS_Encoder Rev02 adapter card.
+ .. image:: uz_d_abs_encoder_rev02.png
 
 Source
 ======
 
-* TODO: Add link to the Altium repository.
-* TODO: Add link to the production data or release archive.
-* TODO: Add links to schematic and assembly drawing once the files are added to this folder.
+* `uz_d_absolute_encoder repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_absolute_encoder>`_
 
 Functionality
 =============

@@ -1,10 +1,10 @@
-.. _uz_d_abs_encoder:
+.. _uz_d_absolute_encoder:
 
-================
-UZ_D_ABS_Encoder
-================
+========================
+Digital Absolute Encoder
+========================
 
-The ``uz_d_abs_encoder`` adapter card family provides digital adapter cards for absolute encoder interfaces.
+The ``uz_d_absolute_encoder`` adapter card family provides digital adapter cards for absolute encoder interfaces.
 These cards are intended to connect EnDat and SSI encoders to the UltraZohm digital adapter card slots.
 
 Use this page as the entry point for common information and select the page that matches the hardware revision in use.

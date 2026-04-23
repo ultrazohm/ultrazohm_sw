@@ -91,6 +91,6 @@ void uz_print_bitstream_timestamp(void)
 	uint32_t year = 2000u + year_off;
 
 //    uz_printf("USR_ACCESS raw: 0x%08X\n", timestamp);
-    uz_printf("RPU: Bitstream timestamp: %04u-%02u-%02u (yyyy-mm-dd) at %02u:%02u:%02u\n",
+    uz_printf("RPU: Bitstream timestamp: %04u-%02u-%02u (yyyy-mm-dd) at %02u:%02u:%02u\r\n",
            year, month, day, hour, minute, second);
 }

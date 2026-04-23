@@ -109,7 +109,7 @@ int main(void)
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
+            uz_printf("RPU: Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
             uz_print_bitstream_timestamp();
             initialization_chain = init_interrupts;
             break;

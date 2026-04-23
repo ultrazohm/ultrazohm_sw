@@ -45,7 +45,7 @@ void PWM_3L_Initialize(DS_Data* data){
 	//Set the Tri-State to off (=default)
 	PWM_3L_SetTriState(0,0,0);
 
-	//print("PWM Module three-level initialized\n\r");
+	//print("PWM Module three-level initialized\r\n");
 }
 
 void PWM_3L_SetDutyCycle(float duty_A, float duty_B, float duty_C){

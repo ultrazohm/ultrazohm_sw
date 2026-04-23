@@ -26,7 +26,7 @@ Common settings used by both GUI generations
 #. ``initOffsetCHx`` sets the initial offset for each of the 20 channels in the scope.
    Use the delimiter ``;`` to separate the offset values for the channels.
 #. ``preSelectedChannelNumbers`` sets the pre-selected channel number for each of the 20 channels in the scope.
-   The numbers correspond to the ``JS_ObservableData`` enum in ``javascope.h``.
+   The numbers correspond to the ``JS_OberservableData`` enum in ``javascope.h``.
    Use the delimiter ``;`` to separate the values for the channels.
 #. ``preSelectedChannelVisibility`` sets the initial visibility for each of the 20 channels in the scope.
    Using ``0`` disables the visibility of the specific channel, while ``1`` turns it on.
@@ -53,13 +53,13 @@ Add variables to the scope drop-down menus
 
 To add a variable to the drop-down menus of the 20 scope channels, follow these two steps:
 
-1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the drop-down menu into the enum ``JS_ObservableData`` inside ``javascope.h``. Pay attention to the naming convention starting with ``JSO_``.
+1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the drop-down menu into the enum ``JS_OberservableData`` inside ``javascope.h``. Pay attention to the naming convention starting with ``JSO_``.
 2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a pointer of the variable to be viewed in the scope to the new enum entry from step 1.
 
-The GUI parses the enum ``JS_ObservableData`` at startup and your new variable appears in the drop-down menu.
+The GUI parses the enum ``JS_OberservableData`` at startup and your new variable appears in the drop-down menu.
 This allows users to add a large number of observable variables to the list, while 20 can be displayed at the same time.
 
-After changing ``JS_ObservableData``, restart the GUI so the updated list is parsed again.
+After changing ``JS_OberservableData``, restart the GUI so the updated list is parsed again.
 
 .. _javascope_scopedata:
 

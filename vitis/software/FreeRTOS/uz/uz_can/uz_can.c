@@ -134,7 +134,7 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
             if (!self->tx_timeout_logged) {
                 u8 rx_err, tx_err;
                 XCanPs_GetBusErrorCounter(&self->can_inst, &rx_err, &tx_err);
-                uz_printf("APU: CAN%u TX timeout - FIFO full, dropping frames (TEC=%u REC=%u)\n\r",
+                uz_printf("APU: CAN%u TX timeout - FIFO full, dropping frames (TEC=%u REC=%u)\r\n",
                           self->instance_index, tx_err, rx_err);
                 self->tx_timeout_logged = true;
             }
@@ -144,7 +144,7 @@ uint32_t uz_can_send_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame_tx
     }
 
     if (self->tx_timeout_logged) {
-        uz_printf("APU: CAN%u TX recovered\n\r", self->instance_index);
+        uz_printf("APU: CAN%u TX recovered\r\n", self->instance_index);
         self->tx_timeout_logged = false;
     }
     
@@ -193,6 +193,6 @@ uint32_t uz_can_receive_frame_blocking(uz_can_t *self, uz_can_frame_t *can_frame
 
 void hal_can_debug_print_frame(uz_can_frame_t *can_frame_p)
 {
-    uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+    uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \r\n",
               can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
 }

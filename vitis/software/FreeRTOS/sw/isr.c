@@ -41,7 +41,7 @@ QueueHandle_t js_control_queue;
 volatile int js_queue_overflow_dropped_samples = 0;
 volatile int js_queue_purge_requested = 0;
 
-int i_LifeCheck_Transfer_ipc = 0;
+int i_lifecheck_apu_ipi_isr = 0;
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -53,7 +53,7 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
  * Interrupt handler for the R5 -> A53 IPI.
  * Runs once per R5 JavaScope update and therefore at the R5 ISR-derived sample rate.
  */
-void Transfer_ipc_Intr_Handler(void *data)
+void APU_IPI_ISR(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
@@ -125,10 +125,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	i_LifeCheck_Transfer_ipc++;
+	i_lifecheck_apu_ipi_isr++;
 
-	if(i_LifeCheck_Transfer_ipc > 25000){
-		i_LifeCheck_Transfer_ipc =0;
+	if(i_lifecheck_apu_ipi_isr > 25000){
+		i_lifecheck_apu_ipi_isr =0;
 	}
 
 	// Not required in the current design: the Ethernet task polls queue depth and
@@ -201,7 +201,7 @@ int Initialize_ISR(){
 	}
 
 	// Connect and enable the APU GIC interrupt for incoming R5 IPIs.
-	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &IPI_instance);
+	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)APU_IPI_ISR, &IPI_instance);
 	if(Status != XST_SUCCESS) {
 		uz_printf("APU: Error: GIC initialization failed\r\n");
 		return XST_FAILURE;

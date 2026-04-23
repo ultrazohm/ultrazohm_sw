@@ -31,8 +31,8 @@ If no command is pending, the A53 returns an explicit no-op message so that the 
       subgraph ISR_Control
           JavaScope_update --> write["Write sample, slow data, and status to OCM bank 3"]
           write --> flush["Flush cache"]
-          flush -->|"Trigger IPI to A53"| Transfer_ipc_Intr_Handler
-          Transfer_ipc_Intr_Handler -->|"Read one A53 response message"| ipc_Control_func
+          flush -->|"Trigger IPI to A53"| APU_IPI_ISR
+          APU_IPI_ISR -->|"Read one A53 response message"| ipc_Control_func
       end
 
 Shared header file

@@ -33,7 +33,7 @@ The purple-colored blocks highlight the parts where the user has to interface wi
       end
           E -->|wait until A53 is finished|E
           E --> |ack|G
-      subgraph A53: Transfer_ipc_Intr_Handler
+      subgraph A53: APU_IPI_ISR
           C --> F[A53: crunch the numbers <br> with user data from OCM Bank 1, <br> write results to OCM Bank 2]
           style F fill:#f9f
           W(Handle JavaScope data <br> for Ethernet <br> transmission)
@@ -102,7 +102,7 @@ In the R5 project ``sw/javascope.c`` within the function ``JavaScope_update`` lo
 Crunch the numbers
 ******************
 
-In the A53 FreeRTOS project ``src/sw/isr.c`` within the function ``Transfer_ipc_Intr_Handler`` look for the lines where you get the shared data from the R5 and calculate stuff you want the A53 to calculate faster.
+In the A53 FreeRTOS project ``src/sw/isr.c`` within the function ``APU_IPI_ISR`` look for the lines where you get the shared data from the R5 and calculate stuff you want the A53 to calculate faster.
 
 .. code-block:: c
 

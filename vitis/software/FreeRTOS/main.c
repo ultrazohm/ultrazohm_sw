@@ -420,7 +420,7 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=7500) { // DHCP timeout after 7.5 s.
+		if (mscnt >=7500) { // define timeout time here
 			uz_printf("APU: DHCP request timed out; using static fallback IP address 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
@@ -437,7 +437,8 @@ int main_thread()
 			DEFAULT_THREAD_PRIO);
 #endif
 
-	/* I2C LED mirroring thread is currently disabled.
+	/* I2C LED mirroring thread is currently disabled since it runs into assert on Carrierboards Rev>=04
+	// TODO: uz_platform needs fixing
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);

@@ -29,9 +29,16 @@ if defined UNEXPECTED (
     exit /b 1
 )
 
+if not exist "%WORKSPACE%" mkdir "%WORKSPACE%"
+
+echo.
+echo ========================================
+echo Starting XSCT to generate workspace...
 echo Workspace: %WORKSPACE%
-echo Running:   %XSCT% -eval "setws {%WORKSPACE%}; source {%SCRIPT%}"
+echo ========================================
+pushd "%WORKSPACE%"
 call "%XSCT%" -eval "setws {%WORKSPACE%}; source {%SCRIPT%}"
+popd
 
 if %ERRORLEVEL% neq 0 (
     echo.

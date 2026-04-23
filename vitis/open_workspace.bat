@@ -14,7 +14,20 @@ if not exist "%VITIS%" (
 )
 
 set WORKSPACE=%~dp0workspace
+if not exist "%WORKSPACE%" (
+    echo ERROR: Workspace folder not found: %WORKSPACE%
+    pause
+    exit /b 1
+)
 
-echo Launching Vitis with workspace: %WORKSPACE%
+echo.
+echo ========================================
+echo Starting Vitis...
+echo Workspace: %WORKSPACE%
+echo ========================================
+pushd "%WORKSPACE%"
 call "%VITIS%" -workspace "%WORKSPACE%"
+popd
+echo.
+echo You can close this terminal now.
 pause

@@ -25,23 +25,25 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
-// define the size of the cache to flush
+// Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 #define UZ_GIC_INTERRUPT_PRIORITY_FREERTOS_SAFE (0xA0U)
 #define UZ_GIC_TRIGGER_LEVEL_SENSITIVE (0x1U)
 
-struct APU_to_RPU_t ControlData;
-extern int js_connection_established;
+struct APU_to_RPU_t ControlData = {0};
+extern volatile int js_connection_established;
 
 // cf. main.c
 extern uint32_t javascope_data_status;
 
-// Javascope Queue parameters
+// JavaScope queue handles and overflow state.
 QueueHandle_t js_queue;
-int js_queue_full = 0;
+QueueHandle_t js_control_queue;
+volatile int js_queue_overflow_dropped_samples = 0;
+volatile int js_queue_purge_requested = 0;
 
-int i_LifeCheck_Transfer_ipc = 0;
+int i_lifecheck_apu_ipi_isr = 0;
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -50,10 +52,10 @@ XIpiPsu IPI_instance;
 static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
 
 /**
- * Interrupt handler for IPI
- * synchronous interrupt with ISR on R5 -> frequency depends on R5 and indirectly on chosen PWM-based ISR-trigger
+ * Interrupt handler for the R5 -> A53 IPI.
+ * Runs once per R5 JavaScope update and therefore at the R5 ISR-derived sample rate.
  */
-void Transfer_ipc_Intr_Handler(void *data)
+void APU_IPI_ISR(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
@@ -64,27 +66,43 @@ void Transfer_ipc_Intr_Handler(void *data)
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 
-	// flush cache of shared memory for javascope data
-	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	// R5 writes this shared region; invalidate A53 cache lines before reading it.
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
 
-	// if javascope connection is established
+	// Queue samples only while a JavaScope TCP client is active.
 	if(js_connection_established!=0)
 	{
-		// append sample to queue
 		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
 
 		if (queue_status == errQUEUE_FULL)
 		{
-			js_queue_full++;
-			// uz_printf("OsziData_queue is full\r\n");
+			js_queue_overflow_dropped_samples++;
+			js_queue_purge_requested = 1;
+			// The TCP worker observes this flag and purges the queued backlog.
 		}
-		// info: queue is purged when new connection is established in 'ethernet.c'
+		else
+		{
+			// Yield to ethernet task only when the queue just crossed the send
+			// threshold. Avoids a context switch on every ISR invocation while
+			// still waking the sender without busy-poll delay.
+			if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET) {
+				portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+			}
+		}
 	}
 
 	// Maintain APU-local copy of status word (cf. main.c)
 	javascope_data_status = javascope_data->status;
 
-	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
+	// Consume at most one pending control command per ISR to preserve ordering.
+	// If no command is pending, send an explicit no-op (id=0) to avoid re-sending old commands.
+	BaseType_t control_command_available = xQueueReceiveFromISR(js_control_queue, &ControlData, &xHigherPriorityTaskWoken);
+	if (control_command_available != pdTRUE) {
+		ControlData.id = 0U;
+		ControlData.value = 0.0f;
+	}
+
+	u32_t ControlData_length = sizeof(ControlData)/sizeof(uint32_t); // XIpiPsu_WriteMessage expects number of 32-bit words as message length
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
@@ -103,26 +121,28 @@ void Transfer_ipc_Intr_Handler(void *data)
 	/* ...until here */
 #endif
 
-	// Write message for acknowledge of the interrupt to RPU
+	// Return the next control command, or an explicit no-op, to the R5.
 	status = XIpiPsu_WriteMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	i_LifeCheck_Transfer_ipc++;
+	i_lifecheck_apu_ipi_isr++;
 
-	if(i_LifeCheck_Transfer_ipc > 25000){
-		i_LifeCheck_Transfer_ipc =0;
+	if(i_lifecheck_apu_ipi_isr > 25000){
+		i_lifecheck_apu_ipi_isr =0;
 	}
 
-	// force context switch after ISR finishes -> switching to ethernet task
-	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	// Not required in the current design: the Ethernet task polls queue depth and
+	// uses non-blocking queue receive, so it is usually not blocked waiting to be
+	// woken by this ISR.
+	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE THE INTERRUPT HAndler (from main)
+// INITIALIZE THE INTERRUPT HANDLER (from main)
 //----------------------------------------------------
 int Initialize_InterruptHandler(){
 
@@ -155,28 +175,35 @@ int Initialize_InterruptHandler(){
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE & SET THE INTERRUPTs and ISRs
+// INITIALIZE & SET THE INTERRUPTS and ISRs
 //----------------------------------------------------
 int Initialize_ISR(){
 
 	int Status = 0;
 
-	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
+	// Initialize the APU-side IPI instance used for R5 communication.
 	Status = Apu_IpiInit(&IPI_instance, INTERRUPT_ID_IPI);
 	if(Status != XST_SUCCESS) {
 		uz_printf("APU: Error: IPI initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
-	// create queue for buffering R5 interrupt -> ethernet thread
+	// Queue R5 JavaScope samples for the Ethernet worker.
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 
-	// Initialize RPU GIC and Connect IPI interrupt
-	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &IPI_instance);
+	// Queue JavaScope control commands for the ISR/R5 response path.
+	js_control_queue = xQueueCreate(JS_CONTROL_QUEUE_SIZE_ELEMENTS, sizeof(struct APU_to_RPU_t));
+	if (js_control_queue == NULL){
+		uz_printf("APU: Error: Control queue creation failed\r\n");
+		return XST_FAILURE;
+	}
+
+	// Connect and enable the APU GIC interrupt for incoming R5 IPIs.
+	Status = Apu_GicInit(&GIC_instance, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)APU_IPI_ISR, &IPI_instance);
 	if(Status != XST_SUCCESS) {
 		uz_printf("APU: Error: GIC initialization failed\r\n");
 		return XST_FAILURE;
@@ -211,7 +238,7 @@ u32 Apu_GicInit(XScuGic *GIC_instance_ptr, u32 IntId, Xil_ExceptionHandler Handl
 
 	XScuGic_Enable(GIC_instance_ptr, IntId);
 
-	uz_printf("APU: Apu_GicInit: Done\r\n");
+	uz_printf("APU: GIC initialized\r\n");
 	return Status;
 }
 
@@ -230,20 +257,20 @@ u32 Apu_IpiInit(XIpiPsu *IPI_instance_Ptr,u16 DeviceId)
 	// Interrupt controller configuration
 	IPI_config = XIpiPsu_LookupConfig(DeviceId);
 		if (IPI_config == NULL) {
-			uz_printf("APU: Error: Ipi Init failed\r\n");
+			uz_printf("APU: IPI initialization failed: no configuration found\r\n");
 			return XST_FAILURE;
 		}
 
 	// Interrupt controller initialization
 	status = XIpiPsu_CfgInitialize(IPI_instance_Ptr, IPI_config, IPI_config->BaseAddress);
 		if (status != XST_SUCCESS) {
-			uz_printf("APU: Error: IPI Config failed\r\n");
+			uz_printf("APU: IPI configuration failed\r\n");
 			return XST_FAILURE;
 		}
 
 	XIpiPsu_InterruptEnable(IPI_instance_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	uz_printf("APU: APU_IpiInit: Done\r\n");
+	uz_printf("APU: IPI initialized\r\n");
 	return XST_SUCCESS;
 }
 
@@ -279,7 +306,7 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic)
 	{
 		const u32 id = uz_ipi_int_ids[i];
 
-		// check if id-interrupt is stuck on active
+		// Check whether this interrupt ID is stuck in ACTIVE state.
 		if (uz_gic_is_active_id(Gic, id)) {
 
 			/* Writing IntId to EOIR to clear the stuck ACTIVE state */

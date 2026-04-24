@@ -82,7 +82,7 @@ void APU_IPI_ISR(void *data)
 		}
 		else
 		{
-			// Yield to ethernet task only when the queue just crossed the send
+			// Yield to the JavaScope stream task only when the queue just crossed the send
 			// threshold. Avoids a context switch on every ISR invocation while
 			// still waking the sender without busy-poll delay.
 			if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET) {
@@ -133,7 +133,7 @@ void APU_IPI_ISR(void *data)
 		i_lifecheck_apu_ipi_isr =0;
 	}
 
-	// Not required in the current design: the Ethernet task polls queue depth and
+	// Not required in the current design: the JavaScope stream task polls queue depth and
 	// uses non-blocking queue receive, so it is usually not blocked waiting to be
 	// woken by this ISR.
 	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -175,9 +175,9 @@ int Initialize_InterruptHandler(){
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE & SET THE INTERRUPTS and ISRs
+// INITIALIZE THE A53 IPI RUNTIME
 //----------------------------------------------------
-int Initialize_ISR(){
+int initialize_ipi_runtime(){
 
 	int Status = 0;
 
@@ -188,8 +188,8 @@ int Initialize_ISR(){
 		return XST_FAILURE;
 	}
 
-	// Queue R5 JavaScope samples for the Ethernet worker.
-	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
+	// Queue R5 JavaScope samples for the TCP worker.
+	js_queue = xQueueCreate(JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t));
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;

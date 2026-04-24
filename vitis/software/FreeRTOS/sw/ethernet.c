@@ -84,7 +84,7 @@ void print_javascope_app_header(ip_addr_t *ip)
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  javascope_connection_thread
+ * Routine:  javascope_stream_thread
  *---------------------------------------------------------------------------*
  * Description:
  *      Worker task for one accepted JavaScope TCP connection. It streams
@@ -92,7 +92,7 @@ void print_javascope_app_header(ip_addr_t *ip)
  *      the A53 ISR/R5 response path. The task exits when the socket closes or
  *      another connection becomes the active JavaScope client.
  *---------------------------------------------------------------------------*/
-void javascope_connection_thread(void *p)
+void javascope_stream_thread(void *p)
 {
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
@@ -280,14 +280,14 @@ void javascope_connection_thread(void *p)
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  javascope_server_thread
+ * Routine:  javascope_socket_manager_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Accepts JavaScope TCP clients and starts one worker task per accepted
- *      socket. Only one client is active at a time; a new connection replaces
- *      the previous active client.
+ *      Accepts JavaScope TCP clients, updates the active socket, and starts
+ *      one stream task per accepted socket. Only one client is active at a
+ *      time; a new connection replaces the previous active client.
  *---------------------------------------------------------------------------*/
-void javascope_server_thread(void *p)
+void javascope_socket_manager_thread(void *p)
 {
 	(void)p;
 	int sock;
@@ -315,17 +315,15 @@ void javascope_server_thread(void *p)
 			connection_count++;
 			uz_printf("APU: JavaScope connected #%lu (socket 0x%x)\r\n", (unsigned long)connection_count, new_clientfd);
 
-			// TODO: set TCP_SND_BUF = 32768 and MEMP_NUM_TCP_SEG = 512 in lwipopts.h (BSP).
-
 			const int old_clientfd = js_replace_active_client(new_clientfd);
 			if ((old_clientfd != 0) && (old_clientfd != new_clientfd)) {
 				uz_printf("APU: Replacing old JavaScope socket with connection #%lu (old socket will close itself)\r\n", (unsigned long)connection_count);
 			}
 
-			sys_thread_new("js_connection", javascope_connection_thread,
-				(void*)new_clientfd,
-				THREAD_STACKSIZE,
-				THREAD_PRIO_JAVASCOPE_CONNECTION);
+			sys_thread_new("js_stream", javascope_stream_thread,
+						(void*)new_clientfd,
+						THREAD_STACKSIZE,
+						THREAD_PRIO_JAVASCOPE_STREAM);
 		}
 	}
 }

@@ -35,8 +35,8 @@ steps:
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands:
    - hostname -I
-    - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
-    - cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
+   - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
+   - cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
    when:
      branch:
      - main

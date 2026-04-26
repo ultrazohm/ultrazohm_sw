@@ -13,6 +13,16 @@ platform:
 
 steps:
 
+ - name: Vivado_build_tcl
+   image: vivado:2022.2
+   commands:
+   - ip link show
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - cd vivado
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source build.tcl
+   - cd ..
+   - git status
+   
  - name: docs
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
    commands: # Modify the commands below to build your repository.
@@ -41,16 +51,6 @@ steps:
      branch:
      - main
      - develop
-
- - name: Vivado_build_tcl
-   image: vivado:2022.2
-   commands:
-   - ip link show
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
-   - cd vivado
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source build.tcl
-   - cd ..
-   - git status
 
 # pipeline step just opens the vivado project
  - name: Vivado_open_project

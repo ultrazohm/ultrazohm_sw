@@ -32,6 +32,7 @@ struct uz_endat_interface_config_t{
     float kp_pll; /**< Proportional gain for the PI within the PLL */
     float ki_pll; /**< Integral gain for the PI within the PLL */
     float position_mech_offset_si_single_turn; /**< Mechanical encoder offset between encoder zero and magnetic zero of the electric machine. Limited to -2*pi ... 2*pi and to values that fit into int32_t after conversion to encoder ticks */
+    uint32_t delay_sampling_in_clk_ticks; /**< Delay of the serial data input sampling in IP-core clock ticks, values from 0 to 194 are allowed */
 };
 
 /**
@@ -133,5 +134,13 @@ void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, enum uz_end
  */
 void uz_endat_interface_set_mechanical_offset_endat_single_turn(uz_endat_interface_t *self, float position_mech_offset_si_single_turn);
 
+/**
+ * @brief Sets the sampling delay of the serial data input in IP-core clock ticks.
+ * @brief Values between 0 and 194 are allowed.
+ *
+ * @param self Pointer to the instance
+ * @param delay_clk_ticks Sampling delay in IP-core clock ticks
+ */
+void uz_endat_interface_set_sampling_delay_clk_ticks(uz_endat_interface_t *self, uint32_t delay_clk_ticks);
 
 #endif // UZ_ENDAT_INTERFACE_H

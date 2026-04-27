@@ -91,6 +91,7 @@ typedef struct _actualValues_ {
 	float endat_pos_raw_mt_d5_1;
 	float endat_pos_mech_si_d5_1;
 	float endat_pos_el_si_d5_1;
+	float endat_pos_mech_mt_d5_1;
 	float endat_speed_mech_si_d5_1;
 	float endat_speed_mech_rpm_d5_1;
 	float endat_speed_el_si_d5_1;

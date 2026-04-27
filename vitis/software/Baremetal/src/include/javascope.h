@@ -28,6 +28,7 @@ enum JS_OberservableData {
 	JSO_multi_turn_raw_d5_1,
 	JSO_pos_mech_si_d5_1,
 	JSO_pos_el_si_d5_1,
+	JSO_pos_mech_mt_d5_1,
 	JSO_speed_mech_si_d5_1,
 	JSO_speed_el_si_d5_1,
 	JSO_speed_mech_rpm_d5_1,

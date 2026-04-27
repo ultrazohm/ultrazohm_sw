@@ -58,6 +58,7 @@ void ISR_Control(void *data)
     Global_Data.av.endat_pos_raw_st_d5_1 = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_pos_raw_mt_d5_1 = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_pos_mech_si_d5_1 = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_pos_mech_mt_d5_1 = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_pos_el_si_d5_1 = uz_endat_interface_get_position_el_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_speed_mech_si_d5_1 = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_1);
 	Global_Data.av.endat_speed_el_si_d5_1 = uz_endat_interface_get_speed_el_si(Global_Data.objects.endat_encoder_d5_1);

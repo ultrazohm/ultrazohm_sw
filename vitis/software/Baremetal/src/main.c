@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "include/endat_encoder.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {

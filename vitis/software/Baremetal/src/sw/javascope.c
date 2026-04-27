@@ -84,6 +84,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_single_turn_raw_d5_1]	= &data->av.endat_pos_raw_st_d5_1;
 	js_ch_observable[JSO_multi_turn_raw_d5_1]	= &data->av.endat_pos_raw_mt_d5_1;
 	js_ch_observable[JSO_pos_el_si_d5_1]		= &data->av.endat_pos_el_si_d5_1;
+	js_ch_observable[JSO_pos_mech_mt_d5_1]		= &data->av.endat_pos_mech_mt_d5_1;
 	js_ch_observable[JSO_speed_mech_si_d5_1]	= &data->av.endat_speed_mech_si_d5_1;
 	js_ch_observable[JSO_speed_el_si_d5_1]		= &data->av.endat_speed_el_si_d5_1;
 	js_ch_observable[JSO_speed_mech_rpm_d5_1]	= &data->av.endat_speed_mech_rpm_d5_1;

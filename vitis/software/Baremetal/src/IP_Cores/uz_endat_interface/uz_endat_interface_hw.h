@@ -13,6 +13,7 @@ void uz_endat_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_c
 void uz_endat_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll);
 void uz_endat_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs);
 void uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn);
+void uz_endat_interface_hw_write_sampling_delay_clk_ticks(uint32_t base_address, uint32_t delay_clk_ticks);
 
 uint32_t uz_endat_interface_hw_read_position_raw_single_turn(uint32_t base_address);
 uint32_t uz_endat_interface_hw_read_position_raw_multi_turn(uint32_t base_address);

@@ -14,6 +14,7 @@
 #define TEST_KP_PLL 628.0f
 #define TEST_KI_PLL 98696.0f
 #define TEST_ENDAT_NUMBER_OF_CRC_BITS 5U
+#define TEST_DELAY_SAMPLING_IN_CLK_TICKS 42U
 
 static const struct uz_endat_interface_config_t default_config = {
     .base_address = TEST_BASE_ADDRESS,
@@ -25,7 +26,8 @@ static const struct uz_endat_interface_config_t default_config = {
     .sampling_interval_seconds = TEST_SAMPLING_INTERVAL,
     .kp_pll = TEST_KP_PLL,
     .ki_pll = TEST_KI_PLL,
-    .position_mech_offset_si_single_turn = -1.276f
+    .position_mech_offset_si_single_turn = -1.276f,
+    .delay_sampling_in_clk_ticks = TEST_DELAY_SAMPLING_IN_CLK_TICKS
 };
 
 struct uz_endat_interface_config_t config;
@@ -51,6 +53,7 @@ static void expect_default_init_writes(void)
     uz_endat_interface_hw_write_pll_parameters_Expect(TEST_BASE_ADDRESS, config.sampling_interval_seconds, config.kp_pll, config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs_Expect(TEST_BASE_ADDRESS, config.machine_polepairs);
     uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn_Expect(TEST_BASE_ADDRESS, expected_mech_offset_ticks);
+    uz_endat_interface_hw_write_sampling_delay_clk_ticks_Expect(TEST_BASE_ADDRESS, config.delay_sampling_in_clk_ticks);
 }
 
 void test_uz_endat_interface_init_asserts(void)
@@ -80,6 +83,8 @@ void test_uz_endat_interface_init_asserts(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_mechanical_offset_endat_single_turn(0U, 0.0f));
 
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_mode_command(0U, uz_endat_interface_send_position));
+
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_sampling_delay_clk_ticks(0U, 42U));
 }
 
 void test_uz_endat_interface_init_config_limit_asserts(void)
@@ -150,9 +155,25 @@ void test_uz_endat_interface_init_config_limit_asserts(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_init(config));
     config = default_config;
 
+    config.delay_sampling_in_clk_ticks = 195U;
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_init(config));
+    config = default_config;
+
     config.endat_encoder_bit_width_single_turn = 31U;
     config.position_mech_offset_si_single_turn = 2.0f * UZ_PIf;
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_init(config));
+}
+
+void test_uz_endat_interface_init_accepts_sampling_delay_clk_ticks_limits(void)
+{
+    config.delay_sampling_in_clk_ticks = 0U;
+    expect_default_init_writes();
+    uz_endat_interface_init(config);
+
+    config = default_config;
+    config.delay_sampling_in_clk_ticks = 194U;
+    expect_default_init_writes();
+    uz_endat_interface_init(config);
 }
 
 void test_uz_endat_interface_init_writes_config(void)
@@ -242,6 +263,17 @@ void test_uz_endat_interface_set_mechanical_offset_endat_single_turn(void)
     uz_endat_interface_set_mechanical_offset_endat_single_turn(instance, 0.0f);
 }
 
+void test_uz_endat_interface_set_sampling_delay_clk_ticks(void)
+{
+    uint32_t delay_clk_ticks = 42U;
+
+    expect_default_init_writes();
+    uz_endat_interface_t *instance = uz_endat_interface_init(config);
+
+    uz_endat_interface_hw_write_sampling_delay_clk_ticks_Expect(TEST_BASE_ADDRESS, delay_clk_ticks);
+    uz_endat_interface_set_sampling_delay_clk_ticks(instance, delay_clk_ticks);
+}
+
 void test_uz_endat_interface_set_mechanical_offset_endat_single_turn_asserts_on_invalid_values(void)
 {
     config.endat_encoder_bit_width_single_turn = 31U;
@@ -254,6 +286,7 @@ void test_uz_endat_interface_set_mechanical_offset_endat_single_turn_asserts_on_
     uz_endat_interface_hw_write_pll_parameters_Expect(TEST_BASE_ADDRESS, config.sampling_interval_seconds, config.kp_pll, config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs_Expect(TEST_BASE_ADDRESS, config.machine_polepairs);
     uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn_Expect(TEST_BASE_ADDRESS, 0);
+    uz_endat_interface_hw_write_sampling_delay_clk_ticks_Expect(TEST_BASE_ADDRESS, config.delay_sampling_in_clk_ticks);
     uz_endat_interface_t *instance = uz_endat_interface_init(config);
 
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_mechanical_offset_endat_single_turn(instance, 2.0f * UZ_PIf));

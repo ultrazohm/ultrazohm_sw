@@ -35,6 +35,7 @@
 // Largest float below INT32_MAX that can be safely cast to int32_t.
 #define INT32_MAX_SAFE_FLOAT 2147483520.0f
 #define POSITION_MECH_OFFSET_LIMIT_RAD (2.0f * UZ_PIf)
+#define SAMPLING_DELAY_CLK_TICKS_MAX 194U
 struct uz_endat_interface_t {
     bool is_ready;
     struct uz_endat_interface_config_t config;
@@ -83,6 +84,7 @@ static void uz_endat_interface_set_config(uz_endat_interface_t *self) {
     uz_endat_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_endat_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
     uz_endat_interface_set_mechanical_offset_endat_single_turn(self, self->config.position_mech_offset_si_single_turn);
+    uz_endat_interface_set_sampling_delay_clk_ticks(self, self->config.delay_sampling_in_clk_ticks);
 }
 
 uint32_t uz_endat_interface_get_position_raw_single_turn(uz_endat_interface_t *self) {
@@ -142,6 +144,11 @@ void uz_endat_interface_set_mode_command(uz_endat_interface_t *self, enum uz_end
     uz_endat_interface_hw_write_endat_mode_command(self->config.base_address, (uint32_t)mode_command);
 }
 
+void uz_endat_interface_set_sampling_delay_clk_ticks(uz_endat_interface_t *self, uint32_t delay_clk_ticks) {
+    assert_self(self);
+    uz_endat_interface_hw_write_sampling_delay_clk_ticks(self->config.base_address, delay_clk_ticks);
+}
+
 static void assert_config(struct uz_endat_interface_config_t config) {
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
@@ -167,6 +174,7 @@ static void assert_config(struct uz_endat_interface_config_t config) {
     uz_assert(config.ki_pll < KI_PLL_MAX);
     uz_assert(config.position_mech_offset_si_single_turn <= POSITION_MECH_OFFSET_LIMIT_RAD);
     uz_assert(config.position_mech_offset_si_single_turn >= -POSITION_MECH_OFFSET_LIMIT_RAD);
+    uz_assert(config.delay_sampling_in_clk_ticks <= SAMPLING_DELAY_CLK_TICKS_MAX);
     calculate_position_mech_offset_ticks_single_turn(config.endat_encoder_bit_width_single_turn, config.position_mech_offset_si_single_turn);
 }
 

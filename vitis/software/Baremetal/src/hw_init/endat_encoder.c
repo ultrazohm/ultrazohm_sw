@@ -10,7 +10,8 @@ struct uz_endat_interface_config_t endat_d5_1_config = {
 		.endat_encoder_bit_width_multi_turn = 12U,
 		.kp_pll = 628.3185f,
 		.ki_pll = 98696.0f,
-		.sampling_interval_seconds = 0.0001f
+		.sampling_interval_seconds = 0.0001f,
+		.delay_sampling_in_clk_ticks = 0U
 };
 
 struct uz_endat_interface_config_t endat_d5_2_config = {
@@ -23,7 +24,8 @@ struct uz_endat_interface_config_t endat_d5_2_config = {
 		.endat_encoder_bit_width_multi_turn = 0U,
 		.kp_pll = 628.3185f,
 		.ki_pll = 98696.0f,
-		.sampling_interval_seconds = 0.0001f
+		.sampling_interval_seconds = 0.0001f,
+		.delay_sampling_in_clk_ticks = 0U
 };
 
 struct uz_endat_interface_config_t endat_d5_3_config = {
@@ -36,7 +38,8 @@ struct uz_endat_interface_config_t endat_d5_3_config = {
 		.endat_encoder_bit_width_multi_turn = 0U,
 		.kp_pll = 628.3185f,
 		.ki_pll = 98696.0f,
-		.sampling_interval_seconds = 0.0001f
+		.sampling_interval_seconds = 0.0001f,
+		.delay_sampling_in_clk_ticks = 0U
 };
 
 uz_endat_interface_t* endat_encoder_init_endat_d5_1() {

@@ -1,11 +1,11 @@
-﻿Port Name,Port Type,Data Type,Range,Unit,Function
+Port Name,Port Type,Data Type,Range,Unit,Function
 PL ports,,,,,
 IPCORE_CLK,Input,bool,false..true,1,IP core clock supply. Has to be 100 MHz
 IPCORE_RESETN,Input,bool,false..true,1,IP core reset
 endat_data_in,Input,bool,false..true,1,Serial data in from the encoder
 trigger_endat_read,Input,bool,false..true,1,Rising edge triggers encoder communication
-AXI4_Lite_ACLK,Input,bool,false..true,1,IP core clock for AXI4Lite interface
-AXI4_Lite_ARESETN,Input,bool,false..true,1,IP core reset for AXI4Lite interface
+AXI4_Lite_ACLK,Input,bool,false..true,1,IP core clock for AXI4_Lite interface
+AXI4_Lite_ARESETN,Input,bool,false..true,1,IP core reset for AXI4_Lite interface
 endat_clk,Output,bool,false..true,1,Clock output to encoder
 endat_mode_data_out,Output,bool,false..true,1,Serial data out to encoder
 RW_clk,Output,bool,false..true,1,Read-write selector for RS485 transceiver of the clock line
@@ -17,17 +17,17 @@ CRC_raw,Output,uint32_t,0..uint32max,1,CRC value received from the encoder
 endat_received_data_out_SH,Output,bool,false..true,1,Debug output for the received serial data from the encoder at the sample and hold stage (SH) within the IP core
 position_mech_SI_single_turn,Output,ufix27_En24,0..2pi,rad,Mechanical single-turn position value in SI unit
 position_el_SI,Output,ufix27_En24,0..2pi,rad,Electrical single-turn position value in SI unit
-position_multi_turn,Output,uint32_t,0..uint32max,1,Mechanical multi-turn position value accounting for mechanical offset value
+position_multi_turn,Output,uint32_t,0..uint32max,1,Offset-corrected multi-turn revolution counter aligned with the full revolution wrap of the single-turn position
 speed_mech_SI,Output,sfix27_En16,-1024..1023.99,rad/s,Mechanical speed value in rad/s
 speed_el_SI,Output,sfix27_En12,-16384..16383.99,rad/s,Electrical speed value in rad/s
-speed_mech_rpm,Output,sfix27_En12,-16384..16383.99,rounds per minute,Mechanical speed value in rpm
+speed_mech_rpm,Output,sfix27_En12,-16384..16383.99,rpm,Mechanical speed value in rpm
 AXI4-Lite ports,,,,,
-endat_clk_divider_AXI,Input,uint32_t,3..500,1,Divider for generating encoder Clock from IP core clock
+endat_clk_divider_AXI,Input,uint32_t,3..500,1,Divider for generating encoder clock from IP core clock
 endat_encoder_bit_width_single_turn_AXI,Input,uint32_t,1..31,1,Bit width of the single-turn position
 endat_encoder_bit_width_multi_turn_AXI,Input,int32_t,0..31,1,Bit width of the multi-turn position
 endat_encoder_number_of_CRC_bits_AXI,Input,int32_t,5,1,Number of CRC bits
 delay_first_clk_on_off_AXI,Input,bool,false..true,1,Selection flag if the first clock pulse should be delayed. Is set automatically depending on selected clock speed
-endat_mode_command_in_AXI,Input,uint32_t,7,1,MODE COMMAND to endatr encoder. Determines what data will be sent by the encoder. At the moment only 'send position' == 7 is supported
+endat_mode_command_in_AXI,Input,uint32_t,7,1,MODE command to EnDat encoder. Determines what data will be sent by the encoder. At the moment only 'send position' == 7 is supported
 endat_com_enable_AXI,Input,bool,false..true,1,Selection flag for enabling communication with the encoder
 reciprocal_bit_width_single_turn_AXI,Input,ufix27_En27,0..0.99,1,Reciprocal value of the single-turn position bit width
 t_sample_AXI,Input,ufix18_En24,0..0.0156,s,Sampling time that matches the trigger_endat_read frequency. This value is used as integration time inside the speed PLL
@@ -43,7 +43,7 @@ position_raw_multi_turn_AXI,Output,uint32_t,0..uint32max,1,Raw integer encoder m
 CRC_raw_AXI,Output,uint32_t,0..uint32max,1,CRC value received from the encoder
 position_mech_SI_single_turn_AXI,Output,ufix27_En24,0..2pi,rad,Mechanical single-turn position value in SI unit
 position_el_SI_AXI,Output,ufix27_En24,0..2pi,rad,Electrical single-turn position value in SI unit
-position_multi_turn_AXI,Output,uint32_t,0..uint32max,1,Mechanical multi-turn position value accounting for mechanical offset value
+position_multi_turn_AXI,Output,uint32_t,0..uint32max,1,Offset-corrected multi-turn revolution counter aligned with the full revolution wrap of the single-turn position
 speed_mech_SI_AXI,Output,sfix27_En16,-1024..1023.99,rad/s,Mechanical speed value in rad/s
 speed_el_SI_AXI,Output,sfix27_En12,-16384..16383.99,rad/s,Electrical speed value in rad/s
-speed_mech_rpm_AXI,Output,sfix27_En12,-16384..16383.99,rounds per minute,Mechanical speed value in rpm
+speed_mech_rpm_AXI,Output,sfix27_En12,-16384..16383.99,rpm,Mechanical speed value in rpm

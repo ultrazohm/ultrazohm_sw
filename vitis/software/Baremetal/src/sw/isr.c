@@ -89,7 +89,8 @@ void ISR_Control(void *data)
     ctrl_data.bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];
 
     // read position from resolver IP Core
-    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+    //ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_right);
 
     // get intermediate circuit voltage measurement value
 //    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter

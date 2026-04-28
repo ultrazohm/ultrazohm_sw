@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Thu Apr 23 16:02:46 2026
+ * C/C++ source code generated on : Mon Apr 27 16:00:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -273,7 +273,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_phi_offset
    * Referenced by: '<S4>/Constant'
    */
-  1.794F,
+  5.44F,
 
   /* Variable: LIMIT_MAX_Overspeed
    * Referenced by: '<S88>/Constant'
@@ -388,7 +388,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_SELECT_U_DC_INPUT
    * Referenced by: '<S17>/0: P_Udc 1: Udc_measured'
    */
-  1U,
+  0U,
 
   /* Variable: FOC_SELECT_phi
    * Referenced by: '<S4>/Constant3'
@@ -768,12 +768,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Expression: MM_U_DC.OFFSET
    * Referenced by: '<S17>/bias_udc'
    */
-  55.0F,
+  0.0F,
 
   /* Expression: MM_U_DC.FACTOR
    * Referenced by: '<S17>/gain_udc'
    */
-  0.0972762629F,
+  439.512146F,
 
   /* Computed Parameter: ASC_LS_Value
    * Referenced by: '<S3>/ASC_LS'

@@ -29,5 +29,8 @@
 #define INTERRUPT_ID_SCUG 					XPAR_PSU_ACPU_GIC_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
 #define INTERRUPT_ID_IPI 					XPAR_XIPIPSU_0_DEVICE_ID			/* IPI device that Interrupt is connected to */
 
+// JavaScope network packet size: number of samples batched per TCP packet.
+#define JS_SAMPLES_PER_PACKET 15
+
 
 #endif /* DEFINES_H_ */

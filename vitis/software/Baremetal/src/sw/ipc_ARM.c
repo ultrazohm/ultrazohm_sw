@@ -187,12 +187,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
-		uz_endat_interface_set_mechanical_offset_endat_single_turn(data->objects.endat_encoder_d5_1, value);
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		uz_endat_interface_set_sampling_delay_clk_ticks(data->objects.endat_encoder_d5_1, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_3):

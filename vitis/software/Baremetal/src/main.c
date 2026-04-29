@@ -107,12 +107,6 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.objects.endat_encoder_d5_1 = endat_encoder_init_endat_d5_1();
-            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
-            Global_Data.objects.endat_encoder_d5_2 = endat_encoder_init_endat_d5_2();
-            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_2, true);
-            Global_Data.objects.endat_encoder_d5_3 = endat_encoder_init_endat_d5_3();
-            uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_3, true);
             initialization_chain = print_msg;
             break;
         case print_msg:

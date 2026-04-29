@@ -32,8 +32,7 @@
 #define SAMPLING_INTERVAL_MAX_SECONDS 0.0156f
 #define KP_PLL_MAX 8191.0f
 #define KI_PLL_MAX 262142.0f
-// Largest float below INT32_MAX that can be safely cast to int32_t.
-#define INT32_MAX_SAFE_FLOAT 2147483520.0f
+#define INT32_MAX_SAFE_FLOAT 2147483520.0f // Largest float below INT32_MAX that can be safely cast to int32_t
 #define POSITION_MECH_OFFSET_LIMIT_RAD (2.0f * UZ_PIf)
 #define SAMPLING_DELAY_CLK_TICKS_MAX 194U
 struct uz_endat_interface_t {

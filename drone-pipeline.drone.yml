@@ -25,6 +25,7 @@ steps:
    
  - name: docs
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands: # Modify the commands below to build your repository.
    - hostname -I
    - cd docs
@@ -36,6 +37,7 @@ steps:
   
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
    - cd vitis/software/Baremetal
@@ -43,6 +45,7 @@ steps:
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
    - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 

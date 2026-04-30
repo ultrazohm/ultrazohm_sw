@@ -3,7 +3,7 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: rtmodel.h
+ * File: uz_codegen0_data.c
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
@@ -19,30 +19,18 @@
  * Validation result: Passed (11), Warning (1), Error (0)
  */
 
-#ifndef rtmodel_h_
-#define rtmodel_h_
 #include "uz_codegen0.h"
 
-/*
- * ROOT_IO_FORMAT: 0 (Individual arguments)
- * ROOT_IO_FORMAT: 1 (Structure reference)
- * ROOT_IO_FORMAT: 2 (Part of model data structure)
- */
-#define ROOT_IO_FORMAT                 2
-
-/* Macros generated for backwards compatibility  */
-#ifndef rtmGetErrorStatus
-#define rtmGetErrorStatus(rtm)         ((void*) 0)
-#endif
-
-#ifndef rtmSetErrorStatus
-#define rtmSetErrorStatus(rtm, val)    ((void) 0)
-#endif
-
-#ifndef rtmGetStopRequested
-#define rtmGetStopRequested(rtm)       ((void*) 0)
-#endif
-#endif                                 /* rtmodel_h_ */
+/* Constant parameters (default storage) */
+const ConstP rtConstP = {
+  /* Pooled Parameter (Expression: [0 1;1 0;0 1;0 1;1 0;1 0;0 0;0 0])
+   * Referenced by:
+   *   '<S18>/Logic'
+   *   '<S20>/Logic'
+   */
+  { false, true, false, false, true, true, false, false, true, false, true, true,
+    false, false, false, false }
+};
 
 /*
  * File trailer for generated code.

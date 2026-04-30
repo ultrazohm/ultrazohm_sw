@@ -12,6 +12,7 @@ typedef enum
     running_state,
     control_state,
     error_state
+
 } platform_state_t;
 
 

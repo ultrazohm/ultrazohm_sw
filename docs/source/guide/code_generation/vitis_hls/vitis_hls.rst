@@ -695,6 +695,7 @@ Testing the IP core with the Vitis Serial Terminal
       }
    }
 
+- Open ``uz_global_configuration.h`` and increase ``#define UZ_HLS_TESTIP_MAX_INSTANCES`` to ``1U``.
 - Build the software.
 - Include ``#include "include/uz_myHLSIP.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myHLSIP();`` before the ISR is initialized!
 - Connect the serial port to the Vitis Serial Terminal.

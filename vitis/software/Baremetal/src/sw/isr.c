@@ -52,6 +52,8 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_endat_encoder_on_D4(&Global_Data);
+    update_resolver_D3_1(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -245,6 +247,3 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
 		}
     }
 }
-
-
-

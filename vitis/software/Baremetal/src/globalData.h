@@ -7,6 +7,9 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_endat_interface/uz_endat_interface.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -49,6 +52,13 @@ typedef struct _AnalogAdapters_ {
 	ADCcard A3;
 } AnalogAdapters;
 
+typedef struct _machineEncoderValues_ {
+	float theta_mech;
+	float theta_elec;
+	float mechanicalRotorSpeed; // in rpm
+	float electricalRotorSpeed; // in rad/s
+} machineEncoderValues;
+
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -84,6 +94,8 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	machineEncoderValues endat_machine;
+	machineEncoderValues resolver_machine;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
@@ -113,6 +125,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
+	uz_endat_interface_t* endat_encoder_d4_1;
+	uz_resolverIP_t* resolver_d3_1;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d3_1;
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
 
@@ -124,4 +139,3 @@ typedef struct _DS_Data_ {
 } DS_Data;
 
 #endif
-

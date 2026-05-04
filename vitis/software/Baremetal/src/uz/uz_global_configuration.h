@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 6U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -88,7 +88,7 @@
 #define UZ_PRNG_MAX_INSTANCES                           0U
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
-#define UZ_ENDAT_INTERFACE_MAX_INSTANCES				0U
+#define UZ_ENDAT_INTERFACE_MAX_INSTANCES				1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

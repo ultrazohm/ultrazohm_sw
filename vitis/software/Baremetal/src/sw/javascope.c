@@ -86,6 +86,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_Endat_theta_mech]		= &data->av.endat_machine.theta_mech;
+	js_ch_observable[JSO_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
+	js_ch_observable[JSO_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
+	js_ch_observable[JSO_Resolver_theta_mech]	= &data->av.resolver_machine.theta_mech;
+	js_ch_observable[JSO_Resolver_theta_elec]	= &data->av.resolver_machine.theta_elec;
+	js_ch_observable[JSO_Resolver_Speed_rpm]		= &data->av.resolver_machine.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Resolver_el_Speed_rad_s]= &data->av.resolver_machine.electricalRotorSpeed;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -101,6 +109,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Endat_theta_mech]		= &data->av.endat_machine.theta_mech;
+	js_slowDataArray[JSSD_FLOAT_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
+	js_slowDataArray[JSSD_FLOAT_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_Resolver_theta_mech]	= &data->av.resolver_machine.theta_mech;
+	js_slowDataArray[JSSD_FLOAT_Resolver_theta_elec]	= &data->av.resolver_machine.theta_elec;
+	js_slowDataArray[JSSD_FLOAT_Resolver_Speed_rpm]		= &data->av.resolver_machine.mechanicalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_Resolver_el_Speed_rad_s]= &data->av.resolver_machine.electricalRotorSpeed;
 
 	return Status;
 }

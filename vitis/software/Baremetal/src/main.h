@@ -41,7 +41,7 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
-
+#include "include/uz_endat_interface_init.h"
 #include "uz/uz_HAL.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
@@ -53,6 +53,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "include/resolver.h"
 
 
 //----------------------------------------------------

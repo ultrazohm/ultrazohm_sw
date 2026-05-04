@@ -9,7 +9,7 @@ It automates the process of converting high-level code into optimized hardware d
 With Vitis HLS, designers can leverage their software skills, experiment with different optimizations, and promote design reuse and modularity.
 Overall, it enables faster time-to-market and the development of highly optimized hardware accelerators.
 
-Related Tutorials & Literature
+Related tutorials & literature:
 
 - https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas
 - https://github.com/Xilinx/Vitis-HLS-Introductory-Examples
@@ -67,13 +67,13 @@ Generation using tcl script
 Manual Tutorial
 ---------------
 
-If you don't want to use a script to generate your design, this tutorial will guide you through the process of manually creating a the IP core using Vitis HLS, synthesizing it, and integrating it into the UltraZohm project. 
+If you don't want to use a script to generate your design, this tutorial will guide you through the process of manually creating the IP core using Vitis HLS, synthesizing it, and integrating it into the UltraZohm project. 
 
 
 .. dropdown:: Show steps (collapsed by default)
    
-   - Start Vitis HLS (2022.2 used for this tutorial)
-   - Create a new HLS Project
+   - Start Vitis HLS (2022.2 used for this tutorial).
+   - Create a new HLS Project.
    
    .. figure:: tutorial_img/1_open_new_project.png
       :width: 400px
@@ -101,7 +101,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 500px
       :align: center
    
-   - Modify the board specification if needed in future applications, ensuring compatibility between the design and the physical board you're using. 
+   - Modify the board specification if needed in future applications, ensuring compatibility between the design and the physical board you are using. 
      When you click the Device Selection Dialog, you will see a list of all the available boards from the Xilinx Library. 
      This dialog allows you to choose the specific board that matches your hardware setup and requirements.
    - For this tutorial, set the device to ``xczu9eg-ffvc900-1-e``.
@@ -111,7 +111,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :align: center
    
    - After completing the configuration part, an empty project will be created. 
-     Now, the basic test IP, we will implement integer multiplication and write the test bench.
+     Now, for the basic test IP, we will implement integer multiplication and write the test bench.
    - To create a source file, simply right-click on the **Source** folder in your project and choose **New Source File...** from the menu.
    
    .. figure:: tutorial_img/5_add_source.png
@@ -173,7 +173,7 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - For instance with right click to **a** variable, the tab that includes the pragmas is a more visualized version.
+   - For instance, with right click to **a** variable, the tab that includes the pragmas is a more visualized version.
    
    .. figure:: tutorial_img/28_directive_editor.png
       :width: 400px
@@ -272,13 +272,13 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 800px
       :align: center
    
-   - After that click Export RTL
+   - After that, click Export RTL.
      
    .. figure:: tutorial_img/30_export_rtl_tab.png
       :width: 350px
       :align: center
    
-   - Export your IP to Vivado workspace
+   - Export your IP to Vivado workspace.
    
    .. figure:: tutorial_img/31_export_rtl.png
       :width: 400px
@@ -294,14 +294,14 @@ Vivado
 - Navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 - Extend uz_user subblock.
 - Extend the smart connect by one master port to connect AXI ports to the processor.
-- Add the new IP-Core and connect it to the system.
+- Add the new IP core and connect it to the system.
 
 .. figure:: tutorial_img/32_vivado_ip_placement.png
    :width: 400px
    :align: center
 
-- Go to the Address editor and assign a base address to the new IP-Core.
-- For video implementation of these steps check out :ref:`hdl_coder` last step..
+- Go to the Address editor and assign a base address to the new IP core.
+- For video implementation of these steps, check out the last step of :ref:`hdl_coder`.
 - Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`.
 
 Vitis
@@ -310,7 +310,7 @@ Vitis
 Drivers
 *******
 
-- Vitis HLS IP-Core generation yields automatically generated AXI-drivers.
+- Vitis HLS IP core generation yields automatically generated AXI-drivers.
 - The usage is not yet aligned with the UZ project's typical drivers and will be explained in the following.
 - The created files for the example project with the name uz_HLS_testIP are:
 
@@ -320,16 +320,16 @@ Drivers
    - xuz_HLS_testip.c
    - xuz_HLS_testip.h
  
-While the ``_hw.h`` file is similar to the HDL-Coder generated hardware address file, the last two files include already usable drivers.
+While the ``_hw.h`` file is similar to the HDL Coder generated hardware address file, the last two files include already usable drivers.
 These drivers can be used for operation or additional UZ-style drivers can be created around them.
 They are automatically included in the exported .xsa file from Vivado and therefore directly included in the platform project within Vitis. 
 You can find them in the Vitis workspace under ``vitis -> UltraZohm/hw/drivers/your_ip_core``.
 The header file can simply be included.
 
-Initialization with Vitis HLS generated Drivers
+Initialization with Vitis HLS generated drivers
 ***********************************************
 
-To initialize an IP-core instance, the instance's define has to be taken from the ``xparameters.h`` file. When we address the IP Core, related information is added to the system files. 
+To initialize an IP core instance, the instance's define has to be taken from the ``xparameters.h`` file. When we address the IP core, related information is added to the system files. 
 
 .. code-block:: c
 
@@ -342,11 +342,11 @@ To initialize an IP-core instance, the instance's define has to be taken from th
 
       int main(void) {
    
-      XUz_hls_testip_Initialize(&xuz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
+      XUz_hls_testip_Initialize(&XUz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
    
    }
 
-Usage of Vitis HLS generated Drivers
+Usage of Vitis HLS generated drivers
 ************************************
 
 To use the write and read with set and get functions, place the initialization code in main / case init_ip_cores: 
@@ -372,7 +372,8 @@ To use the write and read with set and get functions, place the initialization c
 
 .. note::
    Using the AXI-write and -read functions is more tricky depending on the desired datatype.
-   In the following snippet the AXI-interfaces have a floating point datatype, however the data for the AXI-write functions takes an argument of type ``uint32``.
+   In the following snippet the AXI-interfaces have a floating point datatype.
+   However, the data for the AXI-write functions takes an argument of type ``uint32``.
    This means, the driver expects the bits of a floating point value in the storage item of an unsigned int.
    To achieve this, the user can create the really used float variable, here ``REAL_VAR`` and create a pointer of type ``uint32_t`` to this variable and cast it.
    The AXI-set function is called with the dereferenced, casted pointer, which gives the current value of the ``REAL_VAR`` to the driver.
@@ -394,7 +395,7 @@ How to create the driver
 ************************
 
 The driver is already provided in ``ultrazohm_sw/software/Baremetal/src/IP_Cores/uz_HLS_testIP``.
-To gain a better understanding of driver creation, you can follow the steps below to create a driver for the IP Core yourself.
+To gain a better understanding of driver creation, you can follow the steps below to create a driver for the IP core yourself.
 
 .. dropdown:: Show steps (collapsed by default)
 
@@ -560,7 +561,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
 
    .. code-block:: c
       :linenos:
-      :caption: ``test_uz_HLS_testIP_hw.h``
+      :caption: ``test_uz_HLS_testIP_hw.c``
 
       #include "unity.h"
       #include "uz_HLS_testIP_hw.h"
@@ -607,7 +608,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
 
    .. code-block:: c
       :linenos:
-      :caption: ``test_uz_HLS_testIP.h``
+      :caption: ``test_uz_HLS_testIP.c``
 
       #ifdef TEST
 
@@ -651,7 +652,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
 Testing the IP core with the Vitis Serial Terminal
 --------------------------------------------------
 
-- Create the file ``uz_myHLSIP.h`` in the ``include`` folder
+- Create the file ``uz_myHLSIP.h`` in the ``include`` folder.
 
 .. code-block:: c
    :linenos:
@@ -659,7 +660,7 @@ Testing the IP core with the Vitis Serial Terminal
 
    #pragma once
 
-   void uz_myIP(void);
+   void uz_myHLSIP(void);
 
 - Create the file ``uz_myHLSIP.c`` in the ``sw`` folder.
 
@@ -695,8 +696,8 @@ Testing the IP core with the Vitis Serial Terminal
 
 - Build the software.
 - Include ``#include "include/uz_myHLSIP.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myHLSIP();`` before the ISR is initialized!
-- Connected the serial port to the Vitis Serial Terminal
-- Run the program, The success message should be printed to the Vitis Serial Terminal.
+- Connect the serial port to the Vitis Serial Terminal.
+- Run the program. The success message should be printed to the Vitis Serial Terminal.
 
 .. figure:: tutorial_img/33_vitis_result.png
    :width: 400px

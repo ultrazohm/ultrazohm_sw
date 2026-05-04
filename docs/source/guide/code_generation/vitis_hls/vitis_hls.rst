@@ -24,10 +24,10 @@ The example IP core will perform integer multiplication.
 
 Generation using tcl script
 ---------------------------
-
+.. _hls_generation_tcl:
 
 - Each Vitis HLS design can be generated using a ``script.tcl``, which includes all the necessary commands to create, synthesize and export your design.
-- Example ``script.tcl`` for this tutorial:
+- Example ``script.tcl`` (in ``ultrazohm_sw\ip_cores\uz_HLS_testIP\testIP_solution``) for this tutorial:
 
    .. code-block:: console
    
@@ -50,7 +50,7 @@ Generation using tcl script
 
 - This script adds the necessary source and testbench files, sets the part, clock and export settings, and runs the C simulation, synthesis and RTL export.
 - This script can be further adjusted to include additional settings, optimizations and directives as needed for your specific design.
-- For more information regarding the possible commands see the `Vitis HLS Command Reference Documentation <https://docs.amd.com/r/2022.2-English/ug1399-vitis-hls/vitis_hls-Command>`_ .
+- For more information regarding the possible commands see the `Vitis HLS Command Reference Documentation <https://docs.amd.com/r/2022.2-English/ug1399-vitis-hls/vitis_hls-Command>`_.
 - E.g. (not necessary for this tutorial)
   
    .. code-block:: console
@@ -61,8 +61,8 @@ Generation using tcl script
       config_compile -no_signed_zeros -unsafe_math_optimizations 
 
 
-- You can run this script by opening your terminal, navigating to the project directory and running the command ``vitis_hls -f testIP_solution\script.tcl``.
-- After the script is finished, the IP core has been generated and exported and can now be integrated into the Vivado project as described in the next section.
+- You can run this script by opening your terminal, navigating to the project directory, here ``ultrazohm_sw\ip_cores\uz_HLS_testIP``, and running the command ``vitis_hls -f testIP_solution\script.tcl``.
+- After the script is finished, the IP core has been generated and exported to ``uz_HLS_testIP\testIP_solution\impl\export.zip``. The IP core can now be integrated into the Vivado project as described in the section :ref:`Vivado<hls_vivado>`.
 
 Manual Tutorial
 ---------------
@@ -284,16 +284,18 @@ If you don't want to use a script to generate your design, this tutorial will gu
       :width: 400px
       :align: center
    
-   - At the end of the last step, you will have the designed IP core as .zip version. Unzip the file, and place at the ultrazohm_sw/ip_cores folder.
+   - At the end of the last step, you will have the designed IP core as .zip version. Unzip the file, and place in the ``ultrazohm_sw\ip_cores`` folder.
 
 Vivado
 ------
 
-- To use your new IP in the UZ vivado project, make sure, you placed the generated IP at the ultrazohm_sw/ip_cores folder.
+.. _hls_vivado:
+
+- To use the new IP core in the UZ Vivado project, the generated IP core has to be placed in the ``ultrazohm_sw\ip_cores`` folder. After following the steps of :ref:`Generation using tcl script<hls_generation_tcl>`, this is already the case. If the IP core was generated in a different project directory, the IP core can be moved to the ``ultrazohm_sw\ip_cores`` folder by unzipping the exported .zip file.
 - Open Vivado and the block design.
 - Navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 - Extend uz_user subblock.
-- Extend the smart connect by one master port to connect AXI ports to the processor.
+- Extend the smartconnect by one master port to connect AXI ports to the processor.
 - Add the new IP core and connect it to the system.
 
 .. figure:: tutorial_img/32_vivado_ip_placement.png

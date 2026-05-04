@@ -316,17 +316,17 @@ Drivers
 - The usage is not yet aligned with the UZ project's typical drivers and will be explained in the following.
 - The created files for the example project with the name uz_HLS_testIP are:
 
-   - xuz_HLS_testip_hw.h
-   - xuz_HLS_testip_linux.c
-   - xuz_HLS_testip_sinit.c
-   - xuz_HLS_testip.c
-   - xuz_HLS_testip.h
+   - xuz_hls_testip_hw.h
+   - xuz_hls_testip_linux.c
+   - xuz_hls_testip_sinit.c
+   - xuz_hls_testip.c
+   - xuz_hls_testip.h
  
 While the ``_hw.h`` file is similar to the HDL Coder generated hardware address file, the last two files include already usable drivers.
 These drivers can be used for operation or additional UZ-style drivers can be created around them.
 They are automatically included in the exported .xsa file from Vivado and therefore directly included in the platform project within Vitis. 
-You can find them in the Vitis workspace under ``vitis -> UltraZohm/hw/drivers/your_ip_core``.
-The header file can simply be included.
+You can find them in the Vitis workspace (after regenerating the workspace) under ``ultrazohm_sw\vitis\workspace\UltraZohm\hw\drivers\your_ip_core``.
+The header file can simply be included, as also done in the following.
 
 Initialization with Vitis HLS generated drivers
 ***********************************************
@@ -374,7 +374,7 @@ To use the write and read with set and get functions, place the initialization c
 
 .. note::
    Using the AXI-write and -read functions is more tricky depending on the desired datatype.
-   In the following snippet the AXI-interfaces have a floating point datatype.
+   In the following example snippet the AXI-interfaces have a floating point datatype.
    However, the data for the AXI-write functions takes an argument of type ``uint32``.
    This means, the driver expects the bits of a floating point value in the storage item of an unsigned int.
    To achieve this, the user can create the really used float variable, here ``REAL_VAR`` and create a pointer of type ``uint32_t`` to this variable and cast it.
@@ -388,7 +388,6 @@ To use the write and read with set and get functions, place the initialization c
       int main(void) {
          
          XEXAMPLE_Initialize(&example_instance, XPAR_EXAMPLE_0_DEVICE_ID);
-         float value = 99.0f;
          XEXAMPLE_Set_axi_example_signal(&example_instance, *INT_VAR);
       }
 
@@ -401,7 +400,7 @@ To gain a better understanding of driver creation, you can follow the steps belo
 
 .. dropdown:: Show steps (collapsed by default)
 
-   - The detailed explanation for AXI test IP created with HDL Coder can be found here. 
+   - The detailed explanation for AXI test IP created with HDL Coder can be found :ref:`here<hdl_coder>`. 
    - This HLS IP scenario is similar to the example. 
      To multiply two variables result=A⋅B of type int32_t, the driver has to write A and B from the PS to the PL by AXI in the correct registers and read back the result from the PL to the PS.
    - For that reason, we need set and get functions, also called write and read functions. 

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.91
+ * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Apr 27 16:00:44 2026
+ * C/C++ source code generated on : Mon May  4 14:25:47 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -285,7 +285,6 @@ typedef struct {
   real32_T I_dq_Act[6];                /* '<S1>/Current_Controller' */
   real32_T usrpm;                      /* '<S11>/[1//s] => [rpm]' */
   real32_T Abs_d;                      /* '<S11>/Abs' */
-  real32_T DataSourceSwitch;           /* '<S7>/DataSourceSwitch' */
   real32_T EN_FLT_Switch_1;            /* '<S49>/EN_FLT_Switch_1' */
   real32_T EN_FLT_Switch_2;            /* '<S49>/EN_FLT_Switch_2' */
   real32_T EN_FLT_Switch_3;            /* '<S49>/EN_FLT_Switch_3' */
@@ -448,6 +447,7 @@ typedef struct {
   boolean_T Memory_k;                  /* '<S90>/Memory' */
   boolean_T Logic_e[2];                /* '<S90>/Logic' */
   boolean_T Overspeed_Error;           /* '<S11>/Selectphicalc1' */
+  boolean_T DataSourceSwitch;          /* '<S7>/DataSourceSwitch' */
   boolean_T Compare_l;                 /* '<S56>/Compare' */
   boolean_T Compare_fp;                /* '<S57>/Compare' */
   boolean_T Compare_g1;                /* '<S58>/Compare' */
@@ -481,6 +481,7 @@ typedef struct {
   boolean_T FixPtRelationalOperator_m; /* '<S82>/FixPt Relational Operator' */
   boolean_T FixPtRelationalOperator_j; /* '<S83>/FixPt Relational Operator' */
   boolean_T FixPtRelationalOperator_h; /* '<S67>/FixPt Relational Operator' */
+  boolean_T LogicalOperator1_i;        /* '<S7>/Logical Operator1' */
   boolean_T AntiWindupLE;              /* '<S45>/AntiWindupLE' */
   boolean_T AntiWindupOR_q;            /* '<S45>/AntiWindupOR_q' */
   boolean_T AntiWindupOR_d;            /* '<S45>/AntiWindupOR_d' */
@@ -552,6 +553,9 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct P_FOC_FCF_T_ {
+  real32_T ENABLE_External_Stop;       /* Variable: ENABLE_External_Stop
+                                        * Referenced by: '<S7>/ENABLE_External_Stop'
+                                        */
   real32_T ENABLE_GateDriver_FLT_Error_Sys1;
                                    /* Variable: ENABLE_GateDriver_FLT_Error_Sys1
                                     * Referenced by: '<S49>/ENABLE_GateDriver_FLT_Error_Sys1'
@@ -1448,9 +1452,9 @@ struct P_FOC_FCF_T_ {
   uint32_T Constant_Value_f;           /* Computed Parameter: Constant_Value_f
                                         * Referenced by: '<S60>/Constant'
                                         */
-  boolean_T NoError_Manual_Value;    /* Computed Parameter: NoError_Manual_Value
-                                      * Referenced by: '<S7>/NoError_Manual'
-                                      */
+  boolean_T NoError_Value;             /* Computed Parameter: NoError_Value
+                                        * Referenced by: '<S7>/NoError'
+                                        */
   boolean_T Constant2_Value_f;         /* Computed Parameter: Constant2_Value_f
                                         * Referenced by: '<S63>/Constant2'
                                         */
@@ -1493,10 +1497,6 @@ struct P_FOC_FCF_T_ {
   boolean_T Logic_table_lc[16];        /* Computed Parameter: Logic_table_lc
                                         * Referenced by: '<S90>/Logic'
                                         */
-  boolean_T SELECT_DataSource_Value;
-                                  /* Computed Parameter: SELECT_DataSource_Value
-                                   * Referenced by: '<S7>/SELECT_DataSource'
-                                   */
   boolean_T Logic_table_l5[16];        /* Computed Parameter: Logic_table_l5
                                         * Referenced by: '<S71>/Logic'
                                         */

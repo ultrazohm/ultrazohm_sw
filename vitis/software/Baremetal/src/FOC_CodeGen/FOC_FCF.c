@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.91
+ * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Apr 27 16:00:44 2026
+ * C/C++ source code generated on : Mon May  4 14:25:47 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -2625,16 +2625,19 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* End of MultiPortSwitch: '<S11>/Selectphicalc1' */
 
   /* MultiPortSwitch: '<S7>/DataSourceSwitch' incorporates:
-   *  Constant: '<S7>/SELECT_DataSource'
+   *  Constant: '<S7>/ENABLE_External_Stop'
    */
-  if (!FOC_FCF_P.SELECT_DataSource_Value) {
-    /* MultiPortSwitch: '<S7>/DataSourceSwitch' */
-    FOC_FCF_B->DataSourceSwitch = 0.0F;
-  } else {
+  if ((int32_T)FOC_FCF_P.ENABLE_External_Stop == 0) {
     /* MultiPortSwitch: '<S7>/DataSourceSwitch' incorporates:
-     *  Constant: '<S7>/NoError_Manual'
+     *  Constant: '<S7>/NoError'
      */
-    FOC_FCF_B->DataSourceSwitch = FOC_FCF_P.NoError_Manual_Value;
+    FOC_FCF_B->DataSourceSwitch = FOC_FCF_P.NoError_Value;
+  } else {
+    /* Logic: '<S7>/Logical Operator1' */
+    FOC_FCF_B->LogicalOperator1_i = !FOC_FCF_U->bus_BSW_FCF.External_Stop;
+
+    /* MultiPortSwitch: '<S7>/DataSourceSwitch' */
+    FOC_FCF_B->DataSourceSwitch = FOC_FCF_B->LogicalOperator1_i;
   }
 
   /* End of MultiPortSwitch: '<S7>/DataSourceSwitch' */
@@ -3244,7 +3247,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->LogicalOperator3_pp = ((!(FOC_FCF_P.FOC_MANUAL_Error != 0.0F)) &&
     LogicalOperator2_a_tmp && (!FOC_FCF_B->Overspeed_Error) &&
     (!FOC_FCF_U->bus_SMF.Collective_Over_Temp_Error) &&
-    (!(FOC_FCF_B->DataSourceSwitch != 0.0F)) && (!FOC_FCF_B->LogicalOperator3_c));
+    (!FOC_FCF_B->DataSourceSwitch) && (!FOC_FCF_B->LogicalOperator3_c));
 
   /* Logic: '<S7>/Enable_PWM_' */
   LogicalOperator2_a_tmp = (FOC_FCF_B->LogicalOperator3_pp &&

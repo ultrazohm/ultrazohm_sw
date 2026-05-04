@@ -114,6 +114,8 @@ void ISR_Control(void *data)
 	ctrl_data.bus_BSW_FCF.ADC_I_ph[7] = Global_Data.aa.A2.me.ADC_A2;
 	ctrl_data.bus_BSW_FCF.ADC_I_ph[8] = Global_Data.aa.A2.me.ADC_A3;
 
+	// get status of "external stop button"
+	ctrl_data.bus_BSW_FCF.External_Stop = uz_GetExternalStop();
 
 	// write inputs to fast control function of simulink model
 	FOC_FCF_MPtr->inputs->bus_BSW_FCF = ctrl_data.bus_BSW_FCF;

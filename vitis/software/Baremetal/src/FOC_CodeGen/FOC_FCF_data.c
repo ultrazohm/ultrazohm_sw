@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.91
+ * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Apr 27 16:00:44 2026
+ * C/C++ source code generated on : Mon May  4 14:25:47 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,6 +21,11 @@
 
 /* Block parameters (default storage) */
 P_FOC_FCF_T FOC_FCF_P = {
+  /* Variable: ENABLE_External_Stop
+   * Referenced by: '<S7>/ENABLE_External_Stop'
+   */
+  1.0F,
+
   /* Variable: ENABLE_GateDriver_FLT_Error_Sys1
    * Referenced by: '<S49>/ENABLE_GateDriver_FLT_Error_Sys1'
    */
@@ -1401,8 +1406,8 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   0U,
 
-  /* Computed Parameter: NoError_Manual_Value
-   * Referenced by: '<S7>/NoError_Manual'
+  /* Computed Parameter: NoError_Value
+   * Referenced by: '<S7>/NoError'
    */
   false,
 
@@ -1479,11 +1484,6 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false },
-
-  /* Computed Parameter: SELECT_DataSource_Value
-   * Referenced by: '<S7>/SELECT_DataSource'
-   */
-  true,
 
   /* Computed Parameter: Logic_table_l5
    * Referenced by: '<S71>/Logic'

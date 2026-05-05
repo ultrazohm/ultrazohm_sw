@@ -33,7 +33,7 @@ Based on the LTC2983:
 * Simultaneous 50Hz/60Hz Rejection
 * Includes 10ppm/°C (max) Reference (I-Grade)
 * 3 Galvanic isolated LTC2983 available (2 reachable directly on the Front, 1 could be reached with riser-cable)
-* build-in RC-lowpass filter for each channel
+* built-in RC-lowpass filter for each channel
 * on-board-wiring for easy channel/sensor configuration
 
 Before first use

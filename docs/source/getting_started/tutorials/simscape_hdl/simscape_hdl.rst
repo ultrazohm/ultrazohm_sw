@@ -10,11 +10,11 @@ The motivation for using Simscape Models on the UltraZohm is to use them as a vi
 Additionally, Simscape Models on the UltraZohm be used to accelerate specific Simulations compared to using a desktop computer.
 This is especially useful for simulating a system with low time constants that you want to simulate for a long time.
 However, this is the most basic Mathworks example applied to the UltraZohm, and there is no focus on usability for simulation, nor is the signal chain closed.
-The goal of this tutorial is to provide a starting point for the user and showcase the possibilities of using existing tooling with the Ultrazohm.
+The goal of this tutorial is to provide a starting point for the user and showcase the possibilities of using existing tooling with the UltraZohm.
 
 This tutorial consists of:
   
-- Generating HDL-Code from a `Simulink Simscape Modell <https://de.mathworks.com/products/simscape.html>`_
+- Generating HDL-Code from a `Simulink Simscape Model <https://de.mathworks.com/products/simscape.html>`_
 - Implementation of the IP core
 - Integration of the IP core in the UltraZohm Vivado project
 - Follows this Mathworks example: `Generate HDL Code for Simscape Models <https://de.mathworks.com/help/hdlcoder/ug/generate-hdl-code-from-simscape-model.html>`_
@@ -79,7 +79,7 @@ Software
            switch (initialization_chain)
            {
            case init_assertions:
-               uz_assert_configuration(); // This has to be the first line of code in main.c
+               uz_rpu_assert_configuration(); // This has to be the first line of code in main.c
                initialization_chain = init_gpios;
                break;
            case init_gpios:

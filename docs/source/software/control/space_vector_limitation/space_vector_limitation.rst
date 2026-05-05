@@ -76,9 +76,9 @@ With the max modulation index :math:`m_\mathrm{max}` the following voltages can 
   \draw[-latex](Eval2.east) -| (Eval3right.north);
   \draw[-latex](Eval2.west) -| (Eval3left.north);
   \node[font=\Large] at($(Eval2.west)+(-2,0.3)$){Yes};
-  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){generator mode};
+  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){motor mode};
   \node[font=\Large] at($(Eval2.east)+(2,0.3)$){No};
-  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){motor mode};
+  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){generator mode};
   \node[draw,  drop shadow,rectangle, fill=green!20, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.west)+(-2.2,-3)$)(End1){$u_{d,lim} = 0.95 \cdot sign(u_d) \cdot U_{SV,max}$ \\\\ $u_{q,lim} = sign(u_q)\cdot \sqrt{U_{SV,max}^2 - u_{d,lim}^2}$};
   \node[draw,  drop shadow,rectangle,  fill=green!20,align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.east)+(2.2,-3)$)(End2){$u_{d,lim} = u_d$ \\\\ $u_{q,lim} = sign(u_q)\cdot \sqrt{U_{SV,max}^2 - u_{d,lim}^2}$};
   \node[draw,  drop shadow,rectangle,  fill=green!20,align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$u_{q,lim} = 0.95 \cdot sign(u_q) \cdot U_{SV,max}$ \\\\ $u_{d,lim} = sign(u_d)\cdot \sqrt{U_{SV,max}^2 - u_{q,lim}^2}$};

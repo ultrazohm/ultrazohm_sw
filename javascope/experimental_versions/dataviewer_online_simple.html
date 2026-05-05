@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>UltraZohm Data Viewer (JS)</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+
+        .panel {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 style="text-align:center">UltraZohm Data Viewer (JS)</h1>
+
+    <input type="file" id="fileInput" />
+    <p id="status"></p>
+
+    <div class="grid" id="graphs"></div>
+
+    <script>
+let df = [];
+let columns = [];
+
+function createPanel(i) {
+  return `
+  <div class="panel">
+    <h3>Graph ${i}</h3>
+    <select multiple id="select-${i}" style="width:100%"></select>
+    <button onclick="exportData(${i})">Export CSV</button>
+    <div id="plot-${i}" style="height:400px"></div>
+  </div>`;
+}
+
+for (let i = 1; i <= 4; i++) {
+  document.getElementById('graphs').innerHTML += createPanel(i);
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  Papa.parse(file, {
+    header: true,
+    dynamicTyping: true,
+    complete: function(results) {
+      df = results.data;
+      columns = Object.keys(df[0] || {}).filter(c => c !== 'time');
+
+      document.getElementById('status').innerText = `Loaded ${df.length} rows`;
+
+      for (let i = 1; i <= 4; i++) {
+        const sel = document.getElementById(`select-${i}`);
+        sel.innerHTML = columns.map(c => `<option value="${c}">${c}</option>`).join('');
+
+        sel.onchange = () => updatePlot(i);
+      }
+    }
+  });
+});
+
+function updatePlot(i) {
+  if (!df.length) return;
+
+  const sel = document.getElementById(`select-${i}`);
+  const selected = Array.from(sel.selectedOptions).map(o => o.value);
+
+  const time = df.map(r => r.time);
+
+  const traces = selected.map(col => ({
+    x: time,
+    y: df.map(r => r[col]),
+    mode: 'lines',
+    name: col
+  }));
+
+  Plotly.newPlot(`plot-${i}`, traces, {
+    margin: { t: 30 }
+  });
+}
+
+function exportData(i) {
+  const sel = document.getElementById(`select-${i}`);
+  const selected = Array.from(sel.selectedOptions).map(o => o.value);
+
+  if (!selected.length) return alert('Select columns first');
+
+  let csv = 'time,' + selected.join(',') + '\n';
+
+  df.forEach(row => {
+    csv += row.time + ',' + selected.map(c => row[c]).join(',') + '\n';
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `graph_${i}.csv`;
+  a.click();
+}
+    </script>
+
+</body>
+
+</html>

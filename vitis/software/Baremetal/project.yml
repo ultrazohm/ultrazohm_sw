@@ -7,15 +7,14 @@
 
 :project:
   :use_exceptions: TRUE
-  :use_test_preprocessor: TRUE
-  :use_auxiliary_dependencies: TRUE
-  :use_deep_dependencies: TRUE
-  :generate_deep_dependencies: FALSE
+  :use_test_preprocessor: :all
   :build_root: build
 #  :release_build: TRUE
   :test_file_prefix: test_
+  :compile_threads: :auto
+  :test_threads: :auto
+  :use_backtrace: :simple
   :which_ceedling: gem
-  :ceedling_version: 0.31.0
   :default_tasks:
     - test:all
 
@@ -50,6 +49,8 @@
     - -:test/support
   :source:
     - src/**
+  :include:
+    - src/**
   :support:
     - test/support
   :libraries: []
@@ -63,7 +64,7 @@
     - *common_defines
     - TEST
     - CMOCK_MEM_DYNAMIC
-  :test_preprocess:
+  :preprocess:
     - *common_defines
     - TEST
 
@@ -123,10 +124,12 @@
 #     :inc: '/* This is Boilerplate code that is added to the .h file. */'
 
 :plugins:
-  :load_paths:
-    - "#{Ceedling.load_path}"
   :enabled:
-    - stdout_pretty_tests_report
+    - report_tests_pretty_stdout
     - module_generator
-    - xml_tests_report
+    - report_tests_log_factory
+
+:report_tests_log_factory:
+  :reports:
+    - cppunit
 ...

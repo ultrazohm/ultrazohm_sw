@@ -28,23 +28,32 @@ platform_state_t ultrazohm_state_machine_get_state(void);
 void ultrazohm_state_machine_step(void);
 
 /**
- * @brief Sets the input signal enable system of the state machine
- * 
- * @param enable_system 
+ * @brief Latches a one-shot enable system request for the next state machine step.
+ *
+ * Passing ``false`` has no effect. The flag is consumed and cleared by
+ * ``ultrazohm_state_machine_step``; a stop active at that time discards it.
+ *
+ * @param enable_system Set to ``true`` to latch the request.
  */
 void ultrazohm_state_machine_set_enable_system(bool enable_system);
 
 /**
- * @brief Sets the input signal enable control of the state machine
- * 
- * @param enable_control 
+ * @brief Latches a one-shot enable control request for the next state machine step.
+ *
+ * Passing ``false`` has no effect. The flag is consumed and cleared by
+ * ``ultrazohm_state_machine_step``; a stop active at that time discards it.
+ *
+ * @param enable_control Set to ``true`` to latch the request.
  */
 void ultrazohm_state_machine_set_enable_control(bool enable_control);
 
 /**
- * @brief Sets the input signal stop of the state machine
- * 
- * @param stop 
+ * @brief Latches a one-shot stop request for the next state machine step.
+ *
+ * Passing ``false`` has no effect. Stop takes priority over any pending
+ * enable requests in the same step.
+ *
+ * @param stop Set to ``true`` to latch the request.
  */
 void ultrazohm_state_machine_set_stop(bool stop);
 

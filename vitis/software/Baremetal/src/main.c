@@ -15,11 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "uz/uz_math_constants.h"
-#include "Codegen/uz_codegen.h"
-#include "uz/uz_fixedpoint/uz_fixedpoint.h"
-
-uz_codegen codegenInstance;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -30,24 +25,20 @@ DS_Data Global_Data = {
         .halfBridge4DutyCycle = 0.0f,
         .halfBridge5DutyCycle = 0.0f,
         .halfBridge6DutyCycle = 0.0f,
-		.halfBridge7DutyCycle = 0.0f,
-		.halfBridge8DutyCycle = 0.0f,
-		.halfBridge9DutyCycle = 0.0f,
-		.halfBridge10DutyCycle = 0.0f,
-		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
-    },
+        .halfBridge7DutyCycle = 0.0f,
+        .halfBridge8DutyCycle = 0.0f,
+        .halfBridge9DutyCycle = 0.0f,
+        .halfBridge10DutyCycle = 0.0f,
+        .halfBridge11DutyCycle = 0.0f,
+        .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
-};
+    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
 {
     init_assertions = 0,
+    wait_for_apu_handshake,
     init_gpios,
     init_software,
     init_ip_cores,
@@ -56,6 +47,11 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+
+uint32_t apu_version_final = 0;
+uint32_t rpu_version_final = 0;
 
 int main(void)
 {
@@ -65,7 +61,21 @@ int main(void)
         switch (initialization_chain)
         {
         case init_assertions:
-            uz_assert_configuration(); // This has to be the first line of code in main.c
+            uz_rpu_assert_configuration();
+            initialization_chain = wait_for_apu_handshake;
+            break;
+        case wait_for_apu_handshake:
+            write_rpu_version(0U);
+            do
+            {
+                apu_version_final = read_apu_version();
+            } while (!(apu_version_final == 257U));
+            write_rpu_version(UZ_HARDWARE_VERSION);
+            do
+            {
+                apu_version_final = read_apu_version();
+            } while ((apu_version_final == 257U));
+            write_rpu_version(apu_version_final);
             initialization_chain = init_gpios;
             break;
         case init_gpios:
@@ -80,12 +90,6 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
-
-            codegenInstance.input.ki_pll = 98696.0f;
-            codegenInstance.input.kp_pll = 628.3185f;
-            codegenInstance.input.pole_pairs = 2.0f;
-            codegenInstance.input.sampling_time_seconds = Global_Data.av.isr_samplerate_s;
-            uz_codegen_init(&codegenInstance);
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
@@ -101,28 +105,22 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            // ssi init for testing
-            Global_Data.objects.ssi_0_encoder = ssi_encoder_init_ssi0(); //D5_1
-            Global_Data.objects.ssi_1_encoder = ssi_encoder_init_ssi1(); //D5_2
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_1_BASEADDR + 0x13C, 40U); //write delay ticks 40 to ssi_1, since it is required for the Kuebler encoder
-            uz_ssi_interface_enable_ip(Global_Data.objects.ssi_0_encoder, true);
-            uz_ssi_interface_enable_ip(Global_Data.objects.ssi_1_encoder, true);
             initialization_chain = print_msg;
             break;
-	    case print_msg:
+        case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
+            uz_printf("RPU: Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
+            uz_print_bitstream_timestamp();
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-            Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
+            Initialize_ISR();
+            Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:

@@ -3,7 +3,9 @@
 !/vitis/workspace/create_Vitis_workspace_here.txt
 
 ip_cores/*/simulation/slprj/*
+ip_cores/vv_index.xml
 
+javascope/build/
 
 
 vitis/software/Baremetal/src/slprj/
@@ -23,3 +25,6 @@ vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
 control_algorithms/uz_FOC.slxc
 
 *.sw[a-p]
+vitis/Packages/*
+*.slxc
+*cpAnnotation.mat

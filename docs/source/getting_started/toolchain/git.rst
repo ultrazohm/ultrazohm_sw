@@ -1,7 +1,7 @@
 .. _Git:
 
 =============
-git + git lfs
+Git + Git LFS
 =============
 
 Installation
@@ -11,7 +11,7 @@ The version control of the source files of the UltraZohm is done by git.
 Therefore, a git installation as well as git LFS is required:
 
 #. `git installation <https://git-scm.com/downloads>`_
-#. `git lfs installation <https://git-lfs.github.com/>`_
+#. `git LFS installation <https://git-lfs.github.com/>`_
 
 The homepage of git offers excellent `documentation, tutorials <https://git-scm.com/doc>`_, and `videos <https://git-scm.com/videos>`_.
 Another `recommended tutorial is offered by Bitbucket <https://www.atlassian.com/git/tutorials>`_.
@@ -23,6 +23,6 @@ A graphical git client can be used to simplify the usage of git.
 Git Bash
 --------
 
-If you are comfortable with git bash / CLI tool you can use it without the GUI client.
+If you are comfortable with Git Bash or the CLI tools, you can use them without a GUI client.
 
 .. image:: ./images_git/gitclone.png

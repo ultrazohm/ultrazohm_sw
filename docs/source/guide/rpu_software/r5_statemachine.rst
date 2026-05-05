@@ -26,7 +26,7 @@ The initialization of the system is not part of the state machine and is done in
         state "Control" as Control: Blink ready LED <br> Turn on running LED <br> Enable control algorithm
         state "Error" as Error: Disable FPGA outputs <br> Turn on error LED
 
-The figure above shows the four state of the UltraZohm:
+The figure above shows the four states of the UltraZohm:
 
 - Idle
 - Running
@@ -34,7 +34,8 @@ The figure above shows the four state of the UltraZohm:
 - Error
 
 The implicit state *assertion* is not shown (see :ref:`assertions`).
-If in any state an execution is triggered, the error state is executed once, the system is hold and can only be used after a restart (power cycle).
+If an assertion is triggered in any state, the state machine enters the error state.
+From error state, the system returns to idle when a stop input is present.
 The state machine has the following input variables:
 
 - Enable system
@@ -42,9 +43,16 @@ The state machine has the following input variables:
 - Stop
 - Error
 
-The inputs are set using the set functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
-For all UltraZohm versions >2, enable system, enable control, and stop are available as buttons on the frontpanel.
-Additionally, the signals can be set using the :ref:`JavaScope`.
+For all UltraZohm versions >2, enable system, enable control, and stop are available as buttons on the front panel.
+Additionally, these signals can be set using the :ref:`JavaScope` setter functions (e.g., ``ultrazohm_state_machine_set_enable_system``).
+The effective state machine inputs are updated in every ``ultrazohm_state_machine_step`` by merging both sources:
+
+- Enable system = front-panel button ``OR`` latched JavaScope request
+- Enable control = front-panel button ``OR`` latched JavaScope request (only considered in running state)
+- Stop = front-panel stop ``OR`` latched JavaScope request (plus optional external stop, if enabled at compile time)
+
+JavaScope requests are latched by the setter functions and consumed (cleared) once per ``ultrazohm_state_machine_step``.
+A stop input takes priority: any pending enable requests are discarded in the same step that stop is active.
 The input ``Error`` is only set from software functions.
 
 The different states are indicated by the status of the LEDs on the front panel.
@@ -52,6 +60,7 @@ The main difference between the states is that no output signals are routed thro
 Likewise, the control algorithm in the ISR is not executed, if the system is not in the state *Control*.
 
 The following table shows the complete state table.
+In this table, ``Enable System``, ``Enable Control``, and ``Stop`` refer to the merged effective inputs described above.
 
 .. csv-table:: State table with inputs and outputs of the UltraZohm
     :file: r5_statemachine_table.csv

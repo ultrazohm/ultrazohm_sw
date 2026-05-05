@@ -4,10 +4,10 @@
 Bitbucket
 =========
 
-Bitbucket is a cloud hosting service on which the remote repository of the UltraZohm is hosted `UZ Repository <https://bitbucket.org/ultrazohm/ultrazohm_sw/>`_ .
-The source files and pull requests in the repository are public, while the issues are private. 
+Bitbucket is a cloud hosting service on which the remote repository of the UltraZohm is hosted `UZ Repository <https://bitbucket.org/ultrazohm/ultrazohm_sw/>`_.
+The source files and pull requests in the repository are public, while the issues are private.
 Therefore, one has to be registered at Bitbucket and request access to the repository at one of the maintainers.
-Please use a descriptive user name and work-related mail address.
+Please use a descriptive username and a work-related email address.
 
 The Bitbucket features **Issues** and **Pull Requests** are used to structure the technical discussion around the UltraZohm.
 
@@ -48,20 +48,20 @@ How to use the issues
 
 .. image:: ./images_bitbucket/issue4.png
 
-- Once the issue has been created, **discuss everything inside this issue**. This helps to document the development progress and on-boarding other users when you ask them for help or review later on. If you discuss with someone in person or on the phone, write the outcome of this discussion in the issue.
-- **Do not hesitate to close the issue**, once you think it has been resolved. If it turns out it has not been resolved, they can simply be re-opened again. Generally, this should be done by the assignee or the reporter.
+- Once the issue has been created, **discuss everything inside this issue**. This helps to document the development progress and onboarding other users when you ask them for help or review later on. If you discuss with someone in person or on the phone, write the outcome of this discussion in the issue.
+- **Do not hesitate to close the issue**, once you think it has been resolved. If it turns out it has not been resolved, they can simply be reopened again. Generally, this should be done by the assignee or the reporter.
 
 .. _bitbucket_pull_request:
 
 Pull Request
 ************
 
-After you finished a feature and you want to include your changes in the main repository, you have to create a pull request in Bitbucket.
+After you finish a feature and want to include your changes in the main repository, you have to create a pull request in Bitbucket.
 A pull request is the process to merge your changes from your ``feature/branch`` into ``develop``.
 
 .. image:: ./images_bitbucket/create_pull_request.png
 
-In the *Create a pull request* plane, you can choose which branches should be merged. Choose your ``feature/branch`` on the left side and ``develop`` on the right.
+In the *Create a pull request* pane, you can choose which branches should be merged. Choose your ``feature/branch`` on the left side and ``develop`` on the right.
 Give the merge request a useful title and describe what the changes do. The commit messages of your ``feature/branch`` are automatically added.
 
 * If you fix issues with your pull request, specify the issue in the title with ``close #IssueID``, i.e., *Example text, close #99 #100*. 

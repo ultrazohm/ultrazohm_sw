@@ -68,7 +68,7 @@ void uz_phy_reset(void)
 	uz_gpio_set_enable_output(&MIO_PHY1_Reset, false);
 #endif
 
-	uz_printf("PHY reset done\r\n");
+	uz_printf("APU: PHY reset done\r\n");
 }
 
 #if (UZ_PLATFORM_ENABLE==0)

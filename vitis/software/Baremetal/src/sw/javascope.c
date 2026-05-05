@@ -52,6 +52,26 @@ extern float da;
 extern float db;
 extern float dc;
 
+extern float theta_e_right_est;
+extern float theta_e_right_unwrap;
+extern float i_alpha_right_est;
+extern float i_beta_right_est;
+extern float i_alpha_right;
+extern float i_beta_right;
+extern float n_right_est;
+
+extern float theta_e_left_est;
+extern float theta_left_est;
+extern float w_e_left_est;
+extern float w_left_est;
+extern float n_left_est;
+
+extern float theta_i;
+extern int sec;
+float sec_o = 0.0f;
+extern float Ua_comp;
+extern float Ub_comp;
+extern float Uc_comp;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -91,6 +111,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_ref_left] 			= &data->rasv.i_dq_ref_left.q;
 	js_ch_observable[JSO_n_ref_left] 			= &data->rasv.n_ref_left;
 	js_ch_observable[JSO_n_ref_left_filt] 		= &data->rasv.n_ref_left_filt;
+	js_ch_observable[JSO_n_ref_right] 			= &data->rasv.n_ref_right;
+	js_ch_observable[JSO_n_ref_right_filt] 		= &data->rasv.n_ref_right_filt;
 	js_ch_observable[JSO_id_ref_right] 			= &data->rasv.i_dq_ref_right.d;
 	js_ch_observable[JSO_iq_ref_right] 			= &data->rasv.i_dq_ref_right.q;
 	js_ch_observable[JSO_theta_el_left] 		= &data->av.position_el_2pi_d3_1;
@@ -109,6 +131,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_duty_a_left]			= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_duty_b_left]			= &data->rasv.halfBridge2DutyCycle;
 	js_ch_observable[JSO_duty_c_left]			= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_duty_a_right]			= &data->rasv.halfBridge4DutyCycle;
+	js_ch_observable[JSO_duty_b_right]			= &data->rasv.halfBridge5DutyCycle;
+	js_ch_observable[JSO_duty_c_right]			= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -116,6 +141,24 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_da]					= &da;
 	js_ch_observable[JSO_db]					= &db;
 	js_ch_observable[JSO_dc]					= &dc;
+	js_ch_observable[JSO_theta_e_right_est]		= &theta_e_right_est;
+	js_ch_observable[JSO_theta_e_right_unwrap]	= &theta_e_right_unwrap;
+	js_ch_observable[JSO_i_alpha_right_est]		= &i_alpha_right_est;
+	js_ch_observable[JSO_i_beta_right_est]		= &i_beta_right_est;
+	js_ch_observable[JSO_i_alpha_right]			= &i_alpha_right;
+	js_ch_observable[JSO_i_beta_right]			= &i_beta_right;
+	js_ch_observable[JSO_n_right_est]			= &n_right_est;
+	js_ch_observable[JSO_theta_e_left_est]		= &theta_e_left_est;
+	js_ch_observable[JSO_theta_left_est]		= &theta_left_est;
+	js_ch_observable[JSO_w_e_left_est]			= &w_e_left_est;
+	js_ch_observable[JSO_w_left_est]			= &w_left_est;
+	js_ch_observable[JSO_n_left_est]			= &n_left_est;
+	js_ch_observable[JSO_theta_i]				= &theta_i;
+	sec_o = sec*1.0f;
+	js_ch_observable[JSO_sec]					= &sec_o;
+	js_ch_observable[JSO_Ua_comp]				= &Ua_comp;
+	js_ch_observable[JSO_Ub_comp]				= &Ub_comp;
+	js_ch_observable[JSO_Uc_comp]				= &Uc_comp;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

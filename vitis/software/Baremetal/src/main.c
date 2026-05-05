@@ -38,7 +38,7 @@ DS_Data Global_Data = {
         .halfBridge11DutyCycle = 0.0f,
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY)/2.0f,//* (Interrupt_ISR_freq_factor)
     .aa = {.A1 = {.cf.ADC_A1 = 1.0f, .cf.ADC_A2 = 1.0f, .cf.ADC_A3 = 1.0f, .cf.ADC_A4 = 1.0f, .cf.ADC_B5 = 1.0f, .cf.ADC_B6 = 1.0f, .cf.ADC_B7 = 1.0f, .cf.ADC_B8 = 1.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
@@ -100,8 +100,11 @@ int main(void)
             Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
+			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
 			Global_Data.objects.iir_filter_torque = torque_filt_init();
             initialization_chain = init_ip_cores;
             break;
@@ -122,8 +125,10 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.rasv.resolver_offset = -4.363502f; // estimated with offset estimation module
-            Global_Data.rasv.d4_to_d3_offset_mech = 0.59f; // estimated heuristically
+            //Global_Data.rasv.resolver_offset = -4.363502f; // estimated with offset estimation module
+            Global_Data.rasv.resolver_offset = -0.1642f; // tuned by ourselves
+            //Global_Data.rasv.d4_to_d3_offset_mech = 0.59f; // estimated heuristically
+            Global_Data.rasv.d4_to_d3_offset_mech = 0.0523f; // tuned by ourselves
             Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
             Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
             uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1, Global_Data.rasv.resolver_offset);

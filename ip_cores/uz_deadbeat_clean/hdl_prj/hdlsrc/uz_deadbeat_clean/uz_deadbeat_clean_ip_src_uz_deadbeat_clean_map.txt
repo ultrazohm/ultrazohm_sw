@@ -1,0 +1,6 @@
+ --> uz_deadbeat_clean_ip_src_uz_deadbeat_clean_pac
+uz_deadbeat_clean/uz_deadbeat_clean/Sin_cordic_nw --> uz_deadbeat_clean_ip_src_Sin_cordic_nw
+uz_deadbeat_clean/uz_deadbeat_clean/Cos_cordic_nw --> uz_deadbeat_clean_ip_src_Cos_cordic_nw
+uz_deadbeat_clean/uz_deadbeat_clean/Sin_cordic_nw --> uz_deadbeat_clean_ip_src_Sin_cordic_nw_block
+uz_deadbeat_clean/uz_deadbeat_clean/Cos_cordic_nw --> uz_deadbeat_clean_ip_src_Cos_cordic_nw_block
+uz_deadbeat_clean/uz_deadbeat_clean --> uz_deadbeat_clean_ip_src_uz_deadbeat_clean

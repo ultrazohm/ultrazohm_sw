@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2.2 (64-bit)
+# SW Build 3788238 on Tue Feb 21 20:00:34 MST 2023
+# IP Build 3783773 on Tue Feb 21 23:41:56 MST 2023
+# Start of session at: Wed Apr 29 16:09:33 2026
+# Process ID: 208068
+# Current directory: C:/UltraZohm/ultrazohm_test/ip_cores/uz_deadbeat_clean/hdl_prj/ipcore/uz_deadbeat_clean_ip_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/UltraZohm/ultrazohm_test/ip_cores/uz_deadbeat_clean/hdl_prj/ipcore/uz_deadbeat_clean_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/UltraZohm/ultrazohm_test/ip_cores/uz_deadbeat_clean/hdl_prj/ipcore/uz_deadbeat_clean_ip_v1_0/prj_ip\vivado.jou
+# Running On: TUEIEAL-TM02, OS: Windows, CPU Frequency: 3418 MHz, CPU Physical cores: 16, Host memory: 68393 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

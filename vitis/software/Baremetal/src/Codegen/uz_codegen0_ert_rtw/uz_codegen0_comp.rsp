@@ -1,0 +1,7 @@
+-IC:/UltraZohm/ultrazohm_test/vitis/software/Baremetal/src/Codegen
+-IC:/UltraZohm/ultrazohm_test/vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw
+-I"C:/Program Files/MATLAB/R2024b/extern/include"
+-I"C:/Program Files/MATLAB/R2024b/simulink/include"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/src"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/src/ext_mode/common"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/ert"

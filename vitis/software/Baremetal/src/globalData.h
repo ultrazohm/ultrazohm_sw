@@ -111,6 +111,7 @@ typedef struct _actualValues_ {
 	float overspeed;
 	float overtorque;
 	bool currentcontrol_clamping_left;
+	bool currentcontrol_clamping_right;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -127,8 +128,11 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	float M_ref_left;
+	float M_ref_right;
 	float n_ref_left;
+	float n_ref_right;
 	float n_ref_left_filt;
+	float n_ref_right_filt;
 	float resolver_offset;
 	float d4_to_d3_offset_mech;
 	float d4_to_d3_offset_el;
@@ -155,9 +159,12 @@ typedef struct{
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;
+	uz_SpeedControl_t* speed_ctrl_right;
 	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_SetPoint_t* setpoint_ctrl_right;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
+	uz_IIR_Filter_t* iir_filter_ref_speed_right;
 	uz_IIR_Filter_t* iir_filter_torque;
 }object_pointers_t;
 

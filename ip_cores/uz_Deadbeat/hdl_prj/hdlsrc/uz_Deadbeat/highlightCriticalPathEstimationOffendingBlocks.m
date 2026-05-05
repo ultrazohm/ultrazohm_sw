@@ -1,0 +1,16 @@
+open_system('uz_Deadbeat');
+open_system('gm_uz_Deadbeat');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_Deadbeat/uz_Deadbeat/MATLAB Function/MATLAB Function', 'user2');
+annotate_port('gm_uz_Deadbeat/uz_Deadbeat/MATLAB Function/MATLAB Function', 1, 1, 'Block not characterized');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_Deadbeat/uz_Deadbeat/MATLAB Function/MATLAB Function', 'user2');
+annotate_port('gm_uz_Deadbeat/uz_Deadbeat/MATLAB Function/MATLAB Function', 1, 1, 'Block not characterized');
+hilite_system('uz_Deadbeat/uz_Deadbeat/MATLAB Function', 'user2');
+annotate_port('uz_Deadbeat/uz_Deadbeat/MATLAB Function', 1, 1, 'Block not characterized');

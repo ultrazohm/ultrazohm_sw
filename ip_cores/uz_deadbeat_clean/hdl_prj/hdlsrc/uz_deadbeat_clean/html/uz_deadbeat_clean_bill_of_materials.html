@@ -1,0 +1,1022 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_deadbeat_clean
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Multiply_1_4');hdlTableShrink(this, 'Multiply_1_5');hdlTableShrink(this, 'Multiply_1_6');hdlTableShrink(this, 'Multiply_1_7');hdlTableShrink(this, 'Multiply_1_8');hdlTableShrink(this, 'Multiply_1_9');hdlTableShrink(this, 'Multiply_1_10');hdlTableShrink(this, 'Adder_1_2');hdlTableShrink(this, 'Adder_1_5');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Subtractor_1_4');hdlTableShrink(this, 'Subtractor_1_7');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_deadbeat_clean
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+41
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+303
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+534
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+18898
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+393
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+388
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+76
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_deadbeat_clean:30')" name="code2model" class="code2model">
+uz_deadbeat_clean
+</a>
+
+</h5>
+<h5>
+Multipliers (41)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25x24-bit Multiply 							: 11
+</span>
+<span name="Multiply_1_1" id="Multiply_1_1">
+<ul class="SystemdefinedCollapse" id="760e865a-9f9a-477d-8aa5-ec50e18c4859" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:269')" name="code2model" class="code2model">
+Product14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:297')" name="code2model" class="code2model">
+Product6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:298')" name="code2model" class="code2model">
+Product7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:270')" name="code2model" class="code2model">
+Product15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:294')" name="code2model" class="code2model">
+Product38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:300')" name="code2model" class="code2model">
+Product9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:290')" name="code2model" class="code2model">
+Product34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:292')" name="code2model" class="code2model">
+Product36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:273')" name="code2model" class="code2model">
+Product18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:274')" name="code2model" class="code2model">
+Product19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:293')" name="code2model" class="code2model">
+Product37
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '760e865a-9f9a-477d-8aa5-ec50e18c4859')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+50x24-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_2" id="Multiply_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:264')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Multiply 							: 15
+</span>
+<span name="Multiply_1_3" id="Multiply_1_3">
+<ul class="SystemdefinedCollapse" id="4a27862b-8515-4c7f-9cc3-07cb1a8da874" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:275')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:196')" name="code2model" class="code2model">
+Gain3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:197')" name="code2model" class="code2model">
+Gain4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:285')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:271')" name="code2model" class="code2model">
+Product16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:296')" name="code2model" class="code2model">
+Product5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:295')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:279')" name="code2model" class="code2model">
+Product24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:276')" name="code2model" class="code2model">
+Product20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:280')" name="code2model" class="code2model">
+Product25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:190')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:281')" name="code2model" class="code2model">
+Product26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:282')" name="code2model" class="code2model">
+Product27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:194')" name="code2model" class="code2model">
+Gain12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:199')" name="code2model" class="code2model">
+Gain6
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '4a27862b-8515-4c7f-9cc3-07cb1a8da874')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x49-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_4" id="Multiply_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:265')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x25-bit Multiply 							: 3
+</span>
+<span name="Multiply_1_5" id="Multiply_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:283')" name="code2model" class="code2model">
+Product28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:284')" name="code2model" class="code2model">
+Product29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:277')" name="code2model" class="code2model">
+Product22
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_6')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+48x24-bit Multiply 							: 4
+</span>
+<span name="Multiply_1_6" id="Multiply_1_6">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:286')" name="code2model" class="code2model">
+Product30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:288')" name="code2model" class="code2model">
+Product32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:267')" name="code2model" class="code2model">
+Product12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:272')" name="code2model" class="code2model">
+Product17
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x33-bit Multiply 							: 2
+</span>
+<span name="Multiply_1_7" id="Multiply_1_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:299')" name="code2model" class="code2model">
+Product8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:291')" name="code2model" class="code2model">
+Product35
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_8')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+56x24-bit Multiply 							: 2
+</span>
+<span name="Multiply_1_8" id="Multiply_1_8">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:287')" name="code2model" class="code2model">
+Product31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:289')" name="code2model" class="code2model">
+Product33
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_9')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+48x25-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_9" id="Multiply_1_9">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:266')" name="code2model" class="code2model">
+Product11
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_10')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25x25-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_10" id="Multiply_1_10">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:200')" name="code2model" class="code2model">
+Gain7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (303)
+</h5>
+<span style="font-family:monospace">
+24x24-bit Adder 							: 132
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+49x49-bit Adder 							: 2
+</span>
+<span name="Adder_1_2" id="Adder_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:49')" name="code2model" class="code2model">
+Add2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:40')" name="code2model" class="code2model">
+Add11
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+83x83-bit Adder 							: 3
+</span>
+<br /><span style="font-family:monospace">
+73x73-bit Adder 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25x25-bit Adder 							: 7
+</span>
+<span name="Adder_1_5" id="Adder_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:43')" name="code2model" class="code2model">
+Add14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:44')" name="code2model" class="code2model">
+Add15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:47')" name="code2model" class="code2model">
+Add18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:45')" name="code2model" class="code2model">
+Add16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:48')" name="code2model" class="code2model">
+Add19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:46')" name="code2model" class="code2model">
+Add17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:50')" name="code2model" class="code2model">
+Add20
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+50x50-bit Subtractor 							: 3
+</span>
+<span name="Subtractor_1_1" id="Subtractor_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:42')" name="code2model" class="code2model">
+Add13
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+25-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Subtractor 							: 132
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+49x49-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_1_4" id="Subtractor_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:38')" name="code2model" class="code2model">
+Add1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:51')" name="code2model" class="code2model">
+Add3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:39')" name="code2model" class="code2model">
+Add10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:41')" name="code2model" class="code2model">
+Add12
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+83x83-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+73x73-bit Subtractor 							: 3
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+50-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_1_7" id="Subtractor_1_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:42')" name="code2model" class="code2model">
+Add13
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (534)
+</h5>
+<span style="font-family:monospace">
+25-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 274
+</span>
+<br /><span style="font-family:monospace">
+48-bit Register 							: 122
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+74-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+73-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 47
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+56-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 30
+</span>
+<br /><h5>
+Multiplexers (393)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit 3-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:484')" name="code2model" class="code2model">
+Saturation2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:318')" name="code2model" class="code2model">
+Saturation
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:319')" name="code2model" class="code2model">
+Saturation1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 236
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 154
+</span>
+<br /><h5>
+Number of Shift operators (76)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 76
+</span>
+<br /><h5>
+Number of I/O Bits (388)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 243
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="9124c889-2cd1-4cb1-8972-e4c0af29475f" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset_x: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:31')" name="code2model" class="code2model">
+id_ref
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:32')" name="code2model" class="code2model">
+iq_ref
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:33')" name="code2model" class="code2model">
+id
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:34')" name="code2model" class="code2model">
+iq
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:35')" name="code2model" class="code2model">
+theta
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:483')" name="code2model" class="code2model">
+theta_0
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:36')" name="code2model" class="code2model">
+w_e
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:468')" name="code2model" class="code2model">
+ua_0_input
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:469')" name="code2model" class="code2model">
+ub_0_input
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:471')" name="code2model" class="code2model">
+uc_0_input
+</a>
+: 24 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '9124c889-2cd1-4cb1-8972-e4c0af29475f')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 145
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:325')" name="code2model" class="code2model">
+da
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:326')" name="code2model" class="code2model">
+db
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:327')" name="code2model" class="code2model">
+dc
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:465')" name="code2model" class="code2model">
+ua_0
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:466')" name="code2model" class="code2model">
+ub_o
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_deadbeat_clean:467')" name="code2model" class="code2model">
+uc_0
+</a>
+: 24 bits
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

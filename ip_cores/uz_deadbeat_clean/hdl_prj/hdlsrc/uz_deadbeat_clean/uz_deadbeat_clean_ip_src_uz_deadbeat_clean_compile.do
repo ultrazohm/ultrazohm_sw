@@ -1,0 +1,7 @@
+vlib work
+vcom  uz_deadbeat_clean_ip_src_uz_deadbeat_clean_pac.vhd
+vcom  uz_deadbeat_clean_ip_src_Sin_cordic_nw.vhd
+vcom  uz_deadbeat_clean_ip_src_Cos_cordic_nw.vhd
+vcom  uz_deadbeat_clean_ip_src_Sin_cordic_nw_block.vhd
+vcom  uz_deadbeat_clean_ip_src_Cos_cordic_nw_block.vhd
+vcom  uz_deadbeat_clean_ip_src_uz_deadbeat_clean.vhd

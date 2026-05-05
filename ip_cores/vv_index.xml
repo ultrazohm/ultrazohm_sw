@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="d:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores">
+	<Repository value="c:/UltraZohm/ultrazohm_test/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -1773,6 +1773,36 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="mwn.de:ip:uz_axi_my_ip:1.0">
+		</VLNV>
+		<DisplayName value="uz_axi_my_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114559794">
+		</CoreRevision>
+		<ComponentPath value="uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="user.org:ip:uz_dac_spi_interface:1.0">
 		</VLNV>
 		<DisplayName value="uz_dac_spi_interface">
@@ -1874,6 +1904,66 @@
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="mwn.de:ip:uz_Deadbe_ip:1.0">
+		</VLNV>
+		<DisplayName value="uz_Deadbe_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114584086">
+		</CoreRevision>
+		<ComponentPath value="uz_Deadbeat/hdl_prj/ipcore/uz_Deadbe_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="mwn.de:ip:uz_deadbeat_clean_ip:1.0">
+		</VLNV>
+		<DisplayName value="uz_deadbeat_clean_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4.jpg">
+		</ProductGuide>
+		<CoreRevision value="2114587100">
+		</CoreRevision>
+		<ComponentPath value="uz_deadbeat_clean/hdl_prj/ipcore/uz_deadbeat_clean_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
 			<Family name="zynquplus">
 				<Part status="Production" name="ALL">
 				</Part>

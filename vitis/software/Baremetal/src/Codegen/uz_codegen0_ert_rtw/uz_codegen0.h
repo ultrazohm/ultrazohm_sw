@@ -7,20 +7,20 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.29
- * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Thu Oct 13 09:55:19 2022
+ * Model version                  : 9.111
+ * Simulink Coder version         : 24.2 (R2024b) 21-Jun-2024
+ * C/C++ source code generated on : Thu Apr 16 10:52:55 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (12), Warning (1), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
-#ifndef RTW_HEADER_uz_codegen0_h_
-#define RTW_HEADER_uz_codegen0_h_
+#ifndef uz_codegen0_h_
+#define uz_codegen0_h_
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
@@ -61,29 +61,61 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S1>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator2_DSTATE;/* '<S1>/Discrete-Time Integrator2' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
-  int8_T DiscreteTimeIntegrator2_PrevRes;/* '<S1>/Discrete-Time Integrator2' */
+  real_T u_a0;                         /* '<S1>/Deadbeat Control' */
+  real_T u_b0;                         /* '<S1>/Deadbeat Control' */
+  real_T u_c0;                         /* '<S1>/Deadbeat Control' */
+  real_T u_alpha0;
 } DW;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T summand1;                   /* '<Root>/summand1' */
-  real32_T summand2;                   /* '<Root>/summand2' */
-  real32_T reset_SumIntegrator;        /* '<Root>/reset_SumIntegrator' */
-  real32_T time;                       /* '<Root>/time' */
-  real32_T summand3;                   /* '<Root>/summand3' */
-  real32_T reset_TimeIntegrator;       /* '<Root>/reset_TimeIntegrator' */
+  real_T ia;                           /* '<Root>/ia' */
+  real_T ib;                           /* '<Root>/ib' */
+  real_T ic;                           /* '<Root>/ic' */
+  real_T id_ref;                       /* '<Root>/id_ref' */
+  real_T iq_ref;                       /* '<Root>/iq_ref' */
+  real_T theta_e;                      /* '<Root>/theta_e' */
+  real_T w_e;                          /* '<Root>/w_e' */
+  real_T Comp_PM;                      /* '<Root>/Comp_PM' */
+  real_T Rs_PM;                        /* '<Root>/Rs_PM' */
+  real_T Psi_PM;                       /* '<Root>/Psi_PM' */
+  real_T Ts;                           /* '<Root>/Ts' */
+  real_T V_dc_nom_PM;                  /* '<Root>/V_dc_nom_PM' */
+  real_T Ld_PM;                        /* '<Root>/Ld_PM' */
+  real_T Lq_PM;                        /* '<Root>/Lq_PM' */
+  real_T Lambda;                       /* '<Root>/Lambda' */
+  real_T Np;                           /* '<Root>/Np' */
+  real_T Kp_current;                   /* '<Root>/Kp_current' */
+  real_T Ki_current;                   /* '<Root>/Ki_current' */
+  real_T id_ref_left;                  /* '<Root>/id_ref_left' */
+  real_T iq_ref_left;                  /* '<Root>/iq_ref_left' */
+  real_T id_left;                      /* '<Root>/id_left' */
+  real_T iq_left;                      /* '<Root>/iq_left' */
+  real_T theta_left;                   /* '<Root>/theta_left' */
+  real_T we_left;                      /* '<Root>/we_left' */
+  real_T k;                            /* '<Root>/k' */
+  real_T wc;                           /* '<Root>/wc' */
+  real_T wc_speed;                     /* '<Root>/wc_speed' */
+  real_T id;                           /* '<Root>/id' */
+  real_T iq;                           /* '<Root>/iq' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T sum;                        /* '<Root>/sum' */
-  real32_T IntegrationOfSum;           /* '<Root>/IntegrationOfSum' */
-  real32_T ChirpSine;                  /* '<Root>/ChirpSine' */
-  real32_T fb_summand1;                /* '<Root>/fb_summand1' */
-  real32_T fb_time;                    /* '<Root>/fb_time' */
+  real_T da;                           /* '<Root>/da' */
+  real_T db;                           /* '<Root>/db' */
+  real_T dc;                           /* '<Root>/dc' */
+  real_T da_left;                      /* '<Root>/da_left' */
+  real_T db_left;                      /* '<Root>/db_left' */
+  real_T dc_left;                      /* '<Root>/dc_left' */
+  real_T theta_e_est;                  /* '<Root>/theta_e_est' */
+  real_T i_alpha;                      /* '<Root>/i_alpha' */
+  real_T i_beta;                       /* '<Root>/i_beta' */
+  real_T i_alpha_est;                  /* '<Root>/i_alpha_est' */
+  real_T i_beta_est;                   /* '<Root>/i_beta_est' */
+  real_T theta_unwrap;                 /* '<Root>/theta_unwrap' */
+  real_T n_est;                        /* '<Root>/n_est' */
+  real_T Te_est;                       /* '<Root>/Te_est' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -116,13 +148,14 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  *
  * '<Root>' : 'uz_codegen'
  * '<S1>'   : 'uz_codegen/uz_codegen'
+ * '<S2>'   : 'uz_codegen/uz_codegen/Deadbeat Control'
  */
 
 /*-
  * Requirements for '<Root>': uz_codegen0
 
  */
-#endif                                 /* RTW_HEADER_uz_codegen0_h_ */
+#endif                                 /* uz_codegen0_h_ */
 
 /*
  * File trailer for generated code.

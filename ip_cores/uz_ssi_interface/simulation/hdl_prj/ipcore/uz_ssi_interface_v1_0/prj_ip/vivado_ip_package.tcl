@@ -3,23 +3,31 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/uz_ssi_interface_src_uz_ssi_interface_pkg.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Detect_Rise_Positive1.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Detect_Rise_Positive2.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_gray_to_bin.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_fixed_point_floor.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_Sine_HDL_Optimized.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_position_to_speed_pll.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_floor_div_pow2.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_set_offset_to_raw_position_and_wrap.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_slice_position_and_status.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_src_Model.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_src_Sample_and_Hold1.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Serial_In_Parallel_Out.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_src_sample_serial_ssi_data.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_ssi_clock_generator.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Detect_Rise_Positive.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop_block.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_plus_one_bits.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_nfp_wire_single.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_nfp_convert_fix_32_En0_to_single.vhd}
-add_files -norecurse {../hdl/uz_ssi_interface_src_nfp_mul_single.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_ssi_clock_generator.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop_block2.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_ssi_communication.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_fixed_point_floor_block.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_wrap_2pi.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_src_uz_ssi_interface.vhd}
+add_files -norecurse {../hdl/uz_ssi_interface_pkg.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_reset_sync.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_dut.vhd}
 add_files -norecurse {../hdl/uz_ssi_interface_addr_decoder.vhd}
@@ -45,21 +53,53 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114011447 [ipx::current_core]
+set_property core_revision 2114595912 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_ssi_interface_src_uz_ssi_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_uz_ssi_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_uz_ssi_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_uz_ssi_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_gray_to_bin.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_gray_to_bin.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_gray_to_bin.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_gray_to_bin.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Gray_code_to_binary.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sine_HDL_Optimized1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_fixed_point_floor.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_fixed_point_floor.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_fixed_point_floor.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_fixed_point_floor.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Sine_HDL_Optimized.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sine_HDL_Optimized.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_Sine_HDL_Optimized.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sine_HDL_Optimized.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_position_to_speed_pll.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_position_to_speed_pll.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_position_to_speed_pll.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_position_to_speed_pll.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_floor_div_pow2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_floor_div_pow2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_floor_div_pow2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_floor_div_pow2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_set_offset_to_raw_position_and_wrap.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_set_offset_to_raw_position_and_wrap.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_set_offset_to_raw_position_and_wrap.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_set_offset_to_raw_position_and_wrap.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_slice_position_and_status.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_slice_position_and_status.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_slice_position_and_status.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_slice_position_and_status.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_Model.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Model.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_Model.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -68,58 +108,58 @@ ipx::add_file {hdl/uz_ssi_interface_src_Sample_and_Hold1.vhd} [ipx::get_file_gro
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sample_and_Hold1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_Sample_and_Hold1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Sample_and_Hold1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Serial_In_Parallel_Out.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Serial_In_Parallel_Out.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Serial_In_Parallel_Out.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Serial_In_Parallel_Out.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_sample_serial_ssi_data.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_sample_serial_ssi_data.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_sample_serial_ssi_data.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_sample_serial_ssi_data.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_plus_one_bits.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_plus_one_bits.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_plus_one_bits.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_plus_one_bits.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_wire_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_wire_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_wire_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_wire_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_convert_fix_32_En0_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_convert_fix_32_En0_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_convert_fix_32_En0_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_convert_fix_32_En0_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_ssi_interface_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_clock_generator.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_communication.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_communication.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_ssi_communication.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_ssi_communication.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_fixed_point_floor_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_fixed_point_floor_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_fixed_point_floor_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_fixed_point_floor_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_wrap_2pi.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_wrap_2pi.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_wrap_2pi.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_wrap_2pi.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_uz_ssi_interface.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_uz_ssi_interface.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_src_uz_ssi_interface.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_src_uz_ssi_interface.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_ssi_interface_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_ssi_interface_reset_sync.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_ssi_interface_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -228,22 +268,24 @@ set_property value {ACTIVE_LOW} [ipx::get_bus_parameters POLARITY -of_objects [i
 
 # Add report files
 ipx::add_file_group -type {product_guide} {} [ipx::current_core]
+ipx::add_file {doc/doc_arch_axi4_Pipeline_Register.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_Pipeline_Register.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4_lite.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_lite.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/free_running.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/free_running.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
-ipx::add_file {doc/uz_ssi_interface_2023a_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
-set_property type {{html}} [ipx::get_files {doc/uz_ssi_interface_2023a_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/uz_ssi_interface_2025b_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{html}} [ipx::get_files {doc/uz_ssi_interface_2025b_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 
 # Add C files
 ipx::add_file_group -type {misc} {} [ipx::current_core]
 ipx::add_file {include/uz_ssi_interface_addr.h} [ipx::get_file_groups xilinx_miscfiles -of_objects [ipx::current_core]]
 set_property type {{cSource}} [ipx::get_files {include/uz_ssi_interface_addr.h} -of_objects [ipx::get_file_groups xilinx_miscfiles -of_objects [ipx::current_core]]]
+
+# Package IP
 ipx::create_xgui_files [ipx::current_core]
 ipx::check_integrity -quiet [ipx::current_core]
 ipx::save_core [ipx::current_core]
-
-# Package IP
 ipx::archive_core {../uz_ssi_interface_v1_0.zip} [ipx::current_core]
 close_project
 exit

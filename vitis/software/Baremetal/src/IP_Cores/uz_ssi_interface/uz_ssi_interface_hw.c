@@ -1,6 +1,7 @@
 #include "uz_ssi_interface_hw.h"
 #include "uz_ssi_interface_hwAddresses.h"
 #include "../../uz/uz_AXI.h"
+#include <limits.h>
 
 #define FRAC_RECIPROCAL_BIT_WIDTH 27
 #define FRAC_SAMPLING_INTERVAL 24
@@ -10,21 +11,33 @@
 #define FRAC_SPEED_MECH_SI 16
 #define FRAC_SPEED_EL_SI 12
 #define FRAC_SPEED_MECH_RPM 12
+#define SSI_CLOCK_DIVIDER_MIN 20U
+#define SSI_CLOCK_DIVIDER_MAX 625U
+#define SSI_CLOCK_DIVIDER_FIRST_CLOCK_DELAY_THRESHOLD 100U
+#define SSI_ENCODER_BIT_WIDTH_MIN 1U
+#define SSI_ENCODER_BIT_WIDTH_MAX 31U
+#define SSI_ENCODER_STATUS_BITS_MAX 32U
+#define MACHINE_POLEPAIRS_MIN 1U
+#define MACHINE_POLEPAIRS_MAX 255U
+#define SAMPLING_INTERVAL_MAX_SECONDS 0.0156f
+#define KP_PLL_MAX 8191.0f
+#define KI_PLL_MAX 262142.0f
+#define SAMPLING_DELAY_CLK_TICKS_MAX 100U
 
 void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t ssi_clk_divider) {
     uz_assert_not_zero_uint32(base_address);
     // constraint from RLS encoder datasheet, ssi clock frequency between 80 kHz and 2.5 MHz
     // ssi clock frequency = (100 MHz)/(2.0 * ssi_clk_divider).
     // This results in boundaries between 20 and 625 for the clock divider
-    uz_assert(ssi_clk_divider >= 20U); 
-    uz_assert(ssi_clk_divider <= 625U);
+    uz_assert(ssi_clk_divider >= SSI_CLOCK_DIVIDER_MIN);
+    uz_assert(ssi_clk_divider <= SSI_CLOCK_DIVIDER_MAX);
 
     // constraint from RLS encoder datasheet, for ssi clock frequency above 500 kHz
     // the first clock pulse has to be delayed after clock goes low
     // Activate feature flag when clock divider is chosen accordingly
     bool delay_first_clock = false;
 
-    if(ssi_clk_divider < 100U) {
+    if(ssi_clk_divider < SSI_CLOCK_DIVIDER_FIRST_CLOCK_DELAY_THRESHOLD) {
         delay_first_clock = true;
     } else {
         delay_first_clock = false;
@@ -36,8 +49,8 @@ void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t
 
 void uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(ssi_encoder_bit_width_single_turn > 0U);
-    uz_assert(ssi_encoder_bit_width_single_turn <= 25U); // ip core serial data buffer for position is limited to 32 bit but gray code conversion is limited to 25-bit
+    uz_assert(ssi_encoder_bit_width_single_turn >= SSI_ENCODER_BIT_WIDTH_MIN);
+    uz_assert(ssi_encoder_bit_width_single_turn <= SSI_ENCODER_BIT_WIDTH_MAX); // limited by 32-bit AXI parameter interface and shift operations
 
     uint32_t max_encoder_value_for_bit_width = (1U << ssi_encoder_bit_width_single_turn) - 1U;
     float reciprocal_bit_width_single_turn = 1.0f/((float)(max_encoder_value_for_bit_width));
@@ -48,22 +61,23 @@ void uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(uint32_t base_a
 
 void uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_multi_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(ssi_encoder_bit_width_multi_turn <= 25U); // ip core serial data buffer for position is limited to 32 bit but gray code conversion is limited to 25-bit
- 
+    uz_assert(ssi_encoder_bit_width_multi_turn <= SSI_ENCODER_BIT_WIDTH_MAX); // limited by 32-bit AXI parameter interface
+
     uz_axi_write_uint32(base_address + ssi_encoder_bit_width_multi_turn_AXI_Data_uz_ssi_interface, ssi_encoder_bit_width_multi_turn);
 }
 
 void uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(uint32_t base_address, uint32_t ssi_encoder_number_of_status_bits) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(ssi_encoder_number_of_status_bits <= 32U); // ip core serial data buffer for position is limited to 32
+    uz_assert(ssi_encoder_number_of_status_bits <= SSI_ENCODER_STATUS_BITS_MAX); // ip core serial data buffer for status is limited to 32
 
     uz_axi_write_uint32(base_address + ssi_encoder_number_of_status_bits_AXI_Data_uz_ssi_interface, ssi_encoder_number_of_status_bits);
 }
 
-void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding) {
+void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, uint32_t position_encoding) {
     uz_assert_not_zero_uint32(base_address);
+    uz_assert(position_encoding <= 1U);
 
-    uz_axi_write_bool(base_address + pos_is_binary_or_gray_AXI_Data_uz_ssi_interface, position_encoding);
+    uz_axi_write_bool(base_address + pos_is_binary_or_gray_AXI_Data_uz_ssi_interface, (bool)position_encoding);
 }
 
 void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on) {
@@ -75,11 +89,11 @@ void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_cor
 void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll) {
     uz_assert_not_zero_uint32(base_address);
     uz_assert(sampling_interval > 0.0f);
-    uz_assert(sampling_interval < 0.0156f); // fixed point range of fixdt(0,18,24)
+    uz_assert(sampling_interval < SAMPLING_INTERVAL_MAX_SECONDS); // fixed point range of fixdt(0,18,24)
     uz_assert(kp_pll >= 0.0f);
-    uz_assert(kp_pll < 8191.0f); // fixed point range of fixdt(0,18,5)
+    uz_assert(kp_pll < KP_PLL_MAX); // fixed point range of fixdt(0,18,5)
     uz_assert(ki_pll >= 0.0f);
-    uz_assert(ki_pll < 262142.0f); // fixed point range of fixdt(0,18,0)
+    uz_assert(ki_pll < KI_PLL_MAX); // fixed point range of fixdt(0,18,0)
 
     uint32_t sampling_interval_fp = uz_convert_float_to_unsigned_fixed(sampling_interval, FRAC_SAMPLING_INTERVAL);
     uint32_t kp_pll_fp = uz_convert_float_to_unsigned_fixed(kp_pll, FRAC_KP_PLL);
@@ -92,23 +106,23 @@ void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampl
 
 void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(pole_pairs >= 1U);
-    uz_assert(pole_pairs <= 255U); // is uint8_t inside IP core. For higher pole pair numbers, fixed-point data types in subsequent multiplications might have overflow issues
+    uz_assert(pole_pairs >= MACHINE_POLEPAIRS_MIN);
+    uz_assert(pole_pairs <= MACHINE_POLEPAIRS_MAX); // is uint8_t inside IP core. For higher pole pair numbers, fixed-point data types in subsequent multiplications might have overflow issues
 
     uz_axi_write_uint32(base_address + machine_polepairs_AXI_Data_uz_ssi_interface, pole_pairs);
 }
 
 void uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(mech_offset_ticks_single_turn <= 2147483647);
-    uz_assert(mech_offset_ticks_single_turn >= -2147483647);
+    uz_assert(mech_offset_ticks_single_turn <= INT32_MAX);
+    uz_assert(mech_offset_ticks_single_turn >= -INT32_MAX);
     uz_axi_write_int32(base_address + position_mech_offset_ticks_AXI_Data_uz_ssi_interface, mech_offset_ticks_single_turn);
 }
 
-void uz_ssi_interface_hw_write_data_sampling_delay_clock_ticks(uint32_t base_address, uint32_t delay_ticks) {
+void uz_ssi_interface_hw_write_sampling_delay_clk_ticks(uint32_t base_address, uint32_t sampling_delay_clk_ticks) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(delay_ticks <= 100U); // variable delay in the IP-Core has a limit of 100 clock ticks for the delay
-    uz_axi_write_uint32(base_address + sampling_delay_clk_ticks_AXI_Data_uz_ssi_interface, delay_ticks);
+    uz_assert(sampling_delay_clk_ticks <= SAMPLING_DELAY_CLK_TICKS_MAX); // variable delay in the IP core has a limit of 100 clock ticks for the delay
+    uz_axi_write_uint32(base_address + sampling_delay_clk_ticks_AXI_Data_uz_ssi_interface, sampling_delay_clk_ticks);
 }
 
 uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address) {
@@ -123,9 +137,8 @@ uint32_t uz_ssi_interface_hw_read_position_raw_multi_turn(uint32_t base_address)
 
 uint32_t uz_ssi_interface_hw_read_position_multi_turn(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
-    return(uz_axi_read_uint32(base_address +position_multi_turn_AXI_Data_uz_ssi_interface));
+    return(uz_axi_read_uint32(base_address + position_multi_turn_AXI_Data_uz_ssi_interface));
 }
-
 
 uint32_t uz_ssi_interface_hw_read_ssi_encoder_status(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);

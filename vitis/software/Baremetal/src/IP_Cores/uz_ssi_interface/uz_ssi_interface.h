@@ -4,13 +4,13 @@
 #include <stdbool.h>
 
 /**
- * @brief Enumeration of the encoding configurations for the position information
+ * @brief Enumeration of the encoding configurations for the SSI position information
  *
  */
-enum position_encoding_t {
-    binary=0,
-    gray_code
-};
+typedef enum uz_ssi_interface_position_encoding_t {
+    uz_ssi_interface_binary = 0,
+    uz_ssi_interface_gray_code
+} uz_ssi_interface_position_encoding_t;
 
 /**
  * @brief Data type for object uz_ssi_interface
@@ -23,72 +23,104 @@ typedef struct uz_ssi_interface_t uz_ssi_interface_t;
  *
  */
 struct uz_ssi_interface_config_t{
-    uint32_t base_address; /**< Base address of the IP-Core */
-    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+    uint32_t base_address; /**< Base address of the IP core */
+    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP core */
     uint32_t ssi_clk_frequency_Hz; /**< Clock frequency for the serial communication clock, values between 80 kHz and 2.5 MHz are allowed */
-    uint32_t ssi_encoder_bit_width_single_turn;/**< Number of single-turn position bits of the SSI encoder, values up to 25 are allowed. Note that the sum of all bit widths (single-turn, multi-turn, and status) have to be less or equal than 64 */
-    uint32_t ssi_encoder_bit_width_multi_turn;/**< Number of multi-turn position bits of the SSI encoder, values up to 25 are allowed */
-    uint32_t ssi_encoder_number_of_status_bits;/**< Number of status bits of the SSI encoder, values up to 32 are allowed */
-    enum position_encoding_t position_encoding;/**< Select if the position encoding of the SSI encoder is \n
-                                                                                         binary or \n 
-                                                                                         gray_code */
+    uint32_t ssi_encoder_bit_width_single_turn;/**< Number of single-turn position bits of the SSI encoder, values from 1 to 31 are allowed. Note that the sum of all bit widths (single-turn, multi-turn, and status) has to be less than or equal to 64 */
+    uint32_t ssi_encoder_bit_width_multi_turn;/**< Number of multi-turn position bits of the SSI encoder, values from 0 to 31 are allowed. Note that the sum of all bit widths (single-turn, multi-turn, and status) has to be less than or equal to 64 */
+    uint32_t ssi_encoder_number_of_status_bits;/**< Number of status bits of the SSI encoder, values up to 32 are allowed. Note that the sum of all bit widths (single-turn, multi-turn, and status) has to be less than or equal to 64 */
+    uz_ssi_interface_position_encoding_t position_encoding;/**< Selects whether the SSI encoder position data is encoded as binary or gray code */
     uint32_t machine_polepairs; /**< Pole pairs of the machine, only positive values >=1 are allowed */
-    uint32_t encoder_data_sampling_delay_in_clock_ticks;/**< Number of FPGA clock ticks (e.g. 1U tick equals 10ns at 100MHz) that will be waited after a falling edge of the SSI clock before the data line is sampled. This is vital when long encoder cables are used that are more than a few metres long */
+    uint32_t sampling_delay_clk_ticks;/**< Delay of the serial data input sampling in IP core clock ticks, values from 0 to 100 are allowed */
     float sampling_interval_seconds; /**< Sampling interval for the integration employed in the PLL for speed calculation */
     float kp_pll; /**< Proportional gain for the PI within the PLL */
     float ki_pll; /**< Integral gain for the PI within the PLL */
-    float position_mech_offset_si_single_turn; /**< Mechanical encoder offset between encoder zero and magnetic zero of the electric machine. Limited to -7.999 ... 7.999 */
-};
-
-/**
- * @brief Output struct for uz_ssi_interface
- *
- */
-struct uz_ssi_interface_outputs_t {
-    uint32_t position_raw_single_turn; /**< raw position in bit ticks, ranging from 0..ssi_encoder_bit_width_single_turn-1 */
-    uint32_t position_raw_multi_turn; /**< raw position in bit ticks, ranging from 0..ssi_encoder_bit_width_multi_turn-1 */
-    float position_mech_si_single_turn; /**< mechanical angle in rad, ranging from 0..2pi */
-    float position_el_si_single_turn; /**< electrical angle in rad, ranging from 0..2pi */
-    float speed_mech_si; /**< mechanical rotational speed in rad/s */
-    float speed_el_si; /**< electrical rotational speed in rad/s */
-    float speed_mech_rpm; /**< mechanical rotational speed in rounds per minute */
+    float position_mech_offset_si_single_turn; /**< Mechanical encoder offset between encoder zero and magnetic zero of the electric machine. Limited to -2*pi ... 2*pi and to values that fit into int32_t after conversion to encoder ticks */
 };
 
 /**
  * @brief Initializes an instance of the uz_ssi_interface driver
  *
- * @param config Configuration values for the IP-Core
+ * @param config Configuration values for the IP core
  * @return Pointer to initialized instance
  */
-uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t config, struct uz_ssi_interface_outputs_t outputs);
+uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t config);
 
 /**
- * @brief Writes the config from the struct into the IP-Core
+ * @brief Returns the raw single-turn position read from the SSI encoder.
  *
  * @param self Pointer to the instance
+ * @return Raw single-turn position in encoder ticks
  */
-void uz_ssi_interface_set_config(uz_ssi_interface_t *self);
-
-/**
- * @brief Updates the output struct of the driver
- *
- * @param self Pointer to the instance
- */
-void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self);
-
 uint32_t uz_ssi_interface_get_position_raw_single_turn(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the raw multi-turn position read from the SSI encoder.
+ *
+ * @param self Pointer to the instance
+ * @return Raw multi-turn position in encoder turns
+ */
 uint32_t uz_ssi_interface_get_position_raw_multi_turn(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the offset-corrected multi-turn position from the IP core.
+ *
+ * @param self Pointer to the instance
+ * @return Offset-corrected revolution counter that increments aligned with the full revolution wrap of the single-turn position
+ */
 uint32_t uz_ssi_interface_get_position_multi_turn(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the mechanical single-turn position in SI units.
+ *
+ * @param self Pointer to the instance
+ * @return Mechanical single-turn position in rad
+ */
 float uz_ssi_interface_get_position_mech_si_single_turn(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the electrical single-turn position in SI units.
+ *
+ * @param self Pointer to the instance
+ * @return Electrical single-turn position in rad
+ */
 float uz_ssi_interface_get_position_el_si_single_turn(uz_ssi_interface_t *self); 
+
+/**
+ * @brief Returns the mechanical speed in SI units.
+ *
+ * @param self Pointer to the instance
+ * @return Mechanical speed in rad/s
+ */
 float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the electrical speed in SI units.
+ *
+ * @param self Pointer to the instance
+ * @return Electrical speed in rad/s
+ */
 float uz_ssi_interface_get_speed_el_si(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the mechanical speed in revolutions per minute.
+ *
+ * @param self Pointer to the instance
+ * @return Mechanical speed in rpm
+ */
 float uz_ssi_interface_get_speed_mech_rpm(uz_ssi_interface_t *self);
+
+/**
+ * @brief Returns the raw status bits read from the SSI encoder.
+ *
+ * @param self Pointer to the instance
+ * @return Raw SSI encoder status bits
+ */
 uint32_t uz_ssi_interface_get_encoder_status(uz_ssi_interface_t *self);
 
 /**
  * @brief Enables the IP core, i.e., starting the SSI transactions.
- * @brief The IP core is designed the way that no matter when you turn it on or off the, 
+ * @brief The IP core is designed the way that no matter when you turn it on or off,
  * @brief it will perform enabling or disabling only when there is no SSI transaction happening.
  *
  * @param self Pointer to the instance
@@ -98,7 +130,7 @@ void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on);
 
 /**
  * @brief Sets a new mechanical offset value for the single-turn position 
- * @brief Values between -7.999 ... 7.999 are allowed
+ * @brief Values between -2*pi ... 2*pi are allowed if the converted encoder tick value fits into int32_t
  *
  * @param self Pointer to the instance
  * @param position_mech_offset_si_single_turn Mechanical encoder offset between encoder zero and magnetic zero of the electric machine 
@@ -106,28 +138,12 @@ void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on);
 void uz_ssi_interface_set_mechanical_offset_ssi_single_turn(uz_ssi_interface_t *self, float position_mech_offset_si_single_turn);
 
 /**
- * @brief Sets the delay value in FPGA clock ticks, that has to pass until the data line is sampled.
- * @brief Its purpose is to compensate the delay that occurs when long encoder cables are used.
- * @brief After a rising edge of the SSI clock, the encoder sets the next bit of the position data on the data line.
- * @brief At the next falling edge of the SSI clock the data line is sampled. When it takes too long for the data to reach 
- * @brief the data input of the IP-core, one would miss the bit of the present clock cycle. To compensate for this, the user 
- * @brief can set a delay. The delay tick value can be determined heuristically or when employing an integrated logic analyzer (ILA) 
- * @brief in the FPGA.
+ * @brief Sets the sampling delay of the serial data input in IP core clock ticks.
+ * @brief Values between 0 and 100 are allowed.
  *
  * @param self Pointer to the instance
- * @param delay_ticks Positive unsigned integer value of the FPGA clock ticks to which the sampling is delayed after a falling edge of the SSI clock. Default is 0U, values up to 100U are valid.
+ * @param delay_clk_ticks Sampling delay in IP core clock ticks
  */
-void uz_ssi_interface_set_data_sampling_delay_clock_ticks(uz_ssi_interface_t *self, uint32_t delay_ticks);
-
-/**
- * @brief Calculates the ceiled value of an unsigned integer division.
- * @brief Attention: Does not catch overflow of (a+b)>UINT32_MAX
- *
- * @param a Dividend
- * @param b Divisor
- *
- * @return Ceiled unsigned integer division
- */
-uint32_t ceil_div(uint32_t a, uint32_t b);
+void uz_ssi_interface_set_sampling_delay_clk_ticks(uz_ssi_interface_t *self, uint32_t delay_clk_ticks);
 
 #endif // UZ_SSI_INTERFACE_H

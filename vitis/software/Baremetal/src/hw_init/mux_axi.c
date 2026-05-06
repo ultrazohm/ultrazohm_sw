@@ -30,4 +30,3 @@ uz_mux_axi_t* initialize_uz_mux_axi(void) {
 	return (uz_mux_axi_init(uz_mux_axi_config));
 
 }
-

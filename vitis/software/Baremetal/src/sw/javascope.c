@@ -17,6 +17,7 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
+#include "../include/uz_testbench_limits.h"
 #include "xil_cache.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
@@ -36,6 +37,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float js_error_code = 0.0f;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -46,8 +48,32 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
 //Initialize the Interrupt structure
-extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+extern float Te;
+extern float da;
+extern float db;
+extern float dc;
 
+extern float theta_e_right_est;
+extern float theta_e_right_unwrap;
+extern float i_alpha_right_est;
+extern float i_beta_right_est;
+extern float i_alpha_right;
+extern float i_beta_right;
+extern float n_right_est;
+
+extern float theta_e_left_est;
+extern float theta_left_est;
+extern float w_e_left_est;
+extern float w_left_est;
+extern float n_left_est;
+
+extern float theta_i;
+extern int sec;
+float sec_o = 0.0f;
+extern float Ua_comp;
+extern float Ub_comp;
+extern float Uc_comp;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -69,54 +95,108 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 					= &data->av.I_U;
-	js_ch_observable[JSO_ib] 					= &data->av.I_V;
-	js_ch_observable[JSO_ic] 					= &data->av.I_W;
-	js_ch_observable[JSO_ua] 					= &data->av.U_U;
-	js_ch_observable[JSO_ub] 					= &data->av.U_V;
-	js_ch_observable[JSO_uc] 					= &data->av.U_W;
-	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-	js_ch_observable[JSO_id] 					= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]					= &data->av.U_d;
-	js_ch_observable[JSO_uq]					= &data->av.U_q;
+	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.n_mech_rpm_d3_1;
+	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.n_mech_rpm_d4_1;
+	js_ch_observable[JSO_ia_left] 				= &data->av.i_a_left;
+	js_ch_observable[JSO_ib_left] 				= &data->av.i_b_left;
+	js_ch_observable[JSO_ic_left] 				= &data->av.i_c_left;
+	js_ch_observable[JSO_ia_right] 				= &data->av.i_a_right;
+	js_ch_observable[JSO_ib_right] 				= &data->av.i_b_right;
+	js_ch_observable[JSO_ic_right] 				= &data->av.i_c_right;
+	js_ch_observable[JSO_v_dc_right] 			= &data->av.v_dc_right;
+	js_ch_observable[JSO_v_dc_left] 			= &data->av.v_dc_left;
+	js_ch_observable[JSO_id_left] 				= &data->av.i_d_left;
+	js_ch_observable[JSO_iq_left] 				= &data->av.i_q_left;
+	js_ch_observable[JSO_id_right] 				= &data->av.i_d_right;
+	js_ch_observable[JSO_iq_right] 				= &data->av.i_q_right;
+	js_ch_observable[JSO_id_ref_left] 			= &data->rasv.i_dq_ref_left.d;
+	js_ch_observable[JSO_iq_ref_left] 			= &data->rasv.i_dq_ref_left.q;
+	js_ch_observable[JSO_n_ref_left] 			= &data->rasv.n_ref_left;
+	js_ch_observable[JSO_n_ref_left_filt] 		= &data->rasv.n_ref_left_filt;
+	js_ch_observable[JSO_n_ref_right] 			= &data->rasv.n_ref_right;
+	js_ch_observable[JSO_n_ref_right_filt] 		= &data->rasv.n_ref_right_filt;
+	js_ch_observable[JSO_id_ref_right] 			= &data->rasv.i_dq_ref_right.d;
+	js_ch_observable[JSO_iq_ref_right] 			= &data->rasv.i_dq_ref_right.q;
+	js_ch_observable[JSO_theta_el_left] 		= &data->av.position_el_2pi_d3_1;
+	js_ch_observable[JSO_theta_el_right] 		= &data->av.position_el_2pi_d4_1;
+	js_ch_observable[JSO_theta_mech_left] 		= &data->av.position_mech_2pi_d3_1;
+	js_ch_observable[JSO_theta_mech_right] 		= &data->av.position_mech_2pi_d4_1;
+	js_ch_observable[JSO_vd_left]				= &data->av.v_d_left;
+	js_ch_observable[JSO_vq_left]				= &data->av.v_q_left;
+	js_ch_observable[JSO_vd_right]				= &data->av.v_d_right;
+	js_ch_observable[JSO_vq_right]				= &data->av.v_q_right;
+	js_ch_observable[JSO_torque]				= &data->av.torque;
+	js_ch_observable[JSO_torque_filt]			= &data->av.torque_filt;
+	js_ch_observable[JSO_M_ref_left]			= &data->rasv.M_ref_left;
+	js_ch_observable[JSO_omega_mech_left]		= &data->av.omega_mech_left;
+	js_ch_observable[JSO_omega_el_left]			= &data->av.omega_el_left;
+	js_ch_observable[JSO_duty_a_left]			= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_duty_b_left]			= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_duty_c_left]			= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_duty_a_right]			= &data->rasv.halfBridge4DutyCycle;
+	js_ch_observable[JSO_duty_b_right]			= &data->rasv.halfBridge5DutyCycle;
+	js_ch_observable[JSO_duty_c_right]			= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_Te]					= &Te;
+	js_ch_observable[JSO_da]					= &da;
+	js_ch_observable[JSO_db]					= &db;
+	js_ch_observable[JSO_dc]					= &dc;
+	js_ch_observable[JSO_theta_e_right_est]		= &theta_e_right_est;
+	js_ch_observable[JSO_theta_e_right_unwrap]	= &theta_e_right_unwrap;
+	js_ch_observable[JSO_i_alpha_right_est]		= &i_alpha_right_est;
+	js_ch_observable[JSO_i_beta_right_est]		= &i_beta_right_est;
+	js_ch_observable[JSO_i_alpha_right]			= &i_alpha_right;
+	js_ch_observable[JSO_i_beta_right]			= &i_beta_right;
+	js_ch_observable[JSO_n_right_est]			= &n_right_est;
+	js_ch_observable[JSO_theta_e_left_est]		= &theta_e_left_est;
+	js_ch_observable[JSO_theta_left_est]		= &theta_left_est;
+	js_ch_observable[JSO_w_e_left_est]			= &w_e_left_est;
+	js_ch_observable[JSO_w_left_est]			= &w_left_est;
+	js_ch_observable[JSO_n_left_est]			= &n_left_est;
+	js_ch_observable[JSO_theta_i]				= &theta_i;
+	//sec_o = sec*1.0f; ??
+	js_ch_observable[JSO_sec]					= &sec_o;
+	js_ch_observable[JSO_Ua_comp]				= &Ua_comp;
+	js_ch_observable[JSO_Ub_comp]				= &Ub_comp;
+	js_ch_observable[JSO_Uc_comp]				= &Uc_comp;
 	js_ch_observable[JSO_Endat_theta_mech]		= &data->av.endat_machine.theta_mech;
 	js_ch_observable[JSO_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
 	js_ch_observable[JSO_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
 	js_ch_observable[JSO_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
-	js_ch_observable[JSO_Resolver_theta_mech]	= &data->av.resolver_machine.theta_mech;
-	js_ch_observable[JSO_Resolver_theta_elec]	= &data->av.resolver_machine.theta_elec;
-	js_ch_observable[JSO_Resolver_Speed_rpm]		= &data->av.resolver_machine.mechanicalRotorSpeed;
-	js_ch_observable[JSO_Resolver_el_Speed_rad_s]= &data->av.resolver_machine.electricalRotorSpeed;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_vd_left] 			    = &(data->av.v_d_left);
+	js_slowDataArray[JSSD_FLOAT_vq_left] 			    = &(data->av.v_q_left);
+	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_left);
+	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_left);
+	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.n_mech_rpm_d3_1);
+	js_slowDataArray[JSSD_FLOAT_torque]		 		    = &(data->av.torque);
+	js_slowDataArray[JSSD_FLOAT_torque_filt]		    = &(data->av.torque_filt);
+	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
+	js_slowDataArray[JSSD_FLOAT_Overcurrent_AC]			= &(data->av.overcurrent_ac);
+	js_slowDataArray[JSSD_FLOAT_Overvoltage_DC]			= &(data->av.overvoltage_dc);
+	js_slowDataArray[JSSD_FLOAT_Overspeed]				= &(data->av.overspeed);
+	js_slowDataArray[JSSD_FLOAT_Overtorque]				= &(data->av.overtorque);
+	js_slowDataArray[JSSD_FLOAT_Error_Max_Current_Left]	= &js_error_max_current_left;
+	js_slowDataArray[JSSD_FLOAT_Error_Max_Current_Right]	= &js_error_max_current_right;
+	js_slowDataArray[JSSD_FLOAT_Error_Vdc_Left]			= &js_error_vdc_left;
+	js_slowDataArray[JSSD_FLOAT_Error_Vdc_Right]			= &js_error_vdc_right;
+	js_slowDataArray[JSSD_FLOAT_Error_Overspeed_Latch]	= &js_error_overspeed;
+	js_slowDataArray[JSSD_FLOAT_Error_Overtorque_Latch]	= &js_error_overtorque;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &js_error_code;
 	js_slowDataArray[JSSD_FLOAT_Endat_theta_mech]		= &data->av.endat_machine.theta_mech;
 	js_slowDataArray[JSSD_FLOAT_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
 	js_slowDataArray[JSSD_FLOAT_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
 	js_slowDataArray[JSSD_FLOAT_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_Resolver_theta_mech]	= &data->av.resolver_machine.theta_mech;
-	js_slowDataArray[JSSD_FLOAT_Resolver_theta_elec]	= &data->av.resolver_machine.theta_elec;
-	js_slowDataArray[JSSD_FLOAT_Resolver_Speed_rpm]		= &data->av.resolver_machine.mechanicalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_Resolver_el_Speed_rad_s]= &data->av.resolver_machine.electricalRotorSpeed;
 
 	return Status;
 }
@@ -147,6 +227,7 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	js_error_code			= (float)uz_testbench_limits_error_reason;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
@@ -160,14 +241,14 @@ void JavaScope_update(DS_Data* data){
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
 
 	//Send an interrupt to APU
-	status = XIpiPsu_TriggerIpi(&IPI_instance,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//Poll Acknowledgment of IPI
-	status = XIpiPsu_PollForAck(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
+	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
 	if(status != (u32)XST_SUCCESS) {
 		pollErrorCnt++;
 	}
@@ -177,7 +258,7 @@ void JavaScope_update(DS_Data* data){
 
 	//Afterwards the acknowledge a message from the APU can be read/checked, if a53 is enabled for external calculations of the r5 we wait for the acknowledge flag,
 	//if not, we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-	status = XIpiPsu_ReadMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");

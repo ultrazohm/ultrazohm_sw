@@ -7,8 +7,8 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 
-#define OFFSET_STEP_RAD 0.01f                       // set stepsize to step through thetas
-#define OFFSET_RANGE_RAD 0.2f                       // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
+#define OFFSET_STEP_RAD 0.002f                       // set stepsize to step through thetas
+#define OFFSET_RANGE_RAD 0.05f                       // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
 
 
 /**
@@ -79,7 +79,7 @@ bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* s
  * @brief Set (new) setpoint_current to object
  * 
  * @param self Pointer to instance
- * @param setpoint_current Setpoint current value
+ * @param float setpoint_current
  */
 void uz_encoder_offset_estimation_set_setpoint_current(uz_encoder_offset_estimation_t* self, float setpoint_current);
 
@@ -87,7 +87,7 @@ void uz_encoder_offset_estimation_set_setpoint_current(uz_encoder_offset_estimat
  * @brief Set (new) min_omega_el to object
  * 
  * @param self Pointer to instance
- * @param min_omega_el Minimum omega_el value
+ * @param float min_omega_el
  */
 void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_t* self, float min_omega_el);
 

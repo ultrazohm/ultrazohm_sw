@@ -15,6 +15,12 @@
 
 // Includes from own files
 #include "main.h"
+#include "Codegen/uz_codegen.h"
+
+
+extern const struct uz_PMSM_t Siemens_1FK7043;
+
+uz_codegen codegenInstance;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -32,8 +38,8 @@ DS_Data Global_Data = {
         .halfBridge11DutyCycle = 0.0f,
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY)/2.0f,//* (Interrupt_ISR_freq_factor)
+    .aa = {.A1 = {.cf.ADC_A1 = 1.0f, .cf.ADC_A2 = 1.0f, .cf.ADC_A3 = 1.0f, .cf.ADC_A4 = 1.0f, .cf.ADC_B5 = 1.0f, .cf.ADC_B6 = 1.0f, .cf.ADC_B7 = 1.0f, .cf.ADC_B8 = 1.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
 {
@@ -89,6 +95,21 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+
+            //Initialize codegen
+            uz_codegen_init(&codegenInstance);
+
+            Global_Data.av.polepairs_left = Siemens_1FK7043.polePairs;
+            Global_Data.av.polepairs_right = Siemens_1FK7043.polePairs;
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+            Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+            Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
+            Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
+			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
+			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
+			Global_Data.objects.iir_filter_torque = torque_filt_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -105,27 +126,32 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            //Global_Data.rasv.resolver_offset = -4.363502f; // estimated with offset estimation module
+            Global_Data.rasv.resolver_offset = -0.1642f; // tuned by ourselves
+            //Global_Data.rasv.d4_to_d3_offset_mech = 0.59f; // estimated heuristically
+            Global_Data.rasv.d4_to_d3_offset_mech = 0.0523f; // tuned by ourselves
+            Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
+            Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
+            uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d3_1, Global_Data.rasv.resolver_offset);
             Global_Data.objects.endat_encoder_d4_1 = endat_encoder_init_endat_d4_1();
             uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d4_1, uz_endat_interface_send_position);
             uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d4_1, true);
-            Global_Data.objects.resolver_d3_1 = initialize_resolver_D3_1();
-            Global_Data.objects.resolver_pl_interface_d3_1 = initialize_resolver_pl_interface_D3_1();
             initialization_chain = print_msg;
             break;
         case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU: Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
-            uz_print_bitstream_timestamp();
+            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
+
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-            Initialize_ISR();
-            Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
+            Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:

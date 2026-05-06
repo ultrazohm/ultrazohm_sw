@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 6U
+#define UZ_HARDWARE_VERSION 4U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -31,7 +31,7 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
 #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        20.0e3f
 #define UZ_PWM_DEADTIME_IN_US                   1.0f
 #define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        0.5f
 
@@ -42,8 +42,8 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
-#define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
+#define UZ_CURRENTCONTROL_MAX_INSTANCES                 4U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
@@ -51,44 +51,35 @@
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
-#define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_RAMP_MAX_INSTANCES                           1U
-#define UZ_PARAMETERID_MAX_INSTANCES					1U
+#define UZ_SPEEDCONTROL_MAX_INSTANCES                   2U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     4U
+#define UZ_PARAMETERID_MAX_INSTANCES					0U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
-#define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
-#define UZ_SETPOINT_MAX_INSTANCES                       1U
+#define UZ_SETPOINT_MAX_INSTANCES                       2U
 #define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               0U
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
-#define UZ_SETPOINT_MAX_INSTANCES                       1U
-#define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
+#define UZ_SETPOINT_MAX_INSTANCES                       2U
+#define UZ_INVERTER_3PH_MAX_INSTANCES                   0U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
-#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
-#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
+#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            2U
+#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               0U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
-#define UZ_RESOLVERIP_MAX_INSTANCES                     3U
-#define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
-#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
+#define UZ_RESOLVERIP_MAX_INSTANCES                     1U
+#define UZ_SYSMON_PS_MAX_INSTANCES                      1U // Can only be 1 or 0!
+#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          1U
+#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                1U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       0U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
-#define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
-#define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
+#define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      1U
+#define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           2U
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
-#define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
-#define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
-#define UZ_PRNG_PCG_MAX_INSTANCES                       0U
-#define UZ_PRNG_XOSHIRO_MAX_INSTANCES                   0U
-#define UZ_PRNG_HALTON_MAX_INSTANCES                    0U
-#define UZ_PRNG_MAX_INSTANCES                           0U
-#define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
-#define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
-#define UZ_ENDAT_INTERFACE_MAX_INSTANCES				1U
+#define UZ_EnDat_MAX_INSTANCES							1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -113,7 +104,6 @@
     #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             20U
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   50U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
-    #define UZ_RAMP_MAX_INSTANCES                           20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         20U
 	#define UZ_PARAMETERID_MAX_INSTANCES					100U
@@ -131,6 +121,7 @@
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
     #define UZ_SYSMON_PS_MAX_INSTANCES                      10U 
     #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
+    #define UZ_ENDAT_INTERFACE_MAX_INSTANCES                10U
     #define UZ_AXI_GPIO_MAX_INSTANCES                       10U
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
@@ -140,13 +131,5 @@
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
-    #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             50U
-    #define UZ_PRNG_SQUARES_MAX_INSTANCES                   50U
-    #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  50U
-    #define UZ_PRNG_PCG_MAX_INSTANCES                       50U
-    #define UZ_PRNG_XOSHIRO_MAX_INSTANCES                   50U
-    #define UZ_PRNG_HALTON_MAX_INSTANCES                    50U
-    #define UZ_PRNG_MAX_INSTANCES                           50U
-    #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               50U
-	#define UZ_ENDAT_INTERFACE_MAX_INSTANCES				30U
+	#define UZ_EnDat_MAX_INSTANCES							30U
 #endif

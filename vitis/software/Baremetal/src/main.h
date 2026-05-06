@@ -31,7 +31,6 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_rpu_assert_configuration.h"
 
-
 // UltraZohm includes
 #include "globalData.h"
 #include "defines.h"
@@ -41,7 +40,9 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "include/resolver.h"
 #include "include/uz_endat_interface_init.h"
+
 #include "uz/uz_HAL.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
@@ -53,8 +54,10 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-#include "include/resolver.h"
-
+#include "include/pi_foc.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 //----------------------------------------------------
 // FUNCTIONS

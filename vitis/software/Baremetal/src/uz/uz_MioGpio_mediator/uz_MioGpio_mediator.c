@@ -17,7 +17,7 @@ static void InitializeAllStatusLEDs(void);
 static void TurnAllLEDOff(void);
 static void InitializeMioPinsForButtons(uint32_t ultrazohm_revision);
 static void InitializeAllPushButtons(void);
-static void enableAllMioWithButtonsAttached(void);
+static void enableAllMioWithButonsAttached(void);
 
 static XGpioPs Gpio_inst;
 static uz_gpio MIO_LedReady;
@@ -39,7 +39,7 @@ void uz_frontpanel_button_and_led_init(uint32_t ultrazohm_revision)
 
 	InitializeMioPinsForButtons(ultrazohm_revision);
 	InitializeAllPushButtons();
-	enableAllMioWithButtonsAttached();
+	enableAllMioWithButonsAttached();
 }
 
 static void InitializeXilinxMioGpioInstance(void)
@@ -53,8 +53,8 @@ static void InitializeXilinxMioGpioInstance(void)
 
 static void InitializeMioPinsForLEDs(uint32_t ultrazohm_revision)
 {
-	uz_assert(ultrazohm_revision > 0U);
-	if (ultrazohm_revision < 4U)
+	uz_assert(ultrazohm_revision > 0);
+	if (ultrazohm_revision < 4)
 	{ // Rev 3 and earlier
 		uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_3_LED_ready, OUTPUT_PIN);
 		uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_3_LED_running, OUTPUT_PIN);
@@ -65,18 +65,14 @@ static void InitializeMioPinsForLEDs(uint32_t ultrazohm_revision)
 	{
 		switch (ultrazohm_revision)
 		{
-		case 4U:
+		case 4:
 			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_4_LED_ready, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_4_LED_running, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_4_LED_error, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedUser, &Gpio_inst, UZ_REV_4_LED_user, OUTPUT_PIN);
 			break;
-		case 5U:
-			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_5_LED_ready, OUTPUT_PIN);
-			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_5_LED_running, OUTPUT_PIN);
-			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_5_LED_error, OUTPUT_PIN);
-			uz_gpio_init(&MIO_LedUser, &Gpio_inst, UZ_REV_5_LED_user, OUTPUT_PIN);
-		case 6U: // No changes between 5 and 6
+		case 5:
+		case 6:
 			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_5_LED_ready, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_5_LED_running, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_5_LED_error, OUTPUT_PIN);
@@ -91,8 +87,8 @@ static void InitializeMioPinsForLEDs(uint32_t ultrazohm_revision)
 
 static void InitializeMioPinsForButtons(uint32_t ultrazohm_revision)
 {
-	uz_assert(ultrazohm_revision > 0U);
-	if (ultrazohm_revision < 4U)
+	uz_assert(ultrazohm_revision > 0);
+	if (ultrazohm_revision < 4)
 	{ // Rev 3 and earlier
 		uz_gpio_init(&MIO_SWError, &Gpio_inst, UZ_REV_3_SW_stop, INPUT_PIN);
 		uz_gpio_init(&MIO_SWSystem, &Gpio_inst, UZ_REV_3_SW_system, INPUT_PIN);
@@ -103,19 +99,19 @@ static void InitializeMioPinsForButtons(uint32_t ultrazohm_revision)
 	{
 		switch (ultrazohm_revision)
 		{
-		case 4U:
+		case 4:
 			uz_gpio_init(&MIO_SWError, &Gpio_inst, UZ_REV_4_SW_stop, INPUT_PIN);
 			uz_gpio_init(&MIO_SWSystem, &Gpio_inst, UZ_REV_4_SW_system, INPUT_PIN);
 			uz_gpio_init(&MIO_SWControl, &Gpio_inst, UZ_REV_4_SW_control, INPUT_PIN);
 			uz_gpio_init(&MIO_SWExternalStop, &Gpio_inst, UZ_REV_4_SW_external_stop, INPUT_PIN);
 			break;
-		case 5U:
+		case 5:
 			uz_gpio_init(&MIO_SWError, &Gpio_inst, UZ_REV_5_SW_stop, INPUT_PIN);
 			uz_gpio_init(&MIO_SWSystem, &Gpio_inst, UZ_REV_5_SW_system, INPUT_PIN);
 			uz_gpio_init(&MIO_SWControl, &Gpio_inst, UZ_REV_5_SW_control, INPUT_PIN);
 			uz_gpio_init(&MIO_SWExternalStop, &Gpio_inst, UZ_REV_5_SW_external_stop, INPUT_PIN);
 			break;
-		case 6U: // No changes between 5 and 6
+		case 6: // No changes between 5 and 6
 			uz_gpio_init(&MIO_SWError, &Gpio_inst, UZ_REV_5_SW_stop, INPUT_PIN);
 			uz_gpio_init(&MIO_SWSystem, &Gpio_inst, UZ_REV_5_SW_system, INPUT_PIN);
 			uz_gpio_init(&MIO_SWControl, &Gpio_inst, UZ_REV_5_SW_control, INPUT_PIN);
@@ -146,7 +142,7 @@ static void enableAllMioWithLEDsAttached(void)
 	uz_gpio_set_enable_output(&MIO_LedUser, true);
 }
 
-static void enableAllMioWithButtonsAttached(void)
+static void enableAllMioWithButonsAttached(void)
 {
 	uz_gpio_set_enable_output(&MIO_SWError, 1);
 	uz_gpio_set_enable_output(&MIO_SWSystem, 1);

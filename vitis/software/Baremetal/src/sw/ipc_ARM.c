@@ -17,10 +17,28 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/uz_testbench_limits.h"
 #include <stdbool.h>
+extern DS_Data Global_Data;
+
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+extern float Kp_current;
+extern float Ki_current;
+
+extern float k;
+extern float wc;
+extern float wc_speed;
+
+extern bool Speed2Torque;
+extern bool index_switch;
+
+extern float DT_Comp;
+extern float k_dt_c;
+
+extern float amplitude;
+extern float frequency;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -35,6 +53,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);
+			index_switch = false;
+			Speed2Torque = false;
 			break;
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
@@ -186,83 +206,112 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.n_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		//data->av.snd_fld[2] = value;
+		//data->rasv.M_ref_left = value;
+		//Ki_current = value;
+		data->rasv.n_ref_right = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.i_dq_ref_right.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		//data->rasv.i_dq_ref_right.q = value;
+		data->rasv.i_dq_ref_left.q = value;
 			break;
 
 		case (Set_Send_Field_5):
+		data->rasv.torque_offset = value;
 		data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		//data->av.snd_fld[6] = value;
+		//Kp_current = value;
+		DT_Comp = value;
 			break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_10):
 		data->av.snd_fld[10] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_11):
 		data->av.snd_fld[11] = value;
+		uz_SpeedControl_set_Kp(data->objects.speed_ctrl_left, value);
+		//uz_SpeedControl_set_Kp(data->objects.speed_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_12):
 		data->av.snd_fld[12] = value;
+		uz_SpeedControl_set_Ki(data->objects.speed_ctrl_left, value);
+		//uz_SpeedControl_set_Ki(data->objects.speed_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_13):
 		data->av.snd_fld[13] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_14):
 		data->av.snd_fld[14] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_15):
 		data->av.snd_fld[15] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_16):
 		data->av.snd_fld[16] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_17):
+		data->rasv.d4_to_d3_offset_mech = value;
 		data->av.snd_fld[17] = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+		//data->av.snd_fld[18] = value;
+		//Ki_current = value;
+		//k = value;
+		k_dt_c = value;
 			break;
 
 		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+		//data->av.snd_fld[19] = value;
+		wc = value;
+		amplitude = value;
 			break;
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
+		//data->rasv.resolver_offset = value;
+		//uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d3_1, value);
+		wc_speed = value;
+		frequency = value;
 			break;
 
 		case (My_Button_1):
@@ -278,11 +327,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			Speed2Torque = true;
 			break;
 
 		case (My_Button_5):
-
+			Speed2Torque = false;
 			break;
 
 		case (My_Button_6):
@@ -293,13 +342,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
+
 		case (My_Button_8):
 
 			break;
 
-		case (Error_Reset):
 
+		case (Error_Reset):
+		uz_testbench_limits_reset(&data->av);
+		ultrazohm_state_machine_set_stop(true);
+		ultrazohm_state_machine_set_error(false);
 			break;
+
 
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
@@ -342,29 +396,42 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
 
+
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if (Speed2Torque == true) {
+		js_status_BareToRTOS |= (1 << 7);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 7);
+		}
+
+
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	if (Speed2Torque == false) {
+		js_status_BareToRTOS |= (1 << 8);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 8);
+		}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 9);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 9);
+	// }
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 10);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 10);
+	// }
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

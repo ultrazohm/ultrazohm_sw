@@ -46,8 +46,10 @@ uz_resolver_pl_interface_t* initialize_resolver_pl_interface_D3_1(void) {
 void update_resolver_D3_1(DS_Data *const data) {
 	struct uz_resolver_pl_interface_outputs_t outputs = uz_resolver_pl_interface_get_outputs(data->objects.resolver_pl_interface_d3_1);
 
-	data->av.resolver_machine.theta_mech = outputs.position_mech_2pi;
-	data->av.resolver_machine.theta_elec = outputs.position_el_2pi;
-	data->av.resolver_machine.mechanicalRotorSpeed = outputs.n_mech_rpm;
-	data->av.resolver_machine.electricalRotorSpeed = outputs.omega_mech_rad_s * RESOLVER_D3_1_MACHINE_POLEPAIRS;
+	data->av.resolver_pl_outputs_d3_1 = outputs;
+	data->av.position_mech_2pi_d3_1 = outputs.position_mech_2pi;
+	data->av.position_el_2pi_d3_1 = outputs.position_el_2pi;
+	data->av.n_mech_rpm_d3_1 = outputs.n_mech_rpm;
+	data->av.omega_mech_left = outputs.omega_mech_rad_s;
+	data->av.omega_el_left = outputs.omega_mech_rad_s * RESOLVER_D3_1_MACHINE_POLEPAIRS;
 }

@@ -137,6 +137,12 @@ float uz_ssi_interface_get_speed_mech_rpm(uz_ssi_interface_t *self) {
     return (uz_ssi_interface_hw_read_speed_mech_rpm(self->config.base_address));
 }
 
+uint32_t uz_ssi_interface_get_encoder_status(uz_ssi_interface_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (uz_ssi_interface_hw_read_ssi_encoder_status(self->config.base_address));
+}
+
 void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

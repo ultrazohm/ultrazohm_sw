@@ -18,7 +18,6 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
-#include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -188,17 +187,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
-		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_1_BASEADDR + 0x13C, (uint32_t)(value));
+		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_1,value);
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_1_encoder, value);
+		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_2,value);
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_1_encoder, value);
+		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_3,value);
 			break;
 
 		case (Set_Send_Field_4):

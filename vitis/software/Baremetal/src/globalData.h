@@ -87,25 +87,33 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-	float ssi0_position_raw;
-	float ssi0_position_el_si;
-	float ssi0_position_mech_si;
-	float ssi0_speed_mech_rad_s;
-	float ssi0_speed_mech_rad_s_ip;
-	float ssi0_speed_el_rad_s_ip;
-	float ssi0_speed_mech_rpm_ip;
-	float ssi0_speed_mech_rpm;
-	float ssi1_position_raw;
-	float ssi1_position_multiturn_raw;
-	float ssi1_position_multiturn;
-	float ssi1_position_el_si;
-	float ssi1_position_mech_si;
-	float ssi1_speed_mech_rad_s;
-	float ssi1_speed_mech_rad_s_ip;
-	float ssi1_speed_el_rad_s_ip;
-	float ssi1_speed_mech_rpm_ip;
-	float ssi1_speed_mech_rpm;
-	float ssi1_position_decoded;
+	float ssi_ST_raw_d5_1;
+	float ssi_MT_raw_d5_1;
+	float ssi_MT_d5_1;
+	float ssi_ST_mech_SI_d5_1;
+	float ssi_ST_el_SI_d5_1;
+	float ssi_speed_mech_SI_d5_1;
+	float ssi_speed_el_SI_d5_1;
+	float ssi_speed_mech_rpm_d5_1;
+	float ssi_status_d5_1;
+	float ssi_ST_raw_d5_2;
+	float ssi_MT_raw_d5_2;
+	float ssi_MT_d5_2;
+	float ssi_ST_mech_SI_d5_2;
+	float ssi_ST_el_SI_d5_2;
+	float ssi_speed_mech_SI_d5_2;
+	float ssi_speed_el_SI_d5_2;
+	float ssi_speed_mech_rpm_d5_2;
+	float ssi_status_d5_2;
+	float ssi_ST_raw_d5_3;
+	float ssi_MT_raw_d5_3;
+	float ssi_MT_d5_3;
+	float ssi_ST_mech_SI_d5_3;
+	float ssi_ST_el_SI_d5_3;
+	float ssi_speed_mech_SI_d5_3;
+	float ssi_speed_el_SI_d5_3;
+	float ssi_speed_mech_rpm_d5_3;
+	float ssi_status_d5_3;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -134,8 +142,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	uz_ssi_interface_t* ssi_0_encoder;
-	uz_ssi_interface_t* ssi_1_encoder;
+	uz_ssi_interface_t* ssi_encoder_d5_1;
+	uz_ssi_interface_t* ssi_encoder_d5_2;
+	uz_ssi_interface_t* ssi_encoder_d5_3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

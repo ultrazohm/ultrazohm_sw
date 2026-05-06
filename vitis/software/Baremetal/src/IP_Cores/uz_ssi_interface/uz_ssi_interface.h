@@ -84,6 +84,7 @@ float uz_ssi_interface_get_position_el_si_single_turn(uz_ssi_interface_t *self);
 float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self);
 float uz_ssi_interface_get_speed_el_si(uz_ssi_interface_t *self);
 float uz_ssi_interface_get_speed_mech_rpm(uz_ssi_interface_t *self);
+uint32_t uz_ssi_interface_get_encoder_status(uz_ssi_interface_t *self);
 
 /**
  * @brief Enables the IP core, i.e., starting the SSI transactions.

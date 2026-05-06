@@ -37,8 +37,6 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
-extern float sawtooth;
-
 uint32_t pollErrorCnt = 0U;
 
 uint32_t i_fetchDataLifeCheck=0;
@@ -73,21 +71,33 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ssi0_pos_raw]			= &data->av.ssi0_position_raw;
-	js_ch_observable[JSO_ssi0_pos_mech_si]		= &data->av.ssi0_position_mech_si;
-	js_ch_observable[JSO_ssi0_pos_el_si]		= &data->av.ssi0_position_el_si;
-	js_ch_observable[JSO_ssi0_speed_mech_rad_s] = &data->av.ssi0_speed_mech_rad_s;
-	js_ch_observable[JSO_ssi0_speed_mech_rpm]   = &data->av.ssi0_speed_mech_rpm;
-	js_ch_observable[JSO_ssi0_speed_mech_rad_s_ip] = &data->av.ssi0_speed_mech_rad_s_ip;
-	js_ch_observable[JSO_ssi0_speed_el_rad_s_ip]= &data->av.ssi0_speed_el_rad_s_ip;
-	js_ch_observable[JSO_ssi0_speed_mech_rpm_ip] = &data->av.ssi0_speed_mech_rpm_ip;
-	js_ch_observable[JSO_ssi1_pos_raw]			= &data->av.ssi1_position_raw;
-	js_ch_observable[JSO_ssi1_pos_multiturn_raw]= &data->av.ssi1_position_multiturn_raw;
-	js_ch_observable[JSO_ssi1_pos_multiturn]	= &data->av.ssi1_position_multiturn;
-	js_ch_observable[JSO_ssi1_pos_mech_si]		= &data->av.ssi1_position_mech_si;
-	js_ch_observable[JSO_ssi1_pos_el_si]		= &data->av.ssi1_position_el_si;
-	js_ch_observable[JSO_ssi1_pos_raw_dec]		= &data->av.ssi1_position_decoded;
-	js_ch_observable[JSO_sawtooth]				= &sawtooth;
+	js_ch_observable[JSO_ssi_ST_raw_d5_1]		= &data->av.ssi_ST_raw_d5_1;
+	js_ch_observable[JSO_ssi_MT_raw_d5_1]		= &data->av.ssi_MT_raw_d5_1;
+	js_ch_observable[JSO_ssi_MT_d5_1]			= &data->av.ssi_MT_d5_1;
+	js_ch_observable[JSO_ssi_ST_mech_SI_d5_1]	= &data->av.ssi_ST_mech_SI_d5_1;
+	js_ch_observable[JSO_ssi_ST_el_SI_d5_1]		= &data->av.ssi_ST_el_SI_d5_1;
+	js_ch_observable[JSO_ssi_speed_mech_SI_d5_1]= &data->av.ssi_speed_mech_SI_d5_1;
+	js_ch_observable[JSO_ssi_speed_el_SI_d5_1]	= &data->av.ssi_speed_el_SI_d5_1;
+	js_ch_observable[JSO_ssi_speed_mech_rpm_d5_1]= &data->av.ssi_speed_mech_rpm_d5_1;
+	js_ch_observable[JSO_ssi_encoder_status_d5_1]= &data->av.ssi_status_d5_1;
+	js_ch_observable[JSO_ssi_ST_raw_d5_2]		= &data->av.ssi_ST_raw_d5_2;
+	js_ch_observable[JSO_ssi_MT_raw_d5_2]		= &data->av.ssi_MT_raw_d5_2;
+	js_ch_observable[JSO_ssi_MT_d5_2]			= &data->av.ssi_MT_d5_2;
+	js_ch_observable[JSO_ssi_ST_mech_SI_d5_2]	= &data->av.ssi_ST_mech_SI_d5_2;
+	js_ch_observable[JSO_ssi_ST_el_SI_d5_2]		= &data->av.ssi_ST_el_SI_d5_2;
+	js_ch_observable[JSO_ssi_speed_mech_SI_d5_2]= &data->av.ssi_speed_mech_SI_d5_2;
+	js_ch_observable[JSO_ssi_speed_el_SI_d5_2]	= &data->av.ssi_speed_el_SI_d5_2;
+	js_ch_observable[JSO_ssi_speed_mech_rpm_d5_2]= &data->av.ssi_speed_mech_rpm_d5_2;
+	js_ch_observable[JSO_ssi_encoder_status_d5_2]= &data->av.ssi_status_d5_2;
+	js_ch_observable[JSO_ssi_ST_raw_d5_3]		= &data->av.ssi_ST_raw_d5_3;
+	js_ch_observable[JSO_ssi_MT_raw_d5_3]		= &data->av.ssi_MT_raw_d5_3;
+	js_ch_observable[JSO_ssi_MT_d5_3]			= &data->av.ssi_MT_d5_3;
+	js_ch_observable[JSO_ssi_ST_mech_SI_d5_3]	= &data->av.ssi_ST_mech_SI_d5_3;
+	js_ch_observable[JSO_ssi_ST_el_SI_d5_3]		= &data->av.ssi_ST_el_SI_d5_3;
+	js_ch_observable[JSO_ssi_speed_mech_SI_d5_3]= &data->av.ssi_speed_mech_SI_d5_3;
+	js_ch_observable[JSO_ssi_speed_el_SI_d5_3]	= &data->av.ssi_speed_el_SI_d5_3;
+	js_ch_observable[JSO_ssi_speed_mech_rpm_d5_3]= &data->av.ssi_speed_mech_rpm_d5_3;
+	js_ch_observable[JSO_ssi_encoder_status_d5_3]= &data->av.ssi_status_d5_3;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
 	js_ch_observable[JSO_ic] 					= &data->av.I_W;

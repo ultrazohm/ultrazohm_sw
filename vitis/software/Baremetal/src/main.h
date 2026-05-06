@@ -53,8 +53,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
-#include "include/ssi_encoder.h"
+#include "include/uz_ssi_interface_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

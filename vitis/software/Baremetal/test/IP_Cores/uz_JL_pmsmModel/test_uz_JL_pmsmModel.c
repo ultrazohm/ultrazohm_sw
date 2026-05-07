@@ -33,23 +33,16 @@ struct uz_JL_pmsmModel_config_t config = {
     .i_max = 20.0f,
     };
 
-void setUp(void)
-{
-}
+// uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration);
 
-void tearDown(void)
-{
-}
- 
-uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration);
 uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration)
 {
     // This function is called by tests who require an successful initialized instance
-    uz_JL_pmsmModel_hw_write_mot_p_Expect(BASE_ADDRESS, configuration.mot_p);
     uz_JL_pmsmModel_hw_write_R1_Expect(BASE_ADDRESS, configuration.r_1);
-    uz_JL_pmsmModel_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
     uz_JL_pmsmModel_hw_write_L_d_Expect(BASE_ADDRESS, configuration.L_d);
     uz_JL_pmsmModel_hw_write_L_q_Expect(BASE_ADDRESS, configuration.L_q);
+    uz_JL_pmsmModel_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
+    uz_JL_pmsmModel_hw_write_mot_p_Expect(BASE_ADDRESS, configuration.mot_p);
     uz_JL_pmsmModel_hw_write_mot_J_Expect(BASE_ADDRESS,configuration.mot_J);
     uz_JL_pmsmModel_hw_write_M_N_Expect(BASE_ADDRESS,configuration.M_N);
     uz_JL_pmsmModel_hw_write_n_N_Expect(BASE_ADDRESS,configuration.n_N);
@@ -99,9 +92,9 @@ void test_uz_JL_pmsmModel_normal_usage(void)
     float phi_mech_expect = 0.55f;
 
     // After strobe register was high, current values can be read from AXI
-    uz_JL_pmsmModel_hw_read_i_u_ExpectAndReturn(BASE_ADDRESS, i_u_expect);
-    uz_JL_pmsmModel_hw_read_i_v_ExpectAndReturn(BASE_ADDRESS, i_v_expect);
-    uz_JL_pmsmModel_hw_read_i_w_ExpectAndReturn(BASE_ADDRESS, i_w_expect);
+    uz_JL_pmsmModel_hw_read_I_u_ExpectAndReturn(BASE_ADDRESS, i_u_expect);
+    uz_JL_pmsmModel_hw_read_I_v_ExpectAndReturn(BASE_ADDRESS, i_v_expect);
+    uz_JL_pmsmModel_hw_read_I_w_ExpectAndReturn(BASE_ADDRESS, i_w_expect);
     uz_JL_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);
     uz_JL_pmsmModel_hw_read_omega_mech_ExpectAndReturn(BASE_ADDRESS,omega_mech_expect);
     uz_JL_pmsmModel_hw_read_phi_mech_ExpectAndReturn(BASE_ADDRESS,phi_mech_expect);

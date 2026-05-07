@@ -24,10 +24,10 @@ static uz_JL_pmsmModel_t* uz_JL_pmsmModel_allocation(void){
     return (self);
 }
 
-uz_JL_pmsmModel_t* _init() {
-    uz_JL_pmsmModel_t* self = uz_JL_pmsmModel_allocation();
-    return (self);
-}
+// uz_JL_pmsmModel_t* uz_JL_pmsmModel_init() {
+//     uz_JL_pmsmModel_t* self = uz_JL_pmsmModel_allocation();
+//     return (self);
+// }
 
 // private function declarations
 static void write_config_to_pl(uz_JL_pmsmModel_t *self);
@@ -65,7 +65,7 @@ void uz_JL_pmsmModel_reset(uz_JL_pmsmModel_t *self)
         .Last_M=0.0f,
     };
     uz_JL_pmsmModel_set_inputs(self, inputs);
-    uz_JL_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
+    uz_JL_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
     uz_JL_pmsmModel_hw_write_reset(self->config.base_address, false);
     uz_sleep_useconds(1U);
     uz_JL_pmsmModel_hw_write_reset(self->config.base_address, true);

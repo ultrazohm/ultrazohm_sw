@@ -24,6 +24,11 @@ uz_codegen codegenInstance;
 
 #define ENDAT_D4_SPEED_PLL_KP 628.3185f
 #define ENDAT_D4_SPEED_PLL_KI 98696.0f
+#define ENCODER_OFFSET_ESTIMATION_SETPOINT_CURRENT_A 4.0f
+#define ENCODER_OFFSET_ESTIMATION_MIN_OMEGA_EL_RAD_PER_SEC 400.0f
+
+static void initialize_encoder_offset_estimation_resolver_d3();
+static void initialize_encoder_offset_estimation_endat_d4();
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -108,8 +113,10 @@ int main(void)
                 .machine_polepairs = Global_Data.av.polepairs_right,
                 .kp_pll = ENDAT_D4_SPEED_PLL_KP,
                 .ki_pll = ENDAT_D4_SPEED_PLL_KI,
-                .sampling_time_in_seconds = Global_Data.av.isr_samplerate_s};
+                .sampling_time_in_seconds = 1.0f/UZ_PWM_FREQUENCY};
             Global_Data.objects.endat_speed_pll_d4_1 = uz_pos_to_speed_pll_init(endat_speed_pll_d4_1_config);
+            initialize_encoder_offset_estimation_resolver_d3();
+            initialize_encoder_offset_estimation_endat_d4();
             Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
@@ -171,4 +178,30 @@ int main(void)
         }
     }
     return (status);
+}
+
+static void initialize_encoder_offset_estimation_resolver_d3()
+{
+    struct uz_encoder_offset_estimation_config config = {
+        .ptr_measured_rotor_angle = &Global_Data.av.position_el_2pi_d3_1,
+        .ptr_offset_angle = &Global_Data.rasv.resolver_offset,
+        .ptr_actual_omega_el = &Global_Data.av.omega_el_left,
+        .ptr_actual_u_q_V = &Global_Data.av.v_q_left,
+        .setpoint_current = ENCODER_OFFSET_ESTIMATION_SETPOINT_CURRENT_A,
+        .min_omega_el = ENCODER_OFFSET_ESTIMATION_MIN_OMEGA_EL_RAD_PER_SEC};
+
+    Global_Data.objects.encoder_offset_estimation_resolver_d3 = uz_encoder_offset_estimation_init(config);
+}
+
+static void initialize_encoder_offset_estimation_endat_d4()
+{
+    struct uz_encoder_offset_estimation_config config = {
+        .ptr_measured_rotor_angle = &Global_Data.av.endat_machine.theta_elec,
+        .ptr_offset_angle = &Global_Data.rasv.endat_offset,
+        .ptr_actual_omega_el = &Global_Data.av.endat_software_pll_machine.electricalRotorSpeed,
+        .ptr_actual_u_q_V = &Global_Data.av.v_q_right,
+        .setpoint_current = ENCODER_OFFSET_ESTIMATION_SETPOINT_CURRENT_A,
+        .min_omega_el = ENCODER_OFFSET_ESTIMATION_MIN_OMEGA_EL_RAD_PER_SEC};
+
+    Global_Data.objects.encoder_offset_estimation_endat_d4 = uz_encoder_offset_estimation_init(config);
 }

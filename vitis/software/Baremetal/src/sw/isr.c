@@ -65,6 +65,7 @@ static void control_left_motor();
 static void control_right_motor();
 static void measured_to_si_values();
 static inline float wrap_2pi(float x);
+static void encoder_offset_estimation_step();
 static void deadtime_comp();
 static void deadbeat_right_motor();
 
@@ -145,6 +146,8 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    // set endat offset
+//    uz_endat_interface_set_mechanical_offset_endat_single_turn(Global_Data.objects.endat_encoder_d4_1,Global_Data.rasv.endat_offset);
     // update and calculate measured values
     measured_to_si_values();
     // check for physical and safety limits
@@ -216,6 +219,8 @@ void ISR_Control(void *data)
     	Global_Data.av.i_q_left = i_dq_left.q;
     	Global_Data.av.i_d_right = i_dq_right.d;
     	Global_Data.av.i_q_right = i_dq_right.q;
+
+    	//encoder_offset_estimation_step();
 
     	// calculate control (speed and current) of left motor
     	control_left_motor();
@@ -463,6 +468,45 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+static void encoder_offset_estimation_step()
+{
+	if (Global_Data.objects.encoder_offset_estimation_resolver_d3 != 0)
+	{
+		struct uz_encoder_offset_estimation_status resolver_status = uz_encoder_offset_estimation_get_status(Global_Data.objects.encoder_offset_estimation_resolver_d3);
+		Global_Data.av.encoder_offset_resolver_progress = resolver_status.progress;
+		Global_Data.av.encoder_offset_resolver_diagnose = (float)resolver_status.diagnose;
+
+		if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_estimation_resolver_d3))
+		{
+			Global_Data.av.encoder_offset_resolver_i_dq_ref = uz_encoder_offset_estimation_step(Global_Data.objects.encoder_offset_estimation_resolver_d3);
+		}
+		else
+		{
+			Global_Data.av.encoder_offset_resolver_i_dq_ref.d = 0.0f;
+			Global_Data.av.encoder_offset_resolver_i_dq_ref.q = 0.0f;
+			Global_Data.av.encoder_offset_resolver_i_dq_ref.zero = 0.0f;
+		}
+	}
+
+	if (Global_Data.objects.encoder_offset_estimation_endat_d4 != 0)
+	{
+		struct uz_encoder_offset_estimation_status endat_status = uz_encoder_offset_estimation_get_status(Global_Data.objects.encoder_offset_estimation_endat_d4);
+		Global_Data.av.encoder_offset_endat_progress = endat_status.progress;
+		Global_Data.av.encoder_offset_endat_diagnose = (float)endat_status.diagnose;
+
+		if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_estimation_endat_d4))
+		{
+			Global_Data.av.encoder_offset_endat_i_dq_ref = uz_encoder_offset_estimation_step(Global_Data.objects.encoder_offset_estimation_endat_d4);
+		}
+		else
+		{
+			Global_Data.av.encoder_offset_endat_i_dq_ref.d = 0.0f;
+			Global_Data.av.encoder_offset_endat_i_dq_ref.q = 0.0f;
+			Global_Data.av.encoder_offset_endat_i_dq_ref.zero = 0.0f;
+		}
+	}
+}
 
 static void control_left_motor() {
 
@@ -795,11 +839,11 @@ Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_out
 
 // update position and speed from EnDat on D4
 update_endat_encoder_on_D4(&Global_Data);
-Global_Data.av.omega_el_right = Global_Data.av.endat_software_pll_machine.electricalRotorSpeed;
-Global_Data.av.omega_mech_right = Global_Data.av.omega_el_right / Global_Data.av.polepairs_right;
-Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_software_pll_machine.mechanicalRotorSpeed;
-Global_Data.av.position_el_2pi_d4_1 = Global_Data.av.endat_machine.theta_elec;
-Global_Data.av.position_mech_2pi_d4_1 = Global_Data.av.endat_machine.theta_mech;
+//Global_Data.av.omega_el_right = Global_Data.av.endat_software_pll_machine.electricalRotorSpeed;
+//Global_Data.av.omega_mech_right = Global_Data.av.omega_el_right / Global_Data.av.polepairs_right;
+//Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_software_pll_machine.mechanicalRotorSpeed;
+//Global_Data.av.position_el_2pi_d4_1 = Global_Data.av.endat_machine.theta_elec;
+//Global_Data.av.position_mech_2pi_d4_1 = Global_Data.av.endat_machine.theta_mech;
 
 // Torque Sensor measurement
 Global_Data.av.torque = (Global_Data.aa.A1.me.ADC_B5 * 20.0f) + Global_Data.rasv.torque_offset; //positive q-current = positive torque | Burster 8656-5010: 10Nm/10V = 1Nm/1V -> to +-5V via torque box: 1Nm/0.5V -> 2Nm/1V -> *2.0f

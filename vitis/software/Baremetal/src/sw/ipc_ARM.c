@@ -294,10 +294,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_18):
-		//data->av.snd_fld[18] = value;
+		data->rasv.endat_offset = value;
 		//Ki_current = value;
 		//k = value;
-		k_dt_c = value;
+//		k_dt_c = value;
 			break;
 
 		case (Set_Send_Field_19):

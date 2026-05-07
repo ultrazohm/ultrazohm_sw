@@ -165,6 +165,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
 	js_ch_observable[JSO_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
 	js_ch_observable[JSO_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
+	js_ch_observable[JSO_Endat_PLL_theta_mech]	= &data->av.endat_software_pll_machine.theta_mech;
+	js_ch_observable[JSO_Endat_PLL_theta_elec]	= &data->av.endat_software_pll_machine.theta_elec;
+	js_ch_observable[JSO_Endat_PLL_Speed_rpm]	= &data->av.endat_software_pll_machine.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Endat_PLL_el_Speed_rad_s] = &data->av.endat_software_pll_machine.electricalRotorSpeed;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -197,6 +201,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
 	js_slowDataArray[JSSD_FLOAT_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
 	js_slowDataArray[JSSD_FLOAT_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_Endat_PLL_theta_mech]	= &data->av.endat_software_pll_machine.theta_mech;
+	js_slowDataArray[JSSD_FLOAT_Endat_PLL_theta_elec]	= &data->av.endat_software_pll_machine.theta_elec;
+	js_slowDataArray[JSSD_FLOAT_Endat_PLL_Speed_rpm]	= &data->av.endat_software_pll_machine.mechanicalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_Endat_PLL_el_Speed_rad_s] = &data->av.endat_software_pll_machine.electricalRotorSpeed;
 
 	return Status;
 }

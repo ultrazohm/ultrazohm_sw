@@ -92,6 +92,10 @@ enum JS_OberservableData {
 	JSO_Endat_theta_elec,
 	JSO_Endat_Speed_rpm,
 	JSO_Endat_el_Speed_rad_s,
+	JSO_Endat_PLL_theta_mech,
+	JSO_Endat_PLL_theta_elec,
+	JSO_Endat_PLL_Speed_rpm,
+	JSO_Endat_PLL_el_Speed_rad_s,
 	JSO_ENDMARKER
 };
 
@@ -135,6 +139,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_Endat_theta_elec,
 	JSSD_FLOAT_Endat_Speed_rpm,
 	JSSD_FLOAT_Endat_el_Speed_rad_s,
+	JSSD_FLOAT_Endat_PLL_theta_mech,
+	JSSD_FLOAT_Endat_PLL_theta_elec,
+	JSSD_FLOAT_Endat_PLL_Speed_rpm,
+	JSSD_FLOAT_Endat_PLL_el_Speed_rad_s,
 	JSSD_ENDMARKER
 };
 
@@ -259,8 +267,8 @@ enum gui_button_mapping {
 	Error_Vdc_Right,
 	Error_Overspeed,
 	Error_Overtorque,
-	receive_field_17,
-	receive_field_18,
+	Endat_PLL_Speed_rpm,
+	Endat_PLL_el_Speed_rad_s,
 	receive_field_19,
 	receive_field_20,
 	RCV_FLD_ENDMARKER
@@ -286,8 +294,8 @@ enum gui_button_mapping {
 	bool,
 	bool,
 	bool,
-	-,
-	-,
+	RPM,
+	rad/s,
 	-,
 	-,
 	RCV_LABELS_ENDMARKER
@@ -329,8 +337,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_Error_Vdc_Right,
 	JSSD_FLOAT_Error_Overspeed_Latch,
 	JSSD_FLOAT_Error_Overtorque_Latch,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_Endat_PLL_Speed_rpm,
+	JSSD_FLOAT_Endat_PLL_el_Speed_rad_s,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER

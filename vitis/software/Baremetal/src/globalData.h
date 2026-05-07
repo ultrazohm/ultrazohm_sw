@@ -15,6 +15,7 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+#include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -75,6 +76,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	machineEncoderValues endat_machine;
+	machineEncoderValues endat_software_pll_machine;
 	float torque;
 	float torque_filt;
 	float i_a_left;
@@ -165,6 +167,7 @@ typedef struct{
 	uz_resolverIP_t* resolver_d3_1;
 	uz_resolver_pl_interface_t* resolver_pl_interface_d3_1;
 	uz_endat_interface_t* endat_encoder_d4_1;
+	uz_pos_to_speed_pll_t* endat_speed_pll_d4_1;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;

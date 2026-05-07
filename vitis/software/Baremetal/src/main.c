@@ -22,6 +22,9 @@ extern const struct uz_PMSM_t Siemens_1FK7043;
 
 uz_codegen codegenInstance;
 
+#define ENDAT_D4_SPEED_PLL_KP 628.3185f
+#define ENDAT_D4_SPEED_PLL_KI 98696.0f
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -101,6 +104,12 @@ int main(void)
 
             Global_Data.av.polepairs_left = Siemens_1FK7043.polePairs;
             Global_Data.av.polepairs_right = Siemens_1FK7043.polePairs;
+            struct uz_pos_to_speed_pll_config_t endat_speed_pll_d4_1_config = {
+                .machine_polepairs = Global_Data.av.polepairs_right,
+                .kp_pll = ENDAT_D4_SPEED_PLL_KP,
+                .ki_pll = ENDAT_D4_SPEED_PLL_KI,
+                .sampling_time_in_seconds = Global_Data.av.isr_samplerate_s};
+            Global_Data.objects.endat_speed_pll_d4_1 = uz_pos_to_speed_pll_init(endat_speed_pll_d4_1_config);
             Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();

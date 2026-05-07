@@ -750,10 +750,13 @@ static void deadtime_comp() {
 };
 
 static void measured_to_si_values() {
-// update position and speed from resolver on D3 into left variables
+// update position and speed from resolver
 Global_Data.av.resolver_pl_outputs_d3_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d3_1);
-Global_Data.av.position_el_2pi_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
-Global_Data.av.position_mech_2pi_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi;
+
+// calc motor angles and speeds with right orientation
+//Measured with encoder
+Global_Data.av.position_el_2pi_d3_1 = (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
+Global_Data.av.position_mech_2pi_d3_1 =  (2.0f * UZ_PIf) - Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi;
 //Estimation
 /*
 theta_e_left_est = (2.0f * UZ_PIf) - wrap_2pi(theta_e_right_est + Global_Data.av.polepairs_left * Global_Data.rasv.d4_to_d3_offset_mech);
@@ -762,7 +765,8 @@ theta_left_est = wrap_2pi(((2.0f * UZ_PIf)-theta_e_right_unwrap)/Global_Data.av.
 //Global_Data.av.position_mech_2pi_d3_1 = theta_left_est;
 */
 
-Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+//Measured with encoder
+Global_Data.av.omega_mech_left = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f; // *4.0f accounting for bit resolution bug in resolverIP 16bit vs 14bit is factor 4
 Global_Data.av.omega_el_left = Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left;
 //Estimation
 /*
@@ -772,18 +776,28 @@ w_e_left_est = w_left_est * Global_Data.av.polepairs_left;
 //Global_Data.av.omega_el_left = w_e_left_est;
 */
 
-Global_Data.av.n_mech_rpm_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+//Measured with encoder
+Global_Data.av.n_mech_rpm_d3_1 = -1.0f * Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
 //Estimation
 /*
 n_left_est = -1.0f * n_right_est;
 //Global_Data.av.n_mech_rpm_d3_1 = n_left_est;
 */
 
+// Fake right position and speeds, if endat working delete this block
+
+Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f;
+Global_Data.av.omega_el_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
+Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
+Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
+Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
+Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
+
 // update position and speed from EnDat on D4
 update_endat_encoder_on_D4(&Global_Data);
-Global_Data.av.omega_el_right = Global_Data.av.endat_machine.electricalRotorSpeed;
+Global_Data.av.omega_el_right = Global_Data.av.endat_software_pll_machine.electricalRotorSpeed;
 Global_Data.av.omega_mech_right = Global_Data.av.omega_el_right / Global_Data.av.polepairs_right;
-Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_machine.mechanicalRotorSpeed;
+Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_software_pll_machine.mechanicalRotorSpeed;
 Global_Data.av.position_el_2pi_d4_1 = Global_Data.av.endat_machine.theta_elec;
 Global_Data.av.position_mech_2pi_d4_1 = Global_Data.av.endat_machine.theta_mech;
 

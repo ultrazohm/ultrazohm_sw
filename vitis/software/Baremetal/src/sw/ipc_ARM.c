@@ -202,14 +202,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_1, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_2, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_3, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_7):

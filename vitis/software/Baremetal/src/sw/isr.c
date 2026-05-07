@@ -830,20 +830,20 @@ n_left_est = -1.0f * n_right_est;
 
 // Fake right position and speeds, if endat working delete this block
 
-Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f;
-Global_Data.av.omega_el_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
-Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
-Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
-Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
-Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
+//Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s * 4.0f;
+//Global_Data.av.omega_el_right = Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
+//Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm * 4.0f;
+//Global_Data.rasv.d4_to_d3_offset_el = Global_Data.av.polepairs_right * Global_Data.rasv.d4_to_d3_offset_mech;
+//Global_Data.av.position_el_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi - Global_Data.rasv.d4_to_d3_offset_el);
+//Global_Data.av.position_mech_2pi_d4_1 =  wrap_2pi(Global_Data.av.resolver_pl_outputs_d3_1.position_mech_2pi - Global_Data.rasv.d4_to_d3_offset_mech);
 
 // update position and speed from EnDat on D4
 update_endat_encoder_on_D4(&Global_Data);
-//Global_Data.av.omega_el_right = Global_Data.av.endat_software_pll_machine.electricalRotorSpeed;
-//Global_Data.av.omega_mech_right = Global_Data.av.omega_el_right / Global_Data.av.polepairs_right;
-//Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_software_pll_machine.mechanicalRotorSpeed;
-//Global_Data.av.position_el_2pi_d4_1 = Global_Data.av.endat_machine.theta_elec;
-//Global_Data.av.position_mech_2pi_d4_1 = Global_Data.av.endat_machine.theta_mech;
+Global_Data.av.omega_el_right = Global_Data.av.endat_software_pll_machine.electricalRotorSpeed;
+Global_Data.av.omega_mech_right = Global_Data.av.omega_el_right / Global_Data.av.polepairs_right;
+Global_Data.av.n_mech_rpm_d4_1 = Global_Data.av.endat_software_pll_machine.mechanicalRotorSpeed;
+Global_Data.av.position_el_2pi_d4_1 = Global_Data.av.endat_machine.theta_elec;
+Global_Data.av.position_mech_2pi_d4_1 = Global_Data.av.endat_machine.theta_mech;
 
 // Torque Sensor measurement
 Global_Data.av.torque = (Global_Data.aa.A1.me.ADC_B5 * 20.0f) + Global_Data.rasv.torque_offset; //positive q-current = positive torque | Burster 8656-5010: 10Nm/10V = 1Nm/1V -> to +-5V via torque box: 1Nm/0.5V -> 2Nm/1V -> *2.0f

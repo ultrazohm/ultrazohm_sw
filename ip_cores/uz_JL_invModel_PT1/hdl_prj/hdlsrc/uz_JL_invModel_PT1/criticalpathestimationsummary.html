@@ -1,0 +1,287 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Critical Path Summary Report
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Critical Path Report for uz_JL_invModel_PT1/HDL_DUT
+</font>
+<br /><br /><br /><a name="Summary Section">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary Section
+</b>
+
+</font>
+
+</a>
+<hr>Critical Path Delay : 2.016 ns<br />Critical Path Requirement : 10.000 ns (100 MHz)<br />Slack : 7.984 ns<br /><br />Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_JL_invModel_PT1:53')" name="code2model" class="code2model">
+Gain5
+</a>
+<br />Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_JL_invModel_PT1:53')" name="code2model" class="code2model">
+Gain5
+</a>
+<br />Highlight Critical Path: <a href="matlab:run('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_PT1\hdl_prj\hdlsrc\uz_JL_invModel_PT1\criticalPathEstimated')">C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_PT1\hdl_prj\hdlsrc\uz_JL_invModel_PT1\criticalPathEstimated.m</a><br /><br />WARNING: The design contains blocks which are not characterized by Critical Path Estimation, which may reduce accuracy of the estimated critical path. Highlight uncharacterized blocks: <a href="matlab:run('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_PT1\hdl_prj\hdlsrc\uz_JL_invModel_PT1\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_PT1\hdl_prj\hdlsrc\uz_JL_invModel_PT1\highlightCriticalPathEstimationOffendingBlocks.m</a><br /><br /><a href="matlab:run('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_PT1\hdl_prj\hdlsrc\uz_JL_invModel_PT1\clearhighlighting.m')">Clear highlighting</a><br /><br />The model contains multiple rates, which are either explicitly designed or introduced by optimizations. Critical Path Estimation does not account for multiple rates in the reported timing estimates.<br /><br /><a name="Target Device Details">
+<font size="+1" color="#000066">
+<b class="midprod">
+Target Device Details
+</b>
+
+</font>
+
+</a>
+<hr>SynthesisToolSpeedValue -2 not characterized for Family zynq_ultrascale+. Using default value, SynthesisToolSpeedValue=-1, for Critical Path Estimation. Consider characterizing this device configuration using 'genhdltdb'. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'genhdltdb')">More information</a>.<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th width="50%" align="left" valign="top" style="border-style: none">
+<b>
+Device Property
+</b>
+
+</th>
+<th width="50%" align="left" valign="top" style="border-style: none">
+<b>
+Value
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="50%" align="left" valign="top" style="border-style: none">
+<a href="matlab:configset.internal.open('uz_JL_invModel_PT1','SynthesisTool')">SynthesisTool</a>
+</td>
+<td width="50%" align="left" valign="top" style="border-style: none">
+Xilinx Vivado
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="50%" align="left" valign="top" style="border-style: none">
+<a href="matlab:configset.internal.open('uz_JL_invModel_PT1','SynthesisToolChipFamily')">SynthesisToolChipFamily</a>
+</td>
+<td width="50%" align="left" valign="top" style="border-style: none">
+Zynq UltraScale+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="50%" align="left" valign="top" style="border-style: none">
+<a href="matlab:configset.internal.open('uz_JL_invModel_PT1','SynthesisToolDeviceName')">SynthesisToolDeviceName</a>
+</td>
+<td width="50%" align="left" valign="top" style="border-style: none">
+xczu9eg-ffvb1156-2-e
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="50%" align="left" valign="top" style="border-style: none">
+<a href="matlab:configset.internal.open('uz_JL_invModel_PT1','SynthesisToolPackageName')">SynthesisToolPackageName</a>
+</td>
+<td width="50%" align="left" valign="top" style="border-style: none">
+&#160;
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="50%" align="left" valign="top" style="border-style: none">
+<a href="matlab:configset.internal.open('uz_JL_invModel_PT1','SynthesisToolSpeedValue')">SynthesisToolSpeedValue</a>
+</td>
+<td width="50%" align="left" valign="top" style="border-style: none">
+&#160;
+</td>
+
+</tr>
+
+</table>
+<br /><a href="matlab:configset.internal.open('uz_JL_invModel_PT1','TimingDatabaseDirectory')">TimingDatabaseDirectory</a>: Built-in timing database. To customize the timing database, use 'genhdltdb' and set the directory to the generated database. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'genhdltdb')">More information</a><br /><br /><a name="Critical Path Details">
+<font size="+1" color="#000066">
+<b class="midprod">
+Critical Path Details
+</b>
+
+</font>
+
+</a>
+<hr><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Id
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Propagation (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Delay (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Block Path
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+1
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.0160
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.0160
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_JL_invModel_PT1:53')" name="code2model" class="code2model">
+Gain5
+</a>
+
+</td>
+
+</tr>
+
+</table>
+<br /><br />
+</body>
+
+</html>

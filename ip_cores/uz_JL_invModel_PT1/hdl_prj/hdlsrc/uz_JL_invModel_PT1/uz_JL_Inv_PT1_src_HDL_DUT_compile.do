@@ -1,0 +1,11 @@
+vlib work
+vmap -c
+vcom  uz_JL_Inv_PT1_src_HDL_DUT_pkg.vhd
+vcom  uz_JL_Inv_PT1_src_HDL_DUT_tc.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_gain_pow2_double.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_convert_single2double.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_sub_double.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_add_double.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_mul_double.vhd
+vcom  uz_JL_Inv_PT1_src_nfp_convert_double2single.vhd
+vcom  uz_JL_Inv_PT1_src_HDL_DUT.vhd

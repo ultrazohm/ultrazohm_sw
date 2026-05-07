@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_JL_invModel_PT1', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_JL_invModel_PT1', 'handle'));
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Cast To Double2', 1, 1, '');
+annotate_port('uz_JL_invModel_PT1/HDL_DUT/Cast To Double2', 1, 1, '');
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Cast To Double3', 1, 1, '');
+annotate_port('uz_JL_invModel_PT1/HDL_DUT/Cast To Double3', 1, 1, '');
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Cast To Double1', 1, 1, '');
+annotate_port('uz_JL_invModel_PT1/HDL_DUT/Cast To Double1', 1, 1, '');
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Cast To Double', 1, 1, '');
+annotate_port('uz_JL_invModel_PT1/HDL_DUT/Cast To Double', 1, 1, '');
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Gain5', 0, 1, '');
+annotate_port('gm_uz_JL_invModel_PT1/HDL_DUT/Cast To Single', 1, 1, '');
+annotate_port('uz_JL_invModel_PT1/HDL_DUT/Cast To Single', 1, 1, '');

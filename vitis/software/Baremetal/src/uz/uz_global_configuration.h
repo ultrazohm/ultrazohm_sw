@@ -48,7 +48,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
@@ -88,6 +88,8 @@
 #define UZ_PRNG_MAX_INSTANCES                           0U
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
+#define UZ_JL_INVMODEL_PT1_MAX_INSTANCES                1U
+#define UZ_JL_PMSMMODEL_MAX_INSTANCES                   1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -147,4 +149,7 @@
     #define UZ_PRNG_HALTON_MAX_INSTANCES                    50U
     #define UZ_PRNG_MAX_INSTANCES                           50U
     #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               50U
+    #define UZ_JL_INVMODEL_PT1_MAX_INSTANCES                5U
+    #define UZ_JL_PMSMMODEL_MAX_INSTANCES                   1U
+
 #endif

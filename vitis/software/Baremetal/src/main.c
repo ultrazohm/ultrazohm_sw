@@ -16,6 +16,12 @@
 // Includes from own files
 #include "main.h"
 #include "Codegen/uz_codegen.h"
+#include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+
+extern Bus_PMSM_Config struct_PMSM_Config;
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -56,9 +62,36 @@ uint32_t rpu_version_final = 0;
 
 uz_codegen regelung;
 
+uz_inverter_3ph_t *inverter=NULL;
+struct uz_inverter_3ph_config_t inverter_config = {   // example config values
+  .base_address=XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
+  .ip_core_frequency_Hz = 100000000.0f,
+  .switch_pspl_abc = true,
+  .switch_pspl_gate = false,
+  .udc = 678.f
+};
+
+//uz_pmsmModel_t *pmsm=NULL;
+
 int main(void)
 {
-    int status = UZ_SUCCESS;
+
+//	struct uz_pmsmModel_config_t pmsm_config={
+//	  .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
+//	  .ip_core_frequency_Hz=100000000,
+//	    .simulate_mechanical_system = true,
+//	    .r_1 = struct_PMSM_Config.mot_R1,
+//	    .L_d = struct_PMSM_Config.mot_Ld,
+//	    .L_q = struct_PMSM_Config.mot_Lq,
+//	    .psi_pm = struct_PMSM_Config.mot_psi_pm,
+//	    .polepairs = struct_PMSM_Config.mot_p,
+//	    .inertia = struct_PMSM_Config.mot_J,
+//	    .coulomb_friction_constant = 0.01f,
+//	    .friction_coefficient = 0.001f,
+//	    .simulate_nonlinear = false
+//	};
+
+	int status = UZ_SUCCESS;
     while (1)
     {
         switch (initialization_chain)
@@ -111,6 +144,8 @@ int main(void)
 //            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
 //            PWM_3L_Initialize(&Global_Data); // three-level modulator
 //            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            inverter = uz_inverter_3ph_init(inverter_config);
+//            pmsm=uz_pmsmModel_init(pmsm_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

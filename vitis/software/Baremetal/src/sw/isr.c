@@ -31,7 +31,25 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "../uz/uz_math_constants.h"
+#include "../uz/uz_integrator/uz_integrator.h"
 
+extern uz_inverter_3ph_t *inverter;
+float pmsm_theta_el_rad = 0;
+float pmsm_omega_el_rad = 0;
+uz_3ph_abc_t out_voltages = {0};
+uz_3ph_dq_t  pmsm_in_voltages = {0};
+uz_3ph_dq_t  currents_dq = {0};
+uz_3ph_abc_t  currents_abc = {0};
+
+float ctrl_in_currents[3];
+uz_3ph_abc_t in_currents = {                                     // stores flowing currents (made up values for this example)
+  .a = 5,
+  .b = 5,
+  .c = 5};
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
@@ -41,10 +59,25 @@ extern DS_Data Global_Data;
 
 extern uz_codegen regelung;
 extern Bus_ZM_In struct_ZM_In;
+//extern uz_pmsmModel_t *pmsm;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
+
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+    .omega_mech_1_s=0.0f,
+    .v_d_V=0.0f,
+    .v_q_V=0.0f,
+    .load_torque=0.0f
+};
+
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+    .i_d_A=0.0f,
+    .i_q_A=0.0f,
+    .torque_Nm=0.0f,
+    .omega_mech_1_s=0.0f
+};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -62,14 +95,14 @@ void ISR_Control(void *data)
     switch(current_state)
 	{
 		case idle_state:
-			struct_ZM_In.Soll_Status = 0;
+			struct_ZM_In.Soll_Status = Ready;
 			struct_ZM_In.Start_Traj = 0;
 			struct_ZM_In.Soll_Drehzahl = 0;
 			struct_ZM_In.Soll_id = 0;
 			struct_ZM_In.Soll_iq = 0;
 			break;
 		case running_state:
-			struct_ZM_In.Soll_Status = 1;
+			struct_ZM_In.Soll_Status = Run;
 			struct_ZM_In.Start_Traj = 0;
 			struct_ZM_In.Soll_Drehzahl = 0;
 			struct_ZM_In.Soll_id = 0;
@@ -77,13 +110,43 @@ void ISR_Control(void *data)
 			break;
 		case control_state:
 		   // Start: Control algorithm - only if ultrazohm is in control state
-		   struct_ZM_In.Soll_Regelungsart = Strom;
-		   struct_ZM_In.Soll_iq = 2;
+			struct_ZM_In.Soll_Status = En;
+			struct_ZM_In.Soll_Regelungsart = Strom;
+			struct_ZM_In.Soll_iq = 2;
+
+			uz_inverter_3ph_set_i_abc_ps(inverter,in_currents);            // set example currents
+			uz_inverter_3ph_trigger_i_abc_ps_strobe(inverter);             // write values to PL
+			uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter);             // read values from PL
+			out_voltages = uz_inverter_3ph_get_u_abc_ps(inverter);
+
+//			pmsm_omega_el_rad = pmsm_outputs.omega_mech_1_s*2*UZ_PIf*struct_PMSM_Config.mot_p;
+//			pmsm_theta_el_rad = uz_integrator_eulerforward(pmsm_omega_el_rad, pmsm_theta_el_rad, UZ_PWM_FREQUENCY, false);
+//
+//			pmsm_in_voltages = uz_transformation_3ph_abc_to_dq(out_voltages, pmsm_theta_el_rad);
+//			pmsm_inputs.v_d_V = pmsm_in_voltages.d;
+//			pmsm_inputs.v_q_V = pmsm_in_voltages.q;
+//
+//
+//			uz_pmsmModel_trigger_input_strobe(pmsm);
+//			uz_pmsmModel_trigger_output_strobe(pmsm);
+//			pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+//			uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+//			currents_dq.d = pmsm_outputs.i_d_A;
+//			currents_dq.q = pmsm_outputs.i_q_A;
+//			currents_abc = uz_transformation_3ph_dq_to_abc(currents_dq, pmsm_theta_el_rad);
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_Iuvw[1] = currents_abc.a;
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_Iuvw[2] = currents_abc.b;
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_Iuvw[3] = currents_abc.c;
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_m_mot = pmsm_outputs.torque_Nm;
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_Omega_mech = pmsm_outputs.omega_mech_1_s;
+//			regelung.input.Bus_Live_Out_PMSM.pmsm_phi_mech = pmsm_theta_el_rad;
 		   break;
 		default:
 			break;
 	}
 
+    pmsm_inputs.omega_mech_1_s = pmsm_outputs.omega_mech_1_s;
     uz_codegen_step(&regelung);
     Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_o.Dutycycle[0];
     Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_o.Dutycycle[1];

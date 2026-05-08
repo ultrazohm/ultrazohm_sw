@@ -120,6 +120,7 @@ typedef struct _actualValues_ {
 	float n_mech_rpm_d4_1;
 	float overcurrent_ac;
 	float overvoltage_dc;
+	float undervoltage_dc;
 	float overspeed;
 	float overtorque;
 	float encoder_offset_resolver_progress;

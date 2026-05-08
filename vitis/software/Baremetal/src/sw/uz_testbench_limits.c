@@ -14,14 +14,24 @@ const float UZ_TESTBENCH_LIMIT_TORQUE_MAX_NM = 9.0f;
 volatile uint32_t uz_testbench_limits_error_reason = 0U;
 float js_error_max_current_left = 0.0f;
 float js_error_max_current_right = 0.0f;
-float js_error_vdc_left = 0.0f;
-float js_error_vdc_right = 0.0f;
+float js_error_overvoltage_dc = 0.0f;
+float js_error_undervoltage_dc = 0.0f;
 float js_error_overspeed = 0.0f;
 float js_error_overtorque = 0.0f;
 
 static bool is_outside_limits(float value, float min_value, float max_value)
 {
 	return (value < min_value) || (value > max_value);
+}
+
+static bool is_below_limit(float value, float min_value)
+{
+	return value < min_value;
+}
+
+static bool is_above_limit(float value, float max_value)
+{
+	return value > max_value;
 }
 
 static void update_global_data_error_latches(actualValues *av, uint32_t error_mask)
@@ -38,9 +48,11 @@ static void update_global_data_error_latches(actualValues *av, uint32_t error_ma
 					   UZ_TESTBENCH_ERROR_RIGHT_OVERCURRENT_C)) != 0U) {
 		av->overcurrent_ac = 1.0f;
 	}
-	if ((error_mask & (UZ_TESTBENCH_ERROR_LEFT_OVERVOLTAGE_DC |
-					   UZ_TESTBENCH_ERROR_RIGHT_OVERVOLTAGE_DC)) != 0U) {
+	if ((error_mask & UZ_TESTBENCH_ERROR_OVERVOLTAGE_DC) != 0U) {
 		av->overvoltage_dc = 1.0f;
+	}
+	if ((error_mask & UZ_TESTBENCH_ERROR_UNDERVOLTAGE_DC) != 0U) {
+		av->undervoltage_dc = 1.0f;
 	}
 	if ((error_mask & (UZ_TESTBENCH_ERROR_LEFT_OVERSPEED |
 					   UZ_TESTBENCH_ERROR_RIGHT_OVERSPEED)) != 0U) {
@@ -63,11 +75,11 @@ static void update_javascope_error_latches(uint32_t error_mask)
 					   UZ_TESTBENCH_ERROR_RIGHT_OVERCURRENT_C)) != 0U) {
 		js_error_max_current_right = 1.0f;
 	}
-	if ((error_mask & UZ_TESTBENCH_ERROR_LEFT_OVERVOLTAGE_DC) != 0U) {
-		js_error_vdc_left = 1.0f;
+	if ((error_mask & UZ_TESTBENCH_ERROR_OVERVOLTAGE_DC) != 0U) {
+		js_error_overvoltage_dc = 1.0f;
 	}
-	if ((error_mask & UZ_TESTBENCH_ERROR_RIGHT_OVERVOLTAGE_DC) != 0U) {
-		js_error_vdc_right = 1.0f;
+	if ((error_mask & UZ_TESTBENCH_ERROR_UNDERVOLTAGE_DC) != 0U) {
+		js_error_undervoltage_dc = 1.0f;
 	}
 	if ((error_mask & (UZ_TESTBENCH_ERROR_LEFT_OVERSPEED |
 					   UZ_TESTBENCH_ERROR_RIGHT_OVERSPEED)) != 0U) {
@@ -116,11 +128,11 @@ uint32_t uz_testbench_limits_step(actualValues *av)
 	if (is_outside_limits(av->i_c_right, UZ_TESTBENCH_LIMIT_CURRENT_MIN_AMP, UZ_TESTBENCH_LIMIT_CURRENT_MAX_AMP)) {
 		error_mask |= UZ_TESTBENCH_ERROR_RIGHT_OVERCURRENT_C;
 	}
-	if (is_outside_limits(av->v_dc_left, UZ_TESTBENCH_LIMIT_DC_LINK_MIN_V, UZ_TESTBENCH_LIMIT_DC_LINK_MAX_V)) {
-		error_mask |= UZ_TESTBENCH_ERROR_LEFT_OVERVOLTAGE_DC;
+	if (is_above_limit(av->v_dc_left, UZ_TESTBENCH_LIMIT_DC_LINK_MAX_V)) {
+		error_mask |= UZ_TESTBENCH_ERROR_OVERVOLTAGE_DC;
 	}
-	if (is_outside_limits(av->v_dc_right, UZ_TESTBENCH_LIMIT_DC_LINK_MIN_V, UZ_TESTBENCH_LIMIT_DC_LINK_MAX_V)) {
-		error_mask |= UZ_TESTBENCH_ERROR_RIGHT_OVERVOLTAGE_DC;
+	if (is_below_limit(av->v_dc_left, UZ_TESTBENCH_LIMIT_DC_LINK_MIN_V)) {
+		error_mask |= UZ_TESTBENCH_ERROR_UNDERVOLTAGE_DC;
 	}
 	if (is_outside_limits(av->n_mech_rpm_d3_1, UZ_TESTBENCH_LIMIT_SPEED_MIN_RPM, UZ_TESTBENCH_LIMIT_SPEED_MAX_RPM)) {
 		error_mask |= UZ_TESTBENCH_ERROR_LEFT_OVERSPEED;
@@ -146,14 +158,15 @@ void uz_testbench_limits_reset(actualValues *av)
 	uz_testbench_limits_error_reason = 0U;
 	js_error_max_current_left = 0.0f;
 	js_error_max_current_right = 0.0f;
-	js_error_vdc_left = 0.0f;
-	js_error_vdc_right = 0.0f;
+	js_error_overvoltage_dc = 0.0f;
+	js_error_undervoltage_dc = 0.0f;
 	js_error_overspeed = 0.0f;
 	js_error_overtorque = 0.0f;
 
 	if (av != NULL) {
 		av->overcurrent_ac = 0.0f;
 		av->overvoltage_dc = 0.0f;
+		av->undervoltage_dc = 0.0f;
 		av->overspeed = 0.0f;
 		av->overtorque = 0.0f;
 	}

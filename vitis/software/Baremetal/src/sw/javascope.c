@@ -194,12 +194,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
 	js_slowDataArray[JSSD_FLOAT_Overcurrent_AC]			= &(data->av.overcurrent_ac);
 	js_slowDataArray[JSSD_FLOAT_Overvoltage_DC]			= &(data->av.overvoltage_dc);
+	js_slowDataArray[JSSD_FLOAT_Undervoltage_DC]			= &(data->av.undervoltage_dc);
 	js_slowDataArray[JSSD_FLOAT_Overspeed]				= &(data->av.overspeed);
 	js_slowDataArray[JSSD_FLOAT_Overtorque]				= &(data->av.overtorque);
 	js_slowDataArray[JSSD_FLOAT_Error_Max_Current_Left]	= &js_error_max_current_left;
 	js_slowDataArray[JSSD_FLOAT_Error_Max_Current_Right]	= &js_error_max_current_right;
-	js_slowDataArray[JSSD_FLOAT_Error_Vdc_Left]			= &js_error_vdc_left;
-	js_slowDataArray[JSSD_FLOAT_Error_Vdc_Right]			= &js_error_vdc_right;
+	js_slowDataArray[JSSD_FLOAT_Error_Overvoltage_DC]		= &js_error_overvoltage_dc;
+	js_slowDataArray[JSSD_FLOAT_Error_Undervoltage_DC]		= &js_error_undervoltage_dc;
 	js_slowDataArray[JSSD_FLOAT_Error_Overspeed_Latch]	= &js_error_overspeed;
 	js_slowDataArray[JSSD_FLOAT_Error_Overtorque_Latch]	= &js_error_overtorque;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

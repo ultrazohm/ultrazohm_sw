@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "platforms": [
+    {
+      "id": "ultrazohm",
+      "name": "UltraZohm",
+      "description": "UltraZohm hardware platform target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [
+        "Rev04",
+        "Rev05",
+        "Rev06"
+      ],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    },
+    {
+      "id": "microzohm",
+      "name": "MicroZohm",
+      "description": "MicroZohm hardware platform target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [
+        "Rev01",
+        "Rev02",
+        "Rev03"
+      ],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    }
+  ],
+  "axi_interconnect": {
+    "upstream_smartconnect": "uz_user/smartconnect_1",
+    "clock_pin": "uz_user/aclk",
+    "resetn_pin": "uz_user/aresetn",
+    "address_space": "/zynq_ultra_ps_e_0/Data",
+    "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
+    "local_smartconnect_name": "axi_smartconnect"
+  }
+}

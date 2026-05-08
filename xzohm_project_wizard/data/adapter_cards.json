@@ -1,0 +1,451 @@
+{
+  "schema_version": 1,
+  "cpld_programs": [
+    {
+      "id": "none",
+      "name": "No CPLD program",
+      "description": "No slot CPLD program selected."
+    },
+    {
+      "id": "uz_d_3ph_inverter",
+      "name": "uz_d_3ph_inverter",
+      "description": "Slot CPLD program for the UZ_D 3-phase inverter adapter card."
+    },
+    {
+      "id": "uz_d_abs_encoder",
+      "name": "uz_d_abs_encoder",
+      "description": "Slot CPLD program for the UZ_D absolute encoder adapter card."
+    },
+    {
+      "id": "uz_d_temperature_ltc2983",
+      "name": "uz_d_temperature_ltc2983",
+      "description": "Slot CPLD program for the UZ_D temperature card with LTC2983 devices."
+    }
+  ],
+  "cards": [
+    {
+      "id": "empty",
+      "name": "Empty slot",
+      "family": "system",
+      "description": "No adapter card installed.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_card.tcl",
+        "notes": [
+          "No TCL commands are emitted for empty slots."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
+      "id": "uz_d_inverter_adapter",
+      "name": "UZ_D 3-Phase Inverter",
+      "family": "digital",
+      "description": "Digital inverter adapter card using uz_d_inverter_adapter plus the mapping IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "uz_d_3ph_inverter",
+      "vivado": {
+        "template": "cards/uz_d_inverter_adapter.tcl",
+        "notes": [
+          "Create a hierarchy for the inverter adapter.",
+          "Instantiate uz_d_inverter_adapter and uz_inverter_adapter_mapping_v1_0.",
+          "Connect equal-named signals between the IP cores.",
+          "Create the slot interface pin and connect it to the mapping IP.",
+          "Use the matching packed constraint file for the selected D-slot."
+        ],
+        "ip_cores": [
+          {
+            "instance_prefix": "uz_d_inverter_adapter",
+            "module": "uz_d_inverter_adapter",
+            "vlnv": "user.org:user:uz_d_inverter_adapter:1.0"
+          },
+          {
+            "instance_prefix": "uz_inverter_adapter_mapping",
+            "module": "uz_inverter_adapter_mapping_v1_0",
+            "vlnv": "user.org:user:uz_inverter_adapter_mapping_v1_0:1.0"
+          }
+        ],
+        "interfaces": [
+          {
+            "name_template": "{slot}",
+            "vlnv": "uz_inverter_adapter_rtl:1.0"
+          }
+        ],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "uz_inverter_adapter",
+        "notes": [
+          "Generate uz_inverter_adapter_init.c/.h.",
+          "Add object pointer to globalData.h.",
+          "Initialize the driver in main.c."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_absolute_encoder",
+      "name": "UZ_D Absolute Encoder",
+      "family": "digital",
+      "description": "Absolute encoder adapter card with three encoder channels. Each channel can be configured independently, e.g. EnDat or SSI.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "uz_d_abs_encoder",
+      "vivado": {
+        "template": "cards/generic_card.tcl",
+        "notes": [
+          "Instantiate one encoder IP core per enabled channel inside uz_user.",
+          "Connect AXI4-Lite, 100 MHz clock and reset for every enabled channel.",
+          "Connect channel triggers to the intended trigger source.",
+          "D-slot channel mappings use Dig_XX_Chx names where x is the slot channel number."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "channel_1",
+          "label": "Channel 1 IP core",
+          "default": "endat",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [],
+                "ports": []
+            }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_15_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_08_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_17_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_11_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_07_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_15_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data",
+                    "direction": "in",
+                    "pin": "Dig_07_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        },
+        {
+          "id": "channel_2",
+          "label": "Channel 2 IP core",
+          "default": "none",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [],
+                "ports": []
+              }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_14_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_09_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_16_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_10_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_06_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_14_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data",
+                    "direction": "in",
+                    "pin": "Dig_06_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        },
+        {
+          "id": "channel_3",
+          "label": "Channel 3 IP core",
+          "default": "none",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [],
+                "ports": []
+              }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_22_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_12_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_23_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_20_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_18_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/absolute_encoder_channel.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_22_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data",
+                    "direction": "in",
+                    "pin": "Dig_18_Ch{slot_index}"
+                  }
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "",
+        "notes": [
+          "Generate one init file or init section per enabled channel.",
+          "Add object pointer to globalData.h.",
+          "Initialize and enable the IP in main.c after xparameters.h contains the base address."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_temperature_ltc2983",
+      "name": "UZ_D Temperature LTC2983",
+      "family": "digital",
+      "description": "Temperature measurement adapter card using the Temperature_Card_Interface IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "uz_d_temperature_ltc2983",
+      "vivado": {
+                "template": "cards/uz_d_temperature_ltc2983.tcl",
+                "notes": [
+                    "Instantiate Temperature_Card_Interface in uz_digital_Adapter/Dx_adapter.",
+                    "Use single-pin D-slot constraints instead of the packed constraint file.",
+                    "D5 requires a custom CPLD file and is intentionally not listed as compatible."
+                ],
+        "ip_cores": [
+          {
+            "instance_prefix": "temperature_card_interface",
+            "module": "Temperature_Card_Interface",
+            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1"
+          }
+        ],
+                "interfaces": [],
+                "ports": [],
+                "axi_interfaces": [
+                    {
+                        "name": "s00_axi",
+                        "path_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
+                        "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
+                    }
+                ]
+            },
+      "vitis": {
+        "driver": "temperature_card_interface",
+        "notes": []
+      }
+    }
+  ]
+}

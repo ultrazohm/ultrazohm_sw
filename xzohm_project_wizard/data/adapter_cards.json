@@ -141,7 +141,7 @@
                 "template": "cards/absolute_encoder_channel.tcl",
                 "ip_cores": [],
                 "ports": []
-            }
+              }
             },
             {
               "id": "endat",
@@ -152,7 +152,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -181,6 +181,13 @@
                     "direction": "in",
                     "pin": "Dig_07_Ch{slot_index}"
                   }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
                 ]
               },
               "vitis": {
@@ -196,7 +203,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -209,6 +216,13 @@
                     "signal": "ssi_data",
                     "direction": "in",
                     "pin": "Dig_07_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
                 ]
               },
@@ -241,7 +255,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -270,6 +284,13 @@
                     "direction": "in",
                     "pin": "Dig_06_Ch{slot_index}"
                   }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
                 ]
               },
               "vitis": {
@@ -285,7 +306,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -298,6 +319,13 @@
                     "signal": "ssi_data",
                     "direction": "in",
                     "pin": "Dig_06_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
                 ]
               },
@@ -330,7 +358,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "user.org:user:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -359,6 +387,13 @@
                     "direction": "in",
                     "pin": "Dig_18_Ch{slot_index}"
                   }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
                 ]
               },
               "vitis": {
@@ -374,7 +409,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "user.org:user:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
                   }
                 ],
                 "ports": [
@@ -387,6 +422,13 @@
                     "signal": "ssi_data",
                     "direction": "in",
                     "pin": "Dig_18_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
                 ]
               },
@@ -419,12 +461,12 @@
       ],
       "slot_cpld": "uz_d_temperature_ltc2983",
       "vivado": {
-                "template": "cards/uz_d_temperature_ltc2983.tcl",
-                "notes": [
-                    "Instantiate Temperature_Card_Interface in uz_digital_Adapter/Dx_adapter.",
-                    "Use single-pin D-slot constraints instead of the packed constraint file.",
-                    "D5 requires a custom CPLD file and is intentionally not listed as compatible."
-                ],
+        "template": "cards/uz_d_temperature_ltc2983.tcl",
+        "notes": [
+          "Instantiate Temperature_Card_Interface in uz_digital_Adapter/Dx_adapter.",
+          "Use single-pin D-slot constraints instead of the packed constraint file.",
+          "D5 requires a custom CPLD file and is intentionally not listed as compatible."
+        ],
         "ip_cores": [
           {
             "instance_prefix": "temperature_card_interface",
@@ -432,16 +474,16 @@
             "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1"
           }
         ],
-                "interfaces": [],
-                "ports": [],
-                "axi_interfaces": [
-                    {
-                        "name": "s00_axi",
-                        "path_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
-                        "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
-                    }
-                ]
-            },
+        "interfaces": [],
+        "ports": [],
+        "axi_interfaces": [
+          {
+            "name": "s00_axi",
+            "path_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
+            "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
+          }
+        ]
+      },
       "vitis": {
         "driver": "temperature_card_interface",
         "notes": []

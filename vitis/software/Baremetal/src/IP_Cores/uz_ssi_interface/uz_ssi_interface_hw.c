@@ -1,6 +1,7 @@
 #include "uz_ssi_interface_hw.h"
 #include "uz_ssi_interface_hwAddresses.h"
 #include "../../uz/uz_AXI.h"
+#include "../../uz/uz_math_constants.h"
 #include <limits.h>
 
 #define FRAC_RECIPROCAL_BIT_WIDTH 27
@@ -23,6 +24,7 @@
 #define KP_PLL_MAX 8191.0f
 #define KI_PLL_MAX 262142.0f
 #define SAMPLING_DELAY_CLK_TICKS_MAX 100U
+#define POSITION_MECH_SI_MAX (2.0f * UZ_PIf)
 
 void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t ssi_clk_divider) {
     uz_assert_not_zero_uint32(base_address);
@@ -102,6 +104,19 @@ void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampl
     uz_axi_write_uint32(base_address + t_sample_AXI_Data_uz_ssi_interface, sampling_interval_fp);
     uz_axi_write_uint32(base_address + kp_pll_AXI_Data_uz_ssi_interface, kp_pll_fp);
     uz_axi_write_uint32(base_address + ki_pll_AXI_Data_uz_ssi_interface, ki_pll_fp);
+}
+
+void uz_ssi_interface_hw_write_pll_debug_mode(uint32_t base_address, bool debug_on_off) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address + debug_off_on_AXI_Data_uz_ssi_interface, debug_on_off);
+}
+
+void uz_ssi_interface_hw_write_pll_debug_position(uint32_t base_address, float position_mech_si) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(position_mech_si >= 0.0f);
+    uz_assert(position_mech_si <= POSITION_MECH_SI_MAX);
+
+    uz_axi_write_uint32(base_address + position_mech_SI_debug_in_AXI_Data_uz_ssi_interface, uz_convert_float_to_unsigned_fixed(position_mech_si, FRAC_POSITION_SI));
 }
 
 void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs) {

@@ -286,6 +286,24 @@ If possible, reduce the serial clock speed or use a shorter encoder cable.
 The IP core driver also provides the config value ``.sampling_delay_clk_ticks`` to delay sampling by a certain number of clock ticks after the falling clock edge.
 Tune this value while observing the timing with an ``ILA`` to compensate for the delay.
 
+Debugging the IP core's ``pos_to_speed_pll``
+--------------------------------------------
+
+The SSI IP core contains a debug input for the internal ``pos_to_speed_pll``.
+This debug path can be used to feed a user-defined mechanical position directly into the speed PLL instead of the mechanical position calculated from the encoder data.
+It is useful for checking the PLL parametrization, debugging the speed calculation and separating PLL behavior from encoder communication issues.
+
+The debug path is controlled by the software driver.
+Use ``uz_ssi_interface_set_pll_debug_position`` to write the mechanical debug position in rad.
+Allowed values are between ``0`` and ``2*pi``.
+Use ``uz_ssi_interface_enable_pll_debug_mode`` to switch the PLL input between the encoder-derived position and the debug position.
+
+.. warning::
+
+   If the PLL debug mode is enabled, the speed values no longer correspond to the connected encoder position.
+   Disable the debug mode for normal encoder operation and for closed-loop control with real position feedback.
+   By default, the debug mode is disabled.
+
 Reference
 =========
 
@@ -321,3 +339,7 @@ Reference
 .. doxygenfunction:: uz_ssi_interface_set_mechanical_offset_ssi_single_turn
 
 .. doxygenfunction:: uz_ssi_interface_set_sampling_delay_clk_ticks
+
+.. doxygenfunction:: uz_ssi_interface_enable_pll_debug_mode
+
+.. doxygenfunction:: uz_ssi_interface_set_pll_debug_position

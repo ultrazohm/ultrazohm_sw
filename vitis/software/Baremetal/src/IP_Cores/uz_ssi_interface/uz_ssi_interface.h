@@ -146,4 +146,22 @@ void uz_ssi_interface_set_mechanical_offset_ssi_single_turn(uz_ssi_interface_t *
  */
 void uz_ssi_interface_set_sampling_delay_clk_ticks(uz_ssi_interface_t *self, uint32_t delay_clk_ticks);
 
+/**
+ * @brief Enables or disables the PLL debug mode.
+ * @brief If enabled, the speed PLL uses the debug position instead of the encoder-derived mechanical position.
+ *
+ * @param self Pointer to the instance
+ * @param debug_on_off Flag to enable the PLL debug mode, false=off, true=enabled
+ */
+void uz_ssi_interface_enable_pll_debug_mode(uz_ssi_interface_t *self, bool debug_on_off);
+
+/**
+ * @brief Sets the mechanical position used as debug input for the speed PLL.
+ * @brief Values between 0 and 2*pi are allowed.
+ *
+ * @param self Pointer to the instance
+ * @param position_mech_si Mechanical debug position in rad
+ */
+void uz_ssi_interface_set_pll_debug_position(uz_ssi_interface_t *self, float position_mech_si);
+
 #endif // UZ_SSI_INTERFACE_H

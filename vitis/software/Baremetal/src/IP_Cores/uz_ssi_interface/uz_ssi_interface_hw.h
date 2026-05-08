@@ -11,6 +11,8 @@ void uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(uint32_t base_a
 void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, uint32_t position_encoding);
 void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on);
 void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll);
+void uz_ssi_interface_hw_write_pll_debug_mode(uint32_t base_address, bool debug_on_off);
+void uz_ssi_interface_hw_write_pll_debug_position(uint32_t base_address, float position_mech_si);
 void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs);
 void uz_ssi_interface_hw_write_position_mech_offset_ticks_single_turn(uint32_t base_address, int32_t mech_offset_ticks_single_turn);
 void uz_ssi_interface_hw_write_sampling_delay_clk_ticks(uint32_t base_address, uint32_t sampling_delay_clk_ticks);

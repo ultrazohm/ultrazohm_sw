@@ -85,6 +85,10 @@ void test_uz_endat_interface_init_asserts(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_mode_command(0U, uz_endat_interface_send_position));
 
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_sampling_delay_clk_ticks(0U, 42U));
+
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_enable_pll_debug_mode(0U, true));
+
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_set_pll_debug_position(0U, 1.0f));
 }
 
 void test_uz_endat_interface_init_config_limit_asserts(void)
@@ -272,6 +276,23 @@ void test_uz_endat_interface_set_sampling_delay_clk_ticks(void)
 
     uz_endat_interface_hw_write_sampling_delay_clk_ticks_Expect(TEST_BASE_ADDRESS, delay_clk_ticks);
     uz_endat_interface_set_sampling_delay_clk_ticks(instance, delay_clk_ticks);
+}
+
+void test_uz_endat_interface_pll_debug(void)
+{
+    float position_mech_si = 1.0f;
+
+    expect_default_init_writes();
+    uz_endat_interface_t *instance = uz_endat_interface_init(config);
+
+    uz_endat_interface_hw_write_pll_debug_mode_Expect(TEST_BASE_ADDRESS, true);
+    uz_endat_interface_enable_pll_debug_mode(instance, true);
+
+    uz_endat_interface_hw_write_pll_debug_mode_Expect(TEST_BASE_ADDRESS, false);
+    uz_endat_interface_enable_pll_debug_mode(instance, false);
+
+    uz_endat_interface_hw_write_pll_debug_position_Expect(TEST_BASE_ADDRESS, position_mech_si);
+    uz_endat_interface_set_pll_debug_position(instance, position_mech_si);
 }
 
 void test_uz_endat_interface_set_mechanical_offset_endat_single_turn_asserts_on_invalid_values(void)

@@ -69,6 +69,13 @@ void uz_resolver_pl_interface_set_config(uz_resolver_pl_interface_t *self);
 struct uz_resolver_pl_interface_outputs_t uz_resolver_pl_interface_get_outputs(uz_resolver_pl_interface_t *self);
 
 /**
+ * @brief Updates and returns only the electrical angle of the AXI outputs of the IP-Core
+ *
+ * @param self Pointer to the instance
+ */
+float uz_resolver_pl_interface_get_pos_el_2pi(uz_resolver_pl_interface_t *self);
+
+/**
  * @brief Writes new theta_m_offset_rad value into config and into the IP-Core
  *
  * @param self Pointer to the instance

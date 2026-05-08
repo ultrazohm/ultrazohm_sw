@@ -147,7 +147,9 @@
         "xlslice_2": "",
         "xlslice_3": "",
         "xlconcat_0": "",
-        "Temperature_Card_Int_0": ""
+        "Temperature_Card_Int_0": "",
+        "uz_resolver_pl_inter_0": "",
+        "uz_resolver_pl_inter_1": ""
       },
       "zynq_ultra_ps_e_0": "",
       "cil_model": {
@@ -7538,7 +7540,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "6"
+                "value": "8"
               },
               "NUM_SI": {
                 "value": "1"
@@ -7563,7 +7565,9 @@
                   "M02_AXI",
                   "M03_AXI",
                   "M04_AXI",
-                  "M05_AXI"
+                  "M05_AXI",
+                  "M06_AXI",
+                  "M07_AXI"
                 ]
               },
               "M00_AXI": {
@@ -7751,6 +7755,68 @@
                     "value": "0"
                   }
                 }
+              },
+              "M06_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M07_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             }
           },
@@ -7893,6 +7959,18 @@
             "xci_name": "zusys_Temperature_Card_Int_0_0",
             "xci_path": "ip\\zusys_Temperature_Card_Int_0_0\\zusys_Temperature_Card_Int_0_0.xci",
             "inst_hier_path": "uz_user/Temperature_Card_Int_0"
+          },
+          "uz_resolver_pl_inter_0": {
+            "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
+            "xci_name": "zusys_uz_resolver_pl_inter_0_0",
+            "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_0\\zusys_uz_resolver_pl_inter_0_0.xci",
+            "inst_hier_path": "uz_user/uz_resolver_pl_inter_0"
+          },
+          "uz_resolver_pl_inter_1": {
+            "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
+            "xci_name": "zusys_uz_resolver_pl_inter_0_1",
+            "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_1\\zusys_uz_resolver_pl_inter_0_1.xci",
+            "inst_hier_path": "uz_user/uz_resolver_pl_inter_1"
           }
         },
         "interface_nets": {
@@ -7936,6 +8014,18 @@
             "interface_ports": [
               "smartconnect_1/M05_AXI",
               "Temperature_Card_Int_0/s00_axi"
+            ]
+          },
+          "smartconnect_1_M06_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M06_AXI",
+              "uz_resolver_pl_inter_0/AXI4_Lite"
+            ]
+          },
+          "smartconnect_1_M07_AXI": {
+            "interface_ports": [
+              "uz_resolver_pl_inter_1/AXI4_Lite",
+              "smartconnect_1/M07_AXI"
             ]
           }
         },
@@ -8054,6 +8144,24 @@
               "CS_1"
             ]
           },
+          "Resolver_Interface_v_0_position_out_m": {
+            "ports": [
+              "Resolver_Interface_v_0/position_out_m",
+              "uz_resolver_pl_inter_0/position_raw"
+            ]
+          },
+          "Resolver_Interface_v_0_valid_m": {
+            "ports": [
+              "Resolver_Interface_v_0/valid_m",
+              "uz_resolver_pl_inter_0/trigger"
+            ]
+          },
+          "Resolver_Interface_v_0_velocity_out_m": {
+            "ports": [
+              "Resolver_Interface_v_0/velocity_out_m",
+              "uz_resolver_pl_inter_0/velocity_raw"
+            ]
+          },
           "Resolver_Interface_v_1_AD2S1210_mode_A0": {
             "ports": [
               "Resolver_Interface_v_1/AD2S1210_mode_A0",
@@ -8100,6 +8208,24 @@
             "ports": [
               "Resolver_Interface_v_1/SPI_SS",
               "CS_2"
+            ]
+          },
+          "Resolver_Interface_v_1_position_out_m": {
+            "ports": [
+              "Resolver_Interface_v_1/position_out_m",
+              "uz_resolver_pl_inter_1/position_raw"
+            ]
+          },
+          "Resolver_Interface_v_1_valid_m": {
+            "ports": [
+              "Resolver_Interface_v_1/valid_m",
+              "uz_resolver_pl_inter_1/trigger"
+            ]
+          },
+          "Resolver_Interface_v_1_velocity_out_m": {
+            "ports": [
+              "Resolver_Interface_v_1/velocity_out_m",
+              "uz_resolver_pl_inter_1/velocity_raw"
             ]
           },
           "SPI_MISO_1_D02_1": {
@@ -8211,7 +8337,11 @@
               "Resolver_Interface_v_1/s00_axi_aresetn",
               "axi_gpio_Output/s_axi_aresetn",
               "axi_gpio_Input/s_axi_aresetn",
-              "Temperature_Card_Int_0/s00_axi_aresetn"
+              "Temperature_Card_Int_0/s00_axi_aresetn",
+              "uz_resolver_pl_inter_0/IPCORE_RESETN",
+              "uz_resolver_pl_inter_0/AXI4_Lite_ARESETN",
+              "uz_resolver_pl_inter_1/IPCORE_RESETN",
+              "uz_resolver_pl_inter_1/AXI4_Lite_ARESETN"
             ]
           },
           "sample_trigger_1": {
@@ -8261,7 +8391,11 @@
               "Resolver_Interface_v_1/s00_axi_aclk",
               "axi_gpio_Output/s_axi_aclk",
               "axi_gpio_Input/s_axi_aclk",
-              "Temperature_Card_Int_0/s00_axi_aclk"
+              "Temperature_Card_Int_0/s00_axi_aclk",
+              "uz_resolver_pl_inter_0/IPCORE_CLK",
+              "uz_resolver_pl_inter_0/AXI4_Lite_ACLK",
+              "uz_resolver_pl_inter_1/IPCORE_CLK",
+              "uz_resolver_pl_inter_1/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -12666,6 +12800,16 @@
               "SEG_uz_pmsm_model_9ph_dq_0_reg0": {
                 "address_block": "/cil_model/uz_pmsm_model_9ph_dq_0/AXI4/reg0",
                 "offset": "0x00801F0000",
+                "range": "64K"
+              },
+              "SEG_uz_resolver_pl_inter_0_reg0": {
+                "address_block": "/uz_user/uz_resolver_pl_inter_0/AXI4_Lite/reg0",
+                "offset": "0x0080270000",
+                "range": "64K"
+              },
+              "SEG_uz_resolver_pl_inter_1_reg0": {
+                "address_block": "/uz_user/uz_resolver_pl_inter_1/AXI4_Lite/reg0",
+                "offset": "0x0080280000",
                 "range": "64K"
               }
             }

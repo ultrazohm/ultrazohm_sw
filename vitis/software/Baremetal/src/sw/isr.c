@@ -34,6 +34,7 @@
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hw.h"
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hwAddresses.h"
 #include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+#include "../IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 
 
 // Initialize the Interrupt structure
@@ -90,7 +91,8 @@ void ISR_Control(void *data)
 
     // read position from resolver IP Core
     //ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
-    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_right);
+//    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_right);
+    ctrl_data.bus_BSW_FCF.phi = uz_resolver_pl_interface_get_pos_el_2pi(Global_Data.objects.resolver_pl_D5_Ch1);
 
     // get intermediate circuit voltage measurement value
 //    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter

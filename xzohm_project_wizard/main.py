@@ -175,7 +175,12 @@ class SimpleTemplateRenderer:
 
     def _render_variables(self, template: str, context: dict[str, Any]) -> str:
         pattern = re.compile(r"{{\s*([\w.]+)\s*}}")
-        return pattern.sub(lambda match: str(self._resolve(match.group(1), context) or ""), template)
+        return pattern.sub(lambda match: self._format_value(self._resolve(match.group(1), context)), template)
+
+    def _format_value(self, value: Any) -> str:
+        if value is None:
+            return ""
+        return str(value)
 
     def _resolve(self, name: str, context: dict[str, Any]) -> Any:
         value: Any = context
@@ -227,6 +232,9 @@ class TclGenerator:
                         {
                             "slot": slot,
                             "slot_lower": slot.lower(),
+                            "slot_index": slot[1:],
+                            "slot_family": slot[0],
+                            "cleanup_patterns": self._slot_cleanup_patterns(slot),
                         }
                         for slot in configured_slots
                     ],
@@ -268,6 +276,31 @@ class TclGenerator:
         )
         return "\n".join(lines)
 
+    def _slot_cleanup_patterns(self, slot: str) -> str:
+        slot_index = slot[1:]
+        slot_lower = slot.lower()
+        if slot.startswith("D"):
+            return f'"*{slot}*" "*{slot_lower}*" "*_Ch{slot_index}*" "*_ch{slot_index}*"'
+        if slot.startswith("A"):
+            return f'"*{slot}*" "*{slot_lower}*"'
+        return f'"*{slot}*" "*{slot_lower}*"'
+
+    @staticmethod
+    def _vivado_direction(direction: str) -> str:
+        normalized = direction.strip().lower()
+        if normalized in {"out", "output", "o"}:
+            return "O"
+        if normalized in {"inout", "io", "i/o"}:
+            return "IO"
+        return "I"
+
+    @staticmethod
+    def _option_channel_suffix(option_id: str) -> str:
+        match = re.search(r"(\d+)$", option_id)
+        if match:
+            return f"ch{match.group(1)}"
+        return option_id.replace("-", "_")
+
     def _card_section(self, slot: str, card: dict[str, Any], option_values: dict[str, str]) -> str:
         slot_index = slot[1:]
         vivado = card.get("vivado", {})
@@ -283,7 +316,7 @@ class TclGenerator:
             selected_choice = self._selected_choice(option, option_values)
             if selected_choice is None:
                 continue
-            section.append(self._option_section(slot, slot_index, option, selected_choice))
+            section.append(self._option_section(slot, slot_index, option, selected_choice, option_values))
 
         return "\n".join(section)
 
@@ -309,10 +342,12 @@ class TclGenerator:
             )
         ports = []
         for port in vivado.get("ports", []):
+            direction = self._vivado_direction(port.get("direction", "in"))
+            signal = port.get("signal", "signal")
             ports.append(
                 {
-                    "signal": port.get("signal", "signal"),
-                    "direction": port.get("direction", "in"),
+                    "signal": signal,
+                    "direction": direction,
                     "pin": port.get("channel_1_pin", port.get("pin", "signal")).format(slot=slot, slot_index=slot_index),
                 }
             )
@@ -353,8 +388,8 @@ class TclGenerator:
                 {
                     "slot": slot,
                     "slot_lower": slot.lower(),
-                    "adapter_hier_path": f"uz_digital_Adapter/{slot}_adapter",
-                    "local_smartconnect_path": f"uz_digital_Adapter/{slot}_adapter/{local_name}",
+                    "adapter_hier_path": f"uz_digital_adapter/{slot}_adapter",
+                    "local_smartconnect_path": f"uz_digital_adapter/{slot}_adapter/{local_name}",
                     "interface_count": len(interfaces),
                     "axi_interfaces": interfaces,
                 }
@@ -363,7 +398,7 @@ class TclGenerator:
                 axi_connections.append(
                     {
                         "slot": slot,
-                        "local_smartconnect_path": f"uz_digital_Adapter/{slot}_adapter/{local_name}",
+                        "local_smartconnect_path": f"uz_digital_adapter/{slot}_adapter/{local_name}",
                         "index": interface["index"],
                         "path": interface["path"],
                         "addr_seg": interface["addr_seg"],
@@ -443,14 +478,16 @@ class TclGenerator:
         slot_index: str,
         option: dict[str, Any],
         choice: dict[str, Any],
+        option_values: dict[str, str],
     ) -> str:
         option_id = option.get("id", "option")
         choice_id = choice.get("id", "choice")
         vivado = choice.get("vivado", {})
         template = vivado.get("template", "cards/generic_card.tcl")
         if choice_id == "none":
-            template = vivado.get("template", "cards/absolute_encoder_channel.tcl")
+            return f"# {option.get('label', option_id)}: {choice.get('label', choice_id)}\n"
         suffix = f"{slot.lower()}_{option_id}"
+        channel_suffix = f"{slot.lower()}_{self._option_channel_suffix(option_id)}"
         ip_cores = []
         for ip_core in vivado.get("ip_cores", []):
             instance_name = f"{ip_core.get('instance_prefix', 'ip')}_{suffix}"
@@ -461,14 +498,81 @@ class TclGenerator:
                     "vlnv": ip_core.get("vlnv", ""),
                 }
             )
+        primary_ip = ip_cores[0] if ip_cores else {"instance_name": "", "module": "", "vlnv": ""}
 
         ports = []
         for port in vivado.get("ports", []):
+            direction = self._vivado_direction(port.get("direction", "in"))
+            signal = port.get("signal", "signal")
+            adapter_pin_name = f"{signal}_{channel_suffix}"
+            boundary_name = f"{signal}_{channel_suffix}"
             ports.append(
                 {
-                    "signal": port.get("signal", "signal"),
-                    "direction": port.get("direction", "in"),
+                    "signal": signal,
+                    "adapter_pin_name": adapter_pin_name,
+                    "boundary_name": boundary_name,
+                    "direction": direction,
                     "pin": port.get("pin", "signal").format(slot=slot, slot_index=slot_index),
+                    "core_source": (
+                        f"${{ip_path}}/{signal}" if direction == "O" else f"${{adapter_hier_path}}/{adapter_pin_name}"
+                    ),
+                    "core_sink": (
+                        f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"${{ip_path}}/{signal}"
+                    ),
+                    "boundary_source": (
+                        f"${{adapter_hier_path}}/{adapter_pin_name}"
+                        if direction == "O"
+                        else f"${{digital_adapter_hier}}/{boundary_name}"
+                    ),
+                    "boundary_sink": (
+                        f"${{digital_adapter_hier}}/{boundary_name}"
+                        if direction == "O"
+                        else f"${{adapter_hier_path}}/{adapter_pin_name}"
+                    ),
+                }
+            )
+
+        trigger_inputs = []
+        trigger_source = option_values.get(f"{option_id}_trigger_source", "trigger_conversions").strip()
+        if not trigger_source:
+            trigger_source = "trigger_conversions"
+        trigger_source_path = trigger_source if "/" in trigger_source else f"uz_system/{trigger_source}"
+        for trigger in vivado.get("trigger_inputs", []):
+            signal = trigger.get("signal", "trigger")
+            adapter_pin_name = f"{signal}_{channel_suffix}"
+            trigger_inputs.append(
+                {
+                    "signal": signal,
+                    "adapter_pin_name": adapter_pin_name,
+                    "source": trigger_source,
+                    "source_path": trigger_source_path,
+                    "boundary_name": trigger.get(
+                        "boundary_name_template",
+                        "{signal}_{channel_suffix}",
+                    ).format(
+                        slot=slot,
+                        slot_lower=slot.lower(),
+                        slot_index=slot_index,
+                        option_id=option_id,
+                        choice_id=choice_id,
+                        channel_suffix=channel_suffix,
+                        signal=signal,
+                    ),
+                }
+            )
+
+        exposed_outputs = []
+        external_port_signals = {port["signal"] for port in ports}
+        output_signals = [
+            str(signal) for signal in vivado.get("outputs", []) if str(signal) not in external_port_signals
+        ]
+        for signal in dict.fromkeys(output_signals):
+            adapter_pin_name = f"{signal}_{channel_suffix}"
+            exposed_outputs.append(
+                {
+                    "signal": signal,
+                    "adapter_pin_name": adapter_pin_name,
+                    "boundary_name": f"{signal}_{channel_suffix}",
                 }
             )
 
@@ -478,13 +582,17 @@ class TclGenerator:
                 "slot": slot,
                 "slot_lower": slot.lower(),
                 "slot_index": slot_index,
+                "channel_suffix": channel_suffix,
                 "option_id": option_id,
                 "option_label": option.get("label", option_id),
                 "choice_id": choice_id,
                 "choice_label": choice.get("label", choice_id),
                 "enabled": choice_id != "none",
+                "ip": primary_ip,
                 "ip_cores": ip_cores,
                 "ports": ports,
+                "trigger_inputs": trigger_inputs,
+                "exposed_outputs": exposed_outputs,
                 "driver": choice.get("vitis", {}).get("driver", ""),
             },
         )
@@ -625,6 +733,7 @@ class MainWindow(QMainWindow):
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
+        self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
 
         self.stack = QStackedWidget()
@@ -1032,6 +1141,8 @@ class MainWindow(QMainWindow):
         values: dict[str, dict[str, str]] = deepcopy(self.detail_options)
         for (slot, option_id), combo in self.detail_combos.items():
             values.setdefault(slot, {})[option_id] = combo.currentData() or ""
+        for (slot, option_id), edit in self.detail_trigger_edits.items():
+            values.setdefault(slot, {})[f"{option_id}_trigger_source"] = edit.text().strip()
         return values
 
     def selected_platform(self) -> dict[str, Any]:
@@ -1104,6 +1215,7 @@ class MainWindow(QMainWindow):
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
         self.detail_combos = {}
+        self.detail_trigger_edits = {}
         assignments = self.assignments()
         for slot, card_id in assignments.items():
             page_layout = self.slot_detail_layouts[slot]
@@ -1130,16 +1242,33 @@ class MainWindow(QMainWindow):
             if card.get("options"):
                 form = QFormLayout()
                 for option in card.get("options", []):
+                    option_id = option.get("id", "")
                     combo = QComboBox()
-                    selected = self.detail_options.get(slot, {}).get(option.get("id", ""), option.get("default", ""))
+                    selected = self.detail_options.get(slot, {}).get(option_id, option.get("default", ""))
                     for choice in option.get("choices", []):
                         combo.addItem(choice.get("label", choice.get("id", "")), choice.get("id", ""))
                     index = combo.findData(selected)
                     combo.setCurrentIndex(index if index >= 0 else 0)
-                    key = (slot, option.get("id", ""))
+                    key = (slot, option_id)
                     self.detail_combos[key] = combo
                     combo.currentIndexChanged.connect(self._detail_option_changed)
-                    form.addRow(option.get("label", option.get("id", "Option")), combo)
+
+                    trigger_source = self.detail_options.get(slot, {}).get(
+                        f"{option_id}_trigger_source",
+                        "trigger_conversions",
+                    )
+                    trigger_edit = QLineEdit(trigger_source)
+                    trigger_edit.setEnabled(combo.currentData() != "none")
+                    trigger_edit.textChanged.connect(self._detail_option_changed)
+                    self.detail_trigger_edits[key] = trigger_edit
+
+                    row = QWidget()
+                    row_layout = QHBoxLayout(row)
+                    row_layout.setContentsMargins(0, 0, 0, 0)
+                    row_layout.addWidget(combo, 1)
+                    row_layout.addWidget(QLabel("Trigger source"))
+                    row_layout.addWidget(trigger_edit, 1)
+                    form.addRow(option.get("label", option_id or "Option"), row)
                 group_layout.addLayout(form)
 
             page_layout.insertWidget(page_layout.count() - 1, group)
@@ -1160,6 +1289,10 @@ class MainWindow(QMainWindow):
     def _detail_option_changed(self) -> None:
         for (slot, option_id), combo in self.detail_combos.items():
             self.detail_options.setdefault(slot, {})[option_id] = combo.currentData() or ""
+            trigger_edit = self.detail_trigger_edits.get((slot, option_id))
+            if trigger_edit:
+                trigger_edit.setEnabled(combo.currentData() != "none")
+                self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
         self.refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:

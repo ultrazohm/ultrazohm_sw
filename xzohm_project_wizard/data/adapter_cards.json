@@ -185,9 +185,31 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -203,7 +225,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
                   }
                 ],
                 "ports": [
@@ -213,7 +235,17 @@
                     "pin": "Dig_15_Ch{slot_index}"
                   },
                   {
-                    "signal": "ssi_data",
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_17_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_11_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
                     "direction": "in",
                     "pin": "Dig_07_Ch{slot_index}"
                   }
@@ -221,9 +253,30 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -288,9 +341,31 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -306,7 +381,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
                   }
                 ],
                 "ports": [
@@ -316,7 +391,17 @@
                     "pin": "Dig_14_Ch{slot_index}"
                   },
                   {
-                    "signal": "ssi_data",
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_16_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_10_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
                     "direction": "in",
                     "pin": "Dig_06_Ch{slot_index}"
                   }
@@ -324,9 +409,30 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -391,9 +497,31 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -409,7 +537,7 @@
                   {
                     "instance_prefix": "uz_ssi_interface",
                     "module": "uz_ssi_interface",
-                    "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
                   }
                 ],
                 "ports": [
@@ -419,7 +547,17 @@
                     "pin": "Dig_22_Ch{slot_index}"
                   },
                   {
-                    "signal": "ssi_data",
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_23_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_20_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
                     "direction": "in",
                     "pin": "Dig_18_Ch{slot_index}"
                   }
@@ -427,9 +565,30 @@
                 "axi_interfaces": [
                   {
                     "name": "AXI4_Lite",
-                    "path_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
-                    "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
                   }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
                 ]
               },
               "vitis": {
@@ -463,7 +622,7 @@
       "vivado": {
         "template": "cards/uz_d_temperature_ltc2983.tcl",
         "notes": [
-          "Instantiate Temperature_Card_Interface in uz_digital_Adapter/Dx_adapter.",
+          "Instantiate Temperature_Card_Interface in uz_digital_adapter/Dx_adapter.",
           "Use single-pin D-slot constraints instead of the packed constraint file.",
           "D5 requires a custom CPLD file and is intentionally not listed as compatible."
         ],
@@ -479,8 +638,8 @@
         "axi_interfaces": [
           {
             "name": "s00_axi",
-            "path_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
-            "addr_seg_template": "uz_digital_Adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
+            "path_template": "uz_digital_adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
           }
         ]
       },

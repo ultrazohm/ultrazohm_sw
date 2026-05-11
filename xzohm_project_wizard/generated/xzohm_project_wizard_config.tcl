@@ -1278,11 +1278,11 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/trigger_ssi_read_d5_c
 
 
 # -----------------------------------------------------------------------------
-# D5: SSI
+# D5: EnDat
 # -----------------------------------------------------------------------------
 
 
-puts "Adding SSI for slot D5"
+puts "Adding EnDat for slot D5"
 
 set digital_adapter_hier uz_digital_adapter
 set adapter_hier_name D5_adapter
@@ -1295,42 +1295,59 @@ uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/aclk
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/aresetn
 
 
-set uz_ssi_interface_d5_channel_3_path ${adapter_hier_path}/uz_ssi_interface_d5_channel_3
-if {[llength [get_bd_cells -quiet $uz_ssi_interface_d5_channel_3_path]] == 0} {
-  set uz_ssi_interface_d5_channel_3 [create_bd_cell -type ip -vlnv xilinx.com:ip:uz_ssi_interface $uz_ssi_interface_d5_channel_3_path]
+set uz_endat_interface_d5_channel_3_path ${adapter_hier_path}/uz_endat_interface_d5_channel_3
+if {[llength [get_bd_cells -quiet $uz_endat_interface_d5_channel_3_path]] == 0} {
+  set uz_endat_interface_d5_channel_3 [create_bd_cell -type ip -vlnv xilinx.com:ip:uz_endat_interface:1.0 $uz_endat_interface_d5_channel_3_path]
 } else {
-  puts "Reusing existing IP $uz_ssi_interface_d5_channel_3_path"
+  puts "Reusing existing IP $uz_endat_interface_d5_channel_3_path"
 }
-# Module: uz_ssi_interface
+# Module: uz_endat_interface
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${uz_ssi_interface_d5_channel_3_path}/AXI4_Lite_ACLK
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${uz_endat_interface_d5_channel_3_path}/AXI4_Lite_ACLK
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${uz_ssi_interface_d5_channel_3_path}/IPCORE_CLK
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${uz_ssi_interface_d5_channel_3_path}/AXI4_Lite_ARESETN
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${uz_ssi_interface_d5_channel_3_path}/IPCORE_RESETN
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${uz_endat_interface_d5_channel_3_path}/IPCORE_CLK
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${uz_endat_interface_d5_channel_3_path}/AXI4_Lite_ARESETN
 
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/ssi_clk_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${uz_endat_interface_d5_channel_3_path}/IPCORE_RESETN
 
-uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/ssi_clk_d5_ch3
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_clk_d5_ch3
+
+uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/endat_clk_d5_ch3
 
 
 uz_pw_create_bd_port_if_missing O Dig_22_Ch5
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/ssi_clk ${adapter_hier_path}/ssi_clk_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/endat_clk ${adapter_hier_path}/endat_clk_d5_ch3
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/ssi_clk_d5_ch3 ${digital_adapter_hier}/ssi_clk_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_clk_d5_ch3 ${digital_adapter_hier}/endat_clk_d5_ch3
 
 
-uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/ssi_clk_d5_ch3 Dig_22_Ch5
+uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/endat_clk_d5_ch3 Dig_22_Ch5
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_mode_data_out_d5_ch3
+
+uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/endat_mode_data_out_d5_ch3
+
+
+uz_pw_create_bd_port_if_missing O Dig_12_Ch5
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/endat_mode_data_out ${adapter_hier_path}/endat_mode_data_out_d5_ch3
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_mode_data_out_d5_ch3 ${digital_adapter_hier}/endat_mode_data_out_d5_ch3
+
+
+uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/endat_mode_data_out_d5_ch3 Dig_12_Ch5
 
 
 uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/RW_clk_d5_ch3
@@ -1341,7 +1358,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/RW_clk_d5_ch3
 uz_pw_create_bd_port_if_missing O Dig_23_Ch5
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/RW_clk ${adapter_hier_path}/RW_clk_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/RW_clk ${adapter_hier_path}/RW_clk_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_clk_d5_ch3 ${digital_adapter_hier}/RW_clk_d5_ch3
@@ -1358,7 +1375,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/RW_data_d5_ch3
 uz_pw_create_bd_port_if_missing O Dig_20_Ch5
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/RW_data ${adapter_hier_path}/RW_data_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/RW_data ${adapter_hier_path}/RW_data_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_data_d5_ch3 ${digital_adapter_hier}/RW_data_d5_ch3
@@ -1367,33 +1384,33 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_data_d5_ch3 ${digi
 uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/RW_data_d5_ch3 Dig_20_Ch5
 
 
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/ssi_data_in_d5_ch3
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/endat_data_in_d5_ch3
 
-uz_pw_create_bd_pin_if_missing I ${digital_adapter_hier}/ssi_data_in_d5_ch3
+uz_pw_create_bd_pin_if_missing I ${digital_adapter_hier}/endat_data_in_d5_ch3
 
 
 uz_pw_create_bd_port_if_missing I Dig_18_Ch5
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/ssi_data_in_d5_ch3 ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/ssi_data_in
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_data_in_d5_ch3 ${adapter_hier_path}/uz_endat_interface_d5_channel_3/endat_data_in
 
 
-uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/ssi_data_in_d5_ch3 ${adapter_hier_path}/ssi_data_in_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/endat_data_in_d5_ch3 ${adapter_hier_path}/endat_data_in_d5_ch3
 
 
-uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/ssi_data_in_d5_ch3 Dig_18_Ch5
+uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/endat_data_in_d5_ch3 Dig_18_Ch5
 
 
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/ssi_transaction_done_d5_ch3
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_transaction_done_d5_ch3
 
-uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/ssi_transaction_done_d5_ch3
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/ssi_transaction_done ${adapter_hier_path}/ssi_transaction_done_d5_ch3
+uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/endat_transaction_done_d5_ch3
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/ssi_transaction_done_d5_ch3 ${digital_adapter_hier}/ssi_transaction_done_d5_ch3
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/endat_transaction_done ${adapter_hier_path}/endat_transaction_done_d5_ch3
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_transaction_done_d5_ch3 ${digital_adapter_hier}/endat_transaction_done_d5_ch3
 
 
 
@@ -1403,7 +1420,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/position_raw_single_tur
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/position_raw_single_turn ${adapter_hier_path}/position_raw_single_turn_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/position_raw_single_turn ${adapter_hier_path}/position_raw_single_turn_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_single_turn_d5_ch3 ${digital_adapter_hier}/position_raw_single_turn_d5_ch3
@@ -1416,36 +1433,36 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/position_raw_multi_turn
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/position_raw_multi_turn ${adapter_hier_path}/position_raw_multi_turn_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/position_raw_multi_turn ${adapter_hier_path}/position_raw_multi_turn_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_multi_turn_d5_ch3 ${digital_adapter_hier}/position_raw_multi_turn_d5_ch3
 
 
 
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/status_raw_d5_ch3
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/CRC_raw_d5_ch3
 
-uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/status_raw_d5_ch3
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/status_raw ${adapter_hier_path}/status_raw_d5_ch3
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/status_raw_d5_ch3 ${digital_adapter_hier}/status_raw_d5_ch3
+uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/CRC_raw_d5_ch3
 
 
 
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/ssi_data_out_SH_d5_ch3
-
-uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/ssi_data_out_SH_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/CRC_raw ${adapter_hier_path}/CRC_raw_d5_ch3
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/CRC_raw_d5_ch3 ${digital_adapter_hier}/CRC_raw_d5_ch3
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/ssi_data_out_SH ${adapter_hier_path}/ssi_data_out_SH_d5_ch3
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/ssi_data_out_SH_d5_ch3 ${digital_adapter_hier}/ssi_data_out_SH_d5_ch3
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_received_data_out_SH_d5_ch3
+
+uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/endat_received_data_out_SH_d5_ch3
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/endat_received_data_out_SH ${adapter_hier_path}/endat_received_data_out_SH_d5_ch3
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_received_data_out_SH_d5_ch3 ${digital_adapter_hier}/endat_received_data_out_SH_d5_ch3
 
 
 
@@ -1455,7 +1472,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/position_mech_SI_single
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/position_mech_SI_single_turn ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/position_mech_SI_single_turn ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch3 ${digital_adapter_hier}/position_mech_SI_single_turn_d5_ch3
@@ -1468,7 +1485,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/position_el_SI_d5_ch3
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/position_el_SI ${adapter_hier_path}/position_el_SI_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/position_el_SI ${adapter_hier_path}/position_el_SI_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_el_SI_d5_ch3 ${digital_adapter_hier}/position_el_SI_d5_ch3
@@ -1481,7 +1498,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/position_multi_turn_d5_
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/position_multi_turn ${adapter_hier_path}/position_multi_turn_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/position_multi_turn ${adapter_hier_path}/position_multi_turn_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_multi_turn_d5_ch3 ${digital_adapter_hier}/position_multi_turn_d5_ch3
@@ -1494,7 +1511,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/speed_mech_SI_d5_ch3
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/speed_mech_SI ${adapter_hier_path}/speed_mech_SI_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/speed_mech_SI ${adapter_hier_path}/speed_mech_SI_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_SI_d5_ch3 ${digital_adapter_hier}/speed_mech_SI_d5_ch3
@@ -1507,7 +1524,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/speed_el_SI_d5_ch3
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/speed_el_SI ${adapter_hier_path}/speed_el_SI_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/speed_el_SI ${adapter_hier_path}/speed_el_SI_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_el_SI_d5_ch3 ${digital_adapter_hier}/speed_el_SI_d5_ch3
@@ -1520,7 +1537,7 @@ uz_pw_create_bd_pin_if_missing O ${digital_adapter_hier}/speed_mech_rpm_d5_ch3
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/speed_mech_rpm ${adapter_hier_path}/speed_mech_rpm_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_3/speed_mech_rpm ${adapter_hier_path}/speed_mech_rpm_d5_ch3
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_rpm_d5_ch3 ${digital_adapter_hier}/speed_mech_rpm_d5_ch3
@@ -1529,17 +1546,17 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_rpm_d5_ch3
 
 
 
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/trigger_ssi_read_d5_ch3
-uz_pw_create_bd_pin_if_missing I ${digital_adapter_hier}/trigger_ssi_read_d5_ch3
-uz_pw_connect_upper_boundary_net_if_unconnected uz_system/trigger_conversions ${digital_adapter_hier}/trigger_ssi_read_d5_ch3
-uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/trigger_ssi_read_d5_ch3 ${adapter_hier_path}/trigger_ssi_read_d5_ch3
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/trigger_ssi_read_d5_ch3 ${adapter_hier_path}/uz_ssi_interface_d5_channel_3/trigger_ssi_read
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/trigger_endat_read_d5_ch3
+uz_pw_create_bd_pin_if_missing I ${digital_adapter_hier}/trigger_endat_read_d5_ch3
+uz_pw_connect_upper_boundary_net_if_unconnected uz_system/trigger_conversions ${digital_adapter_hier}/trigger_endat_read_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/trigger_endat_read_d5_ch3 ${adapter_hier_path}/trigger_endat_read_d5_ch3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/trigger_endat_read_d5_ch3 ${adapter_hier_path}/uz_endat_interface_d5_channel_3/trigger_endat_read
 
 
 
 
 
-# Vitis driver hook: uz_ssi_interface
+# Vitis driver hook: uz_endat_interface
 
 
 # -----------------------------------------------------------------------------
@@ -1796,8 +1813,8 @@ assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_seg
 
 set slot_sc uz_digital_adapter/D5_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 2]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D5_adapter/uz_ssi_interface_d5_channel_3/AXI4_Lite
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D5_adapter/uz_ssi_interface_d5_channel_3/AXI4_Lite/reg0] -force
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D5_adapter/uz_endat_interface_d5_channel_3/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D5_adapter/uz_endat_interface_d5_channel_3/AXI4_Lite/reg0] -force
 
 
 

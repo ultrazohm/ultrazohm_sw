@@ -36,6 +36,7 @@ from ..paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, OUTPUT_DIR, SLOTS
 from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
+from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..tcl_generator import TclGenerator
 from .card_editor import CardEditorDialog
 
@@ -51,12 +52,15 @@ class MainWindow(QMainWindow):
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
+        self.toolchain_fields: dict[str, QLineEdit] = {}
+        self.toolchain_status: QPlainTextEdit | None = None
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
 
         self.stack = QStackedWidget()
         self.tree = self._build_navigation()
+        self.stack.addWidget(self._build_toolchain_page())
         self.stack.addWidget(self._build_platform_page())
         self.stack.addWidget(self._build_configuration_page())
         self.stack.addWidget(self._build_slot_cpld_page())
@@ -74,6 +78,7 @@ class MainWindow(QMainWindow):
         self.refresh_platform_revisions()
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
+        self.reset_toolchain_config()
         self.reset_axi_config()
         self.rebuild_details()
         self.refresh_tcl_preview()
@@ -108,6 +113,10 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(card_database_action)
 
         view_menu = self.menuBar().addMenu("View")
+        toolchain_action = QAction("Toolchain", self)
+        toolchain_action.triggered.connect(self.show_toolchain_page)
+        view_menu.addAction(toolchain_action)
+
         platform_action = QAction("Platform", self)
         platform_action.triggered.connect(self.show_platform_page)
         view_menu.addAction(platform_action)
@@ -148,6 +157,7 @@ class MainWindow(QMainWindow):
     def _build_navigation(self) -> QTreeWidget:
         tree = QTreeWidget()
         tree.setHeaderHidden(True)
+        toolchain = QTreeWidgetItem(["Toolchain"])
         platform = QTreeWidgetItem(["Platform"])
         config = QTreeWidgetItem(["Hardware configuration"])
         axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
@@ -161,12 +171,13 @@ class MainWindow(QMainWindow):
         ip_driver_setup = QTreeWidgetItem(["IP core driver setup"])
         software_config.addChild(software_general)
         software_config.addChild(ip_driver_setup)
+        tree.addTopLevelItem(toolchain)
         tree.addTopLevelItem(platform)
         tree.addTopLevelItem(config)
         tree.addTopLevelItem(software_config)
         config.setExpanded(True)
         software_config.setExpanded(True)
-        tree.setCurrentItem(platform)
+        tree.setCurrentItem(toolchain)
         tree.currentItemChanged.connect(self._navigation_changed)
         return tree
 
@@ -174,16 +185,108 @@ class MainWindow(QMainWindow):
         if not current:
             return
         page_by_name = {
-            "Platform": 0,
-            "Hardware configuration": 3,
-            "Adapter cards": 1,
-            "Slot CPLDs": 2,
-            "AXI interconnect": 3,
-            "Software configuration": 4,
-            "General": 4,
-            "IP core driver setup": 5,
+            "Toolchain": 0,
+            "Platform": 1,
+            "Hardware configuration": 4,
+            "Adapter cards": 2,
+            "Slot CPLDs": 3,
+            "AXI interconnect": 4,
+            "Software configuration": 5,
+            "General": 5,
+            "IP core driver setup": 6,
         }
         self.stack.setCurrentIndex(page_by_name.get(current.text(0), 0))
+
+    def _build_toolchain_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("Toolchain")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        vivado_group = QGroupBox("Vivado")
+        vivado_form = QFormLayout(vivado_group)
+        vivado_form.addRow("Executable", self._path_picker("vivado_executable", file_mode=True))
+        layout.addWidget(vivado_group)
+
+        lattice_group = QGroupBox("Lattice CPLD")
+        lattice_form = QFormLayout(lattice_group)
+        lattice_form.addRow("Programmer executable", self._path_picker("lattice_programmer_executable", file_mode=True))
+        lattice_hint = QLabel("Use pgrcmd.exe for command-line programming, not programmer.exe, which opens the GUI.")
+        lattice_hint.setWordWrap(True)
+        lattice_form.addRow("", lattice_hint)
+        lattice_form.addRow("CPLD repository", self._path_picker("cpld_repository", file_mode=False))
+        layout.addWidget(lattice_group)
+
+        vitis_group = QGroupBox("Vitis")
+        vitis_form = QFormLayout(vitis_group)
+        vitis_form.addRow("Executable", self._path_picker("vitis_executable", file_mode=True))
+        layout.addWidget(vitis_group)
+
+        buttons = QHBoxLayout()
+        detect_button = QPushButton("Detect tools")
+        detect_button.setMinimumSize(180, 36)
+        detect_button.clicked.connect(self.detect_toolchain_paths)
+        buttons.addStretch(1)
+        buttons.addWidget(detect_button)
+        buttons.addStretch(1)
+        layout.addLayout(buttons)
+
+        self.toolchain_status = QPlainTextEdit()
+        self.toolchain_status.setReadOnly(True)
+        self.toolchain_status.setFixedHeight(120)
+        layout.addWidget(self.toolchain_status)
+
+        layout.addStretch(1)
+        return page
+
+    def _path_picker(self, key: str, file_mode: bool) -> QWidget:
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        field = QLineEdit()
+        field.textChanged.connect(self.refresh_tcl_preview)
+        button = QPushButton("Browse...")
+        button.clicked.connect(lambda: self.browse_toolchain_path(key, file_mode))
+        self.toolchain_fields[key] = field
+        layout.addWidget(field, 1)
+        layout.addWidget(button)
+        return container
+
+    def browse_toolchain_path(self, key: str, file_mode: bool) -> None:
+        field = self.toolchain_fields[key]
+        start_path = field.text().strip() or str(APP_DIR)
+        if file_mode:
+            path_text, _ = QFileDialog.getOpenFileName(self, "Select executable", start_path, "Executables (*.exe);;All files (*)")
+        else:
+            path_text = QFileDialog.getExistingDirectory(self, "Select folder", start_path)
+        if path_text:
+            field.setText(path_text)
+
+    def detect_toolchain_paths(self) -> None:
+        results = {result.key: result for result in detect_toolchain_executables()}
+        messages = []
+        for key, definition in TOOL_DEFINITIONS.items():
+            label = str(definition["label"])
+            result = results.get(key)
+            if result:
+                field = self.toolchain_fields.get(key)
+                if field and not field.text().strip():
+                    field.setText(result.path)
+                    messages.append(f"{label}: found via {result.source}: {result.path}")
+                elif field:
+                    messages.append(f"{label}: found via {result.source}, keeping existing value: {field.text().strip()}")
+                else:
+                    messages.append(f"{label}: found via {result.source}: {result.path}")
+            else:
+                messages.append(f"{label}: not found")
+        messages.append("CPLD repository: not auto-detected")
+        if self.toolchain_status:
+            self.toolchain_status.setPlainText("\n".join(messages))
 
     def _build_placeholder_page(self, title_text: str) -> QWidget:
         page = QWidget()
@@ -429,6 +532,18 @@ class MainWindow(QMainWindow):
     def axi_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.axi_fields.items()}
 
+    def toolchain_config(self) -> dict[str, str]:
+        return {key: field.text().strip() for key, field in self.toolchain_fields.items()}
+
+    def load_toolchain_config(self, values: dict[str, str]) -> None:
+        for key, field in self.toolchain_fields.items():
+            field.blockSignals(True)
+            field.setText(values.get(key, ""))
+            field.blockSignals(False)
+
+    def reset_toolchain_config(self) -> None:
+        self.load_toolchain_config({})
+
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
 
@@ -490,23 +605,27 @@ class MainWindow(QMainWindow):
         self.platform_revision_combo.blockSignals(False)
 
     def show_platform_page(self) -> None:
+        self.stack.setCurrentIndex(1)
+        self.tree.setCurrentItem(self.tree.topLevelItem(1))
+
+    def show_toolchain_page(self) -> None:
         self.stack.setCurrentIndex(0)
         self.tree.setCurrentItem(self.tree.topLevelItem(0))
 
     def show_adapter_cards(self) -> None:
-        self.stack.setCurrentIndex(1)
-        self.tree.setCurrentItem(self.tree.topLevelItem(1).child(1))
+        self.stack.setCurrentIndex(2)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
 
     def show_hardware_configuration(self) -> None:
         self.show_axi_interconnect()
 
     def show_slot_cplds(self) -> None:
-        self.stack.setCurrentIndex(2)
-        self.tree.setCurrentItem(self.tree.topLevelItem(1).child(2))
+        self.stack.setCurrentIndex(3)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(2))
 
     def show_axi_interconnect(self) -> None:
-        self.stack.setCurrentIndex(3)
-        self.tree.setCurrentItem(self.tree.topLevelItem(1).child(0))
+        self.stack.setCurrentIndex(4)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(0))
 
     def show_lattice_diamond_placeholder(self) -> None:
         message = QMessageBox(self)
@@ -518,15 +637,15 @@ class MainWindow(QMainWindow):
         message.exec()
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(6)
+        self.stack.setCurrentIndex(7)
 
     def show_software_general(self) -> None:
-        self.stack.setCurrentIndex(4)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(0))
+        self.stack.setCurrentIndex(5)
+        self.tree.setCurrentItem(self.tree.topLevelItem(3).child(0))
 
     def show_ip_core_driver_setup(self) -> None:
-        self.stack.setCurrentIndex(5)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
+        self.stack.setCurrentIndex(6)
+        self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
 
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
@@ -731,6 +850,7 @@ class MainWindow(QMainWindow):
     def config_document(self) -> dict[str, Any]:
         return build_config_document(
             self.selected_platform(),
+            self.toolchain_config(),
             self.assignments(),
             self.option_values(),
             self.cpld_assignments(),
@@ -746,6 +866,13 @@ class MainWindow(QMainWindow):
             self.platform_combo.setCurrentIndex(platform_index)
         platform_revision = str(document.get("platform_revision", ""))
         self.refresh_platform_revisions(platform_revision)
+
+        toolchain = document.get("toolchain", {})
+        if toolchain is None:
+            toolchain = {}
+        if not isinstance(toolchain, dict):
+            raise ValueError("Config field 'toolchain' must be a JSON object.")
+        self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
 
         slots = document.get("slots", {})
         if not isinstance(slots, dict):

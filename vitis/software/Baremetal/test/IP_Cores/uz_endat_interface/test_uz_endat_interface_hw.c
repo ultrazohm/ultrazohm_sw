@@ -3,6 +3,7 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
+#include "uz_math_constants.h"
 #include "uz_endat_interface_hwAddresses.h"
 #define TEST_BASE_ADDRESS 0x00000000F // random hex value that represents a fictional base address
 #include "uz_endat_interface_hw.h"
@@ -38,6 +39,8 @@ void test_uz_endat_interface_hw_write_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_position_mech_offset_ticks_single_turn(0U, mech_offset_ticks));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_sampling_delay_clk_ticks(0U, delay_clk_ticks));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_endat_mode_command(0U, 7U));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_debug_mode(0U, true));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_debug_position(0U, 1.0f));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_raw_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_raw_multi_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_read_position_multi_turn(0U));
@@ -122,6 +125,35 @@ void test_uz_endat_interface_hw_write_pll_parameters(void)
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + kp_pll_AXI_Data_uz_endat_interface, kp_pll_fp);
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ki_pll_AXI_Data_uz_endat_interface, ki_pll_fp);
     uz_endat_interface_hw_write_pll_parameters(TEST_BASE_ADDRESS, sampling_interval, kp_pll, ki_pll);
+}
+
+void test_uz_endat_interface_hw_write_pll_debug_position_limits(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_debug_position(TEST_BASE_ADDRESS, -0.1f));
+    TEST_ASSERT_FAIL_ASSERT(uz_endat_interface_hw_write_pll_debug_position(TEST_BASE_ADDRESS, (2.0f * UZ_PIf) + 0.1f));
+}
+
+void test_uz_endat_interface_hw_write_pll_debug(void)
+{
+    float position_mech_si = 1.0f;
+    uint32_t position_mech_si_unsigned_representation = 16777216U;
+    uint32_t position_mech_si_zero_unsigned_representation = 0U;
+    uint32_t position_mech_si_max_unsigned_representation = 105414360U;
+
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + debug_off_on_AXI_Data_uz_endat_interface, true);
+    uz_endat_interface_hw_write_pll_debug_mode(TEST_BASE_ADDRESS, true);
+
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + debug_off_on_AXI_Data_uz_endat_interface, false);
+    uz_endat_interface_hw_write_pll_debug_mode(TEST_BASE_ADDRESS, false);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + position_mech_SI_debug_in_AXI_Data_uz_endat_interface, position_mech_si_unsigned_representation);
+    uz_endat_interface_hw_write_pll_debug_position(TEST_BASE_ADDRESS, position_mech_si);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + position_mech_SI_debug_in_AXI_Data_uz_endat_interface, position_mech_si_zero_unsigned_representation);
+    uz_endat_interface_hw_write_pll_debug_position(TEST_BASE_ADDRESS, 0.0f);
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + position_mech_SI_debug_in_AXI_Data_uz_endat_interface, position_mech_si_max_unsigned_representation);
+    uz_endat_interface_hw_write_pll_debug_position(TEST_BASE_ADDRESS, 2.0f * UZ_PIf);
 }
 
 void test_uz_endat_interface_hw_write_machine_pole_pair_limits(void)

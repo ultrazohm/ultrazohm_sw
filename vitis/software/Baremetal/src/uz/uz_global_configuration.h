@@ -89,6 +89,7 @@
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
 #define UZ_ENDAT_INTERFACE_MAX_INSTANCES				0U
+#define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -103,8 +104,8 @@
     #define UZ_INCREMENTALENCODER_MAX_INSTANCES             20U
     #define UZ_NN_LAYER_MAX_INSTANCES                       100U
     #define UZ_NN_MAX_INSTANCES                             20U
-	#define UZ_PWM_SS_2L_MAX_INSTANCES                      50U
-	#define UZ_MATRIX_MAX_INSTANCES                         201U
+    #define UZ_PWM_SS_2L_MAX_INSTANCES                      50U
+    #define UZ_MATRIX_MAX_INSTANCES                         201U
     #define UZ_PMSMMODEL_MAX_INSTANCES                      11U
     #define UZ_PLANTPT1_MAX_INSTANCES                       6U
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
@@ -116,7 +117,7 @@
     #define UZ_RAMP_MAX_INSTANCES                           20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         20U
-	#define UZ_PARAMETERID_MAX_INSTANCES					100U
+    #define UZ_PARAMETERID_MAX_INSTANCES		    		100U
     #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
     #define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               20U
     #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
@@ -139,7 +140,7 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
-    #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
+    #define UZ_NN_ACC_IP_MAX_INSTANCES                      100U
     #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             50U
     #define UZ_PRNG_SQUARES_MAX_INSTANCES                   50U
     #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  50U
@@ -148,5 +149,6 @@
     #define UZ_PRNG_HALTON_MAX_INSTANCES                    50U
     #define UZ_PRNG_MAX_INSTANCES                           50U
     #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               50U
-	#define UZ_ENDAT_INTERFACE_MAX_INSTANCES				30U
+    #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
+    #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
 #endif

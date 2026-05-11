@@ -37,6 +37,16 @@ This can further reduce the valid offset range for encoders with very high singl
 The EnDat clock divider is calculated during initialization from ``ip_clk_frequency_Hz`` and ``endat_clk_frequency_Hz``.
 The resulting divider must be between 3 and 500.
 
+.. warning::
+
+   The raw single-turn and multi-turn position values are read from the encoder with the configured bit widths.
+   However, the SI position and speed values generated inside the IP core use a fixed-point reciprocal to scale the raw single-turn position to radians.
+   With the current reciprocal format, the reciprocal becomes zero for single-turn bit widths of 28 bit and higher.
+   For these configurations, the IP core SI position values and the PLL-based speed values are invalid.
+   For single-turn bit widths below 28 bit, the reciprocal remains nonzero, but its quantization increases with the encoder resolution.
+
+   If a high-resolution encoder with 28 or more single-turn bits is used, read the raw position values from the driver and perform the position scaling and speed estimation in software or in a custom high-precision signal path.
+
 Example Usage
 =============
 
@@ -279,6 +289,24 @@ If possible, reduce the serial clock speed or use a shorter encoder cable.
 The IP core driver also provides the config value ``.delay_sampling_in_clk_ticks`` to delay sampling by a certain number of clock ticks after the falling clock edge.
 Tune this value while observing the timing with an ``ILA`` to compensate for the delay.
 
+Debugging the IP core's ``pos_to_speed_pll``
+--------------------------------------------
+
+The EnDat IP core contains a debug input for the internal ``pos_to_speed_pll``.
+This debug path can be used to feed a user-defined mechanical position directly into the speed PLL instead of the mechanical position calculated from the encoder data.
+It is useful for checking the PLL parametrization, debugging the speed calculation and separating PLL behavior from encoder communication issues.
+
+The debug path is controlled by the software driver.
+Use ``uz_endat_interface_set_pll_debug_position`` to write the mechanical debug position in rad.
+Allowed values are between ``0`` and ``2*pi``.
+Use ``uz_endat_interface_enable_pll_debug_mode`` to switch the PLL input between the encoder-derived position and the debug position.
+
+.. warning::
+
+   If the PLL debug mode is enabled, the speed values no longer correspond to the connected encoder position.
+   Disable the debug mode for normal encoder operation and for closed-loop control with real position feedback.
+   By default, the debug mode is disabled.
+
 Reference
 =========
 
@@ -314,3 +342,7 @@ Reference
 .. doxygenfunction:: uz_endat_interface_set_mechanical_offset_endat_single_turn
 
 .. doxygenfunction:: uz_endat_interface_set_sampling_delay_clk_ticks
+
+.. doxygenfunction:: uz_endat_interface_enable_pll_debug_mode
+
+.. doxygenfunction:: uz_endat_interface_set_pll_debug_position

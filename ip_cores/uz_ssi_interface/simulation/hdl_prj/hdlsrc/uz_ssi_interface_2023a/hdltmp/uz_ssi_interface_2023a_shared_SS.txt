@@ -1,4 +1,0 @@
-Count - 2
-uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_mt
-uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_st
-

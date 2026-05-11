@@ -44,6 +44,46 @@ proc uz_pw_create_bd_port_if_missing {direction port_name} {
   current_bd_instance $old_instance
 }
 
+proc uz_pw_connect_pin_pair_if_unconnected {source_pin sink_pin} {
+  set source [get_bd_pins -quiet $source_pin]
+  set sink [get_bd_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source pin not found: $source_pin"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    uz_pw_try_disconnect_bd_net $sink_net $sink
+  }
+
+  uz_pw_try_connect_bd_net $source $sink
+}
+
+proc uz_pw_connect_temperature_external_pin {direction adapter_pin digital_pin port_name} {
+  global digital_adapter_hier adapter_hier_path
+
+  uz_pw_create_bd_pin_if_missing $direction ${digital_adapter_hier}/${digital_pin}
+  uz_pw_create_bd_port_if_missing $direction $port_name
+  if {$direction eq "O"} {
+    uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/${adapter_pin} ${digital_adapter_hier}/${digital_pin}
+  } else {
+    uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/${digital_pin} ${adapter_hier_path}/${adapter_pin}
+  }
+  uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/${digital_pin} $port_name
+}
+
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   set source [get_bd_pins -quiet $source_pin]
   set sink [get_bd_pins -quiet $sink_pin]
@@ -188,68 +228,51 @@ uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/aresetn
 
 puts "Connecting Temperature Card IP pins in ${adapter_hier_path}"
 
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MOSI_1_Dig01 ${temp_ip_path}/SPI_MOSI_1
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SCLK_1_Dig00 ${temp_ip_path}/SPI_SCLK_1
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SS_1_Dig03 ${temp_ip_path}/SPI_SS_1
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_resetn_1_Dig18 ${temp_ip_path}/LTC_resetn_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MOSI_1_Dig01 ${temp_ip_path}/SPI_MOSI_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SCLK_1_Dig00 ${temp_ip_path}/SPI_SCLK_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SS_1_Dig03 ${temp_ip_path}/SPI_SS_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_resetn_1_Dig18 ${temp_ip_path}/LTC_resetn_1
 
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MOSI_2_Dig13 ${temp_ip_path}/SPI_MOSI_2
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SCLK_2_Dig12 ${temp_ip_path}/SPI_SCLK_2
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SS_2_Dig15 ${temp_ip_path}/SPI_SS_2
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_resetn_2_NC ${temp_ip_path}/LTC_resetn_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MOSI_2_Dig13 ${temp_ip_path}/SPI_MOSI_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SCLK_2_Dig12 ${temp_ip_path}/SPI_SCLK_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SS_2_Dig15 ${temp_ip_path}/SPI_SS_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_resetn_2_NC ${temp_ip_path}/LTC_resetn_2
 
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MOSI_3_Dig07 ${temp_ip_path}/SPI_MOSI_3
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SCLK_3_Dig06 ${temp_ip_path}/SPI_SCLK_3
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_SS_3_Dig09 ${temp_ip_path}/SPI_SS_3
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_resetn_3_NC ${temp_ip_path}/LTC_resetn_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MOSI_3_Dig07 ${temp_ip_path}/SPI_MOSI_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SCLK_3_Dig06 ${temp_ip_path}/SPI_SCLK_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_SS_3_Dig09 ${temp_ip_path}/SPI_SS_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_resetn_3_NC ${temp_ip_path}/LTC_resetn_3
 
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MISO_1_Dig02 ${temp_ip_path}/SPI_MISO_1
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MISO_2_Dig14 ${temp_ip_path}/SPI_MISO_2
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/SPI_MISO_3_Dig08 ${temp_ip_path}/SPI_MISO_3
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_Interrupt_1_Dig04 ${temp_ip_path}/LTC_Interrupt_1
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_Interrupt_2_Dig16 ${temp_ip_path}/LTC_Interrupt_2
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/LTC_Interrupt_3_Dig10 ${temp_ip_path}/LTC_Interrupt_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MISO_1_Dig02 ${temp_ip_path}/SPI_MISO_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MISO_2_Dig14 ${temp_ip_path}/SPI_MISO_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/SPI_MISO_3_Dig08 ${temp_ip_path}/SPI_MISO_3
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_Interrupt_1_Dig04 ${temp_ip_path}/LTC_Interrupt_1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_Interrupt_2_Dig16 ${temp_ip_path}/LTC_Interrupt_2
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/LTC_Interrupt_3_Dig10 ${temp_ip_path}/LTC_Interrupt_3
 
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aclk ${temp_ip_path}/s00_axi_aclk
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aresetn ${temp_ip_path}/s00_axi_aresetn
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${temp_ip_path}/s00_axi_aclk
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${temp_ip_path}/s00_axi_aresetn
 
 puts "Creating external ports for Temperature Card slot {{ slot }}"
 
-uz_pw_create_bd_port_if_missing O Dig_00_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_01_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_02_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_03_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_04_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_06_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_07_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_08_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_09_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_10_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_12_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_13_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_14_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_15_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing I Dig_16_Ch{{ slot_index }}
-uz_pw_create_bd_port_if_missing O Dig_18_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SCLK_1_Dig00 SPI_SCLK_1_Dig00_{{ slot_lower }} Dig_00_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_MOSI_1_Dig01 SPI_MOSI_1_Dig01_{{ slot_lower }} Dig_01_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I SPI_MISO_1_Dig02 SPI_MISO_1_Dig02_{{ slot_lower }} Dig_02_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SS_1_Dig03 SPI_SS_1_Dig03_{{ slot_lower }} Dig_03_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I LTC_Interrupt_1_Dig04 LTC_Interrupt_1_Dig04_{{ slot_lower }} Dig_04_Ch{{ slot_index }}
 
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SCLK_1_Dig00 Dig_00_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MOSI_1_Dig01 Dig_01_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MISO_1_Dig02 Dig_02_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SS_1_Dig03 Dig_03_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/LTC_Interrupt_1_Dig04 Dig_04_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SCLK_3_Dig06 SPI_SCLK_3_Dig06_{{ slot_lower }} Dig_06_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_MOSI_3_Dig07 SPI_MOSI_3_Dig07_{{ slot_lower }} Dig_07_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I SPI_MISO_3_Dig08 SPI_MISO_3_Dig08_{{ slot_lower }} Dig_08_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SS_3_Dig09 SPI_SS_3_Dig09_{{ slot_lower }} Dig_09_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I LTC_Interrupt_3_Dig10 LTC_Interrupt_3_Dig10_{{ slot_lower }} Dig_10_Ch{{ slot_index }}
 
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SCLK_3_Dig06 Dig_06_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MOSI_3_Dig07 Dig_07_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MISO_3_Dig08 Dig_08_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SS_3_Dig09 Dig_09_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/LTC_Interrupt_3_Dig10 Dig_10_Ch{{ slot_index }}
-
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SCLK_2_Dig12 Dig_12_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MOSI_2_Dig13 Dig_13_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_MISO_2_Dig14 Dig_14_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/SPI_SS_2_Dig15 Dig_15_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/LTC_Interrupt_2_Dig16 Dig_16_Ch{{ slot_index }}
-uz_pw_connect_port_if_unconnected ${adapter_hier_path}/LTC_resetn_1_Dig18 Dig_18_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SCLK_2_Dig12 SPI_SCLK_2_Dig12_{{ slot_lower }} Dig_12_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_MOSI_2_Dig13 SPI_MOSI_2_Dig13_{{ slot_lower }} Dig_13_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I SPI_MISO_2_Dig14 SPI_MISO_2_Dig14_{{ slot_lower }} Dig_14_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O SPI_SS_2_Dig15 SPI_SS_2_Dig15_{{ slot_lower }} Dig_15_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin I LTC_Interrupt_2_Dig16 LTC_Interrupt_2_Dig16_{{ slot_lower }} Dig_16_Ch{{ slot_index }}
+uz_pw_connect_temperature_external_pin O LTC_resetn_1_Dig18 LTC_resetn_1_Dig18_{{ slot_lower }} Dig_18_Ch{{ slot_index }}
 
 # TODO: Create/connect a shared AXI SmartConnect path for ${temp_ip_path}/s00_axi.
 # TODO: Assign the AXI base address after the SmartConnect connection exists.

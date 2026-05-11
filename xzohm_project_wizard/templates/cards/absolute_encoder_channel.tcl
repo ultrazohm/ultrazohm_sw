@@ -194,10 +194,10 @@ if {[llength [get_bd_cells -quiet $ip_path]] == 0} {
   puts "Reusing existing IP $ip_path"
 }
 # Module: {{ ip.module }}
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aclk ${ip_path}/AXI4_Lite_ACLK
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aresetn ${ip_path}/AXI4_Lite_ARESETN
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aclk ${ip_path}/IPCORE_CLK
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/aresetn ${ip_path}/IPCORE_RESETN
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${ip_path}/AXI4_Lite_ACLK
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${ip_path}/AXI4_Lite_ARESETN
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aclk ${ip_path}/IPCORE_CLK
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/aresetn ${ip_path}/IPCORE_RESETN
 
 {% for port in ports %}
 uz_pw_create_bd_pin_if_missing {{ port.direction }} ${adapter_hier_path}/{{ port.adapter_pin_name }}

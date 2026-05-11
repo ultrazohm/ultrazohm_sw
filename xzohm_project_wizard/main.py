@@ -250,6 +250,7 @@ class TclGenerator:
                     ],
                 },
             ),
+            self.renderer.render_file("helpers/bd_helpers.tcl", {}),
         ]
 
         for slot in SLOTS:
@@ -305,12 +306,14 @@ class TclGenerator:
         slot_index = slot[1:]
         vivado = card.get("vivado", {})
         template = vivado.get("template", "cards/generic_card.tcl")
-        section = [
-            self.renderer.render_file(
-                template,
-                self._card_context(slot, slot_index, card),
+        section = []
+        if self._vivado_emits_card_section(vivado):
+            section.append(
+                self.renderer.render_file(
+                    template,
+                    self._card_context(slot, slot_index, card),
+                )
             )
-        ]
 
         for option in card.get("options", []):
             selected_choice = self._selected_choice(option, option_values)
@@ -320,18 +323,22 @@ class TclGenerator:
 
         return "\n".join(section)
 
+    def _vivado_emits_card_section(self, vivado: dict[str, Any]) -> bool:
+        return any(
+            vivado.get(key)
+            for key in (
+                "ip_cores",
+                "ports",
+                "signals",
+                "trigger_inputs",
+                "outputs",
+                "constraints",
+            )
+        )
+
     def _card_context(self, slot: str, slot_index: str, card: dict[str, Any]) -> dict[str, Any]:
         vivado = card.get("vivado", {})
-        ip_cores = []
-        for ip_core in vivado.get("ip_cores", []):
-            instance_name = f"{ip_core.get('instance_prefix', 'ip')}_{slot.lower()}"
-            ip_cores.append(
-                {
-                    "instance_name": instance_name,
-                    "module": ip_core.get("module", ""),
-                    "vlnv": ip_core.get("vlnv", ""),
-                }
-            )
+        ip_cores = self._ip_core_context(vivado, f"{slot.lower()}", default_clock_pins=["s00_axi_aclk"], default_reset_pins=["s00_axi_aresetn"])
         interfaces = []
         for interface in vivado.get("interfaces", []):
             interfaces.append(
@@ -340,28 +347,199 @@ class TclGenerator:
                     "vlnv": interface.get("vlnv", ""),
                 }
             )
-        ports = []
-        for port in vivado.get("ports", []):
-            direction = self._vivado_direction(port.get("direction", "in"))
-            signal = port.get("signal", "signal")
-            ports.append(
-                {
-                    "signal": signal,
-                    "direction": direction,
-                    "pin": port.get("channel_1_pin", port.get("pin", "signal")).format(slot=slot, slot_index=slot_index),
-                }
-            )
-        return {
+        primary_ip = ip_cores[0] if ip_cores else {"instance_name": "", "module": "", "vlnv": ""}
+        context = {
             "slot": slot,
             "slot_lower": slot.lower(),
             "slot_index": slot_index,
+            "channel_suffix": slot.lower(),
             "card_id": card.get("id", ""),
             "card_name": card.get("name", card.get("id", "unknown card")),
             "notes": vivado.get("notes", []),
             "ip_cores": ip_cores,
+            "ip": primary_ip,
             "interfaces": interfaces,
-            "ports": ports,
             "driver": card.get("vitis", {}).get("driver", ""),
+        }
+        context.update(
+            self._generic_vivado_context(
+                slot,
+                slot_index,
+                vivado,
+                primary_ip,
+                channel_suffix=slot.lower(),
+                option_values={},
+                option_id="",
+                choice_id="",
+            )
+        )
+        return context
+
+    def _ip_core_context(
+        self,
+        vivado: dict[str, Any],
+        suffix: str,
+        default_clock_pins: list[str] | None = None,
+        default_reset_pins: list[str] | None = None,
+    ) -> list[dict[str, Any]]:
+        ip_cores = []
+        for ip_core in vivado.get("ip_cores", []):
+            instance_name = ip_core.get("instance_name") or f"{ip_core.get('instance_prefix', 'ip')}_{suffix}"
+            ip_cores.append(
+                {
+                    "instance_name": instance_name,
+                    "module": ip_core.get("module", ""),
+                    "vlnv": ip_core.get("vlnv", ""),
+                    "clock_pins": ip_core.get("clock_pins", vivado.get("clock_pins", default_clock_pins or [])),
+                    "reset_pins": ip_core.get("reset_pins", vivado.get("reset_pins", default_reset_pins or [])),
+                }
+            )
+        return ip_cores
+
+    def _generic_vivado_context(
+        self,
+        slot: str,
+        slot_index: str,
+        vivado: dict[str, Any],
+        primary_ip: dict[str, Any],
+        channel_suffix: str,
+        option_values: dict[str, str],
+        option_id: str,
+        choice_id: str,
+    ) -> dict[str, Any]:
+        ip_path = f"${{adapter_hier_path}}/{primary_ip.get('instance_name', '')}" if primary_ip.get("instance_name") else ""
+        signals = []
+        external_port_signals = set()
+        for port in vivado.get("ports", []):
+            signal = port.get("signal", "signal")
+            external_port_signals.add(signal)
+            signals.append(
+                self._signal_context(
+                    slot,
+                    slot_index,
+                    port,
+                    signal,
+                    channel_suffix,
+                    ip_path,
+                    has_external_port=True,
+                )
+            )
+
+        for output in dict.fromkeys(str(signal) for signal in vivado.get("outputs", []) if str(signal) not in external_port_signals):
+            signals.append(
+                self._signal_context(
+                    slot,
+                    slot_index,
+                    {"direction": "out"},
+                    output,
+                    channel_suffix,
+                    ip_path,
+                    has_external_port=False,
+                )
+            )
+
+        trigger_inputs = []
+        trigger_source = option_values.get(f"{option_id}_trigger_source", "trigger_conversions").strip()
+        if not trigger_source:
+            trigger_source = "trigger_conversions"
+        trigger_source_path = trigger_source if "/" in trigger_source else f"uz_system/{trigger_source}"
+        for trigger in vivado.get("trigger_inputs", []):
+            signal = trigger.get("signal", "trigger")
+            adapter_pin_name = trigger.get("adapter_pin_name_template", "{signal}_{channel_suffix}").format(
+                slot=slot,
+                slot_lower=slot.lower(),
+                slot_index=slot_index,
+                option_id=option_id,
+                choice_id=choice_id,
+                channel_suffix=channel_suffix,
+                signal=signal,
+            )
+            boundary_name = trigger.get("boundary_name_template", "{signal}_{channel_suffix}").format(
+                slot=slot,
+                slot_lower=slot.lower(),
+                slot_index=slot_index,
+                option_id=option_id,
+                choice_id=choice_id,
+                channel_suffix=channel_suffix,
+                signal=signal,
+            )
+            trigger_inputs.append(
+                {
+                    "signal": signal,
+                    "adapter_pin_name": adapter_pin_name,
+                    "boundary_name": boundary_name,
+                    "source": trigger_source,
+                    "source_path": trigger_source_path,
+                    "ip_pin_path": f"{ip_path}/{trigger.get('ip_pin', signal)}",
+                }
+            )
+
+        constraints = vivado.get("constraints", {})
+        return {
+            "signals": signals,
+            "trigger_inputs": trigger_inputs,
+            "clock_connections": self._ip_aux_connections(ip_cores=[primary_ip], pin_key="clock_pins"),
+            "reset_connections": self._ip_aux_connections(ip_cores=[primary_ip], pin_key="reset_pins"),
+            "has_constraints": bool(constraints),
+            "packed_constraint": constraints.get("disable", "Digital_{slot}_packed.xdc").format(slot=slot, slot_index=slot_index),
+            "adapter_constraint": constraints.get("enable", "Digital_AdapterBoard_{slot}.xdc").format(slot=slot, slot_index=slot_index),
+        }
+
+    def _ip_aux_connections(self, ip_cores: list[dict[str, Any]], pin_key: str) -> list[dict[str, str]]:
+        connections = []
+        for ip_core in ip_cores:
+            instance_name = ip_core.get("instance_name", "")
+            if not instance_name:
+                continue
+            for pin in ip_core.get(pin_key, []):
+                connections.append({"ip_pin_path": f"${{{instance_name}_path}}/{pin}"})
+        return connections
+
+    def _signal_context(
+        self,
+        slot: str,
+        slot_index: str,
+        port: dict[str, Any],
+        signal: str,
+        channel_suffix: str,
+        ip_path: str,
+        has_external_port: bool,
+    ) -> dict[str, Any]:
+        direction = self._vivado_direction(port.get("direction", "in"))
+        adapter_pin_name = port.get("adapter_pin_name_template", "{signal}_{channel_suffix}").format(
+            slot=slot,
+            slot_lower=slot.lower(),
+            slot_index=slot_index,
+            channel_suffix=channel_suffix,
+            signal=signal,
+        )
+        boundary_name = port.get("boundary_name_template", "{signal}_{channel_suffix}").format(
+            slot=slot,
+            slot_lower=slot.lower(),
+            slot_index=slot_index,
+            channel_suffix=channel_suffix,
+            signal=signal,
+        )
+        ip_pin = port.get("ip_pin", signal)
+        has_boundary = port.get("expose_to_boundary", True)
+        external_port = port.get("pin", port.get("external_port", "")).format(slot=slot, slot_index=slot_index)
+        core_source = f"{ip_path}/{ip_pin}" if direction == "O" else f"${{adapter_hier_path}}/{adapter_pin_name}"
+        core_sink = f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"{ip_path}/{ip_pin}"
+        boundary_source = f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"${{digital_adapter_hier}}/{boundary_name}"
+        boundary_sink = f"${{digital_adapter_hier}}/{boundary_name}" if direction == "O" else f"${{adapter_hier_path}}/{adapter_pin_name}"
+        return {
+            "signal": signal,
+            "direction": direction,
+            "adapter_pin_name": adapter_pin_name,
+            "boundary_name": boundary_name,
+            "external_port": external_port,
+            "has_external_port": has_external_port,
+            "has_boundary": has_boundary,
+            "connects_to_ip": bool(ip_path),
+            "core_source": core_source,
+            "core_sink": core_sink,
+            "boundary_source": boundary_source,
+            "boundary_sink": boundary_sink,
         }
 
     def _axi_context(
@@ -488,101 +666,30 @@ class TclGenerator:
             return f"# {option.get('label', option_id)}: {choice.get('label', choice_id)}\n"
         suffix = f"{slot.lower()}_{option_id}"
         channel_suffix = f"{slot.lower()}_{self._option_channel_suffix(option_id)}"
-        ip_cores = []
-        for ip_core in vivado.get("ip_cores", []):
-            instance_name = f"{ip_core.get('instance_prefix', 'ip')}_{suffix}"
-            ip_cores.append(
-                {
-                    "instance_name": instance_name,
-                    "module": ip_core.get("module", ""),
-                    "vlnv": ip_core.get("vlnv", ""),
-                }
-            )
+        ip_cores = self._ip_core_context(
+            vivado,
+            suffix,
+            default_clock_pins=["AXI4_Lite_ACLK", "IPCORE_CLK"],
+            default_reset_pins=["AXI4_Lite_ARESETN", "IPCORE_RESETN"],
+        )
         primary_ip = ip_cores[0] if ip_cores else {"instance_name": "", "module": "", "vlnv": ""}
+        generic_context = self._generic_vivado_context(
+            slot,
+            slot_index,
+            vivado,
+            primary_ip,
+            channel_suffix,
+            option_values,
+            option_id,
+            choice_id,
+        )
 
-        ports = []
-        for port in vivado.get("ports", []):
-            direction = self._vivado_direction(port.get("direction", "in"))
-            signal = port.get("signal", "signal")
-            adapter_pin_name = f"{signal}_{channel_suffix}"
-            boundary_name = f"{signal}_{channel_suffix}"
-            ports.append(
-                {
-                    "signal": signal,
-                    "adapter_pin_name": adapter_pin_name,
-                    "boundary_name": boundary_name,
-                    "direction": direction,
-                    "pin": port.get("pin", "signal").format(slot=slot, slot_index=slot_index),
-                    "core_source": (
-                        f"${{ip_path}}/{signal}" if direction == "O" else f"${{adapter_hier_path}}/{adapter_pin_name}"
-                    ),
-                    "core_sink": (
-                        f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"${{ip_path}}/{signal}"
-                    ),
-                    "boundary_source": (
-                        f"${{adapter_hier_path}}/{adapter_pin_name}"
-                        if direction == "O"
-                        else f"${{digital_adapter_hier}}/{boundary_name}"
-                    ),
-                    "boundary_sink": (
-                        f"${{digital_adapter_hier}}/{boundary_name}"
-                        if direction == "O"
-                        else f"${{adapter_hier_path}}/{adapter_pin_name}"
-                    ),
-                }
-            )
-
-        trigger_inputs = []
-        trigger_source = option_values.get(f"{option_id}_trigger_source", "trigger_conversions").strip()
-        if not trigger_source:
-            trigger_source = "trigger_conversions"
-        trigger_source_path = trigger_source if "/" in trigger_source else f"uz_system/{trigger_source}"
-        for trigger in vivado.get("trigger_inputs", []):
-            signal = trigger.get("signal", "trigger")
-            adapter_pin_name = f"{signal}_{channel_suffix}"
-            trigger_inputs.append(
-                {
-                    "signal": signal,
-                    "adapter_pin_name": adapter_pin_name,
-                    "source": trigger_source,
-                    "source_path": trigger_source_path,
-                    "boundary_name": trigger.get(
-                        "boundary_name_template",
-                        "{signal}_{channel_suffix}",
-                    ).format(
-                        slot=slot,
-                        slot_lower=slot.lower(),
-                        slot_index=slot_index,
-                        option_id=option_id,
-                        choice_id=choice_id,
-                        channel_suffix=channel_suffix,
-                        signal=signal,
-                    ),
-                }
-            )
-
-        exposed_outputs = []
-        external_port_signals = {port["signal"] for port in ports}
-        output_signals = [
-            str(signal) for signal in vivado.get("outputs", []) if str(signal) not in external_port_signals
-        ]
-        for signal in dict.fromkeys(output_signals):
-            adapter_pin_name = f"{signal}_{channel_suffix}"
-            exposed_outputs.append(
-                {
-                    "signal": signal,
-                    "adapter_pin_name": adapter_pin_name,
-                    "boundary_name": f"{signal}_{channel_suffix}",
-                }
-            )
-
-        return self.renderer.render_file(
-            template,
-            {
+        context = {
                 "slot": slot,
                 "slot_lower": slot.lower(),
                 "slot_index": slot_index,
                 "channel_suffix": channel_suffix,
+                "card_name": choice.get("label", choice_id),
                 "option_id": option_id,
                 "option_label": option.get("label", option_id),
                 "choice_id": choice_id,
@@ -590,12 +697,10 @@ class TclGenerator:
                 "enabled": choice_id != "none",
                 "ip": primary_ip,
                 "ip_cores": ip_cores,
-                "ports": ports,
-                "trigger_inputs": trigger_inputs,
-                "exposed_outputs": exposed_outputs,
                 "driver": choice.get("vitis", {}).get("driver", ""),
-            },
-        )
+        }
+        context.update(generic_context)
+        return self.renderer.render_file(template, context)
 
 
 class CardEditorDialog(QDialog):
@@ -678,10 +783,15 @@ class CardEditorDialog(QDialog):
                     }
                 )
             vivado = {
-                "notes": ["New card entry created from the GUI. Refine this JSON entry before relying on generated TCL."],
+                "template": "cards/generic_adapter_card.tcl",
+                "notes": ["New generic adapter card entry created from the GUI."],
                 "ip_cores": ip_cores,
                 "interfaces": [],
                 "ports": [],
+                "constraints": {
+                    "disable": "Digital_{slot}_packed.xdc",
+                    "enable": "Digital_AdapterBoard_{slot}.xdc",
+                },
             }
 
         slots = [slot.strip().upper() for slot in self.slots_edit.text().split(",") if slot.strip()]

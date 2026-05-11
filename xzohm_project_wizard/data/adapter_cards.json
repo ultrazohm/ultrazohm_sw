@@ -117,7 +117,7 @@
       ],
       "slot_cpld": "uz_d_abs_encoder",
       "vivado": {
-        "template": "cards/generic_card.tcl",
+        "template": "cards/generic_adapter_card.tcl",
         "notes": [
           "Instantiate one encoder IP core per enabled channel inside uz_user.",
           "Connect AXI4-Lite, 100 MHz clock and reset for every enabled channel.",
@@ -126,7 +126,11 @@
         ],
         "ip_cores": [],
         "interfaces": [],
-        "ports": []
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        }
       },
       "options": [
         {
@@ -138,7 +142,7 @@
               "id": "none",
               "label": "Not used",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [],
                 "ports": []
               }
@@ -147,7 +151,7 @@
               "id": "endat",
               "label": "EnDat",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_endat_interface",
@@ -220,7 +224,7 @@
               "id": "ssi",
               "label": "SSI",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_ssi_interface",
@@ -294,7 +298,7 @@
               "id": "none",
               "label": "Not used",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [],
                 "ports": []
               }
@@ -303,7 +307,7 @@
               "id": "endat",
               "label": "EnDat",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_endat_interface",
@@ -376,7 +380,7 @@
               "id": "ssi",
               "label": "SSI",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_ssi_interface",
@@ -450,7 +454,7 @@
               "id": "none",
               "label": "Not used",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [],
                 "ports": []
               }
@@ -459,7 +463,7 @@
               "id": "endat",
               "label": "EnDat",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_endat_interface",
@@ -532,7 +536,7 @@
               "id": "ssi",
               "label": "SSI",
               "vivado": {
-                "template": "cards/absolute_encoder_channel.tcl",
+                "template": "cards/generic_adapter_card.tcl",
                 "ip_cores": [
                   {
                     "instance_prefix": "uz_ssi_interface",
@@ -620,7 +624,7 @@
       ],
       "slot_cpld": "uz_d_temperature_ltc2983",
       "vivado": {
-        "template": "cards/uz_d_temperature_ltc2983.tcl",
+        "template": "cards/generic_adapter_card.tcl",
         "notes": [
           "Instantiate Temperature_Card_Interface in uz_digital_adapter/Dx_adapter.",
           "Use single-pin D-slot constraints instead of the packed constraint file.",
@@ -628,13 +632,121 @@
         ],
         "ip_cores": [
           {
+            "instance_name": "Temperature_Card_Int_0",
             "instance_prefix": "temperature_card_interface",
             "module": "Temperature_Card_Interface",
-            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1"
+            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ]
           }
         ],
         "interfaces": [],
-        "ports": [],
+        "ports": [
+          {
+            "signal": "SPI_SCLK_1_Dig00",
+            "ip_pin": "SPI_SCLK_1",
+            "direction": "out",
+            "pin": "Dig_00_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_1_Dig01",
+            "ip_pin": "SPI_MOSI_1",
+            "direction": "out",
+            "pin": "Dig_01_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_1_Dig02",
+            "ip_pin": "SPI_MISO_1",
+            "direction": "in",
+            "pin": "Dig_02_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_1_Dig03",
+            "ip_pin": "SPI_SS_1",
+            "direction": "out",
+            "pin": "Dig_03_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_1_Dig04",
+            "ip_pin": "LTC_Interrupt_1",
+            "direction": "in",
+            "pin": "Dig_04_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SCLK_3_Dig06",
+            "ip_pin": "SPI_SCLK_3",
+            "direction": "out",
+            "pin": "Dig_06_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_3_Dig07",
+            "ip_pin": "SPI_MOSI_3",
+            "direction": "out",
+            "pin": "Dig_07_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_3_Dig08",
+            "ip_pin": "SPI_MISO_3",
+            "direction": "in",
+            "pin": "Dig_08_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_3_Dig09",
+            "ip_pin": "SPI_SS_3",
+            "direction": "out",
+            "pin": "Dig_09_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_3_Dig10",
+            "ip_pin": "LTC_Interrupt_3",
+            "direction": "in",
+            "pin": "Dig_10_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SCLK_2_Dig12",
+            "ip_pin": "SPI_SCLK_2",
+            "direction": "out",
+            "pin": "Dig_12_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_2_Dig13",
+            "ip_pin": "SPI_MOSI_2",
+            "direction": "out",
+            "pin": "Dig_13_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_2_Dig14",
+            "ip_pin": "SPI_MISO_2",
+            "direction": "in",
+            "pin": "Dig_14_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_2_Dig15",
+            "ip_pin": "SPI_SS_2",
+            "direction": "out",
+            "pin": "Dig_15_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_2_Dig16",
+            "ip_pin": "LTC_Interrupt_2",
+            "direction": "in",
+            "pin": "Dig_16_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_resetn_1_Dig18",
+            "ip_pin": "LTC_resetn_1",
+            "direction": "out",
+            "pin": "Dig_18_Ch{slot_index}"
+          }
+        ],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
         "axi_interfaces": [
           {
             "name": "s00_axi",

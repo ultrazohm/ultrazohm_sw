@@ -53,37 +53,6 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    // Read SSI encoders
-    Global_Data.av.ssi_ST_raw_d5_1 = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_MT_raw_d5_1 = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_MT_d5_1 = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_ST_mech_SI_d5_1 = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_ST_el_SI_d5_1 = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_speed_mech_SI_d5_1 = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_speed_el_SI_d5_1 = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_speed_mech_rpm_d5_1 = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_1);
-    Global_Data.av.ssi_status_d5_1 = uz_ssi_interface_get_encoder_status(Global_Data.objects.ssi_encoder_d5_1);
-
-    Global_Data.av.ssi_ST_raw_d5_2 = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_MT_raw_d5_2 = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_MT_d5_2 = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_ST_mech_SI_d5_2 = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_ST_el_SI_d5_2 = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_speed_mech_SI_d5_2 = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_speed_el_SI_d5_2 = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_speed_mech_rpm_d5_2 = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_status_d5_2 = uz_ssi_interface_get_encoder_status(Global_Data.objects.ssi_encoder_d5_2);
-
-    Global_Data.av.ssi_ST_raw_d5_3 = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_MT_raw_d5_3 = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_MT_d5_3 = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_ST_mech_SI_d5_3 = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_ST_el_SI_d5_3 = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_speed_mech_SI_d5_3 = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_speed_el_SI_d5_3 = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_speed_mech_rpm_d5_3 = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_status_d5_3 = uz_ssi_interface_get_encoder_status(Global_Data.objects.ssi_encoder_d5_3);
-
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

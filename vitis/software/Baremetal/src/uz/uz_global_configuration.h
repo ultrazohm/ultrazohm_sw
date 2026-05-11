@@ -89,7 +89,7 @@
 #define UZ_POS_TO_SPEED_PLL_MAX_INSTANCES               0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
 #define UZ_ENDAT_INTERFACE_MAX_INSTANCES				0U
-#define UZ_SSI_INTERFACE_MAX_INSTANCES					3U
+#define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

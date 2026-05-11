@@ -187,32 +187,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
-		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_1,value);
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_2,value);
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_encoder_d5_3,value);
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
-		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_1, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_2, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
-		uz_ssi_interface_set_sampling_delay_clk_ticks(data->objects.ssi_encoder_d5_3, (uint32_t)value);
 			break;
 
 		case (Set_Send_Field_7):

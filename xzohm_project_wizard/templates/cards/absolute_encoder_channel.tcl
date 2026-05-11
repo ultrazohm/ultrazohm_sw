@@ -31,6 +31,54 @@ proc uz_pw_create_bd_port_if_missing {direction port_name} {
 }
 
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_net_if_unconnected_with_args $source_pin $sink_pin [list]
+}
+
+proc uz_pw_connect_upper_boundary_net_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_net_if_unconnected_with_args $source_pin $sink_pin [list -boundary_type upper]
+}
+
+proc uz_pw_connect_net_in_hierarchy_if_unconnected {hier_path source_pin sink_pin} {
+  set hier [get_bd_cells -quiet $hier_path]
+  if {[llength $hier] == 0} {
+    puts "WARNING: Hierarchy not found: $hier_path"
+    return
+  }
+
+  set old_instance [current_bd_instance .]
+  current_bd_instance $hier
+  uz_pw_connect_net_if_unconnected $source_pin $sink_pin
+  current_bd_instance $old_instance
+}
+
+proc uz_pw_connect_pin_pair_if_unconnected {source_pin sink_pin} {
+  set source [get_bd_pins -quiet $source_pin]
+  set sink [get_bd_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source pin not found: $source_pin"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    uz_pw_try_disconnect_bd_net $sink_net $sink
+  }
+
+  uz_pw_try_connect_bd_net $source $sink
+}
+
+proc uz_pw_connect_net_if_unconnected_with_args {source_pin sink_pin connect_args} {
   set source [get_bd_pins -quiet $source_pin]
   set sink [get_bd_pins -quiet $sink_pin]
   if {[llength $source] == 0} {
@@ -44,24 +92,24 @@ proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   set source_nets [get_bd_nets -quiet -of_objects $source]
   set sink_nets [get_bd_nets -quiet -of_objects $sink]
   if {[llength $source_nets] == 0 && [llength $sink_nets] == 0} {
-    uz_pw_try_connect_bd_net $source $sink
+    uz_pw_try_connect_bd_net {*}$connect_args $source $sink
     return
   }
   if {[llength $source_nets] > 0 && [llength $sink_nets] == 0} {
     set net_name [get_property NAME [lindex $source_nets 0]]
-    uz_pw_try_connect_bd_net -net $net_name $sink
+    uz_pw_try_connect_bd_net {*}$connect_args -net $net_name $sink
     return
   }
   if {[llength $source_nets] == 0 && [llength $sink_nets] > 0} {
     set net_name [get_property NAME [lindex $sink_nets 0]]
-    uz_pw_try_connect_bd_net -net $net_name $source
+    uz_pw_try_connect_bd_net {*}$connect_args -net $net_name $source
     return
   }
   if {[lindex $source_nets 0] ne [lindex $sink_nets 0]} {
     puts "Refreshing stale net on $sink_pin"
     uz_pw_try_disconnect_bd_net [lindex $sink_nets 0] $sink
     set net_name [get_property NAME [lindex $source_nets 0]]
-    uz_pw_try_connect_bd_net -net $net_name $sink
+    uz_pw_try_connect_bd_net {*}$connect_args -net $net_name $sink
   }
 }
 
@@ -163,9 +211,9 @@ uz_pw_connect_port_if_unconnected ${digital_adapter_hier}/{{ port.boundary_name 
 {% for trigger in trigger_inputs %}
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/{{ trigger.adapter_pin_name }}
 uz_pw_create_bd_pin_if_missing I ${digital_adapter_hier}/{{ trigger.boundary_name }}
-uz_pw_connect_net_if_unconnected {{ trigger.source_path }} ${digital_adapter_hier}/{{ trigger.boundary_name }}
-uz_pw_connect_net_if_unconnected ${digital_adapter_hier}/{{ trigger.boundary_name }} ${adapter_hier_path}/{{ trigger.adapter_pin_name }}
-uz_pw_connect_net_if_unconnected ${adapter_hier_path}/{{ trigger.adapter_pin_name }} ${ip_path}/{{ trigger.signal }}
+uz_pw_connect_upper_boundary_net_if_unconnected {{ trigger.source_path }} ${digital_adapter_hier}/{{ trigger.boundary_name }}
+uz_pw_connect_pin_pair_if_unconnected ${digital_adapter_hier}/{{ trigger.boundary_name }} ${adapter_hier_path}/{{ trigger.adapter_pin_name }}
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/{{ trigger.adapter_pin_name }} ${ip_path}/{{ trigger.signal }}
 {% endfor %}
 
 {% for output in exposed_outputs %}

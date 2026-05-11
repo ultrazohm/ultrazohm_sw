@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "platform": "ultrazohm",
+  "platform_revision": "Rev06",
+  "slots": {
+    "A1": "empty",
+    "A2": "empty",
+    "A3": "empty",
+    "D1": "empty",
+    "D2": "empty",
+    "D3": "empty",
+    "D4": "uz_d_temperature_ltc2983",
+    "D5": "uz_d_absolute_encoder"
+  },
+  "slot_options": {
+    "D5": {
+      "channel_1": "endat",
+      "channel_1_trigger_source": "trigger_conversions",
+      "channel_2": "ssi",
+      "channel_2_trigger_source": "trigger_conversions",
+      "channel_3": "endat",
+      "channel_3_trigger_source": "trigger_conversions"
+    }
+  },
+  "slot_cplds": {
+    "D1": "none",
+    "D2": "none",
+    "D3": "none",
+    "D4": "uz_d_temperature_ltc2983",
+    "D5": "uz_d_abs_encoder"
+  },
+  "axi": {
+    "upstream_smartconnect": "uz_user/smartconnect_1",
+    "clock_pin": "uz_user/aclk",
+    "resetn_pin": "uz_user/aresetn",
+    "address_space": "/zynq_ultra_ps_e_0/Data",
+    "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
+    "local_smartconnect_name": "axi_smartconnect"
+  }
+}

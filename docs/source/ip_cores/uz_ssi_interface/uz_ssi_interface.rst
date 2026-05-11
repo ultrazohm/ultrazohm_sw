@@ -259,8 +259,8 @@ If the time delay is too large, the serial data is no longer sampled correctly b
 Symptom
 ^^^^^^^
 
-The figure below shows an almost edge case, where the sampling will fail when either increasing the clock frequency or using a longer encoder cable.
-The figure shows the example for an SSI encoder connected with a ``2 m`` encoder cable and a set clock frequency of ``2.5 MHz``.
+The figure below shows an almost edge case, where the sampling will fail when a longer encoder cable is used.
+The figure shows the example for an SSI encoder connected with a ``1 m`` encoder cable and a set clock frequency of ``2.5 MHz`` (maximum specified frequency for the respective encoder).
 
 .. figure:: delay_comp.png
    :width: 700
@@ -270,8 +270,8 @@ The figure shows the example for an SSI encoder connected with a ``2 m`` encoder
 With every rising edge of the clock the next data bit is provided by the encoder ``clock rising``. Due to the internal data transfer logic and the cable delay,
 this takes a certain amount of time until the bit is present on the data line in the IP core ``data_in``. In order to give enough time for the bit to show up,
 a common practice is to sample the bit at the falling edge of the clock ``sampling on falling edge``. In the figure it can be seen
-that only ``5 clock ticks`` before the falling edge the bit is present on the data_in. If we would increase the clock frequency further or use a longer
-encoder cable, this margin of 5 clock ticks will get smaller until the data bit won't show up on the data_in line before the falling clock edge occurs.
+that only ``8 clock ticks`` before the falling edge the bit is present on the data_in. If we would use a longer
+encoder cable, this margin of 8 clock ticks will get smaller until the data bit won't show up on the data_in line before the falling clock edge occurs.
 
 Debug with ILA
 ^^^^^^^^^^^^^^

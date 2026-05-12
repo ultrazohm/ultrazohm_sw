@@ -5,6 +5,7 @@ from typing import Any
 
 def build_config_document(
     platform: dict[str, Any],
+    platform_cpld: dict[str, str],
     toolchain: dict[str, str],
     slots: dict[str, str],
     slot_options: dict[str, dict[str, str]],
@@ -16,6 +17,7 @@ def build_config_document(
         "schema_version": 1,
         "platform": platform.get("id", ""),
         "platform_revision": platform.get("revision", ""),
+        "platform_cpld": platform_cpld,
         "toolchain": toolchain,
         "slots": slots,
         "slot_options": slot_options,

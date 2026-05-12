@@ -12,6 +12,24 @@ Two system entries are intentionally special:
   AXI interconnect template because it needs the configured project-level
   SmartConnect.
 
+Cards normally use `slot_cpld` for their default slot CPLD program. Rare cards
+with slot-specific CPLD images can additionally define `slot_cpld_by_slot`;
+the GUI uses this map to prefill the Slot CPLDs view while still allowing the
+user to override every slot manually.
+
+```json
+{
+  "slot_cpld": "uz_d_resolver_d1_to_d4",
+  "slot_cpld_by_slot": {
+    "D1": "uz_d_resolver_d1_to_d4",
+    "D2": "uz_d_resolver_d1_to_d4",
+    "D3": "uz_d_resolver_d1_to_d4",
+    "D4": "uz_d_resolver_d1_to_d4",
+    "D5": "uz_d_resolver_d5"
+  }
+}
+```
+
 Minimum `vivado` shape:
 
 ```json

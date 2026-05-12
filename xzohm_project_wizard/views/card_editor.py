@@ -35,6 +35,8 @@ class CardEditorDialog(QDialog):
         self.slots_edit = QLineEdit("D1,D2,D3,D4")
         self.driver_edit = QLineEdit()
         self.cpld_edit = QLineEdit("none")
+        self.cpld_by_slot_edit = QPlainTextEdit()
+        self.cpld_by_slot_edit.setFixedHeight(90)
         self.description_edit = QTextEdit()
         self.description_edit.setFixedHeight(110)
         self.notes_edit = QPlainTextEdit()
@@ -101,6 +103,7 @@ class CardEditorDialog(QDialog):
         form.addRow("Family", self.family_edit)
         form.addRow("Compatible slots", self.slots_edit)
         form.addRow("Slot CPLD", self.cpld_edit)
+        form.addRow("Slot CPLD by slot JSON", self.cpld_by_slot_edit)
         form.addRow("Vitis driver", self.driver_edit)
         form.addRow("Description", self.description_edit)
         form.addRow("Notes", self.notes_edit)
@@ -438,6 +441,7 @@ class CardEditorDialog(QDialog):
         self.slots_edit.setText(",".join(card.get("compatible_slots", [])))
         self.driver_edit.setText(card.get("vitis", {}).get("driver", ""))
         self.cpld_edit.setText(card.get("slot_cpld", "none"))
+        self.cpld_by_slot_edit.setPlainText(json.dumps(card.get("slot_cpld_by_slot", {}), indent=2))
         self.description_edit.setPlainText(card.get("description", ""))
         self.notes_edit.setPlainText("\n".join(vivado.get("notes", [])))
         constraints = vivado.get("constraints", {})
@@ -462,6 +466,9 @@ class CardEditorDialog(QDialog):
             raise ValueError("Vivado JSON must be a JSON object.")
         if not isinstance(options, list):
             raise ValueError("Options JSON must be a JSON array.")
+        cpld_by_slot = self._json_field(self.cpld_by_slot_edit, "Slot CPLD by slot JSON")
+        if not isinstance(cpld_by_slot, dict):
+            raise ValueError("Slot CPLD by slot JSON must be a JSON object.")
 
         vivado = dict(advanced_vivado)
         vivado["template"] = vivado.get("template", "cards/generic_adapter_card.tcl")
@@ -484,6 +491,7 @@ class CardEditorDialog(QDialog):
             "description": self.description_edit.toPlainText().strip(),
             "compatible_slots": slots,
             "slot_cpld": self.cpld_edit.text().strip() or "none",
+            "slot_cpld_by_slot": {str(slot).upper(): str(program) for slot, program in cpld_by_slot.items() if str(program).strip()},
             "vivado": vivado,
             "options": options,
             "vitis": {

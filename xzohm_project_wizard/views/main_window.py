@@ -58,6 +58,8 @@ class MainWindow(QMainWindow):
         self.axi_fields: dict[str, QLineEdit] = {}
         self.toolchain_fields: dict[str, QLineEdit] = {}
         self.toolchain_status: QPlainTextEdit | None = None
+        self.platform_cpld_group: QGroupBox | None = None
+        self.platform_cpld_type_combo: QComboBox | None = None
         self.cpld_programmer_fields: dict[str, QLineEdit] = {}
         self.cpld_status: QTextEdit | None = None
         self.cpld_process: QProcess | None = None
@@ -334,9 +336,30 @@ class MainWindow(QMainWindow):
         self.platform_combo.currentIndexChanged.connect(self.platform_changed)
         form.addRow("Platform", self.platform_combo)
         self.platform_revision_combo = QComboBox()
-        self.platform_revision_combo.currentIndexChanged.connect(self.refresh_tcl_preview)
+        self.platform_revision_combo.currentIndexChanged.connect(self.platform_revision_changed)
         form.addRow("Revision", self.platform_revision_combo)
         layout.addWidget(group)
+
+        self.platform_cpld_group = QGroupBox("CPLD type")
+        cpld_layout = QVBoxLayout(self.platform_cpld_group)
+        self.platform_cpld_type_combo = QComboBox()
+        self.platform_cpld_type_combo.addItem("LA4128V", "la4128v")
+        self.platform_cpld_type_combo.addItem("LC4256V", "lc4256v")
+        self.platform_cpld_type_combo.currentIndexChanged.connect(self.platform_cpld_type_changed)
+        cpld_form = QFormLayout()
+        cpld_form.addRow("Rev04 CPLD type", self.platform_cpld_type_combo)
+        cpld_layout.addLayout(cpld_form)
+        cpld_hint = QLabel(
+            "UltraZohm Rev04 can use different D-slot CPLDs. Select by system serial number:\n"
+            "- LA4128V: old revisions and Rev04 systems from UZ2021-002-001-200-0001 "
+            "to UZ2021-001-001-004-0004\n"
+            "- LC4256V: Rev04 systems from UZ2022-001-001-401-0007 "
+            "up to UZ2024-001-001-0401-0031"
+        )
+        cpld_hint.setWordWrap(True)
+        cpld_hint.setMinimumHeight(92)
+        cpld_layout.addWidget(cpld_hint)
+        layout.addWidget(self.platform_cpld_group)
         layout.addStretch(1)
         return page
 
@@ -598,8 +621,14 @@ class MainWindow(QMainWindow):
     def cpld_assignments(self) -> dict[str, str]:
         return {slot: combo.currentData() or "none" for slot, combo in self.cpld_combos.items()}
 
-    def cpld_programmer_config(self) -> dict[str, str]:
-        return {key: field.text().strip() for key, field in self.cpld_programmer_fields.items()}
+    def cpld_programmer_config(self, include_variant: bool = False) -> dict[str, str]:
+        config = {key: field.text().strip() for key, field in self.cpld_programmer_fields.items()}
+        if include_variant:
+            config["cpld_variant"] = self.selected_cpld_variant()
+        return config
+
+    def platform_cpld_config(self) -> dict[str, str]:
+        return {"rev04_cpld_type": self.rev04_cpld_type()}
 
     def axi_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.axi_fields.items()}
@@ -626,6 +655,16 @@ class MainWindow(QMainWindow):
                 field.setText(values[key])
             field.blockSignals(False)
 
+    def load_platform_cpld_config(self, values: dict[str, str]) -> None:
+        if not self.platform_cpld_type_combo:
+            return
+        cpld_type = values.get("rev04_cpld_type", "")
+        if not cpld_type:
+            return
+        index = self.platform_cpld_type_combo.findData(cpld_type)
+        if index >= 0:
+            self.platform_cpld_type_combo.setCurrentIndex(index)
+
     def load_axi_config(self, values: dict[str, str]) -> None:
         for key, field in self.axi_fields.items():
             field.blockSignals(True)
@@ -641,7 +680,7 @@ class MainWindow(QMainWindow):
         combo = self.cpld_combos.get(slot)
         if not combo:
             return
-        program_id = default_cpld_for_card(self.database, self.assignments().get(slot, "empty"))
+        program_id = default_cpld_for_card(self.database, self.assignments().get(slot, "empty"), slot)
         index = combo.findData(program_id)
         combo.blockSignals(True)
         combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
@@ -668,6 +707,17 @@ class MainWindow(QMainWindow):
     def platform_changed(self) -> None:
         previous_revision = self.platform_revision_combo.currentData() or self.platform_revision_combo.currentText()
         self.refresh_platform_revisions(previous_revision)
+        self.refresh_platform_cpld_visibility()
+        self.invalidate_cpld_project_file()
+        self.refresh_tcl_preview()
+
+    def platform_revision_changed(self) -> None:
+        self.refresh_platform_cpld_visibility()
+        self.invalidate_cpld_project_file()
+        self.refresh_tcl_preview()
+
+    def platform_cpld_type_changed(self) -> None:
+        self.invalidate_cpld_project_file()
         self.refresh_tcl_preview()
 
     def refresh_platform_revisions(self, preferred_revision: str = "") -> None:
@@ -682,6 +732,33 @@ class MainWindow(QMainWindow):
             index = 0
         self.platform_revision_combo.setCurrentIndex(index if self.platform_revision_combo.count() else -1)
         self.platform_revision_combo.blockSignals(False)
+        self.refresh_platform_cpld_visibility()
+
+    def refresh_platform_cpld_visibility(self) -> None:
+        if not self.platform_cpld_group:
+            return
+        self.platform_cpld_group.setVisible(self.is_ultrazohm_rev04())
+
+    def is_ultrazohm_rev04(self) -> bool:
+        return (self.platform_combo.currentData() == "ultrazohm") and (
+            (self.platform_revision_combo.currentData() or self.platform_revision_combo.currentText()) == "Rev04"
+        )
+
+    def rev04_cpld_type(self) -> str:
+        if not self.platform_cpld_type_combo:
+            return "la4128v"
+        return str(self.platform_cpld_type_combo.currentData() or "la4128v")
+
+    def selected_cpld_variant(self) -> str:
+        platform_id = self.platform_combo.currentData()
+        revision = self.platform_revision_combo.currentData() or self.platform_revision_combo.currentText()
+        if platform_id == "ultrazohm":
+            if revision == "Rev04":
+                return self.rev04_cpld_type()
+            return "machxo2"
+        if platform_id == "microzohm":
+            return "microzohm"
+        return "machxo2"
 
     def show_platform_page(self) -> None:
         self.stack.setCurrentIndex(1)
@@ -807,7 +884,7 @@ class MainWindow(QMainWindow):
             repository_path,
             programmer_path,
             self.cpld_assignments(),
-            self.cpld_programmer_config(),
+            self.cpld_programmer_config(include_variant=True),
         )
 
     def set_cpld_status(self, text: str) -> None:
@@ -1050,6 +1127,9 @@ class MainWindow(QMainWindow):
         if self.platform_combo.count() > 0:
             self.platform_combo.setCurrentIndex(0)
         self.refresh_platform_revisions()
+        if self.platform_cpld_type_combo:
+            self.platform_cpld_type_combo.setCurrentIndex(0)
+        self.refresh_platform_cpld_visibility()
         self.detail_options = {}
         for slot, combo in self.slot_combos.items():
             index = combo.findData("empty")
@@ -1111,6 +1191,7 @@ class MainWindow(QMainWindow):
     def config_document(self) -> dict[str, Any]:
         return build_config_document(
             self.selected_platform(),
+            self.platform_cpld_config(),
             self.toolchain_config(),
             self.assignments(),
             self.option_values(),
@@ -1128,6 +1209,14 @@ class MainWindow(QMainWindow):
             self.platform_combo.setCurrentIndex(platform_index)
         platform_revision = str(document.get("platform_revision", ""))
         self.refresh_platform_revisions(platform_revision)
+
+        platform_cpld = document.get("platform_cpld", {})
+        if platform_cpld is None:
+            platform_cpld = {}
+        if not isinstance(platform_cpld, dict):
+            raise ValueError("Config field 'platform_cpld' must be a JSON object.")
+        self.load_platform_cpld_config({str(key): str(value) for key, value in platform_cpld.items()})
+        self.refresh_platform_cpld_visibility()
 
         toolchain = document.get("toolchain", {})
         if toolchain is None:

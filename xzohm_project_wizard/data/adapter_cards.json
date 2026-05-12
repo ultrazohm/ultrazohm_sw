@@ -17,6 +17,16 @@
       "description": "Slot CPLD program for the UZ_D absolute encoder adapter card."
     },
     {
+      "id": "uz_d_resolver_d1_to_d4",
+      "name": "uz_d_resolver_d1_to_d4",
+      "description": "Slot CPLD program for the UZ_D resolver adapter card in slots D1 to D4."
+    },
+    {
+      "id": "uz_d_resolver_d5",
+      "name": "uz_d_resolver_d5",
+      "description": "Slot CPLD program for the UZ_D resolver adapter card in slot D5."
+    },
+    {
       "id": "uz_d_temperature_ltc2983",
       "name": "uz_d_temperature_ltc2983",
       "description": "Slot CPLD program for the UZ_D temperature card with LTC2983 devices."

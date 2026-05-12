@@ -2,6 +2,12 @@
   "schema_version": 1,
   "platform": "ultrazohm",
   "platform_revision": "Rev06",
+  "toolchain": {
+    "vivado_executable": "C:\\Xilinx\\Vivado\\2022.2\\bin\\vivado.bat",
+    "lattice_programmer_executable": "C:\\lscc\\programmer\\diamond\\3.14\\bin\\nt64\\pgrcmd.exe",
+    "cpld_repository": "C:/GIT/UltraZohm/software/cpld_lattice",
+    "vitis_executable": "C:\\Xilinx\\Vitis\\2022.2\\bin\\vitis.bat"
+  },
   "slots": {
     "A1": "empty",
     "A2": "empty",
@@ -28,6 +34,12 @@
     "D3": "none",
     "D4": "uz_d_temperature_ltc2983",
     "D5": "uz_d_abs_encoder"
+  },
+  "cpld_programmer": {
+    "cable_name": "USB2",
+    "port_address": "FTUSB-1",
+    "usb_id": "UltraZohm B Location",
+    "tck_delay": "3"
   },
   "axi": {
     "upstream_smartconnect": "uz_user/smartconnect_1",

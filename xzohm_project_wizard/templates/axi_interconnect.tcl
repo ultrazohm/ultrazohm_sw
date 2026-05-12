@@ -129,6 +129,116 @@ proc uz_pw_set_property_dict_if_objects {property_dict objects label} {
   set_property -dict $property_dict $objects
 }
 
+proc uz_pw_delete_intf_pin_and_net_if_present {pin_path} {
+  set pin [get_bd_intf_pins -quiet $pin_path]
+  if {[llength $pin] == 0} {
+    return
+  }
+
+  foreach intf_net [get_bd_intf_nets -quiet -of_objects $pin] {
+    puts "Deleting AXI interface net connected to $pin_path: $intf_net"
+    catch {delete_bd_objs $intf_net}
+  }
+
+  if {[llength [get_bd_intf_pins -quiet $pin_path]] > 0} {
+    puts "Deleting AXI interface pin $pin_path"
+    catch {delete_bd_objs [get_bd_intf_pins -quiet $pin_path]}
+  }
+}
+
+proc uz_pw_compact_upstream_mi_connections {smartconnect_path} {
+  set smartconnect_cell [get_bd_cells -quiet $smartconnect_path]
+  if {[llength $smartconnect_cell] == 0} {
+    puts "WARNING: Cannot compact AXI master interfaces because SmartConnect was not found: $smartconnect_path"
+    return
+  }
+
+  set mi_count [get_property CONFIG.NUM_MI $smartconnect_cell]
+  set connected_peers {}
+
+  for {set index 0} {$index < $mi_count} {incr index} {
+    set mi_pin_path [uz_pw_get_sc_mi_pin $smartconnect_path $index]
+    set mi_pin [get_bd_intf_pins -quiet $mi_pin_path]
+    if {[llength $mi_pin] == 0} {
+      continue
+    }
+
+    foreach intf_net [get_bd_intf_nets -quiet -of_objects $mi_pin] {
+      set peer_pin ""
+      foreach peer [get_bd_intf_pins -quiet -of_objects $intf_net] {
+        if {$peer ne $mi_pin} {
+          set peer_pin $peer
+          break
+        }
+      }
+      if {$peer_pin ne "" && [lsearch -exact $connected_peers $peer_pin] < 0} {
+        lappend connected_peers $peer_pin
+      }
+      catch {delete_bd_objs $intf_net}
+    }
+  }
+
+  set new_mi_count [llength $connected_peers]
+  if {$new_mi_count < 1} {
+    set new_mi_count 1
+  }
+  puts "Compacting $smartconnect_path to $new_mi_count AXI master interface(s)"
+  uz_pw_set_property_dict_if_objects [list CONFIG.NUM_MI "$new_mi_count"] $smartconnect_cell $smartconnect_path
+
+  for {set index 0} {$index < [llength $connected_peers]} {incr index} {
+    set mi_pin_path [uz_pw_get_sc_mi_pin $smartconnect_path $index]
+    set peer_pin [lindex $connected_peers $index]
+    if {[llength [get_bd_intf_pins -quiet $mi_pin_path]] == 0} {
+      puts "WARNING: Could not reconnect AXI peer $peer_pin because $mi_pin_path does not exist"
+      continue
+    }
+    if {[llength [get_bd_intf_pins -quiet $peer_pin]] == 0} {
+      puts "WARNING: Could not reconnect AXI peer because it no longer exists: $peer_pin"
+      continue
+    }
+    puts "Reconnecting $mi_pin_path to $peer_pin"
+    connect_bd_intf_net [get_bd_intf_pins $mi_pin_path] [get_bd_intf_pins $peer_pin]
+  }
+}
+
+proc uz_pw_remove_slot_axi_attachment {slot} {
+  set upstream_hier_path [uz_pw_parent_path $::uz_pw_upstream_smartconnect]
+  set candidate_pins {}
+  set upstream_boundary_pin ""
+
+  if {$upstream_hier_path eq ""} {
+    set upstream_boundary_pin ${slot}_AXI
+  } else {
+    set upstream_boundary_pin ${upstream_hier_path}/${slot}_AXI
+  }
+  lappend candidate_pins $upstream_boundary_pin
+  lappend candidate_pins uz_digital_adapter/${slot}_AXI
+  lappend candidate_pins uz_digital_adapter/${slot}_adapter/S00_AXI
+
+  foreach pin [get_bd_intf_pins -quiet */${slot}_AXI] {
+    if {[lsearch -exact $candidate_pins $pin] < 0} {
+      lappend candidate_pins $pin
+    }
+  }
+
+  foreach pin_path $candidate_pins {
+    uz_pw_delete_intf_pin_and_net_if_present $pin_path
+  }
+
+  uz_pw_compact_upstream_mi_connections $::uz_pw_upstream_smartconnect
+}
+
+{% if has_no_adapter_slots %}
+if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for slots without adapter boards."
+} else {
+{% for slot in no_adapter_slots %}
+  uz_pw_remove_slot_axi_attachment {{ slot.slot }}
+{% endfor %}
+}
+
+{% endif %}
+
 {% if has_axi %}
 if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
   error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"

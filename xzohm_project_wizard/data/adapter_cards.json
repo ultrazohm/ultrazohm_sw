@@ -25,9 +25,9 @@
   "cards": [
     {
       "id": "empty",
-      "name": "Empty slot",
+      "name": "Bypass",
       "family": "system",
-      "description": "No adapter card installed.",
+      "description": "Leave this slot untouched. No TCL commands are emitted for this slot.",
       "compatible_slots": [
         "A1",
         "A2",
@@ -42,7 +42,40 @@
       "vivado": {
         "template": "cards/generic_card.tcl",
         "notes": [
-          "No TCL commands are emitted for empty slots."
+          "No TCL commands are emitted for bypassed slots."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
+      "id": "no_adapter_board",
+      "name": "No adapter board",
+      "family": "system",
+      "description": "Remove generated block design content for this adapter slot.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/no_adapter_board.tcl",
+        "cleanup_slot": true,
+        "notes": [
+          "Deletes external ports and hierarchy pins matching this slot.",
+          "Deletes the slot adapter hierarchy if it exists.",
+          "AXI boundary cleanup is handled by the shared AXI interconnect template."
         ],
         "ip_cores": [],
         "interfaces": [],

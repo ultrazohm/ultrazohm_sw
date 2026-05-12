@@ -9,6 +9,7 @@ def build_config_document(
     slots: dict[str, str],
     slot_options: dict[str, dict[str, str]],
     slot_cplds: dict[str, str],
+    cpld_programmer: dict[str, str],
     axi: dict[str, str],
 ) -> dict[str, Any]:
     return {
@@ -19,5 +20,6 @@ def build_config_document(
         "slots": slots,
         "slot_options": slot_options,
         "slot_cplds": slot_cplds,
+        "cpld_programmer": cpld_programmer,
         "axi": axi,
     }

@@ -54,6 +54,35 @@ proc uz_pw_is_axi_scalar {object} {
   expr {[string match "D*_AXI*" $object_name] || [string match "S*_AXI*" $object_name] || [string match "M*_AXI*" $object_name]}
 }
 
+proc uz_pw_is_axi_interface_pin {object} {
+  set object_name [get_property NAME $object]
+  expr {[string match "*_AXI" $object_name] || [string match "S*_AXI" $object_name] || [string match "M*_AXI" $object_name]}
+}
+
+proc uz_pw_disconnect_pin_from_all_nets {pin} {
+  foreach net [get_bd_nets -quiet -of_objects $pin] {
+    puts "Disconnecting ${pin} from ${net}"
+    if {![catch {disconnect_bd_net $net $pin}]} {
+      continue
+    }
+    if {![catch {disconnect_bd_net $pin}]} {
+      continue
+    }
+    set net_name [get_property NAME $net]
+    if {![catch {disconnect_bd_net -net $net_name $pin}]} {
+      continue
+    }
+    puts "WARNING: disconnect_bd_net failed for ${pin}"
+  }
+}
+
+proc uz_pw_disconnect_intf_pin_from_all_nets {intf_pin} {
+  foreach intf_net [get_bd_intf_nets -quiet -of_objects $intf_pin] {
+    puts "Deleting interface net connected to ${intf_pin}: ${intf_net}"
+    catch {delete_bd_objs $intf_net}
+  }
+}
+
 proc uz_pw_delete_matching_nets_in_hierarchy {hier_path cleanup_patterns} {
   if {[llength [get_bd_cells -quiet $hier_path]] == 0} {
     return
@@ -88,20 +117,7 @@ proc uz_pw_disconnect_matching_pins_in_hierarchy {hier_path cleanup_patterns} {
       continue
     }
 
-    foreach net [get_bd_nets -quiet -of_objects $pin] {
-      puts "Disconnecting existing generated pin ${pin} from ${net}"
-      if {![catch {disconnect_bd_net $net $pin}]} {
-        continue
-      }
-      if {![catch {disconnect_bd_net $pin}]} {
-        continue
-      }
-      set net_name [get_property NAME $net]
-      if {![catch {disconnect_bd_net -net $net_name $pin}]} {
-        continue
-      }
-      puts "WARNING: disconnect_bd_net failed for ${pin}"
-    }
+    uz_pw_disconnect_pin_from_all_nets $pin
   }
 }
 
@@ -126,16 +142,49 @@ proc uz_pw_delete_matching_pins_in_hierarchy {hier_path cleanup_patterns} {
   }
 }
 
+proc uz_pw_delete_matching_intf_pins_in_hierarchy {hier_path cleanup_patterns} {
+  if {[llength [get_bd_cells -quiet $hier_path]] == 0} {
+    return
+  }
+
+  set intf_pins_to_delete {}
+  foreach intf_pin [get_bd_intf_pins -quiet ${hier_path}/*] {
+    if {[uz_pw_is_axi_interface_pin $intf_pin]} {
+      continue
+    }
+    if {[uz_pw_object_matches_patterns $intf_pin $cleanup_patterns] && [lsearch -exact $intf_pins_to_delete $intf_pin] < 0} {
+      lappend intf_pins_to_delete $intf_pin
+    }
+  }
+
+  foreach intf_pin $intf_pins_to_delete {
+    uz_pw_disconnect_intf_pin_from_all_nets $intf_pin
+  }
+
+  if {[llength $intf_pins_to_delete] > 0} {
+    puts "Deleting existing generated interface pins in ${hier_path}: $intf_pins_to_delete"
+    delete_bd_objs $intf_pins_to_delete
+  }
+}
+
 {% for slot in configured_slots %}
 # TODO: Create or refresh hierarchy for adapter slot {{ slot.slot }}.
-# Suggested hierarchy path: uz_digital_adapter/{{ slot.slot }}_adapter
+# Suggested hierarchy path: uz_digital_adapter/{{ slot.slot }}_adapter or uz_analog_adapter/{{ slot.slot }}_adapter
 uz_pw_delete_external_ports_for_slot {{ slot.slot }} [list {{ slot.cleanup_patterns }}]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
 {% endfor %}
 
 {% for cpld in slot_cplds %}

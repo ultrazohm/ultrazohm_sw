@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import json
+import html
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QProcess, Qt
 from PyQt6.QtGui import QAction, QFont
 from PyQt6.QtWidgets import (
     QComboBox,
+    QCheckBox,
     QFileDialog,
     QFormLayout,
     QGridLayout,
@@ -26,6 +28,7 @@ from PyQt6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QTabWidget,
+    QTextEdit,
     QTreeWidget,
     QTreeWidgetItem,
     QVBoxLayout,
@@ -36,6 +39,7 @@ from ..paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, OUTPUT_DIR, SLOTS
 from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
+from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_settings_from_xcf
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..tcl_generator import TclGenerator
 from .card_editor import CardEditorDialog
@@ -54,6 +58,15 @@ class MainWindow(QMainWindow):
         self.axi_fields: dict[str, QLineEdit] = {}
         self.toolchain_fields: dict[str, QLineEdit] = {}
         self.toolchain_status: QPlainTextEdit | None = None
+        self.cpld_programmer_fields: dict[str, QLineEdit] = {}
+        self.cpld_status: QTextEdit | None = None
+        self.cpld_process: QProcess | None = None
+        self.cpld_log_path: Path | None = None
+        self.cpld_xcf_path: Path = OUTPUT_DIR / "xzohm_project_wizard_slot_cplds.xcf"
+        self.cpld_xcf_current = False
+        self.write_cpld_button: QPushButton | None = None
+        self.program_cpld_button: QPushButton | None = None
+        self.import_cable_button: QPushButton | None = None
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
@@ -250,6 +263,8 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(0, 0, 0, 0)
         field = QLineEdit()
         field.textChanged.connect(self.refresh_tcl_preview)
+        if key in {"lattice_programmer_executable", "cpld_repository"}:
+            field.textChanged.connect(self.invalidate_cpld_project_file)
         button = QPushButton("Browse...")
         button.clicked.connect(lambda: self.browse_toolchain_path(key, file_mode))
         self.toolchain_fields[key] = field
@@ -395,16 +410,70 @@ class MainWindow(QMainWindow):
             self.cpld_combos[slot] = combo
             self._fill_cpld_combo(combo)
             combo.currentIndexChanged.connect(self.refresh_tcl_preview)
+            combo.currentIndexChanged.connect(self.invalidate_cpld_project_file)
             form.addRow(slot, combo)
         outer.addWidget(group)
 
+        cable_group = QGroupBox("Lattice cable settings")
+        cable_form = QFormLayout(cable_group)
+        cable_defaults = {
+            "cable_name": "USB2",
+            "port_address": "FTUSB-1",
+            "usb_id": "UltraZohm B Location",
+            "tck_delay": "3",
+        }
+        cable_labels = {
+            "cable_name": "Cable name",
+            "port_address": "Port address",
+            "usb_id": "USB ID",
+            "tck_delay": "Clock divider",
+        }
+        for key, default_value in cable_defaults.items():
+            edit = QLineEdit(default_value)
+            edit.textChanged.connect(self.invalidate_cpld_project_file)
+            self.cpld_programmer_fields[key] = edit
+            cable_form.addRow(cable_labels[key], edit)
+        recovery_group = QGroupBox("Cable setup recovery")
+        recovery_layout = QVBoxLayout(recovery_group)
+        recovery_hint = QLabel(
+            "This optional path is only needed when the default cable settings do not work. "
+            "Open Diamond Programmer once, select UltraZohm B Location, save an XCF, "
+            "and copy or import CableName and PortAdd from that file."
+        )
+        recovery_hint.setWordWrap(True)
+        recovery_hint.setMinimumHeight(44)
+        recovery_hint.setContentsMargins(0, 4, 0, 4)
+        recovery_layout.addWidget(recovery_hint)
+        import_enable = QCheckBox("I want to import cable settings from an existing Diamond Programmer XCF")
+        import_button = QPushButton("Import cable settings from XCF")
+        import_button.setEnabled(False)
+        import_enable.toggled.connect(import_button.setEnabled)
+        import_button.clicked.connect(self.import_cable_settings_from_xcf)
+        self.import_cable_button = import_button
+        recovery_layout.addWidget(import_enable)
+        recovery_layout.addWidget(import_button, alignment=Qt.AlignmentFlag.AlignRight)
+        cable_form.addRow("", recovery_group)
+        outer.addWidget(cable_group)
+
         buttons = QHBoxLayout()
         lattice_button = QPushButton("Write Lattice Diamond Programmer project file")
-        lattice_button.clicked.connect(self.show_lattice_diamond_placeholder)
+        lattice_button.clicked.connect(self.write_lattice_diamond_project_file)
+        program_button = QPushButton("Programm CPLDs via CLI")
+        program_button.clicked.connect(self.program_cplds_via_cli)
+        self.write_cpld_button = lattice_button
+        self.program_cpld_button = program_button
+        program_button.setEnabled(False)
         buttons.addStretch(1)
         buttons.addWidget(lattice_button)
+        buttons.addWidget(program_button)
         buttons.addStretch(1)
         outer.addLayout(buttons)
+
+        self.cpld_status = QTextEdit()
+        self.cpld_status.setReadOnly(True)
+        self.cpld_status.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        self.cpld_status.setFixedHeight(180)
+        outer.addWidget(self.cpld_status)
         outer.addStretch(1)
         return page
 
@@ -529,6 +598,9 @@ class MainWindow(QMainWindow):
     def cpld_assignments(self) -> dict[str, str]:
         return {slot: combo.currentData() or "none" for slot, combo in self.cpld_combos.items()}
 
+    def cpld_programmer_config(self) -> dict[str, str]:
+        return {key: field.text().strip() for key, field in self.cpld_programmer_fields.items()}
+
     def axi_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.axi_fields.items()}
 
@@ -546,6 +618,13 @@ class MainWindow(QMainWindow):
 
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
+
+    def load_cpld_programmer_config(self, values: dict[str, str]) -> None:
+        for key, field in self.cpld_programmer_fields.items():
+            field.blockSignals(True)
+            if key in values:
+                field.setText(values[key])
+            field.blockSignals(False)
 
     def load_axi_config(self, values: dict[str, str]) -> None:
         for key, field in self.axi_fields.items():
@@ -627,14 +706,196 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentIndex(4)
         self.tree.setCurrentItem(self.tree.topLevelItem(2).child(0))
 
-    def show_lattice_diamond_placeholder(self) -> None:
-        message = QMessageBox(self)
-        message.setWindowTitle("Lattice Diamond project file")
-        message.setText('<span style="color: red;">To be implemented...</span>')
-        message.setTextFormat(Qt.TextFormat.RichText)
-        got_it = message.addButton("Got it", QMessageBox.ButtonRole.AcceptRole)
-        message.setDefaultButton(got_it)
-        message.exec()
+    def import_cable_settings_from_xcf(self) -> None:
+        path_text, _ = QFileDialog.getOpenFileName(
+            self,
+            "Import cable settings from XCF",
+            str(APP_DIR),
+            "Lattice Diamond Programmer project (*.xcf);;All files (*)",
+        )
+        if not path_text:
+            return
+        path = Path(path_text)
+        try:
+            settings = read_cable_settings_from_xcf(path)
+        except (OSError, ValueError) as error:
+            QMessageBox.warning(self, "Could not import cable settings", str(error))
+            return
+
+        self.load_cpld_programmer_config({key: value for key, value in settings.items() if value or key == "usb_id"})
+        self.invalidate_cpld_project_file()
+        imported = [
+            f"Imported cable settings from {path}",
+            f"CableName: {settings.get('cable_name', '')}",
+            f"PortAdd: {settings.get('port_address', '')}",
+            f"USBID: {settings.get('usb_id', '')}",
+            f"TCKDelay: {settings.get('tck_delay', '')}",
+        ]
+        self.set_cpld_status("\n".join(imported))
+
+    def write_lattice_diamond_project_file(self) -> None:
+        try:
+            result = self.generate_lattice_diamond_project_file()
+        except (OSError, ValueError) as error:
+            self.cpld_xcf_current = False
+            self.refresh_cpld_program_button_state()
+            self.set_cpld_status(f"Could not write Lattice Diamond Programmer project file:\n{error}")
+            QMessageBox.warning(self, "Could not write project file", str(error))
+            return
+        messages = [
+            f"Wrote {result.path}",
+            f"Active slots: {', '.join(result.active_slots) if result.active_slots else 'none'}",
+            f"Not programmed: {', '.join(result.inactive_slots) if result.inactive_slots else 'none'}",
+        ]
+        messages.extend(f"WARNING: {warning}" for warning in result.warnings)
+        self.cpld_xcf_current = True
+        self.refresh_cpld_program_button_state()
+        self.set_cpld_status("\n".join(messages))
+
+    def program_cplds_via_cli(self) -> None:
+        if self.cpld_process and self.cpld_process.state() != QProcess.ProcessState.NotRunning:
+            return
+        try:
+            programmer_path = Path(self.toolchain_config().get("lattice_programmer_executable", ""))
+            if not programmer_path.exists():
+                raise FileNotFoundError(f"Lattice Programmer executable not found: {programmer_path}")
+            if not self.cpld_xcf_current or not self.cpld_xcf_path.exists():
+                raise FileNotFoundError("Generate the Lattice Diamond Programmer project file before programming.")
+            log_path = OUTPUT_DIR / "xzohm_project_wizard_slot_cplds.log"
+        except (OSError, ValueError) as error:
+            self.set_cpld_status(f"Could not program CPLDs:\n{error}")
+            QMessageBox.warning(self, "Could not program CPLDs", str(error))
+            return
+
+        try:
+            if log_path.exists():
+                log_path.unlink()
+        except OSError:
+            pass
+
+        command = [str(programmer_path), "-infile", str(self.cpld_xcf_path), "-logfile", str(log_path)]
+        self.cpld_log_path = log_path
+        self.set_cpld_status("")
+        self.append_cpld_status("Programming CPLDs via Lattice Programmer...", "#0057b8")
+        self.append_cpld_status(f"Command: {' '.join(command)}")
+        self.append_cpld_status(f"Project file: {self.cpld_xcf_path}")
+        self.append_cpld_status(f"Log file: {log_path}")
+        self.set_cpld_programming_busy(True)
+        self.statusBar().showMessage("Programming CPLDs...")
+
+        process = QProcess(self)
+        self.cpld_process = process
+        process.setProgram(str(programmer_path))
+        process.setArguments(["-infile", str(self.cpld_xcf_path), "-logfile", str(log_path)])
+        process.setWorkingDirectory(str(programmer_path.parent))
+        process.readyReadStandardOutput.connect(self.read_cpld_process_stdout)
+        process.readyReadStandardError.connect(self.read_cpld_process_stderr)
+        process.errorOccurred.connect(self.cpld_process_error)
+        process.finished.connect(self.cpld_process_finished)
+        process.start()
+
+    def generate_lattice_diamond_project_file(self):
+        toolchain = self.toolchain_config()
+        repository_path = Path(toolchain.get("cpld_repository", ""))
+        programmer_path = Path(toolchain.get("lattice_programmer_executable", ""))
+        if not repository_path.exists():
+            raise FileNotFoundError(f"CPLD repository not found: {repository_path}")
+        if not programmer_path.exists():
+            raise FileNotFoundError(f"Lattice Programmer executable not found: {programmer_path}")
+        return generate_d_slot_xcf(
+            self.cpld_xcf_path,
+            repository_path,
+            programmer_path,
+            self.cpld_assignments(),
+            self.cpld_programmer_config(),
+        )
+
+    def set_cpld_status(self, text: str) -> None:
+        if self.cpld_status:
+            self.cpld_status.setPlainText(text)
+
+    def append_cpld_status(self, text: str, color: str | None = None) -> None:
+        if not self.cpld_status:
+            return
+        escaped = html.escape(text)
+        if color:
+            self.cpld_status.append(f'<span style="color: {color};">{escaped}</span>')
+        else:
+            self.cpld_status.append(escaped)
+
+    def set_cpld_programming_busy(self, busy: bool) -> None:
+        if self.write_cpld_button:
+            self.write_cpld_button.setEnabled(not busy)
+        if self.program_cpld_button:
+            self.program_cpld_button.setEnabled((not busy) and self.cpld_xcf_current and self.cpld_xcf_path.exists())
+            self.program_cpld_button.setText("Programming..." if busy else "Programm CPLDs via CLI")
+
+    def invalidate_cpld_project_file(self) -> None:
+        self.cpld_xcf_current = False
+        self.refresh_cpld_program_button_state()
+
+    def refresh_cpld_program_button_state(self) -> None:
+        if not self.program_cpld_button:
+            return
+        busy = self.cpld_process is not None and self.cpld_process.state() != QProcess.ProcessState.NotRunning
+        self.program_cpld_button.setEnabled((not busy) and self.cpld_xcf_current and self.cpld_xcf_path.exists())
+
+    def read_cpld_process_stdout(self) -> None:
+        if not self.cpld_process:
+            return
+        text = bytes(self.cpld_process.readAllStandardOutput()).decode(errors="replace")
+        self.append_cpld_process_text(text)
+
+    def read_cpld_process_stderr(self) -> None:
+        if not self.cpld_process:
+            return
+        text = bytes(self.cpld_process.readAllStandardError()).decode(errors="replace")
+        self.append_cpld_process_text(text, default_color="#c62828")
+
+    def append_cpld_process_text(self, text: str, default_color: str | None = None) -> None:
+        for line in text.splitlines():
+            self.append_cpld_status(line, self.cpld_log_line_color(line) or default_color)
+
+    def cpld_process_error(self, error: QProcess.ProcessError) -> None:
+        self.append_cpld_status(f"Process error: {error.name}", "#c62828")
+
+    def cpld_process_finished(self, exit_code: int, _exit_status: QProcess.ExitStatus) -> None:
+        self.set_cpld_programming_busy(False)
+        self.statusBar().clearMessage()
+        self.append_cpld_status("")
+        self.append_cpld_status(f"Lattice Programmer exited with code {exit_code}", "#2e7d32" if exit_code == 0 else "#c62828")
+        self.append_cpld_log_file()
+        if exit_code == 0:
+            QMessageBox.information(self, "CPLD programming finished", "Lattice Programmer finished successfully.")
+        else:
+            QMessageBox.warning(self, "CPLD programming failed", f"Lattice Programmer exited with code {exit_code}.")
+        self.cpld_process = None
+
+    def append_cpld_log_file(self) -> None:
+        if not self.cpld_log_path:
+            return
+        if not self.cpld_log_path.exists():
+            self.append_cpld_status(f"Log file was not written: {self.cpld_log_path}", "#c62828")
+            return
+        self.append_cpld_status("")
+        self.append_cpld_status(f"Log file: {self.cpld_log_path}", "#0057b8")
+        log_text = self.cpld_log_path.read_text(encoding="utf-8", errors="replace")
+        if not log_text.strip():
+            self.append_cpld_status("No log text was written.")
+            return
+        for line in log_text.splitlines():
+            self.append_cpld_status(line, self.cpld_log_line_color(line))
+
+    @staticmethod
+    def cpld_log_line_color(line: str) -> str | None:
+        upper_line = line.upper()
+        if "NO ERROR" in upper_line or "NO ERRORS" in upper_line:
+            return None
+        if "ERROR" in upper_line or "FAILED" in upper_line or "FAIL" in upper_line:
+            return "#c62828"
+        if "PASS" in upper_line or "SUCCESS" in upper_line or "SUCCESSFULLY" in upper_line:
+            return "#2e7d32"
+        return None
 
     def show_card_database(self) -> None:
         self.stack.setCurrentIndex(7)
@@ -854,6 +1115,7 @@ class MainWindow(QMainWindow):
             self.assignments(),
             self.option_values(),
             self.cpld_assignments(),
+            self.cpld_programmer_config(),
             self.axi_config(),
         )
 
@@ -904,6 +1166,13 @@ class MainWindow(QMainWindow):
                 continue
             index = combo.findData(program_id)
             combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
+
+        cpld_programmer = document.get("cpld_programmer", {})
+        if cpld_programmer is None:
+            cpld_programmer = {}
+        if not isinstance(cpld_programmer, dict):
+            raise ValueError("Config field 'cpld_programmer' must be a JSON object.")
+        self.load_cpld_programmer_config({str(key): str(value) for key, value in cpld_programmer.items()})
 
         axi = document.get("axi", self.database.axi_interconnect)
         if not isinstance(axi, dict):

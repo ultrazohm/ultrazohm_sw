@@ -4,6 +4,14 @@ The generic Vivado generator uses `templates/cards/generic_adapter_card.tcl`.
 New cards should describe their hardware in `adapter_cards.json` instead of
 adding a card-specific TCL template.
 
+Two system entries are intentionally special:
+
+- `empty` is shown as `Bypass` in the GUI and emits no TCL for the slot.
+- `no_adapter_board` emits `templates/cards/no_adapter_board.tcl` and removes
+  generated slot content. Its AXI boundary cleanup is handled by the shared
+  AXI interconnect template because it needs the configured project-level
+  SmartConnect.
+
 Minimum `vivado` shape:
 
 ```json

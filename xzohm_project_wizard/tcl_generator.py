@@ -64,7 +64,7 @@ class TclGenerator:
             card_id = assignments.get(slot, "empty")
             card = self.database.card_by_id(card_id)
             if not card or card_id == "empty":
-                lines.extend([f"# {slot}: empty", ""])
+                lines.extend([f"# {slot}: bypass - leaving existing block design content untouched", ""])
                 continue
             lines.append(self._card_section(slot, card, option_values.get(slot, {})))
 
@@ -88,7 +88,7 @@ class TclGenerator:
         slot_index = slot[1:]
         slot_lower = slot.lower()
         if slot.startswith("D"):
-            return f'"*{slot}*" "*{slot_lower}*" "*_Ch{slot_index}*" "*_ch{slot_index}*"'
+            return f'"*{slot}*" "*{slot_lower}*" "*_Ch{slot_index}*"'
         if slot.startswith("A"):
             return f'"*{slot}*" "*{slot_lower}*"'
         return f'"*{slot}*" "*{slot_lower}*"'
@@ -140,6 +140,7 @@ class TclGenerator:
                 "trigger_inputs",
                 "outputs",
                 "constraints",
+                "cleanup_slot",
             )
         )
 
@@ -160,6 +161,7 @@ class TclGenerator:
             "slot_lower": slot.lower(),
             "slot_index": slot_index,
             "channel_suffix": slot.lower(),
+            "cleanup_patterns": self._slot_cleanup_patterns(slot),
             "card_id": card.get("id", ""),
             "card_name": card.get("name", card.get("id", "unknown card")),
             "notes": vivado.get("notes", []),
@@ -360,8 +362,12 @@ class TclGenerator:
         config.update({key: value for key, value in axi_config.items() if value})
         axi_slots = []
         axi_connections = []
+        no_adapter_slots = []
         for slot in DIGITAL_SLOTS:
-            card = self.database.card_by_id(assignments.get(slot, "empty"))
+            card_id = assignments.get(slot, "empty")
+            if card_id == "no_adapter_board":
+                no_adapter_slots.append({"slot": slot})
+            card = self.database.card_by_id(card_id)
             if not card:
                 continue
             interfaces = self._axi_interfaces_for_card(slot, card, option_values.get(slot, {}))
@@ -396,6 +402,8 @@ class TclGenerator:
             "resetn_pin": config.get("resetn_pin", ""),
             "address_space": config.get("address_space", ""),
             "local_smartconnect_vlnv": config.get("local_smartconnect_vlnv", "xilinx.com:ip:smartconnect"),
+            "has_no_adapter_slots": bool(no_adapter_slots),
+            "no_adapter_slots": no_adapter_slots,
             "has_axi": bool(axi_slots),
             "axi_slots": axi_slots,
             "axi_connections": axi_connections,

@@ -156,8 +156,8 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-//            Global_Data.objects.resolver_left = initialize_resolver_left();
-//            Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_left = initialize_resolver_left();
+            Global_Data.objects.resolver_right = initialize_resolver_right();
             Global_Data.objects.resolver_pl_D5_Ch1 = initialize_resolver_pl_D5_Ch1();
 
             /* init UZ_D_Temperature card */

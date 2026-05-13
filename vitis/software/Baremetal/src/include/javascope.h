@@ -96,16 +96,6 @@ enum JS_OberservableData {
 	JSO_Endat_PLL_theta_elec,
 	JSO_Endat_PLL_Speed_rpm,
 	JSO_Endat_PLL_el_Speed_rad_s,
-	JSO_EncoderOffset_Resolver_Progress,
-	JSO_EncoderOffset_Resolver_Diagnose,
-	JSO_EncoderOffset_Resolver_Id_Ref,
-	JSO_EncoderOffset_Resolver_Iq_Ref,
-	JSO_EncoderOffset_Resolver_Offset,
-	JSO_EncoderOffset_Endat_Progress,
-	JSO_EncoderOffset_Endat_Diagnose,
-	JSO_EncoderOffset_Endat_Id_Ref,
-	JSO_EncoderOffset_Endat_Iq_Ref,
-	JSO_EncoderOffset_Endat_Offset,
 	JSO_ENDMARKER
 };
 
@@ -117,13 +107,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_temp_inv_left,
-	JSSD_FLOAT_temp_inv_right,
-	JSSD_FLOAT_f_sw_avg_Hz_right,
 	JSSD_FLOAT_vd_left,
 	JSSD_FLOAT_vq_left,
 	JSSD_FLOAT_id_left,
@@ -143,27 +128,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_speed_left,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_torque_filt,
-	JSSD_FLOAT_encoderOffset,
-	JSSD_FLOAT_u_d_ref,
-	JSSD_FLOAT_u_q_ref,
-	JSSD_FLOAT_Endat_theta_mech,
-	JSSD_FLOAT_Endat_theta_elec,
-	JSSD_FLOAT_Endat_Speed_rpm,
-	JSSD_FLOAT_Endat_el_Speed_rad_s,
-	JSSD_FLOAT_Endat_PLL_theta_mech,
-	JSSD_FLOAT_Endat_PLL_theta_elec,
-	JSSD_FLOAT_Endat_PLL_Speed_rpm,
-	JSSD_FLOAT_Endat_PLL_el_Speed_rad_s,
-	JSSD_FLOAT_EncoderOffset_Resolver_Progress,
-	JSSD_FLOAT_EncoderOffset_Resolver_Diagnose,
-	JSSD_FLOAT_EncoderOffset_Resolver_Id_Ref,
-	JSSD_FLOAT_EncoderOffset_Resolver_Iq_Ref,
-	JSSD_FLOAT_EncoderOffset_Resolver_Offset,
-	JSSD_FLOAT_EncoderOffset_Endat_Progress,
-	JSSD_FLOAT_EncoderOffset_Endat_Diagnose,
-	JSSD_FLOAT_EncoderOffset_Endat_Id_Ref,
-	JSSD_FLOAT_EncoderOffset_Endat_Iq_Ref,
-	JSSD_FLOAT_EncoderOffset_Endat_Offset,
+	JSSD_FLOAT_Endat_EncoderOffset,
+	JSSD_FLOAT_Resolver_Offset,
 	JSSD_ENDMARKER
 };
 
@@ -234,8 +200,8 @@ enum gui_button_mapping {
 	Ki_id_right,
 	Kp_iq_right,
 	Ki_iq_right,
-	fake_mech_offset_endat_machine,
-	mech_offset_endat_machine_ipcore,
+	mech_offset_resolver,
+	mech_offset_endat,
 	wc_filter_EMF/amplitude,
 	wc_speed/frequency,
 	SND_FLD_ENDMARKER
@@ -262,7 +228,7 @@ enum gui_button_mapping {
 	-,
 	-,
 	rad,
-	-,
+	rad,
 	-,
 	-,
 	SND_LABELS_ENDMARKER
@@ -288,10 +254,10 @@ enum gui_button_mapping {
 	Error_Undervoltage_DC,
 	Error_Overspeed,
 	Error_Overtorque,
-	Endat_PLL_Speed_rpm,
-	Endat_PLL_el_Speed_rad_s,
-	EO_Resolver_Progress,
-	EO_Endat_Progress,
+	Error_Code,
+	v_dc_left,
+	Endat_EncoderOffset,
+	Resolver_Offset,
 	RCV_FLD_ENDMARKER
 
 
@@ -315,10 +281,10 @@ enum gui_button_mapping {
 	bool,
 	bool,
 	bool,
-	RPM,
-	rad/s,
 	-,
-	-,
+	V,
+	rad,
+	rad,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
@@ -339,7 +305,7 @@ enum gui_button_mapping {
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
-//Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
+//Set the line to JSSD_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_speed_left,
@@ -348,20 +314,20 @@ enum gui_button_mapping {
 	JSSD_FLOAT_iq_left,
 	JSSD_FLOAT_vd_left,
 	JSSD_FLOAT_vq_left,
-	JSSD_FLOAT_Endat_theta_mech,
-	JSSD_FLOAT_Endat_theta_elec,
-	JSSD_FLOAT_Endat_Speed_rpm,
-	JSSD_FLOAT_Endat_el_Speed_rad_s,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
 	JSSD_FLOAT_Error_Max_Current_Left,
 	JSSD_FLOAT_Error_Max_Current_Right,
 	JSSD_FLOAT_Error_Overvoltage_DC,
 	JSSD_FLOAT_Error_Undervoltage_DC,
 	JSSD_FLOAT_Error_Overspeed_Latch,
 	JSSD_FLOAT_Error_Overtorque_Latch,
-	JSSD_FLOAT_Endat_PLL_Speed_rpm,
-	JSSD_FLOAT_Endat_PLL_el_Speed_rad_s,
-	JSSD_FLOAT_EncoderOffset_Resolver_Progress,
-	JSSD_FLOAT_EncoderOffset_Endat_Progress,
+	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_v_dc_left,
+	JSSD_FLOAT_Endat_EncoderOffset,
+	JSSD_FLOAT_Resolver_Offset,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

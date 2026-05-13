@@ -76,7 +76,7 @@ extern DS_Data Global_Data;
 
    const struct uz_PI_Controller_config config_id_right = {
  	      .type = UZ_PI_PARALLEL,
-		  .Kp = 130,//20
+		  .Kp = 20,//130,//20
 	      .Ki = 100,
 		  //.Kp = Siemens_1FK7043.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      //.Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
@@ -84,7 +84,7 @@ extern DS_Data Global_Data;
   };
   const struct uz_PI_Controller_config config_iq_right = {
 		  .type = UZ_PI_PARALLEL,
-		  .Kp = 130,//20
+		  .Kp = 20, //130,//20
 	      .Ki = 100,
 		  //.Kp = Siemens_1FK7043.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      //.Ki = Siemens_1FK7043.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
@@ -115,7 +115,7 @@ extern DS_Data Global_Data;
    		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    struct uz_IIR_Filter_config config_IIR_torque = { .selection = LowPass_first_order,
-      		.cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+      		.cutoff_frequency_Hz = 5.0f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
    uz_CurrentControl_t* current_ctrl_left_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_left));

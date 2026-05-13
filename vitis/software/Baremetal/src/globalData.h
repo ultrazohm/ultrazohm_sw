@@ -16,7 +16,6 @@
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
-#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -123,12 +122,6 @@ typedef struct _actualValues_ {
 	float undervoltage_dc;
 	float overspeed;
 	float overtorque;
-	float encoder_offset_resolver_progress;
-	float encoder_offset_resolver_diagnose;
-	uz_3ph_dq_t encoder_offset_resolver_i_dq_ref;
-	float encoder_offset_endat_progress;
-	float encoder_offset_endat_diagnose;
-	uz_3ph_dq_t encoder_offset_endat_i_dq_ref;
 	bool currentcontrol_clamping_left;
 	bool currentcontrol_clamping_right;
 } actualValues;
@@ -177,8 +170,6 @@ typedef struct{
 	uz_resolver_pl_interface_t* resolver_pl_interface_d3_1;
 	uz_endat_interface_t* endat_encoder_d4_1;
 	uz_pos_to_speed_pll_t* endat_speed_pll_d4_1;
-	uz_encoder_offset_estimation_t* encoder_offset_estimation_resolver_d3;
-	uz_encoder_offset_estimation_t* encoder_offset_estimation_endat_d4;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;

@@ -169,16 +169,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Endat_PLL_theta_elec]	= &data->av.endat_software_pll_machine.theta_elec;
 	js_ch_observable[JSO_Endat_PLL_Speed_rpm]	= &data->av.endat_software_pll_machine.mechanicalRotorSpeed;
 	js_ch_observable[JSO_Endat_PLL_el_Speed_rad_s] = &data->av.endat_software_pll_machine.electricalRotorSpeed;
-	js_ch_observable[JSO_EncoderOffset_Resolver_Progress] = &data->av.encoder_offset_resolver_progress;
-	js_ch_observable[JSO_EncoderOffset_Resolver_Diagnose] = &data->av.encoder_offset_resolver_diagnose;
-	js_ch_observable[JSO_EncoderOffset_Resolver_Id_Ref] = &data->av.encoder_offset_resolver_i_dq_ref.d;
-	js_ch_observable[JSO_EncoderOffset_Resolver_Iq_Ref] = &data->av.encoder_offset_resolver_i_dq_ref.q;
-	js_ch_observable[JSO_EncoderOffset_Resolver_Offset] = &data->rasv.resolver_offset;
-	js_ch_observable[JSO_EncoderOffset_Endat_Progress] = &data->av.encoder_offset_endat_progress;
-	js_ch_observable[JSO_EncoderOffset_Endat_Diagnose] = &data->av.encoder_offset_endat_diagnose;
-	js_ch_observable[JSO_EncoderOffset_Endat_Id_Ref] = &data->av.encoder_offset_endat_i_dq_ref.d;
-	js_ch_observable[JSO_EncoderOffset_Endat_Iq_Ref] = &data->av.encoder_offset_endat_i_dq_ref.q;
-	js_ch_observable[JSO_EncoderOffset_Endat_Offset] = &data->rasv.endat_offset;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -191,6 +181,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.n_mech_rpm_d3_1);
 	js_slowDataArray[JSSD_FLOAT_torque]		 		    = &(data->av.torque);
 	js_slowDataArray[JSSD_FLOAT_torque_filt]		    = &(data->av.torque_filt);
+	js_slowDataArray[JSSD_FLOAT_Endat_EncoderOffset]	= &(data->rasv.endat_offset);
+	js_slowDataArray[JSSD_FLOAT_Resolver_Offset]		= &(data->rasv.resolver_offset);
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
 	js_slowDataArray[JSSD_FLOAT_Overcurrent_AC]			= &(data->av.overcurrent_ac);
 	js_slowDataArray[JSSD_FLOAT_Overvoltage_DC]			= &(data->av.overvoltage_dc);
@@ -208,25 +200,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_Error_Code]				= &js_error_code;
-	js_slowDataArray[JSSD_FLOAT_Endat_theta_mech]		= &data->av.endat_machine.theta_mech;
-	js_slowDataArray[JSSD_FLOAT_Endat_theta_elec]		= &data->av.endat_machine.theta_elec;
-	js_slowDataArray[JSSD_FLOAT_Endat_Speed_rpm]		= &data->av.endat_machine.mechanicalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_Endat_el_Speed_rad_s]	= &data->av.endat_machine.electricalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_Endat_PLL_theta_mech]	= &data->av.endat_software_pll_machine.theta_mech;
-	js_slowDataArray[JSSD_FLOAT_Endat_PLL_theta_elec]	= &data->av.endat_software_pll_machine.theta_elec;
-	js_slowDataArray[JSSD_FLOAT_Endat_PLL_Speed_rpm]	= &data->av.endat_software_pll_machine.mechanicalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_Endat_PLL_el_Speed_rad_s] = &data->av.endat_software_pll_machine.electricalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Resolver_Progress] = &data->av.encoder_offset_resolver_progress;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Resolver_Diagnose] = &data->av.encoder_offset_resolver_diagnose;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Resolver_Id_Ref] = &data->av.encoder_offset_resolver_i_dq_ref.d;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Resolver_Iq_Ref] = &data->av.encoder_offset_resolver_i_dq_ref.q;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Resolver_Offset] = &data->rasv.resolver_offset;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Endat_Progress] = &data->av.encoder_offset_endat_progress;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Endat_Diagnose] = &data->av.encoder_offset_endat_diagnose;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Endat_Id_Ref] = &data->av.encoder_offset_endat_i_dq_ref.d;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Endat_Iq_Ref] = &data->av.encoder_offset_endat_i_dq_ref.q;
-	js_slowDataArray[JSSD_FLOAT_EncoderOffset_Endat_Offset] = &data->rasv.endat_offset;
-
 	return Status;
 }
 

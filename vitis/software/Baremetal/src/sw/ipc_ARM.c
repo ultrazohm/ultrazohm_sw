@@ -289,8 +289,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_17):
-		data->rasv.d4_to_d3_offset_mech = value;
 		data->av.snd_fld[17] = value;
+		data->rasv.resolver_offset = value;
 			break;
 
 		case (Set_Send_Field_18):

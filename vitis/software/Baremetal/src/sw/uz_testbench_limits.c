@@ -2,14 +2,14 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stddef.h>
 
-const float UZ_TESTBENCH_LIMIT_CURRENT_MIN_AMP = -5.0f;
-const float UZ_TESTBENCH_LIMIT_CURRENT_MAX_AMP = 5.0f;
-const float UZ_TESTBENCH_LIMIT_SPEED_MIN_RPM = -1000.0f;
-const float UZ_TESTBENCH_LIMIT_SPEED_MAX_RPM = 1000.0f;
+const float UZ_TESTBENCH_LIMIT_CURRENT_MIN_AMP = -15.0f;
+const float UZ_TESTBENCH_LIMIT_CURRENT_MAX_AMP = 15.0f;
+const float UZ_TESTBENCH_LIMIT_SPEED_MIN_RPM = -3500.0f;
+const float UZ_TESTBENCH_LIMIT_SPEED_MAX_RPM = 3500.0f;
 const float UZ_TESTBENCH_LIMIT_DC_LINK_MIN_V = 40.0f;
-const float UZ_TESTBENCH_LIMIT_DC_LINK_MAX_V = 60.0f;
-const float UZ_TESTBENCH_LIMIT_TORQUE_MIN_NM = -9.0f;
-const float UZ_TESTBENCH_LIMIT_TORQUE_MAX_NM = 9.0f;
+const float UZ_TESTBENCH_LIMIT_DC_LINK_MAX_V = 370.0f;
+const float UZ_TESTBENCH_LIMIT_TORQUE_MIN_NM = -7.0f;
+const float UZ_TESTBENCH_LIMIT_TORQUE_MAX_NM = 7.0f;
 
 volatile uint32_t uz_testbench_limits_error_reason = 0U;
 float js_error_max_current_left = 0.0f;

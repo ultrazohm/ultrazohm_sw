@@ -10,6 +10,7 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_endat_interface/uz_endat_interface.h"
+#include "IP_Cores/uz_Deadbeat/uz_Deadbeat.h"//Deadbeat control in FPGA
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
@@ -189,6 +190,7 @@ typedef struct{
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_right;
 	uz_IIR_Filter_t* iir_filter_torque;
+	uz_Deadbeat_t* deadbeat;//Deadbeat control in FPGA
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

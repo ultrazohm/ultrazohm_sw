@@ -20,7 +20,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
 		.triangle_shift_HB3 = 0.0f,
-		.trigger_source = trigger_at_MIN
+		.trigger_source = trigger_at_EITHER   //trigger_at_MIN
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
@@ -32,6 +32,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
         .PWM_freq_Hz = UZ_PWM_FREQUENCY,
         .PWM_mode = normalized_input_via_AXI,
+		//.PWM_mode = normalized_input_via_FPGA,
         .PWM_en = true,
         .use_external_counter = true,
         .init_dutyCyc_HB1 = 0.0f,
@@ -40,7 +41,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
 		.triangle_shift_HB3 = 0.0f,
-		.trigger_source = trigger_at_MIN
+		.trigger_source = trigger_at_EITHER   //trigger_at_MIN
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {

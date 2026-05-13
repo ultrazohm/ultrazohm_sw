@@ -1,0 +1,6 @@
+ --> uz_Deadbeat_ip_src_uz_Deadbeat_pkg
+uz_Deadbeat/uz_Deadbeat/Sin_cordic_nw --> uz_Deadbeat_ip_src_Sin_cordic_nw
+uz_Deadbeat/uz_Deadbeat/Cos_cordic_nw --> uz_Deadbeat_ip_src_Cos_cordic_nw
+uz_Deadbeat/uz_Deadbeat/Sin_cordic_nw --> uz_Deadbeat_ip_src_Sin_cordic_nw_block
+uz_Deadbeat/uz_Deadbeat/Cos_cordic_nw --> uz_Deadbeat_ip_src_Cos_cordic_nw_block
+uz_Deadbeat/uz_Deadbeat --> uz_Deadbeat_ip_src_uz_Deadbeat

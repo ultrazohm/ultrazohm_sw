@@ -34,6 +34,8 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "../uz/uz_signals/uz_signals.h"
+
+#include "../IP_Cores/uz_Deadbeat/uz_Deadbeat.h"//Deadbeat control in FPGA
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -226,9 +228,31 @@ void ISR_Control(void *data)
     	control_left_motor();
 
     	// calculate control algorithm for right motor
-    	control_right_motor();
+    	//control_right_motor();
 
-    	//deadbeat_right_motor();
+    	/*
+    	struct uz_Deadbeat_outputs_t db_out =
+    	    uz_Deadbeat_read_outputs(Global_Data.objects.deadbeat);
+
+    	struct uz_Deadbeat_inputs_t db_in = {
+    	    .id_ref = i_dq_ref_right.d,
+    	    .iq_ref = i_dq_ref_right.q,
+    	    .id = i_dq_right.d,
+    	    .iq = i_dq_right.q,
+    	    .theta = Global_Data.av.position_el_2pi_d4_1,
+    	    .theta_0 = Global_Data.av.position_el_2pi_d4_1,
+    	    .w_e = Global_Data.av.omega_el_right,
+    	    .ua_0_input = db_out.ua_0,
+    	    .ub_0_input = db_out.ub_o,
+    	    .uc_0_input = db_out.uc_0
+    	};
+
+    	uz_Deadbeat_write_inputs(Global_Data.objects.deadbeat, &db_in);
+    	*/
+
+
+    	deadbeat_right_motor();
+
     	//Deadtime Compensation
     	//deadtime_comp();
     	// Control Algorithm: Input
@@ -710,6 +734,11 @@ static void deadbeat_right_motor(){
     da = 0.5f * (u_a + 1.0f);
     db = 0.5f * (u_b + 1.0f);
     dc = 0.5f * (u_c + 1.0f);
+
+    dutycyc_right.DutyCycle_A = da;
+    dutycyc_right.DutyCycle_B = db;
+    dutycyc_right.DutyCycle_C = dc;
+
 
     /* store modulating voltage */
     u_a0 = u_a;

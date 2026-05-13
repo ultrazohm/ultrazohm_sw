@@ -16,6 +16,9 @@
 // Includes from own files
 #include "main.h"
 #include "Codegen/uz_codegen.h"
+//Deadbeat control in FPGA
+#include "IP_Cores/uz_Deadbeat/uz_Deadbeat.h"
+#include "xparameters.h"
 
 
 extern const struct uz_PMSM_t Siemens_1FK7043;
@@ -130,6 +133,13 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+            //Deadbeat control in FPGA
+            struct uz_Deadbeat_config_t deadbeat_config = {
+                .base_address = XPAR_UZ_DEADBEAT_IP_0_BASEADDR,
+                .ip_clk_frequency_Hz = 100000000U
+            };
+            Global_Data.objects.deadbeat = uz_Deadbeat_init(deadbeat_config);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

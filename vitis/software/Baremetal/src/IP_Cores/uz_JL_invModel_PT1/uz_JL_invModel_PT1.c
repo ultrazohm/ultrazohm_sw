@@ -1,8 +1,8 @@
 
-#include "../../uz_global_configuration.h"
+#include "../../uz/uz_global_configuration.h"
 #if UZ_JL_INVMODEL_PT1_MAX_INSTANCES > 0U
 #include <stdbool.h> 
-#include "../../uz_HAL.h"
+#include "../../uz/uz_HAL.h"
 #include "uz_JL_invModel_PT1.h" 
 #include "uz_JL_invModel_PT1_hw.h" 
 
@@ -75,5 +75,27 @@ void uz_JL_invModel_PT1_set_time_constant(uz_JL_invModel_PT1_t *self, float time
     self->config.time_constant=(1.0f/time_constant);
     uz_JL_invModel_PT1_hw_write_time_constant(self->config.base_adress, self->config.time_constant);
 }
+
+struct uz_JL_invModel_PT1_output_t uz_JL_invModel_PT1_get_outputs(uz_JL_invModel_PT1_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    struct uz_JL_invModel_PT1_output_t outputs = {
+        .Ua = 0.0f,
+        .Ub = 0.0f,
+        .Uc = 0.0f};
+    outputs.Ua = uz_JL_invModel_PT1_hw_read_out_Ua(self->config.base_adress);
+    outputs.Ub = uz_JL_invModel_PT1_hw_read_out_Ub(self->config.base_adress);
+    outputs.Uc = uz_JL_invModel_PT1_hw_read_out_Uc(self->config.base_adress);
+    return outputs;
+}
+
+void uz_JL_invModel_PT1_trigger_output_strobe(uz_JL_invModel_PT1_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_invModel_PT1_hw_trigger_output_strobe(self->config.base_adress);
+}
+
 
 #endif

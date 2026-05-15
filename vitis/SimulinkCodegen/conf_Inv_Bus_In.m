@@ -1,13 +1,13 @@
 % Definition Motorparamter für Bus_Config_PMSM
 clear elems;
 elems(1) = Simulink.BusElement;
-elems(1).Name = 'PWM_H_safe';
-elems(1).DataType = 'single';
+elems(1).Name = 'PWM_H';
+elems(1).DataType = 'boolean';
 elems(1).Dimensions = '3';
 
 elems(2) = Simulink.BusElement;
-elems(2).Name = 'PWM_L_safe';
-elems(2).DataType = 'single';
+elems(2).Name = 'PWM_L';
+elems(2).DataType = 'boolean';
 elems(2).Dimensions = '3';
 
 elems(3) = Simulink.BusElement;
@@ -25,8 +25,8 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.PWM_H_safe = 0; 
-data.PWM_L_safe = 0; 
+data.PWM_H = 0; 
+data.PWM_L = 0; 
 data.Ualpha = 0; 
 data.Ubeta = 0; 
 

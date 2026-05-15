@@ -14,7 +14,8 @@ struct uz_JL_invModel_PT1_config_t config =
         .base_adress = TEST_BASE_ADDRESS,
         .ip_core_frequency_Hz = TEST_IP_CORE_FRQ,
         .gain = 1.0f,
-        .time_constant = 1.1f};
+        .time_constant = 1.1f
+    };
 
 void setUp(void)
 {
@@ -23,7 +24,7 @@ void setUp(void)
     config.ip_core_frequency_Hz = TEST_IP_CORE_FRQ;
     config.gain = 1.0f;
     config.time_constant = 1.1f;
-}
+    }
 }
 
 void tearDown(void)
@@ -96,6 +97,30 @@ void test_uz_JL_invModel_PT1_set_time_constant(void)
     // the time constant is inverted in the function write_time_constant since the IP-Core expects 1/time_constant in the hardware register
     uz_JL_invModel_PT1_hw_write_time_constant_Expect(TEST_BASE_ADDRESS, (1.0f / time_constant));
     uz_JL_invModel_PT1_set_time_constant(instance, time_constant);
+}
+
+void test_uz_JL_invModel_PT1_get_outputs(void)
+{
+    uz_JL_invModel_PT1_hw_write_time_constant_Expect(TEST_BASE_ADDRESS, 1.0f / config.time_constant);
+    uz_JL_invModel_PT1_hw_write_gain_Expect(TEST_BASE_ADDRESS, config.gain);
+    uz_JL_invModel_PT1_t *test_instance = uz_JL_invModel_PT1_init(config);
+
+    uz_JL_invModel_PT1_hw_trigger_output_strobe_Expect(TEST_BASE_ADDRESS);
+    uz_JL_invModel_PT1_trigger_output_strobe(test_instance);
+    
+    float Ua_expect = 6.4f;
+    float Ub_expect = 1.1f;
+    float Uc_expect = 1.1f;
+
+    // After strobe register was high, current values can be read from AXI
+    uz_JL_invModel_PT1_hw_read_out_Ua_ExpectAndReturn(TEST_BASE_ADDRESS, Ua_expect);
+    uz_JL_invModel_PT1_hw_read_out_Ub_ExpectAndReturn(TEST_BASE_ADDRESS, Ub_expect);
+    uz_JL_invModel_PT1_hw_read_out_Uc_ExpectAndReturn(TEST_BASE_ADDRESS, Uc_expect);
+
+    struct uz_JL_invModel_PT1_output_t out = uz_JL_invModel_PT1_get_outputs(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(Ua_expect, out.Ua);
+    TEST_ASSERT_EQUAL_FLOAT(Ub_expect, out.Ub);
+    TEST_ASSERT_EQUAL_FLOAT(Uc_expect, out.Uc);
 }
 
 

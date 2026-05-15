@@ -21,13 +21,20 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
-	JSO_i_a,
-	JSO_i_b,
-	JSO_i_c,
-	JSO_omega,
-	JSO_ua,
-	JSO_ub,
-	JSO_uc,
+	JSO_PT1_ua,
+	JSO_PT1_ub,
+	JSO_PT1_uc,
+	JSO_ideal_ua,
+	JSO_ideal_ub,
+	JSO_ideal_uc,
+	JSO_ctrl_Ualpha,
+	JSO_ctrl_Ubeta,
+	JSO_pmsm_pt1_ia,
+	JSO_pmsm_pt1_ib,
+	JSO_pmsm_pt1_ic,
+	JSO_pmsm_ideal_ia,
+	JSO_pmsm_ideal_ib,
+	JSO_pmsm_ideal_ic,
 	JSO_ENDMARKER
 };
 

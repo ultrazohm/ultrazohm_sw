@@ -24,11 +24,3 @@ hilite_system('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clark
 annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation/Gain2', 1, 1, 'Block not characterized for this configuration');
 hilite_system('uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation/Gain2', 'user2');
 annotate_port('uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation/Gain2', 1, 1, 'Block not characterized for this configuration');
-cs.HiliteType = 'user2';
-cs.ForegroundColor = 'black';
-cs.BackgroundColor = 'gray';
-set_param(0, 'HiliteAncestorsData', cs);
-hilite_system('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/Cast To Single', 'user2');
-annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/Cast To Single', 1, 1, 'Block not characterized for this configuration');
-hilite_system('uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/Cast To Single', 'user2');
-annotate_port('uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/Cast To Single', 1, 1, 'Block not characterized for this configuration');

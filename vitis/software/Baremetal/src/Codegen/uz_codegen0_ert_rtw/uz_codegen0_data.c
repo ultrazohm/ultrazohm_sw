@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.2
+ * Model version                  : 10.5
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed Apr 29 15:06:47 2026
+ * C/C++ source code generated on : Thu May 14 14:56:45 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: All passed
  */
 
 #include "uz_codegen0.h"
@@ -25,8 +25,8 @@
 const ConstP rtConstP = {
   /* Pooled Parameter (Expression: [0 1;1 0;0 1;0 1;1 0;1 0;0 0;0 0])
    * Referenced by:
-   *   '<S18>/Logic'
-   *   '<S20>/Logic'
+   *   '<S19>/Logic'
+   *   '<S21>/Logic'
    */
   { false, true, false, false, true, true, false, false, true, false, true, true,
     false, false, false, false }

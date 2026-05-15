@@ -1,4 +1,4 @@
-create_project prj_ip {} -part xczu9eg-ffvc900-1L-i -force
+create_project prj_ip {} -part xczu9eg-ffvc900-1-i -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
@@ -16,13 +16,11 @@ add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Inverse_Clarke_Transformation.v
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_uminus_single.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Inverse_Park_Transformation.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_dq_abc.vhd}
-add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_recip_single.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Subsystem2.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Psi.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Elektrik.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_signum_single.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_relop_single.vhd}
-add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_convert_double2single.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_nfp_abs_single.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/uz_JL_pmsmModel_src_Drehmomentberechnung.vhd}
@@ -59,7 +57,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114594387 [ipx::current_core]
+set_property core_revision 2114609991 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_JL_pmsmModel_src_uz_JL_pmsmModel_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -118,10 +116,6 @@ ipx::add_file {hdl/uz_JL_pmsmModel_src_dq_abc.vhd} [ipx::get_file_groups xilinx_
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_dq_abc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_dq_abc.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_dq_abc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_recip_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_recip_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_recip_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_recip_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -142,10 +136,6 @@ ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_relop_single.vhd} [ipx::get_file_grou
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_relop_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_pmsmModel_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_pmsmModel_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -16,12 +16,57 @@
 // Includes from own files
 #include "main.h"
 #include "Codegen/uz_codegen.h"
-#include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
-#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "xparameters.h"
+#include "IP_Cores/uz_JL_invModel_PT1/uz_JL_invModel_PT1.h"
+#include "IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+#include "include/javascope.h"
+#include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel_hwAdresse.h"
 
-extern Bus_PMSM_Config struct_PMSM_Config;
 
+uz_JL_invModel_PT1_t *inverter_PT1=NULL;
+uz_JL_invModel_ideal_t *inverter_ideal = NULL;
+uz_JL_pmsmModel_t *pmsm_PT1 = NULL;
+uz_JL_pmsmModel_t *pmsm_ideal = NULL;
+
+extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
+extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
+//struct uz_JL_invModel_ideal_config_t ideal_config ={
+//		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_IDEAL_0_BASEADDR,
+//		.ip_core_frequency_Hz = 100000000.0f,
+//		.Udc = 540.0f
+//};
+
+struct uz_JL_invModel_PT1_config_t PT1_config ={
+		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_PT1_0_BASEADDR,
+		.ip_core_frequency_Hz = 100000000.0f,
+		.gain = 1,
+		.time_constant = 1/(0.5f*1/10000)
+};
+
+struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
+		.base_address = XPAR_UZ_USER_UZ_JL_PMSMMODEL_0_BASEADDR,
+		.ip_core_frequency_Hz = 100000000.0f,
+		.mot_J = 0.000875f,
+		.mot_p = 4.0f,
+		.r_1 = 1.8f,
+		.L_d = 0.0072f,
+		.L_q = 0.0072f,
+		.psi_pm = 0.1423f,
+};
+
+//struct uz_JL_pmsmModel_config_t pmsm_ideal_config = {
+//		.base_address = XPAR_UZ_USER_UZ_JL_PMSMMODEL_1_BASEADDR,
+//		.ip_core_frequency_Hz = 100000000.0f,
+//		.mot_J = 0.000875f,
+//		.mot_p = 4.0f,
+//		.r_1 = 1.8f,
+//		.L_d = 0.0072f,
+//		.L_q = 0.0072f,
+//		.psi_pm = 0.1423f,
+//};
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -54,46 +99,24 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-#include "APU_RPU_shared.h"
-#include "xil_cache.h"
+
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
 uz_codegen regelung;
 
-uz_inverter_3ph_t *inverter=NULL;
-struct uz_inverter_3ph_config_t inverter_config = {   // example config values
-  .base_address=XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
-  .ip_core_frequency_Hz = 100000000.0f,
-  .switch_pspl_abc = true,
-  .switch_pspl_gate = false,
-  .udc = 678.f
-};
+
 
 //uz_pmsmModel_t *pmsm=NULL;
 
 int main(void)
 {
 
-//	struct uz_pmsmModel_config_t pmsm_config={
-//	  .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
-//	  .ip_core_frequency_Hz=100000000,
-//	    .simulate_mechanical_system = true,
-//	    .r_1 = struct_PMSM_Config.mot_R1,
-//	    .L_d = struct_PMSM_Config.mot_Ld,
-//	    .L_q = struct_PMSM_Config.mot_Lq,
-//	    .psi_pm = struct_PMSM_Config.mot_psi_pm,
-//	    .polepairs = struct_PMSM_Config.mot_p,
-//	    .inertia = struct_PMSM_Config.mot_J,
-//	    .coulomb_friction_constant = 0.01f,
-//	    .friction_coefficient = 0.001f,
-//	    .simulate_nonlinear = false
-//	};
-
 	int status = UZ_SUCCESS;
     while (1)
     {
+
         switch (initialization_chain)
         {
         case init_assertions:
@@ -131,21 +154,15 @@ int main(void)
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-//            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-//            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
-//            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-//            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
-//            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
-//            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
-//            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
-//            Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
-//            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-//            PWM_3L_Initialize(&Global_Data); // three-level modulator
-//            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            inverter = uz_inverter_3ph_init(inverter_config);
-//            pmsm=uz_pmsmModel_init(pmsm_config);
+//            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
+            inverter_PT1 = uz_JL_invModel_PT1_init(PT1_config);
+            pmsm_PT1 = uz_JL_pmsmModel_init(pmsm_pt1_config);
+            uz_JL_pmsmModel_set_inputs(pmsm_PT1, pmsm_pt1_in);
+//			uz_JL_pmsmModel_trigger_input_strobe(pmsm_PT1);
+            uz_axi_write_bool(XPAR_UZ_USER_UZ_JL_PMSMMODEL_0_BASEADDR + IPCore_Enable_uz_JL_pmsmModel, true);
+//            pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

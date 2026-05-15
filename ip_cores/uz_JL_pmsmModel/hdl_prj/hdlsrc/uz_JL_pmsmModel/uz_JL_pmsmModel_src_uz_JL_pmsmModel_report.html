@@ -48,28 +48,21 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_JL_pmsmModel/uz_JL_pmsmModel'
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'open_system(\'uz_JL_pmsmModel/uz_JL_pmsmModel\');'})" >open model 'uz_JL_pmsmModel/uz_JL_pmsmModel'</a><BR>
-Generated on 2026-05-04 17:47:48</h1>
-<H2>HDL check for 'uz_JL_pmsmModel' complete with 0 errors, 2 warnings, and 4 messages.</H2><BR>
+Generated on 2026-05-15 13:51:32</h1>
+<H2>HDL check for 'uz_JL_pmsmModel' complete with 0 errors, 1 warnings, and 4 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE style="border: 2px solid; border-collapse: collapse;">
 <TR><TD style="border: 2px solid; border-collapse: collapse;"> <B>Simulink Blocks and resources</B> </TD><TD style="border: 2px solid; border-collapse: collapse;"> <B>Level</B> </TD><TD style="border: 2px solid; border-collapse: collapse;"> <B>Description</B> </TD></TR><TR><TD style="border: 2px solid; border-collapse: collapse;">
-<a alt="HDLShared:hdlshared:cpespeednotcharacterized" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]),\'object\'),\'none\');open_system(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]))'})" >uz_JL_pmsmModel</a>
-</TD>
-<TD style="border: 2px solid; border-collapse: collapse">Warning</TD>
-<TD style="border: 2px solid; border-collapse: collapse">SynthesisToolSpeedValue -1L not characterized for Family zynq_ultrascale+. Using default value, SynthesisToolSpeedValue=-1, for Critical Path Estimation. Consider characterizing this device configuration using 'genhdltdb'. <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'helpview(fullfile(docroot, \'hdlcoder\', \'helptargets.map\'),\'genhdltdb\')'})" >More information</a>.</TD>
-</TR>
-<TR><TD style="border: 2px solid; border-collapse: collapse;">
 <a alt="HDLShared:hdlshared:cpeignoresmultirate" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]),\'object\'),\'none\');open_system(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]))'})" >uz_JL_pmsmModel</a>
 </TD>
 <TD style="border: 2px solid; border-collapse: collapse">Warning</TD>
 <TD style="border: 2px solid; border-collapse: collapse">The model contains multiple rates, which are either explicitly designed or introduced by optimizations. Critical Path Estimation does not account for multiple rates in the reported timing estimates.</TD>
 </TR>
 <TR><TD style="border: 2px solid; border-collapse: collapse;">
-<a alt="hdlcoder:validate:nonvirtualBus" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]),\'object\'),\'none\');hilite_system(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108 47 117 122 95 74 76 95 112 109 115 109 77 111 100 101 108 47 66 117 115 10 67 114 101 97 116 111 114]))'})" >uz_JL_pmsmModel/uz_JL_pmsmModel/Bus
-Creator</a>
+<a alt="hdlcoder:optimization:CRPInFeedbackUnderbudget" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]),\'object\'),\'none\');hilite_system(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108 47 117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]))'})" >uz_JL_pmsmModel/uz_JL_pmsmModel</a>
 </TD>
 <TD style="border: 2px solid; border-collapse: collapse">Message</TD>
-<TD style="border: 2px solid; border-collapse: collapse">The non-virtual bus setting is ignored for HDL code generation. The bus will be implemented as a set of independent elements.</TD>
+<TD style="border: 2px solid; border-collapse: collapse">Clock-rate pipelining identified at least one feedback loop which does not utilize the full latency budget. Oversampling factor is set to '100', but the minimum oversampling factor needed for the design is '81'. To reduce unnecessary clock cycles, either <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'configset.internal.open(\'uz_JL_pmsmModel/uz_JL_pmsmModel\',\'Oversampling\')'})" >lower the oversampling factor</a> to reduce the latency budget or add optimizations that increase latency like pipelining and serialization in your design to use the full latency budget.</TD>
 </TR>
 <TR><TD style="border: 2px solid; border-collapse: collapse;">
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'run(\'C:\\Users\\jonat\\Documents\\MA_JL_CIL\\ip_cores\\uz_JL_pmsmModel\\hdl_prj\\hdlsrc\\uz_JL_pmsmModel\\criticalPathEstimated\')'})" >C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\hdlsrc\uz_JL_pmsmModel\criticalPathEstimated.m</a>
@@ -87,7 +80,7 @@ Creator</a>
 <a alt="hdlcoder:hdldisp:OversampleMessage" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]),\'object\'),\'none\');open_system(char([117 122 95 74 76 95 112 109 115 109 77 111 100 101 108]))'})" >uz_JL_pmsmModel</a>
 </TD>
 <TD style="border: 2px solid; border-collapse: collapse">Message</TD>
-<TD style="border: 2px solid; border-collapse: collapse">MESSAGE: The design requires 81 times faster clock with respect to the base rate = 2e-06.</TD>
+<TD style="border: 2px solid; border-collapse: collapse">MESSAGE: The design requires 100 times faster clock with respect to the base rate = 2e-06.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>

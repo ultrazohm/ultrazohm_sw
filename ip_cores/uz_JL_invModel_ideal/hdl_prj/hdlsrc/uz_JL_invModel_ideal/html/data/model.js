@@ -1,0 +1,1 @@
+var modelInfo = {model:"uz_JL_invModel_ideal"};var modelHierarchy=[{model:"uz_JL_invModel_ideal",relativePath:"_internal.html",parent:"null"},];var AddCode = true;

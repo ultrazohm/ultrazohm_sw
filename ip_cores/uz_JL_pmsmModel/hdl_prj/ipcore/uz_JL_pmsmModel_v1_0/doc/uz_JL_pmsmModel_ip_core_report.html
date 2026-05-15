@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.50
+<td class="summaryTableSndColOddRow">1.66
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">04-May-2026 17:47:53
+<td class="summaryTableSndColOddRow">15-May-2026 13:51:37
 </td>
 </tr>
 <tr>
@@ -154,11 +154,11 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:283')">Uuvw</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:323')">mot_U</a>
 </td>
 <td>Inport
 </td>
-<td>single (3)
+<td>single
 </td>
 <td>External Port
 </td>
@@ -168,7 +168,35 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:284')">Bremse</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:324')">mot_V</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:325')">mot_W</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:298')">Bremse</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -176,13 +204,13 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4
 </td>
-<td class="distinctCellColor">x"14C"
+<td class="distinctCellColor">x"100"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:285')">Last_M</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:299')">Last_M</a>
 </td>
 <td>Inport
 </td>
@@ -190,13 +218,13 @@ Target platform interface table:
 </td>
 <td>AXI4
 </td>
-<td>x"148"
+<td>x"104"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:286')">Last_J</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:300')">Last_J</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -204,29 +232,57 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4
 </td>
-<td class="distinctCellColor">x"144"
+<td class="distinctCellColor">x"108"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:282')">PMSM_config</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:301')">Ud</a>
 </td>
 <td>Inport
 </td>
-<td>bus
+<td>single
 </td>
 <td>AXI4
 </td>
-<td>
+<td>x"110"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">> PMSM_config.mot_R1
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:302')">switchUabc_dq</a>
 </td>
-<td class="distinctCellColor">Bus element
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"10C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:303')">r1</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"11C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:304')">psi_pm</a>
+</td>
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
@@ -238,9 +294,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td>> PMSM_config.mot_psi_pm
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:305')">Ld</a>
 </td>
-<td>Bus element
+<td>Inport
 </td>
 <td>single
 </td>
@@ -252,9 +308,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">> PMSM_config.mot_Ld
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:306')">Lq</a>
 </td>
-<td class="distinctCellColor">Bus element
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
@@ -266,9 +322,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td>> PMSM_config.mot_Lq
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:307')">polpaare</a>
 </td>
-<td>Bus element
+<td>Inport
 </td>
 <td>single
 </td>
@@ -280,9 +336,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">> PMSM_config.mot_p
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:308')">mot_J</a>
 </td>
-<td class="distinctCellColor">Bus element
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
@@ -294,93 +350,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td>> PMSM_config.mot_J
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:335')">Uq</a>
 </td>
-<td>Bus element
-</td>
-<td>single
-</td>
-<td>AXI4
-</td>
-<td>x"134"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">> PMSM_config.mot_n_N
-</td>
-<td class="distinctCellColor">Bus element
-</td>
-<td class="distinctCellColor">single
-</td>
-<td class="distinctCellColor">AXI4
-</td>
-<td class="distinctCellColor">x"138"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td>> PMSM_config.mot_M_N
-</td>
-<td>Bus element
-</td>
-<td>single
-</td>
-<td>AXI4
-</td>
-<td>x"13C"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">> PMSM_config.mot_I_max
-</td>
-<td class="distinctCellColor">Bus element
-</td>
-<td class="distinctCellColor">single
-</td>
-<td class="distinctCellColor">AXI4
-</td>
-<td class="distinctCellColor">x"140"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:280')">PMSM_Out</a>
-</td>
-<td>Outport
-</td>
-<td>bus
-</td>
-<td>AXI4
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">> PMSM_Out.pmsm_Iuvw
-</td>
-<td class="distinctCellColor">Bus element
-</td>
-<td class="distinctCellColor">single (3)
-</td>
-<td class="distinctCellColor">AXI4
-</td>
-<td class="distinctCellColor">x"100"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td>> PMSM_Out.pmsm_Omega_mech
-</td>
-<td>Bus element
+<td>Inport
 </td>
 <td>single
 </td>
@@ -392,9 +364,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">> PMSM_Out.pmsm_phi_mech
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:336')">rec_mot_Ld</a>
 </td>
-<td class="distinctCellColor">Bus element
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
@@ -406,15 +378,99 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td>> PMSM_Out.pmsm_m_mot
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:337')">rec_mot_Lq</a>
 </td>
-<td>Bus element
+<td>Inport
 </td>
 <td>single
 </td>
 <td>AXI4
 </td>
-<td>x"11C"
+<td>x"140"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:310')">omega_mech</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"134"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:311')">phi_mech</a>
+</td>
+<td>Outport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"138"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:312')">pmsm_M_Mot</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"13C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:329')">pmsm_Iu</a>
+</td>
+<td>Outport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"144"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:330')">pmsm_Iv</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"148"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_JL_pmsmModel:331')">pmsm_Iw</a>
+</td>
+<td>Outport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"14C"
 </td>
 <td>
 </td>
@@ -459,143 +515,167 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2605041742: 2605041747
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">Last_J_Data
-</td>
-<td class="distinctCellColor">0x144
-</td>
-<td class="distinctCellColor">data register for Inport Last_J
-</td>
-</tr>
-<tr>
-<td>Last_M_Data
-</td>
-<td>0x148
-</td>
-<td>data register for Inport Last_M
+<td>contains unique IP timestamp (yymmddHHMM): 2605151340: 2605151351
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">Bremse_Data
 </td>
-<td class="distinctCellColor">0x14C
+<td class="distinctCellColor">0x100
 </td>
 <td class="distinctCellColor">data register for Inport Bremse
 </td>
 </tr>
 <tr>
-<td>PMSM_Out_pmsm_Iuvw_Data
+<td>Last_M_Data
 </td>
-<td>0x100
+<td>0x104
 </td>
-<td>data register for Outport PMSM_Out_pmsm_Iuvw. Vector with 3 elements. Register is split across a total of 3 addresses, last address is 0x108.
+<td>data register for Inport Last_M
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_Out_pmsm_Iuvw_Strobe
+<td class="distinctCellColor">Last_J_Data
+</td>
+<td class="distinctCellColor">0x108
+</td>
+<td class="distinctCellColor">data register for Inport Last_J
+</td>
+</tr>
+<tr>
+<td>switchUabc_dq_Data
+</td>
+<td>0x10C
+</td>
+<td>data register for Inport switchUabc_dq
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Ud_Data
 </td>
 <td class="distinctCellColor">0x110
 </td>
-<td class="distinctCellColor">strobe register for port PMSM_Out_pmsm_Iuvw
+<td class="distinctCellColor">data register for Inport Ud
 </td>
 </tr>
 <tr>
-<td>PMSM_Out_pmsm_Omega_mech_Data
+<td>Uq_Data
 </td>
 <td>0x114
 </td>
-<td>data register for Outport PMSM_Out_pmsm_Omega_mech
+<td>data register for Inport Uq
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_Out_pmsm_phi_mech_Data
+<td class="distinctCellColor">rec_mot_Ld_Data
 </td>
 <td class="distinctCellColor">0x118
 </td>
-<td class="distinctCellColor">data register for Outport PMSM_Out_pmsm_phi_mech
+<td class="distinctCellColor">data register for Inport rec_mot_Ld
 </td>
 </tr>
 <tr>
-<td>PMSM_Out_pmsm_m_mot_Data
+<td>r1_Data
 </td>
 <td>0x11C
 </td>
-<td>data register for Outport PMSM_Out_pmsm_m_mot
+<td>data register for Inport r1
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_config_mot_R1_Data
+<td class="distinctCellColor">psi_pm_Data
 </td>
 <td class="distinctCellColor">0x120
 </td>
-<td class="distinctCellColor">data register for Inport PMSM_config_mot_R1
+<td class="distinctCellColor">data register for Inport psi_pm
 </td>
 </tr>
 <tr>
-<td>PMSM_config_mot_psi_pm_Data
+<td>Ld_Data
 </td>
 <td>0x124
 </td>
-<td>data register for Inport PMSM_config_mot_psi_pm
+<td>data register for Inport Ld
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_config_mot_Ld_Data
+<td class="distinctCellColor">Lq_Data
 </td>
 <td class="distinctCellColor">0x128
 </td>
-<td class="distinctCellColor">data register for Inport PMSM_config_mot_Ld
+<td class="distinctCellColor">data register for Inport Lq
 </td>
 </tr>
 <tr>
-<td>PMSM_config_mot_Lq_Data
+<td>polpaare_Data
 </td>
 <td>0x12C
 </td>
-<td>data register for Inport PMSM_config_mot_Lq
+<td>data register for Inport polpaare
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_config_mot_p_Data
+<td class="distinctCellColor">mot_J_Data
 </td>
 <td class="distinctCellColor">0x130
 </td>
-<td class="distinctCellColor">data register for Inport PMSM_config_mot_p
+<td class="distinctCellColor">data register for Inport mot_J
 </td>
 </tr>
 <tr>
-<td>PMSM_config_mot_J_Data
+<td>omega_mech_Data
 </td>
 <td>0x134
 </td>
-<td>data register for Inport PMSM_config_mot_J
+<td>data register for Outport omega_mech
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_config_mot_n_N_Data
+<td class="distinctCellColor">phi_mech_Data
 </td>
 <td class="distinctCellColor">0x138
 </td>
-<td class="distinctCellColor">data register for Inport PMSM_config_mot_n_N
+<td class="distinctCellColor">data register for Outport phi_mech
 </td>
 </tr>
 <tr>
-<td>PMSM_config_mot_M_N_Data
+<td>pmsm_M_Mot_Data
 </td>
 <td>0x13C
 </td>
-<td>data register for Inport PMSM_config_mot_M_N
+<td>data register for Outport pmsm_M_Mot
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">PMSM_config_mot_I_max_Data
+<td class="distinctCellColor">rec_mot_Lq_Data
 </td>
 <td class="distinctCellColor">0x140
 </td>
-<td class="distinctCellColor">data register for Inport PMSM_config_mot_I_max
+<td class="distinctCellColor">data register for Inport rec_mot_Lq
+</td>
+</tr>
+<tr>
+<td>pmsm_Iu_Data
+</td>
+<td>0x144
+</td>
+<td>data register for Outport pmsm_Iu
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">pmsm_Iv_Data
+</td>
+<td class="distinctCellColor">0x148
+</td>
+<td class="distinctCellColor">data register for Outport pmsm_Iv
+</td>
+</tr>
+<tr>
+<td>pmsm_Iw_Data
+</td>
+<td>0x14C
+</td>
+<td>data register for Outport pmsm_Iw
 </td>
 </tr>
 </tbody>
@@ -608,22 +688,6 @@ The register address mapping is also in the following C header file for you to u
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\include\uz_JL_pmsmModel_addr.h')">include\uz_JL_pmsmModel_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
-</div>
-<div>
-<h3 class="sectionHeading">Bit Packing Order</h3>
-Following is the general representation of data packing order and data unpacking order for Vector Input and output cases for Internal IO, External IO and External port interfaces.
-If it is assumed that an interface is mapped to one input(or output) port of the model which has a port width of 128 and port dimension of 4, then:
-<br/><br/>
- Following is the bit packing order to the DUT IP for Input vector case.
-<br/><br/>
-<img src="InBitPacking.jpg"/>
-<br/><br/>
-<br/>
- Following is the bit unpacking order from the DUT IP for Vector Output case.
-<br/><br/>
-<img src="OutBitPacking.jpg"/>
-<br/><br/>
-It should be noted that the above instances are just for demonstration purpose and may not represent the actual mapped port width and port dimension. 
 </div>
 <div>
 <h3 class="sectionHeading">IP Core User Guide</h3>
@@ -737,8 +801,6 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_dq_abc.vhd')">hdl\uz_JL_pmsmModel_src_dq_abc.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_nfp_recip_single.vhd')">hdl\uz_JL_pmsmModel_src_nfp_recip_single.vhd</a>
-<br/>
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_Subsystem2.vhd')">hdl\uz_JL_pmsmModel_src_Subsystem2.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_Psi.vhd')">hdl\uz_JL_pmsmModel_src_Psi.vhd</a>
@@ -748,8 +810,6 @@ Following files are generated under this folder:
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_nfp_signum_single.vhd')">hdl\uz_JL_pmsmModel_src_nfp_signum_single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_nfp_relop_single.vhd')">hdl\uz_JL_pmsmModel_src_nfp_relop_single.vhd</a>
-<br/>
-<a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_nfp_convert_double2single.vhd')">hdl\uz_JL_pmsmModel_src_nfp_convert_double2single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_pmsmModel\hdl_prj\ipcore\uz_JL_pmsmModel_v1_0\hdl\uz_JL_pmsmModel_src_nfp_abs_single.vhd')">hdl\uz_JL_pmsmModel_src_nfp_abs_single.vhd</a>
 <br/>

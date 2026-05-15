@@ -1,0 +1,9 @@
+ --> uz_JL_InvModel_PT1_src_HDL_DUT_pkg
+HDL_DUT_tc --> uz_JL_InvModel_PT1_src_HDL_DUT_tc
+uz_JL_invModel_PT1/HDL_DUT/nfp_gain_pow2_double --> uz_JL_InvModel_PT1_src_nfp_gain_pow2_double
+uz_JL_invModel_PT1/HDL_DUT/nfp_convert_single2double --> uz_JL_InvModel_PT1_src_nfp_convert_single2double
+uz_JL_invModel_PT1/HDL_DUT/nfp_sub_double --> uz_JL_InvModel_PT1_src_nfp_sub_double
+uz_JL_invModel_PT1/HDL_DUT/nfp_add_double --> uz_JL_InvModel_PT1_src_nfp_add_double
+uz_JL_invModel_PT1/HDL_DUT/nfp_mul_double --> uz_JL_InvModel_PT1_src_nfp_mul_double
+uz_JL_invModel_PT1/HDL_DUT/nfp_convert_double2single --> uz_JL_InvModel_PT1_src_nfp_convert_double2single
+uz_JL_invModel_PT1/HDL_DUT --> uz_JL_InvModel_PT1_src_HDL_DUT

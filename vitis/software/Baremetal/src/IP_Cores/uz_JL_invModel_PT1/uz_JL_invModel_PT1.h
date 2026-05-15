@@ -24,6 +24,17 @@ struct  uz_JL_invModel_PT1_config_t
 };
 
 /**
+ * @brief Outoput struct of the inverter model PT1 IP-Core
+ * 
+ */
+struct uz_JL_invModel_PT1_output_t
+{
+    float Ua;
+    float Ub;
+    float Uc;
+};
+
+/**
  * @brief Initialize an instance of the driver
  * 
  * @param config Configuration struct
@@ -62,6 +73,18 @@ void uz_JL_invModel_PT1_set_gain(uz_JL_invModel_PT1_t *self, float gain);
  */
 void uz_JL_invModel_PT1_set_time_constant(uz_JL_invModel_PT1_t *self, float time_constant);
 
+
+/**
+ * @brief Read the output voltages of the inverter model PT1
+ * 
+ */
+struct uz_JL_invModel_PT1_output_t uz_JL_invModel_PT1_get_outputs(uz_JL_invModel_PT1_t *self);
+
+/**
+ * @brief Trigger Output update of the inverter model PT1
+ * 
+ */
+void uz_JL_invModel_PT1_trigger_output_strobe(uz_JL_invModel_PT1_t *self);
 
 
 #endif // UZ_JL_INVMODEL_PT1_H

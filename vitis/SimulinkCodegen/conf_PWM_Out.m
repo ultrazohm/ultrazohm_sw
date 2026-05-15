@@ -2,12 +2,12 @@
 clear elems;
 elems(1) = Simulink.BusElement;
 elems(1).Name = 'PWM_H_safe';
-elems(1).DataType = 'single';
+elems(1).DataType = 'boolean';
 elems(1).Dimensions = '3';
 
 elems(2) = Simulink.BusElement;
 elems(2).Name = 'PWM_L_safe';
-elems(2).DataType = 'single';
+elems(2).DataType = 'boolean';
 elems(2).Dimensions = '3';
 
 Bus_PWM_Out = Simulink.Bus;

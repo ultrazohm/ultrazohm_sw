@@ -7,23 +7,22 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.2
+ * Model version                  : 10.5
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed Apr 29 15:06:47 2026
+ * C/C++ source code generated on : Thu May 14 14:56:45 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: All passed
  */
 
 #include "uz_codegen0.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <math.h>
-#include <string.h>
 
 /* Named constants for Chart: '<S4>/state_chart' */
 #define IN_Error                       ((uint8_t)1U)
@@ -31,7 +30,7 @@
 #define IN_NoError                     ((uint8_t)2U)
 #define IN_Ready                       ((uint8_t)1U)
 #define IN_Run                         ((uint8_t)2U)
-#define IN_Run_n                       ((uint8_t)1U)
+#define IN_Run_c                       ((uint8_t)1U)
 #define IN_Stromregelung               ((uint8_t)1U)
 #define IN_Trapez                      ((uint8_t)2U)
 #define IN_Warten                      ((uint8_t)2U)
@@ -70,18 +69,18 @@ Bus_Ctrl_Config struct_Ctrl_Config = {
                                         *   '<S5>/Switch3'
                                         *   '<S5>/Switch4'
                                         *   '<S9>/Constant3'
-                                        *   '<S11>/Constant1'
-                                        *   '<S11>/Constant2'
                                         *   '<S12>/Constant1'
                                         *   '<S13>/Constant'
                                         *   '<S13>/Constant3'
-                                        *   '<S14>/Constant3'
-                                        *   '<S16>/Constant'
+                                        *   '<S14>/Constant1'
+                                        *   '<S14>/Constant2'
+                                        *   '<S15>/Constant3'
                                         *   '<S17>/Constant'
-                                        *   '<S30>/Constant'
-                                        *   '<S30>/Constant3'
-                                        *   '<S31>/Constant'
-                                        *   '<S31>/Constant3'
+                                        *   '<S18>/Constant'
+                                        *   '<S32>/Constant'
+                                        *   '<S32>/Constant3'
+                                        *   '<S33>/Constant'
+                                        *   '<S33>/Constant3'
                                         */
 
 Bus_PMSM_Config struct_PMSM_Config = {
@@ -98,11 +97,11 @@ Bus_PMSM_Config struct_PMSM_Config = {
                                         * Referenced by:
                                         *   '<S9>/Constant2'
                                         *   '<S11>/Constant'
-                                        *   '<S24>/Constant'
-                                        *   '<S26>/Gain'
-                                        *   '<S28>/Constant'
-                                        *   '<S29>/Constant'
-                                        *   '<S29>/Constant1'
+                                        *   '<S26>/Constant'
+                                        *   '<S28>/Gain'
+                                        *   '<S30>/Constant'
+                                        *   '<S31>/Constant'
+                                        *   '<S31>/Constant1'
                                         */
 
 Bus_ZM_In struct_ZM_In = {
@@ -116,7 +115,7 @@ Bus_ZM_In struct_ZM_In = {
 } ;                                    /* Variable: struct_ZM_In
                                         * Referenced by:
                                         *   '<S12>/Saturation'
-                                        *   '<S19>/Unit Delay2'
+                                        *   '<S20>/Unit Delay2'
                                         */
 
 Bus_Inv_Config struct_Inv_Config = {
@@ -128,7 +127,7 @@ Bus_Inv_Config struct_Inv_Config = {
 } ;                                    /* Variable: struct_Inv_Config
                                         * Referenced by:
                                         *   '<S2>/Constant'
-                                        *   '<S23>/Constant2'
+                                        *   '<S25>/Constant2'
                                         */
 
 static void MinimaleSchaltzeit(const float rtu_Dutycycle[3], float rty_Out1[3]);
@@ -138,15 +137,15 @@ static void raumzeigermodulation(float rtu_Ualpha, float rtu_Ubeta, float
 static void Raumzeigermodulation(float rtu_Ualpha, float rtu_Ubeta, float
   rty_Dutycycle_A[3]);
 static float Drehzahlregelung(float rtu_Soll_Drehzahl, float rtu_omega, const
-  Bus_PMSM_In *rtu_PMSM_In_Inport_3, DW_Drehzahlregelung_b *localDW);
+  Bus_PMSM_In *rtu_PMSM_In_Inport_3, DW_Drehzahlregelung_f *localDW);
 static void Trajektorie_Erzeugung_Init(DW_Trajektorie_Erzeugung *localDW);
 static void Trajektorie_Erzeugung_Reset(DW_Trajektorie_Erzeugung *localDW);
 static void Trajektorie_Erzeugung_Disable(DW_Trajektorie_Erzeugung *localDW);
 static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
   float *rty_Soll_Drehzahl, bool rty_Dis[2], DW_Trajektorie_Erzeugung *localDW);
-static void Drehzahlregelung_f_Init(DW_Drehzahlregelung *localDW);
+static void Drehzahlregelung_o_Init(DW_Drehzahlregelung *localDW);
 static void Drehzahlregelung_Disable(DW_Drehzahlregelung *localDW);
-static void Drehzahlregelung_g(bool rtu_Enable, float rtu_omega, const
+static void Drehzahlregelung_h(bool rtu_Enable, float rtu_omega, const
   Bus_PMSM_In *rtu_PMSM_In_Inport_2, const Bus_ZM_Out *rtu_Bus_ZM_Out_Inport_3,
   bool rty_Dis[2], float *rty_Soll_Moment, DW_Drehzahlregelung *localDW);
 static void IDQCtrl(float rtu_ID, float rtu_IQ, float rtu_IDRef, float rtu_IQRef,
@@ -167,20 +166,13 @@ static void Regelung(bool rtu_Enable, const Bus_PMSM_Out
                      *rtu_PMSM_In_Inport_2, const Bus_ZM_Out
                      *rtu_Bus_ZM_Out_Inport_3, float *rty_Ualpha, float
                      *rty_Ubeta, bool rty_Dis[2], DW_Regelung *localDW);
-static void state_chart_Init(Bus_ZM_Out *rty_Bus_ZM_Out, DW_state_chart *localDW);
+static void state_chart_Init(Bus_ZM_Out *rty_Bus_ZM_Out);
 static void state_chart(const Bus_ZM_In *rtu_Bus_ZM_In, bool rtu_Dis, Bus_ZM_Out
   *rty_Bus_ZM_Out, DW_state_chart *localDW);
-static void Zustandsmaschine_Init(Bus_ZM_Out *rty_Bus_ZM_Out_Outport_1,
-  DW_Zustandsmaschine *localDW);
+static void Zustandsmaschine_Init(Bus_ZM_Out *rty_Bus_ZM_Out_Outport_1);
 static void Zustandsmaschine(const Bus_ZM_In *rtu_Bus_ZM_In_Inport_1, bool
   rtu_ZM_In_Dis_Traj, Bus_ZM_Out *rty_Bus_ZM_Out_Outport_1, DW_Zustandsmaschine *
   localDW);
-const Bus_Ctrl_Out uz_codegen0_rtZBus_Ctrl_Out = { { 0.0F, 0.0F, 0.0F },/* Dutycycle */
-  false,                               /* act_pwm */
-  0.0F,                                /* ctrl_Ualpha */
-  0.0F                                 /* ctrl_Ubeta */
-};
-
 const Bus_ZM_In uz_codegen0_rtZBus_ZM_In = { 0.0F,/* Soll_Drehzahl */
   0.0F,                                /* Soll_id */
   0.0F,                                /* Soll_iq */
@@ -522,96 +514,98 @@ static void Raumzeigermodulation(float rtu_Ualpha, float rtu_Ubeta, float
 
 /* Output and update for atomic system: '<S8>/Drehzahlregelung' */
 static float Drehzahlregelung(float rtu_Soll_Drehzahl, float rtu_omega, const
-  Bus_PMSM_In *rtu_PMSM_In_Inport_3, DW_Drehzahlregelung_b *localDW)
+  Bus_PMSM_In *rtu_PMSM_In_Inport_3, DW_Drehzahlregelung_f *localDW)
 {
   float rty_M_Soll_0;
-  float rtb_Add1_f;
-  float rtb_Product_e;
-  float rtb_Product_m_tmp;
-  float rtb_Switch2_j;
+  float rtb_Add1_b;
+  float rtb_Product_a_tmp;
+  float rtb_Product_j;
+  float rtb_Switch2;
 
   /* Sum: '<S13>/Subtract' incorporates:
    *  Gain: '<S11>/Gain'
-   *  Sum: '<S11>/Subtract'
-   *  UnitDelay: '<S14>/Unit Delay'
+   *  Sum: '<S11>/ctrl_n_diff'
+   *  UnitDelay: '<S15>/Unit Delay'
    */
-  rtb_Product_m_tmp = localDW->UnitDelay_DSTATE - GAIN_RADS_TO_HZ * rtu_omega;
+  rtb_Product_a_tmp = localDW->UnitDelay_DSTATE - GAIN_RADS_TO_HZ * rtu_omega;
 
   /* Product: '<S13>/Product' incorporates:
    *  Constant: '<S13>/Constant'
    *  Sum: '<S13>/Subtract'
    */
-  rtb_Product_e = rtb_Product_m_tmp * struct_Ctrl_Config.KPn;
+  rtb_Product_j = rtb_Product_a_tmp * struct_Ctrl_Config.KPn;
 
   /* Sum: '<S13>/Add1' incorporates:
    *  UnitDelay: '<S13>/Unit Delay'
    */
-  rtb_Add1_f = rtb_Product_e + localDW->UnitDelay_DSTATE_k;
+  rtb_Add1_b = rtb_Product_j + localDW->UnitDelay_DSTATE_j;
 
-  /* Switch: '<S15>/Switch2' incorporates:
+  /* Switch: '<S16>/Switch2' incorporates:
    *  Constant: '<S11>/Constant'
    *  Gain: '<S11>/Gain1'
-   *  RelationalOperator: '<S15>/LowerRelop1'
-   *  RelationalOperator: '<S15>/UpperRelop'
-   *  Switch: '<S15>/Switch'
+   *  RelationalOperator: '<S16>/LowerRelop1'
+   *  RelationalOperator: '<S16>/UpperRelop'
+   *  Switch: '<S16>/Switch'
    */
-  if (rtb_Add1_f > struct_PMSM_Config.mot_M_N) {
-    rtb_Switch2_j = struct_PMSM_Config.mot_M_N;
-  } else if (rtb_Add1_f < -struct_PMSM_Config.mot_M_N) {
-    /* Switch: '<S15>/Switch' incorporates:
+  if (rtb_Add1_b > struct_PMSM_Config.mot_M_N) {
+    rtb_Switch2 = struct_PMSM_Config.mot_M_N;
+  } else if (rtb_Add1_b < -struct_PMSM_Config.mot_M_N) {
+    /* Switch: '<S16>/Switch' incorporates:
      *  Gain: '<S11>/Gain1'
      */
-    rtb_Switch2_j = -struct_PMSM_Config.mot_M_N;
+    rtb_Switch2 = -struct_PMSM_Config.mot_M_N;
   } else {
-    rtb_Switch2_j = rtb_Add1_f;
+    rtb_Switch2 = rtb_Add1_b;
   }
 
-  /* End of Switch: '<S15>/Switch2' */
+  /* End of Switch: '<S16>/Switch2' */
 
-  /* Switch: '<S11>/Abschalten, wenn n_diff < 1.01% nN2' incorporates:
-   *  Constant: '<S11>/Constant1'
-   *  Constant: '<S11>/Constant2'
-   *  Logic: '<S11>/AND'
-   *  Logic: '<S11>/NOT'
-   *  RelationalOperator: '<S11>/Relational Operator'
-   *  RelationalOperator: '<S11>/Relational Operator1'
+  /* Outputs for Atomic SubSystem: '<S11>/n_Ctrl_hysterese' */
+  /* Switch: '<S14>/Abschalten, wenn n_diff < 1.01% nN2' incorporates:
+   *  Constant: '<S14>/Constant1'
+   *  Constant: '<S14>/Constant2'
+   *  Logic: '<S14>/AND'
+   *  Logic: '<S14>/NOT'
+   *  RelationalOperator: '<S14>/Relational Operator'
+   *  RelationalOperator: '<S14>/Relational Operator1'
    */
-  if ((rtb_Product_m_tmp > struct_Ctrl_Config.n_hyst_upperlimit) ||
-      (rtb_Product_m_tmp < struct_Ctrl_Config.n_hyst_lowerlimit)) {
-    /* Switch: '<S11>/Abschalten, wenn n_diff < 1.01% nN1' incorporates:
-     *  RelationalOperator: '<S11>/Relational Operator2'
-     *  Sum: '<S11>/Subtract1'
-     *  Sum: '<S11>/Subtract2'
+  if ((rtb_Product_a_tmp > struct_Ctrl_Config.n_hyst_upperlimit) ||
+      (rtb_Product_a_tmp < struct_Ctrl_Config.n_hyst_lowerlimit)) {
+    /* Switch: '<S14>/Abschalten, wenn n_diff < 1.01% nN1' incorporates:
+     *  RelationalOperator: '<S14>/Relational Operator2'
+     *  Sum: '<S14>/Subtract1'
+     *  Sum: '<S14>/Subtract2'
      */
-    if (rtb_Product_m_tmp > struct_Ctrl_Config.n_hyst_upperlimit) {
-      rty_M_Soll_0 = rtb_Switch2_j - struct_Ctrl_Config.n_hyst_upperlimit;
+    if (rtb_Product_a_tmp > struct_Ctrl_Config.n_hyst_upperlimit) {
+      rty_M_Soll_0 = rtb_Switch2 - struct_Ctrl_Config.n_hyst_upperlimit;
     } else {
-      rty_M_Soll_0 = rtb_Switch2_j - struct_Ctrl_Config.n_hyst_lowerlimit;
+      rty_M_Soll_0 = rtb_Switch2 - struct_Ctrl_Config.n_hyst_lowerlimit;
     }
 
-    /* End of Switch: '<S11>/Abschalten, wenn n_diff < 1.01% nN1' */
+    /* End of Switch: '<S14>/Abschalten, wenn n_diff < 1.01% nN1' */
   } else {
-    /* Switch: '<S11>/Abschalten, wenn n_diff < 1.01% nN' */
+    /* Switch: '<S14>/Abschalten, wenn n_diff < 1.01% nN' */
     rty_M_Soll_0 = rtu_PMSM_In_Inport_3->Last_M;
   }
 
-  /* End of Switch: '<S11>/Abschalten, wenn n_diff < 1.01% nN2' */
+  /* End of Switch: '<S14>/Abschalten, wenn n_diff < 1.01% nN2' */
+  /* End of Outputs for SubSystem: '<S11>/n_Ctrl_hysterese' */
 
-  /* Product: '<S14>/Product2' incorporates:
+  /* Product: '<S15>/Product2' incorporates:
    *  Constant: '<S13>/Constant3'
-   *  Constant: '<S14>/Constant3'
+   *  Constant: '<S15>/Constant3'
    *  Product: '<S13>/Product2'
    */
-  rtb_Product_m_tmp = struct_Ctrl_Config.Tsample / struct_Ctrl_Config.TNn;
+  rtb_Product_a_tmp = struct_Ctrl_Config.Tsample / struct_Ctrl_Config.TNn;
 
-  /* Update for UnitDelay: '<S14>/Unit Delay' incorporates:
-   *  Constant: '<S14>/Constant3'
-   *  Product: '<S14>/Product2'
-   *  Sum: '<S14>/Add'
-   *  Sum: '<S14>/Add1'
+  /* Update for UnitDelay: '<S15>/Unit Delay' incorporates:
+   *  Constant: '<S15>/Constant3'
+   *  Product: '<S15>/Product2'
+   *  Sum: '<S15>/Add'
+   *  Sum: '<S15>/Add1'
    */
   localDW->UnitDelay_DSTATE += (rtu_Soll_Drehzahl - localDW->UnitDelay_DSTATE) *
-    rtb_Product_m_tmp;
+    rtb_Product_a_tmp;
 
   /* Update for UnitDelay: '<S13>/Unit Delay' incorporates:
    *  Constant: '<S11>/Constant'
@@ -623,26 +617,20 @@ static float Drehzahlregelung(float rtu_Soll_Drehzahl, float rtu_omega, const
    *  RelationalOperator: '<S13>/Relational Operator1'
    *  Sum: '<S13>/Add'
    */
-  localDW->UnitDelay_DSTATE_k += ((rtb_Add1_f <= struct_PMSM_Config.mot_M_N) &&
-    (rtb_Add1_f >= -struct_PMSM_Config.mot_M_N) ? rtb_Product_e : 0.0F) *
-    rtb_Product_m_tmp;
+  localDW->UnitDelay_DSTATE_j += ((rtb_Add1_b <= struct_PMSM_Config.mot_M_N) &&
+    (rtb_Add1_b >= -struct_PMSM_Config.mot_M_N) ? rtb_Product_j : 0.0F) *
+    rtb_Product_a_tmp;
   return rty_M_Soll_0;
 }
 
 /* System initialize for enable system: '<S8>/Trajektorie_Erzeugung' */
 static void Trajektorie_Erzeugung_Init(DW_Trajektorie_Erzeugung *localDW)
 {
-  /* InitializeConditions for UnitDelay: '<S12>/Unit Delay1' */
-  localDW->UnitDelay1_DSTATE = 0.0F;
-
-  /* InitializeConditions for Memory: '<S18>/Memory' */
+  /* InitializeConditions for Memory: '<S19>/Memory' */
   localDW->Memory_PreviousInput = true;
 
-  /* InitializeConditions for UnitDelay: '<S12>/Unit Delay' */
-  localDW->UnitDelay_DSTATE = 0.0F;
-
   /* SystemInitialize for Atomic SubSystem: '<S12>/Subsystem' */
-  /* InitializeConditions for UnitDelay: '<S19>/Unit Delay2' */
+  /* InitializeConditions for UnitDelay: '<S20>/Unit Delay2' */
   localDW->UnitDelay2_DSTATE = struct_ZM_In.Soll_Drehzahl;
   if (localDW->UnitDelay2_DSTATE < 0.0F) {
     localDW->UnitDelay2_DSTATE = -1.0F;
@@ -650,11 +638,7 @@ static void Trajektorie_Erzeugung_Init(DW_Trajektorie_Erzeugung *localDW)
     localDW->UnitDelay2_DSTATE = (float)(localDW->UnitDelay2_DSTATE > 0.0F);
   }
 
-  /* End of InitializeConditions for UnitDelay: '<S19>/Unit Delay2' */
-
-  /* InitializeConditions for Memory: '<S20>/Memory' */
-  localDW->Memory_PreviousInput_i = false;
-
+  /* End of InitializeConditions for UnitDelay: '<S20>/Unit Delay2' */
   /* End of SystemInitialize for SubSystem: '<S12>/Subsystem' */
 }
 
@@ -664,14 +648,14 @@ static void Trajektorie_Erzeugung_Reset(DW_Trajektorie_Erzeugung *localDW)
   /* InitializeConditions for UnitDelay: '<S12>/Unit Delay1' */
   localDW->UnitDelay1_DSTATE = 0.0F;
 
-  /* InitializeConditions for Memory: '<S18>/Memory' */
+  /* InitializeConditions for Memory: '<S19>/Memory' */
   localDW->Memory_PreviousInput = true;
 
   /* InitializeConditions for UnitDelay: '<S12>/Unit Delay' */
   localDW->UnitDelay_DSTATE = 0.0F;
 
   /* SystemReset for Atomic SubSystem: '<S12>/Subsystem' */
-  /* InitializeConditions for UnitDelay: '<S19>/Unit Delay2' */
+  /* InitializeConditions for UnitDelay: '<S20>/Unit Delay2' */
   localDW->UnitDelay2_DSTATE = struct_ZM_In.Soll_Drehzahl;
   if (localDW->UnitDelay2_DSTATE < 0.0F) {
     localDW->UnitDelay2_DSTATE = -1.0F;
@@ -679,10 +663,10 @@ static void Trajektorie_Erzeugung_Reset(DW_Trajektorie_Erzeugung *localDW)
     localDW->UnitDelay2_DSTATE = (float)(localDW->UnitDelay2_DSTATE > 0.0F);
   }
 
-  /* End of InitializeConditions for UnitDelay: '<S19>/Unit Delay2' */
+  /* End of InitializeConditions for UnitDelay: '<S20>/Unit Delay2' */
 
-  /* InitializeConditions for Memory: '<S20>/Memory' */
-  localDW->Memory_PreviousInput_i = false;
+  /* InitializeConditions for Memory: '<S21>/Memory' */
+  localDW->Memory_PreviousInput_n = false;
 
   /* End of SystemReset for SubSystem: '<S12>/Subsystem' */
 }
@@ -698,7 +682,7 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
   float *rty_Soll_Drehzahl, bool rty_Dis[2], DW_Trajektorie_Erzeugung *localDW)
 {
   float rtb_Saturation;
-  float rtb_Switch3_j;
+  float rtb_Switch3_p;
   int32_t rtb_Sign1;
   uint32_t rowIdx;
   bool rtb_Logic_idx_0;
@@ -712,15 +696,15 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
       localDW->Trajektorie_Erzeugung_MODE = true;
     }
 
-    /* CombinatorialLogic: '<S18>/Logic' incorporates:
-     *  Constant: '<S16>/Constant'
+    /* CombinatorialLogic: '<S19>/Logic' incorporates:
      *  Constant: '<S17>/Constant'
-     *  Memory: '<S18>/Memory'
-     *  RelationalOperator: '<S16>/Compare'
+     *  Constant: '<S18>/Constant'
+     *  Memory: '<S19>/Memory'
      *  RelationalOperator: '<S17>/Compare'
+     *  RelationalOperator: '<S18>/Compare'
      *  UnitDelay: '<S12>/Unit Delay1'
      */
-    rtb_Logic_idx_0 = rtConstP.pooled6[((((uint32_t)(localDW->UnitDelay1_DSTATE <
+    rtb_Logic_idx_0 = rtConstP.pooled5[((((uint32_t)(localDW->UnitDelay1_DSTATE <
       struct_Ctrl_Config.t_traj) << 1) + (uint32_t)(localDW->UnitDelay1_DSTATE >=
       struct_Ctrl_Config.t_traj)) << 1) + localDW->Memory_PreviousInput];
 
@@ -740,9 +724,9 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
        *  Signum: '<S12>/Sign'
        */
       if (rtb_Sign1 > 0) {
-        rtb_Switch3_j = 0.05F;
+        rtb_Switch3_p = 0.05F;
       } else {
-        rtb_Switch3_j = -0.05F;
+        rtb_Switch3_p = -0.05F;
       }
     } else {
       if (rtu_Max_Drehzahl < 0.0F) {
@@ -759,9 +743,9 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
        *  Signum: '<S12>/Sign'
        */
       if (rtb_Sign1 > 0) {
-        rtb_Switch3_j = -0.05F;
+        rtb_Switch3_p = -0.05F;
       } else {
-        rtb_Switch3_j = 0.05F;
+        rtb_Switch3_p = 0.05F;
       }
     }
 
@@ -782,30 +766,30 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
     /* End of Saturate: '<S12>/Saturation' */
 
     /* Outputs for Atomic SubSystem: '<S12>/Subsystem' */
-    /* Signum: '<S19>/Sign1' */
+    /* Signum: '<S20>/Sign1' */
     if (rtb_Saturation < 0.0F) {
       rtb_Sign1 = -1;
     } else {
       rtb_Sign1 = (rtb_Saturation > 0.0F);
     }
 
-    /* End of Signum: '<S19>/Sign1' */
+    /* End of Signum: '<S20>/Sign1' */
 
-    /* CombinatorialLogic: '<S20>/Logic' incorporates:
-     *  Memory: '<S20>/Memory'
-     *  RelationalOperator: '<S19>/Relational Operator'
-     *  UnitDelay: '<S19>/Unit Delay2'
+    /* CombinatorialLogic: '<S21>/Logic' incorporates:
+     *  Memory: '<S21>/Memory'
+     *  RelationalOperator: '<S20>/Relational Operator'
+     *  UnitDelay: '<S20>/Unit Delay2'
      */
     rowIdx = ((((uint32_t)(localDW->UnitDelay2_DSTATE != rtb_Sign1) << 1) +
-               rtb_Logic_idx_0) << 1) + localDW->Memory_PreviousInput_i;
-    rty_Dis[0U] = rtConstP.pooled6[rowIdx];
-    rty_Dis[1U] = rtConstP.pooled6[rowIdx + 8U];
+               rtb_Logic_idx_0) << 1) + localDW->Memory_PreviousInput_n;
+    rty_Dis[0U] = rtConstP.pooled5[rowIdx];
+    rty_Dis[1U] = rtConstP.pooled5[rowIdx + 8U];
 
-    /* Update for UnitDelay: '<S19>/Unit Delay2' */
+    /* Update for UnitDelay: '<S20>/Unit Delay2' */
     localDW->UnitDelay2_DSTATE = (float)rtb_Sign1;
 
-    /* Update for Memory: '<S20>/Memory' */
-    localDW->Memory_PreviousInput_i = rty_Dis[0];
+    /* Update for Memory: '<S21>/Memory' */
+    localDW->Memory_PreviousInput_n = rty_Dis[0];
 
     /* End of Outputs for SubSystem: '<S12>/Subsystem' */
 
@@ -826,13 +810,13 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
      */
     localDW->UnitDelay1_DSTATE += struct_Ctrl_Config.Tsample;
 
-    /* Update for Memory: '<S18>/Memory' */
+    /* Update for Memory: '<S19>/Memory' */
     localDW->Memory_PreviousInput = rtb_Logic_idx_0;
 
     /* Update for UnitDelay: '<S12>/Unit Delay' incorporates:
      *  Sum: '<S12>/Add'
      */
-    localDW->UnitDelay_DSTATE = rtb_Switch3_j + rtb_Saturation;
+    localDW->UnitDelay_DSTATE = rtb_Switch3_p + rtb_Saturation;
   } else if (localDW->Trajektorie_Erzeugung_MODE) {
     Trajektorie_Erzeugung_Disable(localDW);
   }
@@ -841,10 +825,10 @@ static void Trajektorie_Erzeugung(bool rtu_En_Trapez, float rtu_Max_Drehzahl,
 }
 
 /* System initialize for enable system: '<S3>/Drehzahlregelung' */
-static void Drehzahlregelung_f_Init(DW_Drehzahlregelung *localDW)
+static void Drehzahlregelung_o_Init(DW_Drehzahlregelung *localDW)
 {
   /* SystemInitialize for Enabled SubSystem: '<S8>/Trajektorie_Erzeugung' */
-  Trajektorie_Erzeugung_Init(&localDW->Trajektorie_Erzeugung_i);
+  Trajektorie_Erzeugung_Init(&localDW->Trajektorie_Erzeugung_b);
 
   /* End of SystemInitialize for SubSystem: '<S8>/Trajektorie_Erzeugung' */
 }
@@ -853,8 +837,8 @@ static void Drehzahlregelung_f_Init(DW_Drehzahlregelung *localDW)
 static void Drehzahlregelung_Disable(DW_Drehzahlregelung *localDW)
 {
   /* Disable for Enabled SubSystem: '<S8>/Trajektorie_Erzeugung' */
-  if (localDW->Trajektorie_Erzeugung_i.Trajektorie_Erzeugung_MODE) {
-    Trajektorie_Erzeugung_Disable(&localDW->Trajektorie_Erzeugung_i);
+  if (localDW->Trajektorie_Erzeugung_b.Trajektorie_Erzeugung_MODE) {
+    Trajektorie_Erzeugung_Disable(&localDW->Trajektorie_Erzeugung_b);
   }
 
   /* End of Disable for SubSystem: '<S8>/Trajektorie_Erzeugung' */
@@ -862,7 +846,7 @@ static void Drehzahlregelung_Disable(DW_Drehzahlregelung *localDW)
 }
 
 /* Output and update for enable system: '<S3>/Drehzahlregelung' */
-static void Drehzahlregelung_g(bool rtu_Enable, float rtu_omega, const
+static void Drehzahlregelung_h(bool rtu_Enable, float rtu_omega, const
   Bus_PMSM_In *rtu_PMSM_In_Inport_2, const Bus_ZM_Out *rtu_Bus_ZM_Out_Inport_3,
   bool rty_Dis[2], float *rty_Soll_Moment, DW_Drehzahlregelung *localDW)
 {
@@ -881,7 +865,7 @@ static void Drehzahlregelung_g(bool rtu_Enable, float rtu_omega, const
     /* SignalConversion generated from: '<S12>/En_Trapez' */
     Trajektorie_Erzeugung(rtu_Bus_ZM_Out_Inport_3->En_Traj, rtb_Soll_Drehzahl,
                           &localDW->Switch1, rty_Dis,
-                          &localDW->Trajektorie_Erzeugung_i);
+                          &localDW->Trajektorie_Erzeugung_b);
 
     /* End of Outputs for SubSystem: '<S8>/Trajektorie_Erzeugung' */
 
@@ -895,7 +879,7 @@ static void Drehzahlregelung_g(bool rtu_Enable, float rtu_omega, const
 
     /* Outputs for Atomic SubSystem: '<S8>/Drehzahlregelung' */
     *rty_Soll_Moment = Drehzahlregelung(rtb_Soll_Drehzahl, rtu_omega,
-      rtu_PMSM_In_Inport_2, &localDW->Drehzahlregelung_a);
+      rtu_PMSM_In_Inport_2, &localDW->Drehzahlregelung_p);
 
     /* End of Switch: '<S8>/Switch' */
     /* End of Outputs for SubSystem: '<S8>/Drehzahlregelung' */
@@ -912,149 +896,149 @@ static void IDQCtrl(float rtu_ID, float rtu_IQ, float rtu_IDRef, float rtu_IQRef
                     DW_IDQCtrl *localDW)
 {
   float UnitDelay_DSTATE_tmp;
-  float rtb_Add1_b;
-  float rtb_Add1_o;
+  float rtb_Add1_g;
+  float rtb_Add1_oe;
   float rtb_Add3;
   float rtb_Gain2;
-  float rtb_Product_c;
-  float rtb_Product_i;
+  float rtb_Product_a;
+  float rtb_Product_n;
 
-  /* Product: '<S29>/Product' incorporates:
-   *  Constant: '<S29>/Constant'
-   *  Constant: '<S29>/Constant1'
-   *  Product: '<S29>/Product1'
-   *  Sum: '<S29>/Add'
+  /* Product: '<S31>/Product' incorporates:
+   *  Constant: '<S31>/Constant'
+   *  Constant: '<S31>/Constant1'
+   *  Product: '<S31>/Product1'
+   *  Sum: '<S31>/Add'
    */
   *rty_UQ = (rtu_IDRef * struct_PMSM_Config.mot_Lq +
              struct_PMSM_Config.mot_psi_pm) * rtu_OmegaMech;
 
-  /* Gain: '<S23>/Gain2' incorporates:
-   *  Constant: '<S23>/Constant2'
+  /* Gain: '<S25>/Gain2' incorporates:
+   *  Constant: '<S25>/Constant2'
    */
   rtb_Gain2 = DIVIDE_TWO_BY_THREE * struct_Inv_Config.Udc;
 
-  /* Product: '<S30>/Product' incorporates:
-   *  Constant: '<S30>/Constant'
-   *  Sum: '<S30>/Subtract'
+  /* Product: '<S32>/Product' incorporates:
+   *  Constant: '<S32>/Constant'
+   *  Sum: '<S32>/Subtract'
    */
-  rtb_Product_c = (rtu_IDRef - rtu_ID) * struct_Ctrl_Config.KPi;
+  rtb_Product_n = (rtu_IDRef - rtu_ID) * struct_Ctrl_Config.KPi;
 
-  /* Sum: '<S30>/Add1' incorporates:
-   *  UnitDelay: '<S30>/Unit Delay'
+  /* Sum: '<S32>/Add1' incorporates:
+   *  UnitDelay: '<S32>/Unit Delay'
    */
-  rtb_Add1_b = rtb_Product_c + localDW->UnitDelay_DSTATE;
+  rtb_Add1_g = rtb_Product_n + localDW->UnitDelay_DSTATE;
 
-  /* Switch: '<S33>/Switch2' incorporates:
-   *  Gain: '<S23>/Gain1'
-   *  RelationalOperator: '<S33>/LowerRelop1'
-   *  RelationalOperator: '<S33>/UpperRelop'
-   *  Switch: '<S33>/Switch'
+  /* Switch: '<S35>/Switch2' incorporates:
+   *  Gain: '<S25>/Gain1'
+   *  RelationalOperator: '<S35>/LowerRelop1'
+   *  RelationalOperator: '<S35>/UpperRelop'
+   *  Switch: '<S35>/Switch'
    */
-  if (rtb_Add1_b > rtb_Gain2) {
+  if (rtb_Add1_g > rtb_Gain2) {
     *rty_UD = rtb_Gain2;
-  } else if (rtb_Add1_b < -rtb_Gain2) {
-    /* Switch: '<S33>/Switch' incorporates:
-     *  Gain: '<S23>/Gain1'
+  } else if (rtb_Add1_g < -rtb_Gain2) {
+    /* Switch: '<S35>/Switch' incorporates:
+     *  Gain: '<S25>/Gain1'
      */
     *rty_UD = -rtb_Gain2;
   } else {
-    *rty_UD = rtb_Add1_b;
+    *rty_UD = rtb_Add1_g;
   }
 
-  /* End of Switch: '<S33>/Switch2' */
+  /* End of Switch: '<S35>/Switch2' */
 
-  /* Sum: '<S23>/Add1' incorporates:
-   *  Constant: '<S28>/Constant'
-   *  Product: '<S28>/Product'
-   *  Product: '<S28>/Product1'
+  /* Sum: '<S25>/Add1' incorporates:
+   *  Constant: '<S30>/Constant'
+   *  Product: '<S30>/Product'
+   *  Product: '<S30>/Product1'
    */
   *rty_UD -= rtu_OmegaMech * rtu_IQRef * struct_PMSM_Config.mot_Ld;
 
-  /* Sum: '<S32>/Add3' incorporates:
-   *  Product: '<S32>/Product'
-   *  Product: '<S32>/Product1'
-   *  Sqrt: '<S32>/Sqrt'
-   *  Sum: '<S32>/Add2'
+  /* Sum: '<S34>/Add3' incorporates:
+   *  Product: '<S34>/Product'
+   *  Product: '<S34>/Product1'
+   *  Sqrt: '<S34>/Sqrt'
+   *  Sum: '<S34>/Add2'
    */
   rtb_Add3 = sqrtf(rtb_Gain2 * rtb_Gain2 - *rty_UD * *rty_UD) - *rty_UQ;
 
-  /* Product: '<S31>/Product' incorporates:
-   *  Constant: '<S31>/Constant'
-   *  Sum: '<S31>/Subtract'
+  /* Product: '<S33>/Product' incorporates:
+   *  Constant: '<S33>/Constant'
+   *  Sum: '<S33>/Subtract'
    */
-  rtb_Product_i = (rtu_IQRef - rtu_IQ) * struct_Ctrl_Config.KPi;
+  rtb_Product_a = (rtu_IQRef - rtu_IQ) * struct_Ctrl_Config.KPi;
 
-  /* Sum: '<S31>/Add1' incorporates:
-   *  UnitDelay: '<S31>/Unit Delay'
+  /* Sum: '<S33>/Add1' incorporates:
+   *  UnitDelay: '<S33>/Unit Delay'
    */
-  rtb_Add1_o = rtb_Product_i + localDW->UnitDelay_DSTATE_f;
+  rtb_Add1_oe = rtb_Product_a + localDW->UnitDelay_DSTATE_k;
 
-  /* Switch: '<S34>/Switch2' incorporates:
-   *  Gain: '<S32>/Gain1'
-   *  RelationalOperator: '<S34>/LowerRelop1'
-   *  RelationalOperator: '<S34>/UpperRelop'
-   *  Switch: '<S34>/Switch'
+  /* Switch: '<S36>/Switch2' incorporates:
+   *  Gain: '<S34>/Gain1'
+   *  RelationalOperator: '<S36>/LowerRelop1'
+   *  RelationalOperator: '<S36>/UpperRelop'
+   *  Switch: '<S36>/Switch'
    */
-  if (rtb_Add1_o > rtb_Add3) {
+  if (rtb_Add1_oe > rtb_Add3) {
     UnitDelay_DSTATE_tmp = rtb_Add3;
-  } else if (rtb_Add1_o < -rtb_Add3) {
-    /* Switch: '<S34>/Switch' incorporates:
-     *  Gain: '<S32>/Gain1'
+  } else if (rtb_Add1_oe < -rtb_Add3) {
+    /* Switch: '<S36>/Switch' incorporates:
+     *  Gain: '<S34>/Gain1'
      */
     UnitDelay_DSTATE_tmp = -rtb_Add3;
   } else {
-    UnitDelay_DSTATE_tmp = rtb_Add1_o;
+    UnitDelay_DSTATE_tmp = rtb_Add1_oe;
   }
 
-  /* Sum: '<S23>/Add' incorporates:
-   *  Switch: '<S34>/Switch2'
+  /* Sum: '<S25>/Add' incorporates:
+   *  Switch: '<S36>/Switch2'
    */
   *rty_UQ += UnitDelay_DSTATE_tmp;
 
-  /* Product: '<S30>/Product2' incorporates:
-   *  Constant: '<S30>/Constant3'
-   *  Constant: '<S31>/Constant3'
-   *  Product: '<S31>/Product2'
+  /* Product: '<S32>/Product2' incorporates:
+   *  Constant: '<S32>/Constant3'
+   *  Constant: '<S33>/Constant3'
+   *  Product: '<S33>/Product2'
    */
   UnitDelay_DSTATE_tmp = struct_Ctrl_Config.Tsample / struct_Ctrl_Config.TNi;
 
-  /* Update for UnitDelay: '<S30>/Unit Delay' incorporates:
-   *  Constant: '<S30>/Constant3'
-   *  Gain: '<S23>/Gain1'
-   *  Logic: '<S30>/Logical Operator'
-   *  Product: '<S30>/Product1'
-   *  Product: '<S30>/Product2'
-   *  RelationalOperator: '<S30>/Relational Operator'
-   *  RelationalOperator: '<S30>/Relational Operator1'
-   *  Sum: '<S30>/Add'
+  /* Update for UnitDelay: '<S32>/Unit Delay' incorporates:
+   *  Constant: '<S32>/Constant3'
+   *  Gain: '<S25>/Gain1'
+   *  Logic: '<S32>/Logical Operator'
+   *  Product: '<S32>/Product1'
+   *  Product: '<S32>/Product2'
+   *  RelationalOperator: '<S32>/Relational Operator'
+   *  RelationalOperator: '<S32>/Relational Operator1'
+   *  Sum: '<S32>/Add'
    */
-  localDW->UnitDelay_DSTATE += ((rtb_Add1_b <= rtb_Gain2) && (rtb_Add1_b >=
-    -rtb_Gain2) ? rtb_Product_c : 0.0F) * UnitDelay_DSTATE_tmp;
+  localDW->UnitDelay_DSTATE += ((rtb_Add1_g <= rtb_Gain2) && (rtb_Add1_g >=
+    -rtb_Gain2) ? rtb_Product_n : 0.0F) * UnitDelay_DSTATE_tmp;
 
-  /* Update for UnitDelay: '<S31>/Unit Delay' incorporates:
-   *  Gain: '<S32>/Gain1'
-   *  Logic: '<S31>/Logical Operator'
-   *  Product: '<S31>/Product1'
-   *  Product: '<S31>/Product2'
-   *  RelationalOperator: '<S31>/Relational Operator'
-   *  RelationalOperator: '<S31>/Relational Operator1'
-   *  Sum: '<S31>/Add'
+  /* Update for UnitDelay: '<S33>/Unit Delay' incorporates:
+   *  Gain: '<S34>/Gain1'
+   *  Logic: '<S33>/Logical Operator'
+   *  Product: '<S33>/Product1'
+   *  Product: '<S33>/Product2'
+   *  RelationalOperator: '<S33>/Relational Operator'
+   *  RelationalOperator: '<S33>/Relational Operator1'
+   *  Sum: '<S33>/Add'
    */
-  localDW->UnitDelay_DSTATE_f += ((rtb_Add1_o <= rtb_Add3) && (rtb_Add1_o >=
-    -rtb_Add3) ? rtb_Product_i : 0.0F) * UnitDelay_DSTATE_tmp;
+  localDW->UnitDelay_DSTATE_k += ((rtb_Add1_oe <= rtb_Add3) && (rtb_Add1_oe >=
+    -rtb_Add3) ? rtb_Product_a : 0.0F) * UnitDelay_DSTATE_tmp;
 }
 
 /* Output and update for atomic system: '<S9>/Ueberstromabschaltung' */
 static bool Ueberstromabschaltung(float rtu_Iu, float rtu_Iv, float rtu_Iw)
 {
-  /* Logic: '<S24>/Logical Operator' incorporates:
-   *  Abs: '<S24>/Abs'
-   *  Abs: '<S24>/Abs1'
-   *  Abs: '<S24>/Abs2'
-   *  Constant: '<S24>/Constant'
-   *  RelationalOperator: '<S24>/Relational Operator'
-   *  RelationalOperator: '<S24>/Relational Operator1'
-   *  RelationalOperator: '<S24>/Relational Operator2'
+  /* Logic: '<S26>/Logical Operator' incorporates:
+   *  Abs: '<S26>/Abs'
+   *  Abs: '<S26>/Abs1'
+   *  Abs: '<S26>/Abs2'
+   *  Constant: '<S26>/Constant'
+   *  RelationalOperator: '<S26>/Relational Operator'
+   *  RelationalOperator: '<S26>/Relational Operator1'
+   *  RelationalOperator: '<S26>/Relational Operator2'
    */
   return (struct_PMSM_Config.mot_I_max < fabsf(rtu_Iu)) ||
     (struct_PMSM_Config.mot_I_max < fabsf(rtu_Iv)) ||
@@ -1065,46 +1049,46 @@ static bool Ueberstromabschaltung(float rtu_Iu, float rtu_Iv, float rtu_Iw)
 static void abc_zu_dq(float rtu_theta, float rtu_pmsm_Iu, float rtu_pmsm_Iv,
                       float rtu_pmsm_Iw, float *rty_ctrl_Id, float *rty_ctrl_Iq)
 {
-  float rtb_Gain_c;
+  float rtb_Gain_k;
   float rtb_TrigonometricFunction;
   float rtb_TrigonometricFunction1;
 
-  /* Gain: '<S35>/Gain' incorporates:
-   *  Gain: '<S35>/Gain2'
-   *  Gain: '<S35>/Gain7'
-   *  Sum: '<S35>/Add'
+  /* Gain: '<S37>/Gain' incorporates:
+   *  Gain: '<S37>/Gain2'
+   *  Gain: '<S37>/Gain7'
+   *  Sum: '<S37>/Add'
    */
-  rtb_Gain_c = ((-0.5F * rtu_pmsm_Iv + rtu_pmsm_Iu) + -0.5F * rtu_pmsm_Iw) *
+  rtb_Gain_k = ((-0.5F * rtu_pmsm_Iv + rtu_pmsm_Iu) + -0.5F * rtu_pmsm_Iw) *
     DIVIDE_TWO_BY_THREE;
 
-  /* Trigonometry: '<S36>/Trigonometric Function1' */
+  /* Trigonometry: '<S38>/Trigonometric Function1' */
   rtb_TrigonometricFunction1 = cosf(rtu_theta);
 
-  /* Gain: '<S35>/sqrt(3)//2' */
+  /* Gain: '<S37>/sqrt(3)//2' */
   *rty_ctrl_Iq = -DIVIDE_SQRT_THREE_BY_TWO * rtu_pmsm_Iw;
 
-  /* Gain: '<S35>/Gain1' incorporates:
-   *  Gain: '<S35>/Gain5'
-   *  Sum: '<S35>/Add1'
+  /* Gain: '<S37>/Gain1' incorporates:
+   *  Gain: '<S37>/Gain5'
+   *  Sum: '<S37>/Add1'
    */
   *rty_ctrl_Iq = (DIVIDE_SQRT_THREE_BY_TWO * rtu_pmsm_Iv + *rty_ctrl_Iq) *
     DIVIDE_TWO_BY_THREE;
 
-  /* Trigonometry: '<S36>/Trigonometric Function' */
+  /* Trigonometry: '<S38>/Trigonometric Function' */
   rtb_TrigonometricFunction = sinf(rtu_theta);
 
-  /* Sum: '<S36>/Add' incorporates:
-   *  Product: '<S36>/Product'
-   *  Product: '<S36>/Product1'
+  /* Sum: '<S38>/Add' incorporates:
+   *  Product: '<S38>/Product'
+   *  Product: '<S38>/Product1'
    */
-  *rty_ctrl_Id = rtb_TrigonometricFunction1 * rtb_Gain_c +
+  *rty_ctrl_Id = rtb_TrigonometricFunction1 * rtb_Gain_k +
     rtb_TrigonometricFunction * *rty_ctrl_Iq;
 
-  /* Sum: '<S36>/Add1' incorporates:
-   *  Product: '<S36>/Product2'
-   *  Product: '<S36>/Product3'
+  /* Sum: '<S38>/Add1' incorporates:
+   *  Product: '<S38>/Product2'
+   *  Product: '<S38>/Product3'
    */
-  *rty_ctrl_Iq = *rty_ctrl_Iq * rtb_TrigonometricFunction1 - rtb_Gain_c *
+  *rty_ctrl_Iq = *rty_ctrl_Iq * rtb_TrigonometricFunction1 - rtb_Gain_k *
     rtb_TrigonometricFunction;
 }
 
@@ -1115,26 +1099,26 @@ static void dq_zu_alphabeta(float rtu_theta, float rtu_valD, float rtu_valQ,
   float rtb_TrigonometricFunction;
   float rtb_TrigonometricFunction1;
 
-  /* Trigonometry: '<S27>/Trigonometric Function1' incorporates:
-   *  Gain: '<S27>/Gain1'
+  /* Trigonometry: '<S29>/Trigonometric Function1' incorporates:
+   *  Gain: '<S29>/Gain1'
    */
   rtb_TrigonometricFunction1 = cosf(-rtu_theta);
 
-  /* Trigonometry: '<S27>/Trigonometric Function' incorporates:
-   *  Gain: '<S27>/Gain1'
+  /* Trigonometry: '<S29>/Trigonometric Function' incorporates:
+   *  Gain: '<S29>/Gain1'
    */
   rtb_TrigonometricFunction = sinf(-rtu_theta);
 
-  /* Sum: '<S27>/Add' incorporates:
-   *  Product: '<S27>/Product'
-   *  Product: '<S27>/Product1'
+  /* Sum: '<S29>/Add' incorporates:
+   *  Product: '<S29>/Product'
+   *  Product: '<S29>/Product1'
    */
   *rty_valAlpha = rtu_valD * rtb_TrigonometricFunction1 + rtu_valQ *
     rtb_TrigonometricFunction;
 
-  /* Sum: '<S27>/Add1' incorporates:
-   *  Product: '<S27>/Product2'
-   *  Product: '<S27>/Product3'
+  /* Sum: '<S29>/Add1' incorporates:
+   *  Product: '<S29>/Product2'
+   *  Product: '<S29>/Product3'
    */
   *rty_valBeta = rtu_valQ * rtb_TrigonometricFunction1 - rtu_valD *
     rtb_TrigonometricFunction;
@@ -1146,12 +1130,12 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
   float *rty_Ualpha, float *rty_Ubeta, DW_Stromregelung *localDW)
 {
   float rtb_Add1;
-  float rtb_Add_c5;
-  float rtb_Add_er;
+  float rtb_Add_d;
+  float rtb_Add_k;
+  float rtb_IDRef;
   float rtb_IQRef;
   float rtb_Product1;
   float rtb_Product2;
-  float rtb_Switch2;
   bool rtb_act_ab;
 
   /* Product: '<S9>/Product2' incorporates:
@@ -1167,15 +1151,17 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
     rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_phi_mech;
 
   /* Switch: '<S9>/Switch2' incorporates:
+   *  Constant: '<S24>/Constant'
    *  Constant: '<S9>/Constant'
-   *  Gain: '<S26>/Gain'
+   *  Gain: '<S28>/Gain'
+   *  RelationalOperator: '<S24>/Compare'
    *  Switch: '<S9>/Switch3'
    */
-  if (rtu_Bus_ZM_Out_Inport_3->Ist_Regelungsart >= Strom) {
-    rtb_Switch2 = rtu_Bus_ZM_Out_Inport_3->Soll_id;
-    rtb_IQRef = rtu_Bus_ZM_Out_Inport_3->Soll_id;
+  if (rtu_Bus_ZM_Out_Inport_3->Ist_Regelungsart == Strom) {
+    rtb_IDRef = rtu_Bus_ZM_Out_Inport_3->Soll_id;
+    rtb_IQRef = rtu_Bus_ZM_Out_Inport_3->Soll_iq;
   } else {
-    rtb_Switch2 = 0.0F;
+    rtb_IDRef = 0.0F;
 
     /* Outputs for Atomic SubSystem: '<S9>/calcIq' */
     rtb_IQRef = 0.666666687F / struct_PMSM_Config.mot_psi_pm /
@@ -1189,13 +1175,13 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
   /* Outputs for Atomic SubSystem: '<S9>/abc_zu_dq' */
   abc_zu_dq(rtb_Product1, rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_Iuvw[0],
             rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_Iuvw[1],
-            rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_Iuvw[2], &rtb_Add1, &rtb_Add_c5);
+            rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_Iuvw[2], &rtb_Add1, &rtb_Add_k);
 
   /* End of Outputs for SubSystem: '<S9>/abc_zu_dq' */
 
   /* Outputs for Atomic SubSystem: '<S9>/IDQCtrl' */
-  IDQCtrl(rtb_Add1, rtb_Add_c5, rtb_Switch2, rtb_IQRef, rtb_Product2, &rtb_Add1,
-          &rtb_Add_er, &localDW->IDQCtrl_h);
+  IDQCtrl(rtb_Add1, rtb_Add_k, rtb_IDRef, rtb_IQRef, rtb_Product2, &rtb_Add1,
+          &rtb_Add_d, &localDW->IDQCtrl_c);
 
   /* End of Outputs for SubSystem: '<S9>/IDQCtrl' */
 
@@ -1205,7 +1191,7 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
    *  Product: '<S9>/Product'
    */
   dq_zu_alphabeta(struct_Ctrl_Config.Tsample * rtb_Product2 + rtb_Product1,
-                  rtb_Add1, rtb_Add_er, &rtb_Add_c5, &rtb_Add1);
+                  rtb_Add1, rtb_Add_d, &rtb_Add_k, &rtb_Add1);
 
   /* End of Outputs for SubSystem: '<S9>/dq_zu_alphabeta' */
 
@@ -1217,13 +1203,13 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
   /* End of Outputs for SubSystem: '<S9>/Ueberstromabschaltung' */
 
   /* Logic: '<S9>/Logical Operator' incorporates:
-   *  Constant: '<S21>/Constant'
    *  Constant: '<S22>/Constant'
+   *  Constant: '<S23>/Constant'
    *  Logic: '<S9>/Logical Operator1'
-   *  RelationalOperator: '<S21>/Compare'
    *  RelationalOperator: '<S22>/Compare'
+   *  RelationalOperator: '<S23>/Compare'
    */
-  rtb_act_ab = (((rtb_IQRef == 0.0F) && (rtb_Switch2 == 0.0F)) || rtb_act_ab);
+  rtb_act_ab = (((rtb_IQRef == 0.0F) && (rtb_IDRef == 0.0F)) || rtb_act_ab);
 
   /* Switch: '<S9>/Switch' incorporates:
    *  Constant: '<S9>/Constant1'
@@ -1233,7 +1219,7 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
     *rty_Ualpha = 0.0F;
     *rty_Ubeta = 0.0F;
   } else {
-    *rty_Ualpha = rtb_Add_c5;
+    *rty_Ualpha = rtb_Add_k;
     *rty_Ubeta = rtb_Add1;
   }
 
@@ -1244,7 +1230,7 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
 static void Regelung_Init(DW_Regelung *localDW)
 {
   /* SystemInitialize for Enabled SubSystem: '<S3>/Drehzahlregelung' */
-  Drehzahlregelung_f_Init(&localDW->Drehzahlregelung_gn);
+  Drehzahlregelung_o_Init(&localDW->Drehzahlregelung_hk);
 
   /* End of SystemInitialize for SubSystem: '<S3>/Drehzahlregelung' */
 }
@@ -1253,8 +1239,8 @@ static void Regelung_Init(DW_Regelung *localDW)
 static void Regelung_Disable(DW_Regelung *localDW)
 {
   /* Disable for Enabled SubSystem: '<S3>/Drehzahlregelung' */
-  if (localDW->Drehzahlregelung_gn.Drehzahlregelung_MODE) {
-    Drehzahlregelung_Disable(&localDW->Drehzahlregelung_gn);
+  if (localDW->Drehzahlregelung_hk.Drehzahlregelung_MODE) {
+    Drehzahlregelung_Disable(&localDW->Drehzahlregelung_hk);
   }
 
   /* End of Disable for SubSystem: '<S3>/Drehzahlregelung' */
@@ -1278,18 +1264,18 @@ static void Regelung(bool rtu_Enable, const Bus_PMSM_Out
     /* RelationalOperator: '<S7>/Compare' incorporates:
      *  Constant: '<S7>/Constant'
      */
-    Drehzahlregelung_g((rtu_Bus_ZM_Out_Inport_3->Ist_Regelungsart <= Drehzahl),
+    Drehzahlregelung_h((rtu_Bus_ZM_Out_Inport_3->Ist_Regelungsart <= Drehzahl),
                        rtu_Bus_Live_Out_PMSM_Inport_1->pmsm_Omega_mech,
                        rtu_PMSM_In_Inport_2, rtu_Bus_ZM_Out_Inport_3, rty_Dis,
                        &localDW->Abschaltenwennn_diff101nN2,
-                       &localDW->Drehzahlregelung_gn);
+                       &localDW->Drehzahlregelung_hk);
 
     /* End of Outputs for SubSystem: '<S3>/Drehzahlregelung' */
 
     /* Outputs for Atomic SubSystem: '<S3>/Stromregelung' */
     Stromregelung(localDW->Abschaltenwennn_diff101nN2,
                   rtu_Bus_Live_Out_PMSM_Inport_1, rtu_Bus_ZM_Out_Inport_3,
-                  rty_Ualpha, rty_Ubeta, &localDW->Stromregelung_f);
+                  rty_Ualpha, rty_Ubeta, &localDW->Stromregelung_a);
 
     /* End of Outputs for SubSystem: '<S3>/Stromregelung' */
   } else if (localDW->Regelung_MODE) {
@@ -1300,7 +1286,7 @@ static void Regelung(bool rtu_Enable, const Bus_PMSM_Out
 }
 
 /* System initialize for atomic system: '<S4>/state_chart' */
-static void state_chart_Init(Bus_ZM_Out *rty_Bus_ZM_Out, DW_state_chart *localDW)
+static void state_chart_Init(Bus_ZM_Out *rty_Bus_ZM_Out)
 {
   rty_Bus_ZM_Out->En_Traj = false;
   rty_Bus_ZM_Out->Pulsfreigabe = false;
@@ -1309,11 +1295,6 @@ static void state_chart_Init(Bus_ZM_Out *rty_Bus_ZM_Out, DW_state_chart *localDW
   rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
   rty_Bus_ZM_Out->Soll_id = 0.0F;
   rty_Bus_ZM_Out->Soll_iq = 0.0F;
-  localDW->is_active_c3_uz_codegen0 = 0U;
-  localDW->is_c3_uz_codegen0 = IN_NO_ACTIVE_CHILD;
-  localDW->is_NoError = IN_NO_ACTIVE_CHILD;
-  localDW->is_Run = IN_NO_ACTIVE_CHILD;
-  localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
 }
 
 /* Output and update for atomic system: '<S4>/state_chart' */
@@ -1328,269 +1309,269 @@ static void state_chart(const Bus_ZM_In *rtu_Bus_ZM_In, bool rtu_Dis, Bus_ZM_Out
     localDW->is_active_c3_uz_codegen0 = 1U;
 
     /* Entry Internal: uz_codegen/Zustandsmaschine/state_chart */
-    /* Transition: '<S37>:11' */
+    /* Transition: '<S39>:11' */
     localDW->is_c3_uz_codegen0 = IN_NoError;
 
-    /* Entry Internal 'NoError': '<S37>:32' */
-    /* Transition: '<S37>:45' */
+    /* Entry Internal 'NoError': '<S39>:32' */
+    /* Transition: '<S39>:45' */
     localDW->is_NoError = IN_Ready;
 
-    /* Entry 'Ready': '<S37>:19' */
-    /* '<S37>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
+    /* Entry 'Ready': '<S39>:19' */
+    /* '<S39>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
     rty_Bus_ZM_Out->Ist_Status = Ready;
 
-    /* '<S37>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
+    /* '<S39>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
     rty_Bus_ZM_Out->Pulsfreigabe = false;
 
-    /* '<S37>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
+    /* '<S39>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
     rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
 
-    /* '<S37>:19:5' Bus_ZM_Out.En_Traj=false; */
+    /* '<S39>:19:5' Bus_ZM_Out.En_Traj=false; */
     rty_Bus_ZM_Out->En_Traj = false;
 
-    /* '<S37>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
+    /* '<S39>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
     rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-    /* '<S37>:19:7' Bus_ZM_Out.Soll_id = 0; */
+    /* '<S39>:19:7' Bus_ZM_Out.Soll_id = 0; */
     rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-    /* '<S37>:19:8' Bus_ZM_Out.Soll_iq = 0; */
+    /* '<S39>:19:8' Bus_ZM_Out.Soll_iq = 0; */
     rty_Bus_ZM_Out->Soll_iq = 0.0F;
   } else if (localDW->is_c3_uz_codegen0 == IN_Error) {
-    /* During 'Error': '<S37>:10' */
-    /* '<S37>:14:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == false && Bus_ZM_In.Soll_Status == Status_Ctrl.Ready); */
+    /* During 'Error': '<S39>:10' */
+    /* '<S39>:14:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == false && Bus_ZM_In.Soll_Status == Status_Ctrl.Ready); */
     if ((!rtu_Bus_ZM_In->Fehlermeldung) && (rtu_Bus_ZM_In->Soll_Status == Ready))
     {
-      /* Transition: '<S37>:14' */
+      /* Transition: '<S39>:14' */
       localDW->is_c3_uz_codegen0 = IN_NoError;
 
-      /* Entry Internal 'NoError': '<S37>:32' */
-      /* Transition: '<S37>:45' */
+      /* Entry Internal 'NoError': '<S39>:32' */
+      /* Transition: '<S39>:45' */
       localDW->is_NoError = IN_Ready;
 
-      /* Entry 'Ready': '<S37>:19' */
-      /* '<S37>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
+      /* Entry 'Ready': '<S39>:19' */
+      /* '<S39>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
       rty_Bus_ZM_Out->Ist_Status = Ready;
 
-      /* '<S37>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
+      /* '<S39>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
 
-      /* '<S37>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
+      /* '<S39>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
 
-      /* '<S37>:19:5' Bus_ZM_Out.En_Traj=false; */
+      /* '<S39>:19:5' Bus_ZM_Out.En_Traj=false; */
       rty_Bus_ZM_Out->En_Traj = false;
 
-      /* '<S37>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
+      /* '<S39>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-      /* '<S37>:19:7' Bus_ZM_Out.Soll_id = 0; */
+      /* '<S39>:19:7' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-      /* '<S37>:19:8' Bus_ZM_Out.Soll_iq = 0; */
+      /* '<S39>:19:8' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     } else {
-      /* '<S37>:10:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Error_Status; */
+      /* '<S39>:10:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Error_Status; */
       rty_Bus_ZM_Out->Ist_Status = Error_Status;
 
-      /* '<S37>:10:4' Bus_ZM_Out.Pulsfreigabe = false; */
+      /* '<S39>:10:4' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
 
-      /* '<S37>:10:5' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Error; */
+      /* '<S39>:10:5' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Error; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Error;
 
-      /* '<S37>:10:6' Bus_ZM_Out.En_Traj = false; */
+      /* '<S39>:10:6' Bus_ZM_Out.En_Traj = false; */
       rty_Bus_ZM_Out->En_Traj = false;
 
-      /* '<S37>:10:7' Bus_ZM_Out.Soll_Drehzahl = 0; */
+      /* '<S39>:10:7' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-      /* '<S37>:10:8' Bus_ZM_Out.Soll_id = 0; */
+      /* '<S39>:10:8' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-      /* '<S37>:10:9' Bus_ZM_Out.Soll_iq = 0; */
+      /* '<S39>:10:9' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     }
 
-    /* During 'NoError': '<S37>:32' */
-    /* '<S37>:15:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == true); */
+    /* During 'NoError': '<S39>:32' */
+    /* '<S39>:15:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == true); */
   } else if (rtu_Bus_ZM_In->Fehlermeldung) {
-    /* Transition: '<S37>:15' */
-    /* Exit Internal 'NoError': '<S37>:32' */
-    /* Exit Internal 'Run': '<S37>:20' */
-    /* Exit Internal 'Trapez': '<S37>:54' */
+    /* Transition: '<S39>:15' */
+    /* Exit Internal 'NoError': '<S39>:32' */
+    /* Exit Internal 'Run': '<S39>:20' */
+    /* Exit Internal 'Trapez': '<S39>:54' */
     localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
     localDW->is_Run = IN_NO_ACTIVE_CHILD;
     localDW->is_NoError = IN_NO_ACTIVE_CHILD;
     localDW->is_c3_uz_codegen0 = IN_Error;
   } else if (localDW->is_NoError == IN_Ready) {
-    /* During 'Ready': '<S37>:19' */
-    /* '<S37>:25:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.En); */
+    /* During 'Ready': '<S39>:19' */
+    /* '<S39>:25:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.En); */
     if (rtu_Bus_ZM_In->Soll_Status == En) {
-      /* Transition: '<S37>:25' */
+      /* Transition: '<S39>:25' */
       localDW->is_NoError = IN_Run;
 
-      /* Entry Internal 'Run': '<S37>:20' */
-      /* Transition: '<S37>:55' */
+      /* Entry Internal 'Run': '<S39>:20' */
+      /* Transition: '<S39>:55' */
       localDW->is_Run = IN_nCtrl;
     } else {
-      /* '<S37>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
+      /* '<S39>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
       rty_Bus_ZM_Out->Ist_Status = Ready;
 
-      /* '<S37>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
+      /* '<S39>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
 
-      /* '<S37>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
+      /* '<S39>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
 
-      /* '<S37>:19:5' Bus_ZM_Out.En_Traj=false; */
+      /* '<S39>:19:5' Bus_ZM_Out.En_Traj=false; */
       rty_Bus_ZM_Out->En_Traj = false;
 
-      /* '<S37>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
+      /* '<S39>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-      /* '<S37>:19:7' Bus_ZM_Out.Soll_id = 0; */
+      /* '<S39>:19:7' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-      /* '<S37>:19:8' Bus_ZM_Out.Soll_iq = 0; */
+      /* '<S39>:19:8' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     }
 
-    /* During 'Run': '<S37>:20' */
-    /* '<S37>:26:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.Dis); */
+    /* During 'Run': '<S39>:20' */
+    /* '<S39>:26:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.Dis); */
   } else if (rtu_Bus_ZM_In->Soll_Status == Dis) {
-    /* Transition: '<S37>:26' */
-    /* Exit Internal 'Run': '<S37>:20' */
-    /* Exit Internal 'Trapez': '<S37>:54' */
+    /* Transition: '<S39>:26' */
+    /* Exit Internal 'Run': '<S39>:20' */
+    /* Exit Internal 'Trapez': '<S39>:54' */
     localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
     localDW->is_Run = IN_NO_ACTIVE_CHILD;
     localDW->is_NoError = IN_Ready;
 
-    /* Entry 'Ready': '<S37>:19' */
-    /* '<S37>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
+    /* Entry 'Ready': '<S39>:19' */
+    /* '<S39>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
     rty_Bus_ZM_Out->Ist_Status = Ready;
 
-    /* '<S37>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
+    /* '<S39>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
     rty_Bus_ZM_Out->Pulsfreigabe = false;
 
-    /* '<S37>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
+    /* '<S39>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
     rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
 
-    /* '<S37>:19:5' Bus_ZM_Out.En_Traj=false; */
+    /* '<S39>:19:5' Bus_ZM_Out.En_Traj=false; */
     rty_Bus_ZM_Out->En_Traj = false;
 
-    /* '<S37>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
+    /* '<S39>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
     rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-    /* '<S37>:19:7' Bus_ZM_Out.Soll_id = 0; */
+    /* '<S39>:19:7' Bus_ZM_Out.Soll_id = 0; */
     rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-    /* '<S37>:19:8' Bus_ZM_Out.Soll_iq = 0; */
+    /* '<S39>:19:8' Bus_ZM_Out.Soll_iq = 0; */
     rty_Bus_ZM_Out->Soll_iq = 0.0F;
   } else {
-    /* '<S37>:20:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Run; */
+    /* '<S39>:20:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Run; */
     rty_Bus_ZM_Out->Ist_Status = Run;
 
-    /* '<S37>:20:4' Bus_ZM_Out.Pulsfreigabe = true; */
+    /* '<S39>:20:4' Bus_ZM_Out.Pulsfreigabe = true; */
     rty_Bus_ZM_Out->Pulsfreigabe = true;
     switch (localDW->is_Run) {
      case IN_Stromregelung:
-      /* During 'Stromregelung': '<S37>:86' */
-      /* '<S37>:92:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Strom); */
+      /* During 'Stromregelung': '<S39>:86' */
+      /* '<S39>:92:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Strom); */
       if (rtu_Bus_ZM_In->Soll_Regelungsart != Strom) {
-        /* Transition: '<S37>:92' */
+        /* Transition: '<S39>:92' */
         localDW->is_Run = IN_nCtrl;
       } else {
-        /* '<S37>:86:3' Bus_ZM_Out.Soll_id = Bus_ZM_In.Soll_id; */
+        /* '<S39>:86:3' Bus_ZM_Out.Soll_id = Bus_ZM_In.Soll_id; */
         rty_Bus_ZM_Out->Soll_id = rtu_Bus_ZM_In->Soll_id;
 
-        /* '<S37>:86:4' Bus_ZM_Out.Soll_iq = Bus_ZM_In.Soll_iq; */
+        /* '<S39>:86:4' Bus_ZM_Out.Soll_iq = Bus_ZM_In.Soll_iq; */
         rty_Bus_ZM_Out->Soll_iq = rtu_Bus_ZM_In->Soll_iq;
 
-        /* '<S37>:86:5' Bus_ZM_Out.Soll_Drehzahl = 0; */
+        /* '<S39>:86:5' Bus_ZM_Out.Soll_Drehzahl = 0; */
         rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
 
-        /* '<S37>:86:6' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Strom; */
+        /* '<S39>:86:6' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Strom; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Strom;
       }
       break;
 
      case IN_Trapez:
-      /* During 'Trapez': '<S37>:54' */
-      /* '<S37>:90:1' sf_internal_predicateOutput = 0 | (Dis == 1 || Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Trajektorie); */
+      /* During 'Trapez': '<S39>:54' */
+      /* '<S39>:90:1' sf_internal_predicateOutput = 0 | (Dis == 1 || Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Trajektorie); */
       if (rtu_Dis || (rtu_Bus_ZM_In->Soll_Regelungsart != Trajektorie)) {
-        /* Transition: '<S37>:90' */
-        /* Exit Internal 'Trapez': '<S37>:54' */
+        /* Transition: '<S39>:90' */
+        /* Exit Internal 'Trapez': '<S39>:54' */
         localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
         localDW->is_Run = IN_nCtrl;
       } else {
-        /* '<S37>:54:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Trajektorie; */
+        /* '<S39>:54:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Trajektorie; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Trajektorie;
 
-        /* '<S37>:54:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
+        /* '<S39>:54:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
         rty_Bus_ZM_Out->Soll_Drehzahl = rtu_Bus_ZM_In->Soll_Drehzahl;
 
-        /* '<S37>:54:5' Bus_ZM_Out.Soll_id = 0; */
+        /* '<S39>:54:5' Bus_ZM_Out.Soll_id = 0; */
         rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-        /* '<S37>:54:6' Bus_ZM_Out.Soll_iq = 0; */
+        /* '<S39>:54:6' Bus_ZM_Out.Soll_iq = 0; */
         rty_Bus_ZM_Out->Soll_iq = 0.0F;
-        if (localDW->is_Trapez == IN_Run_n) {
-          /* During 'Run': '<S37>:68' */
-          /* '<S37>:70:1' sf_internal_predicateOutput = 0 | (Dis == 1); */
-          /* '<S37>:68:2' Bus_ZM_Out.En_Traj = true; */
+        if (localDW->is_Trapez == IN_Run_c) {
+          /* During 'Run': '<S39>:68' */
+          /* '<S39>:70:1' sf_internal_predicateOutput = 0 | (Dis == 1); */
+          /* '<S39>:68:2' Bus_ZM_Out.En_Traj = true; */
           rty_Bus_ZM_Out->En_Traj = true;
 
-          /* During 'Warten': '<S37>:66' */
-          /* '<S37>:69:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Start_Traj == 1); */
+          /* During 'Warten': '<S39>:66' */
+          /* '<S39>:69:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Start_Traj == 1); */
         } else if (rtu_Bus_ZM_In->Start_Traj == 1.0F) {
-          /* Transition: '<S37>:69' */
-          localDW->is_Trapez = IN_Run_n;
+          /* Transition: '<S39>:69' */
+          localDW->is_Trapez = IN_Run_c;
 
-          /* Entry 'Run': '<S37>:68' */
-          /* '<S37>:68:2' Bus_ZM_Out.En_Traj = true; */
+          /* Entry 'Run': '<S39>:68' */
+          /* '<S39>:68:2' Bus_ZM_Out.En_Traj = true; */
           rty_Bus_ZM_Out->En_Traj = true;
         } else {
-          /* '<S37>:66:2' Bus_ZM_Out.En_Traj = false; */
+          /* '<S39>:66:2' Bus_ZM_Out.En_Traj = false; */
           rty_Bus_ZM_Out->En_Traj = false;
         }
       }
       break;
 
      default:
-      /* During 'nCtrl': '<S37>:56' */
-      /* '<S37>:89:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Trajektorie); */
+      /* During 'nCtrl': '<S39>:56' */
+      /* '<S39>:89:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Trajektorie); */
       switch (rtu_Bus_ZM_In->Soll_Regelungsart) {
        case Trajektorie:
-        /* Transition: '<S37>:89' */
+        /* Transition: '<S39>:89' */
         localDW->is_Run = IN_Trapez;
 
-        /* Entry Internal 'Trapez': '<S37>:54' */
-        /* Transition: '<S37>:67' */
+        /* Entry Internal 'Trapez': '<S39>:54' */
+        /* Transition: '<S39>:67' */
         localDW->is_Trapez = IN_Warten;
 
-        /* Entry 'Warten': '<S37>:66' */
-        /* '<S37>:66:2' Bus_ZM_Out.En_Traj = false; */
+        /* Entry 'Warten': '<S39>:66' */
+        /* '<S39>:66:2' Bus_ZM_Out.En_Traj = false; */
         rty_Bus_ZM_Out->En_Traj = false;
         break;
 
        case Strom:
-        /* '<S37>:91:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Strom); */
-        /* Transition: '<S37>:91' */
+        /* '<S39>:91:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Strom); */
+        /* Transition: '<S39>:91' */
         localDW->is_Run = IN_Stromregelung;
         break;
 
        default:
-        /* '<S37>:56:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
+        /* '<S39>:56:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
 
-        /* '<S37>:56:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
+        /* '<S39>:56:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
         rty_Bus_ZM_Out->Soll_Drehzahl = rtu_Bus_ZM_In->Soll_Drehzahl;
 
-        /* '<S37>:56:5' Bus_ZM_Out.Soll_id = 0; */
+        /* '<S39>:56:5' Bus_ZM_Out.Soll_id = 0; */
         rty_Bus_ZM_Out->Soll_id = 0.0F;
 
-        /* '<S37>:56:6' Bus_ZM_Out.Soll_iq = 0; */
+        /* '<S39>:56:6' Bus_ZM_Out.Soll_iq = 0; */
         rty_Bus_ZM_Out->Soll_iq = 0.0F;
         break;
       }
@@ -1602,11 +1583,10 @@ static void state_chart(const Bus_ZM_In *rtu_Bus_ZM_In, bool rtu_Dis, Bus_ZM_Out
 }
 
 /* System initialize for atomic system: '<S1>/Zustandsmaschine' */
-static void Zustandsmaschine_Init(Bus_ZM_Out *rty_Bus_ZM_Out_Outport_1,
-  DW_Zustandsmaschine *localDW)
+static void Zustandsmaschine_Init(Bus_ZM_Out *rty_Bus_ZM_Out_Outport_1)
 {
   /* SystemInitialize for Chart: '<S4>/state_chart' */
-  state_chart_Init(rty_Bus_ZM_Out_Outport_1, &localDW->sf_state_chart);
+  state_chart_Init(rty_Bus_ZM_Out_Outport_1);
 }
 
 /* Output and update for atomic system: '<S1>/Zustandsmaschine' */
@@ -1629,39 +1609,35 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* Outputs for Atomic SubSystem: '<S1>/Zustandsmaschine' */
 
   /* UnitDelay: '<S1>/Unit Delay' */
-  Zustandsmaschine(&rtU->Bus_ZM_In_d, rtDW->UnitDelay_DSTATE,
-                   &rtDW->Bus_ZM_Out_c, &rtDW->Zustandsmaschine_p);
+  Zustandsmaschine(&rtU->ZM_In, rtDW->UnitDelay_DSTATE, &rtDW->Bus_ZM_Out_o,
+                   &rtDW->Zustandsmaschine_k);
 
   /* End of Outputs for SubSystem: '<S1>/Zustandsmaschine' */
 
   /* Outputs for Enabled SubSystem: '<S1>/Regelung' */
 
   /* SignalConversion generated from: '<S3>/Enable' */
-  Regelung(rtDW->Bus_ZM_Out_c.Pulsfreigabe, &rtU->Bus_Live_Out_PMSM,
-           &rtU->PMSM_In, &rtDW->Bus_ZM_Out_c, &rtDW->Switch, &rtDW->Switch1,
-           rtDW->Logic, &rtDW->Regelung_b);
+  Regelung(rtDW->Bus_ZM_Out_o.Pulsfreigabe, &rtU->PMSM_Out, &rtU->PMSM_In,
+           &rtDW->Bus_ZM_Out_o, &rtDW->Switch, &rtDW->Switch1, rtDW->Logic,
+           &rtDW->Regelung_e);
 
   /* End of Outputs for SubSystem: '<S1>/Regelung' */
 
   /* Outputs for Atomic SubSystem: '<S1>/Raumzeigermodulation' */
 
   /* BusCreator generated from: '<S1>/Bus_Ctrl_Out_BusCreator' incorporates:
+   *  Logic: '<S1>/Abschaten, wenn kein Zeiger vorhanden'
+   *  Logic: '<S1>/Abschaten, wenn kein Zeiger vorhanden1'
    *  Outport: '<Root>/Bus_Ctrl_Out'
    */
   Raumzeigermodulation(rtDW->Switch, rtDW->Switch1,
-                       rtY->Bus_Ctrl_Out_o.Dutycycle);
+                       rtY->Bus_Ctrl_Out_g.Dutycycle);
 
   /* End of Outputs for SubSystem: '<S1>/Raumzeigermodulation' */
-
-  /* Logic: '<S1>/Abschaten, wenn kein Zeiger vorhanden' */
-  rtY->Bus_Ctrl_Out_o.act_pwm = ((rtDW->Switch != 0.0F) || (rtDW->Switch1 !=
-    0.0F));
-
-  /* BusCreator generated from: '<S1>/Bus_Ctrl_Out_BusCreator' incorporates:
-   *  Outport: '<Root>/Bus_Ctrl_Out'
-   */
-  rtY->Bus_Ctrl_Out_o.ctrl_Ualpha = rtDW->Switch;
-  rtY->Bus_Ctrl_Out_o.ctrl_Ubeta = rtDW->Switch1;
+  rtY->Bus_Ctrl_Out_g.act_pwm = (((rtDW->Switch != 0.0F) || (rtDW->Switch1 !=
+    0.0F)) && rtDW->Bus_ZM_Out_o.Pulsfreigabe);
+  rtY->Bus_Ctrl_Out_g.ctrl_Ualpha = rtDW->Switch;
+  rtY->Bus_Ctrl_Out_g.ctrl_Ubeta = rtDW->Switch1;
 
   /* Update for UnitDelay: '<S1>/Unit Delay' */
   rtDW->UnitDelay_DSTATE = rtDW->Logic[0];
@@ -1672,32 +1648,24 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
 {
   DW *rtDW = rtM->dwork;
   ExtU *rtU = (ExtU *) rtM->inputs;
-  ExtY *rtY = (ExtY *) rtM->outputs;
 
   /* Registration code */
 
   /* states (dwork) */
-  (void) memset((void *)rtDW, 0,
-                sizeof(DW));
-
   {
-    rtDW->Bus_ZM_Out_c = uz_codegen0_rtZBus_ZM_Out;
+    rtDW->Bus_ZM_Out_o = uz_codegen0_rtZBus_ZM_Out;
   }
 
   /* external inputs */
-  (void)memset(rtU, 0, sizeof(ExtU));
-  rtU->Bus_ZM_In_d = uz_codegen0_rtZBus_ZM_In;
-
-  /* external outputs */
-  rtY->Bus_Ctrl_Out_o = uz_codegen0_rtZBus_Ctrl_Out;
+  rtU->ZM_In = uz_codegen0_rtZBus_ZM_In;
 
   /* SystemInitialize for Atomic SubSystem: '<S1>/Zustandsmaschine' */
-  Zustandsmaschine_Init(&rtDW->Bus_ZM_Out_c, &rtDW->Zustandsmaschine_p);
+  Zustandsmaschine_Init(&rtDW->Bus_ZM_Out_o);
 
   /* End of SystemInitialize for SubSystem: '<S1>/Zustandsmaschine' */
 
   /* SystemInitialize for Enabled SubSystem: '<S1>/Regelung' */
-  Regelung_Init(&rtDW->Regelung_b);
+  Regelung_Init(&rtDW->Regelung_e);
 
   /* End of SystemInitialize for SubSystem: '<S1>/Regelung' */
 }

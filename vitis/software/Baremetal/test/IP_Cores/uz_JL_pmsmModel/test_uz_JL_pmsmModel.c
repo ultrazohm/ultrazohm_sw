@@ -28,12 +28,9 @@ struct uz_JL_pmsmModel_config_t config = {
     .psi_pm = 0.05f,
     .mot_p = 2.0f,
     .mot_J = 0.001f,
-    .M_N = 4.0f,
-    .n_N = 4000.0f,
-    .i_max = 20.0f,
     };
 
-// uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration);
+uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration);
 
 uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration)
 {
@@ -43,10 +40,10 @@ uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration
     uz_JL_pmsmModel_hw_write_L_q_Expect(BASE_ADDRESS, configuration.L_q);
     uz_JL_pmsmModel_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
     uz_JL_pmsmModel_hw_write_mot_p_Expect(BASE_ADDRESS, configuration.mot_p);
-    uz_JL_pmsmModel_hw_write_mot_J_Expect(BASE_ADDRESS,configuration.mot_J);
-    uz_JL_pmsmModel_hw_write_M_N_Expect(BASE_ADDRESS,configuration.M_N);
-    uz_JL_pmsmModel_hw_write_n_N_Expect(BASE_ADDRESS,configuration.n_N);
-    uz_JL_pmsmModel_hw_write_I_max_Expect(BASE_ADDRESS,configuration.i_max);
+    uz_JL_pmsmModel_hw_write_mot_J_Expect(BASE_ADDRESS, configuration.mot_J);
+    // uz_JL_pmsmModel_hw_write_M_N_Expect(BASE_ADDRESS, configuration.M_N);
+    // uz_JL_pmsmModel_hw_write_n_N_Expect(BASE_ADDRESS, configuration.n_N);
+    // uz_JL_pmsmModel_hw_write_I_max_Expect(BASE_ADDRESS, configuration.i_max);
     uz_JL_pmsmModel_t *instance = uz_JL_pmsmModel_init(configuration);
     return (instance);
 }
@@ -65,10 +62,14 @@ void test_uz_JL_pmsmModel_reset_model(void)
     uz_JL_pmsmModel_hw_write_bremse_Expect(BASE_ADDRESS,false);
     uz_JL_pmsmModel_hw_write_Last_J_Expect(BASE_ADDRESS,0.0f);
     uz_JL_pmsmModel_hw_write_Last_M_Expect(BASE_ADDRESS,0.0f);
+    uz_JL_pmsmModel_hw_write_switchUabc_dq_Expect(BASE_ADDRESS,false);
+    float Udq[2] = {0.0f, 0.0f};
+    uz_JL_pmsmModel_hw_write_Udq_Expect(BASE_ADDRESS,Udq);
+    // uz_JL_pmsmModel_hw_trigger_input_strobe_Expect(BASE_ADDRESS);
     // force rising edge on inputs strobe
-    uz_JL_pmsmModel_hw_write_reset(BASE_ADDRESS, false);
-    uz_JL_pmsmModel_hw_write_reset(BASE_ADDRESS, true);
-    uz_JL_pmsmModel_hw_write_reset(BASE_ADDRESS, false);
+    uz_JL_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
+    uz_JL_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, true);
+    uz_JL_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_JL_pmsmModel_reset(test_instance);
 }
 
@@ -79,10 +80,10 @@ void test_uz_JL_pmsmModel_normal_usage(void)
 
     // trigger the strobe to sample new values into AXI shadow registers
     // Furthermore, pass input values from shadow register to inputs by calling strobe 
-    uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
-    uz_JL_pmsmModel_trigger_output_strobe(test_instance);
-    uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
-    uz_JL_pmsmModel_trigger_output_strobe(test_instance);
+    // uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    // uz_JL_pmsmModel_trigger_output_strobe(test_instance);
+    // uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    // uz_JL_pmsmModel_trigger_output_strobe(test_instance);
     
     float i_u_expect = 6.4f;
     float i_v_expect = 1.1f;
@@ -92,17 +93,18 @@ void test_uz_JL_pmsmModel_normal_usage(void)
     float phi_mech_expect = 0.55f;
 
     // After strobe register was high, current values can be read from AXI
-    uz_JL_pmsmModel_hw_read_I_u_ExpectAndReturn(BASE_ADDRESS, i_u_expect);
-    uz_JL_pmsmModel_hw_read_I_v_ExpectAndReturn(BASE_ADDRESS, i_v_expect);
-    uz_JL_pmsmModel_hw_read_I_w_ExpectAndReturn(BASE_ADDRESS, i_w_expect);
+    uz_JL_pmsmModel_hw_read_I_a_ExpectAndReturn(BASE_ADDRESS, i_u_expect);
+    uz_JL_pmsmModel_hw_read_I_b_ExpectAndReturn(BASE_ADDRESS, i_v_expect);
+    uz_JL_pmsmModel_hw_read_I_c_ExpectAndReturn(BASE_ADDRESS, i_w_expect);
     uz_JL_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);
     uz_JL_pmsmModel_hw_read_omega_mech_ExpectAndReturn(BASE_ADDRESS,omega_mech_expect);
     uz_JL_pmsmModel_hw_read_phi_mech_ExpectAndReturn(BASE_ADDRESS,phi_mech_expect);
+    
 
     struct uz_JL_pmsmModel_outputs_t out = uz_JL_pmsmModel_get_outputs(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(i_u_expect, out.i_u_A);
-    TEST_ASSERT_EQUAL_FLOAT(i_v_expect, out.i_v_A);
-    TEST_ASSERT_EQUAL_FLOAT(i_w_expect, out.i_w_A);
+    TEST_ASSERT_EQUAL_FLOAT(i_u_expect, out.i_a_A);
+    TEST_ASSERT_EQUAL_FLOAT(i_v_expect, out.i_b_A);
+    TEST_ASSERT_EQUAL_FLOAT(i_w_expect, out.i_c_A);
     TEST_ASSERT_EQUAL_FLOAT(torque_expect, out.torque_Nm);
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
     TEST_ASSERT_EQUAL_FLOAT(phi_mech_expect,out.phi_mech_rad);
@@ -117,6 +119,9 @@ void test_uz_JL_pmsmModel_normal_usage(void)
     uz_JL_pmsmModel_hw_write_bremse_Expect(BASE_ADDRESS, inputs.bremse);
     uz_JL_pmsmModel_hw_write_Last_J_Expect(BASE_ADDRESS, inputs.Last_J);
     uz_JL_pmsmModel_hw_write_Last_M_Expect(BASE_ADDRESS, inputs.Last_M);
+    uz_JL_pmsmModel_hw_write_switchUabc_dq_Expect(BASE_ADDRESS,false);
+    float Udq[2] = {0.0f, 0.0f};
+    uz_JL_pmsmModel_hw_write_Udq_Expect(BASE_ADDRESS,Udq);
     uz_JL_pmsmModel_set_inputs(test_instance, inputs);
 }
 #endif // TEST

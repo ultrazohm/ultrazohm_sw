@@ -10,5 +10,9 @@ void uz_JL_invModel_PT1_hw_write_time_constant(uint32_t base_address, float time
 void uz_JL_invModel_PT1_hw_write_gain(uint32_t base_address,float gain);
 void uz_JL_invModel_PT1_hw_write_Ualpha(uint32_t base_address, float input);
 void uz_JL_invModel_PT1_hw_write_Ubeta(uint32_t base_address, float input);
+float uz_JL_invModel_PT1_hw_read_out_Ua(uint32_t base_address);
+float uz_JL_invModel_PT1_hw_read_out_Ub(uint32_t base_address);
+float uz_JL_invModel_PT1_hw_read_out_Uc(uint32_t base_address);
+void uz_JL_invModel_PT1_hw_trigger_output_strobe(uint32_t base_address);
 
 #endif // UZ_JL_INVMDODEL_PT1_HW_H

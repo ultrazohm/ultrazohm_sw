@@ -17,17 +17,17 @@ typedef struct uz_JL_pmsmModel_t uz_JL_pmsmModel_t;
  */
 struct uz_JL_pmsmModel_config_t
 {
-    uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
+    uint32_t base_address; /**< Base address of the IP-Core instance to which thedriver is coupled */
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
-    float mot_p; /**< Pole pairs of the PMSM */
     float r_1; /**< Stator resistance in ohm */
     float L_d; /**< Direct inductance in Henry */
     float L_q; /**< Quadrature inductance in Henry */
     float psi_pm; /**< Linked magnetic flux of PM magnets */
+    float mot_p; /**< Pole pairs of the PMSM */
     float mot_J; /**< Inertia of the PMSM */
-    float M_N;
-    float n_N;
-    float i_max;
+    // float M_N;
+    // float n_N;
+    // float i_max;
 };
 
 /**
@@ -36,9 +36,9 @@ struct uz_JL_pmsmModel_config_t
  */
 struct uz_JL_pmsmModel_outputs_t
 {
-    float i_u_A; /**< Current in d-axis in A */
-    float i_v_A; /**< Current in q-Axis in A */
-    float i_w_A; /**< Current in q-Axis in A */
+    float i_a_A; /**< Current in d-axis in A */
+    float i_b_A; /**< Current in q-Axis in A */
+    float i_c_A; /**< Current in q-Axis in A */
     float phi_mech_rad; /**< Rotational angle of PMSM in rad*/
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
     float torque_Nm; /**< Inner torque of PMSM in Nm*/
@@ -53,6 +53,9 @@ struct uz_JL_pmsmModel_inputs_t
     bool bremse; /**< Select if PMSM is hold in stillstand */
     float Last_M; /**< Load torque in Nm */
     float Last_J; /**< Load inertia in kg/m^2 */
+    bool SwitchUabc_dq;
+    float Ud;
+	float Uq;
 };
 
 /**
@@ -71,6 +74,7 @@ uz_JL_pmsmModel_t *uz_JL_pmsmModel_init(struct uz_JL_pmsmModel_config_t config);
  */
 void uz_JL_pmsmModel_trigger_output_strobe(uz_JL_pmsmModel_t *self);
 
+void uz_JL_pmsmModel_trigger_input_strobe(uz_JL_pmsmModel_t *self);
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
  * 

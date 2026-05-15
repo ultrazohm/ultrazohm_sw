@@ -14,13 +14,11 @@ vcom  uz_JL_pmsmModel_src_Inverse_Clarke_Transformation.vhd
 vcom  uz_JL_pmsmModel_src_nfp_uminus_single.vhd
 vcom  uz_JL_pmsmModel_src_Inverse_Park_Transformation.vhd
 vcom  uz_JL_pmsmModel_src_dq_abc.vhd
-vcom  uz_JL_pmsmModel_src_nfp_recip_single.vhd
 vcom  uz_JL_pmsmModel_src_Subsystem2.vhd
 vcom  uz_JL_pmsmModel_src_Psi.vhd
 vcom  uz_JL_pmsmModel_src_Elektrik.vhd
 vcom  uz_JL_pmsmModel_src_nfp_signum_single.vhd
 vcom  uz_JL_pmsmModel_src_nfp_relop_single.vhd
-vcom  uz_JL_pmsmModel_src_nfp_convert_double2single.vhd
 vcom  uz_JL_pmsmModel_src_nfp_abs_single.vhd
 vcom  uz_JL_pmsmModel_src_Subsystem1.vhd
 vcom  uz_JL_pmsmModel_src_Drehmomentberechnung.vhd

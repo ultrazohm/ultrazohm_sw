@@ -20,6 +20,10 @@
 #include "xil_cache.h"
 #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../IP_Cores/uz_JL_invModel_PT1/uz_JL_invModel_PT1.h"
+#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
 // define the size of the cache to flush
@@ -48,9 +52,13 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern struct uz_pmsmModel_outputs_t pmsm_outputs;
-extern uz_3ph_abc_t  currents_abc;
-extern uz_3ph_abc_t out_voltages;
+extern uz_3ph_alphabeta_t  voltages_alphabeta;
+
+extern struct uz_JL_invModel_PT1_output_t pt1_outputs;
+extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
+
+extern struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out;
+//extern struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -72,23 +80,20 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-//	js_ch_observable[JSO_i_a]					= &currents_abc.a;
-//	js_ch_observable[JSO_i_b]					= &currents_abc.b;
-//	js_ch_observable[JSO_i_c] 					= &currents_abc.c;
-//	js_ch_observable[JSO_omega] 				= &pmsm_outputs.omega_mech_1_s;
-	js_ch_observable[JSO_ua] 					= &out_voltages.a;
-	js_ch_observable[JSO_ub] 					= &out_voltages.b;
-	js_ch_observable[JSO_uc] 					= &out_voltages.c;
-//	js_ch_observable[JSO_uc] 					= &data->av.U_W;
-//	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-//	js_ch_observable[JSO_id] 					= &data->av.I_d;
-//	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-//	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
-//	js_ch_observable[JSO_ud]					= &data->av.U_d;
-//	js_ch_observable[JSO_uq]					= &data->av.U_q;
-//	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-//	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
-//	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_PT1_ua] 				= &pt1_outputs.Ua;
+	js_ch_observable[JSO_PT1_ub] 				= &pt1_outputs.Ub;
+	js_ch_observable[JSO_PT1_uc] 				= &pt1_outputs.Uc;
+//	js_ch_observable[JSO_ideal_ua] 				= &ideal_outputs.Ua;
+//	js_ch_observable[JSO_ideal_ub] 				= &ideal_outputs.Ub;
+//	js_ch_observable[JSO_ideal_uc] 				= &ideal_outputs.Uc;
+	js_ch_observable[JSO_ctrl_Ualpha] 			= &voltages_alphabeta.alpha;
+	js_ch_observable[JSO_ctrl_Ubeta] 			= &voltages_alphabeta.beta;
+	js_ch_observable[JSO_pmsm_pt1_ia]			= &pmsm_pt1_out.i_a_A;
+	js_ch_observable[JSO_pmsm_pt1_ib]			= &pmsm_pt1_out.i_b_A;
+	js_ch_observable[JSO_pmsm_pt1_ic]			= &pmsm_pt1_out.i_c_A;
+//	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
+//	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
+//	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

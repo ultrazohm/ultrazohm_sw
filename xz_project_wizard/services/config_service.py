@@ -12,6 +12,7 @@ def build_config_document(
     slot_cplds: dict[str, str],
     cpld_programmer: dict[str, str],
     axi: dict[str, str],
+    software: dict[str, str],
 ) -> dict[str, Any]:
     return {
         "schema_version": 1,
@@ -24,4 +25,5 @@ def build_config_document(
         "slot_cplds": slot_cplds,
         "cpld_programmer": cpld_programmer,
         "axi": axi,
+        "software": software,
     }

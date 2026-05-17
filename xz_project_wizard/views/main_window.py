@@ -40,6 +40,7 @@ from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
 from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_settings_from_xcf
+from ..services.software_generator_service import SoftwareGenerator
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..tcl_generator import TclGenerator
 from .card_editor import CardEditorDialog
@@ -52,11 +53,17 @@ class MainWindow(QMainWindow):
         self.resize(1200, 760)
         self.database = CardDatabase.load(DATA_FILE)
         self.generator = TclGenerator(self.database)
+        self.software_generator = SoftwareGenerator(self.database)
         self.current_config_path: Path | None = None
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
         self.toolchain_fields: dict[str, QLineEdit] = {}
+        self.software_fields: dict[str, QLineEdit] = {}
+        self.software_mode_combos: dict[str, QComboBox] = {}
+        self.software_preset_combos: dict[str, QComboBox] = {}
+        self.software_preview: QPlainTextEdit | None = None
+        self.software_status: QPlainTextEdit | None = None
         self.toolchain_status: QPlainTextEdit | None = None
         self.platform_cpld_group: QGroupBox | None = None
         self.platform_cpld_type_combo: QComboBox | None = None
@@ -80,8 +87,8 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._build_configuration_page())
         self.stack.addWidget(self._build_slot_cpld_page())
         self.stack.addWidget(self._build_axi_interconnect_page())
-        self.stack.addWidget(self._build_placeholder_page("General"))
-        self.stack.addWidget(self._build_placeholder_page("IP Core Driver Setup"))
+        self.stack.addWidget(self._build_software_general_page())
+        self.stack.addWidget(self._build_software_driver_page())
         self.stack.addWidget(self._build_database_page())
 
         splitter = QSplitter()
@@ -94,6 +101,8 @@ class MainWindow(QMainWindow):
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.reset_toolchain_config()
+        self.reset_software_config()
+        self.refresh_software_preset_options()
         self.reset_axi_config()
         self.rebuild_details()
         self.refresh_tcl_preview()
@@ -367,6 +376,128 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.platform_cpld_group)
         layout.addStretch(1)
         return page
+
+    def _build_software_general_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("General")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        source_group = QGroupBox("Software project")
+        source_form = QFormLayout(source_group)
+        source_form.addRow("Source folder", self._software_path_picker("source_dir", file_mode=False))
+        source_hint = QLabel(
+            "Select the folder that contains globalData.h. For the current Baremetal framework this is "
+            "usually vitis/software/Baremetal/src."
+        )
+        source_hint.setWordWrap(True)
+        source_form.addRow("", source_hint)
+        layout.addWidget(source_group)
+
+        marker_group = QGroupBox("Marker-based edits")
+        marker_layout = QVBoxLayout(marker_group)
+        marker_hint = QLabel(
+            "The wizard keeps one permanent init header/source pair per adapter slot and rewrites only "
+            "xz Project Wizard marker blocks. Setting a slot to No software driver clears the slot-owned "
+            "markers and removes its generated integration from shared marker blocks."
+        )
+        marker_hint.setWordWrap(True)
+        marker_layout.addWidget(marker_hint)
+        layout.addWidget(marker_group)
+
+        layout.addStretch(1)
+        return page
+
+    def _build_software_driver_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("IP Core Driver Setup")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        slot_group = QGroupBox("Slot software integration")
+        slot_grid = QGridLayout(slot_group)
+        header_font = QFont()
+        header_font.setBold(True)
+        for column, header in enumerate(["Slot", "Mode", "Preset"]):
+            label = QLabel(header)
+            label.setFont(header_font)
+            slot_grid.addWidget(label, 0, column)
+        for row, slot in enumerate(SLOTS, start=1):
+            slot_grid.addWidget(QLabel(slot), row, 0)
+            combo = QComboBox()
+            combo.addItem("Follow hardware selection", "follow_hardware")
+            combo.addItem("No software driver", "no_driver")
+            combo.currentIndexChanged.connect(self.refresh_software_preview)
+            self.software_mode_combos[slot] = combo
+            slot_grid.addWidget(combo, row, 1)
+            preset_combo = QComboBox()
+            preset_combo.currentIndexChanged.connect(self.refresh_software_preview)
+            self.software_preset_combos[slot] = preset_combo
+            slot_grid.addWidget(preset_combo, row, 2)
+        slot_grid.setColumnStretch(1, 1)
+        slot_grid.setColumnStretch(2, 1)
+        layout.addWidget(slot_group)
+
+        advanced_group = QGroupBox("Advanced driver configuration")
+        advanced_layout = QVBoxLayout(advanced_group)
+        advanced_label = QLabel("No advanced driver fields are exposed yet. This area is reserved for schema-driven per-slot and per-channel settings.")
+        advanced_label.setWordWrap(True)
+        advanced_layout.addWidget(advanced_label)
+        layout.addWidget(advanced_group)
+
+        buttons = QHBoxLayout()
+        refresh_button = QPushButton("Refresh software preview")
+        refresh_button.clicked.connect(self.refresh_software_preview)
+        generate_button = QPushButton("Generate software files")
+        generate_button.clicked.connect(self.generate_software_files)
+        buttons.addStretch(1)
+        buttons.addWidget(refresh_button)
+        buttons.addWidget(generate_button)
+        layout.addLayout(buttons)
+
+        self.software_preview = QPlainTextEdit()
+        self.software_preview.setReadOnly(True)
+        self.software_preview.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        layout.addWidget(self.software_preview, 2)
+
+        self.software_status = QPlainTextEdit()
+        self.software_status.setReadOnly(True)
+        self.software_status.setFixedHeight(120)
+        layout.addWidget(self.software_status)
+        return page
+
+    def _software_path_picker(self, key: str, file_mode: bool) -> QWidget:
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        field = QLineEdit()
+        field.textChanged.connect(self.refresh_software_preview)
+        button = QPushButton("Browse...")
+        button.clicked.connect(lambda: self.browse_software_path(key, file_mode))
+        self.software_fields[key] = field
+        layout.addWidget(field, 1)
+        layout.addWidget(button)
+        return container
+
+    def browse_software_path(self, key: str, file_mode: bool) -> None:
+        field = self.software_fields[key]
+        start_path = field.text().strip() or str(APP_DIR.parent)
+        if file_mode:
+            path_text, _ = QFileDialog.getOpenFileName(self, "Select file", start_path, "All files (*)")
+        else:
+            path_text = QFileDialog.getExistingDirectory(self, "Select folder", start_path)
+        if path_text:
+            field.setText(path_text)
 
     def _build_configuration_page(self) -> QWidget:
         page = QWidget()
@@ -647,6 +778,20 @@ class MainWindow(QMainWindow):
     def toolchain_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.toolchain_fields.items()}
 
+    def software_config(self) -> dict[str, str]:
+        config = {key: field.text().strip() for key, field in self.software_fields.items()}
+        for slot, combo in self.software_mode_combos.items():
+            config[f"{slot}_mode"] = combo.currentData() or "follow_hardware"
+        for slot, combo in self.software_preset_combos.items():
+            config[f"{slot}_preset"] = combo.currentData() or "default"
+        return config
+
+    def software_modes(self) -> dict[str, str]:
+        return {slot: combo.currentData() or "follow_hardware" for slot, combo in self.software_mode_combos.items()}
+
+    def software_presets(self) -> dict[str, str]:
+        return {slot: combo.currentData() or "default" for slot, combo in self.software_preset_combos.items()}
+
     def load_toolchain_config(self, values: dict[str, str]) -> None:
         for key, field in self.toolchain_fields.items():
             field.blockSignals(True)
@@ -655,6 +800,50 @@ class MainWindow(QMainWindow):
 
     def reset_toolchain_config(self) -> None:
         self.load_toolchain_config({})
+
+    def load_software_config(self, values: dict[str, str]) -> None:
+        defaults = self.default_software_config()
+        for key, field in self.software_fields.items():
+            field.blockSignals(True)
+            field.setText(values.get(key, defaults.get(key, "")))
+            field.blockSignals(False)
+        for slot, combo in self.software_mode_combos.items():
+            combo.blockSignals(True)
+            index = combo.findData(values.get(f"{slot}_mode", "follow_hardware"))
+            combo.setCurrentIndex(index if index >= 0 else 0)
+            combo.blockSignals(False)
+        self.refresh_software_preset_options(values)
+        self.refresh_software_preview()
+
+    def reset_software_config(self) -> None:
+        self.load_software_config({})
+
+    def default_software_config(self) -> dict[str, str]:
+        default_source = APP_DIR.parent / "vitis" / "software" / "Baremetal" / "src"
+        defaults = {"source_dir": str(default_source)}
+        defaults.update({f"{slot}_mode": "follow_hardware" for slot in SLOTS})
+        defaults.update({f"{slot}_preset": "default" for slot in SLOTS})
+        return defaults
+
+    def refresh_software_preset_options(self, values: dict[str, str] | None = None) -> None:
+        values = values or self.software_config()
+        assignments = self.assignments()
+        for slot, combo in self.software_preset_combos.items():
+            selected = values.get(f"{slot}_preset", combo.currentData() or "default")
+            combo.blockSignals(True)
+            combo.clear()
+            card_id = assignments.get(slot, "empty")
+            if card_id == "uz_d_temperature_ltc2983":
+                combo.addItem("Default", "default")
+                combo.addItem("PT100 2-wire", "pt100_2wire")
+                combo.addItem("Type K thermocouple", "type_k_thermocouple")
+            elif card_id == "uz_d_absolute_encoder":
+                combo.addItem("Default EnDat / SSI", "default")
+            else:
+                combo.addItem("Default", "default")
+            index = combo.findData(selected)
+            combo.setCurrentIndex(index if index >= 0 else 0)
+            combo.blockSignals(False)
 
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
@@ -685,6 +874,7 @@ class MainWindow(QMainWindow):
     def adapter_card_changed(self, slot: str) -> None:
         if slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
+        self.refresh_software_preset_options()
         self.refresh_tcl_preview()
 
     def prefill_cpld_for_slot(self, slot: str) -> None:
@@ -1089,6 +1279,59 @@ class MainWindow(QMainWindow):
                 self.axi_config(),
             )
         )
+        self.refresh_software_preview()
+
+    def refresh_software_preview(self) -> None:
+        if self.software_preview is None:
+            return
+        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
+        source_dir = Path(source_text) if source_text else Path("<software source folder>")
+        self.software_preview.setPlainText(
+            self.software_generator.preview(
+                source_dir,
+                self.assignments(),
+                self.option_values(),
+                self.software_modes(),
+                self.software_presets(),
+            )
+        )
+
+    def generate_software_files(self) -> None:
+        source_field = self.software_fields.get("source_dir")
+        source_text = source_field.text().strip() if source_field else ""
+        if not source_text:
+            QMessageBox.warning(self, "Software source folder missing", "Please select the folder that contains globalData.h.")
+            return
+        source_dir = Path(source_text)
+        try:
+            result = self.software_generator.generate(
+                source_dir,
+                self.assignments(),
+                self.option_values(),
+                self.software_modes(),
+                self.software_presets(),
+            )
+        except (OSError, ValueError) as error:
+            QMessageBox.warning(self, "Could not generate software files", str(error))
+            return
+
+        status = ["Software generation finished."]
+        if result.written_files:
+            status.append("Written files:")
+            status.extend(f"- {path}" for path in result.written_files)
+        else:
+            status.append("Written files: none")
+        if result.patched_files:
+            status.append("Patched files:")
+            status.extend(f"- {path}" for path in result.patched_files)
+        else:
+            status.append("Patched files: none")
+        if result.warnings:
+            status.append("Warnings:")
+            status.extend(f"- {warning}" for warning in result.warnings)
+        if self.software_status:
+            self.software_status.setPlainText("\n".join(status))
+        self.refresh_software_preview()
 
     def refresh_card_table(self) -> None:
         self.card_table.setRowCount(len(self.database.cards))
@@ -1147,7 +1390,9 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
+        self.refresh_software_preset_options()
         self.reset_axi_config()
+        self.reset_software_config()
         self.rebuild_details()
         self.refresh_tcl_preview()
 
@@ -1209,6 +1454,7 @@ class MainWindow(QMainWindow):
             self.cpld_assignments(),
             self.cpld_programmer_config(),
             self.axi_config(),
+            self.software_config(),
         )
 
     def load_config_document(self, document: dict[str, Any]) -> None:
@@ -1236,6 +1482,13 @@ class MainWindow(QMainWindow):
             raise ValueError("Config field 'toolchain' must be a JSON object.")
         self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
 
+        software = document.get("software", {})
+        if software is None:
+            software = {}
+        if not isinstance(software, dict):
+            raise ValueError("Config field 'software' must be a JSON object.")
+        self.load_software_config({str(key): str(value) for key, value in software.items()})
+
         slots = document.get("slots", {})
         if not isinstance(slots, dict):
             raise ValueError("Config field 'slots' must be a JSON object.")
@@ -1245,6 +1498,7 @@ class MainWindow(QMainWindow):
             if index < 0:
                 index = combo.findData("empty")
             combo.setCurrentIndex(index if index >= 0 else 0)
+        self.refresh_software_preset_options(software)
 
         slot_options = document.get("slot_options", {})
         if not isinstance(slot_options, dict):

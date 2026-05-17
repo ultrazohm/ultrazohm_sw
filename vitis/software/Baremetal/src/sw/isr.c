@@ -40,6 +40,14 @@ extern DS_Data Global_Data;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+static void xz_update_adapter_a1(void);
+static void xz_update_adapter_a2(void);
+static void xz_update_adapter_a3(void);
+static void xz_update_adapter_d1(void);
+static void xz_update_adapter_d2(void);
+static void xz_update_adapter_d3(void);
+static void xz_update_adapter_d4(void);
+static void xz_update_adapter_d5(void);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -52,6 +60,14 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    xz_update_adapter_a1();
+    xz_update_adapter_a2();
+    xz_update_adapter_a3();
+    xz_update_adapter_d1();
+    xz_update_adapter_d2();
+    xz_update_adapter_d3();
+    xz_update_adapter_d4();
+    xz_update_adapter_d5();
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -73,6 +89,58 @@ void ISR_Control(void *data)
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
+}
+
+static void xz_update_adapter_a1(void)
+{
+    /* xz Project Wizard BEGIN: A1 isr_control */
+/* xz Project Wizard END: A1 isr_control */
+}
+
+static void xz_update_adapter_a2(void)
+{
+    /* xz Project Wizard BEGIN: A2 isr_control */
+/* xz Project Wizard END: A2 isr_control */
+}
+
+static void xz_update_adapter_a3(void)
+{
+    /* xz Project Wizard BEGIN: A3 isr_control */
+/* xz Project Wizard END: A3 isr_control */
+}
+
+static void xz_update_adapter_d1(void)
+{
+    /* xz Project Wizard BEGIN: D1 isr_control */
+/* xz Project Wizard END: D1 isr_control */
+}
+
+static void xz_update_adapter_d2(void)
+{
+    /* xz Project Wizard BEGIN: D2 isr_control */
+/* xz Project Wizard END: D2 isr_control */
+}
+
+static void xz_update_adapter_d3(void)
+{
+    /* xz Project Wizard BEGIN: D3 isr_control */
+/* xz Project Wizard END: D3 isr_control */
+}
+
+static void xz_update_adapter_d4(void)
+{
+    /* xz Project Wizard BEGIN: D4 isr_control */
+    uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
+    Global_Data.av.temperature_card_d4_channel_A = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+    Global_Data.av.temperature_card_d4_channel_B = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'B');
+    Global_Data.av.temperature_card_d4_channel_C = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'C');
+/* xz Project Wizard END: D4 isr_control */
+}
+
+static void xz_update_adapter_d5(void)
+{
+    /* xz Project Wizard BEGIN: D5 isr_control */
+/* xz Project Wizard END: D5 isr_control */
 }
 
 //==============================================================================================================================================================

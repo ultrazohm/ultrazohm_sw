@@ -7,6 +7,15 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+// xz Project Wizard adapter slot headers
+#include "include/a1_adapter_init.h"
+#include "include/a2_adapter_init.h"
+#include "include/a3_adapter_init.h"
+#include "include/d1_adapter_init.h"
+#include "include/d2_adapter_init.h"
+#include "include/d3_adapter_init.h"
+#include "include/d4_adapter_init.h"
+#include "include/d5_adapter_init.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -86,6 +95,11 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	/* xz Project Wizard BEGIN: actualValues */
+	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
+	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
+	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
+/* xz Project Wizard END: actualValues */
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -114,6 +128,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	/* xz Project Wizard BEGIN: objects */
+	uz_temperaturecard_t* temperature_card_d4;
+/* xz Project Wizard END: objects */
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

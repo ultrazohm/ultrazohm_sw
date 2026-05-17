@@ -67,7 +67,7 @@
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
-#define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
+#define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 1U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U

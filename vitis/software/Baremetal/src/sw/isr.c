@@ -140,6 +140,30 @@ static void xz_update_adapter_d4(void)
 static void xz_update_adapter_d5(void)
 {
     /* xz Project Wizard BEGIN: D5 isr_control */
+    Global_Data.av.endat_encoder_d5_1_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_position_multi_turn = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_position_mech_si_single_turn = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_position_el_si_single_turn = uz_endat_interface_get_position_el_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_speed_mech_si = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_speed_el_si = uz_endat_interface_get_speed_el_si(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.endat_encoder_d5_1_speed_mech_rpm = uz_endat_interface_get_speed_mech_rpm(Global_Data.objects.endat_encoder_d5_1);
+    Global_Data.av.ssi_encoder_d5_2_position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_position_raw_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_position_multi_turn = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_speed_mech_si = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_speed_el_si = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.ssi_encoder_d5_2_speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_2);
+    Global_Data.av.endat_encoder_d5_3_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_position_multi_turn = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_position_mech_si_single_turn = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_position_el_si_single_turn = uz_endat_interface_get_position_el_si_single_turn(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_speed_mech_si = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_speed_el_si = uz_endat_interface_get_speed_el_si(Global_Data.objects.endat_encoder_d5_3);
+    Global_Data.av.endat_encoder_d5_3_speed_mech_rpm = uz_endat_interface_get_speed_mech_rpm(Global_Data.objects.endat_encoder_d5_3);
 /* xz Project Wizard END: D5 isr_control */
 }
 

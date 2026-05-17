@@ -2,6 +2,9 @@
   "schema_version": 1,
   "platform": "ultrazohm",
   "platform_revision": "Rev06",
+  "platform_cpld": {
+    "rev04_cpld_type": "la4128v"
+  },
   "toolchain": {
     "vivado_executable": "C:\\Xilinx\\Vivado\\2022.2\\bin\\vivado.bat",
     "lattice_programmer_executable": "C:\\lscc\\programmer\\diamond\\3.14\\bin\\nt64\\pgrcmd.exe",
@@ -48,5 +51,24 @@
     "address_space": "/zynq_ultra_ps_e_0/Data",
     "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
     "local_smartconnect_name": "axi_smartconnect"
+  },
+  "software": {
+    "source_dir": "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_ZC_test\\vitis\\software\\Baremetal\\src",
+    "A1_mode": "follow_hardware",
+    "A2_mode": "follow_hardware",
+    "A3_mode": "follow_hardware",
+    "D1_mode": "follow_hardware",
+    "D2_mode": "follow_hardware",
+    "D3_mode": "follow_hardware",
+    "D4_mode": "follow_hardware",
+    "D5_mode": "follow_hardware",
+    "A1_preset": "default",
+    "A2_preset": "default",
+    "A3_preset": "default",
+    "D1_preset": "default",
+    "D2_preset": "default",
+    "D3_preset": "default",
+    "D4_preset": "type_k_thermocouple",
+    "D5_preset": "default"
   }
 }

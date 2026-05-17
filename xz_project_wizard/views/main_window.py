@@ -6,7 +6,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from PyQt6.QtCore import QProcess, Qt
+from PyQt6.QtCore import QProcess, Qt, QTimer
 from PyQt6.QtGui import QAction, QFont
 from PyQt6.QtWidgets import (
     QComboBox,
@@ -48,7 +48,7 @@ from .card_editor import CardEditorDialog
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("xZohm Project Wizard")
+        self.setWindowTitle("xz Project Wizard")
         self.resize(1200, 760)
         self.database = CardDatabase.load(DATA_FILE)
         self.generator = TclGenerator(self.database)
@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         self.cpld_status: QTextEdit | None = None
         self.cpld_process: QProcess | None = None
         self.cpld_log_path: Path | None = None
-        self.cpld_xcf_path: Path = OUTPUT_DIR / "xzohm_project_wizard_slot_cplds.xcf"
+        self.cpld_xcf_path: Path = OUTPUT_DIR / "xz_project_wizard_slot_cplds.xcf"
         self.cpld_xcf_current = False
         self.write_cpld_button: QPushButton | None = None
         self.program_cpld_button: QPushButton | None = None
@@ -199,6 +199,11 @@ class MainWindow(QMainWindow):
     def _navigation_changed(self, current: QTreeWidgetItem | None) -> None:
         if not current:
             return
+        if current.text(0) in {"Hardware configuration", "Software configuration"}:
+            first_child = current.child(0)
+            if first_child is not None:
+                QTimer.singleShot(0, lambda item=first_child: self.tree.setCurrentItem(item))
+                return
         page_by_name = {
             "Toolchain": 0,
             "Platform": 1,
@@ -417,7 +422,11 @@ class MainWindow(QMainWindow):
 
     def _build_slot_cpld_page(self) -> QWidget:
         page = QWidget()
-        outer = QVBoxLayout(page)
+        page_layout = QVBoxLayout(page)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        content = QWidget()
+        outer = QVBoxLayout(content)
 
         title = QLabel("Slot CPLDs")
         title_font = QFont()
@@ -498,6 +507,8 @@ class MainWindow(QMainWindow):
         self.cpld_status.setFixedHeight(180)
         outer.addWidget(self.cpld_status)
         outer.addStretch(1)
+        scroll.setWidget(content)
+        page_layout.addWidget(scroll)
         return page
 
     def _build_axi_interconnect_page(self) -> QWidget:
@@ -838,7 +849,7 @@ class MainWindow(QMainWindow):
                 raise FileNotFoundError(f"Lattice Programmer executable not found: {programmer_path}")
             if not self.cpld_xcf_current or not self.cpld_xcf_path.exists():
                 raise FileNotFoundError("Generate the Lattice Diamond Programmer project file before programming.")
-            log_path = OUTPUT_DIR / "xzohm_project_wizard_slot_cplds.log"
+            log_path = OUTPUT_DIR / "xz_project_wizard_slot_cplds.log"
         except (OSError, ValueError) as error:
             self.set_cpld_status(f"Could not program CPLDs:\n{error}")
             QMessageBox.warning(self, "Could not program CPLDs", str(error))
@@ -1145,7 +1156,7 @@ class MainWindow(QMainWindow):
             self,
             "Open config",
             str(APP_DIR),
-            "xZohm Project Wizard config (*.xzpw.json);;JSON files (*.json)",
+            "xz Project Wizard config (*.xzpw.json);;JSON files (*.json)",
         )
         if not path_text:
             return
@@ -1166,12 +1177,12 @@ class MainWindow(QMainWindow):
         self.write_config(self.current_config_path)
 
     def save_config_as(self) -> None:
-        default_path = self.current_config_path or (APP_DIR / "generated" / "xzohm_project_wizard_config.xzpw.json")
+        default_path = self.current_config_path or (APP_DIR / "generated" / "xz_project_wizard_config.xzpw.json")
         path_text, _ = QFileDialog.getSaveFileName(
             self,
             "Save config as",
             str(default_path),
-            "xZohm Project Wizard config (*.xzpw.json);;JSON files (*.json)",
+            "xz Project Wizard config (*.xzpw.json);;JSON files (*.json)",
         )
         if not path_text:
             return
@@ -1279,12 +1290,12 @@ class MainWindow(QMainWindow):
         QMessageBox.information(
             self,
             "Info",
-            "xZohm Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
+            "xz Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
         )
 
     def export_tcl(self) -> None:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        default_path = OUTPUT_DIR / "xzohm_project_wizard_config.tcl"
+        default_path = OUTPUT_DIR / "xz_project_wizard_config.tcl"
         path_text, _ = QFileDialog.getSaveFileName(self, "Export TCL", str(default_path), "TCL files (*.tcl)")
         if not path_text:
             return

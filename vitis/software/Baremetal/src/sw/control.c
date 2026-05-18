@@ -174,6 +174,10 @@ void Control_Task_10ms(void)
 	/* === End of write miscellanious outputs to FPGA interface === */
 
 
+	/* read measurement values of UZ_D_Temperature card */
+	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
+	Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+
 #if 0
 	/* --- Write R5 -> A53 shared data and notify A53 --- */
 	// Map SMF outputs into the shared R5->A53 structure (example mapping)
@@ -227,12 +231,12 @@ void Control_Task_100ms(void)
 	data_R2A_localRPU.Temp_Inv_Phase_7 = Inv_SiC_Temp.T_Sys3_Ph1;
 	data_R2A_localRPU.Temp_Inv_Phase_8 = Inv_SiC_Temp.T_Sys3_Ph2;
 	data_R2A_localRPU.Temp_Inv_Phase_9 = Inv_SiC_Temp.T_Sys3_Ph3;
-	data_R2A_localRPU.Temp_Mot_Phase_1 = 1;
-	data_R2A_localRPU.Temp_Mot_Phase_2 = 2;
-	data_R2A_localRPU.Temp_Mot_Phase_3 = 3;
-	data_R2A_localRPU.Temp_Mot_Phase_4 = 4;
-	data_R2A_localRPU.Temp_Mot_Phase_5 = 5;
-	data_R2A_localRPU.Temp_Mot_Phase_6 = 6;
+	data_R2A_localRPU.Temp_Mot_Phase_1 = Global_Data.av.channel_A_data.temperature[3];
+	data_R2A_localRPU.Temp_Mot_Phase_2 = Global_Data.av.channel_A_data.temperature[5];
+	data_R2A_localRPU.Temp_Mot_Phase_3 = Global_Data.av.channel_A_data.temperature[7];
+	data_R2A_localRPU.Temp_Mot_Phase_4 = Global_Data.av.channel_A_data.temperature[9];
+	data_R2A_localRPU.Temp_Mot_Phase_5 = Global_Data.av.channel_A_data.temperature[11];
+	data_R2A_localRPU.Temp_Mot_Phase_6 = Global_Data.av.channel_A_data.temperature[13];
 //	data_R2A_localRPU.Temp_Mot_Rotor = 1;
 	/* === End of provide data for CAN communication === */
 }

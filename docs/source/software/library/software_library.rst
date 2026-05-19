@@ -14,3 +14,4 @@ Software Library
     signals/signals
     wavegen/wavegen
     uz_prng/uz_prng
+    LUT_1D/LUT_1D

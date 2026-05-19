@@ -55,7 +55,7 @@ static bool uz_LUT1D_check_breakpoints_increasing(uz_array_float_t *breakpoints)
     {
         float data = breakpoints->data[i];
         float next_data = breakpoints->data[i + 1U];
-        if (data > next_data  )
+        if (data >= next_data  )
         {
             return false;
         }

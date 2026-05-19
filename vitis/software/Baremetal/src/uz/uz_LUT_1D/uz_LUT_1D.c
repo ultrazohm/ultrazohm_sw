@@ -41,6 +41,8 @@ uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *dat
     uz_assert_not_NULL(breakpoints);
     uz_assert_not_NULL(data);
     uz_assert(breakpoints->length == data->length);
+    uz_assert(breakpoints->length >= 2U);
+    uz_assert(data->length >= 2U);
     uz_assert(uz_LUT1D_check_breakpoints_increasing(breakpoints));
     uz_LUT_1D_t *self = uz_LUT_1D_allocation();
     self->breakpoints = breakpoints;
@@ -51,6 +53,8 @@ uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *dat
 
 static bool uz_LUT1D_check_breakpoints_increasing(uz_array_float_t *breakpoints)
 {
+    uz_assert_not_NULL(breakpoints);
+    uz_assert(breakpoints->length >= 2U);
     for (uint32_t i = 0U; i < breakpoints->length - 1; i++)
     {
         float data = breakpoints->data[i];

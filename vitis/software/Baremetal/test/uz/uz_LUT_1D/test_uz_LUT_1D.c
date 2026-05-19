@@ -167,20 +167,6 @@ void test_uz_LUT_1D_get_value_exact_interior_breakpoint(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-06f, expected, output);
 }
 
-void test_uz_LUT_1D_get_value_single_entry_table(void)
-{
-    float single_breakpoint[1] = {2.0f};
-    float single_data[1] = {7.0f};
-    uz_array_float_t breakpoints_array = {.length = UZ_ARRAY_SIZE(single_breakpoint), .data = single_breakpoint};
-    uz_array_float_t data_array = {.length = UZ_ARRAY_SIZE(single_data), .data = single_data};
-    uz_LUT_1D_t *instance = uz_LUT_1D_init(&breakpoints_array, &data_array);
-
-    float output = uz_LUT_1D_get_value(instance, -10.0f);
-    TEST_ASSERT_FLOAT_WITHIN(1e-06f, 7.0f, output);
-
-    output = uz_LUT_1D_get_value(instance, 10.0f);
-    TEST_ASSERT_FLOAT_WITHIN(1e-06f, 7.0f, output);
-}
 
 void test_uz_LUT_1D_get_value_out_of_bounds_clamps_to_endpoints(void)
 {

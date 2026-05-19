@@ -313,7 +313,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 `sphinxcontrib-mermaid <https://github.com/mgaitan/sphinxcontrib-mermaid>`_
  Enables to embed `Mermaid <https://mermaid-js.github.io/mermaid/#/>`_ graphs.
 
-`sphinxcontrib.yt <https://github.com/divi255/sphinxcontrib.youtube>`_
+`sphinxcontrib.youtube <https://github.com/divi255/sphinxcontrib.youtube>`_
  Simple embedding of youtube videos.
 
 `six <https://github.com/benjaminp/six>`_

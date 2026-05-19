@@ -20,6 +20,7 @@ extern "C" {
 
 // ========== Include Files =========================================================================
 #include "lwip/sockets.h"
+#include "defines.h"
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
 #include "xstatus.h"
@@ -28,6 +29,7 @@ extern "C" {
 #include "xbasic_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
+#include "include/uz_apu_assert_configuration.h"
 #include "uz/uz_HAL.h"
 
 // ========== Threads =========================================================================
@@ -40,14 +42,15 @@ extern "C" {
 // Period (in ms) of the endless loop in network_thread()
 #define NETWORK_LOOPPERIOD_MS	(500U)
 
-#define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
-#define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NETWORK_SEND_FIELD_SIZE 15
-//The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
+#define TCPPACKETSIZE 1460 // Maximum TCP packet size. Default: 1460. Jumbo frames would allow up to 8960.
+#define TCPPORT 1000	   // JavaScope TCP service port
+#define NETWORK_SEND_FIELD_SIZE JS_SAMPLES_PER_PACKET
+// IP address, netmask, and gateway are configured in main.c.
 
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
-#define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
+#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U  // Non-blocking: the ethernet task polls queue depth before dequeuing, so a timeout is not needed
+#define JS_CONTROL_QUEUE_SIZE_ELEMENTS 256U
 
 
 // ========== Definitions =========================================================================
@@ -63,7 +66,7 @@ extern "C" {
 
 // ========== Structures =========================================================================
 
-typedef struct		// status + time + 20 elements (32bit) + 32 bit
+typedef struct		// One JavaScope TCP frame: status plus batched slow-data and 20 sampled channels.
 {
 	uint32_t status;
 	float slowDataContent[NETWORK_SEND_FIELD_SIZE];
@@ -92,17 +95,11 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 
 
 // ========== Functions and Threads ======================================================================
-void Transfer_ipc(void);
 int main_thread();
-void print_echo_app_header();
+void print_javascope_app_header(ip_addr_t *ip);
 void application_thread();
 void lwip_init();
 
-#if CAN_ACTIVE==1
-	void can_send_1(void); 		//CAN interface: Test function for CAN
-	void can_send_2(void); 		//CAN interface: Test function for CAN
-	void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
-#endif
 
 #ifdef __cplusplus
 }

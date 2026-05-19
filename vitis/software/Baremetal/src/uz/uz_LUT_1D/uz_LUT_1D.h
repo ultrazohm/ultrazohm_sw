@@ -7,10 +7,16 @@
 typedef struct uz_LUT_1D_t uz_LUT_1D_t;
 
 /**
- * @brief Initializes a 1D Look-Up Table (LUT) instance with the provided breakpoints, data, and length.
+ * @brief Initializes a 1D Look-Up Table (LUT) instance with the provided breakpoints and data.
  *
- * @param breakpoints pointer to uz_array_float_t objects for breakpoints for the LUT. Breakpoints array must be in ascending order and have the same length as data
- * @param data pointer to uz_array_float_t object for data values corresponding to the breakpoints. Data array must have the same length as breakpoints
+ * Preconditions:
+ * - breakpoints and data are not NULL
+ * - breakpoints and data have the same length
+ * - length is at least 2
+ * - breakpoints are strictly increasing (no duplicates)
+ *
+ * @param breakpoints pointer to uz_array_float_t object for breakpoints for the LUT
+ * @param data pointer to uz_array_float_t object for data values corresponding to the breakpoints
  * @return uz_LUT_1D_t*
  */
 uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *data);

@@ -15,7 +15,7 @@ typedef struct uz_LUT_1D_t
     uint32_t length;
 } uz_LUT_1D_t;
 
-static uint32_t instances_counter_LUT_1D = 0;
+static uint32_t instances_counter_LUT_1D = 0U;
 
 static uz_LUT_1D_t instances_LUT_1D[UZ_LUT_1D_MAX_INSTANCES] = {0};
 
@@ -33,13 +33,15 @@ static uz_LUT_1D_t *uz_LUT_1D_allocation(void)
     uz_assert(self->is_ready == false);
     instances_counter_LUT_1D++;
     self->is_ready = true;
-    return (self);
+    return self;
 }
 
 uz_LUT_1D_t *uz_LUT_1D_init(uz_array_float_t *breakpoints, uz_array_float_t *data)
 {
     uz_assert_not_NULL(breakpoints);
     uz_assert_not_NULL(data);
+    uz_assert_not_NULL(breakpoints->data);
+    uz_assert_not_NULL(data->data);
     uz_assert(breakpoints->length == data->length);
     uz_assert(breakpoints->length >= 2U);
     uz_assert(data->length >= 2U);
@@ -55,11 +57,11 @@ static bool uz_LUT1D_check_breakpoints_increasing(uz_array_float_t *breakpoints)
 {
     uz_assert_not_NULL(breakpoints);
     uz_assert(breakpoints->length >= 2U);
-    for (uint32_t i = 0U; i < breakpoints->length - 1; i++)
+    for (uint32_t i = 0U; i < breakpoints->length - 1U; i++)
     {
         float data = breakpoints->data[i];
         float next_data = breakpoints->data[i + 1U];
-        if (data >= next_data  )
+        if (data >= next_data)
         {
             return false;
         }
@@ -71,6 +73,7 @@ float uz_LUT_1D_get_value(uz_LUT_1D_t *self, float input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->length >= 2U);
     float output = 0.0f;
     // Check if input is out of bounds
     if (input <= self->breakpoints->data[0])
@@ -83,49 +86,38 @@ float uz_LUT_1D_get_value(uz_LUT_1D_t *self, float input)
     }
     // Find the interval for interpolation using binary search
     uint32_t idx = 0U;
-    if (self->length > 1U)
+    uint32_t left = 0U;
+    uint32_t right = self->length - 2U; // search space is [0, length-2]
+    while (left <= right)
     {
-        uint32_t left = 0U;
-        uint32_t right = self->length - 2U; // search space is [0, length-2]
-        while (left <= right)
+        uint32_t midpoint = left + ((right - left) >> 1);
+        float bp_mid = self->breakpoints->data[midpoint];
+        float bp_mid1 = self->breakpoints->data[midpoint + 1U];
+        if (input >= bp_mid && input < bp_mid1)
         {
-            uint32_t midpoint = left + ((right - left) >> 1);
-            float bp_mid = self->breakpoints->data[midpoint];
-            float bp_mid1 = self->breakpoints->data[midpoint + 1U];
-            if (input >= bp_mid && input < bp_mid1)
+            idx = midpoint;
+            break;
+        }
+        else if (input < bp_mid)
+        {
+            if (midpoint == 0U)
             {
-                idx = midpoint;
+                idx = 0U;
                 break;
             }
-            else if (input < bp_mid)
-            {
-                if (midpoint == 0U)
-                {
-                    idx = 0U;
-                    break;
-                }
-                right = midpoint - 1U;
-            }
-            else
-            {
-                left = midpoint + 1U;
-            }
+            right = midpoint - 1U;
         }
-        float x0 = self->breakpoints->data[idx];
-        float x1 = self->breakpoints->data[idx + 1U];
-        float y0 = self->data->data[idx];
-        float y1 = self->data->data[idx + 1U];
-        if (x1 == x0)
+        else
         {
-            uz_assert(false); // Avoid division by zero, return y0 if breakpoints are the same
+            left = midpoint + 1U;
         }
-        float slope = (y1 - y0) / (x1 - x0);
-        output = y0 + slope * (input - x0);
     }
-    else
-    {
-        output = self->data->data[0];
-    }
+    float x0 = self->breakpoints->data[idx];
+    float x1 = self->breakpoints->data[idx + 1U];
+    float y0 = self->data->data[idx];
+    float y1 = self->data->data[idx + 1U];
+    float slope = (y1 - y0) / (x1 - x0);
+    output = y0 + slope * (input - x0);
     return output;
 }
 #endif

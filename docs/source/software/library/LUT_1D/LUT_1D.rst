@@ -17,7 +17,7 @@ When the input is above the last breakpoint, the last data value is returned.
 When the input is between two breakpoints, the output is linearly interpolated between the two nearest points.
 
 .. code-block:: c
-  :caption: Example to initialize the configuration struct
+  :caption: Example initialization of the configuration struct
 
     //Arrays for LUTs
     static float LUT_breakpoints_array[6] = {0.0f, 1.0f, 2.0f,  3.0f,  4.0f,  5.0f};
@@ -39,7 +39,7 @@ When the input is between two breakpoints, the output is linearly interpolated b
 
 The following plot shows the example LUT defined by ``LUT_breakpoints_array`` and ``LUT_data_array``.
 
-.. tikz:: Example LUT defined by ``LUT_breakpoints_array`` and ``LUT_data_array`` approximating :math:`f(x)` where :math:`x` are the breakpoints.
+.. tikz:: Example LUT defined by ``LUT_breakpoints_array`` and ``LUT_data_array`` approximating :math:`f(x)` where :math:`x` are the breakpoints. The input :math:`x=2.5` is passed to ``uz_LUT_1D_get_value``, which returns :math:`f(2.5)=12.5`.
   :align: center
 
   \begin{tikzpicture}
@@ -61,6 +61,7 @@ The following plot shows the example LUT defined by ``LUT_breakpoints_array`` an
       \addplot[
         color=blue,
         thick,
+        dashed,
         mark=*,
         mark size=2.5pt
       ] coordinates {
@@ -71,7 +72,16 @@ The following plot shows the example LUT defined by ``LUT_breakpoints_array`` an
         (4,20)
         (5,25)
       };
+            \addplot[
+        color=red,
+        thick,
+        mark=x,
+        mark size=4pt
+      ] coordinates {
+        (2.5,12.5)
+      };
       \addlegendentry{LUT support points}
+      \addlegendentry{Interpolation point}
     \end{axis}
   \end{tikzpicture}
 

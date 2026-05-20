@@ -1,0 +1,77 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "windows": {
+                "command": "powershell",
+                "args": [
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-NonInteractive",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    "${workspaceFolder}\\build.ps1"
+                ]
+            },
+            "linux": {
+                "command": "${workspaceFolder}/build.sh"
+            }
+        },
+        {
+            "label": "Run (Default)",
+            "type": "shell",
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "dependsOn": ["Build"],
+            "windows": {
+                "command": "cmd",
+                "args": [
+                    "/c",
+                    "${workspaceFolder}\\javascope_run.bat"
+                ]
+            },
+            "linux": {
+                "command": "${workspaceFolder}/run.sh"
+            }
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "windows": {
+                "command": "powershell",
+                "args": [
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-NonInteractive",
+                    "-Command",
+                    "Remove-Item -Recurse -Force build,dist -ErrorAction SilentlyContinue; Write-Host 'Clean complete' -ForegroundColor Green"
+                ]
+            },
+            "linux": {
+                "command": "bash",
+                "args": [
+                    "-lc",
+                    "rm -rf build dist; echo 'Clean complete'"
+                ]
+            }
+        }
+    ]
+}

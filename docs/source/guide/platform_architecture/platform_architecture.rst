@@ -43,7 +43,7 @@ IP core
 
 IP cores are used in Programmable Logic (PL) aka FPGA.
 They are a reusable component of design logic with a defined interface and behavior that has been verified by its creator. 
-They are comparable to the use of a library for computer programming or a discrete integrated circuit component for printed circuit board design [#ug1228]_ .
+They are comparable to the use of a library for computer programming or a discrete integrated circuit component for printed circuit board design [#ug1228]_ [#wiki]_.
 They can be used for cases when the compute power of the RPU is not sufficient anymore and an acceleration via hardware is necessary.
 For example, deep-learning applications are too resource intensive for the processor and can therefore be accelerated on the FPGA with an IP core.
 

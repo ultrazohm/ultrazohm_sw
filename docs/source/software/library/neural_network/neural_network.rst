@@ -5,7 +5,7 @@ Neural network
 ==============
 
 The following describes the basic theory and definitions for `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
-The software module :ref:`uz_nn` is based on the definitions on this page.
+The software module :ref:`uz_nn` is based on the definitions on this page. For an example of real-time neural-network inference on FPGAs in motor-control applications, see [#realTimeInference]_.
 
 Network and dimension definition
 ================================

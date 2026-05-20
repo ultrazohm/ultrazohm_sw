@@ -24,6 +24,7 @@
 #include "include/javascope.h"
 #include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel_hwAdresse.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
 
 
 uz_JL_invModel_PT1_t *inverter_PT1=NULL;
@@ -33,6 +34,11 @@ uz_JL_pmsmModel_t *pmsm_ideal = NULL;
 
 extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
 extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
+extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
+extern struct uz_JL_invModel_PT1_output_t pt1_outputs;
+
+extern struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out;
+
 //struct uz_JL_invModel_ideal_config_t ideal_config ={
 //		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_IDEAL_0_BASEADDR,
 //		.ip_core_frequency_Hz = 100000000.0f,
@@ -42,8 +48,8 @@ extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
 struct uz_JL_invModel_PT1_config_t PT1_config ={
 		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_PT1_0_BASEADDR,
 		.ip_core_frequency_Hz = 100000000.0f,
-		.gain = 1,
-		.time_constant = 1/(0.5f*1/10000)
+		.gain = 1.0f,
+		.time_constant = 1000000.0f,
 };
 
 struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
@@ -55,6 +61,11 @@ struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
 		.L_d = 0.0072f,
 		.L_q = 0.0072f,
 		.psi_pm = 0.1423f,
+		.mot_F = 0.01f,
+		.mot_Fcoeff = 0.001f,
+		.M_N = 4.3f,
+		.n_N = 5700.0f,
+		.i_max = 20.9f,
 };
 
 //struct uz_JL_pmsmModel_config_t pmsm_ideal_config = {
@@ -66,6 +77,8 @@ struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
 //		.L_d = 0.0072f,
 //		.L_q = 0.0072f,
 //		.psi_pm = 0.1423f,
+//		.mot_F = 0.01f,
+//		.mot_Fcoeff = 0.001f,
 //};
 
 // Initialize the global variables
@@ -107,11 +120,27 @@ uint32_t rpu_version_final = 0;
 uz_codegen regelung;
 
 
-
-//uz_pmsmModel_t *pmsm=NULL;
-
 int main(void)
 {
+	regelung.input.Bus_ZM_In_f.Fehlermeldung = false;
+	regelung.input.Bus_ZM_In_f.Soll_Drehzahl = 0;
+	regelung.input.Bus_ZM_In_f.Soll_Regelungsart = Drehzahl;
+	regelung.input.Bus_ZM_In_f.Soll_Status = Ready;
+	regelung.input.Bus_ZM_In_f.Soll_id = 0;
+	regelung.input.Bus_ZM_In_f.Soll_iq = 0;
+	regelung.input.Bus_ZM_In_f.Start_Traj = false;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = 0;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[0] = 0;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[1] = 0;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = 0;
+	regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = 0;
+	regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = 0;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[0] = 0.5;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[1] = 0.5;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[2] = 0.5;
+	regelung.output.Bus_Ctrl_Out_k.ctrl_Ualpha = 0;
+	regelung.output.Bus_Ctrl_Out_k.ctrl_Ubeta = 0;
+	regelung.output.Bus_Ctrl_Out_k.act_pwm = false;
 
 	int status = UZ_SUCCESS;
     while (1)
@@ -156,13 +185,18 @@ int main(void)
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
+
 //            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
+//            pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
+//        	uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
+//            uz_axi_write_bool(XPAR_UZ_USER_UZ_JL_PMSMMODEL_1_BASEADDR + IPCore_Enable_uz_JL_pmsmModel, true);
+
             inverter_PT1 = uz_JL_invModel_PT1_init(PT1_config);
             pmsm_PT1 = uz_JL_pmsmModel_init(pmsm_pt1_config);
+
             uz_JL_pmsmModel_set_inputs(pmsm_PT1, pmsm_pt1_in);
-//			uz_JL_pmsmModel_trigger_input_strobe(pmsm_PT1);
             uz_axi_write_bool(XPAR_UZ_USER_UZ_JL_PMSMMODEL_0_BASEADDR + IPCore_Enable_uz_JL_pmsmModel, true);
-//            pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
+
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -181,6 +215,7 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+
             break;
         default:
             break;

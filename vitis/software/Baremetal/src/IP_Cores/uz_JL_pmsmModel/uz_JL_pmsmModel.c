@@ -42,8 +42,8 @@ uz_JL_pmsmModel_t *uz_JL_pmsmModel_init(struct uz_JL_pmsmModel_config_t config)
     uz_assert(config.psi_pm >= 0.0f);
     uz_assert(config.mot_p > 0.0f);
     uz_assert(config.mot_J > 0.0f);
-    // uz_assert(config.M_N > 0.0f);
-    // uz_assert(config.n_N > 0.0f);
+    uz_assert(config.mot_F > 0.0f);
+    uz_assert(config.mot_Fcoeff > 0.0f);
     // uz_assert(config.i_max > 0.0f);
     // If the mechanical system is not simulated, set default values
 
@@ -115,11 +115,11 @@ struct uz_JL_pmsmModel_outputs_t uz_JL_pmsmModel_get_outputs(uz_JL_pmsmModel_t *
 //     uz_JL_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
 // }
 
-// void uz_JL_pmsmModel_trigger_output_strobe(uz_JL_pmsmModel_t *self){
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     uz_JL_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
-// }
+void uz_JL_pmsmModel_trigger_output_strobe(uz_JL_pmsmModel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
+}
 
 
 static void write_config_to_pl(uz_JL_pmsmModel_t *self)
@@ -132,8 +132,8 @@ static void write_config_to_pl(uz_JL_pmsmModel_t *self)
     uz_JL_pmsmModel_hw_write_psi_pm(self->config.base_address,  self->config.psi_pm);
     uz_JL_pmsmModel_hw_write_mot_p(self->config.base_address,  self->config.mot_p);
     uz_JL_pmsmModel_hw_write_mot_J(self->config.base_address,  self->config.mot_J);
-    // uz_JL_pmsmModel_hw_write_M_N(self->config.base_address,  self->config.M_N);
-    // uz_JL_pmsmModel_hw_write_n_N(self->config.base_address,  self->config.n_N);
+    uz_JL_pmsmModel_hw_write_Coulomb_Reibung(self->config.base_address,  self->config.mot_F);
+    uz_JL_pmsmModel_hw_write_Reibungskoeffizient(self->config.base_address,  self->config.mot_Fcoeff);
     // uz_JL_pmsmModel_hw_write_I_max(self->config.base_address,  self->config.i_max);
 }
 

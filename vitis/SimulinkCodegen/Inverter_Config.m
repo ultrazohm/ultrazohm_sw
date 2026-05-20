@@ -18,7 +18,7 @@ elems(4).DataType = 'single';
 
 elems(5) = Simulink.BusElement;
 elems(5).Name = 'PT1_reset';
-elems(5).DataType = 'single';
+elems(5).DataType = 'boolean';
 
 Bus_Inv_Config = Simulink.Bus;
 Bus_Inv_Config.Elements = elems;

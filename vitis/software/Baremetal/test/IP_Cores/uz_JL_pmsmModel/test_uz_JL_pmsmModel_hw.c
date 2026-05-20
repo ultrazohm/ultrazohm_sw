@@ -102,7 +102,7 @@ void test_uz_JL_pmsmModel_hw_write_mot_J(void)
 
 void test_uz_JL_pmsmModel_hw_fail_assert_write_mot_J_without_baseaddress(void)
 {
-    float mot_J=3.2;
+    float mot_J=3.2f;
     uz_axi_write_float_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_JL_pmsmModel_hw_write_mot_J(0u, mot_J));
 }
@@ -181,15 +181,43 @@ void test_uz_JL_pmsmModel_hw_fail_assert_write_Last_M_without_baseaddress(void)
 void test_uz_JL_pmsmModel_hw_write_bremse(void)
 {
     bool bremse=true;
-    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+Bremse_Data_uz_JL_pmsmModel,bremse);
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+Bremse_Data_uz_JL_pmsmModel,bremse);
     uz_JL_pmsmModel_hw_write_bremse(TEST_BASE_ADDRESS, bremse);
 }
 
 void test_uz_JL_pmsmModel_hw_fail_assert_write_bremse_without_baseaddress(void)
 {
-    float bremse=3.2f;
-    uz_axi_write_float_Ignore();
+    bool bremse=true;
+    uz_axi_write_bool_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_JL_pmsmModel_hw_write_bremse(0u, bremse));
+}
+
+void test_uz_JL_pmsmModel_hw_write_Coulomb_Reibung(void)
+{
+    float Coulomb_Reibung=0.01f;
+    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+Coulomb_Reibung_Data_uz_JL_pmsmModel, Coulomb_Reibung);
+    uz_JL_pmsmModel_hw_write_Coulomb_Reibung(TEST_BASE_ADDRESS, Coulomb_Reibung);
+}
+
+void test_uz_JL_pmsmModel_hw_fail_assert_write_Coulomb_Reibung_without_baseaddress(void)
+{
+    float Coulomb_Reibung=0.01f;
+    uz_axi_write_float_Ignore();
+    TEST_ASSERT_FAIL_ASSERT(uz_JL_pmsmModel_hw_write_Coulomb_Reibung(0u, Coulomb_Reibung));
+}
+
+void test_uz_JL_pmsmModel_hw_write_Reibungskoeffizient(void)
+{
+    float reibungskoeffizient=0.001f;
+    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+Reibungskoeffizient_Data_uz_JL_pmsmModel,reibungskoeffizient);
+    uz_JL_pmsmModel_hw_write_Reibungskoeffizient(TEST_BASE_ADDRESS, reibungskoeffizient);
+}
+
+void test_uz_JL_pmsmModel_hw_fail_assert_write_Reibungkoeffizient_without_baseaddress(void)
+{
+    float reibungskoeffizient=0.001f;
+    uz_axi_write_float_Ignore();
+    TEST_ASSERT_FAIL_ASSERT(uz_JL_pmsmModel_hw_write_Reibungskoeffizient(0u, reibungskoeffizient));
 }
 
 void test_uz_JL_pmsmModel_hw_write_switchUabc_dq(void)
@@ -275,10 +303,10 @@ void test_uz_JL_pmsmModel_hw_read_I_c(void)
 //     uz_JL_pmsmModel_hw_trigger_input_strobe(TEST_BASE_ADDRESS);
 // }
 
-// void test_uz_JL_pmsmModel_hw_trigger_output_strobe(void){
-//     uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+Iabc_Strobe_uz_JL_pmsmModel,true);
-//     uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+Iabc_Strobe_uz_JL_pmsmModel,false);
-//     uz_JL_pmsmModel_hw_trigger_output_strobe(TEST_BASE_ADDRESS);
-// }
+void test_uz_JL_pmsmModel_hw_trigger_output_strobe(void){
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+pmsm_out_Strobe_uz_JL_pmsmModel,true);
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+pmsm_out_Strobe_uz_JL_pmsmModel,false);
+    uz_JL_pmsmModel_hw_trigger_output_strobe(TEST_BASE_ADDRESS);
+}
 
 #endif // TEST

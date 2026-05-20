@@ -28,6 +28,8 @@ struct uz_JL_pmsmModel_config_t config = {
     .psi_pm = 0.05f,
     .mot_p = 2.0f,
     .mot_J = 0.001f,
+    .mot_F = 0.01f,
+    .mot_Fcoeff = 0.001f,
     };
 
 uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration);
@@ -41,8 +43,8 @@ uz_JL_pmsmModel_t *successful_init(struct uz_JL_pmsmModel_config_t configuration
     uz_JL_pmsmModel_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
     uz_JL_pmsmModel_hw_write_mot_p_Expect(BASE_ADDRESS, configuration.mot_p);
     uz_JL_pmsmModel_hw_write_mot_J_Expect(BASE_ADDRESS, configuration.mot_J);
-    // uz_JL_pmsmModel_hw_write_M_N_Expect(BASE_ADDRESS, configuration.M_N);
-    // uz_JL_pmsmModel_hw_write_n_N_Expect(BASE_ADDRESS, configuration.n_N);
+    uz_JL_pmsmModel_hw_write_Coulomb_Reibung_Expect(BASE_ADDRESS, configuration.mot_F);
+    uz_JL_pmsmModel_hw_write_Reibungskoeffizient_Expect(BASE_ADDRESS, configuration.mot_Fcoeff);
     // uz_JL_pmsmModel_hw_write_I_max_Expect(BASE_ADDRESS, configuration.i_max);
     uz_JL_pmsmModel_t *instance = uz_JL_pmsmModel_init(configuration);
     return (instance);
@@ -80,8 +82,8 @@ void test_uz_JL_pmsmModel_normal_usage(void)
 
     // trigger the strobe to sample new values into AXI shadow registers
     // Furthermore, pass input values from shadow register to inputs by calling strobe 
-    // uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
-    // uz_JL_pmsmModel_trigger_output_strobe(test_instance);
+    uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    uz_JL_pmsmModel_trigger_output_strobe(test_instance);
     // uz_JL_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
     // uz_JL_pmsmModel_trigger_output_strobe(test_instance);
     

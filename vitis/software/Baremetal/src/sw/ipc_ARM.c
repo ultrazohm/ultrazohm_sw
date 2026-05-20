@@ -18,9 +18,18 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../IP_Cores/uz_JL_invModel_PT1/uz_JL_invModel_PT1.h"
+#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
+
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+extern uz_JL_pmsmModel_t *pmsm_PT1;
+
+extern Bus_ZM_In struct_ZM_In;
+extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -186,11 +195,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		struct_ZM_In.Soll_Drehzahl = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		pmsm_pt1_in.Last_M = value;
+		uz_JL_pmsmModel_set_inputs(pmsm_PT1, pmsm_pt1_in);
+
 			break;
 
 		case (Set_Send_Field_3):

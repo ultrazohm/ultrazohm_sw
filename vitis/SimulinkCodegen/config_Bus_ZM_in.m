@@ -19,7 +19,7 @@ i = i + 1;
 
 elems(i) = Simulink.BusElement;
 elems(i).Name = 'Start_Traj';
-elems(i).DataType = 'single';
+elems(i).DataType = 'boolean';
 i = i + 1;
 
 elems(i) = Simulink.BusElement;
@@ -44,7 +44,7 @@ clear elems;
 % --- Parameter-Definition (Die Werte) ---
 clear data;
 
-data.Soll_Drehzahl = 2000; 
+data.Soll_Drehzahl = 5000; 
 data.Soll_id = 0; 
 data.Soll_iq = 0; 
 data.Start_Traj = 0; 

@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>07ce4059</spirit:value>
+            <spirit:value>62ce654c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>07ce4059</spirit:value>
+            <spirit:value>62ce654c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -960,11 +960,45 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>InvOut_PL</spirit:name>
+        <spirit:name>InvOut_PL_U</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">95</spirit:left>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>InvOut_PL_V</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>InvOut_PL_W</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1227,7 +1261,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_InvModel_PT1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_6a18b93b</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_725a3c54</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1403,15 +1437,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_InvModel_PT1</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114604332</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-05-11T13:33:21Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114615973</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-05-19T15:33:33Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="28c8f986"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="34949882"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d5a12182"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="20772c89"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="6047eac8"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

@@ -74,10 +74,10 @@ data.KPi = struct_PMSM_Config.Value.mot_R1 * data.TNi / (data.T_PWM + data.Tsamp
 data.TEi = data.T_PWM + data.Tsample;
 data.TNn = 4 * data.TEi;
 data.KPn = 0.5 * 2 * pi * (struct_PMSM_Config.Value.mot_J+struct_PMSM_In.Value.Last_J) / data.TEi;
-data.n_hyst_upperlimit = struct_PMSM_Config.Value.mot_n_N/60/2/pi/100*1.01; % Hysterese Drehzahlregler: 1% des Sollwerts
+data.n_hyst_upperlimit = struct_PMSM_Config.Value.mot_n_N/60/2/pi/100*1.005; % Hysterese Drehzahlregler: 1% des Sollwerts
 data.n_hyst_lowerlimit = -data.n_hyst_upperlimit;
 data.t_traj = 0.2; % Zeit bis Ende Plateau Trapez
-data.IGBT_dc_min = 5e-6; %minimale Einschaltzeit IGBT
+data.IGBT_dc_min = 1e-6; %minimale Einschaltzeit IGBT
 data.IGBT_deadtime = 5e-7 ; % IGBT Totzeit zwischen Top und Bot Schalter
 
 struct_Ctrl_Config = Simulink.Parameter;

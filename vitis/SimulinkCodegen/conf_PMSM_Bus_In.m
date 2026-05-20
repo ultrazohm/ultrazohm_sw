@@ -30,7 +30,7 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.Last_M = 2; % DC link voltage
+data.Last_M = 0; % DC link voltage
 data.Last_J = 0; % Gain for PT1
 data.Bremse = 0; % Time constant for PT1
 data.Udq = [0 0];

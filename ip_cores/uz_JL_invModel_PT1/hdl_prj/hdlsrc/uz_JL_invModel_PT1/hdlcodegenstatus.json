@@ -22,10 +22,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        1105492445,
-        4214319400,
-        431607006,
-        1059481425
+        3621370441,
+        3893529281,
+        3576020720,
+        3187794958
       ],
       "MarkedUnique": false
     },
@@ -106,7 +106,7 @@
       ],
       "outputPorts": [
         {
-          "Name": "InvOut_PL",
+          "Name": "InvOut_PL_U",
           "Rate": 1E-6,
           "Kind": "data",
           "PortIndex": 0,
@@ -124,11 +124,33 @@
           "Testpoint": false,
           "TunableName": "",
           "Latency": -1
+        },
+        {
+          "Name": "InvOut_PL_V",
+          "Rate": 1E-6,
+          "Kind": "data",
+          "PortIndex": 2,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "InvOut_PL_W",
+          "Rate": 1E-6,
+          "Kind": "data",
+          "PortIndex": 3,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
         }
       ]
     }
   },
   "PhaseCycles": [
+    0,
+    0,
     0,
     0
   ],
@@ -136,7 +158,7 @@
     "multipliers": 10,
     "addersSubtractors": 160,
     "registers": 1699,
-    "oneBitRegisters": 30776,
+    "oneBitRegisters": 30968,
     "rams": 0,
     "multiplexers": 1894,
     "IOBits": 325,

@@ -2,8 +2,8 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Fri May 15 13:51:49 2026
-# Process ID: 28524
+# Start of session at: Tue May 19 17:18:56 2026
+# Process ID: 31924
 # Current directory: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_pmsmModel/hdl_prj/ipcore/uz_JL_pmsmModel_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_pmsmModel/hdl_prj/ipcore/uz_JL_pmsmModel_v1_0/prj_ip/vivado.log
@@ -11,8 +11,8 @@
 # Running On: Jonathan-Link, OS: Windows, CPU Frequency: 1697 MHz, CPU Physical cores: 16, Host memory: 33528 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:10 . Memory (MB): peak = 377.785 ; gain = 44.012
-update_compile_order: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 378.844 ; gain = 0.785
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 378.496 ; gain = 55.895
+update_compile_order: Time (s): cpu = 00:00:00 ; elapsed = 00:00:07 . Memory (MB): peak = 379.156 ; gain = 0.523
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_pmsmModel/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_pmsmModel/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_pmsmModel/hdl_prj/ipcore/uz_JL_pmsmModel_v1_0/prj_ip'.)
@@ -30,6 +30,7 @@ INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'A
 WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
 INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::package_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 426.465 ; gain = 20.203
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel_src_uz_JL_pmsmModel_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel_src_uz_JL_pmsmModel_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel_src_uz_JL_pmsmModel_tc.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -102,4 +103,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel_axi4.vhd" already exi
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_pmsmModel.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Fri May 15 13:52:16 2026...
+INFO: [Common 17-206] Exiting Vivado at Tue May 19 17:19:27 2026...

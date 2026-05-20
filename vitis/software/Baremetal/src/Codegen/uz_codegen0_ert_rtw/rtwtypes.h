@@ -12,8 +12,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "complex_types.h"
-
 typedef int8_t int8_T;
 typedef uint8_t uint8_T;
 typedef int16_t int16_T;

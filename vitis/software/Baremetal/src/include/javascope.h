@@ -24,17 +24,21 @@ enum JS_OberservableData {
 	JSO_PT1_ua,
 	JSO_PT1_ub,
 	JSO_PT1_uc,
-	JSO_ideal_ua,
-	JSO_ideal_ub,
-	JSO_ideal_uc,
+//	JSO_ideal_ua,
+//	JSO_ideal_ub,
+//	JSO_ideal_uc,
 	JSO_ctrl_Ualpha,
 	JSO_ctrl_Ubeta,
 	JSO_pmsm_pt1_ia,
 	JSO_pmsm_pt1_ib,
 	JSO_pmsm_pt1_ic,
-	JSO_pmsm_ideal_ia,
-	JSO_pmsm_ideal_ib,
-	JSO_pmsm_ideal_ic,
+//	JSO_pmsm_ideal_ia,
+//	JSO_pmsm_ideal_ib,
+//	JSO_pmsm_ideal_ic,
+	JSO_pmsm_pt1_omega,
+	JSO_pmsm_pt1_phi,
+	JSO_pmsm_pt1_torque,
+	JSO_Soll_Drehzahl,
 	JSO_ENDMARKER
 };
 
@@ -112,8 +116,8 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
+	Soll_Drehzahl,
+	Last_Moment,
 	send_field_3,
 	send_field_4,
 	send_field_5,

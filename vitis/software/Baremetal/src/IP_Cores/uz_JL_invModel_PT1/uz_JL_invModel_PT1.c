@@ -72,7 +72,7 @@ void uz_JL_invModel_PT1_set_time_constant(uz_JL_invModel_PT1_t *self, float time
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
      // the time constant is inverted since the IP-Core expects 1/time_constant in the hardware register
-    self->config.time_constant=(1.0f/time_constant);
+    self->config.time_constant=(time_constant);
     uz_JL_invModel_PT1_hw_write_time_constant(self->config.base_adress, self->config.time_constant);
 }
 

@@ -27,7 +27,7 @@
     "uz_JL_pmsmModel_src_Mechanik.vhd",
     "uz_JL_pmsmModel_src_uz_JL_pmsmModel.vhd"
   ],
-  "Latency": 2,
+  "Latency": 1,
   "ModelGenStatus": {
     "Version": {
       "Name": "HDL Coder",
@@ -37,10 +37,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        1587600263,
-        2758292179,
-        401193484,
-        1854218775
+        3170488367,
+        3375923211,
+        1045221040,
+        1567417405
       ],
       "MarkedUnique": false
     },
@@ -235,89 +235,50 @@
           "Testpoint": false,
           "TunableName": "",
           "Latency": -1
-        }
-      ],
-      "outputPorts": [
+        },
         {
-          "Name": "omega_mech",
+          "Name": "Reibungskoeffizient",
           "Rate": 2E-6,
           "Kind": "data",
-          "PortIndex": 0,
+          "PortIndex": 17,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
           "Latency": -1
         },
         {
-          "Name": "phi_mech",
+          "Name": "Coulomb_Reibung",
           "Rate": 2E-6,
           "Kind": "data",
-          "PortIndex": 1,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "pmsm_M_Mot",
-          "Rate": 2E-6,
-          "Kind": "data",
-          "PortIndex": 2,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "pmsm_Iu",
-          "Rate": 2E-6,
-          "Kind": "data",
-          "PortIndex": 3,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "pmsm_Iv",
-          "Rate": 2E-6,
-          "Kind": "data",
-          "PortIndex": 4,
-          "IsComplex": false,
-          "Testpoint": false,
-          "TunableName": "",
-          "Latency": -1
-        },
-        {
-          "Name": "pmsm_Iw",
-          "Rate": 2E-6,
-          "Kind": "data",
-          "PortIndex": 5,
+          "PortIndex": 18,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
           "Latency": -1
         }
-      ]
+      ],
+      "outputPorts": {
+        "Name": "pmsm_out",
+        "Rate": 2E-6,
+        "Kind": "data",
+        "PortIndex": 0,
+        "IsComplex": false,
+        "Testpoint": false,
+        "TunableName": "",
+        "Latency": -1
+      }
     }
   },
-  "PhaseCycles": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  ],
+  "PhaseCycles": 0,
   "ResourceSummary": {
-    "multipliers": 54,
-    "addersSubtractors": 938,
-    "registers": 4473,
-    "oneBitRegisters": 48262,
+    "multipliers": 56,
+    "addersSubtractors": 976,
+    "registers": 3642,
+    "oneBitRegisters": 48705,
     "rams": 0,
-    "multiplexers": 5365,
-    "IOBits": 678,
-    "staticShiftOperators": 104,
-    "dynamicShiftOperators": 154
+    "multiplexers": 5610,
+    "IOBits": 742,
+    "staticShiftOperators": 109,
+    "dynamicShiftOperators": 162
   }
 }

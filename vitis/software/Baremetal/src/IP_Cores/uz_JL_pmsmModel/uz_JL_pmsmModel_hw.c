@@ -75,7 +75,7 @@ void uz_JL_pmsmModel_hw_write_Last_J(uint32_t base_address, float Last_J)
 {
     uz_assert_not_zero(base_address);
     float rec_J = 0;
-    if (Last_J != 0)
+    if (Last_J > 0)
     {
          rec_J = 1/Last_J;
     }
@@ -95,7 +95,19 @@ void uz_JL_pmsmModel_hw_write_Last_M(uint32_t base_address, float Last_M)
 void uz_JL_pmsmModel_hw_write_bremse(uint32_t base_address, bool bremse)
 {
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + Bremse_Data_uz_JL_pmsmModel, bremse);
+    uz_axi_write_bool(base_address + Bremse_Data_uz_JL_pmsmModel, bremse);
+}
+
+void uz_JL_pmsmModel_hw_write_Coulomb_Reibung(uint32_t base_address, float Coulomb_Reibung)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address + Coulomb_Reibung_Data_uz_JL_pmsmModel, Coulomb_Reibung);
+}
+
+void uz_JL_pmsmModel_hw_write_Reibungskoeffizient(uint32_t base_address, float Reibungskoeffizient)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address + Reibungskoeffizient_Data_uz_JL_pmsmModel, Reibungskoeffizient);
 }
 
 void uz_JL_pmsmModel_hw_write_switchUabc_dq(uint32_t base_address, bool switchUabc_dq)
@@ -148,12 +160,12 @@ float uz_JL_pmsmModel_hw_read_I_c(uint32_t base_address)
     return uz_axi_read_float(base_address + pmsm_Iw_Data_uz_JL_pmsmModel);
 }
 
-// void uz_JL_pmsmModel_hw_trigger_output_strobe(uint32_t base_address)
-// {
-//     uz_assert_not_zero_uint32(base_address);
-//     uz_axi_write_bool(base_address+Iabc_Strobe_uz_JL_pmsmModel,true);
-//     uz_axi_write_bool(base_address+Iabc_Strobe_uz_JL_pmsmModel,false);
-// }
+void uz_JL_pmsmModel_hw_trigger_output_strobe(uint32_t base_address)
+{
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+pmsm_out_Strobe_uz_JL_pmsmModel,true);
+    uz_axi_write_bool(base_address+pmsm_out_Strobe_uz_JL_pmsmModel,false);
+}
 
 // void uz_JL_pmsmModel_hw_trigger_input_strobe(uint32_t base_address)
 // {

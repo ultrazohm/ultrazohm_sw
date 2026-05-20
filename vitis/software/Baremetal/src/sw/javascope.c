@@ -23,6 +23,8 @@
 #include "../IP_Cores/uz_JL_invModel_PT1/uz_JL_invModel_PT1.h"
 #include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "../Codegen/uz_codegen.h"
+
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
@@ -53,12 +55,15 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern uz_3ph_alphabeta_t  voltages_alphabeta;
+extern uz_codegen regelung;
+
+extern Bus_ZM_In struct_ZM_In;
 
 extern struct uz_JL_invModel_PT1_output_t pt1_outputs;
 extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
 
 extern struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out;
-//extern struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out;
+extern struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -83,17 +88,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_PT1_ua] 				= &pt1_outputs.Ua;
 	js_ch_observable[JSO_PT1_ub] 				= &pt1_outputs.Ub;
 	js_ch_observable[JSO_PT1_uc] 				= &pt1_outputs.Uc;
-//	js_ch_observable[JSO_ideal_ua] 				= &ideal_outputs.Ua;
-//	js_ch_observable[JSO_ideal_ub] 				= &ideal_outputs.Ub;
-//	js_ch_observable[JSO_ideal_uc] 				= &ideal_outputs.Uc;
 	js_ch_observable[JSO_ctrl_Ualpha] 			= &voltages_alphabeta.alpha;
 	js_ch_observable[JSO_ctrl_Ubeta] 			= &voltages_alphabeta.beta;
 	js_ch_observable[JSO_pmsm_pt1_ia]			= &pmsm_pt1_out.i_a_A;
 	js_ch_observable[JSO_pmsm_pt1_ib]			= &pmsm_pt1_out.i_b_A;
 	js_ch_observable[JSO_pmsm_pt1_ic]			= &pmsm_pt1_out.i_c_A;
-//	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
-//	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
-//	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
+	js_ch_observable[JSO_pmsm_pt1_omega]		= &pmsm_pt1_out.omega_mech_1_s;
+	js_ch_observable[JSO_pmsm_pt1_phi]			= &pmsm_pt1_out.phi_mech_rad;
+	js_ch_observable[JSO_pmsm_pt1_torque]		= &pmsm_pt1_out.torque_Nm;
+	js_ch_observable[JSO_Soll_Drehzahl]			= &struct_ZM_In.Soll_Drehzahl;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

@@ -25,9 +25,11 @@ struct uz_JL_pmsmModel_config_t
     float psi_pm; /**< Linked magnetic flux of PM magnets */
     float mot_p; /**< Pole pairs of the PMSM */
     float mot_J; /**< Inertia of the PMSM */
-    // float M_N;
-    // float n_N;
-    // float i_max;
+    float mot_F;
+    float mot_Fcoeff;
+     float M_N;
+     float n_N;
+     float i_max;
 };
 
 /**
@@ -74,7 +76,7 @@ uz_JL_pmsmModel_t *uz_JL_pmsmModel_init(struct uz_JL_pmsmModel_config_t config);
  */
 void uz_JL_pmsmModel_trigger_output_strobe(uz_JL_pmsmModel_t *self);
 
-void uz_JL_pmsmModel_trigger_input_strobe(uz_JL_pmsmModel_t *self);
+// void uz_JL_pmsmModel_trigger_input_strobe(uz_JL_pmsmModel_t *self);
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
  * 

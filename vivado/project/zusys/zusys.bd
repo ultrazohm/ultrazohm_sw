@@ -116,12 +116,9 @@
         "smartconnect_1": "",
         "PWM_H": "",
         "PWM_L": "",
-        "uz_JL_InvModel_PT1_0": "",
         "PWM_ideal": "",
         "uz_JL_pmsmModel_0": "",
-        "xlslice_0": "",
-        "xlslice_1": "",
-        "xlslice_2": ""
+        "uz_JL_InvModel_PT1_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5823,12 +5820,6 @@
               }
             }
           },
-          "uz_JL_InvModel_PT1_0": {
-            "vlnv": "xilinx.com:ip:uz_JL_InvModel_PT1:1.0",
-            "xci_name": "zusys_uz_JL_InvModel_PT1_0_0",
-            "xci_path": "ip\\zusys_uz_JL_InvModel_PT1_0_0\\zusys_uz_JL_InvModel_PT1_0_0.xci",
-            "inst_hier_path": "uz_user/uz_JL_InvModel_PT1_0"
-          },
           "PWM_ideal": {
             "vlnv": "xilinx.com:ip:ila:6.2",
             "xci_name": "zusys_ila_1_0",
@@ -5855,53 +5846,11 @@
             "xci_path": "ip\\zusys_uz_JL_pmsmModel_0_1\\zusys_uz_JL_pmsmModel_0_1.xci",
             "inst_hier_path": "uz_user/uz_JL_pmsmModel_0"
           },
-          "xlslice_0": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_5",
-            "xci_path": "ip\\zusys_xlslice_0_5\\zusys_xlslice_0_5.xci",
-            "inst_hier_path": "uz_user/xlslice_0",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "31"
-              },
-              "DIN_WIDTH": {
-                "value": "96"
-              }
-            }
-          },
-          "xlslice_1": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_6",
-            "xci_path": "ip\\zusys_xlslice_0_6\\zusys_xlslice_0_6.xci",
-            "inst_hier_path": "uz_user/xlslice_1",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "63"
-              },
-              "DIN_TO": {
-                "value": "32"
-              },
-              "DIN_WIDTH": {
-                "value": "96"
-              }
-            }
-          },
-          "xlslice_2": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_7",
-            "xci_path": "ip\\zusys_xlslice_0_7\\zusys_xlslice_0_7.xci",
-            "inst_hier_path": "uz_user/xlslice_2",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "95"
-              },
-              "DIN_TO": {
-                "value": "64"
-              },
-              "DIN_WIDTH": {
-                "value": "96"
-              }
-            }
+          "uz_JL_InvModel_PT1_0": {
+            "vlnv": "xilinx.com:ip:uz_JL_InvModel_PT1:1.0",
+            "xci_name": "zusys_uz_JL_InvModel_PT1_0_0",
+            "xci_path": "ip\\zusys_uz_JL_InvModel_PT1_0_0\\zusys_uz_JL_InvModel_PT1_0_0.xci",
+            "inst_hier_path": "uz_user/uz_JL_InvModel_PT1_0"
           }
         },
         "interface_nets": {
@@ -5919,8 +5868,8 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "uz_JL_pmsmModel_0/AXI4",
-              "smartconnect_1/M01_AXI"
+              "smartconnect_1/M01_AXI",
+              "uz_JL_pmsmModel_0/AXI4"
             ]
           }
         },
@@ -5929,35 +5878,27 @@
             "ports": [
               "aresetn",
               "smartconnect_1/aresetn",
-              "uz_JL_InvModel_PT1_0/IPCORE_RESETN",
-              "uz_JL_InvModel_PT1_0/AXI4_ARESETN",
               "uz_JL_pmsmModel_0/IPCORE_RESETN",
-              "uz_JL_pmsmModel_0/AXI4_ARESETN"
+              "uz_JL_pmsmModel_0/AXI4_ARESETN",
+              "uz_JL_InvModel_PT1_0/IPCORE_RESETN",
+              "uz_JL_InvModel_PT1_0/AXI4_ARESETN"
             ]
           },
-          "uz_JL_Inv_PT1_0_InvOut": {
+          "uz_JL_InvModel_PT1_0_InvOut_PL_U": {
             "ports": [
-              "uz_JL_InvModel_PT1_0/InvOut_PL",
-              "xlslice_0/Din",
-              "xlslice_1/Din",
-              "xlslice_2/Din"
-            ]
-          },
-          "xlslice_0_Dout": {
-            "ports": [
-              "xlslice_0/Dout",
+              "uz_JL_InvModel_PT1_0/InvOut_PL_U",
               "uz_JL_pmsmModel_0/mot_U"
             ]
           },
-          "xlslice_1_Dout": {
+          "uz_JL_InvModel_PT1_0_InvOut_PL_V": {
             "ports": [
-              "xlslice_1/Dout",
+              "uz_JL_InvModel_PT1_0/InvOut_PL_V",
               "uz_JL_pmsmModel_0/mot_V"
             ]
           },
-          "xlslice_2_Dout": {
+          "uz_JL_InvModel_PT1_0_InvOut_PL_W": {
             "ports": [
-              "xlslice_2/Dout",
+              "uz_JL_InvModel_PT1_0/InvOut_PL_W",
               "uz_JL_pmsmModel_0/mot_W"
             ]
           },
@@ -5984,11 +5925,11 @@
             "ports": [
               "aclk",
               "smartconnect_1/aclk",
-              "uz_JL_InvModel_PT1_0/IPCORE_CLK",
-              "uz_JL_InvModel_PT1_0/AXI4_ACLK",
               "PWM_ideal/clk",
               "uz_JL_pmsmModel_0/IPCORE_CLK",
-              "uz_JL_pmsmModel_0/AXI4_ACLK"
+              "uz_JL_pmsmModel_0/AXI4_ACLK",
+              "uz_JL_InvModel_PT1_0/IPCORE_CLK",
+              "uz_JL_InvModel_PT1_0/AXI4_ACLK"
             ]
           }
         }

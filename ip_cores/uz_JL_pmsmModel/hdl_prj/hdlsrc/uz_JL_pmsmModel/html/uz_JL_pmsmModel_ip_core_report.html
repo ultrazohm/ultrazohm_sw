@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.66
+<td class="summaryTableSndColOddRow">1.78
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">15-May-2026 13:51:37
+<td class="summaryTableSndColOddRow">19-May-2026 17:18:42
 </td>
 </tr>
 <tr>
@@ -392,9 +392,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:310\')'})" >omega_mech</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:366\')'})" >Reibungskoeffizient</a>
 </td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
@@ -406,9 +406,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:311\')'})" >phi_mech</a>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:367\')'})" >Coulomb_Reibung</a>
 </td>
-<td>Outport
+<td>Inport
 </td>
 <td>single
 </td>
@@ -420,59 +420,17 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:312\')'})" >pmsm_M_Mot</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:329\')'})" >pmsm_out</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">single
+<td class="distinctCellColor">single (6)
 </td>
 <td class="distinctCellColor">AXI4
 </td>
-<td class="distinctCellColor">x"13C"
+<td class="distinctCellColor">x"160"
 </td>
 <td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:329\')'})" >pmsm_Iu</a>
-</td>
-<td>Outport
-</td>
-<td>single
-</td>
-<td>AXI4
-</td>
-<td>x"144"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:330\')'})" >pmsm_Iv</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">single
-</td>
-<td class="distinctCellColor">AXI4
-</td>
-<td class="distinctCellColor">x"148"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_pmsmModel:331\')'})" >pmsm_Iw</a>
-</td>
-<td>Outport
-</td>
-<td>single
-</td>
-<td>AXI4
-</td>
-<td>x"14C"
-</td>
-<td>
 </td>
 </tr>
 </tbody>
@@ -515,7 +473,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2605151340: 2605151351
+<td>contains unique IP timestamp (yymmddHHMM): 2605191718
 </td>
 </tr>
 <tr>
@@ -623,59 +581,43 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 </tr>
 <tr>
-<td>omega_mech_Data
+<td>Reibungskoeffizient_Data
 </td>
 <td>0x134
 </td>
-<td>data register for Outport omega_mech
+<td>data register for Inport Reibungskoeffizient
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">phi_mech_Data
+<td class="distinctCellColor">Coulomb_Reibung_Data
 </td>
 <td class="distinctCellColor">0x138
 </td>
-<td class="distinctCellColor">data register for Outport phi_mech
+<td class="distinctCellColor">data register for Inport Coulomb_Reibung
 </td>
 </tr>
 <tr>
-<td>pmsm_M_Mot_Data
+<td>rec_mot_Lq_Data
 </td>
-<td>0x13C
+<td>0x140
 </td>
-<td>data register for Outport pmsm_M_Mot
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">rec_mot_Lq_Data
-</td>
-<td class="distinctCellColor">0x140
-</td>
-<td class="distinctCellColor">data register for Inport rec_mot_Lq
+<td>data register for Inport rec_mot_Lq
 </td>
 </tr>
 <tr>
-<td>pmsm_Iu_Data
+<td class="distinctCellColor">pmsm_out_Data
 </td>
-<td>0x144
+<td class="distinctCellColor">0x160
 </td>
-<td>data register for Outport pmsm_Iu
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">pmsm_Iv_Data
-</td>
-<td class="distinctCellColor">0x148
-</td>
-<td class="distinctCellColor">data register for Outport pmsm_Iv
+<td class="distinctCellColor">data register for Outport pmsm_out. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x174.
 </td>
 </tr>
 <tr>
-<td>pmsm_Iw_Data
+<td>pmsm_out_Strobe
 </td>
-<td>0x14C
+<td>0x180
 </td>
-<td>data register for Outport pmsm_Iw
+<td>strobe register for port pmsm_out
 </td>
 </tr>
 </tbody>

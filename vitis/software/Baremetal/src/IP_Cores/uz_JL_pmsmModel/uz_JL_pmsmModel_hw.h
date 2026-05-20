@@ -14,7 +14,8 @@ void uz_JL_pmsmModel_hw_write_mot_J(uint32_t base_address, float mot_J);
 // void uz_JL_pmsmModel_hw_write_M_N(uint32_t base_address, float M_n);
 // void uz_JL_pmsmModel_hw_write_I_max(uint32_t base_address, float I_max);
 void uz_JL_pmsmModel_hw_write_reset(uint32_t base_address, bool reset);
-
+void uz_JL_pmsmModel_hw_write_Reibungskoeffizient(uint32_t base_address, float Reibungskoeffizient);
+void uz_JL_pmsmModel_hw_write_Coulomb_Reibung(uint32_t base_address, float Coulomb_Reibung);
 
 void uz_JL_pmsmModel_hw_write_Last_J(uint32_t base_address, float Last_J);
 void uz_JL_pmsmModel_hw_write_Last_M(uint32_t base_address, float Last_M);
@@ -29,7 +30,7 @@ float uz_JL_pmsmModel_hw_read_I_a(uint32_t base_address);
 float uz_JL_pmsmModel_hw_read_I_b(uint32_t base_address);
 float uz_JL_pmsmModel_hw_read_I_c(uint32_t base_address);
 
-// void uz_JL_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
+void uz_JL_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
 // void uz_JL_pmsmModel_hw_trigger_input_strobe(uint32_t base_address);
 
 #endif // UZ_JL_PMSMMODEL_HW_H

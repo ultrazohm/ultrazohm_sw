@@ -3,12 +3,12 @@
 
 
 //User define
-#define Hidden_Layers 3 //max 5
-#define Neurons_1st_Hidden_Layer 64
-#define Neurons_2nd_Hidden_Layer 64
-#define Neurons_3rd_Hidden_Layer 64
-#define Neurons_4th_Hidden_Layer 64
-#define Neurons_5th_Hidden_Layer 64
+#define Hidden_Layers 2 //max 5
+#define Neurons_1st_Hidden_Layer 32
+#define Neurons_2nd_Hidden_Layer 32
+#define Neurons_3rd_Hidden_Layer 32
+#define Neurons_4th_Hidden_Layer 32
+#define Neurons_5th_Hidden_Layer 32
 
 #define Performance_Target 1//Range of 1->min(Neurons_per_HiddenLayer). Higher number=slower ip-core, but less resources. Adjust, if ==1 is too large for your FPGA
 

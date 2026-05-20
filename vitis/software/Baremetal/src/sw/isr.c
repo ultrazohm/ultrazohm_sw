@@ -84,7 +84,11 @@ void ISR_Control(void *data)
 
     /* get inverter status */
     inverter_status_FLT[0] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
-    inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+    inverter_status_FLT[1] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR);
+    inverter_status_FLT[2] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR);
+//    inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+//    inverter_status_RDY[1] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR);
+//    inverter_status_RDY[2] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR);
 
     ctrl_data.bus_BSW_FCF.Gate_Driver_Status_FLT = (inverter_status_FLT[2] << 12) | (inverter_status_FLT[1] << 6) | inverter_status_FLT[0];
     ctrl_data.bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];

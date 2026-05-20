@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 09:01:14 2026
+ * C/C++ source code generated on : Wed May 20 09:46:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -454,7 +454,7 @@ typedef struct {
   boolean_T Compare_e0;                /* '<S59>/Compare' */
   boolean_T Compare_nd;                /* '<S60>/Compare' */
   boolean_T Compare_cf;                /* '<S61>/Compare' */
-  boolean_T LogicalOperator3_c;        /* '<S49>/Logical Operator3' */
+  boolean_T Gate_Driver_FLT_RDY_Error; /* '<S49>/Logical Operator3' */
   boolean_T LogicalOperator3_pp;       /* '<S7>/Logical Operator3' */
   boolean_T FOC_Enable_PWM[3];         /* '<S7>/Enable_PWM_' */
   boolean_T FCF_Error;                 /* '<S7>/Logical Operator6' */

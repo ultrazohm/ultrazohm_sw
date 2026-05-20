@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 09:01:14 2026
+ * C/C++ source code generated on : Wed May 20 09:46:59 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -3235,9 +3235,9 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* End of MultiPortSwitch: '<S49>/EN_RDY_Switch_3' */
 
   /* Logic: '<S49>/Logical Operator3' */
-  FOC_FCF_B->LogicalOperator3_c = ((!(FOC_FCF_B->EN_FLT_Switch_1 != 0.0F)) &&
-    (!(FOC_FCF_B->EN_FLT_Switch_2 != 0.0F)) && (!(FOC_FCF_B->EN_FLT_Switch_3 !=
-    0.0F)) && (!(FOC_FCF_B->EN_RDY_Switch_1 != 0.0F)) &&
+  FOC_FCF_B->Gate_Driver_FLT_RDY_Error = ((!(FOC_FCF_B->EN_FLT_Switch_1 != 0.0F))
+    && (!(FOC_FCF_B->EN_FLT_Switch_2 != 0.0F)) && (!(FOC_FCF_B->EN_FLT_Switch_3
+    != 0.0F)) && (!(FOC_FCF_B->EN_RDY_Switch_1 != 0.0F)) &&
     (!(FOC_FCF_B->EN_RDY_Switch_2 != 0.0F)) && (!(FOC_FCF_B->EN_RDY_Switch_3 !=
     0.0F)));
 
@@ -3247,7 +3247,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->LogicalOperator3_pp = ((!(FOC_FCF_P.FOC_MANUAL_Error != 0.0F)) &&
     LogicalOperator2_a_tmp && (!FOC_FCF_B->Overspeed_Error) &&
     (!FOC_FCF_U->bus_SMF.Collective_Over_Temp_Error) &&
-    (!FOC_FCF_B->DataSourceSwitch) && (!FOC_FCF_B->LogicalOperator3_c));
+    (!FOC_FCF_B->DataSourceSwitch) && (!FOC_FCF_B->Gate_Driver_FLT_RDY_Error));
 
   /* Logic: '<S7>/Enable_PWM_' */
   LogicalOperator2_a_tmp = (FOC_FCF_B->LogicalOperator3_pp &&

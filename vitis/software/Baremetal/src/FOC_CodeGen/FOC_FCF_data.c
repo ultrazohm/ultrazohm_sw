@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon May  4 14:25:47 2026
+ * C/C++ source code generated on : Wed May 20 09:01:14 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -753,7 +753,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value
    * Referenced by: '<S23>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: Tau_Value
    * Referenced by: '<S22>/Tau'
@@ -1008,7 +1008,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_l
    * Referenced by: '<S92>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: UnitDelay_InitialCondition
    * Referenced by: '<S92>/Unit Delay'
@@ -1059,7 +1059,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_d
    * Referenced by: '<S12>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_p
    * Referenced by: '<S12>/Unit Delay'
@@ -1074,7 +1074,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_f
    * Referenced by: '<S62>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_d
    * Referenced by: '<S62>/Unit Delay'
@@ -1089,7 +1089,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_n
    * Referenced by: '<S38>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain_p
    * Referenced by: '<S35>/TrafoMatrix uvw->alphabeta'
@@ -1105,7 +1105,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_e
    * Referenced by: '<S42>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain_j
    * Referenced by: '<S36>/TrafoMatrix uvw->alphabeta'
@@ -1121,12 +1121,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_er
    * Referenced by: '<S46>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: FOC_T_fast_Value_m
    * Referenced by: '<S5>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: Switch1_Threshold_a
    * Referenced by: '<S30>/Switch1'
@@ -1201,7 +1201,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_df
    * Referenced by: '<S24>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: Gain_Gain_kc
    * Referenced by: '<S24>/Gain'
@@ -1216,12 +1216,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Computed Parameter: FOC_T_fast_Value_c
    * Referenced by: '<S28>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: FOC_T_fast_Value_k
    * Referenced by: '<S29>/FOC_T_fast'
    */
-  0.0001F,
+  5.0E-5F,
 
   /* Computed Parameter: Gain1_Gain_kl
    * Referenced by: '<S5>/Gain1'

@@ -125,30 +125,16 @@ static void export_input_output_arrays_to_csv(const char *filename,
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
 
+#define CSV_NESTED_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
+    {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
+
 #ifndef UZ_PMSM_SWMODEL_RESULTS_CSV_PATH
-#define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "../../../uz_pmsm_swmodel_results.csv"
+#define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
 #endif
 
 #ifndef UZ_PMSM_SWMODEL_CONFIG_CSV_PATH
-#define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "../../../uz_pmsm_swmodel_config.csv"
+#define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 #endif
-
-static void export_config_to_csv(const char *filename, const struct uz_pmsm_swmodel_config_t *config)
-{
-    FILE *file = fopen(filename, "w");
-    TEST_ASSERT_NOT_NULL(file);
-    fprintf(file, "sample_time,R_ph_Ohm,Ld_Henry,Lq_Henry,Psi_PM_Vs,polePairs,J_kg_m_squared,I_max_Ampere\n");
-    fprintf(file, "%f,%f,%f,%f,%f,%f,%f,%f\n",
-            (double)config->sample_time,
-            (double)config->pmsm_parameters.R_ph_Ohm,
-            (double)config->pmsm_parameters.Ld_Henry,
-            (double)config->pmsm_parameters.Lq_Henry,
-            (double)config->pmsm_parameters.Psi_PM_Vs,
-            (double)config->pmsm_parameters.polePairs,
-            (double)config->pmsm_parameters.J_kg_m_squared,
-            (double)config->pmsm_parameters.I_max_Ampere);
-    TEST_ASSERT_EQUAL_INT(0, fclose(file));
-}
 
 void setUp(void)
 {
@@ -244,6 +230,19 @@ void test_uz_pmsm_swmodel_steady_state(void)
         CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, v_q_V, CSV_FIELD_FLOAT),
         CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, omega_mech_1_s, CSV_FIELD_FLOAT),
         CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, load_torque, CSV_FIELD_FLOAT)};
+
+    const struct csv_field_descriptor_t config_fields[] = {
+        CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, sample_time, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, R_ph_Ohm, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, Ld_Henry, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, Lq_Henry, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, Psi_PM_Vs, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, polePairs, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, J_kg_m_squared, CSV_FIELD_FLOAT),
+        CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_config_t, pmsm_parameters, I_max_Ampere, CSV_FIELD_FLOAT)};
+
+    static const struct csv_field_descriptor_t empty_fields[] = {{NULL, 0U, CSV_FIELD_FLOAT}};
+
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_RESULTS_CSV_PATH,
                                       inputs_k,
                                       sizeof(inputs_k[0]),
@@ -254,8 +253,17 @@ void test_uz_pmsm_swmodel_steady_state(void)
                                       output_fields,
                                       sizeof(output_fields) / sizeof(output_fields[0]),
                                       STEADY_STATE_ITERATIONS);
-    
-    export_config_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH, &config);
+
+    export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH,
+                                      &config,
+                                      sizeof(config),
+                                      empty_fields,
+                                      0U,
+                                      &config,
+                                      sizeof(config),
+                                      config_fields,
+                                      sizeof(config_fields) / sizeof(config_fields[0]),
+                                      1U);
 }
 
 

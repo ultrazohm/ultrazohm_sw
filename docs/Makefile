@@ -33,7 +33,15 @@ ceedling_tests:
 ceedling_clean:
 	(cd ../vitis/software/Baremetal/; ceedling clobber)
 
+ceedling_test_output:
+	rm -rf ceedling_test_output
+	mkdir -p ceedling_test_output
+	cd ../vitis/software/Baremetal/test && find . -type d -exec mkdir -p ../../../../docs/ceedling_test_output/{} \;
+
+
+
 docs:
+	make ceedling_test_output
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 
@@ -44,3 +52,4 @@ docs:
 
 livehtml:
 	sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+

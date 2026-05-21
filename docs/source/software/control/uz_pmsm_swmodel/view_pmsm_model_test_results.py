@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import os
 
 # Constants
-CSV_PATH = "uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = "uz_pmsm_swmodel_config.csv"
+CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
+CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 SIGNAL_GROUPS = [
     {
         "title": "d-axis",
@@ -42,16 +42,20 @@ SIGNAL_GROUPS = [
     },
 ]
 
-
 def _load_data():
     if not os.path.exists(CONFIG_CSV_PATH):
         raise FileNotFoundError(f"Config file '{CONFIG_CSV_PATH}' not found.")
+    if not os.path.exists(CSV_PATH):
+        raise FileNotFoundError(f"Results file '{CSV_PATH}' not found.")
 
     config_df = pd.read_csv(CONFIG_CSV_PATH)
-    sample_time = float(config_df["sample_time"].iloc[0])
-
-    if not os.path.exists(CSV_PATH):
-        raise FileNotFoundError(f"File '{CSV_PATH}' not found.")
+    if "sample_time" in config_df.columns:
+        sample_time_column = "sample_time"
+    elif "output_sample_time" in config_df.columns:
+        sample_time_column = "output_sample_time"
+    else:
+        raise KeyError("Expected 'sample_time' or 'output_sample_time' in config CSV")
+    sample_time = float(config_df[sample_time_column].iloc[0])
 
     df = pd.read_csv(CSV_PATH)
     if df.empty:

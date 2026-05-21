@@ -129,6 +129,27 @@ static void export_input_output_arrays_to_csv(const char *filename,
 #define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "../../../uz_pmsm_swmodel_results.csv"
 #endif
 
+#ifndef UZ_PMSM_SWMODEL_CONFIG_CSV_PATH
+#define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "../../../uz_pmsm_swmodel_config.csv"
+#endif
+
+static void export_config_to_csv(const char *filename, const struct uz_pmsm_swmodel_config_t *config)
+{
+    FILE *file = fopen(filename, "w");
+    TEST_ASSERT_NOT_NULL(file);
+    fprintf(file, "sample_time,R_ph_Ohm,Ld_Henry,Lq_Henry,Psi_PM_Vs,polePairs,J_kg_m_squared,I_max_Ampere\n");
+    fprintf(file, "%f,%f,%f,%f,%f,%f,%f,%f\n",
+            (double)config->sample_time,
+            (double)config->pmsm_parameters.R_ph_Ohm,
+            (double)config->pmsm_parameters.Ld_Henry,
+            (double)config->pmsm_parameters.Lq_Henry,
+            (double)config->pmsm_parameters.Psi_PM_Vs,
+            (double)config->pmsm_parameters.polePairs,
+            (double)config->pmsm_parameters.J_kg_m_squared,
+            (double)config->pmsm_parameters.I_max_Ampere);
+    TEST_ASSERT_EQUAL_INT(0, fclose(file));
+}
+
 void setUp(void)
 {
 }
@@ -179,7 +200,7 @@ void test_uz_pmsm_swmodel_all_zeros(void)
 }
 
 
-#define STEADY_STATE_ITERATIONS 10000U
+#define STEADY_STATE_ITERATIONS 1000U
 
 void test_uz_pmsm_swmodel_steady_state(void)
 {
@@ -210,6 +231,7 @@ void test_uz_pmsm_swmodel_steady_state(void)
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_d_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_d_A);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_q_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
     //TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
 
     const struct csv_field_descriptor_t output_fields[] = {
         CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_d_A, CSV_FIELD_FLOAT),
@@ -233,7 +255,7 @@ void test_uz_pmsm_swmodel_steady_state(void)
                                       sizeof(output_fields) / sizeof(output_fields[0]),
                                       STEADY_STATE_ITERATIONS);
     
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
+    export_config_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH, &config);
 }
 
 

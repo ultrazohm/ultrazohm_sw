@@ -101,9 +101,9 @@ void ISR_Control(void *data)
     thetal_el_left_unwrapped = uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_left) - Global_Data.av.theta_el_offset_left;
     Global_Data.av.theta_el_left = uz_signals_wrap(thetal_el_left_unwrapped, 2.0f*UZ_PIf);
 
-    Global_Data.av.omega_mech_right = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.encoder_right);
-    thetal_el_right_unwrapped = uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_right) - Global_Data.av.theta_el_offset_right;
-    Global_Data.av.theta_el_right = uz_signals_wrap(thetal_el_right_unwrapped, 2.0f*UZ_PIf);
+    Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
+    Global_Data.av.theta_el_right = Global_Data.av.resolver_pl_outputs_right.position_el_2pi;
     // update status of both inverters
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);

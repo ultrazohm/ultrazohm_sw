@@ -150,16 +150,13 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
-            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
             Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
-            Global_Data.objects.encoder_right = initialize_encoder_right();
             Global_Data.objects.encoder_left = initialize_encoder_left();
             Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;
-            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
+//            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
             uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
             Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);

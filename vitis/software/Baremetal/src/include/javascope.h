@@ -60,7 +60,7 @@ enum JS_OberservableData {
 	JSO_theta_el_left,
 	JSO_theta_el_left_advanced,
 	JSO_theta_el_right_advanced,
-	JSO_theta_mech_left,
+	JSO_theta_mech_right,
 	JSO_theta_el_right,
 	JSO_mech_Speed_rpm_left,
 	JSO_mech_Speed_rpm_right,
@@ -186,7 +186,7 @@ enum gui_button_mapping {
 	Kp_iq_right,
 	Ki_iq_right,
 	theta_m_offset_rad_right,
-	theta_m_offset_left,
+	theta_elec_offset_left,
 	send_field_19,
 	send_field_20,
 	SND_FLD_ENDMARKER

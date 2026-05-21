@@ -111,7 +111,6 @@ typedef struct _actualValues_ {
 	float theta_el_left;
 	float theta_el_offset_left;
 	float theta_el_left_advanced;
-	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	struct uz_inverter_adapter_outputs_t inverter_left_status;
 	struct uz_inverter_adapter_outputs_t inverter_right_status;
@@ -172,11 +171,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
-	uz_incrementalEncoder_t* encoder_right;
 	uz_incrementalEncoder_t* encoder_left;
-	uz_resolver_pl_interface_t* resolver_pl_interface_left;
 	uz_resolver_pl_interface_t* resolver_pl_interface_right;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;

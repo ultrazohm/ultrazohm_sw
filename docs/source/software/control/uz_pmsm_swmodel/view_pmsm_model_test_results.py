@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import os
 
 # Constants
-CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
+CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
+CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 SIGNAL_GROUPS = [
     {
         "title": "d-axis",

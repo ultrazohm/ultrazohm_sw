@@ -5,8 +5,8 @@ from bokeh.layouts import column
 from bokeh.models import HoverTool
 from bokeh.plotting import figure, show
 
-CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
+CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
+CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 SUBPLOT_HEIGHT_PX = 210
 SIGNAL_GROUPS = [
     {

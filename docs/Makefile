@@ -42,6 +42,7 @@ ceedling_test_output:
 
 docs:
 	make ceedling_test_output
+	make ceedling_tests
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 

@@ -116,9 +116,8 @@ int main(void)
 			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
 			Global_Data.objects.ssi_encoder_d5_2 = initialize_ssi_encoder_d5_2();
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_2, true);
-			Global_Data.objects.endat_encoder_d5_3 = initialize_endat_encoder_d5_3();
-			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_3, uz_endat_interface_send_position);
-			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_3, true);
+			Global_Data.objects.ssi_encoder_d5_3 = initialize_ssi_encoder_d5_3();
+			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
 /* xz Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

@@ -27,7 +27,7 @@
       "channel_1_trigger_source": "trigger_conversions",
       "channel_2": "ssi",
       "channel_2_trigger_source": "trigger_conversions",
-      "channel_3": "endat",
+      "channel_3": "ssi",
       "channel_3_trigger_source": "trigger_conversions"
     }
   },
@@ -69,6 +69,9 @@
     "D2_preset": "default",
     "D3_preset": "default",
     "D4_preset": "type_k_thermocouple",
-    "D5_preset": "default"
+    "D5_preset": "default",
+    "visualize_temp_d4_a_4": "true",
+    "visualize_endat_encoder_d5_1_position_mech_si_single_turn": "true",
+    "visualize_endat_encoder_d5_1_position_el_si_single_turn": "true"
   }
 }

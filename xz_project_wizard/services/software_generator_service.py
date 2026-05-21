@@ -26,6 +26,14 @@ FILE_MARKERS = {
         "/* xz Project Wizard BEGIN: init_ip_cores */",
         "/* xz Project Wizard END: init_ip_cores */",
     ),
+    "javascope_observables": (
+        "/* xz Project Wizard BEGIN: javascope_observables */",
+        "/* xz Project Wizard END: javascope_observables */",
+    ),
+    "javascope_observable_pointers": (
+        "/* xz Project Wizard BEGIN: javascope_observable_pointers */",
+        "/* xz Project Wizard END: javascope_observable_pointers */",
+    ),
 }
 
 
@@ -43,6 +51,9 @@ class SoftwarePlan:
     objects: list[str]
     main_init: list[str]
     isr_control_by_slot: dict[str, list[str]]
+    javascope_observable_enums: list[str]
+    javascope_observable_pointers: list[str]
+    available_visualization_signals: list["VisualizationSignal"]
     instance_counts: dict[str, int]
     warnings: list[str]
 
@@ -52,6 +63,14 @@ class SoftwareGenerationResult:
     written_files: list[Path]
     patched_files: list[Path]
     warnings: list[str]
+
+
+@dataclass(frozen=True)
+class VisualizationSignal:
+    signal_id: str
+    label: str
+    enum_name: str
+    pointer_expression: str
 
 
 class MarkerError(ValueError):
@@ -70,14 +89,17 @@ class SoftwareGenerator:
         option_values: dict[str, dict[str, str]],
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
+        visualization_signals: set[str] | list[str] | None = None,
     ) -> SoftwarePlan:
         software_modes = software_modes or {}
         software_presets = software_presets or {}
+        selected_visualization_signals = set(visualization_signals or [])
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
         actual_values: list[str] = []
         objects: list[str] = []
         main_init: list[str] = []
         isr_control_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
+        available_visualization_signals: list[VisualizationSignal] = []
         warnings: list[str] = []
         temperature_instances = 0
         endat_instances = 0
@@ -88,7 +110,8 @@ class SoftwareGenerator:
             card_id = assignments.get(slot, "empty") if mode == "follow_hardware" else "empty"
             if card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
-                context = self._temperature_context(slot, source_dir, software_presets.get(slot, "default"))
+                preset = software_presets.get(slot, "default")
+                context = self._temperature_context(slot, source_dir, preset)
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
                     self.renderer.render_file("software/temperature_card.h.tpl", context)
@@ -130,6 +153,7 @@ class SoftwareGenerator:
                         ),
                     ]
                 )
+                available_visualization_signals.extend(temperature_visualization_signals(str(context["slot_lower"]), preset))
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     option_id = f"channel_{channel_index}"
@@ -158,6 +182,9 @@ class SoftwareGenerator:
                         isr_control_by_slot[slot].extend(
                             encoder_isr_lines("endat", "endat_encoder", str(context["slot_lower"]), channel_index)
                         )
+                        available_visualization_signals.extend(
+                            encoder_visualization_signals("endat", "endat_encoder", str(context["slot_lower"]), channel_index)
+                        )
                     elif interface == "ssi":
                         ssi_instances += 1
                         context = self._serial_encoder_context(slot, channel_index, "ssi", source_dir)
@@ -181,18 +208,29 @@ class SoftwareGenerator:
                         isr_control_by_slot[slot].extend(
                             encoder_isr_lines("ssi", "ssi_encoder", str(context["slot_lower"]), channel_index)
                         )
+                        available_visualization_signals.extend(
+                            encoder_visualization_signals("ssi", "ssi_encoder", str(context["slot_lower"]), channel_index)
+                        )
             elif card_id not in {"empty", "no_adapter_board"}:
                 card = self.database.card_by_id(card_id) or {}
                 driver = card.get("vitis", {}).get("driver", "")
                 if driver:
                     warnings.append(f"{slot}: software integration for driver '{driver}' is not implemented yet.")
 
+        selected_signals = [
+            signal for signal in available_visualization_signals if signal.signal_id in selected_visualization_signals
+        ]
         return SoftwarePlan(
             slot_content=slot_content,
             actual_values=actual_values,
             objects=objects,
             main_init=main_init,
             isr_control_by_slot=isr_control_by_slot,
+            javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_signals],
+            javascope_observable_pointers=[
+                f"\tjs_ch_observable[{signal.enum_name}] = {signal.pointer_expression};" for signal in selected_signals
+            ],
+            available_visualization_signals=available_visualization_signals,
             instance_counts={
                 "UZ_TEMPERATURE_CARD_MAX_INSTANCES": temperature_instances,
                 "UZ_ENDAT_INTERFACE_MAX_INSTANCES": endat_instances,
@@ -208,8 +246,9 @@ class SoftwareGenerator:
         option_values: dict[str, dict[str, str]],
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
+        visualization_signals: set[str] | list[str] | None = None,
     ) -> str:
-        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets)
+        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets, visualization_signals)
         lines = [
             "Software generation preview",
             f"Source directory: {source_dir}",
@@ -244,10 +283,26 @@ class SoftwareGenerator:
         lines.extend(["", "uz_global_configuration.h instance counts:"])
         for define, count in plan.instance_counts.items():
             lines.append(f"  {define} {count}U")
+        lines.extend(["", "Javascope observable signals:"])
+        if plan.javascope_observable_enums:
+            lines.extend(f"  {entry.strip().rstrip(',')}" for entry in plan.javascope_observable_enums)
+        else:
+            lines.append("  none")
         if plan.warnings:
             lines.extend(["", "Warnings:"])
             lines.extend(f"- {warning}" for warning in plan.warnings)
         return "\n".join(lines)
+
+    def visualization_signals(
+        self,
+        source_dir: Path,
+        assignments: dict[str, str],
+        option_values: dict[str, dict[str, str]],
+        software_modes: dict[str, str] | None = None,
+        software_presets: dict[str, str] | None = None,
+    ) -> list[VisualizationSignal]:
+        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets)
+        return plan.available_visualization_signals
 
     def generate(
         self,
@@ -256,8 +311,9 @@ class SoftwareGenerator:
         option_values: dict[str, dict[str, str]],
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
+        visualization_signals: set[str] | list[str] | None = None,
     ) -> SoftwareGenerationResult:
-        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets)
+        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets, visualization_signals)
         written_files: list[Path] = []
         patched_files: list[Path] = []
 
@@ -281,6 +337,14 @@ class SoftwareGenerator:
         isr_c = source_dir / "sw" / "isr.c"
         patch_slot_isr_control(isr_c, plan.isr_control_by_slot)
         patched_files.append(isr_c)
+
+        javascope_h = source_dir / "include" / "javascope.h"
+        patch_javascope_header(javascope_h, plan.javascope_observable_enums)
+        patched_files.append(javascope_h)
+
+        javascope_c = source_dir / "sw" / "javascope.c"
+        patch_javascope_source(javascope_c, plan.javascope_observable_pointers)
+        patched_files.append(javascope_c)
 
         global_configuration = source_dir / "uz" / "uz_global_configuration.h"
         if plan.instance_counts:
@@ -363,6 +427,14 @@ def patch_slot_isr_control(path: Path, isr_control_by_slot: dict[str, list[str]]
     path.write_text(text, encoding="utf-8")
 
 
+def patch_javascope_header(path: Path, observable_enums: list[str]) -> None:
+    patch_marker_file(path, "javascope_observables", observable_enums)
+
+
+def patch_javascope_source(path: Path, observable_pointers: list[str]) -> None:
+    patch_marker_file(path, "javascope_observable_pointers", observable_pointers)
+
+
 def patch_instance_counts(path: Path, counts: dict[str, int]) -> None:
     text = path.read_text(encoding="utf-8")
     production_text, separator, test_text = text.partition("\n// Configuration defines for the number of used instances for testing")
@@ -421,6 +493,55 @@ def encoder_isr_lines(interface: str, prefix: str, slot_lower: str, channel: int
         f"    Global_Data.av.{name}_speed_mech_si = {driver_prefix}_get_speed_mech_si({object_ref});",
         f"    Global_Data.av.{name}_speed_el_si = {driver_prefix}_get_speed_el_si({object_ref});",
         f"    Global_Data.av.{name}_speed_mech_rpm = {driver_prefix}_get_speed_mech_rpm({object_ref});",
+    ]
+
+
+def temperature_visualization_signals(slot_lower: str, preset: str) -> list[VisualizationSignal]:
+    signals: list[VisualizationSignal] = []
+    zero_based_connector_labels = preset == "type_k_thermocouple"
+    for group in ["A", "B", "C"]:
+        for array_index in range(20):
+            if zero_based_connector_labels:
+                channel_label = f"{array_index:02d}"
+                signal_id_channel = str(array_index)
+                enum_channel = str(array_index)
+            else:
+                channel_label = str(array_index + 1)
+                signal_id_channel = str(array_index + 1)
+                enum_channel = str(array_index + 1)
+            signal_id = f"temp_{slot_lower}_{group.lower()}_{signal_id_channel}"
+            enum_name = f"JSO_XZ_TEMP_{slot_lower.upper()}_{group}_CH{enum_channel}"
+            pointer = f"&data->av.temperature_card_{slot_lower}_channel_{group}.temperature[{array_index}]"
+            signals.append(
+                VisualizationSignal(
+                    signal_id=signal_id,
+                    label=f"{slot_lower.upper()} temperature group {group} channel {channel_label}",
+                    enum_name=enum_name,
+                    pointer_expression=pointer,
+                )
+            )
+    return signals
+
+
+def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, channel: int) -> list[VisualizationSignal]:
+    base_id = f"{prefix}_{slot_lower}_{channel}"
+    enum_base = f"JSO_XZ_{interface.upper()}_{slot_lower.upper()}_CH{channel}"
+    label_base = f"{slot_lower.upper()} {interface.upper()} channel {channel}"
+    fields = [
+        ("position_mech_si_single_turn", "POS_MECH_ST", "position mech SI single turn"),
+        ("position_el_si_single_turn", "POS_EL_ST", "position el SI single turn"),
+        ("speed_mech_si", "SPEED_MECH_SI", "speed mech SI"),
+        ("speed_el_si", "SPEED_EL_SI", "speed el SI"),
+        ("speed_mech_rpm", "SPEED_MECH_RPM", "speed mech rpm"),
+    ]
+    return [
+        VisualizationSignal(
+            signal_id=f"{base_id}_{field}",
+            label=f"{label_base} {label}",
+            enum_name=f"{enum_base}_{enum_suffix}",
+            pointer_expression=f"&data->av.{base_id}_{field}",
+        )
+        for field, enum_suffix, label in fields
     ]
 
 

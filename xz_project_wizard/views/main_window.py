@@ -62,6 +62,8 @@ class MainWindow(QMainWindow):
         self.software_fields: dict[str, QLineEdit] = {}
         self.software_mode_combos: dict[str, QComboBox] = {}
         self.software_preset_combos: dict[str, QComboBox] = {}
+        self.visualization_checkboxes: dict[str, QCheckBox] = {}
+        self.visualization_content_layout: QVBoxLayout | None = None
         self.software_preview: QPlainTextEdit | None = None
         self.software_status: QPlainTextEdit | None = None
         self.toolchain_status: QPlainTextEdit | None = None
@@ -89,6 +91,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._build_axi_interconnect_page())
         self.stack.addWidget(self._build_software_general_page())
         self.stack.addWidget(self._build_software_driver_page())
+        self.stack.addWidget(self._build_data_visualization_page())
         self.stack.addWidget(self._build_database_page())
 
         splitter = QSplitter()
@@ -103,6 +106,7 @@ class MainWindow(QMainWindow):
         self.reset_toolchain_config()
         self.reset_software_config()
         self.refresh_software_preset_options()
+        self.refresh_data_visualization_options()
         self.reset_axi_config()
         self.rebuild_details()
         self.refresh_tcl_preview()
@@ -165,6 +169,10 @@ class MainWindow(QMainWindow):
         ip_driver_action.triggered.connect(self.show_ip_core_driver_setup)
         view_menu.addAction(ip_driver_action)
 
+        data_visualization_action = QAction("Data visualization", self)
+        data_visualization_action.triggered.connect(self.show_data_visualization)
+        view_menu.addAction(data_visualization_action)
+
         refresh_tcl_action = QAction("Refresh TCL preview", self)
         refresh_tcl_action.triggered.connect(self.refresh_tcl_preview)
         view_menu.addAction(refresh_tcl_action)
@@ -193,8 +201,10 @@ class MainWindow(QMainWindow):
         software_config = QTreeWidgetItem(["Software configuration"])
         software_general = QTreeWidgetItem(["General"])
         ip_driver_setup = QTreeWidgetItem(["IP core driver setup"])
+        data_visualization = QTreeWidgetItem(["Data visualization"])
         software_config.addChild(software_general)
         software_config.addChild(ip_driver_setup)
+        software_config.addChild(data_visualization)
         tree.addTopLevelItem(toolchain)
         tree.addTopLevelItem(platform)
         tree.addTopLevelItem(config)
@@ -223,6 +233,7 @@ class MainWindow(QMainWindow):
             "Software configuration": 5,
             "General": 5,
             "IP core driver setup": 6,
+            "Data visualization": 7,
         }
         self.stack.setCurrentIndex(page_by_name.get(current.text(0), 0))
 
@@ -474,6 +485,41 @@ class MainWindow(QMainWindow):
         self.software_status.setReadOnly(True)
         self.software_status.setFixedHeight(120)
         layout.addWidget(self.software_status)
+        return page
+
+    def _build_data_visualization_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("Data Visualization")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        hint = QLabel(
+            "Select generated float signals that should be registered as Javascope observable signals. "
+            "The wizard writes the enum entries in javascope.h and the pointer assignments in javascope.c."
+        )
+        hint.setWordWrap(True)
+        layout.addWidget(hint)
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        content = QWidget()
+        self.visualization_content_layout = QVBoxLayout(content)
+        self.visualization_content_layout.addStretch(1)
+        scroll.setWidget(content)
+        layout.addWidget(scroll, 1)
+
+        buttons = QHBoxLayout()
+        refresh_button = QPushButton("Refresh signal list")
+        refresh_button.clicked.connect(self.refresh_data_visualization_options)
+        buttons.addStretch(1)
+        buttons.addWidget(refresh_button)
+        layout.addLayout(buttons)
+
         return page
 
     def _software_path_picker(self, key: str, file_mode: bool) -> QWidget:
@@ -784,6 +830,9 @@ class MainWindow(QMainWindow):
             config[f"{slot}_mode"] = combo.currentData() or "follow_hardware"
         for slot, combo in self.software_preset_combos.items():
             config[f"{slot}_preset"] = combo.currentData() or "default"
+        for signal_id, checkbox in self.visualization_checkboxes.items():
+            if checkbox.isChecked():
+                config[f"visualize_{signal_id}"] = "true"
         return config
 
     def software_modes(self) -> dict[str, str]:
@@ -791,6 +840,9 @@ class MainWindow(QMainWindow):
 
     def software_presets(self) -> dict[str, str]:
         return {slot: combo.currentData() or "default" for slot, combo in self.software_preset_combos.items()}
+
+    def selected_visualization_signals(self) -> set[str]:
+        return {signal_id for signal_id, checkbox in self.visualization_checkboxes.items() if checkbox.isChecked()}
 
     def load_toolchain_config(self, values: dict[str, str]) -> None:
         for key, field in self.toolchain_fields.items():
@@ -813,6 +865,7 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
         self.refresh_software_preset_options(values)
+        self.refresh_data_visualization_options(values)
         self.refresh_software_preview()
 
     def reset_software_config(self) -> None:
@@ -844,6 +897,49 @@ class MainWindow(QMainWindow):
             index = combo.findData(selected)
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
+        self.refresh_data_visualization_options(values)
+
+    def refresh_data_visualization_options(self, values: dict[str, str] | None = None) -> None:
+        if self.visualization_content_layout is None:
+            return
+        if values is None:
+            selected = self.selected_visualization_signals()
+        else:
+            selected = {
+                key.removeprefix("visualize_")
+                for key, value in values.items()
+                if key.startswith("visualize_") and str(value).lower() in {"1", "true", "yes", "on"}
+            }
+        for index in reversed(range(self.visualization_content_layout.count())):
+            item = self.visualization_content_layout.itemAt(index)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+            else:
+                self.visualization_content_layout.removeItem(item)
+        self.visualization_checkboxes.clear()
+
+        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
+        source_dir = Path(source_text) if source_text else Path("<software source folder>")
+        signals = self.software_generator.visualization_signals(
+            source_dir,
+            self.assignments(),
+            self.detail_options,
+            self.software_modes(),
+            self.software_presets(),
+        )
+        if not signals:
+            label = QLabel("No float-valued generated signals are available for the current software selection.")
+            label.setWordWrap(True)
+            self.visualization_content_layout.addWidget(label)
+        for signal in signals:
+            checkbox = QCheckBox(signal.label)
+            checkbox.setChecked(signal.signal_id in selected)
+            checkbox.stateChanged.connect(self.refresh_software_preview)
+            self.visualization_checkboxes[signal.signal_id] = checkbox
+            self.visualization_content_layout.addWidget(checkbox)
+        self.visualization_content_layout.addStretch(1)
+        self.refresh_software_preview()
 
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
@@ -1176,7 +1272,7 @@ class MainWindow(QMainWindow):
         return None
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(7)
+        self.stack.setCurrentIndex(8)
 
     def show_software_general(self) -> None:
         self.stack.setCurrentIndex(5)
@@ -1185,6 +1281,10 @@ class MainWindow(QMainWindow):
     def show_ip_core_driver_setup(self) -> None:
         self.stack.setCurrentIndex(6)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
+
+    def show_data_visualization(self) -> None:
+        self.stack.setCurrentIndex(7)
+        self.tree.setCurrentItem(self.tree.topLevelItem(3).child(2))
 
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
@@ -1250,6 +1350,8 @@ class MainWindow(QMainWindow):
         for slot in list(self.detail_options):
             if assignments.get(slot, "empty") == "empty":
                 self.detail_options.pop(slot, None)
+        self.refresh_software_preset_options()
+        self.refresh_data_visualization_options()
         self.refresh_tcl_preview()
 
     def _clear_details_layouts(self) -> None:
@@ -1267,6 +1369,7 @@ class MainWindow(QMainWindow):
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
                 self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
+        self.refresh_data_visualization_options()
         self.refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
@@ -1293,6 +1396,7 @@ class MainWindow(QMainWindow):
                 self.option_values(),
                 self.software_modes(),
                 self.software_presets(),
+                self.selected_visualization_signals(),
             )
         )
 
@@ -1310,6 +1414,7 @@ class MainWindow(QMainWindow):
                 self.option_values(),
                 self.software_modes(),
                 self.software_presets(),
+                self.selected_visualization_signals(),
             )
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))
@@ -1482,13 +1587,6 @@ class MainWindow(QMainWindow):
             raise ValueError("Config field 'toolchain' must be a JSON object.")
         self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
 
-        software = document.get("software", {})
-        if software is None:
-            software = {}
-        if not isinstance(software, dict):
-            raise ValueError("Config field 'software' must be a JSON object.")
-        self.load_software_config({str(key): str(value) for key, value in software.items()})
-
         slots = document.get("slots", {})
         if not isinstance(slots, dict):
             raise ValueError("Config field 'slots' must be a JSON object.")
@@ -1498,7 +1596,6 @@ class MainWindow(QMainWindow):
             if index < 0:
                 index = combo.findData("empty")
             combo.setCurrentIndex(index if index >= 0 else 0)
-        self.refresh_software_preset_options(software)
 
         slot_options = document.get("slot_options", {})
         if not isinstance(slot_options, dict):
@@ -1509,6 +1606,13 @@ class MainWindow(QMainWindow):
             if isinstance(options, dict)
         }
         self.rebuild_details()
+
+        software = document.get("software", {})
+        if software is None:
+            software = {}
+        if not isinstance(software, dict):
+            raise ValueError("Config field 'software' must be a JSON object.")
+        self.load_software_config({str(key): str(value) for key, value in software.items()})
 
         slot_cplds = document.get("slot_cplds", {})
         if not isinstance(slot_cplds, dict):

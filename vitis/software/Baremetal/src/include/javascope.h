@@ -49,6 +49,11 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+/* xz Project Wizard BEGIN: javascope_observables */
+	JSO_XZ_TEMP_D4_A_CH4,
+	JSO_XZ_ENDAT_D5_CH1_POS_MECH_ST,
+	JSO_XZ_ENDAT_D5_CH1_POS_EL_ST,
+/* xz Project Wizard END: javascope_observables */
 	JSO_ENDMARKER
 };
 

@@ -115,14 +115,14 @@ typedef struct _actualValues_ {
 	float ssi_encoder_d5_2_speed_mech_si;
 	float ssi_encoder_d5_2_speed_el_si;
 	float ssi_encoder_d5_2_speed_mech_rpm;
-	uint32_t endat_encoder_d5_3_position_raw_single_turn;
-	uint32_t endat_encoder_d5_3_position_raw_multi_turn;
-	uint32_t endat_encoder_d5_3_position_multi_turn;
-	float endat_encoder_d5_3_position_mech_si_single_turn;
-	float endat_encoder_d5_3_position_el_si_single_turn;
-	float endat_encoder_d5_3_speed_mech_si;
-	float endat_encoder_d5_3_speed_el_si;
-	float endat_encoder_d5_3_speed_mech_rpm;
+	uint32_t ssi_encoder_d5_3_position_raw_single_turn;
+	uint32_t ssi_encoder_d5_3_position_raw_multi_turn;
+	uint32_t ssi_encoder_d5_3_position_multi_turn;
+	float ssi_encoder_d5_3_position_mech_si_single_turn;
+	float ssi_encoder_d5_3_position_el_si_single_turn;
+	float ssi_encoder_d5_3_speed_mech_si;
+	float ssi_encoder_d5_3_speed_el_si;
+	float ssi_encoder_d5_3_speed_mech_rpm;
 /* xz Project Wizard END: actualValues */
 } actualValues;
 
@@ -156,7 +156,7 @@ typedef struct{
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;
-	uz_endat_interface_t* endat_encoder_d5_3;
+	uz_ssi_interface_t* ssi_encoder_d5_3;
 /* xz Project Wizard END: objects */
 }object_pointers_t;
 

@@ -26,5 +26,81 @@ Interactive result of the same test.
 Interactive Bokeh result of the same test.
 
 
-Test test test
+Short-circuit steady-state derivation
+====================================
 
+This section derives the steady-state dq currents used in
+``test_uz_pmsm_swmodel_steady_state_rotating_no_voltage``.
+
+Model equations (synchronous dq frame)
+--------------------------------------
+
+The software model equations are
+
+.. math::
+
+    v_d = R_s i_d - \omega_e \psi_q,
+
+.. math::
+
+    v_q = R_s i_q + \omega_e \psi_d,
+
+with flux linkages
+
+.. math::
+
+    \psi_d = L_d i_d + \psi_f, \qquad \psi_q = L_q i_q.
+
+These are the steady-state form of the standard PMSM dq voltage equations
+(:math:`\dot{i}_d=\dot{i}_q=0`).
+
+Short-circuit condition
+-----------------------
+
+For a short circuit at constant speed, set
+
+.. math::
+
+    v_d = 0, \qquad v_q = 0.
+
+Then
+
+.. math::
+
+    R_s i_d = \omega_e L_q i_q,
+
+.. math::
+
+    R_s i_q = -\omega_e (L_d i_d + \psi_f).
+
+Insert :math:`i_d = (\omega_e L_q / R_s) i_q` into the second equation:
+
+.. math::
+
+    i_q = -\frac{\omega_e \psi_f / R_s}{1 + \omega_e^2 L_d L_q / R_s^2},
+
+.. math::
+
+    i_d = \frac{\omega_e L_q}{R_s} i_q.
+
+For :math:`L_d = L_q = L`, this becomes
+
+.. math::
+
+    i_q = -\frac{\omega_e \psi_f R_s}{R_s^2 + (\omega_e L)^2},
+
+.. math::
+
+    i_d = -\frac{\omega_e^2 L \psi_f}{R_s^2 + (\omega_e L)^2}.
+
+Torque expression
+-----------------
+
+The electromagnetic torque is
+
+.. math::
+
+    T_e = \frac{3}{2} p \left(\psi_d i_q - \psi_q i_d\right),
+
+with :math:`p` the pole-pair number. This is the same expression used in the
+software model implementation.

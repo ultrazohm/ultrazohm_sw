@@ -31,6 +31,7 @@ void export_input_output_arrays_to_csv(const char *filename,
                                       size_t output_element_size,
                                       const struct csv_field_descriptor_t *output_fields,
                                       size_t output_field_count,
-                                      size_t length);
+                                      size_t length,
+                                      float add_time);
 
 void write_csv_field(FILE *file, const void *field_ptr, enum csv_field_type_t type);

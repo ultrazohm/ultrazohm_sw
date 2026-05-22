@@ -48,7 +48,8 @@ void export_input_output_arrays_to_csv(const char *filename,
                                               size_t output_element_size,
                                               const struct csv_field_descriptor_t *output_fields,
                                               size_t output_field_count,
-                                              size_t length)
+                                              size_t length,
+                                              float add_time)
 {
     FILE *file = fopen(filename, "w");
     TEST_ASSERT_NOT_NULL(file);
@@ -57,17 +58,22 @@ void export_input_output_arrays_to_csv(const char *filename,
     TEST_ASSERT_NOT_NULL(output_array);
     TEST_ASSERT_NOT_NULL(output_fields);
 
+    if (add_time != 0.0f)
+    {
+        fprintf(file, "time;");
+    }
+
     for (size_t field_index = 0U; field_index < input_field_count; ++field_index)
     {
         fprintf(file, "input_%s", input_fields[field_index].name);
-        fprintf(file, ",");
+        fprintf(file, ";");
     }
     for (size_t field_index = 0U; field_index < output_field_count; ++field_index)
     {
         fprintf(file, "output_%s", output_fields[field_index].name);
         if (field_index < (output_field_count - 1U))
         {
-            fprintf(file, ",");
+            fprintf(file, ";");
         }
     }
     fprintf(file, "\n");
@@ -77,11 +83,16 @@ void export_input_output_arrays_to_csv(const char *filename,
         const unsigned char *input_element = (const unsigned char *)input_array + (element_index * input_element_size);
         const unsigned char *output_element = (const unsigned char *)output_array + (element_index * output_element_size);
 
+        if (add_time != 0.0f)
+        {
+            fprintf(file, "%f;", (double)element_index * (double)add_time);
+        }
+
         for (size_t field_index = 0U; field_index < input_field_count; ++field_index)
         {
             const void *field_ptr = input_element + input_fields[field_index].offset;
             write_csv_field(file, field_ptr, input_fields[field_index].type);
-            fprintf(file, ",");
+            fprintf(file, ";");
         }
 
         for (size_t field_index = 0U; field_index < output_field_count; ++field_index)
@@ -90,7 +101,7 @@ void export_input_output_arrays_to_csv(const char *filename,
             write_csv_field(file, field_ptr, output_fields[field_index].type);
             if (field_index < (output_field_count - 1U))
             {
-                fprintf(file, ",");
+                fprintf(file, ";");
             }
         }
         fprintf(file, "\n");

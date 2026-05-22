@@ -3,10 +3,21 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+from pathlib import Path
 
-# Constants
-CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
-CONFIG_CSV_PATH = "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
+def _find_repo_root(start_path):
+	start_dir = Path(start_path).resolve().parent
+	for candidate in (start_dir, *start_dir.parents):
+		if (candidate / "README.MD").is_file() and (candidate / "docs").is_dir():
+			return str(candidate)
+	raise RuntimeError("Could not locate the repository root from this script")
+
+
+REPO_ROOT = _find_repo_root(__file__)
+CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_results.csv")
+CONFIG_CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_config.csv")
+CSV_PATH = os.path.join(REPO_ROOT, CSV_PATH)
+CONFIG_CSV_PATH = os.path.join(REPO_ROOT, CONFIG_CSV_PATH)
 SIGNAL_GROUPS = [
     {
         "title": "d-axis",

@@ -1,4 +1,4 @@
-# xz Project Wizard
+# Project Wizard
 
 First sketch for a PyQt based configuration helper for UltraZohm projects.
 
@@ -27,7 +27,7 @@ Start the sketch:
 python .\main.py
 ```
 
-On Windows, you can also double-click `run_xz_project_wizard.bat`.
+On Windows, you can also double-click `run_project_wizard.bat`.
 
 ## Files
 

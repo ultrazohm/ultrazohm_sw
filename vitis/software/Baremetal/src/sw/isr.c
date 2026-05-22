@@ -93,53 +93,53 @@ void ISR_Control(void *data)
 
 static void xz_update_adapter_a1(void)
 {
-    /* xz Project Wizard BEGIN: A1 isr_control */
-/* xz Project Wizard END: A1 isr_control */
+    /* Project Wizard BEGIN: A1 isr_control */
+/* Project Wizard END: A1 isr_control */
 }
 
 static void xz_update_adapter_a2(void)
 {
-    /* xz Project Wizard BEGIN: A2 isr_control */
-/* xz Project Wizard END: A2 isr_control */
+    /* Project Wizard BEGIN: A2 isr_control */
+/* Project Wizard END: A2 isr_control */
 }
 
 static void xz_update_adapter_a3(void)
 {
-    /* xz Project Wizard BEGIN: A3 isr_control */
-/* xz Project Wizard END: A3 isr_control */
+    /* Project Wizard BEGIN: A3 isr_control */
+/* Project Wizard END: A3 isr_control */
 }
 
 static void xz_update_adapter_d1(void)
 {
-    /* xz Project Wizard BEGIN: D1 isr_control */
-/* xz Project Wizard END: D1 isr_control */
+    /* Project Wizard BEGIN: D1 isr_control */
+/* Project Wizard END: D1 isr_control */
 }
 
 static void xz_update_adapter_d2(void)
 {
-    /* xz Project Wizard BEGIN: D2 isr_control */
-/* xz Project Wizard END: D2 isr_control */
+    /* Project Wizard BEGIN: D2 isr_control */
+/* Project Wizard END: D2 isr_control */
 }
 
 static void xz_update_adapter_d3(void)
 {
-    /* xz Project Wizard BEGIN: D3 isr_control */
-/* xz Project Wizard END: D3 isr_control */
+    /* Project Wizard BEGIN: D3 isr_control */
+/* Project Wizard END: D3 isr_control */
 }
 
 static void xz_update_adapter_d4(void)
 {
-    /* xz Project Wizard BEGIN: D4 isr_control */
+    /* Project Wizard BEGIN: D4 isr_control */
     uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
     Global_Data.av.temperature_card_d4_channel_A = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
     Global_Data.av.temperature_card_d4_channel_B = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'B');
     Global_Data.av.temperature_card_d4_channel_C = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'C');
-/* xz Project Wizard END: D4 isr_control */
+/* Project Wizard END: D4 isr_control */
 }
 
 static void xz_update_adapter_d5(void)
 {
-    /* xz Project Wizard BEGIN: D5 isr_control */
+    /* Project Wizard BEGIN: D5 isr_control */
     Global_Data.av.endat_encoder_d5_1_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_encoder_d5_1_position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
     Global_Data.av.endat_encoder_d5_1_position_multi_turn = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_1);
@@ -164,7 +164,7 @@ static void xz_update_adapter_d5(void)
     Global_Data.av.ssi_encoder_d5_3_speed_mech_si = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_3);
     Global_Data.av.ssi_encoder_d5_3_speed_el_si = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_3);
     Global_Data.av.ssi_encoder_d5_3_speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_3);
-/* xz Project Wizard END: D5 isr_control */
+/* Project Wizard END: D5 isr_control */
 }
 
 //==============================================================================================================================================================

@@ -12,27 +12,27 @@ SLOTS = ["A1", "A2", "A3", "D1", "D2", "D3", "D4", "D5"]
 
 GLOBAL_DATA_MARKERS = {
     "actual_values": (
-        "/* xz Project Wizard BEGIN: actualValues */",
-        "/* xz Project Wizard END: actualValues */",
+        "/* Project Wizard BEGIN: actualValues */",
+        "/* Project Wizard END: actualValues */",
     ),
     "objects": (
-        "/* xz Project Wizard BEGIN: objects */",
-        "/* xz Project Wizard END: objects */",
+        "/* Project Wizard BEGIN: objects */",
+        "/* Project Wizard END: objects */",
     ),
 }
 
 FILE_MARKERS = {
     "main_init_ip_cores": (
-        "/* xz Project Wizard BEGIN: init_ip_cores */",
-        "/* xz Project Wizard END: init_ip_cores */",
+        "/* Project Wizard BEGIN: init_ip_cores */",
+        "/* Project Wizard END: init_ip_cores */",
     ),
     "javascope_observables": (
-        "/* xz Project Wizard BEGIN: javascope_observables */",
-        "/* xz Project Wizard END: javascope_observables */",
+        "/* Project Wizard BEGIN: javascope_observables */",
+        "/* Project Wizard END: javascope_observables */",
     ),
     "javascope_observable_pointers": (
-        "/* xz Project Wizard BEGIN: javascope_observable_pointers */",
-        "/* xz Project Wizard END: javascope_observable_pointers */",
+        "/* Project Wizard BEGIN: javascope_observable_pointers */",
+        "/* Project Wizard END: javascope_observable_pointers */",
     ),
 }
 
@@ -68,13 +68,76 @@ class SoftwareGenerationResult:
 @dataclass(frozen=True)
 class VisualizationSignal:
     signal_id: str
+    slot: str
     label: str
     enum_name: str
     pointer_expression: str
 
 
+@dataclass(frozen=True)
+class DriverConfigField:
+    id: str
+    label: str
+    default: str
+    multiline: bool = False
+
+
+@dataclass(frozen=True)
+class DriverConfigInstance:
+    id: str
+    slot: str
+    label: str
+    driver: str
+    fields: list[DriverConfigField]
+
+
 class MarkerError(ValueError):
     pass
+
+
+ENDAT_CONFIG_FIELDS = [
+    DriverConfigField("ip_clk_frequency_Hz", "IP clock frequency Hz", "100000000U"),
+    DriverConfigField("machine_polepairs", "Machine pole pairs", "2U"),
+    DriverConfigField("endat_clk_frequency_Hz", "EnDat clock frequency Hz", "2500000U"),
+    DriverConfigField("position_mech_offset_si_single_turn", "Mechanical offset SI single turn", "-1.0f"),
+    DriverConfigField("endat_encoder_bit_width_single_turn", "Single-turn bit width", "25U"),
+    DriverConfigField("endat_encoder_bit_width_multi_turn", "Multi-turn bit width", "12U"),
+    DriverConfigField("kp_pll", "PLL Kp", "628.3185f"),
+    DriverConfigField("ki_pll", "PLL Ki", "98696.0f"),
+    DriverConfigField("sampling_interval_seconds", "Sampling interval seconds", "0.0001f"),
+    DriverConfigField("delay_sampling_in_clk_ticks", "Sampling delay clock ticks", "0U"),
+]
+
+SSI_CONFIG_FIELDS = [
+    DriverConfigField("ip_clk_frequency_Hz", "IP clock frequency Hz", "100000000U"),
+    DriverConfigField("machine_polepairs", "Machine pole pairs", "2U"),
+    DriverConfigField("ssi_clk_frequency_Hz", "SSI clock frequency Hz", "1000000U"),
+    DriverConfigField("position_encoding", "Position encoding", "uz_ssi_interface_binary"),
+    DriverConfigField("position_mech_offset_si_single_turn", "Mechanical offset SI single turn", "0.0f"),
+    DriverConfigField("ssi_encoder_bit_width_single_turn", "Single-turn bit width", "19U"),
+    DriverConfigField("ssi_encoder_bit_width_multi_turn", "Multi-turn bit width", "0U"),
+    DriverConfigField("ssi_encoder_number_of_status_bits", "Status bit count", "0U"),
+    DriverConfigField("sampling_interval_seconds", "Sampling interval seconds", "0.0001f"),
+    DriverConfigField("kp_pll", "PLL Kp", "628.3185f"),
+    DriverConfigField("ki_pll", "PLL Ki", "98696.0f"),
+    DriverConfigField("sampling_delay_clk_ticks", "Sampling delay clock ticks", "0U"),
+]
+
+
+def temperature_config_fields(preset: str) -> list[DriverConfigField]:
+    return [
+        DriverConfigField("ip_clk_frequency_hz", "IP clock frequency Hz", "100000000"),
+        DriverConfigField("sample_frequency_hz", "Sample frequency Hz", "5"),
+        DriverConfigField("config_global_a", "Config_Global_A", "0U"),
+        DriverConfigField("config_mux_a", "Config_Mux_A", "0U"),
+        DriverConfigField("config_global_b", "Config_Global_B", "0U"),
+        DriverConfigField("config_mux_b", "Config_Mux_B", "0U"),
+        DriverConfigField("config_global_c", "Config_Global_C", "0U"),
+        DriverConfigField("config_mux_c", "Config_Mux_C", "0U"),
+        DriverConfigField("configdata_a", "Configdata_A entries", temperature_configdata_a(preset), multiline=True),
+        DriverConfigField("configdata_b", "Configdata_B entries", "        [0] = 0U,", multiline=True),
+        DriverConfigField("configdata_c", "Configdata_C entries", "        [0] = 0U,", multiline=True),
+    ]
 
 
 class SoftwareGenerator:
@@ -90,9 +153,11 @@ class SoftwareGenerator:
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
+        driver_config: dict[str, dict[str, str]] | None = None,
     ) -> SoftwarePlan:
         software_modes = software_modes or {}
         software_presets = software_presets or {}
+        driver_config = driver_config or {}
         selected_visualization_signals = set(visualization_signals or [])
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
         actual_values: list[str] = []
@@ -111,7 +176,12 @@ class SoftwareGenerator:
             if card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
                 preset = software_presets.get(slot, "default")
-                context = self._temperature_context(slot, source_dir, preset)
+                context = self._temperature_context(
+                    slot,
+                    source_dir,
+                    preset,
+                    driver_instance_values(f"{slot.lower()}_temperature", temperature_config_fields(preset), driver_config),
+                )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
                     self.renderer.render_file("software/temperature_card.h.tpl", context)
@@ -160,7 +230,15 @@ class SoftwareGenerator:
                     interface = option_values.get(slot, {}).get(option_id, "none")
                     if interface == "endat":
                         endat_instances += 1
-                        context = self._serial_encoder_context(slot, channel_index, "endat", source_dir)
+                        context = self._serial_encoder_context(
+                            slot,
+                            channel_index,
+                            "endat",
+                            source_dir,
+                            driver_instance_values(
+                                f"{slot.lower()}_channel_{channel_index}_endat", ENDAT_CONFIG_FIELDS, driver_config
+                            ),
+                        )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
                             self.renderer.render_file("software/endat_interface.h.tpl", context)
@@ -187,7 +265,15 @@ class SoftwareGenerator:
                         )
                     elif interface == "ssi":
                         ssi_instances += 1
-                        context = self._serial_encoder_context(slot, channel_index, "ssi", source_dir)
+                        context = self._serial_encoder_context(
+                            slot,
+                            channel_index,
+                            "ssi",
+                            source_dir,
+                            driver_instance_values(
+                                f"{slot.lower()}_channel_{channel_index}_ssi", SSI_CONFIG_FIELDS, driver_config
+                            ),
+                        )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
                             self.renderer.render_file("software/ssi_interface.h.tpl", context)
@@ -247,8 +333,11 @@ class SoftwareGenerator:
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
+        driver_config: dict[str, dict[str, str]] | None = None,
     ) -> str:
-        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets, visualization_signals)
+        plan = self.build_plan(
+            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config
+        )
         lines = [
             "Software generation preview",
             f"Source directory: {source_dir}",
@@ -304,6 +393,55 @@ class SoftwareGenerator:
         plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets)
         return plan.available_visualization_signals
 
+    def driver_config_instances(
+        self,
+        assignments: dict[str, str],
+        option_values: dict[str, dict[str, str]],
+        software_modes: dict[str, str] | None = None,
+        software_presets: dict[str, str] | None = None,
+    ) -> list[DriverConfigInstance]:
+        software_modes = software_modes or {}
+        software_presets = software_presets or {}
+        instances: list[DriverConfigInstance] = []
+        for slot in SLOTS:
+            card_id = assignments.get(slot, "empty") if software_modes.get(slot, "follow_hardware") == "follow_hardware" else "empty"
+            slot_lower = slot.lower()
+            if card_id == "uz_d_temperature_ltc2983":
+                preset = software_presets.get(slot, "default")
+                instances.append(
+                    DriverConfigInstance(
+                        id=f"{slot_lower}_temperature",
+                        slot=slot,
+                        label=f"{slot} temperature card",
+                        driver="temperature",
+                        fields=temperature_config_fields(preset),
+                    )
+                )
+            elif card_id == "uz_d_absolute_encoder":
+                for channel_index in range(1, 4):
+                    interface = option_values.get(slot, {}).get(f"channel_{channel_index}", "none")
+                    if interface == "endat":
+                        instances.append(
+                            DriverConfigInstance(
+                                id=f"{slot_lower}_channel_{channel_index}_endat",
+                                slot=slot,
+                                label=f"{slot} channel {channel_index} EnDat",
+                                driver="endat",
+                                fields=ENDAT_CONFIG_FIELDS,
+                            )
+                        )
+                    elif interface == "ssi":
+                        instances.append(
+                            DriverConfigInstance(
+                                id=f"{slot_lower}_channel_{channel_index}_ssi",
+                                slot=slot,
+                                label=f"{slot} channel {channel_index} SSI",
+                                driver="ssi",
+                                fields=SSI_CONFIG_FIELDS,
+                            )
+                        )
+        return instances
+
     def generate(
         self,
         source_dir: Path,
@@ -312,8 +450,11 @@ class SoftwareGenerator:
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
+        driver_config: dict[str, dict[str, str]] | None = None,
     ) -> SoftwareGenerationResult:
-        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets, visualization_signals)
+        plan = self.build_plan(
+            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config
+        )
         written_files: list[Path] = []
         patched_files: list[Path] = []
 
@@ -353,7 +494,9 @@ class SoftwareGenerator:
 
         return SoftwareGenerationResult(written_files, patched_files, plan.warnings)
 
-    def _temperature_context(self, slot: str, source_dir: Path, preset: str) -> dict[str, object]:
+    def _temperature_context(
+        self, slot: str, source_dir: Path, preset: str, config_values: dict[str, str]
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
         base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "temperature")
         warnings = [warning] if warning else []
@@ -361,23 +504,35 @@ class SoftwareGenerator:
             "slot": slot,
             "slot_lower": slot_lower,
             "base_address_macro": base_address_macro,
-            "ip_clk_frequency_hz": "100000000",
-            "sample_frequency_hz": "5",
-            "configdata_a": temperature_configdata_a(preset),
+            "ip_clk_frequency_hz": config_values["ip_clk_frequency_hz"],
+            "sample_frequency_hz": config_values["sample_frequency_hz"],
+            "config_global_a": config_values["config_global_a"],
+            "config_mux_a": config_values["config_mux_a"],
+            "config_global_b": config_values["config_global_b"],
+            "config_mux_b": config_values["config_mux_b"],
+            "config_global_c": config_values["config_global_c"],
+            "config_mux_c": config_values["config_mux_c"],
+            "configdata_a": config_values["configdata_a"],
+            "configdata_b": config_values["configdata_b"],
+            "configdata_c": config_values["configdata_c"],
             "warnings": warnings,
         }
 
-    def _serial_encoder_context(self, slot: str, channel: int, interface: str, source_dir: Path) -> dict[str, object]:
+    def _serial_encoder_context(
+        self, slot: str, channel: int, interface: str, source_dir: Path, config_values: dict[str, str]
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
         base_address_macro, warning = resolve_base_address_macro(source_dir, slot, interface, channel)
         warnings = [warning] if warning else []
-        return {
+        context = {
             "slot": slot,
             "slot_lower": slot_lower,
             "channel": str(channel),
             "base_address_macro": base_address_macro,
             "warnings": warnings,
         }
+        context.update(config_values)
+        return context
 
 
 def patch_slot_header(path: Path, slot: str, includes: list[str], prototypes: list[str]) -> None:
@@ -399,6 +554,15 @@ def split_header_template(rendered_header: str) -> tuple[list[str], list[str]]:
         else:
             prototypes.append(line)
     return includes, prototypes
+
+
+def driver_instance_values(
+    instance_id: str, fields: list[DriverConfigField], driver_config: dict[str, dict[str, str]]
+) -> dict[str, str]:
+    configured = driver_config.get(instance_id, {})
+    if configured.get("mode") != "custom":
+        configured = {}
+    return {field.id: configured.get(field.id, field.default) for field in fields}
 
 
 def patch_slot_source(path: Path, slot: str, definitions: list[str]) -> None:
@@ -448,8 +612,8 @@ def patch_instance_counts(path: Path, counts: dict[str, int]) -> None:
 
 def replace_named_block(text: str, slot: str, block_name: str, lines: list[str]) -> str:
     marker = (
-        f"/* xz Project Wizard BEGIN: {slot} {block_name} */",
-        f"/* xz Project Wizard END: {slot} {block_name} */",
+        f"/* Project Wizard BEGIN: {slot} {block_name} */",
+        f"/* Project Wizard END: {slot} {block_name} */",
     )
     return replace_block(text, marker, lines)
 
@@ -498,6 +662,7 @@ def encoder_isr_lines(interface: str, prefix: str, slot_lower: str, channel: int
 
 def temperature_visualization_signals(slot_lower: str, preset: str) -> list[VisualizationSignal]:
     signals: list[VisualizationSignal] = []
+    slot = slot_lower.upper()
     zero_based_connector_labels = preset == "type_k_thermocouple"
     for group in ["A", "B", "C"]:
         for array_index in range(20):
@@ -515,6 +680,7 @@ def temperature_visualization_signals(slot_lower: str, preset: str) -> list[Visu
             signals.append(
                 VisualizationSignal(
                     signal_id=signal_id,
+                    slot=slot,
                     label=f"{slot_lower.upper()} temperature group {group} channel {channel_label}",
                     enum_name=enum_name,
                     pointer_expression=pointer,
@@ -527,6 +693,7 @@ def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, 
     base_id = f"{prefix}_{slot_lower}_{channel}"
     enum_base = f"JSO_XZ_{interface.upper()}_{slot_lower.upper()}_CH{channel}"
     label_base = f"{slot_lower.upper()} {interface.upper()} channel {channel}"
+    slot = slot_lower.upper()
     fields = [
         ("position_mech_si_single_turn", "POS_MECH_ST", "position mech SI single turn"),
         ("position_el_si_single_turn", "POS_EL_ST", "position el SI single turn"),
@@ -537,6 +704,7 @@ def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, 
     return [
         VisualizationSignal(
             signal_id=f"{base_id}_{field}",
+            slot=slot,
             label=f"{label_base} {label}",
             enum_name=f"{enum_base}_{enum_suffix}",
             pointer_expression=f"&data->av.{base_id}_{field}",

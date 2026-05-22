@@ -7,7 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-// xz Project Wizard adapter slot headers
+// Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
 #include "include/a3_adapter_init.h"
@@ -95,7 +95,7 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-	/* xz Project Wizard BEGIN: actualValues */
+	/* Project Wizard BEGIN: actualValues */
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
@@ -123,7 +123,7 @@ typedef struct _actualValues_ {
 	float ssi_encoder_d5_3_speed_mech_si;
 	float ssi_encoder_d5_3_speed_el_si;
 	float ssi_encoder_d5_3_speed_mech_rpm;
-/* xz Project Wizard END: actualValues */
+/* Project Wizard END: actualValues */
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -152,12 +152,12 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	/* xz Project Wizard BEGIN: objects */
+	/* Project Wizard BEGIN: objects */
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;
 	uz_ssi_interface_t* ssi_encoder_d5_3;
-/* xz Project Wizard END: objects */
+/* Project Wizard END: objects */
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

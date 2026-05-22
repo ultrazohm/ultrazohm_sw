@@ -1,16 +1,16 @@
 #pragma once
 
-/* xz Project Wizard BEGIN: D5 includes */
-/* xz Project Wizard generated content for D5 channel 1 */
+/* Project Wizard BEGIN: D5 includes */
+/* Project Wizard generated content for D5 channel 1 */
 #include "../IP_Cores/uz_endat_interface/uz_endat_interface.h"
-/* xz Project Wizard generated content for D5 channel 2 */
+/* Project Wizard generated content for D5 channel 2 */
 #include "../IP_Cores/uz_ssi_interface/uz_ssi_interface.h"
-/* xz Project Wizard generated content for D5 channel 3 */
+/* Project Wizard generated content for D5 channel 3 */
 #include "../IP_Cores/uz_ssi_interface/uz_ssi_interface.h"
-/* xz Project Wizard END: D5 includes */
+/* Project Wizard END: D5 includes */
 
-/* xz Project Wizard BEGIN: D5 prototypes */
+/* Project Wizard BEGIN: D5 prototypes */
 uz_endat_interface_t* initialize_endat_encoder_d5_1(void);
 uz_ssi_interface_t* initialize_ssi_encoder_d5_2(void);
 uz_ssi_interface_t* initialize_ssi_encoder_d5_3(void);
-/* xz Project Wizard END: D5 prototypes */
+/* Project Wizard END: D5 prototypes */

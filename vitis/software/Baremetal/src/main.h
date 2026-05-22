@@ -54,7 +54,7 @@
 
 #include "include/pwm_init.h"
 
-// xz Project Wizard adapter slot init headers
+// Project Wizard adapter slot init headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
 #include "include/a3_adapter_init.h"

@@ -9,6 +9,7 @@ from typing import Any
 from PyQt6.QtCore import QProcess, Qt, QTimer
 from PyQt6.QtGui import QAction, QFont
 from PyQt6.QtWidgets import (
+    QApplication,
     QComboBox,
     QCheckBox,
     QFileDialog,
@@ -21,6 +22,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPlainTextEdit,
+    QProgressDialog,
     QPushButton,
     QScrollArea,
     QSplitter,
@@ -49,12 +51,13 @@ from .card_editor import CardEditorDialog
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("xz Project Wizard")
+        self.setWindowTitle("Project Wizard")
         self.resize(1200, 760)
         self.database = CardDatabase.load(DATA_FILE)
         self.generator = TclGenerator(self.database)
         self.software_generator = SoftwareGenerator(self.database)
         self.current_config_path: Path | None = None
+        self.is_loading_config = False
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
@@ -62,8 +65,13 @@ class MainWindow(QMainWindow):
         self.software_fields: dict[str, QLineEdit] = {}
         self.software_mode_combos: dict[str, QComboBox] = {}
         self.software_preset_combos: dict[str, QComboBox] = {}
+        self.driver_config_mode_combos: dict[str, QComboBox] = {}
+        self.driver_config_fields: dict[tuple[str, str], QLineEdit | QPlainTextEdit] = {}
+        self.driver_config_tabs: QTabWidget | None = None
+        self.driver_config_tab_layouts: dict[str, QVBoxLayout] = {}
         self.visualization_checkboxes: dict[str, QCheckBox] = {}
-        self.visualization_content_layout: QVBoxLayout | None = None
+        self.visualization_tabs: QTabWidget | None = None
+        self.visualization_tab_layouts: dict[str, QVBoxLayout] = {}
         self.software_preview: QPlainTextEdit | None = None
         self.software_status: QPlainTextEdit | None = None
         self.toolchain_status: QPlainTextEdit | None = None
@@ -73,7 +81,7 @@ class MainWindow(QMainWindow):
         self.cpld_status: QTextEdit | None = None
         self.cpld_process: QProcess | None = None
         self.cpld_log_path: Path | None = None
-        self.cpld_xcf_path: Path = OUTPUT_DIR / "xz_project_wizard_slot_cplds.xcf"
+        self.cpld_xcf_path: Path = OUTPUT_DIR / "project_wizard_slot_cplds.xcf"
         self.cpld_xcf_current = False
         self.write_cpld_button: QPushButton | None = None
         self.program_cpld_button: QPushButton | None = None
@@ -91,6 +99,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._build_axi_interconnect_page())
         self.stack.addWidget(self._build_software_general_page())
         self.stack.addWidget(self._build_software_driver_page())
+        self.stack.addWidget(self._build_advanced_driver_config_page())
         self.stack.addWidget(self._build_data_visualization_page())
         self.stack.addWidget(self._build_database_page())
 
@@ -169,6 +178,10 @@ class MainWindow(QMainWindow):
         ip_driver_action.triggered.connect(self.show_ip_core_driver_setup)
         view_menu.addAction(ip_driver_action)
 
+        advanced_driver_action = QAction("Advanced driver configuration", self)
+        advanced_driver_action.triggered.connect(self.show_advanced_driver_config)
+        view_menu.addAction(advanced_driver_action)
+
         data_visualization_action = QAction("Data visualization", self)
         data_visualization_action.triggered.connect(self.show_data_visualization)
         view_menu.addAction(data_visualization_action)
@@ -201,9 +214,11 @@ class MainWindow(QMainWindow):
         software_config = QTreeWidgetItem(["Software configuration"])
         software_general = QTreeWidgetItem(["General"])
         ip_driver_setup = QTreeWidgetItem(["IP core driver setup"])
+        advanced_driver_config = QTreeWidgetItem(["Advanced driver configuration"])
         data_visualization = QTreeWidgetItem(["Data visualization"])
         software_config.addChild(software_general)
         software_config.addChild(ip_driver_setup)
+        software_config.addChild(advanced_driver_config)
         software_config.addChild(data_visualization)
         tree.addTopLevelItem(toolchain)
         tree.addTopLevelItem(platform)
@@ -233,7 +248,8 @@ class MainWindow(QMainWindow):
             "Software configuration": 5,
             "General": 5,
             "IP core driver setup": 6,
-            "Data visualization": 7,
+            "Advanced driver configuration": 7,
+            "Data visualization": 8,
         }
         self.stack.setCurrentIndex(page_by_name.get(current.text(0), 0))
 
@@ -414,7 +430,7 @@ class MainWindow(QMainWindow):
         marker_layout = QVBoxLayout(marker_group)
         marker_hint = QLabel(
             "The wizard keeps one permanent init header/source pair per adapter slot and rewrites only "
-            "xz Project Wizard marker blocks. Setting a slot to No software driver clears the slot-owned "
+            "Project Wizard marker blocks. Setting a slot to No software driver clears the slot-owned "
             "markers and removes its generated integration from shared marker blocks."
         )
         marker_hint.setWordWrap(True)
@@ -448,31 +464,21 @@ class MainWindow(QMainWindow):
             combo = QComboBox()
             combo.addItem("Follow hardware selection", "follow_hardware")
             combo.addItem("No software driver", "no_driver")
-            combo.currentIndexChanged.connect(self.refresh_software_preview)
+            combo.currentIndexChanged.connect(self.software_driver_selection_changed)
             self.software_mode_combos[slot] = combo
             slot_grid.addWidget(combo, row, 1)
             preset_combo = QComboBox()
-            preset_combo.currentIndexChanged.connect(self.refresh_software_preview)
+            preset_combo.currentIndexChanged.connect(self.software_driver_selection_changed)
             self.software_preset_combos[slot] = preset_combo
             slot_grid.addWidget(preset_combo, row, 2)
         slot_grid.setColumnStretch(1, 1)
         slot_grid.setColumnStretch(2, 1)
         layout.addWidget(slot_group)
 
-        advanced_group = QGroupBox("Advanced driver configuration")
-        advanced_layout = QVBoxLayout(advanced_group)
-        advanced_label = QLabel("No advanced driver fields are exposed yet. This area is reserved for schema-driven per-slot and per-channel settings.")
-        advanced_label.setWordWrap(True)
-        advanced_layout.addWidget(advanced_label)
-        layout.addWidget(advanced_group)
-
         buttons = QHBoxLayout()
-        refresh_button = QPushButton("Refresh software preview")
-        refresh_button.clicked.connect(self.refresh_software_preview)
         generate_button = QPushButton("Generate software files")
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
-        buttons.addWidget(refresh_button)
         buttons.addWidget(generate_button)
         layout.addLayout(buttons)
 
@@ -485,6 +491,41 @@ class MainWindow(QMainWindow):
         self.software_status.setReadOnly(True)
         self.software_status.setFixedHeight(120)
         layout.addWidget(self.software_status)
+        return page
+
+    def _build_advanced_driver_config_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("Advanced Driver Configuration")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        advanced_hint = QLabel("Use Default for preset-generated config structs, or Custom to edit instance-specific config fields.")
+        advanced_hint.setWordWrap(True)
+        layout.addWidget(advanced_hint)
+        self.driver_config_tabs = QTabWidget()
+        self.driver_config_tab_layouts = {}
+        for slot in SLOTS:
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            content = QWidget()
+            slot_layout = QVBoxLayout(content)
+            slot_layout.addStretch(1)
+            self.driver_config_tab_layouts[slot] = slot_layout
+            scroll.setWidget(content)
+            self.driver_config_tabs.addTab(scroll, slot)
+        layout.addWidget(self.driver_config_tabs, 1)
+
+        buttons = QHBoxLayout()
+        generate_button = QPushButton("Generate software driver files")
+        generate_button.clicked.connect(self.generate_software_files)
+        buttons.addStretch(1)
+        buttons.addWidget(generate_button)
+        layout.addLayout(buttons)
         return page
 
     def _build_data_visualization_page(self) -> QWidget:
@@ -505,20 +546,31 @@ class MainWindow(QMainWindow):
         hint.setWordWrap(True)
         layout.addWidget(hint)
 
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        content = QWidget()
-        self.visualization_content_layout = QVBoxLayout(content)
-        self.visualization_content_layout.addStretch(1)
-        scroll.setWidget(content)
-        layout.addWidget(scroll, 1)
+        self.visualization_tabs = QTabWidget()
+        self.visualization_tab_layouts = {}
+        for slot in SLOTS:
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            content = QWidget()
+            slot_layout = QVBoxLayout(content)
+            slot_layout.addStretch(1)
+            self.visualization_tab_layouts[slot] = slot_layout
+            scroll.setWidget(content)
+            self.visualization_tabs.addTab(scroll, slot)
+        layout.addWidget(self.visualization_tabs, 1)
 
+        action_group = QGroupBox("Software generation")
+        action_layout = QVBoxLayout(action_group)
+        action_hint = QLabel("The selected visualization signals are written together with the software driver integration.")
+        action_hint.setWordWrap(True)
+        action_layout.addWidget(action_hint)
         buttons = QHBoxLayout()
-        refresh_button = QPushButton("Refresh signal list")
-        refresh_button.clicked.connect(self.refresh_data_visualization_options)
+        generate_button = QPushButton("Generate software driver files")
+        generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
-        buttons.addWidget(refresh_button)
-        layout.addLayout(buttons)
+        buttons.addWidget(generate_button)
+        action_layout.addLayout(buttons)
+        layout.addWidget(action_group)
 
         return page
 
@@ -800,8 +852,24 @@ class MainWindow(QMainWindow):
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.refresh_card_table()
-        self.rebuild_details()
-        self.refresh_tcl_preview()
+        self.guarded_rebuild_details()
+        self.guarded_refresh_tcl_preview()
+
+    def guarded_refresh_tcl_preview(self) -> None:
+        if not self.is_loading_config:
+            self.refresh_tcl_preview()
+
+    def guarded_refresh_software_preview(self) -> None:
+        if not self.is_loading_config:
+            self.refresh_software_preview()
+
+    def guarded_refresh_data_visualization_options(self, values: dict[str, str] | None = None) -> None:
+        if not self.is_loading_config:
+            self.refresh_data_visualization_options(values)
+
+    def guarded_rebuild_details(self) -> None:
+        if not self.is_loading_config:
+            self.rebuild_details()
 
     def assignments(self) -> dict[str, str]:
         return {slot: combo.currentData() or "empty" for slot, combo in self.slot_combos.items()}
@@ -830,6 +898,17 @@ class MainWindow(QMainWindow):
             config[f"{slot}_mode"] = combo.currentData() or "follow_hardware"
         for slot, combo in self.software_preset_combos.items():
             config[f"{slot}_preset"] = combo.currentData() or "default"
+        for instance_id, combo in self.driver_config_mode_combos.items():
+            config[f"driver_config_{instance_id}_mode"] = combo.currentData() or "default"
+        for (instance_id, field_id), field in self.driver_config_fields.items():
+            mode_combo = self.driver_config_mode_combos.get(instance_id)
+            if mode_combo is not None and mode_combo.currentData() != "custom":
+                continue
+            if isinstance(field, QPlainTextEdit):
+                value = field.toPlainText().strip()
+            else:
+                value = field.text().strip()
+            config[f"driver_config_{instance_id}_{field_id}"] = value
         for signal_id, checkbox in self.visualization_checkboxes.items():
             if checkbox.isChecked():
                 config[f"visualize_{signal_id}"] = "true"
@@ -843,6 +922,18 @@ class MainWindow(QMainWindow):
 
     def selected_visualization_signals(self) -> set[str]:
         return {signal_id for signal_id, checkbox in self.visualization_checkboxes.items() if checkbox.isChecked()}
+
+    def driver_config_values(self) -> dict[str, dict[str, str]]:
+        values: dict[str, dict[str, str]] = {}
+        for instance_id, combo in self.driver_config_mode_combos.items():
+            values.setdefault(instance_id, {})["mode"] = combo.currentData() or "default"
+        for (instance_id, field_id), field in self.driver_config_fields.items():
+            if isinstance(field, QPlainTextEdit):
+                value = field.toPlainText().strip()
+            else:
+                value = field.text().strip()
+            values.setdefault(instance_id, {})[field_id] = value
+        return values
 
     def load_toolchain_config(self, values: dict[str, str]) -> None:
         for key, field in self.toolchain_fields.items():
@@ -865,8 +956,9 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
         self.refresh_software_preset_options(values)
-        self.refresh_data_visualization_options(values)
-        self.refresh_software_preview()
+        self.refresh_advanced_driver_config_options(values)
+        self.guarded_refresh_data_visualization_options(values)
+        self.guarded_refresh_software_preview()
 
     def reset_software_config(self) -> None:
         self.load_software_config({})
@@ -897,11 +989,88 @@ class MainWindow(QMainWindow):
             index = combo.findData(selected)
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
-        self.refresh_data_visualization_options(values)
+        self.refresh_advanced_driver_config_options(values)
+        self.guarded_refresh_data_visualization_options(values)
+
+    def refresh_advanced_driver_config_options(self, values: dict[str, str] | None = None) -> None:
+        if self.driver_config_tabs is None:
+            return
+        values = values or self.software_config()
+        for layout in self.driver_config_tab_layouts.values():
+            for index in reversed(range(layout.count())):
+                item = layout.itemAt(index)
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)
+                else:
+                    layout.removeItem(item)
+        self.driver_config_mode_combos.clear()
+        self.driver_config_fields.clear()
+
+        instances = self.software_generator.driver_config_instances(
+            self.assignments(),
+            self.option_values(),
+            self.software_modes(),
+            self.software_presets(),
+        )
+        instances_by_slot: dict[str, list[Any]] = {slot: [] for slot in SLOTS}
+        for instance in instances:
+            instances_by_slot.setdefault(instance.slot, []).append(instance)
+        for instance in instances:
+            layout = self.driver_config_tab_layouts.get(instance.slot)
+            if layout is None:
+                continue
+            group = QGroupBox(instance.label)
+            group_layout = QVBoxLayout(group)
+            form = QFormLayout()
+            mode_combo = QComboBox()
+            mode_combo.addItem("Default", "default")
+            mode_combo.addItem("Custom", "custom")
+            mode_value = values.get(f"driver_config_{instance.id}_mode", "default")
+            mode_index = mode_combo.findData(mode_value)
+            mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
+            self.driver_config_mode_combos[instance.id] = mode_combo
+            form.addRow("Config mode", mode_combo)
+
+            field_widgets: list[QLineEdit | QPlainTextEdit] = []
+            for field in instance.fields:
+                if mode_value == "custom":
+                    stored_value = values.get(f"driver_config_{instance.id}_{field.id}", field.default)
+                else:
+                    stored_value = field.default
+                if field.multiline:
+                    widget: QLineEdit | QPlainTextEdit = QPlainTextEdit()
+                    widget.setPlainText(stored_value)
+                    widget.setFixedHeight(95)
+                else:
+                    widget = QLineEdit(stored_value)
+                self.driver_config_fields[(instance.id, field.id)] = widget
+                field_widgets.append(widget)
+                form.addRow(field.label, widget)
+            group_layout.addLayout(form)
+
+            def apply_mode(_index: int, combo: QComboBox = mode_combo, widgets: list[QLineEdit | QPlainTextEdit] = field_widgets) -> None:
+                editable = combo.currentData() == "custom"
+                for widget in widgets:
+                    widget.setEnabled(editable)
+                self.guarded_refresh_software_preview()
+
+            mode_combo.currentIndexChanged.connect(apply_mode)
+            apply_mode(mode_combo.currentIndex())
+            layout.addWidget(group)
+
+        for slot, layout in self.driver_config_tab_layouts.items():
+            if not instances_by_slot.get(slot):
+                label = QLabel(f"No software driver config fields for {slot}.")
+                label.setWordWrap(True)
+                layout.addWidget(label)
+            layout.addStretch(1)
 
     def refresh_data_visualization_options(self, values: dict[str, str] | None = None) -> None:
-        if self.visualization_content_layout is None:
+        if self.visualization_tabs is None:
             return
+        if values is not None and not isinstance(values, dict):
+            values = None
         if values is None:
             selected = self.selected_visualization_signals()
         else:
@@ -910,13 +1079,14 @@ class MainWindow(QMainWindow):
                 for key, value in values.items()
                 if key.startswith("visualize_") and str(value).lower() in {"1", "true", "yes", "on"}
             }
-        for index in reversed(range(self.visualization_content_layout.count())):
-            item = self.visualization_content_layout.itemAt(index)
-            widget = item.widget()
-            if widget is not None:
-                widget.setParent(None)
-            else:
-                self.visualization_content_layout.removeItem(item)
+        for layout in self.visualization_tab_layouts.values():
+            for index in reversed(range(layout.count())):
+                item = layout.itemAt(index)
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)
+                else:
+                    layout.removeItem(item)
         self.visualization_checkboxes.clear()
 
         source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
@@ -928,18 +1098,25 @@ class MainWindow(QMainWindow):
             self.software_modes(),
             self.software_presets(),
         )
-        if not signals:
-            label = QLabel("No float-valued generated signals are available for the current software selection.")
-            label.setWordWrap(True)
-            self.visualization_content_layout.addWidget(label)
+        signals_by_slot: dict[str, list[Any]] = {slot: [] for slot in SLOTS}
         for signal in signals:
+            signals_by_slot.setdefault(signal.slot, []).append(signal)
+        for signal in signals:
+            slot_layout = self.visualization_tab_layouts.get(signal.slot)
+            if slot_layout is None:
+                continue
             checkbox = QCheckBox(signal.label)
             checkbox.setChecked(signal.signal_id in selected)
-            checkbox.stateChanged.connect(self.refresh_software_preview)
+            checkbox.stateChanged.connect(self.guarded_refresh_software_preview)
             self.visualization_checkboxes[signal.signal_id] = checkbox
-            self.visualization_content_layout.addWidget(checkbox)
-        self.visualization_content_layout.addStretch(1)
-        self.refresh_software_preview()
+            slot_layout.addWidget(checkbox)
+        for slot, layout in self.visualization_tab_layouts.items():
+            if not signals_by_slot.get(slot):
+                label = QLabel(f"No generated visualization signals for {slot}.")
+                label.setWordWrap(True)
+                layout.addWidget(label)
+            layout.addStretch(1)
+        self.guarded_refresh_software_preview()
 
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
@@ -968,10 +1145,19 @@ class MainWindow(QMainWindow):
             field.blockSignals(False)
 
     def adapter_card_changed(self, slot: str) -> None:
+        if self.is_loading_config:
+            return
         if slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.refresh_software_preset_options()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_tcl_preview()
+
+    def software_driver_selection_changed(self) -> None:
+        if self.is_loading_config:
+            return
+        self.refresh_advanced_driver_config_options()
+        self.refresh_data_visualization_options()
+        self.refresh_software_preview()
 
     def prefill_cpld_for_slot(self, slot: str) -> None:
         combo = self.cpld_combos.get(slot)
@@ -1002,20 +1188,26 @@ class MainWindow(QMainWindow):
         return {"id": platform_id or "", "name": self.platform_combo.currentText(), "revision": revision}
 
     def platform_changed(self) -> None:
+        if self.is_loading_config:
+            return
         previous_revision = self.platform_revision_combo.currentData() or self.platform_revision_combo.currentText()
         self.refresh_platform_revisions(previous_revision)
         self.refresh_platform_cpld_visibility()
         self.invalidate_cpld_project_file()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_tcl_preview()
 
     def platform_revision_changed(self) -> None:
+        if self.is_loading_config:
+            return
         self.refresh_platform_cpld_visibility()
         self.invalidate_cpld_project_file()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_tcl_preview()
 
     def platform_cpld_type_changed(self) -> None:
+        if self.is_loading_config:
+            return
         self.invalidate_cpld_project_file()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_tcl_preview()
 
     def refresh_platform_revisions(self, preferred_revision: str = "") -> None:
         platform = self.database.platform_by_id(self.platform_combo.currentData()) or {}
@@ -1135,7 +1327,7 @@ class MainWindow(QMainWindow):
                 raise FileNotFoundError(f"Lattice Programmer executable not found: {programmer_path}")
             if not self.cpld_xcf_current or not self.cpld_xcf_path.exists():
                 raise FileNotFoundError("Generate the Lattice Diamond Programmer project file before programming.")
-            log_path = OUTPUT_DIR / "xz_project_wizard_slot_cplds.log"
+            log_path = OUTPUT_DIR / "project_wizard_slot_cplds.log"
         except (OSError, ValueError) as error:
             self.set_cpld_status(f"Could not program CPLDs:\n{error}")
             QMessageBox.warning(self, "Could not program CPLDs", str(error))
@@ -1272,7 +1464,7 @@ class MainWindow(QMainWindow):
         return None
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(8)
+        self.stack.setCurrentIndex(9)
 
     def show_software_general(self) -> None:
         self.stack.setCurrentIndex(5)
@@ -1282,9 +1474,13 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentIndex(6)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
 
-    def show_data_visualization(self) -> None:
+    def show_advanced_driver_config(self) -> None:
         self.stack.setCurrentIndex(7)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(2))
+
+    def show_data_visualization(self) -> None:
+        self.stack.setCurrentIndex(8)
+        self.tree.setCurrentItem(self.tree.topLevelItem(3).child(3))
 
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
@@ -1351,8 +1547,9 @@ class MainWindow(QMainWindow):
             if assignments.get(slot, "empty") == "empty":
                 self.detail_options.pop(slot, None)
         self.refresh_software_preset_options()
-        self.refresh_data_visualization_options()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_data_visualization_options()
+        self.refresh_advanced_driver_config_options()
+        self.guarded_refresh_tcl_preview()
 
     def _clear_details_layouts(self) -> None:
         for layout in self.slot_detail_layouts.values():
@@ -1369,8 +1566,8 @@ class MainWindow(QMainWindow):
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
                 self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
-        self.refresh_data_visualization_options()
-        self.refresh_tcl_preview()
+        self.guarded_refresh_data_visualization_options()
+        self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
         self.tcl_preview.setPlainText(
@@ -1397,6 +1594,7 @@ class MainWindow(QMainWindow):
                 self.software_modes(),
                 self.software_presets(),
                 self.selected_visualization_signals(),
+                self.driver_config_values(),
             )
         )
 
@@ -1415,6 +1613,7 @@ class MainWindow(QMainWindow):
                 self.software_modes(),
                 self.software_presets(),
                 self.selected_visualization_signals(),
+                self.driver_config_values(),
             )
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))
@@ -1506,19 +1705,37 @@ class MainWindow(QMainWindow):
             self,
             "Open config",
             str(APP_DIR),
-            "xz Project Wizard config (*.xzpw.json);;JSON files (*.json)",
+            "Project Wizard config (*.pw.json);;JSON files (*.json)",
         )
         if not path_text:
             return
         path = Path(path_text)
+        progress = QProgressDialog("Reading config file...", "", 0, 7, self)
+        progress.setWindowTitle("Loading config")
+        progress.setCancelButton(None)
+        progress.setWindowModality(Qt.WindowModality.ApplicationModal)
+        progress.setMinimumDuration(0)
+        progress.setValue(0)
+        progress.show()
+        QApplication.processEvents()
+        self.is_loading_config = True
         try:
+            self.update_config_load_progress(progress, 1, "Parsing config file...")
             document = json.loads(path.read_text(encoding="utf-8"))
-            self.load_config_document(document)
+            self.load_config_document(document, progress)
         except (OSError, json.JSONDecodeError, ValueError) as error:
+            self.is_loading_config = False
+            progress.close()
             QMessageBox.warning(self, "Could not open config", str(error))
             return
         self.current_config_path = path
+        self.is_loading_config = False
+        self.update_config_load_progress(progress, 7, "Refreshing previews...")
+        software = document.get("software", {})
+        software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
+        self.refresh_software_preset_options(software_values)
         self.refresh_tcl_preview()
+        progress.close()
 
     def save_config(self) -> None:
         if self.current_config_path is None:
@@ -1527,12 +1744,12 @@ class MainWindow(QMainWindow):
         self.write_config(self.current_config_path)
 
     def save_config_as(self) -> None:
-        default_path = self.current_config_path or (APP_DIR / "generated" / "xz_project_wizard_config.xzpw.json")
+        default_path = self.current_config_path or (APP_DIR / "generated" / "project_wizard_config.pw.json")
         path_text, _ = QFileDialog.getSaveFileName(
             self,
             "Save config as",
             str(default_path),
-            "xz Project Wizard config (*.xzpw.json);;JSON files (*.json)",
+            "Project Wizard config (*.pw.json);;JSON files (*.json)",
         )
         if not path_text:
             return
@@ -1562,9 +1779,17 @@ class MainWindow(QMainWindow):
             self.software_config(),
         )
 
-    def load_config_document(self, document: dict[str, Any]) -> None:
+    def update_config_load_progress(self, progress: QProgressDialog | None, value: int, message: str) -> None:
+        if progress is None:
+            return
+        progress.setLabelText(message)
+        progress.setValue(value)
+        QApplication.processEvents()
+
+    def load_config_document(self, document: dict[str, Any], progress: QProgressDialog | None = None) -> None:
         if not isinstance(document, dict):
             raise ValueError("Config must be a JSON object.")
+        self.update_config_load_progress(progress, 2, "Loading platform and toolchain...")
         platform_id = document.get("platform", "")
         platform_index = self.platform_combo.findData(platform_id)
         if platform_index >= 0:
@@ -1587,6 +1812,7 @@ class MainWindow(QMainWindow):
             raise ValueError("Config field 'toolchain' must be a JSON object.")
         self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
 
+        self.update_config_load_progress(progress, 3, "Loading adapter cards...")
         slots = document.get("slots", {})
         if not isinstance(slots, dict):
             raise ValueError("Config field 'slots' must be a JSON object.")
@@ -1597,6 +1823,7 @@ class MainWindow(QMainWindow):
                 index = combo.findData("empty")
             combo.setCurrentIndex(index if index >= 0 else 0)
 
+        self.update_config_load_progress(progress, 4, "Loading adapter card details...")
         slot_options = document.get("slot_options", {})
         if not isinstance(slot_options, dict):
             raise ValueError("Config field 'slot_options' must be a JSON object.")
@@ -1607,6 +1834,7 @@ class MainWindow(QMainWindow):
         }
         self.rebuild_details()
 
+        self.update_config_load_progress(progress, 5, "Loading software configuration...")
         software = document.get("software", {})
         if software is None:
             software = {}
@@ -1614,6 +1842,7 @@ class MainWindow(QMainWindow):
             raise ValueError("Config field 'software' must be a JSON object.")
         self.load_software_config({str(key): str(value) for key, value in software.items()})
 
+        self.update_config_load_progress(progress, 6, "Loading CPLD and AXI settings...")
         slot_cplds = document.get("slot_cplds", {})
         if not isinstance(slot_cplds, dict):
             raise ValueError("Config field 'slot_cplds' must be a JSON object.")
@@ -1648,12 +1877,12 @@ class MainWindow(QMainWindow):
         QMessageBox.information(
             self,
             "Info",
-            "xz Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
+            "Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
         )
 
     def export_tcl(self) -> None:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        default_path = OUTPUT_DIR / "xz_project_wizard_config.tcl"
+        default_path = OUTPUT_DIR / "project_wizard_config.tcl"
         path_text, _ = QFileDialog.getSaveFileName(self, "Export TCL", str(default_path), "TCL files (*.tcl)")
         if not path_text:
             return

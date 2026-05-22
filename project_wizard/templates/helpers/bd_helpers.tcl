@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Shared block-design helper procedures for xz Project Wizard generated TCL.
+# Shared block-design helper procedures for Project Wizard generated TCL.
 # -----------------------------------------------------------------------------
 
 proc uz_pw_create_hier_if_missing {hier_path} {

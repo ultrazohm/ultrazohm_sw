@@ -1,7 +1,7 @@
 #include "../include/d4_adapter_init.h"
 
-/* xz Project Wizard BEGIN: D4 definitions */
-/* xz Project Wizard generated content for D4 */
+/* Project Wizard BEGIN: D4 definitions */
+/* Project Wizard generated content for D4 */
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
 #include "xparameters.h"
@@ -38,12 +38,16 @@ static struct uz_temperaturecard_config_t config_temperature_card_d4 = {
         [18] = SENSOR_TYPE__TYPE_K_THERMOCOUPLE | TC_COLD_JUNCTION_CH__4 | TC_SINGLE_ENDED | TC_OPEN_CKT_DETECT__NO,
         [19] = SENSOR_TYPE__TYPE_K_THERMOCOUPLE | TC_COLD_JUNCTION_CH__4 | TC_SINGLE_ENDED | TC_OPEN_CKT_DETECT__NO,
     },
-    .Configdata_B = {0U},
-    .Configdata_C = {0U},
+    .Configdata_B = {
+        [0] = 0U,
+    },
+    .Configdata_C = {
+        [0] = 0U,
+    },
 };
 
 uz_temperaturecard_t* initialize_temperature_card_d4(void)
 {
     return uz_temperaturecard_init(config_temperature_card_d4);
 }
-/* xz Project Wizard END: D4 definitions */
+/* Project Wizard END: D4 definitions */

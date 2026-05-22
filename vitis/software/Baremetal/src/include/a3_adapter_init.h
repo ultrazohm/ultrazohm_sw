@@ -1,7 +1,7 @@
 #pragma once
 
-/* xz Project Wizard BEGIN: A3 includes */
-/* xz Project Wizard END: A3 includes */
+/* Project Wizard BEGIN: A3 includes */
+/* Project Wizard END: A3 includes */
 
-/* xz Project Wizard BEGIN: A3 prototypes */
-/* xz Project Wizard END: A3 prototypes */
+/* Project Wizard BEGIN: A3 prototypes */
+/* Project Wizard END: A3 prototypes */

@@ -107,7 +107,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            /* xz Project Wizard BEGIN: init_ip_cores */
+            /* Project Wizard BEGIN: init_ip_cores */
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
 			uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);
@@ -118,7 +118,7 @@ int main(void)
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_2, true);
 			Global_Data.objects.ssi_encoder_d5_3 = initialize_ssi_encoder_d5_3();
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
-/* xz Project Wizard END: init_ip_cores */
+/* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;
         case print_msg:

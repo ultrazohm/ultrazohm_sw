@@ -31,7 +31,7 @@ if errorlevel 1 (
 %PYTHON_CMD% "%~dp0main.py"
 if errorlevel 1 (
     echo.
-    echo xz Project Wizard exited with an error.
+    echo Project Wizard exited with an error.
     pause
     exit /b 1
 )

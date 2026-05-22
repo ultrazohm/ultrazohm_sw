@@ -53,6 +53,9 @@ struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, s
         .torque_Nm = 0.0f,
         .omega_mech_1_s = 0.0f};
 
+
+        // Hier gibts einen bug mit i_k0 und i_k1 -> neue Variablen
+        // dq data type nutzen.
     const float omega_el_1_s = inputs.omega_mech_1_s * self->pmsm_parameters.polePairs;
     float psi_d_Vs = self->pmsm_parameters.Ld_Henry * self->i_d_A + self->pmsm_parameters.Psi_PM_Vs;
     float psi_q_Vs = self->pmsm_parameters.Lq_Henry * self->i_q_A;

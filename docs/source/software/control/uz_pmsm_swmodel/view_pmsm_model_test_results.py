@@ -5,15 +5,16 @@ import matplotlib.pyplot as plt
 import os
 from pathlib import Path
 
-def _find_repo_root(start_path):
-	start_dir = Path(start_path).resolve().parent
+def _find_repo_root(start_dir):
 	for candidate in (start_dir, *start_dir.parents):
 		if (candidate / "README.MD").is_file() and (candidate / "docs").is_dir():
 			return str(candidate)
 	raise RuntimeError("Could not locate the repository root from this script")
 
 
-REPO_ROOT = _find_repo_root(__file__)
+SCRIPT_FILE = globals().get("__file__")
+START_DIR = Path(SCRIPT_FILE).resolve().parent if SCRIPT_FILE else Path.cwd().resolve()
+REPO_ROOT = _find_repo_root(START_DIR)
 CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_results.csv")
 CONFIG_CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_config.csv")
 CSV_PATH = os.path.join(REPO_ROOT, CSV_PATH)

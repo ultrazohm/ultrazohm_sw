@@ -42,6 +42,7 @@ steps:
    - hostname -I
    - cd docs
    - make ceedling_test_output
+   - ls
    - cd ..
    - cd vitis/software/Baremetal
    - ceedling test:all

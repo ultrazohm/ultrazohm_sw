@@ -40,6 +40,9 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
+   - cd docs
+   - make ceedling_test_output
+   - cd ..
    - cd vitis/software/Baremetal
    - ceedling test:all
 

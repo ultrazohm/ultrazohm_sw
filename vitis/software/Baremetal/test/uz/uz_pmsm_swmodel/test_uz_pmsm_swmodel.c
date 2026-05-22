@@ -129,11 +129,11 @@ static void export_input_output_arrays_to_csv(const char *filename,
     {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
 
 #ifndef UZ_PMSM_SWMODEL_RESULTS_CSV_PATH
-#define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
+#define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
 #endif
 
 #ifndef UZ_PMSM_SWMODEL_CONFIG_CSV_PATH
-#define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "/workspaces/ultrazohm_sw/docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
+#define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 #endif
 
 void setUp(void)

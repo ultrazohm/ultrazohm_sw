@@ -172,15 +172,6 @@ void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, str
 
 void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
 {
-    self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * self->measurement.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_offsets.a;
-    self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * self->measurement.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_offsets.b;
-    self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * self->measurement.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_offsets.c;
-    self->actual_values.v_abc_in_V.a = (self->config.voltage_conversion_factors.a * self->measurement.phase_voltage_from_adc_voltage_per_volt.a) + self->config.voltage_offsets.a;
-    self->actual_values.v_abc_in_V.b = (self->config.voltage_conversion_factors.b * self->measurement.phase_voltage_from_adc_voltage_per_volt.b) + self->config.voltage_offsets.b;
-    self->actual_values.v_abc_in_V.c = (self->config.voltage_conversion_factors.c * self->measurement.phase_voltage_from_adc_voltage_per_volt.c) + self->config.voltage_offsets.c;
-    self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * self->measurement.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
-    self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
-
     self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
     self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
@@ -189,22 +180,22 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
     float angle_for_voltage_measurement = self->actual_values.theta_el - (self->config.voltage_theta_shift * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
     self->actual_values.theta_el = uz_signals_wrap(self->actual_values.theta_el, 2.0f * UZ_PIf);
     self->actual_values.theta_el_advanced = self->actual_values.theta_el + (self->config.theta_svm_delay_compensation * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
-    self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->actual_values.i_abc_in_A, self->actual_values.theta_el);
-    self->actual_values.v_dq_in_V = uz_transformation_3ph_abc_to_dq(self->actual_values.v_abc_in_V, angle_for_voltage_measurement);
+    self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->measurement.i_abc_in_A, self->actual_values.theta_el);
+    self->actual_values.v_dq_in_V = uz_transformation_3ph_abc_to_dq(self->measurement.v_abc_in_V, angle_for_voltage_measurement);
 }
 
 void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self)
 {
     uz_assert(self->is_ready);
-    if (fabsf(self->actual_values.i_abc_in_A.a) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.a) > self->machine_data.I_max_Ampere)
     {
         self->safe_operating_region_violation = true;
     }
-    if (fabsf(self->actual_values.i_abc_in_A.b) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.b) > self->machine_data.I_max_Ampere)
     {
         self->safe_operating_region_violation = true;
     }
-    if (fabsf(self->actual_values.i_abc_in_A.c) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.c) > self->machine_data.I_max_Ampere)
     {
         self->safe_operating_region_violation = true;
     }
@@ -274,7 +265,7 @@ struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct 
                 uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
             }
             self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
-            self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
+            self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->measurement.v_dc_in_V, self->actual_values.i_dq_in_A);
         }
         else
         {
@@ -289,11 +280,11 @@ struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct 
         }
         self->reference_values.i_dq_in_A.d = uz_signals_saturation(self->reference_values.i_dq_in_A.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
         self->reference_values.i_dq_in_A.q = uz_signals_saturation(self->reference_values.i_dq_in_A.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
-        self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
-        self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
-        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->measurement.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
+        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
     }
     else
     {

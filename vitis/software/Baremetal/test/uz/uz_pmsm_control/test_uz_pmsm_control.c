@@ -52,17 +52,6 @@ void tearDown(void)
 #define SETPOINT_FILTER_CUTTOFF_FREQUENCY 100.0f
 
 struct uz_pmsm_control_configuration_t pmsm_controller_config = {
-    .current_conversion_factors = {
-        .a = A_GAIN,
-        .b = B_GAIN,
-        .c = C_GAIN},
-    .current_offsets = {.a = A_OFFSET, .b = B_OFFSET, .c = C_OFFSET},
-    .voltage_conversion_factors = {.a = A_VOLTAGE_GAIN, .b = B_VOLTAGE_GAIN, .c = C_VOLTAGE_GAIN},
-    .voltage_offsets = {.a = A_VOLTAGE_OFFSET, .b = B_VOLTAGE_OFFSET, .c = C_VOLTAGE_OFFSET},
-    .v_dc_in_V_conversion_factor = 12.0f,
-    .v_dc_in_V_offset = 0.0f,
-    .i_dc_in_V_conversion_factor = 12.5f,
-    .i_dc_in_V_offset = 0.0f,
     .theta_el_offset = 1.56f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = true,
@@ -127,12 +116,12 @@ void test_uz_pmsm_control_sample(void)
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
 
     struct uz_pmsm_measurement_values measurements = {
-        .phase_currents_from_adc_ampere_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
-        .phase_voltage_from_adc_voltage_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .i_abc_in_A = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .v_abc_in_V = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
         .omega_mech_rad_per_sec = 1.0f,
         .theta_mech = 1.56f,
-        .v_dc_from_adc_volt_per_volt = 12.0f,
-        .i_dc_from_adc_ampere_per_volt = 1.0f};
+        .v_dc_in_V = 12.0f,
+        .i_dc_in_A = 1.0f};
 
     float reference_speed_in_rpm = 1.0f;
     uz_3ph_dq_t reference_currents = {
@@ -154,12 +143,13 @@ void test_uz_pmsm_reset_error(void)
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
 
     struct uz_pmsm_measurement_values measurements = {
-        .phase_currents_from_adc_ampere_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
-        .phase_voltage_from_adc_voltage_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .i_abc_in_A = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .v_abc_in_V = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
         .omega_mech_rad_per_sec = 1.0f,
         .theta_mech = 1.56f,
-        .v_dc_from_adc_volt_per_volt = 12.0f,
-        .i_dc_from_adc_ampere_per_volt = 1.0f};
+        .v_dc_in_V = 12.0f,
+        .i_dc_in_A = 1.0f
+    };
 
     uz_pmsm_controller_acknowledge_and_reset_error(controller, measurements);
 }

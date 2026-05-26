@@ -13,14 +13,6 @@ typedef struct uz_pmsm_control_t uz_pmsm_control_t;
 
 struct uz_pmsm_control_configuration_t
 {
-    uz_3ph_abc_t current_conversion_factors;
-    uz_3ph_abc_t current_offsets;
-    uz_3ph_abc_t voltage_conversion_factors;
-    uz_3ph_abc_t voltage_offsets;
-    float v_dc_in_V_conversion_factor;
-    float v_dc_in_V_offset;
-    float i_dc_in_V_conversion_factor;
-    float i_dc_in_V_offset;
     float theta_el_offset;
     float sample_time; // typically 1/PWM
     bool enable_speed_control;
@@ -56,12 +48,8 @@ struct uz_pmsm_control_configuration_t
 
 struct uz_pmsm_actual_data
 {
-    uz_3ph_abc_t i_abc_in_A;
-    uz_3ph_abc_t v_abc_in_V;
     uz_3ph_dq_t i_dq_in_A;
     uz_3ph_dq_t v_dq_in_V;
-    float v_dc_in_V;
-    float i_dc_in_A;
     float omega_el_rad_per_sec;
     float speed_in_rpm;
     float theta_el;
@@ -70,12 +58,12 @@ struct uz_pmsm_actual_data
 
 struct uz_pmsm_measurement_values
 {
-    uz_3ph_abc_t phase_currents_from_adc_ampere_per_volt; // Values are in V before unit conversion
-    uz_3ph_abc_t phase_voltage_from_adc_voltage_per_volt; // Values are in V before unit conversion
+    uz_3ph_abc_t i_abc_in_A;
+    uz_3ph_abc_t v_abc_in_V;
+    float v_dc_in_V;
+    float i_dc_in_A;
     float omega_mech_rad_per_sec;
     float theta_mech;
-    float v_dc_from_adc_volt_per_volt;
-    float i_dc_from_adc_ampere_per_volt;
 };
 
 struct uz_pmsm_reference_values
@@ -92,16 +80,17 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
 struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
 struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
 struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
-void uz_pmsm_controller_reset(uz_pmsm_control_t *self);
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
 struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
+void uz_pmsm_controller_reset(uz_pmsm_control_t *self);
+void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 
 void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
-float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *self);
-void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
+
 void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
+float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 
 void uz_pmsm_controller_current_control_tune_magnitude_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
 void uz_pmsm_controller_current_control_tune_symmetric_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
@@ -112,4 +101,5 @@ void uz_pmsm_controller_current_control_set_Kp_id(uz_pmsm_control_t *self, float
 void uz_pmsm_controller_current_control_set_Ki_id(uz_pmsm_control_t *self, float Ki_id);
 void uz_pmsm_controller_speed_control_set_Kp_speed(uz_pmsm_control_t *self, float Kp_speed);
 void uz_pmsm_controller_speed_control_set_Ki_speed(uz_pmsm_control_t *self, float Ki_speed);
+
 #endif // UZ_PMSM_CONTROL_H

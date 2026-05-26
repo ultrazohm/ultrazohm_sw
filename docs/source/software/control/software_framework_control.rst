@@ -31,3 +31,4 @@ Control
     uz_Transformation/uz_Transformation
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
     uz_pos_to_speed_pll/pos_to_speed_pll
+    uz_pmsm_swmodel/uz_pmsm_swmodel

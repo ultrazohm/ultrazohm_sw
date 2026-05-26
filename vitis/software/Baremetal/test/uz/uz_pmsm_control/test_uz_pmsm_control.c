@@ -57,6 +57,7 @@ struct uz_pmsm_control_swmodel_inputs_t
     float i_d_ref_A;
     float i_q_ref_A;
     float speed_ref_rpm;
+    float trigger_controller;
 };
 
 struct uz_pmsm_control_swmodel_outputs_t
@@ -78,7 +79,8 @@ struct uz_pmsm_control_swmodel_config_export_t
 const struct csv_field_descriptor_t pmsm_control_swmodel_input_fields[] = {
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, i_d_ref_A, CSV_FIELD_FLOAT),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, i_q_ref_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, speed_ref_rpm, CSV_FIELD_FLOAT)};
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, speed_ref_rpm, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, trigger_controller, CSV_FIELD_FLOAT)};
 
 const struct csv_field_descriptor_t pmsm_control_swmodel_output_fields[] = {
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, i_d_A, CSV_FIELD_FLOAT),
@@ -197,8 +199,7 @@ void test_uz_pmsm_reset_error(void)
         .omega_mech_rad_per_sec = 1.0f,
         .theta_mech = 1.56f,
         .v_dc_in_V = 12.0f,
-        .i_dc_in_A = 1.0f
-    };
+        .i_dc_in_A = 1.0f};
 
     uz_pmsm_control_acknowledge_and_reset_error(controller, measurements);
 }
@@ -207,6 +208,126 @@ void test_uz_pmsm_enable_speed_control(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
     uz_pmsm_control_enable_speed_control(controller, true);
+}
+
+void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
+{
+    enum
+    {
+        CONTROLLER_OVERSAMPLING_FACTOR = 20U,
+        PRE_STEP_CONTROLLER_ITERATIONS = 10000U,
+        POST_STEP_CONTROLLER_ITERATIONS = 10000U,
+        TOTAL_CONTROLLER_ITERATIONS = PRE_STEP_CONTROLLER_ITERATIONS + POST_STEP_CONTROLLER_ITERATIONS,
+        PRE_STEP_MODEL_ITERATIONS = PRE_STEP_CONTROLLER_ITERATIONS * CONTROLLER_OVERSAMPLING_FACTOR,
+        POST_STEP_MODEL_ITERATIONS = POST_STEP_CONTROLLER_ITERATIONS * CONTROLLER_OVERSAMPLING_FACTOR,
+        TOTAL_MODEL_ITERATIONS = PRE_STEP_MODEL_ITERATIONS + POST_STEP_MODEL_ITERATIONS
+    };
+
+    struct uz_pmsm_control_configuration_t controller_config = pmsm_controller_config;
+    controller_config.enable_speed_control = false;
+    controller_config.theta_el_offset = 0.0f;
+    controller_config.theta_sampling_compensation = 0.0f;
+    controller_config.theta_svm_delay_compensation = 0.0f;
+
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.4f * controller_config.sample_time);
+    uz_pmsm_control_enable(controller, true);
+
+    struct uz_pmsm_swmodel_config_t swmodel_config = {
+        .sample_time = controller_config.sample_time / (float)CONTROLLER_OVERSAMPLING_FACTOR,
+        .pmsm_parameters = machine_config};
+    uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(swmodel_config);
+
+    static struct uz_pmsm_control_swmodel_inputs_t sim_inputs[TOTAL_MODEL_ITERATIONS] = {0};
+    static struct uz_pmsm_control_swmodel_outputs_t sim_outputs[TOTAL_MODEL_ITERATIONS] = {0};
+
+    float theta_mech_rad = 0.0f;
+    float omega_mech_rad_per_sec = 10.0f;
+    uz_3ph_dq_t model_i_dq_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+    uz_3ph_dq_t applied_v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+    for (uint32_t i = 0U; i < TOTAL_MODEL_ITERATIONS; i++)
+    {
+        const float i_q_ref_A = (i < PRE_STEP_MODEL_ITERATIONS) ? 0.0f : 1.0f;
+        const bool trigger_controller = (i % CONTROLLER_OVERSAMPLING_FACTOR) == 0U;
+        const float theta_el_rad = theta_mech_rad * machine_config.polePairs;
+        struct uz_pmsm_measurement_values measurements = {
+            .i_abc_in_A = uz_transformation_3ph_dq_to_abc(model_i_dq_A, theta_el_rad),
+            .v_abc_in_V = uz_transformation_3ph_dq_to_abc(applied_v_dq_V, theta_el_rad),
+            .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+            .theta_mech = theta_mech_rad,
+            .v_dc_in_V = 12.0f,
+            .i_dc_in_A = 0.0f};
+
+        uz_3ph_dq_t reference_currents = {
+            .d = 0.0f,
+            .q = i_q_ref_A,
+            .zero = 0.0f};
+
+        if (trigger_controller)
+        {
+            applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
+        }
+
+        struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
+            .v_d_V = applied_v_dq_V.d,
+            .v_q_V = applied_v_dq_V.q,
+            .omega_mech_1_s = omega_mech_rad_per_sec,
+            .load_torque = 0.0f};
+
+        struct uz_pmsm_swmodel_outputs_t swmodel_outputs = uz_pmsm_swmodel_step(model, swmodel_inputs);
+
+        model_i_dq_A.d = swmodel_outputs.i_d_A;
+        model_i_dq_A.q = swmodel_outputs.i_q_A;
+        model_i_dq_A.zero = 0.0f;
+        omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
+        theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * swmodel_config.sample_time, 2.0f * UZ_PIf);
+
+        sim_inputs[i] = (struct uz_pmsm_control_swmodel_inputs_t){
+            .i_d_ref_A = reference_currents.d,
+            .i_q_ref_A = reference_currents.q,
+            .speed_ref_rpm = 0.0f,
+            .trigger_controller = trigger_controller ? 1.0f : 0.0f};
+
+        sim_outputs[i] = (struct uz_pmsm_control_swmodel_outputs_t){
+            .i_d_A = model_i_dq_A.d,
+            .i_q_A = model_i_dq_A.q,
+            .v_d_V = applied_v_dq_V.d,
+            .v_q_V = applied_v_dq_V.q,
+            .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+            .theta_mech_rad = theta_mech_rad};
+    }
+
+    TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_outputs[PRE_STEP_MODEL_ITERATIONS - 1U].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_outputs[TOTAL_MODEL_ITERATIONS - 1U].i_q_A);
+
+#if CSV_EXPORT
+    struct uz_pmsm_control_swmodel_config_export_t export_config = {
+        .sample_time = controller_config.sample_time,
+        .machine = machine_config};
+    export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
+                                      sim_inputs,
+                                      sizeof(sim_inputs[0]),
+                                      pmsm_control_swmodel_input_fields,
+                                      sizeof(pmsm_control_swmodel_input_fields) / sizeof(pmsm_control_swmodel_input_fields[0]),
+                                      sim_outputs,
+                                      sizeof(sim_outputs[0]),
+                                      pmsm_control_swmodel_output_fields,
+                                      sizeof(pmsm_control_swmodel_output_fields) / sizeof(pmsm_control_swmodel_output_fields[0]),
+                                      TOTAL_MODEL_ITERATIONS,
+                                      swmodel_config.sample_time);
+    export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+                                      &export_config,
+                                      sizeof(export_config),
+                                      empty_fields,
+                                      0U,
+                                      &export_config,
+                                      sizeof(export_config),
+                                      pmsm_control_swmodel_config_fields,
+                                      sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                      1U,
+                                      0.0f);
+#endif
 }
 
 void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
@@ -225,7 +346,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
     controller_config.theta_svm_delay_compensation = 0.0f;
 
     uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
-    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.5f*controller_config.sample_time);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.5f * controller_config.sample_time);
     uz_pmsm_control_enable(controller, true);
 
     struct uz_pmsm_swmodel_config_t swmodel_config = {
@@ -258,7 +379,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
             .q = i_q_ref_A,
             .zero = 0.0f};
 
-        applied_v_dq_V=uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
+        applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
 
         struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
             .v_d_V = applied_v_dq_V.d,
@@ -318,7 +439,5 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
                                       0.0f);
 #endif
 }
-
-
 
 #endif // TEST

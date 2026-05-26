@@ -214,23 +214,64 @@ static void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    if (fabsf(self->measurement.i_abc_in_A.a) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.a) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
     {
         self->safe_operating_region_violation = true;
     }
-    if (fabsf(self->measurement.i_abc_in_A.b) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.b) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
     {
         self->safe_operating_region_violation = true;
     }
-    if (fabsf(self->measurement.i_abc_in_A.c) > self->machine_data.I_max_Ampere)
+    if (fabsf(self->measurement.i_abc_in_A.c) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
     {
         self->safe_operating_region_violation = true;
     }
-    if (self->actual_values.speed_in_rpm > self->config.error_upper_bound_speed_in_rpm)
+
+    // Speed
+    if (self->actual_values.speed_in_rpm > self->config.safe_operating_region.speed_in_rpm.upper_bound)
     {
         self->safe_operating_region_violation = true;
     }
-    if (self->actual_values.speed_in_rpm < self->config.error_lower_bound_speed_in_rpm)
+    if (self->actual_values.speed_in_rpm < self->config.safe_operating_region.speed_in_rpm.lower_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+
+    // dc-voltage
+    if (self->measurement.v_dc_in_V > self->config.safe_operating_region.v_dc_in_V.upper_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->measurement.v_dc_in_V < self->config.safe_operating_region.v_dc_in_V.lower_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+
+    // dc-current
+    if (self->measurement.i_dc_in_A > self->config.safe_operating_region.i_dc_in_A.upper_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->measurement.i_dc_in_A < self->config.safe_operating_region.i_dc_in_A.lower_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+
+    // i_d-current
+    if (self->actual_values.i_dq_in_A.d > self->config.safe_operating_region.i_d_in_A.upper_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.i_dq_in_A.d < self->config.safe_operating_region.i_d_in_A.lower_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    // i_q-current
+    if (self->actual_values.i_dq_in_A.q > self->config.safe_operating_region.i_q_in_A.upper_bound)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.i_dq_in_A.q < self->config.safe_operating_region.i_q_in_A.lower_bound)
     {
         self->safe_operating_region_violation = true;
     }

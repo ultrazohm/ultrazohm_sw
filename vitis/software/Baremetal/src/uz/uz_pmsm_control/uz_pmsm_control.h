@@ -59,7 +59,6 @@ struct uz_pmsm_setpoint_limits_t
 struct uz_pmsm_safe_operating_region_t
 {
     struct uz_limits_t speed_in_rpm;
-    struct uz_limits_t torque_in_Nm;
     struct uz_limits_t i_d_in_A;
     struct uz_limits_t i_q_in_A;
     struct uz_limits_t i_abc_in_A;

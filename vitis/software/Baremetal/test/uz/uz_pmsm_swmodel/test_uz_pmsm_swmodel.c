@@ -136,6 +136,57 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH, &config, sizeof(config), empty_fields, 0U, &config, sizeof(config), config_fields, sizeof(config_fields) / sizeof(config_fields[0]), 1U, 0.0f);
 }
 
+void test_uz_pmsm_swmodel_zero_after_reset(void)
+{
+    enum
+    {
+        STEADY_STATE_ITERATIONS = 1000U
+    };
+
+    struct uz_pmsm_swmodel_config_t config = {
+        .sample_time = 1.0f / 10000.0f,
+        .pmsm_parameters = {
+            .R_ph_Ohm = 1.0f,
+            .Ld_Henry = 0.001f,
+            .Lq_Henry = 0.0015f,
+            .Psi_PM_Vs = 0.05f,
+            .polePairs = 4.0f,
+            .J_kg_m_squared = 0.0001f,
+            .I_max_Ampere = 10.0f}};
+
+    uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
+
+    struct uz_pmsm_swmodel_inputs_t inputs = {
+        .v_d_V = 1.0f,
+        .v_q_V = 0.5f,
+        .omega_mech_1_s = 0.0f,
+        .load_torque = 0.0f};
+    struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
+    struct uz_pmsm_swmodel_outputs_t outputs[STEADY_STATE_ITERATIONS] = {0};
+
+    inputs_k[0] = inputs;
+    for (uint32_t i = 0U; i < STEADY_STATE_ITERATIONS; i++)
+    {
+        inputs_k[i] = inputs;
+        outputs[i] = uz_pmsm_swmodel_step(model, inputs_k[i]);
+    }
+    // Not zero after reset
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_d_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_d_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_q_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
+
+    // Zero after reset
+    inputs.v_d_V = 0.0f;
+    inputs.v_q_V = 0.0f;
+    inputs.omega_mech_1_s = 0.0f;
+    uz_pmsm_swmodel_reset(model);
+    struct uz_pmsm_swmodel_outputs_t outputs_after_reset = uz_pmsm_swmodel_step(model, inputs);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_d_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.torque_Nm);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.omega_mech_1_s);
+}
+
 void test_uz_pmsm_swmodel_steady_state_zero_voltage_zero_speed(void)
 {
     enum

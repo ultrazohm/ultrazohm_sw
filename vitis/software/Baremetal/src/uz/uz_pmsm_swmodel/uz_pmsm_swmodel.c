@@ -37,12 +37,24 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
     uz_assert(config.sample_time > 0.0f);
     uz_assert(config.pmsm_parameters.Ld_Henry > 0.0f);
     uz_assert(config.pmsm_parameters.Lq_Henry > 0.0f);
+    uz_assert(config.pmsm_parameters.R_ph_Ohm > 0.0f);
+    uz_assert(config.pmsm_parameters.Psi_PM_Vs >= 0.0f);
+    uz_assert(config.pmsm_parameters.polePairs > 0.0f);
     uz_pmsm_swmodel_t *self = uz_pmsm_swmodel_allocation();
     self->pmsm_parameters = config.pmsm_parameters;
     self->sample_time = config.sample_time;
     self->inverse_Ld = 1.0f / config.pmsm_parameters.Ld_Henry;
     self->inverse_Lq = 1.0f / config.pmsm_parameters.Lq_Henry;
     return (self);
+}
+
+void uz_pmsm_swmodel_reset(uz_pmsm_swmodel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->i_dq_A_k0.d = 0.0f;
+    self->i_dq_A_k0.q = 0.0f;
+    self->i_dq_A_k0.zero = 0.0f;
+
 }
 
 struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, struct uz_pmsm_swmodel_inputs_t inputs)

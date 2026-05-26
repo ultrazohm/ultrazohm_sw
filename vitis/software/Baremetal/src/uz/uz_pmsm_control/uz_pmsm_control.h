@@ -82,7 +82,8 @@ struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_co
 struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
-struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
+struct uz_DutyCycle_t uz_pmsm_controller_sample_duty(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
+struct uz_3ph_dq_t uz_pmsm_controller_sample_dq(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
 void uz_pmsm_controller_reset(uz_pmsm_control_t *self);
 void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 

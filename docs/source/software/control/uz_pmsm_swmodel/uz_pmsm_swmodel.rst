@@ -15,19 +15,20 @@ Example to plot test results
 
 The following plots are different examples to show the results of a unit test in the documentation.
 
-.. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
-    :caption: Result of a test
 
-.. plotly:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results_interactive.py
-    :iframe-width: 100%
-    :iframe-height: 900px
+.. .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
+..     :caption: Result of a test
 
-Interactive result of the same test.
+.. .. plotly:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results_interactive.py
+..     :iframe-width: 100%
+..     :iframe-height: 900px
 
-.. bokeh-plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results_bokeh.py
-    :source-position: none
+.. Interactive result of the same test.
 
-Interactive Bokeh result of the same test.
+.. .. bokeh-plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results_bokeh.py
+..     :source-position: none
+
+.. Interactive Bokeh result of the same test.
 
 
 Short-circuit steady-state derivation

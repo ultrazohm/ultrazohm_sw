@@ -12,6 +12,8 @@
 
 #include "export_struct_to_csv.h"
 
+#define CSV_EXPORT 0
+
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
 
@@ -132,8 +134,10 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_q_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
 
+#if CSV_EXPORT
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_RESULTS_CSV_PATH, inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH, &config, sizeof(config), empty_fields, 0U, &config, sizeof(config), config_fields, sizeof(config_fields) / sizeof(config_fields[0]), 1U, 0.0f);
+#endif
 }
 
 void test_uz_pmsm_swmodel_zero_after_reset(void)
@@ -279,7 +283,9 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
 
+    #if CSV_EXPORT
     export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
+    #endif
 }
 
 #endif // TEST

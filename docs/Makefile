@@ -38,11 +38,13 @@ ceedling_test_output:
 	mkdir -p ceedling_test_output
 	cd ../vitis/software/Baremetal/test && find . -type d -exec mkdir -p ../../../../docs/ceedling_test_output/{} \;
 
-
-
-docs:
+docs_with_ceedling_tests:
 	make ceedling_test_output
 	make ceedling_tests
+	make doxygen
+	make html SPHINXOPTS="-W --keep-going -n"
+
+docs:
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 

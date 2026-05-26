@@ -46,7 +46,7 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
 //Initialize the Interrupt structure
-extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 
 int JavaScope_initialize(DS_Data* data)
@@ -141,17 +141,17 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->status 			= js_status_BareToRTOS;
 
 	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
 
 	//Send an interrupt to APU
-	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+	status = XIpiPsu_TriggerIpi(&IPI_instance,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//Poll Acknowledgment of IPI
-	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
+	status = XIpiPsu_PollForAck(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
 	if(status != (u32)XST_SUCCESS) {
 		pollErrorCnt++;
 	}
@@ -161,7 +161,7 @@ void JavaScope_update(DS_Data* data){
 
 	//Afterwards the acknowledge a message from the APU can be read/checked, if a53 is enabled for external calculations of the r5 we wait for the acknowledge flag,
 	//if not, we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_ReadMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");

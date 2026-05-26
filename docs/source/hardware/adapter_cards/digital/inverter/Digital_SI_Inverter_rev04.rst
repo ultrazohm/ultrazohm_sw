@@ -129,7 +129,7 @@ The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`A
 Switching behavior
 -------------------
 
-The Double Puls Test (DPT) was used for characterizing the switching behavior of the design. 
+The Double Pulse Test (DPT) was used for characterizing the switching behavior of the design. 
 The DC link voltage was set to :math:`V_{dc} = 48\ V`, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`R_L = 400\ mΩ`. 
 The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  
 The experimental waveforms of the DPT are shown below. 

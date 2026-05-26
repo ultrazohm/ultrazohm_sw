@@ -55,13 +55,14 @@ void uz_PWM_SS_2L_hw_SetMode(uint32_t base_address, uint32_t PWM_mode);
 void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_frequency_Hz, float PWM_freq_Hz);
 
 /**
- * @brief sets a half-bridge in a non conducting high-Z tri state mode.
- * 
- * @param base_address          //base address of the instance
- * @param halfBridgeNumber      //number of the half bridge to set. 1,2 or 3.
- * @param TriState_true_false   //turns tri state mode on or off. true=on, false=off
+ * @brief sets half-bridges in a non conducting high-Z tri state mode.
+ *
+ * @param base_address  //base address of the instance
+ * @param Tristate_HB1  //turns tri state mode of HB1 on or off. true=on, false=off
+ * @param Tristate_HB2  //turns tri state mode of HB2 on or off. true=on, false=off
+ * @param Tristate_HB3  //turns tri state mode of HB3 on or off. true=on, false=off
  */
-void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false);
+void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, bool Tristate_HB1, bool Tristate_HB2, bool Tristate_HB3);
 
 /**
  * @brief sets the minimum amount of pulse width that is generated 

@@ -7,7 +7,37 @@
 #include "mock_uz_inverter_adapter_hw.h" // Mock the _hw functions to isolate testing
 #include <stdint.h>
 #include <stdbool.h>
-#include "test_uz_inverter_adapter_test_vectors.h"
+
+uint32_t I_DIAG_test[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+
+uint32_t I_DC_DIAG_ref_result[16] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+uint32_t I1_DIAG_ref_result[16] = {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1};
+uint32_t I2_DIAG_ref_result[16] = {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1};
+uint32_t I3_DIAG_ref_result[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1};
+
+uint32_t OC_test[64] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
+
+uint32_t OC_H1_ref_result[64] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+uint32_t OC_L1_ref_result[64] = {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1};
+uint32_t OC_H2_ref_result[64] = {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1};
+uint32_t OC_L2_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1};
+uint32_t OC_H3_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+uint32_t OC_L3_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+uint32_t FAULT_test[64] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63};
+
+uint32_t FAULT_H1_ref_result[64] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+uint32_t FAULT_L1_ref_result[64] = {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1};
+uint32_t FAULT_H2_ref_result[64] = {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1};
+uint32_t FAULT_L2_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1};
+uint32_t FAULT_H3_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+uint32_t FAULT_L3_ref_result[64] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+float dutycyc_test[11] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f};
+uint32_t PWMFreq_test[11] = {10000U, 10000U, 10000U, 10000U, 10000U, 10000U, 10000U, 10000U, 10000U, 10000U, 10000U};
+uint32_t PWMHighTime_test[11] = {0U, 1000U, 2000U, 3000U, 4000U, 5000U, 6000U, 7000U, 8000U, 9000U, 10000U};
+
+float temp_ref_result[11] = {20.107f, 36.342f, 52.577f, 68.812f, 85.047f, 101.282f, 117.517f, 133.752f, 149.987f, 166.222f, 182.457f};
 
 #define TEST_BASE_ADDRESS 0x0000000F
 #define TEST_IP_CORE_FRQ 100000000U
@@ -93,12 +123,18 @@ void test_uz_inverter_adapter_I_DC_DIAG_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
@@ -123,12 +159,18 @@ void test_uz_inverter_adapter_I1_DIAG_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
@@ -153,12 +195,18 @@ void test_uz_inverter_adapter_I2_DIAG_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
@@ -183,12 +231,18 @@ void test_uz_inverter_adapter_I3_DIAG_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
@@ -213,12 +267,18 @@ void test_uz_inverter_adapter_OC_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -264,12 +324,18 @@ void test_uz_inverter_adapter_FAULT_H1_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -294,12 +360,18 @@ void test_uz_inverter_adapter_FAULT_L1_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -324,12 +396,18 @@ void test_uz_inverter_adapter_FAULT_H2_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -354,12 +432,18 @@ void test_uz_inverter_adapter_FAULT_L2_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -384,12 +468,18 @@ void test_uz_inverter_adapter_FAULT_H3_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -414,12 +504,18 @@ void test_uz_inverter_adapter_FAULT_L3_results(void)
     //create test instance
     uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
 
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-    uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(0U);
+    uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(0U);
     
     uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
     uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
@@ -462,12 +558,18 @@ void test_uz_inverter_adapter_dutycyc_to_temperature_results(void)
         test_instance->outputs.PWMdutyCycNormalized_L2 = dutycyc_test[i];
         test_instance->outputs.PWMdutyCycNormalized_H3 = dutycyc_test[i];
         test_instance->outputs.PWMdutyCycNormalized_L3 = dutycyc_test[i];
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(PWMHighTime_test[i]);
         uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_H1_result[i] = test_instance->outputs.ChipTempDegreesCelsius_H1;
         uz_inverter_adapter_update_states(test_instance);
@@ -548,12 +650,18 @@ void test_uz_inverter_adapter_get_outputs(void) {
         test_instance->outputs.PWMdutyCycNormalized_L2 = dutycyc_test[i];
         test_instance->outputs.PWMdutyCycNormalized_H3 = dutycyc_test[i];
         test_instance->outputs.PWMdutyCycNormalized_L3 = dutycyc_test[i];
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
-        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H1_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H1_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L1_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L1_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H2_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H2_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L2_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L2_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_H3_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_H3_IgnoreAndReturn(PWMHighTime_test[i]);
+        uz_inverter_adapter_hw_get_PWMFreqTicks_L3_IgnoreAndReturn(PWMFreq_test[i]);
+        uz_inverter_adapter_hw_get_PWMhightimeTicks_L3_IgnoreAndReturn(PWMHighTime_test[i]);
         
         return_outputs = uz_inverter_adapter_get_outputs(test_instance);
 

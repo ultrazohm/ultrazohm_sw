@@ -1,52 +1,54 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.166.1/containers/ubuntu
 {
-	"name": "Ubuntu",
+	"name": "Python 3.12 Trixie",
 	"build": {
-		"dockerfile": "Dockerfile",
-		// Update 'VARIANT' to pick an Ubuntu version: focal, bionic
-		"args": { "VARIANT": "focal" }
+		"dockerfile": "Dockerfile"
 	},
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
-		"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash",
+				"ceedlingExplorer.shellPath": "/bin/bash",
+				"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
+				"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
+			},
+			"extensions": [
+				"ms-vscode.cpptools",
+				"eamodio.gitlens",
+				"james-yu.latex-workshop",
+				"ms-vsliveshare.vsliveshare",
+				"lextudio.restructuredtext",
+				"streetsidesoftware.code-spell-checker",
+				"numaru.vscode-ceedling-test-adapter",
+				"dracula-theme.theme-dracula",
+				"pkief.material-icon-theme",
+				"zhuangtongfa.material-theme",
+				"jeff-hykin.better-cpp-syntax",
+				"atlassian.atlascode",
+				"cschlosser.doxdocgen",
+				"mhutchie.git-graph",
+				"mechatroner.rainbow-csv",
+				"trond-snekvik.simple-rst",
+				"ms-vscode.test-adapter-converter",
+				"ms-python.python",
+				"redhat.java",
+				"vscjava.vscode-java-debug",
+				"vscjava.vscode-java-dependency"
+			]
+		}
 	},
 	// Required to debug with gdb, see:
 	// https://code.visualstudio.com/docs/remote/devcontainerjson-reference
 	// https://stackoverflow.com/questions/42029834/gdb-in-docker-container-returns-ptrace-operation-not-permitted
 	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-vscode.cpptools",
-		"eamodio.gitlens",
-		"james-yu.latex-workshop",
-		"ms-vsliveshare.vsliveshare",
-		"lextudio.restructuredtext",
-		"streetsidesoftware.code-spell-checker",
-		"numaru.vscode-ceedling-test-adapter",
-		"dracula-theme.theme-dracula",
-		"pkief.material-icon-theme",
-		"zhuangtongfa.material-theme",
-		"jeff-hykin.better-cpp-syntax",
-		"atlassian.atlascode",
-		"cschlosser.doxdocgen",
-		"mhutchie.git-graph",
-        "mechatroner.rainbow-csv",
-        "trond-snekvik.simple-rst",
-        "ms-vscode.test-adapter-converter",
-		"ms-python.python"
-	],
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	 "postCreateCommand": "pip install -r docs/requirements.txt",
-
+	"postCreateCommand": "pip install -r docs/requirements.txt && chmod +x /workspaces/ultrazohm_sw/javascope/build.sh /workspaces/ultrazohm_sw/javascope/run_with_test_server.sh"
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"
 }

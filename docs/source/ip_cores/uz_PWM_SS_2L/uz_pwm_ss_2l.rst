@@ -48,6 +48,18 @@ The timing of the triangle shift operation as well as the output of new switchin
 * ``trigger_at_MAX`` of the triangle signal
 * ``trigger_at_EITHER`` of the triangle signal
 
+.. note::
+   If the ADC/R5 interrupt is derived from the two-level PWM module via
+   ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` (see :ref:`r5_interrupts`), keep both
+   settings aligned:
+
+   * ``Interrupt_2L_min`` with ``trigger_at_MIN``
+   * ``Interrupt_2L_max`` with ``trigger_at_MAX``
+   * ``Interrupt_2L_max_min`` with ``trigger_at_EITHER``
+
+   Otherwise the PWM update event and the interrupt event occur at different
+   carrier positions.
+
 The input is fixed to ``0`` till ``1``. Whilst ``0`` represents no shift at all, ``1`` represents a shift by an entire period. 
 E.g. with a PWM-frequency of :math:`f=10kHz` and :math:`T=100µs` the input ``triangle_shift_HB2 = 0.1f`` would shift the second half-bridge by :math:`10µs`. 
 This is done internally by shifting the carrier wave itself.
@@ -116,7 +128,7 @@ Vitis
             .Tristate_HB1 = false,
             .Tristate_HB2 = false,
             .Tristate_HB3 = false,
-            .min_pulse_width = 0.01f,
+            .min_pulse_width_in_microseconds   = 1.0f,
             .PWM_freq_Hz = UZ_PWM_FREQUENCY,
             .PWM_mode = normalized_input_via_AXI,
             .PWM_en = true,

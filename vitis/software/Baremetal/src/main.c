@@ -32,12 +32,13 @@ DS_Data Global_Data = {
         .halfBridge11DutyCycle = 0.0f,
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
 {
-    init_assertions_and_wait_for_apu_handshake = 0,
+    init_assertions = 0,
+    wait_for_apu_handshake,
     init_gpios,
     init_software,
     init_ip_cores,
@@ -45,7 +46,7 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
+enum init_chain initialization_chain = init_assertions;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
@@ -59,8 +60,11 @@ int main(void)
     {
         switch (initialization_chain)
         {
-        case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
+        case init_assertions:
+            uz_rpu_assert_configuration();
+            initialization_chain = wait_for_apu_handshake;
+            break;
+        case wait_for_apu_handshake:
             write_rpu_version(0U);
             do
             {
@@ -101,7 +105,6 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
@@ -110,13 +113,14 @@ int main(void)
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
-
+            uz_printf("RPU: Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
+            uz_print_bitstream_timestamp();
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-            Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
+            Initialize_ISR();
+            Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:

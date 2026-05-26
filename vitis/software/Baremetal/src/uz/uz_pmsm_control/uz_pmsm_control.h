@@ -81,26 +81,26 @@ struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *s
 struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
 struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
 
-void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
-struct uz_DutyCycle_t uz_pmsm_controller_sample_duty(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
-struct uz_3ph_dq_t uz_pmsm_controller_sample_dq(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
-void uz_pmsm_controller_reset(uz_pmsm_control_t *self);
-void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
+void uz_pmsm_control_enable(uz_pmsm_control_t *self, bool enable);
+struct uz_DutyCycle_t uz_pmsm_control_sample_duty(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
+struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
+void uz_pmsm_control_reset(uz_pmsm_control_t *self);
+void uz_pmsm_control_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 
-void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
-bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *self);
+void uz_pmsm_control_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
+bool uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self);
 
-void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
+void uz_pmsm_control_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
 float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 
-void uz_pmsm_controller_current_control_tune_magnitude_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
-void uz_pmsm_controller_current_control_tune_symmetric_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
-void uz_pmsm_controller_current_control_tune_bandwidth(uz_pmsm_control_t *self, float bandwidth_rad_per_sec);
-void uz_pmsm_controller_current_control_set_Kp_iq(uz_pmsm_control_t *self, float Kp_iq);
-void uz_pmsm_controller_current_control_set_Ki_iq(uz_pmsm_control_t *self, float Ki_iq);
-void uz_pmsm_controller_current_control_set_Kp_id(uz_pmsm_control_t *self, float Kp_id);
-void uz_pmsm_controller_current_control_set_Ki_id(uz_pmsm_control_t *self, float Ki_id);
-void uz_pmsm_controller_speed_control_set_Kp_speed(uz_pmsm_control_t *self, float Kp_speed);
-void uz_pmsm_controller_speed_control_set_Ki_speed(uz_pmsm_control_t *self, float Ki_speed);
+void uz_pmsm_control_current_control_tune_magnitude_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
+void uz_pmsm_control_current_control_tune_symmetric_optimum(uz_pmsm_control_t *self, float tau_sigma_sec);
+void uz_pmsm_control_current_control_tune_bandwidth(uz_pmsm_control_t *self, float bandwidth_rad_per_sec);
+void uz_pmsm_control_current_control_set_Kp_iq(uz_pmsm_control_t *self, float Kp_iq);
+void uz_pmsm_control_current_control_set_Ki_iq(uz_pmsm_control_t *self, float Ki_iq);
+void uz_pmsm_control_current_control_set_Kp_id(uz_pmsm_control_t *self, float Kp_id);
+void uz_pmsm_control_current_control_set_Ki_id(uz_pmsm_control_t *self, float Ki_id);
+void uz_pmsm_control_speed_control_set_Kp_speed(uz_pmsm_control_t *self, float Kp_speed);
+void uz_pmsm_control_speed_control_set_Ki_speed(uz_pmsm_control_t *self, float Ki_speed);
 
 #endif // UZ_PMSM_CONTROL_H

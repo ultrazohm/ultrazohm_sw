@@ -41,7 +41,7 @@ void tearDown(void)
 }
 
 #define SETPOINT_FILTER_CUTTOFF_FREQUENCY 100.0f
-#define CSV_EXPORT 0
+#define CSV_EXPORT 1
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
@@ -156,7 +156,7 @@ void test_uz_pmsm_control_call_init(void)
 void test_uz_pmsm_control_get_safe_area(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
-    bool safe_operating_violation = uz_pmsm_controller_get_safe_operating_area_violation(controller);
+    bool safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
     // use a if construct to check if violation is present
 }
 
@@ -178,13 +178,13 @@ void test_uz_pmsm_control_sample(void)
         .q = 0.0f,
         .zero = 0.0f};
     float disturbance_input_in_Nm = 0.0f;
-    struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    struct uz_DutyCycle_t duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
 }
 
 void test_uz_pmsm_set_enable(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
-    uz_pmsm_controller_enable(controller, true);
+    uz_pmsm_control_enable(controller, true);
 }
 
 void test_uz_pmsm_reset_error(void)
@@ -200,13 +200,13 @@ void test_uz_pmsm_reset_error(void)
         .i_dc_in_A = 1.0f
     };
 
-    uz_pmsm_controller_acknowledge_and_reset_error(controller, measurements);
+    uz_pmsm_control_acknowledge_and_reset_error(controller, measurements);
 }
 
 void test_uz_pmsm_enable_speed_control(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
-    uz_pmsm_controller_enable_speed_control(controller, true);
+    uz_pmsm_control_enable_speed_control(controller, true);
 }
 
 void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
@@ -225,7 +225,8 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
     controller_config.theta_svm_delay_compensation = 0.0f;
 
     uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
-    uz_pmsm_controller_enable(controller, true);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.5f*controller_config.sample_time);
+    uz_pmsm_control_enable(controller, true);
 
     struct uz_pmsm_swmodel_config_t swmodel_config = {
         .sample_time = controller_config.sample_time,
@@ -257,7 +258,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
             .q = i_q_ref_A,
             .zero = 0.0f};
 
-        applied_v_dq_V=uz_pmsm_controller_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
+        applied_v_dq_V=uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
 
         struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
             .v_d_V = applied_v_dq_V.d,

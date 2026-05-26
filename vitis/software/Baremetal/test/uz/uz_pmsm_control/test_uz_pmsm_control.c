@@ -25,8 +25,8 @@
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
-TEST_FILE("uz_signals_iir_filter.c")
-TEST_FILE("uz_newton_raphson.c")
+TEST_SOURCE_FILE("uz_signals_iir_filter.c")
+TEST_SOURCE_FILE("uz_newton_raphson.c")
 
 void setUp(void)
 {

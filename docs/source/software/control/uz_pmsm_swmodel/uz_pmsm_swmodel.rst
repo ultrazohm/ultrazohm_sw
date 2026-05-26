@@ -2,14 +2,18 @@
 PMSM Software Model (uz_pmsm_swmodel)
 =====================================
 
-Software model of a PMSM, implemented in C.
-Somehow link to :ref:`uz_pmsmModel`?
+Software model of a PMSM for execution on the processor.
 
 .. warning::
-    Aligned the documentation with other PMSM models afterhttps://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/546 is merged
+    Aligned the documentation with other PMSM models after https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/546 is merged
 
 .. warning::
     This docs page acts as a test for new concepts such as visualizing data from the unit tests, which we want to test in the online version of the docs.
+
+Example to plot test results
+============================
+
+The following plots are different examples to show the results of a unit test in the documentation.
 
 .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
     :caption: Result of a test
@@ -82,3 +86,23 @@ For :math:`L_d = L_q = L`, this becomes
 .. math::
 
     i_d = -\frac{\omega_e^2 L \psi_f}{R_s^2 + (\omega_e L)^2}.
+
+Software reference
+==================
+
+.. doxygentypedef:: uz_pmsm_swmodel_t
+
+.. doxygenstruct:: uz_pmsm_swmodel_config_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_swmodel_outputs_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_swmodel_inputs_t
+  :members:
+
+.. doxygenfunction:: uz_pmsm_swmodel_init
+
+.. doxygenfunction:: uz_pmsm_swmodel_step
+
+.. doxygenfunction:: uz_pmsm_swmodel_reset

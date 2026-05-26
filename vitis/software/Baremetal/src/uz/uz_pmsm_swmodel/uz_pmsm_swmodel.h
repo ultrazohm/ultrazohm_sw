@@ -2,7 +2,6 @@
 #define UZ_PMSM_SWMODEL_H
 
 #include "../uz_PMSM_config/uz_PMSM_config.h"
-#include "../../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "../../uz_Transformation/uz_Transformation.h"
 
 struct uz_pmsm_swmodel_config_t {
@@ -10,7 +9,6 @@ struct uz_pmsm_swmodel_config_t {
     struct uz_PMSM_t pmsm_parameters; /**< Configuration struct for PMSM parameters */
 };
 
-// Todo: delete the double definition as this is present in pmsmModel.h as well for the IP-Core.
 struct uz_pmsm_swmodel_outputs_t
 {
     float i_d_A;          /**< Current in d-axis in A */
@@ -34,6 +32,14 @@ struct uz_pmsm_swmodel_inputs_t
 typedef struct uz_pmsm_swmodel_t uz_pmsm_swmodel_t;
 
 uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
+
+/**
+ * @brief Facilitates one integration step of the PMSM model.
+ * 
+ * @param self Pointer to instance
+ * @param inputs Inputs of the current integration step k=0
+ * @return struct uz_pmsm_swmodel_outputs_t Output values at k=1
+ */
 struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, struct uz_pmsm_swmodel_inputs_t inputs);
 
 /*

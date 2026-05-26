@@ -3,7 +3,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+try:
+    _SCRIPT_PATH = Path(__file__).resolve()
+except NameError:
+    # Sphinx executes plot directives via exec(), where __file__ may be missing.
+    _SCRIPT_PATH = Path.cwd()
+
+SCRIPT_DIR = _SCRIPT_PATH.parent if _SCRIPT_PATH.is_file() else _SCRIPT_PATH
 REPO_ROOT = next(path for path in (SCRIPT_DIR, *SCRIPT_DIR.parents) if (path / "README.MD").is_file())
 CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_results.csv"
 CONFIG_CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_config.csv"

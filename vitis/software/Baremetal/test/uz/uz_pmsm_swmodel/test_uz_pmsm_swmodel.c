@@ -278,8 +278,8 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_q_A, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
-    
-    export_input_output_arrays_to_csv("../../../uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
+
+    export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
 }
 
 #endif // TEST

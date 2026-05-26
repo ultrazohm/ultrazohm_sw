@@ -35,11 +35,6 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
 {
     uz_PMSM_config_assert(config.pmsm_parameters);
     uz_assert(config.sample_time > 0.0f);
-    uz_assert(config.pmsm_parameters.Ld_Henry > 0.0f);
-    uz_assert(config.pmsm_parameters.Lq_Henry > 0.0f);
-    uz_assert(config.pmsm_parameters.R_ph_Ohm > 0.0f);
-    uz_assert(config.pmsm_parameters.Psi_PM_Vs >= 0.0f);
-    uz_assert(config.pmsm_parameters.polePairs > 0.0f);
     uz_pmsm_swmodel_t *self = uz_pmsm_swmodel_allocation();
     self->pmsm_parameters = config.pmsm_parameters;
     self->sample_time = config.sample_time;

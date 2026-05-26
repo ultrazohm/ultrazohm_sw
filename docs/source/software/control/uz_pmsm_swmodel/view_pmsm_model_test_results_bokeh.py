@@ -62,7 +62,7 @@ def _load_data():
     if not os.path.exists(CSV_PATH):
         raise FileNotFoundError(f"Results file '{CSV_PATH}' not found.")
 
-    config_df = pd.read_csv(CONFIG_CSV_PATH)
+    config_df = pd.read_csv(CONFIG_CSV_PATH,sep=';')
     if "sample_time" in config_df.columns:
         sample_time_column = "sample_time"
     elif "output_sample_time" in config_df.columns:
@@ -70,7 +70,7 @@ def _load_data():
     else:
         raise KeyError("Expected 'sample_time' or 'output_sample_time' in config CSV")
     sample_time = float(config_df[sample_time_column].iloc[0])
-    df = pd.read_csv(CSV_PATH)
+    df = pd.read_csv(CSV_PATH,sep=';')
     if df.empty:
         raise ValueError(f"'{CSV_PATH}' is empty.")
 

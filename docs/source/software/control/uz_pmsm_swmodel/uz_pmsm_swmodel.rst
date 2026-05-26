@@ -27,13 +27,7 @@ Interactive Bokeh result of the same test.
 
 
 Short-circuit steady-state derivation
-====================================
-
-This section derives the steady-state dq currents used in
-``test_uz_pmsm_swmodel_steady_state_rotating_no_voltage``.
-
-Model equations (synchronous dq frame)
---------------------------------------
+=====================================
 
 The software model equations are
 
@@ -53,10 +47,6 @@ with flux linkages
 
 These are the steady-state form of the standard PMSM dq voltage equations
 (:math:`\dot{i}_d=\dot{i}_q=0`).
-
-Short-circuit condition
------------------------
-
 For a short circuit at constant speed, set
 
 .. math::
@@ -92,15 +82,3 @@ For :math:`L_d = L_q = L`, this becomes
 .. math::
 
     i_d = -\frac{\omega_e^2 L \psi_f}{R_s^2 + (\omega_e L)^2}.
-
-Torque expression
------------------
-
-The electromagnetic torque is
-
-.. math::
-
-    T_e = \frac{3}{2} p \left(\psi_d i_q - \psi_q i_d\right),
-
-with :math:`p` the pole-pair number. This is the same expression used in the
-software model implementation.

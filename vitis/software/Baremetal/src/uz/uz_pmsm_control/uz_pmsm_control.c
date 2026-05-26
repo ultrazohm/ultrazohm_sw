@@ -1,5 +1,3 @@
-#include "uz_pmsm_control.h"
-
 #include "../uz_global_configuration.h"
 #if UZ_PMSM_CONTROL_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -47,6 +45,20 @@ static uz_pmsm_control_t *uz_pmsm_control_allocation(void)
 
 uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data)
 {
+    uz_PMSM_config_assert(machine_data);
+    uz_assert(config.sample_time > 0.0f);
+    uz_assert(config.speed_controller_kp >= 0.0f);
+    uz_assert(config.speed_controller_ki >= 0.0f);
+    uz_assert(config.current_controller_d_kp >= 0.0f);
+    uz_assert(config.current_controller_d_ki >= 0.0f);
+    uz_assert(config.current_controller_q_kp >= 0.0f);
+    uz_assert(config.current_controller_q_ki >= 0.0f);
+    uz_assert(config.setpoint_upper_bound_i_d_in_A > config.setpoint_lower_bound_i_d_in_A);
+    uz_assert(config.setpoint_upper_bound_i_q_in_A > config.setpoint_lower_bound_i_q_in_A);
+    uz_assert(config.setpoint_upper_bound_speed_in_rpm > config.setpoint_lower_bound_speed_in_rpm);
+    uz_assert(config.error_upper_bound_speed_in_rpm > config.error_lower_bound_speed_in_rpm);
+    uz_assert(config.disturbance_input_upper_bound_in_Nm > config.disturbance_input_lower_bound_in_Nm);
+
     uz_pmsm_control_t *self = uz_pmsm_control_allocation();
     self->config = config;
     self->machine_data = machine_data;
@@ -124,21 +136,29 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
 
 struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     return &self->actual_values;
 }
 
 struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     return &self->reference_values;
 }
 
 struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     return &self->measurement;
 }
 
 float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     return &self->config.theta_el_offset;
 }
 
@@ -151,6 +171,7 @@ bool uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self)
 
 void uz_pmsm_control_reset(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_CurrentControl_reset(self->current_controller);
     uz_SpeedControl_reset(self->speed_controller);
@@ -158,20 +179,25 @@ void uz_pmsm_control_reset(uz_pmsm_control_t *self)
 
 void uz_pmsm_control_enable(uz_pmsm_control_t *self, bool enable)
 {
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->enable = enable;
 }
 
 void uz_pmsm_control_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements)
 {
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->measurement = measurements;
+    uz_pmsm_control_measured_to_actual_values(self);
     self->safe_operating_region_violation = false;
     uz_pmsm_control_check_safe_operating_region(self);
 }
 
 void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
     self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
@@ -186,6 +212,7 @@ void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self)
 
 void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
 {
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     if (fabsf(self->measurement.i_abc_in_A.a) > self->machine_data.I_max_Ampere)
     {
@@ -225,8 +252,8 @@ void uz_pmsm_control_set_theta_offset(uz_pmsm_control_t *self, float theta_offse
 
 struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
 {
-    uz_assert(self->is_ready);
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     reference_speed_in_rpm = uz_signals_saturation(reference_speed_in_rpm, self->config.setpoint_upper_bound_speed_in_rpm, self->config.setpoint_lower_bound_speed_in_rpm);
     reference_currents.d = uz_signals_saturation(reference_currents.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
     reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
@@ -294,20 +321,22 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
 
 struct uz_DutyCycle_t uz_pmsm_control_sample_duty(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
 {
-    uz_assert(self->is_ready);
     uz_assert_not_NULL(self);
-    uz_3ph_dq_t v_dq_in_v=uz_pmsm_control_sample_dq(self, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    uz_assert(self->is_ready);
+    uz_3ph_dq_t v_dq_in_v = uz_pmsm_control_sample_dq(self, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
     if (self->enable && (!self->safe_operating_region_violation))
-{
-    self->reference_values.duty_cycle = uz_Space_Vector_Modulation(v_dq_in_v, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
-    self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-    self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-    self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-}else{
-    self->reference_values.duty_cycle.DutyCycle_A = self->config.default_duty_cycle.DutyCycle_A;
-    self->reference_values.duty_cycle.DutyCycle_B = self->config.default_duty_cycle.DutyCycle_B;
-    self->reference_values.duty_cycle.DutyCycle_C = self->config.default_duty_cycle.DutyCycle_C;
-}
+    {
+        self->reference_values.duty_cycle = uz_Space_Vector_Modulation(v_dq_in_v, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
+        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+    }
+    else
+    {
+        self->reference_values.duty_cycle.DutyCycle_A = self->config.default_duty_cycle.DutyCycle_A;
+        self->reference_values.duty_cycle.DutyCycle_B = self->config.default_duty_cycle.DutyCycle_B;
+        self->reference_values.duty_cycle.DutyCycle_C = self->config.default_duty_cycle.DutyCycle_C;
+    }
 
     return self->reference_values.duty_cycle;
 }

@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 09:46:59 2026
+ * C/C++ source code generated on : Wed May 20 18:17:46 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -124,12 +124,12 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: FOC_Enable_Sys2
    * Referenced by: '<S13>/FOC_Enable_Sys2'
    */
-  0.0F,
+  1.0F,
 
   /* Variable: FOC_Enable_Sys3
    * Referenced by: '<S13>/FOC_Enable_Sys3'
    */
-  0.0F,
+  1.0F,
 
   /* Variable: FOC_If_f_el
    * Referenced by: '<S9>/If_f_el'
@@ -150,7 +150,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S42>/FOC_KI'
    *   '<S46>/FOC_KI'
    */
-  250.0F,
+  1500.0F,
 
   /* Variable: FOC_KP
    * Referenced by:
@@ -158,7 +158,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S42>/FOC_KP1'
    *   '<S46>/FOC_KP1'
    */
-  0.3F,
+  1.0F,
 
   /* Variable: FOC_LIMIT_Overcurrent_I_uvw
    * Referenced by:
@@ -1233,39 +1233,6 @@ P_FOC_FCF_T FOC_FCF_P = {
    */
   1.0F,
 
-  /* Computed Parameter: DiscreteFIRFilter20thorder_Init
-   * Referenced by: '<S34>/Discrete FIR Filter 20th order'
-   */
-  0.0F,
-
-  /* Computed Parameter: DiscreteFIRFilter20thorder_Coef
-   * Referenced by: '<S34>/Discrete FIR Filter 20th order'
-   */
-  { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
-    0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
-
-  /* Computed Parameter: DiscreteFIRFilter20thorder_In_k
-   * Referenced by: '<S35>/Discrete FIR Filter 20th order'
-   */
-  0.0F,
-
-  /* Computed Parameter: DiscreteFIRFilter20thorder_Co_a
-   * Referenced by: '<S35>/Discrete FIR Filter 20th order'
-   */
-  { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
-    0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
-
-  /* Computed Parameter: DiscreteFIRFilter20thorder_In_n
-   * Referenced by: '<S36>/Discrete FIR Filter 20th order'
-   */
-  0.0F,
-
-  /* Computed Parameter: DiscreteFIRFilter20thorder_Co_l
-   * Referenced by: '<S36>/Discrete FIR Filter 20th order'
-   */
-  { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
-    0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
-
   /* Computed Parameter: usrpm_Gain
    * Referenced by: '<S11>/[1//s] => [rpm]'
    */
@@ -1275,6 +1242,17 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by: '<S49>/NO_ERROR'
    */
   0.0F,
+
+  /* Computed Parameter: DiscreteFIRFilter20thorderUdq_I
+   * Referenced by: '<S6>/Discrete FIR Filter 20th order Udq'
+   */
+  0.0F,
+
+  /* Computed Parameter: DiscreteFIRFilter20thorderUdq_C
+   * Referenced by: '<S6>/Discrete FIR Filter 20th order Udq'
+   */
+  { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
+    0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: Zero1_Value
    * Referenced by: '<S38>/Zero1'
@@ -1300,6 +1278,17 @@ P_FOC_FCF_T FOC_FCF_P = {
    * Referenced by: '<S46>/Zero1'
    */
   { 0.0F, 0.0F },
+
+  /* Computed Parameter: DiscreteFIRFilter20thorderIdq_I
+   * Referenced by: '<S6>/Discrete FIR Filter 20th order Idq'
+   */
+  0.0F,
+
+  /* Computed Parameter: DiscreteFIRFilter20thorderIdq_C
+   * Referenced by: '<S6>/Discrete FIR Filter 20th order Idq'
+   */
+  { 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F,
+    0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F, 0.05F },
 
   /* Computed Parameter: Switch_Threshold
    * Referenced by: '<S62>/Switch'
@@ -1333,6 +1322,26 @@ P_FOC_FCF_T FOC_FCF_P = {
 
   /* Computed Parameter: Gain3_Gain
    * Referenced by: '<S15>/Gain3'
+   */
+  1.0F,
+
+  /* Computed Parameter: Gain4_Gain
+   * Referenced by: '<S15>/Gain4'
+   */
+  1.0F,
+
+  /* Computed Parameter: Gain5_Gain
+   * Referenced by: '<S15>/Gain5'
+   */
+  1.0F,
+
+  /* Computed Parameter: Gain6_Gain
+   * Referenced by: '<S15>/Gain6'
+   */
+  1.0F,
+
+  /* Computed Parameter: Gain7_Gain
+   * Referenced by: '<S15>/Gain7'
    */
   1.0F,
 

@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 09:46:59 2026
+ * C/C++ source code generated on : Wed May 20 18:17:46 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -184,7 +184,6 @@ typedef struct {
   real32_T TrafoProd1;                 /* '<S34>/TrafoProd1' */
   real32_T TrafoProd2;                 /* '<S34>/TrafoProd2' */
   real32_T I_q1_Act;                   /* '<S34>/I_q1_Act' */
-  real32_T TmpSignalConversionAtDiscreteFI[2];
   real32_T IdqErr[2];                  /* '<S31>/IdqErr' */
   real32_T KPek1[2];                   /* '<S38>/KP*e[k]1' */
   real32_T IntegDelay1[2];             /* '<S38>/IntegDelay1' */
@@ -200,7 +199,6 @@ typedef struct {
   real32_T TrafoProd1_b;               /* '<S35>/TrafoProd1' */
   real32_T TrafoProd2_b;               /* '<S35>/TrafoProd2' */
   real32_T TrafoSum1;                  /* '<S35>/TrafoSum1' */
-  real32_T TmpSignalConversionAtDiscrete_k[2];
   real32_T IdqErr_l[2];                /* '<S32>/IdqErr' */
   real32_T KPek1_l[2];                 /* '<S42>/KP*e[k]1' */
   real32_T IntegDelay1_o[2];           /* '<S42>/IntegDelay1' */
@@ -216,7 +214,6 @@ typedef struct {
   real32_T TrafoProd1_e;               /* '<S36>/TrafoProd1' */
   real32_T TrafoProd2_h;               /* '<S36>/TrafoProd2' */
   real32_T TrafoSum1_p;                /* '<S36>/TrafoSum1' */
-  real32_T TmpSignalConversionAtDiscrete_c[2];
   real32_T IdqErr_e[2];                /* '<S33>/IdqErr' */
   real32_T KPek1_h[2];                 /* '<S46>/KP*e[k]1' */
   real32_T IntegDelay1_d[2];           /* '<S46>/IntegDelay1' */
@@ -277,11 +274,6 @@ typedef struct {
   real32_T Sum2_j;                     /* '<S29>/Sum2' */
   real32_T phi_el_U_trafo[3];          /* '<S5>/Gain1' */
   real32_T phi_el_I_trafo;             /* '<S5>/Gain2' */
-  real32_T I_dq1_Act_filt[2];       /* '<S34>/Discrete FIR Filter 20th order' */
-  real32_T DiscreteFIRFilter20thorder[2];
-                                    /* '<S35>/Discrete FIR Filter 20th order' */
-  real32_T DiscreteFIRFilter20thorder_l[2];
-                                    /* '<S36>/Discrete FIR Filter 20th order' */
   real32_T I_dq_Act[6];                /* '<S1>/Current_Controller' */
   real32_T usrpm;                      /* '<S11>/[1//s] => [rpm]' */
   real32_T Abs_d;                      /* '<S11>/Abs' */
@@ -291,11 +283,14 @@ typedef struct {
   real32_T EN_RDY_Switch_1;            /* '<S49>/EN_RDY_Switch_1' */
   real32_T EN_RDY_Switch_2;            /* '<S49>/EN_RDY_Switch_2' */
   real32_T EN_RDY_Switch_3;            /* '<S49>/EN_RDY_Switch_3' */
+  real32_T TmpSignalConversionAtDiscreteFI[6];
+  real32_T U_dq_Act_filt[6];     /* '<S6>/Discrete FIR Filter 20th order Udq' */
   real32_T IntegStopSwitch2[2];        /* '<S38>/IntegStopSwitch2' */
   real32_T U_d1_CC;                    /* '<S31>/Gain1' */
   real32_T U_q1_CC;                    /* '<S31>/Gain2' */
   real32_T IntegStopSwitch2_o[2];      /* '<S42>/IntegStopSwitch2' */
   real32_T IntegStopSwitch2_h[2];      /* '<S46>/IntegStopSwitch2' */
+  real32_T I_dq_Act_filt[6];     /* '<S6>/Discrete FIR Filter 20th order Idq' */
   real32_T Abs_e;                      /* '<S62>/Abs' */
   real32_T Switch_d;                   /* '<S62>/Switch' */
   real32_T Add1;                       /* '<S62>/Add1' */
@@ -309,6 +304,10 @@ typedef struct {
   real32_T U_q1;                       /* '<S15>/Gain1' */
   real32_T U_alpha1;                   /* '<S15>/Gain2' */
   real32_T U_beta1;                    /* '<S15>/Gain3' */
+  real32_T U_d2;                       /* '<S15>/Gain4' */
+  real32_T U_q2;                       /* '<S15>/Gain5' */
+  real32_T U_d3;                       /* '<S15>/Gain6' */
+  real32_T U_q3;                       /* '<S15>/Gain7' */
   real32_T DutyCycle_u1;               /* '<S97>/DutyCycle_u1' */
   real32_T DutyCycle_u2;               /* '<S97>/DutyCycle_u2' */
   real32_T DutyCycle_u3;               /* '<S97>/DutyCycle_u3' */
@@ -506,20 +505,16 @@ typedef struct {
   real32_T IntegDelay1_DSTATE_p[2];    /* '<S42>/IntegDelay1' */
   real32_T IntegDelay1_DSTATE_h[2];    /* '<S46>/IntegDelay1' */
   real32_T UnitDelay1_DSTATE_i;        /* '<S29>/Unit Delay1' */
-  real32_T DiscreteFIRFilter20thorder_stat[38];
-                                    /* '<S34>/Discrete FIR Filter 20th order' */
-  real32_T DiscreteFIRFilter20thorder_st_g[38];
-                                    /* '<S35>/Discrete FIR Filter 20th order' */
-  real32_T DiscreteFIRFilter20thorder_st_p[38];
-                                    /* '<S36>/Discrete FIR Filter 20th order' */
+  real32_T DiscreteFIRFilter20thorderUdq_s[114];
+                                 /* '<S6>/Discrete FIR Filter 20th order Udq' */
+  real32_T DiscreteFIRFilter20thorderIdq_s[114];
+                                 /* '<S6>/Discrete FIR Filter 20th order Idq' */
   real32_T FCF_Cnt_DSTATE;             /* '<S1>/FCF_Cnt' */
   real32_T UnitDelay1_DSTATE_c[9];     /* '<S23>/Unit Delay1' */
-  int32_T DiscreteFIRFilter20thorder_circ;
-                                    /* '<S34>/Discrete FIR Filter 20th order' */
-  int32_T DiscreteFIRFilter20thorder_ci_m;
-                                    /* '<S35>/Discrete FIR Filter 20th order' */
-  int32_T DiscreteFIRFilter20thorder_ci_c;
-                                    /* '<S36>/Discrete FIR Filter 20th order' */
+  int32_T DiscreteFIRFilter20thorderUdq_c;
+                                 /* '<S6>/Discrete FIR Filter 20th order Udq' */
+  int32_T DiscreteFIRFilter20thorderIdq_c;
+                                 /* '<S6>/Discrete FIR Filter 20th order Idq' */
   boolean_T DelayInput1_DSTATE;        /* '<S83>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_g;      /* '<S82>/Delay Input1' */
   boolean_T DelayInput1_DSTATE_l;      /* '<S67>/Delay Input1' */
@@ -1343,36 +1338,20 @@ struct P_FOC_FCF_T_ {
   real32_T Gain2_Gain;                 /* Computed Parameter: Gain2_Gain
                                         * Referenced by: '<S5>/Gain2'
                                         */
-  real32_T DiscreteFIRFilter20thorder_Init;
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_Init
-                           * Referenced by: '<S34>/Discrete FIR Filter 20th order'
-                           */
-  real32_T DiscreteFIRFilter20thorder_Coef[20];
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_Coef
-                           * Referenced by: '<S34>/Discrete FIR Filter 20th order'
-                           */
-  real32_T DiscreteFIRFilter20thorder_In_k;
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_In_k
-                           * Referenced by: '<S35>/Discrete FIR Filter 20th order'
-                           */
-  real32_T DiscreteFIRFilter20thorder_Co_a[20];
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_Co_a
-                           * Referenced by: '<S35>/Discrete FIR Filter 20th order'
-                           */
-  real32_T DiscreteFIRFilter20thorder_In_n;
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_In_n
-                           * Referenced by: '<S36>/Discrete FIR Filter 20th order'
-                           */
-  real32_T DiscreteFIRFilter20thorder_Co_l[20];
-                          /* Computed Parameter: DiscreteFIRFilter20thorder_Co_l
-                           * Referenced by: '<S36>/Discrete FIR Filter 20th order'
-                           */
   real32_T usrpm_Gain;                 /* Computed Parameter: usrpm_Gain
                                         * Referenced by: '<S11>/[1//s] => [rpm]'
                                         */
   real32_T NO_ERROR_Value;             /* Computed Parameter: NO_ERROR_Value
                                         * Referenced by: '<S49>/NO_ERROR'
                                         */
+  real32_T DiscreteFIRFilter20thorderUdq_I;
+                          /* Computed Parameter: DiscreteFIRFilter20thorderUdq_I
+                           * Referenced by: '<S6>/Discrete FIR Filter 20th order Udq'
+                           */
+  real32_T DiscreteFIRFilter20thorderUdq_C[20];
+                          /* Computed Parameter: DiscreteFIRFilter20thorderUdq_C
+                           * Referenced by: '<S6>/Discrete FIR Filter 20th order Udq'
+                           */
   real32_T Zero1_Value[2];             /* Computed Parameter: Zero1_Value
                                         * Referenced by: '<S38>/Zero1'
                                         */
@@ -1388,6 +1367,14 @@ struct P_FOC_FCF_T_ {
   real32_T Zero1_Value_o[2];           /* Computed Parameter: Zero1_Value_o
                                         * Referenced by: '<S46>/Zero1'
                                         */
+  real32_T DiscreteFIRFilter20thorderIdq_I;
+                          /* Computed Parameter: DiscreteFIRFilter20thorderIdq_I
+                           * Referenced by: '<S6>/Discrete FIR Filter 20th order Idq'
+                           */
+  real32_T DiscreteFIRFilter20thorderIdq_C[20];
+                          /* Computed Parameter: DiscreteFIRFilter20thorderIdq_C
+                           * Referenced by: '<S6>/Discrete FIR Filter 20th order Idq'
+                           */
   real32_T Switch_Threshold;           /* Computed Parameter: Switch_Threshold
                                         * Referenced by: '<S62>/Switch'
                                         */
@@ -1408,6 +1395,18 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T Gain3_Gain;                 /* Computed Parameter: Gain3_Gain
                                         * Referenced by: '<S15>/Gain3'
+                                        */
+  real32_T Gain4_Gain;                 /* Computed Parameter: Gain4_Gain
+                                        * Referenced by: '<S15>/Gain4'
+                                        */
+  real32_T Gain5_Gain;                 /* Computed Parameter: Gain5_Gain
+                                        * Referenced by: '<S15>/Gain5'
+                                        */
+  real32_T Gain6_Gain;                 /* Computed Parameter: Gain6_Gain
+                                        * Referenced by: '<S15>/Gain6'
+                                        */
+  real32_T Gain7_Gain;                 /* Computed Parameter: Gain7_Gain
+                                        * Referenced by: '<S15>/Gain7'
                                         */
   real32_T DutyCycle_u1_Gain;          /* Computed Parameter: DutyCycle_u1_Gain
                                         * Referenced by: '<S97>/DutyCycle_u1'

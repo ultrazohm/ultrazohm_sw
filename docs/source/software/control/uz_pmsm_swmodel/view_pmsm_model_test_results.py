@@ -1,165 +1,49 @@
 
-
-import pandas as pd
 import matplotlib.pyplot as plt
-import os
+import pandas as pd
 from pathlib import Path
 
-def _find_repo_root(start_dir):
-	for candidate in (start_dir, *start_dir.parents):
-		if (candidate / "README.MD").is_file() and (candidate / "docs").is_dir():
-			return str(candidate)
-	raise RuntimeError("Could not locate the repository root from this script")
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = next(path for path in (SCRIPT_DIR, *SCRIPT_DIR.parents) if (path / "README.MD").is_file())
+CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_results.csv"
+CONFIG_CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_config.csv"
 
+config_df = pd.read_csv(CONFIG_CSV_PATH, sep=";")
+df = pd.read_csv(CSV_PATH, sep=";")
+t = df['time']
 
-SCRIPT_FILE = globals().get("__file__")
-START_DIR = Path(SCRIPT_FILE).resolve().parent if SCRIPT_FILE else Path.cwd().resolve()
-REPO_ROOT = _find_repo_root(START_DIR)
-CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_results.csv")
-CONFIG_CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_config.csv")
-CSV_PATH = os.path.join(REPO_ROOT, CSV_PATH)
-CONFIG_CSV_PATH = os.path.join(REPO_ROOT, CONFIG_CSV_PATH)
-SIGNAL_GROUPS = [
-    {
-        "title": "d-axis",
-        "signals": [
-            ("output_i_d_A", "i_d (A)", "tab:blue"),
-            ("input_v_d_V", "v_d (V)", "tab:orange"),
-        ],
-        "ylabel": "A / V",
-    },
-    {
-        "title": "q-axis",
-        "signals": [
-            ("output_i_q_A", "i_q (A)", "tab:green"),
-            ("input_v_q_V", "v_q (V)", "tab:red"),
-        ],
-        "ylabel": "A / V",
-    },
-    {
-        "title": "Torque",
-        "signals": [
-            ("output_torque_Nm", "torque (Nm)", "tab:purple"),
-            ("input_load_torque", "load torque (Nm)", "tab:brown"),
-        ],
-        "ylabel": "Nm",
-    },
-    {
-        "title": "Speed",
-        "signals": [
-            ("output_omega_mech_1_s", "output speed (1/s)", "tab:cyan"),
-            ("input_omega_mech_1_s", "input speed (1/s)", "tab:gray"),
-        ],
-        "ylabel": "1/s",
-    },
-]
+fig, axes = plt.subplots(4, 1, figsize=(12, 10), sharex=True)
 
-def _load_data():
-    if not os.path.exists(CONFIG_CSV_PATH):
-        raise FileNotFoundError(f"Config file '{CONFIG_CSV_PATH}' not found.")
-    if not os.path.exists(CSV_PATH):
-        raise FileNotFoundError(f"Results file '{CSV_PATH}' not found.")
+axes[0].plot(t, df["output_i_d_A"], label="i_d (A)", color="tab:blue", linewidth=1.5)
+axes[0].plot(t, df["input_v_d_V"], label="v_d (V)", color="tab:orange", linewidth=1.5)
+axes[0].set_title("d-axis")
+axes[0].set_ylabel("A / V")
+axes[0].grid(True, linestyle="--", linewidth=0.6, alpha=0.6)
+axes[0].legend(loc="best")
 
-    config_df = pd.read_csv(CONFIG_CSV_PATH, sep=';')
-    if "sample_time" in config_df.columns:
-        sample_time_column = "sample_time"
-    elif "output_sample_time" in config_df.columns:
-        sample_time_column = "output_sample_time"
-    else:
-        raise KeyError("Expected 'sample_time' or 'output_sample_time' in config CSV")
-    sample_time = float(config_df[sample_time_column].iloc[0])
+axes[1].plot(t, df["output_i_q_A"], label="i_q (A)", color="tab:green", linewidth=1.5)
+axes[1].plot(t, df["input_v_q_V"], label="v_q (V)", color="tab:red", linewidth=1.5)
+axes[1].set_title("q-axis")
+axes[1].set_ylabel("A / V")
+axes[1].grid(True, linestyle="--", linewidth=0.6, alpha=0.6)
+axes[1].legend(loc="best")
 
-    df = pd.read_csv(CSV_PATH, sep=';')
-    if df.empty:
-        raise ValueError(f"'{CSV_PATH}' is empty.")
+axes[2].plot(t, df["output_torque_Nm"], label="torque (Nm)", color="tab:purple", linewidth=1.5)
+axes[2].plot(t, df["input_load_torque"], label="load torque (Nm)", color="tab:brown", linewidth=1.5)
+axes[2].set_title("Torque")
+axes[2].set_ylabel("Nm")
+axes[2].grid(True, linestyle="--", linewidth=0.6, alpha=0.6)
+axes[2].legend(loc="best")
 
-    t = df.index * sample_time
-    return t, df
+axes[3].plot(t, df["output_omega_mech_1_s"], label="output speed (1/s)", color="tab:cyan", linewidth=1.5)
+axes[3].plot(t, df["input_omega_mech_1_s"], label="input speed (1/s)", color="tab:gray", linewidth=1.5)
+axes[3].set_title("Speed")
+axes[3].set_ylabel("1/s")
+axes[3].set_xlabel("Time [s]")
+axes[3].grid(True, linestyle="--", linewidth=0.6, alpha=0.6)
+axes[3].legend(loc="best")
 
+fig.suptitle("PMSM model test results")
+fig.tight_layout(rect=(0, 0, 1, 0.97))
+plt.show()
 
-def build_interactive_figure():
-    from plotly.subplots import make_subplots
-    import plotly.graph_objects as go
-
-    t, df = _load_data()
-    fig = make_subplots(
-        rows=len(SIGNAL_GROUPS),
-        cols=1,
-        shared_xaxes=True,
-        subplot_titles=[group["title"] for group in SIGNAL_GROUPS],
-        vertical_spacing=0.04,
-    )
-
-    for row, group in enumerate(SIGNAL_GROUPS, start=1):
-        plotted = False
-        for col, label, _color in group["signals"]:
-            if col in df:
-                fig.add_trace(
-                    go.Scattergl(
-                        x=t,
-                        y=df[col],
-                        mode="lines",
-                        name=label,
-                        legendgroup=group["title"],
-                        showlegend=(row == 1),
-                    ),
-                    row=row,
-                    col=1,
-                )
-                plotted = True
-
-        if not plotted:
-            fig.add_annotation(
-                x=0.5,
-                y=0.5,
-                xref=f"x{row} domain",
-                yref=f"y{row} domain",
-                text="No data",
-                showarrow=False,
-                font={"color": "red"},
-                row=row,
-                col=1,
-            )
-
-        fig.update_yaxes(title_text=group["ylabel"], row=row, col=1)
-
-    fig.update_xaxes(title_text="Time [s]", row=len(SIGNAL_GROUPS), col=1)
-    fig.update_layout(
-        title="PMSM model test results (interactive)",
-        hovermode="x unified",
-        height=320 * len(SIGNAL_GROUPS),
-    )
-    return fig
-
-def main():
-    try:
-        t, df = _load_data()
-    except Exception as e:
-        print(f"Error loading PMSM model data: {e}")
-        return
-
-    fig, axes = plt.subplots(len(SIGNAL_GROUPS), 1, figsize=(12, 10), sharex=True)
-    if len(SIGNAL_GROUPS) == 1:
-        axes = [axes]
-
-    for ax, group in zip(axes, SIGNAL_GROUPS):
-        plotted = False
-        for col, label, color in group["signals"]:
-            if col in df:
-                ax.plot(t, df[col], label=label, color=color, linewidth=1.5)
-                plotted = True
-        ax.set_title(group["title"])
-        ax.set_ylabel(group["ylabel"])
-        ax.grid(True, linestyle="--", linewidth=0.6, alpha=0.6)
-        if plotted:
-            ax.legend(loc="best")
-        else:
-            ax.text(0.5, 0.5, "No data", ha="center", va="center", transform=ax.transAxes, color="red")
-
-    axes[-1].set_xlabel("Time [s]")
-    fig.suptitle("PMSM model test results")
-    fig.tight_layout(rect=(0, 0, 1, 0.97))
-    plt.show()
-
-if __name__ == "__main__":
-    main()

@@ -1,122 +1,67 @@
-import os
 from pathlib import Path
 
 import pandas as pd
 from bokeh.layouts import column
-from bokeh.models import HoverTool
 from bokeh.plotting import figure, show
 
-def _find_repo_root(start_dir):
-    for candidate in (start_dir, *start_dir.parents):
-        if (candidate / "README.MD").is_file() and (candidate / "docs").is_dir():
-            return str(candidate)
-    raise RuntimeError("Could not locate the repository root from this script")
-
-
-SCRIPT_FILE = globals().get("__file__")
-START_DIR = Path(SCRIPT_FILE).resolve().parent if SCRIPT_FILE else Path.cwd().resolve()
-REPO_ROOT = _find_repo_root(START_DIR)
-CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_results.csv")
-CONFIG_CSV_PATH = os.path.join("docs", "ceedling_test_output", "uz", "uz_pmsm_swmodel", "uz_pmsm_swmodel_config.csv")
-CSV_PATH = os.path.join(REPO_ROOT, CSV_PATH)
-CONFIG_CSV_PATH = os.path.join(REPO_ROOT, CONFIG_CSV_PATH)
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = next(path for path in (SCRIPT_DIR, *SCRIPT_DIR.parents) if (path / "README.MD").is_file())
+CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_results.csv"
+CONFIG_CSV_PATH = REPO_ROOT / "docs" / "ceedling_test_output" / "uz" / "uz_pmsm_swmodel" / "uz_pmsm_swmodel_config.csv"
 SUBPLOT_HEIGHT_PX = 210
-SIGNAL_GROUPS = [
-    {
-        "title": "d-axis",
-        "signals": [
-            ("output_i_d_A", "i_d (A)", "#1f77b4"),
-            ("input_v_d_V", "v_d (V)", "#ff7f0e"),
-        ],
-        "ylabel": "A / V",
-    },
-    {
-        "title": "q-axis",
-        "signals": [
-            ("output_i_q_A", "i_q (A)", "#2ca02c"),
-            ("input_v_q_V", "v_q (V)", "#d62728"),
-        ],
-        "ylabel": "A / V",
-    },
-    {
-        "title": "Torque",
-        "signals": [
-            ("output_torque_Nm", "torque (Nm)", "#9467bd"),
-            ("input_load_torque", "load torque (Nm)", "#8c564b"),
-        ],
-        "ylabel": "Nm",
-    },
-    {
-        "title": "Speed",
-        "signals": [
-            ("output_omega_mech_1_s", "output speed (1/s)", "#17becf"),
-            ("input_omega_mech_1_s", "input speed (1/s)", "#7f7f7f"),
-        ],
-        "ylabel": "1/s",
-    },
-]
 
-def _load_data():
-    if not os.path.exists(CONFIG_CSV_PATH):
-        raise FileNotFoundError(f"Config file '{CONFIG_CSV_PATH}' not found.")
-    if not os.path.exists(CSV_PATH):
-        raise FileNotFoundError(f"Results file '{CSV_PATH}' not found.")
+config_df = pd.read_csv(CONFIG_CSV_PATH, sep=";")
+df = pd.read_csv(CSV_PATH, sep=";")
+t = df['time']
 
-    config_df = pd.read_csv(CONFIG_CSV_PATH,sep=';')
-    if "sample_time" in config_df.columns:
-        sample_time_column = "sample_time"
-    elif "output_sample_time" in config_df.columns:
-        sample_time_column = "output_sample_time"
-    else:
-        raise KeyError("Expected 'sample_time' or 'output_sample_time' in config CSV")
-    sample_time = float(config_df[sample_time_column].iloc[0])
-    df = pd.read_csv(CSV_PATH,sep=';')
-    if df.empty:
-        raise ValueError(f"'{CSV_PATH}' is empty.")
+TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
 
-    t = df.index * sample_time
-    return t, df
+p_d = figure(
+    title="d-axis",
+    height=SUBPLOT_HEIGHT_PX,
+    sizing_mode="stretch_width",
+    x_axis_label="",
+    y_axis_label="A / V",
+    tools=TOOLS,
+)
+p_d.line(t, df["output_i_d_A"], line_width=2, color="#26597e", legend_label="i_d (A)")
+p_d.line(t, df["input_v_d_V"], line_width=2, color="#ff7f0e", legend_label="v_d (V)")
 
+p_q = figure(
+    title="q-axis",
+    height=SUBPLOT_HEIGHT_PX,
+    sizing_mode="stretch_width",
+    x_axis_label="",
+    y_axis_label="A / V",
+    tools=TOOLS,
+    x_range=p_d.x_range,
+)
+p_q.line(t, df["output_i_q_A"], line_width=2, color="#2ca02c", legend_label="i_q (A)")
+p_q.line(t, df["input_v_q_V"], line_width=2, color="#d62728", legend_label="v_q (V)")
 
-t, df = _load_data()
-plots = []
-shared_x_range = None
+p_torque = figure(
+    title="Torque",
+    height=SUBPLOT_HEIGHT_PX,
+    sizing_mode="stretch_width",
+    x_axis_label="",
+    y_axis_label="Nm",
+    tools=TOOLS,
+    x_range=p_d.x_range,
+)
+p_torque.line(t, df["output_torque_Nm"], line_width=2, color="#9467bd", legend_label="torque (Nm)")
+p_torque.line(t, df["input_load_torque"], line_width=2, color="#8c564b", legend_label="load torque (Nm)")
 
-for idx, group in enumerate(SIGNAL_GROUPS):
-    figure_kwargs = {
-        "title": group["title"],
-        "height": SUBPLOT_HEIGHT_PX,
-        "sizing_mode": "stretch_width",
-        "x_axis_label": "Time [s]" if idx == len(SIGNAL_GROUPS) - 1 else "",
-        "y_axis_label": group["ylabel"],
-        "tools": "pan,wheel_zoom,box_zoom,reset,save",
-        "active_scroll": "wheel_zoom",
-    }
-    if shared_x_range is not None:
-        figure_kwargs["x_range"] = shared_x_range
+p_speed = figure(
+    title="Speed",
+    height=SUBPLOT_HEIGHT_PX,
+    sizing_mode="stretch_width",
+    x_axis_label="Time [s]",
+    y_axis_label="1/s",
+    tools=TOOLS,
+    x_range=p_d.x_range,
+)
+p_speed.line(t, df["output_omega_mech_1_s"], line_width=2, color="#17becf", legend_label="output speed (1/s)")
+p_speed.line(t, df["input_omega_mech_1_s"], line_width=2, color="#7f7f7f", legend_label="input speed (1/s)")
 
-    p = figure(
-        **figure_kwargs,
-    )
-
-    plotted = False
-    for col, label, color in group["signals"]:
-        if col in df:
-            renderer = p.line(t, df[col], line_width=2, color=color, legend_label=label)
-            p.add_tools(HoverTool(renderers=[renderer], tooltips=[("signal", label), ("x", "$x"), ("y", "$y")]))
-            plotted = True
-
-    if not plotted:
-        p.text(x=[0], y=[0], text=["No data"], text_color="red")
-
-    p.grid.grid_line_alpha = 0.35
-    p.legend.click_policy = "hide"
-    p.legend.location = "top_right"
-
-    if shared_x_range is None:
-        shared_x_range = p.x_range
-
-    plots.append(p)
-
-layout = column(*plots, sizing_mode="stretch_width")
+layout = column(p_d, p_q, p_torque, p_speed, sizing_mode="stretch_width")
 show(layout)

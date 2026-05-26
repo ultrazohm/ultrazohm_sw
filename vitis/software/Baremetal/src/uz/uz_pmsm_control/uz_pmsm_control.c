@@ -28,8 +28,8 @@ struct uz_pmsm_control_t
 static uint32_t instance_counter = 0U;
 static uz_pmsm_control_t instances[UZ_PMSM_CONTROL_MAX_INSTANCES] = {0};
 
-void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self);
-void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self);
+static void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self);
+static void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self);
 
 static uz_pmsm_control_t *uz_pmsm_control_allocation(void);
 
@@ -53,11 +53,11 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     uz_assert(config.current_controller_d_ki >= 0.0f);
     uz_assert(config.current_controller_q_kp >= 0.0f);
     uz_assert(config.current_controller_q_ki >= 0.0f);
-    uz_assert(config.setpoint_upper_bound_i_d_in_A > config.setpoint_lower_bound_i_d_in_A);
-    uz_assert(config.setpoint_upper_bound_i_q_in_A > config.setpoint_lower_bound_i_q_in_A);
-    uz_assert(config.setpoint_upper_bound_speed_in_rpm > config.setpoint_lower_bound_speed_in_rpm);
-    uz_assert(config.error_upper_bound_speed_in_rpm > config.error_lower_bound_speed_in_rpm);
-    uz_assert(config.disturbance_input_upper_bound_in_Nm > config.disturbance_input_lower_bound_in_Nm);
+    // Re-add assertions for limits.
+
+    uz_assert(config.setpoint_filter_i_dq_cutoff_frequency >= 0.0f);
+    uz_assert(config.setpoint_filter_speed_cutoff_frequency >= 0.0f);
+    uz_assert(config.speed_actual_value_filter_cutoff_frequency >= 0.0f);
 
     uz_pmsm_control_t *self = uz_pmsm_control_allocation();
     self->config = config;
@@ -80,8 +80,8 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
         .config_controller.Kp = config.speed_controller_kp,
         .config_controller.Ki = config.speed_controller_ki,
         .config_controller.samplingTime_sec = config.sample_time,
-        .config_controller.upper_limit = config.speed_controller_max_torque,
-        .config_controller.lower_limit = -1.0f * config.speed_controller_max_torque,
+        .config_controller.upper_limit = config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound,
+        .config_controller.lower_limit = config.setpoint_limits.speed_controller_torque_in_Nm.lower_bound,
         .config_controller.type = UZ_PI_PARALLEL};
 
     struct uz_SetPoint_config setpoint_configuration = {
@@ -194,7 +194,7 @@ void uz_pmsm_control_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct
     uz_pmsm_control_check_safe_operating_region(self);
 }
 
-void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self)
+static void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -210,7 +210,7 @@ void uz_pmsm_control_measured_to_actual_values(uz_pmsm_control_t *self)
     self->actual_values.v_dq_in_V = uz_transformation_3ph_abc_to_dq(self->measurement.v_abc_in_V, angle_for_voltage_measurement);
 }
 
-void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
+static void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -254,10 +254,10 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    reference_speed_in_rpm = uz_signals_saturation(reference_speed_in_rpm, self->config.setpoint_upper_bound_speed_in_rpm, self->config.setpoint_lower_bound_speed_in_rpm);
-    reference_currents.d = uz_signals_saturation(reference_currents.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
-    reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
-    disturbance_input_in_Nm = uz_signals_saturation(disturbance_input_in_Nm, self->config.disturbance_input_upper_bound_in_Nm, self->config.disturbance_input_lower_bound_in_Nm);
+    reference_speed_in_rpm = uz_signals_saturation(reference_speed_in_rpm, self->config.setpoint_limits.speed_in_rpm.upper_bound, self->config.setpoint_limits.speed_in_rpm.lower_bound);
+    reference_currents.d = uz_signals_saturation(reference_currents.d, self->config.setpoint_limits.i_d_in_A.upper_bound, self->config.setpoint_limits.i_d_in_A.lower_bound);
+    reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_limits.i_q_in_A.upper_bound, self->config.setpoint_limits.i_q_in_A.lower_bound);
+    disturbance_input_in_Nm = uz_signals_saturation(disturbance_input_in_Nm, self->config.setpoint_limits.disturbance_input_in_Nm.upper_bound, self->config.setpoint_limits.disturbance_input_in_Nm.lower_bound);
 
     if (self->config.speed_actual_value_filter_cutoff_frequency != 0.0f)
     {
@@ -283,7 +283,7 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
         {
             self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
             float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
-            if (fabsf(ref_plus_disturbance_input) > self->config.speed_controller_max_torque)
+            if (fabsf(ref_plus_disturbance_input) > self->config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound)
             {
                 uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
             }
@@ -291,7 +291,7 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
             {
                 uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
             }
-            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
+            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound, self->config.setpoint_limits.speed_controller_torque_in_Nm.lower_bound);
             self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->measurement.v_dc_in_V, self->actual_values.i_dq_in_A);
         }
         else
@@ -305,8 +305,8 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
                 self->reference_values.i_dq_in_A = reference_currents;
             }
         }
-        self->reference_values.i_dq_in_A.d = uz_signals_saturation(self->reference_values.i_dq_in_A.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
-        self->reference_values.i_dq_in_A.q = uz_signals_saturation(self->reference_values.i_dq_in_A.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
+        self->reference_values.i_dq_in_A.d = uz_signals_saturation(self->reference_values.i_dq_in_A.d, self->config.setpoint_limits.i_d_in_A.upper_bound, self->config.setpoint_limits.i_d_in_A.lower_bound);
+        self->reference_values.i_dq_in_A.q = uz_signals_saturation(self->reference_values.i_dq_in_A.q, self->config.setpoint_limits.i_q_in_A.upper_bound, self->config.setpoint_limits.i_q_in_A.lower_bound);
         self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->measurement.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
     }
     else

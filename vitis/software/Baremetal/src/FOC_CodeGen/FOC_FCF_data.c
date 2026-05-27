@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 18:17:46 2026
+ * C/C++ source code generated on : Wed May 27 16:09:18 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -165,7 +165,7 @@ P_FOC_FCF_T FOC_FCF_P = {
    *   '<S65>/Constant'
    *   '<S66>/Constant'
    */
-  50.0F,
+  500.0F,
 
   /* Variable: FOC_LIMIT_Overvoltage_U_DC
    * Referenced by: '<S81>/Constant'
@@ -283,7 +283,7 @@ P_FOC_FCF_T FOC_FCF_P = {
   /* Variable: LIMIT_MAX_Overspeed
    * Referenced by: '<S88>/Constant'
    */
-  8000.0F,
+  6500.0F,
 
   /* Variable: Offset_ADC_Ph1
    * Referenced by: '<S20>/Offset_ADC_Ph1'

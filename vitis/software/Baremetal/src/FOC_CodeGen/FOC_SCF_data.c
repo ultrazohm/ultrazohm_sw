@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 20 17:37:50 2026
+ * C/C++ source code generated on : Wed May 27 16:10:09 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -34,21 +34,21 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: FOC_LIMIT_I_PHASE_PEAK_MAX
    * Referenced by: '<S15>/Constant'
    */
-  200.0F,
+  425.0F,
 
   /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Down
    * Referenced by:
    *   '<S11>/Constant7'
    *   '<S17>/Constant7'
    */
-  -1000.0F,
+  -500.0F,
 
   /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Up
    * Referenced by:
    *   '<S11>/Constant6'
    *   '<S17>/Constant6'
    */
-  1000.0F,
+  500.0F,
 
   /* Variable: FOC_LIMIT_Motor_Torque_MAX
    * Referenced by: '<S8>/Maximum_Torque_Maschine'

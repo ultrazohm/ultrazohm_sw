@@ -35,10 +35,14 @@
     }
   ],
   "axi_interconnect": {
-    "upstream_smartconnect": "uz_user/smartconnect_1",
-    "clock_pin": "uz_user/aclk",
-    "resetn_pin": "uz_user/aresetn",
-    "address_space": "/zynq_ultra_ps_e_0/Data",
+    "d_upstream_smartconnect": "uz_user/smartconnect_1",
+    "d_clock_pin": "uz_user/aclk",
+    "d_resetn_pin": "uz_user/aresetn",
+    "d_address_space": "/zynq_ultra_ps_e_0/Data",
+    "a_upstream_smartconnect": "uz_system/smartconnect_0",
+    "a_clock_pin": "uz_system/clk",
+    "a_resetn_pin": "uz_system/peripheral_aresetn",
+    "a_address_space": "/zynq_ultra_ps_e_0/Data",
     "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
     "local_smartconnect_name": "axi_smartconnect"
   }

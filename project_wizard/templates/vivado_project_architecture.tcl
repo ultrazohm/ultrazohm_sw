@@ -51,7 +51,7 @@ proc uz_pw_object_matches_patterns {object cleanup_patterns} {
 
 proc uz_pw_is_axi_scalar {object} {
   set object_name [get_property NAME $object]
-  expr {[string match "D*_AXI*" $object_name] || [string match "S*_AXI*" $object_name] || [string match "M*_AXI*" $object_name]}
+  expr {[string match "A*_AXI*" $object_name] || [string match "D*_AXI*" $object_name] || [string match "S*_AXI*" $object_name] || [string match "M*_AXI*" $object_name]}
 }
 
 proc uz_pw_is_axi_interface_pin {object} {

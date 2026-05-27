@@ -35,22 +35,50 @@ Minimum `vivado` shape:
 ```json
 {
   "template": "cards/generic_adapter_card.tcl",
+  "adapter_parent_hier": "uz_digital_adapter or uz_analog_adapter",
+  "adapter_clock_pin": "aclk",
+  "adapter_resetn_pin": "aresetn",
   "ip_cores": [
     {
       "instance_name": "OptionalFixedInstanceName",
       "instance_prefix": "used_if_instance_name_is_missing",
       "module": "IP module name",
-      "vlnv": "vendor:library:name:version",
+      "vlnv": "vendor:library:name",
+      "cell_type": "ip or module",
+      "reference": "module_name_for_module_ref_cells",
       "clock_pins": ["s00_axi_aclk"],
-      "reset_pins": ["s00_axi_aresetn"]
+      "reset_pins": ["s00_axi_aresetn"],
+      "properties": {
+        "CONFIG.PARAMETER_NAME": "value"
+      }
     }
   ],
   "ports": [
     {
       "signal": "logical_signal_name",
+      "ip_core": "OptionalInstanceNameIfNotPrimaryIp",
       "ip_pin": "ip_pin_name_if_different",
       "direction": "in or out",
-      "pin": "Dig_00_Ch{slot_index}"
+      "pin": "Dig_00_Ch{slot_index}",
+      "pins": ["first_parallel_external_port", "second_parallel_external_port"],
+      "left": 15,
+      "right": 0
+    }
+  ],
+  "signals": [
+    {
+      "signal": "hierarchy_only_signal_name",
+      "ip_pin": "ip_pin_name_if_different",
+      "direction": "in or out",
+      "external_port": false
+    }
+  ],
+  "pin_connections": [
+    {
+      "source_ip_core": "source_instance_name",
+      "source_pin": "source_pin",
+      "sink_ip_core": "sink_instance_name",
+      "sink_pin": "sink_pin"
     }
   ],
   "outputs": [
@@ -83,7 +111,7 @@ it with `uz_system/`.
 Generated signal path for an external pin:
 
 ```text
-IP pin -> Dx_adapter boundary -> uz_digital_adapter boundary -> top-level port
+IP pin -> slot adapter boundary -> adapter parent hierarchy boundary -> top-level port
 ```
 
 Generated signal path for a configurable trigger input:

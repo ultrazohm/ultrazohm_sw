@@ -201,7 +201,7 @@ proc uz_pw_compact_upstream_mi_connections {smartconnect_path} {
   }
 }
 
-proc uz_pw_remove_slot_axi_attachment {slot} {
+proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier} {
   set upstream_hier_path [uz_pw_parent_path $::uz_pw_upstream_smartconnect]
   set candidate_pins {}
   set upstream_boundary_pin ""
@@ -212,8 +212,8 @@ proc uz_pw_remove_slot_axi_attachment {slot} {
     set upstream_boundary_pin ${upstream_hier_path}/${slot}_AXI
   }
   lappend candidate_pins $upstream_boundary_pin
-  lappend candidate_pins uz_digital_adapter/${slot}_AXI
-  lappend candidate_pins uz_digital_adapter/${slot}_adapter/S00_AXI
+  lappend candidate_pins ${adapter_root_hier}/${slot}_AXI
+  lappend candidate_pins ${adapter_root_hier}/${slot}_adapter/S00_AXI
 
   foreach pin [get_bd_intf_pins -quiet */${slot}_AXI] {
     if {[lsearch -exact $candidate_pins $pin] < 0} {
@@ -229,17 +229,24 @@ proc uz_pw_remove_slot_axi_attachment {slot} {
 }
 
 {% if has_no_adapter_slots %}
-if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
-  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for slots without adapter boards."
-} else {
 {% for slot in no_adapter_slots %}
-  uz_pw_remove_slot_axi_attachment {{ slot.slot }}
-{% endfor %}
+set uz_pw_upstream_smartconnect {{ slot.upstream_smartconnect }}
+if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for {{ slot.slot }}."
+} else {
+  uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
 }
+{% endfor %}
 
 {% endif %}
 
 {% if has_axi %}
+{% for slot in axi_slots %}
+set uz_pw_upstream_smartconnect {{ slot.upstream_smartconnect }}
+set uz_pw_axi_clock_pin {{ slot.clock_pin }}
+set uz_pw_axi_resetn_pin {{ slot.resetn_pin }}
+set uz_pw_axi_address_space {{ slot.address_space }}
+
 if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
   error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
 }
@@ -252,7 +259,6 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
 
-{% for slot in axi_slots %}
 puts "Configuring local AXI SmartConnect for slot {{ slot.slot }}"
 
 set slot_sc {{ slot.local_smartconnect_path }}
@@ -267,14 +273,14 @@ uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI {{ slot.i
 
 uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
 uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
-uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin {{ slot.adapter_hier_path }}/aclk
-uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin {{ slot.adapter_hier_path }}/aresetn
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin {{ slot.adapter_hier_path }}/{{ slot.adapter_clock_pin }}
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin {{ slot.adapter_hier_path }}/{{ slot.adapter_resetn_pin }}
 
 set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
-set digital_adapter_boundary_pin uz_digital_adapter/{{ slot.slot }}_AXI
+set adapter_root_boundary_pin {{ slot.adapter_root_hier }}/{{ slot.slot }}_AXI
 set slot_boundary_pin {{ slot.adapter_hier_path }}/S00_AXI
 
-set upstream_boundary_pin [uz_pw_find_peer_intf_pin $digital_adapter_boundary_pin "*${upstream_hier_path}/M*_AXI"]
+set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
 if {$upstream_boundary_pin eq ""} {
   if {$upstream_hier_path eq ""} {
     set upstream_boundary_pin {{ slot.slot }}_AXI
@@ -284,7 +290,7 @@ if {$upstream_boundary_pin eq ""} {
 }
 
 uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
-uz_pw_create_intf_pin_if_missing Slave $digital_adapter_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
 uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
 
 set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
@@ -293,8 +299,8 @@ if {$upstream_mi_pin eq ""} {
 }
 
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $digital_adapter_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $digital_adapter_boundary_pin $slot_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
 uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 {% endfor %}
@@ -303,6 +309,6 @@ uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 set slot_sc {{ interface.local_smartconnect_path }}
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc {{ interface.index }}]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin {{ interface.path }}
-assign_bd_address -target_address_space {{ address_space }} [get_bd_addr_segs {{ interface.addr_seg }}] -force
+assign_bd_address -target_address_space {{ interface.address_space }} [get_bd_addr_segs {{ interface.addr_seg }}] -force
 {% endfor %}
 {% endif %}

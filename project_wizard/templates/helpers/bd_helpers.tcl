@@ -10,23 +10,39 @@ proc uz_pw_create_hier_if_missing {hier_path} {
   }
 }
 
-proc uz_pw_create_bd_pin_if_missing {direction pin_path} {
+proc uz_pw_create_bd_pin_if_missing {direction pin_path {left ""} {right ""}} {
   if {[llength [get_bd_pins -quiet $pin_path]] == 0} {
-    create_bd_pin -dir $direction $pin_path
+    if {$left ne "" && $right ne ""} {
+      create_bd_pin -dir $direction -from $left -to $right $pin_path
+    } else {
+      create_bd_pin -dir $direction $pin_path
+    }
   } else {
     puts "Reusing existing pin $pin_path"
   }
 }
 
-proc uz_pw_create_bd_port_if_missing {direction port_name} {
+proc uz_pw_create_bd_port_if_missing {direction port_name {left ""} {right ""}} {
   set old_instance [current_bd_instance .]
   current_bd_instance [get_bd_cells /]
   if {[llength [get_bd_ports -quiet $port_name]] == 0} {
-    create_bd_port -dir $direction $port_name
+    if {$left ne "" && $right ne ""} {
+      create_bd_port -dir $direction -from $left -to $right $port_name
+    } else {
+      create_bd_port -dir $direction $port_name
+    }
   } else {
     puts "Reusing existing port $port_name"
   }
   current_bd_instance $old_instance
+}
+
+proc uz_pw_set_property_dict_if_objects {property_dict objects label} {
+  if {[llength $objects] == 0} {
+    puts "WARNING: Could not set properties on $label because no object was found"
+    return
+  }
+  set_property -dict $property_dict $objects
 }
 
 proc uz_pw_try_disconnect_bd_net {net endpoint} {

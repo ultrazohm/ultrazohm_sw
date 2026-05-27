@@ -753,20 +753,24 @@ class MainWindow(QMainWindow):
 
         defaults = self.database.axi_interconnect
 
-        attachment_group = QGroupBox("Project-level AXI attachment point")
-        attachment_form = QFormLayout(attachment_group)
-        attachment_field_labels = [
-            ("upstream_smartconnect", "Upstream SmartConnect"),
-            ("clock_pin", "AXI clock pin"),
-            ("resetn_pin", "AXI resetn pin"),
-            ("address_space", "Address space"),
-        ]
-        for key, label in attachment_field_labels:
-            edit = QLineEdit(str(defaults.get(key, "")))
-            edit.textChanged.connect(self.refresh_tcl_preview)
-            self.axi_fields[key] = edit
-            attachment_form.addRow(label, edit)
-        outer.addWidget(attachment_group)
+        def add_attachment_group(title_text: str, prefix: str) -> None:
+            attachment_group = QGroupBox(title_text)
+            attachment_form = QFormLayout(attachment_group)
+            attachment_field_labels = [
+                (f"{prefix}_upstream_smartconnect", "Upstream SmartConnect"),
+                (f"{prefix}_clock_pin", "AXI clock pin"),
+                (f"{prefix}_resetn_pin", "AXI resetn pin"),
+                (f"{prefix}_address_space", "Address space"),
+            ]
+            for key, label in attachment_field_labels:
+                edit = QLineEdit(str(defaults.get(key, "")))
+                edit.textChanged.connect(self.refresh_tcl_preview)
+                self.axi_fields[key] = edit
+                attachment_form.addRow(label, edit)
+            outer.addWidget(attachment_group)
+
+        add_attachment_group("A-slot project-level AXI attachment point", "a")
+        add_attachment_group("D-slot project-level AXI attachment point", "d")
 
         local_group = QGroupBox("Local per adapter card slot AXI smartconnects")
         local_form = QFormLayout(local_group)
@@ -1139,9 +1143,26 @@ class MainWindow(QMainWindow):
             self.platform_cpld_type_combo.setCurrentIndex(index)
 
     def load_axi_config(self, values: dict[str, str]) -> None:
+        normalized = dict(values)
+        legacy_to_d_slot = {
+            "upstream_smartconnect": "d_upstream_smartconnect",
+            "clock_pin": "d_clock_pin",
+            "resetn_pin": "d_resetn_pin",
+            "address_space": "d_address_space",
+        }
+        for legacy_key, d_slot_key in legacy_to_d_slot.items():
+            if d_slot_key not in normalized and legacy_key in normalized:
+                normalized[d_slot_key] = normalized[legacy_key]
+        provisional_a_defaults = {
+            "a_clock_pin": "uz_system/aclk",
+            "a_resetn_pin": "uz_system/aresetn",
+        }
+        for key, old_value in provisional_a_defaults.items():
+            if normalized.get(key) == old_value:
+                normalized[key] = str(self.database.axi_interconnect.get(key, ""))
         for key, field in self.axi_fields.items():
             field.blockSignals(True)
-            field.setText(values.get(key, str(self.database.axi_interconnect.get(key, ""))))
+            field.setText(normalized.get(key, str(self.database.axi_interconnect.get(key, ""))))
             field.blockSignals(False)
 
     def adapter_card_changed(self, slot: str) -> None:

@@ -97,6 +97,155 @@
       }
     },
     {
+      "id": "analog_ltc2311_16",
+      "name": "Analog LTC2311-16",
+      "family": "analog",
+      "description": "Analog A-slot adapter card using the ADC_LTC2311 IP core.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.",
+          "Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.",
+          "Connects AXI through the A-slot project-level AXI attachment point."
+        ],
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_ADC_LTC2311",
+            "instance_prefix": "ADC_LTC2311",
+            "module": "ADC_LTC2311",
+            "vlnv": "UltraZohm:user:ADC_LTC2311",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ],
+            "properties": {
+              "CONFIG.DATA_WIDTH": "16",
+              "CONFIG.CHANNELS_PER_MASTER": "8",
+              "CONFIG.SPI_MASTER": "1",
+              "CONFIG.OFFSET_WIDTH": "16",
+              "CONFIG.CONVERSION_WIDTH": "18",
+              "CONFIG.RES_LSB": "0",
+              "CONFIG.RES_MSB": "34",
+              "CONFIG.DIFFERENTIAL": "false"
+            }
+          },
+          {
+            "instance_name": "{slot}_iobufds_inst",
+            "instance_prefix": "iobufds_inst",
+            "module": "iobufds_inst",
+            "vlnv": "xilinx.com:module_ref:iobufds_inst",
+            "cell_type": "module",
+            "reference": "iobufds_inst",
+            "properties": {
+              "CONFIG.CHANNELS_PER_MASTER": "8",
+              "CONFIG.SPI_MASTER": "1"
+            }
+          },
+          {
+            "instance_name": "{slot}_inv_input",
+            "instance_prefix": "inv_input",
+            "module": "xlconstant",
+            "vlnv": "xilinx.com:ip:xlconstant",
+            "properties": {
+              "CONFIG.CONST_WIDTH": "8",
+              "CONFIG.CONST_VAL": "0x00"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_inv_input",
+            "source_pin": "dout",
+            "sink_ip_core": "{slot}_iobufds_inst",
+            "sink_pin": "INVERT_OUTPUT"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "{slot}_OUT_CNV_1",
+            "direction": "out",
+            "pins": [
+              "{slot}_OUT_CNV_0",
+              "{slot}_OUT_CNV_1"
+            ],
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}"
+          },
+          {
+            "signal": "{slot}_OUT_CLK",
+            "ip_core": "{slot}_iobufds_inst",
+            "ip_pin": "SCLK_OUT",
+            "direction": "out",
+            "pin": "{slot}_OUT_CLK",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 1,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Value",
+            "direction": "out",
+            "pin": "{slot}_RAW_Value",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 127,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Valid",
+            "direction": "out",
+            "pin": "{slot}_RAW_Valid",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}"
+          },
+          {
+            "signal": "{slot}_IN",
+            "ip_core": "{slot}_iobufds_inst",
+            "ip_pin": "MISO_IN",
+            "direction": "in",
+            "pin": "{slot}_IN",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 15,
+            "right": 0
+          }
+        ],
+        "signals": [
+          {
+            "signal": "TRIGGER_CNV",
+            "direction": "in",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "interfaces": [],
+        "axi_interfaces": [
+          {
+            "name": "S00_AXI",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg"
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
       "id": "uz_d_inverter_adapter",
       "name": "UZ_D 3-Phase Inverter",
       "family": "digital",
@@ -121,18 +270,18 @@
           {
             "instance_prefix": "uz_d_inverter_adapter",
             "module": "uz_d_inverter_adapter",
-            "vlnv": "user.org:user:uz_d_inverter_adapter:1.0"
+            "vlnv": "user.org:user:uz_d_inverter_adapter"
           },
           {
             "instance_prefix": "uz_inverter_adapter_mapping",
             "module": "uz_inverter_adapter_mapping_v1_0",
-            "vlnv": "user.org:user:uz_inverter_adapter_mapping_v1_0:1.0"
+            "vlnv": "user.org:user:uz_inverter_adapter_mapping_v1_0"
           }
         ],
         "interfaces": [
           {
             "name_template": "{slot}",
-            "vlnv": "uz_inverter_adapter_rtl:1.0"
+            "vlnv": "uz_inverter_adapter_rtl"
           }
         ],
         "ports": []
@@ -199,7 +348,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
                   }
                 ],
                 "ports": [
@@ -355,7 +504,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
                   }
                 ],
                 "ports": [
@@ -511,7 +660,7 @@
                   {
                     "instance_prefix": "uz_endat_interface",
                     "module": "uz_endat_interface",
-                    "vlnv": "xilinx.com:ip:uz_endat_interface:1.0"
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
                   }
                 ],
                 "ports": [
@@ -678,7 +827,7 @@
             "instance_name": "Temperature_Card_Int_0",
             "instance_prefix": "temperature_card_interface",
             "module": "Temperature_Card_Interface",
-            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1",
+            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0",
             "clock_pins": [
               "s00_axi_aclk"
             ],

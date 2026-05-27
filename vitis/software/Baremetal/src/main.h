@@ -64,6 +64,10 @@
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "include/uz_temperature_card_init.h"
+#include "include/init_network_ip_core.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+
+
 
 //----------------------------------------------------
 // FUNCTIONS

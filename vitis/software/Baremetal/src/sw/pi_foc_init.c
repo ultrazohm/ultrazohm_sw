@@ -68,7 +68,7 @@ extern DS_Data Global_Data;
    };
 
    const struct uz_SetPoint_config config_setpoint_right = {
-		   .config_PMSM = Voestalpine,
+		   .config_PMSM = Beckhoff_AM8141,
 		   .control_type = FOC,
 		   .id_ref_Ampere = 0.0f,
 		   .is_field_weakening_enabled = false,
@@ -86,8 +86,8 @@ extern DS_Data Global_Data;
 
    const struct uz_PI_Controller_config config_id_right = {
 		  .type = UZ_PI_PARALLEL,
-		  .Kp = Voestalpine.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
- 	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+ 	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
  	      .upper_limit = 24.0f,
 		  .lower_limit = -24.0f
@@ -95,8 +95,8 @@ extern DS_Data Global_Data;
 
   const struct uz_PI_Controller_config config_iq_right = {
 		  .type = UZ_PI_PARALLEL,
-		  .Kp = Voestalpine.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
-	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		  .Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
 	      .upper_limit = 24.0f,
 	      .lower_limit = -24.0f
@@ -111,7 +111,7 @@ extern DS_Data Global_Data;
    };
 
    struct uz_CurrentControl_config config_current_ctrl_right = {
-      .config_PMSM = Voestalpine,
+      .config_PMSM = Beckhoff_AM8141,
 	  .config_id = config_id_right,
 	  .config_iq = config_iq_right,
 	  .decoupling_select = no_decoupling,
@@ -154,3 +154,19 @@ extern DS_Data Global_Data;
 	   return(uz_signals_IIR_Filter_init(config_IIR));
    }
 
+   struct uz_pmsmModel_config_t pmsm_ip_config={
+           .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+           .ip_core_frequency_Hz=100000000,
+           .simulate_mechanical_system = false,
+           .r_1 = Beckhoff_AM8141.R_ph_Ohm,
+           .L_d = Beckhoff_AM8141.Ld_Henry,
+           .L_q = Beckhoff_AM8141.Lq_Henry,
+           .psi_pm = Beckhoff_AM8141.Psi_PM_Vs,
+           .polepairs = Beckhoff_AM8141.polePairs,
+           .inertia = Beckhoff_AM8141.J_kg_m_squared,
+           .coulomb_friction_constant = 0.01f,
+           .friction_coefficient = 0.001f};
+
+   uz_pmsmModel_t* init_pmsm_cil(void) {
+   	return(uz_pmsmModel_init(pmsm_ip_config));
+   }

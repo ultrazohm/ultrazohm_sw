@@ -80,16 +80,17 @@ int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
-enum running_mode{
+enum ControllerApplication
+{
+	CIL=0,
+	REAL
+};
 
-    rs_meas_left,
-    rc_meas_left,
-    rs_meas_right,
-    rc_meas_right,
-    speed_control_left,
-	speed_control_right,
-	reset
-    };
+enum ControllerSelection
+{
+	CC=0,
+	RL
+};
 
 
 #endif /* ISR_H_ */

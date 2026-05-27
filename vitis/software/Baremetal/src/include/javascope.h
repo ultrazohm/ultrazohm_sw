@@ -175,7 +175,7 @@ enum gui_button_mapping {
 	n_ref_rpm_right,
 	id_ref_left,
 	iq_ref_left,
-	dc_c,
+	Kp_id_left,
 	Ki_id_left,
 	Kp_iq_left,
 	Ki_iq_left,
@@ -276,10 +276,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	rc_meas_right,
-	rs_meas_right,
-	rc_meas_left,
-	rs_meas_left,
+	CIL,
+	REAL,
+	CC,
+	RL,
 	speed_control_right,
 	speed_control_left,
 	MyButton7,

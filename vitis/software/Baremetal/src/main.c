@@ -15,6 +15,8 @@
 
 // Includes from own files
 #include "main.h"
+#include "xparameters.h"
+uz_pmsmModel_t *pmsm=NULL;
 ;
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
@@ -90,6 +92,7 @@ int main(void)
         .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 
+
     while (1)
     {
         switch (initialization_chain)
@@ -125,9 +128,7 @@ int main(void)
             Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
-            Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
-            Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
 			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
 			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
@@ -136,7 +137,9 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
+
             uz_adcLtc2311_ip_core_init();
+            Global_Data.objects.pmsm_model = init_pmsm_cil();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -165,6 +168,7 @@ int main(void)
             Global_Data.objects.d2_phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             Global_Data.objects.d2_phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             Global_Data.objects.d2_phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            init_network();
             break;
         case print_msg:
             uz_printf("\r\n\r\n");

@@ -18,6 +18,10 @@
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_NN_acc/uz_NN_acc.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -64,69 +68,78 @@ typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+
+	uz_temperaturecard_OneGroup channel_A_data;
+	float magnitude;
 	float torque;
-	float i_a_left;
-	float i_b_left;
-	float i_c_left;
-	float i_dc_left;
-	float i_dc_right;
-	float i_a_right;
-	float i_b_right;
-	float i_c_right;
-	float i_c_right_CD;
-	float v_a_left;
-	float v_b_left;
-	float v_c_left;
-	float v_a_right;
-	float v_b_right;
-	float v_c_right;
-	float v_dc_left;
-	float v_dc_right;
-	float i_d_left;
-	float i_q_left;
-	float i_d_right;
-	float i_q_right;
-	float v_d_left;
-	float v_q_left;
-	float v_d_right;
-	float v_q_right;
-	float v_d_right_meas;
-	float v_q_right_meas;
-	float v_d_left_meas;
-	float v_q_left_meas;
-	float omega_mech_right;
-	float omega_mech_left;
-	float speed_rpm_left;
-	float speed_rpm_right;
 	float temp;
 	float vcc_lp;
 	float vcc_fp;
 	float fcc_aux;
-	float theta_el_right_advanced;
+
+	//right - Beckhoff_AM8141
+	struct uz_pmsmModel_outputs_t PMSM_outputs;
+	struct uz_pmsmModel_inputs_t PMSM_inputs;
+	float average_temp_right;
+	float mean_temp_inv_right;
+	float polepairs_right;
+	float i_a_right;
+	float i_b_right;
+	float i_c_right;
+	float i_dc_right;
+	float i_c_right_CD;
+	float v_a_right;
+	float v_b_right;
+	float v_c_right;
+	float v_dc_right;
+	float omega_mech_right;
+	float omega_el_right;
+	float speed_rpm_right;
+	float i_d_right;
+	float i_q_right;
+	float v_d_right;
+	float v_q_right;
+	float v_d_left_meas;
+	float v_q_left_meas;
+	struct uz_3ph_dq_t v_dq_meas_left_filter_comp;
+	struct uz_3ph_abc_t v_abc_left_filter_comp;
+	struct uz_inverter_adapter_outputs_t inverter_right_status;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	float theta_el_right;
 	float theta_el_offset_right;
+	float theta_el_right_advanced;
+	float phi_right;
+	float torque_right;
+
+	// left - Voestalpine
+	float average_temp_left;
+	float mean_temp_inv_left;
+	float polepairs_left;
+	float i_a_left;
+	float i_b_left;
+	float i_c_left;
+	float i_dc_left;
+	float v_a_left;
+	float v_b_left;
+	float v_c_left;
+	float v_dc_left;
+	float omega_mech_left;
+	float omega_el_left;
+	float speed_rpm_left;
+	float i_d_left;
+	float i_q_left;
+	float v_d_left;
+	float v_q_left;
+	float v_d_right_meas;
+	float v_q_right_meas;
+	struct uz_3ph_dq_t v_dq_meas_right_filter_comp;
+	struct uz_3ph_abc_t v_abc_right_filter_comp;
+	struct uz_inverter_adapter_outputs_t inverter_left_status;
 	float theta_el_left;
 	float theta_el_offset_left;
 	float theta_el_left_advanced;
-	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
-	struct uz_inverter_adapter_outputs_t inverter_left_status;
-	struct uz_inverter_adapter_outputs_t inverter_right_status;
-	float mean_temp_inv_left;
-	float mean_temp_inv_right;
-	float polepairs_left;
-	float polepairs_right;
-	uz_temperaturecard_OneGroup channel_A_data;
-	float average_temp_right;
-	float average_temp_left;
-	struct uz_3ph_dq_t v_dq_meas_right_filter_comp;
-	struct uz_3ph_abc_t v_abc_right_filter_comp;
-	struct uz_3ph_dq_t v_dq_meas_left_filter_comp;
-	struct uz_3ph_abc_t v_abc_left_filter_comp;
-	float magnitude;
-	float phi_right;
 	float phi_left;
 } actualValues;
 
@@ -171,17 +184,15 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_resolverIP_t* resolver_right;
 	uz_incrementalEncoder_t* encoder_left;
 	uz_resolver_pl_interface_t* resolver_pl_interface_right;
+	uz_resolverIP_t* resolver_right;
+	uz_inverter_adapter_t* uz_d_inverter_left;
+	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;
-	uz_SpeedControl_t* speed_ctrl_right;
 	uz_SetPoint_t* setpoint_ctrl_left;
-	uz_SetPoint_t* setpoint_ctrl_right;
-	uz_inverter_adapter_t* uz_d_inverter_left;
-	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_right;
@@ -196,6 +207,11 @@ typedef struct{
 	uz_IIR_Filter_t *d2_phase_a_lowpass;
 	uz_IIR_Filter_t *d2_phase_b_lowpass;
 	uz_IIR_Filter_t *d2_phase_c_lowpass;
+	uz_matrix_t* matrix_input_acc;
+	uz_matrix_t* matrix_output_acc;
+	uz_nn_t* nn_layer_acc;
+	uz_NN_acc_t* NN_acc_Instance;
+	uz_pmsmModel_t* pmsm_model;
 	}object_pointers_t;
 
 

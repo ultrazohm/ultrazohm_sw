@@ -22,7 +22,10 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
-extern enum running_mode run_state;
+extern enum ControllerApplication ConApp;
+extern enum ControllerSelection	ConSel;
+
+extern uz_3ph_dq_t i_dq_integrated_error_right;
 extern struct uz_3ph_abc_t dc_motor_right;
 
 extern uint32_t js_status_BareToRTOS;
@@ -212,9 +215,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		dc_motor_right.c = value;
-		//data->av.snd_fld[7] = value;
-		//uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
+		//dc_motor_right.c = value;
+		data->av.snd_fld[7] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_8):
@@ -281,33 +284,34 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			run_state = rc_meas_right;
+			ConApp = CIL;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_2):
-			run_state = rs_meas_right;
+			ConApp = REAL;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_3):
-			run_state = rc_meas_left;
+			ConSel = CC;
+			// reset ddpg integrators
+			i_dq_integrated_error_right.d = 0.0f;
+			i_dq_integrated_error_right.q = 0.0f;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_4):
-			run_state = rs_meas_left;
+			ConSel = RL;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_5):
-			run_state = speed_control_right;
-			ultrazohm_state_machine_set_userLED(true);
+
 			break;
 
 		case (My_Button_6):
-			run_state = speed_control_left;
-			ultrazohm_state_machine_set_userLED(true);
+
 			break;
 
 		case (My_Button_7):
@@ -363,28 +367,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (run_state == rc_meas_right) {
+	 if (ConApp == CIL) {
 		js_status_BareToRTOS |= (1 << 4);
 	 	 } else {
 	 		 js_status_BareToRTOS &= ~(1 << 4);
 	 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (run_state == rs_meas_right) {
+	 if (ConApp == REAL) {
 		js_status_BareToRTOS |= (1 << 5);
 	 	 } else {
 	 		 js_status_BareToRTOS &= ~(1 << 5);
 	 	}
 
 	/* Bit 6 - My_Button_3 */
-	 if (run_state == rc_meas_left) {
+	 if (ConSel == CC) {
 		js_status_BareToRTOS |= (1 << 6);
 	 	 } else {
 	 		 js_status_BareToRTOS &= ~(1 << 6);
 	 	}
 
 	/* Bit 7 - My_Button_4 */
-	 if (run_state == rs_meas_left) {
+	 if (ConSel == RL) {
 		js_status_BareToRTOS |= (1 << 7);
 	 	 } else {
 	 		 js_status_BareToRTOS &= ~(1 << 7);
@@ -392,19 +396,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 	/* Bit 8 - My_Button_5 */
-	 if (run_state == speed_control_right) {
-		js_status_BareToRTOS |= (1 << 8);
-	 	 } else {
-	 		 js_status_BareToRTOS &= ~(1 << 8);
-	 	}
+	 // if (run_state == speed_control_right) {
+	 //	js_status_BareToRTOS |= (1 << 8);
+	 //	 } else {
+	 //		 js_status_BareToRTOS &= ~(1 << 8);
+	 //	}
 
 
 	/* Bit 9 - My_Button_6 */
-	 if (run_state == speed_control_left) {
-		js_status_BareToRTOS |= (1 << 9);
-	 	 } else {
-	 		 js_status_BareToRTOS &= ~(1 << 9);
-	 	}
+	// if (run_state == speed_control_left) {
+	//	js_status_BareToRTOS |= (1 << 9);
+	// 	 } else {
+	// 		 js_status_BareToRTOS &= ~(1 << 9);
+	// 	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

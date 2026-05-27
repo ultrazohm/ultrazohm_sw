@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "software_drivers": [
+    {
+      "id": "temperature_card",
+      "name": "Temperature card",
+      "templates": {
+        "header": "software/temperature_card.h.tpl",
+        "source": "software/temperature_card.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000"
+        },
+        {
+          "id": "sample_frequency_hz",
+          "label": "Sample frequency Hz",
+          "default": "5"
+        },
+        {
+          "id": "config_global_a",
+          "label": "Config_Global_A",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_a",
+          "label": "Config_Mux_A",
+          "default": "0U"
+        },
+        {
+          "id": "config_global_b",
+          "label": "Config_Global_B",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_b",
+          "label": "Config_Mux_B",
+          "default": "0U"
+        },
+        {
+          "id": "config_global_c",
+          "label": "Config_Global_C",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_c",
+          "label": "Config_Mux_C",
+          "default": "0U"
+        },
+        {
+          "id": "configdata_a",
+          "label": "Configdata_A entries",
+          "default": "{{ temperature_configdata_a }}",
+          "multiline": true
+        },
+        {
+          "id": "configdata_b",
+          "label": "Configdata_B entries",
+          "default": "        [0] = 0U,",
+          "multiline": true
+        },
+        {
+          "id": "configdata_c",
+          "label": "Configdata_C entries",
+          "default": "        [0] = 0U,",
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "id": "uz_endat_interface",
+      "name": "EnDat interface",
+      "templates": {
+        "header": "software/endat_interface.h.tpl",
+        "source": "software/endat_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "2U"
+        },
+        {
+          "id": "endat_clk_frequency_Hz",
+          "label": "EnDat clock frequency Hz",
+          "default": "2500000U"
+        },
+        {
+          "id": "position_mech_offset_si_single_turn",
+          "label": "Mechanical offset SI single turn",
+          "default": "-1.0f"
+        },
+        {
+          "id": "endat_encoder_bit_width_single_turn",
+          "label": "Single-turn bit width",
+          "default": "25U"
+        },
+        {
+          "id": "endat_encoder_bit_width_multi_turn",
+          "label": "Multi-turn bit width",
+          "default": "12U"
+        },
+        {
+          "id": "kp_pll",
+          "label": "PLL Kp",
+          "default": "628.3185f"
+        },
+        {
+          "id": "ki_pll",
+          "label": "PLL Ki",
+          "default": "98696.0f"
+        },
+        {
+          "id": "sampling_interval_seconds",
+          "label": "Sampling interval seconds",
+          "default": "0.0001f"
+        },
+        {
+          "id": "delay_sampling_in_clk_ticks",
+          "label": "Sampling delay clock ticks",
+          "default": "0U"
+        }
+      ]
+    },
+    {
+      "id": "uz_ssi_interface",
+      "name": "SSI interface",
+      "templates": {
+        "header": "software/ssi_interface.h.tpl",
+        "source": "software/ssi_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "2U"
+        },
+        {
+          "id": "ssi_clk_frequency_Hz",
+          "label": "SSI clock frequency Hz",
+          "default": "1000000U"
+        },
+        {
+          "id": "position_encoding",
+          "label": "Position encoding",
+          "default": "uz_ssi_interface_binary"
+        },
+        {
+          "id": "position_mech_offset_si_single_turn",
+          "label": "Mechanical offset SI single turn",
+          "default": "0.0f"
+        },
+        {
+          "id": "ssi_encoder_bit_width_single_turn",
+          "label": "Single-turn bit width",
+          "default": "19U"
+        },
+        {
+          "id": "ssi_encoder_bit_width_multi_turn",
+          "label": "Multi-turn bit width",
+          "default": "0U"
+        },
+        {
+          "id": "ssi_encoder_number_of_status_bits",
+          "label": "Status bit count",
+          "default": "0U"
+        },
+        {
+          "id": "sampling_interval_seconds",
+          "label": "Sampling interval seconds",
+          "default": "0.0001f"
+        },
+        {
+          "id": "kp_pll",
+          "label": "PLL Kp",
+          "default": "628.3185f"
+        },
+        {
+          "id": "ki_pll",
+          "label": "PLL Ki",
+          "default": "98696.0f"
+        },
+        {
+          "id": "sampling_delay_clk_ticks",
+          "label": "Sampling delay clock ticks",
+          "default": "0U"
+        }
+      ]
+    }
+  ]
+}

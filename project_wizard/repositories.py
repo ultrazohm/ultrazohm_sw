@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .paths import PLATFORM_FILE
+from .paths import PLATFORM_FILE, SOFTWARE_DRIVER_FILE
 
 
 @dataclass
@@ -19,9 +19,12 @@ class CardDatabase:
             adapter_document = json.load(json_file)
         with PLATFORM_FILE.open("r", encoding="utf-8") as json_file:
             platform_document = json.load(json_file)
+        with SOFTWARE_DRIVER_FILE.open("r", encoding="utf-8") as json_file:
+            software_driver_document = json.load(json_file)
         document = dict(adapter_document)
         document["platforms"] = platform_document.get("platforms", [])
         document["axi_interconnect"] = platform_document.get("axi_interconnect", {})
+        document["software_drivers"] = software_driver_document.get("software_drivers", [])
         return cls(path=path, document=document)
 
     @property
@@ -39,6 +42,10 @@ class CardDatabase:
     @property
     def axi_interconnect(self) -> dict[str, Any]:
         return self.document.setdefault("axi_interconnect", {})
+
+    @property
+    def software_drivers(self) -> list[dict[str, Any]]:
+        return self.document.setdefault("software_drivers", [])
 
     def save(self) -> None:
         adapter_document = {
@@ -59,6 +66,9 @@ class CardDatabase:
 
     def cpld_program_by_id(self, program_id: str) -> dict[str, Any] | None:
         return next((program for program in self.cpld_programs if program.get("id") == program_id), None)
+
+    def software_driver_by_id(self, driver_id: str) -> dict[str, Any] | None:
+        return next((driver for driver in self.software_drivers if driver.get("id") == driver_id), None)
 
     def cards_for_slot(self, slot: str) -> list[dict[str, Any]]:
         compatible = []

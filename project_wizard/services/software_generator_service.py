@@ -95,55 +95,43 @@ class MarkerError(ValueError):
     pass
 
 
-ENDAT_CONFIG_FIELDS = [
-    DriverConfigField("ip_clk_frequency_Hz", "IP clock frequency Hz", "100000000U"),
-    DriverConfigField("machine_polepairs", "Machine pole pairs", "2U"),
-    DriverConfigField("endat_clk_frequency_Hz", "EnDat clock frequency Hz", "2500000U"),
-    DriverConfigField("position_mech_offset_si_single_turn", "Mechanical offset SI single turn", "-1.0f"),
-    DriverConfigField("endat_encoder_bit_width_single_turn", "Single-turn bit width", "25U"),
-    DriverConfigField("endat_encoder_bit_width_multi_turn", "Multi-turn bit width", "12U"),
-    DriverConfigField("kp_pll", "PLL Kp", "628.3185f"),
-    DriverConfigField("ki_pll", "PLL Ki", "98696.0f"),
-    DriverConfigField("sampling_interval_seconds", "Sampling interval seconds", "0.0001f"),
-    DriverConfigField("delay_sampling_in_clk_ticks", "Sampling delay clock ticks", "0U"),
-]
-
-SSI_CONFIG_FIELDS = [
-    DriverConfigField("ip_clk_frequency_Hz", "IP clock frequency Hz", "100000000U"),
-    DriverConfigField("machine_polepairs", "Machine pole pairs", "2U"),
-    DriverConfigField("ssi_clk_frequency_Hz", "SSI clock frequency Hz", "1000000U"),
-    DriverConfigField("position_encoding", "Position encoding", "uz_ssi_interface_binary"),
-    DriverConfigField("position_mech_offset_si_single_turn", "Mechanical offset SI single turn", "0.0f"),
-    DriverConfigField("ssi_encoder_bit_width_single_turn", "Single-turn bit width", "19U"),
-    DriverConfigField("ssi_encoder_bit_width_multi_turn", "Multi-turn bit width", "0U"),
-    DriverConfigField("ssi_encoder_number_of_status_bits", "Status bit count", "0U"),
-    DriverConfigField("sampling_interval_seconds", "Sampling interval seconds", "0.0001f"),
-    DriverConfigField("kp_pll", "PLL Kp", "628.3185f"),
-    DriverConfigField("ki_pll", "PLL Ki", "98696.0f"),
-    DriverConfigField("sampling_delay_clk_ticks", "Sampling delay clock ticks", "0U"),
-]
-
-
-def temperature_config_fields(preset: str) -> list[DriverConfigField]:
-    return [
-        DriverConfigField("ip_clk_frequency_hz", "IP clock frequency Hz", "100000000"),
-        DriverConfigField("sample_frequency_hz", "Sample frequency Hz", "5"),
-        DriverConfigField("config_global_a", "Config_Global_A", "0U"),
-        DriverConfigField("config_mux_a", "Config_Mux_A", "0U"),
-        DriverConfigField("config_global_b", "Config_Global_B", "0U"),
-        DriverConfigField("config_mux_b", "Config_Mux_B", "0U"),
-        DriverConfigField("config_global_c", "Config_Global_C", "0U"),
-        DriverConfigField("config_mux_c", "Config_Mux_C", "0U"),
-        DriverConfigField("configdata_a", "Configdata_A entries", temperature_configdata_a(preset), multiline=True),
-        DriverConfigField("configdata_b", "Configdata_B entries", "        [0] = 0U,", multiline=True),
-        DriverConfigField("configdata_c", "Configdata_C entries", "        [0] = 0U,", multiline=True),
-    ]
-
-
 class SoftwareGenerator:
     def __init__(self, database: CardDatabase) -> None:
         self.database = database
         self.renderer = SimpleTemplateRenderer()
+
+    def driver_definition(self, driver_id: str) -> dict[str, object]:
+        definition = self.database.software_driver_by_id(driver_id)
+        if definition is None:
+            raise ValueError(f"Software driver definition not found: {driver_id}")
+        return definition
+
+    def driver_template(self, driver_id: str, template_kind: str) -> str:
+        templates = self.driver_definition(driver_id).get("templates", {})
+        if not isinstance(templates, dict) or not templates.get(template_kind):
+            raise ValueError(f"Software driver '{driver_id}' has no {template_kind} template.")
+        return str(templates[template_kind])
+
+    def driver_config_fields(self, driver_id: str, preset: str = "default") -> list[DriverConfigField]:
+        raw_fields = self.driver_definition(driver_id).get("config_fields", [])
+        if not isinstance(raw_fields, list):
+            raise ValueError(f"Software driver '{driver_id}' field definition must be a list.")
+        fields: list[DriverConfigField] = []
+        for raw_field in raw_fields:
+            if not isinstance(raw_field, dict):
+                continue
+            default = str(raw_field.get("default", ""))
+            if default == "{{ temperature_configdata_a }}":
+                default = temperature_configdata_a(preset)
+            fields.append(
+                DriverConfigField(
+                    id=str(raw_field.get("id", "")),
+                    label=str(raw_field.get("label", raw_field.get("id", ""))),
+                    default=default,
+                    multiline=bool(raw_field.get("multiline", False)),
+                )
+            )
+        return fields
 
     def build_plan(
         self,
@@ -180,16 +168,18 @@ class SoftwareGenerator:
                     slot,
                     source_dir,
                     preset,
-                    driver_instance_values(f"{slot.lower()}_temperature", temperature_config_fields(preset), driver_config),
+                    driver_instance_values(
+                        f"{slot.lower()}_temperature", self.driver_config_fields("temperature_card", preset), driver_config
+                    ),
                 )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
-                    self.renderer.render_file("software/temperature_card.h.tpl", context)
+                    self.renderer.render_file(self.driver_template("temperature_card", "header"), context)
                 )
                 slot_content[slot].header_includes.extend(header_includes)
                 slot_content[slot].header_prototypes.extend(header_prototypes)
                 slot_content[slot].source_definitions.append(
-                    self.renderer.render_file("software/temperature_card.c.tpl", context).rstrip()
+                    self.renderer.render_file(self.driver_template("temperature_card", "source"), context).rstrip()
                 )
                 actual_values.extend(
                     [
@@ -236,17 +226,19 @@ class SoftwareGenerator:
                             "endat",
                             source_dir,
                             driver_instance_values(
-                                f"{slot.lower()}_channel_{channel_index}_endat", ENDAT_CONFIG_FIELDS, driver_config
+                                f"{slot.lower()}_channel_{channel_index}_endat",
+                                self.driver_config_fields("uz_endat_interface"),
+                                driver_config,
                             ),
                         )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
-                            self.renderer.render_file("software/endat_interface.h.tpl", context)
+                            self.renderer.render_file(self.driver_template("uz_endat_interface", "header"), context)
                         )
                         slot_content[slot].header_includes.extend(header_includes)
                         slot_content[slot].header_prototypes.extend(header_prototypes)
                         slot_content[slot].source_definitions.append(
-                            self.renderer.render_file("software/endat_interface.c.tpl", context).rstrip()
+                            self.renderer.render_file(self.driver_template("uz_endat_interface", "source"), context).rstrip()
                         )
                         objects.append(f"\tuz_endat_interface_t* endat_encoder_{context['slot_lower']}_{channel_index};")
                         actual_values.extend(encoder_actual_values("endat_encoder", str(context["slot_lower"]), channel_index))
@@ -271,17 +263,19 @@ class SoftwareGenerator:
                             "ssi",
                             source_dir,
                             driver_instance_values(
-                                f"{slot.lower()}_channel_{channel_index}_ssi", SSI_CONFIG_FIELDS, driver_config
+                                f"{slot.lower()}_channel_{channel_index}_ssi",
+                                self.driver_config_fields("uz_ssi_interface"),
+                                driver_config,
                             ),
                         )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
-                            self.renderer.render_file("software/ssi_interface.h.tpl", context)
+                            self.renderer.render_file(self.driver_template("uz_ssi_interface", "header"), context)
                         )
                         slot_content[slot].header_includes.extend(header_includes)
                         slot_content[slot].header_prototypes.extend(header_prototypes)
                         slot_content[slot].source_definitions.append(
-                            self.renderer.render_file("software/ssi_interface.c.tpl", context).rstrip()
+                            self.renderer.render_file(self.driver_template("uz_ssi_interface", "source"), context).rstrip()
                         )
                         objects.append(f"\tuz_ssi_interface_t* ssi_encoder_{context['slot_lower']}_{channel_index};")
                         actual_values.extend(encoder_actual_values("ssi_encoder", str(context["slot_lower"]), channel_index))
@@ -414,7 +408,7 @@ class SoftwareGenerator:
                         slot=slot,
                         label=f"{slot} temperature card",
                         driver="temperature",
-                        fields=temperature_config_fields(preset),
+                        fields=self.driver_config_fields("temperature_card", preset),
                     )
                 )
             elif card_id == "uz_d_absolute_encoder":
@@ -427,7 +421,7 @@ class SoftwareGenerator:
                                 slot=slot,
                                 label=f"{slot} channel {channel_index} EnDat",
                                 driver="endat",
-                                fields=ENDAT_CONFIG_FIELDS,
+                                fields=self.driver_config_fields("uz_endat_interface"),
                             )
                         )
                     elif interface == "ssi":
@@ -437,7 +431,7 @@ class SoftwareGenerator:
                                 slot=slot,
                                 label=f"{slot} channel {channel_index} SSI",
                                 driver="ssi",
-                                fields=SSI_CONFIG_FIELDS,
+                                fields=self.driver_config_fields("uz_ssi_interface"),
                             )
                         )
         return instances

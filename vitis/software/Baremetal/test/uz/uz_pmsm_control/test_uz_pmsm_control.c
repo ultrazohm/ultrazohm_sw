@@ -26,6 +26,7 @@
 #include "export_struct_to_csv.h"
 #include <math.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include "../uz_integrator/uz_integrator.h"
@@ -96,7 +97,7 @@ const struct csv_field_descriptor_t pmsm_control_swmodel_config_fields[] = {
 struct uz_pmsm_control_configuration_t pmsm_controller_config = {
     .theta_el_offset = 1.56f,
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = true,
+    .enable_speed_control = false,
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 0.05f,
     .current_controller_d_kp = 5.8333f,
@@ -105,7 +106,7 @@ struct uz_pmsm_control_configuration_t pmsm_controller_config = {
     .current_controller_q_ki = 1500.0f,
     .setpoint_limits = {
         .speed_controller_torque_in_Nm = {.upper_bound = 2.0f, .lower_bound = -2.0f},
-        .i_d_in_A = {.upper_bound = 0.5f, .lower_bound = -5.0f},
+        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
         .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
         .speed_in_rpm = {.upper_bound = 1100.0f, .lower_bound = -1100.0f},
         .disturbance_input_in_Nm = {.upper_bound = 10.0f, .lower_bound = -10.0f}},
@@ -531,4 +532,261 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
 #endif
 }
 
+void test_uz_pmsm_control_swmodel_iq_step_multi_speed(void)
+{
+    enum
+    {
+        PRE_STEP_ITERATIONS = 1000U,
+        POST_STEP_ITERATIONS = 1000U,
+        ITERATIONS_PER_SPEED = PRE_STEP_ITERATIONS + POST_STEP_ITERATIONS,
+        SPEED_POINTS = 10U,
+        TOTAL_ITERATIONS = ITERATIONS_PER_SPEED * SPEED_POINTS
+    };
+
+    struct uz_pmsm_control_configuration_t controller_config = pmsm_controller_config;
+    controller_config.enable_speed_control = false;
+    controller_config.theta_el_offset = 0.0f;
+    controller_config.theta_sampling_compensation = 0.0f;
+    controller_config.theta_svm_delay_compensation = 0.0f;
+
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.5f * controller_config.sample_time);
+    uz_pmsm_control_enable(controller, true);
+
+    struct uz_pmsm_swmodel_config_t swmodel_config = {
+        .sample_time = controller_config.sample_time,
+        .pmsm_parameters = machine_config};
+    uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(swmodel_config);
+
+    struct uz_pmsm_control_swmodel_log_t sim_inputs[TOTAL_ITERATIONS] = {0};
+
+    const float i_q_step_A = 1.0f;
+    const float v_dc_V = 12.0f;
+    const float v_max_V = v_dc_V / sqrtf(3.0f);
+    const float resistive_drop_V = machine_config.R_ph_Ohm * i_q_step_A;
+    const float numerator = v_max_V * v_max_V - resistive_drop_V * resistive_drop_V;
+    const float denominator = machine_config.Psi_PM_Vs * machine_config.Psi_PM_Vs +
+                              machine_config.Lq_Henry * machine_config.Lq_Henry * i_q_step_A * i_q_step_A;
+    TEST_ASSERT_TRUE(numerator > 0.0f);
+    TEST_ASSERT_TRUE(denominator > 0.0f);
+
+    float omega_el_cutoff_rad_per_sec = sqrtf(numerator / denominator)*0.8f;
+    //omega_el_cutoff_rad_per_sec-=50.0f;
+    const float omega_mech_cutoff_rad_per_sec = omega_el_cutoff_rad_per_sec / machine_config.polePairs;
+    const float speed_step_rad_per_sec = (2.0f * omega_mech_cutoff_rad_per_sec) / (float)(SPEED_POINTS - 1U);
+
+    for (uint32_t speed_idx = 0U; speed_idx < SPEED_POINTS; ++speed_idx)
+    {
+        const float target_omega_mech_rad_per_sec = -omega_mech_cutoff_rad_per_sec + speed_step_rad_per_sec * (float)speed_idx;
+        float theta_mech_rad = 0.0f;
+        float omega_mech_rad_per_sec = target_omega_mech_rad_per_sec;
+        uz_3ph_dq_t model_i_dq_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+        uz_3ph_dq_t applied_v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+        uz_pmsm_swmodel_reset(model);
+
+        for (uint32_t local_idx = 0U; local_idx < ITERATIONS_PER_SPEED; ++local_idx)
+        {
+            const uint32_t global_idx = speed_idx * ITERATIONS_PER_SPEED + local_idx;
+            const float i_q_ref_A = (local_idx < PRE_STEP_ITERATIONS) ? 0.0f : 1.0f;
+            const float theta_el_rad = theta_mech_rad * machine_config.polePairs;
+            struct uz_pmsm_measurement_values measurements = {
+                .i_abc_in_A = uz_transformation_3ph_dq_to_abc(model_i_dq_A, theta_el_rad),
+                .v_abc_in_V = uz_transformation_3ph_dq_to_abc(applied_v_dq_V, theta_el_rad),
+                .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+                .theta_mech = theta_mech_rad,
+                .v_dc_in_V = 12.0f,
+                .i_dc_in_A = 0.0f};
+
+            uz_3ph_dq_t reference_currents = {
+                .d = 0.0f,
+                .q = i_q_ref_A,
+                .zero = 0.0f};
+
+            applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
+
+            struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
+                .v_dq_V = applied_v_dq_V,
+                .omega_mech_1_s = omega_mech_rad_per_sec,
+                .load_torque = 0.0f};
+            struct uz_pmsm_swmodel_outputs_t swmodel_outputs = uz_pmsm_swmodel_step(model, swmodel_inputs);
+
+            model_i_dq_A = swmodel_outputs.i_dq_A;
+            model_i_dq_A.zero = 0.0f;
+            omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
+            theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * controller_config.sample_time, 2.0f * UZ_PIf);
+
+            sim_inputs[global_idx] = (struct uz_pmsm_control_swmodel_log_t){
+                .i_d_ref_A = reference_currents.d,
+                .i_q_ref_A = reference_currents.q,
+                .speed_ref_rpm = target_omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf),
+                .trigger_controller = 1.0f,
+                .i_d_A = model_i_dq_A.d,
+                .i_q_A = model_i_dq_A.q,
+                .v_d_V = applied_v_dq_V.d,
+                .v_q_V = applied_v_dq_V.q,
+                .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+                .theta_mech_rad = theta_mech_rad};
+        }
+
+        const uint32_t step_end_idx = speed_idx * ITERATIONS_PER_SPEED + (PRE_STEP_ITERATIONS - 1U);
+        const uint32_t run_end_idx = speed_idx * ITERATIONS_PER_SPEED + (ITERATIONS_PER_SPEED - 1U);
+       TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_inputs[step_end_idx].i_q_A);
+       TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[run_end_idx].i_q_A);
+    }
+
+#if CSV_EXPORT
+    struct uz_pmsm_control_swmodel_config_export_t export_config = {
+        .sample_time = controller_config.sample_time,
+        .machine = machine_config};
+    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed.csv",
+                                  sim_inputs,
+                                  sizeof(sim_inputs[0]),
+                                  pmsm_control_swmodel_log,
+                                  sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
+                                  TOTAL_ITERATIONS,
+                                  controller_config.sample_time);
+    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+                                  &export_config,
+                                  sizeof(export_config),
+                                  pmsm_control_swmodel_config_fields,
+                                  sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                  1U,
+                                  0.0f);
+#endif
+}
+
+void test_uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints(void)
+{
+    enum
+    {
+        PRE_STEP_ITERATIONS = 100U,
+        POST_STEP_ITERATIONS = 100U,
+        ITERATIONS_PER_SPEED = PRE_STEP_ITERATIONS + POST_STEP_ITERATIONS,
+        SPEED_POINTS = 10U,
+        RANDOM_SETPOINTS = 10U,
+        TOTAL_ITERATIONS = ITERATIONS_PER_SPEED * SPEED_POINTS * RANDOM_SETPOINTS
+    };
+
+    struct uz_pmsm_control_configuration_t controller_config = pmsm_controller_config;
+    controller_config.enable_speed_control = false;
+    controller_config.theta_el_offset = 0.0f;
+    controller_config.theta_sampling_compensation = 0.0f;
+    controller_config.theta_svm_delay_compensation = 0.0f;
+
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(controller, 0.5f * controller_config.sample_time);
+    uz_pmsm_control_enable(controller, true);
+
+    struct uz_pmsm_swmodel_config_t swmodel_config = {
+        .sample_time = controller_config.sample_time,
+        .pmsm_parameters = machine_config};
+    uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(swmodel_config);
+
+    struct uz_pmsm_control_swmodel_log_t sim_inputs[TOTAL_ITERATIONS] = {0};
+
+    const float i_q_step_A = 1.0f;
+    const float v_dc_V = 12.0f;
+    const float v_max_V = v_dc_V / sqrtf(3.0f);
+    const float resistive_drop_V = machine_config.R_ph_Ohm * i_q_step_A;
+    const float numerator = v_max_V * v_max_V - resistive_drop_V * resistive_drop_V;
+    const float denominator = machine_config.Psi_PM_Vs * machine_config.Psi_PM_Vs +
+                              machine_config.Lq_Henry * machine_config.Lq_Henry * i_q_step_A * i_q_step_A;
+    TEST_ASSERT_TRUE(numerator > 0.0f);
+    TEST_ASSERT_TRUE(denominator > 0.0f);
+
+    float omega_el_cutoff_rad_per_sec = sqrtf(numerator / denominator) * 0.8f; // reducy to be easy within limits
+    // omega_el_cutoff_rad_per_sec-=50.0f;
+    const float omega_mech_cutoff_rad_per_sec = omega_el_cutoff_rad_per_sec / machine_config.polePairs;
+    const float speed_step_rad_per_sec = (2.0f * omega_mech_cutoff_rad_per_sec) / (float)(SPEED_POINTS - 1U);
+
+    srand(0x5A17);
+
+    for (uint32_t setpoint_idx = 0U; setpoint_idx < RANDOM_SETPOINTS; ++setpoint_idx)
+    {
+        const float random_id_ref_A = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+        const float random_iq_ref_A = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+
+        for (uint32_t speed_idx = 0U; speed_idx < SPEED_POINTS; ++speed_idx)
+        {
+            const float target_omega_mech_rad_per_sec = -omega_mech_cutoff_rad_per_sec + speed_step_rad_per_sec * (float)speed_idx;
+            float theta_mech_rad = 0.0f;
+            float omega_mech_rad_per_sec = target_omega_mech_rad_per_sec;
+            uz_3ph_dq_t model_i_dq_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+            uz_3ph_dq_t applied_v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+            uz_pmsm_swmodel_reset(model);
+
+            for (uint32_t local_idx = 0U; local_idx < ITERATIONS_PER_SPEED; ++local_idx)
+            {
+                const uint32_t global_idx = setpoint_idx * (SPEED_POINTS * ITERATIONS_PER_SPEED) + speed_idx * ITERATIONS_PER_SPEED + local_idx;
+                const float i_d_ref_A = (local_idx < PRE_STEP_ITERATIONS) ? 0.0f : random_id_ref_A;
+                const float i_q_ref_A = (local_idx < PRE_STEP_ITERATIONS) ? 0.0f : random_iq_ref_A;
+                const float theta_el_rad = theta_mech_rad * machine_config.polePairs;
+                struct uz_pmsm_measurement_values measurements = {
+                    .i_abc_in_A = uz_transformation_3ph_dq_to_abc(model_i_dq_A, theta_el_rad),
+                    .v_abc_in_V = uz_transformation_3ph_dq_to_abc(applied_v_dq_V, theta_el_rad),
+                    .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+                    .theta_mech = theta_mech_rad,
+                    .v_dc_in_V = 12.0f,
+                    .i_dc_in_A = 0.0f};
+
+                uz_3ph_dq_t reference_currents = {
+                    .d = i_d_ref_A,
+                    .q = i_q_ref_A,
+                    .zero = 0.0f};
+
+                applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
+
+                struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
+                    .v_dq_V = applied_v_dq_V,
+                    .omega_mech_1_s = omega_mech_rad_per_sec,
+                    .load_torque = 0.0f};
+                struct uz_pmsm_swmodel_outputs_t swmodel_outputs = uz_pmsm_swmodel_step(model, swmodel_inputs);
+
+                model_i_dq_A = swmodel_outputs.i_dq_A;
+                model_i_dq_A.zero = 0.0f;
+                omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
+                theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * controller_config.sample_time, 2.0f * UZ_PIf);
+
+                sim_inputs[global_idx] = (struct uz_pmsm_control_swmodel_log_t){
+                    .i_d_ref_A = reference_currents.d,
+                    .i_q_ref_A = reference_currents.q,
+                    .speed_ref_rpm = target_omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf),
+                    .trigger_controller = 1.0f,
+                    .i_d_A = model_i_dq_A.d,
+                    .i_q_A = model_i_dq_A.q,
+                    .v_d_V = applied_v_dq_V.d,
+                    .v_q_V = applied_v_dq_V.q,
+                    .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
+                    .theta_mech_rad = theta_mech_rad};
+            }
+
+            const uint32_t step_end_idx = setpoint_idx * (SPEED_POINTS * ITERATIONS_PER_SPEED) + speed_idx * ITERATIONS_PER_SPEED + (PRE_STEP_ITERATIONS - 1U);
+            const uint32_t run_end_idx = setpoint_idx * (SPEED_POINTS * ITERATIONS_PER_SPEED) + speed_idx * ITERATIONS_PER_SPEED + (ITERATIONS_PER_SPEED - 1U);
+            TEST_ASSERT_FLOAT_WITHIN(0.05f, random_id_ref_A, sim_inputs[run_end_idx].i_d_A);
+            TEST_ASSERT_FLOAT_WITHIN(0.05f, random_iq_ref_A, sim_inputs[run_end_idx].i_q_A);
+        }
+    }
+
+#if CSV_EXPORT
+    struct uz_pmsm_control_swmodel_config_export_t export_config = {
+        .sample_time = controller_config.sample_time,
+        .machine = machine_config};
+    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_multi_speed_random_setpoints.csv",
+                                  sim_inputs,
+                                  sizeof(sim_inputs[0]),
+                                  pmsm_control_swmodel_log,
+                                  sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
+                                  TOTAL_ITERATIONS,
+                                  controller_config.sample_time);
+    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+                                  &export_config,
+                                  sizeof(export_config),
+                                  pmsm_control_swmodel_config_fields,
+                                  sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                  1U,
+                                  0.0f);
+#endif
+}
 #endif // TEST

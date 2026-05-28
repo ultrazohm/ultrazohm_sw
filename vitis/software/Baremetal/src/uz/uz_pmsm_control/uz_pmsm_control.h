@@ -21,7 +21,6 @@ enum uz_pmsm_control_safe_operating_region_violation
     uz_pmsm_control_i_q_violation_upper,
     uz_pmsm_control_i_q_violation_lower,
     uz_pmsm_control_i_abc_violation_upper,
-    uz_pmsm_control_i_abc_violation_lower,
     uz_pmsm_control_v_dc_violation_upper,
     uz_pmsm_control_v_dc_violation_lower,
     uz_pmsm_control_i_dc_violation_upper,
@@ -96,8 +95,6 @@ struct uz_pmsm_control_configuration_t
     float current_controller_d_ki;
     float current_controller_q_kp;
     float current_controller_q_ki;
-    float error_upper_bound_speed_in_rpm;
-    float error_lower_bound_speed_in_rpm;
     float setpoint_filter_i_dq_cutoff_frequency;      // Do not use setpoint filter if 0
     float setpoint_filter_speed_cutoff_frequency;     // Do not use setpoint filter if 0
     float speed_actual_value_filter_cutoff_frequency; // Do not use filter if 0

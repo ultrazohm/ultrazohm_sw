@@ -7,8 +7,6 @@
 #include "../uz_signals/uz_signals.h"
 #include "../uz_piController/uz_piController.h"
 
-
-
 struct uz_pmsm_control_t
 {
     bool is_ready;
@@ -55,7 +53,18 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     uz_assert(config.current_controller_d_ki >= 0.0f);
     uz_assert(config.current_controller_q_kp >= 0.0f);
     uz_assert(config.current_controller_q_ki >= 0.0f);
-    // Re-add assertions for limits.
+    uz_assert(config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound >= config.setpoint_limits.speed_controller_torque_in_Nm.lower_bound);
+    uz_assert(config.setpoint_limits.i_d_in_A.upper_bound >= config.setpoint_limits.i_d_in_A.lower_bound);
+    uz_assert(config.setpoint_limits.i_q_in_A.upper_bound >= config.setpoint_limits.i_q_in_A.lower_bound);
+    uz_assert(config.setpoint_limits.speed_in_rpm.upper_bound >= config.setpoint_limits.speed_in_rpm.lower_bound);
+    uz_assert(config.setpoint_limits.disturbance_input_in_Nm.upper_bound >= config.setpoint_limits.disturbance_input_in_Nm.lower_bound);
+
+    uz_assert(config.safe_operating_region.speed_in_rpm.upper_bound >= config.safe_operating_region.speed_in_rpm.lower_bound);
+    uz_assert(config.safe_operating_region.i_d_in_A.upper_bound >= config.safe_operating_region.i_d_in_A.lower_bound);
+    uz_assert(config.safe_operating_region.i_q_in_A.upper_bound >= config.safe_operating_region.i_q_in_A.lower_bound);
+    uz_assert(config.safe_operating_region.i_abc_in_A.upper_bound >= config.safe_operating_region.i_abc_in_A.lower_bound);
+    uz_assert(config.safe_operating_region.v_dc_in_V.upper_bound >= config.safe_operating_region.v_dc_in_V.lower_bound);
+    uz_assert(config.safe_operating_region.i_dc_in_A.upper_bound >= config.safe_operating_region.i_dc_in_A.lower_bound);
 
     uz_assert(config.setpoint_filter_i_dq_cutoff_frequency >= 0.0f);
     uz_assert(config.setpoint_filter_speed_cutoff_frequency >= 0.0f);
@@ -122,7 +131,7 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
                     .sample_frequency_Hz = 1.0f / config.sample_time,
                     .selection = LowPass_first_order,
                 }};
-        self->setpoint_filter_i_dq = uz_uz_dq_setpoint_filter_init(setpoint_filter_config);
+        self->setpoint_filter_i_dq = uz_dq_setpoint_filter_init(setpoint_filter_config);
     }
 
     if (config.setpoint_filter_speed_cutoff_frequency != 0.0f)
@@ -177,6 +186,16 @@ void uz_pmsm_control_reset(uz_pmsm_control_t *self)
     uz_assert(self->is_ready);
     uz_CurrentControl_reset(self->current_controller);
     uz_SpeedControl_reset(self->speed_controller);
+    if (self->setpoint_filter_i_dq != NULL)    {
+        uz_dq_setpoint_filter_reset(self->setpoint_filter_i_dq);
+    }
+    if (self->setpoint_filter_speed != NULL)    {
+        uz_signals_IIR_Filter_reset(self->setpoint_filter_speed);
+    }
+    if (self->speed_filter != NULL)    {
+        uz_signals_IIR_Filter_reset(self->speed_filter);
+    }
+
 }
 
 void uz_pmsm_control_enable(uz_pmsm_control_t *self, bool enable)
@@ -216,8 +235,8 @@ static void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    if (self->safe_operating_region_violation == uz_pmsm_control_no_violation) // Only check for violation if no violation is currently present. This means that the first violation that occurs is stored until acknowledge_and_reset_error is called. If multiple violations are present at the same time, only the last one that is checked is stored.
-    // Could be changed such that for the last X time steps, all violations that occur are stored and double violations are logged as well. E.g., have an array that states if i_abc is present at step k, if speed violation is present at step k, etc. 
+    if (self->safe_operating_region_violation == uz_pmsm_control_no_violation) // Only check for violation if no violation is currently present. This means that the first time a violation occurs is stored until acknowledge_and_reset_error is called. If multiple violations are present at the same time, only the last one that is checked is stored. For example, if in ISR the check is executed each isr cycle and there is a under voltage detected, which turns off the system and in the next cycle a under speed is detected, only the initial under voltage is stored.
+    // Could be changed such that for the last X time steps, all violations that occur are stored and double violations are logged as well. E.g., have an array that states if i_abc is present at step k, if speed violation is present at step k, etc.
     {
         if (fabsf(self->measurement.i_abc_in_A.a) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
         {
@@ -330,7 +349,7 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
         {
             self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
             float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
-            if (fabsf(ref_plus_disturbance_input) > self->config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound)
+            if ((ref_plus_disturbance_input > self->config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound) || (ref_plus_disturbance_input < self->config.setpoint_limits.speed_controller_torque_in_Nm.lower_bound))
             {
                 uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
             }
@@ -371,7 +390,7 @@ struct uz_DutyCycle_t uz_pmsm_control_sample_duty(uz_pmsm_control_t *self, struc
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_3ph_dq_t v_dq_in_v = uz_pmsm_control_sample_dq(self, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
-    if (self->enable && self->safe_operating_region_violation==uz_pmsm_control_no_violation)
+    if (self->enable && self->safe_operating_region_violation == uz_pmsm_control_no_violation)
     {
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(v_dq_in_v, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
         self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);

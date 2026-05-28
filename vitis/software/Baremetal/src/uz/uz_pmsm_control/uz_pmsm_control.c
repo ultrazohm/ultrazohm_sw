@@ -7,6 +7,8 @@
 #include "../uz_signals/uz_signals.h"
 #include "../uz_piController/uz_piController.h"
 
+
+
 struct uz_pmsm_control_t
 {
     bool is_ready;
@@ -22,7 +24,7 @@ struct uz_pmsm_control_t
     uz_IIR_Filter_t *speed_filter;
     uz_PMSM_t machine_data;
     bool enable;
-    bool safe_operating_region_violation;
+    enum uz_pmsm_control_safe_operating_region_violation safe_operating_region_violation;
 };
 
 static uint32_t instance_counter = 0U;
@@ -162,7 +164,7 @@ float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self)
     return &self->config.theta_el_offset;
 }
 
-bool uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self)
+enum uz_pmsm_control_safe_operating_region_violation uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -190,7 +192,7 @@ void uz_pmsm_control_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct
     uz_assert(self->is_ready);
     self->measurement = measurements;
     uz_pmsm_control_measured_to_actual_values(self);
-    self->safe_operating_region_violation = false;
+    self->safe_operating_region_violation = uz_pmsm_control_no_violation;
     uz_pmsm_control_check_safe_operating_region(self);
 }
 
@@ -214,66 +216,70 @@ static void uz_pmsm_control_check_safe_operating_region(uz_pmsm_control_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    if (fabsf(self->measurement.i_abc_in_A.a) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
+    if (self->safe_operating_region_violation == uz_pmsm_control_no_violation) // Only check for violation if no violation is currently present. This means that the first violation that occurs is stored until acknowledge_and_reset_error is called. If multiple violations are present at the same time, only the last one that is checked is stored.
+    // Could be changed such that for the last X time steps, all violations that occur are stored and double violations are logged as well. E.g., have an array that states if i_abc is present at step k, if speed violation is present at step k, etc. 
     {
-        self->safe_operating_region_violation = true;
-    }
-    if (fabsf(self->measurement.i_abc_in_A.b) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (fabsf(self->measurement.i_abc_in_A.c) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
+        if (fabsf(self->measurement.i_abc_in_A.a) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_abc_violation_upper;
+        }
+        if (fabsf(self->measurement.i_abc_in_A.b) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_abc_violation_upper;
+        }
+        if (fabsf(self->measurement.i_abc_in_A.c) > self->config.safe_operating_region.i_abc_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_abc_violation_upper;
+        }
 
-    // Speed
-    if (self->actual_values.speed_in_rpm > self->config.safe_operating_region.speed_in_rpm.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (self->actual_values.speed_in_rpm < self->config.safe_operating_region.speed_in_rpm.lower_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
+        // Speed
+        if (self->actual_values.speed_in_rpm > self->config.safe_operating_region.speed_in_rpm.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_speed_violation_upper;
+        }
+        if (self->actual_values.speed_in_rpm < self->config.safe_operating_region.speed_in_rpm.lower_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_speed_violation_lower;
+        }
 
-    // dc-voltage
-    if (self->measurement.v_dc_in_V > self->config.safe_operating_region.v_dc_in_V.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (self->measurement.v_dc_in_V < self->config.safe_operating_region.v_dc_in_V.lower_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
+        // dc-voltage
+        if (self->measurement.v_dc_in_V > self->config.safe_operating_region.v_dc_in_V.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_v_dc_violation_upper;
+        }
+        if (self->measurement.v_dc_in_V < self->config.safe_operating_region.v_dc_in_V.lower_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_v_dc_violation_lower;
+        }
 
-    // dc-current
-    if (self->measurement.i_dc_in_A > self->config.safe_operating_region.i_dc_in_A.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (self->measurement.i_dc_in_A < self->config.safe_operating_region.i_dc_in_A.lower_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
+        // dc-current
+        if (self->measurement.i_dc_in_A > self->config.safe_operating_region.i_dc_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_dc_violation_upper;
+        }
+        if (self->measurement.i_dc_in_A < self->config.safe_operating_region.i_dc_in_A.lower_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_dc_violation_lower;
+        }
 
-    // i_d-current
-    if (self->actual_values.i_dq_in_A.d > self->config.safe_operating_region.i_d_in_A.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (self->actual_values.i_dq_in_A.d < self->config.safe_operating_region.i_d_in_A.lower_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    // i_q-current
-    if (self->actual_values.i_dq_in_A.q > self->config.safe_operating_region.i_q_in_A.upper_bound)
-    {
-        self->safe_operating_region_violation = true;
-    }
-    if (self->actual_values.i_dq_in_A.q < self->config.safe_operating_region.i_q_in_A.lower_bound)
-    {
-        self->safe_operating_region_violation = true;
+        // i_d-current
+        if (self->actual_values.i_dq_in_A.d > self->config.safe_operating_region.i_d_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_d_violation_upper;
+        }
+        if (self->actual_values.i_dq_in_A.d < self->config.safe_operating_region.i_d_in_A.lower_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_d_violation_lower;
+        }
+        // i_q-current
+        if (self->actual_values.i_dq_in_A.q > self->config.safe_operating_region.i_q_in_A.upper_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_q_violation_upper;
+        }
+        if (self->actual_values.i_dq_in_A.q < self->config.safe_operating_region.i_q_in_A.lower_bound)
+        {
+            self->safe_operating_region_violation = uz_pmsm_control_i_q_violation_lower;
+        }
     }
 }
 

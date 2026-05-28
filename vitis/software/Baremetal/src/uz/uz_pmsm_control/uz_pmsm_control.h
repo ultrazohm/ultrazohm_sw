@@ -11,6 +11,23 @@
 
 typedef struct uz_pmsm_control_t uz_pmsm_control_t;
 
+enum uz_pmsm_control_safe_operating_region_violation
+{
+    uz_pmsm_control_no_violation = 0,
+    uz_pmsm_control_speed_violation_upper,
+    uz_pmsm_control_speed_violation_lower,
+    uz_pmsm_control_i_d_violation_upper,
+    uz_pmsm_control_i_d_violation_lower,
+    uz_pmsm_control_i_q_violation_upper,
+    uz_pmsm_control_i_q_violation_lower,
+    uz_pmsm_control_i_abc_violation_upper,
+    uz_pmsm_control_i_abc_violation_lower,
+    uz_pmsm_control_v_dc_violation_upper,
+    uz_pmsm_control_v_dc_violation_lower,
+    uz_pmsm_control_i_dc_violation_upper,
+    uz_pmsm_control_i_dc_violation_lower
+};
+
 struct uz_pmsm_actual_data
 {
     uz_3ph_dq_t i_dq_in_A;
@@ -106,7 +123,7 @@ void uz_pmsm_control_reset(uz_pmsm_control_t *self);
 void uz_pmsm_control_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 
 void uz_pmsm_control_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
-bool uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self);
+enum uz_pmsm_control_safe_operating_region_violation uz_pmsm_control_get_safe_operating_area_violation(uz_pmsm_control_t *self);
 
 void uz_pmsm_control_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
 float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);

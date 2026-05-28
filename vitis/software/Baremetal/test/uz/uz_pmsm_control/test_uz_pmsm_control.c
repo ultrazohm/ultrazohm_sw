@@ -40,7 +40,6 @@ void tearDown(void)
 {
 }
 
-#define SETPOINT_FILTER_CUTTOFF_FREQUENCY 100.0f
 #define CSV_EXPORT 1
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
@@ -94,8 +93,6 @@ const struct csv_field_descriptor_t pmsm_control_swmodel_config_fields[] = {
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, J_kg_m_squared, CSV_FIELD_FLOAT),
     CSV_NESTED_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, machine, I_max_Ampere, CSV_FIELD_FLOAT)};
 
-static const struct csv_field_descriptor_t empty_fields[] = {{NULL, 0U, CSV_FIELD_FLOAT}};
-
 struct uz_pmsm_control_configuration_t pmsm_controller_config = {
     .theta_el_offset = 1.56f,
     .sample_time = 1.0f / 10000.0f,
@@ -121,7 +118,7 @@ struct uz_pmsm_control_configuration_t pmsm_controller_config = {
         .i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -1.0f}},
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
-    .setpoint_filter_speed_cutoff_frequency = SETPOINT_FILTER_CUTTOFF_FREQUENCY,
+    .setpoint_filter_speed_cutoff_frequency = 0.0f,
     .motor_type = SMPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
@@ -147,6 +144,11 @@ void test_uz_pmsm_control_call_init(void)
     struct uz_pmsm_actual_data *actual_data = uz_pmsm_control_get_actual_data(controller);
     struct uz_pmsm_reference_values *reference_values = uz_pmsm_control_get_reference_values(controller);
     struct uz_pmsm_measurement_values *measurement_values = uz_pmsm_control_get_pmsm_measurement_values(controller);
+
+    TEST_ASSERT_NOT_NULL(controller);
+    TEST_ASSERT_NOT_NULL(actual_data);
+    TEST_ASSERT_NOT_NULL(reference_values);
+    TEST_ASSERT_NOT_NULL(measurement_values);
     // Put to javascope like so:
     // js_ch_observable[JSO_dut_iq] = &actual_data->i_dq_in_A.q;
 }
@@ -154,7 +156,8 @@ void test_uz_pmsm_control_call_init(void)
 void test_uz_pmsm_control_get_safe_area(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
-    bool safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
+    enum uz_pmsm_control_safe_operating_region_violation safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
+    TEST_ASSERT_TRUE(safe_operating_violation==uz_pmsm_control_no_violation);
     // use a if construct to check if violation is present
 }
 

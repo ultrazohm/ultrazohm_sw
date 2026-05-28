@@ -7,16 +7,14 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.12
+ * Model version                  : 10.17
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed May 20 14:30:38 2026
+ * C/C++ source code generated on : Thu May 21 14:36:31 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
- * Code generation objectives:
- *    1. Execution efficiency
- *    2. Traceability
- * Validation result: Not run
+ * Code generation objective: Execution efficiency
+ * Validation result: All passed
  */
 
 #include "uz_codegen0.h"
@@ -48,15 +46,15 @@ const Bus_ZM_Out uz_codegen0_rtZBus_ZM_Out = {
 
 /* Exported block parameters */
 Bus_Ctrl_Config struct_Ctrl_Config = {
-  0.0001F,
-  0.0001F,
+  0.00005F,
+  0.00005F,
   0.004F,
-  3.6F, //36
+  25.0F,
   0.0002F,
-  0.0008F,
-  13.7444677F,
-  0.151953176F,
-  -0.151953176F,
+  0.0008F, //0008F
+  10.0F,	//13
+  0.005F,
+  -0.005F,
   0.2F,
   1.0e-6F,
   5.0e-7F
@@ -69,13 +67,13 @@ Bus_Ctrl_Config struct_Ctrl_Config = {
                                         *   '<S5>/Switch3'
                                         *   '<S5>/Switch4'
                                         *   '<S9>/Constant3'
-                                        *   '<S12>/Constant'
+                                        *   '<S11>/Constant'
+                                        *   '<S11>/Constant3'
                                         *   '<S12>/Constant3'
-                                        *   '<S13>/Constant3'
+                                        *   '<S24>/Constant'
+                                        *   '<S24>/Constant3'
                                         *   '<S25>/Constant'
                                         *   '<S25>/Constant3'
-                                        *   '<S26>/Constant'
-                                        *   '<S26>/Constant3'
                                         */
 
 Bus_PMSM_Config struct_PMSM_Config = {
@@ -93,24 +91,24 @@ Bus_PMSM_Config struct_PMSM_Config = {
 } ;                                    /* Variable: struct_PMSM_Config
                                         * Referenced by:
                                         *   '<S9>/Constant2'
-                                        *   '<S11>/Constant'
-                                        *   '<S19>/Constant'
-                                        *   '<S21>/Gain'
+                                        *   '<S10>/Constant'
+                                        *   '<S18>/Constant'
+                                        *   '<S20>/Gain'
+                                        *   '<S22>/Constant'
                                         *   '<S23>/Constant'
-                                        *   '<S24>/Constant'
-                                        *   '<S24>/Constant1'
+                                        *   '<S23>/Constant1'
                                         */
 
 Bus_Inv_Config struct_Inv_Config = {
   PT1,
-  678.0F,
+  540.0F,
   1.0F,
   20000.0F,
   false
 } ;                                    /* Variable: struct_Inv_Config
                                         * Referenced by:
                                         *   '<S2>/Constant'
-                                        *   '<S18>/Constant2'
+                                        *   '<S17>/Constant2'
                                         */
 
 static void MinimaleSchaltzeit(const float rtu_Dutycycle[3], float rty_Out1[3]);
@@ -233,15 +231,15 @@ static void MinimaleSchaltzeit(const float rtu_Dutycycle[3], float rty_Out1[3])
   /* End of Switch: '<S5>/Switch4' */
 
   /* Switch: '<S5>/Switch3' */
-  if (!(rtb_Switch1_idx_0 > 1.0F - struct_Ctrl_Config.IGBT_dc_min)) {
+  if (rtb_Switch1_idx_0 <= 1.0F - struct_Ctrl_Config.IGBT_dc_min) {
     rty_Out1[0] = rtb_Switch1_idx_0;
   }
 
-  if (!(rtb_Switch1_idx_1 > 1.0F - struct_Ctrl_Config.IGBT_dc_min)) {
+  if (rtb_Switch1_idx_1 <= 1.0F - struct_Ctrl_Config.IGBT_dc_min) {
     rty_Out1[1] = rtb_Switch1_idx_1;
   }
 
-  if (!(rtb_Switch1_idx_2 > 1.0F - struct_Ctrl_Config.IGBT_dc_min)) {
+  if (rtb_Switch1_idx_2 <= 1.0F - struct_Ctrl_Config.IGBT_dc_min) {
     rty_Out1[2] = rtb_Switch1_idx_2;
   }
 
@@ -260,95 +258,204 @@ static void raumzeigermodulation(float rtu_Ualpha, float rtu_Ubeta, float
   float c;
   int32_t Quadrant;
   int32_t Sektor;
+
+  /* MATLAB Function 'uz_codegen/Raumzeigermodulation/raumzeigermodulation': '<S6>:1' */
+  /* '<S6>:1:2' DIVIDE_ONE_BY_SQRT_THREE = single(single(1) / sqrt(3)); */
+  /* '<S6>:1:3' DIVIDE_ONE_BY_TWO_THIRDS = single(single(1) / (2/3)); */
+  /* '<S6>:1:4' DIVIDE_TWO_BY_TWO_THIRDS = single(2 / (2/3)); */
+  /* '<S6>:1:5' Sektor = single(0); */
+  /* '<S6>:1:6' Quadrant = single(0); */
+  /* '<S6>:1:7' Dutycycle_A = single(0); */
+  /* '<S6>:1:8' Dutycycle_B = single(0); */
+  /* '<S6>:1:9' Dutycycle_C = single(0); */
+  /* '<S6>:1:11' abs_Ualpha = abs(Ualpha); */
   abs_Ualpha = fabsf(rtu_Ualpha);
+
+  /* '<S6>:1:12' abs_Ubeta = abs(Ubeta); */
+  /*  Parameter a,b und c berechnen */
+  /* '<S6>:1:15' a = single(((abs_Ualpha + abs_Ubeta*DIVIDE_ONE_BY_SQRT_THREE)*DIVIDE_ONE_BY_TWO_THIRDS)/Udc); */
   abs_Ubeta = fabsf(rtu_Ubeta) * 0.577350259F;
   a = (abs_Ubeta + abs_Ualpha) * 1.5F / rtu_Udc;
+
+  /* '<S6>:1:16' b = single(((abs_Ualpha - abs_Ubeta*DIVIDE_ONE_BY_SQRT_THREE)*DIVIDE_ONE_BY_TWO_THIRDS)/Udc); */
   abs_Ualpha = (abs_Ualpha - abs_Ubeta) * 1.5F / rtu_Udc;
+
+  /* '<S6>:1:17' c = single((abs_Ubeta*DIVIDE_ONE_BY_SQRT_THREE*DIVIDE_TWO_BY_TWO_THIRDS)/Udc); */
   c = abs_Ubeta * 3.0F / rtu_Udc;
+
+  /*  Sektor bestimmen */
+  /* '<S6>:1:20' if Ubeta < 0 */
   if (rtu_Ubeta < 0.0F) {
+    /* '<S6>:1:21' if Ualpha < 0.0 */
     if (rtu_Ualpha < 0.0F) {
+      /* '<S6>:1:22' Quadrant = single(3); */
       Quadrant = 3;
+
+      /* '<S6>:1:23' if b < 0 */
       if (abs_Ualpha < 0.0F) {
+        /* '<S6>:1:24' Sektor = single(5); */
         Sektor = 5;
       } else {
+        /* '<S6>:1:25' else */
+        /* '<S6>:1:26' Sektor = single(4); */
         Sektor = 4;
       }
     } else {
+      /* '<S6>:1:28' else */
+      /* '<S6>:1:29' Quadrant = single(4); */
       Quadrant = 4;
+
+      /* '<S6>:1:30' if b < 0 */
       if (abs_Ualpha < 0.0F) {
+        /* '<S6>:1:31' Sektor = single(5); */
         Sektor = 5;
       } else {
+        /* '<S6>:1:32' else */
+        /* '<S6>:1:33' Sektor = single(6); */
         Sektor = 6;
       }
     }
+
+    /* '<S6>:1:36' else */
+    /* '<S6>:1:37' if Ualpha < 0 */
   } else if (rtu_Ualpha < 0.0F) {
+    /* '<S6>:1:38' Quadrant = single(2); */
     Quadrant = 2;
+
+    /* '<S6>:1:39' if b < 0 */
     if (abs_Ualpha < 0.0F) {
+      /* '<S6>:1:40' Sektor = single(2); */
       Sektor = 2;
     } else {
+      /* '<S6>:1:41' else */
+      /* '<S6>:1:42' Sektor = single(3); */
       Sektor = 3;
     }
   } else {
+    /* '<S6>:1:44' else */
+    /* '<S6>:1:45' Quadrant = single(1); */
     Quadrant = 1;
+
+    /* '<S6>:1:46' if b < 0 */
     if (abs_Ualpha < 0.0F) {
+      /* '<S6>:1:47' Sektor = single(2); */
       Sektor = 2;
     } else {
+      /* '<S6>:1:48' else */
+      /* '<S6>:1:49' Sektor = single(1); */
       Sektor = 1;
     }
   }
 
+  /* Dutycycle berechnen */
+  /* '<S6>:1:55' switch Sektor */
   switch (Sektor) {
    case 1:
+    /* '<S6>:1:57' case single(1) */
+    /* '<S6>:1:58' Dutycycle_A = (single(1) + b + c); */
     Dutycycle_A = (abs_Ualpha + 1.0F) + c;
+
+    /* '<S6>:1:59' Dutycycle_B = (single(1) - b + c); */
     abs_Ubeta = (1.0F - abs_Ualpha) + c;
+
+    /* '<S6>:1:60' Dutycycle_C = (single(1) - b - c); */
     a = (1.0F - abs_Ualpha) - c;
     break;
 
    case 2:
+    /* '<S6>:1:62' case 2 */
+    /* '<S6>:1:63' if Quadrant == single(1) */
     if (Quadrant == 1) {
+      /* '<S6>:1:64' Dutycycle_A = (single(1) + a + b); */
       Dutycycle_A = (a + 1.0F) + abs_Ualpha;
+
+      /* '<S6>:1:65' Dutycycle_B = (single(1) + a - b); */
       abs_Ubeta = (a + 1.0F) - abs_Ualpha;
+
+      /* '<S6>:1:66' Dutycycle_C = (single(1) - a + b); */
       a = (1.0F - a) + abs_Ualpha;
     } else {
+      /* '<S6>:1:67' else */
+      /* '<S6>:1:68' Dutycycle_A = (single(1) - a - b); */
       Dutycycle_A = (1.0F - a) - abs_Ualpha;
+
+      /* '<S6>:1:69' Dutycycle_B = (single(1) + a - b); */
       abs_Ubeta = (a + 1.0F) - abs_Ualpha;
+
+      /* '<S6>:1:70' Dutycycle_C = (single(1) - a + b); */
       a = (1.0F - a) + abs_Ualpha;
     }
     break;
 
    case 3:
+    /* '<S6>:1:73' case 3 */
+    /* '<S6>:1:74' Dutycycle_A = (single(1) - b - c); */
     Dutycycle_A = (1.0F - abs_Ualpha) - c;
+
+    /* '<S6>:1:75' Dutycycle_B = (single(1) + b + c); */
     abs_Ubeta = (abs_Ualpha + 1.0F) + c;
+
+    /* '<S6>:1:76' Dutycycle_C = (single(1) + b - c); */
     a = (abs_Ualpha + 1.0F) - c;
     break;
 
    case 4:
+    /* '<S6>:1:78' case 4 */
+    /* '<S6>:1:79' Dutycycle_A = (single(1) - b - c); */
     Dutycycle_A = (1.0F - abs_Ualpha) - c;
+
+    /* '<S6>:1:80' Dutycycle_B = (single(1) + b - c); */
     abs_Ubeta = (abs_Ualpha + 1.0F) - c;
+
+    /* '<S6>:1:81' Dutycycle_C = (single(1) + b + c); */
     a = (abs_Ualpha + 1.0F) + c;
     break;
 
    case 5:
+    /* '<S6>:1:83' case 5 */
+    /* '<S6>:1:84' if Quadrant == 3 */
     if (Quadrant == 3) {
+      /* '<S6>:1:85' Dutycycle_A = (single(1) - a - b); */
       Dutycycle_A = (1.0F - a) - abs_Ualpha;
+
+      /* '<S6>:1:86' Dutycycle_B = (single(1) - a + b); */
       abs_Ubeta = (1.0F - a) + abs_Ualpha;
+
+      /* '<S6>:1:87' Dutycycle_C = (single(1) + a - b); */
       a = (a + 1.0F) - abs_Ualpha;
     } else {
+      /* '<S6>:1:88' else */
+      /* '<S6>:1:89' Dutycycle_A = (single(1) + b + a); */
       Dutycycle_A = (abs_Ualpha + 1.0F) + a;
+
+      /* '<S6>:1:90' Dutycycle_B = (single(1) + b - a); */
       abs_Ubeta = (abs_Ualpha + 1.0F) - a;
+
+      /* '<S6>:1:91' Dutycycle_C = (single(1) - b + a); */
       a += 1.0F - abs_Ualpha;
     }
     break;
 
    default:
+    /* '<S6>:1:94' case 6 */
+    /* '<S6>:1:95' Dutycycle_A = (single(1) + b + c); */
     Dutycycle_A = (abs_Ualpha + 1.0F) + c;
+
+    /* '<S6>:1:96' Dutycycle_B = (single(1) - b - c); */
     abs_Ubeta = (1.0F - abs_Ualpha) - c;
+
+    /* '<S6>:1:97' Dutycycle_C = (single(1) - b + c); */
     a = (1.0F - abs_Ualpha) + c;
     break;
   }
 
+  /* '<S6>:1:101' Dutycycle_A =  Dutycycle_A * single(0.5); */
   *rty_Dutycycle_A = Dutycycle_A * 0.5F;
+
+  /* '<S6>:1:102' Dutycycle_B =  Dutycycle_B * single(0.5); */
   *rty_Dutycycle_B = abs_Ubeta * 0.5F;
+
+  /* '<S6>:1:103' Dutycycle_C =  Dutycycle_C * single(0.5); */
   *rty_Dutycycle_C = a * 0.5F;
   *rty_Sektor = (float)Sektor;
   *rty_Quadrant = (float)Quadrant;
@@ -387,69 +494,69 @@ static float Drehzahlregelung(float rtu_Soll_Drehzahl, float rtu_omega,
   float rtb_Add1_gm;
   float rtb_Product_i;
 
-  /* Product: '<S12>/Product' incorporates:
-   *  Constant: '<S12>/Constant'
-   *  Gain: '<S11>/Gain'
-   *  Sum: '<S12>/Subtract'
-   *  UnitDelay: '<S13>/Unit Delay'
+  /* Product: '<S11>/Product' incorporates:
+   *  Constant: '<S11>/Constant'
+   *  Gain: '<S10>/Gain'
+   *  Sum: '<S11>/Subtract'
+   *  UnitDelay: '<S12>/Unit Delay'
    */
   rtb_Product_i = (localDW->UnitDelay_DSTATE - GAIN_RADS_TO_HZ * rtu_omega) *
     struct_Ctrl_Config.KPn;
 
-  /* Sum: '<S12>/Add1' incorporates:
-   *  UnitDelay: '<S12>/Unit Delay'
+  /* Sum: '<S11>/Add1' incorporates:
+   *  UnitDelay: '<S11>/Unit Delay'
    */
   rtb_Add1_gm = rtb_Product_i + localDW->UnitDelay_DSTATE_d;
 
-  /* Switch: '<S14>/Switch2' incorporates:
-   *  Constant: '<S11>/Constant'
-   *  Gain: '<S11>/Gain1'
-   *  RelationalOperator: '<S14>/LowerRelop1'
-   *  RelationalOperator: '<S14>/UpperRelop'
-   *  Switch: '<S14>/Switch'
+  /* Switch: '<S13>/Switch2' incorporates:
+   *  Constant: '<S10>/Constant'
+   *  Gain: '<S10>/Gain1'
+   *  RelationalOperator: '<S13>/LowerRelop1'
+   *  RelationalOperator: '<S13>/UpperRelop'
+   *  Switch: '<S13>/Switch'
    */
   if (rtb_Add1_gm > struct_PMSM_Config.mot_M_N) {
     rty_M_Soll_0 = struct_PMSM_Config.mot_M_N;
   } else if (rtb_Add1_gm < -struct_PMSM_Config.mot_M_N) {
-    /* Switch: '<S14>/Switch' incorporates:
-     *  Gain: '<S11>/Gain1'
+    /* Switch: '<S13>/Switch' incorporates:
+     *  Gain: '<S10>/Gain1'
      */
     rty_M_Soll_0 = -struct_PMSM_Config.mot_M_N;
   } else {
     rty_M_Soll_0 = rtb_Add1_gm;
   }
 
-  /* End of Switch: '<S14>/Switch2' */
+  /* End of Switch: '<S13>/Switch2' */
 
-  /* Product: '<S13>/Product2' incorporates:
+  /* Product: '<S12>/Product2' incorporates:
+   *  Constant: '<S11>/Constant3'
    *  Constant: '<S12>/Constant3'
-   *  Constant: '<S13>/Constant3'
-   *  Product: '<S12>/Product2'
+   *  Product: '<S11>/Product2'
    */
   UnitDelay_DSTATE_tmp = struct_Ctrl_Config.Tsample / struct_Ctrl_Config.TNn;
 
-  /* Update for UnitDelay: '<S13>/Unit Delay' incorporates:
-   *  Constant: '<S13>/Constant3'
-   *  Product: '<S13>/Product2'
-   *  Sum: '<S13>/Add'
-   *  Sum: '<S13>/Add1'
+  /* Update for UnitDelay: '<S12>/Unit Delay' incorporates:
+   *  Constant: '<S12>/Constant3'
+   *  Product: '<S12>/Product2'
+   *  Sum: '<S12>/Add'
+   *  Sum: '<S12>/Add1'
    */
   localDW->UnitDelay_DSTATE += (rtu_Soll_Drehzahl - localDW->UnitDelay_DSTATE) *
     UnitDelay_DSTATE_tmp;
 
-  /* Update for UnitDelay: '<S12>/Unit Delay' incorporates:
-   *  Constant: '<S11>/Constant'
-   *  Gain: '<S11>/Gain1'
-   *  Logic: '<S12>/Logical Operator'
-   *  Product: '<S12>/Product1'
-   *  Product: '<S12>/Product2'
-   *  RelationalOperator: '<S12>/Relational Operator'
-   *  RelationalOperator: '<S12>/Relational Operator1'
-   *  Sum: '<S12>/Add'
+  /* Update for UnitDelay: '<S11>/Unit Delay' incorporates:
+   *  Constant: '<S10>/Constant'
+   *  Gain: '<S10>/Gain1'
+   *  Logic: '<S11>/Logical Operator'
+   *  Product: '<S11>/Product1'
+   *  Product: '<S11>/Product2'
+   *  RelationalOperator: '<S11>/Relational Operator'
+   *  RelationalOperator: '<S11>/Relational Operator1'
+   *  Sum: '<S11>/Add'
    */
-  localDW->UnitDelay_DSTATE_d += (float)((!(rtb_Add1_gm >
-    struct_PMSM_Config.mot_M_N)) && (!(rtb_Add1_gm < -struct_PMSM_Config.mot_M_N)))
-    * rtb_Product_i * UnitDelay_DSTATE_tmp;
+  localDW->UnitDelay_DSTATE_d += ((rtb_Add1_gm <= struct_PMSM_Config.mot_M_N) &&
+    (rtb_Add1_gm >= -struct_PMSM_Config.mot_M_N) ? rtb_Product_i : 0.0F) *
+    UnitDelay_DSTATE_tmp;
   return rty_M_Soll_0;
 }
 
@@ -465,8 +572,6 @@ static void Drehzahlregelung_c(bool rtu_Enable, float rtu_omega, const
   Bus_ZM_Out *rtu_Bus_ZM_Out_Inport_2, bool *rty_Dis, float *rty_Soll_Moment,
   DW_Drehzahlregelung *localDW)
 {
-  float tmp;
-
   /* Outputs for Enabled SubSystem: '<S3>/Drehzahlregelung' incorporates:
    *  EnablePort: '<S8>/Enable'
    */
@@ -474,22 +579,12 @@ static void Drehzahlregelung_c(bool rtu_Enable, float rtu_omega, const
     /* SignalConversion generated from: '<S8>/Dis' */
     *rty_Dis = false;
 
-    /* Switch: '<S8>/Switch' incorporates:
-     *  Constant: '<S10>/Constant'
-     *  Gain: '<S8>/Gain'
-     *  RelationalOperator: '<S10>/Compare'
-     */
-    if (rtu_Bus_ZM_Out_Inport_2->Ist_Regelungsart == Trajektorie) {
-      tmp = 0.0F;
-    } else {
-      tmp = GAIN_UMIN_TO_HZ * rtu_Bus_ZM_Out_Inport_2->Soll_Drehzahl;
-    }
-
     /* Outputs for Atomic SubSystem: '<S8>/Drehzahlregelung' */
-    *rty_Soll_Moment = Drehzahlregelung(tmp, rtu_omega,
+    /* Gain: '<S8>/Gain' */
+    *rty_Soll_Moment = Drehzahlregelung(GAIN_UMIN_TO_HZ *
+      rtu_Bus_ZM_Out_Inport_2->Soll_Drehzahl, rtu_omega,
       &localDW->Drehzahlregelung_i);
 
-    /* End of Switch: '<S8>/Switch' */
     /* End of Outputs for SubSystem: '<S8>/Drehzahlregelung' */
   }
 
@@ -509,108 +604,120 @@ static void IDQCtrl(float rtu_ID, float rtu_IQ, float rtu_IDRef, float rtu_IQRef
   float rtb_Product_h;
   float rtb_Product_m;
 
-  /* Product: '<S24>/Product' incorporates:
-   *  Constant: '<S24>/Constant'
-   *  Constant: '<S24>/Constant1'
-   *  Product: '<S24>/Product1'
-   *  Sum: '<S24>/Add'
+  /* Product: '<S23>/Product' incorporates:
+   *  Constant: '<S23>/Constant'
+   *  Constant: '<S23>/Constant1'
+   *  Product: '<S23>/Product1'
+   *  Sum: '<S23>/Add'
    */
-  *rty_UQ = (rtu_IDRef * struct_PMSM_Config.mot_Lq +
+  *rty_UQ = (rtu_IDRef * struct_PMSM_Config.mot_Ld +
              struct_PMSM_Config.mot_psi_pm) * rtu_OmegaMech;
 
-  /* Gain: '<S18>/Gain2' incorporates:
-   *  Constant: '<S18>/Constant2'
+  /* Gain: '<S17>/Gain2' incorporates:
+   *  Constant: '<S17>/Constant2'
    */
   rtb_Gain2 = DIVIDE_TWO_BY_THREE * struct_Inv_Config.Udc;
 
-  /* Product: '<S25>/Product' incorporates:
-   *  Constant: '<S25>/Constant'
-   *  Sum: '<S25>/Subtract'
+  /* Product: '<S24>/Product' incorporates:
+   *  Constant: '<S24>/Constant'
+   *  Sum: '<S24>/Subtract'
    */
   rtb_Product_m = (rtu_IDRef - rtu_ID) * struct_Ctrl_Config.KPi;
 
-  /* Sum: '<S25>/Add1' incorporates:
-   *  UnitDelay: '<S25>/Unit Delay'
+  /* Sum: '<S24>/Add1' incorporates:
+   *  UnitDelay: '<S24>/Unit Delay'
    */
   rtb_Add1_k = rtb_Product_m + localDW->UnitDelay_DSTATE;
 
-  /* Switch: '<S28>/Switch2' incorporates:
-   *  Gain: '<S18>/Gain1'
-   *  RelationalOperator: '<S28>/LowerRelop1'
-   *  RelationalOperator: '<S28>/UpperRelop'
-   *  Switch: '<S28>/Switch'
+  /* Switch: '<S27>/Switch2' incorporates:
+   *  Gain: '<S17>/Gain1'
+   *  RelationalOperator: '<S27>/LowerRelop1'
+   *  RelationalOperator: '<S27>/UpperRelop'
+   *  Switch: '<S27>/Switch'
    */
   if (rtb_Add1_k > rtb_Gain2) {
     *rty_UD = rtb_Gain2;
   } else if (rtb_Add1_k < -rtb_Gain2) {
-    /* Switch: '<S28>/Switch' incorporates:
-     *  Gain: '<S18>/Gain1'
+    /* Switch: '<S27>/Switch' incorporates:
+     *  Gain: '<S17>/Gain1'
      */
     *rty_UD = -rtb_Gain2;
   } else {
     *rty_UD = rtb_Add1_k;
   }
 
-  /* End of Switch: '<S28>/Switch2' */
+  /* End of Switch: '<S27>/Switch2' */
 
-  /* Sum: '<S18>/Add1' incorporates:
-   *  Constant: '<S23>/Constant'
-   *  Product: '<S23>/Product'
-   *  Product: '<S23>/Product1'
+  /* Sum: '<S17>/Add1' incorporates:
+   *  Constant: '<S22>/Constant'
+   *  Product: '<S22>/Product'
+   *  Product: '<S22>/Product1'
    */
-  *rty_UD -= rtu_OmegaMech * rtu_IQRef * struct_PMSM_Config.mot_Ld;
+  *rty_UD -= rtu_OmegaMech * rtu_IQRef * struct_PMSM_Config.mot_Lq;
 
-  /* Sum: '<S27>/Add3' incorporates:
-   *  Product: '<S27>/Product'
-   *  Product: '<S27>/Product1'
-   *  Sqrt: '<S27>/Sqrt'
-   *  Sum: '<S27>/Add2'
+  /* Sum: '<S26>/Add3' incorporates:
+   *  Product: '<S26>/Product'
+   *  Product: '<S26>/Product1'
+   *  Sqrt: '<S26>/Sqrt'
+   *  Sum: '<S26>/Add2'
    */
   rtb_Add3 = sqrtf(rtb_Gain2 * rtb_Gain2 - *rty_UD * *rty_UD) - *rty_UQ;
 
-  /* Product: '<S26>/Product' incorporates:
-   *  Constant: '<S26>/Constant'
-   *  Sum: '<S26>/Subtract'
+  /* Product: '<S25>/Product' incorporates:
+   *  Constant: '<S25>/Constant'
+   *  Sum: '<S25>/Subtract'
    */
   rtb_Product_h = (rtu_IQRef - rtu_IQ) * struct_Ctrl_Config.KPi;
 
-  /* Sum: '<S26>/Add1' incorporates:
-   *  UnitDelay: '<S26>/Unit Delay'
+  /* Sum: '<S25>/Add1' incorporates:
+   *  UnitDelay: '<S25>/Unit Delay'
    */
   rtb_Add1_b = rtb_Product_h + localDW->UnitDelay_DSTATE_f;
 
-  /* Switch: '<S29>/Switch2' incorporates:
-   *  Gain: '<S27>/Gain1'
-   *  RelationalOperator: '<S29>/LowerRelop1'
-   *  RelationalOperator: '<S29>/UpperRelop'
-   *  Switch: '<S29>/Switch'
+  /* Switch: '<S28>/Switch2' incorporates:
+   *  Gain: '<S26>/Gain1'
+   *  RelationalOperator: '<S28>/LowerRelop1'
+   *  RelationalOperator: '<S28>/UpperRelop'
+   *  Switch: '<S28>/Switch'
    */
   if (rtb_Add1_b > rtb_Add3) {
     UnitDelay_DSTATE_tmp = rtb_Add3;
   } else if (rtb_Add1_b < -rtb_Add3) {
-    /* Switch: '<S29>/Switch' incorporates:
-     *  Gain: '<S27>/Gain1'
+    /* Switch: '<S28>/Switch' incorporates:
+     *  Gain: '<S26>/Gain1'
      */
     UnitDelay_DSTATE_tmp = -rtb_Add3;
   } else {
     UnitDelay_DSTATE_tmp = rtb_Add1_b;
   }
 
-  /* Sum: '<S18>/Add' incorporates:
-   *  Switch: '<S29>/Switch2'
+  /* Sum: '<S17>/Add' incorporates:
+   *  Switch: '<S28>/Switch2'
    */
-  *rty_UQ += UnitDelay_DSTATE_tmp; // = statt +=
+  *rty_UQ += UnitDelay_DSTATE_tmp;
 
-  /* Product: '<S25>/Product2' incorporates:
+  /* Product: '<S24>/Product2' incorporates:
+   *  Constant: '<S24>/Constant3'
    *  Constant: '<S25>/Constant3'
-   *  Constant: '<S26>/Constant3'
-   *  Product: '<S26>/Product2'
+   *  Product: '<S25>/Product2'
    */
   UnitDelay_DSTATE_tmp = struct_Ctrl_Config.Tsample / struct_Ctrl_Config.TNi;
 
+  /* Update for UnitDelay: '<S24>/Unit Delay' incorporates:
+   *  Constant: '<S24>/Constant3'
+   *  Gain: '<S17>/Gain1'
+   *  Logic: '<S24>/Logical Operator'
+   *  Product: '<S24>/Product1'
+   *  Product: '<S24>/Product2'
+   *  RelationalOperator: '<S24>/Relational Operator'
+   *  RelationalOperator: '<S24>/Relational Operator1'
+   *  Sum: '<S24>/Add'
+   */
+  localDW->UnitDelay_DSTATE += ((rtb_Add1_k <= rtb_Gain2) && (rtb_Add1_k >=
+    -rtb_Gain2) ? rtb_Product_m : 0.0F) * UnitDelay_DSTATE_tmp;
+
   /* Update for UnitDelay: '<S25>/Unit Delay' incorporates:
-   *  Constant: '<S25>/Constant3'
-   *  Gain: '<S18>/Gain1'
+   *  Gain: '<S26>/Gain1'
    *  Logic: '<S25>/Logical Operator'
    *  Product: '<S25>/Product1'
    *  Product: '<S25>/Product2'
@@ -618,33 +725,21 @@ static void IDQCtrl(float rtu_ID, float rtu_IQ, float rtu_IDRef, float rtu_IQRef
    *  RelationalOperator: '<S25>/Relational Operator1'
    *  Sum: '<S25>/Add'
    */
-  localDW->UnitDelay_DSTATE += (float)((!(rtb_Add1_k > rtb_Gain2)) &&
-    (!(rtb_Add1_k < -rtb_Gain2))) * rtb_Product_m * UnitDelay_DSTATE_tmp;
-
-  /* Update for UnitDelay: '<S26>/Unit Delay' incorporates:
-   *  Gain: '<S27>/Gain1'
-   *  Logic: '<S26>/Logical Operator'
-   *  Product: '<S26>/Product1'
-   *  Product: '<S26>/Product2'
-   *  RelationalOperator: '<S26>/Relational Operator'
-   *  RelationalOperator: '<S26>/Relational Operator1'
-   *  Sum: '<S26>/Add'
-   */
-  localDW->UnitDelay_DSTATE_f += (float)((!(rtb_Add1_b > rtb_Add3)) &&
-    (!(rtb_Add1_b < -rtb_Add3))) * rtb_Product_h * UnitDelay_DSTATE_tmp;
+  localDW->UnitDelay_DSTATE_f += ((rtb_Add1_b <= rtb_Add3) && (rtb_Add1_b >=
+    -rtb_Add3) ? rtb_Product_h : 0.0F) * UnitDelay_DSTATE_tmp;
 }
 
 /* Output and update for atomic system: '<S9>/Ueberstromabschaltung' */
 static bool Ueberstromabschaltung(float rtu_Iu, float rtu_Iv, float rtu_Iw)
 {
-  /* Logic: '<S19>/Logical Operator' incorporates:
-   *  Abs: '<S19>/Abs'
-   *  Abs: '<S19>/Abs1'
-   *  Abs: '<S19>/Abs2'
-   *  Constant: '<S19>/Constant'
-   *  RelationalOperator: '<S19>/Relational Operator'
-   *  RelationalOperator: '<S19>/Relational Operator1'
-   *  RelationalOperator: '<S19>/Relational Operator2'
+  /* Logic: '<S18>/Logical Operator' incorporates:
+   *  Abs: '<S18>/Abs'
+   *  Abs: '<S18>/Abs1'
+   *  Abs: '<S18>/Abs2'
+   *  Constant: '<S18>/Constant'
+   *  RelationalOperator: '<S18>/Relational Operator'
+   *  RelationalOperator: '<S18>/Relational Operator1'
+   *  RelationalOperator: '<S18>/Relational Operator2'
    */
   return (struct_PMSM_Config.mot_I_max < fabsf(rtu_Iu)) ||
     (struct_PMSM_Config.mot_I_max < fabsf(rtu_Iv)) ||
@@ -659,40 +754,40 @@ static void abc_zu_dq(float rtu_theta, float rtu_pmsm_Iu, float rtu_pmsm_Iv,
   float rtb_TrigonometricFunction;
   float rtb_TrigonometricFunction1;
 
-  /* Gain: '<S30>/Gain' incorporates:
-   *  Gain: '<S30>/Gain2'
-   *  Gain: '<S30>/Gain7'
-   *  Sum: '<S30>/Add'
+  /* Gain: '<S29>/Gain' incorporates:
+   *  Gain: '<S29>/Gain2'
+   *  Gain: '<S29>/Gain7'
+   *  Sum: '<S29>/Add'
    */
   rtb_Gain_k = ((-0.5F * rtu_pmsm_Iv + rtu_pmsm_Iu) + -0.5F * rtu_pmsm_Iw) *
     DIVIDE_TWO_BY_THREE;
 
-  /* Trigonometry: '<S31>/Trigonometric Function1' */
+  /* Trigonometry: '<S30>/Trigonometric Function1' */
   rtb_TrigonometricFunction1 = cosf(rtu_theta);
 
-  /* Gain: '<S30>/sqrt(3)//2' */
+  /* Gain: '<S29>/sqrt(3)//2' */
   *rty_ctrl_Iq = -DIVIDE_SQRT_THREE_BY_TWO * rtu_pmsm_Iw;
 
-  /* Gain: '<S30>/Gain1' incorporates:
-   *  Gain: '<S30>/Gain5'
-   *  Sum: '<S30>/Add1'
+  /* Gain: '<S29>/Gain1' incorporates:
+   *  Gain: '<S29>/Gain5'
+   *  Sum: '<S29>/Add1'
    */
   *rty_ctrl_Iq = (DIVIDE_SQRT_THREE_BY_TWO * rtu_pmsm_Iv + *rty_ctrl_Iq) *
     DIVIDE_TWO_BY_THREE;
 
-  /* Trigonometry: '<S31>/Trigonometric Function' */
+  /* Trigonometry: '<S30>/Trigonometric Function' */
   rtb_TrigonometricFunction = sinf(rtu_theta);
 
-  /* Sum: '<S31>/Add' incorporates:
-   *  Product: '<S31>/Product'
-   *  Product: '<S31>/Product1'
+  /* Sum: '<S30>/Add' incorporates:
+   *  Product: '<S30>/Product'
+   *  Product: '<S30>/Product1'
    */
   *rty_ctrl_Id = rtb_TrigonometricFunction1 * rtb_Gain_k +
     rtb_TrigonometricFunction * *rty_ctrl_Iq;
 
-  /* Sum: '<S31>/Add1' incorporates:
-   *  Product: '<S31>/Product2'
-   *  Product: '<S31>/Product3'
+  /* Sum: '<S30>/Add1' incorporates:
+   *  Product: '<S30>/Product2'
+   *  Product: '<S30>/Product3'
    */
   *rty_ctrl_Iq = *rty_ctrl_Iq * rtb_TrigonometricFunction1 - rtb_Gain_k *
     rtb_TrigonometricFunction;
@@ -705,26 +800,26 @@ static void dq_zu_alphabeta(float rtu_theta, float rtu_valD, float rtu_valQ,
   float rtb_TrigonometricFunction;
   float rtb_TrigonometricFunction1;
 
-  /* Trigonometry: '<S22>/Trigonometric Function1' incorporates:
-   *  Gain: '<S22>/Gain1'
+  /* Trigonometry: '<S21>/Trigonometric Function1' incorporates:
+   *  Gain: '<S21>/Gain1'
    */
   rtb_TrigonometricFunction1 = cosf(-rtu_theta);
 
-  /* Trigonometry: '<S22>/Trigonometric Function' incorporates:
-   *  Gain: '<S22>/Gain1'
+  /* Trigonometry: '<S21>/Trigonometric Function' incorporates:
+   *  Gain: '<S21>/Gain1'
    */
   rtb_TrigonometricFunction = sinf(-rtu_theta);
 
-  /* Sum: '<S22>/Add' incorporates:
-   *  Product: '<S22>/Product'
-   *  Product: '<S22>/Product1'
+  /* Sum: '<S21>/Add' incorporates:
+   *  Product: '<S21>/Product'
+   *  Product: '<S21>/Product1'
    */
   *rty_valAlpha = rtu_valD * rtb_TrigonometricFunction1 + rtu_valQ *
     rtb_TrigonometricFunction;
 
-  /* Sum: '<S22>/Add1' incorporates:
-   *  Product: '<S22>/Product2'
-   *  Product: '<S22>/Product3'
+  /* Sum: '<S21>/Add1' incorporates:
+   *  Product: '<S21>/Product2'
+   *  Product: '<S21>/Product3'
    */
   *rty_valBeta = rtu_valQ * rtb_TrigonometricFunction1 - rtu_valD *
     rtb_TrigonometricFunction;
@@ -757,10 +852,10 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
     rtu_Bus_Live_Out_PMSM_Inport_2->pmsm_phi_mech;
 
   /* Switch: '<S9>/Switch2' incorporates:
-   *  Constant: '<S17>/Constant'
+   *  Constant: '<S16>/Constant'
    *  Constant: '<S9>/Constant'
-   *  Gain: '<S21>/Gain'
-   *  RelationalOperator: '<S17>/Compare'
+   *  Gain: '<S20>/Gain'
+   *  RelationalOperator: '<S16>/Compare'
    *  Switch: '<S9>/Switch3'
    */
   if (rtu_Bus_ZM_Out_Inport_3->Ist_Regelungsart == Strom) {
@@ -809,11 +904,11 @@ static void Stromregelung(float rtu_Soll_Moment, const Bus_PMSM_Out
   /* End of Outputs for SubSystem: '<S9>/Ueberstromabschaltung' */
 
   /* Logic: '<S9>/Logical Operator' incorporates:
+   *  Constant: '<S14>/Constant'
    *  Constant: '<S15>/Constant'
-   *  Constant: '<S16>/Constant'
    *  Logic: '<S9>/Logical Operator1'
+   *  RelationalOperator: '<S14>/Compare'
    *  RelationalOperator: '<S15>/Compare'
-   *  RelationalOperator: '<S16>/Compare'
    */
   rtb_act_ab = (((rtb_IQRef == 0.0F) && (rtb_IDRef == 0.0F)) || rtb_act_ab);
 
@@ -890,125 +985,276 @@ static void state_chart(const Bus_ZM_In *rtu_Bus_ZM_In, bool rtu_Dis, Bus_ZM_Out
   *rty_Bus_ZM_Out, DW_state_chart *localDW)
 {
   /* Chart: '<S4>/state_chart' */
+  /* Gateway: uz_codegen/Zustandsmaschine/state_chart */
+  /* During: uz_codegen/Zustandsmaschine/state_chart */
   if (localDW->is_active_c3_uz_codegen0 == 0) {
+    /* Entry: uz_codegen/Zustandsmaschine/state_chart */
     localDW->is_active_c3_uz_codegen0 = 1U;
+
+    /* Entry Internal: uz_codegen/Zustandsmaschine/state_chart */
+    /* Transition: '<S31>:11' */
     localDW->is_c3_uz_codegen0 = IN_NoError;
+
+    /* Entry Internal 'NoError': '<S31>:32' */
+    /* Transition: '<S31>:45' */
     localDW->is_NoError = IN_Ready;
+
+    /* Entry 'Ready': '<S31>:19' */
+    /* '<S31>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
     rty_Bus_ZM_Out->Ist_Status = Ready;
+
+    /* '<S31>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
     rty_Bus_ZM_Out->Pulsfreigabe = false;
+
+    /* '<S31>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
     rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
+
+    /* '<S31>:19:5' Bus_ZM_Out.En_Traj=false; */
     rty_Bus_ZM_Out->En_Traj = false;
+
+    /* '<S31>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
     rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+    /* '<S31>:19:7' Bus_ZM_Out.Soll_id = 0; */
     rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+    /* '<S31>:19:8' Bus_ZM_Out.Soll_iq = 0; */
     rty_Bus_ZM_Out->Soll_iq = 0.0F;
   } else if (localDW->is_c3_uz_codegen0 == IN_Error) {
+    /* During 'Error': '<S31>:10' */
+    /* '<S31>:14:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == false && Bus_ZM_In.Soll_Status == Status_Ctrl.Ready); */
     if ((!rtu_Bus_ZM_In->Fehlermeldung) && (rtu_Bus_ZM_In->Soll_Status == Ready))
     {
+      /* Transition: '<S31>:14' */
       localDW->is_c3_uz_codegen0 = IN_NoError;
+
+      /* Entry Internal 'NoError': '<S31>:32' */
+      /* Transition: '<S31>:45' */
       localDW->is_NoError = IN_Ready;
+
+      /* Entry 'Ready': '<S31>:19' */
+      /* '<S31>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
       rty_Bus_ZM_Out->Ist_Status = Ready;
+
+      /* '<S31>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
+
+      /* '<S31>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
+
+      /* '<S31>:19:5' Bus_ZM_Out.En_Traj=false; */
       rty_Bus_ZM_Out->En_Traj = false;
+
+      /* '<S31>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+      /* '<S31>:19:7' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+      /* '<S31>:19:8' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     } else {
+      /* '<S31>:10:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Error_Status; */
       rty_Bus_ZM_Out->Ist_Status = Error_Status;
+
+      /* '<S31>:10:4' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
+
+      /* '<S31>:10:5' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Error; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Error;
+
+      /* '<S31>:10:6' Bus_ZM_Out.En_Traj = false; */
       rty_Bus_ZM_Out->En_Traj = false;
+
+      /* '<S31>:10:7' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+      /* '<S31>:10:8' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+      /* '<S31>:10:9' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     }
 
-    /* case IN_NoError: */
+    /* During 'NoError': '<S31>:32' */
+    /* '<S31>:15:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Fehlermeldung == true); */
   } else if (rtu_Bus_ZM_In->Fehlermeldung) {
+    /* Transition: '<S31>:15' */
+    /* Exit Internal 'NoError': '<S31>:32' */
+    /* Exit Internal 'Run': '<S31>:20' */
+    /* Exit Internal 'Trapez': '<S31>:54' */
     localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
     localDW->is_Run = IN_NO_ACTIVE_CHILD;
     localDW->is_NoError = IN_NO_ACTIVE_CHILD;
     localDW->is_c3_uz_codegen0 = IN_Error;
   } else if (localDW->is_NoError == IN_Ready) {
+    /* During 'Ready': '<S31>:19' */
+    /* '<S31>:25:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.En); */
     if (rtu_Bus_ZM_In->Soll_Status == En) {
+      /* Transition: '<S31>:25' */
       localDW->is_NoError = IN_Run;
+
+      /* Entry Internal 'Run': '<S31>:20' */
+      /* Transition: '<S31>:55' */
       localDW->is_Run = IN_nCtrl;
     } else {
+      /* '<S31>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
       rty_Bus_ZM_Out->Ist_Status = Ready;
+
+      /* '<S31>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
       rty_Bus_ZM_Out->Pulsfreigabe = false;
+
+      /* '<S31>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
       rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
+
+      /* '<S31>:19:5' Bus_ZM_Out.En_Traj=false; */
       rty_Bus_ZM_Out->En_Traj = false;
+
+      /* '<S31>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
       rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+      /* '<S31>:19:7' Bus_ZM_Out.Soll_id = 0; */
       rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+      /* '<S31>:19:8' Bus_ZM_Out.Soll_iq = 0; */
       rty_Bus_ZM_Out->Soll_iq = 0.0F;
     }
 
-    /* case IN_Run: */
+    /* During 'Run': '<S31>:20' */
+    /* '<S31>:26:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Status == Status_Ctrl.Dis); */
   } else if (rtu_Bus_ZM_In->Soll_Status == Dis) {
+    /* Transition: '<S31>:26' */
+    /* Exit Internal 'Run': '<S31>:20' */
+    /* Exit Internal 'Trapez': '<S31>:54' */
     localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
     localDW->is_Run = IN_NO_ACTIVE_CHILD;
     localDW->is_NoError = IN_Ready;
+
+    /* Entry 'Ready': '<S31>:19' */
+    /* '<S31>:19:2' Bus_ZM_Out.Ist_Status = Status_Ctrl.Ready; */
     rty_Bus_ZM_Out->Ist_Status = Ready;
+
+    /* '<S31>:19:3' Bus_ZM_Out.Pulsfreigabe = false; */
     rty_Bus_ZM_Out->Pulsfreigabe = false;
+
+    /* '<S31>:19:4' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
     rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
+
+    /* '<S31>:19:5' Bus_ZM_Out.En_Traj=false; */
     rty_Bus_ZM_Out->En_Traj = false;
+
+    /* '<S31>:19:6' Bus_ZM_Out.Soll_Drehzahl = 0; */
     rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+    /* '<S31>:19:7' Bus_ZM_Out.Soll_id = 0; */
     rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+    /* '<S31>:19:8' Bus_ZM_Out.Soll_iq = 0; */
     rty_Bus_ZM_Out->Soll_iq = 0.0F;
   } else {
+    /* '<S31>:20:3' Bus_ZM_Out.Ist_Status = Status_Ctrl.Run; */
     rty_Bus_ZM_Out->Ist_Status = Run;
+
+    /* '<S31>:20:4' Bus_ZM_Out.Pulsfreigabe = true; */
     rty_Bus_ZM_Out->Pulsfreigabe = true;
     switch (localDW->is_Run) {
      case IN_Stromregelung:
+      /* During 'Stromregelung': '<S31>:86' */
+      /* '<S31>:92:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Strom); */
       if (rtu_Bus_ZM_In->Soll_Regelungsart != Strom) {
+        /* Transition: '<S31>:92' */
         localDW->is_Run = IN_nCtrl;
       } else {
+        /* '<S31>:86:3' Bus_ZM_Out.Soll_id = Bus_ZM_In.Soll_id; */
         rty_Bus_ZM_Out->Soll_id = rtu_Bus_ZM_In->Soll_id;
+
+        /* '<S31>:86:4' Bus_ZM_Out.Soll_iq = Bus_ZM_In.Soll_iq; */
         rty_Bus_ZM_Out->Soll_iq = rtu_Bus_ZM_In->Soll_iq;
+
+        /* '<S31>:86:5' Bus_ZM_Out.Soll_Drehzahl = 0; */
         rty_Bus_ZM_Out->Soll_Drehzahl = 0.0F;
+
+        /* '<S31>:86:6' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Strom; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Strom;
       }
       break;
 
      case IN_Trapez:
+      /* During 'Trapez': '<S31>:54' */
+      /* '<S31>:90:1' sf_internal_predicateOutput = 0 | (Dis == 1 || Bus_ZM_In.Soll_Regelungsart ~= Soll_Regelungsart_en.Trajektorie); */
       if (rtu_Dis || (rtu_Bus_ZM_In->Soll_Regelungsart != Trajektorie)) {
+        /* Transition: '<S31>:90' */
+        /* Exit Internal 'Trapez': '<S31>:54' */
         localDW->is_Trapez = IN_NO_ACTIVE_CHILD;
         localDW->is_Run = IN_nCtrl;
       } else {
+        /* '<S31>:54:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Trajektorie; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Trajektorie;
+
+        /* '<S31>:54:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
         rty_Bus_ZM_Out->Soll_Drehzahl = rtu_Bus_ZM_In->Soll_Drehzahl;
+
+        /* '<S31>:54:5' Bus_ZM_Out.Soll_id = 0; */
         rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+        /* '<S31>:54:6' Bus_ZM_Out.Soll_iq = 0; */
         rty_Bus_ZM_Out->Soll_iq = 0.0F;
         if (localDW->is_Trapez == IN_Run_i) {
+          /* During 'Run': '<S31>:68' */
+          /* '<S31>:70:1' sf_internal_predicateOutput = 0 | (Dis == 1); */
+          /* '<S31>:68:2' Bus_ZM_Out.En_Traj = true; */
           rty_Bus_ZM_Out->En_Traj = true;
 
-          /* case IN_Warten: */
+          /* During 'Warten': '<S31>:66' */
+          /* '<S31>:69:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Start_Traj == 1); */
         } else if (rtu_Bus_ZM_In->Start_Traj) {
+          /* Transition: '<S31>:69' */
           localDW->is_Trapez = IN_Run_i;
+
+          /* Entry 'Run': '<S31>:68' */
+          /* '<S31>:68:2' Bus_ZM_Out.En_Traj = true; */
           rty_Bus_ZM_Out->En_Traj = true;
         } else {
+          /* '<S31>:66:2' Bus_ZM_Out.En_Traj = false; */
           rty_Bus_ZM_Out->En_Traj = false;
         }
       }
       break;
 
      default:
-      /* case IN_nCtrl: */
+      /* During 'nCtrl': '<S31>:56' */
+      /* '<S31>:89:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Trajektorie); */
       switch (rtu_Bus_ZM_In->Soll_Regelungsart) {
        case Trajektorie:
+        /* Transition: '<S31>:89' */
         localDW->is_Run = IN_Trapez;
+
+        /* Entry Internal 'Trapez': '<S31>:54' */
+        /* Transition: '<S31>:67' */
         localDW->is_Trapez = IN_Warten;
+
+        /* Entry 'Warten': '<S31>:66' */
+        /* '<S31>:66:2' Bus_ZM_Out.En_Traj = false; */
         rty_Bus_ZM_Out->En_Traj = false;
         break;
 
        case Strom:
+        /* '<S31>:91:1' sf_internal_predicateOutput = 0 | (Bus_ZM_In.Soll_Regelungsart == Soll_Regelungsart_en.Strom); */
+        /* Transition: '<S31>:91' */
         localDW->is_Run = IN_Stromregelung;
         break;
 
        default:
+        /* '<S31>:56:3' Bus_ZM_Out.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; */
         rty_Bus_ZM_Out->Ist_Regelungsart = Drehzahl;
+
+        /* '<S31>:56:4' Bus_ZM_Out.Soll_Drehzahl = Bus_ZM_In.Soll_Drehzahl; */
         rty_Bus_ZM_Out->Soll_Drehzahl = rtu_Bus_ZM_In->Soll_Drehzahl;
+
+        /* '<S31>:56:5' Bus_ZM_Out.Soll_id = 0; */
         rty_Bus_ZM_Out->Soll_id = 0.0F;
+
+        /* '<S31>:56:6' Bus_ZM_Out.Soll_iq = 0; */
         rty_Bus_ZM_Out->Soll_iq = 0.0F;
         break;
       }

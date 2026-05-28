@@ -7,16 +7,14 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.12
+ * Model version                  : 10.17
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed May 20 14:30:38 2026
+ * C/C++ source code generated on : Thu May 21 14:36:31 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
- * Code generation objectives:
- *    1. Execution efficiency
- *    2. Traceability
- * Validation result: Not run
+ * Code generation objective: Execution efficiency
+ * Validation result: All passed
  */
 
 #ifndef rtmodel_h_
@@ -31,6 +29,14 @@
 #define ROOT_IO_FORMAT                 2
 
 /* Macros generated for backwards compatibility  */
+#ifndef rtmGetErrorStatus
+#define rtmGetErrorStatus(rtm)         ((void*) 0)
+#endif
+
+#ifndef rtmSetErrorStatus
+#define rtmSetErrorStatus(rtm, val)    ((void) 0)
+#endif
+
 #ifndef rtmGetStopRequested
 #define rtmGetStopRequested(rtm)       ((void*) 0)
 #endif

@@ -1,7 +1,13 @@
 open_system('gm_uz_JL_invModel_ideal');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/MATLAB Function', 'user2');
+annotate_port('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/MATLAB Function', 0, 1, 'cp : 2.481 ns');
 cs.HiliteType = 'user1';
 cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'blue';
 set_param(0, 'HiliteAncestorsData', cs);
-hilite_system('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/Gain', 'user1');
-annotate_port('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/Gain', 0, 1, 'cp : 1.804 ns');
+hilite_system('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/MATLAB Function/divider', 'user1');
+annotate_port('gm_uz_JL_invModel_ideal/uz_JL_invModel_ideal/MATLAB Function/divider', 0, 1, 'cp : 2.481 ns');

@@ -25,12 +25,18 @@
 #include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel_hwAdresse.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
-
+#include "uz/uz_signals/uz_signals.h"
 
 uz_JL_invModel_PT1_t *inverter_PT1=NULL;
 uz_JL_invModel_ideal_t *inverter_ideal = NULL;
 uz_JL_pmsmModel_t *pmsm_PT1 = NULL;
 uz_JL_pmsmModel_t *pmsm_ideal = NULL;
+uz_IIR_Filter_t *iir_speed = NULL;
+uz_IIR_Filter_t *iir_current_a = NULL;
+uz_IIR_Filter_t *iir_current_b = NULL;
+uz_IIR_Filter_t *iir_current_c = NULL;
+
+
 
 extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
 extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
@@ -39,17 +45,17 @@ extern struct uz_JL_invModel_PT1_output_t pt1_outputs;
 
 extern struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out;
 
-//struct uz_JL_invModel_ideal_config_t ideal_config ={
-//		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_IDEAL_0_BASEADDR,
-//		.ip_core_frequency_Hz = 100000000.0f,
-//		.Udc = 540.0f
-//};
+struct uz_JL_invModel_ideal_config_t ideal_config ={
+		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_IDEAL_0_BASEADDR,
+		.ip_core_frequency_Hz = 100000000.0f,
+		.Udc = 540.0f
+};
 
 struct uz_JL_invModel_PT1_config_t PT1_config ={
 		.base_adress = XPAR_UZ_USER_UZ_JL_INVMODEL_PT1_0_BASEADDR,
 		.ip_core_frequency_Hz = 100000000.0f,
 		.gain = 1.0f,
-		.time_constant = 1000000.0f,
+		.time_constant = 100000.0f,
 };
 
 struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
@@ -68,18 +74,34 @@ struct uz_JL_pmsmModel_config_t pmsm_pt1_config = {
 		.i_max = 20.9f,
 };
 
-//struct uz_JL_pmsmModel_config_t pmsm_ideal_config = {
-//		.base_address = XPAR_UZ_USER_UZ_JL_PMSMMODEL_1_BASEADDR,
-//		.ip_core_frequency_Hz = 100000000.0f,
-//		.mot_J = 0.000875f,
-//		.mot_p = 4.0f,
-//		.r_1 = 1.8f,
-//		.L_d = 0.0072f,
-//		.L_q = 0.0072f,
-//		.psi_pm = 0.1423f,
-//		.mot_F = 0.01f,
-//		.mot_Fcoeff = 0.001f,
-//};
+struct uz_JL_pmsmModel_config_t pmsm_ideal_config = {
+		.base_address = XPAR_UZ_USER_UZ_JL_PMSMMODEL_1_BASEADDR,
+		.ip_core_frequency_Hz = 100000000.0f,
+		.mot_J = 0.000875f,
+		.mot_p = 4.0f,
+		.r_1 = 1.8f,
+		.L_d = 0.0072f,
+		.L_q = 0.0072f,
+		.psi_pm = 0.1423f,
+		.mot_F = 0.01f,
+		.mot_Fcoeff = 0.001f,
+		.M_N = 4.3f,
+		.n_N = 5700.0f,
+		.i_max = 20.9f,
+};
+
+struct uz_IIR_Filter_config iir_speed_config = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 700.0f,
+		.sample_frequency_Hz = 20.0e3f,
+};
+
+struct uz_IIR_Filter_config iir_current_config = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 500.0f,
+		.sample_frequency_Hz = 20.0e3f,
+};
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -135,9 +157,9 @@ int main(void)
 	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = 0;
 	regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = 0;
 	regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = 0;
-	regelung.output.Bus_Ctrl_Out_k.Dutycycle[0] = 0.5;
-	regelung.output.Bus_Ctrl_Out_k.Dutycycle[1] = 0.5;
-	regelung.output.Bus_Ctrl_Out_k.Dutycycle[2] = 0.5;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[0] = 0.0;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[1] = 0.0;
+	regelung.output.Bus_Ctrl_Out_k.Dutycycle[2] = 0.0;
 	regelung.output.Bus_Ctrl_Out_k.ctrl_Ualpha = 0;
 	regelung.output.Bus_Ctrl_Out_k.ctrl_Ubeta = 0;
 	regelung.output.Bus_Ctrl_Out_k.act_pwm = false;
@@ -178,6 +200,7 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             uz_codegen_init(&regelung);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -186,9 +209,10 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
 
-//            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
-//            pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
-//        	uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
+            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
+            pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
+        	uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
+
 //            uz_axi_write_bool(XPAR_UZ_USER_UZ_JL_PMSMMODEL_1_BASEADDR + IPCore_Enable_uz_JL_pmsmModel, true);
 
             inverter_PT1 = uz_JL_invModel_PT1_init(PT1_config);
@@ -197,6 +221,10 @@ int main(void)
             uz_JL_pmsmModel_set_inputs(pmsm_PT1, pmsm_pt1_in);
             uz_axi_write_bool(XPAR_UZ_USER_UZ_JL_PMSMMODEL_0_BASEADDR + IPCore_Enable_uz_JL_pmsmModel, true);
 
+            iir_speed = uz_signals_IIR_Filter_init(iir_speed_config);
+            iir_current_a = uz_signals_IIR_Filter_init(iir_current_config);
+            iir_current_b = uz_signals_IIR_Filter_init(iir_current_config);
+            iir_current_c = uz_signals_IIR_Filter_init(iir_current_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

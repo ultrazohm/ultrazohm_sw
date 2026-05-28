@@ -1,0 +1,27 @@
+# Setting a Project
+create_project amdfp "./" -in_memory -part xczu9eg-ffvb1156-1-e -ip 
+# Set Target Language 
+set_property target_language VHDL [current_project]
+
+# BEGIN Parameters
+set xci_file [create_ip -name floating_point -vendor xilinx.com -library ip -version 7.1 -module_name amdfp_sub_single]
+set_property CONFIG.Add_Sub_Value Subtract [get_ips amdfp_sub_single]
+set_property CONFIG.A_Precision_Type Single [get_ips amdfp_sub_single]
+set_property CONFIG.C_A_Exponent_Width 8 [get_ips amdfp_sub_single]
+set_property CONFIG.C_A_Fraction_Width 24 [get_ips amdfp_sub_single]
+set_property CONFIG.Result_Precision_Type Single [get_ips amdfp_sub_single]
+set_property CONFIG.C_Result_Exponent_Width  8 [get_ips amdfp_sub_single]
+set_property CONFIG.C_Result_Fraction_Width  24 [get_ips amdfp_sub_single]
+set_property CONFIG.C_Mult_Usage Full_Usage [get_ips amdfp_sub_single]
+set_property CONFIG.Flow_Control {NonBlocking} [get_ips amdfp_sub_single]
+set_property CONFIG.Has_ACLKEN {true} [get_ips amdfp_sub_single]
+set_property CONFIG.Has_ARESETn {true} [get_ips amdfp_sub_single]
+set_property CONFIG.Has_RESULT_TREADY {false} [get_ips amdfp_sub_single]
+set_property CONFIG.Maximum_Latency {false} [get_ips amdfp_sub_single]
+set_property CONFIG.C_Rate 1 [get_ips amdfp_sub_single]
+set_property CONFIG.C_Latency 11 [get_ips amdfp_sub_single]
+# END Parameters
+
+#Generate HDL files for the IP
+synth_ip [get_ips amdfp_sub_single]
+close_project

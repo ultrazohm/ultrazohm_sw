@@ -26,10 +26,15 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-extern uz_JL_pmsmModel_t *pmsm_PT1;
+extern uz_JL_pmsmModel_t *pmsm_ideal;
+
+extern float DutA;
+extern float DutB;
+extern float DutC;
+
 
 extern Bus_ZM_In struct_ZM_In;
-extern struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in;
+extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -199,21 +204,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		pmsm_pt1_in.Last_M = value;
-		uz_JL_pmsmModel_set_inputs(pmsm_PT1, pmsm_pt1_in);
+		pmsm_ideal_in.Last_M = value;
+		uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
 
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		DutA = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		DutB = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		DutC = value;
 			break;
 
 		case (Set_Send_Field_6):

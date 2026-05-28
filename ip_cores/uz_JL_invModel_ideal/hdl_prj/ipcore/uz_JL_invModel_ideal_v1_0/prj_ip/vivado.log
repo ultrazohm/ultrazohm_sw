@@ -2,8 +2,8 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Wed May 13 15:42:03 2026
-# Process ID: 33672
+# Start of session at: Tue May 26 13:14:53 2026
+# Process ID: 8924
 # Current directory: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/prj_ip/vivado.log
@@ -11,11 +11,14 @@
 # Running On: Jonathan-Link, OS: Windows, CPU Frequency: 1697 MHz, CPU Physical cores: 16, Host memory: 33528 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:09 . Memory (MB): peak = 378.156 ; gain = 42.758
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:11 . Memory (MB): peak = 377.922 ; gain = 45.699
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+WARNING: [Vivado 12-13650] The IP file 'C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single/amdfp_mul_single.xci' has been moved from its original location, as a result the outputs for this IP will now be generated in 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/hdl/Xilinx/.gen/sources_1/ip/amdfp_mul_single'. Alternatively a copy of the IP can be imported into the project using one of the 'import_ip' or 'import_files' commands.
+add_files: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 449.328 ; gain = 71.406
+WARNING: [Vivado 12-13650] The IP file 'C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L11/amdfp_sub_single/amdfp_sub_single.xci' has been moved from its original location, as a result the outputs for this IP will now be generated in 'c:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/hdl/Xilinx/.gen/sources_1/ip/amdfp_sub_single'. Alternatively a copy of the IP can be imported into the project using one of the 'import_ip' or 'import_files' commands.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'IPCORE_RESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -31,14 +34,16 @@ INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -65,4 +70,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_axi4.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_invModel_ideal.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed May 13 15:42:24 2026...
+INFO: [Common 17-206] Exiting Vivado at Tue May 26 13:15:25 2026...

@@ -25,15 +25,15 @@
  * 4 for Interrupt_3L_start
  * 5 for Interrupt_3L_center
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        2U
 
 #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U // 0: ISR triggers on selected PWM event. 1: ISR triggers on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
 #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
 #define UZ_PWM_FREQUENCY                        20.0e3f
-#define UZ_PWM_DEADTIME_IN_US                   5.0f
-#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        1.0f
+#define UZ_PWM_DEADTIME_IN_US                   0.5f
+#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        5.0f
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
@@ -52,7 +52,7 @@
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     4U
 #define UZ_RAMP_MAX_INSTANCES                           1U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U

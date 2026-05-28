@@ -40,20 +40,27 @@
 #include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_signals/uz_signals.h"
 
 extern uz_JL_invModel_PT1_t *inverter_PT1;
-//extern uz_JL_invModel_ideal_t *inverter_ideal;
+extern uz_JL_invModel_ideal_t *inverter_ideal;
 extern uz_JL_pmsmModel_t *pmsm_PT1;
-//extern uz_JL_pmsmModel_t *pmsm_ideal;
+extern uz_JL_pmsmModel_t *pmsm_ideal;
+extern uz_IIR_Filter_t *iir_speed;
+extern uz_IIR_Filter_t *iir_current_a;
+extern uz_IIR_Filter_t *iir_current_b;
+extern uz_IIR_Filter_t *iir_current_c;
+
+
 
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 uz_3ph_abc_t three_phase_sine = {0};
 
 struct uz_JL_invModel_PT1_output_t pt1_outputs = {0};
-//struct uz_JL_invModel_ideal_output_t ideal_outputs = {0};
+struct uz_JL_invModel_ideal_output_t ideal_outputs = {0};
 
 struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out = {0};
-//struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out = {0};
+struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out = {0};
 
 struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in = {
 		.Last_J = 0.0f,
@@ -64,21 +71,16 @@ struct uz_JL_pmsmModel_inputs_t pmsm_pt1_in = {
 		.Uq = 0.0f,
 };
 
-//struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in = {
-//		.Last_J = 0.0f,
-//		.Last_M = 2.0f,
-//		.bremse = 0.0f,
-//		.SwitchUabc_dq = false,
-//		.Ud = 0.0f,
-//		.Uq = 0.0f,
-//};
+struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in = {
+		.Last_J = 0.0f,
+		.Last_M = 0.0f,
+		.bremse = 0.0f,
+		.SwitchUabc_dq = false,
+		.Ud = 0.0f,
+		.Uq = 0.0f,
+};
 
 
-float ctrl_in_currents[3];
-uz_3ph_abc_t in_currents = {                                     // stores flowing currents (made up values for this example)
-  .a = 5,
-  .b = 5,
-  .c = 5};
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
@@ -91,6 +93,14 @@ Bus_ZM_In struct_ZM_In;
 //extern uz_pmsmModel_t *pmsm;
 
 bool timer = false;
+float speed_filtered = 0.0f;
+float i_a_filt = 0.0f;
+float i_b_filt = 0.0f;
+float i_c_filt = 0.0f;
+
+float DutA = 0.0f;
+float DutB = 0.0f;
+float DutC = 0.0f;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
@@ -104,17 +114,29 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    ReadAllADC();
 //	uz_JL_invModel_PT1_trigger_output_strobe(inverter_PT1);
 //	pt1_outputs = uz_JL_invModel_PT1_get_outputs(inverter_PT1);
-	uz_JL_pmsmModel_trigger_output_strobe(pmsm_PT1);
-	pmsm_pt1_out = uz_JL_pmsmModel_get_outputs(pmsm_PT1);
 
-    regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[0] = pmsm_pt1_out.i_a_A;
-	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[1] = pmsm_pt1_out.i_b_A;
-	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = pmsm_pt1_out.i_c_A;
-	regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = pmsm_pt1_out.omega_mech_1_s;
-	regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = pmsm_pt1_out.phi_mech_rad;
-	regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = pmsm_pt1_out.torque_Nm;
+//	uz_JL_pmsmModel_trigger_output_strobe(pmsm_PT1);
+//	pmsm_pt1_out = uz_JL_pmsmModel_get_outputs(pmsm_PT1);
+
+	uz_JL_invModel_ideal_trigger_output_strobe(inverter_ideal);
+	ideal_outputs = uz_JL_invModel_ideal_get_outputs(inverter_ideal);
+
+	uz_JL_pmsmModel_trigger_output_strobe(pmsm_ideal);
+	pmsm_ideal_out = uz_JL_pmsmModel_get_outputs(pmsm_ideal);
+	speed_filtered = uz_signals_IIR_Filter_sample(iir_speed, pmsm_ideal_out.omega_mech_1_s);
+	i_a_filt = uz_signals_IIR_Filter_sample(iir_current_a, pmsm_ideal_out.i_a_A);
+	i_b_filt = uz_signals_IIR_Filter_sample(iir_current_b, pmsm_ideal_out.i_b_A);
+	i_c_filt = uz_signals_IIR_Filter_sample(iir_current_c, pmsm_ideal_out.i_c_A);
+
+    regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[0] = pmsm_ideal_out.i_a_A;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[1] = pmsm_ideal_out.i_b_A;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = pmsm_ideal_out.i_c_A;
+	regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = speed_filtered;//pmsm_ideal_out.omega_mech_1_s;
+	regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = pmsm_ideal_out.phi_mech_rad;
+	regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = pmsm_ideal_out.torque_Nm;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     switch(current_state)
@@ -126,42 +148,49 @@ void ISR_Control(void *data)
 			struct_ZM_In.Soll_iq = 0;
 			struct_ZM_In.Fehlermeldung = false;
 			struct_ZM_In.Start_Traj = false;
+			voltages_alphabeta.alpha = 0.0f;
+			voltages_alphabeta.beta = 0.0f;
+		    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
 			break;
 		case running_state:
 			struct_ZM_In.Soll_Status = Run;
 			struct_ZM_In.Soll_Drehzahl = 0;
 			struct_ZM_In.Soll_id = 0;
 			struct_ZM_In.Soll_iq = 0;
+			voltages_alphabeta.alpha = 0.0f;
+			voltages_alphabeta.beta = 0.0f;
 			break;
 		case control_state:
 //		    Start: Control algorithm - only if ultrazohm is in control state
 			struct_ZM_In.Soll_Status = En;
 			struct_ZM_In.Soll_Regelungsart = Drehzahl;
-//			struct_ZM_In.Soll_Drehzahl = 10;
+			struct_ZM_In.Soll_Drehzahl = 2000;
 //			struct_ZM_In.Soll_iq = 10;
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+			regelung.input.Bus_ZM_In_f = struct_ZM_In;
+			uz_codegen_step(&regelung);
+		    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[0];
+		    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[1];
+		    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[2];
+			voltages_alphabeta.alpha = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ualpha;
+			voltages_alphabeta.beta = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ubeta;
 		   break;
 		default:
 			break;
 	}
 
-//    float amplitude = 100.0f;
-//    float frequency = 20.0f;
-//    float offset = 0.0f;
-//    three_phase_sine = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
 
-    regelung.input.Bus_ZM_In_f = struct_ZM_In;
+//	uz_JL_invModel_PT1_set_input(inverter_PT1, voltages_alphabeta.alpha, voltages_alphabeta.beta);
 
-    uz_codegen_step(&regelung);
 
-    voltages_alphabeta.alpha = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ualpha;
-	voltages_alphabeta.beta = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ubeta;
-	uz_JL_invModel_PT1_set_input(inverter_PT1, voltages_alphabeta.alpha, voltages_alphabeta.beta);
-
-    JavaScope_update(&Global_Data);
-
-    //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
+    JavaScope_update(&Global_Data);
+
     uz_SystemTime_ISR_Toc();
 }
 

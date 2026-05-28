@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Fri May 22 09:06:51 2026
+# Process ID: 1164
+# Current directory: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/hdlsrc/uz_JL_invModel_ideal/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single
+# Command line: vivado.exe -mode batch -source C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_ideal\hdl_prj\hdlsrc\uz_JL_invModel_ideal\Xilinx\Zynq_UltraScale+\xczu9eg-ffvb1156-1-e\L8\amdfp_mul_single\amdfp_mul_single_scripts.tcl
+# Log file: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/hdlsrc/uz_JL_invModel_ideal/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single/vivado.log
+# Journal file: C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/hdlsrc/uz_JL_invModel_ideal/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single\vivado.jou
+# Running On: Jonathan-Link, OS: Windows, CPU Frequency: 1697 MHz, CPU Physical cores: 16, Host memory: 33528 MB
+#-----------------------------------------------------------
+source {C:\Users\jonat\Documents\MA_JL_CIL\ip_cores\uz_JL_invModel_ideal\hdl_prj\hdlsrc\uz_JL_invModel_ideal\Xilinx\Zynq_UltraScale+\xczu9eg-ffvb1156-1-e\L8\amdfp_mul_single\amdfp_mul_single_scripts.tcl}

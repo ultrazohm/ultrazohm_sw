@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/MA_JL_CIL/ip_cores/uz_JL_invModel_ideal/hdl_prj/ipcore/uz_JL_invModel_ideal_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="832d3a1685304be682d46a5301d41c72"/>
+    <Option Name="Id" Val="ad4e4d368213424f8e035ba58a968eae"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -89,6 +89,20 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
       <Filter Type="Srcs"/>
+      <File Path="$PPRDIR/../hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single/amdfp_mul_single.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L11/amdfp_sub_single/amdfp_sub_single.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -155,13 +169,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd">
+      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -173,7 +181,19 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd">
+      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

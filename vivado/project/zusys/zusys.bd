@@ -114,11 +114,15 @@
       },
       "uz_user": {
         "smartconnect_1": "",
-        "PWM_H": "",
-        "PWM_L": "",
+        "S0": "",
+        "S2": "",
         "PWM_ideal": "",
         "uz_JL_pmsmModel_0": "",
-        "uz_JL_InvModel_PT1_0": ""
+        "uz_JL_InvModel_PT1_0": "",
+        "uz_JL_pmsmModel_1": "",
+        "uz_JL_invModel_ideal_0": "",
+        "S4": "",
+        "xlconcat_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5692,7 +5696,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "2"
+                "value": "4"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5713,7 +5717,9 @@
                 },
                 "bridges": [
                   "M00_AXI",
-                  "M01_AXI"
+                  "M01_AXI",
+                  "M02_AXI",
+                  "M03_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5777,37 +5783,79 @@
                     "value": "0"
                   }
                 }
+              },
+              "M02_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M03_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             }
           },
-          "PWM_H": {
+          "S0": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
             "xci_name": "zusys_xlslice_0_3",
             "xci_path": "ip\\zusys_xlslice_0_3\\zusys_xlslice_0_3.xci",
-            "inst_hier_path": "uz_user/PWM_H",
+            "inst_hier_path": "uz_user/S0",
             "parameters": {
               "DIN_FROM": {
-                "value": "5"
-              },
-              "DIN_TO": {
-                "value": "3"
-              },
-              "DIN_WIDTH": {
-                "value": "24"
-              },
-              "DOUT_WIDTH": {
-                "value": "3"
-              }
-            }
-          },
-          "PWM_L": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_4",
-            "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
-            "inst_hier_path": "uz_user/PWM_L",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "2"
+                "value": "0"
               },
               "DIN_TO": {
                 "value": "0"
@@ -5816,7 +5864,27 @@
                 "value": "24"
               },
               "DOUT_WIDTH": {
-                "value": "3"
+                "value": "1"
+              }
+            }
+          },
+          "S2": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_0_4",
+            "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
+            "inst_hier_path": "uz_user/S2",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "2"
+              },
+              "DIN_TO": {
+                "value": "2"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "1"
               }
             }
           },
@@ -5830,13 +5898,13 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "2"
+                "value": "3"
               },
               "C_PROBE0_WIDTH": {
-                "value": "3"
+                "value": "1"
               },
               "C_PROBE1_WIDTH": {
-                "value": "3"
+                "value": "1"
               }
             }
           },
@@ -5851,6 +5919,49 @@
             "xci_name": "zusys_uz_JL_InvModel_PT1_0_0",
             "xci_path": "ip\\zusys_uz_JL_InvModel_PT1_0_0\\zusys_uz_JL_InvModel_PT1_0_0.xci",
             "inst_hier_path": "uz_user/uz_JL_InvModel_PT1_0"
+          },
+          "uz_JL_pmsmModel_1": {
+            "vlnv": "xilinx.com:ip:uz_JL_pmsmModel:1.0",
+            "xci_name": "zusys_uz_JL_pmsmModel_1_0",
+            "xci_path": "ip\\zusys_uz_JL_pmsmModel_1_0\\zusys_uz_JL_pmsmModel_1_0.xci",
+            "inst_hier_path": "uz_user/uz_JL_pmsmModel_1"
+          },
+          "uz_JL_invModel_ideal_0": {
+            "vlnv": "xilinx.com:ip:uz_JL_invModel_ideal:1.0",
+            "xci_name": "zusys_uz_JL_invModel_ideal_0_2",
+            "xci_path": "ip\\zusys_uz_JL_invModel_ideal_0_2\\zusys_uz_JL_invModel_ideal_0_2.xci",
+            "inst_hier_path": "uz_user/uz_JL_invModel_ideal_0"
+          },
+          "S4": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_S2_0",
+            "xci_path": "ip\\zusys_S2_0\\zusys_S2_0.xci",
+            "inst_hier_path": "uz_user/S4",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "4"
+              },
+              "DIN_TO": {
+                "value": "4"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "1"
+              }
+            }
+          },
+          "xlconcat_0": {
+            "vlnv": "xilinx.com:ip:xlconcat:2.1",
+            "xci_name": "zusys_xlconcat_0_3",
+            "xci_path": "ip\\zusys_xlconcat_0_3\\zusys_xlconcat_0_3.xci",
+            "inst_hier_path": "uz_user/xlconcat_0",
+            "parameters": {
+              "NUM_PORTS": {
+                "value": "3"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -5871,9 +5982,35 @@
               "smartconnect_1/M01_AXI",
               "uz_JL_pmsmModel_0/AXI4"
             ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "uz_JL_invModel_ideal_0/AXI4",
+              "smartconnect_1/M02_AXI"
+            ]
+          },
+          "smartconnect_1_M03_AXI": {
+            "interface_ports": [
+              "uz_JL_pmsmModel_1/AXI4",
+              "smartconnect_1/M03_AXI"
+            ]
           }
         },
         "nets": {
+          "S0_Dout": {
+            "ports": [
+              "S0/Dout",
+              "PWM_ideal/probe0",
+              "xlconcat_0/In0"
+            ]
+          },
+          "S4_Dout": {
+            "ports": [
+              "S4/Dout",
+              "PWM_ideal/probe2",
+              "xlconcat_0/In2"
+            ]
+          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "aresetn",
@@ -5881,7 +6018,11 @@
               "uz_JL_pmsmModel_0/IPCORE_RESETN",
               "uz_JL_pmsmModel_0/AXI4_ARESETN",
               "uz_JL_InvModel_PT1_0/IPCORE_RESETN",
-              "uz_JL_InvModel_PT1_0/AXI4_ARESETN"
+              "uz_JL_InvModel_PT1_0/AXI4_ARESETN",
+              "uz_JL_pmsmModel_1/IPCORE_RESETN",
+              "uz_JL_pmsmModel_1/AXI4_ARESETN",
+              "uz_JL_invModel_ideal_0/IPCORE_RESETN",
+              "uz_JL_invModel_ideal_0/AXI4_ARESETN"
             ]
           },
           "uz_JL_InvModel_PT1_0_InvOut_PL_U": {
@@ -5902,23 +6043,43 @@
               "uz_JL_pmsmModel_0/mot_W"
             ]
           },
+          "uz_JL_invModel_ideal_0_InvOut_PL_U": {
+            "ports": [
+              "uz_JL_invModel_ideal_0/InvOut_PL_U",
+              "uz_JL_pmsmModel_1/mot_U"
+            ]
+          },
+          "uz_JL_invModel_ideal_0_InvOut_PL_V": {
+            "ports": [
+              "uz_JL_invModel_ideal_0/InvOut_PL_V",
+              "uz_JL_pmsmModel_1/mot_V"
+            ]
+          },
+          "uz_JL_invModel_ideal_0_InvOut_PL_W": {
+            "ports": [
+              "uz_JL_invModel_ideal_0/InvOut_PL_W",
+              "uz_JL_pmsmModel_1/mot_W"
+            ]
+          },
+          "xlconcat_0_dout": {
+            "ports": [
+              "xlconcat_0/dout",
+              "uz_JL_invModel_ideal_0/PWM_H"
+            ]
+          },
           "xlslice_3_Dout": {
             "ports": [
               "Din",
-              "PWM_H/Din",
-              "PWM_L/Din"
-            ]
-          },
-          "xlslice_4_Dout": {
-            "ports": [
-              "PWM_H/Dout",
-              "PWM_ideal/probe0"
+              "S0/Din",
+              "S2/Din",
+              "S4/Din"
             ]
           },
           "xlslice_5_Dout": {
             "ports": [
-              "PWM_L/Dout",
-              "PWM_ideal/probe1"
+              "S2/Dout",
+              "PWM_ideal/probe1",
+              "xlconcat_0/In1"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5929,7 +6090,11 @@
               "uz_JL_pmsmModel_0/IPCORE_CLK",
               "uz_JL_pmsmModel_0/AXI4_ACLK",
               "uz_JL_InvModel_PT1_0/IPCORE_CLK",
-              "uz_JL_InvModel_PT1_0/AXI4_ACLK"
+              "uz_JL_InvModel_PT1_0/AXI4_ACLK",
+              "uz_JL_pmsmModel_1/IPCORE_CLK",
+              "uz_JL_pmsmModel_1/AXI4_ACLK",
+              "uz_JL_invModel_ideal_0/IPCORE_CLK",
+              "uz_JL_invModel_ideal_0/AXI4_ACLK"
             ]
           }
         }
@@ -9451,9 +9616,19 @@
                 "offset": "0x0080120000",
                 "range": "64K"
               },
+              "SEG_uz_JL_invModel_ideal_0_reg0": {
+                "address_block": "/uz_user/uz_JL_invModel_ideal_0/AXI4/reg0",
+                "offset": "0x0080100000",
+                "range": "64K"
+              },
               "SEG_uz_JL_pmsmModel_0_reg0": {
                 "address_block": "/uz_user/uz_JL_pmsmModel_0/AXI4/reg0",
                 "offset": "0x0080130000",
+                "range": "64K"
+              },
+              "SEG_uz_JL_pmsmModel_1_reg0": {
+                "address_block": "/uz_user/uz_JL_pmsmModel_1/AXI4/reg0",
+                "offset": "0x0080140000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {

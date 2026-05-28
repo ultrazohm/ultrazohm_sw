@@ -20,7 +20,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
 		.triangle_shift_HB1 = 0.0f,
 		.triangle_shift_HB2 = 0.0f,
 		.triangle_shift_HB3 = 0.0f,
-		.trigger_source = trigger_at_EITHER
+		.trigger_source = trigger_at_MAX
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {

@@ -65,6 +65,11 @@ extern struct uz_JL_invModel_ideal_output_t ideal_outputs;
 extern struct uz_JL_pmsmModel_outputs_t pmsm_pt1_out;
 extern struct uz_JL_pmsmModel_outputs_t pmsm_ideal_out;
 
+extern float speed_filtered;
+extern float i_a_filt;
+extern float i_b_filt;
+extern float i_c_filt;
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -85,18 +90,28 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_PT1_ua] 				= &pt1_outputs.Ua;
-	js_ch_observable[JSO_PT1_ub] 				= &pt1_outputs.Ub;
-	js_ch_observable[JSO_PT1_uc] 				= &pt1_outputs.Uc;
+//	js_ch_observable[JSO_PT1_ua] 				= &pt1_outputs.Ua;
+//	js_ch_observable[JSO_PT1_ub] 				= &pt1_outputs.Ub;
+//	js_ch_observable[JSO_PT1_uc] 				= &pt1_outputs.Uc;
+//	js_ch_observable[JSO_pmsm_pt1_ia]			= &pmsm_pt1_out.i_a_A;
+//	js_ch_observable[JSO_pmsm_pt1_ib]			= &pmsm_pt1_out.i_b_A;
+//	js_ch_observable[JSO_pmsm_pt1_ic]			= &pmsm_pt1_out.i_c_A;
+	js_ch_observable[JSO_ideal_ia_filt]			= &i_a_filt;
+	js_ch_observable[JSO_ideal_ib_filt]			= &i_b_filt;
+	js_ch_observable[JSO_ideal_ic_filt]			= &i_c_filt;
+	js_ch_observable[JSO_pmsm_ideal_omega]		= &pmsm_ideal_out.omega_mech_1_s;
+	js_ch_observable[JSO_pmsm_ideal_phi]		= &pmsm_ideal_out.phi_mech_rad;
+	js_ch_observable[JSO_pmsm_ideal_torque]		= &pmsm_ideal_out.torque_Nm;
+//	js_ch_observable[JSO_Soll_Drehzahl]			= &struct_ZM_In.Soll_Drehzahl;
+	js_ch_observable[JSO_omega_filt]			= &speed_filtered;
 	js_ch_observable[JSO_ctrl_Ualpha] 			= &voltages_alphabeta.alpha;
 	js_ch_observable[JSO_ctrl_Ubeta] 			= &voltages_alphabeta.beta;
-	js_ch_observable[JSO_pmsm_pt1_ia]			= &pmsm_pt1_out.i_a_A;
-	js_ch_observable[JSO_pmsm_pt1_ib]			= &pmsm_pt1_out.i_b_A;
-	js_ch_observable[JSO_pmsm_pt1_ic]			= &pmsm_pt1_out.i_c_A;
-	js_ch_observable[JSO_pmsm_pt1_omega]		= &pmsm_pt1_out.omega_mech_1_s;
-	js_ch_observable[JSO_pmsm_pt1_phi]			= &pmsm_pt1_out.phi_mech_rad;
-	js_ch_observable[JSO_pmsm_pt1_torque]		= &pmsm_pt1_out.torque_Nm;
-	js_ch_observable[JSO_Soll_Drehzahl]			= &struct_ZM_In.Soll_Drehzahl;
+	js_ch_observable[JSO_ideal_ua] 				= &ideal_outputs.Ua;
+	js_ch_observable[JSO_ideal_ub] 				= &ideal_outputs.Ub;
+	js_ch_observable[JSO_ideal_uc] 				= &ideal_outputs.Uc;
+	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
+	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
+	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

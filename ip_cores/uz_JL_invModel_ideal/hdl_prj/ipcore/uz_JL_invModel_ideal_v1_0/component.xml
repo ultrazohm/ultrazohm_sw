@@ -408,12 +408,15 @@
         <spirit:language>VHDL</spirit:language>
         <spirit:modelName>uz_JL_invModel_ideal</spirit:modelName>
         <spirit:fileSetRef>
+          <spirit:localName>xilinx_anylanguagesynthesis_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>277ce150</spirit:value>
+            <spirit:value>d0d8662a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -424,12 +427,15 @@
         <spirit:language>VHDL</spirit:language>
         <spirit:modelName>uz_JL_invModel_ideal</spirit:modelName>
         <spirit:fileSetRef>
+          <spirit:localName>xilinx_anylanguagebehavioralsimulation_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>277ce150</spirit:value>
+            <spirit:value>d0d8662a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -493,23 +499,6 @@
       </spirit:port>
       <spirit:port>
         <spirit:name>PWM_H</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">2</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>PWM_L</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -994,11 +983,45 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>InvOut_PL</spirit:name>
+        <spirit:name>InvOut_PL_U</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">95</spirit:left>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>InvOut_PL_V</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>InvOut_PL_W</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1179,6 +1202,16 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single/amdfp_mul_single.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_u_uz_JL_invModel_ideal_dut_inst/u_uz_JL_invModel_ideal_src_uz_JL_invModel_ideal/u_MATLAB_Function/u_amdfp_mul_single_inst/amdfp_mul_single_1/amdfp_mul_single</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L11/amdfp_sub_single/amdfp_sub_single.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_u_uz_JL_invModel_ideal_dut_inst/u_uz_JL_invModel_ideal_src_uz_JL_invModel_ideal/u_MATLAB_Function/u_amdfp_sub_single_inst/amdfp_sub_single_1/amdfp_sub_single</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_JL_invModel_ideal_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1223,11 +1256,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1235,7 +1264,15 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1249,12 +1286,32 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_invModel_ideal.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7b542051</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_2b690ca7</spirit:userFileType>
       </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_anylanguagesynthesis_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:name>
+      <spirit:vendorExtensions>
+        <xilinx:subCoreRef>
+          <xilinx:componentRef xsi:type="xilinx:componentRefType" xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="floating_point" xilinx:version="7.1">
+            <xilinx:mode xilinx:name="create_mode"/>
+          </xilinx:componentRef>
+        </xilinx:subCoreRef>
+      </spirit:vendorExtensions>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L8/amdfp_mul_single/amdfp_mul_single.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_u_uz_JL_invModel_ideal_dut_inst/u_uz_JL_invModel_ideal_src_uz_JL_invModel_ideal/u_MATLAB_Function/u_amdfp_mul_single_inst/amdfp_mul_single_1/amdfp_mul_single</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/Xilinx/Zynq_UltraScale+/xczu9eg-ffvb1156-1-e/L11/amdfp_sub_single/amdfp_sub_single.xci</spirit:name>
+        <spirit:userFileType>xci</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_u_uz_JL_invModel_ideal_dut_inst/u_uz_JL_invModel_ideal_src_uz_JL_invModel_ideal/u_MATLAB_Function/u_amdfp_sub_single_inst/amdfp_sub_single_1/amdfp_sub_single</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_JL_invModel_ideal_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1310,12 +1367,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1325,7 +1377,17 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1344,6 +1406,16 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_anylanguagebehavioralsimulation_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:name>
+      <spirit:vendorExtensions>
+        <xilinx:subCoreRef>
+          <xilinx:componentRef xilinx:vendor="xilinx.com" xilinx:library="ip" xilinx:name="floating_point" xilinx:version="7.1">
+            <xilinx:mode xilinx:name="create_mode"/>
+          </xilinx:componentRef>
+        </xilinx:subCoreRef>
+      </spirit:vendorExtensions>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
@@ -1414,15 +1486,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_invModel_ideal</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114607221</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-05-13T13:42:24Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114625794</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-05-26T11:15:24Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="1680b3ff"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="0425bd87"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="79a6fdd4"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="8b415800"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="95388870"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

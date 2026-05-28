@@ -3,10 +3,13 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd}
-add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd}
-add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd}
+add_files -norecurse {..\hdl\Xilinx\Zynq_UltraScale+\xczu9eg-ffvb1156-1-e\L8\amdfp_mul_single\amdfp_mul_single.xci}
+add_files -norecurse {..\hdl\Xilinx\Zynq_UltraScale+\xczu9eg-ffvb1156-1-e\L11\amdfp_sub_single\amdfp_sub_single.xci}
+add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd}
+add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd}
+add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd}
 add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd}
-add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd}
+add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd}
 add_files -norecurse {../hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd}
 add_files -norecurse {../hdl/uz_JL_invModel_ideal_pkg.vhd}
 add_files -norecurse {../hdl/uz_JL_invModel_ideal_reset_sync.vhd}
@@ -39,29 +42,33 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2114607221 [ipx::current_core]
+set_property core_revision 2114625794 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_uminus_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_amdfp_mul_single_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_amdfp_sub_single_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_div_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -104,6 +104,7 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
+	JSSD_FLOAT_ZEROVALUE=JSSD_ZEROVALUE,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -305,7 +306,7 @@ enum gui_button_mapping {
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
-//Set the line to JSSD_ZEROVALUE if no value should be transmitted
+//Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_speed_left,
@@ -314,10 +315,10 @@ enum gui_button_mapping {
 	JSSD_FLOAT_iq_left,
 	JSSD_FLOAT_vd_left,
 	JSSD_FLOAT_vq_left,
-	JSSD_ZEROVALUE,
-	JSSD_ZEROVALUE,
-	JSSD_ZEROVALUE,
-	JSSD_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_Error_Max_Current_Left,
 	JSSD_FLOAT_Error_Max_Current_Right,
 	JSSD_FLOAT_Error_Overvoltage_DC,

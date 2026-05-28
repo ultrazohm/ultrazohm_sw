@@ -153,6 +153,9 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	/* Project Wizard BEGIN: objects */
+	uz_adcLtc2311_t* adc_ltc2311_a1;
+	uz_adcLtc2311_t* adc_ltc2311_a2;
+	uz_adcLtc2311_t* adc_ltc2311_a3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;

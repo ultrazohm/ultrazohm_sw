@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 
 from ..repositories import CardDatabase
@@ -22,6 +23,14 @@ GLOBAL_DATA_MARKERS = {
 }
 
 FILE_MARKERS = {
+    "adc_readout_definitions": (
+        "/* Project Wizard BEGIN: adc_readout_definitions */",
+        "/* Project Wizard END: adc_readout_definitions */",
+    ),
+    "adc_readout": (
+        "/* Project Wizard BEGIN: adc_readout */",
+        "/* Project Wizard END: adc_readout */",
+    ),
     "main_init_ip_cores": (
         "/* Project Wizard BEGIN: init_ip_cores */",
         "/* Project Wizard END: init_ip_cores */",
@@ -49,6 +58,8 @@ class SoftwarePlan:
     slot_content: dict[str, SlotSoftwareContent]
     actual_values: list[str]
     objects: list[str]
+    adc_readout_definitions: list[str]
+    adc_readout: list[str]
     main_init: list[str]
     isr_control_by_slot: dict[str, list[str]]
     javascope_observable_enums: list[str]
@@ -150,18 +161,45 @@ class SoftwareGenerator:
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
         actual_values: list[str] = []
         objects: list[str] = []
+        adc_readout_definitions: list[str] = []
+        adc_readout: list[str] = []
         main_init: list[str] = []
         isr_control_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
         available_visualization_signals: list[VisualizationSignal] = []
         warnings: list[str] = []
         temperature_instances = 0
+        adc_ltc2311_instances = 0
         endat_instances = 0
         ssi_instances = 0
 
         for slot in SLOTS:
             mode = software_modes.get(slot, "follow_hardware")
             card_id = assignments.get(slot, "empty") if mode == "follow_hardware" else "empty"
-            if card_id == "uz_d_temperature_ltc2983":
+            if card_id == "analog_ltc2311_16":
+                adc_ltc2311_instances += 1
+                context = self._adc_ltc2311_context(
+                    slot,
+                    source_dir,
+                    driver_instance_values(
+                        f"{slot.lower()}_adc_ltc2311", self.driver_config_fields("uz_adc_ltc2311"), driver_config
+                    ),
+                )
+                warnings.extend(context.pop("warnings"))
+                header_includes, header_prototypes = split_header_template(
+                    self.renderer.render_file(self.driver_template("uz_adc_ltc2311", "header"), context)
+                )
+                slot_content[slot].header_includes.extend(header_includes)
+                slot_content[slot].header_prototypes.extend(header_prototypes)
+                slot_content[slot].source_definitions.append(
+                    self.renderer.render_file(self.driver_template("uz_adc_ltc2311", "source"), context).rstrip()
+                )
+                objects.append(f"\tuz_adcLtc2311_t* adc_ltc2311_{context['slot_lower']};")
+                main_init.append(
+                    f"\t\t\tGlobal_Data.objects.adc_ltc2311_{context['slot_lower']} = initialize_adc_ltc2311_{context['slot_lower']}();"
+                )
+                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot))
+                available_visualization_signals.extend(adc_ltc2311_visualization_signals(str(context["slot_lower"])))
+            elif card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
                 preset = software_presets.get(slot, "default")
                 context = self._temperature_context(
@@ -297,6 +335,10 @@ class SoftwareGenerator:
                 if driver:
                     warnings.append(f"{slot}: software integration for driver '{driver}' is not implemented yet.")
 
+        if adc_ltc2311_instances:
+            adc_readout_definitions.append("static uz_array_int16_t adc_ltc2311_data;")
+            adc_readout.append("    adc_ltc2311_data = uz_dataMover_update_buffer_and_get_data();")
+
         selected_signals = [
             signal for signal in available_visualization_signals if signal.signal_id in selected_visualization_signals
         ]
@@ -304,6 +346,8 @@ class SoftwareGenerator:
             slot_content=slot_content,
             actual_values=actual_values,
             objects=objects,
+            adc_readout_definitions=adc_readout_definitions,
+            adc_readout=adc_readout,
             main_init=main_init,
             isr_control_by_slot=isr_control_by_slot,
             javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_signals],
@@ -312,6 +356,7 @@ class SoftwareGenerator:
             ],
             available_visualization_signals=available_visualization_signals,
             instance_counts={
+                "UZ_ADCLTC2311_MAX_INSTANCES": adc_ltc2311_instances,
                 "UZ_TEMPERATURE_CARD_MAX_INSTANCES": temperature_instances,
                 "UZ_ENDAT_INTERFACE_MAX_INSTANCES": endat_instances,
                 "UZ_SSI_INTERFACE_MAX_INSTANCES": ssi_instances,
@@ -351,6 +396,10 @@ class SoftwareGenerator:
         lines.extend(f"  {entry.strip()}" for entry in plan.actual_values) if plan.actual_values else lines.append("  none")
         lines.append("objects:")
         lines.extend(f"  {entry.strip()}" for entry in plan.objects) if plan.objects else lines.append("  none")
+        lines.extend(["", "sw/isr.c ADC readout definitions marker content:"])
+        lines.extend(f"  {entry.strip()}" for entry in plan.adc_readout_definitions) if plan.adc_readout_definitions else lines.append("  none")
+        lines.extend(["", "sw/isr.c ADC readout marker content:"])
+        lines.extend(f"  {entry.strip()}" for entry in plan.adc_readout) if plan.adc_readout else lines.append("  none")
         lines.extend(["", "main.c init_ip_cores marker content:"])
         lines.extend(f"  {entry.strip()}" for entry in plan.main_init) if plan.main_init else lines.append("  none")
         lines.extend(["", "sw/isr.c per-slot ISR marker content:"])
@@ -409,6 +458,16 @@ class SoftwareGenerator:
                         label=f"{slot} temperature card",
                         driver="temperature",
                         fields=self.driver_config_fields("temperature_card", preset),
+                    )
+                )
+            elif card_id == "analog_ltc2311_16":
+                instances.append(
+                    DriverConfigInstance(
+                        id=f"{slot_lower}_adc_ltc2311",
+                        slot=slot,
+                        label=f"{slot} ADC LTC2311",
+                        driver="adc_ltc2311",
+                        fields=self.driver_config_fields("uz_adc_ltc2311"),
                     )
                 )
             elif card_id == "uz_d_absolute_encoder":
@@ -470,6 +529,8 @@ class SoftwareGenerator:
         patched_files.append(main_c)
 
         isr_c = source_dir / "sw" / "isr.c"
+        patch_marker_file(isr_c, "adc_readout_definitions", plan.adc_readout_definitions)
+        patch_marker_file(isr_c, "adc_readout", plan.adc_readout)
         patch_slot_isr_control(isr_c, plan.isr_control_by_slot)
         patched_files.append(isr_c)
 
@@ -511,6 +572,19 @@ class SoftwareGenerator:
             "configdata_c": config_values["configdata_c"],
             "warnings": warnings,
         }
+
+    def _adc_ltc2311_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "adc_ltc2311")
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
 
     def _serial_encoder_context(
         self, slot: str, channel: int, interface: str, source_dir: Path, config_values: dict[str, str]
@@ -707,6 +781,33 @@ def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, 
     ]
 
 
+def adc_ltc2311_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    return [
+        VisualizationSignal(
+            signal_id=f"adc_ltc2311_{slot_lower}_ch{channel}",
+            slot=slot,
+            label=f"{slot} ADC LTC2311 channel {channel}",
+            enum_name=f"JSO_XZ_ADC_{slot}_CH{channel}",
+            pointer_expression=f"&data->aa.{slot}.me.ADC_array[{channel}]",
+        )
+        for channel in range(8)
+    ]
+
+
+def adc_ltc2311_isr_lines(slot: str) -> list[str]:
+    slot_index = int(slot[1]) - 1
+    buffer_offset = slot_index * 8
+    return [
+        (
+            f"    Global_Data.aa.{slot}.me.ADC_array[{channel}] = "
+            f"((float)adc_ltc2311_data.data[{buffer_offset + channel}]) / (1 << Q16) * "
+            f"Global_Data.aa.{slot}.cf.ADC_array[{channel}];"
+        )
+        for channel in range(8)
+    ]
+
+
 def temperature_configdata_a(preset: str) -> str:
     values = ["0U"] * 20
     if preset == "type_k_thermocouple":
@@ -735,6 +836,9 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     if interface == "temperature":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_TEMPERATURE_CARD_INT_0_BASEADDR"
         search_terms = ["TEMP", "TEMPERATURE"]
+    elif interface == "adc_ltc2311":
+        fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_ADC_LTC2311_S00_AXI_BASEADDR"
+        search_terms = ["ADC_LTC2311", "ADCLTC2311", "LTC2311"]
     elif interface == "endat":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_ENDAT_INTERFACE_{slot.upper()}_CHANNEL_{channel}_BASEADDR"
         search_terms = ["ENDAT"]
@@ -744,14 +848,13 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     else:
         fallback = f"XPAR_{slot.upper()}_BASEADDR"
         search_terms = [interface.upper()]
-    xparameters = find_xparameters(source_dir)
+    xparameters, macros = xparameter_baseaddr_macros(source_dir)
     if xparameters is None:
         return fallback, f"{slot}: xparameters.h not found. Using fallback base-address macro {fallback}."
 
-    text = xparameters.read_text(encoding="utf-8", errors="ignore")
     candidates = [
         macro
-        for macro in re.findall(r"^#define\s+(XPAR_[A-Z0-9_]*BASEADDR)\b", text, re.MULTILINE)
+        for macro in macros
         if any(term in macro for term in search_terms)
     ]
     slot_candidates = [candidate for candidate in candidates if slot.upper() in candidate or slot_lower.upper() in candidate]
@@ -766,6 +869,17 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     return fallback, f"{slot}: no {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
 
 
+@lru_cache(maxsize=16)
+def xparameter_baseaddr_macros(source_dir: Path) -> tuple[Path | None, tuple[str, ...]]:
+    xparameters = find_xparameters(source_dir)
+    if xparameters is None:
+        return None, ()
+    text = xparameters.read_text(encoding="utf-8", errors="ignore")
+    macros = tuple(re.findall(r"^#define\s+(XPAR_[A-Z0-9_]*BASEADDR)\b", text, re.MULTILINE))
+    return xparameters, macros
+
+
+@lru_cache(maxsize=16)
 def find_xparameters(source_dir: Path) -> Path | None:
     search_roots = [source_dir]
     search_roots.extend(parent for parent in source_dir.parents if parent.name.lower() in {"baremetal", "software", "vitis"})

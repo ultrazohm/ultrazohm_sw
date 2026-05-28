@@ -87,13 +87,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
 /* Project Wizard BEGIN: javascope_observable_pointers */
-	js_ch_observable[JSO_XZ_TEMP_D4_A_CH4] = &data->av.temperature_card_d4_channel_A.temperature[4];
-	js_ch_observable[JSO_XZ_ENDAT_D5_CH1_POS_MECH_ST] = &data->av.endat_encoder_d5_1_position_mech_si_single_turn;
-	js_ch_observable[JSO_XZ_ENDAT_D5_CH1_POS_EL_ST] = &data->av.endat_encoder_d5_1_position_el_si_single_turn;
-	js_ch_observable[JSO_XZ_SSI_D5_CH2_POS_MECH_ST] = &data->av.ssi_encoder_d5_2_position_mech_si_single_turn;
-	js_ch_observable[JSO_XZ_SSI_D5_CH2_POS_EL_ST] = &data->av.ssi_encoder_d5_2_position_el_si_single_turn;
-	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_MECH_ST] = &data->av.ssi_encoder_d5_3_position_mech_si_single_turn;
-	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_EL_ST] = &data->av.ssi_encoder_d5_3_position_el_si_single_turn;
 	js_ch_observable[JSO_XZ_ADC_A1_CH0] = &data->aa.A1.me.ADC_array[0];
 	js_ch_observable[JSO_XZ_ADC_A1_CH1] = &data->aa.A1.me.ADC_array[1];
 	js_ch_observable[JSO_XZ_ADC_A1_CH2] = &data->aa.A1.me.ADC_array[2];
@@ -118,6 +111,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_XZ_ADC_A3_CH5] = &data->aa.A3.me.ADC_array[5];
 	js_ch_observable[JSO_XZ_ADC_A3_CH6] = &data->aa.A3.me.ADC_array[6];
 	js_ch_observable[JSO_XZ_ADC_A3_CH7] = &data->aa.A3.me.ADC_array[7];
+	js_ch_observable[JSO_XZ_TEMP_D4_A_CH4] = &data->av.temperature_card_d4_channel_A.temperature[4];
+	js_ch_observable[JSO_XZ_ENDAT_D5_CH1_POS_MECH_ST] = &data->av.endat_encoder_d5_1_position_mech_si_single_turn;
+	js_ch_observable[JSO_XZ_ENDAT_D5_CH1_POS_EL_ST] = &data->av.endat_encoder_d5_1_position_el_si_single_turn;
+	js_ch_observable[JSO_XZ_SSI_D5_CH2_POS_MECH_ST] = &data->av.ssi_encoder_d5_2_position_mech_si_single_turn;
+	js_ch_observable[JSO_XZ_SSI_D5_CH2_POS_EL_ST] = &data->av.ssi_encoder_d5_2_position_el_si_single_turn;
+	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_MECH_ST] = &data->av.ssi_encoder_d5_3_position_mech_si_single_turn;
+	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_EL_ST] = &data->av.ssi_encoder_d5_3_position_el_si_single_turn;
 /* Project Wizard END: javascope_observable_pointers */
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

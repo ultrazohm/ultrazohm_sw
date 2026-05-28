@@ -21,9 +21,9 @@
 #include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
-#include "../include/adc.h"
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
+#include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "../include/uz_platform_state_machine.h"
@@ -38,7 +38,9 @@ XIpiPsu IPI_instance;
 // Global variable structure
 extern DS_Data Global_Data;
 
-static void ReadAllADC();
+/* Project Wizard BEGIN: adc_readout_definitions */
+static uz_array_int16_t adc_ltc2311_data;
+/* Project Wizard END: adc_readout_definitions */
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 static void xz_update_adapter_a1(void);
 static void xz_update_adapter_a2(void);
@@ -58,7 +60,9 @@ static void xz_update_adapter_d5(void);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    ReadAllADC();
+/* Project Wizard BEGIN: adc_readout */
+    adc_ltc2311_data = uz_dataMover_update_buffer_and_get_data();
+/* Project Wizard END: adc_readout */
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     xz_update_adapter_a1();
     xz_update_adapter_a2();
@@ -94,18 +98,42 @@ void ISR_Control(void *data)
 static void xz_update_adapter_a1(void)
 {
     /* Project Wizard BEGIN: A1 isr_control */
+    Global_Data.aa.A1.me.ADC_array[0] = ((float)adc_ltc2311_data.data[0]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[0];
+    Global_Data.aa.A1.me.ADC_array[1] = ((float)adc_ltc2311_data.data[1]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[1];
+    Global_Data.aa.A1.me.ADC_array[2] = ((float)adc_ltc2311_data.data[2]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[2];
+    Global_Data.aa.A1.me.ADC_array[3] = ((float)adc_ltc2311_data.data[3]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[3];
+    Global_Data.aa.A1.me.ADC_array[4] = ((float)adc_ltc2311_data.data[4]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[4];
+    Global_Data.aa.A1.me.ADC_array[5] = ((float)adc_ltc2311_data.data[5]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[5];
+    Global_Data.aa.A1.me.ADC_array[6] = ((float)adc_ltc2311_data.data[6]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[6];
+    Global_Data.aa.A1.me.ADC_array[7] = ((float)adc_ltc2311_data.data[7]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[7];
 /* Project Wizard END: A1 isr_control */
 }
 
 static void xz_update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
+    Global_Data.aa.A2.me.ADC_array[0] = ((float)adc_ltc2311_data.data[8]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[0];
+    Global_Data.aa.A2.me.ADC_array[1] = ((float)adc_ltc2311_data.data[9]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[1];
+    Global_Data.aa.A2.me.ADC_array[2] = ((float)adc_ltc2311_data.data[10]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[2];
+    Global_Data.aa.A2.me.ADC_array[3] = ((float)adc_ltc2311_data.data[11]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[3];
+    Global_Data.aa.A2.me.ADC_array[4] = ((float)adc_ltc2311_data.data[12]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[4];
+    Global_Data.aa.A2.me.ADC_array[5] = ((float)adc_ltc2311_data.data[13]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[5];
+    Global_Data.aa.A2.me.ADC_array[6] = ((float)adc_ltc2311_data.data[14]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[6];
+    Global_Data.aa.A2.me.ADC_array[7] = ((float)adc_ltc2311_data.data[15]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[7];
 /* Project Wizard END: A2 isr_control */
 }
 
 static void xz_update_adapter_a3(void)
 {
     /* Project Wizard BEGIN: A3 isr_control */
+    Global_Data.aa.A3.me.ADC_array[0] = ((float)adc_ltc2311_data.data[16]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[0];
+    Global_Data.aa.A3.me.ADC_array[1] = ((float)adc_ltc2311_data.data[17]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[1];
+    Global_Data.aa.A3.me.ADC_array[2] = ((float)adc_ltc2311_data.data[18]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[2];
+    Global_Data.aa.A3.me.ADC_array[3] = ((float)adc_ltc2311_data.data[19]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[3];
+    Global_Data.aa.A3.me.ADC_array[4] = ((float)adc_ltc2311_data.data[20]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[4];
+    Global_Data.aa.A3.me.ADC_array[5] = ((float)adc_ltc2311_data.data[21]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[5];
+    Global_Data.aa.A3.me.ADC_array[6] = ((float)adc_ltc2311_data.data[22]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[6];
+    Global_Data.aa.A3.me.ADC_array[7] = ((float)adc_ltc2311_data.data[23]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[7];
 /* Project Wizard END: A3 isr_control */
 }
 
@@ -280,14 +308,6 @@ u32 Rpu_IpiInit(u16 DeviceId)
     xil_printf("RPU: Rpu_IpiInit: Done\r\n");
     return XST_SUCCESS;
 }
-
-static void ReadAllADC()
-{
-    ADC_readCardALL(&Global_Data);
-};
-
-
-
 
 static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
 {

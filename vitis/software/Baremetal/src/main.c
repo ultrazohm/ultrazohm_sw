@@ -92,7 +92,6 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-            uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -108,6 +107,9 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             /* Project Wizard BEGIN: init_ip_cores */
+			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
+			Global_Data.objects.adc_ltc2311_a2 = initialize_adc_ltc2311_a2();
+			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
 			uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);

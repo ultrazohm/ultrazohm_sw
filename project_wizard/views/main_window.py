@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
+        self.software_dependent_views_dirty = False
 
         self.stack = QStackedWidget()
         self.tree = self._build_navigation()
@@ -981,9 +982,9 @@ class MainWindow(QMainWindow):
             index = combo.findData(values.get(f"{slot}_mode", "follow_hardware"))
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
-        self.refresh_software_preset_options(values)
+        self.refresh_software_preset_options(values, refresh_dependent=False)
         self.refresh_advanced_driver_config_options(values)
-        self.guarded_refresh_data_visualization_options(values)
+        self.refresh_data_visualization_options(values, refresh_preview=False)
         self.guarded_refresh_software_preview()
 
     def reset_software_config(self) -> None:
@@ -996,7 +997,7 @@ class MainWindow(QMainWindow):
         defaults.update({f"{slot}_preset": "default" for slot in SLOTS})
         return defaults
 
-    def refresh_software_preset_options(self, values: dict[str, str] | None = None) -> None:
+    def refresh_software_preset_options(self, values: dict[str, str] | None = None, refresh_dependent: bool = True) -> None:
         values = values or self.software_config()
         assignments = self.assignments()
         for slot, combo in self.software_preset_combos.items():
@@ -1010,13 +1011,16 @@ class MainWindow(QMainWindow):
                 combo.addItem("Type K thermocouple", "type_k_thermocouple")
             elif card_id == "uz_d_absolute_encoder":
                 combo.addItem("Default EnDat / SSI", "default")
+            elif card_id == "analog_ltc2311_16":
+                combo.addItem("Default ADC LTC2311", "default")
             else:
                 combo.addItem("Default", "default")
             index = combo.findData(selected)
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
-        self.refresh_advanced_driver_config_options(values)
-        self.guarded_refresh_data_visualization_options(values)
+        if refresh_dependent:
+            self.refresh_advanced_driver_config_options(values)
+            self.refresh_data_visualization_options(values, refresh_preview=False)
 
     def refresh_advanced_driver_config_options(self, values: dict[str, str] | None = None) -> None:
         if self.driver_config_tabs is None:
@@ -1092,7 +1096,7 @@ class MainWindow(QMainWindow):
                 layout.addWidget(label)
             layout.addStretch(1)
 
-    def refresh_data_visualization_options(self, values: dict[str, str] | None = None) -> None:
+    def refresh_data_visualization_options(self, values: dict[str, str] | None = None, refresh_preview: bool = True) -> None:
         if self.visualization_tabs is None:
             return
         if values is not None and not isinstance(values, dict):
@@ -1133,7 +1137,6 @@ class MainWindow(QMainWindow):
                 continue
             checkbox = QCheckBox(signal.label)
             checkbox.setChecked(signal.signal_id in selected)
-            checkbox.stateChanged.connect(self.guarded_refresh_software_preview)
             self.visualization_checkboxes[signal.signal_id] = checkbox
             slot_layout.addWidget(checkbox)
         for slot, layout in self.visualization_tab_layouts.items():
@@ -1142,7 +1145,8 @@ class MainWindow(QMainWindow):
                 label.setWordWrap(True)
                 layout.addWidget(label)
             layout.addStretch(1)
-        self.guarded_refresh_software_preview()
+        if refresh_preview:
+            self.guarded_refresh_software_preview()
 
     def reset_axi_config(self) -> None:
         self.load_axi_config({str(key): str(value) for key, value in self.database.axi_interconnect.items()})
@@ -1192,14 +1196,14 @@ class MainWindow(QMainWindow):
             return
         if slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
-        self.refresh_software_preset_options()
+        self.refresh_software_preset_options(refresh_dependent=False)
+        self.software_dependent_views_dirty = True
         self.guarded_refresh_tcl_preview()
 
     def software_driver_selection_changed(self) -> None:
         if self.is_loading_config:
             return
-        self.refresh_advanced_driver_config_options()
-        self.refresh_data_visualization_options()
+        self.software_dependent_views_dirty = True
         self.refresh_software_preview()
 
     def prefill_cpld_for_slot(self, slot: str) -> None:
@@ -1518,12 +1522,22 @@ class MainWindow(QMainWindow):
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
 
     def show_advanced_driver_config(self) -> None:
+        self.refresh_dirty_software_dependent_views()
         self.stack.setCurrentIndex(7)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(2))
 
     def show_data_visualization(self) -> None:
+        self.refresh_dirty_software_dependent_views()
         self.stack.setCurrentIndex(8)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(3))
+
+    def refresh_dirty_software_dependent_views(self) -> None:
+        if self.is_loading_config or not self.software_dependent_views_dirty:
+            return
+        values = self.software_config()
+        self.refresh_advanced_driver_config_options()
+        self.refresh_data_visualization_options(values, refresh_preview=False)
+        self.software_dependent_views_dirty = False
 
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
@@ -1572,7 +1586,7 @@ class MainWindow(QMainWindow):
                     )
                     trigger_edit = QLineEdit(trigger_source)
                     trigger_edit.setEnabled(combo.currentData() != "none")
-                    trigger_edit.textChanged.connect(self._detail_option_changed)
+                    trigger_edit.editingFinished.connect(self._detail_option_changed)
                     self.detail_trigger_edits[key] = trigger_edit
 
                     row = QWidget()
@@ -1609,7 +1623,7 @@ class MainWindow(QMainWindow):
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
                 self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
-        self.guarded_refresh_data_visualization_options()
+        self.software_dependent_views_dirty = True
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
@@ -1642,6 +1656,7 @@ class MainWindow(QMainWindow):
         )
 
     def generate_software_files(self) -> None:
+        self.refresh_dirty_software_dependent_views()
         source_field = self.software_fields.get("source_dir")
         source_text = source_field.text().strip() if source_field else ""
         if not source_text:
@@ -1810,6 +1825,7 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, "Config saved", f"Wrote {path}")
 
     def config_document(self) -> dict[str, Any]:
+        self.refresh_dirty_software_dependent_views()
         return build_config_document(
             self.selected_platform(),
             self.platform_cpld_config(),

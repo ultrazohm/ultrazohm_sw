@@ -160,8 +160,8 @@ int main(void)
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;
 //            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
-            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
-            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
+//            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
+//            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
             Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
@@ -187,10 +187,10 @@ int main(void)
         case infinite_loop:
             ultrazohm_state_machine_step();
             // read temperature values from windings
-            uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
-            Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
-            Global_Data.av.average_temp_right = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 8U);
-            Global_Data.av.average_temp_left = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 9U, 14U);
+//            uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
+//            Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
+//            Global_Data.av.average_temp_right = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 8U);
+//            Global_Data.av.average_temp_left = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 9U, 14U);
             break;
         default:
             break;

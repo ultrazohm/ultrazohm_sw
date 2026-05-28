@@ -60,11 +60,13 @@ extern DS_Data Global_Data;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+static float last_u_d_pu = 0.0f;
+static float last_u_q_pu = 0.0f;
 //defines and limits
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT_AMP		15.0f
-#define		RATED_CURRENT		8.0f
+#define		RATED_CURRENT		12.0f
 #define		DC_VOLTAGE			48.0f
 #define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
 #define		MAX_VOLTAGE			(DC_VOLTAGE * MAX_MODULATION_INDEX)
@@ -107,6 +109,10 @@ struct uz_3ph_abc_t dc_motor_right = {0.0f};
 enum ControllerApplication ConApp;
 enum ControllerSelection ConSel;
 
+
+bool ddpg_ext_clamping = false;
+static bool first_step = true;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -136,8 +142,11 @@ void ISR_Control(void *data)
     	Global_Data.av.speed_rpm_right 			= Global_Data.av.omega_mech_right * 30.0f / UZ_PIf;
     	Global_Data.av.omega_el_right 			= Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right;
     	Global_Data.av.v_dc_right				= DC_VOLTAGE;
+    	Global_Data.av.v_dc_left				= DC_VOLTAGE;
     	Global_Data.av.v_d_right				= Global_Data.av.PMSM_inputs.v_d_V;
     	Global_Data.av.v_q_right			    = Global_Data.av.PMSM_inputs.v_q_V;
+    	i_dq_right.d							= Global_Data.av.i_d_right;
+    	i_dq_right.q							= Global_Data.av.i_q_right;
     	break;
 
     case REAL:
@@ -284,6 +293,14 @@ void ISR_Control(void *data)
     {
     	switch(ConApp){
     		case CIL:
+    			for (uint32_t i = 0; i < 9U; i++) {
+    			        observation[i] = 0.0f;
+    			    }
+    			i_dq_integrated_error_right.d = 0.0f;
+    			i_dq_integrated_error_right.q = 0.0f;
+    			last_u_d_pu = 0.0f;
+    			last_u_q_pu = 0.0f;
+    			first_step = true;
     			break;
     		case REAL:
 
@@ -308,6 +325,8 @@ void ISR_Control(void *data)
     	// Get references
     	Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.js_set_i_dq_ref_right.d;
 	    Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.js_set_i_dq_ref_right.q;
+	    i_dq_ref_right.d = Global_Data.rasv.i_dq_ref_right.d;
+	    i_dq_ref_right.q = Global_Data.rasv.js_set_i_dq_ref_right.q;
 	    Global_Data.rasv.n_ref_left = Global_Data.rasv.js_set_n_ref_left;
 
 		switch(ConSel) {
@@ -321,11 +340,13 @@ void ISR_Control(void *data)
 
 			case RL:
 				filter_compensation_left();
-				Global_Data.rasv.n_ref_left = Global_Data.rasv.js_set_n_ref_left;
 				speed_control_left_motor();
 
-				i_dq_integrated_error_right.d += (i_dq_error_right.d / RATED_CURRENT);
-				i_dq_integrated_error_right.q += (i_dq_error_right.q / RATED_CURRENT);
+				if(ddpg_ext_clamping == false){
+					i_dq_integrated_error_right.d += (i_dq_error_right.d / RATED_CURRENT);
+					i_dq_integrated_error_right.q += (i_dq_error_right.q / RATED_CURRENT);
+				}
+
 				i_dq_error_right.d = i_dq_ref_right.d - i_dq_right.d;
 				i_dq_error_right.q = i_dq_ref_right.q - i_dq_right.q;
 
@@ -335,19 +356,28 @@ void ISR_Control(void *data)
 				observation[2] = ((Global_Data.av.omega_mech_right * 60.0f) / (2.0f * UZ_PIf)) / RATED_SPEED;
 				observation[3] = i_dq_error_right.d / RATED_CURRENT;
 				observation[4] = i_dq_error_right.q / RATED_CURRENT;
-				observation[5] = i_dq_integrated_error_right.d / TS_TRAINING;
-				observation[6] = i_dq_integrated_error_right.q / TS_TRAINING;
-				observation[7] = v_dq_ref_right.d / MAX_VOLTAGE;
-				observation[8] = v_dq_ref_right.q / MAX_VOLTAGE;
+				observation[5] = i_dq_integrated_error_right.d;
+				observation[6] = i_dq_integrated_error_right.q;
+				observation[7] = last_u_d_pu;
+				observation[8] = last_u_q_pu;
 
-				for (uint32_t i = 0; i < 8U; i++) {
+				for (uint32_t i = 0; i < 9U; i++) {
 						   uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,observation[i],0U,i);
 					  }
-					  uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
-
+					  uz_nn_ff(Global_Data.objects.nn_layer_acc,Global_Data.objects.matrix_input_acc);
+					  Global_Data.objects.matrix_output_acc = uz_nn_get_output_data(Global_Data.objects.nn_layer_acc);
+					  uz_matrix_multiply_by_scalar(Global_Data.objects.matrix_output_acc, MAX_VOLTAGE);
 					  v_dq_rl_right.d = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
 					  v_dq_rl_right.q = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
-					  v_dq_ref_right = uz_CurrentControl_SpaceVector_Limitation(v_dq_rl_right, DC_VOLTAGE, MAX_MODULATION_INDEX, Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right, i_dq_right, false);
+					  if (first_step == true) {
+					          // Im allerersten Schritt �berschreiben wir die Netz-Panik mit einer sicheren 0V
+					          v_dq_rl_right.d = 0.0f;
+					          v_dq_rl_right.q = 0.0f;
+					          first_step = false;
+					  }
+					  v_dq_ref_right = uz_CurrentControl_SpaceVector_Limitation(v_dq_rl_right, DC_VOLTAGE, MAX_MODULATION_INDEX, Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right, i_dq_ref_right, &ddpg_ext_clamping);
+					  last_u_d_pu = v_dq_ref_right.d / MAX_VOLTAGE;
+					  last_u_q_pu = v_dq_ref_right.q / MAX_VOLTAGE;
 					  dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_left, Global_Data.av.theta_el_left_advanced);
 				break;
 			default:
@@ -359,7 +389,7 @@ void ISR_Control(void *data)
     		case CIL:
     	    	Global_Data.av.PMSM_inputs.v_d_V = v_dq_ref_right.d;
     	    	Global_Data.av.PMSM_inputs.v_q_V = v_dq_ref_right.q;
-    	    	Global_Data.av.PMSM_inputs.omega_mech_1_s = Global_Data.rasv.n_ref_left_filt / 30.0f * UZ_PIf;
+    	    	Global_Data.av.PMSM_inputs.omega_mech_1_s = Global_Data.rasv.n_ref_left / 30.0f * UZ_PIf;
     	    	uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_model, Global_Data.av.PMSM_inputs);
     	    	break;
 

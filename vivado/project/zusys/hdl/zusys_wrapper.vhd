@@ -1,7 +1,7 @@
 --Copyright 1986-2023 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2.2 (lin64) Build 3788238 Tue Feb 21 19:59:23 MST 2023
---Date        : Mon May 11 17:39:53 2026
+--Date        : Thu May 28 15:29:28 2026
 --Host        : lin1 running 64-bit Ubuntu 22.04.5 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -75,18 +75,6 @@ end zusys_wrapper;
 architecture STRUCTURE of zusys_wrapper is
   component zusys is
   port (
-    A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -130,7 +118,19 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_22_Ch5 : out STD_LOGIC;
     Dig_23_Ch5 : out STD_LOGIC;
     Dig_20_Ch5 : out STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC
+    Dig_18_Ch5 : in STD_LOGIC;
+    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 )
   );
   end component zusys;
 begin

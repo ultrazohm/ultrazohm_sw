@@ -265,15 +265,13 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
         }
 
         struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
-            .v_d_V = applied_v_dq_V.d,
-            .v_q_V = applied_v_dq_V.q,
+            .v_dq_V = applied_v_dq_V,
             .omega_mech_1_s = omega_mech_rad_per_sec,
             .load_torque = 0.0f};
 
         struct uz_pmsm_swmodel_outputs_t swmodel_outputs = uz_pmsm_swmodel_step(model, swmodel_inputs);
 
-        model_i_dq_A.d = swmodel_outputs.i_d_A;
-        model_i_dq_A.q = swmodel_outputs.i_q_A;
+        model_i_dq_A = swmodel_outputs.i_dq_A;
         model_i_dq_A.zero = 0.0f;
         omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
         theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * swmodel_config.sample_time, 2.0f * UZ_PIf);
@@ -370,14 +368,12 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
         applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, 0.0f, reference_currents, 0.0f);
 
         struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
-            .v_d_V = applied_v_dq_V.d,
-            .v_q_V = applied_v_dq_V.q,
+            .v_dq_V = applied_v_dq_V,
             .omega_mech_1_s = omega_mech_rad_per_sec,
             .load_torque = 0.0f};
         struct uz_pmsm_swmodel_outputs_t swmodel_outputs = uz_pmsm_swmodel_step(model, swmodel_inputs);
 
-        model_i_dq_A.d = swmodel_outputs.i_d_A;
-        model_i_dq_A.q = swmodel_outputs.i_q_A;
+        model_i_dq_A = swmodel_outputs.i_dq_A;
         model_i_dq_A.zero = 0.0f;
         omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
         theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * controller_config.sample_time, 2.0f * UZ_PIf);

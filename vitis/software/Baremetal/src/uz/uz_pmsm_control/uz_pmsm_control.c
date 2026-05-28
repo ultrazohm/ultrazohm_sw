@@ -374,6 +374,7 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
         self->reference_values.i_dq_in_A.d = uz_signals_saturation(self->reference_values.i_dq_in_A.d, self->config.setpoint_limits.i_d_in_A.upper_bound, self->config.setpoint_limits.i_d_in_A.lower_bound);
         self->reference_values.i_dq_in_A.q = uz_signals_saturation(self->reference_values.i_dq_in_A.q, self->config.setpoint_limits.i_q_in_A.upper_bound, self->config.setpoint_limits.i_q_in_A.lower_bound);
         self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->measurement.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        self->reference_values.v_abc_in_V = uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el_advanced);
     }
     else
     {
@@ -393,9 +394,6 @@ struct uz_DutyCycle_t uz_pmsm_control_sample_duty(uz_pmsm_control_t *self, struc
     if (self->enable && self->safe_operating_region_violation == uz_pmsm_control_no_violation)
     {
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(v_dq_in_v, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
-        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
     }
     else
     {

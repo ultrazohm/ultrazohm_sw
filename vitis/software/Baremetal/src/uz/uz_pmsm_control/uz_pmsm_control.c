@@ -324,7 +324,7 @@ struct uz_3ph_dq_t uz_pmsm_control_sample_dq(uz_pmsm_control_t *self, struct uz_
         self->reference_values.speed_in_rpm = reference_speed_in_rpm;
     }
 
-    if (self->enable && (!self->safe_operating_region_violation))
+    if (self->enable && self->safe_operating_region_violation == uz_pmsm_control_no_violation)
     {
         if (self->config.enable_speed_control)
         {
@@ -371,7 +371,7 @@ struct uz_DutyCycle_t uz_pmsm_control_sample_duty(uz_pmsm_control_t *self, struc
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_3ph_dq_t v_dq_in_v = uz_pmsm_control_sample_dq(self, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
-    if (self->enable && (!self->safe_operating_region_violation))
+    if (self->enable && self->safe_operating_region_violation==uz_pmsm_control_no_violation)
     {
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(v_dq_in_v, self->measurement.v_dc_in_V, self->actual_values.theta_el_advanced);
         self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->measurement.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);

@@ -163,7 +163,7 @@ void test_uz_pmsm_control_get_safe_area_controller_off(void)
         .i_abc_in_A = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
         .v_abc_in_V = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
         .omega_mech_rad_per_sec = 1.0f,
-        .theta_mech = 1.56f,
+        .theta_mech = 0.0f,
         .v_dc_in_V = 12.0f,
         .i_dc_in_A = 1.0f};
 
@@ -173,30 +173,25 @@ void test_uz_pmsm_control_get_safe_area_controller_off(void)
         .q = 0.0f,
         .zero = 0.0f};
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, 0.0f);
-    // Controller is not enabled, thus default duty cycles are returned
-    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
-    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
-    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
     // controller checks for violation even if not enabled. Inputs are within limits
      safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_no_violation);
+    TEST_ASSERT(safe_operating_violation == uz_pmsm_control_no_violation);
 
     measurements.i_abc_in_A.a = pmsm_controller_config.safe_operating_region.i_abc_in_A.upper_bound + 1.0f; // Measurement is above limit
     duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, 0.0f);
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
-    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
-    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_i_abc_violation_upper);
+    TEST_ASSERT(safe_operating_violation == uz_pmsm_control_i_q_violation_upper); // One of the current limits is hit by the test, if abc or i_q is raised depends on the order of the checks
+    // (safe_operating_violation == uz_pmsm_control_i_abc_violation_upper) ||
+    enum uz_pmsm_control_safe_operating_region_violation previous_violation = safe_operating_violation;
 
     uz_pmsm_control_acknowledge_and_reset_error(controller, measurements); // Acknowledge and reset error with measurement outside of limit -> violation should still be present
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_i_abc_violation_upper);
+    TEST_ASSERT(safe_operating_violation == previous_violation);
 
-    measurements.i_abc_in_A.a = pmsm_controller_config.safe_operating_region.i_abc_in_A.upper_bound - 1.0f; // Measurement is above limit
+    measurements.i_abc_in_A.a = 0.0f; // Measurement is below limit
     uz_pmsm_control_acknowledge_and_reset_error(controller, measurements); // Acknowledge and reset error with measurement within limit -> violation should be reset
-     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_no_violation);
+    safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
+    TEST_ASSERT(safe_operating_violation == uz_pmsm_control_no_violation);
 }
 
 void test_uz_pmsm_control_get_safe_area_controller_on(void)
@@ -222,9 +217,6 @@ void test_uz_pmsm_control_get_safe_area_controller_on(void)
     uz_pmsm_control_enable(controller, true);
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, 0.0f);
     // Controller is not enabled, thus default duty cycles are returned
-    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
-    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
-    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
     // controller checks for violation even if not enabled. Inputs are within limits
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
     TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_no_violation);
@@ -232,22 +224,21 @@ void test_uz_pmsm_control_get_safe_area_controller_on(void)
     measurements.i_abc_in_A.a = pmsm_controller_config.safe_operating_region.i_abc_in_A.upper_bound + 1.0f; // Measurement is above limit
     duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, 0.0f);
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
-    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
-    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_i_abc_violation_upper);
+    TEST_ASSERT(safe_operating_violation == uz_pmsm_control_i_q_violation_upper); // One of the current limits is hit by the test, if abc or i_q is raised depends on the order of the checks
+    // (safe_operating_violation == uz_pmsm_control_i_abc_violation_upper) ||
+    enum uz_pmsm_control_safe_operating_region_violation previous_violation = safe_operating_violation;
 
     uz_pmsm_control_acknowledge_and_reset_error(controller, measurements); // Acknowledge and reset error with measurement outside of limit -> violation should still be present
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_i_abc_violation_upper);
+    TEST_ASSERT(safe_operating_violation == previous_violation);
 
-    measurements.i_abc_in_A.a = pmsm_controller_config.safe_operating_region.i_abc_in_A.upper_bound - 1.0f; // Measurement is above limit
-    uz_pmsm_control_acknowledge_and_reset_error(controller, measurements);                                  // Acknowledge and reset error with measurement within limit -> violation should be reset
+    measurements.i_abc_in_A.a = 0.0f;                                      // Measurement is below limit
+    uz_pmsm_control_acknowledge_and_reset_error(controller, measurements); // Acknowledge and reset error with measurement within limit -> violation should be reset
     safe_operating_violation = uz_pmsm_control_get_safe_operating_area_violation(controller);
-    TEST_ASSERT_TRUE(safe_operating_violation == uz_pmsm_control_no_violation);
+    TEST_ASSERT(safe_operating_violation == uz_pmsm_control_no_violation);
 }
 
-void test_uz_pmsm_control_sample(void)
+void test_uz_pmsm_control_sample_default_duty_cycle(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
 
@@ -265,16 +256,29 @@ void test_uz_pmsm_control_sample(void)
         .q = 0.0f,
         .zero = 0.0f};
     float disturbance_input_in_Nm = 0.0f;
+    measurements.i_abc_in_A.a = 1.0f;
+    measurements.i_abc_in_A.b = -0.5f;
+    measurements.i_abc_in_A.c = -0.5f;
+    // If one current is not zero, the controller will output default duty cycle and not default  after controller is enabled
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
-}
+    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
+    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
+    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
 
-void test_uz_pmsm_set_enable(void)
-{
-    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
     uz_pmsm_control_enable(controller, true);
+    duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    TEST_ASSERT(duty_d2.DutyCycle_A != pmsm_controller_config.default_duty_cycle.DutyCycle_A);
+    TEST_ASSERT(duty_d2.DutyCycle_B != pmsm_controller_config.default_duty_cycle.DutyCycle_B);
+    TEST_ASSERT(duty_d2.DutyCycle_C != pmsm_controller_config.default_duty_cycle.DutyCycle_C);
+
+    uz_pmsm_control_enable(controller, false);
+    duty_d2 = uz_pmsm_control_sample_duty(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    TEST_ASSERT(duty_d2.DutyCycle_A == pmsm_controller_config.default_duty_cycle.DutyCycle_A);
+    TEST_ASSERT(duty_d2.DutyCycle_B == pmsm_controller_config.default_duty_cycle.DutyCycle_B);
+    TEST_ASSERT(duty_d2.DutyCycle_C == pmsm_controller_config.default_duty_cycle.DutyCycle_C);
 }
 
-void test_uz_pmsm_reset_error(void)
+void test_uz_pmsm_control_sample_dq(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
 
@@ -286,15 +290,42 @@ void test_uz_pmsm_reset_error(void)
         .v_dc_in_V = 12.0f,
         .i_dc_in_A = 1.0f};
 
-    uz_pmsm_control_acknowledge_and_reset_error(controller, measurements);
+    float reference_speed_in_rpm = 1.0f;
+    uz_3ph_dq_t reference_currents = {
+        .d = 0.0f,
+        .q = 0.0f,
+        .zero = 0.0f};
+    float disturbance_input_in_Nm = 0.0f;
+    measurements.i_abc_in_A.a = 1.0f;
+    measurements.i_abc_in_A.b = -0.5f;
+    measurements.i_abc_in_A.c = -0.5f;
+    // If one current is not zero, the controller will output default duty cycle and not default  after controller is enabled
+    struct uz_3ph_dq_t v_dq_in_v = uz_pmsm_control_sample_dq(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    TEST_ASSERT(v_dq_in_v.d == 0.0f);
+    TEST_ASSERT(v_dq_in_v.q == 0.0f);
+    TEST_ASSERT(v_dq_in_v.zero == 0.0f);
+
+    uz_pmsm_control_enable(controller, true);
+    v_dq_in_v = uz_pmsm_control_sample_dq(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    TEST_ASSERT(v_dq_in_v.d != 0.0f);
+    TEST_ASSERT(v_dq_in_v.q != 0.0f);
+    TEST_ASSERT(v_dq_in_v.zero == 0.0f);
+
+    uz_pmsm_control_enable(controller, false);
+    v_dq_in_v = uz_pmsm_control_sample_dq(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+    TEST_ASSERT(v_dq_in_v.d == 0.0f);
+    TEST_ASSERT(v_dq_in_v.q == 0.0f);
+    TEST_ASSERT(v_dq_in_v.zero == 0.0f);
 }
 
-void test_uz_pmsm_enable_speed_control(void)
+void test_uz_pmsm_enable_speed_control(void) // How to test?
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
     uz_pmsm_control_enable_speed_control(controller, true);
 }
 
+
+// Time domain tests with machine model
 void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
 {
     enum

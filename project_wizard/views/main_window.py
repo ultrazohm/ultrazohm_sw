@@ -772,6 +772,28 @@ class MainWindow(QMainWindow):
         add_attachment_group("A-slot project-level AXI attachment point", "a")
         add_attachment_group("D-slot project-level AXI attachment point", "d")
 
+        analog_group = QGroupBox("A-slot analog project-level wiring")
+        analog_form = QFormLayout(analog_group)
+        analog_field_labels = [
+            ("analog_raw_value_target_template", "RAW value target template"),
+            ("analog_axi2tcm_trigger_source", "AXI2TCM trigger source"),
+            ("analog_axi2tcm_trigger_target", "AXI2TCM trigger target"),
+            ("analog_conversion_trigger_sources", "Conversion trigger sources"),
+            ("analog_conversion_trigger_target", "Conversion trigger target"),
+        ]
+        for key, label in analog_field_labels:
+            edit = QLineEdit(str(defaults.get(key, "")))
+            edit.textChanged.connect(self.refresh_tcl_preview)
+            self.axi_fields[key] = edit
+            analog_form.addRow(label, edit)
+        analog_hint = QLabel(
+            "These fields make the historically grown A-slot project wiring explicit. "
+            "Use semicolons for multiple conversion trigger sources."
+        )
+        analog_hint.setWordWrap(True)
+        analog_form.addRow("", analog_hint)
+        outer.addWidget(analog_group)
+
         local_group = QGroupBox("Local per adapter card slot AXI smartconnects")
         local_form = QFormLayout(local_group)
         local_field_labels = [

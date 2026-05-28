@@ -170,18 +170,33 @@
             "source_pin": "dout",
             "sink_ip_core": "{slot}_iobufds_inst",
             "sink_pin": "INVERT_OUTPUT"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_LTC2311",
+            "source_pin": "SCLK",
+            "sink_ip_core": "{slot}_iobufds_inst",
+            "sink_pin": "SCLK_IN"
+          },
+          {
+            "source_ip_core": "{slot}_iobufds_inst",
+            "source_pin": "MISO_OUT",
+            "sink_ip_core": "{slot}_ADC_LTC2311",
+            "sink_pin": "MISO"
           }
         ],
         "ports": [
           {
             "signal": "{slot}_OUT_CNV_1",
+            "ip_pin": "SS_N",
             "direction": "out",
             "pins": [
               "{slot}_OUT_CNV_0",
               "{slot}_OUT_CNV_1"
             ],
             "adapter_pin_name_template": "{signal}",
-            "boundary_name_template": "{signal}"
+            "boundary_name_template": "{signal}",
+            "left": 0,
+            "right": 0
           },
           {
             "signal": "{slot}_OUT_CLK",
@@ -196,19 +211,21 @@
           },
           {
             "signal": "{slot}_RAW_Value",
+            "ip_pin": "RAW_VALUE",
             "direction": "out",
-            "pin": "{slot}_RAW_Value",
             "adapter_pin_name_template": "{signal}",
             "boundary_name_template": "{signal}",
+            "external_port": false,
             "left": 127,
             "right": 0
           },
           {
             "signal": "{slot}_RAW_Valid",
+            "ip_pin": "RAW_VALID",
             "direction": "out",
-            "pin": "{slot}_RAW_Valid",
             "adapter_pin_name_template": "{signal}",
-            "boundary_name_template": "{signal}"
+            "boundary_name_template": "{signal}",
+            "external_port": false
           },
           {
             "signal": "{slot}_IN",
@@ -236,7 +253,13 @@
           {
             "name": "S00_AXI",
             "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI",
-            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg"
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg",
+            "range": "0x00010000",
+            "offsets": {
+              "A1": "0x80000000",
+              "A2": "0x80010000",
+              "A3": "0x80020000"
+            }
           }
         ]
       },

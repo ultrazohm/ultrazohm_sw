@@ -74,6 +74,12 @@ class TclGenerator:
                 self._axi_context(assignments, option_values, axi_config),
             )
         )
+        lines.append(
+            self.renderer.render_file(
+                "analog_project_integration.tcl",
+                self._analog_project_context(assignments, axi_config),
+            )
+        )
 
         lines.extend(
             [
@@ -278,6 +284,7 @@ class TclGenerator:
         for port in vivado.get("ports", []):
             signal = port.get("signal", "signal").format(**self._format_context(slot, slot_index))
             external_port_signals.add(signal)
+            has_external_port = port.get("external_port", True) is not False and bool(port.get("pin") or port.get("pins"))
             signals.append(
                 self._signal_context(
                     slot,
@@ -287,7 +294,7 @@ class TclGenerator:
                     channel_suffix,
                     ip_path,
                     ip_paths,
-                    has_external_port=True,
+                    has_external_port=has_external_port,
                 )
             )
 
@@ -302,7 +309,8 @@ class TclGenerator:
                     channel_suffix,
                     ip_path,
                     ip_paths,
-                    has_external_port=bool(signal_definition.get("external_port", False)),
+                    has_external_port=signal_definition.get("external_port", True) is not False
+                    and bool(signal_definition.get("pin") or signal_definition.get("pins")),
                 )
             )
 
@@ -551,6 +559,10 @@ class TclGenerator:
                         "path": interface["path"],
                         "addr_seg": interface["addr_seg"],
                         "address_space": slot_axi["address_space"],
+                        "address_assignment_command": self._address_assignment_command(
+                            slot_axi["address_space"],
+                            interface,
+                        ),
                     }
                 )
         return {
@@ -619,9 +631,57 @@ class TclGenerator:
                     "name": interface.get("name", "axi"),
                     "path": interface.get("path_template", "").format(**context),
                     "addr_seg": interface.get("addr_seg_template", "").format(**context),
+                    "offset": interface.get("offsets", {}).get(slot, interface.get("offset", "")),
+                    "range": interface.get("range", ""),
                 }
             )
         return formatted
+
+    @staticmethod
+    def _address_assignment_command(address_space: str, interface: dict[str, str]) -> str:
+        addr_seg = interface.get("addr_seg", "")
+        offset = interface.get("offset", "")
+        address_range = interface.get("range", "")
+        if offset and address_range:
+            return (
+                f"assign_bd_address -offset {offset} -range {address_range} "
+                f"-target_address_space {address_space} [get_bd_addr_segs {addr_seg}] -force"
+            )
+        return f"assign_bd_address -target_address_space {address_space} [get_bd_addr_segs {addr_seg}] -force"
+
+    def _analog_project_context(self, assignments: dict[str, str], axi_config: dict[str, str]) -> dict[str, Any]:
+        config = dict(self.database.axi_interconnect)
+        config.update({key: value for key, value in axi_config.items() if value})
+        raw_target_template = config.get("analog_raw_value_target_template", "uz_system/ADC_{slot}")
+        raw_value_connections = []
+        for slot in ("A1", "A2", "A3"):
+            card = self.database.card_by_id(assignments.get(slot, "empty"))
+            if not card or card.get("id") != "analog_ltc2311_16":
+                continue
+            raw_value_connections.append(
+                {
+                    "slot": slot,
+                    "source_pin": f"uz_analog_adapter/{slot}_RAW_Value",
+                    "target_pin": raw_target_template.format(slot=slot, slot_index=slot[1:]),
+                }
+            )
+        axi2tcm_source = config.get("analog_axi2tcm_trigger_source", "uz_analog_adapter/A1_RAW_Valid").strip()
+        if axi2tcm_source and "/" not in axi2tcm_source:
+            axi2tcm_source = f"uz_analog_adapter/{axi2tcm_source}"
+        conversion_sources = [
+            source.strip()
+            for source in config.get("analog_conversion_trigger_sources", "").split(";")
+            if source.strip()
+        ]
+        return {
+            "has_analog_ltc2311": bool(raw_value_connections),
+            "raw_value_connections": raw_value_connections,
+            "has_axi2tcm_trigger": bool(raw_value_connections and axi2tcm_source),
+            "axi2tcm_trigger_source": axi2tcm_source,
+            "axi2tcm_trigger_target": config.get("analog_axi2tcm_trigger_target", "uz_system/Trigger_AXI2TCM"),
+            "has_conversion_trigger": bool(raw_value_connections and conversion_sources),
+            "conversion_trigger_pins": " ".join(conversion_sources + [config.get("analog_conversion_trigger_target", "uz_analog_adapter/TRIGGER_CNV")]),
+        }
 
     def _selected_choice(self, option: dict[str, Any], option_values: dict[str, str]) -> dict[str, Any] | None:
         selected_id = option_values.get(option.get("id", ""), option.get("default", ""))

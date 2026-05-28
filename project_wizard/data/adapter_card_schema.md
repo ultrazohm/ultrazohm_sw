@@ -93,7 +93,11 @@ Minimum `vivado` shape:
     {
       "name": "AXI4_Lite",
       "path_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite",
-      "addr_seg_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite/reg0"
+      "addr_seg_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite/reg0",
+      "range": "0x00010000",
+      "offsets": {
+        "A1": "0x80000000"
+      }
     }
   ],
   "constraints": {

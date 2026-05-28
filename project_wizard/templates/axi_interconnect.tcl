@@ -309,6 +309,6 @@ uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 set slot_sc {{ interface.local_smartconnect_path }}
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc {{ interface.index }}]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin {{ interface.path }}
-assign_bd_address -target_address_space {{ interface.address_space }} [get_bd_addr_segs {{ interface.addr_seg }}] -force
+{{ interface.address_assignment_command }}
 {% endfor %}
 {% endif %}

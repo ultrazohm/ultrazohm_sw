@@ -95,6 +95,48 @@ proc uz_pw_connect_pin_pair_if_unconnected {source_pin sink_pin} {
   uz_pw_try_connect_bd_net $source $sink
 }
 
+proc uz_pw_connect_pins_to_shared_net {pin_paths} {
+  set pins {}
+  foreach pin_path $pin_paths {
+    set pin [get_bd_pins -quiet $pin_path]
+    if {[llength $pin] == 0} {
+      puts "WARNING: Shared-net pin not found: $pin_path"
+      continue
+    }
+    lappend pins $pin
+  }
+  if {[llength $pins] < 2} {
+    return
+  }
+
+  set selected_net ""
+  foreach pin $pins {
+    set nets [get_bd_nets -quiet -of_objects $pin]
+    if {[llength $nets] > 0} {
+      set selected_net [lindex $nets 0]
+      break
+    }
+  }
+
+  if {$selected_net eq ""} {
+    uz_pw_try_connect_bd_net {*}$pins
+    return
+  }
+
+  set net_name [get_property NAME $selected_net]
+  foreach pin $pins {
+    set already_connected 0
+    foreach net [get_bd_nets -quiet -of_objects $pin] {
+      if {$net eq $selected_net} {
+        set already_connected 1
+      }
+    }
+    if {!$already_connected} {
+      uz_pw_try_connect_bd_net -net $net_name $pin
+    }
+  }
+}
+
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   set source [get_bd_pins -quiet $source_pin]
   set sink [get_bd_pins -quiet $sink_pin]

@@ -43,6 +43,11 @@
     "a_clock_pin": "uz_system/clk",
     "a_resetn_pin": "uz_system/peripheral_aresetn",
     "a_address_space": "/zynq_ultra_ps_e_0/Data",
+    "analog_raw_value_target_template": "uz_system/ADC_{slot}",
+    "analog_axi2tcm_trigger_source": "uz_analog_adapter/A1_RAW_Valid",
+    "analog_axi2tcm_trigger_target": "uz_system/Trigger_AXI2TCM",
+    "analog_conversion_trigger_sources": "uz_system/trigger_conversions;uz_digital_adapter/PeriodEnd",
+    "analog_conversion_trigger_target": "uz_analog_adapter/TRIGGER_CNV",
     "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
     "local_smartconnect_name": "axi_smartconnect"
   }

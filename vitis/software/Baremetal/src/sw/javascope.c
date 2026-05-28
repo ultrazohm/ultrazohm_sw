@@ -94,6 +94,30 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_XZ_SSI_D5_CH2_POS_EL_ST] = &data->av.ssi_encoder_d5_2_position_el_si_single_turn;
 	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_MECH_ST] = &data->av.ssi_encoder_d5_3_position_mech_si_single_turn;
 	js_ch_observable[JSO_XZ_SSI_D5_CH3_POS_EL_ST] = &data->av.ssi_encoder_d5_3_position_el_si_single_turn;
+	js_ch_observable[JSO_XZ_ADC_A1_CH0] = &data->aa.A1.me.ADC_array[0];
+	js_ch_observable[JSO_XZ_ADC_A1_CH1] = &data->aa.A1.me.ADC_array[1];
+	js_ch_observable[JSO_XZ_ADC_A1_CH2] = &data->aa.A1.me.ADC_array[2];
+	js_ch_observable[JSO_XZ_ADC_A1_CH3] = &data->aa.A1.me.ADC_array[3];
+	js_ch_observable[JSO_XZ_ADC_A1_CH4] = &data->aa.A1.me.ADC_array[4];
+	js_ch_observable[JSO_XZ_ADC_A1_CH5] = &data->aa.A1.me.ADC_array[5];
+	js_ch_observable[JSO_XZ_ADC_A1_CH6] = &data->aa.A1.me.ADC_array[6];
+	js_ch_observable[JSO_XZ_ADC_A1_CH7] = &data->aa.A1.me.ADC_array[7];
+	js_ch_observable[JSO_XZ_ADC_A2_CH0] = &data->aa.A2.me.ADC_array[0];
+	js_ch_observable[JSO_XZ_ADC_A2_CH1] = &data->aa.A2.me.ADC_array[1];
+	js_ch_observable[JSO_XZ_ADC_A2_CH2] = &data->aa.A2.me.ADC_array[2];
+	js_ch_observable[JSO_XZ_ADC_A2_CH3] = &data->aa.A2.me.ADC_array[3];
+	js_ch_observable[JSO_XZ_ADC_A2_CH4] = &data->aa.A2.me.ADC_array[4];
+	js_ch_observable[JSO_XZ_ADC_A2_CH5] = &data->aa.A2.me.ADC_array[5];
+	js_ch_observable[JSO_XZ_ADC_A2_CH6] = &data->aa.A2.me.ADC_array[6];
+	js_ch_observable[JSO_XZ_ADC_A2_CH7] = &data->aa.A2.me.ADC_array[7];
+	js_ch_observable[JSO_XZ_ADC_A3_CH0] = &data->aa.A3.me.ADC_array[0];
+	js_ch_observable[JSO_XZ_ADC_A3_CH1] = &data->aa.A3.me.ADC_array[1];
+	js_ch_observable[JSO_XZ_ADC_A3_CH2] = &data->aa.A3.me.ADC_array[2];
+	js_ch_observable[JSO_XZ_ADC_A3_CH3] = &data->aa.A3.me.ADC_array[3];
+	js_ch_observable[JSO_XZ_ADC_A3_CH4] = &data->aa.A3.me.ADC_array[4];
+	js_ch_observable[JSO_XZ_ADC_A3_CH5] = &data->aa.A3.me.ADC_array[5];
+	js_ch_observable[JSO_XZ_ADC_A3_CH6] = &data->aa.A3.me.ADC_array[6];
+	js_ch_observable[JSO_XZ_ADC_A3_CH7] = &data->aa.A3.me.ADC_array[7];
 /* Project Wizard END: javascope_observable_pointers */
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

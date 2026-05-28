@@ -171,6 +171,42 @@ proc uz_pw_delete_matching_intf_pins_in_hierarchy {hier_path cleanup_patterns} {
 }
 
 
+# TODO: Create or refresh hierarchy for adapter slot A1.
+# Suggested hierarchy path: uz_digital_adapter/A1_adapter or uz_analog_adapter/A1_adapter
+uz_pw_delete_external_ports_for_slot A1 [list "*A1*" "*a1*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
+
+# TODO: Create or refresh hierarchy for adapter slot A2.
+# Suggested hierarchy path: uz_digital_adapter/A2_adapter or uz_analog_adapter/A2_adapter
+uz_pw_delete_external_ports_for_slot A2 [list "*A2*" "*a2*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
+
 # TODO: Create or refresh hierarchy for adapter slot A3.
 # Suggested hierarchy path: uz_digital_adapter/A3_adapter or uz_analog_adapter/A3_adapter
 uz_pw_delete_external_ports_for_slot A3 [list "*A3*" "*a3*"]
@@ -451,9 +487,373 @@ proc uz_pw_apply_slot_constraints {slot packed_constraint_name adapter_constrain
   }
 }
 
-# A1: bypass - leaving existing block design content untouched
+# -----------------------------------------------------------------------------
+# A1: Analog LTC2311-16
+# -----------------------------------------------------------------------------
 
-# A2: bypass - leaving existing block design content untouched
+# NOTE: Creates uz_analog_adapter/Ax_adapter for the selected A-slot.
+
+# NOTE: Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.
+
+# NOTE: Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.
+
+# NOTE: Connects AXI through the A-slot project-level AXI attachment point.
+
+
+puts "Adding Analog LTC2311-16 for slot A1"
+
+set adapter_parent_hier uz_analog_adapter
+set adapter_hier_name A1_adapter
+set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
+
+uz_pw_create_hier_if_missing ${adapter_parent_hier}
+uz_pw_create_hier_if_missing ${adapter_hier_path}
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/s00_axi_aresetn
+
+
+set A1_ADC_LTC2311_path ${adapter_hier_path}/A1_ADC_LTC2311
+if {[llength [get_bd_cells -quiet $A1_ADC_LTC2311_path]] == 0} {
+
+
+  set A1_ADC_LTC2311 [create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311 $A1_ADC_LTC2311_path]
+
+} else {
+  puts "Reusing existing IP $A1_ADC_LTC2311_path"
+}
+# Module: ADC_LTC2311
+
+uz_pw_set_property_dict_if_objects [list CONFIG.DATA_WIDTH 16 CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1 CONFIG.OFFSET_WIDTH 16 CONFIG.CONVERSION_WIDTH 18 CONFIG.RES_LSB 0 CONFIG.RES_MSB 34 CONFIG.DIFFERENTIAL false] [get_bd_cells -quiet $A1_ADC_LTC2311_path] $A1_ADC_LTC2311_path
+
+
+set A1_iobufds_inst_path ${adapter_hier_path}/A1_iobufds_inst
+if {[llength [get_bd_cells -quiet $A1_iobufds_inst_path]] == 0} {
+
+  set A1_iobufds_inst [create_bd_cell -type module -reference iobufds_inst $A1_iobufds_inst_path]
+
+
+} else {
+  puts "Reusing existing IP $A1_iobufds_inst_path"
+}
+# Module: iobufds_inst
+
+uz_pw_set_property_dict_if_objects [list CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1] [get_bd_cells -quiet $A1_iobufds_inst_path] $A1_iobufds_inst_path
+
+
+set A1_inv_input_path ${adapter_hier_path}/A1_inv_input
+if {[llength [get_bd_cells -quiet $A1_inv_input_path]] == 0} {
+
+
+  set A1_inv_input [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant $A1_inv_input_path]
+
+} else {
+  puts "Reusing existing IP $A1_inv_input_path"
+}
+# Module: xlconstant
+
+uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH 8 CONFIG.CONST_VAL 0x00] [get_bd_cells -quiet $A1_inv_input_path] $A1_inv_input_path
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${A1_ADC_LTC2311_path}/s00_axi_aclk
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/s00_axi_aresetn ${A1_ADC_LTC2311_path}/s00_axi_aresetn
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_inv_input/dout ${adapter_hier_path}/A1_iobufds_inst/INVERT_OUTPUT
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_ADC_LTC2311/SCLK ${adapter_hier_path}/A1_iobufds_inst/SCLK_IN
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_iobufds_inst/MISO_OUT ${adapter_hier_path}/A1_ADC_LTC2311/MISO
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A1_OUT_CNV_1 "0" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A1_OUT_CNV_1 "0" "0"
+
+
+uz_pw_create_bd_port_if_missing O A1_OUT_CNV_0 "0" "0"
+uz_pw_create_bd_port_if_missing O A1_OUT_CNV_1 "0" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_ADC_LTC2311/SS_N ${adapter_hier_path}/A1_OUT_CNV_1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_OUT_CNV_1 ${adapter_parent_hier}/A1_OUT_CNV_1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A1_OUT_CNV_1 A1_OUT_CNV_0
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A1_OUT_CNV_1 A1_OUT_CNV_1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A1_OUT_CLK "1" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A1_OUT_CLK "1" "0"
+
+
+uz_pw_create_bd_port_if_missing O A1_OUT_CLK "1" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_iobufds_inst/SCLK_OUT ${adapter_hier_path}/A1_OUT_CLK
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_OUT_CLK ${adapter_parent_hier}/A1_OUT_CLK
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A1_OUT_CLK A1_OUT_CLK
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A1_RAW_Value "127" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A1_RAW_Value "127" "0"
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_ADC_LTC2311/RAW_VALUE ${adapter_hier_path}/A1_RAW_Value
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_RAW_Value ${adapter_parent_hier}/A1_RAW_Value
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A1_RAW_Valid "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A1_RAW_Valid "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_ADC_LTC2311/RAW_VALID ${adapter_hier_path}/A1_RAW_Valid
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_RAW_Valid ${adapter_parent_hier}/A1_RAW_Valid
+
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/A1_IN "15" "0"
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/A1_IN "15" "0"
+
+
+uz_pw_create_bd_port_if_missing I A1_IN "15" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A1_IN ${adapter_hier_path}/A1_iobufds_inst/MISO_IN
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/A1_IN ${adapter_hier_path}/A1_IN
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A1_IN A1_IN
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/TRIGGER_CNV "" ""
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/TRIGGER_CNV "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/TRIGGER_CNV ${adapter_hier_path}/A1_ADC_LTC2311/TRIGGER_CNV
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/TRIGGER_CNV ${adapter_hier_path}/TRIGGER_CNV
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# A2: Analog LTC2311-16
+# -----------------------------------------------------------------------------
+
+# NOTE: Creates uz_analog_adapter/Ax_adapter for the selected A-slot.
+
+# NOTE: Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.
+
+# NOTE: Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.
+
+# NOTE: Connects AXI through the A-slot project-level AXI attachment point.
+
+
+puts "Adding Analog LTC2311-16 for slot A2"
+
+set adapter_parent_hier uz_analog_adapter
+set adapter_hier_name A2_adapter
+set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
+
+uz_pw_create_hier_if_missing ${adapter_parent_hier}
+uz_pw_create_hier_if_missing ${adapter_hier_path}
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/s00_axi_aresetn
+
+
+set A2_ADC_LTC2311_path ${adapter_hier_path}/A2_ADC_LTC2311
+if {[llength [get_bd_cells -quiet $A2_ADC_LTC2311_path]] == 0} {
+
+
+  set A2_ADC_LTC2311 [create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311 $A2_ADC_LTC2311_path]
+
+} else {
+  puts "Reusing existing IP $A2_ADC_LTC2311_path"
+}
+# Module: ADC_LTC2311
+
+uz_pw_set_property_dict_if_objects [list CONFIG.DATA_WIDTH 16 CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1 CONFIG.OFFSET_WIDTH 16 CONFIG.CONVERSION_WIDTH 18 CONFIG.RES_LSB 0 CONFIG.RES_MSB 34 CONFIG.DIFFERENTIAL false] [get_bd_cells -quiet $A2_ADC_LTC2311_path] $A2_ADC_LTC2311_path
+
+
+set A2_iobufds_inst_path ${adapter_hier_path}/A2_iobufds_inst
+if {[llength [get_bd_cells -quiet $A2_iobufds_inst_path]] == 0} {
+
+  set A2_iobufds_inst [create_bd_cell -type module -reference iobufds_inst $A2_iobufds_inst_path]
+
+
+} else {
+  puts "Reusing existing IP $A2_iobufds_inst_path"
+}
+# Module: iobufds_inst
+
+uz_pw_set_property_dict_if_objects [list CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1] [get_bd_cells -quiet $A2_iobufds_inst_path] $A2_iobufds_inst_path
+
+
+set A2_inv_input_path ${adapter_hier_path}/A2_inv_input
+if {[llength [get_bd_cells -quiet $A2_inv_input_path]] == 0} {
+
+
+  set A2_inv_input [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant $A2_inv_input_path]
+
+} else {
+  puts "Reusing existing IP $A2_inv_input_path"
+}
+# Module: xlconstant
+
+uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH 8 CONFIG.CONST_VAL 0x00] [get_bd_cells -quiet $A2_inv_input_path] $A2_inv_input_path
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${A2_ADC_LTC2311_path}/s00_axi_aclk
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/s00_axi_aresetn ${A2_ADC_LTC2311_path}/s00_axi_aresetn
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_inv_input/dout ${adapter_hier_path}/A2_iobufds_inst/INVERT_OUTPUT
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_ADC_LTC2311/SCLK ${adapter_hier_path}/A2_iobufds_inst/SCLK_IN
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_iobufds_inst/MISO_OUT ${adapter_hier_path}/A2_ADC_LTC2311/MISO
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A2_OUT_CNV_1 "0" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A2_OUT_CNV_1 "0" "0"
+
+
+uz_pw_create_bd_port_if_missing O A2_OUT_CNV_0 "0" "0"
+uz_pw_create_bd_port_if_missing O A2_OUT_CNV_1 "0" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_ADC_LTC2311/SS_N ${adapter_hier_path}/A2_OUT_CNV_1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_OUT_CNV_1 ${adapter_parent_hier}/A2_OUT_CNV_1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A2_OUT_CNV_1 A2_OUT_CNV_0
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A2_OUT_CNV_1 A2_OUT_CNV_1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A2_OUT_CLK "1" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A2_OUT_CLK "1" "0"
+
+
+uz_pw_create_bd_port_if_missing O A2_OUT_CLK "1" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_iobufds_inst/SCLK_OUT ${adapter_hier_path}/A2_OUT_CLK
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_OUT_CLK ${adapter_parent_hier}/A2_OUT_CLK
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A2_OUT_CLK A2_OUT_CLK
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A2_RAW_Value "127" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A2_RAW_Value "127" "0"
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_ADC_LTC2311/RAW_VALUE ${adapter_hier_path}/A2_RAW_Value
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_RAW_Value ${adapter_parent_hier}/A2_RAW_Value
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A2_RAW_Valid "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A2_RAW_Valid "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_ADC_LTC2311/RAW_VALID ${adapter_hier_path}/A2_RAW_Valid
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_RAW_Valid ${adapter_parent_hier}/A2_RAW_Valid
+
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/A2_IN "15" "0"
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/A2_IN "15" "0"
+
+
+uz_pw_create_bd_port_if_missing I A2_IN "15" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A2_IN ${adapter_hier_path}/A2_iobufds_inst/MISO_IN
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/A2_IN ${adapter_hier_path}/A2_IN
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A2_IN A2_IN
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/TRIGGER_CNV "" ""
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/TRIGGER_CNV "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/TRIGGER_CNV ${adapter_hier_path}/A2_ADC_LTC2311/TRIGGER_CNV
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/TRIGGER_CNV ${adapter_hier_path}/TRIGGER_CNV
+
+
+
+
+
+
+
+
+
 
 # -----------------------------------------------------------------------------
 # A3: Analog LTC2311-16
@@ -900,6 +1300,130 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
 
+puts "Configuring local AXI SmartConnect for slot A1"
+
+set slot_sc uz_analog_adapter/A1_adapter/axi_smartconnect
+if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
+} else {
+  puts "Reusing existing local SmartConnect $slot_sc"
+}
+
+set slot_sc_cell [get_bd_cells -quiet $slot_sc]
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 1] $slot_sc_cell $slot_sc
+
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_analog_adapter/A1_adapter/clk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_analog_adapter/A1_adapter/s00_axi_aresetn
+
+set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
+set adapter_root_boundary_pin uz_analog_adapter/A1_AXI
+set slot_boundary_pin uz_analog_adapter/A1_adapter/S00_AXI
+
+set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
+if {$upstream_boundary_pin eq ""} {
+  if {$upstream_hier_path eq ""} {
+    set upstream_boundary_pin A1_AXI
+  } else {
+    set upstream_boundary_pin ${upstream_hier_path}/A1_AXI
+  }
+}
+
+uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
+
+set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
+if {$upstream_mi_pin eq ""} {
+  set upstream_mi_pin [uz_pw_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
+}
+
+uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
+uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+
+
+set uz_pw_upstream_smartconnect uz_system/smartconnect_0
+set uz_pw_axi_clock_pin uz_system/clk
+set uz_pw_axi_resetn_pin uz_system/peripheral_aresetn
+set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
+
+if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
+  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
+  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
+}
+
+puts "Configuring local AXI SmartConnect for slot A2"
+
+set slot_sc uz_analog_adapter/A2_adapter/axi_smartconnect
+if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
+} else {
+  puts "Reusing existing local SmartConnect $slot_sc"
+}
+
+set slot_sc_cell [get_bd_cells -quiet $slot_sc]
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 1] $slot_sc_cell $slot_sc
+
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_analog_adapter/A2_adapter/clk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_analog_adapter/A2_adapter/s00_axi_aresetn
+
+set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
+set adapter_root_boundary_pin uz_analog_adapter/A2_AXI
+set slot_boundary_pin uz_analog_adapter/A2_adapter/S00_AXI
+
+set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
+if {$upstream_boundary_pin eq ""} {
+  if {$upstream_hier_path eq ""} {
+    set upstream_boundary_pin A2_AXI
+  } else {
+    set upstream_boundary_pin ${upstream_hier_path}/A2_AXI
+  }
+}
+
+uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
+
+set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
+if {$upstream_mi_pin eq ""} {
+  set upstream_mi_pin [uz_pw_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
+}
+
+uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
+uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+
+
+set uz_pw_upstream_smartconnect uz_system/smartconnect_0
+set uz_pw_axi_clock_pin uz_system/clk
+set uz_pw_axi_resetn_pin uz_system/peripheral_aresetn
+set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
+
+if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
+  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
+  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
+}
+
 puts "Configuring local AXI SmartConnect for slot A3"
 
 set slot_sc uz_analog_adapter/A3_adapter/axi_smartconnect
@@ -947,6 +1471,16 @@ uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 
+set slot_sc uz_analog_adapter/A1_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A1_adapter/A1_ADC_LTC2311/S00_AXI
+assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A1_adapter/A1_ADC_LTC2311/S00_AXI/S00_AXI_reg] -force
+
+set slot_sc uz_analog_adapter/A2_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A2_adapter/A2_ADC_LTC2311/S00_AXI
+assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A2_adapter/A2_ADC_LTC2311/S00_AXI/S00_AXI_reg] -force
+
 set slot_sc uz_analog_adapter/A3_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI
@@ -960,6 +1494,10 @@ assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space /zy
 
 puts "Applying A-slot analog project-level integration"
 
+
+uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A1_RAW_Value uz_system/ADC_A1
+
+uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A2_RAW_Value uz_system/ADC_A2
 
 uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A3_RAW_Value uz_system/ADC_A3
 

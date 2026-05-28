@@ -109,3 +109,55 @@ void export_input_output_arrays_to_csv(const char *filename,
 
     TEST_ASSERT_EQUAL_INT(0, fclose(file));
 }
+
+void export_array_of_struct_to_csv(const char *filename,
+                                   const void *array,
+                                   size_t element_size,
+                                   const struct csv_field_descriptor_t *fields,
+                                   size_t field_count,
+                                   size_t length,
+                                   float add_time)
+{
+    FILE *file = fopen(filename, "w");
+    TEST_ASSERT_NOT_NULL(file);
+    TEST_ASSERT_NOT_NULL(array);
+    TEST_ASSERT_NOT_NULL(fields);
+
+    if (add_time != 0.0f)
+    {
+        fprintf(file, "time;");
+    }
+
+    for (size_t field_index = 0U; field_index < field_count; ++field_index)
+    {
+        fprintf(file, "%s", fields[field_index].name);
+        if (field_index < (field_count - 1U))
+        {
+            fprintf(file, ";");
+        }
+    }
+    fprintf(file, "\n");
+
+    for (size_t element_index = 0U; element_index < length; ++element_index)
+    {
+        const unsigned char *element = (const unsigned char *)array + (element_index * element_size);
+
+        if (add_time != 0.0f)
+        {
+            fprintf(file, "%f;", (double)element_index * (double)add_time);
+        }
+
+        for (size_t field_index = 0U; field_index < field_count; ++field_index)
+        {
+            const void *field_ptr = element + fields[field_index].offset;
+            write_csv_field(file, field_ptr, fields[field_index].type);
+            if (field_index < (field_count - 1U))
+            {
+                fprintf(file, ";");
+            }
+        }
+        fprintf(file, "\n");
+    }
+
+    TEST_ASSERT_EQUAL_INT(0, fclose(file));
+}

@@ -52,16 +52,12 @@ void tearDown(void)
 #define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step.csv"
 #define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_config.csv"
 
-struct uz_pmsm_control_swmodel_inputs_t
+struct uz_pmsm_control_swmodel_log_t
 {
     float i_d_ref_A;
     float i_q_ref_A;
     float speed_ref_rpm;
     float trigger_controller;
-};
-
-struct uz_pmsm_control_swmodel_outputs_t
-{
     float i_d_A;
     float i_q_A;
     float v_d_V;
@@ -76,19 +72,17 @@ struct uz_pmsm_control_swmodel_config_export_t
     struct uz_PMSM_t machine;
 };
 
-const struct csv_field_descriptor_t pmsm_control_swmodel_input_fields[] = {
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, i_d_ref_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, i_q_ref_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, speed_ref_rpm, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_inputs_t, trigger_controller, CSV_FIELD_FLOAT)};
-
-const struct csv_field_descriptor_t pmsm_control_swmodel_output_fields[] = {
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, i_d_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, i_q_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, v_d_V, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, v_q_V, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, omega_mech_rad_per_sec, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_outputs_t, theta_mech_rad, CSV_FIELD_FLOAT)};
+const struct csv_field_descriptor_t pmsm_control_swmodel_log[] = {
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, i_d_ref_A, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, i_q_ref_A, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, speed_ref_rpm, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, trigger_controller, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, i_d_A, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, i_q_A, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, v_d_V, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, v_q_V, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, omega_mech_rad_per_sec, CSV_FIELD_FLOAT),
+    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_log_t, theta_mech_rad, CSV_FIELD_FLOAT)};
 
 const struct csv_field_descriptor_t pmsm_control_swmodel_config_fields[] = {
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_control_swmodel_config_export_t, sample_time, CSV_FIELD_FLOAT),
@@ -240,8 +234,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
         .pmsm_parameters = machine_config};
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(swmodel_config);
 
-    static struct uz_pmsm_control_swmodel_inputs_t sim_inputs[TOTAL_MODEL_ITERATIONS] = {0};
-    static struct uz_pmsm_control_swmodel_outputs_t sim_outputs[TOTAL_MODEL_ITERATIONS] = {0};
+    static struct uz_pmsm_control_swmodel_log_t sim_inputs[TOTAL_MODEL_ITERATIONS] = {0};
 
     float theta_mech_rad = 0.0f;
     float omega_mech_rad_per_sec = 10.0f;
@@ -285,13 +278,11 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
         omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
         theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * swmodel_config.sample_time, 2.0f * UZ_PIf);
 
-        sim_inputs[i] = (struct uz_pmsm_control_swmodel_inputs_t){
+        sim_inputs[i] = (struct uz_pmsm_control_swmodel_log_t){
             .i_d_ref_A = reference_currents.d,
             .i_q_ref_A = reference_currents.q,
             .speed_ref_rpm = 0.0f,
-            .trigger_controller = trigger_controller ? 1.0f : 0.0f};
-
-        sim_outputs[i] = (struct uz_pmsm_control_swmodel_outputs_t){
+            .trigger_controller = trigger_controller ? 1.0f : 0.0f,
             .i_d_A = model_i_dq_A.d,
             .i_q_A = model_i_dq_A.q,
             .v_d_V = applied_v_dq_V.d,
@@ -300,24 +291,20 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
             .theta_mech_rad = theta_mech_rad};
     }
 
-    TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_outputs[PRE_STEP_MODEL_ITERATIONS - 1U].i_q_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_outputs[TOTAL_MODEL_ITERATIONS - 1U].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_inputs[PRE_STEP_MODEL_ITERATIONS - 1U].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[TOTAL_MODEL_ITERATIONS - 1U].i_q_A);
 
 #if CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
-                                      sim_inputs,
-                                      sizeof(sim_inputs[0]),
-                                      pmsm_control_swmodel_input_fields,
-                                      sizeof(pmsm_control_swmodel_input_fields) / sizeof(pmsm_control_swmodel_input_fields[0]),
-                                      sim_outputs,
-                                      sizeof(sim_outputs[0]),
-                                      pmsm_control_swmodel_output_fields,
-                                      sizeof(pmsm_control_swmodel_output_fields) / sizeof(pmsm_control_swmodel_output_fields[0]),
-                                      TOTAL_MODEL_ITERATIONS,
-                                      swmodel_config.sample_time);
+    export_array_of_struct_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_control/uz_pmsm_control_swmodel_iq_step_oversampled.csv",
+                                  sim_inputs,
+                                  sizeof(sim_inputs[0]),
+                                  pmsm_control_swmodel_log,
+                                  sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
+                                  TOTAL_MODEL_ITERATIONS,
+                                  swmodel_config.sample_time);
     export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
                                       &export_config,
                                       sizeof(export_config),
@@ -356,8 +343,7 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
         .pmsm_parameters = machine_config};
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(swmodel_config);
 
-    struct uz_pmsm_control_swmodel_inputs_t sim_inputs[TOTAL_ITERATIONS] = {0};
-    struct uz_pmsm_control_swmodel_outputs_t sim_outputs[TOTAL_ITERATIONS] = {0};
+    struct uz_pmsm_control_swmodel_log_t sim_inputs[TOTAL_ITERATIONS] = {0};
 
     float theta_mech_rad = 0.0f;
     float omega_mech_rad_per_sec = 10.0f;
@@ -396,12 +382,11 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
         omega_mech_rad_per_sec = swmodel_outputs.omega_mech_1_s;
         theta_mech_rad = uz_signals_wrap(theta_mech_rad + omega_mech_rad_per_sec * controller_config.sample_time, 2.0f * UZ_PIf);
 
-        sim_inputs[i] = (struct uz_pmsm_control_swmodel_inputs_t){
+        sim_inputs[i] = (struct uz_pmsm_control_swmodel_log_t){
             .i_d_ref_A = reference_currents.d,
             .i_q_ref_A = reference_currents.q,
-            .speed_ref_rpm = 0.0f};
-
-        sim_outputs[i] = (struct uz_pmsm_control_swmodel_outputs_t){
+            .speed_ref_rpm = 0.0f,
+            .trigger_controller = 1.0f,
             .i_d_A = model_i_dq_A.d,
             .i_q_A = model_i_dq_A.q,
             .v_d_V = applied_v_dq_V.d,
@@ -410,24 +395,20 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
             .theta_mech_rad = theta_mech_rad};
     }
 
-    TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_outputs[PRE_STEP_ITERATIONS - 1U].i_q_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_outputs[TOTAL_ITERATIONS - 1U].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.05f, 0.0f, sim_inputs[PRE_STEP_ITERATIONS - 1U].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.20f, 1.0f, sim_inputs[TOTAL_ITERATIONS - 1U].i_q_A);
 
 #if CSV_EXPORT
     struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .sample_time = controller_config.sample_time,
         .machine = machine_config};
-    export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
-                                      sim_inputs,
-                                      sizeof(sim_inputs[0]),
-                                      pmsm_control_swmodel_input_fields,
-                                      sizeof(pmsm_control_swmodel_input_fields) / sizeof(pmsm_control_swmodel_input_fields[0]),
-                                      sim_outputs,
-                                      sizeof(sim_outputs[0]),
-                                      pmsm_control_swmodel_output_fields,
-                                      sizeof(pmsm_control_swmodel_output_fields) / sizeof(pmsm_control_swmodel_output_fields[0]),
-                                      TOTAL_ITERATIONS,
-                                      controller_config.sample_time);
+    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
+                                  sim_inputs,
+                                  sizeof(sim_inputs[0]),
+                                  pmsm_control_swmodel_log,
+                                  sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
+                                  TOTAL_ITERATIONS,
+                                  controller_config.sample_time);
     export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
                                       &export_config,
                                       sizeof(export_config),

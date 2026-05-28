@@ -303,17 +303,13 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s_oversampled(void)
                                   sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
                                   TOTAL_MODEL_ITERATIONS,
                                   swmodel_config.sample_time);
-    export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
-                                      &export_config,
-                                      sizeof(export_config),
-                                      empty_fields,
-                                      0U,
-                                      &export_config,
-                                      sizeof(export_config),
-                                      pmsm_control_swmodel_config_fields,
-                                      sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
-                                      1U,
-                                      0.0f);
+    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+                                  &export_config,
+                                  sizeof(export_config),
+                                  pmsm_control_swmodel_config_fields,
+                                  sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                  1U,
+                                  0.0f);
 #endif
 }
 
@@ -405,17 +401,13 @@ void test_uz_pmsm_control_swmodel_iq_step_after_1s(void)
                                   sizeof(pmsm_control_swmodel_log) / sizeof(pmsm_control_swmodel_log[0]),
                                   TOTAL_ITERATIONS,
                                   controller_config.sample_time);
-    export_input_output_arrays_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
-                                      &export_config,
-                                      sizeof(export_config),
-                                      empty_fields,
-                                      0U,
-                                      &export_config,
-                                      sizeof(export_config),
-                                      pmsm_control_swmodel_config_fields,
-                                      sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
-                                      1U,
-                                      0.0f);
+    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+                                  &export_config,
+                                  sizeof(export_config),
+                                  pmsm_control_swmodel_config_fields,
+                                  sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                  1U,
+                                  0.0f);
 #endif
 }
 

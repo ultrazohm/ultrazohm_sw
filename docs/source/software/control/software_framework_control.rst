@@ -17,6 +17,7 @@ Control
     ParameterID/ParameterID
     piController/piController
     PMSM_config/uz_PMSM_config
+    uz_pmsm_control/uz_pmsm_control
     SetPoint/SetPoint
     space_vector_limitation/space_vector_limitation
     space_vector_modulation/space_vector_modulation

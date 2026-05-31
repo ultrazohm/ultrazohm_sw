@@ -108,10 +108,6 @@
     "driver_config_d5_channel_3_ssi_kp_pll": "628.3185f",
     "driver_config_d5_channel_3_ssi_ki_pll": "98696.0f",
     "driver_config_d5_channel_3_ssi_sampling_delay_clk_ticks": "0U",
-    "visualize_adc_ltc2311_a1_ch0": "true",
-    "visualize_adc_ltc2311_a1_ch1": "true",
-    "visualize_adc_ltc2311_a1_ch2": "true",
-    "visualize_adc_ltc2311_a1_ch3": "true",
     "visualize_adc_ltc2311_a1_ch4": "true",
     "visualize_adc_ltc2311_a1_ch5": "true",
     "visualize_adc_ltc2311_a1_ch6": "true",
@@ -138,6 +134,10 @@
     "visualize_ssi_encoder_d5_2_position_mech_si_single_turn": "true",
     "visualize_ssi_encoder_d5_2_position_el_si_single_turn": "true",
     "visualize_ssi_encoder_d5_3_position_mech_si_single_turn": "true",
-    "visualize_ssi_encoder_d5_3_position_el_si_single_turn": "true"
+    "visualize_ssi_encoder_d5_3_position_el_si_single_turn": "true",
+    "visualize_adc_ltc2311_a1_ch0": "true",
+    "visualize_adc_ltc2311_a1_ch1": "true",
+    "visualize_adc_ltc2311_a1_ch2": "true",
+    "visualize_adc_ltc2311_a1_ch3": "true"
   }
 }

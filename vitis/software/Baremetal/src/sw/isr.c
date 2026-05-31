@@ -42,14 +42,14 @@ extern DS_Data Global_Data;
 static uz_array_int16_t adc_ltc2311_data;
 /* Project Wizard END: adc_readout_definitions */
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
-static void xz_update_adapter_a1(void);
-static void xz_update_adapter_a2(void);
-static void xz_update_adapter_a3(void);
-static void xz_update_adapter_d1(void);
-static void xz_update_adapter_d2(void);
-static void xz_update_adapter_d3(void);
-static void xz_update_adapter_d4(void);
-static void xz_update_adapter_d5(void);
+static void update_adapter_a1(void);
+static void update_adapter_a2(void);
+static void update_adapter_a3(void);
+static void update_adapter_d1(void);
+static void update_adapter_d2(void);
+static void update_adapter_d3(void);
+static void update_adapter_d4(void);
+static void update_adapter_d5(void);
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -64,14 +64,14 @@ void ISR_Control(void *data)
     adc_ltc2311_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    xz_update_adapter_a1();
-    xz_update_adapter_a2();
-    xz_update_adapter_a3();
-    xz_update_adapter_d1();
-    xz_update_adapter_d2();
-    xz_update_adapter_d3();
-    xz_update_adapter_d4();
-    xz_update_adapter_d5();
+    update_adapter_a1();
+    update_adapter_a2();
+    update_adapter_a3();
+    update_adapter_d1();
+    update_adapter_d2();
+    update_adapter_d3();
+    update_adapter_d4();
+    update_adapter_d5();
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -95,67 +95,67 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Toc();
 }
 
-static void xz_update_adapter_a1(void)
+static void update_adapter_a1(void)
 {
     /* Project Wizard BEGIN: A1 isr_control */
-    Global_Data.aa.A1.me.ADC_array[0] = ((float)adc_ltc2311_data.data[0]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[0];
-    Global_Data.aa.A1.me.ADC_array[1] = ((float)adc_ltc2311_data.data[1]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[1];
-    Global_Data.aa.A1.me.ADC_array[2] = ((float)adc_ltc2311_data.data[2]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[2];
-    Global_Data.aa.A1.me.ADC_array[3] = ((float)adc_ltc2311_data.data[3]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[3];
-    Global_Data.aa.A1.me.ADC_array[4] = ((float)adc_ltc2311_data.data[4]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[4];
-    Global_Data.aa.A1.me.ADC_array[5] = ((float)adc_ltc2311_data.data[5]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[5];
-    Global_Data.aa.A1.me.ADC_array[6] = ((float)adc_ltc2311_data.data[6]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[6];
-    Global_Data.aa.A1.me.ADC_array[7] = ((float)adc_ltc2311_data.data[7]) / (1 << Q16) * Global_Data.aa.A1.cf.ADC_array[7];
+    Global_Data.av.adc_ltc2311_a1_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[0], 0U);
+    Global_Data.av.adc_ltc2311_a1_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[1], 1U);
+    Global_Data.av.adc_ltc2311_a1_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[2], 2U);
+    Global_Data.av.adc_ltc2311_a1_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[3], 3U);
+    Global_Data.av.adc_ltc2311_a1_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[4], 4U);
+    Global_Data.av.adc_ltc2311_a1_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[5], 5U);
+    Global_Data.av.adc_ltc2311_a1_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[6], 6U);
+    Global_Data.av.adc_ltc2311_a1_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[7], 7U);
 /* Project Wizard END: A1 isr_control */
 }
 
-static void xz_update_adapter_a2(void)
+static void update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
-    Global_Data.aa.A2.me.ADC_array[0] = ((float)adc_ltc2311_data.data[8]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[0];
-    Global_Data.aa.A2.me.ADC_array[1] = ((float)adc_ltc2311_data.data[9]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[1];
-    Global_Data.aa.A2.me.ADC_array[2] = ((float)adc_ltc2311_data.data[10]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[2];
-    Global_Data.aa.A2.me.ADC_array[3] = ((float)adc_ltc2311_data.data[11]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[3];
-    Global_Data.aa.A2.me.ADC_array[4] = ((float)adc_ltc2311_data.data[12]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[4];
-    Global_Data.aa.A2.me.ADC_array[5] = ((float)adc_ltc2311_data.data[13]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[5];
-    Global_Data.aa.A2.me.ADC_array[6] = ((float)adc_ltc2311_data.data[14]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[6];
-    Global_Data.aa.A2.me.ADC_array[7] = ((float)adc_ltc2311_data.data[15]) / (1 << Q16) * Global_Data.aa.A2.cf.ADC_array[7];
+    Global_Data.av.adc_ltc2311_a2_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[8], 0U);
+    Global_Data.av.adc_ltc2311_a2_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[9], 1U);
+    Global_Data.av.adc_ltc2311_a2_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[10], 2U);
+    Global_Data.av.adc_ltc2311_a2_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[11], 3U);
+    Global_Data.av.adc_ltc2311_a2_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[12], 4U);
+    Global_Data.av.adc_ltc2311_a2_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[13], 5U);
+    Global_Data.av.adc_ltc2311_a2_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[14], 6U);
+    Global_Data.av.adc_ltc2311_a2_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[15], 7U);
 /* Project Wizard END: A2 isr_control */
 }
 
-static void xz_update_adapter_a3(void)
+static void update_adapter_a3(void)
 {
     /* Project Wizard BEGIN: A3 isr_control */
-    Global_Data.aa.A3.me.ADC_array[0] = ((float)adc_ltc2311_data.data[16]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[0];
-    Global_Data.aa.A3.me.ADC_array[1] = ((float)adc_ltc2311_data.data[17]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[1];
-    Global_Data.aa.A3.me.ADC_array[2] = ((float)adc_ltc2311_data.data[18]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[2];
-    Global_Data.aa.A3.me.ADC_array[3] = ((float)adc_ltc2311_data.data[19]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[3];
-    Global_Data.aa.A3.me.ADC_array[4] = ((float)adc_ltc2311_data.data[20]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[4];
-    Global_Data.aa.A3.me.ADC_array[5] = ((float)adc_ltc2311_data.data[21]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[5];
-    Global_Data.aa.A3.me.ADC_array[6] = ((float)adc_ltc2311_data.data[22]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[6];
-    Global_Data.aa.A3.me.ADC_array[7] = ((float)adc_ltc2311_data.data[23]) / (1 << Q16) * Global_Data.aa.A3.cf.ADC_array[7];
+    Global_Data.av.adc_ltc2311_a3_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[16], 0U);
+    Global_Data.av.adc_ltc2311_a3_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[17], 1U);
+    Global_Data.av.adc_ltc2311_a3_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[18], 2U);
+    Global_Data.av.adc_ltc2311_a3_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[19], 3U);
+    Global_Data.av.adc_ltc2311_a3_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[20], 4U);
+    Global_Data.av.adc_ltc2311_a3_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[21], 5U);
+    Global_Data.av.adc_ltc2311_a3_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[22], 6U);
+    Global_Data.av.adc_ltc2311_a3_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[23], 7U);
 /* Project Wizard END: A3 isr_control */
 }
 
-static void xz_update_adapter_d1(void)
+static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
 /* Project Wizard END: D1 isr_control */
 }
 
-static void xz_update_adapter_d2(void)
+static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
 /* Project Wizard END: D2 isr_control */
 }
 
-static void xz_update_adapter_d3(void)
+static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
 /* Project Wizard END: D3 isr_control */
 }
 
-static void xz_update_adapter_d4(void)
+static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
     uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
@@ -165,7 +165,7 @@ static void xz_update_adapter_d4(void)
 /* Project Wizard END: D4 isr_control */
 }
 
-static void xz_update_adapter_d5(void)
+static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
     Global_Data.av.endat_encoder_d5_1_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);

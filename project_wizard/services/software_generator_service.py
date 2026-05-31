@@ -197,7 +197,8 @@ class SoftwareGenerator:
                 main_init.append(
                     f"\t\t\tGlobal_Data.objects.adc_ltc2311_{context['slot_lower']} = initialize_adc_ltc2311_{context['slot_lower']}();"
                 )
-                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot))
+                actual_values.extend(adc_ltc2311_actual_values(str(context["slot_lower"])))
+                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot, context))
                 available_visualization_signals.extend(adc_ltc2311_visualization_signals(str(context["slot_lower"])))
             elif card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
@@ -743,7 +744,7 @@ def temperature_visualization_signals(slot_lower: str, preset: str) -> list[Visu
                 signal_id_channel = str(array_index + 1)
                 enum_channel = str(array_index + 1)
             signal_id = f"temp_{slot_lower}_{group.lower()}_{signal_id_channel}"
-            enum_name = f"JSO_XZ_TEMP_{slot_lower.upper()}_{group}_CH{enum_channel}"
+            enum_name = f"JSO_TEMP_{slot_lower.upper()}_{group}_CH{enum_channel}"
             pointer = f"&data->av.temperature_card_{slot_lower}_channel_{group}.temperature[{array_index}]"
             signals.append(
                 VisualizationSignal(
@@ -759,7 +760,7 @@ def temperature_visualization_signals(slot_lower: str, preset: str) -> list[Visu
 
 def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, channel: int) -> list[VisualizationSignal]:
     base_id = f"{prefix}_{slot_lower}_{channel}"
-    enum_base = f"JSO_XZ_{interface.upper()}_{slot_lower.upper()}_CH{channel}"
+    enum_base = f"JSO_{interface.upper()}_{slot_lower.upper()}_CH{channel}"
     label_base = f"{slot_lower.upper()} {interface.upper()} channel {channel}"
     slot = slot_lower.upper()
     fields = [
@@ -788,21 +789,26 @@ def adc_ltc2311_visualization_signals(slot_lower: str) -> list[VisualizationSign
             signal_id=f"adc_ltc2311_{slot_lower}_ch{channel}",
             slot=slot,
             label=f"{slot} ADC LTC2311 channel {channel}",
-            enum_name=f"JSO_XZ_ADC_{slot}_CH{channel}",
-            pointer_expression=f"&data->aa.{slot}.me.ADC_array[{channel}]",
+            enum_name=f"JSO_ADC_{slot}_CH{channel}",
+            pointer_expression=f"&data->av.adc_ltc2311_{slot_lower}_ch{channel}",
         )
         for channel in range(8)
     ]
 
 
-def adc_ltc2311_isr_lines(slot: str) -> list[str]:
+def adc_ltc2311_actual_values(slot_lower: str) -> list[str]:
+    return [f"\tfloat adc_ltc2311_{slot_lower}_ch{channel};" for channel in range(8)]
+
+
+def adc_ltc2311_isr_lines(slot: str, context: dict[str, object]) -> list[str]:
     slot_index = int(slot[1]) - 1
     buffer_offset = slot_index * 8
+    slot_lower = slot.lower()
     return [
         (
-            f"    Global_Data.aa.{slot}.me.ADC_array[{channel}] = "
-            f"((float)adc_ltc2311_data.data[{buffer_offset + channel}]) / (1 << Q16) * "
-            f"Global_Data.aa.{slot}.cf.ADC_array[{channel}];"
+            f"    Global_Data.av.adc_ltc2311_{slot_lower}_ch{channel} = "
+            f"uz_adcLtc2311_convert_raw_to_physical_value("
+            f"Global_Data.objects.adc_ltc2311_{slot_lower}, adc_ltc2311_data.data[{buffer_offset + channel}], {channel}U);"
         )
         for channel in range(8)
     ]

@@ -17,47 +17,6 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 
-// union allows to access the values as array and individual variables
-// see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
-typedef union _ConversionFactors_ {
-	struct{
-		float ADC_A1;
-		float ADC_A2;
-		float ADC_A3;
-		float ADC_A4;
-		float ADC_B5;
-		float ADC_B6;
-		float ADC_B7;
-		float ADC_B8;
-		};
-	float ADC_array[8];
-} ConversionFactors;
-
-typedef union _Measurements_ {
-	struct{
-		float ADC_A1;
-		float ADC_A2;
-		float ADC_A3;
-		float ADC_A4;
-		float ADC_B5;
-		float ADC_B6;
-		float ADC_B7;
-		float ADC_B8;
-		};
-	float ADC_array[8];
-} Measurements;
-
-typedef struct _ADCcard_ {
-	ConversionFactors 	cf;
-	Measurements		me;
-} ADCcard;
-
-typedef struct _AnalogAdapters_ {
-	ADCcard A1;
-	ADCcard A2;
-	ADCcard A3;
-} AnalogAdapters;
-
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -96,6 +55,30 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	/* Project Wizard BEGIN: actualValues */
+	float adc_ltc2311_a1_ch0;
+	float adc_ltc2311_a1_ch1;
+	float adc_ltc2311_a1_ch2;
+	float adc_ltc2311_a1_ch3;
+	float adc_ltc2311_a1_ch4;
+	float adc_ltc2311_a1_ch5;
+	float adc_ltc2311_a1_ch6;
+	float adc_ltc2311_a1_ch7;
+	float adc_ltc2311_a2_ch0;
+	float adc_ltc2311_a2_ch1;
+	float adc_ltc2311_a2_ch2;
+	float adc_ltc2311_a2_ch3;
+	float adc_ltc2311_a2_ch4;
+	float adc_ltc2311_a2_ch5;
+	float adc_ltc2311_a2_ch6;
+	float adc_ltc2311_a2_ch7;
+	float adc_ltc2311_a3_ch0;
+	float adc_ltc2311_a3_ch1;
+	float adc_ltc2311_a3_ch2;
+	float adc_ltc2311_a3_ch3;
+	float adc_ltc2311_a3_ch4;
+	float adc_ltc2311_a3_ch5;
+	float adc_ltc2311_a3_ch6;
+	float adc_ltc2311_a3_ch7;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
@@ -166,7 +149,6 @@ typedef struct{
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
-	AnalogAdapters aa;
 	object_pointers_t objects;
 } DS_Data;
 

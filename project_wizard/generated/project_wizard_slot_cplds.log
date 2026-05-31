@@ -16,18 +16,18 @@ JTAG Chain Verification. No Errors.
 Check configuration setup: Successful.
 Device4 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1380 ms.
+Total erase time: 1470 ms.
 
-Number of Loop = 138/1500
+Number of Loop = 147/1500
 Execution time: 00 min : 15 sec
 Operation Done. No errors.
 Elapsed time: 00 min : 16 sec
 Device5 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1460 ms.
+Total erase time: 1300 ms.
 
-Number of Loop = 146/1500
-Execution time: 00 min : 16 sec
+Number of Loop = 130/1500
+Execution time: 00 min : 14 sec
 Operation Done. No errors.
-Elapsed time: 00 min : 16 sec
+Elapsed time: 00 min : 15 sec
 Operation: successful.

@@ -154,6 +154,7 @@ struct uz_adcLtc2311_spi_master_config_t{
 struct uz_adcLtc2311_config_t{
     uint32_t base_address; /**< Base address of the IP-Core. No get or set function available */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core. No get or set function available */
+    float software_raw_to_physical_value_factor[8]; /**< Software-only factors for converting raw TCM values to physical channel values. These values are not written to the IP-Core. */
 
     /* Operation parameter */
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured */
@@ -177,7 +178,7 @@ struct uz_adcLtc2311_config_t{
     uint32_t napping_spi_masters;
 
     struct uz_adcLtc2311_spi_master_config_t spi_master_config;
-    struct uz_adcLtc2311_channel_config_t channel_config;
+    struct uz_adcLtc2311_channel_config_t ip_core_channel_config; /**< Per-channel configuration values that are written to the IP-Core. */
 };
 
 /**
@@ -483,8 +484,20 @@ uint32_t uz_adcLtc2311_get_cpol(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_napping_masters(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t* self);
 
-
-
+/**
+ * @brief Convert a raw ADC value from the TCM data mover into a physical software value.
+ *
+ * @details
+ * This helper uses the software_raw_to_physical_value_factor array from
+ * uz_adcLtc2311_config_t. The factors are software-only scaling values and are
+ * independent from the IP-Core conversion_factor in ip_core_channel_config.
+ *
+ * @param self Pointer to driver instance
+ * @param raw_value Raw signed Q16 value from the TCM data mover
+ * @param channel_index Zero-based channel index, valid range: 0..7
+ * @return Converted physical value
+ */
+float uz_adcLtc2311_convert_raw_to_physical_value(uz_adcLtc2311_t* self, int16_t raw_value, uint32_t channel_index);
 
 // do not use this function, only for internal use:
 void uz_adcLtc2311_set_trigger_mode(uz_adcLtc2311_t *self);

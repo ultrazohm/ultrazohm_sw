@@ -16,27 +16,27 @@
         },
         {
           "id": "conversion_factor",
-          "label": "Conversion factor",
+          "label": "IP-core conversion factor",
           "default": "1.0f"
         },
         {
           "id": "conversion_factor_is_signed",
-          "label": "Conversion factor signed",
+          "label": "IP-core conversion factor signed",
           "default": "true"
         },
         {
           "id": "conversion_factor_integer_bits",
-          "label": "Conversion factor integer bits",
+          "label": "IP-core conversion factor integer bits",
           "default": "14"
         },
         {
           "id": "conversion_factor_fractional_bits",
-          "label": "Conversion factor fractional bits",
+          "label": "IP-core conversion factor fractional bits",
           "default": "4"
         },
         {
           "id": "offset",
-          "label": "Offset",
+          "label": "IP-core offset",
           "default": "0"
         },
         {
@@ -103,6 +103,46 @@
           "id": "max_attempts",
           "label": "Max attempts",
           "default": "10U"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch0",
+          "label": "Software raw-to-physical factor channel 0",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch1",
+          "label": "Software raw-to-physical factor channel 1",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch2",
+          "label": "Software raw-to-physical factor channel 2",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch3",
+          "label": "Software raw-to-physical factor channel 3",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch4",
+          "label": "Software raw-to-physical factor channel 4",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch5",
+          "label": "Software raw-to-physical factor channel 5",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch6",
+          "label": "Software raw-to-physical factor channel 6",
+          "default": "10.0f"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch7",
+          "label": "Software raw-to-physical factor channel 7",
+          "default": "10.0f"
         }
       ]
     },

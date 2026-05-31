@@ -8,7 +8,16 @@
 static struct uz_adcLtc2311_config_t config_adc_ltc2311_{{ slot_lower }} = {
     .base_address = {{ base_address_macro }},
     .ip_clk_frequency_Hz = {{ ip_clk_frequency_Hz }},
-    .channel_config = {
+    .software_raw_to_physical_value_factor = {
+        {{ software_raw_to_physical_value_factor_ch0 }},
+        {{ software_raw_to_physical_value_factor_ch1 }},
+        {{ software_raw_to_physical_value_factor_ch2 }},
+        {{ software_raw_to_physical_value_factor_ch3 }},
+        {{ software_raw_to_physical_value_factor_ch4 }},
+        {{ software_raw_to_physical_value_factor_ch5 }},
+        {{ software_raw_to_physical_value_factor_ch6 }},
+        {{ software_raw_to_physical_value_factor_ch7 }}},
+    .ip_core_channel_config = {
         .conversion_factor = {{ conversion_factor }},
         .conversion_factor_definition = {
             .is_signed = {{ conversion_factor_is_signed }},

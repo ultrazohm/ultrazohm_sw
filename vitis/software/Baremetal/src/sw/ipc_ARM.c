@@ -23,7 +23,10 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
-
+extern bool input_bit;
+extern bool output_bit;
+extern uint32_t output_port;
+extern uint32_t input_port;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -186,11 +189,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		input_port = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		output_port = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -266,7 +269,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			if(output_bit == false)
+			{
+				output_bit = true;
+			}
+			else
+			{
+				output_bit = false;
+			}
 			break;
 
 		case (My_Button_2):

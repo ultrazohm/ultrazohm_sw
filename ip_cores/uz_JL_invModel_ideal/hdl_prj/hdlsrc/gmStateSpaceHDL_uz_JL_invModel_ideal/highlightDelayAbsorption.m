@@ -1,0 +1,18 @@
+open_system('gmStateSpaceHDL_uz_JL_invModel_ideal');
+open_system('gm_gmStateSpaceHDL_uz_JL_invModel_ideal');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/Output/Output Update/Output Update', 'user1');
+annotate_port('gm_gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/Output/Output Update/Output Update', 0, 1, 'Blocks delay absorption: 12 cycles');
+hilite_system('gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/Output/Output Update', 'user1');
+annotate_port('gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/Output/Output Update', 0, 1, 'Blocks delay absorption: 12 cycles');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/State Update/State Update/State Update', 'user1');
+annotate_port('gm_gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/State Update/State Update/State Update', 0, 1, 'Blocks delay absorption: 7 cycles');
+hilite_system('gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/State Update/State Update', 'user1');
+annotate_port('gmStateSpaceHDL_uz_JL_invModel_ideal/uz_JL_invModel_ideal/HDL Subsystem/HDL Algorithm/State Update/State Update', 0, 1, 'Blocks delay absorption: 7 cycles');

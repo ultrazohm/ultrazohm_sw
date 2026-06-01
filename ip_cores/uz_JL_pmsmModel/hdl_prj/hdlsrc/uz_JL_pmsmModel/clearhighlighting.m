@@ -1,0 +1,11 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_JL_pmsmModel', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_JL_pmsmModel', 'handle'));
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik', 0, 1, '');
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation/Gain2', 1, 1, '');
+annotate_port('uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation/Gain2', 1, 1, '');
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation/Gain7', 1, 1, '');
+annotate_port('uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation/Gain7', 1, 1, '');
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation/Gain2', 1, 1, '');
+annotate_port('uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation/Gain2', 1, 1, '');
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Drehmomentberechnung', 0, 1, '');
+annotate_port('gm_uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Drehmomentberechnung/Prduct_3', 0, 1, '');

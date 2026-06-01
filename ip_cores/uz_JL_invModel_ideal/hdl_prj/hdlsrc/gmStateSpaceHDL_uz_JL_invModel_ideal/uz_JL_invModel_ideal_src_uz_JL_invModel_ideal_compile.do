@@ -1,0 +1,15 @@
+vlib work
+vmap -c
+vcom  uz_JL_invModel_ideal_src_uz_JL_invModel_ideal_pkg.vhd
+vcom  uz_JL_invModel_ideal_src_nfp_mul_single.vhd
+vcom  uz_JL_invModel_ideal_src_nfp_add_single.vhd
+vcom  uz_JL_invModel_ideal_src_dot_product_2.vhd
+vcom  uz_JL_invModel_ideal_src_Output.vhd
+vcom  uz_JL_invModel_ideal_src_dot_product_1.vhd
+vcom  uz_JL_invModel_ideal_src_State_Update.vhd
+vcom  uz_JL_invModel_ideal_src_HDL_Algorithm.vhd
+vcom  uz_JL_invModel_ideal_src_HDL_Subsystem.vhd
+vcom  uz_JL_invModel_ideal_src_nfp_gain_pow2_single.vhd
+vcom  uz_JL_invModel_ideal_src_nfp_convert_single2double.vhd
+vcom  uz_JL_invModel_ideal_src_nfp_convert_double2single.vhd
+vcom  uz_JL_invModel_ideal_src_uz_JL_invModel_ideal.vhd

@@ -1,0 +1,24 @@
+ --> uz_JL_pmsmModel_src_uz_JL_pmsmModel_pkg
+uz_JL_pmsmModel_tc --> uz_JL_pmsmModel_src_uz_JL_pmsmModel_tc
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation/nfp_gain_pow2_single --> uz_JL_pmsmModel_src_nfp_gain_pow2_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/Psi/nfp_add_single --> uz_JL_pmsmModel_src_nfp_add_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/Psi/nfp_mul_single --> uz_JL_pmsmModel_src_nfp_mul_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Clark Transformation --> uz_JL_pmsmModel_src_Clark_Transformation
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/Psi/nfp_sub_single --> uz_JL_pmsmModel_src_nfp_sub_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Park-Transformation/nfp_sincos_single --> uz_JL_pmsmModel_src_nfp_sincos_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq/Park-Transformation --> uz_JL_pmsmModel_src_Park_Transformation
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/abc -> dq --> uz_JL_pmsmModel_src_abc_dq
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Clarke-Transformation --> uz_JL_pmsmModel_src_Inverse_Clarke_Transformation
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Park-Transformation/nfp_uminus_single --> uz_JL_pmsmModel_src_nfp_uminus_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc/Inverse Park-Transformation --> uz_JL_pmsmModel_src_Inverse_Park_Transformation
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/dq->abc --> uz_JL_pmsmModel_src_dq_abc
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/Subsystem2 --> uz_JL_pmsmModel_src_Subsystem2
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik/Psi --> uz_JL_pmsmModel_src_Psi
+uz_JL_pmsmModel/uz_JL_pmsmModel/Elektrik --> uz_JL_pmsmModel_src_Elektrik
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/nfp_signum_single --> uz_JL_pmsmModel_src_nfp_signum_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/nfp_relop_single --> uz_JL_pmsmModel_src_nfp_relop_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1/nfp_abs_single --> uz_JL_pmsmModel_src_nfp_abs_single
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Subsystem1 --> uz_JL_pmsmModel_src_Subsystem1
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik/Drehmomentberechnung --> uz_JL_pmsmModel_src_Drehmomentberechnung
+uz_JL_pmsmModel/uz_JL_pmsmModel/Mechanik --> uz_JL_pmsmModel_src_Mechanik
+uz_JL_pmsmModel/uz_JL_pmsmModel --> uz_JL_pmsmModel_src_uz_JL_pmsmModel

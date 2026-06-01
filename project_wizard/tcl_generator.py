@@ -429,14 +429,15 @@ class TclGenerator:
         has_external_port: bool,
     ) -> dict[str, Any]:
         direction = self._vivado_direction(port.get("direction", "in"))
-        adapter_pin_name = port.get("adapter_pin_name_template", "{signal}_{channel_suffix}").format(
+        default_name_template = "{signal}" if slot in signal else "{signal}_{channel_suffix}"
+        adapter_pin_name = port.get("adapter_pin_name_template", default_name_template).format(
             slot=slot,
             slot_lower=slot.lower(),
             slot_index=slot_index,
             channel_suffix=channel_suffix,
             signal=signal,
         )
-        boundary_name = port.get("boundary_name_template", "{signal}_{channel_suffix}").format(
+        boundary_name = port.get("boundary_name_template", default_name_template).format(
             slot=slot,
             slot_lower=slot.lower(),
             slot_index=slot_index,
@@ -517,6 +518,7 @@ class TclGenerator:
         axi_slots = []
         axi_connections = []
         no_adapter_slots = []
+        upstream_smartconnects = []
         for slot in SLOTS:
             card_id = assignments.get(slot, "empty")
             if card_id == "no_adapter_board":
@@ -573,6 +575,12 @@ class TclGenerator:
                         ),
                     }
                 )
+            if slot_axi["upstream_smartconnect"] and slot_axi["upstream_smartconnect"] not in upstream_smartconnects:
+                upstream_smartconnects.append(slot_axi["upstream_smartconnect"])
+        for no_adapter_slot in no_adapter_slots:
+            upstream = no_adapter_slot["upstream_smartconnect"]
+            if upstream and upstream not in upstream_smartconnects:
+                upstream_smartconnects.append(upstream)
         return {
             "upstream_smartconnect": d_slot_axi["upstream_smartconnect"],
             "clock_pin": d_slot_axi["clock_pin"],
@@ -592,6 +600,8 @@ class TclGenerator:
             "has_axi": bool(axi_slots),
             "axi_slots": axi_slots,
             "axi_connections": axi_connections,
+            "has_upstream_smartconnects": bool(upstream_smartconnects),
+            "upstream_smartconnects": [{"path": smartconnect} for smartconnect in upstream_smartconnects],
         }
 
     def _axi_interfaces_for_card(
@@ -671,6 +681,7 @@ class TclGenerator:
         raw_value_connections = []
         raw_valid_sources = []
         has_bypassed_a_slot = False
+        adc_streams = []
         for slot in ("A1", "A2", "A3"):
             card_id = assignments.get(slot, "empty")
             if card_id == "empty":
@@ -679,6 +690,18 @@ class TclGenerator:
             if not card or card.get("id") != "analog_ltc2311_16":
                 continue
             raw_valid_sources.append(f"uz_analog_adapter/{slot}_RAW_Valid")
+            stream_index = len(adc_streams)
+            adc_streams.append(
+                {
+                    "slot": slot,
+                    "pin_name": f"ADC_{slot}",
+                    "source_pin": f"uz_analog_adapter/{slot}_RAW_Value",
+                    "left": "127",
+                    "right": "0",
+                    "concat_index": str(stream_index),
+                    "packed_offset": str(stream_index * 8),
+                }
+            )
             raw_value_connections.append(
                 {
                     "slot": slot,
@@ -718,8 +741,19 @@ class TclGenerator:
         elif not raw_valid_sources:
             axi2tcm_source = ""
             axi2tcm_note = "No A-slot RAW_Valid source or conversion trigger source is generated. Skipping AXI2TCM trigger wiring."
+        adc_stream_count = len(adc_streams)
+        axi2tcm_channel_count = max(2, adc_stream_count * 8)
         return {
             "has_analog_ltc2311": bool(raw_value_connections),
+            "has_adc_streams": bool(adc_streams),
+            "adc_streams": adc_streams,
+            "adc_stream_count": str(adc_stream_count),
+            "datamover_adc_pins": ["ADC_A1", "ADC_A2", "ADC_A3"],
+            "use_adc_concat": adc_stream_count > 1,
+            "use_single_adc_stream": adc_stream_count == 1,
+            "use_zero_datamover_input": adc_stream_count == 0,
+            "axi2tcm_channel_count": str(axi2tcm_channel_count),
+            "axi2tcm_data_width": str(axi2tcm_channel_count * 16),
             "raw_value_connections": raw_value_connections,
             "has_axi2tcm_trigger": bool(axi2tcm_source),
             "axi2tcm_trigger_source": axi2tcm_source,

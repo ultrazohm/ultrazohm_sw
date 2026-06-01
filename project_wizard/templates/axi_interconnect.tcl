@@ -73,6 +73,28 @@ proc uz_pw_add_upstream_mi_pin {smartconnect_path} {
   return [uz_pw_get_sc_mi_pin $smartconnect_path $upstream_mi_index]
 }
 
+proc uz_pw_get_or_add_upstream_mi_pin {smartconnect_path} {
+  set upstream_sc_cell [get_bd_cells -quiet $smartconnect_path]
+  if {[llength $upstream_sc_cell] == 0} {
+    return ""
+  }
+
+  set mi_count [get_property CONFIG.NUM_MI $upstream_sc_cell]
+  for {set index 0} {$index < $mi_count} {incr index} {
+    set mi_pin_path [uz_pw_get_sc_mi_pin $smartconnect_path $index]
+    set mi_pin [get_bd_intf_pins -quiet $mi_pin_path]
+    if {[llength $mi_pin] == 0} {
+      continue
+    }
+    if {[llength [get_bd_intf_nets -quiet -of_objects $mi_pin]] == 0} {
+      puts "Reusing unconnected upstream AXI master interface $mi_pin_path"
+      return $mi_pin_path
+    }
+  }
+
+  return [uz_pw_add_upstream_mi_pin $smartconnect_path]
+}
+
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   if {[llength [get_bd_pins -quiet $source_pin]] == 0} {
     puts "WARNING: Source pin not found: $source_pin"
@@ -295,7 +317,7 @@ uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
 
 set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
 if {$upstream_mi_pin eq ""} {
-  set upstream_mi_pin [uz_pw_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
+  set upstream_mi_pin [uz_pw_get_or_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
 }
 
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
@@ -310,5 +332,12 @@ set slot_sc {{ interface.local_smartconnect_path }}
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc {{ interface.index }}]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin {{ interface.path }}
 {{ interface.address_assignment_command }}
+{% endfor %}
+{% endif %}
+
+{% if has_upstream_smartconnects %}
+puts "Final compaction of project-level AXI SmartConnect master interfaces"
+{% for smartconnect in upstream_smartconnects %}
+uz_pw_compact_upstream_mi_connections {{ smartconnect.path }}
 {% endfor %}
 {% endif %}

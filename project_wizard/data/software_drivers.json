@@ -227,6 +227,69 @@
       ]
     },
     {
+      "id": "uz_dac_interface",
+      "name": "DAC8831 interface",
+      "templates": {
+        "header": "software/dac8831.h.tpl",
+        "source": "software/dac8831.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "gain_ch0",
+          "label": "Gain channel 0",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 0. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch1",
+          "label": "Gain channel 1",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 1. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch2",
+          "label": "Gain channel 2",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 2. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch3",
+          "label": "Gain channel 3",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 3. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch4",
+          "label": "Gain channel 4",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 4. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch5",
+          "label": "Gain channel 5",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 5. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch6",
+          "label": "Gain channel 6",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 6. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch7",
+          "label": "Gain channel 7",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 7. The nominal adapter-card value is 2.0f."
+        }
+      ]
+    },
+    {
       "id": "uz_endat_interface",
       "name": "EnDat interface",
       "templates": {

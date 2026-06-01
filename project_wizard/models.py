@@ -90,10 +90,38 @@ class ResolvedSlot:
 
 
 @dataclass(frozen=True)
+class ResolvedAnalogStream:
+    slot: str
+    card_id: str
+    raw_value_pin: str
+    raw_valid_pin: str
+    channel_count: int
+    sample_width: int
+    packed_offset: int
+
+
+@dataclass(frozen=True)
+class ResolvedAnalogDataMover:
+    streams: list[ResolvedAnalogStream] = field(default_factory=list)
+    minimum_channel_count: int = 2
+
+    @property
+    def channel_count(self) -> int:
+        if not self.streams:
+            return self.minimum_channel_count
+        return max(self.minimum_channel_count, sum(stream.channel_count for stream in self.streams))
+
+    @property
+    def data_width(self) -> int:
+        return self.channel_count * 16
+
+
+@dataclass(frozen=True)
 class ResolvedSystemModel:
     config: SystemConfig
     platform: dict[str, Any] | None
     slots: list[ResolvedSlot]
+    analog_datamover: ResolvedAnalogDataMover = field(default_factory=ResolvedAnalogDataMover)
 
     def slot(self, name: str) -> ResolvedSlot | None:
         return next((slot for slot in self.slots if slot.name == name), None)

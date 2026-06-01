@@ -990,6 +990,8 @@ class MainWindow(QMainWindow):
         return page
 
     def _fill_slot_combo(self, slot: str, combo: QComboBox, selected_id: str = "empty") -> None:
+        if slot.startswith("A") and selected_id == "empty":
+            selected_id = "no_adapter_board"
         combo.blockSignals(True)
         combo.clear()
         for card in self.database.cards_for_slot(slot):
@@ -1177,6 +1179,8 @@ class MainWindow(QMainWindow):
                 combo.addItem("Default EnDat / SSI", "default")
             elif card_id == "analog_ltc2311_16":
                 combo.addItem("Default ADC LTC2311", "default")
+            elif card_id == "analog_dac8831":
+                combo.addItem("Default DAC8831", "default")
             else:
                 combo.addItem("Default", "default")
             index = combo.findData(selected)
@@ -1934,7 +1938,8 @@ class MainWindow(QMainWindow):
         self.detail_options = {}
         self.reset_hardware_config()
         for slot, combo in self.slot_combos.items():
-            index = combo.findData("empty")
+            default_card_id = "no_adapter_board" if slot.startswith("A") else "empty"
+            index = combo.findData(default_card_id)
             combo.setCurrentIndex(index if index >= 0 else 0)
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
@@ -2074,9 +2079,12 @@ class MainWindow(QMainWindow):
             raise ValueError("Config field 'slots' must be a JSON object.")
         for slot, combo in self.slot_combos.items():
             card_id = slots.get(slot, "empty")
+            if slot.startswith("A") and card_id == "empty":
+                card_id = "no_adapter_board"
             index = combo.findData(card_id)
             if index < 0:
-                index = combo.findData("empty")
+                fallback_card_id = "no_adapter_board" if slot.startswith("A") else "empty"
+                index = combo.findData(fallback_card_id)
             combo.setCurrentIndex(index if index >= 0 else 0)
 
         self.update_config_load_progress(progress, 4, "Loading adapter card details...")

@@ -39,9 +39,6 @@
       "family": "system",
       "description": "Leave this slot untouched. No TCL commands are emitted for this slot.",
       "compatible_slots": [
-        "A1",
-        "A2",
-        "A3",
         "D1",
         "D2",
         "D3",
@@ -266,6 +263,365 @@
       "vitis": {
         "driver": "",
         "notes": []
+      }
+    },
+    {
+      "id": "analog_dac8831",
+      "name": "Analog DAC8831",
+      "family": "analog",
+      "description": "Analog A-slot adapter card with eight DAC8831 output channels.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the uz_dac_spi_interface IP core and ten OBUFDS utility buffers.",
+          "Routes SPI clock, chip select and eight DAC data outputs to slot-specific differential ports.",
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Does not participate in the AXI2TCM ADC data mover path."
+        ],
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_DAC8831",
+            "instance_prefix": "uz_dac_spi_interface",
+            "module": "uz_dac_spi_interface",
+            "vlnv": "user.org:ip:uz_dac_spi_interface",
+            "clock_pins": [
+              "AXI4_ACLK",
+              "IPCORE_CLK"
+            ],
+            "reset_pins": [
+              "AXI4_ARESETN",
+              "IPCORE_RESETN"
+            ]
+          },
+          {
+            "instance_name": "{slot}_dac_clk_buf",
+            "instance_prefix": "dac_clk_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_cvn_buf",
+            "instance_prefix": "dac_cvn_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_1_buf",
+            "instance_prefix": "dac_data_1_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_2_buf",
+            "instance_prefix": "dac_data_2_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_3_buf",
+            "instance_prefix": "dac_data_3_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_4_buf",
+            "instance_prefix": "dac_data_4_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_5_buf",
+            "instance_prefix": "dac_data_5_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_6_buf",
+            "instance_prefix": "dac_data_6_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_7_buf",
+            "instance_prefix": "dac_data_7_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_8_buf",
+            "instance_prefix": "dac_data_8_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "spi_clk_out",
+            "sink_ip_core": "{slot}_dac_clk_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "cs_out",
+            "sink_ip_core": "{slot}_dac_cvn_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_1",
+            "sink_ip_core": "{slot}_dac_data_1_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_2",
+            "sink_ip_core": "{slot}_dac_data_2_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_3",
+            "sink_ip_core": "{slot}_dac_data_3_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_4",
+            "sink_ip_core": "{slot}_dac_data_4_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_5",
+            "sink_ip_core": "{slot}_dac_data_5_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_6",
+            "sink_ip_core": "{slot}_dac_data_6_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_7",
+            "sink_ip_core": "{slot}_dac_data_7_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_8",
+            "sink_ip_core": "{slot}_dac_data_8_buf",
+            "sink_pin": "OBUF_IN"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "DAC_CLK_P_{slot}",
+            "ip_core": "{slot}_dac_clk_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_CLK_P_{slot}"
+          },
+          {
+            "signal": "DAC_CLK_N_{slot}",
+            "ip_core": "{slot}_dac_clk_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_CLK_N_{slot}"
+          },
+          {
+            "signal": "DAC_CVN_P_{slot}",
+            "ip_core": "{slot}_dac_cvn_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_CVN_P_{slot}"
+          },
+          {
+            "signal": "DAC_CVN_N_{slot}",
+            "ip_core": "{slot}_dac_cvn_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_CVN_N_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P1_{slot}",
+            "ip_core": "{slot}_dac_data_1_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P1_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N1_{slot}",
+            "ip_core": "{slot}_dac_data_1_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N1_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P2_{slot}",
+            "ip_core": "{slot}_dac_data_2_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P2_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N2_{slot}",
+            "ip_core": "{slot}_dac_data_2_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N2_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P3_{slot}",
+            "ip_core": "{slot}_dac_data_3_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P3_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N3_{slot}",
+            "ip_core": "{slot}_dac_data_3_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N3_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P4_{slot}",
+            "ip_core": "{slot}_dac_data_4_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P4_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N4_{slot}",
+            "ip_core": "{slot}_dac_data_4_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N4_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P5_{slot}",
+            "ip_core": "{slot}_dac_data_5_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P5_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N5_{slot}",
+            "ip_core": "{slot}_dac_data_5_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N5_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P6_{slot}",
+            "ip_core": "{slot}_dac_data_6_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P6_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N6_{slot}",
+            "ip_core": "{slot}_dac_data_6_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N6_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P7_{slot}",
+            "ip_core": "{slot}_dac_data_7_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P7_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N7_{slot}",
+            "ip_core": "{slot}_dac_data_7_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N7_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P8_{slot}",
+            "ip_core": "{slot}_dac_data_8_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P8_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N8_{slot}",
+            "ip_core": "{slot}_dac_data_8_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N8_{slot}"
+          }
+        ],
+        "constraints": {
+          "disable": "Analog_{slot}_packed.xdc",
+          "enable": "uz_dac8831_{slot}.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "AXI4",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4/reg0",
+            "range": "0x00010000",
+            "offsets": {
+              "A1": "0x80000000",
+              "A2": "0x80010000",
+              "A3": "0x80020000"
+            }
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "uz_dac_interface",
+        "notes": [
+          "Generate slot-local DAC initialization.",
+          "Write zero volts to all DAC channels until a configurable signal source is added."
+        ]
       }
     },
     {

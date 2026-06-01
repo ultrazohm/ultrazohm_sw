@@ -39,7 +39,6 @@ XIpiPsu IPI_instance;
 extern DS_Data Global_Data;
 
 /* Project Wizard BEGIN: adc_readout_definitions */
-static uz_array_int16_t adc_ltc2311_data;
 /* Project Wizard END: adc_readout_definitions */
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 static void update_adapter_a1(void);
@@ -61,7 +60,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
 /* Project Wizard BEGIN: adc_readout */
-    adc_ltc2311_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     update_adapter_a1();
@@ -98,42 +96,18 @@ void ISR_Control(void *data)
 static void update_adapter_a1(void)
 {
     /* Project Wizard BEGIN: A1 isr_control */
-    Global_Data.av.adc_ltc2311_a1_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[0], 0U);
-    Global_Data.av.adc_ltc2311_a1_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[1], 1U);
-    Global_Data.av.adc_ltc2311_a1_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[2], 2U);
-    Global_Data.av.adc_ltc2311_a1_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[3], 3U);
-    Global_Data.av.adc_ltc2311_a1_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[4], 4U);
-    Global_Data.av.adc_ltc2311_a1_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[5], 5U);
-    Global_Data.av.adc_ltc2311_a1_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[6], 6U);
-    Global_Data.av.adc_ltc2311_a1_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, adc_ltc2311_data.data[7], 7U);
 /* Project Wizard END: A1 isr_control */
 }
 
 static void update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
-    Global_Data.av.adc_ltc2311_a2_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[8], 0U);
-    Global_Data.av.adc_ltc2311_a2_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[9], 1U);
-    Global_Data.av.adc_ltc2311_a2_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[10], 2U);
-    Global_Data.av.adc_ltc2311_a2_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[11], 3U);
-    Global_Data.av.adc_ltc2311_a2_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[12], 4U);
-    Global_Data.av.adc_ltc2311_a2_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[13], 5U);
-    Global_Data.av.adc_ltc2311_a2_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[14], 6U);
-    Global_Data.av.adc_ltc2311_a2_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, adc_ltc2311_data.data[15], 7U);
 /* Project Wizard END: A2 isr_control */
 }
 
 static void update_adapter_a3(void)
 {
     /* Project Wizard BEGIN: A3 isr_control */
-    Global_Data.av.adc_ltc2311_a3_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[16], 0U);
-    Global_Data.av.adc_ltc2311_a3_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[17], 1U);
-    Global_Data.av.adc_ltc2311_a3_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[18], 2U);
-    Global_Data.av.adc_ltc2311_a3_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[19], 3U);
-    Global_Data.av.adc_ltc2311_a3_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[20], 4U);
-    Global_Data.av.adc_ltc2311_a3_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[21], 5U);
-    Global_Data.av.adc_ltc2311_a3_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[22], 6U);
-    Global_Data.av.adc_ltc2311_a3_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, adc_ltc2311_data.data[23], 7U);
 /* Project Wizard END: A3 isr_control */
 }
 

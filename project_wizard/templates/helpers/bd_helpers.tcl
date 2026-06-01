@@ -37,6 +37,78 @@ proc uz_pw_create_bd_port_if_missing {direction port_name {left ""} {right ""}} 
   current_bd_instance $old_instance
 }
 
+proc uz_pw_create_hier_pin_if_missing {hier_path direction pin_name {left ""} {right ""}} {
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells $hier_path]
+  set pin_path "${hier_path}/${pin_name}"
+  if {[llength [get_bd_pins -quiet $pin_path]] == 0} {
+    if {$left ne "" && $right ne ""} {
+      create_bd_pin -dir $direction -from $left -to $right $pin_name
+    } else {
+      create_bd_pin -dir $direction $pin_name
+    }
+  } else {
+    puts "Reusing existing pin $pin_path"
+  }
+  current_bd_instance $old_instance
+}
+
+proc uz_pw_disconnect_pin_path_from_all_nets {pin_path} {
+  foreach pin [get_bd_pins -quiet $pin_path] {
+    foreach net [get_bd_nets -quiet -of_objects $pin] {
+      uz_pw_try_disconnect_bd_net $net $pin
+    }
+  }
+}
+
+proc uz_pw_delete_pin_if_exists {pin_path} {
+  set pins [get_bd_pins -quiet $pin_path]
+  if {[llength $pins] == 0} {
+    return
+  }
+  foreach pin $pins {
+    foreach net [get_bd_nets -quiet -of_objects $pin] {
+      uz_pw_try_disconnect_bd_net $net $pin
+    }
+  }
+  delete_bd_objs $pins
+}
+
+proc uz_pw_create_ip_cell_if_missing {cell_path vlnv} {
+  if {[llength [get_bd_cells -quiet $cell_path]] == 0} {
+    set old_instance [current_bd_instance .]
+    set path_parts [split $cell_path "/"]
+    set cell_name [lindex $path_parts end]
+    set parent_path [join [lrange $path_parts 0 end-1] "/"]
+    if {$parent_path eq ""} {
+      set parent_path "/"
+    }
+    current_bd_instance [get_bd_cells $parent_path]
+    create_bd_cell -type ip -vlnv $vlnv $cell_name
+    current_bd_instance $old_instance
+  } else {
+    puts "Reusing existing cell $cell_path"
+  }
+}
+
+proc uz_pw_delete_cell_if_exists {cell_path} {
+  set cells [get_bd_cells -quiet $cell_path]
+  if {[llength $cells] == 0} {
+    return
+  }
+  foreach pin [get_bd_pins -quiet ${cell_path}/*] {
+    foreach net [get_bd_nets -quiet -of_objects $pin] {
+      uz_pw_try_disconnect_bd_net $net $pin
+    }
+  }
+  foreach intf_pin [get_bd_intf_pins -quiet ${cell_path}/*] {
+    foreach intf_net [get_bd_intf_nets -quiet -of_objects $intf_pin] {
+      catch {delete_bd_objs $intf_net}
+    }
+  }
+  delete_bd_objs $cells
+}
+
 proc uz_pw_set_property_dict_if_objects {property_dict objects label} {
   if {[llength $objects] == 0} {
     puts "WARNING: Could not set properties on $label because no object was found"
@@ -240,6 +312,15 @@ proc uz_pw_apply_slot_constraints {slot packed_constraint_name adapter_constrain
   }
 
   set adapter_constraint [get_files -quiet $adapter_constraint_name]
+  if {[llength $adapter_constraint] == 0 && [llength $packed_constraint] > 0} {
+    set packed_path [lindex $packed_constraint 0]
+    set candidate_path [file normalize [file join [file dirname $packed_path] $adapter_constraint_name]]
+    if {[file exists $candidate_path]} {
+      puts "Adding adapter constraint file $candidate_path"
+      add_files -fileset constrs_1 $candidate_path
+      set adapter_constraint [get_files -quiet $adapter_constraint_name]
+    }
+  }
   if {[llength $adapter_constraint] > 0} {
     uz_pw_set_property_if_objects is_enabled true $adapter_constraint $adapter_constraint_name
   } else {

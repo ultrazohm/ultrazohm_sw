@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..models import ResolvedOptionChoice, ResolvedSlot, ResolvedSystemModel, SystemConfig, ValidationIssue
+from ..models import (
+    ResolvedAnalogDataMover,
+    ResolvedAnalogStream,
+    ResolvedOptionChoice,
+    ResolvedSlot,
+    ResolvedSystemModel,
+    SystemConfig,
+    ValidationIssue,
+)
 from ..paths import SLOTS
 from ..repositories import CardDatabase
 
@@ -14,7 +22,12 @@ class SystemResolver:
     def resolve(self, config: SystemConfig) -> ResolvedSystemModel:
         platform = self.database.platform_by_id(config.platform)
         slots = [self._resolve_slot(slot_name, config) for slot_name in SLOTS]
-        return ResolvedSystemModel(config=config, platform=platform, slots=slots)
+        return ResolvedSystemModel(
+            config=config,
+            platform=platform,
+            slots=slots,
+            analog_datamover=self._resolve_analog_datamover(slots),
+        )
 
     def validate(self, model: ResolvedSystemModel) -> list[ValidationIssue]:
         issues: list[ValidationIssue] = []
@@ -60,6 +73,28 @@ class SystemResolver:
             option_values=option_values,
             options=self._resolve_options(card, option_values),
         )
+
+    @staticmethod
+    def _resolve_analog_datamover(slots: list[ResolvedSlot]) -> ResolvedAnalogDataMover:
+        streams: list[ResolvedAnalogStream] = []
+        packed_offset = 0
+        for slot in slots:
+            if slot.name not in {"A1", "A2", "A3"} or slot.card_id != "analog_ltc2311_16":
+                continue
+            channel_count = 8
+            streams.append(
+                ResolvedAnalogStream(
+                    slot=slot.name,
+                    card_id=slot.card_id,
+                    raw_value_pin=f"uz_analog_adapter/{slot.name}_RAW_Value",
+                    raw_valid_pin=f"uz_analog_adapter/{slot.name}_RAW_Valid",
+                    channel_count=channel_count,
+                    sample_width=16,
+                    packed_offset=packed_offset,
+                )
+            )
+            packed_offset += channel_count
+        return ResolvedAnalogDataMover(streams=streams, minimum_channel_count=2)
 
     @staticmethod
     def _resolve_options(card: dict[str, Any] | None, option_values: dict[str, str]) -> list[ResolvedOptionChoice]:

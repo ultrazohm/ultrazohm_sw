@@ -31,6 +31,10 @@ FILE_MARKERS = {
         "/* Project Wizard BEGIN: adc_readout */",
         "/* Project Wizard END: adc_readout */",
     ),
+    "datamover_array_length": (
+        "/* Project Wizard BEGIN: datamover_array_length */",
+        "/* Project Wizard END: datamover_array_length */",
+    ),
     "main_init_ip_cores": (
         "/* Project Wizard BEGIN: init_ip_cores */",
         "/* Project Wizard END: init_ip_cores */",
@@ -62,6 +66,7 @@ class SoftwarePlan:
     adc_readout: list[str]
     main_init: list[str]
     isr_control_by_slot: dict[str, list[str]]
+    datamover_array_length: int
     javascope_observable_enums: list[str]
     javascope_observable_pointers: list[str]
     available_visualization_signals: list["VisualizationSignal"]
@@ -171,6 +176,9 @@ class SoftwareGenerator:
         warnings: list[str] = []
         temperature_instances = 0
         adc_ltc2311_instances = 0
+        dac8831_instances = 0
+        adc_ltc2311_offsets = adc_ltc2311_packed_offsets(assignments)
+        datamover_array_length = max(2, len(adc_ltc2311_offsets) * 8)
         endat_instances = 0
         ssi_instances = 0
 
@@ -200,8 +208,33 @@ class SoftwareGenerator:
                     f"\t\t\tGlobal_Data.objects.adc_ltc2311_{context['slot_lower']} = initialize_adc_ltc2311_{context['slot_lower']}();"
                 )
                 actual_values.extend(adc_ltc2311_actual_values(str(context["slot_lower"])))
-                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot, context))
+                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot, context, adc_ltc2311_offsets[slot]))
                 available_visualization_signals.extend(adc_ltc2311_visualization_signals(str(context["slot_lower"])))
+            elif card_id == "analog_dac8831":
+                dac8831_instances += 1
+                context = self._dac8831_context(
+                    slot,
+                    source_dir,
+                    driver_instance_values(
+                        f"{slot.lower()}_dac8831", self.driver_config_fields("uz_dac_interface"), driver_config
+                    ),
+                )
+                warnings.extend(context.pop("warnings"))
+                header_includes, header_prototypes = split_header_template(
+                    self.renderer.render_file(self.driver_template("uz_dac_interface", "header"), context)
+                )
+                slot_content[slot].header_includes.extend(header_includes)
+                slot_content[slot].header_prototypes.extend(header_prototypes)
+                slot_content[slot].source_definitions.append(
+                    self.renderer.render_file(self.driver_template("uz_dac_interface", "source"), context).rstrip()
+                )
+                objects.append(f"\tuz_dac_interface_t* dac8831_{context['slot_lower']};")
+                main_init.append(
+                    f"\t\t\tGlobal_Data.objects.dac8831_{context['slot_lower']} = initialize_dac8831_{context['slot_lower']}();"
+                )
+                isr_control_by_slot[slot].append(
+                    f"    update_dac8831_{context['slot_lower']}_outputs(Global_Data.objects.dac8831_{context['slot_lower']});"
+                )
             elif card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
                 preset = software_presets.get(slot, "default")
@@ -353,6 +386,7 @@ class SoftwareGenerator:
             adc_readout=adc_readout,
             main_init=main_init,
             isr_control_by_slot=isr_control_by_slot,
+            datamover_array_length=datamover_array_length,
             javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_signals],
             javascope_observable_pointers=[
                 f"\tjs_ch_observable[{signal.enum_name}] = {signal.pointer_expression};" for signal in selected_signals
@@ -363,6 +397,7 @@ class SoftwareGenerator:
                 "UZ_TEMPERATURE_CARD_MAX_INSTANCES": temperature_instances,
                 "UZ_ENDAT_INTERFACE_MAX_INSTANCES": endat_instances,
                 "UZ_SSI_INTERFACE_MAX_INSTANCES": ssi_instances,
+                "UZ_DAC_INTERFACE_MAX_INSTANCES": dac8831_instances,
             },
             warnings=warnings,
         )
@@ -473,6 +508,16 @@ class SoftwareGenerator:
                         fields=self.driver_config_fields("uz_adc_ltc2311"),
                     )
                 )
+            elif card_id == "analog_dac8831":
+                instances.append(
+                    DriverConfigInstance(
+                        id=f"{slot_lower}_dac8831",
+                        slot=slot,
+                        label=f"{slot} DAC8831",
+                        driver="dac8831",
+                        fields=self.driver_config_fields("uz_dac_interface"),
+                    )
+                )
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     interface = option_values.get(slot, {}).get(f"channel_{channel_index}", "none")
@@ -537,6 +582,10 @@ class SoftwareGenerator:
         patch_slot_isr_control(isr_c, plan.isr_control_by_slot)
         patched_files.append(isr_c)
 
+        datamover_c = source_dir / "IP_Cores" / "uz_dataMover" / "uz_dataMover.c"
+        patch_marker_file(datamover_c, "datamover_array_length", [f"#define UZ_DATAMOVER_ARRAY_LENGTH {plan.datamover_array_length}"])
+        patched_files.append(datamover_c)
+
         javascope_h = source_dir / "include" / "javascope.h"
         patch_javascope_header(javascope_h, plan.javascope_observable_enums)
         patched_files.append(javascope_h)
@@ -579,6 +628,19 @@ class SoftwareGenerator:
     def _adc_ltc2311_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
         slot_lower = slot.lower()
         base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "adc_ltc2311")
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _dac8831_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "dac8831")
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
@@ -802,9 +864,18 @@ def adc_ltc2311_actual_values(slot_lower: str) -> list[str]:
     return [f"\tfloat adc_ltc2311_{slot_lower}_ch{channel};" for channel in range(8)]
 
 
-def adc_ltc2311_isr_lines(slot: str, context: dict[str, object]) -> list[str]:
-    slot_index = int(slot[1]) - 1
-    buffer_offset = slot_index * 8
+def adc_ltc2311_packed_offsets(assignments: dict[str, str]) -> dict[str, int]:
+    offsets: dict[str, int] = {}
+    next_offset = 0
+    for slot in ["A1", "A2", "A3"]:
+        if assignments.get(slot, "empty") != "analog_ltc2311_16":
+            continue
+        offsets[slot] = next_offset
+        next_offset += 8
+    return offsets
+
+
+def adc_ltc2311_isr_lines(slot: str, context: dict[str, object], buffer_offset: int) -> list[str]:
     slot_lower = slot.lower()
     return [
         (
@@ -847,6 +918,9 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     elif interface == "adc_ltc2311":
         fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_ADC_LTC2311_S00_AXI_BASEADDR"
         search_terms = ["ADC_LTC2311", "ADCLTC2311", "LTC2311"]
+    elif interface == "dac8831":
+        fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_DAC8831_AXI4_BASEADDR"
+        search_terms = ["DAC8831", "DAC_SPI", "DAC"]
     elif interface == "endat":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_ENDAT_INTERFACE_{slot.upper()}_CHANNEL_{channel}_BASEADDR"
         search_terms = ["ENDAT"]

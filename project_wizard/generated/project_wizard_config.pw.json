@@ -11,6 +11,13 @@
     "cpld_repository": "C:/GIT/UltraZohm/software/cpld_lattice",
     "vitis_executable": "C:\\Xilinx\\Vitis\\2022.2\\bin\\vitis.bat"
   },
+  "hardware": {
+    "vivado_project_file": "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_ZC_test\\vivado\\project\\ultrazohm.xpr",
+    "block_design_name": "zusys",
+    "validate_block_design": "false",
+    "save_block_design": "false",
+    "open_vivado_gui": "true"
+  },
   "slots": {
     "A1": "analog_ltc2311_16",
     "A2": "analog_ltc2311_16",
@@ -108,6 +115,10 @@
     "driver_config_d5_channel_3_ssi_kp_pll": "628.3185f",
     "driver_config_d5_channel_3_ssi_ki_pll": "98696.0f",
     "driver_config_d5_channel_3_ssi_sampling_delay_clk_ticks": "0U",
+    "visualize_adc_ltc2311_a1_ch0": "true",
+    "visualize_adc_ltc2311_a1_ch1": "true",
+    "visualize_adc_ltc2311_a1_ch2": "true",
+    "visualize_adc_ltc2311_a1_ch3": "true",
     "visualize_adc_ltc2311_a1_ch4": "true",
     "visualize_adc_ltc2311_a1_ch5": "true",
     "visualize_adc_ltc2311_a1_ch6": "true",
@@ -134,10 +145,6 @@
     "visualize_ssi_encoder_d5_2_position_mech_si_single_turn": "true",
     "visualize_ssi_encoder_d5_2_position_el_si_single_turn": "true",
     "visualize_ssi_encoder_d5_3_position_mech_si_single_turn": "true",
-    "visualize_ssi_encoder_d5_3_position_el_si_single_turn": "true",
-    "visualize_adc_ltc2311_a1_ch0": "true",
-    "visualize_adc_ltc2311_a1_ch1": "true",
-    "visualize_adc_ltc2311_a1_ch2": "true",
-    "visualize_adc_ltc2311_a1_ch3": "true"
+    "visualize_ssi_encoder_d5_3_position_el_si_single_turn": "true"
   }
 }

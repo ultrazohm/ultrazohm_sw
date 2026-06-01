@@ -2873,8 +2873,6 @@ assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_seg
 puts "Applying A-slot analog project-level integration"
 
 
-
-
 uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A1_RAW_Value uz_system/ADC_A1
 
 uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A2_RAW_Value uz_system/ADC_A2

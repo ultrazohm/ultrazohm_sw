@@ -4,6 +4,10 @@
 
 puts "Applying A-slot analog project-level integration"
 
+{% if has_axi2tcm_note %}
+puts "WARNING: {{ axi2tcm_note }}"
+{% endif %}
+
 {% for connection in raw_value_connections %}
 uz_pw_connect_pin_pair_if_unconnected {{ connection.source_pin }} {{ connection.target_pin }}
 {% endfor %}

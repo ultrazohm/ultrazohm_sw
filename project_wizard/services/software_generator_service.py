@@ -91,6 +91,7 @@ class DriverConfigField:
     label: str
     default: str
     multiline: bool = False
+    help_text: str = ""
 
 
 @dataclass(frozen=True)
@@ -140,6 +141,7 @@ class SoftwareGenerator:
                     label=str(raw_field.get("label", raw_field.get("id", ""))),
                     default=default,
                     multiline=bool(raw_field.get("multiline", False)),
+                    help_text=str(raw_field.get("help", "")),
                 )
             )
         return fields

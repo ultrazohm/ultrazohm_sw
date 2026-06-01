@@ -38,12 +38,15 @@ from PyQt6.QtWidgets import (
 )
 
 from ..paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, OUTPUT_DIR, SLOTS
+from ..models import SystemConfig
 from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
 from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_settings_from_xcf
 from ..services.software_generator_service import SoftwareGenerator
+from ..services.system_resolver import SystemResolver
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
+from ..services.vivado_service import write_vivado_run_wrapper
 from ..tcl_generator import TclGenerator
 from .card_editor import CardEditorDialog
 
@@ -56,12 +59,15 @@ class MainWindow(QMainWindow):
         self.database = CardDatabase.load(DATA_FILE)
         self.generator = TclGenerator(self.database)
         self.software_generator = SoftwareGenerator(self.database)
+        self.system_resolver = SystemResolver(self.database)
         self.current_config_path: Path | None = None
         self.is_loading_config = False
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
         self.toolchain_fields: dict[str, QLineEdit] = {}
+        self.hardware_fields: dict[str, QLineEdit] = {}
+        self.hardware_checkboxes: dict[str, QCheckBox] = {}
         self.software_fields: dict[str, QLineEdit] = {}
         self.software_mode_combos: dict[str, QComboBox] = {}
         self.software_preset_combos: dict[str, QComboBox] = {}
@@ -80,12 +86,17 @@ class MainWindow(QMainWindow):
         self.cpld_programmer_fields: dict[str, QLineEdit] = {}
         self.cpld_status: QTextEdit | None = None
         self.cpld_process: QProcess | None = None
+        self.vivado_process: QProcess | None = None
         self.cpld_log_path: Path | None = None
         self.cpld_xcf_path: Path = OUTPUT_DIR / "project_wizard_slot_cplds.xcf"
         self.cpld_xcf_current = False
         self.write_cpld_button: QPushButton | None = None
         self.program_cpld_button: QPushButton | None = None
         self.import_cable_button: QPushButton | None = None
+        self.tcl_export_checkbox: QCheckBox | None = None
+        self.tcl_run_vivado_checkbox: QCheckBox | None = None
+        self.tcl_workflow_button: QPushButton | None = None
+        self.vivado_status: QPlainTextEdit | None = None
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
@@ -95,6 +106,7 @@ class MainWindow(QMainWindow):
         self.tree = self._build_navigation()
         self.stack.addWidget(self._build_toolchain_page())
         self.stack.addWidget(self._build_platform_page())
+        self.stack.addWidget(self._build_hardware_general_page())
         self.stack.addWidget(self._build_configuration_page())
         self.stack.addWidget(self._build_slot_cpld_page())
         self.stack.addWidget(self._build_axi_interconnect_page())
@@ -114,6 +126,7 @@ class MainWindow(QMainWindow):
         for slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.reset_toolchain_config()
+        self.reset_hardware_config()
         self.reset_software_config()
         self.refresh_software_preset_options()
         self.refresh_data_visualization_options()
@@ -158,6 +171,10 @@ class MainWindow(QMainWindow):
         platform_action = QAction("Platform", self)
         platform_action.triggered.connect(self.show_platform_page)
         view_menu.addAction(platform_action)
+
+        hardware_general_action = QAction("Hardware general", self)
+        hardware_general_action.triggered.connect(self.show_hardware_general)
+        view_menu.addAction(hardware_general_action)
 
         adapter_cards_action = QAction("Adapter cards", self)
         adapter_cards_action.triggered.connect(self.show_adapter_cards)
@@ -206,9 +223,11 @@ class MainWindow(QMainWindow):
         toolchain = QTreeWidgetItem(["Toolchain"])
         platform = QTreeWidgetItem(["Platform"])
         config = QTreeWidgetItem(["Hardware configuration"])
+        hardware_general = QTreeWidgetItem(["General"])
         axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
         adapter_cards = QTreeWidgetItem(["Adapter cards"])
         slot_cplds = QTreeWidgetItem(["Slot CPLDs"])
+        config.addChild(hardware_general)
         config.addChild(axi_interconnect)
         config.addChild(adapter_cards)
         config.addChild(slot_cplds)
@@ -242,15 +261,15 @@ class MainWindow(QMainWindow):
         page_by_name = {
             "Toolchain": 0,
             "Platform": 1,
-            "Hardware configuration": 4,
-            "Adapter cards": 2,
-            "Slot CPLDs": 3,
-            "AXI interconnect": 4,
-            "Software configuration": 5,
-            "General": 5,
-            "IP core driver setup": 6,
-            "Advanced driver configuration": 7,
-            "Data visualization": 8,
+            "Hardware configuration": 2,
+            "General": 2 if current.parent() and current.parent().text(0) == "Hardware configuration" else 6,
+            "Adapter cards": 3,
+            "Slot CPLDs": 4,
+            "AXI interconnect": 5,
+            "Software configuration": 6,
+            "IP core driver setup": 7,
+            "Advanced driver configuration": 8,
+            "Data visualization": 9,
         }
         self.stack.setCurrentIndex(page_by_name.get(current.text(0), 0))
 
@@ -321,6 +340,69 @@ class MainWindow(QMainWindow):
         start_path = field.text().strip() or str(APP_DIR)
         if file_mode:
             path_text, _ = QFileDialog.getOpenFileName(self, "Select executable", start_path, "Executables (*.exe);;All files (*)")
+        else:
+            path_text = QFileDialog.getExistingDirectory(self, "Select folder", start_path)
+        if path_text:
+            field.setText(path_text)
+
+    def _build_hardware_general_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("General")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        vivado_group = QGroupBox("Vivado project")
+        vivado_form = QFormLayout(vivado_group)
+        vivado_form.addRow("Project file", self._hardware_path_picker("vivado_project_file", file_mode=True))
+        block_design_name = QLineEdit()
+        self.hardware_fields["block_design_name"] = block_design_name
+        vivado_form.addRow("Block design name", block_design_name)
+        validate_checkbox = QCheckBox("Validate block design after applying TCL")
+        save_checkbox = QCheckBox("Save block design after applying TCL")
+        open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
+        self.hardware_checkboxes["validate_block_design"] = validate_checkbox
+        self.hardware_checkboxes["save_block_design"] = save_checkbox
+        self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
+        vivado_form.addRow("", validate_checkbox)
+        vivado_form.addRow("", save_checkbox)
+        vivado_form.addRow("", open_gui_checkbox)
+        hint = QLabel(
+            "For manual inspection, leave saving disabled. Vivado can apply the generated TCL and validate the "
+            "block design. Enable the GUI option to inspect unsaved changes before deciding whether to save."
+        )
+        hint.setWordWrap(True)
+        vivado_form.addRow("", hint)
+        layout.addWidget(vivado_group)
+        layout.addStretch(1)
+        return page
+
+    def _hardware_path_picker(self, key: str, file_mode: bool) -> QWidget:
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        field = QLineEdit()
+        self.hardware_fields[key] = field
+        button = QPushButton("Browse...")
+        button.clicked.connect(lambda: self.browse_hardware_path(key, file_mode))
+        layout.addWidget(field, 1)
+        layout.addWidget(button)
+        return container
+
+    def browse_hardware_path(self, key: str, file_mode: bool) -> None:
+        field = self.hardware_fields[key]
+        start_path = field.text().strip() or str(APP_DIR.parent)
+        if file_mode:
+            path_text, _ = QFileDialog.getOpenFileName(
+                self,
+                "Select Vivado project",
+                start_path,
+                "Vivado project (*.xpr);;All files (*)",
+            )
         else:
             path_text = QFileDialog.getExistingDirectory(self, "Select folder", start_path)
         if path_text:
@@ -621,12 +703,25 @@ class MainWindow(QMainWindow):
         buttons = QHBoxLayout()
         preview_button = QPushButton("Refresh TCL Preview")
         preview_button.clicked.connect(self.refresh_tcl_preview)
-        export_button = QPushButton("Export TCL")
-        export_button.clicked.connect(self.export_tcl)
+        export_checkbox = QCheckBox("Export TCL")
+        export_checkbox.setChecked(True)
+        run_vivado_checkbox = QCheckBox("Run TCL in Vivado")
+        workflow_button = QPushButton("Execute TCL workflow")
+        workflow_button.clicked.connect(self.execute_tcl_workflow)
+        self.tcl_export_checkbox = export_checkbox
+        self.tcl_run_vivado_checkbox = run_vivado_checkbox
+        self.tcl_workflow_button = workflow_button
         buttons.addStretch(1)
         buttons.addWidget(preview_button)
-        buttons.addWidget(export_button)
+        buttons.addWidget(export_checkbox)
+        buttons.addWidget(run_vivado_checkbox)
+        buttons.addWidget(workflow_button)
         outer.addLayout(buttons)
+
+        self.vivado_status = QPlainTextEdit()
+        self.vivado_status.setReadOnly(True)
+        self.vivado_status.setFixedHeight(110)
+        outer.addWidget(self.vivado_status)
 
         self.tcl_preview = QPlainTextEdit()
         self.tcl_preview.setReadOnly(True)
@@ -775,6 +870,32 @@ class MainWindow(QMainWindow):
 
         analog_group = QGroupBox("A-slot analog project-level wiring")
         analog_form = QFormLayout(analog_group)
+        analog_help = {
+            "analog_raw_value_target_template": (
+                "Connects each generated A-slot RAW_Value vector to a project-level sink. "
+                "Use {slot} as placeholder, for example uz_system/ADC_{slot}. "
+                "For LTC2311 this vector must match DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER."
+            ),
+            "analog_axi2tcm_trigger_source": (
+                "Normally this is one generated A-slot RAW_Valid pin. If the configured pin is not generated "
+                "by the selected A-slot cards, the wizard falls back to the first generated RAW_Valid. "
+                "If no RAW_Valid exists, it uses the first conversion trigger source instead."
+            ),
+            "analog_axi2tcm_trigger_target": (
+                "Project-level input that starts the AXI-to-TCM transfer in uz_system. "
+                "The wizard connects either the selected RAW_Valid source or, if no A-slot ADC exists, "
+                "the first configured conversion trigger source."
+            ),
+            "analog_conversion_trigger_sources": (
+                "Semicolon-separated list of project-level trigger sources. The wizard connects them to the "
+                "shared TRIGGER_CNV pin when A-slot ADC cards are present. The first entry is also used as "
+                "AXI2TCM fallback when no RAW_Valid source exists."
+            ),
+            "analog_conversion_trigger_target": (
+                "Shared trigger pin at the uz_analog_adapter boundary. A-slot ADC cards use this as their "
+                "conversion trigger input."
+            ),
+        }
         analog_field_labels = [
             ("analog_raw_value_target_template", "RAW value target template"),
             ("analog_axi2tcm_trigger_source", "AXI2TCM trigger source"),
@@ -786,7 +907,21 @@ class MainWindow(QMainWindow):
             edit = QLineEdit(str(defaults.get(key, "")))
             edit.textChanged.connect(self.refresh_tcl_preview)
             self.axi_fields[key] = edit
-            analog_form.addRow(label, edit)
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            help_button = QPushButton("?")
+            help_button.setFixedWidth(28)
+            help_button.clicked.connect(
+                lambda _checked=False, title=label, text=analog_help[key]: QMessageBox.information(
+                    self,
+                    title,
+                    text,
+                )
+            )
+            row_layout.addWidget(edit, 1)
+            row_layout.addWidget(help_button)
+            analog_form.addRow(label, row)
         analog_hint = QLabel(
             "These fields make the historically grown A-slot project wiring explicit. "
             "Use semicolons for multiple conversion trigger sources."
@@ -919,6 +1054,12 @@ class MainWindow(QMainWindow):
     def toolchain_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.toolchain_fields.items()}
 
+    def hardware_config(self) -> dict[str, str]:
+        config = {key: field.text().strip() for key, field in self.hardware_fields.items()}
+        for key, checkbox in self.hardware_checkboxes.items():
+            config[key] = "true" if checkbox.isChecked() else "false"
+        return config
+
     def software_config(self) -> dict[str, str]:
         config = {key: field.text().strip() for key, field in self.software_fields.items()}
         for slot, combo in self.software_mode_combos.items():
@@ -970,6 +1111,29 @@ class MainWindow(QMainWindow):
 
     def reset_toolchain_config(self) -> None:
         self.load_toolchain_config({})
+
+    def load_hardware_config(self, values: dict[str, str]) -> None:
+        defaults = self.default_hardware_config()
+        for key, field in self.hardware_fields.items():
+            field.blockSignals(True)
+            field.setText(values.get(key, defaults.get(key, "")))
+            field.blockSignals(False)
+        for key, checkbox in self.hardware_checkboxes.items():
+            checkbox.blockSignals(True)
+            checkbox.setChecked(values.get(key, defaults.get(key, "false")).lower() in {"1", "true", "yes", "on"})
+            checkbox.blockSignals(False)
+
+    def reset_hardware_config(self) -> None:
+        self.load_hardware_config({})
+
+    def default_hardware_config(self) -> dict[str, str]:
+        return {
+            "vivado_project_file": str(APP_DIR.parent / "vivado" / "project" / "ultrazohm.xpr"),
+            "block_design_name": "zusys",
+            "validate_block_design": "true",
+            "save_block_design": "false",
+            "open_vivado_gui": "false",
+        }
 
     def load_software_config(self, values: dict[str, str]) -> None:
         defaults = self.default_software_config()
@@ -1076,7 +1240,24 @@ class MainWindow(QMainWindow):
                     widget = QLineEdit(stored_value)
                 self.driver_config_fields[(instance.id, field.id)] = widget
                 field_widgets.append(widget)
-                form.addRow(field.label, widget)
+                if field.help_text:
+                    row = QWidget()
+                    row_layout = QHBoxLayout(row)
+                    row_layout.setContentsMargins(0, 0, 0, 0)
+                    help_button = QPushButton("?")
+                    help_button.setFixedWidth(28)
+                    help_button.clicked.connect(
+                        lambda _checked=False, title=field.label, text=field.help_text: QMessageBox.information(
+                            self,
+                            title,
+                            text,
+                        )
+                    )
+                    row_layout.addWidget(widget, 1)
+                    row_layout.addWidget(help_button)
+                    form.addRow(field.label, row)
+                else:
+                    form.addRow(field.label, widget)
             group_layout.addLayout(form)
 
             def apply_mode(_index: int, combo: QComboBox = mode_combo, widgets: list[QLineEdit | QPlainTextEdit] = field_widgets) -> None:
@@ -1305,19 +1486,23 @@ class MainWindow(QMainWindow):
         self.tree.setCurrentItem(self.tree.topLevelItem(0))
 
     def show_adapter_cards(self) -> None:
-        self.stack.setCurrentIndex(2)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
-
-    def show_hardware_configuration(self) -> None:
-        self.show_axi_interconnect()
-
-    def show_slot_cplds(self) -> None:
         self.stack.setCurrentIndex(3)
         self.tree.setCurrentItem(self.tree.topLevelItem(2).child(2))
 
-    def show_axi_interconnect(self) -> None:
-        self.stack.setCurrentIndex(4)
+    def show_hardware_configuration(self) -> None:
+        self.show_hardware_general()
+
+    def show_hardware_general(self) -> None:
+        self.stack.setCurrentIndex(2)
         self.tree.setCurrentItem(self.tree.topLevelItem(2).child(0))
+
+    def show_slot_cplds(self) -> None:
+        self.stack.setCurrentIndex(4)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(3))
+
+    def show_axi_interconnect(self) -> None:
+        self.stack.setCurrentIndex(5)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
 
     def import_cable_settings_from_xcf(self) -> None:
         path_text, _ = QFileDialog.getOpenFileName(
@@ -1511,24 +1696,24 @@ class MainWindow(QMainWindow):
         return None
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(9)
+        self.stack.setCurrentIndex(10)
 
     def show_software_general(self) -> None:
-        self.stack.setCurrentIndex(5)
+        self.stack.setCurrentIndex(6)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(0))
 
     def show_ip_core_driver_setup(self) -> None:
-        self.stack.setCurrentIndex(6)
+        self.stack.setCurrentIndex(7)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
 
     def show_advanced_driver_config(self) -> None:
         self.refresh_dirty_software_dependent_views()
-        self.stack.setCurrentIndex(7)
+        self.stack.setCurrentIndex(8)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(2))
 
     def show_data_visualization(self) -> None:
         self.refresh_dirty_software_dependent_views()
-        self.stack.setCurrentIndex(8)
+        self.stack.setCurrentIndex(9)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(3))
 
     def refresh_dirty_software_dependent_views(self) -> None:
@@ -1747,6 +1932,7 @@ class MainWindow(QMainWindow):
             self.platform_cpld_type_combo.setCurrentIndex(0)
         self.refresh_platform_cpld_visibility()
         self.detail_options = {}
+        self.reset_hardware_config()
         for slot, combo in self.slot_combos.items():
             index = combo.findData("empty")
             combo.setCurrentIndex(index if index >= 0 else 0)
@@ -1830,6 +2016,7 @@ class MainWindow(QMainWindow):
             self.selected_platform(),
             self.platform_cpld_config(),
             self.toolchain_config(),
+            self.hardware_config(),
             self.assignments(),
             self.option_values(),
             self.cpld_assignments(),
@@ -1837,6 +2024,9 @@ class MainWindow(QMainWindow):
             self.axi_config(),
             self.software_config(),
         )
+
+    def resolved_system_model(self):
+        return self.system_resolver.resolve(SystemConfig.from_document(self.config_document()))
 
     def update_config_load_progress(self, progress: QProgressDialog | None, value: int, message: str) -> None:
         if progress is None:
@@ -1870,6 +2060,13 @@ class MainWindow(QMainWindow):
         if not isinstance(toolchain, dict):
             raise ValueError("Config field 'toolchain' must be a JSON object.")
         self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
+
+        hardware = document.get("hardware", {})
+        if hardware is None:
+            hardware = {}
+        if not isinstance(hardware, dict):
+            raise ValueError("Config field 'hardware' must be a JSON object.")
+        self.load_hardware_config({str(key): str(value) for key, value in hardware.items()})
 
         self.update_config_load_progress(progress, 3, "Loading adapter cards...")
         slots = document.get("slots", {})
@@ -1939,13 +2136,44 @@ class MainWindow(QMainWindow):
             "Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
         )
 
-    def export_tcl(self) -> None:
+    def execute_tcl_workflow(self) -> None:
+        export_tcl = self.tcl_export_checkbox is None or self.tcl_export_checkbox.isChecked()
+        run_vivado = self.tcl_run_vivado_checkbox is not None and self.tcl_run_vivado_checkbox.isChecked()
+        if not export_tcl and not run_vivado:
+            QMessageBox.warning(self, "Nothing selected", "Select Export TCL, Run TCL in Vivado, or both.")
+            return
+        if run_vivado and self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
+            QMessageBox.warning(self, "Vivado is running", "A Vivado process started by the wizard is still running.")
+            return
+
+        if export_tcl:
+            tcl_path = self.ask_tcl_export_path()
+            if tcl_path is None:
+                return
+        else:
+            tcl_path = OUTPUT_DIR / "project_wizard_config.tcl"
+
+        try:
+            self.write_generated_tcl(tcl_path)
+        except OSError as error:
+            QMessageBox.warning(self, "Could not write TCL", str(error))
+            return
+
+        if run_vivado:
+            self.run_tcl_in_vivado(tcl_path)
+            return
+
+        self.show_tcl_export_result(tcl_path)
+
+    def ask_tcl_export_path(self) -> Path | None:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         default_path = OUTPUT_DIR / "project_wizard_config.tcl"
         path_text, _ = QFileDialog.getSaveFileName(self, "Export TCL", str(default_path), "TCL files (*.tcl)")
-        if not path_text:
-            return
-        path = Path(path_text)
+        return Path(path_text) if path_text else None
+
+    def write_generated_tcl(self, path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        warnings = self.generator.validation_warnings(self.assignments(), self.axi_config())
         path.write_text(
             self.generator.generate(
                 self.selected_platform(),
@@ -1956,4 +2184,124 @@ class MainWindow(QMainWindow):
             ),
             encoding="utf-8",
         )
+        if self.vivado_status:
+            self.vivado_status.setPlainText(f"Wrote TCL: {path}")
+
+    def show_tcl_export_result(self, path: Path) -> None:
+        warnings = self.generator.validation_warnings(self.assignments(), self.axi_config())
+        if warnings:
+            QMessageBox.warning(
+                self,
+                "TCL exported with warnings",
+                f"Wrote {path}\n\n" + "\n".join(f"- {warning}" for warning in warnings),
+            )
+            return
         QMessageBox.information(self, "TCL exported", f"Wrote {path}")
+
+    def export_tcl(self) -> None:
+        if self.tcl_export_checkbox:
+            self.tcl_export_checkbox.setChecked(True)
+        if self.tcl_run_vivado_checkbox:
+            self.tcl_run_vivado_checkbox.setChecked(False)
+        self.execute_tcl_workflow()
+
+    def run_tcl_in_vivado(self, tcl_path: Path) -> None:
+        toolchain = self.toolchain_config()
+        hardware = self.hardware_config()
+        vivado_path = Path(toolchain.get("vivado_executable", ""))
+        project_path = Path(hardware.get("vivado_project_file", ""))
+        open_gui = hardware.get("open_vivado_gui", "false").lower() in {"1", "true", "yes", "on"}
+        if not vivado_path.exists():
+            QMessageBox.warning(self, "Vivado executable missing", f"Vivado executable not found:\n{vivado_path}")
+            return
+        if not project_path.exists():
+            QMessageBox.warning(self, "Vivado project missing", f"Vivado project not found:\n{project_path}")
+            return
+
+        wrapper_path = OUTPUT_DIR / "project_wizard_run_vivado.tcl"
+        try:
+            write_vivado_run_wrapper(
+                wrapper_path,
+                project_path,
+                tcl_path,
+                hardware.get("block_design_name", "zusys"),
+                hardware.get("validate_block_design", "true").lower() in {"1", "true", "yes", "on"},
+                hardware.get("save_block_design", "false").lower() in {"1", "true", "yes", "on"},
+                hardware.get("open_vivado_gui", "false").lower() in {"1", "true", "yes", "on"},
+            )
+        except OSError as error:
+            QMessageBox.warning(self, "Could not write Vivado wrapper", str(error))
+            return
+
+        self.set_vivado_status(
+            "\n".join(
+                [
+                    "Starting Vivado GUI debug run..." if open_gui else "Starting Vivado batch run...",
+                    f"Vivado: {vivado_path}",
+                    f"Project: {project_path}",
+                    f"Generated TCL: {tcl_path}",
+                    f"Wrapper TCL: {wrapper_path}",
+                    "Close Vivado to finish this workflow." if open_gui else "",
+                ]
+            )
+        )
+        self.set_vivado_busy(True)
+        self.statusBar().showMessage(
+            "Running Vivado TCL workflow. Close Vivado to finish." if open_gui else "Running Vivado TCL workflow..."
+        )
+        process = QProcess(self)
+        self.vivado_process = process
+        vivado_args = ["-mode", "gui" if open_gui else "batch", "-source", str(wrapper_path)]
+        if vivado_path.suffix.lower() in {".bat", ".cmd"}:
+            process.setProgram("cmd.exe")
+            process.setArguments(["/c", str(vivado_path), *vivado_args])
+        else:
+            process.setProgram(str(vivado_path))
+            process.setArguments(vivado_args)
+        process.setWorkingDirectory(str(project_path.parent))
+        process.readyReadStandardOutput.connect(self.read_vivado_process_stdout)
+        process.readyReadStandardError.connect(self.read_vivado_process_stderr)
+        process.errorOccurred.connect(self.vivado_process_error)
+        process.finished.connect(self.vivado_process_finished)
+        process.start()
+
+    def set_vivado_status(self, text: str) -> None:
+        if self.vivado_status:
+            self.vivado_status.setPlainText(text)
+
+    def append_vivado_status(self, text: str) -> None:
+        if self.vivado_status:
+            self.vivado_status.appendPlainText(text)
+
+    def read_vivado_process_stdout(self) -> None:
+        if not self.vivado_process:
+            return
+        text = bytes(self.vivado_process.readAllStandardOutput()).decode(errors="replace")
+        if text:
+            self.append_vivado_status(text.rstrip())
+
+    def read_vivado_process_stderr(self) -> None:
+        if not self.vivado_process:
+            return
+        text = bytes(self.vivado_process.readAllStandardError()).decode(errors="replace")
+        if text:
+            self.append_vivado_status(text.rstrip())
+
+    def vivado_process_error(self, error: QProcess.ProcessError) -> None:
+        self.append_vivado_status(f"Process error: {error.name}")
+
+    def vivado_process_finished(self, exit_code: int, _exit_status: QProcess.ExitStatus) -> None:
+        self.set_vivado_busy(False)
+        self.statusBar().clearMessage()
+        self.append_vivado_status("")
+        self.append_vivado_status(f"Vivado exited with code {exit_code}")
+        if exit_code == 0:
+            QMessageBox.information(self, "Vivado TCL workflow finished", "Vivado finished successfully.")
+        else:
+            QMessageBox.warning(self, "Vivado TCL workflow failed", f"Vivado exited with code {exit_code}.")
+        self.vivado_process = None
+
+    def set_vivado_busy(self, busy: bool) -> None:
+        if self.tcl_workflow_button:
+            self.tcl_workflow_button.setEnabled(not busy)
+            self.tcl_workflow_button.setText("Running Vivado..." if busy else "Execute TCL workflow")

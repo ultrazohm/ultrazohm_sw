@@ -17,22 +17,26 @@
         {
           "id": "conversion_factor",
           "label": "IP-core conversion factor",
-          "default": "1.0f"
+          "default": "1.0f",
+          "help": "This value is written into the LTC2311 IP-core channel configuration. It affects the PL-side conversion logic and is independent from the software raw-to-physical factors below."
         },
         {
           "id": "conversion_factor_is_signed",
           "label": "IP-core conversion factor signed",
-          "default": "true"
+          "default": "true",
+          "help": "Defines whether the IP-core conversion factor is interpreted as signed fixed-point value."
         },
         {
           "id": "conversion_factor_integer_bits",
           "label": "IP-core conversion factor integer bits",
-          "default": "14"
+          "default": "14",
+          "help": "Integer-bit width of the IP-core fixed-point conversion factor. Keep this consistent with the LTC2311 IP-core configuration."
         },
         {
           "id": "conversion_factor_fractional_bits",
           "label": "IP-core conversion factor fractional bits",
-          "default": "4"
+          "default": "4",
+          "help": "Fractional-bit width of the IP-core fixed-point conversion factor. Keep this consistent with the LTC2311 IP-core configuration."
         },
         {
           "id": "offset",
@@ -107,42 +111,50 @@
         {
           "id": "software_raw_to_physical_value_factor_ch0",
           "label": "Software raw-to-physical factor channel 0",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch1",
           "label": "Software raw-to-physical factor channel 1",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch2",
           "label": "Software raw-to-physical factor channel 2",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch3",
           "label": "Software raw-to-physical factor channel 3",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch4",
           "label": "Software raw-to-physical factor channel 4",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch5",
           "label": "Software raw-to-physical factor channel 5",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch6",
           "label": "Software raw-to-physical factor channel 6",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         },
         {
           "id": "software_raw_to_physical_value_factor_ch7",
           "label": "Software raw-to-physical factor channel 7",
-          "default": "10.0f"
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
         }
       ]
     },

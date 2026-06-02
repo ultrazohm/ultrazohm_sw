@@ -1,7 +1,7 @@
 --Copyright 1986-2023 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2.2 (lin64) Build 3788238 Tue Feb 21 19:59:23 MST 2023
---Date        : Mon Jun  1 15:50:51 2026
+--Date        : Mon Jun  1 17:21:16 2026
 --Host        : lin1 running 64-bit Ubuntu 22.04.5 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -13,14 +13,6 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity zusys_wrapper is
   port (
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -86,14 +78,6 @@ architecture STRUCTURE of zusys_wrapper is
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     Dig_00_Ch4 : out STD_LOGIC;
     Dig_01_Ch4 : out STD_LOGIC;
     Dig_02_Ch4 : in STD_LOGIC;
@@ -128,14 +112,6 @@ architecture STRUCTURE of zusys_wrapper is
 begin
 zusys_i: component zusys
      port map (
-      A2_IN(15 downto 0) => A2_IN(15 downto 0),
-      A2_OUT_CLK(1 downto 0) => A2_OUT_CLK(1 downto 0),
-      A2_OUT_CNV_0(0) => A2_OUT_CNV_0(0),
-      A2_OUT_CNV_1(0) => A2_OUT_CNV_1(0),
-      A3_IN(15 downto 0) => A3_IN(15 downto 0),
-      A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
-      A3_OUT_CNV_0(0) => A3_OUT_CNV_0(0),
-      A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
       D1_OUT(23 downto 0) => D1_OUT(23 downto 0),
       D1_OUT_26(0) => D1_OUT_26(0),
       D1_OUT_27(0) => D1_OUT_27(0),

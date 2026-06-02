@@ -23,6 +23,10 @@ GLOBAL_DATA_MARKERS = {
 }
 
 FILE_MARKERS = {
+    "hardware_version": (
+        "/* Project Wizard BEGIN: hardware_version */",
+        "/* Project Wizard END: hardware_version */",
+    ),
     "adc_readout_definitions": (
         "/* Project Wizard BEGIN: adc_readout_definitions */",
         "/* Project Wizard END: adc_readout_definitions */",
@@ -407,6 +411,7 @@ class SoftwareGenerator:
         source_dir: Path,
         assignments: dict[str, str],
         option_values: dict[str, dict[str, str]],
+        platform_revision: str = "",
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
@@ -450,6 +455,8 @@ class SoftwareGenerator:
                 lines.extend(f"  {entry.strip()}" for entry in entries)
         if not any_isr_content:
             lines.append("  none")
+        lines.extend(["", "uz_global_configuration.h hardware revision:"])
+        lines.append(f"  UZ_HARDWARE_VERSION {hardware_revision_define_value(platform_revision)}")
         lines.extend(["", "uz_global_configuration.h instance counts:"])
         for define, count in plan.instance_counts.items():
             lines.append(f"  {define} {count}U")
@@ -548,6 +555,7 @@ class SoftwareGenerator:
         source_dir: Path,
         assignments: dict[str, str],
         option_values: dict[str, dict[str, str]],
+        platform_revision: str = "",
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
@@ -595,9 +603,10 @@ class SoftwareGenerator:
         patched_files.append(javascope_c)
 
         global_configuration = source_dir / "uz" / "uz_global_configuration.h"
+        patch_hardware_revision(global_configuration, platform_revision)
         if plan.instance_counts:
             patch_instance_counts(global_configuration, plan.instance_counts)
-            patched_files.append(global_configuration)
+        patched_files.append(global_configuration)
 
         return SoftwareGenerationResult(written_files, patched_files, plan.warnings)
 
@@ -730,6 +739,23 @@ def patch_javascope_header(path: Path, observable_enums: list[str]) -> None:
 
 def patch_javascope_source(path: Path, observable_pointers: list[str]) -> None:
     patch_marker_file(path, "javascope_observable_pointers", observable_pointers)
+
+
+def hardware_revision_define_value(platform_revision: str) -> str:
+    match = re.search(r"(\d+)", platform_revision)
+    if not match:
+        return "4U"
+    return f"{int(match.group(1))}U"
+
+
+def patch_hardware_revision(path: Path, platform_revision: str) -> None:
+    text = path.read_text(encoding="utf-8")
+    text = replace_block(
+        text,
+        FILE_MARKERS["hardware_version"],
+        [f"#define UZ_HARDWARE_VERSION {hardware_revision_define_value(platform_revision)}"],
+    )
+    path.write_text(text, encoding="utf-8")
 
 
 def patch_instance_counts(path: Path, counts: dict[str, int]) -> None:

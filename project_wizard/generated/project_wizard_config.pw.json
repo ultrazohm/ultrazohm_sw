@@ -19,9 +19,9 @@
     "open_vivado_gui": "false"
   },
   "slots": {
-    "A1": "no_adapter_board",
-    "A2": "no_adapter_board",
-    "A3": "no_adapter_board",
+    "A1": "analog_ltc2311_16",
+    "A2": "analog_dac8831",
+    "A3": "analog_ltc2311_16",
     "D1": "empty",
     "D2": "empty",
     "D3": "empty",
@@ -86,6 +86,9 @@
     "D3_preset": "default",
     "D4_preset": "type_k_thermocouple",
     "D5_preset": "default",
+    "driver_config_a1_adc_ltc2311_mode": "default",
+    "driver_config_a2_dac8831_mode": "default",
+    "driver_config_a3_adc_ltc2311_mode": "default",
     "driver_config_d4_temperature_mode": "default",
     "driver_config_d5_channel_1_endat_mode": "custom",
     "driver_config_d5_channel_2_ssi_mode": "default",

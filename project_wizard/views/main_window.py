@@ -1837,6 +1837,7 @@ class MainWindow(QMainWindow):
                 source_dir,
                 self.assignments(),
                 self.option_values(),
+                self.selected_platform().get("revision", ""),
                 self.software_modes(),
                 self.software_presets(),
                 self.selected_visualization_signals(),
@@ -1852,15 +1853,51 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Software source folder missing", "Please select the folder that contains globalData.h.")
             return
         source_dir = Path(source_text)
+        assignments = self.assignments()
+        option_values = self.option_values()
+        platform_revision = self.selected_platform().get("revision", "")
+        software_modes = self.software_modes()
+        software_presets = self.software_presets()
+        visualization_signals = self.selected_visualization_signals()
+        driver_config = self.driver_config_values()
+        try:
+            plan = self.software_generator.build_plan(
+                source_dir,
+                assignments,
+                option_values,
+                software_modes,
+                software_presets,
+                visualization_signals,
+                driver_config,
+            )
+        except (OSError, ValueError) as error:
+            QMessageBox.warning(self, "Could not prepare software generation", str(error))
+            return
+        if plan.warnings:
+            warning_box = QMessageBox(self)
+            warning_box.setIcon(QMessageBox.Icon.Warning)
+            warning_box.setWindowTitle("Software generation warnings")
+            warning_box.setText("The software generator found warnings.")
+            warning_box.setInformativeText("Continue writing files anyway?")
+            warning_box.setDetailedText("\n".join(f"- {warning}" for warning in plan.warnings))
+            cancel_button = warning_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+            continue_button = warning_box.addButton("Continue", QMessageBox.ButtonRole.AcceptRole)
+            warning_box.setDefaultButton(cancel_button)
+            warning_box.exec()
+            if warning_box.clickedButton() != continue_button:
+                if self.software_status:
+                    self.software_status.setPlainText("Software generation canceled because warnings were not accepted.")
+                return
         try:
             result = self.software_generator.generate(
                 source_dir,
-                self.assignments(),
-                self.option_values(),
-                self.software_modes(),
-                self.software_presets(),
-                self.selected_visualization_signals(),
-                self.driver_config_values(),
+                assignments,
+                option_values,
+                platform_revision,
+                software_modes,
+                software_presets,
+                visualization_signals,
+                driver_config,
             )
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))

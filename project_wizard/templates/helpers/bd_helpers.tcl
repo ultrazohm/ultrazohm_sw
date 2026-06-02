@@ -41,11 +41,15 @@ proc uz_pw_create_hier_pin_if_missing {hier_path direction pin_name {left ""} {r
   set old_instance [current_bd_instance .]
   current_bd_instance [get_bd_cells $hier_path]
   set pin_path "${hier_path}/${pin_name}"
-  if {[llength [get_bd_pins -quiet $pin_path]] == 0} {
+  if {[llength [get_bd_pins -quiet $pin_path]] == 0 && [llength [get_bd_pins -quiet $pin_name]] == 0} {
     if {$left ne "" && $right ne ""} {
-      create_bd_pin -dir $direction -from $left -to $right $pin_name
+      if {[catch {create_bd_pin -dir $direction -from $left -to $right $pin_name} result]} {
+        puts "WARNING: Could not create hierarchy pin $pin_path: $result"
+      }
     } else {
-      create_bd_pin -dir $direction $pin_name
+      if {[catch {create_bd_pin -dir $direction $pin_name} result]} {
+        puts "WARNING: Could not create hierarchy pin $pin_path: $result"
+      }
     }
   } else {
     puts "Reusing existing pin $pin_path"
@@ -301,29 +305,57 @@ proc uz_pw_set_property_if_objects {property_name property_value objects label} 
   set_property $property_name $property_value $objects
 }
 
-proc uz_pw_apply_slot_constraints {slot packed_constraint_name adapter_constraint_name} {
-  puts "Switching adapter constraints for slot ${slot}"
-
-  set packed_constraint [get_files -quiet $packed_constraint_name]
-  if {[llength $packed_constraint] > 0} {
-    uz_pw_set_property_if_objects is_enabled false $packed_constraint $packed_constraint_name
-  } else {
-    puts "WARNING: Could not find $packed_constraint_name"
-  }
-
-  set adapter_constraint [get_files -quiet $adapter_constraint_name]
-  if {[llength $adapter_constraint] == 0 && [llength $packed_constraint] > 0} {
-    set packed_path [lindex $packed_constraint 0]
-    set candidate_path [file normalize [file join [file dirname $packed_path] $adapter_constraint_name]]
-    if {[file exists $candidate_path]} {
-      puts "Adding adapter constraint file $candidate_path"
-      add_files -fileset constrs_1 $candidate_path
-      set adapter_constraint [get_files -quiet $adapter_constraint_name]
+proc uz_pw_constraint_base_dir {constraint_names} {
+  foreach constraint_name $constraint_names {
+    set constraint_file [get_files -quiet $constraint_name]
+    if {[llength $constraint_file] > 0} {
+      return [file dirname [lindex $constraint_file 0]]
     }
   }
-  if {[llength $adapter_constraint] > 0} {
-    uz_pw_set_property_if_objects is_enabled true $adapter_constraint $adapter_constraint_name
-  } else {
-    puts "WARNING: Could not find $adapter_constraint_name"
+  return ""
+}
+
+proc uz_pw_find_or_add_constraint {constraint_name constraint_names} {
+  set constraint_file [get_files -quiet $constraint_name]
+  if {[llength $constraint_file] > 0} {
+    return $constraint_file
+  }
+
+  set base_dir [uz_pw_constraint_base_dir $constraint_names]
+  if {$base_dir eq ""} {
+    puts "WARNING: Could not find a constraint directory for $constraint_name"
+    return {}
+  }
+
+  set candidate_path [file normalize [file join $base_dir $constraint_name]]
+  if {[file exists $candidate_path]} {
+    puts "Adding constraint file $candidate_path"
+    add_files -fileset constrs_1 $candidate_path
+    return [get_files -quiet $constraint_name]
+  }
+
+  puts "WARNING: Could not find $constraint_name"
+  return {}
+}
+
+proc uz_pw_disable_slot_constraints {slot constraint_names} {
+  puts "Disabling adapter constraints for slot ${slot}"
+  foreach constraint_name $constraint_names {
+    set constraint_file [get_files -quiet $constraint_name]
+    if {[llength $constraint_file] > 0} {
+      uz_pw_set_property_if_objects is_enabled false $constraint_file $constraint_name
+    }
+  }
+}
+
+proc uz_pw_apply_slot_constraints {slot constraint_names enable_constraint_names} {
+  puts "Switching adapter constraints for slot ${slot}"
+  uz_pw_disable_slot_constraints $slot $constraint_names
+
+  foreach constraint_name $enable_constraint_names {
+    set constraint_file [uz_pw_find_or_add_constraint $constraint_name $constraint_names]
+    if {[llength $constraint_file] > 0} {
+      uz_pw_set_property_if_objects is_enabled true $constraint_file $constraint_name
+    }
   }
 }

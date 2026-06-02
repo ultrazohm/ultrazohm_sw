@@ -74,7 +74,7 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/{{ trigger.adapter_pi
 {% endfor %}
 
 {% if has_constraints %}
-uz_pw_apply_slot_constraints {{ slot }} {{ packed_constraint }} {{ adapter_constraint }}
+uz_pw_apply_slot_constraints {{ slot }} [list {{ slot_constraint_names }}] [list {{ enable_constraint_names }}]
 {% endif %}
 
 {% if driver %}

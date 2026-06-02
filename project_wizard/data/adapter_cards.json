@@ -246,6 +246,9 @@
           }
         ],
         "interfaces": [],
+        "constraints": {
+          "enable": "Analog_{slot}_packed.xdc"
+        },
         "axi_interfaces": [
           {
             "name": "S00_AXI",
@@ -599,7 +602,6 @@
           }
         ],
         "constraints": {
-          "disable": "Analog_{slot}_packed.xdc",
           "enable": "uz_dac8831_{slot}.xdc"
         },
         "axi_interfaces": [

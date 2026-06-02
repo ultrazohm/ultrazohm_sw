@@ -55,6 +55,22 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	/* Project Wizard BEGIN: actualValues */
+	float adc_ltc2311_a1_ch0;
+	float adc_ltc2311_a1_ch1;
+	float adc_ltc2311_a1_ch2;
+	float adc_ltc2311_a1_ch3;
+	float adc_ltc2311_a1_ch4;
+	float adc_ltc2311_a1_ch5;
+	float adc_ltc2311_a1_ch6;
+	float adc_ltc2311_a1_ch7;
+	float adc_ltc2311_a3_ch0;
+	float adc_ltc2311_a3_ch1;
+	float adc_ltc2311_a3_ch2;
+	float adc_ltc2311_a3_ch3;
+	float adc_ltc2311_a3_ch4;
+	float adc_ltc2311_a3_ch5;
+	float adc_ltc2311_a3_ch6;
+	float adc_ltc2311_a3_ch7;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
@@ -112,6 +128,9 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	/* Project Wizard BEGIN: objects */
+	uz_adcLtc2311_t* adc_ltc2311_a1;
+	uz_dac_interface_t* dac8831_a2;
+	uz_adcLtc2311_t* adc_ltc2311_a3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;

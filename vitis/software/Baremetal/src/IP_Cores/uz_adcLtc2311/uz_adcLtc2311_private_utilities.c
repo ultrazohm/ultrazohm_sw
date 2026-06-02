@@ -1,7 +1,10 @@
 #include "uz_adcLtc2311_private_utilities.h"
 #include "uz_adcLtc2311_hw.h"
 #include "uz_adcLtc2311.h"
+#include "../../uz/uz_global_configuration.h"
 #include "../../uz/uz_HAL.h"
+
+#if UZ_ADCLTC2311_MAX_INSTANCES > 0U
 
 uint32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, uint32_t max_attempts)
 {
@@ -217,3 +220,5 @@ void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t *self)
     uz_assert(return_value == UZ_SUCCESS);
     uz_adcLtc2311_update_spi(self);
 }
+
+#endif

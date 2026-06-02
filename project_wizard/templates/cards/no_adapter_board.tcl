@@ -7,10 +7,12 @@ puts "Removing adapter slot {{ slot }} because no adapter board is selected"
 set slot "{{ slot }}"
 set adapter_hier_name "{{ slot }}_adapter"
 set slot_cleanup_patterns [list {{ cleanup_patterns }}]
+set slot_constraint_names [list {{ slot_constraint_names }}]
 
 # Run the slot cleanup once more here so this destructive mode stays isolated
 # from normal adapter-card templates.
 uz_pw_delete_external_ports_for_slot $slot $slot_cleanup_patterns
+uz_pw_disable_slot_constraints $slot $slot_constraint_names
 
 foreach adapter_parent_hier [list uz_digital_adapter uz_analog_adapter] {
   set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}

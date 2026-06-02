@@ -107,6 +107,25 @@ class TclGenerator:
             return f'"*{slot}*" "*{slot_lower}*"'
         return f'"*{slot}*" "*{slot_lower}*"'
 
+    def _slot_constraint_names(self, slot: str) -> list[str]:
+        if slot.startswith("A"):
+            return [
+                f"Analog_{slot}_packed.xdc",
+                f"Analog_AdapterBoard_{slot}.xdc",
+                f"Analog_{slot}_ADC_MAX11331.xdc",
+                f"uz_dac8831_{slot}.xdc",
+            ]
+        if slot.startswith("D"):
+            return [
+                f"Digital_{slot}_packed.xdc",
+                f"Digital_AdapterBoard_{slot}.xdc",
+            ]
+        return []
+
+    @staticmethod
+    def _tcl_list(values: list[str]) -> str:
+        return " ".join(f'"{value}"' for value in values)
+
     @staticmethod
     def _vivado_direction(direction: str) -> str:
         normalized = direction.strip().lower()
@@ -183,6 +202,7 @@ class TclGenerator:
             "slot_index": slot_index,
             "channel_suffix": slot.lower(),
             "cleanup_patterns": self._slot_cleanup_patterns(slot),
+            "slot_constraint_names": self._tcl_list(self._slot_constraint_names(slot)),
             "card_id": card.get("id", ""),
             "card_name": card.get("name", card.get("id", "unknown card")),
             "notes": vivado.get("notes", []),
@@ -374,6 +394,13 @@ class TclGenerator:
             )
 
         constraints = vivado.get("constraints", {})
+        enable_constraints = constraints.get("enable", [])
+        if isinstance(enable_constraints, str):
+            enable_constraints = [enable_constraints]
+        enable_constraints = [
+            str(constraint).format(slot=slot, slot_index=slot_index)
+            for constraint in enable_constraints
+        ]
         return {
             "signals": signals,
             "trigger_inputs": trigger_inputs,
@@ -381,8 +408,7 @@ class TclGenerator:
             "clock_connections": self._ip_aux_connections(ip_cores=[primary_ip], pin_key="clock_pins"),
             "reset_connections": self._ip_aux_connections(ip_cores=[primary_ip], pin_key="reset_pins"),
             "has_constraints": bool(constraints),
-            "packed_constraint": constraints.get("disable", "Digital_{slot}_packed.xdc").format(slot=slot, slot_index=slot_index),
-            "adapter_constraint": constraints.get("enable", "Digital_AdapterBoard_{slot}.xdc").format(slot=slot, slot_index=slot_index),
+            "enable_constraint_names": self._tcl_list(enable_constraints),
         }
 
     def _ip_aux_connections(self, ip_cores: list[dict[str, Any]], pin_key: str) -> list[dict[str, str]]:

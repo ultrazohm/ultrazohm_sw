@@ -106,6 +106,9 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             /* Project Wizard BEGIN: init_ip_cores */
+			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
+			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
+			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
 			uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);

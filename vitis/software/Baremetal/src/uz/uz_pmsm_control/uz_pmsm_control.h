@@ -132,7 +132,7 @@ struct uz_pmsm_control_configuration_t
     float theta_sampling_compensation;                                /**< Multiplier for angle compensation based on sampling delay. */
     float theta_svm_delay_compensation;                               /**< Multiplier for SVM delay compensation in angle advance. */
     float voltage_theta_shift;                                        /**< Multiplier for shifting measurement angle used for voltage transformation. */
-    struct uz_DutyCycle_t default_duty_cycle;                         /**< Duty cycle returned while control is disabled. */
+    struct uz_DutyCycle_t default_duty_cycle;                         /**< Duty cycle returned while control is disabled or safe operating region is violated. */
 };
 
 /**

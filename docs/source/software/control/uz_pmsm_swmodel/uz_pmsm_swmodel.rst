@@ -1,3 +1,5 @@
+.. _uz_pmsm_swmodel:
+
 =====================================
 PMSM Software Model (uz_pmsm_swmodel)
 =====================================

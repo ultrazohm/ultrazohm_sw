@@ -25,7 +25,7 @@ typedef struct uz_dq_setpoint_filter uz_dq_setpoint_filter;
  * @param config uz_dq_setpoint_filter_config struct
  * @return Pointer to uz_dq_setpoint_filter instance
  */
-uz_dq_setpoint_filter* uz_uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filter_config config);
+uz_dq_setpoint_filter* uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filter_config config);
 
 /**
  * @brief Function to filter/smooth out a dq setpoint e.g. for current control
@@ -35,5 +35,12 @@ uz_dq_setpoint_filter* uz_uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filte
  * @return filtered dq struct
  */
 uz_3ph_dq_t uz_signals_IIR_Filter_dq_setpoint(uz_dq_setpoint_filter* self, uz_3ph_dq_t setpoint);
+
+/**
+ * @brief Reset function for the setpoint filter, e.g. to reset the internal states of the IIR filters
+ *
+ * @param self pointer to instance
+ */
+void uz_dq_setpoint_filter_reset(uz_dq_setpoint_filter *self);
 
 #endif // UZ_CONTROLLER_SETPOINT_FILTER_H

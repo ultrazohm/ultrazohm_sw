@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.92
+ * Model version                  : 5.94
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 27 16:09:18 2026
+ * C/C++ source code generated on : Wed Jun  3 11:43:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,7 @@ typedef struct {
   uint32_T Gate_Driver_Status_RDY;
   uint32_T Gate_Driver_Status_FLT;
   boolean_T External_Stop;
+  uint32_T PyroFuse_State;
 } bus_BSW_FCF_t;
 
 #endif

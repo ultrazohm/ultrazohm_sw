@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_FCF'.
  *
- * Model version                  : 5.92
+ * Model version                  : 5.94
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed May 27 16:09:18 2026
+ * C/C++ source code generated on : Wed Jun  3 11:43:35 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -670,15 +670,15 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    */
   FOC_FCF_B->f_2_w_el = FOC_FCF_P.f_2_w_el_Gain * FOC_FCF_P.FOC_Uf_f_el;
 
-  /* Product: '<S92>/Product' incorporates:
-   *  Constant: '<S92>/FOC_T_fast'
+  /* Product: '<S95>/Product' incorporates:
+   *  Constant: '<S95>/FOC_T_fast'
    */
   FOC_FCF_B->Product = FOC_FCF_B->f_2_w_el * FOC_FCF_P.FOC_T_fast_Value_l;
 
-  /* UnitDelay: '<S92>/Unit Delay' */
+  /* UnitDelay: '<S95>/Unit Delay' */
   FOC_FCF_B->UnitDelay = FOC_FCF_DW->UnitDelay_DSTATE;
 
-  /* Sum: '<S92>/Add' */
+  /* Sum: '<S95>/Add' */
   FOC_FCF_B->Add = FOC_FCF_B->Product + FOC_FCF_B->UnitDelay;
 
   /* Gain: '<S34>/TrafoMatrix uvw->alphabeta' */
@@ -957,13 +957,80 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
    */
   FOC_FCF_B->Product1 = FOC_FCF_P.FOC_KI * FOC_FCF_P.FOC_T_fast_Value_n;
 
-  /* Logic: '<S6>/Logical Operator1' incorporates:
+  /* S-Function (sfix_bitop): '<S13>/Get_Status_Sys1' */
+  FOC_FCF_B->Get_Status_Sys1 = FOC_FCF_U->bus_BSW_FCF.PyroFuse_State &
+    FOC_FCF_P.Get_Status_Sys1_BitMask;
+
+  /* DataTypeConversion: '<S13>/Data Type Conversion14' */
+  FOC_FCF_B->DataTypeConversion14 = (FOC_FCF_B->Get_Status_Sys1 != 0U);
+
+  /* Logic: '<S13>/Logical Operator1' incorporates:
+   *  Constant: '<S13>/Reset_PF_Error'
+   */
+  FOC_FCF_B->LogicalOperator1_a = ((FOC_FCF_P.FOC_RESET_PF_Error != 0.0F) ||
+    FOC_FCF_U->bus_SMF.global_reset_errors);
+
+  /* RelationalOperator: '<S94>/Compare' incorporates:
+   *  Constant: '<S94>/Constant'
+   */
+  FOC_FCF_B->Compare_jj = ((int32_T)FOC_FCF_B->LogicalOperator1_a > (int32_T)
+    FOC_FCF_P.Constant_Value_m);
+
+  /* UnitDelay: '<S92>/Delay Input1'
+   *
+   * Block description for '<S92>/Delay Input1':
+   *
+   *  Store in Global RAM
+   */
+  FOC_FCF_B->Uk1_c = FOC_FCF_DW->DelayInput1_DSTATE_f;
+
+  /* RelationalOperator: '<S92>/FixPt Relational Operator' */
+  FOC_FCF_B->FixPtRelationalOperator = ((int32_T)FOC_FCF_B->Compare_jj >
+    (int32_T)FOC_FCF_B->Uk1_c);
+
+  /* Memory: '<S93>/Memory' */
+  FOC_FCF_B->Memory_o2 = FOC_FCF_DW->Memory_PreviousInput_g;
+
+  /* CombinatorialLogic: '<S93>/Logic' */
+  tmp_1 = FOC_FCF_B->DataTypeConversion14;
+  i_0 = tmp_1;
+  tmp_1 = FOC_FCF_B->FixPtRelationalOperator;
+  i_0 = (int32_T)(((uint32_T)i_0 << 1) + tmp_1);
+  tmp_1 = FOC_FCF_B->Memory_o2;
+  i_0 = (int32_T)(((uint32_T)i_0 << 1) + tmp_1);
+  FOC_FCF_B->Logic_a0[0U] = FOC_FCF_P.Logic_table_e[(uint32_T)i_0];
+  FOC_FCF_B->Logic_a0[1U] = FOC_FCF_P.Logic_table_e[(uint32_T)i_0 + 8U];
+
+  /* MultiPortSwitch: '<S13>/Selectphicalc2' incorporates:
+   *  Constant: '<S13>/FOC_ENABLE_PyroFuse_Deactivate_Sys'
+   */
+  if ((int32_T)FOC_FCF_P.FOC_ENABLE_PyroFuse_Deactivate_Sys == 0) {
+    /* MultiPortSwitch: '<S13>/Selectphicalc2' incorporates:
+     *  Constant: '<S13>/Constant1'
+     */
+    FOC_FCF_B->PyroFuse_Sys1_Error = FOC_FCF_P.Constant1_Value_na;
+  } else {
+    /* MultiPortSwitch: '<S13>/Selectphicalc2' */
+    FOC_FCF_B->PyroFuse_Sys1_Error = FOC_FCF_B->Logic_a0[1];
+  }
+
+  /* End of MultiPortSwitch: '<S13>/Selectphicalc2' */
+
+  /* Logic: '<S13>/Logical Operator3' incorporates:
    *  Constant: '<S13>/FOC_Enable_Sys1'
+   */
+  FOC_FCF_B->LogicalOperator3_h = ((FOC_FCF_P.FOC_Enable_Sys1 != 0.0F) &&
+    FOC_FCF_B->PyroFuse_Sys1_Error);
+
+  /* DataTypeConversion: '<S13>/Data Type Conversion1' */
+  FOC_FCF_B->DataTypeConversion1 = FOC_FCF_B->LogicalOperator3_h;
+
+  /* Logic: '<S6>/Logical Operator1' incorporates:
    *  Constant: '<S13>/FOC_Enable_Sys2'
    *  Constant: '<S13>/FOC_Enable_Sys3'
    */
   FOC_FCF_B->FOC_Enable_Bus[0] = (FOC_FCF_B->LogicalOperator1 &&
-    (FOC_FCF_P.FOC_Enable_Sys1 != 0.0F));
+    (FOC_FCF_B->DataTypeConversion1 != 0.0F));
   FOC_FCF_B->FOC_Enable_Bus[1] = (FOC_FCF_B->LogicalOperator1 &&
     (FOC_FCF_P.FOC_Enable_Sys2 != 0.0F));
   FOC_FCF_B->FOC_Enable_Bus[2] = (FOC_FCF_B->LogicalOperator1 &&
@@ -1295,42 +1362,42 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     break;
 
    case 2:
-    /* Gain: '<S93>/Gain' */
+    /* Gain: '<S96>/Gain' */
     FOC_FCF_B->Gain_fw = FOC_FCF_P.FOC_Uf_m * FOC_FCF_B->DiscreteTransferFcn;
 
-    /* Signum: '<S93>/Sign' */
+    /* Signum: '<S96>/Sign' */
     UnitDelay1_p = FOC_FCF_B->Gain_fw;
     if (rtIsNaNF(UnitDelay1_p)) {
-      /* Signum: '<S93>/Sign' */
+      /* Signum: '<S96>/Sign' */
       FOC_FCF_B->Sign_p = (rtNaNF);
     } else if (UnitDelay1_p < 0.0F) {
-      /* Signum: '<S93>/Sign' */
+      /* Signum: '<S96>/Sign' */
       FOC_FCF_B->Sign_p = -1.0F;
     } else {
-      /* Signum: '<S93>/Sign' */
+      /* Signum: '<S96>/Sign' */
       FOC_FCF_B->Sign_p = (real32_T)(UnitDelay1_p > 0.0F);
     }
 
-    /* End of Signum: '<S93>/Sign' */
+    /* End of Signum: '<S96>/Sign' */
 
-    /* Abs: '<S93>/Abs' */
+    /* Abs: '<S96>/Abs' */
     FOC_FCF_B->Abs_d3 = fabsf(FOC_FCF_B->Gain_fw);
 
-    /* Saturate: '<S93>/Saturation1' */
+    /* Saturate: '<S96>/Saturation1' */
     if (FOC_FCF_B->Abs_d3 > FOC_FCF_P.FOC_Uf_U_max) {
-      /* Saturate: '<S93>/Saturation1' */
+      /* Saturate: '<S96>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_P.FOC_Uf_U_max;
     } else if (FOC_FCF_B->Abs_d3 < FOC_FCF_P.FOC_Uf_U_min) {
-      /* Saturate: '<S93>/Saturation1' */
+      /* Saturate: '<S96>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_P.FOC_Uf_U_min;
     } else {
-      /* Saturate: '<S93>/Saturation1' */
+      /* Saturate: '<S96>/Saturation1' */
       FOC_FCF_B->Saturation1 = FOC_FCF_B->Abs_d3;
     }
 
-    /* End of Saturate: '<S93>/Saturation1' */
+    /* End of Saturate: '<S96>/Saturation1' */
 
-    /* Product: '<S93>/Product' */
+    /* Product: '<S96>/Product' */
     FOC_FCF_B->Product_j = FOC_FCF_B->Saturation1 * FOC_FCF_B->Sign_p;
 
     /* Sum: '<S14>/Sum1' incorporates:
@@ -1395,13 +1462,13 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* End of MultiPortSwitch: '<S1>/SelectControlMode' */
 
-  /* Trigonometry: '<S102>/Trigonometric Function' */
+  /* Trigonometry: '<S105>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_n = sinf(FOC_FCF_B->SelectControlMode[6]);
 
-  /* Trigonometry: '<S102>/Trigonometric Function1' */
+  /* Trigonometry: '<S105>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_j = cosf(FOC_FCF_B->SelectControlMode[6]);
 
-  /* Gain: '<S102>/Gain1' */
+  /* Gain: '<S105>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[0] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1409,16 +1476,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S102>/Gain' */
+  /* Gain: '<S105>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_f[0] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[0] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S102>/Sum1' incorporates:
-   *  Gain: '<S102>/Gain'
-   *  Gain: '<S102>/Gain1'
+  /* Sum: '<S105>/Sum1' incorporates:
+   *  Gain: '<S105>/Gain'
+   *  Gain: '<S105>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1426,12 +1493,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S102>/Product' incorporates:
-   *  Sum: '<S102>/Sum1'
+  /* Product: '<S105>/Product' incorporates:
+   *  Sum: '<S105>/Sum1'
    */
   I_ph = Sum1_lz;
 
-  /* Gain: '<S102>/Gain1' */
+  /* Gain: '<S105>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[1] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1439,16 +1506,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S102>/Gain' */
+  /* Gain: '<S105>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_f[1] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[1] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S102>/Sum1' incorporates:
-   *  Gain: '<S102>/Gain'
-   *  Gain: '<S102>/Gain1'
+  /* Sum: '<S105>/Sum1' incorporates:
+   *  Gain: '<S105>/Gain'
+   *  Gain: '<S105>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1456,12 +1523,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S102>/Product' incorporates:
-   *  Sum: '<S102>/Sum1'
+  /* Product: '<S105>/Product' incorporates:
+   *  Sum: '<S105>/Sum1'
    */
   UnitDelay1_p = Sum1_lz;
 
-  /* Gain: '<S102>/Gain1' */
+  /* Gain: '<S105>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[2] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1469,16 +1536,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S102>/Gain' */
+  /* Gain: '<S105>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_f[2] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[2] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S102>/Sum1' incorporates:
-   *  Gain: '<S102>/Gain'
-   *  Gain: '<S102>/Gain1'
+  /* Sum: '<S105>/Sum1' incorporates:
+   *  Gain: '<S105>/Gain'
+   *  Gain: '<S105>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1486,12 +1553,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S102>/Product' incorporates:
-   *  Sum: '<S102>/Sum1'
+  /* Product: '<S105>/Product' incorporates:
+   *  Sum: '<S105>/Sum1'
    */
   Gain_a = Sum1_lz;
 
-  /* Gain: '<S102>/Gain1' */
+  /* Gain: '<S105>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_h[3] *
     FOC_FCF_B->TrigonometricFunction_n;
 
@@ -1499,16 +1566,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S102>/Gain' */
+  /* Gain: '<S105>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_f[3] * FOC_FCF_B->TrigonometricFunction1_j;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_l[3] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S102>/Sum1' incorporates:
-   *  Gain: '<S102>/Gain'
-   *  Gain: '<S102>/Gain1'
+  /* Sum: '<S105>/Sum1' incorporates:
+   *  Gain: '<S105>/Gain'
+   *  Gain: '<S105>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1516,24 +1583,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_g[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S102>/Product' */
+  /* Product: '<S105>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[0];
   Gain_l = FOC_FCF_B->SelectControlMode[1];
   I_ph *= TrafoMatrixuvwalphabeta;
   I_ph += Gain_a * Gain_l;
 
-  /* Product: '<S102>/Product' */
+  /* Product: '<S105>/Product' */
   FOC_FCF_B->Product_c0[0] = I_ph;
 
-  /* Product: '<S102>/Product' */
+  /* Product: '<S105>/Product' */
   I_ph = UnitDelay1_p * TrafoMatrixuvwalphabeta;
   I_ph += Sum1_lz * Gain_l;
 
-  /* Product: '<S102>/Product' */
+  /* Product: '<S105>/Product' */
   FOC_FCF_B->Product_c0[1] = I_ph;
 
-  /* Product: '<S99>/Product' incorporates:
-   *  Constant: '<S99>/Constant'
+  /* Product: '<S102>/Product' incorporates:
+   *  Constant: '<S102>/Constant'
    */
   for (i_1 = 0; i_1 < 6; i_1++) {
     tmp[i_1] = FOC_FCF_P.Constant_Value_d[i_1];
@@ -1545,19 +1612,19 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     I_ph = tmp[i_1] * TrafoMatrixuvwalphabeta;
     I_ph += tmp[i_1 + 3] * Gain_l;
 
-    /* Product: '<S99>/Product' */
+    /* Product: '<S102>/Product' */
     FOC_FCF_B->U_uvw1[i_1] = I_ph;
   }
 
-  /* End of Product: '<S99>/Product' */
+  /* End of Product: '<S102>/Product' */
 
-  /* Trigonometry: '<S103>/Trigonometric Function' */
+  /* Trigonometry: '<S106>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_j = sinf(FOC_FCF_B->SelectControlMode[7]);
 
-  /* Trigonometry: '<S103>/Trigonometric Function1' */
+  /* Trigonometry: '<S106>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_h = cosf(FOC_FCF_B->SelectControlMode[7]);
 
-  /* Gain: '<S103>/Gain1' */
+  /* Gain: '<S106>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[0] *
     FOC_FCF_B->TrigonometricFunction_j;
 
@@ -1565,16 +1632,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_i[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S103>/Gain' */
+  /* Gain: '<S106>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_l[0] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[0] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S103>/Sum1' incorporates:
-   *  Gain: '<S103>/Gain'
-   *  Gain: '<S103>/Gain1'
+  /* Sum: '<S106>/Sum1' incorporates:
+   *  Gain: '<S106>/Gain'
+   *  Gain: '<S106>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1582,12 +1649,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S103>/Product' incorporates:
-   *  Sum: '<S103>/Sum1'
+  /* Product: '<S106>/Product' incorporates:
+   *  Sum: '<S106>/Sum1'
    */
   I_ph = Sum1_lz;
 
-  /* Gain: '<S103>/Gain1' */
+  /* Gain: '<S106>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[1] *
     FOC_FCF_B->TrigonometricFunction_j;
 
@@ -1595,16 +1662,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_i[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S103>/Gain' */
+  /* Gain: '<S106>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_l[1] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[1] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S103>/Sum1' incorporates:
-   *  Gain: '<S103>/Gain'
-   *  Gain: '<S103>/Gain1'
+  /* Sum: '<S106>/Sum1' incorporates:
+   *  Gain: '<S106>/Gain'
+   *  Gain: '<S106>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1612,12 +1679,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S103>/Product' incorporates:
-   *  Sum: '<S103>/Sum1'
+  /* Product: '<S106>/Product' incorporates:
+   *  Sum: '<S106>/Sum1'
    */
   UnitDelay1_p = Sum1_lz;
 
-  /* Gain: '<S103>/Gain1' */
+  /* Gain: '<S106>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[2] *
     FOC_FCF_B->TrigonometricFunction_j;
 
@@ -1625,16 +1692,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_i[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S103>/Gain' */
+  /* Gain: '<S106>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_l[2] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[2] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S103>/Sum1' incorporates:
-   *  Gain: '<S103>/Gain'
-   *  Gain: '<S103>/Gain1'
+  /* Sum: '<S106>/Sum1' incorporates:
+   *  Gain: '<S106>/Gain'
+   *  Gain: '<S106>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1642,12 +1709,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S103>/Product' incorporates:
-   *  Sum: '<S103>/Sum1'
+  /* Product: '<S106>/Product' incorporates:
+   *  Sum: '<S106>/Sum1'
    */
   Gain_a = Sum1_lz;
 
-  /* Gain: '<S103>/Gain1' */
+  /* Gain: '<S106>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_ck[3] *
     FOC_FCF_B->TrigonometricFunction_j;
 
@@ -1655,16 +1722,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_i[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S103>/Gain' */
+  /* Gain: '<S106>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_l[3] * FOC_FCF_B->TrigonometricFunction1_h;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_f[3] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S103>/Sum1' incorporates:
-   *  Gain: '<S103>/Gain'
-   *  Gain: '<S103>/Gain1'
+  /* Sum: '<S106>/Sum1' incorporates:
+   *  Gain: '<S106>/Gain'
+   *  Gain: '<S106>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1672,24 +1739,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_f[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S103>/Product' */
+  /* Product: '<S106>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[2];
   Gain_l = FOC_FCF_B->SelectControlMode[3];
   I_ph *= TrafoMatrixuvwalphabeta;
   I_ph += Gain_a * Gain_l;
 
-  /* Product: '<S103>/Product' */
+  /* Product: '<S106>/Product' */
   FOC_FCF_B->Product_f[0] = I_ph;
 
-  /* Product: '<S103>/Product' */
+  /* Product: '<S106>/Product' */
   I_ph = UnitDelay1_p * TrafoMatrixuvwalphabeta;
   I_ph += Sum1_lz * Gain_l;
 
-  /* Product: '<S103>/Product' */
+  /* Product: '<S106>/Product' */
   FOC_FCF_B->Product_f[1] = I_ph;
 
-  /* Product: '<S100>/Product' incorporates:
-   *  Constant: '<S100>/Constant'
+  /* Product: '<S103>/Product' incorporates:
+   *  Constant: '<S103>/Constant'
    */
   for (i_1 = 0; i_1 < 6; i_1++) {
     tmp[i_1] = FOC_FCF_P.Constant_Value_g[i_1];
@@ -1701,19 +1768,19 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     I_ph = tmp[i_1] * TrafoMatrixuvwalphabeta;
     I_ph += tmp[i_1 + 3] * Gain_l;
 
-    /* Product: '<S100>/Product' */
+    /* Product: '<S103>/Product' */
     FOC_FCF_B->Product_f3[i_1] = I_ph;
   }
 
-  /* End of Product: '<S100>/Product' */
+  /* End of Product: '<S103>/Product' */
 
-  /* Trigonometry: '<S104>/Trigonometric Function' */
+  /* Trigonometry: '<S107>/Trigonometric Function' */
   FOC_FCF_B->TrigonometricFunction_h = sinf(FOC_FCF_B->SelectControlMode[8]);
 
-  /* Trigonometry: '<S104>/Trigonometric Function1' */
+  /* Trigonometry: '<S107>/Trigonometric Function1' */
   FOC_FCF_B->TrigonometricFunction1_hh = cosf(FOC_FCF_B->SelectControlMode[8]);
 
-  /* Gain: '<S104>/Gain1' */
+  /* Gain: '<S107>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[0] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1721,16 +1788,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n4[0] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S104>/Gain' */
+  /* Gain: '<S107>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_j[0] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_ld[0] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S104>/Sum1' incorporates:
-   *  Gain: '<S104>/Gain'
-   *  Gain: '<S104>/Gain1'
+  /* Sum: '<S107>/Sum1' incorporates:
+   *  Gain: '<S107>/Gain'
+   *  Gain: '<S107>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1738,12 +1805,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[0] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S104>/Product' incorporates:
-   *  Sum: '<S104>/Sum1'
+  /* Product: '<S107>/Product' incorporates:
+   *  Sum: '<S107>/Sum1'
    */
   I_ph = Sum1_lz;
 
-  /* Gain: '<S104>/Gain1' */
+  /* Gain: '<S107>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[1] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1751,16 +1818,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n4[1] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S104>/Gain' */
+  /* Gain: '<S107>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_j[1] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_ld[1] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S104>/Sum1' incorporates:
-   *  Gain: '<S104>/Gain'
-   *  Gain: '<S104>/Gain1'
+  /* Sum: '<S107>/Sum1' incorporates:
+   *  Gain: '<S107>/Gain'
+   *  Gain: '<S107>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1768,12 +1835,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[1] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S104>/Product' incorporates:
-   *  Sum: '<S104>/Sum1'
+  /* Product: '<S107>/Product' incorporates:
+   *  Sum: '<S107>/Sum1'
    */
   UnitDelay1_p = Sum1_lz;
 
-  /* Gain: '<S104>/Gain1' */
+  /* Gain: '<S107>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[2] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1781,16 +1848,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n4[2] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S104>/Gain' */
+  /* Gain: '<S107>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_j[2] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_ld[2] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S104>/Sum1' incorporates:
-   *  Gain: '<S104>/Gain'
-   *  Gain: '<S104>/Gain1'
+  /* Sum: '<S107>/Sum1' incorporates:
+   *  Gain: '<S107>/Gain'
+   *  Gain: '<S107>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1798,12 +1865,12 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[2] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S104>/Product' incorporates:
-   *  Sum: '<S104>/Sum1'
+  /* Product: '<S107>/Product' incorporates:
+   *  Sum: '<S107>/Sum1'
    */
   Gain_a = Sum1_lz;
 
-  /* Gain: '<S104>/Gain1' */
+  /* Gain: '<S107>/Gain1' */
   TrafoMatrixuvwalphabeta = FOC_FCF_P.Gain1_Gain_k[3] *
     FOC_FCF_B->TrigonometricFunction_h;
 
@@ -1811,16 +1878,16 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Gain1_n4[3] = TrafoMatrixuvwalphabeta;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Gain: '<S104>/Gain' */
+  /* Gain: '<S107>/Gain' */
   Gain_l = FOC_FCF_P.Gain_Gain_j[3] * FOC_FCF_B->TrigonometricFunction1_hh;
 
   /* End of Outputs for SubSystem: '<Root>/FOC_FCF' */
   FOC_FCF_B->Gain_ld[3] = Gain_l;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Sum: '<S104>/Sum1' incorporates:
-   *  Gain: '<S104>/Gain'
-   *  Gain: '<S104>/Gain1'
+  /* Sum: '<S107>/Sum1' incorporates:
+   *  Gain: '<S107>/Gain'
+   *  Gain: '<S107>/Gain1'
    */
   Sum1_lz = TrafoMatrixuvwalphabeta + Gain_l;
 
@@ -1828,24 +1895,24 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->Sum1_lz[3] = Sum1_lz;
 
   /* Outputs for Atomic SubSystem: '<Root>/FOC_FCF' */
-  /* Product: '<S104>/Product' */
+  /* Product: '<S107>/Product' */
   TrafoMatrixuvwalphabeta = FOC_FCF_B->SelectControlMode[4];
   Gain_l = FOC_FCF_B->SelectControlMode[5];
   I_ph *= TrafoMatrixuvwalphabeta;
   I_ph += Gain_a * Gain_l;
 
-  /* Product: '<S104>/Product' */
+  /* Product: '<S107>/Product' */
   FOC_FCF_B->Product_i[0] = I_ph;
 
-  /* Product: '<S104>/Product' */
+  /* Product: '<S107>/Product' */
   I_ph = UnitDelay1_p * TrafoMatrixuvwalphabeta;
   I_ph += Sum1_lz * Gain_l;
 
-  /* Product: '<S104>/Product' */
+  /* Product: '<S107>/Product' */
   FOC_FCF_B->Product_i[1] = I_ph;
 
-  /* Product: '<S101>/Product' incorporates:
-   *  Constant: '<S101>/Constant'
+  /* Product: '<S104>/Product' incorporates:
+   *  Constant: '<S104>/Constant'
    */
   for (i_1 = 0; i_1 < 6; i_1++) {
     tmp[i_1] = FOC_FCF_P.Constant_Value_o[i_1];
@@ -1855,25 +1922,25 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   Gain_l = FOC_FCF_B->Product_i[1];
 
   /* Outputs for Atomic SubSystem: '<S15>/NormalizedVoltage' */
-  /* Gain: '<S96>/U_DC//2' */
+  /* Gain: '<S99>/U_DC//2' */
   FOC_FCF_B->U_DC2 = FOC_FCF_P.U_DC2_Gain_p * FOC_FCF_B->U_DC_fcf;
 
-  /* MinMax: '<S96>/AvoidDivBy0' incorporates:
-   *  Constant: '<S96>/Constant2'
+  /* MinMax: '<S99>/AvoidDivBy0' incorporates:
+   *  Constant: '<S99>/Constant2'
    */
   UnitDelay1_p = fmaxf(FOC_FCF_P.Constant2_Value_g, FOC_FCF_B->U_DC2);
 
-  /* MinMax: '<S96>/AvoidDivBy0' */
+  /* MinMax: '<S99>/AvoidDivBy0' */
   FOC_FCF_B->AvoidDivBy0 = UnitDelay1_p;
   for (i_0 = 0; i_0 < 3; i_0++) {
-    /* Product: '<S101>/Product' */
+    /* Product: '<S104>/Product' */
     UnitDelay1_p = tmp[i_0] * TrafoMatrixuvwalphabeta;
     UnitDelay1_p += tmp[i_0 + 3] * Gain_l;
 
-    /* Product: '<S101>/Product' */
+    /* Product: '<S104>/Product' */
     FOC_FCF_B->Product_fb[i_0] = UnitDelay1_p;
 
-    /* Product: '<S96>/DutyCycle_normalized' */
+    /* Product: '<S99>/DutyCycle_normalized' */
     FOC_FCF_B->DutyCycle_normed[i_0] = FOC_FCF_B->U_uvw1[i_0] /
       FOC_FCF_B->AvoidDivBy0;
     FOC_FCF_B->DutyCycle_normed[i_0 + 3] = FOC_FCF_B->Product_f3[i_0] /
@@ -1884,29 +1951,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* End of Outputs for SubSystem: '<S15>/NormalizedVoltage' */
 
   /* Outputs for Atomic SubSystem: '<S15>/Super_Sinus_Modulation' */
-  /* MinMax: '<S98>/MinMax2' */
+  /* MinMax: '<S101>/MinMax2' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[0];
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[1]);
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[2]);
 
-  /* MinMax: '<S98>/MinMax2' */
+  /* MinMax: '<S101>/MinMax2' */
   FOC_FCF_B->MinMax2 = UnitDelay1_p;
 
-  /* MinMax: '<S98>/MinMax3' */
+  /* MinMax: '<S101>/MinMax3' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[0];
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[1]);
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[2]);
 
-  /* MinMax: '<S98>/MinMax3' */
+  /* MinMax: '<S101>/MinMax3' */
   FOC_FCF_B->MinMax3 = UnitDelay1_p;
 
-  /* Sum: '<S98>/Sum1' */
+  /* Sum: '<S101>/Sum1' */
   FOC_FCF_B->Sum1_o = FOC_FCF_B->MinMax2 + FOC_FCF_B->MinMax3;
 
-  /* Gain: '<S98>/Factor' */
+  /* Gain: '<S101>/Factor' */
   FOC_FCF_B->Factor = FOC_FCF_P.Factor_Gain * FOC_FCF_B->Sum1_o;
 
-  /* Sum: '<S98>/DutyCycle_SuperSinus_1' */
+  /* Sum: '<S101>/DutyCycle_SuperSinus_1' */
   FOC_FCF_B->DutyCycle_SuperSinus_1[0] = FOC_FCF_B->DutyCycle_normed[0] -
     FOC_FCF_B->Factor;
   FOC_FCF_B->DutyCycle_SuperSinus_1[1] = FOC_FCF_B->DutyCycle_normed[1] -
@@ -1914,29 +1981,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->DutyCycle_SuperSinus_1[2] = FOC_FCF_B->DutyCycle_normed[2] -
     FOC_FCF_B->Factor;
 
-  /* MinMax: '<S98>/MinMax1' */
+  /* MinMax: '<S101>/MinMax1' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[3];
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[4]);
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[5]);
 
-  /* MinMax: '<S98>/MinMax1' */
+  /* MinMax: '<S101>/MinMax1' */
   FOC_FCF_B->MinMax1 = UnitDelay1_p;
 
-  /* MinMax: '<S98>/MinMax4' */
+  /* MinMax: '<S101>/MinMax4' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[3];
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[4]);
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[5]);
 
-  /* MinMax: '<S98>/MinMax4' */
+  /* MinMax: '<S101>/MinMax4' */
   FOC_FCF_B->MinMax4 = UnitDelay1_p;
 
-  /* Sum: '<S98>/Sum2' */
+  /* Sum: '<S101>/Sum2' */
   FOC_FCF_B->Sum2_i = FOC_FCF_B->MinMax1 + FOC_FCF_B->MinMax4;
 
-  /* Gain: '<S98>/Factor1' */
+  /* Gain: '<S101>/Factor1' */
   FOC_FCF_B->Factor1 = FOC_FCF_P.Factor1_Gain * FOC_FCF_B->Sum2_i;
 
-  /* Sum: '<S98>/DutyCycle_SuperSinus_2' */
+  /* Sum: '<S101>/DutyCycle_SuperSinus_2' */
   FOC_FCF_B->DutyCycle_SuperSinus_2[0] = FOC_FCF_B->DutyCycle_normed[3] -
     FOC_FCF_B->Factor1;
   FOC_FCF_B->DutyCycle_SuperSinus_2[1] = FOC_FCF_B->DutyCycle_normed[4] -
@@ -1944,29 +2011,29 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->DutyCycle_SuperSinus_2[2] = FOC_FCF_B->DutyCycle_normed[5] -
     FOC_FCF_B->Factor1;
 
-  /* MinMax: '<S98>/MinMax5' */
+  /* MinMax: '<S101>/MinMax5' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[6];
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[7]);
   UnitDelay1_p = fminf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[8]);
 
-  /* MinMax: '<S98>/MinMax5' */
+  /* MinMax: '<S101>/MinMax5' */
   FOC_FCF_B->MinMax5 = UnitDelay1_p;
 
-  /* MinMax: '<S98>/MinMax6' */
+  /* MinMax: '<S101>/MinMax6' */
   UnitDelay1_p = FOC_FCF_B->DutyCycle_normed[6];
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[7]);
   UnitDelay1_p = fmaxf(UnitDelay1_p, FOC_FCF_B->DutyCycle_normed[8]);
 
-  /* MinMax: '<S98>/MinMax6' */
+  /* MinMax: '<S101>/MinMax6' */
   FOC_FCF_B->MinMax6 = UnitDelay1_p;
 
-  /* Sum: '<S98>/Sum3' */
+  /* Sum: '<S101>/Sum3' */
   FOC_FCF_B->Sum3_k = FOC_FCF_B->MinMax5 + FOC_FCF_B->MinMax6;
 
-  /* Gain: '<S98>/Factor2' */
+  /* Gain: '<S101>/Factor2' */
   FOC_FCF_B->Factor2 = FOC_FCF_P.Factor2_Gain * FOC_FCF_B->Sum3_k;
 
-  /* Sum: '<S98>/DutyCycle_SuperSinus_3' */
+  /* Sum: '<S101>/DutyCycle_SuperSinus_3' */
   FOC_FCF_B->DutyCycle_SuperSinus_3[0] = FOC_FCF_B->DutyCycle_normed[6] -
     FOC_FCF_B->Factor2;
   FOC_FCF_B->DutyCycle_SuperSinus_3[1] = FOC_FCF_B->DutyCycle_normed[7] -
@@ -1999,133 +2066,133 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* End of MultiPortSwitch: '<S15>/SelectModulation' */
   for (i_0 = 0; i_0 < 9; i_0++) {
-    /* Bias: '<S94>/Scale [0..2]' */
+    /* Bias: '<S97>/Scale [0..2]' */
     UnitDelay1_p = FOC_FCF_B->SelMod_DutyCycles[i_0] + FOC_FCF_P.Scale02_Bias;
     FOC_FCF_B->Scale02[i_0] = UnitDelay1_p;
 
-    /* Gain: '<S94>/Scale  [0..1]' */
+    /* Gain: '<S97>/Scale  [0..1]' */
     UnitDelay1_p *= FOC_FCF_P.Scale01_Gain;
     FOC_FCF_B->Scale01[i_0] = UnitDelay1_p;
 
-    /* Saturate: '<S94>/Limit [0..1]' */
+    /* Saturate: '<S97>/Limit [0..1]' */
     if (UnitDelay1_p > FOC_FCF_P.Limit01_UpperSat) {
       UnitDelay1_p = FOC_FCF_P.Limit01_UpperSat;
     } else if (UnitDelay1_p < FOC_FCF_P.Limit01_LowerSat) {
       UnitDelay1_p = FOC_FCF_P.Limit01_LowerSat;
     }
 
-    /* Saturate: '<S94>/Limit [0..1]' */
+    /* Saturate: '<S97>/Limit [0..1]' */
     FOC_FCF_B->Limit01[i_0] = UnitDelay1_p;
   }
 
-  /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' incorporates:
-   *  Constant: '<S97>/Constant6'
+  /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' incorporates:
+   *  Constant: '<S100>/Constant6'
    */
   switch ((int32_T)FOC_FCF_P.FOC_SELECT_Voltage_Assignment_UVW) {
    case 1:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[2];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[5];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[8];
     break;
 
    case 2:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[1];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[4];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[7];
     break;
 
    case 3:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[2];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[5];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[8];
     break;
 
    case 4:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[0];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[3];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[6];
     break;
 
    case 5:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[0];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[1];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[3];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[4];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[6];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[7];
     break;
 
    default:
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
     FOC_FCF_B->Select_GateDriver_Assignment_1[0] = FOC_FCF_B->Limit01[2];
     FOC_FCF_B->Select_GateDriver_Assignment_1[1] = FOC_FCF_B->Limit01[1];
     FOC_FCF_B->Select_GateDriver_Assignment_1[2] = FOC_FCF_B->Limit01[0];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_2' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_2' */
     FOC_FCF_B->Select_GateDriver_Assignment_2[0] = FOC_FCF_B->Limit01[5];
     FOC_FCF_B->Select_GateDriver_Assignment_2[1] = FOC_FCF_B->Limit01[4];
     FOC_FCF_B->Select_GateDriver_Assignment_2[2] = FOC_FCF_B->Limit01[3];
 
-    /* MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_3' */
+    /* MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_3' */
     FOC_FCF_B->Select_GateDriver_Assignment_3[0] = FOC_FCF_B->Limit01[8];
     FOC_FCF_B->Select_GateDriver_Assignment_3[1] = FOC_FCF_B->Limit01[7];
     FOC_FCF_B->Select_GateDriver_Assignment_3[2] = FOC_FCF_B->Limit01[6];
     break;
   }
 
-  /* End of MultiPortSwitch: '<S97>/Select_GateDriver_Assignment_1' */
+  /* End of MultiPortSwitch: '<S100>/Select_GateDriver_Assignment_1' */
 
   /* MultiPortSwitch: '<S3>/Manual_DutyCycles_switch' incorporates:
    *  Constant: '<S3>/FOC_SELECT_MANUAL_DutyCycles'
@@ -2280,88 +2347,88 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   FOC_FCF_B->I_dq_Act[5] = FOC_FCF_B->TrafoSum1_p;
 
   /* Outputs for Atomic SubSystem: '<S15>/Calc_Modulation_Index' */
-  /* Gain: '<S95>/U_DC//2' */
+  /* Gain: '<S98>/U_DC//2' */
   FOC_FCF_B->U_DC2_l = FOC_FCF_P.U_DC2_Gain * FOC_FCF_B->U_DC_fcf;
 
-  /* MinMax: '<S95>/AvoidDivBy0' incorporates:
-   *  Constant: '<S95>/Constant2'
+  /* MinMax: '<S98>/AvoidDivBy0' incorporates:
+   *  Constant: '<S98>/Constant2'
    */
   UnitDelay1_p = fmaxf(FOC_FCF_P.Constant2_Value_d, FOC_FCF_B->U_DC2_l);
 
-  /* MinMax: '<S95>/AvoidDivBy0' */
+  /* MinMax: '<S98>/AvoidDivBy0' */
   FOC_FCF_B->AvoidDivBy0_f = UnitDelay1_p;
 
-  /* Math: '<S95>/Square' */
+  /* Math: '<S98>/Square' */
   UnitDelay1_p = FOC_FCF_B->Product_c0[0];
 
-  /* Math: '<S95>/Square' */
+  /* Math: '<S98>/Square' */
   FOC_FCF_B->Square[0] = UnitDelay1_p * UnitDelay1_p;
 
-  /* Math: '<S95>/Square' */
+  /* Math: '<S98>/Square' */
   UnitDelay1_p = FOC_FCF_B->Product_c0[1];
 
-  /* Math: '<S95>/Square' */
+  /* Math: '<S98>/Square' */
   FOC_FCF_B->Square[1] = UnitDelay1_p * UnitDelay1_p;
 
-  /* Sum: '<S95>/Sum' */
+  /* Sum: '<S98>/Sum' */
   UnitDelay1_p = FOC_FCF_B->Square[0];
 
-  /* Math: '<S95>/Square1' */
+  /* Math: '<S98>/Square1' */
   Gain_a = FOC_FCF_B->Product_f[0];
 
-  /* Math: '<S95>/Square1' */
+  /* Math: '<S98>/Square1' */
   FOC_FCF_B->Square1[0] = Gain_a * Gain_a;
 
-  /* Sum: '<S95>/Sum' */
+  /* Sum: '<S98>/Sum' */
   UnitDelay1_p += FOC_FCF_B->Square[1];
 
-  /* Math: '<S95>/Square1' */
+  /* Math: '<S98>/Square1' */
   Gain_a = FOC_FCF_B->Product_f[1];
 
-  /* Math: '<S95>/Square1' */
+  /* Math: '<S98>/Square1' */
   FOC_FCF_B->Square1[1] = Gain_a * Gain_a;
 
-  /* Sum: '<S95>/Sum' */
+  /* Sum: '<S98>/Sum' */
   FOC_FCF_B->Sum_kr = UnitDelay1_p;
 
-  /* Sqrt: '<S95>/Sqrt' */
+  /* Sqrt: '<S98>/Sqrt' */
   FOC_FCF_B->Sqrt = sqrtf(FOC_FCF_B->Sum_kr);
 
-  /* Sum: '<S95>/Sum1' */
+  /* Sum: '<S98>/Sum1' */
   UnitDelay1_p = FOC_FCF_B->Square1[0];
 
-  /* Math: '<S95>/Square2' */
+  /* Math: '<S98>/Square2' */
   Gain_a = FOC_FCF_B->Product_i[0];
 
-  /* Math: '<S95>/Square2' */
+  /* Math: '<S98>/Square2' */
   FOC_FCF_B->Square2[0] = Gain_a * Gain_a;
 
-  /* Sum: '<S95>/Sum1' */
+  /* Sum: '<S98>/Sum1' */
   UnitDelay1_p += FOC_FCF_B->Square1[1];
 
-  /* Math: '<S95>/Square2' */
+  /* Math: '<S98>/Square2' */
   Gain_a = FOC_FCF_B->Product_i[1];
 
-  /* Math: '<S95>/Square2' */
+  /* Math: '<S98>/Square2' */
   FOC_FCF_B->Square2[1] = Gain_a * Gain_a;
 
-  /* Sum: '<S95>/Sum1' */
+  /* Sum: '<S98>/Sum1' */
   FOC_FCF_B->Sum1_a = UnitDelay1_p;
 
-  /* Sqrt: '<S95>/Sqrt1' */
+  /* Sqrt: '<S98>/Sqrt1' */
   FOC_FCF_B->Sqrt1 = sqrtf(FOC_FCF_B->Sum1_a);
 
-  /* Sum: '<S95>/Sum2' */
+  /* Sum: '<S98>/Sum2' */
   UnitDelay1_p = FOC_FCF_B->Square2[0];
   UnitDelay1_p += FOC_FCF_B->Square2[1];
 
-  /* Sum: '<S95>/Sum2' */
+  /* Sum: '<S98>/Sum2' */
   FOC_FCF_B->Sum2_iq = UnitDelay1_p;
 
-  /* Sqrt: '<S95>/Sqrt2' */
+  /* Sqrt: '<S98>/Sqrt2' */
   FOC_FCF_B->Sqrt2 = sqrtf(FOC_FCF_B->Sum2_iq);
 
-  /* Product: '<S95>/Divide3' */
+  /* Product: '<S98>/Divide3' */
   FOC_FCF_B->ModInd[0] = FOC_FCF_B->Sqrt / FOC_FCF_B->AvoidDivBy0_f;
   FOC_FCF_B->ModInd[1] = FOC_FCF_B->Sqrt1 / FOC_FCF_B->AvoidDivBy0_f;
   FOC_FCF_B->ModInd[2] = FOC_FCF_B->Sqrt2 / FOC_FCF_B->AvoidDivBy0_f;
@@ -2409,11 +2476,11 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_B->Selectphicalc2_d = FOC_FCF_P.Constant1_Value_n;
   } else {
     /* RelationalOperator: '<S89>/FixPt Relational Operator' */
-    FOC_FCF_B->FixPtRelationalOperator = ((int32_T)FOC_FCF_B->Compare_gt >
+    FOC_FCF_B->FixPtRelationalOperator_f = ((int32_T)FOC_FCF_B->Compare_gt >
       (int32_T)FOC_FCF_B->Uk1_h);
 
     /* MultiPortSwitch: '<S11>/Selectphicalc2' */
-    FOC_FCF_B->Selectphicalc2_d = FOC_FCF_B->FixPtRelationalOperator;
+    FOC_FCF_B->Selectphicalc2_d = FOC_FCF_B->FixPtRelationalOperator_f;
   }
 
   /* End of MultiPortSwitch: '<S11>/Selectphicalc2' */
@@ -3076,12 +3143,11 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_U->bus_SMF.FOC_Enable_PWM);
 
   /* Logic: '<S7>/Enable_PWM_' incorporates:
-   *  Constant: '<S13>/FOC_Enable_Sys1'
    *  Constant: '<S13>/FOC_Enable_Sys2'
    *  Constant: '<S13>/FOC_Enable_Sys3'
    */
   FOC_FCF_B->FOC_Enable_PWM[0] = (LogicalOperator2_a_tmp &&
-    (FOC_FCF_P.FOC_Enable_Sys1 != 0.0F));
+    (FOC_FCF_B->DataTypeConversion1 != 0.0F));
   FOC_FCF_B->FOC_Enable_PWM[1] = (LogicalOperator2_a_tmp &&
     (FOC_FCF_P.FOC_Enable_Sys2 != 0.0F));
   FOC_FCF_B->FOC_Enable_PWM[2] = (LogicalOperator2_a_tmp &&
@@ -3727,41 +3793,41 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* Sum: '<S12>/Add1' */
   FOC_FCF_B->Add1_j = FOC_FCF_B->Add_m - FOC_FCF_B->Switch_l;
 
-  /* Abs: '<S92>/Abs' */
+  /* Abs: '<S95>/Abs' */
   FOC_FCF_B->Abs_f = fabsf(FOC_FCF_B->Add);
 
-  /* Switch: '<S92>/Switch' */
+  /* Switch: '<S95>/Switch' */
   if (FOC_FCF_B->Abs_f >= FOC_FCF_P.Switch_Threshold_c) {
-    /* Signum: '<S92>/Sign' */
+    /* Signum: '<S95>/Sign' */
     UnitDelay1_p = FOC_FCF_B->Product;
     if (rtIsNaNF(UnitDelay1_p)) {
-      /* Signum: '<S92>/Sign' */
+      /* Signum: '<S95>/Sign' */
       FOC_FCF_B->Sign = (rtNaNF);
     } else if (UnitDelay1_p < 0.0F) {
-      /* Signum: '<S92>/Sign' */
+      /* Signum: '<S95>/Sign' */
       FOC_FCF_B->Sign = -1.0F;
     } else {
-      /* Signum: '<S92>/Sign' */
+      /* Signum: '<S95>/Sign' */
       FOC_FCF_B->Sign = (real32_T)(UnitDelay1_p > 0.0F);
     }
 
-    /* End of Signum: '<S92>/Sign' */
+    /* End of Signum: '<S95>/Sign' */
 
-    /* Gain: '<S92>/Gain1' */
+    /* Gain: '<S95>/Gain1' */
     FOC_FCF_B->Gain1_o = FOC_FCF_P.Gain1_Gain_a * FOC_FCF_B->Sign;
 
-    /* Switch: '<S92>/Switch' */
+    /* Switch: '<S95>/Switch' */
     FOC_FCF_B->Switch_n = FOC_FCF_B->Gain1_o;
   } else {
-    /* Switch: '<S92>/Switch' incorporates:
-     *  Constant: '<S92>/Constant1'
+    /* Switch: '<S95>/Switch' incorporates:
+     *  Constant: '<S95>/Constant1'
      */
     FOC_FCF_B->Switch_n = FOC_FCF_P.Constant1_Value_e;
   }
 
-  /* End of Switch: '<S92>/Switch' */
+  /* End of Switch: '<S95>/Switch' */
 
-  /* Sum: '<S92>/Add1' */
+  /* Sum: '<S95>/Add1' */
   FOC_FCF_B->Add1_c = FOC_FCF_B->Add - FOC_FCF_B->Switch_n;
 
   /* Gain: '<S15>/Gain' */
@@ -3788,39 +3854,39 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   /* Gain: '<S15>/Gain7' */
   FOC_FCF_B->U_q3 = FOC_FCF_P.Gain7_Gain * FOC_FCF_B->SelectControlMode[5];
 
-  /* Gain: '<S97>/DutyCycle_u1' */
+  /* Gain: '<S100>/DutyCycle_u1' */
   FOC_FCF_B->DutyCycle_u1 = FOC_FCF_P.DutyCycle_u1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[0];
 
-  /* Gain: '<S97>/DutyCycle_u2' */
+  /* Gain: '<S100>/DutyCycle_u2' */
   FOC_FCF_B->DutyCycle_u2 = FOC_FCF_P.DutyCycle_u2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[0];
 
-  /* Gain: '<S97>/DutyCycle_u3' */
+  /* Gain: '<S100>/DutyCycle_u3' */
   FOC_FCF_B->DutyCycle_u3 = FOC_FCF_P.DutyCycle_u3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[0];
 
-  /* Gain: '<S97>/DutyCycle_v1' */
+  /* Gain: '<S100>/DutyCycle_v1' */
   FOC_FCF_B->DutyCycle_v1 = FOC_FCF_P.DutyCycle_v1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[1];
 
-  /* Gain: '<S97>/DutyCycle_v2' */
+  /* Gain: '<S100>/DutyCycle_v2' */
   FOC_FCF_B->DutyCycle_v2 = FOC_FCF_P.DutyCycle_v2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[1];
 
-  /* Gain: '<S97>/DutyCycle_v3' */
+  /* Gain: '<S100>/DutyCycle_v3' */
   FOC_FCF_B->DutyCycle_v3 = FOC_FCF_P.DutyCycle_v3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[1];
 
-  /* Gain: '<S97>/DutyCycle_w1' */
+  /* Gain: '<S100>/DutyCycle_w1' */
   FOC_FCF_B->DutyCycle_w1 = FOC_FCF_P.DutyCycle_w1_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_1[2];
 
-  /* Gain: '<S97>/DutyCycle_w2' */
+  /* Gain: '<S100>/DutyCycle_w2' */
   FOC_FCF_B->DutyCycle_w2 = FOC_FCF_P.DutyCycle_w2_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_2[2];
 
-  /* Gain: '<S97>/DutyCycle_w3' */
+  /* Gain: '<S100>/DutyCycle_w3' */
   FOC_FCF_B->DutyCycle_w3 = FOC_FCF_P.DutyCycle_w3_Gain *
     FOC_FCF_B->Select_GateDriver_Assignment_3[2];
 
@@ -3872,7 +3938,7 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
   UnitDelay1_p /= FOC_FCF_P.DiscreteTransferFcn_DenCoef[0];
   FOC_FCF_DW->DiscreteTransferFcn_states = UnitDelay1_p;
 
-  /* Update for UnitDelay: '<S92>/Unit Delay' */
+  /* Update for UnitDelay: '<S95>/Unit Delay' */
   FOC_FCF_DW->UnitDelay_DSTATE = FOC_FCF_B->Add1_c;
 
   /* Update for UnitDelay: '<S28>/Unit Delay1' */
@@ -3889,6 +3955,17 @@ void FOC_FCF_step(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
   /* Update for UnitDelay: '<S62>/Unit Delay' */
   FOC_FCF_DW->UnitDelay_DSTATE_f = FOC_FCF_B->Add1;
+
+  /* Update for UnitDelay: '<S92>/Delay Input1'
+   *
+   * Block description for '<S92>/Delay Input1':
+   *
+   *  Store in Global RAM
+   */
+  FOC_FCF_DW->DelayInput1_DSTATE_f = FOC_FCF_B->Compare_jj;
+
+  /* Update for Memory: '<S93>/Memory' */
+  FOC_FCF_DW->Memory_PreviousInput_g = FOC_FCF_B->Logic_a0[0];
 
   /* Update for UnitDelay: '<S38>/IntegDelay1' */
   FOC_FCF_DW->IntegDelay1_DSTATE[0] = FOC_FCF_B->IntegStopSwitch2[0];
@@ -4053,7 +4130,7 @@ void FOC_FCF_initialize(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
     FOC_FCF_DW->DiscreteTransferFcn_states =
       FOC_FCF_P.DiscreteTransferFcn_InitialStat;
 
-    /* InitializeConditions for UnitDelay: '<S92>/Unit Delay' */
+    /* InitializeConditions for UnitDelay: '<S95>/Unit Delay' */
     FOC_FCF_DW->UnitDelay_DSTATE = FOC_FCF_P.UnitDelay_InitialCondition;
 
     /* InitializeConditions for UnitDelay: '<S28>/Unit Delay1' */
@@ -4070,6 +4147,18 @@ void FOC_FCF_initialize(RT_MODEL_FOC_FCF_T *const FOC_FCF_M)
 
     /* InitializeConditions for UnitDelay: '<S62>/Unit Delay' */
     FOC_FCF_DW->UnitDelay_DSTATE_f = FOC_FCF_P.UnitDelay_InitialCondition_d;
+
+    /* InitializeConditions for UnitDelay: '<S92>/Delay Input1'
+     *
+     * Block description for '<S92>/Delay Input1':
+     *
+     *  Store in Global RAM
+     */
+    FOC_FCF_DW->DelayInput1_DSTATE_f = FOC_FCF_P.DetectRisePositive_vinit_b;
+
+    /* InitializeConditions for Memory: '<S93>/Memory' */
+    FOC_FCF_DW->Memory_PreviousInput_g =
+      FOC_FCF_P.SRFlipFlop_initial_condition_e;
 
     /* InitializeConditions for UnitDelay: '<S38>/IntegDelay1' */
     FOC_FCF_DW->IntegDelay1_DSTATE[0] = FOC_FCF_P.IntegDelay1_InitialCondition;

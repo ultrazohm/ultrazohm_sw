@@ -16,6 +16,7 @@ PMSM Model Nonlinear
    - IP core has single precision AXI ports
    - All calculations in the IP core are done in **single** precision!
 
+.. warning:: The IP-core does not strictly follow [#Shih_Wei_Su_flux_approximation]_. Check the approximation and offline simulation results before usage.
 
 System description
 ==================

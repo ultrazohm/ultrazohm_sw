@@ -1,7 +1,7 @@
 --Copyright 1986-2023 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2.2 (lin64) Build 3788238 Tue Feb 21 19:59:23 MST 2023
---Date        : Tue Jun  2 10:58:29 2026
+--Date        : Wed Jun  3 14:35:37 2026
 --Host        : lin1 running 64-bit Ubuntu 22.04.5 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -17,10 +17,11 @@ entity zusys_wrapper is
     A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A3_CS : out STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_EOC : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_MISO : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_MOSI : out STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_SCKL : out STD_LOGIC_VECTOR ( 2 downto 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -130,10 +131,11 @@ architecture STRUCTURE of zusys_wrapper is
     DAC_IN_N7_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     DAC_IN_P8_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     DAC_IN_N8_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A3_SCKL : out STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_CS : out STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_MOSI : out STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_MISO : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    A3_EOC : in STD_LOGIC_VECTOR ( 2 downto 0 );
     Dig_00_Ch4 : out STD_LOGIC;
     Dig_01_Ch4 : out STD_LOGIC;
     Dig_02_Ch4 : in STD_LOGIC;
@@ -172,10 +174,11 @@ zusys_i: component zusys
       A1_OUT_CLK(1 downto 0) => A1_OUT_CLK(1 downto 0),
       A1_OUT_CNV_0(0) => A1_OUT_CNV_0(0),
       A1_OUT_CNV_1(0) => A1_OUT_CNV_1(0),
-      A3_IN(15 downto 0) => A3_IN(15 downto 0),
-      A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
-      A3_OUT_CNV_0(0) => A3_OUT_CNV_0(0),
-      A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
+      A3_CS(2 downto 0) => A3_CS(2 downto 0),
+      A3_EOC(2 downto 0) => A3_EOC(2 downto 0),
+      A3_MISO(2 downto 0) => A3_MISO(2 downto 0),
+      A3_MOSI(2 downto 0) => A3_MOSI(2 downto 0),
+      A3_SCKL(2 downto 0) => A3_SCKL(2 downto 0),
       D1_OUT(23 downto 0) => D1_OUT(23 downto 0),
       D1_OUT_26(0) => D1_OUT_26(0),
       D1_OUT_27(0) => D1_OUT_27(0),

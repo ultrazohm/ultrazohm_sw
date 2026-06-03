@@ -488,6 +488,7 @@ class TclGenerator:
         else:
             external_ports = []
         primary_external_port = external_ports[0] if external_ports else ""
+        connects_to_ip = bool(selected_ip_path) and port.get("connect_to_ip", True) is not False
         core_source = f"{selected_ip_path}/{ip_pin}" if direction == "O" else f"${{adapter_hier_path}}/{adapter_pin_name}"
         core_sink = f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"{selected_ip_path}/{ip_pin}"
         boundary_source = f"${{adapter_hier_path}}/{adapter_pin_name}" if direction == "O" else f"${{adapter_parent_hier}}/{boundary_name}"
@@ -511,7 +512,7 @@ class TclGenerator:
             "has_boundary": has_boundary,
             "left": str(port.get("left", "")),
             "right": str(port.get("right", "")),
-            "connects_to_ip": bool(selected_ip_path),
+            "connects_to_ip": connects_to_ip,
             "core_source": core_source,
             "core_sink": core_sink,
             "boundary_source": boundary_source,
@@ -713,25 +714,38 @@ class TclGenerator:
             if card_id == "empty":
                 has_bypassed_a_slot = True
             card = self.database.card_by_id(card_id)
-            if not card or card.get("id") != "analog_ltc2311_16":
+            adc_stream = (card or {}).get("vivado", {}).get("adc_stream", {})
+            if not card or not adc_stream:
                 continue
-            raw_valid_sources.append(f"uz_analog_adapter/{slot}_RAW_Valid")
+            raw_value_signal = str(adc_stream.get("raw_value_signal", "{slot}_RAW_Value")).format(
+                slot=slot,
+                slot_index=slot[1:],
+            )
+            raw_valid_signal = str(adc_stream.get("raw_valid_signal", "{slot}_RAW_Valid")).format(
+                slot=slot,
+                slot_index=slot[1:],
+            )
+            channel_count = int(str(adc_stream.get("channel_count", 8)), 0)
+            sample_width = int(str(adc_stream.get("sample_width", 16)), 0)
+            raw_width = channel_count * sample_width
+            raw_valid_sources.append(f"uz_analog_adapter/{raw_valid_signal}")
             stream_index = len(adc_streams)
             adc_streams.append(
                 {
                     "slot": slot,
                     "pin_name": f"ADC_{slot}",
-                    "source_pin": f"uz_analog_adapter/{slot}_RAW_Value",
-                    "left": "127",
+                    "source_pin": f"uz_analog_adapter/{raw_value_signal}",
+                    "left": str(raw_width - 1),
                     "right": "0",
                     "concat_index": str(stream_index),
-                    "packed_offset": str(stream_index * 8),
+                    "packed_offset": str(sum(int(stream["channel_count"]) for stream in adc_streams)),
+                    "channel_count": str(channel_count),
                 }
             )
             raw_value_connections.append(
                 {
                     "slot": slot,
-                    "source_pin": f"uz_analog_adapter/{slot}_RAW_Value",
+                    "source_pin": f"uz_analog_adapter/{raw_value_signal}",
                     "target_pin": raw_target_template.format(slot=slot, slot_index=slot[1:]),
                 }
             )
@@ -768,7 +782,7 @@ class TclGenerator:
             axi2tcm_source = ""
             axi2tcm_note = "No A-slot RAW_Valid source or conversion trigger source is generated. Skipping AXI2TCM trigger wiring."
         adc_stream_count = len(adc_streams)
-        axi2tcm_channel_count = max(2, adc_stream_count * 8)
+        axi2tcm_channel_count = max(2, sum(int(stream["channel_count"]) for stream in adc_streams))
         return {
             "has_analog_ltc2311": bool(raw_value_connections),
             "has_adc_streams": bool(adc_streams),
@@ -795,11 +809,17 @@ class TclGenerator:
         config.update({key: value for key, value in axi_config.items() if value})
         warnings: list[str] = []
         has_bypassed_a_slot = any(assignments.get(slot, "empty") == "empty" for slot in ("A1", "A2", "A3"))
-        raw_valid_sources = [
-            f"uz_analog_adapter/{slot}_RAW_Valid"
-            for slot in ("A1", "A2", "A3")
-            if assignments.get(slot, "empty") == "analog_ltc2311_16"
-        ]
+        raw_valid_sources = []
+        for slot in ("A1", "A2", "A3"):
+            card = self.database.card_by_id(assignments.get(slot, "empty"))
+            adc_stream = (card or {}).get("vivado", {}).get("adc_stream", {})
+            if not adc_stream:
+                continue
+            raw_valid_signal = str(adc_stream.get("raw_valid_signal", "{slot}_RAW_Valid")).format(
+                slot=slot,
+                slot_index=slot[1:],
+            )
+            raw_valid_sources.append(f"uz_analog_adapter/{raw_valid_signal}")
         conversion_sources = [
             self._normalize_bd_pin_path(source, "uz_system")
             for source in config.get("analog_conversion_trigger_sources", "").split(";")

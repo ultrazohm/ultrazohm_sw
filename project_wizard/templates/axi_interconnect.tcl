@@ -111,36 +111,66 @@ proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   }
 }
 
-proc uz_pw_connect_intf_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_intf_pins -quiet $source_pin]] == 0} {
-    puts "WARNING: Source AXI interface not found: $source_pin"
-    return
-  }
-  if {[llength [get_bd_intf_pins -quiet $sink_pin]] == 0} {
-    puts "WARNING: Sink AXI interface not found: $sink_pin"
-    return
-  }
-  if {[llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] == 0} {
-    connect_bd_intf_net [get_bd_intf_pins $source_pin] [get_bd_intf_pins $sink_pin]
-  } else {
-    puts "Reusing existing AXI interface connection on $sink_pin"
+proc uz_pw_delete_intf_nets_on_pin {pin label} {
+  foreach intf_net [get_bd_intf_nets -quiet -of_objects $pin] {
+    puts "Deleting stale AXI interface net on $label: $intf_net"
+    catch {delete_bd_objs $intf_net}
   }
 }
 
-proc uz_pw_connect_intf_upper_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_intf_pins -quiet $source_pin]] == 0} {
+proc uz_pw_connect_intf_pair {source_pin sink_pin {boundary_type ""} {preserve_source_nets 0}} {
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+
+  if {[llength $source] == 0} {
     puts "WARNING: Source AXI interface not found: $source_pin"
     return
   }
-  if {[llength [get_bd_intf_pins -quiet $sink_pin]] == 0} {
+  if {[llength $sink] == 0} {
     puts "WARNING: Sink AXI interface not found: $sink_pin"
     return
   }
-  if {[llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] == 0} {
-    connect_bd_intf_net -boundary_type upper [get_bd_intf_pins $source_pin] [get_bd_intf_pins $sink_pin]
-  } else {
-    puts "Reusing existing AXI interface connection on $sink_pin"
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      puts "Reusing existing AXI interface connection between $source_pin and $sink_pin"
+      return
+    }
   }
+
+  if {!$preserve_source_nets && [llength $source_nets] > 0} {
+    uz_pw_delete_intf_nets_on_pin $source $source_pin
+  }
+  if {[llength [get_bd_intf_pins -quiet $sink_pin]] > 0 && [llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] > 0} {
+    uz_pw_delete_intf_nets_on_pin [get_bd_intf_pins $sink_pin] $sink_pin
+  }
+
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0 || [llength $sink] == 0} {
+    puts "WARNING: Could not reconnect AXI interface because a pin disappeared: $source_pin -> $sink_pin"
+    return
+  }
+
+  if {$boundary_type eq "upper"} {
+    connect_bd_intf_net -boundary_type upper $source $sink
+  } else {
+    connect_bd_intf_net $source $sink
+  }
+}
+
+proc uz_pw_connect_intf_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin
+}
+
+proc uz_pw_connect_intf_preserve_source_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin "" 1
+}
+
+proc uz_pw_connect_intf_upper_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin upper 1
 }
 
 proc uz_pw_set_property_dict_if_objects {property_dict objects label} {
@@ -281,6 +311,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
 
+puts "Refreshing AXI attachment for slot {{ slot.slot }}"
+uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
+
 puts "Configuring local AXI SmartConnect for slot {{ slot.slot }}"
 
 set slot_sc {{ slot.local_smartconnect_path }}
@@ -323,7 +356,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 {% endfor %}
 

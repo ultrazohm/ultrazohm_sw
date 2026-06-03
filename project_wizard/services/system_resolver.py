@@ -79,17 +79,29 @@ class SystemResolver:
         streams: list[ResolvedAnalogStream] = []
         packed_offset = 0
         for slot in slots:
-            if slot.name not in {"A1", "A2", "A3"} or slot.card_id != "analog_ltc2311_16":
+            if slot.name not in {"A1", "A2", "A3"}:
                 continue
-            channel_count = 8
+            adc_stream = (slot.card or {}).get("vivado", {}).get("adc_stream", {})
+            if not adc_stream:
+                continue
+            channel_count = int(str(adc_stream.get("channel_count", 8)), 0)
+            sample_width = int(str(adc_stream.get("sample_width", 16)), 0)
+            raw_value_signal = str(adc_stream.get("raw_value_signal", "{slot}_RAW_Value")).format(
+                slot=slot.name,
+                slot_index=slot.name[1:],
+            )
+            raw_valid_signal = str(adc_stream.get("raw_valid_signal", "{slot}_RAW_Valid")).format(
+                slot=slot.name,
+                slot_index=slot.name[1:],
+            )
             streams.append(
                 ResolvedAnalogStream(
                     slot=slot.name,
                     card_id=slot.card_id,
-                    raw_value_pin=f"uz_analog_adapter/{slot.name}_RAW_Value",
-                    raw_valid_pin=f"uz_analog_adapter/{slot.name}_RAW_Valid",
+                    raw_value_pin=f"uz_analog_adapter/{raw_value_signal}",
+                    raw_valid_pin=f"uz_analog_adapter/{raw_valid_signal}",
                     channel_count=channel_count,
-                    sample_width=16,
+                    sample_width=sample_width,
                     packed_offset=packed_offset,
                 )
             )

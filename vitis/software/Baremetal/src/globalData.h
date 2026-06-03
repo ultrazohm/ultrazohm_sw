@@ -6,7 +6,6 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
-#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -63,14 +62,30 @@ typedef struct _actualValues_ {
 	float adc_ltc2311_a1_ch5;
 	float adc_ltc2311_a1_ch6;
 	float adc_ltc2311_a1_ch7;
-	float adc_ltc2311_a3_ch0;
-	float adc_ltc2311_a3_ch1;
-	float adc_ltc2311_a3_ch2;
-	float adc_ltc2311_a3_ch3;
-	float adc_ltc2311_a3_ch4;
-	float adc_ltc2311_a3_ch5;
-	float adc_ltc2311_a3_ch6;
-	float adc_ltc2311_a3_ch7;
+	float adc_max11331_a3_ch0;
+	float adc_max11331_a3_ch1;
+	float adc_max11331_a3_ch2;
+	float adc_max11331_a3_ch3;
+	float adc_max11331_a3_ch4;
+	float adc_max11331_a3_ch5;
+	float adc_max11331_a3_ch6;
+	float adc_max11331_a3_ch7;
+	float adc_max11331_a3_ch8;
+	float adc_max11331_a3_ch9;
+	float adc_max11331_a3_ch10;
+	float adc_max11331_a3_ch11;
+	float adc_max11331_a3_ch12;
+	float adc_max11331_a3_ch13;
+	float adc_max11331_a3_ch14;
+	float adc_max11331_a3_ch15;
+	float adc_max11331_a3_ch16;
+	float adc_max11331_a3_ch17;
+	float adc_max11331_a3_ch18;
+	float adc_max11331_a3_ch19;
+	float adc_max11331_a3_ch20;
+	float adc_max11331_a3_ch21;
+	float adc_max11331_a3_ch22;
+	float adc_max11331_a3_ch23;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
@@ -125,12 +140,11 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	/* Project Wizard BEGIN: objects */
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
-	uz_adcLtc2311_t* adc_ltc2311_a3;
+	uz_adcMax11331_t* adc_max11331_a3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;

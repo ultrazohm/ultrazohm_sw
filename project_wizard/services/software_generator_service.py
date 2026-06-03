@@ -101,6 +101,9 @@ class DriverConfigField:
     default: str
     multiline: bool = False
     help_text: str = ""
+    input_type: str = "text"
+    options: tuple[tuple[str, str], ...] = ()
+    visible_when: tuple[tuple[str, tuple[str, ...]], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -151,6 +154,17 @@ class SoftwareGenerator:
                     default=default,
                     multiline=bool(raw_field.get("multiline", False)),
                     help_text=str(raw_field.get("help", "")),
+                    input_type=str(raw_field.get("input", "text")),
+                    options=tuple(
+                        (str(option.get("value", "")), str(option.get("label", option.get("value", ""))))
+                        for option in raw_field.get("options", [])
+                        if isinstance(option, dict)
+                    ),
+                    visible_when=tuple(
+                        (str(controller), tuple(str(value) for value in allowed_values))
+                        for controller, allowed_values in raw_field.get("visible_when", {}).items()
+                        if isinstance(allowed_values, list)
+                    ),
                 )
             )
         return fields
@@ -180,9 +194,10 @@ class SoftwareGenerator:
         warnings: list[str] = []
         temperature_instances = 0
         adc_ltc2311_instances = 0
+        adc_max11331_instances = 0
         dac8831_instances = 0
-        adc_ltc2311_offsets = adc_ltc2311_packed_offsets(assignments)
-        datamover_array_length = max(2, len(adc_ltc2311_offsets) * 8)
+        analog_adc_offsets = analog_adc_packed_offsets(assignments)
+        datamover_array_length = max(2, sum(stream["channel_count"] for stream in analog_adc_offsets.values()))
         endat_instances = 0
         ssi_instances = 0
 
@@ -212,8 +227,37 @@ class SoftwareGenerator:
                     f"\t\t\tGlobal_Data.objects.adc_ltc2311_{context['slot_lower']} = initialize_adc_ltc2311_{context['slot_lower']}();"
                 )
                 actual_values.extend(adc_ltc2311_actual_values(str(context["slot_lower"])))
-                isr_control_by_slot[slot].extend(adc_ltc2311_isr_lines(slot, context, adc_ltc2311_offsets[slot]))
+                isr_control_by_slot[slot].extend(
+                    adc_ltc2311_isr_lines(slot, context, analog_adc_offsets[slot]["offset"])
+                )
                 available_visualization_signals.extend(adc_ltc2311_visualization_signals(str(context["slot_lower"])))
+            elif card_id == "analog_max11331":
+                adc_max11331_instances += 1
+                context = self._adc_max11331_context(
+                    slot,
+                    source_dir,
+                    driver_instance_values(
+                        f"{slot.lower()}_adc_max11331", self.driver_config_fields("uz_adc_max11331"), driver_config
+                    ),
+                )
+                warnings.extend(context.pop("warnings"))
+                header_includes, header_prototypes = split_header_template(
+                    self.renderer.render_file(self.driver_template("uz_adc_max11331", "header"), context)
+                )
+                slot_content[slot].header_includes.extend(header_includes)
+                slot_content[slot].header_prototypes.extend(header_prototypes)
+                slot_content[slot].source_definitions.append(
+                    self.renderer.render_file(self.driver_template("uz_adc_max11331", "source"), context).rstrip()
+                )
+                objects.append(f"\tuz_adcMax11331_t* adc_max11331_{context['slot_lower']};")
+                main_init.append(
+                    f"\t\t\tGlobal_Data.objects.adc_max11331_{context['slot_lower']} = initialize_adc_max11331_{context['slot_lower']}();"
+                )
+                actual_values.extend(adc_max11331_actual_values(str(context["slot_lower"])))
+                isr_control_by_slot[slot].extend(
+                    adc_max11331_isr_lines(slot, context, analog_adc_offsets[slot]["offset"])
+                )
+                available_visualization_signals.extend(adc_max11331_visualization_signals(str(context["slot_lower"])))
             elif card_id == "analog_dac8831":
                 dac8831_instances += 1
                 context = self._dac8831_context(
@@ -375,9 +419,9 @@ class SoftwareGenerator:
                 if driver:
                     warnings.append(f"{slot}: software integration for driver '{driver}' is not implemented yet.")
 
-        if adc_ltc2311_instances:
-            adc_readout_definitions.append("static uz_array_int16_t adc_ltc2311_data;")
-            adc_readout.append("    adc_ltc2311_data = uz_dataMover_update_buffer_and_get_data();")
+        if adc_ltc2311_instances or adc_max11331_instances:
+            adc_readout_definitions.append("static uz_array_int16_t analog_adc_data;")
+            adc_readout.append("    analog_adc_data = uz_dataMover_update_buffer_and_get_data();")
 
         selected_signals = [
             signal for signal in available_visualization_signals if signal.signal_id in selected_visualization_signals
@@ -398,6 +442,7 @@ class SoftwareGenerator:
             available_visualization_signals=available_visualization_signals,
             instance_counts={
                 "UZ_ADCLTC2311_MAX_INSTANCES": adc_ltc2311_instances,
+                "UZ_ADCMAX11331_MAX_INSTANCES": adc_max11331_instances,
                 "UZ_TEMPERATURE_CARD_MAX_INSTANCES": temperature_instances,
                 "UZ_ENDAT_INTERFACE_MAX_INSTANCES": endat_instances,
                 "UZ_SSI_INTERFACE_MAX_INSTANCES": ssi_instances,
@@ -513,6 +558,16 @@ class SoftwareGenerator:
                         label=f"{slot} ADC LTC2311",
                         driver="adc_ltc2311",
                         fields=self.driver_config_fields("uz_adc_ltc2311"),
+                    )
+                )
+            elif card_id == "analog_max11331":
+                instances.append(
+                    DriverConfigInstance(
+                        id=f"{slot_lower}_adc_max11331",
+                        slot=slot,
+                        label=f"{slot} ADC MAX11331",
+                        driver="adc_max11331",
+                        fields=self.driver_config_fields("uz_adc_max11331"),
                     )
                 )
             elif card_id == "analog_dac8831":
@@ -647,14 +702,32 @@ class SoftwareGenerator:
         context.update(config_values)
         return context
 
-    def _dac8831_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+    def _adc_max11331_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "dac8831")
+        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "adc_max11331")
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
             "slot_lower": slot_lower,
             "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _dac8831_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "dac8831")
+        warnings = [warning] if warning else []
+        output_assignments = [
+            dac8831_output_assignment(slot_lower, channel, config_values)
+            for channel in range(8)
+        ]
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "base_address_macro": base_address_macro,
+            "output_assignments": output_assignments,
             "warnings": warnings,
         }
         context.update(config_values)
@@ -705,6 +778,31 @@ def driver_instance_values(
     if configured.get("mode") != "custom":
         configured = {}
     return {field.id: configured.get(field.id, field.default) for field in fields}
+
+
+def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict[str, str]) -> str:
+    prefix = f"output_ch{channel}"
+    mode = config_values.get(f"{prefix}_source", "constant")
+    constant = config_values.get(f"{prefix}_constant", "0.0f")
+    amplitude = config_values.get(f"{prefix}_amplitude", "1.0f")
+    frequency = config_values.get(f"{prefix}_frequency_Hz", "10.0f")
+    duty_cycle = config_values.get(f"{prefix}_duty_cycle", "0.5f")
+    offset = config_values.get(f"{prefix}_offset", "0.0f")
+    if mode == "sine":
+        expression = f"uz_wavegen_sine_with_offset({amplitude}, {frequency}, {offset})"
+    elif mode == "sawtooth":
+        expression = f"uz_wavegen_sawtooth_with_offset({amplitude}, {frequency}, {offset})"
+    elif mode == "triangle":
+        expression = f"uz_wavegen_triangle_with_offset({amplitude}, {frequency}, {offset})"
+    elif mode == "square":
+        expression = f"uz_wavegen_square({amplitude}, {frequency}, {duty_cycle}) + {offset}"
+    elif mode == "pulse":
+        expression = f"uz_wavegen_pulse({amplitude}, {frequency}, {duty_cycle}) + {offset}"
+    elif mode == "white_noise":
+        expression = f"uz_wavegen_white_noise({amplitude}) + {offset}"
+    else:
+        expression = constant
+    return f"    dac8831_{slot_lower}_outputs[{channel}] = {expression};"
 
 
 def patch_slot_source(path: Path, slot: str, definitions: list[str]) -> None:
@@ -890,14 +988,40 @@ def adc_ltc2311_actual_values(slot_lower: str) -> list[str]:
     return [f"\tfloat adc_ltc2311_{slot_lower}_ch{channel};" for channel in range(8)]
 
 
-def adc_ltc2311_packed_offsets(assignments: dict[str, str]) -> dict[str, int]:
-    offsets: dict[str, int] = {}
+def adc_max11331_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    return [
+        VisualizationSignal(
+            signal_id=f"adc_max11331_{slot_lower}_ch{channel}",
+            slot=slot,
+            label=f"{slot} ADC MAX11331 channel {channel}",
+            enum_name=f"JSO_ADC_MAX11331_{slot}_CH{channel}",
+            pointer_expression=f"&data->av.adc_max11331_{slot_lower}_ch{channel}",
+        )
+        for channel in range(24)
+    ]
+
+
+def adc_max11331_actual_values(slot_lower: str) -> list[str]:
+    return [f"\tfloat adc_max11331_{slot_lower}_ch{channel};" for channel in range(24)]
+
+
+def analog_adc_packed_offsets(assignments: dict[str, str]) -> dict[str, dict[str, int]]:
+    offsets: dict[str, dict[str, int]] = {}
     next_offset = 0
     for slot in ["A1", "A2", "A3"]:
-        if assignments.get(slot, "empty") != "analog_ltc2311_16":
+        card_id = assignments.get(slot, "empty")
+        if card_id == "analog_ltc2311_16":
+            channel_count = 8
+        elif card_id == "analog_max11331":
+            channel_count = 24
+        else:
             continue
-        offsets[slot] = next_offset
-        next_offset += 8
+        offsets[slot] = {
+            "offset": next_offset,
+            "channel_count": channel_count,
+        }
+        next_offset += channel_count
     return offsets
 
 
@@ -907,9 +1031,20 @@ def adc_ltc2311_isr_lines(slot: str, context: dict[str, object], buffer_offset: 
         (
             f"    Global_Data.av.adc_ltc2311_{slot_lower}_ch{channel} = "
             f"uz_adcLtc2311_convert_raw_to_physical_value("
-            f"Global_Data.objects.adc_ltc2311_{slot_lower}, adc_ltc2311_data.data[{buffer_offset + channel}], {channel}U);"
+            f"Global_Data.objects.adc_ltc2311_{slot_lower}, analog_adc_data.data[{buffer_offset + channel}], {channel}U);"
         )
         for channel in range(8)
+    ]
+
+
+def adc_max11331_isr_lines(slot: str, context: dict[str, object], buffer_offset: int) -> list[str]:
+    slot_lower = slot.lower()
+    return [
+        (
+            f"    Global_Data.av.adc_max11331_{slot_lower}_ch{channel} = "
+            f"convert_adc_max11331_{slot_lower}_raw_to_physical_value(analog_adc_data.data[{buffer_offset + channel}]);"
+        )
+        for channel in range(24)
     ]
 
 
@@ -944,6 +1079,9 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     elif interface == "adc_ltc2311":
         fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_ADC_LTC2311_S00_AXI_BASEADDR"
         search_terms = ["ADC_LTC2311", "ADCLTC2311", "LTC2311"]
+    elif interface == "adc_max11331":
+        fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_ADC_MAX11331_BASEADDR"
+        search_terms = ["ADC_MAX11331", "ADCMAX11331", "MAX11331"]
     elif interface == "dac8831":
         fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_DAC8831_AXI4_BASEADDR"
         search_terms = ["DAC8831", "DAC_SPI", "DAC"]

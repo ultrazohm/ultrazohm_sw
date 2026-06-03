@@ -54,8 +54,8 @@ typedef struct uz_adcMax11331_t uz_adcMax11331_t;
  *
  */
 enum uz_adcMax11331_trigger_mode{
-    pl_trigger=0, /**< Conversion is only triggered by IP-Core PL port */
-    continuous_trigger, /**< Conversion is triggered continuously with the maximum frequency -> this is the default mode */
+    UZ_ADCMAX11331_PL_TRIGGER=0, /**< Conversion is only triggered by IP-Core PL port */
+    UZ_ADCMAX11331_CONTINUOUS_TRIGGER, /**< Conversion is triggered continuously with the maximum frequency -> this is the default mode */
 };
 
 /**

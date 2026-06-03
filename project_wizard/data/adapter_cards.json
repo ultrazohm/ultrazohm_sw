@@ -115,6 +115,12 @@
           "Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.",
           "Connects AXI through the A-slot project-level AXI attachment point."
         ],
+        "adc_stream": {
+          "raw_value_signal": "{slot}_RAW_Value",
+          "raw_valid_signal": "{slot}_RAW_Valid",
+          "channel_count": 8,
+          "sample_width": 16
+        },
         "ip_cores": [
           {
             "instance_name": "{slot}_ADC_LTC2311",
@@ -266,6 +272,249 @@
       "vitis": {
         "driver": "",
         "notes": []
+      }
+    },
+    {
+      "id": "analog_max11331",
+      "name": "Analog MAX11331",
+      "family": "analog",
+      "description": "Analog A-slot adapter card using the ADC_MAX11331_top IP core.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the ADC_MAX11331_top IP core and standard xlconcat fanout helpers.",
+          "Routes MAX11331 SPI signals to slot-specific vector ports without using the legacy duplicate.vhd helper.",
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Contributes 24 packed 16-bit ADC samples to the AXI2TCM DataMover path."
+        ],
+        "adc_stream": {
+          "raw_value_signal": "{slot}_RAW_Value",
+          "raw_valid_signal": "{slot}_RAW_Valid",
+          "channel_count": 24,
+          "sample_width": 16
+        },
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_ADC_MAX11331",
+            "instance_prefix": "ADC_MAX11331_top",
+            "module": "ADC_MAX11331_top",
+            "vlnv": "Wendel_ZC:UZ_IP_Repository:ADC_MAX11331_top",
+            "clock_pins": [
+              "clk",
+              "s_axi_lite_aclk"
+            ],
+            "reset_pins": [
+              "reset_n",
+              "s_axi_lite_aresetn"
+            ],
+            "properties": {
+              "CONFIG.OUTPUT_WORD_WIDTH": "16",
+              "CONFIG.NUMBER_OF_ADCS": "3",
+              "CONFIG.DIFFERENTIAL_SAMPLING": "true",
+              "CONFIG.DEBUG_MESSAGE_INCLUDED": "false"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_sclk_fanout",
+            "instance_prefix": "max11331_sclk_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_cs_fanout",
+            "instance_prefix": "max11331_cs_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_mosi_fanout",
+            "instance_prefix": "max11331_mosi_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In2"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In2"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In2"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "{slot}_SCKL",
+            "ip_core": "{slot}_max11331_sclk_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_SCKL",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_CS",
+            "ip_core": "{slot}_max11331_cs_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_CS",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_MOSI",
+            "ip_core": "{slot}_max11331_mosi_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_MOSI",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_MISO",
+            "ip_pin": "miso",
+            "direction": "in",
+            "pin": "{slot}_MISO",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_EOC",
+            "direction": "in",
+            "pin": "{slot}_EOC",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "connect_to_ip": false,
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Value",
+            "ip_pin": "raw_measured_data",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false,
+            "left": 383,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Valid",
+            "ip_pin": "meas_done",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "signals": [
+          {
+            "signal": "TRIGGER_CNV",
+            "ip_pin": "enable_measure",
+            "direction": "in",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "interfaces": [],
+        "constraints": {
+          "enable": "Analog_{slot}_ADC_MAX11331.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "s_axi_lite",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite/reg0",
+            "range": "0x00010000",
+            "offsets": {
+              "A1": "0x80000000",
+              "A2": "0x80010000",
+              "A3": "0x80020000"
+            }
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "uz_adc_max11331",
+        "notes": [
+          "Generate slot-local MAX11331 initialization.",
+          "Read 24 packed 16-bit samples from the AXI2TCM DataMover buffer."
+        ]
       }
     },
     {

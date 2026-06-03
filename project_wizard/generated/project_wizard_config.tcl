@@ -170,6 +170,37 @@ proc uz_pw_delete_matching_intf_pins_in_hierarchy {hier_path cleanup_patterns} {
   }
 }
 
+proc uz_pw_delete_child_cells_in_slot_hierarchy {hier_path} {
+  if {[llength [get_bd_cells -quiet $hier_path]] == 0} {
+    return
+  }
+
+  set cells_to_delete {}
+  foreach cell [get_bd_cells -quiet ${hier_path}/*] {
+    set cell_name [get_property NAME $cell]
+    if {$cell_name eq "axi_smartconnect"} {
+      continue
+    }
+    if {[lsearch -exact $cells_to_delete $cell] < 0} {
+      lappend cells_to_delete $cell
+    }
+  }
+
+  foreach cell $cells_to_delete {
+    foreach intf_pin [get_bd_intf_pins -quiet -of_objects $cell] {
+      uz_pw_disconnect_intf_pin_from_all_nets $intf_pin
+    }
+    foreach pin [get_bd_pins -quiet -of_objects $cell] {
+      uz_pw_disconnect_pin_from_all_nets $pin
+    }
+  }
+
+  if {[llength $cells_to_delete] > 0} {
+    puts "Deleting existing generated child cells in ${hier_path}: $cells_to_delete"
+    catch {delete_bd_objs $cells_to_delete}
+  }
+}
+
 
 # TODO: Create or refresh hierarchy for adapter slot A1.
 # Suggested hierarchy path: uz_digital_adapter/A1_adapter or uz_analog_adapter/A1_adapter
@@ -188,6 +219,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/A1_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A1_adapter
 
 # TODO: Create or refresh hierarchy for adapter slot A2.
 # Suggested hierarchy path: uz_digital_adapter/A2_adapter or uz_analog_adapter/A2_adapter
@@ -206,6 +239,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/A2_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A2_adapter
 
 # TODO: Create or refresh hierarchy for adapter slot A3.
 # Suggested hierarchy path: uz_digital_adapter/A3_adapter or uz_analog_adapter/A3_adapter
@@ -224,6 +259,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A3_adapter [list "*A3*" "*a3*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/A3_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A3_adapter
 
 # TODO: Create or refresh hierarchy for adapter slot D4.
 # Suggested hierarchy path: uz_digital_adapter/D4_adapter or uz_analog_adapter/D4_adapter
@@ -242,6 +279,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*D4*" "*d4*" "
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/D4_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D4_adapter
 
 # TODO: Create or refresh hierarchy for adapter slot D5.
 # Suggested hierarchy path: uz_digital_adapter/D5_adapter or uz_analog_adapter/D5_adapter
@@ -260,6 +299,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*D5*" "*d5*" "
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/D5_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D5_adapter
 
 
 
@@ -1389,19 +1430,21 @@ uz_pw_apply_slot_constraints A2 [list "Analog_A2_packed.xdc" "Analog_AdapterBoar
 
 
 # -----------------------------------------------------------------------------
-# A3: Analog LTC2311-16
+# A3: Analog MAX11331
 # -----------------------------------------------------------------------------
 
 # NOTE: Creates uz_analog_adapter/Ax_adapter for the selected A-slot.
 
-# NOTE: Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.
+# NOTE: Instantiates the ADC_MAX11331_top IP core and standard xlconcat fanout helpers.
 
-# NOTE: Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.
+# NOTE: Routes MAX11331 SPI signals to slot-specific vector ports without using the legacy duplicate.vhd helper.
 
 # NOTE: Connects AXI through the A-slot project-level AXI attachment point.
 
+# NOTE: Contributes 24 packed 16-bit ADC samples to the AXI2TCM DataMover path.
 
-puts "Adding Analog LTC2311-16 for slot A3"
+
+puts "Adding Analog MAX11331 for slot A3"
 
 set adapter_parent_hier uz_analog_adapter
 set adapter_hier_name A3_adapter
@@ -1414,108 +1457,185 @@ uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/s00_axi_aresetn
 
 
-set A3_ADC_LTC2311_path ${adapter_hier_path}/A3_ADC_LTC2311
-if {[llength [get_bd_cells -quiet $A3_ADC_LTC2311_path]] == 0} {
+set A3_ADC_MAX11331_path ${adapter_hier_path}/A3_ADC_MAX11331
+if {[llength [get_bd_cells -quiet $A3_ADC_MAX11331_path]] == 0} {
 
 
-  set A3_ADC_LTC2311 [create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311 $A3_ADC_LTC2311_path]
-
-} else {
-  puts "Reusing existing IP $A3_ADC_LTC2311_path"
-}
-# Module: ADC_LTC2311
-
-uz_pw_set_property_dict_if_objects [list CONFIG.DATA_WIDTH 16 CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1 CONFIG.OFFSET_WIDTH 16 CONFIG.CONVERSION_WIDTH 18 CONFIG.RES_LSB 0 CONFIG.RES_MSB 34 CONFIG.DIFFERENTIAL false] [get_bd_cells -quiet $A3_ADC_LTC2311_path] $A3_ADC_LTC2311_path
-
-
-set A3_iobufds_inst_path ${adapter_hier_path}/A3_iobufds_inst
-if {[llength [get_bd_cells -quiet $A3_iobufds_inst_path]] == 0} {
-
-  set A3_iobufds_inst [create_bd_cell -type module -reference iobufds_inst $A3_iobufds_inst_path]
-
+  set A3_ADC_MAX11331 [create_bd_cell -type ip -vlnv Wendel_ZC:UZ_IP_Repository:ADC_MAX11331_top $A3_ADC_MAX11331_path]
 
 } else {
-  puts "Reusing existing IP $A3_iobufds_inst_path"
+  puts "Reusing existing IP $A3_ADC_MAX11331_path"
 }
-# Module: iobufds_inst
+# Module: ADC_MAX11331_top
 
-uz_pw_set_property_dict_if_objects [list CONFIG.CHANNELS_PER_MASTER 8 CONFIG.SPI_MASTER 1] [get_bd_cells -quiet $A3_iobufds_inst_path] $A3_iobufds_inst_path
-
-
-set A3_inv_input_path ${adapter_hier_path}/A3_inv_input
-if {[llength [get_bd_cells -quiet $A3_inv_input_path]] == 0} {
+uz_pw_set_property_dict_if_objects [list CONFIG.OUTPUT_WORD_WIDTH 16 CONFIG.NUMBER_OF_ADCS 3 CONFIG.DIFFERENTIAL_SAMPLING true CONFIG.DEBUG_MESSAGE_INCLUDED false] [get_bd_cells -quiet $A3_ADC_MAX11331_path] $A3_ADC_MAX11331_path
 
 
-  set A3_inv_input [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant $A3_inv_input_path]
+set A3_max11331_sclk_fanout_path ${adapter_hier_path}/A3_max11331_sclk_fanout
+if {[llength [get_bd_cells -quiet $A3_max11331_sclk_fanout_path]] == 0} {
+
+
+  set A3_max11331_sclk_fanout [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat $A3_max11331_sclk_fanout_path]
 
 } else {
-  puts "Reusing existing IP $A3_inv_input_path"
+  puts "Reusing existing IP $A3_max11331_sclk_fanout_path"
 }
-# Module: xlconstant
+# Module: xlconcat
 
-uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH 8 CONFIG.CONST_VAL 0x00] [get_bd_cells -quiet $A3_inv_input_path] $A3_inv_input_path
-
-
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 3] [get_bd_cells -quiet $A3_max11331_sclk_fanout_path] $A3_max11331_sclk_fanout_path
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${A3_ADC_LTC2311_path}/s00_axi_aclk
+set A3_max11331_cs_fanout_path ${adapter_hier_path}/A3_max11331_cs_fanout
+if {[llength [get_bd_cells -quiet $A3_max11331_cs_fanout_path]] == 0} {
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/s00_axi_aresetn ${A3_ADC_LTC2311_path}/s00_axi_aresetn
+  set A3_max11331_cs_fanout [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat $A3_max11331_cs_fanout_path]
+
+} else {
+  puts "Reusing existing IP $A3_max11331_cs_fanout_path"
+}
+# Module: xlconcat
+
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 3] [get_bd_cells -quiet $A3_max11331_cs_fanout_path] $A3_max11331_cs_fanout_path
 
 
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_inv_input/dout ${adapter_hier_path}/A3_iobufds_inst/INVERT_OUTPUT
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_LTC2311/SCLK ${adapter_hier_path}/A3_iobufds_inst/SCLK_IN
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_iobufds_inst/MISO_OUT ${adapter_hier_path}/A3_ADC_LTC2311/MISO
+set A3_max11331_mosi_fanout_path ${adapter_hier_path}/A3_max11331_mosi_fanout
+if {[llength [get_bd_cells -quiet $A3_max11331_mosi_fanout_path]] == 0} {
 
 
+  set A3_max11331_mosi_fanout [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat $A3_max11331_mosi_fanout_path]
 
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_OUT_CNV_1 "0" "0"
+} else {
+  puts "Reusing existing IP $A3_max11331_mosi_fanout_path"
+}
+# Module: xlconcat
 
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_OUT_CNV_1 "0" "0"
-
-
-uz_pw_create_bd_port_if_missing O A3_OUT_CNV_0 "0" "0"
-uz_pw_create_bd_port_if_missing O A3_OUT_CNV_1 "0" "0"
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_LTC2311/SS_N ${adapter_hier_path}/A3_OUT_CNV_1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_OUT_CNV_1 ${adapter_parent_hier}/A3_OUT_CNV_1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_OUT_CNV_1 A3_OUT_CNV_0
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_OUT_CNV_1 A3_OUT_CNV_1
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_OUT_CLK "1" "0"
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_OUT_CLK "1" "0"
-
-
-uz_pw_create_bd_port_if_missing O A3_OUT_CLK "1" "0"
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_iobufds_inst/SCLK_OUT ${adapter_hier_path}/A3_OUT_CLK
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_OUT_CLK ${adapter_parent_hier}/A3_OUT_CLK
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_OUT_CLK A3_OUT_CLK
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_RAW_Value "127" "0"
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_RAW_Value "127" "0"
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 3] [get_bd_cells -quiet $A3_max11331_mosi_fanout_path] $A3_max11331_mosi_fanout_path
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_LTC2311/RAW_VALUE ${adapter_hier_path}/A3_RAW_Value
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${A3_ADC_MAX11331_path}/clk
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${A3_ADC_MAX11331_path}/s_axi_lite_aclk
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/s00_axi_aresetn ${A3_ADC_MAX11331_path}/reset_n
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/s00_axi_aresetn ${A3_ADC_MAX11331_path}/s_axi_lite_aresetn
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/sclk ${adapter_hier_path}/A3_max11331_sclk_fanout/In0
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/sclk ${adapter_hier_path}/A3_max11331_sclk_fanout/In1
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/sclk ${adapter_hier_path}/A3_max11331_sclk_fanout/In2
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/ss_n ${adapter_hier_path}/A3_max11331_cs_fanout/In0
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/ss_n ${adapter_hier_path}/A3_max11331_cs_fanout/In1
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/ss_n ${adapter_hier_path}/A3_max11331_cs_fanout/In2
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/mosi ${adapter_hier_path}/A3_max11331_mosi_fanout/In0
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/mosi ${adapter_hier_path}/A3_max11331_mosi_fanout/In1
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/mosi ${adapter_hier_path}/A3_max11331_mosi_fanout/In2
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_SCKL "2" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_SCKL "2" "0"
+
+
+uz_pw_create_bd_port_if_missing O A3_SCKL "2" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_max11331_sclk_fanout/dout ${adapter_hier_path}/A3_SCKL
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_SCKL ${adapter_parent_hier}/A3_SCKL
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_SCKL A3_SCKL
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_CS "2" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_CS "2" "0"
+
+
+uz_pw_create_bd_port_if_missing O A3_CS "2" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_max11331_cs_fanout/dout ${adapter_hier_path}/A3_CS
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_CS ${adapter_parent_hier}/A3_CS
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_CS A3_CS
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_MOSI "2" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_MOSI "2" "0"
+
+
+uz_pw_create_bd_port_if_missing O A3_MOSI "2" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_max11331_mosi_fanout/dout ${adapter_hier_path}/A3_MOSI
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_MOSI ${adapter_parent_hier}/A3_MOSI
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_MOSI A3_MOSI
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/A3_MISO "2" "0"
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/A3_MISO "2" "0"
+
+
+uz_pw_create_bd_port_if_missing I A3_MISO "2" "0"
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_MISO ${adapter_hier_path}/A3_ADC_MAX11331/miso
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/A3_MISO ${adapter_hier_path}/A3_MISO
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_MISO A3_MISO
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/A3_EOC "2" "0"
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/A3_EOC "2" "0"
+
+
+uz_pw_create_bd_port_if_missing I A3_EOC "2" "0"
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/A3_EOC ${adapter_hier_path}/A3_EOC
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_EOC A3_EOC
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/A3_RAW_Value "383" "0"
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_RAW_Value "383" "0"
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/raw_measured_data ${adapter_hier_path}/A3_RAW_Value
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_RAW_Value ${adapter_parent_hier}/A3_RAW_Value
@@ -1528,28 +1648,11 @@ uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_RAW_Valid "" ""
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_LTC2311/RAW_VALID ${adapter_hier_path}/A3_RAW_Valid
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/meas_done ${adapter_hier_path}/A3_RAW_Valid
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_RAW_Valid ${adapter_parent_hier}/A3_RAW_Valid
 
-
-
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/A3_IN "15" "0"
-
-uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/A3_IN "15" "0"
-
-
-uz_pw_create_bd_port_if_missing I A3_IN "15" "0"
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_IN ${adapter_hier_path}/A3_iobufds_inst/MISO_IN
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/A3_IN ${adapter_hier_path}/A3_IN
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/A3_IN A3_IN
 
 
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/TRIGGER_CNV "" ""
@@ -1558,7 +1661,7 @@ uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/TRIGGER_CNV "" ""
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/TRIGGER_CNV ${adapter_hier_path}/A3_ADC_LTC2311/TRIGGER_CNV
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/TRIGGER_CNV ${adapter_hier_path}/A3_ADC_MAX11331/enable_measure
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/TRIGGER_CNV ${adapter_hier_path}/TRIGGER_CNV
@@ -1569,9 +1672,11 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/TRIGGER_CNV ${adapt
 
 
 
-uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoard_A3.xdc" "Analog_A3_ADC_MAX11331.xdc" "uz_dac8831_A3.xdc"] [list "Analog_A3_packed.xdc"]
+uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoard_A3.xdc" "Analog_A3_ADC_MAX11331.xdc" "uz_dac8831_A3.xdc"] [list "Analog_A3_ADC_MAX11331.xdc"]
 
 
+
+# Vitis driver hook: uz_adc_max11331
 
 
 # D1: bypass - leaving existing block design content untouched
@@ -2895,36 +3000,66 @@ proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
   }
 }
 
-proc uz_pw_connect_intf_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_intf_pins -quiet $source_pin]] == 0} {
-    puts "WARNING: Source AXI interface not found: $source_pin"
-    return
-  }
-  if {[llength [get_bd_intf_pins -quiet $sink_pin]] == 0} {
-    puts "WARNING: Sink AXI interface not found: $sink_pin"
-    return
-  }
-  if {[llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] == 0} {
-    connect_bd_intf_net [get_bd_intf_pins $source_pin] [get_bd_intf_pins $sink_pin]
-  } else {
-    puts "Reusing existing AXI interface connection on $sink_pin"
+proc uz_pw_delete_intf_nets_on_pin {pin label} {
+  foreach intf_net [get_bd_intf_nets -quiet -of_objects $pin] {
+    puts "Deleting stale AXI interface net on $label: $intf_net"
+    catch {delete_bd_objs $intf_net}
   }
 }
 
-proc uz_pw_connect_intf_upper_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_intf_pins -quiet $source_pin]] == 0} {
+proc uz_pw_connect_intf_pair {source_pin sink_pin {boundary_type ""} {preserve_source_nets 0}} {
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+
+  if {[llength $source] == 0} {
     puts "WARNING: Source AXI interface not found: $source_pin"
     return
   }
-  if {[llength [get_bd_intf_pins -quiet $sink_pin]] == 0} {
+  if {[llength $sink] == 0} {
     puts "WARNING: Sink AXI interface not found: $sink_pin"
     return
   }
-  if {[llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] == 0} {
-    connect_bd_intf_net -boundary_type upper [get_bd_intf_pins $source_pin] [get_bd_intf_pins $sink_pin]
-  } else {
-    puts "Reusing existing AXI interface connection on $sink_pin"
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      puts "Reusing existing AXI interface connection between $source_pin and $sink_pin"
+      return
+    }
   }
+
+  if {!$preserve_source_nets && [llength $source_nets] > 0} {
+    uz_pw_delete_intf_nets_on_pin $source $source_pin
+  }
+  if {[llength [get_bd_intf_pins -quiet $sink_pin]] > 0 && [llength [get_bd_intf_nets -quiet -of_objects [get_bd_intf_pins $sink_pin]]] > 0} {
+    uz_pw_delete_intf_nets_on_pin [get_bd_intf_pins $sink_pin] $sink_pin
+  }
+
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0 || [llength $sink] == 0} {
+    puts "WARNING: Could not reconnect AXI interface because a pin disappeared: $source_pin -> $sink_pin"
+    return
+  }
+
+  if {$boundary_type eq "upper"} {
+    connect_bd_intf_net -boundary_type upper $source $sink
+  } else {
+    connect_bd_intf_net $source $sink
+  }
+}
+
+proc uz_pw_connect_intf_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin
+}
+
+proc uz_pw_connect_intf_preserve_source_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin "" 1
+}
+
+proc uz_pw_connect_intf_upper_if_unconnected {source_pin sink_pin} {
+  uz_pw_connect_intf_pair $source_pin $sink_pin upper 1
 }
 
 proc uz_pw_set_property_dict_if_objects {property_dict objects label} {
@@ -3055,6 +3190,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
 
+puts "Refreshing AXI attachment for slot A1"
+uz_pw_remove_slot_axi_attachment A1 uz_analog_adapter
+
 puts "Configuring local AXI SmartConnect for slot A1"
 
 set slot_sc uz_analog_adapter/A1_adapter/axi_smartconnect
@@ -3097,7 +3235,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 set uz_pw_upstream_smartconnect uz_system/smartconnect_0
@@ -3116,6 +3254,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
 if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
+
+puts "Refreshing AXI attachment for slot A2"
+uz_pw_remove_slot_axi_attachment A2 uz_analog_adapter
 
 puts "Configuring local AXI SmartConnect for slot A2"
 
@@ -3159,7 +3300,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 set uz_pw_upstream_smartconnect uz_system/smartconnect_0
@@ -3178,6 +3319,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
 if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
+
+puts "Refreshing AXI attachment for slot A3"
+uz_pw_remove_slot_axi_attachment A3 uz_analog_adapter
 
 puts "Configuring local AXI SmartConnect for slot A3"
 
@@ -3221,7 +3365,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 set uz_pw_upstream_smartconnect uz_user/smartconnect_1
@@ -3240,6 +3384,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
 if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
+
+puts "Refreshing AXI attachment for slot D4"
+uz_pw_remove_slot_axi_attachment D4 uz_digital_adapter
 
 puts "Configuring local AXI SmartConnect for slot D4"
 
@@ -3283,7 +3430,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 set uz_pw_upstream_smartconnect uz_user/smartconnect_1
@@ -3302,6 +3449,9 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
 if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
+
+puts "Refreshing AXI attachment for slot D5"
+uz_pw_remove_slot_axi_attachment D5 uz_digital_adapter
 
 puts "Configuring local AXI SmartConnect for slot D5"
 
@@ -3345,7 +3495,7 @@ if {$upstream_mi_pin eq ""} {
 uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
 uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
 
@@ -3362,8 +3512,8 @@ assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space /zy
 
 set slot_sc uz_analog_adapter/A3_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI
-assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI/S00_AXI_reg] -force
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite
+assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite/reg0] -force
 
 set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
@@ -3408,8 +3558,8 @@ puts "Applying AXI2TCM DataMover packing for A-slot ADC streams"
 
 set project_wizard_datamover_hier "uz_system/DataMover"
 set project_wizard_axi2tcm "${project_wizard_datamover_hier}/AXI2TCM_0"
-set project_wizard_axi2tcm_channels 16
-set project_wizard_axi2tcm_data_width 256
+set project_wizard_axi2tcm_channels 32
+set project_wizard_axi2tcm_data_width 512
 
 if {[llength [get_bd_cells -quiet $project_wizard_axi2tcm]] > 0} {
   uz_pw_set_property_if_objects CONFIG.C_M00_NUMBER_of_ADCs $project_wizard_axi2tcm_channels [get_bd_cells -quiet $project_wizard_axi2tcm] $project_wizard_axi2tcm
@@ -3438,8 +3588,8 @@ uz_pw_create_hier_pin_if_missing uz_system/DataMover I ADC_A1 127 0
 uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A1_RAW_Value uz_system/ADC_A1
 uz_pw_connect_pin_pair_if_unconnected uz_system/ADC_A1 uz_system/DataMover/ADC_A1
 
-uz_pw_create_hier_pin_if_missing uz_system I ADC_A3 127 0
-uz_pw_create_hier_pin_if_missing uz_system/DataMover I ADC_A3 127 0
+uz_pw_create_hier_pin_if_missing uz_system I ADC_A3 383 0
+uz_pw_create_hier_pin_if_missing uz_system/DataMover I ADC_A3 383 0
 uz_pw_connect_pin_pair_if_unconnected uz_analog_adapter/A3_RAW_Value uz_system/ADC_A3
 uz_pw_connect_pin_pair_if_unconnected uz_system/ADC_A3 uz_system/DataMover/ADC_A3
 

@@ -8,43 +8,32 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-static struct uz_adcLtc2311_config_t config_adc_ltc2311_a3 = {
-    .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR,
+static struct uz_adcMax11331_config_t config_adc_max11331_a3 = {
+    .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
-    .software_raw_to_physical_value_factor = {
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f,
-        10.0f},
-    .ip_core_channel_config = {
+    .master_select = UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2 | UZ_ADCMAX11331_MASTER3,
+    .trigger_mode = UZ_ADCMAX11331_PL_TRIGGER,
+    .adc_delay_offset = 0U,
+    .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ,
+    .cpha = 1U,
+    .cpol = 1U,
+    .error_code = 0U,
+    .channel_config = {
         .conversion_factor = 1.0f,
         .conversion_factor_definition = {
             .is_signed = true,
             .integer_bits = 14,
             .fractional_bits = 4},
         .offset = 0,
-    },
-    .spi_master_config = {
-        .samples = 1U,
-        .sample_time = 6U,
-        .trigger_mode = pl_trigger},
-    .cpol = 1U,
-    .cpha = 0U,
-    .napping_spi_masters = 0U,
-    .sleeping_spi_masters = 0U,
-    .master_select = UZ_ADCLTC2311_MASTER1,
-    .channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8,
-    .pre_delay = 0U,
-    .post_delay = 0U,
-    .clk_div = 0U,
-    .max_attempts = 10U};
+    }};
 
-uz_adcLtc2311_t* initialize_adc_ltc2311_a3(void)
+uz_adcMax11331_t* initialize_adc_max11331_a3(void)
 {
-    return uz_adcLtc2311_init(config_adc_ltc2311_a3);
+    return uz_adcMax11331_init(config_adc_max11331_a3);
+}
+
+float convert_adc_max11331_a3_raw_to_physical_value(int16_t raw_value)
+{
+    return ((float)((int16_t)(raw_value << 4))) / (float)(1 << 15) * config_adc_max11331_a3.channel_config.conversion_factor;
 }
 /* Project Wizard END: A3 definitions */

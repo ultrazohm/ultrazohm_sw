@@ -167,6 +167,37 @@ proc uz_pw_delete_matching_intf_pins_in_hierarchy {hier_path cleanup_patterns} {
   }
 }
 
+proc uz_pw_delete_child_cells_in_slot_hierarchy {hier_path} {
+  if {[llength [get_bd_cells -quiet $hier_path]] == 0} {
+    return
+  }
+
+  set cells_to_delete {}
+  foreach cell [get_bd_cells -quiet ${hier_path}/*] {
+    set cell_name [get_property NAME $cell]
+    if {$cell_name eq "axi_smartconnect"} {
+      continue
+    }
+    if {[lsearch -exact $cells_to_delete $cell] < 0} {
+      lappend cells_to_delete $cell
+    }
+  }
+
+  foreach cell $cells_to_delete {
+    foreach intf_pin [get_bd_intf_pins -quiet -of_objects $cell] {
+      uz_pw_disconnect_intf_pin_from_all_nets $intf_pin
+    }
+    foreach pin [get_bd_pins -quiet -of_objects $cell] {
+      uz_pw_disconnect_pin_from_all_nets $pin
+    }
+  }
+
+  if {[llength $cells_to_delete] > 0} {
+    puts "Deleting existing generated child cells in ${hier_path}: $cells_to_delete"
+    catch {delete_bd_objs $cells_to_delete}
+  }
+}
+
 {% for slot in configured_slots %}
 # TODO: Create or refresh hierarchy for adapter slot {{ slot.slot }}.
 # Suggested hierarchy path: uz_digital_adapter/{{ slot.slot }}_adapter or uz_analog_adapter/{{ slot.slot }}_adapter
@@ -185,6 +216,8 @@ uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list {{ slot.cleanup
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/{{ slot.slot }}_adapter
 {% endfor %}
 
 {% for cpld in slot_cplds %}

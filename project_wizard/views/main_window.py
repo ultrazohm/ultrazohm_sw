@@ -72,7 +72,7 @@ class MainWindow(QMainWindow):
         self.software_mode_combos: dict[str, QComboBox] = {}
         self.software_preset_combos: dict[str, QComboBox] = {}
         self.driver_config_mode_combos: dict[str, QComboBox] = {}
-        self.driver_config_fields: dict[tuple[str, str], QLineEdit | QPlainTextEdit] = {}
+        self.driver_config_fields: dict[tuple[str, str], QLineEdit | QPlainTextEdit | QComboBox] = {}
         self.driver_config_tabs: QTabWidget | None = None
         self.driver_config_tab_layouts: dict[str, QVBoxLayout] = {}
         self.visualization_checkboxes: dict[str, QCheckBox] = {}
@@ -879,6 +879,7 @@ class MainWindow(QMainWindow):
             "analog_axi2tcm_trigger_source": (
                 "Normally this is one generated A-slot RAW_Valid pin. If the configured pin is not generated "
                 "by the selected A-slot cards, the wizard falls back to the first generated RAW_Valid. "
+                "For LTC2311 this is driven by RAW_VALID; for MAX11331 it is driven by meas_done. "
                 "If no RAW_Valid exists, it uses the first conversion trigger source instead."
             ),
             "analog_axi2tcm_trigger_target": (
@@ -1076,6 +1077,8 @@ class MainWindow(QMainWindow):
                 continue
             if isinstance(field, QPlainTextEdit):
                 value = field.toPlainText().strip()
+            elif isinstance(field, QComboBox):
+                value = str(field.currentData() or "")
             else:
                 value = field.text().strip()
             config[f"driver_config_{instance_id}_{field_id}"] = value
@@ -1100,6 +1103,8 @@ class MainWindow(QMainWindow):
         for (instance_id, field_id), field in self.driver_config_fields.items():
             if isinstance(field, QPlainTextEdit):
                 value = field.toPlainText().strip()
+            elif isinstance(field, QComboBox):
+                value = str(field.currentData() or "")
             else:
                 value = field.text().strip()
             values.setdefault(instance_id, {})[field_id] = value
@@ -1179,6 +1184,8 @@ class MainWindow(QMainWindow):
                 combo.addItem("Default EnDat / SSI", "default")
             elif card_id == "analog_ltc2311_16":
                 combo.addItem("Default ADC LTC2311", "default")
+            elif card_id == "analog_max11331":
+                combo.addItem("Default ADC MAX11331", "default")
             elif card_id == "analog_dac8831":
                 combo.addItem("Default DAC8831", "default")
             else:
@@ -1230,14 +1237,24 @@ class MainWindow(QMainWindow):
             self.driver_config_mode_combos[instance.id] = mode_combo
             form.addRow("Config mode", mode_combo)
 
-            field_widgets: list[QLineEdit | QPlainTextEdit] = []
+            field_widgets: list[QWidget] = []
+            field_rows: dict[str, tuple[QWidget, QWidget | None]] = {}
+            choice_fields: dict[str, QComboBox] = {}
             for field in instance.fields:
                 if mode_value == "custom":
                     stored_value = values.get(f"driver_config_{instance.id}_{field.id}", field.default)
                 else:
                     stored_value = field.default
-                if field.multiline:
-                    widget: QLineEdit | QPlainTextEdit = QPlainTextEdit()
+                if field.input_type == "choice":
+                    widget = QComboBox()
+                    options = field.options or ((field.default, field.default),)
+                    for option_value, option_label in options:
+                        widget.addItem(option_label, option_value)
+                    option_index = widget.findData(stored_value)
+                    widget.setCurrentIndex(option_index if option_index >= 0 else 0)
+                    choice_fields[field.id] = widget
+                elif field.multiline:
+                    widget = QPlainTextEdit()
                     widget.setPlainText(stored_value)
                     widget.setFixedHeight(95)
                 else:
@@ -1260,16 +1277,43 @@ class MainWindow(QMainWindow):
                     row_layout.addWidget(widget, 1)
                     row_layout.addWidget(help_button)
                     form.addRow(field.label, row)
+                    label_widget = form.labelForField(row)
+                    field_rows[field.id] = (row, label_widget)
                 else:
                     form.addRow(field.label, widget)
+                    label_widget = form.labelForField(widget)
+                    field_rows[field.id] = (widget, label_widget)
             group_layout.addLayout(form)
 
-            def apply_mode(_index: int, combo: QComboBox = mode_combo, widgets: list[QLineEdit | QPlainTextEdit] = field_widgets) -> None:
+            def apply_visibility(
+                fields: list[Any] = instance.fields,
+                rows: dict[str, tuple[QWidget, QWidget | None]] = field_rows,
+                choices: dict[str, QComboBox] = choice_fields,
+            ) -> None:
+                for field in fields:
+                    visible = True
+                    for controller_id, allowed_values in field.visible_when:
+                        controller = choices.get(controller_id)
+                        if controller is None or str(controller.currentData()) not in set(allowed_values):
+                            visible = False
+                            break
+                    row_widget, label_widget = rows.get(field.id, (None, None))
+                    if row_widget is not None:
+                        row_widget.setVisible(visible)
+                    if label_widget is not None:
+                        label_widget.setVisible(visible)
+
+            def apply_mode(_index: int, combo: QComboBox = mode_combo, widgets: list[QWidget] = field_widgets) -> None:
                 editable = combo.currentData() == "custom"
                 for widget in widgets:
                     widget.setEnabled(editable)
+                apply_visibility()
                 self.guarded_refresh_software_preview()
 
+            for choice_combo in choice_fields.values():
+                choice_combo.currentIndexChanged.connect(
+                    lambda _index, refresh=apply_visibility: (refresh(), self.guarded_refresh_software_preview())
+                )
             mode_combo.currentIndexChanged.connect(apply_mode)
             apply_mode(mode_combo.currentIndex())
             layout.addWidget(group)

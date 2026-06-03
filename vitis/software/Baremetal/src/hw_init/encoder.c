@@ -13,6 +13,16 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
+/*
+ * Legacy fixed D5 incremental encoder integration.
+ *
+ * The Project Wizard now owns adapter-slot IP placement and software
+ * integration. Keep this implementation parked for the later wizard-managed
+ * incremental encoder card support, but do not compile it as fixed framework
+ * code.
+ */
+#if 0
+
 #include <stdint.h>
 #include <math.h>
 #include "../include/encoder.h"
@@ -52,3 +62,5 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }
+
+#endif

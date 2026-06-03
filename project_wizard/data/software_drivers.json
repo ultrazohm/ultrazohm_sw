@@ -227,6 +227,82 @@
       ]
     },
     {
+      "id": "uz_adc_max11331",
+      "name": "ADC MAX11331",
+      "templates": {
+        "header": "software/adc_max11331.h.tpl",
+        "source": "software/adc_max11331.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "conversion_factor",
+          "label": "Software conversion factor",
+          "default": "1.0f",
+          "help": "Software-side factor used for the packed MAX11331 raw values. The current wizard template mirrors the legacy MAX11331 conversion formula."
+        },
+        {
+          "id": "conversion_factor_is_signed",
+          "label": "Conversion factor signed",
+          "default": "true"
+        },
+        {
+          "id": "conversion_factor_integer_bits",
+          "label": "Conversion factor integer bits",
+          "default": "14"
+        },
+        {
+          "id": "conversion_factor_fractional_bits",
+          "label": "Conversion factor fractional bits",
+          "default": "4"
+        },
+        {
+          "id": "offset",
+          "label": "Software offset",
+          "default": "0"
+        },
+        {
+          "id": "master_select",
+          "label": "Master select",
+          "default": "UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2 | UZ_ADCMAX11331_MASTER3"
+        },
+        {
+          "id": "trigger_mode",
+          "label": "Trigger mode",
+          "default": "UZ_ADCMAX11331_PL_TRIGGER"
+        },
+        {
+          "id": "adc_delay_offset",
+          "label": "ADC delay offset",
+          "default": "0U"
+        },
+        {
+          "id": "clk_div",
+          "label": "SPI clock divider",
+          "default": "UZ_ADCMAX11331_SPI_CLK_16_67MHZ"
+        },
+        {
+          "id": "cpha",
+          "label": "CPHA",
+          "default": "1U"
+        },
+        {
+          "id": "cpol",
+          "label": "CPOL",
+          "default": "1U"
+        },
+        {
+          "id": "error_code",
+          "label": "Initial error code",
+          "default": "0U"
+        }
+      ]
+    },
+    {
       "id": "uz_dac_interface",
       "name": "DAC8831 interface",
       "templates": {
@@ -286,6 +362,374 @@
           "label": "Gain channel 7",
           "default": "2.0f",
           "help": "Software conversion gain for DAC output channel 7. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "output_ch0_source",
+          "label": "Output channel 0 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch0_constant",
+          "label": "Output channel 0 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch0_source": ["constant"]}
+        },
+        {
+          "id": "output_ch0_amplitude",
+          "label": "Output channel 0 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch0_frequency_Hz",
+          "label": "Output channel 0 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch0_duty_cycle",
+          "label": "Output channel 0 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch0_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch0_offset",
+          "label": "Output channel 0 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch1_source",
+          "label": "Output channel 1 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch1_constant",
+          "label": "Output channel 1 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch1_source": ["constant"]}
+        },
+        {
+          "id": "output_ch1_amplitude",
+          "label": "Output channel 1 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch1_frequency_Hz",
+          "label": "Output channel 1 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch1_duty_cycle",
+          "label": "Output channel 1 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch1_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch1_offset",
+          "label": "Output channel 1 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch2_source",
+          "label": "Output channel 2 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch2_constant",
+          "label": "Output channel 2 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch2_source": ["constant"]}
+        },
+        {
+          "id": "output_ch2_amplitude",
+          "label": "Output channel 2 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch2_frequency_Hz",
+          "label": "Output channel 2 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch2_duty_cycle",
+          "label": "Output channel 2 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch2_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch2_offset",
+          "label": "Output channel 2 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch3_source",
+          "label": "Output channel 3 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch3_constant",
+          "label": "Output channel 3 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch3_source": ["constant"]}
+        },
+        {
+          "id": "output_ch3_amplitude",
+          "label": "Output channel 3 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch3_frequency_Hz",
+          "label": "Output channel 3 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch3_duty_cycle",
+          "label": "Output channel 3 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch3_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch3_offset",
+          "label": "Output channel 3 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch4_source",
+          "label": "Output channel 4 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch4_constant",
+          "label": "Output channel 4 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch4_source": ["constant"]}
+        },
+        {
+          "id": "output_ch4_amplitude",
+          "label": "Output channel 4 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch4_frequency_Hz",
+          "label": "Output channel 4 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch4_duty_cycle",
+          "label": "Output channel 4 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch4_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch4_offset",
+          "label": "Output channel 4 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch5_source",
+          "label": "Output channel 5 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch5_constant",
+          "label": "Output channel 5 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch5_source": ["constant"]}
+        },
+        {
+          "id": "output_ch5_amplitude",
+          "label": "Output channel 5 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch5_frequency_Hz",
+          "label": "Output channel 5 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch5_duty_cycle",
+          "label": "Output channel 5 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch5_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch5_offset",
+          "label": "Output channel 5 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch6_source",
+          "label": "Output channel 6 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch6_constant",
+          "label": "Output channel 6 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch6_source": ["constant"]}
+        },
+        {
+          "id": "output_ch6_amplitude",
+          "label": "Output channel 6 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch6_frequency_Hz",
+          "label": "Output channel 6 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch6_duty_cycle",
+          "label": "Output channel 6 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch6_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch6_offset",
+          "label": "Output channel 6 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch7_source",
+          "label": "Output channel 7 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch7_constant",
+          "label": "Output channel 7 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch7_source": ["constant"]}
+        },
+        {
+          "id": "output_ch7_amplitude",
+          "label": "Output channel 7 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch7_frequency_Hz",
+          "label": "Output channel 7 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch7_duty_cycle",
+          "label": "Output channel 7 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch7_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch7_offset",
+          "label": "Output channel 7 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
         }
       ]
     },

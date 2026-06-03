@@ -21,6 +21,14 @@ Data indexing of the flattened array follows:
 
 where :math:`N_x` is the number of x-axis breakpoints.
 
+For the code example below with ``LUT_breakpoints_x_array = {0, 1, 2}``,
+``LUT_breakpoints_y_array = {0, 1, 2}``, and
+``LUT_data_array = {0, 1, 2, 10, 11, 12, 20, 21, 22}``, the row-major flattening is:
+
+.. csv-table:: Mapping of support points to flattened ``LUT_data_array`` entries
+	:file: 2d_lut_example_data.csv
+	:header-rows: 1
+
 If ``input_x`` or ``input_y`` is outside the breakpoint range, it is clamped to the nearest breakpoint.
 The return value is then computed with bilinear interpolation.
 If either input is ``NaN``, the return value is also ``NaN``.
@@ -60,7 +68,7 @@ If either input is ``NaN``, the return value is also ``NaN``.
 		float input_y = 0.5f;
 		float output = uz_LUT_2D_get_value(lut_instance, input_x, input_y); // output = 5.5
 
-The following plot shows the LUT support points and one interpolation point.
+The following plot shows the LUT support points, the underlying surface grid, and one interpolation point.
 
 .. tikz:: Example 2D LUT support grid for ``LUT_data_array``. The red marker indicates :math:`(x,y)=(0.5,0.5)` with bilinear interpolation result :math:`f(0.5,0.5)=5.5`.
 	:align: center
@@ -68,7 +76,7 @@ The following plot shows the LUT support points and one interpolation point.
 	\begin{tikzpicture}
 		\begin{axis}[
 			width=11cm,
-			height=7cm,
+			height=11cm,
 			view={45}{35},
 			xlabel={x breakpoints},
 			ylabel={y breakpoints},
@@ -79,6 +87,17 @@ The following plot shows the LUT support points and one interpolation point.
 			zmin=0, zmax=22,
 			legend style={draw=none, fill=none, at={(0.02,0.98)}, anchor=north west}
 		]
+			\addplot3[
+				surf,
+				mesh/rows=3,
+				shader=flat,
+				draw=black!45,
+				fill opacity=0.2
+			] coordinates {
+				(0,0,0) (1,0,1) (2,0,2)
+				(0,1,10) (1,1,11) (2,1,12)
+				(0,2,20) (1,2,21) (2,2,22)
+			};
 			\addplot3[
 				only marks,
 				mark=*,
@@ -98,6 +117,7 @@ The following plot shows the LUT support points and one interpolation point.
 			] coordinates {
 				(0.5,0.5,5.5)
 			};
+			\addlegendentry{LUT range}
 			\addlegendentry{LUT support points}
 			\addlegendentry{Interpolation point}
 		\end{axis}

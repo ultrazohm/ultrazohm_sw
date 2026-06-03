@@ -1,8 +1,8 @@
 .. _uz_pmsm_control:
 
-============
-PMSM Control
-============
+==============================
+PMSM Control (uz_pmsm_control)
+==============================
 
 
 Description
@@ -72,6 +72,67 @@ For each sample, the implementation performs the following steps:
 When the controller is disabled or a safe operating region violation is active, ``uz_pmsm_control_sample_dq`` resets the internal controller and filter states and returns a zero dq-voltage vector.
 In the same condition, ``uz_pmsm_control_sample_duty`` returns ``default_duty_cycle`` from the configuration.
 Choose this default value to match the safe state of the inverter hardware.
+
+.. https://mermaid.live/edit#pako:eNqtVttu2zAM_RVDTxuWZM699sOArsWAAuu6pUUfNg-CasmOMVtyZCldevv2Ub7MTuI4xTA_RTyH5CElUXlEvqAMuajf73vcFzyIQtfjlhWTjdDKtVj8y-M56PEgFvf-kkhl3ZybtQVfpu9CSdKldcFTrbLCaD4aSearSHDr5mNtjTC583HE8WltW1e229omEhYSnDB_iSWhOGUSZ8yvcbVkimAWN6PQ3SBRaTptqsqUlneE-wwQUGzwL0lNkCxgkhk4SxmjBpZpshVzhYFUBWWc7rVCP-A0yRIM7VRSxDgjSRozcGzrzudF5W8-cM2ikJM4Ay9QSgynkPLDQ62oh35a_f6HpuvFxQJ_imIFXdupZztIg1dobMYy9LOtCrZl7uPWy8uLlcY6O0o0OQzxDeh5B0nfHutAY9-O9aEQUAc06xzwY0ge8bCGKktnzS2R2jWSIG_kkb06VmkjSpXrmqmvIuKq2b2rBeS4Nqz3Z1rCDiurFL6V42pxWPD031VOq6hl7p3t3fJupxh_ydbn32ouoWuzv21QV5intbmS5uY_5c1KCRz2W7hdQuJLQXVc1NSa5jV8uuos9tjM6rib5VwgvtIk_q_38-8wfHWV9VzrEAyUjKnUnMXyELZN8Rwqu4zXIlYkZHvtr4CcTFcjc8_2Juph4YWbVhvsb_yq8vzQlMcnwLvPSv30lDkLc_WSHDaWigvkwAPSMRYaHpXMtiemI0JOK9OvRoWm_MwMmjWiHgplRJGrpGY9lDCZELNEj8bVQ1BTAgfIhZ-UBUTHykMefwa3lPDvQiSVpxQ6XCI3ABWw0iklip1HBN62mgKbxOSZ0Fwhd3wymudBkPuIfiN3dOIMhuORPXTsyciZncynPbRB7nA4HYztyXg2t2dTAzjPPfSQ57UH84k9nDkTx7Ht4QjceojRCLb8svh3kv9Jef4DY9Lq4Q
+
+.. mermaid::
+  :caption: Control flow of uz_pmsm_control_sample
+
+  ---
+  config:
+    layout: elk
+  ---
+
+  flowchart TD
+
+      subgraph Inputs
+          direction TB
+          i_abc_in_A
+          v_abc_in_V
+          omega_mech_rad_per_sec
+          theta_el
+          v_dc_in_V
+          i_dc_in_A
+          disturbance_input_in_Nm
+          reference_speed_in_rpm
+          i_dq_ref_A
+      end
+
+      subgraph uz_pmsm_control_sample_dq
+          direction LR
+
+          uz_signals_saturation_speed["uz_signals_saturation"] --> uz_signals_IIR_Filter_reference_speed["uz_signals_IIR_Filter_sample"] --> uz_speedControl_sample
+          uz_speedControl_sample ~~~ plus
+          uz_speedControl_sample --> plus(["+"])
+          uz_signals_saturation_disturbance["uz_signals_saturation"] --> plus
+
+          plus --> clamping
+          clamping --> uz_speedControl_sample
+
+          plus --> uz_signals_saturation_after_speed["uz_signals_saturation"]
+          uz_signals_saturation_after_speed --> uz_SetPoint_sample --> OR["Speed/Current Control"]
+          OR --> uz_signals_saturation5["uz_signals_saturation"]
+          uz_signals_saturation5 --> uz_CurrentControl_sample 
+          uz_CurrentControl_sample --> revDQ
+          advance --> revDQ
+          uz_CurrentControl_sample -->|v_dq_in_V| uz_Space_Vector_Modulation
+          advance --> uz_Space_Vector_Modulation
+          dq --> uz_CurrentControl_sample
+          omega_mech_rad_per_sec --> uz_signals_IIR_Filter_sample_actual_speed["uz_signals_IIR_Filter_sample"] --> uz_speedControl_sample
+          v_dc_in_V --> uz_Space_Vector_Modulation
+          i_dq_ref_A --> uz_signals_IIR_Filter_dq_setpoint --> OR
+          v_abc_in_V --> advance_voltage
+          advance_voltage --> dq2
+      end
+
+      uz_Space_Vector_Modulation --> duty_cycle
+      revDQ --> ref_v_abc_in_V
+      i_abc_in_A --> dq
+      theta_el --> dq
+      theta_el --> advance
+      disturbance_input_in_Nm --> uz_signals_saturation_disturbance
+      reference_speed_in_rpm --> uz_signals_saturation_speed
+      dq2 --> actual.v_abc_in_V
 
 
 
@@ -294,6 +355,26 @@ Use ``uz_pmsm_control_get_actual_data``, ``uz_pmsm_control_get_reference_values`
 The returned pointers refer to internal storage and remain owned by the PMSM control instance.
 ``uz_pmsm_control_set_theta_offset`` changes the electrical angle offset at runtime.
 ``uz_pmsm_control_get_pointer_to_theta_offset`` returns a direct pointer to the same offset variable, for example for integration with observer or calibration code.
+
+Observability of internal data
+------------------------------
+
+Internal data such as actual values, reference values, and measurement values are accessible by pointers, as shown in :numref:`lst_uz_pmsm_internal_data_pointers`.
+
+.. code-block:: c
+  :caption: Access to internal PMSM control data pointers
+  :name: lst_uz_pmsm_internal_data_pointers
+
+  struct uz_pmsm_actual_data *actual_data = uz_pmsm_control_get_actual_data(pmsm_control);
+  struct uz_pmsm_reference_values *reference_values = uz_pmsm_control_get_reference_values(pmsm_control);
+  struct uz_pmsm_measurement_values *measurement_values = uz_pmsm_control_get_pmsm_measurement_values(pmsm_control);
+
+The pointers can be used to display the data in the Javascope like so:
+
+.. code-block:: c
+  :caption: Display of internal PMSM control data in the Javascope
+
+    js_ch_observable[JSO_dut_iq] = &actual_data->i_dq_in_A.q;
 
 API Reference
 -------------

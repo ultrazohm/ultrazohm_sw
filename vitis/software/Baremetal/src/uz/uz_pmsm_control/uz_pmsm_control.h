@@ -150,7 +150,7 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
  * @param self Pointer to PMSM control instance.
  * @return Pointer to struct containing actual values.
  */
-struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
+const struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
 
 /**
  * @brief Returns pointer to internal reference values.
@@ -158,7 +158,7 @@ struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *s
  * @param self Pointer to PMSM control instance.
  * @return Pointer to struct containing reference values.
  */
-struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
+const struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
 
 /**
  * @brief Returns pointer to stored measurement values.
@@ -166,7 +166,7 @@ struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_co
  * @param self Pointer to PMSM control instance.
  * @return Pointer to struct containing latest measurement values.
  */
-struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
+const struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
 
 /**
  * @brief Enables or disables the controller output stage.
@@ -245,7 +245,7 @@ void uz_pmsm_control_set_theta_offset(uz_pmsm_control_t *self, float theta_offse
  * @param self Pointer to PMSM control instance.
  * @return Pointer to theta offset in rad.
  */
-float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
+const float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 
 /**
  * @brief Tunes current controller gains using magnitude optimum.

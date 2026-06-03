@@ -142,9 +142,9 @@ struct uz_PMSM_t machine_config = {
 void test_uz_pmsm_control_call_init(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
-    struct uz_pmsm_actual_data *actual_data = uz_pmsm_control_get_actual_data(controller);
-    struct uz_pmsm_reference_values *reference_values = uz_pmsm_control_get_reference_values(controller);
-    struct uz_pmsm_measurement_values *measurement_values = uz_pmsm_control_get_pmsm_measurement_values(controller);
+    const struct uz_pmsm_actual_data *actual_data = uz_pmsm_control_get_actual_data(controller);
+    const struct uz_pmsm_reference_values *reference_values = uz_pmsm_control_get_reference_values(controller);
+    const struct uz_pmsm_measurement_values *measurement_values = uz_pmsm_control_get_pmsm_measurement_values(controller);
 
     TEST_ASSERT_NOT_NULL(controller);
     TEST_ASSERT_NOT_NULL(actual_data);

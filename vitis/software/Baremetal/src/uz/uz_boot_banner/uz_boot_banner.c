@@ -15,7 +15,6 @@
 
 #include "uz_boot_banner.h"
 #include "../uz_HAL.h"
-#include <math.h>
 
 void uz_print_control_frequency(float pwm_frequency_hz, float isr_samplerate_s)
 {
@@ -25,6 +24,6 @@ void uz_print_control_frequency(float pwm_frequency_hz, float isr_samplerate_s)
     const unsigned isr_khz   = (unsigned)lroundf((1.0f / isr_samplerate_s) / 1000.0f);
     const unsigned period_us = (unsigned)lroundf(isr_samplerate_s * 1.0e6f);
 
-    uz_printf("RPU: PWM frequency:    %u kHz\r\n", pwm_khz);
-    uz_printf("RPU: Control ISR rate: %u kHz  (period %u us)\r\n", isr_khz, period_us);
+    uz_printf("RPU: PWM frequency: %u kHz\r\n", pwm_khz);
+    uz_printf("RPU: Control ISR rate: %u kHz (period %u us)\r\n", isr_khz, period_us);
 }

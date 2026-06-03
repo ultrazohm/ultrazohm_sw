@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'UltraZohm'
-copyright = '2025, UltraZohm Community'
+copyright = '2026, UltraZohm Community'
 author = 'UltraZohm Community'
 
 # -- General configuration ---------------------------------------------------
@@ -15,16 +15,23 @@ author = 'UltraZohm Community'
 
 extensions = [
     "sphinxcontrib.mermaid",
-    "sphinxcontrib.yt",
+    "sphinxcontrib.youtube",
     "sphinx_issues",
     "sphinx_copybutton",
     "sphinxcontrib.tikz",
     "sphinx.ext.mathjax",
     "breathe",
     "sphinx_plotly_directive", # https://matplotlib.org/stable/api/sphinxext_plot_directive_api.html#module-matplotlib.sphinxext.plot_directive
+    "bokeh.sphinxext.bokeh_plot",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_design"
 ]
+
+plotly_pre_code = """
+import plotly.io as pio
+pio.templates.default = \"plotly_white\"
+"""
+
 templates_path = ['_templates']
 exclude_patterns = []
 html_favicon = "favicon.svg"
@@ -90,4 +97,4 @@ nitpick_ignore = [
     ("c:identifier", "bool"),
 ]
 
-tikz_latex_preamble = "\\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19
+tikz_latex_preamble = r"\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

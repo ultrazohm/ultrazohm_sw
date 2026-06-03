@@ -82,6 +82,37 @@ void uz_platform_printhost_group004model003(uint8_t fflags_model) {
 	uz_printf(" UZ Host ID: %9s, serial %04i\r\n", hostrev, serial);
 }
 
+void uz_platform_printhousing_groups001a002(enum uz_platform_eeprom_group hw_group, uint16_t hw_model) {
+	char* type;
+	char* size;
+
+	switch(hw_model) {
+		case 1:
+			type = "Desk";
+			break;
+		case 2:
+			type = "Rack";
+			break;
+		default:
+			type = "unknown";
+			break;
+	}
+
+	switch(hw_group) {
+		case UZP_HWGROUP_UZOHM3:
+			size = "3U";
+			break;
+		case UZP_HWGROUP_UZOHM6:
+			size = "6U";
+			break;
+		default:
+			size = "unknown";
+			break;
+	}
+
+	uz_printf(" UZ Housing: %s %s\r\n", type, size);
+}
+
 void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 	uz_printf("/=================\\\r\n");
 	if (UZP_HWGROUP_EXTERNAL == eeprom->hw_group) {
@@ -98,6 +129,8 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 		uz_printf(" UZ Card ID: %s\r\n", uz_platform_eeprom_group000models_enum2label(eeprom->hw_model));
 	if ( (UZP_HWGROUP_MZOHM == eeprom->hw_group) && (UZP_HWGROUP_MZ_CARRIER != eeprom->hw_model) )
 		uz_printf(" MZ Host ID: %s\r\n", uz_platform_eeprom_group003models_enum2label(eeprom->hw_model));
+	if ( (UZP_HWGROUP_UZOHM3 == eeprom->hw_group) || (UZP_HWGROUP_UZOHM6 == eeprom->hw_group) )
+		uz_platform_printhousing_groups001a002(eeprom->hw_group, eeprom->hw_model);
 
 	UZ_PLATFORM_FFLAGS2STR(fflags_revision, eeprom->fflags_revision)
 	uz_printf("Hw revision:     %02i (flags %s=0x%02X)\r\n", eeprom->hw_revision, fflags_revision, eeprom->fflags_revision);

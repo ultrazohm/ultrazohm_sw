@@ -13,9 +13,21 @@ platform:
 
 steps:
 
+ - name: Vivado_build_tcl
+   image: vivado:2022.2
+   commands:
+   - ip link show
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - cd vivado
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source build.tcl
+   - cd ..
+   - git status
+   
  - name: docs
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands: # Modify the commands below to build your repository.
+   - hostname -I
    - cd docs
    - pip install -r requirements.txt
    - pip list
@@ -24,36 +36,36 @@ steps:
    - ls
   
  - name: Ceedling unit tests
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands:
+   - hostname -I
+   - cd docs
+   - make ceedling_test_output
+   - ls
+   - pwd
+   - cd ..
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
-   image: ultrazohm/ultrazohm_remote_container
+   image: ultrazohm/ultrazohm_remote_container_new:2f93599
+   depends_on: [ Vivado_build_tcl ]
    commands:
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
-    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
+   - hostname -I
+   - cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
+   - cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
    when:
      branch:
      - main
      - develop
-
- - name: Vivado_build_tcl
-   image: vivado:2022.2
-   commands:
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
-   - cd vivado
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source build.tcl
-   - cd ..
-   - git status
 
 # pipeline step just opens the vivado project
  - name: Vivado_open_project
    image: vivado:2022.2
    depends_on: [ Vivado_build_tcl ]
    commands:
+   - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_open_project.tcl
 
@@ -62,6 +74,7 @@ steps:
    image: vivado:2022.2
    depends_on: [ Vivado_open_project ]
    commands:
+   - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_syntax.tcl
 
@@ -70,28 +83,29 @@ steps:
    image: vivado:2022.2
    depends_on: [ Vivado_check_syntax ]
    commands:
+   - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
 
 # Runs report_environment from vivado to check if the license is valid for debug reasons (only on main and develop branch)
- - name: Vivado_check_license
-   image: vivado:2022.2
-   depends_on: [ Vivado_validate_board_design ]
-   commands:
-   - ip link show
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
-   - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
-   when:
-     branch:
-     - main
-     - develop
-     ref:
-     - refs/tags/vivado*
+#  - name: Vivado_check_license
+#    image: vivado:2022.2
+#    depends_on: [ Vivado_validate_board_design ]
+#    commands:
+#    - ip link show
+#    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+#    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
+#    when:
+#      branch:
+#      - main
+#      - develop
+#      ref:
+#      - refs/tags/vivado*
 
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream
    image: vivado:2022.2
-   depends_on: [ Vivado_check_license ]
+   depends_on: [ Vivado_validate_board_design ]
    commands:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh

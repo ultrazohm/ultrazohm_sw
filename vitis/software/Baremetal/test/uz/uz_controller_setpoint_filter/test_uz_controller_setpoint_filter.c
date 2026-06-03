@@ -3,9 +3,10 @@
 #include "unity.h"
 
 #include "uz_signals.h"
-TEST_FILE("uz_signals_iir_filter.c")
+TEST_SOURCE_FILE("src/uz/uz_signals/uz_signals_iir_filter.c")
 #include "uz_controller_setpoint_filter.h"
 #include "test_assert_with_exception.h"
+#include <stddef.h>
 
 #define ISR_SAMPLE_FREQ_HZ 10000.0f
 
@@ -30,7 +31,7 @@ void test_uz_signals_IIR_Filter_dq_setpoint(void){
     struct uz_dq_setpoint_filter_config config = {
         .config_filter_d = config_filter,
         .config_filter_q = config_filter};
-    uz_dq_setpoint_filter* obj = uz_uz_dq_setpoint_filter_init(config);
+    uz_dq_setpoint_filter* obj = uz_dq_setpoint_filter_init(config);
     // fist value of IIR should be 0, as it uses it directly as output
     uz_3ph_dq_t setpoint = {0};
     uz_3ph_dq_t filtered = uz_signals_IIR_Filter_dq_setpoint(obj, setpoint);
@@ -44,5 +45,47 @@ void test_uz_signals_IIR_Filter_dq_setpoint(void){
     TEST_ASSERT_FLOAT_WITHIN(0.001255f, filtered.d, 1e-3f);
     TEST_ASSERT_FLOAT_WITHIN(0.002511f, filtered.q, 1e-3f);
 }
+
+void test_uz_signals_IIR_Filter_dq_setpoint_reset(void){
+    enum {ITERATIONS = 50000U };
+
+    const struct uz_IIR_Filter_config config_filter = {
+        .cutoff_frequency_Hz = 10.0f,
+        .sample_frequency_Hz = ISR_SAMPLE_FREQ_HZ,
+        .selection = LowPass_first_order};
+    struct uz_dq_setpoint_filter_config config = {
+        .config_filter_d = config_filter,
+        .config_filter_q = config_filter};
+    uz_dq_setpoint_filter* dq_filter = uz_dq_setpoint_filter_init(config);
+
+    const uz_3ph_dq_t setpoint = {.d = 1.0f, .q = 2.0f};
+    const uz_3ph_dq_t setpoint_zero = {.d = 0.0f, .q = 0.0f};
+    uz_3ph_dq_t filtered = {0};
+
+    filtered = uz_signals_IIR_Filter_dq_setpoint(dq_filter, setpoint_zero);
+    filtered = uz_signals_IIR_Filter_dq_setpoint(dq_filter, setpoint);
+    TEST_ASSERT_LESS_THAN_FLOAT(setpoint.d, filtered.d);
+    TEST_ASSERT_LESS_THAN_FLOAT(setpoint.q, filtered.q);
+
+    for (uint32_t i = 0U; i < ITERATIONS; i++)
+    {
+        filtered = uz_signals_IIR_Filter_dq_setpoint(dq_filter, setpoint);
+    }
+    TEST_ASSERT_FLOAT_WITHIN(0.00001f, setpoint.d, filtered.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.00001f, setpoint.q, filtered.q);
+
+    uz_dq_setpoint_filter_reset(dq_filter);
+    filtered = uz_signals_IIR_Filter_dq_setpoint(dq_filter, setpoint_zero);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, filtered.d);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, filtered.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, filtered.zero);
+
+    filtered = uz_signals_IIR_Filter_dq_setpoint(dq_filter, setpoint);
+    TEST_ASSERT_LESS_THAN_FLOAT(setpoint.d, filtered.d);
+    TEST_ASSERT_LESS_THAN_FLOAT(setpoint.q, filtered.q);
+
+}
+
+
 
 #endif // TEST

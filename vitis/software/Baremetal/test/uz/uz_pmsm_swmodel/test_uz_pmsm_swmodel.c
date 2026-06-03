@@ -20,18 +20,21 @@
 #define CSV_NESTED_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
     {#field_name, offsetof(struct_type, nested_struct) + offsetof(struct uz_PMSM_t, field_name), field_type}
 
+#define CSV_DQ_FIELD_DESCRIPTOR(struct_type, nested_struct, field_name, field_type) \
+    {#field_name, offsetof(struct_type, nested_struct) + offsetof(uz_3ph_dq_t, field_name), field_type}
+
 #define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
 #define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 
 const struct csv_field_descriptor_t output_fields[] = {
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_d_A, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_q_A, CSV_FIELD_FLOAT),
+    CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_dq_A, d, CSV_FIELD_FLOAT),
+    CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_dq_A, q, CSV_FIELD_FLOAT),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, torque_Nm, CSV_FIELD_FLOAT),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, omega_mech_1_s, CSV_FIELD_FLOAT)};
 
 const struct csv_field_descriptor_t input_fields[] = {
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, v_d_V, CSV_FIELD_FLOAT),
-    CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, v_q_V, CSV_FIELD_FLOAT),
+    CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, v_dq_V, d, CSV_FIELD_FLOAT),
+    CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, v_dq_V, q, CSV_FIELD_FLOAT),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, omega_mech_1_s, CSV_FIELD_FLOAT),
     CSV_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_inputs_t, load_torque, CSV_FIELD_FLOAT)};
 
@@ -85,13 +88,12 @@ void test_uz_pmsm_swmodel_all_zeros(void)
             .I_max_Ampere = 10.0f}};
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
     struct uz_pmsm_swmodel_inputs_t inputs = {
-        .v_d_V = 0.0f,
-        .v_q_V = 0.0f,
+        .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
         .omega_mech_1_s = 0.0f,
         .load_torque = 0.0f};
     struct uz_pmsm_swmodel_outputs_t outputs = uz_pmsm_swmodel_step(model, inputs);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.i_d_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.torque_Nm);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs.omega_mech_1_s);
 }
@@ -117,8 +119,7 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
     struct uz_pmsm_swmodel_inputs_t inputs = {
-        .v_d_V = 1.0f,
-        .v_q_V = 0.5f,
+        .v_dq_V = {.d = 1.0f, .q = 0.5f, .zero = 0.0f},
         .omega_mech_1_s = 0.0f,
         .load_torque = 0.0f};
     struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
@@ -130,8 +131,8 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
         inputs_k[i] = inputs;
         outputs[i] = uz_pmsm_swmodel_step(model, inputs_k[i]);
     }
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_d_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_d_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_q_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_dq_V.d / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_dq_V.q / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
 
 #if CSV_EXPORT
@@ -161,8 +162,7 @@ void test_uz_pmsm_swmodel_zero_after_reset(void)
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
     struct uz_pmsm_swmodel_inputs_t inputs = {
-        .v_d_V = 1.0f,
-        .v_q_V = 0.5f,
+        .v_dq_V = {.d = 1.0f, .q = 0.5f, .zero = 0.0f},
         .omega_mech_1_s = 0.0f,
         .load_torque = 0.0f};
     struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
@@ -175,18 +175,19 @@ void test_uz_pmsm_swmodel_zero_after_reset(void)
         outputs[i] = uz_pmsm_swmodel_step(model, inputs_k[i]);
     }
     // Not zero after reset
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_d_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_d_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_q_V / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_dq_V.d / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_dq_V.q / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
 
     // Zero after reset
-    inputs.v_d_V = 0.0f;
-    inputs.v_q_V = 0.0f;
+    inputs.v_dq_V.d = 0.0f;
+    inputs.v_dq_V.q = 0.0f;
+    inputs.v_dq_V.zero = 0.0f;
     inputs.omega_mech_1_s = 0.0f;
     uz_pmsm_swmodel_reset(model);
     struct uz_pmsm_swmodel_outputs_t outputs_after_reset = uz_pmsm_swmodel_step(model, inputs);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_d_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.torque_Nm);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs_after_reset.omega_mech_1_s);
 }
@@ -212,8 +213,7 @@ void test_uz_pmsm_swmodel_steady_state_zero_voltage_zero_speed(void)
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
     struct uz_pmsm_swmodel_inputs_t inputs = {
-        .v_d_V = 0.0f,
-        .v_q_V = 0.0f,
+        .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
         .omega_mech_1_s = 0.0f,
         .load_torque = 0.0f};
     struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
@@ -228,8 +228,8 @@ void test_uz_pmsm_swmodel_steady_state_zero_voltage_zero_speed(void)
 
     for (uint32_t i = 0U; i < STEADY_STATE_ITERATIONS; i++)
     {
-        TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].i_d_A);
-        TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].i_q_A);
+        TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].i_dq_A.d);
+        TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].i_dq_A.q);
         TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].omega_mech_1_s);
         TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[i].torque_Nm);
     }
@@ -256,8 +256,7 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
     struct uz_pmsm_swmodel_inputs_t inputs = {
-        .v_d_V = 0.0f,
-        .v_q_V = 0.0f,
+        .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
         .omega_mech_1_s = 100.0f,
         .load_torque = 0.0f};
     struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
@@ -278,8 +277,8 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
     const float expected_torque_Nm = 1.5f * config.pmsm_parameters.polePairs * (expected_psi_d_Vs * expected_i_q_A - expected_psi_q_Vs * expected_i_d_A);
 
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_d_A, outputs[STEADY_STATE_ITERATIONS - 1].i_d_A);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_q_A, outputs[STEADY_STATE_ITERATIONS - 1].i_q_A);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_d_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_q_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
 

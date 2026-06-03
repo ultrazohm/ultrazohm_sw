@@ -11,8 +11,7 @@ struct uz_pmsm_swmodel_config_t {
 
 struct uz_pmsm_swmodel_outputs_t
 {
-    float i_d_A;          /**< Current in d-axis in A */
-    float i_q_A;          /**< Current in q-Axis in A */
+    uz_3ph_dq_t i_dq_A;   /**< Current in dq-frame in A */
     float torque_Nm;      /**< Inner torque of PMSM in Nm*/
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
 };
@@ -23,8 +22,7 @@ struct uz_pmsm_swmodel_outputs_t
  */
 struct uz_pmsm_swmodel_inputs_t
 {
-    float v_d_V;          /**< Voltage in d-axis in V */
-    float v_q_V;          /**< Voltage in q-axis in V */
+    uz_3ph_dq_t v_dq_V;   /**< Voltage in dq-frame in V */
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
     float load_torque;    /**< Applied load torque in Nm */
 };

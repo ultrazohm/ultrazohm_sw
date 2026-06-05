@@ -148,6 +148,16 @@ void uz_endat_interface_set_sampling_delay_clk_ticks(uz_endat_interface_t *self,
     uz_endat_interface_hw_write_sampling_delay_clk_ticks(self->config.base_address, delay_clk_ticks);
 }
 
+void uz_endat_interface_enable_pll_debug_mode(uz_endat_interface_t *self, bool debug_on_off) {
+    assert_self(self);
+    uz_endat_interface_hw_write_pll_debug_mode(self->config.base_address, debug_on_off);
+}
+
+void uz_endat_interface_set_pll_debug_position(uz_endat_interface_t *self, float position_mech_si) {
+    assert_self(self);
+    uz_endat_interface_hw_write_pll_debug_position(self->config.base_address, position_mech_si);
+}
+
 static void assert_config(struct uz_endat_interface_config_t config) {
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);

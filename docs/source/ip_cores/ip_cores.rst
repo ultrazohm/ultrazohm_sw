@@ -13,6 +13,7 @@ IP Cores
     adc_ltc2311_v3/adc_ltc2311_v3
     uz_incrementalEncoder/uz_IncrementalEncoder
     uz_endat_interface/uz_endat_interface
+    uz_ssi_interface/uz_ssi_interface
     axi_testIP/axi_testIP
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1

@@ -4,16 +4,20 @@
 Vitis HLS (HDL)
 ===============
 
-Vitis HLS is a tool that simplifies hardware design by allowing designers to create efficient hardware designs from high-level programming languages like C and C++.
-It automates the process of converting high-level code into optimized hardware descriptions, reducing development time and enabling the integration of hardware accelerators.
-With Vitis HLS, designers can leverage their software skills, experiment with different optimizations, and promote design reuse and modularity.
-Overall, it enables faster time-to-market and the development of highly optimized hardware accelerators.
+Vitis HLS generates RTL from C and C++ code.
+It is useful for IP cores where the algorithm is easier to describe and test in software than directly in HDL.
+The generated design can then be optimized with HLS directives, synthesized, and exported for integration in Vivado.
+
+It is an alternative to :ref:`HDL Coder <hdl_coder>`, where the algorithm needs to be modeled as a Simulink data flow diagram.
+Vitis HLS is also well suited for floating-point logic.
+Since MATLAB R2025b, Vitis HLS can be used as a synthesis tool directly within MATLAB, see tutorial links below.
 
 Related tutorials & literature:
 
-- https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas
-- https://github.com/Xilinx/Vitis-HLS-Introductory-Examples
-- https://docs.xilinx.com/r/2022.2-English/ug1399-vitis-hls/Introduction-to-Vitis-HLS
+- `User Guide 1399 - Introduction to Vitis HLS <https://docs.xilinx.com/r/2022.2-English/ug1399-vitis-hls/Introduction-to-Vitis-HLS>`_
+- `User Guide 1399 - HLS Pragmas <https://docs.amd.com/r/2022.2-English/ug1399-vitis-hls/HLS-Pragmas>`_
+- `Introductory Examples <https://github.com/Xilinx/Vitis-HLS-Introductory-Examples>`_
+- `From MATLAB to Optimized RTL Using HDL Coder and AMD Vitis HLS <https://www.mathworks.com/videos/from-matlab-to-optimized-rtl-using-hdl-coder-and-amd-vitis-hls-1774893384578.html>`_.
 
 
 Tutorial
@@ -22,8 +26,8 @@ Tutorial
 This tutorial will guide you through the process of creating a simple IP core using Vitis HLS, synthesizing it, and integrating it into the UltraZohm project. 
 The example IP core will perform integer multiplication.
 
-Generation using tcl script
----------------------------
+Project setup using tcl script
+------------------------------
 .. _hls_generation_tcl:
 
 - Each Vitis HLS design can be generated using a ``script.tcl``, which includes all the necessary commands to create, synthesize and export your design.
@@ -61,16 +65,42 @@ Generation using tcl script
       config_compile -no_signed_zeros -unsafe_math_optimizations 
 
 
-- You can run this script by opening your terminal, navigating to the project directory, here ``ultrazohm_sw\ip_cores\uz_HLS_testIP``, and running the command ``vitis_hls -f testIP_solution\script.tcl``.
-- After the script is finished, the IP core has been generated and exported to ``uz_HLS_testIP\testIP_solution\impl\export.zip``. The IP core can now be integrated into the Vivado project as described in the section :ref:`Vivado<hls_vivado>`.
+- Run the script from the project directory, here ``ultrazohm_sw\ip_cores\uz_HLS_testIP``.
+  If the Vitis HLS environment is already configured, use:
 
-Manual Tutorial
----------------
+  .. code-block:: console
+
+     vitis_hls -f testIP_solution\script.tcl
+
+  If ``vitis_hls`` is not found on Windows, run the command from PowerShell through the Vitis HLS environment setup script:
+
+  .. code-block:: powershell
+
+     cd C:\path\to\ultrazohm_sw\ip_cores\uz_HLS_testIP
+     cmd /c '"C:\Xilinx\Vitis_HLS\2022.2\settings64.bat" && vitis_hls -f testIP_solution\script.tcl'
+
+  The ``settings64.bat`` script configures the environment for the current command shell, including the ``PATH`` entries required to find ``vitis_hls``.
+
+- After the script is finished, the IP core has been generated and exported to ``uz_HLS_testIP\testIP_solution\impl\export.zip``. The IP core can now be integrated into the Vivado project as described in the section :ref:`Vivado<hls_vivado>`.
+- After generation, open the HLS project with:
+
+  .. code-block:: console
+
+     vitis_hls -p uz_HLS_testIP
+
+  Or from PowerShell without a configured Vitis HLS environment:
+
+  .. code-block:: powershell
+
+     cmd /c '"C:\Xilinx\Vitis_HLS\2022.2\settings64.bat" && vitis_hls -p uz_HLS_testIP'
+
+Manual project setup 
+--------------------
 
 If you don't want to use a script to generate your design, this tutorial will guide you through the process of manually creating the IP core using Vitis HLS, synthesizing it, and integrating it into the UltraZohm project. 
 
 
-.. dropdown:: Show steps (collapsed by default)
+.. dropdown:: Show steps to create project from scratch (collapsed by default)
    
    - Start Vitis HLS (2022.2 used for this tutorial).
    - Create a new HLS Project.
@@ -156,36 +186,15 @@ If you don't want to use a script to generate your design, this tutorial will gu
    
    .. code-block:: c
    
-   	void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
+      #include <stdint.h>
 
-   - For port settings, AXI interface configuration, and other important modifications, HLS gives you the option to make modifications with ``#pragma``. 
-   - The page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
-   
-   - Additionally, you can use the Directive section to add pragmas.
-   
-   .. figure:: tutorial_img/26_directive.png
-      :width: 1200px
-      :align: center
-   
-   - If you have a closer look to inside of the Directive, this is an additional way to add pragmas to the code. 
-   
-   .. figure:: tutorial_img/27_insert_directive.png
-      :width: 400px
-      :align: center
-   
-   - For instance, with right click to **a** variable, the tab that includes the pragmas is a more visualized version.
-   
-   .. figure:: tutorial_img/28_directive_editor.png
-      :width: 400px
-      :align: center
-   
+      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
+
    - To create a test bench file, simply right-click on the **Test Bench** folder in your project and choose **New Test Bench File...** from the menu.
    - When the file window opens, make sure to check the path displayed. 
      If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.
    - Create a new test bench file ``tb_uz_HLS_testIP.cpp``.
-   - The source file contains a simple function that performs multiplication and returns the result. 
-     The test bench ensures that the result from the source file matches the expected result. 
-     It generates random values for a specified number of iterations, compares the results, and prints **"Correct"** if they match, or **"Failed"** if they differ.
+   - The test bench calls the multiplication function with fixed input values and prints the result.
    
    .. figure:: tutorial_img/11_create_testbench.png
       :width: 500px
@@ -210,81 +219,99 @@ If you don't want to use a script to generate your design, this tutorial will gu
          return 0;
       }
    
-   - To simulate the system, you can use the C simulation option. 
-     This allows you to execute the simulation using a C-based simulator, which provides an efficient and accurate representation of the system's behavior.
-   
-   .. figure:: tutorial_img/14_c_simulation.png
-      :width: 400px
-      :align: center
-   
-   - As you can see from simulation box, there are several options to debug, clean, build and optimize. 
-     You can simply click the OK button to continue with the default settings for now.
-   
-   .. figure:: tutorial_img/15_c_simulation_box.png
-      :width: 400px
-      :align: center
-   
-   - Once the compilation process is complete, you can check the results either from the console output or from the log file. 
-     If the compilation is successful and there are no errors reported, it indicates that the compilation has passed.
-   - During synthesis, the design is converted into a gate-level representation, and a resource usage estimation is provided.
-     The estimated resource usage is (except for DSP slices, I/O pins) generally a bit higher than after Vivado synthesis. 
-     This allows you to analyze the utilization of FPGA resources such as logic elements, memory blocks, and I/O pins.
-   - Before proceeding with the synthesis step, it is important to specify the top file of your design.
-     
-   .. figure:: tutorial_img/17_top_setting.png
-      :width: 400px
-      :align: center
-   
-   - Inside the Project settings, you have the ability to arrange various settings related to your project, including general, simulation, and synthesis settings. 
-     For the current task, let's focus on the synthesis part.
-   
-   .. figure:: tutorial_img/18_top_file.png
-      :width: 600px
-      :align: center
-   
-   - Choose ``uz_HLS_testIP.cpp`` as top function.
-   
-   .. figure:: tutorial_img/19_top_select.png
-      :width: 600px
-      :align: center
-   
-   - Once you have configured the synthesis settings in the Project settings, you can proceed with the C synthesis.
-   
-   .. figure:: tutorial_img/20_c_synthesis.png
-      :width: 400px
-      :align: center
-   
-   - At the beginning of project creation, we have seen the C synthesis parameters. 
-     Continue with the default parameter values. 
-     However, there may be specific cases where you need to modify these parameters to suit your project requirements.
-     
-   .. figure:: tutorial_img/21_c_settings.png
-      :width: 400px
-      :align: center
-   
-   - Once the synthesis process is complete, you can review the Summary Report of the design. 
-     This report provides comprehensive information about various aspects of the synthesized design, making it a valuable resource for analysis and evaluation.
-   - The Summary Report typically includes essential data such as resource utilization (logic elements, memory blocks, I/O pins), timing constraints, power estimation, and other relevant statistics. 
-     It offers insights into the efficiency and performance of the synthesized design.
-   - Take the time to carefully examine the Summary Report to gain a better understanding of the design's resource usage, timing characteristics, and overall quality.
-     
-   .. figure:: tutorial_img/22_report.png
-      :width: 800px
-      :align: center
-   
-   - After that, click Export RTL.
-     
-   .. figure:: tutorial_img/30_export_rtl_tab.png
-      :width: 350px
-      :align: center
-   
-   - Export your IP to Vivado workspace.
-   
-   .. figure:: tutorial_img/31_export_rtl.png
-      :width: 400px
-      :align: center
-   
-   - At the end of the last step, you will have the designed IP core as .zip version. Unzip the file, and place in the ``ultrazohm_sw\ip_cores`` folder.
+Using Vitis HLS and pragmas
+---------------------------
+
+- HLS pragmas configure interfaces, scheduling, resource mapping, and other synthesis behavior.
+  The example source uses ``#pragma HLS INTERFACE`` to create AXI-Lite registers for ``a``, ``b``, and ``result``.
+  See the `Vitis HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_ documentation for the available pragmas.
+- Pragmas can be written directly in the source code or added through the **Directive** view in Vitis HLS.
+
+.. figure:: tutorial_img/26_directive.png
+   :width: 1200px
+   :align: center
+
+- Open the directive editor to add or modify directives without editing the source code manually.
+
+.. figure:: tutorial_img/27_insert_directive.png
+   :width: 400px
+   :align: center
+
+- For example, right-click a variable such as ``a`` to configure its interface pragma.
+
+.. figure:: tutorial_img/28_directive_editor.png
+   :width: 400px
+   :align: center
+
+- Run **C Simulation** to compile and execute the test bench before synthesis.
+
+.. figure:: tutorial_img/14_c_simulation.png
+   :width: 400px
+   :align: center
+
+- The simulation dialog provides options for debug, clean build, and optimization.
+  The default settings are sufficient for this tutorial.
+
+.. figure:: tutorial_img/15_c_simulation_box.png
+   :width: 400px
+   :align: center
+
+- Check the console output or log file after simulation.
+  A successful run means the C implementation and test bench compile and execute without errors.
+- Before synthesis, configure the top function of the design.
+
+.. figure:: tutorial_img/17_top_setting.png
+   :width: 400px
+   :align: center
+
+- Open the synthesis settings in the project settings.
+
+.. figure:: tutorial_img/18_top_file.png
+   :width: 600px
+   :align: center
+
+- Select ``uz_HLS_testIP`` as the top function.
+
+.. figure:: tutorial_img/19_top_select.png
+   :width: 600px
+   :align: center
+
+- Run **C Synthesis**.
+  Synthesis converts the C/C++ implementation into RTL and reports estimated resource usage and timing.
+  The estimated resource usage is usually higher than the final Vivado synthesis result, except for DSP slices and I/O pins.
+
+.. figure:: tutorial_img/20_c_synthesis.png
+   :width: 400px
+   :align: center
+
+- Keep the default synthesis settings for this tutorial.
+  Adjust them only when the design requires different clock, interface, or optimization constraints.
+
+.. figure:: tutorial_img/21_c_settings.png
+   :width: 400px
+   :align: center
+
+- Review the Summary Report after synthesis.
+  It shows resource estimates, timing information, and other synthesis results.
+
+.. figure:: tutorial_img/22_report.png
+   :width: 800px
+   :align: center
+
+- Click **Export RTL** to package the synthesized design.
+
+.. figure:: tutorial_img/30_export_rtl_tab.png
+   :width: 350px
+   :align: center
+
+- Export the IP for integration in Vivado.
+
+.. figure:: tutorial_img/31_export_rtl.png
+   :width: 400px
+   :align: center
+
+- At the end of the export step, Vitis HLS creates the IP core as a ``.zip`` file.
+  Unzip it and place it in the ``ultrazohm_sw\ip_cores`` folder.
 
 Vivado
 ------

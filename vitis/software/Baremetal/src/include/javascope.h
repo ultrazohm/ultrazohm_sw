@@ -142,6 +142,11 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_pmsm_sw_i_d,
+	JSSD_FLOAT_pmsm_sw_i_q,
+	JSSD_FLOAT_pmsm_ip_i_d,
+	JSSD_FLOAT_pmsm_ip_i_q,
+	JSSD_FLOAT_i_q_ref,
 	JSSD_ENDMARKER
 };
 
@@ -250,12 +255,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
-	receive_field_6,
+	speed,
+	i_d_sw,
+	i_q_sw,
+	i_d_ip,
+	i_q_ip,
+	i_q_ref,
 	receive_field_7,
 	receive_field_8,
 	receive_field_9,
@@ -278,11 +283,11 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
 	A,
 	A,
-	V,
-	V,
+	A,
+	A,
+	A,
 	-,
 	-,
 	-,
@@ -303,7 +308,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
+	AutoMode,
 	MyButton2,
 	MyButton3,
 	MyButton4,
@@ -317,29 +322,28 @@ enum gui_button_mapping {
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
-//Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
+//Set the line to JSSD_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_pmsm_sw_i_d,
+	JSSD_FLOAT_pmsm_sw_i_q,
+	JSSD_FLOAT_pmsm_ip_i_d,
+	JSSD_FLOAT_pmsm_ip_i_q,
+	JSSD_FLOAT_i_q_ref,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

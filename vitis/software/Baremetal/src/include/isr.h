@@ -79,6 +79,8 @@ int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorith
 int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
+void uz_pmsm_cil_start_auto_mode(void);
+bool uz_pmsm_cil_is_auto_mode_active(void);
 
 
 #endif /* ISR_H_ */

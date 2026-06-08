@@ -27,9 +27,9 @@
 uint32_t cache_size_to_flush = 0U;
 //Variables for JavaScope
 static float zerovalue = 0.0;
-static float *js_slowDataArray[JSSD_ENDMARKER];
-float *js_ch_observable[JSO_ENDMARKER];
-float *js_ch_selected[JS_CHANNELS];
+static const float *js_slowDataArray[JSSD_ENDMARKER];
+const float *js_ch_observable[JSO_ENDMARKER];
+const float *js_ch_selected[JS_CHANNELS];
 
 static float lifecheck;
 static float ISR_execution_time_us;
@@ -267,6 +267,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+
+	const struct uz_pmsm_actual_data *swmodel_actual = uz_pmsm_control_get_actual_data(data->objects.pmsm_control_swmodel);
+	const struct uz_pmsm_actual_data *ipcore_actual = uz_pmsm_control_get_actual_data(data->objects.pmsm_control_ipcore);
+	js_slowDataArray[JSSD_FLOAT_pmsm_sw_i_d] = &swmodel_actual->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_pmsm_sw_i_q] = &swmodel_actual->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_pmsm_ip_i_d] = &ipcore_actual->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_pmsm_ip_i_q] = &ipcore_actual->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_i_q_ref] = &data->av.snd_fld[4];
 
 	return Status;
 }

@@ -19,6 +19,7 @@
 #include "../include/ipc_ARM.h"
 #include <math.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
@@ -44,9 +45,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 static void uz_pmsm_cil_reset(void);
 static void uz_pmsm_cil_zero_duty_cycles(void);
 static void uz_pmsm_cil_run_control_step(void);
-static float uz_pmsm_cil_rpm_to_rad_per_sec(float speed_rpm);
-static float uz_pmsm_cil_wrap_to_2pi(float angle_rad);
-static float uz_pmsm_cil_get_v_dc(void);
+static void uz_pmsm_cil_update_auto_mode(void);
 static struct uz_pmsm_measurement_values uz_pmsm_cil_make_measurements(uz_3ph_dq_t i_dq_A, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec, float v_dc_V);
 static void uz_pmsm_cil_write_ipcore_actual_values(struct uz_pmsm_measurement_values measurements, struct uz_pmsmModel_outputs_t outputs, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec);
 
@@ -56,12 +55,21 @@ static void uz_pmsm_cil_write_ipcore_actual_values(struct uz_pmsm_measurement_va
 #define UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A 4U
 #define UZ_PMSM_CIL_SEND_FIELD_V_DC_V 5U
 
+#define UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ 1000U
+#define UZ_PMSM_CIL_AUTO_MODE_IQ_1A_TICKS UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ
+#define UZ_PMSM_CIL_AUTO_MODE_IQ_4A_TICKS (60U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
+#define UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_TICKS (120U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
+#define UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_IQ_4A_TICKS (180U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
+#define UZ_PMSM_CIL_AUTO_MODE_CYCLE_TICKS (240U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
+
 static uz_3ph_dq_t pmsm_cil_swmodel_v_dq_V = {0};
 static uz_3ph_dq_t pmsm_cil_ipcore_v_dq_V = {0};
 static struct uz_pmsm_swmodel_outputs_t pmsm_cil_swmodel_outputs = {0};
 static struct uz_pmsmModel_outputs_t pmsm_cil_ipcore_outputs = {0};
 static float pmsm_cil_theta_mech_rad = 0.0f;
 static bool pmsm_cil_is_reset = false;
+static bool pmsm_cil_auto_mode_active = false;
+static uint32_t pmsm_cil_auto_mode_counter = 0U;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -79,6 +87,7 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         pmsm_cil_is_reset = false;
+        uz_pmsm_cil_update_auto_mode();
         uz_pmsm_cil_run_control_step();
     }
     else
@@ -269,6 +278,68 @@ static float uz_pmsm_cil_get_v_dc(void)
     return v_dc_V;
 }
 
+void uz_pmsm_cil_start_auto_mode(void)
+{
+    if (ultrazohm_state_machine_get_state() == control_state)
+    {
+        pmsm_cil_auto_mode_active = true;
+        pmsm_cil_auto_mode_counter = 0U;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
+    }
+}
+
+bool uz_pmsm_cil_is_auto_mode_active(void)
+{
+    return pmsm_cil_auto_mode_active;
+}
+
+static void uz_pmsm_cil_stop_auto_mode(void)
+{
+    pmsm_cil_auto_mode_active = false;
+    pmsm_cil_auto_mode_counter = 0U;
+}
+
+static void uz_pmsm_cil_update_auto_mode(void)
+{
+    if (!pmsm_cil_auto_mode_active)
+    {
+        return;
+    }
+
+    if (pmsm_cil_auto_mode_counter >= UZ_PMSM_CIL_AUTO_MODE_CYCLE_TICKS)
+    {
+        pmsm_cil_auto_mode_counter = 0U;
+    }
+
+    if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_IQ_1A_TICKS)
+    {
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 0.0f;
+    }
+    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_IQ_4A_TICKS)
+    {
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 1.0f;
+    }
+    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_TICKS)
+    {
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 4.0f;
+    }
+    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_IQ_4A_TICKS)
+    {
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 1000.0f;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 1.0f;
+    }
+    else
+    {
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 1000.0f;
+        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 4.0f;
+    }
+
+    pmsm_cil_auto_mode_counter++;
+}
+
 static struct uz_pmsm_measurement_values uz_pmsm_cil_make_measurements(uz_3ph_dq_t i_dq_A, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec, float v_dc_V)
 {
     const float theta_el_rad = uz_pmsm_cil_wrap_to_2pi(theta_mech_rad * UZ_CIL_PMSM_POLE_PAIRS);
@@ -319,6 +390,7 @@ static void uz_pmsm_cil_reset(void)
     pmsm_cil_ipcore_outputs = (struct uz_pmsmModel_outputs_t){0};
     pmsm_cil_theta_mech_rad = 0.0f;
     pmsm_cil_is_reset = true;
+    uz_pmsm_cil_stop_auto_mode();
 
     Global_Data.av.I_d = 0.0f;
     Global_Data.av.I_q = 0.0f;

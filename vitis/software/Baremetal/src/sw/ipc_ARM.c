@@ -17,10 +17,11 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../include/isr.h"
 #include <stdbool.h>
 
-extern float *js_ch_observable[JSO_ENDMARKER];
-extern float *js_ch_selected[JS_CHANNELS];
+extern const float *js_ch_observable[JSO_ENDMARKER];
+extern const float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -266,7 +267,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			uz_pmsm_cil_start_auto_mode();
 			break;
 
 		case (My_Button_2):
@@ -342,11 +343,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	if (uz_pmsm_cil_is_auto_mode_active()) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

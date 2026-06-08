@@ -30,4 +30,24 @@
 #define INTERRUPT_ID_IPI 					XPAR_XIPIPSU_0_DEVICE_ID			/* IPI device that Interrupt is connected to */
 
 
+//==============================================================================================================================================================
+// Host logging / measurement path selection (mutually exclusive)
+// ---------------------------------------------------------------------------
+// Exactly ONE path is active at a time; choose it by setting LOGGING_PATH:
+//   LOGGING_PATH_XCP        : XCP-on-R5 via the OCM ethernet adapter (CANape)
+//   LOGGING_PATH_JAVASCOPE  : stream samples to the JavaScope GUI over TCP
+// The R5 data exchange (data_A2R / data_R2A via IPI) and CAN run in both.
+//==============================================================================
+#define LOGGING_PATH_XCP        1
+#define LOGGING_PATH_JAVASCOPE  2
+
+#ifndef LOGGING_PATH
+#define LOGGING_PATH  LOGGING_PATH_XCP
+#endif
+
+#if (LOGGING_PATH != LOGGING_PATH_XCP) && (LOGGING_PATH != LOGGING_PATH_JAVASCOPE)
+#error "LOGGING_PATH must be LOGGING_PATH_XCP or LOGGING_PATH_JAVASCOPE"
+#endif
+
+
 #endif /* DEFINES_H_ */

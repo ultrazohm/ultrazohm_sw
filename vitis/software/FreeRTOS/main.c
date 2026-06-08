@@ -225,11 +225,17 @@ void network_thread(void *p)
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
     uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
+#if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
     print_echo_app_header();
     uz_printf("\r\n");
     sys_thread_new("echod", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
+#elif LOGGING_PATH==LOGGING_PATH_XCP
+    sys_thread_new("xcp_device", ocm_eth_adapter_task, 0,
+		THREAD_STACKSIZE,
+		DEFAULT_THREAD_PRIO);
+#endif
     vTaskDelete(NULL);
 #endif
 
@@ -284,14 +290,17 @@ int main_thread()
 		if (server_netif.ip_addr.addr) {
 			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
+#if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
 			print_echo_app_header();
 			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+#elif LOGGING_PATH==LOGGING_PATH_XCP
 			sys_thread_new("xcp_device", ocm_eth_adapter_task, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+#endif
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
@@ -307,14 +316,17 @@ int main_thread()
 			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
 			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
+#if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
 			print_echo_app_header();
 			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+#elif LOGGING_PATH==LOGGING_PATH_XCP
 			sys_thread_new("xcp_device", ocm_eth_adapter_task, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+#endif
 			break;
 		}
 	}

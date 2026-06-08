@@ -53,12 +53,16 @@ XScuGic_Config *IntcConfig;
  */
 void Transfer_ipc_Intr_Handler(void *data)
 {
+#if LOGGING_PATH==LOGGING_PATH_XCP
 	ocm_eth_adapter_irq();
+#endif
 
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
+#if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+#endif
 	int status;
-	BaseType_t xHigherPriorityTaskWoken;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
@@ -87,6 +91,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	// Now data from R5 is available, write to local struct:
 	data_R2A_localAPU = *data_R2A;
 
+#if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{
@@ -100,6 +105,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 	// queue is purged when new connection is established
+#endif
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

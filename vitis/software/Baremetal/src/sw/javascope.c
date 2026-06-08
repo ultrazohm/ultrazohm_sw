@@ -49,6 +49,93 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 extern XIpiPsu IPI_instance;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 
+struct JavaScope_pmsm_control_observable_ids {
+	enum JS_OberservableData actual_i_d;
+	enum JS_OberservableData actual_i_q;
+	enum JS_OberservableData actual_i_zero;
+	enum JS_OberservableData actual_v_d;
+	enum JS_OberservableData actual_v_q;
+	enum JS_OberservableData actual_v_zero;
+	enum JS_OberservableData actual_omega_el_rad_s;
+	enum JS_OberservableData actual_speed_rpm;
+	enum JS_OberservableData actual_theta_el;
+	enum JS_OberservableData actual_theta_el_advanced;
+	enum JS_OberservableData theta_offset;
+	enum JS_OberservableData ref_speed_rpm;
+	enum JS_OberservableData ref_torque_Nm;
+	enum JS_OberservableData ref_i_d;
+	enum JS_OberservableData ref_i_q;
+	enum JS_OberservableData ref_i_zero;
+	enum JS_OberservableData ref_v_d;
+	enum JS_OberservableData ref_v_q;
+	enum JS_OberservableData ref_v_zero;
+	enum JS_OberservableData ref_v_a;
+	enum JS_OberservableData ref_v_b;
+	enum JS_OberservableData ref_v_c;
+	enum JS_OberservableData ref_duty_a;
+	enum JS_OberservableData ref_duty_b;
+	enum JS_OberservableData ref_duty_c;
+	enum JS_OberservableData meas_i_a;
+	enum JS_OberservableData meas_i_b;
+	enum JS_OberservableData meas_i_c;
+	enum JS_OberservableData meas_v_a;
+	enum JS_OberservableData meas_v_b;
+	enum JS_OberservableData meas_v_c;
+	enum JS_OberservableData meas_v_dc;
+	enum JS_OberservableData meas_i_dc;
+	enum JS_OberservableData meas_omega_mech_rad_s;
+	enum JS_OberservableData meas_theta_mech;
+};
+
+static void JavaScope_register_pmsm_control_observables(uz_pmsm_control_t *controller, const struct JavaScope_pmsm_control_observable_ids *ids)
+{
+	if (controller == NULL) {
+		return;
+	}
+
+	const struct uz_pmsm_actual_data *actual = uz_pmsm_control_get_actual_data(controller);
+	const struct uz_pmsm_reference_values *reference = uz_pmsm_control_get_reference_values(controller);
+	const struct uz_pmsm_measurement_values *measurement = uz_pmsm_control_get_pmsm_measurement_values(controller);
+
+	js_ch_observable[ids->actual_i_d] = &actual->i_dq_in_A.d;
+	js_ch_observable[ids->actual_i_q] = &actual->i_dq_in_A.q;
+	js_ch_observable[ids->actual_i_zero] = &actual->i_dq_in_A.zero;
+	js_ch_observable[ids->actual_v_d] = &actual->v_dq_in_V.d;
+	js_ch_observable[ids->actual_v_q] = &actual->v_dq_in_V.q;
+	js_ch_observable[ids->actual_v_zero] = &actual->v_dq_in_V.zero;
+	js_ch_observable[ids->actual_omega_el_rad_s] = &actual->omega_el_rad_per_sec;
+	js_ch_observable[ids->actual_speed_rpm] = &actual->speed_in_rpm;
+	js_ch_observable[ids->actual_theta_el] = &actual->theta_el;
+	js_ch_observable[ids->actual_theta_el_advanced] = &actual->theta_el_advanced;
+	js_ch_observable[ids->theta_offset] = uz_pmsm_control_get_pointer_to_theta_offset(controller);
+
+	js_ch_observable[ids->ref_speed_rpm] = &reference->speed_in_rpm;
+	js_ch_observable[ids->ref_torque_Nm] = &reference->M_in_Nm;
+	js_ch_observable[ids->ref_i_d] = &reference->i_dq_in_A.d;
+	js_ch_observable[ids->ref_i_q] = &reference->i_dq_in_A.q;
+	js_ch_observable[ids->ref_i_zero] = &reference->i_dq_in_A.zero;
+	js_ch_observable[ids->ref_v_d] = &reference->v_dq_in_V.d;
+	js_ch_observable[ids->ref_v_q] = &reference->v_dq_in_V.q;
+	js_ch_observable[ids->ref_v_zero] = &reference->v_dq_in_V.zero;
+	js_ch_observable[ids->ref_v_a] = &reference->v_abc_in_V.a;
+	js_ch_observable[ids->ref_v_b] = &reference->v_abc_in_V.b;
+	js_ch_observable[ids->ref_v_c] = &reference->v_abc_in_V.c;
+	js_ch_observable[ids->ref_duty_a] = &reference->duty_cycle.DutyCycle_A;
+	js_ch_observable[ids->ref_duty_b] = &reference->duty_cycle.DutyCycle_B;
+	js_ch_observable[ids->ref_duty_c] = &reference->duty_cycle.DutyCycle_C;
+
+	js_ch_observable[ids->meas_i_a] = &measurement->i_abc_in_A.a;
+	js_ch_observable[ids->meas_i_b] = &measurement->i_abc_in_A.b;
+	js_ch_observable[ids->meas_i_c] = &measurement->i_abc_in_A.c;
+	js_ch_observable[ids->meas_v_a] = &measurement->v_abc_in_V.a;
+	js_ch_observable[ids->meas_v_b] = &measurement->v_abc_in_V.b;
+	js_ch_observable[ids->meas_v_c] = &measurement->v_abc_in_V.c;
+	js_ch_observable[ids->meas_v_dc] = &measurement->v_dc_in_V;
+	js_ch_observable[ids->meas_i_dc] = &measurement->i_dc_in_A;
+	js_ch_observable[ids->meas_omega_mech_rad_s] = &measurement->omega_mech_rad_per_sec;
+	js_ch_observable[ids->meas_theta_mech] = &measurement->theta_mech;
+}
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -86,6 +173,85 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+
+
+	static const struct JavaScope_pmsm_control_observable_ids swmodel_control_ids = {
+		JSO_PMSM_SW_ACTUAL_I_D,
+		JSO_PMSM_SW_ACTUAL_I_Q,
+		JSO_PMSM_SW_ACTUAL_I_ZERO,
+		JSO_PMSM_SW_ACTUAL_V_D,
+		JSO_PMSM_SW_ACTUAL_V_Q,
+		JSO_PMSM_SW_ACTUAL_V_ZERO,
+		JSO_PMSM_SW_ACTUAL_OMEGA_EL_RAD_S,
+		JSO_PMSM_SW_ACTUAL_SPEED_RPM,
+		JSO_PMSM_SW_ACTUAL_THETA_EL,
+		JSO_PMSM_SW_ACTUAL_THETA_EL_ADVANCED,
+		JSO_PMSM_SW_THETA_OFFSET,
+		JSO_PMSM_SW_REF_SPEED_RPM,
+		JSO_PMSM_SW_REF_TORQUE_NM,
+		JSO_PMSM_SW_REF_I_D,
+		JSO_PMSM_SW_REF_I_Q,
+		JSO_PMSM_SW_REF_I_ZERO,
+		JSO_PMSM_SW_REF_V_D,
+		JSO_PMSM_SW_REF_V_Q,
+		JSO_PMSM_SW_REF_V_ZERO,
+		JSO_PMSM_SW_REF_V_A,
+		JSO_PMSM_SW_REF_V_B,
+		JSO_PMSM_SW_REF_V_C,
+		JSO_PMSM_SW_REF_DUTY_A,
+		JSO_PMSM_SW_REF_DUTY_B,
+		JSO_PMSM_SW_REF_DUTY_C,
+		JSO_PMSM_SW_MEAS_I_A,
+		JSO_PMSM_SW_MEAS_I_B,
+		JSO_PMSM_SW_MEAS_I_C,
+		JSO_PMSM_SW_MEAS_V_A,
+		JSO_PMSM_SW_MEAS_V_B,
+		JSO_PMSM_SW_MEAS_V_C,
+		JSO_PMSM_SW_MEAS_V_DC,
+		JSO_PMSM_SW_MEAS_I_DC,
+		JSO_PMSM_SW_MEAS_OMEGA_MECH_RAD_S,
+		JSO_PMSM_SW_MEAS_THETA_MECH
+	};
+	static const struct JavaScope_pmsm_control_observable_ids ipcore_control_ids = {
+		JSO_PMSM_IP_ACTUAL_I_D,
+		JSO_PMSM_IP_ACTUAL_I_Q,
+		JSO_PMSM_IP_ACTUAL_I_ZERO,
+		JSO_PMSM_IP_ACTUAL_V_D,
+		JSO_PMSM_IP_ACTUAL_V_Q,
+		JSO_PMSM_IP_ACTUAL_V_ZERO,
+		JSO_PMSM_IP_ACTUAL_OMEGA_EL_RAD_S,
+		JSO_PMSM_IP_ACTUAL_SPEED_RPM,
+		JSO_PMSM_IP_ACTUAL_THETA_EL,
+		JSO_PMSM_IP_ACTUAL_THETA_EL_ADVANCED,
+		JSO_PMSM_IP_THETA_OFFSET,
+		JSO_PMSM_IP_REF_SPEED_RPM,
+		JSO_PMSM_IP_REF_TORQUE_NM,
+		JSO_PMSM_IP_REF_I_D,
+		JSO_PMSM_IP_REF_I_Q,
+		JSO_PMSM_IP_REF_I_ZERO,
+		JSO_PMSM_IP_REF_V_D,
+		JSO_PMSM_IP_REF_V_Q,
+		JSO_PMSM_IP_REF_V_ZERO,
+		JSO_PMSM_IP_REF_V_A,
+		JSO_PMSM_IP_REF_V_B,
+		JSO_PMSM_IP_REF_V_C,
+		JSO_PMSM_IP_REF_DUTY_A,
+		JSO_PMSM_IP_REF_DUTY_B,
+		JSO_PMSM_IP_REF_DUTY_C,
+		JSO_PMSM_IP_MEAS_I_A,
+		JSO_PMSM_IP_MEAS_I_B,
+		JSO_PMSM_IP_MEAS_I_C,
+		JSO_PMSM_IP_MEAS_V_A,
+		JSO_PMSM_IP_MEAS_V_B,
+		JSO_PMSM_IP_MEAS_V_C,
+		JSO_PMSM_IP_MEAS_V_DC,
+		JSO_PMSM_IP_MEAS_I_DC,
+		JSO_PMSM_IP_MEAS_OMEGA_MECH_RAD_S,
+		JSO_PMSM_IP_MEAS_THETA_MECH
+	};
+
+	JavaScope_register_pmsm_control_observables(data->objects.pmsm_control_swmodel, &swmodel_control_ids);
+	JavaScope_register_pmsm_control_observables(data->objects.pmsm_control_ipcore, &ipcore_control_ids);
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

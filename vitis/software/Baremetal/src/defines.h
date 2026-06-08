@@ -44,6 +44,21 @@
 #define FPGA_20MHz		20000000.0f			//Clock frequency
 #define FPGA_10MHz		10000000.0f			//Clock frequency
 
+// CIL PMSM model/controller parameters
+#define UZ_CIL_PMSM_MODEL_IP_CORE_FREQUENCY_HZ       100000000U
+#define UZ_CIL_PMSM_R_PH_OHM                         0.51f
+#define UZ_CIL_PMSM_LD_HENRY                         0.002f
+#define UZ_CIL_PMSM_LQ_HENRY                         0.002f
+#define UZ_CIL_PMSM_PSI_PM_VS                        0.042f
+#define UZ_CIL_PMSM_J_KG_M_SQUARED                   0.000108f
+#define UZ_CIL_PMSM_I_MAX_AMPERE                     12.0f
+#define UZ_CIL_PMSM_FRICTION_COEFFICIENT             0.001f
+#define UZ_CIL_PMSM_COULOMB_FRICTION_CONSTANT        0.01f
+#define UZ_CIL_PMSM_POLE_PAIRS                       1.0f
+#define UZ_CIL_PMSM_CURRENT_CONTROLLER_KP             5.8333f
+#define UZ_CIL_PMSM_CURRENT_CONTROLLER_KI             1500.0f
+#define UZ_CIL_PMSM_DEFAULT_V_DC_V                    24.0f
+
 //Fractional Bit defines
 #define   Q32         32
 #define   Q31         31

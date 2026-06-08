@@ -9,6 +9,7 @@
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
 #include "uz/uz_pmsm_swmodel/uz_pmsm_swmodel.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -118,6 +119,8 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsmModel_t* pmsm_model;
 	uz_pmsm_swmodel_t* pmsm_swmodel;
+	uz_pmsm_control_t* pmsm_control_ipcore;
+	uz_pmsm_control_t* pmsm_control_swmodel;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

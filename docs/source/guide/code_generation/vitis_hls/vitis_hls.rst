@@ -7,10 +7,11 @@ Vitis HLS (HDL)
 Vitis HLS generates RTL from C and C++ code.
 It is useful for IP cores where the algorithm is easier to describe, test, or optimize in software than directly in HDL.
 The generated RTL can be packaged as an IP core, integrated in Vivado, and accessed from Vitis software through AXI drivers.
+Good starting point is `User Guide 1399 - Introduction to Vitis HLS <https://docs.xilinx.com/r/2022.2-English/ug1399-vitis-hls/Introduction-to-Vitis-HLS>`_.
 
 Compared with :ref:`HDL Coder <hdl_coder>`, Vitis HLS does not require modeling the algorithm as a Simulink data flow diagram.
 It is also well suited for floating-point logic and code-oriented design flows.
-Since MATLAB R2025b, Vitis HLS can also be used as a synthesis tool directly within MATLAB.
+Since MATLAB R2025b, Vitis HLS can also be used as a synthesis tool directly within MATLAB, see the MathWorks tutorial `From MATLAB to Optimized RTL Using HDL Coder and AMD Vitis HLS <https://www.mathworks.com/videos/from-matlab-to-optimized-rtl-using-hdl-coder-and-amd-vitis-hls-1774893384578.html>`_ for details.
 
 Recommended workflow
 ====================
@@ -47,23 +48,11 @@ Generate the HLS project with Tcl
 Each Vitis HLS design should be generated using a ``script.tcl``.
 The script captures the commands required to create, simulate, synthesize, and export the design.
 
-Place the following example in ``ultrazohm_sw\ip_cores\uz_HLS_testIP\testIP_solution\script.tcl``:
+The example script is in ``ultrazohm_sw\ip_cores\uz_HLS_testIP\testIP_solution\script.tcl``:
 
-.. code-block:: tcl
-
-   open_project uz_HLS_testIP
-   set_top uz_HLS_testIP
-   add_files ./uz_HLS_testIP.cpp
-   add_files ./uz_HLS_testIP.h
-   add_files -tb ./tb_uz_HLS_testIP.cpp
-   open_solution "testIP_solution" -flow_target vivado
-   set_part {xczu9eg-ffvc900-1-e}
-   create_clock -period 10 -name default
-   config_export -format ip_catalog -rtl verilog
-   #source "./testIP_solution/directives.tcl"
-   csim_design
-   csynth_design
-   export_design -rtl verilog -format ip_catalog
+.. literalinclude:: ../../../../../ip_cores/uz_HLS_testIP/testIP_solution/script.tcl
+   :language: tcl
+   :caption: ``script.tcl``
 
 The script adds the source and test bench files, sets the top function, selects the UltraZohm device, creates a 10 ns clock, runs C simulation, runs C synthesis, and exports the RTL as an IP catalog package.
 
@@ -95,7 +84,7 @@ You only need the ``call "C:\Xilinx\Vitis_HLS\2022.2\settings64.bat"`` line if `
 Adjust the Vitis HLS installation path if it is installed somewhere else.
 The setup script only changes the environment of the shell in which it is executed.
 
-After the script is finished, the IP core has been generated and exported to ``uz_HLS_testIP\testIP_solution\impl\export.zip``.
+After the script finishes, Vitis HLS creates the generated project in ``uz_HLS_testIP\`` and exports the packaged IP to ``uz_HLS_testIP\testIP_solution\impl\export.zip``.
 The IP core can now be integrated into the Vivado project as described in :ref:`hls_vivado`.
 
 **Open the generated HLS project**
@@ -106,20 +95,15 @@ To inspect the generated HLS project, open it with:
 
    vitis_hls -p uz_HLS_testIP
 
-From ``cmd.exe`` without a configured Vitis HLS environment, use:
-
-.. code-block:: bat
-
-   call "C:\Xilinx\Vitis_HLS\2022.2\settings64.bat"
-   vitis_hls -p uz_HLS_testIP
 
 Optional manual project setup
 -----------------------------
 
 The manual flow creates the same example project through the Vitis HLS GUI.
+It is not required when the project is generated with ``script.tcl``.
 Use it when you want to inspect the project settings interactively or learn where the Tcl commands appear in the GUI.
 
-.. dropdown:: Show steps to create project from scratch (collapsed by default)
+.. dropdown:: Show manual GUI project creation steps
    
    - Start Vitis HLS (2022.2 used for this tutorial).
    - Create a new HLS Project.
@@ -175,19 +159,9 @@ Use it when you want to inspect the project settings interactively or learn wher
       :width: 500px
       :align: center
    
-   .. code-block:: c
-   
-      #include <stdint.h>
-   
-      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result) {
-   
-         #pragma HLS INTERFACE ap_ctrl_none port=return
-         #pragma HLS INTERFACE s_axilite port=a bundle=control
-         #pragma HLS INTERFACE s_axilite port=b bundle=control
-         #pragma HLS INTERFACE s_axilite port=result bundle=control
-   
-         *result = a * b;
-      }
+   .. literalinclude:: ../../../../../ip_cores/uz_HLS_testIP/uz_HLS_testIP.cpp
+      :language: c
+      :caption: ``uz_HLS_testIP.cpp``
    
    - To create a header file, simply right-click on the **Source** folder in your project and choose **New Source File...** from the menu.
    
@@ -203,11 +177,9 @@ Use it when you want to inspect the project settings interactively or learn wher
       :width: 500px
       :align: center
    
-   .. code-block:: c
-   
-      #include <stdint.h>
-
-      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
+   .. literalinclude:: ../../../../../ip_cores/uz_HLS_testIP/uz_HLS_testIP.h
+      :language: c
+      :caption: ``uz_HLS_testIP.h``
 
    - To create a test bench file, simply right-click on the **Test Bench** folder in your project and choose **New Test Bench File...** from the menu.
    - When the file window opens, make sure to check the path displayed. 
@@ -219,24 +191,9 @@ Use it when you want to inspect the project settings interactively or learn wher
       :width: 500px
       :align: center
    
-   .. code-block:: c
-   	
-      #include <stdio.h>
-      #include <stdint.h>
-   
-      void uz_HLS_testIP(int32_t a, int32_t b, int32_t *result);
-   
-      int main() {
-         int32_t a = 5;
-         int32_t b = 7;
-         int32_t result;
-   
-         uz_HLS_testIP(a, b, &result);
-   
-         printf("Multiplication result: %d\n", result);
-   
-         return 0;
-      }
+   .. literalinclude:: ../../../../../ip_cores/uz_HLS_testIP/tb_uz_HLS_testIP.cpp
+      :language: c
+      :caption: ``tb_uz_HLS_testIP.cpp``
    
 Simulate, synthesize, and export in the GUI
 -------------------------------------------
@@ -366,9 +323,11 @@ Use the IP core from Vitis
 Generated drivers
 *****************
 
-- Vitis HLS IP core generation yields automatically generated AXI-drivers.
-- The usage is not yet aligned with the UZ project's typical drivers and will be explained in the following.
-- The created files for the example project with the name uz_HLS_testIP are:
+Vitis HLS generates AXI driver files for the exported IP core.
+Use these generated drivers for quick tests.
+For production code in the UltraZohm software structure, prefer a small UZ-style wrapper driver around the hardware access, as shown in the next section.
+
+The generated driver files for ``uz_HLS_testIP`` are:
 
   - ``xuz_hls_testip_hw.h``
   - ``xuz_hls_testip_linux.c``
@@ -376,54 +335,47 @@ Generated drivers
   - ``xuz_hls_testip.c``
   - ``xuz_hls_testip.h``
  
-While the ``_hw.h`` file is similar to the HDL Coder generated hardware address file, the last two files include already usable drivers.
-These drivers can be used for operation or additional UZ-style drivers can be created around them.
-They are automatically included in the exported .xsa file from Vivado and therefore directly included in the platform project within Vitis. 
-You can find them in the Vitis workspace (after regenerating the workspace) under ``ultrazohm_sw\vitis\workspace\UltraZohm\hw\drivers\your_ip_core``.
-The header file can simply be included, as also done in the following.
+The ``_hw.h`` file contains register offsets and low-level definitions.
+The ``xuz_hls_testip.c`` and ``xuz_hls_testip.h`` files provide the initialization, setter, and getter functions used by software.
+Vivado includes these generated drivers in the exported XSA, and Vitis imports them into the platform project after the workspace is regenerated.
+They can be found under ``ultrazohm_sw\vitis\workspace\UltraZohm\hw\drivers\your_ip_core``.
 
 Initialization with Vitis HLS generated drivers
 ***********************************************
 
-To initialize an IP core instance, the instance's define has to be taken from the ``xparameters.h`` file. When we address the IP core, related information is added to the system files. 
+To initialize an IP core instance, include the generated header and use the device ID from ``xparameters.h``.
+The device ID is generated from the Vivado block design and becomes available after the XSA has been exported and the Vitis workspace has been updated.
 
 .. code-block:: c
 
-      #include <xuz_hls_testip.h>
-      
-      XUz_hls_testip XUz_hls_testip_instance;
-      
-      int32_t a = 0;
-      int32_t b = 0;
+   #include <xuz_hls_testip.h>
 
-      int main(void) {
-   
+   XUz_hls_testip XUz_hls_testip_instance;
+
+   int main(void) {
       XUz_hls_testip_Initialize(&XUz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
-   
    }
 
 Usage of Vitis HLS generated drivers
 ************************************
 
-To use the write and read with set and get functions, place the initialization code in main / case init_ip_cores: 
+After initialization, use the generated setter and getter functions to write input registers and read output registers.
+For a quick test, the generated driver can be used directly from ``main`` or from the ``init_ip_cores`` case:
 
 .. code-block:: c
 
-      XUz_hls_testip XUz_hls_testip_instance;
+   XUz_hls_testip XUz_hls_testip_instance;
 
-      int32_t a = 5;
-      int32_t b = 10;
-      int32_t result = 0;
+   int32_t a = 5;
+   int32_t b = 10;
+   int32_t result = 0;
 
-
-      int main(void) {
-   
-         // IP core initialization
-         XUz_hls_testip_Initialize(&XUz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
-         XUz_hls_testip_Set_a(&XUz_hls_testip_instance, a);
-         XUz_hls_testip_Set_b(&XUz_hls_testip_instance, b);
-         result = XUz_hls_testip_Get_result(&XUz_hls_testip_instance);
-         uz_printf("The result of multiplication is %d\r\n", result);
+   int main(void) {
+      XUz_hls_testip_Initialize(&XUz_hls_testip_instance, XPAR_UZ_USER_UZ_HLS_TESTIP_0_DEVICE_ID);
+      XUz_hls_testip_Set_a(&XUz_hls_testip_instance, a);
+      XUz_hls_testip_Set_b(&XUz_hls_testip_instance, b);
+      result = XUz_hls_testip_Get_result(&XUz_hls_testip_instance);
+      uz_printf("The result of multiplication is %d\r\n", result);
    }
 
 .. note::
@@ -436,14 +388,13 @@ To use the write and read with set and get functions, place the initialization c
 
 .. code-block:: c
 
-      float REAL_VAR = 0.0f;
-      uint32_t* INT_VAR = (uint32_t*)&REAL_VAR;
-      
-      int main(void) {
-         
-         XEXAMPLE_Initialize(&example_instance, XPAR_EXAMPLE_0_DEVICE_ID);
-         XEXAMPLE_Set_axi_example_signal(&example_instance, *INT_VAR);
-      }
+   float REAL_VAR = 0.0f;
+   uint32_t* INT_VAR = (uint32_t*)&REAL_VAR;
+
+   int main(void) {
+      XEXAMPLE_Initialize(&example_instance, XPAR_EXAMPLE_0_DEVICE_ID);
+      XEXAMPLE_Set_axi_example_signal(&example_instance, *INT_VAR);
+   }
 
 
 Optional UZ-style driver
@@ -467,240 +418,44 @@ To gain a better understanding of driver creation, you can follow the steps belo
       * ``uz_HLS_testIP_hw.h``
       * ``uz_HLS_testIP_hwAddresses.h``
    
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP/uz_HLS_testIP_hw.c
+      :language: c
       :linenos:
       :caption: ``uz_HLS_testIP_hw.c``
    
-      #include "uz_HLS_testIP_hw.h"
-      #include "uz_HLS_testIP_hwAddresses.h"
-      #include "../../uz/uz_AXI.h"
-
-      void uz_HLS_testIP_hw_write_A(uint32_t base_address,int32_t A){
-         uz_assert_not_zero_uint32(base_address);
-         uz_axi_write_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA,A);
-      }
-
-      void uz_HLS_testIP_hw_write_B(uint32_t base_address,int32_t B){
-         uz_assert_not_zero_uint32(base_address);
-         uz_axi_write_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA,B);
-      }
-
-      int32_t uz_HLS_testIP_hw_read_result(uint32_t base_address){
-         uz_assert_not_zero_uint32(base_address);
-         return (uz_axi_read_int32(base_address+XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA));
-      }
-   
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP/uz_HLS_testIP_hw.h
+      :language: c
       :linenos:
       :caption: ``uz_HLS_testIP_hw.h``
    
-      #ifndef UZ_HLS_TESTIP_HW_H
-      #define UZ_HLS_TESTIP_HW_H
-      #include <stdint.h>
-
-      void uz_HLS_testIP_hw_write_A(uint32_t base_address,int32_t A);
-      void uz_HLS_testIP_hw_write_B(uint32_t base_address,int32_t B);
-      int32_t uz_HLS_testIP_hw_read_result(uint32_t base_address);
-
-      #endif // UZ_HLS_TESTIP_HW_H
-   
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP/uz_HLS_testIP_hwAddresses.h
+      :language: c
       :linenos:
       :caption: ``uz_HLS_testIP_hwAddresses.h``
    
-      #ifndef UZ_HLS_TESTIP_HWADDRESSES_H
-      #define UZ_HLS_TESTIP_HWADDRESSES_H
-
-      #define XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA      0x10
-      #define XUZ_HLS_TESTIP_CONTROL_BITS_A_DATA      32
-      #define XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA      0x18
-      #define XUZ_HLS_TESTIP_CONTROL_BITS_B_DATA      32
-      #define XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA 0x20
-      #define XUZ_HLS_TESTIP_CONTROL_BITS_RESULT_DATA 32
-      #define XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_CTRL 0x24
-
-      #endif // UZ_HLS_TESTIP_HWADDRESSES_H
-   
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP/uz_HLS_testIP.c
+      :language: c
       :linenos:
       :caption: ``uz_HLS_testIP.c``
-   
-      #include "../../uz/uz_global_configuration.h"
-      #if UZ_HLS_TESTIP_MAX_INSTANCES > 0U
-      #include <stdbool.h>
-      #include "../../uz/uz_HAL.h"
-      #include "uz_HLS_testIP.h"
-      #include "uz_HLS_testIP_hw.h"
 
-      struct uz_HLS_testIP {
-         bool is_ready;
-         struct uz_HLS_testIP_config_t config;
-      };
-
-      static uint32_t instance_counter = 0U;
-      static uz_HLS_testIP instances[UZ_HLS_TESTIP_MAX_INSTANCES] = { 0 };
-
-      static uz_HLS_testIP* uz_HLS_testIP_allocation(void);
-
-      static uz_HLS_testIP* uz_HLS_testIP_allocation(void){
-         uz_assert(instance_counter < UZ_HLS_TESTIP_MAX_INSTANCES);
-         uz_HLS_testIP* self = &instances[instance_counter];
-         uz_assert_false(self->is_ready);
-         instance_counter++;
-         self->is_ready = true;
-         return (self);
-      }
-
-      uz_HLS_testIP* uz_HLS_testIP_init(struct uz_HLS_testIP_config_t config) {
-         uz_HLS_testIP* self = uz_HLS_testIP_allocation();
-         self->config = config;
-         return (self);
-      }
-
-      int32_t uz_HLS_testIP_multiply(uz_HLS_testIP* self, int32_t A, int32_t B){
-         uz_assert_not_NULL(self);
-         uz_assert(self->is_ready);
-         uz_HLS_testIP_hw_write_A(self->config.base_address,A);
-         uz_HLS_testIP_hw_write_B(self->config.base_address,B);
-         return (uz_HLS_testIP_hw_read_result(self->config.base_address));
-      }
-      #endif
-   
-   
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/src/IP_Cores/uz_HLS_testIP/uz_HLS_testIP.h
+      :language: c
       :linenos:
       :caption: ``uz_HLS_testIP.h``
-   
-      #ifndef UZ_HLS_TESTIP_H
-      #define UZ_HLS_TESTIP_H
-      #include <stdint.h>
-
-      /**
-      * @brief Data type for object uz_HLS_testIP
-      *
-      */
-      typedef struct uz_HLS_testIP uz_HLS_testIP;
-
-      /**
-      * @brief Configuration struct for myTestIP
-      *
-      */
-      struct uz_HLS_testIP_config_t{
-         uint32_t base_address; /**< Base address of the IP core */
-         uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP core */
-      };
-
-      /**
-      * @brief Initializes an instance of the myTestIP driver
-      *
-      * @param config Configuration values for the IP core
-      * @return Pointer to initialized instance
-      */
-      uz_HLS_testIP* uz_HLS_testIP_init(struct uz_HLS_testIP_config_t config);
-
-      /**
-      * @brief Calculates result=A*B
-      *
-      * @param self Pointer to IP core instance that was initialized with init function
-      * @param A First factor
-      * @param B Second factor
-      * @return Product of A times B
-      */
-      int32_t uz_HLS_testIP_multiply(uz_HLS_testIP* self, int32_t A, int32_t B);
-
-      #endif // UZ_HLS_TESTIP_H
 
    - Open ``uz_global_configuration.h`` and add ``#define UZ_HLS_TESTIP_MAX_INSTANCES 0U`` to the normal configuration section and ``#define UZ_HLS_TESTIP_MAX_INSTANCES 20U`` to the test configuration section.
    - For the unit tests navigate to ``vitis/software/Baremetal/test/IP_Cores`` and create the folder ``uz_HLS_testIP``.
    - Within this folder create the file ``test_uz_HLS_testIP.c`` and ``test_uz_HLS_testIP_hw.c``.
 
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/test/IP_Cores/uz_HLS_testIP/test_uz_HLS_testIP_hw.c
+      :language: c
       :linenos:
       :caption: ``test_uz_HLS_testIP_hw.c``
 
-      #include "unity.h"
-      #include "uz_HLS_testIP_hw.h"
-      #include <stdbool.h>
-      #include <stdint.h>
-      #include "test_assert_with_exception.h"
-      #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
-      #include "uz_HLS_testIP_hwAddresses.h"
-
-      #define BASE_ADDRESS 0x0F0000000U // random hex value that represents a fictional base address
-      #define ZERO_BASE_ADDRESS 0x00000000U
-
-
-      void test_uz_HLS_testIP_hw_write_A_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_write_A(ZERO_BASE_ADDRESS, 10));
-      }
-
-      void test_uz_HLS_testIP_hw_write_B_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_write_B(ZERO_BASE_ADDRESS, 10));
-      }
-
-      void test_uz_HLS_testIP_hw_read_result_base_address_zero(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_hw_read_result(ZERO_BASE_ADDRESS));
-      }
-
-      void test_uz_HLS_testIP_hw_write_A(void) {
-      	int32_t testvalue = 10;
-      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_A_DATA, testvalue);
-      	uz_HLS_testIP_hw_write_A(BASE_ADDRESS, testvalue);
-      }
-
-      void test_uz_HLS_testIP_hw_write_B(void) {
-      	int32_t testvalue = 10;
-      	uz_axi_write_int32_Expect(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_B_DATA, testvalue);
-      	uz_HLS_testIP_hw_write_B(BASE_ADDRESS, testvalue);
-      }
-
-      void test_uz_HLS_testIP_hw_read_result(void) {
-      	int32_t expected_result = 42;
-      	uz_axi_read_int32_ExpectAndReturn(BASE_ADDRESS + XUZ_HLS_TESTIP_CONTROL_ADDR_RESULT_DATA, expected_result);
-      	uz_HLS_testIP_hw_read_result(BASE_ADDRESS);
-      }
-
-
-   .. code-block:: c
+   .. literalinclude:: ../../../../../vitis/software/Baremetal/test/IP_Cores/uz_HLS_testIP/test_uz_HLS_testIP.c
+      :language: c
       :linenos:
       :caption: ``test_uz_HLS_testIP.c``
-
-      #ifdef TEST
-
-      #include "unity.h"
-      #include "uz_HLS_testIP.h"
-      #include "mock_uz_HLS_testIP_hw.h"
-      #include "test_assert_with_exception.h"
-
-      #define TEST_BASE_ADDRESS 0x000F0000
-
-      uz_HLS_testIP* successful_init(void);
-      uz_HLS_testIP* successful_init(void) {
-      	struct uz_HLS_testIP_config_t config = {
-      		.base_address = TEST_BASE_ADDRESS,
-      		.ip_clk_frequency_Hz = 100000000U};
-      	uz_HLS_testIP* instance = uz_HLS_testIP_init(config);
-      	return(instance);
-      }
-
-      void test_uz_HLS_testIP_init_successful(void) {
-      	successful_init();
-      }
-
-      void test_uz_HLS_testIP_multiply_assert_NULL(void) {
-      	TEST_ASSERT_FAIL_ASSERT(uz_HLS_testIP_multiply(NULL, 5, 10));
-      }
-
-      void test_uz_HLS_testIP_multiply(void) {
-      	uz_HLS_testIP* instance = successful_init();
-      	uz_HLS_testIP_hw_write_A_Expect(TEST_BASE_ADDRESS, 5);
-      	uz_HLS_testIP_hw_write_B_Expect(TEST_BASE_ADDRESS, 10);
-      	uz_HLS_testIP_hw_read_result_ExpectAndReturn(TEST_BASE_ADDRESS, 50);
-      	int32_t result = uz_HLS_testIP_multiply(instance, 5, 10);
-      	TEST_ASSERT_EQUAL_INT32(50, result);
-      }
-
-      #endif // TEST
 
 
 
@@ -763,6 +518,23 @@ Test on hardware with the Vitis Serial Terminal
 .. figure:: tutorial_img/34_vitis_serial_term.png
    :width: 400px
    :align: center
+
+More complex HLS use case
+=========================
+
+The ``uz_HLS_testIP`` example is intentionally small and shows the mechanics of generating, exporting, integrating, and driving a Vitis HLS IP core.
+For a more complex HLS-based IP core, see :ref:`uz_NN_acc`.
+
+The :ref:`uz_NN_acc` IP core implements a configurable floating-point MLP accelerator and shows additional topics that are relevant for larger HLS designs:
+
+- multiple C/C++ source files and reusable layer functions,
+- multiple Vitis HLS solutions with separate ``script.tcl`` and ``directives.tcl`` files,
+- HLS directives for performance and resource tradeoffs,
+- AXI-Lite control together with memory access from the programmable logic,
+- a UZ-style software driver for integrating the accelerator into the UltraZohm software stack.
+
+The number of layers and neurons is fixed during HLS synthesis.
+Changing the network structure therefore requires resynthesizing the IP core, as described in :ref:`uz_NN_customize_setup`.
 
 Further reading
 ===============

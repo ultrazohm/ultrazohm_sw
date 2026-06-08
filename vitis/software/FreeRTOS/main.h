@@ -95,7 +95,7 @@ void lwip_init();
 #if CAN_ACTIVE==1
 	void can_send_1(void); 		//CAN interface: Test function for CAN
 	void can_send_2(void); 		//CAN interface: Test function for CAN
-	void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
+	// hal_can_debug_print_frame() is declared in uz/uz_can/uz_can.h (operates on uz_can_frame_t)
 #endif
 
 #ifdef __cplusplus

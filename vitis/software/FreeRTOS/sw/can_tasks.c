@@ -2,13 +2,16 @@
 #include "task.h"
 //#include "shared_memory.h"
 #include "../include/can_tasks.h"
-#include "../include/can.h"        /* can_frame_t, hal_can_* */
+#include "../uz/uz_can/uz_can.h"   /* uz_can_frame_t, uz_can_* */
 #include "../defines.h"
 #include "../uz/uz_HAL.h"
 #include "../include/isr.h"
 #include "APU_RPU_shared.h"
 #include <xstatus.h>               /* XST_SUCCESS */
 #include <string.h>
+
+/* CAN driver instance (created in main.c via uz_can_init). */
+extern uz_can_t *can_instance_0;
 
 typedef struct {
     volatile uint32_t sequence;
@@ -24,11 +27,11 @@ uint8_t msgStateActual_cnt=0;
 static void can_rx_task(void *pv)
 {
     (void)pv;
-    can_frame_t frame;
+    uz_can_frame_t frame;
     for (;;) {
         /* Poll RX fifo every 1 ms (cheap and deterministic). If RX is non-empty, read frame */
-        if (!hal_can_is_rx_empty()) {
-            if (hal_can_receive_frame_blocking(&frame) == XST_SUCCESS) {
+        if (!uz_can_is_rx_empty(can_instance_0)) {
+            if (uz_can_receive_frame_blocking(can_instance_0, &frame) == XST_SUCCESS) {
                 if (frame.std_id == 0x123 && frame.dlc >= 1) {
                     shared_CAN_Data.SignalRx1 = frame.data[0];
                     shared_CAN_Data.sequence++;
@@ -42,14 +45,14 @@ static void can_rx_task(void *pv)
 static void can_task_1ms(void *pv)
 {
     TickType_t last = xTaskGetTickCount();
-    can_frame_t tx;
+    uz_can_frame_t tx;
     (void)pv;
     for (;;) {
         /* Example: periodic heartbeat on 1ms (can be replaced with real data) */
         tx.std_id = 0x100;
         tx.dlc = 1;
         tx.data[0] = 0xAA;
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
         vTaskDelayUntil(&last, pdMS_TO_TICKS(1));
     }
@@ -58,8 +61,8 @@ static void can_task_1ms(void *pv)
 static void can_task_10ms(void *pv)
 {
     TickType_t last = xTaskGetTickCount();
-    can_frame_t tx;
-    can_frame_t rx;
+    uz_can_frame_t tx;
+    uz_can_frame_t rx;
     (void)pv;
     for (;;) {
     	/* ============================== */
@@ -80,7 +83,7 @@ static void can_task_10ms(void *pv)
         tx.data[5] = (uint8_t)(u16_tmp_Voltage_DC_Link>>8);	// high byte
         tx.data[6] = 0;
         tx.data[7] = 0;
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
 
     	/* ================================ */
@@ -100,14 +103,14 @@ static void can_task_10ms(void *pv)
         tx.data[5] = (uint8_t)(u32_tmp_Diag_Limits_Status>>8);		// ...
         tx.data[6] = (uint8_t)(u32_tmp_Diag_Limits_Status>>16);		// ...
         tx.data[7] = (uint8_t)(u32_tmp_Diag_Limits_Status>>24);		// high byte
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
 
         /* Limit processing CAN receive messages up to 64 frames per task to avoid blocking */
         uint8_t drained = 0;
         const uint8_t max_drain = 64;
-        while (!hal_can_is_rx_empty() && (drained < max_drain)) {
-            if (hal_can_receive_frame_blocking(&rx) == XST_SUCCESS) {
+        while (!uz_can_is_rx_empty(can_instance_0) && (drained < max_drain)) {
+            if (uz_can_receive_frame_blocking(can_instance_0, &rx) == XST_SUCCESS) {
             	/* =============================== */
             	/* Receive Message toMCU2_Requests */
                 if (rx.std_id == 0x131 && rx.dlc >= 1) {
@@ -156,7 +159,7 @@ static void can_task_10ms(void *pv)
 static void can_task_100ms(void *pv)
 {
     TickType_t last = xTaskGetTickCount();
-    can_frame_t tx;
+    uz_can_frame_t tx;
     (void)pv;
     for (;;) {
     	/* ============================= */
@@ -172,7 +175,7 @@ static void can_task_100ms(void *pv)
         tx.data[5] = 0;
         tx.data[6] = 0;
         tx.data[7] = 0;
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
 
     	/* ======================================= */
@@ -188,7 +191,7 @@ static void can_task_100ms(void *pv)
         tx.data[5] = data_R2A_localAPU.Temp_Inv_Phase_6;
         tx.data[6] = 0;
         tx.data[7] = 0;
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
 
     	/* ==================================== */
@@ -204,14 +207,14 @@ static void can_task_100ms(void *pv)
         tx.data[5] = data_R2A_localAPU.Temp_Mot_Phase_6;
         tx.data[6] = 0;
         tx.data[7] = 0;
-        hal_can_send_frame_blocking(&tx);
+        uz_can_send_frame_blocking(can_instance_0, &tx);
 
 
         vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
     }
 }
 
-/* Public init: create RX + periodic tasks. Call after hal_can_init(). */
+/* Public init: create RX + periodic tasks. Call after uz_can_init(). */
 void CAN_app_init(void)
 {
 	BaseType_t ret;

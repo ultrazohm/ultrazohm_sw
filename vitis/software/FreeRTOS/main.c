@@ -23,7 +23,7 @@
 
 //Includes for CAN
 #define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
-#include "include/can.h"
+#include "uz/uz_can/uz_can.h"
 #include "include/can_tasks.h"
 
 //Includes from own files
@@ -33,6 +33,13 @@
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
 #include "sw/xcp/OCM_eth_adapter.h"
+
+// CAN driver configuration and instance (uz_can replaces the previous hal_can layer).
+struct uz_can_config_t can_config_0 = {
+	.base_address = XPAR_PSU_CAN_0_BASEADDR,
+	.ip_core_frequency_Hz = 100000000U, // 100 MHz
+	.can_device_id = XPAR_PSU_CAN_0_DEVICE_ID};
+uz_can_t *can_instance_0 = NULL;
 
 
 size_t lifecheck_mainThread = 0;
@@ -158,14 +165,14 @@ void network_thread(void *p)
 
 #if CAN_ACTIVE==1
 	uz_printf(" Init CAN \n\r"); //CAN interface
-	int rc_status = hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
+	can_instance_0 = uz_can_init(can_config_0); //CAN 0 interface
 
-//	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
+//	can_instance_1 = uz_can_init(can_config_1); //CAN 1 interface
 
-	if (rc_status != XST_SUCCESS) {
-	    uz_printf("hal_can_init failed rc_status=%d\n\r", rc_status);
+	if (can_instance_0 == NULL) {
+	    uz_printf("uz_can_init failed\n\r");
 	} else {
-	    uz_printf("hal_can_init OK\n\r");
+	    uz_printf("uz_can_init OK\n\r");
 	}
 
 //	can_frame_t can_frame_rx; //CAN interface
@@ -320,17 +327,7 @@ int main_thread()
 
 
 //==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  hal_can_debug_print_frame
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void hal_can_debug_print_frame(can_frame_t *can_frame_p)
-{
-	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
-			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
-}
+/* hal_can_debug_print_frame() is now provided by uz_can.c (operates on uz_can_frame_t). */
 
 
 //==============================================================================================================================================================
@@ -348,13 +345,13 @@ void can_send_1(void)
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
-	can_frame_t can_frame_tx;
+	uz_can_frame_t can_frame_tx;
 	can_frame_tx.std_id = 0x123;
 	can_frame_tx.dlc = 2;
 	can_frame_tx.data[0] = 0x13;
 	can_frame_tx.data[1] = tick;
 
-	hal_can_send_frame_blocking(&can_frame_tx);
+	uz_can_send_frame_blocking(can_instance_0, &can_frame_tx);
 }
 
 
@@ -373,11 +370,11 @@ void can_send_2(void)
 	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
-	can_frame_t can_frame_tx;
+	uz_can_frame_t can_frame_tx;
 	can_frame_tx.std_id = 0x52;
 	can_frame_tx.dlc = 2;
 	can_frame_tx.data[0] = 0x12;
 	can_frame_tx.data[1] = tick;
 
-	hal_can_send_frame_blocking(&can_frame_tx);
+	uz_can_send_frame_blocking(can_instance_0, &can_frame_tx);
 }

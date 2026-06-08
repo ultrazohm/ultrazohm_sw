@@ -79,7 +79,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
-#define UZ_PMSM_CONTROL_MAX_INSTANCES 0U
+#define UZ_PMSM_CONTROL_MAX_INSTANCES                   0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
 #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
@@ -91,9 +91,9 @@
 #define UZ_PMSM_SWMODEL_MAX_INSTANCES                   0U
 #define UZ_LUT_1D_MAX_INSTANCES                         0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
+#define UZ_HLS_TESTIP_MAX_INSTANCES                     0U
 #define UZ_ENDAT_INTERFACE_MAX_INSTANCES				0U
 #define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
-
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -144,9 +144,8 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
-#define UZ_PMSM_CONTROL_MAX_INSTANCES 15U
+    #define UZ_PMSM_CONTROL_MAX_INSTANCES                   15U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
-    #define UZ_NN_ACC_IP_MAX_INSTANCES                      100U
     #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             50U
     #define UZ_PRNG_SQUARES_MAX_INSTANCES                   50U
     #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  50U
@@ -159,4 +158,5 @@
     #define UZ_LUT_1D_MAX_INSTANCES                         20U
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
+    #define UZ_HLS_TESTIP_MAX_INSTANCES                     20U
 #endif

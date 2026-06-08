@@ -519,11 +519,14 @@ Test on hardware with the Vitis Serial Terminal
    :width: 400px
    :align: center
 
-More complex HLS use case
-=========================
+More complex HLS use cases
+==========================
 
 The ``uz_HLS_testIP`` example is intentionally small and shows the mechanics of generating, exporting, integrating, and driving a Vitis HLS IP core.
-For a more complex HLS-based IP core, see :ref:`uz_NN_acc`.
+For more complex HLS-based IP cores, see the following examples.
+
+Neural network accelerator
+--------------------------
 
 The :ref:`uz_NN_acc` IP core implements a configurable floating-point MLP accelerator and shows additional topics that are relevant for larger HLS designs:
 
@@ -535,6 +538,24 @@ The :ref:`uz_NN_acc` IP core implements a configurable floating-point MLP accele
 
 The number of layers and neurons is fixed during HLS synthesis.
 Changing the network structure therefore requires resynthesizing the IP core, as described in :ref:`uz_NN_customize_setup`.
+
+FCS-MPC with prediction horizon one
+-----------------------------------
+
+Another HLS example is a finite-control-set model predictive control (FCS-MPC) implementation with prediction horizon one.
+This use case is currently developed on the remote branch ``origin/feature/fcs_mpc_n1`` and is not part of ``develop`` yet.
+The branch contains the HLS source files under ``ip_cores/fcs_mpc_n1``.
+
+Compared with ``uz_HLS_testIP``, the FCS-MPC example is useful for studying an HLS design that is closer to a real control algorithm:
+
+- prediction of candidate switching states,
+- cost-function evaluation in hardware,
+- selection of the optimal switching state within a fixed control cycle,
+- AXI-Lite control together with AXI-Stream inputs and direct ``ap_none`` outputs,
+- integration of controller logic as an IP core in the FPGA fabric,
+- C simulation, C synthesis, co-simulation, and VHDL IP export from one ``script.tcl``.
+
+Once the branch is merged, this section should be extended with links to the generated IP core, its HLS ``script.tcl``, and the corresponding software driver.
 
 Further reading
 ===============

@@ -2,7 +2,7 @@
 Triangle wave
 =============
 
-.. doxygenfunction:: uz_wavegen_triangle
+.. doxygenfunction:: uz_wavegen_triangle_sample
 
 Example
 =======
@@ -15,13 +15,15 @@ Example
   int main(void) {
      float amplitude = 6.0f;
      float frequency_Hz = 5.0f;
-     float output = uz_wavegen_triangle(amplitude, frequency_Hz);
+     uz_wavegen_triangle_t* triangle = uz_wavegen_triangle_init();
+     float output = uz_wavegen_triangle_sample(triangle, amplitude, frequency_Hz);
   }
 
 Description
 ===========
 
-This function calculates a triangle wave based on the global system time.
+This function calculates a triangle wave.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: triangle wave
   :align: left

@@ -2,7 +2,7 @@
 Sine wave
 =========
 
-.. doxygenfunction:: uz_wavegen_sine
+.. doxygenfunction:: uz_wavegen_sine_sample
 
 Example
 =======
@@ -15,13 +15,15 @@ Example
   int main(void) {
      float amplitude = 8.0f;
      float frequency_Hz = 10.0f;
-     float output = uz_wavegen_sine(amplitude, frequency_Hz);
+     uz_wavegen_sine_t* sine = uz_wavegen_sine_init();
+     float output = uz_wavegen_sine_sample(sine, amplitude, frequency_Hz);
   }
 
 Description
 ===========
 
-This function calculates a sine wave with :math:`y=sin(2 \pi f \cdot t)` where :math:`t` is the global system time.
+This function calculates a sine wave with :math:`y=sin(2 \pi f \cdot t)`.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: sine wave
   :align: left

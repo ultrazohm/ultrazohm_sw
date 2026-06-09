@@ -2,7 +2,7 @@
 Sawtooth wave
 =============
 
-.. doxygenfunction:: uz_wavegen_sawtooth
+.. doxygenfunction:: uz_wavegen_sawtooth_sample
 
 Example
 =======
@@ -15,13 +15,15 @@ Example
   int main(void) {
      float amplitude = 10.0f;
      float frequency_Hz = 5.0f;
-     float output = uz_wavegen_sawtooth(amplitude, frequency_Hz);
+     uz_wavegen_sawtooth_t* sawtooth = uz_wavegen_sawtooth_init();
+     float output = uz_wavegen_sawtooth_sample(sawtooth, amplitude, frequency_Hz);
   }
 
 Description
 ===========
 
-This function calculates a sawtooth based on the global system time.
+This function calculates a sawtooth.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: sawtooth wave
   :align: left

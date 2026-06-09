@@ -19,7 +19,8 @@ The module uses the ``uz_3ph_abc_t`` data type from :ref:`uz_Transformation` to 
     float amplitude = 2.0f;
     float frequency = 5.0f;
     float offset = 1.0f;
-    uz_3ph_abc_t three_phase_sine = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
+    uz_wavegen_three_phase* three_phase = uz_wavegen_three_phase_init();
+    uz_3ph_abc_t three_phase_sine = uz_wavegen_three_phase_sample(three_phase, amplitude, frequency, offset);
 
 
 Description

@@ -4,7 +4,7 @@
 Pulse wave
 ==========
 
-.. doxygenfunction:: uz_wavegen_pulse
+.. doxygenfunction:: uz_wavegen_pulse_sample
 
 Example
 =======
@@ -18,13 +18,15 @@ Example
      float amplitude = 8.0f;
      float frequency_Hz = 10.0f;
      float duty_cycle = 0.5f;
-     float output = uz_wavegen_pulse(amplitude, frequency_Hz, duty_cycle);
+     uz_wavegen_pulse_t* pulse = uz_wavegen_pulse_init();
+     float output = uz_wavegen_pulse_sample(pulse, amplitude, frequency_Hz, duty_cycle);
   }
 
 Description
 ===========
 
-This function calculates a pulse wave with specified offset based on the global system time.
+This function calculates a pulse wave.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: pulse wave
   :align: left

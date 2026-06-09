@@ -4,6 +4,8 @@
 Pulse wave
 ==========
 
+.. doxygentypedef:: uz_wavegen_pulse_t
+
 .. doxygenfunction:: uz_wavegen_pulse_sample
 
 Example

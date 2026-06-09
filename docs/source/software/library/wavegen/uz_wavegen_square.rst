@@ -2,6 +2,8 @@
 Square wave
 ===========
 
+.. doxygentypedef:: uz_wavegen_square_t
+
 .. doxygenfunction:: uz_wavegen_square_sample
 
 Example

@@ -18,8 +18,6 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include <math.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
@@ -42,34 +40,6 @@ extern DS_Data Global_Data;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
-static void uz_pmsm_cil_reset(void);
-static void uz_pmsm_cil_zero_duty_cycles(void);
-static void uz_pmsm_cil_run_control_step(void);
-static void uz_pmsm_cil_update_auto_mode(void);
-static struct uz_pmsm_measurement_values uz_pmsm_cil_make_measurements(uz_3ph_dq_t i_dq_A, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec, float v_dc_V);
-static void uz_pmsm_cil_write_ipcore_actual_values(struct uz_pmsm_measurement_values measurements, struct uz_pmsmModel_outputs_t outputs, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec);
-
-#define UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM 1U
-#define UZ_PMSM_CIL_SEND_FIELD_LOAD_TORQUE_NM 2U
-#define UZ_PMSM_CIL_SEND_FIELD_ID_REF_A 3U
-#define UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A 4U
-#define UZ_PMSM_CIL_SEND_FIELD_V_DC_V 5U
-
-#define UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ 1000U
-#define UZ_PMSM_CIL_AUTO_MODE_IQ_1A_TICKS UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ
-#define UZ_PMSM_CIL_AUTO_MODE_IQ_4A_TICKS (60U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
-#define UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_TICKS (120U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
-#define UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_IQ_4A_TICKS (180U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
-#define UZ_PMSM_CIL_AUTO_MODE_CYCLE_TICKS (240U * UZ_PMSM_CIL_AUTO_MODE_SAMPLE_FREQUENCY_HZ)
-
-static uz_3ph_dq_t pmsm_cil_swmodel_v_dq_V = {0};
-static uz_3ph_dq_t pmsm_cil_ipcore_v_dq_V = {0};
-static struct uz_pmsm_swmodel_outputs_t pmsm_cil_swmodel_outputs = {0};
-static struct uz_pmsmModel_outputs_t pmsm_cil_ipcore_outputs = {0};
-static float pmsm_cil_theta_mech_rad = 0.0f;
-static bool pmsm_cil_is_reset = false;
-static bool pmsm_cil_auto_mode_active = false;
-static uint32_t pmsm_cil_auto_mode_counter = 0U;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -86,21 +56,9 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        pmsm_cil_is_reset = false;
-        uz_pmsm_cil_update_auto_mode();
-        uz_pmsm_cil_run_control_step();
+        // Start: Control algorithm - only if ultrazohm is in control state
     }
-    else
-    {
-        if (!pmsm_cil_is_reset)
-        {
-            uz_pmsm_cil_reset();
-            pmsm_cil_is_reset = true;
-        }
-    }
-
-    uz_pmsm_cil_zero_duty_cycles();
-
+    
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
@@ -236,239 +194,6 @@ static void ReadAllADC()
     ADC_readCardALL(&Global_Data);
 };
 
-static void uz_pmsm_cil_zero_duty_cycles(void)
-{
-    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge10DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge11DutyCycle = 0.0f;
-    Global_Data.rasv.halfBridge12DutyCycle = 0.0f;
-}
-
-static float uz_pmsm_cil_rpm_to_rad_per_sec(float speed_rpm)
-{
-    return speed_rpm * 2.0f * (float)M_PI / 60.0f;
-}
-
-static float uz_pmsm_cil_wrap_to_2pi(float angle_rad)
-{
-    const float two_pi = 2.0f * (float)M_PI;
-    float wrapped = fmodf(angle_rad, two_pi);
-    if (wrapped < 0.0f)
-    {
-        wrapped += two_pi;
-    }
-    return wrapped;
-}
-
-static float uz_pmsm_cil_get_v_dc(void)
-{
-    float v_dc_V = Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_V_DC_V];
-    if (v_dc_V <= 0.0f)
-    {
-        v_dc_V = UZ_CIL_PMSM_DEFAULT_V_DC_V;
-    }
-    return v_dc_V;
-}
-
-void uz_pmsm_cil_start_auto_mode(void)
-{
-    if (ultrazohm_state_machine_get_state() == control_state)
-    {
-        pmsm_cil_auto_mode_active = true;
-        pmsm_cil_auto_mode_counter = 0U;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
-    }
-}
-
-bool uz_pmsm_cil_is_auto_mode_active(void)
-{
-    return pmsm_cil_auto_mode_active;
-}
-
-static void uz_pmsm_cil_stop_auto_mode(void)
-{
-    pmsm_cil_auto_mode_active = false;
-    pmsm_cil_auto_mode_counter = 0U;
-}
-
-static void uz_pmsm_cil_update_auto_mode(void)
-{
-    if (!pmsm_cil_auto_mode_active)
-    {
-        return;
-    }
-
-    if (pmsm_cil_auto_mode_counter >= UZ_PMSM_CIL_AUTO_MODE_CYCLE_TICKS)
-    {
-        pmsm_cil_auto_mode_counter = 0U;
-    }
-
-    if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_IQ_1A_TICKS)
-    {
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 0.0f;
-    }
-    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_IQ_4A_TICKS)
-    {
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 1.0f;
-    }
-    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_TICKS)
-    {
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 500.0f;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 4.0f;
-    }
-    else if (pmsm_cil_auto_mode_counter < UZ_PMSM_CIL_AUTO_MODE_SPEED_1000RPM_IQ_4A_TICKS)
-    {
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 1000.0f;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 1.0f;
-    }
-    else
-    {
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM] = 1000.0f;
-        Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A] = 4.0f;
-    }
-
-    pmsm_cil_auto_mode_counter++;
-}
-
-static struct uz_pmsm_measurement_values uz_pmsm_cil_make_measurements(uz_3ph_dq_t i_dq_A, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec, float v_dc_V)
-{
-    const float theta_el_rad = uz_pmsm_cil_wrap_to_2pi(theta_mech_rad * UZ_CIL_PMSM_POLE_PAIRS);
-    struct uz_pmsm_measurement_values measurements = {
-        .i_abc_in_A = uz_transformation_3ph_dq_to_abc(i_dq_A, theta_el_rad),
-        .v_abc_in_V = uz_transformation_3ph_dq_to_abc(v_dq_V, theta_el_rad),
-        .v_dc_in_V = v_dc_V,
-        .i_dc_in_A = 0.0f,
-        .omega_mech_rad_per_sec = omega_mech_rad_per_sec,
-        .theta_mech = theta_mech_rad};
-    return measurements;
-}
-
-static void uz_pmsm_cil_acknowledge_controller(uz_pmsm_control_t *controller)
-{
-    if (controller != NULL)
-    {
-        const struct uz_pmsm_measurement_values reset_measurements = {
-            .i_abc_in_A = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
-            .v_abc_in_V = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
-            .v_dc_in_V = UZ_CIL_PMSM_DEFAULT_V_DC_V,
-            .i_dc_in_A = 0.0f,
-            .omega_mech_rad_per_sec = 0.0f,
-            .theta_mech = 0.0f};
-        uz_pmsm_control_enable(controller, false);
-        uz_pmsm_control_reset(controller);
-        uz_pmsm_control_acknowledge_and_reset_error(controller, reset_measurements);
-    }
-}
-
-static void uz_pmsm_cil_reset(void)
-{
-    uz_pmsm_cil_acknowledge_controller(Global_Data.objects.pmsm_control_swmodel);
-    uz_pmsm_cil_acknowledge_controller(Global_Data.objects.pmsm_control_ipcore);
-
-    if (Global_Data.objects.pmsm_swmodel != NULL)
-    {
-        uz_pmsm_swmodel_reset(Global_Data.objects.pmsm_swmodel);
-    }
-    if (Global_Data.objects.pmsm_model != NULL)
-    {
-        uz_pmsmModel_reset(Global_Data.objects.pmsm_model);
-    }
-
-    pmsm_cil_swmodel_v_dq_V = (uz_3ph_dq_t){0};
-    pmsm_cil_ipcore_v_dq_V = (uz_3ph_dq_t){0};
-    pmsm_cil_swmodel_outputs = (struct uz_pmsm_swmodel_outputs_t){0};
-    pmsm_cil_ipcore_outputs = (struct uz_pmsmModel_outputs_t){0};
-    pmsm_cil_theta_mech_rad = 0.0f;
-    pmsm_cil_is_reset = true;
-    uz_pmsm_cil_stop_auto_mode();
-
-    Global_Data.av.I_d = 0.0f;
-    Global_Data.av.I_q = 0.0f;
-    Global_Data.av.U_d = 0.0f;
-    Global_Data.av.U_q = 0.0f;
-    Global_Data.av.mechanicalTorque = 0.0f;
-    Global_Data.av.mechanicalTorqueObserved = 0.0f;
-    Global_Data.av.mechanicalRotorSpeed = 0.0f;
-    Global_Data.av.electricalRotorSpeed = 0.0f;
-    Global_Data.av.theta_mech = 0.0f;
-    Global_Data.av.theta_elec = 0.0f;
-
-    uz_pmsm_cil_zero_duty_cycles();
-}
-
-static void uz_pmsm_cil_write_ipcore_actual_values(struct uz_pmsm_measurement_values measurements, struct uz_pmsmModel_outputs_t outputs, uz_3ph_dq_t v_dq_V, float theta_mech_rad, float omega_mech_rad_per_sec)
-{
-    Global_Data.av.I_U = measurements.i_abc_in_A.a;
-    Global_Data.av.I_V = measurements.i_abc_in_A.b;
-    Global_Data.av.I_W = measurements.i_abc_in_A.c;
-    Global_Data.av.U_U = measurements.v_abc_in_V.a;
-    Global_Data.av.U_V = measurements.v_abc_in_V.b;
-    Global_Data.av.U_W = measurements.v_abc_in_V.c;
-    Global_Data.av.I_d = outputs.i_d_A;
-    Global_Data.av.I_q = outputs.i_q_A;
-    Global_Data.av.U_d = v_dq_V.d;
-    Global_Data.av.U_q = v_dq_V.q;
-    Global_Data.av.mechanicalTorque = outputs.torque_Nm;
-    Global_Data.av.mechanicalTorqueObserved = outputs.torque_Nm;
-    Global_Data.av.mechanicalRotorSpeed = omega_mech_rad_per_sec * 60.0f / (2.0f * (float)M_PI);
-    Global_Data.av.electricalRotorSpeed = Global_Data.av.mechanicalRotorSpeed * UZ_CIL_PMSM_POLE_PAIRS;
-    Global_Data.av.theta_mech = theta_mech_rad;
-    Global_Data.av.theta_elec = uz_pmsm_cil_wrap_to_2pi(theta_mech_rad * UZ_CIL_PMSM_POLE_PAIRS);
-}
-
-static void uz_pmsm_cil_run_control_step(void)
-{
-    const float speed_ref_rpm = Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_SPEED_RPM];
-    const float omega_mech_rad_per_sec = uz_pmsm_cil_rpm_to_rad_per_sec(speed_ref_rpm);
-    const float load_torque_Nm = Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_LOAD_TORQUE_NM];
-    const float v_dc_V = uz_pmsm_cil_get_v_dc();
-    const uz_3ph_dq_t reference_currents_A = {
-        .d = Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_ID_REF_A],
-        .q = Global_Data.av.snd_fld[UZ_PMSM_CIL_SEND_FIELD_IQ_REF_A],
-        .zero = 0.0f};
-
-    pmsm_cil_theta_mech_rad = uz_pmsm_cil_wrap_to_2pi(pmsm_cil_theta_mech_rad + (omega_mech_rad_per_sec * Global_Data.av.isr_samplerate_s));
-
-    uz_pmsm_control_enable(Global_Data.objects.pmsm_control_swmodel, true);
-    uz_pmsm_control_enable(Global_Data.objects.pmsm_control_ipcore, true);
-
-    struct uz_pmsm_measurement_values swmodel_measurements = uz_pmsm_cil_make_measurements(pmsm_cil_swmodel_outputs.i_dq_A, pmsm_cil_swmodel_v_dq_V, pmsm_cil_theta_mech_rad, omega_mech_rad_per_sec, v_dc_V);
-    pmsm_cil_swmodel_v_dq_V = uz_pmsm_control_sample_dq(Global_Data.objects.pmsm_control_swmodel, swmodel_measurements, speed_ref_rpm, reference_currents_A, load_torque_Nm);
-    const struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
-        .v_dq_V = pmsm_cil_swmodel_v_dq_V,
-        .omega_mech_1_s = omega_mech_rad_per_sec,
-        .load_torque = load_torque_Nm};
-    pmsm_cil_swmodel_outputs = uz_pmsm_swmodel_step(Global_Data.objects.pmsm_swmodel, swmodel_inputs);
-
-    uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_model);
-    uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_model);
-    pmsm_cil_ipcore_outputs = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_model);
-    const uz_3ph_dq_t ipcore_i_dq_A = {
-        .d = pmsm_cil_ipcore_outputs.i_d_A,
-        .q = pmsm_cil_ipcore_outputs.i_q_A,
-        .zero = 0.0f};
-    struct uz_pmsm_measurement_values ipcore_measurements = uz_pmsm_cil_make_measurements(ipcore_i_dq_A, pmsm_cil_ipcore_v_dq_V, pmsm_cil_theta_mech_rad, omega_mech_rad_per_sec, v_dc_V);
-    pmsm_cil_ipcore_v_dq_V = uz_pmsm_control_sample_dq(Global_Data.objects.pmsm_control_ipcore, ipcore_measurements, speed_ref_rpm, reference_currents_A, load_torque_Nm);
-    const struct uz_pmsmModel_inputs_t ipcore_inputs = {
-        .v_d_V = pmsm_cil_ipcore_v_dq_V.d,
-        .v_q_V = pmsm_cil_ipcore_v_dq_V.q,
-        .omega_mech_1_s = omega_mech_rad_per_sec,
-        .load_torque = load_torque_Nm};
-    uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_model, ipcore_inputs);
-
-    Global_Data.av.U_ZK = v_dc_V;
-    uz_pmsm_cil_write_ipcore_actual_values(ipcore_measurements, pmsm_cil_ipcore_outputs, pmsm_cil_ipcore_v_dq_V, pmsm_cil_theta_mech_rad, omega_mech_rad_per_sec);
-}
 
 
 

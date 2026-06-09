@@ -15,16 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "xparameters.h"
-
-#if defined(XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR)
-#define UZ_LINEAR_PMSM_MODEL_BASE_ADDRESS XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR
-#elif defined(XPAR_UZ_PMSM_MODEL_0_BASEADDR)
-#define UZ_LINEAR_PMSM_MODEL_BASE_ADDRESS XPAR_UZ_PMSM_MODEL_0_BASEADDR
-#else
-#error "No base address macro found for uz_pmsm_model_0"
-#endif
-
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -44,74 +34,6 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
-
-static const uz_PMSM_t pmsm_cil_machine_config = {
-    .R_ph_Ohm = UZ_CIL_PMSM_R_PH_OHM,
-    .Ld_Henry = UZ_CIL_PMSM_LD_HENRY,
-    .Lq_Henry = UZ_CIL_PMSM_LQ_HENRY,
-    .Psi_PM_Vs = UZ_CIL_PMSM_PSI_PM_VS,
-    .polePairs = UZ_CIL_PMSM_POLE_PAIRS,
-    .J_kg_m_squared = UZ_CIL_PMSM_J_KG_M_SQUARED,
-    .I_max_Ampere = UZ_CIL_PMSM_I_MAX_AMPERE};
-
-static const struct uz_pmsm_swmodel_config_t pmsm_swmodel_config = {
-    .sample_time = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .pmsm_parameters = {
-        .R_ph_Ohm = UZ_CIL_PMSM_R_PH_OHM,
-        .Ld_Henry = UZ_CIL_PMSM_LD_HENRY,
-        .Lq_Henry = UZ_CIL_PMSM_LQ_HENRY,
-        .Psi_PM_Vs = UZ_CIL_PMSM_PSI_PM_VS,
-        .polePairs = UZ_CIL_PMSM_POLE_PAIRS,
-        .J_kg_m_squared = UZ_CIL_PMSM_J_KG_M_SQUARED,
-        .I_max_Ampere = UZ_CIL_PMSM_I_MAX_AMPERE}};
-
-static const struct uz_pmsmModel_config_t pmsm_model_config = {
-    .base_address = UZ_LINEAR_PMSM_MODEL_BASE_ADDRESS,
-    .ip_core_frequency_Hz = UZ_CIL_PMSM_MODEL_IP_CORE_FREQUENCY_HZ,
-    .simulate_mechanical_system = false,
-    .r_1 = UZ_CIL_PMSM_R_PH_OHM,
-    .L_d = UZ_CIL_PMSM_LD_HENRY,
-    .L_q = UZ_CIL_PMSM_LQ_HENRY,
-    .psi_pm = UZ_CIL_PMSM_PSI_PM_VS,
-    .polepairs = UZ_CIL_PMSM_POLE_PAIRS,
-    .inertia = UZ_CIL_PMSM_J_KG_M_SQUARED,
-    .coulomb_friction_constant = UZ_CIL_PMSM_COULOMB_FRICTION_CONSTANT,
-    .friction_coefficient = UZ_CIL_PMSM_FRICTION_COEFFICIENT};
-
-static const struct uz_pmsm_control_configuration_t pmsm_control_config = {
-    .setpoint_limits = {
-        .speed_controller_torque_in_Nm = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-        .i_d_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
-        .i_q_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
-        .speed_in_rpm = {.upper_bound = 6000.0f, .lower_bound = -6000.0f},
-        .disturbance_input_in_Nm = {.upper_bound = 10.0f, .lower_bound = -10.0f}},
-    .safe_operating_region = {
-        .speed_in_rpm = {.upper_bound = 6500.0f, .lower_bound = -6500.0f},
-        .i_d_in_A = {.upper_bound = 25.0f, .lower_bound = -25.0f},
-        .i_q_in_A = {.upper_bound = 25.0f, .lower_bound = -25.0f},
-        .i_abc_in_A = {.upper_bound = 25.0f, .lower_bound = -25.0f},
-        .v_dc_in_V = {.upper_bound = 80.0f, .lower_bound = 1.0f},
-        .i_dc_in_A = {.upper_bound = 25.0f, .lower_bound = -25.0f}},
-    .theta_el_offset = 0.0f,
-    .sample_time = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .enable_speed_control = false,
-    .speed_controller_kp = 0.0f,
-    .speed_controller_ki = 0.0f,
-    .current_controller_d_kp = UZ_CIL_PMSM_CURRENT_CONTROLLER_KP,
-    .current_controller_d_ki = UZ_CIL_PMSM_CURRENT_CONTROLLER_KI,
-    .current_controller_q_kp = UZ_CIL_PMSM_CURRENT_CONTROLLER_KP,
-    .current_controller_q_ki = UZ_CIL_PMSM_CURRENT_CONTROLLER_KI,
-    .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
-    .setpoint_filter_speed_cutoff_frequency = 0.0f,
-    .speed_actual_value_filter_cutoff_frequency = 0.0f,
-    .decoupling_method = linear_decoupling,
-    .motor_type = SMPMSM,
-    .enable_field_weakening = false,
-    .relative_torque_tolerance = 0.01f,
-    .theta_sampling_compensation = 0.0f,
-    .theta_svm_delay_compensation = 0.0f,
-    .voltage_theta_shift = 0.0f,
-    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
 
 enum init_chain
 {
@@ -166,15 +88,11 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            Global_Data.objects.pmsm_swmodel = uz_pmsm_swmodel_init(pmsm_swmodel_config);
-            Global_Data.objects.pmsm_control_swmodel = uz_pmsm_control_init(pmsm_control_config, pmsm_cil_machine_config);
-            Global_Data.objects.pmsm_control_ipcore = uz_pmsm_control_init(pmsm_control_config, pmsm_cil_machine_config);
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
-            Global_Data.objects.pmsm_model = uz_pmsmModel_init(pmsm_model_config);
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

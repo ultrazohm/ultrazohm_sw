@@ -22,9 +22,16 @@ extensions = [
     "sphinx.ext.mathjax",
     "breathe",
     "sphinx_plotly_directive", # https://matplotlib.org/stable/api/sphinxext_plot_directive_api.html#module-matplotlib.sphinxext.plot_directive
+    "bokeh.sphinxext.bokeh_plot",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_design"
 ]
+
+plotly_pre_code = """
+import plotly.io as pio
+pio.templates.default = \"plotly_white\"
+"""
+
 templates_path = ['_templates']
 exclude_patterns = []
 html_favicon = "favicon.svg"

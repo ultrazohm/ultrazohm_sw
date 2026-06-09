@@ -64,7 +64,7 @@ Structure of the Interrupt
     :align: center
     :caption: Signal flow in PL for ADC trigger and ISR trigger
 
-    graph LR
+    graph TB
         PWM_2L --> B[interrupts_in]
         PWM_3L --> B
         VIO --> B

@@ -6,7 +6,7 @@ Current Measurement Box Rev03
 Overview
 --------
 
-.. figure:: strommessbox_rev03.jpg
+.. figure:: currentmeasurementbox_rev03_externalthreads.jpg
    :alt: Current measurement box Rev03
    :align: center
    :width: 800px
@@ -30,10 +30,10 @@ Interface
 
 - Supply voltage VIN: 7 V to 65 V via Samtec IPL1-102-02-L-D-K.
 - Alternative VIN connector footprint: TSW-102-07-F-S.
-- Sensor current path per channel through REDCUBE press-fit terminals for M3 ring shoes, rated for 130A.
+- Sensor current path per channel through REDCUBE press-fit terminals for M3 ring shoes, rated for 130 A.
 
-  - Initially external threads were used Wurth part number: 7461094
-  - Due to producion issues (deforming during when pressing it in), we swiched to external thread version Wurth part number 7461093
+  - Initially, the external-thread `Wuerth 7461094 <https://www.we-online.com/components/products/datasheet/7461094.pdf>`_ terminal was used.
+  - Due to production issues during press-fit assembly, it was changed to the internal-thread `Wuerth 7461093 <https://www.we-online.com/components/products/datasheet/7461093.pdf>`_ terminal.
 
 **Outputs:**
 

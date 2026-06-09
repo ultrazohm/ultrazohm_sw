@@ -49,7 +49,6 @@ Interface
 **Outputs:**
 
 - 4 fully differential voltage outputs via RJ45
-- Differential output voltage: max ±4.250 V (depending on the sensor)
 
 .. note::
 

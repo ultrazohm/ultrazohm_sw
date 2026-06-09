@@ -70,7 +70,7 @@ The activation of the adapter card identification feature depends on the ``UZ_PL
 
   * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
   * retrieve the platform identification from the external EEPROM,
-  * communicate the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
+  * communicate the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``wait_for_apu_handshake`` on the RPU and ``wait_for_rpu_handshake`` on the APU),
   * initialize internal data structures (for instance, the I/O map for the given platform), and
   * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
   * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework

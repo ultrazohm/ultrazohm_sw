@@ -88,10 +88,11 @@ static void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 
 enum init_chain
 {
-	initialization_handshake = 0,
+	init_assertions = 0,
+	wait_for_rpu_handshake,
 	initialization_rtos
 };
-enum init_chain initialization_chain = initialization_handshake;
+enum init_chain initialization_chain = init_assertions;
 
 uint32_t apu_version_final = 0U;
 uint32_t rpu_version_final = 0U;
@@ -101,7 +102,10 @@ int main()
 {
 	switch (initialization_chain)
 	{
-		case initialization_handshake:
+		case init_assertions:
+			uz_apu_assert_configuration();
+			initialization_chain = wait_for_rpu_handshake;
+		case wait_for_rpu_handshake:
 			write_apu_version(257U);
 			do
 			{
@@ -146,7 +150,6 @@ int main()
 			}
 			#endif
 			initialization_chain = initialization_rtos;
-
 
 		case initialization_rtos:
 			// Initialize the interrupt handler here in main() rather than in network_bringup_thread, to avoid the

@@ -36,6 +36,8 @@ Example
      unfiltered_signal = uz_signals_IIR_Filter_reverse_sample(test_instance, filtered_signal);
   }
 
+.. warning :: The implementation of the filter uses the first value from the unfiltered signal as the first output (first sample).
+
 Description
 ===========
 

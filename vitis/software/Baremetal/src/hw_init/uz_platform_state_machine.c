@@ -5,8 +5,6 @@
 #include "../uz/uz_LED/uz_LED_facade.h"
 #include "../uz/uz_PushButton/uz_PushButton_facade.h"
 #include "../include/gpio_axi.h"
-#include "../include/uz_assertion_configuration.h"
-
 typedef struct
 {
     bool readyLED;

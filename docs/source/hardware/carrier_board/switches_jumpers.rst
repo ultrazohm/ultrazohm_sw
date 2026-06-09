@@ -88,16 +88,16 @@ SW2 - Power Mode First Part
      - EN_GT_R
      - EN_GT_L
      - EN_PLL_PWR
-   * - Power Enabled
-     - OFF
-     - OFF
-     - ``OFF``
-     - ``OFF``
-   * - Power Disabled
+   * - Power/Rail Disabled
      - ``ON``
      - ``ON``
      - ON
      - ON
+   * - Power/Rail Enabled
+     - OFF
+     - OFF
+     - ``OFF``
+     - ``OFF``
 
 
 SW3 - Power Mode Second Part
@@ -121,16 +121,16 @@ SW3 - Power Mode Second Part
      - EN_LPD
      - EN_PL
      - EN_FPD
-   * - Power Enabled
-     - ``OFF``
-     - ``OFF``
-     - ``OFF``
-     - ``OFF``
-   * - Power Disabled
+   * - Power/Rail Disabled
      - ON
      - ON
      - ON
      - ON
+   * - Power/Rail Enabled
+     - ``OFF``
+     - ``OFF``
+     - ``OFF``
+     - ``OFF``
 
 
 Default adjustments for the UltraZohm ≤Rev04

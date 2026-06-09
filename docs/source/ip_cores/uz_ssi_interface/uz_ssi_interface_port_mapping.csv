@@ -1,0 +1,48 @@
+Port Name,Port Type,Data Type,Range,Unit,Function
+PL ports,,,,,
+IPCORE_CLK,Input,bool,false..true,1,IP core clock supply. Has to be 100 MHz
+IPCORE_RESETN,Input,bool,false..true,1,IP core reset
+ssi_data_in,Input,bool,false..true,1,Serial data in from the encoder
+trigger_ssi_read,Input,bool,false..true,1,Rising edge triggers encoder communication
+AXI4_Lite_ACLK,Input,bool,false..true,1,IP core clock for AXI4_Lite interface
+AXI4_Lite_ARESETN,Input,bool,false..true,1,IP core reset for AXI4_Lite interface
+ssi_clk,Output,bool,false..true,1,Clock output to encoder
+RW_clk,Output,bool,false..true,1,Read-write selector for RS485 transceiver of the clock line
+RW_data,Output,bool,false..true,1,Read-write selector for RS485 transceiver of the data line
+ssi_transaction_done,Output,bool,false..true,1,Rising edge when encoder communication is finished
+position_raw_single_turn,Output,uint32_t,0..uint32max,1,Raw integer encoder single-turn position
+position_raw_multi_turn,Output,uint32_t,0..uint32max,1,Raw integer encoder multi-turn position
+status_raw,Output,uint32_t,0..uint32max,1,Raw status bits received from the encoder
+ssi_data_out_SH,Output,bool,false..true,1,Debug output for the received serial data from the encoder at the sample and hold stage (SH) within the IP core
+position_mech_SI_single_turn,Output,ufix27_En24,0..2pi,rad,Mechanical single-turn position value in SI unit
+position_el_SI,Output,ufix27_En24,0..2pi,rad,Electrical single-turn position value in SI unit
+position_multi_turn,Output,uint32_t,0..uint32max,1,Offset-corrected multi-turn revolution counter aligned with the full revolution wrap of the single-turn position
+speed_mech_SI,Output,sfix27_En16,-1024..1023.99,rad/s,Mechanical speed value in rad/s
+speed_el_SI,Output,sfix27_En12,-16384..16383.99,rad/s,Electrical speed value in rad/s
+speed_mech_rpm,Output,sfix27_En12,-16384..16383.99,rpm,Mechanical speed value in rpm
+AXI4-Lite ports,,,,,
+ssi_clk_divider_AXI,Input,uint32_t,20..625,1,Divider for generating encoder clock from IP core clock
+ssi_encoder_bit_width_single_turn_AXI,Input,uint32_t,1..31,1,Bit width of the single-turn position
+ssi_encoder_bit_width_multi_turn_AXI,Input,uint32_t,0..31,1,Bit width of the multi-turn position
+ssi_encoder_number_of_status_bits_AXI,Input,uint32_t,0..32,1,Number of status bits
+delay_first_clk_on_off_AXI,Input,bool,false..true,1,Selection flag if the first clock pulse should be delayed. Is set automatically depending on selected clock speed
+pos_is_binary_or_gray_AXI,Input,bool,false..true,1,Selection flag for binary or gray-code position encoding
+ssi_com_enable_AXI,Input,bool,false..true,1,Selection flag for enabling communication with the encoder
+reciprocal_bit_width_single_turn_AXI,Input,ufix27_En27,0..0.99,1,Reciprocal value of the single-turn position bit width
+t_sample_AXI,Input,ufix18_En24,0..0.0156,s,Sampling time that matches the trigger_ssi_read frequency. This value is used as integration time inside the speed PLL
+kp_pll_AXI,Input,ufix18_En5,0..8191,,Proportional gain of the speed PLL
+ki_pll_AXI,Input,ufix18,0..262142,,Integral gain of the speed PLL
+debug_off_on_AXI,Input,bool,false..true,1,"Selection flag for enabling the debug in port for the mechanical position, which is used to debug the speed PLL"
+position_mech_SI_debug_in_AXI,Input,ufix27_En24,0..2pi,rad,Input for an artificial position signal for speed PLL debug
+machine_polepairs_AXI,Input,uint32_t,1..255,1,Number of machine pole pairs for calculating electrical position/speed values
+position_mech_offset_ticks_AXI,Input,int32_t,-int32max..int32max,1,Integer representation of the mechanical offset value. Offset is computed in raw integer ticks inside the IP core
+sampling_delay_clk_ticks_AXI,Input,uint32_t,0..100,1,User input in order to delay the sampling of the serial data input. Used to account for delay in encoder cables. Equals 0..1 microseconds
+position_raw_single_turn_AXI,Output,uint32_t,0..uint32max,1,Raw integer encoder single-turn position
+position_raw_multi_turn_AXI,Output,uint32_t,0..uint32max,1,Raw integer encoder multi-turn position
+status_raw_AXI,Output,uint32_t,0..uint32max,1,Raw status bits received from the encoder
+position_mech_SI_single_turn_AXI,Output,ufix27_En24,0..2pi,rad,Mechanical single-turn position value in SI unit
+position_el_SI_AXI,Output,ufix27_En24,0..2pi,rad,Electrical single-turn position value in SI unit
+position_multi_turn_AXI,Output,uint32_t,0..uint32max,1,Offset-corrected multi-turn revolution counter aligned with the full revolution wrap of the single-turn position
+speed_mech_SI_AXI,Output,sfix27_En16,-1024..1023.99,rad/s,Mechanical speed value in rad/s
+speed_el_SI_AXI,Output,sfix27_En12,-16384..16383.99,rad/s,Electrical speed value in rad/s
+speed_mech_rpm_AXI,Output,sfix27_En12,-16384..16383.99,rpm,Mechanical speed value in rpm

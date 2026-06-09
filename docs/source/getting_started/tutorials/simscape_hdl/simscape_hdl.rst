@@ -79,7 +79,7 @@ Software
            switch (initialization_chain)
            {
            case init_assertions:
-               uz_assert_configuration(); // This has to be the first line of code in main.c
+               uz_rpu_assert_configuration(); // This has to be the first line of code in main.c
                initialization_chain = init_gpios;
                break;
            case init_gpios:

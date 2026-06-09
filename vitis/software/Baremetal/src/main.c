@@ -37,7 +37,8 @@ DS_Data Global_Data = {
 
 enum init_chain
 {
-    init_assertions_and_wait_for_apu_handshake = 0,
+    init_assertions = 0,
+    wait_for_apu_handshake,
     init_gpios,
     init_software,
     init_ip_cores,
@@ -45,7 +46,7 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
+enum init_chain initialization_chain = init_assertions;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
@@ -59,8 +60,11 @@ int main(void)
     {
         switch (initialization_chain)
         {
-        case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
+        case init_assertions:
+            uz_rpu_assert_configuration();
+            initialization_chain = wait_for_apu_handshake;
+            break;
+        case wait_for_apu_handshake:
             write_rpu_version(0U);
             do
             {

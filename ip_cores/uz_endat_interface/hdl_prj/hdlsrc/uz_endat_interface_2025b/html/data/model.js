@@ -1,0 +1,1 @@
+var modelInfo = {model:"uz_endat_interface"};var modelHierarchy=[{model:"uz_endat_interface",relativePath:"_internal.html",parent:"null"},];var AddCode = true;

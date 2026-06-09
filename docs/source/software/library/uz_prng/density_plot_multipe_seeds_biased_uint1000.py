@@ -1,7 +1,6 @@
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-import plotly.graph_objects as go
 
 def read_data(distribution_name):
     base_path='density_plot_multipe_seeds_biased_uint1000/'

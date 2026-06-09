@@ -1,0 +1,10 @@
+open_system('uz_ssi_interface_2025b');
+open_system('gm_uz_ssi_interface_2025b');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_ssi_interface_2025b/uz_ssi_interface/position_to_speed_pll/Delay1', 'user1');
+annotate_port('gm_uz_ssi_interface_2025b/uz_ssi_interface/position_to_speed_pll/Delay1', 0, 1, 'Blocks delay absorption: 1 cycles');
+hilite_system('uz_ssi_interface_2025b/uz_ssi_interface/position_to_speed_pll/Delay1', 'user1');
+annotate_port('uz_ssi_interface_2025b/uz_ssi_interface/position_to_speed_pll/Delay1', 0, 1, 'Blocks delay absorption: 1 cycles');

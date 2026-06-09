@@ -18,6 +18,9 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -27,6 +30,15 @@ extern bool input_bit;
 extern bool output_bit;
 extern uint32_t output_port;
 extern uint32_t input_port;
+extern uz_JL_pmsmModel_t *pmsm_ideal;
+
+extern float DutA;
+extern float DutB;
+extern float DutC;
+
+
+extern Bus_ZM_In struct_ZM_In;
+extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -197,7 +209,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		struct_ZM_In.Soll_Drehzahl = value;
 			break;
 
 		case (Set_Send_Field_4):

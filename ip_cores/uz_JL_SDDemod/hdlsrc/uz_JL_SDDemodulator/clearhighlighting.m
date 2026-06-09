@@ -1,0 +1,11 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_JL_SDDemodulator', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_JL_SDDemodulator', 'handle'));
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Subsystem5', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Unit Delay8', 1, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/HDL Counter', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Relational Operator', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Switch4', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Subsystem5/Add', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Subsystem5/Logical Operator', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Subsystem5/Relational Operator', 0, 1, '');
+annotate_port('gm_uz_JL_SDDemodulator/uz_JL_SDDemodulator/Subsystem5/Switch', 0, 1, '');

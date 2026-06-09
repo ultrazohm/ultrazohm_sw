@@ -28,6 +28,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -38,7 +41,7 @@ extern DS_Data Global_Data;
 extern  uz_axi_gpio_t* output_gpio;
 extern  uz_axi_gpio_t* input_gpio;
 
-uint32_t output_bitmask=0xaaaa5050U;
+uint32_t output_bitmask=0xFFFFFFFF;
 bool input_bit=false;
 bool output_bit=false;
 uint32_t output_port = 0U;
@@ -47,6 +50,19 @@ uint32_t input_port = 0U;
 float input_bit_float = 0;
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
+
+
+extern uz_JL_SDDemod_t *SD_Filter;
+
+struct uz_JL_SDDemod_output_t SD_Filter_out = {0};
+float SD_Filter_out_f = 0;
+
+
+extern uz_codegen regelung;
+Bus_ZM_In struct_ZM_In;
+
+uz_3ph_alphabeta_t  voltages_alphabeta = {0};
+uz_3ph_abc_t three_phase_sine = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -59,21 +75,58 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
 
-    }
+    SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
+    SD_Filter_out_f = (float)SD_Filter_out.data;
+
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    switch(current_state)
+    	{
+    		case idle_state:
+//    			struct_ZM_In.Soll_Status = Ready;
+//    			struct_ZM_In.Soll_Drehzahl = 0;
+//    			struct_ZM_In.Soll_id = 0;
+//    			struct_ZM_In.Soll_iq = 0;
+//    			struct_ZM_In.Fehlermeldung = false;
+//    			struct_ZM_In.Start_Traj = false;
+//    			voltages_alphabeta.alpha = 0.0f;
+//    			voltages_alphabeta.beta = 0.0f;
+//    		    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+//    		    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+//    		    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+//    			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
+    			break;
+    		case running_state:
+//    			struct_ZM_In.Soll_Status = Run;
+//    			struct_ZM_In.Soll_Drehzahl = 0;
+//    			struct_ZM_In.Soll_id = 0;
+//    			struct_ZM_In.Soll_iq = 0;
+//    			voltages_alphabeta.alpha = 0.0f;
+//    			voltages_alphabeta.beta = 0.0f;
+    			break;
+    		case control_state:
+//    //		    Start: Control algorithm - only if ultrazohm is in control state
+//    			struct_ZM_In.Soll_Status = En;
+//    			struct_ZM_In.Soll_Regelungsart = Drehzahl;
+//    			struct_ZM_In.Soll_Drehzahl = 2000;
+//    //			struct_ZM_In.Soll_iq = 10;
+//    			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+//    			regelung.input.Bus_ZM_In_f = struct_ZM_In;
+//    			uz_codegen_step(&regelung);
+//    		    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[0];
+//    		    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[1];
+//    		    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[2];
+//    			voltages_alphabeta.alpha = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ualpha;
+//    			voltages_alphabeta.beta = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ubeta;
+    		   break;
+    		default:
+    			break;
+    	}
     
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-
-    uz_axi_gpio_write_pin_zero_based(output_gpio, output_port, output_bit);
-	input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, input_port);
-	input_bit_float = (float)input_bit;
     
-    JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -92,6 +92,9 @@
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
 #define UZ_ENDAT_INTERFACE_MAX_INSTANCES				0U
 #define UZ_SSI_INTERFACE_MAX_INSTANCES					0U
+#define UZ_JL_PMSMMODEL_MAX_INSTANCES                   2U
+#define UZ_JL_INVMODEL_IDEAL_MAX_INSTANCES              1U
+#define UZ_JL_SDDEMOD_MAX_INSTANCES                     1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -155,4 +158,5 @@
     #define UZ_LUT_1D_MAX_INSTANCES                         20U
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
+    #define UZ_JL_SDDEMOD_MAX_INSTANCES                     10U
 #endif

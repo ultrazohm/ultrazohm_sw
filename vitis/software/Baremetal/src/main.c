@@ -15,6 +15,9 @@
 
 // Includes from own files
 #include "main.h"
+#include "Codegen/uz_codegen.h"
+#include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
+#include "IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -53,25 +56,49 @@ enum init_chain initialization_chain = init_assertions;
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
-struct uz_axi_gpio_config_t output_config={
-            .base_address=XPAR_UZ_USER_AXI_GPIO_0_BASEADDR,
-            .device_id=XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
-            .number_of_pins=18,
-            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
-};
 
 struct uz_axi_gpio_config_t input_config={
             .base_address=XPAR_UZ_USER_AXI_GPIO_1_BASEADDR,
             .device_id=XPAR_UZ_USER_AXI_GPIO_1_DEVICE_ID,
-            .number_of_pins=18,
+            .number_of_pins=19,
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
 };
 
-uz_axi_gpio_t* output_gpio=NULL;
+
+uz_JL_SDDemod_t *SD_Filter = NULL;
+
+
+struct uz_JL_SDDemod_config_t SD_Filter_config = {
+		.base_address = XPAR_UZ_JL_SDDEMOD_0_BASEADDR,
+		.ip_clk_frequency_Hz = 100000000.0f,
+		.R_axi = 1000,
+};
+
 uz_axi_gpio_t* input_gpio=NULL;
+uz_codegen regelung;
+
 
 int main(void)
 {
+//	regelung.input.Bus_ZM_In_f.Fehlermeldung = false;
+//		regelung.input.Bus_ZM_In_f.Soll_Drehzahl = 0;
+//		regelung.input.Bus_ZM_In_f.Soll_Regelungsart = Drehzahl;
+//		regelung.input.Bus_ZM_In_f.Soll_Status = Ready;
+//		regelung.input.Bus_ZM_In_f.Soll_id = 0;
+//		regelung.input.Bus_ZM_In_f.Soll_iq = 0;
+//		regelung.input.Bus_ZM_In_f.Start_Traj = false;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = 0;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[0] = 0;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[1] = 0;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = 0;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = 0;
+//		regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = 0;
+//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[0] = 0.0;
+//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[1] = 0.0;
+//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[2] = 0.0;
+//		regelung.output.Bus_Ctrl_Out_k.ctrl_Ualpha = 0;
+//		regelung.output.Bus_Ctrl_Out_k.ctrl_Ubeta = 0;
+//		regelung.output.Bus_Ctrl_Out_k.act_pwm = false;
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -106,6 +133,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            uz_codegen_init(&regelung);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -116,8 +144,11 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
-            output_gpio=uz_axi_gpio_init(output_config);
             input_gpio=uz_axi_gpio_init(input_config);
+//            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
+//			pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
+//			uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
+			SD_Filter = uz_JL_SDDemod_init(SD_Filter_config);
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -136,6 +167,8 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            JavaScope_update(&Global_Data);
+
             break;
         default:
             break;

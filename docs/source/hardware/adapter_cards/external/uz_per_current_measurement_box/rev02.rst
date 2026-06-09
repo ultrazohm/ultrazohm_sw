@@ -6,7 +6,7 @@ Current Measurement Box Rev02
 This section provides an overview of the Rev02 analog current measurement box, including hardware details, test setup, supported configurations and findings.
 
 Overview
-========
+--------
 
 .. figure:: PCB_Box_rev02.jpg
    :alt: PCB and box Rev02
@@ -140,14 +140,14 @@ Adjust Measurement Gain
 -----------------------
 
 For all types of current sensing measurements, it is recommended to configure the gain of the differential operational amplifier (THS4521) to match the expected sensor output range to the ADC input range, ideally maximizing dynamic range.
-
-The gain is configured using external feedback resistors R11 and R12 as follows:
+The differential gain is set by the matched feedback and input resistor pairs of the THS4521 stage:
 
 .. math::
 
-   g = \frac{R_{11}}{R_{12}} = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2 \,\,
+   g_\mathrm{diff} = \frac{R_f}{R_g} = \frac{R_{11}}{R_{12}} = \frac{R_{16}}{R_{14}}
+   = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2
 
-Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC's ±5 V input range when full-scale current is applied.
+For correct fully differential operation, the resistor pairs must be matched: :math:`R_{11}=R_{16}` and :math:`R_{12}=R_{14}`.
 
 .. note::
    Use precision resistors (0.1% or better) for R11, R12, R14, R16 to ensure consistent gain and matching across all channels.
@@ -184,7 +184,7 @@ This anti-aliasing filter attenuates high-frequency differential-mode noise.
       10 \cdot C_\mathrm{CM} < C_\mathrm{Diff}
 
 Performance Tests
-=================
+-----------------
 
 The following pages document the Rev02 performance test setup and results.
 

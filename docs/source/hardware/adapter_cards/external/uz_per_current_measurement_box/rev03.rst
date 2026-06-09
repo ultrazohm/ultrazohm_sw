@@ -13,7 +13,7 @@ Overview
 
 Rev03 is the latest revision of the current measurement box.
 The schematic is built around four identical measurement channels.
-Each channel uses a Sensitec CAS50xx current sensor and a THS4521 fully differential amplifier stage.
+Each channel uses a Sensitec CAS50xxSRA or CAS50xxKRA current sensor and a THS4521 fully differential amplifier stage.
 
 Changes from Rev02
 ------------------
@@ -66,7 +66,7 @@ Functionality and Specifications
    * - Number of channels
      - 4
    * - Current sensor
-     - CAS50xxXRA
+     - Sensitec CAS50xxSRA/CAS50xxKRA
    * - Amplifier
      - THS4521 fully differential amplifier, gain = 2
    * - Input current connection

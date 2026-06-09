@@ -62,9 +62,6 @@ CAS5075KRA                Sensitec          TMR                  75             
 Revisions
 ---------
 
-- :ref:`Rev03 <current_measurement_box_rev03>` 
-- :ref:`Rev02 <current_measurement_box_rev02>`
-
 ..  toctree::
    :maxdepth: 1
    :caption: Revisions

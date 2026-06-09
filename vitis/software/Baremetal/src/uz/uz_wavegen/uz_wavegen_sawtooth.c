@@ -29,7 +29,6 @@ static uint32_t instance_counter = 0U;
 static uz_wavegen_sawtooth_t instances[UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES] = { 0 };
 
 static uz_wavegen_sawtooth_t* uz_wavegen_sawtooth_allocation(void);
-static float uz_wavegen_sawtooth_sample_impl(uz_wavegen_sawtooth_t* self, float amplitude, float frequency_Hz, float offset);
 
 static uz_wavegen_sawtooth_t* uz_wavegen_sawtooth_allocation(void) {
     uz_assert(instance_counter < UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES);
@@ -40,15 +39,6 @@ static uz_wavegen_sawtooth_t* uz_wavegen_sawtooth_allocation(void) {
     return self;
 }
 
-static float uz_wavegen_sawtooth_sample_impl(uz_wavegen_sawtooth_t* self, float amplitude, float frequency_Hz, float offset) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_assert(frequency_Hz > 0.0f);
-    uz_assert(amplitude != 0.0f);
-    float phase = uz_wavegen_phase_acc_step(&self->acc, frequency_Hz);
-    return amplitude * phase + offset;
-}
-
 uz_wavegen_sawtooth_t* uz_wavegen_sawtooth_init(void) {
     uz_wavegen_sawtooth_t* self = uz_wavegen_sawtooth_allocation();
     uz_wavegen_phase_acc_reset(&self->acc);
@@ -56,11 +46,16 @@ uz_wavegen_sawtooth_t* uz_wavegen_sawtooth_init(void) {
 }
 
 float uz_wavegen_sawtooth_sample(uz_wavegen_sawtooth_t* self, float amplitude, float frequency_Hz) {
-    return uz_wavegen_sawtooth_sample_impl(self, amplitude, frequency_Hz, 0.0f);
+    return uz_wavegen_sawtooth_sample_with_offset(self, amplitude, frequency_Hz, 0.0f);
 }
 
 float uz_wavegen_sawtooth_sample_with_offset(uz_wavegen_sawtooth_t* self, float amplitude, float frequency_Hz, float offset) {
-    return uz_wavegen_sawtooth_sample_impl(self, amplitude, frequency_Hz, offset);
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(frequency_Hz > 0.0f);
+    uz_assert(amplitude != 0.0f);
+    float phase = uz_wavegen_phase_acc_step(&self->acc, frequency_Hz);
+    return amplitude * phase + offset;
 }
 
 void uz_wavegen_sawtooth_reset(uz_wavegen_sawtooth_t* self) {

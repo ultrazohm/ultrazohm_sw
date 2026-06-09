@@ -2,7 +2,7 @@
 Sawtooth wave
 =============
 
-.. doxygentypedef:: uz_wavegen_sawtooth_t
+.. c:type:: uz_wavegen_sawtooth_t
 
 .. doxygenfunction:: uz_wavegen_sawtooth_sample
 

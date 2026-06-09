@@ -2,7 +2,7 @@
 Triangle wave
 =============
 
-.. doxygentypedef:: uz_wavegen_triangle_t
+.. c:type:: uz_wavegen_triangle_t
 
 .. doxygenfunction:: uz_wavegen_triangle_sample
 

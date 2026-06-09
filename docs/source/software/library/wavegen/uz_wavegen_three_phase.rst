@@ -4,7 +4,7 @@
 Three phase sine function
 =========================
 
-.. doxygentypedef:: uz_wavegen_three_phase
+.. c:type:: uz_wavegen_three_phase
 
 .. doxygenfunction:: uz_wavegen_three_phase_sample
 

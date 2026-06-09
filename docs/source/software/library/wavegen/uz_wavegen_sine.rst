@@ -2,7 +2,7 @@
 Sine wave
 =========
 
-.. doxygentypedef:: uz_wavegen_sine_t
+.. c:type:: uz_wavegen_sine_t
 
 .. doxygenfunction:: uz_wavegen_sine_sample
 

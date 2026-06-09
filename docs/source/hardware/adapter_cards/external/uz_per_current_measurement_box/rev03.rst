@@ -39,6 +39,13 @@ Interface
 
 - 4 fully differential voltage outputs via RJ45.
 
+.. figure:: currentmeasurementbox_rev03_internalthreads.jpg
+   :alt: Current measurement box Rev03 with internal-thread terminals
+   :align: center
+   :width: 800px
+
+   Rev03 with internal-thread REDCUBE terminals 7461093.
+
 Functionality and Specifications
 --------------------------------
 

@@ -21,6 +21,19 @@ Common Features
 - Fully differential analog output per channel
 - RJ45 output interface for connection to UltraZohm analog adapter cards
 
+Power Supply Cable
+------------------
+
+The power supply cable is identical for all revisions of the current measurement box.
+It can be directly plugged into the :ref:`Analog_LTC2311_16` ADC card to use the 24 V supply from the UltraZohm.
+Use an IPD1-102-D connector on the current measurement box side and an IPD1-108-D connector on the UltraZohm side.
+
+.. figure:: power_supply_cable.jpg
+   :align: center
+   :width: 500px
+
+   Power supply cable for the current measurement box.
+
 .. _current_measurement_box_supported_sensors:
 
 Supported Sensors

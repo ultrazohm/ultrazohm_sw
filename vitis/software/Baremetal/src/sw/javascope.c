@@ -17,7 +17,6 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
-#include "../uz/uz_wavegen/uz_wavegen.h"
 #include "xil_cache.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
@@ -37,8 +36,6 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-static float wavegen_sine_sample;
-static uz_wavegen_sine_t* wavegen_sine;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -89,8 +86,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-	js_ch_observable[JSO_wavegen_sine]			= &wavegen_sine_sample;
-	wavegen_sine = uz_wavegen_sine_init();
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -136,7 +131,6 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
-	wavegen_sine_sample		= uz_wavegen_sine_sample(wavegen_sine, 1.0f, 10.0f);
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

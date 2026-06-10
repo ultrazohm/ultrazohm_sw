@@ -1,0 +1,592 @@
+<html>
+<head>
+<title>IP Core Generation Report for uz_pmsm_model_nonlinear</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<style type="text/css">
+table {
+	width: 100%;
+	border: 1px solid black;
+}
+
+div {
+	line-heigh: 90%;
+}
+
+h2.title {
+	color: #000066;
+	font-weight: bold;
+}
+
+h3.sectionHeading {
+	color: #000066;
+	font-weight: bold;
+}
+
+td.distinctCellColor {
+	background-color: #eeeeff;
+}
+
+td.summaryTableSndColOddRow {
+	background-color: #eeeeff;
+	text-align: right;
+}
+
+td.summaryTableSndColEvenRow {
+	text-align: right;
+}
+
+thead.reportTableHeader {
+	background-color: #eeeeee;
+	font-weight: bold;
+}
+
+</style>
+
+</head>
+<body>
+<h2 class="title">IP Core Generation Report for uz_pmsm_model_nonlinear</h2>
+<div>
+<h3 class="sectionHeading">Summary</h3>
+<table>
+<tbody>
+<tr>
+<td class="distinctCellColor">IP core name
+</td>
+<td class="summaryTableSndColOddRow">uz_pmsm_model_nonlinear
+</td>
+</tr>
+<tr>
+<td>IP core version
+</td>
+<td class="summaryTableSndColEvenRow">1.0
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">IP core folder
+</td>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\*.*')">hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0</a>
+</td>
+</tr>
+<tr>
+<td>IP core zip file name
+</td>
+<td class="summaryTableSndColEvenRow">uz_pmsm_model_nonlinear_v1_0.zip
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Target platform
+</td>
+<td class="summaryTableSndColOddRow">Generic Xilinx Platform
+</td>
+</tr>
+<tr>
+<td>Target tool
+</td>
+<td class="summaryTableSndColEvenRow">Xilinx Vivado
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Target language
+</td>
+<td class="summaryTableSndColOddRow">VHDL
+</td>
+</tr>
+<tr>
+<td>Model
+</td>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear')">uz_pmsm_model_nonlinear</a>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Model version
+</td>
+<td class="summaryTableSndColOddRow">9.10
+</td>
+</tr>
+<tr>
+<td>HDL Coder version
+</td>
+<td class="summaryTableSndColEvenRow">24.2
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">IP core generated on
+</td>
+<td class="summaryTableSndColOddRow">20-Feb-2026 11:35:44
+</td>
+</tr>
+<tr>
+<td>IP core generated for
+</td>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:7')">uz_pmsm_mode_nonlinear</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3 class="sectionHeading">Target Interface Configuration</h3>
+You chose the following target interface configuration for 
+<a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear')">uz_pmsm_model_nonlinear</a>
+:
+<br/><br/>
+Processor/FPGA synchronization mode: 
+<b>Free running</b>
+<br/><br/>
+Target platform interface table:
+<br/>
+<table>
+<thead class="reportTableHeader">
+<tr>
+<td>Port Name
+</td>
+<td>Port Type
+</td>
+<td>Data Type
+</td>
+<td>Target Platform Interfaces
+</td>
+<td>Interface Mapping
+</td>
+<td>Interface Options
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:251')">reset_integrators</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>AXI4
+</td>
+<td>x"100"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:359')">simulate_mechanical</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"104"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:295')">reciprocal_J</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"108"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:293')">mu</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"10C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:294')">M_n0</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"110"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:246')">R1</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"11C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:247')">polepairs</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"120"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:1208')">fitting_parameter</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single (23)
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"180"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:981')">inputs</a>
+</td>
+<td>Inport
+</td>
+<td>single (4)
+</td>
+<td>AXI4
+</td>
+<td>x"130"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model_nonlinear:983')">outputs</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">single (4)
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"150"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3 class="sectionHeading">Register Address Mapping</h3>
+The following AXI4 bus accessible registers were generated for this IP core:
+<br/><br/>
+<table>
+<thead class="reportTableHeader">
+<tr>
+<td>Register Name
+</td>
+<td>Address Offset
+</td>
+<td>Description
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPCore_Reset
+</td>
+<td>0x0
+</td>
+<td>write 0x1 to bit 0 to reset IP core
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">IPCore_Enable
+</td>
+<td class="distinctCellColor">0x4
+</td>
+<td class="distinctCellColor">enabled (by default) when bit 0 is 0x1
+</td>
+</tr>
+<tr>
+<td>IPCore_Timestamp
+</td>
+<td>0x8
+</td>
+<td>contains unique IP timestamp (yymmddHHMM): 2602201135
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">reset_integrators_Data
+</td>
+<td class="distinctCellColor">0x100
+</td>
+<td class="distinctCellColor">data register for Inport reset_integrators
+</td>
+</tr>
+<tr>
+<td>simulate_mechanical_Data
+</td>
+<td>0x104
+</td>
+<td>data register for Inport simulate_mechanical
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">reciprocal_J_Data
+</td>
+<td class="distinctCellColor">0x108
+</td>
+<td class="distinctCellColor">data register for Inport reciprocal_J
+</td>
+</tr>
+<tr>
+<td>mu_Data
+</td>
+<td>0x10C
+</td>
+<td>data register for Inport mu
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">M_n0_Data
+</td>
+<td class="distinctCellColor">0x110
+</td>
+<td class="distinctCellColor">data register for Inport M_n0
+</td>
+</tr>
+<tr>
+<td>R1_Data
+</td>
+<td>0x11C
+</td>
+<td>data register for Inport R1
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">polepairs_Data
+</td>
+<td class="distinctCellColor">0x120
+</td>
+<td class="distinctCellColor">data register for Inport polepairs
+</td>
+</tr>
+<tr>
+<td>inputs_Data
+</td>
+<td>0x130
+</td>
+<td>data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">inputs_Strobe
+</td>
+<td class="distinctCellColor">0x140
+</td>
+<td class="distinctCellColor">strobe register for port inputs
+</td>
+</tr>
+<tr>
+<td>outputs_Data
+</td>
+<td>0x150
+</td>
+<td>data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">outputs_Strobe
+</td>
+<td class="distinctCellColor">0x160
+</td>
+<td class="distinctCellColor">strobe register for port outputs
+</td>
+</tr>
+<tr>
+<td>fitting_parameter_Data
+</td>
+<td>0x180
+</td>
+<td>data register for Inport fitting_parameter. Vector with 23 elements. Register is split across a total of 23 addresses, last address is 0x1D8.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">fitting_parameter_Strobe
+</td>
+<td class="distinctCellColor">0x200
+</td>
+<td class="distinctCellColor">strobe register for port fitting_parameter
+</td>
+</tr>
+</tbody>
+</table>
+<br/>
+The AXI4 slave write register readback is OFF for the IP core.
+<br/>
+The register address mapping is also in the following C header file for you to use when programming the processor:
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\include\uz_pmsm_model_nonlinear_addr.h')">include\uz_pmsm_model_nonlinear_addr.h</a>
+<br/>
+The IP core name is appended to the register names to avoid name conflicts.
+</div>
+<div>
+<h3 class="sectionHeading">IP Core User Guide</h3>
+<b>Theory of Operation</b>
+<br/><br/>
+This IP core is designed to be connected to an embedded processor with an 
+<b>AXI4 interface. </b>
+The processor acts as master, and the IP core acts as slave. By accessing the generated registers via the AXI4 interface, the processor can control the IP core, and read and write data from and to the IP core. 
+<br/><br/>
+For example, to reset the IP core, write 0x1 to the bit 0 of IPCore_Reset register. To enable or disable the IP core, write 0x1 or 0x0 to the IPCore_Enable register. To access the data ports of the MATLAB/Simulink algorithm, read or write to the associated data registers.
+<br/><br/>
+<img src="doc_arch_axi4.jpg"/>
+<br/><br/>
+The "Register Interface Read Pipeline" was specified as 0 for the IP core. The default read delay for the AXI4 register inteface is one clock cycle. 
+Depending on the selected "Register Interface Read Pipeline" value and IO connected to the AXI4 interface, register pipelining is introduced in the read adress decoder logic.
+For this model readable AXI4 slave registers are 5 and read delay for each AXI4 register is n = 1 clock cycles. The following diagram depicts the read functionality of the AXI4 registers.
+<br/><br/>
+<img src="doc_arch_axi4_Pipeline_Register.jpg"/>
+<br/><br/>
+<br/><br/>
+<b>Processor/FPGA Synchronization</b>
+<br/><br/>
+The 
+<b>Free running </b>
+mode means there is no explicit synchronization between embedded processor software execution (SW) and the IP core (HW). SW and HW runs independently. The data written from the processor to IP core takes effect immediately, and the data read from the IP core is the latest data available on the IP core output ports. 
+<br/><br/>
+<img src="free_running.jpg"/>
+<br/><br/>
+<b>Vector Data Read/Write with Strobe Synchronization</b>
+<br/><br/>
+Vector data and data whose bit width is wider than the AXI4 register width (32 bits) use multiple registers and therefore require multiple sequential AXI4 reads/writes. All such data is treated as synchronous to the IP core algorithm logic. Additional strobe registers added for each such input and output port maintain this synchronization across multiple sequential AXI4 reads/writes. For input ports, the strobe register controls the enables on a set of shadow registers, allowing the IP core logic to see all the updated data elements simultaneously. For output ports, the strobe register controls the synchronous capturing of data elements to be read.
+<br/><br/>
+To read a data port that uses multiple registers, first write the strobe address with 0x1, then read each desired data element from corresponding address range. To write a data port that uses multiple registers, first write each desired data element, then write 0x1 to the strobe address to complete the transaction.
+<br/><br/>
+To read data whose bit width is wider than the AXI4 register width (32 bits), the individual 32-bit data elements should be concatenated after reading. For write operations, the data should be sliced into 32-bit sections before writing.
+<br/><br/>
+<img src="vector_strobe.jpg"/>
+<br/><br/>
+<br/><br/>
+<b>Xilinx Vivado Environment Integration</b>
+<br/><br/>
+This IP Core is generated for the Xilinx Vivado environment. The following steps are an example showing how to integrate the generated IP core into Xilinx Vivado environment:
+<br/><br/>
+1. The generated IP core is a zip package file under the IP core folder. Please check the Summary section of this report for the IP zip file name and folder.
+<br/>
+2. In the Vivado project, go to Project Settings -> IP -> Repository Manager, add the folder containing the IP zip file as IP Repository.
+<br/>
+3. In Repository Manger, click the "Add IP" button to add IP zip file to the IP repository. This step adds the generated IP into the Vivado IP Catalog.
+<br/>
+4. In the Vivado project, find the generated IP core in the IP Catalog under category "HDL Coder Generated IP". In you have a Vivado block design open, you can add the generated IP into your block design.
+<br/>
+5. Connect the AXI4 port of the IP core to the embedded processor's AXI master port.
+<br/>
+6. Connect the clock and reset ports of the IP core to the global clock and reset signals.
+<br/>
+7. Assign an Offset Address for the IP core in the Address Editor.
+<br/>
+8. Connect external ports and add FPGA pin assignment constraints to constraint file.
+<br/>
+9. Generate FPGA bitstream and download the bitstream to target device.
+<br/><br/>
+If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Package for Xilinx FPGA and SoC Devices, you can select the board you are using in the Target platform option in the Set Target > Set Target Device and Synthesis Tool task. You can then use Embedded System Integration tasks in HDL Workflow Advisor to help you integrate the generated IP core into Xilinx Vivado environment.
+</div>
+<div>
+<h3 class="sectionHeading">IP Core File List</h3>
+The IP core folder is located at:
+<br/>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\*.*')">hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0</a>
+<br/>
+Following files are generated under this folder:
+<br/><br/>
+<b>IP core zip file</b>
+<br/>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\*.*')">uz_pmsm_model_nonlinear_v1_0.zip</a>
+<br/><br/>
+<b>IP core report</b>
+<br/>
+<a href="matlab:web('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\doc\uz_pmsm_model_nonlinear_ip_core_report.html')">doc\uz_pmsm_model_nonlinear_ip_core_report.html</a>
+<br/><br/>
+<b>IP core HDL source files</b>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear_pkg.vhd')">hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear_pkg.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear_tc.vhd')">hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear_tc.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_uminus_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_uminus_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_abs_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_abs_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_sub_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_sub_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_mul_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_mul_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_cosh_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_cosh_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_log_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_log_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_tanh_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_tanh_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_add_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_add_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_recip_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_recip_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_signum_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_signum_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_nfp_div_single.vhd')">hdl\uz_pmsm_model_nonlinear_src_nfp_div_single.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear.vhd')">hdl\uz_pmsm_model_nonlinear_src_uz_pmsm_mode_nonlinear.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_pkg.vhd')">hdl\uz_pmsm_model_nonlinear_pkg.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_reset_sync.vhd')">hdl\uz_pmsm_model_nonlinear_reset_sync.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_dut.vhd')">hdl\uz_pmsm_model_nonlinear_dut.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_addr_decoder.vhd')">hdl\uz_pmsm_model_nonlinear_addr_decoder.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_SimpleDualPortRAM_generic.vhd')">hdl\uz_pmsm_model_nonlinear_SimpleDualPortRAM_generic.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_rdfifo_data.vhd')">hdl\uz_pmsm_model_nonlinear_rdfifo_data.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_SimpleDualPortRAM_singlebit.vhd')">hdl\uz_pmsm_model_nonlinear_SimpleDualPortRAM_singlebit.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_rdfifo_last.vhd')">hdl\uz_pmsm_model_nonlinear_rdfifo_last.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_rdfifo_rid.vhd')">hdl\uz_pmsm_model_nonlinear_rdfifo_rid.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_axi4_module.vhd')">hdl\uz_pmsm_model_nonlinear_axi4_module.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear_axi4.vhd')">hdl\uz_pmsm_model_nonlinear_axi4.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\hdl\uz_pmsm_model_nonlinear.vhd')">hdl\uz_pmsm_model_nonlinear.vhd</a>
+<br/>
+<br/>
+<b>IP core C header file</b>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pmsm_model_nonlinear_v1_0\include\uz_pmsm_model_nonlinear_addr.h')">include\uz_pmsm_model_nonlinear_addr.h</a>
+</div>
+</body>
+</html>

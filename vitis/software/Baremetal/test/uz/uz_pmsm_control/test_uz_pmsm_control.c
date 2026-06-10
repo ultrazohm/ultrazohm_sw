@@ -41,7 +41,7 @@ void tearDown(void)
 {
 }
 
-#define CSV_EXPORT 1
+#define CSV_EXPORT 0
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}

@@ -2,7 +2,7 @@
 #define UZ_PMSM_SWMODEL_H
 
 #include "../uz_PMSM_config/uz_PMSM_config.h"
-#include "../../uz_Transformation/uz_Transformation.h"
+#include "../uz_Transformation/uz_Transformation.h"
 
 struct uz_pmsm_swmodel_config_t {
     float sample_time; /**< Sample time for the software model in seconds */

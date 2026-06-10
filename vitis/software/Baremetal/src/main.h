@@ -41,6 +41,7 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "uz/uz_boot_banner/uz_boot_banner.h"
 
 #include "uz/uz_HAL.h"
 

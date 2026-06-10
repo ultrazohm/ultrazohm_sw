@@ -50,6 +50,7 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    /*
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
@@ -69,6 +70,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     
+                        */
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

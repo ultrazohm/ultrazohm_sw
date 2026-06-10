@@ -2,3 +2,12 @@
 beckhoff_HMD06_005_048_30_00M1IY170
 ===================================
 
+The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be plotted directly with ``pyuzlib``.
+
+
+.. plot::
+  :caption: Flux map
+
+   import pyuzlib
+   pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+

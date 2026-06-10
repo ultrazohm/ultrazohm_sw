@@ -18,4 +18,13 @@ The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be
    import pyuzlib
    pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
 
+Coefficients
+============
+
+The linearized coefficients below are generated from ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` using ``measured_psi_dq_averaged_800_rpm/coefficient.py``.
+
+.. csv-table:: Linearized flux-map coefficients
+  :file: measured_psi_dq_averaged_800_rpm/coefficient.csv
+  :header-rows: 1
+
 

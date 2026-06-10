@@ -23,7 +23,7 @@ To build and edit the documentation on your native system, you need to:
 
 #. Install `Python <https://www.python.org/>`_ 
 #. Install pip (included in current Python versions)
-#. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
+#. Install the local ``pyuzlib`` package and everything in ``docs/requirements.txt`` by invoking ``python -m pip install -e ./pyuzlib -r docs/requirements.txt`` in a command shell inside the workspace root
 #. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
   
    * As image processing ``suite`` you have to install `Ghostscript <https://www.ghostscript.com/>`_
@@ -46,8 +46,6 @@ To build and edit the documentation on your native system, you need to:
   :align: center
   :alt: Alternative text
 
-
-.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
 
 Makefile reference
 ******************

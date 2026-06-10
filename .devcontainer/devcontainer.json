@@ -9,6 +9,7 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python3.12",
 				"terminal.integrated.shell.linux": "/bin/bash",
 				"ceedlingExplorer.shellPath": "/bin/bash",
 				"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",

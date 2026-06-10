@@ -1,4 +1,5 @@
 sphinx==9.1.0
+-e ./pyuzlib
 sphinx_rtd_theme
 sphinxcontrib-mermaid
 sphinxcontrib.youtube

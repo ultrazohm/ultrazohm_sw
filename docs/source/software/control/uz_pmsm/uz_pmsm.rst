@@ -6,12 +6,12 @@ uz_pmsm
 
 .. note:: This has to be integrated with uz_PMSM_config
 
-``uz_pmsm`` defines a CSV based data scheme for electrical machine parameters used with the UltraZohm software framework.
-The goal is to keep one human-readable source of truth for measured, datasheet, and FEM data and to generate the structures needed by the controller, software models, plots, and later C lookup tables from the same files.
+``uz_pmsm`` defines a CSV based data scheme for machine parameters of PMSM to be used with the UltraZohm software framework.
+The goal is to generate a unified data structure to match the controller, software models, and plots.
 
-The scheme deliberately separates three concerns:
+The data is split into:
 
-* ``linear_parameters.csv`` contains the parameters that map directly to the existing ``uz_PMSM_t`` struct.
+* ``machine_parameters.csv`` contains the parameters that map directly to the existing ``uz_PMSM_t`` struct.
 * ``flux_map.csv`` contains the regular nonlinear flux-linkage map :math:`\psi_d(i_d,i_q)` and :math:`\psi_q(i_d,i_q)`.
 * ``differential_inductances.csv`` contains the derivatives of the flux map when a model or controller needs them explicitly.
 
@@ -29,14 +29,12 @@ This keeps import/export functions simple and makes it clear which files belong 
    uz_motors/
      dummy_motor/
        nominal_v1/
-         metadata.csv
-         linear_parameters.csv
+         machine_parameters.csv
          flux_map.csv
          differential_inductances.csv
 
-Only ``linear_parameters.csv`` is required for a linear machine model.
+Only ``machine_parameters.csv`` is required for a linear machine model.
 Only ``flux_map.csv`` is required for a nonlinear flux map representation.
-``metadata.csv`` and ``differential_inductances.csv`` are recommended, but they can be generated or omitted if they are not needed.
 The directory ``dummy_motor/nominal_v1`` contains the canonical synthetic example dataset.
 
 General CSV rules
@@ -56,28 +54,10 @@ All canonical CSV files use these rules:
 The canonical dq convention is the same one used by the UltraZohm PMSM controller and transformations.
 Do not mix peak and RMS values in one dataset.
 
-Metadata
-========
+Machine parameters
+==================
 
-``metadata.csv`` is a simple two-column key-value table.
-It is intentionally not a general database; it only records the context needed to reproduce or choose a dataset.
-
-.. code-block:: text
-
-   key,value
-   machine_id,dummy_motor
-   dataset_id,nominal_v1
-   source,synthetic
-   description,This dataset contains synthetic data for a dummy motor under nominal conditions.
-
-Recommended keys are ``machine_id``, ``dataset_id``, and ``source``.
-Use a new dataset directory when the source data, processing method, temperature, or operating condition changes in a way that should be traceable.
-Additional metadata can be added as further key-value rows.
-
-Linear parameters
-=================
-
-``linear_parameters.csv`` is a two-column long-form table with ``parameter`` and ``value``.
+``machine_parameters.csv`` is a two-column long-form table with ``parameter`` and ``value``.
 It has no ``unit`` column; units are part of the parameter name, following the existing UltraZohm C names where possible.
 The file contains the linear PMSM parameters and the machine operating-envelope values.
 The order of rows is not relevant.
@@ -250,7 +230,6 @@ Differential inductances
 ========================
 
 ``differential_inductances.csv`` uses the same grid and the same ordering as ``flux_map.csv``.
-It is derived from the flux map and should record the derivation method in ``metadata.csv``.
 
 .. code-block:: text
 
@@ -303,7 +282,7 @@ The existing PMSM software path is linear:
      \psi_d = L_d i_d + \psi_{PM}, \qquad \psi_q = L_q i_q.
 
 The nonlinear data scheme should not replace this path.
-Instead, ``linear_parameters.csv`` remains the source for the existing modules, while ``flux_map.csv`` and ``differential_inductances.csv`` are the source for optional nonlinear behavior.
+Instead, ``machine_parameters.csv`` remains the source for the existing modules, while ``flux_map.csv`` and ``differential_inductances.csv`` are the source for optional nonlinear behavior.
 For example, nonlinear static decoupling needs :math:`\psi_d` and :math:`\psi_q` at the actual current point, which can later be supplied by two ``uz_LUT_2D`` instances.
 A nonlinear PMSM software model can use the same flux maps together with the differential inductance matrix to solve
 
@@ -368,11 +347,11 @@ Importer and exporter contract
 MATLAB and Python helpers should implement the same checks and produce the same canonical order.
 The recommended minimum API is:
 
-* Read a dataset directory and return metadata, linear parameters, flux map, and optional differential inductances.
+* Read a dataset directory machine parameters, flux map, and optional differential inductances.
 * Validate the mandatory columns and the units encoded in map column names or scalar parameter names.
 * Validate that canonical maps are rectangular, have no duplicate ``(i_d_A, i_q_A)`` pairs, and use strictly increasing breakpoints.
 * Sort maps into the canonical row-major order before writing.
-* Export ``uz_PMSM_t`` values and derive controller limit values from the ratings in ``linear_parameters.csv``.
+* Export ``uz_PMSM_t`` values and derive controller limit values from the ratings in ``machine_parameters.csv``.
 * Export ``uz_LUT_2D`` breakpoint and data arrays from ``flux_map.csv``.
 * Optionally derive ``differential_inductances.csv`` from ``flux_map.csv`` using a documented method.
 
@@ -384,9 +363,9 @@ Validation checklist
 
 Before a dataset is used in the controller or a model, check the following:
 
-* ``linear_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
-* ``linear_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
-* ``linear_parameters.csv`` contains the recommended machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits, when it is used to derive controller limits.
+* ``machine_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
+* ``machine_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
+* ``machine_parameters.csv`` contains the recommended machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits, when it is used to derive controller limits.
 * ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
 * ``Psi_PM_Vs`` is greater than or equal to zero.
 * ``flux_map.csv`` has the required columns ``operating_point``, ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``.
@@ -405,3 +384,4 @@ Available motor datasets
     :caption: PMSM motors
 
     dummy_motor/dummy_motor
+    beckhoff_HMD06_005_048_30_00M1IY170/beckhoff_HMD06_005_048_30_00M1IY170

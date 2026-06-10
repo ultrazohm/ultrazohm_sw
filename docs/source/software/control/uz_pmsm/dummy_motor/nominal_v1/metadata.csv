@@ -1,5 +1,0 @@
-key,value
-machine_id,dummy_motor
-dataset_id,nominal_v1
-source,synthetic,
-description,This dataset contains synthetic data for a dummy motor under nominal conditions. The parameters are based on typical values for small electric motors and are intended for testing and validation purposes in control applications.

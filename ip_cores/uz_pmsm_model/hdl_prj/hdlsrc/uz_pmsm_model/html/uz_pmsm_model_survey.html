@@ -36,7 +36,7 @@ uz_pmsm_model
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-7.0
+2.93
 </td>
 
 </tr>
@@ -45,7 +45,7 @@ Model version
 HDL Coder version
 </td>
 <td align="right" valign="top" style="border-style: none">
-23.2
+3.18
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2024-05-23 13:50:33
+2021-07-23 16:45:56
 </td>
 
 </tr>
@@ -84,7 +84,7 @@ VHDL
 Target Directory
 </td>
 <td align="right" valign="top" style="border-style: none">
-hdl_prj\hdlsrc
+hdl_prj/hdlsrc
 </td>
 
 </tr>
@@ -138,25 +138,7 @@ uz_pmsm_model/uz_pmsm_model
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-LUTMapToRAM
-</td>
-<td align="right" valign="top" style="border-style: none">
-off
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-ModulePrefix
-</td>
-<td align="right" valign="top" style="border-style: none">
-uz_pmsm_model_src_
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-OptimizationReport
+HierarchicalDistPipelining
 </td>
 <td align="right" valign="top" style="border-style: none">
 on
@@ -165,19 +147,37 @@ on
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-Oversampling
+LUTMapToRAM
 </td>
 <td align="right" valign="top" style="border-style: none">
-200
+off
 </td>
 
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-ProjectFolder
+ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-hdl_prj
+uz_pmsm_model_src_
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+OptimizationReport
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Oversampling
+</td>
+<td align="right" valign="top" style="border-style: none">
+50
 </td>
 
 </tr>
@@ -231,7 +231,7 @@ Zynq UltraScale+
 SynthesisToolDeviceName
 </td>
 <td align="right" valign="top" style="border-style: none">
-xczu9eg-ffvc900-3-e
+xazu11eg-ffvf1517-1-i
 </td>
 
 </tr>
@@ -240,7 +240,7 @@ xczu9eg-ffvc900-3-e
 TargetDirectory
 </td>
 <td align="right" valign="top" style="border-style: none">
-hdl_prj\hdlsrc
+hdl_prj/hdlsrc
 </td>
 
 </tr>
@@ -254,15 +254,6 @@ Generic Xilinx Platform
 
 </tr>
 <tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-UseFloatingPoint
-</td>
-<td align="right" valign="top" style="border-style: none">
-on
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Workflow
 </td>
@@ -391,39 +382,6 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:1204')" name="code2model" class="code2model">
-simulate_nonlinear
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"108"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:295')" name="code2model" class="code2model">
 reciprocal_J
 </a>
@@ -450,7 +408,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"10C"
+x"108"
 </td>
 
 </tr>
@@ -483,7 +441,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"110"
+x"10C"
 </td>
 
 </tr>
@@ -516,7 +474,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"114"
+x"110"
 </td>
 
 </tr>
@@ -524,7 +482,40 @@ x"114"
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
-L_d
+reciprocal_L_d
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"114"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
+reciprocal_L_q
 </a>
 
 </b>
@@ -550,39 +541,6 @@ IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
 x"118"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
-L_q
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"11C"
 </td>
 
 </tr>
@@ -615,7 +573,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"120"
+x"11C"
 </td>
 
 </tr>
@@ -648,7 +606,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"124"
+x"120"
 </td>
 
 </tr>
@@ -681,40 +639,7 @@ AXI4
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"128"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:1208')" name="code2model" class="code2model">
-fitting_parameter
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"180"
+x"124"
 </td>
 
 </tr>
@@ -835,8 +760,56 @@ on
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:1006')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:436')" name="code2model" class="code2model">
 pmsm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:120')" name="code2model" class="code2model">
+integrator
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:622')" name="code2model" class="code2model">
+integrator1
 </a>
 
 </b>

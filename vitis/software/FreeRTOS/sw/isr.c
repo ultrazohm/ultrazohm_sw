@@ -55,42 +55,53 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
  */
 void APU_IPI_ISR(void *data)
 {
-	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	// R5 -> A53 JavaScope sample ring in shared OCM bank 3
+	struct javascope_ring_t volatile * const js_ring = (struct javascope_ring_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE_RING;
 	// create pointers to user data variables located in OCM Bank 1 and 2
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
+	// Drain all ring slots the R5 has published since the last IPI.  The R5
+	// writes write_idx/dropped; invalidate that cache line before reading.
+	Xil_DCacheInvalidateRange((INTPTR)&js_ring->write_idx, 2U * sizeof(uint32_t));
+	uint32_t w = js_ring->write_idx;
+	uint32_t r = js_ring->read_idx;   // A53 owns read_idx
 
-	// R5 writes this shared region; invalidate A53 cache lines before reading it.
-	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
-
-	// Queue samples only while a JavaScope TCP client is active.
-	if(js_connection_established!=0)
+	while (r != w)
 	{
-		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
+		struct javascope_data_t volatile * const slot = &js_ring->slots[r & JAVASCOPE_RING_MASK];
+		Xil_DCacheInvalidateRange((INTPTR)slot, JAVASCOPE_DATA_SIZE);
 
-		if (queue_status == errQUEUE_FULL)
+		// Maintain APU-local copy of status word (cf. main.c)
+		javascope_data_status = slot->status;
+
+		// Queue samples only while a JavaScope TCP client is active.
+		if(js_connection_established!=0)
 		{
-			js_queue_overflow_dropped_samples++;
-			js_queue_purge_requested = 1;
-			// The TCP worker observes this flag and purges the queued backlog.
-		}
-		else
-		{
-			// Yield to ethernet task only when the queue just crossed the send
-			// threshold. Avoids a context switch on every ISR invocation while
-			// still waking the sender without busy-poll delay.
-			if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET) {
+			size_t queue_status = xQueueSendToBackFromISR(js_queue, slot, &xHigherPriorityTaskWoken);
+
+			if (queue_status == errQUEUE_FULL)
+			{
+				js_queue_overflow_dropped_samples++;
+				js_queue_purge_requested = 1;
+				// The TCP worker observes this flag and purges the queued backlog.
+			}
+			else if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET)
+			{
+				// Yield to ethernet task only when the queue just crossed the send
+				// threshold. Avoids a context switch on every ISR invocation while
+				// still waking the sender without busy-poll delay.
 				portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 			}
 		}
+		r++;
 	}
 
-	// Maintain APU-local copy of status word (cf. main.c)
-	javascope_data_status = javascope_data->status;
+	// Publish the advanced read index so the R5 can reuse the drained slots.
+	js_ring->read_idx = r;
+	Xil_DCacheFlushRange((INTPTR)&js_ring->read_idx, sizeof(uint32_t));
 
 	// Consume at most one pending control command per ISR to preserve ordering.
 	// If no command is pending, send an explicit no-op (id=0) to avoid re-sending old commands.

@@ -19,6 +19,47 @@ struct javascope_data_t
 	float       scope_ch[JS_CHANNELS];
 };
 
+// --- R5 -> A53 JavaScope sample ring buffer (shared OCM bank 3) -------------
+// The first 128 bytes of bank 3 stay reserved for the version handshake
+// (read_/write_apu/rpu_version below, at offsets 0 and 64); the ring follows.
+#define JAVASCOPE_RING_META_BYTES   128U
+#define MEM_SHARED_START_OCM_BANK_3_JAVASCOPE_RING \
+        (MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + JAVASCOPE_RING_META_BYTES)
+
+#define JAVASCOPE_RING_SLOTS        512U                        // power of two
+#define JAVASCOPE_RING_MASK         (JAVASCOPE_RING_SLOTS - 1U)
+
+// Samples per APU interrupt: the R5 triggers an IPI every Nth frame (or
+// immediately when the ring fills), decimating the A53 interrupt rate.
+// 1 == notify every frame (previous behavior). Tune on hardware.
+#define JAVASCOPE_RING_NOTIFY_DECIM 16U
+
+// Header split so the R5-owned (write_idx/dropped) and A53-owned (read_idx)
+// fields occupy separate 64-byte cache lines (avoids false sharing).
+struct javascope_ring_t
+{
+	volatile uint32_t write_idx;     // R5 writes, A53 reads
+	volatile uint32_t dropped;       // R5 writes (frames dropped when ring full)
+	uint8_t  _pad0[64U - 2U * sizeof(uint32_t)];
+	volatile uint32_t read_idx;      // A53 writes, R5 reads
+	uint8_t  _pad1[64U - sizeof(uint32_t)];
+	// NOTE: sizeof(javascope_data_t) == 92 B is NOT a multiple of the cache-line
+	// size (R5 32 B / A53 64 B), so adjacent slots share cache lines.  This is
+	// safe for this single-producer/single-consumer ring: the R5 writes slots
+	// sequentially and flushes each by range, the A53 invalidates each slot by
+	// range before reading, and producer and consumer never touch the same slot
+	// concurrently.  Padding each slot to 64 B would push 512 slots past the
+	// 64 KB of OCM bank 3, so the unaligned layout is intentional.
+	struct javascope_data_t slots[JAVASCOPE_RING_SLOTS];
+};
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+_Static_assert((JAVASCOPE_RING_NOTIFY_DECIM >= 1U) && (JAVASCOPE_RING_NOTIFY_DECIM < JAVASCOPE_RING_SLOTS),
+               "JAVASCOPE_RING_NOTIFY_DECIM must be in [1, JAVASCOPE_RING_SLOTS).");
+_Static_assert((JAVASCOPE_RING_META_BYTES + sizeof(struct javascope_ring_t)) <= (64U * 1024U),
+               "JavaScope ring does not fit in OCM bank 3.");
+#endif
+
 struct APU_to_RPU_t
 {
 	uint32_t id;

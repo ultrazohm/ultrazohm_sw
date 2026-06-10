@@ -36,6 +36,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float ipc_dropped_frames;   // R5->A53 ring frames dropped (ring full), as a JS channel
 
 uint32_t pollErrorCnt = 0U;
 
@@ -86,6 +87,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_ipc_dropped_frames] 	= &ipc_dropped_frames;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -102,20 +104,31 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
+	// Reset the R5->A53 sample ring header so a warm boot does not start from
+	// stale OCM indices.  The R5 owns init and runs before the control ISR is
+	// enabled (and thus before the A53 ever drains).
+	struct javascope_ring_t volatile * const js_ring = (struct javascope_ring_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE_RING;
+	js_ring->write_idx = 0U;
+	js_ring->read_idx  = 0U;
+	js_ring->dropped   = 0U;
+	Xil_DCacheFlushRange((INTPTR)js_ring, JAVASCOPE_RING_META_BYTES);
+
 	return Status;
 }
 
 
 void JavaScope_update(DS_Data* data){
 
-	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	// R5 -> A53 JavaScope sample ring in shared OCM bank 3
+	struct javascope_ring_t volatile * const js_ring = (struct javascope_ring_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE_RING;
 	struct APU_to_RPU_t Received_Data_from_A53 = {0};
 	// create pointers to user data variables located in OCM Bank 1 and 2
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	static int js_cnt_slowData=0;
+	static uint32_t js_notify_pending=0U;   // frames written since the last IPI
 	int status = XST_SUCCESS;
+	int notified = 0;                       // did we trigger an IPI this frame?
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
@@ -132,21 +145,50 @@ void JavaScope_update(DS_Data* data){
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
 
-	// write data to shared memory
+	// Mirror the R5-owned ring drop counter for the JavaScope observable channel
+	// (R5 owns dropped, so it reads back its own cached value — no invalidate).
+	ipc_dropped_frames = (float)js_ring->dropped;
+
+	// Build one frame locally, then publish it into the ring buffer.
+	struct javascope_data_t sample;
 	for(int j=0; j<JS_CHANNELS; j++){
-		javascope_data->scope_ch[j] = *js_ch_selected[j];
+		sample.scope_ch[j] = *js_ch_selected[j];
 	}
-	javascope_data->slowDataID 		= js_cnt_slowData;
-	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
-	javascope_data->status 			= js_status_BareToRTOS;
+	sample.slowDataID 		= js_cnt_slowData;
+	sample.slowDataContent  = *js_slowDataArray[js_cnt_slowData];
+	sample.status 			= js_status_BareToRTOS;
 
-	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE);
+	// R5 owns write_idx; read the A53-owned read_idx fresh to test for "full".
+	Xil_DCacheInvalidateRange((INTPTR)&js_ring->read_idx, sizeof(uint32_t));
+	uint32_t w = js_ring->write_idx;
+	uint32_t r = js_ring->read_idx;
 
-	//Send an interrupt to APU
-	status = XIpiPsu_TriggerIpi(&IPI_instance,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
-	if(status != (u32)XST_SUCCESS) {
-		xil_printf("RPU: IPI Trigger failed\r\n");
+	if (((w - r) & JAVASCOPE_RING_MASK) == JAVASCOPE_RING_MASK) {
+		// Ring full: drop newest, publish write_idx+dropped, and kick the A53.
+		js_ring->dropped++;
+		Xil_DCacheFlushRange((INTPTR)&js_ring->write_idx, 2U * sizeof(uint32_t));
+		if (js_notify_pending > 0U) {
+			notified = 1;
+			js_notify_pending = 0U;
+		}
+	} else {
+		js_ring->slots[w & JAVASCOPE_RING_MASK] = sample;
+		Xil_DCacheFlushRange((INTPTR)&js_ring->slots[w & JAVASCOPE_RING_MASK], JAVASCOPE_DATA_SIZE);
+		js_ring->write_idx = w + 1U;   // advance in R5 cache; published on notify
+		// Decimated notify: publish write_idx + IPI every Nth frame.
+		if (++js_notify_pending >= JAVASCOPE_RING_NOTIFY_DECIM) {
+			Xil_DCacheFlushRange((INTPTR)&js_ring->write_idx, sizeof(uint32_t));
+			notified = 1;
+			js_notify_pending = 0U;
+		}
+	}
+
+	//Send an interrupt to APU only on notify frames
+	if (notified) {
+		status = XIpiPsu_TriggerIpi(&IPI_instance,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+		if(status != (u32)XST_SUCCESS) {
+			xil_printf("RPU: IPI Trigger failed\r\n");
+		}
 	}
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
@@ -157,14 +199,16 @@ void JavaScope_update(DS_Data* data){
 	}
 #endif
 
-	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
-
-	//Afterwards the acknowledge a message from the APU can be read/checked, if a53 is enabled for external calculations of the r5 we wait for the acknowledge flag,
-	//if not, we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-	status = XIpiPsu_ReadMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
-
-	if(status != (u32)XST_SUCCESS) {
-		xil_printf("RPU: IPI reading from A53 failed\r\n");
+	// Read the A53's response (one popped control command) ONLY on frames where
+	// we actually notified.  The A53 refreshes the response buffer once per IPI,
+	// so reading it on non-notify frames would re-dispatch the same command
+	// (the response is decimated together with the IPI).
+	if (notified) {
+		u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // number of 32-bit words
+		status = XIpiPsu_ReadMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
+		if(status != (u32)XST_SUCCESS) {
+			xil_printf("RPU: IPI reading from A53 failed\r\n");
+		}
 	}
 
 	js_cnt_slowData++;

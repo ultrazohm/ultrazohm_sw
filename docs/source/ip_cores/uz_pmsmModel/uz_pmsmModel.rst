@@ -294,6 +294,7 @@ Vitis
   #include "../uz/uz_wavegen/uz_wavegen.h"
   #include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
   extern uz_pmsmModel_t *pmsm;
+  uz_wavegen_pulse_t* pulse; // Initialize once with uz_wavegen_pulse_init() before ISR starts
 
   float i_d_soll=0.0f;
   float i_q_soll=0.0f;
@@ -316,7 +317,7 @@ Vitis
   uz_pmsmModel_trigger_input_strobe(pmsm);
   uz_pmsmModel_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-  pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
+  pmsm_inputs.v_q_V=uz_wavegen_pulse_sample(pulse, 10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
   uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
   // [...]
@@ -385,10 +386,11 @@ Closed loop
 
 .. code-block:: c
 
+    // pulse is initialized once with uz_wavegen_pulse_init() before ISR starts
     uz_pmsmModel_trigger_input_strobe(pmsm);
     uz_pmsmModel_trigger_output_strobe(pmsm);
     pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-    referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
+    referenceValue=uz_wavegen_pulse_sample(pulse, 1.0f, 0.10f, 0.5f);
     pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
     pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
     pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);

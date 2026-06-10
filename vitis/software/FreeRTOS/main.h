@@ -33,12 +33,20 @@ extern "C" {
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
+#define THREAD_PRIO_I2CIO                   1U
+#define THREAD_PRIO_CAN                     1U
+#define THREAD_PRIO_DEFAULT                 2U
+#define THREAD_PRIO_MAIN                    THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_NETWORK_BRINGUP         THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER THREAD_PRIO_DEFAULT
+#define THREAD_PRIO_JAVASCOPE_STREAM         3U
+#define THREAD_PRIO_XEMACIF_INPUT           3U
 
 // Period (in ms) of the endless loop in i2cio_thread()
 #define I2CIO_THREAD_TIMER_MS	(50U)
 
 // ========== JavaScope-Ethernet =========================================================================
-// Period (in ms) of the endless loop in network_thread()
+// Period (in ms) of the endless loop in network_bringup_thread()
 #define NETWORK_LOOPPERIOD_MS	(500U)
 
 #define TCPPACKETSIZE 1460 // Maximum TCP packet size. Default: 1460. Jumbo frames would allow up to 8960.
@@ -48,7 +56,7 @@ extern "C" {
 
 // ========== JavaScope-Queue =========================================================================
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
-#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U  // Non-blocking: the ethernet task polls queue depth before dequeuing, so a timeout is not needed
+#define JS_QUEUE_RECEIVE_TICKS2WAIT 0U  // Non-blocking: the JavaScope stream task polls queue depth before dequeuing, so a timeout is not needed
 #define JS_CONTROL_QUEUE_SIZE_ELEMENTS 256U
 
 
@@ -96,7 +104,7 @@ typedef struct		// One JavaScope TCP frame: status plus batched slow-data and 20
 // ========== Functions and Threads ======================================================================
 int main_thread();
 void print_javascope_app_header(ip_addr_t *ip);
-void application_thread();
+void javascope_socket_manager_thread(void *p);
 void lwip_init();
 
 

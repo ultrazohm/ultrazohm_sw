@@ -28,6 +28,8 @@
 // Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+#define UZ_GIC_INTERRUPT_PRIORITY_FREERTOS_SAFE (0xA0U)
+#define UZ_GIC_TRIGGER_LEVEL_SENSITIVE (0x1U)
 
 struct APU_to_RPU_t ControlData = {0};
 extern volatile int js_connection_established;
@@ -80,7 +82,7 @@ void APU_IPI_ISR(void *data)
 		}
 		else
 		{
-			// Yield to ethernet task only when the queue just crossed the send
+			// Yield to the JavaScope stream task only when the queue just crossed the send
 			// threshold. Avoids a context switch on every ISR invocation while
 			// still waking the sender without busy-poll delay.
 			if (uxQueueMessagesWaitingFromISR(js_queue) == JS_SAMPLES_PER_PACKET) {
@@ -131,7 +133,7 @@ void APU_IPI_ISR(void *data)
 		i_lifecheck_apu_ipi_isr =0;
 	}
 
-	// Not required in the current design: the Ethernet task polls queue depth and
+	// Not required in the current design: the JavaScope stream task polls queue depth and
 	// uses non-blocking queue receive, so it is usually not blocked waiting to be
 	// woken by this ISR.
 	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -173,9 +175,9 @@ int Initialize_InterruptHandler(){
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE & SET THE INTERRUPTS and ISRs
+// INITIALIZE THE A53 IPI RUNTIME
 //----------------------------------------------------
-int Initialize_ISR(){
+int initialize_ipi_runtime(){
 
 	int Status = 0;
 
@@ -186,8 +188,8 @@ int Initialize_ISR(){
 		return XST_FAILURE;
 	}
 
-	// Queue R5 JavaScope samples for the Ethernet worker.
-	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
+	// Queue R5 JavaScope samples for the TCP worker.
+	js_queue = xQueueCreate(JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t));
 	if (js_queue == NULL){
 		uz_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;
@@ -231,6 +233,7 @@ u32 Apu_GicInit(XScuGic *GIC_instance_ptr, u32 IntId, Xil_ExceptionHandler Handl
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
+	XScuGic_SetPriorityTriggerType(GIC_instance_ptr, IntId, UZ_GIC_INTERRUPT_PRIORITY_FREERTOS_SAFE, UZ_GIC_TRIGGER_LEVEL_SENSITIVE);
 	Status = XScuGic_Connect(GIC_instance_ptr, IntId, Handler, PeriphInstPtr);
 
 	XScuGic_Enable(GIC_instance_ptr, IntId);

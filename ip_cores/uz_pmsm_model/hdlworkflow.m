@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 13:52:18 on 23/05/2024
+% Generated with MATLAB 9.10 (R2021a) at 10:12:28 on 30/07/2021
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
+%     Filename  : '/home/ts/Documents/ultrazohm_sw/ip_cores/uz_pmsm_model/hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -20,27 +20,25 @@ load_system('uz_pmsm_model');
 %% Model HDL Parameters
 %% Set Model 'uz_pmsm_model' HDL parameters
 hdlset_param('uz_pmsm_model', 'CriticalPathEstimation', 'on');
-fpconfig = hdlcoder.createFloatingPointTargetConfig('NATIVEFLOATINGPOINT' ...
-, 'LatencyStrategy', 'Min',  'HandleDenormals', 'On' ...
+hdlset_param('uz_pmsm_model', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint' ...
+, 'LatencyStrategy', 'MIN',  'HandleDenormals', 'on') ...
 );
-hdlset_param('uz_pmsm_model', 'FloatingPointTargetConfiguration', fpconfig);
 hdlset_param('uz_pmsm_model', 'GenerateValidationModel', 'on');
 hdlset_param('uz_pmsm_model', 'HDLSubsystem', 'uz_pmsm_model/uz_pmsm_model');
+hdlset_param('uz_pmsm_model', 'HierarchicalDistPipelining', 'on');
 hdlset_param('uz_pmsm_model', 'LUTMapToRAM', 'off');
 hdlset_param('uz_pmsm_model', 'OptimizationReport', 'on');
-hdlset_param('uz_pmsm_model', 'Oversampling', 200);
-hdlset_param('uz_pmsm_model', 'ProjectFolder', 'hdl_prj');
+hdlset_param('uz_pmsm_model', 'Oversampling', 50);
 hdlset_param('uz_pmsm_model', 'ResetType', 'Synchronous');
 hdlset_param('uz_pmsm_model', 'ResourceReport', 'on');
 hdlset_param('uz_pmsm_model', 'ScalarizePorts', 'DUTLevel');
 hdlset_param('uz_pmsm_model', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('uz_pmsm_model', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
-hdlset_param('uz_pmsm_model', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-3-e');
+hdlset_param('uz_pmsm_model', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
 hdlset_param('uz_pmsm_model', 'SynthesisToolPackageName', '');
 hdlset_param('uz_pmsm_model', 'SynthesisToolSpeedValue', '');
-hdlset_param('uz_pmsm_model', 'TargetDirectory', 'hdl_prj\hdlsrc');
+hdlset_param('uz_pmsm_model', 'TargetDirectory', 'hdl_prj/hdlsrc');
 hdlset_param('uz_pmsm_model', 'TargetPlatform', 'Generic Xilinx Platform');
-hdlset_param('uz_pmsm_model', 'UseFloatingPoint', 'on');
 hdlset_param('uz_pmsm_model', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
@@ -57,44 +55,36 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/simulate_mechanical', 'IOInterface', '
 hdlset_param('uz_pmsm_model/uz_pmsm_model/simulate_mechanical', 'IOInterfaceMapping', 'x"104"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model/uz_pmsm_model/simulate_nonlinear', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/simulate_nonlinear', 'IOInterfaceMapping', 'x"108"');
-
-% Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_J', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_J', 'IOInterfaceMapping', 'x"10C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_J', 'IOInterfaceMapping', 'x"108"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/mu', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/mu', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/mu', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/M_n0', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/M_n0', 'IOInterfaceMapping', 'x"114"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/M_n0', 'IOInterfaceMapping', 'x"110"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model/uz_pmsm_model/L_d', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/L_d', 'IOInterfaceMapping', 'x"118"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_L_d', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_L_d', 'IOInterfaceMapping', 'x"114"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model/uz_pmsm_model/L_q', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/L_q', 'IOInterfaceMapping', 'x"11C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_L_q', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_L_q', 'IOInterfaceMapping', 'x"118"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/R1', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/R1', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/R1', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/polepairs', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/polepairs', 'IOInterfaceMapping', 'x"124"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/polepairs', 'IOInterfaceMapping', 'x"120"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/psi_pm', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/psi_pm', 'IOInterfaceMapping', 'x"128"');
-
-% Set Inport HDL parameters
-hdlset_param('uz_pmsm_model/uz_pmsm_model/fitting_parameter', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/fitting_parameter', 'IOInterfaceMapping', 'x"180"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/psi_pm', 'IOInterfaceMapping', 'x"124"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/inputs', 'IOInterface', 'AXI4');
@@ -114,6 +104,12 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/mechanical_system/integrator1', 'Flatt
 hdlset_param('uz_pmsm_model/uz_pmsm_model/pmsm', 'FlattenHierarchy', 'on');
 
 % Set SubSystem HDL parameters
+hdlset_param('uz_pmsm_model/uz_pmsm_model/pmsm/integrator', 'FlattenHierarchy', 'on');
+
+% Set SubSystem HDL parameters
+hdlset_param('uz_pmsm_model/uz_pmsm_model/pmsm/integrator1', 'FlattenHierarchy', 'on');
+
+% Set SubSystem HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/torque_calculation', 'FlattenHierarchy', 'on');
 
 % Set Outport HDL parameters
@@ -127,7 +123,6 @@ hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','
 
 % Specify the top level project directory
 hWC.ProjectFolder = 'hdl_prj';
-hWC.AllowUnsupportedToolVersion = true;
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;
 
@@ -148,11 +143,9 @@ hWC.AdditionalProjectCreationTclFiles = '';
 hWC.EnableIPCaching = false;
 
 % Set properties related to 'RunTaskGenerateSoftwareInterface' Task
-hWC.GenerateSoftwareInterfaceModel = false;
+hWC.GenerateSoftwareInterfaceModel = true;
 hWC.OperatingSystem = '';
-hWC.HostTargetInterface = '';
-hWC.GenerateHostInterfaceModel = false;
-hWC.GenerateHostInterfaceScript = false;
+hWC.GenerateSoftwareInterfaceScript = true;
 
 % Set properties related to 'RunTaskBuildFPGABitstream' Task
 hWC.RunExternalBuild = false;

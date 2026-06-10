@@ -36,7 +36,8 @@
 				"ms-python.python",
 				"redhat.java",
 				"vscjava.vscode-java-debug",
-				"vscjava.vscode-java-dependency"
+				"vscjava.vscode-java-dependency",
+				"ms-toolsai.jupyter"
 			]
 		}
 	},

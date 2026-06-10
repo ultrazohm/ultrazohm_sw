@@ -13,7 +13,7 @@ Inside the repository, install the package in editable mode:
 
 .. code-block:: bash
 
-	pip install -e ./pyuzlib
+	python -m pip install -e ./pyuzlib
 
 Public API
 ==========

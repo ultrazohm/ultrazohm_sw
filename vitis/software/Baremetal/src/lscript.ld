@@ -28,9 +28,9 @@ MEMORY
    psu_ocm_ram_bank3_MEM_0 : ORIGIN = 0xFFFF0000, LENGTH = 0x10000
    psu_r5_0_atcm_MEM_0 : ORIGIN = 0x0, LENGTH = 0x10000
    psu_r5_0_btcm_MEM_0 : ORIGIN = 0x20000, LENGTH = 0x10000
-   /* Linux must reserve the full 32 MiB range 0x40000000..0x41FFFFFF.
-      The linker uses 0x40000000..0x41FEFFFF and leaves the top 64 KiB as guard. */
-   psu_r5_ddr_0_MEM_0 : ORIGIN = 0x40000000, LENGTH = 0x01FF0000
+   /* Linux must reserve the full 128 MiB range 0x40000000..0x47FFFFFF.
+      The linker uses 0x40000000..0x47FEFFFF and leaves the top 64 KiB as guard. */
+   psu_r5_ddr_0_MEM_0 : ORIGIN = 0x40000000, LENGTH = 0x07FF0000
 }
 
 /* Specify the default entry point to the program */
@@ -300,4 +300,3 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
-

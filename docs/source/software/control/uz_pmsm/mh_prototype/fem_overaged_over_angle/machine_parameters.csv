@@ -19,6 +19,3 @@ I_d_max_A,10
 I_d_min_A,-10
 I_q_max_A,10
 I_q_min_A,-10
-
-Inenn,Imax,Udc,nnenn,Ld,Lq,Rs,p,PsiPm,Umax,KPd,KPq,KId,KIq,machine
-8,12,48,1000,0.00175,0.00175,0.45,4,0.042,27.712812921102,8.75,8.75,2250,2250,M5

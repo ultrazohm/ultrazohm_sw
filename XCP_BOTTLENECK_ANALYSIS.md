@@ -125,6 +125,26 @@ shrunk 10000 → 512 (bounded backlog latency, ~645 KB heap freed).
 (`xcp_txq_overflow_dropped` climbs, purges drop stale samples) but the
 session stays alive and responsive.
 
+### T2. Network stack stall under sustained DAQ load — **FIXED**
+After T1: A53 "stalled" with `xemacif_input_thread` (and earlier
+`tcpip_thread`) parked in their idle waits; R5 unaffected. Those stacks are
+the threads' *normal* blocked states — the real failure was that no network
+data moved anymore: a livelock, not a scheduler freeze.
+**Mechanism (priority inversion):** the XCP workers ran at priority 4/5,
+**above** the BSP's lwIP threads (`TCPIP_THREAD_PRIO` =
+`DEFAULT_THREAD_PRIO` = 2). Under sustained DAQ load the TX worker (woken up
+to 20 k×/s, batching hard) starved `xemacif_input_thread`/`tcpip_thread` →
+CANape's ACKs were not processed → the 8 KB `TCP_SND_BUF` never reopened →
+`write()` blocked; GEM RX can die permanently once its buffers run dry.
+**Fix:** `PRIO_XCP_TX`/`PRIO_XCP_RX` lowered to **1** (below the network
+stack). XCP consumes leftover CPU; overload now lands in our DAQ queue
+(drops + purge, session-safe) instead of inside lwIP (fatal).
+**If throughput gaps become an issue later:** the proper lever is the BSP
+(`TCP_SND_BUF` 8 K → 32 K, cf. develop's TODO in its ethernet.c) — BSP
+settings can be made regeneration-proof via `vitis_update_platform.tcl`,
+which already patches the FreeRTOS heap the same way. Parked per the
+no-lwIP/BSP-changes constraint.
+
 ---
 
 ## Deep dive: R5 side (XcpBasic + glue)

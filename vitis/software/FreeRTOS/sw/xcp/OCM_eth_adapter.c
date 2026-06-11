@@ -34,8 +34,17 @@
 
 #define STACKSIZE_XCP           (1024 * 10)
 #define PRIO_XCP_BACKGROUND     7
-#define PRIO_XCP_RX             5
-#define PRIO_XCP_TX             4
+/* The XCP TX/RX workers MUST run below the lwIP threads they depend on
+ * (TCPIP_THREAD_PRIO = DEFAULT_THREAD_PRIO = 2 in the BSP). They used to run
+ * at 4/5, preempting tcpip_thread and xemacif_input_thread under sustained
+ * DAQ load: RX/ACK processing starved, the TCP send window never reopened,
+ * the GEM RX path ran out of buffers, and the whole network stack stalled
+ * (observed as both lwIP threads parked in their idle waits while XCP timed
+ * out). At priority 1 the XCP workers consume leftover CPU; overload then
+ * shows up as DAQ drops in our queue (session-safe) instead of inside lwIP
+ * (fatal). */
+#define PRIO_XCP_RX             1
+#define PRIO_XCP_TX             1
 
 /* DAQ (DTO) queue: sized for bounded latency, not maximum buffering. A deep
  * queue only delays the inevitable when DAQ rate exceeds TCP drain rate, and

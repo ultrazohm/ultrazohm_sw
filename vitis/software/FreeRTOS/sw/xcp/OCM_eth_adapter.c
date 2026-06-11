@@ -67,6 +67,13 @@ volatile uint32_t try_to_read_ocm = 0;
 static volatile uint32_t xcp_txq_overflow_dropped = 0;
 static volatile int      xcp_txq_purge_requested  = 0;
 
+// Per-connection worker lifecycle. The accept loop sets these before spawning
+// the TX/RX tasks and waits for both to clear before accepting the next master,
+// so the socket fd is never reused/closed while a worker still holds it and only
+// one TX task ever drains queue_xcp_tx.
+static volatile uint8_t xcp_tx_task_running = 0;
+static volatile uint8_t xcp_rx_task_running = 0;
+
 /*-------------------------------------------------------------------
  * Static functions
  *-----------------------------------------------------------------*/
@@ -78,7 +85,7 @@ static void my_print_ip(ip_addr_t *ip)
 
 static void ocm_eth_adapter_tx(void *arg_p)
 {
-    int sd = * (int *) arg_p;
+    int sd = (int)(intptr_t) arg_p;
     int nwrote;
 
     xil_printf("%s() start\n", __func__);
@@ -86,7 +93,11 @@ static void ocm_eth_adapter_tx(void *arg_p)
     xQueueReset(queue_xcp_tx);
     xcp_txq_purge_requested = 0;
 
-    while (1) {
+    // Run until the connection is torn down (rx clears xcp_eth_connected) or a
+    // socket write fails. The receive timeout lets the task notice a disconnect
+    // even with no DAQ data queued, so it always exits and is recreated for the
+    // next connection (it used to be created once per boot and never resumed).
+    while (xcp_eth_connected) {
         // Backpressure: if the ISR flagged a TX-queue overflow, drop the stale
         // backlog rather than streaming seconds-old XCP frames after a stall.
         // Only triggers under sustained link saturation (queue was full).
@@ -96,11 +107,8 @@ static void ocm_eth_adapter_tx(void *arg_p)
         }
 
         uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
-        if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
-            xil_printf("%s(): xQueueReceive() tx failed\n", __func__);
-            xil_printf("%s(): critical error, can not recover\n", __func__);
-            vTaskDelay(5);
-            return;
+        if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, pdMS_TO_TICKS(100)) != pdPASS) {
+            continue;  // timeout: re-check xcp_eth_connected, then keep waiting
         }
         msg_txq_read++;
 
@@ -110,54 +118,48 @@ static void ocm_eth_adapter_tx(void *arg_p)
 
 
         if ((nwrote = write(sd, buf_xcp_tx, (len_xcp_tx + XCP_HEADER_LEN))) < 0) {
-            xil_printf("%s(): write() failed\n", __func__);
-            break;
+            break;  // socket closed/error; the accept loop owns close()
         }
     }
 
-    xil_printf("%s(): delete\n", __func__);
-    close(sd);
+    xil_printf("%s(): tx exit\n", __func__);
+    xcp_tx_task_running = 0;
     vTaskDelete(NULL);
 }
 
 static void ocm_eth_adapter_rx(void *arg_p)
 {
-    int sd = * (int *) arg_p;
+    int sd = (int)(intptr_t) arg_p;
     int n;
 
     xil_printf("%s() start\n", __func__);
     uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
-    xQueueReset(queue_xcp_tx);
-    xcp_eth_connected = 1;
-
     while (1) {
-        // Will block here until new data is available
-        if ((n = read(sd, buf_xcp_rx, BUF_SIZE_XCP_RX)) < 0) {
-            xil_printf("ERROR: could not read from xcp master socket\n");
-            break;
-        }
-
-        // No bytes means socket was closed by counterpart
+        // Blocks until the master sends data or closes the connection.
+        n = read(sd, buf_xcp_rx, BUF_SIZE_XCP_RX);
         if (n <= 0) {
-            xil_printf("%s(): n <= 0\n", __func__);
+            // n < 0 = socket error, n == 0 = orderly close by the master
             break;
         }
 
         if (xQueueSend(queue_xcp_rx, buf_xcp_rx, 0) != pdPASS) {
-            xil_printf("%s(): xQueueSend() tcp_rx failed\n", __func__);
-            xil_printf("%s(): critical error!\n", __func__);
-            vTaskDelay(5);
-            return;
+            // RX command queue full (ISR not draining fast enough): drop this
+            // frame but keep the connection alive. Do NOT return here without
+            // teardown -- that previously leaked the task and wedged reconnects.
+        } else {
+            msg_rxq_written++;
         }
-        msg_rxq_written++;
     }
 
+    // Connection teardown: signal the tx task to stop (xcp_eth_connected = 0)
+    // and drop the TX backlog. The accept loop closes the socket once both
+    // workers have exited, so the fd is never closed while still in use.
     xcp_eth_connected = 0;
     xQueueReset(queue_xcp_tx);
 
-    xil_printf("%s(): delete\n", __func__);
-    close(sd);
+    xil_printf("%s(): rx exit\n", __func__);
+    xcp_rx_task_running = 0;
     vTaskDelete(NULL);
 }
 
@@ -244,28 +246,38 @@ void ocm_eth_adapter_task(void *p)
     }
     lwip_listen(sock, 0);
 
-    /* The eth_tx task blocks at a queue and will not notice that the xcp
-     * master closed the TCP connection. This task will continue to run. */
-    int flag_xcp_eth_tx_created_once = 0;
     while (1) {
         int new_sd;
         int size = sizeof(remote);
 
         xil_printf("%s() waiting for xcp host connection on port %d\n", __func__, XCP_ETH_PORT);
-        if ((new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-
-            xil_printf("xcp master connected from\n");
-            extern void my_print_ip(ip_addr_t *ip);
-            my_print_ip((ip_addr_t*) &remote.sin_addr);
-
-            if (! flag_xcp_eth_tx_created_once) {
-                flag_xcp_eth_tx_created_once = 1;
-                sys_thread_new("xcp_eth_tx", ocm_eth_adapter_tx,
-                    (void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_TX);
-            }
-            sys_thread_new("xcp_eth_rx", ocm_eth_adapter_rx,
-                (void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_RX);
+        new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size);
+        if (new_sd < 0) {
+            continue;  // accept failed; retry
         }
+
+        xil_printf("xcp master connected from\n");
+        my_print_ip((ip_addr_t*) &remote.sin_addr);
+
+        // Start a fresh TX+RX worker pair for this connection. The socket fd is
+        // passed BY VALUE; the old code passed &new_sd, a dangling pointer to a
+        // loop-local. Recreating the TX task every connection fixes XCP not
+        // resuming after a reconnect (it was previously created only once).
+        xcp_eth_connected   = 1;
+        xcp_tx_task_running = 1;
+        xcp_rx_task_running = 1;
+        sys_thread_new("xcp_eth_tx", ocm_eth_adapter_tx,
+            (void*)(intptr_t)new_sd, STACKSIZE_XCP, PRIO_XCP_TX);
+        sys_thread_new("xcp_eth_rx", ocm_eth_adapter_rx,
+            (void*)(intptr_t)new_sd, STACKSIZE_XCP, PRIO_XCP_RX);
+
+        // Single XCP master at a time: wait for both workers of this connection
+        // to finish, then close the fd exactly once before accepting the next.
+        // This prevents fd reuse-while-held and two TX tasks draining the queue.
+        while (xcp_tx_task_running || xcp_rx_task_running) {
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+        close(new_sd);
     }
 
     xil_printf("%s(): delete\n", __func__);

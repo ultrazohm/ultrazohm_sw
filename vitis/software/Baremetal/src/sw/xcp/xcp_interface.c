@@ -12,6 +12,8 @@
 #include "XCP_Basic/XcpBasic.h"
 
 #include "RPU_APU_exchange.h"
+#include "../../include/isr.h"                     /* Interrupt_ISR_freq_factor, UZ_PWM_FREQUENCY */
+#include "../../uz/uz_SystemTime/uz_SystemTime.h"  /* uz_SystemTime_GetUptimeInUs */
 
 /*-------------------------------------------------------------------
  * Types
@@ -20,6 +22,15 @@
 /*-------------------------------------------------------------------
  * Configuration
  *-----------------------------------------------------------------*/
+/* xcp_irq() is called from ISR_Control, whose rate is the PWM frequency times
+ * the trigger factor (e.g. Interrupt_2L_max_min fires twice per PWM period).
+ * The XCP event dividers are derived from this so the named events (1MS,
+ * 10MS, ...) stay correct when the PWM frequency or the trigger choice
+ * changes; they used to be hardcoded for a 10 kHz base.
+ * Note: the ISR rate must be an integer multiple of 1 kHz, otherwise the
+ * named events drift. */
+#define XCP_ISR_FREQ_HZ		((uint32_t)((UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor)))
+#define XCP_CYCLES_PER_MS	(XCP_ISR_FREQ_HZ / 1000u)
 
 /*-------------------------------------------------------------------
  * Variables
@@ -45,7 +56,7 @@ static void xcp_interface_stim(void)
 	}
 }
 
-static void xcp_interface_events_10kHz(void)
+static void xcp_interface_events(void)
 {
 	/* TODO: Possible optimization: Make sure only 2 or 3 messages are written
 	 * to the OCM at a time to reduce IRQ run time in R5 and A53.
@@ -55,36 +66,41 @@ static void xcp_interface_events_10kHz(void)
 	 *  This will add jitter to the slower tasks.
 	 */
 
-    xcp_timestamp += 1; // = uz_SystemTime_GetUptimeInUs();
+    /* One timestamp per ISR cycle; all events of this cycle share it.
+     * Unit matches kXcpDaqTimestampUnit (DAQ_TIMESTAMP_UNIT_1US). */
+    xcp_timestamp = (uint32_t)uz_SystemTime_GetUptimeInUs();
 
     XcpEvent(XCP_EVENT_FAST);
 
-    static uint32_t cnt_div_10 = 0;
-    cnt_div_10++;
-    if (cnt_div_10 >= 10) {
-        cnt_div_10 = 0;
+    /* Named events derived from the actual ISR rate. Initial counter values
+     * stagger the slower events so they do not all fire in the same cycle
+     * (bounds the per-cycle OCM load). */
+    static uint32_t cnt_div_1ms = 0;
+    cnt_div_1ms++;
+    if (cnt_div_1ms >= (1u * XCP_CYCLES_PER_MS)) {
+        cnt_div_1ms = 0;
 
         XcpEvent(XCP_EVENT_1MS);
     }
 
-    static uint32_t cnt_div_100 = 1;
-    cnt_div_100++;
-    if (cnt_div_100 >= 100) {
-        cnt_div_100 = 0;
+    static uint32_t cnt_div_10ms = 1;
+    cnt_div_10ms++;
+    if (cnt_div_10ms >= (10u * XCP_CYCLES_PER_MS)) {
+        cnt_div_10ms = 0;
         XcpEvent(XCP_EVENT_10MS);
     }
 
-    static uint32_t cnt_div_1000 = 2;
-    cnt_div_1000++;
-    if (cnt_div_1000 >= 1000) {
-        cnt_div_1000 = 0;
+    static uint32_t cnt_div_100ms = 2;
+    cnt_div_100ms++;
+    if (cnt_div_100ms >= (100u * XCP_CYCLES_PER_MS)) {
+        cnt_div_100ms = 0;
         XcpEvent(XCP_EVENT_100MS);
     }
 
-    static uint32_t cnt_div_10000 = 3;
-    cnt_div_10000++;
-    if (cnt_div_10000 >= 10000) {
-        cnt_div_10000 = 0;
+    static uint32_t cnt_div_1s = 3;
+    cnt_div_1s++;
+    if (cnt_div_1s >= (1000u * XCP_CYCLES_PER_MS)) {
+        cnt_div_1s = 0;
         XcpEvent(XCP_EVENT_1S);
     }
 }
@@ -101,7 +117,7 @@ void xcp_interface_init(void)
 void xcp_irq(void)
 {
 	rpu_apu_exchange_prepare_write();
-    xcp_interface_events_10kHz();
+    xcp_interface_events();
 
 	rpu_apu_exchange_cache_invalidate_before_read();
 	rpu_apu_exchange_prepare_read();

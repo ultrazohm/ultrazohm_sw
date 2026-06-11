@@ -170,21 +170,32 @@ covers 512 B, so overflowed frames are read stale → garbage to CANape.
   bounded ISR time) — requires restructuring the `XcpSendCallBack()` call.
 - APU: bound `readOCM` to the region end (mirror of B4 for the read side).
 
-### R2. XCP event rates are 2× off since the 20 kHz PWM change
-`xcp_interface_events_10kHz()` derives the 1ms/10ms/100ms/1s events from
-fixed dividers (10/100/1000/10000) assuming a **10 kHz** base, but
-`xcp_irq()` runs at `UZ_PWM_FREQUENCY` = **20 kHz** since the feature merge.
-All named event periods are half their label (1MS fires every 0.5 ms, 1S
-every 0.5 s), and `XCP_EVENT_FAST` doubled its data volume (which is what
-overloaded the TX path originally).
-**Fix:** derive the dividers from `UZ_PWM_FREQUENCY` instead of hardcoding.
+### R2. XCP event dividers hardcoded to a 10 kHz base — **FIXED** (+ important correction)
+**Correction to the earlier analysis:** the ISR actually still runs at
+**10 kHz** — `UZ_PWM_FREQUENCY = 10.0e3f` configures the PWM IP, and the
+active trigger choice (`INTERRUPT_ISR_SOURCE_USER_CHOICE = 1` →
+`Interrupt_2L_min`, factor 1) fires once per PWM period. So the XCP event
+dividers were coincidentally correct. The "10→20 kHz" feature commit only
+regenerated the **Simulink FOC model** for a 50 µs step (`FOC_T_fast` =
+5e-5) — see the new finding below.
+**Fix anyway:** dividers now derived from
+`UZ_PWM_FREQUENCY × Interrupt_ISR_freq_factor`, so the named events stay
+correct under any future PWM/trigger change. Timestamp shares the cycle.
 
-### R3. DAQ timestamp unit inconsistent
-`xcp_timestamp += 1` per ISR cycle (50 µs at 20 kHz), but `xcp_cfg.h`
-declares `kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS`. If CANape uses
-slave timestamps, the time axis is off by orders of magnitude (works today
-only if CANape is set to PC arrival time). The commented hint
-`uz_SystemTime_GetUptimeInUs()` + unit `1US` would make it consistent.
+### ⚠ NEW finding (control domain, NOT fixed — needs owner decision):
+The FOC model (`FOC_FCF_data.c`) was regenerated for a **50 µs** step
+(20 kHz), but the PWM IP and the control ISR run at **10 kHz** (100 µs):
+all model-internal time constants/integrators execute 2× slower than
+designed. Either set `UZ_PWM_FREQUENCY = 20.0e3f` (and verify PWM hardware
++ CPU headroom) or regenerate the model for 100 µs.
+
+### R3. DAQ timestamp unit inconsistent — **FIXED**
+Was: `xcp_timestamp += 1` per ISR cycle while `xcp_cfg.h` declared
+`DAQ_TIMESTAMP_UNIT_10NS` — masters using slave timestamps got a time axis
+off by orders of magnitude.
+**Fix:** timestamp now sourced from `uz_SystemTime_GetUptimeInUs()` once per
+cycle (all events of a cycle share it) and declared as
+`DAQ_TIMESTAMP_UNIT_1US`, ticks-per-unit 1.
 
 ### T3. CANape "Ungültiger Zähler im XCP-Transport-Layer-Header" — **FIXED**
 Counter errors right at measurement start (expected 130/131/132, received
@@ -207,12 +218,15 @@ and both sides flush only the bytes actually written. APU-side IPI-ISR
 drain capped at 32 frames/IRQ to bound ISR time.
 **Both ELFs must always be rebuilt together after OCM layout changes.**
 
-### R4. Duplicated protocol file
-`RPU_APU_exchange.c/.h` exist as **two copies** (R5: `Baremetal/src/sw/xcp/`,
-APU: `FreeRTOS/sw/xcp/`) sharing the OCM layout via duplicated `#define`s.
-They have now diverged (B4 only on APU). Any change to the region
-addresses/sizes must be made in both; longer-term the file should be shared
-like `APU_RPU_shared.h`.
+### R4. Duplicated protocol file — **FIXED**
+Was: `RPU_APU_exchange.c/.h` existed as two copies (R5 + APU) that had
+already diverged once.
+**Fix:** single-sourced in `vitis/software/shared/` (`RPU_APU_exchange.h` +
+`RPU_APU_exchange_impl.c`), resolved via the shared include path both
+projects already use for `APU_RPU_shared.h`. Each app compiles the
+implementation through a thin local stub
+(`.../sw/xcp/RPU_APU_exchange.c` → `#include "RPU_APU_exchange_impl.c"`);
+the per-side behaviour is selected by the BSP's `ARMR5` define.
 
 ### Headroom note
 The 512 B/cycle window ≈ 6–7 DTO frames ≈ ~7 MB/s theoretical at 20 kHz —

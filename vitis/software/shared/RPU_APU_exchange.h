@@ -4,9 +4,10 @@
  *
  * Data exchange between RPU and APU
  *
- * NOTE: This file intentionally exists twice -- Baremetal/src/sw/xcp/ (R5)
- * and FreeRTOS/sw/xcp/ (A53). Both copies MUST stay identical: the OCM
- * layout in the .c file is the shared protocol between the two processors.
+ * Single shared header for both processors (R5 Baremetal and A53 FreeRTOS),
+ * resolved via the vitis/software/shared include path. The implementation
+ * lives in RPU_APU_exchange_impl.c (same directory), compiled once per
+ * application through a thin stub.
  */
 
 #ifndef RPU_APU_EXCHANGE_H_

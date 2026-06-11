@@ -219,7 +219,10 @@ typedef int32_t		vsint32;
    *   #define kXcpDaqTimestampTicksPerUnit 4096
    */
 #define kXcpDaqTimestampSize DAQ_TIMESTAMP_DWORD	//WORD == uint16, DWORD == uint32
-#define kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS
+/* Timestamp source is uz_SystemTime_GetUptimeInUs() (cf. xcp_interface.c),
+ * i.e. 1 tick = 1 microsecond. Was declared as 10NS while the code counted
+ * ISR cycles -- masters using slave timestamps got a wrong time axis. */
+#define kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_1US
 #define kXcpDaqTimestampTicksPerUnit 1
 
 //  #define ApplXcpGetTimestamp()     xcp_interface_getTimestamp()

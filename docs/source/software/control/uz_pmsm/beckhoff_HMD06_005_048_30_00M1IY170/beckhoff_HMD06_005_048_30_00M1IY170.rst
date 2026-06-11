@@ -4,6 +4,9 @@ beckhoff HMD06_005_048_30
 
 The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be plotted directly with ``pyuzlib``.
 
+Matplotlib
+==========
+
 
 .. plot::
   :caption: Flux map
@@ -11,12 +14,52 @@ The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be
    import pyuzlib
    pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
 
+Plotly
+======
+
 .. plotly::
   :iframe-width: 100%
   :caption: Flux map Plotly
 
    import pyuzlib
    pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+
+Tikz
+====
+
+.. .. tikz:: Flux map rendered from ``measured_psi_dq_averaged_800_rpm/flux_map.csv``.
+..   :align: center
+
+..     \usepgfplotslibrary{groupplots}
+..    \pgfplotstableread[col sep=comma]{software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv}\fluxmap
+
+..    \begin{tikzpicture}
+..        \begin{groupplot}[
+..            group style={group size=2 by 1, horizontal sep=2cm},
+..            view={45}{45},
+..            colormap/viridis,
+..            grid=both,
+..            width=0.45\columnwidth,
+..            height=6cm
+..        ]
+..        \nextgroupplot[
+..            xlabel={$i_d$ in A},
+..            ylabel={$i_q$ in A},
+..            zlabel={$\psi_d$ in mVs}
+..        ]
+..        \addplot3[surf, shader=interp, colormap/viridis, mesh/rows=11, mark=*]
+..            table[x=i_d_A, y=i_q_A, z expr=\thisrow{psi_d_Vs}*1000] \fluxmap;
+
+..        \nextgroupplot[
+..            xlabel={$i_d$ in A},
+..            ylabel={$i_q$ in A},
+..            zlabel={$\psi_q$ in mVs}
+..        ]
+..        \addplot3[surf, shader=interp, colormap/viridis, mesh/rows=11, mark=*]
+..            table[x=i_d_A, y=i_q_A, z expr=\thisrow{psi_q_Vs}*1000] \fluxmap;
+..        \end{groupplot}
+..    \end{tikzpicture}
+
 
 Coefficients
 ============

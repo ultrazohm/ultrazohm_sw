@@ -10,6 +10,7 @@ def test_pyuzlib_has_version():
 def test_pyuzlib_exposes_docs_pmsm_helpers():
     assert pyuzlib.docs.pmsm.plot_flux_map
     assert pyuzlib.docs.pmsm.plot_flux_map_plotly
+    assert pyuzlib.docs.pmsm.plot_linear_flux_model_comparison
     assert pyuzlib.docs.pmsm.plot_operation_area
     assert pyuzlib.docs.pmsm.plot_max_torque_curve
 
@@ -99,6 +100,22 @@ def test_pmsm_object_loads_flux_map_and_fits_linear_model():
     assert abs(fit.loc[0, "L_qq"] - 0.003) < 1e-12
 
 
+def test_pmsm_object_compares_linear_model_to_flux_map_samples():
+    motor = PMSM()
+    motor.load_flux_map_csv(
+        "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
+    )
+    comparison = motor.compare_linear_flux_model()
+
+    assert "linear_no_saturation_comparison" in motor.results
+    assert "psi_d_linear_Vs" in comparison
+    assert "psi_q_linear_Vs" in comparison
+    assert "psi_d_error_Vs" in comparison
+    assert "psi_q_error_Vs" in comparison
+    assert comparison["psi_d_error_Vs"].abs().max() < 1e-12
+    assert comparison["psi_q_error_Vs"].abs().max() < 1e-12
+
+
 def test_docs_helper_uses_new_linear_fit_implementation():
     fit = pyuzlib.docs.pmsm.L_dd_L_qq_from_flux_map_assuming_no_saturation(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
@@ -155,4 +172,14 @@ def test_docs_operation_area_helpers_smoke():
         machine_parameters_csv,
         v_dc_V=24.0,
         speeds_rpm=np.array([0.0, 500.0]),
+    )
+
+
+def test_docs_linear_flux_model_comparison_helper_smoke():
+    import matplotlib
+
+    matplotlib.use("Agg")
+    pyuzlib.docs.pmsm.plot_linear_flux_model_comparison(
+        "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv",
+        grid_points=5,
     )

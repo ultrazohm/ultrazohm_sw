@@ -64,6 +64,16 @@ Tikz
 Coefficients
 ============
 
+.. plot::
+  :caption: Linear flux model compared with measured flux-map data
+
+   import pyuzlib
+
+   pyuzlib.docs.pmsm.plot_linear_flux_model_comparison(
+       'docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv',
+       grid_points=20,
+   )
+
 
 Operating area
 ==============

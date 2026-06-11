@@ -78,6 +78,115 @@ def plot_flux_map_plotly(flux_map: FluxMap) -> go.Figure:
     return fig
 
 
+def plot_linear_flux_model_comparison(
+    flux_map: FluxMap,
+    *,
+    grid_points: int = 20,
+    fit_name: str = "Linear Fit",
+) -> None:
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+
+    from .fitting import (
+        compare_linear_flux_model_assuming_no_saturation,
+        fit_linear_flux_model_assuming_no_saturation,
+        predict_linear_flux_model_assuming_no_saturation,
+    )
+
+    data = compare_linear_flux_model_assuming_no_saturation(
+        flux_map,
+        fit_name=fit_name,
+    )
+    coefficients = fit_linear_flux_model_assuming_no_saturation(
+        flux_map,
+        fit_name=fit_name,
+    )
+
+    i_d_grid, i_q_grid = np.meshgrid(
+        np.linspace(data["i_d_A"].min(), data["i_d_A"].max(), grid_points),
+        np.linspace(data["i_q_A"].min(), data["i_q_A"].max(), grid_points),
+    )
+    psi_d_linear, psi_q_linear = predict_linear_flux_model_assuming_no_saturation(
+        coefficients,
+        i_d_grid,
+        i_q_grid,
+    )
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(12, 5),
+        subplot_kw={"projection": "3d"},
+        constrained_layout=True,
+    )
+
+    plot_specs = (
+        (
+            axes[0],
+            "psi_d_Vs",
+            psi_d_linear,
+            r"$\psi_d$: measured samples and linear fit",
+            float(coefficients.loc[0, "r2_d"]),
+            135,
+        ),
+        (
+            axes[1],
+            "psi_q_Vs",
+            psi_q_linear,
+            r"$\psi_q$: measured samples and linear fit",
+            float(coefficients.loc[0, "r2_q"]),
+            245,
+        ),
+    )
+    for ax, psi_column, psi_linear, title, r2_score, azimuth in plot_specs:
+        ax.view_init(elev=30, azim=azimuth)
+        scatter = ax.scatter(
+            data["i_d_A"],
+            data["i_q_A"],
+            data[psi_column],
+            c=data[psi_column],
+            cmap="viridis",
+            depthshade=False,
+        )
+        ax.plot_surface(
+            i_d_grid,
+            i_q_grid,
+            psi_linear,
+            alpha=0.45,
+            color="red",
+            rstride=1,
+            cstride=1,
+        )
+        ax.set_title(f"{title}\nR2 = {r2_score:.5f}")
+        ax.set_xlabel("i_d / A")
+        ax.set_ylabel("i_q / A")
+        ax.set_zlabel("Flux linkage / Vs")
+        fig.colorbar(scatter, ax=ax, label="Measured flux linkage / Vs", shrink=0.7)
+
+    axes[0].legend(
+        handles=[
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="w",
+                markerfacecolor="black",
+                label="Measured",
+            ),
+            Patch(facecolor="red", alpha=0.45, label="Linear fit"),
+        ],
+        loc="upper left",
+    )
+    title = (
+        flux_map.source_path.parent.name
+        if flux_map.source_path is not None
+        else flux_map.name
+    )
+    fig.suptitle(f"Linear flux-model comparison: {title}")
+
+
 def plot_operation_area(
     operation_area: OperationArea,
     *,

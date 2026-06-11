@@ -28,6 +28,22 @@ def plot_flux_map_plotly(csv_path: str | Path) -> go.Figure:
     return _plot_flux_map_plotly(FluxMap.from_csv(csv_path))
 
 
+def plot_linear_flux_model_comparison(
+    csv_path: str | Path,
+    *,
+    grid_points: int = 20,
+    fit_name: str = "Linear Fit",
+) -> None:
+    import pyuzlib
+
+    motor = pyuzlib.pmsm.PMSM()
+    motor.load_flux_map_csv(resolve_csv_path(csv_path))
+    motor.plot_linear_flux_model_comparison(
+        grid_points=grid_points,
+        fit_name=fit_name,
+    )
+
+
 def plot_operation_area(
     machine_parameters_csv_path: str | Path,
     *,

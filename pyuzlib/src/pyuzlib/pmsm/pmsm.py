@@ -5,7 +5,10 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
-from .fitting import fit_linear_flux_model_assuming_no_saturation
+from .fitting import (
+    compare_linear_flux_model_assuming_no_saturation,
+    fit_linear_flux_model_assuming_no_saturation,
+)
 from .flux_map import FluxMap
 from .operation_area import Modulation, OperationArea, calculate_operation_area
 from .parameters import PMSMParameters
@@ -74,6 +77,20 @@ class PMSM:
         self.results[name] = result
         return result
 
+    def compare_linear_flux_model(
+        self,
+        *,
+        flux_map: str = "default",
+        name: str = "linear_no_saturation_comparison",
+        fit_name: str = "Linear Fit",
+    ) -> pd.DataFrame:
+        result = compare_linear_flux_model_assuming_no_saturation(
+            self.get_flux_map(flux_map),
+            fit_name=fit_name,
+        )
+        self.results[name] = result
+        return result
+
     def plot_flux_map(self, flux_map: str = "default") -> None:
         from .plotting import plot_flux_map
 
@@ -83,6 +100,21 @@ class PMSM:
         from .plotting import plot_flux_map_plotly
 
         return plot_flux_map_plotly(self.get_flux_map(flux_map))
+
+    def plot_linear_flux_model_comparison(
+        self,
+        *,
+        flux_map: str = "default",
+        grid_points: int = 20,
+        fit_name: str = "Linear Fit",
+    ) -> None:
+        from .plotting import plot_linear_flux_model_comparison
+
+        plot_linear_flux_model_comparison(
+            self.get_flux_map(flux_map),
+            grid_points=grid_points,
+            fit_name=fit_name,
+        )
 
     def calculate_operation_area(
         self,

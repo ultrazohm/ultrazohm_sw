@@ -131,13 +131,26 @@ struct uz_pmsm_control_configuration_t pmsm_controller_config = {
 };
 
 struct uz_PMSM_t machine_config = {
+    .machine_id = 0U,
     .R_ph_Ohm = 0.51f,
     .Ld_Henry = 0.002f,
     .Lq_Henry = 0.002f,
     .Psi_PM_Vs = 0.042f,
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.000108f,
-    .I_max_Ampere = 12.0f};
+    .I_max_Ampere = 12.0f,
+    .I_rated_Ampere = 8.0f,
+    .Torque_rated_Nm = 1.2f,
+    .Torque_max_Nm = 2.0f,
+    .Torque_min_Nm = -2.0f,
+    .speed_rated_rpm = 1000.0f,
+    .speed_max_rpm = 1500.0f,
+    .speed_min_rpm = -1500.0f,
+    .V_dc_nominal_V = 24.0f,
+    .I_d_max_A = 10.0f,
+    .I_d_min_A = -10.0f,
+    .I_q_max_A = 10.0f,
+    .I_q_min_A = -10.0f};
 
 void test_uz_pmsm_control_call_init(void)
 {

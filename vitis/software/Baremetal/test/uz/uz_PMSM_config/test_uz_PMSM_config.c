@@ -8,13 +8,27 @@ uz_PMSM_t config = {0};
 uz_PMSM_flux_fitting_parameter_config_t fitting_config = {0};
 void setUp(void)
 {
-    config.R_ph_Ohm = 0.08f;
-    config.Ld_Henry = 0.00027f;
-    config.Lq_Henry = 0.00027f;
-    config.Psi_PM_Vs = 0.0082f;
-    config.polePairs = 4.0f;
-    config.J_kg_m_squared = 0.00001773f;
-    config.I_max_Ampere = 20.0f;
+    config = (uz_PMSM_t){
+        .machine_id = 0U,
+        .R_ph_Ohm = 0.08f,
+        .Ld_Henry = 0.00027f,
+        .Lq_Henry = 0.00027f,
+        .Psi_PM_Vs = 0.0082f,
+        .polePairs = 4.0f,
+        .J_kg_m_squared = 0.00001773f,
+        .I_max_Ampere = 20.0f,
+        .I_rated_Ampere = 10.0f,
+        .Torque_rated_Nm = 1.0f,
+        .Torque_max_Nm = 2.0f,
+        .Torque_min_Nm = -2.0f,
+        .speed_rated_rpm = 1000.0f,
+        .speed_max_rpm = 2000.0f,
+        .speed_min_rpm = -2000.0f,
+        .V_dc_nominal_V = 48.0f,
+        .I_d_max_A = 10.0f,
+        .I_d_min_A = -10.0f,
+        .I_q_max_A = 10.0f,
+        .I_q_min_A = -10.0f};
     fitting_config.ad1_parameter = 0.026620095524092f;
     fitting_config.ad2_parameter = 0.047133812840564f;
     fitting_config.ad3_parameter = -27.868596691410815f;
@@ -117,8 +131,21 @@ void test_uz_PMSM_config_assert_F1G1_parameter(void){
 }
 
 void test_uz_PMSM_config_assert_F2G2_parameter(void){
-    fitting_config.F1G1_parameter = 0.0f;
+    fitting_config.F2G2_parameter = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_fitting_parameter_config_assert(fitting_config));
+}
+
+void test_uz_PMSM_config_assert_fails_for_missing_new_fields(void)
+{
+    struct uz_PMSM_t config_old = {
+        .R_ph_Ohm = 0.51f,
+        .Ld_Henry = 0.002f,
+        .Lq_Henry = 0.002f,
+        .Psi_PM_Vs = 0.042f,
+        .polePairs = 4.0f,
+        .J_kg_m_squared = 0.000108f,
+        .I_max_Ampere = 12.0f};
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config_old));
 }
 
 #endif // TEST

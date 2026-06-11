@@ -63,10 +63,12 @@
   :test:
     - *common_defines
     - TEST
+    - CEXCEPTION_USE_CONFIG_FILE
     - CMOCK_MEM_DYNAMIC
   :preprocess:
     - *common_defines
     - TEST
+    - CEXCEPTION_USE_CONFIG_FILE
 
 :cmock:
   :mock_prefix: mock_

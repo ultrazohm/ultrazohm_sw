@@ -65,7 +65,7 @@ up to **10 ms** avoidable latency per wakeup).
 **Fix:** thread a `BaseType_t woken` through `ocm_eth_adapter_irq()` and
 `portYIELD_FROM_ISR()` it at the end of the IPI ISR.
 
-### B3. RX assumes 1 `read()` = 1 XCP command — framing bug
+### B3. RX assumes 1 `read()` = 1 XCP command — framing bug — **FIXED**
 **Where:** `ocm_eth_adapter_rx()`
 **Problem:** TCP is a byte stream. During connection setup CANape sends
 command bursts (`SET_DAQ_PTR`/`WRITE_DAQ` flurries) that can coalesce into
@@ -153,7 +153,7 @@ Audited after the disconnect fixes: `Baremetal/src/sw/xcp/xcp_interface.c`,
 `XCP_Basic/xcp_cfg.h`, R5 copy of `RPU_APU_exchange.c`, call site in
 `Baremetal/src/sw/isr.c:198` (`xcp_irq()` inside `ISR_Control`).
 
-### R1. Unbounded DAQ burst into the 512-byte XCP_OUT window — **highest risk**
+### R1. Unbounded DAQ burst into the 512-byte XCP_OUT window — **FIXED**
 `XCP_DISABLE_SEND_QUEUE` is set, so XcpBasic sends *direct*: every DAQ
 sample of every event goes through `ApplXcpSend` → `rpu_apu_exchange_writeOCM`
 **in the same ISR cycle**. The R5 copy of `writeOCM` has **no bounds check**
@@ -185,6 +185,27 @@ declares `kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS`. If CANape uses
 slave timestamps, the time axis is off by orders of magnitude (works today
 only if CANape is set to PC arrival time). The commented hint
 `uz_SystemTime_GetUptimeInUs()` + unit `1US` would make it consistent.
+
+### T3. CANape "Ungültiger Zähler im XCP-Transport-Layer-Header" — **FIXED**
+Counter errors right at measurement start (expected 130/131/132, received
+131/130/132 = reordered). Root cause: the transport CTR was assigned on the
+**R5 at production time** (`ApplXcpSend`), but the T1 fix deliberately
+reorders frames (CTO responses overtake queued DAQ frames), and every
+intentional drop (queue overflow, purge, OCM bounds) creates CTR gaps.
+**Fix:** the A53 — the actual TCP transport endpoint — now owns the CTR and
+stamps it in `tx_batch_append()` at transmission time, in transmission
+order (reset per connection). Reordering and drops are no longer visible at
+the transport layer; dropped DAQ frames appear only as measurement gaps.
+
+### Throughput: XCP_OUT window 512 B → 7680 B — **DONE**
+`XCP_OUT` grown to 7680 B (~100 DTO frames/cycle, 15× the old budget; end
+address 0xFFFFFE00 deliberately below the 32-bit wrap on the R5). The last
+256 B are a **CTO reserve** (R5 write side only): a DAQ burst can never
+squeeze out a command response. Cache cost handled: the A53 invalidates
+lazily per message in `readOCM` (instead of the whole window every IPI),
+and both sides flush only the bytes actually written. APU-side IPI-ISR
+drain capped at 32 frames/IRQ to bound ISR time.
+**Both ELFs must always be rebuilt together after OCM layout changes.**
 
 ### R4. Duplicated protocol file
 `RPU_APU_exchange.c/.h` exist as **two copies** (R5: `Baremetal/src/sw/xcp/`,

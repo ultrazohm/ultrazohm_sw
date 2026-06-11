@@ -67,6 +67,17 @@
  * 0xFC..0xFF = CTO (SERV/EV/ERR/RES); 0x00..0xFB = DAQ DTO (ODT number). */
 #define XCP_PID_CTO_MIN         0xFC
 
+/* TCP RX staging buffer for reassembling length-prefixed commands from the
+ * byte stream: commands may arrive split or coalesced (TCP is a stream, not
+ * a datagram service). */
+#define XCP_RX_STREAM_BUF_SIZE  512
+
+/* Bound the IPI-ISR time: maximum frames moved OCM -> queues per interrupt.
+ * Excess frames of that cycle are dropped -- sustained throughput is governed
+ * by the TCP drain rate anyway, and the R5 rewrites the OCM window in the
+ * next cycle. */
+#define XCP_TX_DRAIN_MAX_PER_IRQ 32
+
 #define XCP_ETH_PORT            (uint16_t) 12340
 
 /*-------------------------------------------------------------------
@@ -111,8 +122,17 @@ static void my_print_ip(ip_addr_t *ip)
             ip4_addr3(ip), ip4_addr4(ip));
 }
 
-/* Append one length-prefixed frame to the batch buffer. Returns the new fill
- * level (unchanged if the frame's length field is corrupt). */
+/* XCP transport-layer counter (CTR, header bytes [2..3]). The A53 is the TCP
+ * transport endpoint, so it owns this counter: it is stamped here at
+ * transmission time, in transmission order. The R5 also writes a counter at
+ * production time, but that one becomes wrong whenever frames are reordered
+ * (CTO responses overtake queued DAQ frames) or dropped (overflow, purge) --
+ * observed as CANape "Ungueltiger Zaehler im XCP-Transport-Layer-Header". */
+static uint16_t xcp_eth_tx_ctr = 0;
+
+/* Append one length-prefixed frame to the batch buffer and stamp the
+ * transport counter. Returns the new fill level (unchanged if the frame's
+ * length field is corrupt). */
 static uint32_t tx_batch_append(uint8_t *batch_buf, uint32_t batch_fill, const uint8_t *frame)
 {
     uint16_t len_xcp_tx = (uint16_t)((frame[0] << 0) | (frame[1] << 8));
@@ -123,6 +143,12 @@ static uint32_t tx_batch_append(uint8_t *batch_buf, uint32_t batch_fill, const u
     }
 
     memcpy(&batch_buf[batch_fill], frame, frame_total);
+
+    // Overwrite the R5-assigned counter with the transmission-order counter.
+    batch_buf[batch_fill + 2] = (uint8_t)(xcp_eth_tx_ctr >> 0);
+    batch_buf[batch_fill + 3] = (uint8_t)(xcp_eth_tx_ctr >> 8);
+    xcp_eth_tx_ctr++;
+
     msg_txq_read++;
     return batch_fill + frame_total;
 }
@@ -137,6 +163,7 @@ static void ocm_eth_adapter_tx(void *arg_p)
     xQueueReset(queue_xcp_tx);
     xQueueReset(queue_xcp_tx_cto);
     xcp_txq_purge_requested = 0;
+    xcp_eth_tx_ctr = 0;  // fresh transport counter sequence per connection
 
     // Run until the connection is torn down (rx clears xcp_eth_connected) or a
     // socket write fails. The receive timeout lets the task notice a disconnect
@@ -203,22 +230,60 @@ static void ocm_eth_adapter_rx(void *arg_p)
     int n;
 
     xil_printf("%s() start\n", __func__);
-    uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
-    while (1) {
+    /* TCP is a byte stream, not a datagram service: commands may arrive
+     * split across reads or coalesced into one segment (CANape sends command
+     * bursts during DAQ setup). Collect bytes in a staging buffer and forward
+     * only complete length-prefixed messages; the previous code assumed
+     * 1 read() == 1 command and lost or corrupted coalesced/split commands. */
+    uint8_t  stream_buf[XCP_RX_STREAM_BUF_SIZE];
+    uint32_t stream_fill = 0;
+    int      stream_corrupt = 0;
+
+    while (!stream_corrupt) {
         // Blocks until the master sends data or closes the connection.
-        n = read(sd, buf_xcp_rx, BUF_SIZE_XCP_RX);
+        n = read(sd, &stream_buf[stream_fill], sizeof(stream_buf) - stream_fill);
         if (n <= 0) {
             // n < 0 = socket error, n == 0 = orderly close by the master
             break;
         }
+        stream_fill += (uint32_t)n;
 
-        if (xQueueSend(queue_xcp_rx, buf_xcp_rx, 0) != pdPASS) {
-            // RX command queue full (ISR not draining fast enough): drop this
-            // frame but keep the connection alive. Do NOT return here without
-            // teardown -- that previously leaked the task and wedged reconnects.
-        } else {
-            msg_rxq_written++;
+        // Extract every complete message currently in the buffer.
+        uint32_t off = 0;
+        while ((stream_fill - off) >= XCP_HEADER_LEN) {
+            uint16_t len_xcp_rx = (uint16_t)(stream_buf[off] | (stream_buf[off + 1] << 8));
+            uint32_t msg_total = (uint32_t)len_xcp_rx + XCP_HEADER_LEN;
+
+            if (len_xcp_rx == 0 || msg_total > BUF_SIZE_XCP_RX) {
+                // Desynchronized/corrupt stream: drop the connection; the
+                // master reconnects cleanly. Resynchronizing a corrupt
+                // length-prefixed stream is guesswork.
+                xil_printf("%s(): corrupt transport header, closing\n", __func__);
+                stream_corrupt = 1;
+                break;
+            }
+            if ((stream_fill - off) < msg_total) {
+                break;  // partial message: wait for the remaining bytes
+            }
+
+            // Forward one complete message (queue items are fixed-size).
+            uint8_t msg[BUF_SIZE_XCP_RX];
+            memcpy(msg, &stream_buf[off], msg_total);
+            memset(&msg[msg_total], 0, sizeof(msg) - msg_total);
+            if (xQueueSend(queue_xcp_rx, msg, 0) != pdPASS) {
+                // RX command queue full (ISR not draining fast enough): drop
+                // this command but keep the connection alive.
+            } else {
+                msg_rxq_written++;
+            }
+            off += msg_total;
+        }
+
+        // Keep any incomplete tail for the next read().
+        if (off > 0) {
+            memmove(stream_buf, &stream_buf[off], stream_fill - off);
+            stream_fill -= off;
         }
     }
 
@@ -256,13 +321,25 @@ static BaseType_t read_rxQueue_write_OCM(void)
 
 		// Peek first: if the message does not fit into the OCM region we leave
 		// it queued for the next IPI cycle instead of losing it. XCP_IN is only
-		// 256 bytes (~3 commands), so command bursts must be drained over
-		// several cycles rather than overrunning the region.
+		// 256 bytes, so command bursts are drained over several cycles rather
+		// than overrunning the region.
 		if(xQueuePeekFromISR(queue_xcp_rx, buf_xcp_rx) != pdPASS) {
 			break;
 		}
 
-		if (! rpu_apu_exchange_writeOCM(BUF_SIZE_XCP_RX, buf_xcp_rx)) {
+		// Write the actual message size (header + payload), not the fixed
+		// buffer size: commands are small, this fits more per cycle and stops
+		// writing stale tail bytes into the OCM.
+		uint16_t len_xcp_rx = (uint16_t)(buf_xcp_rx[0] | (buf_xcp_rx[1] << 8));
+		uint32_t msg_total = (uint32_t)len_xcp_rx + XCP_HEADER_LEN;
+		if (msg_total > BUF_SIZE_XCP_RX) {
+			// Corrupt entry (should be impossible, rx task validates framing):
+			// consume and drop it.
+			(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
+			continue;
+		}
+
+		if (! rpu_apu_exchange_writeOCM((uint8_t)msg_total, buf_xcp_rx)) {
 			break;	// OCM write region full; retry remaining commands next cycle
 		}
 
@@ -277,9 +354,18 @@ static BaseType_t read_rxQueue_write_OCM(void)
 static BaseType_t read_OCM_write_txQueue(void)
 {
 	BaseType_t task_woken = pdFALSE;
+	uint32_t drained = 0;
 
 	while (1) {
 		if (xcp_eth_connected == 0) {
+			break;
+		}
+
+		// Bound the ISR time now that the OCM window holds up to ~100 frames.
+		// Frames beyond the cap are lost for this cycle (the R5 rewrites the
+		// window next cycle) -- under sustained overload the TCP drain rate is
+		// the limiter anyway, and the cap is far above it.
+		if (drained >= XCP_TX_DRAIN_MAX_PER_IRQ) {
 			break;
 		}
 
@@ -290,6 +376,7 @@ static BaseType_t read_OCM_write_txQueue(void)
 			// Could not read a message from OCM
 			break;
 		}
+		drained++;
 
 		// Classify by XCP PID (first payload byte after the 4-byte transport
 		// header): CTO packets (command responses etc.) take the dedicated

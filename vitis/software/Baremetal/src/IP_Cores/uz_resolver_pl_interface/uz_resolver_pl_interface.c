@@ -75,4 +75,11 @@ void uz_resolver_pl_interface_reset(uz_resolver_pl_interface_t *self) {
     uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, true);
     uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, false);    
 }
+
+float uz_resolver_pl_interface_get_pos_el_2pi(uz_resolver_pl_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return(uz_resolver_pl_interface_hw_read_pos_el_2pi(self->config.base_address));
+}
+
 #endif

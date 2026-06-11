@@ -61,6 +61,7 @@
 #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 
 #include "include/resolver.h"
+#include "include/uz_resolver_pl_interface_init.h"
 #include "xparameters.h"
 
 #include "sw/control.h"

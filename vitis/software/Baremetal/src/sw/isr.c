@@ -34,6 +34,8 @@
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hw.h"
 #include "../IP_Cores/uz_inverter_status/uz_inverter_status_hwAddresses.h"
 #include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+#include "../IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "misc_IO.h"
 
 
 // Initialize the Interrupt structure
@@ -49,6 +51,8 @@ uint8_t Control_timer_100ms;
 
 uint32_t inverter_status_RDY[3] = {0};
 uint32_t inverter_status_FLT[3] = {0};
+
+uint32_t IN_AXI_GPIO_MISC_bit_word;
 
 // ~~~~~~~~~~~
 extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
@@ -83,21 +87,31 @@ void ISR_Control(void *data)
 
     /* get inverter status */
     inverter_status_FLT[0] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
-    inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+    inverter_status_FLT[1] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR);
+    inverter_status_FLT[2] = uz_inverter_status_hw_get_FLT(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR);
+//    inverter_status_RDY[0] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_0_BASEADDR);
+//    inverter_status_RDY[1] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_1_BASEADDR);
+//    inverter_status_RDY[2] = uz_inverter_status_hw_get_RDY(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR);
 
     ctrl_data.bus_BSW_FCF.Gate_Driver_Status_FLT = (inverter_status_FLT[2] << 12) | (inverter_status_FLT[1] << 6) | inverter_status_FLT[0];
     ctrl_data.bus_BSW_FCF.Gate_Driver_Status_RDY = (inverter_status_RDY[2] << 12) | (inverter_status_RDY[1] << 6) | inverter_status_RDY[0];
 
-    // read position from resolver IP Core
-    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+    /* get misc status signals (e.g. Pyro Fuse) */
+    IN_AXI_GPIO_MISC_bit_word = uz_get_misc_inputs();
+	ctrl_data.bus_BSW_FCF.PyroFuse_State = (IN_AXI_GPIO_MISC_bit_word >> 1) & 0x01;
 
-    // get intermediate circuit voltage measurement value
+    /* read position from resolver IP Core */
+    //ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_left);
+//    ctrl_data.bus_BSW_FCF.phi = uz_resolverIP_readElectricalPosition(Global_Data.objects.resolver_right);
+    ctrl_data.bus_BSW_FCF.phi = uz_resolver_pl_interface_get_pos_el_2pi(Global_Data.objects.resolver_pl_D5_Ch1);
+
+    /* get intermediate circuit voltage measurement value */
 //    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4*13.97; // µInverter
-    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4;
-//	Global_Data.aa.A1.me.ADC_B8;
-//	Global_Data.aa.A2.me.ADC_A4;
+//    ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_A4;		// Sys1
+	ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A1.me.ADC_B8;		// Sys2
+//	  ctrl_data.bus_BSW_FCF.ADC_U_DC = Global_Data.aa.A2.me.ADC_A4;		// Sys3
 
-    // get phase currents measurement values
+    /* get phase currents measurement values */
 //    ctrl_data.bus_BSW_FCF.ADC_I_ph[0] = (Global_Data.aa.A1.me.ADC_A1-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
 //    ctrl_data.bus_BSW_FCF.ADC_I_ph[1] = (Global_Data.aa.A1.me.ADC_A2-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
 //    ctrl_data.bus_BSW_FCF.ADC_I_ph[2] = (Global_Data.aa.A1.me.ADC_A3-2.5)*40; // CASR25-NP (µInverter) --> offset = 2.5 V, sensitivity = 40 A/V
@@ -113,15 +127,17 @@ void ISR_Control(void *data)
 	ctrl_data.bus_BSW_FCF.ADC_I_ph[7] = Global_Data.aa.A2.me.ADC_A2;
 	ctrl_data.bus_BSW_FCF.ADC_I_ph[8] = Global_Data.aa.A2.me.ADC_A3;
 
+	/* get status of "external stop button" */
+	ctrl_data.bus_BSW_FCF.External_Stop = uz_GetExternalStop();
 
-	// write inputs to fast control function of simulink model
+	/* write inputs to fast control function of simulink model */
 	FOC_FCF_MPtr->inputs->bus_BSW_FCF = ctrl_data.bus_BSW_FCF;
 	FOC_FCF_MPtr->inputs->bus_SCF     = ctrl_data.bus_SCF;
 	FOC_FCF_MPtr->inputs->bus_SMF     = ctrl_data.bus_SMF;
 
 	FOC_FCF_step(FOC_FCF_MPtr);
 
-	// write simulink outputs to control data exchange structure
+	/* write simulink outputs to control data exchange structure */
 	ctrl_data.bus_FCF = FOC_FCF_MPtr->outputs->bus_FCF;
 
 	Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.bus_FCF.DutyCycles[0];
@@ -134,12 +150,12 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge8DutyCycle = ctrl_data.bus_FCF.DutyCycles[7];
 	Global_Data.rasv.halfBridge9DutyCycle = ctrl_data.bus_FCF.DutyCycles[8];
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-
-    }
+//    platform_state_t current_state=ultrazohm_state_machine_get_state();
+//    if (current_state==control_state)
+//    {
+//        // Start: Control algorithm - only if ultrazohm is in control state
+//
+//    }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -167,16 +183,16 @@ void ISR_Control(void *data)
 		uz_inverter_status_hw_set_GateDriverEnable(XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_UZ_INVERTER_STATUS_IP_2_BASEADDR, 0, 0);
 
 
-    /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */
-    if(pmsm_model_reset)
-      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions
-
-    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
-    //uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
-    in_voltages = uz_pmsm_model9ph_dq_get_input_voltages(pmsm);		// read input voltages to PMSM model set by dq-trafo FPGA model
-    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
-    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
-    /* ~~~~~~~~~~~~~~ End of MOTOR MODEL ~~~~~~~~~~~~~~ */
+//    /* ~~~~~~~~~~~~~~ MOTOR MODEL ~~~~~~~~~~~~~~~~~~~~~ */
+//    if(pmsm_model_reset)
+//      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions
+//
+//    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+//    //uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
+//    in_voltages = uz_pmsm_model9ph_dq_get_input_voltages(pmsm);		// read input voltages to PMSM model set by dq-trafo FPGA model
+//    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
+//    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
+//    /* ~~~~~~~~~~~~~~ End of MOTOR MODEL ~~~~~~~~~~~~~~ */
 
 
 	xcp_irq();

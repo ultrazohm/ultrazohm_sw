@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 // union allows to access the values as array and individual variables
@@ -118,6 +119,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
+	uz_resolver_pl_interface_t* resolver_pl_D5_Ch1;
 	uz_mux_axi_t* mux_axi;
 	uz_temperaturecard_t* temperature_card_d4;
 }object_pointers_t;

@@ -158,6 +158,7 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.resolver_left = initialize_resolver_left();
             Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_pl_D5_Ch1 = initialize_resolver_pl_D5_Ch1();
 
             /* init UZ_D_Temperature card */
             Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();

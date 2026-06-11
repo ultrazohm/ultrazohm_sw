@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:26 2026
+ * C/C++ source code generated on : Fri Apr 17 13:36:23 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -19,6 +19,7 @@
 
 #include "FOC_SMF.h"
 #include "rtwtypes.h"
+#include "FOC_SMF_private.h"
 #include <math.h>
 #include "FOC_SMF_types.h"
 #include <string.h>
@@ -29,9 +30,10 @@
 #define FOC_SMF_IN_CTRL_RE_INIT        ((uint8_T)3U)
 #define FOC_SMF_IN_ERROR_MODE          ((uint8_T)4U)
 #define FOC_SMF_IN_FOC_IDLE            ((uint8_T)1U)
-#define FOC_SMF_IN_FOC_SPEED           ((uint8_T)2U)
-#define FOC_SMF_IN_FOC_STANDBY         ((uint8_T)3U)
-#define FOC_SMF_IN_FOC_TORQUE          ((uint8_T)4U)
+#define FOC_SMF_IN_FOC_If              ((uint8_T)2U)
+#define FOC_SMF_IN_FOC_SPEED           ((uint8_T)3U)
+#define FOC_SMF_IN_FOC_STANDBY         ((uint8_T)4U)
+#define FOC_SMF_IN_FOC_TORQUE          ((uint8_T)5U)
 #define FOC_SMF_IN_NO_ACTIVE_CHILD     ((uint8_T)0U)
 #define FOC_SMF_IN_RUN_MODE            ((uint8_T)5U)
 #define FOC_SMF_IN_SYS_INIT            ((uint8_T)6U)
@@ -43,8 +45,27 @@ const bus_SMF_t FOC_SMF_rtZbus_SMF_t = { 0U,/* SysStateAct */
   false,                               /* global_reset_errors */
   false,                               /* SPEED_CTRL_Enable */
   0.0F,                                /* MaxMotTemp */
-  false                                /* Collective_Over_Temp_Error */
+  false,                               /* Collective_Over_Temp_Error */
+  false                                /* Enable_If_Mode */
 };
+
+real_T rt_roundd_snf(real_T u)
+{
+  real_T y;
+  if (fabs(u) < 4.503599627370496E+15) {
+    if (u >= 0.5) {
+      y = floor(u + 0.5);
+    } else if (u > -0.5) {
+      y = u * 0.0;
+    } else {
+      y = ceil(u - 0.5);
+    }
+  } else {
+    y = u;
+  }
+
+  return y;
+}
 
 /* Model step function */
 void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
@@ -53,8 +74,10 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   DW_FOC_SMF_T *FOC_SMF_DW = FOC_SMF_M->dwork;
   ExtU_FOC_SMF_T *FOC_SMF_U = (ExtU_FOC_SMF_T *) FOC_SMF_M->inputs;
   ExtY_FOC_SMF_T *FOC_SMF_Y = (ExtY_FOC_SMF_T *) FOC_SMF_M->outputs;
+  real_T tmp_1;
   int32_T k;
   real32_T tmp;
+  uint8_T tmp_0;
 
   /* MultiPortSwitch: '<S1>/DataSourceSwitch' incorporates:
    *  Constant: '<S1>/SELECT_DataSource'
@@ -101,122 +124,182 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   if (FOC_SMF_DW->is_active_c1_FOC_SMF == 0U) {
     FOC_SMF_DW->is_active_c1_FOC_SMF = 1U;
     FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_SYS_INIT;
-    FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_SYS_INIT;
-    FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+    FOC_SMF_B->State = FOC_SMF_P.enumState_SYS_INIT;
+    FOC_SMF_B->FOC_Mode = 1U;
   } else {
     switch (FOC_SMF_DW->is_c1_FOC_SMF) {
      case FOC_SMF_IN_CTRL_IDLE:
-      FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_IDLE;
-      FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+      FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_IDLE;
+      FOC_SMF_B->FOC_Mode = 1U;
       if (FOC_SMF_U->bus_FCF.FCF_Error) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       } else if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_RUN_MODE) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_RUN_MODE;
-        FOC_SMF_Y->bus_SMF.FOC_Mode = 3U;
+        FOC_SMF_B->FOC_Mode = 3U;
         FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_FOC_IDLE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_RUN_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_RUN_MODE;
         FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_IDLE;
-        FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = false;
+        FOC_SMF_B->FOC_Enable_PWM = false;
       }
       break;
 
      case FOC_SMF_IN_CTRL_INIT:
-      FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_INIT;
+      FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_INIT;
       if (FOC_SMF_U->bus_FCF.FCF_Error) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       } else if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_CTRL_IDLE) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_IDLE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_IDLE;
-        FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_IDLE;
+        FOC_SMF_B->FOC_Mode = 1U;
       }
       break;
 
      case FOC_SMF_IN_CTRL_RE_INIT:
-      FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_RE_INIT;
+      FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_RE_INIT;
       if ((FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_CTRL_IDLE) &&
           (!FOC_SMF_U->bus_FCF.FCF_Error)) {
         FOC_SMF_Y->bus_SMF.global_reset_errors = false;
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_SYS_INIT;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_SYS_INIT;
-        FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_SYS_INIT;
+        FOC_SMF_B->FOC_Mode = 1U;
       } else if (FOC_SMF_U->bus_FCF.FCF_Error) {
         FOC_SMF_Y->bus_SMF.global_reset_errors = false;
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       }
       break;
 
      case FOC_SMF_IN_ERROR_MODE:
-      FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+      FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_CTRL_IDLE) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_RE_INIT;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_RE_INIT;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_RE_INIT;
         FOC_SMF_Y->bus_SMF.global_reset_errors = true;
       }
       break;
 
      case FOC_SMF_IN_RUN_MODE:
-      FOC_SMF_Y->bus_SMF.FOC_Mode = 3U;
+      FOC_SMF_B->FOC_Mode = 3U;
       if (FOC_SMF_U->bus_FCF.FCF_Error) {
-        if (FOC_SMF_DW->is_RUN_MODE == FOC_SMF_IN_FOC_SPEED) {
+        switch (FOC_SMF_DW->is_RUN_MODE) {
+         case FOC_SMF_IN_FOC_If:
+          FOC_SMF_Y->bus_SMF.Enable_If_Mode = false;
+          FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
+          break;
+
+         case FOC_SMF_IN_FOC_SPEED:
           FOC_SMF_Y->bus_SMF.SPEED_CTRL_Enable = false;
           FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
-        } else {
+          break;
+
+         default:
           FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
+          break;
         }
 
         FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_OFF;
-        FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = false;
+        FOC_SMF_B->FOC_Enable_PWM = false;
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       } else if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_CTRL_IDLE) {
-        if (FOC_SMF_DW->is_RUN_MODE == FOC_SMF_IN_FOC_SPEED) {
+        switch (FOC_SMF_DW->is_RUN_MODE) {
+         case FOC_SMF_IN_FOC_If:
+          FOC_SMF_Y->bus_SMF.Enable_If_Mode = false;
+          FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
+          break;
+
+         case FOC_SMF_IN_FOC_SPEED:
           FOC_SMF_Y->bus_SMF.SPEED_CTRL_Enable = false;
           FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
-        } else {
+          break;
+
+         default:
           FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;
+          break;
         }
 
         FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_OFF;
-        FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = false;
+        FOC_SMF_B->FOC_Enable_PWM = false;
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_IDLE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_IDLE;
-        FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_IDLE;
+        FOC_SMF_B->FOC_Mode = 1U;
       } else {
         switch (FOC_SMF_DW->is_RUN_MODE) {
          case FOC_SMF_IN_FOC_IDLE:
-          FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_RUN_MODE;
+          FOC_SMF_B->State = FOC_SMF_P.enumState_RUN_MODE;
           if ((FOC_SMF_B->DataSourceSwitch1[0] == 0.0F) &&
               (FOC_SMF_B->DataSourceSwitch1[1] == 0.0F)) {
             FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_FOC_STANDBY;
             FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_STANDBY;
-            FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = true;
+            FOC_SMF_B->FOC_Enable_PWM = true;
           }
           break;
 
+         case FOC_SMF_IN_FOC_If:
+          tmp_1 = rt_roundd_snf(FOC_SMF_P.enumState_IF);
+          if (tmp_1 < 256.0) {
+            if (tmp_1 >= 0.0) {
+              tmp_0 = (uint8_T)tmp_1;
+            } else {
+              tmp_0 = 0U;
+            }
+          } else {
+            tmp_0 = MAX_uint8_T;
+          }
+
+          FOC_SMF_B->State = tmp_0;
+          break;
+
          case FOC_SMF_IN_FOC_SPEED:
-          FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_SPEED_MODE;
+          FOC_SMF_B->State = FOC_SMF_P.enumState_SPEED_MODE;
           break;
 
          case FOC_SMF_IN_FOC_STANDBY:
           if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_TORQUE_MODE) {
             FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_FOC_TORQUE;
-            FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_TORQUE_MODE;
+            FOC_SMF_B->State = FOC_SMF_P.enumState_TORQUE_MODE;
             FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_TORQUE;
           } else if (FOC_SMF_B->DataSourceSwitch ==
                      FOC_SMF_P.enumState_SPEED_MODE) {
             FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_FOC_SPEED;
-            FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_SPEED_MODE;
+            FOC_SMF_B->State = FOC_SMF_P.enumState_SPEED_MODE;
             FOC_SMF_Y->bus_SMF.StateFOC = FOC_SMF_P.enumState_FOC_SPEED;
             FOC_SMF_Y->bus_SMF.SPEED_CTRL_Enable = true;
+          } else if (FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_IF) {
+            FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_FOC_If;
+            tmp_1 = rt_roundd_snf(FOC_SMF_P.enumState_IF);
+            if (tmp_1 < 256.0) {
+              if (tmp_1 >= 0.0) {
+                tmp_0 = (uint8_T)tmp_1;
+              } else {
+                tmp_0 = 0U;
+              }
+            } else {
+              tmp_0 = MAX_uint8_T;
+            }
+
+            FOC_SMF_B->State = tmp_0;
+            tmp_1 = rt_roundd_snf(FOC_SMF_P.enumState_FOC_IF);
+            if (tmp_1 < 256.0) {
+              if (tmp_1 >= 0.0) {
+                tmp_0 = (uint8_T)tmp_1;
+              } else {
+                tmp_0 = 0U;
+              }
+            } else {
+              tmp_0 = MAX_uint8_T;
+            }
+
+            FOC_SMF_Y->bus_SMF.StateFOC = tmp_0;
+            FOC_SMF_Y->bus_SMF.Enable_If_Mode = true;
           }
           break;
 
          default:
           /* case IN_FOC_TORQUE: */
-          FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_TORQUE_MODE;
+          FOC_SMF_B->State = FOC_SMF_P.enumState_TORQUE_MODE;
           break;
         }
       }
@@ -224,15 +307,15 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
 
      default:
       /* case IN_SYS_INIT: */
-      FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_SYS_INIT;
-      FOC_SMF_Y->bus_SMF.FOC_Mode = 1U;
+      FOC_SMF_B->State = FOC_SMF_P.enumState_SYS_INIT;
+      FOC_SMF_B->FOC_Mode = 1U;
       if (FOC_SMF_U->bus_FCF.FCF_Error) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_ERROR_MODE;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_ERROR_MODE;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_ERROR_MODE;
       } else if ((FOC_SMF_B->DataSourceSwitch == FOC_SMF_P.enumState_CTRL_IDLE) &&
                  FOC_SMF_B->KL15_PG_SourceSwitch) {
         FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_CTRL_INIT;
-        FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_P.enumState_CTRL_INIT;
+        FOC_SMF_B->State = FOC_SMF_P.enumState_CTRL_INIT;
       }
       break;
     }
@@ -241,7 +324,7 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   /* End of Chart: '<S1>/FOC_Statemachine' */
 
   /* MinMax: '<S4>/MinMax1' incorporates:
-   *  Inport: '<Root>/bus_BSW_SCF'
+   *  Inport: '<Root>/bus_BSW_SMF'
    */
   tmp = FOC_SMF_U->bus_BSW_SMF.MotTemp[0];
   for (k = 0; k < 5; k++) {
@@ -255,10 +338,13 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   /* BusCreator: '<S1>/Bus Creator' incorporates:
    *  Outport: '<Root>/bus_SMF'
    */
+  FOC_SMF_Y->bus_SMF.SysStateAct = FOC_SMF_B->State;
+  FOC_SMF_Y->bus_SMF.FOC_Mode = FOC_SMF_B->FOC_Mode;
+  FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = FOC_SMF_B->FOC_Enable_PWM;
   FOC_SMF_Y->bus_SMF.Collective_Over_Temp_Error = false;
 
   /* MinMax: '<S4>/MinMax' incorporates:
-   *  Inport: '<Root>/bus_BSW_SCF'
+   *  Inport: '<Root>/bus_BSW_SMF'
    */
   tmp = FOC_SMF_U->bus_BSW_SMF.InvTemp[0];
   for (k = 0; k < 8; k++) {
@@ -272,9 +358,9 @@ void FOC_SMF_step(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
 /* Model initialize function */
 void FOC_SMF_initialize(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
 {
+  B_FOC_SMF_T *FOC_SMF_B = FOC_SMF_M->blockIO;
   DW_FOC_SMF_T *FOC_SMF_DW = FOC_SMF_M->dwork;
   ExtY_FOC_SMF_T *FOC_SMF_Y = (ExtY_FOC_SMF_T *) FOC_SMF_M->outputs;
-  B_FOC_SMF_T *FOC_SMF_B = FOC_SMF_M->blockIO;
   ExtU_FOC_SMF_T *FOC_SMF_U = (ExtU_FOC_SMF_T *) FOC_SMF_M->inputs;
 
   /* Registration code */
@@ -294,12 +380,13 @@ void FOC_SMF_initialize(RT_MODEL_FOC_SMF_T *const FOC_SMF_M)
   FOC_SMF_Y->bus_SMF = FOC_SMF_rtZbus_SMF_t;
 
   /* SystemInitialize for Chart: '<S1>/FOC_Statemachine' */
-  FOC_SMF_Y->bus_SMF.SysStateAct = 0U;
-  FOC_SMF_Y->bus_SMF.FOC_Mode = 0U;
+  FOC_SMF_B->State = 0U;
+  FOC_SMF_B->FOC_Mode = 0U;
   FOC_SMF_Y->bus_SMF.StateFOC = 49U;
-  FOC_SMF_Y->bus_SMF.FOC_Enable_PWM = false;
+  FOC_SMF_B->FOC_Enable_PWM = false;
   FOC_SMF_Y->bus_SMF.global_reset_errors = false;
   FOC_SMF_Y->bus_SMF.SPEED_CTRL_Enable = false;
+  FOC_SMF_Y->bus_SMF.Enable_If_Mode = false;
   FOC_SMF_DW->is_active_c1_FOC_SMF = 0U;
   FOC_SMF_DW->is_c1_FOC_SMF = FOC_SMF_IN_NO_ACTIVE_CHILD;
   FOC_SMF_DW->is_RUN_MODE = FOC_SMF_IN_NO_ACTIVE_CHILD;

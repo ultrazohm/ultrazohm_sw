@@ -6,11 +6,11 @@
 struct uz_resolverIP_config_t resolver_config_left={
         .base_address=XPAR_UZ_USER_RESOLVER_INTERFACE_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
-        .resolution = 16,
+        .resolution = 12,
         .freq_clockin = 8192000,
-        .pole_pairs_machine = 4.0f,
+        .pole_pairs_machine = 9.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical = 0.3959959f, //0.3923f <- was the rough estimate
+        .zero_position_mechanical = 0.0f,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 
@@ -19,9 +19,9 @@ struct uz_resolverIP_config_t resolver_config_right={
         .ip_clk_frequency_Hz=100000000U,
         .resolution = 16,
         .freq_clockin = 8192000,
-        .pole_pairs_machine = 4.0f,
+        .pole_pairs_machine = 9.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical =  0.4008981f, //0.3964f <- was the rough estimate
+        .zero_position_mechanical = 0.0f,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 

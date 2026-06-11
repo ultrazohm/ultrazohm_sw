@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SCF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.92
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:10 2026
+ * C/C++ source code generated on : Wed May 27 16:10:09 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -34,26 +34,26 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: FOC_LIMIT_I_PHASE_PEAK_MAX
    * Referenced by: '<S15>/Constant'
    */
-  197.989899F,
+  425.0F,
 
   /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Down
    * Referenced by:
    *   '<S11>/Constant7'
    *   '<S17>/Constant7'
    */
-  -1000.0F,
+  -500.0F,
 
   /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Up
    * Referenced by:
    *   '<S11>/Constant6'
    *   '<S17>/Constant6'
    */
-  1000.0F,
+  500.0F,
 
   /* Variable: FOC_LIMIT_Motor_Torque_MAX
    * Referenced by: '<S8>/Maximum_Torque_Maschine'
    */
-  205.0F,
+  1054.0F,
 
   /* Variable: FOC_LIMIT_Torque_Derating_Temp
    * Referenced by: '<S26>/Constant'
@@ -100,14 +100,14 @@ P_FOC_SCF_T FOC_SCF_P = {
    *   '<S31>/FOC_L_sd'
    *   '<S14>/Constant1'
    */
-  0.00033F,
+  7.58E-5F,
 
   /* Variable: FOC_L_sq
    * Referenced by:
    *   '<S31>/FOC_L_sq'
    *   '<S14>/Constant2'
    */
-  0.0008F,
+  7.58E-5F,
 
   /* Variable: FOC_MANUAL_Id_Ref
    * Referenced by: '<S5>/Constant5'
@@ -127,14 +127,14 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Variable: FOC_M_peak_max
    * Referenced by: '<S3>/limit T1'
    */
-  205.0F,
+  1054.0F,
 
   /* Variable: FOC_Psi_PM
    * Referenced by:
    *   '<S31>/FOC_Psi_PM'
    *   '<S14>/Constant4'
    */
-  0.07F,
+  0.06794F,
 
   /* Variable: FOC_SELECT_ExtTrqReq
    * Referenced by: '<S1>/Constant2'
@@ -291,23 +291,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: Gain_Gain
    * Referenced by: '<S5>/Gain'
    */
-  0.5F,
-
-  /* Computed Parameter: Id_Ref_M_MTPC_tableData
-   * Referenced by: '<S10>/Id_Ref_M_MTPC'
-   */
-  { 0.0F, -6.00855064F, -18.6489582F, -34.0876961F, -51.3419304F, -69.4636459F,
-    -89.1475F, -108.779228F, -130.074341F, -152.355057F, -175.75235F,
-    -196.982727F, -216.247208F, -235.417313F, -254.675476F, -275.007843F,
-    -293.418152F, -310.50119F, -330.435028F, -350.285706F },
-
-  /* Computed Parameter: Id_Ref_M_MTPC_bp01Data
-   * Referenced by: '<S10>/Id_Ref_M_MTPC'
-   */
-  { -0.00374402152F, 13.3595037F, 28.7598114F, 45.9291649F, 63.6041794F,
-    81.6191483F, 99.7469635F, 117.703423F, 135.436905F, 152.716476F, 169.124191F,
-    185.131531F, 200.403763F, 215.28064F, 229.630981F, 243.24057F, 255.660156F,
-    265.91925F, 275.042145F, 283.534546F },
+  0.333333343F,
 
   /* Computed Parameter: zero_Current_Value_l
    * Referenced by: '<S6>/zero_Current'
@@ -317,7 +301,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: Gain_Gain_n
    * Referenced by: '<S14>/Gain'
    */
-  0.166666672F,
+  0.0740740746F,
 
   /* Computed Parameter: Constant_Value
    * Referenced by: '<S14>/Constant'
@@ -362,7 +346,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: RPMw_el_Gain
    * Referenced by: '<S3>/RPM => w_el'
    */
-  0.418879032F,
+  0.942477822F,
 
   /* Computed Parameter: UnitDelay_InitialCondition
    * Referenced by: '<S3>/Unit Delay'
@@ -382,7 +366,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: limitT3_LowerSat
    * Referenced by: '<S3>/limit T3'
    */
-  -205.0F,
+  -1054.0F,
 
   /* Expression: FOC_T_slow
    * Referenced by: '<S3>/FOC_T_slow'
@@ -407,7 +391,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: uZ_p2_Gain
    * Referenced by: '<S31>/3*Z_p//2'
    */
-  6.0F,
+  13.5F,
 
   /* Computed Parameter: Constant_Value_g
    * Referenced by: '<S25>/Constant'
@@ -477,23 +461,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: Gain_Gain_d
    * Referenced by: '<S6>/Gain'
    */
-  0.5F,
-
-  /* Computed Parameter: Iq_Ref_M_MTPC_tableData
-   * Referenced by: '<S16>/Iq_Ref_M_MTPC'
-   */
-  { 0.0F, 24.5382252F, 46.9587593F, 67.6910172F, 87.0381546F, 105.501091F,
-    122.592422F, 139.428146F, 154.684204F, 168.773026F, 181.476791F, 196.018585F,
-    212.466125F, 228.995804F, 245.423965F, 260.714F, 278.014282F, 296.709717F,
-    312.407227F, 328.176666F },
-
-  /* Computed Parameter: Iq_Ref_M_MTPC_bp01Data
-   * Referenced by: '<S16>/Iq_Ref_M_MTPC'
-   */
-  { -0.00374402152F, 13.3595037F, 28.7598114F, 45.9291649F, 63.6041794F,
-    81.6191483F, 99.7469635F, 117.703423F, 135.436905F, 152.716476F, 169.124191F,
-    185.131531F, 200.403763F, 215.28064F, 229.630981F, 243.24057F, 255.660156F,
-    265.91925F, 275.042145F, 283.534546F },
+  0.333333343F,
 
   /* Computed Parameter: PsiReduceGain1_Gain
    * Referenced by: '<S15>/PsiReduceGain1'
@@ -503,7 +471,7 @@ P_FOC_SCF_T FOC_SCF_P = {
   /* Computed Parameter: usrpm_Gain
    * Referenced by: '<S1>/[1//s] => [rpm]'
    */
-  2.38732409F,
+  1.06103301F,
 
   /* Computed Parameter: UnitDelay_InitialCondition_l
    * Referenced by: '<S15>/Unit Delay'

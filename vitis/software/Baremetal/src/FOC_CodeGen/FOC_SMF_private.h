@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_SMF'.
  *
- * Model version                  : 5.79
+ * Model version                  : 5.91
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Mon Mar  2 11:38:26 2026
+ * C/C++ source code generated on : Fri Apr 17 13:36:23 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,6 +21,9 @@
 #define FOC_SMF_private_h_
 #include "rtwtypes.h"
 #include "FOC_SMF_types.h"
+
+extern real_T rt_roundd_snf(real_T u);
+
 #endif                                 /* FOC_SMF_private_h_ */
 
 /*

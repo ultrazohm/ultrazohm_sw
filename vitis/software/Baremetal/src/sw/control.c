@@ -19,6 +19,7 @@
 #include "xil_cache.h"
 #include "../include/ipc_ARM.h"
 #include "appl/Inverter_Temp_Driver.h"
+#include "appl/median_filter.h"
 
 // --- Simulink model variables ---
 RT_MODEL_FOC_FCF_T FOC_FCF_M_;
@@ -78,6 +79,14 @@ uint32_t PWMin_HighTicks;
 uint32_t PWMin_PeriodTicks;
 uint32_t DutyCycleIPcoreTimestamp;
 
+// variables for temperature measurement
+//MedianFilter5_t TempMotorMedianFilter[3];
+MedianFilter5_t TempMotorMedianFilter1;
+MedianFilter5_t TempMotorMedianFilter2;
+MedianFilter5_t TempMotorMedianFilter3;
+float TempMotor[3];
+float TempMotor_tmp[3];
+
 
 void init_control_functions(void)
 {
@@ -106,6 +115,12 @@ void init_control_functions(void)
 
 	/* Initialize model */
 	FOC_SMF_initialize(FOC_SMF_MPtr);
+
+	/* Initialize median filter */
+	MedianFilter5_Init(&TempMotorMedianFilter1, 0.0f);
+	MedianFilter5_Init(&TempMotorMedianFilter2, 0.0f);
+	MedianFilter5_Init(&TempMotorMedianFilter3, 0.0f);
+
 }
 
 /**
@@ -174,6 +189,22 @@ void Control_Task_10ms(void)
 	/* === End of write miscellanious outputs to FPGA interface === */
 
 
+	/* read measurement values of UZ_D_Temperature card */
+	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
+	Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+
+	// check boundaries value of measurement and ignore if beyond boundaries
+	TempMotor_tmp[0] = ((Global_Data.av.channel_A_data.temperature[3] < 0.0f) || (Global_Data.av.channel_A_data.temperature[3] > 200.0f)) ? TempMotor[0] : Global_Data.av.channel_A_data.temperature[3];
+	TempMotor_tmp[1] = ((Global_Data.av.channel_A_data.temperature[5] < 0.0f) || (Global_Data.av.channel_A_data.temperature[5] > 200.0f)) ? TempMotor[1] : Global_Data.av.channel_A_data.temperature[5];
+	TempMotor_tmp[2] = ((Global_Data.av.channel_A_data.temperature[7] < 0.0f) || (Global_Data.av.channel_A_data.temperature[7] > 200.0f)) ? TempMotor[2] : Global_Data.av.channel_A_data.temperature[7];
+
+	// median filter
+	TempMotor[0] = MedianFilter5_Update(&TempMotorMedianFilter1, TempMotor_tmp[0]);
+	TempMotor[1] = MedianFilter5_Update(&TempMotorMedianFilter2, TempMotor_tmp[1]);
+	TempMotor[2] = MedianFilter5_Update(&TempMotorMedianFilter3, TempMotor_tmp[2]);
+
+	/* === End of temperature measurement === */
+
 #if 0
 	/* --- Write R5 -> A53 shared data and notify A53 --- */
 	// Map SMF outputs into the shared R5->A53 structure (example mapping)
@@ -227,12 +258,12 @@ void Control_Task_100ms(void)
 	data_R2A_localRPU.Temp_Inv_Phase_7 = Inv_SiC_Temp.T_Sys3_Ph1;
 	data_R2A_localRPU.Temp_Inv_Phase_8 = Inv_SiC_Temp.T_Sys3_Ph2;
 	data_R2A_localRPU.Temp_Inv_Phase_9 = Inv_SiC_Temp.T_Sys3_Ph3;
-	data_R2A_localRPU.Temp_Mot_Phase_1 = 1;
-	data_R2A_localRPU.Temp_Mot_Phase_2 = 2;
-	data_R2A_localRPU.Temp_Mot_Phase_3 = 3;
-	data_R2A_localRPU.Temp_Mot_Phase_4 = 4;
-	data_R2A_localRPU.Temp_Mot_Phase_5 = 5;
-	data_R2A_localRPU.Temp_Mot_Phase_6 = 6;
+	data_R2A_localRPU.Temp_Mot_Phase_1 = Global_Data.av.channel_A_data.temperature[3];
+	data_R2A_localRPU.Temp_Mot_Phase_2 = Global_Data.av.channel_A_data.temperature[5];
+	data_R2A_localRPU.Temp_Mot_Phase_3 = Global_Data.av.channel_A_data.temperature[7];
+	data_R2A_localRPU.Temp_Mot_Phase_4 = Global_Data.av.channel_A_data.temperature[9];
+	data_R2A_localRPU.Temp_Mot_Phase_5 = Global_Data.av.channel_A_data.temperature[11];
+	data_R2A_localRPU.Temp_Mot_Phase_6 = Global_Data.av.channel_A_data.temperature[13];
 //	data_R2A_localRPU.Temp_Mot_Rotor = 1;
 	/* === End of provide data for CAN communication === */
 }

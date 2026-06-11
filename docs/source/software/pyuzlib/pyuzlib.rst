@@ -4,7 +4,7 @@ pyuzlib
 
 ``pyuzlib`` is a small Python helper library for documentation and data-processing tasks in the UltraZohm repository.
 
-At the moment, the package mainly provides plotting helpers for PMSM flux-map datasets stored as CSV files.
+At the moment, the package mainly provides PMSM data helpers for scalar machine parameters, flux-map CSV files, fitting routines, plotting, and CSV export.
 
 Installation
 ============
@@ -18,22 +18,58 @@ Inside the repository, install the package in editable mode:
 Public API
 ==========
 
-The package root exposes the ``docs`` namespace:
+The package root exposes the ``pmsm`` and ``docs`` namespaces:
 
 .. code-block:: python
 
 	import pyuzlib
 
 	print(pyuzlib.__version__)
+	motor = pyuzlib.pmsm.PMSM()
 	pyuzlib.docs.pmsm.plot_flux_map(...)
 
-PMSM Helpers
-============
+PMSM Workflow
+=============
 
-The module ``pyuzlib.docs.pmsm`` currently provides these helpers:
+The object-oriented PMSM API keeps scalar machine parameters, flux maps, fitting results, and export routines together:
+
+.. code-block:: python
+
+	import pyuzlib
+
+	motor = pyuzlib.pmsm.PMSM()
+	motor.load_parameters_csv(
+	    "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/machine_parameters.csv"
+	)
+	motor.load_flux_map_csv(
+	    "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
+	)
+
+	fit = motor.fit_linear_flux_model()
+	motor.export_result_csv("linear_no_saturation", "linear_flux_fit.csv")
+
+The flux-map importer accepts custom column names and normalizes the data internally to ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``:
+
+.. code-block:: python
+
+	motor.load_flux_map_csv(
+	    "flux_map.csv",
+	    i_d_col="Id",
+	    i_q_col="Iq",
+	    psi_d_col="PsiD",
+	    psi_q_col="PsiQ",
+	)
+
+``PMSMParameters`` stores the C-compatible fields ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere``. Additional scalar values from parameter CSV files are preserved separately for documentation and controller workflows.
+
+Compatibility Helpers
+=====================
+
+The module ``pyuzlib.docs.pmsm`` still provides these helpers for documentation snippets:
 
 * ``plot_flux_map(csv_path)`` for a Matplotlib-based static plot that integrates with the Sphinx ``plot`` directive.
 * ``plot_flux_map_plotly(csv_path)`` for a Plotly-based interactive figure that integrates with the Sphinx ``plotly`` directive.
+* ``L_dd_L_qq_from_flux_map_assuming_no_saturation(csv_path)`` for the existing linear-regression table.
 
 The CSV file is expected to contain the columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs`` on a regular grid.
 

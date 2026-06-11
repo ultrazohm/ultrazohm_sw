@@ -115,6 +115,7 @@ int main(void)
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU: Build Date of main.c: %s at %s,\r\n", __DATE__, __TIME__);
             uz_print_bitstream_timestamp();
+            uz_print_control_frequency(Global_Data.av.pwm_frequency_hz, Global_Data.av.isr_samplerate_s);
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

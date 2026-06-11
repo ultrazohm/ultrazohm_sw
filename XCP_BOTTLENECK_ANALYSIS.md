@@ -87,7 +87,7 @@ overruns the region — no bounds check, silent corruption of adjacent OCM.
 **Fix:** bound the per-ISR drain by remaining region space; leave the rest
 queued for the next ISR.
 
-### B5. `QUEUE_XCP_TX_LEN = 10000` — ~680 KB heap, unbounded latency
+### B5. `QUEUE_XCP_TX_LEN = 10000` — ~680 KB heap, unbounded latency — **FIXED**
 **Where:** `OCM_eth_adapter.c` configuration
 **Problem:** 10000 × 68 B ≈ 680 KB of FreeRTOS heap for the TX queue, and a
 "full" queue represents seconds of stale backlog (which is what made the
@@ -102,6 +102,85 @@ gives bounded worst-case latency.
   would do for the read direction; harmless today because the A53 never
   dirties the `XCP_OUT` lines, but fragile if that ever changes.
 - Accept loop polls worker-exit flags at 20 ms — negligible.
+
+## Hardware test findings
+
+### T1. Request timeout ~4 min into a DAQ measurement — **FIXED**
+First hardware test after F1/F2/B1/B2/B4: no more freezes (R5 keeps
+running, `tcpip_thread` stack shows its normal idle mbox-fetch), but CANape
+reported "Timeout: Keine Response zur Request-Message empfangen" ~4 min
+into a measurement.
+**Mechanism:** DAQ production slightly exceeded TCP drain, so the (then
+10000-deep) TX queue filled slowly — a surplus of ~40 frames/s fills it in
+~4 min. A CTO response enqueued behind thousands of DAQ frames exceeds the
+master's response timeout; alternatively the overflow purge wiped the
+response together with the stale DAQ backlog. Either way: no response →
+session timeout.
+**Fix:** dedicated CTO queue (`queue_xcp_tx_cto`, classified in the ISR by
+XCP PID ≥ 0xFC = RES/ERR/EV/SERV). CTO responses jump the DAQ backlog in
+the TX batch, are never purged, and the ISR keeps draining the OCM on
+DAQ-queue overflow so a trailing CTO still gets through. Plus B5: DAQ queue
+shrunk 10000 → 512 (bounded backlog latency, ~645 KB heap freed).
+**Expected behaviour under sustained overload now:** DAQ gaps
+(`xcp_txq_overflow_dropped` climbs, purges drop stale samples) but the
+session stays alive and responsive.
+
+---
+
+## Deep dive: R5 side (XcpBasic + glue)
+
+Audited after the disconnect fixes: `Baremetal/src/sw/xcp/xcp_interface.c`,
+`XCP_Basic/xcp_cfg.h`, R5 copy of `RPU_APU_exchange.c`, call site in
+`Baremetal/src/sw/isr.c:198` (`xcp_irq()` inside `ISR_Control`).
+
+### R1. Unbounded DAQ burst into the 512-byte XCP_OUT window — **highest risk**
+`XCP_DISABLE_SEND_QUEUE` is set, so XcpBasic sends *direct*: every DAQ
+sample of every event goes through `ApplXcpSend` → `rpu_apu_exchange_writeOCM`
+**in the same ISR cycle**. The R5 copy of `writeOCM` has **no bounds check**
+(unlike the APU copy since B4), and `kXcpDaqMemSize = 2 KB` allows CANape DAQ
+configs that produce far more than the 512-byte window per cycle.
+Overflow consequences compound on the APU side: `readOCM` follows the
+length-chain **past the region end** (unbounded, in ISR context — with
+garbage lengths it can walk far beyond OCM), and the cache-invalidate only
+covers 512 B, so overflowed frames are read stale → garbage to CANape.
+**Fix (two halves):**
+- R5: port the B4 bounds check to the R5 copy of `writeOCM` (drop + count).
+  Optionally enable `XCP_ENABLE_SEND_QUEUE` so XcpBasic buffers DTOs in its
+  2 KB DAQ memory and the glue drains ≤ window-budget per cycle (no loss,
+  bounded ISR time) — requires restructuring the `XcpSendCallBack()` call.
+- APU: bound `readOCM` to the region end (mirror of B4 for the read side).
+
+### R2. XCP event rates are 2× off since the 20 kHz PWM change
+`xcp_interface_events_10kHz()` derives the 1ms/10ms/100ms/1s events from
+fixed dividers (10/100/1000/10000) assuming a **10 kHz** base, but
+`xcp_irq()` runs at `UZ_PWM_FREQUENCY` = **20 kHz** since the feature merge.
+All named event periods are half their label (1MS fires every 0.5 ms, 1S
+every 0.5 s), and `XCP_EVENT_FAST` doubled its data volume (which is what
+overloaded the TX path originally).
+**Fix:** derive the dividers from `UZ_PWM_FREQUENCY` instead of hardcoding.
+
+### R3. DAQ timestamp unit inconsistent
+`xcp_timestamp += 1` per ISR cycle (50 µs at 20 kHz), but `xcp_cfg.h`
+declares `kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS`. If CANape uses
+slave timestamps, the time axis is off by orders of magnitude (works today
+only if CANape is set to PC arrival time). The commented hint
+`uz_SystemTime_GetUptimeInUs()` + unit `1US` would make it consistent.
+
+### R4. Duplicated protocol file
+`RPU_APU_exchange.c/.h` exist as **two copies** (R5: `Baremetal/src/sw/xcp/`,
+APU: `FreeRTOS/sw/xcp/`) sharing the OCM layout via duplicated `#define`s.
+They have now diverged (B4 only on APU). Any change to the region
+addresses/sizes must be made in both; longer-term the file should be shared
+like `APU_RPU_shared.h`.
+
+### Headroom note
+The 512 B/cycle window ≈ 6–7 DTO frames ≈ ~7 MB/s theoretical at 20 kHz —
+adequate *if respected* (R1). OCM bank 3 has ~7.5 KB unused above
+`XCP_OUT`; the window could grow (e.g. 2–8 KB) if more per-cycle DAQ volume
+is ever needed — must be changed in both copies (R4) and in the APU
+cache-invalidate range.
+
+---
 
 ### Deliberately out of scope (user constraint: no lwIP/BSP changes)
 - `TCP_NODELAY` via `setsockopt()` on the accepted socket would reduce

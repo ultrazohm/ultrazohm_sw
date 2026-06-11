@@ -37,12 +37,26 @@
 #define PRIO_XCP_RX             5
 #define PRIO_XCP_TX             4
 
-#define QUEUE_XCP_TX_LEN        10000
+/* DAQ (DTO) queue: sized for bounded latency, not maximum buffering. A deep
+ * queue only delays the inevitable when DAQ rate exceeds TCP drain rate, and
+ * the backlog latency made CANape requests time out (observed ~4 min into a
+ * measurement with the previous 10000-entry queue). 512 frames ~= 35 KB is
+ * tens of milliseconds at typical drain rates. */
+#define QUEUE_XCP_TX_LEN        512
 #define QUEUE_XCP_RX_LEN        10
+
+/* Dedicated queue for CTO packets (command responses RES/ERR/EV/SERV,
+ * PID >= 0xFC). Responses must never wait behind the DAQ backlog and must
+ * survive a DAQ purge, otherwise the master times out under DAQ load. */
+#define QUEUE_XCP_TX_CTO_LEN    16
 
 /* TX batching: collect queued frames into one buffer of roughly a TCP MSS
  * before write(), instead of one socket call per 68-byte frame. */
 #define TX_BATCH_BUF_SIZE       1400
+
+/* First payload byte after the 4-byte transport header is the XCP PID.
+ * 0xFC..0xFF = CTO (SERV/EV/ERR/RES); 0x00..0xFB = DAQ DTO (ODT number). */
+#define XCP_PID_CTO_MIN         0xFC
 
 #define XCP_ETH_PORT            (uint16_t) 12340
 
@@ -50,6 +64,7 @@
  * Variables
  *-----------------------------------------------------------------*/
 static QueueHandle_t queue_xcp_tx;
+static QueueHandle_t queue_xcp_tx_cto = NULL;
 static QueueHandle_t queue_xcp_rx = NULL;
 
 static volatile uint8_t xcp_eth_connected = 0;
@@ -87,6 +102,22 @@ static void my_print_ip(ip_addr_t *ip)
             ip4_addr3(ip), ip4_addr4(ip));
 }
 
+/* Append one length-prefixed frame to the batch buffer. Returns the new fill
+ * level (unchanged if the frame's length field is corrupt). */
+static uint32_t tx_batch_append(uint8_t *batch_buf, uint32_t batch_fill, const uint8_t *frame)
+{
+    uint16_t len_xcp_tx = (uint16_t)((frame[0] << 0) | (frame[1] << 8));
+    uint32_t frame_total = (uint32_t)len_xcp_tx + XCP_HEADER_LEN;
+
+    if (frame_total > BUF_SIZE_XCP_TX) {
+        return batch_fill;  // corrupt length field; drop the frame
+    }
+
+    memcpy(&batch_buf[batch_fill], frame, frame_total);
+    msg_txq_read++;
+    return batch_fill + frame_total;
+}
+
 static void ocm_eth_adapter_tx(void *arg_p)
 {
     int sd = (int)(intptr_t) arg_p;
@@ -95,6 +126,7 @@ static void ocm_eth_adapter_tx(void *arg_p)
     xil_printf("%s() start\n", __func__);
 
     xQueueReset(queue_xcp_tx);
+    xQueueReset(queue_xcp_tx_cto);
     xcp_txq_purge_requested = 0;
 
     // Run until the connection is torn down (rx clears xcp_eth_connected) or a
@@ -102,9 +134,9 @@ static void ocm_eth_adapter_tx(void *arg_p)
     // even with no DAQ data queued, so it always exits and is recreated for the
     // next connection (it used to be created once per boot and never resumed).
     while (xcp_eth_connected) {
-        // Backpressure: if the ISR flagged a TX-queue overflow, drop the stale
-        // backlog rather than streaming seconds-old XCP frames after a stall.
-        // Only triggers under sustained link saturation (queue was full).
+        // Backpressure: if the ISR flagged a DAQ-queue overflow, drop the
+        // stale DAQ backlog rather than streaming seconds-old frames after a
+        // stall. CTO responses live in their own queue and are NOT purged.
         if (xcp_txq_purge_requested) {
             xcp_txq_purge_requested = 0;
             xQueueReset(queue_xcp_tx);
@@ -117,31 +149,30 @@ static void ocm_eth_adapter_tx(void *arg_p)
         // the wire, so concatenating them does not change the stream format.
         uint8_t  batch_buf[TX_BATCH_BUF_SIZE];
         uint32_t batch_fill = 0;
+        uint8_t  buf_xcp_tx[BUF_SIZE_XCP_TX];
 
-        uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
-        // Block (with timeout for disconnect detection) for the first frame...
-        if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, pdMS_TO_TICKS(100)) != pdPASS) {
-            continue;  // timeout: re-check xcp_eth_connected, then keep waiting
+        // CTO responses first: they jump any DAQ backlog so the master's
+        // request never times out under DAQ load.
+        while ((batch_fill + BUF_SIZE_XCP_TX) <= TX_BATCH_BUF_SIZE
+               && xQueueReceive(queue_xcp_tx_cto, buf_xcp_tx, 0) == pdPASS) {
+            batch_fill = tx_batch_append(batch_buf, batch_fill, buf_xcp_tx);
         }
 
-        do {
-            // length was already written before msg was given to queue
-            uint16_t len_xcp_tx = (uint16_t)((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
-            uint32_t frame_total = (uint32_t)len_xcp_tx + XCP_HEADER_LEN;
-
-            if (frame_total > BUF_SIZE_XCP_TX) {
-                // Corrupt length field; drop the frame instead of overrunning
-                // the batch buffer.
-                continue;
+        if (batch_fill == 0) {
+            // No pending CTO: block for DAQ data. Short timeout so a CTO
+            // arriving on an idle connection waits at most ~20 ms and a
+            // disconnect is still detected promptly.
+            if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, pdMS_TO_TICKS(20)) != pdPASS) {
+                continue;  // timeout: re-check connection/CTO, keep waiting
             }
+            batch_fill = tx_batch_append(batch_buf, batch_fill, buf_xcp_tx);
+        }
 
-            memcpy(&batch_buf[batch_fill], buf_xcp_tx, frame_total);
-            batch_fill += frame_total;
-            msg_txq_read++;
-
-            // ...then drain further frames without blocking while they fit.
-        } while ((batch_fill + BUF_SIZE_XCP_TX) <= TX_BATCH_BUF_SIZE
-                 && xQueueReceive(queue_xcp_tx, buf_xcp_tx, 0) == pdPASS);
+        // Top up the batch with further DAQ frames without blocking.
+        while ((batch_fill + BUF_SIZE_XCP_TX) <= TX_BATCH_BUF_SIZE
+               && xQueueReceive(queue_xcp_tx, buf_xcp_tx, 0) == pdPASS) {
+            batch_fill = tx_batch_append(batch_buf, batch_fill, buf_xcp_tx);
+        }
 
         if (batch_fill == 0) {
             continue;
@@ -196,6 +227,7 @@ static void ocm_eth_adapter_rx(void *arg_p)
 static void ocm_eth_adapter_init(void)
 {
     queue_xcp_tx = xQueueGenericCreate(QUEUE_XCP_TX_LEN, BUF_SIZE_XCP_TX, 0);
+    queue_xcp_tx_cto = xQueueGenericCreate(QUEUE_XCP_TX_CTO_LEN, BUF_SIZE_XCP_TX, 0);
     queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
 
     rpu_apu_exchange_init();
@@ -250,15 +282,30 @@ static BaseType_t read_OCM_write_txQueue(void)
 			break;
 		}
 
+		// Classify by XCP PID (first payload byte after the 4-byte transport
+		// header): CTO packets (command responses etc.) take the dedicated
+		// queue so they never wait behind -- or get purged with -- the DAQ
+		// backlog. The master times out if a response is late or lost.
+		if (data[XCP_HEADER_LEN] >= XCP_PID_CTO_MIN) {
+			if (xQueueSendFromISR(queue_xcp_tx_cto, data, &task_woken) == pdPASS) {
+				msg_txq_written++;
+			}
+			// CTO queue full is practically impossible (request/response is
+			// serialized); if it happens the frame is dropped silently.
+			continue;
+		}
+
 		if(xQueueSendFromISR(queue_xcp_tx, data, &task_woken) != pdPASS) {
-			// TX queue full: the Ethernet client/link cannot keep up with the
+			// DAQ queue full: the Ethernet client/link cannot keep up with the
 			// XCP DAQ rate. Drop this frame and ask the TX task to purge its
 			// stale backlog so latency stays bounded. Must NOT block, delay or
 			// printf from ISR context here -- doing so corrupts the FreeRTOS
 			// scheduler and freezes the system (the previous behaviour).
+			// Keep draining the OCM (continue, not break): a CTO response
+			// behind the overflowing DAQ frames must still get through.
 			xcp_txq_overflow_dropped++;
 			xcp_txq_purge_requested = 1;
-			break;
+			continue;
 		}
 		msg_txq_written++;
 	}

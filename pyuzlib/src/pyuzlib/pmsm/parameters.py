@@ -28,6 +28,7 @@ def _c_parameter(*, ctype: str = "float"):
 class PMSMParameters:
     """C-compatible PMSM machine parameters plus optional metadata."""
 
+    machine_id: int | None = _c_parameter(ctype="uint32_t")
     R_ph_Ohm: float | None = _c_parameter()
     Ld_Henry: float | None = _c_parameter()
     Lq_Henry: float | None = _c_parameter()
@@ -35,6 +36,18 @@ class PMSMParameters:
     polePairs: float | None = _c_parameter()
     J_kg_m_squared: float | None = _c_parameter()
     I_max_Ampere: float | None = _c_parameter()
+    I_rated_Ampere: float | None = _c_parameter()
+    Torque_rated_Nm: float | None = _c_parameter()
+    Torque_max_Nm: float | None = _c_parameter()
+    Torque_min_Nm: float | None = _c_parameter()
+    speed_rated_rpm: float | None = _c_parameter()
+    speed_max_rpm: float | None = _c_parameter()
+    speed_min_rpm: float | None = _c_parameter()
+    V_dc_nominal_V: float | None = _c_parameter()
+    I_d_max_A: float | None = _c_parameter()
+    I_d_min_A: float | None = _c_parameter()
+    I_q_max_A: float | None = _c_parameter()
+    I_q_min_A: float | None = _c_parameter()
     additional_parameters: dict[str, ParameterValue] = field(default_factory=dict)
 
     C_PARAMETER_FIELDS: ClassVar[tuple[CParameterField, ...]] = ()
@@ -105,6 +118,18 @@ class PMSMParameters:
         assert self.polePairs is not None
         assert self.J_kg_m_squared is not None
         assert self.I_max_Ampere is not None
+        assert self.I_rated_Ampere is not None
+        assert self.Torque_rated_Nm is not None
+        assert self.Torque_max_Nm is not None
+        assert self.Torque_min_Nm is not None
+        assert self.speed_rated_rpm is not None
+        assert self.speed_max_rpm is not None
+        assert self.speed_min_rpm is not None
+        assert self.V_dc_nominal_V is not None
+        assert self.I_d_max_A is not None
+        assert self.I_d_min_A is not None
+        assert self.I_q_max_A is not None
+        assert self.I_q_min_A is not None
 
         checks = {
             "R_ph_Ohm": self.R_ph_Ohm > 0.0,
@@ -114,6 +139,16 @@ class PMSMParameters:
             "polePairs": self.polePairs > 0.0 and self.polePairs % 1.0 == 0.0,
             "J_kg_m_squared": self.J_kg_m_squared > 0.0,
             "I_max_Ampere": self.I_max_Ampere > 0.0,
+            "I_rated_Ampere": 0.0 < self.I_rated_Ampere <= self.I_max_Ampere,
+            "Torque_rated_Nm": self.Torque_rated_Nm > 0.0,
+            "Torque_max_Nm": self.Torque_max_Nm >= self.Torque_rated_Nm,
+            "Torque_min_Nm": self.Torque_min_Nm <= 0.0,
+            "speed_rated_rpm": self.speed_rated_rpm > 0.0,
+            "speed_max_rpm": self.speed_max_rpm >= self.speed_rated_rpm,
+            "speed_min_rpm": self.speed_min_rpm <= 0.0,
+            "V_dc_nominal_V": self.V_dc_nominal_V > 0.0,
+            "I_d_limits": self.I_d_max_A >= self.I_d_min_A,
+            "I_q_limits": self.I_q_max_A >= self.I_q_min_A,
         }
         invalid = [name for name, is_valid in checks.items() if not is_valid]
         if invalid:

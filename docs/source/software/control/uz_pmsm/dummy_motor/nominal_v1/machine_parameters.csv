@@ -1,5 +1,6 @@
 parameter,value
 machine_name,dummy_motor
+machine_id,2
 R_ph_Ohm,0.51
 Ld_Henry,0.002
 Lq_Henry,0.003

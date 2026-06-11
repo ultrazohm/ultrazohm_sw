@@ -1,5 +1,6 @@
 parameter,value
 machine_name,beckhoff_AM8141-0j00-000
+machine_id,1
 R_ph_Ohm,0.51
 Ld_Henry,0.00175
 Lq_Henry,0.00175

@@ -65,6 +65,7 @@ The order of rows is not relevant.
 .. code-block:: text
 
    parameter,value
+   machine_id,2
    R_ph_Ohm,0.51
    Ld_Henry,0.002
    Lq_Henry,0.003
@@ -97,6 +98,9 @@ The following rows map directly to ``uz_PMSM_t`` and are required by the existin
    * - Parameter
      - Meaning
      - Existing consumer
+   * - ``machine_id``
+     - Unique machine identifier used to recognize the loaded machine data.
+     - ``uz_PMSM_t``
    * - ``R_ph_Ohm``
      - Stator phase resistance :math:`R_s` in Ohm.
      - ``uz_PMSM_t``
@@ -118,43 +122,42 @@ The following rows map directly to ``uz_PMSM_t`` and are required by the existin
    * - ``I_max_Ampere``
      - Maximum allowed current used by the setpoint module for MTPA and field weakening in A.
      - ``uz_PMSM_t``
-
-Recommended rating rows
------------------------
-
-The following rows are not consumed by ``uz_PMSM_t`` directly, but they belong in the same file because they define the machine operating envelope from datasheets, tests, or FEM data.
-Importers may use them to derive controller limits.
-
-.. list-table:: Recommended rating rows
-   :header-rows: 1
-   :widths: 35 65
-
-   * - Parameter
-     - Meaning
    * - ``I_rated_Ampere``
      - Rated continuous phase current in A.
+     - ``uz_PMSM_t``
    * - ``Torque_rated_Nm``
      - Rated continuous torque in Nm.
+     - ``uz_PMSM_t``
    * - ``Torque_max_Nm``
      - Maximum allowed positive torque command in Nm.
+     - ``uz_PMSM_t``
    * - ``Torque_min_Nm``
      - Maximum allowed negative torque command in Nm.
+     - ``uz_PMSM_t``
    * - ``speed_rated_rpm``
      - Rated mechanical speed in rpm.
+     - ``uz_PMSM_t``
    * - ``speed_max_rpm``
      - Maximum allowed positive mechanical speed in rpm.
+     - ``uz_PMSM_t``
    * - ``speed_min_rpm``
      - Maximum allowed negative mechanical speed in rpm.
+     - ``uz_PMSM_t``
    * - ``V_dc_nominal_V``
      - Nominal DC-link voltage in V.
+     - ``uz_PMSM_t``
    * - ``I_d_max_A``
      - Maximum allowed d-axis current in A.
+     - ``uz_PMSM_t``
    * - ``I_d_min_A``
      - Minimum allowed d-axis current in A.
+     - ``uz_PMSM_t``
    * - ``I_q_max_A``
      - Maximum allowed q-axis current in A.
+     - ``uz_PMSM_t``
    * - ``I_q_min_A``
      - Minimum allowed q-axis current in A.
+     - ``uz_PMSM_t``
 
 Relation to ``uz_pmsm_control`` limits
 --------------------------------------
@@ -273,7 +276,7 @@ Relation to controller and models
 
 The existing PMSM software path is linear:
 
-* :ref:`uz_PMSM_config` defines ``uz_PMSM_t`` with ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere``.
+* :ref:`uz_PMSM_config` defines ``uz_PMSM_t`` with the required rows from ``machine_parameters.csv``.
 * :ref:`uz_pmsm_control` receives ``uz_PMSM_t`` and forwards it to the current controller and setpoint generation.
 * :ref:`uz_pmsm_swmodel` currently evaluates the linear flux linkages
 
@@ -365,7 +368,7 @@ Before a dataset is used in the controller or a model, check the following:
 
 * ``machine_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
 * ``machine_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
-* ``machine_parameters.csv`` contains the recommended machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits, when it is used to derive controller limits.
+* ``machine_parameters.csv`` contains the machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits.
 * ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
 * ``Psi_PM_Vs`` is greater than or equal to zero.
 * ``flux_map.csv`` has the required columns ``operating_point``, ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``.

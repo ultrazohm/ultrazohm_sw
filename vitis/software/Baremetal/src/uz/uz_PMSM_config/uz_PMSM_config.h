@@ -2,12 +2,14 @@
 #define UZ_PMSM_CONFIG_H
 
 #pragma once
+#include <stdint.h>
 
 /**
  * @brief Configuratin struct for a PMSM. Accessible by the user
  * 
  */
 typedef struct uz_PMSM_t{
+    uint32_t machine_id; /**< unique machine identifier generated from the PMSM machine catalog */
     float R_ph_Ohm;/**< phase resitance inductance in Ohm. Must be greater than 0.0f */
     float Ld_Henry; /**< d-axis inductance in Henry. Must be greater than 0.0f */
     float Lq_Henry;/**< q-axis inductance in Henry. Must be greater than 0.0f */
@@ -15,6 +17,18 @@ typedef struct uz_PMSM_t{
     float polePairs; /**< number of polePairs of the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
     float J_kg_m_squared; /**< inertia of the PMSM. Must be greater than 0.0f */
     float I_max_Ampere; /**< max allowed current per phase. Must be greater than 0.0f */
+    float I_rated_Ampere; /**< rated current per phase. Must be greater than 0.0f */
+    float Torque_rated_Nm; /**< rated torque in Nm. Must be greater than 0.0f */
+    float Torque_max_Nm; /**< maximum torque in Nm. Must be greater or equal to rated torque */
+    float Torque_min_Nm; /**< minimum torque in Nm. Must be less than or equal to 0.0f */
+    float speed_rated_rpm; /**< rated mechanical speed in rpm. Must be greater than 0.0f */
+    float speed_max_rpm; /**< maximum mechanical speed in rpm. Must be greater or equal to rated speed */
+    float speed_min_rpm; /**< minimum mechanical speed in rpm. Must be less than or equal to 0.0f */
+    float V_dc_nominal_V; /**< nominal DC-link voltage in V. Must be greater than 0.0f */
+    float I_d_max_A; /**< maximum d-axis current in A */
+    float I_d_min_A; /**< minimum d-axis current in A */
+    float I_q_max_A; /**< maximum q-axis current in A */
+    float I_q_min_A; /**< minimum q-axis current in A */
 }uz_PMSM_t;
 
 #include "uz_avialable_machines_auto_generated.h"

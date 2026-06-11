@@ -1,5 +1,6 @@
 parameter,value
 machine_name,mh_prototype
+machine_id,3
 R_ph_Ohm,0.51
 Ld_Henry,0.00175
 Lq_Henry,0.00175

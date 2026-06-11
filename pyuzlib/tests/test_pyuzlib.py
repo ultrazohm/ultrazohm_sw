@@ -45,7 +45,8 @@ def test_pmsm_parameters_load_c_values_and_additional_values():
 
     assert parameters.R_ph_Ohm == 0.51
     assert parameters.Ld_Henry == 0.002
-    assert parameters.additional_parameters["I_rated_Ampere"] == 8.0
+    assert parameters.I_rated_Ampere == 8.0
+    assert parameters.machine_id == 2
     assert parameters.to_c_dict()["I_max_Ampere"] == 12.0
 
 
@@ -54,6 +55,7 @@ def test_pmsm_parameters_c_field_names_follow_dataclass_order():
         (field_spec.ctype, field_spec.name)
         for field_spec in PMSMParameters.C_PARAMETER_FIELDS
     ) == (
+        ("uint32_t", "machine_id"),
         ("float", "R_ph_Ohm"),
         ("float", "Ld_Henry"),
         ("float", "Lq_Henry"),
@@ -61,8 +63,21 @@ def test_pmsm_parameters_c_field_names_follow_dataclass_order():
         ("float", "polePairs"),
         ("float", "J_kg_m_squared"),
         ("float", "I_max_Ampere"),
+        ("float", "I_rated_Ampere"),
+        ("float", "Torque_rated_Nm"),
+        ("float", "Torque_max_Nm"),
+        ("float", "Torque_min_Nm"),
+        ("float", "speed_rated_rpm"),
+        ("float", "speed_max_rpm"),
+        ("float", "speed_min_rpm"),
+        ("float", "V_dc_nominal_V"),
+        ("float", "I_d_max_A"),
+        ("float", "I_d_min_A"),
+        ("float", "I_q_max_A"),
+        ("float", "I_q_min_A"),
     )
     assert PMSMParameters.C_PARAMETER_NAMES == (
+        "machine_id",
         "R_ph_Ohm",
         "Ld_Henry",
         "Lq_Henry",
@@ -70,6 +85,18 @@ def test_pmsm_parameters_c_field_names_follow_dataclass_order():
         "polePairs",
         "J_kg_m_squared",
         "I_max_Ampere",
+        "I_rated_Ampere",
+        "Torque_rated_Nm",
+        "Torque_max_Nm",
+        "Torque_min_Nm",
+        "speed_rated_rpm",
+        "speed_max_rpm",
+        "speed_min_rpm",
+        "V_dc_nominal_V",
+        "I_d_max_A",
+        "I_d_min_A",
+        "I_q_max_A",
+        "I_q_min_A",
     )
 
 
@@ -164,6 +191,7 @@ def test_machine_catalog_generates_inventory_and_header(tmp_path):
     assert "DUMMY_MOTOR_NOMINAL_V1" in inventory_output.read_text(encoding="utf-8")
     header_text = header_output.read_text(encoding="utf-8")
     assert "#define UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT" in header_text
+    assert ".machine_id = 2u" in header_text
     assert ".R_ph_Ohm = 0.51f" in header_text
 
 
@@ -181,6 +209,7 @@ def test_pmsm_parameters_load_string_metadata_and_ignore_appended_table(tmp_path
     csv_path.write_text(
         "parameter,value\n"
         "machine_name,beckhoff_AM8141-0j00-000\n"
+        "machine_id,1\n"
         "R_ph_Ohm,0.51\n"
         "Ld_Henry,0.00175\n"
         "Lq_Henry,0.00175\n"
@@ -188,6 +217,18 @@ def test_pmsm_parameters_load_string_metadata_and_ignore_appended_table(tmp_path
         "polePairs,4\n"
         "J_kg_m_squared,0.000108\n"
         "I_max_Ampere,12\n"
+        "I_rated_Ampere,8\n"
+        "Torque_rated_Nm,1.2\n"
+        "Torque_max_Nm,2\n"
+        "Torque_min_Nm,-2\n"
+        "speed_rated_rpm,1000\n"
+        "speed_max_rpm,1500\n"
+        "speed_min_rpm,-1500\n"
+        "V_dc_nominal_V,48\n"
+        "I_d_max_A,10\n"
+        "I_d_min_A,-10\n"
+        "I_q_max_A,10\n"
+        "I_q_min_A,-10\n"
         "\n"
         "Inenn,Imax,Udc,nnenn,Ld,Lq,Rs,p,PsiPm,Umax,KPd,KPq,KId,KIq,machine\n"
         "8,12,48,1000,0.00175,0.00175,0.45,4,0.042,27.71,8.75,8.75,2250,2250,M5\n",

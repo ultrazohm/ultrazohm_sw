@@ -162,7 +162,7 @@ def write_available_machines_csv(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     c_parameter_names = tuple(field.name for field in c_fields)
     fieldnames = [
-        "machine_id",
+        "catalog_id",
         "macro_name",
         "machine_name",
         "dataset_name",
@@ -174,7 +174,7 @@ def write_available_machines_csv(
         writer.writeheader()
         for entry in entries:
             row = {
-                "machine_id": entry.machine_id,
+                "catalog_id": entry.machine_id,
                 "macro_name": entry.macro_name,
                 "machine_name": entry.machine_name,
                 "dataset_name": entry.dataset_name,

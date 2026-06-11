@@ -48,7 +48,7 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
 static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_m_rad_per_sec, float V_dc_volts, float i_ref, float M_ref_Nm);
 static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_FE_max, uz_3ph_dq_t actual_currents_Ampere);
-static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
+static void uz_SetPoint_assert_motor_parameters(const uz_PMSM_t *input, enum uz_Setpoint_motor_type motor_type);
 static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
 static void uz_SetPoint_newton_raphson_MTPA_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm); 
 static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float M_ref_Nm, float V_FE_max, float omega_el_rad_per_sec);
@@ -67,7 +67,7 @@ static uz_SetPoint_t* uz_SetPoint_allocation(void){
 uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     uz_SetPoint_t* self = uz_SetPoint_allocation();
     uz_assert(config.relative_torque_tolerance >= 0.0f);
-    uz_SetPoint_assert_motor_parameters(config.config_PMSM, config.motor_type);
+    uz_SetPoint_assert_motor_parameters(&config.config_PMSM, config.motor_type);
 	self->newton_MTPA.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(self->derivate_poly_coefficients_MTPA);
 	self->newton_MTPA.derivate_poly_coefficients.data = &self->derivate_poly_coefficients_MTPA[0];
     self->newton_MTPA.derivate_poly_coefficients.data[0] = 1.0f; //1*x0
@@ -124,11 +124,12 @@ void uz_SetPoint_set_field_weakening(uz_SetPoint_t* self, bool is_field_weakenin
 	self->config.is_field_weakening_enabled = is_field_weakening_enabled;
 }
 
-void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
+void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, const uz_PMSM_t *input) {
     uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input);
     uz_assert(self->is_ready);
     uz_SetPoint_assert_motor_parameters(input, self->config.motor_type);
-    self->config.config_PMSM = input;
+    self->config.config_PMSM = *input;
 }
 
 void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere) {
@@ -158,16 +159,17 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
     }
     return(output_currents);
 }
-static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type) {
-    uz_assert(input.polePairs > 0.0f);
-	uz_assert(fmodf(input.polePairs, 1.0f) == 0);
-	uz_assert(input.R_ph_Ohm > 0.0f);
-	uz_assert(input.I_max_Ampere > 0.0f);
-	uz_assert(input.Ld_Henry > 0.0f);
-	uz_assert(input.Lq_Henry > 0.0f);
-	uz_assert(input.Psi_PM_Vs >= 0.0f);
+static void uz_SetPoint_assert_motor_parameters(const uz_PMSM_t *input, enum uz_Setpoint_motor_type motor_type) {
+    uz_assert_not_NULL(input);
+    uz_assert(input->polePairs > 0.0f);
+	uz_assert(fmodf(input->polePairs, 1.0f) == 0);
+	uz_assert(input->R_ph_Ohm > 0.0f);
+	uz_assert(input->I_max_Ampere > 0.0f);
+	uz_assert(input->Ld_Henry > 0.0f);
+	uz_assert(input->Lq_Henry > 0.0f);
+	uz_assert(input->Psi_PM_Vs >= 0.0f);
     if(motor_type == IPMSM) {
-        uz_assert(input.Ld_Henry != input.Lq_Henry);
+        uz_assert(input->Ld_Henry != input->Lq_Henry);
     }
 }
 

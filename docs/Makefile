@@ -17,6 +17,9 @@ help:
 # Delete build folder before make
 .PHONY: clean
 
+auto_generate_available_machines:
+	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
+
 clean:
 	 rm -r build
 

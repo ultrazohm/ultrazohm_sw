@@ -7,33 +7,49 @@ from typing import ClassVar
 
 import pandas as pd
 
-ParameterValue = float | str
+ParameterValue = float | int | str
+
+
+@dataclass(frozen=True)
+class CParameterField:
+    name: str
+    ctype: str
+
+
+C_PARAMETER_TYPE_METADATA_KEY = "uz_pmsm_c_type"
+SUPPORTED_C_PARAMETER_TYPES = ("float", "uint32_t")
+
+
+def _c_parameter(*, ctype: str = "float"):
+    return field(default=None, metadata={C_PARAMETER_TYPE_METADATA_KEY: ctype})
 
 
 @dataclass
 class PMSMParameters:
     """C-compatible PMSM machine parameters plus optional metadata."""
 
-    R_ph_Ohm: float | None = None
-    Ld_Henry: float | None = None
-    Lq_Henry: float | None = None
-    Psi_PM_Vs: float | None = None
-    polePairs: float | None = None
-    J_kg_m_squared: float | None = None
-    I_max_Ampere: float | None = None
+    R_ph_Ohm: float | None = _c_parameter()
+    Ld_Henry: float | None = _c_parameter()
+    Lq_Henry: float | None = _c_parameter()
+    Psi_PM_Vs: float | None = _c_parameter()
+    polePairs: float | None = _c_parameter()
+    J_kg_m_squared: float | None = _c_parameter()
+    I_max_Ampere: float | None = _c_parameter()
     additional_parameters: dict[str, ParameterValue] = field(default_factory=dict)
 
+    C_PARAMETER_FIELDS: ClassVar[tuple[CParameterField, ...]] = ()
     C_PARAMETER_NAMES: ClassVar[tuple[str, ...]] = ()
+    C_PARAMETER_TYPES: ClassVar[dict[str, str]] = {}
 
     @classmethod
     def from_csv(cls, csv_path: str | Path) -> "PMSMParameters":
         csv_path = Path(csv_path)
         values = cls._read_key_value_csv(csv_path)
-        c_values: dict[str, float | None] = {}
+        c_values: dict[str, float | int | None] = {}
         additional_parameters: dict[str, ParameterValue] = {}
         for name, value in values.items():
-            if name in cls.C_PARAMETER_NAMES:
-                c_values[name] = float(value)
+            if name in cls.C_PARAMETER_TYPES:
+                c_values[name] = cls._parse_c_value(value, cls.C_PARAMETER_TYPES[name])
             else:
                 additional_parameters[name] = cls._parse_additional_value(value)
 
@@ -41,8 +57,12 @@ class PMSMParameters:
 
     def update(self, **values: ParameterValue) -> None:
         for name, value in values.items():
-            if name in self.C_PARAMETER_NAMES:
-                setattr(self, name, float(value))
+            if name in self.C_PARAMETER_TYPES:
+                setattr(
+                    self,
+                    name,
+                    self._parse_c_value(value, self.C_PARAMETER_TYPES[name]),
+                )
             else:
                 self.additional_parameters[name] = self._parse_additional_value(value)
 
@@ -52,9 +72,15 @@ class PMSMParameters:
             values.update(self.additional_parameters)
         return values
 
-    def to_c_dict(self) -> dict[str, float]:
+    def to_c_dict(self) -> dict[str, float | int]:
         self.validate_for_c()
-        return {name: float(getattr(self, name)) for name in self.C_PARAMETER_NAMES}
+        return {
+            field_spec.name: self._parse_c_value(
+                getattr(self, field_spec.name),
+                field_spec.ctype,
+            )
+            for field_spec in self.C_PARAMETER_FIELDS
+        }
 
     def to_csv(self, csv_path: str | Path, include_additional: bool = True) -> None:
         values = self.to_dict(include_additional=include_additional)
@@ -93,12 +119,48 @@ class PMSMParameters:
         if invalid:
             raise ValueError(f"Invalid PMSM parameters for C implementation: {invalid}")
 
+        invalid_type_values = [
+            field_spec.name
+            for field_spec in self.C_PARAMETER_FIELDS
+            if not self._is_valid_c_value(
+                getattr(self, field_spec.name),
+                field_spec.ctype,
+            )
+        ]
+        if invalid_type_values:
+            raise ValueError(
+                "Invalid PMSM parameter types for C implementation: "
+                f"{invalid_type_values}"
+            )
+
     @staticmethod
     def _parse_additional_value(value: object) -> ParameterValue:
         try:
             return float(value)
         except (TypeError, ValueError):
             return str(value)
+
+    @staticmethod
+    def _parse_c_value(value: object, ctype: str) -> float | int:
+        if ctype == "float":
+            return float(value)
+        if ctype == "uint32_t":
+            float_value = float(value)
+            parsed_value = int(float_value)
+            if float_value != parsed_value:
+                raise ValueError(f"Cannot parse {value!r} as uint32_t")
+            return parsed_value
+        raise ValueError(f"Unsupported C parameter type: {ctype}")
+
+    @staticmethod
+    def _is_valid_c_value(value: object, ctype: str) -> bool:
+        try:
+            parsed_value = PMSMParameters._parse_c_value(value, ctype)
+        except (TypeError, ValueError):
+            return False
+        if ctype == "uint32_t":
+            return 0 <= parsed_value <= 0xFFFFFFFF
+        return True
 
     @staticmethod
     def _read_key_value_csv(csv_path: Path) -> dict[str, str]:
@@ -123,8 +185,25 @@ class PMSMParameters:
         return dict(rows)
 
 
-PMSMParameters.C_PARAMETER_NAMES = tuple(
-    dataclass_field.name
+PMSMParameters.C_PARAMETER_FIELDS = tuple(
+    CParameterField(
+        name=dataclass_field.name,
+        ctype=str(dataclass_field.metadata[C_PARAMETER_TYPE_METADATA_KEY]),
+    )
     for dataclass_field in fields(PMSMParameters)
-    if dataclass_field.name != "additional_parameters"
+    if C_PARAMETER_TYPE_METADATA_KEY in dataclass_field.metadata
 )
+unsupported_c_parameter_types = [
+    field_spec
+    for field_spec in PMSMParameters.C_PARAMETER_FIELDS
+    if field_spec.ctype not in SUPPORTED_C_PARAMETER_TYPES
+]
+if unsupported_c_parameter_types:
+    raise ValueError(f"Unsupported PMSM C parameter fields: {unsupported_c_parameter_types}")
+
+PMSMParameters.C_PARAMETER_NAMES = tuple(
+    field_spec.name for field_spec in PMSMParameters.C_PARAMETER_FIELDS
+)
+PMSMParameters.C_PARAMETER_TYPES = {
+    field_spec.name: field_spec.ctype for field_spec in PMSMParameters.C_PARAMETER_FIELDS
+}

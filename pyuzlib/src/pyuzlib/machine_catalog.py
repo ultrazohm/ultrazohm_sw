@@ -8,8 +8,9 @@ from pathlib import Path
 
 from ._repo_paths import machine_catalog_default_paths
 from ._repo_paths import repo_root_from
-from .pmsm import PMSM
-from .pmsm import PMSMParameters
+from .pmsm.parameters import CParameterField
+from .pmsm.parameters import PMSMParameters
+from .pmsm.parameters import SUPPORTED_C_PARAMETER_TYPES
 
 
 @dataclass(frozen=True)
@@ -19,9 +20,10 @@ class MachineCatalogEntry:
     machine_name: str
     dataset_name: str
     machine_parameters_csv: str
-    parameters: dict[str, float]
+    parameters: dict[str, float | int]
 
-def parse_uz_pmsm_struct_fields(header_path: str | Path) -> tuple[str, ...]:
+
+def parse_uz_pmsm_struct_fields(header_path: str | Path) -> tuple[CParameterField, ...]:
     header_path = Path(header_path)
     text = header_path.read_text(encoding="utf-8")
     match = re.search(
@@ -33,14 +35,28 @@ def parse_uz_pmsm_struct_fields(header_path: str | Path) -> tuple[str, ...]:
         raise ValueError(f"Could not locate uz_PMSM_t in {header_path}")
 
     body = re.sub(r"/\*.*?\*/", "", match.group("body"), flags=re.DOTALL)
-    fields: list[str] = []
+    fields: list[CParameterField] = []
     for line in body.splitlines():
-        stripped = line.strip()
+        stripped = re.sub(r"//.*", "", line).strip()
         if not stripped:
             continue
-        field_match = re.match(r"(?:float|double|uint32_t|int32_t|bool)\s+([A-Za-z_][A-Za-z0-9_]*)\s*;", stripped)
+        field_match = re.fullmatch(
+            r"(?P<ctype>[A-Za-z_][A-Za-z0-9_]*)\s+"
+            r"(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*;",
+            stripped,
+        )
         if field_match:
-            fields.append(field_match.group(1))
+            ctype = field_match.group("ctype")
+            if ctype not in SUPPORTED_C_PARAMETER_TYPES:
+                raise ValueError(
+                    f"Unsupported uz_PMSM_t field type in {header_path}: "
+                    f"{ctype} {field_match.group('name')}"
+                )
+            fields.append(CParameterField(ctype=ctype, name=field_match.group("name")))
+            continue
+        raise ValueError(
+            f"Unsupported uz_PMSM_t field declaration in {header_path}: {stripped}"
+        )
 
     if not fields:
         raise ValueError(f"No uz_PMSM_t fields parsed from {header_path}")
@@ -64,6 +80,19 @@ def format_c_float(value: float) -> str:
     return f"{text}f"
 
 
+def format_c_value(value: float | int, ctype: str) -> str:
+    if ctype == "float":
+        return format_c_float(float(value))
+    if ctype == "uint32_t":
+        parsed_value = int(value)
+        if parsed_value != float(value):
+            raise ValueError(f"Cannot render non-integer value {value!r} as uint32_t")
+        if parsed_value < 0 or parsed_value > 0xFFFFFFFF:
+            raise ValueError(f"Cannot render out-of-range value {value!r} as uint32_t")
+        return f"{parsed_value}u"
+    raise ValueError(f"Unsupported C field type: {ctype}")
+
+
 def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -> str:
     resolved_path = Path(path).resolve()
     resolved_repo_root = Path(repo_root).resolve()
@@ -75,13 +104,13 @@ def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -
 def discover_machine_catalog(
     uz_pmsm_dir: str | Path,
     c_header_path: str | Path,
-) -> tuple[tuple[str, ...], list[MachineCatalogEntry]]:
+) -> tuple[tuple[CParameterField, ...], list[MachineCatalogEntry]]:
     uz_pmsm_dir = Path(uz_pmsm_dir)
-    c_parameter_names = parse_uz_pmsm_struct_fields(c_header_path)
-    if c_parameter_names != PMSMParameters.C_PARAMETER_NAMES:
+    c_fields = parse_uz_pmsm_struct_fields(c_header_path)
+    if c_fields != PMSMParameters.C_PARAMETER_FIELDS:
         raise ValueError(
             "pyuzlib.PMSMParameters and uz_PMSM_t differ. "
-            f"Python fields: {PMSMParameters.C_PARAMETER_NAMES}, C fields: {c_parameter_names}"
+            f"Python fields: {PMSMParameters.C_PARAMETER_FIELDS}, C fields: {c_fields}"
         )
     entries: list[MachineCatalogEntry] = []
     used_machine_ids: set[str] = set()
@@ -92,16 +121,14 @@ def discover_machine_catalog(
             continue
 
         machine_dir, dataset_dir, _ = relative_csv_path.parts
-        motor = PMSM()
-        parameters = motor.load_parameters_csv(csv_path)
+        parameters = PMSMParameters.from_csv(csv_path)
         values = parameters.to_dict(include_additional=True)
 
-        missing = [name for name in c_parameter_names if values.get(name) is None]
-        if missing:
-            raise ValueError(f"Missing uz_PMSM_t fields in {csv_path}: {missing}")
-
-        c_values = {name: float(values[name]) for name in c_parameter_names}
-        parameters.validate_for_c()
+        try:
+            c_dict = parameters.to_c_dict()
+        except ValueError as exc:
+            raise ValueError(f"Invalid PMSM parameter CSV {csv_path}: {exc}") from exc
+        c_values = {field.name: c_dict[field.name] for field in c_fields}
 
         machine_id = normalize_machine_identifier(f"{machine_dir}_{dataset_dir}")
         if machine_id in used_machine_ids:
@@ -123,16 +150,17 @@ def discover_machine_catalog(
     if not entries:
         raise ValueError(f"No machine_parameters.csv files found below {uz_pmsm_dir}")
 
-    return c_parameter_names, entries
+    return c_fields, entries
 
 
 def write_available_machines_csv(
     entries: list[MachineCatalogEntry],
     output_path: str | Path,
-    c_parameter_names: tuple[str, ...],
+    c_fields: tuple[CParameterField, ...],
 ) -> None:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    c_parameter_names = tuple(field.name for field in c_fields)
     fieldnames = [
         "machine_id",
         "macro_name",
@@ -152,14 +180,19 @@ def write_available_machines_csv(
                 "dataset_name": entry.dataset_name,
                 "machine_parameters_csv": entry.machine_parameters_csv,
             }
-            row.update({name: format(entry.parameters[name], ".15g") for name in c_parameter_names})
+            row.update(
+                {
+                    field.name: format(entry.parameters[field.name], ".15g")
+                    for field in c_fields
+                }
+            )
             writer.writerow(row)
 
 
 def render_c_init_header(
     entries: list[MachineCatalogEntry],
     *,
-    c_parameter_names: tuple[str, ...],
+    c_fields: tuple[CParameterField, ...],
     source_root: str | Path,
     inventory_output: str | Path,
     generator_script: str,
@@ -188,8 +221,11 @@ def render_c_init_header(
         )
         lines.append(f"#define {entry.macro_name} \\")
         lines.append("    { \\")
-        for name in c_parameter_names:
-            lines.append(f"        .{name} = {format_c_float(entry.parameters[name])}, \\")
+        for field in c_fields:
+            lines.append(
+                f"        .{field.name} = "
+                f"{format_c_value(entry.parameters[field.name], field.ctype)}, \\"
+            )
         lines.append("    }")
         lines.append("")
 
@@ -202,7 +238,7 @@ def write_c_init_header(
     entries: list[MachineCatalogEntry],
     output_path: str | Path,
     *,
-    c_parameter_names: tuple[str, ...],
+    c_fields: tuple[CParameterField, ...],
     source_root: str | Path,
     inventory_output: str | Path,
     generator_script: str,
@@ -212,7 +248,7 @@ def write_c_init_header(
     output_path.write_text(
         render_c_init_header(
             entries,
-            c_parameter_names=c_parameter_names,
+            c_fields=c_fields,
             source_root=source_root,
             inventory_output=inventory_output,
             generator_script=generator_script,
@@ -228,15 +264,15 @@ def generate_machine_catalog(
     generated_header_output: str | Path,
     generator_script: str,
 ) -> list[MachineCatalogEntry]:
-    c_parameter_names, entries = discover_machine_catalog(
+    c_fields, entries = discover_machine_catalog(
         uz_pmsm_dir=uz_pmsm_dir,
         c_header_path=c_header_path,
     )
-    write_available_machines_csv(entries, inventory_output, c_parameter_names)
+    write_available_machines_csv(entries, inventory_output, c_fields)
     write_c_init_header(
         entries,
         generated_header_output,
-        c_parameter_names=c_parameter_names,
+        c_fields=c_fields,
         source_root=uz_pmsm_dir,
         inventory_output=inventory_output,
         generator_script=generator_script,

@@ -50,6 +50,18 @@ def test_pmsm_parameters_load_c_values_and_additional_values():
 
 
 def test_pmsm_parameters_c_field_names_follow_dataclass_order():
+    assert tuple(
+        (field_spec.ctype, field_spec.name)
+        for field_spec in PMSMParameters.C_PARAMETER_FIELDS
+    ) == (
+        ("float", "R_ph_Ohm"),
+        ("float", "Ld_Henry"),
+        ("float", "Lq_Henry"),
+        ("float", "Psi_PM_Vs"),
+        ("float", "polePairs"),
+        ("float", "J_kg_m_squared"),
+        ("float", "I_max_Ampere"),
+    )
     assert PMSMParameters.C_PARAMETER_NAMES == (
         "R_ph_Ohm",
         "Ld_Henry",
@@ -64,16 +76,69 @@ def test_pmsm_parameters_c_field_names_follow_dataclass_order():
 def test_machine_catalog_parses_uz_pmsm_fields_from_c_header():
     header_path = "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h"
 
-    field_names = machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+    c_fields = machine_catalog.parse_uz_pmsm_struct_fields(header_path)
 
-    assert field_names == PMSMParameters.C_PARAMETER_NAMES
+    assert c_fields == PMSMParameters.C_PARAMETER_FIELDS
+
+
+def test_machine_catalog_rejects_unsupported_c_struct_declarations(tmp_path):
+    header_path = tmp_path / "uz_PMSM_config.h"
+    header_path.write_text(
+        "typedef struct uz_PMSM_t{\n"
+        "    float R_ph_Ohm;\n"
+        "    char unsupported_name[16];\n"
+        "}uz_PMSM_t;\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Unsupported uz_PMSM_t field declaration"):
+        machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+
+
+def test_machine_catalog_parses_future_uint32_c_struct_field(tmp_path):
+    header_path = tmp_path / "uz_PMSM_config.h"
+    header_path.write_text(
+        "typedef struct uz_PMSM_t{\n"
+        "    float R_ph_Ohm;\n"
+        "    uint32_t machine_id;\n"
+        "}uz_PMSM_t;\n",
+        encoding="utf-8",
+    )
+
+    c_fields = machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+
+    assert c_fields == (
+        machine_catalog.CParameterField(ctype="float", name="R_ph_Ohm"),
+        machine_catalog.CParameterField(ctype="uint32_t", name="machine_id"),
+    )
+
+
+def test_machine_catalog_rejects_unsupported_c_struct_field_types(tmp_path):
+    header_path = tmp_path / "uz_PMSM_config.h"
+    header_path.write_text(
+        "typedef struct uz_PMSM_t{\n"
+        "    double R_ph_Ohm;\n"
+        "}uz_PMSM_t;\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Unsupported uz_PMSM_t field type"):
+        machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+
+
+def test_machine_catalog_formats_uint32_c_values():
+    assert machine_catalog.format_c_value(42, "uint32_t") == "42u"
+    assert machine_catalog.format_c_value(42.0, "uint32_t") == "42u"
+    with pytest.raises(ValueError, match="Cannot render non-integer"):
+        machine_catalog.format_c_value(42.5, "uint32_t")
 
 
 def test_machine_catalog_detects_drift_between_c_header_and_python_model(monkeypatch):
     monkeypatch.setattr(
         PMSMParameters,
-        "C_PARAMETER_NAMES",
-        PMSMParameters.C_PARAMETER_NAMES + ("new_parameter",),
+        "C_PARAMETER_FIELDS",
+        PMSMParameters.C_PARAMETER_FIELDS
+        + (machine_catalog.CParameterField(ctype="float", name="new_parameter"),),
     )
 
     with pytest.raises(ValueError, match="pyuzlib.PMSMParameters and uz_PMSM_t differ"):

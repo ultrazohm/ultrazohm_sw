@@ -1,5 +1,8 @@
 import pyuzlib
 import numpy as np
+import pytest
+from pyuzlib import machine_catalog
+from pyuzlib._repo_paths import machine_catalog_default_paths
 from pyuzlib.pmsm import (
     DifferentialInductanceMap,
     FluxMap,
@@ -30,6 +33,11 @@ def test_pyuzlib_exposes_pmsm_api():
     assert pyuzlib.pmsm.OperationArea
 
 
+def test_pyuzlib_exposes_machine_catalog_api():
+    assert pyuzlib.machine_catalog.parse_uz_pmsm_struct_fields
+    assert pyuzlib.machine_catalog.generate_machine_catalog
+
+
 def test_pmsm_parameters_load_c_values_and_additional_values():
     parameters = PMSMParameters.from_csv(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/machine_parameters.csv"
@@ -39,6 +47,68 @@ def test_pmsm_parameters_load_c_values_and_additional_values():
     assert parameters.Ld_Henry == 0.002
     assert parameters.additional_parameters["I_rated_Ampere"] == 8.0
     assert parameters.to_c_dict()["I_max_Ampere"] == 12.0
+
+
+def test_pmsm_parameters_c_field_names_follow_dataclass_order():
+    assert PMSMParameters.C_PARAMETER_NAMES == (
+        "R_ph_Ohm",
+        "Ld_Henry",
+        "Lq_Henry",
+        "Psi_PM_Vs",
+        "polePairs",
+        "J_kg_m_squared",
+        "I_max_Ampere",
+    )
+
+
+def test_machine_catalog_parses_uz_pmsm_fields_from_c_header():
+    header_path = "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h"
+
+    field_names = machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+
+    assert field_names == PMSMParameters.C_PARAMETER_NAMES
+
+
+def test_machine_catalog_detects_drift_between_c_header_and_python_model(monkeypatch):
+    monkeypatch.setattr(
+        PMSMParameters,
+        "C_PARAMETER_NAMES",
+        PMSMParameters.C_PARAMETER_NAMES + ("new_parameter",),
+    )
+
+    with pytest.raises(ValueError, match="pyuzlib.PMSMParameters and uz_PMSM_t differ"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir="docs/source/software/control/uz_pmsm",
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
+def test_machine_catalog_generates_inventory_and_header(tmp_path):
+    inventory_output = tmp_path / "avialable_machines.csv"
+    header_output = tmp_path / "uz_avialable_machines_auto_generated.h"
+
+    entries = machine_catalog.generate_machine_catalog(
+        uz_pmsm_dir="docs/source/software/control/uz_pmsm",
+        c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        inventory_output=inventory_output,
+        generated_header_output=header_output,
+        generator_script="pyuzlib.machine_catalog",
+    )
+
+    assert len(entries) == 3
+    assert "DUMMY_MOTOR_NOMINAL_V1" in inventory_output.read_text(encoding="utf-8")
+    header_text = header_output.read_text(encoding="utf-8")
+    assert "#define UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT" in header_text
+    assert ".R_ph_Ohm = 0.51f" in header_text
+
+
+def test_machine_catalog_default_paths_point_to_repo_layout():
+    defaults = machine_catalog_default_paths("pyuzlib/src/pyuzlib/machine_catalog.py")
+
+    assert defaults["uz_pmsm_dir"].as_posix().endswith("docs/source/software/control/uz_pmsm")
+    assert defaults["c_header_path"].as_posix().endswith(
+        "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h"
+    )
 
 
 def test_pmsm_parameters_load_string_metadata_and_ignore_appended_table(tmp_path):

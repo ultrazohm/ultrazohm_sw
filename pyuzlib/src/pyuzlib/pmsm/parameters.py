@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import ClassVar
 
@@ -23,15 +23,7 @@ class PMSMParameters:
     I_max_Ampere: float | None = None
     additional_parameters: dict[str, ParameterValue] = field(default_factory=dict)
 
-    C_PARAMETER_NAMES: ClassVar[tuple[str, ...]] = (
-        "R_ph_Ohm",
-        "Ld_Henry",
-        "Lq_Henry",
-        "Psi_PM_Vs",
-        "polePairs",
-        "J_kg_m_squared",
-        "I_max_Ampere",
-    )
+    C_PARAMETER_NAMES: ClassVar[tuple[str, ...]] = ()
 
     @classmethod
     def from_csv(cls, csv_path: str | Path) -> "PMSMParameters":
@@ -129,3 +121,10 @@ class PMSMParameters:
                 rows.append((row[0].strip(), row[1].strip()))
 
         return dict(rows)
+
+
+PMSMParameters.C_PARAMETER_NAMES = tuple(
+    dataclass_field.name
+    for dataclass_field in fields(PMSMParameters)
+    if dataclass_field.name != "additional_parameters"
+)

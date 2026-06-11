@@ -104,3 +104,37 @@ Related Documentation
 =====================
 
 For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000`.
+
+Auto-generation for machine catalog
+===================================
+
+
+.. code-block:: bash
+
+	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
+
+
+Adding new members to uz_PMSM_t
+===============================
+
+The machine-catalog generation flow is designed so that changes to ``uz_PMSM_t`` mostly require schema updates, not generator updates.
+
+If a new scalar member is added to ``uz_PMSM_t``, update these places:
+
+* Add the new field to ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h``.
+* Extend the checks in ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.c`` if the new field needs validation.
+* Add the same field to the ``PMSMParameters`` dataclass in ``pyuzlib/src/pyuzlib/pmsm/parameters.py``.
+* Extend ``PMSMParameters.validate_for_c()`` if the new field is required or constrained.
+* Add the new parameter row to every ``machine_parameters.csv`` file under ``docs/source/software/control/uz_pmsm``.
+* Update the canonical CSV documentation in ``docs/source/software/control/uz_pmsm/uz_pmsm.rst``.
+* Regenerate the catalog using ``python -m pyuzlib.machine_catalog`` or ``uz-generate-pmsm-machine-catalog``.
+
+The following parts do not usually need manual changes:
+
+* ``pyuzlib.machine_catalog`` parses the field list directly from ``uz_PMSM_t`` in the C header.
+* ``uz_avialable_machines_auto_generated.h`` is regenerated automatically.
+* ``docs/source/software/control/uz_pmsm/generate_available_machines.py`` is only a thin wrapper.
+
+The important guardrail is that ``pyuzlib.machine_catalog`` compares the parsed ``uz_PMSM_t`` field list against ``PMSMParameters``. If the C struct changes but the Python data model is not updated, catalog generation fails with a clear mismatch instead of silently producing incorrect macros.
+
+This workflow assumes that the new member can still be represented as a scalar ``parameter,value`` entry in ``machine_parameters.csv`` and that the C declaration is a supported scalar field type. If a future member is an array, nested struct, or otherwise not representable in the current CSV scheme, both the CSV schema and the generator logic must be extended.

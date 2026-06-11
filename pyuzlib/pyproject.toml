@@ -26,6 +26,9 @@ dev = [
     "ruff",
 ]
 
+[project.scripts]
+uz-generate-pmsm-machine-catalog = "pyuzlib.machine_catalog:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["pyuzlib*"]

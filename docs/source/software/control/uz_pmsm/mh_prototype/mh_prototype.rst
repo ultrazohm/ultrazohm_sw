@@ -1,8 +1,9 @@
-========================
-beckhoff AM8141-0j00-000
-========================
+============
+mh_prototype
+============
 
-The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be plotted directly with ``pyuzlib``.
+MH prototype machine.
+The measured dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted directly with ``pyuzlib``.
 
 Matplotlib
 ==========
@@ -12,7 +13,7 @@ Matplotlib
   :caption: Flux map
 
    import pyuzlib
-   pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+   pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/mh_prototype/fem_overaged_over_angle/flux_map.csv')
 
 Plotly
 ======
@@ -22,7 +23,8 @@ Plotly
   :caption: Flux map Plotly
 
    import pyuzlib
-   pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+   pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/mh_prototype/fem_overaged_over_angle/flux_map.csv')
+
 
 Coefficients
 ============
@@ -33,13 +35,15 @@ Coefficients
    import pyuzlib
 
    pyuzlib.docs.pmsm.plot_linear_flux_model_comparison(
-       'docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv',
+       'docs/source/software/control/uz_pmsm/mh_prototype/fem_overaged_over_angle/flux_map.csv',
        grid_points=20,
    )
 
 
 Operating area
 ==============
+
+.. warning:: Dummy data for MH Prototype!
 
 .. plot::
   :caption: Operating area at rated speed
@@ -48,7 +52,7 @@ Operating area
    import pyuzlib
 
    pyuzlib.docs.pmsm.plot_operation_area(
-       'docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/machine_parameters.csv',
+       'docs/source/software/control/uz_pmsm/mh_prototype/fem_overaged_over_angle/machine_parameters.csv',
        v_dc_V=48.0,
        speed_rpm=1000.0,
        current_limit_A=12.0,
@@ -64,7 +68,7 @@ Operating area
    import pyuzlib
 
    pyuzlib.docs.pmsm.plot_max_torque_curve(
-       'docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/machine_parameters.csv',
+       'docs/source/software/control/uz_pmsm/mh_prototype/fem_overaged_over_angle/machine_parameters.csv',
        v_dc_V=48.0,
        speeds_rpm=np.linspace(0.0, 1500.0, 20),
        current_limit_A=12.0,

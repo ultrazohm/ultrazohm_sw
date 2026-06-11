@@ -385,3 +385,4 @@ Available motor datasets
 
     dummy_motor/dummy_motor
     beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000
+    mh_prototype/mh_prototype

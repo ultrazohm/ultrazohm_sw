@@ -81,11 +81,11 @@ Example
 	import pyuzlib
 
 	pyuzlib.docs.pmsm.plot_flux_map(
-		 "docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/"
+		 "docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/"
 		 "measured_psi_dq_averaged_800_rpm/flux_map.csv"
 	)
 
 Related Documentation
 =====================
 
-For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/beckhoff_HMD06_005_048_30_00M1IY170`.
+For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000`.

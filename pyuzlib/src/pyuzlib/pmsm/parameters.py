@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar
 
 import pandas as pd
+
+ParameterValue = float | str
 
 
 @dataclass
@@ -18,7 +21,7 @@ class PMSMParameters:
     polePairs: float | None = None
     J_kg_m_squared: float | None = None
     I_max_Ampere: float | None = None
-    additional_parameters: dict[str, float] = field(default_factory=dict)
+    additional_parameters: dict[str, ParameterValue] = field(default_factory=dict)
 
     C_PARAMETER_NAMES: ClassVar[tuple[str, ...]] = (
         "R_ph_Ohm",
@@ -33,32 +36,25 @@ class PMSMParameters:
     @classmethod
     def from_csv(cls, csv_path: str | Path) -> "PMSMParameters":
         csv_path = Path(csv_path)
-        data = pd.read_csv(csv_path)
-        required_columns = {"parameter", "value"}
-        missing_columns = required_columns - set(data.columns)
-        if missing_columns:
-            raise ValueError(f"Missing parameter CSV columns: {sorted(missing_columns)}")
-
-        values = dict(zip(data["parameter"], data["value"], strict=False))
+        values = cls._read_key_value_csv(csv_path)
         c_values: dict[str, float | None] = {}
-        additional_parameters: dict[str, float] = {}
+        additional_parameters: dict[str, ParameterValue] = {}
         for name, value in values.items():
-            value = float(value)
             if name in cls.C_PARAMETER_NAMES:
-                c_values[name] = value
+                c_values[name] = float(value)
             else:
-                additional_parameters[name] = value
+                additional_parameters[name] = cls._parse_additional_value(value)
 
         return cls(**c_values, additional_parameters=additional_parameters)
 
-    def update(self, **values: float) -> None:
+    def update(self, **values: ParameterValue) -> None:
         for name, value in values.items():
             if name in self.C_PARAMETER_NAMES:
                 setattr(self, name, float(value))
             else:
-                self.additional_parameters[name] = float(value)
+                self.additional_parameters[name] = self._parse_additional_value(value)
 
-    def to_dict(self, include_additional: bool = True) -> dict[str, float | None]:
+    def to_dict(self, include_additional: bool = True) -> dict[str, ParameterValue | None]:
         values = {name: getattr(self, name) for name in self.C_PARAMETER_NAMES}
         if include_additional:
             values.update(self.additional_parameters)
@@ -104,3 +100,32 @@ class PMSMParameters:
         invalid = [name for name, is_valid in checks.items() if not is_valid]
         if invalid:
             raise ValueError(f"Invalid PMSM parameters for C implementation: {invalid}")
+
+    @staticmethod
+    def _parse_additional_value(value: object) -> ParameterValue:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return str(value)
+
+    @staticmethod
+    def _read_key_value_csv(csv_path: Path) -> dict[str, str]:
+        rows: list[tuple[str, str]] = []
+        with csv_path.open(newline="", encoding="utf-8") as csv_file:
+            reader = csv.reader(csv_file)
+            try:
+                header = next(reader)
+            except StopIteration as exc:
+                raise ValueError(f"Empty parameter CSV: {csv_path}") from exc
+
+            if header[:2] != ["parameter", "value"]:
+                raise ValueError("Parameter CSV must start with the columns 'parameter,value'")
+
+            for row in reader:
+                if not row or all(cell.strip() == "" for cell in row):
+                    break
+                if len(row) != 2:
+                    break
+                rows.append((row[0].strip(), row[1].strip()))
+
+        return dict(rows)

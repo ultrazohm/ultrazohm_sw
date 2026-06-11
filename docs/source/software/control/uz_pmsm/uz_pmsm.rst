@@ -384,4 +384,4 @@ Available motor datasets
     :caption: PMSM motors
 
     dummy_motor/dummy_motor
-    beckhoff_HMD06_005_048_30_00M1IY170/beckhoff_HMD06_005_048_30_00M1IY170
+    beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000

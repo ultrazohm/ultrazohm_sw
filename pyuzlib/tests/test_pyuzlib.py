@@ -28,6 +28,30 @@ def test_pmsm_parameters_load_c_values_and_additional_values():
     assert parameters.to_c_dict()["I_max_Ampere"] == 12.0
 
 
+def test_pmsm_parameters_load_string_metadata_and_ignore_appended_table(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\n"
+        "machine_name,beckhoff_AM8141-0j00-000\n"
+        "R_ph_Ohm,0.51\n"
+        "Ld_Henry,0.00175\n"
+        "Lq_Henry,0.00175\n"
+        "Psi_PM_Vs,0.042\n"
+        "polePairs,4\n"
+        "J_kg_m_squared,0.000108\n"
+        "I_max_Ampere,12\n"
+        "\n"
+        "Inenn,Imax,Udc,nnenn,Ld,Lq,Rs,p,PsiPm,Umax,KPd,KPq,KId,KIq,machine\n"
+        "8,12,48,1000,0.00175,0.00175,0.45,4,0.042,27.71,8.75,8.75,2250,2250,M5\n",
+        encoding="utf-8",
+    )
+
+    parameters = PMSMParameters.from_csv(csv_path)
+
+    assert parameters.additional_parameters["machine_name"] == "beckhoff_AM8141-0j00-000"
+    assert parameters.to_c_dict()["Ld_Henry"] == 0.00175
+
+
 def test_flux_map_loads_default_columns_as_canonical_table():
     flux_map = FluxMap.from_csv(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"

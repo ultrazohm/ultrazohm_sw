@@ -1,6 +1,6 @@
-=========================
-beckhoff HMD06_005_048_30
-=========================
+========================
+beckhoff AM8141-0j00-000
+========================
 
 The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be plotted directly with ``pyuzlib``.
 
@@ -12,7 +12,7 @@ Matplotlib
   :caption: Flux map
 
    import pyuzlib
-   pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+   pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv')
 
 Plotly
 ======
@@ -22,7 +22,7 @@ Plotly
   :caption: Flux map Plotly
 
    import pyuzlib
-   pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv')
+   pyuzlib.docs.pmsm.plot_flux_map_plotly('docs/source/software/control/uz_pmsm/AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv')
 
 Tikz
 ====
@@ -31,7 +31,7 @@ Tikz
 ..   :align: center
 
 ..     \usepgfplotslibrary{groupplots}
-..    \pgfplotstableread[col sep=comma]{software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv}\fluxmap
+..    \pgfplotstableread[col sep=comma]{software/control/uz_pmsm/AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv}\fluxmap
 
 ..    \begin{tikzpicture}
 ..        \begin{groupplot}[
@@ -63,11 +63,5 @@ Tikz
 
 Coefficients
 ============
-
-The linearized coefficients below are generated from ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` using ``measured_psi_dq_averaged_800_rpm/coefficient.py``.
-
-.. csv-table:: Linearized flux-map coefficients
-  :file: measured_psi_dq_averaged_800_rpm/coefficient.csv
-  :header-rows: 1
 
 

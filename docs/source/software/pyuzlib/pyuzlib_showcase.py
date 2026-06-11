@@ -8,7 +8,7 @@ import pyuzlib
 PARAMETER_CSV = Path(
     "/workspaces/ultrazohm_sw/docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/machine_parameters.csv"
 )
-FLUX_MAP_CSV = Path("/workspaces/ultrazohm_sw/docs/source/software/control/uz_pmsm/beckhoff_HMD06_005_048_30_00M1IY170/measured_psi_dq_averaged_800_rpm/flux_map.csv")
+FLUX_MAP_CSV = Path("/workspaces/ultrazohm_sw/docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv")
 
 
 motor = pyuzlib.pmsm.PMSM()

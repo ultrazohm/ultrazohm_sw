@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 // OCM Bank 3 starts at         0xFFFF0000
 // See UG1085 page 533 (https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.375357)
 

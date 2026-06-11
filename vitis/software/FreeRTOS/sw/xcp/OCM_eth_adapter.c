@@ -40,6 +40,10 @@
 #define QUEUE_XCP_TX_LEN        10000
 #define QUEUE_XCP_RX_LEN        10
 
+/* TX batching: collect queued frames into one buffer of roughly a TCP MSS
+ * before write(), instead of one socket call per 68-byte frame. */
+#define TX_BATCH_BUF_SIZE       1400
+
 #define XCP_ETH_PORT            (uint16_t) 12340
 
 /*-------------------------------------------------------------------
@@ -106,18 +110,44 @@ static void ocm_eth_adapter_tx(void *arg_p)
             xQueueReset(queue_xcp_tx);
         }
 
+        // Batch as many queued frames as fit into ~one TCP MSS and send them
+        // with a single write(). Each write() goes through the lwIP socket
+        // layer / tcpip_thread mailbox, so one write per 68-byte frame was the
+        // main throughput limiter at DAQ rates. Frames are length-prefixed on
+        // the wire, so concatenating them does not change the stream format.
+        uint8_t  batch_buf[TX_BATCH_BUF_SIZE];
+        uint32_t batch_fill = 0;
+
         uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
+        // Block (with timeout for disconnect detection) for the first frame...
         if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, pdMS_TO_TICKS(100)) != pdPASS) {
             continue;  // timeout: re-check xcp_eth_connected, then keep waiting
         }
-        msg_txq_read++;
 
-        // length was already written before msg was given to queue
-        uint16_t len_xcp_tx;
-        len_xcp_tx = ((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
+        do {
+            // length was already written before msg was given to queue
+            uint16_t len_xcp_tx = (uint16_t)((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
+            uint32_t frame_total = (uint32_t)len_xcp_tx + XCP_HEADER_LEN;
 
+            if (frame_total > BUF_SIZE_XCP_TX) {
+                // Corrupt length field; drop the frame instead of overrunning
+                // the batch buffer.
+                continue;
+            }
 
-        if ((nwrote = write(sd, buf_xcp_tx, (len_xcp_tx + XCP_HEADER_LEN))) < 0) {
+            memcpy(&batch_buf[batch_fill], buf_xcp_tx, frame_total);
+            batch_fill += frame_total;
+            msg_txq_read++;
+
+            // ...then drain further frames without blocking while they fit.
+        } while ((batch_fill + BUF_SIZE_XCP_TX) <= TX_BATCH_BUF_SIZE
+                 && xQueueReceive(queue_xcp_tx, buf_xcp_tx, 0) == pdPASS);
+
+        if (batch_fill == 0) {
+            continue;
+        }
+
+        if ((nwrote = write(sd, batch_buf, batch_fill)) < 0) {
             break;  // socket closed/error; the accept loop owns close()
         }
     }
@@ -171,28 +201,42 @@ static void ocm_eth_adapter_init(void)
     rpu_apu_exchange_init();
 }
 
-static void read_rxQueue_write_OCM(void)
+static BaseType_t read_rxQueue_write_OCM(void)
 {
+	BaseType_t task_woken = pdFALSE;
+
 	// This irq can occur before the queue is created (xcp main task)
 	if (queue_xcp_rx == NULL) {
-		return;
+		return pdFALSE;
 	}
 
 	while (1) {
 		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
-		// Abort receive if no message could be read
-		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) != pdPASS) {
+		// Peek first: if the message does not fit into the OCM region we leave
+		// it queued for the next IPI cycle instead of losing it. XCP_IN is only
+		// 256 bytes (~3 commands), so command bursts must be drained over
+		// several cycles rather than overrunning the region.
+		if(xQueuePeekFromISR(queue_xcp_rx, buf_xcp_rx) != pdPASS) {
 			break;
 		}
-		msg_rxq_read++;
 
-		rpu_apu_exchange_writeOCM(BUF_SIZE_XCP_RX, buf_xcp_rx);
+		if (! rpu_apu_exchange_writeOCM(BUF_SIZE_XCP_RX, buf_xcp_rx)) {
+			break;	// OCM write region full; retry remaining commands next cycle
+		}
+
+		// Written to OCM: now actually consume the message from the queue.
+		(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
+		msg_rxq_read++;
 	}
+
+	return task_woken;
 }
 
-static void read_OCM_write_txQueue(void)
+static BaseType_t read_OCM_write_txQueue(void)
 {
+	BaseType_t task_woken = pdFALSE;
+
 	while (1) {
 		if (xcp_eth_connected == 0) {
 			break;
@@ -206,7 +250,7 @@ static void read_OCM_write_txQueue(void)
 			break;
 		}
 
-		if(xQueueSendFromISR(queue_xcp_tx, data, NULL) != pdPASS) {
+		if(xQueueSendFromISR(queue_xcp_tx, data, &task_woken) != pdPASS) {
 			// TX queue full: the Ethernet client/link cannot keep up with the
 			// XCP DAQ rate. Drop this frame and ask the TX task to purge its
 			// stale backlog so latency stays bounded. Must NOT block, delay or
@@ -218,6 +262,8 @@ static void read_OCM_write_txQueue(void)
 		}
 		msg_txq_written++;
 	}
+
+	return task_woken;
 }
 
 /*-------------------------------------------------------------------
@@ -284,13 +330,23 @@ void ocm_eth_adapter_task(void *p)
     vTaskDelete(NULL);
 }
 
-void ocm_eth_adapter_irq(void)
+int ocm_eth_adapter_irq(void)
 {
+	BaseType_t task_woken = pdFALSE;
+
 	rpu_apu_exchange_cache_invalidate_before_read();
 	rpu_apu_exchange_prepare_read();
-	read_OCM_write_txQueue();
+	if (read_OCM_write_txQueue() != pdFALSE) {
+		task_woken = pdTRUE;
+	}
 
 	rpu_apu_exchange_prepare_write();
-	read_rxQueue_write_OCM();
+	if (read_rxQueue_write_OCM() != pdFALSE) {
+		task_woken = pdTRUE;
+	}
 	rpu_apu_exchange_cache_flush_after_write();
+
+	// Nonzero asks the IPI ISR to portYIELD_FROM_ISR so the TX task runs
+	// immediately instead of waiting for the next tick interrupt.
+	return (task_woken != pdFALSE) ? 1 : 0;
 }

@@ -52,7 +52,11 @@
  * Variables
  *-----------------------------------------------------------------*/
 static volatile size_t addr_w = 0;
+static volatile size_t addr_w_end = 0;	// exclusive end of the current write region (bounds check)
 static volatile size_t addr_r = 0;
+
+// Messages dropped because the OCM write region was full (see writeOCM)
+volatile uint32_t cnt_msg_ocm_w_dropped = 0;
 
 // Todo remove debug variable
 static volatile uint32_t cnt_msg_ocm_w = 0;
@@ -112,16 +116,26 @@ void rpu_apu_exchange_prepare_write(void)
 {
 #ifdef RPU
 	addr_w = XCP_OUT_ADDR;
+	addr_w_end = XCP_OUT_ADDR + XCP_OUT_LEN;
 #endif
 #ifdef APU
 	addr_w = XCP_IN_ADDR;
+	addr_w_end = XCP_IN_ADDR + XCP_IN_LEN;
 #endif
     *(uint32_t *)addr_w = 0;
 }
 
-void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
+int rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
 {
 	uint8_t *dst_p = (uint8_t *)(addr_w);
+
+	// Bounds check: a message needs 4 (len) + len (payload) + 4 (terminating 0).
+	// Without this, draining more messages than the region holds silently
+	// overruns the OCM area (XCP_IN is only 256 bytes ~= 3 commands).
+	if (((size_t)dst_p + 4u + (size_t)len + 4u) > addr_w_end) {
+		cnt_msg_ocm_w_dropped++;
+		return 0;	// no space; caller keeps the message for the next cycle
+	}
 
 	// Write package len
     *(uint32_t *)dst_p = len;
@@ -138,6 +152,7 @@ void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
 	addr_w = (size_t)dst_p;
 
     cnt_msg_ocm_w++;
+    return 1;
 }
 
 int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p)

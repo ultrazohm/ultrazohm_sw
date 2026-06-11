@@ -53,16 +53,21 @@ XScuGic_Config *IntcConfig;
  */
 void Transfer_ipc_Intr_Handler(void *data)
 {
+	int status;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
 #if LOGGING_PATH==LOGGING_PATH_XCP
-	ocm_eth_adapter_irq();
+	// Returns nonzero if the XCP TX task was woken; yield at ISR end so it
+	// runs immediately instead of waiting for the next tick interrupt.
+	if (ocm_eth_adapter_irq() != 0) {
+		xHigherPriorityTaskWoken = pdTRUE;
+	}
 #endif
 
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
 #if LOGGING_PATH==LOGGING_PATH_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
 #endif
-	int status;
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

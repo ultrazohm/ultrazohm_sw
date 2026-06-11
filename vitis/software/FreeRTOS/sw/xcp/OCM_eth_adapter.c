@@ -58,6 +58,15 @@ static volatile uint32_t msg_rxq_read = 0;
 
 volatile uint32_t try_to_read_ocm = 0;
 
+// TX-queue backpressure (cf. read_OCM_write_txQueue / ocm_eth_adapter_tx).
+// When the Ethernet link cannot keep up with the XCP DAQ rate the TX queue
+// fills. The producer runs in ISR context, so it must never block: it drops
+// the frame, counts it, and asks the TX task to purge the stale backlog so
+// latency stays bounded. This replaces a former vTaskDelay()/xil_printf() call
+// from ISR context that corrupted the FreeRTOS scheduler and froze the system.
+static volatile uint32_t xcp_txq_overflow_dropped = 0;
+static volatile int      xcp_txq_purge_requested  = 0;
+
 /*-------------------------------------------------------------------
  * Static functions
  *-----------------------------------------------------------------*/
@@ -75,8 +84,17 @@ static void ocm_eth_adapter_tx(void *arg_p)
     xil_printf("%s() start\n", __func__);
 
     xQueueReset(queue_xcp_tx);
+    xcp_txq_purge_requested = 0;
 
     while (1) {
+        // Backpressure: if the ISR flagged a TX-queue overflow, drop the stale
+        // backlog rather than streaming seconds-old XCP frames after a stall.
+        // Only triggers under sustained link saturation (queue was full).
+        if (xcp_txq_purge_requested) {
+            xcp_txq_purge_requested = 0;
+            xQueueReset(queue_xcp_tx);
+        }
+
         uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
         if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
             xil_printf("%s(): xQueueReceive() tx failed\n", __func__);
@@ -186,11 +204,15 @@ static void read_OCM_write_txQueue(void)
 			break;
 		}
 
-		BaseType_t* const taskWoken_p = 0;
-		if(xQueueSendFromISR(queue_xcp_tx, data, taskWoken_p) != pdPASS) {
-			xil_printf("%s(): xQueueSend() failed, queue full\n", __func__);
-			vTaskDelay(5);
-			return;
+		if(xQueueSendFromISR(queue_xcp_tx, data, NULL) != pdPASS) {
+			// TX queue full: the Ethernet client/link cannot keep up with the
+			// XCP DAQ rate. Drop this frame and ask the TX task to purge its
+			// stale backlog so latency stays bounded. Must NOT block, delay or
+			// printf from ISR context here -- doing so corrupts the FreeRTOS
+			// scheduler and freezes the system (the previous behaviour).
+			xcp_txq_overflow_dropped++;
+			xcp_txq_purge_requested = 1;
+			break;
 		}
 		msg_txq_written++;
 	}

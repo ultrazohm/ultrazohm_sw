@@ -1,0 +1,4 @@
+machine_id,macro_name,machine_name,dataset_name,machine_parameters_csv,R_ph_Ohm,Ld_Henry,Lq_Henry,Psi_PM_Vs,polePairs,J_kg_m_squared,I_max_Ampere
+BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM,UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM_INIT,beckhoff_AM8141-0j00-000,measured_psi_dq_averaged_800_rpm,beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/machine_parameters.csv,0.51,0.00175,0.00175,0.042,4,1,12
+DUMMY_MOTOR_NOMINAL_V1,UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT,dummy_motor,nominal_v1,dummy_motor/nominal_v1/machine_parameters.csv,0.51,0.002,0.003,0.042,4,0.000108,12
+MH_PROTOTYPE_FEM_OVERAGED_OVER_ANGLE,UZ_PMSM_MH_PROTOTYPE_FEM_OVERAGED_OVER_ANGLE_INIT,mh_prototype,fem_overaged_over_angle,mh_prototype/fem_overaged_over_angle/machine_parameters.csv,0.51,0.00175,0.00175,0.042,4,1,12

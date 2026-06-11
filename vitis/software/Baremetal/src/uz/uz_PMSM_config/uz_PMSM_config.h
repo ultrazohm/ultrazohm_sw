@@ -17,6 +17,8 @@ typedef struct uz_PMSM_t{
     float I_max_Ampere; /**< max allowed current per phase. Must be greater than 0.0f */
 }uz_PMSM_t;
 
+#include "uz_avialable_machines_auto_generated.h"
+
 typedef struct uz_PMSM_flux_fitting_parameter_config_t{
     float ad1_parameter; /**Fitting Parameter for Flux approximation*/
     float ad2_parameter; /**Fitting Parameter for Flux approximation*/

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
+from .differential_inductance import DifferentialInductanceMap
 from .fitting import (
     compare_linear_flux_model_assuming_no_saturation,
     fit_linear_flux_model_assuming_no_saturation,
@@ -23,6 +24,7 @@ class PMSM:
     def __init__(self, parameters: PMSMParameters | None = None) -> None:
         self.parameters = parameters or PMSMParameters()
         self.flux_maps: dict[str, FluxMap] = {}
+        self.differential_inductance_maps: dict[str, DifferentialInductanceMap] = {}
         self.results: dict[str, pd.DataFrame] = {}
 
     def load_parameters_csv(self, csv_path: str | Path) -> PMSMParameters:
@@ -116,6 +118,47 @@ class PMSM:
             fit_name=fit_name,
         )
 
+    def calculate_differential_inductances(
+        self,
+        *,
+        flux_map: str = "default",
+        name: str = "default",
+        edge_order: int = 2,
+    ) -> DifferentialInductanceMap:
+        differential_inductances = DifferentialInductanceMap.from_flux_map(
+            self.get_flux_map(flux_map),
+            name=name,
+            edge_order=edge_order,
+        )
+        self.differential_inductance_maps[name] = differential_inductances
+        self.results[f"{name}_differential_inductances"] = differential_inductances.data
+        return differential_inductances
+
+    def get_differential_inductances(
+        self,
+        name: str = "default",
+    ) -> DifferentialInductanceMap:
+        try:
+            return self.differential_inductance_maps[name]
+        except KeyError as exc:
+            available_maps = list(self.differential_inductance_maps)
+            raise KeyError(
+                f"Unknown differential inductance map '{name}'. "
+                f"Available maps: {available_maps}"
+            ) from exc
+
+    def plot_differential_inductances(
+        self,
+        differential_inductances: str | DifferentialInductanceMap = "default",
+    ) -> None:
+        from .plotting import plot_differential_inductances
+
+        if isinstance(differential_inductances, str):
+            differential_inductances = self.get_differential_inductances(
+                differential_inductances
+            )
+        plot_differential_inductances(differential_inductances)
+
     def calculate_operation_area(
         self,
         *,
@@ -173,6 +216,14 @@ class PMSM:
 
     def export_flux_map_csv(self, csv_path: str | Path, *, flux_map: str = "default") -> None:
         self.get_flux_map(flux_map).to_csv(csv_path)
+
+    def export_differential_inductances_csv(
+        self,
+        csv_path: str | Path,
+        *,
+        differential_inductances: str = "default",
+    ) -> None:
+        self.get_differential_inductances(differential_inductances).to_csv(csv_path)
 
     def export_result_csv(self, result: str, csv_path: str | Path) -> None:
         try:

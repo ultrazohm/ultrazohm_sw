@@ -1,6 +1,12 @@
 import pyuzlib
 import numpy as np
-from pyuzlib.pmsm import FluxMap, OperationArea, PMSM, PMSMParameters
+from pyuzlib.pmsm import (
+    DifferentialInductanceMap,
+    FluxMap,
+    OperationArea,
+    PMSM,
+    PMSMParameters,
+)
 
 
 def test_pyuzlib_has_version():
@@ -11,6 +17,7 @@ def test_pyuzlib_exposes_docs_pmsm_helpers():
     assert pyuzlib.docs.pmsm.plot_flux_map
     assert pyuzlib.docs.pmsm.plot_flux_map_plotly
     assert pyuzlib.docs.pmsm.plot_linear_flux_model_comparison
+    assert pyuzlib.docs.pmsm.plot_differential_inductances
     assert pyuzlib.docs.pmsm.plot_operation_area
     assert pyuzlib.docs.pmsm.plot_max_torque_curve
 
@@ -19,6 +26,7 @@ def test_pyuzlib_exposes_pmsm_api():
     assert pyuzlib.pmsm.PMSM
     assert pyuzlib.pmsm.PMSMParameters
     assert pyuzlib.pmsm.FluxMap
+    assert pyuzlib.pmsm.DifferentialInductanceMap
     assert pyuzlib.pmsm.OperationArea
 
 
@@ -116,6 +124,36 @@ def test_pmsm_object_compares_linear_model_to_flux_map_samples():
     assert comparison["psi_q_error_Vs"].abs().max() < 1e-12
 
 
+def test_pmsm_object_calculates_and_exports_differential_inductance_maps(tmp_path):
+    motor = PMSM()
+    motor.load_flux_map_csv(
+        "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
+    )
+
+    differential_inductances = motor.calculate_differential_inductances()
+    export_path = tmp_path / "differential_inductances.csv"
+    motor.export_differential_inductances_csv(export_path)
+
+    assert isinstance(differential_inductances, DifferentialInductanceMap)
+    assert list(differential_inductances.data.columns) == [
+        "operating_point",
+        "i_d_A",
+        "i_q_A",
+        "L_dd_H",
+        "L_dq_H",
+        "L_qd_H",
+        "L_qq_H",
+    ]
+    assert differential_inductances.L_dd.shape == (3, 3)
+    assert np.allclose(differential_inductances.data["L_dd_H"], 0.002)
+    assert np.allclose(differential_inductances.data["L_qq_H"], 0.003)
+    assert np.allclose(differential_inductances.data["L_dq_H"], 0.0)
+    assert np.allclose(differential_inductances.data["L_qd_H"], 0.0)
+    assert export_path.read_text(encoding="utf-8").startswith(
+        "operating_point,i_d_A,i_q_A,L_dd_H,L_dq_H,L_qd_H,L_qq_H"
+    )
+
+
 def test_docs_helper_uses_new_linear_fit_implementation():
     fit = pyuzlib.docs.pmsm.L_dd_L_qq_from_flux_map_assuming_no_saturation(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
@@ -182,4 +220,13 @@ def test_docs_linear_flux_model_comparison_helper_smoke():
     pyuzlib.docs.pmsm.plot_linear_flux_model_comparison(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv",
         grid_points=5,
+    )
+
+
+def test_docs_differential_inductance_plot_helper_smoke():
+    import matplotlib
+
+    matplotlib.use("Agg")
+    pyuzlib.docs.pmsm.plot_differential_inductances(
+        "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
     )

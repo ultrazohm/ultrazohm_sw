@@ -44,6 +44,19 @@ def plot_linear_flux_model_comparison(
     )
 
 
+def plot_differential_inductances(
+    csv_path: str | Path,
+    *,
+    edge_order: int = 2,
+) -> None:
+    import pyuzlib
+
+    motor = pyuzlib.pmsm.PMSM()
+    motor.load_flux_map_csv(resolve_csv_path(csv_path))
+    motor.calculate_differential_inductances(edge_order=edge_order)
+    motor.plot_differential_inductances()
+
+
 def plot_operation_area(
     machine_parameters_csv_path: str | Path,
     *,

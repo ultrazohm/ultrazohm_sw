@@ -3,6 +3,7 @@ from __future__ import annotations
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from .differential_inductance import DifferentialInductanceMap
 from .flux_map import FluxMap
 from .operation_area import OperationArea
 
@@ -185,6 +186,45 @@ def plot_linear_flux_model_comparison(
         else flux_map.name
     )
     fig.suptitle(f"Linear flux-model comparison: {title}")
+
+
+def plot_differential_inductances(
+    differential_inductances: DifferentialInductanceMap,
+) -> None:
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    fig, axes = plt.subplots(
+        2,
+        2,
+        figsize=(11, 9),
+        subplot_kw={"projection": "3d"},
+        constrained_layout=True,
+    )
+    plot_specs = (
+        (axes[0, 0], differential_inductances.L_dd, r"$L_{dd}$ / H"),
+        (axes[0, 1], differential_inductances.L_dq, r"$L_{dq}$ / H"),
+        (axes[1, 0], differential_inductances.L_qd, r"$L_{qd}$ / H"),
+        (axes[1, 1], differential_inductances.L_qq, r"$L_{qq}$ / H"),
+    )
+
+    for ax, values, title in plot_specs:
+        i_d_values = values.columns.to_numpy(dtype=float)
+        i_q_values = values.index.to_numpy(dtype=float)
+        mesh_i_d, mesh_i_q = np.meshgrid(i_d_values, i_q_values)
+        surface = ax.plot_surface(
+            mesh_i_d,
+            mesh_i_q,
+            values.to_numpy(dtype=float),
+            cmap="viridis",
+        )
+        fig.colorbar(surface, ax=ax, label="Inductance / H", shrink=0.7)
+        ax.set_title(title)
+        ax.set_xlabel("i_d / A")
+        ax.set_ylabel("i_q / A")
+        ax.set_zlabel("Inductance / H")
+
+    fig.suptitle(f"Differential inductance maps: {differential_inductances.name}")
 
 
 def plot_operation_area(

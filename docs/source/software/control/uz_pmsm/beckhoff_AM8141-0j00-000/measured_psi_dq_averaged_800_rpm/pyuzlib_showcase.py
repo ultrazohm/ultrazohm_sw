@@ -33,6 +33,11 @@ print("Linear flux-model fit")
 print(fit)
 print()
 
+differential_inductances = motor.calculate_differential_inductances()
+print("Differential inductance table")
+print(differential_inductances.data.head())
+print()
+
 motor.update_parameters(Torque_rated_Nm=1.2, speed_rated_rpm=1000.0)
 print("Additional non-C parameters kept with the PMSM object")
 print(motor.parameters.additional_parameters)
@@ -41,15 +46,18 @@ print()
 parameter_export =  "pmsm_parameters.csv"
 flux_map_export =  "flux_map_canonical.csv"
 fit_export =  "linear_flux_fit.csv"
+differential_inductance_export = "differential_inductances.csv"
 
 # motor.export_parameters_csv(parameter_export)
 # motor.export_flux_map_csv(flux_map_export)
 # motor.export_result_csv("linear_no_saturation", fit_export)
+# motor.export_differential_inductances_csv(differential_inductance_export)
 
 print("CSV exports")
 print(parameter_export)
 print(flux_map_export)
 print(fit_export)
+print(differential_inductance_export)
 print()
 
 figure = motor.plot_flux_map_plotly()
@@ -57,6 +65,8 @@ figure.show()
 
 fig2=motor.plot_flux_map()
 print(fig2)
+
+motor.plot_differential_inductances()
 
 operation_area = motor.calculate_operation_area(
     v_dc_V=48.0,

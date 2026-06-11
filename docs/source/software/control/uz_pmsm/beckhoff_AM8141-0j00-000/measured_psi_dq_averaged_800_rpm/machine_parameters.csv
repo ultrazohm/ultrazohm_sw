@@ -5,7 +5,7 @@ Ld_Henry,0.00175
 Lq_Henry,0.00175
 Psi_PM_Vs,0.042
 polePairs,4
-J_kg_m_squared,0
+J_kg_m_squared,1
 I_max_Ampere,12
 I_rated_Ampere,8
 Torque_rated_Nm,1.2

@@ -1,5 +1,6 @@
 import pyuzlib
-from pyuzlib.pmsm import FluxMap, PMSM, PMSMParameters
+import numpy as np
+from pyuzlib.pmsm import FluxMap, OperationArea, PMSM, PMSMParameters
 
 
 def test_pyuzlib_has_version():
@@ -9,12 +10,15 @@ def test_pyuzlib_has_version():
 def test_pyuzlib_exposes_docs_pmsm_helpers():
     assert pyuzlib.docs.pmsm.plot_flux_map
     assert pyuzlib.docs.pmsm.plot_flux_map_plotly
+    assert pyuzlib.docs.pmsm.plot_operation_area
+    assert pyuzlib.docs.pmsm.plot_max_torque_curve
 
 
 def test_pyuzlib_exposes_pmsm_api():
     assert pyuzlib.pmsm.PMSM
     assert pyuzlib.pmsm.PMSMParameters
     assert pyuzlib.pmsm.FluxMap
+    assert pyuzlib.pmsm.OperationArea
 
 
 def test_pmsm_parameters_load_c_values_and_additional_values():
@@ -102,3 +106,53 @@ def test_docs_helper_uses_new_linear_fit_implementation():
 
     assert abs(fit.loc[0, "L_dd"] - 0.002) < 1e-12
     assert abs(fit.loc[0, "L_qq"] - 0.003) < 1e-12
+
+
+def test_pmsm_operation_area_calculates_grid_and_max_torque_curve():
+    motor = PMSM(
+        PMSMParameters(
+            R_ph_Ohm=0.51,
+            Ld_Henry=0.002,
+            Lq_Henry=0.003,
+            Psi_PM_Vs=0.042,
+            polePairs=4,
+            J_kg_m_squared=0.000108,
+            I_max_Ampere=12,
+        )
+    )
+
+    operation_area = motor.calculate_operation_area(
+        v_dc_V=48.0,
+        speed_rpm=1000.0,
+        grid_points=12,
+        speeds_rpm=np.array([0.0, 1000.0]),
+    )
+
+    assert isinstance(operation_area, OperationArea)
+    assert operation_area.torque_Nm.shape == (12, 12)
+    assert operation_area.v_max_V == 48.0 / np.sqrt(3.0)
+    assert operation_area.max_torque is not None
+    assert set(operation_area.max_torque["strategy"]) == {"optimal", "id_zero"}
+    assert "operation_area_grid" in motor.results
+    assert "operation_area_max_torque" in motor.results
+
+
+def test_docs_operation_area_helpers_smoke():
+    import matplotlib
+
+    matplotlib.use("Agg")
+    machine_parameters_csv = (
+        "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/machine_parameters.csv"
+    )
+
+    pyuzlib.docs.pmsm.plot_operation_area(
+        machine_parameters_csv,
+        v_dc_V=24.0,
+        speed_rpm=1000.0,
+        grid_points=12,
+    )
+    pyuzlib.docs.pmsm.plot_max_torque_curve(
+        machine_parameters_csv,
+        v_dc_V=24.0,
+        speeds_rpm=np.array([0.0, 500.0]),
+    )

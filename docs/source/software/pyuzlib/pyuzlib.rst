@@ -48,6 +48,21 @@ The object-oriented PMSM API keeps scalar machine parameters, flux maps, fitting
 	fit = motor.fit_linear_flux_model()
 	motor.export_result_csv("linear_no_saturation", "linear_flux_fit.csv")
 
+The same object can calculate and plot a linear PMSM operation area from the scalar machine parameters:
+
+.. code-block:: python
+
+	import numpy as np
+
+	operation_area = motor.calculate_operation_area(
+	    v_dc_V=24.0,
+	    speed_rpm=1000.0,
+	    grid_points=40,
+	    speeds_rpm=np.linspace(0.0, 1500.0, 6),
+	)
+	motor.plot_operation_area(operation_area)
+	motor.plot_max_torque_curve(operation_area.max_torque)
+
 The flux-map importer accepts custom column names and normalizes the data internally to ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``:
 
 .. code-block:: python

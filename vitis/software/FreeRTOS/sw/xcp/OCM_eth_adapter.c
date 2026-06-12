@@ -89,6 +89,13 @@ static QueueHandle_t queue_xcp_rx = NULL;
 
 static volatile uint8_t xcp_eth_connected = 0;
 
+/* Connection state accessor for the GEM RX watchdog in main.c (an XCP
+ * master being connected implies inbound TCP ACK traffic must flow). */
+int ocm_eth_adapter_is_connected(void)
+{
+    return (xcp_eth_connected != 0);
+}
+
 // TODO delete
 static volatile uint32_t msg_txq_written = 0;
 static volatile uint32_t msg_txq_read = 0;

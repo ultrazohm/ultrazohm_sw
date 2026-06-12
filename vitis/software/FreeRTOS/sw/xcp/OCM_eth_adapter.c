@@ -34,17 +34,16 @@
 
 #define STACKSIZE_XCP           (1024 * 10)
 #define PRIO_XCP_BACKGROUND     7
-/* The XCP TX/RX workers MUST run below the lwIP threads they depend on
- * (TCPIP_THREAD_PRIO = DEFAULT_THREAD_PRIO = 2 in the BSP). They used to run
- * at 4/5, preempting tcpip_thread and xemacif_input_thread under sustained
- * DAQ load: RX/ACK processing starved, the TCP send window never reopened,
- * the GEM RX path ran out of buffers, and the whole network stack stalled
- * (observed as both lwIP threads parked in their idle waits while XCP timed
- * out). At priority 1 the XCP workers consume leftover CPU; overload then
- * shows up as DAQ drops in our queue (session-safe) instead of inside lwIP
- * (fatal). */
-#define PRIO_XCP_RX             1
-#define PRIO_XCP_TX             1
+/* Priority scheme ported from develop (feature/freertos_priorities, PR #567):
+ * the streaming workers run at 3 -- the SAME level as xemacif_input_thread
+ * (cf. THREAD_PRIO_XCP_STREAM/THREAD_PRIO_XEMACIF_INPUT in main.h). RX/ACK
+ * ingestion can therefore always preempt or time-slice with the streamers,
+ * so the TCP send window keeps moving under full TX load (the starvation
+ * scenario that motivated the earlier priority-1 setting is prevented from
+ * the other side). tcpip_thread stays at the BSP default (2): the workers
+ * block on socket calls/queues constantly, handing the CPU down to it. */
+#define PRIO_XCP_RX             3
+#define PRIO_XCP_TX             3
 
 /* DAQ (DTO) queue: sized for bounded latency, not maximum buffering. A deep
  * queue only delays the inevitable when DAQ rate exceeds TCP drain rate, and

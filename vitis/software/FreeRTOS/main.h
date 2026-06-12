@@ -33,6 +33,15 @@ extern "C" {
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 
+/* Thread priority scheme ported from develop (feature/freertos_priorities,
+ * PR #567), which proved robust under sustained streaming load there.
+ * Key idea: network RX/ACK ingestion (xemacif_input) runs ABOVE the
+ * streaming producers, so the TCP window always keeps moving; tcpip_thread
+ * stays at the BSP default (2); slow housekeeping below. */
+#define THREAD_PRIO_DEFAULT          2U  /* = DEFAULT_THREAD_PRIO (BSP) */
+#define THREAD_PRIO_XEMACIF_INPUT    3U  /* RX/ACK ingestion above producers */
+#define THREAD_PRIO_XCP_STREAM       3U  /* XCP TX/RX workers (develop: JavaScope stream = 3) */
+
 // ========== JavaScope-Ethernet =========================================================================
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter

@@ -46,6 +46,10 @@ uz_can_t *can_instance_0 = NULL;
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
 
+/* GEM RX watchdog reset counter (cf. network_thread); global so it is
+ * visible in the debugger. */
+volatile uint32_t rx_watchdog_resets = 0;
+
 #if LWIP_DHCP==1
 extern volatile int dhcp_timoutcntr;
 err_t dhcp_start(struct netif *netif);
@@ -159,7 +163,7 @@ void network_thread(void *p)
     /* start packet receive thread - required for lwIP operation */
     sys_thread_new("xemacif_input_thread", (void(*)(void*))xemacif_input_thread, netif,
             THREAD_STACKSIZE,
-            DEFAULT_THREAD_PRIO);
+            THREAD_PRIO_XEMACIF_INPUT);
 
 #if CAN_ACTIVE==1
 	uz_printf(" Init CAN \n\r"); //CAN interface
@@ -204,7 +208,6 @@ void network_thread(void *p)
 		 * idle connection: a dropped in-flight frame is retransmitted. */
 		{
 			static uint32_t rx_dead_checks = 0;
-			static volatile uint32_t rx_watchdog_resets = 0;  /* debug counter */
 			uint32_t rx_frames = Xil_In32(PLATFORM_EMAC_BASEADDR + XEMACPS_RXCNT_OFFSET);
 
 			if (ocm_eth_adapter_is_connected() && (rx_frames == 0U)) {

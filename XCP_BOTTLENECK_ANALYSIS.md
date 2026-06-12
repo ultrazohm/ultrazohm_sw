@@ -125,7 +125,33 @@ shrunk 10000 → 512 (bounded backlog latency, ~645 KB heap freed).
 (`xcp_txq_overflow_dropped` climbs, purges drop stale samples) but the
 session stays alive and responsive.
 
-### T5. ROOT CAUSE of the recurring freezes: FPU context not saved on task switch — **FIXED**
+### T6. THE root cause: missing portMEMORY_BARRIER in the Xilinx A53 port — **FIXED**
+Found by live disassembly of the spinning `xTaskResumeAll()` loop after T5
+proved insufficient. The kernel source places `portMEMORY_BARRIER()` inside
+the pending-ready drain loop (tasks.c:2248) specifically to force the
+compiler to re-read the list head each iteration. The Xilinx ARM_CA53 port
+**never defines this macro**, the kernel default is **empty**, all list
+macros inline at -O2 — so GCC legally **hoisted `pxTCB` and every derived
+pointer out of the `while` loop** (verified instruction by instruction:
+loads at 0x9aa4–0x9acc, loop body 0x9ad4–0x9b84 with no reload).
+Consequence: whenever **two or more tasks are woken into
+`xPendingReadyList` during a single scheduler-suspension window**, the
+second iteration re-processes the stale first task, performs pointer
+surgery through stale addresses, and corrupts the kernel lists → infinite
+loop holding a critical section → `PMR = 0x90` → every interrupt masked →
+total freeze, power-cycle only.
+This explains the entire incident history: stochastic minutes-scale
+failures (probability of a double-wake per window), load dependence, why
+the 10 kHz `portYIELD_FROM_ISR` + priority changes made this branch fail
+in minutes while develop survives (fewer FromISR wakes per window), the
+valid-looking 1-item list in every snapshot, the silent watchpoint on the
+list header, and the rotating victim tasks.
+**Fix:** `#define portMEMORY_BARRIER() __asm volatile ( "" ::: "memory" )`
+in `FreeRTOSConfig.h` (both copies; auto-patched after regeneration by
+`vitis_update_platform.tcl` — no BSP parameter exists for it).
+Platform/BSP rebuild + app rebuild required.
+
+### T5. Earlier finding (real, but not the trigger): FPU context not saved on task switch — **FIXED**
 All "stall" incidents (T2's priority fix and the GEM watchdog helped real but
 secondary issues) shared one true root cause, finally caught **live** in the
 debugger: the CPU was not blocked but **spinning inside `xTaskResumeAll`

@@ -114,6 +114,28 @@ bsp config use_task_fpu_support 2
 platform write
 bsp regenerate
 
+# CRITICAL: patch portMEMORY_BARRIER into the regenerated FreeRTOSConfig.h.
+# The Xilinx ARM_CA53 port does not define it, so the kernel default (EMPTY)
+# applies. The kernel relies on it as a compiler barrier, e.g. in the
+# xTaskResumeAll() pending-ready drain loop: without it, GCC -O2 hoists the
+# list-head load out of the loop (verified in disassembly) and the kernel
+# lists get corrupted whenever >=2 tasks are woken during one scheduler
+# suspension window -> total system freeze. There is no BSP parameter for
+# this, hence the textual patch. Cf. XCP_BOTTLENECK_ANALYSIS.md.
+set barrier_define "#define portMEMORY_BARRIER() __asm volatile ( \"\" ::: \"memory\" )"
+foreach frtos_cfg [glob -nocomplain \
+        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/include/FreeRTOSConfig.h" \
+        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/libsrc/freertos10_xilinx_*/src/FreeRTOSConfig.h"] {
+    set fp [open $frtos_cfg r]; set cfg_content [read $fp]; close $fp
+    if {[string first "portMEMORY_BARRIER" $cfg_content] == -1} {
+        set cfg_content [string map [list "#define configASSERT" "$barrier_define\n#define configASSERT"] $cfg_content]
+        set fp [open $frtos_cfg w]; puts -nonewline $fp $cfg_content; close $fp
+        puts "Info (UltraZohm): patched portMEMORY_BARRIER into $frtos_cfg"
+    } else {
+        puts "Info (UltraZohm): portMEMORY_BARRIER already present in $frtos_cfg"
+    }
+}
+
 ####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain

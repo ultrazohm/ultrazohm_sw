@@ -1,8 +1,12 @@
-User Code, CPLD Program, Digital Card, Notes
- 01,tx30, Digital Voltage, 
- 02,tx26_w_enable, Digital Voltage, Card is enabled via PL
- 03,rx30,,
- 04,optical_14tx_4rx, Digital Optical 14Tx4Rx Rev08, 
- 05,uz_d_3ph_inverter, Digital Inverter Rev03, 
- 06,uz_d_resolver_d1_to_d4, Digital Resolver Rev01,
- 07,uz_d_resolver_d5, Digital Resolver Rev01,
+Trace ID,CPLD Program,Digital Card,Notes
+21,tx30,Digital Voltage,30 transmitter outputs
+22,tx26_w_enable,Digital Voltage,Card is enabled via PL
+23,rx30,,30 receiver inputs
+24,optical_14tx_4rx,Digital Optical 14Tx4Rx Rev08,
+25,uz_d_3ph_inverter,Digital Inverter Rev03,
+26,uz_d_resolver_d1_to_d4,Digital Resolver Rev01,D1 to D4
+27,uz_d_resolver_d5,Digital Resolver Rev01,D5
+28,uz_d_abs_encoder_ssi_rev01,Digital Absolute Encoder Rev01,SSI absolute encoder
+29,tx16_14rx,,16 transmitter outputs and 14 receiver inputs
+2A,tx20_10rx,,20 transmitter outputs and 10 receiver inputs
+2F,template_dslots,,Template/reference implementation

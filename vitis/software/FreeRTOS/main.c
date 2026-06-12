@@ -116,9 +116,6 @@ void network_thread(void *p)
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
 #if LWIP_IPV6==0
     ip_addr_t ipaddr, netmask, gw;
-#if LWIP_DHCP==1
-    int mscnt = 0;
-#endif
 #endif
 
     netif = &server_netif;
@@ -252,12 +249,12 @@ void network_thread(void *p)
 //		#endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
-		dhcp_fine_tmr();
-		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
-			dhcp_coarse_tmr();
-			mscnt = 0;
-		}
+		/* NOTE: dhcp_fine_tmr()/dhcp_coarse_tmr() were called here manually.
+		 * That is a leftover from raw-API lwIP 1.x: lwIP 2.1 runs both timers
+		 * itself inside tcpip_thread (see lwip-2.1.1/src/core/timeouts.c).
+		 * Calling them from this thread as well executed the DHCP state
+		 * machine concurrently from two threads WITHOUT the tcpip lock --
+		 * a real memory-corruption hazard (raced pbuf/pcb operations). */
 	}
 #else
     uz_printf("\r\n");

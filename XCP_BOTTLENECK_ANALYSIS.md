@@ -151,6 +151,18 @@ in `FreeRTOSConfig.h` (both copies; auto-patched after regeneration by
 `vitis_update_platform.tcl` — no BSP parameter exists for it).
 Platform/BSP rebuild + app rebuild required.
 
+**Upstream status (verified on GitHub):** AMD/Xilinx fixed this in
+`embeddedsw` between releases — `xilinx_v2022.2` (our Vitis, kernel 10.4.6
+port): **no** `portMEMORY_BARRIER`; `xilinx_v2023.1` (kernel 10.5.1 port)
+and master (10.6.1): defines it **character-for-character identical** to
+our workaround. So: known-and-fixed upstream, silently via the kernel
+rebase; Vitis ≥ 2023.1 contains it. The failure mode is also publicly
+documented in the FreeRTOS forums ("stuck in xTaskResumeAll with more than
+two items in xPendingReadyList", Microblaze portMEMORY_BARRIER thread,
+"A53 on Zynq UltraScale+ stucks after some time"). Our config-level define
+is the correct backport for Vitis 2022.2 and becomes a harmless duplicate
+after any future Vitis upgrade.
+
 ### T5. Earlier finding (real, but not the trigger): FPU context not saved on task switch — **FIXED**
 All "stall" incidents (T2's priority fix and the GEM watchdog helped real but
 secondary issues) shared one true root cause, finally caught **live** in the

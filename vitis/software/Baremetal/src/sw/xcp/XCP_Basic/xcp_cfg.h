@@ -199,7 +199,11 @@ typedef int32_t		vsint32;
 
 /* Memory space reserved for DAQ */
 /* This memory is also shared with the VX, so the size was set to fullfill VX max requirement */
-#define kXcpDaqMemSize (1024*2)
+/* Memory pool the master allocates DAQ lists / ODTs / signal entries from --
+ * the hard cap on how large a measurement configuration can get. 2 KB capped
+ * the achievable DAQ throughput at roughly one DTO per fast event; the
+ * driver allows up to 0xFFFF. Lives in R5 DDR (xcp.Daq.u.b). */
+#define kXcpDaqMemSize (1024*32)
 #define XCP_ENABLE_SEND_DIRECT
 //#define XCP_ENABLE_SEND_QUEUE
 #define XCP_DISABLE_SEND_QUEUE

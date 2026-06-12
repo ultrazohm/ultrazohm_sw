@@ -125,7 +125,37 @@ shrunk 10000 → 512 (bounded backlog latency, ~645 KB heap freed).
 (`xcp_txq_overflow_dropped` climbs, purges drop stale samples) but the
 session stays alive and responsive.
 
-### T2. Network stack stall under sustained DAQ load — **FIXED**
+### T5. ROOT CAUSE of the recurring freezes: FPU context not saved on task switch — **FIXED**
+All "stall" incidents (T2's priority fix and the GEM watchdog helped real but
+secondary issues) shared one true root cause, finally caught **live** in the
+debugger: the CPU was not blocked but **spinning inside `xTaskResumeAll`
+(tasks.c:2250)** on a corrupted (circular) `xPendingReadyList`, holding a
+critical section → GIC `PMR = 0x90` → every interrupt masked (tick, GEM, IPI
+all pending in `ISPENDR`, never delivered) → scheduler dead, network dead,
+only power-cycle recovers.
+
+**Mechanism:** the BSP had `configUSE_TASK_FPU_SUPPORT = 1`: FP/NEON
+registers are saved on context switch **only for tasks that called
+`vPortTaskUsesFPU()` — and no task in the codebase ever did**. On aarch64,
+GCC uses NEON Q-registers inside ordinary `memcpy` (proven via objdump:
+callers include `prvCopyDataToQueue` — the FreeRTOS kernel itself — plus
+`ocm_eth_adapter_tx/rx`, `tcp_write`, `pbuf_*`). A task preempted mid-memcpy
+resumes with corrupted Q-registers and completes the copy with garbage;
+when the victim copy involved kernel/queue data, kernel lists corrupted.
+Stochastic (227 s / 447 s observed), load-dependent. The XCP work made it
+acute: the 10 kHz `portYIELD_FROM_ISR` (B2) plus lower task priorities
+multiplied preemptions by orders of magnitude — develop's polling-style
+JavaScope path rarely preempts, which is why it survives 140 Mbit/s runs.
+
+**Fix:** `configUSE_TASK_FPU_SUPPORT = 2` (FPU context for ALL tasks), set in
+three places: the generated `FreeRTOSConfig.h` (both copies, immediate), the
+domain's `system.mss` (`use_task_fpu_support = 2`, survives `bsp
+regenerate`), and `tcl_scripts/vitis_update_platform.tcl` (`bsp config
+use_task_fpu_support 2`, survives platform updates — same mechanism as the
+heap-size precedent). Requires a **platform/BSP rebuild, then the FreeRTOS
+app**; the R5/Baremetal is unaffected (no FreeRTOS).
+
+### T2. Network stack stall under sustained DAQ load — **FIXED** (secondary)
 After T1: A53 "stalled" with `xemacif_input_thread` (and earlier
 `tcpip_thread`) parked in their idle waits; R5 unaffected. Those stacks are
 the threads' *normal* blocked states — the real failure was that no network

@@ -102,7 +102,16 @@ domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
 bsp config total_heap_size  200000000
-platform write 
+# FPU/NEON context must be saved for ALL tasks (configUSE_TASK_FPU_SUPPORT=2).
+# With the default (1), tasks must opt in via vPortTaskUsesFPU() -- nothing does,
+# yet on aarch64 GCC uses NEON Q-registers inside ordinary memcpy (FreeRTOS
+# queue copies, lwIP pbuf copies, the XCP TX batcher). A task preempted
+# mid-memcpy resumed with corrupted Q-registers, eventually corrupting kernel
+# lists: observed as an infinite loop in xTaskResumeAll (tasks.c:2250) with
+# GIC PMR stuck at 0x90, all interrupts masked, whole A53 frozen (XCP DAQ
+# died after minutes). Root-caused 2026-06; cf. XCP_BOTTLENECK_ANALYSIS.md.
+bsp config use_task_fpu_support 2
+platform write
 bsp regenerate
 
 ####################################################

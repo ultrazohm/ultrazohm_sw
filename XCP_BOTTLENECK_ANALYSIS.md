@@ -163,6 +163,30 @@ two items in xPendingReadyList", Microblaze portMEMORY_BARRIER thread,
 is the correct backport for Vitis 2022.2 and becomes a harmless duplicate
 after any future Vitis upgrade.
 
+### T7. lwIP 2.1.1 / GEM (xemacpsif) driver audit — no remaining bomb for our config
+Companion audit to T6 (the FreeRTOS-kernel half). Method: compare every
+post-2022.2 fix (lwIP upstream 2.1.2/2.1.3/2.2.0 + AMD embeddedsw GEM/lwIP
+changelog) against THIS configuration: lwIP 2.1.1, NO_SYS=0 (socket /
+tcpip_thread), TCP only (no TLS/IPv6/UDP-app), DHCP on, GEM xemacpsif_dma on
+ZynqMP (gigeversion > 2), HW checksum offload, 64/64 RX/TX BDs.
+
+| Post-2022.2 fix | Applies here? |
+|---|---|
+| GEM RX cache byte-flip / L1-prefetch corruption (the famous ZynqMP one) | ALREADY present in 2022.2 -- our xemacpsif_dma.c RX handler already does Xil_DCacheInvalidateRange(p->payload, rx_bytes) with the "L1 cache prefetch conditions" comment (the fix text). OK |
+| GEM RX-hang erratum SI#692601 (resetrx_on_no_rxdata) | N/A -- Zynq-7000 (gigeversion 2) only; no-op on ZynqMP. Our RX watchdog (ebd01c5da) is harmless redundancy. |
+| lwIP tcp_recved overflow-check assertion (2.1.2, bug #55015) | Low risk -- edge-case window-update assert; lwIP asserts are active here. One-function backport or LWIP_NOASSERT if ever hit. |
+| lwIP RST-from-port-0, poll-assert, TLS use-after-free (2.1.2/2.1.3) | Cosmetic / N/A (no TLS, no socket-poll). |
+| AMD "TCPIP_CORE_LOCK not released when LWIP_TIMERS==0" (lwip220, 2025.1) | N/A -- we have LWIP_TIMERS==1 (NO_SYS=0). |
+| emacps post-2022.2: 10GbE, multi-packet, priority queuing, SGMII/PHY (2024.2+) | N/A -- features, not fixes; standard 1G GEM + existing PHY. |
+
+Verdict: no stability landmine in the lwIP/GEM half matching this config --
+the one famous data-corruption bug is already fixed in 2022.2 and the RX-hang
+erratum does not apply to ZynqMP. Residual items are throughput knobs, not
+bugs: MEMP_NUM_PBUF = 16 (small), TX BD ring = 64, TCP_SND_BUF = 8192 (the
+window ceiling discussed under throughput). Same caveat as T6: changelog-
+mining cannot catch a silently fixed bug (T6 itself was not in any changelog)
+-- but every known post-2022.2 fix is already present, N/A, or a sizing knob.
+
 ### T5. Earlier finding (real, but not the trigger): FPU context not saved on task switch — **FIXED**
 All "stall" incidents (T2's priority fix and the GEM watchdog helped real but
 secondary issues) shared one true root cause, finally caught **live** in the

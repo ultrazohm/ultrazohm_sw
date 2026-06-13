@@ -1,0 +1,13 @@
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'red';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/Add4','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/Delay7','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime4','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime4/Constant','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime4/Relational Operator1','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime4/Switch','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/Relational Operator5','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/Switch8','user1');
+hilite_system('uz_SVPWM_6ph/SVPWM_and_Signal_Control/Switch4','user1');

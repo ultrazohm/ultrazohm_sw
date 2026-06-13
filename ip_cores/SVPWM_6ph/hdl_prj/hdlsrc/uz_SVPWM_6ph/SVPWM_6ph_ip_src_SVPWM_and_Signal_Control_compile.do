@@ -1,0 +1,11 @@
+vlib work
+vcom  SVPWM_6ph_ip_src_SVPWM_and_Signal_Control_pkg.vhd
+vcom  SVPWM_6ph_ip_src_Detect_Rise_Positive.vhd
+vcom  SVPWM_6ph_ip_src_LimitSVTime.vhd
+vcom  SVPWM_6ph_ip_src_LimitSVTime1.vhd
+vcom  SVPWM_6ph_ip_src_LimitSVTime2.vhd
+vcom  SVPWM_6ph_ip_src_LimitSVTime3.vhd
+vcom  SVPWM_6ph_ip_src_Counter_Ctrl.vhd
+vcom  SVPWM_6ph_ip_src_GenSVPWM.vhd
+vcom  SVPWM_6ph_ip_src_VSI_Control_Signal_Switch.vhd
+vcom  SVPWM_6ph_ip_src_SVPWM_and_Signal_Control.vhd

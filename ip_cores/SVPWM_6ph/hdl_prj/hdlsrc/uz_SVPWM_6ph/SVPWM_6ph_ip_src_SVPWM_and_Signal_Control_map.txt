@@ -1,0 +1,10 @@
+ --> SVPWM_6ph_ip_src_SVPWM_and_Signal_Control_pkg
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/Detect Rise Positive --> SVPWM_6ph_ip_src_Detect_Rise_Positive
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime --> SVPWM_6ph_ip_src_LimitSVTime
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime1 --> SVPWM_6ph_ip_src_LimitSVTime1
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime2 --> SVPWM_6ph_ip_src_LimitSVTime2
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/LimitSVTime3 --> SVPWM_6ph_ip_src_LimitSVTime3
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM/Counter Ctrl --> SVPWM_6ph_ip_src_Counter_Ctrl
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/GenSVPWM --> SVPWM_6ph_ip_src_GenSVPWM
+uz_SVPWM_6ph/SVPWM_and_Signal_Control/VSI Control Signal Switch --> SVPWM_6ph_ip_src_VSI_Control_Signal_Switch
+uz_SVPWM_6ph/SVPWM_and_Signal_Control --> SVPWM_6ph_ip_src_SVPWM_and_Signal_Control

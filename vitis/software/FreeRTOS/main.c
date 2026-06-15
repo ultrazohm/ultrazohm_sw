@@ -15,7 +15,6 @@
 
 #include "xparameters.h"
 #include "netif/xadapter.h"
-#include "xemacps_hw.h"   /* GEM registers for the RX-hang watchdog */
 
 //Includes for Ethernet
 #if LWIP_DHCP==1
@@ -45,10 +44,6 @@ uz_can_t *can_instance_0 = NULL;
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
-
-/* GEM RX watchdog reset counter (cf. network_thread); global so it is
- * visible in the debugger. */
-volatile uint32_t rx_watchdog_resets = 0;
 
 #if LWIP_DHCP==1
 extern volatile int dhcp_timoutcntr;
@@ -190,43 +185,6 @@ void network_thread(void *p)
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}
-
-		/* ~~~~~~ GEM RX-hang watchdog ~~~~~~
-		 * The ZynqMP GEM RX path can become unresponsive under sustained load
-		 * (same failure class as EmacPs erratum SI#692601). The BSP ships a
-		 * workaround (xemacpsif_resetrx_on_no_rxdata) but it is gated to GEM
-		 * version 2 (Zynq-7000) and is a no-op on the ZynqMP -- and nothing
-		 * calls it anyway. Without recovery the RX death is permanent: no RX
-		 * IRQs -> no ACKs -> TCP send window never reopens -> XCP times out
-		 * and only a power cycle helps.
-		 * Detection: the GEM "frames received OK" statistics register is
-		 * clear-on-read. While an XCP master is connected, inbound ACK
-		 * traffic must flow; if the counter stays 0 for several consecutive
-		 * checks, the RX path is considered dead and is restarted by
-		 * toggling NWCTRL.RXEN (the same action as the BSP workaround,
-		 * without the version gate). Harmless if triggered spuriously on an
-		 * idle connection: a dropped in-flight frame is retransmitted. */
-		{
-			static uint32_t rx_dead_checks = 0;
-			uint32_t rx_frames = Xil_In32(PLATFORM_EMAC_BASEADDR + XEMACPS_RXCNT_OFFSET);
-
-			if (ocm_eth_adapter_is_connected() && (rx_frames == 0U)) {
-				rx_dead_checks++;
-				if (rx_dead_checks >= 4U) {  /* ~2 s without any RX frame */
-					uint32_t regctrl = Xil_In32(PLATFORM_EMAC_BASEADDR + XEMACPS_NWCTRL_OFFSET);
-					Xil_Out32(PLATFORM_EMAC_BASEADDR + XEMACPS_NWCTRL_OFFSET,
-							regctrl & ~(uint32_t)XEMACPS_NWCTRL_RXEN_MASK);
-					Xil_Out32(PLATFORM_EMAC_BASEADDR + XEMACPS_NWCTRL_OFFSET,
-							regctrl | (uint32_t)XEMACPS_NWCTRL_RXEN_MASK);
-					rx_watchdog_resets++;
-					rx_dead_checks = 0;
-					uz_printf("APU: GEM RX watchdog: RX path restarted (#%lu)\r\n",
-							(unsigned long)rx_watchdog_resets);
-				}
-			} else {
-				rx_dead_checks = 0;
-			}
-		}
 
 //		#if CAN_ACTIVE==1
 //			if( ! hal_can_is_rx_empty() ){

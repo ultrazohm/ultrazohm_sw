@@ -2,7 +2,7 @@
 #define UZ_ZERO_INJECTION__DUAL_PWM_3PH_H
 
 #include "../uz_Transformation/uz_Transformation.h"
-#include "../uz_Space_Vector_Modulation/uz_Space_Vector_Modulation.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz_Transformation/uz_Transformation.h"
 
 typedef enum {

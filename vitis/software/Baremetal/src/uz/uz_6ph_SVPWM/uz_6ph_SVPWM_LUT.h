@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "../uz_Transformation/uz_Transformation.h"
-#include "../uz_Space_Vector_Modulation/uz_Space_Vector_Modulation.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 typedef struct {
     float u_z1;

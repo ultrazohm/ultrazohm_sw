@@ -10,7 +10,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
-#include "uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_PMSM_config/uz_PMSM_config.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"

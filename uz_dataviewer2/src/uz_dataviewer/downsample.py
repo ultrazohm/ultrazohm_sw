@@ -1,48 +1,25 @@
-"""Range-aware downsampling for large logs.
+"""Range-aware downsampling for large logs (pure NumPy -- identical on native and web).
 
-Two layers:
+:func:`decimate_range` is the single entry point; it dispatches between two layers,
+both of which emit a ~``n_out``-point **min/max envelope at the signal's true sample
+positions** (so spikes/ripple survive and it looks like the waveform):
 
-* :func:`downsample_xy` -- a one-shot decimation of a visible slice via
-  ``tsdownsample`` (MinMax-LTTB), with a pure-NumPy fallback. Cost is *O(visible
-  points)*, fine for moderate windows but expensive when the whole of a
-  multi-gigabyte signal is on screen (it re-scans tens of millions of points).
+* **One-shot envelope** (:func:`_envelope_oneshot`) -- scans the visible slice and
+  takes each bucket's argmin/argmax, *O(visible points)*. Used for windows up to
+  :data:`PYRAMID_MIN_POINTS`, where a full scan is only a couple of ms.
 
-* :class:`Pyramid` -- a precomputed **multi-resolution min/max pyramid** built
-  once per signal. Querying it for a window is *O(output points)*, independent of
-  the total sample count, so a 5 GB log pans at full frame rate. This is the
-  primary path for large signals; ``downsample_xy`` remains the fast path for
-  small ones and the fallback where no pyramid exists.
+* :class:`Pyramid` -- a precomputed **multi-resolution min/max pyramid** built once
+  per signal. Querying it for a larger window is *O(output points)*, independent of
+  the total sample count, so a multi-hundred-MB signal pans at full frame rate.
 
-The legacy ``dataviewer.py`` used ``plotly_resampler.FigureResampler`` (tied to
-Plotly); only its decimation engine, the standalone ``tsdownsample``, was
-reusable with ImPlot -- which is what the one-shot path uses.
+(The legacy viewer used ``plotly_resampler``/``tsdownsample`` MinMax-LTTB; that Rust
+dependency has been dropped in favour of the pyramid, which keeps the native and
+Pyodide/WASM builds on exactly the same code path.)
 """
 
 from __future__ import annotations
 
 import numpy as np
-
-try:
-    from tsdownsample import MinMaxLTTBDownsampler
-
-    _DOWNSAMPLER = MinMaxLTTBDownsampler()
-except ImportError:  # e.g. Pyodide/web where the Rust wheel is unavailable
-    _DOWNSAMPLER = None
-
-
-def _minmax_indices(y: np.ndarray, n_out: int) -> np.ndarray:
-    """Pure-NumPy MinMax decimation fallback (preserves per-bucket extrema)."""
-    n = y.shape[0]
-    n_buckets = max(n_out // 2, 1)
-    edges = np.linspace(0, n, n_buckets + 1, dtype=np.int64)
-    idx = []
-    for lo, hi in zip(edges[:-1], edges[1:]):
-        if hi <= lo:
-            continue
-        seg = y[lo:hi]
-        idx.append(lo + int(seg.argmin()))
-        idx.append(lo + int(seg.argmax()))
-    return np.unique(np.asarray(idx, dtype=np.int64))
 
 
 def visible_slice(time: np.ndarray, x_min: float, x_max: float) -> tuple[int, int]:
@@ -50,120 +27,134 @@ def visible_slice(time: np.ndarray, x_min: float, x_max: float) -> tuple[int, in
 
     One sample of padding is added on each side so lines reach the plot edges.
     ``time`` is assumed monotonically increasing.
+
+    The search scalars are cast to ``time``'s dtype first: ``np.searchsorted`` on a
+    float32 array with a Python (float64) scalar **up-casts the whole array** to
+    float64 every call -- ~31 ms on the 7.5 M-bin FFT ``freqs`` array, i.e. the
+    per-frame killer behind a sluggish spectrum (the same landmine as ``np.interp``
+    for cursors). A matching-dtype scalar keeps it O(log n).
     """
-    start = int(np.searchsorted(time, x_min, side="left"))
-    stop = int(np.searchsorted(time, x_max, side="right"))
+    lo = time.dtype.type(x_min)
+    hi = time.dtype.type(x_max)
+    start = int(np.searchsorted(time, lo, side="left"))
+    stop = int(np.searchsorted(time, hi, side="right"))
     start = max(0, start - 1)
     stop = min(time.shape[0], stop + 1)
     return start, stop
 
 
-def downsample_xy(
-    time: np.ndarray,
-    y: np.ndarray,
-    n_out: int,
-    x_min: float | None = None,
-    x_max: float | None = None,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Return ``(x, y)`` reduced to at most ``n_out`` points within the range.
-
-    When ``x_min``/``x_max`` are given the series is first cropped to the visible
-    window, so zooming in progressively reveals more detail (the same behaviour
-    plotly-resampler provided).
-    """
-    n_out = max(int(n_out), 2)
-
-    if x_min is not None and x_max is not None and x_max > x_min:
-        start, stop = visible_slice(time, x_min, x_max)
-    else:
-        start, stop = 0, time.shape[0]
-
-    xs = time[start:stop]
-    ys = y[start:stop]
-
-    if xs.shape[0] <= n_out:
-        return xs, ys
-
-    if _DOWNSAMPLER is not None:
-        idx = _DOWNSAMPLER.downsample(xs, ys, n_out=n_out)
-    else:
-        idx = _minmax_indices(ys, n_out)
-    return xs[idx], ys[idx]
+# -- range-aware min/max envelope decimation ----------------------------------
+# Both decimators below emit ~``n_out`` points as a min/max envelope at the
+# signals' *true sample positions* (so it looks like the waveform, not a blocky
+# bucket-centre grid) and produce a consistent point count at every zoom.
+#
+# Signals larger than this get a :class:`Pyramid`; the per-frame query then reads
+# only a coarse level (O(output)). At or below it, the one-shot envelope scans the
+# visible slice directly (vectorised, a couple of ms at this size).
+PYRAMID_MIN_POINTS = 1_000_000
 
 
-# -- multi-resolution min/max pyramid -----------------------------------------
-# Signals with more than this many samples get a pyramid; smaller ones are cheap
-# to decimate directly.
-PYRAMID_MIN_POINTS = 200_000
+def _argminmax_buckets(values: np.ndarray, n_buckets: int) -> tuple[np.ndarray, np.ndarray]:
+    """Per-(near-equal-)bucket argmin/argmax over ``values`` (local indices)."""
+    count = values.shape[0]
+    bucket = max(1, -(-count // n_buckets))  # ceil division
+    nb = -(-count // bucket)
+    pad = nb * bucket - count
+    block = np.concatenate([values, np.full(pad, values[-1], values.dtype)]) if pad else values
+    block = block.reshape(nb, bucket)
+    base = np.arange(nb, dtype=np.int64) * bucket
+    imin = np.minimum(base + block.argmin(axis=1), count - 1)
+    imax = np.minimum(base + block.argmax(axis=1), count - 1)
+    return imin, imax
+
+
+def _envelope(time: np.ndarray, y: np.ndarray, indices_min: np.ndarray, indices_max: np.ndarray
+              ) -> tuple[np.ndarray, np.ndarray]:
+    """Interleave per-bucket min/max sample indices into an in-order (x, y) line."""
+    lo = np.minimum(indices_min, indices_max)
+    hi = np.maximum(indices_min, indices_max)
+    nb = lo.shape[0]
+    out = np.empty(2 * nb, dtype=np.int64)
+    out[0::2] = lo
+    out[1::2] = hi
+    return time[out], y[out]
+
+
+def _envelope_oneshot(time, y, n_out, start, stop):
+    """Vectorised min/max envelope of ``y[start:stop]`` at true sample positions."""
+    imin, imax = _argminmax_buckets(y[start:stop], max(n_out // 2, 1))
+    return _envelope(time, y, imin + start, imax + start)
 
 
 class Pyramid:
     """Precomputed min/max levels of one signal, for O(output) decimation.
 
     Level ``k`` stores, for buckets of ``base * factor**k`` consecutive samples,
-    the per-bucket ``min`` and ``max`` (``float32``). To draw a window we pick the
-    finest level whose bucket density fits the output budget, slice it, and expand
-    each bucket into two points (min, max) -- a faithful envelope that preserves
-    spikes. Per-query cost depends only on the output size, not the signal length.
-
-    X is *not* stored: bucket positions map to raw sample indices (``bucket_size``
-    apart), so query reads X from the run's ``time`` axis. The pyramid is thus
-    independent of time normalisation and reusable across runs of equal length.
+    the **sample indices** of the per-bucket min and max. A query picks the
+    coarsest level that still has at least the budget of buckets in the window,
+    then groups those down to the budget (keeping the true min/max index of each
+    group) -- so the output is ~``n_out`` points at their real positions, the same
+    at every zoom. Per-query cost depends only on the output size, not the signal
+    length. Storing indices (not values) lets the envelope use true X/Y read from
+    the run's ``time``/``y`` arrays, so the pyramid is also normalisation-agnostic.
     """
 
     __slots__ = ("levels", "n")
 
     def __init__(self, levels: list[tuple[int, np.ndarray, np.ndarray]], n: int) -> None:
-        self.levels = levels  # [(bucket_size, ymin, ymax), ...] coarsening
+        self.levels = levels  # [(bucket_size, imin, imax), ...] coarsening
         self.n = n
 
     @classmethod
     def build(cls, y: np.ndarray, base: int = 64, factor: int = 8, min_buckets: int = 512) -> "Pyramid":
         y = np.ascontiguousarray(y, dtype=np.float32)
         n = int(y.shape[0])
+        dtype = np.int32 if n < 2_000_000_000 else np.int64
+        imin, imax = _argminmax_buckets(y, -(-n // base))
+        imin = imin.astype(dtype)
+        imax = imax.astype(dtype)
+        levels: list[tuple[int, np.ndarray, np.ndarray]] = [(base, imin, imax)]
         bucket = base
-        nb = (n + bucket - 1) // bucket
-        pad = nb * bucket - n
-        src = np.concatenate([y, np.full(pad, y[-1], np.float32)]) if pad else y
-        block = src.reshape(nb, bucket)
-        ymin = block.min(axis=1)
-        ymax = block.max(axis=1)
-        levels: list[tuple[int, np.ndarray, np.ndarray]] = [(bucket, ymin, ymax)]
-        # Coarser levels are aggregated from the previous level (min-of-mins,
-        # max-of-maxes), so the whole build is O(n).
-        while ymin.shape[0] > min_buckets:
+        # Coarser levels aggregate the previous level's indices (pick the child
+        # whose value is smallest for min / largest for max), so the build is O(n).
+        while imin.shape[0] > min_buckets:
             bucket *= factor
-            pnb = ymin.shape[0]
-            nb = (pnb + factor - 1) // factor
-            pad = nb * factor - pnb
-            if pad:
-                ymin = np.concatenate([ymin, np.full(pad, ymin[-1], np.float32)])
-                ymax = np.concatenate([ymax, np.full(pad, ymax[-1], np.float32)])
-            ymin = ymin.reshape(nb, factor).min(axis=1)
-            ymax = ymax.reshape(nb, factor).max(axis=1)
-            levels.append((bucket, ymin, ymax))
+            imin = cls._group(y, imin, factor, np.argmin).astype(dtype)
+            imax = cls._group(y, imax, factor, np.argmax).astype(dtype)
+            levels.append((bucket, imin, imax))
         return cls(levels, n)
 
-    def query(self, time: np.ndarray, n_out: int, start: int, stop: int) -> tuple[np.ndarray, np.ndarray]:
+    @staticmethod
+    def _group(y: np.ndarray, idx: np.ndarray, factor: int, pick) -> np.ndarray:
+        """Reduce ``idx`` (sample indices) by ``factor``, keeping the extreme child."""
+        pnb = idx.shape[0]
+        ng = -(-pnb // factor)
+        pad = ng * factor - pnb
+        cand = np.concatenate([idx, np.full(pad, idx[-1], idx.dtype)]) if pad else idx
+        cand = cand.reshape(ng, factor)
+        sel = pick(y[cand], axis=1)
+        return cand[np.arange(ng), sel]
+
+    def query(self, time: np.ndarray, y: np.ndarray, n_out: int, start: int, stop: int
+              ) -> tuple[np.ndarray, np.ndarray]:
         count = max(stop - start, 1)
-        target_buckets = max(n_out // 2, 1)  # two output points per bucket
-        # Finest level whose bucket count over the window fits the budget.
-        bucket, ymin, ymax = self.levels[-1]
-        for lvl_bucket, lvl_min, lvl_max in self.levels:
-            if count / lvl_bucket <= target_buckets:
-                bucket, ymin, ymax = lvl_bucket, lvl_min, lvl_max
+        target = max(n_out // 2, 1)
+        # Coarsest level that still has >= `target` buckets over the window.
+        bucket, imin, imax = self.levels[0]
+        for lvl in self.levels:
+            if count / lvl[0] >= target:
+                bucket, imin, imax = lvl
+            else:
                 break
         b0 = start // bucket
-        b1 = min((stop + bucket - 1) // bucket, ymin.shape[0])
+        b1 = min((stop + bucket - 1) // bucket, imin.shape[0])
         if b1 <= b0:
-            b1 = min(b0 + 1, ymin.shape[0])
-        nb = b1 - b0
-        centers = np.minimum(np.arange(b0, b1) * bucket + bucket // 2, self.n - 1)
-        out_x = np.repeat(time[centers], 2)
-        out_y = np.empty(2 * nb, dtype=np.float32)
-        out_y[0::2] = ymin[b0:b1]
-        out_y[1::2] = ymax[b0:b1]
-        return out_x, out_y
+            b1 = min(b0 + 1, imin.shape[0])
+        a, b = imin[b0:b1], imax[b0:b1]
+        if a.shape[0] > target:  # group down to the budget, keeping true extremes
+            a = self._group(y, a, -(-a.shape[0] // target), np.argmin)
+            b = self._group(y, b, -(-b.shape[0] // target), np.argmax)
+        return _envelope(time, y, a.astype(np.int64), b.astype(np.int64))
 
 
 def decimate_range(
@@ -176,18 +167,14 @@ def decimate_range(
 ) -> tuple[np.ndarray, np.ndarray]:
     """Decimate ``[start, stop)`` to ~``n_out`` points (caller supplies the slice).
 
-    Uses the precomputed :class:`Pyramid` when present (O(output)); otherwise
-    falls back to a one-shot ``tsdownsample`` of the slice.
+    Returns the raw slice when it already fits, the precomputed :class:`Pyramid`'s
+    envelope for huge windows (O(output)), else a one-shot vectorised envelope of
+    the slice. All paths produce a consistent ~``n_out``-point min/max envelope at
+    the signals' true sample positions.
     """
     n_out = max(int(n_out), 2)
     if stop - start <= n_out:
         return time[start:stop], y[start:stop]
-    if pyramid is not None:
-        return pyramid.query(time, n_out, start, stop)
-    xs = time[start:stop]
-    ys = y[start:stop]
-    if _DOWNSAMPLER is not None:
-        idx = _DOWNSAMPLER.downsample(xs, ys, n_out=n_out)
-    else:
-        idx = _minmax_indices(ys, n_out)
-    return xs[idx], ys[idx]
+    if pyramid is not None and (stop - start) > PYRAMID_MIN_POINTS:
+        return pyramid.query(time, y, n_out, start, stop)
+    return _envelope_oneshot(time, y, n_out, start, stop)

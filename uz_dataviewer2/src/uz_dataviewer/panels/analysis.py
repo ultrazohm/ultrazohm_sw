@@ -16,9 +16,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
 from imgui_bundle import imgui, implot
 
 from .. import webbridge
+from ..downsample import decimate_range, visible_slice
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -65,6 +67,8 @@ class AnalysisPanel:
         self._export_dialog = None
         self._computed_key: tuple | None = None  # state at last compute (stale check)
         self._last_logged_x: tuple[float, float] | None = None  # zoom echo baseline
+        self._fit_pending: bool = True  # one-shot auto-fit (first show / Reset / new result)
+        self._fitting: bool = False     # this frame is an auto-fit (decimate full range)
 
     # -- command-name helpers ----------------------------------------------
     @property
@@ -120,6 +124,19 @@ class AnalysisPanel:
     def _result_labels(self) -> list[str]:
         return []
 
+    def _plot_decimated(self, state: "AppState", label: str, x: np.ndarray, y: np.ndarray, pyramid) -> None:
+        """Plot a line range-decimated to the current view, so a multi-million-point
+        spectrum doesn't redraw at full resolution every frame."""
+        if self._fitting:
+            start, stop = 0, x.shape[0]  # fit frame: limits not known yet -> full range
+        else:
+            lim = implot.get_plot_limits()
+            start, stop = visible_slice(x, float(lim.x.min), float(lim.x.max))
+        xs, ys = decimate_range(x, y, pyramid, max(state.max_points, 2), start, stop)
+        implot.plot_line(
+            label, np.ascontiguousarray(xs, np.float64), np.ascontiguousarray(ys, np.float64)
+        )
+
     # -- stale tracking -----------------------------------------------------
     def _current_key(self, state: "AppState", cfg: "AnalysisConfig") -> tuple:
         window = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
@@ -157,6 +174,9 @@ class AnalysisPanel:
         if imgui.button("Compute"):
             self._emit(state, self.compute_command)
         imgui.same_line()
+        if imgui.button("Reset view"):
+            self._fit_pending = True
+        imgui.same_line()
         if imgui.button("Clear") and cfg.sources:
             self._emit(state, self.clear_command)
         imgui.same_line()
@@ -177,6 +197,7 @@ class AnalysisPanel:
             x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
             self._compute(state, cfg, x_min, x_max)
             self._computed_key = self._current_key(state, cfg)
+            self._fit_pending = True  # fit the fresh result
 
         # -- info + stale indicator --
         if self._info:
@@ -187,10 +208,16 @@ class AnalysisPanel:
         imgui.separator()
 
         # -- plot --
+        did_set = False
+        self._fitting = self._fit_pending
+        if self._fit_pending:
+            implot.set_next_axes_to_fit()  # must precede begin_plot
+            self._fit_pending = False
+            cfg.pending_x_lim = None        # a fit overrides a queued zoom
+            did_set = True
         if implot.begin_plot("##analysis", imgui.ImVec2(-1, -1)):
             implot.setup_axes(self.x_label, self.y_label)
             self._setup_axes(state)
-            did_set = False
             if cfg.pending_x_lim is not None:
                 lo, hi = cfg.pending_x_lim
                 implot.setup_axis_limits(implot.ImAxis_.x1, lo, hi, implot.Cond_.always)

@@ -23,7 +23,8 @@ class HistogramPanel(AnalysisPanel):
 
     def __init__(self) -> None:
         super().__init__()
-        self._results: list[tuple[str, np.ndarray]] = []
+        # (label, bin_centers, counts, bar_width) -- binned once at compute time.
+        self._results: list[tuple[str, np.ndarray, np.ndarray, float]] = []
 
     def config(self, state: AppState):
         return state.histogram
@@ -40,6 +41,7 @@ class HistogramPanel(AnalysisPanel):
         imgui.same_line()
 
     def _compute(self, state: AppState, cfg, x_min: float, x_max: float) -> None:
+        bins = max(1, cfg.bins)
         results = []
         total = 0
         for ref in cfg.sources:
@@ -48,10 +50,16 @@ class HistogramPanel(AnalysisPanel):
             if run is None or signal is None:
                 continue
             start, stop = visible_slice(run.time, x_min, x_max)
-            values = np.ascontiguousarray(signal.y[start:stop], dtype=np.float64)
-            if values.size:
-                results.append((state.signal_label(ref), values))
-                total += values.size
+            values = signal.y[start:stop]
+            if values.size == 0:
+                continue
+            # Bin once here (not every frame): a Full-range histogram may hold
+            # tens of millions of samples; plotting the precomputed bars is O(bins).
+            counts, edges = np.histogram(values.astype(np.float64), bins=bins)
+            centers = (edges[:-1] + edges[1:]) / 2.0
+            width = float(edges[1] - edges[0]) if edges.size > 1 else 1.0
+            results.append((state.signal_label(ref), centers, counts.astype(np.float64), width))
+            total += int(values.size)
         self._results = results
         self._info = (
             f"{len(results)} signal(s), {total:,} samples, window [{x_min:.4f}, {x_max:.4f}] s"
@@ -59,9 +67,8 @@ class HistogramPanel(AnalysisPanel):
         )
 
     def _draw(self, state: AppState) -> None:
-        bins = max(1, state.histogram.bins)
-        for label, values in self._results:
-            implot.plot_histogram(label, values, bins)
+        for label, centers, counts, width in self._results:
+            implot.plot_bars(label, centers, counts, width)
 
     def _result_labels(self) -> list[str]:
-        return [label for label, _ in self._results]
+        return [label for label, _, _, _ in self._results]

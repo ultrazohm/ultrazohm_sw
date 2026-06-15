@@ -3,7 +3,7 @@
 A :class:`Run` corresponds to one loaded log file (CSV or Parquet). It owns a
 shared ``time`` axis plus one :class:`Signal` per logged channel. Signal samples
 are kept as contiguous NumPy arrays so they can be fed directly to ImPlot and to
-the ``tsdownsample`` engine without per-frame copies.
+the downsampling pyramid without per-frame copies.
 """
 
 from __future__ import annotations

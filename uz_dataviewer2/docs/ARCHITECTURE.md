@@ -61,7 +61,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | [console.py](../src/uz_dataviewer/console.py) | Bottom console: scrolling selectable log + command input/completion/history | `Console` |
 | [model.py](../src/uz_dataviewer/model.py) | Loaded data + per-log time normalization | `Run`, `Signal`, `DataRegistry` |
 | [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing | `load_file`, `parse_channel_name` |
-| [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware MinMax-LTTB decimation (+ NumPy fallback) | `downsample_xy`, `visible_slice` |
+| [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware decimation: min/max pyramid + one-shot (pure NumPy) | `Pyramid`, `decimate_range`, `visible_slice` |
 | [analysis.py](../src/uz_dataviewer/analysis.py) | GUI-free transforms (FFT) | `compute_fft`, `FftResult` |
 | [session.py](../src/uz_dataviewer/session.py) | JSON save/restore, `.uzscript` export/replay, CSV exports | `to_dict`/`apply_dict`, `export_*` |
 | [webbridge.py](../src/uz_dataviewer/webbridge.py) | Browser integration (file input, array load, downloads) | `IS_WEB`, `load_columns`, `download` |
@@ -76,7 +76,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 ## 4. Data model
 
 - A **`Run`** is one loaded file: a shared `time` axis (`float64`) plus one
-  **`Signal`** per channel (`y` as `float32`, contiguous, ready for ImPlot/`tsdownsample`).
+  **`Signal`** per channel (`y` as `float32`, contiguous, ready for ImPlot and the pyramid).
 - **`DataRegistry`** owns runs and hands out stable integer ids; `SignalRef = (run_id, name)`
   identifies a signal everywhere.
 - **Time normalization** is per-log: `Run.set_time_origin(target)` keeps the original
@@ -125,8 +125,11 @@ Per time-series cell, each frame:
 2. **Linked X:** the hovered cell becomes the `_driver` and publishes its X range to
    `state.shared_x`; followers lock to it. Every time-series cell also publishes its own
    range to `state.plot_x_ranges[plot_n]` (used by analysis windows' "follow plot_N").
-3. **Downsample** each signal to `max_points` over the visible window
-   (`downsample_xy`) — this is what keeps multi-GB logs interactive.
+3. **Downsample** each signal to ~`max_points` over the visible window
+   (`decimate_range`, fed by `visible_slice`) — this is what keeps multi-GB logs
+   interactive. Note **XY cells are the exception**: they decimate by plain uniform
+   stride (`_xy_stride`), *not* a min/max envelope, so a busy Lissajous figure can
+   alias — acceptable for the phase-portrait use case but worth knowing.
 4. Draw it (line/scatter/stairs), optionally with per-sample markers (`Spec.marker`),
    routing the left/right (secondary `ImAxis_.y2`) axis per signal.
 5. **Cursors** (two `drag_line_x`) and **spy** (`drag_rect` + a `canvas_only` inset) draw
@@ -165,27 +168,53 @@ This is why "absolutely everything is a command" holds for the analysis windows 
 
 ## 8. Downsampling ([downsample.py](../src/uz_dataviewer/downsample.py))
 
-Two layers, because per-frame cost matters on multi-GB logs:
+Pure NumPy — **identical on native and web** (the Rust `tsdownsample` dependency was
+removed in favour of the pyramid). Every path produces a **min/max envelope at the signals'
+true sample positions** (so it looks like the waveform, not a blocky bucket-centre grid) and
+a **consistent ~`max_points` output at every zoom**. Two layers:
 
-- **One-shot (`downsample_xy`)** — crops to the visible window, then decimates to
-  `max_points` with `tsdownsample` MinMax-LTTB (or a pure-NumPy fallback on web). Cost is
-  **O(visible points)**: fine for small signals/zoomed-in views, but re-scanning tens of
-  millions of points *every frame* is what made a 5 GB log drop to ~13 fps.
-- **Multi-resolution pyramid (`Pyramid`)** — the primary path for large signals
-  (`> PYRAMID_MIN_POINTS`). Built **once per signal on first display** (lazily, cached on
-  `Signal.pyramid`): geometric min/max levels (bucket sizes `64, 512, 4096, …`), each
-  aggregated from the previous, so the build is O(n). At query time the finest level whose
-  density fits `max_points` is sliced to the window and expanded into a min/max envelope.
-  Per-frame cost is **O(output)** — independent of signal length.
+- **One-shot envelope (`_envelope_oneshot`)** — splits the visible slice into ~`max_points/2`
+  near-equal buckets, takes each bucket's argmin/argmax, and interleaves them in order.
+  Vectorised, **O(visible points)** — used for windows up to `PYRAMID_MIN_POINTS` (1 M), a
+  couple of ms at that size.
+- **Multi-resolution pyramid (`Pyramid`)** — for larger windows. Built **once per signal on
+  first display** (lazily, cached on `Signal.pyramid`): geometric levels storing the per-bucket
+  argmin/argmax **sample indices** (`64, 512, 4096, …`), each aggregated from the previous, so
+  the build is O(n). A query picks the coarsest level that still has ≥ the budget of buckets,
+  then groups those down to the budget keeping each group's true extreme — **O(output)**.
 
-> Measured on 50 M points (≈5 GB log scale): per-frame decimation **~17 ms → 0.012 ms**
-> (~1300×), build ~96 ms once, pyramid memory ~3.6 % of the signal. X is **not** stored —
-> bucket positions map to raw indices, so X is read from the run's `time` axis at query
-> time (and the pyramid is unaffected by time normalization).
+> Storing *indices* (not values) is what lets the envelope use true X/Y read from the run's
+> `time`/`y` arrays, so it's also normalization-agnostic. Measured (single float32 signal,
+> `max_points=10 000`, one core; reproduce with a short `Pyramid.build`/`decimate_range` timing
+> loop):
+>
+> | Signal | Build (once) | Query/frame (full) | Query/frame (zoomed) | Pyramid memory |
+> |---|---|---|---|---|
+> | 10 M pts (40 MB) | ~15 ms | ~0.9 ms | ~0.15 ms | 1.4 MB (3.6 %) |
+> | 50 M pts (200 MB) | ~75 ms | ~0.7 ms | ~0.2 ms | 7.1 MB (3.6 %) |
+>
+> For comparison, re-scanning the full 50 M extent every frame (the one-shot envelope, the work
+> the pyramid avoids) costs **~23 ms/frame** — i.e. the pyramid is ~30× cheaper per frame at the
+> price of a one-time build and ~3.6 % memory. The output also stays ~`max_points` whether you
+> view the whole record or a slice (the earlier 8×-jumpy point count and bucket-centre blockiness
+> are gone). *(Absolute times are hardware-dependent; the point is the O(output) vs O(visible)
+> gap, which is structural.)*
+>
+> The FFT/Histogram windows use the same decimation: a multi-million-point spectrum is
+> range-decimated per frame (`AnalysisPanel._plot_decimated`) rather than drawn in full, and a
+> histogram is binned once at compute (not re-binned every frame).
 
-This is also why the design stays true to immediate mode: the pyramid makes per-frame work
-genuinely cheap, so the renderer re-decimates every frame (no result caching) while staying
-smooth — the expensive structure is built once, like loading the file.
+Two trade-offs this design accepts, stated honestly:
+
+- The pyramid is built **lazily on first display**, on the render thread — so the first frame
+  after dropping in a large signal stalls for the build (~75 ms at 50 M above). It's a one-off
+  per signal and dwarfed by the file load, but a smoother option would be to build it on the
+  loader thread alongside parsing. *(Not done; noted as future work.)*
+- The renderer **re-decimates every frame with no result cache**. Because a query is O(output)
+  this is cheap even on a static view, and it keeps the code stateless (true to immediate mode).
+  The alternative — caching the decimated arrays keyed on `(visible limits, max_points)` and
+  reusing them while the view is unchanged — would trim idle CPU, at the cost of a cache to
+  invalidate. We chose simplicity; the door is open if idle draw cost ever matters.
 
 ---
 
@@ -213,8 +242,8 @@ The same Python runs on the desktop and in the browser via Pyodide (CPython→WA
 |---|---|---|
 | File open | OS dialog (`portable_file_dialogs`) | hidden HTML `<input type=file>` |
 | Loading | async on a `ThreadPoolExecutor` | synchronous (no worker threads) |
-| Large CSV | Arrow reads the whole file | **stream-parsed into typed arrays** (`load_columns`) so the multi-GB text never sits in wasm32 memory |
-| Downsampler | Rust `tsdownsample` | pure-NumPy fallback (no WASM wheel) |
+| Large CSV | Arrow reads the whole file | **> 200 MB only** is **stream-parsed into typed arrays** (`load_columns`) so the multi-GB text never sits in wasm32 memory; ≤ 200 MB CSV and any Parquet still go through Arrow |
+| Downsampler | min/max pyramid (pure NumPy) | **identical** (same code, no native dep) |
 | Export / Save | OS save dialog | `webbridge.download` (Blob + anchor click); session menu disabled |
 
 The hard ceiling is wasm32's ~4 GB address space: the *numeric* data must fit
@@ -271,8 +300,8 @@ Run: `pytest` from the project root.
 | Single `AppState`, panels as renderers | One source of truth; trivial to serialise and test; no scattered widget state. |
 | Command layer is the only mutation path | Scriptability, console transcript, save/restore-by-replay, and headless testing all derive from it. |
 | Gestures **echo**, discrete actions **execute** | Zoom/drag are continuous; echoing once on settle keeps the console readable while staying replayable. |
-| Reuse `tsdownsample`, not `plotly_resampler` | The only part of the old viewer reusable with ImPlot. |
-| Min/max **pyramid** for large signals | Per-frame decimation becomes O(output), not O(visible points), so multi-GB logs pan at full fps — built once at first view, ~3.6% memory overhead. |
+| Min/max **pyramid** (pure NumPy) for decimation | Per-frame cost becomes O(output), not O(visible points) (~0.7 ms vs ~23 ms/frame at 50 M points), so multi-GB logs pan at full fps — built once at first view (~75 ms/50 M), ~3.6 % memory. Replaced the Rust `tsdownsample` dep so native and web run the same code. **Cost:** lazy build hitches the first frame; the renderer re-decimates every frame uncached (both deemed acceptable — see §8). |
+| XY cells decimate by uniform **stride**, not min/max | An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple, but can alias a dense Lissajous figure (the only place "range-aware downsampling" doesn't apply). |
 | FFT/Histogram are windows, on-demand | Per-frame transforms of a large window would tank the frame rate; explicit Compute keeps it snappy. |
 | `searchsorted` not `np.interp` for cursors | `np.interp` up-casts the whole array each call — catastrophic per frame. |
 | Session refs by run **label** | Run ids are reassigned on reload; labels survive. |

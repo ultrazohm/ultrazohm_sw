@@ -4,8 +4,8 @@ Signals are dropped in from the navigation tree. Each cell renders as a time
 series (line / scatter / stairs) or an XY plot (one signal vs another), and the
 time-series X axes can be linked so panning/zooming one subplot moves them all.
 Spectra and value distributions live in the dedicated FFT / Histogram windows.
-Series are decimated per visible range with MinMax-LTTB so multi-gigabyte logs
-stay interactive.
+Series are decimated per visible range with a min/max pyramid so multi-gigabyte
+logs stay interactive.
 
 Every discrete interaction here is routed through the command registry
 (``state.commands``) so it is echoed to the console and is equally reachable from

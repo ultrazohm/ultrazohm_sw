@@ -17,8 +17,8 @@ python run.py
 
 ## 2. Native single-file executables (PyInstaller)
 
-The build collects `imgui_bundle`, `pyarrow` and `tsdownsample` (which carry
-native libraries) into one self-contained binary.
+The build collects `imgui_bundle` and `pyarrow` (which carry native libraries)
+into one self-contained binary.
 
 ### Linux / Ubuntu / macOS
 ```bash
@@ -92,8 +92,8 @@ Web-specific notes:
 - Version pins live in `build/gen_web.py` (`PYODIDE_VERSION`, `IMGUI_BUNDLE_WHEEL`).
   The wheel is built against one specific Pyodide release; if you bump one, bump
   the other to a compatible pair (see the imgui_bundle Pyodide docs).
-- `tsdownsample` (Rust) has no Pyodide wheel; `downsample.py` automatically uses
-  its pure-NumPy MinMax fallback there.
+- Downsampling is pure NumPy (the min/max pyramid in `downsample.py`), so the native
+  and web builds run identical decimation code — no native/Rust dependency to wheel.
 
 Reference: imgui_bundle Pyodide docs —
 <https://pthom.github.io/imgui_bundle/python_pyodide.html>

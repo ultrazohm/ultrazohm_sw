@@ -86,8 +86,8 @@ to explore.
 - **Plot types** — line / scatter / stairs / XY (per cell); plus **secondary (right) Y axis**,
   **cursors** (Δx/frequency/Δy), a **spy** zoom inset, per-sample markers, and per-cell **CSV export**.
 - **Linked X axes** — pan/zoom one subplot, the rest follow ("lock time axis").
-- **Range-aware downsampling** — MinMax-LTTB via `tsdownsample` against the visible window, so
-  multi-gigabyte logs stay interactive (NumPy fallback on the web build).
+- **Range-aware downsampling** — a pure-NumPy min/max pyramid against the visible window, so
+  multi-gigabyte logs pan at full frame rate (identical on native and web).
 - **FFT & Histogram windows** — overlay several signals over a selectable time window
   (follow a plot / full / custom), computed on demand, with CSV export.
 - **Scriptable command console** — every action echoes a replayable command; the input runs the
@@ -110,15 +110,15 @@ command to the device. Those are JavaScope's domain.
 - **plotly-resampler** downsampling for big logs.
 
 `uz_dataviewer2` reimplements this offline-viewer concept on Dear ImGui/ImPlot for a native
-docked desktop app (and a WASM web build), reusing the *decimation engine* (`tsdownsample`)
-that lived under plotly-resampler — which is the only part of the old viewer that could be
-carried over, since `FigureResampler` is bound to Plotly figures.
+docked desktop app (and a WASM web build). `FigureResampler` is bound to Plotly figures, so
+nothing of the old rendering carried over; the decimation engine (`tsdownsample`) was reused
+at first, then replaced by a pure-NumPy **min/max pyramid** so native and web share one path.
 
 | Feature | `dataviewer.py` (legacy) | `uz_dataviewer2` (current) |
 |---|---|---|
 | UI stack | Plotly / Dash (browser) | Dear ImGui + ImPlot (native + WASM) |
 | Layout | 4 fixed graph panels | Runtime grid, drag-drop signals |
-| Big-log handling | plotly-resampler | `tsdownsample` MinMax-LTTB + NumPy fallback |
+| Big-log handling | plotly-resampler | pure-NumPy min/max pyramid (O(output)/frame) |
 | Overlay / multi-file | Yes (2 files) | Yes (many runs) |
 | Secondary Y axis | Yes | Yes |
 | Cursors | Yes | Yes (Δx/frequency/Δy) |

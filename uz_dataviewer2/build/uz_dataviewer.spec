@@ -6,8 +6,8 @@
 #     pyinstaller build/uz_dataviewer.spec
 #
 # imgui_bundle ships compiled extensions plus fonts/assets that must be bundled,
-# so we collect the whole package. pyarrow and tsdownsample carry native
-# libraries which PyInstaller's hooks pick up automatically.
+# so we collect the whole package. pyarrow carries native libraries which
+# PyInstaller's hooks pick up automatically.
 
 import os
 import sys
@@ -21,7 +21,7 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
 datas, binaries, hiddenimports = [], [], []
-for pkg in ("imgui_bundle", "pyarrow", "tsdownsample"):
+for pkg in ("imgui_bundle", "pyarrow"):
     d, b, h = collect_all(pkg)
     datas += d
     binaries += b

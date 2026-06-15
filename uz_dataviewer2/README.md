@@ -27,7 +27,8 @@ is a replayable command.
 - **Subplot grid** — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**,
   **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**,
   per-cell **CSV export**.
-- **Range-aware downsampling** — MinMax-LTTB via `tsdownsample`; zoom in to reveal detail.
+- **Range-aware downsampling** — a min/max pyramid (pure NumPy) for time series; multi-GB logs
+  pan at full fps and zoom reveals detail. (XY plots decimate by plain stride.)
 - **FFT & Histogram windows** — overlay several signals, pick the time window
   (follow a plot / full / custom), compute on demand, log axes, CSV export.
 - **Scriptable command console** — every action echoes a command; the input runs them, with
@@ -66,7 +67,7 @@ uz_dataviewer/
 │   ├── console.py            # console: selectable log + command input
 │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
 │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
-│   ├── downsample.py         # MinMax-LTTB (tsdownsample) + NumPy fallback
+│   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
 │   ├── analysis.py           # GUI-free transforms (FFT)
 │   ├── session.py            # JSON save/restore + .uzscript + CSV export
 │   ├── webbridge.py          # browser integration (file input, array load, downloads)

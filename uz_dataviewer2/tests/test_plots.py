@@ -14,7 +14,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from uz_dataviewer.downsample import downsample_xy  # noqa: E402
+from uz_dataviewer.downsample import visible_slice  # noqa: E402
 from uz_dataviewer.model import DataRegistry  # noqa: E402
 from uz_dataviewer.panels.plots import PlotsPanel, _is_finite_range  # noqa: E402
 from uz_dataviewer.state import AppState, SubplotCell  # noqa: E402
@@ -54,11 +54,11 @@ def test_default_limits_window_yields_no_overlap():
     # overlap a log whose time starts at ~12 s -> empty slice. The panel must
     # therefore fall back to the data extent (covered by the extent test above).
     state, run = _registry_with_run(t_start=11.979)
-    xs, _ = downsample_xy(run.time, run.signals["theta"].y, 200, x_min=0.0, x_max=1.0)
-    assert xs.shape[0] <= 1  # nothing meaningful in the default window
+    start, stop = visible_slice(run.time, 0.0, 1.0)
+    assert stop - start <= 1  # nothing meaningful in the default window
 
-    xs, _ = downsample_xy(run.time, run.signals["theta"].y, 200, x_min=11.979, x_max=15.979)
-    assert xs.shape[0] > 100  # full extent renders correctly
+    start, stop = visible_slice(run.time, 11.979, 15.979)
+    assert stop - start > 100  # full extent renders correctly
 
 
 def test_add_sets_fit_pending():

@@ -36,7 +36,8 @@ Histogram** (center tabs), **Console** (bottom) — which you can rearrange.
 - **Drag** a channel from the tree onto a plot cell to add it.
 - **Layout** toolbar sets the grid (`1x1` default … `2x2`, `3x1`, …).
 - **Type** (per cell): `line` / `scatter` / `stairs` / `xy` (one signal vs another —
-  pick the X signal in the cell header).
+  pick the X signal in the cell header). Time-series types use min/max downsampling that
+  preserves spikes; `xy` decimates by plain stride, so a very dense phase plot can alias.
 - **Link X axes** (toolbar): pan/zoom one subplot and the others follow.
 - **Max points** (toolbar): the per-signal downsample budget; "downsampling: active/off"
   tells you whether the current view is decimated. Zoom in to reveal more detail.

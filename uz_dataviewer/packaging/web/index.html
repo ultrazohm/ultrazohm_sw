@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+UltraZohm Data Viewer - web build (pyodide).
+
+Based on the official imgui_bundle pyodide template:
+https://imgui-bundle.pages.dev/doc/  (For Python users -> Deploy to the web)
+
+Serve this directory through a web server, e.g.:
+    python -m http.server -d packaging/web/site
+Opening the file directly via file:// will NOT work (package loading needs http).
+
+Notes for the web build:
+  * tsdownsample (Rust) has no pyodide wheel - the app automatically falls
+    back to its built-in numpy min/max downsampler.
+  * pyarrow may not be available in your pyodide distribution - the app then
+    falls back to a pure-python CSV reader (parquet needs pyarrow).
+  * Native file dialogs do not exist in the browser. Place data files in the
+    pyodide filesystem (see the demo-data fetch below) and load them via the
+    path box in the navigation panel.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UltraZohm Data Viewer</title>
+    <style>
+        html, body { margin: 0; padding: 0; background: #1e1e1e; height: 100%; overflow: hidden; }
+        #canvas { display: block; width: 100vw; height: 100vh; }
+        #loading {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: #ccc;
+            font-family: sans-serif; background: #1e1e1e;
+        }
+        .spinner {
+            border: 4px solid #333; border-top: 4px solid #4caf50; border-radius: 50%;
+            width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
+</head>
+<body>
+<div id="loading"><div class="spinner"></div><div id="loading-text">Loading Python runtime ...</div></div>
+<canvas id="canvas"></canvas>
+
+<script type="text/python" id="pythonCode">
+import os
+from uz_dataviewer import app
+
+argv = ["/demo.csv"] if os.path.exists("/demo.csv") else []
+# On pyodide, immapp.run starts the GUI and returns immediately.
+app.main(argv)
+</script>
+
+<script>
+async function main() {
+    const status = (text) => document.getElementById("loading-text").textContent = text;
+    const canvas = document.getElementById("canvas");
+    canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    let pyodide = await loadPyodide();
+    pyodide.canvas.setCanvas2D(canvas);
+    pyodide._api._skip_unwind_fatal_error = true;
+
+    status("Loading packages ...");
+    await pyodide.loadPackage("micropip");
+    const micropip = pyodide.pyimport("micropip");
+    await pyodide.loadPackage("numpy");
+    try {
+        await pyodide.loadPackage("pyarrow");
+    } catch (e) {
+        console.warn("pyarrow unavailable in this pyodide distribution; " +
+                     "the viewer falls back to its pure-python CSV reader.", e);
+    }
+
+    // Wheels assembled by build_web.sh (imgui_bundle emscripten wheel + app wheel).
+    status("Installing application ...");
+    const manifest = await (await fetch("wheels/manifest.json")).json();
+    for (const wheel of manifest.wheels) {
+        await micropip.install("wheels/" + wheel);
+    }
+
+    // Optional demo data: put a 'demo.csv' next to index.html.
+    try {
+        const response = await fetch("demo.csv");
+        if (response.ok) {
+            const data = new Uint8Array(await response.arrayBuffer());
+            pyodide.FS.writeFile("/demo.csv", data);
+        }
+    } catch (e) { /* no demo data - fine */ }
+
+    status("Starting ...");
+    document.getElementById("loading").style.display = "none";
+    pyodide.runPython(document.getElementById("pythonCode").textContent);
+}
+main();
+</script>
+</body>
+</html>

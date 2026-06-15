@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv*/
+build/
+dist/
+packaging/web/site/
+# hello_imgui window-state files written at runtime
+*.ini
+

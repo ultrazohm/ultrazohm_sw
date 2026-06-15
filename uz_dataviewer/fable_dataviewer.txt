@@ -1,0 +1,978 @@
+╭─── Claude Code v2.1.175 ─────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                Welcome back Tobias!                │ started                 │
+│                                                    │ Run /init to create a … │
+│                       ▐▛███▜▌                      │ ─────────────────────── │
+│                      ▝▜█████▛▘                     │ What's new              │
+│                        ▘▘ ▝▝                       │ Added `enforceAvailabl… │
+│  Fable 5 · Claude Pro ·                            │ Added `wheelScrollAcce… │
+│  tobias.schindler@zohm-control.com's Organization  │ Fixed the `/model` pic… │
+│       /workspaces/ultrazohm_sw/uz_dataviewer       │ /release-notes for more │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ ▎ Fable 5 is here! Our newest model for complex, long-running work.
+ ▎ Included in your plan limits until Jun 22, then switch to usage credits to continue.
+
+❯ /model [fable] 
+  ⎿  Model '[fable]' not found
+
+❯ /model Fable                                                                  
+  ⎿  Set model to Fable 5 and saved as your default for new sessions
+
+❯ in dataviewer.md, there is a task. do it carefully                            
+
+● I'll find and read dataviewer.md first.
+
+  Searched for 2 patterns, read 3 files, listed 1 directory (ctrl+o to expand)
+
+● Bash(python3 --version; pip list 2>/dev/null | grep -iE
+      "imgui|plotly|pandas|polars|pyarrow|tsdownsample|numpy|dash" ; echo ---;
+      which python3 pip)
+  ⎿  Python 3.12.13
+     dash                          4.1.0
+     jupyter-dash                  0.4.2
+     … +10 lines (ctrl+o to expand)
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Bash(pip install imgui_bundle 2>&1 | tail -3)
+  ⎿  [notice] A new release of pip is available: 25.0.1 -> 26.1.2
+     [notice] To update, run: pip install --upgrade pip
+
+● Bash(python3 -c "import imgui_bundle; print(imgui_bundle.__version__)" &&
+      python3 -c "from imgui_bundle import implot; print('implot ok')" &&
+      python3 -c "import tsdo…)
+  ⎿  1.92.801
+     implot ok
+     tsdownsample ok
+
+● Bash(python3 - <<'EOF'
+      from imgui_bundle import implot, imgui, hello_imgui, immapp…)
+  ⎿  begin_drag_drop_target_plot -> begin_drag_drop_target_plot() -> bool
+     begin_drag_drop_source_item -> begin_drag_drop_source_item(label_id: s
+     tr, flags: int = 0) -> bool
+     … +25 lines (ctrl+o to expand)
+
+● Bash(which xvfb-run Xvfb; apt list --installed 2>/dev/null | grep -i xvfb |
+      head -2; ls /workspaces/ultrazohm_sw | head -30)
+  ⎿  CHANGELOG.md
+     LICENSE
+     README.MD
+     … +10 lines (ctrl+o to expand)
+
+● There's already a uz_dataviewer3 directory in the repo — let me check what it
+  contains before creating uz_dataviewer, in case this is a previous attempt.
+
+● Bash(find /workspaces/ultrazohm_sw/uz_dataviewer3 -type f | head -50; echo
+      ---; git -C /workspaces/ultrazohm_sw log --oneline -3 -- uz_dataviewer3
+      2>/dev/null; git -…)
+  ⎿  ---
+     ?? dataviewer.md
+
+● Bash(python3 - <<'EOF'
+      from imgui_bundle import implot, imgui, hello_imgui…)
+  ⎿  plot_line(label_id: str, values: ndarray[writable=False], xscale: floa
+     t = 1, xstart: float = 0, spec: imgui_bundle._imgui_bundle.implot.Spec
+      | None = None) -> None
+     … +18 lines (ctrl+o to expand)
+
+● All API checks pass. Let me set up task tracking and check the imgui_bundle
+  docs for the official web-deployment path (so the web build flow is accurate,
+  not guessed).
+● Fetch(https://pthom.github.io/imgui_bundle/quickstart.html)
+  ⎿  Received 0 bytes (404 Not Found)
+
+● Fetch(https://pthom.github.io/imgui_bundle/)
+  ⎿  Received 431 bytes (200 OK)
+
+● Fetch(https://imgui-bundle.pages.dev/doc/)
+  ⎿  Received 71.2KB (200 OK)
+
+● Fetch(https://imgui-bundle.pages.dev/doc/python/packaging/)
+  ⎿  Received 71.8KB (200 OK)
+
+● Fetch(https://imgui-bundle.pages.dev/doc/python/)
+  ⎿  Received 71.8KB (200 OK)
+
+● Web Search("imgui_bundle python pyodide deploy web application documentation")
+  ⎿  Did 1 search in 7s
+
+● Web Search("imgui_bundle hello_imgui python pyinstaller packaging native app")
+  ⎿  Did 1 search in 9s
+
+● Fetch(https://pthom.github.io/imgui_bundle/python/python-pyodide/)
+  ⎿  Received 0 bytes (404 Not Found)
+
+● Fetch(https://imgui-bundle.pages.dev/doc/python/python-pyodide/)
+  ⎿  Received 103.6KB (200 OK)
+
+● I have everything needed. Let me set up task tracking, then present the plan
+  and implement.
+
+● Bash(mkdir -p /workspaces/ultrazohm_sw/uz_dataviewer/src/uz_dataviewer/{core,u
+      i,analysis} /workspaces/ultrazohm_sw/uz_dataviewer/tests
+      /workspaces/ultrazohm_sw/uz_da…)
+  ⎿  Done
+● Write(pyproject.toml)
+  ⎿  Wrote 36 lines to pyproject.toml
+       2 requires = ["hatchling"]
+       3 build-backend = "hatchling.build"
+       4 
+       5 [project]
+       6 name = "uz-dataviewer"
+       7 version = "0.1.0"
+       8 description = "UltraZohm data viewer for javascope log files (cs
+         v/parquet) built with imgui_bundle"
+       9 readme = "README.md"
+      10 requires-python = ">=3.10"
+     … +27 lines (ctrl+o to expand)
+
+● Write(src/uz_dataviewer/__init__.py)
+  ⎿  Wrote 3 lines to src/uz_dataviewer/__init__.py
+      1 """UltraZohm data viewer built with imgui_bundle."""
+      2 
+      3 __version__ = "0.1.0"
+
+● Write(src/uz_dataviewer/__main__.py)
+  ⎿  Wrote 4 lines to src/uz_dataviewer/__main__.py
+      1 from uz_dataviewer.app import main
+      2 
+      3 if __name__ == "__main__":
+      4     main()
+
+● Write(src/uz_dataviewer/core/__init__.py)
+  ⎿  Wrote 1 lines to src/uz_dataviewer/core/__init__.py
+      1 (No content)
+
+● Write(src/uz_dataviewer/ui/__init__.py)
+  ⎿  Wrote 1 lines to src/uz_dataviewer/ui/__init__.py
+      1 (No content)
+
+● Write(src/uz_dataviewer/analysis/__init__.py)
+  ⎿  Wrote 1 lines to src/uz_dataviewer/analysis/__init__.py
+      1 (No content)
+
+● Write(src/uz_dataviewer/core/console.py)
+  ⎿  Wrote 77 lines to src/uz_dataviewer/core/console.py
+      1 """Thread-safe message buffer backing the bottom console panel.""
+        "
+      2 
+      3 from __future__ import annotations
+      4 
+      5 import threading
+      6 import time
+      7 from dataclasses import dataclass, field
+      8 from enum import IntEnum
+      9 
+     … +73 lines (ctrl+o to expand)
+
+● Write(src/uz_dataviewer/core/loader.py)
+  ⎿  Wrote 168 lines to src/uz_dataviewer/core/loader.py
+        quet).ders for javascope log files (.csv with ';' separator, .par
+      2 
+      3 Files can exceed 1 GB, so loading favors pyarrow (multi-threaded 
+      4 and converts each channel to a contiguous numpy array exactly onc
+        e.
+      5 Loading runs on worker threads (see DataStore.load_files_async) s
+      6 never blocks.
+      7 """
+      8 
+      9 from __future__ import annotations
+     … +175 lines (ctrl+o to expand)
+
+● Now the viewport downsampler — the piece that replaces plotly-resampler,
+  reusing its tsdownsample core with a numpy fallback for web:
+
+● Write(src/uz_dataviewer/core/downsample.py)
+  ⎿  Wrote 157 lines to src/uz_dataviewer/core/downsample.py
+       2 """Viewport-aware downsampling for large signals.
+         er is tied totaviewer uses plotly-resampler, whose FigureResampl
+       4 plotly/Dash and cannot be reused here. Its actual aggregation co
+       5 the framework-agnostic 'tsdownsample' package (Rust MinMaxLTTB w
+         orking on
+         e is notmpy arrays) - that core IS reused here. When tsdownsampl
+         ist), ale (e.g. on pyodide/web, where the Rust wheel does not ex
+       8 vectorized numpy min/max binning fallback is used.
+      10 Strategy (same dynamic-aggregation idea as plotly-resampler): ev
+         ery plot only
+     … +172 lines (ctrl+o to expand)
+
+● Now the data store with async loading and the drag-payload registry:
+
+● Write(src/uz_dataviewer/core/data_store.py)
+  ⎿  Wrote 126 lines to src/uz_dataviewer/core/data_store.py
+         .""Holds all loaded runs and coordinates background file loading
+       2 
+       3 Loading happens on a small thread pool; finished Runs (or errors
+       4 and folded into the store from the UI thread once per frame via 
+         poll().
+       5 """
+       7 from __future__ import annotations
+       8 
+       9 import os
+      10 import queue
+     … +129 lines (ctrl+o to expand)
+
+● Now the FFT analysis module:
+
+● Write(src/uz_dataviewer/analysis/fft.py)
+  ⎿  Wrote 85 lines to src/uz_dataviewer/analysis/fft.py
+      1 """Amplitude-spectrum FFT over a (cursor-)selected region of a si
+        gnal."""
+      2 
+      3 from __future__ import annotations
+      4 
+      5 from dataclasses import dataclass
+      6 
+      7 import numpy as np
+      8 
+      9 WINDOWS = ("hann", "hamming", "rectangular")
+     … +83 lines (ctrl+o to expand)
+
+● Write(src/uz_dataviewer/ui/app_state.py)
+  ⎿  Wrote 98 lines to src/uz_dataviewer/ui/app_state.py
+      1 """Mutable UI state shared between the panels (single-threaded UI
+         access)."""
+      2 
+      3 from __future__ import annotations
+      4 
+      5 from dataclasses import dataclass, field
+      6 
+      7 from uz_dataviewer.core.console import Console
+      8 from uz_dataviewer.core.data_store import DataStore, SignalRef
+      9 from uz_dataviewer.core.downsample import ViewportDownsampler
+     … +95 lines (ctrl+o to expand)
+● Before writing panels, let me verify the remaining API details I'll depend on
+  (file dialogs, implot enums, legend popup, child windows):
+
+● Bash(python3 - <<'EOF'
+      from imgui_bundle import imgui, implot, hello_imgui…)
+  ⎿  open_file: __init__(self, title: str, default_path: str = '', filters:
+      collections.abc.Sequence[str] | None = None, options: imgui_bundle._i
+     mgui_bundle.portable_file_dialogs.opt = opt.none) -> None
+     … +42 lines (ctrl+o to expand)
+
+● All APIs confirmed. Writing the navigation panel (left pane — file loading,
+  run tree, drag sources):
+
+● Write(src/uz_dataviewer/ui/navigation_panel.py)
+  ⎿  Wrote 130 lines to src/uz_dataviewer/ui/navigation_panel.py
+         ignals. navigation: load files, activate runs, browse and drag s
+       2 
+       3 Each loaded run is a collapsible tree node (Matlab-data-viewer s
+       4 checkbox to activate/deactivate it. Signals are drag sources tha
+         t can be
+       5 dropped onto any plot in the main view.
+       7 """
+       8 from __future__ import annotations
+       9 
+      10 import os
+     … +139 lines (ctrl+o to expand)
+
+● Bash(python3 - <<'EOF'
+      from imgui_bundle import imgui, implot…)
+  ⎿  set_next_axes_to_fit -> set_next_axes_to_fit() -> None
+     set_axes -> set_axes(x_axis: int, y_axis: int) -> None
+     setup_axis -> setup_axis(axis: int, label: str | None = None, flags: i
+     … +25 lines (ctrl+o to expand)
+
+● Write(src/uz_dataviewer/ui/plot_panel.py)
+  ⎿  Wrote 280 lines to src/uz_dataviewer/ui/plot_panel.py
+        sors,me-series plot cell: drop target, viewport downsampling, cur
+      2 secondary y-axis, cursor readout and CSV export of the cursor reg
+        ion."""
+      3 
+      4 from __future__ import annotations
+      5 
+      6 import os
+      7 
+      8 import numpy as np
+      9 from imgui_bundle import imgui, implot
+     … +316 lines (ctrl+o to expand)
+
+● Now the FFT panel:
+
+● Write(src/uz_dataviewer/ui/fft_panel.py)
+  ⎿  Wrote 160 lines to src/uz_dataviewer/ui/fft_panel.py
+         compute the cell: pick a source time plot + one of its signals, 
+       2 amplitude spectrum of the cursor-selected region (or the visible
+          range)."""
+       4 from __future__ import annotations
+       5 
+       6 import numpy as np
+       8 from imgui_bundle import imgui, implot
+       9 from uz_dataviewer.analysis import fft
+      10 from uz_dataviewer.ui.app_state import PLOT_TYPE_TIME, AppState,
+          PlotConfig
+     … +179 lines (ctrl+o to expand)
+
+● Now the plot grid orchestrator and console panel:
+
+● Write(src/uz_dataviewer/ui/plot_grid.py)
+  ⎿  Wrote 139 lines to src/uz_dataviewer/ui/plot_grid.py
+      2 """Main view: toolbar + runtime-settable grid of plot cells.
+      3 Each cell hosts either a time-series plot or an FFT plot (switcha
+        ble at
+      4 runtime). Cells keep their configuration when the grid shrinks an
+        d grows.
+      5 """
+      6 
+      7 from __future__ import annotations
+      8 
+      9 from imgui_bundle import imgui, implot
+     … +139 lines (ctrl+o to expand)
+
+● Write(src/uz_dataviewer/ui/console_panel.py)
+  ⎿  Wrote 59 lines to src/uz_dataviewer/ui/console_panel.py
+         vents.""" console: filterable, auto-scrolling log of loader/UI e
+       2 
+       3 from __future__ import annotations
+       4 
+       5 from imgui_bundle import imgui
+       6 
+       7 from uz_dataviewer.core.console import LogLevel
+       8 from uz_dataviewer.ui.app_state import AppState
+       9 
+      10 LEVEL_FILTERS = (
+     … +54 lines (ctrl+o to expand)
+
+● Now the application entry point with the VS Code-style docking layout:
+
+● Write(src/uz_dataviewer/app.py)
+  ⎿  Wrote 108 lines to src/uz_dataviewer/app.py
+         left, plotsm data viewer application: 3-pane layout (navigation 
+       2 right, console bottom) built on hello_imgui docking + implot."""
+       3 
+       4 from __future__ import annotations
+       5 
+       6 import argparse
+       7 import os
+       8 import sys
+       9 
+      10 from imgui_bundle import hello_imgui, imgui, immapp
+     … +115 lines (ctrl+o to expand)
+
+● Let me verify the app constructs correctly (runner params don't need a GL
+  context) and check the few remaining uncertain APIs:
+
+● Bash(cd /workspaces/ultrazohm_sw/uz_dataviewer && pip install -e ".[dev]" 2>&1
+      | tail -2 && python3 - <<'EOF'
+      from imgui_bundle import implot, imgui, hello_imgui…)
+  ⎿  Error: Exit code 1
+     note: This is an issue with the package mentioned above, not pip.
+     hint: See above for details.
+     Location_: True get_plot_size: True
+     Dir.down: 3
+     Traceback (most recent call last):
+       File "<stdin>", line 4, in <module>
+     ModuleNotFoundError: No module named 'uz_dataviewer'
+
+● Bash(cd /workspaces/ultrazohm_sw/uz_dataviewer && touch README.md && pip
+      install -e ".[dev]" 2>&1 | tail -15)
+  ⎿  Downloading pytest-9.0.3-py3-none-any.whl (375 kB)
+     Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+     Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+     … +17 lines (ctrl+o to expand)
+  ⎿  (timeout 3m)
+
+● Installed (the earlier failure was just the missing README.md, now created).
+  Verifying app construction:
+
+● Bash(python3 - <<'EOF'
+      import uz_dataviewer.app as app…)
+  ⎿  runner params OK: UltraZohm Data Viewer 0.1.0
+     docking splits: [('MainDockSpace', 'ConsoleSpace'), ('MainDockSpace',
+     'NavigationSpace')]
+     windows: ['Data', 'Plots', 'Console']
+● The app constructs cleanly. Now the test suite with generated sample data:
+
+● Write(tests/conftest.py)
+  ⎿  Wrote 35 lines to tests/conftest.py
+       2 import pytestas np
+       3 
+       4 
+       5 @pytest.fixture
+       6 def sample_signal():
+         ine."""1 s of 10 kHz data: 50 Hz / 1 V sine plus 1 kHz / 0.2 V s
+       8     sample_rate = 10_000
+       9     time = np.arange(sample_rate) / sample_rate
+      10     values = 1.0 * np.sin(2 * np.pi * 50 * time) + 0.2 * np.sin(
+         2 * np.pi * 1000 * time)
+     … +29 lines (ctrl+o to expand)
+
+● Write(tests/test_loader.py)
+  ⎿  Wrote 65 lines to tests/test_loader.py
+       1 import numpy as np
+       2 import pytest
+       3 
+       4 from uz_dataviewer.core import loader
+       5 
+       6 
+       7 def test_load_csv(javascope_csv):
+       8     run = loader.load_file(javascope_csv)
+       9     assert run.has_real_time
+      10     assert set(run.signals) == {"ch1", "ch2"}
+     … +59 lines (ctrl+o to expand)
+
+● Write(tests/test_downsample.py)
+  ⎿  Wrote 84 lines to tests/test_downsample.py
+       1 import numpy as np
+       2 
+       3 from uz_dataviewer.core import downsample
+       4 
+       5 
+       6 def test_small_input_passthrough():
+       7     x = np.arange(10.0)
+       8     y = np.sin(x)
+       9     indices = downsample.downsample_indices(x, y, 100)
+      10     np.testing.assert_array_equal(indices, np.arange(10))
+     … +77 lines (ctrl+o to expand)
+
+● Write(tests/test_fft.py)
+  ⎿  Wrote 54 lines to tests/test_fft.py
+       1 import numpy as np
+       2 import pytest
+       3 
+       4 from uz_dataviewer.analysis import fft
+       5 
+       6 
+       7 def test_detects_sine_frequencies_and_amplitudes(sample_signal):
+       8     time, values, sample_rate = sample_signal
+       9     result = fft.compute_fft(time, values, window="hann")
+      10     assert result is not None
+     … +51 lines (ctrl+o to expand)
+
+● Write(tests/test_data_store.py)
+  ⎿  Wrote 62 lines to tests/test_data_store.py
+       1 import time as time_module
+       2 
+       3 from uz_dataviewer.core.console import Console, LogLevel
+       4 from uz_dataviewer.core.data_store import DataStore, SignalRef
+       5 
+       6 
+       7 def _wait_for_loads(store, timeout=10.0):
+       8     deadline = time_module.time() + timeout
+       9     while time_module.time() < deadline:
+      10         store.poll()
+     … +52 lines (ctrl+o to expand)
+
+● Bash(python3 -m pytest -q 2>&1 | tail -20)
+  ⎿  E       Mismatched elements: 9 / 1000 (0.9%)
+     E       First 5 mismatches are at indices:
+     E        [100]: -0.0 (ACTUAL), -3.6739403974420594e-16 (DESIRED)
+     … +17 lines (ctrl+o to expand)
+  ⎿  (timeout 3m)
+
+● Update(tests/test_loader.py)
+  ⎿  Added 2 lines, removed 1 line
+      29  def test_csv_and_parquet_agree(javascope_csv, javascope_parquet
+          ):
+      30      run_csv = loader.load_file(javascope_csv)
+      31      run_parquet = loader.load_file(javascope_parquet)
+      32 +    # The CSV fixture stores 9 decimals, so allow that as absol
+         +ute tolerance.                                                 
+      33      np.testing.assert_allclose(
+      33 -        run_csv.signals["ch1"], run_parquet.signals["ch1"][:100
+         -0], rtol=1e-6                                                  
+      34 +        run_csv.signals["ch1"], run_parquet.signals["ch1"][:100
+         +0], rtol=1e-6, atol=1e-9                                       
+      35      )
+      36  
+      37  
+
+● Bash(python3 -m pytest -q 2>&1 | tail -3)
+  ⎿  ..........................
+        [100%]
+     26 passed in 0.50s
+
+● Bash(apt-get install -y xvfb 2>&1 | tail -2)
+  ⎿  Processing triggers for fontconfig (2.15.0-2.3) ...
+     Processing triggers for libc-bin (2.41-12+deb13u2) ...
+  ⎿  (timeout 3m)
+
+● Bash(cd /tmp && python3 - <<'EOF'
+      import numpy as np, pyarrow as pa, pyarrow.parquet as papq…)
+  ⎿  sample files written
+     exit=0
+  ⎿  Shell cwd was reset to /workspaces/ultrazohm_sw
+
+● Bash(cd /tmp && xvfb-run -a python3 - <<'EOF' 2>&1 | tail -15
+      import time as time_module…)
+  ⎿  rendered 60 frames OK
+     console tail:
+       [13:00:52] [INFO ] Loading 'smoke.parquet' ...
+     … +6 lines (ctrl+o to expand)
+  ⎿  Shell cwd was reset to /workspaces/ultrazohm_sw
+
+● Rendering works end-to-end. Let me capture a screenshot to visually verify the
+  3-pane layout:
+
+● Bash(python3 -c "from imgui_bundle import hello_imgui; print([f for f in
+      dir(hello_imgui) if 'screenshot' in f.lower()])")
+  ⎿  ['final_app_window_screenshot', 'final_app_window_screenshot_framebuff
+     er_scale']
+
+● Bash(cd /tmp && xvfb-run -a -s "-screen 0 1600x900x24" python3 - <<'EOF' 2>&1
+      | tail -5
+      import time as time_module…)
+  ⎿  screenshot saved (900, 1600, 3)
+     exit=0
+  ⎿  Shell cwd was reset to /workspaces/ultrazohm_sw
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(src/uz_dataviewer/core/loader.py)  ⎿  Added 61 lines, removed 1 line
+      73  
+      74  
+      75  def _read_csv(path: str):
+      76 -    import pyarrow.csv as pacsv                                
+      76 +    try:                                                       
+      77 +        import pyarrow.csv as pacsv                            
+      78 +    except ImportError:                                        
+      79 +        # e.g. web/pyodide builds without pyarrow              
+      80 +        return _read_csv_python(path)                          
+      81  
+      82      try:
+      83          return pacsv.read_csv(
+     ...
+       89          raise LoaderError(f"Failed to read CSV '{path}': {exc}
+           ") from exc
+       90  
+       91  
+       92 +def _read_csv_python(path: str):                              
+       93 +    """Slow but dependency-free CSV reader returning a pyarrow
+          +-table-like shim."""                                          
+       94 +    import csv                                                
+       95 +                                                              
+       96 +    try:                                                      
+       97 +        with open(path, newline="") as f:                     
+       98 +            reader = csv.reader(f, delimiter=CSV_SEPARATOR)   
+       99 +            header = next(reader, None)                       
+      100 +            if header is None:                                
+      101 +                raise LoaderError(f"'{os.path.basename(path)}'
+          + is empty.")                                                  
+      102 +            rows = [row for row in reader if row]             
+      103 +    except LoaderError:                                       
+      104 +        raise                                                 
+      105 +    except Exception as exc:                                  
+      106 +        raise LoaderError(f"Failed to read CSV '{path}': {exc}
+          +") from exc                                                   
+      107 +                                                              
+      108 +    columns = []                                              
+      109 +    for index, name in enumerate(header):                     
+      110 +        cells = [row[index] if index < len(row) else "" for ro
+          +w in rows]                                                    
+      111 +        columns.append((name, cells))                         
+      112 +    return _PythonTable(columns)                              
+      113 +                                                              
+      114 +                                                              
+      115 +class _PythonTable:                                           
+      116 +    """Minimal stand-in for a pyarrow.Table used by the pure-p
+          +ython CSV path."""                                            
+      117 +                                                              
+      118 +    def __init__(self, columns: list[tuple[str, list[str]]]): 
+      119 +        self._columns = dict(columns)                         
+      120 +        self.column_names = [name for name, _ in columns]     
+      121 +        self.num_rows = len(columns[0][1]) if columns else 0  
+      122 +                                                              
+      123 +    def column(self, name: str) -> "_PythonColumn":           
+      124 +        return _PythonColumn(self._columns[name])             
+      125 +                                                              
+      126 +                                                              
+      127 +class _PythonColumn:                                          
+      128 +    def __init__(self, cells: list[str]):                     
+      129 +        self._cells = cells                                   
+      130 +                                                              
+      131 +    def __len__(self) -> int:                                 
+      132 +        return len(self._cells)                               
+      133 +                                                              
+      134 +    @property                                                 
+      135 +    def null_count(self) -> int:                              
+      136 +        return sum(1 for cell in self._cells if not cell.strip
+          +())                                                           
+      137 +                                                              
+      138 +    def to_float_array(self) -> np.ndarray | None:            
+      139 +        try:                                                  
+      140 +            return np.array(                                  
+      141 +                [float(cell) if cell.strip() else np.nan for c
+          +ell in self._cells],                                          
+      142 +                dtype=np.float64,                             
+      143 +            )                                                 
+      144 +        except ValueError:                                    
+      145 +            return None                                       
+      146 +                                                              
+      147 +                                                              
+      148  def _read_parquet(path: str):
+      149      import pyarrow.parquet as papq
+      150  
+
+● Update(src/uz_dataviewer/core/loader.py)
+  ⎿  Added 3 lines
+      208  
+      209  def _to_float_array(column) -> np.ndarray | None:
+      210      """Convert a pyarrow column to a float64 numpy array, or N
+           one if not numeric."""
+      211 +    if isinstance(column, _PythonColumn):                     
+      212 +        return column.to_float_array()                        
+      213 +                                                              
+      214      import pyarrow as pa
+      215      import pyarrow.compute as pacompute
+      216  
+
+● Now the no-threads fallback in the data store:
+
+● Update(src/uz_dataviewer/core/data_store.py)
+  ⎿  Added 5 lines, removed 1 line
+      54              with self._pending_lock:
+      55                  self._pending_count += 1
+      56              self.console.info(f"Loading '{os.path.basename(path
+          )}' ...")
+      57 -            self._executor.submit(self._load_worker, path)     
+      57 +            try:                                               
+      58 +                self._executor.submit(self._load_worker, path) 
+      59 +            except RuntimeError:                               
+      60 +                # No thread support (e.g. pyodide/web): load sy
+         +nchronously.                                                   
+      61 +                self._load_worker(path)                        
+      62  
+      63      def _load_worker(self, path: str) -> None:
+      64          try:
+
+● Write(tests/test_loader_fallback.py)
+  ⎿  Wrote 24 lines to tests/test_loader_fallback.py
+         b builds)."""ython CSV path used when pyarrow is unavailable (we
+       2 
+       3 import numpy as np
+       4 
+       5 from uz_dataviewer.core import loader
+       6 
+       7 
+       8 def test_python_csv_reader_matches_pyarrow(javascope_csv):
+       9     run_arrow = loader.load_file(javascope_csv)
+      10     table = loader._read_csv_python(javascope_csv)
+     … +17 lines (ctrl+o to expand)
+
+● Bash(cd /workspaces/ultrazohm_sw/uz_dataviewer && python3 -m pytest -q 2>&1 |
+      tail -3)
+  ⎿  ............................
+        [100%]
+     28 passed in 0.47s
+
+● Write(tests/smoke_gui.py)
+  ⎿  Wrote 87 lines to tests/smoke_gui.py
+         f frames.ss GUI smoke test - renders the full app for a number o
+       2 
+         ay or xvfb:ed by pytest (needs a display). Run with a real displ
+       4 
+       5     xvfb-run -a python tests/smoke_gui.py
+       7 Generates sample data, loads it, populates time-series plots (wi
+         th cursors
+         exits.wnsampling active) and an FFT plot, renders 60 frames and 
+       9 Exit code 0 means every render path executed without raising.
+      10 """
+     … +87 lines (ctrl+o to expand)
+
+● Bash(xvfb-run -a python3 tests/smoke_gui.py; echo "exit=$?")
+  ⎿  smoke test OK: 60 frames rendered, no console errors
+     exit=0
+
+● Write(packaging/desktop/uz_dataviewer.spec)
+  ⎿  Wrote 49 lines to packaging/desktop/uz_dataviewer.spec
+      2 # Build from the uz_dataviewer project root:ewer.
+      3 #   pyinstaller packaging/desktop/uz_dataviewer.spec --noconfirm
+      4 # imgui_bundle ships assets (fonts, etc.) and native libraries th
+        at must be
+      5 # collected explicitly.
+      6 
+      7 import os
+      8 
+      9 from PyInstaller.utils.hooks import collect_data_files, collect_d
+        ynamic_libs
+     … +43 lines (ctrl+o to expand)
+
+● Write(packaging/desktop/build.sh)
+  ⎿  Wrote 23 lines to packaging/desktop/build.sh
+       1 #!/usr/bin/env bash
+       2 # Build a self-contained native app for Linux (Ubuntu).
+       3 # Result: dist/uz-dataviewer/uz-dataviewer
+       4 set -euo pipefail
+       5 
+       6 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+       7 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+       8 cd "${PROJECT_ROOT}"
+       9 
+      10 VENV_DIR="${PROJECT_ROOT}/.venv-build"
+     … +14 lines (ctrl+o to expand)
+
+● Write(packaging/desktop/build.ps1)
+  ⎿  Wrote 21 lines to packaging/desktop/build.ps1
+       2 # Result: dist\uz-dataviewer\uz-dataviewer.exes.
+       3 # Run from anywhere:  powershell -ExecutionPolicy Bypass -File p
+         ackaging\desktop\build.ps1
+       4 $ErrorActionPreference = "Stop"
+       5 
+       6 $ProjectRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
+       7 Set-Location $ProjectRoot
+       8 
+       9 $VenvDir = Join-Path $ProjectRoot ".venv-build"
+      10 if (-not (Test-Path $VenvDir)) {
+     … +14 lines (ctrl+o to expand)
+
+● Now the web (pyodide) build, following the official imgui_bundle template:
+
+● Write(packaging/web/index.html)
+  ⎿  Wrote 98 lines to packaging/web/index.html
+       2 <!--CTYPE html>
+       3 UltraZohm Data Viewer - web build (pyodide).
+       4 
+       5 Based on the official imgui_bundle pyodide template:
+       6 https://imgui-bundle.pages.dev/doc/  (For Python users -> Deploy
+       7  to the web)
+       8 Serve this directory through a web server, e.g.:
+       9     python -m http.server -d packaging/web/site
+      10 Opening the file directly via file:// will NOT work (package loa
+         ding needs http).
+     … +109 lines (ctrl+o to expand)
+
+● Write(packaging/web/build_web.sh)
+  ⎿  Wrote 56 lines to packaging/web/build_web.sh
+       2 # Assemble the static web build (pyodide) into packaging/web/sit
+         e/.
+       3 #
+       4 #   ./packaging/web/build_web.sh
+       5 #   python -m http.server -d packaging/web/site 8000
+       6 #   -> open http://localhost:8000
+       7 #
+       8 # Steps (per the imgui_bundle pyodide docs):
+       9 #   1. build the pure-python wheel of uz_dataviewer
+      10 #   2. download the imgui_bundle emscripten (pyodide) wheel
+     … +52 lines (ctrl+o to expand)
+
+● Bash(chmod +x
+      /workspaces/ultrazohm_sw/uz_dataviewer/packaging/desktop/build.sh
+      /workspaces/ultrazohm_sw/uz_dataviewer/packaging/web/build_web.sh &&
+      ./packaging/web/…)  ⎿  Successfully built uz-dataviewer
+
+     [notice] A new release of pip is available: 25.0.1 -> 26.1.2
+     … +7 lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+  Listed 1 directory (ctrl+o to expand)
+
+● The web build works — it discovered and fetched the real emscripten wheel. Now
+  validating the desktop build flow end-to-end with PyInstaller:
+
+● Bash(./packaging/desktop/build.sh 2>&1 | tail -6)
+  ⎿  Running in the background (↓ to manage)
+
+● While that builds, I'll write the README documenting everything:
+
+● Write(README.md)
+  ⎿  Error writing file
+
+● Background command "Run Linux desktop build (venv + pyinstaller)" completed (exit code 0)
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+● Bash(env | grep -i pip; pip config list 2>/dev/null; cat /etc/pip.conf
+      2>/dev/null)
+  ⎿  Error: Exit code 1
+     PIP_USER=yes
+     PATH=/root/.local/bin:/root/.vscode-server/data/User/globalStorage/github.c
+     opilot-chat/debugCommand:/root/.vscode-server/data/User/globalStorage/githu
+     b.copilot-chat/copilotCli:/vscode/vscode-server/bin/linux-x64/07ff9d6178ede
+     9a1bd12ad3399074d726ebe6e43/bin/remote-cli:/usr/lib/jvm/java-21-openjdk-amd
+     64/bin:/workspace/.pip-modules/bin:/usr/local/bin:/usr/local/sbin:/usr/loca
+     l/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.vscode-server/extensions/ms-pyth
+     on.debugpy-2026.6.0-linux-x64/bundled/scripts/noConfigScripts
+     PYTHONUSERBASE=/workspace/.pip-modules
+     :env:.user='yes'
+
+● The container sets PIP_USER=yes globally, which breaks venv installs. Adding a
+  guard to the build script (harmless elsewhere, makes the flow robust):
+
+● Update(packaging/desktop/build.sh)
+  ⎿  Added 3 lines
+      13  fi
+      14  # shellcheck disable=SC1091
+      15  source "${VENV_DIR}/bin/activate"
+      16 +# A globally exported PIP_USER would break installing into the 
+         +venv.                                                          
+      17 +export PIP_USER=0                                              
+      18 +unset PYTHONUSERBASE                                           
+      19  
+      20  pip install --upgrade pip
+      21  pip install ".[fast,build]"
+
+● Bash(./packaging/desktop/build.sh > /tmp/desktop_build.log 2>&1; echo
+      "exit=$?"; tail -3 /tmp/desktop_build.log)
+  ⎿  exit=0
+     9813 INFO: Build complete! The results are available in: /workspaces/u
+     ltrazohm_sw/uz_dataviewer/dist
+     … +3 lines (ctrl+o to expand)
+  ⎿  (timeout 10m)
+
+● Bash(du -sh dist/uz-dataviewer && xvfb-run -a
+      ./dist/uz-dataviewer/uz-dataviewer --smoke-frames 20 /tmp/smoke.parquet;
+      echo "exit=$?")
+  ⎿  292M       dist/uz-dataviewer
+     exit=0
+
+● The packaged Linux binary runs cleanly. Writing the README, screenshot, and
+  .gitignore:
+
+● Write(README.md)
+  ⎿  Wrote 125 lines to README.md
+      2 # UltraZohm Data Viewer (uz_dataviewer)
+      3 Native data viewer for javascope log files, built with
+      4 [imgui_bundle](https://github.com/pthom/imgui_bundle) (Dear ImGui
+         + ImPlot).
+      5 It is the successor of the plotly/Dash based `javascope/dataviewe
+      6 VS-Code-like 3-pane layout and handles very large logs (> 1 GB) t
+        hrough
+      7 viewport-aware downsampling.
+      8 
+      9 ![layout](docs/screenshot.png)
+     … +155 lines (ctrl+o to expand)
+
+● Bash(mkdir -p /workspaces/ultrazohm_sw/uz_dataviewer/docs && cp
+      /tmp/uz_dataviewer_screenshot.png
+      /workspaces/ultrazohm_sw/uz_dataviewer/docs/screenshot.png)
+  ⎿  Done
+
+● Write(.gitignore)
+  ⎿  Wrote 7 lines to .gitignore
+      1 __pycache__/
+      2 *.egg-info/
+      3 .pytest_cache/
+      4 .venv*/
+      5 build/
+      6 dist/
+      7 packaging/web/site/
+
+● Final polish — clamp plot sizes so tiny cells can't go negative, then run the
+  full verification suite:
+
+● Update(src/uz_dataviewer/ui/plot_panel.py)
+  ⎿  Added 2 lines, removed 3 lines
+      75  
+      76          readout_lines = self._cursor_readout(plot) if plot.show
+          _cursors else []
+      77          if readout_lines:
+      78 -            size = imgui.ImVec2(                               
+      79 -                size.x, size.y - imgui.get_text_line_height_wit
+         -h_spacing() * len(readout_lines)                               
+      80 -            )                                                  
+      78 +            reserved = imgui.get_text_line_height_with_spacing(
+         +) * len(readout_lines)                                         
+      79 +            size = imgui.ImVec2(size.x, max(size.y - reserved, 
+         +80.0))                                                         
+      80  
+      81          if plot_index in self.pending_fit:
+      82              implot.set_next_axes_to_fit()
+
+● Update(src/uz_dataviewer/ui/plot_grid.py)
+  ⎿  Added 1 line, removed 1 line
+      118              # Reserve one info line below the FFT plot.
+      119              plot_size = imgui.ImVec2(
+      120                  plot_size.x,
+      121 -                plot_size.y - imgui.get_text_line_height_with_
+          -spacing(),                                                    
+      121 +                max(plot_size.y - imgui.get_text_line_height_w
+          +ith_spacing(), 80.0),                                         
+      122              )
+      123              self.fft_panel.render_plot(index, plot, plot_size)
+      124          imgui.pop_id()
+
+● Bash(python3 -m compileall -q src tests && python3 -m pytest -q 2>&1 | tail -2
+      && xvfb-run -a python3 tests/smoke_gui.py && git -C
+      /workspaces/ultrazohm_sw status --…)
+  ⎿  ............................
+        [100%]
+     28 passed in 0.46s
+     … +2 lines (ctrl+o to expand)
+  ⎿  (timeout 5m)
+
+● Bash(git -C /workspaces/ultrazohm_sw status --ignored=no --short
+      --untracked-files=all -- uz_dataviewer | grep -v -E
+      "__pycache__|egg-info|\.venv|^.. uz_dataviewer/(…)
+  ⎿  ?? uz_dataviewer/.gitignore
+     ?? uz_dataviewer/README.md
+     ?? uz_dataviewer/UltraZohm_Data_Viewer_0_1_0.ini
+     … +31 lines (ctrl+o to expand)
+● One stray file: hello_imgui writes a window-state .ini next to the CWD.
+  Cleaning up and ignoring it:
+
+● Bash(rm -f
+      /workspaces/ultrazohm_sw/uz_dataviewer/UltraZohm_Data_Viewer_0_1_0.ini
+      /workspaces/ultrazohm_sw/uz_dataviewer/imgui.ini)
+  ⎿  Done
+
+● Update(.gitignore)
+  ⎿  Added 3 lines
+       5  build/
+       6  dist/
+       7  packaging/web/site/
+       8 +# hello_imgui window-state files written at runtime            
+       9 +*.ini                                                          
+      10 +                                                               
+
+● Done. The task from dataviewer.md is fully implemented and verified — a new
+  uz_dataviewer/ project replicating the javascope dataviewer with imgui_bundle.
+
+  What was built
+
+  uz_dataviewer/ — a pip-installable Python project (pip install -e ., run with
+  uz-dataviewer [files...]):
+
+  - VS Code-style 3-pane layout (hello_imgui docking): navigation left, plot
+  grid right, console bottom.
+  - Navigation: load multiple .csv/.parquet files (background threads, UI never
+  blocks), each run shown as a collapsible tree node with its logged signals
+  (Matlab-style), a checkbox to activate/deactivate it, and right-click to
+  remove.
+  - Plot grid: runtime-settable (1×1, 1×2, 2×1, 2×2, 2×3, 3×3); signals are
+  dragged from the tree and dropped onto plots; each cell's type is switchable
+  between Time series and FFT.
+  - Time plots: draggable A/B cursors with value/delta readout, CSV export of
+  the cursor region (with "start time at 0" option), per-signal secondary y-axis
+  via legend right-click, "Lock time axes" across plots — full feature parity
+  with the old dataviewer.py.
+  - FFT (the requested future extension, working now): pick a source time plot +
+  signal; the spectrum is computed over the region between that plot's cursors
+  (or its visible range), with Hann/Hamming/rectangular windows and log axes.
+
+  Downsampling finding (the task asked to check this): the current dataviewer.py
+  uses plotly-resampler's FigureResampler, which is plotly/Dash-coupled and
+  can't be used with imgui_bundle — but its underlying core, the tsdownsample
+  Rust MinMaxLTTB library, is framework-agnostic and is exactly what I reused.
+  Each plot re-downsamples only its visible time range to a configurable point
+  budget, with caching and view-padding so panning/zooming stays smooth on >1 GB
+  logs. A pure-numpy min/max fallback covers the web build, where the Rust
+  wheel doesn't exist.
+
+  Build flow (all three verified where possible):
+  - Linux: packaging/desktop/build.sh (venv + PyInstaller) — ran it; the 292 MB 
+  dist/uz-dataviewer/ binary executes correctly.
+  - Windows: packaging/desktop/build.ps1, same spec file (not runnable in this
+  container).
+  - Web: packaging/web/build_web.sh builds the app wheel, downloads the official
+  imgui_bundle emscripten wheel, and assembles a static pyodide site per the
+  imgui_bundle docs — ran it; the site assembled with the real wasm wheel.
+  Pyodide quirks (no threads, no native dialogs, possibly no pyarrow) all have
+  code fallbacks.
+
+  Verification: 28 pytest unit tests pass (loader incl. javascope's trailing-;
+  format, downsampling spike preservation, FFT amplitude accuracy, async store).
+  A committed headless GUI smoke test (tests/smoke_gui.py, runs under xvfb)
+  renders 60 frames with populated plots, cursors, axis linking, and an FFT cell
+  — passes, and a screenshot confirmed the layout (saved as
+  docs/screenshot.png).
+
+  One observation: the repo root contains an empty, untracked uz_dataviewer3/
+  directory that looks like a leftover from an earlier attempt — I left it
+  untouched, but it can probably be deleted.
+
+✻ Crunched for 23m 10s
+
+※ recap: Built the new uz_dataviewer per dataviewer.md: an imgui_bundle viewer for javascope csv/parquet logs with drag-and-drop plots, FFT, downsampling, plus desktop and web builds, all tested and passing. Next action: review it and try running it yourself. (disable recaps in /config)

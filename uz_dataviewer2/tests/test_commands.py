@@ -43,7 +43,7 @@ def test_dispatch_builds_plot_state():
         "set_grid(2, 2)",
         "add_signal(plot_1, run_1, ia)",
         "add_signal(plot_1, Log.csv, ib)",  # run resolved by label
-        "set_plot_type(plot_2, Histogram)",
+        "set_plot_type(plot_2, Scatter)",
         "set_x_lim(plot_1, 1.0, 2.0)",
         "show_samples(plot_1, on)",
         "set_max_points(500)",
@@ -54,7 +54,7 @@ def test_dispatch_builds_plot_state():
     assert state.cells[0].signals == [(1, "ia"), (1, "ib")]
     assert state.cells[0].show_samples is True
     assert state.cells[0].pending_x_lim == (1.0, 2.0)
-    assert state.cells[1].plot_type is PlotType.HISTOGRAM
+    assert state.cells[1].plot_type is PlotType.SCATTER
     assert state.max_points == 500
     assert state.link_x is False
 

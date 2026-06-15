@@ -43,6 +43,10 @@ class Signal:
     run_id: int
     """Identifier of the owning :class:`Run`."""
 
+    pyramid: object = field(default=None, repr=False, compare=False)
+    """Lazily-built multi-resolution min/max pyramid (:class:`downsample.Pyramid`)
+    for O(output) decimation of large signals. Built on first display."""
+
     @property
     def label(self) -> str:
         return f"{self.name} [{self.unit}]" if self.unit else self.name

@@ -1,6 +1,6 @@
-"""Signal transforms shared by the FFT panel and the FFT plot type.
+"""Signal transforms used by the FFT window.
 
-Kept GUI-free so it is unit-testable and reusable from the (future) node canvas.
+Kept GUI-free so it is unit-testable and reusable from other analysis windows.
 """
 
 from __future__ import annotations

@@ -1,10 +1,11 @@
 """Center plot panel: a runtime-configurable grid of ImPlot subplots.
 
-Signals are dropped in from the navigation tree. Each cell renders as one of
-several types -- line / scatter / stairs (time series), histogram, XY (one signal
-vs another) or FFT -- and the time-series X axes can be linked so panning/zooming
-one subplot moves them all. Series are decimated per visible range with
-MinMax-LTTB so multi-gigabyte logs stay interactive.
+Signals are dropped in from the navigation tree. Each cell renders as a time
+series (line / scatter / stairs) or an XY plot (one signal vs another), and the
+time-series X axes can be linked so panning/zooming one subplot moves them all.
+Spectra and value distributions live in the dedicated FFT / Histogram windows.
+Series are decimated per visible range with MinMax-LTTB so multi-gigabyte logs
+stay interactive.
 
 Every discrete interaction here is routed through the command registry
 (``state.commands``) so it is echoed to the console and is equally reachable from
@@ -19,10 +20,9 @@ import math
 import numpy as np
 from imgui_bundle import imgui, implot
 
-from ..analysis import compute_fft
-from ..downsample import downsample_xy, visible_slice
+from .. import webbridge
+from ..downsample import PYRAMID_MIN_POINTS, Pyramid, decimate_range, visible_slice
 from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell
-from .fft import follow_combo
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -42,8 +42,6 @@ class PlotsPanel:
         self._driver: int = -1  # cell index that currently drives linked X axes
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
         self._last_logged_x: dict[int, tuple[float, float]] = {}  # for zoom echo
-        self._fft_cache: dict[int, list] = {}  # cell index -> [(label, freqs, mag), ...]
-        self._fft_struct: dict[int, tuple] = {}  # cell index -> structural key (for one-shot recompute)
         self._cursor_text: dict[int, str] = {}  # cell index -> cursor readout
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
         self._last_logged_spy: dict[int, tuple] = {}  # spy-rect echo
@@ -66,7 +64,8 @@ class PlotsPanel:
         path = dialog.result()
         self._export_dialog = None
         if path:
-            self._emit(state, "export_data", plot_n, path)
+            relative = state.cells[plot_n - 1].export_relative
+            self._emit(state, "export_data", plot_n, path, relative)
 
     # -- toolbar ------------------------------------------------------------
     def _toolbar(self, state: AppState) -> None:
@@ -139,43 +138,33 @@ class PlotsPanel:
                 self._emit(state, "cursors", plot_n, cursors)
 
         imgui.same_line()
-        if imgui.small_button("Export") and cell.signals and pfd is not None and self._export_dialog is None:
-            self._export_dialog = (
-                pfd.save_file("Export plot data", f"plot_{plot_n}.csv", ["CSV (*.csv)", "*.csv"]),
-                plot_n,
-            )
+        if imgui.small_button("Export") and cell.signals:
+            name = f"plot_{plot_n}.csv"
+            if pfd is not None and self._export_dialog is None:
+                self._export_dialog = (
+                    pfd.save_file("Export plot data", name, ["CSV (*.csv)", "*.csv"]),
+                    plot_n,
+                )
+            elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
+                path = "/tmp/" + name
+                self._emit(state, "export_data", plot_n, path, cell.export_relative)
+                webbridge.download(path, name)
+        imgui.same_line()
+        changed, rel = imgui.checkbox("start at 0", cell.export_relative)
+        if changed:
+            self._emit(state, "set_export_relative", plot_n, rel)
 
         imgui.same_line()
         shown = self._last_points.get(index)
         suffix = f", ~{shown:,} pts shown" if shown else ""
         imgui.text_disabled(f"{len(cell.signals)} signal(s){suffix}")
 
-        # Second row: cursor readout / XY source / FFT controls.
+        # Second row: cursor readout / XY source.
         if cell.plot_type in _TIME_SERIES:
             if cell.cursors and self._cursor_text.get(index):
                 imgui.text_colored((0.95, 0.85, 0.25, 1.0), self._cursor_text[index])
         elif cell.plot_type is PlotType.XY:
             self._xy_source_combo(state, index, cell)
-        elif cell.plot_type is PlotType.FFT:
-            self._fft_controls(state, index, cell)
-
-    def _fft_controls(self, state: AppState, index: int, cell: SubplotCell) -> None:
-        """Mirror the FFT panel's controls inside an FFT plot cell."""
-        if imgui.small_button("Calc FFT"):
-            self._fft_compute_cell(state, index, cell)
-        imgui.same_line()
-        _, cell.fft_remove_dc = imgui.checkbox("DC", cell.fft_remove_dc)
-        imgui.same_line()
-        _, cell.fft_window = imgui.checkbox("Hann", cell.fft_window)
-        imgui.same_line()
-        _, cell.fft_follow_plot = follow_combo("win", cell.fft_follow_plot, state.cell_count)
-        if cell.fft_follow_plot == 0:
-            imgui.same_line()
-            imgui.set_next_item_width(80)
-            _, cell.fft_tmin = imgui.input_float("t0", cell.fft_tmin)
-            imgui.same_line()
-            imgui.set_next_item_width(80)
-            _, cell.fft_tmax = imgui.input_float("t1", cell.fft_tmax)
 
     def _xy_source_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
         refs: list[SignalRef] = []
@@ -208,12 +197,8 @@ class PlotsPanel:
 
         if cell.plot_type in _TIME_SERIES:
             self._render_time_series(state, index, cell, size.x, plot_h)
-        elif cell.plot_type is PlotType.HISTOGRAM:
-            self._render_histogram(state, index, cell, size.x, plot_h)
         elif cell.plot_type is PlotType.XY:
             self._render_xy(state, index, cell, size.x, plot_h)
-        elif cell.plot_type is PlotType.FFT:
-            self._render_fft(state, index, cell, size.x, plot_h)
 
         imgui.pop_id()
 
@@ -290,9 +275,13 @@ class PlotsPanel:
                 continue
             implot.set_axis(implot.ImAxis_.y2 if ref in cell.y2_signals else implot.ImAxis_.y1)
             label = state.signal_label(ref)
-            xs, ys = downsample_xy(run.time, signal.y, n_out, x_min, x_max)
-            points_shown += xs.shape[0]
+            # Build the per-signal min/max pyramid once (large signals only), then
+            # decimate the visible window in O(output) so multi-GB logs pan smoothly.
+            if signal.pyramid is None and signal.y.size > PYRAMID_MIN_POINTS:
+                signal.pyramid = Pyramid.build(signal.y)
             start, stop = visible_slice(run.time, x_min, x_max)
+            xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
+            points_shown += xs.shape[0]
             if xs.shape[0] < (stop - start):
                 state.downsampling_active = True
 
@@ -310,24 +299,6 @@ class PlotsPanel:
 
             self._legend_popup(state, cell, ref, label)
         return points_shown
-
-    # -- histogram ----------------------------------------------------------
-    def _render_histogram(
-        self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
-    ) -> None:
-        if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
-            implot.setup_axes("value", "count")
-            for ref in list(cell.signals):
-                signal = state.registry.get_signal(ref[0], ref[1])
-                run = state.registry.get(ref[0])
-                if signal is None or run is None or not run.active:
-                    continue
-                values = np.ascontiguousarray(signal.y, dtype=np.float64)
-                implot.plot_histogram(state.signal_label(ref), values)
-                self._legend_popup(state, cell, ref, state.signal_label(ref))
-            self._accept_drop(state, index, cell)
-            implot.end_plot()
-        self._last_points[index] = 0
 
     # -- XY (signal vs signal) ----------------------------------------------
     def _render_xy(
@@ -367,67 +338,6 @@ class PlotsPanel:
     def _xy_stride(self, state: AppState, n: int) -> int:
         budget = max(state.max_points, 2)
         return max(1, n // budget)
-
-    # -- FFT as a plot type -------------------------------------------------
-    def _render_fft(
-        self, state: AppState, index: int, cell: SubplotCell, width: float, plot_h: float
-    ) -> None:
-        results = self._fft_for_cell(state, index, cell)
-        if cell.fit_pending:
-            implot.set_next_axes_to_fit()  # honour "Reset view" for FFT cells
-            cell.fit_pending = False
-        if implot.begin_plot(f"##plot{index}", imgui.ImVec2(width, plot_h)):
-            implot.setup_axes("frequency [Hz]", "amplitude")
-            for label, freqs, mag in results:
-                implot.plot_line(label, freqs, mag)
-                self._legend_popup(state, cell, self._ref_for_label(cell, state, label), label)
-            self._accept_drop(state, index, cell)
-            implot.end_plot()
-        self._last_points[index] = 0
-
-    @staticmethod
-    def _ref_for_label(cell: SubplotCell, state: AppState, label: str) -> SignalRef:
-        for ref in cell.signals:
-            if state.signal_label(ref) == label:
-                return ref
-        return cell.signals[0] if cell.signals else (0, "")
-
-    def _fft_window(self, state: AppState, cell: SubplotCell) -> tuple[float, float]:
-        return state.resolve_x_window(
-            cell.fft_follow_plot, (cell.fft_tmin, cell.fft_tmax), cell.signals
-        )
-
-    def _fft_compute_cell(self, state: AppState, index: int, cell: SubplotCell) -> None:
-        x_min, x_max = self._fft_window(state, cell)
-        results: list = []
-        for ref in cell.signals:
-            run = state.registry.get(ref[0])
-            signal = state.registry.get_signal(ref[0], ref[1])
-            if run is None or signal is None or not run.active:
-                continue
-            result = compute_fft(
-                run.time, signal.y, x_min, x_max,
-                remove_dc=cell.fft_remove_dc, window=cell.fft_window,
-            )
-            if result.ok:
-                results.append((state.signal_label(ref), result.freqs, result.mag))
-        self._fft_cache[index] = results
-
-    def _fft_for_cell(self, state: AppState, index: int, cell: SubplotCell) -> list:
-        if not cell.signals:
-            self._fft_cache.pop(index, None)
-            return []
-        # Recompute once on a *structural* change (signals or options edited); the
-        # Calc button forces it. Following a plot's range does NOT recompute while
-        # you pan -- there is no auto-calc, so press Calc to refresh the window.
-        struct = (
-            tuple(cell.signals), cell.fft_remove_dc, cell.fft_window,
-            cell.fft_follow_plot, round(cell.fft_tmin, 6), round(cell.fft_tmax, 6),
-        )
-        if self._fft_struct.get(index) != struct:
-            self._fft_struct[index] = struct
-            self._fft_compute_cell(state, index, cell)
-        return self._fft_cache.get(index, [])
 
     # -- cursors ------------------------------------------------------------
     @staticmethod
@@ -542,7 +452,10 @@ class PlotsPanel:
                 run = state.registry.get(ref[0])
                 if signal is None or run is None or not run.active:
                     continue
-                xs, ys = downsample_xy(run.time, signal.y, n_out, x1, x2)
+                if signal.pyramid is None and signal.y.size > PYRAMID_MIN_POINTS:
+                    signal.pyramid = Pyramid.build(signal.y)
+                start, stop = visible_slice(run.time, x1, x2)
+                xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
                 xs = np.ascontiguousarray(xs, dtype=np.float64)
                 ys = np.ascontiguousarray(ys, dtype=np.float64)
                 implot.plot_line(state.signal_label(ref), xs, ys)

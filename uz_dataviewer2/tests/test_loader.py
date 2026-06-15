@@ -55,6 +55,25 @@ def test_load_parquet(tmp_path):
     assert "ia" in run.signals
 
 
+def test_sniff_delimiter(tmp_path):
+    from uz_dataviewer.loader import _sniff_delimiter
+
+    semi = tmp_path / "javascope.csv"
+    semi.write_text("time;CH8=8)ia;CH9=9)ib;\n0.0;1.0;2.0;\n")
+    comma = tmp_path / "exported.csv"
+    comma.write_text("time,ia,ib\n0.0,1.0,2.0\n")
+    assert _sniff_delimiter(str(semi)) == ";"
+    assert _sniff_delimiter(str(comma)) == ","
+
+
+def test_load_comma_separated_csv(tmp_path):
+    path = tmp_path / "comma.csv"
+    path.write_text("time,ia,ib\n0.0,0.1,1.0\n0.1,0.2,1.1\n")
+    run = load_file(str(path), DataRegistry())
+    assert run.n_rows == 2
+    assert set(run.signals) == {"ia", "ib"}
+
+
 def test_unsupported_extension(tmp_path):
     path = tmp_path / "data.txt"
     path.write_text("nope")

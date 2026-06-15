@@ -112,6 +112,23 @@ def _parse_bool(raw) -> bool:
     raise CommandError(f"Expected a boolean (on/off), got {raw!r}")
 
 
+def _parse_fwindow(raw) -> int:
+    """Analysis time-source: ``custom`` -> 0, ``full`` -> -1, ``plot_N`` -> N."""
+    if isinstance(raw, int):
+        return raw
+    s = str(raw).strip().lower()
+    if s == "custom":
+        return 0
+    if s == "full":
+        return -1
+    if s.startswith("plot_"):
+        s = s[len("plot_"):]
+    try:
+        return int(s)
+    except ValueError as exc:  # noqa: TRY003
+        raise CommandError(f"Expected custom/full/plot_N, got {raw!r}") from exc
+
+
 def _plot_number(raw) -> int:
     if isinstance(raw, int):
         return raw
@@ -160,6 +177,8 @@ def _coerce_one(state: "AppState", param: Param, raw):
         return n
     if kind == "run":
         return _resolve_run(state, raw)
+    if kind == "fwindow":
+        return _parse_fwindow(raw)
     raise CommandError(f"Unknown parameter kind: {kind}")
 
 
@@ -196,6 +215,9 @@ def format_call(cmd: Command, values: list) -> str:
             parts.append(f"plot_{int(value)}")
         elif param.kind == "run":
             parts.append(f"run_{int(value)}")
+        elif param.kind == "fwindow":
+            v = int(value)
+            parts.append("custom" if v == 0 else "full" if v == -1 else f"plot_{v}")
         elif param.kind == "bool":
             parts.append("true" if value else "false")
         elif param.kind == "float":
@@ -365,7 +387,7 @@ def register_builtins(reg: CommandRegistry) -> None:
         _cell(state, a[0]).plot_type = _resolve_plot_type(a[1])
 
     reg.add("set_plot_type", [Param("plot", "plot"), Param("type", "str")], set_plot_type,
-            "Set a subplot's type (line/scatter/stairs/histogram/xy/fft).")
+            "Set a subplot's type (line/scatter/stairs/xy).")
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a
@@ -468,29 +490,129 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("export_data", [Param("plot", "plot"), Param("path", "str"), Param("relative", "bool", optional=True)],
             export_data, "Export a subplot's signals to CSV (relative=true zeroes the start time).")
 
-    # -- FFT --------------------------------------------------------------
-    def fft_source(state, a):
-        run_id, name = a
-        if state.registry.get_signal(run_id, name) is None:
-            raise CommandError(f"run_{run_id} has no signal {name!r}")
-        ref = (run_id, name)
-        if ref not in state.fft.sources:
-            state.fft.sources.append(ref)
-        state.fft.compute_requested = True
+    def set_export_relative(state, a):
+        _cell(state, a[0]).export_relative = a[1]
 
-    reg.add("fft_source", [Param("run", "run"), Param("signal", "str")], fft_source,
-            "Add a signal to the FFT panel (it can show several at once).")
+    reg.add("set_export_relative", [Param("plot", "plot"), Param("on", "bool")], set_export_relative,
+            "Toggle 'start time at 0' for a subplot's CSV export.")
 
-    def fft_clear(state, a):
-        state.fft.sources.clear()
+    # -- analysis windows (FFT, Histogram) --------------------------------
+    # The two windows share a control surface, so their common commands are
+    # registered from one factory; the transform-specific options (DC/Hann/log,
+    # bins) and the compute/export handlers are added per window below.
+    def _register_analysis_common(prefix: str, attr: str, noun: str) -> None:
+        def _cfg(state):
+            return getattr(state, attr)
 
-    reg.add("fft_clear", [], fft_clear, "Remove all signals from the FFT panel.")
+        def source(state, a):
+            run_id, name = a
+            if state.registry.get_signal(run_id, name) is None:
+                raise CommandError(f"run_{run_id} has no signal {name!r}")
+            cfg = _cfg(state)
+            ref = (run_id, name)
+            if ref not in cfg.sources:
+                cfg.sources.append(ref)
+            cfg.compute_requested = True
+
+        reg.add(f"{prefix}_source", [Param("run", "run"), Param("signal", "str")], source,
+                f"Add a signal to the {noun} window (it can show several at once).")
+
+        def clear(state, a):
+            _cfg(state).sources.clear()
+
+        reg.add(f"{prefix}_clear", [], clear, f"Remove all signals from the {noun} window.")
+
+        def remove(state, a):
+            cfg = _cfg(state)
+            ref = (a[0], a[1])
+            if ref in cfg.sources:
+                cfg.sources.remove(ref)
+            cfg.compute_requested = True
+
+        reg.add(f"{prefix}_remove", [Param("run", "run"), Param("signal", "str")], remove,
+                f"Remove a signal from the {noun} window.")
+
+        def follow(state, a):
+            cfg = _cfg(state)
+            old = cfg.follow_plot
+            cfg.follow_plot = a[0]
+            if a[0] == 0:  # Custom: seed t-range from the window we were just on
+                cfg.x_min, cfg.x_max = state.resolve_x_window(old, (cfg.x_min, cfg.x_max), cfg.sources)
+            elif a[0] >= 1:  # following a plot -> compute it; custom/full do not
+                cfg.compute_requested = True
+
+        reg.add(f"{prefix}_follow", [Param("target", "fwindow")], follow,
+                f"Set the {noun} time window source (custom / full / plot_N).")
+
+        def rng(state, a):
+            cfg = _cfg(state)
+            cfg.x_min, cfg.x_max = a[0], a[1]
+
+        reg.add(f"{prefix}_range", [Param("min", "float"), Param("max", "float")], rng,
+                f"Set the {noun} custom time window.")
+
+        def xlim(state, a):
+            _cfg(state).pending_x_lim = (a[0], a[1])
+
+        reg.add(f"{prefix}_xlim", [Param("min", "float"), Param("max", "float")], xlim,
+                f"Set the {noun} plot's X-axis view limits.")
+
+    _register_analysis_common("fft", "fft", "FFT")
+    _register_analysis_common("hist", "histogram", "Histogram")
 
     def fft(state, a):
         state.fft.compute_requested = True
         state.focus_fft = True
 
-    reg.add("fft", [], fft, "Recompute the FFT panel.")
+    reg.add("fft", [], fft, "Recompute and focus the FFT window.")
+
+    def fft_remove_dc(state, a):
+        state.fft.remove_dc = a[0]
+        state.fft.compute_requested = True
+
+    reg.add("fft_remove_dc", [Param("on", "bool")], fft_remove_dc, "Toggle FFT DC removal.")
+
+    def fft_hann(state, a):
+        state.fft.window = a[0]
+        state.fft.compute_requested = True
+
+    reg.add("fft_hann", [Param("on", "bool")], fft_hann, "Toggle the FFT Hann window.")
+
+    def fft_logx(state, a):
+        state.fft.log_x = a[0]
+
+    reg.add("fft_logx", [Param("on", "bool")], fft_logx, "Toggle the FFT log X axis.")
+
+    def fft_logy(state, a):
+        state.fft.log_y = a[0]
+
+    reg.add("fft_logy", [Param("on", "bool")], fft_logy, "Toggle the FFT log Y axis.")
+
+    def fft_export(state, a):
+        from .session import export_fft
+        n = export_fft(state, a[0])
+        return f"Exported {n} column(s) to {a[0]}"
+
+    reg.add("fft_export", [Param("path", "str")], fft_export, "Export the FFT spectra to CSV.")
+
+    def histogram(state, a):
+        state.histogram.compute_requested = True
+        state.focus_histogram = True
+
+    reg.add("histogram", [], histogram, "Recompute and focus the Histogram window.")
+
+    def hist_bins(state, a):
+        state.histogram.bins = max(1, a[0])
+        state.histogram.compute_requested = True
+
+    reg.add("hist_bins", [Param("n", "int")], hist_bins, "Set the Histogram bin count.")
+
+    def hist_export(state, a):
+        from .session import export_histogram
+        n = export_histogram(state, a[0])
+        return f"Exported {n} column(s) to {a[0]}"
+
+    reg.add("hist_export", [Param("path", "str")], hist_export, "Export the histogram bins to CSV.")
 
     # -- session ----------------------------------------------------------
     def save_state(state, a):

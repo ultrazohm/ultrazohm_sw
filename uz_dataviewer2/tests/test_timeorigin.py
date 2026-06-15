@@ -85,6 +85,9 @@ def test_fft_follow_plot_resolves_range(tmp_path):
     assert win == (12.05, 12.15)
     # Custom (follow_plot == 0) uses the explicit values.
     assert state.resolve_x_window(0, (1.0, 2.0), [(1, "ia")]) == (1.0, 2.0)
-    # Following a plot with no published range falls back to the signal extent.
+    # Full (follow_plot == -1) uses the whole record.
+    full = state.resolve_x_window(-1, (0.0, 0.0), [(1, "ia")])
+    assert abs(full[0] - 12.0) < 1e-6 and abs(full[1] - 12.2) < 1e-6
+    # Following a plot with no published range falls back to the full record.
     fb = state.resolve_x_window(2, (0.0, 0.0), [(1, "ia")])
     assert abs(fb[0] - 12.0) < 1e-6 and abs(fb[1] - 12.2) < 1e-6

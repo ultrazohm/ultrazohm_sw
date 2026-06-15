@@ -54,9 +54,8 @@ def _drive(state, frames=3):
 
 def test_render_every_plot_type():
     state = _state()
-    state.set_grid(2, 3)
-    types = [PlotType.LINE, PlotType.SCATTER, PlotType.STAIRS,
-             PlotType.HISTOGRAM, PlotType.XY, PlotType.FFT]
+    state.set_grid(2, 2)
+    types = [PlotType.LINE, PlotType.SCATTER, PlotType.STAIRS, PlotType.XY]
     for i, t in enumerate(types):
         state.cells[i].plot_type = t
         state.cells[i].add((1, "ia"))
@@ -86,22 +85,63 @@ def test_render_cursors_and_secondary_axis():
     assert state.cells[0].cursor_x is not None
 
 
-def test_fft_cell_does_not_recompute_every_frame(monkeypatch):
-    """With auto-calc off, an FFT cell computes once (structural change), not
-    every frame -- the fix for the FFT performance problem."""
-    import uz_dataviewer.panels.plots as plots_mod
+def _drive_window(panel, state, frames=4):
+    from imgui_bundle import imgui, implot
+
+    imgui.create_context()
+    implot.create_context()
+    io = imgui.get_io()
+    io.display_size = imgui.ImVec2(1000, 700)
+    io.delta_time = 1.0 / 60.0
+    io.backend_flags |= imgui.BackendFlags_.renderer_has_textures
+    try:
+        for _ in range(frames):
+            imgui.new_frame()
+            imgui.begin("W")
+            panel.render(state)
+            imgui.end()
+            imgui.render()
+    finally:
+        implot.destroy_context()
+        imgui.destroy_context()
+
+
+def test_fft_window_renders_multiple_signals():
+    from uz_dataviewer.panels.fft import FftPanel
+
+    state = _state()
+    state.commands.dispatch(state, "fft_source(Log.csv, ia)")
+    state.commands.dispatch(state, "fft_source(Log.csv, ib)")
+    panel = FftPanel()
+    _drive_window(panel, state)
+    assert len(panel._results) == 2  # one spectrum per source
+
+
+def test_histogram_window_renders_multiple_signals():
+    from uz_dataviewer.panels.histogram import HistogramPanel
+
+    state = _state()
+    state.commands.dispatch(state, "hist_source(Log.csv, ia)")
+    state.commands.dispatch(state, "hist_source(Log.csv, ib)")
+    panel = HistogramPanel()
+    _drive_window(panel, state)
+    assert len(panel._results) == 2  # one distribution per source
+
+
+def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
+    """The FFT window computes only when asked (drag/compute), never per frame."""
+    import uz_dataviewer.panels.fft as fft_mod
+    from uz_dataviewer.panels.fft import FftPanel
 
     calls = {"n": 0}
-    real = plots_mod.compute_fft
+    real = fft_mod.compute_fft
 
     def counting(*a, **k):
         calls["n"] += 1
         return real(*a, **k)
 
-    monkeypatch.setattr(plots_mod, "compute_fft", counting)
+    monkeypatch.setattr(fft_mod, "compute_fft", counting)
     state = _state()
-    state.set_grid(1, 1)
-    state.cells[0].plot_type = PlotType.FFT
-    state.cells[0].add((1, "ia"))
-    _drive(state, frames=6)
-    assert calls["n"] == 1  # one signal, computed once (structural) -- not 6x
+    state.commands.dispatch(state, "fft_source(Log.csv, ia)")  # sets compute_requested
+    _drive_window(FftPanel(), state, frames=6)
+    assert calls["n"] == 1  # computed once for the one source, not 6x

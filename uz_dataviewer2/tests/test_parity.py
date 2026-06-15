@@ -101,10 +101,23 @@ def test_export_data_writes_csv(tmp_path):
     assert "ia" in header and "ib" in header
 
 
+def test_export_uses_plots_own_range(tmp_path):
+    state = _state(tmp_path)
+    # Each plot publishes its own X range; export must use plot_1's, not a global.
+    state.plot_x_ranges[1] = (1.5, 3.0)
+    out = tmp_path / "win.csv"
+    session.export_data(state, 0, str(out), relative=False)
+    import csv
+
+    with open(out) as fh:
+        times = [float(r["time"]) for r in csv.DictReader(fh)]
+    assert min(times) >= 1.0 and max(times) <= 3.0  # only the plot's window
+
+
 def test_export_relative_time_zeroes_start(tmp_path):
     state = _state(tmp_path)
-    # Restrict to a window starting at t=1 so 'relative' is observable.
-    state.shared_x = (1.0, 3.0)
+    # A window starting above t=0 so 'relative' is observable.
+    state.plot_x_ranges[1] = (1.5, 3.0)
     out = tmp_path / "rel.csv"
     session.export_data(state, 0, str(out), relative=True)
     import csv
@@ -119,6 +132,19 @@ def test_export_command_via_dispatch(tmp_path):
     out = tmp_path / "cmd.csv"
     state.commands.dispatch(state, f'export_data(plot_1, "{out}")')
     assert out.exists()
+
+
+def test_export_then_import_roundtrips(tmp_path):
+    """Exported CSV is comma-separated; the loader must sniff that and re-import."""
+    from uz_dataviewer.loader import load_file
+    from uz_dataviewer.model import DataRegistry
+
+    state = _state(tmp_path)
+    out = tmp_path / "exported.csv"
+    session.export_data(state, 0, str(out))
+    run = load_file(str(out), DataRegistry())
+    assert set(run.signals) >= {"ia", "ib"}
+    assert run.n_rows >= 1
 
 
 def test_session_roundtrip_preserves_parity(tmp_path):

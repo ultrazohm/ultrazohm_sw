@@ -23,7 +23,7 @@ def _populated_state(csv_path):
     state.commands.dispatch(state, f'load("{csv_path}")')
     state.commands.dispatch(state, "set_grid(2, 1)")
     state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ia)")
-    state.commands.dispatch(state, "set_plot_type(plot_2, Histogram)")
+    state.commands.dispatch(state, "set_plot_type(plot_2, Scatter)")
     state.commands.dispatch(state, "add_signal(plot_2, Log_test.csv, ib)")
     state.commands.dispatch(state, "show_samples(plot_1, on)")
     state.commands.dispatch(state, "set_max_points(750)")
@@ -45,7 +45,7 @@ def test_json_roundtrip(tmp_path):
     assert restored.max_points == 750
     assert restored.cells[0].plot_type is PlotType.LINE
     assert restored.cells[0].show_samples is True
-    assert restored.cells[1].plot_type is PlotType.HISTOGRAM
+    assert restored.cells[1].plot_type is PlotType.SCATTER
     # Signals resolve back to the reloaded run by label.
     assert [r[1] for r in restored.cells[0].signals] == ["ia"]
     assert [r[1] for r in restored.cells[1].signals] == ["ib"]
@@ -60,12 +60,12 @@ def test_script_export_and_replay(tmp_path):
     session.export_script(state, str(script))
     text = script.read_text()
     assert "add_signal(plot_1," in text
-    assert "set_plot_type(plot_2, Histogram)" in text
+    assert "set_plot_type(plot_2, Scatter)" in text
 
     replayed = AppState()
     n = session.run_script(replayed, str(script))
     assert n > 0
     assert (replayed.rows, replayed.cols) == (2, 1)
     assert [r[1] for r in replayed.cells[0].signals] == ["ia"]
-    assert replayed.cells[1].plot_type is PlotType.HISTOGRAM
+    assert replayed.cells[1].plot_type is PlotType.SCATTER
     assert replayed.cells[0].show_samples is True

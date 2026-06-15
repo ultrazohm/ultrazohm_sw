@@ -1,9 +1,12 @@
 # Building the UltraZohm Data Viewer
 
+> Usage: **[USAGE.md](USAGE.md)** · Internals/design: **[ARCHITECTURE.md](ARCHITECTURE.md)**
+
 The viewer is a pure-Python `imgui_bundle` application. `imgui_bundle` ships
 prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, Linux
 and macOS, so the same source runs on all desktop platforms, and can also be
-executed in the browser via Pyodide.
+executed in the browser via Pyodide. (CI for native + web builds lives in the
+repo-root `.gitlab-ci.yml`.)
 
 ## 1. Run from source (any desktop OS)
 
@@ -70,9 +73,19 @@ HTML). That's a separate effort and would drop the Python data stack.
 ### Loading data in the browser
 
 There is no OS file dialog in a tab, so the **Open file(s)…** button opens an
-HTML file picker. The chosen file is written into the Pyodide virtual filesystem
-and loaded synchronously (Pyodide has no worker threads). Prefer Parquet or
-pre-trimmed CSV — pushing multi-GB logs through the browser is impractical.
+HTML file picker. Loading is synchronous (Pyodide has no worker threads):
+
+- **Small files (≤ 200 MB) and any Parquet** are written to the Pyodide FS and
+  parsed by Arrow as usual.
+- **Large CSVs (> 200 MB)** are **stream-parsed in the browser** directly into
+  per-column typed arrays (`webbridge.load_columns`): the File blob is read in
+  chunks, so the multi-gigabyte *text* is never resident in 32-bit WASM memory —
+  only the compact numeric result (time `float64` + channels `float32`). This
+  loads the whole file at **full resolution**, not decimated.
+
+The hard limit is wasm32's ~4 GB address space: the *numeric* data must fit
+(≈ `rows × channels × 4` bytes), which is far smaller than the raw CSV. For
+genuinely huge logs the native app is still the better choice.
 
 Web-specific notes:
 

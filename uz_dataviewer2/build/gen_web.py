@@ -13,8 +13,10 @@ Follows the official imgui_bundle Pyodide template
   them into the Pyodide virtual filesystem, then boots the app.
 
 Browser specifics handled here: a hidden ``<input type="file">`` feeds chosen
-files into the Pyodide FS and calls ``webbridge.load_uploaded`` (the OS file
-dialog used on desktop does not exist in a tab).
+files in (the OS file dialog used on desktop does not exist in a tab). Small
+files / Parquet go through the Pyodide FS + ``webbridge.load_uploaded``; large
+CSVs are stream-parsed into typed arrays and handed to ``webbridge.load_columns``
+so the multi-gigabyte text never has to be resident in 32-bit WASM memory.
 
 NOTE: the page must be served over HTTP (``python -m http.server``); opening it
 via ``file://`` prevents Pyodide package loading (per the imgui_bundle docs).
@@ -145,12 +147,12 @@ def build_html() -> str:
     }}
   }}
 
-  // Pyodide is 32-bit WASM (~4 GB ceiling), so a multi-GB log cannot be held in
-  // memory, let alone parsed. Files above this size are streamed and row-decimated
-  // on the way in (header + every Nth row), bounded to ~TARGET_ROWS, so memory
-  // stays small. Smaller files load fully for maximum fidelity.
+  // Pyodide is 32-bit WASM (~4 GB ceiling). Small files are written to the FS and
+  // parsed by Arrow as usual. Large CSVs would blow the ceiling if their whole
+  // text were resident, so above this size we stream-parse them directly into
+  // per-column typed arrays in the browser (full resolution) -- the huge text is
+  // never held at once; only the compact numeric result is kept.
   const FULL_LOAD_LIMIT = 200 * 1024 * 1024;  // 200 MB
-  const TARGET_ROWS = 1000000;
 
   function pyLoad(path, note) {{
     const py = "from uz_dataviewer.webbridge import load_uploaded; load_uploaded(" +
@@ -164,21 +166,67 @@ def build_html() -> str:
     pyLoad(path, "");
   }}
 
-  async function loadDecimating(file) {{
-    // Estimate the row count from a head sample to pick the decimation stride.
+  // Stream-parse a large CSV directly into per-column typed arrays. The File blob
+  // is disk-backed and read in chunks, so the multi-GB text is never resident;
+  // only the compact numeric arrays (time float64 + channels float32) are kept,
+  // which fit comfortably -- so the whole file loads at FULL resolution.
+  async function loadStreamingCsv(file) {{
+    const t0 = performance.now();
     const head = await file.slice(0, 256 * 1024).text();
     const headLines = Math.max(head.split("\\n").length - 1, 1);
     const avgLineBytes = (256 * 1024) / headLines;
-    const estRows = Math.max(1, Math.floor(file.size / avgLineBytes));
-    const stride = Math.max(1, Math.ceil(estRows / TARGET_ROWS));
+    let cap = Math.max(1024, Math.floor(file.size / Math.max(avgLineBytes, 1)));
 
     const reader = file.stream().getReader();
     const decoder = new TextDecoder();
     let remainder = "";
     let header = null;
-    let kept = [];
-    let dataIdx = 0;
+    let timeIdx = 0;
+    let dataIdx = [];       // field indices of the data columns
+    let dataNames = [];     // their raw header names
+    let timeArr = null;     // Float64Array
+    let cols = [];          // Float32Array per data column
+    let n = 0;
     let readBytes = 0;
+
+    function grow(need) {{
+      if (need <= cap) return;
+      const nc = Math.max(need, Math.ceil(cap * 1.5));
+      const nt = new Float64Array(nc); nt.set(timeArr.subarray(0, n)); timeArr = nt;
+      for (let c = 0; c < cols.length; c++) {{
+        const a = new Float32Array(nc); a.set(cols[c].subarray(0, n)); cols[c] = a;
+      }}
+      cap = nc;
+    }}
+
+    function initHeader(line) {{
+      const fields = line.split(";");
+      const kept = [];
+      for (let i = 0; i < fields.length; i++) {{
+        const nm = fields[i].trim();
+        if (nm !== "") kept.push([i, nm]);
+      }}
+      let tPos = kept.findIndex(k => k[1].toLowerCase() === "time");
+      if (tPos < 0) tPos = 0;
+      timeIdx = kept.length ? kept[tPos][0] : 0;
+      for (let k = 0; k < kept.length; k++) {{
+        if (k === tPos) continue;
+        dataIdx.push(kept[k][0]);
+        dataNames.push(kept[k][1]);
+      }}
+      timeArr = new Float64Array(cap);
+      cols = dataNames.map(() => new Float32Array(cap));
+    }}
+
+    function pushRow(line) {{
+      if (line === "") return;
+      const f = line.split(";");
+      grow(n + 1);
+      timeArr[n] = parseFloat(f[timeIdx]);
+      for (let c = 0; c < dataIdx.length; c++) cols[c][n] = parseFloat(f[dataIdx[c]]);
+      n++;
+    }}
+
     while (true) {{
       const {{ done, value }} = await reader.read();
       if (done) break;
@@ -186,22 +234,20 @@ def build_html() -> str:
       const parts = (remainder + decoder.decode(value, {{ stream: true }})).split("\\n");
       remainder = parts.pop();  // last (possibly partial) line
       for (const line of parts) {{
-        if (header === null) {{ header = line; kept.push(line); continue; }}
-        if (dataIdx % stride === 0) kept.push(line);
-        dataIdx++;
+        if (header === null) {{ header = line; initHeader(line); continue; }}
+        pushRow(line);
       }}
-      console.log("Reading " + file.name + ": " +
-                  (100 * readBytes / file.size).toFixed(0) + "%");
+      console.log("Parsing " + file.name + ": " + (100 * readBytes / file.size).toFixed(0) + "%");
     }}
-    if (remainder.length > 0 && (header === null || dataIdx % stride === 0)) kept.push(remainder);
+    if (header === null) initHeader(remainder); else pushRow(remainder.trim());
 
-    const path = "/uploads/" + file.name;
-    pyodide.FS.writeFile(path, new TextEncoder().encode(kept.join("\\n") + "\\n"));
-    kept = null;  // free before parsing
-    const note = "Large file (" + (file.size / 1e9).toFixed(2) + " GB): streamed and " +
-                 "decimated 1:" + stride + " (~" + estRows.toLocaleString() + " rows) to fit " +
-                 "browser memory. Zoom resolution is limited; use the native app for full data.";
-    pyLoad(path, note);
+    // Hand the compact typed arrays to Python (one copy into WASM; JS frees after).
+    const bridge = pyodide.pyimport("uz_dataviewer.webbridge");
+    bridge.load_columns(file.name, dataNames, cols.map(a => a.subarray(0, n)), timeArr.subarray(0, n));
+    bridge.destroy();
+    timeArr = null; cols = null;
+    const secs = ((performance.now() - t0) / 1000).toFixed(1);
+    console.log("Loaded " + file.name + " full-resolution: " + n.toLocaleString() + " rows in " + secs + "s");
   }}
 
   function wireFileInput() {{
@@ -210,8 +256,9 @@ def build_html() -> str:
       try {{ pyodide.FS.mkdir("/uploads"); }} catch (_) {{}}
       for (const file of ev.target.files) {{
         try {{
-          if (file.size <= FULL_LOAD_LIMIT) await loadFull(file);
-          else await loadDecimating(file);
+          const isCsv = file.name.toLowerCase().endsWith(".csv");
+          if (isCsv && file.size > FULL_LOAD_LIMIT) await loadStreamingCsv(file);
+          else await loadFull(file);
         }} catch (err) {{
           console.error(err);
           pyodide.runPython(

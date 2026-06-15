@@ -22,9 +22,7 @@ class PlotType(enum.Enum):
     LINE = "Line"
     SCATTER = "Scatter"
     STAIRS = "Stairs"
-    HISTOGRAM = "Histogram"
     XY = "XY"
-    FFT = "FFT"
 
     @classmethod
     def labels(cls) -> list[str]:
@@ -65,20 +63,14 @@ class SubplotCell:
     cursor_x: tuple[float, float] | None = None
     """Persisted cursor X positions as ``(x1, x2)``."""
 
+    export_relative: bool = False
+    """When exporting this cell, rebase the time column to start at 0."""
+
     pending_x_lim: tuple[float, float] | None = None
     """One-shot X-axis limits to apply next render (from ``set_x_lim``)."""
 
     pending_y_lim: tuple[float, float] | None = None
     """One-shot Y-axis limits to apply next render (from ``set_y_lim``)."""
-
-    # FFT plot-type settings (mirror the FFT panel's controls).
-    fft_remove_dc: bool = True
-    fft_window: bool = True
-    fft_follow_plot: int = 1
-    """Which subplot's X range is the FFT window. ``0`` = *Custom*
-    (``fft_tmin``/``fft_tmax``); ``N`` = follow ``plot_N``."""
-    fft_tmin: float = 0.0
-    fft_tmax: float = 0.0
 
     def add(self, ref: SignalRef) -> bool:
         if ref not in self.signals:
@@ -99,19 +91,40 @@ GRID_PRESETS: list[tuple[int, int]] = [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (
 
 
 @dataclass
-class FftConfig:
-    """Configuration for the FFT panel (which can show several signals at once)."""
+class AnalysisConfig:
+    """Shared state for an analysis window (FFT, histogram, ...).
+
+    Each holds a set of source signals (dragged in from the tree or plots) and a
+    time window that either follows a chosen subplot or is entered manually.
+    """
 
     sources: list[SignalRef] = field(default_factory=list)
     follow_plot: int = 1
-    """Which subplot's X range to use as the FFT window. ``0`` = *Custom*
+    """Which subplot's X range to use as the window. ``0`` = *Custom*
     (use ``x_min``/``x_max``); ``N`` = follow ``plot_N``."""
     x_min: float = 0.0
     x_max: float = 0.0
+    compute_requested: bool = False
+    """Set by drag-drop / a command so the window recomputes next frame."""
+    pending_x_lim: tuple[float, float] | None = None
+    """One-shot X-axis view limits to apply next render (from ``*_xlim``)."""
+
+
+@dataclass
+class FftConfig(AnalysisConfig):
+    """FFT window: amplitude spectra of several signals at once."""
+
     remove_dc: bool = True
     window: bool = True
-    compute_requested: bool = False
-    """Set by the ``fft`` command / drag-drop so the panel recomputes next frame."""
+    log_x: bool = False
+    log_y: bool = False
+
+
+@dataclass
+class HistogramConfig(AnalysisConfig):
+    """Histogram window: value distributions of several signals at once."""
+
+    bins: int = 50
 
 
 class AppState:
@@ -140,6 +153,7 @@ class AppState:
         self.downsampling_active = False
 
         self.fft = FftConfig()
+        self.histogram = HistogramConfig()
 
         # The signal currently being dragged from the navigation tree, picked up
         # by the plot panel on drop.
@@ -148,8 +162,9 @@ class AppState:
         self._executor = ThreadPoolExecutor(max_workers=2)
         self._pending: list[tuple[Future[Run], str]] = []
 
-        # Signal that the docking layout should focus the FFT window this frame.
+        # Signal that the docking layout should focus an analysis window this frame.
         self.focus_fft = False
+        self.focus_histogram = False
 
     # -- grid management ----------------------------------------------------
     @property
@@ -198,6 +213,24 @@ class AppState:
         self._report_loaded(run)
         return run
 
+    def add_run_from_arrays(
+        self,
+        label: str,
+        path: str,
+        time: "np.ndarray",
+        signals: dict,
+        units: dict,
+    ) -> Run:
+        """Register a run that was already parsed into numpy arrays.
+
+        Used by the web build, where the CSV is stream-parsed into typed arrays in
+        the browser (full resolution) rather than handed to the Arrow reader -- so
+        the multi-gigabyte text never has to be resident in 32-bit WASM memory.
+        """
+        run = self.registry.add_run(label, path, time, signals, units)
+        self._report_loaded(run)
+        return run
+
     def remove_run(self, run_id: int) -> None:
         """Remove a run and drop any plot assignments that referenced it."""
         run = self.registry.get(run_id)
@@ -209,6 +242,7 @@ class AppState:
             if cell.xy_source is not None and cell.xy_source[0] == run_id:
                 cell.xy_source = None
         self.fft.sources = [s for s in self.fft.sources if s[0] != run_id]
+        self.histogram.sources = [s for s in self.histogram.sources if s[0] != run_id]
         self.registry.remove_run(run_id)
         self.console.info(f"Removed run {run.label}")
 
@@ -242,18 +276,24 @@ class AppState:
     ) -> tuple[float, float]:
         """Resolve an FFT/analysis time window.
 
-        ``follow_plot >= 1`` follows that subplot's live X range (falling back to
-        the first signal's full extent if that plot has no range yet); ``0`` uses
-        the explicit ``custom`` ``(min, max)``.
+        ``follow_plot``: ``0`` uses the explicit ``custom`` ``(min, max)``; ``-1``
+        (*Full*) uses the first signal's whole record; ``>= 1`` follows that
+        subplot's live X range (falling back to the full record if that plot has
+        no range yet).
         """
-        if follow_plot >= 1:
+        if follow_plot == 0:  # Custom
+            return custom
+
+        if follow_plot >= 1:  # follow a specific plot, if it has a live range
             rng = self.plot_x_ranges.get(follow_plot)
             if rng is not None and math.isfinite(rng[0]) and math.isfinite(rng[1]) and rng[1] > rng[0]:
                 return rng
-            if signals:
-                run = self.registry.get(signals[0][0])
-                if run is not None and run.n_rows:
-                    return float(run.time[0]), float(run.time[-1])
+
+        # Full (-1), or a followed plot with no range yet: the whole record.
+        if signals:
+            run = self.registry.get(signals[0][0])
+            if run is not None and run.n_rows:
+                return float(run.time[0]), float(run.time[-1])
         return custom
 
     # -- signal assignment helpers -----------------------------------------

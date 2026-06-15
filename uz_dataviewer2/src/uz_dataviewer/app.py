@@ -20,6 +20,7 @@ from imgui_bundle import hello_imgui, imgui, immapp
 
 from . import webbridge
 from .panels.fft import FftPanel
+from .panels.histogram import HistogramPanel
 from .panels.navigation import NavigationPanel
 from .panels.plots import PlotsPanel
 from .state import AppState
@@ -40,6 +41,7 @@ class DataViewerApp:
         self.navigation = NavigationPanel()
         self.plots = PlotsPanel()
         self.fft = FftPanel()
+        self.histogram = HistogramPanel()
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
         # Let the browser file-input bridge reach this state (no-op on desktop).
@@ -85,12 +87,17 @@ class DataViewerApp:
         fft.dock_space_name = MAIN_DOCK
         fft.gui_function = lambda: self.fft.render(self.state)
 
+        histogram = hello_imgui.DockableWindow()
+        histogram.label = "Histogram"
+        histogram.dock_space_name = MAIN_DOCK
+        histogram.gui_function = lambda: self.histogram.render(self.state)
+
         console = hello_imgui.DockableWindow()
         console.label = "Console"
         console.dock_space_name = BOTTOM_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
-        return [nav, plots, fft, console]
+        return [nav, plots, fft, histogram, console]
 
     # -- Session menu (save/restore + scripting) ----------------------------
     def _show_menus(self) -> None:
@@ -146,6 +153,9 @@ class DataViewerApp:
         if self.state.focus_fft:
             hello_imgui.get_runner_params().docking_params.focus_dockable_window("FFT")
             self.state.focus_fft = False
+        if self.state.focus_histogram:
+            hello_imgui.get_runner_params().docking_params.focus_dockable_window("Histogram")
+            self.state.focus_histogram = False
 
     # -- runner -------------------------------------------------------------
     def run(self) -> None:

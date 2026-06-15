@@ -1,0 +1,123 @@
+# GitLab CI/CD for the UltraZohm Data Viewer (uz_dataviewer2/)
+#
+# Produces:
+#   • build:linux    -> native Ubuntu executable   (dist/uz_dataviewer)      [artifact]
+#   • build:windows  -> native Windows .exe         (dist/uz_dataviewer.exe)  [artifact]
+#   • pages          -> the web (Pyodide/WASM) app, published on GitLab Pages
+#   • test           -> pytest, and gates the builds
+#
+# The viewer lives in the uz_dataviewer2/ subdirectory of this monorepo, so the
+# jobs cd into it and only run when uz_dataviewer2/ (or this file) changes. If you
+# ever host uz_dataviewer2/ as its own GitLab project, move this file to that
+# repo's root and replace "uz_dataviewer2/" with "." throughout.
+#
+# Notes:
+#   • imgui_bundle ships its own GL/GLFW libraries; on Debian it only needs the
+#     X11 system libs installed below (required to import it during tests/build).
+#   • build:windows uses GitLab's SaaS Windows runner tag. For a self-managed
+#     runner, swap the tag for your Windows runner's tag.
+
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  DV_DIR: uz_dataviewer2
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Run this pipeline only for the data viewer's changes (keeps it out of the way
+# of the rest of the monorepo). Tags always build a release.
+.dv-rules:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes: ["uz_dataviewer2/**/*", ".gitlab-ci.yml"]
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes: ["uz_dataviewer2/**/*", ".gitlab-ci.yml"]
+
+# ---------------------------------------------------------------------------
+# Tests (Linux) — gates the build stage.
+# ---------------------------------------------------------------------------
+test:
+  extends: .dv-rules
+  stage: test
+  image: python:3.12-slim-bookworm
+  cache:
+    key: pip-linux
+    paths: ["$PIP_CACHE_DIR"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
+    - python -m pip install --upgrade pip
+    - pip install -r "$DV_DIR/requirements.txt" pytest
+  script:
+    - cd "$DV_DIR"
+    - python -m pytest -q
+
+# ---------------------------------------------------------------------------
+# Native Ubuntu binary (PyInstaller).
+# ---------------------------------------------------------------------------
+build:linux:
+  extends: .dv-rules
+  stage: build
+  image: python:3.12-slim-bookworm
+  cache:
+    key: pip-linux
+    paths: ["$PIP_CACHE_DIR"]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends libgl1 libx11-6 libxext6 libxau6 libxdmcp6 libxcb1
+  script:
+    - cd "$DV_DIR"
+    - ./build/build_native.sh
+  artifacts:
+    name: "uz_dataviewer-linux-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - uz_dataviewer2/dist/uz_dataviewer
+    expire_in: 30 days
+
+# ---------------------------------------------------------------------------
+# Native Windows .exe (PyInstaller on a Windows runner).
+# ---------------------------------------------------------------------------
+build:windows:
+  extends: .dv-rules
+  stage: build
+  tags:
+    - saas-windows-medium-amd64   # self-managed: use your Windows runner's tag
+  before_script:
+    - choco install python312 -y --no-progress
+    - Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+    - refreshenv
+    - python --version
+    - python -m pip install --upgrade pip
+  script:
+    - cd "$env:DV_DIR"
+    - .\build\build_native.ps1
+  artifacts:
+    name: "uz_dataviewer-windows-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - uz_dataviewer2/dist/uz_dataviewer.exe
+    expire_in: 30 days
+
+# ---------------------------------------------------------------------------
+# Web (Pyodide/WASM) app -> GitLab Pages.
+# gen_web.py is pure stdlib, so no native deps are needed here. The output is a
+# self-contained web/index.html (it fetches Pyodide + wheels from the CDN at
+# runtime). Pages publishes the contents of public/ on the default branch.
+# ---------------------------------------------------------------------------
+pages:
+  stage: deploy
+  image: python:3.12-slim-bookworm
+  script:
+    - cd "$DV_DIR" && bash build/build_web.sh   # not +x in git, so invoke via bash
+    - cd "$CI_PROJECT_DIR"
+    - rm -rf public && mkdir -p public
+    - cp -r "$DV_DIR/web/." public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    # Pages is served from the default branch only.
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes: ["uz_dataviewer2/**/*", ".gitlab-ci.yml"]

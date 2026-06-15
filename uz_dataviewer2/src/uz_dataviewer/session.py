@@ -3,7 +3,7 @@
 Two complementary formats, both exposed as commands (see :mod:`commands`):
 
 * **JSON snapshot** (``save_state`` / ``load_state``) -- the exact view: grid,
-  per-cell signal assignments, plot types, link/downsample settings, FFT config
+  per-cell signal assignments, plot types, link/downsample settings, FFT/Histogram config
   and the set of loaded files. Restores to the same picture, including which
   files to reload.
 * **Command script** (``export_script`` / ``run_script``) -- a human-readable,
@@ -59,15 +59,9 @@ def to_dict(state: "AppState") -> dict:
                 "spy_rect": list(cell.spy_rect) if cell.spy_rect else None,
                 "cursors": cell.cursors,
                 "cursor_x": list(cell.cursor_x) if cell.cursor_x else None,
+                "export_relative": cell.export_relative,
                 "xy_source": _ref_to_labelled(state, cell.xy_source),
                 "y2": [_ref_to_labelled(state, r) for r in cell.y2_signals],
-                "fft": {
-                    "remove_dc": cell.fft_remove_dc,
-                    "window": cell.fft_window,
-                    "follow_plot": cell.fft_follow_plot,
-                    "tmin": cell.fft_tmin,
-                    "tmax": cell.fft_tmax,
-                },
             }
         )
     return {
@@ -89,6 +83,15 @@ def to_dict(state: "AppState") -> dict:
             "x_max": state.fft.x_max,
             "remove_dc": state.fft.remove_dc,
             "window": state.fft.window,
+            "log_x": state.fft.log_x,
+            "log_y": state.fft.log_y,
+        },
+        "histogram": {
+            "sources": [_ref_to_labelled(state, r) for r in state.histogram.sources],
+            "follow_plot": state.histogram.follow_plot,
+            "x_min": state.histogram.x_min,
+            "x_max": state.histogram.x_max,
+            "bins": state.histogram.bins,
         },
     }
 
@@ -144,14 +147,9 @@ def apply_dict(state: "AppState", data: dict) -> None:
         cell.spy_rect = tuple(spec["spy_rect"]) if spec.get("spy_rect") else None
         cell.cursors = bool(spec.get("cursors", False))
         cell.cursor_x = tuple(spec["cursor_x"]) if spec.get("cursor_x") else None
+        cell.export_relative = bool(spec.get("export_relative", False))
         cell.xy_source = _resolve(spec.get("xy_source"))
         cell.y2_signals = [r for r in (_resolve(s) for s in spec.get("y2", [])) if r is not None]
-        cfft = spec.get("fft") or {}
-        cell.fft_remove_dc = bool(cfft.get("remove_dc", cell.fft_remove_dc))
-        cell.fft_window = bool(cfft.get("window", cell.fft_window))
-        cell.fft_follow_plot = int(cfft.get("follow_plot", cell.fft_follow_plot))
-        cell.fft_tmin = float(cfft.get("tmin", cell.fft_tmin))
-        cell.fft_tmax = float(cfft.get("tmax", cell.fft_tmax))
         cell.fit_pending = True
 
     fft = data.get("fft") or {}
@@ -161,6 +159,15 @@ def apply_dict(state: "AppState", data: dict) -> None:
     state.fft.x_max = float(fft.get("x_max", state.fft.x_max))
     state.fft.remove_dc = bool(fft.get("remove_dc", state.fft.remove_dc))
     state.fft.window = bool(fft.get("window", state.fft.window))
+    state.fft.log_x = bool(fft.get("log_x", state.fft.log_x))
+    state.fft.log_y = bool(fft.get("log_y", state.fft.log_y))
+
+    hist = data.get("histogram") or {}
+    state.histogram.sources = [r for r in (_resolve(s) for s in hist.get("sources", [])) if r is not None]
+    state.histogram.follow_plot = int(hist.get("follow_plot", state.histogram.follow_plot))
+    state.histogram.x_min = float(hist.get("x_min", state.histogram.x_min))
+    state.histogram.x_max = float(hist.get("x_max", state.histogram.x_max))
+    state.histogram.bins = int(hist.get("bins", state.histogram.bins))
 
 
 # -- command script -----------------------------------------------------------
@@ -214,6 +221,10 @@ def to_script(state: "AppState") -> list[str]:
         labelled = _ref_to_labelled(state, ref)
         if labelled:
             lines.append(f"fft_source({_arg(labelled[0])}, {_arg(labelled[1])})")
+    for ref in state.histogram.sources:
+        labelled = _ref_to_labelled(state, ref)
+        if labelled:
+            lines.append(f"hist_source({_arg(labelled[0])}, {_arg(labelled[1])})")
     return lines
 
 
@@ -258,9 +269,12 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
         raise ValueError("source run is not loaded")
     time = run0.time
 
-    if state.shared_x is not None:
-        x_min = max(state.shared_x[0], float(time[0]))
-        x_max = min(state.shared_x[1], float(time[-1]))
+    # Use *this* subplot's own visible X range (not the global linked range), so
+    # it is unambiguous which plot you are exporting. Fall back to the full extent.
+    own = state.plot_x_ranges.get(plot_index + 1)
+    if own is not None:
+        x_min = max(own[0], float(time[0]))
+        x_max = min(own[1], float(time[-1]))
         if x_max <= x_min:
             x_min, x_max = float(time[0]), float(time[-1])
     else:
@@ -275,7 +289,81 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
             continue
         signal = state.registry.get_signal(ref[0], ref[1])
         if signal is not None:
-            columns[state.signal_label(ref)] = signal.y[start:stop]
+            # Use the plain channel name (e.g. "ia"), as in the source log -- not
+            # the "ia @ Log.csv" display label.
+            columns[ref[1]] = signal.y[start:stop]
 
+    pd.DataFrame(columns).to_csv(path, index=False)
+    return len(columns)
+
+
+def export_fft(state: "AppState", path: str) -> int:
+    """Write the FFT window's spectra to a wide CSV: ``frequency`` + one amplitude
+    column per signal (named by the plain channel name)."""
+    import numpy as np
+    import pandas as pd
+
+    from .analysis import compute_fft
+
+    cfg = state.fft
+    if not cfg.sources:
+        raise ValueError("FFT window has no signals")
+    x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+
+    columns: dict[str, np.ndarray] = {}
+    for ref in cfg.sources:
+        run = state.registry.get(ref[0])
+        signal = state.registry.get_signal(ref[0], ref[1])
+        if run is None or signal is None:
+            continue
+        result = compute_fft(run.time, signal.y, x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window)
+        if not result.ok:
+            continue
+        if "frequency" not in columns:
+            columns["frequency"] = result.freqs
+        columns[ref[1]] = result.mag
+    if "frequency" not in columns:
+        raise ValueError("no spectra to export")
+    # Align all columns to the shortest (spectra share the window, so equal in
+    # the common single-run case; trim defensively for mixed sample rates).
+    m = min(len(v) for v in columns.values())
+    pd.DataFrame({k: v[:m] for k, v in columns.items()}).to_csv(path, index=False)
+    return len(columns)
+
+
+def export_histogram(state: "AppState", path: str) -> int:
+    """Write the Histogram window's bins to a wide CSV: ``bin_center`` + one count
+    column per signal, computed over a shared value range so columns align."""
+    import numpy as np
+    import pandas as pd
+
+    cfg = state.histogram
+    if not cfg.sources:
+        raise ValueError("Histogram window has no signals")
+    x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
+
+    series: dict[str, np.ndarray] = {}
+    lo = hi = None
+    for ref in cfg.sources:
+        run = state.registry.get(ref[0])
+        signal = state.registry.get_signal(ref[0], ref[1])
+        if run is None or signal is None:
+            continue
+        start, stop = visible_slice(run.time, x_min, x_max)
+        values = signal.y[start:stop].astype(np.float64)
+        if values.size == 0:
+            continue
+        series[ref[1]] = values
+        lo = float(values.min()) if lo is None else min(lo, float(values.min()))
+        hi = float(values.max()) if hi is None else max(hi, float(values.max()))
+    if not series:
+        raise ValueError("no data to export")
+    if hi <= lo:
+        hi = lo + 1.0
+    bins = max(1, cfg.bins)
+    edges = np.linspace(lo, hi, bins + 1)
+    columns: dict[str, np.ndarray] = {"bin_center": (edges[:-1] + edges[1:]) / 2.0}
+    for name, values in series.items():
+        columns[name], _ = np.histogram(values, bins=edges)
     pd.DataFrame(columns).to_csv(path, index=False)
     return len(columns)

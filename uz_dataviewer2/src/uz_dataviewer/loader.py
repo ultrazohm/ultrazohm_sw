@@ -74,10 +74,22 @@ def _table_to_run(table: pa.Table, registry: DataRegistry, path: str) -> Run:
     return registry.add_run(label, path, time, signals, units)
 
 
+def _sniff_delimiter(path: str) -> str:
+    """Pick the CSV delimiter from the header row.
+
+    JavaScope logs are ``;``-separated; CSVs exported by this viewer (and most
+    other tools) are ``,``-separated. Choosing by the header makes export -> import
+    round-trip, and we default to ``;`` (the native format) on a tie.
+    """
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        header = fh.readline()
+    return "," if header.count(",") > header.count(";") else ";"
+
+
 def load_csv(path: str, registry: DataRegistry) -> Run:
     table = pa_csv.read_csv(
         path,
-        parse_options=pa_csv.ParseOptions(delimiter=";"),
+        parse_options=pa_csv.ParseOptions(delimiter=_sniff_delimiter(path)),
         read_options=pa_csv.ReadOptions(use_threads=True),
         convert_options=pa_csv.ConvertOptions(strings_can_be_null=True),
     )

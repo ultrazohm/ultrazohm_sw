@@ -22,6 +22,7 @@ from . import webbridge
 from .panels.fft import FftPanel
 from .panels.histogram import HistogramPanel
 from .panels.navigation import NavigationPanel
+from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
 from .state import AppState
 
@@ -42,6 +43,7 @@ class DataViewerApp:
         self.plots = PlotsPanel()
         self.fft = FftPanel()
         self.histogram = HistogramPanel()
+        self.nodes = NodesPanel()
         # Pending Session-menu file dialogs: (dialog, command_name, is_multi).
         self._session_dialog: tuple = ()
         # Let the browser file-input bridge reach this state (no-op on desktop).
@@ -92,12 +94,17 @@ class DataViewerApp:
         histogram.dock_space_name = MAIN_DOCK
         histogram.gui_function = lambda: self.histogram.render(self.state)
 
+        nodes = hello_imgui.DockableWindow()
+        nodes.label = "Nodes"
+        nodes.dock_space_name = MAIN_DOCK
+        nodes.gui_function = lambda: self.nodes.render(self.state)
+
         console = hello_imgui.DockableWindow()
         console.label = "Console"
         console.dock_space_name = BOTTOM_DOCK
         console.gui_function = lambda: self.state.console.render(self.state)
 
-        return [nav, plots, fft, histogram, console]
+        return [nav, plots, fft, histogram, nodes, console]
 
     # -- Session menu (save/restore + scripting) ----------------------------
     def _show_menus(self) -> None:
@@ -183,6 +190,14 @@ class DataViewerApp:
 
         addons = immapp.AddOnsParams()
         addons.with_implot = True
+        # Enable the node-editor add-on for the Nodes window. Disable its own
+        # settings file so the node graph (positions included) is owned entirely
+        # by our AppState / command log / session, not a stray side-car json.
+        from imgui_bundle import imgui_node_editor as ed
+
+        node_cfg = ed.Config()
+        node_cfg.settings_file = ""
+        addons.with_node_editor_config = node_cfg
         immapp.run(params, addons)
 
 

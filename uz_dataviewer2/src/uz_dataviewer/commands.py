@@ -141,6 +141,26 @@ def _plot_number(raw) -> int:
         raise CommandError(f"Expected a plot reference (plot_1), got {raw!r}") from exc
 
 
+def _resolve_node(state: "AppState", raw) -> int:
+    """Resolve a ``node_<id>`` token, a bare id, or a node *name* to a node id."""
+    graph = state.nodes
+    if isinstance(raw, int):
+        node_id = raw
+    else:
+        s = str(raw).strip()
+        body = s[len("node_"):] if s.startswith("node_") else s
+        if body.lstrip("-").isdigit():
+            node_id = int(body)
+        else:
+            node = graph.by_name(s)
+            if node is None:
+                raise CommandError(f"No node named {s!r}")
+            return node.id
+    if graph.get(node_id) is None:
+        raise CommandError(f"node_{node_id} does not exist")
+    return node_id
+
+
 def _resolve_run(state: "AppState", raw) -> int:
     if isinstance(raw, int):
         run_id = raw
@@ -177,6 +197,8 @@ def _coerce_one(state: "AppState", param: Param, raw):
         return n
     if kind == "run":
         return _resolve_run(state, raw)
+    if kind == "node":
+        return _resolve_node(state, raw)
     if kind == "fwindow":
         return _parse_fwindow(raw)
     raise CommandError(f"Unknown parameter kind: {kind}")
@@ -215,6 +237,8 @@ def format_call(cmd: Command, values: list) -> str:
             parts.append(f"plot_{int(value)}")
         elif param.kind == "run":
             parts.append(f"run_{int(value)}")
+        elif param.kind == "node":
+            parts.append(f"node_{int(value)}")
         elif param.kind == "fwindow":
             v = int(value)
             parts.append("custom" if v == 0 else "full" if v == -1 else f"plot_{v}")
@@ -614,6 +638,9 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("hist_export", [Param("path", "str")], hist_export, "Export the histogram bins to CSV.")
 
+    # -- node graph (dataflow transforms -> derived signals) --------------
+    _register_node_commands(reg)
+
     # -- session ----------------------------------------------------------
     def save_state(state, a):
         from .session import save_state as _save
@@ -663,3 +690,84 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("help", [Param("name", "str", optional=True)], help_cmd,
             "List commands, or show help for one.")
+
+
+def _register_node_commands(reg: CommandRegistry) -> None:
+    """The node-graph command surface. A graph is built and replayed entirely
+    through these flat calls, so console scripting and ``.uzscript`` work as for
+    everything else."""
+    from .nodes import TRANSFORM_KINDS, evaluate
+
+    def node_source(state, a):
+        run_id, name = a
+        if state.registry.get_signal(run_id, name) is None:
+            raise CommandError(f"run_{run_id} has no signal {name!r}")
+        node = state.nodes.add("source", ref=(run_id, name))
+        return f"Added {node.name} (source: {name})"
+
+    reg.add("node_source", [Param("run", "run"), Param("signal", "str")], node_source,
+            "Add a source node wrapping a loaded signal (the graph's input).")
+
+    def node_add(state, a):
+        kind = str(a[0]).lower()
+        if kind not in TRANSFORM_KINDS:
+            raise CommandError(f"node_add kind must be one of {', '.join(TRANSFORM_KINDS)}")
+        node = state.nodes.add(kind)
+        return f"Added {node.name} ({kind})"
+
+    reg.add("node_add", [Param("kind", "str")], node_add,
+            f"Add a transform node ({', '.join(TRANSFORM_KINDS)}).")
+
+    def node_set(state, a):
+        node = state.nodes.get(a[0])
+        node.params[str(a[1])] = str(a[2])
+
+    reg.add("node_set", [Param("node", "node"), Param("key", "str"), Param("value", "str")],
+            node_set, "Set a transform node parameter (e.g. node_set(node_2, cutoff, 1000)).")
+
+    def node_link(state, a):
+        state.nodes.link(a[0], a[1])
+
+    reg.add("node_link", [Param("src", "node"), Param("dst", "node")], node_link,
+            "Connect a node's output to another node's input.")
+
+    def node_unlink(state, a):
+        state.nodes.unlink(a[0], a[1])
+
+    reg.add("node_unlink", [Param("src", "node"), Param("dst", "node")], node_unlink,
+            "Disconnect a node link.")
+
+    def node_remove(state, a):
+        node = state.nodes.get(a[0])
+        if node is not None and node.out_run_id is not None:
+            state.remove_run(node.out_run_id)
+        state.nodes.remove(a[0])
+
+    reg.add("node_remove", [Param("node", "node")], node_remove,
+            "Remove a node (and its derived run, if any).")
+
+    def node_rename(state, a):
+        node, new = state.nodes.get(a[0]), str(a[1])
+        if state.nodes.by_name(new) not in (None, node):
+            raise CommandError(f"A node named {new!r} already exists")
+        if node.out_run_id is not None:
+            run = state.registry.get(node.out_run_id)
+            if run is not None:
+                run.label = new
+        node.name = new
+
+    reg.add("node_rename", [Param("node", "node"), Param("name", "str")], node_rename,
+            "Rename a node (its derived run takes the new name).")
+
+    def node_pos(state, a):
+        state.nodes.get(a[0]).pos = (float(a[1]), float(a[2]))
+
+    reg.add("node_pos", [Param("node", "node"), Param("x", "float"), Param("y", "float")],
+            node_pos, "Set a node's canvas position.")
+
+    def node_eval(state, a):
+        n = evaluate(state, a[0])
+        return f"Evaluated {n} node(s)"
+
+    reg.add("node_eval", [Param("node", "node", optional=True)], node_eval,
+            "Evaluate the graph (or one node + its inputs), materializing derived signals.")

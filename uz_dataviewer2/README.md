@@ -31,6 +31,8 @@ is a replayable command.
   pan at full fps and zoom reveals detail. (XY plots decimate by plain stride.)
 - **FFT & Histogram windows** — overlay several signals, pick the time window
   (follow a plot / full / custom), compute on demand, log axes, CSV export.
+- **Node canvas** — drag a signal into a graph, apply transforms (FFT / math /
+  filter), and the result becomes a new draggable signal. Fully scriptable (`node_*`).
 - **Scriptable command console** — every action echoes a command; the input runs them, with
   completion, history and a selectable log. Sessions save to JSON or a replayable `.uzscript`.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
@@ -69,9 +71,11 @@ uz_dataviewer/
 │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
 │   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
 │   ├── analysis.py           # GUI-free transforms (FFT)
+│   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
+│   ├── nodes.py              # dataflow graph + evaluation -> derived signals
 │   ├── session.py            # JSON save/restore + .uzscript + CSV export
 │   ├── webbridge.py          # browser integration (file input, array load, downloads)
-│   └── panels/               # navigation, plots, analysis base, fft, histogram
+│   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
 ├── docs/                     # USAGE / ARCHITECTURE / BUILD
 └── build/                    # native (PyInstaller) + web (Pyodide) build flow

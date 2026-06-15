@@ -40,6 +40,7 @@ pre_new_frame()                      # app.py: poll async loads, focus requests,
    ├─ PlotsPanel.render(state)       # center: subplot grid
    ├─ FftPanel.render(state)         # center tab: FFT window
    ├─ HistogramPanel.render(state)   # center tab: Histogram window
+   ├─ NodesPanel.render(state)       # center tab: node canvas
    └─ Console.render(state)          # bottom: log + command input
 ```
 
@@ -63,6 +64,8 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing | `load_file`, `parse_channel_name` |
 | [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware decimation: min/max pyramid + one-shot (pure NumPy) | `Pyramid`, `decimate_range`, `visible_slice` |
 | [analysis.py](../src/uz_dataviewer/analysis.py) | GUI-free transforms (FFT) | `compute_fft`, `FftResult` |
+| [transforms.py](../src/uz_dataviewer/transforms.py) | GUI-free node transforms (math, FIR filter), pure NumPy | `math_node`, `filter_node` |
+| [nodes.py](../src/uz_dataviewer/nodes.py) | Dataflow graph + on-demand evaluation → derived runs | `NodeGraph`, `Node`, `evaluate`, `is_stale` |
 | [session.py](../src/uz_dataviewer/session.py) | JSON save/restore, `.uzscript` export/replay, CSV exports | `to_dict`/`apply_dict`, `export_*` |
 | [webbridge.py](../src/uz_dataviewer/webbridge.py) | Browser integration (file input, array load, downloads) | `IS_WEB`, `load_columns`, `download` |
 | panels/[navigation.py](../src/uz_dataviewer/panels/navigation.py) | Left tree, drag sources, file dialog, normalize menu | `NavigationPanel` |
@@ -70,6 +73,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | panels/[analysis.py](../src/uz_dataviewer/panels/analysis.py) | Shared base for analysis windows (sources, follow-window, compute, stale, zoom, export) | `AnalysisPanel`, `follow_combo` |
 | panels/[fft.py](../src/uz_dataviewer/panels/fft.py) | FFT window | `FftPanel(AnalysisPanel)` |
 | panels/[histogram.py](../src/uz_dataviewer/panels/histogram.py) | Histogram window | `HistogramPanel(AnalysisPanel)` |
+| panels/[nodes.py](../src/uz_dataviewer/panels/nodes.py) | Node canvas (`imgui_node_editor`) issuing `node_*` commands | `NodesPanel` |
 
 ---
 
@@ -163,6 +167,42 @@ FFT and Histogram share `AnalysisPanel`. Subclasses set a command `prefix`
   `*_xlim` on zoom, `*_export`, …) and **Export** (OS dialog on desktop, browser download on web).
 
 This is why "absolutely everything is a command" holds for the analysis windows too.
+
+---
+
+## 7a. Node graph ([nodes.py](../src/uz_dataviewer/nodes.py), [transforms.py](../src/uz_dataviewer/transforms.py), panels/[nodes.py](../src/uz_dataviewer/panels/nodes.py))
+
+A small dataflow engine, deliberately built as a **derived-signal factory**: a
+transform node, when evaluated, materializes its result as a *new run* in the
+registry (`Run.derived=True`) via `AppState.upsert_derived_run`. That derived
+signal then flows through the **existing** app unchanged — it shows in Navigation
+and is draggable into plots / FFT / Histogram. Nodes *produce* data; nothing else
+in the app needs to know they exist.
+
+- **Graph** (`NodeGraph`) of `Node`s: a **source** wraps a `(run, signal)` ref; a
+  **transform** (`fft` / `math` / `filter`) pulls arrays from its inputs and computes.
+  Links are validated against cycles; ids are persisted so derived-run labels (=
+  node name) are stable across save/restore.
+- **On-demand evaluation** (`evaluate`): topological order; each transform reads its
+  inputs (a source from the registry, an upstream transform from its cache), computes
+  via `transforms`/`analysis`, bumps a `version`, and upserts its derived run **in
+  place** (so plot references survive a re-eval). Per-node errors are logged and
+  skipped, not fatal. A node is **stale** (`is_stale`) when its key — params + each
+  input's version/identity — differs from the last evaluated key (the same idea as
+  the analysis windows' `_computed_key`).
+- **GUI-free + scriptable**: `nodes.py`/`transforms.py` import no GUI and raise plain
+  `ValueError`s, so the whole engine is driven and tested from command strings. The
+  canvas (`panels/nodes.py`, `imgui_node_editor`) is a thin layer that **only issues
+  `node_*` commands** — drag-drop → `node_source`, link → `node_link`, a widget →
+  `node_set`, a drag → `node_pos`, the button → `node_eval`. So the graph round-trips
+  through the console, `.uzscript`, and the JSON session like everything else.
+- **Transforms are pure NumPy** (windowed-sinc FIR filter, not SciPy) so native and
+  web share one code path. FFT reuses `analysis.compute_fft`; its derived run's x-axis
+  is frequency.
+
+> v1 limits (intentional): binary math needs equal-length inputs (no resampling);
+> a source node pointing at *another node's* derived output is a runtime convenience
+> that may not fully survive restore (chaining is meant to go through `node_link`).
 
 ---
 
@@ -275,6 +315,11 @@ in `app.py` and a config dataclass + serialisation.
 **Add a plot type** — extend `PlotType`, branch in `PlotsPanel._render_cell`, and update
 `session.py` if it carries extra per-cell state.
 
+**Add a node transform** — add a pure function in [transforms.py](../src/uz_dataviewer/transforms.py)
+(or reuse one in `analysis.py`), a branch in `nodes._compute`, its default params and input
+arity, and a param-widget block in `NodesPanel._params`. Commands and save/restore are generic
+(`node_set` carries arbitrary params), so nothing else needs touching.
+
 ---
 
 ## 12. Testing
@@ -303,6 +348,7 @@ Run: `pytest` from the project root.
 | Min/max **pyramid** (pure NumPy) for decimation | Per-frame cost becomes O(output), not O(visible points) (~0.7 ms vs ~23 ms/frame at 50 M points), so multi-GB logs pan at full fps — built once at first view (~75 ms/50 M), ~3.6 % memory. Replaced the Rust `tsdownsample` dep so native and web run the same code. **Cost:** lazy build hitches the first frame; the renderer re-decimates every frame uncached (both deemed acceptable — see §8). |
 | XY cells decimate by uniform **stride**, not min/max | An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple, but can alias a dense Lissajous figure (the only place "range-aware downsampling" doesn't apply). |
 | FFT/Histogram are windows, on-demand | Per-frame transforms of a large window would tank the frame rate; explicit Compute keeps it snappy. |
+| Nodes are a **derived-signal factory** (not a new viewer) | Transforms emit ordinary runs, so plots/FFT/Histogram consume them unchanged — the canvas adds power without re-plumbing the rest. The engine is GUI-free and command-driven, so it's scriptable and headless-testable; the `imgui_node_editor` canvas only issues `node_*` commands. |
 | `searchsorted` not `np.interp` for cursors | `np.interp` up-casts the whole array each call — catastrophic per frame. |
 | Session refs by run **label** | Run ids are reassigned on reload; labels survive. |
 | Per-log time normalization keeps `time_raw` | Reversible, cheap (recompute on change only), and signals are never touched. |

@@ -14,8 +14,8 @@ python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload file(s)
 python run.py session.uzscript       # replay a saved session at startup
 ```
 
-The window has four dockable areas — **Navigation** (left), **Plots / FFT /
-Histogram** (center tabs), **Console** (bottom) — which you can rearrange.
+The window has five dockable areas — **Navigation** (left), **Plots / FFT /
+Histogram / Nodes** (center tabs), **Console** (bottom) — which you can rearrange.
 
 ---
 
@@ -70,6 +70,32 @@ Both work the same way:
 
 ---
 
+## Nodes (transforms → derived signals)
+
+The **Nodes** window is a dataflow canvas: build a small graph that turns signals
+into **new signals**, which then appear in Navigation and can be dragged into any
+plot / FFT / Histogram like a loaded channel.
+
+1. **Add a source** — drag a channel onto the `[ drop signal here -> +source ]`
+   button (or it can be added by command). A source node wraps that signal.
+2. **Add a transform** — toolbar `+ fft` / `+ math` / `+ filter`:
+   - **fft** — amplitude spectrum (its output's x-axis is frequency); options
+     *remove DC*, *Hann*.
+   - **math** — `scale`/`offset` (with a constant *k*), `derivative`, `integral`
+     (one input), or `A-B` / `A/B` (two inputs of equal length).
+   - **filter** — windowed-sinc FIR *low* / *high* / *band* pass; set *cutoff* (Hz),
+     *cutoff2* for band, and *taps* (more = sharper).
+3. **Wire it** — drag from a node's **out** pin to another node's **in** pin. You can
+   chain transforms (e.g. *filter → fft*).
+4. **Evaluate** — the toolbar **Evaluate** (whole graph) or a node's **eval** button
+   computes on demand and materializes each transform's result as a derived run
+   named `node_<id>`. Edit anything and the node shows **(stale)** until re-evaluated.
+5. **Use the result** — the derived `node_<id>` appears in Navigation; drag its `out`
+   channel into a plot, or feed it to the FFT/Histogram windows.
+
+Everything here is a command (`node_*`), so a graph is fully scriptable and saved
+with the session. Rename a node to give its derived run a friendlier name.
+
 ## Console & scripting
 
 Every action is echoed to the **Console** as a canonical command
@@ -117,6 +143,7 @@ Plots are referenced `plot_1..plot_N` (row-major); runs as `run_<id>` or by file
 | Tools | `show_samples(plot, on)`, `cursors(plot, on)`, `set_cursors(plot, x1, x2)`, `spy(plot, on)`, `set_spy_rect(plot, xmin, ymin, xmax, ymax)`, `export_data(plot, path, [relative])`, `set_export_relative(plot, on)` |
 | FFT window | `fft_source(run, signal)`, `fft_remove(run, signal)`, `fft_clear()`, `fft_follow(custom\|full\|plot_N)`, `fft_range(min, max)`, `fft_remove_dc(on)`, `fft_hann(on)`, `fft_logx(on)`, `fft_logy(on)`, `fft_xlim(min, max)`, `fft()`, `fft_export(path)` |
 | Histogram window | `hist_source(run, signal)`, `hist_remove(run, signal)`, `hist_clear()`, `hist_follow(custom\|full\|plot_N)`, `hist_range(min, max)`, `hist_bins(n)`, `hist_xlim(min, max)`, `histogram()`, `hist_export(path)` |
+| Nodes | `node_source(run, signal)`, `node_add(fft\|math\|filter)`, `node_set(node, key, value)`, `node_link(src, dst)`, `node_unlink(src, dst)`, `node_remove(node)`, `node_rename(node, name)`, `node_pos(node, x, y)`, `node_eval([node])` |
 | Session | `save_state(path)`, `load_state(path)`, `export_script(path)`, `run_script(path)` |
 | Console | `help([name])`, `clear_console()` |
 

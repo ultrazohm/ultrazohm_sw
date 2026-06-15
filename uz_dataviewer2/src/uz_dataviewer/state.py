@@ -12,7 +12,8 @@ from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
 from .loader import load_file
-from .model import DataRegistry, Run
+from .model import DataRegistry, Run, Signal
+from .nodes import NodeGraph
 
 # Identifies a signal across runs: (run_id, signal_name).
 SignalRef = tuple[int, str]
@@ -155,6 +156,9 @@ class AppState:
         self.fft = FftConfig()
         self.histogram = HistogramConfig()
 
+        # Dataflow node graph: transforms produce derived runs (see nodes.py).
+        self.nodes = NodeGraph()
+
         # The signal currently being dragged from the navigation tree, picked up
         # by the plot panel on drop.
         self.dragged_ref: SignalRef | None = None
@@ -231,11 +235,37 @@ class AppState:
         self._report_loaded(run)
         return run
 
+    def upsert_derived_run(self, label: str, time, signal_y, unit: str = "") -> int:
+        """Create or refresh the single-channel derived run a node materializes.
+
+        Refreshing *in place* (rather than remove + re-add) keeps the run id stable
+        so plots/analysis windows referencing this derived signal survive a
+        re-evaluation. Returns the derived run's id.
+        """
+        import numpy as np
+
+        time = np.ascontiguousarray(time, dtype=np.float64)
+        y = np.ascontiguousarray(signal_y, dtype=np.float32)
+        for run in self.registry.runs:
+            if run.derived and run.label == label:
+                run.time = time
+                run.time_raw = time
+                run.time_origin = None
+                run.signals = {"out": Signal("out", unit, y, run.id)}
+                return run.id
+        run = self.registry.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})
+        run.derived = True
+        return run.id
+
     def remove_run(self, run_id: int) -> None:
         """Remove a run and drop any plot assignments that referenced it."""
         run = self.registry.get(run_id)
         if run is None:
             return
+        # Detach any node that materialized this run so a later eval re-creates it.
+        for node in self.nodes.nodes.values():
+            if node.out_run_id == run_id:
+                node.out_run_id = None
         for cell in self.cells:
             cell.signals = [s for s in cell.signals if s[0] != run_id]
             cell.y2_signals = [s for s in cell.y2_signals if s[0] != run_id]

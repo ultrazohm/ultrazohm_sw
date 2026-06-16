@@ -1,29 +1,25 @@
 # FFT — future ideas (not yet implemented)
 
-Captured 2026-06-15. **Part 0 below is already done** (it was the real cause of the
-"15M-sample FFT drops to ~15 fps" report). Parts 1–2 are deferred ideas for *deliberate*
-resolution control and for the one-time compute cost — open until someone needs them.
+> Part of the [roadmap](ROADMAP.md). The deep dive for deliberate FFT resolution control.
+
+Captured 2026-06-15. Parts 1–2 are deferred ideas for *deliberate* resolution control and
+for the one-time compute cost — open until someone needs them.
 
 ## Background / measurements (15M-sample window, one core)
 - One-time `rfft` + magnitude on *Compute*: **~512 ms** → 7,500,001 bins (60 MB float32).
 - Spectrum pyramid build: ~35 ms.
 - Per-frame plotting (pyramid-backed `decimate_range`): ~0.3 ms.
-- So the *display* was never inherently expensive; see Part 0.
+- So the *display* was never inherently expensive.
 
-## Part 0 — DONE: the actual FPS fix (dtype landmine)
-The ~70 ms/frame display cost was **not** the bin count. `AnalysisPanel._plot_decimated`
-calls `visible_slice(freqs, …)` every frame, and the FFT `freqs` array is **float32**.
-`np.searchsorted(float32_array, python_float)` **up-casts the entire 7.5M-point array to
-float64** every call (~31 ms × 2 calls = ~62 ms/frame) — the same landmine the architecture
-doc already documents for `np.interp` cursors.
-
-**Fix shipped:** `visible_slice` now coerces the search scalars to `time.dtype` before
-`searchsorted` (`downsample.py`). Result: **70 ms → 0.15 ms/frame**, full 7.5M-bin resolution
-kept, no math change. Regression guard: `tests/test_downsample.py::test_visible_slice_is_fast_on_float32`.
-
-> Lesson for the future: any `searchsorted` / `interp` / comparison of a Python-`float`
-> scalar against a **float32 signal array** up-casts the whole array. Always pass a
-> dtype-matched scalar. Worth a grep before adding new per-frame array math.
+> **Already fixed** (the real cause of the "15M-sample FFT drops to ~15 fps" report): a
+> dtype landmine — `visible_slice` did `np.searchsorted` with a Python `float` against the
+> **float32** `freqs` array, up-casting the whole 7.5M-point array every frame (~70 ms).
+> `visible_slice` now coerces the scalars to `time.dtype` first (`downsample.py`): **70 ms →
+> 0.15 ms/frame**, full resolution kept. Guard:
+> `tests/test_downsample.py::test_visible_slice_is_fast_on_float32`. (Same landmine
+> ARCHITECTURE §6 documents for `np.interp` cursors.) **Lesson:** any `searchsorted` /
+> `interp` / comparison of a Python `float` against a **float32 array** up-casts the whole
+> array — always pass a dtype-matched scalar.
 
 ---
 

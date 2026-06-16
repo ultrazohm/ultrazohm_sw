@@ -14,8 +14,8 @@ python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload file(s)
 python run.py session.uzscript       # replay a saved session at startup
 ```
 
-The window has five dockable areas — **Navigation** (left), **Plots / FFT /
-Histogram / Nodes** (center tabs), **Console** (bottom) — which you can rearrange.
+The window has dockable panels — **Navigation** (left), **Plots / FFT /
+Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you can rearrange.
 
 ---
 

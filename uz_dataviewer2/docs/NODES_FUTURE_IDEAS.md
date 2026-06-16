@@ -1,5 +1,7 @@
 # Nodes — known limitations & future ideas
 
+> Part of the [roadmap](ROADMAP.md). The deep dive for the node graph's open edges.
+
 Captured 2026-06-15 from a critical review of the node-graph feature (engine in
 [nodes.py](../src/uz_dataviewer/nodes.py) / [transforms.py](../src/uz_dataviewer/transforms.py),
 canvas in [panels/nodes.py](../src/uz_dataviewer/panels/nodes.py)). The review **fixed** three
@@ -101,109 +103,8 @@ feature, scoped as JSON-session-only with an explicit trust warning, if interact
 proves worth the grammar/security work. Neither requires a new interpreter — just a registration
 hook in `nodes.py` and (for A) a code-carrying param path that bypasses the flat command grammar.
 
----
-
-## Plugin system (external transform nodes) — ✅ IMPLEMENTED (2026-06)
-
-**Built — see [PLUGINS.md](PLUGINS.md).** Option B shipped: a transform `REGISTRY` in `nodes.py`
-(builtins + plugins), the `@transform` / `ParamSpec` API and a tolerant loader in `plugins.py`
-(`$UZ_DATAVIEWER_PLUGINS` + `~/.uz_dataviewer/nodes/`, plus a `load_plugins([dir])` command), a
-generic `ParamSpec` UI for plugin nodes, and unknown-kind placeholders on restore. The design
-sketch below is kept for context. *(Option A, inline-code nodes, remains a future idea.)*
-
-### Original design sketch (Option B)
-
-Goal: a user drops a `.py` file in a folder and a new transform node type appears, fully working
-through the canvas, commands, evaluation, and sessions — with **no change** to the command grammar
-or save format.
-
-### The enabling refactor: a transform registry
-Today `nodes.py` hardcodes transforms in four places (`TRANSFORM_KINDS`, `DEFAULT_PARAMS`,
-`_INPUTS`/arity, and the `if node.kind == …` chain in `_compute`), plus bespoke widgets in
-`NodesPanel._params`. Replace those with **one registry** that builtins and plugins both populate:
-
-```python
-# nodes.py (sketch)
-@dataclass
-class TransformSpec:
-    kind: str                       # unique id, e.g. "fft", "movavg"
-    compute: Callable               # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
-    params: dict                    # default params, e.g. {"window": "101"}
-    inputs: tuple[int, int]         # (min, max) arity, e.g. (1, 1) or (2, 2)
-    ui: list[ParamSpec] = ()        # optional: how the canvas renders each param
-    unit: str = "passthrough"       # output unit policy
-
-REGISTRY: dict[str, TransformSpec] = {}
-def register_transform(spec): REGISTRY[spec.kind] = spec
-```
-
-The builtins (`fft`/`math`/`filter`/`shift`) register themselves at import. `_compute`,
-`TRANSFORM_KINDS`, `DEFAULT_PARAMS`, and arity all become lookups into `REGISTRY`. Once this is
-data-driven, a plugin that calls `register_transform(...)` is indistinguishable from a builtin.
-
-### Plugin file contract
-A plugin is a `.py` module that registers one or more transforms via a tiny public API:
-
-```python
-# ~/.uz_dataviewer/nodes/movavg.py
-import numpy as np
-from uz_dataviewer.plugins import transform, ParamSpec, API_VERSION   # stable, documented surface
-
-@transform(
-    kind="movavg",
-    params={"width": "51"},
-    inputs=(1, 1),
-    ui=[ParamSpec.int("width", "window (samples)", min=1)],
-)
-def moving_average(inputs, params):
-    t, y = inputs[0]
-    w = max(1, int(float(params["width"])))
-    k = np.ones(w) / w
-    return t, np.convolve(np.asarray(y, float), k, mode="same"), f"moving avg {w}"
-```
-
-The contract mirrors `transforms.math_node` exactly, so existing transforms could even be expressed
-as plugins. `API_VERSION` lets a plugin declare compatibility; loader skips mismatches with a notice.
-
-### Discovery & loading
-At startup (after the core registers builtins, before the first frame): scan, in order,
-`$UZ_DATAVIEWER_PLUGINS` (colon-separated), `~/.uz_dataviewer/nodes/`, and a `plugins/` folder next
-to the executable / CWD. For each `.py`, `importlib`-load it in a try/except so **one broken plugin
-logs an error and is skipped** rather than taking down startup. Reject a `kind` that clashes with a
-builtin or an already-loaded plugin (first wins, warn). Log "Loaded N plugin transform(s)" to the
-console. numpy (and pyarrow) are already bundled, so plugins relying on them work in the frozen app.
-
-### Generic param UI
-`NodesPanel._params` gains a fallback that renders from `spec.ui` (a list of typed `ParamSpec`:
-`float` / `int` / `bool` / `enum(options)` / `str`), each emitting `node_set` like today. Builtins
-can migrate to `ParamSpec` or keep their bespoke widgets; plugins always use the generic path. No
-plugin UI code needed beyond declaring its params.
-
-### Commands, evaluation, sessions — unchanged
-- `node_add(<kind>)` validates against the registry, so any plugin kind just works; `node_set`
-  already carries arbitrary params; `node_eval` dispatches through `REGISTRY[kind].compute`.
-- **Serialization references the kind name only** — `.uzscript` and JSON round-trip with zero
-  changes. The one new rule: on **load with a missing plugin**, don't drop the node — keep it as a
-  greyed-out *unknown(kind)* placeholder that **preserves its params and links**, so re-installing
-  the plugin and re-evaluating restores it. (Add an `unknown` render path + an "N nodes need plugin
-  X" console warning.)
-
-### Native vs web
-- **Native:** works directly (disk dirs + `importlib`).
-- **Web (Pyodide):** no real FS for user files. Later options: fetch a configured list of plugin
-  URLs, or a paste/upload box that writes into the Pyodide FS before `importlib`. v1 = native-only;
-  the registry refactor is platform-agnostic so web can follow.
-
-### Security
-Plugins are code the user deliberately installed (same trust level as `pip install <pkg>`), and a
-shared **session never contains code** (only kind names + params), so opening someone else's graph
-is still data-only. Document the trust model; optionally a `--no-plugins` / settings switch to skip
-loading. (This is the key advantage over inline-code nodes, which embed executable code in sessions.)
-
-### Rough effort & order
-1. Registry refactor of the four builtins (no behaviour change) — the bulk of the work, and a good
-   cleanup on its own.
-2. `uz_dataviewer.plugins` public API (`transform` decorator, `ParamSpec`, `API_VERSION`).
-3. Discovery/loader with per-file error isolation.
-4. Generic `ParamSpec` UI renderer + `unknown`-kind placeholder on load.
-5. Docs: a "Writing a node plugin" page with the example above; ship one sample plugin.
+> **Update:** Option B (external plugin files) **shipped** — a transform `REGISTRY` in
+> `nodes.py`, the `@transform` / `ParamSpec` API, a tolerant loader (`plugins.py`,
+> `$UZ_DATAVIEWER_PLUGINS` + `~/.uz_dataviewer/nodes/` + `load_plugins([dir])`), a generic
+> param UI, and unknown-kind placeholders on restore. See **[PLUGINS.md](PLUGINS.md)**.
+> Option A (inline-code nodes) above remains the open idea.

@@ -22,7 +22,8 @@ Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you ca
 ## Loading data
 
 - **Navigation ▸ Open file(s)…** loads `.csv` (JavaScope `;`-separated **or** standard
-  `,`-separated — the delimiter is auto-detected) and `.parquet`, multiple at once.
+  `,`-separated — the delimiter is auto-detected) and `.parquet`, multiple at once. On the
+  desktop you can also **drag `.csv`/`.parquet` files onto the window** to load them.
 - Expand a run to see its channels. The checkbox (de)activates a run; right-click ▸
   **Remove run** drops it.
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and
@@ -38,17 +39,26 @@ Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you ca
 - **Type** (per cell): `line` / `scatter` / `stairs` / `xy` (one signal vs another —
   pick the X signal in the cell header). Time-series types use min/max downsampling that
   preserves spikes; `xy` decimates by plain stride, so a very dense phase plot can alias.
-- **Link X axes** (toolbar): pan/zoom one subplot and the others follow.
-- **Max points** (toolbar): the per-signal downsample budget; "downsampling: active/off"
-  tells you whether the current view is decimated. Zoom in to reveal more detail.
+- **Link X axes** (toolbar): pan/zoom one subplot and the others follow. **Any** plot you
+  pan/zoom drives the shared range — there is no master plot; all linked plots show (and
+  decimate over) the same time window.
+- **Max points** (toolbar, with a quick-pick presets dropdown): the per-signal downsample
+  budget — the visible window is drawn as a min/max envelope of about this many points
+  (it stays ~constant as you zoom). "downsampling: **active**" means the view is decimated;
+  it switches to "**off (all samples)**" once the visible window holds fewer **raw samples**
+  than Max points — on a multi-million-sample log that needs deep zoom. The cell header shows
+  `~N pts shown (M in view)` so you can see both the drawn budget and the raw samples in the
+  window.
 - **Reset view** auto-fits the cell to its data; **Clear** empties it.
 - **Right axis:** right-click a signal in the legend ▸ **Right axis** to put it on its own
   (secondary Y) scale.
 - **samples** — a marker at every sample. **spy** — drag a rectangle on the plot; the inset
-  below shows just that region. **cursors** — two draggable vertical lines with a
-  Δx / frequency / Δy readout.
+  below shows just that region (its line colours match the main plot). **cursors** — two
+  draggable vertical lines with a Δx / frequency / Δy readout. Enabling **cursors**/**spy**
+  places them at 25 %/75 % of the *current* view, so they always start on-screen.
 - **Export** writes the cell's signals over its current X window to CSV; tick **start at 0**
-  to rebase the time column. (The export is comma-separated and re-imports cleanly.)
+  to rebase the time column. (The export is comma-separated and re-imports cleanly. Note: on a
+  log already time-normalized to 0, the start is 0 with or without this option.)
 
 ---
 
@@ -83,8 +93,9 @@ plot / FFT / Histogram like a loaded channel.
 2. **Add a transform** — toolbar `+ fft` / `+ math` / `+ filter` / `+ shift`:
    - **fft** — amplitude spectrum (its output's x-axis is frequency); options
      *remove DC*, *Hann*.
-   - **math** — `scale`/`offset` (with a constant *k*), `derivative`, `integral`
-     (one input), or `A+B` / `A-B` / `A/B` (two inputs of equal length).
+   - **math** — `scale`/`offset` (with a constant *k*), `derivative`, `integral`,
+     `reciprocal` (1/A) (one input), or `A+B` / `A-B` / `A*B` / `A/B` (two inputs of
+     equal length).
    - **filter** — windowed-sinc FIR *low* / *high* / *band* pass; set *cutoff* (Hz),
      *cutoff2* for band, and *taps* (more = sharper).
    - **shift** — offset the signal's time axis by a constant (`by` seconds).

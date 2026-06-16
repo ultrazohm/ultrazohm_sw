@@ -61,6 +61,19 @@ def test_math_add():
     np.testing.assert_allclose(d, 2.0 * y, rtol=1e-5)
 
 
+def test_math_mul():
+    t, y = _sine(5)
+    _, p, _ = math_node([(t, y), (t, y)], {"op": "mul"})
+    np.testing.assert_allclose(p, np.asarray(y, float) ** 2, rtol=1e-5)
+
+
+def test_math_reciprocal_guards_zero():
+    t = np.linspace(0.0, 1.0, 5)
+    y = np.array([2.0, 0.0, 4.0, 0.5, 0.0], dtype=np.float32)
+    _, r, _ = math_node([(t, y)], {"op": "reciprocal"})
+    np.testing.assert_allclose(r, [0.5, 0.0, 0.25, 2.0, 0.0], rtol=1e-6)
+
+
 def test_filter_lowpass_removes_high_freq():
     t = np.linspace(0.0, 1.0, 4000)  # fs = 4000 Hz
     low = np.sin(2 * np.pi * 5 * t)

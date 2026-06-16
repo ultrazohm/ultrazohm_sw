@@ -267,7 +267,10 @@ class NodesPanel:
             val = float(node.params.get(key, 0.0))
         except ValueError:
             val = 0.0
-        changed, val = imgui.input_float(label, val)
+        # "%g" shows the value plainly (e.g. "2", "0.5") instead of the input_float
+        # default "%.3f" which pads to thousandths ("2.000") -- and matches how the
+        # value is stored below.
+        changed, val = imgui.input_float(label, val, 0.0, 0.0, "%g")
         if changed:
             self._emit(state, "node_set", node.id, key, f"{val:g}")
 

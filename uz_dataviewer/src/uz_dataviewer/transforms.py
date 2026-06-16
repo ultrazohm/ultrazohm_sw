@@ -14,8 +14,8 @@ from __future__ import annotations
 import numpy as np
 
 # -- math node ----------------------------------------------------------------
-MATH_UNARY = ("scale", "offset", "derivative", "integral")
-MATH_BINARY = ("add", "sub", "div")
+MATH_UNARY = ("scale", "offset", "derivative", "integral", "reciprocal")
+MATH_BINARY = ("add", "sub", "mul", "div")
 MATH_OPS = MATH_UNARY + MATH_BINARY
 
 
@@ -24,8 +24,8 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
     """Arithmetic on one or two input signals.
 
     Unary (one input): ``scale`` (×k), ``offset`` (+k), ``derivative`` (d/dt),
-    ``integral`` (∫ dt). Binary (two inputs, same length/time base): ``sub``
-    (A−B), ``div`` (A/B).
+    ``integral`` (∫ dt), ``reciprocal`` (1/A). Binary (two inputs, same
+    length/time base): ``add`` (A+B), ``sub`` (A−B), ``mul`` (A·B), ``div`` (A/B).
     """
     op = str(params.get("op", "scale")).lower()
     if op not in MATH_OPS:
@@ -45,6 +45,10 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             return time, y + k, f"offset +{k:g}"
         if op == "derivative":
             return time, np.gradient(y, time), "derivative d/dt"
+        if op == "reciprocal":
+            with np.errstate(divide="ignore", invalid="ignore"):
+                out = np.where(y != 0.0, 1.0 / y, 0.0)
+            return time, out, "1 / A"
         # integral: cumulative trapezoid, starting at 0
         dt = np.diff(time)
         area = np.concatenate([[0.0], np.cumsum((y[1:] + y[:-1]) * 0.5 * dt)])
@@ -66,6 +70,8 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
         return time, y1 + y2, "A + B"
     if op == "sub":
         return time, y1 - y2, "A - B"
+    if op == "mul":
+        return time, y1 * y2, "A * B"
     with np.errstate(divide="ignore", invalid="ignore"):
         out = np.where(y2 != 0.0, y1 / y2, 0.0)
     return time, out, "A / B"

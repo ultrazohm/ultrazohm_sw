@@ -15,6 +15,8 @@ dependencies = [
     "numpy>=1.24",
     "pandas>=2.0",
     "pyarrow>=12.0",
+    # Native-only window file drag-drop (GLFW backend); a no-op if absent.
+    "glfw>=2.5; platform_system != 'Emscripten'",
 ]
 
 [project.optional-dependencies]

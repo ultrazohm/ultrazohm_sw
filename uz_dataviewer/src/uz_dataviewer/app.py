@@ -157,6 +157,36 @@ class DataViewerApp:
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.state.console.error(str(exc))
 
+    # -- native file drag-drop ---------------------------------------------
+    def _install_file_drop(self) -> None:
+        """Load `.csv`/`.parquet` files dropped onto the window (native, GLFW only).
+
+        hello_imgui has no file-drop callback, so we register GLFW's directly. On the
+        web build, a non-GLFW backend, or a missing `glfw` module this is a no-op and
+        the **Open file(s)...** button remains the way in.
+        """
+        if webbridge.IS_WEB:
+            return
+        try:
+            import glfw
+            from imgui_bundle import glfw_utils
+
+            window = glfw_utils.glfw_window_hello_imgui()
+            if window is None:
+                return
+
+            def _on_drop(_window, paths) -> None:
+                for p in paths:
+                    if str(p).lower().endswith((".csv", ".parquet")):
+                        self.state.request_load(str(p))
+                    else:
+                        self.state.console.warn(f"ignored dropped file (not .csv/.parquet): {p}")
+
+            self._drop_callback = _on_drop  # keep a reference so it is not GC'd
+            glfw.set_drop_callback(window, _on_drop)
+        except Exception as exc:  # noqa: BLE001 - drag-drop is a nicety, never fatal
+            self.state.console.warn(f"file drag-drop unavailable: {exc}")
+
     # -- per-frame ----------------------------------------------------------
     def _pre_new_frame(self) -> None:
         self.state.poll_pending_loads()
@@ -191,6 +221,7 @@ class DataViewerApp:
         params.callbacks.pre_new_frame = self._pre_new_frame
         params.callbacks.show_menus = self._show_menus
         params.callbacks.before_exit = self.state.shutdown
+        params.callbacks.post_init = self._install_file_drop
 
         addons = immapp.AddOnsParams()
         addons.with_implot = True

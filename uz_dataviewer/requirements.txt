@@ -3,3 +3,6 @@ imgui-bundle>=1.6
 numpy>=1.24
 pandas>=2.0
 pyarrow>=12.0
+# Native-only: window file drag-drop via the GLFW backend's drop callback.
+# Optional at runtime -- absence just disables drag-drop (the Open button still works).
+glfw>=2.5; platform_system != "Emscripten"

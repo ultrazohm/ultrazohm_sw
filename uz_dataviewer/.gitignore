@@ -8,5 +8,6 @@ dist/
 venv/
 *.ini
 imgui.ini
+NodeEditor.json
 *.spec.bak
 web/

@@ -37,10 +37,37 @@ def _is_finite_range(lo: float, hi: float) -> bool:
     return math.isfinite(lo) and math.isfinite(hi) and hi > lo
 
 
+def _colored_spec(idx: int, *, marker: bool) -> "implot.Spec":
+    """A draw Spec pinning a signal to colormap colour ``idx``.
+
+    ImPlot's auto colours are assigned per ``begin_plot`` in draw order, so the same
+    signal would get different colours in the main plot and the spy inset. Pinning the
+    colour by the signal's index keeps the two in sync. Must be called inside a plot.
+    """
+    color = implot.get_colormap_color(idx % implot.get_colormap_size())
+    spec = implot.Spec()
+    spec.line_color = color
+    spec.marker_fill_color = color
+    spec.marker_line_color = color
+    if marker:
+        spec.marker = implot.Marker_.circle
+    return spec
+
+
+def _abbrev(n: int) -> str:
+    """Human-readable count, e.g. 4_012_345 -> '4.0M'."""
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.1f}M"
+    if n >= 1_000:
+        return f"{n / 1_000:.1f}k"
+    return str(n)
+
+
 class PlotsPanel:
     def __init__(self) -> None:
         self._driver: int = -1  # cell index that currently drives linked X axes
         self._last_points: dict[int, int] = {}  # cell index -> samples drawn last frame
+        self._last_raw: dict[int, int] = {}  # cell index -> raw samples in view last frame
         self._last_logged_x: dict[int, tuple[float, float]] = {}  # for zoom echo
         self._cursor_text: dict[int, str] = {}  # cell index -> cursor readout
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
@@ -97,10 +124,24 @@ class PlotsPanel:
             self._emit(state, "set_max_points", max(100, value))
 
         imgui.same_line()
+        imgui.set_next_item_width(80)
+        if imgui.begin_combo("##maxpoints_presets", "presets"):
+            for preset in (2000, 5000, 10000, 20000):
+                if imgui.selectable(f"{preset:,}", state.max_points == preset)[0]:
+                    self._emit(state, "set_max_points", preset)
+            imgui.end_combo()
+
+        imgui.same_line()
         if state.downsampling_active:
             imgui.text_colored((0.95, 0.75, 0.25, 1.0), "downsampling: active")
         else:
             imgui.text_colored((0.45, 0.85, 0.50, 1.0), "downsampling: off (all samples)")
+        if imgui.is_item_hovered():
+            imgui.set_tooltip(
+                "Min/max envelope at ~Max points per signal.\n"
+                "Turns off (raw samples) once the visible window holds\n"
+                "fewer raw samples than Max points."
+            )
 
         imgui.same_line()
         imgui.text_disabled(f"({len(state.registry)} run(s) loaded)")
@@ -156,7 +197,13 @@ class PlotsPanel:
 
         imgui.same_line()
         shown = self._last_points.get(index)
-        suffix = f", ~{shown:,} pts shown" if shown else ""
+        raw = self._last_raw.get(index)
+        if shown:
+            suffix = f", ~{shown:,} pts shown"
+            if raw:
+                suffix += f" ({_abbrev(raw)} in view)"
+        else:
+            suffix = ""
         imgui.text_disabled(f"{len(cell.signals)} signal(s){suffix}")
 
         # Second row: cursor readout / XY source.
@@ -237,8 +284,9 @@ class PlotsPanel:
             if _is_finite_range(raw_lo, raw_hi):
                 state.plot_x_ranges[index + 1] = (raw_lo, raw_hi)
 
-            points_shown = self._plot_signals(state, cell, x_min, x_max)
+            points_shown, raw_in_view = self._plot_signals(state, cell, x_min, x_max)
             self._last_points[index] = points_shown
+            self._last_raw[index] = raw_in_view
 
             if cell.cursors:
                 self._draw_cursors(state, index, cell)
@@ -260,15 +308,14 @@ class PlotsPanel:
         if cell.spy and cell.spy_rect is not None:
             self._render_spy_inset(state, index, cell, width, inset_h)
 
-    def _plot_signals(self, state: AppState, cell: SubplotCell, x_min: float, x_max: float) -> int:
+    def _plot_signals(
+        self, state: AppState, cell: SubplotCell, x_min: float, x_max: float
+    ) -> tuple[int, int]:
         n_out = max(state.max_points, 2)
         points_shown = 0
-        spec = None
-        if cell.show_samples:
-            spec = implot.Spec()
-            spec.marker = implot.Marker_.circle
+        raw_in_view = 0
 
-        for ref in list(cell.signals):
+        for i, ref in enumerate(list(cell.signals)):
             signal = state.registry.get_signal(ref[0], ref[1])
             run = state.registry.get(ref[0])
             if signal is None or run is None or not run.active:
@@ -282,6 +329,8 @@ class PlotsPanel:
             start, stop = visible_slice(run.time, x_min, x_max)
             xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
             points_shown += xs.shape[0]
+            # Raw samples in the window (densest signal), not a sum across signals.
+            raw_in_view = max(raw_in_view, stop - start)
             if xs.shape[0] < (stop - start):
                 state.downsampling_active = True
 
@@ -290,15 +339,20 @@ class PlotsPanel:
             xs = np.ascontiguousarray(xs, dtype=np.float64)
             ys = np.ascontiguousarray(ys, dtype=np.float64)
 
+            # Scatter is markers-only, so it always needs one; line/stairs show markers
+            # only when "samples" is on. (A Spec defaults marker to none, which would
+            # otherwise make a scatter plot draw nothing.)
+            want_marker = cell.show_samples or cell.plot_type is PlotType.SCATTER
+            spec = _colored_spec(i, marker=want_marker)
             if cell.plot_type is PlotType.LINE:
-                implot.plot_line(label, xs, ys, spec) if spec else implot.plot_line(label, xs, ys)
+                implot.plot_line(label, xs, ys, spec)
             elif cell.plot_type is PlotType.SCATTER:
-                implot.plot_scatter(label, xs, ys)
+                implot.plot_scatter(label, xs, ys, spec)
             else:
-                implot.plot_stairs(label, xs, ys)
+                implot.plot_stairs(label, xs, ys, spec)
 
             self._legend_popup(state, cell, ref, label)
-        return points_shown
+        return points_shown, raw_in_view
 
     # -- XY (signal vs signal) ----------------------------------------------
     def _render_xy(
@@ -334,6 +388,7 @@ class PlotsPanel:
             self._accept_drop(state, index, cell)
             implot.end_plot()
         self._last_points[index] = 0
+        self._last_raw[index] = 0
 
     def _xy_stride(self, state: AppState, n: int) -> int:
         budget = max(state.max_points, 2)
@@ -447,7 +502,7 @@ class PlotsPanel:
         if implot.begin_plot(f"##spy{index}", imgui.ImVec2(width, max(height, 50.0)), implot.Flags_.canvas_only):
             implot.setup_axes_limits(x1, x2, y1, y2, imgui.Cond_.always)
             n_out = max(state.max_points, 2)
-            for ref in list(cell.signals):
+            for i, ref in enumerate(list(cell.signals)):
                 signal = state.registry.get_signal(ref[0], ref[1])
                 run = state.registry.get(ref[0])
                 if signal is None or run is None or not run.active:
@@ -458,7 +513,8 @@ class PlotsPanel:
                 xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
                 xs = np.ascontiguousarray(xs, dtype=np.float64)
                 ys = np.ascontiguousarray(ys, dtype=np.float64)
-                implot.plot_line(state.signal_label(ref), xs, ys)
+                # Same colour index as the main plot so the inset matches.
+                implot.plot_line(state.signal_label(ref), xs, ys, _colored_spec(i, marker=False))
             implot.end_plot()
 
     # -- shared bits --------------------------------------------------------

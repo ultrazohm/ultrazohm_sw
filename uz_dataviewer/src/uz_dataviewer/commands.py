@@ -442,7 +442,10 @@ def register_builtins(reg: CommandRegistry) -> None:
             "Toggle per-sample markers on a subplot.")
 
     def spy(state, a):
-        _cell(state, a[0]).spy = a[1]
+        cell = _cell(state, a[0])
+        if a[1] and not cell.spy:
+            cell.spy_rect = None  # re-center to 25/75% of the current view on enable
+        cell.spy = a[1]
 
     reg.add("spy", [Param("plot", "plot"), Param("on", "bool")], spy,
             "Toggle the spy (drag-rect zoom inset) on a subplot.")
@@ -471,7 +474,10 @@ def register_builtins(reg: CommandRegistry) -> None:
             set_xy, "Use a signal as the X axis (XY plot) for a subplot.")
 
     def cursors(state, a):
-        _cell(state, a[0]).cursors = a[1]
+        cell = _cell(state, a[0])
+        if a[1] and not cell.cursors:
+            cell.cursor_x = None  # re-center to 25/75% of the current view on enable
+        cell.cursors = a[1]
 
     reg.add("cursors", [Param("plot", "plot"), Param("on", "bool")], cursors,
             "Toggle two measurement cursors (Δx / frequency readout) on a subplot.")

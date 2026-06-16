@@ -21,7 +21,8 @@ is a replayable command.
 ## Features at a glance
 
 - **Load many files** — `.csv` (JavaScope `;` *or* standard `,`, auto-detected) and
-  `.parquet`, read with Apache Arrow.
+  `.parquet`, read with Apache Arrow. Open via the button or **drag files onto the window**
+  (desktop).
 - **Matlab-style navigation** — runs → channels, (de)activate/remove, **per-log time
   normalization**.
 - **Subplot grid** — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**,
@@ -77,11 +78,12 @@ uz_dataviewer/
 │   ├── analysis.py           # GUI-free transforms (FFT)
 │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
 │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
+│   ├── plugins.py            # external transform-node plugins (@transform, loader)
 │   ├── session.py            # JSON save/restore + .uzscript + CSV export
 │   ├── webbridge.py          # browser integration (file input, array load, downloads)
 │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
 ├── tests/                    # pytest (logic via commands + headless rendering)
-├── docs/                     # USAGE / ARCHITECTURE / BUILD
+├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / ROADMAP
 └── build/                    # native (PyInstaller) + web (Pyodide) build flow
 ```
 

@@ -58,7 +58,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 |--------|----------------|-----------|
 | [app.py](../src/uz_dataviewer/app.py) | Docking layout, `immapp` runner, theme, Session menu, `.uzscript`/file startup | `DataViewerApp` |
 | [state.py](../src/uz_dataviewer/state.py) | The single app state, grid/cells, analysis configs, async load orchestration | `AppState`, `SubplotCell`, `PlotType`, `AnalysisConfig`/`FftConfig`/`HistogramConfig` |
-| [commands.py](../src/uz_dataviewer/commands.py) | Command registry, parser, dispatcher, the ~50 built-in commands | `CommandRegistry`, `Command`, `Param` |
+| [commands.py](../src/uz_dataviewer/commands.py) | Command registry, parser, dispatcher, the ~60 built-in commands | `CommandRegistry`, `Command`, `Param` |
 | [console.py](../src/uz_dataviewer/console.py) | Bottom console: scrolling selectable log + command input/completion/history | `Console` |
 | [model.py](../src/uz_dataviewer/model.py) | Loaded data + per-log time normalization | `Run`, `Signal`, `DataRegistry` |
 | [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing | `load_file`, `parse_channel_name` |
@@ -181,7 +181,7 @@ and is draggable into plots / FFT / Histogram. Nodes *produce* data; nothing els
 in the app needs to know they exist.
 
 - **Graph** (`NodeGraph`) of `Node`s: a **source** wraps a `(run, signal)` ref; a
-  **transform** (`fft` / `math` / `filter`) pulls arrays from its inputs and computes.
+  **transform** (`fft` / `math` / `filter` / `shift`) pulls arrays from its inputs and computes.
   Links are validated against cycles; ids are persisted so derived-run labels (=
   node name) are stable across save/restore.
 - **On-demand evaluation** (`evaluate`): topological order; each transform reads its
@@ -231,6 +231,16 @@ a **consistent ~`max_points` output at every zoom**. Two layers:
   argmin/argmax **sample indices** (`64, 512, 4096, …`), each aggregated from the previous, so
   the build is O(n). A query picks the coarsest level that still has ≥ the budget of buckets,
   then groups those down to the budget keeping each group's true extreme — **O(output)**.
+
+> **Hitting the budget exactly.** Both layers group their candidate buckets down to *exactly*
+> `max_points/2` via `_reduce_to` — it assigns the `k` candidates to `max_points/2` near-equal
+> groups (`grp = arange(k)*target//k`) and keeps each group's true extreme with one `lexsort`.
+> This replaced an integer **group factor** (`ceil(k/target)`), which could only halve/third/…
+> the count and so realised as few as ~50 % of the budget at certain zooms (e.g. a 5 M-sample
+> window landed on ~1 220 of 2 000 points). The output is now a stable ~`max_points` at every
+> zoom and on every path. `_reduce_to` only ever runs on an already-bucketed array
+> (≲ `target × factor`), so the query stays O(output); the pyramid *build* is untouched (still
+> a fixed-stride O(n) pass).
 
 > Storing *indices* (not values) is what lets the envelope use true X/Y read from the run's
 > `time`/`y` arrays, so it's also normalization-agnostic. Measured (single float32 signal,
@@ -289,7 +299,7 @@ The same Python runs on the desktop and in the browser via Pyodide (CPython→WA
 
 | Concern | Native | Web |
 |---|---|---|
-| File open | OS dialog (`portable_file_dialogs`) | hidden HTML `<input type=file>` |
+| File open | OS dialog (`portable_file_dialogs`) + window drag-drop (GLFW) | hidden HTML `<input type=file>` |
 | Loading | async on a `ThreadPoolExecutor` | synchronous (no worker threads) |
 | Large CSV | Arrow reads the whole file | **> 200 MB only** is **stream-parsed into typed arrays** (`load_columns`) so the multi-GB text never sits in wasm32 memory; ≤ 200 MB CSV and any Parquet still go through Arrow |
 | Downsampler | min/max pyramid (pure NumPy) | **identical** (same code, no native dep) |

@@ -37,8 +37,25 @@ def test_output_count_is_consistent_across_zoom():
     for frac in (1.0, 0.5, 0.2, 0.07, 0.02):
         xs, _ = decimate_range(t, y, pyr, n_out, 0, int(n * frac))
         counts.append(xs.shape[0])
-    # Every zoom yields between ~n_out/2 and n_out points -- never collapses.
-    assert all(n_out // 2 <= c <= n_out + 4 for c in counts), counts
+    # `_reduce_to` hits the budget exactly: every zoom yields ~n_out points (the old
+    # integer-factor group-down realised as few as ~n_out/2 at certain windows).
+    assert all(0.95 * n_out <= c <= n_out for c in counts), counts
+
+
+def test_budget_is_hit_on_both_paths_across_window_sizes():
+    """Regression for the undershoot: a 5 M-sample window once landed on ~61 % of the
+    budget. Sweep windows that cross the pyramid/one-shot boundary and assert every
+    *decimated* window lands within 5 % of max_points (raw windows return all samples)."""
+    n = 8_000_000
+    t = np.arange(n, dtype=np.float64)
+    rng = np.random.default_rng(0)
+    y = (np.sin(t * 1e-3) + 0.01 * rng.standard_normal(n)).astype(np.float32)
+    pyr = Pyramid.build(y)
+    for n_out in (2000, 5000):
+        for count in (8_000_000, 5_000_000, 3_000_000, 1_500_000,  # pyramid
+                      1_000_000, 500_000, 100_000, 20_000):         # one-shot
+            xs, _ = decimate_range(t, y, pyr, n_out, 0, count)
+            assert 0.95 * n_out <= xs.shape[0] <= n_out, (n_out, count, xs.shape[0])
 
 
 def test_spike_is_preserved():

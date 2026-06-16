@@ -80,10 +80,44 @@ def _envelope(time: np.ndarray, y: np.ndarray, indices_min: np.ndarray, indices_
     return time[out], y[out]
 
 
+def _reduce_to(y: np.ndarray, idx: np.ndarray, target: int, largest: bool) -> np.ndarray:
+    """Reduce candidate sample ``idx`` to **exactly ``target``** indices, keeping the
+    true extreme of each group.
+
+    ``idx`` is split into ``target`` near-equal contiguous groups; from each we keep the
+    index whose value is smallest (``largest=False``) or largest (``largest=True``). This
+    replaces an integer **group factor** (``ceil(k/target)``, which can only halve/third/...
+    the count and so realises as few as ~``target/2`` groups) with an *exact* group count,
+    so the envelope lands at ~``n_out`` points at every zoom. ``idx`` must be ascending; the
+    result stays ascending (groups are taken in order). Cost is one ``lexsort`` over ``k``
+    candidates -- only ever called on an already-bucketed array (≲ ``target * factor``), so
+    the query stays O(output).
+    """
+    k = int(idx.shape[0])
+    if k <= target:
+        return idx
+    grp = (np.arange(k) * target) // k  # near-equal groups, monotonic 0..target-1
+    keys = -y[idx] if largest else y[idx]
+    order = np.lexsort((keys, grp))  # by group, then value -> group extreme is first
+    g = grp[order]
+    first = np.empty(k, dtype=bool)
+    first[0] = True
+    first[1:] = g[1:] != g[:-1]
+    return idx[order[first]]
+
+
 def _envelope_oneshot(time, y, n_out, start, stop):
-    """Vectorised min/max envelope of ``y[start:stop]`` at true sample positions."""
-    imin, imax = _argminmax_buckets(y[start:stop], max(n_out // 2, 1))
-    return _envelope(time, y, imin + start, imax + start)
+    """Vectorised min/max envelope of ``y[start:stop]`` at true sample positions.
+
+    Buckets to a ``≥ target`` intermediate, then :func:`_reduce_to` exactly ``target``
+    groups per side so the output is a consistent ~``n_out`` points (the reshape is
+    O(visible), the lexsort only touches the ~``2*target`` intermediate).
+    """
+    target = max(n_out // 2, 1)
+    imin, imax = _argminmax_buckets(y[start:stop], 2 * target)
+    imin = _reduce_to(y, imin + start, target, largest=False)
+    imax = _reduce_to(y, imax + start, target, largest=True)
+    return _envelope(time, y, imin, imax)
 
 
 class Pyramid:
@@ -151,9 +185,9 @@ class Pyramid:
         if b1 <= b0:
             b1 = min(b0 + 1, imin.shape[0])
         a, b = imin[b0:b1], imax[b0:b1]
-        if a.shape[0] > target:  # group down to the budget, keeping true extremes
-            a = self._group(y, a, -(-a.shape[0] // target), np.argmin)
-            b = self._group(y, b, -(-b.shape[0] // target), np.argmax)
+        # Group down to exactly the budget, keeping each group's true extreme.
+        a = _reduce_to(y, a, target, largest=False)
+        b = _reduce_to(y, b, target, largest=True)
         return _envelope(time, y, a.astype(np.int64), b.astype(np.int64))
 
 

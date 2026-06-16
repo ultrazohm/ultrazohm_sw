@@ -19,7 +19,7 @@ For building each target see **[BUILD.md](BUILD.md)**; for internals see
 |---|---|---|
 | **Runtime** | CPython, frozen by PyInstaller | CPython → WebAssembly (Pyodide) |
 | **Distribution** | One self-contained executable | A static web page (must be served over HTTP) |
-| **File open** | OS file dialog (`portable_file_dialogs`) | Hidden HTML `<input type=file>` picker |
+| **File open** | OS file dialog (`portable_file_dialogs`) + drag files onto the window (GLFW) | Hidden HTML `<input type=file>` picker |
 | **Loading** | Async on a `ThreadPoolExecutor` | **Synchronous** (Pyodide has no worker threads) |
 | **Large CSV** | Arrow reads the whole file | **> 200 MB** is **stream-parsed** into typed arrays; ≤ 200 MB CSV and any Parquet still go through Arrow |
 | **Downsampler** | Min/max pyramid (pure NumPy) | **Identical** — same code, no native dependency |
@@ -32,7 +32,9 @@ For building each target see **[BUILD.md](BUILD.md)**; for internals see
 ## Why these differences exist
 
 ### File access
-A browser tab has no OS file dialog, so **Open file(s)…** opens an HTML picker instead.
+On the desktop you can open files via the OS dialog **or drag `.csv`/`.parquet` files onto
+the window** (a GLFW drop callback; a no-op without the GLFW backend). A browser tab has no OS
+file dialog, so **Open file(s)…** opens an HTML picker instead.
 Saving works the same way in reverse: native pops an OS save dialog; web triggers a
 **browser download** via `webbridge.download` (a Blob + a synthetic anchor click).
 Because there's no OS path to write back to, the **Session menu's save/restore is disabled

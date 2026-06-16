@@ -59,6 +59,29 @@ def test_dispatch_builds_plot_state():
     assert state.link_x is False
 
 
+def test_cursors_recenter_on_enable():
+    state = _state_with_run()
+    cell = state.cells[0]
+    cell.cursor_x = (0.1, 0.2)  # a position placed at an earlier zoom
+    cell.cursors = False
+    state.commands.dispatch(state, "cursors(plot_1, on)")
+    assert cell.cursor_x is None  # cleared -> re-centers to the current view
+    assert cell.cursors is True
+    cell.cursor_x = (0.3, 0.4)
+    state.commands.dispatch(state, "cursors(plot_1, on)")  # already on -> keep it
+    assert cell.cursor_x == (0.3, 0.4)
+
+
+def test_spy_recenter_on_enable():
+    state = _state_with_run()
+    cell = state.cells[0]
+    cell.spy_rect = (0.0, 0.0, 1.0, 1.0)
+    cell.spy = False
+    state.commands.dispatch(state, "spy(plot_1, on)")
+    assert cell.spy_rect is None
+    assert cell.spy is True
+
+
 def test_set_xy_switches_type_and_source():
     state = _state_with_run()
     state.commands.dispatch(state, "set_xy(plot_1, run_1, ia)")

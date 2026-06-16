@@ -20,6 +20,9 @@
 #include <math.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
+#if XCP_MEAS_IMAGE_ENABLE
+#include "xcp_meas_r5.h"
+#endif
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
@@ -69,6 +72,12 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     
+#if XCP_MEAS_IMAGE_ENABLE
+    /* Phase 3: write R5 measurements into the OCM MEAS image so the A53 can
+     * DAQ them via XCPlite.  Must run before JavaScope_update() because that
+     * call triggers the IPI which wakes the A53 IPI ISR. */
+    xcp_meas_r5_update(&Global_Data);
+#endif
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

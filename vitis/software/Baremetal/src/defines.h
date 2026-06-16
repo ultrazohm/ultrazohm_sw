@@ -110,4 +110,18 @@
 #define   Q02toF		-Q2
 #define   Q01toF		-Q1
 
+/*===========================================================================
+ * XCPlite Phase 3 — R5 MEAS image writer
+ *
+ * Set to 1 to enable xcp_meas_r5_update() in ISR_Control.
+ * Keep 0 until the A53 side (LOGGING_PATH_XCP_LITE) is also enabled and
+ * the signal mapping in xcp_meas_r5.c has been adapted to the actual
+ * control variables (currents, voltages, angle, …).
+ *
+ * BOTH defines must be changed in tandem:
+ *   vitis/software/Baremetal/src/defines.h   → XCP_MEAS_IMAGE_ENABLE
+ *   vitis/software/FreeRTOS/defines.h        → LOGGING_PATH_XCP_LITE
+ *=========================================================================*/
+#define XCP_MEAS_IMAGE_ENABLE   1
+
 #endif /* DEFINES_H_ */

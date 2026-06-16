@@ -32,5 +32,22 @@
 // JavaScope network packet size: number of samples batched per TCP packet.
 #define JS_SAMPLES_PER_PACKET 15
 
+//==============================================================================================================================================================
+// Logging path selector -- compile-time XOR: JavaScope (TCP) vs XCPlite (UDP).
+//
+// Set exactly ONE to 1; the other must be 0.
+//   LOGGING_PATH_JAVASCOPE -- existing JavaScope TCP logger (unchanged)
+//   LOGGING_PATH_XCP_LITE  -- XCPlite UDP logger (MIT, CANape-compatible)
+//
+// Switch to XCPlite by flipping the two values below. Both code paths compile
+// in either mode; only the server-start call in main.c changes.
+//==============================================================================================================================================================
+#define LOGGING_PATH_JAVASCOPE  0
+#define LOGGING_PATH_XCP_LITE   1
+
+#if (LOGGING_PATH_JAVASCOPE + LOGGING_PATH_XCP_LITE) != 1
+#error "defines.h: exactly one of LOGGING_PATH_JAVASCOPE / LOGGING_PATH_XCP_LITE must be 1"
+#endif
+
 
 #endif /* DEFINES_H_ */

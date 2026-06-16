@@ -28,6 +28,11 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+
+#if LOGGING_PATH_XCP_LITE
+#include "sw/xcp_lite/xcp_server_uz.h"
+#endif
+
 #include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
@@ -179,7 +184,7 @@ int main()
  *---------------------------------------------------------------------------*
  * Description:
  *      Configures the Ethernet interface, starts the lwIP input thread, and
- *      starts the JavaScope socket manager once an IP address is available.
+ *      starts the logging server once an IP address is available.
  *---------------------------------------------------------------------------*/
 void network_bringup_thread(void *p)
 {
@@ -252,7 +257,7 @@ void network_bringup_thread(void *p)
             THREAD_STACKSIZE,
             THREAD_PRIO_XEMACIF_INPUT);
 
-/*	// Enable (currently not required for I²C-based GPOs)
+/*	// Enable (currently not required for I2C-based GPOs)
 	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
 	uz_platform_gposet(I2CLED_MZD10GREEN, UZP_GPO_ENABLE2PUSHPULLED);
 	uz_platform_gposet(I2CLED_MZD11RED, UZP_GPO_ENABLE2PUSHPULLED);
@@ -268,13 +273,19 @@ void network_bringup_thread(void *p)
 #if LWIP_DHCP==1
     dhcp_start(netif);
     // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of
-    // javascope_socket_manager_thread are performed in main_thread
+    // the logging server are performed in main_thread.
 #else
+    /* Static-IP path: start the selected logging server immediately. */
+#if LOGGING_PATH_JAVASCOPE
     print_javascope_app_header(&(server_netif.ip_addr));
     sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
-#endif
+#elif LOGGING_PATH_XCP_LITE
+    print_xcp_app_header(&(server_netif.ip_addr));
+    xcp_server_uz_start();
+#endif /* LOGGING_PATH_* */
+#endif /* LWIP_DHCP */
 
     // Periodic loop for DHCP timers and heartbeat LEDs.
     while (1) {
@@ -344,13 +355,13 @@ void i2cio_thread()
 	while(1) {
 		if (apu_version_final > 4U)					// FIXME: Support for MZ broken due to 18e978be1f5dfa2002753cfec87ef567094f8594 ff.
 		{
-			// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
+			// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I2C-LEDs
 			uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1 << 0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 			uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1 << 1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 			uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1 << 2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 			uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1 << 3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 
-			// Push all (I²C-)GPO changes to hardware
+			// Push all (I2C-)GPO changes to hardware
 			uz_platform_gpoupdate();
 		}
 
@@ -367,7 +378,7 @@ void i2cio_thread()
  *      Initializes the A53-side IPI runtime and JavaScope queues, resets the PHY,
  *      initializes lwIP, and starts the network thread
  *      "network_bringup_thread()". If DHCP is enabled, waits up to 7.5 s for
- *      a lease and then starts the JavaScope socket manager thread. Exits
+ *      a lease and then starts the selected logging server thread. Exits
  *      (vTaskDelete) after all enabled child threads are launched; it does
  *      not run continuously.
  *---------------------------------------------------------------------------*/
@@ -437,12 +448,17 @@ int main_thread()
 		}
 	}	// while(1)
 
+    /* DHCP path: start the selected logging server after IP is resolved. */
+#if LOGGING_PATH_JAVASCOPE
 	print_javascope_app_header(&(server_netif.ip_addr));
-
 	sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
 			THREAD_STACKSIZE,
 			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
-#endif
+#elif LOGGING_PATH_XCP_LITE
+	print_xcp_app_header(&(server_netif.ip_addr));
+	xcp_server_uz_start();
+#endif /* LOGGING_PATH_* */
+#endif /* LWIP_DHCP */
 
 	/* I2C LED mirroring thread is currently disabled since it runs into assert on Carrierboards Rev>=04
 	// TODO: uz_platform needs fixing

@@ -22,6 +22,7 @@
 #include "APU_RPU_shared.h"
 
 #include "../main.h"
+#include "xcp_lite/xcp_server_uz.h"  /* XCP_UDP_PORT for print_xcp_app_header */
 
 extern QueueHandle_t js_queue;
 extern QueueHandle_t js_control_queue;
@@ -79,6 +80,20 @@ void print_javascope_app_header(ip_addr_t *ip)
     uz_printf("\r\n");
     uz_printf("APU: Connect JavaScope GUI to %d.%d.%d.%d:%d\r\n",
             ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip), TCPPORT);
+    uz_printf("\r\n");
+}
+
+//==============================================================================================================================================================
+// Print the XCPlite (CANape / xcp_poll.py) endpoint on the serial console so the
+// board IP is discoverable without a router/DHCP lookup. Mirrors the JavaScope
+// banner above; XCP runs on UDP (see xcp_server_uz.c, default port 5556).
+void print_xcp_app_header(ip_addr_t *ip)
+{
+    uz_printf("\r\n");
+    uz_printf("APU: XCPlite slave (UDP) at %d.%d.%d.%d:%d\r\n",
+            ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip), XCP_UDP_PORT);
+    uz_printf("APU:   test with  python tools/xcp_test/xcp_poll.py --ip %d.%d.%d.%d\r\n",
+            ip4_addr1(ip), ip4_addr2(ip), ip4_addr3(ip), ip4_addr4(ip));
     uz_printf("\r\n");
 }
 

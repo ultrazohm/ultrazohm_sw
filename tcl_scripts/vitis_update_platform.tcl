@@ -74,6 +74,8 @@ proc app_build {{name *}} {
 proc vitis_main {} {
 
 set WS_PATH [getws]
+set uz_vitis_script_dir [file dirname [file normalize [info script]]]
+source [file join $uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
 cd $WS_PATH
 cd ..
 set FOLDER_PATH [pwd]
@@ -102,8 +104,11 @@ domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
 bsp config total_heap_size  200000000
-platform write 
+platform write
 bsp regenerate
+# Patch portMEMORY_BARRIER into the generated FreeRTOSConfig.h.
+# bsp regenerate overwrites the file, so the patch must follow it.
+uz_vitis_patch_freertos_bsp
 
 #####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"

@@ -24,6 +24,9 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#if LOGGING_PATH_XCP_LITE
+#include "xcp_lite/xcp_meas_image_a53.h"
+#endif
 
 // Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
@@ -133,10 +136,13 @@ void APU_IPI_ISR(void *data)
 		i_lifecheck_apu_ipi_isr =0;
 	}
 
-	// Not required in the current design: the JavaScope stream task polls queue depth and
-	// uses non-blocking queue receive, so it is usually not blocked waiting to be
-	// woken by this ISR.
-	// portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+#if LOGGING_PATH_XCP_LITE
+	/* Phase 3: copy the R5 MEAS image into the A53-local buffer and wake
+	 * xcp_meas_event_task.  The IPI ACK is already sent above so R5 can
+	 * continue its next control cycle while we process the snapshot here. */
+	xcp_meas_image_a53_on_ipi(&xHigherPriorityTaskWoken);
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+#endif
 }
 
 

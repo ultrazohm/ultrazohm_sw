@@ -93,6 +93,7 @@ proc vitis_main {} {
 
   global uzcfg
   source [file join $::uz_vitis_script_dir vitis_configure_UltraZohm_bsp_settings.tcl]
+  source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
 
   set WS_PATH [getws]
   cd $WS_PATH
@@ -136,6 +137,9 @@ proc vitis_main {} {
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
   bsp regenerate
+  # Patch portMEMORY_BARRIER into the generated FreeRTOSConfig.h.
+  # bsp regenerate overwrites the file, so the patch must follow it.
+  uz_vitis_patch_freertos_bsp
 
 
   #Domain Baremetal R5_0
@@ -219,6 +223,9 @@ proc vitis_main {} {
   # but in Vitis in the compiler settings, it is listed under miscellaneous instead of directories
   app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
   app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
+  # XCPlite vendored sources: make xcplib_uz_cfg.h and xcp_server_uz.h findable
+  # without path prefix from files that include them with a bare filename.
+  app config -name FreeRTOS compiler-misc -I"$filename_FreeRTOS/sw/xcp_lite"
 
   # set optimization level
   app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}

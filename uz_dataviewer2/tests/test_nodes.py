@@ -83,6 +83,45 @@ def test_stale_after_param_change():
     assert not nodemod.is_stale(state, state.nodes, node)
 
 
+def test_shift_node_offsets_time():
+    state = _state_with_sine(50.0)
+    _run(state, "node_source(run_1, ia)", "node_add(shift)", "node_set(node_2, by, 5)",
+         "node_link(node_1, node_2)", "node_eval()")
+    run = _derived(state, "node_2")
+    assert abs(float(run.time[0]) - 5.0) < 1e-6  # whole axis shifted +5 s
+
+
+def test_source_crop_limits_window():
+    state = _state_with_sine(50.0, n=1000)  # t in [0, 1]
+    _run(state, "node_source(run_1, ia)", "node_set(node_1, tmin, 0.2)",
+         "node_set(node_1, tmax, 0.4)", "node_add(shift)", "node_set(node_2, by, 0)",
+         "node_link(node_1, node_2)", "node_eval()")
+    run = _derived(state, "node_2")
+    assert run.n_rows < 1000  # cropped
+    assert run.time[0] >= 0.19 and run.time[-1] <= 0.41
+    # widening the crop restales the downstream node
+    assert not nodemod.is_stale(state, state.nodes, state.nodes.get(2))
+    state.commands.execute(state, "node_set", [1, "tmax", "0.6"])
+    assert nodemod.is_stale(state, state.nodes, state.nodes.get(2))
+
+
+def test_stale_propagates_downstream():
+    """Editing an upstream node must mark everything downstream stale too, even
+    before the upstream is re-evaluated (else a chained node shows fresh while
+    displaying results from the old input)."""
+    state = _state_with_sine(5.0, n=4000)
+    _run(state, "node_source(run_1, ia)", "node_add(filter)",
+         "node_set(node_2, cutoff, 40)", "node_link(node_1, node_2)",
+         "node_add(fft)", "node_link(node_2, node_3)", "node_eval()")
+    filt, fft = state.nodes.get(2), state.nodes.get(3)
+    assert not nodemod.is_stale(state, state.nodes, fft)
+    state.commands.execute(state, "node_set", [2, "cutoff", "80"])  # change upstream
+    assert nodemod.is_stale(state, state.nodes, filt)
+    assert nodemod.is_stale(state, state.nodes, fft)  # propagated
+    state.commands.execute(state, "node_eval", [])
+    assert not nodemod.is_stale(state, state.nodes, fft)
+
+
 def test_link_cycle_is_rejected():
     state = _state_with_sine()
     _run(state, "node_add(math)", "node_add(math)", "node_link(node_1, node_2)")

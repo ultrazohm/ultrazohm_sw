@@ -32,7 +32,8 @@ is a replayable command.
 - **FFT & Histogram windows** — overlay several signals, pick the time window
   (follow a plot / full / custom), compute on demand, log axes, CSV export.
 - **Node canvas** — drag a signal into a graph, apply transforms (FFT / math /
-  filter), and the result becomes a new draggable signal. Fully scriptable (`node_*`).
+  filter / shift), and the result becomes a new draggable signal. Fully scriptable
+  (`node_*`) and extensible with your own **Python plugin nodes** (see docs/PLUGINS.md).
 - **Scriptable command console** — every action echoes a command; the input runs them, with
   completion, history and a selectable log. Sessions save to JSON or a replayable `.uzscript`.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).

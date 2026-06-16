@@ -94,18 +94,21 @@ def _to_numpy(buf, dtype):
     return np.asarray(buf, dtype=dtype)
 
 
-def load_columns(label: str, names, arrays, time) -> None:
+def load_columns(label: str, names, arrays, time, note: str = "") -> None:
     """Register a run from typed arrays parsed in the browser. Called from JS.
 
     The web loader stream-parses a large CSV directly into per-column typed
-    arrays (full resolution), avoiding the multi-gigabyte text ever being held in
-    32-bit WASM memory. ``names``/``arrays`` are parallel (raw channel header ->
-    ``float32`` samples); ``time`` is the shared ``float64`` axis.
+    arrays, avoiding the multi-gigabyte text ever being held in 32-bit WASM
+    memory. ``names``/``arrays`` are parallel (raw channel header -> ``float32``
+    samples); ``time`` is the shared ``float64`` axis. ``note`` carries an optional
+    message (e.g. that the file had to be decimated to fit the WASM heap).
     """
     if _active_state is None:
         return
     from .loader import parse_channel_name
 
+    if note:
+        _active_state.console.warn(note)
     t = _to_numpy(time, "float64")
     signals: dict = {}
     units: dict = {}

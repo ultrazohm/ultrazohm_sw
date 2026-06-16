@@ -17,28 +17,124 @@ from __future__ import annotations
 
 import itertools
 from dataclasses import dataclass, field
+from typing import Callable
 
 import numpy as np
 
 from . import transforms
 from .analysis import compute_fft
-
-NODE_KINDS = ("source", "fft", "math", "filter")
-TRANSFORM_KINDS = ("fft", "math", "filter")
-
-# Per-kind default parameters so a freshly added node has something to compute.
-DEFAULT_PARAMS: dict[str, dict] = {
-    "source": {},
-    "fft": {"remove_dc": "true", "window": "true"},
-    "math": {"op": "scale", "k": "1.0"},
-    "filter": {"type": "low", "cutoff": "0", "taps": "101"},
-}
+from .downsample import visible_slice
 
 _TRUE = {"1", "true", "on", "yes"}
 
 
 def _as_bool(v) -> bool:
     return str(v).strip().lower() in _TRUE
+
+
+# -- transform registry -------------------------------------------------------
+# Every transform (builtin *or* plugin) is a TransformSpec in REGISTRY. The engine
+# is entirely data-driven from it: available kinds, default params, input arity and
+# the compute function are all looked up here, so a plugin that registers a spec is
+# indistinguishable from a builtin. "source" is special (not a transform) and is
+# never in the registry.
+@dataclass
+class ParamSpec:
+    """Declares one editable parameter so the canvas can render a generic widget
+    for plugin nodes (builtins keep bespoke widgets)."""
+
+    key: str
+    kind: str  # 'float' | 'int' | 'bool' | 'enum' | 'str'
+    label: str = ""
+    options: tuple[str, ...] = ()  # for 'enum'
+
+    @staticmethod
+    def float(key, label=""):
+        return ParamSpec(key, "float", label or key)
+
+    @staticmethod
+    def int(key, label=""):
+        return ParamSpec(key, "int", label or key)
+
+    @staticmethod
+    def bool(key, label=""):
+        return ParamSpec(key, "bool", label or key)
+
+    @staticmethod
+    def enum(key, options, label=""):
+        return ParamSpec(key, "enum", label or key, tuple(options))
+
+    @staticmethod
+    def str(key, label=""):
+        return ParamSpec(key, "str", label or key)
+
+
+@dataclass
+class TransformSpec:
+    kind: str
+    compute: "Callable"           # (inputs:list[(t,y)], params:dict) -> (t_out, y_out, info)
+    params: dict = field(default_factory=dict)  # default params
+    inputs: tuple[int, int] = (1, 1)             # (min, max) arity
+    ui: tuple = ()                # ParamSpec list (for the generic plugin UI)
+    unit: str = ""               # output unit for the derived run
+
+
+REGISTRY: dict[str, TransformSpec] = {}
+
+
+def register_transform(spec: TransformSpec) -> None:
+    """Register a transform kind (used by builtins at import and by plugins)."""
+    if not spec.kind or spec.kind == "source":
+        raise ValueError(f"invalid transform kind {spec.kind!r}")
+    REGISTRY[spec.kind] = spec
+
+
+def transform_kinds() -> tuple[str, ...]:
+    """The transform kinds currently available (builtins + loaded plugins)."""
+    return tuple(REGISTRY)
+
+
+def default_params(kind: str) -> dict:
+    spec = REGISTRY.get(kind)
+    return dict(spec.params) if spec is not None else {}
+
+
+# -- builtin transforms (registered at import) --------------------------------
+def _fft_compute(inputs, params):
+    time, y = inputs[0]
+    res = compute_fft(
+        np.asarray(time, np.float64), np.asarray(y, np.float64),
+        float(time[0]), float(time[-1]),
+        remove_dc=_as_bool(params.get("remove_dc", True)),
+        window=_as_bool(params.get("window", True)),
+    )
+    if not res.ok:
+        raise ValueError(res.info)
+    return np.asarray(res.freqs, np.float64), np.asarray(res.mag, np.float64), res.info
+
+
+def _math_compute(inputs, params):
+    return transforms.math_node(inputs, params)
+
+
+def _filter_compute(inputs, params):
+    time, y = inputs[0]
+    return transforms.filter_node(time, y, params)
+
+
+def _shift_compute(inputs, params):
+    time, y = inputs[0]
+    by = float(params.get("by", 0.0))
+    return np.asarray(time, np.float64) + by, np.asarray(y, np.float64), f"shift {by:+g} s"
+
+
+register_transform(TransformSpec("fft", _fft_compute,
+                                 {"remove_dc": "true", "window": "true"}, (1, 1)))
+register_transform(TransformSpec("math", _math_compute,
+                                 {"op": "scale", "k": "1.0"}, (1, 2)))
+register_transform(TransformSpec("filter", _filter_compute,
+                                 {"type": "low", "cutoff": "0", "taps": "101"}, (1, 1)))
+register_transform(TransformSpec("shift", _shift_compute, {"by": "0"}, (1, 1)))
 
 
 @dataclass
@@ -62,7 +158,10 @@ class Node:
 
     @property
     def is_transform(self) -> bool:
-        return self.kind in TRANSFORM_KINDS
+        # Anything that is not a source is a transform -- including an unknown kind
+        # from a missing plugin, which then evaluates to a clear error rather than
+        # being silently skipped.
+        return self.kind != "source"
 
 
 class NodeGraph:
@@ -74,14 +173,18 @@ class NodeGraph:
 
     # -- mutation ---------------------------------------------------------
     def add(self, kind: str, *, name: str | None = None, ref: tuple | None = None,
-            node_id: int | None = None) -> Node:
-        if kind not in NODE_KINDS:
-            raise ValueError(f"Unknown node kind {kind!r}; one of {', '.join(NODE_KINDS)}")
+            node_id: int | None = None, allow_unknown: bool = False) -> Node:
+        # ``allow_unknown`` lets session restore keep a node whose plugin is not
+        # installed (a placeholder) instead of dropping it; interactive node_add
+        # rejects unknown kinds.
+        if kind != "source" and kind not in REGISTRY and not allow_unknown:
+            known = ", ".join(("source",) + transform_kinds())
+            raise ValueError(f"Unknown node kind {kind!r}; one of {known}")
         nid = node_id if node_id is not None else next(self._ids)
         if node_id is not None:  # keep the counter ahead of restored ids
             self._ids = itertools.count(max(nid + 1, self._next_peek()))
         node = Node(id=nid, kind=kind, name=name or f"node_{nid}",
-                    params=dict(DEFAULT_PARAMS.get(kind, {})), ref=ref)
+                    params=default_params(kind), ref=ref)
         self.nodes[nid] = node
         return node
 
@@ -183,18 +286,29 @@ def _node_output(state, node: Node) -> tuple[np.ndarray, np.ndarray]:
         sig = state.registry.get_signal(node.ref[0], node.ref[1])
         if run is None or sig is None:
             raise ValueError(f"{node.name}: source signal is not loaded")
-        return run.time, sig.y
+        time, y = run.time, sig.y
+        # Optional tmin/tmax crop (empty = full record).
+        tmin, tmax = node.params.get("tmin", ""), node.params.get("tmax", "")
+        if (tmin != "" or tmax != "") and time.shape[0]:
+            lo = float(tmin) if tmin != "" else float(time[0])
+            hi = float(tmax) if tmax != "" else float(time[-1])
+            start, stop = visible_slice(time, lo, hi)
+            time, y = time[start:stop], y[start:stop]
+        return time, y
     if node.out_time is None or node.out_y is None:
         raise ValueError(f"{node.name}: not evaluated yet")
     return node.out_time, node.out_y
 
 
 def _source_signature(state, node: Node):
-    """Identity of a source's underlying signal, for stale detection."""
+    """Identity of a source's underlying signal (incl. its crop window), for stale
+    detection of downstream nodes."""
+    window = (node.params.get("tmin", ""), node.params.get("tmax", ""))
     if node.ref is None:
-        return ("ref", None)
+        return ("ref", None, window)
     run = state.registry.get(node.ref[0])
-    return ("ref", node.ref, None if run is None else (run.n_rows, run.time_origin))
+    sig = None if run is None else (run.n_rows, run.time_origin)
+    return ("ref", node.ref, sig, window)
 
 
 def node_key(state, graph: NodeGraph, node: Node) -> tuple:
@@ -213,37 +327,36 @@ def node_key(state, graph: NodeGraph, node: Node) -> tuple:
 
 
 def is_stale(state, graph: NodeGraph, node: Node) -> bool:
-    return node.is_transform and node.eval_key != node_key(state, graph, node)
+    """A transform is stale if its own key changed *or* anything upstream is stale.
+
+    The recursion matters: editing a filter's cutoff makes the filter stale, but the
+    FFT fed by it is still showing results computed from the *old* filter output -- so
+    it must read stale too, even though the filter's version hasn't bumped yet."""
+    if not node.is_transform:
+        return False
+    if node.eval_key is None or node.eval_key != node_key(state, graph, node):
+        return True
+    return any(
+        is_stale(state, graph, graph.nodes[i])
+        for i in node.inputs
+        if i in graph.nodes
+    )
 
 
 # -- computation --------------------------------------------------------------
 def _compute(node: Node, inputs: list[tuple[np.ndarray, np.ndarray]]
              ) -> tuple[np.ndarray, np.ndarray, str, str]:
-    """Returns ``(out_time, out_y, info, unit)`` for a transform node."""
-    if node.kind == "fft":
-        if len(inputs) != 1:
-            raise ValueError(f"fft needs exactly 1 input, got {len(inputs)}")
-        time, y = inputs[0]
-        res = compute_fft(
-            np.asarray(time, np.float64), np.asarray(y, np.float64),
-            float(time[0]), float(time[-1]),
-            remove_dc=_as_bool(node.params.get("remove_dc", True)),
-            window=_as_bool(node.params.get("window", True)),
-        )
-        if not res.ok:
-            raise ValueError(res.info)
-        return (np.asarray(res.freqs, np.float64), np.asarray(res.mag, np.float64),
-                res.info, "")
-    if node.kind == "math":
-        t, y, info = transforms.math_node(inputs, node.params)
-        return t, y, info, ""
-    if node.kind == "filter":
-        if len(inputs) != 1:
-            raise ValueError(f"filter needs exactly 1 input, got {len(inputs)}")
-        time, y = inputs[0]
-        t, out, info = transforms.filter_node(time, y, node.params)
-        return t, out, info, ""
-    raise ValueError(f"{node.name}: kind {node.kind!r} is not computable")
+    """Dispatch to the node's registered transform. Returns ``(out_time, out_y,
+    info, unit)``; raises a clear error if the kind has no spec (missing plugin)."""
+    spec = REGISTRY.get(node.kind)
+    if spec is None:
+        raise ValueError(f"unknown node kind {node.kind!r} -- is its plugin installed?")
+    lo, hi = spec.inputs
+    if not (lo <= len(inputs) <= hi):
+        want = f"{lo}" if lo == hi else f"{lo}..{hi}"
+        raise ValueError(f"{node.kind} needs {want} input(s), got {len(inputs)}")
+    out_time, out_y, info = spec.compute(inputs, node.params)
+    return out_time, out_y, info, spec.unit
 
 
 def evaluate(state, node_id: int | None = None) -> int:
@@ -262,6 +375,11 @@ def evaluate(state, node_id: int | None = None) -> int:
     for nid in order:
         node = graph.nodes[nid]
         if not node.is_transform:
+            continue
+        # Skip work that is already up to date. Safe because we go in topo order:
+        # if an upstream was just recomputed its version bumps, so this node reads
+        # stale (via node_key) and is recomputed; only genuinely-current nodes skip.
+        if node.out_y is not None and not is_stale(state, graph, node):
             continue
         try:
             inputs = [_node_output(state, graph.nodes[i]) for i in node.inputs]

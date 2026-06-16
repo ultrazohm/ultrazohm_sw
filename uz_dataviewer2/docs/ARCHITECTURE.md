@@ -65,7 +65,8 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware decimation: min/max pyramid + one-shot (pure NumPy) | `Pyramid`, `decimate_range`, `visible_slice` |
 | [analysis.py](../src/uz_dataviewer/analysis.py) | GUI-free transforms (FFT) | `compute_fft`, `FftResult` |
 | [transforms.py](../src/uz_dataviewer/transforms.py) | GUI-free node transforms (math, FIR filter), pure NumPy | `math_node`, `filter_node` |
-| [nodes.py](../src/uz_dataviewer/nodes.py) | Dataflow graph + on-demand evaluation → derived runs | `NodeGraph`, `Node`, `evaluate`, `is_stale` |
+| [nodes.py](../src/uz_dataviewer/nodes.py) | Dataflow graph + on-demand evaluation → derived runs; the transform **registry** | `NodeGraph`, `Node`, `evaluate`, `is_stale`, `TransformSpec`, `REGISTRY` |
+| [plugins.py](../src/uz_dataviewer/plugins.py) | Load external transform-node plugins (`@transform`); robust to missing dirs/files | `transform`, `ParamSpec`, `load_plugins` |
 | [session.py](../src/uz_dataviewer/session.py) | JSON save/restore, `.uzscript` export/replay, CSV exports | `to_dict`/`apply_dict`, `export_*` |
 | [webbridge.py](../src/uz_dataviewer/webbridge.py) | Browser integration (file input, array load, downloads) | `IS_WEB`, `load_columns`, `download` |
 | panels/[navigation.py](../src/uz_dataviewer/panels/navigation.py) | Left tree, drag sources, file dialog, normalize menu | `NavigationPanel` |
@@ -199,6 +200,14 @@ in the app needs to know they exist.
 - **Transforms are pure NumPy** (windowed-sinc FIR filter, not SciPy) so native and
   web share one code path. FFT reuses `analysis.compute_fft`; its derived run's x-axis
   is frequency.
+- **Registry-driven.** Every transform (builtin *or* plugin) is a `TransformSpec` in
+  `REGISTRY`; the engine looks up available kinds, default params, input arity and the
+  compute function there, so a plugin is indistinguishable from a builtin. External
+  plugins (`plugins.py`, the `@transform` decorator) are loaded at startup from
+  `$UZ_DATAVIEWER_PLUGINS` / `~/.uz_dataviewer/nodes/` — both optional; a missing dir,
+  no files, or a broken plugin are all tolerated (the app runs with just the builtins).
+  An unknown kind (plugin not installed) restores as a placeholder that keeps its
+  params/links. See **[PLUGINS.md](PLUGINS.md)**.
 
 > v1 limits (intentional): binary math needs equal-length inputs (no resampling);
 > a source node pointing at *another node's* derived output is a runtime convenience
@@ -287,7 +296,10 @@ The same Python runs on the desktop and in the browser via Pyodide (CPython→WA
 | Export / Save | OS save dialog | `webbridge.download` (Blob + anchor click); session menu disabled |
 
 The hard ceiling is wasm32's ~4 GB address space: the *numeric* data must fit
-(`rows × channels × 4` bytes), far below the raw CSV size. See **[BUILD.md](BUILD.md)**.
+(`rows × channels × 4` bytes), far below the raw CSV size. The streaming loader
+estimates this up front and **decimates `1:stride` on load if it would exceed a
+~1.5 GB budget** (with a console notice), so an oversize log loads a usable
+decimated view instead of silently aborting the runtime. See **[BUILD.md](BUILD.md)**.
 
 ---
 
@@ -315,10 +327,12 @@ in `app.py` and a config dataclass + serialisation.
 **Add a plot type** — extend `PlotType`, branch in `PlotsPanel._render_cell`, and update
 `session.py` if it carries extra per-cell state.
 
-**Add a node transform** — add a pure function in [transforms.py](../src/uz_dataviewer/transforms.py)
-(or reuse one in `analysis.py`), a branch in `nodes._compute`, its default params and input
-arity, and a param-widget block in `NodesPanel._params`. Commands and save/restore are generic
-(`node_set` carries arbitrary params), so nothing else needs touching.
+**Add a node transform** — register a `TransformSpec` in `nodes.py` (a compute function +
+default params + arity), or, for a user-supplied one, ship a plugin file with the `@transform`
+decorator (see **[PLUGINS.md](PLUGINS.md)**). Builtins keep bespoke widgets in `NodesPanel._params`;
+plugins render from their `ParamSpec` list automatically. Commands and save/restore are generic
+(`node_set` carries arbitrary params; the graph stores only the kind name), so nothing else needs
+touching.
 
 ---
 

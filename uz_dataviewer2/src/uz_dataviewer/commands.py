@@ -696,7 +696,7 @@ def _register_node_commands(reg: CommandRegistry) -> None:
     """The node-graph command surface. A graph is built and replayed entirely
     through these flat calls, so console scripting and ``.uzscript`` work as for
     everything else."""
-    from .nodes import TRANSFORM_KINDS, evaluate
+    from .nodes import evaluate, transform_kinds
 
     def node_source(state, a):
         run_id, name = a
@@ -710,13 +710,14 @@ def _register_node_commands(reg: CommandRegistry) -> None:
 
     def node_add(state, a):
         kind = str(a[0]).lower()
-        if kind not in TRANSFORM_KINDS:
-            raise CommandError(f"node_add kind must be one of {', '.join(TRANSFORM_KINDS)}")
+        kinds = transform_kinds()  # dynamic: includes any loaded plugins
+        if kind not in kinds:
+            raise CommandError(f"node_add kind must be one of {', '.join(kinds)}")
         node = state.nodes.add(kind)
         return f"Added {node.name} ({kind})"
 
     reg.add("node_add", [Param("kind", "str")], node_add,
-            f"Add a transform node ({', '.join(TRANSFORM_KINDS)}).")
+            "Add a transform node (fft, math, filter, shift, or an installed plugin kind).")
 
     def node_set(state, a):
         node = state.nodes.get(a[0])
@@ -771,3 +772,13 @@ def _register_node_commands(reg: CommandRegistry) -> None:
 
     reg.add("node_eval", [Param("node", "node", optional=True)], node_eval,
             "Evaluate the graph (or one node + its inputs), materializing derived signals.")
+
+    def load_plugins(state, a):
+        from .plugins import load_plugins as _load
+
+        dirs = [a[0]] if a[0] else None  # given dir, else the configured defaults
+        new = _load(dirs, console=state.console)
+        return f"Loaded {len(new)} plugin node kind(s)" if new else "No new plugin nodes found"
+
+    reg.add("load_plugins", [Param("dir", "str", optional=True)], load_plugins,
+            "Load external node plugins from a directory (or the configured defaults).")

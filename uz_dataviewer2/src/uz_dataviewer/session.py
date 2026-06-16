@@ -200,8 +200,11 @@ def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
     state.nodes = NodeGraph()
     for spec in sorted(specs, key=lambda s: int(s["id"])):
         ref = resolve(spec.get("ref")) if spec.get("kind") == "source" else None
+        # allow_unknown keeps a node whose plugin isn't installed as a placeholder
+        # (params + links preserved) rather than dropping it.
         node = state.nodes.add(
-            spec["kind"], name=spec.get("name"), ref=ref, node_id=int(spec["id"])
+            spec["kind"], name=spec.get("name"), ref=ref, node_id=int(spec["id"]),
+            allow_unknown=True,
         )
         node.params = dict(spec.get("params", {}))
         pos = spec.get("pos") or (0.0, 0.0)

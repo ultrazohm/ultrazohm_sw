@@ -160,6 +160,11 @@ def build_html() -> str:
     pyodide.runPython(py);
   }}
 
+  // Run a snippet with the live AppState bound as `s` (for console messages).
+  function pyRun(body) {{
+    pyodide.runPython("from uz_dataviewer.webbridge import _active_state as s\\n" + body);
+  }}
+
   async function loadFull(file) {{
     const path = "/uploads/" + file.name;
     pyodide.FS.writeFile(path, new Uint8Array(await file.arrayBuffer()));
@@ -175,7 +180,23 @@ def build_html() -> str:
     const head = await file.slice(0, 256 * 1024).text();
     const headLines = Math.max(head.split("\\n").length - 1, 1);
     const avgLineBytes = (256 * 1024) / headLines;
-    let cap = Math.max(1024, Math.floor(file.size / Math.max(avgLineBytes, 1)));
+
+    // The parsed numeric arrays must fit in Pyodide's 32-bit WASM heap (~4 GB, in
+    // practice less). Estimate the footprint from the header column count and a row
+    // estimate; if it would blow MEM_BUDGET, decimate 1:stride on the way in. Full
+    // resolution is physically impossible here for a multi-GB log -- the native app
+    // is the way to get it. Without this guard the oversize allocation aborts the
+    // whole WASM runtime silently ("loading does nothing").
+    const MEM_BUDGET = 1.5 * 1024 * 1024 * 1024;
+    const firstLine = (head.split("\\n").find(l => l.trim() !== "")) || "";
+    const nDataCols = Math.max(firstLine.split(";").filter(s => s.trim() !== "").length - 1, 1);
+    const estRows = file.size / Math.max(avgLineBytes, 1);
+    const stride = Math.max(1, Math.ceil((estRows * (8 + 4 * nDataCols)) / MEM_BUDGET));
+    pyRun("s and s.console.info(" + JSON.stringify(
+      "Parsing " + file.name + " in the browser" +
+      (stride > 1 ? " (decimating 1:" + stride + " to fit memory)" : "") + ", please wait...") + ")");
+    let seen = 0;
+    let cap = Math.max(1024, Math.floor(estRows / stride));
 
     const reader = file.stream().getReader();
     const decoder = new TextDecoder();
@@ -220,6 +241,7 @@ def build_html() -> str:
 
     function pushRow(line) {{
       if (line === "") return;
+      if ((seen++ % stride) !== 0) return;  // keep every stride-th row (memory fit)
       const f = line.split(";");
       grow(n + 1);
       timeArr[n] = parseFloat(f[timeIdx]);
@@ -242,12 +264,18 @@ def build_html() -> str:
     if (header === null) initHeader(remainder); else pushRow(remainder.trim());
 
     // Hand the compact typed arrays to Python (one copy into WASM; JS frees after).
+    const note = stride > 1
+      ? ("Loaded " + file.name + " decimated 1:" + stride + " (" + n.toLocaleString() +
+         " of ~" + Math.round(estRows).toLocaleString() + " rows): full resolution needs ~" +
+         (estRows * (8 + 4 * nDataCols) / 1073741824).toFixed(1) + " GB, over the browser's ~" +
+         (MEM_BUDGET / 1073741824).toFixed(1) + " GB limit. Use the native app for full detail.")
+      : "";
     const bridge = pyodide.pyimport("uz_dataviewer.webbridge");
-    bridge.load_columns(file.name, dataNames, cols.map(a => a.subarray(0, n)), timeArr.subarray(0, n));
+    bridge.load_columns(file.name, dataNames, cols.map(a => a.subarray(0, n)), timeArr.subarray(0, n), note);
     bridge.destroy();
     timeArr = null; cols = null;
     const secs = ((performance.now() - t0) / 1000).toFixed(1);
-    console.log("Loaded " + file.name + " full-resolution: " + n.toLocaleString() + " rows in " + secs + "s");
+    console.log("Loaded " + file.name + ": " + n.toLocaleString() + " rows (1:" + stride + ") in " + secs + "s");
   }}
 
   function wireFileInput() {{

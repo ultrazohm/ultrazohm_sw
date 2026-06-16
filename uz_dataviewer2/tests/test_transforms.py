@@ -55,6 +55,12 @@ def test_math_sub():
     assert np.allclose(d, 0.0)
 
 
+def test_math_add():
+    t, y = _sine(5)
+    _, d, _ = math_node([(t, y), (t, y)], {"op": "add"})
+    np.testing.assert_allclose(d, 2.0 * y, rtol=1e-5)
+
+
 def test_filter_lowpass_removes_high_freq():
     t = np.linspace(0.0, 1.0, 4000)  # fs = 4000 Hz
     low = np.sin(2 * np.pi * 5 * t)

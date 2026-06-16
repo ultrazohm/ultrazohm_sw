@@ -15,16 +15,18 @@ from __future__ import annotations
 from imgui_bundle import imgui
 from imgui_bundle import imgui_node_editor as ed
 
-from ..nodes import TRANSFORM_KINDS, is_stale
+from ..nodes import REGISTRY, is_stale, transform_kinds
 from ..state import AppState
-from ..transforms import FILTER_TYPES, MATH_OPS, MATH_UNARY
+from ..transforms import FILTER_TYPES, MATH_BINARY, MATH_OPS
 from .navigation import SIGNAL_DND_TYPE
 
+# Kinds with bespoke param widgets below; any other transform (a plugin) uses the
+# generic ParamSpec renderer.
+_BUILTIN_KINDS = ("fft", "math", "filter", "shift")
 # Disjoint id ranges so node / pin / link ids never collide in the editor.
 _OUT_BASE = 1_000_000
 _IN_BASE = 2_000_000
 _LINK_BASE = 3_000_000
-_INPUTS = {"source": 0, "fft": 1, "filter": 1, "math": 2}
 _TRUE = {"1", "true", "on", "yes"}
 
 
@@ -57,10 +59,26 @@ def _b(params: dict, key: str, default: bool) -> bool:
     return str(params.get(key, default)).strip().lower() in _TRUE
 
 
+def _input_pin_count(node) -> int:
+    """How many input pins to draw: the kind's arity, but never fewer than the
+    links already attached (so existing links always have a pin to render to)."""
+    if node.kind == "source":
+        base = 0
+    elif node.kind == "math":  # op-dependent: unary vs binary
+        base = 2 if str(node.params.get("op", "scale")) in MATH_BINARY else 1
+    else:
+        spec = REGISTRY.get(node.kind)
+        base = spec.inputs[1] if spec is not None else 1  # max arity (unknown -> 1)
+    return max(base, len(node.inputs))
+
+
 class NodesPanel:
     def __init__(self) -> None:
         self._positioned: set[int] = set()
         self._last_pos: dict[int, tuple[float, float]] = {}
+        self._renaming: int | None = None   # node whose name is being edited inline
+        self._rename_buf: str = ""
+        self._rename_focus: bool = False
 
     # -- command helper -----------------------------------------------------
     def _emit(self, state: AppState, name: str, *args) -> None:
@@ -71,15 +89,10 @@ class NodesPanel:
 
     # -- toolbar ------------------------------------------------------------
     def _toolbar(self, state: AppState) -> None:
-        imgui.button("[ drop signal here -> +source ]")
-        if imgui.begin_drag_drop_target():
-            if imgui.accept_drag_drop_payload_py_id(SIGNAL_DND_TYPE) is not None:
-                ref = getattr(state, "dragged_ref", None)
-                if ref is not None:
-                    self._emit(state, "node_source", ref[0], ref[1])
-            imgui.end_drag_drop_target()
-
-        for kind in TRANSFORM_KINDS:
+        imgui.text_disabled("drag a signal onto the canvas to add a source")
+        imgui.same_line()
+        imgui.text("|")
+        for kind in transform_kinds():
             imgui.same_line()
             if imgui.button(f"+ {kind}"):
                 self._emit(state, "node_add", kind)
@@ -110,14 +123,18 @@ class NodesPanel:
 
         ed.begin_node(ed.NodeId(nid))
         imgui.push_id(nid)
-        imgui.text(f"{node.name}  ({node.kind})")
-        if is_stale(state, state.nodes, node):
-            imgui.same_line()
-            imgui.text_colored((0.95, 0.75, 0.25, 1.0), "(stale)")
+        if self._renaming == nid:
+            self._rename_field(state)
+        else:
+            imgui.text(f"{node.name}  ({node.kind})")
+            if is_stale(state, state.nodes, node):
+                imgui.same_line()
+                imgui.text_colored((0.95, 0.75, 0.25, 1.0), "(stale)")
 
-        for slot in range(_INPUTS.get(node.kind, 1)):
+        n_in = _input_pin_count(node)
+        for slot in range(n_in):
             ed.begin_pin(ed.PinId(_in_pin(nid, slot)), ed.PinKind.input)
-            imgui.text("-> in" if _INPUTS[node.kind] == 1 else f"-> in{slot + 1}")
+            imgui.text("-> in" if n_in == 1 else f"-> in{slot + 1}")
             ed.end_pin()
 
         self._params(state, node)
@@ -142,10 +159,41 @@ class NodesPanel:
         pos = ed.get_node_position(ed.NodeId(nid))
         self._maybe_echo_pos(state, nid, float(pos.x), float(pos.y))
 
+    # -- inline rename (double-click a node) --------------------------------
+    def _rename_field(self, state: AppState) -> None:
+        if self._rename_focus:
+            imgui.set_keyboard_focus_here()
+            self._rename_focus = False
+        imgui.set_next_item_width(150)
+        changed, self._rename_buf = imgui.input_text(
+            "##rename", self._rename_buf, imgui.InputTextFlags_.enter_returns_true
+        )
+        if changed:  # Enter committed
+            self._commit_rename(state)
+        elif imgui.is_item_deactivated():  # clicked away / Escape
+            self._commit_rename(state)
+
+    def _commit_rename(self, state: AppState) -> None:
+        nid, name = self._renaming, self._rename_buf.strip()
+        self._renaming = None
+        self._rename_focus = False
+        node = state.nodes.get(nid) if nid is not None else None
+        if node is not None and name and name != node.name:
+            self._emit(state, "node_rename", nid, name)
+
+    def _begin_rename(self, state: AppState) -> None:
+        dc = ed.get_double_clicked_node()
+        if dc.id() != 0 and state.nodes.get(dc.id()) is not None:
+            self._renaming = dc.id()
+            self._rename_buf = state.nodes.get(dc.id()).name
+            self._rename_focus = True
+
     def _params(self, state: AppState, node) -> None:
         imgui.push_item_width(120)
         p = node.params
-        if node.kind == "fft":
+        if node.kind == "source":
+            self._source_window(state, node)
+        elif node.kind == "fft":
             ch, on = imgui.checkbox("remove DC", _b(p, "remove_dc", True))
             if ch:
                 self._emit(state, "node_set", node.id, "remove_dc", "true" if on else "false")
@@ -162,7 +210,49 @@ class NodesPanel:
             if str(p.get("type", "low")) == "band":
                 self._float(state, node, "cutoff2", "cutoff2 Hz")
             self._int(state, node, "taps", "taps")
+        elif node.kind == "shift":
+            self._float(state, node, "by", "by (s)")
+        elif node.kind in REGISTRY:
+            self._plugin_params(state, node)  # plugin: render from its ParamSpec list
+        else:
+            imgui.text_colored((0.95, 0.4, 0.4, 1.0), "missing plugin")
         imgui.pop_item_width()
+
+    def _plugin_params(self, state: AppState, node) -> None:
+        """Generic renderer for a plugin node's declared ParamSpec list."""
+        spec = REGISTRY.get(node.kind)
+        for ps in (spec.ui if spec is not None else ()):
+            if ps.kind == "bool":
+                ch, on = imgui.checkbox(ps.label, _b(node.params, ps.key, False))
+                if ch:
+                    self._emit(state, "node_set", node.id, ps.key, "true" if on else "false")
+            elif ps.kind == "int":
+                self._int(state, node, ps.key, ps.label)
+            elif ps.kind == "enum":
+                self._combo(state, node, ps.key, f"##{ps.key}", list(ps.options))
+            elif ps.kind == "str":
+                self._text(state, node, ps.key, ps.label)
+            else:  # float (default)
+                self._float(state, node, ps.key, ps.label)
+
+    def _source_window(self, state: AppState, node) -> None:
+        """Optional tmin/tmax crop on a source node (empty params = full record)."""
+        p = node.params
+        active = bool(p.get("tmin", "")) or bool(p.get("tmax", ""))
+        changed, on = imgui.checkbox("crop time", active)
+        if changed:
+            if on:  # seed with the run's full extent so the fields are meaningful
+                run = state.registry.get(node.ref[0]) if node.ref else None
+                lo = float(run.time[0]) if run is not None and run.n_rows else 0.0
+                hi = float(run.time[-1]) if run is not None and run.n_rows else 0.0
+                self._emit(state, "node_set", node.id, "tmin", f"{lo:g}")
+                self._emit(state, "node_set", node.id, "tmax", f"{hi:g}")
+            else:
+                self._emit(state, "node_set", node.id, "tmin", "")
+                self._emit(state, "node_set", node.id, "tmax", "")
+        if active:
+            self._float(state, node, "tmin", "t min")
+            self._float(state, node, "tmax", "t max")
 
     # -- param widgets (each emits node_set) --------------------------------
     def _combo(self, state, node, key, label, options) -> None:
@@ -189,6 +279,13 @@ class NodesPanel:
         changed, val = imgui.input_int(label, val)
         if changed:
             self._emit(state, "node_set", node.id, key, str(val))
+
+    def _text(self, state, node, key, label) -> None:
+        changed, val = imgui.input_text(
+            label, str(node.params.get(key, "")), imgui.InputTextFlags_.enter_returns_true
+        )
+        if changed:
+            self._emit(state, "node_set", node.id, key, val)
 
     # -- position echo (settle on mouse-up, like zoom) ----------------------
     def _maybe_echo_pos(self, state: AppState, nid: int, x: float, y: float) -> None:
@@ -247,4 +344,24 @@ class NodesPanel:
                             ed.PinId(_out_pin(in_id)), ed.PinId(_in_pin(node.id, slot)))
         self._handle_create(state)
         self._handle_delete(state)
+        self._begin_rename(state)
         ed.end()
+        self._handle_drop(state)
+
+    # -- drag a signal onto the canvas -> source node at the drop point -----
+    def _handle_drop(self, state: AppState) -> None:
+        # After ed.end() the editor's child counts as the last item, so it can be
+        # a drag-drop target for the Navigation signal payload.
+        if not imgui.begin_drag_drop_target():
+            return
+        if imgui.accept_drag_drop_payload_py_id(SIGNAL_DND_TYPE) is not None:
+            ref = getattr(state, "dragged_ref", None)
+            if ref is not None:
+                before = set(state.nodes.nodes)
+                self._emit(state, "node_source", ref[0], ref[1])
+                new = set(state.nodes.nodes) - before
+                if new:
+                    nid = new.pop()
+                    c = ed.screen_to_canvas(imgui.get_mouse_pos())
+                    self._emit(state, "node_pos", nid, float(c.x), float(c.y))
+        imgui.end_drag_drop_target()

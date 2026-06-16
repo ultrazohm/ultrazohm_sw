@@ -15,7 +15,7 @@ import numpy as np
 
 # -- math node ----------------------------------------------------------------
 MATH_UNARY = ("scale", "offset", "derivative", "integral")
-MATH_BINARY = ("sub", "div")
+MATH_BINARY = ("add", "sub", "div")
 MATH_OPS = MATH_UNARY + MATH_BINARY
 
 
@@ -62,6 +62,8 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             "v1 does not resample"
         )
     time = np.asarray(t1, dtype=np.float64)
+    if op == "add":
+        return time, y1 + y2, "A + B"
     if op == "sub":
         return time, y1 - y2, "A - B"
     with np.errstate(divide="ignore", invalid="ignore"):

@@ -76,15 +76,18 @@ The **Nodes** window is a dataflow canvas: build a small graph that turns signal
 into **new signals**, which then appear in Navigation and can be dragged into any
 plot / FFT / Histogram like a loaded channel.
 
-1. **Add a source** — drag a channel onto the `[ drop signal here -> +source ]`
-   button (or it can be added by command). A source node wraps that signal.
-2. **Add a transform** — toolbar `+ fft` / `+ math` / `+ filter`:
+1. **Add a source** — drag a channel from Navigation **onto the canvas**; a source
+   node wraps that signal at the drop point. (Or `node_source(run, signal)`.) Tick
+   **crop time** on the node to use only a `t min … t max` window instead of the
+   full record.
+2. **Add a transform** — toolbar `+ fft` / `+ math` / `+ filter` / `+ shift`:
    - **fft** — amplitude spectrum (its output's x-axis is frequency); options
      *remove DC*, *Hann*.
    - **math** — `scale`/`offset` (with a constant *k*), `derivative`, `integral`
-     (one input), or `A-B` / `A/B` (two inputs of equal length).
+     (one input), or `A+B` / `A-B` / `A/B` (two inputs of equal length).
    - **filter** — windowed-sinc FIR *low* / *high* / *band* pass; set *cutoff* (Hz),
      *cutoff2* for band, and *taps* (more = sharper).
+   - **shift** — offset the signal's time axis by a constant (`by` seconds).
 3. **Wire it** — drag from a node's **out** pin to another node's **in** pin. You can
    chain transforms (e.g. *filter → fft*).
 4. **Evaluate** — the toolbar **Evaluate** (whole graph) or a node's **eval** button
@@ -94,7 +97,11 @@ plot / FFT / Histogram like a loaded channel.
    channel into a plot, or feed it to the FFT/Histogram windows.
 
 Everything here is a command (`node_*`), so a graph is fully scriptable and saved
-with the session. Rename a node to give its derived run a friendlier name.
+with the session. **Double-click a node** to rename it inline — its derived signal
+takes the new name (or `node_rename(node, name)`).
+
+**Custom transforms (plugins):** you can add your own node kinds by dropping a small
+Python file in a plugin folder — see **[PLUGINS.md](PLUGINS.md)**.
 
 ## Console & scripting
 
@@ -143,7 +150,7 @@ Plots are referenced `plot_1..plot_N` (row-major); runs as `run_<id>` or by file
 | Tools | `show_samples(plot, on)`, `cursors(plot, on)`, `set_cursors(plot, x1, x2)`, `spy(plot, on)`, `set_spy_rect(plot, xmin, ymin, xmax, ymax)`, `export_data(plot, path, [relative])`, `set_export_relative(plot, on)` |
 | FFT window | `fft_source(run, signal)`, `fft_remove(run, signal)`, `fft_clear()`, `fft_follow(custom\|full\|plot_N)`, `fft_range(min, max)`, `fft_remove_dc(on)`, `fft_hann(on)`, `fft_logx(on)`, `fft_logy(on)`, `fft_xlim(min, max)`, `fft()`, `fft_export(path)` |
 | Histogram window | `hist_source(run, signal)`, `hist_remove(run, signal)`, `hist_clear()`, `hist_follow(custom\|full\|plot_N)`, `hist_range(min, max)`, `hist_bins(n)`, `hist_xlim(min, max)`, `histogram()`, `hist_export(path)` |
-| Nodes | `node_source(run, signal)`, `node_add(fft\|math\|filter)`, `node_set(node, key, value)`, `node_link(src, dst)`, `node_unlink(src, dst)`, `node_remove(node)`, `node_rename(node, name)`, `node_pos(node, x, y)`, `node_eval([node])` |
+| Nodes | `node_source(run, signal)`, `node_add(fft\|math\|filter\|shift\|…)`, `node_set(node, key, value)`, `node_link(src, dst)`, `node_unlink(src, dst)`, `node_remove(node)`, `node_rename(node, name)`, `node_pos(node, x, y)`, `node_eval([node])`, `load_plugins([dir])` |
 | Session | `save_state(path)`, `load_state(path)`, `export_script(path)`, `run_script(path)` |
 | Console | `help([name])`, `clear_console()` |
 

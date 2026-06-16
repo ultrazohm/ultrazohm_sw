@@ -80,12 +80,17 @@ HTML file picker. Loading is synchronous (Pyodide has no worker threads):
 - **Large CSVs (> 200 MB)** are **stream-parsed in the browser** directly into
   per-column typed arrays (`webbridge.load_columns`): the File blob is read in
   chunks, so the multi-gigabyte *text* is never resident in 32-bit WASM memory —
-  only the compact numeric result (time `float64` + channels `float32`). This
-  loads the whole file at **full resolution**, not decimated.
+  only the compact numeric result (time `float64` + channels `float32`).
 
-The hard limit is wasm32's ~4 GB address space: the *numeric* data must fit
-(≈ `rows × channels × 4` bytes), which is far smaller than the raw CSV. For
-genuinely huge logs the native app is still the better choice.
+The hard limit is wasm32's ~4 GB address space: the *numeric* arrays must fit
+(≈ `rows × channels × 4` bytes), which is far smaller than the raw CSV but still
+caps how big a log the browser can hold. The streaming loader estimates that
+footprint up front and, **if it would exceed a safe budget (~1.5 GB), decimates
+`1:stride` on the way in** and says so in the console (e.g. *"Loaded … decimated
+1:3 … use the native app for full detail"*). So a file under the budget loads at
+**full resolution**, and a genuinely huge one (e.g. a 5 GB log) loads a usable
+**decimated** view instead of silently aborting the WASM runtime. For full
+resolution on multi-GB logs, use the native app.
 
 Web-specific notes:
 

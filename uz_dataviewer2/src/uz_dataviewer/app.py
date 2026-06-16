@@ -48,6 +48,10 @@ class DataViewerApp:
         self._session_dialog: tuple = ()
         # Let the browser file-input bridge reach this state (no-op on desktop).
         webbridge.register_state(self.state)
+        # Load any external node plugins (optional; safe with no dir/files present).
+        from . import plugins
+
+        plugins.load_plugins(console=self.state.console)
         for path in initial_files or []:
             if not os.path.exists(path):
                 self.state.console.warn(f"File not found: {path}")

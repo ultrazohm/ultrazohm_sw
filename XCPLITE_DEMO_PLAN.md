@@ -129,7 +129,107 @@ in this plan deserve a hard second look *before* sinking effort into Phases 3–
 (a) Phase 1 passes on hardware; (b) a spike confirms whether the A53 can read R5
 control memory coherently enough for DAQ; (c) stakeholders confirm a *curated*
 signal set is acceptable. If (b)/(c) fail, redesign before writing more Phase 3/4
-code.
+code — see the prior-art comparison and Option Z below.
+
+---
+
+## Prior art: the `uz_sw_xcp_hedrive_andi` branch (read before the gate)
+
+A sibling branch (`feature/HeDrive_9ph_xcp_debug`) already built a *different*,
+more capable XCP integration. It is the reference to weigh against the
+image-based A53 design.
+
+**What it does:** runs Vector's **XCP Basic** slave **on the R5**, in the
+control core; the A53 is a dumb Ethernet gateway.
+- `ApplXcpGetPointer()` returns the raw address → **arbitrary R5 addressing**.
+  Its A2L (`canape/.../xcp_uz.A2L`, 156 KB) has **51 MEASUREMENTs + 56
+  CHARACTERISTICs** at R5 symbol addresses. Adding a signal = add it to the A2L;
+  no firmware change.
+- DAQ events (`FAST/1MS/10MS/100MS/1S`) fire from `ISR_Control` at divided
+  control rates, timestamped from `uz_SystemTime` → samples coherent with the
+  control loop by construction.
+- Calibration works directly (XCP `DOWNLOAD` writes straight to R5 RAM); no
+  page-flip machinery.
+- Transport: R5 ⇄ OCM FIFO (`XCP_OUT` 512 B, `XCP_IN` 256 B) ⇄ IPI ⇄ FreeRTOS
+  queues ⇄ A53 **TCP** tasks (port 12340) ⇄ CANape.
+- Its only blocker is **license** (XCP Basic is non-redistributable) — the whole
+  reason for the XCPlite effort.
+
+**The plan coupled two independent choices.** "MIT license" and "move the slave
+to the A53" are orthogonal:
+
+| | slave location → addressing | driver → license |
+|--|--|--|
+| hedrive | R5 → arbitrary | XCP Basic → non-redistributable |
+| xcp_lite (now) | A53 → curated image only | XCPlite → MIT |
+
+By also moving to the A53, the current effort fixed the license but **regressed
+the capability** (arbitrary measurement + working calibration) that is the actual
+point of XCP. The hedrive `XCP_BOTTLENECK_ANALYSIS.md` also shows the OCM↔Ethernet
+gateway was a bug farm (ISR freezes, TCP framing, OCM overflow, per-frame
+`write()` throughput collapse) — complexity xcp_lite avoids *only because it never
+ferries live XCP frames across the core boundary*, which is also why it can't do
+arbitrary addressing.
+
+### Honest comparison
+
+| Dimension | hedrive (XCP Basic on R5) | xcp_lite (XCPlite on A53) |
+|--|--|--|
+| License | non-transferable | MIT |
+| Arbitrary variable | yes (A2L only) | no (edit struct + 2-core rebuild + regen A2L) |
+| Calibration | yes (direct R5 writes) | unbuilt Phase-4 page-flip |
+| DAQ time alignment | control-rate, in ISR | A53 event after IPI → jitter; clock base mismatch |
+| Transport | custom OCM↔TCP gateway (complex) | native lwIP UDP, XCPlite owns it |
+| Load on control core | runs `XcpCommand` on R5 | off the R5 |
+| Maturity | debugged on hardware | compiles, not HW-tested |
+
+## Option Z — XCPlite *protocol engine* on the R5 (MIT **and** arbitrary)
+
+The best option is on neither branch today: keep XCPlite (MIT) but run its
+**protocol engine** on the R5 like XCP Basic, with a transport gateway on the
+A53. The plan dismissed "slave on R5" because XCPlite "needs OS + sockets +
+atomics" — but that conflates XCPlite's *server* with its *engine*. The engine is
+transport- and OS-agnostic; the verified seams:
+
+- **Command in:** any code may call `XcpCommand(cmdBuf, cmdLen)` (xcplite.c) —
+  exactly how XCP Basic is fed from the OCM FIFO today.
+- **Addressing:** `ApplXcpGetBaseAddr()+offset` with base 0 ⇒ XCP address ==
+  pointer. On the R5 that is native **arbitrary** access (the A53 can't do this
+  only because the address isn't its coherent memory).
+- **Platform coupling is isolated:** the DAQ queue (`queue32.c`) needs only a
+  `MUTEX`; sockets/threads live in `xcpethtl.c` / `xcpethserver.c` /
+  `platform_freertos.c`, all replaceable.
+
+**Reuse unchanged (the hard, valuable part):** `xcplite.c` (protocol + DAQ),
+`xcp.h`, `queue32.c`, `util.c`, the `ApplXcp*` callbacks. Disable
+`OPTION_CAL_SEGMENTS` so `DOWNLOAD` writes go straight to R5 addresses
+(hedrive-style direct calibration).
+
+**Replace / write new:**
+1. `platform_baremetal_r5.c` — clock = `uz_SystemTime`; `MUTEX` = IRQ
+   critical-section (single core, ISR-vs-main only); no sockets, no threads,
+   `sleep` = spin/no-op.
+2. `xcptl_ocm.c` — a thin transport: feed RX frames into `XcpCommand`, and
+   implement the CRM send + DTO queue-drain (`XcpTl…`/`XcpEthTlSend…`
+   equivalents) by writing into the OCM FIFO instead of a socket.
+3. **Driving model (no XCPlite server tasks):** call `XcpEvent()` from
+   `ISR_Control` (producer, ISR context); call `XcpCommand()` + the queue-drain
+   from the R5 main loop (consumer). queue32's critical-section mutex makes the
+   ISR-producer / main-consumer split safe on the single R5 core.
+4. **A53 side:** reuse hedrive's `OCM_eth_adapter.c` + `RPU_APU_exchange.c`
+   gateway (prefer **UDP** — simpler than hedrive's TCP, and matches XCPlite's
+   transport-layer framing).
+
+**Risks / unknowns to size first:** R5 footprint of `xcplite.c` (≈165 KB source;
+fits TCM+DDR?); per-event DAQ cost added to `ISR_Control`; `XcpEvent` ISR-safety
+under the critical-section mutex; and re-validating the OCM gateway's hard-won
+fixes (F1/F2/B1–B5 in hedrive's analysis). Effort is dominated by plumbing
+(transport + platform + gateway) — the same plumbing hedrive already wrote for
+XCP Basic, so much of the ISR-event and OCM-bridge design ports across. The
+engine and DAQ logic come for free.
+
+**Decision shortcut:** curated set acceptable → finish the current A53 path.
+Arbitrary measurement/calibration required → do **Option Z**, not Phases 3–4.
 
 > **PREREQUISITE — do this before anything else:** merge branch
 > **`feature/freertos_memory_barrier_patch`** (in `C:\Users\ga92wum\git\uz\uz_sw_memory_barrier`)

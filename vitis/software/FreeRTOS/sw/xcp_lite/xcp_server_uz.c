@@ -71,23 +71,38 @@ static tXcpEventId xcp_demo_event_handle  = 0u;
 /*---------------------------------------------------------------------------
  * xcp_daq_task
  *
- * Phase 1 demo: 1 ms periodic loop.
- * Increments the counter, computes a 1 Hz sine, triggers the DAQ event.
+ * Phase 1 demo: periodic loop at the finest period the FreeRTOS tick allows.
+ * Increments the counter, computes a ~1 Hz sine, triggers the DAQ event.
  * XCPlite reads xcp_demo_counter and xcp_demo_sine directly from memory
  * (the A2L links their addresses; no explicit "register" call needed).
+ *
+ * NOTE: the UZ FreeRTOS tick is coarse (configTICK_RATE_HZ = 100 → 10 ms).
+ * pdMS_TO_TICKS(1) truncates to 0 ticks, and a 0-tick period makes
+ * vTaskDelayUntil() assert (tasks.c configASSERT xTimeIncrement > 0). So the
+ * period is clamped to >= 1 tick, and the sine rate is derived from the actual
+ * sample rate instead of assuming 1 kHz.
  *--------------------------------------------------------------------------*/
 static void xcp_daq_task(void *pvParameters)
 {
     (void)pvParameters;
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xPeriod = pdMS_TO_TICKS(1u);
+    TickType_t xPeriod = pdMS_TO_TICKS(10u);
+    if (xPeriod == 0u) {
+        xPeriod = 1u;
+    }
+    /* samples per second at the actual period; guard against divide-by-zero */
+    uint32_t samples_per_s = (uint32_t)configTICK_RATE_HZ / (uint32_t)xPeriod;
+    if (samples_per_s == 0u) {
+        samples_per_s = 1u;
+    }
 
     for (;;) {
         vTaskDelayUntil(&xLastWakeTime, xPeriod);
         xcp_demo_counter++;
-        /* 1 Hz sine: 1000 ticks per period at 1 kHz sample rate */
+        /* ~1 Hz sine: one full period every samples_per_s samples */
         xcp_demo_sine = sinf(2.0f * 3.14159265f *
-                             (float)(xcp_demo_counter % 1000u) / 1000.0f);
+                             (float)(xcp_demo_counter % samples_per_s) /
+                             (float)samples_per_s);
         XcpEvent(xcp_demo_event_handle);
     }
 }

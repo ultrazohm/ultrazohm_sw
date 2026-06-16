@@ -231,6 +231,46 @@ engine and DAQ logic come for free.
 **Decision shortcut:** curated set acceptable → finish the current A53 path.
 Arbitrary measurement/calibration required → do **Option Z**, not Phases 3–4.
 
+### Feasibility — VERIFIED 2026-06-16 (green light)
+
+Probed the engine's actual platform coupling and the armr5 toolchain:
+- **`<pthread.h>`** in `xcplite.c` is gated by `TEST_MUTABLE_ACCESS_OWNERSHIP`
+  (a debug macro we never define) → **not compiled.**
+- The **C11 `atomic_` uses** (11×) are a few state flags (`daq_running`,
+  `cmd_pending`, `event_list.count`). **armr5 gcc 11.2.0 supports `stdatomic`**
+  (test compiled). On the single-core R5 they reduce to loads/stores + barriers
+  and *give the ISR-vs-main-loop safety for free* (XCP Basic did this by hand).
+- **`queue32.c`** needs only a `MUTEX` (→ IRQ critical section on R5).
+- **Footprint:** engine (`xcplite+queue32+util+xcpappl`) ≈ **40 KB text + 4 KB
+  bss** — trivial for the R5's DDR.
+- **No fundamental blocker.** It is the hedrive architecture with MIT XCPlite
+  swapped in for XCP Basic.
+
+### Milestone plan (supersedes image-based Phases 3–4)
+
+- **Z1 — engine builds for R5 (no hardware).** Add a baremetal platform backend
+  (`platform_baremetal.c` + a `_BAREMETAL` branch in `platform.h`: MUTEX = IRQ
+  critical section, clock = `uz_SystemTime`, no threads/sockets, `sleep` = spin)
+  and a baremetal cfg (queue32, no A2L gen, no persistence, `OPTION_CAL_SEGMENTS`
+  **off** for direct addressing). Compile `xcplite.c`+`queue32.c`+`util.c`+appl
+  for armr5. *Accept:* clean compile + object size.
+- **Z2 — OCM transport (R5).** `xcptl_ocm.c`: RX pulls CTO from the OCM FIFO →
+  `XcpCommand()`; TX implements CRM send + DAQ-queue drain → OCM FIFO. Reuse
+  hedrive's `RPU_APU_exchange` FIFO. *Accept:* links into Baremetal; a manual
+  `XcpCommand` round-trips via OCM (loopback).
+- **Z3 — A53 gateway.** Port hedrive's `OCM_eth_adapter` (OCM ↔ **UDP**) into
+  this FreeRTOS app as an XOR alternative to the A53 XCPlite server. *Accept:*
+  `xcp_poll.py` / CANape CONNECTs through the gateway to the R5 engine.
+- **Z4 — arbitrary measurement.** `ApplXcpGetBaseAddr`=0 identity → R5 reads any
+  address; `XcpEvent` from `ISR_Control`; A2L generated from the R5 ELF symbols.
+  *Accept:* DAQ of arbitrary R5 variables (no curated struct).
+- **Z5 — arbitrary calibration [safety review].** `OPTION_CAL_SEGMENTS` off →
+  `DOWNLOAD` writes straight to R5 addresses (hedrive-style). *Accept:* live
+  param change reaches R5; reviewed for motor-control safety.
+
+The working A53 XCPlite path (Phases 0–1–3) stays as a **curated-mode fallback**;
+Option Z is added alongside, selected like the JavaScope/XCP XOR.
+
 > **PREREQUISITE — do this before anything else:** merge branch
 > **`feature/freertos_memory_barrier_patch`** (in `C:\Users\ga92wum\git\uz\uz_sw_memory_barrier`)
 > into `develop`, then bring `develop` into this `feature/xcp_lite` branch. That branch

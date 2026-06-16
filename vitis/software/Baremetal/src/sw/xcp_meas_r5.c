@@ -62,14 +62,20 @@ void xcp_meas_r5_update(const DS_Data *data)
         (struct xcp_meas_image_t volatile *)XCP_MEAS_IMAGE_BASE;
 
     /* --- seqlock write begin ------------------------------------------- */
-    img->seq++;                     /* → odd: signals write in progress */
+    /* Force the parity instead of relying on a zero-initialised counter: OCM is
+     * NOT cleared at boot, so a garbage *odd* initial seq would stay odd forever
+     * (seq++ twice per cycle preserves parity) and the A53 reader's
+     * "if (seq & 1) skip" guard would reject every sample. Setting odd-then-even
+     * makes the protocol self-correcting regardless of the power-on value. */
+    uint32_t s = img->seq;
+    img->seq = s | 1u;              /* → odd: signals write in progress */
     __asm volatile ("dsb" ::: "memory"); /* data barrier: seq visible before data */
 
     img->timestamp_us = (uint32_t)uz_SystemTime_GetUptimeInUs();
     xcp_meas_fill_signals(img, data);
 
     __asm volatile ("dsb" ::: "memory"); /* data barrier: data visible before seq */
-    img->seq++;                     /* → even: signals write complete */
+    img->seq = (s | 1u) + 1u;       /* → even: signals write complete */
     /* --- seqlock write end --------------------------------------------- */
 
     /* Flush so the A53 sees the update after its Xil_DCacheInvalidateRange. */

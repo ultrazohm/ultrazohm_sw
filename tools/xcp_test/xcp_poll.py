@@ -57,6 +57,13 @@ DEFAULT_ADDR = {
     "xcp_meas_local_signal": 0x00200290,   # float[8] (Phase 3 image signals)
 }
 
+# --- Phase 3 R5->A53 MEAS image in OCM (from APU_RPU_shared.h) ---------------
+# bank1 base 0xFFFD0000 + 0x100; struct = { u32 seq; u32 timestamp_us; f32 sig[8] }
+OCM_IMAGE_BASE = 0xFFFD0100
+OCM_SEQ_ADDR = OCM_IMAGE_BASE + 0x0
+OCM_TS_ADDR = OCM_IMAGE_BASE + 0x4
+OCM_SIG0_ADDR = OCM_IMAGE_BASE + 0x8
+
 # Repo-relative default locations (this file lives in <repo>/tools/xcp_test/).
 _REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DEFAULT_ELF = os.path.join(
@@ -151,6 +158,9 @@ def main():
     ap.add_argument("--nm", default=DEFAULT_NM, help="path to aarch64 nm")
     ap.add_argument("--counter-addr", type=lambda x: int(x, 0), default=None)
     ap.add_argument("--sine-addr", type=lambda x: int(x, 0), default=None)
+    ap.add_argument("--diag", action="store_true",
+                    help="Phase 3 diagnostic: read the R5 MEAS image in OCM directly "
+                         "(seq/ts @ 0xFFFD0100) and the A53-local copy, side by side")
     args = ap.parse_args()
 
     addr = dict(DEFAULT_ADDR)
@@ -174,6 +184,25 @@ def main():
     try:
         info = xcp.connect()
         print("[+] CONNECTED  (MAX_CTO=%d  MAX_DTO=%d)" % (info["max_cto"], info["max_dto"]))
+
+        if args.diag:
+            # Phase 3 fault localization. Read the R5 image in OCM directly, plus
+            # the A53-local copy the IPI handler maintains.
+            #   raw_seq/raw_ts advancing  -> R5 IS writing the OCM image
+            #   local_ts == raw_ts        -> A53 IPI handler copies it correctly
+            #   raw_seq == 0 (static)     -> R5 not writing (ISR_Control idle /
+            #                                stale R5 build / XCP_MEAS_IMAGE_ENABLE=0)
+            #   raw advancing but local_ts == 0 -> IPI not reaching A53 / copy path
+            print("    OCM image @ 0x%08X (seq/ts) + A53-local copy -- Ctrl+C to stop\n" % OCM_IMAGE_BASE)
+            print("    %-12s  %-14s  %-14s  %-14s" % ("raw_seq", "raw_ts_us", "raw_sig0", "local_ts_us"))
+            while True:
+                raw_seq = struct.unpack("<I", xcp.short_upload(OCM_SEQ_ADDR, 4))[0]
+                raw_ts = struct.unpack("<I", xcp.short_upload(OCM_TS_ADDR, 4))[0]
+                raw_sig0 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR, 4))[0]
+                local_ts = struct.unpack("<I", xcp.short_upload(addr["xcp_meas_local_timestamp_us"], 4))[0]
+                print("    %-12d  %-14d  %-14.4f  %-14d" % (raw_seq, raw_ts, raw_sig0, local_ts))
+                time.sleep(args.interval)
+
         print("    polling -- Ctrl+C to stop\n")
         print("    %-12s  %-12s  %-14s" % ("counter", "sine", "ts_us"))
         while True:

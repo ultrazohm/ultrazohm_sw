@@ -10,7 +10,7 @@
  *   - Electrical nameplate (Rs, Rr, Lm, leakage inductances, pole pairs)
  *   - Mechanical (inertia J)
  *   - Rated operating point (Psi_rated, control current limit)
- *   - Protection limits (Vdc_max, phase-current trip limit, Speed_max)
+ *   - Protection limits (v_dc_min_v, vdc_max_v, phase-current trip limit, Speed_max)
  *   - Control tuning (Speed PI gains, resonant gain scale, KF noise defaults)
  *   - U/f open-loop parameters (V/f ratio, boost, frequency limits)
  *
@@ -45,6 +45,9 @@
 #define VA_VDC_MAX_V              52.0f
 #define VA_IPHASE_MAX_A           15.0f
 
+/* Preliminary IM DC-link undervoltage threshold for test bench protection. */
+#define v_dc_min_v                100.0f
+
 
 /* ============================================================
  * Lindner 3 kW IM — Wolfspeed adapter board testbed
@@ -67,7 +70,7 @@
 #define MOTOR_Control_current_max_A      10.0f   /* soft limit used by IM control and speed-loop output saturation */
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V                    700.0f
+#define vdc_max_v                          700.0f
 #define MOTOR_Protection_phase_max_A       20.0f   /* hard trip threshold checked against measured phase currents */
 #define MOTOR_Speed_max_rpm               3300.0f
 
@@ -145,7 +148,7 @@
 #define MOTOR_Control_current_max_A       6.0f    /* soft limit used by IM control and speed-loop output saturation */
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V                    400.0f
+#define vdc_max_v                          400.0f
 #define MOTOR_Protection_phase_max_A       6.0f    /* hard trip threshold checked against measured phase currents */
 #define MOTOR_Speed_max_rpm               1800.0f /* 1.2× synchronous speed (1500 rpm) */
 
@@ -200,7 +203,7 @@
 #define MOTOR_Control_current_max_A      50.0f //50.0f
 
 /* Protection limits — hardware-level fault thresholds */
-#define MOTOR_Vdc_max_V                    800.0f //800.0f
+#define vdc_max_v                          800.0f //800.0f
 #define MOTOR_Protection_phase_max_A       50.0f //50.0f   /* hard trip threshold checked against measured phase currents */
 #define MOTOR_Speed_max_rpm               5000.0f  /* 1.2× synchronous speed (1500 rpm) */
 

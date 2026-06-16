@@ -32,7 +32,7 @@ static void error_checks_update_visualization_latches(uint32_t error_mask)
     if ((error_mask & (ERR_IM_OVERCURRENT_U | ERR_IM_OVERCURRENT_V | ERR_IM_OVERCURRENT_W)) != 0U) {
         js_error_max_current_im = 1.0f;
     }
-    if ((error_mask & ERR_IM_OVERVOLTAGE_DC) != 0U) {
+    if ((error_mask & (ERR_IM_OVERVOLTAGE_DC | ERR_IM_UNDERVOLTAGE_DC)) != 0U) {
         js_error_vdc_im = 1.0f;
     }
     if ((error_mask & ERR_VA_OVERVOLTAGE_DC) != 0U) {
@@ -66,6 +66,7 @@ uint32_t error_checks_step(const actualValues *av, const error_checks_config_t *
     bool const nan_meas = !isfinite(av->IM_vdc) || !isfinite(av->IM_ia) ||
                           !isfinite(av->IM_ib) || !isfinite(av->IM_ic) ||
                           !isfinite(av->IM_mechanicalRotorSpeed_filtered);
+    bool const im_uv_dc = av->IM_vdc < config->im_vdc_min;
     bool const im_ov_dc = av->IM_vdc > config->im_vdc_max;
     bool const im_oc_iu = fabsf(av->IM_ia) > config->im_iphase_max;
     bool const im_oc_iv = fabsf(av->IM_ib) > config->im_iphase_max;
@@ -77,6 +78,9 @@ uint32_t error_checks_step(const actualValues *av, const error_checks_config_t *
     bool const va_oc_iw = fabsf(av->VA_ic) > config->va_iphase_max;
 
     uint32_t error_mask = 0U;
+    if (im_uv_dc) {
+        error_mask |= ERR_IM_UNDERVOLTAGE_DC;
+    }
     if (im_ov_dc) {
         error_mask |= ERR_IM_OVERVOLTAGE_DC;
     }

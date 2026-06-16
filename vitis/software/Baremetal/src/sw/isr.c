@@ -143,7 +143,8 @@ static uz_IM_t IM_config = {
 };
 
 static error_checks_config_t error_checks_config = {
-    .im_vdc_max                  = MOTOR_Vdc_max_V,
+    .im_vdc_min                  = v_dc_min_v,
+    .im_vdc_max                  = vdc_max_v,
     .im_iphase_max               = MOTOR_Protection_phase_max_A,
     .im_max_mechanical_speed_rpm = MOTOR_Speed_max_rpm,
     .va_vdc_max                  = VA_VDC_MAX_V,

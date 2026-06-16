@@ -31,14 +31,17 @@
 #define ERR_VA_OVERCURRENT_U    (1U << 8)
 #define ERR_VA_OVERCURRENT_V    (1U << 9)
 #define ERR_VA_OVERCURRENT_W    (1U << 10)
+#define ERR_IM_UNDERVOLTAGE_DC  (1U << 11)
 
 #define ERR_OVERVOLTAGE_DC ERR_IM_OVERVOLTAGE_DC
+#define ERR_UNDERVOLTAGE_DC ERR_IM_UNDERVOLTAGE_DC
 #define ERR_OVERCURRENT_U  ERR_IM_OVERCURRENT_U
 #define ERR_OVERCURRENT_V  ERR_IM_OVERCURRENT_V
 #define ERR_OVERCURRENT_W  ERR_IM_OVERCURRENT_W
 #define ERR_OVERSPEED      ERR_IM_OVERSPEED
 
 typedef struct {
+    float im_vdc_min;
     float im_vdc_max;
     float im_iphase_max;
     float im_max_mechanical_speed_rpm;

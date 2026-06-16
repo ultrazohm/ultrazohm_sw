@@ -6,7 +6,7 @@ and how they relate.
 > **TL;DR** — The **JavaScope** (`javascope/`) is a *live oscilloscope*: a Java/Swing
 > application that connects to the UltraZohm hardware over TCP, streams scope channels in
 > real time, triggers, scales, and sends commands/parameters **to** the device, and writes
-> `Log_*.csv` files. The **Data Viewer** (`uz_dataviewer2/`) is an *offline post-processing
+> `Log_*.csv` files. The **Data Viewer** (`uz_dataviewer/`) is an *offline post-processing
 > viewer*: an ImGui/ImPlot desktop+web app that *reads* those logs for fast, interactive
 > inspection. They are complementary, not competing — JavaScope **produces** the logs that
 > the Data Viewer **consumes**. The Data Viewer is the modern successor to the legacy Plotly
@@ -16,7 +16,7 @@ and how they relate.
 
 ## 1. The two tools at a glance
 
-| | **JavaScope** (`javascope/`) | **Data Viewer** (`uz_dataviewer2/`) |
+| | **JavaScope** (`javascope/`) | **Data Viewer** (`uz_dataviewer/`) |
 |---|---|---|
 | Role | Live acquisition & device control | Offline log inspection & analysis |
 | Tech | Java / Swing, JFreeChart (`UZ_GUI.jar`, `src/UZ_GUI/*.java`, ~23k LOC) | Python, Dear ImGui via `imgui_bundle` + ImPlot |
@@ -27,7 +27,7 @@ and how they relate.
 | Platforms | Desktop JVM | Native (PyInstaller) + Web (Pyodide/WASM) |
 
 There is also a **third, legacy artifact**: `javascope/dataviewer.py`, a Plotly/Dash web app.
-`uz_dataviewer2` is its rewrite. See §4.
+`uz_dataviewer` is its rewrite. See §4.
 
 ---
 
@@ -73,7 +73,7 @@ hardware while an experiment is live.
 
 ---
 
-## 3. Data Viewer (`uz_dataviewer2`) — the offline analyzer
+## 3. Data Viewer (`uz_dataviewer`) — the offline analyzer
 
 The Data Viewer never touches the hardware. It opens completed logs and makes large ones fast
 to explore.
@@ -101,7 +101,7 @@ command to the device. Those are JavaScope's domain.
 ## 4. Relationship to the legacy `dataviewer.py`
 
 `javascope/dataviewer.py` (~1.7k LOC, Plotly/Dash) is the **direct predecessor** of
-`uz_dataviewer2`. It already offered, in a browser:
+`uz_dataviewer`. It already offered, in a browser:
 
 - 4 graph panels, load up to 2 files, **overlay-compare** both files on one graph;
 - **cursors**, **export data** (with "start time at 0" relative-time option);
@@ -109,12 +109,12 @@ command to the device. Those are JavaScope's domain.
 - **shared/linked x-axis** across graphs;
 - **plotly-resampler** downsampling for big logs.
 
-`uz_dataviewer2` reimplements this offline-viewer concept on Dear ImGui/ImPlot for a native
+`uz_dataviewer` reimplements this offline-viewer concept on Dear ImGui/ImPlot for a native
 docked desktop app (and a WASM web build). `FigureResampler` is bound to Plotly figures, so
 nothing of the old rendering carried over; the decimation engine (`tsdownsample`) was reused
 at first, then replaced by a pure-NumPy **min/max pyramid** so native and web share one path.
 
-| Feature | `dataviewer.py` (legacy) | `uz_dataviewer2` (current) |
+| Feature | `dataviewer.py` (legacy) | `uz_dataviewer` (current) |
 |---|---|---|
 | UI stack | Plotly / Dash (browser) | Dear ImGui + ImPlot (native + WASM) |
 | Layout | 4 fixed graph panels | Runtime grid, drag-drop signals |
@@ -126,7 +126,7 @@ at first, then replaced by a pure-NumPy **min/max pyramid** so native and web sh
 | FFT | No | Yes (dedicated window) + Histogram window |
 | Scripting / command API | No | Yes (every action is a command; `.uzscript` replay) |
 
-> The parity items the legacy `dataviewer.py` had over the early `uz_dataviewer2`
+> The parity items the legacy `dataviewer.py` had over the early `uz_dataviewer`
 > (secondary y-axis, cursors, data export) have since been implemented, and the viewer
 > now goes beyond it with the command/scripting layer, Histogram window, spy tool and
 > per-log time normalization.
@@ -149,7 +149,7 @@ at first, then replaced by a pure-NumPy **min/max pyramid** so native and web sh
                                │
                                ▼
                  ┌────────────────────────────┐
-                 │  Data Viewer (uz_dataviewer2)│  offline inspection,
+                 │  Data Viewer (uz_dataviewer)│  offline inspection,
                  │  ImGui/ImPlot                │  FFT, downsampling
                  └────────────────────────────┘
 ```

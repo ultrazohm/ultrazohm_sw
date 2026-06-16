@@ -56,7 +56,8 @@ plots (or the FFT / Histogram windows).
 |-----|-----|
 | **[docs/USAGE.md](docs/USAGE.md)** | Driving the app: panels, plots, analysis windows, the command console & scripting, full command reference. |
 | **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Developers: module map, the state-driven/command-routed design, internals, how to extend, testing, design decisions. |
-| **[docs/BUILD.md](docs/BUILD.md)** | Building native executables and the web/WASM app; native vs. web differences. |
+| **[docs/BUILD.md](docs/BUILD.md)** | Building native executables and the web/WASM app. |
+| **[docs/NATIVE_VS_WEB.md](docs/NATIVE_VS_WEB.md)** | What differs between the desktop and browser builds (file I/O, threading, memory) and what's identical. |
 | **[docs/PLUGINS.md](docs/PLUGINS.md)** | Writing your own node transforms as Python plugins. |
 | **[docs/ROADMAP.md](docs/ROADMAP.md)** | Open ideas and the record of what's already shipped. |
 

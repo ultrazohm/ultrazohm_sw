@@ -76,7 +76,7 @@
 
 #endif
 
-#if !defined(_WIN) && !defined(_LINUX) && !defined(_MACOS) && !defined(_QNX) && !defined(_FREE_RTOS)
+#if !defined(_WIN) && !defined(_LINUX) && !defined(_MACOS) && !defined(_QNX) && !defined(_FREE_RTOS) && !defined(_BAREMETAL)
 #error "Please define platform _WIN, _MACOS, _LINUX, _QNX or _FREE_RTOS"
 #endif
 
@@ -111,6 +111,13 @@ OPTION_CLOCK_EPOCH_ARB or OPTION_CLOCK_EPOCH_PTP
 
 #include <time.h>
 #include <windows.h>
+
+#elif defined(_BAREMETAL) // Bare-metal R5 (Option Z): C11 atomics, no OS headers
+#ifndef __cplusplus
+#include <stdatomic.h>
+#define ATOMIC_BOOL_TYPE uint_fast8_t
+#define ATOMIC_BOOL atomic_uint_fast8_t
+#endif
 
 #elif defined(_FREE_RTOS)
 
@@ -322,6 +329,14 @@ void platformShmUnlink(const char *name);
 #define mutexLock EnterCriticalSection
 #define mutexUnlock LeaveCriticalSection
 
+#elif defined(_BAREMETAL) // Bare-metal: IRQ critical-section mutex (single core, ISR vs main)
+#define MUTEX uint32_t
+#define MUTEX_INTIALIZER 0
+#define mutexLock(m) platformMutexLock(m)
+#define mutexUnlock(m) platformMutexUnlock(m)
+void platformMutexLock(MUTEX *m);
+void platformMutexUnlock(MUTEX *m);
+
 #elif defined(_FREE_RTOS) // FreeRTOS
 
 #define MUTEX SemaphoreHandle_t
@@ -358,6 +373,13 @@ typedef HANDLE THREAD_HANDLE;
         CloseHandle(h);                                                                                                                                                            \
     } while (0)
 #define get_thread_id() GetCurrentThreadId()
+
+#elif defined(_BAREMETAL) // Bare-metal: no threads (engine driven from ISR + main loop)
+typedef uint32_t THREAD_HANDLE;
+#define create_thread(h, attr, fn, args) ((void)0)
+#define join_thread(h) ((void)0)
+#define cancel_thread(h) ((void)0)
+#define get_thread_id() (0u)
 
 #elif defined(_FREE_RTOS) // FreeRTOS
 

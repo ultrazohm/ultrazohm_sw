@@ -248,6 +248,15 @@ Probed the engine's actual platform coupling and the armr5 toolchain:
 
 ### Milestone plan (supersedes image-based Phases 3–4)
 
+> **Progress (2026-06-16):** Z1 **done**, Z2 **~90%** — see
+> `option_z/r5_engine/STATUS.md`. The XCPlite engine compiles+links for the
+> bare-metal R5 (armr5, ~35 KB); the full stack resolves to just 4 external
+> symbols (`uz_SystemTime` + 3 OCM-FIFO funcs). `platform_baremetal.c` +
+> `xcptl_ocm.c` + `xcplib_r5_cfg.h` are written and verified. Remaining: finish
+> the OCM FIFO (port hedrive `RPU_APU_exchange`), Vitis integration (Z1b), the
+> A53 gateway (Z3), and the `XcpEvent`/A2L wiring (Z4).
+
+
 - **Z1 — engine builds for R5 (no hardware).** Add a baremetal platform backend
   (`platform_baremetal.c` + a `_BAREMETAL` branch in `platform.h`: MUTEX = IRQ
   critical section, clock = `uz_SystemTime`, no threads/sockets, `sleep` = spin)

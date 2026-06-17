@@ -124,4 +124,12 @@
  *=========================================================================*/
 #define XCP_MEAS_IMAGE_ENABLE   1
 
+/*===========================================================================
+ * Option Z — XCPlite protocol ENGINE on the R5 (arbitrary addressing).
+ * 1 = run the XCPlite engine on the R5 (replaces the MEAS-image path in
+ * ISR_Control); the A53 must then select LOGGING_PATH_XCP_R5_GATEWAY.
+ * 0 = curated A53 path (use XCP_MEAS_IMAGE_ENABLE above).
+ *=========================================================================*/
+#define XCP_ENGINE_R5_ENABLE    1
+
 #endif /* DEFINES_H_ */

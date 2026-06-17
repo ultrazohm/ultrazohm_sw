@@ -23,6 +23,9 @@
 #if XCP_MEAS_IMAGE_ENABLE
 #include "xcp_meas_r5.h"
 #endif
+#if XCP_ENGINE_R5_ENABLE
+#include "xcp_engine/xcp_r5.h"
+#endif
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
@@ -72,6 +75,13 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     
+#if XCP_ENGINE_R5_ENABLE
+    /* Option Z: XCPlite engine on the R5. Sample DAQ, process commands + drain
+     * the DAQ queue into the OCM FIFO, then signal the A53 gateway via IPI. */
+    xcp_r5_event();
+    xcp_r5_poll();
+    XIpiPsu_TriggerIpi(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+#else
 #if XCP_MEAS_IMAGE_ENABLE
     /* Phase 3: write R5 measurements into the OCM MEAS image so the A53 can
      * DAQ them via XCPlite.  Must run before JavaScope_update() because that
@@ -79,6 +89,7 @@ void ISR_Control(void *data)
     xcp_meas_r5_update(&Global_Data);
 #endif
     JavaScope_update(&Global_Data);
+#endif
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -15,6 +15,9 @@
 
 // Includes from own files
 #include "main.h"
+#if XCP_ENGINE_R5_ENABLE
+#include "sw/xcp_engine/xcp_r5.h"
+#endif
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -120,6 +123,9 @@ int main(void)
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
+#if XCP_ENGINE_R5_ENABLE
+            xcp_r5_init("UltraZohm_XCP", "1.0");
+#endif
             Initialize_ISR();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;

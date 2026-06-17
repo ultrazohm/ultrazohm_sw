@@ -32,6 +32,9 @@
 #if LOGGING_PATH_XCP_LITE
 #include "sw/xcp_lite/xcp_server_uz.h"
 #endif
+#if LOGGING_PATH_XCP_R5_GATEWAY
+#include "sw/xcp_gateway/xcp_gateway_a53.h"
+#endif
 
 #include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
@@ -284,6 +287,9 @@ void network_bringup_thread(void *p)
 #elif LOGGING_PATH_XCP_LITE
     print_xcp_app_header(&(server_netif.ip_addr));
     xcp_server_uz_start();
+#elif LOGGING_PATH_XCP_R5_GATEWAY
+    print_xcp_app_header(&(server_netif.ip_addr));
+    xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
 #endif /* LOGGING_PATH_* */
 #endif /* LWIP_DHCP */
 
@@ -457,6 +463,9 @@ int main_thread()
 #elif LOGGING_PATH_XCP_LITE
 	print_xcp_app_header(&(server_netif.ip_addr));
 	xcp_server_uz_start();
+#elif LOGGING_PATH_XCP_R5_GATEWAY
+	print_xcp_app_header(&(server_netif.ip_addr));
+	xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
 #endif /* LOGGING_PATH_* */
 #endif /* LWIP_DHCP */
 

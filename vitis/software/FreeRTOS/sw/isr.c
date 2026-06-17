@@ -27,6 +27,9 @@
 #if LOGGING_PATH_XCP_LITE
 #include "xcp_lite/xcp_meas_image_a53.h"
 #endif
+#if LOGGING_PATH_XCP_R5_GATEWAY
+#include "xcp_gateway/xcp_gateway_a53.h"
+#endif
 
 // Cache ranges for optional A53/R5 accelerator user-data exchange.
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
@@ -60,6 +63,14 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic);
  */
 void APU_IPI_ISR(void *data)
 {
+#if LOGGING_PATH_XCP_R5_GATEWAY
+	/* Option Z gateway mode: ferry OCM <-> UDP only (no JavaScope/MEAS). */
+	BaseType_t gw_woken = pdFALSE;
+	(void)data;
+	xcp_gateway_a53_on_ipi(&gw_woken);
+	XIpiPsu_ClearInterruptStatus(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+	portYIELD_FROM_ISR(gw_woken);
+#else
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	// create pointers to user data variables located in OCM Bank 1 and 2
@@ -143,6 +154,7 @@ void APU_IPI_ISR(void *data)
 	xcp_meas_image_a53_on_ipi(&xHigherPriorityTaskWoken);
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 #endif
+#endif /* LOGGING_PATH_XCP_R5_GATEWAY else */
 }
 
 

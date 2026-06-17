@@ -42,11 +42,12 @@
 // Switch to XCPlite by flipping the two values below. Both code paths compile
 // in either mode; only the server-start call in main.c changes.
 //==============================================================================================================================================================
-#define LOGGING_PATH_JAVASCOPE  0
-#define LOGGING_PATH_XCP_LITE   1
+#define LOGGING_PATH_JAVASCOPE      0
+#define LOGGING_PATH_XCP_LITE       0
+#define LOGGING_PATH_XCP_R5_GATEWAY 1  /* Option Z: A53 gateway to the R5 engine */
 
-#if (LOGGING_PATH_JAVASCOPE + LOGGING_PATH_XCP_LITE) != 1
-#error "defines.h: exactly one of LOGGING_PATH_JAVASCOPE / LOGGING_PATH_XCP_LITE must be 1"
+#if (LOGGING_PATH_JAVASCOPE + LOGGING_PATH_XCP_LITE + LOGGING_PATH_XCP_R5_GATEWAY) != 1
+#error "defines.h: exactly one LOGGING_PATH_* must be 1"
 #endif
 
 

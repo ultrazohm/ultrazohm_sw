@@ -194,13 +194,17 @@ def main():
             #                                stale R5 build / XCP_MEAS_IMAGE_ENABLE=0)
             #   raw advancing but local_ts == 0 -> IPI not reaching A53 / copy path
             print("    OCM image @ 0x%08X (seq/ts) + A53-local copy -- Ctrl+C to stop\n" % OCM_IMAGE_BASE)
-            print("    %-12s  %-14s  %-14s  %-14s" % ("raw_seq", "raw_ts_us", "raw_sig0", "local_ts_us"))
+            print("    (sig0 = ISR exec time us, sig1 = ISR period us)\n")
+            print("    %-12s  %-12s  %-10s  %-10s  %-12s" %
+                  ("raw_seq", "raw_ts_us", "isr_exec", "isr_period", "local_ts_us"))
             while True:
                 raw_seq = struct.unpack("<I", xcp.short_upload(OCM_SEQ_ADDR, 4))[0]
                 raw_ts = struct.unpack("<I", xcp.short_upload(OCM_TS_ADDR, 4))[0]
-                raw_sig0 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR, 4))[0]
+                sig0 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR, 4))[0]
+                sig1 = struct.unpack("<f", xcp.short_upload(OCM_SIG0_ADDR + 4, 4))[0]
                 local_ts = struct.unpack("<I", xcp.short_upload(addr["xcp_meas_local_timestamp_us"], 4))[0]
-                print("    %-12d  %-14d  %-14.4f  %-14d" % (raw_seq, raw_ts, raw_sig0, local_ts))
+                print("    %-12d  %-12d  %-10.3f  %-10.3f  %-12d" %
+                      (raw_seq, raw_ts, sig0, sig1, local_ts))
                 time.sleep(args.interval)
 
         print("    polling -- Ctrl+C to stop\n")

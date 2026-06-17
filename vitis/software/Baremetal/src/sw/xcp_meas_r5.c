@@ -39,16 +39,17 @@
 static void xcp_meas_fill_signals(struct xcp_meas_image_t volatile *img,
                                   const DS_Data *data)
 {
-    /* Phase 3 placeholder — maps the first 8 ADC channels from card 1.
-     * Replace with meaningful control-loop signals before production use. */
-    img->signal[0] = data->av.I_L1;
-    img->signal[1] = data->av.I_L2;
-    img->signal[2] = data->av.I_L3;
-    img->signal[3] = data->av.U_ZK;
-    img->signal[4] = data->av.mechanicalRotorSpeed;
-    img->signal[5] = data->av.I_d;
-    img->signal[6] = data->av.I_q;
-    img->signal[7] = data->av.U_d;
+    /* signal[0..1]: ISR timing — live and non-zero even with no motor/power,
+     * so the full R5->A53->XCP path can be demonstrated on the bench.
+     * signal[2..7]: control-loop measurements (zero until currents flow). */
+    img->signal[0] = uz_SystemTime_GetIsrExectionTimeInUs(); /* ISR execution time [us] */
+    img->signal[1] = uz_SystemTime_GetIsrPeriodInUs();       /* ISR period [us]         */
+    img->signal[2] = data->av.I_L1;
+    img->signal[3] = data->av.I_L2;
+    img->signal[4] = data->av.I_L3;
+    img->signal[5] = data->av.U_ZK;
+    img->signal[6] = data->av.mechanicalRotorSpeed;
+    img->signal[7] = data->av.I_d;
 }
 
 /*---------------------------------------------------------------------------

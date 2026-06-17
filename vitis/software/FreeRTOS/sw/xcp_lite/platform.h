@@ -24,14 +24,23 @@
 //-------------------------------------------------------------------------------------------------
 // Platform defines
 
-// UltraZohm: force the FreeRTOS platform for every translation unit that pulls in
+// UltraZohm: force the platform for every translation unit that pulls in
 // platform.h.  The platform must be selected *before* the detection/#error below
 // (line ~69), which is earlier than xcplib_cfg.h (and thus the UZ override) is
-// included.  The Vitis project does not pass -D_FREE_RTOS reliably (command-line
-// macro quoting in the .cproject is fragile), so we hard-select it here.  Only
-// xcp_lite sources include platform.h, so this does not affect the rest of the app.
+// included.  The Vitis project does not pass -D_FREE_RTOS / -D_BAREMETAL
+// reliably (command-line macro quoting in the .cproject is fragile), so we
+// hard-select here based on ARMR5: the Baremetal R5 build passes -DARMR5 (=>
+// Option Z bare-metal engine), the A53 FreeRTOS build does not (=> _FREE_RTOS).
+// Only xcp_lite/xcp_engine sources include platform.h, so this does not affect
+// the rest of either app.
+#if defined(ARMR5)
+#ifndef _BAREMETAL
+#define _BAREMETAL
+#endif
+#else
 #ifndef _FREE_RTOS
 #define _FREE_RTOS
+#endif
 #endif
 
 // 64 Bit or 32 Bit platform

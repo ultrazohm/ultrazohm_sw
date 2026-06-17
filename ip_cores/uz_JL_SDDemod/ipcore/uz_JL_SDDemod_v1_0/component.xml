@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fb925525</spirit:value>
+            <spirit:value>5e17f7a8</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fb925525</spirit:value>
+            <spirit:value>5e17f7a8</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -492,7 +492,33 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>data_in</spirit:name>
+        <spirit:name>in_data_ads</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>in_clk_ads</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>trigger_output</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -986,6 +1012,19 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>data_raw_out</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1194,19 +1233,19 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Subsystem1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_JL_SDDemod_src_Subsystem5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Integratoren.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator2.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Differentierer.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1220,7 +1259,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_SDDemod.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_763137eb</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_03fd5918</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1276,22 +1315,22 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Subsystem1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_JL_SDDemod_src_Subsystem5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Integratoren.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_JL_SDDemod_src_Integrator2.vhd</spirit:name>
+        <spirit:name>hdl/uz_JL_SDDemod_src_Differentierer.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1364,15 +1403,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_SDDemod</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114644815</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-06-08T16:16:33Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114656098</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-06-16T12:18:58Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="196f84c6"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="e374ff9d"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="1f1b2e07"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="46c7f8ad"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="aa9035a7"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

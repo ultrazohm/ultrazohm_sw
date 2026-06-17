@@ -29,9 +29,12 @@ uz_JL_SDDemod_t* uz_JL_SDDemod_init(struct uz_JL_SDDemod_config_t config) {
     uz_assert_not_zero(config.ip_clk_frequency_Hz);
     uz_assert_not_zero(config.base_address);
     uz_assert(config.R_axi>0U);
+    uz_assert(config.clk_ratio>0U);
     uz_JL_SDDemod_t* self = uz_JL_SDDemod_allocation();
     self->config = config;
     uz_JL_SDDemod_set_Raxi(self, config.R_axi);
+    uz_JL_SDDemod_set_clk_ratio(self, config.clk_ratio);
+    uz_JL_SDDemod_set_switch_clk(self, config.switch_clk);
     return (self);
 }
 
@@ -40,6 +43,20 @@ uz_JL_SDDemod_t* uz_JL_SDDemod_init(struct uz_JL_SDDemod_config_t config) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_JL_SDDemod_hw_write_R_axi(self->config.base_address, R_axi);
+}
+
+ void uz_JL_SDDemod_set_clk_ratio(uz_JL_SDDemod_t *self, uint16_t clk_ratio)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_clk_ratio(self->config.base_address, clk_ratio);
+}
+
+ void uz_JL_SDDemod_set_switch_clk(uz_JL_SDDemod_t *self, bool switch_clk)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_switch_clk(self->config.base_address, switch_clk);
 }
 
 struct uz_JL_SDDemod_output_t uz_JL_SDDemod_get_outputs(uz_JL_SDDemod_t *self)

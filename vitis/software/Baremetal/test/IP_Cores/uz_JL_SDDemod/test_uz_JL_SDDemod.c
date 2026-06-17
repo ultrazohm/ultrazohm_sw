@@ -14,6 +14,8 @@ struct uz_JL_SDDemod_config_t config ={
     .base_address = BASE_ADDRESS,
     .ip_clk_frequency_Hz = IP_FRQ,
     .R_axi = 500,
+    .clk_ratio = 100,
+    .switch_clk = true,
 };
 
 void setUp(void)
@@ -21,6 +23,8 @@ void setUp(void)
     config.base_address = BASE_ADDRESS;
     config.ip_clk_frequency_Hz = IP_FRQ;
     config.R_axi = 500;
+    config.clk_ratio = 100;
+    config.switch_clk = true;
 }
 
 void tearDown(void)
@@ -30,6 +34,8 @@ void tearDown(void)
 void test_uz_JL_SDDemod_correct_init(void)
 {
     uz_JL_SDDemod_hw_write_R_axi_Expect(BASE_ADDRESS, config.R_axi);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, config.switch_clk);
     uz_JL_SDDemod_t *test_instance = uz_JL_SDDemod_init(config);
     TEST_ASSERT_NOT_NULL(test_instance);
 }
@@ -51,6 +57,8 @@ void test_uz_JL_SDDemod_init_fail_assert_zero_frq(void)
 void test_uz_JL_SDDemod_set_Raxi(void)
 {
     uz_JL_SDDemod_hw_write_R_axi_Expect(BASE_ADDRESS, config.R_axi);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, config.switch_clk);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
 
     uint16_t input = 500;
@@ -58,10 +66,36 @@ void test_uz_JL_SDDemod_set_Raxi(void)
     uz_JL_SDDemod_set_Raxi(instance, input);
 }
 
+void test_uz_JL_SDDemod_set_clk_ratio(void)
+{
+    uz_JL_SDDemod_hw_write_R_axi_Expect(BASE_ADDRESS, config.R_axi);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, config.switch_clk);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    uint16_t input = 100;
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_clk_ratio(instance, input);
+}
+
+void test_uz_JL_SDDemod_set_switch_clk(void)
+{
+    uz_JL_SDDemod_hw_write_R_axi_Expect(BASE_ADDRESS, config.R_axi);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, config.switch_clk);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    bool input = false;
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_switch_clk(instance, input);
+}
+
 void test_uz_JL_SDDemod_get_outputs(void)
 {
     // Setup: Initialize the instance
     uz_JL_SDDemod_hw_write_R_axi_Expect(BASE_ADDRESS, config.R_axi);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_clk_Expect(BASE_ADDRESS, config.switch_clk);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
     TEST_ASSERT_NOT_NULL(instance);
 

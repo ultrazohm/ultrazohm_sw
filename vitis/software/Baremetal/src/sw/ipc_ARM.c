@@ -31,6 +31,7 @@ extern bool output_bit;
 extern uint32_t output_port;
 extern uint32_t input_port;
 extern uz_JL_pmsmModel_t *pmsm_ideal;
+extern float DC_LINK_MAX_VOLTS;
 
 extern float DutA;
 extern float DutB;
@@ -201,11 +202,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		input_port = value;
+		DC_LINK_MAX_VOLTS = value;
 			break;
 
 		case (Set_Send_Field_2):
-		output_port = value;
+		DC_LINK_MAX_VOLTS = value;
 			break;
 
 		case (Set_Send_Field_3):

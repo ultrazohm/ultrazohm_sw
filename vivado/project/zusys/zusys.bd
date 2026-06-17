@@ -2218,20 +2218,20 @@
               },
               "Resolver_Interface_v_1": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_Resolver_Interface_v_0_1",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_0_1\\zusys_Resolver_Interface_v_0_1.xci",
+                "xci_name": "zusys_Resolver_Interface_v_1_0",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_1_0_2\\zusys_Resolver_Interface_v_1_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/Resolver_Interface_v_1"
               },
               "uz_resolver_pl_inter_1": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_uz_resolver_pl_inter_0_1",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_1\\zusys_uz_resolver_pl_inter_0_1.xci",
+                "xci_name": "zusys_uz_resolver_pl_inter_1_0",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0_2\\zusys_uz_resolver_pl_inter_1_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/uz_resolver_pl_inter_1"
               },
               "smartconnect_0": {
                 "vlnv": "xilinx.com:ip:smartconnect:1.0",
-                "xci_name": "zusys_smartconnect_0_1",
-                "xci_path": "ip\\zusys_smartconnect_0_1\\zusys_smartconnect_0_1.xci",
+                "xci_name": "zusys_smartconnect_0_0",
+                "xci_path": "ip\\zusys_smartconnect_0_0_2\\zusys_smartconnect_0_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/smartconnect_0",
                 "parameters": {
                   "NUM_MI": {
@@ -3048,8 +3048,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_3",
-                "xci_path": "ip\\zusys_system_ila_0_3_1\\zusys_system_ila_0_3.xci",
+                "xci_name": "zusys_system_ila_0_1",
+                "xci_path": "ip\\zusys_system_ila_0_1_2\\zusys_system_ila_0_1.xci",
                 "inst_hier_path": "uz_system/DataMover/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -3076,8 +3076,8 @@
               },
               "xlconcat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_xlconcat_0_2",
-                "xci_path": "ip\\zusys_xlconcat_0_2_1\\zusys_xlconcat_0_2.xci",
+                "xci_name": "zusys_xlconcat_0_1",
+                "xci_path": "ip\\zusys_xlconcat_0_1_2\\zusys_xlconcat_0_1.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -3247,8 +3247,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_4",
-                "xci_path": "ip\\zusys_system_ila_0_4_1\\zusys_system_ila_0_4.xci",
+                "xci_name": "zusys_system_ila_0_2",
+                "xci_path": "ip\\zusys_system_ila_0_2_2\\zusys_system_ila_0_2.xci",
                 "inst_hier_path": "uz_system/Interrupt/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -4848,6 +4848,9 @@
           },
           "D1_OUT": {
             "direction": "O"
+          },
+          "trigger_output": {
+            "direction": "I"
           }
         },
         "components": {
@@ -4962,8 +4965,8 @@
           },
           "SD_data": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_2_1",
-            "xci_path": "ip\\zusys_xlslice_2_1\\zusys_xlslice_2_1.xci",
+            "xci_name": "zusys_SD_data_0",
+            "xci_path": "ip\\zusys_SD_data_0_2\\zusys_SD_data_0.xci",
             "inst_hier_path": "uz_user/SD_data",
             "parameters": {
               "DIN_FROM": {
@@ -4979,8 +4982,8 @@
           },
           "SD_Clk": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_3_1",
-            "xci_path": "ip\\zusys_xlslice_3_1\\zusys_xlslice_3_1.xci",
+            "xci_name": "zusys_SD_Clk_0",
+            "xci_path": "ip\\zusys_SD_Clk_0_2\\zusys_SD_Clk_0.xci",
             "inst_hier_path": "uz_user/SD_Clk",
             "parameters": {
               "DIN_FROM": {
@@ -4996,8 +4999,8 @@
           },
           "ila_0": {
             "vlnv": "xilinx.com:ip:ila:6.2",
-            "xci_name": "zusys_ila_0_2",
-            "xci_path": "ip\\zusys_ila_0_2\\zusys_ila_0_2.xci",
+            "xci_name": "zusys_ila_0_1",
+            "xci_path": "ip\\zusys_ila_0_1_2\\zusys_ila_0_1.xci",
             "inst_hier_path": "uz_user/ila_0",
             "parameters": {
               "C_DATA_DEPTH": {
@@ -5007,7 +5010,7 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "3"
+                "value": "4"
               }
             }
           },
@@ -5050,14 +5053,15 @@
           "SD_Clk_Dout": {
             "ports": [
               "SD_Clk/Dout",
-              "ila_0/probe1"
+              "ila_0/probe1",
+              "uz_JL_SDDemod_0/in_clk_ads"
             ]
           },
           "SD_data_Dout": {
             "ports": [
               "SD_data/Dout",
               "ila_0/probe0",
-              "uz_JL_SDDemod_0/data_in"
+              "uz_JL_SDDemod_0/in_data_ads"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -5067,6 +5071,18 @@
               "axi_gpio_1/s_axi_aresetn",
               "uz_JL_SDDemod_0/IPCORE_RESETN",
               "uz_JL_SDDemod_0/AXI4_ARESETN"
+            ]
+          },
+          "trigger_output_1": {
+            "ports": [
+              "trigger_output",
+              "uz_JL_SDDemod_0/trigger_output"
+            ]
+          },
+          "uz_JL_SDDemod_0_data_raw_out": {
+            "ports": [
+              "uz_JL_SDDemod_0/data_raw_out",
+              "ila_0/probe3"
             ]
           },
           "uz_JL_SDDemod_0_out_clk_ads": {
@@ -6273,7 +6289,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -7200,16 +7216,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -8318,7 +8334,8 @@
       "Gates_Carrier_triangular_max_min": {
         "ports": [
           "uz_digital_adapter/Carrier_triangular_max_min",
-          "uz_system/Interrupt0"
+          "uz_system/Interrupt0",
+          "uz_user/trigger_output"
         ]
       },
       "Gates_Carrier_triangular_min1": {

@@ -64,7 +64,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >C:\Users\jonat\Documents\MA_JL_HIL\ip_cores\uz_JL_SDDemod\ipcore\uz_JL_SDDemod_v1_0</a>
+<td class="summaryTableSndColOddRow"><a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod\ipcore\uz_JL_SDDemod_v1_0</a>
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.10
+<td class="summaryTableSndColOddRow">1.26
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">08-Jun-2026 18:15:35
+<td class="summaryTableSndColOddRow">16-Jun-2026 14:18:14
 </td>
 </tr>
 <tr>
@@ -154,7 +154,7 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:8\')'})" >data_in</a>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:8\')'})" >in_data_ads</a>
 </td>
 <td>Inport
 </td>
@@ -168,7 +168,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:87\')'})" >R_axi</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:87\')'})" >Dezimation</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -177,6 +177,62 @@ Target platform interface table:
 <td class="distinctCellColor">AXI4
 </td>
 <td class="distinctCellColor">x"100"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:458\')'})" >clk_ratio</a>
+</td>
+<td>Inport
+</td>
+<td>int16
+</td>
+<td>AXI4
+</td>
+<td>x"108"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:462\')'})" >in_clk_ads</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:492\')'})" >switch_clk</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>AXI4
+</td>
+<td>x"10C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:535\')'})" >trigger_output</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
@@ -207,6 +263,20 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:541\')'})" >data_raw_out</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -249,15 +319,15 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2606081815
+<td>contains unique IP timestamp (yymmddHHMM): 2606161418
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">R_axi_Data
+<td class="distinctCellColor">Dezimation_Data
 </td>
 <td class="distinctCellColor">0x100
 </td>
-<td class="distinctCellColor">data register for Inport R_axi
+<td class="distinctCellColor">data register for Inport Dezimation
 </td>
 </tr>
 <tr>
@@ -268,6 +338,22 @@ The following AXI4 bus accessible registers were generated for this IP core:
 <td>data register for Outport data_out_ps
 </td>
 </tr>
+<tr>
+<td class="distinctCellColor">clk_ratio_Data
+</td>
+<td class="distinctCellColor">0x108
+</td>
+<td class="distinctCellColor">data register for Inport clk_ratio
+</td>
+</tr>
+<tr>
+<td>switch_clk_Data
+</td>
+<td>0x10C
+</td>
+<td>data register for Inport switch_clk
+</td>
+</tr>
 </tbody>
 </table>
 <br/>
@@ -275,7 +361,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\include\\uz_JL_SDDemod_addr.h\')'})" >include\uz_JL_SDDemod_addr.h</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\include\\uz_JL_SDDemod_addr.h\')'})" >include\uz_JL_SDDemod_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -338,58 +424,58 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >C:\Users\jonat\Documents\MA_JL_HIL\ip_cores\uz_JL_SDDemod\ipcore\uz_JL_SDDemod_v1_0</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod\ipcore\uz_JL_SDDemod_v1_0</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >uz_JL_SDDemod_v1_0.zip</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'uiopen(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\*.*\')'})" >uz_JL_SDDemod_v1_0.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'web(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\doc\\uz_JL_SDDemodulator_ip_core_report.html\')'})" >doc\uz_JL_SDDemodulator_ip_core_report.html</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'web(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\doc\\uz_JL_SDDemodulator_ip_core_report.html\')'})" >doc\uz_JL_SDDemodulator_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Integrator.vhd\')'})" >hdl\uz_JL_SDDemod_src_Integrator.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Differentierer.vhd\')'})" >hdl\uz_JL_SDDemod_src_Differentierer.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Integrator1.vhd\')'})" >hdl\uz_JL_SDDemod_src_Integrator1.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Integratoren.vhd\')'})" >hdl\uz_JL_SDDemod_src_Integratoren.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Integrator2.vhd\')'})" >hdl\uz_JL_SDDemod_src_Integrator2.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Subsystem1.vhd\')'})" >hdl\uz_JL_SDDemod_src_Subsystem1.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Subsystem5.vhd\')'})" >hdl\uz_JL_SDDemod_src_Subsystem5.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_Subsystem5.vhd\')'})" >hdl\uz_JL_SDDemod_src_Subsystem5.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_uz_JL_SDDemodulator.vhd\')'})" >hdl\uz_JL_SDDemod_src_uz_JL_SDDemodulator.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_src_uz_JL_SDDemodulator.vhd\')'})" >hdl\uz_JL_SDDemod_src_uz_JL_SDDemodulator.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_pkg.vhd\')'})" >hdl\uz_JL_SDDemod_pkg.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_pkg.vhd\')'})" >hdl\uz_JL_SDDemod_pkg.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_reset_sync.vhd\')'})" >hdl\uz_JL_SDDemod_reset_sync.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_reset_sync.vhd\')'})" >hdl\uz_JL_SDDemod_reset_sync.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_dut.vhd\')'})" >hdl\uz_JL_SDDemod_dut.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_dut.vhd\')'})" >hdl\uz_JL_SDDemod_dut.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_addr_decoder.vhd\')'})" >hdl\uz_JL_SDDemod_addr_decoder.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_addr_decoder.vhd\')'})" >hdl\uz_JL_SDDemod_addr_decoder.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_SimpleDualPortRAM_generic.vhd\')'})" >hdl\uz_JL_SDDemod_SimpleDualPortRAM_generic.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_SimpleDualPortRAM_generic.vhd\')'})" >hdl\uz_JL_SDDemod_SimpleDualPortRAM_generic.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_data.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_data.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_data.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_data.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_SimpleDualPortRAM_singlebit.vhd\')'})" >hdl\uz_JL_SDDemod_SimpleDualPortRAM_singlebit.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_SimpleDualPortRAM_singlebit.vhd\')'})" >hdl\uz_JL_SDDemod_SimpleDualPortRAM_singlebit.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_last.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_last.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_last.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_last.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_rid.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_rid.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_rdfifo_rid.vhd\')'})" >hdl\uz_JL_SDDemod_rdfifo_rid.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_axi4_module.vhd\')'})" >hdl\uz_JL_SDDemod_axi4_module.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_axi4_module.vhd\')'})" >hdl\uz_JL_SDDemod_axi4_module.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_axi4.vhd\')'})" >hdl\uz_JL_SDDemod_axi4.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod_axi4.vhd\')'})" >hdl\uz_JL_SDDemod_axi4.vhd</a>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod.vhd\')'})" >hdl\uz_JL_SDDemod.vhd</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\hdl\\uz_JL_SDDemod.vhd\')'})" >hdl\uz_JL_SDDemod.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\MA_JL_HIL\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\include\\uz_JL_SDDemod_addr.h\')'})" >include\uz_JL_SDDemod_addr.h</a>
+<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'edit(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\ipcore\\uz_JL_SDDemod_v1_0\\include\\uz_JL_SDDemod_addr.h\')'})" >include\uz_JL_SDDemod_addr.h</a>
 </div>
 <script>function postParentWindowMessage(message) {window.parent.postMessage(message, "*");}</script>
 </body>

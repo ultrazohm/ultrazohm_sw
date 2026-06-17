@@ -64,6 +64,68 @@ Bus_ZM_In struct_ZM_In;
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 uz_3ph_abc_t three_phase_sine = {0};
 
+
+/* --- System-Parameter (Konfiguration) --- */
+// Dein gewählter Dezimationsfaktor M im FPGA (z.B. hochgeschraubt auf 512)
+#define SINC_M_FACTOR           256
+
+// Theoretisches Maximum des Sinc3 Filters: M^3 (hier: 134.217.728)
+#define SINC3_MAX_VAL           262144
+
+// Nullpunkt des Filters (Mitte des Wertebereichs entspricht 0V am ADC)
+#define SINC_ZERO_OFFSET        (SINC3_MAX_VAL / 2)
+
+/* --- Spannungsteiler-Konfiguration --- */
+// Angenommenes Design: Bei 800V liegen exakt 250mV am ADC an
+float DC_LINK_MAX_VOLTS=       100.0f;
+#define ADS1202_VREF_VOLTS      0.250f
+
+// Der Skalierungsfaktor (k_v) deines Hardware-Spannungsteilers (z.B. 3200.0)
+#define VOLTAGE_DIVIDER_RATIO   (DC_LINK_MAX_VOLTS / ADS1202_VREF_VOLTS)
+
+
+/**
+ * @brief Wandelt den Sinc3-Wert in die echte Zwischenkreisspannung (V) um.
+ * @param raw_fpga_value Der unbeschnittene Wert aus dem FPGA.
+ * @return float Die gemessene Zwischenkreisspannung in Volt.
+ */
+float Process_DCLink_Voltage(int32_t raw_fpga_value) {
+
+	int32_t shifted_value = raw_fpga_value;// & 0x00FFFFFF;
+	shifted_value = shifted_value << 7;
+	shifted_value = shifted_value >> 14;
+//	shifted_value = shifted_value & 0x00FFFFFF;
+
+    // 1. DC-Offset abziehen (Zentrierung um 0V)
+	float centered_val = shifted_value - SINC_ZERO_OFFSET;
+
+    // 2. Rauschen bei 0V abfangen
+    // Da der Zwischenkreis nie negativ sein kann, ist ein negativer
+    // centered_val physikalisch unmöglich und reines thermisches Rauschen.
+//    if (centered_val < 0.0f) {
+//        centered_val = 0.0f;
+//    }
+
+    // 3. Normierung auf das Verhältnis (0.0 bis +1.0)
+    // Wir nutzen hier nur die positive obere Hälfte des Filters!
+	float shiftet_value_f = (float)shifted_value;
+	float  normalized_ratio = shiftet_value_f / (float)SINC_ZERO_OFFSET;
+
+    // 4. Umrechnung in die kleine Spannung am ADC (0V bis 0.25V)
+	float adc_voltage = normalized_ratio * (float)ADS1202_VREF_VOLTS;
+
+    // 5. Hochskalieren auf die tatsächliche Zwischenkreisspannung
+	float dc_link_voltage = adc_voltage * VOLTAGE_DIVIDER_RATIO;
+
+	if(raw_fpga_value & 0x01000000)
+	{
+		dc_link_voltage = -dc_link_voltage;
+	}
+
+    return dc_link_voltage;
+}
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -75,10 +137,10 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
+//    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
 
     SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
-    SD_Filter_out_f = (float)SD_Filter_out.data;
+    SD_Filter_out_f= Process_DCLink_Voltage(SD_Filter_out.data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     switch(current_state)
@@ -126,7 +188,8 @@ void ISR_Control(void *data)
     
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    
+    JavaScope_update(&Global_Data);
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

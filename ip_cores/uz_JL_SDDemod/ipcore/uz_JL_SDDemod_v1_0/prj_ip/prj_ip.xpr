@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/MA_JL_HIL/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="793f4d8b84f14e16b5b4cdc1b831ab41"/>
+    <Option Name="Id" Val="729575fb242b4060aed3f27c881cba88"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -149,25 +149,25 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Subsystem1.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Subsystem5.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Integrator.vhd">
+      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Integratoren.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Integrator1.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Integrator2.vhd">
+      <File Path="$PPRDIR/../hdl/uz_JL_SDDemod_src_Differentierer.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

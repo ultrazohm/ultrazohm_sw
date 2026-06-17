@@ -2,8 +2,8 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Tue Jun 16 14:18:30 2026
-# Process ID: 18380
+# Start of session at: Mon Jun 15 14:25:38 2026
+# Process ID: 7028
 # Current directory: C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip/vivado.log
@@ -11,8 +11,7 @@
 # Running On: Jonathan-Link, OS: Windows, CPU Frequency: 1697 MHz, CPU Physical cores: 16, Host memory: 33528 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 376.719 ; gain = 44.180
-update_compile_order: Time (s): cpu = 00:00:00 ; elapsed = 00:00:05 . Memory (MB): peak = 376.719 ; gain = 0.000
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 377.801 ; gain = 42.250
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip'.)
@@ -64,4 +63,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_axi4.vhd" already exist
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Jun 16 14:18:59 2026...
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 15 14:25:59 2026...

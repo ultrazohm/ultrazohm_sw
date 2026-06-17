@@ -71,7 +71,9 @@ uz_JL_SDDemod_t *SD_Filter = NULL;
 struct uz_JL_SDDemod_config_t SD_Filter_config = {
 		.base_address = XPAR_UZ_JL_SDDEMOD_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
-		.R_axi = 1000,
+		.R_axi = 256,
+		.clk_ratio = 5,
+		.switch_clk = true,
 };
 
 uz_axi_gpio_t* input_gpio=NULL;
@@ -84,7 +86,7 @@ int main(void)
 //		regelung.input.Bus_ZM_In_f.Soll_Drehzahl = 0;
 //		regelung.input.Bus_ZM_In_f.Soll_Regelungsart = Drehzahl;
 //		regelung.input.Bus_ZM_In_f.Soll_Status = Ready;
-//		regelung.input.Bus_ZM_In_f.Soll_id = 0;
+//		regelung.input.Bus_ZM_In_f.Soll_id = 0;,
 //		regelung.input.Bus_ZM_In_f.Soll_iq = 0;
 //		regelung.input.Bus_ZM_In_f.Start_Traj = false;
 //		regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = 0;
@@ -167,7 +169,6 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
-            JavaScope_update(&Global_Data);
 
             break;
         default:

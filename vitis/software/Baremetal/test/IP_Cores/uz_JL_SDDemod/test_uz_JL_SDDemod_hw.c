@@ -21,8 +21,20 @@ void tearDown(void)
 
 void test_uz_JL_SDDemod_hw_write_R_axi(void){
     uint16_t test_val=500;
-    uz_axi_write_uint32_Expect(BASE_ADDRESS+R_axi_Data_uz_JL_SDDemod,test_val);
+    uz_axi_write_uint32_Expect(BASE_ADDRESS+Dezimation_Data_uz_JL_SDDemod,test_val);
     uz_JL_SDDemod_hw_write_R_axi(BASE_ADDRESS,test_val);
+}
+
+void test_uz_JL_SDDemod_hw_write_switch_clk(void){
+    bool test_val=true;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS+switch_clk_Data_uz_JL_SDDemod,test_val);
+    uz_JL_SDDemod_hw_write_switch_clk(BASE_ADDRESS,test_val);
+}
+
+void test_uz_JL_SDDemod_hw_write_clk_ratio(void){
+    uint16_t test_val=100;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS+clk_ratio_Data_uz_JL_SDDemod,test_val);
+    uz_JL_SDDemod_hw_write_clk_ratio(BASE_ADDRESS,test_val);
 }
 
 void test_uz_JL_SDDemod_hw_read_data(void)
@@ -32,4 +44,6 @@ void test_uz_JL_SDDemod_hw_read_data(void)
     int32_t val_read=uz_JL_SDDemod_hw_read_data(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expect_val,val_read);
 }
+
+
 #endif // TEST

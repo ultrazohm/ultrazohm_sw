@@ -36,7 +36,7 @@ uz_JL_SDDemodulator
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.10
+1.26
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2026-06-08 18:15:25
+2026-06-16 14:18:05
 </td>
 
 </tr>
@@ -84,7 +84,7 @@ VHDL
 Target Directory
 </td>
 <td align="right" valign="top" style="border-style: none">
-C:\Users\jonat\Documents\MA_JL_HIL\ip_cores\uz_JL_SDDemod\hdlsrc
+C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod\hdlsrc
 </td>
 
 </tr>
@@ -132,7 +132,7 @@ uz_JL_SDDemod_src_
 ProjectFolder
 </td>
 <td align="right" valign="top" style="border-style: none">
-C:\Users\jonat\Documents\MA_JL_HIL\ip_cores\uz_JL_SDDemod
+C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod
 </td>
 
 </tr>
@@ -177,7 +177,7 @@ xczu9eg-ffvb1156-1-e
 TargetDirectory
 </td>
 <td align="right" valign="top" style="border-style: none">
-C:\Users\jonat\Documents\MA_JL_HIL\ip_cores\uz_JL_SDDemod\hdlsrc
+C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod\hdlsrc
 </td>
 
 </tr>
@@ -263,7 +263,7 @@ Free running
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:8\')'})"  name="code2model" class="code2model">
-data_in
+in_data_ads
 </a>
 
 </b>
@@ -287,7 +287,7 @@ External Port
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:87\')'})"  name="code2model" class="code2model">
-R_axi
+Dezimation
 </a>
 
 </b>
@@ -313,6 +313,120 @@ IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
 x"100"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:458\')'})"  name="code2model" class="code2model">
+clk_ratio
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"108"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:462\')'})"  name="code2model" class="code2model">
+in_clk_ads
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:492\')'})"  name="code2model" class="code2model">
+switch_clk
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:535\')'})"  name="code2model" class="code2model">
+trigger_output
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
 </td>
 
 </tr>
@@ -354,6 +468,30 @@ x"104"
 <br /><br /><b>
 Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:452\')'})"  name="code2model" class="code2model">
 out_clk_ads
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_JL_SDDemodulator:541\')'})"  name="code2model" class="code2model">
+data_raw_out
 </a>
 
 </b>

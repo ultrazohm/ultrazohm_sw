@@ -1,15 +1,19 @@
 /*----------------------------------------------------------------------------
 | xcptl_ocm.c
 |   XCP transport layer over the OCM FIFO for the bare-metal R5 (Option Z).
-|   Replaces xcpethtl.c (sockets) on the R5: the A53 gateway ferries XCP-on-
-|   Ethernet TL frames between UDP and the OCM FIFO; here we move them between
-|   the OCM FIFO and the XCPlite protocol engine.
+|   Replaces xcpethtl.c (sockets): the A53 gateway ferries XCP-on-Ethernet TL
+|   frames between UDP and the OCM FIFO; here we move them between the OCM FIFO
+|   and the XCPlite protocol engine.
 |
 |   Engine-facing symbols required by xcplite.c:
 |     XcpTlGetCtr / XcpTlSendCrm / XcpTlWaitForTransmitQueueEmpty
-|   Plus the R5 driving API: xcp_r5_init / xcp_r5_rx_pump / xcp_r5_tx_pump.
+|   R5 driving API (call from the Baremetal app):
+|     xcp_r5_init()   once at startup (after uz_SystemTime is up)
+|     xcp_r5_event()  from ISR_Control: sample DAQ (thin; just XcpEvent)
+|     xcp_r5_poll()   from the main loop / per control cycle: command + DAQ sweep
 |
-|   TL wire frame = [dlc:u16 LE][ctr:u16 LE][packet ...]  (XCPTL header = 4B).
+|   TL wire frame = [dlc:u16 LE][ctr:u16 LE][packet ...]  (XCPTL header = 4B),
+|   exactly the XCP-on-UDP datagram payload the A53 gateway forwards verbatim.
 |
 |   Copyright 2024 Eyke Liegmann, Apache-2.0.
  ----------------------------------------------------------------------------*/
@@ -19,16 +23,14 @@
 #include "queue.h"
 #include "platform.h"
 #include "xcptl_cfg.h"
+#include "ocm_xcp_fifo.h"
 #include <string.h>
 #include <stdint.h>
 
 #define XCP_R5_QUEUE_SIZE_BYTES (8u * 1024u)
 
-/* Abstract OCM FIFO — implemented by the ported hedrive RPU_APU_exchange in the
- * Z2 integration step (shared/RPU_APU_exchange_impl.c). One TL frame per call. */
-extern void ocm_xcp_init(void);
-extern bool ocm_xcp_read_cmd(uint8_t *out_len, const uint8_t **out_frame); /* A53->R5 */
-extern bool ocm_xcp_write_rsp(const uint8_t *frame, uint16_t len);         /* R5->A53 */
+/* DAQ event handle (created in xcp_r5_init, triggered in xcp_r5_event). */
+uint16_t xcp_r5_daq_event = 0u;
 
 static MUTEX        gCtrMutex;
 static uint16_t     gCtr   = 0u;
@@ -38,6 +40,8 @@ static tQueueHandle gQueue = NULL;
 
 uint16_t XcpTlGetCtr(void) { return gCtr++; }
 
+/* Command response: frame it and append to XCP_OUT. Called from within
+ * XcpCommand(), i.e. inside the xcp_r5_poll() sweep after prepare_write(). */
 void XcpTlSendCrm(const uint8_t *data, uint8_t size) {
     uint8_t buf[XCPTL_TRANSPORT_LAYER_HEADER_SIZE + XCPTL_MAX_CTO_SIZE];
     mutexLock(&gCtrMutex);
@@ -47,22 +51,29 @@ void XcpTlSendCrm(const uint8_t *data, uint8_t size) {
     buf[3] = (uint8_t)(gCtr >> 8);
     gCtr++;
     memcpy(&buf[XCPTL_TRANSPORT_LAYER_HEADER_SIZE], data, size);
-    (void)ocm_xcp_write_rsp(buf, (uint16_t)(size + XCPTL_TRANSPORT_LAYER_HEADER_SIZE));
+    (void)ocm_xcp_fifo_write((uint8_t)(size + XCPTL_TRANSPORT_LAYER_HEADER_SIZE), buf);
     mutexUnlock(&gCtrMutex);
 }
 
-/* Drain the DAQ/CRM transmit queue into the OCM FIFO. Called from the R5 main
- * loop and from XcpTlWaitForTransmitQueueEmpty. queuePop() stamps the TL ctr
- * via XcpTlGetCtr() (see queue.h). */
+/* Drain the DAQ/CRM transmit queue into XCP_OUT. Mirrors
+ * XcpTlHandleTransmitQueue (queue32 path): the ctr mutex keeps the TL counter
+ * consistent across response and DAQ packets; queuePop() stamps the ctr. */
 void xcp_r5_tx_pump(void) {
     for (;;) {
+        mutexLock(&gCtrMutex);
         uint32_t lost = 0u;
-        tQueueBuffer b = queuePop(gQueue, true /*accumulate*/, false /*priority*/, &lost);
-        if (b.size == 0u) {
-            break;
+        tQueueBuffer qb = queuePop(gQueue, true /*accumulate*/, false /*flush*/, &lost);
+        if (lost > 0u) {
+            gCtr += (uint16_t)lost; /* account for dropped packets in the counter */
         }
-        (void)ocm_xcp_write_rsp(b.buffer, b.size);
-        queueRelease(gQueue, &b);
+        uint16_t l = qb.size;
+        if (l == 0u) {
+            mutexUnlock(&gCtrMutex);
+            break; /* queue empty */
+        }
+        (void)ocm_xcp_fifo_write((uint8_t)l, qb.buffer);
+        mutexUnlock(&gCtrMutex);
+        queueRelease(gQueue, &qb);
     }
 }
 
@@ -72,19 +83,38 @@ bool XcpTlWaitForTransmitQueueEmpty(uint16_t timeout_ms) {
     return true;
 }
 
-/* Pull pending XCP commands from the OCM FIFO and hand them to the engine. */
-void xcp_r5_rx_pump(void) {
-    const uint8_t *frame;
-    uint8_t len;
-    while (ocm_xcp_read_cmd(&len, &frame)) {
-        uint16_t dlc = (uint16_t)(frame[0] | ((uint16_t)frame[1] << 8));
-        XcpCommand((const uint32_t *)(const void *)(frame + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
-                   (uint8_t)dlc);
-    }
+/* --- R5 driving API ------------------------------------------------------- */
+
+/* Sample DAQ. Call from ISR_Control. Thin: XcpEvent pushes to the queue; the
+ * OCM write happens in xcp_r5_poll() on the main loop, off the ISR. */
+void xcp_r5_event(void) {
+    XcpEvent(xcp_r5_daq_event);
 }
 
-/* One-time init: queue + engine + OCM FIFO. Base addr 0 => XCP address ==
- * pointer => arbitrary R5 addressing (the whole point of Option Z). */
+/* One full exchange sweep. Call once per control cycle on the main loop (not in
+ * the ISR): prepare XCP_OUT, read commands from XCP_IN -> XcpCommand (responses
+ * append to XCP_OUT), drain the DAQ queue -> XCP_OUT, flush. The caller signals
+ * the A53 (IPI) after this returns. */
+void xcp_r5_poll(void) {
+    ocm_xcp_fifo_prepare_write();
+
+    ocm_xcp_fifo_cache_invalidate_before_read();
+    ocm_xcp_fifo_prepare_read();
+    uint8_t len;
+    uint8_t *data;
+    while (ocm_xcp_fifo_read(&len, &data)) {
+        uint16_t dlc = (uint16_t)(data[0] | ((uint16_t)data[1] << 8));
+        XcpCommand((const uint32_t *)(const void *)(data + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
+                   (uint8_t)dlc);
+    }
+
+    xcp_r5_tx_pump();
+
+    ocm_xcp_fifo_cache_flush_after_write();
+}
+
+/* One-time init. Base addr 0 => XCP address == pointer => arbitrary R5
+ * addressing (the point of Option Z). Returns 0 on success. */
 int xcp_r5_init(const char *name, const char *epk) {
     mutexInit(&gCtrMutex, false, 0u);
     gCtr = 0u;
@@ -92,11 +122,12 @@ int xcp_r5_init(const char *name, const char *epk) {
     if (gQueue == NULL) {
         return -1;
     }
-    ocm_xcp_init();
+    ocm_xcp_fifo_init();
     ApplXcpSetBaseAddr((const uint8_t *)0);
     if (!XcpInit(name, epk, XCP_MODE_LOCAL)) {
         return -2;
     }
     XcpStart(gQueue, false);
+    xcp_r5_daq_event = (uint16_t)XcpCreateEvent("DAQ_R5", 1000000u, 0u);
     return 0;
 }

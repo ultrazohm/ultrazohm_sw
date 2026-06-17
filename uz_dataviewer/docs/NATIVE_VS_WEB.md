@@ -63,6 +63,11 @@ budget loads at **full resolution**, and a genuinely huge one (e.g. 5 GB) loads 
 **decimated** view instead of silently aborting the WASM runtime. **For full resolution on
 multi-GB logs, use the native app.**
 
+Cloud logs (proposed — see [REMOTE_DATA.md](REMOTE_DATA.md)) download and load through this
+same in-memory path, so the heap budget above still applies to an oversize log in the browser.
+Lifting that ceiling (out-of-core via OPFS) is analysed separately in
+[WEB_LARGE_LOGS.md](WEB_LARGE_LOGS.md).
+
 ### Downsampling is the same on both
 The decimator is a pure-NumPy min/max pyramid (`downsample.py`) — there is no native/Rust
 dependency to wheel for the browser, so native and web run **exactly the same** decimation

@@ -144,19 +144,68 @@ def build_a2l(addrs, ip, port):
 """
 
 
+# Option Z: arbitrary R5 symbols. TYPE -> (A2L datatype, lower, upper).
+SYM_TYPEMAP = {
+    "u8": ("UBYTE", "0", "255"), "u16": ("UWORD", "0", "65535"),
+    "u32": ("ULONG", "0", "4294967295"),
+    "i32": ("SLONG", "-2147483648", "2147483647"),
+    "f32": ("FLOAT32_IEEE", "-3.4E38", "3.4E38"),
+}
+
+
+def build_symbols_a2l(items, ip, port):
+    """items: [(name, addr, type)] -> a full A2L (Option Z, R5 ELF symbols)."""
+    meas = []
+    for name, a, typ in items:
+        dtype, lo, hi = SYM_TYPEMAP.get(typ, SYM_TYPEMAP["f32"])
+        meas.append(measurement(name, dtype, a, "R5 %s" % name, lo, hi))
+    block = "\n".join(meas)
+    # Reuse build_a2l's document shell by string-substituting the meas block and title.
+    doc = build_a2l({}, ip, port)  # empty -> shell with no measurements
+    doc = doc.replace("XCPlite on A53 / FreeRTOS / lwIP (UDP)",
+                      "XCPlite engine on R5 (Option Z, arbitrary addressing)")
+    # Insert the measurements after COMPU_METHOD/RECORD_LAYOUTs, before IF_DATA.
+    return doc.replace("    /begin IF_DATA XCP",
+                       block + "\n    /begin IF_DATA XCP", 1)
+
+
 def main():
     ap = argparse.ArgumentParser(description="Generate an A2L for the UltraZohm XCPlite demo.")
-    ap.add_argument("--elf", default=DEFAULT_ELF)
+    ap.add_argument("--elf", default=DEFAULT_ELF,
+                    help="ELF to read addresses from (point at Baremetal.elf for --symbols)")
     ap.add_argument("--nm", default=DEFAULT_NM)
     ap.add_argument("--ip", default="192.168.1.42", help="board IP for the XCP_ON_UDP_IP block")
     ap.add_argument("--port", type=int, default=5556)
     ap.add_argument("--out", default=DEFAULT_OUT)
+    ap.add_argument("--symbols", default=None,
+                    help="Option Z: comma list of R5 symbols 'name:type' (type in "
+                         "u8/u16/u32/i32/f32) resolved from --elf (Baremetal.elf). "
+                         "Emits an A2L of arbitrary R5 variables instead of the demo.")
     args = ap.parse_args()
 
     if not os.path.isfile(args.elf):
         print("[x] ELF not found: %s" % args.elf); return 1
     nm = args.nm if os.path.isfile(args.nm) else "nm"
     addrs = nm_addresses(args.elf, nm)
+
+    if args.symbols:
+        want = {}
+        for spec in args.symbols.split(","):
+            name, _, typ = spec.strip().partition(":")
+            want[name] = (typ or "f32").lower()
+        items = [(n, addrs[n], t) for n, t in want.items() if n in addrs]
+        missing = [n for n in want if n not in addrs]
+        if missing:
+            print("[!] not found in ELF: %s" % ", ".join(missing))
+        if not items:
+            print("[x] no requested symbols found in %s" % args.elf); return 1
+        with open(args.out, "w", newline="\n") as f:
+            f.write(build_symbols_a2l(items, args.ip, args.port))
+        print("[+] wrote %s (%d R5 symbols)" % (args.out, len(items)))
+        for n, a, t in items:
+            print("    %-28s @ 0x%08X  %s" % (n, a, t))
+        return 0
+
     if "xcp_demo_counter" not in addrs:
         print("[x] demo symbols not found in ELF (is this the XCPlite build?)"); return 1
 

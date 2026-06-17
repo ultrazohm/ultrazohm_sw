@@ -92,6 +92,56 @@ def resolve_addresses(elf_path, nm_path):
     return found
 
 
+WATCH_TYPES = {  # name -> (struct fmt, size bytes)
+    "u8": ("<B", 1), "i8": ("<b", 1), "u16": ("<H", 2), "i16": ("<h", 2),
+    "u32": ("<I", 4), "i32": ("<i", 4), "f32": ("<f", 4), "f64": ("<d", 8),
+}
+
+
+def nm_lookup(elf, nm, names):
+    """Resolve symbol names -> address from an ELF via nm (for --watch)."""
+    if not (elf and os.path.isfile(elf)):
+        return {}
+    nm = nm if (nm and os.path.isfile(nm)) else "nm"
+    try:
+        out = subprocess.check_output([nm, elf], text=True, stderr=subprocess.DEVNULL)
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    want = set(names)
+    found = {}
+    for line in out.splitlines():
+        p = line.split()
+        if len(p) >= 3 and p[2] in want:
+            try:
+                found[p[2]] = int(p[0], 16)
+            except ValueError:
+                pass
+    return found
+
+
+def parse_watch(specs, elf, nm):
+    """'name:u32' or '0xADDR:f32' -> [(label, addr, fmt, size)]. Default type f32."""
+    names = [s.partition(":")[0] for s in specs if not s.lower().startswith("0x")]
+    syms = nm_lookup(elf, nm, names) if names else {}
+    out = []
+    for sp in specs:
+        body, _, typ = sp.partition(":")
+        typ = (typ or "f32").lower()
+        if typ not in WATCH_TYPES:
+            print("[!] unknown type '%s' in '%s' (using f32)" % (typ, sp))
+            typ = "f32"
+        fmt, size = WATCH_TYPES[typ]
+        if body.lower().startswith("0x"):
+            a = int(body, 16)
+        elif body in syms:
+            a = syms[body]
+        else:
+            print("[x] cannot resolve '%s' (not 0xADDR and not in --elf)" % body)
+            continue
+        out.append((sp, a, fmt, size))
+    return out
+
+
 class XcpUdp:
     """Minimal XCP-on-UDP master. Transport header = <LEN u16><CTR u16> little-endian."""
 
@@ -161,6 +211,10 @@ def main():
     ap.add_argument("--diag", action="store_true",
                     help="Phase 3 diagnostic: read the R5 MEAS image in OCM directly "
                          "(seq/ts @ 0xFFFD0100) and the A53-local copy, side by side")
+    ap.add_argument("--watch", action="append", default=[], metavar="NAME|0xADDR[:TYPE]",
+                    help="arbitrary read (repeatable). TYPE in u8/u16/u32/i32/f32/f64 "
+                         "(default f32). NAME resolved from --elf -- point --elf at "
+                         "Baremetal.elf for the Option Z R5 engine (arbitrary addressing).")
     args = ap.parse_args()
 
     addr = dict(DEFAULT_ADDR)
@@ -184,6 +238,24 @@ def main():
     try:
         info = xcp.connect()
         print("[+] CONNECTED  (MAX_CTO=%d  MAX_DTO=%d)" % (info["max_cto"], info["max_dto"]))
+
+        if args.watch:
+            # Arbitrary read (Option Z: any R5 address via the identity-mapped engine).
+            items = parse_watch(args.watch, args.elf, args.nm)
+            if not items:
+                print("[x] no watch items resolved")
+                return 1
+            for (label, a, _fmt, _sz) in items:
+                print("[i] %s @ 0x%08X" % (label, a))
+            print("    arbitrary read -- Ctrl+C to stop\n")
+            print("    " + "  ".join("%-16s" % i[0] for i in items))
+            while True:
+                vals = []
+                for (label, a, fmt, size) in items:
+                    v = struct.unpack(fmt, xcp.short_upload(a, size))[0]
+                    vals.append(("%-16.4f" if fmt in ("<f", "<d") else "%-16d") % v)
+                print("    " + "  ".join(vals))
+                time.sleep(args.interval)
 
         if args.diag:
             # Phase 3 fault localization. Read the R5 image in OCM directly, plus

@@ -248,14 +248,16 @@ Probed the engine's actual platform coupling and the armr5 toolchain:
 
 ### Milestone plan (supersedes image-based Phases 3–4)
 
-> **Progress (2026-06-17):** Z1/Z2/Z3 **code-complete and compile-verified** —
-> see `option_z/r5_engine/STATUS.md`. The R5 stack (engine + `platform_baremetal`
-> + `xcptl_ocm` + the ported `ocm_xcp_fifo`) links to **only `uz_SystemTime`**
-> (~36 KB armr5); the A53 `xcp_gateway_a53` (UDP⇄OCM, IPI-ISR + 2 tasks) compiles
-> against the A53 BSP. Remaining is Vitis assembly + on-hardware bring-up:
-> wire both apps (Z1b), and generate the arbitrary A2L from the R5 ELF (Z4) —
-> documented step-by-step in STATUS.md. Best done at the bench so each step is
-> testable.
+> **Progress (2026-06-17):** Z1–Z4 **fully integrated; both apps build green**
+> with Option Z as the default config (`XCP_ENGINE_R5_ENABLE=1` +
+> `LOGGING_PATH_XCP_R5_GATEWAY=1`). The R5 (`Baremetal/src/sw/xcp_engine/`) runs
+> the XCPlite engine over the OCM FIFO, wired into `ISR_Control`; the A53
+> (`FreeRTOS/sw/xcp_gateway/`) bridges UDP⇄OCM in the IPI ISR + rx/tx tasks.
+> Arbitrary R5 measurement tooling added (`xcp_poll.py --watch`,
+> `gen_a2l.py --symbols`). **Not yet run on hardware** (integrated assume-it-
+> works) — bring-up + debugging steps in `option_z/TEST_PLAN.md`. Fallback to the
+> validated curated path via the flags. Commits CP1–CP5 are checkpoints to jump
+> back to.
 
 
 - **Z1 — engine builds for R5 (no hardware).** Add a baremetal platform backend

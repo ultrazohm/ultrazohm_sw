@@ -19,6 +19,31 @@ MATH_BINARY = ("add", "sub", "mul", "div")
 MATH_OPS = MATH_UNARY + MATH_BINARY
 
 
+def _require_increasing_time(time: np.ndarray, op: str) -> None:
+    """``op`` differentiates/integrates/filters against ``time``; it needs a finite,
+    strictly increasing axis. A zero or negative step divides by zero in
+    ``np.gradient`` / ``1/median(dt)`` or integrates backwards. Loaded logs already
+    satisfy this (the loader validates monotonicity), so this only catches hand-built
+    or duplicate-timestamp axes."""
+    if not np.isfinite(time).all():
+        raise ValueError(f"{op} needs a finite time axis (NaN/Inf present)")
+    if time.shape[0] > 1 and np.any(np.diff(time) <= 0):
+        raise ValueError(f"{op} needs a strictly increasing time axis")
+
+
+def _binary_time_note(t1: np.ndarray, t2: np.ndarray) -> str:
+    """Binary math index-aligns its two inputs (v1 does not resample). If they come
+    from different time bases the result is still index-aligned, but the shared axis
+    (``t1``) no longer describes B -- flag it in the node info so the result isn't read
+    as time-aligned. O(1) endpoint check, cheap on multi-million-sample signals."""
+    if t1.shape != t2.shape or t1.shape[0] == 0:
+        return ""
+    span = abs(float(t1[-1] - t1[0])) or 1.0
+    if abs(float(t1[0] - t2[0])) > 1e-6 * span or abs(float(t1[-1] - t2[-1])) > 1e-6 * span:
+        return " (index-aligned; time bases differ)"
+    return ""
+
+
 def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
               ) -> tuple[np.ndarray, np.ndarray, str]:
     """Arithmetic on one or two input signals.
@@ -44,12 +69,14 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             k = float(params.get("k", 0.0))
             return time, y + k, f"offset +{k:g}"
         if op == "derivative":
+            _require_increasing_time(time, "derivative")
             return time, np.gradient(y, time), "derivative d/dt"
         if op == "reciprocal":
             with np.errstate(divide="ignore", invalid="ignore"):
                 out = np.where(y != 0.0, 1.0 / y, 0.0)
             return time, out, "1 / A"
         # integral: cumulative trapezoid, starting at 0
+        _require_increasing_time(time, "integral")
         dt = np.diff(time)
         area = np.concatenate([[0.0], np.cumsum((y[1:] + y[:-1]) * 0.5 * dt)])
         return time, area, "integral dt"
@@ -66,15 +93,16 @@ def math_node(inputs: list[tuple[np.ndarray, np.ndarray]], params: dict
             "v1 does not resample"
         )
     time = np.asarray(t1, dtype=np.float64)
+    note = _binary_time_note(time, np.asarray(t2, dtype=np.float64))
     if op == "add":
-        return time, y1 + y2, "A + B"
+        return time, y1 + y2, "A + B" + note
     if op == "sub":
-        return time, y1 - y2, "A - B"
+        return time, y1 - y2, "A - B" + note
     if op == "mul":
-        return time, y1 * y2, "A * B"
+        return time, y1 * y2, "A * B" + note
     with np.errstate(divide="ignore", invalid="ignore"):
         out = np.where(y2 != 0.0, y1 / y2, 0.0)
-    return time, out, "A / B"
+    return time, out, "A / B" + note
 
 
 # -- filter node --------------------------------------------------------------
@@ -107,6 +135,7 @@ def filter_node(time: np.ndarray, y: np.ndarray, params: dict
     y = np.asarray(y, dtype=np.float64)
     if time.shape[0] < 2:
         raise ValueError("filter needs at least 2 samples")
+    _require_increasing_time(time, "filter")
     fs = 1.0 / float(np.median(np.diff(time)))
     taps = max(3, int(float(params.get("taps", 101))))
     fc = float(params.get("cutoff", 0.0))

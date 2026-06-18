@@ -55,6 +55,17 @@ def test_compute_fft_recovers_tone_amplitude_with_hann_window():
     assert abs(float(r.mag.max()) - amp) < 0.05  # not ~A/2
 
 
+def test_compute_fft_empty_and_nonfinite_return_error_not_crash():
+    # Empty run -> clear error, not an IndexError on time[0].
+    r = compute_fft(np.array([], dtype=np.float64), np.array([], dtype=np.float32), 0.0, 0.0)
+    assert not r.ok and "No samples" in r.info
+    # A non-finite window -> clear error instead of a NaN-poisoned spectrum.
+    t = np.linspace(0.0, 1.0, 64)
+    y = np.full(64, np.nan, dtype=np.float32)
+    r2 = compute_fft(t, y, float(t[0]), float(t[-1]))
+    assert not r2.ok and "non-finite" in r2.info
+
+
 def test_compute_fft_dc_bin_not_double_counted():
     # A pure DC offset should read its true amplitude at f=0 (the single-sided x2
     # applies only to the mirrored AC bins, not DC).
@@ -138,6 +149,32 @@ def test_export_fft(tmp_path):
     assert n == 3  # frequency + ia + ib
     header = out.read_text().splitlines()[0]
     assert header.startswith("frequency,") and "ia" in header and "ib" in header
+
+
+def test_export_fft_mixed_sample_rates_pairs_freq_with_amp(tmp_path):
+    # Two runs at *different* sample rates -> different FFT frequency axes. The CSV
+    # must keep each amplitude paired with its own frequency axis (per-signal
+    # `<name>_frequency` columns), not collapse onto one shared frequency column.
+    import pandas as pd
+
+    state = AppState()
+    t1 = np.linspace(0.0, 1.0, 1000, endpoint=False)   # fs = 1000 Hz -> 501 bins
+    t2 = np.linspace(0.0, 1.0, 4000, endpoint=False)   # fs = 4000 Hz -> 2001 bins
+    state.registry.add_run("a.csv", "a.csv", t1,
+                           {"sa": np.sin(2 * np.pi * 50 * t1).astype(np.float32)}, {"sa": ""})
+    state.registry.add_run("b.csv", "b.csv", t2,
+                           {"sb": np.sin(2 * np.pi * 123 * t2).astype(np.float32)}, {"sb": ""})
+    state.commands.dispatch(state, "fft_source(run_1, sa)")
+    state.commands.dispatch(state, "fft_source(run_2, sb)")
+    out = tmp_path / "fft_mixed.csv"
+    session.export_fft(state, str(out))
+    df = pd.read_csv(out)
+    assert "frequency" not in df.columns  # mixed axes -> no single shared column
+    assert {"sa_frequency", "sa", "sb_frequency", "sb"} <= set(df.columns)
+    sa = df[["sa_frequency", "sa"]].dropna().reset_index(drop=True)
+    sb = df[["sb_frequency", "sb"]].dropna().reset_index(drop=True)
+    assert abs(float(sa["sa_frequency"][int(sa["sa"].values.argmax())]) - 50.0) < 2.0
+    assert abs(float(sb["sb_frequency"][int(sb["sb"].values.argmax())]) - 123.0) < 2.0
 
 
 def test_export_histogram(tmp_path):

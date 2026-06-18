@@ -49,6 +49,21 @@ def test_math_binary_requires_equal_length():
         math_node([(t1, y1), (t2, y2)], {"op": "sub"})
 
 
+def test_math_binary_flags_time_base_mismatch():
+    t1, y1 = _sine(5, n=1000)
+    _, _, info = math_node([(t1, y1), (t1 + 10.0, y1)], {"op": "sub"})  # same rate, shifted origin
+    assert "time bases differ" in info
+    _, _, info2 = math_node([(t1, y1), (t1, y1)], {"op": "sub"})  # identical axis
+    assert "time bases differ" not in info2
+
+
+def test_derivative_rejects_non_increasing_time():
+    t = np.array([0.0, 0.1, 0.1, 0.2])  # duplicate timestamp -> dt = 0
+    y = np.array([0.0, 1.0, 2.0, 3.0], dtype=np.float32)
+    with pytest.raises(ValueError, match="strictly increasing"):
+        math_node([(t, y)], {"op": "derivative"})
+
+
 def test_math_sub():
     t, y = _sine(5)
     _, d, _ = math_node([(t, y), (t, y)], {"op": "sub"})

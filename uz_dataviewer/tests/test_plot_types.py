@@ -141,6 +141,23 @@ def test_histogram_window_renders_multiple_signals():
     assert len(panel._results) == 2  # one distribution per source
 
 
+def test_histogram_skips_non_finite_samples():
+    from uz_dataviewer.panels.histogram import HistogramPanel
+
+    state = AppState()
+    t = np.linspace(0.0, 1.0, 6)
+    y = np.array([0.0, 1.0, np.nan, 2.0, np.inf, 3.0], dtype=np.float32)
+    state.registry.add_run("L.csv", "L.csv", t, {"s": y}, {"s": ""})
+    state.histogram.sources = [(1, "s")]
+    panel = HistogramPanel()
+    panel._compute(state, state.histogram, float(t[0]), float(t[-1]))
+    assert len(panel._results) == 1
+    _, centers, counts, _ = panel._results[0]
+    assert np.isfinite(centers).all()  # NaN/Inf did not poison the bin edges
+    assert counts.sum() == 4            # only the 4 finite samples binned
+    assert "non-finite skipped" in panel._info
+
+
 def test_analysis_window_computes_on_demand_not_every_frame(monkeypatch):
     """The FFT window computes only when asked (drag/compute), never per frame."""
     import uz_dataviewer.panels.fft as fft_mod

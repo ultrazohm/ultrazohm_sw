@@ -74,6 +74,25 @@ def test_load_comma_separated_csv(tmp_path):
     assert set(run.signals) == {"ia", "ib"}
 
 
+def test_validate_time_axis_rejects_bad_axes():
+    from uz_dataviewer.loader import validate_time_axis
+
+    with pytest.raises(ValueError, match="empty"):
+        validate_time_axis(np.array([], dtype=np.float64), "x.csv")
+    with pytest.raises(ValueError, match="non-finite"):
+        validate_time_axis(np.array([0.0, np.nan, 1.0]), "x.csv")
+    with pytest.raises(ValueError, match="non-decreasing"):
+        validate_time_axis(np.array([0.0, 0.2, 0.1]), "x.csv")
+    validate_time_axis(np.array([0.0, 0.1, 0.1, 0.2]), "x.csv")  # duplicates allowed
+
+
+def test_load_rejects_decreasing_time(tmp_path):
+    path = tmp_path / "Log_back.csv"
+    path.write_text("time;CH8=8)ia;\n0.0;1.0;\n0.2;2.0;\n0.1;3.0;\n")
+    with pytest.raises(ValueError, match="non-decreasing"):
+        load_file(str(path), DataRegistry())
+
+
 def test_unsupported_extension(tmp_path):
     path = tmp_path / "data.txt"
     path.write_text("nope")

@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from . import webbridge
 from .commands import CommandRegistry
 from .console import Console
-from .loader import load_file
+from .loader import ParsedRun, load_file, parse_file
 from .model import DataRegistry, Run, Signal
 from .nodes import NodeGraph
 
@@ -179,7 +179,9 @@ class AppState:
         self.dragged_ref: SignalRef | None = None
 
         self._executor = ThreadPoolExecutor(max_workers=2)
-        self._pending: list[tuple[Future[Run], str]] = []
+        # Worker parses into a ParsedRun (no registry touch); the main thread registers
+        # it in poll_pending_loads, so DataRegistry stays single-threaded.
+        self._pending: list[tuple[Future[ParsedRun], str]] = []
 
         # Signal that the docking layout should focus an analysis window this frame.
         self.focus_fft = False
@@ -211,7 +213,8 @@ class AppState:
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
             return
-        future = self._executor.submit(load_file, path, self.registry)
+        # Parse on the worker; registration happens on the main thread (poll below).
+        future = self._executor.submit(parse_file, path)
         self._pending.append((future, path))
 
     def load_sync(self, path: str) -> Run | None:
@@ -246,6 +249,12 @@ class AppState:
         the browser (full resolution) rather than handed to the Arrow reader -- so
         the multi-gigabyte text never has to be resident in 32-bit WASM memory.
         """
+        import numpy as np
+
+        from .loader import validate_time_axis
+
+        time = np.ascontiguousarray(time, dtype=np.float64)
+        validate_time_axis(time, path)  # same monotonic contract as the native loaders
         run = self.registry.add_run(label, path, time, signals, units)
         self._report_loaded(run)
         return run
@@ -266,6 +275,7 @@ class AppState:
                 run.time = time
                 run.time_raw = time
                 run.time_origin = None
+                run.mark_time_changed()  # invalidate decimation caches keyed on the time version
                 run.signals = {"out": Signal("out", unit, y, run.id)}
                 return run.id
         run = self.registry.add_run(label, f"<derived:{label}>", time, {"out": y}, {"out": unit})
@@ -298,14 +308,18 @@ class AppState:
         )
 
     def poll_pending_loads(self) -> None:
-        """Finalise completed background loads; call once per frame."""
-        still_pending: list[tuple[Future[Run], str]] = []
+        """Finalise completed background loads; call once per frame.
+
+        The worker only *parsed*; the registry mutation (``register``) happens here on
+        the main thread, so the UI never reads a registry mid-write.
+        """
+        still_pending: list[tuple[Future[ParsedRun], str]] = []
         for future, path in self._pending:
             if not future.done():
                 still_pending.append((future, path))
                 continue
             try:
-                run = future.result()
+                run = future.result().register(self.registry)
             except Exception as exc:  # noqa: BLE001 - surfaced to the console
                 self.console.error(f"Failed to load {os.path.basename(path)}: {exc}")
                 continue

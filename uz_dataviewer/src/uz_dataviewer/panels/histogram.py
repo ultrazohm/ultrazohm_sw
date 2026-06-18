@@ -48,6 +48,7 @@ class HistogramPanel(AnalysisPanel):
         # different width/centre set -> overlapping, misaligned bars.
         slices: list[tuple[str, np.ndarray]] = []
         lo = hi = None
+        dropped = 0
         for ref in cfg.sources:
             run = state.registry.get(ref[0])
             signal = state.registry.get_signal(ref[0], ref[1])
@@ -55,6 +56,14 @@ class HistogramPanel(AnalysisPanel):
                 continue
             start, stop = visible_slice(run.time, x_min, x_max)
             values = signal.y[start:stop]
+            # Drop non-finite samples: a single NaN/Inf otherwise makes min/max -> NaN,
+            # so np.linspace produces NaN edges and every bin is meaningless. The
+            # .all() fast-path keeps the common (clean) case copy-free.
+            finite = np.isfinite(values)
+            if not finite.all():
+                kept = values[finite]
+                dropped += int(values.size - kept.size)
+                values = kept
             if values.size == 0:
                 continue
             slices.append((state.signal_label(ref), values))
@@ -70,17 +79,21 @@ class HistogramPanel(AnalysisPanel):
             # regardless), so no full-array float64 upcast of up to tens of millions
             # of samples. Bin once here (not every frame); plotting bars is O(bins).
             edges = np.linspace(lo, hi, bins + 1)
+            centers = (edges[:-1] + edges[1:]) / 2.0  # shared across signals
             width = float(edges[1] - edges[0])
             for label, values in slices:
                 counts, _ = np.histogram(values, bins=edges)
-                centers = (edges[:-1] + edges[1:]) / 2.0
                 results.append((label, centers, counts.astype(np.float64), width))
                 total += int(values.size)
         self._results = results
-        self._info = (
-            f"{len(results)} signal(s), {total:,} samples, window [{x_min:.4f}, {x_max:.4f}] s"
-            if results else "Drag signals here to histogram them."
-        )
+        if results:
+            note = f", {dropped:,} non-finite skipped" if dropped else ""
+            self._info = (
+                f"{len(results)} signal(s), {total:,} samples{note}, "
+                f"window [{x_min:.4f}, {x_max:.4f}] s"
+            )
+        else:
+            self._info = "Drag signals here to histogram them."
 
     def _draw(self, state: AppState) -> None:
         for label, centers, counts, width in self._results:

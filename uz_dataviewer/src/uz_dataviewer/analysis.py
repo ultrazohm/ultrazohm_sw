@@ -5,15 +5,20 @@ Kept GUI-free so it is unit-testable and reusable from other analysis windows.
 
 from __future__ import annotations
 
+from collections import OrderedDict
+
 import numpy as np
 
 from .downsample import visible_slice
 
 # Hann windows are recomputed per FFT; cache by length (with the window sum, used
 # for the amplitude correction below) since the same window is re-used across
-# recomputes at the same span (cheap memory, avoids a cos over millions of samples
-# each Compute).
-_HANN_CACHE: dict[int, tuple[np.ndarray, float]] = {}
+# recomputes at the same span (cheap, avoids a cos over millions of samples each
+# Compute). Bounded LRU: a long session computing FFTs at many distinct window
+# lengths would otherwise retain a float32 window per length (~60 MB at 15 M
+# samples) for the life of the process.
+_HANN_CACHE_MAX = 8
+_HANN_CACHE: "OrderedDict[int, tuple[np.ndarray, float]]" = OrderedDict()
 
 
 def _hann(n: int) -> tuple[np.ndarray, float]:
@@ -23,6 +28,10 @@ def _hann(n: int) -> tuple[np.ndarray, float]:
         w = np.hanning(n).astype(np.float32)
         cached = (w, float(w.sum(dtype=np.float64)))
         _HANN_CACHE[n] = cached
+        if len(_HANN_CACHE) > _HANN_CACHE_MAX:
+            _HANN_CACHE.popitem(last=False)  # evict least-recently-used
+    else:
+        _HANN_CACHE.move_to_end(n)  # mark most-recently-used
     return cached
 
 
@@ -79,6 +88,8 @@ def compute_fft(
     transform. Returns an empty :class:`FftResult` (with an ``info`` reason) when
     the slice is too short or the time axis is unusable.
     """
+    if time.shape[0] == 0:
+        return FftResult(None, None, "No samples in this run to transform.")
     if x_max <= x_min:
         x_min, x_max = float(time[0]), float(time[-1])
 
@@ -92,12 +103,17 @@ def compute_fft(
     n = ys.shape[0]
     if n < 4:
         return FftResult(None, None, "Selected window is too short for an FFT.")
+    # A single O(n) pass at Compute (not per frame): NaN/Inf in the window would
+    # otherwise propagate through the whole spectrum. The transform assumes a
+    # uniform time base, so masking would corrupt it -- reject instead.
+    if not np.isfinite(ys).all():
+        return FftResult(None, None, "Selected window has non-finite samples (NaN/Inf); cannot compute FFT.")
 
     # Logs are uniformly sampled (the rate can differ between logs), so the step is
     # exactly the span / interval count -- O(1), no full np.diff + median over the
     # window (which is costly on a multi-million-sample full-window FFT).
     dt = (float(ts[-1]) - float(ts[0])) / (n - 1)
-    if dt <= 0:
+    if not np.isfinite(dt) or dt <= 0:
         return FftResult(None, None, "Time axis is not increasing; cannot compute FFT.")
 
     if remove_dc:

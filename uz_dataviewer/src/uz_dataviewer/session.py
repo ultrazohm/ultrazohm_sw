@@ -436,8 +436,16 @@ def export_data(state: "AppState", plot_index: int, path: str, relative: bool = 
 
 
 def export_fft(state: "AppState", path: str) -> int:
-    """Write the FFT window's spectra to a wide CSV: ``frequency`` + one amplitude
-    column per signal (named by the plain channel name)."""
+    """Write the FFT window's spectra to a CSV.
+
+    A single shared ``frequency`` column + one amplitude column per signal when every
+    spectrum shares the same frequency axis (the common case: signals from one run, or
+    runs sampled at the same rate over the same window). When the spectra have
+    **different** frequency axes -- signals from runs at different sample rates or
+    window lengths -- each signal is written as its own ``<name>_frequency, <name>``
+    pair (NaN-padded to the longest), so amplitudes stay paired with the correct bins.
+    A single shared column would otherwise mis-align them.
+    """
     import numpy as np
     import pandas as pd
 
@@ -448,7 +456,8 @@ def export_fft(state: "AppState", path: str) -> int:
         raise ValueError("FFT window has no signals")
     x_min, x_max = state.resolve_x_window(cfg.follow_plot, (cfg.x_min, cfg.x_max), cfg.sources)
 
-    columns: dict[str, np.ndarray] = {}
+    spectra: list[tuple[str, np.ndarray, np.ndarray]] = []  # (name, freqs, mag)
+    used: set[str] = set()
     for ref in cfg.sources:
         run = state.registry.get(ref[0])
         signal = state.registry.get_signal(ref[0], ref[1])
@@ -457,15 +466,29 @@ def export_fft(state: "AppState", path: str) -> int:
         result = compute_fft(run.time, signal.y, x_min, x_max, remove_dc=cfg.remove_dc, window=cfg.window)
         if not result.ok:
             continue
-        if "frequency" not in columns:
-            columns["frequency"] = result.freqs
-        columns[ref[1]] = result.mag
-    if "frequency" not in columns:
+        name = ref[1] if ref[1] not in used else f"{ref[1]} @ {run.label}"  # disambiguate dup names
+        used.add(name)
+        spectra.append((name, result.freqs, result.mag))
+    if not spectra:
         raise ValueError("no spectra to export")
-    # Align all columns to the shortest (spectra share the window, so equal in
-    # the common single-run case; trim defensively for mixed sample rates).
-    m = min(len(v) for v in columns.values())
-    pd.DataFrame({k: v[:m] for k, v in columns.items()}).to_csv(path, index=False)
+
+    freqs0 = spectra[0][1]
+    shared = all(f.shape == freqs0.shape and np.array_equal(f, freqs0) for _, f, _ in spectra)
+    if shared:  # one `frequency` column + one amplitude column per signal
+        m = min(min(len(mag) for _, _, mag in spectra), len(freqs0))
+        columns: dict[str, np.ndarray] = {"frequency": freqs0[:m]}
+        for name, _, mag in spectra:
+            columns[name] = mag[:m]
+    else:  # mixed axes -> per-signal (frequency, amplitude) pairs, NaN-padded
+        maxlen = max(len(mag) for _, _, mag in spectra)
+        columns = {}
+        for name, freqs, mag in spectra:
+            fcol, acol = np.full(maxlen, np.nan), np.full(maxlen, np.nan)
+            fcol[: len(freqs)] = freqs
+            acol[: len(mag)] = mag
+            columns[f"{name}_frequency"] = fcol
+            columns[name] = acol
+    pd.DataFrame(columns).to_csv(path, index=False)
     return len(columns)
 
 
@@ -489,8 +512,12 @@ def export_histogram(state: "AppState", path: str) -> int:
             continue
         start, stop = visible_slice(run.time, x_min, x_max)
         # np.histogram bins float32 directly (edges below are float64); no need to
-        # upcast the whole window, which can be tens of millions of samples.
+        # upcast the whole window, which can be tens of millions of samples. Drop
+        # non-finite samples so a stray NaN/Inf doesn't poison the shared min/max.
         values = signal.y[start:stop]
+        finite = np.isfinite(values)
+        if not finite.all():
+            values = values[finite]
         if values.size == 0:
             continue
         series[ref[1]] = values

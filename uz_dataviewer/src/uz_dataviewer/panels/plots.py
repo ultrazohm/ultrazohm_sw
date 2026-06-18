@@ -351,9 +351,13 @@ class PlotsPanel:
             # window, budget and underlying array). With idle FPS off the plot
             # redraws continuously, so this skips a full re-decimate on a static view.
             ck = (index, ref)
-            sig_id = id(signal.y)
+            # Version stamps (not id(signal.y)): a derived run refreshed in place frees
+            # the old array, whose address CPython can reuse for the new one -> id would
+            # collide and serve a stale envelope. The time version also catches run.time
+            # being reassigned (normalisation) while signal.y is unchanged.
+            ver = (signal.version, run.time_version)
             cached = self._decim_cache.get(ck)
-            if cached is not None and cached[:4] == (sig_id, start, stop, n_out):
+            if cached is not None and cached[:4] == (ver, start, stop, n_out):
                 xs, ys = cached[4], cached[5]
             else:
                 xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
@@ -361,7 +365,7 @@ class PlotsPanel:
                 # mismatch reinterprets a buffer as the wrong type. Keep them equal.
                 xs = np.ascontiguousarray(xs, dtype=np.float64)
                 ys = np.ascontiguousarray(ys, dtype=np.float64)
-                self._decim_cache[ck] = (sig_id, start, stop, n_out, xs, ys)
+                self._decim_cache[ck] = (ver, start, stop, n_out, xs, ys)
             points_shown += xs.shape[0]
             # Raw samples in the window (densest signal), not a sum across signals.
             raw_in_view = max(raw_in_view, stop - start)

@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import os
 import re
+from dataclasses import dataclass
 from typing import Callable
 
 import numpy as np
@@ -31,6 +32,25 @@ import pyarrow.csv as pa_csv
 import pyarrow.parquet as pq
 
 from .model import DataRegistry, Run
+
+
+@dataclass
+class ParsedRun:
+    """A fully-parsed log not yet added to any registry.
+
+    Parsing (the slow, allocation-heavy work) can run on a worker thread; registering
+    -- the only step that mutates the shared :class:`DataRegistry` -- is then done on
+    the main thread via :meth:`register`, keeping the registry single-threaded.
+    """
+
+    label: str
+    path: str
+    time: np.ndarray
+    signals: dict[str, np.ndarray]
+    units: dict[str, str]
+
+    def register(self, registry: DataRegistry) -> Run:
+        return registry.add_run(self.label, self.path, self.time, self.signals, self.units)
 
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 # Units commonly appended to JavaScope channel names.
@@ -111,14 +131,34 @@ def _named_signals(
     return signals, units
 
 
-def _table_to_run(table: pa.Table, registry: DataRegistry, path: str) -> Run:
+def validate_time_axis(time: np.ndarray, path: str) -> None:
+    """Reject a log whose time axis breaks the app-wide monotonic contract.
+
+    ``visible_slice`` -- and therefore plotting, cursors, FFT and export windows --
+    assumes a non-empty, finite, non-decreasing time axis; a log that violates it
+    would silently produce wrong slices and spectra. Fail the load with a clear
+    message instead. Duplicates (equal timestamps) are allowed; only a *decreasing*
+    step, NaN/Inf, or an empty axis is rejected. One pass over the time column only
+    (not the channels), negligible against parse cost.
+    """
+    name = os.path.basename(path)
+    if time.shape[0] == 0:
+        raise ValueError(f"{name}: time column is empty.")
+    if not np.isfinite(time).all():
+        raise ValueError(f"{name}: time column contains non-finite values (NaN/Inf).")
+    if time.shape[0] > 1 and np.any(time[1:] < time[:-1]):
+        raise ValueError(f"{name}: time column is not non-decreasing (timestamps go backwards).")
+
+
+def _table_to_parsed(table: pa.Table, path: str) -> ParsedRun:
     time_col, data_columns = _split_time_columns(table.column_names)
     time = table.column(time_col).to_numpy(zero_copy_only=False).astype(np.float64)
+    validate_time_axis(time, path)
     signals, units = _named_signals(
         data_columns,
         lambda raw: table.column(raw).to_numpy(zero_copy_only=False),
     )
-    return registry.add_run(os.path.basename(path), path, time, signals, units)
+    return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
 def _sniff_delimiter(path: str) -> str:
@@ -179,7 +219,7 @@ def _guard_csv_size(path: str, columns: list[str]) -> None:
         )
 
 
-def load_csv(path: str, registry: DataRegistry) -> Run:
+def parse_csv(path: str) -> ParsedRun:
     delimiter = _sniff_delimiter(path)
     columns = _read_header(path, delimiter)
     _guard_csv_size(path, columns)
@@ -192,12 +232,10 @@ def load_csv(path: str, registry: DataRegistry) -> Run:
             column_types=_csv_column_types(columns),
         ),
     )
-    return _table_to_run(table, registry, path)
+    return _table_to_parsed(table, path)
 
 
-def _load_parquet_streaming(
-    pf: pq.ParquetFile, registry: DataRegistry, path: str, n_rows: int
-) -> Run:
+def _parse_parquet_streaming(pf: pq.ParquetFile, path: str, n_rows: int) -> ParsedRun:
     """Stream a large Parquet into preallocated arrays (peak ~= resident + a batch)."""
     time_col, data_columns = _split_time_columns(pf.schema_arrow.names)
     ordered = [time_col, *data_columns]
@@ -216,16 +254,17 @@ def _load_parquet_streaming(
         time = time[:off]
         arrays = {k: v[:off] for k, v in arrays.items()}
 
+    validate_time_axis(time, path)
     signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
-    return registry.add_run(os.path.basename(path), path, time, signals, units)
+    return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
-def load_parquet(path: str, registry: DataRegistry) -> Run:
+def parse_parquet(path: str) -> ParsedRun:
     pf = pq.ParquetFile(path)
     n_rows = pf.metadata.num_rows
     if n_rows < PARQUET_STREAM_MIN_ROWS:
-        return _table_to_run(pf.read(), registry, path)
-    return _load_parquet_streaming(pf, registry, path, n_rows)
+        return _table_to_parsed(pf.read(), path)
+    return _parse_parquet_streaming(pf, path, n_rows)
 
 
 def convert_csv_to_parquet(src: str, dst: str | None = None) -> str:
@@ -274,11 +313,19 @@ def _drop_empty_columns(batch: pa.RecordBatch) -> pa.RecordBatch:
     return batch.select(keep)
 
 
-def load_file(path: str, registry: DataRegistry) -> Run:
-    """Load ``path`` into ``registry`` and return the created :class:`Run`."""
+def parse_file(path: str) -> ParsedRun:
+    """Parse ``path`` into a :class:`ParsedRun` without touching any registry.
+
+    Safe to call off the main thread; the caller registers the result later.
+    """
     ext = os.path.splitext(path)[1].lower()
     if ext == ".csv":
-        return load_csv(path, registry)
+        return parse_csv(path)
     if ext == ".parquet":
-        return load_parquet(path, registry)
+        return parse_parquet(path)
     raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
+
+
+def load_file(path: str, registry: DataRegistry) -> Run:
+    """Parse ``path`` and register it into ``registry`` (single-threaded callers)."""
+    return parse_file(path).register(registry)

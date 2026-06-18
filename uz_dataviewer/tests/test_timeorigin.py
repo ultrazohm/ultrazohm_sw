@@ -75,6 +75,33 @@ def test_time_origin_survives_session_roundtrip(tmp_path):
     assert abs(replayed.registry.get(1).time[0] - 5.0) < 1e-6
 
 
+def test_time_version_bumps_on_normalize(tmp_path):
+    # The plot decimation cache is keyed on run.time_version; normalising the axis
+    # must bump it so a cached envelope (built from the old time) is not reused.
+    state, run = _state(tmp_path)
+    v0 = run.time_version
+    state.commands.dispatch(state, "normalize_time(run_1)")
+    assert run.time_version != v0
+    state.commands.dispatch(state, "reset_time(run_1)")
+    assert run.time_version not in (v0, None)
+
+
+def test_derived_refresh_bumps_signal_and_time_version(tmp_path):
+    # A derived run refreshed in place reuses the run id (so plots survive), but its
+    # signal array and time are new -> both versions must change so caches that keyed
+    # on id(signal.y) (now the version) cannot false-hit on a reused address.
+    state, _ = _state(tmp_path)
+    t = np.linspace(0.0, 1.0, 8)
+    rid = state.upsert_derived_run("deriv", t, np.zeros(8))
+    run = state.registry.get(rid)
+    sv0, tv0 = run.signals["out"].version, run.time_version
+    state.upsert_derived_run("deriv", t, np.ones(8))
+    run2 = state.registry.get(rid)
+    assert run2.id == rid
+    assert run2.signals["out"].version != sv0
+    assert run2.time_version != tv0
+
+
 def test_fft_follow_plot_resolves_range(tmp_path):
     state, run = _state(tmp_path)
     state.set_grid(2, 1)

@@ -180,5 +180,5 @@ Plots are referenced `plot_1..plot_N` (row-major); runs as `run_<id>` or by file
 
 The browser build (GitLab/GitHub Pages, or `build/build_web.sh`) runs the same UI, with a
 few platform limits: synchronous loading, large CSVs stream-parsed at full resolution,
-Export via browser download, and the Session-menu save/restore disabled (no OS dialog).
-Details in **[BUILD.md](BUILD.md)**.
+and Export plus Session save/restore via browser download and a hidden file picker (no OS
+dialog). Details in **[BUILD.md](BUILD.md)**.

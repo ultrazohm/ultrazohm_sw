@@ -23,7 +23,7 @@ For building each target see **[BUILD.md](BUILD.md)**; for internals see
 | **Loading** | Async on a `ThreadPoolExecutor` | **Synchronous** (Pyodide has no worker threads) |
 | **Large CSV** | Arrow reads the whole file | **> 200 MB** is **stream-parsed** into typed arrays; ≤ 200 MB CSV and any Parquet still go through Arrow |
 | **Downsampler** | Min/max pyramid (pure NumPy) | **Identical** — same code, no native dependency |
-| **Export / Save** | OS save dialog | Browser download (Blob + anchor); **Session save/restore menu disabled** |
+| **Export / Save** | OS save dialog | Browser download (Blob + anchor); session save/restore uses download + a hidden file picker |
 | **Memory** | OS RAM | Hard ~4 GB wasm32 address space |
 | **Internet needed?** | No | **Yes at load** — fetches the Pyodide runtime + wheels |
 
@@ -37,8 +37,12 @@ the window** (a GLFW drop callback; a no-op without the GLFW backend). A browser
 file dialog, so **Open file(s)…** opens an HTML picker instead.
 Saving works the same way in reverse: native pops an OS save dialog; web triggers a
 **browser download** via `webbridge.download` (a Blob + a synthetic anchor click).
-Because there's no OS path to write back to, the **Session menu's save/restore is disabled
-on web** — you can still drive everything through the command console and `.uzscript`.
+The **Session menu works on web** too: *Save state* / *Export script* write to the Pyodide FS
+and download; *Load state / Run script* opens a second hidden file picker
+(`uzSessionInput`) whose upload is routed by extension — `.json` → `load_state`,
+`.uzscript`/`.txt` → `run_script` (`webbridge.load_uploaded_session`). One caveat: a restored
+JSON snapshot re-loads its data files **by path**, which won't exist in a fresh tab, so on web
+re-open the logs (or use a `.uzscript`, which carries the `load(...)` lines) alongside it.
 
 ### Threading
 Native loads files on a background `ThreadPoolExecutor` so the UI keeps rendering during a

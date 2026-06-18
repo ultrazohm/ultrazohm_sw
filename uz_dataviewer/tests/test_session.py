@@ -124,3 +124,66 @@ def test_script_export_and_replay(tmp_path):
     assert [r[1] for r in replayed.cells[0].signals] == ["ia"]
     assert replayed.cells[1].plot_type is PlotType.SCATTER
     assert replayed.cells[0].show_samples is True
+
+
+def test_json_restore_flags_analysis_recompute(tmp_path):
+    """Restoring a session with FFT/Histogram sources must request a recompute,
+    so the windows draw their results without a manual Compute click."""
+    csv = tmp_path / "Log_test.csv"
+    csv.write_text(SAMPLE)
+    state = _populated_state(str(csv))
+    state.commands.dispatch(state, "fft_source(Log_test.csv, ia)")
+    state.commands.dispatch(state, "hist_source(Log_test.csv, ib)")
+
+    out = tmp_path / "session.json"
+    session.save_state(state, str(out))
+
+    restored = AppState()
+    assert restored.fft.compute_requested is False  # fresh state
+    session.load_state(restored, str(out))
+    assert [r[1] for r in restored.fft.sources] == ["ia"]
+    assert [r[1] for r in restored.histogram.sources] == ["ib"]
+    assert restored.fft.compute_requested is True
+    assert restored.histogram.compute_requested is True
+
+    # No analysis sources -> no recompute requested.
+    plain = _populated_state(str(csv))
+    plain_out = tmp_path / "plain.json"
+    session.save_state(plain, str(plain_out))
+    restored_plain = AppState()
+    session.load_state(restored_plain, str(plain_out))
+    assert restored_plain.fft.compute_requested is False
+
+
+def test_script_preserves_analysis_options(tmp_path):
+    """A .uzscript must reproduce the FFT/Histogram options, not silently reset
+    them to defaults (DC removal/Hann on, 50 bins, follow plot_1)."""
+    csv = tmp_path / "Log_test.csv"
+    csv.write_text(SAMPLE)
+    state = _populated_state(str(csv))
+    state.commands.dispatch(state, "fft_source(Log_test.csv, ia)")
+    state.commands.dispatch(state, "fft_remove_dc(false)")
+    state.commands.dispatch(state, "fft_hann(false)")
+    state.commands.dispatch(state, "fft_logy(true)")
+    state.commands.dispatch(state, "hist_source(Log_test.csv, ib)")
+    state.commands.dispatch(state, "hist_bins(128)")
+    state.commands.dispatch(state, "set_export_relative(plot_1, true)")
+
+    script = tmp_path / "session.uzscript"
+    session.export_script(state, str(script))
+    text = script.read_text()
+    assert "fft_remove_dc(false)" in text
+    assert "fft_hann(false)" in text
+    assert "fft_logy(true)" in text
+    assert "hist_bins(128)" in text
+    assert "set_export_relative(plot_1, true)" in text
+
+    replayed = AppState()
+    session.run_script(replayed, str(script))
+    assert replayed.fft.remove_dc is False
+    assert replayed.fft.window is False
+    assert replayed.fft.log_y is True
+    assert [r[1] for r in replayed.fft.sources] == ["ia"]
+    assert replayed.histogram.bins == 128
+    assert [r[1] for r in replayed.histogram.sources] == ["ib"]
+    assert replayed.cells[0].export_relative is True

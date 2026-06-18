@@ -11,3 +11,4 @@ imgui.ini
 NodeEditor.json
 *.spec.bak
 web/
+testdata/

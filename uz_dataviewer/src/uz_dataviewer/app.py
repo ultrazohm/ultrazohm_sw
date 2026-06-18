@@ -114,6 +114,13 @@ class DataViewerApp:
     def _show_menus(self) -> None:
         if not imgui.begin_menu("Session"):
             return
+        if webbridge.IS_WEB:
+            self._web_session_menu()
+        else:
+            self._native_session_menu()
+        imgui.end_menu()
+
+    def _native_session_menu(self) -> None:
         disabled = pfd is None or bool(self._session_dialog)
         if imgui.menu_item("Save state...", "", False, not disabled)[0]:
             self._session_dialog = (
@@ -140,7 +147,25 @@ class DataViewerApp:
                 "run_script",
                 True,
             )
-        imgui.end_menu()
+
+    def _web_session_menu(self) -> None:
+        """Browser has no OS file dialog: write+download to save, a hidden file
+        input to load (routed by extension in :func:`webbridge.load_uploaded_session`)."""
+        if imgui.menu_item("Save state...", "", False, True)[0]:
+            self._web_download("save_state", "session.json")
+        if imgui.menu_item("Load state / Run script...", "", False, True)[0]:
+            webbridge.trigger_session_open()
+        imgui.separator()
+        if imgui.menu_item("Export script...", "", False, True)[0]:
+            self._web_download("export_script", "session.uzscript")
+
+    def _web_download(self, command: str, name: str) -> None:
+        path = "/tmp/" + name
+        try:
+            self.state.commands.execute(self.state, command, [path])
+            webbridge.download(path, name)
+        except Exception as exc:  # noqa: BLE001 - surfaced to the console
+            self.state.console.error(str(exc))
 
     def _poll_session_dialog(self) -> None:
         if not self._session_dialog:

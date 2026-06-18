@@ -26,6 +26,7 @@ except Exception:  # pragma: no cover - defensive; flag should always exist
 _active_state = None  # type: ignore[var-annotated]
 
 FILE_INPUT_ID = "uzFileInput"
+SESSION_INPUT_ID = "uzSessionInput"
 
 
 def register_state(state) -> None:
@@ -58,6 +59,38 @@ def load_uploaded(path: str, note: str = "") -> None:
     _active_state.request_load(path)
 
 
+def trigger_session_open() -> None:
+    """Click the hidden HTML session-file input (browser only).
+
+    Separate from the data file input so an uploaded ``.json``/``.uzscript`` is
+    routed to :func:`load_uploaded_session` (state restore / script replay)
+    rather than to the data loader.
+    """
+    if not IS_WEB:
+        return
+    import js  # type: ignore[import-not-found]
+
+    element = js.document.getElementById(SESSION_INPUT_ID)
+    if element is not None:
+        element.click()
+
+
+def load_uploaded_session(path: str) -> None:
+    """Load a session file the browser wrote into the Pyodide FS. Called from JS.
+
+    Routes by extension: ``.json`` restores a state snapshot (``load_state``),
+    anything else replays a command script (``run_script``). Both go through the
+    command layer so the action is logged like any other.
+    """
+    if _active_state is None:
+        return
+    command = "load_state" if path.lower().endswith(".json") else "run_script"
+    try:
+        _active_state.commands.execute(_active_state, command, [path])
+    except Exception as exc:  # noqa: BLE001 - surfaced to the console
+        _active_state.console.error(str(exc))
+
+
 def download(path: str, filename: str | None = None) -> None:
     """Trigger a browser download of a file in the Pyodide FS (web only).
 
@@ -72,13 +105,20 @@ def download(path: str, filename: str | None = None) -> None:
 
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
+    name = filename or path.rsplit("/", 1)[-1]
+    if name.endswith(".json"):
+        mime = "application/json"
+    elif name.endswith(".csv"):
+        mime = "text/csv"
+    else:
+        mime = "text/plain"
     options = js.Object.new()
-    options.type = "text/csv"
+    options.type = mime
     blob = js.Blob.new(to_js([text]), options)
     url = js.URL.createObjectURL(blob)
     anchor = js.document.createElement("a")
     anchor.href = url
-    anchor.setAttribute("download", filename or path.rsplit("/", 1)[-1])
+    anchor.setAttribute("download", name)
     js.document.body.appendChild(anchor)
     anchor.click()
     anchor.remove()

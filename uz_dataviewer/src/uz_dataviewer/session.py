@@ -197,6 +197,13 @@ def apply_dict(state: "AppState", data: dict) -> None:
     state.histogram.x_max = float(hist.get("x_max", state.histogram.x_max))
     state.histogram.bins = int(hist.get("bins", state.histogram.bins))
 
+    # Restoring sources alone leaves the windows blank until the user clicks
+    # Compute (the panels only ever compute on request). Flag a recompute so a
+    # restored session draws its spectra/bins straight away -- matching what the
+    # fft_source/hist_source commands do when a script is replayed.
+    state.fft.compute_requested = bool(state.fft.sources)
+    state.histogram.compute_requested = bool(state.histogram.sources)
+
 
 def _restore_nodes(state: "AppState", specs: list, resolve) -> None:
     """Rebuild the node graph from a snapshot (preserving ids) and evaluate it."""
@@ -306,16 +313,57 @@ def to_script(state: "AppState") -> list[str]:
                 lines.append(f"set_cursors(plot_{i}, {cell.cursor_x[0]:.6g}, {cell.cursor_x[1]:.6g})")
             else:
                 lines.append(f"cursors(plot_{i}, true)")
+        if cell.export_relative:
+            lines.append(f"set_export_relative(plot_{i}, true)")
 
-    for ref in state.fft.sources:
+    _analysis_to_script(state, lines)
+    return lines
+
+
+def _fwindow_token(follow_plot: int) -> str:
+    """``follow_plot`` int -> the ``fwindow`` token (custom / full / plot_N)."""
+    if follow_plot == 0:
+        return "custom"
+    if follow_plot == -1:
+        return "full"
+    return f"plot_{follow_plot}"
+
+
+def _analysis_to_script(state: "AppState", lines: list[str]) -> None:
+    """Emit the FFT/Histogram sources *and their options*, so a replayed script
+    reproduces the same window the JSON snapshot would (DC removal, Hann, log
+    axes, bin count, time window) rather than silently falling back to defaults."""
+    fft = state.fft
+    for ref in fft.sources:
         labelled = _ref_to_labelled(state, ref)
         if labelled:
             lines.append(f"fft_source({_arg(labelled[0])}, {_arg(labelled[1])})")
-    for ref in state.histogram.sources:
+    if fft.sources:
+        if not fft.remove_dc:
+            lines.append("fft_remove_dc(false)")
+        if not fft.window:
+            lines.append("fft_hann(false)")
+        if fft.log_x:
+            lines.append("fft_logx(true)")
+        if fft.log_y:
+            lines.append("fft_logy(true)")
+        if fft.follow_plot != 1:
+            lines.append(f"fft_follow({_fwindow_token(fft.follow_plot)})")
+        if fft.follow_plot == 0:
+            lines.append(f"fft_range({fft.x_min:.6g}, {fft.x_max:.6g})")
+
+    hist = state.histogram
+    for ref in hist.sources:
         labelled = _ref_to_labelled(state, ref)
         if labelled:
             lines.append(f"hist_source({_arg(labelled[0])}, {_arg(labelled[1])})")
-    return lines
+    if hist.sources:
+        if hist.bins != 50:
+            lines.append(f"hist_bins({hist.bins})")
+        if hist.follow_plot != 1:
+            lines.append(f"hist_follow({_fwindow_token(hist.follow_plot)})")
+        if hist.follow_plot == 0:
+            lines.append(f"hist_range({hist.x_min:.6g}, {hist.x_max:.6g})")
 
 
 def export_script(state: "AppState", path: str) -> None:

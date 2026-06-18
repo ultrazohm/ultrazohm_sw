@@ -118,6 +118,7 @@ def build_html() -> str:
 <div id="loader">Loading Pyodide...</div>
 <canvas id="canvas" tabindex="0"></canvas>
 <input type="file" id="uzFileInput" accept=".csv,.parquet" multiple style="display:none">
+<input type="file" id="uzSessionInput" accept=".json,.uzscript,.txt" style="display:none">
 
 <!-- Embedded Python sources (written into the Pyodide FS before the app starts) -->
 {src_tags}
@@ -298,6 +299,29 @@ def build_html() -> str:
     }});
   }}
 
+  // Session files (.json state / .uzscript) -- written to the FS then routed to
+  // load_state / run_script by extension. Separate input from the data loader.
+  function wireSessionInput() {{
+    const input = document.getElementById("uzSessionInput");
+    input.addEventListener("change", async (ev) => {{
+      try {{ pyodide.FS.mkdir("/uploads"); }} catch (_) {{}}
+      const file = ev.target.files[0];
+      if (file) {{
+        try {{
+          const path = "/uploads/" + file.name;
+          pyodide.FS.writeFile(path, new Uint8Array(await file.arrayBuffer()));
+          pyodide.runPython(
+            "from uz_dataviewer.webbridge import load_uploaded_session; load_uploaded_session(" +
+            JSON.stringify(path) + ")");
+        }} catch (err) {{
+          console.error(err);
+          pyRun("s and s.console.error(" + JSON.stringify("Failed to read " + file.name + ": " + err) + ")");
+        }}
+      }}
+      ev.target.value = "";  // allow re-selecting the same file
+    }});
+  }}
+
   async function main() {{
     const canvas = document.getElementById("canvas");
     canvas.addEventListener("contextmenu", e => e.preventDefault());
@@ -321,6 +345,7 @@ def build_html() -> str:
     setStatus("Starting viewer...");
     writeSourcesToFs();
     wireFileInput();
+    wireSessionInput();
     pyodide.runPython(document.getElementById("uzBootstrap").textContent);
     hideLoader();
   }}

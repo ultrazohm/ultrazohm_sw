@@ -43,6 +43,30 @@ def test_compute_fft_recovers_tone_on_bad_length_in_float32():
     assert abs(float(r.mag.max()) - amp) < 0.05  # normalised by original n, not padded length
 
 
+def test_compute_fft_recovers_tone_amplitude_with_hann_window():
+    # With the Hann window on (the default), the amplitude must be normalised by the
+    # window's coherent gain (Sum w), not by n -- otherwise the peak reads ~A/2.
+    fs, n, freq, amp = 5000.0, 8192, 50.0, 2.0
+    t = (np.arange(n) / fs).astype(np.float64)
+    y = (amp * np.sin(2 * np.pi * freq * t)).astype(np.float32)
+    r = compute_fft(t, y, float(t[0]), float(t[-1]), remove_dc=True, window=True)
+    assert r.ok
+    assert abs(float(r.freqs[np.argmax(r.mag)]) - freq) < fs / n * 3
+    assert abs(float(r.mag.max()) - amp) < 0.05  # not ~A/2
+
+
+def test_compute_fft_dc_bin_not_double_counted():
+    # A pure DC offset should read its true amplitude at f=0 (the single-sided x2
+    # applies only to the mirrored AC bins, not DC).
+    fs, n, offset = 1000.0, 4096, 3.0
+    t = (np.arange(n) / fs).astype(np.float64)
+    y = np.full(n, offset, dtype=np.float32)
+    r = compute_fft(t, y, float(t[0]), float(t[-1]), remove_dc=False, window=False)
+    assert r.ok
+    assert float(r.freqs[0]) == 0.0
+    assert abs(float(r.mag[0]) - offset) < 0.01  # not 2*offset
+
+
 def _state():
     state = AppState()
     t = np.linspace(0.0, 2.0, 4000)

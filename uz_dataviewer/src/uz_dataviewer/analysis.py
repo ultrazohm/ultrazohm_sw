@@ -9,18 +9,21 @@ import numpy as np
 
 from .downsample import visible_slice
 
-# Hann windows are recomputed per FFT; cache by length since the same window is
-# re-used across recomputes at the same span (cheap memory, avoids a cos over
-# millions of samples each Compute).
-_HANN_CACHE: dict[int, np.ndarray] = {}
+# Hann windows are recomputed per FFT; cache by length (with the window sum, used
+# for the amplitude correction below) since the same window is re-used across
+# recomputes at the same span (cheap memory, avoids a cos over millions of samples
+# each Compute).
+_HANN_CACHE: dict[int, tuple[np.ndarray, float]] = {}
 
 
-def _hann(n: int) -> np.ndarray:
-    w = _HANN_CACHE.get(n)
-    if w is None:
+def _hann(n: int) -> tuple[np.ndarray, float]:
+    """Return the length-``n`` Hann window and its sum (coherent gain · n)."""
+    cached = _HANN_CACHE.get(n)
+    if cached is None:
         w = np.hanning(n).astype(np.float32)
-        _HANN_CACHE[n] = w
-    return w
+        cached = (w, float(w.sum(dtype=np.float64)))
+        _HANN_CACHE[n] = cached
+    return cached
 
 
 def _next_fast_len(n: int) -> int:
@@ -99,14 +102,28 @@ def compute_fft(
 
     if remove_dc:
         ys -= ys.mean(dtype=np.float64)  # accumulate the mean in float64, subtract in place
+    # Amplitude normalisation is by the window's *coherent gain* (Σw): a tone of
+    # amplitude A peaks at A/2·Σw, so 2/Σw recovers A. For the rectangular case
+    # Σw = n, which is the plain 2/n. (Using 2/n with a Hann window under-reports
+    # every amplitude by ~2x, since Σw ≈ n/2.)
     if window:
-        ys *= _hann(n)
+        w, wsum = _hann(n)
+        ys *= w
+        norm = 2.0 / wsum
+    else:
+        norm = 2.0 / n
 
     # Zero-pad to a 5-smooth length so rfft avoids the large-prime slow path; the
-    # amplitude stays normalised by the *original* n (padding only interpolates bins).
+    # amplitude stays normalised by the *original* window (padding only interpolates bins).
     m = _next_fast_len(n)
     spectrum = np.fft.rfft(ys, n=m)
     freqs = np.fft.rfftfreq(m, d=dt)
-    mag = (2.0 / n) * np.abs(spectrum)
+    mag = norm * np.abs(spectrum)
+    # The single-sided ×2 folds the negative-frequency twin onto each bin; the DC
+    # bin (and the Nyquist bin at even length) has no twin, so halve it back.
+    if mag.size:
+        mag[0] *= 0.5
+        if m % 2 == 0:
+            mag[-1] *= 0.5
     info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{x_min:.4f}, {x_max:.4f}] s"
     return FftResult(freqs.astype(np.float32), mag.astype(np.float32), info)

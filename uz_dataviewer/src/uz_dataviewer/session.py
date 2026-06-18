@@ -488,7 +488,9 @@ def export_histogram(state: "AppState", path: str) -> int:
         if run is None or signal is None:
             continue
         start, stop = visible_slice(run.time, x_min, x_max)
-        values = signal.y[start:stop].astype(np.float64)
+        # np.histogram bins float32 directly (edges below are float64); no need to
+        # upcast the whole window, which can be tens of millions of samples.
+        values = signal.y[start:stop]
         if values.size == 0:
             continue
         series[ref[1]] = values

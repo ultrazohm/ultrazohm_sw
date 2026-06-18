@@ -336,6 +336,17 @@ def register_builtins(reg: CommandRegistry) -> None:
     reg.add("load", [Param("path", "str"), Param("start", "float", optional=True)], load,
             "Load a .csv/.parquet log; the optional start normalises the time origin.")
 
+    def convert(state, a):
+        from .loader import convert_csv_to_parquet
+
+        src, dst = a
+        out = convert_csv_to_parquet(src, dst)
+        state.console.info(f"converted {src} -> {out}")
+
+    reg.add("convert", [Param("src", "str"), Param("dst", "str", optional=True)], convert,
+            "Stream-convert a large CSV to Parquet (loads with a ~1.5x memory peak); "
+            "dst defaults to src with a .parquet extension.")
+
     def normalize_time(state, a):
         run_id, start = a
         run = state.registry.get(run_id)

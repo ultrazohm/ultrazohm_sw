@@ -79,3 +79,72 @@ def test_unsupported_extension(tmp_path):
     path.write_text("nope")
     with pytest.raises(ValueError):
         load_file(str(path), DataRegistry())
+
+
+def test_csv_channels_are_float32_time_float64(tmp_path):
+    path = tmp_path / "Log_dtypes.csv"
+    path.write_text(SAMPLE)
+    run = load_file(str(path), DataRegistry())
+    assert run.time.dtype == np.float64
+    assert all(sig.y.dtype == np.float32 for sig in run.signals.values())
+
+
+def test_csv_size_guard_refuses_with_guidance(tmp_path, monkeypatch):
+    from uz_dataviewer import loader
+
+    path = tmp_path / "Log_big.csv"
+    path.write_text(SAMPLE)
+    # A tiny file trips the guard once the budget is lowered below its footprint.
+    monkeypatch.setattr(loader, "MAX_CSV_NUMERIC_BYTES", 1)
+    with pytest.raises(ValueError) as exc:
+        load_file(str(path), DataRegistry())
+    assert "convert(" in str(exc.value)
+
+
+def test_convert_csv_to_parquet_round_trips(tmp_path):
+    from uz_dataviewer.loader import convert_csv_to_parquet
+
+    csv_path = tmp_path / "Log_conv.csv"
+    csv_path.write_text(SAMPLE)
+
+    # Loading the CSV directly is the reference.
+    ref = load_file(str(csv_path), DataRegistry())
+
+    dst = convert_csv_to_parquet(str(csv_path))
+    assert dst.endswith(".parquet") and os.path.exists(dst)
+    via_parquet = load_file(dst, DataRegistry())
+
+    assert set(via_parquet.signals) == set(ref.signals)
+    np.testing.assert_allclose(via_parquet.time, ref.time)
+    for name, sig in ref.signals.items():
+        assert via_parquet.signals[name].unit == sig.unit
+        np.testing.assert_allclose(via_parquet.signals[name].y, sig.y, rtol=1e-5)
+
+
+def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
+    import pandas as pd
+
+    from uz_dataviewer import loader
+
+    n = 5000
+    df = pd.DataFrame(
+        {
+            "time": np.linspace(0.0, 1.0, n),
+            "ia": np.sin(np.linspace(0.0, 10.0, n)).astype(np.float32),
+            "ib": np.cos(np.linspace(0.0, 10.0, n)).astype(np.float32),
+        }
+    )
+    path = tmp_path / "Log_stream.parquet"
+    # Many small row groups so iter_batches yields multiple batches.
+    df.to_parquet(path, row_group_size=512)
+
+    bulk = load_file(str(path), DataRegistry())  # n < threshold -> bulk path
+
+    # Force the streaming path and confirm it fills exactly n_rows and agrees.
+    monkeypatch.setattr(loader, "PARQUET_STREAM_MIN_ROWS", 0)
+    streamed = load_file(str(path), DataRegistry())
+
+    assert streamed.n_rows == n == bulk.n_rows
+    np.testing.assert_allclose(streamed.time, bulk.time)
+    for name in bulk.signals:
+        np.testing.assert_array_equal(streamed.signals[name].y, bulk.signals[name].y)

@@ -22,7 +22,7 @@ and the deep-dive files hold the detailed analysis (nodes, FFT, cloud data sourc
 | **Fixed FFT bin count** (resample / Welch cap) | FFT | Idea — a user-set cap so huge windows compute cheaply. Welch vs. resample trade-offs worked out. | [FFT_FUTURE_IDEAS.md](FFT_FUTURE_IDEAS.md#part-2--fixed-number-of-frequency-bins-resample--welch) |
 | **Move one-time `rfft` off the render thread** | FFT | Idea — kills the ~0.5 s *Compute* freeze on native (web has no worker threads). | [FFT_FUTURE_IDEAS.md](FFT_FUTURE_IDEAS.md) |
 | **Cloud logs (authenticated file store)** | Loader | Proposed — serve logs from a PocketBase file store for native + web; client downloads and loads them through the existing pipeline (decimation stays client-side, local path untouched). | [REMOTE_DATA.md](REMOTE_DATA.md) |
-| **Large logs in the web build (out-of-core)** | Loader | Analysis — wasm32's ~4 GB heap blocks big logs in the browser; out-of-core via an embedded DB or on-disk pyramid on OPFS is the fix (also removes the native RAM bound). Approach deferred. Note: channels now parse as float32 (done) — saves ~4–5 GB at load; streaming-parse or Parquet is the bigger lever. | [WEB_LARGE_LOGS.md](WEB_LARGE_LOGS.md) |
+| **Large logs in the web build (out-of-core)** | Loader | Analysis — wasm32's ~4 GB heap blocks big logs in the browser; out-of-core via an embedded DB or on-disk pyramid on OPFS is the fix (also removes the native RAM bound). Approach deferred. The **native** lean-loading path is now **shipped** (float32 channels, large-Parquet streaming, CSV size guard, CSV→Parquet `convert`); only the web/out-of-core route remains. | [WEB_LARGE_LOGS.md](WEB_LARGE_LOGS.md) |
 
 ---
 

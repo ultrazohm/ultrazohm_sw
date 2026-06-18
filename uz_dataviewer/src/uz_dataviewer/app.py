@@ -238,6 +238,18 @@ class DataViewerApp:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "convert":
+        # Headless CSV->Parquet conversion: `uz-dataviewer convert big.csv ...`.
+        from .loader import convert_csv_to_parquet
+
+        files = argv[1:]
+        if not files:
+            print("usage: uz-dataviewer convert <file.csv> [more.csv ...]", file=sys.stderr)
+            return 2
+        for src in files:
+            out = convert_csv_to_parquet(src)
+            print(f"converted {src} -> {out}")
+        return 0
     app = DataViewerApp(initial_files=argv)
     app.run()
     return 0

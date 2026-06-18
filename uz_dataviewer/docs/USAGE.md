@@ -29,6 +29,12 @@ Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you ca
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and
   enter a start (default `0`), then **Apply**. This shifts that log's time axis without
   touching the samples; untick to restore. (Also `load("Log.csv", 0)`.)
+- **Large logs:** channels load as `float32` and large Parquet files stream in, so a
+  multi-million-sample log opens at roughly its in-memory size. A **very large CSV is
+  refused** (bulk CSV parsing would risk running out of memory) with a message pointing you
+  to convert it once: `convert("Log.csv")` in the console, or `uz-dataviewer convert Log.csv`
+  from a shell — both write a `.parquet` beside the source that loads leanly. (Native; the
+  browser build is still bounded by its ~4 GB heap.)
 
 ---
 
@@ -154,7 +160,7 @@ Plots are referenced `plot_1..plot_N` (row-major); runs as `run_<id>` or by file
 
 | Group | Commands |
 |-------|----------|
-| Data / runs | `load(path, [start])`, `remove_run(run)`, `set_active(run, on)`, `normalize_time(run, [start])`, `reset_time(run)` |
+| Data / runs | `load(path, [start])`, `convert(src, [dst])`, `remove_run(run)`, `set_active(run, on)`, `normalize_time(run, [start])`, `reset_time(run)` |
 | Layout | `set_grid(rows, cols)`, `link_x(on)`, `set_max_points(n)` |
 | Signals | `add_signal(plot, run, signal)`, `remove_signal(plot, run, signal)`, `clear_plot(plot)`, `set_plot_type(plot, type)`, `set_xy(plot, run, signal)`, `set_axis(plot, run, signal, side)` |
 | View | `set_x_lim(plot, min, max)`, `set_y_lim(plot, min, max)`, `reset_view(plot)` |

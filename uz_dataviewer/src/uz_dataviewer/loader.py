@@ -2,18 +2,28 @@
 
 Supports the JavaScope ``.csv`` (``;`` separated) and ``.parquet`` log formats.
 CSV parsing uses Apache Arrow's multi-threaded reader which keeps memory and
-load time reasonable even for multi-gigabyte logs; the JavaScope writes a
-trailing ``;`` that produces an empty column, which is dropped here.
+load time reasonable; the JavaScope writes a trailing ``;`` that produces an
+empty column, which is dropped here.
 
 Channel headers look like ``CH8=8)ia`` -- the ``CHn=n)`` bookkeeping prefix is
 stripped to leave the friendly signal name, and a trailing unit token
 (``_rpm``, ``_us`` ...) is extracted for axis labels.
+
+Large logs (see ``docs/WEB_LARGE_LOGS.md``) are handled leanly on native:
+
+* channels parse **directly to float32** (time stays float64), avoiding a
+  float64 intermediate copy at load;
+* a **size guard** refuses a CSV that would not fit comfortably in RAM during the
+  bulk parse, and points the user at :func:`convert_csv_to_parquet`;
+* large Parquet files are **stream-loaded** into preallocated arrays (peak ~= the
+  resident dataset + one row-group), instead of materialising the whole table.
 """
 
 from __future__ import annotations
 
 import os
 import re
+from typing import Callable
 
 import numpy as np
 import pyarrow as pa
@@ -25,6 +35,25 @@ from .model import DataRegistry, Run
 _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 # Units commonly appended to JavaScope channel names.
 _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C", "K")
+
+# -- large-log tuning (see docs/WEB_LARGE_LOGS.md) ----------------------------
+# A CSV is bulk-parsed by Arrow, which holds the whole table in RAM *alongside*
+# the output arrays, so the load peak is several times the resident numeric size.
+# We refuse a CSV whose estimated resident footprint exceeds this budget and route
+# the user to the streaming CSV->Parquet converter; Parquet then loads through the
+# streaming path at a ~1.5x peak. Resident bytes ~= rows * (8 + 4*n_channels).
+#
+# NOTE: this budget is measured against the *resident* footprint, NOT the
+# bulk-parse peak. Arrow's read_csv transiently uses ~2-3x the resident size, so a
+# CSV just under this limit can still peak well above 10 GB during parsing. The
+# value is therefore a deliberately high ceiling that only blocks extreme files;
+# it is not a guarantee the bulk parse fits in 10 GB of RAM.
+MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
+# Parquet files below this many rows use the simple bulk reader; larger ones stream.
+PARQUET_STREAM_MIN_ROWS = 2_000_000
+# Rough average characters per numeric text field, used *only* to turn a CSV file
+# size into a row estimate for the size guard (and its message). Not exact.
+_CSV_AVG_FIELD_CHARS = 8
 
 
 def parse_channel_name(raw: str) -> tuple[str, str]:
@@ -47,31 +76,49 @@ def parse_channel_name(raw: str) -> tuple[str, str]:
     return name, unit
 
 
-def _table_to_run(table: pa.Table, registry: DataRegistry, path: str) -> Run:
-    columns = [c for c in table.column_names if c.strip() != ""]
+def _split_time_columns(column_names: list[str]) -> tuple[str, list[str]]:
+    """Pick the time column (``"time"`` or the first) and the data columns.
+
+    Empty-named columns (e.g. JavaScope's trailing ``;``) are ignored.
+    """
+    columns = [c for c in column_names if c.strip() != ""]
     if not columns:
         raise ValueError("File does not contain any named columns.")
-
     time_col = "time" if "time" in columns else columns[0]
     data_columns = [c for c in columns if c != time_col]
     if not data_columns:
         raise ValueError("File does not contain any signal columns besides time.")
+    return time_col, data_columns
 
-    time = table.column(time_col).to_numpy(zero_copy_only=False).astype(np.float64)
 
+def _named_signals(
+    data_columns: list[str], get_values: Callable[[str], np.ndarray]
+) -> tuple[dict[str, np.ndarray], dict[str, str]]:
+    """Map raw headers to ``{friendly_name: float32 array}`` plus units.
+
+    Shared by the bulk and streaming loaders so they agree on naming and on the
+    duplicate-name fallback (use the raw header when two channels clean to the
+    same friendly name).
+    """
     signals: dict[str, np.ndarray] = {}
     units: dict[str, str] = {}
     for raw in data_columns:
         name, unit = parse_channel_name(raw)
-        # Guard against duplicate friendly names by falling back to the raw header.
         if name in signals:
             name = raw.strip()
-        values = table.column(raw).to_numpy(zero_copy_only=False).astype(np.float32)
-        signals[name] = values
+        signals[name] = np.asarray(get_values(raw), dtype=np.float32)
         units[name] = unit
+    return signals, units
 
-    label = os.path.basename(path)
-    return registry.add_run(label, path, time, signals, units)
+
+def _table_to_run(table: pa.Table, registry: DataRegistry, path: str) -> Run:
+    time_col, data_columns = _split_time_columns(table.column_names)
+    time = table.column(time_col).to_numpy(zero_copy_only=False).astype(np.float64)
+    signals, units = _named_signals(
+        data_columns,
+        lambda raw: table.column(raw).to_numpy(zero_copy_only=False),
+    )
+    return registry.add_run(os.path.basename(path), path, time, signals, units)
 
 
 def _sniff_delimiter(path: str) -> str:
@@ -86,19 +133,145 @@ def _sniff_delimiter(path: str) -> str:
     return "," if header.count(",") > header.count(";") else ";"
 
 
+def _read_header(path: str, delimiter: str) -> list[str]:
+    """Return the non-empty column names from the CSV header row."""
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        header = fh.readline()
+    return [c.strip() for c in header.rstrip("\r\n").split(delimiter) if c.strip() != ""]
+
+
+def _csv_column_types(columns: list[str]) -> dict[str, pa.DataType]:
+    """Arrow ``column_types`` so channels parse straight to float32.
+
+    The time column is read as float64; every other named column as float32. This
+    avoids Arrow inferring float64 for the channels and a later float64->float32
+    cast (a full extra copy) -- the dominant load-peak cost on big logs.
+    """
+    if not columns:
+        return {}
+    time_col = "time" if "time" in columns else columns[0]
+    return {c: (pa.float64() if c == time_col else pa.float32()) for c in columns}
+
+
+def _estimate_csv_rows_and_bytes(path: str, columns: list[str]) -> tuple[int, int]:
+    """Rough ``(rows, resident_bytes)`` estimate for the size guard.
+
+    ``resident_bytes`` is the in-RAM numeric footprint (time float64 + channels
+    float32), estimated from the file size and column count -- not exact, but
+    enough to refuse a CSV that would risk OOM during the bulk parse.
+    """
+    n_cols = max(1, len(columns))
+    n_channels = max(0, len(columns) - 1)  # all but the time column
+    est_rows = int(os.path.getsize(path) / (n_cols * _CSV_AVG_FIELD_CHARS))
+    resident = est_rows * (8 + 4 * n_channels)
+    return est_rows, resident
+
+
+def _guard_csv_size(path: str, columns: list[str]) -> None:
+    est_rows, resident = _estimate_csv_rows_and_bytes(path, columns)
+    if resident > MAX_CSV_NUMERIC_BYTES:
+        gb = resident / (1024**3)
+        raise ValueError(
+            f"CSV too large (~{est_rows / 1e6:.0f}M rows, ~{gb:.1f} GB in memory). "
+            "Bulk CSV parsing risks running out of memory; convert it to Parquet "
+            "first (Parquet streams in at a ~1.5x peak), then open the .parquet:\n"
+            f'    convert("{path}")'
+        )
+
+
 def load_csv(path: str, registry: DataRegistry) -> Run:
+    delimiter = _sniff_delimiter(path)
+    columns = _read_header(path, delimiter)
+    _guard_csv_size(path, columns)
     table = pa_csv.read_csv(
         path,
-        parse_options=pa_csv.ParseOptions(delimiter=_sniff_delimiter(path)),
+        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
         read_options=pa_csv.ReadOptions(use_threads=True),
-        convert_options=pa_csv.ConvertOptions(strings_can_be_null=True),
+        convert_options=pa_csv.ConvertOptions(
+            strings_can_be_null=True,
+            column_types=_csv_column_types(columns),
+        ),
     )
     return _table_to_run(table, registry, path)
 
 
+def _load_parquet_streaming(
+    pf: pq.ParquetFile, registry: DataRegistry, path: str, n_rows: int
+) -> Run:
+    """Stream a large Parquet into preallocated arrays (peak ~= resident + a batch)."""
+    time_col, data_columns = _split_time_columns(pf.schema_arrow.names)
+    ordered = [time_col, *data_columns]
+    time = np.empty(n_rows, dtype=np.float64)
+    arrays = {raw: np.empty(n_rows, dtype=np.float32) for raw in data_columns}
+
+    off = 0
+    for batch in pf.iter_batches(columns=ordered):
+        m = batch.num_rows
+        for j, name in enumerate(ordered):
+            values = batch.column(j).to_numpy(zero_copy_only=False)
+            target = time if name == time_col else arrays[name]
+            target[off : off + m] = values
+        off += m
+    if off != n_rows:  # metadata disagreed with the data; trim to what we read
+        time = time[:off]
+        arrays = {k: v[:off] for k, v in arrays.items()}
+
+    signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
+    return registry.add_run(os.path.basename(path), path, time, signals, units)
+
+
 def load_parquet(path: str, registry: DataRegistry) -> Run:
-    table = pq.read_table(path)
-    return _table_to_run(table, registry, path)
+    pf = pq.ParquetFile(path)
+    n_rows = pf.metadata.num_rows
+    if n_rows < PARQUET_STREAM_MIN_ROWS:
+        return _table_to_run(pf.read(), registry, path)
+    return _load_parquet_streaming(pf, registry, path, n_rows)
+
+
+def convert_csv_to_parquet(src: str, dst: str | None = None) -> str:
+    """Stream-convert a CSV log to Parquet with bounded memory.
+
+    Reads ``src`` in row-group batches (never the whole file at once), casts
+    channels to float32 / time to float64, drops empty columns (JavaScope's
+    trailing ``;``) and writes ``dst``. Raw headers (``CH8=8)ia``) are preserved so
+    the resulting Parquet round-trips through the same name parsing on load.
+    Returns the output path (``src`` with a ``.parquet`` extension by default).
+    """
+    if not src.lower().endswith(".csv"):
+        raise ValueError(f"convert expects a .csv file, got {src!r}")
+    if dst is None:
+        dst = os.path.splitext(src)[0] + ".parquet"
+
+    delimiter = _sniff_delimiter(src)
+    columns = _read_header(src, delimiter)
+    reader = pa_csv.open_csv(
+        src,
+        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
+        read_options=pa_csv.ReadOptions(use_threads=True),
+        convert_options=pa_csv.ConvertOptions(
+            strings_can_be_null=True,
+            column_types=_csv_column_types(columns),
+        ),
+    )
+    writer: pq.ParquetWriter | None = None
+    try:
+        for batch in reader:
+            batch = _drop_empty_columns(batch)
+            if writer is None:
+                writer = pq.ParquetWriter(dst, batch.schema)
+            writer.write_batch(batch)
+    finally:
+        if writer is not None:
+            writer.close()
+        reader.close()
+    return dst
+
+
+def _drop_empty_columns(batch: pa.RecordBatch) -> pa.RecordBatch:
+    keep = [i for i, name in enumerate(batch.schema.names) if name.strip() != ""]
+    if len(keep) == batch.num_columns:
+        return batch
+    return batch.select(keep)
 
 
 def load_file(path: str, registry: DataRegistry) -> Run:

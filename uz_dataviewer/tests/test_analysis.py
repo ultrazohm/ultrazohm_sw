@@ -11,8 +11,36 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from uz_dataviewer import session  # noqa: E402
+from uz_dataviewer.analysis import _next_fast_len, compute_fft  # noqa: E402
 from uz_dataviewer.commands import _parse_fwindow  # noqa: E402
 from uz_dataviewer.state import AppState  # noqa: E402
+
+
+def test_next_fast_len_is_5_smooth_and_ge():
+    for n in (1, 6, 7, 17, 100, 19_997, 9_000_001):
+        m = _next_fast_len(n)
+        assert m >= n
+        r = m
+        for p in (2, 3, 5):
+            while r % p == 0:
+                r //= p
+        assert r == 1 or n <= 6, (n, m)  # m is 2^a*3^b*5^c (n>6)
+    assert _next_fast_len(17) == 18
+    assert _next_fast_len(100) == 100  # already smooth
+    assert _next_fast_len(19_997) == 20_000
+
+
+def test_compute_fft_recovers_tone_on_bad_length_in_float32():
+    # A prime window length exercises the zero-pad-to-fast-length path; amplitude
+    # and frequency must survive padding, and the output stays float32.
+    fs, n, freq, amp = 5000.0, 19_997, 50.0, 2.0
+    t = (np.arange(n) / fs).astype(np.float64)
+    y = (amp * np.sin(2 * np.pi * freq * t)).astype(np.float32)
+    r = compute_fft(t, y, float(t[0]), float(t[-1]), remove_dc=True, window=False)
+    assert r.ok
+    assert r.freqs.dtype == np.float32 and r.mag.dtype == np.float32
+    assert abs(float(r.freqs[np.argmax(r.mag)]) - freq) < fs / n * 3
+    assert abs(float(r.mag.max()) - amp) < 0.05  # normalised by original n, not padded length
 
 
 def _state():

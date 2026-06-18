@@ -73,6 +73,9 @@ class PlotsPanel:
         self._last_logged_cursor: dict[int, tuple[float, float]] = {}  # cursor echo
         self._last_logged_spy: dict[int, tuple] = {}  # spy-rect echo
         self._export_dialog: tuple | None = None  # (pfd dialog, plot_n)
+        # Per (cell, signal) decimation memo: skip re-decimating an unchanged view.
+        # key -> (sig_id, start, stop, n_out, xs_f64, ys_f64).
+        self._decim_cache: dict[tuple, tuple] = {}
 
     # -- helpers ------------------------------------------------------------
     def _emit(self, state: AppState, name: str, *args) -> None:
@@ -296,7 +299,7 @@ class PlotsPanel:
             if _is_finite_range(raw_lo, raw_hi):
                 state.plot_x_ranges[index + 1] = (raw_lo, raw_hi)
 
-            points_shown, raw_in_view = self._plot_signals(state, cell, x_min, x_max)
+            points_shown, raw_in_view = self._plot_signals(state, index, cell, x_min, x_max)
             self._last_points[index] = points_shown
             self._last_raw[index] = raw_in_view
 
@@ -321,9 +324,14 @@ class PlotsPanel:
             self._render_spy_inset(state, index, cell, width, inset_h)
 
     def _plot_signals(
-        self, state: AppState, cell: SubplotCell, x_min: float, x_max: float
+        self, state: AppState, index: int, cell: SubplotCell, x_min: float, x_max: float
     ) -> tuple[int, int]:
-        n_out = max(state.max_points, 2)
+        # A min/max envelope can't show more than ~one point per horizontal pixel, so
+        # cap the budget at the plot's pixel width (then the user's max_points is an
+        # upper bound). Avoids decimating + uploading 2-4x more vertices than the
+        # screen can resolve at the larger presets.
+        px = int(implot.get_plot_size().x)
+        n_out = max(2, min(state.max_points, 2 * px if px > 0 else state.max_points))
         points_shown = 0
         raw_in_view = 0
 
@@ -339,17 +347,26 @@ class PlotsPanel:
             if signal.pyramid is None and signal.y.size > PYRAMID_MIN_POINTS:
                 signal.pyramid = Pyramid.build(signal.y)
             start, stop = visible_slice(run.time, x_min, x_max)
-            xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
+            # Reuse the last decimation when nothing that affects it changed (same
+            # window, budget and underlying array). With idle FPS off the plot
+            # redraws continuously, so this skips a full re-decimate on a static view.
+            ck = (index, ref)
+            sig_id = id(signal.y)
+            cached = self._decim_cache.get(ck)
+            if cached is not None and cached[:4] == (sig_id, start, stop, n_out):
+                xs, ys = cached[4], cached[5]
+            else:
+                xs, ys = decimate_range(run.time, signal.y, signal.pyramid, n_out, start, stop)
+                # PlotLine is templated on one type T for both arrays: a dtype
+                # mismatch reinterprets a buffer as the wrong type. Keep them equal.
+                xs = np.ascontiguousarray(xs, dtype=np.float64)
+                ys = np.ascontiguousarray(ys, dtype=np.float64)
+                self._decim_cache[ck] = (sig_id, start, stop, n_out, xs, ys)
             points_shown += xs.shape[0]
             # Raw samples in the window (densest signal), not a sum across signals.
             raw_in_view = max(raw_in_view, stop - start)
             if xs.shape[0] < (stop - start):
                 state.downsampling_active = True
-
-            # PlotLine is templated on one type T for both arrays: a dtype
-            # mismatch reinterprets a buffer as the wrong type. Keep them equal.
-            xs = np.ascontiguousarray(xs, dtype=np.float64)
-            ys = np.ascontiguousarray(ys, dtype=np.float64)
 
             # Scatter is markers-only, so it always needs one; line/stairs show markers
             # only when "samples" is on. (A Spec defaults marker to none, which would

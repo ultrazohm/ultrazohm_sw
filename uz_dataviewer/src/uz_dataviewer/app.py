@@ -233,6 +233,9 @@ class DataViewerApp:
         )
         params.imgui_window_params.show_status_bar = True
         params.imgui_window_params.show_menu_bar = True
+        # Always render at full rate. hello_imgui idles to ~9 fps when there's no
+        # input; for live panning/zooming of large logs we want full FPS throughout.
+        params.fps_idling.enable_idling = False
         # MaterialFlat theme (per the idea list); applied via hello_imgui's
         # tweakable theme so it survives the dock layout setup.
         params.imgui_window_params.tweaked_theme.theme = (

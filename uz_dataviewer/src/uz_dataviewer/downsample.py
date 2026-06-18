@@ -89,21 +89,26 @@ def _reduce_to(y: np.ndarray, idx: np.ndarray, target: int, largest: bool) -> np
     replaces an integer **group factor** (``ceil(k/target)``, which can only halve/third/...
     the count and so realises as few as ~``target/2`` groups) with an *exact* group count,
     so the envelope lands at ~``n_out`` points at every zoom. ``idx`` must be ascending; the
-    result stays ascending (groups are taken in order). Cost is one ``lexsort`` over ``k``
-    candidates -- only ever called on an already-bucketed array (≲ ``target * factor``), so
-    the query stays O(output).
+    result stays ascending (groups are taken in order).
+
+    Cost is O(k) via segment reductions (``np.minimum/maximum.reduceat``) -- no sort. An
+    earlier version used ``np.lexsort`` here, which is O(k log k) and, run every frame per
+    signal (twice, min+max) on the decimation hot path, dropped frames at larger
+    ``max_points``; the reduceat form is output-equivalent and ~10x faster.
     """
     k = int(idx.shape[0])
     if k <= target:
         return idx
     grp = (np.arange(k) * target) // k  # near-equal groups, monotonic 0..target-1
-    keys = -y[idx] if largest else y[idx]
-    order = np.lexsort((keys, grp))  # by group, then value -> group extreme is first
-    g = grp[order]
-    first = np.empty(k, dtype=bool)
-    first[0] = True
-    first[1:] = g[1:] != g[:-1]
-    return idx[order[first]]
+    # Every group 0..target-1 is non-empty (grp steps by <1 per element when k > target),
+    # so `bnds` are valid reduceat segment starts with no empty segments.
+    bnds = np.searchsorted(grp, np.arange(target))
+    vals = y[idx]
+    segext = (np.maximum if largest else np.minimum).reduceat(vals, bnds)
+    ishit = vals == segext[grp]  # candidates equal to their group's extreme
+    pos = np.where(ishit, np.arange(k), k)  # ties -> keep the lowest (first) index
+    firstpos = np.minimum.reduceat(pos, bnds)
+    return idx[firstpos]
 
 
 def _envelope_oneshot(time, y, n_out, start, stop):

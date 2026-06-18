@@ -48,7 +48,10 @@ def compute_fft(
     if n < 4:
         return FftResult(None, None, "Selected window is too short for an FFT.")
 
-    dt = float(np.median(np.diff(ts)))
+    # Logs are uniformly sampled (the rate can differ between logs), so the step is
+    # exactly the span / interval count -- O(1), no full np.diff + median over the
+    # window (which is costly on a multi-million-sample full-window FFT).
+    dt = (float(ts[-1]) - float(ts[0])) / (n - 1)
     if dt <= 0:
         return FftResult(None, None, "Time axis is not increasing; cannot compute FFT.")
 

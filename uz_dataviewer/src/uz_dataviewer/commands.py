@@ -315,7 +315,7 @@ class CommandRegistry:
 # -- built-in commands --------------------------------------------------------
 def register_builtins(reg: CommandRegistry) -> None:
     # Imported lazily inside handlers to avoid a GUI/state import cycle.
-    from .state import PlotType
+    from .state import PlotType, XyStyle
 
     def _cell(state, plot_n):
         return state.cells[plot_n - 1]
@@ -423,6 +423,17 @@ def register_builtins(reg: CommandRegistry) -> None:
 
     reg.add("set_plot_type", [Param("plot", "plot"), Param("type", "str")], set_plot_type,
             "Set a subplot's type (line/scatter/stairs/xy).")
+
+    def set_xy_style(state, a):
+        plot_n, token = a
+        for s in XyStyle:
+            if s.value.lower() == str(token).lower() or s.name.lower() == str(token).lower():
+                _cell(state, plot_n).xy_style = s
+                return
+        raise CommandError(f"Unknown XY style {token!r}; one of {XyStyle.labels()}")
+
+    reg.add("set_xy_style", [Param("plot", "plot"), Param("style", "str")], set_xy_style,
+            "Set the XY plot draw style: Line, Markers, or Both.")
 
     def set_x_lim(state, a):
         plot_n, lo, hi = a

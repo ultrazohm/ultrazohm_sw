@@ -61,6 +61,7 @@ plots (or the FFT / Histogram windows).
 | **[docs/NATIVE_VS_WEB.md](docs/NATIVE_VS_WEB.md)** | What differs between the desktop and browser builds (file I/O, threading, memory) and what's identical. |
 | **[docs/PLUGINS.md](docs/PLUGINS.md)** | Writing your own node transforms as Python plugins. |
 | **[docs/ROADMAP.md](docs/ROADMAP.md)** | Open ideas and the record of what's already shipped. |
+| **[docs/dataviewer_v_javascope.md](docs/dataviewer_v_javascope.md)** | How the live JavaScope and this offline viewer relate, and the legacy `dataviewer.py` it succeeds. |
 
 ## Project layout
 

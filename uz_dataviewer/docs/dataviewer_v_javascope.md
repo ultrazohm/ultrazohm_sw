@@ -160,7 +160,7 @@ at first, then replaced by a pure-NumPy **min/max pyramid** so native and web sh
   arrange subplots, zoom into gigabyte-scale data, run FFTs.
 
 **One forward-looking overlap:** the Data Viewer's unified, scriptable **command API** —
-every click becomes a logged, replayable command (see [docs/ROADMAP.md](docs/ROADMAP.md)) —
+every click becomes a logged, replayable command (see [ROADMAP.md](ROADMAP.md)) —
 mirrors the JavaScope's existing "send commands to the device" model conceptually, but
 the Data Viewer's commands act on the *view* (plots, layout, FFT), not on hardware. The two
 could converge later (e.g. a scriptable tool that both controls acquisition and analyzes the

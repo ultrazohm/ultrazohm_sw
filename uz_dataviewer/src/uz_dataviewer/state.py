@@ -30,6 +30,18 @@ class PlotType(enum.Enum):
         return [t.value for t in cls]
 
 
+class XyStyle(enum.Enum):
+    """How an XY (signal-vs-signal) cell is drawn."""
+
+    LINE = "Line"  # connected line, no markers (the original behaviour)
+    MARKERS = "Markers"  # markers only, no connecting line (scatter)
+    BOTH = "Both"  # connected line with a marker at every sample
+
+    @classmethod
+    def labels(cls) -> list[str]:
+        return [s.value for s in cls]
+
+
 @dataclass
 class SubplotCell:
     """One cell of the plot grid and the signals dropped into it."""
@@ -54,6 +66,9 @@ class SubplotCell:
 
     xy_source: SignalRef | None = None
     """Signal used as the X axis when ``plot_type`` is :attr:`PlotType.XY`."""
+
+    xy_style: XyStyle = XyStyle.LINE
+    """How an XY cell draws its series (line / markers / both)."""
 
     y2_signals: list[SignalRef] = field(default_factory=list)
     """Signals drawn against the secondary (right) Y axis."""

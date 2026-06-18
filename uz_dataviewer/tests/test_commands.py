@@ -89,6 +89,20 @@ def test_set_xy_switches_type_and_source():
     assert state.cells[0].xy_source == (1, "ia")
 
 
+def test_set_xy_style():
+    from uz_dataviewer.state import XyStyle
+
+    state = _state_with_run()
+    assert state.cells[0].xy_style is XyStyle.LINE  # default preserves old behaviour
+    state.commands.dispatch(state, "set_xy_style(plot_1, markers)")
+    assert state.cells[0].xy_style is XyStyle.MARKERS
+    state.commands.dispatch(state, "set_xy_style(plot_1, Both)")  # case-insensitive
+    assert state.cells[0].xy_style is XyStyle.BOTH
+    # An unknown style is reported to the console, not applied.
+    state.commands.dispatch(state, "set_xy_style(plot_1, nope)")
+    assert state.cells[0].xy_style is XyStyle.BOTH
+
+
 def test_unknown_signal_is_reported_not_raised():
     state = _state_with_run()
     # Dispatch swallows errors into the console rather than raising.

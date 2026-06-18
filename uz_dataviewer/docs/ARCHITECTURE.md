@@ -61,7 +61,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | [commands.py](../src/uz_dataviewer/commands.py) | Command registry, parser, dispatcher, the ~60 built-in commands | `CommandRegistry`, `Command`, `Param` |
 | [console.py](../src/uz_dataviewer/console.py) | Bottom console: scrolling selectable log + command input/completion/history | `Console` |
 | [model.py](../src/uz_dataviewer/model.py) | Loaded data + per-log time normalization | `Run`, `Signal`, `DataRegistry` |
-| [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing | `load_file`, `parse_channel_name` |
+| [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet `convert`) — see §4a | `load_file`, `parse_channel_name`, `convert_csv_to_parquet` |
 | [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware decimation: min/max pyramid + one-shot (pure NumPy) | `Pyramid`, `decimate_range`, `visible_slice` |
 | [analysis.py](../src/uz_dataviewer/analysis.py) | GUI-free transforms (FFT) | `compute_fft`, `FftResult` |
 | [transforms.py](../src/uz_dataviewer/transforms.py) | GUI-free node transforms (math, FIR filter), pure NumPy | `math_node`, `filter_node` |
@@ -90,6 +90,36 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 
 Channel headers like `CH8=8)ia` are cleaned to `ia` by `parse_channel_name`, which
 also detects a trailing unit token (`_rpm`, `_us`, …) for axis labels.
+
+---
+
+## 4a. Loading & large logs ([loader.py](../src/uz_dataviewer/loader.py))
+
+`load_file` dispatches by extension to `load_csv` / `load_parquet`, both producing a `Run`
+via `DataRegistry.add_run`. On native, loads run on a `ThreadPoolExecutor` (see §10). The
+loader is built to keep the **load-time memory peak** near the resident dataset size, so
+~100M-point logs open without OOM:
+
+- **float32 at parse, no intermediate copy.** `_csv_column_types` feeds Arrow
+  `ConvertOptions(column_types=…)` so channels parse straight to `float32` (time stays
+  `float64`) — avoiding the float64→float32 re-cast that used to double the channel memory.
+  `_named_signals` then shares one naming/dedup pass across every load path.
+- **CSV size guard.** `_guard_csv_size` estimates the resident footprint from file size ×
+  column count and **refuses** a CSV above `MAX_CSV_NUMERIC_BYTES`, pointing the user at
+  `convert(...)`. (The budget is measured against the *resident* size, not Arrow's bulk-parse
+  peak — which runs ~2–3× higher — so it is a deliberately high ceiling, not a fit guarantee.)
+- **Streaming Parquet.** For files above `PARQUET_STREAM_MIN_ROWS`, `_load_parquet_streaming`
+  reads the exact row count from `ParquetFile.metadata.num_rows`, **preallocates** the output
+  arrays, and fills them with `iter_batches` (peak ≈ resident + one row group, ~1.5× measured)
+  instead of materialising the whole table. Small Parquet keeps the simple bulk path.
+- **CSV→Parquet converter.** `convert_csv_to_parquet` stream-converts a CSV to Parquet with
+  bounded memory (per-batch `ParquetWriter.write_batch`), dropping JavaScope's empty trailing
+  column and preserving raw headers so the result round-trips through the same name parsing.
+  Exposed as the scriptable `convert(src, [dst])` command and the `uz-dataviewer convert` CLI.
+
+The data stays **in RAM**, so FFT / histogram / node transforms still operate on the full
+record. Lifting the in-RAM bound entirely (out-of-core, web's hard ~4 GB case) is deferred —
+see **[WEB_LARGE_LOGS.md](WEB_LARGE_LOGS.md)**.
 
 ---
 
@@ -294,22 +324,20 @@ CSV exports (`export_data`, `export_fft`, `export_histogram`) also live here.
 
 ## 10. Native vs Web ([webbridge.py](../src/uz_dataviewer/webbridge.py))
 
-The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM).
-`webbridge.IS_WEB` gates the differences:
+The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single
+flag, `webbridge.IS_WEB`, gates the handful of edges that differ. The UI, command layer, plots,
+FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O,
+threading, and the WASM memory ceiling.
 
-| Concern | Native | Web |
-|---|---|---|
-| File open | OS dialog (`portable_file_dialogs`) + window drag-drop (GLFW) | hidden HTML `<input type=file>` |
-| Loading | async on a `ThreadPoolExecutor` | synchronous (no worker threads) |
-| Large CSV | Arrow reads the whole file | **> 200 MB only** is **stream-parsed into typed arrays** (`load_columns`) so the multi-GB text never sits in wasm32 memory; ≤ 200 MB CSV and any Parquet still go through Arrow |
-| Downsampler | min/max pyramid (pure NumPy) | **identical** (same code, no native dep) |
-| Export / Save | OS save dialog | `webbridge.download` (Blob + anchor click); session menu disabled |
+The design-relevant points: loads are async on native and synchronous on web (Pyodide has no
+worker threads); the renderer never branches on the target because the **decimator is pure NumPy**
+(no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so
+a large CSV is **stream-parsed into typed arrays** and **decimated on a memory budget** at load
+rather than materialised whole.
 
-The hard ceiling is wasm32's ~4 GB address space: the *numeric* data must fit
-(`rows × channels × 4` bytes), far below the raw CSV size. The streaming loader
-estimates this up front and **decimates `1:stride` on load if it would exceed a
-~1.5 GB budget** (with a console notice), so an oversize log loads a usable
-decimated view instead of silently aborting the runtime. See **[BUILD.md](BUILD.md)**.
+The full table and the rationale for each difference live in
+**[NATIVE_VS_WEB.md](NATIVE_VS_WEB.md)**; the wasm32 ~4 GB ceiling and the deferred out-of-core
+fix are analysed in **[WEB_LARGE_LOGS.md](WEB_LARGE_LOGS.md)**.
 
 ---
 

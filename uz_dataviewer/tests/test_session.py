@@ -78,6 +78,34 @@ def test_json_roundtrip(tmp_path):
     assert [r[1] for r in restored.cells[1].signals] == ["ib"]
 
 
+def test_xy_style_roundtrip_and_script(tmp_path):
+    from uz_dataviewer.state import XyStyle
+
+    csv = tmp_path / "Log_test.csv"
+    csv.write_text(SAMPLE)
+    state = AppState()
+    state.commands.dispatch(state, f'load("{csv}")')
+    state.commands.dispatch(state, "set_xy(plot_1, Log_test.csv, ia)")
+    state.commands.dispatch(state, "add_signal(plot_1, Log_test.csv, ib)")
+    state.commands.dispatch(state, "set_xy_style(plot_1, both)")
+
+    # JSON round-trip.
+    out = tmp_path / "session.json"
+    session.save_state(state, str(out))
+    restored = AppState()
+    session.load_state(restored, str(out))
+    assert restored.cells[0].plot_type is PlotType.XY
+    assert restored.cells[0].xy_style is XyStyle.BOTH
+
+    # .uzscript export emits the non-default style and replays it.
+    script = tmp_path / "session.uzscript"
+    session.export_script(state, str(script))
+    assert "set_xy_style(plot_1, Both)" in script.read_text()
+    replayed = AppState()
+    session.run_script(replayed, str(script))
+    assert replayed.cells[0].xy_style is XyStyle.BOTH
+
+
 def test_script_export_and_replay(tmp_path):
     csv = tmp_path / "Log_test.csv"
     csv.write_text(SAMPLE)

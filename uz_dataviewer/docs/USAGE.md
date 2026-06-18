@@ -43,8 +43,9 @@ Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you ca
 - **Drag** a channel from the tree onto a plot cell to add it.
 - **Layout** toolbar sets the grid (`1x1` default … `2x2`, `3x1`, …).
 - **Type** (per cell): `line` / `scatter` / `stairs` / `xy` (one signal vs another —
-  pick the X signal in the cell header). Time-series types use min/max downsampling that
-  preserves spikes; `xy` decimates by plain stride, so a very dense phase plot can alias.
+  pick the X signal in the cell header, and a **style** dropdown selects `Line` / `Markers` /
+  `Both`). Time-series types use min/max downsampling that preserves spikes; `xy` decimates by
+  plain stride, so a very dense phase plot can alias.
 - **Link X axes** (toolbar): pan/zoom one subplot and the others follow. **Any** plot you
   pan/zoom drives the shared range — there is no master plot; all linked plots show (and
   decimate over) the same time window.
@@ -162,7 +163,7 @@ Plots are referenced `plot_1..plot_N` (row-major); runs as `run_<id>` or by file
 |-------|----------|
 | Data / runs | `load(path, [start])`, `convert(src, [dst])`, `remove_run(run)`, `set_active(run, on)`, `normalize_time(run, [start])`, `reset_time(run)` |
 | Layout | `set_grid(rows, cols)`, `link_x(on)`, `set_max_points(n)` |
-| Signals | `add_signal(plot, run, signal)`, `remove_signal(plot, run, signal)`, `clear_plot(plot)`, `set_plot_type(plot, type)`, `set_xy(plot, run, signal)`, `set_axis(plot, run, signal, side)` |
+| Signals | `add_signal(plot, run, signal)`, `remove_signal(plot, run, signal)`, `clear_plot(plot)`, `set_plot_type(plot, type)`, `set_xy(plot, run, signal)`, `set_xy_style(plot, line\|markers\|both)`, `set_axis(plot, run, signal, side)` |
 | View | `set_x_lim(plot, min, max)`, `set_y_lim(plot, min, max)`, `reset_view(plot)` |
 | Tools | `show_samples(plot, on)`, `cursors(plot, on)`, `set_cursors(plot, x1, x2)`, `spy(plot, on)`, `set_spy_rect(plot, xmin, ymin, xmax, ymax)`, `export_data(plot, path, [relative])`, `set_export_relative(plot, on)` |
 | FFT window | `fft_source(run, signal)`, `fft_remove(run, signal)`, `fft_clear()`, `fft_follow(custom\|full\|plot_N)`, `fft_range(min, max)`, `fft_remove_dc(on)`, `fft_hann(on)`, `fft_logx(on)`, `fft_logy(on)`, `fft_xlim(min, max)`, `fft()`, `fft_export(path)` |

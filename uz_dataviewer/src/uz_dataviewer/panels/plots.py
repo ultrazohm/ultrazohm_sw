@@ -22,7 +22,7 @@ from imgui_bundle import imgui, implot
 
 from .. import webbridge
 from ..downsample import PYRAMID_MIN_POINTS, Pyramid, decimate_range, visible_slice
-from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell
+from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -212,6 +212,18 @@ class PlotsPanel:
                 imgui.text_colored((0.95, 0.85, 0.25, 1.0), self._cursor_text[index])
         elif cell.plot_type is PlotType.XY:
             self._xy_source_combo(state, index, cell)
+            imgui.same_line()
+            self._xy_style_combo(state, index, cell)
+
+    def _xy_style_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
+        labels = XyStyle.labels()
+        cur_idx = labels.index(cell.xy_style.value)
+        imgui.text("style:")
+        imgui.same_line()
+        imgui.set_next_item_width(95)
+        changed, cur_idx = imgui.combo("##xystyle", cur_idx, labels)
+        if changed:
+            self._emit(state, "set_xy_style", index + 1, list(XyStyle)[cur_idx].value)
 
     def _xy_source_combo(self, state: AppState, index: int, cell: SubplotCell) -> None:
         refs: list[SignalRef] = []
@@ -374,15 +386,21 @@ class PlotsPanel:
             if x_sig is not None:
                 stride = self._xy_stride(state, x_sig.y.shape[0])
                 xs = np.ascontiguousarray(x_sig.y[::stride], dtype=np.float64)
-                for ref in list(cell.signals):
+                want_marker = cell.xy_style in (XyStyle.MARKERS, XyStyle.BOTH)
+                for i, ref in enumerate(list(cell.signals)):
                     sig = state.registry.get_signal(ref[0], ref[1])
                     run = state.registry.get(ref[0])
                     if sig is None or run is None or not run.active:
                         continue
                     n = min(xs.shape[0], sig.y[::stride].shape[0])
                     ys = np.ascontiguousarray(sig.y[::stride][:n], dtype=np.float64)
-                    implot.plot_line(state.signal_label(ref), xs[:n], ys)
-                    self._legend_popup(state, cell, ref, state.signal_label(ref))
+                    label = state.signal_label(ref)
+                    spec = _colored_spec(i, marker=want_marker)
+                    if cell.xy_style is XyStyle.MARKERS:
+                        implot.plot_scatter(label, xs[:n], ys, spec)
+                    else:  # LINE (no markers) or BOTH (line + markers)
+                        implot.plot_line(label, xs[:n], ys, spec)
+                    self._legend_popup(state, cell, ref, label)
             else:
                 implot.plot_dummy("(pick an X source)")
             self._accept_drop(state, index, cell)

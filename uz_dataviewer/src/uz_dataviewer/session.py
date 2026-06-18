@@ -20,7 +20,7 @@ import json
 from typing import TYPE_CHECKING
 
 from .downsample import visible_slice
-from .state import PlotType
+from .state import PlotType, XyStyle
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from .state import AppState, SubplotCell
@@ -78,6 +78,7 @@ def to_dict(state: "AppState") -> dict:
                 "cursor_x": list(cell.cursor_x) if cell.cursor_x else None,
                 "export_relative": cell.export_relative,
                 "xy_source": _ref_to_labelled(state, cell.xy_source),
+                "xy_style": cell.xy_style.value,
                 "y2": [_ref_to_labelled(state, r) for r in cell.y2_signals],
             }
         )
@@ -172,6 +173,10 @@ def apply_dict(state: "AppState", data: dict) -> None:
         cell.cursor_x = tuple(spec["cursor_x"]) if spec.get("cursor_x") else None
         cell.export_relative = bool(spec.get("export_relative", False))
         cell.xy_source = _resolve(spec.get("xy_source"))
+        try:
+            cell.xy_style = XyStyle(spec.get("xy_style", XyStyle.LINE.value))
+        except ValueError:
+            cell.xy_style = XyStyle.LINE
         cell.y2_signals = [r for r in (_resolve(s) for s in spec.get("y2", [])) if r is not None]
         cell.fit_pending = True
 
@@ -282,6 +287,8 @@ def to_script(state: "AppState") -> list[str]:
             labelled = _ref_to_labelled(state, cell.xy_source)
             if labelled:
                 lines.append(f"set_xy(plot_{i}, {_arg(labelled[0])}, {_arg(labelled[1])})")
+        if cell.plot_type is PlotType.XY and cell.xy_style is not XyStyle.LINE:
+            lines.append(f"set_xy_style(plot_{i}, {cell.xy_style.value})")
         for ref in cell.y2_signals:
             labelled = _ref_to_labelled(state, ref)
             if labelled:

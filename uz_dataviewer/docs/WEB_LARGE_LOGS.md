@@ -4,6 +4,11 @@
 > **separate** from the cloud-data feature ([REMOTE_DATA.md](REMOTE_DATA.md)) — it is purely
 > about why the *browser* build can't open very large logs and what could fix it. The
 > implementation approach is intentionally left open.
+>
+> **Native** large logs are already handled by lean loading (float32-at-parse, streaming
+> Parquet, a CSV size guard and a CSV→Parquet `convert`) — see
+> [ARCHITECTURE §4a](ARCHITECTURE.md#4a-loading--large-logs-loaderpy). This doc is only about
+> the harder **web / larger-than-RAM** case that lean loading can't reach.
 
 ## The problem (concrete)
 
@@ -18,15 +23,14 @@ the PC's RAM).
 
 ## Why it's hard: the wasm32 ceiling
 
-Pyodide is a **wasm32** runtime: it has **one linear memory** — a single contiguous
-`ArrayBuffer` addressed by 32-bit pointers → **~4 GiB maximum, ~2–3 GB in practice** once you
-leave headroom. **Everything** Python touches lives in it: numpy arrays, Apache Arrow's parse
-buffers, the CSV text while parsing, and all Python objects. The current loader materializes the
-**whole** dataset (`time` + every channel) and then builds the min/max pyramid in that same
-memory — so ~4.8 GB simply doesn't fit in a ~4 GB address space.
+Pyodide runs in **wasm32**'s single ~4 GiB linear memory (~2–3 GB usable), and **everything**
+Python touches lives there — numpy arrays, Arrow's parse buffers, the CSV text, all Python
+objects (the basics are in [NATIVE_VS_WEB.md](NATIVE_VS_WEB.md#large-csvs-and-the-memory-ceiling)).
+The loader materialises the **whole** dataset and builds the pyramid in that same memory, so
+~4.8 GB doesn't fit in a ~4 GB address space.
 
-The crucial point: **this cap is on linear memory (RAM), not on what the tab can store overall.**
-That distinction is the whole answer to "would a database help?"
+The crucial point for the rest of this note: **this cap is on linear memory (RAM), not on what
+the tab can store overall** — which is the whole answer to "would a database help?"
 
 ## Mitigations
 
@@ -81,19 +85,13 @@ by loading everything.
   PC's RAM — tens of GB), so a ~4.8 GB log is comfortable, but a much larger one (e.g. 50 GB)
   would still exhaust native RAM. "Bound by RAM" holds on both; only the ceiling differs (machine
   RAM vs ~4 GB wasm).
-- **…and the current loader wastes memory at load (a separate fix — partially DONE).** Loading
-  the 4.6 GB example uses **~24 GB**. One cause: `pyarrow.csv.read_csv`
-  ([loader.py](../src/uz_dataviewer/loader.py)) inferred channels as **float64**, then
-  `_table_to_run` did `to_numpy(...).astype(float32)` per column (a float64 *and* a float32 copy).
-  **Fixed:** channels are now parsed **directly as float32** (time stays float64) via
-  `ConvertOptions(column_types=…)`. Measured saving scales as `4 B × n_channels × rows` (≈0.2 GB
-  at 2M rows → **≈4–5 GB at ~55M rows**), i.e. **~24 GB → ~19–20 GB** — real but **not** a
-  halving. The dominant remaining cost is that Arrow still materialises the **whole table** in RAM
-  alongside the output arrays. To actually cut the peak you must avoid holding the whole table:
-  **stream-parse** (Arrow batch reader → convert each batch to float32 into preallocated arrays,
-  the same shape as the web JS loader) or load from **Parquet** (smaller input, float32 columns,
-  no inference). Those are the bigger levers; the out-of-core work below is only for logs that
-  exceed RAM entirely.
+- **…and the load *peak* (separate from the resident bound) is now handled on native.** The
+  old loader peaked at ~24 GB on the 4.6 GB example (float64 inference + a float32 re-cast, and
+  Arrow holding the whole table). Lean loading has since shipped — float32-at-parse and streaming
+  Parquet bring the native peak down near the resident size; see
+  [ARCHITECTURE §4a](ARCHITECTURE.md#4a-loading--large-logs-loaderpy). That fixes the *peak*, but
+  not the *resident* bound: the full dataset still lives in RAM, which is exactly what the
+  out-of-core work below removes.
 - **pandas** is in-memory only — it loads the whole frame into RAM. It can read in fixed
   `chunksize` passes, but has no random-access "read just the visible window" model for
   interactive use. Not an out-of-core fix by itself.
@@ -115,60 +113,11 @@ on-disk pyramid in OPFS.
 
 ---
 
-## Native large logs (up to ~100M points) — **SHIPPED**
-
-This is the realistic target (native, both **CSV and Parquet**, up to ~100M points). The data
-stays **in RAM** so FFT / node transforms / histogram keep working — they each need the full
-window's raw samples in RAM (a full-record `rfft` even adds ~2–3 GB transient at 100M). Going
-out-of-core here would force a segmented/Welch FFT + a nodes rework — much larger effort. At 100M
-the ~8.8 GB resident fits native RAM; the only real problem is the **load peak**, so we just load
-leanly. (Out-of-core, below, is reserved for the web/larger-than-RAM case.)
-
-Key simplification: **cap CSV at ~10M rows and require Parquet above that.** This removes the
-hard part of streaming (assembling in-memory arrays from a CSV with no row count) — only Parquet
-needs streaming, and Parquet is the easy case.
-
-**Status: implemented in `loader.py`** (all four pieces below). The data stays in RAM, so FFT /
-histogram / node transforms keep working on the full record.
-
-1. **CSV — bulk loader, guarded by footprint. ✅**
-   - Channels parse **directly to float32**, time to float64, via
-     `ConvertOptions(column_types=_csv_column_types(...))` — no float64 intermediate copy.
-   - `_guard_csv_size` estimates the resident footprint from file size × column count and **refuses**
-     a CSV above `MAX_CSV_NUMERIC_BYTES` (~10 GB, ~110M rows at 20 channels) with a message pointing at
-     `convert(...)`.
-   - **Caveat:** the budget is measured against the *resident* footprint, **not** the bulk-parse
-     peak. Arrow's `read_csv` transiently uses ~2–3× the resident size, so a CSV just under the
-     limit can still peak well above 10 GB during parsing. `MAX_CSV_NUMERIC_BYTES` is thus a
-     deliberately high ceiling that blocks only extreme files — not a guarantee the bulk parse fits
-     in 10 GB. Lower it if you want a more conservative guard.
-
-2. **Parquet — streaming load (up to ~100M). ✅**
-   - `pq.ParquetFile(path).metadata.num_rows` gives the exact row count → arrays are **preallocated**
-     exactly (no grow-and-trim).
-   - `iter_batches(columns=…)` streams row groups; each batch is cast to float32 / float64 into the
-     preallocated slices and discarded. Files below `PARQUET_STREAM_MIN_ROWS` keep the simple bulk
-     path. Measured peak ≈ ~1.5× resident (vs ~2.1× for bulk) and the gap widens with size.
-
-3. **CSV→Parquet converter. ✅**
-   - `convert_csv_to_parquet(src, dst=None)`: streaming `pa_csv.open_csv(...)` → per-batch
-     `ParquetWriter.write_batch(...)`, dropping JavaScope's empty trailing column and keeping raw
-     headers so the `.parquet` round-trips through the same name parsing on load.
-
-4. **Triggering the converter — refuse with guidance (chosen UX). ✅**
-   - The size guard refuses and points the user to convert once; conversion is **explicit**, not
-     auto-on-open. Exposed both as the scriptable `convert(src, [dst])` console command and the
-     headless `uz-dataviewer convert <file.csv>` CLI subcommand.
-
-**Web is unchanged by this:** even as Parquet, 100M (~8.8 GB) can't fit Pyodide's 4 GB heap
-(Arrow builds the whole table), so web large logs still need the out-of-core route below. This
-work is **native-only**.
-
-**Touch points (as built):** `loader.load_csv` (float32 types + `_guard_csv_size`),
-`loader.load_parquet` / `_load_parquet_streaming` (streaming + preallocation), `convert_csv_to_parquet`,
-the `convert` command in `commands.py`, and the `convert` CLI branch in `app.main`. Verified by
-`tests/test_loader.py` (dtypes, guard message, converter round-trip, streaming-vs-bulk parity) and a
-manual RSS check on an 8M-row Parquet.
+> **Native is already handled.** Lean loading (float32-at-parse, CSV size guard, streaming
+> Parquet, CSV→Parquet `convert`) keeps native loads near their resident size for logs up to
+> ~100M points that still **fit in RAM** — documented in
+> [ARCHITECTURE §4a](ARCHITECTURE.md#4a-loading--large-logs-loaderpy). The rest of this note is
+> only about the **web / larger-than-RAM** case, where the data cannot all be resident at once.
 
 ---
 

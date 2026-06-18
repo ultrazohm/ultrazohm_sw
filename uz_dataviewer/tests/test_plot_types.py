@@ -65,6 +65,19 @@ def test_render_every_plot_type():
     _drive(state)  # must not raise
 
 
+def test_render_xy_styles():
+    from uz_dataviewer.state import XyStyle
+
+    for style in XyStyle:
+        state = _state()
+        state.set_grid(1, 1)
+        state.cells[0].plot_type = PlotType.XY
+        state.cells[0].xy_source = (1, "ib")
+        state.cells[0].add((1, "ia"))
+        state.cells[0].xy_style = style
+        _drive(state)  # markers / line / both must all render without raising
+
+
 def test_render_spy_inset():
     state = _state()
     state.set_grid(1, 1)

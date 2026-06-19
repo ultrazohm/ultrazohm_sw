@@ -242,8 +242,8 @@
         {
           "id": "conversion_factor",
           "label": "Software conversion factor",
-          "default": "1.0f",
-          "help": "Software-side factor used for the packed MAX11331 raw values. The current wizard template mirrors the legacy MAX11331 conversion formula."
+          "default": "4.96241f",
+          "help": "Board-specific software-side conversion factor used for the packed MAX11331 raw values. The default 4.96241f is taken from the MAX11 adapter card documentation and is independent of the UltraZohm hardware revision. The current driver uses one conversion factor for all 24 channels."
         },
         {
           "id": "conversion_factor_is_signed",

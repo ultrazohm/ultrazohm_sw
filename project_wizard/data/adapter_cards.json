@@ -474,7 +474,7 @@
           },
           {
             "signal": "{slot}_RAW_Valid",
-            "ip_pin": "meas_done",
+            "ip_pin": "new_data",
             "direction": "out",
             "adapter_pin_name_template": "{signal}",
             "boundary_name_template": "{signal}",

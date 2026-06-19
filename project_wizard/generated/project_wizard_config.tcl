@@ -1648,7 +1648,7 @@ uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/A3_RAW_Valid "" ""
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/meas_done ${adapter_hier_path}/A3_RAW_Valid
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_ADC_MAX11331/new_data ${adapter_hier_path}/A3_RAW_Valid
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/A3_RAW_Valid ${adapter_parent_hier}/A3_RAW_Valid

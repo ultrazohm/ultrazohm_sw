@@ -57,6 +57,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | Module | Responsibility | Key types |
 |--------|----------------|-----------|
 | [app.py](../src/uz_dataviewer/app.py) | Docking layout, `immapp` runner, theme, Session menu, `.uzscript`/file startup | `DataViewerApp` |
+| [api.py](../src/uz_dataviewer/api.py) | GUI-free façade for headless/library use (load, FFT, node transforms) — see [LIBRARY.md](LIBRARY.md) | `read`, `Dataset`, `fft`, `fft_frame`, `node`, `kinds` |
 | [state.py](../src/uz_dataviewer/state.py) | The single app state, grid/cells, analysis configs, async load orchestration | `AppState`, `SubplotCell`, `PlotType`, `AnalysisConfig`/`FftConfig`/`HistogramConfig` |
 | [commands.py](../src/uz_dataviewer/commands.py) | Command registry, parser, dispatcher, the ~60 built-in commands | `CommandRegistry`, `Command`, `Param` |
 | [console.py](../src/uz_dataviewer/console.py) | Bottom console: scrolling selectable log + command input/completion/history | `Console` |

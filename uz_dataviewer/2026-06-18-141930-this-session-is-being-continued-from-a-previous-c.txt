@@ -1,0 +1,1721 @@
+╭─── Claude Code v2.1.181 ─────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                Welcome back Tobias!                │ started                 │
+│                                                    │ Run /init to create a … │
+│                       ▐▛███▜▌                      │ ─────────────────────── │
+│                      ▝▜█████▛▘                     │ What's new              │
+│                        ▘▘ ▝▝                       │ Added `/config key=val… │
+│  Opus 4.8 · Claude Pro ·                           │ Added `sandbox.allowAp… │
+│  tobias.schindler@zohm-control.com's Organization  │ Added `CLAUDE_CLIENT_P… │
+│       /workspaces/ultrazohm_sw/uz_dataviewer       │ /release-notes for more │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+● Written down and verified. The discussion is now captured in
+  docs/WEB_LARGE_LOGS.md as an implementation-ready section, "Decided plan for 
+  native large logs (up to ~100M points)", covering:
+
+  - Why in-RAM (not out-of-core) for native — FFT/nodes/histogram need the full
+  window's raw samples in RAM (full-record rfft adds ~2–3 GB transient at 100M);
+  the resident ~8.8 GB fits native RAM, so only the load peak needs fixing.
+  - The simplification you proposed: cap CSV at ~10M rows, require Parquet above
+  — removes the hard CSV-streaming case; only Parquet needs streaming, which is
+  the easy one.
+  - 3 concrete pieces, with the real APIs:
+    a. CSV → keep the bulk float32 loader (done), add a size guard (~1 GB ≈ ~10M
+  rows) that refuses oversize CSV.
+    b. Parquet → streaming load via ParquetFile.metadata.num_rows (exact
+  preallocation) + iter_batches + per-batch float32 → ~1× peak, up to 100M.
+    c. CSV→Parquet converter (open_csv → ParquetWriter.write_batch), since
+  JavaScope only emits CSV — with the open UX decision noted (lean:
+  auto-convert-on-open + cached .parquet).
+  - Status (float32 parsing DONE; rest pending), the web caveat (100M can't fit
+  the 4 GB heap even as Parquet → still needs the separate out-of-core route),
+  touch points (loader.load_csv, loader.load_parquet, converter helper,
+  state.request_load/navigation), and a verification recipe.
+
+  I also relabeled the existing out-of-core section as "for the web/out-of-core
+  case" so the two strategies (native in-RAM vs web out-of-core) are clearly
+  separated. Links verified; no code changed this turn.
+
+  The one open decision recorded for implementation time is the converter UX
+  (auto-convert-on-open vs a convert script) — my noted lean is
+  auto-convert-on-open with a cached Parquet.
+
+❯ /compact                                                                      
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Read uz_dataviewer/tests/test_loader.py (82 lines)
+  ⎿  Read uz_dataviewer/src/uz_dataviewer/loader.py (112 lines)
+  ⎿  Read uz_dataviewer/docs/ROADMAP.md (46 lines)
+  ⎿  Read uz_dataviewer/docs/NATIVE_VS_WEB.md (102 lines)
+  ⎿  Read uz_dataviewer/docs/WEB_LARGE_LOGS.md (196 lines)
+  ⎿  Plan file referenced 
+     (~/.claude/plans/in-uz-dataviewer2-there-are-woolly-flamingo.md)
+
+❯ /compact check the uz_dataviewer in the directory uz/dataviewer               
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Plan file referenced 
+     (~/.claude/plans/in-uz-dataviewer2-there-are-woolly-flamingo.md)
+
+❯ critically examine the season write and load function. for example, on        
+  native, the fft window is not resumed. on web, the session can not be         
+  exported at all. check the full session read and write function and the       
+  export and import script function. compe up with a plan if you find any       
+  problems                                                                      
+
+● I'll examine the session save/load and export/import functionality. Let me
+  find the relevant code.
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Now let me look at how these are wired as commands and how web file I/O works.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Now let me look at how the UI triggers these (file dialogs) and the web path,
+  plus the FFT config state shape.
+
+  Read 1 file (ctrl+o to expand)
+
+● Now the navigation panel where the buttons live:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Let me look at the navigation panel's session buttons (save/load state,
+  scripts):
+
+  Read 1 file (ctrl+o to expand)
+
+● The session save/load/script buttons aren't in navigation. Let me find them
+  (likely a menu bar in app.py):
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Both issues are becoming clear. Let me check the FFT/Histogram config state
+  and how compute is triggered:
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+● Let me confirm how the FFT panel decides to compute, to verify the
+  restore-doesn't-recompute issue:
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Let me check resolve_x_window fallback and confirm the script-vs-JSON
+  asymmetry for FFT options:
+
+  Read 1 file (ctrl+o to expand)
+
+● Let me check existing session tests and docs claims to ground the plan:
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+● I've traced the full session read/write and script export/import paths. Here's
+  what I found.
+
+  Findings
+
+  Bug 1 — JSON restore never recomputes FFT/Histogram (this is your "FFT window 
+  not resumed")
+
+  apply_dict restores the sources and all options but never asks the windows to
+  recompute:
+
+  # session.py:184  — sets sources, but not compute_requested
+  state.fft.sources = [r for r in (_resolve(s) for s in fft.get("sources", []))
+  if r is not None]
+
+  The analysis panel only ever computes when compute_requested is set
+  (analysis.py:195). So after Load state, the FFT/Histogram windows come back
+  with the right source list and options but draw nothing until you manually
+  click Compute. The "⚠ stale" hint doesn't even show, because it's gated on
+  there already being results (analysis.py:205).
+
+  Notably the script path doesn't have this bug: fft_source/hist_source set
+  compute_requested = True (commands.py:567,582), so a replayed .uzscript does
+  recompute. The asymmetry is exactly why JSON-restore looks broken and
+  script-replay doesn't.
+
+  Fix: in apply_dict, after restoring sources, state.fft.compute_requested = 
+  bool(state.fft.sources) (and same for histogram). One line each.
+
+  Bug 2 — Web build can't save/load/export/run sessions at all
+
+  The Session menu is gated on native-only file dialogs:
+
+  # app.py:117
+  disabled = pfd is None or bool(self._session_dialog)
+
+  On web pfd is None, so all four items (Save state, Load state, Export script,
+  Run script) are permanently greyed out. The data exports (plots/FFT/histogram)
+  were given a web path via webbridge.download + the hidden <input type=file>,
+  but the Session menu never was.
+
+  Fix, two halves:
+  - Save state / Export script (easy): write to /tmp/<name> then
+  webbridge.download(path, name), same pattern the data exports already use.
+  download() reads UTF-8 text, so JSON/.uzscript work as-is (its hardcoded
+  type="text/csv" is cosmetic).
+  - Load state / Run script (more work): needs an upload route. The hidden
+  uzFileInput currently hardcodes uploaded files to request_load (i.e. treat as
+  data). We'd add a "pending upload action" so a .json routes to load_state and
+  .uzscript to run_script — a small change in webbridge.py plus the JS change
+  handler in build/gen_web.py.
+  - Caveat to document: restoring a JSON session re-loads its data files by path
+  (load_sync(run.path)), and those paths won't exist in a fresh Pyodide FS — so
+  web load-state realistically works within one session or needs the data
+  re-uploaded. Out of scope to fully solve here.
+
+  Bug 3 — .uzscript export is lossy vs JSON for analysis options
+
+  to_script (session.py:310-317) emits only fft_source(...) / hist_source(...).
+  It drops everything else the JSON saves: FFT remove_dc, Hann window,
+  log_x/log_y, follow_plot/range; histogram bins, follow/range; and per-cell
+  export_relative. So a script "reproduces the session" with DC-removal/Hann
+  silently back on, bins back to 50, and any custom analysis window lost — a
+  different picture than the JSON of the same session. The module docstring
+  claims both formats reproduce the session.
+
+  Fix: emit the non-default analysis options in to_script
+  (fft_remove_dc/fft_hann/fft_logx/fft_logy, fft_follow+fft_range when not the
+  default, hist_bins, set_export_relative), guarded on non-default so scripts
+  stay short. Commands already exist for all of these.
+
+  Also worth noting
+
+  - No test covers FFT/Histogram round-trip — that's why Bug 1 and Bug 3 slipped
+  through. test_session.py checks grid/cells/xy only.
+
+  Proposed plan
+
+  1. Bug 1 (small, highest value): set compute_requested for fft & histogram in
+  apply_dict. Add a test_session assertion that a restored session with FFT/hist
+  sources flags a recompute.
+  2. Bug 3 (correctness): make to_script emit non-default analysis +
+  export_relative options; extend the script round-trip test.
+  3. Bug 2 (web parity): enable Save state / Export script on web via /tmp +
+  download; add the upload route for Load state / Run script in webbridge.py +
+  build/gen_web.py. Bigger and touches the JS shim — I'd do it as a separate
+  commit.
+
+  I'd suggest doing 1 and 2 together (pure-Python, fully testable now) and
+  2-the-web-part as a follow-up. Want me to implement 1 + 3 now, or all three?
+
+✻ Worked for 3m 8s
+
+❯ implement all three                                                           
+
+● I'll implement all three. Let me start with the file-dialog/web shim context I
+  haven't seen yet.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Let me check how the fwindow param parses, so the script emits a valid
+  fft_follow token, plus the export_relative command name:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Now I have everything. Let me implement Bug 1 (recompute on restore) and Bug 3
+  (lossless script) in session.py:
+
+● Update(src/uz_dataviewer/session.py)
+  ⎿  Added 7 lines
+      197      state.histogram.x_max = float(hist.get("x_max", state.hist
+           ogram.x_max))
+      198      state.histogram.bins = int(hist.get("bins", state.histogra
+           m.bins))
+      199  
+      200 +    # Restoring sources alone leaves the windows blank until t
+          +he user clicks                                                
+      201 +    # Compute (the panels only ever compute on request). Flag 
+          +a recompute so a                                              
+      202 +    # restored session draws its spectra/bins straight away --
+          + matching what the                                            
+      203 +    # fft_source/hist_source commands do when a script is repl
+          +ayed.                                                         
+      204 +    state.fft.compute_requested = bool(state.fft.sources)     
+      205 +    state.histogram.compute_requested = bool(state.histogram.s
+          +ources)                                                       
+      206  
+      207 +                                                              
+      208  def _restore_nodes(state: "AppState", specs: list, resolve) ->
+            None:
+      209      """Rebuild the node graph from a snapshot (preserving ids)
+            and evaluate it."""
+      210      from .nodes import NodeGraph, evaluate
+
+● Now Bug 3 — make to_script emit the analysis options and export_relative:
+
+● Update(src/uz_dataviewer/session.py)
+  ⎿  Added 44 lines, removed 3 lines
+      313                  lines.append(f"set_cursors(plot_{i}, {cell.cur
+           sor_x[0]:.6g}, {cell.cursor_x[1]:.6g})")
+      314              else:
+      315                  lines.append(f"cursors(plot_{i}, true)")
+      316 +        if cell.export_relative:                              
+      317 +            lines.append(f"set_export_relative(plot_{i}, true)
+          +")                                                            
+      318  
+      317 -    for ref in state.fft.sources:                             
+      319 +    _analysis_to_script(state, lines)                         
+      320 +    return lines                                              
+      321 +                                                              
+      322 +                                                              
+      323 +def _fwindow_token(follow_plot: int) -> str:                  
+      324 +    """``follow_plot`` int -> the ``fwindow`` token (custom / 
+          +full / plot_N)."""                                            
+      325 +    if follow_plot == 0:                                      
+      326 +        return "custom"                                       
+      327 +    if follow_plot == -1:                                     
+      328 +        return "full"                                         
+      329 +    return f"plot_{follow_plot}"                              
+      330 +                                                              
+      331 +                                                              
+      332 +def _analysis_to_script(state: "AppState", lines: list[str]) -
+          +> None:                                                       
+      333 +    """Emit the FFT/Histogram sources *and their options*, so 
+          +a replayed script                                             
+      334 +    reproduces the same window the JSON snapshot would (DC rem
+          +oval, Hann, log                                               
+      335 +    axes, bin count, time window) rather than silently falling
+          + back to defaults."""                                         
+      336 +    fft = state.fft                                           
+      337 +    for ref in fft.sources:                                   
+      338          labelled = _ref_to_labelled(state, ref)
+      339          if labelled:
+      340              lines.append(f"fft_source({_arg(labelled[0])}, {_a
+           rg(labelled[1])})")
+      321 -    for ref in state.histogram.sources:                       
+      341 +    if fft.sources:                                           
+      342 +        if not fft.remove_dc:                                 
+      343 +            lines.append("fft_remove_dc(false)")              
+      344 +        if not fft.window:                                    
+      345 +            lines.append("fft_hann(false)")                   
+      346 +        if fft.log_x:                                         
+      347 +            lines.append("fft_logx(true)")                    
+      348 +        if fft.log_y:                                         
+      349 +            lines.append("fft_logy(true)")                    
+      350 +        if fft.follow_plot != 1:                              
+      351 +            lines.append(f"fft_follow({_fwindow_token(fft.foll
+          +ow_plot)})")                                                  
+      352 +        if fft.follow_plot == 0:                              
+      353 +            lines.append(f"fft_range({fft.x_min:.6g}, {fft.x_m
+          +ax:.6g})")                                                    
+      354 +                                                              
+      355 +    hist = state.histogram                                    
+      356 +    for ref in hist.sources:                                  
+      357          labelled = _ref_to_labelled(state, ref)
+      358          if labelled:
+      359              lines.append(f"hist_source({_arg(labelled[0])}, {_
+           arg(labelled[1])})")
+      325 -    return lines                                              
+      360 +    if hist.sources:                                          
+      361 +        if hist.bins != 50:                                   
+      362 +            lines.append(f"hist_bins({hist.bins})")           
+      363 +        if hist.follow_plot != 1:                             
+      364 +            lines.append(f"hist_follow({_fwindow_token(hist.fo
+          +llow_plot)})")                                                
+      365 +        if hist.follow_plot == 0:                             
+      366 +            lines.append(f"hist_range({hist.x_min:.6g}, {hist.
+          +x_max:.6g})")                                                 
+      367  
+      368  
+      369  def export_script(state: "AppState", path: str) -> None:
+
+● Now Bug 2 (web). First, webbridge.py — generic download mimetype + session
+  upload route:
+
+● Update(src/uz_dataviewer/webbridge.py)
+  ⎿  Added 1 line
+      26  _active_state = None  # type: ignore[var-annotated]
+      27  
+      28  FILE_INPUT_ID = "uzFileInput"
+      29 +SESSION_INPUT_ID = "uzSessionInput"                            
+      30  
+      31  
+      32  def register_state(state) -> None:
+
+● Update(src/uz_dataviewer/webbridge.py)
+  ⎿  Added 40 lines, removed 1 line
+      59      _active_state.request_load(path)
+      60  
+      61  
+      62 +def trigger_session_open() -> None:                            
+      63 +    """Click the hidden HTML session-file input (browser only).
+      64 +                                                               
+      65 +    Separate from the data file input so an uploaded ``.json``/
+         +``.uzscript`` is                                               
+      66 +    routed to :func:`load_uploaded_session` (state restore / sc
+         +ript replay)                                                   
+      67 +    rather than to the data loader.                            
+      68 +    """                                                        
+      69 +    if not IS_WEB:                                             
+      70 +        return                                                 
+      71 +    import js  # type: ignore[import-not-found]                
+      72 +                                                               
+      73 +    element = js.document.getElementById(SESSION_INPUT_ID)     
+      74 +    if element is not None:                                    
+      75 +        element.click()                                        
+      76 +                                                               
+      77 +                                                               
+      78 +def load_uploaded_session(path: str) -> None:                  
+      79 +    """Load a session file the browser wrote into the Pyodide F
+         +S. Called from JS.                                             
+      80 +                                                               
+      81 +    Routes by extension: ``.json`` restores a state snapshot (`
+         +`load_state``),                                                
+      82 +    anything else replays a command script (``run_script``). Bo
+         +th go through the                                              
+      83 +    command layer so the action is logged like any other.      
+      84 +    """                                                        
+      85 +    if _active_state is None:                                  
+      86 +        return                                                 
+      87 +    command = "load_state" if path.lower().endswith(".json") el
+         +se "run_script"                                                
+      88 +    try:                                                       
+      89 +        _active_state.commands.execute(_active_state, command, 
+         +[path])                                                        
+      90 +    except Exception as exc:  # noqa: BLE001 - surfaced to the 
+         +console                                                        
+      91 +        _active_state.console.error(str(exc))                  
+      92 +                                                               
+      93 +                                                               
+      94  def download(path: str, filename: str | None = None) -> None:
+      95      """Trigger a browser download of a file in the Pyodide FS (
+          web only).
+      96  
+     ...
+      105  
+      106      with open(path, encoding="utf-8") as fh:
+      107          text = fh.read()
+      108 +    name = filename or path.rsplit("/", 1)[-1]                
+      109 +    if name.endswith(".json"):                                
+      110 +        mime = "application/json"                             
+      111 +    elif name.endswith(".csv"):                               
+      112 +        mime = "text/csv"                                     
+      113 +    else:                                                     
+      114 +        mime = "text/plain"                                   
+      115      options = js.Object.new()
+       77 -    options.type = "text/csv"                                 
+      116 +    options.type = mime                                       
+      117      blob = js.Blob.new(to_js([text]), options)
+      118      url = js.URL.createObjectURL(blob)
+      119      anchor = js.document.createElement("a")
+
+● Let me update the rest of download to reuse name:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(src/uz_dataviewer/webbridge.py)
+  ⎿  Added 1 line, removed 1 line
+      118      url = js.URL.createObjectURL(blob)
+      119      anchor = js.document.createElement("a")
+      120      anchor.href = url
+      121 -    anchor.setAttribute("download", filename or path.rsplit("/
+          -", 1)[-1])                                                    
+      121 +    anchor.setAttribute("download", name)                     
+      122      js.document.body.appendChild(anchor)
+      123      anchor.click()
+      124      anchor.remove()
+
+● Now app.py — split the Session menu into native (dialogs) and web
+  (download/upload) paths:
+● Update(src/uz_dataviewer/app.py)
+  ⎿  Added 26 lines, removed 1 line
+      114      def _show_menus(self) -> None:
+      115          if not imgui.begin_menu("Session"):
+      116              return
+      117 +        if webbridge.IS_WEB:                                  
+      118 +            self._web_session_menu()                          
+      119 +        else:                                                 
+      120 +            self._native_session_menu()                       
+      121 +        imgui.end_menu()                                      
+      122 +                                                              
+      123 +    def _native_session_menu(self) -> None:                   
+      124          disabled = pfd is None or bool(self._session_dialog)
+      125          if imgui.menu_item("Save state...", "", False, not dis
+           abled)[0]:
+      126              self._session_dialog = (
+     ...
+      147                  "run_script",
+      148                  True,
+      149              )
+      143 -        imgui.end_menu()                                      
+      150  
+      151 +    def _web_session_menu(self) -> None:                      
+      152 +        """Browser has no OS file dialog: write+download to sa
+          +ve, a hidden file                                             
+      153 +        input to load (routed by extension in :func:`webbridge
+          +.load_uploaded_session`)."""                                  
+      154 +        if imgui.menu_item("Save state...", "", False, True)[0
+          +]:                                                            
+      155 +            self._web_download("save_state", "session.json")  
+      156 +        if imgui.menu_item("Load state / Run script...", "", F
+          +alse, True)[0]:                                               
+      157 +            webbridge.trigger_session_open()                  
+      158 +        imgui.separator()                                     
+      159 +        if imgui.menu_item("Export script...", "", False, True
+          +)[0]:                                                         
+      160 +            self._web_download("export_script", "session.uzscr
+          +ipt")                                                         
+      161 +                                                              
+      162 +    def _web_download(self, command: str, name: str) -> None: 
+      163 +        path = "/tmp/" + name                                 
+      164 +        try:                                                  
+      165 +            self.state.commands.execute(self.state, command, [
+          +path])                                                        
+      166 +            webbridge.download(path, name)                    
+      167 +        except Exception as exc:  # noqa: BLE001 - surfaced to
+          + the console                                                  
+      168 +            self.state.console.error(str(exc))                
+      169 +                                                              
+      170      def _poll_session_dialog(self) -> None:
+      171          if not self._session_dialog:
+      172              return
+
+● Now gen_web.py — add the hidden session input and wire it:
+
+● Update(build/gen_web.py)
+  ⎿  Added 1 line
+      118  <div id="loader">Loading Pyodide...</div>
+      119  <canvas id="canvas" tabindex="0"></canvas>
+      120  <input type="file" id="uzFileInput" accept=".csv,.parquet" mul
+           tiple style="display:none">
+      121 +<input type="file" id="uzSessionInput" accept=".json,.uzscript
+          +,.txt" style="display:none">                                  
+      122  
+      123  <!-- Embedded Python sources (written into the Pyodide FS befo
+           re the app starts) -->
+      124  {src_tags}
+
+● Update(build/gen_web.py)
+  ⎿  Added 23 lines
+      299      }});
+      300    }}
+      301  
+      302 +  // Session files (.json state / .uzscript) -- written to the
+          + FS then routed to                                            
+      303 +  // load_state / run_script by extension. Separate input from
+          + the data loader.                                             
+      304 +  function wireSessionInput() {{                              
+      305 +    const input = document.getElementById("uzSessionInput");  
+      306 +    input.addEventListener("change", async (ev) => {{         
+      307 +      try {{ pyodide.FS.mkdir("/uploads"); }} catch (_) {{}}  
+      308 +      const file = ev.target.files[0];                        
+      309 +      if (file) {{                                            
+      310 +        try {{                                                
+      311 +          const path = "/uploads/" + file.name;               
+      312 +          pyodide.FS.writeFile(path, new Uint8Array(await file
+          +.arrayBuffer()));                                             
+      313 +          pyodide.runPython(                                  
+      314 +            "from uz_dataviewer.webbridge import load_uploaded
+          +_session; load_uploaded_session(" +                           
+      315 +            JSON.stringify(path) + ")");                      
+      316 +        }} catch (err) {{                                     
+      317 +          console.error(err);                                 
+      318 +          pyRun("s and s.console.error(" + JSON.stringify("Fai
+          +led to read " + file.name + ": " + err) + ")");               
+      319 +        }}                                                    
+      320 +      }}                                                      
+      321 +      ev.target.value = "";  // allow re-selecting the same fi
+          +le                                                            
+      322 +    }});                                                      
+      323 +  }}                                                          
+      324 +                                                              
+      325    async function main() {{
+      326      const canvas = document.getElementById("canvas");
+      327      canvas.addEventListener("contextmenu", e => e.preventDefau
+           lt());
+
+● Now find where wireFileInput() is called and add wireSessionInput():
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Update(build/gen_web.py)
+  ⎿  Added 1 line
+      345      setStatus("Starting viewer...");
+      346      writeSourcesToFs();
+      347      wireFileInput();
+      348 +    wireSessionInput();                                       
+      349      pyodide.runPython(document.getElementById("uzBootstrap").t
+           extContent);
+      350      hideLoader();
+      351    }}
+
+● Now let me add tests. Let me view the test helpers:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(tests/test_session.py)
+  ⎿  Added 63 lines
+      124      assert [r[1] for r in replayed.cells[0].signals] == ["ia"]
+      125      assert replayed.cells[1].plot_type is PlotType.SCATTER
+      126      assert replayed.cells[0].show_samples is True
+      127 +                                                              
+      128 +                                                              
+      129 +def test_json_restore_flags_analysis_recompute(tmp_path):     
+      130 +    """Restoring a session with FFT/Histogram sources must req
+          +uest a recompute,                                             
+      131 +    so the windows draw their results without a manual Compute
+          + click."""                                                    
+      132 +    csv = tmp_path / "Log_test.csv"                           
+      133 +    csv.write_text(SAMPLE)                                    
+      134 +    state = _populated_state(str(csv))                        
+      135 +    state.commands.dispatch(state, "fft_source(Log_test.csv, i
+          +a)")                                                          
+      136 +    state.commands.dispatch(state, "hist_source(Log_test.csv, 
+          +ib)")                                                         
+      137 +                                                              
+      138 +    out = tmp_path / "session.json"                           
+      139 +    session.save_state(state, str(out))                       
+      140 +                                                              
+      141 +    restored = AppState()                                     
+      142 +    assert restored.fft.compute_requested is False  # fresh st
+          +ate                                                           
+      143 +    session.load_state(restored, str(out))                    
+      144 +    assert [r[1] for r in restored.fft.sources] == ["ia"]     
+      145 +    assert [r[1] for r in restored.histogram.sources] == ["ib"
+          +]                                                             
+      146 +    assert restored.fft.compute_requested is True             
+      147 +    assert restored.histogram.compute_requested is True       
+      148 +                                                              
+      149 +    # No analysis sources -> no recompute requested.          
+      150 +    plain = _populated_state(str(csv))                        
+      151 +    plain_out = tmp_path / "plain.json"                       
+      152 +    session.save_state(plain, str(plain_out))                 
+      153 +    restored_plain = AppState()                               
+      154 +    session.load_state(restored_plain, str(plain_out))        
+      155 +    assert restored_plain.fft.compute_requested is False      
+      156 +                                                              
+      157 +                                                              
+      158 +def test_script_preserves_analysis_options(tmp_path):         
+      159 +    """A .uzscript must reproduce the FFT/Histogram options, n
+          +ot silently reset                                             
+      160 +    them to defaults (DC removal/Hann on, 50 bins, follow plot
+          +_1)."""                                                       
+      161 +    csv = tmp_path / "Log_test.csv"                           
+      162 +    csv.write_text(SAMPLE)                                    
+      163 +    state = _populated_state(str(csv))                        
+      164 +    state.commands.dispatch(state, "fft_source(Log_test.csv, i
+          +a)")                                                          
+      165 +    state.commands.dispatch(state, "fft_remove_dc(false)")    
+      166 +    state.commands.dispatch(state, "fft_hann(false)")         
+      167 +    state.commands.dispatch(state, "fft_logy(true)")          
+      168 +    state.commands.dispatch(state, "hist_source(Log_test.csv, 
+          +ib)")                                                         
+      169 +    state.commands.dispatch(state, "hist_bins(128)")          
+      170 +    state.commands.dispatch(state, "set_export_relative(plot_1
+          +, true)")                                                     
+      171 +                                                              
+      172 +    script = tmp_path / "session.uzscript"                    
+      173 +    session.export_script(state, str(script))                 
+      174 +    text = script.read_text()                                 
+      175 +    assert "fft_remove_dc(false)" in text                     
+      176 +    assert "fft_hann(false)" in text                          
+      177 +    assert "fft_logy(true)" in text                           
+      178 +    assert "hist_bins(128)" in text                           
+      179 +    assert "set_export_relative(plot_1, true)" in text        
+      180 +                                                              
+      181 +    replayed = AppState()                                     
+      182 +    session.run_script(replayed, str(script))                 
+      183 +    assert replayed.fft.remove_dc is False                    
+      184 +    assert replayed.fft.window is False                       
+      185 +    assert replayed.fft.log_y is True                         
+      186 +    assert [r[1] for r in replayed.fft.sources] == ["ia"]     
+      187 +    assert replayed.histogram.bins == 128                     
+      188 +    assert [r[1] for r in replayed.histogram.sources] == ["ib"
+          +]                                                             
+      189 +    assert replayed.cells[0].export_relative is True          
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All pass. Let me run the full suite to ensure no regressions:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All tests pass. Let me verify the web generator still compiles (it's f-string
+  heavy):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Let me confirm the HTML template is produced correctly (brace balancing for
+  the new JS):
+
+  Searched for 1 pattern, read 1 file, ran 1 shell command (ctrl+o to expand)
+
+● Implementation done and verified. Let me check whether the docs mention
+  session export availability on web, to keep them accurate:
+
+  Searched for 4 patterns, listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+● This doc now contradicts the new behaviour. Let me read and fix it:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(docs/NATIVE_VS_WEB.md)
+  ⎿  Added 1 line, removed 1 line
+      23  | **Loading** | Async on a `ThreadPoolExecutor` | **Synchronous
+          ** (Pyodide has no worker threads) |
+      24  | **Large CSV** | Arrow reads the whole file | **> 200 MB** is 
+          **stream-parsed** into typed arrays; ≤ 200 MB CSV and any Parqu
+          et still go through Arrow |
+      25  | **Downsampler** | Min/max pyramid (pure NumPy) | **Identical*
+          * — same code, no native dependency |
+      26 -| **Export / Save** | OS save dialog | Browser download (Blob +
+         - anchor); **Session save/restore menu disabled** |             
+      26 +| **Export / Save** | OS save dialog | Browser download (Blob +
+         + anchor); session save/restore uses download + a hidden file pi
+         +cker |                                                         
+      27  | **Memory** | OS RAM | Hard ~4 GB wasm32 address space |
+      28  | **Internet needed?** | No | **Yes at load** — fetches the Pyo
+          dide runtime + wheels |
+      29  
+
+● Update(docs/NATIVE_VS_WEB.md)
+  ⎿  Added 6 lines, removed 2 lines
+      37  file dialog, so **Open file(s)…** opens an HTML picker instead.
+      38  Saving works the same way in reverse: native pops an OS save di
+          alog; web triggers a
+      39  **browser download** via `webbridge.download` (a Blob + a synth
+          etic anchor click).
+      40 -Because there's no OS path to write back to, the **Session menu
+         -'s save/restore is disabled                                    
+      41 -on web** — you can still drive everything through the command c
+         -onsole and `.uzscript`.                                        
+      40 +The **Session menu works on web** too: *Save state* / *Export s
+         +cript* write to the Pyodide FS                                 
+      41 +and download; *Load state / Run script* opens a second hidden f
+         +ile picker                                                     
+      42 +(`uzSessionInput`) whose upload is routed by extension — `.json
+         +` → `load_state`,                                              
+      43 +`.uzscript`/`.txt` → `run_script` (`webbridge.load_uploaded_ses
+         +sion`). One caveat: a restored                                 
+      44 +JSON snapshot re-loads its data files **by path**, which won't 
+         +exist in a fresh tab, so on web                                
+      45 +re-open the logs (or use a `.uzscript`, which carries the `load
+         +(...)` lines) alongside it.                                    
+      46  
+      47  ### Threading
+      48  Native loads files on a background `ThreadPoolExecutor` so the 
+          UI keeps rendering during a
+
+● Let me verify line 99 context is still accurate:
+  Read 1 file (ctrl+o to expand)
+
+● Let me check USAGE.md for any "web disabled" session claim:
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Update(docs/USAGE.md)
+  ⎿  Added 2 lines, removed 2 lines
+      180  
+      181  The browser build (GitLab/GitHub Pages, or `build/build_web.sh
+           `) runs the same UI, with a
+      182  few platform limits: synchronous loading, large CSVs stream-pa
+           rsed at full resolution,
+      183 -Export via browser download, and the Session-menu save/restore
+          - disabled (no OS dialog).                                     
+      184 -Details in **[BUILD.md](BUILD.md)**.                          
+      183 +and Export plus Session save/restore via browser download and 
+          +a hidden file picker (no OS                                   
+      184 +dialog). Details in **[BUILD.md](BUILD.md)**.                 
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All three implemented and verified. Summary of what changed:
+
+  Bug 1 — JSON restore now recomputes FFT/Histogram
+
+  session.py apply_dict: after restoring sources, sets
+  state.fft.compute_requested / state.histogram.compute_requested when sources
+  exist. Load state now redraws spectra/bins immediately instead of leaving the
+  windows blank until a manual Compute. (Script replay already did this via
+  fft_source/hist_source; this closes the asymmetry.)
+
+  Bug 3 — .uzscript export is now lossless for analysis options
+
+  session.py new _analysis_to_script helper: emits non-default FFT options
+  (fft_remove_dc, fft_hann, fft_logx, fft_logy, fft_follow+fft_range), histogram
+  hist_bins/follow/range, and per-cell set_export_relative. A replayed script
+  now reproduces the same FFT/histogram window as the JSON snapshot rather than
+  silently reverting to DC-removal/Hann on, 50 bins, follow plot_1.
+
+  Bug 2 — Web build can now save/load/export/run sessions
+
+  - app.py: split the Session menu into _native_session_menu (unchanged dialogs)
+  and _web_session_menu. On web, Save state / Export script write to /tmp then
+  webbridge.download; Load state / Run script opens a hidden picker.
+  - webbridge.py: added trigger_session_open() and load_uploaded_session()
+  (routes .json→load_state, else→run_script through the command layer);
+  download() now picks a correct MIME type by extension.
+  - build/gen_web.py: added the hidden uzSessionInput element and
+  wireSessionInput() JS, wired in main().
+
+  Tests & docs
+
+  - tests/test_session.py: test_json_restore_flags_analysis_recompute and
+  test_script_preserves_analysis_options.
+  - Corrected the now-false "session save/restore disabled on web" claims in
+  NATIVE_VS_WEB.md and USAGE.md, including the caveat that a restored JSON
+  snapshot reloads data files by path (won't exist in a fresh tab — re-open the
+  logs or use a .uzscript, which carries the load(...) lines).
+
+  Full suite (113 tests) passes; changed Python files byte-compile; build_html()
+  renders with the new pieces present. The native path is untouched in
+  behaviour.
+
+  One thing I did not fully solve (noted in the doc, not in scope here): on web,
+  restoring a JSON snapshot can't recreate data files that aren't in the fresh
+  Pyodide FS — .uzscript is the portable option there since it embeds the
+  load(...) lines. Want me to commit these changes?
+
+✻ Worked for 5m 52s
+
+❯ I feel like the performance of the viewer has degregaded, especially for fft  
+  calculation over full window. Examine if there are any performance hits that  
+  are caused by the last 10 commits. I added some testfiles to the testfile     
+  folder. Regular plotting still seems fine with 2000 points but 5000 points    
+  already get fps drops. Lets also get rid of the idle mode, just always go     
+  full gas. examine potential performance bottlenecks without changes first     
+
+● I'll investigate the performance regression with read-only tools. Let me start
+  by examining the last 10 commits and the hot paths (rendering, downsampling,
+  FFT).
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The whole viewer was added relative to HEAD~10 (the "Rename" obscures
+  history). Let me find the real diffs by following renames, and read the hot
+  paths. The "consistent downsampling" commit is the prime suspect.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now let me see the actual downsample diff that introduced _reduce_to (the
+  undershoot fix — prime suspect), and the current downsample code:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Now let me read the full current downsample.py, analysis.py, and fft.py to
+  assess per-frame cost:
+
+  Read 1 file (ctrl+o to expand)
+
+● Let me read the FFT/analysis compute & plot paths, and the app runner
+  (idle/FPS) config:
+
+  Read 1 file (ctrl+o to expand)
+
+● FFT builds a pyramid for the spectrum (fft.py:77), so its per-frame redraw
+  also goes through the _reduce_to lexsort. Let me read the plots render hot
+  loop and the app runner (idle config):
+
+  Read 1 file (ctrl+o to expand)
+
+● Now the app runner config for idle/FPS:
+
+  Read 1 file (ctrl+o to expand)
+
+● No idle config is set, so hello_imgui's default fps_idling (idle ~9 FPS) is
+  active. Let me check the testfiles the user added and confirm the hello_imgui
+  idle API exists:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● 9M and 75M-row test files. Let me quantify the lexsort regression with a
+  microbenchmark (read-only) to validate the hypothesis and a sortless
+  alternative:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● The benchmark is decisive. Let me confirm the hello_imgui idle API attribute
+  names in the installed version:
+
+  Ran 1 shell command (ctrl+o to expand)
+● Let me confirm the FFT compute path itself (analysis.py) isn't doing per-call
+  waste:
+
+  Read 1 file (ctrl+o to expand)
+
+● I have a complete, measured diagnosis. Let me verify the existing decimation
+  tests so the fix preserves contracts, then write the plan.
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Diagnosis complete and measured. The reduceat fix preserves both contracts
+  these tests assert (exact-target count + spike preservation). Let me write the
+  plan.
+
+● API Error: Overloaded
+
+✻ Cogitated for 6m 1s
+
+❯ retry                                                                         
+
+● Updated plan
+  ⎿  Error writing file
+
+  Read 1 file (ctrl+o to expand)
+
+● Updated plan
+  ⎿  /plan to preview
+
+● I examined the hot paths and measured the regression. Here's the diagnosis.
+
+  Root cause (a real regression, commit 531b7603e)
+
+  The "consistent downsampling" commit fixed the min/max-envelope undershoot by
+  adding _reduce_to() in downsample.py — but it implemented the per-bucket
+  extreme with np.lexsort, an O(k·log k) sort that runs every frame, per signal,
+  twice (min + max) in the decimation hot path. It replaced the old O(k)
+  vectorised reshape + argmin/argmax. The FFT window hits the same code because
+  a full-window spectrum builds its own Pyramid (fft.py:77).
+
+  Microbenchmark (target 2500 ≈ max-points 5000, k≈20000, min+max):
+
+  ┌──────────────────────────────┬─────────────────────┐
+  │           approach           │ ms / signal / frame │
+  ├──────────────────────────────┼─────────────────────┤
+  │ current _reduce_to (lexsort) │ 5.2                 │
+  ├──────────────────────────────┼─────────────────────┤
+  │ sortless reduceat            │ 0.5 (10×)           │
+  ├──────────────────────────────┼─────────────────────┤
+  │ old _group (pre-regression)  │ 0.22                │
+  └──────────────────────────────┴─────────────────────┘
+
+  A few overlaid signals at 5000 points → 15–25 ms/frame just in _reduce_to,
+  blowing the 16.7 ms/60fps budget. At 2000 points the sort is small enough to
+  stay under — which is exactly your "2000 fine, 5000 drops, full-window FFT
+  sluggish" report.
+
+  The fix is a sortless segment-extreme using np.minimum/maximum.reduceat. I
+  verified it produces identical output to the lexsort (same true extremes,
+  exact target length), so it keeps the undershoot fix and restores ~10× speed.
+
+  Idle mode
+
+  Not configured, so hello_imgui's default fps_idling.enable_idling=True (idle 9
+  fps) is active. One line in run() disables it for always-full-FPS.
+
+  Not the culprit (noted only)
+
+  compute_fft's np.median(np.diff(ts)) is heavy on the 75M-row file but it's
+  on-demand, not per-frame — left out of scope.
+
+  The full plan (with the exact _reduce_to replacement and verification steps)
+  is written to the plan file.
+
+● User approved Claude's plan
+  ⎿  Plan saved to: 
+     ~/.claude/plans/in-uz-dataviewer2-there-are-woolly-flamingo.md · /plan to 
+     edit
+     Plan: Fix the per-frame decimation regression + always-full-FPS
+
+     Context
+
+     The viewer feels slower than it used to — full-window FFT redraws and
+     ordinary
+     plotting at 5000 max-points drop frames, while 2000 points stays smooth.
+     The cause is a real regression introduced by commit 531b7603e ("consistent
+     downsampling…"). That commit fixed the min/max-envelope undershoot by
+     adding
+     _reduce_to() in downsample.py, but it implemented the per-bucket extreme
+     using
+     np.lexsort — an O(k·log k) sort run every frame, per signal, twice 
+     (min+max)
+     in the hot decimation path. It replaced the previous O(k) vectorised
+     reshape+argmin/argmax (Pyramid._group). The same path also serves the FFT
+     window,
+     because a full-window spectrum gets its own Pyramid (panels/fft.py:77), so
+     interacting with a big spectrum pays the sort each frame too.
+
+     Separately, idle FPS throttling is on by default (hello_imgui
+     fps_idling.enable_idling=True, fps_idle=9), which the user wants off.
+
+     Measured (microbenchmark, target=2500 ≈ max_points 5000, k≈20000, min+max 
+     per call)
+
+     ┌──────────────────────────────────────────────┬─────────────────────┐
+     │                   approach                   │ ms / signal / frame │
+     ├──────────────────────────────────────────────┼─────────────────────┤
+     │ current _reduce_to (lexsort)                 │ 5.2                 │
+     ├──────────────────────────────────────────────┼─────────────────────┤
+     │ sortless reduceat (proposed)                 │ 0.5  (10× faster)   │
+     ├──────────────────────────────────────────────┼─────────────────────┤
+     │ old _group (pre-regression, but undershoots) │ 0.22                │
+     └──────────────────────────────────────────────┴─────────────────────┘
+
+     At 5000 points with a few overlaid signals this blows the 16.7 ms/60 fps
+     budget;
+     at 2000 points (target 1000, smaller k) it stays under — exactly the
+     reported
+     symptom. The reduceat output is identical to the lexsort output (verified:
+     same true extremes, exact target length), so it keeps the undershoot fix
+     and
+     restores speed.
+
+     Changes
+
+     1. Replace the lexsort in _reduce_to with a sortless segment-extreme
+
+     File: src/uz_dataviewer/downsample.py (_reduce_to, lines ~83–106).
+
+     Keep the signature and contract (ascending idx → exactly target ascending
+     indices, each the true min/max of its near-equal contiguous group). Replace
+     the
+     np.lexsort body with np.minimum.reduceat / np.maximum.reduceat over
+     per-group
+     boundaries plus a first-hit lookup, e.g.:
+
+     k = int(idx.shape[0])
+     if k <= target:
+         return idx
+     grp = (np.arange(k) * target) // k          # monotonic 0..target-1, every 
+     group non-empty
+     bnds = np.searchsorted(grp, np.arange(target))
+     vals = y[idx]
+     segext = (np.maximum if largest else np.minimum).reduceat(vals, bnds)
+     ishit = vals == segext[grp]                  # equal to the segment extreme
+     big = np.where(ishit, np.arange(k), k)       # first hit per segment (ties 
+     -> lowest index)
+     firstpos = np.minimum.reduceat(big, bnds)
+     return idx[firstpos]
+
+     This benefits all three call sites unchanged: Pyramid.query (large-signal
+     plotting), _envelope_oneshot (zoomed-in / ≤1M signals), and the
+     FFT/Histogram
+     spectrum redraw via their result pyramids.
+
+     2. Always full FPS (remove idle throttling)
+
+     File: src/uz_dataviewer/app.py, in run() next to the other params.* setup
+     (around line 234):
+
+     params.fps_idling.enable_idling = False   # always render at full rate, no 
+     idle throttle
+
+     Out of scope / noted only
+
+     - compute_fft uses np.median(np.diff(ts)) (O(n·log n) + full-window
+     allocations)
+     to derive dt. It is on-demand, not per-frame, so it is not the regression;
+     leave it unless the one-shot Compute latency on the 75M-row file is itself
+     a
+     concern (could become (ts[-1]-ts[0])/(n-1) with a uniformity guard).
+
+     Verification
+
+     - python -m pytest tests/test_pyramid.py tests/test_downsample.py -q — the
+     exact-count (0.95*n_out ≤ out ≤ n_out), spike-preservation, and
+     true-position
+     tests must still pass (the fix is output-equivalent).
+     - Full suite: python -m pytest -q (113 tests) stays green.
+     - Manual: python run.py testdata/9m_rows.csv (and the 75M file), overlay
+     several
+     signals at max points = 5000/10000, pan/zoom — should hold full frame rate;
+     Compute a full-window FFT and interact with the spectrum — redraw should no
+     longer stutter. Confirm the UI runs at full FPS when idle (no 9-fps drop).
+     - Optional A/B: temporarily print frame time, or re-run the microbenchmark,
+     to
+     confirm _reduce_to dropped from ~5 ms to ~0.5 ms per signal.
+
+● Auto mode lets Claude handle permission prompts automatically — Claude
+  checks each tool call for risky actions and prompt injection before 
+  executing. Actions Claude identifies as safe are executed, while 
+  actions Claude identifies as risky are blocked and Claude may try a 
+  different approach. Ideal for long-running tasks. Sessions are 
+  slightly more expensive. Claude can make mistakes that allow harmful 
+  commands to run, it's recommended to only use in isolated 
+  environments. Shift+Tab to change mode.
+
+● Let me implement. First the core fix in _reduce_to:
+
+● Update(src/uz_dataviewer/downsample.py)
+  ⎿  Added 15 lines, removed 10 lines
+       89      replaces an integer **group factor** (``ceil(k/target)``, 
+           which can only halve/third/...
+       90      the count and so realises as few as ~``target/2`` groups) 
+           with an *exact* group count,
+       91      so the envelope lands at ~``n_out`` points at every zoom. 
+           ``idx`` must be ascending; the
+       92 -    result stays ascending (groups are taken in order). Cost i
+          -s one ``lexsort`` over ``k``                                  
+       93 -    candidates -- only ever called on an already-bucketed arra
+          -y (≲ ``target * factor``), so                                 
+       94 -    the query stays O(output).                                
+       92 +    result stays ascending (groups are taken in order).       
+       93 +                                                              
+       94 +    Cost is O(k) via segment reductions (``np.minimum/maximum.
+          +reduceat``) -- no sort. An                                    
+       95 +    earlier version used ``np.lexsort`` here, which is O(k log
+          + k) and, run every frame per                                  
+       96 +    signal (twice, min+max) on the decimation hot path, droppe
+          +d frames at larger                                            
+       97 +    ``max_points``; the reduceat form is output-equivalent and
+          + ~10x faster.                                                 
+       98      """
+       99      k = int(idx.shape[0])
+      100      if k <= target:
+      101          return idx
+      102      grp = (np.arange(k) * target) // k  # near-equal groups, m
+           onotonic 0..target-1
+      100 -    keys = -y[idx] if largest else y[idx]                     
+      101 -    order = np.lexsort((keys, grp))  # by group, then value ->
+          - group extreme is first                                       
+      102 -    g = grp[order]                                            
+      103 -    first = np.empty(k, dtype=bool)                           
+      104 -    first[0] = True                                           
+      105 -    first[1:] = g[1:] != g[:-1]                               
+      106 -    return idx[order[first]]                                  
+      103 +    # Every group 0..target-1 is non-empty (grp steps by <1 pe
+          +r element when k > target),                                   
+      104 +    # so `bnds` are valid reduceat segment starts with no empt
+          +y segments.                                                   
+      105 +    bnds = np.searchsorted(grp, np.arange(target))            
+      106 +    vals = y[idx]                                             
+      107 +    segext = (np.maximum if largest else np.minimum).reduceat(
+          +vals, bnds)                                                   
+      108 +    ishit = vals == segext[grp]  # candidates equal to their g
+          +roup's extreme                                                
+      109 +    pos = np.where(ishit, np.arange(k), k)  # ties -> keep the
+          + lowest (first) index                                         
+      110 +    firstpos = np.minimum.reduceat(pos, bnds)                 
+      111 +    return idx[firstpos]                                      
+      112  
+      113  
+      114  def _envelope_oneshot(time, y, n_out, start, stop):
+
+● Now disable idle throttling in app.py:
+
+● Update(src/uz_dataviewer/app.py)
+  ⎿  Added 3 lines
+      233          )
+      234          params.imgui_window_params.show_status_bar = True
+      235          params.imgui_window_params.show_menu_bar = True
+      236 +        # Always render at full rate. hello_imgui idles to ~9 
+          +fps when there's no                                           
+      237 +        # input; for live panning/zooming of large logs we wan
+          +t full FPS throughout.                                        
+      238 +        params.fps_idling.enable_idling = False               
+      239          # MaterialFlat theme (per the idea list); applied via 
+           hello_imgui's
+      240          # tweakable theme so it survives the dock layout setup
+           .
+      241          params.imgui_window_params.tweaked_theme.theme = (
+
+● Now verify the fix is correct and fast against the decimation tests plus a
+  correctness/perf check:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Bit-identical to the old lexsort output, strictly ascending, and 10× faster.
+  Now the full suite:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All tests pass. Let me byte-compile the changed files to be safe:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Both changes are implemented and verified.
+
+  What changed
+
+  1. The regression fix — src/uz_dataviewer/downsample.py _reduce_to
+  Replaced the per-frame np.lexsort (O(k·log k)) with sortless segment
+  reductions (np.minimum/maximum.reduceat + first-hit lookup, O(k)). Same
+  signature, same contract.
+
+  - Verified bit-identical output to the old lexsort across 200 randomized
+  trials, including tie-heavy integer data (the worst case for tie-breaking) —
+  so the undershoot fix and spike preservation are fully retained.
+  - Measured 0.51 ms for the min+max pair vs the old 5.2 ms (~10×) at the
+  regression point (target 2500 ≈ 5000 max-points, k≈20000).
+  - Fixes all three callers at once: large-signal plotting (Pyramid.query),
+  zoomed-in/≤1M (_envelope_oneshot), and the FFT/Histogram spectrum redraw
+  (their result pyramids hit the same path — that's the "full-window FFT
+  sluggish" case).
+
+  2. Always full FPS — src/uz_dataviewer/app.py
+  Added params.fps_idling.enable_idling = False in run(), disabling
+  hello_imgui's default idle throttle (was dropping to ~9 fps when idle).
+
+  Verification done
+
+  - tests/test_pyramid.py + tests/test_downsample.py: pass (exact-count,
+  spike-preservation, true-position contracts hold).
+  - Full suite: 113 tests pass.
+  - Both files byte-compile.
+
+  The plan's optional compute_fft np.median(np.diff(ts)) item was intentionally
+  left out (on-demand, not the per-frame regression).
+
+  What's left is the manual check on your machine, which I can't run here: load
+  testdata/9m_rows.csv (and the 75M file), overlay several signals at max-points
+  5000/10000, pan/zoom and interact with a full-window FFT — frame rate should
+  now hold. Want me to commit these changes?
+
+✻ Baked for 2m 37s
+
+❯ Regarding compute_fft. Use the proposed method to calculate ts since the      
+  on-demand fft also seems slower than required. Also, the log always has       
+  uniform sampling, but different logs can have different sampling times.       
+● The user wants the cheaper dt calculation. Since sampling is uniform per-log,
+  (ts[-1]-ts[0])/(n-1) is exact and avoids the O(n·log n) median + the full
+  np.diff allocation. Let me check the existing FFT tests first, then edit.
+
+  Searched for 3 patterns (ctrl+o to expand)
+
+● No direct tests pin the median behaviour. Let me make the edit:
+
+● Update(src/uz_dataviewer/analysis.py)
+  ⎿  Added 4 lines, removed 1 line
+      48      if n < 4:
+      49          return FftResult(None, None, "Selected window is too sh
+          ort for an FFT.")
+      50  
+      51 -    dt = float(np.median(np.diff(ts)))                         
+      51 +    # Logs are uniformly sampled (the rate can differ between l
+         +ogs), so the step is                                           
+      52 +    # exactly the span / interval count -- O(1), no full np.dif
+         +f + median over the                                            
+      53 +    # window (which is costly on a multi-million-sample full-wi
+         +ndow FFT).                                                     
+      54 +    dt = (float(ts[-1]) - float(ts[0])) / (n - 1)              
+      55      if dt <= 0:
+      56          return FftResult(None, None, "Time axis is not increasi
+          ng; cannot compute FFT.")
+      57  
+
+● np is still used (hanning/fft/abs). Let me verify correctness and run the
+  tests:
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● Done. compute_fft now derives the sample step as (ts[-1] - ts[0]) / (n - 1)
+  instead of np.median(np.diff(ts)).
+
+  - Correct per-log: since each log is uniformly sampled, this is exact, and
+  it's still computed from that log's own time axis — verified fs comes out
+  right for different rates (10 kHz and 250 Hz both recover the 50 Hz tone with
+  the correct fs in the info line).
+  - Faster on-demand: drops the full np.diff allocation (n−1 elements) and the
+  O(n·log n) median over the whole window — meaningful on a multi-million-sample
+  full-window FFT. n ≥ 4 is already guaranteed above, so n − 1 is safe.
+  - The dt <= 0 guard for a non-increasing axis is preserved.
+
+  Full suite (113 tests) still passes.
+
+  Summary of all changes in this performance pass:
+  1. downsample.py _reduce_to — lexsort → O(k) reduceat (~10× faster per frame,
+  output-identical).
+  2. app.py — fps_idling.enable_idling = False (always full FPS).
+  3. analysis.py compute_fft — O(1) uniform-step dt (faster on-demand FFT).
+
+  Want me to commit these?
+
+✻ Churned for 1m 0s
+
+❯ are there any other approaches to improve the performance even further? Maybe 
+  an alternative to numpy such as jax? Or a more high-performance fft lib?      
+  Just discuss options for further improvements, we do not change it now        
+
+● This is a good question to think through carefully, because the dual-platform
+  constraint (native CPython and Pyodide/wasm32 on the same code path — the
+  whole reason tsdownsample/Rust was dropped) rules out a lot of the obvious
+  "just use a faster lib" answers. Let me verify a couple of factual claims
+  before discussing, then lay out the options.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Great — that surfaced some hard numbers that reshape the answer. Two of my
+  assumptions were wrong, in useful ways:
+
+  - numpy.fft already preserves float32 → complex64 (modern pocketfft backend).
+  Our compute_fft throws that away with .astype(np.float64).
+  - Prime/awkward window lengths are catastrophic: rfft of a ~2M prime length
+  took 571 ms vs 66 ms padded to the next fast length — ~9×.
+  - The numpy "prep" around the FFT (astype + hanning + demean + multiply) costs
+  as much as the transform itself (278 ms vs 240 ms at 9M).
+
+  Here's how I'd think about the options, ordered by leverage-per-risk. The
+  governing constraint throughout: anything that must run in Pyodide/wasm32
+  can't be a native binary lib, and adding a native-only fast path means
+  maintaining two implementations (the thing this project deliberately avoided
+  when it dropped tsdownsample).
+
+  Tier 1 — pure-NumPy, dual-platform, high leverage (no new deps)
+
+  1. Stop upcasting the FFT to float64. Drop ys.astype(np.float64); keep float32
+  → complex64. Halves every large allocation (the 75M-sample full-window FFT
+  goes from ~600 MB complex128 to ~300 MB complex64 — also eases the 4 GB WASM
+  ceiling) and is faster. Precision is irrelevant for an amplitude spectrum
+  you're plotting.
+
+  2. Pad the FFT to next_fast_len. This is the single biggest FFT win and it's
+  free (numpy has the machinery; scipy exposes next_fast_len directly, or
+  compute the next 2^a·3^b·5^c). ~9× on bad lengths, near-zero on already-smooth
+  ones. Caveat: padding interpolates the spectrum (finer bin spacing) and you
+  must keep the 2/n amplitude normalization tied to the original n, not the
+  padded length — a real correctness detail, and it interacts with the "fixed
+  bin count" idea already in FFT_FUTURE_IDEAS.md.
+
+  3. In-place prep + cached window. ys -= ys.mean(), ys *= window, and memoize
+  np.hanning(n) by length (often reused across recomputes at the same window).
+  With scipy.fft(overwrite_x=True) you also avoid the transform's internal copy.
+  This roughly halves the non-FFT half of the cost.
+
+  4. Per-frame decimation cache — now the most important one. Since we just
+  disabled idle throttling, every frame re-runs decimate_range for every signal
+  even when the view hasn't moved (previously capped at 9 fps). Memoize per
+  signal on (x_min, x_max rounded, n_out) and reuse the cached arrays when
+  nothing changed. This is the natural complement to "always full FPS" and is
+  pure Python — it turns a static-but-full-rate screen from "re-decimate
+  everything 60×/s" into "decimate once."
+
+  5. Pixel-aware point budget. Cap the envelope target at the plot's pixel width
+  (a 1200 px plot can't show more than ~1200–2400 envelope points). At
+  max_points = 5000–10000 you're currently decimating and uploading 2–4× more
+  vertices than the screen can resolve — wasted in both decimation and draw.
+  Clean, pure-Python, helps every path.
+
+  Tier 2 — architecture (native), no new deps
+
+  6. Build the pyramid off the render thread. Pyramid.build is O(n) and
+  currently lazy on first render → a visible hitch on a 75M signal. Native
+  already has a ThreadPoolExecutor for loading; build the pyramid there. Web
+  stays synchronous regardless.
+
+  Tier 3 — new libraries (discuss, but each breaks or strains the single-path 
+  design)
+
+  scipy.fft — the only library candidate that's also available in Pyodide. Gives
+  workers=-1 (multicore, native only — no-op in web), overwrite_x,
+  next_fast_len, and clean single-precision. Modest, real, low-risk if you
+  accept scipy as a dependency (it's heavy in the web bundle). Honestly, items
+  1–3 capture most of its benefit without the dependency.
+
+  pyFFTW (FFTW) — fastest CPU FFT with plan reuse/wisdom, multithreaded.
+  Native-only (no wasm wheel), and its sweet spot is repeated FFTs of the same 
+  size — but ours are on-demand over varying windows, so planning overhead
+  fights you unless you pad to a small set of fixed lengths (which #2 already
+  implies). High complexity for uncertain gain here.
+
+  Numba — JIT the decimation kernels into one fused pass (no intermediates).
+  Native-only (LLVM, not in Pyodide) → two implementations, plus first-call
+  compile latency. The decimation is already ~0.5 ms/signal, so the headroom is
+  small; not worth it.
+
+  JAX — XLA JIT + GPU. I'd specifically not pursue it for this:
+  - No jaxlib in Pyodide → breaks web entirely.
+  - CPU JAX rarely beats pocketfft for single FFT calls; XLA's advantage is
+  fusing pipelines run many times, with per-shape compilation cost — the
+  opposite of on-demand, varying-size FFTs.
+  - The real JAX/GPU win (cuFFT) only materializes for users with CUDA, on huge
+  transforms — a niche for a desktop log viewer, and a heavy, fragile
+  dependency.
+  - It could only ever make sense as an optional native GPU "turbo" mode, gated
+  and fully duplicated against the numpy path. Large effort, narrow payoff.
+
+  My recommendation
+
+  Profile the 75M file first to confirm where the on-demand FFT time actually
+  goes, then do 1–3 (FFT) and 4–5 (rendering) — all pure-NumPy, both platforms,
+  no dependency, and they target exactly what the numbers above show (prep ≈
+  transform; prime lengths ≈ 9× cliff; full-FPS re-decimation waste). Reach for
+  scipy.fft only if multicore native FFT becomes a stated requirement. Leave
+  JAX/FFTW/Numba unless you decide to ship a separate, native-only accelerated
+  build — at which point GPU FFT via scipy's CuPy backend or JAX could be a
+  dedicated project.
+
+  Want me to write this up into docs/FFT_FUTURE_IDEAS.md / the ROADMAP so it's
+  captured, or leave it as discussion for now?
+
+✻ Brewed for 2m 2s
+
+❯ Can you profile regarding tier1, if conformed implement                       
+
+● Let me profile the Tier 1 items on realistic scales. First, check what's
+  already a dependency (whether scipy is available without adding it):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● scipy is not a declared dependency (only
+  numpy/pandas/pyarrow/imgui-bundle/glfw), so I'll compute next_fast_len myself
+  in pure Python rather than add scipy. Let me profile the FFT path (items 1–3):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● FFT gains confirmed: 1.4–1.6× on good lengths, 7.3× on bad lengths, peak
+  frequency still exact. Now profile the rendering items (4: per-frame
+  decimation cache, 5: pixel-aware budget):
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All five Tier 1 items confirmed:
+
+  ┌──────────────────────────────┬──────────────────────────────────────────┐
+  │             Item             │                  Result                  │
+  ├──────────────────────────────┼──────────────────────────────────────────┤
+  │ FFT float32 + in-place +     │ 1.4–1.6× good lengths                    │
+  │ cached window (1-3)          │                                          │
+  ├──────────────────────────────┼──────────────────────────────────────────┤
+  │ FFT next_fast_len padding    │ 7.3× on bad lengths, peak exact          │
+  │ (2)                          │                                          │
+  ├──────────────────────────────┼──────────────────────────────────────────┤
+  │ Pixel-aware budget (5)       │ 7.6× (1.0→0.135 ms) + fewer vertices     │
+  ├──────────────────────────────┼──────────────────────────────────────────┤
+  │ Decimation cache (4)         │ saves 2–6 ms/frame on static views (now  │
+  │                              │ wasted every frame with idle off)        │
+  └──────────────────────────────┴──────────────────────────────────────────┘
+
+  Let me verify the implot pixel-size API before implementing the render-side
+  items:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Confirmed. Let me implement the FFT optimizations (items 1–3) in analysis.py:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(src/uz_dataviewer/analysis.py)
+  ⎿  Added 38 lines
+       9  
+      10  from .downsample import visible_slice
+      11  
+      12 +# Hann windows are recomputed per FFT; cache by length since th
+         +e same window is                                               
+      13 +# re-used across recomputes at the same span (cheap memory, avo
+         +ids a cos over                                                 
+      14 +# millions of samples each Compute).                           
+      15 +_HANN_CACHE: dict[int, np.ndarray] = {}                        
+      16  
+      17 +                                                               
+      18 +def _hann(n: int) -> np.ndarray:                               
+      19 +    w = _HANN_CACHE.get(n)                                     
+      20 +    if w is None:                                              
+      21 +        w = np.hanning(n).astype(np.float32)                   
+      22 +        _HANN_CACHE[n] = w                                     
+      23 +    return w                                                   
+      24 +                                                               
+      25 +                                                               
+      26 +def _next_fast_len(n: int) -> int:                             
+      27 +    """Smallest 5-smooth (2^a·3^b·5^c) integer >= ``n``.       
+      28 +                                                               
+      29 +    ``np.fft.rfft`` is dramatically faster on 5-smooth lengths 
+         +than on lengths with                                           
+      30 +    a large prime factor -- a ~9x cliff at multi-million-sample
+         + windows -- so the                                             
+      31 +    transform zero-pads up to one. Pure-Python (no scipy) to ke
+         +ep the dependency                                              
+      32 +    list lean; the next power of two is always a valid upper bo
+         +und.                                                           
+      33 +    """                                                        
+      34 +    if n <= 6:                                                 
+      35 +        return n                                               
+      36 +    best = 1 << (n - 1).bit_length()  # next power of two >= n 
+      37 +    p5 = 1                                                     
+      38 +    while p5 < best:                                           
+      39 +        p3 = p5                                                
+      40 +        while p3 < best:                                       
+      41 +            x = p3                                             
+      42 +            while x < n:                                       
+      43 +                x <<= 1                                        
+      44 +            if x < best:                                       
+      45 +                best = x                                       
+      46 +            p3 *= 3                                            
+      47 +        p5 *= 5                                                
+      48 +    return best                                                
+      49 +                                                               
+      50 +                                                               
+      51  class FftResult:
+      52      """Single-sided amplitude spectrum plus a human-readable st
+          atus line."""
+      53  
+
+● Update(src/uz_dataviewer/analysis.py)
+  ⎿  Added 12 lines, removed 5 lines
+      80          x_min, x_max = float(time[0]), float(time[-1])
+      81  
+      82      start, stop = visible_slice(time, x_min, x_max)
+      83 -    ys = y[start:stop].astype(np.float64)                      
+      83 +    # Keep float32 (JavaScope data is float32): numpy's pocketf
+         +ft preserves it as a                                           
+      84 +    # complex64 transform -- half the memory of the old float64
+         + upcast (big on a                                              
+      85 +    # multi-million-sample full-window FFT, and on the WASM hea
+         +p) and faster. A copy                                          
+      86 +    # so the demean/window can run in place.                   
+      87 +    ys = np.array(y[start:stop], dtype=np.float32)             
+      88      ts = time[start:stop]
+      89      n = ys.shape[0]
+      90      if n < 4:
+     ...
+       98          return FftResult(None, None, "Time axis is not increas
+           ing; cannot compute FFT.")
+       99  
+      100      if remove_dc:
+       97 -        ys = ys - ys.mean()                                   
+      101 +        ys -= ys.mean(dtype=np.float64)  # accumulate the mean
+          + in float64, subtract in place                                
+      102      if window:
+       99 -        ys = ys * np.hanning(n)                               
+      103 +        ys *= _hann(n)                                        
+      104  
+      101 -    spectrum = np.fft.rfft(ys)                                
+      102 -    freqs = np.fft.rfftfreq(n, d=dt)                          
+      105 +    # Zero-pad to a 5-smooth length so rfft avoids the large-p
+          +rime slow path; the                                           
+      106 +    # amplitude stays normalised by the *original* n (padding 
+          +only interpolates bins).                                      
+      107 +    m = _next_fast_len(n)                                     
+      108 +    spectrum = np.fft.rfft(ys, n=m)                           
+      109 +    freqs = np.fft.rfftfreq(m, d=dt)                          
+      110      mag = (2.0 / n) * np.abs(spectrum)
+      111      info = f"{n:,} samples, fs = {1.0 / dt:,.1f} Hz, window [{
+           x_min:.4f}, {x_max:.4f}] s"
+      112      return FftResult(freqs.astype(np.float32), mag.astype(np.f
+           loat32), info)
+● Now items 4 & 5 in plots.py. Let me read the panel init and the call site:
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(src/uz_dataviewer/panels/plots.py)
+  ⎿  Added 3 lines
+      73          self._last_logged_cursor: dict[int, tuple[float, float]
+          ] = {}  # cursor echo
+      74          self._last_logged_spy: dict[int, tuple] = {}  # spy-rec
+          t echo
+      75          self._export_dialog: tuple | None = None  # (pfd dialog
+          , plot_n)
+      76 +        # Per (cell, signal) decimation memo: skip re-decimatin
+         +g an unchanged view.                                           
+      77 +        # key -> (sig_id, start, stop, n_out, xs_f64, ys_f64). 
+      78 +        self._decim_cache: dict[tuple, tuple] = {}             
+      79  
+      80      # -- helpers ----------------------------------------------
+          --------------
+      81      def _emit(self, state: AppState, name: str, *args) -> None:
+
+● Now update the call site to pass index:
+
+● Update(src/uz_dataviewer/panels/plots.py)
+  ⎿  Added 1 line, removed 1 line
+      299              if _is_finite_range(raw_lo, raw_hi):
+      300                  state.plot_x_ranges[index + 1] = (raw_lo, raw_
+           hi)
+      301  
+      302 -            points_shown, raw_in_view = self._plot_signals(sta
+          -te, cell, x_min, x_max)                                       
+      302 +            points_shown, raw_in_view = self._plot_signals(sta
+          +te, index, cell, x_min, x_max)                                
+      303              self._last_points[index] = points_shown
+      304              self._last_raw[index] = raw_in_view
+      305  
+
+● Now rewrite _plot_signals with the pixel-aware budget and decimation cache:
+
+● Update(src/uz_dataviewer/panels/plots.py)
+  ⎿  Added 22 lines, removed 8 lines
+      324              self._render_spy_inset(state, index, cell, width, 
+           inset_h)
+      325  
+      326      def _plot_signals(
+      327 -        self, state: AppState, cell: SubplotCell, x_min: float
+          -, x_max: float                                                
+      327 +        self, state: AppState, index: int, cell: SubplotCell, 
+          +x_min: float, x_max: float                                    
+      328      ) -> tuple[int, int]:
+      329 -        n_out = max(state.max_points, 2)                      
+      329 +        # A min/max envelope can't show more than ~one point p
+          +er horizontal pixel, so                                       
+      330 +        # cap the budget at the plot's pixel width (then the u
+          +ser's max_points is an                                        
+      331 +        # upper bound). Avoids decimating + uploading 2-4x mor
+          +e vertices than the                                           
+      332 +        # screen can resolve at the larger presets.           
+      333 +        px = int(implot.get_plot_size().x)                    
+      334 +        n_out = max(2, min(state.max_points, 2 * px if px > 0 
+          +else state.max_points))                                       
+      335          points_shown = 0
+      336          raw_in_view = 0
+      337  
+     ...
+      347              if signal.pyramid is None and signal.y.size > PYRA
+           MID_MIN_POINTS:
+      348                  signal.pyramid = Pyramid.build(signal.y)
+      349              start, stop = visible_slice(run.time, x_min, x_max
+           )
+      345 -            xs, ys = decimate_range(run.time, signal.y, signal
+          -.pyramid, n_out, start, stop)                                 
+      350 +            # Reuse the last decimation when nothing that affe
+          +cts it changed (same                                          
+      351 +            # window, budget and underlying array). With idle 
+          +FPS off the plot                                              
+      352 +            # redraws continuously, so this skips a full re-de
+          +cimate on a static view.                                      
+      353 +            ck = (index, ref)                                 
+      354 +            sig_id = id(signal.y)                             
+      355 +            cached = self._decim_cache.get(ck)                
+      356 +            if cached is not None and cached[:4] == (sig_id, s
+          +tart, stop, n_out):                                           
+      357 +                xs, ys = cached[4], cached[5]                 
+      358 +            else:                                             
+      359 +                xs, ys = decimate_range(run.time, signal.y, si
+          +gnal.pyramid, n_out, start, stop)                             
+      360 +                # PlotLine is templated on one type T for both
+          + arrays: a dtype                                              
+      361 +                # mismatch reinterprets a buffer as the wrong 
+          +type. Keep them equal.                                        
+      362 +                xs = np.ascontiguousarray(xs, dtype=np.float64
+          +)                                                             
+      363 +                ys = np.ascontiguousarray(ys, dtype=np.float64
+          +)                                                             
+      364 +                self._decim_cache[ck] = (sig_id, start, stop, 
+          +n_out, xs, ys)                                                
+      365              points_shown += xs.shape[0]
+      366              # Raw samples in the window (densest signal), not 
+           a sum across signals.
+      367              raw_in_view = max(raw_in_view, stop - start)
+      368              if xs.shape[0] < (stop - start):
+      369                  state.downsampling_active = True
+      370  
+      352 -            # PlotLine is templated on one type T for both arr
+          -ays: a dtype                                                  
+      353 -            # mismatch reinterprets a buffer as the wrong type
+          -. Keep them equal.                                            
+      354 -            xs = np.ascontiguousarray(xs, dtype=np.float64)   
+      355 -            ys = np.ascontiguousarray(ys, dtype=np.float64)   
+      356 -                                                              
+      371              # Scatter is markers-only, so it always needs one;
+            line/stairs show markers
+      372              # only when "samples" is on. (A Spec defaults mark
+           er to none, which would
+      373              # otherwise make a scatter plot draw nothing.)
+
+● Let me verify the rest of the function still flows correctly after the edit:
+
+  Read 1 file (ctrl+o to expand)
+
+● Let me confirm derived (node) signals get a fresh array on recompute, so the
+  id(signal.y) cache key invalidates correctly:
+
+  Searched for 2 patterns, read 1 file (ctrl+o to expand)
+
+● On node recompute a fresh Signal with a new y array is created (state.py:269),
+  so id(signal.y) changes and the cache invalidates correctly. Now verify FFT
+  correctness (amplitude preserved under padding) and run tests:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● Amplitude (2.0) and frequency (50 Hz) preserved exactly under padding, float32
+  output confirmed. Now the full suite:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+● All pass. Let me add regression tests locking the FFT contracts (float32
+  output + correct peak on a bad length + _next_fast_len):
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(tests/test_analysis.py)
+  ⎿  Added 28 lines
+      11  sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."
+          , "src"))
+      12  
+      13  from uz_dataviewer import session  # noqa: E402
+      14 +from uz_dataviewer.analysis import _next_fast_len, compute_fft 
+         + # noqa: E402                                                  
+      15  from uz_dataviewer.commands import _parse_fwindow  # noqa: E402
+      16  from uz_dataviewer.state import AppState  # noqa: E402
+      17  
+      18  
+      19 +def test_next_fast_len_is_5_smooth_and_ge():                   
+      20 +    for n in (1, 6, 7, 17, 100, 19_997, 9_000_001):            
+      21 +        m = _next_fast_len(n)                                  
+      22 +        assert m >= n                                          
+      23 +        r = m                                                  
+      24 +        for p in (2, 3, 5):                                    
+      25 +            while r % p == 0:                                  
+      26 +                r //= p                                        
+      27 +        assert r == 1 or n <= 6, (n, m)  # m is 2^a*3^b*5^c (n>
+         +6)                                                             
+      28 +    assert _next_fast_len(17) == 18                            
+      29 +    assert _next_fast_len(100) == 100  # already smooth        
+      30 +    assert _next_fast_len(19_997) == 20_000                    
+      31 +                                                               
+      32 +                                                               
+      33 +def test_compute_fft_recovers_tone_on_bad_length_in_float32(): 
+      34 +    # A prime window length exercises the zero-pad-to-fast-leng
+         +th path; amplitude                                             
+      35 +    # and frequency must survive padding, and the output stays 
+         +float32.                                                       
+      36 +    fs, n, freq, amp = 5000.0, 19_997, 50.0, 2.0               
+      37 +    t = (np.arange(n) / fs).astype(np.float64)                 
+      38 +    y = (amp * np.sin(2 * np.pi * freq * t)).astype(np.float32)
+      39 +    r = compute_fft(t, y, float(t[0]), float(t[-1]), remove_dc=
+         +True, window=False)                                            
+      40 +    assert r.ok                                                
+      41 +    assert r.freqs.dtype == np.float32 and r.mag.dtype == np.fl
+         +oat32                                                          
+      42 +    assert abs(float(r.freqs[np.argmax(r.mag)]) - freq) < fs / 
+         +n * 3                                                          
+      43 +    assert abs(float(r.mag.max()) - amp) < 0.05  # normalised b
+         +y original n, not padded length                                
+      44 +                                                               
+      45 +                                                               
+      46  def _state():
+      47      state = AppState()
+      48      t = np.linspace(0.0, 2.0, 4000)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+● All Tier 1 items profiled, confirmed, and implemented. Full suite (now 115
+  tests) green.
+
+  Profiling results (measured on 9M-scale data)
+
+  ┌─────────────────────────────┬───────────────────────────┬──────────────┐
+  │            Item             │      Before → After       │     Gain     │
+  ├─────────────────────────────┼───────────────────────────┼──────────────┤
+  │ 1–3 FFT float32 + in-place  │ 611 → 394 ms (smooth)     │ 1.6×         │
+  │ + cached Hann               │                           │              │
+  ├─────────────────────────────┼───────────────────────────┼──────────────┤
+  │ 2 FFT next_fast_len padding │ 2996 → 413 ms (prime      │ 7.3×         │
+  │                             │ length)                   │              │
+  ├─────────────────────────────┼───────────────────────────┼──────────────┤
+  │ 5 Pixel-aware budget        │ 1.02 → 0.135 ms/signal    │ 7.6×         │
+  │                             │ (10k pts)                 │              │
+  ├─────────────────────────────┼───────────────────────────┼──────────────┤
+  │ 4 Decimation cache          │ 0.72 ms/signal × N saved  │ 2–6 ms/frame │
+  │                             │ on static views           │  back        │
+  └─────────────────────────────┴───────────────────────────┴──────────────┘
+
+  FFT amplitude (2.0) and frequency (50 Hz) verified preserved under padding;
+  output is now float32/complex64 (half the memory — also eases the WASM heap).
+
+  What I changed
+
+  analysis.py (compute_fft)
+  - Keep float32 (dropped the .astype(np.float64) upcast → complex64 transform).
+  - In-place demean (ys -= mean(dtype=float64)) and window, no temporaries.
+  - Cached Hann window by length (_HANN_CACHE/_hann).
+  - Zero-pad to _next_fast_len (new pure-Python 5-smooth helper — no scipy, kept
+  the dep list lean), normalized by the original n.
+
+  panels/plots.py (_plot_signals)
+  - Pixel-aware budget: n_out = min(max_points, 2 × plot_width_px) — max_points
+  becomes an upper bound; can't draw more than the screen resolves.
+  - Per-frame decimation cache keyed on (cell, signal) → (id(y), start, stop, 
+  n_out). Reuses the decimated float64 arrays when the view is unchanged —
+  important now that idle FPS is off and the plot redraws continuously. Verified
+  cache invalidates correctly when node-derived arrays are replaced
+  (upsert_derived_run makes a fresh Signal).
+
+  Tests — added test_next_fast_len_is_5_smooth_and_ge and
+  test_compute_fft_recovers_tone_on_bad_length_in_float32.
+
+  I did not add scipy (FFT float32/padding gains are achievable in pure numpy),
+  keeping native and web on the same code path. Want me to commit this whole
+  performance pass (the _reduce_to fix, idle-off, the uniform-dt, and these Tier
+  1 items)?
+
+✻ Crunched for 5m 51s

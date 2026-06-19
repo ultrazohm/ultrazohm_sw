@@ -5,11 +5,9 @@ Roadmap
 =======
 
 Open ideas for the UltraZohm Data Viewer and the record of what's already shipped.
-For how to use the app see :doc:`usage`; for internals see :doc:`architecture`.
+For how to use the app see :doc:`uz_dataviewer_usage`; for internals see :doc:`uz_dataviewer_architecture`.
 
-This is the **single entry point** for future work: the table below is the index;
-deep-dive files hold the detailed analysis for nodes, web large-log handling, and
-the cloud-data proposal.
+This is the **single entry point** for future work: the table below is the index; deep-dive files hold the detailed analysis for nodes, web large-log handling, and the cloud-data proposal.
 
 Open ideas
 ==========
@@ -45,7 +43,7 @@ Open ideas
        name collisions, source-on-derived chaining)
      - Nodes
      - Open follow-ups, all low/low-medium severity — not core-path bugs.
-     - :doc:`nodes_future_ideas` (items A–E)
+     - :doc:`uz_dataviewer_nodes_future_ideas` (items A–E)
    * - **Inline-code nodes** (user Python typed into a node)
      - Nodes
      - Assessed, deferred — plugin files (Option B) shipped first; inline code would need
@@ -65,7 +63,7 @@ Open ideas
      - Proposed — serve logs from a PocketBase file store for native + web; client
        downloads and loads them through the existing pipeline (decimation stays
        client-side, local path untouched).
-     - :doc:`remote_data`
+     - :doc:`uz_dataviewer_remote_data`
    * - **Large logs in the web build (out-of-core)**
      - Loader
      - Analysis — wasm32's ~4 GB heap blocks big logs in the browser; out-of-core via an
@@ -73,7 +71,7 @@ Open ideas
        bound). Approach deferred. The **native** lean-loading path is now **shipped**
        (float32 channels, large-Parquet streaming, CSV size guard, CSV→Parquet
        ``convert``); only the web/out-of-core route remains.
-     - :doc:`web_large_logs`
+     - :doc:`uz_dataviewer_web_large_logs`
 
 .. _uz_dataviewer_fft_deferred:
 
@@ -145,8 +143,7 @@ Open decisions before building:
 Shipped
 =======
 
-Items from the original idea list that are now implemented (see :doc:`usage` /
-:doc:`architecture`):
+Items from the original idea list that are now implemented (see :doc:`uz_dataviewer_usage` / :doc:`uz_dataviewer_architecture`):
 
 - **Scriptable command API** — every click is a logged, replayable command; unified
   grammar.
@@ -155,7 +152,7 @@ Items from the original idea list that are now implemented (see :doc:`usage` /
 - **Zoom/gesture echo** — e.g. a zoom emits ``set_x_lim(plot_1, min, max)`` to the log.
 - **Save / restore state** — JSON snapshot and an editable, replayable ``.uzscript``.
 - **Nodes** — drag a signal into a canvas, apply a transform, get a new draggable signal;
-  scriptable like everything else (``node_*``). Extensible via **plugins** (:doc:`plugins`).
+  scriptable like everything else (``node_*``). Extensible via **plugins** (:doc:`uz_dataviewer_plugins`).
 - **More plot types** — XY plot; **Histogram** (as a dedicated window, like FFT).
 - **Show samples** — per-sample markers on line plots.
 - **Spy** — drag a rectangle; an inset below shows only that region.

@@ -6,10 +6,9 @@ Large logs in the web build (the wasm32 memory limit)
 
 .. note::
 
-   Status: **analysis / design note, not built.** Part of the :doc:`roadmap`. This is
-   **separate** from the cloud-data feature (:doc:`remote_data`) — it is purely about why
-   the *browser* build can't open very large logs and what could fix it. The
-   implementation approach is intentionally left open.
+   Status: **analysis / design note, not built.** Part of the :doc:`uz_dataviewer_roadmap`.
+   This is **separate** from the cloud-data feature (:doc:`uz_dataviewer_remote_data`) — it is purely about why the *browser* build can't open very large logs and what could fix it.
+   The implementation approach is intentionally left open.
 
    **Native** large logs are already handled by lean loading (float32-at-parse, streaming
    Parquet, a CSV size guard and a CSV→Parquet ``convert``) — see

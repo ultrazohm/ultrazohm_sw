@@ -12,8 +12,7 @@ The UI, the command layer, plots, FFT/Histogram, nodes, and the downsampler are
 **identical** on both. The differences are all at the edges: file I/O, threading, and
 the WASM memory ceiling.
 
-For building each target see :doc:`build`; for internals see
-:ref:`uz_dataviewer_arch_native_web`.
+For building each target see :doc:`uz_dataviewer_build`; for internals see :ref:`uz_dataviewer_arch_native_web`.
 
 At a glance
 ===========
@@ -107,10 +106,8 @@ log under the budget loads at **full resolution**, and a genuinely huge one (e.g
 loads a usable **decimated** view instead of silently aborting the WASM runtime. **For
 full resolution on multi-GB logs, use the native app.**
 
-Cloud logs (proposed — see :doc:`remote_data`) download and load through this same
-in-memory path, so the heap budget above still applies to an oversize log in the
-browser. Lifting that ceiling (out-of-core via OPFS) is analysed separately in
-:doc:`web_large_logs`.
+Cloud logs (proposed — see :doc:`uz_dataviewer_remote_data`) download and load through this same in-memory path, so the heap budget above still applies to an oversize log in the browser.
+Lifting that ceiling (out-of-core via OPFS) is analysed separately in :doc:`uz_dataviewer_web_large_logs`.
 
 Downsampling is the same on both
 --------------------------------
@@ -137,8 +134,5 @@ Web-only operational notes
 What is identical
 =================
 
-The **command API and console**, **plots** (types, cursors, spy, secondary axis, linked
-X, CSV export), **FFT & Histogram windows**, the **node graph** and built-in transforms,
-**range-aware downsampling**, and the **``.uzscript``** replay all behave the same on
-native and web. Plugins are native-first (real filesystem + ``importlib``); web plugin
-loading is a future idea — see :doc:`plugins` and :doc:`roadmap`.
+The **command API and console**, **plots** (types, cursors, spy, secondary axis, linked X, CSV export), **FFT & Histogram windows**, the **node graph** and built-in transforms, **range-aware downsampling**, and the **``.uzscript``** replay all behave the same on native and web.
+Plugins are native-first (real filesystem + ``importlib``); web plugin loading is a future idea — see :doc:`uz_dataviewer_plugins` and :doc:`uz_dataviewer_roadmap`.

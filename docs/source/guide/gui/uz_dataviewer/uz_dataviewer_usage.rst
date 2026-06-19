@@ -4,8 +4,8 @@
 Usage guide
 ===========
 
-How to drive the UltraZohm Data Viewer. For internals see
-:doc:`architecture`; for packaging see :doc:`build`.
+How to drive the UltraZohm Data Viewer.
+For internals see :doc:`uz_dataviewer_architecture`; for packaging see :doc:`uz_dataviewer_build`.
 
 Launching
 =========
@@ -131,7 +131,7 @@ with the session. **Double-click a node** to rename it inline — its derived si
 takes the new name (or ``node_rename(node, name)``).
 
 **Custom transforms (plugins):** you can add your own node kinds by dropping a small
-Python file in a plugin folder — see :doc:`plugins`.
+Python file in a plugin folder — see :doc:`uz_dataviewer_plugins`.
 
 Console & scripting
 ===================
@@ -223,4 +223,5 @@ Web build differences
 The browser build (GitLab/GitHub Pages, or ``build/build_web.sh``) runs the same UI,
 with a few platform limits: synchronous loading, large CSVs stream-parsed at full
 resolution, and Export plus Session save/restore via browser download and a hidden
-file picker (no OS dialog). Details in :doc:`build`.
+file picker (no OS dialog).
+Details in :doc:`uz_dataviewer_build`.

@@ -70,6 +70,5 @@ API surface
      - ``tuple[str, ...]``
      - opt into external ``@transform`` plugin kinds (builtins are always present)
 
-The façade adds no compute logic — it reuses ``loader.parse_file``,
-``analysis.compute_fft``, ``nodes.REGISTRY`` and ``transforms.*``. For the full
-internals see :doc:`architecture`.
+The façade adds no compute logic — it reuses ``loader.parse_file``, ``analysis.compute_fft``, ``nodes.REGISTRY`` and ``transforms.*``.
+For the full internals see :doc:`uz_dataviewer_architecture`.

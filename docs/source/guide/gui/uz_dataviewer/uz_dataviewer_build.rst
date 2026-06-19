@@ -4,13 +4,11 @@
 Building the Data Viewer
 ==============================
 
-Usage: :doc:`usage` · Internals/design: :doc:`architecture`
+Usage: :doc:`uz_dataviewer_usage` · Internals/design: :doc:`uz_dataviewer_architecture`
 
-The viewer is a pure-Python ``imgui_bundle`` application. ``imgui_bundle`` ships
-prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, Linux
-and macOS, so the same source runs on all desktop platforms, and can also be
-executed in the browser via Pyodide. (CI for native + web builds lives in the
-repo-root ``.gitlab-ci.yml``.)
+The viewer is a pure-Python ``imgui_bundle`` application.
+``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, Linux and macOS, so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.
+(CI for native + web builds lives in the repo-root ``.gitlab-ci.yml``.)
 
 Run from source (any desktop OS)
 ================================

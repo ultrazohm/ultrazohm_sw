@@ -6,8 +6,7 @@ Cloud logs via an authenticated file store (proposal)
 
 .. note::
 
-   Status: **proposed, not built.** Part of the :doc:`roadmap`. This is a design /
-   feasibility note, not a spec for code that exists today.
+   Status: **proposed, not built.** Part of the :doc:`uz_dataviewer_roadmap`. This is a design / feasibility note, not a spec for code that exists today.
 
 Why
 ===
@@ -15,11 +14,10 @@ Why
 Central, authenticated access to logs — for both native and web builds — so analysts can
 open recordings without copying multi-gigabyte files around by hand.
 
-A ">8 GB log" is the **CSV text** size. The same record is only **~15M rows ≈ ~1.3 GB of
-numeric data** (15M × ~20 channels × 4 B + a float64 time axis). That fits the web build's
-~1.5 GB wasm-heap budget (see :doc:`native_vs_web`), so such a log already loads at **full
-resolution in the browser** and trivially on native. The goal is **central, authenticated
-access** — not raising the memory ceiling — and the design can stay small.
+A ">8 GB log" is the **CSV text** size.
+The same record is only **~15M rows ≈ ~1.3 GB of numeric data** (15M × ~20 channels × 4 B + a float64 time axis).
+That fits the web build's ~1.5 GB wasm-heap budget (see :doc:`uz_dataviewer_native_vs_web`), so such a log already loads at **full resolution in the browser** and trivially on native.
+The goal is **central, authenticated access** — not raising the memory ceiling — and the design can stay small.
 
 Constraints
 ===========

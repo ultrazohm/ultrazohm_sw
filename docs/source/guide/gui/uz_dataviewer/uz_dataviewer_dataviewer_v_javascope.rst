@@ -4,23 +4,20 @@
 JavaScope vs. Data Viewer
 =========================
 
-A comparison of the two UltraZohm tools that deal with scope data, what each is for,
-and how they relate.
+A comparison of the two UltraZohm tools that deal with scope data, what each is for, and how they relate.
 
 .. note::
 
    **TL;DR** — The **JavaScope** (``javascope/``) is a *live oscilloscope*: a Java/Swing
    application that connects to the UltraZohm hardware over TCP, streams scope channels in
    real time, triggers, scales, and sends commands/parameters **to** the device, and
-   writes ``Log_*.csv`` files. The **Data Viewer** (``uz_dataviewer/``) is an *offline
-   post-processing viewer*: an ImGui/ImPlot desktop+web app that *reads* those logs for
-   fast, interactive inspection. They are complementary, not competing — JavaScope
-   **produces** the logs that the Data Viewer **consumes**. The Data Viewer is the modern
-   successor to the legacy Plotly viewer ``javascope/dataviewer.py``, **not** a
-   replacement for the live Java scope.
+   writes ``Log_*.csv`` files.
+   The **Data Viewer** (``uz_dataviewer/``) is an *offline post-processing viewer*: an ImGui/ImPlot desktop+web app that *reads* those logs for fast, interactive inspection.
+   They are complementary, not competing — JavaScope **produces** the logs that the Data Viewer **consumes**.
+   The Data Viewer is the modern successor to the legacy Plotly viewer ``javascope/dataviewer.py``, **not** a replacement for the live Java scope.
 
-1. The two tools at a glance
-============================
+The two tools at a glance
+==========================
 
 .. list-table::
    :header-rows: 1
@@ -51,14 +48,15 @@ and how they relate.
      - Desktop JVM
      - Native (PyInstaller) + Web (Pyodide/WASM)
 
-There is also a **third, legacy artifact**: ``javascope/dataviewer.py``, a Plotly/Dash web
-app. ``uz_dataviewer`` is its rewrite. See §4.
+There is also a **third, legacy artifact**: ``javascope/dataviewer.py``, a Plotly/Dash web app.
+``uz_dataviewer`` is its rewrite.
+See :ref:`uz_dataviewer_legacy_dataviewer`.
 
-2. JavaScope — the live oscilloscope
-====================================
+JavaScope — the live oscilloscope
+===================================
 
-The JavaScope is the operator console for the running UltraZohm. Its job is to talk to the
-hardware while an experiment is live.
+The JavaScope is the operator console for the running UltraZohm.
+Its job is to talk to the hardware while an experiment is live.
 
 **Acquisition**
 
@@ -103,11 +101,11 @@ hardware while an experiment is live.
   scope data and accepts the command protocol, so the JavaScope can be exercised without
   hardware.
 
-3. Data Viewer (``uz_dataviewer``) — the offline analyzer
-=========================================================
+Data Viewer (``uz_dataviewer``) — the offline analyzer
+========================================================
 
-The Data Viewer never touches the hardware. It opens completed logs and makes large ones
-fast to explore.
+The Data Viewer never touches the hardware.
+It opens completed logs and makes large ones fast to explore.
 
 - **Loading** — ``.csv`` (JavaScope ``;``-format, read with Arrow's multithreaded parser)
   and ``.parquet``, multiple files at once, async on desktop.
@@ -126,14 +124,17 @@ fast to explore.
 - **Scriptable command console** — every action echoes a replayable command; the input
   runs the same commands; sessions save to JSON or a ``.uzscript``.
 
-What it deliberately does **not** do: connect to hardware, trigger, stream live, or send
-any command to the device. Those are JavaScope's domain.
+What it deliberately does **not** do: connect to hardware, trigger, stream live, or send any command to the device.
+Those are JavaScope's domain.
 
-4. Relationship to the legacy ``dataviewer.py``
-===============================================
+.. _uz_dataviewer_legacy_dataviewer:
+
+Relationship to the legacy ``dataviewer.py``
+=============================================
 
 ``javascope/dataviewer.py`` (~1.7k LOC, Plotly/Dash) is the **direct predecessor** of
-``uz_dataviewer``. It already offered, in a browser:
+``uz_dataviewer``.
+It already offered, in a browser:
 
 - 4 graph panels, load up to 2 files, **overlay-compare** both files on one graph;
 - **cursors**, **export data** (with "start time at 0" relative-time option);
@@ -141,11 +142,8 @@ any command to the device. Those are JavaScope's domain.
 - **shared/linked x-axis** across graphs;
 - **plotly-resampler** downsampling for big logs.
 
-``uz_dataviewer`` reimplements this offline-viewer concept on Dear ImGui/ImPlot for a
-native docked desktop app (and a WASM web build). ``FigureResampler`` is bound to Plotly
-figures, so nothing of the old rendering carried over; the decimation engine
-(``tsdownsample``) was reused at first, then replaced by a pure-NumPy **min/max pyramid**
-so native and web share one path.
+``uz_dataviewer`` reimplements this offline-viewer concept on Dear ImGui/ImPlot for a native docked desktop app (and a WASM web build).
+``FigureResampler`` is bound to Plotly figures, so nothing of the old rendering carried over; the decimation engine (``tsdownsample``) was reused at first, then replaced by a pure-NumPy **min/max pyramid** so native and web share one path.
 
 .. list-table::
    :header-rows: 1
@@ -182,8 +180,8 @@ so native and web share one path.
      - No
      - Yes (every action is a command; ``.uzscript`` replay)
 
-5. How they fit together
-========================
+How they fit together
+======================
 
 .. code-block:: text
 
@@ -204,7 +202,5 @@ so native and web share one path.
                     │  ImGui/ImPlot                │  FFT, downsampling
                     └────────────────────────────┘
 
-- **JavaScope** is for *running an experiment*: connect, trigger, observe live, tune
-  parameters, and record.
-- **Data Viewer** is for *understanding the recording afterwards*: open one or many logs,
-  arrange subplots, zoom into gigabyte-scale data, run FFTs.
+- **JavaScope** is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
+- **Data Viewer** is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.

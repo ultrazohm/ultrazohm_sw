@@ -4,14 +4,12 @@
 Nodes — known limitations & future ideas
 ==========================================
 
-Part of the :doc:`roadmap`. The deep dive for the node graph's open edges.
+Part of the :doc:`uz_dataviewer_roadmap`.
+The deep dive for the node graph's open edges.
 
-Captured 2026-06-15 from a critical review of the node-graph feature (engine in
-``nodes.py`` / ``transforms.py``, canvas in ``panels/nodes.py``). The review **fixed**
-three items before this list: transitive staleness (a downstream node now reads
-``(stale)`` when an upstream changes), op-aware input-pin count on ``math`` nodes, and
-skip-fresh evaluation (``node_eval`` only recomputes stale nodes). The items below are
-**not** core-path bugs — they are edges and polish, left as documented follow-ups.
+Captured 2026-06-15 from a critical review of the node-graph feature (engine in ``nodes.py`` / ``transforms.py``, canvas in ``panels/nodes.py``).
+The review **fixed** three items before this list: transitive staleness (a downstream node now reads ``(stale)`` when an upstream changes), op-aware input-pin count on ``math`` nodes, and skip-fresh evaluation (``node_eval`` only recomputes stale nodes).
+The items below are **not** core-path bugs — they are edges and polish, left as documented follow-ups.
 
 A. Binary math input order is implicit (connection order)
 =========================================================
@@ -149,5 +147,5 @@ param path that bypasses the flat command grammar.
    **Update:** Option B (external plugin files) **shipped** — a transform ``REGISTRY`` in
    ``nodes.py``, the ``@transform`` / ``ParamSpec`` API, a tolerant loader (``plugins.py``,
    ``$UZ_DATAVIEWER_PLUGINS`` + ``~/.uz_dataviewer/nodes/`` + ``load_plugins([dir])``), a
-   generic param UI, and unknown-kind placeholders on restore. See :doc:`plugins`. Option A
+   generic param UI, and unknown-kind placeholders on restore. See :doc:`uz_dataviewer_plugins`. Option A
    (inline-code nodes) above remains the open idea.

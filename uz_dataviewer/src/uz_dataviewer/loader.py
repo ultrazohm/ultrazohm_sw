@@ -57,20 +57,23 @@ _CHANNEL_PREFIX = re.compile(r"^CH\d+\s*=\s*\d+\s*\)\s*(.*)$")
 _KNOWN_UNITS = ("us", "ms", "rpm", "deg", "rad", "Hz", "V", "A", "W", "Nm", "C", "K")
 
 # -- large-log tuning (see docs/WEB_LARGE_LOGS.md) ----------------------------
-# A CSV is bulk-parsed by Arrow, which holds the whole table in RAM *alongside*
-# the output arrays, so the load peak is several times the resident numeric size.
-# We refuse a CSV whose estimated resident footprint exceeds this budget and route
-# the user to the streaming CSV->Parquet converter; Parquet then loads through the
-# streaming path at a ~1.5x peak. Resident bytes ~= rows * (8 + 4*n_channels).
+# Large CSVs stream-parse (see CSV_STREAM_MIN_BYTES / _parse_csv_streaming) at a peak of
+# ~1.5x the resident numeric size, so the load peak is no longer the constraint -- but the
+# *full record still has to fit in RAM*. We refuse a CSV whose estimated resident footprint
+# exceeds this budget and route the user to Parquet (also ~1.5x, and faster to reload) or to
+# loading fewer channels. Resident bytes ~= rows * (8 + 4*n_channels).
 #
-# NOTE: this budget is measured against the *resident* footprint, NOT the
-# bulk-parse peak. Arrow's read_csv transiently uses ~2-3x the resident size, so a
-# CSV just under this limit can still peak well above 10 GB during parsing. The
-# value is therefore a deliberately high ceiling that only blocks extreme files;
-# it is not a guarantee the bulk parse fits in 10 GB of RAM.
+# NOTE: this is a resident-RAM ceiling, not a fit guarantee for a specific machine -- it is a
+# deliberately high blanket limit that only blocks extreme files. A box with less RAM than the
+# resident size can still OOM below it; lifting the resident bound entirely is the out-of-core
+# work in docs/WEB_LARGE_LOGS.md.
 MAX_CSV_NUMERIC_BYTES = 10_000_000_000  # ~10 GB resident (~110M rows at 20 channels)
 # Parquet files below this many rows use the simple bulk reader; larger ones stream.
 PARQUET_STREAM_MIN_ROWS = 2_000_000
+# CSVs at/above this *file* size stream-parse (peak ~1.5x resident) instead of the bulk
+# Arrow read (peak ~4x). Small logs keep the fast multithreaded bulk path. Mirrors the
+# web build's 200 MB streaming threshold (build/gen_web.py FULL_LOAD_LIMIT).
+CSV_STREAM_MIN_BYTES = 256 * 1024 * 1024
 # Rough average characters per numeric text field, used *only* to turn a CSV file
 # size into a row estimate for the size guard (and its message). Not exact.
 _CSV_AVG_FIELD_CHARS = 8
@@ -212,17 +215,77 @@ def _guard_csv_size(path: str, columns: list[str]) -> None:
     if resident > MAX_CSV_NUMERIC_BYTES:
         gb = resident / (1024**3)
         raise ValueError(
-            f"CSV too large (~{est_rows / 1e6:.0f}M rows, ~{gb:.1f} GB in memory). "
-            "Bulk CSV parsing risks running out of memory; convert it to Parquet "
-            "first (Parquet streams in at a ~1.5x peak), then open the .parquet:\n"
+            f"CSV too large (~{est_rows / 1e6:.0f}M rows, ~{gb:.1f} GB resident in RAM). "
+            "Large CSVs stream in (peak ~1.5x resident), but the full record still has to "
+            "fit in memory. Convert it to Parquet (streams + reloads faster) or load fewer "
+            "channels:\n"
             f'    convert("{path}")'
         )
+
+
+def _grow(arr: np.ndarray, new_cap: int, used: int) -> np.ndarray:
+    """Return a copy of ``arr`` resized to ``new_cap``, preserving ``arr[:used]``."""
+    out = np.empty(new_cap, dtype=arr.dtype)
+    out[:used] = arr[:used]
+    return out
+
+
+def _parse_csv_streaming(path: str, delimiter: str, columns: list[str]) -> ParsedRun:
+    """Stream a large CSV into preallocated arrays (peak ~= resident + a batch).
+
+    Mirrors :func:`_parse_parquet_streaming`, but a CSV's row count is unknown up front,
+    so we seed the arrays from the size estimate and grow them geometrically -- the whole
+    multi-GB text never sits in memory at once, only the compact numeric result. The Arrow
+    streaming reader projects to the named columns (``include_columns``), which also drops
+    JavaScope's empty trailing column.
+    """
+    time_col, data_columns = _split_time_columns(columns)
+    ordered = [time_col, *data_columns]
+    est_rows, _ = _estimate_csv_rows_and_bytes(path, columns)
+    cap = max(1024, int(est_rows * 1.1))
+    time = np.empty(cap, dtype=np.float64)
+    arrays = {raw: np.empty(cap, dtype=np.float32) for raw in data_columns}
+
+    reader = pa_csv.open_csv(
+        path,
+        parse_options=pa_csv.ParseOptions(delimiter=delimiter),
+        read_options=pa_csv.ReadOptions(use_threads=True),
+        convert_options=pa_csv.ConvertOptions(
+            strings_can_be_null=True,
+            column_types=_csv_column_types(columns),
+            include_columns=ordered,
+        ),
+    )
+    off = 0
+    try:
+        for batch in reader:
+            m = batch.num_rows
+            if off + m > cap:
+                cap = max(off + m, int(cap * 1.5))
+                time = _grow(time, cap, off)
+                arrays = {k: _grow(v, cap, off) for k, v in arrays.items()}
+            for j, name in enumerate(ordered):
+                values = batch.column(j).to_numpy(zero_copy_only=False)
+                target = time if name == time_col else arrays[name]
+                target[off : off + m] = values
+            off += m
+    finally:
+        reader.close()
+
+    time = time[:off]
+    arrays = {k: v[:off] for k, v in arrays.items()}
+    validate_time_axis(time, path)
+    signals, units = _named_signals(data_columns, lambda raw: arrays[raw])
+    return ParsedRun(os.path.basename(path), path, time, signals, units)
 
 
 def parse_csv(path: str) -> ParsedRun:
     delimiter = _sniff_delimiter(path)
     columns = _read_header(path, delimiter)
     _guard_csv_size(path, columns)
+    # Large CSVs stream (peak ~1.5x resident); small ones keep the fast bulk read.
+    if os.path.getsize(path) >= CSV_STREAM_MIN_BYTES:
+        return _parse_csv_streaming(path, delimiter, columns)
     table = pa_csv.read_csv(
         path,
         parse_options=pa_csv.ParseOptions(delimiter=delimiter),
@@ -313,6 +376,18 @@ def _drop_empty_columns(batch: pa.RecordBatch) -> pa.RecordBatch:
     return batch.select(keep)
 
 
+def _release_arrow_pool() -> None:
+    """Hand Arrow's freed-but-retained buffers back to the OS after a parse.
+
+    Arrow's default memory pool keeps freed parse scratch around for reuse rather than
+    returning it, so process RSS stays at the parse high-water mark (measured ~2.9 GB on
+    the 0.71 GB 9M-row CSV) long after the table is gone. ``release_unused`` reclaims it
+    (~1.2 GB back there, ~10 GB on the 75M log). Only buffers with no live references are
+    freed, so the numpy arrays we just built are untouched.
+    """
+    pa.default_memory_pool().release_unused()
+
+
 def parse_file(path: str) -> ParsedRun:
     """Parse ``path`` into a :class:`ParsedRun` without touching any registry.
 
@@ -320,10 +395,13 @@ def parse_file(path: str) -> ParsedRun:
     """
     ext = os.path.splitext(path)[1].lower()
     if ext == ".csv":
-        return parse_csv(path)
-    if ext == ".parquet":
-        return parse_parquet(path)
-    raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
+        parsed = parse_csv(path)
+    elif ext == ".parquet":
+        parsed = parse_parquet(path)
+    else:
+        raise ValueError(f'Unsupported file type "{ext}". Expected .csv or .parquet.')
+    _release_arrow_pool()
+    return parsed
 
 
 def load_file(path: str, registry: DataRegistry) -> Run:

@@ -108,10 +108,19 @@ dataset size, so ~100M-point logs open without OOM:
   `ConvertOptions(column_types=…)` so channels parse straight to `float32` (time stays
   `float64`) — avoiding the float64→float32 re-cast that used to double the channel memory.
   `_named_signals` then shares one naming/dedup pass across every load path.
+- **Streaming CSV.** For files at/above `CSV_STREAM_MIN_BYTES`, `_parse_csv_streaming` reads via
+  Arrow's `open_csv` batch reader into **preallocated** numpy arrays (grown geometrically since a
+  CSV's row count isn't known up front), `include_columns` projecting to just the named columns.
+  Peak ≈ resident + one batch (~1.5×) instead of the bulk `read_csv` peak (~4× the resident size,
+  measured). Small CSVs keep the fast multithreaded bulk path.
+- **Releasing Arrow's pool.** After every parse, `parse_file` calls `_release_arrow_pool`
+  (`pa.default_memory_pool().release_unused()`): Arrow retains freed parse scratch rather than
+  returning it to the OS, so RSS otherwise stays pinned at the parse high-water mark
+  (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
 - **CSV size guard.** `_guard_csv_size` estimates the resident footprint from file size ×
-  column count and **refuses** a CSV above `MAX_CSV_NUMERIC_BYTES`, pointing the user at
-  `convert(...)`. (The budget is measured against the *resident* size, not Arrow's bulk-parse
-  peak — which runs ~2–3× higher — so it is a deliberately high ceiling, not a fit guarantee.)
+  column count and **refuses** a CSV above `MAX_CSV_NUMERIC_BYTES`. Now that large CSVs stream,
+  this is a **resident-RAM** ceiling (the full record must still fit in memory), not a bulk-parse
+  guard; it routes the user to `convert(...)` or fewer channels.
 - **Streaming Parquet.** For files above `PARQUET_STREAM_MIN_ROWS`, `_parse_parquet_streaming`
   reads the exact row count from `ParquetFile.metadata.num_rows`, **preallocates** the output
   arrays, and fills them with `iter_batches` (peak ≈ resident + one row group, ~1.5× measured)

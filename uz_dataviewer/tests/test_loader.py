@@ -140,6 +140,52 @@ def test_convert_csv_to_parquet_round_trips(tmp_path):
         np.testing.assert_allclose(via_parquet.signals[name].y, sig.y, rtol=1e-5)
 
 
+def _javascope_csv(n: int) -> str:
+    """A JavaScope-style ``;``-separated CSV (trailing ``;`` -> empty column) with n rows."""
+    t = np.linspace(0.0, 1.0, n)
+    ia = np.sin(np.linspace(0.0, 10.0, n))
+    rpm = 100.0 + np.cos(np.linspace(0.0, 10.0, n))
+    lines = ["time;CH8=8)ia;CH15=15)Speed_rpm;"]
+    lines += [f"{t[i]:.6f};{ia[i]:.6f};{rpm[i]:.6f};" for i in range(n)]
+    return "\n".join(lines) + "\n"
+
+
+def test_csv_streaming_matches_bulk(tmp_path, monkeypatch):
+    from uz_dataviewer import loader
+
+    n = 2500
+    path = tmp_path / "Log_stream.csv"
+    path.write_text(_javascope_csv(n))
+
+    bulk = load_file(str(path), DataRegistry())  # file < threshold -> bulk path
+
+    # Force streaming, and seed a deliberately low row estimate so the preallocated
+    # arrays must grow at least once (exercises _grow).
+    monkeypatch.setattr(loader, "CSV_STREAM_MIN_BYTES", 0)
+    monkeypatch.setattr(loader, "_estimate_csv_rows_and_bytes", lambda p, c: (10, 10))
+    streamed = load_file(str(path), DataRegistry())
+
+    assert streamed.n_rows == n == bulk.n_rows
+    # Trailing ';' empty column is dropped -- only the three named signals remain.
+    assert set(streamed.signals) == {"ia", "Speed_rpm"} == set(bulk.signals)
+    assert streamed.signals["Speed_rpm"].unit == "rpm"
+    np.testing.assert_allclose(streamed.time, bulk.time)
+    for name in bulk.signals:
+        np.testing.assert_array_equal(streamed.signals[name].y, bulk.signals[name].y)
+        assert streamed.signals[name].y.dtype == np.float32
+    assert streamed.time.dtype == np.float64
+
+
+def test_csv_streaming_rejects_decreasing_time(tmp_path, monkeypatch):
+    from uz_dataviewer import loader
+
+    path = tmp_path / "Log_back_stream.csv"
+    path.write_text("time;CH8=8)ia;\n0.0;1.0;\n0.2;2.0;\n0.1;3.0;\n")
+    monkeypatch.setattr(loader, "CSV_STREAM_MIN_BYTES", 0)  # force the streaming path
+    with pytest.raises(ValueError, match="non-decreasing"):
+        load_file(str(path), DataRegistry())
+
+
 def test_parquet_streaming_matches_bulk(tmp_path, monkeypatch):
     import pandas as pd
 

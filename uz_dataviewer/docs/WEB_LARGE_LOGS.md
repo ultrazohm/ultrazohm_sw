@@ -87,8 +87,9 @@ by loading everything.
   RAM vs ~4 GB wasm).
 - **…and the load *peak* (separate from the resident bound) is now handled on native.** The
   old loader peaked at ~24 GB on the 4.6 GB example (float64 inference + a float32 re-cast, and
-  Arrow holding the whole table). Lean loading has since shipped — float32-at-parse and streaming
-  Parquet bring the native peak down near the resident size; see
+  Arrow holding the whole table). Lean loading has since shipped — float32-at-parse, streaming
+  **CSV** *and* Parquet (~1.5× resident instead of CSV's old ~4× bulk peak), and releasing Arrow's
+  retained pool after each parse — bringing the native peak down near the resident size; see
   [ARCHITECTURE §4a](ARCHITECTURE.md#4a-loading--large-logs-loaderpy). That fixes the *peak*, but
   not the *resident* bound: the full dataset still lives in RAM, which is exactly what the
   out-of-core work below removes.

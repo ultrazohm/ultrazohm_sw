@@ -30,7 +30,7 @@ Example
      filtered_signal = uz_exp_smooth_sample(test_instance, unfiltered_signal);
   }
 
-.. note :: The implementation of the filter uses the first value from the unfiltered signal as the first output (first sample).
+.. warning :: The implementation of the filter uses the first value from the unfiltered signal as the first output (first sample).
 
 Reference
 =========

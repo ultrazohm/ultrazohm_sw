@@ -41,7 +41,7 @@ static uz_dq_setpoint_filter* uz_dq_setpoint_filter_allocation(void) {
 	return (self);
 }
 
-uz_dq_setpoint_filter* uz_uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filter_config config){
+uz_dq_setpoint_filter* uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filter_config config){
 	uz_dq_setpoint_filter* self = uz_dq_setpoint_filter_allocation();
     uz_assert(UZ_IIR_FILTER_MAX_INSTANCES>=(2U*instances_counter_dq_setpoint_filter));   // each instance uses 2 IIR filters so this amount should be available
 	self->config_filter_d = config.config_filter_d;
@@ -58,5 +58,12 @@ uz_3ph_dq_t uz_signals_IIR_Filter_dq_setpoint(uz_dq_setpoint_filter* self, uz_3p
         .q = uz_signals_IIR_Filter_sample(self->iir_instance_q, setpoint.q),
         .zero = 0.0f};
     return out;
+}
+
+void uz_dq_setpoint_filter_reset(uz_dq_setpoint_filter* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_signals_IIR_Filter_reset(self->iir_instance_d);
+    uz_signals_IIR_Filter_reset(self->iir_instance_q);
 }
 #endif

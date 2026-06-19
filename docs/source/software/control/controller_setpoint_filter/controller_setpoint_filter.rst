@@ -32,8 +32,8 @@ Example configuration
   uz_dq_setpoint_filter* obj_2 = NULL;
   int main(void) {
      //...
-     obj_1 = uz_uz_dq_setpoint_filter_init(config);
-     obj_2 = uz_uz_dq_setpoint_filter_init(config);
+     obj_1 = uz_dq_setpoint_filter_init(config);
+     obj_2 = uz_dq_setpoint_filter_init(config);
      //...
   }
 
@@ -60,6 +60,8 @@ IIR filter set-point
 
 .. doxygentypedef:: uz_dq_setpoint_filter
 
-.. doxygenfunction:: uz_uz_dq_setpoint_filter_init
+.. doxygenfunction:: uz_dq_setpoint_filter_init
 
 .. doxygenfunction:: uz_signals_IIR_Filter_dq_setpoint
+  
+.. doxygenfunction:: uz_dq_setpoint_filter_reset

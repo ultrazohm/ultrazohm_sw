@@ -1,6 +1,7 @@
 build/
 source/_build
 doxygen_output/
+ceedling_test_output/
 .vscode/
 *.raw
 *.plt

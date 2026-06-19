@@ -24,6 +24,7 @@
 #define TWO_DIVIDED_BY_THREE (2.0f/3.0f) 
 
 struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad) {
+	uz_assert(V_DC_Volts > 0.0f);
 	struct uz_DutyCycle_t output = {0};
 	uz_3ph_alphabeta_t reference = uz_transformation_3ph_dq_to_alphabeta(v_ref_Volts, theta_el_rad);
 	float V_DC_scaling = 1.0f / (V_DC_Volts * TWO_DIVIDED_BY_THREE);

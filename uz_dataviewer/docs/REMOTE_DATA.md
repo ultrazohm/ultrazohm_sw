@@ -9,12 +9,11 @@ We want logs available "from the cloud" — for both the native and web builds �
 authentication and multiple users, instead of every analyst copying multi-gigabyte files
 around by hand.
 
-A sizing note that keeps this simple: a ">8 GB log" is the **CSV text** size. The same record
-is only **~15M rows ≈ ~1.3 GB of numeric data** (15M × ~20 channels × 4 B + a float64 time
-axis). That fits the web build's ~1.5 GB wasm-heap budget (see
-[NATIVE_VS_WEB.md](NATIVE_VS_WEB.md)), so such a log already loads at **full resolution in the
-browser** and trivially on native. So the goal is **central, authenticated access** — *not*
-breaking the memory ceiling — and the design can stay small.
+A ">8 GB log" is the **CSV text** size. The same record is only **~15M rows ≈ ~1.3 GB of
+numeric data** (15M × ~20 channels × 4 B + a float64 time axis). That fits the web build's
+~1.5 GB wasm-heap budget (see [NATIVE_VS_WEB.md](NATIVE_VS_WEB.md)), so such a log already
+loads at **full resolution in the browser** and trivially on native. The goal is **central,
+authenticated access** — not raising the memory ceiling — and the design can stay small.
 
 ## Constraints
 

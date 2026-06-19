@@ -141,12 +141,11 @@ def load_state(state: "AppState", path: str) -> None:
 
 def apply_dict(state: "AppState", data: dict) -> None:
     # Reload any files referenced by the snapshot that are not already present.
-    have = {run.label for run in state.registry.runs}
+    have = {run.path for run in state.registry.runs}
     for file_path in data.get("files", []):
-        label = file_path.rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
-        if label not in have:
+        if file_path not in have:
             state.load_sync(file_path)
-            have.add(label)
+            have.add(file_path)
 
     # Re-apply per-log time normalisation.
     origins = data.get("time_origins", {})

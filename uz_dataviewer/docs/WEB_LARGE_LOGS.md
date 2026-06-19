@@ -29,8 +29,8 @@ objects (the basics are in [NATIVE_VS_WEB.md](NATIVE_VS_WEB.md#large-csvs-and-th
 The loader materialises the **whole** dataset and builds the pyramid in that same memory, so
 ~4.8 GB doesn't fit in a ~4 GB address space.
 
-The crucial point for the rest of this note: **this cap is on linear memory (RAM), not on what
-the tab can store overall** — which is the whole answer to "would a database help?"
+**This cap is on linear memory (RAM), not on what the tab can store overall** — which is why an
+embedded database using OPFS can help despite running in the same browser tab.
 
 ## Mitigations
 
@@ -44,8 +44,7 @@ the tab can store overall** — which is the whole answer to "would a database h
 
 ## Why an embedded database resolves it — even in the same browser tab
 
-A natural objection: *the data still lives in the same browser window, so how does a DB help?*
-Because a tab has **two separate memory pools**, and the 4 GB cap applies to only one:
+A tab has **two separate memory pools**, and the 4 GB cap applies to only one:
 
 1. **wasm linear memory (RAM)** — the single ~4 GB `ArrayBuffer`. This is the wall.
 2. **OPFS (Origin Private File System)** — large, persistent, **disk-backed** storage for the
@@ -78,7 +77,7 @@ visible window per view**:
 The zoomed-out overview min/max therefore has to be computed **out-of-core** — by the engine, not
 by loading everything.
 
-## Do pandas / Polars already solve this? And isn't native also RAM-bound?
+## Pandas / Polars / native RAM bound
 
 - **Native is also bound by RAM today.** The current loader (native *and* web) reads the
   **whole** log into in-memory numpy arrays + pyramid. Native just has a far higher ceiling (the

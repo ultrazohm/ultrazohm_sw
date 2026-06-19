@@ -2800,20 +2800,20 @@
               },
               "uz_endat_interface_d5_channel_1": {
                 "vlnv": "xilinx.com:ip:uz_endat_interface:1.0",
-                "xci_name": "zusys_uz_endat_interface_d5_channel_1_1",
-                "xci_path": "ip/zusys_uz_endat_interface_d5_channel_1_1/zusys_uz_endat_interface_d5_channel_1_1.xci",
+                "xci_name": "zusys_uz_endat_interface_d5_channel_1_2",
+                "xci_path": "ip/zusys_uz_endat_interface_d5_channel_1_2/zusys_uz_endat_interface_d5_channel_1_2.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/uz_endat_interface_d5_channel_1"
               },
               "uz_ssi_interface_d5_channel_2": {
                 "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-                "xci_name": "zusys_uz_ssi_interface_d5_channel_2_1",
-                "xci_path": "ip/zusys_uz_ssi_interface_d5_channel_2_1/zusys_uz_ssi_interface_d5_channel_2_1.xci",
+                "xci_name": "zusys_uz_ssi_interface_d5_channel_2_2",
+                "xci_path": "ip/zusys_uz_ssi_interface_d5_channel_2_2/zusys_uz_ssi_interface_d5_channel_2_2.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/uz_ssi_interface_d5_channel_2"
               },
               "uz_ssi_interface_d5_channel_3": {
                 "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-                "xci_name": "zusys_uz_ssi_interface_d5_channel_3_1",
-                "xci_path": "ip/zusys_uz_ssi_interface_d5_channel_3_1/zusys_uz_ssi_interface_d5_channel_3_1.xci",
+                "xci_name": "zusys_uz_ssi_interface_d5_channel_3_2",
+                "xci_path": "ip/zusys_uz_ssi_interface_d5_channel_3_2/zusys_uz_ssi_interface_d5_channel_3_2.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/uz_ssi_interface_d5_channel_3"
               }
             },
@@ -3332,8 +3332,8 @@
               },
               "Temperature_Card_Int_0": {
                 "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0:1.1",
-                "xci_name": "zusys_Temperature_Card_Int_0_1",
-                "xci_path": "ip/zusys_Temperature_Card_Int_0_1/zusys_Temperature_Card_Int_0_1.xci",
+                "xci_name": "zusys_Temperature_Card_Int_0_2",
+                "xci_path": "ip/zusys_Temperature_Card_Int_0_2/zusys_Temperature_Card_Int_0_2.xci",
                 "inst_hier_path": "uz_digital_adapter/D4_adapter/Temperature_Card_Int_0"
               }
             },
@@ -3388,61 +3388,61 @@
                   "Temperature_Card_Int_0/SPI_MISO_3"
                 ]
               },
-              "Temperature_Card_Int_0_LTC_resetn_2": {
+              "Temperature_Card_Int_0_LTC_resetn_3": {
                 "ports": [
                   "Temperature_Card_Int_0/LTC_resetn_1",
                   "LTC_resetn_1_Dig18_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_MOSI_4": {
+              "Temperature_Card_Int_0_SPI_MOSI_7": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_MOSI_1",
                   "SPI_MOSI_1_Dig01_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_MOSI_5": {
+              "Temperature_Card_Int_0_SPI_MOSI_8": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_MOSI_3",
                   "SPI_MOSI_3_Dig07_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_MOSI_6": {
+              "Temperature_Card_Int_0_SPI_MOSI_9": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_MOSI_2",
                   "SPI_MOSI_2_Dig13_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SCLK_4": {
+              "Temperature_Card_Int_0_SPI_SCLK_7": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SCLK_1",
                   "SPI_SCLK_1_Dig00_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SCLK_5": {
+              "Temperature_Card_Int_0_SPI_SCLK_8": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SCLK_3",
                   "SPI_SCLK_3_Dig06_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SCLK_6": {
+              "Temperature_Card_Int_0_SPI_SCLK_9": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SCLK_2",
                   "SPI_SCLK_2_Dig12_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SS_4": {
+              "Temperature_Card_Int_0_SPI_SS_7": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SS_1",
                   "SPI_SS_1_Dig03_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SS_5": {
+              "Temperature_Card_Int_0_SPI_SS_8": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SS_3",
                   "SPI_SS_3_Dig09_d4"
                 ]
               },
-              "Temperature_Card_Int_0_SPI_SS_6": {
+              "Temperature_Card_Int_0_SPI_SS_9": {
                 "ports": [
                   "Temperature_Card_Int_0/SPI_SS_2",
                   "SPI_SS_2_Dig15_d4"
@@ -4355,8 +4355,8 @@
               },
               "xlconcat_0": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_xlconcat_0_3",
-                "xci_path": "ip/zusys_xlconcat_0_3/zusys_xlconcat_0_3.xci",
+                "xci_name": "zusys_xlconcat_0_4",
+                "xci_path": "ip/zusys_xlconcat_0_4/zusys_xlconcat_0_4.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
@@ -4374,13 +4374,13 @@
               }
             },
             "nets": {
-              "ADC_A1_2": {
+              "ADC_A1_3": {
                 "ports": [
                   "ADC_A1",
                   "xlconcat_0/In0"
                 ]
               },
-              "ADC_A3_2": {
+              "ADC_A3_3": {
                 "ports": [
                   "ADC_A3",
                   "xlconcat_0/In1"
@@ -6026,13 +6026,13 @@
           }
         },
         "nets": {
-          "ADC_A1_2": {
+          "ADC_A1_3": {
             "ports": [
               "ADC_A1",
               "DataMover/ADC_A1"
             ]
           },
-          "ADC_A3_2": {
+          "ADC_A3_3": {
             "ports": [
               "ADC_A3",
               "DataMover/ADC_A3"
@@ -9791,8 +9791,8 @@
               },
               "A1_ADC_LTC2311": {
                 "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
-                "xci_name": "zusys_A1_ADC_LTC2311_1",
-                "xci_path": "ip/zusys_A1_ADC_LTC2311_1/zusys_A1_ADC_LTC2311_1.xci",
+                "xci_name": "zusys_A1_ADC_LTC2311_2",
+                "xci_path": "ip/zusys_A1_ADC_LTC2311_2/zusys_A1_ADC_LTC2311_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_ADC_LTC2311",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -9823,8 +9823,8 @@
               },
               "A1_iobufds_inst": {
                 "vlnv": "xilinx.com:module_ref:iobufds_inst:1.0",
-                "xci_name": "zusys_A1_iobufds_inst_1",
-                "xci_path": "ip/zusys_A1_iobufds_inst_1/zusys_A1_iobufds_inst_1.xci",
+                "xci_name": "zusys_A1_iobufds_inst_2",
+                "xci_path": "ip/zusys_A1_iobufds_inst_2/zusys_A1_iobufds_inst_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_iobufds_inst",
                 "parameters": {
                   "CHANNELS_PER_MASTER": {
@@ -9869,8 +9869,8 @@
               },
               "A1_inv_input": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
-                "xci_name": "zusys_A1_inv_input_1",
-                "xci_path": "ip/zusys_A1_inv_input_1/zusys_A1_inv_input_1.xci",
+                "xci_name": "zusys_A1_inv_input_2",
+                "xci_path": "ip/zusys_A1_inv_input_2/zusys_A1_inv_input_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A1_adapter/A1_inv_input",
                 "parameters": {
                   "CONST_VAL": {
@@ -10167,14 +10167,14 @@
               },
               "A2_DAC8831": {
                 "vlnv": "user.org:ip:uz_dac_spi_interface:1.0",
-                "xci_name": "zusys_A2_DAC8831_1",
-                "xci_path": "ip/zusys_A2_DAC8831_1/zusys_A2_DAC8831_1.xci",
+                "xci_name": "zusys_A2_DAC8831_2",
+                "xci_path": "ip/zusys_A2_DAC8831_2/zusys_A2_DAC8831_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_DAC8831"
               },
               "A2_dac_clk_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_clk_buf_1",
-                "xci_path": "ip/zusys_A2_dac_clk_buf_1/zusys_A2_dac_clk_buf_1.xci",
+                "xci_name": "zusys_A2_dac_clk_buf_2",
+                "xci_path": "ip/zusys_A2_dac_clk_buf_2/zusys_A2_dac_clk_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_clk_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10184,8 +10184,8 @@
               },
               "A2_dac_cvn_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_cvn_buf_1",
-                "xci_path": "ip/zusys_A2_dac_cvn_buf_1/zusys_A2_dac_cvn_buf_1.xci",
+                "xci_name": "zusys_A2_dac_cvn_buf_2",
+                "xci_path": "ip/zusys_A2_dac_cvn_buf_2/zusys_A2_dac_cvn_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_cvn_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10195,8 +10195,8 @@
               },
               "A2_dac_data_1_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_1_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_1_buf_1/zusys_A2_dac_data_1_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_1_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_1_buf_2/zusys_A2_dac_data_1_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_1_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10206,8 +10206,8 @@
               },
               "A2_dac_data_2_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_2_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_2_buf_1/zusys_A2_dac_data_2_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_2_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_2_buf_2/zusys_A2_dac_data_2_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_2_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10217,8 +10217,8 @@
               },
               "A2_dac_data_3_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_3_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_3_buf_1/zusys_A2_dac_data_3_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_3_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_3_buf_2/zusys_A2_dac_data_3_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_3_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10228,8 +10228,8 @@
               },
               "A2_dac_data_4_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_4_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_4_buf_1/zusys_A2_dac_data_4_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_4_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_4_buf_2/zusys_A2_dac_data_4_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_4_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10239,8 +10239,8 @@
               },
               "A2_dac_data_5_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_5_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_5_buf_1/zusys_A2_dac_data_5_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_5_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_5_buf_2/zusys_A2_dac_data_5_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_5_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10250,8 +10250,8 @@
               },
               "A2_dac_data_6_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_6_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_6_buf_1/zusys_A2_dac_data_6_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_6_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_6_buf_2/zusys_A2_dac_data_6_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_6_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10261,8 +10261,8 @@
               },
               "A2_dac_data_7_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_7_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_7_buf_1/zusys_A2_dac_data_7_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_7_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_7_buf_2/zusys_A2_dac_data_7_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_7_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10272,8 +10272,8 @@
               },
               "A2_dac_data_8_buf": {
                 "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-                "xci_name": "zusys_A2_dac_data_8_buf_1",
-                "xci_path": "ip/zusys_A2_dac_data_8_buf_1/zusys_A2_dac_data_8_buf_1.xci",
+                "xci_name": "zusys_A2_dac_data_8_buf_2",
+                "xci_path": "ip/zusys_A2_dac_data_8_buf_2/zusys_A2_dac_data_8_buf_2.xci",
                 "inst_hier_path": "uz_analog_adapter/A2_adapter/A2_dac_data_8_buf",
                 "parameters": {
                   "C_BUF_TYPE": {
@@ -10631,8 +10631,8 @@
               },
               "A3_ADC_MAX11331": {
                 "vlnv": "Wendel_ZC:UZ_IP_Repository:ADC_MAX11331_top:1.0",
-                "xci_name": "zusys_A3_ADC_MAX11331_0",
-                "xci_path": "ip/zusys_A3_ADC_MAX11331_0/zusys_A3_ADC_MAX11331_0.xci",
+                "xci_name": "zusys_A3_ADC_MAX11331_1",
+                "xci_path": "ip/zusys_A3_ADC_MAX11331_1/zusys_A3_ADC_MAX11331_1.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_ADC_MAX11331",
                 "parameters": {
                   "DEBUG_MESSAGE_INCLUDED": {
@@ -10651,8 +10651,8 @@
               },
               "A3_max11331_sclk_fanout": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_A3_max11331_sclk_fanout_0",
-                "xci_path": "ip/zusys_A3_max11331_sclk_fanout_0/zusys_A3_max11331_sclk_fanout_0.xci",
+                "xci_name": "zusys_A3_max11331_sclk_fanout_1",
+                "xci_path": "ip/zusys_A3_max11331_sclk_fanout_1/zusys_A3_max11331_sclk_fanout_1.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_max11331_sclk_fanout",
                 "parameters": {
                   "NUM_PORTS": {
@@ -10662,8 +10662,8 @@
               },
               "A3_max11331_cs_fanout": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_A3_max11331_cs_fanout_0",
-                "xci_path": "ip/zusys_A3_max11331_cs_fanout_0/zusys_A3_max11331_cs_fanout_0.xci",
+                "xci_name": "zusys_A3_max11331_cs_fanout_1",
+                "xci_path": "ip/zusys_A3_max11331_cs_fanout_1/zusys_A3_max11331_cs_fanout_1.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_max11331_cs_fanout",
                 "parameters": {
                   "NUM_PORTS": {
@@ -10673,8 +10673,8 @@
               },
               "A3_max11331_mosi_fanout": {
                 "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                "xci_name": "zusys_A3_max11331_mosi_fanout_0",
-                "xci_path": "ip/zusys_A3_max11331_mosi_fanout_0/zusys_A3_max11331_mosi_fanout_0.xci",
+                "xci_name": "zusys_A3_max11331_mosi_fanout_1",
+                "xci_path": "ip/zusys_A3_max11331_mosi_fanout_1/zusys_A3_max11331_mosi_fanout_1.xci",
                 "inst_hier_path": "uz_analog_adapter/A3_adapter/A3_max11331_mosi_fanout",
                 "parameters": {
                   "NUM_PORTS": {
@@ -10698,18 +10698,18 @@
               }
             },
             "nets": {
-              "A3_ADC_MAX11331_meas_done": {
-                "ports": [
-                  "A3_ADC_MAX11331/meas_done",
-                  "A3_RAW_Valid"
-                ]
-              },
               "A3_ADC_MAX11331_mosi": {
                 "ports": [
                   "A3_ADC_MAX11331/mosi",
                   "A3_max11331_mosi_fanout/In0",
                   "A3_max11331_mosi_fanout/In1",
                   "A3_max11331_mosi_fanout/In2"
+                ]
+              },
+              "A3_ADC_MAX11331_new_data": {
+                "ports": [
+                  "A3_ADC_MAX11331/new_data",
+                  "A3_RAW_Valid"
                 ]
               },
               "A3_ADC_MAX11331_raw_measured_data": {
@@ -11149,19 +11149,19 @@
       }
     },
     "nets": {
-      "A1_IN_2": {
+      "A1_IN_3": {
         "ports": [
           "A1_IN",
           "uz_analog_adapter/A1_IN"
         ]
       },
-      "A3_EOC_1": {
+      "A3_EOC_2": {
         "ports": [
           "A3_EOC",
           "uz_analog_adapter/A3_EOC"
         ]
       },
-      "A3_MISO_1": {
+      "A3_MISO_2": {
         "ports": [
           "A3_MISO",
           "uz_analog_adapter/A3_MISO"
@@ -11252,43 +11252,43 @@
           "uz_digital_adapter/trigger_ssi_read_d5_ch3"
         ]
       },
-      "LTC_Interrupt_1_Dig04_d4_2": {
+      "LTC_Interrupt_1_Dig04_d4_3": {
         "ports": [
           "Dig_04_Ch4",
           "uz_digital_adapter/LTC_Interrupt_1_Dig04_d4"
         ]
       },
-      "LTC_Interrupt_2_Dig16_d4_2": {
+      "LTC_Interrupt_2_Dig16_d4_3": {
         "ports": [
           "Dig_16_Ch4",
           "uz_digital_adapter/LTC_Interrupt_2_Dig16_d4"
         ]
       },
-      "LTC_Interrupt_3_Dig10_d4_2": {
+      "LTC_Interrupt_3_Dig10_d4_3": {
         "ports": [
           "Dig_10_Ch4",
           "uz_digital_adapter/LTC_Interrupt_3_Dig10_d4"
         ]
       },
-      "SPI_MISO_1_Dig02_d4_2": {
+      "SPI_MISO_1_Dig02_d4_3": {
         "ports": [
           "Dig_02_Ch4",
           "uz_digital_adapter/SPI_MISO_1_Dig02_d4"
         ]
       },
-      "SPI_MISO_2_Dig14_d4_2": {
+      "SPI_MISO_2_Dig14_d4_3": {
         "ports": [
           "Dig_14_Ch4",
           "uz_digital_adapter/SPI_MISO_2_Dig14_d4"
         ]
       },
-      "SPI_MISO_3_Dig08_d4_2": {
+      "SPI_MISO_3_Dig08_d4_3": {
         "ports": [
           "Dig_08_Ch4",
           "uz_digital_adapter/SPI_MISO_3_Dig08_d4"
         ]
       },
-      "endat_data_in_d5_ch1_2": {
+      "endat_data_in_d5_ch1_3": {
         "ports": [
           "Dig_07_Ch5",
           "uz_digital_adapter/endat_data_in_d5_ch1"
@@ -11302,302 +11302,302 @@
           "uz_analog_adapter/aresetn"
         ]
       },
-      "ssi_data_in_d5_ch2_2": {
+      "ssi_data_in_d5_ch2_3": {
         "ports": [
           "Dig_06_Ch5",
           "uz_digital_adapter/ssi_data_in_d5_ch2"
         ]
       },
-      "ssi_data_in_d5_ch3_2": {
+      "ssi_data_in_d5_ch3_3": {
         "ports": [
           "Dig_18_Ch5",
           "uz_digital_adapter/ssi_data_in_d5_ch3"
         ]
       },
-      "uz_analog_adapter_A1_OUT_CLK1": {
+      "uz_analog_adapter_A1_OUT_CLK2": {
         "ports": [
           "uz_analog_adapter/A1_OUT_CLK",
           "A1_OUT_CLK"
         ]
       },
-      "uz_analog_adapter_A1_OUT_CNV_2": {
+      "uz_analog_adapter_A1_OUT_CNV_3": {
         "ports": [
           "uz_analog_adapter/A1_OUT_CNV_1",
           "A1_OUT_CNV_0",
           "A1_OUT_CNV_1"
         ]
       },
-      "uz_analog_adapter_A1_RAW_Valid1": {
+      "uz_analog_adapter_A1_RAW_Valid2": {
         "ports": [
           "uz_analog_adapter/A1_RAW_Valid",
           "uz_system/Trigger_AXI2TCM"
         ]
       },
-      "uz_analog_adapter_A1_RAW_Value1": {
+      "uz_analog_adapter_A1_RAW_Value2": {
         "ports": [
           "uz_analog_adapter/A1_RAW_Value",
           "uz_system/ADC_A1"
         ]
       },
-      "uz_analog_adapter_A3_CS": {
+      "uz_analog_adapter_A3_CS1": {
         "ports": [
           "uz_analog_adapter/A3_CS",
           "A3_CS"
         ]
       },
-      "uz_analog_adapter_A3_MOSI": {
+      "uz_analog_adapter_A3_MOSI1": {
         "ports": [
           "uz_analog_adapter/A3_MOSI",
           "A3_MOSI"
         ]
       },
-      "uz_analog_adapter_A3_RAW_Value1": {
+      "uz_analog_adapter_A3_RAW_Value2": {
         "ports": [
           "uz_analog_adapter/A3_RAW_Value",
           "uz_system/ADC_A3"
         ]
       },
-      "uz_analog_adapter_A3_SCKL": {
+      "uz_analog_adapter_A3_SCKL1": {
         "ports": [
           "uz_analog_adapter/A3_SCKL",
           "A3_SCKL"
         ]
       },
-      "uz_analog_adapter_DAC_CLK_N_A3": {
+      "uz_analog_adapter_DAC_CLK_N_A4": {
         "ports": [
           "uz_analog_adapter/DAC_CLK_N_A2",
           "DAC_CLK_N_A2"
         ]
       },
-      "uz_analog_adapter_DAC_CLK_P_A3": {
+      "uz_analog_adapter_DAC_CLK_P_A4": {
         "ports": [
           "uz_analog_adapter/DAC_CLK_P_A2",
           "DAC_CLK_P_A2"
         ]
       },
-      "uz_analog_adapter_DAC_CVN_N_A3": {
+      "uz_analog_adapter_DAC_CVN_N_A4": {
         "ports": [
           "uz_analog_adapter/DAC_CVN_N_A2",
           "DAC_CVN_N_A2"
         ]
       },
-      "uz_analog_adapter_DAC_CVN_P_A3": {
+      "uz_analog_adapter_DAC_CVN_P_A4": {
         "ports": [
           "uz_analog_adapter/DAC_CVN_P_A2",
           "DAC_CVN_P_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N1_A3": {
+      "uz_analog_adapter_DAC_IN_N1_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N1_A2",
           "DAC_IN_N1_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N2_A3": {
+      "uz_analog_adapter_DAC_IN_N2_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N2_A2",
           "DAC_IN_N2_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N3_A3": {
+      "uz_analog_adapter_DAC_IN_N3_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N3_A2",
           "DAC_IN_N3_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N4_A3": {
+      "uz_analog_adapter_DAC_IN_N4_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N4_A2",
           "DAC_IN_N4_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N5_A3": {
+      "uz_analog_adapter_DAC_IN_N5_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N5_A2",
           "DAC_IN_N5_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N6_A3": {
+      "uz_analog_adapter_DAC_IN_N6_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N6_A2",
           "DAC_IN_N6_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N7_A3": {
+      "uz_analog_adapter_DAC_IN_N7_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N7_A2",
           "DAC_IN_N7_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_N8_A3": {
+      "uz_analog_adapter_DAC_IN_N8_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_N8_A2",
           "DAC_IN_N8_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P1_A3": {
+      "uz_analog_adapter_DAC_IN_P1_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P1_A2",
           "DAC_IN_P1_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P2_A3": {
+      "uz_analog_adapter_DAC_IN_P2_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P2_A2",
           "DAC_IN_P2_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P3_A3": {
+      "uz_analog_adapter_DAC_IN_P3_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P3_A2",
           "DAC_IN_P3_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P4_A3": {
+      "uz_analog_adapter_DAC_IN_P4_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P4_A2",
           "DAC_IN_P4_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P5_A3": {
+      "uz_analog_adapter_DAC_IN_P5_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P5_A2",
           "DAC_IN_P5_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P6_A3": {
+      "uz_analog_adapter_DAC_IN_P6_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P6_A2",
           "DAC_IN_P6_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P7_A3": {
+      "uz_analog_adapter_DAC_IN_P7_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P7_A2",
           "DAC_IN_P7_A2"
         ]
       },
-      "uz_analog_adapter_DAC_IN_P8_A3": {
+      "uz_analog_adapter_DAC_IN_P8_A4": {
         "ports": [
           "uz_analog_adapter/DAC_IN_P8_A2",
           "DAC_IN_P8_A2"
         ]
       },
-      "uz_digital_adapter_LTC_resetn_1_Dig18_d5": {
+      "uz_digital_adapter_LTC_resetn_1_Dig18_d6": {
         "ports": [
           "uz_digital_adapter/LTC_resetn_1_Dig18_d4",
           "Dig_18_Ch4"
         ]
       },
-      "uz_digital_adapter_RW_clk_d5_ch4": {
+      "uz_digital_adapter_RW_clk_d5_ch7": {
         "ports": [
           "uz_digital_adapter/RW_clk_d5_ch1",
           "Dig_17_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_clk_d5_ch5": {
+      "uz_digital_adapter_RW_clk_d5_ch8": {
         "ports": [
           "uz_digital_adapter/RW_clk_d5_ch2",
           "Dig_16_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_clk_d5_ch6": {
+      "uz_digital_adapter_RW_clk_d5_ch9": {
         "ports": [
           "uz_digital_adapter/RW_clk_d5_ch3",
           "Dig_23_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_data_d5_ch4": {
+      "uz_digital_adapter_RW_data_d5_ch7": {
         "ports": [
           "uz_digital_adapter/RW_data_d5_ch1",
           "Dig_11_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_data_d5_ch5": {
+      "uz_digital_adapter_RW_data_d5_ch8": {
         "ports": [
           "uz_digital_adapter/RW_data_d5_ch2",
           "Dig_10_Ch5"
         ]
       },
-      "uz_digital_adapter_RW_data_d5_ch6": {
+      "uz_digital_adapter_RW_data_d5_ch9": {
         "ports": [
           "uz_digital_adapter/RW_data_d5_ch3",
           "Dig_20_Ch5"
         ]
       },
-      "uz_digital_adapter_SPI_MOSI_1_Dig01_d5": {
+      "uz_digital_adapter_SPI_MOSI_1_Dig01_d6": {
         "ports": [
           "uz_digital_adapter/SPI_MOSI_1_Dig01_d4",
           "Dig_01_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_MOSI_2_Dig13_d5": {
+      "uz_digital_adapter_SPI_MOSI_2_Dig13_d6": {
         "ports": [
           "uz_digital_adapter/SPI_MOSI_2_Dig13_d4",
           "Dig_13_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_MOSI_3_Dig07_d5": {
+      "uz_digital_adapter_SPI_MOSI_3_Dig07_d6": {
         "ports": [
           "uz_digital_adapter/SPI_MOSI_3_Dig07_d4",
           "Dig_07_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SCLK_1_Dig00_d5": {
+      "uz_digital_adapter_SPI_SCLK_1_Dig00_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SCLK_1_Dig00_d4",
           "Dig_00_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SCLK_2_Dig12_d5": {
+      "uz_digital_adapter_SPI_SCLK_2_Dig12_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SCLK_2_Dig12_d4",
           "Dig_12_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SCLK_3_Dig06_d5": {
+      "uz_digital_adapter_SPI_SCLK_3_Dig06_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SCLK_3_Dig06_d4",
           "Dig_06_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SS_1_Dig03_d5": {
+      "uz_digital_adapter_SPI_SS_1_Dig03_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SS_1_Dig03_d4",
           "Dig_03_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SS_2_Dig15_d5": {
+      "uz_digital_adapter_SPI_SS_2_Dig15_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SS_2_Dig15_d4",
           "Dig_15_Ch4"
         ]
       },
-      "uz_digital_adapter_SPI_SS_3_Dig09_d5": {
+      "uz_digital_adapter_SPI_SS_3_Dig09_d6": {
         "ports": [
           "uz_digital_adapter/SPI_SS_3_Dig09_d4",
           "Dig_09_Ch4"
         ]
       },
-      "uz_digital_adapter_endat_clk_d5_ch2": {
+      "uz_digital_adapter_endat_clk_d5_ch3": {
         "ports": [
           "uz_digital_adapter/endat_clk_d5_ch1",
           "Dig_15_Ch5"
         ]
       },
-      "uz_digital_adapter_endat_mode_data_out_d5_ch2": {
+      "uz_digital_adapter_endat_mode_data_out_d5_ch3": {
         "ports": [
           "uz_digital_adapter/endat_mode_data_out_d5_ch1",
           "Dig_08_Ch5"
         ]
       },
-      "uz_digital_adapter_ssi_clk_d5_ch4": {
+      "uz_digital_adapter_ssi_clk_d5_ch6": {
         "ports": [
           "uz_digital_adapter/ssi_clk_d5_ch2",
           "Dig_14_Ch5"
         ]
       },
-      "uz_digital_adapter_ssi_clk_d5_ch5": {
+      "uz_digital_adapter_ssi_clk_d5_ch7": {
         "ports": [
           "uz_digital_adapter/ssi_clk_d5_ch3",
           "Dig_22_Ch5"

@@ -107,6 +107,14 @@ int main(void)
             /* Project Wizard BEGIN: init_ip_cores */
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
+			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch1_sawtooth = uz_wavegen_sawtooth_init();
+			Global_Data.objects.dac8831_a2_ch2_triangle = uz_wavegen_triangle_init();
+			Global_Data.objects.dac8831_a2_ch3_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch4_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch5_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);

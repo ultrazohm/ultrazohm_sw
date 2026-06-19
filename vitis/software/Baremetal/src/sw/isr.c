@@ -110,7 +110,7 @@ static void update_adapter_a1(void)
 static void update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
-    update_dac8831_a2_outputs(Global_Data.objects.dac8831_a2);
+    update_dac8831_a2_outputs(&Global_Data);
 /* Project Wizard END: A2 isr_control */
 }
 

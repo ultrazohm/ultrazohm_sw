@@ -24,7 +24,7 @@
     "A3": "analog_max11331",
     "D1": "empty",
     "D2": "empty",
-    "D3": "empty",
+    "D3": "uz_d_inverter_adapter",
     "D4": "uz_d_temperature_ltc2983",
     "D5": "uz_d_absolute_encoder"
   },
@@ -41,7 +41,7 @@
   "slot_cplds": {
     "D1": "none",
     "D2": "none",
-    "D3": "none",
+    "D3": "uz_d_3ph_inverter",
     "D4": "uz_d_temperature_ltc2983",
     "D5": "uz_d_abs_encoder"
   },
@@ -89,6 +89,7 @@
     "driver_config_a1_adc_ltc2311_mode": "default",
     "driver_config_a2_dac8831_mode": "custom",
     "driver_config_a3_adc_max11331_mode": "default",
+    "driver_config_d3_inverter_adapter_mode": "default",
     "driver_config_d4_temperature_mode": "default",
     "driver_config_d5_channel_1_endat_mode": "custom",
     "driver_config_d5_channel_2_ssi_mode": "default",

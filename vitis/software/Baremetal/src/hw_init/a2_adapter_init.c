@@ -5,6 +5,7 @@
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../globalData.h"
 #include "xparameters.h"
 #include <stdint.h>
 
@@ -40,25 +41,25 @@ uz_dac_interface_t* initialize_dac8831_a2(void)
     return uz_dac_interface_init(config_dac8831_a2);
 }
 
-void update_dac8831_a2_outputs(uz_dac_interface_t* instance)
+void update_dac8831_a2_outputs(struct _DS_Data_* data)
 {
 
-    dac8831_a2_outputs[0] = uz_wavegen_sine_with_offset(1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[0] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
 
-    dac8831_a2_outputs[1] = uz_wavegen_sawtooth_with_offset(1.0f, 10.0f, -2.5f);
+    dac8831_a2_outputs[1] = uz_wavegen_sawtooth_sample_with_offset(data->objects.dac8831_a2_ch1_sawtooth, 1.0f, 10.0f, -2.5f);
 
-    dac8831_a2_outputs[2] = uz_wavegen_triangle_with_offset(1.0f, 10.0f, -1.0f);
+    dac8831_a2_outputs[2] = uz_wavegen_triangle_sample_with_offset(data->objects.dac8831_a2_ch2_triangle, 1.0f, 10.0f, -1.0f);
 
-    dac8831_a2_outputs[3] = uz_wavegen_sine_with_offset(1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[3] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch3_sine, 1.0f, 10.0f, 0.0f);
 
-    dac8831_a2_outputs[4] = uz_wavegen_sine_with_offset(1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[4] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch4_sine, 1.0f, 10.0f, 0.0f);
 
-    dac8831_a2_outputs[5] = uz_wavegen_sine_with_offset(1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[5] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch5_sine, 1.0f, 10.0f, 0.0f);
 
-    dac8831_a2_outputs[6] = uz_wavegen_sine_with_offset(1.0f, 20.0f, 0.0f);
+    dac8831_a2_outputs[6] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch6_sine, 1.0f, 20.0f, 0.0f);
 
-    dac8831_a2_outputs[7] = uz_wavegen_sine_with_offset(1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[7] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch7_sine, 1.0f, 10.0f, 0.0f);
 
-    uz_dac_interface_set_ouput_values(instance, &dac8831_a2_output_array);
+    uz_dac_interface_set_ouput_values(data->objects.dac8831_a2, &dac8831_a2_output_array);
 }
 /* Project Wizard END: A2 definitions */

@@ -889,29 +889,36 @@
       "slot_cpld": "uz_d_3ph_inverter",
       "vivado": {
         "template": "cards/uz_d_inverter_adapter.tcl",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
         "notes": [
           "Create a hierarchy for the inverter adapter.",
-          "Instantiate uz_d_inverter_adapter and uz_inverter_adapter_mapping_v1_0.",
-          "Connect equal-named signals between the IP cores.",
-          "Create the slot interface pin and connect it to the mapping IP.",
-          "Use the matching packed constraint file for the selected D-slot."
+          "Instantiate uz_d_inverter_adapter v1.1.",
+          "Create the adapter-board ports and the small slice/concat plumbing directly.",
+          "Leave Gates[5:0] and PWM_UZ_Enable unconnected until their sources are configured in the wizard.",
+          "Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file."
         ],
         "ip_cores": [
           {
             "instance_prefix": "uz_d_inverter_adapter",
             "module": "uz_d_inverter_adapter",
-            "vlnv": "user.org:user:uz_d_inverter_adapter"
-          },
-          {
-            "instance_prefix": "uz_inverter_adapter_mapping",
-            "module": "uz_inverter_adapter_mapping_v1_0",
-            "vlnv": "user.org:user:uz_inverter_adapter_mapping_v1_0"
+            "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
           }
         ],
-        "interfaces": [
+        "interfaces": [],
+        "axi_interfaces": [
           {
-            "name_template": "{slot}",
-            "vlnv": "uz_inverter_adapter_rtl"
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/uz_d_inverter_adapter_{slot_lower}/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_d_inverter_adapter_{slot_lower}/AXI4_Lite/reg0"
           }
         ],
         "ports": []

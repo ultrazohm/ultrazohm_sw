@@ -11,6 +11,34 @@ from ..template_renderer import SimpleTemplateRenderer
 
 SLOTS = ["A1", "A2", "A3", "D1", "D2", "D3", "D4", "D5"]
 
+DAC_WAVEGEN_TYPES = {
+    "sine": {
+        "type": "uz_wavegen_sine_t",
+        "init": "uz_wavegen_sine_init",
+        "count_define": "UZ_WAVEGEN_SINE_MAX_INSTANCES",
+    },
+    "sawtooth": {
+        "type": "uz_wavegen_sawtooth_t",
+        "init": "uz_wavegen_sawtooth_init",
+        "count_define": "UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES",
+    },
+    "triangle": {
+        "type": "uz_wavegen_triangle_t",
+        "init": "uz_wavegen_triangle_init",
+        "count_define": "UZ_WAVEGEN_TRIANGLE_MAX_INSTANCES",
+    },
+    "square": {
+        "type": "uz_wavegen_square_t",
+        "init": "uz_wavegen_square_init",
+        "count_define": "UZ_WAVEGEN_SQUARE_MAX_INSTANCES",
+    },
+    "pulse": {
+        "type": "uz_wavegen_pulse_t",
+        "init": "uz_wavegen_pulse_init",
+        "count_define": "UZ_WAVEGEN_PULSE_MAX_INSTANCES",
+    },
+}
+
 GLOBAL_DATA_MARKERS = {
     "actual_values": (
         "/* Project Wizard BEGIN: actualValues */",
@@ -196,6 +224,14 @@ class SoftwareGenerator:
         adc_ltc2311_instances = 0
         adc_max11331_instances = 0
         dac8831_instances = 0
+        inverter_adapter_instances = 0
+        wavegen_instance_counts = {
+            "UZ_WAVEGEN_SINE_MAX_INSTANCES": 0,
+            "UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES": 0,
+            "UZ_WAVEGEN_TRIANGLE_MAX_INSTANCES": 0,
+            "UZ_WAVEGEN_SQUARE_MAX_INSTANCES": 0,
+            "UZ_WAVEGEN_PULSE_MAX_INSTANCES": 0,
+        }
         analog_adc_offsets = analog_adc_packed_offsets(assignments)
         datamover_array_length = max(2, sum(stream["channel_count"] for stream in analog_adc_offsets.values()))
         endat_instances = 0
@@ -268,6 +304,7 @@ class SoftwareGenerator:
                     ),
                 )
                 warnings.extend(context.pop("warnings"))
+                wavegen_instances = context.pop("wavegen_instances")
                 header_includes, header_prototypes = split_header_template(
                     self.renderer.render_file(self.driver_template("uz_dac_interface", "header"), context)
                 )
@@ -277,11 +314,50 @@ class SoftwareGenerator:
                     self.renderer.render_file(self.driver_template("uz_dac_interface", "source"), context).rstrip()
                 )
                 objects.append(f"\tuz_dac_interface_t* dac8831_{context['slot_lower']};")
+                for instance in wavegen_instances:
+                    objects.append(f"\t{instance['type']}* {instance['object_name']};")
                 main_init.append(
                     f"\t\t\tGlobal_Data.objects.dac8831_{context['slot_lower']} = initialize_dac8831_{context['slot_lower']}();"
                 )
+                for instance in wavegen_instances:
+                    main_init.append(
+                        f"\t\t\tGlobal_Data.objects.{instance['object_name']} = {instance['init']}();"
+                    )
+                    wavegen_instance_counts[instance["count_define"]] += 1
                 isr_control_by_slot[slot].append(
-                    f"    update_dac8831_{context['slot_lower']}_outputs(Global_Data.objects.dac8831_{context['slot_lower']});"
+                    "    update_dac8831_{slot_lower}_outputs(&Global_Data);".format(
+                        slot_lower=context["slot_lower"]
+                    )
+                )
+            elif card_id == "uz_d_inverter_adapter":
+                inverter_adapter_instances += 1
+                context = self._inverter_adapter_context(
+                    slot,
+                    source_dir,
+                    driver_instance_values(
+                        f"{slot.lower()}_inverter_adapter",
+                        self.driver_config_fields("uz_inverter_adapter"),
+                        driver_config,
+                    ),
+                )
+                warnings.extend(context.pop("warnings"))
+                header_includes, header_prototypes = split_header_template(
+                    self.renderer.render_file(self.driver_template("uz_inverter_adapter", "header"), context)
+                )
+                slot_content[slot].header_includes.extend(header_includes)
+                slot_content[slot].header_prototypes.extend(header_prototypes)
+                slot_content[slot].source_definitions.append(
+                    self.renderer.render_file(self.driver_template("uz_inverter_adapter", "source"), context).rstrip()
+                )
+                objects.append(f"\tuz_inverter_adapter_t* inverter_adapter_{context['slot_lower']};")
+                actual_values.append(f"\tstruct uz_inverter_adapter_outputs_t inverter_adapter_{context['slot_lower']};")
+                main_init.append(
+                    f"\t\t\tGlobal_Data.objects.inverter_adapter_{context['slot_lower']} = initialize_inverter_adapter_{context['slot_lower']}();"
+                )
+                isr_control_by_slot[slot].append(
+                    "    update_inverter_adapter_{slot_lower}_outputs(&Global_Data);".format(
+                        slot_lower=context["slot_lower"]
+                    )
                 )
             elif card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
@@ -447,6 +523,8 @@ class SoftwareGenerator:
                 "UZ_ENDAT_INTERFACE_MAX_INSTANCES": endat_instances,
                 "UZ_SSI_INTERFACE_MAX_INSTANCES": ssi_instances,
                 "UZ_DAC_INTERFACE_MAX_INSTANCES": dac8831_instances,
+                "UZ_INVERTER_ADAPTER_MAX_INSTANCES": inverter_adapter_instances,
+                **wavegen_instance_counts,
             },
             warnings=warnings,
         )
@@ -578,6 +656,16 @@ class SoftwareGenerator:
                         label=f"{slot} DAC8831",
                         driver="dac8831",
                         fields=self.driver_config_fields("uz_dac_interface"),
+                    )
+                )
+            elif card_id == "uz_d_inverter_adapter":
+                instances.append(
+                    DriverConfigInstance(
+                        id=f"{slot_lower}_inverter_adapter",
+                        slot=slot,
+                        label=f"{slot} inverter adapter",
+                        driver="inverter_adapter",
+                        fields=self.driver_config_fields("uz_inverter_adapter"),
                     )
                 )
             elif card_id == "uz_d_absolute_encoder":
@@ -723,11 +811,26 @@ class SoftwareGenerator:
             dac8831_output_assignment(slot_lower, channel, config_values)
             for channel in range(8)
         ]
+        wavegen_instances = dac8831_wavegen_instances(slot_lower, config_values)
         context = {
             "slot": slot,
             "slot_lower": slot_lower,
             "base_address_macro": base_address_macro,
             "output_assignments": output_assignments,
+            "wavegen_instances": wavegen_instances,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _inverter_adapter_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "inverter_adapter")
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "base_address_macro": base_address_macro,
             "warnings": warnings,
         }
         context.update(config_values)
@@ -789,20 +892,59 @@ def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict
     duty_cycle = config_values.get(f"{prefix}_duty_cycle", "0.5f")
     offset = config_values.get(f"{prefix}_offset", "0.0f")
     if mode == "sine":
-        expression = f"uz_wavegen_sine_with_offset({amplitude}, {frequency}, {offset})"
+        expression = (
+            f"uz_wavegen_sine_sample_with_offset("
+            f"data->objects.{dac8831_wavegen_object_name(slot_lower, channel, mode)}, {amplitude}, {frequency}, {offset})"
+        )
     elif mode == "sawtooth":
-        expression = f"uz_wavegen_sawtooth_with_offset({amplitude}, {frequency}, {offset})"
+        expression = (
+            f"uz_wavegen_sawtooth_sample_with_offset("
+            f"data->objects.{dac8831_wavegen_object_name(slot_lower, channel, mode)}, {amplitude}, {frequency}, {offset})"
+        )
     elif mode == "triangle":
-        expression = f"uz_wavegen_triangle_with_offset({amplitude}, {frequency}, {offset})"
+        expression = (
+            f"uz_wavegen_triangle_sample_with_offset("
+            f"data->objects.{dac8831_wavegen_object_name(slot_lower, channel, mode)}, {amplitude}, {frequency}, {offset})"
+        )
     elif mode == "square":
-        expression = f"uz_wavegen_square({amplitude}, {frequency}, {duty_cycle}) + {offset}"
+        expression = (
+            f"uz_wavegen_square_sample("
+            f"data->objects.{dac8831_wavegen_object_name(slot_lower, channel, mode)}, "
+            f"{amplitude}, {frequency}, {duty_cycle}) + {offset}"
+        )
     elif mode == "pulse":
-        expression = f"uz_wavegen_pulse({amplitude}, {frequency}, {duty_cycle}) + {offset}"
+        expression = (
+            f"uz_wavegen_pulse_sample("
+            f"data->objects.{dac8831_wavegen_object_name(slot_lower, channel, mode)}, "
+            f"{amplitude}, {frequency}, {duty_cycle}) + {offset}"
+        )
     elif mode == "white_noise":
         expression = f"uz_wavegen_white_noise({amplitude}) + {offset}"
     else:
         expression = constant
     return f"    dac8831_{slot_lower}_outputs[{channel}] = {expression};"
+
+
+def dac8831_wavegen_object_name(slot_lower: str, channel: int, mode: str) -> str:
+    return f"dac8831_{slot_lower}_ch{channel}_{mode}"
+
+
+def dac8831_wavegen_instances(slot_lower: str, config_values: dict[str, str]) -> list[dict[str, str]]:
+    instances: list[dict[str, str]] = []
+    for channel in range(8):
+        mode = config_values.get(f"output_ch{channel}_source", "constant")
+        metadata = DAC_WAVEGEN_TYPES.get(mode)
+        if metadata is None:
+            continue
+        instances.append(
+            {
+                "object_name": dac8831_wavegen_object_name(slot_lower, channel, mode),
+                "type": metadata["type"],
+                "init": metadata["init"],
+                "count_define": metadata["count_define"],
+            }
+        )
+    return instances
 
 
 def patch_slot_source(path: Path, slot: str, definitions: list[str]) -> None:
@@ -1085,6 +1227,9 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     elif interface == "dac8831":
         fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_DAC8831_AXI4_BASEADDR"
         search_terms = ["DAC8831", "DAC_SPI", "DAC"]
+    elif interface == "inverter_adapter":
+        fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_D_INVERTER_ADAPTER_{slot.upper()}_BASEADDR"
+        search_terms = ["INVERTER_ADAPTER", "UZ_D_INVERTER", "INVERTER"]
     elif interface == "endat":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_ENDAT_INTERFACE_{slot.upper()}_CHANNEL_{channel}_BASEADDR"
         search_terms = ["ENDAT"]

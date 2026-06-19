@@ -57,6 +57,30 @@ proc uz_pw_create_hier_pin_if_missing {hier_path direction pin_name {left ""} {r
   current_bd_instance $old_instance
 }
 
+proc uz_pw_create_bd_intf_pin_if_missing {hier_path mode vlnv pin_name} {
+  set pin_path "${hier_path}/${pin_name}"
+  if {[llength [get_bd_intf_pins -quiet $pin_path]] > 0} {
+    puts "Reusing existing interface pin $pin_path"
+    return
+  }
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells $hier_path]
+  create_bd_intf_pin -mode $mode -vlnv $vlnv $pin_name
+  current_bd_instance $old_instance
+}
+
+proc uz_pw_create_bd_intf_port_if_missing {mode vlnv port_name} {
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells /]
+  if {[llength [get_bd_intf_ports -quiet $port_name]] > 0} {
+    puts "Reusing existing interface port $port_name"
+    current_bd_instance $old_instance
+    return
+  }
+  create_bd_intf_port -mode $mode -vlnv $vlnv $port_name
+  current_bd_instance $old_instance
+}
+
 proc uz_pw_disconnect_pin_path_from_all_nets {pin_path} {
   foreach pin [get_bd_pins -quiet $pin_path] {
     foreach net [get_bd_nets -quiet -of_objects $pin] {
@@ -142,6 +166,58 @@ proc uz_pw_try_connect_bd_net {args} {
     }
     puts "WARNING: connect_bd_net failed: $result"
   }
+}
+
+proc uz_pw_connect_intf_pair_if_unconnected {source_pin sink_pin} {
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source interface pin not found: $source_pin"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink interface pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    catch {delete_bd_objs $sink_net}
+  }
+  connect_bd_intf_net $source $sink
+}
+
+proc uz_pw_connect_intf_port_to_pin_if_unconnected {source_port sink_pin} {
+  set source [get_bd_intf_ports -quiet $source_port]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source interface port not found: $source_port"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink interface pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    catch {delete_bd_objs $sink_net}
+  }
+  connect_bd_intf_net $source $sink
 }
 
 proc uz_pw_connect_pin_pair_if_unconnected {source_pin sink_pin} {

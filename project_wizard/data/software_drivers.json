@@ -734,6 +734,33 @@
       ]
     },
     {
+      "id": "uz_inverter_adapter",
+      "name": "UZ inverter adapter",
+      "templates": {
+        "header": "software/inverter_adapter.h.tpl",
+        "source": "software/inverter_adapter.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "linear_interpolation_a",
+          "label": "Temperature interpolation a",
+          "default": "-289.01f",
+          "help": "Gradient for the chip-temperature linear interpolation y = a*x + b."
+        },
+        {
+          "id": "linear_interpolation_b",
+          "label": "Temperature interpolation b",
+          "default": "218.72f",
+          "help": "Offset for the chip-temperature linear interpolation y = a*x + b."
+        }
+      ]
+    },
+    {
       "id": "uz_endat_interface",
       "name": "EnDat interface",
       "templates": {

@@ -144,6 +144,14 @@ typedef struct{
 	/* Project Wizard BEGIN: objects */
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
+	uz_wavegen_sine_t* dac8831_a2_ch0_sine;
+	uz_wavegen_sawtooth_t* dac8831_a2_ch1_sawtooth;
+	uz_wavegen_triangle_t* dac8831_a2_ch2_triangle;
+	uz_wavegen_sine_t* dac8831_a2_ch3_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch4_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch5_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;

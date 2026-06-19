@@ -47,6 +47,7 @@ from ..services.software_generator_service import SoftwareGenerator
 from ..services.system_resolver import SystemResolver
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..services.vivado_service import write_vivado_run_wrapper
+from ..theme import set_dark_mode
 from ..tcl_generator import TclGenerator
 from .card_editor import CardEditorDialog
 
@@ -101,6 +102,7 @@ class MainWindow(QMainWindow):
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
         self.software_dependent_views_dirty = False
+        self.dark_mode_action: QAction | None = None
 
         self.stack = QStackedWidget()
         self.tree = self._build_navigation()
@@ -208,6 +210,13 @@ class MainWindow(QMainWindow):
         refresh_tcl_action.triggered.connect(self.refresh_tcl_preview)
         view_menu.addAction(refresh_tcl_action)
 
+        view_menu.addSeparator()
+        dark_mode_action = QAction("Dark mode", self)
+        dark_mode_action.setCheckable(True)
+        dark_mode_action.triggered.connect(self.set_dark_mode_enabled)
+        self.dark_mode_action = dark_mode_action
+        view_menu.addAction(dark_mode_action)
+
         help_menu = self.menuBar().addMenu("Help")
         docs_action = QAction("Docs", self)
         docs_action.triggered.connect(self.show_docs)
@@ -216,6 +225,13 @@ class MainWindow(QMainWindow):
         info_action = QAction("Info", self)
         info_action.triggered.connect(self.show_info)
         help_menu.addAction(info_action)
+
+    def set_dark_mode_enabled(self, enabled: bool) -> None:
+        set_dark_mode(QApplication.instance(), enabled)
+        if self.dark_mode_action is not None:
+            self.dark_mode_action.blockSignals(True)
+            self.dark_mode_action.setChecked(enabled)
+            self.dark_mode_action.blockSignals(False)
 
     def _build_navigation(self) -> QTreeWidget:
         tree = QTreeWidget()
@@ -1154,6 +1170,9 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
             combo.blockSignals(False)
         self.refresh_software_preset_options(values, refresh_dependent=False)
+        if self.is_loading_config:
+            self.software_dependent_views_dirty = True
+            return
         self.refresh_advanced_driver_config_options(values)
         self.refresh_data_visualization_options(values, refresh_preview=False)
         self.guarded_refresh_software_preview()
@@ -1836,6 +1855,9 @@ class MainWindow(QMainWindow):
         for slot in list(self.detail_options):
             if assignments.get(slot, "empty") == "empty":
                 self.detail_options.pop(slot, None)
+        if self.is_loading_config:
+            self.software_dependent_views_dirty = True
+            return
         self.refresh_software_preset_options()
         self.guarded_refresh_data_visualization_options()
         self.refresh_advanced_driver_config_options()
@@ -2064,6 +2086,7 @@ class MainWindow(QMainWindow):
         software = document.get("software", {})
         software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
         self.refresh_software_preset_options(software_values)
+        self.software_dependent_views_dirty = False
         self.refresh_tcl_preview()
         progress.close()
 

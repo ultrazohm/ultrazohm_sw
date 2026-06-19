@@ -2,6 +2,7 @@
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../globalData.h"
 #include "xparameters.h"
 #include <stdint.h>
 
@@ -37,10 +38,10 @@ uz_dac_interface_t* initialize_dac8831_{{ slot_lower }}(void)
     return uz_dac_interface_init(config_dac8831_{{ slot_lower }});
 }
 
-void update_dac8831_{{ slot_lower }}_outputs(uz_dac_interface_t* instance)
+void update_dac8831_{{ slot_lower }}_outputs(struct _DS_Data_* data)
 {
 {% for assignment in output_assignments %}
 {{ assignment }}
 {% endfor %}
-    uz_dac_interface_set_ouput_values(instance, &dac8831_{{ slot_lower }}_output_array);
+    uz_dac_interface_set_ouput_values(data->objects.dac8831_{{ slot_lower }}, &dac8831_{{ slot_lower }}_output_array);
 }

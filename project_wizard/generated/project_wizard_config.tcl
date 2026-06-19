@@ -170,6 +170,31 @@ proc uz_pw_delete_matching_intf_pins_in_hierarchy {hier_path cleanup_patterns} {
   }
 }
 
+proc uz_pw_delete_external_intf_ports_for_slot {slot cleanup_patterns} {
+  set intf_ports_to_delete {}
+  foreach pattern $cleanup_patterns {
+    foreach intf_port [get_bd_intf_ports -quiet $pattern] {
+      if {[uz_pw_is_axi_interface_pin $intf_port]} {
+        continue
+      }
+      if {[lsearch -exact $intf_ports_to_delete $intf_port] < 0} {
+        lappend intf_ports_to_delete $intf_port
+      }
+    }
+  }
+
+  foreach intf_port $intf_ports_to_delete {
+    foreach intf_net [get_bd_intf_nets -quiet -of_objects $intf_port] {
+      catch {delete_bd_objs $intf_net}
+    }
+  }
+
+  if {[llength $intf_ports_to_delete] > 0} {
+    puts "Deleting existing generated interface ports for slot ${slot}: $intf_ports_to_delete"
+    delete_bd_objs $intf_ports_to_delete
+  }
+}
+
 proc uz_pw_delete_child_cells_in_slot_hierarchy {hier_path} {
   if {[llength [get_bd_cells -quiet $hier_path]] == 0} {
     return
@@ -205,6 +230,7 @@ proc uz_pw_delete_child_cells_in_slot_hierarchy {hier_path} {
 # TODO: Create or refresh hierarchy for adapter slot A1.
 # Suggested hierarchy path: uz_digital_adapter/A1_adapter or uz_analog_adapter/A1_adapter
 uz_pw_delete_external_ports_for_slot A1 [list "*A1*" "*a1*"]
+uz_pw_delete_external_intf_ports_for_slot A1 [list "*A1*" "*a1*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
@@ -214,7 +240,9 @@ uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A1_adapter [list "*A1*" "*a1*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A1*" "*a1*"]
@@ -225,6 +253,7 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A1_adapter
 # TODO: Create or refresh hierarchy for adapter slot A2.
 # Suggested hierarchy path: uz_digital_adapter/A2_adapter or uz_analog_adapter/A2_adapter
 uz_pw_delete_external_ports_for_slot A2 [list "*A2*" "*a2*"]
+uz_pw_delete_external_intf_ports_for_slot A2 [list "*A2*" "*a2*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
@@ -234,7 +263,9 @@ uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A2_adapter [list "*A2*" "*a2*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A2*" "*a2*"]
@@ -245,6 +276,7 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A2_adapter
 # TODO: Create or refresh hierarchy for adapter slot A3.
 # Suggested hierarchy path: uz_digital_adapter/A3_adapter or uz_analog_adapter/A3_adapter
 uz_pw_delete_external_ports_for_slot A3 [list "*A3*" "*a3*"]
+uz_pw_delete_external_intf_ports_for_slot A3 [list "*A3*" "*a3*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*A3*" "*a3*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/A3_adapter [list "*A3*" "*a3*"]
@@ -254,7 +286,9 @@ uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*A3*" "*a3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*A3*" "*a3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/A3_adapter [list "*A3*" "*a3*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*A3*" "*a3*"]
@@ -262,9 +296,33 @@ uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/A3_adapter [list "*A3*
 uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/A3_adapter
 uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/A3_adapter
 
+# TODO: Create or refresh hierarchy for adapter slot D3.
+# Suggested hierarchy path: uz_digital_adapter/D3_adapter or uz_analog_adapter/D3_adapter
+uz_pw_delete_external_ports_for_slot D3 [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_external_intf_ports_for_slot D3 [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter/D3_adapter [list "*D3*" "*d3*" "*_Ch3*"]
+uz_pw_delete_child_cells_in_slot_hierarchy uz_digital_adapter/D3_adapter
+uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D3_adapter
+
 # TODO: Create or refresh hierarchy for adapter slot D4.
 # Suggested hierarchy path: uz_digital_adapter/D4_adapter or uz_analog_adapter/D4_adapter
 uz_pw_delete_external_ports_for_slot D4 [list "*D4*" "*d4*" "*_Ch4*"]
+uz_pw_delete_external_intf_ports_for_slot D4 [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
@@ -274,7 +332,9 @@ uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*D4*" "*d4*" "
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*D4*" "*d4*" "*_Ch4*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*D4*" "*d4*" "*_Ch4*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/D4_adapter [list "*D4*" "*d4*" "*_Ch4*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*D4*" "*d4*" "*_Ch4*"]
@@ -285,6 +345,7 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D4_adapter
 # TODO: Create or refresh hierarchy for adapter slot D5.
 # Suggested hierarchy path: uz_digital_adapter/D5_adapter or uz_analog_adapter/D5_adapter
 uz_pw_delete_external_ports_for_slot D5 [list "*D5*" "*d5*" "*_Ch5*"]
+uz_pw_delete_external_intf_ports_for_slot D5 [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_analog_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
@@ -294,7 +355,9 @@ uz_pw_delete_matching_nets_in_hierarchy uz_digital_adapter [list "*D5*" "*d5*" "
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_nets_in_hierarchy uz_analog_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter [list "*D5*" "*d5*" "*_Ch5*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_digital_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter [list "*D5*" "*d5*" "*_Ch5*"]
+uz_pw_delete_matching_intf_pins_in_hierarchy uz_analog_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_digital_adapter/D5_adapter [list "*D5*" "*d5*" "*_Ch5*"]
 uz_pw_delete_matching_pins_in_hierarchy uz_analog_adapter [list "*D5*" "*d5*" "*_Ch5*"]
@@ -308,7 +371,7 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D5_adapter
 
 # Slot CPLD D2: No CPLD program (none)
 
-# Slot CPLD D3: No CPLD program (none)
+# Slot CPLD D3: uz_d_3ph_inverter (uz_d_3ph_inverter)
 
 # Slot CPLD D4: uz_d_temperature_ltc2983 (uz_d_temperature_ltc2983)
 
@@ -371,6 +434,30 @@ proc uz_pw_create_hier_pin_if_missing {hier_path direction pin_name {left ""} {r
   } else {
     puts "Reusing existing pin $pin_path"
   }
+  current_bd_instance $old_instance
+}
+
+proc uz_pw_create_bd_intf_pin_if_missing {hier_path mode vlnv pin_name} {
+  set pin_path "${hier_path}/${pin_name}"
+  if {[llength [get_bd_intf_pins -quiet $pin_path]] > 0} {
+    puts "Reusing existing interface pin $pin_path"
+    return
+  }
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells $hier_path]
+  create_bd_intf_pin -mode $mode -vlnv $vlnv $pin_name
+  current_bd_instance $old_instance
+}
+
+proc uz_pw_create_bd_intf_port_if_missing {mode vlnv port_name} {
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells /]
+  if {[llength [get_bd_intf_ports -quiet $port_name]] > 0} {
+    puts "Reusing existing interface port $port_name"
+    current_bd_instance $old_instance
+    return
+  }
+  create_bd_intf_port -mode $mode -vlnv $vlnv $port_name
   current_bd_instance $old_instance
 }
 
@@ -459,6 +546,58 @@ proc uz_pw_try_connect_bd_net {args} {
     }
     puts "WARNING: connect_bd_net failed: $result"
   }
+}
+
+proc uz_pw_connect_intf_pair_if_unconnected {source_pin sink_pin} {
+  set source [get_bd_intf_pins -quiet $source_pin]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source interface pin not found: $source_pin"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink interface pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    catch {delete_bd_objs $sink_net}
+  }
+  connect_bd_intf_net $source $sink
+}
+
+proc uz_pw_connect_intf_port_to_pin_if_unconnected {source_port sink_pin} {
+  set source [get_bd_intf_ports -quiet $source_port]
+  set sink [get_bd_intf_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source interface port not found: $source_port"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink interface pin not found: $sink_pin"
+    return
+  }
+
+  set source_nets [get_bd_intf_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_intf_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      return
+    }
+  }
+
+  foreach sink_net $sink_nets {
+    catch {delete_bd_objs $sink_net}
+  }
+  connect_bd_intf_net $source $sink
 }
 
 proc uz_pw_connect_pin_pair_if_unconnected {source_pin sink_pin} {
@@ -1683,7 +1822,227 @@ uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoar
 
 # D2: bypass - leaving existing block design content untouched
 
-# D3: bypass - leaving existing block design content untouched
+# -----------------------------------------------------------------------------
+# D3: UZ_D 3-Phase Inverter
+# -----------------------------------------------------------------------------
+
+# NOTE: Create a hierarchy for the inverter adapter.
+
+# NOTE: Instantiate uz_d_inverter_adapter v1.1.
+
+# NOTE: Create the adapter-board ports and the small slice/concat plumbing directly.
+
+# NOTE: Leave Gates[5:0] and PWM_UZ_Enable unconnected until their sources are configured in the wizard.
+
+# NOTE: Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file.
+
+
+set adapter_parent_hier uz_digital_adapter
+set adapter_hier_name D3_adapter
+set adapter_hier_path "${adapter_parent_hier}/${adapter_hier_name}"
+set adapter_clock_pin clk
+set adapter_resetn_pin resetn
+
+# Recreate the selected slot content so the wizard configuration wins over stale IP.
+uz_pw_delete_child_cells_in_slot_hierarchy $adapter_hier_path
+uz_pw_create_hier_if_missing $adapter_parent_hier
+uz_pw_create_hier_if_missing $adapter_hier_path
+
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/aclk"
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/aresetn"
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_clock_pin
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_resetn_pin
+
+set inverter_driver_path "${adapter_hier_path}/uz_d_inverter_adapter_d3"
+uz_pw_create_ip_cell_if_missing $inverter_driver_path xilinx.com:ip:uz_d_inverter_adapter:1.1
+
+
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${inverter_driver_path}/IPCORE_CLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${inverter_driver_path}/AXI4_Lite_ACLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${inverter_driver_path}/IPCORE_RESETN"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${inverter_driver_path}/AXI4_Lite_ARESETN"
+
+proc uz_pw_inverter_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
+  uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $external_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path $direction $internal_name "$left" "$right"
+
+  if {$direction ne "O"} {
+    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
+    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${external_name}" "${adapter_hier_path}/${internal_name}"
+  }
+}
+
+proc uz_pw_inverter_connect_slot_output {adapter_parent_hier adapter_hier_path internal_name external_name} {
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${external_name}"
+  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
+}
+
+proc uz_pw_inverter_create_xlslice {cell_path bit_index} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlslice
+  uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH {6} CONFIG.DIN_FROM $bit_index CONFIG.DIN_TO $bit_index CONFIG.DOUT_WIDTH {1}] [get_bd_cells -quiet $cell_path] $cell_path
+}
+
+proc uz_pw_inverter_create_xlconcat {cell_path port_count} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconcat
+  uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS $port_count] [get_bd_cells -quiet $cell_path] $cell_path
+}
+
+# Future wizard option: Gates[5:0] source. For now this boundary pin is left unconnected by design.
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I Gates 5 0
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D3_Gates 5 0
+uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/D3_Gates" "${adapter_hier_path}/Gates"
+
+# Future wizard option: PWM_UZ_Enable source. For now this boundary pin is left unconnected by design.
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I PWM_UZ_Enable
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D3_PWM_UZ_Enable
+uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/D3_PWM_UZ_Enable" "${adapter_hier_path}/PWM_UZ_Enable"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/PWM_UZ_Enable" "${inverter_driver_path}/PWM_UZ_Enable"
+
+# Dig_16_Ch3 is unused by the adapter mapping but present on the adapter board connector.
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_DIG_IO_17 Dig_16_Ch3
+
+# Gate outputs to the adapter board.
+# Former mapping IP order: Gates[0..5] -> PWM_H1, PWM_L1, PWM_H2, PWM_L2, PWM_H3, PWM_L3.
+
+set pwm_h1_slice_path "${adapter_hier_path}/D3_pwm_h1_slice"
+uz_pw_inverter_create_xlslice $pwm_h1_slice_path 0
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h1 Dig_00_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h1_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_h1_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h1"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h1 Dig_00_Ch3
+
+set pwm_l1_slice_path "${adapter_hier_path}/D3_pwm_l1_slice"
+uz_pw_inverter_create_xlslice $pwm_l1_slice_path 1
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l1 Dig_01_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l1_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_l1_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l1"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l1 Dig_01_Ch3
+
+set pwm_h2_slice_path "${adapter_hier_path}/D3_pwm_h2_slice"
+uz_pw_inverter_create_xlslice $pwm_h2_slice_path 2
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h2 Dig_02_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h2_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_h2_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h2"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h2 Dig_02_Ch3
+
+set pwm_l2_slice_path "${adapter_hier_path}/D3_pwm_l2_slice"
+uz_pw_inverter_create_xlslice $pwm_l2_slice_path 3
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l2 Dig_03_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l2_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_l2_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l2"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l2 Dig_03_Ch3
+
+set pwm_h3_slice_path "${adapter_hier_path}/D3_pwm_h3_slice"
+uz_pw_inverter_create_xlslice $pwm_h3_slice_path 4
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h3 Dig_04_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h3_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_h3_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h3"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h3 Dig_04_Ch3
+
+set pwm_l3_slice_path "${adapter_hier_path}/D3_pwm_l3_slice"
+uz_pw_inverter_create_xlslice $pwm_l3_slice_path 5
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l3 Dig_05_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l3_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected "${pwm_l3_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l3"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l3 Dig_05_Ch3
+
+
+# PWM enable output from the driver IP to the adapter board.
+uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_en Dig_14_Ch3
+uz_pw_connect_pin_pair_if_unconnected "${inverter_driver_path}/PWM_EN" "${adapter_hier_path}/D3_pwm_en"
+uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_en Dig_14_Ch3
+
+# Status and diagnostic inputs from the adapter board.
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_i1_diag Dig_06_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h1_temp Dig_07_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_i2_diag Dig_08_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l1_temp Dig_09_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_i3_diag Dig_10_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l1_oc Dig_11_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_i_diag Dig_12_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l1_fault Dig_13_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h1_oc Dig_15_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h1_fault Dig_17_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h3_temp Dig_18_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h2_temp Dig_19_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l3_temp Dig_20_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l2_temp Dig_21_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l3_oc Dig_22_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l2_oc Dig_23_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l3_fault Dig_24_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_l2_fault Dig_25_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h3_oc Dig_26_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h2_oc Dig_27_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h3_fault Dig_28_Ch3
+
+uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_h2_fault Dig_29_Ch3
+
+
+uz_pw_inverter_create_xlconcat "${adapter_hier_path}/D3_i_diag_concat" 4
+# Former mapping IP order: I_DIAG = {I3_DIAG, I2_DIAG, I1_DIAG, I_DIAG}.
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_i_diag" "${adapter_hier_path}/D3_i_diag_concat/In0"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_i1_diag" "${adapter_hier_path}/D3_i_diag_concat/In1"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_i2_diag" "${adapter_hier_path}/D3_i_diag_concat/In2"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_i3_diag" "${adapter_hier_path}/D3_i_diag_concat/In3"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_i_diag_concat/dout" "${inverter_driver_path}/I_DIAG"
+
+uz_pw_inverter_create_xlconcat "${adapter_hier_path}/D3_temp_concat" 6
+# Former mapping IP order: Temp = {L3_Temp, H3_Temp, L2_Temp, H2_Temp, L1_Temp, H1_Temp}.
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h1_temp" "${adapter_hier_path}/D3_temp_concat/In0"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l1_temp" "${adapter_hier_path}/D3_temp_concat/In1"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h2_temp" "${adapter_hier_path}/D3_temp_concat/In2"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l2_temp" "${adapter_hier_path}/D3_temp_concat/In3"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h3_temp" "${adapter_hier_path}/D3_temp_concat/In4"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l3_temp" "${adapter_hier_path}/D3_temp_concat/In5"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_temp_concat/dout" "${inverter_driver_path}/Temp"
+
+uz_pw_inverter_create_xlconcat "${adapter_hier_path}/D3_oc_concat" 6
+# Former mapping IP order: OC = {L3_OC, H3_OC, L2_OC, H2_OC, L1_OC, H1_OC}.
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h1_oc" "${adapter_hier_path}/D3_oc_concat/In0"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l1_oc" "${adapter_hier_path}/D3_oc_concat/In1"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h2_oc" "${adapter_hier_path}/D3_oc_concat/In2"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l2_oc" "${adapter_hier_path}/D3_oc_concat/In3"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h3_oc" "${adapter_hier_path}/D3_oc_concat/In4"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l3_oc" "${adapter_hier_path}/D3_oc_concat/In5"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_oc_concat/dout" "${inverter_driver_path}/OC"
+
+uz_pw_inverter_create_xlconcat "${adapter_hier_path}/D3_fault_concat" 6
+# Former mapping IP order: FAULT = {H3_FAULT, L3_FAULT, L2_FAULT, H2_FAULT, L1_FAULT, H1_FAULT}.
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h1_fault" "${adapter_hier_path}/D3_fault_concat/In0"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l1_fault" "${adapter_hier_path}/D3_fault_concat/In1"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h2_fault" "${adapter_hier_path}/D3_fault_concat/In2"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l2_fault" "${adapter_hier_path}/D3_fault_concat/In3"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_l3_fault" "${adapter_hier_path}/D3_fault_concat/In4"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_h3_fault" "${adapter_hier_path}/D3_fault_concat/In5"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/D3_fault_concat/dout" "${inverter_driver_path}/FAULT"
+
+uz_pw_apply_slot_constraints D3 [list "Digital_D3_packed.xdc" "Digital_AdapterBoard_D3.xdc"] [list "Digital_AdapterBoard_D3.xdc"]
+
+
+# Vitis driver hook: uz_inverter_adapter
+
 
 # -----------------------------------------------------------------------------
 # D4: UZ_D Temperature LTC2983
@@ -3385,6 +3744,71 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
   error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
 }
 
+puts "Refreshing AXI attachment for slot D3"
+uz_pw_remove_slot_axi_attachment D3 uz_digital_adapter
+
+puts "Configuring local AXI SmartConnect for slot D3"
+
+set slot_sc uz_digital_adapter/D3_adapter/axi_smartconnect
+if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
+} else {
+  puts "Reusing existing local SmartConnect $slot_sc"
+}
+
+set slot_sc_cell [get_bd_cells -quiet $slot_sc]
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 1] $slot_sc_cell $slot_sc
+
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_digital_adapter/D3_adapter/clk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_digital_adapter/D3_adapter/resetn
+
+set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
+set adapter_root_boundary_pin uz_digital_adapter/D3_AXI
+set slot_boundary_pin uz_digital_adapter/D3_adapter/S00_AXI
+
+set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
+if {$upstream_boundary_pin eq ""} {
+  if {$upstream_hier_path eq ""} {
+    set upstream_boundary_pin D3_AXI
+  } else {
+    set upstream_boundary_pin ${upstream_hier_path}/D3_AXI
+  }
+}
+
+uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
+
+set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
+if {$upstream_mi_pin eq ""} {
+  set upstream_mi_pin [uz_pw_get_or_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
+}
+
+uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+
+
+set uz_pw_upstream_smartconnect uz_user/smartconnect_1
+set uz_pw_axi_clock_pin uz_user/aclk
+set uz_pw_axi_resetn_pin uz_user/aresetn
+set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
+
+if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
+  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
+  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
+}
+
 puts "Refreshing AXI attachment for slot D4"
 uz_pw_remove_slot_axi_attachment D4 uz_digital_adapter
 
@@ -3514,6 +3938,11 @@ set slot_sc uz_analog_adapter/A3_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite
 assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite/reg0] -force
+
+set slot_sc uz_digital_adapter/D3_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D3_adapter/uz_d_inverter_adapter_d3/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D3_adapter/uz_d_inverter_adapter_d3/AXI4_Lite/reg0] -force
 
 set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]

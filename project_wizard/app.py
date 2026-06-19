@@ -12,6 +12,7 @@ except ModuleNotFoundError as error:
     raise SystemExit(1) from error
 
 from .views.main_window import MainWindow
+from .theme import set_dark_mode
 
 
 def show_uncaught_exception(exc_type, exc_value, exc_traceback) -> None:
@@ -31,7 +32,9 @@ def show_uncaught_exception(exc_type, exc_value, exc_traceback) -> None:
 
 def main() -> int:
     app = QApplication(sys.argv)
+    set_dark_mode(app, True)
     sys.excepthook = show_uncaught_exception
     window = MainWindow()
+    window.set_dark_mode_enabled(True)
     window.show()
     return app.exec()

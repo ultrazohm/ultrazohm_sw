@@ -64,6 +64,7 @@ class Dataset:
 
     @property
     def names(self) -> list[str]:
+        """Ordered list of signal names in this dataset."""
         return list(self.signals)
 
     def __getitem__(self, name: str) -> np.ndarray:

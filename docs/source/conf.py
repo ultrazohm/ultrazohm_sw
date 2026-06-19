@@ -3,6 +3,12 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import pathlib
+import sys
+
+# uz_dataviewer library API (uz_dataviewer.api does not import the GUI stack)
+sys.path.insert(0, str(pathlib.Path(__file__).parents[2] / "uz_dataviewer" / "src"))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -20,12 +26,20 @@ extensions = [
     "sphinx_copybutton",
     "sphinxcontrib.tikz",
     "sphinx.ext.mathjax",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
     "breathe",
     "sphinx_plotly_directive", # https://matplotlib.org/stable/api/sphinxext_plot_directive_api.html#module-matplotlib.sphinxext.plot_directive
     "bokeh.sphinxext.bokeh_plot",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_design"
 ]
+
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
+}
+autodoc_member_order = "bysource"
 
 plotly_pre_code = """
 import plotly.io as pio

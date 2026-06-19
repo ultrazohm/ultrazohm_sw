@@ -61,7 +61,14 @@ def _next_fast_len(n: int) -> int:
 
 
 class FftResult:
-    """Single-sided amplitude spectrum plus a human-readable status line."""
+    """Single-sided amplitude spectrum plus a human-readable status line.
+
+    Attributes:
+        freqs: Frequency axis (Hz), ``None`` on failure.
+        mag: Amplitude (same units as input ``y``), ``None`` on failure.
+        info: Human-readable description of the computation or the failure reason.
+        ok: ``True`` when ``freqs`` and ``mag`` are populated.
+    """
 
     def __init__(self, freqs: np.ndarray | None, mag: np.ndarray | None, info: str) -> None:
         self.freqs = freqs
@@ -70,6 +77,7 @@ class FftResult:
 
     @property
     def ok(self) -> bool:
+        """``True`` when the computation succeeded and ``freqs``/``mag`` are populated."""
         return self.freqs is not None and self.mag is not None
 
 

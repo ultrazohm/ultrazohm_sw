@@ -99,5 +99,4 @@ Tests
 
    uz_dataviewer_roadmap
    uz_dataviewer_nodes_future_ideas
-   uz_dataviewer_remote_data
    uz_dataviewer_web_large_logs

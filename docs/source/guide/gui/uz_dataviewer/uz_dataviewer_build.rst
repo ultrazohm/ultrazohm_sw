@@ -76,7 +76,7 @@ Maintenance notes:
 - Version pins live in ``build/gen_web.py`` (``PYODIDE_VERSION``, ``IMGUI_BUNDLE_WHEEL``). The wheel is built against one specific Pyodide release; if you bump one, bump the other to a compatible pair (see the imgui_bundle Pyodide docs).
 - Downsampling is pure NumPy (the min/max pyramid in ``downsample.py``), so the native and web builds run identical decimation code — no native/Rust dependency to wheel.
 
-Reference: imgui_bundle Pyodide docs — `pthom.github.io/imgui_bundle/python_pyodide.html<https://pthom.github.io/imgui_bundle/python_pyodide.html>`_
+Reference: imgui_bundle Pyodide docs — `pthom.github.io/imgui_bundle/python_pyodide.html <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_
 
 Loading data in the browser
 ---------------------------

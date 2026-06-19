@@ -14,9 +14,8 @@ The items below are **not** core-path bugs — they are edges and polish, left a
 A. Binary math input order is implicit (connection order)
 =========================================================
 
-``A-B`` / ``A/B`` take ``inputs[0]`` and ``inputs[1]`` in the order the links were
-**created**, not by which input pin (``in1``/``in2``) the user dropped onto. The editor
-*does* tell us the target slot in ``query_new_link``, but ``NodesPanel._try_link``
+``A-B`` / ``A/B`` take ``inputs[0]`` and ``inputs[1]`` in the order the links were **created**, not by which input pin (``in1``/``in2``) the user dropped onto.
+The editor *does* tell us the target slot in ``query_new_link``, but ``NodesPanel._try_link``
 currently ignores it and ``node_link`` just appends.
 
 - **Severity:** low–medium (wrong order silently swaps A and B).
@@ -69,17 +68,6 @@ through ``node_link`` (transform → transform), which is robust.
 - **Fix:** either resolve such source refs lazily at eval time, or block creating a
   source from a derived run and steer users to ``node_link``.
 
-Implemented after this review (for the record)
-==============================================
-
-- **Double-click a node to rename** its output signal (the derived run takes the new
-  name).
-- **Drag a signal from Navigation straight onto the canvas** to add a source node at the
-  drop point.
-- **math ``add``** (A+B) alongside sub/div; **``shift`` node** (offset the time axis by a
-  constant); **source ``crop time``** (optional ``tmin``/``tmax`` so a source uses only a
-  window of its record).
-
 .. _uz_dataviewer_custom_code_nodes:
 
 Custom-code nodes — feasibility assessment
@@ -89,32 +77,14 @@ Custom-code nodes — feasibility assessment
 externally after build)? **Answer: yes, and it's reasonable** — the app already *is*
 CPython at runtime (native: the PyInstaller-frozen interpreter; web:
 Pyodide/CPython-in-WASM), so ``exec``/``importlib`` work on both targets without bundling
-a second interpreter. The transform contract is already a pure function
-``(inputs, params) -> (out_time, out_y, info)``, so a code node is "just another
-transform whose body is user-supplied." Two designs, with the trade-offs that actually
-matter here:
+a second interpreter.
+The transform contract is already a pure function ``(inputs, params) -> (out_time, out_y, info)``, so a code node is "just another transform whose body is user-supplied."
 
-Option B (recommended): external plugin files
----------------------------------------------
+External plugin files are already shipped — see :doc:`uz_dataviewer_plugins`.
+The remaining open idea is inline code typed directly into a node:
 
-Load ``.py`` files from a known directory (e.g. ``~/.uz_dataviewer/nodes/`` or a
-``plugins/`` folder next to the binary) at startup; each registers a transform (a
-function + a small metadata dict: kind name, default params). ``nodes._compute``
-dispatches to it by kind.
-
-- **Native:** works directly — a frozen PyInstaller app can ``importlib`` arbitrary
-  ``.py`` from disk as long as their imports (numpy) are bundled.
-- **Web:** no real FS; a plugin would have to be fetched/uploaded then ``exec``'d —
-  possible but less natural; could be a later addition.
-- **Serialization:** clean — the graph references a *kind name*, never embeds code, so
-  ``.uzscript`` and JSON round-trip unchanged.
-- **Security:** plugins are files the user deliberately installed (same trust as
-  ``pip install``); a shared *session* stays data-only.
-- **Effort:** small-to-medium. Fits the documented "add a transform" extension path
-  exactly.
-
-Option A: inline code typed into the node
------------------------------------------
+Inline code typed into the node
+---------------------------------
 
 A ``code`` node kind with a multiline text field; the body runs in a namespace with
 ``t``, ``y`` (inputs) and ``np``, returning ``(t_out, y_out)``.
@@ -131,21 +101,3 @@ A ``code`` node kind with a multiline text field; the body runs in a namespace w
      code nodes from untrusted sessions" switch. (On web the Pyodide sandbox limits the
      blast radius; on native it's full local privileges.)
 - **Effort:** medium, mostly the grammar/serialization special-case and the trust UX.
-
-Recommendation
---------------
-
-Do **Option B first** (plugin files): clean serialization, proper multiline code, opt-in
-security, and it slots straight into the existing transform model. Add **Option A** later
-as an "advanced" feature, scoped as JSON-session-only with an explicit trust warning, if
-interactive in-app scripting proves worth the grammar/security work. Neither requires a
-new interpreter — just a registration hook in ``nodes.py`` and (for A) a code-carrying
-param path that bypasses the flat command grammar.
-
-.. note::
-
-   **Update:** Option B (external plugin files) **shipped** — a transform ``REGISTRY`` in
-   ``nodes.py``, the ``@transform`` / ``ParamSpec`` API, a tolerant loader (``plugins.py``,
-   ``$UZ_DATAVIEWER_PLUGINS`` + ``~/.uz_dataviewer/nodes/`` + ``load_plugins([dir])``), a
-   generic param UI, and unknown-kind placeholders on restore. See :doc:`uz_dataviewer_plugins`. Option A
-   (inline-code nodes) above remains the open idea.

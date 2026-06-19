@@ -61,3 +61,24 @@ def test_downsample_small_series_passthrough():
     xs, ys = decimate_range(time, y, None, 1000, 0, time.shape[0])  # window <= n_out
     np.testing.assert_array_equal(xs, time)
     np.testing.assert_array_equal(ys, y)
+
+
+def test_downsample_budget_is_max_points_not_pixel_width():
+    # The plots panel now passes n_out = max_points (no pixel-width cap). A window with
+    # <= max_points raw samples must come back lossless (this is the user-visible promise
+    # that a 5.5k-sample window with max_points=20000 is NOT downsampled); a larger
+    # window decimates to ~max_points.
+    time = np.linspace(0.0, 50.0, 5_000_000)
+    y = np.sin(time).astype(np.float32)
+    max_points = 20_000
+
+    start, stop = 1_000_000, 1_005_500  # 5500 raw samples, well under the budget
+    xs, ys = decimate_range(time, y, None, max_points, start, stop)
+    assert xs.shape[0] == stop - start  # raw, untouched
+    np.testing.assert_array_equal(xs, time[start:stop])
+    np.testing.assert_array_equal(ys, y[start:stop])
+
+    start, stop = 0, 5_000_000  # far more than the budget -> envelope to ~max_points
+    xs, ys = decimate_range(time, y, None, max_points, start, stop)
+    assert xs.shape[0] <= max_points
+    assert xs.shape[0] >= max_points // 2  # lands near the budget, not far below it

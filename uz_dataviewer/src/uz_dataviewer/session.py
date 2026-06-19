@@ -28,6 +28,18 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
 SCHEMA_VERSION = 1
 
 
+def ensure_extension(path: str, ext: str) -> str:
+    """Return ``path`` with ``ext`` (including the leading dot) appended if missing.
+
+    Native save dialogs (``portable_file_dialogs``) don't reliably add the filter's
+    extension when the user edits the filename, so saved files can land without one.
+    Matching is case-insensitive; an empty path is returned unchanged.
+    """
+    if path and not path.lower().endswith(ext.lower()):
+        return path + ext
+    return path
+
+
 # -- helpers ------------------------------------------------------------------
 def _ref_to_labelled(state: "AppState", ref) -> list | None:
     """``(run_id, name)`` -> ``[run_label, name]`` (or ``None``)."""

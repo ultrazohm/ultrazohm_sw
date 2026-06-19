@@ -18,6 +18,14 @@ SAMPLE = (
 )
 
 
+def test_ensure_extension():
+    assert session.ensure_extension("session", ".json") == "session.json"
+    assert session.ensure_extension("session.json", ".json") == "session.json"
+    assert session.ensure_extension("SESSION.JSON", ".json") == "SESSION.JSON"  # case-insensitive
+    assert session.ensure_extension("a/b/plot_1", ".csv") == "a/b/plot_1.csv"
+    assert session.ensure_extension("", ".json") == ""  # no path -> unchanged
+
+
 def _populated_state(csv_path):
     state = AppState()
     state.commands.dispatch(state, f'load("{csv_path}")')

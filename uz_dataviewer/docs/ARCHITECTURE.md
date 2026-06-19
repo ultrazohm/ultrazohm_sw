@@ -61,7 +61,7 @@ a **pending-flag pattern**: e.g. `cell.fit_pending`, `cell.pending_x_lim`,
 | [commands.py](../src/uz_dataviewer/commands.py) | Command registry, parser, dispatcher, the ~60 built-in commands | `CommandRegistry`, `Command`, `Param` |
 | [console.py](../src/uz_dataviewer/console.py) | Bottom console: scrolling selectable log + command input/completion/history | `Console` |
 | [model.py](../src/uz_dataviewer/model.py) | Loaded data + per-log time normalization | `Run`, `Signal`, `DataRegistry` |
-| [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet `convert`) — see §4a | `load_file`, `parse_channel_name`, `convert_csv_to_parquet` |
+| [loader.py](../src/uz_dataviewer/loader.py) | CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet `convert`) — see §4a | `load_file`, `parse_file`, `ParsedRun`, `parse_channel_name`, `convert_csv_to_parquet` |
 | [downsample.py](../src/uz_dataviewer/downsample.py) | Range-aware decimation: min/max pyramid + one-shot (pure NumPy) | `Pyramid`, `decimate_range`, `visible_slice` |
 | [analysis.py](../src/uz_dataviewer/analysis.py) | GUI-free transforms (FFT) | `compute_fft`, `FftResult` |
 | [transforms.py](../src/uz_dataviewer/transforms.py) | GUI-free node transforms (math, FIR filter), pure NumPy | `math_node`, `filter_node` |
@@ -95,10 +95,13 @@ also detects a trailing unit token (`_rpm`, `_us`, …) for axis labels.
 
 ## 4a. Loading & large logs ([loader.py](../src/uz_dataviewer/loader.py))
 
-`load_file` dispatches by extension to `load_csv` / `load_parquet`, both producing a `Run`
-via `DataRegistry.add_run`. On native, loads run on a `ThreadPoolExecutor` (see §10). The
-loader is built to keep the **load-time memory peak** near the resident dataset size, so
-~100M-point logs open without OOM:
+`load_file` dispatches by extension through `parse_file` → `parse_csv` / `parse_parquet`,
+each returning a `ParsedRun` (plain arrays, no registry touch) that is then turned into a
+`Run` via `ParsedRun.register` (`DataRegistry.add_run`). On native, loads run on a
+`ThreadPoolExecutor`: the worker only **parses** into a `ParsedRun`, and the main thread
+**registers** it in `state.poll_pending_loads`, so `DataRegistry` is only ever mutated from one
+thread (see §10). The loader is built to keep the **load-time memory peak** near the resident
+dataset size, so ~100M-point logs open without OOM:
 
 - **float32 at parse, no intermediate copy.** `_csv_column_types` feeds Arrow
   `ConvertOptions(column_types=…)` so channels parse straight to `float32` (time stays
@@ -108,7 +111,7 @@ loader is built to keep the **load-time memory peak** near the resident dataset 
   column count and **refuses** a CSV above `MAX_CSV_NUMERIC_BYTES`, pointing the user at
   `convert(...)`. (The budget is measured against the *resident* size, not Arrow's bulk-parse
   peak — which runs ~2–3× higher — so it is a deliberately high ceiling, not a fit guarantee.)
-- **Streaming Parquet.** For files above `PARQUET_STREAM_MIN_ROWS`, `_load_parquet_streaming`
+- **Streaming Parquet.** For files above `PARQUET_STREAM_MIN_ROWS`, `_parse_parquet_streaming`
   reads the exact row count from `ParquetFile.metadata.num_rows`, **preallocates** the output
   arrays, and fills them with `iter_batches` (peak ≈ resident + one row group, ~1.5× measured)
   instead of materialising the whole table. Small Parquet keeps the simple bulk path.

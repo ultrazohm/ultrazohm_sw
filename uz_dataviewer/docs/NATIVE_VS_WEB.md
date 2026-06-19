@@ -46,8 +46,11 @@ re-open the logs (or use a `.uzscript`, which carries the `load(...)` lines) alo
 
 ### Threading
 Native loads files on a background `ThreadPoolExecutor` so the UI keeps rendering during a
-big parse. Pyodide has **no worker threads**, so web loads **synchronously** — the tab
-blocks for the duration of the parse.
+big parse. The worker only **parses** the file into a `ParsedRun` (plain arrays); the shared
+`DataRegistry` is mutated only on the main thread, which **registers** the result in
+`poll_pending_loads` — so the registry stays single-threaded even though parsing is off-thread.
+Pyodide has **no worker threads**, so web loads **synchronously** — the tab blocks for the
+duration of the parse (and registers inline).
 
 ### Large CSVs and the memory ceiling
 The real constraint on web is wasm32's **~4 GB address space**. What matters is not the

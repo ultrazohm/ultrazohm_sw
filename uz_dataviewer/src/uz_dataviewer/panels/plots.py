@@ -22,6 +22,7 @@ from imgui_bundle import imgui, implot
 
 from .. import webbridge
 from ..downsample import PYRAMID_MIN_POINTS, Pyramid, decimate_range, visible_slice
+from ..session import ensure_extension
 from ..state import GRID_PRESETS, AppState, PlotType, SignalRef, SubplotCell, XyStyle
 from .navigation import SIGNAL_DND_TYPE
 
@@ -94,6 +95,7 @@ class PlotsPanel:
         path = dialog.result()
         self._export_dialog = None
         if path:
+            path = ensure_extension(path, ".csv")  # dialog may drop the extension
             relative = state.cells[plot_n - 1].export_relative
             self._emit(state, "export_data", plot_n, path, relative)
 
@@ -190,9 +192,10 @@ class PlotsPanel:
                     plot_n,
                 )
             elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
-                path = "/tmp/" + name
-                self._emit(state, "export_data", plot_n, path, cell.export_relative)
-                webbridge.download(path, name)
+                webbridge.save_and_download(
+                    state, name,
+                    lambda path: self._emit(state, "export_data", plot_n, path, cell.export_relative),
+                )
         imgui.same_line()
         changed, rel = imgui.checkbox("start at 0", cell.export_relative)
         if changed:
@@ -326,12 +329,10 @@ class PlotsPanel:
     def _plot_signals(
         self, state: AppState, index: int, cell: SubplotCell, x_min: float, x_max: float
     ) -> tuple[int, int]:
-        # A min/max envelope can't show more than ~one point per horizontal pixel, so
-        # cap the budget at the plot's pixel width (then the user's max_points is an
-        # upper bound). Avoids decimating + uploading 2-4x more vertices than the
-        # screen can resolve at the larger presets.
-        px = int(implot.get_plot_size().x)
-        n_out = max(2, min(state.max_points, 2 * px if px > 0 else state.max_points))
+        # max_points is the budget: a window with <= max_points raw samples is drawn in
+        # full (decimate_range returns the raw slice), above it we emit a ~max_points
+        # min/max envelope. Same rule the FFT/Histogram path uses; no pixel-width cap.
+        n_out = max(2, state.max_points)
         points_shown = 0
         raw_in_view = 0
 

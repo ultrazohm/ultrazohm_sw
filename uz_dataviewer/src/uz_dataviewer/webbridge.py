@@ -125,6 +125,24 @@ def download(path: str, filename: str | None = None) -> None:
     js.URL.revokeObjectURL(url)
 
 
+def save_and_download(state, name: str, emit) -> None:
+    """Web-only: write a file to ``/tmp/<name>`` then hand it to the browser as a download.
+
+    Consolidates the export/save pattern that every web branch repeats: pick a temp path,
+    run the command that writes it (``emit(path)`` -- usually a ``commands.execute`` /
+    panel ``_emit`` that takes the path), then :func:`download` it. A no-op on native, where
+    the caller drives an OS save dialog instead. Errors are surfaced to the console.
+    """
+    if not IS_WEB:
+        return
+    path = "/tmp/" + name
+    try:
+        emit(path)
+        download(path, name)
+    except Exception as exc:  # noqa: BLE001 - surfaced to the console
+        state.console.error(str(exc))
+
+
 def _to_numpy(buf, dtype):
     """Coerce a JS TypedArray (or anything array-like) to a numpy array."""
     import numpy as np

@@ -42,3 +42,41 @@ def test_load_columns_no_state_is_noop():
     webbridge.register_state(None)
     # Must not raise when no app state is registered.
     webbridge.load_columns("x.csv", ["a"], [np.zeros(3, np.float32)], np.zeros(3))
+
+
+def test_save_and_download_runs_command_then_downloads(monkeypatch):
+    # Web export path: write /tmp/<name> via the emit callback, then hand it to download().
+    state = AppState()
+    webbridge.register_state(state)
+    calls: dict = {}
+    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(webbridge, "download", lambda path, name: calls.update(download=(path, name)))
+
+    webbridge.save_and_download(state, "plot_1.csv", lambda path: calls.update(emit=path))
+
+    assert calls["emit"] == "/tmp/plot_1.csv"
+    assert calls["download"] == ("/tmp/plot_1.csv", "plot_1.csv")
+
+
+def test_save_and_download_native_is_noop(monkeypatch):
+    # On native the caller drives an OS save dialog; the helper must do nothing.
+    state = AppState()
+    monkeypatch.setattr(webbridge, "IS_WEB", False)
+    called: list = []
+    webbridge.save_and_download(state, "x.csv", lambda path: called.append(path))
+    assert called == []
+
+
+def test_save_and_download_surfaces_errors(monkeypatch):
+    # A failing command goes to the console, not up the call stack.
+    state = AppState()
+    webbridge.register_state(state)
+    monkeypatch.setattr(webbridge, "IS_WEB", True)
+    monkeypatch.setattr(webbridge, "download", lambda *a: None)
+
+    def boom(path):
+        raise ValueError("export failed")
+
+    webbridge.save_and_download(state, "x.csv", boom)  # must not raise
+    errors = [e.message for e in state.console._entries if e.level == "ERROR"]
+    assert any("export failed" in m for m in errors)

@@ -21,6 +21,7 @@ from imgui_bundle import imgui, implot
 
 from .. import webbridge
 from ..downsample import decimate_range, visible_slice
+from ..session import ensure_extension
 from .navigation import SIGNAL_DND_TYPE
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -149,6 +150,7 @@ class AnalysisPanel:
         path = self._export_dialog.result()
         self._export_dialog = None
         if path:
+            path = ensure_extension(path, ".csv")  # dialog may drop the extension
             self._emit(state, self.export_command, path)
 
     def render(self, state: "AppState") -> None:
@@ -187,9 +189,9 @@ class AnalysisPanel:
                     f"Export {self.prefix} data", name, ["CSV (*.csv)", "*.csv"]
                 )
             elif webbridge.IS_WEB:  # no OS dialog in a tab -> write to FS + download
-                path = "/tmp/" + name
-                self._emit(state, self.export_command, path)
-                webbridge.download(path, name)
+                webbridge.save_and_download(
+                    state, name, lambda path: self._emit(state, self.export_command, path)
+                )
 
         # -- compute on demand (command-driven; never per frame) --
         if cfg.compute_requested:

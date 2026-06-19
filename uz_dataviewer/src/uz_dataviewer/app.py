@@ -24,6 +24,7 @@ from .panels.histogram import HistogramPanel
 from .panels.navigation import NavigationPanel
 from .panels.nodes import NodesPanel
 from .panels.plots import PlotsPanel
+from .session import ensure_extension
 from .state import AppState
 
 try:  # portable_file_dialogs is unavailable in the browser build
@@ -122,17 +123,21 @@ class DataViewerApp:
 
     def _native_session_menu(self) -> None:
         disabled = pfd is None or bool(self._session_dialog)
+        # Tuple: (dialog, command, is_multi, ext). `ext` (a save's expected extension)
+        # is forced onto the result if the dialog returned none; "" for the loads.
         if imgui.menu_item("Save state...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.save_file("Save state", "session.json", ["JSON (*.json)", "*.json"]),
                 "save_state",
                 False,
+                ".json",
             )
         if imgui.menu_item("Load state...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.open_file("Load state", "", ["JSON (*.json)", "*.json"]),
                 "load_state",
                 True,
+                "",
             )
         imgui.separator()
         if imgui.menu_item("Export script...", "", False, not disabled)[0]:
@@ -140,12 +145,14 @@ class DataViewerApp:
                 pfd.save_file("Export script", "session.uzscript", ["Script (*.uzscript)", "*.uzscript"]),
                 "export_script",
                 False,
+                ".uzscript",
             )
         if imgui.menu_item("Run script...", "", False, not disabled)[0]:
             self._session_dialog = (
                 pfd.open_file("Run script", "", ["Script (*.uzscript *.txt)", "*.uzscript *.txt"]),
                 "run_script",
                 True,
+                "",
             )
 
     def _web_session_menu(self) -> None:
@@ -160,22 +167,21 @@ class DataViewerApp:
             self._web_download("export_script", "session.uzscript")
 
     def _web_download(self, command: str, name: str) -> None:
-        path = "/tmp/" + name
-        try:
-            self.state.commands.execute(self.state, command, [path])
-            webbridge.download(path, name)
-        except Exception as exc:  # noqa: BLE001 - surfaced to the console
-            self.state.console.error(str(exc))
+        webbridge.save_and_download(
+            self.state, name, lambda path: self.state.commands.execute(self.state, command, [path])
+        )
 
     def _poll_session_dialog(self) -> None:
         if not self._session_dialog:
             return
-        dialog, command, is_multi = self._session_dialog
+        dialog, command, is_multi, ext = self._session_dialog
         if not dialog.ready():
             return
         result = dialog.result()
         path = (result[0] if result else "") if is_multi else result
         self._session_dialog = ()
+        if path and ext:  # a save: make sure the file keeps its type extension
+            path = ensure_extension(path, ext)
         if path:
             try:
                 self.state.commands.execute(self.state, command, [path])

@@ -4,37 +4,32 @@
 Architecture & Design (developer)
 ==================================
 
-This document explains how ``uz_dataviewer`` is put together, the design decisions
-behind it, and how to extend it. For end-user docs see :doc:`usage`; for packaging
-see :doc:`build`.
+This document explains how ``uz_dataviewer`` is put together, the design decisions behind it, and how to extend it. For end-user docs see :doc:`usage`; for packaging see :doc:`build`.
 
 1. The one big idea
 ===================
 
 The viewer is **state-driven and command-routed**:
 
-- There is a single source of truth, ``AppState`` (``state.py``). Panels are (almost)
-  pure render functions: each frame they read ``AppState`` and draw it.
-- **Every discrete user action goes through the command registry** (``commands.py``).
-  A command mutates ``AppState`` *and* echoes its canonical call to the console.
+- There is a single source of truth, ``AppState`` (``state.py``). Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
+- **Every discrete user action goes through the command registry** (``commands.py``). A command mutates ``AppState`` *and* echoes its canonical call to the console.
 
 Because of this, four things fall out for free:
 
 #. **Scriptability** — anything you can click, you can type or replay (``.uzscript``).
 #. **A live transcript** — the console shows exactly what happened, as commands.
 #. **Save/restore** — sessions serialise to JSON or to a replayable command script.
-#. **Testability** — the whole app logic is exercised by dispatching command strings;
-   no window required.
+#. **Testability** — the whole app logic is exercised by dispatching command strings; no window required.
 
-.. note::
+.. warning::
 
-   If you add a feature and the only way to trigger it is a direct widget mutation,
-   you've broken the model. Add a command and have the widget call it.
+   If you add a feature and the only way to trigger it is a direct widget mutation, you've broken the model. Add a command and have the widget call it.
 
 2. Frame flow
 =============
 
-``immapp.run()`` (hello_imgui) drives a classic immediate-mode loop. Per frame:
+``immapp.run()`` (hello_imgui) drives a classic immediate-mode loop.
+Per frame:
 
 .. code-block:: text
 
@@ -48,10 +43,11 @@ Because of this, four things fall out for free:
       └─ Console.render(state)          # bottom: log + command input
 
 Immediate mode has one structural consequence the code leans on everywhere:
-**there is no retained widget state**, so anything that must persist across frames
-lives in ``AppState``/``SubplotCell``. Transient "do this once next frame" requests use
-a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
-``cfg.compute_requested``. The renderer consumes and clears the flag.
+
+   - **There is no retained widget state**
+   - Anything that must persist across frames lives in ``AppState``/``SubplotCell``
+   - Transient "do this once next frame" requests use a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``, ``cfg.compute_requested``
+   - The renderer consumes and clears the flag.
 
 3. Module map
 =============
@@ -64,12 +60,10 @@ a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
      - Responsibility
      - Key types
    * - ``app.py``
-     - Docking layout, ``immapp`` runner, theme, Session menu, ``.uzscript``/file
-       startup
+     - Docking layout, ``immapp`` runner, theme, Session menu, ``.uzscript``/file startup
      - ``DataViewerApp``
    * - ``api.py``
-     - GUI-free façade for headless/library use (load, FFT, node transforms) — see
-       :doc:`library`
+     - GUI-free façade for headless/library use (load, FFT, node transforms) — see :doc:`library`
      - ``read``, ``Dataset``, ``fft``, ``fft_frame``, ``node``, ``kinds``
    * - ``state.py``
      - The single app state, grid/cells, analysis configs, async load orchestration
@@ -85,9 +79,7 @@ a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
      - Loaded data + per-log time normalization
      - ``Run``, ``Signal``, ``DataRegistry``
    * - ``loader.py``
-     - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean
-       large-log loading (float32-at-parse, CSV size guard, streaming Parquet,
-       CSV→Parquet ``convert``) — see §4a
+     - CSV (Arrow) / Parquet loading, header cleaning, delimiter sniffing; lean large-log loading (float32-at-parse, CSV size guard, streaming Parquet, CSV→Parquet ``convert``) — see §4a
      - ``load_file``, ``parse_file``, ``ParsedRun``, ``parse_channel_name``,
        ``convert_csv_to_parquet``
    * - ``downsample.py``
@@ -100,13 +92,10 @@ a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
      - GUI-free node transforms (math, FIR filter), pure NumPy
      - ``math_node``, ``filter_node``
    * - ``nodes.py``
-     - Dataflow graph + on-demand evaluation → derived runs; the transform
-       **registry**
-     - ``NodeGraph``, ``Node``, ``evaluate``, ``is_stale``, ``TransformSpec``,
-       ``REGISTRY``
+     - Dataflow graph + on-demand evaluation → derived runs; the transform **registry**
+     - ``NodeGraph``, ``Node``, ``evaluate``, ``is_stale``, ``TransformSpec``, ``REGISTRY``
    * - ``plugins.py``
-     - Load external transform-node plugins (``@transform``); robust to missing
-       dirs/files
+     - Load external transform-node plugins (``@transform``); robust to missing dirs/files
      - ``transform``, ``ParamSpec``, ``load_plugins``
    * - ``session.py``
      - JSON save/restore, ``.uzscript`` export/replay, CSV exports
@@ -121,8 +110,7 @@ a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
      - Subplot grid: types, cursors, spy, axis linking, secondary axis, export
      - ``PlotsPanel``
    * - ``panels/analysis.py``
-     - Shared base for analysis windows (sources, follow-window, compute, stale, zoom,
-       export)
+     - Shared base for analysis windows (sources, follow-window, compute, stale, zoom, export)
      - ``AnalysisPanel``, ``follow_combo``
    * - ``panels/fft.py``
      - FFT window
@@ -137,17 +125,11 @@ a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``,
 4. Data model
 =============
 
-- A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one
-  **``Signal``** per channel (``y`` as ``float32``, contiguous, ready for ImPlot and
-  the pyramid).
-- **``DataRegistry``** owns runs and hands out stable integer ids;
-  ``SignalRef = (run_id, name)`` identifies a signal everywhere.
-- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original
-  ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It's reversible
-  (``target=None`` restores raw) and only re-derives on change, never per frame.
+- A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``, contiguous, ready for ImPlot and the pyramid).
+- **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
+- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It's reversible (``target=None`` restores raw) and only re-derives on change, never per frame.
 
-Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name``,
-which also detects a trailing unit token (``_rpm``, ``_us``, …) for axis labels.
+Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name``, which also detects a trailing unit token (``_rpm``, ``_us``, …) for axis labels.
 
 .. _uz_dataviewer_loader_large_logs:
 

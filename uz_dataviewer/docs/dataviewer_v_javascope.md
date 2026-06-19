@@ -126,11 +126,6 @@ at first, then replaced by a pure-NumPy **min/max pyramid** so native and web sh
 | FFT | No | Yes (dedicated window) + Histogram window |
 | Scripting / command API | No | Yes (every action is a command; `.uzscript` replay) |
 
-> The parity items the legacy `dataviewer.py` had over the early `uz_dataviewer`
-> (secondary y-axis, cursors, data export) have since been implemented, and the viewer
-> now goes beyond it with the command/scripting layer, Histogram window, spy tool and
-> per-log time normalization.
-
 ---
 
 ## 5. How they fit together
@@ -158,10 +153,3 @@ at first, then replaced by a pure-NumPy **min/max pyramid** so native and web sh
   parameters, and record.
 - **Data Viewer** is for *understanding the recording afterwards*: open one or many logs,
   arrange subplots, zoom into gigabyte-scale data, run FFTs.
-
-**One forward-looking overlap:** the Data Viewer's unified, scriptable **command API** —
-every click becomes a logged, replayable command (see [ROADMAP.md](ROADMAP.md)) —
-mirrors the JavaScope's existing "send commands to the device" model conceptually, but
-the Data Viewer's commands act on the *view* (plots, layout, FFT), not on hardware. The two
-could converge later (e.g. a scriptable tool that both controls acquisition and analyzes the
-result), but for now they stay on opposite sides of the `Log_*.csv` boundary.

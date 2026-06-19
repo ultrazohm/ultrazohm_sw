@@ -100,7 +100,7 @@ code. (This is why the legacy `tsdownsample` dependency was dropped.)
 
 ## What is identical
 
-So it's clear how little actually diverges: the **command API and console**, **plots**
+The **command API and console**, **plots**
 (types, cursors, spy, secondary axis, linked X, CSV export), **FFT & Histogram windows**,
 the **node graph** and built-in transforms, **range-aware downsampling**, and the
 **`.uzscript`** replay all behave the same on native and web. Plugins are native-first

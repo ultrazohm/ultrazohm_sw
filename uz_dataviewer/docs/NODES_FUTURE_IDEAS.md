@@ -59,7 +59,7 @@ exist until its producing node is evaluated. Chaining is meant to go through `no
 
 ---
 
-## Custom-code nodes (planned — feasibility assessment)
+## Custom-code nodes — feasibility assessment
 
 **Question:** can a node run user-written Python (typed at runtime, or supplied externally after
 build)? **Answer: yes, and it's reasonable** — the app already *is* CPython at runtime (native:

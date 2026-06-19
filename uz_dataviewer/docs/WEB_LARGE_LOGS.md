@@ -113,14 +113,6 @@ on-disk pyramid in OPFS.
 
 ---
 
-> **Native is already handled.** Lean loading (float32-at-parse, CSV size guard, streaming
-> Parquet, CSV→Parquet `convert`) keeps native loads near their resident size for logs up to
-> ~100M points that still **fit in RAM** — documented in
-> [ARCHITECTURE §4a](ARCHITECTURE.md#4a-loading--large-logs-loaderpy). The rest of this note is
-> only about the **web / larger-than-RAM** case, where the data cannot all be resident at once.
-
----
-
 ## Two implementation approaches (presented, not chosen) — for the web/out-of-core case
 
 **A. DuckDB-wasm + OPFS.** Store the log as Parquet/tables in OPFS; do range filters and

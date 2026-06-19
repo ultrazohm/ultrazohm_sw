@@ -5,9 +5,8 @@
 
 ## Why
 
-We want logs available "from the cloud" — for both the native and web builds — with
-authentication and multiple users, instead of every analyst copying multi-gigabyte files
-around by hand.
+Central, authenticated access to logs — for both native and web builds — so analysts can
+open recordings without copying multi-gigabyte files around by hand.
 
 A ">8 GB log" is the **CSV text** size. The same record is only **~15M rows ≈ ~1.3 GB of
 numeric data** (15M × ~20 channels × 4 B + a float64 time axis). That fits the web build's
@@ -41,7 +40,7 @@ additive and converges onto the current code path.
   15M-row log as a Parquet *attachment* is a few-hundred-MB download (no PocketBase scale
   issue), whereas the same data as per-sample *records* would be 15M+ rows — far outside
   PocketBase/SQLite's comfort zone (ingest cost, DB bloat, and PocketBase has no server-side
-  sampling/aggregation anyway). Files it is.
+  sampling/aggregation anyway). File attachments are the right approach.
 - **Ingest** = an offline script: convert a log (CSV/Parquet) to compact Parquet and upload it
   with its metadata. (No live/growing-log support in v1.)
 

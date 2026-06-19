@@ -397,10 +397,10 @@ Note that this means the actual calculation time of network without the communic
        end
        Driver->>Processor: Invalidate cache for output
 
+.. _uz_NN_customize_setup:
+
 Customize IP core
 -----------------
-
-.. _uz_NN_customize_setup:
 
 The IP core can be configured according to your needs (neuron count & layer setup).
 However, for this to work, the IP core will need to be synthesized again using the new setup.

@@ -85,7 +85,7 @@ Additional Components
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
-    adapter_cards/analog/CurrentMeasurementPCB/index
+    adapter_cards/external/uz_per_current_measurement_box/index
     adapter_cards/external/rj_45_breakout/rj45_breakout
     adapter_cards/external/uz_per_wolfspeed_25kw_FM3/uz_per_wolfspeed_25kw_FM3
     adapter_cards/external/uz_per_voltage_measurement_box/uz_per_voltage_measurement_box

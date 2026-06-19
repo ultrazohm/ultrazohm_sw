@@ -328,6 +328,7 @@ Vitis
   #include "../uz/uz_wavegen/uz_wavegen.h"
   #include "../IP_Cores/uz_pmsmMmodel_6ph_dqxy/uz_pmsmModel_6ph_dqxy.h"
   extern uz_pmsmModel_6ph_dqxy_t *pmsm_6ph;
+  uz_wavegen_pulse_t* pulse; // Initialize once with uz_wavegen_pulse_init() before ISR starts
 
   float i_d_soll=0.0f;
   float i_q_soll=0.0f;
@@ -356,7 +357,7 @@ Vitis
   uz_pmsmModel_6ph_dqxy_trigger_input_strobe(pmsm_6ph);
   uz_pmsmModel_6ph_dqxy_trigger_output_strobe(pmsm_6ph);
   pmsm_outputs=uz_pmsmModel_6ph_dqxy_get_outputs(pmsm_6ph);
-  pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
+  pmsm_inputs.v_q_V=uz_wavegen_pulse_sample(pulse, 10.0f, 0.10f, 0.5f);
   pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
   pmsm_inputs.v_x_V=0.4f;
   pmsm_inputs.v_y_V=-0.5f;

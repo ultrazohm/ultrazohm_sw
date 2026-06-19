@@ -19,17 +19,18 @@ _IRQ_STACK_SIZE = DEFINED(_IRQ_STACK_SIZE) ? _IRQ_STACK_SIZE : 1024;
 _FIQ_STACK_SIZE = DEFINED(_FIQ_STACK_SIZE) ? _FIQ_STACK_SIZE : 1024;
 _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
-/* Define Memories in the system */
+/* Define memories used by the R5 application or by fixed-address shared data. */
 
 MEMORY
 {
+   /* Shared OCM, accessed by fixed addresses in APU_RPU_shared.h. */
    psu_ocm_ram_bank0_to_2_MEM_0 : ORIGIN = 0xFFFC0000, LENGTH = 0x30000
    psu_ocm_ram_bank3_MEM_0 : ORIGIN = 0xFFFF0000, LENGTH = 0x10000
-   psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
    psu_r5_0_atcm_MEM_0 : ORIGIN = 0x0, LENGTH = 0x10000
    psu_r5_0_btcm_MEM_0 : ORIGIN = 0x20000, LENGTH = 0x10000
-   psu_r5_ddr_0_MEM_0 : ORIGIN = 0x40000000, LENGTH = 0x3FFF0000
-   psu_r5_tcm_ram_0_MEM_0 : ORIGIN = 0x0, LENGTH = 0x40000
+   /* Linux must reserve the full 128 MiB range 0x40000000..0x47FFFFFF.
+      The linker uses 0x40000000..0x47FEFFFF and leaves the top 64 KiB as guard. */
+   psu_r5_ddr_0_MEM_0 : ORIGIN = 0x40000000, LENGTH = 0x07FF0000
 }
 
 /* Specify the default entry point to the program */
@@ -299,4 +300,3 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
 
 _end = .;
 }
-

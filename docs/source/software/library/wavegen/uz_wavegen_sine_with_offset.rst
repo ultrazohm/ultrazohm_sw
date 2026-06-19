@@ -2,7 +2,7 @@
 Sine wave with offset
 =====================
 
-.. doxygenfunction:: uz_wavegen_sine_with_offset
+.. doxygenfunction:: uz_wavegen_sine_sample_with_offset
 
 Example
 =======
@@ -16,13 +16,15 @@ Example
      float amplitude = 6.0f;
      float frequency_Hz = 5.0f;
      float offset = -5.0f;
-     float output = uz_wavegen_sine_with_offset(amplitude, frequency_Hz, offset);
+     uz_wavegen_sine_t* sine = uz_wavegen_sine_init();
+     float output = uz_wavegen_sine_sample_with_offset(sine, amplitude, frequency_Hz, offset);
   }
 
 Description
 ===========
 
-This function calculates a sine wave with :math:`y=sin(2 \pi f \cdot t) + x` where :math:`t` is the global system time and :math`x` is the offset.
+This function calculates a sine wave with :math:`y=sin(2 \pi f \cdot t) + x` where :math:`x` is the offset.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: sine wave with offset
   :align: left

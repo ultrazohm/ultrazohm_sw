@@ -21,7 +21,7 @@
 void APU_IPI_ISR(void *baseaddr_p);  // IPI interrupt handler triggered by R5 core (synchronous with R5 ISR)
 u32 Rpu_IpiHandler(XIpiPsu *IpiInstPtr);
 int Initialize_InterruptHandler();
-int Initialize_ISR();
+int initialize_ipi_runtime();
 int Initialize_Interrupts(u16 DeviceId);		//Init Hardware for ISR
 u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler,void *PeriphInstPtr);
 u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId);	//Init Hardware for IPI-ISR

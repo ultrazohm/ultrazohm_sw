@@ -4,5 +4,5 @@
 # Timing Specification Constraints
 
 
-# FPGA Pin Location Constraints
+# FPGA Pin Location Constrain
 

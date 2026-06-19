@@ -183,7 +183,7 @@ Interfaces of Cabinet
 
    code_generation/embedded_coder/embedded_coder
    code_generation/hdl_coder/hdl_coder
-   code_generation/vivado_hls/vivado_hls
+   code_generation/vitis_hls/vitis_hls
 
 .. toctree::
    :maxdepth: 1

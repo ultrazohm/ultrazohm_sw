@@ -218,9 +218,7 @@ Nodes *produce* data; nothing else in the app needs to know they exist.
 
 .. note::
 
-   v1 limits (intentional): binary math needs equal-length inputs (no resampling);
-   a source node pointing at *another node's* derived output is a runtime convenience
-   that may not fully survive restore (chaining is meant to go through ``node_link``).
+   v1 limits (intentional): binary math needs equal-length inputs (no resampling); a source node pointing at *another node's* derived output is a runtime convenience that may not fully survive restore (chaining is meant to go through ``node_link``).
 
 .. _uz_dataviewer_downsampling:
 
@@ -265,8 +263,8 @@ Measured (single float32 signal, ``max_points=10 000``, one core; reproduce with
      - ~0.2 ms
      - 7.1 MB (3.6 %)
 
-For comparison, re-scanning the full 50 M extent every frame (the one-shot envelope, the work the pyramid avoids) costs **~23 ms/frame** — i.e. the pyramid is ~30× cheaper per frame at the price of a one-time build and ~3.6 % memory.
-The output also stays ~``max_points`` whether you view the whole record or a slice (the earlier 8×-jumpy point count and bucket-centre blockiness are gone).
+For comparison, re-scanning the full 50 M extent every frame (the one-shot envelope, the work the pyramid avoids) costs **~23 ms/frame** — i.e. the pyramid is ~30x cheaper per frame at the price of a one-time build and ~3.6 % memory.
+The output also stays ~``max_points`` whether you view the whole record or a slice (the earlier 8x-jumpy point count and bucket-centre blockiness are gone).
 *(Absolute times are hardware-dependent; the point is the O(output) vs O(visible) gap, which is structural.)*
 
 The FFT/Histogram windows use the same decimation: a multi-million-point spectrum is range-decimated per frame (``AnalysisPanel._plot_decimated``) rather than drawn in full, and a histogram is binned once at compute (not re-binned every frame).

@@ -183,24 +183,4 @@ It already offered, in a browser:
 How they fit together
 ======================
 
-.. code-block:: text
 
-      UltraZohm hardware
-           │  TCP :1000  (live stream, 20 ch)
-           ▼
-    ┌──────────────────────┐     commands / parameters
-    │  JavaScope (Java)     │ ───────────────────────────►  back to device
-    │  live scope + control │
-    └──────────┬───────────┘
-               │ writes
-               ▼
-         Log_*.csv  ──────────────┬───────────────► JS_plot_data.m (Matlab import)
-                                  │
-                                  ▼
-                    ┌────────────────────────────┐
-                    │  Data Viewer (uz_dataviewer)│  offline inspection,
-                    │  ImGui/ImPlot                │  FFT, downsampling
-                    └────────────────────────────┘
-
-- **JavaScope** is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
-- **Data Viewer** is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.

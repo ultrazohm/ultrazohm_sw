@@ -256,7 +256,8 @@ void test_uz_SVPWM6phIP_hw_SetTristate_with_zero_base_address(void)
 void test_uz_SVPWM6phIP_hw_SetTriggerSource_assert(void)
 {
     uint32_t trigger_source = 3U; //only 0->2 are defined as trigger source inputs
-    TEST_ASSERT_FAIL_ASSERT(uz_SVPWM6phIP_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source));    
+    TEST_ASSERT_FAIL_ASSERT(uz_SVPWM6phIP_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source));  
+                              
 }
 
 void test_uz_SVPWM6phIP_hw_SetTriggerSource(void)

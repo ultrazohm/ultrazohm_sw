@@ -612,7 +612,7 @@ const uint8_t svpwm_4active_2zero_24sector_SV_sequence[NUM_METHODS_6PH_SVPWM_MET
 };
 
 
-// LUTs der inversen Matrizen für CSVPWM 4 aktive SV
+// LUTs der inversen Matrizen fï¿½r CSVPWM 4 aktive SV
 
 static const float inverse_T_tv_CSVPWM_24_1L_1ML_2M_L2_M12[24][4][4] = {
     {{0.633974596215561f, 2.366025403784440f, 2.366025403784440f, 0.633974596215561f},
@@ -2399,7 +2399,7 @@ static const float inverse_T_tv_CSVPWM_24_4M_M1432_D[24][4][4] = {
 
 
 
-// LUTs der inversen Matrizen für CSVPWM 5 aktive SV 50:50 M-Aufteilung
+// LUTs der inversen Matrizen fï¿½r CSVPWM 5 aktive SV 50:50 M-Aufteilung
 
 static const float inverse_T_tv_CSVPWM_24_1L_1ML_3M_L2_M132[24][4][4] = {
     {{1.732050807568880f, 3.000000000000000f, -1.732050807568880f, 3.000000000000000f},

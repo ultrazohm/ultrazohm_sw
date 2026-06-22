@@ -100,6 +100,7 @@ class MainWindow(QMainWindow):
         self.vivado_status: QPlainTextEdit | None = None
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
+        self.detail_source_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
         self.software_dependent_views_dirty = False
         self.dark_mode_action: QAction | None = None
@@ -1476,6 +1477,8 @@ class MainWindow(QMainWindow):
             values.setdefault(slot, {})[option_id] = combo.currentData() or ""
         for (slot, option_id), edit in self.detail_trigger_edits.items():
             values.setdefault(slot, {})[f"{option_id}_trigger_source"] = edit.text().strip()
+        for (slot, field_id), edit in self.detail_source_edits.items():
+            values.setdefault(slot, {})[field_id] = edit.text().strip()
         return values
 
     def selected_platform(self) -> dict[str, Any]:
@@ -1801,6 +1804,7 @@ class MainWindow(QMainWindow):
         self._clear_details_layouts()
         self.detail_combos = {}
         self.detail_trigger_edits = {}
+        self.detail_source_edits = {}
         assignments = self.assignments()
         for slot, card_id in assignments.items():
             page_layout = self.slot_detail_layouts[slot]
@@ -1856,6 +1860,24 @@ class MainWindow(QMainWindow):
                     form.addRow(option.get("label", option_id or "Option"), row)
                 group_layout.addLayout(form)
 
+            source_fields = card.get("vivado", {}).get("source_fields", [])
+            if source_fields:
+                source_group = QGroupBox("Vivado source signals")
+                source_layout = QFormLayout(source_group)
+                for source_field in source_fields:
+                    field_id = source_field.get("id", "")
+                    if not field_id:
+                        continue
+                    value = self.detail_options.get(slot, {}).get(field_id, source_field.get("default", ""))
+                    edit = QLineEdit(value)
+                    edit.setPlaceholderText(source_field.get("placeholder", "Block design pin path"))
+                    if source_field.get("tooltip") or source_field.get("help"):
+                        edit.setToolTip(source_field.get("tooltip", source_field.get("help", "")))
+                    edit.editingFinished.connect(self._detail_option_changed)
+                    self.detail_source_edits[(slot, field_id)] = edit
+                    source_layout.addRow(source_field.get("label", field_id), edit)
+                group_layout.addWidget(source_group)
+
             page_layout.insertWidget(page_layout.count() - 1, group)
 
         for slot in list(self.detail_options):
@@ -1884,6 +1906,8 @@ class MainWindow(QMainWindow):
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
                 self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
+        for (slot, field_id), edit in self.detail_source_edits.items():
+            self.detail_options.setdefault(slot, {})[field_id] = edit.text().strip()
         self.software_dependent_views_dirty = True
         self.guarded_refresh_tcl_preview()
 

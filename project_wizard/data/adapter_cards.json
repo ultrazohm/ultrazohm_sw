@@ -895,8 +895,39 @@
           "Create a hierarchy for the inverter adapter.",
           "Instantiate uz_d_inverter_adapter v1.1.",
           "Create the adapter-board ports and the small slice/concat plumbing directly.",
-          "Tie Gates[5:0] and PWM_UZ_Enable to zero until their sources are configured in the wizard.",
+          "Connect Gates[5:0] from a configurable block-design gate vector slice, with local zero fallback if the selected source is missing.",
+          "Connect PWM_UZ_Enable from a configurable block-design source pin, with local zero fallback if the selected source is missing.",
           "Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "gates_source",
+            "label": "Gate vector source",
+            "default": "uz_digital_adapter/Gate_Signals_2L",
+            "placeholder": "Block design pin path",
+            "help": "Vector source pin for the two-level gate signals. The selected bit range is sliced inside the inverter adapter hierarchy."
+          },
+          {
+            "id": "gates_source_from",
+            "label": "Gate slice from",
+            "default": "5",
+            "placeholder": "MSB index",
+            "help": "Most-significant bit of the gate vector slice that drives uz_d_inverter_adapter Gates[5:0]."
+          },
+          {
+            "id": "gates_source_to",
+            "label": "Gate slice to",
+            "default": "0",
+            "placeholder": "LSB index",
+            "help": "Least-significant bit of the gate vector slice that drives uz_d_inverter_adapter Gates[5:0]."
+          },
+          {
+            "id": "pwm_enable_source",
+            "label": "PWM_UZ_Enable source",
+            "default": "uz_digital_adapter/Enable_Gate",
+            "placeholder": "Block design pin path",
+            "help": "Single-bit source pin that drives uz_d_inverter_adapter PWM_UZ_Enable. Leave empty or use an invalid path to fall back to zero."
+          }
         ],
         "ip_cores": [
           {

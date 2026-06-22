@@ -105,8 +105,8 @@ struct uz_adcMax11331_config_t{
  * The function initializes the hardware by executing the following functions:
  *
  * <UL>
- * <LI> @ref uz_adcMax11331_set_clk_div </LI>
- * <LI> @ref uz_adcMax11331_check_echo_of_master </LI>
+ * <LI> uz_adcMax11331_set_clk_div </LI>
+ * <LI> uz_adcMax11331_check_echo_of_master </LI>
  * </UL>
  *
  * @param config Configuration values for the IP-Core

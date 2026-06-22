@@ -37,6 +37,12 @@
       "channel_2_trigger_source": "trigger_conversions",
       "channel_3": "ssi",
       "channel_3_trigger_source": "trigger_conversions"
+    },
+    "D3": {
+      "gates_source": "uz_digital_adapter/Gate_Signals_2L",
+      "gates_source_from": "5",
+      "gates_source_to": "0",
+      "pwm_enable_source": "uz_digital_adapter/Enable_Gate"
     }
   },
   "slot_cplds": {
@@ -85,7 +91,7 @@
     "D1_preset": "default",
     "D2_preset": "default",
     "D3_preset": "default",
-    "D4_preset": "type_k_thermocouple",
+    "D4_preset": "default",
     "D5_preset": "default",
     "driver_config_a1_adc_ltc2311_mode": "default",
     "driver_config_a2_dac8831_mode": "custom",

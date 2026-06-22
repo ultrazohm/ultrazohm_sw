@@ -53,6 +53,11 @@ proc uz_pw_inverter_create_xlslice {cell_path bit_index} {
   uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH {6} CONFIG.DIN_FROM $bit_index CONFIG.DIN_TO $bit_index CONFIG.DOUT_WIDTH {1}] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
+proc uz_pw_inverter_create_vector_xlslice {cell_path din_width din_from din_to dout_width} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlslice
+  uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH $din_width CONFIG.DIN_FROM $din_from CONFIG.DIN_TO $din_to CONFIG.DOUT_WIDTH $dout_width] [get_bd_cells -quiet $cell_path] $cell_path
+}
+
 proc uz_pw_inverter_create_xlconcat {cell_path port_count} {
   uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconcat
   uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS $port_count] [get_bd_cells -quiet $cell_path] $cell_path
@@ -63,21 +68,43 @@ proc uz_pw_inverter_create_xlconstant {cell_path width value} {
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-# Future wizard option: Gates[5:0] source. For now use a deterministic zero source
-# internal to the slot hierarchy.
+# Gates[5:0] source. Use the configured vector source if it is present and slice
+# the selected six bits locally, otherwise fall back to a deterministic zero
+# source internal to the slot hierarchy.
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/Gates"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_Gates"
-set gates_default_path "${adapter_hier_path}/{{ slot }}_gates_default_zero"
-uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
-set gates_source_pin "${gates_default_path}/dout"
+set gate_vector_source_pin "{{ inverter_gates_source }}"
+set gate_slice_from "{{ inverter_gates_source_from }}"
+set gate_slice_to "{{ inverter_gates_source_to }}"
+if {[string is integer -strict $gate_slice_from] && [string is integer -strict $gate_slice_to]} {
+  set gate_slice_width [expr {abs($gate_slice_from - $gate_slice_to) + 1}]
+} else {
+  set gate_slice_width 0
+}
+if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_source_pin]] == 0 || $gate_slice_width != 6} {
+  puts "WARNING: Gate vector source '$gate_vector_source_pin' with slice ${gate_slice_from}:${gate_slice_to} is not usable for {{ slot }} inverter adapter; using zero fallback."
+  set gates_default_path "${adapter_hier_path}/{{ slot }}_gates_default_zero"
+  uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
+  set gates_source_pin "${gates_default_path}/dout"
+} else {
+  set gates_source_slice_path "${adapter_hier_path}/{{ slot }}_gates_source_slice"
+  uz_pw_inverter_create_vector_xlslice $gates_source_slice_path 24 $gate_slice_from $gate_slice_to 6
+  uz_pw_connect_pin_pair_if_unconnected $gate_vector_source_pin "${gates_source_slice_path}/Din"
+  set gates_source_pin "${gates_source_slice_path}/Dout"
+}
 
-# Future wizard option: PWM_UZ_Enable source. For now use a deterministic zero
-# source internal to the slot hierarchy.
+# PWM_UZ_Enable source. Use the configured source if it is present, otherwise
+# fall back to a deterministic zero source internal to the slot hierarchy.
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/PWM_UZ_Enable"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_PWM_UZ_Enable"
-set pwm_enable_default_path "${adapter_hier_path}/{{ slot }}_pwm_enable_default_zero"
-uz_pw_inverter_create_xlconstant $pwm_enable_default_path 1 0
-uz_pw_connect_pin_pair_if_unconnected "${pwm_enable_default_path}/dout" "${inverter_driver_path}/PWM_UZ_Enable"
+set pwm_enable_source_pin "{{ inverter_pwm_enable_source }}"
+if {$pwm_enable_source_pin eq "" || [llength [get_bd_pins -quiet $pwm_enable_source_pin]] == 0} {
+  puts "WARNING: PWM_UZ_Enable source '$pwm_enable_source_pin' not found for {{ slot }} inverter adapter; using zero fallback."
+  set pwm_enable_default_path "${adapter_hier_path}/{{ slot }}_pwm_enable_default_zero"
+  uz_pw_inverter_create_xlconstant $pwm_enable_default_path 1 0
+  set pwm_enable_source_pin "${pwm_enable_default_path}/dout"
+}
+uz_pw_connect_pin_pair_if_unconnected $pwm_enable_source_pin "${inverter_driver_path}/PWM_UZ_Enable"
 
 # Dig_16_Ch{{ slot_index }} is unused by the adapter mapping. Do not create a
 # dummy top-level input here; an unloaded constrained input can be optimized away

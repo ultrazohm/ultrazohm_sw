@@ -90,22 +90,42 @@ class TclGenerator:
             [
                 "# Configure block-design/IP OOC synthesis checkpoints.",
                 "# Disabling checkpoints makes builds slower, but avoids Vivado checkpoint/archive issues for some IP configurations.",
-                "set project_wizard_bd_files [get_files -quiet *.bd]",
-                "if {[llength $project_wizard_bd_files] > 0} {",
+                "set project_wizard_checkpoint_bd_files {}",
+                "if {![catch {current_bd_design} project_wizard_current_bd] && [llength $project_wizard_current_bd] > 0} {",
+                "  set project_wizard_current_bd_name [get_property NAME $project_wizard_current_bd]",
+                "  set project_wizard_checkpoint_bd_files [get_files -quiet \"${project_wizard_current_bd_name}.bd\"]",
+                "  if {[llength $project_wizard_checkpoint_bd_files] == 0} {",
+                "    set project_wizard_checkpoint_bd_files [get_files -quiet \"*${project_wizard_current_bd_name}.bd\"]",
+                "  }",
+                "}",
+                "if {[llength $project_wizard_checkpoint_bd_files] == 0} {",
+                "  set project_wizard_checkpoint_bd_files [get_files -quiet *.bd]",
+                "}",
+                "if {[llength $project_wizard_checkpoint_bd_files] > 0} {",
+                "  foreach project_wizard_bd_file $project_wizard_checkpoint_bd_files {",
             ]
         )
         if checkpoint_mode_disabled:
-            lines.append("  set_property synth_checkpoint_mode None $project_wizard_bd_files")
+            lines.extend(
+                [
+                    "    puts \"Project Wizard: setting synth_checkpoint_mode None on $project_wizard_bd_file\"",
+                    "    if {[catch {set_property synth_checkpoint_mode None $project_wizard_bd_file} project_wizard_checkpoint_error]} {",
+                    "      puts \"WARNING: Project Wizard could not set synth_checkpoint_mode to None on $project_wizard_bd_file: $project_wizard_checkpoint_error\"",
+                    "    }",
+                ]
+            )
         else:
             lines.extend(
                 [
-                    "  if {[catch {reset_property synth_checkpoint_mode $project_wizard_bd_files} project_wizard_checkpoint_error]} {",
-                    "    puts \"WARNING: Project Wizard could not reset synth_checkpoint_mode: $project_wizard_checkpoint_error\"",
-                    "  }",
+                    "    puts \"Project Wizard: resetting synth_checkpoint_mode on $project_wizard_bd_file\"",
+                    "    if {[catch {reset_property synth_checkpoint_mode $project_wizard_bd_file} project_wizard_checkpoint_error]} {",
+                    "      puts \"WARNING: Project Wizard could not reset synth_checkpoint_mode on $project_wizard_bd_file: $project_wizard_checkpoint_error\"",
+                    "    }",
                 ]
             )
         lines.extend(
             [
+                "  }",
                 "} else {",
                 "  puts \"WARNING: Project Wizard could not find a block design file to configure synth checkpoints.\"",
                 "}",
@@ -185,7 +205,7 @@ class TclGenerator:
             section.append(
                 self.renderer.render_file(
                     template,
-                    self._card_context(slot, slot_index, card),
+                    self._card_context(slot, slot_index, card, option_values),
                 )
             )
 
@@ -211,9 +231,20 @@ class TclGenerator:
             )
         )
 
-    def _card_context(self, slot: str, slot_index: str, card: dict[str, Any]) -> dict[str, Any]:
+    def _card_context(
+        self,
+        slot: str,
+        slot_index: str,
+        card: dict[str, Any],
+        option_values: dict[str, str],
+    ) -> dict[str, Any]:
         vivado = card.get("vivado", {})
         format_context = self._format_context(slot, slot_index)
+        source_fields = {
+            field.get("id", ""): str(option_values.get(field.get("id", ""), field.get("default", "")))
+            for field in vivado.get("source_fields", [])
+            if field.get("id")
+        }
         ip_cores = self._ip_core_context(
             vivado,
             f"{slot.lower()}",
@@ -248,6 +279,10 @@ class TclGenerator:
             "adapter_parent_hier": vivado.get("adapter_parent_hier", self._adapter_root_hier(slot)),
             "adapter_clock_pin": vivado.get("adapter_clock_pin", "aclk"),
             "adapter_resetn_pin": vivado.get("adapter_resetn_pin", "aresetn"),
+            "inverter_gates_source": source_fields.get("gates_source", ""),
+            "inverter_gates_source_from": source_fields.get("gates_source_from", "5"),
+            "inverter_gates_source_to": source_fields.get("gates_source_to", "0"),
+            "inverter_pwm_enable_source": source_fields.get("pwm_enable_source", ""),
             "inverter_gate_outputs": [
                 {"bit": "0", "port": "pwm_h1", "external_port": f"Dig_00_Ch{slot_index}"},
                 {"bit": "1", "port": "pwm_l1", "external_port": f"Dig_01_Ch{slot_index}"},

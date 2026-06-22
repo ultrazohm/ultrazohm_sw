@@ -17,7 +17,10 @@
     "validate_block_design": "false",
     "save_block_design": "false",
     "open_vivado_gui": "false",
-    "disable_bd_synth_checkpoints": "true"
+    "disable_bd_synth_checkpoints": "true",
+    "pwm_2l_instances": "4",
+    "pwm_3l_instances": "1",
+    "pwm_2l_debug_ila": "true"
   },
   "slots": {
     "A1": "analog_ltc2311_16",

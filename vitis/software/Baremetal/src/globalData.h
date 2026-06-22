@@ -86,6 +86,7 @@ typedef struct _actualValues_ {
 	float adc_max11331_a3_ch21;
 	float adc_max11331_a3_ch22;
 	float adc_max11331_a3_ch23;
+	struct uz_inverter_adapter_outputs_t inverter_adapter_d3;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
@@ -153,6 +154,7 @@ typedef struct{
 	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
 	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
+	uz_inverter_adapter_t* inverter_adapter_d3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;

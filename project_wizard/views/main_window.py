@@ -69,6 +69,8 @@ class MainWindow(QMainWindow):
         self.toolchain_fields: dict[str, QLineEdit] = {}
         self.hardware_fields: dict[str, QLineEdit] = {}
         self.hardware_checkboxes: dict[str, QCheckBox] = {}
+        self.pwm_combos: dict[str, QComboBox] = {}
+        self.pwm_checkboxes: dict[str, QCheckBox] = {}
         self.software_fields: dict[str, QLineEdit] = {}
         self.software_mode_combos: dict[str, QComboBox] = {}
         self.software_preset_combos: dict[str, QComboBox] = {}
@@ -117,6 +119,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._build_software_driver_page())
         self.stack.addWidget(self._build_advanced_driver_config_page())
         self.stack.addWidget(self._build_data_visualization_page())
+        self.stack.addWidget(self._build_pwm_page())
         self.stack.addWidget(self._build_database_page())
 
         splitter = QSplitter()
@@ -243,10 +246,12 @@ class MainWindow(QMainWindow):
         hardware_general = QTreeWidgetItem(["General"])
         axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
         adapter_cards = QTreeWidgetItem(["Adapter cards"])
+        pwm = QTreeWidgetItem(["PWM"])
         slot_cplds = QTreeWidgetItem(["Slot CPLDs"])
         config.addChild(hardware_general)
         config.addChild(axi_interconnect)
         config.addChild(adapter_cards)
+        config.addChild(pwm)
         config.addChild(slot_cplds)
         software_config = QTreeWidgetItem(["Software configuration"])
         software_general = QTreeWidgetItem(["General"])
@@ -283,6 +288,7 @@ class MainWindow(QMainWindow):
             "Adapter cards": 3,
             "Slot CPLDs": 4,
             "AXI interconnect": 5,
+            "PWM": 10,
             "Software configuration": 6,
             "IP core driver setup": 7,
             "Advanced driver configuration": 8,
@@ -400,6 +406,53 @@ class MainWindow(QMainWindow):
         hint.setWordWrap(True)
         vivado_form.addRow("", hint)
         layout.addWidget(vivado_group)
+        layout.addStretch(1)
+        return page
+
+    def _build_pwm_page(self) -> QWidget:
+        page = QWidget()
+        layout = QVBoxLayout(page)
+
+        title = QLabel("PWM")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        layout.addWidget(title)
+
+        sections = QHBoxLayout()
+
+        pwm_2l_group = QGroupBox("2L PWM")
+        pwm_2l_form = QFormLayout(pwm_2l_group)
+        instances_2l = QComboBox()
+        for count in range(1, 11):
+            instances_2l.addItem(f"{count} instance" if count == 1 else f"{count} instances", str(count))
+        instances_2l.currentIndexChanged.connect(lambda _index: self.guarded_refresh_tcl_preview())
+        self.pwm_combos["pwm_2l_instances"] = instances_2l
+        pwm_2l_form.addRow("Instances", instances_2l)
+
+        debug_2l = QCheckBox("Place debug ILA")
+        debug_2l.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
+        self.pwm_checkboxes["pwm_2l_debug_ila"] = debug_2l
+        pwm_2l_form.addRow("", debug_2l)
+        sections.addWidget(pwm_2l_group, 1)
+
+        pwm_3l_group = QGroupBox("3L PWM")
+        pwm_3l_form = QFormLayout(pwm_3l_group)
+        instances_3l = QComboBox()
+        instances_3l.addItem("1 instance", "1")
+        instances_3l.currentIndexChanged.connect(lambda _index: self.guarded_refresh_tcl_preview())
+        self.pwm_combos["pwm_3l_instances"] = instances_3l
+        pwm_3l_form.addRow("Instances", instances_3l)
+        sections.addWidget(pwm_3l_group, 1)
+
+        layout.addLayout(sections)
+        hint = QLabel(
+            "The wizard generates pwm_2L and pwm_3L inside an existing top-level uz_pwm hierarchy. "
+            "D1/D2 cleanup can be done separately after the generated PWM hierarchy is validated."
+        )
+        hint.setWordWrap(True)
+        layout.addWidget(hint)
         layout.addStretch(1)
         return page
 
@@ -1083,6 +1136,10 @@ class MainWindow(QMainWindow):
         config = {key: field.text().strip() for key, field in self.hardware_fields.items()}
         for key, checkbox in self.hardware_checkboxes.items():
             config[key] = "true" if checkbox.isChecked() else "false"
+        for key, combo in self.pwm_combos.items():
+            config[key] = str(combo.currentData() or combo.currentText())
+        for key, checkbox in self.pwm_checkboxes.items():
+            config[key] = "true" if checkbox.isChecked() else "false"
         return config
 
     def software_config(self) -> dict[str, str]:
@@ -1151,6 +1208,18 @@ class MainWindow(QMainWindow):
             checkbox.blockSignals(True)
             checkbox.setChecked(values.get(key, defaults.get(key, "false")).lower() in {"1", "true", "yes", "on"})
             checkbox.blockSignals(False)
+        for key, combo in self.pwm_combos.items():
+            combo.blockSignals(True)
+            value = values.get(key, defaults.get(key, ""))
+            index = combo.findData(value)
+            if index < 0:
+                index = combo.findText(value)
+            combo.setCurrentIndex(index if index >= 0 else 0)
+            combo.blockSignals(False)
+        for key, checkbox in self.pwm_checkboxes.items():
+            checkbox.blockSignals(True)
+            checkbox.setChecked(values.get(key, defaults.get(key, "false")).lower() in {"1", "true", "yes", "on"})
+            checkbox.blockSignals(False)
 
     def reset_hardware_config(self) -> None:
         self.load_hardware_config({})
@@ -1163,6 +1232,9 @@ class MainWindow(QMainWindow):
             "save_block_design": "false",
             "open_vivado_gui": "false",
             "disable_bd_synth_checkpoints": "false",
+            "pwm_2l_instances": "4",
+            "pwm_2l_debug_ila": "true",
+            "pwm_3l_instances": "1",
         }
 
     def load_software_config(self, values: dict[str, str]) -> None:
@@ -1772,7 +1844,7 @@ class MainWindow(QMainWindow):
         return None
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(10)
+        self.stack.setCurrentIndex(11)
 
     def show_software_general(self) -> None:
         self.stack.setCurrentIndex(6)

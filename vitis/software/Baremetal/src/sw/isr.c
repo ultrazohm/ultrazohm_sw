@@ -159,6 +159,7 @@ static void update_adapter_d2(void)
 static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
+    update_inverter_adapter_d3_outputs(&Global_Data);
 /* Project Wizard END: D3 isr_control */
 }
 

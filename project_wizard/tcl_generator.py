@@ -80,6 +80,12 @@ class TclGenerator:
         )
         lines.append(
             self.renderer.render_file(
+                "pwm.tcl",
+                self._pwm_context(axi_config, hardware_config),
+            )
+        )
+        lines.append(
+            self.renderer.render_file(
                 "analog_project_integration.tcl",
                 self._analog_project_context(assignments, axi_config),
             )
@@ -177,8 +183,24 @@ class TclGenerator:
         return " ".join(f'"{value}"' for value in values)
 
     @staticmethod
-    def _config_bool(value: str) -> bool:
+    def _config_bool(value: Any, default: bool = False) -> bool:
+        if value is None:
+            return default
+        if isinstance(value, bool):
+            return value
         return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+    @staticmethod
+    def _config_int(value: Any, default: int, minimum: int | None = None, maximum: int | None = None) -> int:
+        try:
+            result = int(str(value).strip())
+        except (TypeError, ValueError):
+            result = default
+        if minimum is not None:
+            result = max(minimum, result)
+        if maximum is not None:
+            result = min(maximum, result)
+        return result
 
     @staticmethod
     def _vivado_direction(direction: str) -> str:
@@ -731,6 +753,93 @@ class TclGenerator:
             "axi_connections": axi_connections,
             "has_upstream_smartconnects": bool(upstream_smartconnects),
             "upstream_smartconnects": [{"path": smartconnect} for smartconnect in upstream_smartconnects],
+        }
+
+    def _pwm_context(self, axi_config: dict[str, str], hardware_config: dict[str, str]) -> dict[str, Any]:
+        config = dict(self.database.axi_interconnect)
+        config.update({key: value for key, value in axi_config.items() if value})
+        instance_count = self._config_int(hardware_config.get("pwm_2l_instances", "4"), 4, minimum=1, maximum=10)
+        debug_ila = self._config_bool(hardware_config.get("pwm_2l_debug_ila", "true"), default=True)
+        address_space = config.get("d_address_space", config.get("address_space", ""))
+
+        instances: list[dict[str, Any]] = []
+        vio_probe_props: list[dict[str, Any]] = []
+        vio_connections: list[dict[str, Any]] = []
+        gate_concat_connections: list[dict[str, Any]] = []
+        address_segments: list[dict[str, str]] = []
+
+        for index in range(instance_count):
+            instances.append(
+                {
+                    "index": index,
+                    "pwm_cell": f"PWM_and_SS_control_V_{index}",
+                    "interlock_cell": f"uz_interlockDeadtime_{index}",
+                    "gate_concat_cell": f"gate_concat_{index}",
+                    "pwm_mi_index": index * 2,
+                    "interlock_mi_index": (index * 2) + 1,
+                }
+            )
+            address_segments.extend(
+                [
+                    {
+                        "path": f"uz_pwm/pwm_2L/PWM_and_SS_control_V_{index}/AXI4_Lite/reg0",
+                        "address_space": address_space,
+                    },
+                    {
+                        "path": f"uz_pwm/pwm_2L/uz_interlockDeadtime_{index}/AXI4/reg0",
+                        "address_space": address_space,
+                    },
+                ]
+            )
+            for signal_index in range(6):
+                probe_index = (index * 6) + signal_index
+                vio_probe_props.append({"index": probe_index, "width": 1})
+                vio_connections.append(
+                    {
+                        "probe_index": probe_index,
+                        "pwm_cell": f"PWM_and_SS_control_V_{index}",
+                        "signal_index": signal_index,
+                    }
+                )
+                gate_concat_connections.append(
+                    {
+                        "concat_cell": f"gate_concat_{index}",
+                        "concat_input": signal_index,
+                        "interlock_cell": f"uz_interlockDeadtime_{index}",
+                        "output_pin": f"s{signal_index}_out",
+                    }
+                )
+
+        address_segments.append(
+            {
+                "path": "uz_pwm/pwm_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",
+                "address_space": address_space,
+            }
+        )
+
+        return {
+            "enabled": self._config_bool(hardware_config.get("pwm_enabled", "true"), default=True),
+            "root_hier": "uz_pwm",
+            "pwm_2l_hier": "uz_pwm/pwm_2L",
+            "pwm_3l_hier": "uz_pwm/pwm_3L",
+            "instance_count": instance_count,
+            "gate_width": (instance_count * 6) - 1,
+            "debug_ila": debug_ila,
+            "instances": instances,
+            "vio_probe_count": instance_count * 6,
+            "vio_probe_props": vio_probe_props,
+            "vio_connections": vio_connections,
+            "gate_concat_connections": gate_concat_connections,
+            "upstream_smartconnect": config.get(
+                "d_upstream_smartconnect",
+                config.get("upstream_smartconnect", ""),
+            ),
+            "clock_pin": config.get("d_clock_pin", config.get("clock_pin", "")),
+            "resetn_pin": config.get("d_resetn_pin", config.get("resetn_pin", "")),
+            "address_space": address_space,
+            "local_smartconnect_vlnv": config.get("local_smartconnect_vlnv", "xilinx.com:ip:smartconnect"),
+            "pwm_2l_axi_count": instance_count * 2,
+            "address_segments": address_segments,
         }
 
     def _axi_interfaces_for_card(

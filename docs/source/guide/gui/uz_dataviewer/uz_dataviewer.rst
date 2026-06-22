@@ -13,28 +13,73 @@ The Python API of ImGUI bundle is utilized.
 Note that the binary is not distributed but has to be build by the user from source.
 Detailed guidelines for building are given in :doc:`uz_dataviewer_build`.
 
-The basic layout of  the application is as follows
+Starting uz_dataviewer
+======================
 
-.. code-block:: text
+The ``uz_dataviewer`` is located in ``ultrazohm_sw/dataviewer/`` and there are multiple options to run the application.
+The online web version, a local web version, as a native application using the compiled binary, or as a native application from source (requires properly setup Python environment).
 
-   +------------------------------------------------------------------+
-   |  Navigation  |      Plots / FFT / Histogram  (docked tabs)       |
-   |   (left)     |   Plots: runtime grid of subplots (1x1 ... 2x2)   |
-   |  runs &      |   FFT / Histogram: dedicated analysis windows     |
-   |  signals     |                                                   |
-   |--------------+---------------------------------------------------|
-   |                       Console  (bottom)                          |
-   +------------------------------------------------------------------+
+.. does tab-set negatively impat searchability?
+
+.. tab-set::
+
+    .. tab-item:: Native from binary
+
+       Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+       See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
+       If you have access to the binary without building, the aplication can be run in an arbitrary location.
+       When the binary is not located in ``ultrazohm_sw/dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
+       
+       .. code-block:: bash
+       
+          ./uz_dataviewer/dist/uz_dataviewer # from ultrazohm_sw/
+
+
+    .. tab-item:: Native from source
+
+        Starting ``uz_dataviewer`` from source, using venv is recommended, but not required if the required dependencies are installed.
+        Note that ``uz_dataviewer`` can only run in headless mode in the :ref:`vscode_remote_container`.
+        Thus the following commands need to be run on the local machine, not in the container, to see the GUI.
+        
+        .. code-block:: bash
+        
+           cd uz_dataviewer                     # from ultrazohm_sw/
+           python -m venv venv
+           source venv/bin/activate             # Linux/macOS
+           .\venv\Scripts\activate              # Windows
+           pip install -r requirements.txt      
+           pip install -r requirements.txt      
+           python run.py                        # or: python -m uz_dataviewer
+           python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
+           python run.py session.uzscript       # replay a saved session
+
+    .. tab-item:: Local Web version
+
+           Starting ``uz_dataviewer`` from the binary, assuming the binary is located in ``ultrazohm_sw/dataviewer/dist``.
+           See :ref:`uz_dataviewer_build` for instructions on how to build the binary.
+           If you have access to the binary without building, the aplication can be run in an arbitrary location.
+           When the binary is not located in ``ultrazohm_sw/dataviewer/dist``, see :ref:`uz_dataviewer_plugins`.
+           
+           .. code-block:: bash
+           
+              cd uz_dataviewer/
+              (cd web && python -m http.server 8000)
+           
+           Open `http://localhost:8000/ <http://localhost:8000/>`_ in a web browser to start the web version of ``uz_dataviewer``.
+
+
+Quickstart
+==========
 
 ..  _uz_dataviewer_layout:
 
 ..  figure:: uz_dataviewer_currents.png
     :align: center
-    :width: 500px
+    :width: 700px
 
-    Layout of ```uz_dataviewer``.
+    Layout of ``uz_dataviewer``.
 
-:numref:`uz_dataviewer_layout` shows the Layout of ```uz_dataviewer`` with data navigation (1),  window control (2), plot setup (3), subplot setup (4), console (5), and settings (6).
+:numref:`uz_dataviewer_layout` shows the Layout of ``uz_dataviewer`` with data navigation (1),  window control (2), plot setup (3), subplot setup (4), console (5), and settings (6).
 The data navigation is used to open log files.
 Log files can be opened by clicking the *Open file(s)...* button or by dragging and dropping files onto the navigation panel (native only).
 Individual signals of a log can be dragged and dropped into the plot area.
@@ -62,51 +107,10 @@ Features
 - **Scriptable command console** — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
 - **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
 
-Quick start
-===========
 
-.. code-block:: bash
 
-   pip install -r requirements.txt      # or: pip install -e .
-   python run.py                        # or: python -m uz_dataviewer
-   python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload
-   python run.py session.uzscript       # replay a saved session
-
-Then **Open file(s)…** in the Navigation panel, expand the run, and drag signals into the plots (or the FFT / Histogram windows).
-
-Project layout
-==============
-
-.. code-block:: text
-
-   uz_dataviewer/
-   ├── run.py                    # run from a source checkout (also replays *.uzscript)
-   ├── src/uz_dataviewer/
-   │   ├── app.py                # docking layout, runner, theme, Session menu
-   │   ├── state.py              # AppState, SubplotCell, FFT/Histogram configs
-   │   ├── commands.py           # command registry / parser / dispatcher (the script API)
-   │   ├── console.py            # console: selectable log + command input
-   │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
-   │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
-   │   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
-   │   ├── analysis.py           # GUI-free transforms (FFT)
-   │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
-   │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
-   │   ├── plugins.py            # external transform-node plugins (@transform, loader)
-   │   ├── session.py            # JSON save/restore + .uzscript + CSV export
-   │   ├── webbridge.py          # browser integration (file input, array load, downloads)
-   │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
-   ├── tests/                    # pytest (logic via commands + headless rendering)
-   ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / ROADMAP
-   └── build/                    # native (PyInstaller) + web (Pyodide) build flow
-
-Tests
-=====
-
-.. code-block:: bash
-
-   pip install pytest
-   pytest
+Outline
+=======
 
 .. toctree::
    :maxdepth: 1

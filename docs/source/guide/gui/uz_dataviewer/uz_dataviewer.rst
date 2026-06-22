@@ -91,7 +91,6 @@ Tests
 
    uz_dataviewer_architecture
    uz_dataviewer_native_vs_web
-   uz_dataviewer_dataviewer_v_javascope
 
 .. toctree::
    :maxdepth: 1

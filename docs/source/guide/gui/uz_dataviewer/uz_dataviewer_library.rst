@@ -41,8 +41,9 @@ API reference
 .. autoclass:: uz_dataviewer.api.Dataset
    :members:
 
-.. autoclass:: uz_dataviewer.api.FftResult
+.. autoclass:: uz_dataviewer.analysis.FftResult
    :members:
+   :no-index:
 
 .. autofunction:: uz_dataviewer.api.read
 .. autofunction:: uz_dataviewer.api.fft

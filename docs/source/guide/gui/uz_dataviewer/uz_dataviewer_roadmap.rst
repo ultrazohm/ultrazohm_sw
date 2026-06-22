@@ -63,7 +63,7 @@ Open ideas
      - Proposed — serve logs from a PocketBase file store for native + web; client
        downloads and loads them through the existing pipeline (decimation stays
        client-side, local path untouched).
-     - :doc:`uz_dataviewer_remote_data`
+     - :ref:`uz_dataviewer_remote_data`
    * - **Large logs in the web build (out-of-core)**
      - Loader
      - Analysis — wasm32's ~4 GB heap blocks big logs in the browser; out-of-core via an

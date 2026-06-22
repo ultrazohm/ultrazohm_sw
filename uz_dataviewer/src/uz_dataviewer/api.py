@@ -48,7 +48,7 @@ __all__ = [
 class Dataset:
     """A loaded log: a shared ``time`` axis plus named signal arrays.
 
-    Thin read-friendly wrapper over :class:`loader.ParsedRun`. Index a signal by name
+    Thin read-friendly wrapper over ``loader.ParsedRun``. Index a signal by name
     (``data["ia"]``), test membership (``"ia" in data``), iterate names, or pull the
     whole thing into a DataFrame with :meth:`to_dataframe`.
     """
@@ -106,7 +106,7 @@ def fft(
     """Single-sided amplitude spectrum of ``y``.
 
     With no ``x_min``/``x_max`` the whole record is transformed. Returns a
-    :class:`analysis.FftResult` (``.freqs``, ``.mag``, ``.info``, ``.ok``).
+    ``uz_dataviewer.analysis.FftResult`` (``.freqs``, ``.mag``, ``.info``, ``.ok``).
     """
     t = np.asarray(time, dtype=np.float64)
     yy = np.asarray(y, dtype=np.float64)
@@ -154,7 +154,7 @@ def node(kind: str, *signals, **params):
 
 
 def filter(time, y, **params):
-    """Convenience wrapper over :func:`transforms.filter_node` (FIR low/high/band-pass).
+    """Convenience wrapper over ``transforms.filter_node`` (FIR low/high/band-pass).
 
     Returns ``(time, filtered_y, info)``.
     """
@@ -164,7 +164,7 @@ def filter(time, y, **params):
 
 
 def math(*signals, **params):
-    """Convenience wrapper over :func:`transforms.math_node` (scale/offset/derivative/
+    """Convenience wrapper over ``transforms.math_node`` (scale/offset/derivative/
     integral/reciprocal and binary add/sub/mul/div).
 
     ``signals`` are ``(time, y)`` tuples. Returns ``(time, y_out, info)``.

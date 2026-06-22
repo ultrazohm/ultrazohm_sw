@@ -109,6 +109,8 @@ nitpick_ignore = [
     ("c:identifier", "size_t"),
     ("c:identifier", "uintptr_t"),
     ("c:identifier", "bool"),
+    ("py:class", "numpy.ndarray"),
+    ("py:class", "uz_dataviewer.analysis.FftResult"),
 ]
 
 tikz_latex_preamble = r"\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

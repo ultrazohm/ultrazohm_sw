@@ -7,7 +7,7 @@ Native vs Web
 The same ``uz_dataviewer`` Python runs on the desktop **and** in the browser.
 Native is CPython (a PyInstaller-frozen interpreter). 
 Web is **Pyodide** (CPython compiled to WebAssembly).
-The flag ``webbridge.IS_WEB``gates a handful of places where there are differences.
+The flag ``webbridge.IS_WEB`` gates a handful of places where there are differences.
 
 The UI, the command layer, plots, FFT/Histogram, nodes, and the downsampler are **identical** on both targets.
 The differences are file I/O, threading, and the WASM memory ceiling.
@@ -86,7 +86,7 @@ The streaming loader **estimates the numeric footprint up front** and, if it wou
 So a log under the budget loads at **full resolution**, and a genuinely huge one (e.g. 5 GB) loads a usable **decimated** view instead of silently aborting the WASM runtime.
 **For full resolution on multi-GB logs, use the native app.**
 
-Cloud logs (proposed — see :doc:`uz_dataviewer_remote_data`) download and load through this same in-memory path, so the heap budget above still applies to an oversize log in the browser.
+Cloud logs (proposed — see :ref:`uz_dataviewer_remote_data`) download and load through this same in-memory path, so the heap budget above still applies to an oversize log in the browser.
 Lifting that ceiling (out-of-core via OPFS) is analysed separately in :doc:`uz_dataviewer_web_large_logs`.
 
 Downsampling is the same on both

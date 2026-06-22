@@ -1,22 +1,54 @@
 .. _uz_dataviewer:
 
-========================
-UltraZohm Data Viewer
-========================
+=============
+uz_dataviewer
+=============
 
-``uz_dataviewer`` is an ImGui/ImPlot desktop and web application for inspecting the ``Log_*.csv`` / ``.parquet`` logs that JavaScope records.
-It does not talk to hardware — it reads files only — and is built to make multi-gigabyte logs fast and interactive.
+``uz_dataviewer`` is a tool to inspect log files from measurements conduced using the UltraZohm.
+Specifically, the ``Log_*.csv`` logs that the :ref:`JavaScope`  records can be read.
+Additionally,  JavasScope logs that are converted to ``.parquet`` can be loaded, which is recommended for large logs.
+``uz_dataviewer`` is based on `ImGUI bundle <https://github.com/pthom/imgui_bundle>`_, which in turn uses ImGui/ImPlot.
+The Python API of ImGUI bundle is utilized.
+``uz_dataviewer`` is available as a desktop and (local) web application.
+Note that the binary is not distributed but has to be build by the user from source.
+Detailed guidelines for building are given in :doc:`uz_dataviewer_build`.
+
+The basic layout of  the application is as follows
 
 .. code-block:: text
 
    +------------------------------------------------------------------+
    |  Navigation  |      Plots / FFT / Histogram  (docked tabs)       |
    |   (left)     |   Plots: runtime grid of subplots (1x1 ... 2x2)   |
-   |  runs &      |   FFT / Histogram: dedicated analysis windows      |
-   |  signals     |                                                    |
-   |--------------+----------------------------------------------------|
+   |  runs &      |   FFT / Histogram: dedicated analysis windows     |
+   |  signals     |                                                   |
+   |--------------+---------------------------------------------------|
    |                       Console  (bottom)                          |
    +------------------------------------------------------------------+
+
+..  _uz_dataviewer_layout:
+
+..  figure:: uz_dataviewer_currents.png
+    :align: center
+    :width: 500px
+
+    Layout of ```uz_dataviewer``.
+
+:numref:`uz_dataviewer_layout` shows the Layout of ```uz_dataviewer`` with data navigation (1),  window control (2), plot setup (3), subplot setup (4), console (5), and settings (6).
+The data navigation is used to open log files.
+Log files can be opened by clicking the *Open file(s)...* button or by dragging and dropping files onto the navigation panel (native only).
+Individual signals of a log can be dragged and dropped into the plot area.
+Right click on the log shows information and gives access to additional per-log settings, such as time normalization.
+The window control (2) controls settings for the complete window, e.g., the plot, histogram, FFT, or Nodes window.
+Windows can be closed, floated, docked as tabs and are resizable.
+The window control (2) for the plot window gives access to, for example, the plot layout such as 1x1 or 2x1.
+Settings of the window control (2) are global for the complete window.
+The subplot setup (4) controls individual subplots and gives access to settings such as the plot type (line, scatter, stairs, XY), or secondary y-axis.
+The console (5) shows the command log and allows to enter commands, which are also logged.
+The settings (6) give access to application settings, such import and export of current application state (session) and settings the view (view), e.g., reset to default view.
+
+For all plots, the following interactions are available: Mouse wheel zooms in and out, right-click and drag creates a zoom rectangle, right-click while holding shift only zooms the x-axis, while holding Alt only zooms the y-axis.
+Right-clicking the x-axis or y-axis gives access to additional settings.
 
 Features
 ========

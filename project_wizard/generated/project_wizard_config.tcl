@@ -1832,7 +1832,7 @@ uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoar
 
 # NOTE: Create the adapter-board ports and the small slice/concat plumbing directly.
 
-# NOTE: Leave Gates[5:0] and PWM_UZ_Enable unconnected until their sources are configured in the wizard.
+# NOTE: Tie Gates[5:0] and PWM_UZ_Enable to zero until their sources are configured in the wizard.
 
 # NOTE: Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file.
 
@@ -1864,18 +1864,18 @@ uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin
 
 proc uz_pw_inverter_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
   uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $external_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $internal_name "$left" "$right"
   uz_pw_create_hier_pin_if_missing $adapter_hier_path $direction $internal_name "$left" "$right"
 
   if {$direction ne "O"} {
-    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
-    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${external_name}" "${adapter_hier_path}/${internal_name}"
+    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
+    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
   }
 }
 
 proc uz_pw_inverter_connect_slot_output {adapter_parent_hier adapter_hier_path internal_name external_name} {
-  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${external_name}"
-  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${internal_name}"
+  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
 }
 
 proc uz_pw_inverter_create_xlslice {cell_path bit_index} {
@@ -1888,19 +1888,30 @@ proc uz_pw_inverter_create_xlconcat {cell_path port_count} {
   uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS $port_count] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-# Future wizard option: Gates[5:0] source. For now this boundary pin is left unconnected by design.
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I Gates 5 0
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D3_Gates 5 0
-uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/D3_Gates" "${adapter_hier_path}/Gates"
+proc uz_pw_inverter_create_xlconstant {cell_path width value} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconstant
+  uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
+}
 
-# Future wizard option: PWM_UZ_Enable source. For now this boundary pin is left unconnected by design.
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I PWM_UZ_Enable
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D3_PWM_UZ_Enable
-uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/D3_PWM_UZ_Enable" "${adapter_hier_path}/PWM_UZ_Enable"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/PWM_UZ_Enable" "${inverter_driver_path}/PWM_UZ_Enable"
+# Future wizard option: Gates[5:0] source. For now use a deterministic zero source
+# internal to the slot hierarchy.
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/Gates"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/D3_Gates"
+set gates_default_path "${adapter_hier_path}/D3_gates_default_zero"
+uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
+set gates_source_pin "${gates_default_path}/dout"
 
-# Dig_16_Ch3 is unused by the adapter mapping but present on the adapter board connector.
-uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_DIG_IO_17 Dig_16_Ch3
+# Future wizard option: PWM_UZ_Enable source. For now use a deterministic zero
+# source internal to the slot hierarchy.
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/PWM_UZ_Enable"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/D3_PWM_UZ_Enable"
+set pwm_enable_default_path "${adapter_hier_path}/D3_pwm_enable_default_zero"
+uz_pw_inverter_create_xlconstant $pwm_enable_default_path 1 0
+uz_pw_connect_pin_pair_if_unconnected "${pwm_enable_default_path}/dout" "${inverter_driver_path}/PWM_UZ_Enable"
+
+# Dig_16_Ch3 is unused by the adapter mapping. Do not create a
+# dummy top-level input here; an unloaded constrained input can be optimized away
+# and has caused brittle implementation behavior in Vivado.
 
 # Gate outputs to the adapter board.
 # Former mapping IP order: Gates[0..5] -> PWM_H1, PWM_L1, PWM_H2, PWM_L2, PWM_H3, PWM_L3.
@@ -1908,42 +1919,42 @@ uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path D3_D
 set pwm_h1_slice_path "${adapter_hier_path}/D3_pwm_h1_slice"
 uz_pw_inverter_create_xlslice $pwm_h1_slice_path 0
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h1 Dig_00_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h1_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_h1_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_h1_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h1"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h1 Dig_00_Ch3
 
 set pwm_l1_slice_path "${adapter_hier_path}/D3_pwm_l1_slice"
 uz_pw_inverter_create_xlslice $pwm_l1_slice_path 1
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l1 Dig_01_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l1_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_l1_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_l1_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l1"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l1 Dig_01_Ch3
 
 set pwm_h2_slice_path "${adapter_hier_path}/D3_pwm_h2_slice"
 uz_pw_inverter_create_xlslice $pwm_h2_slice_path 2
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h2 Dig_02_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h2_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_h2_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_h2_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h2"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h2 Dig_02_Ch3
 
 set pwm_l2_slice_path "${adapter_hier_path}/D3_pwm_l2_slice"
 uz_pw_inverter_create_xlslice $pwm_l2_slice_path 3
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l2 Dig_03_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l2_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_l2_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_l2_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l2"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l2 Dig_03_Ch3
 
 set pwm_h3_slice_path "${adapter_hier_path}/D3_pwm_h3_slice"
 uz_pw_inverter_create_xlslice $pwm_h3_slice_path 4
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_h3 Dig_04_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_h3_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_h3_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_h3_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_h3"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_h3 Dig_04_Ch3
 
 set pwm_l3_slice_path "${adapter_hier_path}/D3_pwm_l3_slice"
 uz_pw_inverter_create_xlslice $pwm_l3_slice_path 5
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path D3_pwm_l3 Dig_05_Ch3
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${pwm_l3_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${pwm_l3_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${pwm_l3_slice_path}/Dout" "${adapter_hier_path}/D3_pwm_l3"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path D3_pwm_l3 Dig_05_Ch3
 
@@ -3344,16 +3355,47 @@ proc uz_pw_get_or_add_upstream_mi_pin {smartconnect_path} {
 }
 
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_pins -quiet $source_pin]] == 0} {
+  set source [get_bd_pins -quiet $source_pin]
+  set sink [get_bd_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
     puts "WARNING: Source pin not found: $source_pin"
     return
   }
-  if {[llength [get_bd_pins -quiet $sink_pin]] == 0} {
+  if {[llength $sink] == 0} {
     puts "WARNING: Sink pin not found: $sink_pin"
     return
   }
-  if {[llength [get_bd_nets -quiet -of_objects [get_bd_pins $sink_pin]]] == 0} {
-    connect_bd_net [get_bd_pins $source_pin] [get_bd_pins $sink_pin]
+
+  set source_nets [get_bd_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      puts "Reusing existing net on $sink_pin"
+      return
+    }
+  }
+
+  if {[llength $sink_nets] == 0} {
+    connect_bd_net $source $sink
+    return
+  }
+
+  # The sink may already drive a local sub-net, e.g. a hierarchy clock pin wired
+  # to local IP pins before the upstream clock is attached. Preserve those loads
+  # and merge them into the source net.
+  set sink_net [lindex $sink_nets 0]
+  set sink_net_pins [get_bd_pins -quiet -of_objects $sink_net]
+  foreach sink_net_pin $sink_net_pins {
+    catch {disconnect_bd_net $sink_net $sink_net_pin}
+  }
+  foreach sink_net_pin $sink_net_pins {
+    if {[llength [get_bd_nets -quiet -of_objects $sink_net_pin]] == 0} {
+      connect_bd_net $source $sink_net_pin
+    }
+  }
+
+  if {[llength [get_bd_nets -quiet -of_objects $sink]] == 0} {
+    connect_bd_net $source $sink
   } else {
     puts "Reusing existing net on $sink_pin"
   }
@@ -3554,6 +3596,18 @@ uz_pw_remove_slot_axi_attachment A1 uz_analog_adapter
 
 puts "Configuring local AXI SmartConnect for slot A1"
 
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_analog_adapter/A1_adapter/AXI4_Lite \
+  uz_analog_adapter/A1_adapter/s00_axi \
+  uz_analog_adapter/A1_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
+
 set slot_sc uz_analog_adapter/A1_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
   create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
@@ -3618,6 +3672,18 @@ puts "Refreshing AXI attachment for slot A2"
 uz_pw_remove_slot_axi_attachment A2 uz_analog_adapter
 
 puts "Configuring local AXI SmartConnect for slot A2"
+
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_analog_adapter/A2_adapter/AXI4_Lite \
+  uz_analog_adapter/A2_adapter/s00_axi \
+  uz_analog_adapter/A2_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
 
 set slot_sc uz_analog_adapter/A2_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
@@ -3684,6 +3750,18 @@ uz_pw_remove_slot_axi_attachment A3 uz_analog_adapter
 
 puts "Configuring local AXI SmartConnect for slot A3"
 
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_analog_adapter/A3_adapter/AXI4_Lite \
+  uz_analog_adapter/A3_adapter/s00_axi \
+  uz_analog_adapter/A3_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
+
 set slot_sc uz_analog_adapter/A3_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
   create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
@@ -3748,6 +3826,18 @@ puts "Refreshing AXI attachment for slot D3"
 uz_pw_remove_slot_axi_attachment D3 uz_digital_adapter
 
 puts "Configuring local AXI SmartConnect for slot D3"
+
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_digital_adapter/D3_adapter/AXI4_Lite \
+  uz_digital_adapter/D3_adapter/s00_axi \
+  uz_digital_adapter/D3_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
 
 set slot_sc uz_digital_adapter/D3_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
@@ -3814,6 +3904,18 @@ uz_pw_remove_slot_axi_attachment D4 uz_digital_adapter
 
 puts "Configuring local AXI SmartConnect for slot D4"
 
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_digital_adapter/D4_adapter/AXI4_Lite \
+  uz_digital_adapter/D4_adapter/s00_axi \
+  uz_digital_adapter/D4_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
+
 set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
   create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
@@ -3878,6 +3980,18 @@ puts "Refreshing AXI attachment for slot D5"
 uz_pw_remove_slot_axi_attachment D5 uz_digital_adapter
 
 puts "Configuring local AXI SmartConnect for slot D5"
+
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  uz_digital_adapter/D5_adapter/AXI4_Lite \
+  uz_digital_adapter/D5_adapter/s00_axi \
+  uz_digital_adapter/D5_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
 
 set slot_sc uz_digital_adapter/D5_adapter/axi_smartconnect
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {

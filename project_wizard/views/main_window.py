@@ -381,15 +381,20 @@ class MainWindow(QMainWindow):
         validate_checkbox = QCheckBox("Validate block design after applying TCL")
         save_checkbox = QCheckBox("Save block design after applying TCL")
         open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
+        disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
         self.hardware_checkboxes["validate_block_design"] = validate_checkbox
         self.hardware_checkboxes["save_block_design"] = save_checkbox
         self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
+        self.hardware_checkboxes["disable_bd_synth_checkpoints"] = disable_checkpoints_checkbox
+        disable_checkpoints_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
         vivado_form.addRow("", validate_checkbox)
         vivado_form.addRow("", save_checkbox)
         vivado_form.addRow("", open_gui_checkbox)
+        vivado_form.addRow("", disable_checkpoints_checkbox)
         hint = QLabel(
             "For manual inspection, leave saving disabled. Vivado can apply the generated TCL and validate the "
-            "block design. Enable the GUI option to inspect unsaved changes before deciding whether to save."
+            "block design. Enable the GUI option to inspect unsaved changes before deciding whether to save. "
+            "Disable synthesis checkpoints for slower but cleaner full builds when Vivado has IP checkpoint issues."
         )
         hint.setWordWrap(True)
         vivado_form.addRow("", hint)
@@ -1156,6 +1161,7 @@ class MainWindow(QMainWindow):
             "validate_block_design": "true",
             "save_block_design": "false",
             "open_vivado_gui": "false",
+            "disable_bd_synth_checkpoints": "false",
         }
 
     def load_software_config(self, values: dict[str, str]) -> None:
@@ -1889,6 +1895,7 @@ class MainWindow(QMainWindow):
                 self.option_values(),
                 self.cpld_assignments(),
                 self.axi_config(),
+                self.hardware_config(),
             )
         )
         self.refresh_software_preview()
@@ -2293,6 +2300,7 @@ class MainWindow(QMainWindow):
                 self.option_values(),
                 self.cpld_assignments(),
                 self.axi_config(),
+                self.hardware_config(),
             ),
             encoding="utf-8",
         )

@@ -96,16 +96,47 @@ proc uz_pw_get_or_add_upstream_mi_pin {smartconnect_path} {
 }
 
 proc uz_pw_connect_net_if_unconnected {source_pin sink_pin} {
-  if {[llength [get_bd_pins -quiet $source_pin]] == 0} {
+  set source [get_bd_pins -quiet $source_pin]
+  set sink [get_bd_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
     puts "WARNING: Source pin not found: $source_pin"
     return
   }
-  if {[llength [get_bd_pins -quiet $sink_pin]] == 0} {
+  if {[llength $sink] == 0} {
     puts "WARNING: Sink pin not found: $sink_pin"
     return
   }
-  if {[llength [get_bd_nets -quiet -of_objects [get_bd_pins $sink_pin]]] == 0} {
-    connect_bd_net [get_bd_pins $source_pin] [get_bd_pins $sink_pin]
+
+  set source_nets [get_bd_nets -quiet -of_objects $source]
+  set sink_nets [get_bd_nets -quiet -of_objects $sink]
+  foreach source_net $source_nets {
+    if {[lsearch -exact $sink_nets $source_net] >= 0} {
+      puts "Reusing existing net on $sink_pin"
+      return
+    }
+  }
+
+  if {[llength $sink_nets] == 0} {
+    connect_bd_net $source $sink
+    return
+  }
+
+  # The sink may already drive a local sub-net, e.g. a hierarchy clock pin wired
+  # to local IP pins before the upstream clock is attached. Preserve those loads
+  # and merge them into the source net.
+  set sink_net [lindex $sink_nets 0]
+  set sink_net_pins [get_bd_pins -quiet -of_objects $sink_net]
+  foreach sink_net_pin $sink_net_pins {
+    catch {disconnect_bd_net $sink_net $sink_net_pin}
+  }
+  foreach sink_net_pin $sink_net_pins {
+    if {[llength [get_bd_nets -quiet -of_objects $sink_net_pin]] == 0} {
+      connect_bd_net $source $sink_net_pin
+    }
+  }
+
+  if {[llength [get_bd_nets -quiet -of_objects $sink]] == 0} {
+    connect_bd_net $source $sink
   } else {
     puts "Reusing existing net on $sink_pin"
   }
@@ -315,6 +346,18 @@ puts "Refreshing AXI attachment for slot {{ slot.slot }}"
 uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
 
 puts "Configuring local AXI SmartConnect for slot {{ slot.slot }}"
+
+# Remove legacy slot-local AXI boundary names before creating the canonical
+# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach legacy_slot_axi_pin [list \
+  {{ slot.adapter_hier_path }}/AXI4_Lite \
+  {{ slot.adapter_hier_path }}/s00_axi \
+  {{ slot.adapter_hier_path }}/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+}
 
 set slot_sc {{ slot.local_smartconnect_path }}
 if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {

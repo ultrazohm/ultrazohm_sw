@@ -34,18 +34,18 @@ uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin
 
 proc uz_pw_inverter_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
   uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $external_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $internal_name "$left" "$right"
   uz_pw_create_hier_pin_if_missing $adapter_hier_path $direction $internal_name "$left" "$right"
 
   if {$direction ne "O"} {
-    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
-    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${external_name}" "${adapter_hier_path}/${internal_name}"
+    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
+    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
   }
 }
 
 proc uz_pw_inverter_connect_slot_output {adapter_parent_hier adapter_hier_path internal_name external_name} {
-  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${external_name}"
-  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${external_name}" $external_name
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${internal_name}"
+  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
 }
 
 proc uz_pw_inverter_create_xlslice {cell_path bit_index} {
@@ -58,19 +58,30 @@ proc uz_pw_inverter_create_xlconcat {cell_path port_count} {
   uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS $port_count] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-# Future wizard option: Gates[5:0] source. For now this boundary pin is left unconnected by design.
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I Gates 5 0
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ slot }}_Gates 5 0
-uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/{{ slot }}_Gates" "${adapter_hier_path}/Gates"
+proc uz_pw_inverter_create_xlconstant {cell_path width value} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconstant
+  uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
+}
 
-# Future wizard option: PWM_UZ_Enable source. For now this boundary pin is left unconnected by design.
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I PWM_UZ_Enable
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ slot }}_PWM_UZ_Enable
-uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/{{ slot }}_PWM_UZ_Enable" "${adapter_hier_path}/PWM_UZ_Enable"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/PWM_UZ_Enable" "${inverter_driver_path}/PWM_UZ_Enable"
+# Future wizard option: Gates[5:0] source. For now use a deterministic zero source
+# internal to the slot hierarchy.
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/Gates"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_Gates"
+set gates_default_path "${adapter_hier_path}/{{ slot }}_gates_default_zero"
+uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
+set gates_source_pin "${gates_default_path}/dout"
 
-# Dig_16_Ch{{ slot_index }} is unused by the adapter mapping but present on the adapter board connector.
-uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path {{ slot }}_DIG_IO_17 Dig_16_Ch{{ slot_index }}
+# Future wizard option: PWM_UZ_Enable source. For now use a deterministic zero
+# source internal to the slot hierarchy.
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/PWM_UZ_Enable"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_PWM_UZ_Enable"
+set pwm_enable_default_path "${adapter_hier_path}/{{ slot }}_pwm_enable_default_zero"
+uz_pw_inverter_create_xlconstant $pwm_enable_default_path 1 0
+uz_pw_connect_pin_pair_if_unconnected "${pwm_enable_default_path}/dout" "${inverter_driver_path}/PWM_UZ_Enable"
+
+# Dig_16_Ch{{ slot_index }} is unused by the adapter mapping. Do not create a
+# dummy top-level input here; an unloaded constrained input can be optimized away
+# and has caused brittle implementation behavior in Vivado.
 
 # Gate outputs to the adapter board.
 # Former mapping IP order: Gates[0..5] -> PWM_H1, PWM_L1, PWM_H2, PWM_L2, PWM_H3, PWM_L3.
@@ -78,7 +89,7 @@ uz_pw_inverter_create_slot_signal I $adapter_parent_hier $adapter_hier_path {{ s
 set {{ gate.port }}_slice_path "${adapter_hier_path}/{{ slot }}_{{ gate.port }}_slice"
 uz_pw_inverter_create_xlslice ${{ gate.port }}_slice_path {{ gate.bit }}
 uz_pw_inverter_create_slot_signal O $adapter_parent_hier $adapter_hier_path {{ slot }}_{{ gate.port }} {{ gate.external_port }}
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/Gates" "${{{ gate.port }}_slice_path}/Din"
+uz_pw_connect_pin_pair_if_unconnected $gates_source_pin "${{{ gate.port }}_slice_path}/Din"
 uz_pw_connect_pin_pair_if_unconnected "${{{ gate.port }}_slice_path}/Dout" "${adapter_hier_path}/{{ slot }}_{{ gate.port }}"
 uz_pw_inverter_connect_slot_output $adapter_parent_hier $adapter_hier_path {{ slot }}_{{ gate.port }} {{ gate.external_port }}
 {% endfor %}

@@ -16,7 +16,8 @@
     "block_design_name": "zusys",
     "validate_block_design": "false",
     "save_block_design": "false",
-    "open_vivado_gui": "false"
+    "open_vivado_gui": "false",
+    "disable_bd_synth_checkpoints": "true"
   },
   "slots": {
     "A1": "analog_ltc2311_16",

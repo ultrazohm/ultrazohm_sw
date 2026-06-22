@@ -20,7 +20,9 @@ class TclGenerator:
         option_values: dict[str, dict[str, str]],
         cpld_assignments: dict[str, str],
         axi_config: dict[str, str],
+        hardware_config: dict[str, str] | None = None,
     ) -> str:
+        hardware_config = hardware_config or {}
         platform_id = platform.get("id", "")
         platform_name = platform.get("name", platform_id)
         platform_revision = platform.get("revision", "")
@@ -83,6 +85,34 @@ class TclGenerator:
             )
         )
 
+        checkpoint_mode_disabled = self._config_bool(hardware_config.get("disable_bd_synth_checkpoints", "false"))
+        lines.extend(
+            [
+                "# Configure block-design/IP OOC synthesis checkpoints.",
+                "# Disabling checkpoints makes builds slower, but avoids Vivado checkpoint/archive issues for some IP configurations.",
+                "set project_wizard_bd_files [get_files -quiet *.bd]",
+                "if {[llength $project_wizard_bd_files] > 0} {",
+            ]
+        )
+        if checkpoint_mode_disabled:
+            lines.append("  set_property synth_checkpoint_mode None $project_wizard_bd_files")
+        else:
+            lines.extend(
+                [
+                    "  if {[catch {reset_property synth_checkpoint_mode $project_wizard_bd_files} project_wizard_checkpoint_error]} {",
+                    "    puts \"WARNING: Project Wizard could not reset synth_checkpoint_mode: $project_wizard_checkpoint_error\"",
+                    "  }",
+                ]
+            )
+        lines.extend(
+            [
+                "} else {",
+                "  puts \"WARNING: Project Wizard could not find a block design file to configure synth checkpoints.\"",
+                "}",
+                "",
+            ]
+        )
+
         lines.extend(
             [
                 "# TODO: validate design and save block design.",
@@ -125,6 +155,10 @@ class TclGenerator:
     @staticmethod
     def _tcl_list(values: list[str]) -> str:
         return " ".join(f'"{value}"' for value in values)
+
+    @staticmethod
+    def _config_bool(value: str) -> bool:
+        return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
     @staticmethod
     def _vivado_direction(direction: str) -> str:

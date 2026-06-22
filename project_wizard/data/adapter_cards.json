@@ -895,7 +895,7 @@
           "Create a hierarchy for the inverter adapter.",
           "Instantiate uz_d_inverter_adapter v1.1.",
           "Create the adapter-board ports and the small slice/concat plumbing directly.",
-          "Leave Gates[5:0] and PWM_UZ_Enable unconnected until their sources are configured in the wizard.",
+          "Tie Gates[5:0] and PWM_UZ_Enable to zero until their sources are configured in the wizard.",
           "Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file."
         ],
         "ip_cores": [

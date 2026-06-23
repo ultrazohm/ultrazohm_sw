@@ -54,5 +54,5 @@ API reference
 .. autofunction:: uz_dataviewer.api.kinds
 .. autofunction:: uz_dataviewer.api.load_plugins
 
-The facade adds no compute logic — it reuses ``loader.parse_file``, ``analysis.compute_fft``, ``nodes.REGISTRY`` and ``transforms.*``.
-For the full internals see :doc:`uz_dataviewer_architecture`.
+The facade adds no compute logic of its own — it reuses the same loader, FFT and node transforms as the GUI, so results match what you see in the app.
+For internals see :doc:`uz_dataviewer_architecture`.

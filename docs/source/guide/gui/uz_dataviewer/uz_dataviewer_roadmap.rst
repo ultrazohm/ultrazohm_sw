@@ -186,6 +186,95 @@ That is deliberately out of scope here and shares plumbing with the web out-of-c
 Rough effort (small–medium): PocketBase schema + ingest script; a client cloud module (authenticate, list, download-to-FS, hand to ``request_load``); ``connect`` / ``open_cloud`` commands + a Navigation "Open from cloud…" entry.
 Auth / multi-user is free from PocketBase.
 
+.. _uz_dataviewer_web_large_logs:
+
+Large logs in the web build (out-of-core)
+=========================================
+
+.. note::
+
+   Status: **analysis / design note, not built.**
+   Separate from the cloud-logs feature (:ref:`uz_dataviewer_remote_data`) — this is only about why the *browser* build can't open very large logs and what could fix it.
+   Native large logs are already handled by lean loading (see :ref:`uz_dataviewer_loader_large_logs`); this section is the harder web / larger-than-RAM case.
+
+The problem
+-----------
+
+Example: a ~4.6 GB CSV, 21 columns (``time`` + 20 channels), ~55M rows.
+Parsed to numbers that is ``time`` float64 (8 B) + 20 channels float32 (80 B) = 88 B/row × 55M ≈ **~4.8 GB**.
+The web build cannot hold that, so today it decimates ``1:stride`` on load (a lossy overview) or the tab runs out of memory; native opens it fine using the PC's RAM.
+
+The wasm32 ceiling
+------------------
+
+Pyodide runs in wasm32's single ~4 GiB linear memory (~2–3 GB usable), and everything Python touches lives there — numpy arrays, parse buffers, the CSV text, all Python objects (the basics are in :ref:`uz_dataviewer_native_web_memory`).
+The loader materialises the whole dataset and builds the pyramid in that same memory, so ~4.8 GB doesn't fit.
+This cap is on linear memory (RAM), not on what the tab can store overall — which is why disk-backed storage (OPFS) can help even in the same tab.
+
+Mitigations
+-----------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 25 35
+
+   * - Option
+     - Helps?
+     - Cost
+   * - **Decimate-on-load** (current)
+     - Loads a coarse *overview* only — no full-res zoom
+     - already done; lossy
+   * - **Shrink the footprint** (load only selected channels; store ``y`` as ``float16``/``int16``)
+     - ~2–4× more headroom
+     - cheap, partial; precision loss
+   * - **Out-of-core via OPFS** (embedded DB or on-disk pyramid)
+     - **Real fix** — data on disk, not in the 4 GB RAM
+     - significant change
+   * - **wasm64 / memory64**
+     - Raises the address space past 4 GB
+     - needs a memory64 Pyodide + imgui_bundle build and broad browser support; not practical yet
+   * - **Web Workers / SharedArrayBuffer**
+     - **No** — still 32-bit linear memory per module
+     - improves responsiveness, not capacity
+
+Out-of-core via OPFS
+--------------------
+
+A browser tab has two separate memory pools, and the 4 GB cap applies to only one:
+
+#. **wasm linear memory (RAM)** — the single ~4 GB buffer. This is the wall.
+#. **OPFS (Origin Private File System)** — large, persistent, disk-backed storage for the origin, not part of linear memory.
+
+An embedded database compiled to wasm (DuckDB-wasm, or SQLite-wasm with the OPFS VFS) keeps its tables in OPFS (disk) and queries out-of-core: it pages only the data it needs into a bounded buffer, scans, frees it, and returns a small result (~``max_points`` per signal).
+So the full dataset lives on disk while only a bounded working set ever occupies RAM — the dataset can be far larger than 4 GB even in the same tab.
+
+This only works if the app **never materialises the whole dataset in RAM** (today it does the equivalent of ``SELECT *`` into numpy).
+Out-of-core means querying the visible window per view: zoomed in → a range query (few rows, exact); zoomed out → a min/max-per-bucket query for the overview; fetched async + cached, debounced on pan/zoom settle.
+
+Engines
+-------
+
+- **Native is also bound by RAM today** — the loader reads the whole log into memory; native just has a far higher ceiling (the PC's RAM). The load *peak* is already handled (lean loading, :ref:`uz_dataviewer_loader_large_logs`); the *resident* bound is what out-of-core removes.
+- **pandas** is in-memory only; chunked reads give no random-access "visible window" model.
+- **Polars** (lazy + streaming over Parquet, with predicate/projection pushdown) and **DuckDB over Parquet** are genuinely out-of-core.
+- **Where it runs matters.** On native, Polars/DuckDB over Parquet is the easy path and would lift the native RAM bound too. In the browser the Python builds aren't set up for Pyodide + OPFS, so the practical engine is **DuckDB-wasm** reading from OPFS, or our own on-disk pyramid in OPFS.
+
+Two approaches (not chosen)
+---------------------------
+
+**A. DuckDB-wasm + OPFS.** Store the log as Parquet/tables in OPFS; do range filters and min/max-per-bucket in SQL. Least bespoke code, but adds a large second wasm runtime (tens of MB to download) and moves the decimation into the DB.
+
+**B. On-disk pyramid in OPFS (no DB).** A one-time streaming ingest reads the file in chunks (never holding it all in RAM) and writes columnar data plus our min/max ``Pyramid`` levels into OPFS; the client then reads small levels/ranges per view. Keeps our decimation and needs no heavy dependency, but is more bespoke out-of-core code.
+
+Both need a one-time ingest pass into OPFS, and both share the in-app **"windowed run"** abstraction (a run whose arrays are fetched per visible window, async + cached) — the same plumbing the cloud feature would use, only the source differs.
+
+Scope
+-----
+
+Substantial: a new run type in ``model.py`` and a shift in ``panels/plots.py`` from per-frame in-memory decimation to an async windowed fetch + cache.
+The native path is unaffected.
+The A-vs-B choice is deferred until this is scheduled.
+
 .. _uz_dataviewer_node_followups:
 
 Nodes — known limitations & follow-ups

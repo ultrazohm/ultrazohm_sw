@@ -4,18 +4,18 @@
 Writing node plugins
 ====================
 
-The Nodes canvas can be extended with your own **transform nodes** — a plain Python file that turns input signals into an output signal. Once installed, your node kind works exactly like a builtin: a toolbar button, param widgets, evaluation, scripting (``node_*``), and save/restore. Plugins are entirely optional; with none installed the
-app runs unchanged.
+The Nodes canvas can be extended with your own **transform nodes** — a plain Python file that turns input signals into an output signal.
+Once installed, your node kind works exactly like a builtin: a toolbar button, param widgets, evaluation, scripting (``node_*``), and save/restore.
+Plugins are entirely optional; with none installed the app runs unchanged.
 
-For internals see :ref:`the node graph section <uz_dataviewer_node_graph>`; for the node UI see :ref:`uz_dataviewer_usage_nodes`.
+For how to use nodes in the GUI see :ref:`uz_dataviewer_nodes`; for the engine internals see :ref:`the node graph section <uz_dataviewer_node_graph>`.
 
-Where plugins live (the "setting")
-==================================
+Where plugins live
+==================
 
-The viewer scans, in order, and only if they exist:
+The viewer scans these locations in order, and only if they exist:
 
-#. **``UZ_DATAVIEWER_PLUGINS``** — one or more directories (``os.pathsep``-separated: ``:`` on Linux/macOS, ``;`` on Windows).
-   This is the setting that points at your plugin folder.
+#. **``UZ_DATAVIEWER_PLUGINS``** — one or more directories (``os.pathsep``-separated: ``:`` on Linux/macOS, ``;`` on Windows). Point this at your plugin folder.
 #. **``~/.uz_dataviewer/nodes/``** — the default user plugin folder.
 
 .. code-block:: bash

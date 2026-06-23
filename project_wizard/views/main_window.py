@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import html
+import sys
+import traceback
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -1646,7 +1648,7 @@ class MainWindow(QMainWindow):
 
     def show_slot_cplds(self) -> None:
         self.stack.setCurrentIndex(4)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(3))
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(4))
 
     def show_axi_interconnect(self) -> None:
         self.stack.setCurrentIndex(5)
@@ -1994,7 +1996,8 @@ class MainWindow(QMainWindow):
                 self.hardware_config(),
             )
         )
-        self.refresh_software_preview()
+        if not self.is_loading_config:
+            self.refresh_software_preview()
 
     def refresh_software_preview(self) -> None:
         if self.software_preview is None:
@@ -2179,19 +2182,43 @@ class MainWindow(QMainWindow):
             document = json.loads(path.read_text(encoding="utf-8"))
             self.load_config_document(document, progress)
         except (OSError, json.JSONDecodeError, ValueError) as error:
-            self.is_loading_config = False
-            progress.close()
             QMessageBox.warning(self, "Could not open config", str(error))
             return
+        except Exception as error:  # noqa: BLE001 - keep the GUI recoverable on unexpected load failures.
+            details = traceback.format_exc()
+            print(details, file=sys.stderr)
+            QMessageBox.critical(
+                self,
+                "Could not open config",
+                "An unexpected error occurred while loading the config.\n\n"
+                f"{type(error).__name__}: {error}\n\n"
+                "Details were also written to the console.",
+            )
+            return
+        finally:
+            self.is_loading_config = False
+            progress.close()
         self.current_config_path = path
-        self.is_loading_config = False
-        self.update_config_load_progress(progress, 7, "Refreshing previews...")
-        software = document.get("software", {})
-        software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
-        self.refresh_software_preset_options(software_values)
-        self.software_dependent_views_dirty = False
-        self.refresh_tcl_preview()
-        progress.close()
+        QTimer.singleShot(0, lambda document=document: self.finish_config_load_refresh(document))
+
+    def finish_config_load_refresh(self, document: dict[str, Any]) -> None:
+        try:
+            software = document.get("software", {})
+            software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
+            self.refresh_software_preset_options(software_values)
+            self.software_dependent_views_dirty = False
+            self.refresh_tcl_preview()
+            self.refresh_software_preview()
+        except Exception as error:  # noqa: BLE001 - keep the GUI alive after refresh errors.
+            details = traceback.format_exc()
+            print(details, file=sys.stderr)
+            QMessageBox.critical(
+                self,
+                "Could not refresh config",
+                "The config was loaded, but refreshing generated previews failed.\n\n"
+                f"{type(error).__name__}: {error}\n\n"
+                "Details were also written to the console.",
+            )
 
     def save_config(self) -> None:
         if self.current_config_path is None:

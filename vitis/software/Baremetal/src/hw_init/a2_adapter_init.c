@@ -44,7 +44,7 @@ uz_dac_interface_t* initialize_dac8831_a2(void)
 void update_dac8831_a2_outputs(struct _DS_Data_* data)
 {
 
-    dac8831_a2_outputs[0] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
+//    dac8831_a2_outputs[0] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
 
     dac8831_a2_outputs[1] = uz_wavegen_sawtooth_sample_with_offset(data->objects.dac8831_a2_ch1_sawtooth, 1.0f, 10.0f, -2.5f);
 

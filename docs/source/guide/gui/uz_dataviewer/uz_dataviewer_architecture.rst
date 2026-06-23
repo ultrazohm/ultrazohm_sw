@@ -1,30 +1,30 @@
 .. _uz_dataviewer_architecture:
 
-==================================
-Architecture & Design (developer)
-==================================
+==============================
+Architecture & design
+==============================
 
-This document explains how ``uz_dataviewer`` is put together, the design decisions behind it, and how to extend it.
-For end-user docs see :doc:`uz_dataviewer_usage`; for packaging see :doc:`uz_dataviewer_build`.
+Developer reference for how ``uz_dataviewer`` is structured, the design decisions behind it, and how to extend it.
+End-user documentation is in :doc:`uz_dataviewer_usage`; packaging is in :doc:`uz_dataviewer_build`.
 
-The one big idea
-================
+Core model
+==========
 
 The viewer is **state-driven and command-routed**:
 
-- There is a single source of truth, ``AppState`` (``state.py``). Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
+- A single source of truth, ``AppState`` (``state.py``). Panels are (almost) pure render functions: each frame they read ``AppState`` and draw it.
 - **Every discrete user action goes through the command registry** (``commands.py``). A command mutates ``AppState`` *and* echoes its canonical call to the console.
 
-Because of this, four things fall out for free:
+This model yields four properties:
 
-#. **Scriptability** — anything you can click, you can type or replay (``.uzscript``).
-#. **A live transcript** — the console shows exactly what happened, as commands.
+#. **Scriptability** — anything clickable can be typed or replayed (``.uzscript``).
+#. **Live transcript** — the console shows what happened, as commands.
 #. **Save/restore** — sessions serialise to JSON or to a replayable command script.
-#. **Testability** — the whole app logic is exercised by dispatching command strings; no window required.
+#. **Testability** — app logic is exercised by dispatching command strings; no window required.
 
 .. warning::
 
-   If you add a feature and the only way to trigger it is a direct widget mutation, you've broken the model.
+   A feature whose only trigger is a direct widget mutation breaks this model.
    Add a command and have the widget call it.
 
 Frame flow
@@ -44,10 +44,8 @@ Per frame:
       ├─ NodesPanel.render(state)       # center tab: node canvas
       └─ Console.render(state)          # bottom: log + command input
 
-Immediate mode has one structural consequence the code leans on everywhere:
-**there is no retained widget state**, so anything that must persist across frames lives in ``AppState``/``SubplotCell``.
-Transient "do this once next frame" requests use a **pending-flag pattern**: e.g. ``cell.fit_pending``, ``cell.pending_x_lim``, ``cfg.compute_requested``.
-The renderer consumes and clears the flag.
+Immediate mode has **no retained widget state**, so anything that must persist across frames lives in ``AppState``/``SubplotCell``.
+Transient "do this once next frame" requests use a **pending-flag pattern** (``cell.fit_pending``, ``cell.pending_x_lim``, ``cfg.compute_requested``): the renderer consumes and clears the flag.
 
 Module map
 ==========
@@ -127,7 +125,7 @@ Data model
 
 - A **``Run``** is one loaded file: a shared ``time`` axis (``float64``) plus one **``Signal``** per channel (``y`` as ``float32``, contiguous, ready for ImPlot and the pyramid).
 - **``DataRegistry``** owns runs and hands out stable integer ids; ``SignalRef = (run_id, name)`` identifies a signal everywhere.
-- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It's reversible (``target=None`` restores raw) and only re-derives on change, never per frame.
+- **Time normalization** is per-log: ``Run.set_time_origin(target)`` keeps the original ``time_raw`` and derives ``time = time_raw - time_raw[0] + target``. It is reversible (``target=None`` restores raw) and re-derives only on change, never per frame.
 
 Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name``, which also detects a trailing unit token (``_rpm``, ``_us``, …) for axis labels.
 
@@ -136,19 +134,20 @@ Channel headers like ``CH8=8)ia`` are cleaned to ``ia`` by ``parse_channel_name`
 Loading & large logs (``loader.py``)
 =====================================
 
-``load_file`` dispatches by extension through ``parse_file`` → ``parse_csv`` / ``parse_parquet``, each returning a ``ParsedRun`` (plain arrays, no registry touch) that is then turned into a ``Run`` via ``ParsedRun.register`` (``DataRegistry.add_run``).
+``load_file`` dispatches by extension through ``parse_file`` → ``parse_csv`` / ``parse_parquet``, each returning a ``ParsedRun`` (plain arrays, no registry touch) that is turned into a ``Run`` via ``ParsedRun.register`` (``DataRegistry.add_run``).
 On native, loads run on a ``ThreadPoolExecutor``: the worker only **parses** into a ``ParsedRun``, and the main thread **registers** it in ``state.poll_pending_loads``, so ``DataRegistry`` is only ever mutated from one thread (see :ref:`uz_dataviewer_arch_native_web`).
-The loader is built to keep the **load-time memory peak** near the resident dataset size, so ~100M-point logs open without OOM:
 
-- **float32 at parse, no intermediate copy.** ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``) — avoiding the float64→float32 re-cast that used to double the channel memory. ``_named_signals`` then shares one naming/dedup pass across every load path.
-- **Streaming CSV.** For files at/above ``CSV_STREAM_MIN_BYTES``, ``_parse_csv_streaming`` reads via Arrow's ``open_csv`` batch reader into **preallocated** numpy arrays (grown geometrically since a CSV's row count isn't known up front), ``include_columns`` projecting to just the named columns. Peak ≈ resident + one batch (~1.5×) instead of the bulk ``read_csv`` peak (~4× the resident size, measured). Small CSVs keep the fast multithreaded bulk path.
-- **Releasing Arrow's pool.** After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow retains freed parse scratch rather than returning it to the OS, so RSS otherwise stays pinned at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
-- **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must still fit in memory), not a bulk-parse guard; it routes the user to ``convert(...)`` or fewer channels.
+The loader keeps the **load-time memory peak** near the resident dataset size, so ~100M-point logs open without OOM:
+
+- **float32 at parse, no intermediate copy.** ``_csv_column_types`` feeds Arrow ``ConvertOptions(column_types=…)`` so channels parse straight to ``float32`` (time stays ``float64``), avoiding the float64→float32 re-cast that doubled channel memory. ``_named_signals`` shares one naming/dedup pass across every load path.
+- **Streaming CSV.** For files at/above ``CSV_STREAM_MIN_BYTES``, ``_parse_csv_streaming`` reads via Arrow's ``open_csv`` batch reader into **preallocated** numpy arrays (grown geometrically since a CSV's row count isn't known up front), ``include_columns`` projecting to just the named columns. Peak ≈ resident + one batch (~1.5×) instead of the bulk ``read_csv`` peak (~4× resident, measured). Small CSVs keep the fast multithreaded bulk path.
+- **Releasing Arrow's pool.** After every parse, ``parse_file`` calls ``_release_arrow_pool`` (``pa.default_memory_pool().release_unused()``): Arrow otherwise retains freed parse scratch rather than returning it to the OS, pinning RSS at the parse high-water mark (measured ~1.2 GB reclaimed on the 9M-row log, ~10 GB on the 75M).
+- **CSV size guard.** ``_guard_csv_size`` estimates the resident footprint from file size × column count and **refuses** a CSV above ``MAX_CSV_NUMERIC_BYTES``. Now that large CSVs stream, this is a **resident-RAM** ceiling (the full record must fit in memory), not a bulk-parse guard; it routes the user to ``convert(...)`` or fewer channels.
 - **Streaming Parquet.** For files above ``PARQUET_STREAM_MIN_ROWS``, ``_parse_parquet_streaming`` reads the exact row count from ``ParquetFile.metadata.num_rows``, **preallocates** the output arrays, and fills them with ``iter_batches`` (peak ≈ resident + one row group, ~1.5× measured) instead of materialising the whole table. Small Parquet keeps the simple bulk path.
 - **CSV→Parquet converter.** ``convert_csv_to_parquet`` stream-converts a CSV to Parquet with bounded memory (per-batch ``ParquetWriter.write_batch``), dropping JavaScope's empty trailing column and preserving raw headers so the result round-trips through the same name parsing. Exposed as the scriptable ``convert(src, [dst])`` command and the ``uz-dataviewer convert`` CLI.
 
-The data stays **in RAM**, so FFT / histogram / node transforms still operate on the full record.
-Lifting the in-RAM bound entirely (out-of-core, web's hard ~4 GB case) is deferred — see :doc:`uz_dataviewer_web_large_logs`.
+The data stays **in RAM**, so FFT / histogram / node transforms operate on the full record.
+Lifting the in-RAM bound entirely (out-of-core, web's hard ~4 GB case) is deferred — see :ref:`uz_dataviewer_web_large_logs`.
 
 The command layer
 =================
@@ -162,10 +161,10 @@ The grammar is a single function call, ``name(arg, arg, ...)`` (``parse_call``).
   - ``execute(state, name, args)`` — used by UI handlers; coerces, runs, **echoes** the canonical call.
   - ``dispatch(state, text)`` — used by the console/scripts; parses then executes; errors go to the console.
   - ``echo(state, name, values)`` — logs a command **without** running it. Used for continuous gestures (zoom, cursor/spy drag) that ImPlot has *already* applied — the echo settles once on mouse-up rather than firing every frame.
-- **Run resolution by label** is what lets scripts say ``add_signal(plot_1, Log.csv, ia)`` and survive run-id reassignment after a reload.
+- **Run resolution by label** lets scripts say ``add_signal(plot_1, Log.csv, ia)`` and survive run-id reassignment after a reload.
 
 Panels never mutate ``AppState`` for a user action directly; they call ``state.commands.execute(...)`` (often via a small ``self._emit`` wrapper that logs errors).
-This is the invariant that keeps everything scriptable.
+This invariant keeps everything scriptable.
 
 Plots panel internals (``panels/plots.py``)
 ============================================
@@ -178,14 +177,14 @@ Per time-series cell, each frame:
 
 #. Compute the data extent and apply any **pending** axis limits (``fit_pending``, ``pending_x_lim``, ``pending_y_lim``) with ``Cond_.Always``.
 #. **Linked X:** the hovered cell becomes the ``_driver`` and publishes its X range to ``state.shared_x``; followers lock to it. Every time-series cell also publishes its own range to ``state.plot_x_ranges[plot_n]`` (used by analysis windows' "follow plot_N").
-#. **Downsample** each signal to ~``max_points`` over the visible window (``decimate_range``, fed by ``visible_slice``) — this is what keeps multi-GB logs interactive. Note **XY cells are the exception**: they decimate by plain uniform stride (``_xy_stride``), *not* a min/max envelope, so a busy Lissajous figure can alias — acceptable for the phase-portrait use case but worth knowing.
+#. **Downsample** each signal to ~``max_points`` over the visible window (``decimate_range``, fed by ``visible_slice``) — this keeps multi-GB logs interactive. **XY cells are the exception**: they decimate by plain uniform stride (``_xy_stride``), not a min/max envelope, so a busy Lissajous figure can alias (acceptable for the phase-portrait case).
 #. Draw it (line/scatter/stairs), optionally with per-sample markers (``Spec.marker``), routing the left/right (secondary ``ImAxis_.y2``) axis per signal.
-#. **Cursors** (two ``drag_line_x``) and **spy** (``drag_rect`` + a ``canvas_only`` inset) draw on top. Their readouts and rectangles are computed cheaply and only recomputed on move.
+#. **Cursors** (two ``drag_line_x``) and **spy** (``drag_rect`` + a ``canvas_only`` inset) draw on top. Their readouts and rectangles are recomputed only on move.
 #. **Zoom echo:** when a pan/zoom settles, ``echo set_x_lim(plot_n, ...)``.
 
 .. note::
 
-   **Performance landmine (documented in code):** cursor readouts originally used ``np.interp``, which **up-casts the entire ``float32`` signal to ``float64`` on every call** — ~150 ms/frame on a 5 M-point log.
+   **Cursor performance.** Cursor readouts originally used ``np.interp``, which up-casts the entire ``float32`` signal to ``float64`` on every call (~150 ms/frame on a 5 M-point log).
    It was replaced with an O(log n) ``searchsorted`` lookup (``_value_at``) that touches only the two bracketing samples.
 
 Analysis windows (``panels/analysis.py``)
@@ -206,19 +205,19 @@ The base provides:
 Node graph (``nodes.py``, ``transforms.py``, ``panels/nodes.py``)
 ==================================================================
 
-A small dataflow engine, deliberately built as a **derived-signal factory**: a transform node, when evaluated, materializes its result as a *new run* in the registry (``Run.derived=True``) via ``AppState.upsert_derived_run``.
-That derived signal then flows through the **existing** app unchanged — it shows in Navigation and is draggable into plots / FFT / Histogram.
+A small dataflow engine, built as a **derived-signal factory**: a transform node, when evaluated, materializes its result as a *new run* in the registry (``Run.derived=True``) via ``AppState.upsert_derived_run``.
+That derived signal then flows through the existing app unchanged — it shows in Navigation and is draggable into plots / FFT / Histogram.
 Nodes *produce* data; nothing else in the app needs to know they exist.
 
 - **Graph** (``NodeGraph``) of ``Node``s: a **source** wraps a ``(run, signal)`` ref; a **transform** (``fft`` / ``math`` / ``filter`` / ``shift``) pulls arrays from its inputs and computes. Links are validated against cycles; ids are persisted so derived-run labels (= node name) are stable across save/restore.
 - **On-demand evaluation** (``evaluate``): topological order; each transform reads its inputs (a source from the registry, an upstream transform from its cache), computes via ``transforms``/``analysis``, bumps a ``version``, and upserts its derived run **in place** (so plot references survive a re-eval). Per-node errors are logged and skipped, not fatal. A node is **stale** (``is_stale``) when its key — params + each input's version/identity — differs from the last evaluated key (the same idea as the analysis windows' ``_computed_key``).
-- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. So the graph round-trips through the console, ``.uzscript``, and the JSON session like everything else.
+- **GUI-free + scriptable**: ``nodes.py``/``transforms.py`` import no GUI and raise plain ``ValueError``s, so the whole engine is driven and tested from command strings. The canvas (``panels/nodes.py``, ``imgui_node_editor``) is a thin layer that **only issues ``node_*`` commands** — drag-drop → ``node_source``, link → ``node_link``, a widget → ``node_set``, a drag → ``node_pos``, the button → ``node_eval``. So the graph round-trips through the console, ``.uzscript``, and the JSON session.
 - **Transforms are pure NumPy** (windowed-sinc FIR filter, not SciPy) so native and web share one code path. FFT reuses ``analysis.compute_fft``; its derived run's x-axis is frequency.
 - **Registry-driven.** Every transform (builtin *or* plugin) is a ``TransformSpec`` in ``REGISTRY``; the engine looks up available kinds, default params, input arity and the compute function there, so a plugin is indistinguishable from a builtin. External plugins (``plugins.py``, the ``@transform`` decorator) are loaded at startup from ``$UZ_DATAVIEWER_PLUGINS`` / ``~/.uz_dataviewer/nodes/`` — both optional; a missing dir, no files, or a broken plugin are all tolerated (the app runs with just the builtins). An unknown kind (plugin not installed) restores as a placeholder that keeps its params/links. See :doc:`uz_dataviewer_plugins`.
 
 .. note::
 
-   v1 limits (intentional): binary math needs equal-length inputs (no resampling); a source node pointing at *another node's* derived output is a runtime convenience that may not fully survive restore (chaining is meant to go through ``node_link``).
+   Intentional v1 limits: binary math needs equal-length inputs (no resampling); a source node pointing at *another node's* derived output is a runtime convenience that may not fully survive restore (chaining is meant to go through ``node_link``).
 
 .. _uz_dataviewer_downsampling:
 
@@ -234,14 +233,13 @@ Two layers:
 
 .. note::
 
-   **Hitting the budget exactly.**
-   Both layers group their candidate buckets down to *exactly* ``max_points/2`` via ``_reduce_to`` — it assigns the ``k`` candidates to ``max_points/2`` near-equal groups (``grp = arange(k)*target//k``) and keeps each group's true extreme with one ``lexsort``.
+   **Hitting the budget exactly.** Both layers group their candidate buckets down to *exactly* ``max_points/2`` via ``_reduce_to`` — it assigns the ``k`` candidates to ``max_points/2`` near-equal groups (``grp = arange(k)*target//k``) and keeps each group's true extreme with one ``lexsort``.
    This replaced an integer **group factor** (``ceil(k/target)``), which could only halve/third/… the count and so realised as few as ~50 % of the budget at certain zooms (e.g. a 5 M-sample window landed on ~1 220 of 2 000 points).
    The output is now a stable ~``max_points`` at every zoom and on every path.
    ``_reduce_to`` only ever runs on an already-bucketed array (≲ ``target × factor``), so the query stays O(output); the pyramid *build* is untouched (still a fixed-stride O(n) pass).
 
-Storing *indices* (not values) is what lets the envelope use true X/Y read from the run's ``time``/``y`` arrays, so it's also normalization-agnostic.
-Measured (single float32 signal, ``max_points=10 000``, one core; reproduce with a short ``Pyramid.build``/``decimate_range`` timing loop):
+Storing *indices* (not values) lets the envelope use true X/Y read from the run's ``time``/``y`` arrays, so it is also normalization-agnostic.
+Measured (single float32 signal, ``max_points=10 000``, one core; reproduce with a short ``Pyramid.build`` / ``decimate_range`` timing loop):
 
 .. list-table::
    :header-rows: 1
@@ -263,16 +261,16 @@ Measured (single float32 signal, ``max_points=10 000``, one core; reproduce with
      - ~0.2 ms
      - 7.1 MB (3.6 %)
 
-For comparison, re-scanning the full 50 M extent every frame (the one-shot envelope, the work the pyramid avoids) costs **~23 ms/frame** — i.e. the pyramid is ~30x cheaper per frame at the price of a one-time build and ~3.6 % memory.
-The output also stays ~``max_points`` whether you view the whole record or a slice (the earlier 8x-jumpy point count and bucket-centre blockiness are gone).
-*(Absolute times are hardware-dependent; the point is the O(output) vs O(visible) gap, which is structural.)*
+Re-scanning the full 50 M extent every frame (the one-shot envelope, the work the pyramid avoids) costs **~23 ms/frame** — the pyramid is ~30× cheaper per frame at the price of a one-time build and ~3.6 % memory.
+The output stays ~``max_points`` whether viewing the whole record or a slice.
+*(Absolute times are hardware-dependent; the structural point is the O(output) vs O(visible) gap.)*
 
 The FFT/Histogram windows use the same decimation: a multi-million-point spectrum is range-decimated per frame (``AnalysisPanel._plot_decimated``) rather than drawn in full, and a histogram is binned once at compute (not re-binned every frame).
 
-Two trade-offs this design accepts:
+Two accepted trade-offs:
 
-- The pyramid is built **lazily on first display**, on the render thread — so the first frame after dropping in a large signal stalls for the build (~75 ms at 50 M above). It's a one-off per signal and dwarfed by the file load, but a smoother option would be to build it on the loader thread alongside parsing. *(Not done; noted as future work.)*
-- The renderer **re-decimates every frame with no result cache**. Because a query is O(output) this is cheap even on a static view, and it keeps the code stateless (true to immediate mode). The alternative — caching the decimated arrays keyed on ``(visible limits, max_points)`` and reusing them while the view is unchanged — would trim idle CPU, at the cost of a cache to invalidate. Simplicity was chosen; the door is open if idle draw cost ever matters.
+- The pyramid is built **lazily on first display**, on the render thread, so the first frame after dropping in a large signal stalls for the build (~75 ms at 50 M). It is a one-off per signal and dwarfed by the file load; building it on the loader thread alongside parsing is noted as future work.
+- The renderer **re-decimates every frame with no result cache**. Because a query is O(output) this is cheap even on a static view, and it keeps the code stateless (true to immediate mode). Caching decimated arrays keyed on ``(visible limits, max_points)`` would trim idle CPU at the cost of a cache to invalidate; simplicity was chosen.
 
 Sessions (``session.py``)
 ==========================
@@ -286,15 +284,15 @@ CSV exports (``export_data``, ``export_fft``, ``export_histogram``) also live he
 
 .. _uz_dataviewer_arch_native_web:
 
-Native vs Web (``webbridge.py``)
+Native vs web (``webbridge.py``)
 ==================================
 
 The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``webbridge.IS_WEB``, gates the handful of edges that differ.
 The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, and the WASM memory ceiling.
 
-The design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** and **decimated on a memory budget** at load rather than materialised whole.
+Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** and **decimated on a memory budget** at load rather than materialised whole.
 
-The full table and the rationale for each difference live in :doc:`uz_dataviewer_native_vs_web`; the wasm32 ~4 GB ceiling and the deferred out-of-core fix are analysed in :doc:`uz_dataviewer_web_large_logs`.
+The full table and the rationale for each difference are in :doc:`uz_dataviewer_native_vs_web`; the wasm32 ~4 GB ceiling and the deferred out-of-core fix are analysed in :ref:`uz_dataviewer_web_large_logs`.
 
 Extending the app
 =================
@@ -324,12 +322,13 @@ Commands and save/restore are generic (``node_set`` carries arbitrary params; th
 Testing
 =======
 
-Tests are pure ``pytest``, no real window. Two patterns:
+Tests are pure ``pytest``, no real window.
+Two patterns:
 
 - **Logic via commands** — dispatch command strings against an ``AppState`` and assert on state (e.g. ``test_commands.py``, ``test_session.py``).
 - **Headless rendering** — create an ImGui/ImPlot context, set a backend-textures flag, and drive a few frames calling ``panel.render(state)`` (e.g. ``test_plot_types.py``). This exercises the real ImPlot calls (begin/end pairing, Spec markers, drag tools) without a GPU window. Destroy the contexts in a ``finally`` so tests don't leak across modules.
 
-Run: ``pytest`` from the project root.
+Run ``pytest`` from the project root.
 
 .. _uz_dataviewer_design_decisions:
 
@@ -345,17 +344,28 @@ Design decisions
    * - Single ``AppState``, panels as renderers
      - One source of truth; trivial to serialise and test; no scattered widget state.
    * - Command layer is the only mutation path
-     - Scriptability, console transcript, save/restore-by-replay, and headless testing all derive from it.
+     - Scriptability, console transcript, save/restore-by-replay, and headless testing all
+       derive from it.
    * - Gestures **echo**, discrete actions **execute**
-     - Zoom/drag are continuous; echoing once on settle keeps the console readable while staying replayable.
+     - Zoom/drag are continuous; echoing once on settle keeps the console readable while
+       staying replayable.
    * - Min/max **pyramid** (pure NumPy) for decimation
-     - Per-frame cost becomes O(output), not O(visible points) (~0.7 ms vs ~23 ms/frame at 50 M points), so multi-GB logs pan at full fps — built once at first view (~75 ms/50 M), ~3.6 % memory. Replaced the Rust ``tsdownsample`` dep so native and web run the same code. **Cost:** lazy build hitches the first frame; the renderer re-decimates every frame uncached (both deemed acceptable — see :ref:`uz_dataviewer_downsampling`).
+     - Per-frame cost becomes O(output), not O(visible points) (~0.7 ms vs ~23 ms/frame at
+       50 M points), so multi-GB logs pan at full fps — built once at first view (~75 ms/50 M),
+       ~3.6 % memory. Replaced the Rust ``tsdownsample`` dep so native and web run the same
+       code. Cost: lazy build hitches the first frame; the renderer re-decimates every frame
+       uncached (both accepted — see :ref:`uz_dataviewer_downsampling`).
    * - XY cells decimate by uniform **stride**, not min/max
-     - An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple, but can alias a dense Lissajous figure (the only place "range-aware downsampling" doesn't apply).
+     - An XY/phase plot has no monotone time axis to bucket against; stride keeps it simple
+       but can alias a dense Lissajous figure (the one place range-aware downsampling does not
+       apply).
    * - FFT/Histogram are windows, on-demand
-     - Per-frame transforms of a large window would tank the frame rate; explicit Compute keeps it snappy.
+     - Per-frame transforms of a large window would tank the frame rate; explicit Compute
+       keeps it snappy.
    * - Nodes are a **derived-signal factory** (not a new viewer)
-     - Transforms emit ordinary runs, so plots/FFT/Histogram consume them unchanged — the canvas adds power without re-plumbing the rest. The engine is GUI-free and command-driven, so it's scriptable and headless-testable; the ``imgui_node_editor`` canvas only issues ``node_*`` commands.
+     - Transforms emit ordinary runs, so plots/FFT/Histogram consume them unchanged. The
+       engine is GUI-free and command-driven (scriptable and headless-testable); the
+       ``imgui_node_editor`` canvas only issues ``node_*`` commands.
    * - ``searchsorted`` not ``np.interp`` for cursors
      - ``np.interp`` up-casts the whole array each call — catastrophic per frame.
    * - Session refs by run **label**
@@ -367,26 +377,15 @@ Design decisions
    * - Pending-flag pattern (``fit_pending``, ``compute_requested``, …)
      - The immediate-mode way to express "do X once next frame".
 
+Repository layout
+=================
 
 .. code-block:: text
 
    uz_dataviewer/
    ├── run.py                    # run from a source checkout (also replays *.uzscript)
-   ├── src/uz_dataviewer/
-   │   ├── app.py                # docking layout, runner, theme, Session menu
-   │   ├── state.py              # AppState, SubplotCell, FFT/Histogram configs
-   │   ├── commands.py           # command registry / parser / dispatcher (the script API)
-   │   ├── console.py            # console: selectable log + command input
-   │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
-   │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
-   │   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
-   │   ├── analysis.py           # GUI-free transforms (FFT)
-   │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
-   │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
-   │   ├── plugins.py            # external transform-node plugins (@transform, loader)
-   │   ├── session.py            # JSON save/restore + .uzscript + CSV export
-   │   ├── webbridge.py          # browser integration (file input, array load, downloads)
+   ├── src/uz_dataviewer/        # modules — see the module map above
    │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
    ├── tests/                    # pytest (logic via commands + headless rendering)
-   ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / ROADMAP
+   ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / LIBRARY / ROADMAP
    └── build/                    # native (PyInstaller) + web (Pyodide) build flow

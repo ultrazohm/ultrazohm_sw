@@ -7,16 +7,16 @@ Usage guide
 Features
 ========
 
-- **Load many files** — ``.csv`` (JavaScope ``;`` *or* standard ``,``, auto-detected) and ``.parquet``, read with Apache Arrow. Open via the button or **drag files onto the window** (desktop).
-- **Matlab-style navigation** — runs → channels, (de)activate/remove, **per-log time normalization**.
-- **Subplot grid** — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**, **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**, per-cell **CSV export**.
-- **Range-aware downsampling** — a min/max pyramid (pure NumPy) for time series; multi-GB logs pan at full fps and zoom reveals detail. XY plots decimate by plain stride.
-- **FFT & Histogram windows** — overlay several signals, pick the time window (follow a plot / full / custom), compute on demand, log axes, CSV export.
-- **Node canvas** — drag a signal into a graph, apply transforms (FFT / math / filter / shift), and the result becomes a new draggable signal. Fully scriptable (``node_*``) and extensible with Python plugin nodes (see :doc:`uz_dataviewer_plugins`).
-- **Scriptable command console** — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
-- **MaterialFlat theme.** Runs natively (Windows/Linux/macOS) and in the browser (Pyodide/WASM).
+- Load many files — ``.csv`` (JavaScope ``;`` *or* ``,``, auto-detected) and ``.parquet``, read with Apache Arrow. Open via the button or **drag files onto the window** (desktop).
+- Subplot grid — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**, **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**, per-cell **CSV export**.
+- Range-aware downsampling — a min/max pyramid (pure NumPy) for time series; multi-GB logs pan at full fps and zoom reveals detail. XY plots decimate by plain stride.
+- FFT & Histogram windows — overlay several signals, pick the time window (follow a plot / full / custom), compute on demand, log axes, CSV export.
+- Node canvas — drag a signal into a graph, apply transforms (FFT / math / filter / shift), and the result becomes a new draggable signal. Fully scriptable (``node_*``) and extensible with Python plugin nodes (see :doc:`uz_dataviewer_plugins`).
+- Scriptable command console — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
 
 
+Javascope interaction
+=====================
 
 ``uz_dataviewer`` is designed to work with the data logged by the UltraZohm hardware and :ref:`JavaScope` software.
 
@@ -41,19 +41,6 @@ Features
 - **JavaScope** is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
 - **Data Viewer** is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.
 
-Launching
-=========
-
-.. code-block:: bash
-
-   cd uz_dataviewer
-   pip install -r requirements.txt                          # or: pip install -e .
-   python run.py                                            # or: python -m uz_dataviewer
-   python run.py ../javascope/Log_2026-06-11_22-45-16.csv   # preload file(s)
-   python run.py session.uzscript                           # replay a saved session at startup
-
-The window has dockable panels — **Navigation** (left), **Plots / FFT /Histogram / Nodes** (center, as tabs), and **Console** (bottom) — which you can rearrange.
-
 Loading data
 ============
 
@@ -62,8 +49,22 @@ Loading data
 - **Per-log time normalization:** right-click a run ▸ tick **Normalize start time** and enter a start (default ``0``), then **Apply**. This shifts that log's time axis without touching the samples; untick to restore. (Also ``load("Log.csv", 0)``.)
 - **Large logs:** channels load as ``float32`` and large Parquet files stream in, so a multi-million-sample log opens at roughly its in-memory size. A **very large CSV is refused** (bulk CSV parsing would risk running out of memory) with a message pointing you to convert it once: ``convert("Log.csv")`` in the console, or ``uz-dataviewer convert Log.csv`` from a shell — both write a ``.parquet`` beside the source that loads leanly. (Native; the browser build is still bounded by its ~4 GB heap.)
 
-Plots
-=====
+Window types
+============
+
+Existing window types:
+
+- Plots :ref:`uz_dataviewer_plot_window`
+- FFT :ref:`uz_dataviewer_fft_window`
+- Histogram :ref:`uz_dataviewer_histogram_window`
+- Nodes :ref:`uz_dataviewer_nodes`
+
+
+
+.. _uz_dataviewer_plot_window:
+
+Plot window
+===========
 
 - **Drag** a channel from the tree onto a plot cell to add it.
 - **Layout** toolbar sets the grid (``1x1`` default … ``2x2``, ``3x1``, …).
@@ -76,8 +77,30 @@ Plots
   **cursors** — two draggable vertical lines with a Δx / frequency / Δy readout. Enabling **cursors**/**spy** places them at 25 %/75 % of the *current* view, so they always start on-screen.
 - **Export** writes the cell's signals over its current X window to CSV; tick **start at 0** to rebase the time column. (The export is comma-separated and re-imports cleanly. Note: on a log already time-normalized to 0, the start is 0 with or without this option.)
 
-FFT & Histogram windows
-=======================
+.. _uz_dataviewer_fft_window:
+
+FFT window
+==========
+
+
+#. **Drag signals in** (from the tree or a plot) to overlay several.
+#. **Window** selector — choose the time window:
+
+   - ``plot_N`` — follow that subplot's current X range (computes immediately),
+   - ``Full`` — the whole record,
+   - ``Custom`` — type ``t min`` / ``t max``.
+
+   Switching to ``Full``/``Custom`` does **not** auto-compute (the window may be huge).
+#. Press **Compute**. If settings changed since the last compute you'll see **⚠ stale - press Compute**.
+#. **FFT** options: **Remove DC**, **Hann window**, **log x** / **log y**. **Histogram** option: **bins**.
+#. **Export** writes the result to CSV (FFT: ``frequency,<sig>…``; Histogram: ``bin_center,<sig>…``).
+
+.. _uz_dataviewer_nodes:
+
+.. _uz_dataviewer_histogram_window:
+
+Histogram window
+================
 
 Both work the same way:
 
@@ -93,7 +116,6 @@ Both work the same way:
 #. **FFT** options: **Remove DC**, **Hann window**, **log x** / **log y**. **Histogram** option: **bins**.
 #. **Export** writes the result to CSV (FFT: ``frequency,<sig>…``; Histogram: ``bin_center,<sig>…``).
 
-.. _uz_dataviewer_usage_nodes:
 
 Nodes (transforms → derived signals)
 ====================================

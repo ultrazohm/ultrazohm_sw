@@ -87,7 +87,7 @@ So a log under the budget loads at **full resolution**, and a genuinely huge one
 **For full resolution on multi-GB logs, use the native app.**
 
 Cloud logs (proposed — see :ref:`uz_dataviewer_remote_data`) download and load through this same in-memory path, so the heap budget above still applies to an oversize log in the browser.
-Lifting that ceiling (out-of-core via OPFS) is analysed separately in :doc:`uz_dataviewer_web_large_logs`.
+Lifting that ceiling (out-of-core via OPFS) is analysed separately in :ref:`uz_dataviewer_web_large_logs`.
 
 Downsampling is the same on both
 --------------------------------
@@ -109,12 +109,11 @@ What is identical
 The **command API and console**, **plots** (types, cursors, spy, secondary axis, linked X, CSV export), **FFT & Histogram windows**, the **node graph** and built-in transforms, **range-aware downsampling**, and the **``.uzscript``** replay all behave the same on native and web.
 Plugins are native-first (real filesystem + ``importlib``); web plugin loading is a future idea — see :doc:`uz_dataviewer_plugins` and :doc:`uz_dataviewer_roadmap`.
 
-Maintenance notes:
+Maintenance note
+----------------
 
-- Version pins live in ``build/gen_web.py`` (``PYODIDE_VERSION``, ``IMGUI_BUNDLE_WHEEL``). The wheel is built against one specific Pyodide release; if you bump one, bump the other to a compatible pair (see the imgui_bundle Pyodide docs).
-Reference: imgui_bundle Pyodide docs — `pthom.github.io/imgui_bundle/python_pyodide.html <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_
-
-
+Version pins live in ``build/gen_web.py`` (``PYODIDE_VERSION``, ``IMGUI_BUNDLE_WHEEL``). The wheel is built against one specific Pyodide release; if you bump one, bump the other to a compatible pair (see the imgui_bundle Pyodide docs).
+Reference: imgui_bundle Pyodide docs `pthom.github.io/imgui_bundle/python_pyodide.html <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_.
 
 Loading data in the browser
 ---------------------------

@@ -43,12 +43,7 @@ Open ideas
        name collisions, source-on-derived chaining)
      - Nodes
      - Open follow-ups, all low/low-medium severity — not core-path bugs.
-     - :doc:`uz_dataviewer_nodes_future_ideas` (items A–E)
-   * - **Inline-code nodes** (user Python typed into a node)
-     - Nodes
-     - Assessed, deferred — plugin files (Option B) shipped first; inline code would need
-       a code-carrying command path + a trust model.
-     - :ref:`uz_dataviewer_custom_code_nodes`
+     - Node items A - E
    * - **Fixed FFT bin count** (resample / Welch cap)
      - FFT
      - Idea — a user-set cap so huge windows compute cheaply. Trade-offs worked out; see
@@ -278,3 +273,70 @@ Stand up a local PocketBase with one Parquet run; from the app, authenticate, li
 download, and load it through the existing pipeline; confirm it behaves exactly like a
 local file (plots, pyramid, cursors, export). Then check auth (a user without access can't
 list/download it).
+
+Nodes — known limitations & future ideas
+========================================
+
+Part of the :doc:`uz_dataviewer_roadmap`.
+The deep dive for the node graph's open edges.
+
+Captured 2026-06-15 from a critical review of the node-graph feature (engine in ``nodes.py`` / ``transforms.py``, canvas in ``panels/nodes.py``).
+The review **fixed** three items before this list: transitive staleness (a downstream node now reads ``(stale)`` when an upstream changes), op-aware input-pin count on ``math`` nodes, and skip-fresh evaluation (``node_eval`` only recomputes stale nodes).
+The items below are **not** core-path bugs — they are edges and polish, left as documented follow-ups.
+
+A. Binary math input order is implicit (connection order)
+=========================================================
+
+``A-B`` / ``A/B`` take ``inputs[0]`` and ``inputs[1]`` in the order the links were **created**, not by which input pin (``in1``/``in2``) the user dropped onto.
+The editor *does* tell us the target slot in ``query_new_link``, but ``NodesPanel._try_link``
+currently ignores it and ``node_link`` just appends.
+
+- **Severity:** low–medium (wrong order silently swaps A and B).
+- **Fix:** decode the dropped input slot and have ``node_link`` place the source at that
+  index (needs ``node_link`` to carry an optional slot → small command-grammar change).
+
+B. FFT-derived run's x-axis is frequency but plots label it "time"
+==================================================================
+
+An ``fft`` node's derived run uses ``time = freqs``, so dropping it into a time-series
+cell shows a spectrum under an x-axis labelled "time", and **Link X** would couple a
+frequency axis to time axes.
+
+- **Severity:** low (cosmetic / semantic).
+- **Fix:** tag derived runs with an x-axis kind/label; have ``PlotsPanel`` honour it and
+  exclude frequency-axis runs from link-X. (Or simply view FFT-derived signals on their
+  own.)
+
+C. Units are not propagated to derived signals
+==============================================
+
+Every derived signal is created with unit ``""``. For ``filter`` and ``offset`` the
+physical unit is unchanged and could be carried over; ``scale``/``derivative``/``integral``
+change it.
+
+- **Severity:** low.
+- **Fix:** pass the input unit through for unit-preserving ops in ``nodes._compute`` /
+  ``upsert_derived_run``.
+
+D. Name / label collisions
+==========================
+
+Derived runs are labelled by node name (``node_<id>`` by default). If a loaded file is
+named like a node, or two nodes are renamed to the same label, ``_label_to_run_id``
+resolves to the first match. ``node_rename`` checks other **node** names but not loaded
+**run** labels.
+
+- **Severity:** low (needs a deliberate clash).
+- **Fix:** validate node names against ``registry`` labels too; reject duplicates.
+
+E. Source-on-derived chaining is fragile across restore/script
+==============================================================
+
+Making a **source** node that wraps *another node's* derived run works at runtime (the
+run id is valid) but may not survive save/restore or ``.uzscript`` replay, because the
+derived run does not exist until its producing node is evaluated. Chaining is meant to go
+through ``node_link`` (transform → transform), which is robust.
+
+- **Severity:** low.
+- **Fix:** either resolve such source refs lazily at eval time, or block creating a
+  source from a derived run and steer users to ``node_link``.

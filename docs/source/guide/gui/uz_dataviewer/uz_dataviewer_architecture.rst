@@ -366,3 +366,27 @@ Design decisions
      - Avoids holding multi-GB text in 32-bit WASM memory; loads full resolution.
    * - Pending-flag pattern (``fit_pending``, ``compute_requested``, …)
      - The immediate-mode way to express "do X once next frame".
+
+
+.. code-block:: text
+
+   uz_dataviewer/
+   ├── run.py                    # run from a source checkout (also replays *.uzscript)
+   ├── src/uz_dataviewer/
+   │   ├── app.py                # docking layout, runner, theme, Session menu
+   │   ├── state.py              # AppState, SubplotCell, FFT/Histogram configs
+   │   ├── commands.py           # command registry / parser / dispatcher (the script API)
+   │   ├── console.py            # console: selectable log + command input
+   │   ├── model.py              # Run / Signal / DataRegistry (+ time normalization)
+   │   ├── loader.py             # CSV/Parquet loading + channel-name parsing
+   │   ├── downsample.py         # min/max pyramid (pure NumPy, O(output) per frame)
+   │   ├── analysis.py           # GUI-free transforms (FFT)
+   │   ├── transforms.py         # GUI-free node transforms (math, FIR filter)
+   │   ├── nodes.py              # dataflow graph + evaluation -> derived signals
+   │   ├── plugins.py            # external transform-node plugins (@transform, loader)
+   │   ├── session.py            # JSON save/restore + .uzscript + CSV export
+   │   ├── webbridge.py          # browser integration (file input, array load, downloads)
+   │   └── panels/               # navigation, plots, analysis base, fft, histogram, nodes
+   ├── tests/                    # pytest (logic via commands + headless rendering)
+   ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / ROADMAP
+   └── build/                    # native (PyInstaller) + web (Pyodide) build flow

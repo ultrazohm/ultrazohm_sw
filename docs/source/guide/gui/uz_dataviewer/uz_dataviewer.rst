@@ -95,24 +95,12 @@ Outline
 
 .. toctree::
    :maxdepth: 1
-   :caption: User documentation
+   :caption: ``uz_dataviewer`` documentation
 
-   uz_dataviewer_usage
    uz_dataviewer_build
-   uz_dataviewer_library
-   uz_dataviewer_plugins
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Design & internals
-
-   uz_dataviewer_architecture
+   uz_dataviewer_usage
    uz_dataviewer_native_vs_web
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Roadmap & proposals
-
+   uz_dataviewer_plugins
+   uz_dataviewer_library
+   uz_dataviewer_architecture
    uz_dataviewer_roadmap
-   uz_dataviewer_nodes_future_ideas
-   uz_dataviewer_web_large_logs

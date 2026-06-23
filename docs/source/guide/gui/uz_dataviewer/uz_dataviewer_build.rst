@@ -1,34 +1,28 @@
 .. _uz_dataviewer_build:
 
-==============================
+========================
 Building the Data Viewer
-==============================
+========================
 
-Usage: :doc:`uz_dataviewer_usage` · Internals/design: :doc:`uz_dataviewer_architecture`
-
-The viewer is a pure-Python ``imgui_bundle`` application.
+``uz_dataviewer`` is a pure-Python ``imgui_bundle`` application.
 ``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, Linux and macOS, so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.
-(CI for native + web builds lives in the repo-root ``.gitlab-ci.yml``.)
-
-Run from source (any desktop OS)
-================================
-
-.. code-block:: bash
-
-   pip install -r requirements.txt
-   python run.py
+In the following, the build process of ``uz_dataviewer`` is described.
+Usage of the :ref:`vscode_remote_container` is assumed.
 
 Native single-file executables (PyInstaller)
 ============================================
 
 The build collects ``imgui_bundle`` and ``pyarrow`` (which carry native libraries) into one self-contained binary.
+Both native builds wrap ``pyinstaller build/uz_dataviewer.spec``.
+Cross-compiling is not supported by PyInstaller.
+Build each OS's binary on that OS.
 
 Linux / Ubuntu / macOS
 ----------------------
 
 .. code-block:: bash
 
-   ./build/build_native.sh
+   ./build/build_native.sh # from ultrazohm_sw/uz_dataviewer
    # -> dist/uz_dataviewer
 
 Windows (PowerShell)
@@ -36,10 +30,10 @@ Windows (PowerShell)
 
 .. code-block:: powershell
 
-   .\build\build_native.ps1
+   .\build\build_native.ps1 # from ultrazohm_sw/uz_dataviewer
    # -> dist\uz_dataviewer.exe
 
-Both wrap ``pyinstaller build/uz_dataviewer.spec``. Cross-compiling is not supported by PyInstaller — build each OS's binary on that OS (e.g. via a CI matrix with ``ubuntu-latest``, ``windows-latest``, ``macos-latest``).
+
 
 .. _uz_dataviewer_build_web:
 
@@ -60,32 +54,9 @@ At load time the page:
 
 .. note::
 
-   **Why the old build hung at "Installing packages…":** imgui-bundle publishes **no WASM wheel to PyPI**, so ``micropip.install("imgui-bundle")`` could never resolve.
-   The wheel must come from pthom's hosting, which the generator now uses.
+   ``uz_dataviewer`` can not be run by opening ``index.html`` directly from disk (``file://``) because the browser blocks Pyodide's package downloads from a ``file://`` origin. Use any static server, e.g., ``python -m http.server``. ``uz_dataviewer`` requires internet access at runtime.
 
-A local web server is required — ``file://`` does not work
-----------------------------------------------------------
+.. note::
 
-Opening ``index.html`` directly from disk (``file://``) **fails**: the browser blocks Pyodide's package downloads from a ``file://`` origin (documented imgui_bundle / Pyodide limitation). Use any static server — ``python -m http.server``, nginx, GitHub Pages, S3, etc.
-The page still needs internet access at runtime to fetch the Pyodide runtime and the wheels.
+   ``uz_dataviewer`` is not fully identical in the web-version to the native version. See :doc:`uz_dataviewer_native_vs_web` for details.
 
-Web runtime behaviour — file loading, memory ceiling, and what's identical to native — is documented in :doc:`uz_dataviewer_native_vs_web`.
-
-Maintenance notes:
-
-- Version pins live in ``build/gen_web.py`` (``PYODIDE_VERSION``, ``IMGUI_BUNDLE_WHEEL``). The wheel is built against one specific Pyodide release; if you bump one, bump the other to a compatible pair (see the imgui_bundle Pyodide docs).
-- Downsampling is pure NumPy (the min/max pyramid in ``downsample.py``), so the native and web builds run identical decimation code — no native/Rust dependency to wheel.
-
-Reference: imgui_bundle Pyodide docs — `pthom.github.io/imgui_bundle/python_pyodide.html <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_
-
-Loading data in the browser
----------------------------
-
-There is no OS file dialog in a tab, so the **Open file(s)…** button opens an HTML file picker. Loading is synchronous (Pyodide has no worker threads):
-
-- **Small files (≤ 200 MB) and any Parquet** are written to the Pyodide FS and parsed by Arrow as usual.
-- **Large CSVs (> 200 MB)** are **stream-parsed in the browser** directly into per-column typed arrays (``webbridge.load_columns``): the File blob is read in chunks, so the multi-gigabyte *text* is never resident in 32-bit WASM memory — only the compact numeric result (time ``float64`` + channels ``float32``).
-
-The hard limit is wasm32's ~4 GB address space: the *numeric* arrays must fit(≈``rows x channels x 4`` bytes), which is far smaller than the raw CSV but still caps how big a log the browser can hold. The streaming loader estimates that footprint up front and, **if it would exceed a safe budget (~1.5 GB), decimates ``1:stride`` on the way in** and says so in the console (e.g. *"Loaded … decimated
-1:3 … use the native app for full detail"*). So a file under the budget loads at **full resolution**, and a genuinely huge one (e.g. a 5 GB log) loads a usable **decimated** view instead of silently aborting the WASM runtime.
-For full resolution on multi-GB logs, use the native app.

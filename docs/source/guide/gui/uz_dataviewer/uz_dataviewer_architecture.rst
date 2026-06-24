@@ -411,19 +411,3 @@ Repository layout
    ├── tests/                    # pytest (logic via commands + headless rendering)
    ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / LIBRARY / ROADMAP
    └── build/                    # native (PyInstaller) + web (Pyodide) build flow
-
-uz_dataviewer architecture (state-driven + command-routed)
-----------------------------------------------------------
-
-The single most important rule for this sub-project: it is **state-driven and command-routed**.
-- `AppState` (`src/uz_dataviewer/state.py`) is the single source of truth; panels are nearly
-  pure per-frame render functions that read it (immediate-mode GUI — no retained widget state,
-  so anything persisting across frames lives in `AppState`/`SubplotCell`, often via a
-  "pending flag" consumed by the renderer).
-- **Every discrete user action goes through the command registry**
-  (`src/uz_dataviewer/commands.py`): a command mutates `AppState` *and* echoes its canonical
-  call to the console. This is what makes the app scriptable (`.uzscript`), save/restore-able,
-  and testable without a window.
-
-> When adding a feature, do not mutate state directly from a widget. Add a command and have the
-> widget invoke it. Tests dispatch command strings rather than driving the GUI.

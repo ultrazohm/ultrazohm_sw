@@ -160,9 +160,3 @@ file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/
 
 This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
 and ``help`` prints the same list in the console, so both stay current.
-
-Web build differences
-=====================
-
-The browser build runs the same UI with a few platform limits: loading blocks the tab, very large logs are decimated on load, and Export plus Session save/restore go through a browser download and a file picker (no OS dialog).
-For all platform differences and the memory limit see :doc:`uz_dataviewer_native_vs_web`; for building the web artifact see :doc:`uz_dataviewer_build`.

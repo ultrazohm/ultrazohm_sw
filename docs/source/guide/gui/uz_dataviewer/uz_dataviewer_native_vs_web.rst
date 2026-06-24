@@ -1,16 +1,15 @@
 .. _uz_dataviewer_native_vs_web:
 
-=============
-Native vs Web
-=============
+===============
+Web limitations
+===============
 
-The same ``uz_dataviewer`` runs on the desktop **and** in the browser.
-Native is a self-contained desktop application; web is a static page you open in a browser (Pyodide/WebAssembly).
-The UI, plots, FFT/Histogram, nodes, scripting and downsampling are the **same** on both — only file access, loading speed, and the memory limit differ.
-For building each target see :doc:`uz_dataviewer_build`; for the internals see :ref:`uz_dataviewer_arch_native_web`.
-
-At a glance
-===========
+The ``uz_dataviewer`` runs on the desktop (*native*) and in the browser.
+Native is a self-contained desktop application; web is a static page you open in a browser.
+The UI, plots, FFT/Histogram, nodes, scripting and downsampling are the **same** on both.
+The command console and scripting, all plot types (cursors, spy, secondary axis, linked X, CSV export), the FFT & Histogram windows, the node graph and built-in transforms, range-aware downsampling, and ``.uzscript`` replay all behave the same on native and web.
+Web can only use built-in nodes, user nodes using the plugin features it not possible.
+File access, loading speed, and the memory limit differ between native and web where the web version has limitations.
 
 .. list-table::
    :header-rows: 1
@@ -74,14 +73,3 @@ What counts is the **numeric** size after parsing (roughly ``rows × channels ×
 **For full resolution on multi-gigabyte logs, use the native app** — it is limited only by your machine's RAM.
 Lifting the browser ceiling (out-of-core storage) is future work — see :ref:`uz_dataviewer_web_large_logs`.
 
-Running the web build
-=====================
-
-- **A local web server is required — ``file://`` does not work.** Serve the page over HTTP (``python -m http.server``, nginx, GitHub/GitLab Pages, S3, …).
-- **Internet access is needed at load** to fetch the Pyodide runtime and the Python packages; once loaded, everything runs locally in the tab.
-
-What is identical
-=================
-
-The command console and scripting, all plot types (cursors, spy, secondary axis, linked X, CSV export), the FFT & Histogram windows, the node graph and built-in transforms, range-aware downsampling, and ``.uzscript`` replay all behave the same on native and web.
-Plugins are native-first; web plugin loading is a future idea — see :doc:`uz_dataviewer_plugins` and :doc:`uz_dataviewer_roadmap`.

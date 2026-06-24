@@ -53,11 +53,6 @@ proc uz_pw_inverter_create_xlslice {cell_path bit_index} {
   uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH {6} CONFIG.DIN_FROM $bit_index CONFIG.DIN_TO $bit_index CONFIG.DOUT_WIDTH {1}] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-proc uz_pw_inverter_create_vector_xlslice {cell_path din_width din_from din_to dout_width} {
-  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlslice
-  uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH $din_width CONFIG.DIN_FROM $din_from CONFIG.DIN_TO $din_to CONFIG.DOUT_WIDTH $dout_width] [get_bd_cells -quiet $cell_path] $cell_path
-}
-
 proc uz_pw_inverter_create_xlconcat {cell_path port_count} {
   uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconcat
   uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS $port_count] [get_bd_cells -quiet $cell_path] $cell_path
@@ -68,29 +63,31 @@ proc uz_pw_inverter_create_xlconstant {cell_path width value} {
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-# Gates[5:0] source. Use the configured vector source if it is present and slice
-# the selected six bits locally, otherwise fall back to a deterministic zero
-# source internal to the slot hierarchy.
+proc uz_pw_inverter_leaf_name {object_path} {
+  set parts [split $object_path "/"]
+  return [lindex $parts end]
+}
+
+# Gates[5:0] source. Use the configured six-bit vector source if it is present,
+# otherwise fall back to a deterministic zero source internal to the slot hierarchy.
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/Gates"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_Gates"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/Din"
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/Din"
 set gate_vector_source_pin "{{ inverter_gates_source }}"
-set gate_slice_from "{{ inverter_gates_source_from }}"
-set gate_slice_to "{{ inverter_gates_source_to }}"
-if {[string is integer -strict $gate_slice_from] && [string is integer -strict $gate_slice_to]} {
-  set gate_slice_width [expr {abs($gate_slice_from - $gate_slice_to) + 1}]
-} else {
-  set gate_slice_width 0
-}
-if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_source_pin]] == 0 || $gate_slice_width != 6} {
-  puts "WARNING: Gate vector source '$gate_vector_source_pin' with slice ${gate_slice_from}:${gate_slice_to} is not usable for {{ slot }} inverter adapter; using zero fallback."
+if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_source_pin]] == 0} {
+  puts "WARNING: Six-bit gate vector source '$gate_vector_source_pin' is not usable for {{ slot }} inverter adapter; using zero fallback."
   set gates_default_path "${adapter_hier_path}/{{ slot }}_gates_default_zero"
   uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
   set gates_source_pin "${gates_default_path}/dout"
 } else {
-  set gates_source_slice_path "${adapter_hier_path}/{{ slot }}_gates_source_slice"
-  uz_pw_inverter_create_vector_xlslice $gates_source_slice_path 24 $gate_slice_from $gate_slice_to 6
-  uz_pw_connect_pin_pair_if_unconnected $gate_vector_source_pin "${gates_source_slice_path}/Din"
-  set gates_source_pin "${gates_source_slice_path}/Dout"
+  set gate_source_boundary_name [uz_pw_inverter_leaf_name $gate_vector_source_pin]
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $gate_source_boundary_name 5 0
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I $gate_source_boundary_name 5 0
+  uz_pw_connect_pin_pair_if_unconnected $gate_vector_source_pin "${adapter_parent_hier}/${gate_source_boundary_name}"
+  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${gate_source_boundary_name}" "${adapter_hier_path}/${gate_source_boundary_name}"
+  uz_pw_delete_cell_if_exists "${adapter_hier_path}/{{ slot }}_gates_source_slice"
+  set gates_source_pin "${adapter_hier_path}/${gate_source_boundary_name}"
 }
 
 # PWM_UZ_Enable source. Use the configured source if it is present, otherwise

@@ -75,8 +75,11 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 10.0f, 0.5f);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, true);
-    	Global_Data.rasv.halfBridge1DutyCycle = uz_wavegen_sine_sample_with_offset(Global_Data.objects.dac8831_a2_ch0_sine, 0.5f, 2.0f, 0.5f);
+    	Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine_wave.a;
+    	Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
+    	Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
     } else {
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
     }

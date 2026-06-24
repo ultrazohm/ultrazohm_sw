@@ -127,6 +127,7 @@ int main(void)
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_2, true);
 			Global_Data.objects.ssi_encoder_d5_3 = initialize_ssi_encoder_d5_3();
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
+			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

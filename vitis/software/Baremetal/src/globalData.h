@@ -159,6 +159,7 @@ typedef struct{
 	uz_endat_interface_t* endat_encoder_d5_1;
 	uz_ssi_interface_t* ssi_encoder_d5_2;
 	uz_ssi_interface_t* ssi_encoder_d5_3;
+	uz_wavegen_three_phase* three_phase_sine;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

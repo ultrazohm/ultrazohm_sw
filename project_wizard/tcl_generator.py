@@ -64,6 +64,13 @@ class TclGenerator:
             self.renderer.render_file("helpers/bd_helpers.tcl", {}),
         ]
 
+        lines.append(
+            self.renderer.render_file(
+                "pwm.tcl",
+                self._pwm_context(axi_config, hardware_config),
+            )
+        )
+
         for slot in SLOTS:
             card_id = assignments.get(slot, "empty")
             card = self.database.card_by_id(card_id)
@@ -76,12 +83,6 @@ class TclGenerator:
             self.renderer.render_file(
                 "axi_interconnect.tcl",
                 self._axi_context(assignments, option_values, axi_config),
-            )
-        )
-        lines.append(
-            self.renderer.render_file(
-                "pwm.tcl",
-                self._pwm_context(axi_config, hardware_config),
             )
         )
         lines.append(
@@ -267,6 +268,8 @@ class TclGenerator:
             for field in vivado.get("source_fields", [])
             if field.get("id")
         }
+        if card.get("id") == "uz_d_inverter_adapter" and source_fields.get("gates_source") == "uz_digital_adapter/Gate_Signals_2L":
+            source_fields["gates_source"] = "uz_pwm/Gate_Signals_2L_0"
         ip_cores = self._ip_core_context(
             vivado,
             f"{slot.lower()}",
@@ -302,8 +305,6 @@ class TclGenerator:
             "adapter_clock_pin": vivado.get("adapter_clock_pin", "aclk"),
             "adapter_resetn_pin": vivado.get("adapter_resetn_pin", "aresetn"),
             "inverter_gates_source": source_fields.get("gates_source", ""),
-            "inverter_gates_source_from": source_fields.get("gates_source_from", "5"),
-            "inverter_gates_source_to": source_fields.get("gates_source_to", "0"),
             "inverter_pwm_enable_source": source_fields.get("pwm_enable_source", ""),
             "inverter_gate_outputs": [
                 {"bit": "0", "port": "pwm_h1", "external_port": f"Dig_00_Ch{slot_index}"},
@@ -763,12 +764,14 @@ class TclGenerator:
         address_space = config.get("d_address_space", config.get("address_space", ""))
 
         instances: list[dict[str, Any]] = []
+        gate_outputs: list[dict[str, Any]] = []
         vio_probe_props: list[dict[str, Any]] = []
         vio_connections: list[dict[str, Any]] = []
         gate_concat_connections: list[dict[str, Any]] = []
         address_segments: list[dict[str, str]] = []
 
         for index in range(instance_count):
+            gate_outputs.append({"index": index, "pin_name": f"Gate_Signals_2L_{index}"})
             instances.append(
                 {
                     "index": index,
@@ -823,9 +826,9 @@ class TclGenerator:
             "pwm_2l_hier": "uz_pwm/pwm_2L",
             "pwm_3l_hier": "uz_pwm/pwm_3L",
             "instance_count": instance_count,
-            "gate_width": (instance_count * 6) - 1,
             "debug_ila": debug_ila,
             "instances": instances,
+            "gate_outputs": gate_outputs,
             "vio_probe_count": instance_count * 6,
             "vio_probe_props": vio_probe_props,
             "vio_connections": vio_connections,
@@ -887,8 +890,6 @@ class TclGenerator:
                     "name": interface.get("name", "axi"),
                     "path": interface.get("path_template", "").format(**context),
                     "addr_seg": interface.get("addr_seg_template", "").format(**context),
-                    "offset": interface.get("offsets", {}).get(slot, interface.get("offset", "")),
-                    "range": interface.get("range", ""),
                 }
             )
         return formatted
@@ -896,13 +897,6 @@ class TclGenerator:
     @staticmethod
     def _address_assignment_command(address_space: str, interface: dict[str, str]) -> str:
         addr_seg = interface.get("addr_seg", "")
-        offset = interface.get("offset", "")
-        address_range = interface.get("range", "")
-        if offset and address_range:
-            return (
-                f"assign_bd_address -offset {offset} -range {address_range} "
-                f"-target_address_space {address_space} [get_bd_addr_segs {addr_seg}] -force"
-            )
         return f"assign_bd_address -target_address_space {address_space} [get_bd_addr_segs {addr_seg}] -force"
 
     @staticmethod

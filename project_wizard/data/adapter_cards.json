@@ -259,13 +259,7 @@
           {
             "name": "S00_AXI",
             "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI",
-            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg",
-            "range": "0x00010000",
-            "offsets": {
-              "A1": "0x80000000",
-              "A2": "0x80010000",
-              "A3": "0x80020000"
-            }
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg"
           }
         ]
       },
@@ -499,13 +493,7 @@
           {
             "name": "s_axi_lite",
             "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite",
-            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite/reg0",
-            "range": "0x00010000",
-            "offsets": {
-              "A1": "0x80000000",
-              "A2": "0x80010000",
-              "A3": "0x80020000"
-            }
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite/reg0"
           }
         ]
       },
@@ -857,13 +845,7 @@
           {
             "name": "AXI4",
             "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4",
-            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4/reg0",
-            "range": "0x00010000",
-            "offsets": {
-              "A1": "0x80000000",
-              "A2": "0x80010000",
-              "A3": "0x80020000"
-            }
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4/reg0"
           }
         ]
       },
@@ -903,23 +885,9 @@
           {
             "id": "gates_source",
             "label": "Gate vector source",
-            "default": "uz_digital_adapter/Gate_Signals_2L",
-            "placeholder": "Block design pin path",
-            "help": "Vector source pin for the two-level gate signals. The selected bit range is sliced inside the inverter adapter hierarchy."
-          },
-          {
-            "id": "gates_source_from",
-            "label": "Gate slice from",
-            "default": "5",
-            "placeholder": "MSB index",
-            "help": "Most-significant bit of the gate vector slice that drives uz_d_inverter_adapter Gates[5:0]."
-          },
-          {
-            "id": "gates_source_to",
-            "label": "Gate slice to",
-            "default": "0",
-            "placeholder": "LSB index",
-            "help": "Least-significant bit of the gate vector slice that drives uz_d_inverter_adapter Gates[5:0]."
+            "default": "uz_pwm/Gate_Signals_2L_0",
+            "placeholder": "uz_pwm/Gate_Signals_2L_0",
+            "help": "Six-bit vector source pin for one two-level PWM gate-signal instance."
           },
           {
             "id": "pwm_enable_source",

@@ -42,9 +42,7 @@
       "channel_3_trigger_source": "trigger_conversions"
     },
     "D3": {
-      "gates_source": "uz_digital_adapter/Gate_Signals_2L",
-      "gates_source_from": "5",
-      "gates_source_to": "0",
+      "gates_source": "uz_pwm/Gate_Signals_2L_0",
       "pwm_enable_source": "uz_digital_adapter/Enable_Gate"
     }
   },

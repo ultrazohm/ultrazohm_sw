@@ -4,7 +4,6 @@ import json
 import html
 import sys
 import traceback
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -1546,7 +1545,25 @@ class MainWindow(QMainWindow):
         combo.blockSignals(False)
 
     def option_values(self) -> dict[str, dict[str, str]]:
-        values: dict[str, dict[str, str]] = deepcopy(self.detail_options)
+        assignments = self.assignments()
+        values: dict[str, dict[str, str]] = {}
+        for slot, options in self.detail_options.items():
+            card = self.database.card_by_id(assignments.get(slot, "empty"))
+            if not card:
+                continue
+            allowed_keys: set[str] = set()
+            for option in card.get("options", []):
+                option_id = option.get("id", "")
+                if option_id:
+                    allowed_keys.add(option_id)
+                    allowed_keys.add(f"{option_id}_trigger_source")
+            for source_field in card.get("vivado", {}).get("source_fields", []):
+                field_id = source_field.get("id", "")
+                if field_id:
+                    allowed_keys.add(field_id)
+            filtered = {key: value for key, value in options.items() if key in allowed_keys}
+            if filtered:
+                values[slot] = filtered
         for (slot, option_id), combo in self.detail_combos.items():
             values.setdefault(slot, {})[option_id] = combo.currentData() or ""
         for (slot, option_id), edit in self.detail_trigger_edits.items():

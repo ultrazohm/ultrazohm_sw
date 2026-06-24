@@ -6,10 +6,9 @@ Web limitations
 
 The ``uz_dataviewer`` runs on the desktop (*native*) and in the browser.
 Native is a self-contained desktop application; web is a static page you open in a browser.
-The UI, plots, FFT/Histogram, nodes, scripting and downsampling are the **same** on both.
-The command console and scripting, all plot types (cursors, spy, secondary axis, linked X, CSV export), the FFT & Histogram windows, the node graph and built-in transforms, range-aware downsampling, and ``.uzscript`` replay all behave the same on native and web.
-Web can only use built-in nodes, user nodes using the plugin features it not possible.
-File access, loading speed, and the memory limit differ between native and web where the web version has limitations.
+Almost everything behaves the **same** on both: the command console and scripting, every plot type (cursors, spy, secondary axis, linked X, CSV export), the FFT & Histogram windows, the node graph with its built-in transforms, range-aware downsampling, and ``.uzscript`` replay.
+The one feature web cannot offer is **custom node plugins**: the browser runs the built-in transforms only, while native can also load your own from a plugin folder (see :doc:`uz_dataviewer_plugins`).
+Otherwise the differences are in **file access**, **loading speed**, and the **memory limit** — the places where the browser is constrained.
 
 .. list-table::
    :header-rows: 1
@@ -29,10 +28,13 @@ File access, loading speed, and the memory limit differ between native and web w
      - Blocks the tab until the file is parsed
    * - **Very large logs**
      - Limited only by your machine's RAM
-     - Decimated on load above ~1.5 GB of data; full resolution below
+     - Large **CSV** decimated on load to fit; **Parquet** must fit in memory (no auto-decimation)
    * - **Export / Save**
      - OS save dialog
      - Browser download (and a file picker to load sessions back)
+   * - **Custom node plugins**
+     - Built-in transforms plus your own plugin folder
+     - Built-in transforms only
    * - **Memory**
      - Your machine's RAM
      - Hard ~4 GB browser limit
@@ -66,9 +68,12 @@ Memory limit
 
 A browser tab can address only **~4 GB** of memory, and the whole dataset must fit there.
 What counts is the **numeric** size after parsing (roughly ``rows × channels × 4`` bytes), not the raw text size — so a multi-gigabyte CSV is far smaller once loaded.
+The browser keeps a margin below that ceiling for the runtime and the app itself, so a log loads at **full resolution** in the browser only while its numeric size stays **under ~1.5 GB**.
 
-- A log whose numeric size is **under ~1.5 GB** loads at **full resolution** in the browser.
-- A larger log is **decimated on load** (a coarse overview), with a message in the console (e.g. *"Loaded … decimated 1:3 … use the native app for full detail"*).
+How a larger log is handled depends on the file type:
+
+- A large **CSV** is **decimated on load** (a coarse overview) so it always opens, with a message in the console (e.g. *"Loaded … decimated 1:3 … use the native app for full detail"*).
+- A **Parquet** log (and any CSV that is not over the threshold) loads at **full resolution and is not auto-decimated** — if it does not fit in the browser's memory the load simply fails. Open fewer channels, ``convert`` a trimmed selection, or use the native app.
 
 **For full resolution on multi-gigabyte logs, use the native app** — it is limited only by your machine's RAM.
 Lifting the browser ceiling (out-of-core storage) is future work — see :ref:`uz_dataviewer_web_large_logs`.

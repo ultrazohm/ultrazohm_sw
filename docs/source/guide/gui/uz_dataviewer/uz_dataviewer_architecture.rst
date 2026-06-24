@@ -1,8 +1,8 @@
 .. _uz_dataviewer_architecture:
 
-==============================
-Architecture & design
-==============================
+===================
+Developer reference
+===================
 
 Developer reference for how ``uz_dataviewer`` is structured, the design decisions behind it, and how to extend it.
 End-user documentation is in :doc:`uz_dataviewer_usage`; packaging is in :doc:`uz_dataviewer_build`.
@@ -304,7 +304,7 @@ Native vs web (``webbridge.py``)
 ==================================
 
 The same Python runs on the desktop and in the browser via Pyodide (CPython→WASM); a single flag, ``webbridge.IS_WEB``, gates the handful of edges that differ.
-The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, and the WASM memory ceiling.
+The UI, command layer, plots, FFT/Histogram, nodes and downsampler are **identical** on both — the differences are file I/O, threading, the WASM memory ceiling, and plugin loading.
 
 Design-relevant points: loads are async on native and synchronous on web (Pyodide has no worker threads); the renderer never branches on the target because the **decimator is pure NumPy** (no native dependency to wheel for the browser); and the web build cannot hold a multi-GB log, so a large CSV is **stream-parsed into typed arrays** and **decimated on a memory budget** at load rather than materialised whole.
 
@@ -313,7 +313,9 @@ The user-facing comparison is in :doc:`uz_dataviewer_native_vs_web`; the wasm32 
 Web edges (``webbridge.py`` / ``build/gen_web.py``):
 
 - **File I/O.** Native uses ``portable_file_dialogs`` plus a GLFW drop callback; web uses a hidden HTML ``<input type=file>`` to open, ``webbridge.download`` (a Blob + synthetic anchor click) to save, and a second hidden picker (``uzSessionInput``) for session uploads, routed by extension in ``webbridge.load_uploaded_session`` (``.json`` → ``load_state``, ``.uzscript``/``.txt`` → ``run_script``).
-- **Loading.** A CSV ≤ ``FULL_LOAD_LIMIT`` (200 MB) and any Parquet go through Arrow on the Pyodide FS, same as native. A larger CSV is stream-parsed in JavaScript into per-column typed arrays (``webbridge.load_columns``) so the multi-GB text never sits in WASM memory; the loader estimates the numeric footprint and decimates ``1:stride`` if it would exceed ``MEM_BUDGET`` (~1.5 GB).
+- **Loading.** ``wireFileInput`` (``build/gen_web.py``) dispatches by type: a CSV ≤ ``FULL_LOAD_LIMIT`` (200 MB) **and any Parquet** take ``loadFull`` → written to the Pyodide FS and parsed by Arrow, same code as native; a larger CSV takes ``loadStreamingCsv``.
+- **Streaming CSV decimation (CSV only).** ``loadStreamingCsv`` reads the ``File`` blob in chunks (the multi-GB text never sits in WASM memory) and pushes per-column typed arrays into ``webbridge.load_columns``. It estimates the numeric footprint (``estRows × (8 + 4·nDataCols)``) from a header sample and, if that exceeds ``MEM_BUDGET`` (~1.5 GB, the working budget below the ~4 GB heap ceiling), keeps every ``stride``-th row so the result fits — emitting the "decimated 1:N … use the native app" console note. **This safety net is CSV-only:** a large **Parquet** has no equivalent and goes through ``loadFull`` unguarded, so it loads at full resolution if it fits the heap or, if it doesn't, the oversize allocation **silently aborts the whole WASM runtime** ("loading does nothing"). The size estimate exists precisely to avoid that abort for the CSV path.
+- **Node plugins are native-only.** ``plugins.load_plugins`` (called once at startup in ``app.py``) scans filesystem/env plugin dirs (``$UZ_DATAVIEWER_PLUGINS``, ``~/.uz_dataviewer/nodes/``) that a browser tab cannot populate, so on web it finds nothing and the node graph runs the builtins in ``nodes.REGISTRY`` only. The ``load_plugins`` command still exists but has no dirs to read. See :doc:`uz_dataviewer_plugins`.
 - **Version pins.** ``PYODIDE_VERSION`` and ``IMGUI_BUNDLE_WHEEL`` (``build/gen_web.py``) must be a compatible pair — the ``imgui_bundle`` wheel is built against one specific Pyodide release, so bump them together (see the `imgui_bundle Pyodide docs <https://pthom.github.io/imgui_bundle/python_pyodide.html>`_). A true single-file, no-server build would require a C++/emscripten ``SINGLE_FILE`` rebuild and would drop the Python data stack (:ref:`uz_dataviewer_build_web`).
 
 Extending the app

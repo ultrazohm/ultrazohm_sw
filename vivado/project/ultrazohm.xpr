@@ -133,69 +133,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_gpio_2_0/zusys_axi_gpio_2_0.xci">
-          <Proxy FileSetName="zusys_axi_gpio_2_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_usr_access_bridge_0_0/zusys_uz_usr_access_bridge_0_0.xci">
-          <Proxy FileSetName="zusys_uz_usr_access_bridge_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_1_1/zusys_smartconnect_1_1.xci">
-          <Proxy FileSetName="zusys_smartconnect_1_1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_axi_testIP_0_0/zusys_uz_axi_testIP_0_0.xci">
-          <Proxy FileSetName="zusys_uz_axi_testIP_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0/zusys_zynq_ultra_ps_e_0_0.xci">
-          <Proxy FileSetName="zusys_zynq_ultra_ps_e_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_0/zusys_util_vector_logic_0_0.xci">
-          <Proxy FileSetName="zusys_util_vector_logic_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_0_0/zusys_uz_interlockDeadtime_0_0.xci">
-          <Proxy FileSetName="zusys_uz_interlockDeadtime_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_1_0/zusys_uz_interlockDeadtime_1_0.xci">
-          <Proxy FileSetName="zusys_uz_interlockDeadtime_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_2_0/zusys_uz_interlockDeadtime_2_0.xci">
-          <Proxy FileSetName="zusys_uz_interlockDeadtime_2_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_3_0/zusys_uz_interlockDeadtime_3_0.xci">
-          <Proxy FileSetName="zusys_uz_interlockDeadtime_3_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_2L_0/zusys_vio_Gates_2L_0.xci">
-          <Proxy FileSetName="zusys_vio_Gates_2L_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_0/zusys_PWM_and_SS_control_V_0_0.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_1_0/zusys_PWM_and_SS_control_V_1_0.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_2_0/zusys_PWM_and_SS_control_V_2_0.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_2_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_3_0/zusys_PWM_and_SS_control_V_3_0.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_3_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_0/zusys_ila_0_0.xci">
-          <Proxy FileSetName="zusys_ila_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Interrupt_Start_Center_0/zusys_Interrupt_Start_Center_0.xci">
-          <Proxy FileSetName="zusys_Interrupt_Start_Center_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_SS_3L_ip_0_0/zusys_PWM_SS_3L_ip_0_0.xci">
-          <Proxy FileSetName="zusys_PWM_SS_3L_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Set_Deadtime_3L_0/zusys_Set_Deadtime_3L_0.xci">
-          <Proxy FileSetName="zusys_Set_Deadtime_3L_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_top_npc_state_machine_0_0/zusys_top_npc_state_machine_0_0.xci">
-          <Proxy FileSetName="zusys_top_npc_state_machine_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_3L_0/zusys_vio_Gates_3L_0.xci">
-          <Proxy FileSetName="zusys_vio_Gates_3L_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0/zusys_AXI2TCM_0_0.xci">
           <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
         </CompFileExtendedInfo>
@@ -234,6 +171,69 @@
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_50MHz_0/zusys_proc_sys_reset_50MHz_0.xci">
           <Proxy FileSetName="zusys_proc_sys_reset_50MHz_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_gpio_2_0/zusys_axi_gpio_2_0.xci">
+          <Proxy FileSetName="zusys_axi_gpio_2_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_usr_access_bridge_0_0/zusys_uz_usr_access_bridge_0_0.xci">
+          <Proxy FileSetName="zusys_uz_usr_access_bridge_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_1_1/zusys_smartconnect_1_1.xci">
+          <Proxy FileSetName="zusys_smartconnect_1_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_axi_testIP_0_0/zusys_uz_axi_testIP_0_0.xci">
+          <Proxy FileSetName="zusys_uz_axi_testIP_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0/zusys_zynq_ultra_ps_e_0_0.xci">
+          <Proxy FileSetName="zusys_zynq_ultra_ps_e_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_3L_0/zusys_vio_Gates_3L_0.xci">
+          <Proxy FileSetName="zusys_vio_Gates_3L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_top_npc_state_machine_0_0/zusys_top_npc_state_machine_0_0.xci">
+          <Proxy FileSetName="zusys_top_npc_state_machine_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Set_Deadtime_3L_0/zusys_Set_Deadtime_3L_0.xci">
+          <Proxy FileSetName="zusys_Set_Deadtime_3L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_SS_3L_ip_0_0/zusys_PWM_SS_3L_ip_0_0.xci">
+          <Proxy FileSetName="zusys_PWM_SS_3L_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Interrupt_Start_Center_0/zusys_Interrupt_Start_Center_0.xci">
+          <Proxy FileSetName="zusys_Interrupt_Start_Center_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_0/zusys_ila_0_0.xci">
+          <Proxy FileSetName="zusys_ila_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_3_0/zusys_PWM_and_SS_control_V_3_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_3_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_0/zusys_util_vector_logic_0_0.xci">
+          <Proxy FileSetName="zusys_util_vector_logic_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_0_0/zusys_uz_interlockDeadtime_0_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_1_0/zusys_uz_interlockDeadtime_1_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_2_0/zusys_uz_interlockDeadtime_2_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_2_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_3_0/zusys_uz_interlockDeadtime_3_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_3_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_2L_0/zusys_vio_Gates_2L_0.xci">
+          <Proxy FileSetName="zusys_vio_Gates_2L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_0/zusys_PWM_and_SS_control_V_0_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_1_0/zusys_PWM_and_SS_control_V_1_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_2_0/zusys_PWM_and_SS_control_V_2_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_2_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">

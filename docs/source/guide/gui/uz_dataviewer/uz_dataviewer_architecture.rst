@@ -70,6 +70,9 @@ Module map
    * - ``commands.py``
      - Command registry, parser, dispatcher, the ~60 built-in commands
      - ``CommandRegistry``, ``Command``, ``Param``
+   * - ``command_doc.py``
+     - Generates the docs command reference (CSV) from the live registry — see :ref:`uz_dataviewer_generated_command_reference`
+     - ``build_csv``, ``group_for``, ``GROUP_ORDER``
    * - ``console.py``
      - Bottom console: scrolling selectable log + command input/completion/history
      - ``Console``
@@ -165,6 +168,19 @@ The grammar is a single function call, ``name(arg, arg, ...)`` (``parse_call``).
 
 Panels never mutate ``AppState`` for a user action directly; they call ``state.commands.execute(...)`` (often via a small ``self._emit`` wrapper that logs errors).
 This invariant keeps everything scriptable.
+
+.. _uz_dataviewer_generated_command_reference:
+
+Generated command reference (``command_doc.py``)
+-------------------------------------------------
+
+The command table in :ref:`uz_dataviewer_usage` is **generated from the live registry**, not hand-maintained.
+The commands are closures registered inside ``register_builtins`` and the ``_register_analysis_common`` / ``_register_node_commands`` factories — built from name f-strings (``fft_remove``, ``hist_remove`` are *one* closure parameterised by ``prefix``), so there is no module-level symbol for ``sphinx.ext.autodoc`` to document.
+``command_doc.build_csv`` instead instantiates a ``CommandRegistry`` and walks ``reg.all()``, taking the name, ``cmd.help`` (description), ``cmd.params`` (rendered ``name:kind``) and the handler's source location (``handler.__code__.co_filename``/``co_firstlineno`` → ``commands.py:577``) — that source column is exactly what makes an otherwise-unfindable closure locatable.
+
+- **Grouping lives here, not in the registry.** ``group_for`` maps each command to a section (``GROUP_ORDER``) by name prefix (``fft_*``/``hist_*``/``node_*``) or an explicit table for the rest, and **raises** for any unassigned command. (``help`` lists commands flat; the curated grouping is documentation-only.)
+- **Committed, not built at docs time.** The output ``uz_dataviewer_commands.csv`` sits beside ``uz_dataviewer_usage.rst`` and is included via ``.. csv-table:: :file:``, so the Sphinx build stays hermetic. Regenerate with ``python -m uz_dataviewer.command_doc``.
+- **Drift-guarded.** ``tests/test_command_doc.py`` re-renders in memory and fails if the committed CSV is stale or a new command has no group — so editing a command (or even shifting its line) without regenerating breaks CI.
 
 Plots panel internals (``panels/plots.py``)
 ============================================
@@ -395,3 +411,19 @@ Repository layout
    ├── tests/                    # pytest (logic via commands + headless rendering)
    ├── docs/                     # USAGE / ARCHITECTURE / BUILD / NATIVE_VS_WEB / PLUGINS / LIBRARY / ROADMAP
    └── build/                    # native (PyInstaller) + web (Pyodide) build flow
+
+uz_dataviewer architecture (state-driven + command-routed)
+----------------------------------------------------------
+
+The single most important rule for this sub-project: it is **state-driven and command-routed**.
+- `AppState` (`src/uz_dataviewer/state.py`) is the single source of truth; panels are nearly
+  pure per-frame render functions that read it (immediate-mode GUI — no retained widget state,
+  so anything persisting across frames lives in `AppState`/`SubplotCell`, often via a
+  "pending flag" consumed by the renderer).
+- **Every discrete user action goes through the command registry**
+  (`src/uz_dataviewer/commands.py`): a command mutates `AppState` *and* echoes its canonical
+  call to the console. This is what makes the app scriptable (`.uzscript`), save/restore-able,
+  and testable without a window.
+
+> When adding a feature, do not mutate state directly from a widget. Add a command and have the
+> widget invoke it. Tests dispatch command strings rather than driving the GUI.

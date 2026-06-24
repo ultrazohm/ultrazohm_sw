@@ -1,11 +1,11 @@
 .. _uz_dataviewer_build:
 
-========================
-Building the Data Viewer
-========================
+======================
+Building uz_dataviewer
+======================
 
-``uz_dataviewer`` is a pure-Python ``imgui_bundle`` application.
-``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, Linux and macOS, so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.
+``uz_dataviewer`` is a Python ``imgui_bundle`` application.
+``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, and Linux so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.
 In the following, the build process of ``uz_dataviewer`` is described.
 Usage of the :ref:`vscode_remote_container` is assumed.
 
@@ -17,8 +17,8 @@ Both native builds wrap ``pyinstaller build/uz_dataviewer.spec``.
 Cross-compiling is not supported by PyInstaller.
 Build each OS's binary on that OS.
 
-Linux / Ubuntu / macOS
-----------------------
+Linux / Ubuntu
+--------------
 
 .. code-block:: bash
 

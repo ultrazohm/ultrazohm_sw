@@ -4,20 +4,13 @@
 Usage guide
 ===========
 
-Features
-========
-
-- Load many files — ``.csv`` (JavaScope ``;`` *or* ``,``, auto-detected) and ``.parquet``. Open via the button or drag files onto the window (desktop).
-- Subplot grid — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**, **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**, per-cell **CSV export**.
-- Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail (XY plots use a plain stride).
-- FFT & Histogram windows — overlay several signals, pick the time window (follow a plot / full / custom), compute on demand, log axes, CSV export.
-- Node canvas — drag a signal into a graph, apply transforms (FFT / math / filter / shift), and the result becomes a new draggable signal. Scriptable (``node_*``) and extensible with Python plugin nodes (see :doc:`uz_dataviewer_plugins`).
-- Scriptable command console — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
 
 JavaScope interaction
 =====================
 
 ``uz_dataviewer`` is designed to work with the data logged by the UltraZohm hardware and the :ref:`JavaScope` software.
+:ref:`JavaScope` is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
+``uz_dataviewer`` is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.
 
 .. code-block:: text
 
@@ -30,15 +23,13 @@ JavaScope interaction
     └──────────┬───────────┘
                │ writes
                ▼
-         Log_*.csv  ──────────────┬───────────────► JS_plot_data.m (Matlab import), Python import
+         Log_*.csv  ──────────────┬───────────────► Matlab (JS_plot_data.m), Python (uz_dataviewer.read())
                                   │
                                   ▼
                     ┌────────────────────────────┐
                     │  (uz_dataviewer)           │  Data inspection, FFT, analysis
                     └────────────────────────────┘
 
-- **JavaScope** is for *running an experiment*: connect, trigger, observe live, tune parameters, and record.
-- **Data Viewer** is for *understanding the recording afterwards*: open one or many logs, arrange subplots, zoom into gigabyte-scale data, run FFTs.
 
 Loading data
 ============
@@ -157,48 +148,18 @@ Save / restore a session
 Command reference
 =================
 
-.. list-table::
+The **Arguments** column lists each parameter as ``name:kind``; optional ones are bracketed
+(``[start:float]``). The argument *kinds* are: ``plot`` = ``plot_N``; ``run`` = ``run_N`` or a
+file label; ``fwindow`` = ``custom`` / ``full`` / ``plot_N``; ``bool`` = ``on``/``off`` (or
+``true``/``false``); the rest are ``int`` / ``float`` / ``str``.
+
+.. csv-table:: uz_dataviewer console commands
+   :file: uz_dataviewer_commands.csv
    :header-rows: 1
-   :widths: 20 80
+   :widths: 16 12 34 22 16
 
-   * - Group
-     - Commands
-   * - Data / runs
-     - ``load(path, [start])``, ``convert(src, [dst])``, ``remove_run(run)``,
-       ``set_active(run, on)``, ``normalize_time(run, [start])``, ``reset_time(run)``
-   * - Layout
-     - ``set_grid(rows, cols)``, ``link_x(on)``, ``set_max_points(n)``
-   * - Signals
-     - ``add_signal(plot, run, signal)``, ``remove_signal(plot, run, signal)``,
-       ``clear_plot(plot)``, ``set_plot_type(plot, type)``, ``set_xy(plot, run, signal)``,
-       ``set_xy_style(plot, line|markers|both)``, ``set_axis(plot, run, signal, side)``
-   * - View
-     - ``set_x_lim(plot, min, max)``, ``set_y_lim(plot, min, max)``, ``reset_view(plot)``
-   * - Tools
-     - ``show_samples(plot, on)``, ``cursors(plot, on)``, ``set_cursors(plot, x1, x2)``,
-       ``spy(plot, on)``, ``set_spy_rect(plot, xmin, ymin, xmax, ymax)``,
-       ``export_data(plot, path, [relative])``, ``set_export_relative(plot, on)``
-   * - FFT window
-     - ``fft_source(run, signal)``, ``fft_remove(run, signal)``, ``fft_clear()``,
-       ``fft_follow(custom|full|plot_N)``, ``fft_range(min, max)``, ``fft_remove_dc(on)``,
-       ``fft_hann(on)``, ``fft_logx(on)``, ``fft_logy(on)``, ``fft_xlim(min, max)``,
-       ``fft()``, ``fft_export(path)``
-   * - Histogram window
-     - ``hist_source(run, signal)``, ``hist_remove(run, signal)``, ``hist_clear()``,
-       ``hist_follow(custom|full|plot_N)``, ``hist_range(min, max)``, ``hist_bins(n)``,
-       ``hist_xlim(min, max)``, ``histogram()``, ``hist_export(path)``
-   * - Nodes
-     - ``node_source(run, signal)``, ``node_add(fft|math|filter|shift|…)``,
-       ``node_set(node, key, value)``, ``node_link(src, dst)``, ``node_unlink(src, dst)``,
-       ``node_remove(node)``, ``node_rename(node, name)``, ``node_pos(node, x, y)``,
-       ``node_eval([node])``, ``load_plugins([dir])``
-   * - Session
-     - ``save_state(path)``, ``load_state(path)``, ``export_script(path)``,
-       ``run_script(path)``
-   * - Console
-     - ``help([name])``, ``clear_console()``
-
-(``help`` prints this list live, so it is always current.)
+This table is generated from the live command registry (``python -m uz_dataviewer.command_doc``),
+and ``help`` prints the same list in the console, so both stay current.
 
 Web build differences
 =====================

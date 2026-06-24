@@ -14,6 +14,16 @@ Additionally,  :ref:`JavaScope` logs that are converted to ``.parquet`` can be l
 ``uz_dataviewer`` is available as a desktop and (local) web application.
 Detailed guidelines for building are given in :doc:`uz_dataviewer_build`.
 
+Features
+--------
+
+- Load many files — ``.csv`` (JavaScope ``;`` *or* ``,``, auto-detected) and ``.parquet``. Open via the button or drag files onto the window (desktop).
+- Subplot grid — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**, **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**, per-cell **CSV export**.
+- Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail (XY plots use a plain stride).
+- FFT & Histogram windows — overlay several signals, pick the time window (follow a plot / full / custom), compute on demand, log axes, CSV export.
+- Node canvas — drag a signal into a graph, apply transforms (FFT / math / filter / shift), and the result becomes a new draggable signal. Scriptable (``node_*``) and extensible with Python plugin nodes (see :doc:`uz_dataviewer_plugins`).
+- Scriptable command console — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
+
 Starting uz_dataviewer
 ======================
 
@@ -79,7 +89,7 @@ The data navigation is used to open log files.
 Log files can be opened by clicking the *Open file(s)...* button or by dragging and dropping files onto the navigation panel (native only).
 Individual signals of a log can be dragged and dropped into the plot area.
 Right click on the log shows information and gives access to additional per-log settings, such as time normalization.
-The window control (2) controls settings for the complete window, e.g., the plot, histogram, FFT, or Nodes window.
+The window control (2) offers settings for the complete window, e.g., the plot, histogram, FFT, or nodes window.
 Windows can be closed, floated, docked as tabs and are resizable.
 The window control (2) for the plot window gives access to, for example, the plot layout such as 1x1 or 2x1.
 Settings of the window control (2) are global for the complete window.
@@ -90,12 +100,11 @@ The settings (6) give access to application settings, such import and export of 
 For all plots, the following interactions are available: Mouse wheel zooms in and out, right-click and drag creates a zoom rectangle, right-click while holding shift only zooms the x-axis, while holding Alt only zooms the y-axis.
 Right-clicking the x-axis or y-axis gives access to additional settings.
 
-Outline
-=======
+Outline uz_dataviewer documentation
+===================================
 
 .. toctree::
    :maxdepth: 1
-   :caption: ``uz_dataviewer`` documentation
 
    uz_dataviewer_build
    uz_dataviewer_usage

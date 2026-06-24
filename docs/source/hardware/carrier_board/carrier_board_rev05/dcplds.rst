@@ -66,6 +66,8 @@ The shared heartbeat and safe-state handling must stay common so all D-Slot prog
 
 The MachXO2 D-Slot project contains the following maintained implementations:
 
+- ``i2c_only`` (runtime-configurable direction and protected TX test mode;
+  see :ref:`dslot_i2c_runtime`)
 - ``tx30``
 - ``tx26_w_enable``
 - ``rx30``

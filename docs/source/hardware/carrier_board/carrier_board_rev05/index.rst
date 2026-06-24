@@ -16,4 +16,5 @@ Carrier Board Rev05
 	frontpanel_rev01
 	../carrier_board_rev06/i2c
 	dcplds
+	dslot_i2c_runtime
 	arm_pins

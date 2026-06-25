@@ -1,7 +1,7 @@
 --Copyright 1986-2023 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2.2 (lin64) Build 3788238 Tue Feb 21 19:59:23 MST 2023
---Date        : Wed Jun 24 16:28:36 2026
+--Date        : Thu Jun 25 10:48:22 2026
 --Host        : lin1 running 64-bit Ubuntu 22.04.5 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -22,16 +22,6 @@ entity zusys_wrapper is
     A3_MISO : in STD_LOGIC_VECTOR ( 2 downto 0 );
     A3_MOSI : out STD_LOGIC_VECTOR ( 2 downto 0 );
     A3_SCKL : out STD_LOGIC_VECTOR ( 2 downto 0 );
-    D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
-    D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
-    D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     DAC_CLK_N_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     DAC_CLK_P_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     DAC_CVN_N_A2 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -116,16 +106,6 @@ end zusys_wrapper;
 architecture STRUCTURE of zusys_wrapper is
   component zusys is
   port (
-    D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
-    D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
-    D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
@@ -227,16 +207,6 @@ zusys_i: component zusys
       A3_MISO(2 downto 0) => A3_MISO(2 downto 0),
       A3_MOSI(2 downto 0) => A3_MOSI(2 downto 0),
       A3_SCKL(2 downto 0) => A3_SCKL(2 downto 0),
-      D1_OUT(23 downto 0) => D1_OUT(23 downto 0),
-      D1_OUT_26(0) => D1_OUT_26(0),
-      D1_OUT_27(0) => D1_OUT_27(0),
-      D1_OUT_28(0) => D1_OUT_28(0),
-      D1_OUT_29(0) => D1_OUT_29(0),
-      D2_OUT(11 downto 0) => D2_OUT(11 downto 0),
-      D2_OUT_26(0) => D2_OUT_26(0),
-      D2_OUT_27(0) => D2_OUT_27(0),
-      D2_OUT_28(0) => D2_OUT_28(0),
-      D2_OUT_29(0) => D2_OUT_29(0),
       DAC_CLK_N_A2(0) => DAC_CLK_N_A2(0),
       DAC_CLK_P_A2(0) => DAC_CLK_P_A2(0),
       DAC_CVN_N_A2(0) => DAC_CVN_N_A2(0),

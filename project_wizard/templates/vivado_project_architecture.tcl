@@ -13,14 +13,6 @@ set project_wizard_platform_revision "{{ platform_revision }}"
 puts "Project Wizard: applying adapter card configuration"
 puts "Target platform: {{ platform_name }} {{ platform_revision }}"
 
-# TODO: Check that a Vivado project and block design are open.
-# Example direction:
-#   if {[current_project -quiet] eq ""} { error "No Vivado project open" }
-#   if {[current_bd_design -quiet] eq ""} { error "No block design open" }
-
-# TODO: Remove or reuse previously generated Project Wizard hierarchies.
-# This should eventually be guarded by generated object names or a user choice.
-
 proc uz_pw_delete_external_ports_for_slot {slot cleanup_patterns} {
   set ports_to_delete {}
   foreach pattern $cleanup_patterns {
@@ -224,8 +216,7 @@ proc uz_pw_delete_child_cells_in_slot_hierarchy {hier_path} {
 }
 
 {% for slot in configured_slots %}
-# TODO: Create or refresh hierarchy for adapter slot {{ slot.slot }}.
-# Suggested hierarchy path: uz_digital_adapter/{{ slot.slot }}_adapter or uz_analog_adapter/{{ slot.slot }}_adapter
+# Refresh generated block-design objects for adapter slot {{ slot.slot }}.
 uz_pw_delete_external_ports_for_slot {{ slot.slot }} [list {{ slot.cleanup_patterns }}]
 uz_pw_delete_external_intf_ports_for_slot {{ slot.slot }} [list {{ slot.cleanup_patterns }}]
 uz_pw_disconnect_matching_pins_in_hierarchy uz_digital_adapter/{{ slot.slot }}_adapter [list {{ slot.cleanup_patterns }}]

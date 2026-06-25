@@ -20,7 +20,6 @@
 #include <math.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
-#include "../include/pwm_3L_driver.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 #include "xtime_l.h"
@@ -29,6 +28,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../include/pwm_init.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -71,29 +71,76 @@ void ISR_Control(void *data)
     update_adapter_d4();
     update_adapter_d5();
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == idle_state)
+    {
+        /* Project Wizard BEGIN: idle_state isr_actions */
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
+        Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+        Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, true, true, true);
+        Global_Data.rasv.halfBridge10DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge11DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge12DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
+/* Project Wizard END: idle_state isr_actions */
+    }
+    else if (current_state == running_state)
+    {
+        /* Project Wizard BEGIN: running_state isr_actions */
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, false, false, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, true);
+/* Project Wizard END: running_state isr_actions */
+    }
+    else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 10.0f, 0.5f);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, true);
-    	Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine_wave.a;
-    	Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
-    	Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
-    } else {
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
+        uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 10.0f, 0.5f);
+        Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine_wave.a;
+        Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
+        Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
+        /* Project Wizard BEGIN: control_state isr_actions */
+/* Project Wizard END: control_state isr_actions */
+    }
+    else if (current_state == error_state)
+    {
+        /* Project Wizard BEGIN: error_state isr_actions */
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
+        Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+        Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, true, true, true);
+        Global_Data.rasv.halfBridge10DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge11DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge12DutyCycle = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
+/* Project Wizard END: error_state isr_actions */
     }
     
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    /* Project Wizard BEGIN: pwm_runtime */
+    project_wizard_update_pwm_outputs(&Global_Data);
+/* Project Wizard END: pwm_runtime */
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
-    
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

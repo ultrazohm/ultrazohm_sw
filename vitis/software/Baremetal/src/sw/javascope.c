@@ -119,7 +119,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH21] = &data->av.adc_max11331_a3_ch21;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH22] = &data->av.adc_max11331_a3_ch22;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH23] = &data->av.adc_max11331_a3_ch23;
-	js_ch_observable[JSO_TEMP_D4_A_CH4] = &data->av.temperature_card_d4_channel_A.temperature[3];
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H1] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H1;
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L1] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_L1;
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H2] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H2;
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L2] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_L2;
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H3] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H3;
+	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L3] = &data->av.inverter_adapter_d3.ChipTempDegreesCelsius_L3;
+	js_ch_observable[JSO_TEMP_D4_A_CH4] = &data->av.temperature_card_d4_channel_A.temperature[4];
+	js_ch_observable[JSO_TEMP_D4_A_CH5] = &data->av.temperature_card_d4_channel_A.temperature[5];
+	js_ch_observable[JSO_TEMP_D4_A_CH19] = &data->av.temperature_card_d4_channel_A.temperature[19];
 	js_ch_observable[JSO_ENDAT_D5_CH1_POS_MECH_ST] = &data->av.endat_encoder_d5_1_position_mech_si_single_turn;
 	js_ch_observable[JSO_ENDAT_D5_CH1_POS_EL_ST] = &data->av.endat_encoder_d5_1_position_el_si_single_turn;
 	js_ch_observable[JSO_SSI_D5_CH2_POS_MECH_ST] = &data->av.ssi_encoder_d5_2_position_mech_si_single_turn;

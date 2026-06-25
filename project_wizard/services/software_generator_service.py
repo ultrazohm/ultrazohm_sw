@@ -71,6 +71,26 @@ FILE_MARKERS = {
         "/* Project Wizard BEGIN: init_ip_cores */",
         "/* Project Wizard END: init_ip_cores */",
     ),
+    "pwm_runtime": (
+        "/* Project Wizard BEGIN: pwm_runtime */",
+        "/* Project Wizard END: pwm_runtime */",
+    ),
+    "idle_state_isr_actions": (
+        "/* Project Wizard BEGIN: idle_state isr_actions */",
+        "/* Project Wizard END: idle_state isr_actions */",
+    ),
+    "running_state_isr_actions": (
+        "/* Project Wizard BEGIN: running_state isr_actions */",
+        "/* Project Wizard END: running_state isr_actions */",
+    ),
+    "control_state_isr_actions": (
+        "/* Project Wizard BEGIN: control_state isr_actions */",
+        "/* Project Wizard END: control_state isr_actions */",
+    ),
+    "error_state_isr_actions": (
+        "/* Project Wizard BEGIN: error_state isr_actions */",
+        "/* Project Wizard END: error_state isr_actions */",
+    ),
     "javascope_observables": (
         "/* Project Wizard BEGIN: javascope_observables */",
         "/* Project Wizard END: javascope_observables */",
@@ -80,6 +100,29 @@ FILE_MARKERS = {
         "/* Project Wizard END: javascope_observable_pointers */",
     ),
 }
+
+PWM_GLOBAL_DEFINE_KEYS = {
+    "pwm_frequency": "UZ_PWM_FREQUENCY",
+    "pwm_deadtime_us": "UZ_PWM_DEADTIME_IN_US",
+    "pwm_min_pulse_width_us": "UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US",
+}
+
+PWM_2L_MODE_OPTIONS = (
+    ("normalized_input_via_AXI", "normalized_input_via_AXI"),
+    ("normalized_input_via_FPGA", "normalized_input_via_FPGA"),
+    ("direct_control_via_FPGA", "direct_control_via_FPGA"),
+)
+
+PWM_2L_TRIGGER_SOURCE_OPTIONS = (
+    ("trigger_at_MIN", "trigger_at_MIN"),
+    ("trigger_at_MAX", "trigger_at_MAX"),
+    ("trigger_at_EITHER", "trigger_at_EITHER"),
+)
+
+BOOL_LITERAL_OPTIONS = (
+    ("true", "true"),
+    ("false", "false"),
+)
 
 
 @dataclass
@@ -92,12 +135,14 @@ class SlotSoftwareContent:
 @dataclass
 class SoftwarePlan:
     slot_content: dict[str, SlotSoftwareContent]
+    generated_files: dict[str, str]
     actual_values: list[str]
     objects: list[str]
     adc_readout_definitions: list[str]
     adc_readout: list[str]
     main_init: list[str]
     isr_control_by_slot: dict[str, list[str]]
+    state_isr_actions: dict[str, list[str]]
     datamover_array_length: int
     javascope_observable_enums: list[str]
     javascope_observable_pointers: list[str]
@@ -206,18 +251,27 @@ class SoftwareGenerator:
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
         driver_config: dict[str, dict[str, str]] | None = None,
+        hardware_config: dict[str, str] | None = None,
     ) -> SoftwarePlan:
         software_modes = software_modes or {}
         software_presets = software_presets or {}
         driver_config = driver_config or {}
+        hardware_config = hardware_config or {}
         selected_visualization_signals = set(visualization_signals or [])
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
+        generated_files: dict[str, str] = {}
         actual_values: list[str] = []
         objects: list[str] = []
         adc_readout_definitions: list[str] = []
         adc_readout: list[str] = []
         main_init: list[str] = []
         isr_control_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
+        state_isr_actions: dict[str, list[str]] = {
+            "idle_state": [],
+            "running_state": [],
+            "control_state": [],
+            "error_state": [],
+        }
         available_visualization_signals: list[VisualizationSignal] = []
         warnings: list[str] = []
         temperature_instances = 0
@@ -236,6 +290,35 @@ class SoftwareGenerator:
         datamover_array_length = max(2, sum(stream["channel_count"] for stream in analog_adc_offsets.values()))
         endat_instances = 0
         ssi_instances = 0
+        pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
+        pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
+        state_isr_actions.update(pwm_2l_state_isr_actions(pwm_2l_instance_count, hardware_config))
+        pwm_context = self._project_wizard_pwm_context(source_dir, pwm_2l_instance_count, pwm_3l_enabled, driver_config)
+        warnings.extend(pwm_context.pop("warnings"))
+        generated_files["include/pwm_init.h"] = self.renderer.render_file(
+            "software/pwm_init.h.tpl", pwm_context
+        ).rstrip() + "\n"
+        generated_files["hw_init/pwm_init.c"] = self.renderer.render_file(
+            "software/pwm_init.c.tpl", pwm_context
+        ).rstrip() + "\n"
+        for instance in pwm_context["pwm_2l_instances"]:
+            objects.extend(
+                [
+                    f"\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_{instance['index']};",
+                    f"\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_{instance['index']};",
+                ]
+            )
+            main_init.extend(
+                [
+                    f"\t\t\tGlobal_Data.objects.project_wizard_deadtime_2l_{instance['index']} = initialize_project_wizard_deadtime_2l_{instance['index']}();",
+                    f"\t\t\tuz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_{instance['index']}, true);",
+                    f"\t\t\tGlobal_Data.objects.project_wizard_pwm_2l_{instance['index']} = initialize_project_wizard_pwm_2l_{instance['index']}();",
+                ]
+            )
+        if pwm_3l_enabled:
+            main_init.append("\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);")
+        objects.append("\tuz_wavegen_three_phase* three_phase_sine;")
+        main_init.append("\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();")
 
         for slot in SLOTS:
             mode = software_modes.get(slot, "follow_hardware")
@@ -354,11 +437,21 @@ class SoftwareGenerator:
                 main_init.append(
                     f"\t\t\tGlobal_Data.objects.inverter_adapter_{context['slot_lower']} = initialize_inverter_adapter_{context['slot_lower']}();"
                 )
+                state_isr_actions["idle_state"].append(
+                    f"uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_{context['slot_lower']}, false);"
+                )
+                state_isr_actions["running_state"].append(
+                    f"uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_{context['slot_lower']}, true);"
+                )
+                state_isr_actions["error_state"].append(
+                    f"uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_{context['slot_lower']}, false);"
+                )
                 isr_control_by_slot[slot].append(
                     "    update_inverter_adapter_{slot_lower}_outputs(&Global_Data);".format(
                         slot_lower=context["slot_lower"]
                     )
                 )
+                available_visualization_signals.extend(inverter_adapter_visualization_signals(str(context["slot_lower"])))
             elif card_id == "uz_d_temperature_ltc2983":
                 temperature_instances += 1
                 preset = software_presets.get(slot, "default")
@@ -504,12 +597,14 @@ class SoftwareGenerator:
         ]
         return SoftwarePlan(
             slot_content=slot_content,
+            generated_files=generated_files,
             actual_values=actual_values,
             objects=objects,
             adc_readout_definitions=adc_readout_definitions,
             adc_readout=adc_readout,
             main_init=main_init,
             isr_control_by_slot=isr_control_by_slot,
+            state_isr_actions=state_isr_actions,
             datamover_array_length=datamover_array_length,
             javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_signals],
             javascope_observable_pointers=[
@@ -517,6 +612,7 @@ class SoftwareGenerator:
             ],
             available_visualization_signals=available_visualization_signals,
             instance_counts={
+                "UZ_PWM_SS_2L_MAX_INSTANCES": pwm_2l_instance_count,
                 "UZ_ADCLTC2311_MAX_INSTANCES": adc_ltc2311_instances,
                 "UZ_ADCMAX11331_MAX_INSTANCES": adc_max11331_instances,
                 "UZ_TEMPERATURE_CARD_MAX_INSTANCES": temperature_instances,
@@ -539,9 +635,10 @@ class SoftwareGenerator:
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
         driver_config: dict[str, dict[str, str]] | None = None,
+        hardware_config: dict[str, str] | None = None,
     ) -> str:
         plan = self.build_plan(
-            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config
+            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config, hardware_config
         )
         lines = [
             "Software generation preview",
@@ -555,6 +652,11 @@ class SoftwareGenerator:
                 slot_lower = slot.lower()
                 lines.append(f"- include/{slot_lower}_adapter_init.h")
                 lines.append(f"- hw_init/{slot_lower}_adapter_init.c")
+        else:
+            lines.append("- none")
+        lines.extend(["", "Generated subsystem files:"])
+        if plan.generated_files:
+            lines.extend(f"- {path}" for path in plan.generated_files)
         else:
             lines.append("- none")
 
@@ -578,8 +680,23 @@ class SoftwareGenerator:
                 lines.extend(f"  {entry.strip()}" for entry in entries)
         if not any_isr_content:
             lines.append("  none")
+        lines.extend(["", "sw/isr.c PWM runtime marker content:"])
+        lines.extend(f"  {entry.strip()}" for entry in project_wizard_pwm_runtime_lines())
+        lines.extend(["", "sw/isr.c platform-state action marker content:"])
+        for state_name in ["idle_state", "running_state", "control_state", "error_state"]:
+            lines.append(f"{state_name}:")
+            entries = plan.state_isr_actions.get(state_name, [])
+            if entries:
+                lines.extend(f"  {entry.strip()}" for entry in entries)
+            else:
+                lines.append("  none")
         lines.extend(["", "uz_global_configuration.h hardware revision:"])
         lines.append(f"  UZ_HARDWARE_VERSION {hardware_revision_define_value(platform_revision)}")
+        lines.extend(["", "uz_global_configuration.h PWM timing defines:"])
+        for config_key, define in PWM_GLOBAL_DEFINE_KEYS.items():
+            value = (hardware_config or {}).get(config_key, "")
+            if value:
+                lines.append(f"  {define} {value}")
         lines.extend(["", "uz_global_configuration.h instance counts:"])
         for define, count in plan.instance_counts.items():
             lines.append(f"  {define} {count}U")
@@ -610,10 +727,43 @@ class SoftwareGenerator:
         option_values: dict[str, dict[str, str]],
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
+        hardware_config: dict[str, str] | None = None,
     ) -> list[DriverConfigInstance]:
         software_modes = software_modes or {}
         software_presets = software_presets or {}
+        hardware_config = hardware_config or {}
         instances: list[DriverConfigInstance] = []
+        pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
+        pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
+        for index in range(pwm_2l_instance_count):
+            instances.append(
+                DriverConfigInstance(
+                    id=f"pwm_2l_{index}",
+                    slot="PWM",
+                    label=f"2L PWM instance {index}",
+                    driver="pwm_2l",
+                    fields=pwm_2l_config_fields(),
+                )
+            )
+            instances.append(
+                DriverConfigInstance(
+                    id=f"deadtime_2l_{index}",
+                    slot="PWM",
+                    label=f"2L deadtime instance {index}",
+                    driver="deadtime_2l",
+                    fields=deadtime_2l_config_fields(),
+                )
+            )
+        if pwm_3l_enabled:
+            instances.append(
+                DriverConfigInstance(
+                    id="pwm_3l_0",
+                    slot="PWM",
+                    label="3L PWM instance 0",
+                    driver="pwm_3l",
+                    fields=pwm_3l_config_fields(),
+                )
+            )
         for slot in SLOTS:
             card_id = assignments.get(slot, "empty") if software_modes.get(slot, "follow_hardware") == "follow_hardware" else "empty"
             slot_lower = slot.lower()
@@ -703,12 +853,18 @@ class SoftwareGenerator:
         software_presets: dict[str, str] | None = None,
         visualization_signals: set[str] | list[str] | None = None,
         driver_config: dict[str, dict[str, str]] | None = None,
+        hardware_config: dict[str, str] | None = None,
     ) -> SoftwareGenerationResult:
         plan = self.build_plan(
-            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config
+            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config, hardware_config
         )
         written_files: list[Path] = []
         patched_files: list[Path] = []
+
+        for relative_path, content in plan.generated_files.items():
+            path = source_dir / relative_path
+            path.write_text(content, encoding="utf-8")
+            written_files.append(path)
 
         for slot, content in plan.slot_content.items():
             slot_lower = slot.lower()
@@ -730,6 +886,8 @@ class SoftwareGenerator:
         isr_c = source_dir / "sw" / "isr.c"
         patch_marker_file(isr_c, "adc_readout_definitions", plan.adc_readout_definitions)
         patch_marker_file(isr_c, "adc_readout", plan.adc_readout)
+        patch_marker_file(isr_c, "pwm_runtime", project_wizard_pwm_runtime_lines())
+        patch_platform_state_isr_actions(isr_c, plan.state_isr_actions)
         patch_slot_isr_control(isr_c, plan.isr_control_by_slot)
         patched_files.append(isr_c)
 
@@ -747,11 +905,58 @@ class SoftwareGenerator:
 
         global_configuration = source_dir / "uz" / "uz_global_configuration.h"
         patch_hardware_revision(global_configuration, platform_revision)
+        patch_pwm_global_defines(global_configuration, hardware_config or {})
         if plan.instance_counts:
             patch_instance_counts(global_configuration, plan.instance_counts)
         patched_files.append(global_configuration)
 
         return SoftwareGenerationResult(written_files, patched_files, plan.warnings)
+
+    def _project_wizard_pwm_context(
+        self,
+        source_dir: Path,
+        pwm_2l_instance_count: int,
+        pwm_3l_enabled: bool,
+        driver_config: dict[str, dict[str, str]] | None = None,
+    ) -> dict[str, object]:
+        driver_config = driver_config or {}
+        instances: list[dict[str, object]] = []
+        warnings: list[str] = []
+        for index in range(pwm_2l_instance_count):
+            pwm_macro, pwm_warning = resolve_pwm_base_address_macro(source_dir, "pwm_2l", index)
+            deadtime_macro, deadtime_warning = resolve_pwm_base_address_macro(source_dir, "deadtime_2l", index)
+            if pwm_warning:
+                warnings.append(pwm_warning)
+            if deadtime_warning:
+                warnings.append(deadtime_warning)
+            half_bridge_base = index * 3 + 1
+            pwm_values = driver_instance_values(f"pwm_2l_{index}", pwm_2l_config_fields(), driver_config)
+            deadtime_values = driver_instance_values(f"deadtime_2l_{index}", deadtime_2l_config_fields(), driver_config)
+            instances.append(
+                {
+                    "index": index,
+                    "pwm_base_address_macro": pwm_macro,
+                    "deadtime_base_address_macro": deadtime_macro,
+                    "half_bridge_a": half_bridge_base,
+                    "half_bridge_b": half_bridge_base + 1,
+                    "half_bridge_c": half_bridge_base + 2,
+                    "pwm_config": pwm_values,
+                    "deadtime_config": deadtime_values,
+                }
+            )
+        pwm_3l_macro = ""
+        pwm_3l_config = driver_instance_values("pwm_3l_0", pwm_3l_config_fields(), driver_config)
+        if pwm_3l_enabled:
+            pwm_3l_macro, pwm_3l_warning = resolve_pwm_base_address_macro(source_dir, "pwm_3l", 0)
+            if pwm_3l_warning:
+                warnings.append(pwm_3l_warning)
+        return {
+            "pwm_2l_instances": instances,
+            "pwm_3l_enabled": pwm_3l_enabled,
+            "pwm_3l_base_address_macro": pwm_3l_macro,
+            "pwm_3l_config": pwm_3l_config,
+            "warnings": warnings,
+        }
 
     def _temperature_context(
         self, slot: str, source_dir: Path, preset: str, config_values: dict[str, str]
@@ -883,6 +1088,120 @@ def driver_instance_values(
     return {field.id: configured.get(field.id, field.default) for field in fields}
 
 
+def pwm_2l_config_fields() -> list[DriverConfigField]:
+    return [
+        DriverConfigField("ip_clk_frequency_Hz", "IP clock frequency Hz", "100000000"),
+        DriverConfigField("Tristate_HB1", "Tristate HB1", "false", input_type="choice", options=BOOL_LITERAL_OPTIONS),
+        DriverConfigField("Tristate_HB2", "Tristate HB2", "false", input_type="choice", options=BOOL_LITERAL_OPTIONS),
+        DriverConfigField("Tristate_HB3", "Tristate HB3", "false", input_type="choice", options=BOOL_LITERAL_OPTIONS),
+        DriverConfigField(
+            "min_pulse_width_in_microseconds",
+            "Minimum pulse width us",
+            "UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US",
+        ),
+        DriverConfigField("PWM_freq_Hz", "PWM frequency Hz", "UZ_PWM_FREQUENCY"),
+        DriverConfigField(
+            "PWM_mode",
+            "PWM mode",
+            "normalized_input_via_AXI",
+            input_type="choice",
+            options=PWM_2L_MODE_OPTIONS,
+        ),
+        DriverConfigField("PWM_en", "PWM enable", "true", input_type="choice", options=BOOL_LITERAL_OPTIONS),
+        DriverConfigField(
+            "use_external_counter",
+            "Use external counter",
+            "true",
+            input_type="choice",
+            options=BOOL_LITERAL_OPTIONS,
+        ),
+        DriverConfigField("init_dutyCyc_HB1", "Initial duty HB1", "0.0f"),
+        DriverConfigField("init_dutyCyc_HB2", "Initial duty HB2", "0.0f"),
+        DriverConfigField("init_dutyCyc_HB3", "Initial duty HB3", "0.0f"),
+        DriverConfigField("triangle_shift_HB1", "Triangle shift HB1", "0.0f"),
+        DriverConfigField("triangle_shift_HB2", "Triangle shift HB2", "0.0f"),
+        DriverConfigField("triangle_shift_HB3", "Triangle shift HB3", "0.0f"),
+        DriverConfigField(
+            "trigger_source",
+            "Trigger source",
+            "trigger_at_MIN",
+            input_type="choice",
+            options=PWM_2L_TRIGGER_SOURCE_OPTIONS,
+        ),
+    ]
+
+
+def deadtime_2l_config_fields() -> list[DriverConfigField]:
+    return [
+        DriverConfigField("clock_frequency_MHz", "Clock frequency MHz", "100"),
+        DriverConfigField("deadtime_us", "Deadtime us", "UZ_PWM_DEADTIME_IN_US"),
+        DriverConfigField(
+            "inverse_bottom_switch",
+            "Inverse bottom switch",
+            "false",
+            input_type="choice",
+            options=BOOL_LITERAL_OPTIONS,
+        ),
+    ]
+
+
+def pwm_3l_config_fields() -> list[DriverConfigField]:
+    return [
+        DriverConfigField("enable", "Enable", "1"),
+        DriverConfigField("mode", "Mode", "0"),
+        DriverConfigField("carrier_frequency_Hz", "Carrier frequency Hz", "data->av.pwm_frequency_hz"),
+        DriverConfigField("minimum_pulse_width", "Minimum pulse width", "0.01f"),
+        DriverConfigField("initial_duty_a", "Initial duty A", "data->rasv.halfBridge1DutyCycle"),
+        DriverConfigField("initial_duty_b", "Initial duty B", "data->rasv.halfBridge2DutyCycle"),
+        DriverConfigField("initial_duty_c", "Initial duty C", "data->rasv.halfBridge3DutyCycle"),
+        DriverConfigField("tristate_a", "Tristate A", "0"),
+        DriverConfigField("tristate_b", "Tristate B", "0"),
+        DriverConfigField("tristate_c", "Tristate C", "0"),
+    ]
+
+
+def config_int(value: str, default: int, minimum: int, maximum: int) -> int:
+    try:
+        parsed = int(str(value))
+    except (TypeError, ValueError):
+        parsed = default
+    return max(minimum, min(maximum, parsed))
+
+
+def pwm_2l_state_isr_actions(instance_count: int, hardware_config: dict[str, str]) -> dict[str, list[str]]:
+    behavior = hardware_config.get("pwm_2l_idle_error_behavior", "tristate_with_duty_cycle")
+    enable_tristate = behavior == "tristate_with_duty_cycle"
+    duty_values = [
+        hardware_config.get("pwm_2l_idle_error_duty_hb1", "0.0f") or "0.0f",
+        hardware_config.get("pwm_2l_idle_error_duty_hb2", "0.0f") or "0.0f",
+        hardware_config.get("pwm_2l_idle_error_duty_hb3", "0.0f") or "0.0f",
+    ]
+    idle_error_lines: list[str] = []
+    running_lines: list[str] = []
+    for index in range(instance_count):
+        half_bridge_base = index * 3 + 1
+        for offset, duty_value in enumerate(duty_values):
+            half_bridge = half_bridge_base + offset
+            idle_error_lines.append(f"Global_Data.rasv.halfBridge{half_bridge}DutyCycle = {duty_value};")
+        if enable_tristate:
+            idle_error_lines.append(
+                f"uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_{index}, true, true, true);"
+            )
+            running_lines.append(
+                f"uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_{index}, false, false, false);"
+            )
+    return {
+        "idle_state": list(idle_error_lines),
+        "running_state": running_lines,
+        "control_state": [],
+        "error_state": list(idle_error_lines),
+    }
+
+
+def project_wizard_pwm_runtime_lines() -> list[str]:
+    return ["    project_wizard_update_pwm_outputs(&Global_Data);"]
+
+
 def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict[str, str]) -> str:
     prefix = f"output_ch{channel}"
     mode = config_values.get(f"{prefix}_source", "constant")
@@ -973,6 +1292,14 @@ def patch_slot_isr_control(path: Path, isr_control_by_slot: dict[str, list[str]]
     path.write_text(text, encoding="utf-8")
 
 
+def patch_platform_state_isr_actions(path: Path, state_isr_actions: dict[str, list[str]]) -> None:
+    text = path.read_text(encoding="utf-8")
+    for state_name in ["idle_state", "running_state", "control_state", "error_state"]:
+        lines = [f"        {line.strip()}" for line in state_isr_actions.get(state_name, [])]
+        text = replace_block(text, FILE_MARKERS[f"{state_name}_isr_actions"], lines)
+    path.write_text(text, encoding="utf-8")
+
+
 def patch_javascope_header(path: Path, observable_enums: list[str]) -> None:
     patch_marker_file(path, "javascope_observables", observable_enums)
 
@@ -996,6 +1323,20 @@ def patch_hardware_revision(path: Path, platform_revision: str) -> None:
         [f"#define UZ_HARDWARE_VERSION {hardware_revision_define_value(platform_revision)}"],
     )
     path.write_text(text, encoding="utf-8")
+
+
+def patch_pwm_global_defines(path: Path, hardware_config: dict[str, str]) -> None:
+    text = path.read_text(encoding="utf-8")
+    production_text, separator, test_text = text.partition("\n// Configuration defines for the number of used instances for testing")
+    for config_key, define in PWM_GLOBAL_DEFINE_KEYS.items():
+        value = hardware_config.get(config_key, "").strip()
+        if not value:
+            continue
+        pattern = re.compile(rf"^#define\s+{re.escape(define)}\s+\S+", re.MULTILINE)
+        production_text, replacements = pattern.subn(f"#define {define:<40} {value}", production_text, count=1)
+        if replacements != 1:
+            raise MarkerError(f"Could not find {define} in {path}.")
+    path.write_text(production_text + separator + test_text, encoding="utf-8")
 
 
 def patch_instance_counts(path: Path, counts: dict[str, int]) -> None:
@@ -1148,6 +1489,34 @@ def adc_max11331_actual_values(slot_lower: str) -> list[str]:
     return [f"\tfloat adc_max11331_{slot_lower}_ch{channel};" for channel in range(24)]
 
 
+def inverter_adapter_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    fields = [
+        ("pwm_duty_h1", "PWMdutyCycNormalized_H1", "PWM duty H1", "PWM_DUTY_H1"),
+        ("pwm_duty_l1", "PWMdutyCycNormalized_L1", "PWM duty L1", "PWM_DUTY_L1"),
+        ("pwm_duty_h2", "PWMdutyCycNormalized_H2", "PWM duty H2", "PWM_DUTY_H2"),
+        ("pwm_duty_l2", "PWMdutyCycNormalized_L2", "PWM duty L2", "PWM_DUTY_L2"),
+        ("pwm_duty_h3", "PWMdutyCycNormalized_H3", "PWM duty H3", "PWM_DUTY_H3"),
+        ("pwm_duty_l3", "PWMdutyCycNormalized_L3", "PWM duty L3", "PWM_DUTY_L3"),
+        ("chip_temp_h1", "ChipTempDegreesCelsius_H1", "chip temperature H1", "CHIP_TEMP_H1"),
+        ("chip_temp_l1", "ChipTempDegreesCelsius_L1", "chip temperature L1", "CHIP_TEMP_L1"),
+        ("chip_temp_h2", "ChipTempDegreesCelsius_H2", "chip temperature H2", "CHIP_TEMP_H2"),
+        ("chip_temp_l2", "ChipTempDegreesCelsius_L2", "chip temperature L2", "CHIP_TEMP_L2"),
+        ("chip_temp_h3", "ChipTempDegreesCelsius_H3", "chip temperature H3", "CHIP_TEMP_H3"),
+        ("chip_temp_l3", "ChipTempDegreesCelsius_L3", "chip temperature L3", "CHIP_TEMP_L3"),
+    ]
+    return [
+        VisualizationSignal(
+            signal_id=f"inverter_adapter_{slot_lower}_{signal_suffix}",
+            slot=slot,
+            label=f"{slot} inverter adapter {label}",
+            enum_name=f"JSO_INVERTER_ADAPTER_{slot}_{enum_suffix}",
+            pointer_expression=f"&data->av.inverter_adapter_{slot_lower}.{field_name}",
+        )
+        for signal_suffix, field_name, label, enum_suffix in fields
+    ]
+
+
 def analog_adc_packed_offsets(assignments: dict[str, str]) -> dict[str, dict[str, int]]:
     offsets: dict[str, dict[str, int]] = {}
     next_offset = 0
@@ -1258,6 +1627,36 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     if candidates:
         return candidates[0], f"{slot}: no slot-specific {interface} BASEADDR macro found. Using {candidates[0]} from {xparameters}."
     return fallback, f"{slot}: no {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
+
+
+def resolve_pwm_base_address_macro(source_dir: Path, interface: str, index: int) -> tuple[str, str]:
+    if interface == "pwm_2l":
+        fallback = f"XPAR_UZ_PWM_PWM_2L_PWM_AND_SS_CONTROL_V_{index}_BASEADDR"
+        required_terms = ["UZ_PWM", "PWM_2L", "PWM_AND_SS_CONTROL_V"]
+    elif interface == "deadtime_2l":
+        fallback = f"XPAR_UZ_PWM_PWM_2L_UZ_INTERLOCKDEADTIME_{index}_BASEADDR"
+        required_terms = ["UZ_PWM", "PWM_2L", "UZ_INTERLOCKDEADTIME"]
+    elif interface == "pwm_3l":
+        fallback = "XPAR_UZ_PWM_PWM_3L_PWM_SS_3L_IP_0_BASEADDR"
+        required_terms = ["UZ_PWM", "PWM_3L", "PWM_SS_3L_IP"]
+    else:
+        fallback = f"XPAR_UZ_PWM_{interface.upper()}_{index}_BASEADDR"
+        required_terms = ["UZ_PWM", interface.upper()]
+
+    xparameters, macros = xparameter_baseaddr_macros(source_dir)
+    if xparameters is None:
+        return fallback, f"PWM: xparameters.h not found. Using fallback base-address macro {fallback}."
+
+    indexed_suffix = f"_{index}_BASEADDR"
+    candidates = [
+        macro
+        for macro in macros
+        if all(term in macro for term in required_terms) and macro.endswith(indexed_suffix)
+    ]
+    if candidates:
+        return candidates[0], ""
+
+    return fallback, f"PWM: no {interface} BASEADDR macro for instance {index} found in {xparameters}. Using fallback {fallback}."
 
 
 @lru_cache(maxsize=16)

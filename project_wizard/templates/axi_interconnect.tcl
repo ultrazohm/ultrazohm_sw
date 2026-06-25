@@ -347,16 +347,16 @@ uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
 
 puts "Configuring local AXI SmartConnect for slot {{ slot.slot }}"
 
-# Remove legacy slot-local AXI boundary names before creating the canonical
-# wizard boundary. Older designs used IP-specific names such as AXI4_Lite here;
-# the wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# Remove non-canonical slot-local AXI boundary names before creating the generated
+# boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# Project Wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
 # SmartConnect.
-foreach legacy_slot_axi_pin [list \
+foreach previous_slot_axi_pin [list \
   {{ slot.adapter_hier_path }}/AXI4_Lite \
   {{ slot.adapter_hier_path }}/s00_axi \
   {{ slot.adapter_hier_path }}/s_axi_lite \
 ] {
-  uz_pw_delete_intf_pin_and_net_if_present $legacy_slot_axi_pin
+  uz_pw_delete_intf_pin_and_net_if_present $previous_slot_axi_pin
 }
 
 set slot_sc {{ slot.local_smartconnect_path }}

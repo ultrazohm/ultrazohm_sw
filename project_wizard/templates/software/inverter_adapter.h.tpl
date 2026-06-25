@@ -1,3 +1,4 @@
+/* Project Wizard generated content for {{ slot }} */
 #include "../IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 struct _DS_Data_;

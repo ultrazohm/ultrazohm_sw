@@ -33,9 +33,9 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
 #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
-#define UZ_PWM_FREQUENCY                        10.0e3f
-#define UZ_PWM_DEADTIME_IN_US                   1.0f
-#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        0.5f
+#define UZ_PWM_FREQUENCY                         10.0e3f
+#define UZ_PWM_DEADTIME_IN_US                    0.3f
+#define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US         0.5f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
@@ -51,7 +51,7 @@
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             0U
-#define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
+#define UZ_PWM_SS_2L_MAX_INSTANCES                        4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U

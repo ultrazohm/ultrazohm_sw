@@ -1,8 +1,8 @@
 .. _uz_dataviewer_plugins:
 
-====================
-Writing node plugins
-====================
+============
+Node plugins
+============
 
 The Nodes canvas can be extended with your own **transform nodes** — a plain Python file that turns input signals into an output signal.
 Once installed, your node kind works exactly like a builtin: a toolbar button, param widgets, evaluation, scripting (``node_*``), and save/restore.

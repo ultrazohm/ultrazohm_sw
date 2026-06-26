@@ -1,16 +1,16 @@
 .. _uz_dataviewer_library:
 
-=======================================
-Using uz_dataviewer as a Python library
-=======================================
+===============
+Python library
+===============
 
-The data/analysis core runs **without a window**.
-You can load logs, compute FFTs, and run the node transforms from a plain script or a notebook through the ergonomic facade in ``uz_dataviewer.api`` — re-exported at the package top level.
+The data/analysis core runs without a window, i.e., headless.
+The library can load logs, compute FFTs, and run the node transforms from a Python script through the facade in ``uz_dataviewer.api``, which is re-exported at the package top level.
 
 .. note::
 
    **Importing the package does not import the imgui GUI stack.**
-   ``import uz_dataviewer`` (and ``uz_dataviewer.api`` / ``.analysis`` / ``.nodes``) needs only numpy/pandas/pyarrow.
+   ``import uz_dataviewer`` (and ``uz_dataviewer.api`` / ``.analysis`` / ``.nodes``) only requires numpy/pandas/pyarrow.
    The GUI (``DataViewerApp`` / ``main``) is loaded lazily, only when you actually access it.
    The core is therefore usable on a headless server and ``import`` stays fast.
 
@@ -38,6 +38,11 @@ A runnable version is in ``examples/headless_example.py``.
 API reference
 =============
 
+The facade adds no compute logic of its own.
+The facade reuses the loader, FFT and node transforms used by the GUI.
+Thus, the results of library usage matches the results of the GUI.
+
+
 .. autoclass:: uz_dataviewer.api.Dataset
    :members:
 
@@ -54,5 +59,3 @@ API reference
 .. autofunction:: uz_dataviewer.api.kinds
 .. autofunction:: uz_dataviewer.api.load_plugins
 
-The facade adds no compute logic of its own — it reuses the same loader, FFT and node transforms as the GUI, so results match what you see in the app.
-For internals see :doc:`uz_dataviewer_architecture`.

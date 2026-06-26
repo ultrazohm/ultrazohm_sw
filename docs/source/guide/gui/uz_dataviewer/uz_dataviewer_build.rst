@@ -1,8 +1,8 @@
 .. _uz_dataviewer_build:
 
-======================
-Building uz_dataviewer
-======================
+=====
+Build
+=====
 
 ``uz_dataviewer`` is a Python ``imgui_bundle`` application.
 ``imgui_bundle`` ships prebuilt native binaries (Dear ImGui, ImPlot, hello_imgui) for Windows, and Linux so the same source runs on all desktop platforms, and can also be executed in the browser via Pyodide.

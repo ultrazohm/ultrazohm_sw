@@ -17,12 +17,12 @@ Detailed guidelines for building are given in :doc:`uz_dataviewer_build`.
 Features
 --------
 
-- Load many files — ``.csv`` (JavaScope ``;`` *or* ``,``, auto-detected) and ``.parquet``. Open via the button or drag files onto the window (desktop).
-- Subplot grid — drag-and-drop signals, runtime layout, types line/scatter/stairs/**XY**, **linked X axes**, **secondary Y axis**, **cursors**, **spy** zoom inset, **show samples**, per-cell **CSV export**.
-- Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail (XY plots use a plain stride).
-- FFT & Histogram windows — overlay several signals, pick the time window (follow a plot / full / custom), compute on demand, log axes, CSV export.
-- Node canvas — drag a signal into a graph, apply transforms (FFT / math / filter / shift), and the result becomes a new draggable signal. Scriptable (``node_*``) and extensible with Python plugin nodes (see :doc:`uz_dataviewer_plugins`).
-- Scriptable command console — every action echoes a command; the input runs them, with completion, history and a selectable log. Sessions save to JSON or a replayable ``.uzscript``.
+- Load :ref:`JavaScope` ``.csv`` (delimiter ``;`` *or* ``,`` is auto-detected) and ``.parquet`` log files
+- Subplot grid, drag-and-drop signals, adjust layout at runtime, multiple plot types (line/scatter/stairs/*XY*), linked X axes, secondary Y axis, cursors, spy zoom inset, show samples, per-cell ``.csv`` export
+- Range-aware downsampling — multi-GB logs pan smoothly and zooming reveals detail
+- FFT & Histogram, optional locked time window to time plot, optional logarithmic axes, ``.csv`` export of FFT and histogram data
+- Nodes for applying transforms (FFT / math / filter / shift) to signals where the result becomes a new signal. Nodes can be extended with custom Python code for user-specific nodes (:doc:`uz_dataviewer_plugins`)
+- Command console and script support: every action in the GUI is a command. Save sessions save to JSON or a ``.uzscript``.
 
 Starting uz_dataviewer
 ======================

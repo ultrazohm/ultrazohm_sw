@@ -4,19 +4,19 @@
 Node plugins
 ============
 
-The Nodes canvas can be extended with your own **transform nodes** — a plain Python file that turns input signals into an output signal.
-Once installed, your node kind works exactly like a builtin: a toolbar button, param widgets, evaluation, scripting (``node_*``), and save/restore.
-Plugins are entirely optional; with none installed the app runs unchanged.
+The Nodes canvas can be extended with nodes that apply a user-defined transformation.
+To this end, a Python file is required that turns input signals into an output signal.
+Once installed, your node kind works like a builtin node with a toolbar button, param widgets, evaluation, scripting (``node_*``), and save/restore.
+Plugins are optional, when no plugin is installed, the app runs unchanged.
+For how to use nodes in the GUI see :ref:`uz_dataviewer_nodes`.
 
-For how to use nodes in the GUI see :ref:`uz_dataviewer_nodes`; for the engine internals see :ref:`the node graph section <uz_dataviewer_node_graph>`.
+Plugins location
+================
 
-Where plugins live
-==================
+``uz_dataviewer`` scans these locations in order, and only if they exist:
 
-The viewer scans these locations in order, and only if they exist:
-
-#. **``UZ_DATAVIEWER_PLUGINS``** — one or more directories (``os.pathsep``-separated: ``:`` on Linux/macOS, ``;`` on Windows). Point this at your plugin folder.
-#. **``~/.uz_dataviewer/nodes/``** — the default user plugin folder.
+#. ``UZ_DATAVIEWER_PLUGINS``: one or more directories (``os.pathsep``-separated: ``:`` on Linux/macOS, ``;`` on Windows). Point this at your plugin folder.
+#. ``~/.uz_dataviewer/nodes/``: the default user plugin folder.
 
 .. code-block:: bash
 
@@ -29,13 +29,14 @@ You can also load a folder at runtime from the console (no restart):
 
    load_plugins("/path/to/my/plugins")     # or load_plugins() for the configured dirs
 
-A missing folder or file is silently skipped; a plugin that throws on import is logged to the console and skipped — it never blocks startup.
+A missing folder or file is silently skipped.
+A plugin that throws an error on import is logged to the console and skipped.
 
-The contract
-============
+Plugin structure
+================
 
 A plugin file registers one or more transforms with the ``@transform`` decorator.
-The function takes ``inputs`` (a list of ``(time, y)`` NumPy arrays, one per connected input) and the node's ``params`` (a ``dict[str, str]``), and returns ``(out_time, out_y, info)``:
+The function takes ``inputs`` (a list of ``(time, y)`` NumPy arrays (one per connected input) as well as the node's ``params`` (a ``dict[str, str]``) and returns ``(out_time, out_y, info)``.
 
 .. code-block:: python
 
@@ -54,7 +55,7 @@ The function takes ``inputs`` (a list of ``(time, y)`` NumPy arrays, one per con
        out = np.convolve(np.asarray(y, float), np.ones(width) / width, mode="same")
        return time, out, f"moving avg, {width} samples"   # info shows under the node
 
-That is the whole API. A working copy is in ``examples/plugins/moving_average.py``.
+A working example is located at ``ultrazohm_sw/uz_dataviewer/examples/plugins/moving_average.py``.
 
 ``@transform(...)`` arguments
 -----------------------------
@@ -86,17 +87,10 @@ Each renders a widget that writes back to ``params[key]``; read it in your funct
 Rules & tips
 ============
 
-- **Output an ``(out_time, out_y, info)`` tuple.** ``out_time`` is the x-axis of the derived signal (for a spectrum-like node it can be frequency).
+- Output an ``(out_time, out_y, info)`` tuple. ``out_time`` is the x-axis of the derived signal (for a spectrum-like node it can be frequency).
   Raise a normal exception with a clear message on bad input — it's caught, shown on the node, and the rest of the graph keeps working.
 - The result is materialized as a **derived run** named after the node, so it appears in Navigation and is draggable into plots / FFT / Histogram.
 - Keep transforms **pure NumPy** if you want them to also work in the web build. 
   Native plugins can import anything that's installed.
-- **Scripting & sessions:** a graph stores only the node *kind* and its params, never your code, so ``.uzscript``/JSON round-trip unchanged.
+- Scripting & sessions: a graph stores only the node *kind* and its params, never your code, so ``.uzscript``/JSON round-trip unchanged.
   Opening a session whose plugin isn't installed keeps the node as a greyed **"missing plugin"** placeholder (params + links preserved); install the plugin and re-evaluate to restore it.
-
-Security
-========
-
-A plugin is code you deliberately installed (same trust level as ``pip install``).
-A saved **session never contains code** — only kind names and params — so opening someone else's graph stays data-only.
-To run without any plugins, just leave the folders empty / ``UZ_DATAVIEWER_PLUGINS`` unset.

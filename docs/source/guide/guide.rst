@@ -192,6 +192,6 @@ Interfaces of Cabinet
    gui/install
    gui/network
    gui/javascope
-   gui/dataviewer/dataviewer
    gui/uz_dataviewer/uz_dataviewer
+   gui/dataviewer/dataviewer
 

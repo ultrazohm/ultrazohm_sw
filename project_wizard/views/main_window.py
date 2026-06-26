@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
         self.software_generator = SoftwareGenerator(self.database)
         self.system_resolver = SystemResolver(self.database)
         self.current_config_path: Path | None = None
-        self.is_loading_config = False
+        self.is_loading_config = True
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
         self.axi_fields: dict[str, QLineEdit] = {}
@@ -79,7 +79,7 @@ class MainWindow(QMainWindow):
         self.driver_config_fields: dict[tuple[str, str], QLineEdit | QPlainTextEdit | QComboBox] = {}
         self.driver_config_tabs: QTabWidget | None = None
         self.driver_config_tab_layouts: dict[str, QVBoxLayout] = {}
-        self.visualization_checkboxes: dict[str, QCheckBox] = {}
+        self.visualization_route_checkboxes: dict[str, tuple[QCheckBox, QCheckBox]] = {}
         self.visualization_tabs: QTabWidget | None = None
         self.visualization_tab_layouts: dict[str, QVBoxLayout] = {}
         self.software_preview: QPlainTextEdit | None = None
@@ -102,6 +102,7 @@ class MainWindow(QMainWindow):
         self.tcl_workflow_button: QPushButton | None = None
         self.vivado_status: QPlainTextEdit | None = None
         self.detail_combos: dict[tuple[str, str], QComboBox] = {}
+        self.detail_checkboxes: dict[tuple[str, str], QCheckBox] = {}
         self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_source_edits: dict[tuple[str, str], QLineEdit] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
@@ -129,17 +130,20 @@ class MainWindow(QMainWindow):
         splitter.setSizes([250, 950])
         self.setCentralWidget(splitter)
         self._build_menu()
-        self.refresh_platform_revisions()
-        for slot in DIGITAL_SLOTS:
-            self.prefill_cpld_for_slot(slot)
-        self.reset_toolchain_config()
-        self.reset_hardware_config()
-        self.reset_software_config()
-        self.refresh_software_preset_options()
-        self.refresh_data_visualization_options()
-        self.reset_axi_config()
-        self.rebuild_details()
+        try:
+            self.refresh_platform_revisions()
+            for slot in DIGITAL_SLOTS:
+                self.prefill_cpld_for_slot(slot)
+            self.reset_toolchain_config()
+            self.reset_hardware_config()
+            self.reset_software_config()
+            self.reset_axi_config()
+            self.rebuild_details()
+        finally:
+            self.is_loading_config = False
+        self.refresh_dirty_software_dependent_views()
         self.refresh_tcl_preview()
+        self.refresh_software_preview()
 
     def _build_menu(self) -> None:
         file_menu = self.menuBar().addMenu("File")
@@ -1216,9 +1220,15 @@ class MainWindow(QMainWindow):
             else:
                 value = field.text().strip()
             config[f"driver_config_{instance_id}_{field_id}"] = value
-        for signal_id, checkbox in self.visualization_checkboxes.items():
-            if checkbox.isChecked():
-                config[f"visualize_{signal_id}"] = "true"
+        for signal_id, (javascope_checkbox, slow_data_checkbox) in self.visualization_route_checkboxes.items():
+            javascope_enabled = javascope_checkbox.isChecked()
+            slow_data_enabled = slow_data_checkbox.isChecked()
+            if javascope_enabled and slow_data_enabled:
+                config[f"visualize_{signal_id}"] = "both"
+            elif javascope_enabled:
+                config[f"visualize_{signal_id}"] = "javascope"
+            elif slow_data_enabled:
+                config[f"visualize_{signal_id}"] = "slow_data"
         return config
 
     def software_modes(self) -> dict[str, str]:
@@ -1227,8 +1237,18 @@ class MainWindow(QMainWindow):
     def software_presets(self) -> dict[str, str]:
         return {slot: combo.currentData() or "default" for slot, combo in self.software_preset_combos.items()}
 
-    def selected_visualization_signals(self) -> set[str]:
-        return {signal_id for signal_id, checkbox in self.visualization_checkboxes.items() if checkbox.isChecked()}
+    def selected_visualization_signals(self) -> dict[str, str]:
+        selected: dict[str, str] = {}
+        for signal_id, (javascope_checkbox, slow_data_checkbox) in self.visualization_route_checkboxes.items():
+            javascope_enabled = javascope_checkbox.isChecked()
+            slow_data_enabled = slow_data_checkbox.isChecked()
+            if javascope_enabled and slow_data_enabled:
+                selected[signal_id] = "both"
+            elif javascope_enabled:
+                selected[signal_id] = "javascope"
+            elif slow_data_enabled:
+                selected[signal_id] = "slow_data"
+        return selected
 
     def driver_config_values(self) -> dict[str, dict[str, str]]:
         values: dict[str, dict[str, str]] = {}
@@ -1343,6 +1363,8 @@ class MainWindow(QMainWindow):
                 combo.addItem("Type K thermocouple", "type_k_thermocouple")
             elif card_id == "uz_d_absolute_encoder":
                 combo.addItem("Default EnDat / SSI", "default")
+            elif card_id == "uz_d_incremental_encoder":
+                combo.addItem("Default Incremental Encoder", "default")
             elif card_id == "analog_ltc2311_16":
                 combo.addItem("Default ADC LTC2311", "default")
             elif card_id == "analog_max11331":
@@ -1465,19 +1487,25 @@ class MainWindow(QMainWindow):
                     if label_widget is not None:
                         label_widget.setVisible(visible)
 
-            def apply_mode(_index: int, combo: QComboBox = mode_combo, widgets: list[QWidget] = field_widgets) -> None:
+            def apply_mode(
+                _index: int,
+                combo: QComboBox = mode_combo,
+                widgets: list[QWidget] = field_widgets,
+                refresh_preview: bool = True,
+            ) -> None:
                 editable = combo.currentData() == "custom"
                 for widget in widgets:
                     widget.setEnabled(editable)
                 apply_visibility()
-                self.guarded_refresh_software_preview()
+                if refresh_preview:
+                    self.guarded_refresh_software_preview()
 
             for choice_combo in choice_fields.values():
                 choice_combo.currentIndexChanged.connect(
                     lambda _index, refresh=apply_visibility: (refresh(), self.guarded_refresh_software_preview())
                 )
             mode_combo.currentIndexChanged.connect(apply_mode)
-            apply_mode(mode_combo.currentIndex())
+            apply_mode(mode_combo.currentIndex(), refresh_preview=False)
             layout.addWidget(group)
 
         for slot, layout in self.driver_config_tab_layouts.items():
@@ -1495,11 +1523,13 @@ class MainWindow(QMainWindow):
         if values is None:
             selected = self.selected_visualization_signals()
         else:
-            selected = {
-                key.removeprefix("visualize_")
-                for key, value in values.items()
-                if key.startswith("visualize_") and str(value).lower() in {"1", "true", "yes", "on"}
-            }
+            selected = {}
+            for key, value in values.items():
+                if not key.startswith("visualize_"):
+                    continue
+                route = str(value).strip().lower()
+                if route in {"javascope", "slow_data", "both"}:
+                    selected[key.removeprefix("visualize_")] = route
         for layout in self.visualization_tab_layouts.values():
             for index in reversed(range(layout.count())):
                 item = layout.itemAt(index)
@@ -1508,7 +1538,7 @@ class MainWindow(QMainWindow):
                     widget.setParent(None)
                 else:
                     layout.removeItem(item)
-        self.visualization_checkboxes.clear()
+        self.visualization_route_checkboxes.clear()
 
         source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
         source_dir = Path(source_text) if source_text else Path("<software source folder>")
@@ -1526,10 +1556,23 @@ class MainWindow(QMainWindow):
             slot_layout = self.visualization_tab_layouts.get(signal.slot)
             if slot_layout is None:
                 continue
-            checkbox = QCheckBox(signal.label)
-            checkbox.setChecked(signal.signal_id in selected)
-            self.visualization_checkboxes[signal.signal_id] = checkbox
-            slot_layout.addWidget(checkbox)
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            label = QLabel(signal.label)
+            label.setWordWrap(True)
+            selected_route = selected.get(signal.signal_id, "off")
+            javascope_checkbox = QCheckBox("Javascope")
+            slow_data_checkbox = QCheckBox("Slow data")
+            javascope_checkbox.setChecked(selected_route in {"javascope", "both"})
+            slow_data_checkbox.setChecked(selected_route in {"slow_data", "both"})
+            javascope_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_software_preview())
+            slow_data_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_software_preview())
+            self.visualization_route_checkboxes[signal.signal_id] = (javascope_checkbox, slow_data_checkbox)
+            row_layout.addWidget(label, 1)
+            row_layout.addWidget(javascope_checkbox)
+            row_layout.addWidget(slow_data_checkbox)
+            slot_layout.addWidget(row)
         for slot, layout in self.visualization_tab_layouts.items():
             if not signals_by_slot.get(slot):
                 label = QLabel(f"No generated visualization signals for {slot}.")
@@ -1629,6 +1672,8 @@ class MainWindow(QMainWindow):
                 values[slot] = filtered
         for (slot, option_id), combo in self.detail_combos.items():
             values.setdefault(slot, {})[option_id] = combo.currentData() or ""
+        for (slot, option_id), checkbox in self.detail_checkboxes.items():
+            values.setdefault(slot, {})[option_id] = "true" if checkbox.isChecked() else "false"
         for (slot, option_id), edit in self.detail_trigger_edits.items():
             values.setdefault(slot, {})[f"{option_id}_trigger_source"] = edit.text().strip()
         for (slot, field_id), edit in self.detail_source_edits.items():
@@ -1957,6 +2002,7 @@ class MainWindow(QMainWindow):
     def rebuild_details(self) -> None:
         self._clear_details_layouts()
         self.detail_combos = {}
+        self.detail_checkboxes = {}
         self.detail_trigger_edits = {}
         self.detail_source_edits = {}
         assignments = self.assignments()
@@ -1986,6 +2032,19 @@ class MainWindow(QMainWindow):
                 form = QFormLayout()
                 for option in card.get("options", []):
                     option_id = option.get("id", "")
+                    if option.get("input") == "checkbox":
+                        selected = str(
+                            self.detail_options.get(slot, {}).get(option_id, option.get("default", "false"))
+                        ).strip().lower()
+                        checkbox = QCheckBox(option.get("text", "Enabled"))
+                        checkbox.setChecked(selected in {"1", "true", "yes", "on"})
+                        if option.get("tooltip") or option.get("help"):
+                            checkbox.setToolTip(option.get("tooltip", option.get("help", "")))
+                        key = (slot, option_id)
+                        self.detail_checkboxes[key] = checkbox
+                        checkbox.stateChanged.connect(self._detail_option_changed)
+                        form.addRow(option.get("label", option_id or "Option"), checkbox)
+                        continue
                     combo = QComboBox()
                     selected = self.detail_options.get(slot, {}).get(option_id, option.get("default", ""))
                     for choice in option.get("choices", []):
@@ -1996,22 +2055,25 @@ class MainWindow(QMainWindow):
                     self.detail_combos[key] = combo
                     combo.currentIndexChanged.connect(self._detail_option_changed)
 
-                    trigger_source = self.detail_options.get(slot, {}).get(
-                        f"{option_id}_trigger_source",
-                        "trigger_conversions",
-                    )
-                    trigger_edit = QLineEdit(trigger_source)
-                    trigger_edit.setEnabled(combo.currentData() != "none")
-                    trigger_edit.editingFinished.connect(self._detail_option_changed)
-                    self.detail_trigger_edits[key] = trigger_edit
+                    if option.get("show_trigger_source", True):
+                        trigger_source = self.detail_options.get(slot, {}).get(
+                            f"{option_id}_trigger_source",
+                            "trigger_conversions",
+                        )
+                        trigger_edit = QLineEdit(trigger_source)
+                        trigger_edit.setEnabled(combo.currentData() != "none")
+                        trigger_edit.editingFinished.connect(self._detail_option_changed)
+                        self.detail_trigger_edits[key] = trigger_edit
 
-                    row = QWidget()
-                    row_layout = QHBoxLayout(row)
-                    row_layout.setContentsMargins(0, 0, 0, 0)
-                    row_layout.addWidget(combo, 1)
-                    row_layout.addWidget(QLabel("Trigger source"))
-                    row_layout.addWidget(trigger_edit, 1)
-                    form.addRow(option.get("label", option_id or "Option"), row)
+                        row = QWidget()
+                        row_layout = QHBoxLayout(row)
+                        row_layout.setContentsMargins(0, 0, 0, 0)
+                        row_layout.addWidget(combo, 1)
+                        row_layout.addWidget(QLabel("Trigger source"))
+                        row_layout.addWidget(trigger_edit, 1)
+                        form.addRow(option.get("label", option_id or "Option"), row)
+                    else:
+                        form.addRow(option.get("label", option_id or "Option"), combo)
                 group_layout.addLayout(form)
 
             source_fields = card.get("vivado", {}).get("source_fields", [])
@@ -2060,6 +2122,8 @@ class MainWindow(QMainWindow):
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
                 self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
+        for (slot, option_id), checkbox in self.detail_checkboxes.items():
+            self.detail_options.setdefault(slot, {})[option_id] = "true" if checkbox.isChecked() else "false"
         for (slot, field_id), edit in self.detail_source_edits.items():
             self.detail_options.setdefault(slot, {})[field_id] = edit.text().strip()
         self.software_dependent_views_dirty = True

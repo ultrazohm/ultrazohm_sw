@@ -7,6 +7,11 @@
       "description": "No slot CPLD program selected."
     },
     {
+      "id": "rx30",
+      "name": "rx30",
+      "description": "D-slot CPLD program for receive-oriented digital adapter card pin routing."
+    },
+    {
       "id": "uz_d_3ph_inverter",
       "name": "uz_d_3ph_inverter",
       "description": "Slot CPLD program for the UZ_D 3-phase inverter adapter card."
@@ -933,6 +938,214 @@
       }
     },
     {
+      "id": "uz_d_incremental_encoder",
+      "name": "UZ_D Incremental Encoder",
+      "family": "digital",
+      "description": "Incremental encoder adapter card using the Incremental_Encoder_v26 IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "rx30",
+      "vivado": {
+        "template": "cards/uz_d_incremental_encoder.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "RESETN",
+        "notes": [
+          "Creates the selected Dx_adapter hierarchy for three fixed incremental encoder IP cores.",
+          "Routes the encoder index, A and B inputs from the slot-specific digital adapter pins.",
+          "Connects PeriodEnd to a configurable trigger source.",
+          "Connects AXI through the D-slot project-level AXI attachment point.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "period_end_source",
+            "label": "PeriodEnd source pin",
+            "default": "uz_system/trigger_conversions",
+            "help": "Block-design pin used to latch/update the incremental encoder period measurement. The legacy design used the conversion-trigger path."
+          }
+        ],
+        "incremental_encoder_default_revision": "rev04",
+        "incremental_encoder_revisions": {
+          "rev02": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_13_Ch{slot_index}",
+              "b_pin": "Dig_12_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_16_Ch{slot_index}",
+              "b_pin": "Dig_15_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_20_Ch{slot_index}",
+              "a_pin": "Dig_19_Ch{slot_index}",
+              "b_pin": "Dig_18_Ch{slot_index}"
+            }
+          ],
+          "rev03": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_11_Ch{slot_index}",
+              "a_pin": "Dig_12_Ch{slot_index}",
+              "b_pin": "Dig_13_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_15_Ch{slot_index}",
+              "b_pin": "Dig_16_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_18_Ch{slot_index}",
+              "b_pin": "Dig_19_Ch{slot_index}"
+            }
+          ],
+          "rev04": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_11_Ch{slot_index}",
+              "a_pin": "Dig_12_Ch{slot_index}",
+              "b_pin": "Dig_13_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_15_Ch{slot_index}",
+              "b_pin": "Dig_16_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_18_Ch{slot_index}",
+              "b_pin": "Dig_19_Ch{slot_index}"
+            }
+          ]
+        },
+        "ip_cores": [
+          {
+            "instance_name": "incremental_encoder_{slot_lower}",
+            "instance_prefix": "incremental_encoder",
+            "module": "Incremental_Encoder_v26",
+            "vlnv": "xilinx.com:ip:Incremental_Encoder_v26",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
+          }
+        ],
+        "interfaces": [],
+        "incremental_encoder_outputs": [
+          {
+            "signal": "omega",
+            "left": 31,
+            "right": 0
+          },
+          {
+            "signal": "theta_el",
+            "left": 31,
+            "right": 0
+          },
+          {
+            "signal": "position",
+            "left": 15,
+            "right": 0
+          },
+          {
+            "signal": "omega_MA_N4",
+            "left": 31,
+            "right": 0
+          }
+        ],
+        "incremental_encoder_channels": [
+          {
+            "channel": 1,
+            "index_pin": "Dig_11_Ch{slot_index}",
+            "a_pin": "Dig_12_Ch{slot_index}",
+            "b_pin": "Dig_13_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "index_pin": "Dig_14_Ch{slot_index}",
+            "a_pin": "Dig_15_Ch{slot_index}",
+            "b_pin": "Dig_16_Ch{slot_index}"
+          },
+          {
+            "channel": 3,
+            "index_pin": "Dig_17_Ch{slot_index}",
+            "a_pin": "Dig_18_Ch{slot_index}",
+            "b_pin": "Dig_19_Ch{slot_index}"
+          }
+        ],
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_1/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_1/AXI4_Lite/reg0"
+          },
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_2/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_2/AXI4_Lite/reg0"
+          },
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_3/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_3/AXI4_Lite/reg0"
+          }
+        ]
+      },
+      "options": [
+        {
+          "id": "adapter_revision",
+          "label": "Adapter board revision",
+          "default": "rev04",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rev02",
+              "label": "Rev02"
+            },
+            {
+              "id": "rev03",
+              "label": "Rev03"
+            },
+            {
+              "id": "rev04",
+              "label": "Rev04"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_incrementalEncoder",
+        "notes": [
+          "Generate slot-local incremental encoder initialization.",
+          "Read encoder position, speed and index status in the slot ISR update function."
+        ]
+      }
+    },
+    {
       "id": "uz_d_absolute_encoder",
       "name": "UZ_D Absolute Encoder",
       "family": "digital",
@@ -1437,6 +1650,194 @@
           "Generate one init file or init section per enabled channel.",
           "Add object pointer to globalData.h.",
           "Initialize and enable the IP in main.c after xparameters.h contains the base address."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_resolver",
+      "name": "UZ_D Resolver",
+      "family": "digital",
+      "description": "Resolver adapter card using one Resolver Interface IP core per available AD2S1210 channel, optionally followed by the resolver PL interface IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "uz_d_resolver_d1_to_d4",
+      "slot_cpld_by_slot": {
+        "D1": "uz_d_resolver_d1_to_d4",
+        "D2": "uz_d_resolver_d1_to_d4",
+        "D3": "uz_d_resolver_d1_to_d4",
+        "D4": "uz_d_resolver_d1_to_d4",
+        "D5": "uz_d_resolver_d5"
+      },
+      "vivado": {
+        "template": "cards/uz_d_resolver.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "RESETN",
+        "notes": [
+          "Creates the selected Dx_adapter hierarchy for the resolver IP cores.",
+          "Routes the AD2S1210 SPI and control signals from the slot-specific digital adapter pins.",
+          "Connects sample_trigger to a configurable trigger source.",
+          "Optionally instantiates one resolver PL interface IP core per resolver channel.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "sample_trigger_source",
+            "label": "Sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "help": "Block-design pin used to trigger resolver sampling."
+          }
+        ],
+        "ip_cores": [
+          {
+            "instance_prefix": "resolver_ip",
+            "module": "Resolver_Interface_v1_0",
+            "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ]
+          },
+          {
+            "instance_prefix": "resolver_pl_interface",
+            "module": "uz_resolver_pl_interface",
+            "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
+          }
+        ],
+        "resolver_channels_d1_to_d4": [
+          {
+            "channel": 1,
+            "sample_pin": "Dig_00_Ch{slot_index}",
+            "sdo_pin": "Dig_01_Ch{slot_index}",
+            "fsync_pin": "Dig_02_Ch{slot_index}",
+            "sclk_pin": "Dig_03_Ch{slot_index}",
+            "reset_pin": "Dig_04_Ch{slot_index}",
+            "a1_pin": "Dig_05_Ch{slot_index}",
+            "a0_pin": "Dig_06_Ch{slot_index}",
+            "cs_pin": "Dig_07_Ch{slot_index}",
+            "sdi_pin": "Dig_08_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "sample_pin": "Dig_09_Ch{slot_index}",
+            "sdo_pin": "Dig_10_Ch{slot_index}",
+            "fsync_pin": "Dig_11_Ch{slot_index}",
+            "sclk_pin": "Dig_12_Ch{slot_index}",
+            "reset_pin": "Dig_13_Ch{slot_index}",
+            "a1_pin": "Dig_14_Ch{slot_index}",
+            "a0_pin": "Dig_15_Ch{slot_index}",
+            "cs_pin": "Dig_16_Ch{slot_index}",
+            "sdi_pin": "Dig_17_Ch{slot_index}"
+          },
+          {
+            "channel": 3,
+            "sample_pin": "Dig_18_Ch{slot_index}",
+            "sdo_pin": "Dig_19_Ch{slot_index}",
+            "fsync_pin": "Dig_20_Ch{slot_index}",
+            "sclk_pin": "Dig_21_Ch{slot_index}",
+            "reset_pin": "Dig_22_Ch{slot_index}",
+            "a1_pin": "Dig_23_Ch{slot_index}",
+            "a0_pin": "Dig_24_Ch{slot_index}",
+            "cs_pin": "Dig_25_Ch{slot_index}",
+            "sdi_pin": "Dig_26_Ch{slot_index}"
+          }
+        ],
+        "resolver_channels_d5": [
+          {
+            "channel": 1,
+            "sample_pin": "Dig_06_Ch{slot_index}",
+            "sdo_pin": "Dig_07_Ch{slot_index}",
+            "fsync_pin": "Dig_08_Ch{slot_index}",
+            "sclk_pin": "Dig_09_Ch{slot_index}",
+            "reset_pin": "Dig_10_Ch{slot_index}",
+            "a1_pin": "Dig_11_Ch{slot_index}",
+            "a0_pin": "Dig_12_Ch{slot_index}",
+            "cs_pin": "Dig_13_Ch{slot_index}",
+            "sdi_pin": "Dig_14_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "sample_pin": "Dig_15_Ch{slot_index}",
+            "sdo_pin": "Dig_16_Ch{slot_index}",
+            "fsync_pin": "Dig_17_Ch{slot_index}",
+            "sclk_pin": "Dig_18_Ch{slot_index}",
+            "reset_pin": "Dig_19_Ch{slot_index}",
+            "a1_pin": "Dig_20_Ch{slot_index}",
+            "a0_pin": "Dig_21_Ch{slot_index}",
+            "cs_pin": "Dig_22_Ch{slot_index}",
+            "sdi_pin": "Dig_23_Ch{slot_index}"
+          }
+        ],
+        "resolver_pl_outputs": [
+          {
+            "signal": "position_mech_raw",
+            "left": 15,
+            "right": 0
+          },
+          {
+            "signal": "position_mech_2pi",
+            "left": 26,
+            "right": 0
+          },
+          {
+            "signal": "position_el_2pi",
+            "left": 26,
+            "right": 0
+          },
+          {
+            "signal": "omega_mech_rad_s",
+            "left": 23,
+            "right": 0
+          },
+          {
+            "signal": "n_mech_rpm",
+            "left": 23,
+            "right": 0
+          },
+          {
+            "signal": "done",
+            "left": "",
+            "right": ""
+          }
+        ],
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "interfaces": []
+      },
+      "options": [
+        {
+          "id": "enable_pl_interface",
+          "label": "Resolver PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "text": "Instantiate resolver PL interface IPs",
+          "help": "When enabled, each resolver IP channel feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        }
+      ],
+      "vitis": {
+        "driver": "uz_resolverIP",
+        "notes": [
+          "Generate one resolver IP driver instance per available resolver channel.",
+          "When enabled, generate one resolver PL interface driver instance per resolver channel.",
+          "Read processed PL-interface angle and speed values in the slot ISR update function."
         ]
       }
     },

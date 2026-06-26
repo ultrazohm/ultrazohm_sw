@@ -44,21 +44,29 @@ uz_dac_interface_t* initialize_dac8831_a2(void)
 void update_dac8831_a2_outputs(struct _DS_Data_* data)
 {
 
-    dac8831_a2_outputs[0] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
+    data->av.dac8831_a2_ch0 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch0_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[0] = data->av.dac8831_a2_ch0;
 
-    dac8831_a2_outputs[1] = uz_wavegen_sawtooth_sample_with_offset(data->objects.dac8831_a2_ch1_sawtooth, 1.0f, 10.0f, -2.5f);
+    data->av.dac8831_a2_ch1 = uz_wavegen_sawtooth_sample_with_offset(data->objects.dac8831_a2_ch1_sawtooth, 1.0f, 10.0f, -2.5f);
+    dac8831_a2_outputs[1] = data->av.dac8831_a2_ch1;
 
-    dac8831_a2_outputs[2] = uz_wavegen_triangle_sample_with_offset(data->objects.dac8831_a2_ch2_triangle, 1.0f, 10.0f, -1.0f);
+    data->av.dac8831_a2_ch2 = uz_wavegen_triangle_sample_with_offset(data->objects.dac8831_a2_ch2_triangle, 1.0f, 10.0f, -1.0f);
+    dac8831_a2_outputs[2] = data->av.dac8831_a2_ch2;
 
-    dac8831_a2_outputs[3] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch3_sine, 1.0f, 10.0f, 0.0f);
+    data->av.dac8831_a2_ch3 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch3_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[3] = data->av.dac8831_a2_ch3;
 
-    dac8831_a2_outputs[4] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch4_sine, 1.0f, 10.0f, 0.0f);
+    data->av.dac8831_a2_ch4 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch4_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[4] = data->av.dac8831_a2_ch4;
 
-    dac8831_a2_outputs[5] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch5_sine, 1.0f, 10.0f, 0.0f);
+    data->av.dac8831_a2_ch5 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch5_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[5] = data->av.dac8831_a2_ch5;
 
-    dac8831_a2_outputs[6] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch6_sine, 1.0f, 20.0f, 0.0f);
+    data->av.dac8831_a2_ch6 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch6_sine, 1.0f, 20.0f, 0.0f);
+    dac8831_a2_outputs[6] = data->av.dac8831_a2_ch6;
 
-    dac8831_a2_outputs[7] = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch7_sine, 1.0f, 10.0f, 0.0f);
+    data->av.dac8831_a2_ch7 = uz_wavegen_sine_sample_with_offset(data->objects.dac8831_a2_ch7_sine, 1.0f, 10.0f, 0.0f);
+    dac8831_a2_outputs[7] = data->av.dac8831_a2_ch7;
 
     uz_dac_interface_set_ouput_values(data->objects.dac8831_a2, &dac8831_a2_output_array);
 }

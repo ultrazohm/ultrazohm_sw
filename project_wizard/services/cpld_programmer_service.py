@@ -64,7 +64,7 @@ CPLD_VARIANTS = {
 
 ISPMACH_JED_FILENAMES = {
     "30tx": "uz_cpld_30tx.jed",
-    "30rx": "uz_cpld_30rx.jed",
+    "rx30": "uz_cpld_rx30.jed",
     "uz_d_3ph_inverter": "uz_d_3ph_inverter.jed",
     "uz_d_abs_encoder": "uz_d_abs_encoder.jed",
     "uz_d_resolver_d1_to_d4": str(Path("uz_d_resolver") / "digital_D1_to_D4" / "uz_cpld_uz_d_resolver_d1_to_d4.jed"),
@@ -72,6 +72,10 @@ ISPMACH_JED_FILENAMES = {
     "uz_d_temperature_ltc2983": "uz_temperature_card.jed",
 }
 
+MACHXO2_JED_FILENAMES = {
+    "30tx": "uz_cpld_30tx.jed",
+    "rx30": "uz_cpld_rx30.jed",
+}
 
 @dataclass(frozen=True)
 class GeneratedXcf:
@@ -226,7 +230,18 @@ def _program_jed_path(cpld_repository: Path, program_id: str, variant: dict[str,
     program = program_id.strip() or DEFAULT_INACTIVE_PROGRAM_ID
     base_dir = Path(str(variant["base_dir"]))
     if variant["name"] == "LCMXO2-2000HC":
-        return cpld_repository / base_dir / program / f"uz_d_slots_{program}.jed"
+        candidates = [
+            cpld_repository / base_dir / program / f"uz_d_slots_{program}.jed",
+        ]
+        mapped_filename = MACHXO2_JED_FILENAMES.get(program)
+        if mapped_filename:
+            candidates.append(cpld_repository / base_dir / program / mapped_filename)
+            candidates.append(cpld_repository / base_dir / mapped_filename)
+        candidates.append(cpld_repository / base_dir / program / f"{program}.jed")
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+        return candidates[0]
     filename = ISPMACH_JED_FILENAMES.get(program, f"{program}.jed")
     filename_path = Path(filename)
     if len(filename_path.parts) > 1:

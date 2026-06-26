@@ -286,6 +286,9 @@ class TclGenerator:
                 }
             )
         primary_ip = ip_cores[0] if ip_cores else {"instance_name": "", "module": "", "vlnv": ""}
+        incremental_encoder_channels = self._incremental_encoder_channels(vivado, slot, slot_index, option_values)
+        resolver_channels = self._resolver_channels(vivado, slot, slot_index)
+        resolver_enable_pl_interface = self._config_bool(option_values.get("enable_pl_interface", "true"), default=True)
         context = {
             "slot": slot,
             "slot_lower": slot.lower(),
@@ -306,6 +309,23 @@ class TclGenerator:
             "adapter_resetn_pin": vivado.get("adapter_resetn_pin", "aresetn"),
             "inverter_gates_source": source_fields.get("gates_source", ""),
             "inverter_pwm_enable_source": source_fields.get("pwm_enable_source", ""),
+            "incremental_encoder_period_end_source": source_fields.get("period_end_source", ""),
+            "incremental_encoder_channels": incremental_encoder_channels,
+            "incremental_encoder_output_paths": self._incremental_encoder_output_paths(
+                incremental_encoder_channels,
+                self._incremental_encoder_outputs(vivado),
+                slot,
+            ),
+            "resolver_trigger_source": source_fields.get("sample_trigger_source", ""),
+            "resolver_enable_pl_interface": resolver_enable_pl_interface,
+            "resolver_channels": resolver_channels,
+            "resolver_ip": primary_ip,
+            "resolver_pl_ip": ip_cores[1] if len(ip_cores) > 1 else {"instance_name": "", "module": "", "vlnv": ""},
+            "resolver_pl_output_paths": self._resolver_pl_output_paths(
+                resolver_channels,
+                self._resolver_pl_outputs(vivado),
+                slot,
+            ),
             "inverter_gate_outputs": [
                 {"bit": "0", "port": "pwm_h1", "external_port": f"Dig_00_Ch{slot_index}"},
                 {"bit": "1", "port": "pwm_l1", "external_port": f"Dig_01_Ch{slot_index}"},
@@ -353,6 +373,154 @@ class TclGenerator:
             )
         )
         return context
+
+    @staticmethod
+    def _incremental_encoder_channels(
+        vivado: dict[str, Any], slot: str, slot_index: str, option_values: dict[str, str]
+    ) -> list[dict[str, str]]:
+        default_revision = str(vivado.get("incremental_encoder_default_revision", "rev04"))
+        revision = option_values.get("adapter_revision", default_revision) or default_revision
+        revisions = vivado.get("incremental_encoder_revisions", {})
+        if isinstance(revisions, dict) and revision in revisions:
+            raw_channels = revisions.get(revision, [])
+        else:
+            raw_channels = vivado.get("incremental_encoder_channels", [])
+        channels = []
+        for raw_channel in raw_channels:
+            channel = str(raw_channel.get("channel", ""))
+            if not channel:
+                continue
+            format_context = {
+                "slot": slot,
+                "slot_lower": slot.lower(),
+                "slot_index": slot_index,
+                "channel": channel,
+            }
+            channels.append(
+                {
+                    "channel": channel,
+                    "instance_name": f"incremental_encoder_{slot.lower()}_{channel}",
+                    "index_internal_name": f"{slot}_incr_encoder_{channel}_i",
+                    "a_internal_name": f"{slot}_incr_encoder_{channel}_a",
+                    "b_internal_name": f"{slot}_incr_encoder_{channel}_b",
+                    "index_pin": str(raw_channel.get("index_pin", "")).format(**format_context),
+                    "a_pin": str(raw_channel.get("a_pin", "")).format(**format_context),
+                    "b_pin": str(raw_channel.get("b_pin", "")).format(**format_context),
+                }
+            )
+        return channels
+
+    @staticmethod
+    def _incremental_encoder_outputs(vivado: dict[str, Any]) -> list[dict[str, str]]:
+        outputs = []
+        for raw_output in vivado.get("incremental_encoder_outputs", []):
+            signal = str(raw_output.get("signal", ""))
+            if not signal:
+                continue
+            outputs.append(
+                {
+                    "signal": signal,
+                    "left": str(raw_output.get("left", "")) or "\"\"",
+                    "right": str(raw_output.get("right", "")) or "\"\"",
+                }
+            )
+        return outputs
+
+    @staticmethod
+    def _incremental_encoder_output_paths(
+        channels: list[dict[str, str]], outputs: list[dict[str, str]], slot: str
+    ) -> list[dict[str, str]]:
+        output_paths = []
+        for channel in channels:
+            channel_index = channel["channel"]
+            for output in outputs:
+                output_paths.append(
+                    {
+                        "channel": channel_index,
+                        "boundary_name": f"{slot}_incr_encoder_{channel_index}_{output['signal']}",
+                        "source_pin": f"${{incremental_encoder_{channel_index}_path}}/{output['signal']}",
+                        "left": output["left"],
+                        "right": output["right"],
+                    }
+                )
+        return output_paths
+
+    @staticmethod
+    def _resolver_channels(vivado: dict[str, Any], slot: str, slot_index: str) -> list[dict[str, str]]:
+        raw_channels_key = "resolver_channels_d5" if slot == "D5" else "resolver_channels_d1_to_d4"
+        raw_channels = vivado.get(raw_channels_key, [])
+        channels = []
+        for raw_channel in raw_channels:
+            channel = str(raw_channel.get("channel", ""))
+            if not channel:
+                continue
+            format_context = {
+                "slot": slot,
+                "slot_lower": slot.lower(),
+                "slot_index": slot_index,
+                "channel": channel,
+            }
+            channels.append(
+                {
+                    "channel": channel,
+                    "resolver_instance_name": f"resolver_ip_{slot.lower()}_{channel}",
+                    "pl_instance_name": f"resolver_pl_interface_{slot.lower()}_{channel}",
+                    "sample_internal_name": f"{slot}_resolver_{channel}_n_sample",
+                    "sdo_internal_name": f"{slot}_resolver_{channel}_sdo",
+                    "fsync_internal_name": f"{slot}_resolver_{channel}_n_fsync",
+                    "sclk_internal_name": f"{slot}_resolver_{channel}_sclk",
+                    "reset_internal_name": f"{slot}_resolver_{channel}_n_reset",
+                    "a1_internal_name": f"{slot}_resolver_{channel}_a1",
+                    "a0_internal_name": f"{slot}_resolver_{channel}_a0",
+                    "cs_internal_name": f"{slot}_resolver_{channel}_cs",
+                    "sdi_internal_name": f"{slot}_resolver_{channel}_sdi",
+                    "sample_pin": str(raw_channel.get("sample_pin", "")).format(**format_context),
+                    "sdo_pin": str(raw_channel.get("sdo_pin", "")).format(**format_context),
+                    "fsync_pin": str(raw_channel.get("fsync_pin", "")).format(**format_context),
+                    "sclk_pin": str(raw_channel.get("sclk_pin", "")).format(**format_context),
+                    "reset_pin": str(raw_channel.get("reset_pin", "")).format(**format_context),
+                    "a1_pin": str(raw_channel.get("a1_pin", "")).format(**format_context),
+                    "a0_pin": str(raw_channel.get("a0_pin", "")).format(**format_context),
+                    "cs_pin": str(raw_channel.get("cs_pin", "")).format(**format_context),
+                    "sdi_pin": str(raw_channel.get("sdi_pin", "")).format(**format_context),
+                }
+            )
+        return channels
+
+    @staticmethod
+    def _resolver_pl_outputs(vivado: dict[str, Any]) -> list[dict[str, str]]:
+        outputs = []
+        for raw_output in vivado.get("resolver_pl_outputs", []):
+            signal = str(raw_output.get("signal", ""))
+            if not signal:
+                continue
+            outputs.append(
+                {
+                    "signal": signal,
+                    "left": str(raw_output.get("left", "")) or "\"\"",
+                    "right": str(raw_output.get("right", "")) or "\"\"",
+                }
+            )
+        return outputs
+
+    @staticmethod
+    def _resolver_pl_output_paths(
+        channels: list[dict[str, str]], outputs: list[dict[str, str]], slot: str
+    ) -> list[dict[str, str]]:
+        output_paths = []
+        for channel in channels:
+            channel_index = channel["channel"]
+            for output in outputs:
+                output_paths.append(
+                    {
+                        "channel": channel_index,
+                        "boundary_name": f"{slot}_resolver_pl_{channel_index}_{output['signal']}",
+                        "source_pin": f"${{resolver_pl_{channel_index}_path}}/{output['signal']}",
+                        "left": output["left"],
+                        "right": output["right"],
+                    }
+                )
+        return output_paths
 
     def _ip_core_context(
         self,
@@ -853,6 +1021,8 @@ class TclGenerator:
         option_values: dict[str, str],
     ) -> list[dict[str, str]]:
         slot_index = slot[1:]
+        if card.get("id") == "uz_d_resolver":
+            return self._resolver_axi_interfaces(slot, slot_index, card.get("vivado", {}), option_values)
         interfaces = self._format_axi_interfaces(slot, slot_index, card.get("vivado", {}).get("axi_interfaces", []))
         for option in card.get("options", []):
             selected_choice = self._selected_choice(option, option_values)
@@ -867,6 +1037,43 @@ class TclGenerator:
                     choice_id=selected_choice.get("id", ""),
                 )
             )
+        return interfaces
+
+    def _resolver_axi_interfaces(
+        self,
+        slot: str,
+        slot_index: str,
+        vivado: dict[str, Any],
+        option_values: dict[str, str],
+    ) -> list[dict[str, str]]:
+        channels = self._resolver_channels(vivado, slot, slot_index)
+        enable_pl_interface = self._config_bool(option_values.get("enable_pl_interface", "true"), default=True)
+        interfaces = []
+        for channel in channels:
+            channel_index = channel["channel"]
+            interfaces.append(
+                {
+                    "name": "s00_axi",
+                    "path": f"uz_digital_adapter/{slot}_adapter/resolver_ip_{slot.lower()}_{channel_index}/s00_axi",
+                    "addr_seg": (
+                        f"uz_digital_adapter/{slot}_adapter/resolver_ip_{slot.lower()}_{channel_index}/s00_axi/reg0"
+                    ),
+                }
+            )
+            if enable_pl_interface:
+                interfaces.append(
+                    {
+                        "name": "AXI4_Lite",
+                        "path": (
+                            f"uz_digital_adapter/{slot}_adapter/"
+                            f"resolver_pl_interface_{slot.lower()}_{channel_index}/AXI4_Lite"
+                        ),
+                        "addr_seg": (
+                            f"uz_digital_adapter/{slot}_adapter/"
+                            f"resolver_pl_interface_{slot.lower()}_{channel_index}/AXI4_Lite/reg0"
+                        ),
+                    }
+                )
         return interfaces
 
     def _format_axi_interfaces(

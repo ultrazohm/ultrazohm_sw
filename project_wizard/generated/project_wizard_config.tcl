@@ -397,7 +397,7 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D5_adapter
 
 
 
-# Slot CPLD D1: No CPLD program (none)
+# Slot CPLD D1: rx30 (rx30)
 
 # Slot CPLD D2: No CPLD program (none)
 
@@ -2628,48 +2628,171 @@ uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoar
 
 
 # -----------------------------------------------------------------------------
-# D1: No adapter board
+# D1: UZ_D Incremental Encoder
 # -----------------------------------------------------------------------------
 
-puts "Removing adapter slot D1 because no adapter board is selected"
+# NOTE: Creates the selected Dx_adapter hierarchy for three fixed incremental encoder IP cores.
 
-set slot "D1"
-set adapter_hier_name "D1_adapter"
-set slot_cleanup_patterns [list "*D1*" "*d1*" "*_Ch1*"]
-set slot_constraint_names [list "Digital_D1_packed.xdc" "Digital_AdapterBoard_D1.xdc"]
+# NOTE: Routes the encoder index, A and B inputs from the slot-specific digital adapter pins.
 
-# Apply the slot-removal cleanup locally so the No adapter board workflow stays
-# isolated from adapter-card generation.
-uz_pw_delete_external_ports_for_slot $slot $slot_cleanup_patterns
-uz_pw_disable_slot_constraints $slot $slot_constraint_names
+# NOTE: Connects PeriodEnd to a configurable trigger source.
 
-foreach adapter_parent_hier [list uz_digital_adapter uz_analog_adapter] {
-  set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
+# NOTE: Connects AXI through the D-slot project-level AXI attachment point.
 
-  if {[llength [get_bd_cells -quiet $adapter_hier_path]] == 0} {
-    puts "No existing adapter hierarchy found at $adapter_hier_path"
-    continue
-  }
+# NOTE: Uses single-pin D-slot constraints instead of the packed constraint file.
 
-  puts "Deleting existing adapter hierarchy $adapter_hier_path"
 
-  foreach intf_pin [get_bd_intf_pins -quiet ${adapter_hier_path}/*] {
-    uz_pw_disconnect_intf_pin_from_all_nets $intf_pin
-  }
+set adapter_parent_hier uz_digital_adapter
+set adapter_hier_name D1_adapter
+set adapter_hier_path "${adapter_parent_hier}/${adapter_hier_name}"
+set adapter_clock_pin clk
+set adapter_resetn_pin RESETN
 
-  foreach pin [get_bd_pins -quiet ${adapter_hier_path}/*] {
-    uz_pw_disconnect_pin_from_all_nets $pin
-  }
+# Recreate the selected slot content so the wizard configuration wins over stale IP.
+uz_pw_delete_child_cells_in_slot_hierarchy $adapter_hier_path
+uz_pw_create_hier_if_missing $adapter_parent_hier
+uz_pw_create_hier_if_missing $adapter_hier_path
 
-  catch {delete_bd_objs [get_bd_cells $adapter_hier_path]}
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/aclk"
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/aresetn"
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_clock_pin
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_resetn_pin
+
+proc uz_pw_incremental_encoder_create_input_path {adapter_parent_hier adapter_hier_path internal_name external_name target_pin} {
+  uz_pw_create_bd_port_if_missing I $external_name
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $internal_name
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I $internal_name
+  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" $target_pin
 }
 
-foreach adapter_parent_hier [list uz_digital_adapter uz_analog_adapter] {
-  uz_pw_disconnect_matching_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
-  uz_pw_delete_matching_nets_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
-  uz_pw_delete_matching_intf_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
-  uz_pw_delete_matching_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
+proc uz_pw_incremental_encoder_create_xlconstant {cell_path width value} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconstant
+  uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
+
+proc uz_pw_incremental_encoder_create_output_path {adapter_parent_hier adapter_hier_path boundary_name source_pin left right} {
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path O $boundary_name $left $right
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier O $boundary_name $left $right
+  uz_pw_connect_pin_pair_if_unconnected $source_pin "${adapter_hier_path}/${boundary_name}"
+  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_hier_path}/${boundary_name}" "${adapter_parent_hier}/${boundary_name}"
+}
+
+set period_end_source_pin "uz_system/trigger_conversions"
+if {$period_end_source_pin eq "" || [llength [get_bd_pins -quiet $period_end_source_pin]] == 0} {
+  puts "WARNING: PeriodEnd source '$period_end_source_pin' not found for D1 incremental encoder; using zero fallback."
+  set period_end_default_path "${adapter_hier_path}/D1_period_end_default_zero"
+  uz_pw_incremental_encoder_create_xlconstant $period_end_default_path 1 0
+  set period_end_source_pin "${period_end_default_path}/dout"
+}
+
+
+set incremental_encoder_1_path "${adapter_hier_path}/incremental_encoder_d1_1"
+uz_pw_create_ip_cell_if_missing $incremental_encoder_1_path xilinx.com:ip:Incremental_Encoder_v26
+
+
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_1_path}/IPCORE_CLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_1_path}/AXI4_Lite_ACLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_1_path}/IPCORE_RESETN"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_1_path}/AXI4_Lite_ARESETN"
+
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_i Dig_11_Ch1 "${incremental_encoder_1_path}/I"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_a Dig_12_Ch1 "${incremental_encoder_1_path}/A"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_b Dig_13_Ch1 "${incremental_encoder_1_path}/B"
+
+set period_end_parent_pin "D1_PeriodEnd_1"
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $period_end_parent_pin
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $period_end_parent_pin
+uz_pw_connect_pin_pair_if_unconnected $period_end_source_pin "${adapter_parent_hier}/${period_end_parent_pin}"
+uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${period_end_parent_pin}" "${adapter_hier_path}/${period_end_parent_pin}"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${period_end_parent_pin}" "${incremental_encoder_1_path}/PeriodEnd"
+
+set incremental_encoder_2_path "${adapter_hier_path}/incremental_encoder_d1_2"
+uz_pw_create_ip_cell_if_missing $incremental_encoder_2_path xilinx.com:ip:Incremental_Encoder_v26
+
+
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_2_path}/IPCORE_CLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_2_path}/AXI4_Lite_ACLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_2_path}/IPCORE_RESETN"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_2_path}/AXI4_Lite_ARESETN"
+
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_i Dig_14_Ch1 "${incremental_encoder_2_path}/I"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_a Dig_15_Ch1 "${incremental_encoder_2_path}/A"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_b Dig_16_Ch1 "${incremental_encoder_2_path}/B"
+
+set period_end_parent_pin "D1_PeriodEnd_2"
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $period_end_parent_pin
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $period_end_parent_pin
+uz_pw_connect_pin_pair_if_unconnected $period_end_source_pin "${adapter_parent_hier}/${period_end_parent_pin}"
+uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${period_end_parent_pin}" "${adapter_hier_path}/${period_end_parent_pin}"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${period_end_parent_pin}" "${incremental_encoder_2_path}/PeriodEnd"
+
+set incremental_encoder_3_path "${adapter_hier_path}/incremental_encoder_d1_3"
+uz_pw_create_ip_cell_if_missing $incremental_encoder_3_path xilinx.com:ip:Incremental_Encoder_v26
+
+
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_3_path}/IPCORE_CLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${incremental_encoder_3_path}/AXI4_Lite_ACLK"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_3_path}/IPCORE_RESETN"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${incremental_encoder_3_path}/AXI4_Lite_ARESETN"
+
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_i Dig_17_Ch1 "${incremental_encoder_3_path}/I"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_a Dig_18_Ch1 "${incremental_encoder_3_path}/A"
+uz_pw_incremental_encoder_create_input_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_b Dig_19_Ch1 "${incremental_encoder_3_path}/B"
+
+set period_end_parent_pin "D1_PeriodEnd_3"
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $period_end_parent_pin
+uz_pw_create_hier_pin_if_missing $adapter_hier_path I $period_end_parent_pin
+uz_pw_connect_pin_pair_if_unconnected $period_end_source_pin "${adapter_parent_hier}/${period_end_parent_pin}"
+uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${period_end_parent_pin}" "${adapter_hier_path}/${period_end_parent_pin}"
+uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${period_end_parent_pin}" "${incremental_encoder_3_path}/PeriodEnd"
+
+
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_omega "${incremental_encoder_1_path}/omega" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_theta_el "${incremental_encoder_1_path}/theta_el" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_position "${incremental_encoder_1_path}/position" 15 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_1_omega_MA_N4 "${incremental_encoder_1_path}/omega_MA_N4" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_omega "${incremental_encoder_2_path}/omega" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_theta_el "${incremental_encoder_2_path}/theta_el" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_position "${incremental_encoder_2_path}/position" 15 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_2_omega_MA_N4 "${incremental_encoder_2_path}/omega_MA_N4" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_omega "${incremental_encoder_3_path}/omega" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_theta_el "${incremental_encoder_3_path}/theta_el" 31 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_position "${incremental_encoder_3_path}/position" 15 0
+
+uz_pw_incremental_encoder_create_output_path $adapter_parent_hier $adapter_hier_path D1_incr_encoder_3_omega_MA_N4 "${incremental_encoder_3_path}/omega_MA_N4" 31 0
+
+
+uz_pw_apply_slot_constraints D1 [list "Digital_D1_packed.xdc" "Digital_AdapterBoard_D1.xdc"] [list "Digital_AdapterBoard_D1.xdc"]
+
+
+# Vitis driver hook: uz_incrementalEncoder
+
+
+# -----------------------------------------------------------------------------
+# D1: Rev04
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
 # -----------------------------------------------------------------------------
 # D2: No adapter board
@@ -4493,13 +4616,6 @@ proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier} {
 
 set uz_pw_upstream_smartconnect uz_user/smartconnect_1
 if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
-  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for D1."
-} else {
-  uz_pw_remove_slot_axi_attachment D1 uz_digital_adapter
-}
-
-set uz_pw_upstream_smartconnect uz_user/smartconnect_1
-if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
   puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for D2."
 } else {
   uz_pw_remove_slot_axi_attachment D2 uz_digital_adapter
@@ -4723,6 +4839,83 @@ if {$upstream_boundary_pin eq ""} {
     set upstream_boundary_pin A3_AXI
   } else {
     set upstream_boundary_pin ${upstream_hier_path}/A3_AXI
+  }
+}
+
+uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
+uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
+
+set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
+if {$upstream_mi_pin eq ""} {
+  set upstream_mi_pin [uz_pw_get_or_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
+}
+
+uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
+uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
+uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
+
+
+set uz_pw_upstream_smartconnect uz_user/smartconnect_1
+set uz_pw_axi_clock_pin uz_user/aclk
+set uz_pw_axi_resetn_pin uz_user/aresetn
+set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
+
+if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
+  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
+}
+
+if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
+  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
+}
+
+puts "Refreshing AXI attachment for slot D1"
+uz_pw_remove_slot_axi_attachment D1 uz_digital_adapter
+
+puts "Configuring local AXI SmartConnect for slot D1"
+
+# Remove non-canonical slot-local AXI boundary names before creating the generated
+# boundary. Older designs used IP-specific names such as AXI4_Lite here;
+# Project Wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
+# SmartConnect.
+foreach previous_slot_axi_pin [list \
+  uz_digital_adapter/D1_adapter/AXI4_Lite \
+  uz_digital_adapter/D1_adapter/s00_axi \
+  uz_digital_adapter/D1_adapter/s_axi_lite \
+] {
+  uz_pw_delete_intf_pin_and_net_if_present $previous_slot_axi_pin
+}
+
+set slot_sc uz_digital_adapter/D1_adapter/axi_smartconnect
+if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
+} else {
+  puts "Reusing existing local SmartConnect $slot_sc"
+}
+
+set slot_sc_cell [get_bd_cells -quiet $slot_sc]
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 3] $slot_sc_cell $slot_sc
+
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
+uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_digital_adapter/D1_adapter/clk
+uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_digital_adapter/D1_adapter/RESETN
+
+set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
+set adapter_root_boundary_pin uz_digital_adapter/D1_AXI
+set slot_boundary_pin uz_digital_adapter/D1_adapter/S00_AXI
+
+set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
+if {$upstream_boundary_pin eq ""} {
+  if {$upstream_hier_path eq ""} {
+    set upstream_boundary_pin D1_AXI
+  } else {
+    set upstream_boundary_pin ${upstream_hier_path}/D1_AXI
   }
 }
 
@@ -4989,6 +5182,21 @@ set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite
 assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_analog_adapter/A3_adapter/A3_ADC_MAX11331/s_axi_lite/reg0] -force
 
+set slot_sc uz_digital_adapter/D1_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D1_adapter/incremental_encoder_d1_1/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D1_adapter/incremental_encoder_d1_1/AXI4_Lite/reg0] -force
+
+set slot_sc uz_digital_adapter/D1_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 1]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D1_adapter/incremental_encoder_d1_2/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D1_adapter/incremental_encoder_d1_2/AXI4_Lite/reg0] -force
+
+set slot_sc uz_digital_adapter/D1_adapter/axi_smartconnect
+set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 2]
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D1_adapter/incremental_encoder_d1_3/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D1_adapter/incremental_encoder_d1_3/AXI4_Lite/reg0] -force
+
 set slot_sc uz_digital_adapter/D3_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D3_adapter/uz_d_inverter_adapter_d3/AXI4_Lite
@@ -5134,4 +5342,3 @@ if {[llength $project_wizard_checkpoint_bd_files] > 0} {
 
 # Generated Project Wizard TCL completed.
 puts "Project Wizard: TCL generation flow finished"
-

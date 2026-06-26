@@ -889,6 +889,173 @@
           "default": "0U"
         }
       ]
+    },
+    {
+      "id": "uz_resolverIP",
+      "name": "Resolver Interface",
+      "templates": {
+        "header": "software/resolver_ip.h.tpl",
+        "source": "software/resolver_ip.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "resolution",
+          "label": "Resolver resolution bits",
+          "default": "16U"
+        },
+        {
+          "id": "freq_clockin",
+          "label": "AD2S1210 clock input Hz",
+          "default": "8192000.0f"
+        },
+        {
+          "id": "zero_position_mechanical",
+          "label": "Mechanical zero position",
+          "default": "0.0f"
+        },
+        {
+          "id": "pole_pairs_machine",
+          "label": "Machine pole pairs",
+          "default": "4.0f"
+        },
+        {
+          "id": "pole_pairs_resolver",
+          "label": "Resolver pole pairs",
+          "default": "1.0f"
+        },
+        {
+          "id": "mode_after_init",
+          "label": "Mode after init",
+          "default": "POSITION_VELOCITY_MODE",
+          "input": "choice",
+          "options": [
+            {
+              "value": "POSITION_VELOCITY_MODE",
+              "label": "Position and velocity"
+            },
+            {
+              "value": "POSITION_MODE",
+              "label": "Position"
+            },
+            {
+              "value": "VELOCITY_MODE",
+              "label": "Velocity"
+            },
+            {
+              "value": "CONFIG_MODE",
+              "label": "Config"
+            }
+          ],
+          "help": "When the resolver PL interface is enabled, POSITION_VELOCITY_MODE keeps the resolver raw position and speed outputs updating for PL-side processing."
+        }
+      ]
+    },
+    {
+      "id": "uz_resolver_pl_interface",
+      "name": "Resolver PL interface",
+      "templates": {
+        "header": "software/resolver_pl_interface.h.tpl",
+        "source": "software/resolver_pl_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "resolver_polepairs",
+          "label": "Resolver pole pairs",
+          "default": "1"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "4"
+        },
+        {
+          "id": "position_intmax",
+          "label": "Position int max",
+          "default": "65535"
+        },
+        {
+          "id": "bitToRPS_factor",
+          "label": "Bit to RPS factor",
+          "default": "BIT_TO_RPS_FACTOR_16BIT"
+        },
+        {
+          "id": "theta_m_offset_rad",
+          "label": "Mechanical theta offset rad",
+          "default": "0.0f"
+        }
+      ]
+    },
+    {
+      "id": "uz_incrementalEncoder",
+      "name": "Incremental encoder",
+      "templates": {
+        "header": "software/incremental_encoder.h.tpl",
+        "source": "software/incremental_encoder.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_core_frequency_Hz",
+          "label": "IP core frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "line_number_per_turn_mech",
+          "label": "Line number per mechanical turn",
+          "default": "5000U"
+        },
+        {
+          "id": "OmegaPerOverSample_in_rpm",
+          "label": "Omega per oversample rpm",
+          "default": "500.0f"
+        },
+        {
+          "id": "drive_pole_pair",
+          "label": "Drive pole pairs",
+          "default": "4U",
+          "help": "Pole-pair count passed to the incremental encoder driver configuration. Keep this consistent with the driver requirements for electrical-angle readout."
+        },
+        {
+          "id": "Encoder_mech_Offset",
+          "label": "Mechanical encoder offset",
+          "default": "0U"
+        },
+        {
+          "id": "Encoder_elec_Offset",
+          "label": "Electrical encoder offset",
+          "default": "0U"
+        },
+        {
+          "id": "counting_direction",
+          "label": "Counting direction",
+          "default": "uz_incrementalEncoder_counting_clock_wise",
+          "input": "choice",
+          "options": [
+            {
+              "value": "uz_incrementalEncoder_counting_clock_wise",
+              "label": "Clockwise"
+            },
+            {
+              "value": "uz_incrementalEncoder_counting_counter_clock_wise",
+              "label": "Counter-clockwise"
+            }
+          ]
+        },
+        {
+          "id": "Speed_Timeout_ms",
+          "label": "Speed timeout ms",
+          "default": "10U"
+        }
+      ]
     }
   ]
 }

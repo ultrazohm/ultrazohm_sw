@@ -117,6 +117,9 @@ int main(void)
 			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
 			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
+			Global_Data.objects.incremental_encoder_d1_1 = initialize_incremental_encoder_d1_1();
+			Global_Data.objects.incremental_encoder_d1_2 = initialize_incremental_encoder_d1_2();
+			Global_Data.objects.incremental_encoder_d1_3 = initialize_incremental_encoder_d1_3();
 			Global_Data.objects.inverter_adapter_d3 = initialize_inverter_adapter_d3();
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);

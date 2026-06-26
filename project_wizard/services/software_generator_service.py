@@ -95,9 +95,17 @@ FILE_MARKERS = {
         "/* Project Wizard BEGIN: javascope_observables */",
         "/* Project Wizard END: javascope_observables */",
     ),
+    "javascope_slowdata": (
+        "/* Project Wizard BEGIN: javascope_slowdata */",
+        "/* Project Wizard END: javascope_slowdata */",
+    ),
     "javascope_observable_pointers": (
         "/* Project Wizard BEGIN: javascope_observable_pointers */",
         "/* Project Wizard END: javascope_observable_pointers */",
+    ),
+    "javascope_slowdata_pointers": (
+        "/* Project Wizard BEGIN: javascope_slowdata_pointers */",
+        "/* Project Wizard END: javascope_slowdata_pointers */",
     ),
 }
 
@@ -146,6 +154,8 @@ class SoftwarePlan:
     datamover_array_length: int
     javascope_observable_enums: list[str]
     javascope_observable_pointers: list[str]
+    javascope_slowdata_enums: list[str]
+    javascope_slowdata_pointers: list[str]
     available_visualization_signals: list["VisualizationSignal"]
     instance_counts: dict[str, int]
     warnings: list[str]
@@ -165,6 +175,21 @@ class VisualizationSignal:
     label: str
     enum_name: str
     pointer_expression: str
+    source_expression: str = ""
+    source_type: str = "float"
+
+    @property
+    def field_name(self) -> str:
+        return f"viz_{re.sub(r'[^0-9A-Za-z_]', '_', self.signal_id)}"
+
+    @property
+    def float_expression(self) -> str:
+        expression = self.source_expression or self.pointer_expression.removeprefix("&")
+        if self.source_type == "bool":
+            return f"({expression} ? 1.0f : 0.0f)"
+        if self.source_type in {"uint32", "int32", "uint16", "int16", "enum"}:
+            return f"((float){expression})"
+        return expression
 
 
 @dataclass(frozen=True)
@@ -252,12 +277,15 @@ class SoftwareGenerator:
         visualization_signals: set[str] | list[str] | None = None,
         driver_config: dict[str, dict[str, str]] | None = None,
         hardware_config: dict[str, str] | None = None,
+        resolve_base_addresses: bool = True,
     ) -> SoftwarePlan:
+        if resolve_base_addresses:
+            clear_xparameters_cache()
         software_modes = software_modes or {}
         software_presets = software_presets or {}
         driver_config = driver_config or {}
         hardware_config = hardware_config or {}
-        selected_visualization_signals = set(visualization_signals or [])
+        selected_visualization_routes = normalize_visualization_routes(visualization_signals)
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
         generated_files: dict[str, str] = {}
         actual_values: list[str] = []
@@ -279,6 +307,9 @@ class SoftwareGenerator:
         adc_max11331_instances = 0
         dac8831_instances = 0
         inverter_adapter_instances = 0
+        incremental_encoder_instances = 0
+        resolver_ip_instances = 0
+        resolver_pl_interface_instances = 0
         wavegen_instance_counts = {
             "UZ_WAVEGEN_SINE_MAX_INSTANCES": 0,
             "UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES": 0,
@@ -293,7 +324,9 @@ class SoftwareGenerator:
         pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
         pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
         state_isr_actions.update(pwm_2l_state_isr_actions(pwm_2l_instance_count, hardware_config))
-        pwm_context = self._project_wizard_pwm_context(source_dir, pwm_2l_instance_count, pwm_3l_enabled, driver_config)
+        pwm_context = self._project_wizard_pwm_context(
+            source_dir, pwm_2l_instance_count, pwm_3l_enabled, driver_config, resolve_base_addresses
+        )
         warnings.extend(pwm_context.pop("warnings"))
         generated_files["include/pwm_init.h"] = self.renderer.render_file(
             "software/pwm_init.h.tpl", pwm_context
@@ -331,6 +364,7 @@ class SoftwareGenerator:
                     driver_instance_values(
                         f"{slot.lower()}_adc_ltc2311", self.driver_config_fields("uz_adc_ltc2311"), driver_config
                     ),
+                    resolve_base_addresses,
                 )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
@@ -358,6 +392,7 @@ class SoftwareGenerator:
                     driver_instance_values(
                         f"{slot.lower()}_adc_max11331", self.driver_config_fields("uz_adc_max11331"), driver_config
                     ),
+                    resolve_base_addresses,
                 )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
@@ -385,6 +420,7 @@ class SoftwareGenerator:
                     driver_instance_values(
                         f"{slot.lower()}_dac8831", self.driver_config_fields("uz_dac_interface"), driver_config
                     ),
+                    resolve_base_addresses,
                 )
                 warnings.extend(context.pop("warnings"))
                 wavegen_instances = context.pop("wavegen_instances")
@@ -399,6 +435,7 @@ class SoftwareGenerator:
                 objects.append(f"\tuz_dac_interface_t* dac8831_{context['slot_lower']};")
                 for instance in wavegen_instances:
                     objects.append(f"\t{instance['type']}* {instance['object_name']};")
+                actual_values.extend(dac8831_actual_values(str(context["slot_lower"])))
                 main_init.append(
                     f"\t\t\tGlobal_Data.objects.dac8831_{context['slot_lower']} = initialize_dac8831_{context['slot_lower']}();"
                 )
@@ -412,6 +449,7 @@ class SoftwareGenerator:
                         slot_lower=context["slot_lower"]
                     )
                 )
+                available_visualization_signals.extend(dac8831_visualization_signals(str(context["slot_lower"])))
             elif card_id == "uz_d_inverter_adapter":
                 inverter_adapter_instances += 1
                 context = self._inverter_adapter_context(
@@ -422,6 +460,7 @@ class SoftwareGenerator:
                         self.driver_config_fields("uz_inverter_adapter"),
                         driver_config,
                     ),
+                    resolve_base_addresses,
                 )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
@@ -462,6 +501,7 @@ class SoftwareGenerator:
                     driver_instance_values(
                         f"{slot.lower()}_temperature", self.driver_config_fields("temperature_card", preset), driver_config
                     ),
+                    resolve_base_addresses,
                 )
                 warnings.extend(context.pop("warnings"))
                 header_includes, header_prototypes = split_header_template(
@@ -505,6 +545,108 @@ class SoftwareGenerator:
                     ]
                 )
                 available_visualization_signals.extend(temperature_visualization_signals(str(context["slot_lower"]), preset))
+            elif card_id == "uz_d_incremental_encoder":
+                for channel_index in range(1, 4):
+                    incremental_encoder_instances += 1
+                    context = self._incremental_encoder_context(
+                        slot,
+                        channel_index,
+                        source_dir,
+                        driver_instance_values(
+                            f"{slot.lower()}_incremental_encoder_{channel_index}",
+                            self.driver_config_fields("uz_incrementalEncoder"),
+                            driver_config,
+                        ),
+                        resolve_base_addresses,
+                    )
+                    warnings.extend(context.pop("warnings"))
+                    header_includes, header_prototypes = split_header_template(
+                        self.renderer.render_file(self.driver_template("uz_incrementalEncoder", "header"), context)
+                    )
+                    slot_content[slot].header_includes.extend(header_includes)
+                    slot_content[slot].header_prototypes.extend(header_prototypes)
+                    slot_content[slot].source_definitions.append(
+                        self.renderer.render_file(self.driver_template("uz_incrementalEncoder", "source"), context).rstrip()
+                    )
+                    objects.append(f"\tuz_incrementalEncoder_t* incremental_encoder_{context['slot_lower']}_{channel_index};")
+                    actual_values.extend(incremental_encoder_actual_values(str(context["slot_lower"]), channel_index))
+                    main_init.append(
+                        f"\t\t\tGlobal_Data.objects.incremental_encoder_{context['slot_lower']}_{channel_index} = initialize_incremental_encoder_{context['slot_lower']}_{channel_index}();"
+                    )
+                    isr_control_by_slot[slot].extend(incremental_encoder_isr_lines(context))
+                    available_visualization_signals.extend(
+                        incremental_encoder_visualization_signals(str(context["slot_lower"]), channel_index)
+                    )
+            elif card_id == "uz_d_resolver":
+                channel_count = resolver_channel_count(slot)
+                enable_pl_interface = config_bool(option_values.get(slot, {}).get("enable_pl_interface", "true"), default=True)
+                for channel_index in range(1, channel_count + 1):
+                    resolver_ip_instances += 1
+                    resolver_context = self._resolver_ip_context(
+                        slot,
+                        channel_index,
+                        source_dir,
+                        driver_instance_values(
+                            f"{slot.lower()}_resolver_ip_{channel_index}",
+                            self.driver_config_fields("uz_resolverIP"),
+                            driver_config,
+                        ),
+                        resolve_base_addresses,
+                    )
+                    warnings.extend(resolver_context.pop("warnings"))
+                    header_includes, header_prototypes = split_header_template(
+                        self.renderer.render_file(self.driver_template("uz_resolverIP", "header"), resolver_context)
+                    )
+                    slot_content[slot].header_includes.extend(header_includes)
+                    slot_content[slot].header_prototypes.extend(header_prototypes)
+                    slot_content[slot].source_definitions.append(
+                        self.renderer.render_file(self.driver_template("uz_resolverIP", "source"), resolver_context).rstrip()
+                    )
+                    objects.append(f"\tuz_resolverIP_t* resolver_ip_{resolver_context['slot_lower']}_{channel_index};")
+                    main_init.append(
+                        f"\t\t\tGlobal_Data.objects.resolver_ip_{resolver_context['slot_lower']}_{channel_index} = initialize_resolver_ip_{resolver_context['slot_lower']}_{channel_index}();"
+                    )
+                    if enable_pl_interface:
+                        resolver_pl_interface_instances += 1
+                        pl_context = self._resolver_pl_interface_context(
+                            slot,
+                            channel_index,
+                            source_dir,
+                            driver_instance_values(
+                                f"{slot.lower()}_resolver_pl_interface_{channel_index}",
+                                self.driver_config_fields("uz_resolver_pl_interface"),
+                                driver_config,
+                            ),
+                            resolve_base_addresses,
+                        )
+                        warnings.extend(pl_context.pop("warnings"))
+                        header_includes, header_prototypes = split_header_template(
+                            self.renderer.render_file(
+                                self.driver_template("uz_resolver_pl_interface", "header"),
+                                pl_context,
+                            )
+                        )
+                        slot_content[slot].header_includes.extend(header_includes)
+                        slot_content[slot].header_prototypes.extend(header_prototypes)
+                        slot_content[slot].source_definitions.append(
+                            self.renderer.render_file(
+                                self.driver_template("uz_resolver_pl_interface", "source"),
+                                pl_context,
+                            ).rstrip()
+                        )
+                        objects.append(
+                            f"\tuz_resolver_pl_interface_t* resolver_pl_interface_{pl_context['slot_lower']}_{channel_index};"
+                        )
+                        actual_values.extend(resolver_pl_interface_actual_values(str(pl_context["slot_lower"]), channel_index))
+                        main_init.append(
+                            f"\t\t\tGlobal_Data.objects.resolver_pl_interface_{pl_context['slot_lower']}_{channel_index} = initialize_resolver_pl_interface_{pl_context['slot_lower']}_{channel_index}();"
+                        )
+                        isr_control_by_slot[slot].extend(
+                            resolver_pl_interface_isr_lines(str(pl_context["slot_lower"]), channel_index)
+                        )
+                        available_visualization_signals.extend(
+                            resolver_pl_interface_visualization_signals(str(pl_context["slot_lower"]), channel_index)
+                        )
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     option_id = f"channel_{channel_index}"
@@ -519,9 +661,10 @@ class SoftwareGenerator:
                             driver_instance_values(
                                 f"{slot.lower()}_channel_{channel_index}_endat",
                                 self.driver_config_fields("uz_endat_interface"),
-                                driver_config,
-                            ),
-                        )
+                            driver_config,
+                        ),
+                        resolve_base_addresses,
+                    )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
                             self.renderer.render_file(self.driver_template("uz_endat_interface", "header"), context)
@@ -556,9 +699,10 @@ class SoftwareGenerator:
                             driver_instance_values(
                                 f"{slot.lower()}_channel_{channel_index}_ssi",
                                 self.driver_config_fields("uz_ssi_interface"),
-                                driver_config,
-                            ),
-                        )
+                            driver_config,
+                        ),
+                        resolve_base_addresses,
+                    )
                         warnings.extend(context.pop("warnings"))
                         header_includes, header_prototypes = split_header_template(
                             self.renderer.render_file(self.driver_template("uz_ssi_interface", "header"), context)
@@ -592,9 +736,36 @@ class SoftwareGenerator:
             adc_readout_definitions.append("static uz_array_int16_t analog_adc_data;")
             adc_readout.append("    analog_adc_data = uz_dataMover_update_buffer_and_get_data();")
 
-        selected_signals = [
-            signal for signal in available_visualization_signals if signal.signal_id in selected_visualization_signals
+        selected_javascope_signals = [
+            signal
+            for signal in available_visualization_signals
+            if selected_visualization_routes.get(signal.signal_id) in {"javascope", "both"}
         ]
+        selected_slowdata_signals = [
+            signal
+            for signal in available_visualization_signals
+            if selected_visualization_routes.get(signal.signal_id) in {"slow_data", "both"}
+        ]
+        routed_visualization_signals = list(
+            {signal.signal_id: signal for signal in selected_javascope_signals + selected_slowdata_signals}.values()
+        )
+        field_declarations = [
+            f"    float {signal.field_name};" for signal in routed_visualization_signals
+        ] or ["    float unused;"]
+        update_assignments = [
+            f"    project_wizard_visualization_data.{signal.field_name} = {signal.float_expression};"
+            for signal in routed_visualization_signals
+        ]
+        visualization_context = {
+            "field_declarations": "\n".join(field_declarations),
+            "update_assignments": "\n".join(update_assignments),
+        }
+        generated_files["include/project_wizard_visualization.h"] = self.renderer.render_file(
+            "software/project_wizard_visualization.h.tpl", visualization_context
+        ).rstrip() + "\n"
+        generated_files["sw/project_wizard_visualization.c"] = self.renderer.render_file(
+            "software/project_wizard_visualization.c.tpl", visualization_context
+        ).rstrip() + "\n"
         return SoftwarePlan(
             slot_content=slot_content,
             generated_files=generated_files,
@@ -606,9 +777,17 @@ class SoftwareGenerator:
             isr_control_by_slot=isr_control_by_slot,
             state_isr_actions=state_isr_actions,
             datamover_array_length=datamover_array_length,
-            javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_signals],
+            javascope_observable_enums=[f"\t{signal.enum_name}," for signal in selected_javascope_signals],
             javascope_observable_pointers=[
-                f"\tjs_ch_observable[{signal.enum_name}] = {signal.pointer_expression};" for signal in selected_signals
+                f"\tjs_ch_observable[{signal.enum_name}] = &project_wizard_visualization_data.{signal.field_name};"
+                for signal in selected_javascope_signals
+            ],
+            javascope_slowdata_enums=[
+                f"\tJSSD_FLOAT_{signal.enum_name.removeprefix('JSO_')}," for signal in selected_slowdata_signals
+            ],
+            javascope_slowdata_pointers=[
+                f"\tjs_slowDataArray[JSSD_FLOAT_{signal.enum_name.removeprefix('JSO_')}] = &project_wizard_visualization_data.{signal.field_name};"
+                for signal in selected_slowdata_signals
             ],
             available_visualization_signals=available_visualization_signals,
             instance_counts={
@@ -620,6 +799,9 @@ class SoftwareGenerator:
                 "UZ_SSI_INTERFACE_MAX_INSTANCES": ssi_instances,
                 "UZ_DAC_INTERFACE_MAX_INSTANCES": dac8831_instances,
                 "UZ_INVERTER_ADAPTER_MAX_INSTANCES": inverter_adapter_instances,
+                "UZ_INCREMENTALENCODER_MAX_INSTANCES": incremental_encoder_instances,
+                "UZ_RESOLVERIP_MAX_INSTANCES": resolver_ip_instances,
+                "UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES": resolver_pl_interface_instances,
                 **wavegen_instance_counts,
             },
             warnings=warnings,
@@ -705,6 +887,11 @@ class SoftwareGenerator:
             lines.extend(f"  {entry.strip().rstrip(',')}" for entry in plan.javascope_observable_enums)
         else:
             lines.append("  none")
+        lines.extend(["", "Javascope slow-data signals:"])
+        if plan.javascope_slowdata_enums:
+            lines.extend(f"  {entry.strip().rstrip(',')}" for entry in plan.javascope_slowdata_enums)
+        else:
+            lines.append("  none")
         if plan.warnings:
             lines.extend(["", "Warnings:"])
             lines.extend(f"- {warning}" for warning in plan.warnings)
@@ -718,7 +905,14 @@ class SoftwareGenerator:
         software_modes: dict[str, str] | None = None,
         software_presets: dict[str, str] | None = None,
     ) -> list[VisualizationSignal]:
-        plan = self.build_plan(source_dir, assignments, option_values, software_modes, software_presets)
+        plan = self.build_plan(
+            source_dir,
+            assignments,
+            option_values,
+            software_modes,
+            software_presets,
+            resolve_base_addresses=False,
+        )
         return plan.available_visualization_signals
 
     def driver_config_instances(
@@ -818,6 +1012,40 @@ class SoftwareGenerator:
                         fields=self.driver_config_fields("uz_inverter_adapter"),
                     )
                 )
+            elif card_id == "uz_d_incremental_encoder":
+                for channel_index in range(1, 4):
+                    instances.append(
+                        DriverConfigInstance(
+                            id=f"{slot_lower}_incremental_encoder_{channel_index}",
+                            slot=slot,
+                            label=f"{slot} incremental encoder channel {channel_index}",
+                            driver="incremental_encoder",
+                            fields=self.driver_config_fields("uz_incrementalEncoder"),
+                        )
+                    )
+            elif card_id == "uz_d_resolver":
+                channel_count = resolver_channel_count(slot)
+                enable_pl_interface = config_bool(option_values.get(slot, {}).get("enable_pl_interface", "true"), default=True)
+                for channel_index in range(1, channel_count + 1):
+                    instances.append(
+                        DriverConfigInstance(
+                            id=f"{slot_lower}_resolver_ip_{channel_index}",
+                            slot=slot,
+                            label=f"{slot} resolver IP channel {channel_index}",
+                            driver="resolver_ip",
+                            fields=self.driver_config_fields("uz_resolverIP"),
+                        )
+                    )
+                    if enable_pl_interface:
+                        instances.append(
+                            DriverConfigInstance(
+                                id=f"{slot_lower}_resolver_pl_interface_{channel_index}",
+                                slot=slot,
+                                label=f"{slot} resolver PL interface channel {channel_index}",
+                                driver="resolver_pl_interface",
+                                fields=self.driver_config_fields("uz_resolver_pl_interface"),
+                            )
+                        )
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     interface = option_values.get(slot, {}).get(f"channel_{channel_index}", "none")
@@ -896,11 +1124,11 @@ class SoftwareGenerator:
         patched_files.append(datamover_c)
 
         javascope_h = source_dir / "include" / "javascope.h"
-        patch_javascope_header(javascope_h, plan.javascope_observable_enums)
+        patch_javascope_header(javascope_h, plan.javascope_observable_enums, plan.javascope_slowdata_enums)
         patched_files.append(javascope_h)
 
         javascope_c = source_dir / "sw" / "javascope.c"
-        patch_javascope_source(javascope_c, plan.javascope_observable_pointers)
+        patch_javascope_source(javascope_c, plan.javascope_observable_pointers, plan.javascope_slowdata_pointers)
         patched_files.append(javascope_c)
 
         global_configuration = source_dir / "uz" / "uz_global_configuration.h"
@@ -918,13 +1146,18 @@ class SoftwareGenerator:
         pwm_2l_instance_count: int,
         pwm_3l_enabled: bool,
         driver_config: dict[str, dict[str, str]] | None = None,
+        resolve_base_addresses: bool = True,
     ) -> dict[str, object]:
         driver_config = driver_config or {}
         instances: list[dict[str, object]] = []
         warnings: list[str] = []
         for index in range(pwm_2l_instance_count):
-            pwm_macro, pwm_warning = resolve_pwm_base_address_macro(source_dir, "pwm_2l", index)
-            deadtime_macro, deadtime_warning = resolve_pwm_base_address_macro(source_dir, "deadtime_2l", index)
+            pwm_macro, pwm_warning = resolve_pwm_base_address_macro(
+                source_dir, "pwm_2l", index, search_xparameters=resolve_base_addresses
+            )
+            deadtime_macro, deadtime_warning = resolve_pwm_base_address_macro(
+                source_dir, "deadtime_2l", index, search_xparameters=resolve_base_addresses
+            )
             if pwm_warning:
                 warnings.append(pwm_warning)
             if deadtime_warning:
@@ -947,7 +1180,9 @@ class SoftwareGenerator:
         pwm_3l_macro = ""
         pwm_3l_config = driver_instance_values("pwm_3l_0", pwm_3l_config_fields(), driver_config)
         if pwm_3l_enabled:
-            pwm_3l_macro, pwm_3l_warning = resolve_pwm_base_address_macro(source_dir, "pwm_3l", 0)
+            pwm_3l_macro, pwm_3l_warning = resolve_pwm_base_address_macro(
+                source_dir, "pwm_3l", 0, search_xparameters=resolve_base_addresses
+            )
             if pwm_3l_warning:
                 warnings.append(pwm_3l_warning)
         return {
@@ -959,10 +1194,17 @@ class SoftwareGenerator:
         }
 
     def _temperature_context(
-        self, slot: str, source_dir: Path, preset: str, config_values: dict[str, str]
+        self,
+        slot: str,
+        source_dir: Path,
+        preset: str,
+        config_values: dict[str, str],
+        resolve_base_addresses: bool = True,
     ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "temperature")
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "temperature", search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         return {
             "slot": slot,
@@ -982,9 +1224,13 @@ class SoftwareGenerator:
             "warnings": warnings,
         }
 
-    def _adc_ltc2311_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+    def _adc_ltc2311_context(
+        self, slot: str, source_dir: Path, config_values: dict[str, str], resolve_base_addresses: bool = True
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "adc_ltc2311")
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "adc_ltc2311", search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
@@ -995,9 +1241,13 @@ class SoftwareGenerator:
         context.update(config_values)
         return context
 
-    def _adc_max11331_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+    def _adc_max11331_context(
+        self, slot: str, source_dir: Path, config_values: dict[str, str], resolve_base_addresses: bool = True
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "adc_max11331")
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "adc_max11331", search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
@@ -1008,9 +1258,13 @@ class SoftwareGenerator:
         context.update(config_values)
         return context
 
-    def _dac8831_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+    def _dac8831_context(
+        self, slot: str, source_dir: Path, config_values: dict[str, str], resolve_base_addresses: bool = True
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "dac8831")
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "dac8831", search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         output_assignments = [
             dac8831_output_assignment(slot_lower, channel, config_values)
@@ -1028,9 +1282,13 @@ class SoftwareGenerator:
         context.update(config_values)
         return context
 
-    def _inverter_adapter_context(self, slot: str, source_dir: Path, config_values: dict[str, str]) -> dict[str, object]:
+    def _inverter_adapter_context(
+        self, slot: str, source_dir: Path, config_values: dict[str, str], resolve_base_addresses: bool = True
+    ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, "inverter_adapter")
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "inverter_adapter", search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
@@ -1041,11 +1299,88 @@ class SoftwareGenerator:
         context.update(config_values)
         return context
 
-    def _serial_encoder_context(
-        self, slot: str, channel: int, interface: str, source_dir: Path, config_values: dict[str, str]
+    def _incremental_encoder_context(
+        self,
+        slot: str,
+        channel: int,
+        source_dir: Path,
+        config_values: dict[str, str],
+        resolve_base_addresses: bool = True,
     ) -> dict[str, object]:
         slot_lower = slot.lower()
-        base_address_macro, warning = resolve_base_address_macro(source_dir, slot, interface, channel)
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "incremental_encoder", channel, search_xparameters=resolve_base_addresses
+        )
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "channel": str(channel),
+            "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _resolver_ip_context(
+        self,
+        slot: str,
+        channel: int,
+        source_dir: Path,
+        config_values: dict[str, str],
+        resolve_base_addresses: bool = True,
+    ) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "resolver_ip", channel, search_xparameters=resolve_base_addresses
+        )
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "channel": str(channel),
+            "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _resolver_pl_interface_context(
+        self,
+        slot: str,
+        channel: int,
+        source_dir: Path,
+        config_values: dict[str, str],
+        resolve_base_addresses: bool = True,
+    ) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "resolver_pl_interface", channel, search_xparameters=resolve_base_addresses
+        )
+        warnings = [warning] if warning else []
+        context = {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "channel": str(channel),
+            "base_address_macro": base_address_macro,
+            "warnings": warnings,
+        }
+        context.update(config_values)
+        return context
+
+    def _serial_encoder_context(
+        self,
+        slot: str,
+        channel: int,
+        interface: str,
+        source_dir: Path,
+        config_values: dict[str, str],
+        resolve_base_addresses: bool = True,
+    ) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, interface, channel, search_xparameters=resolve_base_addresses
+        )
         warnings = [warning] if warning else []
         context = {
             "slot": slot,
@@ -1168,6 +1503,27 @@ def config_int(value: str, default: int, minimum: int, maximum: int) -> int:
     return max(minimum, min(maximum, parsed))
 
 
+def config_bool(value: object, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def normalize_visualization_routes(visualization_signals: object) -> dict[str, str]:
+    if visualization_signals is None:
+        return {}
+    if isinstance(visualization_signals, dict):
+        routes: dict[str, str] = {}
+        for signal_id, route in visualization_signals.items():
+            normalized_route = str(route).strip().lower()
+            if normalized_route in {"javascope", "slow_data", "both"}:
+                routes[str(signal_id)] = normalized_route
+        return routes
+    return {str(signal_id): "javascope" for signal_id in visualization_signals}
+
+
 def pwm_2l_state_isr_actions(instance_count: int, hardware_config: dict[str, str]) -> dict[str, list[str]]:
     behavior = hardware_config.get("pwm_2l_idle_error_behavior", "tristate_with_duty_cycle")
     enable_tristate = behavior == "tristate_with_duty_cycle"
@@ -1241,7 +1597,28 @@ def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict
         expression = f"uz_wavegen_white_noise({amplitude}) + {offset}"
     else:
         expression = constant
-    return f"    dac8831_{slot_lower}_outputs[{channel}] = {expression};"
+    return (
+        f"    data->av.dac8831_{slot_lower}_ch{channel} = {expression};\n"
+        f"    dac8831_{slot_lower}_outputs[{channel}] = data->av.dac8831_{slot_lower}_ch{channel};"
+    )
+
+
+def dac8831_actual_values(slot_lower: str) -> list[str]:
+    return [f"\tfloat dac8831_{slot_lower}_ch{channel};" for channel in range(8)]
+
+
+def dac8831_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    return [
+        VisualizationSignal(
+            signal_id=f"dac8831_{slot_lower}_ch{channel}",
+            slot=slot,
+            label=f"{slot} DAC8831 output channel {channel}",
+            enum_name=f"JSO_DAC8831_{slot}_CH{channel}",
+            pointer_expression=f"&data->av.dac8831_{slot_lower}_ch{channel}",
+        )
+        for channel in range(8)
+    ]
 
 
 def dac8831_wavegen_object_name(slot_lower: str, channel: int, mode: str) -> str:
@@ -1300,12 +1677,18 @@ def patch_platform_state_isr_actions(path: Path, state_isr_actions: dict[str, li
     path.write_text(text, encoding="utf-8")
 
 
-def patch_javascope_header(path: Path, observable_enums: list[str]) -> None:
-    patch_marker_file(path, "javascope_observables", observable_enums)
+def patch_javascope_header(path: Path, observable_enums: list[str], slowdata_enums: list[str]) -> None:
+    text = path.read_text(encoding="utf-8")
+    text = replace_block(text, FILE_MARKERS["javascope_observables"], observable_enums)
+    text = replace_block(text, FILE_MARKERS["javascope_slowdata"], slowdata_enums)
+    path.write_text(text, encoding="utf-8")
 
 
-def patch_javascope_source(path: Path, observable_pointers: list[str]) -> None:
-    patch_marker_file(path, "javascope_observable_pointers", observable_pointers)
+def patch_javascope_source(path: Path, observable_pointers: list[str], slowdata_pointers: list[str]) -> None:
+    text = path.read_text(encoding="utf-8")
+    text = replace_block(text, FILE_MARKERS["javascope_observable_pointers"], observable_pointers)
+    text = replace_block(text, FILE_MARKERS["javascope_slowdata_pointers"], slowdata_pointers)
+    path.write_text(text, encoding="utf-8")
 
 
 def hardware_revision_define_value(platform_revision: str) -> str:
@@ -1435,11 +1818,14 @@ def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, 
     label_base = f"{slot_lower.upper()} {interface.upper()} channel {channel}"
     slot = slot_lower.upper()
     fields = [
-        ("position_mech_si_single_turn", "POS_MECH_ST", "position mech SI single turn"),
-        ("position_el_si_single_turn", "POS_EL_ST", "position el SI single turn"),
-        ("speed_mech_si", "SPEED_MECH_SI", "speed mech SI"),
-        ("speed_el_si", "SPEED_EL_SI", "speed el SI"),
-        ("speed_mech_rpm", "SPEED_MECH_RPM", "speed mech rpm"),
+        ("position_raw_single_turn", "POS_RAW_ST", "position raw single turn", "uint32"),
+        ("position_raw_multi_turn", "POS_RAW_MT", "position raw multi turn", "uint32"),
+        ("position_multi_turn", "POS_MT", "position multi turn", "uint32"),
+        ("position_mech_si_single_turn", "POS_MECH_ST", "position mech SI single turn", "float"),
+        ("position_el_si_single_turn", "POS_EL_ST", "position el SI single turn", "float"),
+        ("speed_mech_si", "SPEED_MECH_SI", "speed mech SI", "float"),
+        ("speed_el_si", "SPEED_EL_SI", "speed el SI", "float"),
+        ("speed_mech_rpm", "SPEED_MECH_RPM", "speed mech rpm", "float"),
     ]
     return [
         VisualizationSignal(
@@ -1448,8 +1834,119 @@ def encoder_visualization_signals(interface: str, prefix: str, slot_lower: str, 
             label=f"{label_base} {label}",
             enum_name=f"{enum_base}_{enum_suffix}",
             pointer_expression=f"&data->av.{base_id}_{field}",
+            source_type=source_type,
         )
-        for field, enum_suffix, label in fields
+        for field, enum_suffix, label, source_type in fields
+    ]
+
+
+def incremental_encoder_actual_values(slot_lower: str, channel: int) -> list[str]:
+    name = f"incremental_encoder_{slot_lower}_{channel}"
+    return [
+        f"\tfloat {name}_theta_el;",
+        f"\tfloat {name}_omega_mech;",
+        f"\tfloat {name}_omega_mech_ma_n4;",
+        f"\tuint32_t {name}_position;",
+        f"\tuint32_t {name}_position_w_offset;",
+        f"\tuint32_t {name}_index_found;",
+    ]
+
+
+def incremental_encoder_isr_lines(context: dict[str, object]) -> list[str]:
+    slot_lower = str(context["slot_lower"])
+    channel = str(context["channel"])
+    name = f"incremental_encoder_{slot_lower}_{channel}"
+    object_ref = f"Global_Data.objects.{name}"
+    return [
+        f"    Global_Data.av.{name}_theta_el = uz_incrementalEncoder_get_theta_el({object_ref});",
+        f"    Global_Data.av.{name}_omega_mech = uz_incrementalEncoder_get_omega_mech({object_ref});",
+        f"    Global_Data.av.{name}_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4({object_ref});",
+        f"    Global_Data.av.{name}_position = uz_incrementalEncoder_get_position({object_ref});",
+        f"    Global_Data.av.{name}_position_w_offset = uz_incrementalEncoder_get_position_wOffset({object_ref});",
+        f"    Global_Data.av.{name}_index_found = uz_incrementalEncoder_get_Index_Found({object_ref});",
+    ]
+
+
+def incremental_encoder_visualization_signals(slot_lower: str, channel: int) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    base_id = f"incremental_encoder_{slot_lower}_{channel}"
+    enum_base = f"JSO_INCREMENTAL_ENCODER_{slot}_CH{channel}"
+    label_base = f"{slot} incremental encoder channel {channel}"
+    fields = [
+        ("theta_el", "THETA_EL", "electrical angle", "float"),
+        ("omega_mech", "OMEGA_MECH", "mechanical speed", "float"),
+        ("omega_mech_ma_n4", "OMEGA_MECH_MA_N4", "mechanical speed moving average N4", "float"),
+        ("position", "POSITION", "position", "uint32"),
+        ("position_w_offset", "POSITION_W_OFFSET", "position with offset", "uint32"),
+        ("index_found", "INDEX_FOUND", "index found", "uint32"),
+    ]
+    return [
+        VisualizationSignal(
+            signal_id=f"{base_id}_{field}",
+            slot=slot,
+            label=f"{label_base} {label}",
+            enum_name=f"{enum_base}_{enum_suffix}",
+            pointer_expression=f"&data->av.{base_id}_{field}",
+            source_type=source_type,
+        )
+        for field, enum_suffix, label, source_type in fields
+    ]
+
+
+def resolver_channel_count(slot: str) -> int:
+    return 2 if slot == "D5" else 3
+
+
+def resolver_pl_interface_actual_values(slot_lower: str, channel: int) -> list[str]:
+    name = f"resolver_pl_interface_{slot_lower}_{channel}"
+    return [
+        f"\tint32_t {name}_revolution_counter;",
+        f"\tfloat {name}_position_mech_2pi;",
+        f"\tfloat {name}_position_el_2pi;",
+        f"\tfloat {name}_omega_mech_rad_s;",
+        f"\tfloat {name}_n_mech_rpm;",
+        f"\tfloat {name}_omega_el_rad_s;",
+    ]
+
+
+def resolver_pl_interface_isr_lines(slot_lower: str, channel: int) -> list[str]:
+    name = f"resolver_pl_interface_{slot_lower}_{channel}"
+    object_ref = f"Global_Data.objects.{name}"
+    output_ref = f"{name}_outputs"
+    return [
+        f"    struct uz_resolver_pl_interface_outputs_t {output_ref} = uz_resolver_pl_interface_get_outputs({object_ref});",
+        f"    Global_Data.av.{name}_revolution_counter = {output_ref}.revolution_counter;",
+        f"    Global_Data.av.{name}_position_mech_2pi = {output_ref}.position_mech_2pi;",
+        f"    Global_Data.av.{name}_position_el_2pi = {output_ref}.position_el_2pi;",
+        f"    Global_Data.av.{name}_omega_mech_rad_s = {output_ref}.omega_mech_rad_s;",
+        f"    Global_Data.av.{name}_n_mech_rpm = {output_ref}.n_mech_rpm;",
+        f"    Global_Data.av.{name}_omega_el_rad_s = {output_ref}.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_{slot_lower}_{channel});",
+    ]
+
+
+def resolver_pl_interface_visualization_signals(slot_lower: str, channel: int) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    base_id = f"resolver_pl_interface_{slot_lower}_{channel}"
+    enum_base = f"JSO_RESOLVER_PL_{slot}_CH{channel}"
+    label_base = f"{slot} resolver PL interface channel {channel}"
+    fields = [
+        ("position_mech_2pi", "POS_MECH_2PI", "mechanical position", "float"),
+        ("position_el_2pi", "POS_EL_2PI", "electrical position", "float"),
+        ("omega_mech_rad_s", "OMEGA_MECH_RAD_S", "mechanical speed rad/s", "float"),
+        ("n_mech_rpm", "N_MECH_RPM", "mechanical speed rpm", "float"),
+        ("omega_el_rad_s", "OMEGA_EL_RAD_S", "electrical speed rad/s", "float"),
+        ("revolution_counter", "REVOLUTION_COUNTER", "revolution counter", "int32"),
+    ]
+    return [
+        VisualizationSignal(
+            signal_id=f"{base_id}_{field}",
+            slot=slot,
+            label=f"{label_base} {label}",
+            enum_name=f"{enum_base}_{enum_suffix}",
+            pointer_expression=f"&data->av.{base_id}_{field}",
+            source_type=source_type,
+        )
+        for field, enum_suffix, label, source_type in fields
     ]
 
 
@@ -1492,18 +1989,37 @@ def adc_max11331_actual_values(slot_lower: str) -> list[str]:
 def inverter_adapter_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
     slot = slot_lower.upper()
     fields = [
-        ("pwm_duty_h1", "PWMdutyCycNormalized_H1", "PWM duty H1", "PWM_DUTY_H1"),
-        ("pwm_duty_l1", "PWMdutyCycNormalized_L1", "PWM duty L1", "PWM_DUTY_L1"),
-        ("pwm_duty_h2", "PWMdutyCycNormalized_H2", "PWM duty H2", "PWM_DUTY_H2"),
-        ("pwm_duty_l2", "PWMdutyCycNormalized_L2", "PWM duty L2", "PWM_DUTY_L2"),
-        ("pwm_duty_h3", "PWMdutyCycNormalized_H3", "PWM duty H3", "PWM_DUTY_H3"),
-        ("pwm_duty_l3", "PWMdutyCycNormalized_L3", "PWM duty L3", "PWM_DUTY_L3"),
-        ("chip_temp_h1", "ChipTempDegreesCelsius_H1", "chip temperature H1", "CHIP_TEMP_H1"),
-        ("chip_temp_l1", "ChipTempDegreesCelsius_L1", "chip temperature L1", "CHIP_TEMP_L1"),
-        ("chip_temp_h2", "ChipTempDegreesCelsius_H2", "chip temperature H2", "CHIP_TEMP_H2"),
-        ("chip_temp_l2", "ChipTempDegreesCelsius_L2", "chip temperature L2", "CHIP_TEMP_L2"),
-        ("chip_temp_h3", "ChipTempDegreesCelsius_H3", "chip temperature H3", "CHIP_TEMP_H3"),
-        ("chip_temp_l3", "ChipTempDegreesCelsius_L3", "chip temperature L3", "CHIP_TEMP_L3"),
+        ("pwm_duty_h1", "PWMdutyCycNormalized_H1", "PWM duty H1", "PWM_DUTY_H1", "float"),
+        ("pwm_duty_l1", "PWMdutyCycNormalized_L1", "PWM duty L1", "PWM_DUTY_L1", "float"),
+        ("pwm_duty_h2", "PWMdutyCycNormalized_H2", "PWM duty H2", "PWM_DUTY_H2", "float"),
+        ("pwm_duty_l2", "PWMdutyCycNormalized_L2", "PWM duty L2", "PWM_DUTY_L2", "float"),
+        ("pwm_duty_h3", "PWMdutyCycNormalized_H3", "PWM duty H3", "PWM_DUTY_H3", "float"),
+        ("pwm_duty_l3", "PWMdutyCycNormalized_L3", "PWM duty L3", "PWM_DUTY_L3", "float"),
+        ("chip_temp_h1", "ChipTempDegreesCelsius_H1", "chip temperature H1", "CHIP_TEMP_H1", "float"),
+        ("chip_temp_l1", "ChipTempDegreesCelsius_L1", "chip temperature L1", "CHIP_TEMP_L1", "float"),
+        ("chip_temp_h2", "ChipTempDegreesCelsius_H2", "chip temperature H2", "CHIP_TEMP_H2", "float"),
+        ("chip_temp_l2", "ChipTempDegreesCelsius_L2", "chip temperature L2", "CHIP_TEMP_L2", "float"),
+        ("chip_temp_h3", "ChipTempDegreesCelsius_H3", "chip temperature H3", "CHIP_TEMP_H3", "float"),
+        ("chip_temp_l3", "ChipTempDegreesCelsius_L3", "chip temperature L3", "CHIP_TEMP_L3", "float"),
+        ("oc", "OC", "OC status word", "OC", "uint32"),
+        ("oc_h1", "OC_H1", "OC H1", "OC_H1", "bool"),
+        ("oc_l1", "OC_L1", "OC L1", "OC_L1", "bool"),
+        ("oc_h2", "OC_H2", "OC H2", "OC_H2", "bool"),
+        ("oc_l2", "OC_L2", "OC L2", "OC_L2", "bool"),
+        ("oc_h3", "OC_H3", "OC H3", "OC_H3", "bool"),
+        ("oc_l3", "OC_L3", "OC L3", "OC_L3", "bool"),
+        ("fault", "FAULT", "FAULT status word", "FAULT", "uint32"),
+        ("fault_h1", "FAULT_H1", "FAULT H1", "FAULT_H1", "bool"),
+        ("fault_l1", "FAULT_L1", "FAULT L1", "FAULT_L1", "bool"),
+        ("fault_h2", "FAULT_H2", "FAULT H2", "FAULT_H2", "bool"),
+        ("fault_l2", "FAULT_L2", "FAULT L2", "FAULT_L2", "bool"),
+        ("fault_h3", "FAULT_H3", "FAULT H3", "FAULT_H3", "bool"),
+        ("fault_l3", "FAULT_L3", "FAULT L3", "FAULT_L3", "bool"),
+        ("i_diag", "I_DIAG", "I_DIAG status word", "I_DIAG", "uint32"),
+        ("i_dc_diag", "I_DC_DIAG", "I DC diagnostic", "I_DC_DIAG", "bool"),
+        ("i1_diag", "I1_DIAG", "I1 diagnostic", "I1_DIAG", "bool"),
+        ("i2_diag", "I2_DIAG", "I2 diagnostic", "I2_DIAG", "bool"),
+        ("i3_diag", "I3_DIAG", "I3 diagnostic", "I3_DIAG", "bool"),
     ]
     return [
         VisualizationSignal(
@@ -1512,8 +2028,9 @@ def inverter_adapter_visualization_signals(slot_lower: str) -> list[Visualizatio
             label=f"{slot} inverter adapter {label}",
             enum_name=f"JSO_INVERTER_ADAPTER_{slot}_{enum_suffix}",
             pointer_expression=f"&data->av.inverter_adapter_{slot_lower}.{field_name}",
+            source_type=source_type,
         )
-        for signal_suffix, field_name, label, enum_suffix in fields
+        for signal_suffix, field_name, label, enum_suffix, source_type in fields
     ]
 
 
@@ -1582,7 +2099,13 @@ def temperature_configdata_a(preset: str) -> str:
     return "\n".join(f"        [{index}] = {value}," for index, value in enumerate(values))
 
 
-def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, channel: int | None = None) -> tuple[str, str]:
+def resolve_base_address_macro(
+    source_dir: Path,
+    slot: str,
+    interface: str,
+    channel: int | None = None,
+    search_xparameters: bool = True,
+) -> tuple[str, str]:
     slot_lower = slot.lower()
     if interface == "temperature":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_TEMPERATURE_CARD_INT_0_BASEADDR"
@@ -1599,6 +2122,18 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     elif interface == "inverter_adapter":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_D_INVERTER_ADAPTER_{slot.upper()}_BASEADDR"
         search_terms = ["INVERTER_ADAPTER", "UZ_D_INVERTER", "INVERTER"]
+    elif interface == "incremental_encoder":
+        if channel is None:
+            fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_INCREMENTAL_ENCODER_{slot.upper()}_BASEADDR"
+        else:
+            fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_INCREMENTAL_ENCODER_{slot.upper()}_{channel}_BASEADDR"
+        search_terms = ["INCREMENTAL_ENCODER", "INCREMENTAL", "ENCODER"]
+    elif interface == "resolver_ip":
+        fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_RESOLVER_IP_{slot.upper()}_{channel}_BASEADDR"
+        search_terms = ["RESOLVER_IP", "RESOLVER_INTERFACE", "RESOLVER"]
+    elif interface == "resolver_pl_interface":
+        fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_RESOLVER_PL_INTERFACE_{slot.upper()}_{channel}_BASEADDR"
+        search_terms = ["RESOLVER_PL_INTERFACE", "RESOLVER_PL"]
     elif interface == "endat":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_ENDAT_INTERFACE_{slot.upper()}_CHANNEL_{channel}_BASEADDR"
         search_terms = ["ENDAT"]
@@ -1608,6 +2143,8 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     else:
         fallback = f"XPAR_{slot.upper()}_BASEADDR"
         search_terms = [interface.upper()]
+    if not search_xparameters:
+        return fallback, ""
     xparameters, macros = xparameter_baseaddr_macros(source_dir)
     if xparameters is None:
         return fallback, f"{slot}: xparameters.h not found. Using fallback base-address macro {fallback}."
@@ -1619,9 +2156,19 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     ]
     slot_candidates = [candidate for candidate in candidates if slot.upper() in candidate or slot_lower.upper() in candidate]
     if channel is not None:
-        channel_candidates = [candidate for candidate in slot_candidates if f"CHANNEL_{channel}" in candidate]
+        channel_markers = [
+            f"CHANNEL_{channel}",
+            f"_{slot.upper()}_{channel}_BASEADDR",
+            f"_{channel}_BASEADDR",
+        ]
+        channel_candidates = [candidate for candidate in slot_candidates if any(marker in candidate for marker in channel_markers)]
         if channel_candidates:
             return channel_candidates[0], ""
+        if interface == "incremental_encoder" and channel == 1:
+            legacy_candidates = [candidate for candidate in slot_candidates if f"_{slot.upper()}_BASEADDR" in candidate]
+            if legacy_candidates:
+                return legacy_candidates[0], ""
+        return fallback, f"{slot}: no channel {channel} {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
     if slot_candidates:
         return slot_candidates[0], ""
     if candidates:
@@ -1629,7 +2176,9 @@ def resolve_base_address_macro(source_dir: Path, slot: str, interface: str, chan
     return fallback, f"{slot}: no {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
 
 
-def resolve_pwm_base_address_macro(source_dir: Path, interface: str, index: int) -> tuple[str, str]:
+def resolve_pwm_base_address_macro(
+    source_dir: Path, interface: str, index: int, search_xparameters: bool = True
+) -> tuple[str, str]:
     if interface == "pwm_2l":
         fallback = f"XPAR_UZ_PWM_PWM_2L_PWM_AND_SS_CONTROL_V_{index}_BASEADDR"
         required_terms = ["UZ_PWM", "PWM_2L", "PWM_AND_SS_CONTROL_V"]
@@ -1642,6 +2191,8 @@ def resolve_pwm_base_address_macro(source_dir: Path, interface: str, index: int)
     else:
         fallback = f"XPAR_UZ_PWM_{interface.upper()}_{index}_BASEADDR"
         required_terms = ["UZ_PWM", interface.upper()]
+    if not search_xparameters:
+        return fallback, ""
 
     xparameters, macros = xparameter_baseaddr_macros(source_dir)
     if xparameters is None:
@@ -1682,3 +2233,8 @@ def find_xparameters(source_dir: Path) -> Path | None:
         if matches:
             return matches[0]
     return None
+
+
+def clear_xparameters_cache() -> None:
+    xparameter_baseaddr_macros.cache_clear()
+    find_xparameters.cache_clear()

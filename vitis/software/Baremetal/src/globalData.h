@@ -20,38 +20,7 @@
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	/* Project Wizard BEGIN: actualValues */
@@ -63,6 +32,14 @@ typedef struct _actualValues_ {
 	float adc_ltc2311_a1_ch5;
 	float adc_ltc2311_a1_ch6;
 	float adc_ltc2311_a1_ch7;
+	float dac8831_a2_ch0;
+	float dac8831_a2_ch1;
+	float dac8831_a2_ch2;
+	float dac8831_a2_ch3;
+	float dac8831_a2_ch4;
+	float dac8831_a2_ch5;
+	float dac8831_a2_ch6;
+	float dac8831_a2_ch7;
 	float adc_max11331_a3_ch0;
 	float adc_max11331_a3_ch1;
 	float adc_max11331_a3_ch2;
@@ -87,6 +64,24 @@ typedef struct _actualValues_ {
 	float adc_max11331_a3_ch21;
 	float adc_max11331_a3_ch22;
 	float adc_max11331_a3_ch23;
+	float incremental_encoder_d1_1_theta_el;
+	float incremental_encoder_d1_1_omega_mech;
+	float incremental_encoder_d1_1_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d1_1_position;
+	uint32_t incremental_encoder_d1_1_position_w_offset;
+	uint32_t incremental_encoder_d1_1_index_found;
+	float incremental_encoder_d1_2_theta_el;
+	float incremental_encoder_d1_2_omega_mech;
+	float incremental_encoder_d1_2_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d1_2_position;
+	uint32_t incremental_encoder_d1_2_position_w_offset;
+	uint32_t incremental_encoder_d1_2_index_found;
+	float incremental_encoder_d1_3_theta_el;
+	float incremental_encoder_d1_3_omega_mech;
+	float incremental_encoder_d1_3_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d1_3_position;
+	uint32_t incremental_encoder_d1_3_position_w_offset;
+	uint32_t incremental_encoder_d1_3_index_found;
 	struct uz_inverter_adapter_outputs_t inverter_adapter_d3;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
 	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
@@ -156,6 +151,9 @@ typedef struct{
 	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
 	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
+	uz_incrementalEncoder_t* incremental_encoder_d1_1;
+	uz_incrementalEncoder_t* incremental_encoder_d1_2;
+	uz_incrementalEncoder_t* incremental_encoder_d1_3;
 	uz_inverter_adapter_t* inverter_adapter_d3;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_endat_interface_t* endat_encoder_d5_1;

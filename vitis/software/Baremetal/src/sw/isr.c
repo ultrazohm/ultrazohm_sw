@@ -29,6 +29,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_init.h"
+#include "../include/project_wizard_visualization.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -141,6 +142,7 @@ void ISR_Control(void *data)
     project_wizard_update_pwm_outputs(&Global_Data);
 /* Project Wizard END: pwm_runtime */
 
+    project_wizard_visualization_update(&Global_Data);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -201,6 +203,24 @@ static void update_adapter_a3(void)
 static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
+    Global_Data.av.incremental_encoder_d1_1_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_1_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_1_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_1_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_1_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_1_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d1_1);
+    Global_Data.av.incremental_encoder_d1_2_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_2_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_2_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_2_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d1_2);
+    Global_Data.av.incremental_encoder_d1_3_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d1_3);
+    Global_Data.av.incremental_encoder_d1_3_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d1_3);
+    Global_Data.av.incremental_encoder_d1_3_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d1_3);
+    Global_Data.av.incremental_encoder_d1_3_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d1_3);
+    Global_Data.av.incremental_encoder_d1_3_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d1_3);
+    Global_Data.av.incremental_encoder_d1_3_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d1_3);
 /* Project Wizard END: D1 isr_control */
 }
 

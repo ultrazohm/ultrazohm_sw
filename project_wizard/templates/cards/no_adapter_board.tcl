@@ -9,8 +9,8 @@ set adapter_hier_name "{{ slot }}_adapter"
 set slot_cleanup_patterns [list {{ cleanup_patterns }}]
 set slot_constraint_names [list {{ slot_constraint_names }}]
 
-# Run the slot cleanup once more here so this destructive mode stays isolated
-# from normal adapter-card templates.
+# Apply the slot-removal cleanup locally so the No adapter board workflow stays
+# isolated from adapter-card generation.
 uz_pw_delete_external_ports_for_slot $slot $slot_cleanup_patterns
 uz_pw_disable_slot_constraints $slot $slot_constraint_names
 

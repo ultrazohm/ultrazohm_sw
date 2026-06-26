@@ -113,7 +113,8 @@
           "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
           "Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.",
           "Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.",
-          "Connects AXI through the A-slot project-level AXI attachment point."
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Contributes 8 packed 16-bit ADC samples to the AXI2TCM DataMover path."
         ],
         "adc_stream": {
           "raw_value_signal": "{slot}_RAW_Value",
@@ -287,7 +288,7 @@
         "notes": [
           "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
           "Instantiates the ADC_MAX11331_top IP core and standard xlconcat fanout helpers.",
-          "Routes MAX11331 SPI signals to slot-specific vector ports without using the legacy duplicate.vhd helper.",
+          "Routes MAX11331 SPI signals to slot-specific vector ports with generated concat fanout logic.",
           "Connects AXI through the A-slot project-level AXI attachment point.",
           "Contributes 24 packed 16-bit ADC samples to the AXI2TCM DataMover path."
         ],
@@ -892,7 +893,7 @@
           {
             "id": "pwm_enable_source",
             "label": "PWM_UZ_Enable source",
-            "default": "uz_digital_adapter/Enable_Gate",
+            "default": "uz_system/Enable_Inverter",
             "placeholder": "Block design pin path",
             "help": "Single-bit source pin that drives uz_d_inverter_adapter PWM_UZ_Enable. Leave empty or use an invalid path to fall back to zero."
           }

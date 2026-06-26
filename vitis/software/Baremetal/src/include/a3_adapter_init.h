@@ -1,6 +1,7 @@
 #pragma once
 
 /* Project Wizard BEGIN: A3 includes */
+/* Project Wizard generated content for A3 */
 #include "../IP_Cores/uz_adcMax11331/uz_adcMax11331.h"
 /* Project Wizard END: A3 includes */
 

@@ -1,6 +1,7 @@
 #pragma once
 
 /* Project Wizard BEGIN: A2 includes */
+/* Project Wizard generated content for A2 */
 #include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 /* Project Wizard END: A2 includes */

@@ -428,7 +428,7 @@ class MainWindow(QMainWindow):
         instances_2l = QComboBox()
         for count in range(1, 11):
             instances_2l.addItem(f"{count} instance" if count == 1 else f"{count} instances", str(count))
-        instances_2l.currentIndexChanged.connect(lambda _index: self.guarded_refresh_tcl_preview())
+        instances_2l.currentIndexChanged.connect(lambda _index: self.pwm_hardware_selection_changed())
         self.pwm_combos["pwm_2l_instances"] = instances_2l
         pwm_2l_form.addRow("Instances", instances_2l)
 
@@ -436,26 +436,80 @@ class MainWindow(QMainWindow):
         debug_2l.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
         self.pwm_checkboxes["pwm_2l_debug_ila"] = debug_2l
         pwm_2l_form.addRow("", debug_2l)
+
+        idle_error_behavior = QComboBox()
+        idle_error_behavior.addItem("Set halfBridgeDutyCycle values", "set_duty_cycle")
+        idle_error_behavior.addItem("Set tristate enable and halfBridgeDutyCycle values", "tristate_with_duty_cycle")
+        idle_error_behavior.currentIndexChanged.connect(lambda _index: self.pwm_hardware_selection_changed())
+        self.pwm_combos["pwm_2l_idle_error_behavior"] = idle_error_behavior
+        pwm_2l_form.addRow("Idle/error gate behavior", idle_error_behavior)
+
+        idle_error_duty_hb1 = QLineEdit()
+        idle_error_duty_hb1.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_2l_idle_error_duty_hb1"] = idle_error_duty_hb1
+        pwm_2l_form.addRow("Idle/error duty HB1", idle_error_duty_hb1)
+        idle_error_duty_hb2 = QLineEdit()
+        idle_error_duty_hb2.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_2l_idle_error_duty_hb2"] = idle_error_duty_hb2
+        pwm_2l_form.addRow("Idle/error duty HB2", idle_error_duty_hb2)
+        idle_error_duty_hb3 = QLineEdit()
+        idle_error_duty_hb3.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_2l_idle_error_duty_hb3"] = idle_error_duty_hb3
+        pwm_2l_form.addRow("Idle/error duty HB3", idle_error_duty_hb3)
         sections.addWidget(pwm_2l_group, 1)
 
         pwm_3l_group = QGroupBox("3L PWM")
         pwm_3l_form = QFormLayout(pwm_3l_group)
         instances_3l = QComboBox()
         instances_3l.addItem("1 instance", "1")
-        instances_3l.currentIndexChanged.connect(lambda _index: self.guarded_refresh_tcl_preview())
+        instances_3l.currentIndexChanged.connect(lambda _index: self.pwm_hardware_selection_changed())
         self.pwm_combos["pwm_3l_instances"] = instances_3l
         pwm_3l_form.addRow("Instances", instances_3l)
         sections.addWidget(pwm_3l_group, 1)
 
         layout.addLayout(sections)
+        timing_group = QGroupBox("Global PWM timing")
+        timing_form = QFormLayout(timing_group)
+        pwm_frequency = QLineEdit()
+        pwm_frequency.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_frequency"] = pwm_frequency
+        timing_form.addRow("UZ_PWM_FREQUENCY", pwm_frequency)
+        pwm_deadtime = QLineEdit()
+        pwm_deadtime.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_deadtime_us"] = pwm_deadtime
+        timing_form.addRow("UZ_PWM_DEADTIME_IN_US", pwm_deadtime)
+        pwm_min_pulse_width = QLineEdit()
+        pwm_min_pulse_width.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields["pwm_min_pulse_width_us"] = pwm_min_pulse_width
+        timing_form.addRow("UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US", pwm_min_pulse_width)
+        timing_hint = QLabel(
+            "These values are written to uz_global_configuration.h. The PWM driver configs can reference the "
+            "defines, so changing them here updates the project-wide PWM timing in one place."
+        )
+        timing_hint.setWordWrap(True)
+        timing_form.addRow("", timing_hint)
+        layout.addWidget(timing_group)
+
+        enable_group = QGroupBox("Project-level enable")
+        enable_form = QFormLayout(enable_group)
+        enable_source = QLineEdit()
+        enable_source.textChanged.connect(lambda _text: self.guarded_refresh_tcl_preview())
+        self.hardware_fields["pwm_enable_source"] = enable_source
+        enable_form.addRow("Enable_Gate source", enable_source)
+        layout.addWidget(enable_group)
         hint = QLabel(
             "The wizard generates pwm_2L and pwm_3L inside an existing top-level uz_pwm hierarchy. "
-            "D1/D2 cleanup can be done separately after the generated PWM hierarchy is validated."
+            "Configure the number of PWM instances, optional instrumentation, and shared timing values here."
         )
         hint.setWordWrap(True)
         layout.addWidget(hint)
         layout.addStretch(1)
         return page
+
+    def pwm_hardware_selection_changed(self) -> None:
+        self.guarded_refresh_tcl_preview()
+        self.refresh_advanced_driver_config_options()
+        self.guarded_refresh_software_preview()
 
     def _hardware_path_picker(self, key: str, file_mode: bool) -> QWidget:
         container = QWidget()
@@ -668,7 +722,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(advanced_hint)
         self.driver_config_tabs = QTabWidget()
         self.driver_config_tab_layouts = {}
-        for slot in SLOTS:
+        for slot in ["PWM", *SLOTS]:
             scroll = QScrollArea()
             scroll.setWidgetResizable(True)
             content = QWidget()
@@ -1000,7 +1054,7 @@ class MainWindow(QMainWindow):
             row_layout.addWidget(help_button)
             analog_form.addRow(label, row)
         analog_hint = QLabel(
-            "These fields make the historically grown A-slot project wiring explicit. "
+            "These fields define the project-level A-slot analog data and trigger wiring. "
             "Use semicolons for multiple conversion trigger sources."
         )
         analog_hint.setWordWrap(True)
@@ -1235,7 +1289,15 @@ class MainWindow(QMainWindow):
             "disable_bd_synth_checkpoints": "false",
             "pwm_2l_instances": "4",
             "pwm_2l_debug_ila": "true",
+            "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
+            "pwm_2l_idle_error_duty_hb1": "0.0f",
+            "pwm_2l_idle_error_duty_hb2": "0.0f",
+            "pwm_2l_idle_error_duty_hb3": "0.0f",
             "pwm_3l_instances": "1",
+            "pwm_enable_source": "uz_system/Enable_Inverter",
+            "pwm_frequency": "10.0e3f",
+            "pwm_deadtime_us": "1.0f",
+            "pwm_min_pulse_width_us": "0.5f",
         }
 
     def load_software_config(self, values: dict[str, str]) -> None:
@@ -1316,8 +1378,9 @@ class MainWindow(QMainWindow):
             self.option_values(),
             self.software_modes(),
             self.software_presets(),
+            self.hardware_config(),
         )
-        instances_by_slot: dict[str, list[Any]] = {slot: [] for slot in SLOTS}
+        instances_by_slot: dict[str, list[Any]] = {slot: [] for slot in ["PWM", *SLOTS]}
         for instance in instances:
             instances_by_slot.setdefault(instance.slot, []).append(instance)
         for instance in instances:
@@ -2031,6 +2094,7 @@ class MainWindow(QMainWindow):
                 self.software_presets(),
                 self.selected_visualization_signals(),
                 self.driver_config_values(),
+                self.hardware_config(),
             )
         )
 
@@ -2049,6 +2113,7 @@ class MainWindow(QMainWindow):
         software_presets = self.software_presets()
         visualization_signals = self.selected_visualization_signals()
         driver_config = self.driver_config_values()
+        hardware_config = self.hardware_config()
         try:
             plan = self.software_generator.build_plan(
                 source_dir,
@@ -2058,6 +2123,7 @@ class MainWindow(QMainWindow):
                 software_presets,
                 visualization_signals,
                 driver_config,
+                hardware_config,
             )
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not prepare software generation", str(error))
@@ -2087,6 +2153,7 @@ class MainWindow(QMainWindow):
                 software_presets,
                 visualization_signals,
                 driver_config,
+                hardware_config,
             )
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))
@@ -2496,7 +2563,7 @@ class MainWindow(QMainWindow):
         self.set_vivado_status(
             "\n".join(
                 [
-                    "Starting Vivado GUI debug run..." if open_gui else "Starting Vivado batch run...",
+                    "Starting interactive Vivado run..." if open_gui else "Starting Vivado batch run...",
                     f"Vivado: {vivado_path}",
                     f"Project: {project_path}",
                     f"Generated TCL: {tcl_path}",

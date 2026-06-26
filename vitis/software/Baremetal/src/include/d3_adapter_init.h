@@ -1,6 +1,7 @@
 #pragma once
 
 /* Project Wizard BEGIN: D3 includes */
+/* Project Wizard generated content for D3 */
 #include "../IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 /* Project Wizard END: D3 includes */
 

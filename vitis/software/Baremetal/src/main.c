@@ -91,20 +91,21 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
-            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
-            Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
-            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            PWM_3L_Initialize(&Global_Data); // three-level modulator
             /* Project Wizard BEGIN: init_ip_cores */
+			Global_Data.objects.project_wizard_deadtime_2l_0 = initialize_project_wizard_deadtime_2l_0();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0, true);
+			Global_Data.objects.project_wizard_pwm_2l_0 = initialize_project_wizard_pwm_2l_0();
+			Global_Data.objects.project_wizard_deadtime_2l_1 = initialize_project_wizard_deadtime_2l_1();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
+			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
+			Global_Data.objects.project_wizard_deadtime_2l_2 = initialize_project_wizard_deadtime_2l_2();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_2, true);
+			Global_Data.objects.project_wizard_pwm_2l_2 = initialize_project_wizard_pwm_2l_2();
+			Global_Data.objects.project_wizard_deadtime_2l_3 = initialize_project_wizard_deadtime_2l_3();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);
+			Global_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();
+			initialize_project_wizard_pwm_3l(&Global_Data);
+			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
 			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
@@ -127,7 +128,6 @@ int main(void)
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_2, true);
 			Global_Data.objects.ssi_encoder_d5_3 = initialize_ssi_encoder_d5_3();
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
-			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

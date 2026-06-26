@@ -12,6 +12,7 @@ set uz_pw_pwm_upstream_smartconnect {{ upstream_smartconnect }}
 set uz_pw_pwm_clock_pin {{ clock_pin }}
 set uz_pw_pwm_resetn_pin {{ resetn_pin }}
 set uz_pw_pwm_address_space {{ address_space }}
+set uz_pw_pwm_enable_source_pin {{ enable_source_pin }}
 
 proc uz_pw_get_sc_mi_pin {smartconnect_path index} {
   if {$index < 10} {
@@ -307,6 +308,13 @@ if {$uz_pw_pwm_clock_pin ne ""} {
 if {$uz_pw_pwm_resetn_pin ne ""} {
   uz_pw_connect_net_if_unconnected $uz_pw_pwm_resetn_pin ${uz_pw_pwm_root}/resetn
 }
+if {$uz_pw_pwm_enable_source_pin ne ""} {
+  if {[llength [get_bd_pins -quiet $uz_pw_pwm_enable_source_pin]] > 0} {
+    uz_pw_connect_net_if_unconnected $uz_pw_pwm_enable_source_pin ${uz_pw_pwm_root}/Enable_Gate
+  } else {
+    puts "WARNING: PWM Enable_Gate source pin not found: $uz_pw_pwm_enable_source_pin"
+  }
+}
 
 # 2L PWM ----------------------------------------------------------------------
 uz_pw_create_bd_pin_if_missing I ${uz_pw_pwm_2l_hier}/clk
@@ -533,6 +541,19 @@ uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/vio_Gates_3L/probe_out5 ${
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/vio_Gates_3L/probe_out6 ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSb2_IN_External
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/vio_Gates_3L/probe_out7 ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc1_IN_External
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/vio_Gates_3L/probe_out8 ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc2_IN_External
+
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt0
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt1
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt2
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt3
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt4
+uz_pw_create_hier_pin_if_missing uz_system I Interrupt5
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Carrier_triangular_max_min uz_system/Interrupt0
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Carrier_triangular_min uz_system/Interrupt1
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Carrier_triangular_max uz_system/Interrupt2
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Interrupt_Start_Center uz_system/Interrupt3
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Interrupt_Start uz_system/Interrupt4
+uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_root}/Interrupt_Center uz_system/Interrupt5
 
 {% for segment in address_segments %}
 uz_pw_pwm_assign_address {{ segment.address_space }} {{ segment.path }}

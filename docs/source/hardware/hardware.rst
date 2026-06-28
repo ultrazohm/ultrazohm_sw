@@ -69,6 +69,7 @@ Adapter Cards
     adapter_cards/digital/digital_voltage/digital_voltage_general
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
+    adapter_cards/digital/uz_d_abs_encoder/uz_d_abs_encoder
     adapter_cards/digital/temperature_rev02/temperature_rev02
     adapter_cards/digital/Digital_Resolver_rev01
     adapter_cards/digital/inverter/inverter_general
@@ -84,7 +85,7 @@ Additional Components
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
-    adapter_cards/analog/CurrentMeasurementPCB/index
+    adapter_cards/external/uz_per_current_measurement_box/index
     adapter_cards/external/rj_45_breakout/rj45_breakout
     adapter_cards/external/uz_per_wolfspeed_25kw_FM3/uz_per_wolfspeed_25kw_FM3
     adapter_cards/external/uz_per_voltage_measurement_box/uz_per_voltage_measurement_box

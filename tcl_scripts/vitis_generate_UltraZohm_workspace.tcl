@@ -27,6 +27,7 @@
 
 ## uzcfg is global for now (but can easily be localized being a hash table)
 global uzcfg
+set ::uz_vitis_script_dir [file dirname [file normalize [info script]]]
 
 ## System-wide Settings
 # Hardware platform: [UltraZohm]
@@ -91,6 +92,8 @@ proc app_build {{name *}} {
 proc vitis_main {} {
 
   global uzcfg
+  source [file join $::uz_vitis_script_dir vitis_configure_UltraZohm_bsp_settings.tcl]
+  source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
 
   set WS_PATH [getws]
   cd $WS_PATH
@@ -129,25 +132,13 @@ proc vitis_main {} {
   #add freertos domain
   domain create -name FreeRTOS_domain -os freertos10_xilinx -proc psu_cortexa53_0
 
-  puts "Info (UltraZohm): change FreeRTOS BSP settings"
-  #add liIP lib to BSP
-  bsp setlib -name lwip211
-
-  # get list of configurable parameters for lwip lib
-  #bsp listparams -lib lwip211
-  bsp config api_mode SOCKET_API
-  platform write
-  bsp config dhcp_does_arp_check $uzcfg(ENABLE_DHCP)
-  platform write
-  bsp config lwip_dhcp $uzcfg(ENABLE_DHCP)
-  platform write
-  # increase heap size of freertos, to fix javascope glitches
-  bsp config total_heap_size 200000000
-  platform write
+  uz_vitis_apply_freertos_bsp_settings $uzcfg(ENABLE_DHCP)
 
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
   bsp regenerate
+  # Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
+  uz_vitis_patch_freertos_bsp $WS_PATH
 
 
   #Domain Baremetal R5_0
@@ -156,12 +147,7 @@ proc vitis_main {} {
   #create Baremetal domain
   domain create -name Baremetal_domain -os standalone -proc psu_cortexr5_0
 
-  puts "Info (UltraZohm): change Baremetal BSP settings"
-  # "Hide" peripherals used by FreeRTOS/Linux from Baremetal(_domain)
-  bsp setdriver -ip psu_ethernet_3 -driver generic
-  platform write
-  bsp setdriver -ip psu_i2c_1 -driver generic
-  platform write
+  uz_vitis_apply_baremetal_bsp_settings
 
 
   ##Domain FSBL (Standalone) A53_0

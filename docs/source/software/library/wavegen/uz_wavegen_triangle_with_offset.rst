@@ -2,7 +2,7 @@
 Triangle wave with offset
 =========================
 
-.. doxygenfunction:: uz_wavegen_triangle_with_offset
+.. doxygenfunction:: uz_wavegen_triangle_sample_with_offset
 
 Example
 =======
@@ -16,13 +16,15 @@ Example
      float amplitude = 6.0f;
      float frequency_Hz = 5.0f;
      float offset = -5.0f;
-     float output = uz_wavegen_triangle_with_offset(amplitude, frequency_Hz, offset);
+     uz_wavegen_triangle_t* triangle = uz_wavegen_triangle_init();
+     float output = uz_wavegen_triangle_sample_with_offset(triangle, amplitude, frequency_Hz, offset);
   }
 
 Description
 ===========
 
-This function calculates a triangle wave with offset based on the global system time.
+This function calculates a triangle wave with offset.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: triangle wave with offset
   :align: left

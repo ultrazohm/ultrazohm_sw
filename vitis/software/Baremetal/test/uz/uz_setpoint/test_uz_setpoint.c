@@ -5,6 +5,7 @@
 #include "uz_setpoint.h"
 #include "uz_newton_raphson.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_PMSM_config/uz_PMSM_config.h"
 
 TEST_SOURCE_FILE("src/uz/uz_PMSM_config/uz_PMSM_config.c")
 

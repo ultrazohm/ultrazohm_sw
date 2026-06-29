@@ -101,6 +101,42 @@ def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -
     return resolved_path.as_posix()
 
 
+def create_machine_template(
+    motor_name: str,
+    dataset_name: str,
+    uz_pmsm_dir: str | Path,
+) -> Path:
+    uz_pmsm_dir = Path(uz_pmsm_dir)
+    dataset_dir = uz_pmsm_dir / motor_name / dataset_name
+    if dataset_dir.exists():
+        raise ValueError(f"Dataset directory already exists: {dataset_dir}")
+
+    used_ids: set[int] = set()
+    for csv_path in uz_pmsm_dir.rglob("machine_parameters.csv"):
+        relative = csv_path.relative_to(uz_pmsm_dir)
+        if len(relative.parts) != 3:
+            continue
+        for line in csv_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("machine_id,"):
+                try:
+                    used_ids.add(int(line.split(",", 1)[1].strip()))
+                except (ValueError, IndexError):
+                    pass
+                break
+
+    next_id = next(i for i in range(1, len(used_ids) + 2) if i not in used_ids)
+
+    dataset_dir.mkdir(parents=True)
+    csv_path = dataset_dir / "machine_parameters.csv"
+    lines = ["parameter,value", f"machine_name,{motor_name}", f"machine_id,{next_id}"]
+    for field in PMSMParameters.C_PARAMETER_FIELDS:
+        if field.name == "machine_id":
+            continue
+        lines.append(f"{field.name},")
+    csv_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return csv_path
+
+
 def discover_machine_catalog(
     uz_pmsm_dir: str | Path,
     c_header_path: str | Path,
@@ -138,8 +174,13 @@ def discover_machine_catalog(
 
         numeric_machine_id = int(c_values.get("machine_id", 0))
         if numeric_machine_id in used_numeric_machine_ids:
+            next_id = next(
+                i for i in range(1, len(used_numeric_machine_ids) + 2)
+                if i not in used_numeric_machine_ids
+            )
             raise ValueError(
                 f"Duplicate numeric machine_id {numeric_machine_id} in {csv_path}. "
+                f"Next unused machine_id is {next_id}. "
                 "Each machine_parameters.csv must have a unique machine_id value."
             )
         used_numeric_machine_ids.add(numeric_machine_id)
@@ -302,6 +343,15 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
         type=Path,
         default=defaults["generated_header_output"],
     )
+
+    subparsers = parser.add_subparsers(dest="command")
+    add_machine = subparsers.add_parser(
+        "add_machine",
+        help="Create a new motor dataset directory with a machine_parameters.csv template.",
+    )
+    add_machine.add_argument("motor_name", help="Motor directory name, e.g. my_motor")
+    add_machine.add_argument("dataset_name", help="Dataset directory name, e.g. nominal_v1")
+
     return parser
 
 
@@ -309,6 +359,20 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
     anchor = default_anchor or __file__
     parser = build_arg_parser(anchor)
     args = parser.parse_args(argv)
+
+    if args.command == "add_machine":
+        csv_path = create_machine_template(
+            motor_name=args.motor_name,
+            dataset_name=args.dataset_name,
+            uz_pmsm_dir=args.uz_pmsm_dir,
+        )
+        macro_name = (
+            f"UZ_PMSM_{normalize_machine_identifier(f'{args.motor_name}_{args.dataset_name}')}_INIT"
+        )
+        print(f"Created: {csv_path}")
+        print(f"Fill in all empty values, then run the catalog generator.")
+        print(f"C macro will be: {macro_name}")
+        return 0
 
     entries = generate_machine_catalog(
         uz_pmsm_dir=args.uz_pmsm_dir,

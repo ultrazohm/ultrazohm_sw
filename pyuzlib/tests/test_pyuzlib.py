@@ -206,7 +206,7 @@ def test_machine_catalog_rejects_duplicate_numeric_machine_id(tmp_path):
     (machine_a_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
     (machine_b_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
 
-    with pytest.raises(ValueError, match="Duplicate numeric machine_id 1"):
+    with pytest.raises(ValueError, match="Duplicate numeric machine_id 1.*Next unused machine_id is 2"):
         machine_catalog.discover_machine_catalog(
             uz_pmsm_dir=tmp_path,
             c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
@@ -225,7 +225,7 @@ def test_machine_catalog_generates_inventory_and_header(tmp_path):
         generator_script="pyuzlib.machine_catalog",
     )
 
-    assert len(entries) == 3
+    assert len(entries) == 4
     assert "DUMMY_MOTOR_NOMINAL_V1" in inventory_output.read_text(encoding="utf-8")
     header_text = header_output.read_text(encoding="utf-8")
     assert "#define UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT" in header_text

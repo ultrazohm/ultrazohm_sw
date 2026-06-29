@@ -280,6 +280,96 @@ Before a dataset is used in the controller or a model, check the following:
 * Source CSV files are not exported to C unless they have first been converted to the canonical regular map.
 
 
+Adding a new motor
+==================
+
+The workflow has three phases: create the dataset, optionally preprocess raw data, then regenerate the C header.
+
+.. rubric:: Phase 1 — Create the dataset directory (manual)
+
+Use the ``add_machine`` subcommand of ``generate_available_machines.py`` to scaffold the required directory structure and a ``machine_parameters.csv`` template with all row names pre-filled:
+
+.. code-block:: bash
+
+   # run from docs/source/software/control/uz_pmsm/
+   python generate_available_machines.py add_machine <motor_name> <dataset_name>
+
+   # example
+   python generate_available_machines.py add_machine my_motor nominal_v1
+
+This creates:
+
+.. code-block:: text
+
+   uz_pmsm/
+     my_motor/
+       nominal_v1/
+         machine_parameters.csv   ← template with all parameter names, values empty
+
+The script also prints the C macro name that will be generated:
+
+.. code-block:: text
+
+   Created: .../my_motor/nominal_v1/machine_parameters.csv
+   Fill in all empty values, then run the catalog generator.
+   C macro will be: UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT
+
+``machine_id`` is assigned automatically as the next unused integer.
+
+.. rubric:: Phase 2 — Fill in machine_parameters.csv (manual)
+
+Open the generated template and fill in every empty value.
+All rows map directly to fields of ``uz_PMSM_t`` and must satisfy the constraints documented in :ref:`uz_PMSM_config`.
+The generator validates these constraints and reports errors with field names when they are violated.
+
+If you also have flux-map data, place ``flux_map.csv`` in the same directory using the canonical column order
+``operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs``.
+For raw FEM or measurement files with different column names, write a small preprocessing script
+(see ``mh_prototype/fem_overaged_over_angle/preprocess_to_correct_data_format.py`` as an example)
+and run it manually before the next step.
+
+.. rubric:: Phase 3 — Regenerate the catalog (scripted)
+
+Run the catalog generator once to update both output artifacts:
+
+.. code-block:: bash
+
+   # from docs/
+   make auto_generate_available_machines
+
+   # or from the repo root
+   PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
+
+The generator:
+
+1. Parses the ``uz_PMSM_t`` struct definition from ``uz_PMSM_config.h`` and verifies that the Python model matches it exactly.
+2. Finds every ``machine_parameters.csv`` file two levels deep under ``uz_pmsm/``.
+3. Validates all parameter values and checks that every ``machine_id`` is unique.
+4. Writes ``available_machines.csv`` — a tabular inventory for humans and Sphinx.
+5. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
+
+Both output files must be committed to the repository after running.
+
+To verify that committed files are still in sync with the CSV sources:
+
+.. code-block:: bash
+
+   make check_available_machines
+
+.. rubric:: Phase 4 — Use the macro in C code (manual)
+
+``uz_PMSM_config.h`` already includes ``uz_available_machines_auto_generated.h``, so no additional include is needed:
+
+.. code-block:: c
+
+   #include "uz_PMSM_config.h"
+
+   uz_PMSM_t my_motor = UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT;
+   uz_PMSM_config_assert(my_motor);
+
+The macro expands to a C99 designated initializer with all 20 fields set.
+``uz_PMSM_config_assert`` validates every field at runtime and fires ``uz_assert`` on violation.
+
 Available motor datasets
 ========================
 

@@ -26,21 +26,6 @@
 #define UZ_PMSM_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results.csv"
 #define UZ_PMSM_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_config.csv"
 
-#define TEST_PMSM_REQUIRED_FIELDS \
-    .machine_id = 0U, \
-    .I_rated_Ampere = 8.0f, \
-    .Torque_rated_Nm = 1.2f, \
-    .Torque_max_Nm = 2.0f, \
-    .Torque_min_Nm = -2.0f, \
-    .speed_rated_rpm = 1000.0f, \
-    .speed_max_rpm = 1500.0f, \
-    .speed_min_rpm = -1500.0f, \
-    .V_dc_nominal_V = 24.0f, \
-    .I_d_max_A = 10.0f, \
-    .I_d_min_A = -10.0f, \
-    .I_q_max_A = 10.0f, \
-    .I_q_min_A = -10.0f
-
 const struct csv_field_descriptor_t output_fields[] = {
     CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_dq_A, d, CSV_FIELD_FLOAT),
     CSV_DQ_FIELD_DESCRIPTOR(struct uz_pmsm_swmodel_outputs_t, i_dq_A, q, CSV_FIELD_FLOAT),
@@ -85,7 +70,19 @@ void test_uz_pmsm_swmodel_test_init(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
     TEST_ASSERT_NOT_NULL(model);
 }
@@ -102,7 +99,19 @@ void test_uz_pmsm_swmodel_all_zeros(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
     struct uz_pmsm_swmodel_inputs_t inputs = {
         .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
@@ -132,7 +141,19 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
 
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
@@ -176,7 +197,19 @@ void test_uz_pmsm_swmodel_zero_after_reset(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
 
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
@@ -228,7 +261,19 @@ void test_uz_pmsm_swmodel_steady_state_zero_voltage_zero_speed(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
 
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
@@ -272,7 +317,19 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
             .polePairs = 4.0f,
             .J_kg_m_squared = 0.0001f,
             .I_max_Ampere = 10.0f,
-            TEST_PMSM_REQUIRED_FIELDS}};
+            .machine_id = 0U,
+            .I_rated_Ampere = 8.0f,
+            .Torque_rated_Nm = 1.2f,
+            .Torque_max_Nm = 2.0f,
+            .Torque_min_Nm = -2.0f,
+            .speed_rated_rpm = 1000.0f,
+            .speed_max_rpm = 1500.0f,
+            .speed_min_rpm = -1500.0f,
+            .V_dc_nominal_V = 24.0f,
+            .I_d_max_A = 10.0f,
+            .I_d_min_A = -10.0f,
+            .I_q_max_A = 10.0f,
+            .I_q_min_A = -10.0f}};
 
     uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
 
@@ -291,8 +348,8 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     }
     const float omega_el_1_s = inputs.omega_mech_1_s * config.pmsm_parameters.polePairs;
     const float resistance = config.pmsm_parameters.R_ph_Ohm;
-    const float denominator = 1.0f + ((omega_el_1_s * omega_el_1_s * config.pmsm_parameters.Ld_Henry * config.pmsm_parameters.Lq_Henry) /(resistance * resistance));
-    const float expected_i_q_A =-(omega_el_1_s * config.pmsm_parameters.Psi_PM_Vs / resistance) / denominator;
+    const float denominator = 1.0f + ((omega_el_1_s * omega_el_1_s * config.pmsm_parameters.Ld_Henry * config.pmsm_parameters.Lq_Henry) / (resistance * resistance));
+    const float expected_i_q_A = -(omega_el_1_s * config.pmsm_parameters.Psi_PM_Vs / resistance) / denominator;
     const float expected_i_d_A = (omega_el_1_s * config.pmsm_parameters.Lq_Henry / resistance) * expected_i_q_A;
     const float expected_psi_d_Vs = config.pmsm_parameters.Ld_Henry * expected_i_d_A + config.pmsm_parameters.Psi_PM_Vs;
     const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
@@ -303,9 +360,9 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
 
-    #if CSV_EXPORT
+#if CSV_EXPORT
     export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
-    #endif
+#endif
 }
 
 #endif // TEST

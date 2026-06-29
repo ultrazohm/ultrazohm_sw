@@ -444,3 +444,61 @@ def test_docs_differential_inductance_plot_helper_smoke():
     pyuzlib.docs.pmsm.plot_differential_inductances(
         "docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/flux_map.csv"
     )
+
+
+def test_add_machine_creates_template_and_prints_hints(tmp_path, capsys):
+    csv_path, script_path, next_id = machine_catalog.create_machine_template(
+        motor_name="test_motor",
+        dataset_name="v1",
+        uz_pmsm_dir=tmp_path,
+    )
+
+    assert csv_path.exists()
+    assert script_path is None
+    csv_text = csv_path.read_text(encoding="utf-8")
+    assert "parameter,value" in csv_text
+    assert "machine_id," in csv_text
+    assert "R_ph_Ohm," in csv_text
+    assert next_id == 1
+
+    machine_catalog._print_parameter_hints(next_id)
+    out = capsys.readouterr().out
+    assert "R_ph_Ohm" in out
+    assert "> 0" in out
+    assert "auto-assigned: 1" in out
+
+
+def test_add_machine_with_raw_data_creates_preprocess_script(tmp_path):
+    csv_path, script_path, next_id = machine_catalog.create_machine_template(
+        motor_name="test_motor",
+        dataset_name="v1",
+        uz_pmsm_dir=tmp_path,
+        with_raw_data=True,
+    )
+
+    assert csv_path.exists()
+    assert script_path is not None
+    assert script_path.exists()
+    script_text = script_path.read_text(encoding="utf-8")
+    assert "pyuzlib" in script_text
+    assert "flux_map_raw.csv" in script_text
+    assert "TODO" in script_text
+    assert "export_flux_map_csv" in script_text
+
+
+def test_add_machine_cli_without_raw_data(tmp_path):
+    rc = machine_catalog.main(
+        ["--uz-pmsm-dir", str(tmp_path), "add_machine", "my_motor", "nominal_v1"],
+    )
+    assert rc == 0
+    assert (tmp_path / "my_motor" / "nominal_v1" / "machine_parameters.csv").exists()
+    assert not (tmp_path / "my_motor" / "nominal_v1" / "preprocess_to_correct_data_format.py").exists()
+
+
+def test_add_machine_cli_with_raw_data(tmp_path):
+    rc = machine_catalog.main(
+        ["--uz-pmsm-dir", str(tmp_path), "add_machine", "my_motor", "nominal_v1", "--with-raw-data"],
+    )
+    assert rc == 0
+    assert (tmp_path / "my_motor" / "nominal_v1" / "machine_parameters.csv").exists()
+    assert (tmp_path / "my_motor" / "nominal_v1" / "preprocess_to_correct_data_format.py").exists()

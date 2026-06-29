@@ -101,11 +101,81 @@ def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -
     return resolved_path.as_posix()
 
 
+_PARAMETER_HINTS: dict[str, tuple[str, str]] = {
+    # field_name: (constraint, description)
+    "machine_id":       ("positive integer, unique across all motors", "auto-assigned, change only if needed"),
+    "R_ph_Ohm":         ("> 0",                    "phase resistance in Ohm"),
+    "Ld_Henry":         ("> 0",                    "d-axis inductance in H"),
+    "Lq_Henry":         ("> 0",                    "q-axis inductance in H"),
+    "Psi_PM_Vs":        (">= 0",                   "PM flux linkage in Vs"),
+    "polePairs":        ("> 0, integer value",      "e.g. 2, 4, 6"),
+    "J_kg_m_squared":   ("> 0",                    "rotor inertia in kg·m²"),
+    "I_max_Ampere":     ("> 0",                    "peak phase current in A"),
+    "I_rated_Ampere":   ("0 < value <= I_max_Ampere", ""),
+    "Torque_rated_Nm":  ("> 0",                    ""),
+    "Torque_max_Nm":    (">= Torque_rated_Nm",     ""),
+    "Torque_min_Nm":    ("<= 0, < Torque_max_Nm",  ""),
+    "speed_rated_rpm":  ("> 0",                    ""),
+    "speed_max_rpm":    (">= speed_rated_rpm",     ""),
+    "speed_min_rpm":    ("<= 0, < speed_max_rpm",  ""),
+    "V_dc_nominal_V":   ("> 0",                    "nominal DC-link voltage in V"),
+    "I_d_max_A":        (">= I_d_min_A",           ""),
+    "I_d_min_A":        ("any float",              ""),
+    "I_q_max_A":        (">= I_q_min_A",           ""),
+    "I_q_min_A":        ("any float",              ""),
+}
+
+_PREPROCESS_SCRIPT_TEMPLATE = '''\
+#!/usr/bin/env python3
+"""Convert raw flux-map data to the canonical uz_pmsm format.
+
+Edit the column name strings below to match your source file, then run this script once.
+Commit flux_map.csv and differential_inductances.csv; the raw source file is optional.
+"""
+from pathlib import Path
+import pyuzlib
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+motor = pyuzlib.pmsm.PMSM()
+motor.load_flux_map_csv(
+    SCRIPT_DIR / "flux_map_raw.csv",  # TODO: rename to match your raw file
+    i_d_col="i_d",     # TODO: column name for d-axis current in your source file
+    i_q_col="i_q",     # TODO: column name for q-axis current
+    psi_d_col="psi_d", # TODO: column name for d-axis flux linkage
+    psi_q_col="psi_q", # TODO: column name for q-axis flux linkage
+)
+motor.calculate_differential_inductances()
+motor.export_flux_map_csv(SCRIPT_DIR / "flux_map.csv")
+motor.export_differential_inductances_csv(SCRIPT_DIR / "differential_inductances.csv")
+print("Exported flux_map.csv and differential_inductances.csv.")
+'''
+
+
+def _print_parameter_hints(next_id: int) -> None:
+    name_w = max(len(n) for n in _PARAMETER_HINTS) + 2
+    constraint_w = max(len(c) for c, _ in _PARAMETER_HINTS.values()) + 2
+    print("\nParameter constraints:")
+    for field in PMSMParameters.C_PARAMETER_FIELDS:
+        constraint, description = _PARAMETER_HINTS.get(field.name, ("", ""))
+        if field.name == "machine_id":
+            constraint = f"positive integer, unique across all motors (auto-assigned: {next_id})"
+        desc_part = f"  {description}" if description else ""
+        print(f"  {field.name:<{name_w}} ({field.ctype})  {constraint:<{constraint_w}}{desc_part}")
+
+
+def _write_preprocess_script_template(dataset_dir: Path) -> Path:
+    script_path = dataset_dir / "preprocess_to_correct_data_format.py"
+    script_path.write_text(_PREPROCESS_SCRIPT_TEMPLATE, encoding="utf-8")
+    return script_path
+
+
 def create_machine_template(
     motor_name: str,
     dataset_name: str,
     uz_pmsm_dir: str | Path,
-) -> Path:
+    with_raw_data: bool = False,
+) -> tuple[Path, Path | None, int]:
     uz_pmsm_dir = Path(uz_pmsm_dir)
     dataset_dir = uz_pmsm_dir / motor_name / dataset_name
     if dataset_dir.exists():
@@ -134,7 +204,9 @@ def create_machine_template(
             continue
         lines.append(f"{field.name},")
     csv_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return csv_path
+
+    script_path = _write_preprocess_script_template(dataset_dir) if with_raw_data else None
+    return csv_path, script_path, next_id
 
 
 def discover_machine_catalog(
@@ -351,6 +423,12 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
     )
     add_machine.add_argument("motor_name", help="Motor directory name, e.g. my_motor")
     add_machine.add_argument("dataset_name", help="Dataset directory name, e.g. nominal_v1")
+    add_machine.add_argument(
+        "--with-raw-data",
+        action="store_true",
+        default=False,
+        help="Also create a preprocess_to_correct_data_format.py template for raw FEM/measurement data.",
+    )
 
     return parser
 
@@ -361,17 +439,21 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
     args = parser.parse_args(argv)
 
     if args.command == "add_machine":
-        csv_path = create_machine_template(
+        csv_path, script_path, next_id = create_machine_template(
             motor_name=args.motor_name,
             dataset_name=args.dataset_name,
             uz_pmsm_dir=args.uz_pmsm_dir,
+            with_raw_data=args.with_raw_data,
         )
         macro_name = (
             f"UZ_PMSM_{normalize_machine_identifier(f'{args.motor_name}_{args.dataset_name}')}_INIT"
         )
         print(f"Created: {csv_path}")
+        if script_path is not None:
+            print(f"Created: {script_path}")
         print(f"Fill in all empty values, then run the catalog generator.")
         print(f"C macro will be: {macro_name}")
+        _print_parameter_hints(next_id)
         return 0
 
     entries = generate_machine_catalog(

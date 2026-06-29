@@ -63,8 +63,10 @@ CPLD_VARIANTS = {
 }
 
 ISPMACH_JED_FILENAMES = {
+    "tx30": "uz_cpld_30tx.jed",
     "30tx": "uz_cpld_30tx.jed",
     "rx30": "uz_cpld_rx30.jed",
+    "optical_14tx_4rx": "uz_cpld_14tx_4rx.jed",
     "uz_d_3ph_inverter": "uz_d_3ph_inverter.jed",
     "uz_d_abs_encoder": "uz_d_abs_encoder.jed",
     "uz_d_resolver_d1_to_d4": str(Path("uz_d_resolver") / "digital_D1_to_D4" / "uz_cpld_uz_d_resolver_d1_to_d4.jed"),
@@ -73,6 +75,7 @@ ISPMACH_JED_FILENAMES = {
 }
 
 MACHXO2_JED_FILENAMES = {
+    "tx30": "uz_d_slots_tx30.jed",
     "30tx": "uz_cpld_30tx.jed",
     "rx30": "uz_cpld_rx30.jed",
 }
@@ -233,6 +236,8 @@ def _program_jed_path(cpld_repository: Path, program_id: str, variant: dict[str,
         candidates = [
             cpld_repository / base_dir / program / f"uz_d_slots_{program}.jed",
         ]
+        if program.startswith("voltage_"):
+            candidates.append(cpld_repository / base_dir / "Voltage_3v3_5v" / program / f"uz_d_slots_{program}.jed")
         mapped_filename = MACHXO2_JED_FILENAMES.get(program)
         if mapped_filename:
             candidates.append(cpld_repository / base_dir / program / mapped_filename)

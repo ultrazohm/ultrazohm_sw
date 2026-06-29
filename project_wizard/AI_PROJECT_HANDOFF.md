@@ -113,6 +113,13 @@ Important helpers:
 
 Do not create partial interface paths in one place and complete paths in another. AXI interface connections through hierarchies should be made consistently using the established AXI helper flow.
 
+Slot-boundary pin naming rule:
+
+- Every generated hierarchy pin or boundary pin must carry the slot prefix, e.g. `D3_...`, unless it is a fixed external adapter port such as `Dig_00_Ch3`.
+- Do not derive intermediate boundary pin names from generic source leaf names such as `Gate_Signals_2L_0` or `Enable_Gate`. Slot changes rely on cleanup patterns like `*D3*`; generic names become stale pins under `uz_digital_adapter`.
+- Before inventing a new signal-routing strategy, compare against the already-tested templates, especially inverter, incremental encoder, and resolver. Reuse their helper pattern unless there is a concrete technical reason not to.
+- For PWM/gate routing, prefer the proven vector-through-hierarchy approach: route `uz_pwm/Gate_Signals_2L_x` into the slot hierarchy as a slot-prefixed vector boundary pin and slice locally if scalar pins are needed.
+
 ### Wizard Ownership Rule
 
 The wizard owns:
@@ -373,7 +380,7 @@ User built the workspace and confirmed all three encoder interfaces are working 
 
 #### Resolver Adapter
 
-First-pass implementation added, not yet Vivado/hardware validated by the user:
+Resolver implementation added and hardware-smoke-tested by the user:
 
 - Adapter card id: `uz_d_resolver`.
 - Slot CPLD programs:
@@ -386,7 +393,7 @@ First-pass implementation added, not yet Vivado/hardware validated by the user:
   - D1-D4 generate 3 channels.
   - D5 generates 2 channels.
 - Optional resolver PL interface:
-  - checkbox in adapter-card detail view: `enable_pl_interface`
+  - per-channel checkboxes in adapter-card detail view: `enable_pl_interface_ch1`, `enable_pl_interface_ch2`, `enable_pl_interface_ch3`
   - default: enabled
   - VLNV: `xilinx.com:ip:uz_resolver_pl_interface:1.0`
   - instance naming: `resolver_pl_interface_{slot_lower}_{channel}`
@@ -395,9 +402,10 @@ First-pass implementation added, not yet Vivado/hardware validated by the user:
     - `resolver_ip_*/velocity_out_m` -> `resolver_pl_interface_*/velocity_raw`
     - `resolver_ip_*/valid_m` -> `resolver_pl_interface_*/trigger`
 - Sample trigger source:
-  - GUI source field id: `sample_trigger_source`
+  - GUI source field ids: `sample_trigger_source_ch1`, `sample_trigger_source_ch2`, `sample_trigger_source_ch3`
   - default: `uz_system/trigger_conversions`
-  - if missing, Tcl warns and ties sample trigger to zero.
+  - D1-D4 show channel 1-3 trigger fields; D5 shows only channel 1-2 trigger fields.
+  - if a selected channel trigger source is missing, Tcl warns and ties that channel sample trigger to zero.
 - PL-interface outputs are exposed at `uz_digital_adapter` and `Dx_adapter`:
   - `Dx_resolver_pl_{channel}_position_mech_raw`
   - `Dx_resolver_pl_{channel}_position_mech_2pi`
@@ -428,13 +436,19 @@ First-pass implementation added, not yet Vivado/hardware validated by the user:
   - `position_intmax`
   - `bitToRPS_factor`
   - `theta_m_offset_rad`
-- ISR readout generated for PL-interface enabled channels:
+- ISR readout generated for PL-interface enabled channels from `uz_resolver_pl_interface_get_outputs()`:
   - `position_mech_2pi`
   - `position_el_2pi`
   - `omega_mech_rad_s`
   - `n_mech_rpm`
   - `omega_el_rad_s` calculated as mechanical rad/s times resolver IP machine pole pairs
   - `revolution_counter`
+- ISR readout generated for channels without PL interface from the base resolver IP driver:
+  - calls `uz_resolverIP_readMechanicalPositionAndVelocity()` for mechanical position/speed
+  - calls `uz_resolverIP_readElectricalPositionAndVelocity()` for electrical position/speed
+  - stores `resolver_ip_{slot_lower}_{channel}_position_mech_2pi`
+  - stores `position_el_2pi`, `omega_mech_rad_s`, `n_mech_rpm`, and `omega_el_rad_s`
+  - visualization signals are generated for those base-IP values instead of PL-interface values
 - Instance count defines handled:
   - `UZ_RESOLVERIP_MAX_INSTANCES`
   - `UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES`
@@ -446,6 +460,14 @@ Resolver smoke checks passed:
 - Focused Tcl generation check for D4 with PL interface enabled.
 - Focused Tcl generation check for D5 with PL interface disabled.
 - Focused software plan check for D5 with PL interface enabled, including instance counts and generated init/readout content.
+- Resolver PL-interface selection is now per channel:
+  - Adapter-card view shows channel 1-3 checkboxes for D1-D4.
+  - Adapter-card view shows only channel 1-2 checkboxes for D5.
+  - Tcl, AXI attachment, and PL-interface software driver generation are generated only for checked PL-interface channels.
+  - Unchecked channels still generate base resolver IP software readout and visualization.
+  - Toggling PL-interface channel checkboxes refreshes advanced driver options, software preview, and visualization options immediately.
+- User confirmed D2 hardware readout and visualization for all three resolver channels, including a mixed case with channel 2 using base resolver IP readout and channels 1/3 using PL interface.
+- User confirmed D5 bitstream/software/GUI visualization with two resolver channels using PL interfaces.
 
 ### Files Touched Along The Way
 
@@ -481,13 +503,13 @@ Immediate next task in the new chat:
    - Open the wizard.
    - Select `UZ_D Resolver` in D4 first, then D5.
    - Confirm default CPLD becomes `uz_d_resolver_d1_to_d4` for D1-D4 and `uz_d_resolver_d5` for D5.
-   - Confirm the resolver PL interface checkbox is enabled by default.
-   - Confirm sample trigger source defaults to `uz_system/trigger_conversions`.
+   - Confirm the resolver PL interface channel checkboxes are enabled by default.
+   - Confirm all visible channel sample trigger sources default to `uz_system/trigger_conversions`.
    - Generate Tcl.
    - Apply Tcl in Vivado GUI.
    - Check BD:
-     - D1-D4 create 3 `resolver_ip_*` instances and 3 `resolver_pl_interface_*` instances when enabled.
-     - D5 creates 2 `resolver_ip_*` instances and 2 `resolver_pl_interface_*` instances when enabled.
+     - D1-D4 create 3 `resolver_ip_*` instances and only the checked `resolver_pl_interface_*` instances.
+     - D5 creates 2 `resolver_ip_*` instances and only the checked `resolver_pl_interface_*` instances.
      - `valid_m` connects to PL-interface `trigger`.
      - resolver sample trigger connects from configured source to each resolver IP.
      - PL-interface outputs are exposed through the D-slot adapter hierarchy.

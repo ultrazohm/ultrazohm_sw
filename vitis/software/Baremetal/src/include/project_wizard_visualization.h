@@ -45,6 +45,7 @@ typedef struct {
     float viz_incremental_encoder_d1_1_theta_el;
     float viz_incremental_encoder_d1_2_theta_el;
     float viz_incremental_encoder_d1_3_theta_el;
+    float viz_endat_encoder_d2_1_position_mech_si_single_turn;
     float viz_inverter_adapter_d3_chip_temp_h1;
     float viz_inverter_adapter_d3_chip_temp_l1;
     float viz_inverter_adapter_d3_chip_temp_h2;
@@ -54,14 +55,8 @@ typedef struct {
     float viz_temp_d4_a_4;
     float viz_temp_d4_a_5;
     float viz_temp_d4_a_19;
-    float viz_endat_encoder_d5_1_position_raw_single_turn;
-    float viz_endat_encoder_d5_1_position_raw_multi_turn;
-    float viz_endat_encoder_d5_1_position_mech_si_single_turn;
-    float viz_endat_encoder_d5_1_position_el_si_single_turn;
-    float viz_ssi_encoder_d5_2_position_mech_si_single_turn;
-    float viz_ssi_encoder_d5_2_position_el_si_single_turn;
-    float viz_ssi_encoder_d5_3_position_mech_si_single_turn;
-    float viz_ssi_encoder_d5_3_position_el_si_single_turn;
+    float viz_resolver_pl_interface_d5_1_position_mech_2pi;
+    float viz_resolver_pl_interface_d5_2_position_mech_2pi;
     float viz_incremental_encoder_d1_1_position;
     float viz_incremental_encoder_d1_2_position;
     float viz_incremental_encoder_d1_3_position;

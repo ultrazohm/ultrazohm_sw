@@ -2,6 +2,15 @@
   "schema_version": 1,
   "software_drivers": [
     {
+      "id": "uz_axi_gpio",
+      "name": "AXI GPIO",
+      "templates": {
+        "header": "software/axi_gpio.h.tpl",
+        "source": "software/axi_gpio.c.tpl"
+      },
+      "config_fields": []
+    },
+    {
       "id": "uz_adc_ltc2311",
       "name": "ADC LTC2311",
       "templates": {

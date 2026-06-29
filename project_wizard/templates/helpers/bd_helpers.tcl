@@ -373,6 +373,42 @@ proc uz_pw_connect_port_if_unconnected {source_pin port_name} {
   }
 }
 
+proc uz_pw_get_bd_port_from_root {port_name} {
+  set old_instance [current_bd_instance .]
+  current_bd_instance [get_bd_cells /]
+  set port [get_bd_ports -quiet $port_name]
+  current_bd_instance $old_instance
+  return $port
+}
+
+proc uz_pw_connect_port_to_pin_if_unconnected {port_name sink_pin} {
+  set source [uz_pw_get_bd_port_from_root $port_name]
+  set sink [get_bd_pins -quiet $sink_pin]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source port not found: $port_name"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink pin not found: $sink_pin"
+    return
+  }
+  uz_pw_try_connect_bd_net $source $sink
+}
+
+proc uz_pw_connect_pin_to_port_if_unconnected {source_pin port_name} {
+  set source [get_bd_pins -quiet $source_pin]
+  set sink [uz_pw_get_bd_port_from_root $port_name]
+  if {[llength $source] == 0} {
+    puts "WARNING: Source pin not found: $source_pin"
+    return
+  }
+  if {[llength $sink] == 0} {
+    puts "WARNING: Sink port not found: $port_name"
+    return
+  }
+  uz_pw_try_connect_bd_net $source $sink
+}
+
 proc uz_pw_set_property_if_objects {property_name property_value objects label} {
   if {[llength $objects] == 0} {
     puts "WARNING: Could not set $property_name on $label because no object was found"

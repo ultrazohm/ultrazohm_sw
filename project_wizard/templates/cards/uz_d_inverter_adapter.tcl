@@ -63,17 +63,14 @@ proc uz_pw_inverter_create_xlconstant {cell_path width value} {
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-proc uz_pw_inverter_leaf_name {object_path} {
-  set parts [split $object_path "/"]
-  return [lindex $parts end]
-}
-
 # Gates[5:0] source. Use the configured six-bit vector source if it is present,
 # otherwise fall back to a deterministic zero source internal to the slot hierarchy.
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/Gates"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_Gates"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/Din"
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/Din"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_Gate_Signals_2L_source"
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/{{ slot }}_Gate_Signals_2L_source"
 set gate_vector_source_pin "{{ inverter_gates_source }}"
 if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_source_pin]] == 0} {
   puts "WARNING: Six-bit gate vector source '$gate_vector_source_pin' is not usable for {{ slot }} inverter adapter; using zero fallback."
@@ -81,7 +78,7 @@ if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_s
   uz_pw_inverter_create_xlconstant $gates_default_path 6 0x00
   set gates_source_pin "${gates_default_path}/dout"
 } else {
-  set gate_source_boundary_name [uz_pw_inverter_leaf_name $gate_vector_source_pin]
+  set gate_source_boundary_name "{{ slot }}_Gate_Signals_2L_source"
   uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $gate_source_boundary_name 5 0
   uz_pw_create_hier_pin_if_missing $adapter_hier_path I $gate_source_boundary_name 5 0
   uz_pw_connect_pin_pair_if_unconnected $gate_vector_source_pin "${adapter_parent_hier}/${gate_source_boundary_name}"
@@ -94,12 +91,21 @@ if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_s
 # fall back to a deterministic zero source internal to the slot hierarchy.
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/PWM_UZ_Enable"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_PWM_UZ_Enable"
+uz_pw_delete_pin_if_exists "${adapter_parent_hier}/{{ slot }}_PWM_UZ_Enable_source"
+uz_pw_delete_pin_if_exists "${adapter_hier_path}/{{ slot }}_PWM_UZ_Enable_source"
 set pwm_enable_source_pin "{{ inverter_pwm_enable_source }}"
 if {$pwm_enable_source_pin eq "" || [llength [get_bd_pins -quiet $pwm_enable_source_pin]] == 0} {
   puts "WARNING: PWM_UZ_Enable source '$pwm_enable_source_pin' not found for {{ slot }} inverter adapter; using zero fallback."
   set pwm_enable_default_path "${adapter_hier_path}/{{ slot }}_pwm_enable_default_zero"
   uz_pw_inverter_create_xlconstant $pwm_enable_default_path 1 0
   set pwm_enable_source_pin "${pwm_enable_default_path}/dout"
+} else {
+  set pwm_enable_boundary_name "{{ slot }}_PWM_UZ_Enable_source"
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $pwm_enable_boundary_name
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I $pwm_enable_boundary_name
+  uz_pw_connect_pin_pair_if_unconnected $pwm_enable_source_pin "${adapter_parent_hier}/${pwm_enable_boundary_name}"
+  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${pwm_enable_boundary_name}" "${adapter_hier_path}/${pwm_enable_boundary_name}"
+  set pwm_enable_source_pin "${adapter_hier_path}/${pwm_enable_boundary_name}"
 }
 uz_pw_connect_pin_pair_if_unconnected $pwm_enable_source_pin "${inverter_driver_path}/PWM_UZ_Enable"
 

@@ -44,7 +44,7 @@ from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
 from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_settings_from_xcf
-from ..services.software_generator_service import SoftwareGenerator
+from ..services.software_generator_service import SoftwareGenerator, resolver_channel_count
 from ..services.system_resolver import SystemResolver
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..services.vivado_service import write_vivado_run_wrapper
@@ -1365,6 +1365,10 @@ class MainWindow(QMainWindow):
                 combo.addItem("Default EnDat / SSI", "default")
             elif card_id == "uz_d_incremental_encoder":
                 combo.addItem("Default Incremental Encoder", "default")
+            elif card_id == "uz_d_resolver":
+                combo.addItem("Default Resolver", "default")
+            elif card_id == "uz_d_inverter_adapter":
+                combo.addItem("Default Inverter Adapter", "default")
             elif card_id == "analog_ltc2311_16":
                 combo.addItem("Default ADC LTC2311", "default")
             elif card_id == "analog_max11331":
@@ -1644,7 +1648,11 @@ class MainWindow(QMainWindow):
         combo = self.cpld_combos.get(slot)
         if not combo:
             return
-        program_id = default_cpld_for_card(self.database, self.assignments().get(slot, "empty"), slot)
+        card = self.database.card_by_id(self.assignments().get(slot, "empty"))
+        if card and card.get("vivado", {}).get("io_card"):
+            program_id = TclGenerator.io_card_cpld_program(card, self.detail_options.get(slot, {}))
+        else:
+            program_id = default_cpld_for_card(self.database, self.assignments().get(slot, "empty"), slot)
         index = combo.findData(program_id)
         combo.blockSignals(True)
         combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
@@ -1667,6 +1675,11 @@ class MainWindow(QMainWindow):
                 field_id = source_field.get("id", "")
                 if field_id:
                     allowed_keys.add(field_id)
+            if card.get("vivado", {}).get("io_card"):
+                for pin_index in range(30):
+                    allowed_keys.add(f"io_pin_{pin_index:02d}_mode")
+                    allowed_keys.add(f"io_pin_{pin_index:02d}_source")
+                    allowed_keys.add(f"io_pin_{pin_index:02d}_constant")
             filtered = {key: value for key, value in options.items() if key in allowed_keys}
             if filtered:
                 values[slot] = filtered
@@ -2032,6 +2045,13 @@ class MainWindow(QMainWindow):
                 form = QFormLayout()
                 for option in card.get("options", []):
                     option_id = option.get("id", "")
+                    resolver_channel = option.get("resolver_channel")
+                    if card_id == "uz_d_resolver" and resolver_channel:
+                        try:
+                            if int(resolver_channel) > resolver_channel_count(slot):
+                                continue
+                        except (TypeError, ValueError):
+                            pass
                     if option.get("input") == "checkbox":
                         selected = str(
                             self.detail_options.get(slot, {}).get(option_id, option.get("default", "false"))
@@ -2084,6 +2104,13 @@ class MainWindow(QMainWindow):
                     field_id = source_field.get("id", "")
                     if not field_id:
                         continue
+                    resolver_channel = source_field.get("resolver_channel")
+                    if card_id == "uz_d_resolver" and resolver_channel:
+                        try:
+                            if int(resolver_channel) > resolver_channel_count(slot):
+                                continue
+                        except (TypeError, ValueError):
+                            pass
                     value = self.detail_options.get(slot, {}).get(field_id, source_field.get("default", ""))
                     edit = QLineEdit(value)
                     edit.setPlaceholderText(source_field.get("placeholder", "Block design pin path"))
@@ -2093,6 +2120,9 @@ class MainWindow(QMainWindow):
                     self.detail_source_edits[(slot, field_id)] = edit
                     source_layout.addRow(source_field.get("label", field_id), edit)
                 group_layout.addWidget(source_group)
+
+            if card.get("vivado", {}).get("io_card"):
+                group_layout.addWidget(self._build_io_card_pin_group(slot, card))
 
             page_layout.insertWidget(page_layout.count() - 1, group)
 
@@ -2115,9 +2145,79 @@ class MainWindow(QMainWindow):
                 if widget:
                     widget.deleteLater()
 
+    def _build_io_card_pin_group(self, slot: str, card: dict[str, Any]) -> QGroupBox:
+        group = QGroupBox("IO source and sink draft")
+        layout = QVBoxLayout(group)
+        hint = QLabel("TX pins drive the adapter board. RX pins read from the adapter board.")
+        hint.setWordWrap(True)
+        layout.addWidget(hint)
+
+        grid = QGridLayout()
+        grid.addWidget(QLabel("Pin"), 0, 0)
+        grid.addWidget(QLabel("Direction"), 0, 1)
+        grid.addWidget(QLabel("Mode"), 0, 2)
+        grid.addWidget(QLabel("Source / sink path"), 0, 3)
+        grid.addWidget(QLabel("Constant"), 0, 4)
+
+        directions = TclGenerator._io_card_directions(card.get("vivado", {}).get("io_card", {}), self.detail_options.get(slot, {}))
+        for row_index, physical_direction in enumerate(directions, start=1):
+            pin_index = row_index - 1
+            pin_id = f"io_pin_{pin_index:02d}"
+            pin_name = f"Dig_{pin_index:02d}_Ch{slot[1:]}"
+            mode_combo = QComboBox()
+            if physical_direction == "tx":
+                mode_options = [
+                    ("axi_gpio", "AXI GPIO"),
+                    ("top_level", "Top-level input"),
+                    ("pwm", "PWM source pin"),
+                    ("source_pin", "Custom source pin"),
+                    ("constant", "Constant"),
+                ]
+            else:
+                mode_options = [
+                    ("axi_gpio", "AXI GPIO"),
+                    ("top_level", "Top-level output"),
+                ]
+            for value, label in mode_options:
+                mode_combo.addItem(label, value)
+            selected_mode = self.detail_options.get(slot, {}).get(f"{pin_id}_mode", "axi_gpio")
+            mode_index = mode_combo.findData(selected_mode)
+            mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
+            mode_combo.currentIndexChanged.connect(self._detail_option_changed)
+            self.detail_combos[(slot, f"{pin_id}_mode")] = mode_combo
+
+            source_edit = QLineEdit(
+                self.detail_options.get(slot, {}).get(
+                    f"{pin_id}_source",
+                    f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pin_index // 6}/s{pin_index % 6}_out",
+                )
+            )
+            source_edit.editingFinished.connect(self._detail_option_changed)
+            self.detail_source_edits[(slot, f"{pin_id}_source")] = source_edit
+
+            constant_edit = QLineEdit(self.detail_options.get(slot, {}).get(f"{pin_id}_constant", "0"))
+            constant_edit.setFixedWidth(64)
+            constant_edit.editingFinished.connect(self._detail_option_changed)
+            self.detail_source_edits[(slot, f"{pin_id}_constant")] = constant_edit
+
+            grid.addWidget(QLabel(pin_name), row_index, 0)
+            grid.addWidget(QLabel("TX" if physical_direction == "tx" else "RX"), row_index, 1)
+            grid.addWidget(mode_combo, row_index, 2)
+            grid.addWidget(source_edit, row_index, 3)
+            grid.addWidget(constant_edit, row_index, 4)
+
+        layout.addLayout(grid)
+        return group
+
     def _detail_option_changed(self) -> None:
+        changed_widget = self.sender()
+        rebuild_io_details = False
         for (slot, option_id), combo in self.detail_combos.items():
             self.detail_options.setdefault(slot, {})[option_id] = combo.currentData() or ""
+            if combo is changed_widget and (
+                option_id == "optical_variant" or option_id.startswith("direction_group_")
+            ):
+                rebuild_io_details = True
             trigger_edit = self.detail_trigger_edits.get((slot, option_id))
             if trigger_edit:
                 trigger_edit.setEnabled(combo.currentData() != "none")
@@ -2127,6 +2227,22 @@ class MainWindow(QMainWindow):
         for (slot, field_id), edit in self.detail_source_edits.items():
             self.detail_options.setdefault(slot, {})[field_id] = edit.text().strip()
         self.software_dependent_views_dirty = True
+        for slot in DIGITAL_SLOTS:
+            card = self.database.card_by_id(self.assignments().get(slot, "empty"))
+            if card and card.get("vivado", {}).get("io_card"):
+                self.prefill_cpld_for_slot(slot)
+                self.invalidate_cpld_project_file()
+        if rebuild_io_details and not self.is_loading_config:
+            self.rebuild_details()
+            self.refresh_advanced_driver_config_options()
+            self.refresh_data_visualization_options(refresh_preview=False)
+            self.guarded_refresh_software_preview()
+            self.guarded_refresh_tcl_preview()
+            return
+        if not self.is_loading_config:
+            self.refresh_advanced_driver_config_options()
+            self.refresh_data_visualization_options(refresh_preview=False)
+            self.guarded_refresh_software_preview()
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:

@@ -120,17 +120,21 @@ int main(void)
 			Global_Data.objects.incremental_encoder_d1_1 = initialize_incremental_encoder_d1_1();
 			Global_Data.objects.incremental_encoder_d1_2 = initialize_incremental_encoder_d1_2();
 			Global_Data.objects.incremental_encoder_d1_3 = initialize_incremental_encoder_d1_3();
+			Global_Data.objects.endat_encoder_d2_1 = initialize_endat_encoder_d2_1();
+			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d2_1, uz_endat_interface_send_position);
+			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d2_1, true);
+			Global_Data.objects.ssi_encoder_d2_2 = initialize_ssi_encoder_d2_2();
+			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d2_2, true);
+			Global_Data.objects.ssi_encoder_d2_3 = initialize_ssi_encoder_d2_3();
+			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d2_3, true);
 			Global_Data.objects.inverter_adapter_d3 = initialize_inverter_adapter_d3();
 			Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
 			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
 			uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);
-			Global_Data.objects.endat_encoder_d5_1 = initialize_endat_encoder_d5_1();
-			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_1, uz_endat_interface_send_position);
-			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
-			Global_Data.objects.ssi_encoder_d5_2 = initialize_ssi_encoder_d5_2();
-			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_2, true);
-			Global_Data.objects.ssi_encoder_d5_3 = initialize_ssi_encoder_d5_3();
-			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
+			Global_Data.objects.resolver_ip_d5_1 = initialize_resolver_ip_d5_1();
+			Global_Data.objects.resolver_pl_interface_d5_1 = initialize_resolver_pl_interface_d5_1();
+			Global_Data.objects.resolver_ip_d5_2 = initialize_resolver_ip_d5_2();
+			Global_Data.objects.resolver_pl_interface_d5_2 = initialize_resolver_pl_interface_d5_2();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

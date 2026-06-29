@@ -310,6 +310,7 @@ class SoftwareGenerator:
         incremental_encoder_instances = 0
         resolver_ip_instances = 0
         resolver_pl_interface_instances = 0
+        axi_gpio_instances = 0
         wavegen_instance_counts = {
             "UZ_WAVEGEN_SINE_MAX_INSTANCES": 0,
             "UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES": 0,
@@ -579,7 +580,7 @@ class SoftwareGenerator:
                     )
             elif card_id == "uz_d_resolver":
                 channel_count = resolver_channel_count(slot)
-                enable_pl_interface = config_bool(option_values.get(slot, {}).get("enable_pl_interface", "true"), default=True)
+                slot_options = option_values.get(slot, {})
                 for channel_index in range(1, channel_count + 1):
                     resolver_ip_instances += 1
                     resolver_context = self._resolver_ip_context(
@@ -606,7 +607,7 @@ class SoftwareGenerator:
                     main_init.append(
                         f"\t\t\tGlobal_Data.objects.resolver_ip_{resolver_context['slot_lower']}_{channel_index} = initialize_resolver_ip_{resolver_context['slot_lower']}_{channel_index}();"
                     )
-                    if enable_pl_interface:
+                    if resolver_pl_interface_enabled(slot_options, channel_index):
                         resolver_pl_interface_instances += 1
                         pl_context = self._resolver_pl_interface_context(
                             slot,
@@ -647,6 +648,38 @@ class SoftwareGenerator:
                         available_visualization_signals.extend(
                             resolver_pl_interface_visualization_signals(str(pl_context["slot_lower"]), channel_index)
                         )
+                    else:
+                        actual_values.extend(resolver_ip_actual_values(str(resolver_context["slot_lower"]), channel_index))
+                        isr_control_by_slot[slot].extend(
+                            resolver_ip_isr_lines(str(resolver_context["slot_lower"]), channel_index)
+                        )
+                        available_visualization_signals.extend(
+                            resolver_ip_visualization_signals(str(resolver_context["slot_lower"]), channel_index)
+                        )
+            elif card_id in {"uz_d_optical_io", "uz_d_voltage_3v3_5v"}:
+                card = self.database.card_by_id(card_id) or {}
+                slot_options = option_values.get(slot, {})
+                if io_card_needs_axi(card, slot_options):
+                    axi_gpio_instances += 1
+                    context = self._axi_gpio_context(slot, source_dir, card, slot_options, resolve_base_addresses)
+                    warnings.extend(context.pop("warnings"))
+                    header_includes, header_prototypes = split_header_template(
+                        self.renderer.render_file(self.driver_template("uz_axi_gpio", "header"), context)
+                    )
+                    slot_content[slot].header_includes.extend(header_includes)
+                    slot_content[slot].header_prototypes.extend(header_prototypes)
+                    slot_content[slot].source_definitions.append(
+                        self.renderer.render_file(self.driver_template("uz_axi_gpio", "source"), context).rstrip()
+                    )
+                    objects.append(f"\tuz_axi_gpio_t* axi_gpio_{context['slot_lower']};")
+                    actual_values.append(f"\tuint32_t io_card_{context['slot_lower']}_state;")
+                    main_init.append(
+                        f"\t\t\tGlobal_Data.objects.axi_gpio_{context['slot_lower']} = initialize_axi_gpio_{context['slot_lower']}();"
+                    )
+                    isr_control_by_slot[slot].append(
+                        f"    Global_Data.av.io_card_{context['slot_lower']}_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_{context['slot_lower']});"
+                    )
+                    available_visualization_signals.extend(io_card_visualization_signals(str(context["slot_lower"])))
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     option_id = f"channel_{channel_index}"
@@ -802,6 +835,7 @@ class SoftwareGenerator:
                 "UZ_INCREMENTALENCODER_MAX_INSTANCES": incremental_encoder_instances,
                 "UZ_RESOLVERIP_MAX_INSTANCES": resolver_ip_instances,
                 "UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES": resolver_pl_interface_instances,
+                "UZ_AXI_GPIO_MAX_INSTANCES": axi_gpio_instances,
                 **wavegen_instance_counts,
             },
             warnings=warnings,
@@ -820,7 +854,15 @@ class SoftwareGenerator:
         hardware_config: dict[str, str] | None = None,
     ) -> str:
         plan = self.build_plan(
-            source_dir, assignments, option_values, software_modes, software_presets, visualization_signals, driver_config, hardware_config
+            source_dir,
+            assignments,
+            option_values,
+            software_modes,
+            software_presets,
+            visualization_signals,
+            driver_config,
+            hardware_config,
+            resolve_base_addresses=False,
         )
         lines = [
             "Software generation preview",
@@ -1025,7 +1067,7 @@ class SoftwareGenerator:
                     )
             elif card_id == "uz_d_resolver":
                 channel_count = resolver_channel_count(slot)
-                enable_pl_interface = config_bool(option_values.get(slot, {}).get("enable_pl_interface", "true"), default=True)
+                slot_options = option_values.get(slot, {})
                 for channel_index in range(1, channel_count + 1):
                     instances.append(
                         DriverConfigInstance(
@@ -1036,7 +1078,7 @@ class SoftwareGenerator:
                             fields=self.driver_config_fields("uz_resolverIP"),
                         )
                     )
-                    if enable_pl_interface:
+                    if resolver_pl_interface_enabled(slot_options, channel_index):
                         instances.append(
                             DriverConfigInstance(
                                 id=f"{slot_lower}_resolver_pl_interface_{channel_index}",
@@ -1046,6 +1088,18 @@ class SoftwareGenerator:
                                 fields=self.driver_config_fields("uz_resolver_pl_interface"),
                             )
                         )
+            elif card_id in {"uz_d_optical_io", "uz_d_voltage_3v3_5v"}:
+                card = self.database.card_by_id(card_id) or {}
+                if io_card_needs_axi(card, option_values.get(slot, {})):
+                    instances.append(
+                        DriverConfigInstance(
+                            id=f"{slot_lower}_axi_gpio",
+                            slot=slot,
+                            label=f"{slot} AXI GPIO IO card",
+                            driver="axi_gpio",
+                            fields=self.driver_config_fields("uz_axi_gpio"),
+                        )
+                    )
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     interface = option_values.get(slot, {}).get(f"channel_{channel_index}", "none")
@@ -1391,6 +1445,33 @@ class SoftwareGenerator:
         }
         context.update(config_values)
         return context
+
+    def _axi_gpio_context(
+        self,
+        slot: str,
+        source_dir: Path,
+        card: dict[str, object],
+        option_values: dict[str, str],
+        resolve_base_addresses: bool = True,
+    ) -> dict[str, object]:
+        slot_lower = slot.lower()
+        base_address_macro, warning = resolve_base_address_macro(
+            source_dir, slot, "axi_gpio", search_xparameters=resolve_base_addresses
+        )
+        device_id_macro, device_warning = resolve_device_id_macro(
+            source_dir, slot, "axi_gpio", search_xparameters=resolve_base_addresses
+        )
+        warnings = [entry for entry in [warning, device_warning] if entry]
+        return {
+            "slot": slot,
+            "slot_lower": slot_lower,
+            "base_address_macro": base_address_macro,
+            "device_id_macro": device_id_macro,
+            "fallback_device_id": d_slot_index(slot) - 1,
+            "direction_mask": f"0x{io_card_direction_mask(card, option_values):08X}",
+            "direction_mask_define": f"PROJECT_WIZARD_IO_CARD_{slot.upper()}_DIRECTION_MASK",
+            "warnings": warnings,
+        }
 
 
 def patch_slot_header(path: Path, slot: str, includes: list[str], prototypes: list[str]) -> None:
@@ -1897,6 +1978,68 @@ def resolver_channel_count(slot: str) -> int:
     return 2 if slot == "D5" else 3
 
 
+def d_slot_index(slot: str) -> int:
+    try:
+        return int(slot[1:])
+    except (TypeError, ValueError):
+        return 1
+
+
+def resolver_pl_interface_enabled(option_values: dict[str, str], channel: int) -> bool:
+    return config_bool(option_values.get(f"enable_pl_interface_ch{channel}", "true"), default=True)
+
+
+def resolver_ip_actual_values(slot_lower: str, channel: int) -> list[str]:
+    name = f"resolver_ip_{slot_lower}_{channel}"
+    return [
+        f"\tfloat {name}_position_mech_2pi;",
+        f"\tfloat {name}_position_el_2pi;",
+        f"\tfloat {name}_omega_mech_rad_s;",
+        f"\tfloat {name}_n_mech_rpm;",
+        f"\tfloat {name}_omega_el_rad_s;",
+    ]
+
+
+def resolver_ip_isr_lines(slot_lower: str, channel: int) -> list[str]:
+    name = f"resolver_ip_{slot_lower}_{channel}"
+    object_ref = f"Global_Data.objects.{name}"
+    mechanical_ref = f"{name}_mechanical"
+    electrical_ref = f"{name}_electrical"
+    return [
+        f"    struct uz_resolverIP_position_velocity_t {mechanical_ref} = uz_resolverIP_readMechanicalPositionAndVelocity({object_ref});",
+        f"    struct uz_resolverIP_position_velocity_t {electrical_ref} = uz_resolverIP_readElectricalPositionAndVelocity({object_ref});",
+        f"    Global_Data.av.{name}_position_mech_2pi = {mechanical_ref}.position;",
+        f"    Global_Data.av.{name}_position_el_2pi = {electrical_ref}.position;",
+        f"    Global_Data.av.{name}_omega_mech_rad_s = {mechanical_ref}.velocity;",
+        f"    Global_Data.av.{name}_n_mech_rpm = {mechanical_ref}.velocity * 9.549296585513721f;",
+        f"    Global_Data.av.{name}_omega_el_rad_s = {electrical_ref}.velocity;",
+    ]
+
+
+def resolver_ip_visualization_signals(slot_lower: str, channel: int) -> list[VisualizationSignal]:
+    base_id = f"resolver_ip_{slot_lower}_{channel}"
+    slot = slot_lower.upper()
+    label_base = f"{slot} resolver IP channel {channel}"
+    enum_base = f"JSO_RESOLVER_IP_{slot}_CH{channel}"
+    fields = [
+        ("position_mech_2pi", "POSITION_MECH_2PI", "position mech 2pi"),
+        ("position_el_2pi", "POSITION_EL_2PI", "position el 2pi"),
+        ("omega_mech_rad_s", "OMEGA_MECH_RAD_S", "omega mech rad/s"),
+        ("n_mech_rpm", "N_MECH_RPM", "n mech rpm"),
+        ("omega_el_rad_s", "OMEGA_EL_RAD_S", "omega el rad/s"),
+    ]
+    return [
+        VisualizationSignal(
+            signal_id=f"{base_id}_{field}",
+            slot=slot,
+            label=f"{label_base} {label}",
+            enum_name=f"{enum_base}_{enum_suffix}",
+            pointer_expression=f"&data->av.{base_id}_{field}",
+        )
+        for field, enum_suffix, label in fields
+    ]
+
+
 def resolver_pl_interface_actual_values(slot_lower: str, channel: int) -> list[str]:
     name = f"resolver_pl_interface_{slot_lower}_{channel}"
     return [
@@ -1948,6 +2091,70 @@ def resolver_pl_interface_visualization_signals(slot_lower: str, channel: int) -
         )
         for field, enum_suffix, label, source_type in fields
     ]
+
+
+def io_card_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+    slot = slot_lower.upper()
+    return [
+        VisualizationSignal(
+            signal_id=f"io_card_{slot_lower}_pin_{pin:02d}",
+            slot=slot,
+            label=f"{slot} IO pin {pin:02d}",
+            enum_name=f"JSO_IO_CARD_{slot}_PIN_{pin:02d}",
+            pointer_expression=f"&data->av.io_card_{slot_lower}_state",
+            source_expression=f"((data->av.io_card_{slot_lower}_state >> {pin}U) & 0x1U)",
+            source_type="uint32",
+        )
+        for pin in range(30)
+    ]
+
+
+def io_card_needs_axi(card: dict[str, object], option_values: dict[str, str]) -> bool:
+    directions = io_card_directions(card, option_values)
+    default_modes = card.get("vivado", {}).get("io_card", {}).get("default_modes", {})
+    if not isinstance(default_modes, dict):
+        default_modes = {}
+    return any(
+        option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio"))) == "axi_gpio"
+        for index, direction in enumerate(directions)
+    )
+
+
+def io_card_direction_mask(card: dict[str, object], option_values: dict[str, str]) -> int:
+    directions = io_card_directions(card, option_values)
+    mask = 0
+    for index, direction in enumerate(directions):
+        if direction == "rx":
+            mask |= 1 << index
+    return mask
+
+
+def io_card_directions(card: dict[str, object], option_values: dict[str, str]) -> list[str]:
+    io_card = card.get("vivado", {}).get("io_card", {})
+    if not isinstance(io_card, dict):
+        return []
+    kind = str(io_card.get("kind", ""))
+    pin_count = config_int(str(io_card.get("pin_count", "30")), default=30, minimum=1, maximum=30)
+    if kind == "optical":
+        variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
+        if variant == "18rx":
+            return ["rx"] * min(pin_count, 18)
+        if variant == "18tx":
+            return ["tx"] * min(pin_count, 18)
+        return ["tx"] * 14 + ["rx"] * 4
+    if kind == "voltage_grouped":
+        directions: list[str] = []
+        groups = io_card.get("groups", [])
+        if not isinstance(groups, list):
+            return ["rx"] * pin_count
+        for group_index, group in enumerate(groups, start=1):
+            if not isinstance(group, dict):
+                continue
+            width = config_int(str(group.get("width", "0")), default=0, minimum=0, maximum=30)
+            direction = option_values.get(f"direction_group_{group_index}", str(group.get("default", "rx")))
+            directions.extend([direction if direction in {"tx", "rx"} else "rx"] * width)
+        return directions[:pin_count]
+    return ["rx"] * pin_count
 
 
 def adc_ltc2311_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
@@ -2117,7 +2324,7 @@ def resolve_base_address_macro(
         fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_ADC_MAX11331_BASEADDR"
         search_terms = ["ADC_MAX11331", "ADCMAX11331", "MAX11331"]
     elif interface == "dac8831":
-        fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_DAC8831_AXI4_BASEADDR"
+        fallback = f"XPAR_UZ_ANALOG_ADAPTER_{slot.upper()}_ADAPTER_{slot.upper()}_DAC8831_BASEADDR"
         search_terms = ["DAC8831", "DAC_SPI", "DAC"]
     elif interface == "inverter_adapter":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_D_INVERTER_ADAPTER_{slot.upper()}_BASEADDR"
@@ -2140,6 +2347,9 @@ def resolve_base_address_macro(
     elif interface == "ssi":
         fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_UZ_SSI_INTERFACE_{slot.upper()}_CHANNEL_{channel}_BASEADDR"
         search_terms = ["SSI"]
+    elif interface == "axi_gpio":
+        fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_AXI_GPIO_{slot.upper()}_BASEADDR"
+        search_terms = ["AXI_GPIO"]
     else:
         fallback = f"XPAR_{slot.upper()}_BASEADDR"
         search_terms = [interface.upper()]
@@ -2171,9 +2381,41 @@ def resolve_base_address_macro(
         return fallback, f"{slot}: no channel {channel} {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
     if slot_candidates:
         return slot_candidates[0], ""
+    if interface == "axi_gpio":
+        return fallback, f"{slot}: no slot-specific {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
     if candidates:
         return candidates[0], f"{slot}: no slot-specific {interface} BASEADDR macro found. Using {candidates[0]} from {xparameters}."
     return fallback, f"{slot}: no {interface} BASEADDR macro found in {xparameters}. Using fallback {fallback}."
+
+
+def resolve_device_id_macro(
+    source_dir: Path,
+    slot: str,
+    interface: str,
+    search_xparameters: bool = True,
+) -> tuple[str, str]:
+    if interface == "axi_gpio":
+        fallback = f"XPAR_UZ_DIGITAL_ADAPTER_{slot.upper()}_ADAPTER_AXI_GPIO_{slot.upper()}_DEVICE_ID"
+        search_terms = ["AXI_GPIO"]
+    else:
+        fallback = f"XPAR_{slot.upper()}_DEVICE_ID"
+        search_terms = [interface.upper()]
+    if not search_xparameters:
+        return fallback, ""
+    xparameters = find_xparameters(source_dir)
+    if xparameters is None:
+        return fallback, f"{slot}: xparameters.h not found. Using fallback device-id macro {fallback}."
+    text = xparameters.read_text(encoding="utf-8", errors="ignore")
+    macros = tuple(re.findall(r"^#define\s+(XPAR_[A-Z0-9_]*DEVICE_ID)\b", text, re.MULTILINE))
+    candidates = [macro for macro in macros if any(term in macro for term in search_terms)]
+    slot_candidates = [candidate for candidate in candidates if slot.upper() in candidate]
+    if slot_candidates:
+        return slot_candidates[0], ""
+    if interface == "axi_gpio":
+        return fallback, f"{slot}: no slot-specific {interface} DEVICE_ID macro found in {xparameters}. Using fallback {fallback}."
+    if candidates:
+        return candidates[0], f"{slot}: no slot-specific {interface} DEVICE_ID macro found. Using {candidates[0]} from {xparameters}."
+    return fallback, f"{slot}: no {interface} DEVICE_ID macro found in {xparameters}. Using fallback {fallback}."
 
 
 def resolve_pwm_base_address_macro(
@@ -2222,16 +2464,45 @@ def xparameter_baseaddr_macros(source_dir: Path) -> tuple[Path | None, tuple[str
 
 @lru_cache(maxsize=16)
 def find_xparameters(source_dir: Path) -> Path | None:
-    search_roots = [source_dir]
-    search_roots.extend(parent for parent in source_dir.parents if parent.name.lower() in {"baremetal", "software", "vitis"})
-    seen: set[Path] = set()
-    for root in search_roots:
-        if root in seen or not root.exists():
+    candidates = [
+        source_dir / "xparameters.h",
+        source_dir / "include" / "xparameters.h",
+        source_dir / "xilinx" / "xparameters.h",
+    ]
+    for parent in source_dir.parents:
+        if parent.name.lower() not in {"baremetal", "software"}:
             continue
-        seen.add(root)
-        matches = [path for path in root.rglob("xparameters.h") if "test" not in {part.lower() for part in path.parts}]
-        if matches:
-            return matches[0]
+        candidates.extend(
+            [
+                parent / "src" / "xparameters.h",
+                parent / "src" / "include" / "xparameters.h",
+                parent / "include" / "xparameters.h",
+            ]
+        )
+        if parent.name.lower() == "software":
+            vitis_root = parent.parent
+            workspace_root = vitis_root / "workspace"
+            candidates.extend(
+                sorted(
+                    workspace_root.glob(
+                        "*/psu_cortexr5_0/Baremetal_domain/bsp/psu_cortexr5_0/include/xparameters.h"
+                    )
+                )
+            )
+            candidates.extend(
+                sorted(
+                    workspace_root.glob(
+                        "*/export/*/sw/*/Baremetal_domain/bspinclude/include/xparameters.h"
+                    )
+                )
+            )
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if candidate.exists() and "test" not in {part.lower() for part in candidate.parts}:
+            return candidate
     return None
 
 

@@ -51,14 +51,6 @@ proc uz_pw_resolver_create_xlconstant {cell_path width value} {
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-set sample_trigger_source_pin "{{ resolver_trigger_source }}"
-if {$sample_trigger_source_pin eq "" || [llength [get_bd_pins -quiet $sample_trigger_source_pin]] == 0} {
-  puts "WARNING: sample_trigger source '$sample_trigger_source_pin' not found for {{ slot }} resolver; using zero fallback."
-  set sample_trigger_default_path "${adapter_hier_path}/{{ slot }}_resolver_sample_trigger_default_zero"
-  uz_pw_resolver_create_xlconstant $sample_trigger_default_path 1 0
-  set sample_trigger_source_pin "${sample_trigger_default_path}/dout"
-}
-
 {% for resolver in resolver_channels %}
 set resolver_ip_{{ resolver.channel }}_path "${adapter_hier_path}/{{ resolver.resolver_instance_name }}"
 uz_pw_create_ip_cell_if_missing $resolver_ip_{{ resolver.channel }}_path {{ resolver_ip.vlnv }}
@@ -76,14 +68,22 @@ uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path {{ res
 uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path {{ resolver.cs_internal_name }} {{ resolver.cs_pin }} "${resolver_ip_{{ resolver.channel }}_path}/SPI_SS"
 uz_pw_resolver_create_input_path $adapter_parent_hier $adapter_hier_path {{ resolver.sdi_internal_name }} {{ resolver.sdi_pin }} "${resolver_ip_{{ resolver.channel }}_path}/SPI_MISO"
 
+set sample_trigger_source_pin_{{ resolver.channel }} "{{ resolver.trigger_source }}"
+if {$sample_trigger_source_pin_{{ resolver.channel }} eq "" || [llength [get_bd_pins -quiet $sample_trigger_source_pin_{{ resolver.channel }}]] == 0} {
+  puts "WARNING: sample_trigger source '$sample_trigger_source_pin_{{ resolver.channel }}' not found for {{ slot }} resolver channel {{ resolver.channel }}; using zero fallback."
+  set sample_trigger_default_path_{{ resolver.channel }} "${adapter_hier_path}/{{ slot }}_resolver_sample_trigger_{{ resolver.channel }}_default_zero"
+  uz_pw_resolver_create_xlconstant $sample_trigger_default_path_{{ resolver.channel }} 1 0
+  set sample_trigger_source_pin_{{ resolver.channel }} "${sample_trigger_default_path_{{ resolver.channel }}}/dout"
+}
+
 set sample_trigger_parent_pin "{{ slot }}_resolver_sample_trigger_{{ resolver.channel }}"
 uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $sample_trigger_parent_pin
 uz_pw_create_hier_pin_if_missing $adapter_hier_path I $sample_trigger_parent_pin
-uz_pw_connect_pin_pair_if_unconnected $sample_trigger_source_pin "${adapter_parent_hier}/${sample_trigger_parent_pin}"
+uz_pw_connect_pin_pair_if_unconnected $sample_trigger_source_pin_{{ resolver.channel }} "${adapter_parent_hier}/${sample_trigger_parent_pin}"
 uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${sample_trigger_parent_pin}" "${adapter_hier_path}/${sample_trigger_parent_pin}"
 uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${sample_trigger_parent_pin}" "${resolver_ip_{{ resolver.channel }}_path}/sample_trigger"
 
-{% if resolver_enable_pl_interface %}
+{% if resolver.pl_enabled %}
 set resolver_pl_{{ resolver.channel }}_path "${adapter_hier_path}/{{ resolver.pl_instance_name }}"
 uz_pw_create_ip_cell_if_missing $resolver_pl_{{ resolver.channel }}_path {{ resolver_pl_ip.vlnv }}
 
@@ -97,11 +97,9 @@ uz_pw_connect_pin_pair_if_unconnected "${resolver_ip_{{ resolver.channel }}_path
 {% endif %}
 {% endfor %}
 
-{% if resolver_enable_pl_interface %}
 {% for output in resolver_pl_output_paths %}
 uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path {{ output.boundary_name }} "{{ output.source_pin }}" {{ output.left }} {{ output.right }}
 {% endfor %}
-{% endif %}
 
 uz_pw_apply_slot_constraints {{ slot }} [list {{ slot_constraint_names }}] [list "Digital_AdapterBoard_{{ slot }}.xdc"]
 

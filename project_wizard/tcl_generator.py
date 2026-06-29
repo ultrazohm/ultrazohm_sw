@@ -287,8 +287,8 @@ class TclGenerator:
             )
         primary_ip = ip_cores[0] if ip_cores else {"instance_name": "", "module": "", "vlnv": ""}
         incremental_encoder_channels = self._incremental_encoder_channels(vivado, slot, slot_index, option_values)
-        resolver_channels = self._resolver_channels(vivado, slot, slot_index)
-        resolver_enable_pl_interface = self._config_bool(option_values.get("enable_pl_interface", "true"), default=True)
+        resolver_channels = self._resolver_channels(vivado, slot, slot_index, option_values)
+        io_card_context = self._io_card_context(slot, slot_index, card, option_values)
         context = {
             "slot": slot,
             "slot_lower": slot.lower(),
@@ -316,8 +316,6 @@ class TclGenerator:
                 self._incremental_encoder_outputs(vivado),
                 slot,
             ),
-            "resolver_trigger_source": source_fields.get("sample_trigger_source", ""),
-            "resolver_enable_pl_interface": resolver_enable_pl_interface,
             "resolver_channels": resolver_channels,
             "resolver_ip": primary_ip,
             "resolver_pl_ip": ip_cores[1] if len(ip_cores) > 1 else {"instance_name": "", "module": "", "vlnv": ""},
@@ -326,6 +324,7 @@ class TclGenerator:
                 self._resolver_pl_outputs(vivado),
                 slot,
             ),
+            **io_card_context,
             "inverter_gate_outputs": [
                 {"bit": "0", "port": "pwm_h1", "external_port": f"Dig_00_Ch{slot_index}"},
                 {"bit": "1", "port": "pwm_l1", "external_port": f"Dig_01_Ch{slot_index}"},
@@ -445,8 +444,11 @@ class TclGenerator:
                 )
         return output_paths
 
-    @staticmethod
-    def _resolver_channels(vivado: dict[str, Any], slot: str, slot_index: str) -> list[dict[str, str]]:
+    @classmethod
+    def _resolver_channels(
+        cls, vivado: dict[str, Any], slot: str, slot_index: str, option_values: dict[str, str] | None = None
+    ) -> list[dict[str, str]]:
+        option_values = option_values or {}
         raw_channels_key = "resolver_channels_d5" if slot == "D5" else "resolver_channels_d1_to_d4"
         raw_channels = vivado.get(raw_channels_key, [])
         channels = []
@@ -463,6 +465,11 @@ class TclGenerator:
             channels.append(
                 {
                     "channel": channel,
+                    "pl_enabled": cls._resolver_pl_interface_enabled(option_values, int(channel)),
+                    "trigger_source": option_values.get(
+                        f"sample_trigger_source_ch{channel}",
+                        "uz_system/trigger_conversions",
+                    ),
                     "resolver_instance_name": f"resolver_ip_{slot.lower()}_{channel}",
                     "pl_instance_name": f"resolver_pl_interface_{slot.lower()}_{channel}",
                     "sample_internal_name": f"{slot}_resolver_{channel}_n_sample",
@@ -487,6 +494,10 @@ class TclGenerator:
             )
         return channels
 
+    @classmethod
+    def _resolver_pl_interface_enabled(cls, option_values: dict[str, str], channel: int) -> bool:
+        return cls._config_bool(option_values.get(f"enable_pl_interface_ch{channel}", "true"), default=True)
+
     @staticmethod
     def _resolver_pl_outputs(vivado: dict[str, Any]) -> list[dict[str, str]]:
         outputs = []
@@ -509,6 +520,8 @@ class TclGenerator:
     ) -> list[dict[str, str]]:
         output_paths = []
         for channel in channels:
+            if not channel.get("pl_enabled"):
+                continue
             channel_index = channel["channel"]
             for output in outputs:
                 output_paths.append(
@@ -521,6 +534,165 @@ class TclGenerator:
                     }
                 )
         return output_paths
+
+    @classmethod
+    def _io_card_context(
+        cls, slot: str, slot_index: str, card: dict[str, Any], option_values: dict[str, str]
+    ) -> dict[str, Any]:
+        vivado = card.get("vivado", {})
+        io_card = vivado.get("io_card", {})
+        if not io_card:
+            return {
+                "has_axi_gpio": False,
+                "axi_gpio_instance_name": "",
+                "has_axi_input_concat": False,
+                "has_axi_input_zero": False,
+                "axi_gpio_all_inputs": "0",
+                "axi_gpio_all_outputs": "0",
+                "axi_input_zero_indices": [],
+                "pwm_sources": [],
+                "io_pins": [],
+            }
+        directions = cls._io_card_directions(io_card, option_values)
+        default_modes = io_card.get("default_modes", {})
+        io_pins = []
+        for index, physical_direction in enumerate(directions):
+            pin_name = f"Dig_{index:02d}_Ch{slot_index}"
+            default_mode = str(default_modes.get(physical_direction, "axi_gpio"))
+            mode = option_values.get(f"io_pin_{index:02d}_mode", default_mode) or default_mode
+            source_path = option_values.get(f"io_pin_{index:02d}_source", cls._default_io_source_path(index))
+            constant_value = option_values.get(f"io_pin_{index:02d}_constant", "0")
+            if physical_direction == "rx" and mode not in {"axi_gpio", "top_level"}:
+                mode = "axi_gpio"
+            if physical_direction == "tx" and mode not in {"axi_gpio", "top_level", "source_pin", "pwm", "constant"}:
+                mode = "axi_gpio"
+            is_tx = physical_direction == "tx"
+            is_rx = physical_direction == "rx"
+            is_axi = mode == "axi_gpio"
+            is_axi_rx = is_axi and is_rx
+            pwm_source_index = index // 6
+            io_pins.append(
+                {
+                    "index": str(index),
+                    "pin_name": pin_name,
+                    "physical_direction": physical_direction,
+                    "bd_direction": "O" if physical_direction == "tx" else "I",
+                    "mode": mode,
+                    "source_path": source_path,
+                    "pwm_vector_path": f"uz_pwm/Gate_Signals_2L_{pwm_source_index}",
+                    "pwm_boundary_name": f"{slot}_io_pwm_source_{pwm_source_index}",
+                    "pwm_source_variable": f"{slot.lower()}_io_pwm_source_{pwm_source_index}",
+                    "pwm_bit": str(index % 6),
+                    "constant_value": "1" if str(constant_value).strip() in {"1", "true", "True"} else "0",
+                    "helper_name": f"{slot.lower()}_io_{index:02d}",
+                    "source_boundary_name": f"{slot}_io_{index:02d}_source_internal",
+                    "user_port_name": f"{slot}_io_{index:02d}_{'source' if physical_direction == 'tx' else 'sink'}",
+                    "is_tx": is_tx,
+                    "is_rx": is_rx,
+                    "is_axi_tx": is_axi and is_tx,
+                    "is_axi_rx": is_axi_rx,
+                    "is_top_level_tx": mode == "top_level" and is_tx,
+                    "is_top_level_rx": mode == "top_level" and is_rx,
+                    "is_pwm": mode == "pwm",
+                    "is_source_pin": mode == "source_pin",
+                    "is_constant": mode == "constant",
+                }
+            )
+        has_axi_gpio = any(pin["mode"] == "axi_gpio" for pin in io_pins)
+        has_axi_outputs = any(pin["is_axi_tx"] for pin in io_pins)
+        has_axi_inputs = any(pin["is_axi_rx"] for pin in io_pins)
+        has_axi_input_concat = has_axi_gpio and has_axi_inputs
+        connected_axi_input_indices = {int(pin["index"]) for pin in io_pins if pin["is_axi_rx"]}
+        axi_input_zero_indices = []
+        if has_axi_input_concat:
+            axi_input_zero_indices = [
+                {"index": str(index)}
+                for index in range(30)
+                if index not in connected_axi_input_indices
+            ]
+        pwm_sources_by_index = {}
+        for pin in io_pins:
+            if not pin["is_pwm"]:
+                continue
+            pwm_source_index = int(pin["index"]) // 6
+            pwm_sources_by_index[pwm_source_index] = {
+                "source_index": str(pwm_source_index),
+                "source_path": f"uz_pwm/Gate_Signals_2L_{pwm_source_index}",
+                "boundary_name": f"{slot}_io_pwm_source_{pwm_source_index}",
+                "variable_name": f"{slot.lower()}_io_pwm_source_{pwm_source_index}",
+            }
+        return {
+            "has_axi_gpio": has_axi_gpio,
+            "axi_gpio_instance_name": f"axi_gpio_{slot.lower()}",
+            "has_axi_input_concat": has_axi_input_concat,
+            "has_axi_input_zero": bool(axi_input_zero_indices),
+            "axi_gpio_all_inputs": "1" if has_axi_inputs and not has_axi_outputs else "0",
+            "axi_gpio_all_outputs": "1" if has_axi_outputs and not has_axi_inputs else "0",
+            "axi_input_zero_indices": axi_input_zero_indices,
+            "pwm_sources": [pwm_sources_by_index[index] for index in sorted(pwm_sources_by_index)],
+            "io_pins": io_pins,
+        }
+
+    @classmethod
+    def _io_card_needs_axi(cls, card: dict[str, Any], option_values: dict[str, str]) -> bool:
+        vivado = card.get("vivado", {})
+        io_card = vivado.get("io_card", {})
+        if not io_card:
+            return False
+        directions = cls._io_card_directions(io_card, option_values)
+        default_modes = io_card.get("default_modes", {})
+        return any(
+            option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio"))) == "axi_gpio"
+            for index, direction in enumerate(directions)
+        )
+
+    @staticmethod
+    def _default_io_source_path(index: int) -> str:
+        pwm_instance = index // 6
+        pwm_signal = index % 6
+        return f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pwm_instance}/s{pwm_signal}_out"
+
+    @classmethod
+    def _io_card_directions(cls, io_card: dict[str, Any], option_values: dict[str, str]) -> list[str]:
+        kind = str(io_card.get("kind", ""))
+        pin_count = cls._config_int(io_card.get("pin_count", 30), default=30, minimum=1, maximum=30)
+        if kind == "optical":
+            variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
+            if variant == "18rx":
+                return ["rx"] * min(pin_count, 18)
+            if variant == "18tx":
+                return ["tx"] * min(pin_count, 18)
+            return ["tx"] * 14 + ["rx"] * 4
+        if kind == "voltage_grouped":
+            directions: list[str] = []
+            groups = io_card.get("groups", [])
+            for group_index, group in enumerate(groups, start=1):
+                width = cls._config_int(group.get("width", 0), default=0, minimum=0, maximum=30)
+                direction = option_values.get(f"direction_group_{group_index}", str(group.get("default", "rx")))
+                directions.extend([direction if direction in {"tx", "rx"} else "rx"] * width)
+            return directions[:pin_count]
+        return ["rx"] * pin_count
+
+    @classmethod
+    def io_card_cpld_program(cls, card: dict[str, Any], option_values: dict[str, str]) -> str:
+        io_card = card.get("vivado", {}).get("io_card", {})
+        kind = str(io_card.get("kind", ""))
+        if kind == "optical":
+            variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
+            return {
+                "14tx4rx": "optical_14tx_4rx",
+                "18tx": "tx30",
+                "18rx": "rx30",
+            }.get(variant, "optical_14tx_4rx")
+        if kind == "voltage_grouped":
+            groups = io_card.get("groups", [])
+            parts = []
+            for group_index, group in enumerate(groups, start=1):
+                width = cls._config_int(group.get("width", 0), default=0, minimum=0, maximum=30)
+                direction = option_values.get(f"direction_group_{group_index}", str(group.get("default", "rx")))
+                parts.append(f"{width}{direction if direction in {'tx', 'rx'} else 'rx'}")
+            return f"voltage_{'_'.join(parts)}"
+        return str(card.get("slot_cpld", "none") or "none")
 
     def _ip_core_context(
         self,
@@ -1023,6 +1195,17 @@ class TclGenerator:
         slot_index = slot[1:]
         if card.get("id") == "uz_d_resolver":
             return self._resolver_axi_interfaces(slot, slot_index, card.get("vivado", {}), option_values)
+        if card.get("vivado", {}).get("io_card"):
+            if not self._io_card_needs_axi(card, option_values):
+                return []
+            slot_lower = slot.lower()
+            return [
+                {
+                    "name": "S_AXI",
+                    "path": f"uz_digital_adapter/{slot}_adapter/axi_gpio_{slot_lower}/S_AXI",
+                    "addr_seg": f"uz_digital_adapter/{slot}_adapter/axi_gpio_{slot_lower}/S_AXI/Reg",
+                }
+            ]
         interfaces = self._format_axi_interfaces(slot, slot_index, card.get("vivado", {}).get("axi_interfaces", []))
         for option in card.get("options", []):
             selected_choice = self._selected_choice(option, option_values)
@@ -1046,8 +1229,7 @@ class TclGenerator:
         vivado: dict[str, Any],
         option_values: dict[str, str],
     ) -> list[dict[str, str]]:
-        channels = self._resolver_channels(vivado, slot, slot_index)
-        enable_pl_interface = self._config_bool(option_values.get("enable_pl_interface", "true"), default=True)
+        channels = self._resolver_channels(vivado, slot, slot_index, option_values)
         interfaces = []
         for channel in channels:
             channel_index = channel["channel"]
@@ -1060,7 +1242,7 @@ class TclGenerator:
                     ),
                 }
             )
-            if enable_pl_interface:
+            if channel.get("pl_enabled"):
                 interfaces.append(
                     {
                         "name": "AXI4_Lite",

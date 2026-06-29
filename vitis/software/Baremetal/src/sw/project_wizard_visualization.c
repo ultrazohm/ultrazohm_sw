@@ -47,6 +47,7 @@ void project_wizard_visualization_update(struct _DS_Data_* data)
     project_wizard_visualization_data.viz_incremental_encoder_d1_1_theta_el = data->av.incremental_encoder_d1_1_theta_el;
     project_wizard_visualization_data.viz_incremental_encoder_d1_2_theta_el = data->av.incremental_encoder_d1_2_theta_el;
     project_wizard_visualization_data.viz_incremental_encoder_d1_3_theta_el = data->av.incremental_encoder_d1_3_theta_el;
+    project_wizard_visualization_data.viz_endat_encoder_d2_1_position_mech_si_single_turn = data->av.endat_encoder_d2_1_position_mech_si_single_turn;
     project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h1 = data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H1;
     project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_l1 = data->av.inverter_adapter_d3.ChipTempDegreesCelsius_L1;
     project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h2 = data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H2;
@@ -56,14 +57,8 @@ void project_wizard_visualization_update(struct _DS_Data_* data)
     project_wizard_visualization_data.viz_temp_d4_a_4 = data->av.temperature_card_d4_channel_A.temperature[4];
     project_wizard_visualization_data.viz_temp_d4_a_5 = data->av.temperature_card_d4_channel_A.temperature[5];
     project_wizard_visualization_data.viz_temp_d4_a_19 = data->av.temperature_card_d4_channel_A.temperature[19];
-    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_raw_single_turn = ((float)data->av.endat_encoder_d5_1_position_raw_single_turn);
-    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_raw_multi_turn = ((float)data->av.endat_encoder_d5_1_position_raw_multi_turn);
-    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_mech_si_single_turn = data->av.endat_encoder_d5_1_position_mech_si_single_turn;
-    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_el_si_single_turn = data->av.endat_encoder_d5_1_position_el_si_single_turn;
-    project_wizard_visualization_data.viz_ssi_encoder_d5_2_position_mech_si_single_turn = data->av.ssi_encoder_d5_2_position_mech_si_single_turn;
-    project_wizard_visualization_data.viz_ssi_encoder_d5_2_position_el_si_single_turn = data->av.ssi_encoder_d5_2_position_el_si_single_turn;
-    project_wizard_visualization_data.viz_ssi_encoder_d5_3_position_mech_si_single_turn = data->av.ssi_encoder_d5_3_position_mech_si_single_turn;
-    project_wizard_visualization_data.viz_ssi_encoder_d5_3_position_el_si_single_turn = data->av.ssi_encoder_d5_3_position_el_si_single_turn;
+    project_wizard_visualization_data.viz_resolver_pl_interface_d5_1_position_mech_2pi = data->av.resolver_pl_interface_d5_1_position_mech_2pi;
+    project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_position_mech_2pi = data->av.resolver_pl_interface_d5_2_position_mech_2pi;
     project_wizard_visualization_data.viz_incremental_encoder_d1_1_position = ((float)data->av.incremental_encoder_d1_1_position);
     project_wizard_visualization_data.viz_incremental_encoder_d1_2_position = ((float)data->av.incremental_encoder_d1_2_position);
     project_wizard_visualization_data.viz_incremental_encoder_d1_3_position = ((float)data->av.incremental_encoder_d1_3_position);

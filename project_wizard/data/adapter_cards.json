@@ -12,6 +12,96 @@
       "description": "D-slot CPLD program for receive-oriented digital adapter card pin routing."
     },
     {
+      "id": "tx30",
+      "name": "tx30",
+      "description": "D-slot CPLD program for transmit-oriented digital adapter card pin routing."
+    },
+    {
+      "id": "optical_14tx_4rx",
+      "name": "optical_14tx_4rx",
+      "description": "D-slot CPLD program for optical 14TX/4RX adapter card pin routing."
+    },
+    {
+      "id": "voltage_8rx_8rx_8rx_6rx",
+      "name": "voltage_8rx_8rx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8rx_6tx",
+      "name": "voltage_8rx_8rx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8tx_6rx",
+      "name": "voltage_8rx_8rx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8tx_6tx",
+      "name": "voltage_8rx_8rx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8rx_6rx",
+      "name": "voltage_8rx_8tx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8rx_6tx",
+      "name": "voltage_8rx_8tx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8tx_6rx",
+      "name": "voltage_8rx_8tx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8tx_6tx",
+      "name": "voltage_8rx_8tx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8rx_6rx",
+      "name": "voltage_8tx_8rx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8rx_6tx",
+      "name": "voltage_8tx_8rx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8tx_6rx",
+      "name": "voltage_8tx_8rx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8tx_6tx",
+      "name": "voltage_8tx_8rx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8rx_6rx",
+      "name": "voltage_8tx_8tx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8rx_6tx",
+      "name": "voltage_8tx_8tx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8tx_6rx",
+      "name": "voltage_8tx_8tx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8tx_6tx",
+      "name": "voltage_8tx_8tx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
       "id": "uz_d_3ph_inverter",
       "name": "uz_d_3ph_inverter",
       "description": "Slot CPLD program for the UZ_D 3-phase inverter adapter card."
@@ -938,6 +1028,208 @@
       }
     },
     {
+      "id": "uz_d_optical_io",
+      "name": "UZ_D Optical IO",
+      "family": "digital",
+      "description": "Digital optical adapter card with selectable 14TX4RX, 18TX, or 18RX population.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "optical_14tx_4rx",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "RESETN",
+        "notes": [
+          "Routes the selected optical IO population through the slot CPLD.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Only Dig_00 through Dig_17 are used for the optical card.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "optical",
+          "pin_count": 18,
+          "default_variant": "14tx4rx",
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          }
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "optical_variant",
+          "label": "Optical variant",
+          "default": "14tx4rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "14tx4rx",
+              "label": "14TX4RX"
+            },
+            {
+              "id": "18tx",
+              "label": "18TX"
+            },
+            {
+              "id": "18rx",
+              "label": "18RX"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose one 30-bit IO state word for visualization."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_voltage_3v3_5v",
+      "name": "UZ_D Voltage 3V3/5V",
+      "family": "digital",
+      "description": "Digital voltage 3V3/5V adapter card with four hardware direction groups.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "voltage_8rx_8rx_8rx_6rx",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "RESETN",
+        "notes": [
+          "Routes all 30 voltage IO pins according to the four hardware direction groups.",
+          "The selected group directions determine the slot CPLD program.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "voltage_grouped",
+          "pin_count": 30,
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          },
+          "groups": [
+            {
+              "label": "DIG IO 00-07",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 08-15",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 16-23",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 24-29",
+              "width": 6,
+              "default": "rx"
+            }
+          ]
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "direction_group_1",
+          "label": "DIG IO 00-07 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_2",
+          "label": "DIG IO 08-15 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_3",
+          "label": "DIG IO 16-23 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_4",
+          "label": "DIG IO 24-29 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose one 30-bit IO state word for visualization."
+        ]
+      }
+    },
+    {
       "id": "uz_d_incremental_encoder",
       "name": "UZ_D Incremental Encoder",
       "family": "digital",
@@ -1687,10 +1979,25 @@
         ],
         "source_fields": [
           {
-            "id": "sample_trigger_source",
-            "label": "Sample trigger source pin",
+            "id": "sample_trigger_source_ch1",
+            "label": "Channel 1 sample trigger source pin",
             "default": "uz_system/trigger_conversions",
-            "help": "Block-design pin used to trigger resolver sampling."
+            "resolver_channel": 1,
+            "help": "Block-design pin used to trigger resolver channel 1 sampling."
+          },
+          {
+            "id": "sample_trigger_source_ch2",
+            "label": "Channel 2 sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "resolver_channel": 2,
+            "help": "Block-design pin used to trigger resolver channel 2 sampling."
+          },
+          {
+            "id": "sample_trigger_source_ch3",
+            "label": "Channel 3 sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "resolver_channel": 3,
+            "help": "Block-design pin used to trigger resolver channel 3 sampling."
           }
         ],
         "ip_cores": [
@@ -1824,12 +2131,31 @@
       },
       "options": [
         {
-          "id": "enable_pl_interface",
-          "label": "Resolver PL interface",
+          "id": "enable_pl_interface_ch1",
+          "label": "Channel 1 PL interface",
           "default": "true",
           "input": "checkbox",
-          "text": "Instantiate resolver PL interface IPs",
-          "help": "When enabled, each resolver IP channel feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+          "resolver_channel": 1,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 1 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        },
+        {
+          "id": "enable_pl_interface_ch2",
+          "label": "Channel 2 PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "resolver_channel": 2,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 2 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        },
+        {
+          "id": "enable_pl_interface_ch3",
+          "label": "Channel 3 PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "resolver_channel": 3,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 3 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
         }
       ],
       "vitis": {

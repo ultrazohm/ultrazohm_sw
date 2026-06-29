@@ -114,6 +114,7 @@ def discover_machine_catalog(
         )
     entries: list[MachineCatalogEntry] = []
     used_machine_ids: set[str] = set()
+    used_numeric_machine_ids: set[int] = set()
 
     for csv_path in sorted(uz_pmsm_dir.rglob("machine_parameters.csv")):
         relative_csv_path = csv_path.relative_to(uz_pmsm_dir)
@@ -134,6 +135,14 @@ def discover_machine_catalog(
         if machine_id in used_machine_ids:
             raise ValueError(f"Duplicate machine id generated for {csv_path}: {machine_id}")
         used_machine_ids.add(machine_id)
+
+        numeric_machine_id = int(c_values.get("machine_id", 0))
+        if numeric_machine_id in used_numeric_machine_ids:
+            raise ValueError(
+                f"Duplicate numeric machine_id {numeric_machine_id} in {csv_path}. "
+                "Each machine_parameters.csv must have a unique machine_id value."
+            )
+        used_numeric_machine_ids.add(numeric_machine_id)
 
         machine_name = str(values.get("machine_name", machine_dir))
         entries.append(
@@ -203,8 +212,8 @@ def render_c_init_header(
     source_root_comment = format_path_for_generated_comment(source_root, repo_root)
     inventory_comment = format_path_for_generated_comment(inventory_output, repo_root)
     lines = [
-        "#ifndef UZ_AVIALABLE_MACHINES_AUTO_GENERATED_H",
-        "#define UZ_AVIALABLE_MACHINES_AUTO_GENERATED_H",
+        "#ifndef UZ_AVAILABLE_MACHINES_AUTO_GENERATED_H",
+        "#define UZ_AVAILABLE_MACHINES_AUTO_GENERATED_H",
         "",
         "#pragma once",
         "",
@@ -229,7 +238,7 @@ def render_c_init_header(
         lines.append("    }")
         lines.append("")
 
-    lines.append("#endif // UZ_AVIALABLE_MACHINES_AUTO_GENERATED_H")
+    lines.append("#endif // UZ_AVAILABLE_MACHINES_AUTO_GENERATED_H")
     lines.append("")
     return "\n".join(lines)
 

@@ -111,26 +111,6 @@ class PMSMParameters:
         if missing:
             raise ValueError(f"Missing PMSM parameters required by C implementation: {missing}")
 
-        assert self.R_ph_Ohm is not None
-        assert self.Ld_Henry is not None
-        assert self.Lq_Henry is not None
-        assert self.Psi_PM_Vs is not None
-        assert self.polePairs is not None
-        assert self.J_kg_m_squared is not None
-        assert self.I_max_Ampere is not None
-        assert self.I_rated_Ampere is not None
-        assert self.Torque_rated_Nm is not None
-        assert self.Torque_max_Nm is not None
-        assert self.Torque_min_Nm is not None
-        assert self.speed_rated_rpm is not None
-        assert self.speed_max_rpm is not None
-        assert self.speed_min_rpm is not None
-        assert self.V_dc_nominal_V is not None
-        assert self.I_d_max_A is not None
-        assert self.I_d_min_A is not None
-        assert self.I_q_max_A is not None
-        assert self.I_q_min_A is not None
-
         checks = {
             "R_ph_Ohm": self.R_ph_Ohm > 0.0,
             "Ld_Henry": self.Ld_Henry > 0.0,

@@ -161,13 +161,7 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
 }
 static void uz_SetPoint_assert_motor_parameters(const uz_PMSM_t *input, enum uz_Setpoint_motor_type motor_type) {
     uz_assert_not_NULL(input);
-    uz_assert(input->polePairs > 0.0f);
-	uz_assert(fmodf(input->polePairs, 1.0f) == 0);
-	uz_assert(input->R_ph_Ohm > 0.0f);
-	uz_assert(input->I_max_Ampere > 0.0f);
-	uz_assert(input->Ld_Henry > 0.0f);
-	uz_assert(input->Lq_Henry > 0.0f);
-	uz_assert(input->Psi_PM_Vs >= 0.0f);
+    uz_PMSM_config_assert(*input);
     if(motor_type == IPMSM) {
         uz_assert(input->Ld_Henry != input->Lq_Henry);
     }

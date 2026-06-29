@@ -4,8 +4,6 @@
 uz_pmsm
 =======
 
-.. note:: This has to be integrated with uz_PMSM_config
-
 ``uz_pmsm`` defines a CSV based data scheme for machine parameters of PMSM to be used with the UltraZohm software framework.
 The goal is to generate a unified data structure to match the controller, software models, and plots.
 
@@ -26,7 +24,7 @@ This keeps import/export functions simple and makes it clear which files belong 
 
 .. code-block:: text
 
-   uz_motors/
+   uz_pmsm/
      dummy_motor/
        nominal_v1/
          machine_parameters.csv

@@ -16,7 +16,7 @@ def machine_catalog_default_paths(anchor: str | Path) -> dict[str, Path]:
     return {
         "repo_root": repo_root,
         "uz_pmsm_dir": repo_root / "docs/source/software/control/uz_pmsm",
-        "inventory_output": repo_root / "docs/source/software/control/uz_pmsm/avialable_machines.csv",
+        "inventory_output": repo_root / "docs/source/software/control/uz_pmsm/available_machines.csv",
         "c_header_path": repo_root / "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
-        "generated_header_output": repo_root / "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_avialable_machines_auto_generated.h",
+        "generated_header_output": repo_root / "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_available_machines_auto_generated.h",
     }

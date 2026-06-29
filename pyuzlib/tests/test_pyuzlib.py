@@ -175,9 +175,47 @@ def test_machine_catalog_detects_drift_between_c_header_and_python_model(monkeyp
         )
 
 
+def test_machine_catalog_rejects_duplicate_numeric_machine_id(tmp_path):
+    machine_a_dir = tmp_path / "machine_a" / "dataset_v1"
+    machine_b_dir = tmp_path / "machine_b" / "dataset_v1"
+    machine_a_dir.mkdir(parents=True)
+    machine_b_dir.mkdir(parents=True)
+    csv_content = (
+        "parameter,value\n"
+        "machine_id,1\n"
+        "R_ph_Ohm,0.51\n"
+        "Ld_Henry,0.002\n"
+        "Lq_Henry,0.003\n"
+        "Psi_PM_Vs,0.042\n"
+        "polePairs,4\n"
+        "J_kg_m_squared,0.000108\n"
+        "I_max_Ampere,12\n"
+        "I_rated_Ampere,8\n"
+        "Torque_rated_Nm,1.2\n"
+        "Torque_max_Nm,2\n"
+        "Torque_min_Nm,-2\n"
+        "speed_rated_rpm,1000\n"
+        "speed_max_rpm,1500\n"
+        "speed_min_rpm,-1500\n"
+        "V_dc_nominal_V,24\n"
+        "I_d_max_A,10\n"
+        "I_d_min_A,-10\n"
+        "I_q_max_A,10\n"
+        "I_q_min_A,-10\n"
+    )
+    (machine_a_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
+    (machine_b_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Duplicate numeric machine_id 1"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
 def test_machine_catalog_generates_inventory_and_header(tmp_path):
-    inventory_output = tmp_path / "avialable_machines.csv"
-    header_output = tmp_path / "uz_avialable_machines_auto_generated.h"
+    inventory_output = tmp_path / "available_machines.csv"
+    header_output = tmp_path / "uz_available_machines_auto_generated.h"
 
     entries = machine_catalog.generate_machine_catalog(
         uz_pmsm_dir="docs/source/software/control/uz_pmsm",

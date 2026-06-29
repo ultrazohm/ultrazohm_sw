@@ -3,7 +3,7 @@
 
 #pragma once
 #include <stdint.h>
-#include "uz_avialable_machines_auto_generated.h"
+#include "uz_available_machines_auto_generated.h"
 
 /**
  * @brief Configuratin struct for a PMSM. Accessible by the user

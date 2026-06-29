@@ -6,6 +6,8 @@
 #include "uz_newton_raphson.h"
 #include "../uz_signals/uz_signals.h"
 
+TEST_SOURCE_FILE("src/uz/uz_PMSM_config/uz_PMSM_config.c")
+
 struct uz_SetPoint_config config = {0};
 float omega_m_rad_per_sec = 0.0f;
 float M_ref_Nm = 0.045f;
@@ -21,6 +23,19 @@ void setUp(void)
     config.config_PMSM.R_ph_Ohm = 0.1f;
     config.config_PMSM.polePairs = 4.0f;
     config.config_PMSM.Psi_PM_Vs = 0.0075f;
+    config.config_PMSM.J_kg_m_squared = 0.0001f;
+    config.config_PMSM.I_rated_Ampere = 10.0f;
+    config.config_PMSM.Torque_rated_Nm = 1.0f;
+    config.config_PMSM.Torque_max_Nm = 2.0f;
+    config.config_PMSM.Torque_min_Nm = -2.0f;
+    config.config_PMSM.speed_rated_rpm = 1000.0f;
+    config.config_PMSM.speed_max_rpm = 2000.0f;
+    config.config_PMSM.speed_min_rpm = -2000.0f;
+    config.config_PMSM.V_dc_nominal_V = 24.0f;
+    config.config_PMSM.I_d_max_A = 10.0f;
+    config.config_PMSM.I_d_min_A = -10.0f;
+    config.config_PMSM.I_q_max_A = 10.0f;
+    config.config_PMSM.I_q_min_A = -10.0f;
     config.motor_type = SMPMSM;
     config.is_field_weakening_enabled = false;
     config.relative_torque_tolerance = 1.0f;

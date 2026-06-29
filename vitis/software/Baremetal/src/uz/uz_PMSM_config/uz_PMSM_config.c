@@ -21,6 +21,8 @@ void uz_PMSM_config_assert(uz_PMSM_t config){
     uz_assert(config.V_dc_nominal_V > 0.0f);
     uz_assert(config.I_d_max_A >= config.I_d_min_A);
     uz_assert(config.I_q_max_A >= config.I_q_min_A);
+    uz_assert(config.Torque_min_Nm < config.Torque_max_Nm);
+    uz_assert(config.speed_min_rpm < config.speed_max_rpm);
 }
 
 void uz_PMSM_fitting_parameter_config_assert(uz_PMSM_flux_fitting_parameter_config_t fitting_config){

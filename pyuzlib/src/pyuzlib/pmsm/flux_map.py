@@ -105,4 +105,6 @@ class FluxMap:
         return self.data.pivot(index="i_q_A", columns="i_d_A", values="psi_q_Vs")
 
     def to_csv(self, csv_path: str | Path) -> None:
-        self.data.to_csv(csv_path, index=False)
+        out = self.data.copy()
+        out.insert(0, "operating_point", range(len(out)))
+        out.to_csv(csv_path, index=False)

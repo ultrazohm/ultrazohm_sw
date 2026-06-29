@@ -132,7 +132,7 @@ If a new scalar member is added to ``uz_PMSM_t``, update these places:
 The following parts do not usually need manual changes:
 
 * ``pyuzlib.machine_catalog`` parses the field list directly from ``uz_PMSM_t`` in the C header.
-* ``uz_avialable_machines_auto_generated.h`` is regenerated automatically.
+* ``uz_available_machines_auto_generated.h`` is regenerated automatically.
 * ``docs/source/software/control/uz_pmsm/generate_available_machines.py`` is only a thin wrapper.
 
 The important guardrail is that ``pyuzlib.machine_catalog`` compares the parsed ``uz_PMSM_t`` field list against ``PMSMParameters``. If the C struct changes but the Python data model is not updated, catalog generation fails with a clear mismatch instead of silently producing incorrect macros.

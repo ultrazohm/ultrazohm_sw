@@ -148,10 +148,80 @@ void test_uz_PMSM_config_assert_fails_for_missing_new_fields(void)
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config_old));
 }
 
-void test_uz_PMSM_dummy_machine(void)
+void test_uz_PMSM_beckhoff_machine(void)
 {
-    struct uz_PMSM_t config_old = {UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM_INIT};
-    uz_PMSM_config_assert(config_old);
+    struct uz_PMSM_t config_beckhoff = UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM_INIT;
+    uz_PMSM_config_assert(config_beckhoff);
+}
+
+void test_uz_PMSM_config_assert_I_rated(void){
+    config.I_rated_Ampere = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.I_rated_Ampere = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.I_rated_Ampere = config.I_max_Ampere + 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_Torque_rated(void){
+    config.Torque_rated_Nm = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.Torque_rated_Nm = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_Torque_max(void){
+    config.Torque_max_Nm = config.Torque_rated_Nm - 0.1f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_Torque_min(void){
+    config.Torque_min_Nm = 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_Torque_min_max_relation(void){
+    config.Torque_min_Nm = config.Torque_max_Nm;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_speed_rated(void){
+    config.speed_rated_rpm = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.speed_rated_rpm = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_speed_max(void){
+    config.speed_max_rpm = config.speed_rated_rpm - 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_speed_min(void){
+    config.speed_min_rpm = 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_speed_min_max_relation(void){
+    config.speed_min_rpm = config.speed_max_rpm;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_V_dc_nominal(void){
+    config.V_dc_nominal_V = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.V_dc_nominal_V = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_I_d_limits(void){
+    config.I_d_max_A = config.I_d_min_A - 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_I_q_limits(void){
+    config.I_q_max_A = config.I_q_min_A - 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
 }
 
 #endif // TEST

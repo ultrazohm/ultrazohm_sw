@@ -20,6 +20,12 @@ help:
 auto_generate_available_machines:
 	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
 
+check_available_machines:
+	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog --inventory-output /tmp/available_machines_check.csv --header-output /tmp/uz_available_machines_check.h
+	diff /tmp/uz_available_machines_check.h ../vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_available_machines_auto_generated.h
+	diff /tmp/available_machines_check.csv source/software/control/uz_pmsm/available_machines.csv
+	@echo "Generated artifacts are up-to-date."
+
 clean:
 	 rm -r build
 

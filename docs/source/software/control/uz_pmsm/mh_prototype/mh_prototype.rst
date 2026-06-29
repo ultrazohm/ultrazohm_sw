@@ -5,6 +5,8 @@ mh_prototype
 MH prototype machine.
 The measured dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted directly with ``pyuzlib``.
 
+.. warning:: Dummy data for MH Prototype! The electrical parameters (R_ph_Ohm, Ld_Henry, Lq_Henry, Psi_PM_Vs) and inertia (J_kg_m_squared) in machine_parameters.csv are placeholder values copied from the beckhoff dataset and do not reflect actual characterization data.
+
 Matplotlib
 ==========
 

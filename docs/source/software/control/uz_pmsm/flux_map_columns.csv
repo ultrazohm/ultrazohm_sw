@@ -1,0 +1,6 @@
+Column,Meaning
+``operating_point``,"Integer row index in LUT order. This column is useful for checks and plots, but importers should be able to regenerate it."
+``i_d_A``,d-axis current breakpoint in A.
+``i_q_A``,q-axis current breakpoint in A.
+``psi_d_Vs``,d-axis flux linkage in V s.
+``psi_q_Vs``,q-axis flux linkage in V s.

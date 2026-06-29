@@ -3,6 +3,7 @@
 
 #pragma once
 #include <stdint.h>
+#include "uz_avialable_machines_auto_generated.h"
 
 /**
  * @brief Configuratin struct for a PMSM. Accessible by the user
@@ -30,8 +31,6 @@ typedef struct uz_PMSM_t{
     float I_q_max_A; /**< maximum q-axis current in A */
     float I_q_min_A; /**< minimum q-axis current in A */
 }uz_PMSM_t;
-
-#include "uz_avialable_machines_auto_generated.h"
 
 typedef struct uz_PMSM_flux_fitting_parameter_config_t{
     float ad1_parameter; /**Fitting Parameter for Flux approximation*/

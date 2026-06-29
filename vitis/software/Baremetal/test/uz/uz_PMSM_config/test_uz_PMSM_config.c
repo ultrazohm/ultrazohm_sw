@@ -148,4 +148,10 @@ void test_uz_PMSM_config_assert_fails_for_missing_new_fields(void)
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config_old));
 }
 
+void test_uz_PMSM_dummy_machine(void)
+{
+    struct uz_PMSM_t config_old = {UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM_INIT};
+    uz_PMSM_config_assert(config_old);
+}
+
 #endif // TEST

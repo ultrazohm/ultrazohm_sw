@@ -1,0 +1,21 @@
+Parameter,Meaning,Existing consumer
+``machine_id``,Unique machine identifier used to recognize the loaded machine data.,``uz_PMSM_t``
+``R_ph_Ohm``,Stator phase resistance :math:`R_s` in Ohm.,``uz_PMSM_t``
+``Ld_Henry``,Linear d-axis inductance :math:`L_d` in H.,``uz_PMSM_t``
+``Lq_Henry``,Linear q-axis inductance :math:`L_q` in H.,``uz_PMSM_t``
+``Psi_PM_Vs``,Permanent magnet flux linkage :math:`\psi_{PM}` in V s.,``uz_PMSM_t``
+``polePairs``,Number of pole pairs.,``uz_PMSM_t``
+``J_kg_m_squared``,Rotor inertia in kg m^2.,``uz_PMSM_t``
+``I_max_Ampere``,Maximum allowed current used by the setpoint module for MTPA and field weakening in A.,``uz_PMSM_t``
+``I_rated_Ampere``,Rated continuous phase current in A.,``uz_PMSM_t``
+``Torque_rated_Nm``,Rated continuous torque in Nm.,``uz_PMSM_t``
+``Torque_max_Nm``,Maximum allowed positive torque command in Nm.,``uz_PMSM_t``
+``Torque_min_Nm``,Maximum allowed negative torque command in Nm.,``uz_PMSM_t``
+``speed_rated_rpm``,Rated mechanical speed in rpm.,``uz_PMSM_t``
+``speed_max_rpm``,Maximum allowed positive mechanical speed in rpm.,``uz_PMSM_t``
+``speed_min_rpm``,Maximum allowed negative mechanical speed in rpm.,``uz_PMSM_t``
+``V_dc_nominal_V``,Nominal DC-link voltage in V.,``uz_PMSM_t``
+``I_d_max_A``,Maximum allowed d-axis current in A.,``uz_PMSM_t``
+``I_d_min_A``,Minimum allowed d-axis current in A.,``uz_PMSM_t``
+``I_q_max_A``,Maximum allowed q-axis current in A.,``uz_PMSM_t``
+``I_q_min_A``,Minimum allowed q-axis current in A.,``uz_PMSM_t``

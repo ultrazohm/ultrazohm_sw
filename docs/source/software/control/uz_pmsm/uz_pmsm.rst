@@ -61,103 +61,21 @@ Machine parameters
 It has no ``unit`` column; units are part of the parameter name, following the existing UltraZohm C names where possible.
 The file contains the linear PMSM parameters and the machine operating-envelope values.
 The order of rows is not relevant.
+The canonical synthetic example from ``dummy_motor/nominal_v1/machine_parameters.csv`` is:
 
-.. code-block:: text
-
-   parameter,value
-   machine_id,2
-   R_ph_Ohm,0.51
-   Ld_Henry,0.002
-   Lq_Henry,0.003
-   Psi_PM_Vs,0.042
-   polePairs,4
-   J_kg_m_squared,0.000108
-   I_max_Ampere,12
-   I_rated_Ampere,8
-   Torque_rated_Nm,1.2
-   Torque_max_Nm,2
-   Torque_min_Nm,-2
-   speed_rated_rpm,1000
-   speed_max_rpm,1500
-   speed_min_rpm,-1500
-   V_dc_nominal_V,24
-   I_d_max_A,10
-   I_d_min_A,-10
-   I_q_max_A,10
-   I_q_min_A,-10
+.. csv-table:: Example ``machine_parameters.csv``
+   :file: dummy_motor/nominal_v1/machine_parameters.csv
+   :header-rows: 1
 
 Required machine rows
 ---------------------
 
 The following rows map directly to ``uz_PMSM_t`` and are required by the existing PMSM controller, setpoint module, and software model.
 
-.. list-table:: Required ``uz_PMSM_t`` rows
+.. csv-table:: Required ``uz_PMSM_t`` rows
+   :file: required_uz_pmsm_rows.csv
    :header-rows: 1
    :widths: 30 50 20
-
-   * - Parameter
-     - Meaning
-     - Existing consumer
-   * - ``machine_id``
-     - Unique machine identifier used to recognize the loaded machine data.
-     - ``uz_PMSM_t``
-   * - ``R_ph_Ohm``
-     - Stator phase resistance :math:`R_s` in Ohm.
-     - ``uz_PMSM_t``
-   * - ``Ld_Henry``
-     - Linear d-axis inductance :math:`L_d` in H.
-     - ``uz_PMSM_t``
-   * - ``Lq_Henry``
-     - Linear q-axis inductance :math:`L_q` in H.
-     - ``uz_PMSM_t``
-   * - ``Psi_PM_Vs``
-     - Permanent magnet flux linkage :math:`\psi_{PM}` in V s.
-     - ``uz_PMSM_t``
-   * - ``polePairs``
-     - Number of pole pairs.
-     - ``uz_PMSM_t``
-   * - ``J_kg_m_squared``
-     - Rotor inertia in kg m^2.
-     - ``uz_PMSM_t``
-   * - ``I_max_Ampere``
-     - Maximum allowed current used by the setpoint module for MTPA and field weakening in A.
-     - ``uz_PMSM_t``
-   * - ``I_rated_Ampere``
-     - Rated continuous phase current in A.
-     - ``uz_PMSM_t``
-   * - ``Torque_rated_Nm``
-     - Rated continuous torque in Nm.
-     - ``uz_PMSM_t``
-   * - ``Torque_max_Nm``
-     - Maximum allowed positive torque command in Nm.
-     - ``uz_PMSM_t``
-   * - ``Torque_min_Nm``
-     - Maximum allowed negative torque command in Nm.
-     - ``uz_PMSM_t``
-   * - ``speed_rated_rpm``
-     - Rated mechanical speed in rpm.
-     - ``uz_PMSM_t``
-   * - ``speed_max_rpm``
-     - Maximum allowed positive mechanical speed in rpm.
-     - ``uz_PMSM_t``
-   * - ``speed_min_rpm``
-     - Maximum allowed negative mechanical speed in rpm.
-     - ``uz_PMSM_t``
-   * - ``V_dc_nominal_V``
-     - Nominal DC-link voltage in V.
-     - ``uz_PMSM_t``
-   * - ``I_d_max_A``
-     - Maximum allowed d-axis current in A.
-     - ``uz_PMSM_t``
-   * - ``I_d_min_A``
-     - Minimum allowed d-axis current in A.
-     - ``uz_PMSM_t``
-   * - ``I_q_max_A``
-     - Maximum allowed q-axis current in A.
-     - ``uz_PMSM_t``
-   * - ``I_q_min_A``
-     - Minimum allowed q-axis current in A.
-     - ``uz_PMSM_t``
 
 Relation to ``uz_pmsm_control`` limits
 --------------------------------------
@@ -172,32 +90,18 @@ Nonlinear flux map
 ``flux_map.csv`` is a long-form table with one row per support point.
 It represents a complete regular grid and is directly compatible with :ref:`uz_LUT_2D`.
 
-.. code-block:: text
+The canonical synthetic example from ``dummy_motor/nominal_v1/flux_map.csv`` is:
 
-   operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs
-   0,-10,-10,0.022,-0.03
-   1,0,-10,0.042,-0.03
-   2,10,-10,0.062,-0.03
-   3,-10,0,0.022,0
+.. csv-table:: Example ``flux_map.csv``
+   :file: dummy_motor/nominal_v1/flux_map.csv
+   :header-rows: 1
 
 Required columns are:
 
-.. list-table:: Flux map columns
+.. csv-table:: Flux map columns
+   :file: flux_map_columns.csv
    :header-rows: 1
    :widths: 25 75
-
-   * - Column
-     - Meaning
-   * - ``operating_point``
-     - Integer row index in LUT order. This column is useful for checks and plots, but importers should be able to regenerate it.
-   * - ``i_d_A``
-     - d-axis current breakpoint in A.
-   * - ``i_q_A``
-     - q-axis current breakpoint in A.
-   * - ``psi_d_Vs``
-     - d-axis flux linkage in V s.
-   * - ``psi_q_Vs``
-     - q-axis flux linkage in V s.
 
 Ordering contract
 -----------------
@@ -234,12 +138,11 @@ Differential inductances
 
 ``differential_inductances.csv`` uses the same grid and the same ordering as ``flux_map.csv``.
 
-.. code-block:: text
+The canonical synthetic example from ``dummy_motor/nominal_v1/differential_inductances.csv`` is:
 
-   operating_point,i_d_A,i_q_A,L_dd_H,L_dq_H,L_qd_H,L_qq_H
-   0,-10,-10,0.002,0,0,0.003
-   1,0,-10,0.002,0,0,0.003
-   2,10,-10,0.002,0,0,0.003
+.. csv-table:: Example ``differential_inductances.csv``
+   :file: dummy_motor/nominal_v1/differential_inductances.csv
+   :header-rows: 1
 
 The four inductances are the entries of the differential flux linkage matrix:
 

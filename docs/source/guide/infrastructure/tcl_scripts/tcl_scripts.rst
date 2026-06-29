@@ -118,3 +118,65 @@ Usage:
 ::
 
    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
+
+
+Startup scripts
+---------------
+
+For Ubuntu, helper scripts are available in ``ultrazohm_sw/vitis`` to simplify creating and opening the Vitis workspace.
+They assume that ``xsct`` and ``vitis`` are available on ``PATH``.
+
+run_generate_workspace.sh
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Creates the Vitis workspace in ``ultrazohm_sw/vitis/workspace`` by running ``vitis_generate_UltraZohm_workspace.tcl`` via XSCT.
+The script refuses to run if the workspace folder is not empty, except for ``create_Vitis_workspace_here.txt``.
+After the workspace has been generated, it starts ``open_vitis.sh``.
+
+Usage:
+
+::
+
+  cd ~/ultrazohm/ultrazohm_sw
+  ./vitis/run_generate_workspace.sh
+
+open_vitis.sh
+^^^^^^^^^^^^^
+
+Opens Vitis with the workspace preset to ``ultrazohm_sw/vitis/workspace``.
+This is useful after the workspace has already been created once.
+
+Usage:
+
+::
+
+  cd ~/ultrazohm/ultrazohm_sw
+  ./vitis/open_vitis.sh
+
+run_generate_workspace.bat
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Creates the Vitis workspace in ``ultrazohm_sw\vitis\workspace`` by running ``vitis_generate_UltraZohm_workspace.tcl`` via XSCT on Windows.
+The script checks the configured Xilinx installation path, writes a log file in ``ultrazohm_sw\vitis\logs``, and refuses to run if the workspace folder is not empty except for ``create_Vitis_workspace_here.txt``.
+After the workspace has been generated, it starts ``open_workspace.bat`` in a new command window.
+
+Usage:
+
+::
+
+  cd C:\path\to\ultrazohm_sw
+  vitis\run_generate_workspace.bat
+
+open_workspace.bat
+^^^^^^^^^^^^^^^^^^
+
+Opens Vitis on Windows with the workspace preset to ``ultrazohm_sw\vitis\workspace``.
+The script expects the configured Vitis installation to exist and can be used after the workspace has already been created.
+
+Usage:
+
+::
+
+  cd C:\path\to\ultrazohm_sw
+  vitis\open_workspace.bat
+

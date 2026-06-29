@@ -21,9 +21,12 @@ _EL2_STACK_SIZE = DEFINED(_EL2_STACK_SIZE) ? _EL2_STACK_SIZE : 1024;
 
 MEMORY
 {
+   /* A53 low DDR stops before the R5 carveout at 0x40000000. */
    psu_ddr_0_MEM_0 : ORIGIN = 0x0, LENGTH = 0x3FFF0000
    psu_ddr_1_MEM_0 : ORIGIN = 0x800000000, LENGTH = 0x80000000
-   psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
+   /* Shared OCM, accessed by fixed addresses in APU_RPU_shared.h. */
+   psu_ocm_ram_bank0_to_2_MEM_0 : ORIGIN = 0xFFFC0000, LENGTH = 0x30000
+   psu_ocm_ram_bank3_MEM_0 : ORIGIN = 0xFFFF0000, LENGTH = 0x10000
 }
 
 /* Specify the default entry point to the program */

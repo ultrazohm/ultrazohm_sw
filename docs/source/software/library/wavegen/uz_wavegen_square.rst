@@ -2,7 +2,9 @@
 Square wave
 ===========
 
-.. doxygenfunction:: uz_wavegen_square
+.. c:type:: uz_wavegen_square_t
+
+.. doxygenfunction:: uz_wavegen_square_sample
 
 Example
 =======
@@ -16,13 +18,15 @@ Example
      float amplitude = 6.0f;
      float frequency_Hz = 20.0f;
      float duty_cycle = 0.5f;
-     float output = uz_wavegen_square(amplitude, frequency_Hz, duty_cycle);
+     uz_wavegen_square_t* square = uz_wavegen_square_init();
+     float output = uz_wavegen_square_sample(square, amplitude, frequency_Hz, duty_cycle);
   }
 
 Description
 ===========
 
-This function calculates a square wave based on the global system time.
+This function calculates a square wave.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: square wave
   :align: left

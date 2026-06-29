@@ -1,23 +1,24 @@
-Current Measurement Box
-=======================
+.. _current_measurement_box_rev02:
 
-This section provides an overview of the analog current measurement box, including hardware details, test setup, supported configurations and findings.
+Current Measurement Box Rev02
+=============================
 
-========
+This section provides an overview of the Rev02 analog current measurement box, including hardware details, test setup, supported configurations and findings.
+
 Overview
-========
+--------
 
-.. figure:: PCB_Box.jpg
-   :alt: PCB_and_Box
+.. figure:: PCB_Box_rev02.jpg
+   :alt: PCB and box Rev02
    :align: center
    :width: 800px
-   
+
 
 .. figure:: PCB_3D_TopView_Altium.png
    :alt: Top view of the current measurement PCB
    :align: center
    :width: 600px
-   
+
 
 The figure above shows the top view of the current measurement PCB with highlighted functional areas:
 
@@ -32,7 +33,7 @@ Features
 --------
 
 - 4 independent current sensing channels
-- DC and AC measurement from 0 up to 300 kHz 
+- DC and AC measurement from 0 up to 300 kHz
 - Compatible with LEM CASR-NP and Sensitec CAS5000 sensors
 - Fully differential analog output per channel with gain of 2
 
@@ -47,17 +48,16 @@ Interface
 
 **Outputs:**
 
-- 4 fully differential voltage outputs via RJ45 
-- Differential output voltage: max ±4.250 V (depending on the sensor)
+- 4 fully differential voltage outputs via RJ45
 
 .. note::
 
-   While the screw terminal block supports wires up to 10 mm² (≈8 AWG), operating at 80 A results in the PCB surface temperatures around 105 °C. 
+   While the screw terminal block supports wires up to 10 mm² (≈8 AWG), operating at 80 A results in the PCB surface temperatures around 105 °C.
 
 Thermal Performance
 -------------------
 
-The thermal behavior of the PCB was evaluated by applying increasing DC input current on a single phase of the primary side and measuring the surface temperature using a thermal camera. 
+The thermal behavior of the PCB was evaluated by applying increasing DC input current on a single phase of the primary side and measuring the surface temperature using a thermal camera.
 The temperature values shown in the plot below represent the hottest point observed on the PCB during each test step. The heat distribution across the primary phase trace was found to be spread relatively uniformly.
 As shown in the graph, at an input current of 80 A (DC), the PCB reaches a surface temperature of approximately 105 °C. Therefore 80 A should be considered as the upper limit of the current capabilities of PCB.
 
@@ -84,7 +84,7 @@ Functionality & Specifications
 VIN                               9 V to 48 V (typically 24 V)
 VCC+ Supply                       5.12 V
 Sensor Reference voltage          2.5 V (fixed from current sensor internally)
-Number of channels                4 
+Number of channels                4
 Amplifier                         THS4521 differential op-amp, gain = 2
 Common-mode voltage               2.5 V (set by voltage reference IC REF35250QDBVR)
 Sensor output                     2.5 V at 0 A input current
@@ -98,26 +98,12 @@ Output connectors                 RJ45 (Ethernet-style) for differential pairs
    :align: center
    :width: 800px
 
-   
+* :download:`Schematic Rev02 <SCH_Strommessplatine_Default_Rev02.pdf>`
+
 Supported Sensors
 -----------------
 
-The analog card supports multiple current transducers with the same footprint. 
-The last two columns indicate the unamplified sensor output voltage range for full-scale input current.
-
-========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
-Sensor Model              Manufacturer    Technology    Nominal Current (Arms)   Range (A)     Sensitivity (mV/A)    Bandwidth (±3 dB)   Sensor Output [V] (Min-Max)
-========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
-CASR 6-NP                 LEM              Fluxgate               6                 ±20               104.2               ~300 kHz           0.416 V - 4.584 V
-CASR 15-NP                LEM              Fluxgate              15                 ±51                41.67              ~300 kHz           0.375 V - 4.625 V
-CASR 25-NP                LEM              Fluxgate              25                 ±85                25.0               ~300 kHz           0.375 V - 4.625 V
-CASR 50-NP                LEM              Fluxgate              50                ±150                12.5               ~300 kHz           0.625 V - 4.375 V
-STB-6CAS/R/F              Sinomags          TMR                   6                 ±20               104.2               ~400 kHz           0.416 V - 4.584 V
-CAS5015SRA-LI             Sensitec          TMR                  15                 ±51                41.67              ~400 kHz           0.375 V - 4.625 V
-CAS5025SRA-LI             Sensitec          TMR                  25                 ±85                25.0               ~400 kHz           0.375 V - 4.625 V
-CAS5050SRA-LI             Sensitec          TMR                  50                ±150                12.5               ~400 kHz           0.625 V - 4.375 V
-========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
-
+Rev02 supports the current transducers listed in :ref:`current_measurement_box_supported_sensors`, except CAS50xxKRA with higher clearance like CAS5075KRA.
 
 VCC+ Supply Adjustment
 ----------------------
@@ -147,21 +133,21 @@ When using high-range sensors (CAS5015SRA-LI, CAS5025SRA-LI etc.), the amplified
 
 The expected differential output from the current sensing chain is very close to the typical output swing limits of the THS4521 at a 5.0 V supply, reinforcing the need for increased supply headroom.
 
-.. note :: 
+.. note ::
      The sensor reference voltage remains at 2.5 V regardless of the 5.12 V supply, so output offset and scaling are unaffected. Only the amplifier headroom benefits from the increased supply.
 
 Adjust Measurement Gain
 -----------------------
 
 For all types of current sensing measurements, it is recommended to configure the gain of the differential operational amplifier (THS4521) to match the expected sensor output range to the ADC input range, ideally maximizing dynamic range.
-
-The gain is configured using external feedback resistors R11 and R12 as follows:
+The differential gain is set by the matched feedback and input resistor pairs of the THS4521 stage:
 
 .. math::
 
-   g = \frac{R_{11}}{R_{12}} = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2 \,\,
+   g_\mathrm{diff} = \frac{R_f}{R_g} = \frac{R_{11}}{R_{12}} = \frac{R_{16}}{R_{14}}
+   = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2
 
-Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC's ±5 V input range when full-scale current is applied.
+For correct fully differential operation, the resistor pairs must be matched: :math:`R_{11}=R_{16}` and :math:`R_{12}=R_{14}`.
 
 .. note::
    Use precision resistors (0.1% or better) for R11, R12, R14, R16 to ensure consistent gain and matching across all channels.
@@ -169,10 +155,10 @@ Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifi
 Filters
 -------
 
-The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter. 
+The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter.
 
-1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is defined by the differential capacitor 
-:math:`C_\mathrm{Diff}` (C18 = 5.6 nF), which is **populated**, and the common-mode capacitors 
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is defined by the differential capacitor
+:math:`C_\mathrm{Diff}` (C18 = 5.6 nF), which is **populated**, and the common-mode capacitors
 :math:`C_\mathrm{CM}` (C16, C20), which are **not populated** during initial testing.
 
 .. math::
@@ -180,13 +166,13 @@ The analog signal path includes two types of low-pass filters: an anti-aliasing 
    f_\mathrm{aliasing,-3dB} = \frac{1}{2 \pi R_{13} (2 C_\mathrm{Diff} + C_\mathrm{CM})}
    = \frac{1}{2 \pi \cdot 49.9\,\Omega \cdot (2 \cdot 5.6\,\mathrm{nF} + 0)} \approx 285\,\mathrm{kHz}
 
-This anti-aliasing filter attenuates high-frequency differential-mode noise. 
+This anti-aliasing filter attenuates high-frequency differential-mode noise.
 
 
 1. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with:
 
-.. math:: 
-   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} = 
+.. math::
+   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} =
                             \frac{1}{2\pi\cdot2\,\mathrm{k\Omega}\cdot22\,\mathrm{pF}} \approx 3.62\, \mathrm{MHz}
 
 .. note::
@@ -197,13 +183,10 @@ This anti-aliasing filter attenuates high-frequency differential-mode noise.
 
       10 \cdot C_\mathrm{CM} < C_\mathrm{Diff}
 
-.. figure:: whole_system_block_diagram.png
-   :align: center
-   :width: 700px
+Performance Tests
+-----------------
 
-
-Block diagram showing the signal and power flow between the UltraZohm system carrier board, current measurement box, and the LTC2311-16 ADC card.
-
+The following pages document the Rev02 performance test setup and results.
 
 ..  toctree::
    :maxdepth: 1

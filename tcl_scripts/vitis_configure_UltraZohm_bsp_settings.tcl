@@ -67,6 +67,10 @@ proc uz_vitis_apply_freertos_bsp_settings {enable_dhcp} {
   bsp config lwip_dhcp $enable_dhcp
   # increase heap size of freertos, to fix javascope glitches
   bsp config total_heap_size 200000000
+  # Save FPU/NEON context for ALL tasks (default 1 only covers tasks that call
+  # vPortTaskUsesFPU(), but aarch64 GCC uses NEON Q-registers inside ordinary
+  # memcpy -> a task preempted mid-copy would resume with corrupted registers).
+  bsp config use_task_fpu_support 2
   platform write
 }
 

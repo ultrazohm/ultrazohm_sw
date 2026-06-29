@@ -2,7 +2,7 @@
 Sawtooth wave with offset
 =========================
 
-.. doxygenfunction:: uz_wavegen_sawtooth_with_offset
+.. doxygenfunction:: uz_wavegen_sawtooth_sample_with_offset
 
 Example
 =======
@@ -16,13 +16,15 @@ Example
      float amplitude = -5.0f;
      float frequency_Hz = 10.0f;
      float offset = 1.0f;
-     float output = uz_wavegen_sawtooth_with_offset(amplitude, frequency_Hz, offset);
+     uz_wavegen_sawtooth_t* sawtooth = uz_wavegen_sawtooth_init();
+     float output = uz_wavegen_sawtooth_sample_with_offset(sawtooth, amplitude, frequency_Hz, offset);
   }
 
 Description
 ===========
 
-This function calculates a sawtooth with specified offset based on the global system time.
+This function calculates a sawtooth with specified offset.
+The phase is tracked in the wavegen instance and advanced on each sample call.
 
 .. tikz:: sawtooth wave with offset
   :align: left

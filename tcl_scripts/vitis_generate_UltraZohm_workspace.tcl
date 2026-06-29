@@ -93,6 +93,7 @@ proc vitis_main {} {
 
   global uzcfg
   source [file join $::uz_vitis_script_dir vitis_configure_UltraZohm_bsp_settings.tcl]
+  source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
 
   set WS_PATH [getws]
   cd $WS_PATH
@@ -136,6 +137,8 @@ proc vitis_main {} {
   puts "Info (UltraZohm): regenerate FreeRTOS BSP"
   #regenerate board support package
   bsp regenerate
+  # Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
+  uz_vitis_patch_freertos_bsp $WS_PATH
 
 
   #Domain Baremetal R5_0

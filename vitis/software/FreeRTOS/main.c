@@ -49,7 +49,7 @@ uz_can_t* can_instance_1 = NULL;
 
 
 size_t lifecheck_mainThread = 0;
-size_t lifeCheck_networkThread = 0;
+size_t lifeCheck_networkBringupThread = 0;
 
 // APU-local mirror of the RPU status word; used by i2cio_thread if LED mirroring is enabled.
 uint32_t javascope_data_status = 0;
@@ -124,47 +124,47 @@ int main()
 				rpu_version_final = read_rpu_version();
 			} while (!(apu_version_final == rpu_version_final));
 
-#if (UZ_PLATFORM_CARDID==1)
- {
-			const uint32_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
+			#if (UZ_PLATFORM_CARDID==1)
+			{
+				const uint32_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
 
-			uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
+				uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
 
-			for (uint32_t i=0; i<card_slots; i++) {
-				uz_platform_eeprom_group000models_t model = 1000;		// Groups are defined up to 999,
-				uint8_t revision = 0;									// whilst revisions and
-				uint16_t serial = 0;									// serials start at one
+				for (uint32_t i=0; i<card_slots; i++) {
+					uz_platform_eeprom_group000models_t model = 1000;		// Groups are defined up to 999,
+					uint8_t revision = 0;									// whilst revisions and
+					uint16_t serial = 0;									// serials start at one
 
-				if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) ) {
-					uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
+					if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) ) {
+						uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
 
-					if ( (UZP_HWGROUP_ADCARD_DIGVOLT335 == model) && (1 < revision) )
-						uz_platform_configcard_model015_voltageled(i);
-				} else
-					uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
+						if ( (UZP_HWGROUP_ADCARD_DIGVOLT335 == model) && (1 < revision) )
+							uz_platform_configcard_model015_voltageled(i);
+					} else
+						uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
 
-				uz_printf("\r\n");
+					uz_printf("\r\n");
+				}
+
+				uz_printf("---\r\n\r\n");
 			}
-
-			uz_printf("---\r\n\r\n");
- }
-#endif
-		initialization_chain = initialization_rtos;
+			#endif
+			initialization_chain = initialization_rtos;
 
 		case initialization_rtos:
-				// Initialize the interrupt handler here in main() rather than in network_thread, to avoid the
-				// interrupt handler being registered before the thread stack is fully established.
+			// Initialize the interrupt handler here in main() rather than in network_bringup_thread, to avoid the
+			// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
-#if CAN_ACTIVE==1
-	uz_printf("APU: Init CAN \r\n"); // CAN interface
-	can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
-	can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
+			#if CAN_ACTIVE==1
+			uz_printf("APU: Init CAN \r\n"); // CAN interface
+			can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
+			can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
-#endif
+			#endif
 			// Start the main thread
 			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
 						   THREAD_STACKSIZE,
-						   DEFAULT_THREAD_PRIO);
+						   THREAD_PRIO_MAIN);
 			vTaskStartScheduler();
 			break;
 	}
@@ -175,18 +175,14 @@ int main()
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
- * Routine:  network_thread
+ * Routine:  network_bringup_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Initializes the A53-side IPI ISR and JavaScope queues, configures the
- *      Ethernet interface, starts the lwIP input thread, and starts the
- *      JavaScope TCP server once an IP address is available.
+ *      Configures the Ethernet interface, starts the lwIP input thread, and
+ *      starts the JavaScope socket manager once an IP address is available.
  *---------------------------------------------------------------------------*/
-void network_thread(void *p)
+void network_bringup_thread(void *p)
 {
-	// Initialize the A53-side IPI handler and JavaScope queues.
-	Initialize_ISR();
-
     struct netif *netif;
     /* The MAC address is board-specific; fall back to the Xilinx default if EEPROM read fails. */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
@@ -252,9 +248,9 @@ void network_thread(void *p)
     netif_set_up(netif);
 
     /* start packet receive thread - required for lwIP operation */
-    sys_thread_new("xemacif_input_thread", (void(*)(void*))xemacif_input_thread, netif,
+    sys_thread_new("xemacif_input", (void(*)(void*))xemacif_input_thread, netif,
             THREAD_STACKSIZE,
-            DEFAULT_THREAD_PRIO);
+            THREAD_PRIO_XEMACIF_INPUT);
 
 /*	// Enable (currently not required for I²C-based GPOs)
 	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
@@ -271,21 +267,22 @@ void network_thread(void *p)
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
-    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
+    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of
+    // javascope_socket_manager_thread are performed in main_thread
 #else
     print_javascope_app_header(&(server_netif.ip_addr));
-    sys_thread_new("javascope_tcp", application_thread, 0,
-		THREAD_STACKSIZE,
-		DEFAULT_THREAD_PRIO);
+    sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
+			THREAD_STACKSIZE,
+			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
 #endif
 
     // Periodic loop for DHCP timers and heartbeat LEDs.
     while (1) {
 
 #if LWIP_DHCP==1
-    	lifeCheck_networkThread++;
-      	if(lifeCheck_networkThread > 2500){
-      		lifeCheck_networkThread =0;
+		lifeCheck_networkBringupThread++;
+		if(lifeCheck_networkBringupThread > 2500){
+			lifeCheck_networkBringupThread =0;
       	}
 
 		dhcp_fine_tmr();
@@ -327,14 +324,14 @@ void network_thread(void *p)
 				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_ASSERT_QUEUED);
 				break;
 		}
-		mz_lscan++;
+			mz_lscan++;
 
-		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+			vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 
-	}	// endless while(1)
+		}
 
-    return;
-}
+	    return;
+	}
 
 void i2cio_thread()
 {
@@ -367,11 +364,12 @@ void i2cio_thread()
  * Routine:  main_thread
  *---------------------------------------------------------------------------*
  * Description:
- *      Resets the PHY, initializes lwIP, and starts the network thread
- *      "network_thread()". If DHCP is enabled, waits up to 7.5 s for a
- *      lease and then starts the TCP application thread. Exits (vTaskDelete)
- *      after all enabled child threads are launched; it does not run
- *      continuously.
+ *      Initializes the A53-side IPI runtime and JavaScope queues, resets the PHY,
+ *      initializes lwIP, and starts the network thread
+ *      "network_bringup_thread()". If DHCP is enabled, waits up to 7.5 s for
+ *      a lease and then starts the JavaScope socket manager thread. Exits
+ *      (vTaskDelete) after all enabled child threads are launched; it does
+ *      not run continuously.
  *---------------------------------------------------------------------------*/
 int main_thread()
 {
@@ -381,6 +379,12 @@ int main_thread()
 
 	uz_printf("\r\nAPU: Build date of main.c: %s %s\r\n", __DATE__, __TIME__);
 
+	if (initialize_ipi_runtime() != XST_SUCCESS) {
+		uz_printf("APU: Error: IPI runtime initialization failed\r\n");
+		vTaskDelete(NULL);
+		return XST_FAILURE;
+	}
+
 	// Reset PHY before lwIP initializes the network interface.
 	uz_phy_reset();
 
@@ -389,19 +393,19 @@ int main_thread()
 
     /* Any thread using lwIP should be created using sys_thread_new. */
     // Start Ethernet/DHCP/network-interface handling.
-    sys_thread_new("NW_THRD", network_thread, NULL,
-		THREAD_STACKSIZE,
-            DEFAULT_THREAD_PRIO);
+    sys_thread_new("network_bringup", network_bringup_thread, NULL,
+			THREAD_STACKSIZE,
+            THREAD_PRIO_NETWORK_BRINGUP);
 
 #if CAN_ACTIVE == 1
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
-				   DEFAULT_THREAD_PRIO);
+				   THREAD_PRIO_CAN);
 	xil_printf("APU: CAN-Thread0 started\r\n");
 
 	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
 				   THREAD_STACKSIZE,
-				   DEFAULT_THREAD_PRIO);
+				   THREAD_PRIO_CAN);
 
 	xil_printf("APU: CAN-Thread1 started\r\n");
 #endif
@@ -435,16 +439,16 @@ int main_thread()
 
 	print_javascope_app_header(&(server_netif.ip_addr));
 
-	sys_thread_new("javascope_tcp", application_thread, 0,
+	sys_thread_new("js_socket_manager", javascope_socket_manager_thread, 0,
 			THREAD_STACKSIZE,
-			DEFAULT_THREAD_PRIO);
+			THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
 #endif
 
 	/* I2C LED mirroring thread is currently disabled since it runs into assert on Carrierboards Rev>=04
 	// TODO: uz_platform needs fixing
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
-			DEFAULT_THREAD_PRIO);
+			THREAD_PRIO_I2CIO);
 */
     vTaskDelete(NULL);
     return 0;

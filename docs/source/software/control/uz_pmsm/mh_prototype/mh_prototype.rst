@@ -8,6 +8,18 @@ The measured dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted 
 
 .. warning:: Dummy data for MH Prototype! The electrical parameters (R_ph_Ohm, Ld_Henry, Lq_Henry, Psi_PM_Vs) and inertia (J_kg_m_squared) in machine_parameters.csv are placeholder values copied from the beckhoff dataset and do not reflect actual characterization data.
 
+C usage
+=======
+
+.. warning:: These parameters are placeholder values. Do not use this machine definition in production control code.
+
+.. code-block:: c
+
+   #include "uz_PMSM_config.h"
+
+   uz_PMSM_t motor = UZ_PMSM_MH_PROTOTYPE_FEM_OVERAGED_OVER_ANGLE_INIT;
+   uz_PMSM_config_assert(motor);
+
 Matplotlib
 ==========
 

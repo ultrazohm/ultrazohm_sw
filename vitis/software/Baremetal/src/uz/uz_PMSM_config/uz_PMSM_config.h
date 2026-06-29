@@ -11,7 +11,7 @@
  */
 typedef struct uz_PMSM_t{
     uint32_t machine_id; /**< unique machine identifier generated from the PMSM machine catalog */
-    float R_ph_Ohm;/**< phase resitance inductance in Ohm. Must be greater than 0.0f */
+    float R_ph_Ohm;/**< phase resistance in Ohm. Must be greater than 0.0f */
     float Ld_Henry; /**< d-axis inductance in Henry. Must be greater than 0.0f */
     float Lq_Henry;/**< q-axis inductance in Henry. Must be greater than 0.0f */
     float Psi_PM_Vs;/**< permanent magnet flux linkage in Volt-seconds. Must be greater or equal than 0.0f */

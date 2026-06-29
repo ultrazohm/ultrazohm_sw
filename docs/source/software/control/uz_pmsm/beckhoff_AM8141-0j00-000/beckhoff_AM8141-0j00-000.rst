@@ -3,6 +3,21 @@ beckhoff AM8141-0j00-000
 ========================
 
 The measured dataset in ``measured_psi_dq_averaged_800_rpm/flux_map.csv`` can be plotted directly with ``pyuzlib``.
+
+C usage
+=======
+
+.. code-block:: c
+
+   #include "uz_PMSM_config.h"
+
+   /* 800 RPM dataset — measured over a larger current range, generally preferred: */
+   uz_PMSM_t motor = UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_800_RPM_INIT;
+   uz_PMSM_config_assert(motor);
+
+   /* 400 RPM dataset — alternative if needed: */
+   uz_PMSM_t motor = UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_400_RPM_INIT;
+   uz_PMSM_config_assert(motor);
 ``measured_psi_dq_averaged_800_rpm.csv`` is measured at 800 rpm and -800 rpm, where t he flux map is averaged for each operating point to counteract the influence of the iron losses.
 
 
@@ -17,7 +32,7 @@ Matplotlib
    pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv')
 
 .. plot::
-  :caption: Flux map measured at 800 rpm
+  :caption: Flux map measured at 400 rpm
 
    import pyuzlib
    pyuzlib.docs.pmsm.plot_flux_map('docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_400_rpm/flux_map.csv')

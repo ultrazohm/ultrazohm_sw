@@ -75,6 +75,10 @@ The following rows map directly to ``uz_PMSM_t`` and are required by the existin
    :header-rows: 1
    :widths: 30 50 20
 
+The ``machine_name`` row is optional.
+Its value becomes the human-readable label in the generated C header comment and the machine inventory CSV.
+If absent, the motor directory name is used instead.
+
 Relation to ``uz_pmsm_control`` limits
 --------------------------------------
 
@@ -272,7 +276,7 @@ Before a dataset is used in the controller or a model, check the following:
 * ``machine_parameters.csv`` contains the machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits.
 * ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
 * ``Psi_PM_Vs`` is greater than or equal to zero.
-* ``flux_map.csv`` has the required columns ``operating_point``, ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``.
+* ``flux_map.csv`` has the four required columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``. An optional ``operating_point`` column is ignored on import and added automatically on export by pyuzlib.
 * ``i_d_A`` and ``i_q_A`` form a complete rectangular grid.
 * Breakpoints are strictly increasing after sorting.
 * File order is sorted by ``i_q_A`` first and then by ``i_d_A``.
@@ -315,6 +319,14 @@ The script also prints the C macro name that will be generated:
    C macro will be: UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT
 
 ``machine_id`` is assigned automatically as the next unused integer.
+The script also prints a table of every parameter's constraint and unit, so you can fill in the CSV without leaving the terminal.
+
+If the motor data starts from a raw FEM or measurement file with non-standard column names, pass ``--with-raw-data``.
+This additionally creates a ``preprocess_to_correct_data_format.py`` template in the dataset directory with ``TODO`` comments for column name mapping:
+
+.. code-block:: bash
+
+   python generate_available_machines.py add_machine my_motor nominal_v1 --with-raw-data
 
 .. rubric:: Phase 2 — Fill in machine_parameters.csv (manual)
 
@@ -324,8 +336,9 @@ The generator validates these constraints and reports errors with field names wh
 
 If you also have flux-map data, place ``flux_map.csv`` in the same directory using the canonical column order
 ``operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs``.
-For raw FEM or measurement files with different column names, write a small preprocessing script
-(see ``mh_prototype/fem_overaged_over_angle/preprocess_to_correct_data_format.py`` as an example)
+For raw FEM or measurement files with different column names, edit the
+``preprocess_to_correct_data_format.py`` template created by ``--with-raw-data``
+(or see ``mh_prototype/fem_overaged_over_angle/preprocess_to_correct_data_format.py`` as an example)
 and run it manually before the next step.
 
 .. rubric:: Phase 3 — Regenerate the catalog (scripted)

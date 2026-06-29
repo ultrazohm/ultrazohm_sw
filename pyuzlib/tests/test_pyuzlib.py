@@ -100,6 +100,36 @@ def test_pmsm_parameters_c_field_names_follow_dataclass_order():
     )
 
 
+def test_pmsm_parameters_rejects_torque_min_not_less_than_torque_max(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\nmachine_id,1\nR_ph_Ohm,0.51\nLd_Henry,0.002\nLq_Henry,0.003\n"
+        "Psi_PM_Vs,0.042\npolePairs,4\nJ_kg_m_squared,0.000108\nI_max_Ampere,12\n"
+        "I_rated_Ampere,8\nTorque_rated_Nm,1.2\nTorque_max_Nm,2\n"
+        "Torque_min_Nm,2\n"  # positive — must be <= 0
+        "speed_rated_rpm,1000\nspeed_max_rpm,1500\nspeed_min_rpm,-1500\n"
+        "V_dc_nominal_V,24\nI_d_max_A,10\nI_d_min_A,-10\nI_q_max_A,10\nI_q_min_A,-10\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Torque_min_Nm"):
+        PMSMParameters.from_csv(csv_path).validate_for_c()
+
+
+def test_pmsm_parameters_rejects_speed_min_positive(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\nmachine_id,1\nR_ph_Ohm,0.51\nLd_Henry,0.002\nLq_Henry,0.003\n"
+        "Psi_PM_Vs,0.042\npolePairs,4\nJ_kg_m_squared,0.000108\nI_max_Ampere,12\n"
+        "I_rated_Ampere,8\nTorque_rated_Nm,1.2\nTorque_max_Nm,2\nTorque_min_Nm,-2\n"
+        "speed_rated_rpm,1000\nspeed_max_rpm,1500\n"
+        "speed_min_rpm,500\n"  # positive — must be <= 0
+        "V_dc_nominal_V,24\nI_d_max_A,10\nI_d_min_A,-10\nI_q_max_A,10\nI_q_min_A,-10\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="speed_min_rpm"):
+        PMSMParameters.from_csv(csv_path).validate_for_c()
+
+
 def test_machine_catalog_parses_uz_pmsm_fields_from_c_header():
     header_path = "vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h"
 

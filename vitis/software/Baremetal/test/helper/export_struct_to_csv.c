@@ -85,7 +85,7 @@ void export_input_output_arrays_to_csv(const char *filename,
 
         if (add_time != 0.0f)
         {
-            fprintf(file, "%f;", (double)element_index * (double)add_time);
+            fprintf(file, "%.10f;", (double)element_index * (double)add_time);
         }
 
         for (size_t field_index = 0U; field_index < input_field_count; ++field_index)
@@ -144,7 +144,7 @@ void export_array_of_struct_to_csv(const char *filename,
 
         if (add_time != 0.0f)
         {
-            fprintf(file, "%f;", (double)element_index * (double)add_time);
+            fprintf(file, "%.10f;", (double)element_index * (double)add_time);
         }
 
         for (size_t field_index = 0U; field_index < field_count; ++field_index)

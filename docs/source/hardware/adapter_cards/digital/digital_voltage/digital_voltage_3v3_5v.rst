@@ -149,6 +149,7 @@ References/Source
 
 * :download:`Schematic Rev03 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev03.pdf>`
 * `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
+* Corresponding MachXO2 D-Slot CPLD implementations: ``MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v``
 
 Compatibility
 =============

@@ -289,22 +289,22 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
                                   1U,
                                   0.0f);
 #endif
-// #if BINARY_EXPORT
-//     export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_RESULTS_BINARY_PATH,
-//                                      sim_log,
-//                                      sizeof(sim_log[0]),
-//                                      pmsm_control_swmodel_log_fields,
-//                                      sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
-//                                      TOTAL_MODEL_ITERATIONS,
-//                                      swmodel_config.sample_time);
-//     export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_CONFIG_BINARY_PATH,
-//                                      &export_config,
-//                                      sizeof(export_config),
-//                                      pmsm_control_swmodel_config_fields,
-//                                      sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
-//                                      1U,
-//                                      0.0f);
-// #endif
+#if BINARY_EXPORT
+    export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_RESULTS_BINARY_PATH,
+                                     sim_log,
+                                     sizeof(sim_log[0]),
+                                     pmsm_control_swmodel_log_fields,
+                                     sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
+                                     TOTAL_MODEL_ITERATIONS,
+                                     swmodel_config.sample_time);
+    export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_CONFIG_BINARY_PATH,
+                                     &export_config,
+                                     sizeof(export_config),
+                                     pmsm_control_swmodel_config_fields,
+                                     sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
+                                     1U,
+                                     0.0f);
+#endif
 }
 
 #endif // TEST

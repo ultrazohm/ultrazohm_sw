@@ -29,7 +29,6 @@ TEST_SOURCE_FILE("uz_controller_setpoint_filter.c")
 TEST_SOURCE_FILE("uz_integrator.c")
 
 #define CSV_EXPORT 1
-#define BINARY_EXPORT 1
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
@@ -39,8 +38,6 @@ TEST_SOURCE_FILE("uz_integrator.c")
 
 #define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile.csv"
 #define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_config.csv"
-#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_BINARY_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile.bin"
-#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_BINARY_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_config.bin"
 #define UZ_PMSM_CONTROL_FREQUENCY_HZ 10000U
 #define UZ_PMSM_SWMODEL_OVERSAMPLING_FACTOR 200U
 #define UZ_PMSM_CONTROL_SWMODEL_SIMULATION_TIME_SECONDS 3U
@@ -274,13 +271,13 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
         .v_dc_V = machine_config.V_dc_nominal_V,
         .machine = machine_config};
 
-    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
-                                  sim_log,
-                                  sizeof(sim_log[0]),
-                                  pmsm_control_swmodel_log_fields,
-                                  sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
-                                  TOTAL_MODEL_ITERATIONS,
-                                  swmodel_config.sample_time);
+    export_array_of_struct_to_csv_fast(UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
+                                       sim_log,
+                                       sizeof(sim_log[0]),
+                                       pmsm_control_swmodel_log_fields,
+                                       sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
+                                       TOTAL_MODEL_ITERATIONS,
+                                       swmodel_config.sample_time);
     export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
                                   &export_config,
                                   sizeof(export_config),
@@ -289,22 +286,7 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
                                   1U,
                                   0.0f);
 #endif
-// #if BINARY_EXPORT
-//     export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_RESULTS_BINARY_PATH,
-//                                      sim_log,
-//                                      sizeof(sim_log[0]),
-//                                      pmsm_control_swmodel_log_fields,
-//                                      sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
-//                                      TOTAL_MODEL_ITERATIONS,
-//                                      swmodel_config.sample_time);
-//     export_array_of_struct_to_binary(UZ_PMSM_CONTROL_SWMODEL_CONFIG_BINARY_PATH,
-//                                      &export_config,
-//                                      sizeof(export_config),
-//                                      pmsm_control_swmodel_config_fields,
-//                                      sizeof(pmsm_control_swmodel_config_fields) / sizeof(pmsm_control_swmodel_config_fields[0]),
-//                                      1U,
-//                                      0.0f);
-// #endif
+
 }
 
 #endif // TEST

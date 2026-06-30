@@ -106,22 +106,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH21] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch21;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH22] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch22;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH23] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch23;
-	js_ch_observable[JSO_INCREMENTAL_ENCODER_D1_CH1_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d1_1_theta_el;
-	js_ch_observable[JSO_INCREMENTAL_ENCODER_D1_CH2_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d1_2_theta_el;
-	js_ch_observable[JSO_INCREMENTAL_ENCODER_D1_CH3_THETA_EL] = &project_wizard_visualization_data.viz_incremental_encoder_d1_3_theta_el;
-	js_ch_observable[JSO_ENDAT_D2_CH1_POS_MECH_ST] = &project_wizard_visualization_data.viz_endat_encoder_d2_1_position_mech_si_single_turn;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H1] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h1;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L1] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_l1;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H2] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h2;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L2] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_l2;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_H3] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h3;
-	js_ch_observable[JSO_INVERTER_ADAPTER_D3_CHIP_TEMP_L3] = &project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_l3;
 	js_ch_observable[JSO_TEMP_D4_A_CH4] = &project_wizard_visualization_data.viz_temp_d4_a_4;
 	js_ch_observable[JSO_TEMP_D4_A_CH5] = &project_wizard_visualization_data.viz_temp_d4_a_5;
 	js_ch_observable[JSO_TEMP_D4_A_CH19] = &project_wizard_visualization_data.viz_temp_d4_a_19;
-	js_ch_observable[JSO_RESOLVER_PL_D5_CH1_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_1_position_mech_2pi;
-	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_position_mech_2pi;
 /* Project Wizard END: javascope_observable_pointers */
+	js_ch_observable[JSO_D2_INPUT_LOOPBACK_UINT32] = &data->av.d2_input_loopback_uint32;
+	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -132,23 +122,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
-	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D1_CH1_POSITION] = &project_wizard_visualization_data.viz_incremental_encoder_d1_1_position;
-	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D1_CH2_POSITION] = &project_wizard_visualization_data.viz_incremental_encoder_d1_2_position;
-	js_slowDataArray[JSSD_FLOAT_INCREMENTAL_ENCODER_D1_CH3_POSITION] = &project_wizard_visualization_data.viz_incremental_encoder_d1_3_position;
-	js_slowDataArray[JSSD_FLOAT_ENDAT_D2_CH1_POS_MECH_ST] = &project_wizard_visualization_data.viz_endat_encoder_d2_1_position_mech_si_single_turn;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_H1] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_h1;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_L1] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_l1;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_H2] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_h2;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_L2] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_l2;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_H3] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_h3;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_OC_L3] = &project_wizard_visualization_data.viz_inverter_adapter_d3_oc_l3;
-	js_slowDataArray[JSSD_FLOAT_INVERTER_ADAPTER_D3_FAULT] = &project_wizard_visualization_data.viz_inverter_adapter_d3_fault;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH4] = &project_wizard_visualization_data.viz_temp_d4_a_4;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH5] = &project_wizard_visualization_data.viz_temp_d4_a_5;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH19] = &project_wizard_visualization_data.viz_temp_d4_a_19;
-	js_slowDataArray[JSSD_FLOAT_RESOLVER_PL_D5_CH1_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_1_position_mech_2pi;
-	js_slowDataArray[JSSD_FLOAT_RESOLVER_PL_D5_CH2_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_position_mech_2pi;
 /* Project Wizard END: javascope_slowdata_pointers */
 
 	return Status;

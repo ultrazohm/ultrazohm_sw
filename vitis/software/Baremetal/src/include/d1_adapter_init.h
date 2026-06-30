@@ -1,16 +1,11 @@
 #pragma once
 
 /* Project Wizard BEGIN: D1 includes */
-/* Project Wizard generated content for D1 incremental encoder channel 1 */
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-/* Project Wizard generated content for D1 incremental encoder channel 2 */
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-/* Project Wizard generated content for D1 incremental encoder channel 3 */
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+/* Project Wizard generated content for D1 AXI GPIO IO card */
+#include <stdint.h>
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 /* Project Wizard END: D1 includes */
 
 /* Project Wizard BEGIN: D1 prototypes */
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_1(void);
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_2(void);
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_3(void);
+uz_axi_gpio_t* initialize_axi_gpio_d1(void);
 /* Project Wizard END: D1 prototypes */

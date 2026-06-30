@@ -1,98 +1,71 @@
 #include "../include/d5_adapter_init.h"
 
 /* Project Wizard BEGIN: D5 definitions */
-/* Project Wizard generated content for D5 resolver IP channel 1 */
+/* Project Wizard generated content for D5 channel 1 */
 #include "xparameters.h"
 
-static struct uz_resolverIP_config_t resolver_ip_d5_1_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_IP_D5_1_BASEADDR,
+static struct uz_endat_interface_config_t endat_encoder_d5_1_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_ENDAT_INTERFACE_D5_CHANNEL_1_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
-    .resolution = 16U,
-    .freq_clockin = 8192000.0f,
-    .zero_position_mechanical = 0.0f,
-    .pole_pairs_machine = 4.0f,
-    .pole_pairs_resolver = 1.0f,
-    .mode_after_init = POSITION_VELOCITY_MODE
+    .machine_polepairs = 2U,
+    .endat_clk_frequency_Hz = 2500000U,
+    .position_mech_offset_si_single_turn = -1.0f,
+    .endat_encoder_bit_width_single_turn = 25U,
+    .endat_encoder_bit_width_multi_turn = 12U,
+    .kp_pll = 628.3185f,
+    .ki_pll = 98696.0f,
+    .sampling_interval_seconds = 0.0001f,
+    .delay_sampling_in_clk_ticks = 0U
 };
 
-uz_resolverIP_t* initialize_resolver_ip_d5_1(void)
+uz_endat_interface_t* initialize_endat_encoder_d5_1(void)
 {
-    return uz_resolverIP_init(resolver_ip_d5_1_config);
+    return uz_endat_interface_init(endat_encoder_d5_1_config);
 }
-/* Project Wizard generated content for D5 resolver PL interface channel 1 */
-#include "../uz/uz_global_configuration.h"
+/* Project Wizard generated content for D5 channel 2 */
 #include "xparameters.h"
 
-static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d5_1_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_PL_INTERFACE_D5_1_BASEADDR,
+static struct uz_ssi_interface_config_t ssi_encoder_d5_2_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_SSI_INTERFACE_D5_CHANNEL_2_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
-    .resolver_polepairs = 1,
-    .machine_polepairs = 4,
-    .position_intmax = 65535,
-    .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-    .theta_m_offset_rad = 0.0f
+    .machine_polepairs = 2U,
+    .ssi_clk_frequency_Hz = 1000000U,
+    .position_encoding = uz_ssi_interface_binary,
+    .position_mech_offset_si_single_turn = 0.0f,
+    .ssi_encoder_bit_width_single_turn = 19U,
+    .ssi_encoder_bit_width_multi_turn = 0U,
+    .ssi_encoder_number_of_status_bits = 0U,
+    .sampling_interval_seconds = 0.0001f,
+    .kp_pll = 628.3185f,
+    .ki_pll = 98696.0f,
+    .sampling_delay_clk_ticks = 0U
 };
 
-static struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d5_1_outputs = {
-    .revolution_counter = 0,
-    .position_mech_2pi = 0.0f,
-    .position_el_2pi = 0.0f,
-    .omega_mech_rad_s = 0.0f,
-    .n_mech_rpm = 0.0f
-};
-
-uz_resolver_pl_interface_t* initialize_resolver_pl_interface_d5_1(void)
+uz_ssi_interface_t* initialize_ssi_encoder_d5_2(void)
 {
-    return uz_resolver_pl_interface_init(
-        resolver_pl_interface_d5_1_config,
-        resolver_pl_interface_d5_1_outputs
-    );
+    return uz_ssi_interface_init(ssi_encoder_d5_2_config);
 }
-/* Project Wizard generated content for D5 resolver IP channel 2 */
+/* Project Wizard generated content for D5 channel 3 */
 #include "xparameters.h"
 
-static struct uz_resolverIP_config_t resolver_ip_d5_2_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_IP_D5_2_BASEADDR,
+static struct uz_ssi_interface_config_t ssi_encoder_d5_3_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_SSI_INTERFACE_D5_CHANNEL_3_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
-    .resolution = 16U,
-    .freq_clockin = 8192000.0f,
-    .zero_position_mechanical = 0.0f,
-    .pole_pairs_machine = 4.0f,
-    .pole_pairs_resolver = 1.0f,
-    .mode_after_init = POSITION_VELOCITY_MODE
+    .machine_polepairs = 2U,
+    .ssi_clk_frequency_Hz = 1000000U,
+    .position_encoding = uz_ssi_interface_binary,
+    .position_mech_offset_si_single_turn = 0.0f,
+    .ssi_encoder_bit_width_single_turn = 19U,
+    .ssi_encoder_bit_width_multi_turn = 0U,
+    .ssi_encoder_number_of_status_bits = 0U,
+    .sampling_interval_seconds = 0.0001f,
+    .kp_pll = 628.3185f,
+    .ki_pll = 98696.0f,
+    .sampling_delay_clk_ticks = 0U
 };
 
-uz_resolverIP_t* initialize_resolver_ip_d5_2(void)
+uz_ssi_interface_t* initialize_ssi_encoder_d5_3(void)
 {
-    return uz_resolverIP_init(resolver_ip_d5_2_config);
-}
-/* Project Wizard generated content for D5 resolver PL interface channel 2 */
-#include "../uz/uz_global_configuration.h"
-#include "xparameters.h"
-
-static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d5_2_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_PL_INTERFACE_D5_2_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000U,
-    .resolver_polepairs = 1,
-    .machine_polepairs = 4,
-    .position_intmax = 65535,
-    .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-    .theta_m_offset_rad = 0.0f
-};
-
-static struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d5_2_outputs = {
-    .revolution_counter = 0,
-    .position_mech_2pi = 0.0f,
-    .position_el_2pi = 0.0f,
-    .omega_mech_rad_s = 0.0f,
-    .n_mech_rpm = 0.0f
-};
-
-uz_resolver_pl_interface_t* initialize_resolver_pl_interface_d5_2(void)
-{
-    return uz_resolver_pl_interface_init(
-        resolver_pl_interface_d5_2_config,
-        resolver_pl_interface_d5_2_outputs
-    );
+    return uz_ssi_interface_init(ssi_encoder_d5_3_config);
 }
 /* Project Wizard END: D5 definitions */

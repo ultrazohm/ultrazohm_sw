@@ -1,61 +1,25 @@
 #include "../include/d1_adapter_init.h"
 
 /* Project Wizard BEGIN: D1 definitions */
-/* Project Wizard generated content for D1 incremental encoder channel 1 */
+/* Project Wizard generated content for D1 AXI GPIO IO card */
 #include "xparameters.h"
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
-static struct uz_incrementalEncoder_config incremental_encoder_d1_1_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_INCREMENTAL_ENCODER_D1_1_BASEADDR,
-    .ip_core_frequency_Hz = 100000000U,
-    .line_number_per_turn_mech = 5000U,
-    .OmegaPerOverSample_in_rpm = 500.0f,
-    .drive_pole_pair = 4U,
-    .Encoder_mech_Offset = 0U,
-    .Encoder_elec_Offset = 0U,
-    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
-    .Speed_Timeout_ms = 10U
+#ifndef XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_AXI_GPIO_D1_DEVICE_ID
+#define XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_AXI_GPIO_D1_DEVICE_ID 0U
+#endif
+
+#define PROJECT_WIZARD_IO_CARD_D1_DIRECTION_MASK 0x00000000U
+
+static struct uz_axi_gpio_config_t axi_gpio_d1_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_AXI_GPIO_D1_BASEADDR,
+    .device_id = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_AXI_GPIO_D1_DEVICE_ID,
+    .number_of_pins = 30U,
+    .direction_of_pins = PROJECT_WIZARD_IO_CARD_D1_DIRECTION_MASK
 };
 
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_1(void)
+uz_axi_gpio_t* initialize_axi_gpio_d1(void)
 {
-    return uz_incrementalEncoder_init(incremental_encoder_d1_1_config);
-}
-/* Project Wizard generated content for D1 incremental encoder channel 2 */
-#include "xparameters.h"
-
-static struct uz_incrementalEncoder_config incremental_encoder_d1_2_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_INCREMENTAL_ENCODER_D1_2_BASEADDR,
-    .ip_core_frequency_Hz = 100000000U,
-    .line_number_per_turn_mech = 5000U,
-    .OmegaPerOverSample_in_rpm = 500.0f,
-    .drive_pole_pair = 4U,
-    .Encoder_mech_Offset = 0U,
-    .Encoder_elec_Offset = 0U,
-    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
-    .Speed_Timeout_ms = 10U
-};
-
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_2(void)
-{
-    return uz_incrementalEncoder_init(incremental_encoder_d1_2_config);
-}
-/* Project Wizard generated content for D1 incremental encoder channel 3 */
-#include "xparameters.h"
-
-static struct uz_incrementalEncoder_config incremental_encoder_d1_3_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_INCREMENTAL_ENCODER_D1_3_BASEADDR,
-    .ip_core_frequency_Hz = 100000000U,
-    .line_number_per_turn_mech = 5000U,
-    .OmegaPerOverSample_in_rpm = 500.0f,
-    .drive_pole_pair = 4U,
-    .Encoder_mech_Offset = 0U,
-    .Encoder_elec_Offset = 0U,
-    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
-    .Speed_Timeout_ms = 10U
-};
-
-uz_incrementalEncoder_t* initialize_incremental_encoder_d1_3(void)
-{
-    return uz_incrementalEncoder_init(incremental_encoder_d1_3_config);
+    return uz_axi_gpio_init(axi_gpio_d1_config);
 }
 /* Project Wizard END: D1 definitions */

@@ -1,71 +1,25 @@
 #include "../include/d2_adapter_init.h"
 
 /* Project Wizard BEGIN: D2 definitions */
-/* Project Wizard generated content for D2 channel 1 */
+/* Project Wizard generated content for D2 AXI GPIO IO card */
 #include "xparameters.h"
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
-static struct uz_endat_interface_config_t endat_encoder_d2_1_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_UZ_ENDAT_INTERFACE_D2_CHANNEL_1_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000U,
-    .machine_polepairs = 2U,
-    .endat_clk_frequency_Hz = 2500000U,
-    .position_mech_offset_si_single_turn = -1.0f,
-    .endat_encoder_bit_width_single_turn = 25U,
-    .endat_encoder_bit_width_multi_turn = 12U,
-    .kp_pll = 628.3185f,
-    .ki_pll = 98696.0f,
-    .sampling_interval_seconds = 0.0001f,
-    .delay_sampling_in_clk_ticks = 0U
+#ifndef XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_AXI_GPIO_D2_DEVICE_ID
+#define XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_AXI_GPIO_D2_DEVICE_ID 1U
+#endif
+
+#define PROJECT_WIZARD_IO_CARD_D2_DIRECTION_MASK 0x3FFFFFFFU
+
+static struct uz_axi_gpio_config_t axi_gpio_d2_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_AXI_GPIO_D2_BASEADDR,
+    .device_id = XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_AXI_GPIO_D2_DEVICE_ID,
+    .number_of_pins = 30U,
+    .direction_of_pins = PROJECT_WIZARD_IO_CARD_D2_DIRECTION_MASK
 };
 
-uz_endat_interface_t* initialize_endat_encoder_d2_1(void)
+uz_axi_gpio_t* initialize_axi_gpio_d2(void)
 {
-    return uz_endat_interface_init(endat_encoder_d2_1_config);
-}
-/* Project Wizard generated content for D2 channel 2 */
-#include "xparameters.h"
-
-static struct uz_ssi_interface_config_t ssi_encoder_d2_2_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_UZ_SSI_INTERFACE_D2_CHANNEL_2_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000U,
-    .machine_polepairs = 2U,
-    .ssi_clk_frequency_Hz = 1000000U,
-    .position_encoding = uz_ssi_interface_binary,
-    .position_mech_offset_si_single_turn = 0.0f,
-    .ssi_encoder_bit_width_single_turn = 19U,
-    .ssi_encoder_bit_width_multi_turn = 0U,
-    .ssi_encoder_number_of_status_bits = 0U,
-    .sampling_interval_seconds = 0.0001f,
-    .kp_pll = 628.3185f,
-    .ki_pll = 98696.0f,
-    .sampling_delay_clk_ticks = 0U
-};
-
-uz_ssi_interface_t* initialize_ssi_encoder_d2_2(void)
-{
-    return uz_ssi_interface_init(ssi_encoder_d2_2_config);
-}
-/* Project Wizard generated content for D2 channel 3 */
-#include "xparameters.h"
-
-static struct uz_ssi_interface_config_t ssi_encoder_d2_3_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_UZ_SSI_INTERFACE_D2_CHANNEL_3_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000U,
-    .machine_polepairs = 2U,
-    .ssi_clk_frequency_Hz = 1000000U,
-    .position_encoding = uz_ssi_interface_binary,
-    .position_mech_offset_si_single_turn = 0.0f,
-    .ssi_encoder_bit_width_single_turn = 19U,
-    .ssi_encoder_bit_width_multi_turn = 0U,
-    .ssi_encoder_number_of_status_bits = 0U,
-    .sampling_interval_seconds = 0.0001f,
-    .kp_pll = 628.3185f,
-    .ki_pll = 98696.0f,
-    .sampling_delay_clk_ticks = 0U
-};
-
-uz_ssi_interface_t* initialize_ssi_encoder_d2_3(void)
-{
-    return uz_ssi_interface_init(ssi_encoder_d2_3_config);
+    return uz_axi_gpio_init(axi_gpio_d2_config);
 }
 /* Project Wizard END: D2 definitions */

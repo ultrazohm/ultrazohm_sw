@@ -4,9 +4,18 @@
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include "../uz_Transformation/uz_Transformation.h"
 
+/**
+ * @brief Selects the numerical integration method used by the software model.
+ */
+enum uz_pmsm_swmodel_integration_method_t {
+    uz_pmsm_swmodel_euler_forward = 0, /**< Explicit Euler (1st order). Default. */
+    uz_pmsm_swmodel_heun               /**< Heun's method (explicit trapezoidal, 2nd order). */
+};
+
 struct uz_pmsm_swmodel_config_t {
     float sample_time; /**< Sample time for the software model in seconds */
     struct uz_PMSM_t pmsm_parameters; /**< Configuration struct for PMSM parameters */
+    enum uz_pmsm_swmodel_integration_method_t integration_method; /**< Integration method (defaults to Euler forward) */
 };
 
 struct uz_pmsm_swmodel_outputs_t

@@ -177,6 +177,9 @@ Integration
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
 Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
+The inputs (voltages and speed) are held constant over the step (zero-order hold), and the current--flux coupling (the current changes the flux :math:`\psi(i)`, which changes the derivative) is resolved *across* steps: every step recomputes :math:`\psi(i)` from the present state before forming the derivative.
+With the small step size the per-step truncation error :math:`\mathcal{O}(t_s^2)` is negligible, so the explicit Euler method is both accurate and produces smooth output.
+The software counterpart :ref:`uz_pmsm_swmodel <uz_pmsm_swmodel>` additionally offers a 2nd-order Heun integration option, which reaches comparable accuracy with a larger step (less oversampling).
 The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
 
 .. math:: 

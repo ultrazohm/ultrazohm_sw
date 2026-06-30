@@ -38,6 +38,8 @@ TEST_SOURCE_FILE("uz_integrator.c")
 
 #define UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile.csv"
 #define UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_config.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_RESULTS_DELAY_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay.csv"
+#define UZ_PMSM_CONTROL_SWMODEL_CONFIG_DELAY_CSV_PATH "../../../docs/ceedling_test_output/integration_tests/uz_pmsm_control_swmodel_profile_measurement_delay_config.csv"
 #define UZ_PMSM_CONTROL_FREQUENCY_HZ 10000U
 #define UZ_PMSM_SWMODEL_OVERSAMPLING_FACTOR 200U
 #define UZ_PMSM_CONTROL_SWMODEL_SIMULATION_TIME_SECONDS 3U
@@ -102,7 +104,15 @@ void tearDown(void)
 {
 }
 
-void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
+/*
+ * Shared body for the profile integration tests. When
+ * delay_measurements_one_control_step is true, the controller is fed the
+ * measurements sampled at the *previous* controller tick (a one-control-step
+ * sampling delay) instead of the current ones; everything else is identical.
+ */
+static void run_uz_pmsm_swmodel_uz_pmsm_control_profile(bool delay_measurements_one_control_step,
+                                                        const char *results_csv_path,
+                                                        const char *config_csv_path)
 {
     enum
     {
@@ -183,7 +193,7 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
     };
 
     uz_pmsm_control_t *controller = uz_pmsm_control_init(controller_config, machine_config);
-    const float magnitude_optimum_tau_sigma_sec = 0.5f * controller_config.sample_time;
+    const float magnitude_optimum_tau_sigma_sec = 1.0f * controller_config.sample_time;
     uz_pmsm_control_current_control_tune_magnitude_optimum(controller, magnitude_optimum_tau_sigma_sec);
     uz_pmsm_control_enable(controller, true);
 
@@ -197,6 +207,12 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
     float theta_mech_rad = 0.0f;
     uz_3ph_dq_t model_i_dq_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
     uz_3ph_dq_t applied_v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+    /* Holds the measurements from the previous controller tick for the delayed variant.
+     * Initialised to the (all-zero) start-up state with nominal DC-link voltage, which
+     * equals the measurements computed at i == 0, so the first controller tick matches. */
+    struct uz_pmsm_measurement_values delayed_measurements = {0};
+    delayed_measurements.v_dc_in_V = machine_config.V_dc_nominal_V;
 
     for (uint32_t i = 0U; i < TOTAL_MODEL_ITERATIONS; i++)
     {
@@ -230,7 +246,10 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
 
         if (controller_active)
         {
-            applied_v_dq_V = uz_pmsm_control_sample_dq(controller, measurements, speed_ref_rpm, reference_currents, 0.0f);
+            const struct uz_pmsm_measurement_values controller_measurements =
+                delay_measurements_one_control_step ? delayed_measurements : measurements;
+            applied_v_dq_V = uz_pmsm_control_sample_dq(controller, controller_measurements, speed_ref_rpm, reference_currents, 0.0f);
+            delayed_measurements = measurements;
         }
 
         const struct uz_pmsm_swmodel_inputs_t swmodel_inputs = {
@@ -271,14 +290,14 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
         .v_dc_V = machine_config.V_dc_nominal_V,
         .machine = machine_config};
 
-    export_array_of_struct_to_csv_fast(UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
+    export_array_of_struct_to_csv_fast(results_csv_path,
                                        sim_log,
                                        sizeof(sim_log[0]),
                                        pmsm_control_swmodel_log_fields,
                                        sizeof(pmsm_control_swmodel_log_fields) / sizeof(pmsm_control_swmodel_log_fields[0]),
                                        TOTAL_MODEL_ITERATIONS,
                                        swmodel_config.sample_time);
-    export_array_of_struct_to_csv(UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH,
+    export_array_of_struct_to_csv(config_csv_path,
                                   &export_config,
                                   sizeof(export_config),
                                   pmsm_control_swmodel_config_fields,
@@ -287,6 +306,20 @@ void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
                                   0.0f);
 #endif
 
+}
+
+void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile(void)
+{
+    run_uz_pmsm_swmodel_uz_pmsm_control_profile(false,
+                                                UZ_PMSM_CONTROL_SWMODEL_RESULTS_CSV_PATH,
+                                                UZ_PMSM_CONTROL_SWMODEL_CONFIG_CSV_PATH);
+}
+
+void test_integration_uz_pmsm_swmodel_uz_pmsm_control_profile_measurement_delay(void)
+{
+    run_uz_pmsm_swmodel_uz_pmsm_control_profile(true,
+                                                UZ_PMSM_CONTROL_SWMODEL_RESULTS_DELAY_CSV_PATH,
+                                                UZ_PMSM_CONTROL_SWMODEL_CONFIG_DELAY_CSV_PATH);
 }
 
 #endif // TEST

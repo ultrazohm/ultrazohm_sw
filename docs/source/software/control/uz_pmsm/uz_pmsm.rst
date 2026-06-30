@@ -4,6 +4,8 @@
 uz_pmsm
 =======
 
+.. warning:: This feature is work in progress but available and merged to enable real-world testing!
+
 ``uz_pmsm`` defines a CSV based data scheme for machine parameters of PMSM to be used with the UltraZohm software framework.
 The goal is to generate a unified data structure to match the controller, software models, and plots.
 

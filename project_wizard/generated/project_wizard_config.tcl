@@ -397,9 +397,9 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D5_adapter
 
 
 
-# Slot CPLD D1: voltage_8tx_8tx_8tx_6tx (voltage_8tx_8tx_8tx_6tx)
+# Slot CPLD D1: voltage_8tx_8tx_8rx_6rx (voltage_8tx_8tx_8rx_6rx)
 
-# Slot CPLD D2: voltage_8rx_8rx_8rx_6rx (voltage_8rx_8rx_8rx_6rx)
+# Slot CPLD D2: voltage_8rx_8rx_8tx_6tx (voltage_8rx_8rx_8tx_6tx)
 
 # Slot CPLD D3: optical_14tx_4rx (optical_14tx_4rx)
 
@@ -2691,6 +2691,8 @@ uz_pw_create_hier_if_missing ${adapter_hier_path}
 uz_pw_delete_pin_if_exists ${adapter_hier_path}/Enable_Gate
 uz_pw_delete_pin_if_exists ${adapter_hier_path}/Gate_Signals_2L
 
+uz_pw_delete_pin_if_exists ${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0
+
 
 proc uz_pw_io_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
   uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
@@ -2724,15 +2726,36 @@ uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/RESETN
 
 set io_gpio_path ${adapter_hier_path}/axi_gpio_d1
 uz_pw_create_ip_cell_if_missing $io_gpio_path xilinx.com:ip:axi_gpio
-uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS 0 CONFIG.C_ALL_OUTPUTS 1 CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
+uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS 0 CONFIG.C_ALL_OUTPUTS 0 CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${io_gpio_path}/s_axi_aclk
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RESETN ${io_gpio_path}/s_axi_aresetn
 
 
 
+set io_gpio_i_concat_path ${adapter_hier_path}/d1_io_gpio_i_concat
+uz_pw_create_ip_cell_if_missing $io_gpio_i_concat_path xilinx.com:ip:xlconcat
+uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 30] [get_bd_cells -quiet $io_gpio_i_concat_path] $io_gpio_i_concat_path
 
 
 
+set io_gpio_zero_path ${adapter_hier_path}/d1_io_gpio_zero
+uz_pw_io_create_xlconstant $io_gpio_zero_path 1 0
+
+
+
+set d1_io_pwm_source_pwm_2l_0 "uz_pwm/Gate_Signals_2L_0"
+if {$d1_io_pwm_source_pwm_2l_0 eq "" || [llength [get_bd_pins -quiet $d1_io_pwm_source_pwm_2l_0]] == 0} {
+  puts "WARNING: PWM vector source '$d1_io_pwm_source_pwm_2l_0' not found for D1 IO card; using zero fallback."
+  set d1_io_pwm_source_pwm_2l_0_zero_path "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0_zero"
+  uz_pw_io_create_xlconstant $d1_io_pwm_source_pwm_2l_0_zero_path 6 0x00
+  set d1_io_pwm_source_pwm_2l_0 "${d1_io_pwm_source_pwm_2l_0_zero_path}/dout"
+} else {
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D1_io_pwm_source_pwm_2l_0 5 0
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I D1_io_pwm_source_pwm_2l_0 5 0
+  uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 "${adapter_parent_hier}/D1_io_pwm_source_pwm_2l_0"
+  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/D1_io_pwm_source_pwm_2l_0" "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0"
+  set d1_io_pwm_source_pwm_2l_0 "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0"
+}
 
 
 
@@ -2742,13 +2765,14 @@ uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_00_Ch1
 
 
 
-set d1_io_00_slice_path ${adapter_hier_path}/d1_io_00_slice
-uz_pw_io_create_xlslice $d1_io_00_slice_path 30 0
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_00_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_00_slice_path/Dout ${adapter_hier_path}/Dig_00_Ch1
 
 
 
+
+set d1_io_00_pwm_slice_path ${adapter_hier_path}/d1_io_00_pwm_slice
+uz_pw_io_create_xlslice $d1_io_00_pwm_slice_path 6 0
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_00_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_00_pwm_slice_path/Dout ${adapter_hier_path}/Dig_00_Ch1
 
 
 
@@ -2758,18 +2782,20 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_00_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_01_Ch1 Dig_01_Ch1
 
 
 
 
-set d1_io_01_slice_path ${adapter_hier_path}/d1_io_01_slice
-uz_pw_io_create_xlslice $d1_io_01_slice_path 30 1
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_01_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_01_slice_path/Dout ${adapter_hier_path}/Dig_01_Ch1
 
 
 
+
+set d1_io_01_pwm_slice_path ${adapter_hier_path}/d1_io_01_pwm_slice
+uz_pw_io_create_xlslice $d1_io_01_pwm_slice_path 6 1
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_01_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_01_pwm_slice_path/Dout ${adapter_hier_path}/Dig_01_Ch1
 
 
 
@@ -2779,18 +2805,20 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_01_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_02_Ch1 Dig_02_Ch1
 
 
 
 
-set d1_io_02_slice_path ${adapter_hier_path}/d1_io_02_slice
-uz_pw_io_create_xlslice $d1_io_02_slice_path 30 2
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_02_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_02_slice_path/Dout ${adapter_hier_path}/Dig_02_Ch1
 
 
 
+
+set d1_io_02_pwm_slice_path ${adapter_hier_path}/d1_io_02_pwm_slice
+uz_pw_io_create_xlslice $d1_io_02_pwm_slice_path 6 2
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_02_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_02_pwm_slice_path/Dout ${adapter_hier_path}/Dig_02_Ch1
 
 
 
@@ -2800,18 +2828,20 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_02_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_03_Ch1 Dig_03_Ch1
 
 
 
 
-set d1_io_03_slice_path ${adapter_hier_path}/d1_io_03_slice
-uz_pw_io_create_xlslice $d1_io_03_slice_path 30 3
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_03_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_03_slice_path/Dout ${adapter_hier_path}/Dig_03_Ch1
 
 
 
+
+set d1_io_03_pwm_slice_path ${adapter_hier_path}/d1_io_03_pwm_slice
+uz_pw_io_create_xlslice $d1_io_03_pwm_slice_path 6 3
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_03_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_03_pwm_slice_path/Dout ${adapter_hier_path}/Dig_03_Ch1
 
 
 
@@ -2821,18 +2851,20 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_03_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_04_Ch1 Dig_04_Ch1
 
 
 
 
-set d1_io_04_slice_path ${adapter_hier_path}/d1_io_04_slice
-uz_pw_io_create_xlslice $d1_io_04_slice_path 30 4
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_04_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_04_slice_path/Dout ${adapter_hier_path}/Dig_04_Ch1
 
 
 
+
+set d1_io_04_pwm_slice_path ${adapter_hier_path}/d1_io_04_pwm_slice
+uz_pw_io_create_xlslice $d1_io_04_pwm_slice_path 6 4
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_04_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_04_pwm_slice_path/Dout ${adapter_hier_path}/Dig_04_Ch1
 
 
 
@@ -2842,18 +2874,20 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_04_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_05_Ch1 Dig_05_Ch1
 
 
 
 
-set d1_io_05_slice_path ${adapter_hier_path}/d1_io_05_slice
-uz_pw_io_create_xlslice $d1_io_05_slice_path 30 5
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_05_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_05_slice_path/Dout ${adapter_hier_path}/Dig_05_Ch1
 
 
 
+
+set d1_io_05_pwm_slice_path ${adapter_hier_path}/d1_io_05_pwm_slice
+uz_pw_io_create_xlslice $d1_io_05_pwm_slice_path 6 5
+uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_05_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d1_io_05_pwm_slice_path/Dout ${adapter_hier_path}/Dig_05_Ch1
 
 
 
@@ -2863,7 +2897,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_05_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_06_Ch1 Dig_06_Ch1
+
 
 
 
@@ -2884,7 +2920,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_06_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_07_Ch1 Dig_07_Ch1
+
 
 
 
@@ -2905,7 +2943,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_07_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_08_Ch1 Dig_08_Ch1
+
 
 
 
@@ -2926,7 +2966,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_08_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_09_Ch1 Dig_09_Ch1
+
 
 
 
@@ -2947,7 +2989,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_09_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_10_Ch1 Dig_10_Ch1
+
 
 
 
@@ -2968,7 +3012,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_10_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_11_Ch1 Dig_11_Ch1
+
 
 
 
@@ -2989,7 +3035,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_11_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_12_Ch1 Dig_12_Ch1
+
 
 
 
@@ -3010,7 +3058,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_12_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_13_Ch1 Dig_13_Ch1
+
 
 
 
@@ -3031,7 +3081,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_13_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_14_Ch1 Dig_14_Ch1
+
 
 
 
@@ -3052,7 +3104,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_14_Ch1 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_15_Ch1 Dig_15_Ch1
+
 
 
 
@@ -3073,183 +3127,146 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_15_Ch1 
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_16_Ch1 Dig_16_Ch1
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_16_Ch1 Dig_16_Ch1
 
-set d1_io_16_slice_path ${adapter_hier_path}/d1_io_16_slice
-uz_pw_io_create_xlslice $d1_io_16_slice_path 30 16
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_16_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_16_slice_path/Dout ${adapter_hier_path}/Dig_16_Ch1
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_16_Ch1 ${io_gpio_i_concat_path}/In16
 
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_16_Ch1 Dig_16_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_17_Ch1 Dig_17_Ch1
 
 
 
 
-set d1_io_17_slice_path ${adapter_hier_path}/d1_io_17_slice
-uz_pw_io_create_xlslice $d1_io_17_slice_path 30 17
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_17_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_17_slice_path/Dout ${adapter_hier_path}/Dig_17_Ch1
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_17_Ch1 Dig_17_Ch1
 
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_17_Ch1 ${io_gpio_i_concat_path}/In17
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_17_Ch1 Dig_17_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_18_Ch1 Dig_18_Ch1
 
 
 
 
-set d1_io_18_slice_path ${adapter_hier_path}/d1_io_18_slice
-uz_pw_io_create_xlslice $d1_io_18_slice_path 30 18
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_18_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_18_slice_path/Dout ${adapter_hier_path}/Dig_18_Ch1
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_18_Ch1 Dig_18_Ch1
 
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_18_Ch1 ${io_gpio_i_concat_path}/In18
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_18_Ch1 Dig_18_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_19_Ch1 Dig_19_Ch1
 
 
 
 
-set d1_io_19_slice_path ${adapter_hier_path}/d1_io_19_slice
-uz_pw_io_create_xlslice $d1_io_19_slice_path 30 19
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_19_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_19_slice_path/Dout ${adapter_hier_path}/Dig_19_Ch1
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_19_Ch1 Dig_19_Ch1
 
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_19_Ch1 ${io_gpio_i_concat_path}/In19
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_19_Ch1 Dig_19_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_20_Ch1 Dig_20_Ch1
 
 
 
 
-set d1_io_20_slice_path ${adapter_hier_path}/d1_io_20_slice
-uz_pw_io_create_xlslice $d1_io_20_slice_path 30 20
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_20_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_20_slice_path/Dout ${adapter_hier_path}/Dig_20_Ch1
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_20_Ch1 Dig_20_Ch1
 
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_20_Ch1 ${io_gpio_i_concat_path}/In20
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_20_Ch1 Dig_20_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_21_Ch1 Dig_21_Ch1
 
 
 
 
-set d1_io_21_slice_path ${adapter_hier_path}/d1_io_21_slice
-uz_pw_io_create_xlslice $d1_io_21_slice_path 30 21
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_21_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_21_slice_path/Dout ${adapter_hier_path}/Dig_21_Ch1
 
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_21_Ch1 Dig_21_Ch1
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_21_Ch1 Dig_21_Ch1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_21_Ch1 ${io_gpio_i_concat_path}/In21
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_22_Ch1 Dig_22_Ch1
 
 
 
 
-set d1_io_22_slice_path ${adapter_hier_path}/d1_io_22_slice
-uz_pw_io_create_xlslice $d1_io_22_slice_path 30 22
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_22_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_22_slice_path/Dout ${adapter_hier_path}/Dig_22_Ch1
 
 
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_22_Ch1 Dig_22_Ch1
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_22_Ch1 Dig_22_Ch1
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_22_Ch1 ${io_gpio_i_concat_path}/In22
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_23_Ch1 Dig_23_Ch1
 
 
 
 
-set d1_io_23_slice_path ${adapter_hier_path}/d1_io_23_slice
-uz_pw_io_create_xlslice $d1_io_23_slice_path 30 23
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_23_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_23_slice_path/Dout ${adapter_hier_path}/Dig_23_Ch1
 
 
 
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_23_Ch1 Dig_23_Ch1
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_23_Ch1 Dig_23_Ch1
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_23_Ch1 ${io_gpio_i_concat_path}/In23
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_24_Ch1 Dig_24_Ch1
 
 
 
 
-set d1_io_24_slice_path ${adapter_hier_path}/d1_io_24_slice
-uz_pw_io_create_xlslice $d1_io_24_slice_path 30 24
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_24_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_24_slice_path/Dout ${adapter_hier_path}/Dig_24_Ch1
 
 
 
@@ -3257,20 +3274,16 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_24_slice_path/Dout ${adapter_hier_p
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_24_Ch1 Dig_24_Ch1
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_24_Ch1 Dig_24_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_25_Ch1 Dig_25_Ch1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_24_Ch1 ${io_gpio_i_concat_path}/In24
 
 
 
 
-set d1_io_25_slice_path ${adapter_hier_path}/d1_io_25_slice
-uz_pw_io_create_xlslice $d1_io_25_slice_path 30 25
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_25_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_25_slice_path/Dout ${adapter_hier_path}/Dig_25_Ch1
 
 
 
@@ -3279,19 +3292,15 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_25_slice_path/Dout ${adapter_hier_p
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_25_Ch1 Dig_25_Ch1
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_25_Ch1 Dig_25_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_26_Ch1 Dig_26_Ch1
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_25_Ch1 ${io_gpio_i_concat_path}/In25
 
 
 
-set d1_io_26_slice_path ${adapter_hier_path}/d1_io_26_slice
-uz_pw_io_create_xlslice $d1_io_26_slice_path 30 26
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_26_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_26_slice_path/Dout ${adapter_hier_path}/Dig_26_Ch1
 
 
 
@@ -3300,19 +3309,15 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_26_slice_path/Dout ${adapter_hier_p
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_26_Ch1 Dig_26_Ch1
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_26_Ch1 Dig_26_Ch1
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_27_Ch1 Dig_27_Ch1
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_26_Ch1 ${io_gpio_i_concat_path}/In26
 
 
-set d1_io_27_slice_path ${adapter_hier_path}/d1_io_27_slice
-uz_pw_io_create_xlslice $d1_io_27_slice_path 30 27
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_27_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_27_slice_path/Dout ${adapter_hier_path}/Dig_27_Ch1
 
 
 
@@ -3321,19 +3326,15 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_27_slice_path/Dout ${adapter_hier_p
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_27_Ch1 Dig_27_Ch1
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_27_Ch1 Dig_27_Ch1
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_28_Ch1 Dig_28_Ch1
 
 
 
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_27_Ch1 ${io_gpio_i_concat_path}/In27
 
-set d1_io_28_slice_path ${adapter_hier_path}/d1_io_28_slice
-uz_pw_io_create_xlslice $d1_io_28_slice_path 30 28
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_28_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_28_slice_path/Dout ${adapter_hier_path}/Dig_28_Ch1
 
 
 
@@ -3342,19 +3343,15 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_28_slice_path/Dout ${adapter_hier_p
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_28_Ch1 Dig_28_Ch1
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_29_Ch1 Dig_29_Ch1
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_28_Ch1 Dig_28_Ch1
 
 
 
 
-set d1_io_29_slice_path ${adapter_hier_path}/d1_io_29_slice
-uz_pw_io_create_xlslice $d1_io_29_slice_path 30 29
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_29_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_29_slice_path/Dout ${adapter_hier_path}/Dig_29_Ch1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_28_Ch1 ${io_gpio_i_concat_path}/In28
 
 
 
@@ -3363,12 +3360,62 @@ uz_pw_connect_pin_pair_if_unconnected $d1_io_29_slice_path/Dout ${adapter_hier_p
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_29_Ch1 Dig_29_Ch1
 
 
 
 
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_29_Ch1 Dig_29_Ch1
 
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_29_Ch1 ${io_gpio_i_concat_path}/In29
+
+
+
+
+
+
+
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In0
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In1
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In2
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In3
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In4
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In5
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In6
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In7
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In8
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In9
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In10
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In11
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In12
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In13
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In14
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In15
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_i_concat_path}/dout ${io_gpio_path}/gpio_io_i
 
 
 
@@ -3406,7 +3453,7 @@ uz_pw_apply_slot_constraints D1 [list "Digital_D1_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D1: TX output from FPGA
+# D1: RX input to FPGA
 # -----------------------------------------------------------------------------
 
 
@@ -3419,7 +3466,7 @@ uz_pw_apply_slot_constraints D1 [list "Digital_D1_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D1: TX output from FPGA
+# D1: RX input to FPGA
 # -----------------------------------------------------------------------------
 
 
@@ -3492,7 +3539,7 @@ uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/RESETN
 
 set io_gpio_path ${adapter_hier_path}/axi_gpio_d2
 uz_pw_create_ip_cell_if_missing $io_gpio_path xilinx.com:ip:axi_gpio
-uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS 1 CONFIG.C_ALL_OUTPUTS 0 CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
+uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS 0 CONFIG.C_ALL_OUTPUTS 0 CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${io_gpio_path}/s_axi_aclk
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RESETN ${io_gpio_path}/s_axi_aresetn
 
@@ -3502,6 +3549,10 @@ set io_gpio_i_concat_path ${adapter_hier_path}/d2_io_gpio_i_concat
 uz_pw_create_ip_cell_if_missing $io_gpio_i_concat_path xilinx.com:ip:xlconcat
 uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 30] [get_bd_cells -quiet $io_gpio_i_concat_path] $io_gpio_i_concat_path
 
+
+
+set io_gpio_zero_path ${adapter_hier_path}/d2_io_gpio_zero
+uz_pw_io_create_xlconstant $io_gpio_zero_path 1 0
 
 
 
@@ -3515,7 +3566,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_00_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_00_Ch2 ${io_gpio_i_concat_path}/In0
+
 
 
 
@@ -3531,7 +3582,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_01_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_01_Ch2 ${io_gpio_i_concat_path}/In1
+
 
 
 
@@ -3547,7 +3598,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_02_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_02_Ch2 ${io_gpio_i_concat_path}/In2
+
 
 
 
@@ -3563,7 +3614,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_03_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_03_Ch2 ${io_gpio_i_concat_path}/In3
+
 
 
 
@@ -3579,7 +3630,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_04_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_04_Ch2 ${io_gpio_i_concat_path}/In4
+
 
 
 
@@ -3595,7 +3646,7 @@ uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_05_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_05_Ch2 ${io_gpio_i_concat_path}/In5
+
 
 
 
@@ -3622,12 +3673,16 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_06_Ch2 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_07_Ch2 Dig_07_Ch2
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_07_Ch2 ${io_gpio_i_concat_path}/In7
+
+
 
 
 
@@ -3654,12 +3709,16 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_08_Ch2 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_09_Ch2 Dig_09_Ch2
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_09_Ch2 ${io_gpio_i_concat_path}/In9
+
+
 
 
 
@@ -3686,12 +3745,16 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_10_Ch2 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_11_Ch2 Dig_11_Ch2
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_11_Ch2 ${io_gpio_i_concat_path}/In11
+
+
 
 
 
@@ -3718,12 +3781,16 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_12_Ch2 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_13_Ch2 Dig_13_Ch2
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_13_Ch2 ${io_gpio_i_concat_path}/In13
+
+
 
 
 
@@ -3750,6 +3817,8 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_14_Ch2 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_15_Ch2 Dig_15_Ch2
 
 
@@ -3766,13 +3835,16 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_15_Ch2 ${io_gpio_
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_16_Ch2 Dig_16_Ch2
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_16_Ch2 Dig_16_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_16_Ch2 ${io_gpio_i_concat_path}/In16
 
+set d2_io_16_slice_path ${adapter_hier_path}/d2_io_16_slice
+uz_pw_io_create_xlslice $d2_io_16_slice_path 30 16
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_16_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_16_slice_path/Dout ${adapter_hier_path}/Dig_16_Ch2
 
 
 
@@ -3781,77 +3853,91 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_16_Ch2 ${io_gpio_
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_16_Ch2 Dig_16_Ch2
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_17_Ch2 Dig_17_Ch2
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_17_Ch2 Dig_17_Ch2
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_17_Ch2 ${io_gpio_i_concat_path}/In17
 
 
 
 
+set d2_io_17_slice_path ${adapter_hier_path}/d2_io_17_slice
+uz_pw_io_create_xlslice $d2_io_17_slice_path 30 17
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_17_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_17_slice_path/Dout ${adapter_hier_path}/Dig_17_Ch2
 
 
 
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_18_Ch2 Dig_18_Ch2
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_17_Ch2 Dig_17_Ch2
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_18_Ch2 ${io_gpio_i_concat_path}/In18
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_18_Ch2 Dig_18_Ch2
 
 
 
 
 
+set d2_io_18_slice_path ${adapter_hier_path}/d2_io_18_slice
+uz_pw_io_create_xlslice $d2_io_18_slice_path 30 18
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_18_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_18_slice_path/Dout ${adapter_hier_path}/Dig_18_Ch2
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_19_Ch2 Dig_19_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_19_Ch2 ${io_gpio_i_concat_path}/In19
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_18_Ch2 Dig_18_Ch2
 
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_19_Ch2 Dig_19_Ch2
 
 
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_20_Ch2 Dig_20_Ch2
+set d2_io_19_slice_path ${adapter_hier_path}/d2_io_19_slice
+uz_pw_io_create_xlslice $d2_io_19_slice_path 30 19
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_19_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_19_slice_path/Dout ${adapter_hier_path}/Dig_19_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_20_Ch2 ${io_gpio_i_concat_path}/In20
 
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_19_Ch2 Dig_19_Ch2
 
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_20_Ch2 Dig_20_Ch2
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_21_Ch2 Dig_21_Ch2
 
 
 
+set d2_io_20_slice_path ${adapter_hier_path}/d2_io_20_slice
+uz_pw_io_create_xlslice $d2_io_20_slice_path 30 20
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_20_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_20_slice_path/Dout ${adapter_hier_path}/Dig_20_Ch2
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_21_Ch2 ${io_gpio_i_concat_path}/In21
 
 
 
@@ -3859,17 +3945,21 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_21_Ch2 ${io_gpio_
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_20_Ch2 Dig_20_Ch2
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_22_Ch2 Dig_22_Ch2
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_21_Ch2 Dig_21_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_22_Ch2 ${io_gpio_i_concat_path}/In22
 
 
+set d2_io_21_slice_path ${adapter_hier_path}/d2_io_21_slice
+uz_pw_io_create_xlslice $d2_io_21_slice_path 30 21
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_21_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_21_slice_path/Dout ${adapter_hier_path}/Dig_21_Ch2
 
 
 
@@ -3878,76 +3968,90 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_22_Ch2 ${io_gpio_
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_23_Ch2 Dig_23_Ch2
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_21_Ch2 Dig_21_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_23_Ch2 ${io_gpio_i_concat_path}/In23
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_22_Ch2 Dig_22_Ch2
 
 
 
 
 
+set d2_io_22_slice_path ${adapter_hier_path}/d2_io_22_slice
+uz_pw_io_create_xlslice $d2_io_22_slice_path 30 22
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_22_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_22_slice_path/Dout ${adapter_hier_path}/Dig_22_Ch2
 
 
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_24_Ch2 Dig_24_Ch2
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_22_Ch2 Dig_22_Ch2
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_24_Ch2 ${io_gpio_i_concat_path}/In24
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_23_Ch2 Dig_23_Ch2
 
 
 
 
 
+set d2_io_23_slice_path ${adapter_hier_path}/d2_io_23_slice
+uz_pw_io_create_xlslice $d2_io_23_slice_path 30 23
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_23_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_23_slice_path/Dout ${adapter_hier_path}/Dig_23_Ch2
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_25_Ch2 Dig_25_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_25_Ch2 ${io_gpio_i_concat_path}/In25
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_23_Ch2 Dig_23_Ch2
 
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_24_Ch2 Dig_24_Ch2
 
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_26_Ch2 Dig_26_Ch2
 
+set d2_io_24_slice_path ${adapter_hier_path}/d2_io_24_slice
+uz_pw_io_create_xlslice $d2_io_24_slice_path 30 24
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_24_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_24_slice_path/Dout ${adapter_hier_path}/Dig_24_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_26_Ch2 ${io_gpio_i_concat_path}/In26
 
 
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_24_Ch2 Dig_24_Ch2
 
 
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_25_Ch2 Dig_25_Ch2
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_27_Ch2 Dig_27_Ch2
 
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_27_Ch2 ${io_gpio_i_concat_path}/In27
+set d2_io_25_slice_path ${adapter_hier_path}/d2_io_25_slice
+uz_pw_io_create_xlslice $d2_io_25_slice_path 30 25
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_25_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_25_slice_path/Dout ${adapter_hier_path}/Dig_25_Ch2
 
 
 
@@ -3956,17 +4060,21 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_27_Ch2 ${io_gpio_
 
 
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_25_Ch2 Dig_25_Ch2
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_28_Ch2 Dig_28_Ch2
 
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_26_Ch2 Dig_26_Ch2
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_28_Ch2 ${io_gpio_i_concat_path}/In28
 
 
 
+set d2_io_26_slice_path ${adapter_hier_path}/d2_io_26_slice
+uz_pw_io_create_xlslice $d2_io_26_slice_path 30 26
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_26_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_26_slice_path/Dout ${adapter_hier_path}/Dig_26_Ch2
 
 
 
@@ -3974,21 +4082,121 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_28_Ch2 ${io_gpio_
 
 
 
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_29_Ch2 Dig_29_Ch2
 
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_26_Ch2 Dig_26_Ch2
 
 
 
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_29_Ch2 ${io_gpio_i_concat_path}/In29
 
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_27_Ch2 Dig_27_Ch2
 
 
 
 
 
+set d2_io_27_slice_path ${adapter_hier_path}/d2_io_27_slice
+uz_pw_io_create_xlslice $d2_io_27_slice_path 30 27
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_27_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_27_slice_path/Dout ${adapter_hier_path}/Dig_27_Ch2
 
 
 
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_27_Ch2 Dig_27_Ch2
+
+
+
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_28_Ch2 Dig_28_Ch2
+
+
+
+
+
+set d2_io_28_slice_path ${adapter_hier_path}/d2_io_28_slice
+uz_pw_io_create_xlslice $d2_io_28_slice_path 30 28
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_28_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_28_slice_path/Dout ${adapter_hier_path}/Dig_28_Ch2
+
+
+
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_28_Ch2 Dig_28_Ch2
+
+
+
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_29_Ch2 Dig_29_Ch2
+
+
+
+
+
+set d2_io_29_slice_path ${adapter_hier_path}/d2_io_29_slice
+uz_pw_io_create_xlslice $d2_io_29_slice_path 30 29
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d2_io_29_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d2_io_29_slice_path/Dout ${adapter_hier_path}/Dig_29_Ch2
+
+
+
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_29_Ch2 Dig_29_Ch2
+
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In0
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In1
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In2
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In3
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In4
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In5
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In16
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In17
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In18
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In19
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In20
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In21
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In22
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In23
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In24
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In25
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In26
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In27
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In28
+
+uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In29
 
 
 
@@ -4030,7 +4238,7 @@ uz_pw_apply_slot_constraints D2 [list "Digital_D2_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D2: RX input to FPGA
+# D2: TX output from FPGA
 # -----------------------------------------------------------------------------
 
 
@@ -4043,7 +4251,7 @@ uz_pw_apply_slot_constraints D2 [list "Digital_D2_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D2: RX input to FPGA
+# D2: TX output from FPGA
 # -----------------------------------------------------------------------------
 
 
@@ -4082,8 +4290,6 @@ uz_pw_create_hier_if_missing ${adapter_hier_path}
 # represented as BD pins and cannot be removed individually.
 uz_pw_delete_pin_if_exists ${adapter_hier_path}/Enable_Gate
 uz_pw_delete_pin_if_exists ${adapter_hier_path}/Gate_Signals_2L
-
-uz_pw_delete_pin_if_exists ${adapter_hier_path}/D3_io_pwm_source_0
 
 
 proc uz_pw_io_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
@@ -4135,24 +4341,12 @@ uz_pw_io_create_xlconstant $io_gpio_zero_path 1 0
 
 
 
-set d3_io_pwm_source_0 "uz_pwm/Gate_Signals_2L_0"
-if {$d3_io_pwm_source_0 eq "" || [llength [get_bd_pins -quiet $d3_io_pwm_source_0]] == 0} {
-  puts "WARNING: PWM vector source '$d3_io_pwm_source_0' not found for D3 IO card; using zero fallback."
-  set d3_io_pwm_source_0_zero_path "${adapter_hier_path}/D3_io_pwm_source_0_zero"
-  uz_pw_io_create_xlconstant $d3_io_pwm_source_0_zero_path 6 0x00
-  set d3_io_pwm_source_0 "${d3_io_pwm_source_0_zero_path}/dout"
-} else {
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D3_io_pwm_source_0 5 0
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path I D3_io_pwm_source_0 5 0
-  uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 "${adapter_parent_hier}/D3_io_pwm_source_0"
-  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/D3_io_pwm_source_0" "${adapter_hier_path}/D3_io_pwm_source_0"
-  set d3_io_pwm_source_0 "${adapter_hier_path}/D3_io_pwm_source_0"
-}
 
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_00_Ch3 Dig_00_Ch3
+uz_pw_create_bd_port_if_missing O Dig_00_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_00_Ch3
 
 
 
@@ -4161,124 +4355,123 @@ uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_00_Ch3
 
 
 
-set d3_io_00_pwm_slice_path ${adapter_hier_path}/d3_io_00_pwm_slice
-uz_pw_io_create_xlslice $d3_io_00_pwm_slice_path 6 0
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_00_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_00_pwm_slice_path/Dout ${adapter_hier_path}/Dig_00_Ch3
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_00_Ch2 ${adapter_parent_hier}/Dig_00_Ch3
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_00_Ch3 Dig_00_Ch3
 
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_00_Ch3 Dig_00_Ch3
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_01_Ch3 Dig_01_Ch3
 
 
+uz_pw_create_bd_port_if_missing O Dig_01_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_01_Ch3
 
 
 
 
 
 
-set d3_io_01_pwm_slice_path ${adapter_hier_path}/d3_io_01_pwm_slice
-uz_pw_io_create_xlslice $d3_io_01_pwm_slice_path 6 1
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_01_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_01_pwm_slice_path/Dout ${adapter_hier_path}/Dig_01_Ch3
 
 
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_01_Ch2 ${adapter_parent_hier}/Dig_01_Ch3
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_01_Ch3 Dig_01_Ch3
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_02_Ch3 Dig_02_Ch3
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_01_Ch3 Dig_01_Ch3
 
 
 
 
+uz_pw_create_bd_port_if_missing O Dig_02_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_02_Ch3
 
 
 
 
-set d3_io_02_pwm_slice_path ${adapter_hier_path}/d3_io_02_pwm_slice
-uz_pw_io_create_xlslice $d3_io_02_pwm_slice_path 6 2
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_02_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_02_pwm_slice_path/Dout ${adapter_hier_path}/Dig_02_Ch3
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_02_Ch3 Dig_02_Ch3
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_02_Ch2 ${adapter_parent_hier}/Dig_02_Ch3
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_03_Ch3 Dig_03_Ch3
 
 
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_02_Ch3 Dig_02_Ch3
 
 
 
 
+uz_pw_create_bd_port_if_missing O Dig_03_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_03_Ch3
 
 
-set d3_io_03_pwm_slice_path ${adapter_hier_path}/d3_io_03_pwm_slice
-uz_pw_io_create_xlslice $d3_io_03_pwm_slice_path 6 3
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_03_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_03_pwm_slice_path/Dout ${adapter_hier_path}/Dig_03_Ch3
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_03_Ch3 Dig_03_Ch3
 
 
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_03_Ch2 ${adapter_parent_hier}/Dig_03_Ch3
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_04_Ch3 Dig_04_Ch3
 
 
 
 
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_03_Ch3 Dig_03_Ch3
 
 
 
 
-set d3_io_04_pwm_slice_path ${adapter_hier_path}/d3_io_04_pwm_slice
-uz_pw_io_create_xlslice $d3_io_04_pwm_slice_path 6 4
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_04_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_04_pwm_slice_path/Dout ${adapter_hier_path}/Dig_04_Ch3
+uz_pw_create_bd_port_if_missing O Dig_04_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_04_Ch3
 
 
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_04_Ch3 Dig_04_Ch3
 
 
 
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_05_Ch3 Dig_05_Ch3
 
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_04_Ch2 ${adapter_parent_hier}/Dig_04_Ch3
 
 
 
 
 
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_04_Ch3 Dig_04_Ch3
 
 
-set d3_io_05_pwm_slice_path ${adapter_hier_path}/d3_io_05_pwm_slice
-uz_pw_io_create_xlslice $d3_io_05_pwm_slice_path 6 5
-uz_pw_connect_pin_pair_if_unconnected $d3_io_pwm_source_0 $d3_io_05_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d3_io_05_pwm_slice_path/Dout ${adapter_hier_path}/Dig_05_Ch3
 
 
+uz_pw_create_bd_port_if_missing O Dig_05_Ch3
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O Dig_05_Ch3
 
 
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_05_Ch3 Dig_05_Ch3
+
+
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected uz_digital_adapter/Dig_05_Ch2 ${adapter_parent_hier}/Dig_05_Ch3
+
+
+
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/Dig_05_Ch3 Dig_05_Ch3
 
 
 
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_06_Ch3 Dig_06_Ch3
+
 
 
 
@@ -4299,7 +4492,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_06_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_07_Ch3 Dig_07_Ch3
+
 
 
 
@@ -4320,7 +4515,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_07_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_08_Ch3 Dig_08_Ch3
+
 
 
 
@@ -4341,7 +4538,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_08_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_09_Ch3 Dig_09_Ch3
+
 
 
 
@@ -4362,7 +4561,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_09_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_10_Ch3 Dig_10_Ch3
+
 
 
 
@@ -4383,7 +4584,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_10_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_11_Ch3 Dig_11_Ch3
+
 
 
 
@@ -4404,7 +4607,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_11_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_12_Ch3 Dig_12_Ch3
+
 
 
 
@@ -4425,7 +4630,9 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_12_Ch3 
 
 
 
+
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_13_Ch3 Dig_13_Ch3
+
 
 
 
@@ -4447,12 +4654,16 @@ uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_13_Ch3 
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_14_Ch3 Dig_14_Ch3
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_14_Ch3 ${io_gpio_i_concat_path}/In14
+
+
 
 
 
@@ -4479,6 +4690,8 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_15_Ch3 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_16_Ch3 Dig_16_Ch3
 
 
@@ -4495,12 +4708,15 @@ uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_16_Ch3 ${io_gpio_
 
 
 
+
+
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_17_Ch3 Dig_17_Ch3
 
 
 
 
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_17_Ch3 ${io_gpio_i_concat_path}/In17
+
 
 
 

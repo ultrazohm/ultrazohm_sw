@@ -132,6 +132,7 @@ int main(void)
 			uz_ssi_interface_enable_ip(Global_Data.objects.ssi_encoder_d5_3, true);
 /* Project Wizard END: init_ip_cores */
             Global_Data.objects.d1_output_test_sawtooth = uz_wavegen_sawtooth_init();
+            Global_Data.objects.d2_output_test_sawtooth = uz_wavegen_sawtooth_init();
             Global_Data.objects.d3_output_test_sawtooth = uz_wavegen_sawtooth_init();
             initialization_chain = print_msg;
             break;

@@ -19,9 +19,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8tx_8tx_8tx_6tx/uz_d_slots_voltage_8tx_8tx_8tx_6tx.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8tx_8tx_8rx_6rx/uz_d_slots_voltage_8tx_8tx_8rx_6rx.jed</File>
 			<FileTime>06/29/26 14:51:28</FileTime>
-			<JedecChecksum>0x9D37</JedecChecksum>
+			<JedecChecksum>0x4FD9</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
@@ -49,9 +49,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8rx_8rx_8rx_6rx/uz_d_slots_voltage_8rx_8rx_8rx_6rx.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8rx_8rx_8tx_6tx/uz_d_slots_voltage_8rx_8rx_8tx_6tx.jed</File>
 			<FileTime>06/29/26 14:51:28</FileTime>
-			<JedecChecksum>0x13E3</JedecChecksum>
+			<JedecChecksum>0x3FEF</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>

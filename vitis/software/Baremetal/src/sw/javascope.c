@@ -110,6 +110,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_TEMP_D4_A_CH5] = &project_wizard_visualization_data.viz_temp_d4_a_5;
 	js_ch_observable[JSO_TEMP_D4_A_CH19] = &project_wizard_visualization_data.viz_temp_d4_a_19;
 /* Project Wizard END: javascope_observable_pointers */
+	js_ch_observable[JSO_D1_OUTPUT_TEST_UINT32] = &data->av.d1_output_test_uint32;
+	js_ch_observable[JSO_D1_INPUT_LOOPBACK_UINT32] = &data->av.d1_input_loopback_uint32;
+	js_ch_observable[JSO_D2_OUTPUT_TEST_UINT32] = &data->av.d2_output_test_uint32;
 	js_ch_observable[JSO_D2_INPUT_LOOPBACK_UINT32] = &data->av.d2_input_loopback_uint32;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 

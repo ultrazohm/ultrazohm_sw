@@ -23,6 +23,9 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float d1_output_test_uint32;
+	float d1_input_loopback_uint32;
+	float d2_output_test_uint32;
 	float d2_input_loopback_uint32;
 	float d3_input_loopback_uint32;
 	/* Project Wizard BEGIN: actualValues */
@@ -117,6 +120,7 @@ typedef struct _referenceAndSetValues_ {
 typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_wavegen_sawtooth_t* d1_output_test_sawtooth;
+	uz_wavegen_sawtooth_t* d2_output_test_sawtooth;
 	uz_wavegen_sawtooth_t* d3_output_test_sawtooth;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

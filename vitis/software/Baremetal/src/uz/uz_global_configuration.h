@@ -41,7 +41,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES            1U
 #define UZ_WAVEGEN_SINE_MAX_INSTANCES                     6U
-#define UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES                 3U
+#define UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES                 4U
 #define UZ_WAVEGEN_PULSE_MAX_INSTANCES                    0U
 #define UZ_WAVEGEN_SQUARE_MAX_INSTANCES                   0U
 #define UZ_WAVEGEN_TRIANGLE_MAX_INSTANCES                 1U

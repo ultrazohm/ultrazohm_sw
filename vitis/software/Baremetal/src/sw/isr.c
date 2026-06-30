@@ -111,23 +111,31 @@ void ISR_Control(void *data)
         Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
         Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
 
-        float d1_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d1_output_test_sawtooth, 30.0f, 1.0f / 3.75f);
-        uint32_t d1_output_test_index = (uint32_t)d1_output_test_value;
-        if (d1_output_test_index > 29U) {
-            d1_output_test_index = 29U;
+        float d1_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d1_output_test_sawtooth, 10.0f, 1.0f / 5.0f);
+        uint32_t d1_output_test_offset = (uint32_t)d1_output_test_value;
+        if (d1_output_test_offset > 9U) {
+            d1_output_test_offset = 9U;
         }
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d1, (1U << d1_output_test_index));
+        uint32_t d1_output_test_state = (1U << (d1_output_test_offset + 6U));
+        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d1, d1_output_test_state);
+        Global_Data.av.d1_output_test_uint32 = (float)d1_output_test_state;
+
+        float d2_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d2_output_test_sawtooth, 14.0f, 1.0f / 7.0f);
+        uint32_t d2_output_test_offset = (uint32_t)d2_output_test_value;
+        if (d2_output_test_offset > 13U) {
+            d2_output_test_offset = 13U;
+        }
+        uint32_t d2_output_test_state = (1U << (d2_output_test_offset + 16U));
+        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d2, d2_output_test_state);
+        Global_Data.av.d2_output_test_uint32 = (float)d2_output_test_state;
+
+        uint32_t d1_input_loopback_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
+        Global_Data.av.io_card_d1_state = d1_input_loopback_state;
+        Global_Data.av.d1_input_loopback_uint32 = (float)(d1_input_loopback_state & 0x3FFF0000U);
 
         uint32_t d2_input_loopback_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
-        uint32_t d2_input_loopback_index = 0U;
-        for (uint32_t index = 0U; index < 30U; index++) {
-            if ((d2_input_loopback_state & (1U << index)) != 0U) {
-                d2_input_loopback_index = index;
-                break;
-            }
-        }
         Global_Data.av.io_card_d2_state = d2_input_loopback_state;
-        Global_Data.av.d2_input_loopback_uint32 = (float)d2_input_loopback_index;
+        Global_Data.av.d2_input_loopback_uint32 = (float)(d2_input_loopback_state & 0x0000FFC0U);
 
         float d3_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d3_output_test_sawtooth, 8.0f, 1.0f / 1.0f);
         uint32_t d3_output_test_offset = (uint32_t)d3_output_test_value;

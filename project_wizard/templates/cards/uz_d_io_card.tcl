@@ -76,11 +76,11 @@ set {{ pwm_source.variable_name }} "{{ pwm_source.source_path }}"
 if {${{ pwm_source.variable_name }} eq "" || [llength [get_bd_pins -quiet ${{ pwm_source.variable_name }}]] == 0} {
   puts "WARNING: PWM vector source '${{ pwm_source.variable_name }}' not found for {{ slot }} IO card; using zero fallback."
   set {{ pwm_source.variable_name }}_zero_path "${adapter_hier_path}/{{ pwm_source.boundary_name }}_zero"
-  uz_pw_io_create_xlconstant ${{ pwm_source.variable_name }}_zero_path 6 0x00
+  uz_pw_io_create_xlconstant ${{ pwm_source.variable_name }}_zero_path {{ pwm_source.width }} 0x00
   set {{ pwm_source.variable_name }} "${{{ pwm_source.variable_name }}_zero_path}/dout"
 } else {
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ pwm_source.boundary_name }} 5 0
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path I {{ pwm_source.boundary_name }} 5 0
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ pwm_source.boundary_name }} {{ pwm_source.left }} {{ pwm_source.right }}
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I {{ pwm_source.boundary_name }} {{ pwm_source.left }} {{ pwm_source.right }}
   uz_pw_connect_pin_pair_if_unconnected ${{ pwm_source.variable_name }} "${adapter_parent_hier}/{{ pwm_source.boundary_name }}"
   uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/{{ pwm_source.boundary_name }}" "${adapter_hier_path}/{{ pwm_source.boundary_name }}"
   set {{ pwm_source.variable_name }} "${adapter_hier_path}/{{ pwm_source.boundary_name }}"
@@ -88,8 +88,12 @@ if {${{ pwm_source.variable_name }} eq "" || [llength [get_bd_pins -quiet ${{ pw
 {% endfor %}
 
 {% for pin in io_pins %}
-{% if pin.is_tx %}
+{% if pin.is_tx_local %}
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path {{ pin.pin_name }} {{ pin.pin_name }}
+{% endif %}
+{% if pin.is_tx_parent_source %}
+uz_pw_create_bd_port_if_missing O {{ pin.pin_name }}
+uz_pw_create_hier_pin_if_missing $adapter_parent_hier O {{ pin.pin_name }}
 {% endif %}
 {% if pin.is_rx %}
 uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path {{ pin.pin_name }} {{ pin.pin_name }}
@@ -112,17 +116,16 @@ uz_pw_connect_port_to_pin_if_unconnected {{ pin.user_port_name }} ${adapter_pare
 uz_pw_connect_upper_boundary_net_if_unconnected ${adapter_parent_hier}/{{ pin.user_port_name }} ${adapter_hier_path}/{{ pin.user_port_name }}
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/{{ pin.user_port_name }} ${adapter_hier_path}/{{ pin.pin_name }}
 {% endif %}
-{% if pin.is_top_level_rx %}
-uz_pw_create_bd_port_if_missing O {{ pin.user_port_name }}
-uz_pw_connect_pin_to_port_if_unconnected ${adapter_hier_path}/{{ pin.pin_name }} {{ pin.user_port_name }}
-{% endif %}
 {% if pin.is_pwm %}
 set {{ pin.helper_name }}_pwm_slice_path ${adapter_hier_path}/{{ pin.helper_name }}_pwm_slice
-uz_pw_io_create_xlslice ${{ pin.helper_name }}_pwm_slice_path 6 {{ pin.pwm_bit }}
+uz_pw_io_create_xlslice ${{ pin.helper_name }}_pwm_slice_path {{ pin.pwm_source_width }} {{ pin.pwm_bit }}
 uz_pw_connect_pin_pair_if_unconnected ${{ pin.pwm_source_variable }} ${{ pin.helper_name }}_pwm_slice_path/Din
 uz_pw_connect_pin_pair_if_unconnected ${{ pin.helper_name }}_pwm_slice_path/Dout ${adapter_hier_path}/{{ pin.pin_name }}
 {% endif %}
-{% if pin.is_source_pin %}
+{% if pin.is_parent_source_pin %}
+uz_pw_connect_pin_pair_if_unconnected {{ pin.source_path }} ${adapter_parent_hier}/{{ pin.pin_name }}
+{% endif %}
+{% if pin.is_external_source_pin %}
 uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ pin.source_boundary_name }}
 uz_pw_create_hier_pin_if_missing $adapter_hier_path I {{ pin.source_boundary_name }}
 uz_pw_connect_pin_pair_if_unconnected {{ pin.source_path }} ${adapter_parent_hier}/{{ pin.source_boundary_name }}
@@ -134,8 +137,11 @@ set {{ pin.helper_name }}_const_path ${adapter_hier_path}/{{ pin.helper_name }}_
 uz_pw_io_create_xlconstant ${{ pin.helper_name }}_const_path 1 {{ pin.constant_value }}
 uz_pw_connect_pin_pair_if_unconnected ${{ pin.helper_name }}_const_path/dout ${adapter_hier_path}/{{ pin.pin_name }}
 {% endif %}
-{% if pin.is_tx %}
+{% if pin.is_tx_local %}
 uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path {{ pin.pin_name }} {{ pin.pin_name }}
+{% endif %}
+{% if pin.is_tx_parent_source %}
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/{{ pin.pin_name }} {{ pin.pin_name }}
 {% endif %}
 {% endfor %}
 

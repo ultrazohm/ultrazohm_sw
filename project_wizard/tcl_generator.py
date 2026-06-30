@@ -562,6 +562,7 @@ class TclGenerator:
             mode = option_values.get(f"io_pin_{index:02d}_mode", default_mode) or default_mode
             source_path = option_values.get(f"io_pin_{index:02d}_source", cls._default_io_source_path(index))
             constant_value = option_values.get(f"io_pin_{index:02d}_constant", "0")
+            source_is_adapter_parent_pin = source_path.startswith(f"{cls._adapter_root_hier(slot)}/")
             if physical_direction == "rx" and mode not in {"axi_gpio", "top_level"}:
                 mode = "axi_gpio"
             if physical_direction == "tx" and mode not in {"axi_gpio", "top_level", "source_pin", "pwm", "constant"}:
@@ -570,7 +571,12 @@ class TclGenerator:
             is_rx = physical_direction == "rx"
             is_axi = mode == "axi_gpio"
             is_axi_rx = is_axi and is_rx
-            pwm_source_index = index // 6
+            is_parent_source_pin = mode == "source_pin" and source_is_adapter_parent_pin
+            pwm_instance = option_values.get(f"io_pin_{index:02d}_pwm_instance", cls._default_io_pwm_instance(index))
+            pwm_pin = option_values.get(f"io_pin_{index:02d}_pwm_pin", f"s{index % 6}_out")
+            pwm_source_path = cls._io_pwm_source_path(pwm_instance)
+            pwm_source_width = cls._io_pwm_source_width(pwm_instance)
+            pwm_bit = cls._io_pwm_pin_bit(pwm_pin, pwm_source_width)
             io_pins.append(
                 {
                     "index": str(index),
@@ -579,15 +585,25 @@ class TclGenerator:
                     "bd_direction": "O" if physical_direction == "tx" else "I",
                     "mode": mode,
                     "source_path": source_path,
-                    "pwm_vector_path": f"uz_pwm/Gate_Signals_2L_{pwm_source_index}",
-                    "pwm_boundary_name": f"{slot}_io_pwm_source_{pwm_source_index}",
-                    "pwm_source_variable": f"{slot.lower()}_io_pwm_source_{pwm_source_index}",
-                    "pwm_bit": str(index % 6),
+                    "source_is_adapter_parent_pin": source_is_adapter_parent_pin,
+                    "is_parent_source_pin": is_parent_source_pin,
+                    "is_external_source_pin": mode == "source_pin" and not source_is_adapter_parent_pin,
+                    "pwm_instance": pwm_instance,
+                    "pwm_pin": pwm_pin,
+                    "pwm_vector_path": pwm_source_path,
+                    "pwm_boundary_name": f"{slot}_io_pwm_source_{cls._io_pwm_safe_name(pwm_instance)}",
+                    "pwm_source_variable": f"{slot.lower()}_io_pwm_source_{cls._io_pwm_safe_name(pwm_instance)}",
+                    "pwm_source_width": str(pwm_source_width),
+                    "pwm_source_left": str(pwm_source_width - 1),
+                    "pwm_source_right": "0",
+                    "pwm_bit": str(pwm_bit),
                     "constant_value": "1" if str(constant_value).strip() in {"1", "true", "True"} else "0",
                     "helper_name": f"{slot.lower()}_io_{index:02d}",
                     "source_boundary_name": f"{slot}_io_{index:02d}_source_internal",
                     "user_port_name": f"{slot}_io_{index:02d}_{'source' if physical_direction == 'tx' else 'sink'}",
                     "is_tx": is_tx,
+                    "is_tx_local": is_tx and not is_parent_source_pin,
+                    "is_tx_parent_source": is_tx and is_parent_source_pin,
                     "is_rx": is_rx,
                     "is_axi_tx": is_axi and is_tx,
                     "is_axi_rx": is_axi_rx,
@@ -614,12 +630,15 @@ class TclGenerator:
         for pin in io_pins:
             if not pin["is_pwm"]:
                 continue
-            pwm_source_index = int(pin["index"]) // 6
-            pwm_sources_by_index[pwm_source_index] = {
-                "source_index": str(pwm_source_index),
-                "source_path": f"uz_pwm/Gate_Signals_2L_{pwm_source_index}",
-                "boundary_name": f"{slot}_io_pwm_source_{pwm_source_index}",
-                "variable_name": f"{slot.lower()}_io_pwm_source_{pwm_source_index}",
+            pwm_instance = str(pin["pwm_instance"])
+            pwm_sources_by_index[pwm_instance] = {
+                "source_index": pwm_instance,
+                "source_path": pin["pwm_vector_path"],
+                "boundary_name": pin["pwm_boundary_name"],
+                "variable_name": pin["pwm_source_variable"],
+                "width": pin["pwm_source_width"],
+                "left": pin["pwm_source_left"],
+                "right": pin["pwm_source_right"],
             }
         return {
             "has_axi_gpio": has_axi_gpio,
@@ -651,6 +670,34 @@ class TclGenerator:
         pwm_instance = index // 6
         pwm_signal = index % 6
         return f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pwm_instance}/s{pwm_signal}_out"
+
+    @staticmethod
+    def _default_io_pwm_instance(index: int) -> str:
+        return f"pwm_2l_{index // 6}"
+
+    @staticmethod
+    def _io_pwm_safe_name(pwm_instance: str) -> str:
+        return re.sub(r"[^A-Za-z0-9_]", "_", pwm_instance.lower())
+
+    @staticmethod
+    def _io_pwm_source_path(pwm_instance: str) -> str:
+        parts = pwm_instance.lower().split("_")
+        if len(parts) >= 3 and parts[0] == "pwm" and parts[1] == "3l":
+            return f"uz_pwm/Gate_Signals_3L_{parts[2]}"
+        if len(parts) >= 3 and parts[0] == "pwm" and parts[1] == "2l":
+            return f"uz_pwm/Gate_Signals_2L_{parts[2]}"
+        return "uz_pwm/Gate_Signals_2L_0"
+
+    @staticmethod
+    def _io_pwm_source_width(pwm_instance: str) -> int:
+        return 12 if pwm_instance.lower().startswith("pwm_3l_") else 6
+
+    @staticmethod
+    def _io_pwm_pin_bit(pwm_pin: str, width: int) -> int:
+        match = re.fullmatch(r"s(\d+)_out", pwm_pin.strip().lower())
+        if not match:
+            return 0
+        return min(max(int(match.group(1)), 0), width - 1)
 
     @classmethod
     def _io_card_directions(cls, io_card: dict[str, Any], option_values: dict[str, str]) -> list[str]:

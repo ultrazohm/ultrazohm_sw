@@ -113,6 +113,37 @@ That is why fine-step Euler is both accurate and smooth.
 Heun's method attacks the within-step approximation directly: it evaluates the derivative at the start **and** at the Euler-predicted end of the step (re-evaluating :math:`\psi(i)` at the predicted current) and averages the two.
 It therefore captures the within-step current/flux change to 2nd order, achieving comparable accuracy at a much larger step -- i.e. with much less oversampling.
 
+Integrator state: current or flux
+=================================
+
+The ``integrator_state`` field of :cpp:struct:`uz_pmsm_swmodel_config_t` selects which electrical quantity is integrated:
+
+* ``uz_pmsm_swmodel_integrator_state_current`` (default) integrates the dq **currents** and derives the flux algebraically, :math:`\psi_d = L_d i_d + \psi_f,\; \psi_q = L_q i_q`.
+* ``uz_pmsm_swmodel_integrator_state_flux`` integrates the dq **flux linkages** and derives the current, :math:`i_d = (\psi_d - \psi_f)/L_d,\; i_q = \psi_q/L_q`. This matches the FPGA reference :ref:`uz_pmsmModel`.
+
+Both share the voltage balance :math:`e_d = v_d - R_s i_d + \omega_e \psi_q`, :math:`e_q = v_q - R_s i_q - \omega_e \psi_d`; the current formulation integrates :math:`e/L`, the flux formulation integrates :math:`e`.
+For a linear machine (constant :math:`L_d, L_q`) the two are equivalent and produce the same trajectory up to floating-point rounding; the flux formulation is the basis for a future nonlinear flux-map machine where :math:`\psi(i)` is a lookup.
+
+Mechanical model
+================
+
+By default the model is electrical only and the rotor speed :math:`\omega_{mech}` is an input that is passed straight through to the output.
+Setting ``simulate_mechanical_system = true`` makes the model integrate the speed from the torque balance instead (the input speed is then ignored and :math:`\omega_{mech}` starts at zero; use :cpp:func:`uz_pmsm_swmodel_reset` to re-zero it), matching :ref:`uz_pmsmModel`:
+
+.. math::
+
+    \frac{d \omega_{mech}}{dt} = \frac{M_i - M_F - T_L}{J}, \qquad
+    M_i = \tfrac{3}{2} p (\psi_d i_q - \psi_q i_d),
+
+with Coulomb plus viscous friction
+
+.. math::
+
+    M_F = \operatorname{sign}(\omega_{mech})\,(M_{R0} + \mu\,|\omega_{mech}|).
+
+The inertia :math:`J` is taken from ``pmsm_parameters.J_kg_m_squared``; the friction constants :math:`M_{R0}` and :math:`\mu` are the ``coulomb_friction_constant`` and ``friction_coefficient`` config fields, and the load torque :math:`T_L` is the ``load_torque`` model input.
+The mechanical state is integrated with the same selected ``integration_method`` (Euler or Heun) as the electrical state, as one coupled system.
+
 Software reference
 ==================
 

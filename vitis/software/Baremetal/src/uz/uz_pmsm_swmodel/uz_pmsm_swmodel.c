@@ -42,10 +42,8 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
 {
     uz_PMSM_config_assert(config.pmsm_parameters);
     uz_assert(config.sample_time > 0.0f);
-    if (config.simulate_mechanical_system)
-    {
-        uz_assert(config.pmsm_parameters.J_kg_m_squared > 0.0f);
-    }
+    uz_assert(config.coulomb_friction_constant >= 0.0f);
+    uz_assert(config.friction_coefficient >= 0.0f);
     uz_pmsm_swmodel_t *self = uz_pmsm_swmodel_allocation();
     self->pmsm_parameters = config.pmsm_parameters;
     self->sample_time = config.sample_time;
@@ -56,14 +54,7 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
     self->friction_coefficient = config.friction_coefficient;
     self->inverse_Ld = 1.0f / config.pmsm_parameters.Ld_Henry;
     self->inverse_Lq = 1.0f / config.pmsm_parameters.Lq_Henry;
-    if (config.pmsm_parameters.J_kg_m_squared > 0.0f)
-    {
-        self->inverse_J = 1.0f / config.pmsm_parameters.J_kg_m_squared;
-    }
-    else
-    {
-        self->inverse_J = 0.0f;
-    }
+    self->inverse_J = 1.0f / config.pmsm_parameters.J_kg_m_squared;
     uz_pmsm_swmodel_reset(self);
     return (self);
 }
@@ -72,8 +63,6 @@ void uz_pmsm_swmodel_reset(uz_pmsm_swmodel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->omega_mech_1_s_k0 = 0.0f;
-    // Initialise the electrical state to represent zero current. In flux mode that is
-    // psi_d = psi_PM, psi_q = 0 (since psi_d = Ld*i_d + psi_PM at i_d = 0); in current mode it is zero.
     if (self->integrator_state == uz_pmsm_swmodel_integrator_state_flux)
     {
         self->integrator_state_k0.d = self->pmsm_parameters.Psi_PM_Vs;

@@ -26,13 +26,13 @@ enum uz_pmsm_swmodel_integrator_state_t {
 };
 
 struct uz_pmsm_swmodel_config_t {
-    float sample_time; /**< Sample time for the software model in seconds */
+    float sample_time; /**< Sample time for the software model in seconds. Must be greater than 0.0f */
     struct uz_PMSM_t pmsm_parameters; /**< Configuration struct for PMSM parameters */
     enum uz_pmsm_swmodel_integration_method_t integration_method; /**< Integration method (defaults to Euler forward) */
     enum uz_pmsm_swmodel_integrator_state_t integrator_state; /**< Electrical integrator state (defaults to current) */
     bool simulate_mechanical_system; /**< If true, integrate the mechanical speed from the torque balance; otherwise the input speed is passed through (default false) */
-    float coulomb_friction_constant; /**< Coulomb friction torque in Nm (only used if simulate_mechanical_system) */
-    float friction_coefficient; /**< Viscous friction coefficient in Nm*s (only used if simulate_mechanical_system) */
+    float coulomb_friction_constant; /**< Coulomb friction torque in Nm. Must be greater or equal than 0.0f */
+    float friction_coefficient; /**< Viscous friction coefficient in Nm*s. Must be greater or equal than 0.0f */
 };
 
 struct uz_pmsm_swmodel_outputs_t
@@ -55,6 +55,12 @@ struct uz_pmsm_swmodel_inputs_t
 
 typedef struct uz_pmsm_swmodel_t uz_pmsm_swmodel_t;
 
+/**
+ * @brief Initializes a PMSM software model instance.
+ *
+ * @param config Model configuration. The PMSM parameters, sample time, and friction coefficients are asserted for valid values.
+ * @return Pointer to the initialized PMSM software model instance
+ */
 uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
 
 /**
@@ -66,7 +72,7 @@ uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
  */
 struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, struct uz_pmsm_swmodel_inputs_t inputs);
 
-/*
+/**
  * @brief Resets the PMSM software model, i.e., sets all internal states to zero
  * @param self Pointer to the PMSM software model instance
  */

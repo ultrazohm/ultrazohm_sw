@@ -359,14 +359,14 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
     const float expected_torque_Nm = 1.5f * config.pmsm_parameters.polePairs * (expected_psi_d_Vs * expected_i_q_A - expected_psi_q_Vs * expected_i_d_A);
 
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_d_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_q_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
-    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
-    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
 
 #if CSV_EXPORT
     export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
 #endif
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_d_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_q_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.omega_mech_1_s, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
+    TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_torque_Nm, outputs[STEADY_STATE_ITERATIONS - 1].torque_Nm);
 }
 
 // A valid base configuration (matches the IP-core machine parameters: Ld != Lq so the
@@ -397,6 +397,27 @@ static struct uz_pmsm_swmodel_config_t base_swmodel_config(void)
             .I_q_max_A = 10.0f,
             .I_q_min_A = -10.0f}};
     return config;
+}
+
+void test_uz_pmsm_swmodel_init_asserts_negative_sample_time(void)
+{
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.sample_time = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_pmsm_swmodel_init(config));
+}
+
+void test_uz_pmsm_swmodel_init_asserts_negative_coulomb_friction(void)
+{
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.coulomb_friction_constant = -0.01f;
+    TEST_ASSERT_FAIL_ASSERT(uz_pmsm_swmodel_init(config));
+}
+
+void test_uz_pmsm_swmodel_init_asserts_negative_friction_coefficient(void)
+{
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.friction_coefficient = -0.01f;
+    TEST_ASSERT_FAIL_ASSERT(uz_pmsm_swmodel_init(config));
 }
 
 // Drives identical inputs through a current-state and a flux-state model and asserts they

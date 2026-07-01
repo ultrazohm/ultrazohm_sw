@@ -93,7 +93,7 @@ For :math:`L_d = L_q = L`, this becomes
 Integration method and oversampling
 ===================================
 
-The model integrates the dq current ODE with a selectable method, set via the ``integration_method`` field of :cpp:struct:`uz_pmsm_swmodel_config_t`:
+The model integrates the dq electrical ODE with a selectable method, set via the ``integration_method`` field of :c:struct:`uz_pmsm_swmodel_config_t`.
 
 * ``uz_pmsm_swmodel_euler_forward`` -- explicit Euler (1st order, default).
 * ``uz_pmsm_swmodel_heun`` -- Heun's method (explicit trapezoidal rule, 2nd order), see :ref:`uz_integrator <uz_integrator>` (``Heun's method``).
@@ -116,7 +116,7 @@ It therefore captures the within-step current/flux change to 2nd order, achievin
 Integrator state: current or flux
 =================================
 
-The ``integrator_state`` field of :cpp:struct:`uz_pmsm_swmodel_config_t` selects which electrical quantity is integrated:
+The ``integrator_state`` field of :c:struct:`uz_pmsm_swmodel_config_t` selects which electrical quantity is integrated:
 
 * ``uz_pmsm_swmodel_integrator_state_current`` (default) integrates the dq **currents** and derives the flux algebraically, :math:`\psi_d = L_d i_d + \psi_f,\; \psi_q = L_q i_q`.
 * ``uz_pmsm_swmodel_integrator_state_flux`` integrates the dq **flux linkages** and derives the current, :math:`i_d = (\psi_d - \psi_f)/L_d,\; i_q = \psi_q/L_q`. This matches the FPGA reference :ref:`uz_pmsmModel`.
@@ -128,7 +128,8 @@ Mechanical model
 ================
 
 By default the model is electrical only and the rotor speed :math:`\omega_{mech}` is an input that is passed straight through to the output.
-Setting ``simulate_mechanical_system = true`` makes the model integrate the speed from the torque balance instead (the input speed is then ignored and :math:`\omega_{mech}` starts at zero; use :cpp:func:`uz_pmsm_swmodel_reset` to re-zero it), matching :ref:`uz_pmsmModel`:
+In this mode ``load_torque`` does not affect the speed output.
+Setting ``simulate_mechanical_system = true`` makes the model integrate the speed from the torque balance instead (the input speed is then ignored and :math:`\omega_{mech}` starts at zero; use :c:func:`uz_pmsm_swmodel_reset` to re-zero it), matching :ref:`uz_pmsmModel`:
 
 .. math::
 
@@ -142,12 +143,17 @@ with Coulomb plus viscous friction
     M_F = \operatorname{sign}(\omega_{mech})\,(M_{R0} + \mu\,|\omega_{mech}|).
 
 The inertia :math:`J` is taken from ``pmsm_parameters.J_kg_m_squared``; the friction constants :math:`M_{R0}` and :math:`\mu` are the ``coulomb_friction_constant`` and ``friction_coefficient`` config fields, and the load torque :math:`T_L` is the ``load_torque`` model input.
+Both friction constants must be nonnegative; zero is valid for friction-free simulations.
 The mechanical state is integrated with the same selected ``integration_method`` (Euler or Heun) as the electrical state, as one coupled system.
 
 Software reference
 ==================
 
 .. doxygentypedef:: uz_pmsm_swmodel_t
+
+.. doxygenenum:: uz_pmsm_swmodel_integration_method_t
+
+.. doxygenenum:: uz_pmsm_swmodel_integrator_state_t
 
 .. doxygenstruct:: uz_pmsm_swmodel_config_t
   :members:

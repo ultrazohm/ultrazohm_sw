@@ -429,6 +429,7 @@ static void assert_flux_matches_current(enum uz_pmsm_swmodel_integration_method_
     config.integrator_state = uz_pmsm_swmodel_integrator_state_current;
     uz_pmsm_swmodel_t *current_model = uz_pmsm_swmodel_init(config);
     config.integrator_state = uz_pmsm_swmodel_integrator_state_flux;
+    config.preload_flux_state = true; // start from zero current to match the current-state model
     uz_pmsm_swmodel_t *flux_model = uz_pmsm_swmodel_init(config);
 
     const struct uz_pmsm_swmodel_inputs_t inputs = {
@@ -586,6 +587,7 @@ void test_uz_pmsm_swmodel_mechanical_flux_matches_current(void)
     config.integrator_state = uz_pmsm_swmodel_integrator_state_current;
     uz_pmsm_swmodel_t *current_model = uz_pmsm_swmodel_init(config);
     config.integrator_state = uz_pmsm_swmodel_integrator_state_flux;
+    config.preload_flux_state = true; // start from zero current to match the current-state model
     uz_pmsm_swmodel_t *flux_model = uz_pmsm_swmodel_init(config);
 
     const struct uz_pmsm_swmodel_inputs_t inputs = {
@@ -603,4 +605,76 @@ void test_uz_pmsm_swmodel_mechanical_flux_matches_current(void)
     }
 }
 
+// preload_flux_state controls the flux integrator reset value: when set, the d-axis flux starts
+// at the PM flux linkage so the machine begins from zero current; when clear it starts at zero
+// flux, i.e. an initial d-current of -Psi_PM/Ld. Only affects the flux integrator state.
+void test_uz_pmsm_swmodel_preload_flux_state_sets_initial_current(void)
+{
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.integrator_state = uz_pmsm_swmodel_integrator_state_flux;
+    const struct uz_pmsm_swmodel_inputs_t inputs = {
+        .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
+        .omega_mech_1_s = 0.0f,
+        .load_torque = 0.0f};
+
+    config.preload_flux_state = true;
+    uz_pmsm_swmodel_t *preloaded = uz_pmsm_swmodel_init(config);
+    const struct uz_pmsm_swmodel_outputs_t preloaded_out = uz_pmsm_swmodel_step(preloaded, inputs);
+    TEST_ASSERT_FLOAT_WITHIN(1e-3f, 0.0f, preloaded_out.i_dq_A.d);
+
+    config.preload_flux_state = false;
+    uz_pmsm_swmodel_t *zeroed = uz_pmsm_swmodel_init(config);
+    const struct uz_pmsm_swmodel_outputs_t zeroed_out = uz_pmsm_swmodel_step(zeroed, inputs);
+    TEST_ASSERT_TRUE(zeroed_out.i_dq_A.d < -1.0f);
+}
+
+void test_uz_pmsm_swmodel_ipcore_no_mechanical(void)
+{
+    enum
+    {
+        STEADY_STATE_ITERATIONS = 10000U
+    };
+
+    struct uz_pmsm_swmodel_config_t config = base_swmodel_config();
+    config.simulate_mechanical_system = false;
+    config.integration_method = uz_pmsm_swmodel_euler_forward;
+    config.integrator_state = uz_pmsm_swmodel_integrator_state_flux;
+    config.preload_flux_state=false;
+
+        uz_pmsm_swmodel_t *model = uz_pmsm_swmodel_init(config);
+
+    struct uz_pmsm_swmodel_inputs_t inputs = {
+        // No applied voltage: this validates the rotating short-circuit steady state, which is what
+        // expected_i_d_A / expected_i_q_A below derive (a nonzero v_dq shifts that operating point).
+        .v_dq_V = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
+        .omega_mech_1_s = 100.0f,
+        .load_torque = 0.0f};
+    struct uz_pmsm_swmodel_inputs_t inputs_k[STEADY_STATE_ITERATIONS] = {0};
+    struct uz_pmsm_swmodel_outputs_t outputs[STEADY_STATE_ITERATIONS] = {0};
+
+    inputs_k[0] = inputs;
+    for (uint32_t i = 0U; i < STEADY_STATE_ITERATIONS; i++)
+    {
+        if (i>= 4000)
+        {
+            inputs.v_dq_V.d = -10.0f;
+            inputs.v_dq_V.q = 10.0f;
+        }
+        inputs_k[i] = inputs;
+        outputs[i] = uz_pmsm_swmodel_step(model, inputs_k[i]);
+    }
+    const float omega_el_1_s = inputs.omega_mech_1_s * config.pmsm_parameters.polePairs;
+    const float resistance = config.pmsm_parameters.R_ph_Ohm;
+    const float denominator = 1.0f + ((omega_el_1_s * omega_el_1_s * config.pmsm_parameters.Ld_Henry * config.pmsm_parameters.Lq_Henry) / (resistance * resistance));
+    const float expected_i_q_A = -(omega_el_1_s * config.pmsm_parameters.Psi_PM_Vs / resistance) / denominator;
+    const float expected_i_d_A = (omega_el_1_s * config.pmsm_parameters.Lq_Henry / resistance) * expected_i_q_A;
+    const float expected_psi_d_Vs = config.pmsm_parameters.Ld_Henry * expected_i_d_A + config.pmsm_parameters.Psi_PM_Vs;
+    const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
+    const float expected_torque_Nm = 1.5f * config.pmsm_parameters.polePairs * (expected_psi_d_Vs * expected_i_q_A - expected_psi_q_Vs * expected_i_d_A);
+
+#if CSV_EXPORT
+    export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_ipcore_no_mechanical.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
+#endif
+
+}
 #endif // TEST

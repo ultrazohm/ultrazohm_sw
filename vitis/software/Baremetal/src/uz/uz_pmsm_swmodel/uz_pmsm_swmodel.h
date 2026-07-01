@@ -30,6 +30,7 @@ struct uz_pmsm_swmodel_config_t {
     struct uz_PMSM_t pmsm_parameters; /**< Configuration struct for PMSM parameters */
     enum uz_pmsm_swmodel_integration_method_t integration_method; /**< Integration method (defaults to Euler forward) */
     enum uz_pmsm_swmodel_integrator_state_t integrator_state; /**< Electrical integrator state (defaults to current) */
+    bool preload_flux_state; /**< If true and integrator_state is flux, preload the d-axis flux state with the PM flux linkage Psi_PM_Vs on reset; otherwise all states reset to zero (default false) */
     bool simulate_mechanical_system; /**< If true, integrate the mechanical speed from the torque balance; otherwise the input speed is passed through (default false) */
     float coulomb_friction_constant; /**< Coulomb friction torque in Nm. Must be greater or equal than 0.0f */
     float friction_coefficient; /**< Viscous friction coefficient in Nm*s. Must be greater or equal than 0.0f */

@@ -13,6 +13,7 @@ struct uz_pmsm_swmodel_t
     struct uz_PMSM_t pmsm_parameters;
     enum uz_pmsm_swmodel_integration_method_t integration_method;
     enum uz_pmsm_swmodel_integrator_state_t integrator_state;
+    bool preload_flux_state;
     bool simulate_mechanical_system;
     float coulomb_friction_constant;
     float friction_coefficient;
@@ -49,6 +50,7 @@ uz_pmsm_swmodel_t *uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config)
     self->sample_time = config.sample_time;
     self->integration_method = config.integration_method;
     self->integrator_state = config.integrator_state;
+    self->preload_flux_state = config.preload_flux_state;
     self->simulate_mechanical_system = config.simulate_mechanical_system;
     self->coulomb_friction_constant = config.coulomb_friction_constant;
     self->friction_coefficient = config.friction_coefficient;
@@ -63,7 +65,7 @@ void uz_pmsm_swmodel_reset(uz_pmsm_swmodel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->omega_mech_1_s_k0 = 0.0f;
-    if (self->integrator_state == uz_pmsm_swmodel_integrator_state_flux)
+    if (self->preload_flux_state && self->integrator_state == uz_pmsm_swmodel_integrator_state_flux)
     {
         self->integrator_state_k0.d = self->pmsm_parameters.Psi_PM_Vs;
         self->integrator_state_k0.q = 0.0f;

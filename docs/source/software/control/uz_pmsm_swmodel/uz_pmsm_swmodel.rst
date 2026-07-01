@@ -124,6 +124,11 @@ The ``integrator_state`` field of :c:struct:`uz_pmsm_swmodel_config_t` selects w
 Both share the voltage balance :math:`e_d = v_d - R_s i_d + \omega_e \psi_q`, :math:`e_q = v_q - R_s i_q - \omega_e \psi_d`; the current formulation integrates :math:`e/L`, the flux formulation integrates :math:`e`.
 For a linear machine (constant :math:`L_d, L_q`) the two are equivalent and produce the same trajectory up to floating-point rounding; the flux formulation is the basis for a future nonlinear flux-map machine where :math:`\psi(i)` is a lookup.
 
+For the flux formulation the reset value of the d-axis flux state matters, because the derived current is :math:`i_d = (\psi_d - \psi_f)/L_d`.
+By default the integrator state resets to zero, which starts the machine at :math:`i_d = -\psi_f/L_d`.
+Setting ``preload_flux_state = true`` instead preloads the d-axis flux state with :math:`\psi_f` on reset, so the machine starts from zero current (matching the current formulation).
+The flag has no effect when ``integrator_state`` is current.
+
 Mechanical model
 ================
 

@@ -41,7 +41,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES            1U
 #define UZ_WAVEGEN_SINE_MAX_INSTANCES                     6U
-#define UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES                 4U
+#define UZ_WAVEGEN_SAWTOOTH_MAX_INSTANCES                 2U
 #define UZ_WAVEGEN_PULSE_MAX_INSTANCES                    0U
 #define UZ_WAVEGEN_SQUARE_MAX_INSTANCES                   0U
 #define UZ_WAVEGEN_TRIANGLE_MAX_INSTANCES                 1U
@@ -73,11 +73,11 @@
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES                 0U
-#define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 1U
+#define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 0U
 #define UZ_RESOLVERIP_MAX_INSTANCES                       0U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES            0U
-#define UZ_AXI_GPIO_MAX_INSTANCES                         3U
+#define UZ_AXI_GPIO_MAX_INSTANCES                         1U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
@@ -98,9 +98,9 @@
 #define UZ_LUT_1D_MAX_INSTANCES                         0U
 #define UZ_LUT_2D_MAX_INSTANCES                         0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
-#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                  1U
+#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            0U
-#define UZ_SSI_INTERFACE_MAX_INSTANCES                    2U
+#define UZ_SSI_INTERFACE_MAX_INSTANCES                    0U
 #define UZ_HLS_TESTIP_MAX_INSTANCES                     0U
 #endif
 

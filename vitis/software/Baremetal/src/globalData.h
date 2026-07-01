@@ -23,10 +23,6 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-	float d1_output_test_uint32;
-	float d1_input_loopback_uint32;
-	float d2_output_test_uint32;
-	float d2_input_loopback_uint32;
 	float d3_input_loopback_uint32;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
@@ -69,36 +65,7 @@ typedef struct _actualValues_ {
 	float adc_max11331_a3_ch21;
 	float adc_max11331_a3_ch22;
 	float adc_max11331_a3_ch23;
-	uint32_t io_card_d1_state;
-	uint32_t io_card_d2_state;
 	uint32_t io_card_d3_state;
-	uz_temperaturecard_OneGroup temperature_card_d4_channel_A;
-	uz_temperaturecard_OneGroup temperature_card_d4_channel_B;
-	uz_temperaturecard_OneGroup temperature_card_d4_channel_C;
-	uint32_t endat_encoder_d5_1_position_raw_single_turn;
-	uint32_t endat_encoder_d5_1_position_raw_multi_turn;
-	uint32_t endat_encoder_d5_1_position_multi_turn;
-	float endat_encoder_d5_1_position_mech_si_single_turn;
-	float endat_encoder_d5_1_position_el_si_single_turn;
-	float endat_encoder_d5_1_speed_mech_si;
-	float endat_encoder_d5_1_speed_el_si;
-	float endat_encoder_d5_1_speed_mech_rpm;
-	uint32_t ssi_encoder_d5_2_position_raw_single_turn;
-	uint32_t ssi_encoder_d5_2_position_raw_multi_turn;
-	uint32_t ssi_encoder_d5_2_position_multi_turn;
-	float ssi_encoder_d5_2_position_mech_si_single_turn;
-	float ssi_encoder_d5_2_position_el_si_single_turn;
-	float ssi_encoder_d5_2_speed_mech_si;
-	float ssi_encoder_d5_2_speed_el_si;
-	float ssi_encoder_d5_2_speed_mech_rpm;
-	uint32_t ssi_encoder_d5_3_position_raw_single_turn;
-	uint32_t ssi_encoder_d5_3_position_raw_multi_turn;
-	uint32_t ssi_encoder_d5_3_position_multi_turn;
-	float ssi_encoder_d5_3_position_mech_si_single_turn;
-	float ssi_encoder_d5_3_position_el_si_single_turn;
-	float ssi_encoder_d5_3_speed_mech_si;
-	float ssi_encoder_d5_3_speed_el_si;
-	float ssi_encoder_d5_3_speed_mech_rpm;
 /* Project Wizard END: actualValues */
 } actualValues;
 
@@ -119,8 +86,6 @@ typedef struct _referenceAndSetValues_ {
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
-	uz_wavegen_sawtooth_t* d1_output_test_sawtooth;
-	uz_wavegen_sawtooth_t* d2_output_test_sawtooth;
 	uz_wavegen_sawtooth_t* d3_output_test_sawtooth;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
@@ -143,13 +108,7 @@ typedef struct{
 	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
 	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
-	uz_axi_gpio_t* axi_gpio_d1;
-	uz_axi_gpio_t* axi_gpio_d2;
 	uz_axi_gpio_t* axi_gpio_d3;
-	uz_temperaturecard_t* temperature_card_d4;
-	uz_endat_interface_t* endat_encoder_d5_1;
-	uz_ssi_interface_t* ssi_encoder_d5_2;
-	uz_ssi_interface_t* ssi_encoder_d5_3;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

@@ -1043,7 +1043,7 @@
         "template": "cards/uz_d_io_card.tcl",
         "adapter_parent_hier": "uz_digital_adapter",
         "adapter_clock_pin": "clk",
-        "adapter_resetn_pin": "RESETN",
+        "adapter_resetn_pin": "resetn",
         "notes": [
           "Routes the selected optical IO population through the slot CPLD.",
           "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
@@ -1112,7 +1112,7 @@
         "template": "cards/uz_d_io_card.tcl",
         "adapter_parent_hier": "uz_digital_adapter",
         "adapter_clock_pin": "clk",
-        "adapter_resetn_pin": "RESETN",
+        "adapter_resetn_pin": "resetn",
         "notes": [
           "Routes all 30 voltage IO pins according to the four hardware direction groups.",
           "The selected group directions determine the slot CPLD program.",
@@ -1246,7 +1246,7 @@
         "template": "cards/uz_d_incremental_encoder.tcl",
         "adapter_parent_hier": "uz_digital_adapter",
         "adapter_clock_pin": "clk",
-        "adapter_resetn_pin": "RESETN",
+        "adapter_resetn_pin": "resetn",
         "notes": [
           "Creates the selected Dx_adapter hierarchy for three fixed incremental encoder IP cores.",
           "Routes the encoder index, A and B inputs from the slot-specific digital adapter pins.",
@@ -1969,7 +1969,7 @@
         "template": "cards/uz_d_resolver.tcl",
         "adapter_parent_hier": "uz_digital_adapter",
         "adapter_clock_pin": "clk",
-        "adapter_resetn_pin": "RESETN",
+        "adapter_resetn_pin": "resetn",
         "notes": [
           "Creates the selected Dx_adapter hierarchy for the resolver IP cores.",
           "Routes the AD2S1210 SPI and control signals from the slot-specific digital adapter pins.",

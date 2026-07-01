@@ -111,32 +111,6 @@ void ISR_Control(void *data)
         Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
         Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
 
-        float d1_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d1_output_test_sawtooth, 10.0f, 1.0f / 5.0f);
-        uint32_t d1_output_test_offset = (uint32_t)d1_output_test_value;
-        if (d1_output_test_offset > 9U) {
-            d1_output_test_offset = 9U;
-        }
-        uint32_t d1_output_test_state = (1U << (d1_output_test_offset + 6U));
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d1, d1_output_test_state);
-        Global_Data.av.d1_output_test_uint32 = (float)d1_output_test_state;
-
-        float d2_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d2_output_test_sawtooth, 14.0f, 1.0f / 7.0f);
-        uint32_t d2_output_test_offset = (uint32_t)d2_output_test_value;
-        if (d2_output_test_offset > 13U) {
-            d2_output_test_offset = 13U;
-        }
-        uint32_t d2_output_test_state = (1U << (d2_output_test_offset + 16U));
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d2, d2_output_test_state);
-        Global_Data.av.d2_output_test_uint32 = (float)d2_output_test_state;
-
-        uint32_t d1_input_loopback_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
-        Global_Data.av.io_card_d1_state = d1_input_loopback_state;
-        Global_Data.av.d1_input_loopback_uint32 = (float)(d1_input_loopback_state & 0x3FFF0000U);
-
-        uint32_t d2_input_loopback_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
-        Global_Data.av.io_card_d2_state = d2_input_loopback_state;
-        Global_Data.av.d2_input_loopback_uint32 = (float)(d2_input_loopback_state & 0x0000FFC0U);
-
         float d3_output_test_value = uz_wavegen_sawtooth_sample(Global_Data.objects.d3_output_test_sawtooth, 8.0f, 1.0f / 1.0f);
         uint32_t d3_output_test_offset = (uint32_t)d3_output_test_value;
         if (d3_output_test_offset > 7U) {
@@ -245,14 +219,12 @@ static void update_adapter_a3(void)
 static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
-    Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
 /* Project Wizard END: D1 isr_control */
 }
 
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
-    Global_Data.av.io_card_d2_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
 /* Project Wizard END: D2 isr_control */
 }
 
@@ -266,40 +238,12 @@ static void update_adapter_d3(void)
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
-    uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
-    Global_Data.av.temperature_card_d4_channel_A = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
-    Global_Data.av.temperature_card_d4_channel_B = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'B');
-    Global_Data.av.temperature_card_d4_channel_C = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'C');
 /* Project Wizard END: D4 isr_control */
 }
 
 static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
-    Global_Data.av.endat_encoder_d5_1_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_multi_turn = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_mech_si_single_turn = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_el_si_single_turn = uz_endat_interface_get_position_el_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_mech_si = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_el_si = uz_endat_interface_get_speed_el_si(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_mech_rpm = uz_endat_interface_get_speed_mech_rpm(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.ssi_encoder_d5_2_position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_position_raw_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_position_multi_turn = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_speed_mech_si = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_speed_el_si = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_2_speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_2);
-    Global_Data.av.ssi_encoder_d5_3_position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_position_raw_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_position_multi_turn = uz_ssi_interface_get_position_multi_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_speed_mech_si = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_speed_el_si = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_encoder_d5_3);
-    Global_Data.av.ssi_encoder_d5_3_speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_encoder_d5_3);
 /* Project Wizard END: D5 isr_control */
 }
 

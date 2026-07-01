@@ -2210,102 +2210,168 @@ class MainWindow(QMainWindow):
         hint.setWordWrap(True)
         layout.addWidget(hint)
 
-        grid = QGridLayout()
-        grid.addWidget(QLabel("Pin"), 0, 0)
-        grid.addWidget(QLabel("Direction"), 0, 1)
-        grid.addWidget(QLabel("Mode"), 0, 2)
-        grid.addWidget(QLabel("Signal"), 0, 3)
-        grid.addWidget(QLabel("Constant value"), 0, 4)
-
         directions = TclGenerator._io_card_directions(card.get("vivado", {}).get("io_card", {}), self.detail_options.get(slot, {}))
-        for row_index, physical_direction in enumerate(directions, start=1):
-            pin_index = row_index - 1
-            pin_id = f"io_pin_{pin_index:02d}"
-            pin_name = f"Dig_{pin_index:02d}_Ch{slot[1:]}"
-            mode_combo = QComboBox()
-            if physical_direction == "tx":
-                mode_options = [
-                    ("axi_gpio", "AXI GPIO"),
-                    ("top_level", "Top-level port"),
-                    ("pwm", "PWM"),
-                    ("source_pin", "Custom BD source"),
-                    ("constant", "Constant"),
-                ]
-            else:
-                mode_options = [
-                    ("axi_gpio", "AXI GPIO"),
-                    ("top_level", "Top-level port"),
-                ]
-            for value, label in mode_options:
-                mode_combo.addItem(label, value)
-            selected_mode = self.detail_options.get(slot, {}).get(f"{pin_id}_mode", "axi_gpio")
-            mode_index = mode_combo.findData(selected_mode)
-            mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
-            mode_combo.currentIndexChanged.connect(self._detail_option_changed)
-            self.detail_combos[(slot, f"{pin_id}_mode")] = mode_combo
+        summary = TclGenerator._io_card_context(slot, slot[1:], card, self.detail_options.get(slot, {})).get("io_summary", "")
+        if summary:
+            summary_label = QLabel(summary)
+            summary_label.setWordWrap(True)
+            layout.addWidget(summary_label)
 
-            signal_widget = QWidget()
-            signal_layout = QHBoxLayout(signal_widget)
-            signal_layout.setContentsMargins(0, 0, 0, 0)
-            signal_layout.setSpacing(4)
-            source_edit = QLineEdit(
-                self.detail_options.get(slot, {}).get(
-                    f"{pin_id}_source",
-                    f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pin_index // 6}/s{pin_index % 6}_out",
-                )
-            )
-            source_edit.setPlaceholderText("Block design pin path, e.g. uz_digital_adapter/Dig_00_Ch2")
-            source_edit.editingFinished.connect(self._detail_option_changed)
-            self.detail_source_edits[(slot, f"{pin_id}_source")] = source_edit
-            signal_layout.addWidget(source_edit, 1)
+        for group_title, start_index, end_index in self._io_card_pin_group_ranges(slot, card, directions):
+            pin_group = QGroupBox(group_title)
+            grid = QGridLayout(pin_group)
+            grid.addWidget(QLabel("Pin"), 0, 0)
+            grid.addWidget(QLabel("Direction"), 0, 1)
+            grid.addWidget(QLabel("Mode"), 0, 2)
+            grid.addWidget(QLabel("Signal"), 0, 3)
+            grid.addWidget(QLabel("Constant value"), 0, 4)
 
-            pwm_instance_combo = QComboBox()
-            for pwm_value, pwm_label in self._io_pwm_instance_choices():
-                pwm_instance_combo.addItem(pwm_label, pwm_value)
-            selected_pwm_instance = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_instance", self._default_io_pwm_instance(pin_index))
-            pwm_instance_index = pwm_instance_combo.findData(selected_pwm_instance)
-            pwm_instance_combo.setCurrentIndex(pwm_instance_index if pwm_instance_index >= 0 else 0)
-            pwm_instance_combo.currentIndexChanged.connect(self._detail_option_changed)
-            self.detail_source_edits[(slot, f"{pin_id}_pwm_instance")] = pwm_instance_combo
-            signal_layout.addWidget(pwm_instance_combo, 1)
-
-            pwm_pin_combo = QComboBox()
-            for pwm_pin_value, pwm_pin_label in self._io_pwm_pin_choices(str(pwm_instance_combo.currentData() or "")):
-                pwm_pin_combo.addItem(pwm_pin_label, pwm_pin_value)
-            selected_pwm_pin = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_pin", f"s{pin_index % 6}_out")
-            pwm_pin_index = pwm_pin_combo.findData(selected_pwm_pin)
-            pwm_pin_combo.setCurrentIndex(pwm_pin_index if pwm_pin_index >= 0 else 0)
-            pwm_pin_combo.currentIndexChanged.connect(self._detail_option_changed)
-            self.detail_source_edits[(slot, f"{pin_id}_pwm_pin")] = pwm_pin_combo
-            signal_layout.addWidget(pwm_pin_combo, 1)
-
-            constant_combo = QComboBox()
-            constant_combo.addItem("Low / false / 0", "0")
-            constant_combo.addItem("High / true / 1", "1")
-            selected_constant = "1" if self.detail_options.get(slot, {}).get(f"{pin_id}_constant", "0").strip().lower() in {"1", "true", "yes", "on"} else "0"
-            constant_index = constant_combo.findData(selected_constant)
-            constant_combo.setCurrentIndex(constant_index if constant_index >= 0 else 0)
-            constant_combo.currentIndexChanged.connect(self._detail_option_changed)
-            self.detail_source_edits[(slot, f"{pin_id}_constant")] = constant_combo
-
-            current_mode = str(mode_combo.currentData() or "")
-            self.io_pin_rows[(slot, pin_id)] = {
-                "mode": mode_combo,
-                "source": source_edit,
-                "pwm_instance": pwm_instance_combo,
-                "pwm_pin": pwm_pin_combo,
-                "constant": constant_combo,
-            }
-            self._refresh_io_pin_row_state(slot, pin_id, current_mode)
-
-            grid.addWidget(QLabel(pin_name), row_index, 0)
-            grid.addWidget(QLabel("TX" if physical_direction == "tx" else "RX"), row_index, 1)
-            grid.addWidget(mode_combo, row_index, 2)
-            grid.addWidget(signal_widget, row_index, 3)
-            grid.addWidget(constant_combo, row_index, 4)
-
-        layout.addLayout(grid)
+            for row_index, pin_index in enumerate(range(start_index, end_index), start=1):
+                self._add_io_card_pin_row(slot, pin_index, directions[pin_index], grid, row_index)
+            layout.addWidget(pin_group)
         return group
+
+    def _add_io_card_pin_row(
+        self,
+        slot: str,
+        pin_index: int,
+        physical_direction: str,
+        grid: QGridLayout,
+        row_index: int,
+    ) -> None:
+        pin_id = f"io_pin_{pin_index:02d}"
+        pin_name = f"Dig_{pin_index:02d}_Ch{slot[1:]}"
+        mode_combo = QComboBox()
+        if physical_direction == "tx":
+            mode_options = [
+                ("axi_gpio", "AXI GPIO"),
+                ("top_level", "Top-level port"),
+                ("pwm", "PWM"),
+                ("source_pin", "Custom BD source"),
+                ("constant", "Constant"),
+            ]
+        else:
+            mode_options = [
+                ("axi_gpio", "AXI GPIO"),
+                ("top_level", "Top-level port"),
+            ]
+        for value, label in mode_options:
+            mode_combo.addItem(label, value)
+        selected_mode = self.detail_options.get(slot, {}).get(f"{pin_id}_mode", "axi_gpio")
+        mode_index = mode_combo.findData(selected_mode)
+        mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
+        mode_combo.currentIndexChanged.connect(self._detail_option_changed)
+        self.detail_combos[(slot, f"{pin_id}_mode")] = mode_combo
+
+        signal_widget = QWidget()
+        signal_layout = QHBoxLayout(signal_widget)
+        signal_layout.setContentsMargins(0, 0, 0, 0)
+        signal_layout.setSpacing(4)
+        source_edit = QLineEdit(
+            self.detail_options.get(slot, {}).get(
+                f"{pin_id}_source",
+                f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pin_index // 6}/s{pin_index % 6}_out",
+            )
+        )
+        source_edit.setPlaceholderText("Block design pin path, e.g. uz_digital_adapter/Dig_00_Ch2")
+        source_edit.editingFinished.connect(self._detail_option_changed)
+        self.detail_source_edits[(slot, f"{pin_id}_source")] = source_edit
+        signal_layout.addWidget(source_edit, 1)
+
+        pwm_instance_combo = QComboBox()
+        for pwm_value, pwm_label in self._io_pwm_instance_choices():
+            pwm_instance_combo.addItem(pwm_label, pwm_value)
+        selected_pwm_instance = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_instance", self._default_io_pwm_instance(pin_index))
+        pwm_instance_index = pwm_instance_combo.findData(selected_pwm_instance)
+        pwm_instance_combo.setCurrentIndex(pwm_instance_index if pwm_instance_index >= 0 else 0)
+        pwm_instance_combo.currentIndexChanged.connect(self._detail_option_changed)
+        self.detail_source_edits[(slot, f"{pin_id}_pwm_instance")] = pwm_instance_combo
+        signal_layout.addWidget(pwm_instance_combo, 1)
+
+        pwm_pin_combo = QComboBox()
+        for pwm_pin_value, pwm_pin_label in self._io_pwm_pin_choices(str(pwm_instance_combo.currentData() or "")):
+            pwm_pin_combo.addItem(pwm_pin_label, pwm_pin_value)
+        selected_pwm_pin = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_pin", f"s{pin_index % 6}_out")
+        pwm_pin_index = pwm_pin_combo.findData(selected_pwm_pin)
+        pwm_pin_combo.setCurrentIndex(pwm_pin_index if pwm_pin_index >= 0 else 0)
+        pwm_pin_combo.currentIndexChanged.connect(self._detail_option_changed)
+        self.detail_source_edits[(slot, f"{pin_id}_pwm_pin")] = pwm_pin_combo
+        signal_layout.addWidget(pwm_pin_combo, 1)
+
+        constant_combo = QComboBox()
+        constant_combo.addItem("Low", "0")
+        constant_combo.addItem("High", "1")
+        selected_constant = "1" if self.detail_options.get(slot, {}).get(f"{pin_id}_constant", "0").strip().lower() in {"1", "true", "yes", "on"} else "0"
+        constant_index = constant_combo.findData(selected_constant)
+        constant_combo.setCurrentIndex(constant_index if constant_index >= 0 else 0)
+        constant_combo.currentIndexChanged.connect(self._detail_option_changed)
+        self.detail_source_edits[(slot, f"{pin_id}_constant")] = constant_combo
+
+        current_mode = str(mode_combo.currentData() or "")
+        self.io_pin_rows[(slot, pin_id)] = {
+            "mode": mode_combo,
+            "source": source_edit,
+            "pwm_instance": pwm_instance_combo,
+            "pwm_pin": pwm_pin_combo,
+            "constant": constant_combo,
+        }
+        self._refresh_io_pin_row_state(slot, pin_id, current_mode)
+
+        grid.addWidget(QLabel(pin_name), row_index, 0)
+        grid.addWidget(self._io_direction_indicator(physical_direction), row_index, 1)
+        grid.addWidget(mode_combo, row_index, 2)
+        grid.addWidget(signal_widget, row_index, 3)
+        grid.addWidget(constant_combo, row_index, 4)
+
+    def _io_card_pin_group_ranges(
+        self,
+        slot: str,
+        card: dict[str, Any],
+        directions: list[str],
+    ) -> list[tuple[str, int, int]]:
+        io_card = card.get("vivado", {}).get("io_card", {})
+        kind = str(io_card.get("kind", ""))
+        if kind == "voltage_grouped":
+            ranges: list[tuple[str, int, int]] = []
+            start = 0
+            groups = io_card.get("groups", [])
+            for group_index, group_definition in enumerate(groups, start=1):
+                width = TclGenerator._config_int(group_definition.get("width", 0), default=0, minimum=0, maximum=30)
+                end = min(start + width, len(directions))
+                if start >= end:
+                    continue
+                direction = directions[start].upper()
+                ranges.append((f"Group {group_index}: Dig_{start:02d}..{end - 1:02d} {direction}", start, end))
+                start = end
+            return ranges or [("Pins", 0, len(directions))]
+        ranges = []
+        start = 0
+        while start < len(directions):
+            direction = directions[start]
+            end = start + 1
+            while end < len(directions) and directions[end] == direction:
+                end += 1
+            label = "TX pins" if direction == "tx" else "RX pins"
+            ranges.append((f"{label}: Dig_{start:02d}..{end - 1:02d}", start, end))
+            start = end
+        return ranges
+
+    def _io_direction_indicator(self, physical_direction: str) -> QWidget:
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(4)
+        for direction in ("TX", "RX"):
+            active = physical_direction.upper() == direction
+            label = QLabel(direction)
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setFixedWidth(28)
+            if active:
+                label.setStyleSheet("font-weight: 600; color: white; background: #2f6fed; border-radius: 3px; padding: 2px;")
+            else:
+                label.setStyleSheet("color: #777; border: 1px solid #bbb; border-radius: 3px; padding: 2px;")
+            layout.addWidget(label)
+        return widget
 
     def _io_pwm_instance_choices(self) -> list[tuple[str, str]]:
         choices: list[tuple[str, str]] = []
@@ -2355,6 +2421,7 @@ class MainWindow(QMainWindow):
             pwm_pin_combo.setVisible(mode == "pwm")
             pwm_pin_combo.setEnabled(mode == "pwm")
         if constant_combo is not None:
+            constant_combo.setVisible(mode == "constant")
             constant_combo.setEnabled(mode == "constant")
 
     def _refresh_io_pwm_pin_choices(self, slot: str, pin_id: str) -> None:
@@ -2428,16 +2495,24 @@ class MainWindow(QMainWindow):
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
+        assignments = self.assignments()
+        option_values = self.option_values()
+        axi_config = self.axi_config()
         self.tcl_preview.setPlainText(
             self.generator.generate(
                 self.selected_platform(),
-                self.assignments(),
-                self.option_values(),
+                assignments,
+                option_values,
                 self.cpld_assignments(),
-                self.axi_config(),
+                axi_config,
                 self.hardware_config(),
             )
         )
+        warnings = self.generator.validation_warnings(assignments, axi_config, option_values, self.software_modes())
+        if warnings and self.vivado_status:
+            self.vivado_status.setPlainText("TCL preview warnings:\n" + "\n".join(f"- {warning}" for warning in warnings))
+        elif self.vivado_status and self.vivado_status.toPlainText().startswith("TCL preview warnings:"):
+            self.vivado_status.clear()
         if not self.is_loading_config:
             self.refresh_software_preview()
 
@@ -2861,7 +2936,6 @@ class MainWindow(QMainWindow):
 
     def write_generated_tcl(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        warnings = self.generator.validation_warnings(self.assignments(), self.axi_config())
         path.write_text(
             self.generator.generate(
                 self.selected_platform(),
@@ -2877,7 +2951,12 @@ class MainWindow(QMainWindow):
             self.vivado_status.setPlainText(f"Wrote TCL: {path}")
 
     def show_tcl_export_result(self, path: Path) -> None:
-        warnings = self.generator.validation_warnings(self.assignments(), self.axi_config())
+        warnings = self.generator.validation_warnings(
+            self.assignments(),
+            self.axi_config(),
+            self.option_values(),
+            self.software_modes(),
+        )
         if warnings:
             QMessageBox.warning(
                 self,

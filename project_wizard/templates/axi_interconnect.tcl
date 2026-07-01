@@ -284,7 +284,7 @@ proc uz_pw_compact_upstream_mi_connections {smartconnect_path} {
   }
 }
 
-proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier} {
+proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier local_smartconnect_path} {
   set upstream_hier_path [uz_pw_parent_path $::uz_pw_upstream_smartconnect]
   set candidate_pins {}
   set upstream_boundary_pin ""
@@ -308,6 +308,12 @@ proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier} {
     uz_pw_delete_intf_pin_and_net_if_present $pin_path
   }
 
+  set local_sc [get_bd_cells -quiet $local_smartconnect_path]
+  if {[llength $local_sc] > 0} {
+    puts "Deleting stale local AXI SmartConnect $local_smartconnect_path"
+    catch {delete_bd_objs $local_sc}
+  }
+
   uz_pw_compact_upstream_mi_connections $::uz_pw_upstream_smartconnect
 }
 
@@ -317,7 +323,7 @@ set uz_pw_upstream_smartconnect {{ slot.upstream_smartconnect }}
 if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
   puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for {{ slot.slot }}."
 } else {
-  uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
+  uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }} {{ slot.local_smartconnect_path }}
 }
 {% endfor %}
 
@@ -343,7 +349,7 @@ if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
 }
 
 puts "Refreshing AXI attachment for slot {{ slot.slot }}"
-uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }}
+uz_pw_remove_slot_axi_attachment {{ slot.slot }} {{ slot.adapter_root_hier }} {{ slot.local_smartconnect_path }}
 
 puts "Configuring local AXI SmartConnect for slot {{ slot.slot }}"
 

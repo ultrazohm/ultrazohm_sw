@@ -6,6 +6,9 @@
 {% endfor %}
 
 puts "Adding {{ card_name }} for slot {{ slot }}"
+{% if io_summary %}
+# IO summary: {{ io_summary }}
+{% endif %}
 
 set adapter_parent_hier {{ adapter_parent_hier }}
 set adapter_hier_name {{ slot }}_adapter
@@ -49,10 +52,9 @@ proc uz_pw_io_create_xlconstant {cell_path width value} {
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
+{% if has_axi_gpio %}
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/{{ adapter_clock_pin }}
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/{{ adapter_resetn_pin }}
-
-{% if has_axi_gpio %}
 set io_gpio_path ${adapter_hier_path}/{{ axi_gpio_instance_name }}
 uz_pw_create_ip_cell_if_missing $io_gpio_path xilinx.com:ip:axi_gpio
 uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS {{ axi_gpio_all_inputs }} CONFIG.C_ALL_OUTPUTS {{ axi_gpio_all_outputs }} CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
@@ -88,6 +90,7 @@ if {${{ pwm_source.variable_name }} eq "" || [llength [get_bd_pins -quiet ${{ pw
 {% endfor %}
 
 {% for pin in io_pins %}
+# {{ pin.pin_name }}: {{ pin.physical_direction_label }}, {{ pin.mode_label }}{% if pin.is_pwm %}, {{ pin.pwm_instance }} {{ pin.pwm_pin }}{% endif %}{% if pin.is_source_pin %}, source {{ pin.source_path }}{% endif %}{% if pin.is_constant %}, {{ pin.constant_label }}{% endif %}
 {% if pin.is_tx_local %}
 uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path {{ pin.pin_name }} {{ pin.pin_name }}
 {% endif %}

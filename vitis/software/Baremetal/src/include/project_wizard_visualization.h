@@ -42,9 +42,6 @@ typedef struct {
     float viz_adc_max11331_a3_ch21;
     float viz_adc_max11331_a3_ch22;
     float viz_adc_max11331_a3_ch23;
-    float viz_temp_d4_a_4;
-    float viz_temp_d4_a_5;
-    float viz_temp_d4_a_19;
 } project_wizard_visualization_data_t;
 
 extern project_wizard_visualization_data_t project_wizard_visualization_data;

@@ -44,7 +44,4 @@ void project_wizard_visualization_update(struct _DS_Data_* data)
     project_wizard_visualization_data.viz_adc_max11331_a3_ch21 = data->av.adc_max11331_a3_ch21;
     project_wizard_visualization_data.viz_adc_max11331_a3_ch22 = data->av.adc_max11331_a3_ch22;
     project_wizard_visualization_data.viz_adc_max11331_a3_ch23 = data->av.adc_max11331_a3_ch23;
-    project_wizard_visualization_data.viz_temp_d4_a_4 = data->av.temperature_card_d4_channel_A.temperature[4];
-    project_wizard_visualization_data.viz_temp_d4_a_5 = data->av.temperature_card_d4_channel_A.temperature[5];
-    project_wizard_visualization_data.viz_temp_d4_a_19 = data->av.temperature_card_d4_channel_A.temperature[19];
 }

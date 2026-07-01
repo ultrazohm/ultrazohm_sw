@@ -106,14 +106,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH21] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch21;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH22] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch22;
 	js_ch_observable[JSO_ADC_MAX11331_A3_CH23] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch23;
-	js_ch_observable[JSO_TEMP_D4_A_CH4] = &project_wizard_visualization_data.viz_temp_d4_a_4;
-	js_ch_observable[JSO_TEMP_D4_A_CH5] = &project_wizard_visualization_data.viz_temp_d4_a_5;
-	js_ch_observable[JSO_TEMP_D4_A_CH19] = &project_wizard_visualization_data.viz_temp_d4_a_19;
 /* Project Wizard END: javascope_observable_pointers */
-	js_ch_observable[JSO_D1_OUTPUT_TEST_UINT32] = &data->av.d1_output_test_uint32;
-	js_ch_observable[JSO_D1_INPUT_LOOPBACK_UINT32] = &data->av.d1_input_loopback_uint32;
-	js_ch_observable[JSO_D2_OUTPUT_TEST_UINT32] = &data->av.d2_output_test_uint32;
-	js_ch_observable[JSO_D2_INPUT_LOOPBACK_UINT32] = &data->av.d2_input_loopback_uint32;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -125,9 +118,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
-	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH4] = &project_wizard_visualization_data.viz_temp_d4_a_4;
-	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH5] = &project_wizard_visualization_data.viz_temp_d4_a_5;
-	js_slowDataArray[JSSD_FLOAT_TEMP_D4_A_CH19] = &project_wizard_visualization_data.viz_temp_d4_a_19;
 /* Project Wizard END: javascope_slowdata_pointers */
 
 	return Status;

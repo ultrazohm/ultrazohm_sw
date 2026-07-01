@@ -22,7 +22,6 @@
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-#include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
@@ -69,7 +68,7 @@ extern DS_Data Global_Data;
 #define MAX_CURRENT_ASSERTION 		380.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
-#define MAX_MOTOR_TEMP_ASSERTION	115.0f
+#define MAX_MOTOR_TEMP_ASSERTION	120.0f
 #define U_DC_MAX					61.0f
 #define U_DC_MIN					10.0f
 
@@ -125,6 +124,7 @@ struct uz_3ph_dq_t dq_reference_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 float torque_ref = 0.0f;
 
 struct uz_3ph_dq_t dq_decoup_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_abc_t current_reference_abc = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
 
 struct uz_DutyCycle_t output_dutycycle = {
 		.DutyCycle_A = 0.0f,
@@ -214,6 +214,7 @@ void ISR_Control(void *data)
     } else{
     	ticks_gradient++;
     }
+
     // Assertion check
     //
     if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION)
@@ -345,7 +346,7 @@ void ISR_Control(void *data)
   					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
   					// Dead-Time compensation
-					uz_3ph_abc_t current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+					current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
   					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
 
   					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
@@ -354,6 +355,9 @@ void ISR_Control(void *data)
   					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
   					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
   					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+  					Global_Data.rasv.ia_ref = current_reference_abc.a;
+  					Global_Data.rasv.ib_ref = current_reference_abc.b;
+  					Global_Data.rasv.ic_ref = current_reference_abc.c;
 
   					if (Global_Data.rasv.flg_use_voltComp){
   						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
@@ -376,17 +380,37 @@ void ISR_Control(void *data)
   					Global_Data.rasv.Id_ref = dq_reference_current.d;
   					Global_Data.rasv.Iq_ref = dq_reference_current.q;
   					Global_Data.rasv.n_ref = actual_output.n_ref_rpm;
+  					//dq_reference_current.d = 0.0f;
+  					//dq_reference_current.q = 0.0f;
 
   					// Basic FOC current control
-  					uz_3ph_dq_t dq_current_filt = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
-  					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_current_filt, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+  					//uz_3ph_dq_t dq_current_filt = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
+  					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
   					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
   					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
 
   					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
   					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
-  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					// Dead-Time compensation
+					current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+  					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
+
+  					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+  					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+  					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+  					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
+  					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
+  					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+  					Global_Data.rasv.ia_ref = current_reference_abc.a;
+  					Global_Data.rasv.ib_ref = current_reference_abc.b;
+  					Global_Data.rasv.ic_ref = current_reference_abc.c;
+
+  					if (Global_Data.rasv.flg_use_voltComp){
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
+  					} else{
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					}
   					break;
   				case rc_fingerprint:
   					Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.temperature_motor);
@@ -420,7 +444,26 @@ void ISR_Control(void *data)
 
   					uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, trigger);
 
-  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					// Dead-Time compensation
+					current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+  					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
+
+  					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+  					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+  					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+  					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
+  					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
+  					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+  					Global_Data.rasv.ia_ref = current_reference_abc.a;
+  					Global_Data.rasv.ib_ref = current_reference_abc.b;
+  					Global_Data.rasv.ic_ref = current_reference_abc.c;
+
+  					if (Global_Data.rasv.flg_use_voltComp){
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
+  					} else{
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					}
+
   					break;
   				case offset_estimation:
   				    if(!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_obj)){         // if not finished
@@ -438,12 +481,31 @@ void ISR_Control(void *data)
   					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
   					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
-  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					// Dead-Time compensation
+					current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+  					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
+
+  					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+  					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+  					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+  					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
+  					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
+  					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+  					Global_Data.rasv.ia_ref = current_reference_abc.a;
+  					Global_Data.rasv.ib_ref = current_reference_abc.b;
+  					Global_Data.rasv.ic_ref = current_reference_abc.c;
+
+  					if (Global_Data.rasv.flg_use_voltComp){
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
+  					} else{
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					}
+
   					break;
   				case chirp_signal:
-  					Global_Data.rasv.Id_ref = uz_wavegen_chirp_sample(Global_Data.objects.chirp_instance);
-  					dq_reference_current.d = Global_Data.rasv.Id_ref;
-  					dq_reference_current.q = 0.0f;
+  					Global_Data.rasv.Iq_ref = uz_wavegen_chirp_sample(Global_Data.objects.chirp_instance);
+  					dq_reference_current.d = 0.0f;
+  					dq_reference_current.q = Global_Data.rasv.Iq_ref;
   					chirp_counter++;
 
   					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
@@ -453,7 +515,25 @@ void ISR_Control(void *data)
   					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
   					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
-  					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					// Dead-Time compensation
+					current_reference_abc = uz_transformation_3ph_dq_to_abc(current_setpoints_filtered, Global_Data.av.theta_elec);
+  					output_dutycycle_comp = uz_VoltageCompensation_sample(Global_Data.objects.VoltageComp_instance, output_dutycycle, current_reference_abc, Global_Data.av.U_ZK);
+
+  					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+  					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+  					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+  					Global_Data.rasv.dutycycle_comp_A = output_dutycycle_comp.DutyCycle_A;
+  					Global_Data.rasv.dutycycle_comp_B = output_dutycycle_comp.DutyCycle_B;
+  					Global_Data.rasv.dutycycle_comp_C = output_dutycycle_comp.DutyCycle_C;
+  					Global_Data.rasv.ia_ref = current_reference_abc.a;
+  					Global_Data.rasv.ib_ref = current_reference_abc.b;
+  					Global_Data.rasv.ic_ref = current_reference_abc.c;
+
+  					if (Global_Data.rasv.flg_use_voltComp){
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle_comp.DutyCycle_A, output_dutycycle_comp.DutyCycle_B, output_dutycycle_comp.DutyCycle_C);
+  					} else{
+  						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+  					}
 
   					if(chirp_counter >= 12.0f * ISR_SAMPLE_FREQ){
   						uz_wavegen_chirp_reset(Global_Data.objects.chirp_instance);
@@ -479,6 +559,7 @@ void ISR_Control(void *data)
       			ultrazohm_state_machine_set_stop(true);
       		}
       	}
+
     } else{
       	// Jumped out of control state --> Reset has to be low for 1 ms
       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 0U);
@@ -489,6 +570,7 @@ void ISR_Control(void *data)
       	output_dutycycle.DutyCycle_A = 0.0f;
       	output_dutycycle.DutyCycle_B = 0.0f;
       	output_dutycycle.DutyCycle_C = 0.0f;
+
       	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
       	uz_CurrentControl_reset(Global_Data.objects.FOC_instance);
         dq_reference_current.d = 0.0f;

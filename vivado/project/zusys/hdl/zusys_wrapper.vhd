@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Apr 13 10:59:19 2026
+--Date        : Mon Apr 13 15:57:08 2026
 --Host        : Laptop-Timo running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -36,12 +36,12 @@ entity zusys_wrapper is
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_IN_10 : in STD_LOGIC;
-    D3_IN_14 : in STD_LOGIC;
-    D3_IN_16 : in STD_LOGIC;
-    D3_IN_2 : in STD_LOGIC;
-    D3_IN_4 : in STD_LOGIC;
-    D3_IN_8 : in STD_LOGIC;
+    D3_IN_10 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_14 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_16 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_2 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_4 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_8 : in STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -93,12 +93,6 @@ architecture STRUCTURE of zusys_wrapper is
     D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_18_Ch5 : in STD_LOGIC;
-    D3_IN_2 : in STD_LOGIC;
-    D3_IN_4 : in STD_LOGIC;
-    D3_IN_14 : in STD_LOGIC;
-    D3_IN_16 : in STD_LOGIC;
-    D3_IN_8 : in STD_LOGIC;
-    D3_IN_10 : in STD_LOGIC;
     D3_Temperature_OUT : out STD_LOGIC_VECTOR ( 2 downto 0 );
     Dig_22_Ch5 : out STD_LOGIC;
     Dig_23_Ch5 : out STD_LOGIC;
@@ -106,7 +100,13 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_12_Ch5 : out STD_LOGIC;
     D2_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D1_IN : in STD_LOGIC_VECTOR ( 3 downto 0 )
+    D1_IN : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    D3_IN_2 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_4 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_8 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_10 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_14 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_IN_16 : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -135,12 +135,12 @@ zusys_i: component zusys
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),
       D2_OUT_29(0) => D2_OUT_29(0),
-      D3_IN_10 => D3_IN_10,
-      D3_IN_14 => D3_IN_14,
-      D3_IN_16 => D3_IN_16,
-      D3_IN_2 => D3_IN_2,
-      D3_IN_4 => D3_IN_4,
-      D3_IN_8 => D3_IN_8,
+      D3_IN_10(0) => D3_IN_10(0),
+      D3_IN_14(0) => D3_IN_14(0),
+      D3_IN_16(0) => D3_IN_16(0),
+      D3_IN_2(0) => D3_IN_2(0),
+      D3_IN_4(0) => D3_IN_4(0),
+      D3_IN_8(0) => D3_IN_8(0),
       D3_OUT_26(0) => D3_OUT_26(0),
       D3_OUT_27(0) => D3_OUT_27(0),
       D3_OUT_28(0) => D3_OUT_28(0),

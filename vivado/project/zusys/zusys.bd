@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x84A9934410AD2AB0",
+      "boundary_crc": "0x49CA89F352B9CF4C",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -275,24 +275,6 @@
       "Dig_18_Ch5": {
         "direction": "I"
       },
-      "D3_IN_2": {
-        "direction": "I"
-      },
-      "D3_IN_4": {
-        "direction": "I"
-      },
-      "D3_IN_14": {
-        "direction": "I"
-      },
-      "D3_IN_16": {
-        "direction": "I"
-      },
-      "D3_IN_8": {
-        "direction": "I"
-      },
-      "D3_IN_10": {
-        "direction": "I"
-      },
       "D3_Temperature_OUT": {
         "direction": "O",
         "left": "2",
@@ -335,6 +317,36 @@
       "D1_IN": {
         "direction": "I",
         "left": "3",
+        "right": "0"
+      },
+      "D3_IN_2": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "D3_IN_4": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "D3_IN_8": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "D3_IN_10": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "D3_IN_14": {
+        "direction": "I",
+        "left": "0",
+        "right": "0"
+      },
+      "D3_IN_16": {
+        "direction": "I",
+        "left": "0",
         "right": "0"
       }
     },
@@ -3530,8 +3542,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_3",
-                "xci_path": "ip\\zusys_system_ila_0_3\\zusys_system_ila_0_3.xci",
+                "xci_name": "zusys_system_ila_0_2",
+                "xci_path": "ip\\zusys_system_ila_0_2\\zusys_system_ila_0_2.xci",
                 "inst_hier_path": "uz_system/DataMover/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -3729,8 +3741,8 @@
               },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_4",
-                "xci_path": "ip\\zusys_system_ila_0_4\\zusys_system_ila_0_4.xci",
+                "xci_name": "zusys_system_ila_0_3",
+                "xci_path": "ip\\zusys_system_ila_0_3\\zusys_system_ila_0_3.xci",
                 "inst_hier_path": "uz_system/Interrupt/system_ila_0",
                 "parameters": {
                   "C_DATA_DEPTH": {
@@ -5075,8 +5087,8 @@
               },
               "xlslice_0": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_0_1",
-                "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
+                "xci_name": "zusys_xlslice_0_0",
+                "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
                 "inst_hier_path": "uz_system/uz_enable/xlslice_0",
                 "parameters": {
                   "DIN_FROM": {
@@ -5109,8 +5121,8 @@
               },
               "axi_gpio_0": {
                 "vlnv": "xilinx.com:ip:axi_gpio:2.0",
-                "xci_name": "zusys_axi_gpio_0_1",
-                "xci_path": "ip\\zusys_axi_gpio_0_1\\zusys_axi_gpio_0_1.xci",
+                "xci_name": "zusys_axi_gpio_0_0",
+                "xci_path": "ip\\zusys_axi_gpio_0_0\\zusys_axi_gpio_0_0.xci",
                 "inst_hier_path": "uz_system/uz_enable/axi_gpio_0",
                 "parameters": {
                   "C_ALL_INPUTS": {
@@ -5782,14 +5794,14 @@
           },
           "uz_endat_interface_0": {
             "vlnv": "xilinx.com:ip:uz_endat_interface:0.4",
-            "xci_name": "zusys_uz_endat_interface_0_1",
-            "xci_path": "ip\\zusys_uz_endat_interface_0_1\\zusys_uz_endat_interface_0_1.xci",
+            "xci_name": "zusys_uz_endat_interface_0_0",
+            "xci_path": "ip\\zusys_uz_endat_interface_0_0\\zusys_uz_endat_interface_0_0.xci",
             "inst_hier_path": "uz_user/uz_endat_interface_0"
           },
           "axi_gpio_0": {
             "vlnv": "xilinx.com:ip:axi_gpio:2.0",
-            "xci_name": "zusys_axi_gpio_0_0",
-            "xci_path": "ip\\zusys_axi_gpio_0_0\\zusys_axi_gpio_0_0.xci",
+            "xci_name": "zusys_axi_gpio_0_1",
+            "xci_path": "ip\\zusys_axi_gpio_0_1\\zusys_axi_gpio_0_1.xci",
             "inst_hier_path": "uz_user/axi_gpio_0",
             "parameters": {
               "C_ALL_OUTPUTS": {
@@ -9034,8 +9046,8 @@
       },
       "xlslice_0": {
         "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_xlslice_0_0",
-        "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
+        "xci_name": "zusys_xlslice_0_1",
+        "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
         "inst_hier_path": "xlslice_0",
         "parameters": {
           "DIN_FROM": {
@@ -9048,8 +9060,8 @@
       },
       "xlconcat_0": {
         "vlnv": "xilinx.com:ip:xlconcat:2.1",
-        "xci_name": "zusys_xlconcat_0_5",
-        "xci_path": "ip\\zusys_xlconcat_0_5\\zusys_xlconcat_0_5.xci",
+        "xci_name": "zusys_xlconcat_0_4",
+        "xci_path": "ip\\zusys_xlconcat_0_4\\zusys_xlconcat_0_4.xci",
         "inst_hier_path": "xlconcat_0",
         "parameters": {
           "NUM_PORTS": {

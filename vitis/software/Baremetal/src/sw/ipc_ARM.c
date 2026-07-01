@@ -329,10 +329,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-			control_mode = manual;
+			/*control_mode = manual;
 			data->rasv.halfBridge1DutyCycle = 0.0;
 			data->rasv.halfBridge2DutyCycle = 0.0;
-			data->rasv.halfBridge3DutyCycle = 0.0;
+			data->rasv.halfBridge3DutyCycle = 0.0; */
+			control_mode = rs_measurement;
 			break;
 
 		case (My_Button_8):
@@ -395,12 +396,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
+	if (control_mode == rc_fingerprint){
+		js_status_BareToRTOS |= 1 << 6;
+	}else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
+
 
 	/* Bit 7 - My_Button_4 */
 	// js_status_BareToRTOS &= ~(1 << 7);
+	if (control_mode == FOC_i_dq_setpoint){
+		js_status_BareToRTOS |= 1 << 7;
+	}else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
+
 
 	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);
+	if (control_mode == offset_estimation){
+		js_status_BareToRTOS |= 1 << 8;
+	}else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
 	if (data->rasv.flg_use_voltComp){

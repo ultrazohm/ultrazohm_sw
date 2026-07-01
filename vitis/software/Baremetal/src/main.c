@@ -48,8 +48,8 @@ struct uz_dq_setpoint_filter_config config = {
 
 struct uz_parameterid_rs_config_t config_rs_meas = {
 		.n_start_rpm = 200.0f,
-	    .n_end_rpm = 1400.0f,
-	    .n_steps = 6.0f,
+	    .n_end_rpm = 2200.0f,
+	    .n_steps = 9.0f,
 	    .i_pos_Amps = 50.0f,
 	    .i_neg_Amps = -50.0f,
 	    .i_repeats = 5.0f, // W
@@ -62,12 +62,12 @@ struct uz_parameterid_rs_config_t config_rs_meas = {
 
 
 const struct uz_parameterID_rc_config_t rc_meas_config = {
-  	.abs_id_max_Amps = 150.0f,
-  	.abs_iq_max_Amps = 150.0f,
-	.n_start_rpm = 1000.0f,
-	.n_stop_rpm = 1000.0f,
-	.id_steps = 10U,
-	.iq_steps = 10U,
+  	.abs_id_max_Amps = 50.0f,
+  	.abs_iq_max_Amps = 50.0f,
+	.n_start_rpm = 100.0f,
+	.n_stop_rpm = 100.0f,
+	.id_steps = 5U,
+	.iq_steps = 5U,
 	.n_steps = 0U,
 	.check_temp=1
   };
@@ -76,17 +76,17 @@ struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               
     .ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
     .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
     .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
-    .ptr_actual_u_q_V = &Global_Data.rasv.Uq_ref,                                    // pointer to q-setpoint voltage
+    .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
     .min_omega_el = 1300.0f,                                                     // target electric rotor angular speed (USE OWN)
     .setpoint_current = 30.0f};    // current setpoint to reach speed (USE OWN)
 
 struct uz_wavegen_chirp_config config_chirp = {
-        .amplitude = 10.0f,
+        .amplitude = 15.0f,
         .start_frequency_Hz = 1.0f,
         .end_frequency_Hz = 7000.0f,
         .duration_sec = 5.0f,
-        .initial_delay_sec = 2.0f,
-        .offset = 15.0f
+        .initial_delay_sec = 0.0f,
+        .offset = 150.0f
 };
 
 const struct uz_resonantController_config config_R = {
@@ -101,14 +101,40 @@ const struct uz_resonantController_config config_R = {
     .in_measured_value = 0.0f,
 };
 
+static float dead_time_lut_currents_A[41] = {
+    -25.0000000f, -23.7500000f, -22.5000000f, -21.2500000f, -20.0000000f, -18.7500000f, -17.5000000f, -16.2500000f, -15.0000000f, -13.7500000f,
+    -12.5000000f, -11.2500000f, -10.0000000f, -8.7500000f, -7.5000000f, -6.2500000f, -5.0000000f, -3.7500000f, -2.5000000f, -1.2500000f,
+    0.0000000f, 1.2500000f, 2.5000000f, 3.7500000f, 5.0000000f, 6.2500000f, 7.5000000f, 8.7500000f, 10.0000000f, 11.2500000f,
+    12.5000000f, 13.7500000f, 15.0000000f, 16.2500000f, 17.5000000f, 18.7500000f, 20.0000000f, 21.2500000f, 22.5000000f, 23.7500000f, 25.0000000f
+};
+
+static float dead_time_lut_values[41] = {
+    -1.0000000f, -0.9988809f, -0.9974101f, -0.9954759f, -0.9929302f,
+    -0.9895774f, -0.9851575f, -0.9793256f, -0.9716230f, -0.9614383f,
+    -0.9479550f, -0.9300800f, -0.9063454f, -0.8747726f, -0.8326819f,
+    -0.7764207f, -0.7009650f, -0.5993062f, -0.4614183f, -0.2721095f,
+    0.0000000f, 0.2721095f, 0.4614183f, 0.5993062f, 0.7009650f,
+    0.7764207f, 0.8326819f, 0.8747726f, 0.9063454f, 0.9300800f,
+    0.9479550f, 0.9614383f, 0.9716230f, 0.9793256f, 0.9851575f,
+    0.9895774f, 0.9929302f, 0.9954759f, 0.9974101f, 0.9988809f, 1.0000000f
+};
+
 struct uz_VoltageCompensation_config VoltComp_config = {
-	 .dead_time_us = 2.0f,
+	 .dead_time_us = 0.6489075f,
 	 .enable_dead_time_compensation = 1U,
 	 .enable_on_delay_time_compensation = 0U,
 	 .enable_voltage_drop_compensation = 0U,
 	 .enable_R_on_compensation = 0U,
-	 .switching_frequency_Hz = UZ_PWM_FREQ_HZ,
-	 .threshold_current = 5.0f,
+	 .switching_frequency_Hz = UZ_PWM_FREQUENCY,
+	 .threshold_current = 25.0000000f,
+	 .dead_time_compensation_type = UZ_VOLTAGE_COMPENSATION_DEAD_TIME_USE_EXPONENTIAL_FUNCTION,
+	 .dead_time_exp_A = 1.0035966f,
+	 .dead_time_exp_B = 0.2415270f,
+	 .dead_time_exp_C = 0.9612082f,
+	 .dead_time_exp_S = 1.1f,
+	 .dead_time_lut_currents_A = dead_time_lut_currents_A,
+	 .dead_time_lut_values = dead_time_lut_values,
+	 .dead_time_lut_size = 41,
 	 .R_on_mOhm = 3.5f
 };
 
@@ -163,6 +189,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+
             struct uz_PMSM_t config_PMSM = {
                .Ld_Henry = 0.00001159f,				// 0.000027 fuer seg-rotor
                .Lq_Henry = 0.000016663f,				// 0.000042 fuer seg_rotor
@@ -174,15 +201,15 @@ int main(void)
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.05f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
-               .Ki = 100.0f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
+               .Kp = 0.0509f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
+               .Ki = 54.7f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.05f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
-			   .Ki = 100.0f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
+               .Kp = 0.0578f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
+			   .Ki = 54.7f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
@@ -196,7 +223,7 @@ int main(void)
             Global_Data.objects.FOC_instance = uz_CurrentControl_init(FOC_config);
             struct uz_SetPoint_config SP_config = {
                   .config_PMSM = config_PMSM,
-                  .motor_type = SMPMSM,
+                  .motor_type = IPMSM,
                   .is_field_weakening_enabled = false,
                   .id_ref_Ampere = 0.0f,
                   .relative_torque_tolerance = 0.001f
@@ -204,17 +231,20 @@ int main(void)
             Global_Data.objects.current_setpoint_obj = uz_SetPoint_init(SP_config);
             Global_Data.rasv.flg_use_setpoint_calculation = 0.0f;
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
-            Global_Data.av.theta_offset = -0.01999986f;
+            Global_Data.av.theta_offset = -0.0195f;
+            Global_Data.objects.pll_0 = pll_0_init();
+
             Global_Data.objects.encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
             Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
             Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
-            Global_Data.objects.pll_0 = pll_0_init();
+
             Global_Data.objects.chirp_instance = uz_wavegen_chirp_init(config_chirp);
             Global_Data.objects.R_controller_instance_d = uz_resonantController_init(config_R);
             Global_Data.objects.R_controller_instance_q = uz_resonantController_init(config_R);
             Global_Data.rasv.flg_use_ResonantController = 0.0f;
             Global_Data.rasv.flg_use_voltComp = 0.0f;
             Global_Data.objects.VoltageComp_instance = uz_VoltageCompensation_init(VoltComp_config);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -247,8 +277,8 @@ int main(void)
                         		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
                         };
             struct uz_axi_gpio_config_t config_output_LMG = {
-                        		.base_address = XPAR_UZ_USER_AXI_GPIO_D2OUTS_BASEADDR ,
-                        		.device_id = XPAR_UZ_USER_AXI_GPIO_D2OUTS_DEVICE_ID,
+                        		.base_address = XPAR_UZ_USER_AXI_GPIO_0_BASEADDR ,
+                        		.device_id = XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
                         		.number_of_pins = 6,
                         		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
                         };

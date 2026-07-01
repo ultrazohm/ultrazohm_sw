@@ -150,6 +150,9 @@ typedef struct _referenceAndSetValues_ {
 	float dutycycle_comp_A;
 	float dutycycle_comp_B;
 	float dutycycle_comp_C;
+	float ia_ref;
+	float ib_ref;
+	float ic_ref;
 } referenceAndSetValues;
 
 typedef struct{

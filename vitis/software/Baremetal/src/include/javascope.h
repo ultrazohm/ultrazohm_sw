@@ -75,6 +75,9 @@ enum JS_OberservableData {
 	JSO_DutyCycle_comp_A,
 	JSO_DutyCycle_comp_B,
 	JSO_DutyCycle_comp_C,
+	JSO_ia_ref,
+	JSO_ib_ref,
+	JSO_ic_ref,
 	JSO_ENDMARKER
 };
 
@@ -269,7 +272,7 @@ enum gui_button_mapping {
 	FOC_control,
 	Offset_est.,
 	VoltComp.,
-	dutyC:0.0,
+	RsMeas,
 	chirp_signal,
 	MYBUTTONS_LABELS_ENDMARKER
 

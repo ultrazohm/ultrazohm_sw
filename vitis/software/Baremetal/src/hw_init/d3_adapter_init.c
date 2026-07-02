@@ -1,25 +1,29 @@
 #include "../include/d3_adapter_init.h"
 
 /* Project Wizard BEGIN: D3 definitions */
-/* Project Wizard generated content for D3 AXI GPIO IO card */
+/* Project Wizard generated content for D3 */
+#include "../uz/uz_HAL.h"
+#include "../uz/uz_global_configuration.h"
+#include "../globalData.h"
 #include "xparameters.h"
-#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+#include <stdbool.h>
 
-#ifndef XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_AXI_GPIO_D3_DEVICE_ID
-#define XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_AXI_GPIO_D3_DEVICE_ID 2U
-#endif
+static struct uz_inverter_adapter_config_t config_inverter_adapter_d3 = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_D_INVERTER_ADAPTER_D3_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000U,
+    .linear_interpolation_params = {
+        .a = -289.01f,
+        .b = 218.72f}};
 
-#define PROJECT_WIZARD_IO_CARD_D3_DIRECTION_MASK 0x0003C000U
+static struct uz_inverter_adapter_outputs_t inverter_adapter_d3_outputs = {0};
 
-static struct uz_axi_gpio_config_t axi_gpio_d3_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_AXI_GPIO_D3_BASEADDR,
-    .device_id = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_AXI_GPIO_D3_DEVICE_ID,
-    .number_of_pins = 30U,
-    .direction_of_pins = PROJECT_WIZARD_IO_CARD_D3_DIRECTION_MASK
-};
-
-uz_axi_gpio_t* initialize_axi_gpio_d3(void)
+uz_inverter_adapter_t* initialize_inverter_adapter_d3(void)
 {
-    return uz_axi_gpio_init(axi_gpio_d3_config);
+    return uz_inverter_adapter_init(config_inverter_adapter_d3, inverter_adapter_d3_outputs);
+}
+
+void update_inverter_adapter_d3_outputs(struct _DS_Data_* data)
+{
+    data->av.inverter_adapter_d3 = uz_inverter_adapter_get_outputs(data->objects.inverter_adapter_d3);
 }
 /* Project Wizard END: D3 definitions */

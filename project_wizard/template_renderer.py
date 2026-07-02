@@ -37,7 +37,10 @@ class SimpleTemplateRenderer:
             template = template[: match.start()] + "".join(rendered) + template[match.end() :]
 
     def _render_if_blocks(self, template: str, context: dict[str, Any]) -> str:
-        pattern = re.compile(r"{%\s*if\s+([\w.]+)\s*%}(.*?){%\s*endif\s*%}", re.DOTALL)
+        pattern = re.compile(
+            r"{%\s*if\s+([\w.]+)\s*%}((?:(?!{%\s*if\b|{%\s*endif\s*%}).)*?){%\s*endif\s*%}",
+            re.DOTALL,
+        )
         while True:
             match = pattern.search(template)
             if not match:

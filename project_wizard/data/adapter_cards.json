@@ -22,6 +22,11 @@
       "description": "D-slot CPLD program for optical 14TX/4RX adapter card pin routing."
     },
     {
+      "id": "tx20_10rx",
+      "name": "tx20_10rx",
+      "description": "D-slot CPLD program for UZ_D Voltage RS422 20TX/10RX pin routing."
+    },
+    {
       "id": "voltage_8rx_8rx_8rx_6rx",
       "name": "voltage_8rx_8rx_8rx_6rx",
       "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
@@ -1051,13 +1056,53 @@
           "Uses single-pin D-slot constraints instead of the packed constraint file."
         ],
         "io_card": {
-          "kind": "optical",
+          "kind": "variant",
           "pin_count": 18,
+          "variant_option": "optical_variant",
           "default_variant": "14tx4rx",
           "default_modes": {
             "tx": "axi_gpio",
             "rx": "axi_gpio"
-          }
+          },
+          "variants": [
+            {
+              "id": "14tx4rx",
+              "label": "14TX4RX",
+              "cpld_program": "optical_14tx_4rx",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 14
+                },
+                {
+                  "direction": "rx",
+                  "width": 4
+                }
+              ]
+            },
+            {
+              "id": "18tx",
+              "label": "18TX",
+              "cpld_program": "tx30",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 18
+                }
+              ]
+            },
+            {
+              "id": "18rx",
+              "label": "18RX",
+              "cpld_program": "rx30",
+              "directions": [
+                {
+                  "direction": "rx",
+                  "width": 18
+                }
+              ]
+            }
+          ]
         },
         "constraints": {
           "disable": "Digital_{slot}_packed.xdc",
@@ -1104,8 +1149,7 @@
         "D1",
         "D2",
         "D3",
-        "D4",
-        "D5"
+        "D4"
       ],
       "slot_cpld": "voltage_8rx_8rx_8rx_6rx",
       "vivado": {
@@ -1217,6 +1261,114 @@
             {
               "id": "tx",
               "label": "TX output from FPGA"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose one 30-bit IO state word for visualization."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_voltage_rs422",
+      "name": "UZ_D Voltage RS422",
+      "family": "digital",
+      "description": "Digital voltage RS422 adapter card with selectable 30TX, 20TX10RX, or 30RX population.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "rx30",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Routes all 30 RS422 IO pins according to the selected adapter population.",
+          "The selected RS422 variant determines the slot CPLD program.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "variant",
+          "pin_count": 30,
+          "variant_option": "rs422_variant",
+          "default_variant": "30rx",
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          },
+          "variants": [
+            {
+              "id": "30rx",
+              "label": "30RX",
+              "cpld_program": "rx30",
+              "directions": [
+                {
+                  "direction": "rx",
+                  "width": 30
+                }
+              ]
+            },
+            {
+              "id": "20tx10rx",
+              "label": "20TX10RX",
+              "cpld_program": "tx20_10rx",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 20
+                },
+                {
+                  "direction": "rx",
+                  "width": 10
+                }
+              ]
+            },
+            {
+              "id": "30tx",
+              "label": "30TX",
+              "cpld_program": "tx30",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 30
+                }
+              ]
+            }
+          ]
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "rs422_variant",
+          "label": "RS422 variant",
+          "default": "30rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "30rx",
+              "label": "30RX"
+            },
+            {
+              "id": "20tx10rx",
+              "label": "20TX10RX"
+            },
+            {
+              "id": "30tx",
+              "label": "30TX"
             }
           ]
         }

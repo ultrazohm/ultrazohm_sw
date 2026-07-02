@@ -656,7 +656,7 @@ class SoftwareGenerator:
                         available_visualization_signals.extend(
                             resolver_ip_visualization_signals(str(resolver_context["slot_lower"]), channel_index)
                         )
-            elif card_id in {"uz_d_optical_io", "uz_d_voltage_3v3_5v"}:
+            elif (self.database.card_by_id(card_id) or {}).get("vivado", {}).get("io_card"):
                 card = self.database.card_by_id(card_id) or {}
                 slot_options = option_values.get(slot, {})
                 if io_card_needs_axi(card, slot_options):
@@ -2114,10 +2114,15 @@ def io_card_needs_axi(card: dict[str, object], option_values: dict[str, str]) ->
     default_modes = card.get("vivado", {}).get("io_card", {}).get("default_modes", {})
     if not isinstance(default_modes, dict):
         default_modes = {}
-    return any(
-        option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio"))) == "axi_gpio"
-        for index, direction in enumerate(directions)
-    )
+    for index, direction in enumerate(directions):
+        mode = option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio")))
+        if direction == "rx" and mode not in {"axi_gpio", "top_level"}:
+            mode = "axi_gpio"
+        if direction == "tx" and mode not in {"axi_gpio", "source_pin", "pwm", "constant"}:
+            mode = "axi_gpio"
+        if mode == "axi_gpio":
+            return True
+    return False
 
 
 def io_card_direction_mask(card: dict[str, object], option_values: dict[str, str]) -> int:
@@ -2135,13 +2140,9 @@ def io_card_directions(card: dict[str, object], option_values: dict[str, str]) -
         return []
     kind = str(io_card.get("kind", ""))
     pin_count = config_int(str(io_card.get("pin_count", "30")), default=30, minimum=1, maximum=30)
-    if kind == "optical":
-        variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
-        if variant == "18rx":
-            return ["rx"] * min(pin_count, 18)
-        if variant == "18tx":
-            return ["tx"] * min(pin_count, 18)
-        return ["tx"] * 14 + ["rx"] * 4
+    variant_directions = io_card_variant_directions(io_card, option_values)
+    if variant_directions:
+        return variant_directions[:pin_count]
     if kind == "voltage_grouped":
         directions: list[str] = []
         groups = io_card.get("groups", [])
@@ -2155,6 +2156,35 @@ def io_card_directions(card: dict[str, object], option_values: dict[str, str]) -
             directions.extend([direction if direction in {"tx", "rx"} else "rx"] * width)
         return directions[:pin_count]
     return ["rx"] * pin_count
+
+
+def io_card_variant_directions(io_card: dict[str, object], option_values: dict[str, str]) -> list[str]:
+    variant = selected_io_card_variant(io_card, option_values)
+    if not variant:
+        return []
+    directions: list[str] = []
+    for group in variant.get("directions", []):
+        if not isinstance(group, dict):
+            continue
+        direction = str(group.get("direction", "rx")).strip().lower()
+        if direction not in {"tx", "rx"}:
+            direction = "rx"
+        width = config_int(str(group.get("width", "0")), default=0, minimum=0, maximum=30)
+        directions.extend([direction] * width)
+    return directions
+
+
+def selected_io_card_variant(io_card: dict[str, object], option_values: dict[str, str]) -> dict[str, object] | None:
+    variants = io_card.get("variants", [])
+    if not isinstance(variants, list) or not variants:
+        return None
+    option_id = str(io_card.get("variant_option", "io_variant"))
+    selected_id = option_values.get(option_id, str(io_card.get("default_variant", "")))
+    for variant in variants:
+        if isinstance(variant, dict) and str(variant.get("id", "")) == selected_id:
+            return variant
+    first = variants[0]
+    return first if isinstance(first, dict) else None
 
 
 def adc_ltc2311_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:

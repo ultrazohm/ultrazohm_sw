@@ -236,7 +236,11 @@ def _program_jed_path(cpld_repository: Path, program_id: str, variant: dict[str,
         candidates = [
             cpld_repository / base_dir / program / f"uz_d_slots_{program}.jed",
         ]
+        if program == "tx20_10rx":
+            candidates.append(cpld_repository / base_dir / program / "uz_d_slots_tx20_10rx.jed")
         if program.startswith("voltage_"):
+            candidates.append(cpld_repository / base_dir / "Voltage_RS422" / program / f"uz_d_slots_{program}.jed")
+            candidates.append(cpld_repository / base_dir / "Voltage_RS422" / program / f"{program}.jed")
             candidates.append(cpld_repository / base_dir / "Voltage_3v3_5v" / program / f"uz_d_slots_{program}.jed")
         mapped_filename = MACHXO2_JED_FILENAMES.get(program)
         if mapped_filename:
@@ -247,6 +251,10 @@ def _program_jed_path(cpld_repository: Path, program_id: str, variant: dict[str,
             if candidate.exists():
                 return candidate
         return candidates[0]
+    if program == "tx20_10rx":
+        if "LC4256V" in base_dir.parts:
+            return cpld_repository / base_dir / "20tx_10rx" / "20tx_10rx.jed"
+        return cpld_repository / base_dir / "20tx_10rx" / "uz_cpld_20tx_10rx.jed"
     filename = ISPMACH_JED_FILENAMES.get(program, f"{program}.jed")
     filename_path = Path(filename)
     if len(filename_path.parts) > 1:

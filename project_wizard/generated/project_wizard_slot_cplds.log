@@ -21,21 +21,29 @@ Total erase time: 1340 ms.
 Number of Loop = 134/1500
 Execution time: 00 min : 15 sec
 Operation Done. No errors.
-Elapsed time: 00 min : 16 sec
+Elapsed time: 00 min : 15 sec
 Device2 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1400 ms.
+Total erase time: 1410 ms.
 
-Number of Loop = 140/1500
+Number of Loop = 141/1500
+Execution time: 00 min : 15 sec
+Operation Done. No errors.
+Elapsed time: 00 min : 16 sec
+Device3 LCMXO2-2000HC: FLASH Erase,Program,Verify
+
+Total erase time: 1650 ms.
+
+Number of Loop = 165/1500
+Execution time: 00 min : 15 sec
+Operation Done. No errors.
+Elapsed time: 00 min : 16 sec
+Device4 LCMXO2-2000HC: FLASH Erase,Program,Verify
+
+Total erase time: 1470 ms.
+
+Number of Loop = 147/1500
 Execution time: 00 min : 15 sec
 Operation Done. No errors.
 Elapsed time: 00 min : 15 sec
-Device3 LCMXO2-2000HC: FLASH Erase,Program,Verify
-
-Total erase time: 1690 ms.
-
-Number of Loop = 169/1500
-Execution time: 00 min : 15 sec
-Operation Done. No errors.
-Elapsed time: 00 min : 16 sec
 Operation: successful.

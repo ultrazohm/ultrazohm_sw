@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import json
 import html
+import platform
+import subprocess
 import sys
 import traceback
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-from PyQt6.QtCore import QProcess, Qt, QTimer
-from PyQt6.QtGui import QAction, QFont
+from PyQt6.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, QProcess, Qt, QTimer
+from PyQt6.QtGui import QAction, QColor, QFont, QKeySequence, QPainter, QPalette, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -37,6 +39,7 @@ from PyQt6.QtWidgets import (
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
+    QWidgetAction,
 )
 
 from ..paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, OUTPUT_DIR, SLOTS
@@ -45,13 +48,62 @@ from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
 from ..services.config_service import build_config_document
 from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_settings_from_xcf
-from ..services.software_generator_service import SoftwareGenerator, resolver_channel_count
+from ..services.software_generator_service import SoftwareGenerator
 from ..services.system_resolver import SystemResolver
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
 from ..services.vivado_service import write_vivado_run_wrapper
 from ..theme import set_dark_mode
 from ..tcl_generator import TclGenerator
+from .adapter_card_details import AdapterCardDetailsWidget
 from .card_editor import CardEditorDialog
+
+
+class MenuActionRow(QWidget):
+    def __init__(self, text: str, shortcut: str, triggered: Callable[[], None], parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.triggered = triggered
+        self.hovered = False
+        self.setMinimumWidth(260)
+        self.setMinimumHeight(28)
+        self.setMouseTracking(True)
+
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(14, 4, 14, 4)
+        layout.setSpacing(18)
+
+        text_label = QLabel(text)
+        shortcut_label = QLabel(shortcut)
+        shortcut_font = shortcut_label.font()
+        shortcut_font.setItalic(True)
+        shortcut_font.setPointSize(max(1, shortcut_font.pointSize() - 1))
+        shortcut_label.setFont(shortcut_font)
+        shortcut_label.setStyleSheet("color: #777;")
+
+        layout.addWidget(text_label)
+        layout.addStretch(1)
+        layout.addWidget(shortcut_label)
+
+    def enterEvent(self, event) -> None:
+        self.hovered = True
+        self.update()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event) -> None:
+        self.hovered = False
+        self.update()
+        super().leaveEvent(event)
+
+    def mouseReleaseEvent(self, event) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.triggered()
+            return
+        super().mouseReleaseEvent(event)
+
+    def paintEvent(self, event) -> None:
+        if self.hovered:
+            painter = QPainter(self)
+            painter.fillRect(self.rect(), self.palette().color(QPalette.ColorRole.Highlight))
+        super().paintEvent(event)
 
 
 class MainWindow(QMainWindow):
@@ -64,6 +116,7 @@ class MainWindow(QMainWindow):
         self.software_generator = SoftwareGenerator(self.database)
         self.system_resolver = SystemResolver(self.database)
         self.current_config_path: Path | None = None
+        self.saved_config_snapshot = ""
         self.is_loading_config = True
         self.slot_combos: dict[str, QComboBox] = {}
         self.cpld_combos: dict[str, QComboBox] = {}
@@ -88,6 +141,7 @@ class MainWindow(QMainWindow):
         self.toolchain_status: QPlainTextEdit | None = None
         self.platform_cpld_group: QGroupBox | None = None
         self.platform_cpld_type_combo: QComboBox | None = None
+        self.platform_nameplate_group: QGroupBox | None = None
         self.cpld_programmer_fields: dict[str, QLineEdit] = {}
         self.cpld_status: QTextEdit | None = None
         self.cpld_process: QProcess | None = None
@@ -102,13 +156,10 @@ class MainWindow(QMainWindow):
         self.tcl_run_vivado_checkbox: QCheckBox | None = None
         self.tcl_workflow_button: QPushButton | None = None
         self.vivado_status: QPlainTextEdit | None = None
-        self.detail_combos: dict[tuple[str, str], QComboBox] = {}
-        self.detail_checkboxes: dict[tuple[str, str], QCheckBox] = {}
-        self.detail_trigger_edits: dict[tuple[str, str], QLineEdit] = {}
-        self.detail_source_edits: dict[tuple[str, str], QLineEdit | QComboBox] = {}
-        self.io_pin_rows: dict[tuple[str, str], dict[str, QWidget]] = {}
         self.detail_options: dict[str, dict[str, str]] = {}
+        self.adapter_details: AdapterCardDetailsWidget | None = None
         self.software_dependent_views_dirty = False
+        self.bulk_update_disable_depth = 0
         self.dark_mode_action: QAction | None = None
 
         self.stack = QStackedWidget()
@@ -145,31 +196,18 @@ class MainWindow(QMainWindow):
             self.is_loading_config = False
         self.refresh_dirty_software_dependent_views()
         self.refresh_tcl_preview()
-        self.refresh_software_preview()
+        self.saved_config_snapshot = self.config_snapshot()
 
     def _build_menu(self) -> None:
         file_menu = self.menuBar().addMenu("File")
 
-        new_config_action = QAction("New config", self)
-        new_config_action.triggered.connect(self.new_config)
-        file_menu.addAction(new_config_action)
-
-        open_config_action = QAction("Open config", self)
-        open_config_action.triggered.connect(self.open_config)
-        file_menu.addAction(open_config_action)
-
-        save_config_action = QAction("Save config", self)
-        save_config_action.triggered.connect(self.save_config)
-        file_menu.addAction(save_config_action)
-
-        save_config_as_action = QAction("Save config as", self)
-        save_config_as_action.triggered.connect(self.save_config_as)
-        file_menu.addAction(save_config_as_action)
+        self.add_file_menu_action(file_menu, "New config", QKeySequence.StandardKey.New, self.new_config)
+        self.add_file_menu_action(file_menu, "Open config", QKeySequence.StandardKey.Open, self.open_config)
+        self.add_file_menu_action(file_menu, "Save config", QKeySequence.StandardKey.Save, self.save_config)
+        self.add_file_menu_action(file_menu, "Save config as", QKeySequence.StandardKey.SaveAs, self.save_config_as)
 
         file_menu.addSeparator()
-        quit_action = QAction("Quit", self)
-        quit_action.triggered.connect(self.close)
-        file_menu.addAction(quit_action)
+        self.add_file_menu_action(file_menu, "Quit", QKeySequence("Ctrl+Q"), self.close)
 
         edit_menu = self.menuBar().addMenu("Edit")
         card_database_action = QAction("Card database", self)
@@ -237,12 +275,52 @@ class MainWindow(QMainWindow):
         info_action.triggered.connect(self.show_info)
         help_menu.addAction(info_action)
 
+    def add_file_menu_action(
+        self,
+        menu,
+        text: str,
+        shortcut: QKeySequence | QKeySequence.StandardKey,
+        handler: Callable[[], Any],
+    ) -> QAction:
+        action = QAction(text, self)
+        action.setShortcut(shortcut)
+        action.triggered.connect(handler)
+        self.addAction(action)
+
+        widget_action = QWidgetAction(menu)
+        shortcut_text = action.shortcut().toString(QKeySequence.SequenceFormat.NativeText)
+
+        def trigger_action() -> None:
+            menu.close()
+            action.trigger()
+
+        widget_action.setDefaultWidget(MenuActionRow(text, shortcut_text, trigger_action, menu))
+        menu.addAction(widget_action)
+        return action
+
     def set_dark_mode_enabled(self, enabled: bool) -> None:
         set_dark_mode(QApplication.instance(), enabled)
         if self.dark_mode_action is not None:
             self.dark_mode_action.blockSignals(True)
             self.dark_mode_action.setChecked(enabled)
             self.dark_mode_action.blockSignals(False)
+
+    def closeEvent(self, event) -> None:
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Icon.Question)
+        dialog.setWindowTitle("Quit Project Wizard")
+        dialog.setText("Do you really want to quit Project Wizard?")
+        quit_button = dialog.addButton("Quit", QMessageBox.ButtonRole.AcceptRole)
+        cancel_button = dialog.addButton(QMessageBox.StandardButton.Cancel)
+        dialog.setDefaultButton(cancel_button)
+        dialog.exec()
+        if dialog.clickedButton() == quit_button:
+            if not self.confirm_save_config_changes("quitting"):
+                event.ignore()
+                return
+            event.accept()
+            return
+        event.ignore()
 
     def _build_navigation(self) -> QTreeWidget:
         tree = QTreeWidget()
@@ -414,8 +492,8 @@ class MainWindow(QMainWindow):
         vivado_form.addRow("", open_gui_checkbox)
         vivado_form.addRow("", disable_checkpoints_checkbox)
         hint = QLabel(
-            "For manual inspection, leave saving disabled. Vivado can apply the generated TCL and validate the "
-            "block design. Enable the GUI option to inspect unsaved changes before deciding whether to save. "
+            "Vivado can apply the generated TCL and validate the "
+            "block design (BD). Enable the GUI option to inspect the created BD. "
             "Disable synthesis checkpoints for slower but cleaner full builds when Vivado has IP checkpoint issues."
         )
         hint.setWordWrap(True)
@@ -601,13 +679,46 @@ class MainWindow(QMainWindow):
         form = QFormLayout(group)
         self.platform_combo = QComboBox()
         for platform in self.database.platforms:
-            self.platform_combo.addItem(platform.get("name", platform.get("id", "Unnamed platform")), platform.get("id"))
+            platform_name = platform.get("name", platform.get("id", "Unnamed platform"))
+            supported = bool(platform.get("supported", True))
+            display_name = platform_name if supported else f"{platform_name} - comming soon"
+            self.platform_combo.addItem(display_name, platform.get("id"))
+            if not supported:
+                item = self.platform_combo.model().item(self.platform_combo.count() - 1)
+                if item is not None:
+                    item.setForeground(QColor("#777"))
+                    item.setEnabled(False)
+                    item.setSelectable(False)
         self.platform_combo.currentIndexChanged.connect(self.platform_changed)
         form.addRow("Platform", self.platform_combo)
         self.platform_revision_combo = QComboBox()
         self.platform_revision_combo.currentIndexChanged.connect(self.platform_revision_changed)
         form.addRow("Revision", self.platform_revision_combo)
         layout.addWidget(group)
+
+        self.platform_nameplate_group = QGroupBox("Revision on system nameplate")
+        nameplate_layout = QVBoxLayout(self.platform_nameplate_group)
+        nameplate_hint = QLabel(
+            "Use the first two digits of the four-digit group after the third hyphen in the serial number. "
+            "In this example, 06 means Rev06."
+        )
+        nameplate_hint.setWordWrap(True)
+        nameplate_layout.addWidget(nameplate_hint)
+        nameplate_image = QLabel()
+        nameplate_image.setFixedSize(390, 204)
+        nameplate_image.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        nameplate_image.setStyleSheet("background-color: #ffffff;")
+        nameplate_pixmap = QPixmap(str(APP_DIR / "assets" / "nameplate_revision.png"))
+        nameplate_image.setPixmap(
+            nameplate_pixmap.scaled(
+                nameplate_image.size(),
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation,
+            )
+        )
+        nameplate_image.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        nameplate_layout.addWidget(nameplate_image, 0, Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.platform_nameplate_group)
 
         self.platform_cpld_group = QGroupBox("CPLD type")
         cpld_layout = QVBoxLayout(self.platform_cpld_group)
@@ -620,7 +731,7 @@ class MainWindow(QMainWindow):
         cpld_layout.addLayout(cpld_form)
         cpld_hint = QLabel(
             "UltraZohm Rev04 can use different D-slot CPLDs. Select by system serial number:\n"
-            "- LA4128V: old revisions and Rev04 systems from UZ2021-002-001-200-0001 "
+            "- LA4128V: Revisions < Rev04 and Rev04 systems from UZ2021-002-001-200-0001 "
             "to UZ2021-001-001-004-0004\n"
             "- LC4256V: Rev04 systems from UZ2022-001-001-401-0007 "
             "up to UZ2024-001-001-0401-0031"
@@ -762,7 +873,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.driver_config_tabs, 1)
 
         buttons = QHBoxLayout()
-        generate_button = QPushButton("Generate software driver files")
+        generate_button = QPushButton("Generate software files")
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
         buttons.addWidget(generate_button)
@@ -806,7 +917,7 @@ class MainWindow(QMainWindow):
         action_hint.setWordWrap(True)
         action_layout.addWidget(action_hint)
         buttons = QHBoxLayout()
-        generate_button = QPushButton("Generate software driver files")
+        generate_button = QPushButton("Generate software files")
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
         buttons.addWidget(generate_button)
@@ -855,17 +966,25 @@ class MainWindow(QMainWindow):
 
         content = QSplitter(Qt.Orientation.Horizontal)
         slot_group = self._build_slot_group()
-        details_group = self._build_details_group()
-        slot_group.setFixedHeight(420)
+        details_group = AdapterCardDetailsWidget(
+            self.database,
+            self.assignments,
+            self.detail_options,
+            self.hardware_config,
+            self.adapter_detail_changed,
+            lambda: self.is_loading_config,
+        )
+        self.adapter_details = details_group
         slot_group.setMaximumWidth(390)
         slot_group.setMinimumWidth(220)
-        details_group.setFixedHeight(420)
+        slot_group.setMinimumHeight(260)
+        details_group.setMinimumHeight(260)
         content.addWidget(slot_group)
         content.addWidget(details_group)
         content.setStretchFactor(0, 0)
         content.setStretchFactor(1, 1)
         content.setSizes([340, 820])
-        controls_layout.addWidget(content)
+        controls_layout.addWidget(content, 1)
 
         buttons = QHBoxLayout()
         preview_button = QPushButton("Refresh TCL Preview")
@@ -898,9 +1017,9 @@ class MainWindow(QMainWindow):
         self.tcl_preview.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         output_layout.addWidget(self.tcl_preview, 2)
         vertical_splitter.addWidget(output)
-        vertical_splitter.setStretchFactor(0, 0)
-        vertical_splitter.setStretchFactor(1, 1)
-        vertical_splitter.setSizes([500, 330])
+        vertical_splitter.setStretchFactor(0, 1)
+        vertical_splitter.setStretchFactor(1, 0)
+        vertical_splitter.setSizes([620, 210])
         outer.addWidget(vertical_splitter, 1)
         return page
 
@@ -1065,7 +1184,7 @@ class MainWindow(QMainWindow):
             "analog_axi2tcm_trigger_source": (
                 "Normally this is one generated A-slot RAW_Valid pin. If the configured pin is not generated "
                 "by the selected A-slot cards, the wizard falls back to the first generated RAW_Valid. "
-                "For LTC2311 this is driven by RAW_VALID; for MAX11331 it is driven by meas_done. "
+                "For LTC2311 this is driven by RAW_VALID; for MAX11331 it is driven by new_data. "
                 "If no RAW_Valid exists, it uses the first conversion trigger source instead."
             ),
             "analog_axi2tcm_trigger_target": (
@@ -1131,29 +1250,6 @@ class MainWindow(QMainWindow):
         outer.addWidget(local_group)
         outer.addStretch(1)
         return page
-
-    def _build_details_group(self) -> QGroupBox:
-        group = QGroupBox("Selected card details")
-        layout = QVBoxLayout(group)
-        self.details_tabs = QTabWidget()
-        self.details_tabs.setFixedHeight(380)
-        self.slot_detail_pages: dict[str, QWidget] = {}
-        self.slot_detail_layouts: dict[str, QVBoxLayout] = {}
-        for slot in SLOTS:
-            page = QWidget()
-            page_layout = QVBoxLayout(page)
-            page_layout.setContentsMargins(8, 8, 8, 8)
-            page_layout.addStretch(1)
-            scroll = QScrollArea()
-            scroll.setWidgetResizable(True)
-            scroll.setWidget(page)
-            self.slot_detail_pages[slot] = page
-            self.slot_detail_layouts[slot] = page_layout
-            self.details_tabs.addTab(scroll, slot)
-        layout.addWidget(self.details_tabs)
-        for combo in self.slot_combos.values():
-            combo.currentIndexChanged.connect(self.rebuild_details)
-        return group
 
     def _build_database_page(self) -> QWidget:
         page = QWidget()
@@ -1221,6 +1317,24 @@ class MainWindow(QMainWindow):
     def guarded_rebuild_details(self) -> None:
         if not self.is_loading_config:
             self.rebuild_details()
+
+    def guarded_rebuild_slot_details(self, slot: str) -> None:
+        if not self.is_loading_config and self.adapter_details is not None:
+            self.adapter_details.rebuild_slot(slot)
+
+    def set_bulk_updates_enabled(self, enabled: bool) -> None:
+        if not enabled:
+            self.bulk_update_disable_depth += 1
+        else:
+            self.bulk_update_disable_depth = max(0, self.bulk_update_disable_depth - 1)
+        if (not enabled and self.bulk_update_disable_depth > 1) or (enabled and self.bulk_update_disable_depth > 0):
+            return
+        widgets = [self.stack, self.adapter_details]
+        for widget in widgets:
+            if widget is not None:
+                widget.setUpdatesEnabled(enabled)
+                if enabled:
+                    widget.update()
 
     def assignments(self) -> dict[str, str]:
         return {slot: combo.currentData() or "empty" for slot, combo in self.slot_combos.items()}
@@ -1684,10 +1798,24 @@ class MainWindow(QMainWindow):
     def adapter_card_changed(self, slot: str) -> None:
         if self.is_loading_config:
             return
+        self.guarded_rebuild_slot_details(slot)
         if slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.refresh_software_preset_options(refresh_dependent=False)
         self.software_dependent_views_dirty = True
+        self.guarded_refresh_tcl_preview()
+
+    def adapter_detail_changed(self, slot: str | None, cpld_may_change: bool) -> None:
+        self.software_dependent_views_dirty = True
+        if cpld_may_change and slot in DIGITAL_SLOTS:
+            card = self.database.card_by_id(self.assignments().get(slot, "empty"))
+            if card and card.get("vivado", {}).get("io_card"):
+                self.prefill_cpld_for_slot(slot)
+                self.invalidate_cpld_project_file()
+        if not self.is_loading_config:
+            self.refresh_advanced_driver_config_options()
+            self.refresh_data_visualization_options(refresh_preview=False)
+            self.guarded_refresh_software_preview()
         self.guarded_refresh_tcl_preview()
 
     def software_driver_selection_changed(self) -> None:
@@ -1711,6 +1839,8 @@ class MainWindow(QMainWindow):
         combo.blockSignals(False)
 
     def option_values(self) -> dict[str, dict[str, str]]:
+        if self.adapter_details is not None:
+            self.adapter_details.sync_detail_options_from_widgets()
         assignments = self.assignments()
         values: dict[str, dict[str, str]] = {}
         for slot, options in self.detail_options.items():
@@ -1737,17 +1867,6 @@ class MainWindow(QMainWindow):
             filtered = {key: value for key, value in options.items() if key in allowed_keys}
             if filtered:
                 values[slot] = filtered
-        for (slot, option_id), combo in self.detail_combos.items():
-            values.setdefault(slot, {})[option_id] = combo.currentData() or ""
-        for (slot, option_id), checkbox in self.detail_checkboxes.items():
-            values.setdefault(slot, {})[option_id] = "true" if checkbox.isChecked() else "false"
-        for (slot, option_id), edit in self.detail_trigger_edits.items():
-            values.setdefault(slot, {})[f"{option_id}_trigger_source"] = edit.text().strip()
-        for (slot, field_id), edit in self.detail_source_edits.items():
-            if isinstance(edit, QComboBox):
-                values.setdefault(slot, {})[field_id] = str(edit.currentData() or "")
-            else:
-                values.setdefault(slot, {})[field_id] = edit.text().strip()
         return values
 
     def selected_platform(self) -> dict[str, Any]:
@@ -1765,6 +1884,7 @@ class MainWindow(QMainWindow):
             return
         previous_revision = self.platform_revision_combo.currentData() or self.platform_revision_combo.currentText()
         self.refresh_platform_revisions(previous_revision)
+        self.refresh_platform_nameplate_visibility()
         self.refresh_platform_cpld_visibility()
         self.invalidate_cpld_project_file()
         self.guarded_refresh_tcl_preview()
@@ -1794,7 +1914,13 @@ class MainWindow(QMainWindow):
             index = 0
         self.platform_revision_combo.setCurrentIndex(index if self.platform_revision_combo.count() else -1)
         self.platform_revision_combo.blockSignals(False)
+        self.refresh_platform_nameplate_visibility()
         self.refresh_platform_cpld_visibility()
+
+    def refresh_platform_nameplate_visibility(self) -> None:
+        if not self.platform_nameplate_group:
+            return
+        self.platform_nameplate_group.setVisible(self.platform_combo.currentData() == "ultrazohm")
 
     def refresh_platform_cpld_visibility(self) -> None:
         if not self.platform_cpld_group:
@@ -2070,428 +2196,15 @@ class MainWindow(QMainWindow):
         self.software_dependent_views_dirty = False
 
     def rebuild_details(self) -> None:
-        self._clear_details_layouts()
-        self.detail_combos = {}
-        self.detail_checkboxes = {}
-        self.detail_trigger_edits = {}
-        self.detail_source_edits = {}
-        self.io_pin_rows = {}
-        assignments = self.assignments()
-        for slot, card_id in assignments.items():
-            page_layout = self.slot_detail_layouts[slot]
-            card = self.database.card_by_id(card_id)
-            if not card or card_id == "empty":
-                page_layout.insertWidget(page_layout.count() - 1, QLabel(f"{slot}: Empty slot"))
-                continue
-
-            group = QGroupBox(f"{slot}: {card.get('name', card_id)}")
-            group_layout = QVBoxLayout(group)
-            if card.get("description"):
-                description = QLabel(card.get("description", ""))
-                description.setWordWrap(True)
-                group_layout.addWidget(description)
-
-            driver = card.get("vitis", {}).get("driver", "")
-            if driver:
-                group_layout.addWidget(QLabel(f"Vitis driver: {driver}"))
-            for note in card.get("vivado", {}).get("notes", []):
-                note_label = QLabel(f"Vivado: {note}")
-                note_label.setWordWrap(True)
-                group_layout.addWidget(note_label)
-
-            if card.get("options"):
-                form = QFormLayout()
-                for option in card.get("options", []):
-                    option_id = option.get("id", "")
-                    resolver_channel = option.get("resolver_channel")
-                    if card_id == "uz_d_resolver" and resolver_channel:
-                        try:
-                            if int(resolver_channel) > resolver_channel_count(slot):
-                                continue
-                        except (TypeError, ValueError):
-                            pass
-                    if option.get("input") == "checkbox":
-                        selected = str(
-                            self.detail_options.get(slot, {}).get(option_id, option.get("default", "false"))
-                        ).strip().lower()
-                        checkbox = QCheckBox(option.get("text", "Enabled"))
-                        checkbox.setChecked(selected in {"1", "true", "yes", "on"})
-                        if option.get("tooltip") or option.get("help"):
-                            checkbox.setToolTip(option.get("tooltip", option.get("help", "")))
-                        key = (slot, option_id)
-                        self.detail_checkboxes[key] = checkbox
-                        checkbox.stateChanged.connect(self._detail_option_changed)
-                        form.addRow(option.get("label", option_id or "Option"), checkbox)
-                        continue
-                    combo = QComboBox()
-                    selected = self.detail_options.get(slot, {}).get(option_id, option.get("default", ""))
-                    for choice in option.get("choices", []):
-                        combo.addItem(choice.get("label", choice.get("id", "")), choice.get("id", ""))
-                    index = combo.findData(selected)
-                    combo.setCurrentIndex(index if index >= 0 else 0)
-                    key = (slot, option_id)
-                    self.detail_combos[key] = combo
-                    combo.currentIndexChanged.connect(self._detail_option_changed)
-
-                    if option.get("show_trigger_source", True):
-                        trigger_source = self.detail_options.get(slot, {}).get(
-                            f"{option_id}_trigger_source",
-                            "trigger_conversions",
-                        )
-                        trigger_edit = QLineEdit(trigger_source)
-                        trigger_edit.setEnabled(combo.currentData() != "none")
-                        trigger_edit.editingFinished.connect(self._detail_option_changed)
-                        self.detail_trigger_edits[key] = trigger_edit
-
-                        row = QWidget()
-                        row_layout = QHBoxLayout(row)
-                        row_layout.setContentsMargins(0, 0, 0, 0)
-                        row_layout.addWidget(combo, 1)
-                        row_layout.addWidget(QLabel("Trigger source"))
-                        row_layout.addWidget(trigger_edit, 1)
-                        form.addRow(option.get("label", option_id or "Option"), row)
-                    else:
-                        form.addRow(option.get("label", option_id or "Option"), combo)
-                group_layout.addLayout(form)
-
-            source_fields = card.get("vivado", {}).get("source_fields", [])
-            if source_fields:
-                source_group = QGroupBox("Vivado source signals")
-                source_layout = QFormLayout(source_group)
-                for source_field in source_fields:
-                    field_id = source_field.get("id", "")
-                    if not field_id:
-                        continue
-                    resolver_channel = source_field.get("resolver_channel")
-                    if card_id == "uz_d_resolver" and resolver_channel:
-                        try:
-                            if int(resolver_channel) > resolver_channel_count(slot):
-                                continue
-                        except (TypeError, ValueError):
-                            pass
-                    value = self.detail_options.get(slot, {}).get(field_id, source_field.get("default", ""))
-                    edit = QLineEdit(value)
-                    edit.setPlaceholderText(source_field.get("placeholder", "Block design pin path"))
-                    if source_field.get("tooltip") or source_field.get("help"):
-                        edit.setToolTip(source_field.get("tooltip", source_field.get("help", "")))
-                    edit.editingFinished.connect(self._detail_option_changed)
-                    self.detail_source_edits[(slot, field_id)] = edit
-                    source_layout.addRow(source_field.get("label", field_id), edit)
-                group_layout.addWidget(source_group)
-
-            if card.get("vivado", {}).get("io_card"):
-                group_layout.addWidget(self._build_io_card_pin_group(slot, card))
-
-            page_layout.insertWidget(page_layout.count() - 1, group)
-
-        for slot in list(self.detail_options):
-            if assignments.get(slot, "empty") == "empty":
-                self.detail_options.pop(slot, None)
+        if self.adapter_details is None:
+            return
+        self.adapter_details.rebuild_all()
         if self.is_loading_config:
             self.software_dependent_views_dirty = True
             return
         self.refresh_software_preset_options()
         self.guarded_refresh_data_visualization_options()
         self.refresh_advanced_driver_config_options()
-        self.guarded_refresh_tcl_preview()
-
-    def _clear_details_layouts(self) -> None:
-        for layout in self.slot_detail_layouts.values():
-            while layout.count() > 1:
-                item = layout.takeAt(0)
-                widget = item.widget()
-                if widget:
-                    widget.deleteLater()
-
-    def _build_io_card_pin_group(self, slot: str, card: dict[str, Any]) -> QGroupBox:
-        group = QGroupBox("IO source and sink")
-        layout = QVBoxLayout(group)
-        hint = QLabel("TX pins drive the adapter board. RX pins read from the adapter board.")
-        hint.setWordWrap(True)
-        layout.addWidget(hint)
-
-        directions = TclGenerator._io_card_directions(card.get("vivado", {}).get("io_card", {}), self.detail_options.get(slot, {}))
-        summary = TclGenerator._io_card_context(slot, slot[1:], card, self.detail_options.get(slot, {})).get("io_summary", "")
-        if summary:
-            summary_label = QLabel(summary)
-            summary_label.setWordWrap(True)
-            layout.addWidget(summary_label)
-
-        for group_title, start_index, end_index in self._io_card_pin_group_ranges(slot, card, directions):
-            pin_group = QGroupBox(group_title)
-            grid = QGridLayout(pin_group)
-            grid.addWidget(QLabel("Pin"), 0, 0)
-            grid.addWidget(QLabel("Direction"), 0, 1)
-            grid.addWidget(QLabel("Mode"), 0, 2)
-            grid.addWidget(QLabel("Signal"), 0, 3)
-            grid.addWidget(QLabel("Constant value"), 0, 4)
-
-            for row_index, pin_index in enumerate(range(start_index, end_index), start=1):
-                self._add_io_card_pin_row(slot, pin_index, directions[pin_index], grid, row_index)
-            layout.addWidget(pin_group)
-        return group
-
-    def _add_io_card_pin_row(
-        self,
-        slot: str,
-        pin_index: int,
-        physical_direction: str,
-        grid: QGridLayout,
-        row_index: int,
-    ) -> None:
-        pin_id = f"io_pin_{pin_index:02d}"
-        pin_name = f"Dig_{pin_index:02d}_Ch{slot[1:]}"
-        mode_combo = QComboBox()
-        if physical_direction == "tx":
-            mode_options = [
-                ("axi_gpio", "AXI GPIO"),
-                ("top_level", "Top-level port"),
-                ("pwm", "PWM"),
-                ("source_pin", "Custom BD source"),
-                ("constant", "Constant"),
-            ]
-        else:
-            mode_options = [
-                ("axi_gpio", "AXI GPIO"),
-                ("top_level", "Top-level port"),
-            ]
-        for value, label in mode_options:
-            mode_combo.addItem(label, value)
-        selected_mode = self.detail_options.get(slot, {}).get(f"{pin_id}_mode", "axi_gpio")
-        mode_index = mode_combo.findData(selected_mode)
-        mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
-        mode_combo.currentIndexChanged.connect(self._detail_option_changed)
-        self.detail_combos[(slot, f"{pin_id}_mode")] = mode_combo
-
-        signal_widget = QWidget()
-        signal_layout = QHBoxLayout(signal_widget)
-        signal_layout.setContentsMargins(0, 0, 0, 0)
-        signal_layout.setSpacing(4)
-        source_edit = QLineEdit(
-            self.detail_options.get(slot, {}).get(
-                f"{pin_id}_source",
-                f"uz_pwm/pwm_2L/uz_interlockDeadtime_{pin_index // 6}/s{pin_index % 6}_out",
-            )
-        )
-        source_edit.setPlaceholderText("Block design pin path, e.g. uz_digital_adapter/Dig_00_Ch2")
-        source_edit.editingFinished.connect(self._detail_option_changed)
-        self.detail_source_edits[(slot, f"{pin_id}_source")] = source_edit
-        signal_layout.addWidget(source_edit, 1)
-
-        pwm_instance_combo = QComboBox()
-        for pwm_value, pwm_label in self._io_pwm_instance_choices():
-            pwm_instance_combo.addItem(pwm_label, pwm_value)
-        selected_pwm_instance = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_instance", self._default_io_pwm_instance(pin_index))
-        pwm_instance_index = pwm_instance_combo.findData(selected_pwm_instance)
-        pwm_instance_combo.setCurrentIndex(pwm_instance_index if pwm_instance_index >= 0 else 0)
-        pwm_instance_combo.currentIndexChanged.connect(self._detail_option_changed)
-        self.detail_source_edits[(slot, f"{pin_id}_pwm_instance")] = pwm_instance_combo
-        signal_layout.addWidget(pwm_instance_combo, 1)
-
-        pwm_pin_combo = QComboBox()
-        for pwm_pin_value, pwm_pin_label in self._io_pwm_pin_choices(str(pwm_instance_combo.currentData() or "")):
-            pwm_pin_combo.addItem(pwm_pin_label, pwm_pin_value)
-        selected_pwm_pin = self.detail_options.get(slot, {}).get(f"{pin_id}_pwm_pin", f"s{pin_index % 6}_out")
-        pwm_pin_index = pwm_pin_combo.findData(selected_pwm_pin)
-        pwm_pin_combo.setCurrentIndex(pwm_pin_index if pwm_pin_index >= 0 else 0)
-        pwm_pin_combo.currentIndexChanged.connect(self._detail_option_changed)
-        self.detail_source_edits[(slot, f"{pin_id}_pwm_pin")] = pwm_pin_combo
-        signal_layout.addWidget(pwm_pin_combo, 1)
-
-        constant_combo = QComboBox()
-        constant_combo.addItem("Low", "0")
-        constant_combo.addItem("High", "1")
-        selected_constant = "1" if self.detail_options.get(slot, {}).get(f"{pin_id}_constant", "0").strip().lower() in {"1", "true", "yes", "on"} else "0"
-        constant_index = constant_combo.findData(selected_constant)
-        constant_combo.setCurrentIndex(constant_index if constant_index >= 0 else 0)
-        constant_combo.currentIndexChanged.connect(self._detail_option_changed)
-        self.detail_source_edits[(slot, f"{pin_id}_constant")] = constant_combo
-
-        current_mode = str(mode_combo.currentData() or "")
-        self.io_pin_rows[(slot, pin_id)] = {
-            "mode": mode_combo,
-            "source": source_edit,
-            "pwm_instance": pwm_instance_combo,
-            "pwm_pin": pwm_pin_combo,
-            "constant": constant_combo,
-        }
-        self._refresh_io_pin_row_state(slot, pin_id, current_mode)
-
-        grid.addWidget(QLabel(pin_name), row_index, 0)
-        grid.addWidget(self._io_direction_indicator(physical_direction), row_index, 1)
-        grid.addWidget(mode_combo, row_index, 2)
-        grid.addWidget(signal_widget, row_index, 3)
-        grid.addWidget(constant_combo, row_index, 4)
-
-    def _io_card_pin_group_ranges(
-        self,
-        slot: str,
-        card: dict[str, Any],
-        directions: list[str],
-    ) -> list[tuple[str, int, int]]:
-        io_card = card.get("vivado", {}).get("io_card", {})
-        kind = str(io_card.get("kind", ""))
-        if kind == "voltage_grouped":
-            ranges: list[tuple[str, int, int]] = []
-            start = 0
-            groups = io_card.get("groups", [])
-            for group_index, group_definition in enumerate(groups, start=1):
-                width = TclGenerator._config_int(group_definition.get("width", 0), default=0, minimum=0, maximum=30)
-                end = min(start + width, len(directions))
-                if start >= end:
-                    continue
-                direction = directions[start].upper()
-                ranges.append((f"Group {group_index}: Dig_{start:02d}..{end - 1:02d} {direction}", start, end))
-                start = end
-            return ranges or [("Pins", 0, len(directions))]
-        ranges = []
-        start = 0
-        while start < len(directions):
-            direction = directions[start]
-            end = start + 1
-            while end < len(directions) and directions[end] == direction:
-                end += 1
-            label = "TX pins" if direction == "tx" else "RX pins"
-            ranges.append((f"{label}: Dig_{start:02d}..{end - 1:02d}", start, end))
-            start = end
-        return ranges
-
-    def _io_direction_indicator(self, physical_direction: str) -> QWidget:
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(4)
-        for direction in ("TX", "RX"):
-            active = physical_direction.upper() == direction
-            label = QLabel(direction)
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setFixedWidth(28)
-            if active:
-                label.setStyleSheet("font-weight: 600; color: white; background: #2f6fed; border-radius: 3px; padding: 2px;")
-            else:
-                label.setStyleSheet("color: #777; border: 1px solid #bbb; border-radius: 3px; padding: 2px;")
-            layout.addWidget(label)
-        return widget
-
-    def _io_pwm_instance_choices(self) -> list[tuple[str, str]]:
-        choices: list[tuple[str, str]] = []
-        hardware = self.hardware_config()
-        try:
-            pwm_2l_instances = max(0, int(hardware.get("pwm_2l_instances", "0")))
-        except ValueError:
-            pwm_2l_instances = 0
-        try:
-            pwm_3l_instances = max(0, int(hardware.get("pwm_3l_instances", "0")))
-        except ValueError:
-            pwm_3l_instances = 0
-        choices.extend((f"pwm_2l_{index}", f"PWM_2L_{index}") for index in range(pwm_2l_instances))
-        choices.extend((f"pwm_3l_{index}", f"PWM_3L_{index}") for index in range(pwm_3l_instances))
-        return choices or [("pwm_2l_0", "PWM_2L_0")]
-
-    def _default_io_pwm_instance(self, pin_index: int) -> str:
-        choices = self._io_pwm_instance_choices()
-        preferred = f"pwm_2l_{pin_index // 6}"
-        return preferred if any(value == preferred for value, _label in choices) else choices[0][0]
-
-    @staticmethod
-    def _io_pwm_pin_choices(pwm_instance: str) -> list[tuple[str, str]]:
-        if pwm_instance.startswith("pwm_3l_"):
-            return [(f"s{index}_out", f"s{index}_out") for index in range(12)]
-        return [(f"s{index}_out", f"s{index}_out") for index in range(6)]
-
-    def _refresh_io_pin_row_state(self, slot: str, pin_id: str, mode: str | None = None) -> None:
-        row = self.io_pin_rows.get((slot, pin_id))
-        if not row:
-            return
-        mode_combo = row.get("mode")
-        if mode is None and isinstance(mode_combo, QComboBox):
-            mode = str(mode_combo.currentData() or "")
-        mode = mode or ""
-        source_edit = row.get("source")
-        pwm_instance_combo = row.get("pwm_instance")
-        pwm_pin_combo = row.get("pwm_pin")
-        constant_combo = row.get("constant")
-        if source_edit is not None:
-            source_edit.setVisible(mode == "source_pin")
-            source_edit.setEnabled(mode == "source_pin")
-        if pwm_instance_combo is not None:
-            pwm_instance_combo.setVisible(mode == "pwm")
-            pwm_instance_combo.setEnabled(mode == "pwm")
-        if pwm_pin_combo is not None:
-            pwm_pin_combo.setVisible(mode == "pwm")
-            pwm_pin_combo.setEnabled(mode == "pwm")
-        if constant_combo is not None:
-            constant_combo.setVisible(mode == "constant")
-            constant_combo.setEnabled(mode == "constant")
-
-    def _refresh_io_pwm_pin_choices(self, slot: str, pin_id: str) -> None:
-        row = self.io_pin_rows.get((slot, pin_id))
-        if not row:
-            return
-        pwm_instance_combo = row.get("pwm_instance")
-        pwm_pin_combo = row.get("pwm_pin")
-        if not isinstance(pwm_instance_combo, QComboBox) or not isinstance(pwm_pin_combo, QComboBox):
-            return
-        selected_pin = str(pwm_pin_combo.currentData() or "")
-        choices = self._io_pwm_pin_choices(str(pwm_instance_combo.currentData() or ""))
-        pwm_pin_combo.blockSignals(True)
-        pwm_pin_combo.clear()
-        for value, label in choices:
-            pwm_pin_combo.addItem(label, value)
-        index = pwm_pin_combo.findData(selected_pin)
-        pwm_pin_combo.setCurrentIndex(index if index >= 0 else 0)
-        pwm_pin_combo.blockSignals(False)
-        self.detail_options.setdefault(slot, {})[f"{pin_id}_pwm_pin"] = str(pwm_pin_combo.currentData() or "")
-
-    def _detail_option_changed(self) -> None:
-        changed_widget = self.sender()
-        rebuild_io_details = False
-        cpld_may_change = False
-        changed_slot: str | None = None
-        changed_pin_id: str | None = None
-        changed_pwm_instance_slot: str | None = None
-        changed_pwm_instance_pin_id: str | None = None
-        for (slot, option_id), combo in self.detail_combos.items():
-            self.detail_options.setdefault(slot, {})[option_id] = combo.currentData() or ""
-            if combo is changed_widget:
-                changed_slot = slot
-                if option_id == "optical_variant" or option_id.startswith("direction_group_"):
-                    rebuild_io_details = True
-                    cpld_may_change = True
-                elif option_id.startswith("io_pin_") and option_id.endswith("_mode"):
-                    changed_pin_id = option_id.removesuffix("_mode")
-                    self._refresh_io_pin_row_state(slot, changed_pin_id, str(combo.currentData() or ""))
-            trigger_edit = self.detail_trigger_edits.get((slot, option_id))
-            if trigger_edit:
-                trigger_edit.setEnabled(combo.currentData() != "none")
-                self.detail_options.setdefault(slot, {})[f"{option_id}_trigger_source"] = trigger_edit.text().strip()
-        for (slot, option_id), checkbox in self.detail_checkboxes.items():
-            self.detail_options.setdefault(slot, {})[option_id] = "true" if checkbox.isChecked() else "false"
-        for (slot, field_id), edit in self.detail_source_edits.items():
-            if isinstance(edit, QComboBox):
-                self.detail_options.setdefault(slot, {})[field_id] = str(edit.currentData() or "")
-                if edit is changed_widget and field_id.startswith("io_pin_") and field_id.endswith("_pwm_instance"):
-                    changed_slot = slot
-                    changed_pwm_instance_slot = slot
-                    changed_pwm_instance_pin_id = field_id.removesuffix("_pwm_instance")
-            else:
-                self.detail_options.setdefault(slot, {})[field_id] = edit.text().strip()
-        if changed_pwm_instance_slot and changed_pwm_instance_pin_id:
-            self._refresh_io_pwm_pin_choices(changed_pwm_instance_slot, changed_pwm_instance_pin_id)
-            self._refresh_io_pin_row_state(changed_pwm_instance_slot, changed_pwm_instance_pin_id)
-        self.software_dependent_views_dirty = True
-        if cpld_may_change and changed_slot in DIGITAL_SLOTS:
-            card = self.database.card_by_id(self.assignments().get(changed_slot, "empty"))
-            if card and card.get("vivado", {}).get("io_card"):
-                self.prefill_cpld_for_slot(changed_slot)
-                self.invalidate_cpld_project_file()
-        if rebuild_io_details and not self.is_loading_config:
-            self.rebuild_details()
-            return
-        if not self.is_loading_config:
-            self.refresh_advanced_driver_config_options()
-            self.refresh_data_visualization_options(refresh_preview=False)
-            self.guarded_refresh_software_preview()
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
@@ -2580,6 +2293,21 @@ class MainWindow(QMainWindow):
                 if self.software_status:
                     self.software_status.setPlainText("Software generation canceled because warnings were not accepted.")
                 return
+        confirm_box = QMessageBox(self)
+        confirm_box.setIcon(QMessageBox.Icon.Question)
+        confirm_box.setWindowTitle("Generate software files")
+        confirm_box.setText("Generate software files now?")
+        confirm_box.setInformativeText(
+            "The wizard will write generated slot files and patch Project Wizard marker blocks in the selected software source folder."
+        )
+        cancel_button = confirm_box.addButton(QMessageBox.StandardButton.Cancel)
+        generate_button = confirm_box.addButton("Generate software files", QMessageBox.ButtonRole.AcceptRole)
+        confirm_box.setDefaultButton(cancel_button)
+        confirm_box.exec()
+        if confirm_box.clickedButton() != generate_button:
+            if self.software_status:
+                self.software_status.setPlainText("Software generation canceled.")
+            return
         try:
             result = self.software_generator.generate(
                 source_dir,
@@ -2658,6 +2386,8 @@ class MainWindow(QMainWindow):
         self.refresh_all_card_views()
 
     def new_config(self) -> None:
+        if not self.confirm_save_config_changes("starting a new config"):
+            return
         self.current_config_path = None
         if self.platform_combo.count() > 0:
             self.platform_combo.setCurrentIndex(0)
@@ -2666,6 +2396,8 @@ class MainWindow(QMainWindow):
             self.platform_cpld_type_combo.setCurrentIndex(0)
         self.refresh_platform_cpld_visibility()
         self.detail_options = {}
+        if self.adapter_details is not None:
+            self.adapter_details.detail_options = self.detail_options
         self.reset_hardware_config()
         for slot, combo in self.slot_combos.items():
             default_card_id = "no_adapter_board" if slot.startswith("A") else "empty"
@@ -2678,8 +2410,11 @@ class MainWindow(QMainWindow):
         self.reset_software_config()
         self.rebuild_details()
         self.refresh_tcl_preview()
+        self.saved_config_snapshot = self.config_snapshot()
 
     def open_config(self) -> None:
+        if not self.confirm_save_config_changes("opening another config"):
+            return
         path_text, _ = QFileDialog.getOpenFileName(
             self,
             "Open config",
@@ -2698,6 +2433,7 @@ class MainWindow(QMainWindow):
         progress.show()
         QApplication.processEvents()
         self.is_loading_config = True
+        self.set_bulk_updates_enabled(False)
         try:
             self.update_config_load_progress(progress, 1, "Parsing config file...")
             document = json.loads(path.read_text(encoding="utf-8"))
@@ -2718,18 +2454,19 @@ class MainWindow(QMainWindow):
             return
         finally:
             self.is_loading_config = False
+            self.set_bulk_updates_enabled(True)
             progress.close()
         self.current_config_path = path
         QTimer.singleShot(0, lambda document=document: self.finish_config_load_refresh(document))
 
     def finish_config_load_refresh(self, document: dict[str, Any]) -> None:
+        self.set_bulk_updates_enabled(False)
         try:
             software = document.get("software", {})
             software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
             self.refresh_software_preset_options(software_values)
             self.software_dependent_views_dirty = False
             self.refresh_tcl_preview()
-            self.refresh_software_preview()
         except Exception as error:  # noqa: BLE001 - keep the GUI alive after refresh errors.
             details = traceback.format_exc()
             print(details, file=sys.stderr)
@@ -2740,14 +2477,16 @@ class MainWindow(QMainWindow):
                 f"{type(error).__name__}: {error}\n\n"
                 "Details were also written to the console.",
             )
+        finally:
+            self.set_bulk_updates_enabled(True)
+        self.saved_config_snapshot = self.config_snapshot()
 
-    def save_config(self) -> None:
+    def save_config(self) -> bool:
         if self.current_config_path is None:
-            self.save_config_as()
-            return
-        self.write_config(self.current_config_path)
+            return self.save_config_as()
+        return self.write_config(self.current_config_path)
 
-    def save_config_as(self) -> None:
+    def save_config_as(self) -> bool:
         default_path = self.current_config_path or (APP_DIR / "generated" / "project_wizard_config.pw.json")
         path_text, _ = QFileDialog.getSaveFileName(
             self,
@@ -2756,19 +2495,47 @@ class MainWindow(QMainWindow):
             "Project Wizard config (*.pw.json);;JSON files (*.json)",
         )
         if not path_text:
-            return
+            return False
         path = Path(path_text)
         self.current_config_path = path
-        self.write_config(path)
+        return self.write_config(path)
 
-    def write_config(self, path: Path) -> None:
+    def write_config(self, path: Path) -> bool:
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(self.config_document(), indent=2) + "\n", encoding="utf-8")
         except OSError as error:
             QMessageBox.warning(self, "Could not save config", str(error))
-            return
+            return False
+        self.saved_config_snapshot = self.config_snapshot()
         QMessageBox.information(self, "Config saved", f"Wrote {path}")
+        return True
+
+    def config_snapshot(self) -> str:
+        return json.dumps(self.config_document(), sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+    def has_unsaved_config_changes(self) -> bool:
+        return self.config_snapshot() != self.saved_config_snapshot
+
+    def confirm_save_config_changes(self, action: str) -> bool:
+        if not self.saved_config_snapshot or not self.has_unsaved_config_changes():
+            return True
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Icon.Question)
+        dialog.setWindowTitle("Save config changes")
+        dialog.setText("The current config has unsaved changes.")
+        dialog.setInformativeText(f"Do you want to save the config before {action}?")
+        save_button = dialog.addButton("Save", QMessageBox.ButtonRole.AcceptRole)
+        discard_button = dialog.addButton("Discard", QMessageBox.ButtonRole.DestructiveRole)
+        cancel_button = dialog.addButton(QMessageBox.StandardButton.Cancel)
+        dialog.setDefaultButton(save_button)
+        dialog.exec()
+        clicked_button = dialog.clickedButton()
+        if clicked_button == save_button:
+            return self.save_config()
+        if clicked_button == discard_button:
+            return True
+        return False
 
     def config_document(self) -> dict[str, Any]:
         self.refresh_dirty_software_dependent_views()
@@ -2851,6 +2618,8 @@ class MainWindow(QMainWindow):
             for slot, options in slot_options.items()
             if isinstance(options, dict)
         }
+        if self.adapter_details is not None:
+            self.adapter_details.detail_options = self.detail_options
         self.rebuild_details()
 
         self.update_config_load_progress(progress, 5, "Loading software configuration...")
@@ -2871,7 +2640,9 @@ class MainWindow(QMainWindow):
                 self.prefill_cpld_for_slot(slot)
                 continue
             index = combo.findData(program_id)
+            combo.blockSignals(True)
             combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
+            combo.blockSignals(False)
 
         cpld_programmer = document.get("cpld_programmer", {})
         if cpld_programmer is None:
@@ -2893,11 +2664,68 @@ class MainWindow(QMainWindow):
         )
 
     def show_info(self) -> None:
-        QMessageBox.information(
-            self,
-            "Info",
-            "Project Wizard\n\nEarly PyQt sketch for configuring UltraZohm and MicroZohm projects.",
+        version = self.git_metadata(["describe", "--tags", "--always", "--dirty"])
+        branch = self.git_metadata(["rev-parse", "--abbrev-ref", "HEAD"])
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Icon.Information)
+        dialog.setWindowTitle("Info")
+        dialog.setText("Project Wizard")
+        dialog.setInformativeText(
+            "\n".join(
+                [
+                    "Configuration helper for UltraZohm Vivado, CPLD, and software integration workflows.",
+                    "",
+                    f"Version: {version}",
+                    "License: Apache License 2.0",
+                ]
+            )
         )
+        dialog.setDetailedText(
+            "\n".join(
+                [
+                    "Project Wizard",
+                    "",
+                    "Purpose:",
+                    "  Configure UltraZohm hardware slots, generate Vivado TCL, generate CPLD programmer files,",
+                    "  and generate or patch Vitis software integration files.",
+                    "",
+                    "Version control:",
+                    f"  Version: {version}",
+                    f"  Branch: {branch}",
+                    "",
+                    "Runtime:",
+                    f"  Python: {platform.python_version()}",
+                    f"  PyQt: {PYQT_VERSION_STR}",
+                    f"  Qt: {QT_VERSION_STR}",
+                    f"  Operating system: {platform.platform()}",
+                    "",
+                    "Paths:",
+                    f"  Wizard folder: {APP_DIR}",
+                    f"  Data folder: {DATA_FILE.parent}",
+                    f"  Generated folder: {OUTPUT_DIR}",
+                    "",
+                    "License:",
+                    "  Apache License 2.0",
+                    f"  Full license text: {APP_DIR.parent / 'LICENSE'}",
+                ]
+            )
+        )
+        dialog.exec()
+
+    @staticmethod
+    def git_metadata(args: list[str]) -> str:
+        try:
+            result = subprocess.run(
+                ["git", *args],
+                cwd=APP_DIR.parent,
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return "unknown"
+        return result.stdout.strip() or "unknown"
 
     def execute_tcl_workflow(self) -> None:
         export_tcl = self.tcl_export_checkbox is None or self.tcl_export_checkbox.isChecked()

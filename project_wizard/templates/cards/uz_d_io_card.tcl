@@ -111,14 +111,6 @@ uz_pw_connect_pin_pair_if_unconnected ${{ pin.helper_name }}_slice_path/Dout ${a
 {% if pin.is_axi_rx %}
 uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/{{ pin.pin_name }} ${io_gpio_i_concat_path}/In{{ pin.index }}
 {% endif %}
-{% if pin.is_top_level_tx %}
-uz_pw_create_bd_port_if_missing I {{ pin.user_port_name }}
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ pin.user_port_name }}
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I {{ pin.user_port_name }}
-uz_pw_connect_port_to_pin_if_unconnected {{ pin.user_port_name }} ${adapter_parent_hier}/{{ pin.user_port_name }}
-uz_pw_connect_upper_boundary_net_if_unconnected ${adapter_parent_hier}/{{ pin.user_port_name }} ${adapter_hier_path}/{{ pin.user_port_name }}
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/{{ pin.user_port_name }} ${adapter_hier_path}/{{ pin.pin_name }}
-{% endif %}
 {% if pin.is_pwm %}
 set {{ pin.helper_name }}_pwm_slice_path ${adapter_hier_path}/{{ pin.helper_name }}_pwm_slice
 uz_pw_io_create_xlslice ${{ pin.helper_name }}_pwm_slice_path {{ pin.pwm_source_width }} {{ pin.pwm_bit }}
@@ -126,7 +118,7 @@ uz_pw_connect_pin_pair_if_unconnected ${{ pin.pwm_source_variable }} ${{ pin.hel
 uz_pw_connect_pin_pair_if_unconnected ${{ pin.helper_name }}_pwm_slice_path/Dout ${adapter_hier_path}/{{ pin.pin_name }}
 {% endif %}
 {% if pin.is_parent_source_pin %}
-uz_pw_connect_pin_pair_if_unconnected {{ pin.source_path }} ${adapter_parent_hier}/{{ pin.pin_name }}
+# Deferred until all IO card hierarchies and parent pins have been placed.
 {% endif %}
 {% if pin.is_external_source_pin %}
 uz_pw_create_hier_pin_if_missing $adapter_parent_hier I {{ pin.source_boundary_name }}
@@ -144,7 +136,7 @@ uz_pw_connect_pin_pair_if_unconnected ${{ pin.helper_name }}_const_path/dout ${a
 uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path {{ pin.pin_name }} {{ pin.pin_name }}
 {% endif %}
 {% if pin.is_tx_parent_source %}
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/{{ pin.pin_name }} {{ pin.pin_name }}
+# Deferred until all IO card hierarchies and parent pins have been placed.
 {% endif %}
 {% endfor %}
 

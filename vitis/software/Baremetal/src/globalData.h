@@ -65,7 +65,35 @@ typedef struct _actualValues_ {
 	float adc_max11331_a3_ch21;
 	float adc_max11331_a3_ch22;
 	float adc_max11331_a3_ch23;
-	uint32_t io_card_d3_state;
+	uint32_t io_card_d1_state;
+	struct uz_inverter_adapter_outputs_t inverter_adapter_d2;
+	struct uz_inverter_adapter_outputs_t inverter_adapter_d3;
+	int32_t resolver_pl_interface_d4_1_revolution_counter;
+	float resolver_pl_interface_d4_1_position_mech_2pi;
+	float resolver_pl_interface_d4_1_position_el_2pi;
+	float resolver_pl_interface_d4_1_omega_mech_rad_s;
+	float resolver_pl_interface_d4_1_n_mech_rpm;
+	float resolver_pl_interface_d4_1_omega_el_rad_s;
+	int32_t resolver_pl_interface_d4_2_revolution_counter;
+	float resolver_pl_interface_d4_2_position_mech_2pi;
+	float resolver_pl_interface_d4_2_position_el_2pi;
+	float resolver_pl_interface_d4_2_omega_mech_rad_s;
+	float resolver_pl_interface_d4_2_n_mech_rpm;
+	float resolver_pl_interface_d4_2_omega_el_rad_s;
+	int32_t resolver_pl_interface_d4_3_revolution_counter;
+	float resolver_pl_interface_d4_3_position_mech_2pi;
+	float resolver_pl_interface_d4_3_position_el_2pi;
+	float resolver_pl_interface_d4_3_omega_mech_rad_s;
+	float resolver_pl_interface_d4_3_n_mech_rpm;
+	float resolver_pl_interface_d4_3_omega_el_rad_s;
+	uint32_t endat_encoder_d5_1_position_raw_single_turn;
+	uint32_t endat_encoder_d5_1_position_raw_multi_turn;
+	uint32_t endat_encoder_d5_1_position_multi_turn;
+	float endat_encoder_d5_1_position_mech_si_single_turn;
+	float endat_encoder_d5_1_position_el_si_single_turn;
+	float endat_encoder_d5_1_speed_mech_si;
+	float endat_encoder_d5_1_speed_el_si;
+	float endat_encoder_d5_1_speed_mech_rpm;
 /* Project Wizard END: actualValues */
 } actualValues;
 
@@ -86,16 +114,11 @@ typedef struct _referenceAndSetValues_ {
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
-	uz_wavegen_sawtooth_t* d3_output_test_sawtooth;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1;
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_2;
-	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_3;
-	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;
 	uz_wavegen_three_phase* three_phase_sine;
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
@@ -108,7 +131,16 @@ typedef struct{
 	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
 	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
 	uz_adcMax11331_t* adc_max11331_a3;
-	uz_axi_gpio_t* axi_gpio_d3;
+	uz_axi_gpio_t* axi_gpio_d1;
+	uz_inverter_adapter_t* inverter_adapter_d2;
+	uz_inverter_adapter_t* inverter_adapter_d3;
+	uz_resolverIP_t* resolver_ip_d4_1;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d4_1;
+	uz_resolverIP_t* resolver_ip_d4_2;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d4_2;
+	uz_resolverIP_t* resolver_ip_d4_3;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d4_3;
+	uz_endat_interface_t* endat_encoder_d5_1;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

@@ -79,6 +79,15 @@ class TclGenerator:
                 continue
             lines.append(self._card_section(slot, card, option_values.get(slot, {})))
 
+        deferred_io_connections = self._io_card_deferred_connections(assignments, option_values)
+        if deferred_io_connections:
+            lines.append(
+                self.renderer.render_file(
+                    "io_card_deferred_connections.tcl",
+                    {"connections": deferred_io_connections},
+                )
+            )
+
         lines.append(
             self.renderer.render_file(
                 "axi_interconnect.tcl",
@@ -550,6 +559,7 @@ class TclGenerator:
         io_card = vivado.get("io_card", {})
         if not io_card:
             return {
+                "adapter_parent_hier": vivado.get("adapter_parent_hier", cls._adapter_root_hier(slot)),
                 "has_axi_gpio": False,
                 "axi_gpio_instance_name": "",
                 "has_axi_input_concat": False,
@@ -573,7 +583,7 @@ class TclGenerator:
             source_is_adapter_parent_pin = source_path.startswith(f"{cls._adapter_root_hier(slot)}/")
             if physical_direction == "rx" and mode not in {"axi_gpio", "top_level"}:
                 mode = "axi_gpio"
-            if physical_direction == "tx" and mode not in {"axi_gpio", "top_level", "source_pin", "pwm", "constant"}:
+            if physical_direction == "tx" and mode not in {"axi_gpio", "source_pin", "pwm", "constant"}:
                 mode = "axi_gpio"
             mode_label = {
                 "axi_gpio": "AXI GPIO",
@@ -625,7 +635,7 @@ class TclGenerator:
                     "is_rx": is_rx,
                     "is_axi_tx": is_axi and is_tx,
                     "is_axi_rx": is_axi_rx,
-                    "is_top_level_tx": mode == "top_level" and is_tx,
+                    "is_top_level_tx": False,
                     "is_top_level_rx": mode == "top_level" and is_rx,
                     "is_pwm": mode == "pwm",
                     "is_source_pin": mode == "source_pin",
@@ -659,6 +669,7 @@ class TclGenerator:
                 "right": pin["pwm_source_right"],
             }
         return {
+            "adapter_parent_hier": vivado.get("adapter_parent_hier", cls._adapter_root_hier(slot)),
             "has_axi_gpio": has_axi_gpio,
             "axi_gpio_instance_name": f"axi_gpio_{slot.lower()}",
             "has_axi_input_concat": has_axi_input_concat,
@@ -679,6 +690,31 @@ class TclGenerator:
     @classmethod
     def _io_card_needs_axi(cls, card: dict[str, Any], option_values: dict[str, str]) -> bool:
         return bool(cls._io_card_context("D0", "0", card, option_values).get("has_axi_gpio"))
+
+    def _io_card_deferred_connections(
+        self,
+        assignments: dict[str, str],
+        option_values: dict[str, dict[str, str]],
+    ) -> list[dict[str, str]]:
+        connections: list[dict[str, str]] = []
+        for slot in SLOTS:
+            card = self.database.card_by_id(assignments.get(slot, "empty"))
+            if not card or not card.get("vivado", {}).get("io_card"):
+                continue
+            context = self._io_card_context(slot, slot[1:], card, option_values.get(slot, {}))
+            adapter_parent_hier = str(context.get("adapter_parent_hier", self._adapter_root_hier(slot)))
+            for pin in context.get("io_pins", []):
+                if not pin.get("is_tx_parent_source"):
+                    continue
+                connections.append(
+                    {
+                        "slot": slot,
+                        "pin_name": str(pin.get("pin_name", "")),
+                        "source_path": str(pin.get("source_path", "")),
+                        "parent_pin_path": f"{adapter_parent_hier}/{pin.get('pin_name', '')}",
+                    }
+                )
+        return connections
 
     @staticmethod
     def _default_io_source_path(index: int) -> str:
@@ -718,13 +754,9 @@ class TclGenerator:
     def _io_card_directions(cls, io_card: dict[str, Any], option_values: dict[str, str]) -> list[str]:
         kind = str(io_card.get("kind", ""))
         pin_count = cls._config_int(io_card.get("pin_count", 30), default=30, minimum=1, maximum=30)
-        if kind == "optical":
-            variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
-            if variant == "18rx":
-                return ["rx"] * min(pin_count, 18)
-            if variant == "18tx":
-                return ["tx"] * min(pin_count, 18)
-            return ["tx"] * 14 + ["rx"] * 4
+        variant_directions = cls._io_card_variant_directions(io_card, option_values)
+        if variant_directions:
+            return variant_directions[:pin_count]
         if kind == "voltage_grouped":
             directions: list[str] = []
             groups = io_card.get("groups", [])
@@ -736,16 +768,41 @@ class TclGenerator:
         return ["rx"] * pin_count
 
     @classmethod
+    def _io_card_variant_directions(cls, io_card: dict[str, Any], option_values: dict[str, str]) -> list[str]:
+        variant = cls._selected_io_card_variant(io_card, option_values)
+        if not variant:
+            return []
+        directions: list[str] = []
+        for group in variant.get("directions", []):
+            if not isinstance(group, dict):
+                continue
+            direction = str(group.get("direction", "rx")).strip().lower()
+            if direction not in {"tx", "rx"}:
+                direction = "rx"
+            width = cls._config_int(group.get("width", 0), default=0, minimum=0, maximum=30)
+            directions.extend([direction] * width)
+        return directions
+
+    @classmethod
+    def _selected_io_card_variant(cls, io_card: dict[str, Any], option_values: dict[str, str]) -> dict[str, Any] | None:
+        variants = io_card.get("variants", [])
+        if not isinstance(variants, list) or not variants:
+            return None
+        option_id = str(io_card.get("variant_option", "io_variant"))
+        selected_id = option_values.get(option_id, str(io_card.get("default_variant", "")))
+        selected = next((variant for variant in variants if str(variant.get("id", "")) == selected_id), None)
+        if isinstance(selected, dict):
+            return selected
+        first = variants[0]
+        return first if isinstance(first, dict) else None
+
+    @classmethod
     def io_card_cpld_program(cls, card: dict[str, Any], option_values: dict[str, str]) -> str:
         io_card = card.get("vivado", {}).get("io_card", {})
+        variant = cls._selected_io_card_variant(io_card, option_values)
+        if variant:
+            return str(variant.get("cpld_program", card.get("slot_cpld", "none")) or "none")
         kind = str(io_card.get("kind", ""))
-        if kind == "optical":
-            variant = option_values.get("optical_variant", str(io_card.get("default_variant", "14tx4rx")))
-            return {
-                "14tx4rx": "optical_14tx_4rx",
-                "18tx": "tx30",
-                "18rx": "rx30",
-            }.get(variant, "optical_14tx_4rx")
         if kind == "voltage_grouped":
             groups = io_card.get("groups", [])
             parts = []

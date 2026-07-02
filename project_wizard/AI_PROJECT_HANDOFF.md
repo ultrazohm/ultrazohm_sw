@@ -88,6 +88,14 @@ raw config JSON
 
 Use helpers from `project_wizard/templates/helpers/bd_helpers.tcl`. Do not hand-roll new variants unless a missing helper is genuinely needed.
 
+Template rendering rule:
+
+- Generated Tcl must never contain unresolved template syntax such as `{% if ... %}`, `{% endif %}`, `{% for ... %}`, `{% endfor %}`, or `{{ variable }}`.
+- Vivado/Tcl reports these leaks as confusing runtime errors such as `invalid command name "% endif %"`.
+- This has happened repeatedly during generator development. Always scan generated Tcl for `"{%"` and `"{{"` after changing templates or `SimpleTemplateRenderer`.
+- The local `SimpleTemplateRenderer` is intentionally small. It now supports nested `{% if %}` blocks by reducing innermost `if` blocks first, but it is still not a full Jinja engine. Keep templates simple, and add renderer smoke tests when introducing new control-flow shapes.
+- Especially check disabled-option paths such as PWM debug ILA unchecked, because these paths can expose leaked closing tags that are hidden when the option is enabled.
+
 Proven signal-through-hierarchy pattern:
 
 1. Create/reuse the parent hierarchy.

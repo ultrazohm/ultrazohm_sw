@@ -42,6 +42,14 @@ typedef struct {
     float viz_adc_max11331_a3_ch21;
     float viz_adc_max11331_a3_ch22;
     float viz_adc_max11331_a3_ch23;
+    float viz_resolver_pl_interface_d4_1_position_mech_2pi;
+    float viz_resolver_pl_interface_d4_1_position_el_2pi;
+    float viz_resolver_pl_interface_d4_1_n_mech_rpm;
+    float viz_endat_encoder_d5_1_position_mech_si_single_turn;
+    float viz_endat_encoder_d5_1_position_el_si_single_turn;
+    float viz_endat_encoder_d5_1_speed_mech_rpm;
+    float viz_inverter_adapter_d2_chip_temp_h1;
+    float viz_inverter_adapter_d3_chip_temp_h1;
 } project_wizard_visualization_data_t;
 
 extern project_wizard_visualization_data_t project_wizard_visualization_data;

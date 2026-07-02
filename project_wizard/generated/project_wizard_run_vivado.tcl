@@ -14,5 +14,10 @@ if {[catch {source $project_wizard_generated_tcl} project_wizard_error]} {
     puts "ERROR: Project Wizard generated TCL failed:"
     puts $project_wizard_error
 }
-puts "Project Wizard: block design was not saved because Save block design is disabled."
+if {[catch {validate_bd_design} project_wizard_error]} {
+    puts "ERROR: Project Wizard block design validation failed:"
+    puts $project_wizard_error
+}
+save_bd_design
+save_project
 puts "Project Wizard: Vivado GUI mode is active for inspection."

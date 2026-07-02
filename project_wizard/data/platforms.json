@@ -20,12 +20,26 @@
     {
       "id": "microzohm",
       "name": "MicroZohm",
+      "supported": false,
       "description": "MicroZohm hardware platform target. Detailed Vivado and Vitis implications are still to be defined.",
       "revisions": [
         "Rev01",
         "Rev02",
         "Rev03"
       ],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    },
+    {
+      "id": "kria_kr260",
+      "name": "Kria KR260",
+      "supported": false,
+      "description": "Kria KR260 robotics starter kit target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [],
       "vivado": {
         "notes": []
       },

@@ -98,12 +98,6 @@ int main(void)
 			Global_Data.objects.project_wizard_deadtime_2l_1 = initialize_project_wizard_deadtime_2l_1();
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
 			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
-			Global_Data.objects.project_wizard_deadtime_2l_2 = initialize_project_wizard_deadtime_2l_2();
-			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_2, true);
-			Global_Data.objects.project_wizard_pwm_2l_2 = initialize_project_wizard_pwm_2l_2();
-			Global_Data.objects.project_wizard_deadtime_2l_3 = initialize_project_wizard_deadtime_2l_3();
-			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);
-			Global_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();
 			initialize_project_wizard_pwm_3l(&Global_Data);
 			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
@@ -117,9 +111,19 @@ int main(void)
 			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
 			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
-			Global_Data.objects.axi_gpio_d3 = initialize_axi_gpio_d3();
+			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
+			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
+			Global_Data.objects.inverter_adapter_d3 = initialize_inverter_adapter_d3();
+			Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
+			Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
+			Global_Data.objects.resolver_ip_d4_2 = initialize_resolver_ip_d4_2();
+			Global_Data.objects.resolver_pl_interface_d4_2 = initialize_resolver_pl_interface_d4_2();
+			Global_Data.objects.resolver_ip_d4_3 = initialize_resolver_ip_d4_3();
+			Global_Data.objects.resolver_pl_interface_d4_3 = initialize_resolver_pl_interface_d4_3();
+			Global_Data.objects.endat_encoder_d5_1 = initialize_endat_encoder_d5_1();
+			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_1, uz_endat_interface_send_position);
+			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
 /* Project Wizard END: init_ip_cores */
-            Global_Data.objects.d3_output_test_sawtooth = uz_wavegen_sawtooth_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

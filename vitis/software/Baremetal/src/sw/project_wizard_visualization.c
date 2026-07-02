@@ -44,4 +44,12 @@ void project_wizard_visualization_update(struct _DS_Data_* data)
     project_wizard_visualization_data.viz_adc_max11331_a3_ch21 = data->av.adc_max11331_a3_ch21;
     project_wizard_visualization_data.viz_adc_max11331_a3_ch22 = data->av.adc_max11331_a3_ch22;
     project_wizard_visualization_data.viz_adc_max11331_a3_ch23 = data->av.adc_max11331_a3_ch23;
+    project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_position_mech_2pi = data->av.resolver_pl_interface_d4_1_position_mech_2pi;
+    project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_position_el_2pi = data->av.resolver_pl_interface_d4_1_position_el_2pi;
+    project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_n_mech_rpm = data->av.resolver_pl_interface_d4_1_n_mech_rpm;
+    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_mech_si_single_turn = data->av.endat_encoder_d5_1_position_mech_si_single_turn;
+    project_wizard_visualization_data.viz_endat_encoder_d5_1_position_el_si_single_turn = data->av.endat_encoder_d5_1_position_el_si_single_turn;
+    project_wizard_visualization_data.viz_endat_encoder_d5_1_speed_mech_rpm = data->av.endat_encoder_d5_1_speed_mech_rpm;
+    project_wizard_visualization_data.viz_inverter_adapter_d2_chip_temp_h1 = data->av.inverter_adapter_d2.ChipTempDegreesCelsius_H1;
+    project_wizard_visualization_data.viz_inverter_adapter_d3_chip_temp_h1 = data->av.inverter_adapter_d3.ChipTempDegreesCelsius_H1;
 }

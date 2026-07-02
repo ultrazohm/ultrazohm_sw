@@ -16,7 +16,6 @@ Control
     movingAverage/movingAverage
     ParameterID/ParameterID
     piController/piController
-    PMSM_config/uz_PMSM_config
     uz_pmsm/uz_pmsm
     uz_pmsm_control/uz_pmsm_control
     SetPoint/SetPoint

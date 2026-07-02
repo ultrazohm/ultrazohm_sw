@@ -21,7 +21,7 @@ struct uz_pmsm_swmodel_t
     float omega_mech_1_s_k0;         // mechanical speed state at k=0 (only used if simulate_mechanical_system)
     float inverse_Ld;                // Precompute inductance for reducing divisions
     float inverse_Lq;                // Precompute inductance for reducing divisions
-    float inverse_J;                 // Precompute inertia for reducing divisions (0 if J not set)
+    float inverse_J;                 // Precomputed 1/J to avoid divisions per step; init asserts J > 0
 };
 
 static uint32_t instance_counter = 0U;

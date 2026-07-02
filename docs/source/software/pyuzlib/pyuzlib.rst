@@ -18,7 +18,7 @@ Inside the repository, install the package in editable mode:
 Public API
 ==========
 
-The package root exposes the ``pmsm`` and ``docs`` namespaces:
+The package root exposes the ``pmsm``, ``docs``, and ``machine_catalog`` namespaces:
 
 .. code-block:: python
 
@@ -75,7 +75,26 @@ The flux-map importer accepts custom column names and normalizes the data intern
 	    psi_q_col="PsiQ",
 	)
 
-``PMSMParameters`` stores the C-compatible fields ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere``. Additional scalar values from parameter CSV files are preserved separately for documentation and controller workflows.
+``PMSMParameters`` stores all 20 C-compatible fields of ``uz_PMSM_t``: ``machine_id``, the physical parameters (``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``), and the rating and limit values (``I_max_Ampere``, ``I_rated_Ampere``, ``Torque_rated_Nm``, ``Torque_max_Nm``, ``Torque_min_Nm``, ``speed_rated_rpm``, ``speed_max_rpm``, ``speed_min_rpm``, ``V_dc_nominal_V``, ``I_d_max_A``, ``I_d_min_A``, ``I_q_max_A``, ``I_q_min_A``). Additional scalar values from parameter CSV files (e.g. ``machine_name``) are preserved separately in ``additional_parameters`` for documentation and controller workflows.
+
+PMSM API overview
+=================
+
+The ``pyuzlib.pmsm.PMSM`` class bundles the whole workflow. Besides the methods shown above it provides:
+
+* ``update_parameters(**values)`` — update C fields or additional parameters in place.
+* ``get_flux_map(name)`` — access a loaded flux map as a ``FluxMap`` object.
+* ``compare_linear_flux_model(fit_name)`` / ``plot_linear_flux_model_comparison(fit_name)`` — compare a linear fit against the nonlinear flux map.
+* ``calculate_differential_inductances()`` / ``get_differential_inductances()`` / ``plot_differential_inductances()`` — derive :math:`L_{dd}`, :math:`L_{dq}`, :math:`L_{qd}`, :math:`L_{qq}` from the flux map as a ``DifferentialInductanceMap``.
+* ``export_parameters_csv(path)``, ``export_flux_map_csv(path)``, ``export_differential_inductances_csv(path)`` — write the canonical CSV files.
+
+``calculate_operation_area`` returns an ``OperationArea`` object holding the feasible current region, torque isolines, and the maximum-torque-over-speed data used by the plot helpers.
+
+A complete runnable example is included in the repository:
+
+.. literalinclude:: pyuzlib_showcase.py
+   :language: python
+   :caption: ``docs/source/software/pyuzlib/pyuzlib_showcase.py``
 
 Compatibility Helpers
 =====================
@@ -85,6 +104,9 @@ The module ``pyuzlib.docs.pmsm`` still provides these helpers for documentation 
 * ``plot_flux_map(csv_path)`` for a Matplotlib-based static plot that integrates with the Sphinx ``plot`` directive.
 * ``plot_flux_map_plotly(csv_path)`` for a Plotly-based interactive figure that integrates with the Sphinx ``plotly`` directive.
 * ``L_dd_L_qq_from_flux_map_assuming_no_saturation(csv_path)`` for the existing linear-regression table.
+* ``plot_linear_flux_model_comparison(csv_path)`` for comparing a linear fit against the flux map from a ``flux_map.csv`` file.
+* ``plot_differential_inductances(csv_path)`` for deriving and plotting the differential inductances from a ``flux_map.csv`` file.
+* ``plot_operation_area(machine_parameters_csv_path, ...)`` and ``plot_max_torque_curve(machine_parameters_csv_path, ...)`` for operation-area plots from a ``machine_parameters.csv`` file, as used by the motor dataset pages.
 
 The CSV file is expected to contain the columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs`` on a regular grid.
 
@@ -108,9 +130,11 @@ For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_AM8141-0j0
 Auto-generation for machine catalog
 ===================================
 
+Run the catalog generator from the repository root (or use ``make auto_generate_available_machines`` from ``docs/``):
 
 .. code-block:: bash
 
+	# from the repo root
 	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
 
 

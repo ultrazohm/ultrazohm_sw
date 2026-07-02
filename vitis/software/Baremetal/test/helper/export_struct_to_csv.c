@@ -8,6 +8,16 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 
+/* The output directories (e.g. docs/ceedling_test_output/...) are gitignored and are
+   created by `make ceedling_tests` in docs/ (target ceedling_test_output); the failure
+   message names the CSV path so a missing directory is obvious. */
+static FILE *open_csv_file_for_write(const char *filename)
+{
+    FILE *file = fopen(filename, "w");
+    TEST_ASSERT_NOT_NULL_MESSAGE(file, filename);
+    return file;
+}
+
 void write_csv_field(FILE *file, const void *field_ptr, enum csv_field_type_t type)
 {
     switch (type)
@@ -54,8 +64,7 @@ void export_input_output_arrays_to_csv(const char *filename,
                                               size_t length,
                                               float add_time)
 {
-    FILE *file = fopen(filename, "w");
-    TEST_ASSERT_NOT_NULL(file);
+    FILE *file = open_csv_file_for_write(filename);
     TEST_ASSERT_NOT_NULL(input_array);
     TEST_ASSERT_NOT_NULL(input_fields);
     TEST_ASSERT_NOT_NULL(output_array);
@@ -121,8 +130,7 @@ void export_array_of_struct_to_csv(const char *filename,
                                    size_t length,
                                    float add_time)
 {
-    FILE *file = fopen(filename, "w");
-    TEST_ASSERT_NOT_NULL(file);
+    FILE *file = open_csv_file_for_write(filename);
     TEST_ASSERT_NOT_NULL(array);
     TEST_ASSERT_NOT_NULL(fields);
 
@@ -349,8 +357,7 @@ void export_array_of_struct_to_csv_fast(const char *filename,
                                         size_t length,
                                         float add_time)
 {
-    FILE *file = fopen(filename, "w");
-    TEST_ASSERT_NOT_NULL(file);
+    FILE *file = open_csv_file_for_write(filename);
     TEST_ASSERT_NOT_NULL(array);
     TEST_ASSERT_NOT_NULL(fields);
 

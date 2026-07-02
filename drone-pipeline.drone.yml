@@ -42,6 +42,7 @@ steps:
    - hostname -I
    - cd docs
    - make ceedling_test_output
+   - make check_available_machines
    - ls
    - pwd
    - cd ..

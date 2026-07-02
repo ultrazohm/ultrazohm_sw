@@ -53,16 +53,35 @@ Makefile reference
 The following commands are available to call with ``make``.
 Generating the sphinx documentation requires that Doxygen was already generated.
 
-====================== ================================
-Command                Function
-====================== ================================
-``make clean``         deletes sphinx build folder
-``make doxygen_clean`` deletes the Doxygen build folder
-``make html``          builds sphinx documentation
-``make doxygen``       builds Doxygen
-``make docs``          builds Doxygen and sphinx
-``make livehtml``      builds sphinx with live preview
-====================== ================================
+========================================= =========================================================================
+Command                                   Function
+========================================= =========================================================================
+``make clean``                            deletes sphinx build folder
+``make doxygen_clean``                    deletes the Doxygen build folder
+``make html``                             builds sphinx documentation
+``make doxygen``                          builds Doxygen
+``make docs``                             builds Doxygen and sphinx (what the CI docs steps run)
+``make livehtml``                         builds sphinx with live preview
+``make ceedling_test_output``             wipes and recreates ``docs/ceedling_test_output/``
+``make ceedling_tests``                   recreates ``docs/ceedling_test_output/``, then runs all ceedling tests
+``make docs_with_ceedling_tests``         full pipeline: test output dirs, ceedling tests, Doxygen, sphinx
+``make auto_generate_available_machines`` regenerates the PMSM machine catalog (header and inventory CSV)
+``make check_available_machines``         verifies the committed machine catalog matches the CSV sources (CI check)
+========================================= =========================================================================
+
+Docs and ceedling test output
+*****************************
+
+Some unit tests export their results as CSV files to ``docs/ceedling_test_output/`` so the documentation can plot them.
+This directory is gitignored and is created by the ``ceedling_test_output`` Makefile target, which ``make ceedling_tests`` and ``make docs_with_ceedling_tests`` run automatically.
+Running ``ceedling test:all`` directly from ``vitis/software/Baremetal`` requires ``docs/ceedling_test_output/`` to exist; otherwise the CSV-exporting tests fail with an error naming the missing CSV path — run ``make ceedling_test_output`` (or ``make ceedling_tests``) in ``docs/`` first.
+The relationship between the docs build and the tests is deliberately decoupled:
+
+* ``make docs`` builds Doxygen and sphinx only and never runs ceedling. This is what the CI docs steps run and what is published online.
+* ``make docs_with_ceedling_tests`` is the full pipeline: it recreates ``docs/ceedling_test_output/``, runs all ceedling tests (which regenerate the CSV files), and then builds the docs.
+
+Plot directives that read files from ``docs/ceedling_test_output/`` (e.g. in :ref:`uz_pmsm_swmodel`) are currently disabled, because ``make docs`` in CI would fail without the test output (sphinx runs with warnings-as-errors).
+Only re-enable such directives together with switching the CI docs steps to ``make docs_with_ceedling_tests``.
 
 Video
 *****

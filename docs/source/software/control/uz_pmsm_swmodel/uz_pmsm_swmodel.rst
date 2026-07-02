@@ -17,6 +17,11 @@ Example to plot test results
 
 The following plots are different examples to show the results of a unit test in the documentation.
 
+.. The plot directives below read CSV files that the ceedling tests write to
+   docs/ceedling_test_output/. They are disabled because the CI docs build runs
+   `make docs` without running ceedling first, and sphinx treats warnings as
+   errors (-W). Only re-enable them together with switching the CI docs steps
+   to `make docs_with_ceedling_tests`, see the howToDocs guide.
 
 .. .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
 ..     :caption: Result of a test

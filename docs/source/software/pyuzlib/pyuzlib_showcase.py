@@ -5,10 +5,9 @@ pio.renderers.default = "vscode"
 import pyuzlib
 
 
-PARAMETER_CSV = Path(
-    "/workspaces/ultrazohm_sw/docs/source/software/control/uz_pmsm/dummy_motor/nominal_v1/machine_parameters.csv"
-)
-FLUX_MAP_CSV = Path("/workspaces/ultrazohm_sw/docs/source/software/control/uz_pmsm/beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv")
+UZ_PMSM_DIR = Path(__file__).resolve().parent.parent / "control/uz_pmsm"
+PARAMETER_CSV = UZ_PMSM_DIR / "dummy_motor/nominal_v1/machine_parameters.csv"
+FLUX_MAP_CSV = UZ_PMSM_DIR / "beckhoff_AM8141-0j00-000/measured_psi_dq_averaged_800_rpm/flux_map.csv"
 
 
 motor = pyuzlib.pmsm.PMSM()
@@ -33,6 +32,11 @@ print(fit)
 print()
 
 motor.update_parameters(Torque_rated_Nm=1.2, speed_rated_rpm=1000.0)
+print("Updated C parameters")
+print(motor.parameters.Torque_rated_Nm, motor.parameters.speed_rated_rpm)
+print()
+
+motor.update_parameters(datasheet_note="values from preliminary datasheet")
 print("Additional non-C parameters kept with the PMSM object")
 print(motor.parameters.additional_parameters)
 print()
@@ -54,5 +58,4 @@ print()
 figure = motor.plot_flux_map_plotly()
 figure.show()
 
-fig2=motor.plot_flux_map()
-print(fig2)
+motor.plot_flux_map()

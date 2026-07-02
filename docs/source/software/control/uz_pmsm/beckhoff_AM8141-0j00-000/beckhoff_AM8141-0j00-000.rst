@@ -19,7 +19,7 @@ C usage
    uz_PMSM_t motor = UZ_PMSM_BECKHOFF_AM8141_0J00_000_MEASURED_PSI_DQ_AVERAGED_400_RPM_INIT;
    uz_PMSM_config_assert(motor);
 
-``measured_psi_dq_averaged_800_rpm.csv`` is measured at 800 rpm and -800 rpm, where t he flux map is averaged for each operating point to counteract the influence of the iron losses.
+``measured_psi_dq_averaged_800_rpm.csv`` is measured at 800 rpm and -800 rpm, where the flux map is averaged for each operating point to counteract the influence of the iron losses.
 
 Matplotlib
 ==========

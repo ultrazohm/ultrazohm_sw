@@ -44,8 +44,8 @@ All canonical CSV files use these rules:
 
 * Comma separated values with one header row.
 * Decimal point notation, no thousands separators.
-* SI base units in the stored values.
 * Units are encoded in column names for map data, e.g. ``i_d_A`` and ``psi_d_Vs``, and in parameter names for scalar parameter tables.
+* SI units are used where practical; some parameters follow the existing C struct field names instead, e.g. rotational speeds are stored in rpm (``speed_max_rpm``).
 * No unnamed index column.
 * No comments or unit rows inside the CSV file.
 * Empty values are not allowed in canonical files used for import or code generation.
@@ -135,7 +135,7 @@ With this convention the import/export functions can build a ``uz_LUT_2D`` insta
 
 Measured or FEM source tables can be irregular, contain duplicate operating points, use different column names, or use a different order.
 Convert such source data to ``flux_map.csv`` before it is used for C arrays or deterministic plots.
-For example, the measured source column ``dut_id_set`` maps to ``i_d_A`` and ``dut_iq_set`` maps to ``i_q_A``; source columns ``psi_d`` and ``psi_q`` map to ``psi_d_Vs`` and ``psi_q_Vs``.
+For example, the raw FEM export in ``mh_prototype/fem_overaged_over_angle/flux_map_raw_from_fem.csv`` uses the source columns ``I_d``, ``I_q``, ``Psi_d``, and ``Psi_q``; the ``preprocess_to_correct_data_format.py`` script in the same directory maps them to ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``.
 
 Differential inductances
 ========================
@@ -289,19 +289,20 @@ Before a dataset is used in the controller or a model, check the following:
 Adding a new motor
 ==================
 
-The workflow has three phases: create the dataset, optionally preprocess raw data, then regenerate the C header.
+The workflow has four phases: create the dataset directory, fill in the machine data (optionally preprocessing raw data), regenerate the catalog, and use the generated macro in C code.
 
 .. rubric:: Phase 1 — Create the dataset directory (manual)
 
-Use the ``add_machine`` subcommand of ``generate_available_machines.py`` to scaffold the required directory structure and a ``machine_parameters.csv`` template with all row names pre-filled:
+Use the ``add_machine`` subcommand of ``generate_available_machines.py`` to scaffold the required directory structure and a ``machine_parameters.csv`` template with all row names pre-filled.
+The script resolves all paths from the repository root, so it can be run from any working directory:
 
 .. code-block:: bash
 
-   # run from docs/source/software/control/uz_pmsm/
-   python generate_available_machines.py add_machine <motor_name> <dataset_name>
+   # run from anywhere, e.g. the repo root
+   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine <motor_name> <dataset_name>
 
    # example
-   python generate_available_machines.py add_machine my_motor nominal_v1
+   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine my_motor nominal_v1
 
 This creates:
 
@@ -310,7 +311,7 @@ This creates:
    uz_pmsm/
      my_motor/
        nominal_v1/
-         machine_parameters.csv   ← template with all parameter names, values empty
+         machine_parameters.csv   ← template with all parameter names; machine_name and machine_id are pre-filled, all other values are empty
 
 The script also prints the C macro name that will be generated:
 
@@ -383,10 +384,52 @@ To verify that committed files are still in sync with the CSV sources:
    uz_PMSM_config_assert(my_motor);
 
 The macro expands to a C99 designated initializer with all 20 fields set.
-``uz_PMSM_config_assert`` validates every field at runtime and fires ``uz_assert`` on violation.
+``uz_PMSM_config_assert`` validates the physical parameters and the limit relations (e.g. rated below maximum, minimum below maximum) at runtime and fires ``uz_assert`` on violation; ``machine_id`` itself is not checked.
+
+.. _uz_PMSM_config:
+
+PMSM config
+===========
+
+Motor parameters of a permanent magnet synchronous motor (PMSM) are needed for multiple functions.
+To streamline the coding process, every necessary PMSM parameter is bundled inside a ``uz_PMSM_t`` struct, which can be used in the whole UltraZohm project.
+
+.. doxygenstruct:: uz_PMSM_t
+    :members:
+
+Example
+-------
+
+.. code-block:: c
+  :linenos:
+  :caption: Example function call for configuration
+  
+  #include "uz/uz_PMSM_config/uz_PMSM_config.h"
+  int main(void) {
+     struct uz_PMSM_t config = {
+      .R_ph_Ohm = 0.08f,
+      .Ld_Henry = 0.00027f,
+      .Lq_Henry = 0.00027f,
+      .Psi_PM_Vs = 0.0082f,
+      .polePairs = 4.0f,
+      .J_kg_m_squared = 0.00001773f,
+      .I_max_Ampere = 10.0f
+     }; 
+  }
+
+
+To avoid code duplication a function, which asserts every struct member, is available. 
+
+.. doxygenfunction:: uz_PMSM_config_assert
 
 Available motor datasets
 ========================
+
+The generated machine inventory lists every dataset with its C macro name and all parameter values:
+
+.. csv-table:: Generated machine inventory ``available_machines.csv``
+   :file: available_machines.csv
+   :header-rows: 1
 
 .. toctree::
     :maxdepth: 1

@@ -15,10 +15,193 @@ The data is split into:
 * ``flux_map.csv`` contains the regular nonlinear flux-linkage map :math:`\psi_d(i_d,i_q)` and :math:`\psi_q(i_d,i_q)`.
 * ``differential_inductances.csv`` contains the derivatives of the flux map when a model or controller needs them explicitly.
 
-The files used by code generation and plots should use the canonical names and ordering described below. The repository also contains measured and FEM source CSV examples with older column names; these are useful as import examples, but they are not canonical dataset directories.
+The Python companion library :ref:`pyuzlib` reads, validates, plots, and exports these files and generates the C machine catalog.
+The files used by code generation and plots should use the canonical names and ordering described in the :ref:`file format reference <uz_pmsm_file_formats>`. The repository also contains measured and FEM source CSV examples with older column names; these are useful as import examples, but they are not canonical dataset directories.
+
+Quick start: use an existing motor in C
+=======================================
+
+Every motor dataset in this database is exported as a C initializer macro.
+To configure a PMSM with an existing dataset:
+
+.. code-block:: c
+
+   #include "uz_PMSM_config.h"
+
+   uz_PMSM_t motor = UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT;
+   uz_PMSM_config_assert(motor);
+
+The macro name follows the rule ``UZ_PMSM_<MOTOR_DIR>_<DATASET_DIR>_INIT``: both directory names are uppercased and every non-alphanumeric character is replaced by ``_``.
+All available macros are listed in the table below, and the struct fields are documented in :ref:`uz_PMSM_config`.
+To analyze or plot the underlying motor data in Python, use :ref:`pyuzlib`.
+
+Available motor datasets
+========================
+
+The generated machine inventory lists every dataset with its C macro name and all parameter values:
+
+.. csv-table:: Generated machine inventory ``available_machines.csv``
+   :file: available_machines.csv
+   :header-rows: 1
+
+.. toctree::
+    :maxdepth: 1
+    :caption: PMSM motors
+
+    dummy_motor/dummy_motor
+    beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000
+    mh_prototype/mh_prototype
+
+Adding a new motor
+==================
+
+The workflow has four phases: create the dataset directory, fill in the machine data (optionally preprocessing raw data), regenerate the catalog, and use the generated macro in C code.
+
+.. rubric:: Phase 1 — Create the dataset directory (manual)
+
+Use the ``add_machine`` subcommand of ``generate_available_machines.py`` to scaffold the required directory structure and a ``machine_parameters.csv`` template with all row names pre-filled.
+The script resolves all paths from the repository root, so it can be run from any working directory:
+
+.. code-block:: bash
+
+   # run from anywhere, e.g. the repo root
+   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine <motor_name> <dataset_name>
+
+   # example
+   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine my_motor nominal_v1
+
+This creates:
+
+.. code-block:: text
+
+   uz_pmsm/
+     my_motor/
+       nominal_v1/
+         machine_parameters.csv   ← template with all parameter names; machine_name and machine_id are pre-filled, all other values are empty
+
+The script also prints the C macro name that will be generated:
+
+.. code-block:: text
+
+   Created: .../my_motor/nominal_v1/machine_parameters.csv
+   Fill in all empty values, then run the catalog generator.
+   C macro will be: UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT
+
+``machine_id`` is pre-filled with the next unused integer.
+It is a stable identifier reserved for future runtime machine selection and must stay unique across all motors.
+The script also prints a table of every parameter's constraint and unit, so you can fill in the CSV without leaving the terminal.
+
+If the motor data starts from a raw FEM or measurement file with non-standard column names, pass ``--with-raw-data``.
+This additionally creates a ``preprocess_to_correct_data_format.py`` template in the dataset directory with ``TODO`` comments for column name mapping:
+
+.. code-block:: bash
+
+   python generate_available_machines.py add_machine my_motor nominal_v1 --with-raw-data
+
+.. rubric:: Phase 2 — Fill in machine_parameters.csv (manual)
+
+Open the generated template and fill in every empty value.
+All rows map directly to fields of ``uz_PMSM_t`` and must satisfy the constraints documented in :ref:`uz_PMSM_config`.
+The generator validates these constraints and reports errors with field names when they are violated.
+
+If you also have flux-map data, place ``flux_map.csv`` in the same directory using the canonical column order
+``operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs`` (see the :ref:`file format reference <uz_pmsm_file_formats>`).
+For raw FEM or measurement files with different column names, edit the
+``preprocess_to_correct_data_format.py`` template created by ``--with-raw-data``
+(or see ``mh_prototype/fem_overaged_over_angle/preprocess_to_correct_data_format.py`` as an example)
+and run it manually before the next step.
+
+.. rubric:: Phase 3 — Regenerate the catalog (scripted)
+
+Run the catalog generator once to update both output artifacts:
+
+.. code-block:: bash
+
+   # from docs/
+   make auto_generate_available_machines
+
+   # or from the repo root
+   PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
+
+The generator:
+
+1. Parses the ``uz_PMSM_t`` struct definition from ``uz_PMSM_config.h`` and verifies that the Python model matches it exactly.
+2. Finds every ``machine_parameters.csv`` file two levels deep under ``uz_pmsm/``.
+3. Validates all parameter values and checks that every ``machine_id`` is unique.
+4. Writes ``available_machines.csv`` — a tabular inventory for humans and Sphinx.
+5. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
+
+Both output files must be committed to the repository after running.
+
+To verify that committed files are still in sync with the CSV sources:
+
+.. code-block:: bash
+
+   make check_available_machines
+
+.. rubric:: Phase 4 — Use the macro in C code (manual)
+
+``uz_PMSM_config.h`` already includes ``uz_available_machines_auto_generated.h``, so no additional include is needed:
+
+.. code-block:: c
+
+   #include "uz_PMSM_config.h"
+
+   uz_PMSM_t my_motor = UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT;
+   uz_PMSM_config_assert(my_motor);
+
+The macro expands to a C99 designated initializer with all 20 fields set.
+``uz_PMSM_config_assert`` validates the physical parameters and the limit relations (e.g. rated below maximum, minimum below maximum) at runtime and fires ``uz_assert`` on violation; ``machine_id`` itself is not checked.
+
+.. _uz_PMSM_config:
+
+PMSM config
+===========
+
+Motor parameters of a permanent magnet synchronous motor (PMSM) are needed for multiple functions.
+To streamline the coding process, every necessary PMSM parameter is bundled inside a ``uz_PMSM_t`` struct, which can be used in the whole UltraZohm project.
+
+.. doxygenstruct:: uz_PMSM_t
+    :members:
+
+Example
+-------
+
+.. code-block:: c
+  :linenos:
+  :caption: Example function call for configuration
+
+  #include "uz/uz_PMSM_config/uz_PMSM_config.h"
+  int main(void) {
+     uz_PMSM_t config = UZ_PMSM_DUMMY_MOTOR_NOMINAL_V1_INIT;
+     uz_PMSM_config_assert(config);
+  }
+
+A struct can also be filled manually for a machine that is not part of the database.
+In that case every field must be set and must satisfy the constraints listed in the struct documentation above, otherwise ``uz_PMSM_config_assert`` fires.
+
+To avoid code duplication a function, which asserts every struct member, is available.
+
+.. doxygenfunction:: uz_PMSM_config_assert
+
+Troubleshooting
+===============
+
+* **The catalog generator fails with** ``Invalid PMSM parameter CSV <path>: ...`` — the named file contains an empty, unparsable, or constraint-violating value; the message names the offending parameter. A freshly scaffolded template fails like this until every value is filled in (Phase 2).
+* **The catalog generator fails with** ``Duplicate numeric machine_id ...`` — two ``machine_parameters.csv`` files use the same ``machine_id``; the message suggests the next unused value. This typically happens when two motors are added on separate branches and merged.
+* **The CI check** ``make check_available_machines`` **fails** — the committed generated files are out of sync with the CSV sources. Run ``make auto_generate_available_machines`` in ``docs/`` and commit **both** ``uz_available_machines_auto_generated.h`` and ``available_machines.csv``. CI only checks; it never regenerates or commits these files itself.
+* **The catalog generator fails with** ``pyuzlib.PMSMParameters and uz_PMSM_t differ`` — the ``uz_PMSM_t`` struct in ``uz_PMSM_config.h`` was changed without updating the Python model. Mirror the change in the ``PMSMParameters`` dataclass (``pyuzlib/src/pyuzlib/pmsm/parameters.py``, same field order), extend ``PMSM_PARAMETER_CONSTRAINTS`` and ``uz_PMSM_config_assert`` consistently, then regenerate the catalog.
+
+.. _uz_pmsm_file_formats:
+
+File format reference
+=====================
+
+This section specifies the canonical dataset files.
+It is required reading for writing importers/exporters or preparing data by hand; for the everyday workflows see the sections above.
 
 Directory layout
-================
+----------------
 
 Use one directory per machine and one subdirectory per dataset or version.
 The machine name belongs in the directory name, not in every file name.
@@ -38,7 +221,7 @@ Only ``flux_map.csv`` is required for a nonlinear flux map representation.
 The directory ``dummy_motor/nominal_v1`` contains the canonical synthetic example dataset.
 
 General CSV rules
-=================
+-----------------
 
 All canonical CSV files use these rules:
 
@@ -55,7 +238,7 @@ The canonical dq convention is the same one used by the UltraZohm PMSM controlle
 Do not mix peak and RMS values in one dataset.
 
 Machine parameters
-==================
+------------------
 
 ``machine_parameters.csv`` is a two-column long-form table with ``parameter`` and ``value``.
 It has no ``unit`` column; units are part of the parameter name, following the existing UltraZohm C names where possible.
@@ -68,7 +251,7 @@ The canonical synthetic example from ``dummy_motor/nominal_v1/machine_parameters
    :header-rows: 1
 
 Required machine rows
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 The following rows map directly to ``uz_PMSM_t`` and are required by the existing PMSM controller, setpoint module, and software model.
 
@@ -82,14 +265,14 @@ Its value becomes the human-readable label in the generated C header comment and
 If absent, the motor directory name is used instead.
 
 Relation to ``uz_pmsm_control`` limits
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The motor CSV stores machine capability, not a complete ``uz_pmsm_control_configuration_t``.
 The ``setpoint_limits`` of ``uz_pmsm_control`` are controller policy and can be derived from ratings such as ``Torque_max_Nm``, ``Torque_min_Nm``, ``speed_max_rpm``, ``speed_min_rpm``, ``I_d_max_A``, and ``I_q_max_A`` when a concrete controller configuration is generated.
 DC-link voltage and DC-link current limits also stay outside this motor CSV because they depend on the inverter, DC source, and test setup.
 
 Nonlinear flux map
-==================
+------------------
 
 ``flux_map.csv`` is a long-form table with one row per support point.
 It represents a complete regular grid and is directly compatible with :ref:`uz_LUT_2D`.
@@ -108,7 +291,7 @@ Required columns are:
    :widths: 25 75
 
 Ordering contract
------------------
+~~~~~~~~~~~~~~~~~
 
 Use ``i_d_A`` as the ``uz_LUT_2D`` x-axis and ``i_q_A`` as the y-axis.
 Both breakpoint vectors must be strictly increasing.
@@ -138,7 +321,7 @@ Convert such source data to ``flux_map.csv`` before it is used for C arrays or d
 For example, the raw FEM export in ``mh_prototype/fem_overaged_over_angle/flux_map_raw_from_fem.csv`` uses the source columns ``I_d``, ``I_q``, ``Psi_d``, and ``Psi_q``; the ``preprocess_to_correct_data_format.py`` script in the same directory maps them to ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``.
 
 Differential inductances
-========================
+------------------------
 
 ``differential_inductances.csv`` uses the same grid and the same ordering as ``flux_map.csv``.
 
@@ -177,6 +360,41 @@ with
 
 For energy-consistent maps the two cross terms should be close to each other.
 Store both terms anyway; an exporter can decide whether a later controller or model wants both terms, one selected term, or an averaged cross term.
+
+Importer and exporter contract
+------------------------------
+
+MATLAB and Python helpers should implement the same checks and produce the same canonical order.
+The recommended minimum API is:
+
+* Read a dataset directory machine parameters, flux map, and optional differential inductances.
+* Validate the mandatory columns and the units encoded in map column names or scalar parameter names.
+* Validate that canonical maps are rectangular, have no duplicate ``(i_d_A, i_q_A)`` pairs, and use strictly increasing breakpoints.
+* Sort maps into the canonical row-major order before writing.
+* Export ``uz_PMSM_t`` values and derive controller limit values from the ratings in ``machine_parameters.csv``.
+* Export ``uz_LUT_2D`` breakpoint and data arrays from ``flux_map.csv``.
+* Optionally derive ``differential_inductances.csv`` from ``flux_map.csv`` using a documented method.
+
+Importers may support legacy column aliases for convenience, such as ``i_d`` to ``i_d_A`` or ``psi_d`` to ``psi_d_Vs``.
+Exporters should always write the canonical column names.
+
+Validation checklist
+--------------------
+
+The catalog generator enforces the ``machine_parameters.csv`` items automatically on every run; the flux-map items must currently be checked by hand or with the :ref:`pyuzlib` importers.
+Before a dataset is used in the controller or a model, check the following:
+
+* ``machine_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
+* ``machine_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
+* ``machine_parameters.csv`` contains the machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits.
+* ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
+* ``Psi_PM_Vs`` is greater than or equal to zero.
+* ``flux_map.csv`` has the four required columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``. An optional ``operating_point`` column is ignored on import and added automatically on export by pyuzlib.
+* ``i_d_A`` and ``i_q_A`` form a complete rectangular grid.
+* Breakpoints are strictly increasing after sorting.
+* File order is sorted by ``i_q_A`` first and then by ``i_d_A``.
+* ``differential_inductances.csv``, if present, has exactly the same ``operating_point``, ``i_d_A``, and ``i_q_A`` columns as ``flux_map.csv``.
+* Source CSV files are not exported to C unless they have first been converted to the canonical regular map.
 
 Relation to controller and models
 =================================
@@ -250,191 +468,3 @@ Set ``mesh/rows`` to the number of unique ``i_q_A`` breakpoints.
            table[x=i_d_A, y=i_q_A, z expr=\thisrow{psi_q_Vs}*1000] \fluxmap;
        \end{groupplot}
    \end{tikzpicture}
-
-Importer and exporter contract
-==============================
-
-MATLAB and Python helpers should implement the same checks and produce the same canonical order.
-The recommended minimum API is:
-
-* Read a dataset directory machine parameters, flux map, and optional differential inductances.
-* Validate the mandatory columns and the units encoded in map column names or scalar parameter names.
-* Validate that canonical maps are rectangular, have no duplicate ``(i_d_A, i_q_A)`` pairs, and use strictly increasing breakpoints.
-* Sort maps into the canonical row-major order before writing.
-* Export ``uz_PMSM_t`` values and derive controller limit values from the ratings in ``machine_parameters.csv``.
-* Export ``uz_LUT_2D`` breakpoint and data arrays from ``flux_map.csv``.
-* Optionally derive ``differential_inductances.csv`` from ``flux_map.csv`` using a documented method.
-
-Importers may support legacy column aliases for convenience, such as ``i_d`` to ``i_d_A`` or ``psi_d`` to ``psi_d_Vs``.
-Exporters should always write the canonical column names.
-
-Validation checklist
-====================
-
-Before a dataset is used in the controller or a model, check the following:
-
-* ``machine_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
-* ``machine_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
-* ``machine_parameters.csv`` contains the machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits.
-* ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
-* ``Psi_PM_Vs`` is greater than or equal to zero.
-* ``flux_map.csv`` has the four required columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``. An optional ``operating_point`` column is ignored on import and added automatically on export by pyuzlib.
-* ``i_d_A`` and ``i_q_A`` form a complete rectangular grid.
-* Breakpoints are strictly increasing after sorting.
-* File order is sorted by ``i_q_A`` first and then by ``i_d_A``.
-* ``differential_inductances.csv``, if present, has exactly the same ``operating_point``, ``i_d_A``, and ``i_q_A`` columns as ``flux_map.csv``.
-* Source CSV files are not exported to C unless they have first been converted to the canonical regular map.
-
-
-Adding a new motor
-==================
-
-The workflow has four phases: create the dataset directory, fill in the machine data (optionally preprocessing raw data), regenerate the catalog, and use the generated macro in C code.
-
-.. rubric:: Phase 1 — Create the dataset directory (manual)
-
-Use the ``add_machine`` subcommand of ``generate_available_machines.py`` to scaffold the required directory structure and a ``machine_parameters.csv`` template with all row names pre-filled.
-The script resolves all paths from the repository root, so it can be run from any working directory:
-
-.. code-block:: bash
-
-   # run from anywhere, e.g. the repo root
-   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine <motor_name> <dataset_name>
-
-   # example
-   python docs/source/software/control/uz_pmsm/generate_available_machines.py add_machine my_motor nominal_v1
-
-This creates:
-
-.. code-block:: text
-
-   uz_pmsm/
-     my_motor/
-       nominal_v1/
-         machine_parameters.csv   ← template with all parameter names; machine_name and machine_id are pre-filled, all other values are empty
-
-The script also prints the C macro name that will be generated:
-
-.. code-block:: text
-
-   Created: .../my_motor/nominal_v1/machine_parameters.csv
-   Fill in all empty values, then run the catalog generator.
-   C macro will be: UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT
-
-``machine_id`` is assigned automatically as the next unused integer.
-The script also prints a table of every parameter's constraint and unit, so you can fill in the CSV without leaving the terminal.
-
-If the motor data starts from a raw FEM or measurement file with non-standard column names, pass ``--with-raw-data``.
-This additionally creates a ``preprocess_to_correct_data_format.py`` template in the dataset directory with ``TODO`` comments for column name mapping:
-
-.. code-block:: bash
-
-   python generate_available_machines.py add_machine my_motor nominal_v1 --with-raw-data
-
-.. rubric:: Phase 2 — Fill in machine_parameters.csv (manual)
-
-Open the generated template and fill in every empty value.
-All rows map directly to fields of ``uz_PMSM_t`` and must satisfy the constraints documented in :ref:`uz_PMSM_config`.
-The generator validates these constraints and reports errors with field names when they are violated.
-
-If you also have flux-map data, place ``flux_map.csv`` in the same directory using the canonical column order
-``operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs``.
-For raw FEM or measurement files with different column names, edit the
-``preprocess_to_correct_data_format.py`` template created by ``--with-raw-data``
-(or see ``mh_prototype/fem_overaged_over_angle/preprocess_to_correct_data_format.py`` as an example)
-and run it manually before the next step.
-
-.. rubric:: Phase 3 — Regenerate the catalog (scripted)
-
-Run the catalog generator once to update both output artifacts:
-
-.. code-block:: bash
-
-   # from docs/
-   make auto_generate_available_machines
-
-   # or from the repo root
-   PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
-
-The generator:
-
-1. Parses the ``uz_PMSM_t`` struct definition from ``uz_PMSM_config.h`` and verifies that the Python model matches it exactly.
-2. Finds every ``machine_parameters.csv`` file two levels deep under ``uz_pmsm/``.
-3. Validates all parameter values and checks that every ``machine_id`` is unique.
-4. Writes ``available_machines.csv`` — a tabular inventory for humans and Sphinx.
-5. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
-
-Both output files must be committed to the repository after running.
-
-To verify that committed files are still in sync with the CSV sources:
-
-.. code-block:: bash
-
-   make check_available_machines
-
-.. rubric:: Phase 4 — Use the macro in C code (manual)
-
-``uz_PMSM_config.h`` already includes ``uz_available_machines_auto_generated.h``, so no additional include is needed:
-
-.. code-block:: c
-
-   #include "uz_PMSM_config.h"
-
-   uz_PMSM_t my_motor = UZ_PMSM_MY_MOTOR_NOMINAL_V1_INIT;
-   uz_PMSM_config_assert(my_motor);
-
-The macro expands to a C99 designated initializer with all 20 fields set.
-``uz_PMSM_config_assert`` validates the physical parameters and the limit relations (e.g. rated below maximum, minimum below maximum) at runtime and fires ``uz_assert`` on violation; ``machine_id`` itself is not checked.
-
-.. _uz_PMSM_config:
-
-PMSM config
-===========
-
-Motor parameters of a permanent magnet synchronous motor (PMSM) are needed for multiple functions.
-To streamline the coding process, every necessary PMSM parameter is bundled inside a ``uz_PMSM_t`` struct, which can be used in the whole UltraZohm project.
-
-.. doxygenstruct:: uz_PMSM_t
-    :members:
-
-Example
--------
-
-.. code-block:: c
-  :linenos:
-  :caption: Example function call for configuration
-  
-  #include "uz/uz_PMSM_config/uz_PMSM_config.h"
-  int main(void) {
-     struct uz_PMSM_t config = {
-      .R_ph_Ohm = 0.08f,
-      .Ld_Henry = 0.00027f,
-      .Lq_Henry = 0.00027f,
-      .Psi_PM_Vs = 0.0082f,
-      .polePairs = 4.0f,
-      .J_kg_m_squared = 0.00001773f,
-      .I_max_Ampere = 10.0f
-     }; 
-  }
-
-
-To avoid code duplication a function, which asserts every struct member, is available. 
-
-.. doxygenfunction:: uz_PMSM_config_assert
-
-Available motor datasets
-========================
-
-The generated machine inventory lists every dataset with its C macro name and all parameter values:
-
-.. csv-table:: Generated machine inventory ``available_machines.csv``
-   :file: available_machines.csv
-   :header-rows: 1
-
-.. toctree::
-    :maxdepth: 1
-    :caption: PMSM motors
-
-    dummy_motor/dummy_motor
-    beckhoff_AM8141-0j00-000/beckhoff_AM8141-0j00-000
-    mh_prototype/mh_prototype

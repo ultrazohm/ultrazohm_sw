@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -9,13 +10,14 @@ from pathlib import Path
 from ._repo_paths import machine_catalog_default_paths
 from ._repo_paths import repo_root_from
 from .pmsm.parameters import CParameterField
+from .pmsm.parameters import PMSM_PARAMETER_CONSTRAINTS
 from .pmsm.parameters import PMSMParameters
 from .pmsm.parameters import SUPPORTED_C_PARAMETER_TYPES
 
 
 @dataclass(frozen=True)
 class MachineCatalogEntry:
-    machine_id: str
+    catalog_id: str
     macro_name: str
     machine_name: str
     dataset_name: str
@@ -74,6 +76,8 @@ def normalize_machine_identifier(value: str) -> str:
 
 
 def format_c_float(value: float) -> str:
+    if not math.isfinite(value):
+        raise ValueError(f"Cannot render non-finite value {value!r} as C float")
     text = format(value, ".15g")
     if "e" not in text.lower() and "." not in text:
         text = f"{text}.0"
@@ -100,30 +104,6 @@ def format_path_for_generated_comment(path: str | Path, repo_root: str | Path) -
         return resolved_path.relative_to(resolved_repo_root).as_posix()
     return resolved_path.as_posix()
 
-
-_PARAMETER_HINTS: dict[str, tuple[str, str]] = {
-    # field_name: (constraint, description)
-    "machine_id":       ("positive integer, unique across all motors", "auto-assigned, change only if needed"),
-    "R_ph_Ohm":         ("> 0",                    "phase resistance in Ohm"),
-    "Ld_Henry":         ("> 0",                    "d-axis inductance in H"),
-    "Lq_Henry":         ("> 0",                    "q-axis inductance in H"),
-    "Psi_PM_Vs":        (">= 0",                   "PM flux linkage in Vs"),
-    "polePairs":        ("> 0, integer value",      "e.g. 2, 4, 6"),
-    "J_kg_m_squared":   ("> 0",                    "rotor inertia in kg·m²"),
-    "I_max_Ampere":     ("> 0",                    "peak phase current in A"),
-    "I_rated_Ampere":   ("0 < value <= I_max_Ampere", ""),
-    "Torque_rated_Nm":  ("> 0",                    ""),
-    "Torque_max_Nm":    (">= Torque_rated_Nm",     ""),
-    "Torque_min_Nm":    ("<= 0, < Torque_max_Nm",  ""),
-    "speed_rated_rpm":  ("> 0",                    ""),
-    "speed_max_rpm":    (">= speed_rated_rpm",     ""),
-    "speed_min_rpm":    ("<= 0, < speed_max_rpm",  ""),
-    "V_dc_nominal_V":   ("> 0",                    "nominal DC-link voltage in V"),
-    "I_d_max_A":        (">= I_d_min_A",           ""),
-    "I_d_min_A":        ("any float",              ""),
-    "I_q_max_A":        (">= I_q_min_A",           ""),
-    "I_q_min_A":        ("any float",              ""),
-}
 
 _PREPROCESS_SCRIPT_TEMPLATE = '''\
 #!/usr/bin/env python3
@@ -153,13 +133,16 @@ print("Exported flux_map.csv and differential_inductances.csv.")
 
 
 def _print_parameter_hints(next_id: int) -> None:
-    name_w = max(len(n) for n in _PARAMETER_HINTS) + 2
-    constraint_w = max(len(c) for c, _ in _PARAMETER_HINTS.values()) + 2
+    hints = {entry.name: entry for entry in PMSM_PARAMETER_CONSTRAINTS}
+    name_w = max(len(n) for n in hints) + 2
+    constraint_w = max(len(entry.constraint) for entry in PMSM_PARAMETER_CONSTRAINTS) + 2
     print("\nParameter constraints:")
     for field in PMSMParameters.C_PARAMETER_FIELDS:
-        constraint, description = _PARAMETER_HINTS.get(field.name, ("", ""))
+        entry = hints.get(field.name)
+        constraint = entry.constraint if entry else ""
+        description = entry.description if entry else ""
         if field.name == "machine_id":
-            constraint = f"positive integer, unique across all motors (auto-assigned: {next_id})"
+            constraint = f"positive integer, unique across all motors (pre-filled: {next_id})"
         desc_part = f"  {description}" if description else ""
         print(f"  {field.name:<{name_w}} ({field.ctype})  {constraint:<{constraint_w}}{desc_part}")
 
@@ -221,7 +204,7 @@ def discover_machine_catalog(
             f"Python fields: {PMSMParameters.C_PARAMETER_FIELDS}, C fields: {c_fields}"
         )
     entries: list[MachineCatalogEntry] = []
-    used_machine_ids: set[str] = set()
+    used_catalog_ids: set[str] = set()
     used_numeric_machine_ids: set[int] = set()
 
     for csv_path in sorted(uz_pmsm_dir.rglob("machine_parameters.csv")):
@@ -230,19 +213,18 @@ def discover_machine_catalog(
             continue
 
         machine_dir, dataset_dir, _ = relative_csv_path.parts
-        parameters = PMSMParameters.from_csv(csv_path)
-        values = parameters.to_dict(include_additional=True)
-
         try:
+            parameters = PMSMParameters.from_csv(csv_path)
             c_dict = parameters.to_c_dict()
         except ValueError as exc:
             raise ValueError(f"Invalid PMSM parameter CSV {csv_path}: {exc}") from exc
+        values = parameters.to_dict(include_additional=True)
         c_values = {field.name: c_dict[field.name] for field in c_fields}
 
-        machine_id = normalize_machine_identifier(f"{machine_dir}_{dataset_dir}")
-        if machine_id in used_machine_ids:
-            raise ValueError(f"Duplicate machine id generated for {csv_path}: {machine_id}")
-        used_machine_ids.add(machine_id)
+        catalog_id = normalize_machine_identifier(f"{machine_dir}_{dataset_dir}")
+        if catalog_id in used_catalog_ids:
+            raise ValueError(f"Duplicate catalog id generated for {csv_path}: {catalog_id}")
+        used_catalog_ids.add(catalog_id)
 
         numeric_machine_id = int(c_values.get("machine_id", 0))
         if numeric_machine_id in used_numeric_machine_ids:
@@ -260,8 +242,8 @@ def discover_machine_catalog(
         machine_name = str(values.get("machine_name", machine_dir))
         entries.append(
             MachineCatalogEntry(
-                machine_id=machine_id,
-                macro_name=f"UZ_PMSM_{machine_id}_INIT",
+                catalog_id=catalog_id,
+                macro_name=f"UZ_PMSM_{catalog_id}_INIT",
                 machine_name=machine_name,
                 dataset_name=dataset_dir,
                 machine_parameters_csv=str(relative_csv_path).replace("\\", "/"),
@@ -296,7 +278,7 @@ def write_available_machines_csv(
         writer.writeheader()
         for entry in entries:
             row = {
-                "catalog_id": entry.machine_id,
+                "catalog_id": entry.catalog_id,
                 "macro_name": entry.macro_name,
                 "machine_name": entry.machine_name,
                 "dataset_name": entry.dataset_name,
@@ -334,6 +316,8 @@ def render_c_init_header(
         f"/* Source PMSM datasets root: {source_root_comment} */",
         f"/* Generated machine inventory: {inventory_comment} */",
         "/* Do not edit this file manually. */",
+        "/* Macro naming: UZ_PMSM_<MOTOR_DIR>_<DATASET_DIR>_INIT, uppercased, non-alphanumerics replaced by '_'. */",
+        "/* machine_id is a stable, manually assigned identifier reserved for future runtime machine selection. */",
         "",
     ]
 

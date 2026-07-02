@@ -10,7 +10,7 @@
  * 
  */
 typedef struct uz_PMSM_t{
-    uint32_t machine_id; /**< unique machine identifier generated from the PMSM machine catalog */
+    uint32_t machine_id; /**< stable dataset id from machine_parameters.csv; reserved for future runtime machine selection, not checked by uz_PMSM_config_assert */
     float R_ph_Ohm;/**< phase resistance in Ohm. Must be greater than 0.0f */
     float Ld_Henry; /**< d-axis inductance in Henry. Must be greater than 0.0f */
     float Lq_Henry;/**< q-axis inductance in Henry. Must be greater than 0.0f */

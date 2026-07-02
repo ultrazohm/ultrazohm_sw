@@ -1,5 +1,5 @@
 Parameter,Meaning,Existing consumer
-``machine_id``,Unique machine identifier used to recognize the loaded machine data.,``uz_PMSM_t``
+``machine_id``,"Stable, manually assigned machine identifier, unique across all motors; reserved for future runtime machine selection.",``uz_PMSM_t``
 ``R_ph_Ohm``,Stator phase resistance :math:`R_s` in Ohm.,``uz_PMSM_t``
 ``Ld_Henry``,Linear d-axis inductance :math:`L_d` in H.,``uz_PMSM_t``
 ``Lq_Henry``,Linear q-axis inductance :math:`L_q` in H.,``uz_PMSM_t``

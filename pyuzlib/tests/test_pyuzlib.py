@@ -495,7 +495,7 @@ def test_add_machine_creates_template_and_prints_hints(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "R_ph_Ohm" in out
     assert "> 0" in out
-    assert "auto-assigned: 1" in out
+    assert "pre-filled: 1" in out
 
 
 def test_add_machine_with_raw_data_creates_preprocess_script(tmp_path):
@@ -532,3 +532,107 @@ def test_add_machine_cli_with_raw_data(tmp_path):
     assert rc == 0
     assert (tmp_path / "my_motor" / "nominal_v1" / "machine_parameters.csv").exists()
     assert (tmp_path / "my_motor" / "nominal_v1" / "preprocess_to_correct_data_format.py").exists()
+
+
+_VALID_MACHINE_CSV = (
+    "parameter,value\n"
+    "machine_id,1\n"
+    "R_ph_Ohm,0.51\n"
+    "Ld_Henry,0.002\n"
+    "Lq_Henry,0.003\n"
+    "Psi_PM_Vs,0.042\n"
+    "polePairs,4\n"
+    "J_kg_m_squared,0.000108\n"
+    "I_max_Ampere,12\n"
+    "I_rated_Ampere,8\n"
+    "Torque_rated_Nm,1.2\n"
+    "Torque_max_Nm,2\n"
+    "Torque_min_Nm,-2\n"
+    "speed_rated_rpm,1000\n"
+    "speed_max_rpm,1500\n"
+    "speed_min_rpm,-1500\n"
+    "V_dc_nominal_V,24\n"
+    "I_d_max_A,10\n"
+    "I_d_min_A,-10\n"
+    "I_q_max_A,10\n"
+    "I_q_min_A,-10\n"
+)
+
+
+def test_pmsm_parameters_reject_malformed_row_with_path_and_row_number(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\n"
+        "machine_id,1\n"
+        "R_ph_Ohm,0.51,stray_cell\n"
+        "Ld_Henry,0.002\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"Malformed row 3 in .*machine_parameters\.csv"):
+        PMSMParameters.from_csv(csv_path)
+
+
+def test_pmsm_parameters_reject_duplicate_parameter_rows(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\n"
+        "machine_id,1\n"
+        "R_ph_Ohm,0.51\n"
+        "R_ph_Ohm,0.62\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"Duplicate parameter 'R_ph_Ohm' in .*machine_parameters\.csv"):
+        PMSMParameters.from_csv(csv_path)
+
+
+def test_pmsm_parameters_unparseable_value_error_names_the_parameter(tmp_path):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        "parameter,value\n"
+        "machine_id,1\n"
+        "R_ph_Ohm,\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"Cannot parse value '' for parameter 'R_ph_Ohm'"):
+        PMSMParameters.from_csv(csv_path)
+
+
+def test_machine_catalog_error_for_unfilled_template_names_csv_and_parameter(tmp_path):
+    machine_catalog.create_machine_template(
+        motor_name="my_motor",
+        dataset_name="nominal_v1",
+        uz_pmsm_dir=tmp_path,
+    )
+
+    with pytest.raises(ValueError, match=r"Invalid PMSM parameter CSV .*machine_parameters\.csv.*'R_ph_Ohm'"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
+@pytest.mark.parametrize("bad_value", ["inf", "-inf", "nan", "1e39"])
+def test_pmsm_parameters_reject_non_finite_and_out_of_float_range_values(tmp_path, bad_value):
+    csv_path = tmp_path / "machine_parameters.csv"
+    csv_path.write_text(
+        _VALID_MACHINE_CSV.replace("V_dc_nominal_V,24", f"V_dc_nominal_V,{bad_value}"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="V_dc_nominal_V"):
+        PMSMParameters.from_csv(csv_path).validate_for_c()
+
+
+def test_machine_catalog_format_c_float_rejects_non_finite_values():
+    with pytest.raises(ValueError, match="non-finite"):
+        machine_catalog.format_c_float(float("inf"))
+    with pytest.raises(ValueError, match="non-finite"):
+        machine_catalog.format_c_float(float("nan"))
+
+
+def test_parameter_constraints_cover_every_c_parameter_field():
+    constraint_names = {entry.name for entry in pyuzlib.pmsm.PMSM_PARAMETER_CONSTRAINTS}
+    assert set(PMSMParameters.C_PARAMETER_NAMES) <= constraint_names

@@ -1,3 +1,5 @@
+.. _pyuzlib:
+
 =======
 pyuzlib
 =======
@@ -5,6 +7,7 @@ pyuzlib
 ``pyuzlib`` is a small Python helper library for documentation and data-processing tasks in the UltraZohm repository.
 
 At the moment, the package mainly provides PMSM data helpers for scalar machine parameters, flux-map CSV files, fitting routines, plotting, and CSV export.
+The CSV files it operates on are the motor datasets of the :ref:`uz_pmsm` motor database; see that page for the canonical file formats and the workflow for adding a new motor.
 
 Installation
 ============
@@ -130,12 +133,14 @@ For a concrete dataset example, see :doc:`../control/uz_pmsm/beckhoff_AM8141-0j0
 Auto-generation for machine catalog
 ===================================
 
-Run the catalog generator from the repository root (or use ``make auto_generate_available_machines`` from ``docs/``):
+The ``pyuzlib.machine_catalog`` module generates the machine inventory CSV and the C initializer header from the motor datasets:
 
 .. code-block:: bash
 
-	# from the repo root
-	PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
+	# from docs/
+	make auto_generate_available_machines
+
+The full workflow (scaffolding a new dataset, filling in values, regenerating, committing) is documented in :ref:`uz_pmsm`, section "Adding a new motor".
 
 
 Adding new members to uz_PMSM_t
@@ -147,8 +152,8 @@ If a new scalar member is added to ``uz_PMSM_t``, update these places:
 
 * Add the new field to ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h``.
 * Extend the checks in ``vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.c`` if the new field needs validation.
-* Add the same field to the ``PMSMParameters`` dataclass in ``pyuzlib/src/pyuzlib/pmsm/parameters.py``.
-* Extend ``PMSMParameters.validate_for_c()`` if the new field is required or constrained.
+* Add the same field to the ``PMSMParameters`` dataclass in ``pyuzlib/src/pyuzlib/pmsm/parameters.py`` (same field order as the struct).
+* Add a ``ParameterConstraint`` entry for the new field to ``PMSM_PARAMETER_CONSTRAINTS`` in the same file; it drives both ``validate_for_c()`` and the ``add_machine`` template hints.
 * Add the new parameter row to every ``machine_parameters.csv`` file under ``docs/source/software/control/uz_pmsm``.
 * Update the canonical CSV documentation in ``docs/source/software/control/uz_pmsm/uz_pmsm.rst``.
 * Regenerate the catalog using ``python -m pyuzlib.machine_catalog`` or ``uz-generate-pmsm-machine-catalog``.

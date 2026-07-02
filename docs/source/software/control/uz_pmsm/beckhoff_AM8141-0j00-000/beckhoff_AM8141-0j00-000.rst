@@ -2,7 +2,8 @@
 beckhoff AM8141-0j00-000
 ========================
 
-The measured datasets, e.g., ``measured_psi_dq_averaged_800_rpm/flux_map.csv``, can be plotted by using ``pyuzlib``.
+These datasets are part of the :ref:`uz_pmsm` motor database; see there for the file formats and how to add a motor.
+The measured datasets, e.g., ``measured_psi_dq_averaged_800_rpm/flux_map.csv``, can be plotted by using :ref:`pyuzlib`.
 
 C usage
 =======

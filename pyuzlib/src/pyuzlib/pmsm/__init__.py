@@ -3,7 +3,7 @@
 from .differential_inductance import DifferentialInductanceMap
 from .flux_map import FluxMap
 from .operation_area import OperationArea
-from .parameters import PMSMParameters
+from .parameters import PMSM_PARAMETER_CONSTRAINTS, ParameterConstraint, PMSMParameters
 from .pmsm import PMSM
 
 __all__ = [
@@ -12,4 +12,6 @@ __all__ = [
     "OperationArea",
     "PMSM",
     "PMSMParameters",
+    "PMSM_PARAMETER_CONSTRAINTS",
+    "ParameterConstraint",
 ]

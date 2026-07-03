@@ -133,9 +133,6 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0/zusys_AXI2TCM_0_0.xci">
-          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_1/zusys_util_vector_logic_0_1.xci">
           <Proxy FileSetName="zusys_util_vector_logic_0_1"/>
         </CompFileExtendedInfo>
@@ -186,6 +183,9 @@
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0/zusys_zynq_ultra_ps_e_0_0.xci">
           <Proxy FileSetName="zusys_zynq_ultra_ps_e_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0/zusys_AXI2TCM_0_0.xci">
+          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">
@@ -256,7 +256,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Digital_AdapterBoard_D5.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>

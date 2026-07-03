@@ -2,7 +2,7 @@
 #include "../uz_HAL.h"
 
 // Keep in sync with PMSM_PARAMETER_CONSTRAINTS in pyuzlib/src/pyuzlib/pmsm/parameters.py
-void uz_PMSM_config_assert(uz_PMSM_t config){
+void uz_PMSM_config_assert_model(uz_PMSM_t config){
     uz_assert(config.R_ph_Ohm > 0.0f);
     uz_assert(config.Ld_Henry > 0.0f);
 	uz_assert(config.Lq_Henry > 0.0f);
@@ -11,6 +11,11 @@ void uz_PMSM_config_assert(uz_PMSM_t config){
 	uz_assert(fmodf(config.polePairs, 1.0f) == 0);
     uz_assert(config.J_kg_m_squared > 0.0f);
     uz_assert(config.I_max_Ampere > 0.0f);
+}
+
+// Keep in sync with PMSM_PARAMETER_CONSTRAINTS in pyuzlib/src/pyuzlib/pmsm/parameters.py
+void uz_PMSM_config_assert(uz_PMSM_t config){
+    uz_PMSM_config_assert_model(config);
     uz_assert(config.I_rated_Ampere > 0.0f);
     uz_assert(config.I_rated_Ampere <= config.I_max_Ampere);
     uz_assert(config.Torque_rated_Nm > 0.0f);

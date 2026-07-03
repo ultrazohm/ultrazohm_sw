@@ -161,7 +161,8 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
 }
 static void uz_SetPoint_assert_motor_parameters(const uz_PMSM_t *input, enum uz_Setpoint_motor_type motor_type) {
     uz_assert_not_NULL(input);
-    uz_PMSM_config_assert(*input);
+    // Setpoint generation only uses the physical machine model, not the rating/limit envelope.
+    uz_PMSM_config_assert_model(*input);
     if(motor_type == IPMSM) {
         uz_assert(input->Ld_Henry != input->Lq_Henry);
     }

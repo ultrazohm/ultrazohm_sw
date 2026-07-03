@@ -224,4 +224,36 @@ void test_uz_PMSM_config_assert_I_q_limits(void){
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
 }
 
+// A config with only the physical model parameters (envelope fields left at zero) must pass
+// uz_PMSM_config_assert_model but fail the full uz_PMSM_config_assert. This is the contract that
+// lets current control and setpoint accept model-only configs without the rating envelope.
+void test_uz_PMSM_config_assert_model_passes_model_only_config(void)
+{
+    struct uz_PMSM_t config_model_only = {
+        .R_ph_Ohm = 0.51f,
+        .Ld_Henry = 0.002f,
+        .Lq_Henry = 0.002f,
+        .Psi_PM_Vs = 0.042f,
+        .polePairs = 4.0f,
+        .J_kg_m_squared = 0.000108f,
+        .I_max_Ampere = 12.0f};
+    TEST_ASSERT_PASS_ASSERT(uz_PMSM_config_assert_model(config_model_only));
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config_model_only));
+}
+
+void test_uz_PMSM_config_assert_model_checks_model_parameters(void)
+{
+    config.R_ph_Ohm = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert_model(config));
+    config.R_ph_Ohm = 0.08f;
+    config.Ld_Henry = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert_model(config));
+}
+
+// The full valid config must satisfy the model-only assert as well.
+void test_uz_PMSM_config_assert_model_passes_full_valid_config(void)
+{
+    TEST_ASSERT_PASS_ASSERT(uz_PMSM_config_assert_model(config));
+}
+
 #endif // TEST

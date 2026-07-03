@@ -121,6 +121,7 @@ Description
 
 Allocates the memory for the SetPoint instance. 
 Furthermore the input values of the configuration struct are asserted. 
+The setpoint module only requires the physical PMSM model fields, not the full rating envelope, but ``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.
 
 Functions
 =========

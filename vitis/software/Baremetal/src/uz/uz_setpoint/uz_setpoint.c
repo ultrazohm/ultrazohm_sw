@@ -163,6 +163,7 @@ static void uz_SetPoint_assert_motor_parameters(const uz_PMSM_t *input, enum uz_
     uz_assert_not_NULL(input);
     // Setpoint generation only uses the physical machine model, not the rating/limit envelope.
     uz_PMSM_config_assert_model(*input);
+    uz_assert(input->Psi_PM_Vs > 0.0f);
     if(motor_type == IPMSM) {
         uz_assert(input->Ld_Henry != input->Lq_Henry);
     }

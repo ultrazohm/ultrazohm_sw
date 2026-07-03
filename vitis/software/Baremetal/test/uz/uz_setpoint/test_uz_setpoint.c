@@ -99,6 +99,11 @@ void test_uz_SetPoint_init_assert_Psi_pm(void){
     TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
 }
 
+void test_uz_SetPoint_init_assert_Psi_pm_zero(void){
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
+}
+
 void test_uz_SetPoint_init_assert_polePairs_negative(void){
     config.config_PMSM.polePairs = -2.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
@@ -168,6 +173,12 @@ void test_uz_SetPoint_set_PMSM_config_assert_Lq_zero(void){
 void test_uz_SetPoint_set_PMSM_config_assert_Psi_pm(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Psi_PM_Vs = -0.08f;
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
+}
+
+void test_uz_SetPoint_set_PMSM_config_assert_Psi_pm_zero(void){
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 

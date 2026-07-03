@@ -7,7 +7,7 @@
 
 /**
  * @brief Configuratin struct for a PMSM. Accessible by the user
- * 
+ *
  */
 typedef struct uz_PMSM_t{
     uint32_t machine_id; /**< stable dataset id from machine_parameters.csv; reserved for future runtime machine selection, not checked by uz_PMSM_config_assert */

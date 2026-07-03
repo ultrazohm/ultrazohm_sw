@@ -31,4 +31,5 @@ Description
 ===========
 
 Updates the PMSM-parameters in the SpeedControl object to the new input values.
-Every value of the struct will be asserted again.
+The physical PMSM model fields are asserted again.
+``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.

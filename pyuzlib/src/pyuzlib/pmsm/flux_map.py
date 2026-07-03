@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 
@@ -92,9 +93,23 @@ class FluxMap:
         missing_columns = set(CANONICAL_FLUX_MAP_COLUMNS) - set(data.columns)
         if missing_columns:
             raise ValueError(f"Missing canonical flux-map columns: {sorted(missing_columns)}")
+        if data.empty:
+            raise ValueError("Flux map contains no operating points")
+        if not np.isfinite(data.loc[:, list(CANONICAL_FLUX_MAP_COLUMNS)].to_numpy(dtype=float)).all():
+            raise ValueError("Flux map contains non-finite values")
+
         duplicated_points = data.duplicated(subset=["i_d_A", "i_q_A"])
         if duplicated_points.any():
             raise ValueError("Flux map contains duplicate i_d/i_q operating points")
+
+        i_d_breakpoints = np.sort(data["i_d_A"].unique())
+        i_q_breakpoints = np.sort(data["i_q_A"].unique())
+        if len(data) != len(i_d_breakpoints) * len(i_q_breakpoints):
+            raise ValueError("Flux map does not form a complete rectangular i_d/i_q grid")
+        if len(i_d_breakpoints) > 1 and not np.all(np.diff(i_d_breakpoints) > 0.0):
+            raise ValueError("Flux map i_d_A breakpoints are not strictly increasing")
+        if len(i_q_breakpoints) > 1 and not np.all(np.diff(i_q_breakpoints) > 0.0):
+            raise ValueError("Flux map i_q_A breakpoints are not strictly increasing")
 
     @property
     def psi_d(self) -> pd.DataFrame:

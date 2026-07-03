@@ -89,6 +89,7 @@ The script also prints the C macro name that will be generated:
 
 ``machine_id`` is pre-filled with the next unused integer.
 It is a stable identifier reserved for future runtime machine selection and must stay unique across all motors.
+Use positive values only; ``machine_id = 0`` is reserved for manual or unassigned configurations and is rejected by the catalog generator.
 The script also prints a table of every parameter's constraint and unit, so you can fill in the CSV without leaving the terminal.
 
 If the motor data starts from a raw FEM or measurement file with non-standard column names, pass ``--with-raw-data``.
@@ -127,9 +128,10 @@ The generator:
 
 1. Parses the ``uz_PMSM_t`` struct definition from ``uz_PMSM_config.h`` and verifies that the Python model matches it exactly.
 2. Finds every ``machine_parameters.csv`` file two levels deep under ``uz_pmsm/``.
-3. Validates all parameter values and checks that every ``machine_id`` is unique.
-4. Writes ``available_machines.csv`` — a tabular inventory for humans and Sphinx.
-5. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
+3. Validates all parameter values and checks that every ``machine_id`` is positive and unique.
+4. Validates canonical ``flux_map.csv`` and ``differential_inductances.csv`` files when present.
+5. Writes ``available_machines.csv`` — a tabular inventory for humans and Sphinx.
+6. Writes ``uz_available_machines_auto_generated.h`` — C designated-initializer macros, one per motor dataset.
 
 Both output files must be committed to the repository after running.
 
@@ -152,6 +154,8 @@ To verify that committed files are still in sync with the CSV sources:
 
 The macro expands to a C99 designated initializer with all 20 fields set.
 ``uz_PMSM_config_assert`` validates the physical parameters and the limit relations (e.g. rated below maximum, minimum below maximum) at runtime and fires ``uz_assert`` on violation; ``machine_id`` itself is not checked.
+Modules that only use the physical machine model can call ``uz_PMSM_config_assert_model`` to accept configs without the rating envelope.
+The setpoint module is stricter for ``Psi_PM_Vs`` because FOC setpoint generation divides by this value; ``uz_SetPoint_init`` and ``uz_SetPoint_set_PMSM_config`` require ``Psi_PM_Vs > 0.0f``.
 
 .. _uz_PMSM_config:
 
@@ -188,7 +192,9 @@ Troubleshooting
 ===============
 
 * **The catalog generator fails with** ``Invalid PMSM parameter CSV <path>: ...`` — the named file contains an empty, unparsable, or constraint-violating value; the message names the offending parameter. A freshly scaffolded template fails like this until every value is filled in (Phase 2).
+* **The catalog generator fails with** ``machine_id must be a positive integer ...`` — the dataset uses ``machine_id = 0`` or a negative value. Keep ``0`` for manual or unassigned configs and use a positive catalog ID for committed datasets.
 * **The catalog generator fails with** ``Duplicate numeric machine_id ...`` — two ``machine_parameters.csv`` files use the same ``machine_id``; the message suggests the next unused value. This typically happens when two motors are added on separate branches and merged.
+* **The catalog generator fails with** ``Invalid PMSM dataset maps ...`` — a canonical ``flux_map.csv`` is not finite, rectangular, or duplicate-free, or a sibling ``differential_inductances.csv`` does not match the same ``operating_point``, ``i_d_A``, and ``i_q_A`` order.
 * **The CI check** ``make check_available_machines`` **fails** — the committed generated files are out of sync with the CSV sources. Run ``make auto_generate_available_machines`` in ``docs/`` and commit **both** ``uz_available_machines_auto_generated.h`` and ``available_machines.csv``. CI only checks; it never regenerates or commits these files itself.
 * **The catalog generator fails with** ``pyuzlib.PMSMParameters and uz_PMSM_t differ`` — the ``uz_PMSM_t`` struct in ``uz_PMSM_config.h`` was changed without updating the Python model. Mirror the change in the ``PMSMParameters`` dataclass (``pyuzlib/src/pyuzlib/pmsm/parameters.py``, same field order), extend ``PMSM_PARAMETER_CONSTRAINTS`` and ``uz_PMSM_config_assert`` consistently, then regenerate the catalog.
 
@@ -381,14 +387,16 @@ Exporters should always write the canonical column names.
 Validation checklist
 --------------------
 
-The catalog generator enforces the ``machine_parameters.csv`` items automatically on every run; the flux-map items must currently be checked by hand or with the :ref:`pyuzlib` importers.
+The catalog generator enforces the ``machine_parameters.csv`` items and canonical map items automatically on every run.
 Before a dataset is used in the controller or a model, check the following:
 
 * ``machine_parameters.csv`` has exactly the columns ``parameter`` and ``value``.
 * ``machine_parameters.csv`` contains every required ``uz_PMSM_t`` field exactly once.
 * ``machine_parameters.csv`` contains the machine envelope rows, including rated current, torque limits, speed limits, and d/q current limits.
+* ``machine_id`` is a positive integer and is unique across all committed PMSM datasets.
 * ``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``polePairs``, ``J_kg_m_squared``, and ``I_max_Ampere`` are greater than zero.
 * ``Psi_PM_Vs`` is greater than or equal to zero.
+* ``Psi_PM_Vs`` is greater than zero for configs passed to the setpoint module.
 * ``flux_map.csv`` has the four required columns ``i_d_A``, ``i_q_A``, ``psi_d_Vs``, and ``psi_q_Vs``. An optional ``operating_point`` column is ignored on import and added automatically on export by pyuzlib.
 * ``i_d_A`` and ``i_q_A`` form a complete rectangular grid.
 * Breakpoints are strictly increasing after sorting.
@@ -411,7 +419,8 @@ The existing PMSM software path is linear:
 
 The nonlinear data scheme should not replace this path.
 Instead, ``machine_parameters.csv`` remains the source for the existing modules, while ``flux_map.csv`` and ``differential_inductances.csv`` are the source for optional nonlinear behavior.
-For example, nonlinear static decoupling needs :math:`\psi_d` and :math:`\psi_q` at the actual current point, which can later be supplied by two ``uz_LUT_2D`` instances.
+For example, nonlinear static decoupling needs :math:`\psi_d` and :math:`\psi_q` at the actual current point.
+These are supplied by two ``uz_LUT_2D`` instances loaded at compile time from ``flux_map.csv`` via :ref:`uz_pmsm_flux_map`, which generates a macro header so that only the flux maps actually used are compiled into the firmware.
 A nonlinear PMSM software model can use the same flux maps together with the differential inductance matrix to solve
 
 .. math::

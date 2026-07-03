@@ -361,6 +361,46 @@ def test_flux_map_loads_default_columns_as_canonical_table():
     assert flux_map.psi_q.shape == (3, 3)
 
 
+def test_flux_map_rejects_incomplete_rectangular_grid(tmp_path):
+    csv_path = tmp_path / "flux_map.csv"
+    csv_path.write_text(
+        "i_d_A,i_q_A,psi_d_Vs,psi_q_Vs\n"
+        "-1,0,0.01,0.02\n"
+        "0,0,0.03,0.04\n"
+        "-1,1,0.05,0.06\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="rectangular"):
+        FluxMap.from_csv(csv_path)
+
+
+def test_flux_map_rejects_non_finite_values(tmp_path):
+    csv_path = tmp_path / "flux_map.csv"
+    csv_path.write_text(
+        "i_d_A,i_q_A,psi_d_Vs,psi_q_Vs\n"
+        "-1,0,0.01,0.02\n"
+        "0,0,nan,0.04\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="non-finite"):
+        FluxMap.from_csv(csv_path)
+
+
+def test_flux_map_rejects_duplicate_operating_points(tmp_path):
+    csv_path = tmp_path / "flux_map.csv"
+    csv_path.write_text(
+        "i_d_A,i_q_A,psi_d_Vs,psi_q_Vs\n"
+        "-1,0,0.01,0.02\n"
+        "-1,0,0.03,0.04\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate"):
+        FluxMap.from_csv(csv_path)
+
+
 def test_flux_map_loads_with_explicit_column_mapping(tmp_path):
     csv_path = tmp_path / "odd_names.csv"
     csv_path.write_text(
@@ -599,6 +639,106 @@ _VALID_MACHINE_CSV = (
     "I_q_max_A,10\n"
     "I_q_min_A,-10\n"
 )
+
+
+_VALID_FLUX_MAP_CSV = (
+    "operating_point,i_d_A,i_q_A,psi_d_Vs,psi_q_Vs\n"
+    "0,-1,0,0.01,0.02\n"
+    "1,0,0,0.03,0.04\n"
+    "2,-1,1,0.05,0.06\n"
+    "3,0,1,0.07,0.08\n"
+)
+
+
+_VALID_DIFFERENTIAL_INDUCTANCES_CSV = (
+    "operating_point,i_d_A,i_q_A,L_dd_H,L_dq_H,L_qd_H,L_qq_H\n"
+    "0,-1,0,0.001,0,0,0.002\n"
+    "1,0,0,0.001,0,0,0.002\n"
+    "2,-1,1,0.001,0,0,0.002\n"
+    "3,0,1,0.001,0,0,0.002\n"
+)
+
+
+def test_machine_catalog_rejects_zero_machine_id(tmp_path):
+    dataset_dir = tmp_path / "machine_a" / "dataset_v1"
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "machine_parameters.csv").write_text(
+        _VALID_MACHINE_CSV.replace("machine_id,1", "machine_id,0"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="machine_id must be a positive integer"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
+def test_renumber_duplicate_machine_ids_replaces_zero_and_missing_ids(tmp_path):
+    zero_dir = tmp_path / "machine_a" / "dataset_v1"
+    missing_dir = tmp_path / "machine_b" / "dataset_v1"
+    valid_dir = tmp_path / "machine_c" / "dataset_v1"
+    zero_dir.mkdir(parents=True)
+    missing_dir.mkdir(parents=True)
+    valid_dir.mkdir(parents=True)
+    (zero_dir / "machine_parameters.csv").write_text(
+        _VALID_MACHINE_CSV.replace("machine_id,1", "machine_id,0"),
+        encoding="utf-8",
+    )
+    (missing_dir / "machine_parameters.csv").write_text(
+        _VALID_MACHINE_CSV.replace("machine_id,1\n", ""),
+        encoding="utf-8",
+    )
+    (valid_dir / "machine_parameters.csv").write_text(
+        _VALID_MACHINE_CSV,
+        encoding="utf-8",
+    )
+
+    changes = machine_catalog.renumber_duplicate_machine_ids(tmp_path)
+
+    assert changes == [
+        ("machine_a/dataset_v1/machine_parameters.csv", 0, 2),
+        ("machine_b/dataset_v1/machine_parameters.csv", 0, 3),
+    ]
+    assert machine_catalog._read_machine_id_from_csv(zero_dir / "machine_parameters.csv") == 2
+    assert machine_catalog._read_machine_id_from_csv(missing_dir / "machine_parameters.csv") == 3
+    assert machine_catalog._read_machine_id_from_csv(valid_dir / "machine_parameters.csv") == 1
+
+
+def test_machine_catalog_rejects_mismatched_differential_inductance_grid(tmp_path):
+    dataset_dir = tmp_path / "machine_a" / "dataset_v1"
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "machine_parameters.csv").write_text(_VALID_MACHINE_CSV, encoding="utf-8")
+    (dataset_dir / "flux_map.csv").write_text(_VALID_FLUX_MAP_CSV, encoding="utf-8")
+    (dataset_dir / "differential_inductances.csv").write_text(
+        _VALID_DIFFERENTIAL_INDUCTANCES_CSV.replace("3,0,1", "3,1,1"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="same operating_point, i_d_A, and i_q_A order"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
+def test_machine_catalog_rejects_unsorted_flux_map_file_order(tmp_path):
+    dataset_dir = tmp_path / "machine_a" / "dataset_v1"
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "machine_parameters.csv").write_text(_VALID_MACHINE_CSV, encoding="utf-8")
+    (dataset_dir / "flux_map.csv").write_text(
+        _VALID_FLUX_MAP_CSV.replace(
+            "1,0,0,0.03,0.04\n2,-1,1,0.05,0.06",
+            "2,-1,1,0.05,0.06\n1,0,0,0.03,0.04",
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="canonical row-major order"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
 
 
 def test_pmsm_parameters_reject_malformed_row_with_path_and_row_number(tmp_path):

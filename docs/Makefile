@@ -28,6 +28,14 @@ check_available_machines:
 	diff /tmp/available_machines_check.csv source/software/control/uz_pmsm/available_machines.csv
 	@echo "Generated artifacts are up-to-date."
 
+auto_generate_flux_maps:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog
+
+check_flux_maps:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog --header-output /tmp/uz_pmsm_flux_maps_check.h
+	diff /tmp/uz_pmsm_flux_maps_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_flux_map/uz_pmsm_flux_maps_auto_generated.h
+	@echo "Generated flux-map header is up-to-date."
+
 clean:
 	 rm -r build
 

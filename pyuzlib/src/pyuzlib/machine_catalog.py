@@ -7,8 +7,13 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
+
 from ._repo_paths import machine_catalog_default_paths
 from ._repo_paths import repo_root_from
+from .pmsm.differential_inductance import CANONICAL_DIFFERENTIAL_INDUCTANCE_COLUMNS
+from .pmsm.flux_map import FluxMap
 from .pmsm.parameters import CParameterField
 from .pmsm.parameters import PMSM_PARAMETER_CONSTRAINTS
 from .pmsm.parameters import PMSMParameters
@@ -209,17 +214,21 @@ def _rewrite_machine_id_in_csv(csv_path: Path, new_id: int) -> None:
             newline = "\n" if line.endswith("\n") else ""
             lines[index] = f"machine_id,{new_id}{newline}"
             break
+    else:
+        insert_index = 1 if lines else 0
+        lines.insert(insert_index, f"machine_id,{new_id}\n")
     csv_path.write_text("".join(lines), encoding="utf-8")
 
 
 def renumber_duplicate_machine_ids(uz_pmsm_dir: str | Path) -> list[tuple[str, int, int]]:
-    """Deterministically resolve duplicate machine_id values across all datasets.
+    """Deterministically resolve unusable machine_id values across all datasets.
 
-    Datasets are visited in sorted catalog-id order; the first occurrence of each id keeps it,
-    and every later duplicate is rewritten to the next unused id. Only the machine_id row of a
-    changed machine_parameters.csv is touched. Returns the list of applied
-    (machine_parameters_csv, old_id, new_id) changes. This is opt-in (``--renumber``) so stable
-    ids stay stable during a normal catalog regeneration.
+    Datasets are visited in sorted catalog-id order; the first positive occurrence of each id
+    keeps it, and every duplicate, missing, malformed, or zero id is rewritten to the next unused
+    positive id. Only the machine_id row is rewritten or inserted in a changed
+    machine_parameters.csv. Returns the list of applied (machine_parameters_csv, old_id, new_id)
+    changes. This is opt-in (``--renumber``) so stable ids stay stable during a normal catalog
+    regeneration.
     """
     uz_pmsm_dir = Path(uz_pmsm_dir)
     datasets: list[tuple[str, Path, int | None]] = []
@@ -232,18 +241,152 @@ def renumber_duplicate_machine_ids(uz_pmsm_dir: str | Path) -> list[tuple[str, i
         datasets.append((catalog_id, csv_path, _read_machine_id_from_csv(csv_path)))
 
     datasets.sort(key=lambda entry: entry[0])
+    reserved_ids: set[int] = set()
+    for _, _, machine_id in datasets:
+        if machine_id is not None and machine_id > 0 and machine_id not in reserved_ids:
+            reserved_ids.add(machine_id)
+
     used_ids: set[int] = set()
     changes: list[tuple[str, int, int]] = []
     for _, csv_path, machine_id in datasets:
-        if machine_id is not None and machine_id not in used_ids:
+        if machine_id is not None and machine_id > 0 and machine_id not in used_ids:
             used_ids.add(machine_id)
             continue
-        new_id = next(i for i in range(1, len(used_ids) + 2) if i not in used_ids)
+        new_id = next(
+            i
+            for i in range(1, len(datasets) + len(used_ids) + 2)
+            if i not in reserved_ids and i not in used_ids
+        )
         used_ids.add(new_id)
         _rewrite_machine_id_in_csv(csv_path, new_id)
         relative = str(csv_path.relative_to(uz_pmsm_dir)).replace("\\", "/")
         changes.append((relative, machine_id if machine_id is not None else 0, new_id))
     return changes
+
+
+def _required_numeric_columns(
+    *,
+    csv_path: Path,
+    data: pd.DataFrame,
+    columns: tuple[str, ...],
+    file_kind: str,
+) -> pd.DataFrame:
+    missing_columns = set(columns) - set(data.columns)
+    if missing_columns:
+        raise ValueError(
+            f"{file_kind} {csv_path} is missing required columns: {sorted(missing_columns)}"
+        )
+    try:
+        numeric_data = data.loc[:, list(columns)].apply(pd.to_numeric, errors="raise")
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{file_kind} {csv_path} contains non-numeric values: {exc}") from exc
+    if not np.isfinite(numeric_data.to_numpy(dtype=float)).all():
+        raise ValueError(f"{file_kind} {csv_path} contains non-finite values")
+    return numeric_data
+
+
+def _integer_series(series: pd.Series, *, csv_path: Path, column: str) -> pd.Series:
+    numeric_values = pd.to_numeric(series, errors="raise")
+    if not np.isfinite(numeric_values.to_numpy(dtype=float)).all():
+        raise ValueError(f"{csv_path} column {column} contains non-finite values")
+    integer_values = numeric_values.astype(int)
+    if not np.array_equal(numeric_values.to_numpy(dtype=float), integer_values.to_numpy(dtype=float)):
+        raise ValueError(f"{csv_path} column {column} must contain integer values")
+    return integer_values
+
+
+def _expected_flux_order(flux_map: FluxMap) -> pd.DataFrame:
+    expected = flux_map.data.loc[:, ["i_d_A", "i_q_A"]].copy()
+    expected.insert(0, "operating_point", range(len(expected)))
+    return expected
+
+
+def _validate_flux_map_file_order(flux_path: Path, flux_map: FluxMap) -> None:
+    raw_flux_data = pd.read_csv(flux_path)
+    order_data = _required_numeric_columns(
+        csv_path=flux_path,
+        data=raw_flux_data,
+        columns=("i_d_A", "i_q_A"),
+        file_kind="Flux map CSV",
+    )
+    expected_order = _expected_flux_order(flux_map)
+    if not np.array_equal(
+        order_data.loc[:, ["i_d_A", "i_q_A"]].to_numpy(dtype=float),
+        expected_order.loc[:, ["i_d_A", "i_q_A"]].to_numpy(dtype=float),
+    ):
+        raise ValueError(
+            f"Flux map CSV {flux_path} must be stored in canonical row-major order "
+            "sorted by i_q_A and then i_d_A"
+        )
+
+    if "operating_point" not in raw_flux_data.columns:
+        return
+    operating_point = _integer_series(
+        raw_flux_data["operating_point"],
+        csv_path=flux_path,
+        column="operating_point",
+    )
+    if not np.array_equal(
+        operating_point.to_numpy(dtype=int),
+        expected_order["operating_point"].to_numpy(dtype=int),
+    ):
+        raise ValueError(
+            f"Flux map CSV {flux_path} operating_point must be 0..N-1 in canonical row-major order"
+        )
+
+
+def _validate_differential_inductances_csv(
+    differential_path: Path,
+    flux_map: FluxMap,
+) -> None:
+    differential_data = pd.read_csv(differential_path)
+    numeric_data = _required_numeric_columns(
+        csv_path=differential_path,
+        data=differential_data,
+        columns=CANONICAL_DIFFERENTIAL_INDUCTANCE_COLUMNS,
+        file_kind="Differential inductance CSV",
+    )
+    actual_order = numeric_data.loc[:, ["operating_point", "i_d_A", "i_q_A"]].copy()
+    actual_order = actual_order.assign(
+        operating_point=_integer_series(
+            actual_order["operating_point"],
+            csv_path=differential_path,
+            column="operating_point",
+        )
+    ).reset_index(drop=True)
+    expected_order = _expected_flux_order(flux_map)
+    if (
+        not np.array_equal(
+            actual_order["operating_point"].to_numpy(dtype=int),
+            expected_order["operating_point"].to_numpy(dtype=int),
+        )
+        or not np.array_equal(
+            actual_order.loc[:, ["i_d_A", "i_q_A"]].to_numpy(dtype=float),
+            expected_order.loc[:, ["i_d_A", "i_q_A"]].to_numpy(dtype=float),
+        )
+    ):
+        raise ValueError(
+            f"Differential inductance CSV {differential_path} must use the same "
+            "operating_point, i_d_A, and i_q_A order as the canonical flux map"
+        )
+
+
+def validate_uz_pmsm_dataset_maps(uz_pmsm_dir: str | Path) -> None:
+    """Validate canonical flux-map and differential-inductance CSVs below uz_pmsm_dir."""
+
+    uz_pmsm_dir = Path(uz_pmsm_dir)
+    for flux_path in sorted(uz_pmsm_dir.rglob("flux_map.csv")):
+        relative_flux_path = flux_path.relative_to(uz_pmsm_dir)
+        if len(relative_flux_path.parts) != 3:
+            continue
+        try:
+            flux_map = FluxMap.from_csv(flux_path)
+            _validate_flux_map_file_order(flux_path, flux_map)
+            differential_path = flux_path.with_name("differential_inductances.csv")
+            if differential_path.exists():
+                _validate_differential_inductances_csv(differential_path, flux_map)
+        except ValueError as exc:
+            raise ValueError(f"Invalid PMSM dataset maps below {flux_path.parent}: {exc}") from exc
 
 
 def discover_machine_catalog(
@@ -281,6 +424,11 @@ def discover_machine_catalog(
         used_catalog_ids.add(catalog_id)
 
         numeric_machine_id = int(c_values.get("machine_id", 0))
+        if numeric_machine_id <= 0:
+            raise ValueError(
+                f"machine_id must be a positive integer in {csv_path}; "
+                "0 is reserved for manual or unassigned configs"
+            )
         if numeric_machine_id in used_numeric_machine_ids:
             next_id = next(
                 i for i in range(1, len(used_numeric_machine_ids) + 2)
@@ -308,6 +456,8 @@ def discover_machine_catalog(
     if not entries:
         raise ValueError(f"No machine_parameters.csv files found below {uz_pmsm_dir}")
 
+    validate_uz_pmsm_dataset_maps(uz_pmsm_dir)
+
     return c_fields, entries
 
 
@@ -328,7 +478,7 @@ def write_available_machines_csv(
         *c_parameter_names,
     ]
     with output_path.open("w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for entry in entries:
             row = {
@@ -458,8 +608,8 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Before generating, deterministically reassign duplicate machine_id values "
-        "(useful after merging motors added on separate branches). Rewrites the affected "
-        "machine_parameters.csv files.",
+        "or missing/zero ids (useful after merging motors added on separate branches). "
+        "Rewrites the affected machine_parameters.csv files.",
     )
 
     subparsers = parser.add_subparsers(dest="command")
@@ -505,11 +655,11 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
     if args.renumber:
         changes = renumber_duplicate_machine_ids(args.uz_pmsm_dir)
         if changes:
-            print(f"Renumbered {len(changes)} duplicate machine_id value(s):")
+            print(f"Renumbered {len(changes)} machine_id value(s):")
             for csv_path, old_id, new_id in changes:
                 print(f"  {csv_path}: {old_id} -> {new_id}")
         else:
-            print("No duplicate machine_id values found.")
+            print("No duplicate, missing, or zero machine_id values found.")
 
     entries = generate_machine_catalog(
         uz_pmsm_dir=args.uz_pmsm_dir,

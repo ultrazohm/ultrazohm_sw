@@ -32,9 +32,10 @@ auto_generate_flux_maps:
 	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog
 
 check_flux_maps:
-	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog --header-output /tmp/uz_pmsm_flux_maps_check.h
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog --header-output /tmp/uz_pmsm_flux_maps_check.h --diffind-header-output /tmp/uz_pmsm_differential_inductances_check.h
 	diff /tmp/uz_pmsm_flux_maps_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_flux_map/uz_pmsm_flux_maps_auto_generated.h
-	@echo "Generated flux-map header is up-to-date."
+	diff /tmp/uz_pmsm_differential_inductances_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h
+	@echo "Generated flux-map and differential-inductance headers are up-to-date."
 
 clean:
 	 rm -r build

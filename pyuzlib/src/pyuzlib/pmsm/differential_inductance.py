@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 
 from .flux_map import FluxMap
+from .flux_map import resolve_csv_path
 
 
 CANONICAL_DIFFERENTIAL_INDUCTANCE_COLUMNS = (
@@ -17,6 +18,8 @@ CANONICAL_DIFFERENTIAL_INDUCTANCE_COLUMNS = (
     "L_qd_H",
     "L_qq_H",
 )
+
+DIFFERENTIAL_INDUCTANCE_VALUE_COLUMNS = ("L_dd_H", "L_dq_H", "L_qd_H", "L_qq_H")
 
 
 @dataclass
@@ -66,6 +69,46 @@ class DifferentialInductanceMap:
             L_qq_H=L_qq_H,
         )
         return cls(data=table, source_flux_map=flux_map, name=name)
+
+    @classmethod
+    def from_csv(cls, csv_path: str | Path, *, name: str = "default") -> "DifferentialInductanceMap":
+        csv_path = resolve_csv_path(csv_path)
+        data = pd.read_csv(csv_path)
+        required_columns = ("i_d_A", "i_q_A", *DIFFERENTIAL_INDUCTANCE_VALUE_COLUMNS)
+        missing_columns = set(required_columns) - set(data.columns)
+        if missing_columns:
+            raise ValueError(
+                f"Missing differential-inductance CSV columns: {sorted(missing_columns)}"
+            )
+        canonical_data = (
+            data.loc[:, list(required_columns)]
+            .astype(float)
+            .sort_values(["i_q_A", "i_d_A"])
+            .reset_index(drop=True)
+        )
+        cls._validate(canonical_data)
+        canonical_data.insert(0, "operating_point", range(len(canonical_data)))
+        return cls(data=canonical_data, name=name)
+
+    @staticmethod
+    def _validate(data: pd.DataFrame) -> None:
+        import numpy as np
+
+        value_columns = ["i_d_A", "i_q_A", *DIFFERENTIAL_INDUCTANCE_VALUE_COLUMNS]
+        if data.empty:
+            raise ValueError("Differential inductance map contains no operating points")
+        if not np.isfinite(data.loc[:, value_columns].to_numpy(dtype=float)).all():
+            raise ValueError("Differential inductance map contains non-finite values")
+        if data.duplicated(subset=["i_d_A", "i_q_A"]).any():
+            raise ValueError("Differential inductance map contains duplicate i_d/i_q operating points")
+        i_d_breakpoints = np.sort(data["i_d_A"].unique())
+        i_q_breakpoints = np.sort(data["i_q_A"].unique())
+        if len(data) != len(i_d_breakpoints) * len(i_q_breakpoints):
+            raise ValueError("Differential inductance map does not form a complete rectangular i_d/i_q grid")
+        if len(i_d_breakpoints) > 1 and not np.all(np.diff(i_d_breakpoints) > 0.0):
+            raise ValueError("Differential inductance map i_d_A breakpoints are not strictly increasing")
+        if len(i_q_breakpoints) > 1 and not np.all(np.diff(i_q_breakpoints) > 0.0):
+            raise ValueError("Differential inductance map i_q_A breakpoints are not strictly increasing")
 
     @property
     def L_dd(self) -> pd.DataFrame:

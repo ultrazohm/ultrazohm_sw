@@ -34,3 +34,4 @@ Control
     uz_pos_to_speed_pll/pos_to_speed_pll
     uz_pmsm_swmodel/uz_pmsm_swmodel
     uz_pmsm_flux_map/uz_pmsm_flux_map
+    uz_pmsm_differential_inductance/uz_pmsm_differential_inductance

@@ -98,18 +98,17 @@ typedef struct _actualValues_ {
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
-	float halfBridge1DutyCycle;
-	float halfBridge2DutyCycle;
-	float halfBridge3DutyCycle;
-	float halfBridge4DutyCycle;
-	float halfBridge5DutyCycle;
-	float halfBridge6DutyCycle;
-	float halfBridge7DutyCycle;
-	float halfBridge8DutyCycle;
-	float halfBridge9DutyCycle;
-	float halfBridge10DutyCycle;
-	float halfBridge11DutyCycle;
-	float halfBridge12DutyCycle;
+/* Project Wizard BEGIN: referenceAndSetValues */
+	float pwm_2L_0_halfBridgeDutyCycle_1;
+	float pwm_2L_0_halfBridgeDutyCycle_2;
+	float pwm_2L_0_halfBridgeDutyCycle_3;
+	float pwm_2L_1_halfBridgeDutyCycle_1;
+	float pwm_2L_1_halfBridgeDutyCycle_2;
+	float pwm_2L_1_halfBridgeDutyCycle_3;
+	float pwm_3L_0_halfBridgeDutyCycle_1;
+	float pwm_3L_0_halfBridgeDutyCycle_2;
+	float pwm_3L_0_halfBridgeDutyCycle_3;
+/* Project Wizard END: referenceAndSetValues */
 } referenceAndSetValues;
 
 typedef struct{

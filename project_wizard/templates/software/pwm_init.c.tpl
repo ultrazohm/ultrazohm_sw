@@ -132,16 +132,16 @@ void project_wizard_update_pwm_outputs(DS_Data* data)
 {% for instance in pwm_2l_instances %}
     uz_PWM_SS_2L_set_duty_cycle(
         data->objects.project_wizard_pwm_2l_{{ instance.index }},
-        data->rasv.halfBridge{{ instance.half_bridge_a }}DutyCycle,
-        data->rasv.halfBridge{{ instance.half_bridge_b }}DutyCycle,
-        data->rasv.halfBridge{{ instance.half_bridge_c }}DutyCycle
+        data->rasv.{{ instance.duty_cycle_a }},
+        data->rasv.{{ instance.duty_cycle_b }},
+        data->rasv.{{ instance.duty_cycle_c }}
     );
 {% endfor %}
 {% if pwm_3l_enabled %}
     project_wizard_pwm_3l_set_duty_cycle(
-        data->rasv.halfBridge1DutyCycle,
-        data->rasv.halfBridge2DutyCycle,
-        data->rasv.halfBridge3DutyCycle
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_1,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_2,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_3
     );
 {% endif %}
 }

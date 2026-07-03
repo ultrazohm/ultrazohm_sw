@@ -68,6 +68,10 @@ raw config JSON
   -> Tcl/Software/CPLD generators
 ```
 
+Current platform-scope note:
+
+- Leave existing `uz_` hardcoded Tcl/software names as-is for now. The current generators intentionally target the UltraZohm Vivado/software architecture (`uz_system`, `uz_user`, `uz_analog_adapter`, `uz_digital_adapter`, `uz_pwm`, `uz_*` drivers, `UZ_*` defines). Platform combo entries for future platforms should not imply that this naming has already been abstracted. Future MicroZohm/Kria support will need a deliberate platform-naming/configuration abstraction.
+
 ## 2. Established Methods And Coding Rules
 
 ### General Coding Rules

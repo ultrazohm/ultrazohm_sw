@@ -44,6 +44,10 @@ GLOBAL_DATA_MARKERS = {
         "/* Project Wizard BEGIN: actualValues */",
         "/* Project Wizard END: actualValues */",
     ),
+    "reference_and_set_values": (
+        "/* Project Wizard BEGIN: referenceAndSetValues */",
+        "/* Project Wizard END: referenceAndSetValues */",
+    ),
     "objects": (
         "/* Project Wizard BEGIN: objects */",
         "/* Project Wizard END: objects */",
@@ -70,6 +74,10 @@ FILE_MARKERS = {
     "main_init_ip_cores": (
         "/* Project Wizard BEGIN: init_ip_cores */",
         "/* Project Wizard END: init_ip_cores */",
+    ),
+    "main_rasv_initializer": (
+        "/* Project Wizard BEGIN: rasv_initializer */",
+        "/* Project Wizard END: rasv_initializer */",
     ),
     "pwm_runtime": (
         "/* Project Wizard BEGIN: pwm_runtime */",
@@ -110,6 +118,10 @@ FILE_MARKERS = {
 }
 
 PWM_GLOBAL_DEFINE_KEYS = {
+    "interrupt_isr_source": "INTERRUPT_ISR_SOURCE_USER_CHOICE",
+    "interrupt_isr_trigger_on_adc_data_ready": "INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY",
+    "interrupt_adc_to_isr_ratio": "INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE",
+    "adc_trigger_delay_us": "ADC_TRIGGER_DELAY_IN_US",
     "pwm_frequency": "UZ_PWM_FREQUENCY",
     "pwm_deadtime_us": "UZ_PWM_DEADTIME_IN_US",
     "pwm_min_pulse_width_us": "UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US",
@@ -145,10 +157,12 @@ class SoftwarePlan:
     slot_content: dict[str, SlotSoftwareContent]
     generated_files: dict[str, str]
     actual_values: list[str]
+    reference_and_set_values: list[str]
     objects: list[str]
     adc_readout_definitions: list[str]
     adc_readout: list[str]
     main_init: list[str]
+    main_rasv_initializer: list[str]
     isr_control_by_slot: dict[str, list[str]]
     state_isr_actions: dict[str, list[str]]
     datamover_array_length: int
@@ -289,10 +303,12 @@ class SoftwareGenerator:
         slot_content = {slot: SlotSoftwareContent() for slot in SLOTS}
         generated_files: dict[str, str] = {}
         actual_values: list[str] = []
+        reference_and_set_values: list[str] = []
         objects: list[str] = []
         adc_readout_definitions: list[str] = []
         adc_readout: list[str] = []
         main_init: list[str] = []
+        main_rasv_initializer: list[str] = []
         isr_control_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
         state_isr_actions: dict[str, list[str]] = {
             "idle_state": [],
@@ -324,6 +340,8 @@ class SoftwareGenerator:
         ssi_instances = 0
         pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
         pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
+        reference_and_set_values.extend(half_bridge_duty_cycle_fields(pwm_2l_instance_count, pwm_3l_enabled))
+        main_rasv_initializer.extend(half_bridge_duty_cycle_initializers(pwm_2l_instance_count, pwm_3l_enabled))
         state_isr_actions.update(pwm_2l_state_isr_actions(pwm_2l_instance_count, hardware_config))
         pwm_context = self._project_wizard_pwm_context(
             source_dir, pwm_2l_instance_count, pwm_3l_enabled, driver_config, resolve_base_addresses
@@ -679,7 +697,9 @@ class SoftwareGenerator:
                     isr_control_by_slot[slot].append(
                         f"    Global_Data.av.io_card_{context['slot_lower']}_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_{context['slot_lower']});"
                     )
-                    available_visualization_signals.extend(io_card_visualization_signals(str(context["slot_lower"])))
+                    available_visualization_signals.extend(
+                        io_card_visualization_signals(str(context["slot_lower"]), card, slot_options)
+                    )
             elif card_id == "uz_d_absolute_encoder":
                 for channel_index in range(1, 4):
                     option_id = f"channel_{channel_index}"
@@ -803,10 +823,12 @@ class SoftwareGenerator:
             slot_content=slot_content,
             generated_files=generated_files,
             actual_values=actual_values,
+            reference_and_set_values=reference_and_set_values,
             objects=objects,
             adc_readout_definitions=adc_readout_definitions,
             adc_readout=adc_readout,
             main_init=main_init,
+            main_rasv_initializer=main_rasv_initializer,
             isr_control_by_slot=isr_control_by_slot,
             state_isr_actions=state_isr_actions,
             datamover_array_length=datamover_array_length,
@@ -1158,10 +1180,11 @@ class SoftwareGenerator:
             written_files.append(source_path)
 
         global_data = source_dir / "globalData.h"
-        patch_global_data(global_data, plan.actual_values, plan.objects)
+        patch_global_data(global_data, plan.actual_values, plan.reference_and_set_values, plan.objects)
         patched_files.append(global_data)
 
         main_c = source_dir / "main.c"
+        patch_marker_file(main_c, "main_rasv_initializer", plan.main_rasv_initializer)
         patch_marker_file(main_c, "main_init_ip_cores", plan.main_init)
         patched_files.append(main_c)
 
@@ -1216,7 +1239,6 @@ class SoftwareGenerator:
                 warnings.append(pwm_warning)
             if deadtime_warning:
                 warnings.append(deadtime_warning)
-            half_bridge_base = index * 3 + 1
             pwm_values = driver_instance_values(f"pwm_2l_{index}", pwm_2l_config_fields(), driver_config)
             deadtime_values = driver_instance_values(f"deadtime_2l_{index}", deadtime_2l_config_fields(), driver_config)
             instances.append(
@@ -1224,9 +1246,9 @@ class SoftwareGenerator:
                     "index": index,
                     "pwm_base_address_macro": pwm_macro,
                     "deadtime_base_address_macro": deadtime_macro,
-                    "half_bridge_a": half_bridge_base,
-                    "half_bridge_b": half_bridge_base + 1,
-                    "half_bridge_c": half_bridge_base + 2,
+                    "duty_cycle_a": f"pwm_2L_{index}_halfBridgeDutyCycle_1",
+                    "duty_cycle_b": f"pwm_2L_{index}_halfBridgeDutyCycle_2",
+                    "duty_cycle_c": f"pwm_2L_{index}_halfBridgeDutyCycle_3",
                     "pwm_config": pwm_values,
                     "deadtime_config": deadtime_values,
                 }
@@ -1567,9 +1589,9 @@ def pwm_3l_config_fields() -> list[DriverConfigField]:
         DriverConfigField("mode", "Mode", "0"),
         DriverConfigField("carrier_frequency_Hz", "Carrier frequency Hz", "data->av.pwm_frequency_hz"),
         DriverConfigField("minimum_pulse_width", "Minimum pulse width", "0.01f"),
-        DriverConfigField("initial_duty_a", "Initial duty A", "data->rasv.halfBridge1DutyCycle"),
-        DriverConfigField("initial_duty_b", "Initial duty B", "data->rasv.halfBridge2DutyCycle"),
-        DriverConfigField("initial_duty_c", "Initial duty C", "data->rasv.halfBridge3DutyCycle"),
+        DriverConfigField("initial_duty_a", "Initial duty A", "data->rasv.pwm_3L_0_halfBridgeDutyCycle_1"),
+        DriverConfigField("initial_duty_b", "Initial duty B", "data->rasv.pwm_3L_0_halfBridgeDutyCycle_2"),
+        DriverConfigField("initial_duty_c", "Initial duty C", "data->rasv.pwm_3L_0_halfBridgeDutyCycle_3"),
         DriverConfigField("tristate_a", "Tristate A", "0"),
         DriverConfigField("tristate_b", "Tristate B", "0"),
         DriverConfigField("tristate_c", "Tristate C", "0"),
@@ -1616,10 +1638,11 @@ def pwm_2l_state_isr_actions(instance_count: int, hardware_config: dict[str, str
     idle_error_lines: list[str] = []
     running_lines: list[str] = []
     for index in range(instance_count):
-        half_bridge_base = index * 3 + 1
         for offset, duty_value in enumerate(duty_values):
-            half_bridge = half_bridge_base + offset
-            idle_error_lines.append(f"Global_Data.rasv.halfBridge{half_bridge}DutyCycle = {duty_value};")
+            half_bridge = offset + 1
+            idle_error_lines.append(
+                f"Global_Data.rasv.pwm_2L_{index}_halfBridgeDutyCycle_{half_bridge} = {duty_value};"
+            )
         if enable_tristate:
             idle_error_lines.append(
                 f"uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_{index}, true, true, true);"
@@ -1633,6 +1656,28 @@ def pwm_2l_state_isr_actions(instance_count: int, hardware_config: dict[str, str
         "control_state": [],
         "error_state": list(idle_error_lines),
     }
+
+
+def half_bridge_duty_cycle_fields(pwm_2l_instance_count: int, pwm_3l_enabled: bool) -> list[str]:
+    fields = [
+        f"\tfloat pwm_2L_{pwm_index}_halfBridgeDutyCycle_{half_bridge};"
+        for pwm_index in range(pwm_2l_instance_count)
+        for half_bridge in range(1, 4)
+    ]
+    if pwm_3l_enabled:
+        fields.extend(f"\tfloat pwm_3L_0_halfBridgeDutyCycle_{half_bridge};" for half_bridge in range(1, 4))
+    return fields
+
+
+def half_bridge_duty_cycle_initializers(pwm_2l_instance_count: int, pwm_3l_enabled: bool) -> list[str]:
+    initializers = [
+        f"        .pwm_2L_{pwm_index}_halfBridgeDutyCycle_{half_bridge} = 0.0f,"
+        for pwm_index in range(pwm_2l_instance_count)
+        for half_bridge in range(1, 4)
+    ]
+    if pwm_3l_enabled:
+        initializers.extend(f"        .pwm_3L_0_halfBridgeDutyCycle_{half_bridge} = 0.0f," for half_bridge in range(1, 4))
+    return initializers
 
 
 def project_wizard_pwm_runtime_lines() -> list[str]:
@@ -1730,9 +1775,10 @@ def patch_slot_source(path: Path, slot: str, definitions: list[str]) -> None:
     path.write_text(text, encoding="utf-8")
 
 
-def patch_global_data(path: Path, actual_values: list[str], objects: list[str]) -> None:
+def patch_global_data(path: Path, actual_values: list[str], reference_and_set_values: list[str], objects: list[str]) -> None:
     text = path.read_text(encoding="utf-8")
     text = replace_block(text, GLOBAL_DATA_MARKERS["actual_values"], actual_values)
+    text = replace_block(text, GLOBAL_DATA_MARKERS["reference_and_set_values"], reference_and_set_values)
     text = replace_block(text, GLOBAL_DATA_MARKERS["objects"], objects)
     path.write_text(text, encoding="utf-8")
 
@@ -2093,20 +2139,42 @@ def resolver_pl_interface_visualization_signals(slot_lower: str, channel: int) -
     ]
 
 
-def io_card_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+def io_card_visualization_signals(
+    slot_lower: str,
+    card: dict[str, object],
+    option_values: dict[str, str],
+) -> list[VisualizationSignal]:
     slot = slot_lower.upper()
+    pins = io_card_axi_visualization_pins(card, option_values)
     return [
         VisualizationSignal(
             signal_id=f"io_card_{slot_lower}_pin_{pin:02d}",
             slot=slot,
-            label=f"{slot} IO pin {pin:02d}",
+            label=f"{slot} IO pin {pin:02d} ({direction.upper()}, AXI GPIO)",
             enum_name=f"JSO_IO_CARD_{slot}_PIN_{pin:02d}",
             pointer_expression=f"&data->av.io_card_{slot_lower}_state",
             source_expression=f"((data->av.io_card_{slot_lower}_state >> {pin}U) & 0x1U)",
             source_type="uint32",
         )
-        for pin in range(30)
+        for pin, direction in pins
     ]
+
+
+def io_card_axi_visualization_pins(card: dict[str, object], option_values: dict[str, str]) -> list[tuple[int, str]]:
+    directions = io_card_directions(card, option_values)
+    default_modes = card.get("vivado", {}).get("io_card", {}).get("default_modes", {})
+    if not isinstance(default_modes, dict):
+        default_modes = {}
+    pins: list[tuple[int, str]] = []
+    for index, direction in enumerate(directions):
+        mode = option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio")))
+        if direction == "rx" and mode not in {"axi_gpio", "top_level"}:
+            mode = "axi_gpio"
+        if direction == "tx" and mode not in {"axi_gpio", "source_pin", "pwm", "constant"}:
+            mode = "axi_gpio"
+        if mode == "axi_gpio":
+            pins.append((index, direction))
+    return pins
 
 
 def io_card_needs_axi(card: dict[str, object], option_values: dict[str, str]) -> bool:

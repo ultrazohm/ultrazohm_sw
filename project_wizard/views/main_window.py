@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
     QCheckBox,
     QFileDialog,
     QFormLayout,
+    QFrame,
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
@@ -54,6 +55,7 @@ from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_exec
 from ..services.vivado_service import write_vivado_run_wrapper
 from ..theme import set_dark_mode
 from ..tcl_generator import TclGenerator
+from ..version import __version__
 from .adapter_card_details import AdapterCardDetailsWidget
 from .card_editor import CardEditorDialog
 
@@ -168,13 +170,14 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._build_platform_page())
         self.stack.addWidget(self._build_hardware_general_page())
         self.stack.addWidget(self._build_configuration_page())
-        self.stack.addWidget(self._build_slot_cpld_page())
+        self.stack.addWidget(self._build_pwm_page())
         self.stack.addWidget(self._build_axi_interconnect_page())
+        self.stack.addWidget(self._build_tcl_generation_page())
+        self.stack.addWidget(self._build_slot_cpld_page())
         self.stack.addWidget(self._build_software_general_page())
         self.stack.addWidget(self._build_software_driver_page())
         self.stack.addWidget(self._build_advanced_driver_config_page())
         self.stack.addWidget(self._build_data_visualization_page())
-        self.stack.addWidget(self._build_pwm_page())
         self.stack.addWidget(self._build_database_page())
 
         splitter = QSplitter()
@@ -231,13 +234,17 @@ class MainWindow(QMainWindow):
         adapter_cards_action.triggered.connect(self.show_adapter_cards)
         view_menu.addAction(adapter_cards_action)
 
-        slot_cplds_action = QAction("Slot CPLDs", self)
-        slot_cplds_action.triggered.connect(self.show_slot_cplds)
-        view_menu.addAction(slot_cplds_action)
-
         axi_action = QAction("AXI interconnect", self)
         axi_action.triggered.connect(self.show_axi_interconnect)
         view_menu.addAction(axi_action)
+
+        tcl_generation_action = QAction("TCL generation", self)
+        tcl_generation_action.triggered.connect(self.show_tcl_generation)
+        view_menu.addAction(tcl_generation_action)
+
+        slot_cplds_action = QAction("Slot CPLDs", self)
+        slot_cplds_action.triggered.connect(self.show_slot_cplds)
+        view_menu.addAction(slot_cplds_action)
 
         software_general_action = QAction("Software general", self)
         software_general_action.triggered.connect(self.show_software_general)
@@ -254,10 +261,6 @@ class MainWindow(QMainWindow):
         data_visualization_action = QAction("Data visualization", self)
         data_visualization_action.triggered.connect(self.show_data_visualization)
         view_menu.addAction(data_visualization_action)
-
-        refresh_tcl_action = QAction("Refresh TCL preview", self)
-        refresh_tcl_action.triggered.connect(self.refresh_tcl_preview)
-        view_menu.addAction(refresh_tcl_action)
 
         view_menu.addSeparator()
         dark_mode_action = QAction("Dark mode", self)
@@ -329,14 +332,16 @@ class MainWindow(QMainWindow):
         platform = QTreeWidgetItem(["Platform"])
         config = QTreeWidgetItem(["Hardware configuration"])
         hardware_general = QTreeWidgetItem(["General"])
-        axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
         adapter_cards = QTreeWidgetItem(["Adapter cards"])
-        pwm = QTreeWidgetItem(["PWM"])
+        pwm = QTreeWidgetItem(["PWM / Timing"])
+        axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
+        tcl_generation = QTreeWidgetItem(["TCL generation"])
         slot_cplds = QTreeWidgetItem(["Slot CPLDs"])
         config.addChild(hardware_general)
-        config.addChild(axi_interconnect)
         config.addChild(adapter_cards)
         config.addChild(pwm)
+        config.addChild(axi_interconnect)
+        config.addChild(tcl_generation)
         config.addChild(slot_cplds)
         software_config = QTreeWidgetItem(["Software configuration"])
         software_general = QTreeWidgetItem(["General"])
@@ -369,15 +374,16 @@ class MainWindow(QMainWindow):
             "Toolchain": 0,
             "Platform": 1,
             "Hardware configuration": 2,
-            "General": 2 if current.parent() and current.parent().text(0) == "Hardware configuration" else 6,
+            "General": 2 if current.parent() and current.parent().text(0) == "Hardware configuration" else 8,
             "Adapter cards": 3,
-            "Slot CPLDs": 4,
+            "PWM / Timing": 4,
             "AXI interconnect": 5,
-            "PWM": 10,
-            "Software configuration": 6,
-            "IP core driver setup": 7,
-            "Advanced driver configuration": 8,
-            "Data visualization": 9,
+            "TCL generation": 6,
+            "Slot CPLDs": 7,
+            "Software configuration": 8,
+            "IP core driver setup": 9,
+            "Advanced driver configuration": 10,
+            "Data visualization": 11,
         }
         self.stack.setCurrentIndex(page_by_name.get(current.text(0), 0))
 
@@ -478,23 +484,9 @@ class MainWindow(QMainWindow):
         block_design_name = QLineEdit()
         self.hardware_fields["block_design_name"] = block_design_name
         vivado_form.addRow("Block design name", block_design_name)
-        validate_checkbox = QCheckBox("Validate block design after applying TCL")
-        save_checkbox = QCheckBox("Save block design after applying TCL")
-        open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
-        disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
-        self.hardware_checkboxes["validate_block_design"] = validate_checkbox
-        self.hardware_checkboxes["save_block_design"] = save_checkbox
-        self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
-        self.hardware_checkboxes["disable_bd_synth_checkpoints"] = disable_checkpoints_checkbox
-        disable_checkpoints_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
-        vivado_form.addRow("", validate_checkbox)
-        vivado_form.addRow("", save_checkbox)
-        vivado_form.addRow("", open_gui_checkbox)
-        vivado_form.addRow("", disable_checkpoints_checkbox)
         hint = QLabel(
-            "Vivado can apply the generated TCL and validate the "
-            "block design (BD). Enable the GUI option to inspect the created BD. "
-            "Disable synthesis checkpoints for slower but cleaner full builds when Vivado has IP checkpoint issues."
+            "Select the Vivado project and block design that the generated TCL should target. "
+            "TCL execution options are configured on the TCL generation page."
         )
         hint.setWordWrap(True)
         vivado_form.addRow("", hint)
@@ -506,7 +498,7 @@ class MainWindow(QMainWindow):
         page = QWidget()
         layout = QVBoxLayout(page)
 
-        title = QLabel("PWM")
+        title = QLabel("PWM / Timing")
         title_font = QFont()
         title_font.setPointSize(16)
         title_font.setBold(True)
@@ -530,8 +522,11 @@ class MainWindow(QMainWindow):
         pwm_2l_form.addRow("", debug_2l)
 
         idle_error_behavior = QComboBox()
-        idle_error_behavior.addItem("Set halfBridgeDutyCycle values", "set_duty_cycle")
-        idle_error_behavior.addItem("Set tristate enable and halfBridgeDutyCycle values", "tristate_with_duty_cycle")
+        idle_error_behavior.addItem("Set PWM half-bridge duty-cycle values", "set_duty_cycle")
+        idle_error_behavior.addItem(
+            "Set tristate enable and PWM half-bridge duty-cycle values",
+            "tristate_with_duty_cycle",
+        )
         idle_error_behavior.currentIndexChanged.connect(lambda _index: self.pwm_hardware_selection_changed())
         self.pwm_combos["pwm_2l_idle_error_behavior"] = idle_error_behavior
         pwm_2l_form.addRow("Idle/error gate behavior", idle_error_behavior)
@@ -562,18 +557,60 @@ class MainWindow(QMainWindow):
         layout.addLayout(sections)
         timing_group = QGroupBox("Global PWM timing")
         timing_form = QFormLayout(timing_group)
-        pwm_frequency = QLineEdit()
-        pwm_frequency.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
-        self.hardware_fields["pwm_frequency"] = pwm_frequency
-        timing_form.addRow("UZ_PWM_FREQUENCY", pwm_frequency)
-        pwm_deadtime = QLineEdit()
-        pwm_deadtime.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
-        self.hardware_fields["pwm_deadtime_us"] = pwm_deadtime
-        timing_form.addRow("UZ_PWM_DEADTIME_IN_US", pwm_deadtime)
-        pwm_min_pulse_width = QLineEdit()
-        pwm_min_pulse_width.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
-        self.hardware_fields["pwm_min_pulse_width_us"] = pwm_min_pulse_width
-        timing_form.addRow("UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US", pwm_min_pulse_width)
+        timing_form.addRow(
+            "INTERRUPT_ISR_SOURCE_USER_CHOICE",
+            self._hardware_timing_field(
+                "interrupt_isr_source",
+                "PWM interrupt source:\n"
+                "0: Interrupt_2L_max_min\n"
+                "1: Interrupt_2L_min\n"
+                "2: Interrupt_2L_max\n"
+                "3: Interrupt_3L_start_center\n"
+                "4: Interrupt_3L_start\n"
+                "5: Interrupt_3L_center\n\n"
+                "If a 2L PWM trigger is selected, align uz_PWM_SS_2L_config_t.trigger_source.",
+            ),
+        )
+        timing_form.addRow(
+            "INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY",
+            self._hardware_timing_field(
+                "interrupt_isr_trigger_on_adc_data_ready",
+                "ISR trigger mode:\n"
+                "0: ISR triggers on the selected PWM event\n"
+                "1: ISR triggers on axi2tcm_write_done after ADC data is in TCM",
+            ),
+        )
+        timing_form.addRow(
+            "INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE",
+            self._hardware_timing_field(
+                "interrupt_adc_to_isr_ratio",
+                "ADC-to-ISR ratio:\n"
+                "Trigger the ADC at every PWM event.\n"
+                "Trigger ISR_Control only every N-th interrupt event.",
+            ),
+        )
+        timing_form.addRow(
+            "ADC_TRIGGER_DELAY_IN_US",
+            self._hardware_timing_field(
+                "adc_trigger_delay_us",
+                "ADC trigger delay:\n"
+                "Unit: microseconds\n"
+                "Applies in both ISR trigger modes.\n"
+                "Default 0.01f is a 10 ns delay.",
+            ),
+        )
+        timing_form.addRow(
+            "UZ_PWM_FREQUENCY",
+            self._hardware_timing_field("pwm_frequency", "Global PWM frequency used by generated PWM software configuration."),
+        )
+        timing_form.addRow(
+            "UZ_PWM_DEADTIME_IN_US",
+            self._hardware_timing_field("pwm_deadtime_us", "Global PWM deadtime in microseconds."),
+        )
+        timing_form.addRow(
+            "UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US",
+            self._hardware_timing_field("pwm_min_pulse_width_us", "Global minimum PWM pulse width in microseconds."),
+        )
         timing_hint = QLabel(
             "These values are written to uz_global_configuration.h. The PWM driver configs can reference the "
             "defines, so changing them here updates the project-wide PWM timing in one place."
@@ -603,6 +640,23 @@ class MainWindow(QMainWindow):
         self.guarded_refresh_tcl_preview()
         self.refresh_advanced_driver_config_options()
         self.guarded_refresh_software_preview()
+
+    def _hardware_timing_field(self, key: str, help_text: str) -> QWidget:
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        field = QLineEdit()
+        field.setMaximumWidth(120)
+        field.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
+        self.hardware_fields[key] = field
+        help_button = QPushButton("?")
+        help_button.setFixedWidth(28)
+        help_button.setToolTip(help_text)
+        help_button.clicked.connect(lambda: QMessageBox.information(self, "Timing define", help_text))
+        layout.addWidget(field)
+        layout.addWidget(help_button)
+        layout.addStretch(1)
+        return container
 
     def _hardware_path_picker(self, key: str, file_mode: bool) -> QWidget:
         container = QWidget()
@@ -734,7 +788,8 @@ class MainWindow(QMainWindow):
             "- LA4128V: Revisions < Rev04 and Rev04 systems from UZ2021-002-001-200-0001 "
             "to UZ2021-001-001-004-0004\n"
             "- LC4256V: Rev04 systems from UZ2022-001-001-401-0007 "
-            "up to UZ2024-001-001-0401-0031"
+            "up to UZ2024-001-001-0401-0031\n"
+            "Attention!: The 'Programm CPLDs via CLI' workflow in the 'Slot CPLDs' page is not supported for LA4128/LC4256 CPLDs"
         )
         cpld_hint.setWordWrap(True)
         cpld_hint.setMinimumHeight(92)
@@ -893,7 +948,9 @@ class MainWindow(QMainWindow):
 
         hint = QLabel(
             "Select generated float signals that should be registered as Javascope observable signals. "
-            "The wizard writes the enum entries in javascope.h and the pointer assignments in javascope.c."
+            "The wizard writes the enum entries in javascope.h and the pointer assignments in javascope.c. "
+            "IO-card pin entries are generated from the AXI GPIO-backed pins of the selected card variant "
+            "and represent the software-visible GPIO bit value."
         )
         hint.setWordWrap(True)
         layout.addWidget(hint)
@@ -960,7 +1017,6 @@ class MainWindow(QMainWindow):
         title.setFont(title_font)
         outer.addWidget(title)
 
-        vertical_splitter = QSplitter(Qt.Orientation.Vertical)
         controls = QWidget()
         controls_layout = QVBoxLayout(controls)
 
@@ -985,25 +1041,102 @@ class MainWindow(QMainWindow):
         content.setStretchFactor(1, 1)
         content.setSizes([340, 820])
         controls_layout.addWidget(content, 1)
+        outer.addWidget(controls, 1)
+        return page
 
-        buttons = QHBoxLayout()
+    def _build_tcl_generation_page(self) -> QWidget:
+        page = QWidget()
+        outer = QVBoxLayout(page)
+
+        title = QLabel("TCL generation")
+        title_font = QFont()
+        title_font.setPointSize(16)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        outer.addWidget(title)
+
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        controls = QWidget()
+        controls_layout = QHBoxLayout(controls)
+
+        local_group = QGroupBox("Local Vivado builds")
+        local_layout = QVBoxLayout(local_group)
+
+        options_title = QLabel("Vivado execution options")
+        options_title_font = QFont(options_title.font())
+        options_title_font.setBold(True)
+        options_title.setFont(options_title_font)
+        local_layout.addWidget(options_title)
+
+        options_widget = QWidget()
+        options_form = QFormLayout(options_widget)
+        validate_checkbox = QCheckBox("Validate block design after applying TCL")
+        save_checkbox = QCheckBox("Save block design after applying TCL")
+        open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
+        disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
+        self.hardware_checkboxes["validate_block_design"] = validate_checkbox
+        self.hardware_checkboxes["save_block_design"] = save_checkbox
+        self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
+        self.hardware_checkboxes["disable_bd_synth_checkpoints"] = disable_checkpoints_checkbox
+        disable_checkpoints_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
+        options_form.addRow("", validate_checkbox)
+        options_form.addRow("", save_checkbox)
+        options_form.addRow("", open_gui_checkbox)
+        options_form.addRow("", disable_checkpoints_checkbox)
+        hint = QLabel(
+            "These options only affect the TCL execution/export flow. Complete the hardware configuration pages first, "
+            "then refresh the preview or run the workflow from here."
+        )
+        hint.setWordWrap(True)
+        options_form.addRow("", hint)
+        local_layout.addWidget(options_widget)
+
+        workflow_title = QLabel("TCL workflow")
+        workflow_title_font = QFont(workflow_title.font())
+        workflow_title_font.setBold(True)
+        workflow_title.setFont(workflow_title_font)
+        local_layout.addWidget(workflow_title)
+
+        workflow_widget = QWidget()
+        workflow_layout = QGridLayout(workflow_widget)
         preview_button = QPushButton("Refresh TCL Preview")
         preview_button.clicked.connect(self.refresh_tcl_preview)
-        export_checkbox = QCheckBox("Export TCL")
+        export_button = QPushButton("Export TCL")
+        export_button.clicked.connect(self.export_tcl)
+        run_vivado_button = QPushButton("Run TCL in Vivado")
+        run_vivado_button.clicked.connect(self.run_current_tcl_in_vivado)
+        export_checkbox = QCheckBox("Include export")
         export_checkbox.setChecked(True)
-        run_vivado_checkbox = QCheckBox("Run TCL in Vivado")
+        run_vivado_checkbox = QCheckBox("Include Vivado run")
         workflow_button = QPushButton("Execute TCL workflow")
         workflow_button.clicked.connect(self.execute_tcl_workflow)
         self.tcl_export_checkbox = export_checkbox
         self.tcl_run_vivado_checkbox = run_vivado_checkbox
         self.tcl_workflow_button = workflow_button
-        buttons.addStretch(1)
-        buttons.addWidget(preview_button)
-        buttons.addWidget(export_checkbox)
-        buttons.addWidget(run_vivado_checkbox)
-        buttons.addWidget(workflow_button)
-        controls_layout.addLayout(buttons)
-        vertical_splitter.addWidget(controls)
+        workflow_layout.addWidget(preview_button, 0, 0)
+        workflow_layout.addWidget(export_button, 0, 1)
+        workflow_layout.addWidget(run_vivado_button, 0, 2)
+        workflow_layout.addWidget(export_checkbox, 1, 0)
+        workflow_layout.addWidget(run_vivado_checkbox, 1, 1)
+        workflow_layout.addWidget(workflow_button, 1, 2)
+        workflow_layout.setColumnStretch(3, 1)
+        local_layout.addWidget(workflow_widget)
+        local_layout.addStretch(1)
+
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.VLine)
+        separator.setFrameShadow(QFrame.Shadow.Sunken)
+        separator.setLineWidth(2)
+        separator.setMidLineWidth(1)
+
+        remote_group = QGroupBox("Remote workstation builds")
+        remote_layout = QVBoxLayout(remote_group)
+        remote_layout.addStretch(1)
+
+        controls_layout.addWidget(local_group, 1)
+        controls_layout.addWidget(separator)
+        controls_layout.addWidget(remote_group, 1)
+        splitter.addWidget(controls)
 
         output = QWidget()
         output_layout = QVBoxLayout(output)
@@ -1016,11 +1149,11 @@ class MainWindow(QMainWindow):
         self.tcl_preview.setReadOnly(True)
         self.tcl_preview.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
         output_layout.addWidget(self.tcl_preview, 2)
-        vertical_splitter.addWidget(output)
-        vertical_splitter.setStretchFactor(0, 1)
-        vertical_splitter.setStretchFactor(1, 0)
-        vertical_splitter.setSizes([620, 210])
-        outer.addWidget(vertical_splitter, 1)
+        splitter.addWidget(output)
+        splitter.setStretchFactor(0, 0)
+        splitter.setStretchFactor(1, 1)
+        splitter.setSizes([230, 590])
+        outer.addWidget(splitter, 1)
         return page
 
     def _build_slot_group(self) -> QGroupBox:
@@ -1127,6 +1260,12 @@ class MainWindow(QMainWindow):
         buttons.addWidget(program_button)
         buttons.addStretch(1)
         outer.addLayout(buttons)
+        cpld_cli_hint = QLabel(
+            "Attention!: The 'Programm CPLDs via CLI' workflow in the 'Slot CPLDs' page is not supported for LA4128/LC4256 CPLDs"
+        )
+        cpld_cli_hint.setWordWrap(True)
+        cpld_cli_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        outer.addWidget(cpld_cli_hint)
 
         self.cpld_status = QTextEdit()
         self.cpld_status.setReadOnly(True)
@@ -1357,6 +1496,38 @@ class MainWindow(QMainWindow):
     def toolchain_config(self) -> dict[str, str]:
         return {key: field.text().strip() for key, field in self.toolchain_fields.items()}
 
+    def require_toolchain_paths(self, requirements: list[tuple[str, str, str]], title: str) -> bool:
+        toolchain = self.toolchain_config()
+        missing = []
+        invalid = []
+        for key, label, kind in requirements:
+            path_text = toolchain.get(key, "").strip()
+            if not path_text:
+                missing.append(label)
+                continue
+            path = Path(path_text)
+            if kind == "file" and not path.is_file():
+                invalid.append(f"{label}: {path}")
+            elif kind == "directory" and not path.is_dir():
+                invalid.append(f"{label}: {path}")
+        if not missing and not invalid:
+            return True
+
+        messages = []
+        if missing:
+            messages.append("Missing Toolchain page paths:")
+            messages.extend(f"- {label}" for label in missing)
+        if invalid:
+            if messages:
+                messages.append("")
+            messages.append("Configured paths were not found:")
+            messages.extend(f"- {entry}" for entry in invalid)
+        messages.append("")
+        messages.append("Open the Toolchain page, use Detect tools or Browse..., and try again.")
+        QMessageBox.warning(self, title, "\n".join(messages))
+        self.show_toolchain_page()
+        return False
+
     def hardware_config(self) -> dict[str, str]:
         config = {key: field.text().strip() for key, field in self.hardware_fields.items()}
         for key, checkbox in self.hardware_checkboxes.items():
@@ -1480,7 +1651,11 @@ class MainWindow(QMainWindow):
             "pwm_2l_idle_error_duty_hb2": "0.0f",
             "pwm_2l_idle_error_duty_hb3": "0.0f",
             "pwm_3l_instances": "1",
-            "pwm_enable_source": "uz_system/Enable_Inverter",
+            "pwm_enable_source": "uz_system/Enable_Gate",
+            "interrupt_isr_source": "1U",
+            "interrupt_isr_trigger_on_adc_data_ready": "0U",
+            "interrupt_adc_to_isr_ratio": "1U",
+            "adc_trigger_delay_us": "0.01f",
             "pwm_frequency": "10.0e3f",
             "pwm_deadtime_us": "1.0f",
             "pwm_min_pulse_width_us": "0.5f",
@@ -1958,7 +2133,7 @@ class MainWindow(QMainWindow):
 
     def show_adapter_cards(self) -> None:
         self.stack.setCurrentIndex(3)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(2))
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
 
     def show_hardware_configuration(self) -> None:
         self.show_hardware_general()
@@ -1968,12 +2143,16 @@ class MainWindow(QMainWindow):
         self.tree.setCurrentItem(self.tree.topLevelItem(2).child(0))
 
     def show_slot_cplds(self) -> None:
-        self.stack.setCurrentIndex(4)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(4))
+        self.stack.setCurrentIndex(7)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(5))
 
     def show_axi_interconnect(self) -> None:
         self.stack.setCurrentIndex(5)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(3))
+
+    def show_tcl_generation(self) -> None:
+        self.stack.setCurrentIndex(6)
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(4))
 
     def import_cable_settings_from_xcf(self) -> None:
         path_text, _ = QFileDialog.getOpenFileName(
@@ -2003,6 +2182,18 @@ class MainWindow(QMainWindow):
         self.set_cpld_status("\n".join(imported))
 
     def write_lattice_diamond_project_file(self) -> None:
+        if not self.require_toolchain_paths(
+            [
+                ("cpld_repository", "CPLD repository", "directory"),
+                ("lattice_programmer_executable", "Lattice Programmer executable", "file"),
+            ],
+            "CPLD toolchain paths missing",
+        ):
+            return
+        xcf_path = self.ask_cpld_project_export_path()
+        if xcf_path is None:
+            return
+        self.cpld_xcf_path = xcf_path
         try:
             result = self.generate_lattice_diamond_project_file()
         except (OSError, ValueError) as error:
@@ -2021,8 +2212,26 @@ class MainWindow(QMainWindow):
         self.refresh_cpld_program_button_state()
         self.set_cpld_status("\n".join(messages))
 
+    def ask_cpld_project_export_path(self) -> Path | None:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        default_path = self.cpld_xcf_path if self.cpld_xcf_path else OUTPUT_DIR / "project_wizard_slot_cplds.xcf"
+        if not default_path.is_absolute():
+            default_path = OUTPUT_DIR / default_path.name
+        path_text, _ = QFileDialog.getSaveFileName(
+            self,
+            "Write Lattice Diamond Programmer project file",
+            str(default_path),
+            "Lattice Diamond Programmer project (*.xcf);;All files (*)",
+        )
+        return Path(path_text) if path_text else None
+
     def program_cplds_via_cli(self) -> None:
         if self.cpld_process and self.cpld_process.state() != QProcess.ProcessState.NotRunning:
+            return
+        if not self.require_toolchain_paths(
+            [("lattice_programmer_executable", "Lattice Programmer executable", "file")],
+            "CPLD toolchain paths missing",
+        ):
             return
         try:
             programmer_path = Path(self.toolchain_config().get("lattice_programmer_executable", ""))
@@ -2167,24 +2376,24 @@ class MainWindow(QMainWindow):
         return None
 
     def show_card_database(self) -> None:
-        self.stack.setCurrentIndex(11)
+        self.stack.setCurrentIndex(12)
 
     def show_software_general(self) -> None:
-        self.stack.setCurrentIndex(6)
+        self.stack.setCurrentIndex(8)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(0))
 
     def show_ip_core_driver_setup(self) -> None:
-        self.stack.setCurrentIndex(7)
+        self.stack.setCurrentIndex(9)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(1))
 
     def show_advanced_driver_config(self) -> None:
         self.refresh_dirty_software_dependent_views()
-        self.stack.setCurrentIndex(8)
+        self.stack.setCurrentIndex(10)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(2))
 
     def show_data_visualization(self) -> None:
         self.refresh_dirty_software_dependent_views()
-        self.stack.setCurrentIndex(9)
+        self.stack.setCurrentIndex(11)
         self.tree.setCurrentItem(self.tree.topLevelItem(3).child(3))
 
     def refresh_dirty_software_dependent_views(self) -> None:
@@ -2664,7 +2873,7 @@ class MainWindow(QMainWindow):
         )
 
     def show_info(self) -> None:
-        version = self.git_metadata(["describe", "--tags", "--always", "--dirty"])
+        git_revision = self.git_metadata(["describe", "--tags", "--always", "--dirty"])
         branch = self.git_metadata(["rev-parse", "--abbrev-ref", "HEAD"])
         dialog = QMessageBox(self)
         dialog.setIcon(QMessageBox.Icon.Information)
@@ -2675,7 +2884,7 @@ class MainWindow(QMainWindow):
                 [
                     "Configuration helper for UltraZohm Vivado, CPLD, and software integration workflows.",
                     "",
-                    f"Version: {version}",
+                    f"Version: {__version__}",
                     "License: Apache License 2.0",
                 ]
             )
@@ -2690,7 +2899,8 @@ class MainWindow(QMainWindow):
                     "  and generate or patch Vitis software integration files.",
                     "",
                     "Version control:",
-                    f"  Version: {version}",
+                    f"  Application version: {__version__}",
+                    f"  Git revision: {git_revision}",
                     f"  Branch: {branch}",
                     "",
                     "Runtime:",
@@ -2735,6 +2945,11 @@ class MainWindow(QMainWindow):
             return
         if run_vivado and self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
             QMessageBox.warning(self, "Vivado is running", "A Vivado process started by the wizard is still running.")
+            return
+        if run_vivado and not self.require_toolchain_paths(
+            [("vivado_executable", "Vivado executable", "file")],
+            "Vivado toolchain path missing",
+        ):
             return
 
         if export_tcl:
@@ -2801,7 +3016,19 @@ class MainWindow(QMainWindow):
             self.tcl_run_vivado_checkbox.setChecked(False)
         self.execute_tcl_workflow()
 
+    def run_current_tcl_in_vivado(self) -> None:
+        if self.tcl_export_checkbox:
+            self.tcl_export_checkbox.setChecked(True)
+        if self.tcl_run_vivado_checkbox:
+            self.tcl_run_vivado_checkbox.setChecked(True)
+        self.execute_tcl_workflow()
+
     def run_tcl_in_vivado(self, tcl_path: Path) -> None:
+        if not self.require_toolchain_paths(
+            [("vivado_executable", "Vivado executable", "file")],
+            "Vivado toolchain path missing",
+        ):
+            return
         toolchain = self.toolchain_config()
         hardware = self.hardware_config()
         vivado_path = Path(toolchain.get("vivado_executable", ""))

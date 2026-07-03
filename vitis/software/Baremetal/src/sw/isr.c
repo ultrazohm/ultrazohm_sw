@@ -76,13 +76,13 @@ void ISR_Control(void *data)
     if (current_state == idle_state)
     {
         /* Project Wizard BEGIN: idle_state isr_actions */
-        Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
@@ -101,9 +101,12 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
         uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
-        Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine_wave.a;
-        Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine_wave.b;
-        Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine_wave.c;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
+        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
+        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
+        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
 
         static uint64_t io_test_last_step_us = 0U;
         static uint32_t d1_axi_tx_index = 0U;
@@ -133,13 +136,13 @@ void ISR_Control(void *data)
     else if (current_state == error_state)
     {
         /* Project Wizard BEGIN: error_state isr_actions */
-        Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
-        Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);

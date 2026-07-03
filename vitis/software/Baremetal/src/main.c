@@ -19,18 +19,18 @@
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-        .halfBridge1DutyCycle = 0.0f,
-        .halfBridge2DutyCycle = 0.0f,
-        .halfBridge3DutyCycle = 0.0f,
-        .halfBridge4DutyCycle = 0.0f,
-        .halfBridge5DutyCycle = 0.0f,
-        .halfBridge6DutyCycle = 0.0f,
-        .halfBridge7DutyCycle = 0.0f,
-        .halfBridge8DutyCycle = 0.0f,
-        .halfBridge9DutyCycle = 0.0f,
-        .halfBridge10DutyCycle = 0.0f,
-        .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f},
+/* Project Wizard BEGIN: rasv_initializer */
+        .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
+/* Project Wizard END: rasv_initializer */
+    },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)};
 

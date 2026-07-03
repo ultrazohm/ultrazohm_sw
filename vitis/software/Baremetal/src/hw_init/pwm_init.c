@@ -153,9 +153,9 @@ void initialize_project_wizard_pwm_3l(DS_Data* data)
     project_wizard_pwm_3l_set_carrier_frequency(data->av.pwm_frequency_hz);
     project_wizard_pwm_3l_set_minimum_pulse_width(0.01f);
     project_wizard_pwm_3l_set_duty_cycle(
-        data->rasv.halfBridge1DutyCycle,
-        data->rasv.halfBridge2DutyCycle,
-        data->rasv.halfBridge3DutyCycle
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_1,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_2,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_3
     );
     project_wizard_pwm_3l_set_tristate(
         0,
@@ -170,23 +170,23 @@ void project_wizard_update_pwm_outputs(DS_Data* data)
 
     uz_PWM_SS_2L_set_duty_cycle(
         data->objects.project_wizard_pwm_2l_0,
-        data->rasv.halfBridge1DutyCycle,
-        data->rasv.halfBridge2DutyCycle,
-        data->rasv.halfBridge3DutyCycle
+        data->rasv.pwm_2L_0_halfBridgeDutyCycle_1,
+        data->rasv.pwm_2L_0_halfBridgeDutyCycle_2,
+        data->rasv.pwm_2L_0_halfBridgeDutyCycle_3
     );
 
     uz_PWM_SS_2L_set_duty_cycle(
         data->objects.project_wizard_pwm_2l_1,
-        data->rasv.halfBridge4DutyCycle,
-        data->rasv.halfBridge5DutyCycle,
-        data->rasv.halfBridge6DutyCycle
+        data->rasv.pwm_2L_1_halfBridgeDutyCycle_1,
+        data->rasv.pwm_2L_1_halfBridgeDutyCycle_2,
+        data->rasv.pwm_2L_1_halfBridgeDutyCycle_3
     );
 
 
     project_wizard_pwm_3l_set_duty_cycle(
-        data->rasv.halfBridge1DutyCycle,
-        data->rasv.halfBridge2DutyCycle,
-        data->rasv.halfBridge3DutyCycle
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_1,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_2,
+        data->rasv.pwm_3L_0_halfBridgeDutyCycle_3
     );
 
 }

@@ -63,9 +63,9 @@ CPLD_VARIANTS = {
 }
 
 ISPMACH_JED_FILENAMES = {
-    "tx30": "uz_cpld_30tx.jed",
-    "30tx": "uz_cpld_30tx.jed",
-    "rx30": "uz_cpld_rx30.jed",
+    "tx30": str(Path("30tx") / "uz_cpld_30tx.jed"),
+    "30tx": str(Path("30tx") / "uz_cpld_30tx.jed"),
+    "rx30": str(Path("30rx") / "uz_cpld_30rx.jed"),
     "optical_14tx_4rx": "uz_cpld_14tx_4rx.jed",
     "uz_d_3ph_inverter": "uz_d_3ph_inverter.jed",
     "uz_d_abs_encoder": "uz_d_abs_encoder.jed",

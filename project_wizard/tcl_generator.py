@@ -1310,7 +1310,7 @@ class TclGenerator:
             ),
             "clock_pin": config.get("d_clock_pin", config.get("clock_pin", "")),
             "resetn_pin": config.get("d_resetn_pin", config.get("resetn_pin", "")),
-            "enable_source_pin": hardware_config.get("pwm_enable_source", "uz_system/Enable_Inverter"),
+            "enable_source_pin": hardware_config.get("pwm_enable_source", "uz_system/Enable_Gate"),
             "address_space": address_space,
             "local_smartconnect_vlnv": config.get("local_smartconnect_vlnv", "xilinx.com:ip:smartconnect"),
             "pwm_2l_axi_count": instance_count * 2,

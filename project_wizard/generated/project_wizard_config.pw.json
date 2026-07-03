@@ -17,6 +17,10 @@
     "pwm_2l_idle_error_duty_hb1": "0.5f",
     "pwm_2l_idle_error_duty_hb2": "0.5f",
     "pwm_2l_idle_error_duty_hb3": "0.5f",
+    "interrupt_isr_source": "1U",
+    "interrupt_isr_trigger_on_adc_data_ready": "0U",
+    "interrupt_adc_to_isr_ratio": "1U",
+    "adc_trigger_delay_us": "0.01f",
     "pwm_frequency": "10.0e3f",
     "pwm_deadtime_us": "0.3f",
     "pwm_min_pulse_width_us": "0.5f",
@@ -27,8 +31,7 @@
     "disable_bd_synth_checkpoints": "false",
     "pwm_2l_instances": "2",
     "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
-    "pwm_3l_instances": "1",
-    "pwm_2l_debug_ila": "true"
+    "pwm_3l_instances": "1"
   },
   "slots": {
     "A1": "analog_ltc2311_16",
@@ -237,17 +240,16 @@
   },
   "axi": {
     "a_upstream_smartconnect": "uz_system/smartconnect_0",
-    "a_clock_pin": "uz_system/clk",
+    "a_clock_pin": "uz_system/peripheral_clk",
     "a_resetn_pin": "uz_system/peripheral_aresetn",
     "a_address_space": "/zynq_ultra_ps_e_0/Data",
-    "d_upstream_smartconnect": "uz_user/smartconnect_1",
-    "d_clock_pin": "uz_user/aclk",
-    "d_resetn_pin": "uz_user/aresetn",
+    "d_upstream_smartconnect": "uz_system/smartconnect_0",
+    "d_clock_pin": "uz_system/peripheral_clk",
+    "d_resetn_pin": "uz_system/peripheral_aresetn",
     "d_address_space": "/zynq_ultra_ps_e_0/Data",
-    "analog_raw_value_target_template": "uz_system/ADC_{slot}",
     "analog_axi2tcm_trigger_source": "uz_analog_adapter/A3_RAW_Valid",
     "analog_axi2tcm_trigger_target": "uz_system/Trigger_AXI2TCM",
-    "analog_conversion_trigger_sources": "uz_system/trigger_conversions;uz_digital_adapter/PeriodEnd",
+    "analog_conversion_trigger_sources": "uz_system/trigger_conversions",
     "analog_conversion_trigger_target": "uz_analog_adapter/TRIGGER_CNV",
     "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
     "local_smartconnect_name": "axi_smartconnect"

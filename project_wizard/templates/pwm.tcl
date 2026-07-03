@@ -346,12 +346,6 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:vio ${uz_pw_pwm_2l_hier}/vio_Gates_2
 set_property -dict [list CONFIG.C_NUM_PROBE_IN {0} CONFIG.C_NUM_PROBE_OUT {{ vio_probe_count }} {% for probe in vio_probe_props %}CONFIG.C_PROBE_OUT{{ probe.index }}_WIDTH {1} {% endfor %}] [get_bd_cells ${uz_pw_pwm_2l_hier}/vio_Gates_2L]
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_2l_hier}/clk ${uz_pw_pwm_2l_hier}/vio_Gates_2L/clk
 
-{% if debug_ila %}
-create_bd_cell -type ip -vlnv xilinx.com:ip:ila ${uz_pw_pwm_2l_hier}/ila_0
-set_property -dict [list CONFIG.C_DATA_DEPTH {16384} CONFIG.C_MONITOR_TYPE {Native} CONFIG.C_NUM_OF_PROBES {19}] [get_bd_cells ${uz_pw_pwm_2l_hier}/ila_0]
-uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_2l_hier}/clk ${uz_pw_pwm_2l_hier}/ila_0/clk
-{% endif %}
-
 {% for instance in instances %}
 create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip ${uz_pw_pwm_2l_hier}/{{ instance.pwm_cell }}
 create_bd_cell -type ip -vlnv user.org:ip:uz_interlockDeadtime2L ${uz_pw_pwm_2l_hier}/{{ instance.interlock_cell }}
@@ -406,28 +400,6 @@ uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_2l_hier}/Carrier_triangular_ma
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_2l_hier}/Carrier_triangular_min ${uz_pw_pwm_root}/Carrier_triangular_min
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_2l_hier}/Carrier_triangular_max_min ${uz_pw_pwm_root}/Carrier_triangular_max_min
 
-{% if debug_ila %}
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS0_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe0
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS1_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe1
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS2_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe2
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS3_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe3
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS4_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe4
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/SS5_OUT ${uz_pw_pwm_2l_hier}/ila_0/probe5
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/PWM_enb_out ${uz_pw_pwm_2l_hier}/ila_0/probe6
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/Triangular_Max ${uz_pw_pwm_2l_hier}/ila_0/probe7
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/Triangular_Min ${uz_pw_pwm_2l_hier}/ila_0/probe8
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/triangle_out ${uz_pw_pwm_2l_hier}/ila_0/probe9
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/dir_out ${uz_pw_pwm_2l_hier}/ila_0/probe10
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/PWM_and_SS_control_V_0/applied_new_reference_value ${uz_pw_pwm_2l_hier}/ila_0/probe11
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s0_out ${uz_pw_pwm_2l_hier}/ila_0/probe12
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s1_out ${uz_pw_pwm_2l_hier}/ila_0/probe13
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s2_out ${uz_pw_pwm_2l_hier}/ila_0/probe14
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s3_out ${uz_pw_pwm_2l_hier}/ila_0/probe15
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s4_out ${uz_pw_pwm_2l_hier}/ila_0/probe16
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/s5_out ${uz_pw_pwm_2l_hier}/ila_0/probe17
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_2l_hier}/uz_interlockDeadtime_0/enableFB ${uz_pw_pwm_2l_hier}/ila_0/probe18
-{% endif %}
-
 # 3L PWM ----------------------------------------------------------------------
 uz_pw_create_bd_pin_if_missing I ${uz_pw_pwm_3l_hier}/clk
 uz_pw_create_bd_pin_if_missing I ${uz_pw_pwm_3l_hier}/resetn
@@ -458,8 +430,6 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:vio ${uz_pw_pwm_3l_hier}/Set_Deadtim
 set_property -dict [list CONFIG.C_NUM_PROBE_IN {0} CONFIG.C_PROBE_OUT0_INIT_VAL {0x0C8} CONFIG.C_PROBE_OUT0_WIDTH {10}] [get_bd_cells ${uz_pw_pwm_3l_hier}/Set_Deadtime_3L]
 create_bd_cell -type ip -vlnv xilinx.com:ip:vio ${uz_pw_pwm_3l_hier}/vio_Gates_3L
 set_property -dict [list CONFIG.C_NUM_PROBE_IN {0} CONFIG.C_NUM_PROBE_OUT {9} CONFIG.C_PROBE_OUT0_WIDTH {14} CONFIG.C_PROBE_OUT1_WIDTH {14} CONFIG.C_PROBE_OUT2_WIDTH {14} CONFIG.C_PROBE_OUT6_WIDTH {1} CONFIG.C_PROBE_OUT7_WIDTH {1} CONFIG.C_PROBE_OUT8_WIDTH {1}] [get_bd_cells ${uz_pw_pwm_3l_hier}/vio_Gates_3L]
-create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila ${uz_pw_pwm_3l_hier}/system_ila_0
-set_property -dict [list CONFIG.C_DATA_DEPTH {16384} CONFIG.C_MON_TYPE {NATIVE} CONFIG.C_NUM_OF_PROBES {23}] [get_bd_cells ${uz_pw_pwm_3l_hier}/system_ila_0]
 if {[catch {create_bd_cell -type module -reference top_npc_state_machine ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0} result]} {
   error "Unable to add referenced module top_npc_state_machine for PWM 3L: $result"
 }
@@ -469,23 +439,17 @@ uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hi
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/IPCORE_CLK
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hier}/Set_Deadtime_3L/clk
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hier}/vio_Gates_3L/clk
-uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hier}/system_ila_0/clk
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/clk ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/clock
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/resetn ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/AXI4_Lite_ARESETN
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/resetn ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/IPCORE_RESETN
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/Enable_Gate ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/enable
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/Gates_Vector/dout ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/switching_signals
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/Gates_Vector/dout ${uz_pw_pwm_3l_hier}/system_ila_0/probe13
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Center ${uz_pw_pwm_3l_hier}/Interrupt_Center
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Center ${uz_pw_pwm_3l_hier}/Interrupt_Start_Center_or/Op1
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Center ${uz_pw_pwm_3l_hier}/system_ila_0/probe20
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Start ${uz_pw_pwm_3l_hier}/Interrupt_Start
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Start ${uz_pw_pwm_3l_hier}/Interrupt_Start_Center_or/Op2
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/Period_Start ${uz_pw_pwm_3l_hier}/system_ila_0/probe21
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/Interrupt_Start_Center_or/Res ${uz_pw_pwm_3l_hier}/Interrupt_Start_Center
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/Interrupt_Start_Center_or/Res ${uz_pw_pwm_3l_hier}/system_ila_0/probe12
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/Set_Deadtime_3L/probe_out0 ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/deadtime
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/Set_Deadtime_3L/probe_out0 ${uz_pw_pwm_3l_hier}/system_ila_0/probe22
 
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSa1_OUT ${uz_pw_pwm_3l_hier}/Gates_Vector/In0
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSa2_OUT ${uz_pw_pwm_3l_hier}/Gates_Vector/In1
@@ -493,12 +457,6 @@ uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSb1_OUT ${
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSb2_OUT ${uz_pw_pwm_3l_hier}/Gates_Vector/In3
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc1_OUT ${uz_pw_pwm_3l_hier}/Gates_Vector/In4
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc2_OUT ${uz_pw_pwm_3l_hier}/Gates_Vector/In5
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSa1_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe14
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSa2_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe15
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSb1_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe16
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSb2_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe17
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc1_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe18
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/PWM_SS_3L_ip_0/SSc2_OUT ${uz_pw_pwm_3l_hier}/system_ila_0/probe19
 
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S1 ${uz_pw_pwm_3l_hier}/xlconcat_0/In0
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S2 ${uz_pw_pwm_3l_hier}/xlconcat_0/In1
@@ -513,19 +471,6 @@ uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S3 ${uz_pw_pwm_3l_hier}/xlconcat_0/In10
 uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S4 ${uz_pw_pwm_3l_hier}/xlconcat_0/In11
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/xlconcat_0/dout ${uz_pw_pwm_3l_hier}/Gate_Signals_3L_0
-
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S1 ${uz_pw_pwm_3l_hier}/system_ila_0/probe0
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S2 ${uz_pw_pwm_3l_hier}/system_ila_0/probe1
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S3 ${uz_pw_pwm_3l_hier}/system_ila_0/probe2
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/A_S4 ${uz_pw_pwm_3l_hier}/system_ila_0/probe3
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/B_S1 ${uz_pw_pwm_3l_hier}/system_ila_0/probe4
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/B_S2 ${uz_pw_pwm_3l_hier}/system_ila_0/probe5
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/B_S3 ${uz_pw_pwm_3l_hier}/system_ila_0/probe6
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/B_S4 ${uz_pw_pwm_3l_hier}/system_ila_0/probe7
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S1 ${uz_pw_pwm_3l_hier}/system_ila_0/probe8
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S2 ${uz_pw_pwm_3l_hier}/system_ila_0/probe9
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S3 ${uz_pw_pwm_3l_hier}/system_ila_0/probe10
-uz_pw_connect_net_if_unconnected ${uz_pw_pwm_3l_hier}/top_npc_state_machine_0/C_S4 ${uz_pw_pwm_3l_hier}/system_ila_0/probe11
 
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/Gate_Signals_3L_0 ${uz_pw_pwm_root}/Gate_Signals_3L_0
 uz_pw_connect_pin_pair_if_unconnected ${uz_pw_pwm_3l_hier}/Interrupt_Center ${uz_pw_pwm_root}/Interrupt_Center

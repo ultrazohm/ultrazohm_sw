@@ -59,6 +59,8 @@ from ..version import __version__
 from .adapter_card_details import AdapterCardDetailsWidget
 from .card_editor import CardEditorDialog
 
+TIMING_CONTROL_WIDTH = 260
+
 
 class MenuActionRow(QWidget):
     def __init__(self, text: str, shortcut: str, triggered: Callable[[], None], parent: QWidget | None = None) -> None:
@@ -234,7 +236,7 @@ class MainWindow(QMainWindow):
         adapter_cards_action.triggered.connect(self.show_adapter_cards)
         view_menu.addAction(adapter_cards_action)
 
-        axi_action = QAction("AXI interconnect", self)
+        axi_action = QAction("ADC triggers", self)
         axi_action.triggered.connect(self.show_axi_interconnect)
         view_menu.addAction(axi_action)
 
@@ -333,8 +335,8 @@ class MainWindow(QMainWindow):
         config = QTreeWidgetItem(["Hardware configuration"])
         hardware_general = QTreeWidgetItem(["General"])
         adapter_cards = QTreeWidgetItem(["Adapter cards"])
-        pwm = QTreeWidgetItem(["PWM / Timing"])
-        axi_interconnect = QTreeWidgetItem(["AXI interconnect"])
+        pwm = QTreeWidgetItem(["PWM / Timing / Interrupts"])
+        axi_interconnect = QTreeWidgetItem(["ADC triggers"])
         tcl_generation = QTreeWidgetItem(["TCL generation"])
         slot_cplds = QTreeWidgetItem(["Slot CPLDs"])
         config.addChild(hardware_general)
@@ -376,8 +378,8 @@ class MainWindow(QMainWindow):
             "Hardware configuration": 2,
             "General": 2 if current.parent() and current.parent().text(0) == "Hardware configuration" else 8,
             "Adapter cards": 3,
-            "PWM / Timing": 4,
-            "AXI interconnect": 5,
+            "PWM / Timing / Interrupts": 4,
+            "ADC triggers": 5,
             "TCL generation": 6,
             "Slot CPLDs": 7,
             "Software configuration": 8,
@@ -498,7 +500,7 @@ class MainWindow(QMainWindow):
         page = QWidget()
         layout = QVBoxLayout(page)
 
-        title = QLabel("PWM / Timing")
+        title = QLabel("PWM / Timing / Interrupts")
         title_font = QFont()
         title_font.setPointSize(16)
         title_font.setBold(True)
@@ -515,11 +517,6 @@ class MainWindow(QMainWindow):
         instances_2l.currentIndexChanged.connect(lambda _index: self.pwm_hardware_selection_changed())
         self.pwm_combos["pwm_2l_instances"] = instances_2l
         pwm_2l_form.addRow("Instances", instances_2l)
-
-        debug_2l = QCheckBox("Place debug ILA")
-        debug_2l.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
-        self.pwm_checkboxes["pwm_2l_debug_ila"] = debug_2l
-        pwm_2l_form.addRow("", debug_2l)
 
         idle_error_behavior = QComboBox()
         idle_error_behavior.addItem("Set PWM half-bridge duty-cycle values", "set_duty_cycle")
@@ -559,8 +556,16 @@ class MainWindow(QMainWindow):
         timing_form = QFormLayout(timing_group)
         timing_form.addRow(
             "INTERRUPT_ISR_SOURCE_USER_CHOICE",
-            self._hardware_timing_field(
+            self._hardware_timing_combo(
                 "interrupt_isr_source",
+                [
+                    ("0: Interrupt_2L_max_min", "0U"),
+                    ("1: Interrupt_2L_min", "1U"),
+                    ("2: Interrupt_2L_max", "2U"),
+                    ("3: Interrupt_3L_start_center", "3U"),
+                    ("4: Interrupt_3L_start", "4U"),
+                    ("5: Interrupt_3L_center", "5U"),
+                ],
                 "PWM interrupt source:\n"
                 "0: Interrupt_2L_max_min\n"
                 "1: Interrupt_2L_min\n"
@@ -573,8 +578,12 @@ class MainWindow(QMainWindow):
         )
         timing_form.addRow(
             "INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY",
-            self._hardware_timing_field(
+            self._hardware_timing_combo(
                 "interrupt_isr_trigger_on_adc_data_ready",
+                [
+                    ("0: Selected PWM event", "0U"),
+                    ("1: axi2tcm_write_done", "1U"),
+                ],
                 "ISR trigger mode:\n"
                 "0: ISR triggers on the selected PWM event\n"
                 "1: ISR triggers on axi2tcm_write_done after ADC data is in TCM",
@@ -585,8 +594,8 @@ class MainWindow(QMainWindow):
             self._hardware_timing_field(
                 "interrupt_adc_to_isr_ratio",
                 "ADC-to-ISR ratio:\n"
-                "Trigger the ADC at every PWM event.\n"
-                "Trigger ISR_Control only every N-th interrupt event.",
+                "1U: Trigger the ADC/ISR_Control at every PWM event.\n"
+                "NU: Trigger ADC/ISR_Control only every N-th PWM event.",
             ),
         )
         timing_form.addRow(
@@ -646,7 +655,7 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout(container)
         layout.setContentsMargins(0, 0, 0, 0)
         field = QLineEdit()
-        field.setMaximumWidth(120)
+        field.setFixedWidth(TIMING_CONTROL_WIDTH)
         field.textChanged.connect(lambda _text: self.guarded_refresh_software_preview())
         self.hardware_fields[key] = field
         help_button = QPushButton("?")
@@ -654,6 +663,25 @@ class MainWindow(QMainWindow):
         help_button.setToolTip(help_text)
         help_button.clicked.connect(lambda: QMessageBox.information(self, "Timing define", help_text))
         layout.addWidget(field)
+        layout.addWidget(help_button)
+        layout.addStretch(1)
+        return container
+
+    def _hardware_timing_combo(self, key: str, items: list[tuple[str, str]], help_text: str) -> QWidget:
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        combo = QComboBox()
+        combo.setFixedWidth(TIMING_CONTROL_WIDTH)
+        for label, value in items:
+            combo.addItem(label, value)
+        combo.currentIndexChanged.connect(lambda _index: self.guarded_refresh_software_preview())
+        self.pwm_combos[key] = combo
+        help_button = QPushButton("?")
+        help_button.setFixedWidth(28)
+        help_button.setToolTip(help_text)
+        help_button.clicked.connect(lambda: QMessageBox.information(self, "Timing define", help_text))
+        layout.addWidget(combo)
         layout.addWidget(help_button)
         layout.addStretch(1)
         return container
@@ -885,14 +913,22 @@ class MainWindow(QMainWindow):
         output = QWidget()
         output_layout = QVBoxLayout(output)
 
+        preview_group = QGroupBox("Software generation preview")
+        preview_layout = QVBoxLayout(preview_group)
         self.software_preview = QPlainTextEdit()
         self.software_preview.setReadOnly(True)
         self.software_preview.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
-        output_layout.addWidget(self.software_preview, 2)
+        self.software_preview.setPlainText("Software generation preview is shown here after the wizard refreshes the driver setup.")
+        preview_layout.addWidget(self.software_preview)
+        output_layout.addWidget(preview_group, 2)
 
+        status_group = QGroupBox("Software generation output")
+        status_layout = QVBoxLayout(status_group)
         self.software_status = QPlainTextEdit()
         self.software_status.setReadOnly(True)
-        output_layout.addWidget(self.software_status)
+        self.software_status.setPlainText("No software generation output yet.")
+        status_layout.addWidget(self.software_status)
+        output_layout.addWidget(status_group)
         splitter.addWidget(output)
         splitter.setStretchFactor(0, 0)
         splitter.setStretchFactor(1, 1)
@@ -1141,18 +1177,27 @@ class MainWindow(QMainWindow):
         output = QWidget()
         output_layout = QVBoxLayout(output)
 
+        warning_group = QGroupBox("TCL preview warnings and workflow output")
+        warning_layout = QVBoxLayout(warning_group)
         self.vivado_status = QPlainTextEdit()
         self.vivado_status.setReadOnly(True)
-        output_layout.addWidget(self.vivado_status)
+        self.vivado_status.setPlainText("No TCL preview warnings.")
+        self.vivado_status.setMaximumHeight(72)
+        warning_layout.addWidget(self.vivado_status)
+        output_layout.addWidget(warning_group)
 
+        preview_group = QGroupBox("TCL preview")
+        preview_layout = QVBoxLayout(preview_group)
         self.tcl_preview = QPlainTextEdit()
         self.tcl_preview.setReadOnly(True)
         self.tcl_preview.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
-        output_layout.addWidget(self.tcl_preview, 2)
+        self.tcl_preview.setPlainText("Generated TCL preview is shown here.")
+        preview_layout.addWidget(self.tcl_preview)
+        output_layout.addWidget(preview_group, 2)
         splitter.addWidget(output)
         splitter.setStretchFactor(0, 0)
         splitter.setStretchFactor(1, 1)
-        splitter.setSizes([230, 590])
+        splitter.setSizes([360, 460])
         outer.addWidget(splitter, 1)
         return page
 
@@ -1270,10 +1315,14 @@ class MainWindow(QMainWindow):
         self.cpld_status = QTextEdit()
         self.cpld_status.setReadOnly(True)
         self.cpld_status.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        self.cpld_status.setPlainText("No CPLD programmer output yet.")
         outer.addStretch(1)
         scroll.setWidget(content)
+        cpld_status_group = QGroupBox("CPLD programmer output")
+        cpld_status_layout = QVBoxLayout(cpld_status_group)
+        cpld_status_layout.addWidget(self.cpld_status)
         splitter.addWidget(scroll)
-        splitter.addWidget(self.cpld_status)
+        splitter.addWidget(cpld_status_group)
         splitter.setStretchFactor(0, 1)
         splitter.setStretchFactor(1, 0)
         splitter.setSizes([560, 190])
@@ -1284,7 +1333,7 @@ class MainWindow(QMainWindow):
         page = QWidget()
         outer = QVBoxLayout(page)
 
-        title = QLabel("AXI Interconnect")
+        title = QLabel("ADC triggers")
         title_font = QFont()
         title_font.setPointSize(16)
         title_font.setBold(True)
@@ -1292,34 +1341,38 @@ class MainWindow(QMainWindow):
         outer.addWidget(title)
 
         defaults = self.database.axi_interconnect
+        tabs = QTabWidget()
+        outer.addWidget(tabs, 1)
 
-        def add_attachment_group(title_text: str, prefix: str) -> None:
-            attachment_group = QGroupBox(title_text)
-            attachment_form = QFormLayout(attachment_group)
-            attachment_field_labels = [
-                (f"{prefix}_upstream_smartconnect", "Upstream SmartConnect"),
-                (f"{prefix}_clock_pin", "AXI clock pin"),
-                (f"{prefix}_resetn_pin", "AXI resetn pin"),
-                (f"{prefix}_address_space", "Address space"),
-            ]
-            for key, label in attachment_field_labels:
-                edit = QLineEdit(str(defaults.get(key, "")))
-                edit.textChanged.connect(self.refresh_tcl_preview)
-                self.axi_fields[key] = edit
-                attachment_form.addRow(label, edit)
-            outer.addWidget(attachment_group)
+        def add_axi_field(form: QFormLayout, key: str, label: str, help_text: str | None = None) -> QLineEdit:
+            edit = QLineEdit(str(defaults.get(key, "")))
+            edit.textChanged.connect(self.refresh_tcl_preview)
+            self.axi_fields[key] = edit
+            if help_text is None:
+                form.addRow(label, edit)
+                return edit
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(0, 0, 0, 0)
+            help_button = QPushButton("?")
+            help_button.setFixedWidth(28)
+            help_button.clicked.connect(
+                lambda _checked=False, title=label, text=help_text: QMessageBox.information(
+                    self,
+                    title,
+                    text,
+                )
+            )
+            row_layout.addWidget(edit, 1)
+            row_layout.addWidget(help_button)
+            form.addRow(label, row)
+            return edit
 
-        add_attachment_group("A-slot project-level AXI attachment point", "a")
-        add_attachment_group("D-slot project-level AXI attachment point", "d")
-
-        analog_group = QGroupBox("A-slot analog project-level wiring")
+        trigger_page = QWidget()
+        trigger_layout = QVBoxLayout(trigger_page)
+        analog_group = QGroupBox("A-slot analog trigger wiring")
         analog_form = QFormLayout(analog_group)
         analog_help = {
-            "analog_raw_value_target_template": (
-                "Connects each generated A-slot RAW_Value vector to a project-level sink. "
-                "Use {slot} as placeholder, for example uz_system/ADC_{slot}. "
-                "For LTC2311 this vector must match DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER."
-            ),
             "analog_axi2tcm_trigger_source": (
                 "Normally this is one generated A-slot RAW_Valid pin. If the configured pin is not generated "
                 "by the selected A-slot cards, the wizard falls back to the first generated RAW_Valid. "
@@ -1342,38 +1395,45 @@ class MainWindow(QMainWindow):
             ),
         }
         analog_field_labels = [
-            ("analog_raw_value_target_template", "RAW value target template"),
             ("analog_axi2tcm_trigger_source", "AXI2TCM trigger source"),
             ("analog_axi2tcm_trigger_target", "AXI2TCM trigger target"),
             ("analog_conversion_trigger_sources", "Conversion trigger sources"),
             ("analog_conversion_trigger_target", "Conversion trigger target"),
         ]
         for key, label in analog_field_labels:
-            edit = QLineEdit(str(defaults.get(key, "")))
-            edit.textChanged.connect(self.refresh_tcl_preview)
-            self.axi_fields[key] = edit
-            row = QWidget()
-            row_layout = QHBoxLayout(row)
-            row_layout.setContentsMargins(0, 0, 0, 0)
-            help_button = QPushButton("?")
-            help_button.setFixedWidth(28)
-            help_button.clicked.connect(
-                lambda _checked=False, title=label, text=analog_help[key]: QMessageBox.information(
-                    self,
-                    title,
-                    text,
-                )
-            )
-            row_layout.addWidget(edit, 1)
-            row_layout.addWidget(help_button)
-            analog_form.addRow(label, row)
+            add_axi_field(analog_form, key, label, analog_help[key])
         analog_hint = QLabel(
-            "These fields define the project-level A-slot analog data and trigger wiring. "
-            "Use semicolons for multiple conversion trigger sources."
+            "These settings define trigger wiring between generated A-slot analog signals, AXI2TCM, "
+            "and the shared conversion trigger."
         )
         analog_hint.setWordWrap(True)
         analog_form.addRow("", analog_hint)
-        outer.addWidget(analog_group)
+        trigger_layout.addWidget(analog_group)
+        trigger_layout.addStretch(1)
+        tabs.addTab(trigger_page, "ADC triggers")
+
+        advanced_page = QWidget()
+        advanced_layout = QVBoxLayout(advanced_page)
+        advanced_fields: list[QLineEdit] = []
+        advanced_enable = QCheckBox("Enable advanced AXI wiring edits")
+        advanced_enable.setChecked(False)
+        advanced_layout.addWidget(advanced_enable)
+
+        def add_attachment_group(title_text: str, prefix: str) -> None:
+            attachment_group = QGroupBox(title_text)
+            attachment_form = QFormLayout(attachment_group)
+            attachment_field_labels = [
+                (f"{prefix}_upstream_smartconnect", "Upstream SmartConnect"),
+                (f"{prefix}_clock_pin", "AXI clock pin"),
+                (f"{prefix}_resetn_pin", "AXI resetn pin"),
+                (f"{prefix}_address_space", "Address space"),
+            ]
+            for key, label in attachment_field_labels:
+                advanced_fields.append(add_axi_field(attachment_form, key, label))
+            advanced_layout.addWidget(attachment_group)
+
+        add_attachment_group("A-slot project-level AXI attachment point", "a")
+        add_attachment_group("D-slot project-level AXI attachment point", "d")
 
         local_group = QGroupBox("Local per adapter card slot AXI smartconnects")
         local_form = QFormLayout(local_group)
@@ -1382,12 +1442,18 @@ class MainWindow(QMainWindow):
             ("local_smartconnect_name", "Local SmartConnect name"),
         ]
         for key, label in local_field_labels:
-            edit = QLineEdit(str(defaults.get(key, "")))
-            edit.textChanged.connect(self.refresh_tcl_preview)
-            self.axi_fields[key] = edit
-            local_form.addRow(label, edit)
-        outer.addWidget(local_group)
-        outer.addStretch(1)
+            advanced_fields.append(add_axi_field(local_form, key, label))
+        advanced_layout.addWidget(local_group)
+        advanced_hint = QLabel(
+            "These values describe the existing UltraZohm block-design topology. They normally stay unchanged."
+        )
+        advanced_hint.setWordWrap(True)
+        advanced_layout.addWidget(advanced_hint)
+        advanced_layout.addStretch(1)
+        for field in advanced_fields:
+            field.setEnabled(False)
+        advanced_enable.toggled.connect(lambda checked: [field.setEnabled(checked) for field in advanced_fields])
+        tabs.addTab(advanced_page, "Advanced AXI wiring")
         return page
 
     def _build_database_page(self) -> QWidget:
@@ -1645,7 +1711,6 @@ class MainWindow(QMainWindow):
             "open_vivado_gui": "false",
             "disable_bd_synth_checkpoints": "false",
             "pwm_2l_instances": "4",
-            "pwm_2l_debug_ila": "true",
             "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
             "pwm_2l_idle_error_duty_hb1": "0.0f",
             "pwm_2l_idle_error_duty_hb2": "0.0f",
@@ -2432,9 +2497,9 @@ class MainWindow(QMainWindow):
         )
         warnings = self.generator.validation_warnings(assignments, axi_config, option_values, self.software_modes())
         if warnings and self.vivado_status:
-            self.vivado_status.setPlainText("TCL preview warnings:\n" + "\n".join(f"- {warning}" for warning in warnings))
-        elif self.vivado_status and self.vivado_status.toPlainText().startswith("TCL preview warnings:"):
-            self.vivado_status.clear()
+            self.vivado_status.setPlainText("\n".join(f"- {warning}" for warning in warnings))
+        elif self.vivado_status:
+            self.vivado_status.setPlainText("No TCL preview warnings.")
         if not self.is_loading_config:
             self.refresh_software_preview()
 

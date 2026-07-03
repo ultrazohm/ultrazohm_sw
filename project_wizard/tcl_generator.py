@@ -1231,7 +1231,6 @@ class TclGenerator:
         config = dict(self.database.axi_interconnect)
         config.update({key: value for key, value in axi_config.items() if value})
         instance_count = self._config_int(hardware_config.get("pwm_2l_instances", "4"), 4, minimum=1, maximum=10)
-        debug_ila = self._config_bool(hardware_config.get("pwm_2l_debug_ila", "true"), default=True)
         address_space = config.get("d_address_space", config.get("address_space", ""))
 
         instances: list[dict[str, Any]] = []
@@ -1297,7 +1296,6 @@ class TclGenerator:
             "pwm_2l_hier": "uz_pwm/pwm_2L",
             "pwm_3l_hier": "uz_pwm/pwm_3L",
             "instance_count": instance_count,
-            "debug_ila": debug_ila,
             "instances": instances,
             "gate_outputs": gate_outputs,
             "vio_probe_count": instance_count * 6,
@@ -1430,7 +1428,7 @@ class TclGenerator:
     def _analog_project_context(self, assignments: dict[str, str], axi_config: dict[str, str]) -> dict[str, Any]:
         config = dict(self.database.axi_interconnect)
         config.update({key: value for key, value in axi_config.items() if value})
-        raw_target_template = config.get("analog_raw_value_target_template", "uz_system/ADC_{slot}")
+        raw_target_template = "uz_system/ADC_{slot}"
         raw_value_connections = []
         raw_valid_sources = []
         has_bypassed_a_slot = False

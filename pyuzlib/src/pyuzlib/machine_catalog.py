@@ -388,6 +388,20 @@ def validate_uz_pmsm_dataset_maps(uz_pmsm_dir: str | Path) -> None:
         except ValueError as exc:
             raise ValueError(f"Invalid PMSM dataset maps below {flux_path.parent}: {exc}") from exc
 
+    # A differential_inductances.csv is derived from, and validated against, a sibling flux_map.csv.
+    # An orphan inductance map (no flux_map.csv next to it) cannot be validated or regenerated and
+    # would silently produce a differential-inductance header entry with no matching flux map, so it
+    # is rejected. flux_map.csv without differential_inductances.csv stays allowed (the map is optional).
+    for differential_path in sorted(uz_pmsm_dir.rglob("differential_inductances.csv")):
+        relative_differential_path = differential_path.relative_to(uz_pmsm_dir)
+        if len(relative_differential_path.parts) != 3:
+            continue
+        if not differential_path.with_name("flux_map.csv").exists():
+            raise ValueError(
+                f"Invalid PMSM dataset maps below {differential_path.parent}: "
+                "differential_inductances.csv has no sibling flux_map.csv"
+            )
+
 
 def discover_machine_catalog(
     uz_pmsm_dir: str | Path,

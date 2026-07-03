@@ -173,7 +173,7 @@
     #define UZ_PMSM_SWMODEL_MAX_INSTANCES                   50U
     #define UZ_LUT_1D_MAX_INSTANCES                         20U
     #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            50U
-    #define UZ_LUT_2D_MAX_INSTANCES                         20U
+    #define UZ_LUT_2D_MAX_INSTANCES                         40U // >= 2*UZ_PMSM_FLUX_MAP_MAX_INSTANCES + 4*UZ_PMSM_DIFFERENTIAL_INDUCTANCE_MAX_INSTANCES
     #define UZ_PMSM_FLUX_MAP_MAX_INSTANCES                  10U
     #define UZ_PMSM_DIFFERENTIAL_INDUCTANCE_MAX_INSTANCES   5U
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U

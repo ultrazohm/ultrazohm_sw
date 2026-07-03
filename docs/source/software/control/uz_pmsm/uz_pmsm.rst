@@ -124,7 +124,12 @@ Run the catalog generator once to update both output artifacts:
    # or from the repo root
    PYTHONPATH=pyuzlib/src python3 -m pyuzlib.machine_catalog
 
-The generator:
+If the dataset also contains ``flux_map.csv`` / ``differential_inductances.csv``, regenerate their
+headers too. ``make auto_generate_all`` runs both the scalar catalog and the flux-map /
+differential-inductance generators in one step (see :ref:`uz_pmsm_flux_map` and
+:ref:`uz_pmsm_differential_inductance`), so prefer it when unsure.
+
+The scalar catalog generator:
 
 1. Parses the ``uz_PMSM_t`` struct definition from ``uz_PMSM_config.h`` and verifies that the Python model matches it exactly.
 2. Finds every ``machine_parameters.csv`` file two levels deep under ``uz_pmsm/``.
@@ -135,11 +140,13 @@ The generator:
 
 Both output files must be committed to the repository after running.
 
-To verify that committed files are still in sync with the CSV sources:
+To verify that committed files are still in sync with the CSV sources (``make check_all`` also checks
+the flux-map and differential-inductance headers, and is the target CI runs):
 
 .. code-block:: bash
 
    make check_available_machines
+   make check_all                  # scalar catalog + flux-map + differential-inductance headers
 
 .. rubric:: Phase 4 — Use the macro in C code (manual)
 

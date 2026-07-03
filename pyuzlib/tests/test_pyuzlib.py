@@ -722,6 +722,37 @@ def test_machine_catalog_rejects_mismatched_differential_inductance_grid(tmp_pat
         )
 
 
+def test_machine_catalog_rejects_orphan_differential_inductances(tmp_path):
+    # differential_inductances.csv without a sibling flux_map.csv cannot be validated or regenerated.
+    dataset_dir = tmp_path / "machine_a" / "dataset_v1"
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "machine_parameters.csv").write_text(_VALID_MACHINE_CSV, encoding="utf-8")
+    (dataset_dir / "differential_inductances.csv").write_text(
+        _VALID_DIFFERENTIAL_INDUCTANCES_CSV,
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="no sibling flux_map.csv"):
+        machine_catalog.discover_machine_catalog(
+            uz_pmsm_dir=tmp_path,
+            c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+        )
+
+
+def test_machine_catalog_allows_flux_map_without_differential_inductances(tmp_path):
+    # The differential-inductance map is optional; a flux map on its own must still validate.
+    dataset_dir = tmp_path / "machine_a" / "dataset_v1"
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "machine_parameters.csv").write_text(_VALID_MACHINE_CSV, encoding="utf-8")
+    (dataset_dir / "flux_map.csv").write_text(_VALID_FLUX_MAP_CSV, encoding="utf-8")
+
+    _c_fields, entries = machine_catalog.discover_machine_catalog(
+        uz_pmsm_dir=tmp_path,
+        c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
+    )
+    assert len(entries) == 1
+
+
 def test_machine_catalog_rejects_unsorted_flux_map_file_order(tmp_path):
     dataset_dir = tmp_path / "machine_a" / "dataset_v1"
     dataset_dir.mkdir(parents=True)

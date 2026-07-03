@@ -37,6 +37,17 @@ check_flux_maps:
 	diff /tmp/uz_pmsm_differential_inductances_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h
 	@echo "Generated flux-map and differential-inductance headers are up-to-date."
 
+# Umbrella targets: regenerate/verify every committed PMSM artifact (scalar machine catalog + the
+# flux-map and differential-inductance headers) in one command. Use check_all in CI so a stale
+# generated header can never pass unnoticed. The explicit recipe and .PHONY entry keep the catch-all
+# "%: Makefile" (sphinx-build) rule below from matching these recipe-less names.
+.PHONY: auto_generate_all check_all
+auto_generate_all: auto_generate_available_machines auto_generate_flux_maps
+	@echo "Regenerated machine catalog, flux-map, and differential-inductance artifacts."
+
+check_all: check_available_machines check_flux_maps
+	@echo "All generated PMSM artifacts are up-to-date."
+
 clean:
 	 rm -r build
 

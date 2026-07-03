@@ -192,6 +192,60 @@ def create_machine_template(
     return csv_path, script_path, next_id
 
 
+def _read_machine_id_from_csv(csv_path: Path) -> int | None:
+    for line in csv_path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("machine_id,"):
+            try:
+                return int(line.split(",", 1)[1].strip())
+            except (ValueError, IndexError):
+                return None
+    return None
+
+
+def _rewrite_machine_id_in_csv(csv_path: Path, new_id: int) -> None:
+    lines = csv_path.read_text(encoding="utf-8").splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if line.startswith("machine_id,"):
+            newline = "\n" if line.endswith("\n") else ""
+            lines[index] = f"machine_id,{new_id}{newline}"
+            break
+    csv_path.write_text("".join(lines), encoding="utf-8")
+
+
+def renumber_duplicate_machine_ids(uz_pmsm_dir: str | Path) -> list[tuple[str, int, int]]:
+    """Deterministically resolve duplicate machine_id values across all datasets.
+
+    Datasets are visited in sorted catalog-id order; the first occurrence of each id keeps it,
+    and every later duplicate is rewritten to the next unused id. Only the machine_id row of a
+    changed machine_parameters.csv is touched. Returns the list of applied
+    (machine_parameters_csv, old_id, new_id) changes. This is opt-in (``--renumber``) so stable
+    ids stay stable during a normal catalog regeneration.
+    """
+    uz_pmsm_dir = Path(uz_pmsm_dir)
+    datasets: list[tuple[str, Path, int | None]] = []
+    for csv_path in sorted(uz_pmsm_dir.rglob("machine_parameters.csv")):
+        relative_csv_path = csv_path.relative_to(uz_pmsm_dir)
+        if len(relative_csv_path.parts) != 3:
+            continue
+        machine_dir, dataset_dir, _ = relative_csv_path.parts
+        catalog_id = normalize_machine_identifier(f"{machine_dir}_{dataset_dir}")
+        datasets.append((catalog_id, csv_path, _read_machine_id_from_csv(csv_path)))
+
+    datasets.sort(key=lambda entry: entry[0])
+    used_ids: set[int] = set()
+    changes: list[tuple[str, int, int]] = []
+    for _, csv_path, machine_id in datasets:
+        if machine_id is not None and machine_id not in used_ids:
+            used_ids.add(machine_id)
+            continue
+        new_id = next(i for i in range(1, len(used_ids) + 2) if i not in used_ids)
+        used_ids.add(new_id)
+        _rewrite_machine_id_in_csv(csv_path, new_id)
+        relative = str(csv_path.relative_to(uz_pmsm_dir)).replace("\\", "/")
+        changes.append((relative, machine_id if machine_id is not None else 0, new_id))
+    return changes
+
+
 def discover_machine_catalog(
     uz_pmsm_dir: str | Path,
     c_header_path: str | Path,
@@ -399,6 +453,14 @@ def build_arg_parser(default_anchor: str | Path) -> argparse.ArgumentParser:
         type=Path,
         default=defaults["generated_header_output"],
     )
+    parser.add_argument(
+        "--renumber",
+        action="store_true",
+        default=False,
+        help="Before generating, deterministically reassign duplicate machine_id values "
+        "(useful after merging motors added on separate branches). Rewrites the affected "
+        "machine_parameters.csv files.",
+    )
 
     subparsers = parser.add_subparsers(dest="command")
     add_machine = subparsers.add_parser(
@@ -439,6 +501,15 @@ def main(argv: list[str] | None = None, *, default_anchor: str | Path | None = N
         print(f"C macro will be: {macro_name}")
         _print_parameter_hints(next_id)
         return 0
+
+    if args.renumber:
+        changes = renumber_duplicate_machine_ids(args.uz_pmsm_dir)
+        if changes:
+            print(f"Renumbered {len(changes)} duplicate machine_id value(s):")
+            for csv_path, old_id, new_id in changes:
+                print(f"  {csv_path}: {old_id} -> {new_id}")
+        else:
+            print("No duplicate machine_id values found.")
 
     entries = generate_machine_catalog(
         uz_pmsm_dir=args.uz_pmsm_dir,

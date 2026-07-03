@@ -152,6 +152,22 @@ def test_machine_catalog_rejects_unsupported_c_struct_declarations(tmp_path):
         machine_catalog.parse_uz_pmsm_struct_fields(header_path)
 
 
+def test_machine_catalog_rejects_multi_variable_declaration(tmp_path):
+    # A single declaration listing several fields (float a, b;) is not representable as a
+    # (name, value) CSV row and must be rejected loudly rather than silently mis-parsed.
+    header_path = tmp_path / "uz_PMSM_config.h"
+    header_path.write_text(
+        "typedef struct uz_PMSM_t{\n"
+        "    float R_ph_Ohm;\n"
+        "    float Ld_Henry, Lq_Henry;\n"
+        "}uz_PMSM_t;\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Unsupported uz_PMSM_t field declaration"):
+        machine_catalog.parse_uz_pmsm_struct_fields(header_path)
+
+
 def test_machine_catalog_parses_future_uint32_c_struct_field(tmp_path):
     header_path = tmp_path / "uz_PMSM_config.h"
     header_path.write_text(
@@ -241,6 +257,32 @@ def test_machine_catalog_rejects_duplicate_numeric_machine_id(tmp_path):
             uz_pmsm_dir=tmp_path,
             c_header_path="vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_PMSM_config.h",
         )
+
+
+def test_renumber_duplicate_machine_ids_resolves_collision(tmp_path):
+    csv_content = (
+        "parameter,value\n"
+        "machine_id,1\n"
+        "R_ph_Ohm,0.51\n"
+        "Ld_Henry,0.002\n"
+    )
+    machine_a_dir = tmp_path / "machine_a" / "dataset_v1"
+    machine_b_dir = tmp_path / "machine_b" / "dataset_v1"
+    machine_a_dir.mkdir(parents=True)
+    machine_b_dir.mkdir(parents=True)
+    (machine_a_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
+    (machine_b_dir / "machine_parameters.csv").write_text(csv_content, encoding="utf-8")
+
+    changes = machine_catalog.renumber_duplicate_machine_ids(tmp_path)
+
+    # First dataset in sorted catalog order keeps id 1; the second is bumped to the next unused id.
+    assert changes == [("machine_b/dataset_v1/machine_parameters.csv", 1, 2)]
+    assert machine_catalog._read_machine_id_from_csv(machine_a_dir / "machine_parameters.csv") == 1
+    assert machine_catalog._read_machine_id_from_csv(machine_b_dir / "machine_parameters.csv") == 2
+    # Other rows are preserved untouched.
+    assert "R_ph_Ohm,0.51" in (machine_b_dir / "machine_parameters.csv").read_text(encoding="utf-8")
+    # Running again is a no-op once ids are unique.
+    assert machine_catalog.renumber_duplicate_machine_ids(tmp_path) == []
 
 
 def test_machine_catalog_generates_inventory_and_header(tmp_path):
@@ -636,3 +678,45 @@ def test_machine_catalog_format_c_float_rejects_non_finite_values():
 def test_parameter_constraints_cover_every_c_parameter_field():
     constraint_names = {entry.name for entry in pyuzlib.pmsm.PMSM_PARAMETER_CONSTRAINTS}
     assert set(PMSMParameters.C_PARAMETER_NAMES) <= constraint_names
+
+
+def _c_asserted_pmsm_fields() -> set[str]:
+    """Field names referenced by the uz_assert() calls in the two uz_PMSM_config assert
+    functions of uz_PMSM_config.c. This is the C side of the constraint contract."""
+    import re
+
+    paths = machine_catalog_default_paths(__file__)
+    c_source = paths["c_header_path"].with_name("uz_PMSM_config.c")
+    text = c_source.read_text(encoding="utf-8")
+    # Isolate the two model/envelope assert functions (exclude the fitting-parameter assert).
+    bodies = re.findall(
+        r"void\s+uz_PMSM_config_assert(?:_model)?\s*\(\s*uz_PMSM_t\s+config\s*\)\s*\{(.*?)\}",
+        text,
+        re.DOTALL,
+    )
+    assert bodies, "Could not locate uz_PMSM_config_assert functions in uz_PMSM_config.c"
+    combined = "\n".join(bodies)
+    return set(re.findall(r"config\.([A-Za-z_][A-Za-z0-9_]*)", combined))
+
+
+def test_c_and_python_pmsm_constraints_do_not_drift():
+    """Guard against the C uz_PMSM_config_assert* checks and the Python
+    PMSM_PARAMETER_CONSTRAINTS drifting apart. Field-level parity: every field the C code
+    asserts must be a known parameter, every field Python constrains must be asserted in C,
+    and every C field except machine_id must be validated somewhere in C."""
+    asserted_fields = _c_asserted_pmsm_fields()
+    c_field_names = set(PMSMParameters.C_PARAMETER_NAMES)
+    python_checked = {
+        entry.name
+        for entry in pyuzlib.pmsm.PMSM_PARAMETER_CONSTRAINTS
+        if entry.check is not None
+    }
+
+    # No stray/typo field names on the C side.
+    assert asserted_fields <= c_field_names
+    # Every field with a Python value-constraint is asserted on the C side.
+    assert python_checked <= asserted_fields
+    # machine_id is documented as intentionally not asserted in C.
+    assert "machine_id" not in asserted_fields
+    # Every other struct field is validated somewhere in the C asserts (directly or via a relation).
+    assert c_field_names - {"machine_id"} <= asserted_fields

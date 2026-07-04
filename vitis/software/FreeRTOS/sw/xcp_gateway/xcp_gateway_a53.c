@@ -40,6 +40,12 @@ static QueueHandle_t gRxQueue = NULL;        /* CANape -> R5 (commands)         
 static QueueHandle_t gTxQueue = NULL;        /* R5 -> CANape (responses + DAQ)  */
 static int           gSock    = -1;
 
+/* The IPI ISR is registered by initialize_ipi_runtime() long before this
+ * gateway is initialised (network-up/DHCP), while the R5 fires an IPI every
+ * control cycle from boot. Guard the ISR path until init completed, otherwise
+ * xQueueSendToBackFromISR(NULL, ...) asserts inside the ISR. */
+static volatile int   gGwReady = 0;
+
 static struct sockaddr_in gMaster;           /* last master (CANape) endpoint   */
 static volatile int       gMasterValid = 0;
 
@@ -51,6 +57,10 @@ static volatile int       gMasterValid = 0;
  *------------------------------------------------------------------------*/
 void xcp_gateway_a53_on_ipi(BaseType_t *pxHigherPriorityTaskWoken) {
     xcp_gw_frame_t f;
+
+    if (!gGwReady) {
+        return; /* pre-init IPI (R5 boots first); isr.c still clears the status */
+    }
 
     /* R5 -> A53: read every framed message currently in XCP_OUT. */
     ocm_xcp_fifo_cache_invalidate_before_read();
@@ -85,8 +95,8 @@ static void xcp_gw_rx_task(void *arg) {
     for (;;) {
         slen = sizeof(src);
         int n = lwip_recvfrom(gSock, f.data, sizeof(f.data), 0, (struct sockaddr *)&src, &slen);
-        if (n <= 0) {
-            continue;
+        if (n <= 0 || n > 255) {
+            continue; /* FIFO records are u8-length capped; oversize would alias to len 0 */
         }
         gMaster = src;       /* learn / refresh the CANape endpoint            */
         gMasterValid = 1;
@@ -148,5 +158,6 @@ int xcp_gateway_a53_init(uint32_t thread_stack, uint32_t thread_prio) {
     if (sys_thread_new("xcp_gw_tx", xcp_gw_tx_task, NULL, thread_stack, thread_prio) == NULL) {
         return -5;
     }
+    gGwReady = 1; /* from here on the IPI ISR may touch the queues/FIFO */
     return 0;
 }

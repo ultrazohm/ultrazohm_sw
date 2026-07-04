@@ -320,8 +320,10 @@ tQueueBuffer queuePop(tQueueHandle queue_handle, bool accumulate, bool flush, ui
     if (packets_lost != NULL) {
         if (queue->packets_lost > 0)
             DBG_PRINTF6("queuePop: packets_lost=%" PRIu32 "\n", queue->packets_lost);
-        queue->packets_lost = 0; // Reset lost packets count
+        // UZ fix: report BEFORE resetting (upstream zeroes first, so the caller
+        // always saw 0 and the transport-layer ctr never signalled overflow).
         *packets_lost = queue->packets_lost;
+        queue->packets_lost = 0; // Reset lost packets count
     }
 
     // Check if there is a message segment ready in the transmit queue

@@ -22,6 +22,10 @@ void ocm_xcp_fifo_prepare_write(void);
 void ocm_xcp_fifo_cache_invalidate_before_read(void);
 void ocm_xcp_fifo_cache_flush_after_write(void);
 
+/* R5 only (no-op on the A53): zero the read-region chain head after a read
+ * sweep so a delayed A53 rewind cannot cause duplicate command execution. */
+void ocm_xcp_fifo_consume_read(void);
+
 /* Append one framed message to the write region.
  * Returns 1 if written, 0 if the region is full (caller drops/retries). */
 int ocm_xcp_fifo_write(uint8_t len, const uint8_t *data);

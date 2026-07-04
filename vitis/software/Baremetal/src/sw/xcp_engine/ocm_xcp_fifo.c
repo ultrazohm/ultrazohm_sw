@@ -29,12 +29,13 @@
 #define XCP_OUT_ADDR 0xFFFFE000u
 #define XCP_OUT_LEN  7680u
 #define XCP_IN_ADDR  0xFFFFC000u
-#define XCP_IN_LEN   256u
+#define XCP_IN_LEN   1024u /* >= several max-size command records (4+252+4 each) */
 
 /* R5 write side reserves the tail of XCP_OUT for CTO frames (XCP PID >= 0xFC:
- * RES/ERR/EV/SERV) so a DAQ burst can never starve a command response. */
+ * RES/ERR/EV/SERV) so a DAQ burst can never starve a command response.
+ * Must hold at least one max-size CRM record: 4 + (4+248) + 4 = 260 bytes. */
 #ifdef OCM_XCP_RPU
-#define XCP_WRITE_CTO_RESERVE 256u
+#define XCP_WRITE_CTO_RESERVE 512u
 #else
 #define XCP_WRITE_CTO_RESERVE 0u
 #endif
@@ -72,6 +73,17 @@ void ocm_xcp_fifo_cache_invalidate_before_read(void) {
 void ocm_xcp_fifo_cache_flush_after_write(void) {
     /* Flush only the bytes written this cycle: start..(addr_w + terminator). */
     Xil_DCacheFlushRange(addr_w_start, (addr_w + 4u) - addr_w_start);
+}
+
+/* R5 only: zero the XCP_IN chain head after consuming it, so that a delayed
+ * A53 IPI (which normally rewinds XCP_IN) cannot make the R5 re-read and
+ * RE-EXECUTE the same commands next cycle. Race with a concurrent A53 write is
+ * benign: at worst one command chain is lost and the master retries. */
+void ocm_xcp_fifo_consume_read(void) {
+#ifdef OCM_XCP_RPU
+    *(volatile uint32_t *)XCP_IN_ADDR = 0u;
+    Xil_DCacheFlushRange(XCP_IN_ADDR, 4u);
+#endif
 }
 
 void ocm_xcp_fifo_prepare_read(void) {

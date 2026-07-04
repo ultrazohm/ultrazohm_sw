@@ -289,7 +289,12 @@ void network_bringup_thread(void *p)
     xcp_server_uz_start();
 #elif LOGGING_PATH_XCP_R5_GATEWAY
     print_xcp_app_header(&(server_netif.ip_addr));
-    xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
+    {
+        int xcp_gw_status = xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
+        if (xcp_gw_status != 0) {
+            uz_printf("APU: Error: XCP R5 gateway init failed (%d)\r\n", xcp_gw_status);
+        }
+    }
 #endif /* LOGGING_PATH_* */
 #endif /* LWIP_DHCP */
 
@@ -465,7 +470,12 @@ int main_thread()
 	xcp_server_uz_start();
 #elif LOGGING_PATH_XCP_R5_GATEWAY
 	print_xcp_app_header(&(server_netif.ip_addr));
-	xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
+	{
+		int xcp_gw_status = xcp_gateway_a53_init(2048U, THREAD_PRIO_JAVASCOPE_SOCKET_MANAGER);
+		if (xcp_gw_status != 0) {
+			uz_printf("APU: Error: XCP R5 gateway init failed (%d)\r\n", xcp_gw_status);
+		}
+	}
 #endif /* LOGGING_PATH_* */
 #endif /* LWIP_DHCP */
 

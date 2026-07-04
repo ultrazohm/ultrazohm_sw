@@ -259,6 +259,28 @@ Probed the engine's actual platform coupling and the armr5 toolchain:
 > validated curated path via the flags. Commits CP1–CP5 are checkpoints to jump
 > back to.
 
+> **Hardening pass (2026-07-04, pre-hardware audit):** a line-by-line audit of
+> the untested path found **8 first-try-breaking defects**; all fixed and both
+> apps rebuilt green. Show-stoppers: (a) A53 **boot crash** — the IPI ISR ran
+> against NULL gateway queues for up to ~7.5 s before `xcp_gateway_a53_init`
+> (fixed with a `gGwReady` guard); (b) **wire corruption** — R5 config derived
+> MAX_DTO 1024 / segment 7968 but the OCM FIFO caps records at 255 B and
+> `xcp_r5_tx_pump` truncated via a `uint8_t` cast (R5 now MTU 284 → segment
+> 252, CTO/DTO 248/248 — CONNECT now matches `gen_a2l.py`); (c) **DAQ never
+> transmitted** — `queuePop(flush=false)` never returns a lone open segment
+> (now flush=true per cycle; also fixed the vendored `packets_lost`
+> report-after-reset bug). Safety: an XCP read/write of an unmapped address
+> data-aborted the **control core** — `xcp_r5_check_memory` now allow-lists
+> ATCM/BTCM/DDR/OCM. Robustness: consume-marker on XCP_IN against duplicate
+> command execution; IPI status cleared before handling; CTO reserve 512 /
+> XCP_IN 1024; init failures self-disable the engine instead of crashing
+> `ISR_Control` (`xcp_r5_init_result` latch, `xcp_r5_cycle_count` liveness
+> counter). Tooling: `xcp_poll.py` is connect-only by default (the old demo
+> poll targeted A53 addresses = R5 abort), parses multi-frame datagrams, falls
+> back to `Baremetal.elf`/armr5-nm for `--watch`, and gained a **`--daq`**
+> smoke test that streams a variable through a real DAQ list — CANape's path,
+> without CANape. Updated `option_z/TEST_PLAN.md` accordingly (Tests 2/3/3b).
+
 
 - **Z1 — engine builds for R5 (no hardware).** Add a baremetal platform backend
   (`platform_baremetal.c` + a `_BAREMETAL` branch in `platform.h`: MUTEX = IRQ

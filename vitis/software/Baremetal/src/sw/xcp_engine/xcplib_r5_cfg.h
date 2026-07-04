@@ -18,4 +18,11 @@
 #undef  OPTION_ENABLE_ELF_UPLOAD
 #undef  OPTION_DAQ_MEM_SIZE
 #define OPTION_DAQ_MEM_SIZE (512 * 6)
+/* OCM FIFO transport bound: a FIFO record is u8-length capped (<= 255 bytes
+ * including the 4-byte TL header), and the A53 gateway frame cap is 256.
+ * MTU 284 -> XCPTL_MAX_SEGMENT_SIZE 252 (= max record payload); DTO 248 so
+ * CONNECT advertises MAX_CTO/MAX_DTO = 248/248 (matches gen_a2l.py). */
+#undef  OPTION_MTU
+#define OPTION_MTU 284
+#define XCPTL_MAX_DTO_SIZE 248 /* xcptl_cfg.h honours this predefine */
 #endif

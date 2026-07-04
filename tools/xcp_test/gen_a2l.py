@@ -164,6 +164,9 @@ def build_symbols_a2l(items, ip, port):
     doc = build_a2l({}, ip, port)  # empty -> shell with no measurements
     doc = doc.replace("XCPlite on A53 / FreeRTOS / lwIP (UDP)",
                       "XCPlite engine on R5 (Option Z, arbitrary addressing)")
+    # The R5 engine's event 0 is named DAQ_R5 (created in xcp_r5_init).
+    doc = doc.replace('/begin EVENT "DAQ_1ms" "DAQ1ms"',
+                      '/begin EVENT "DAQ_R5" "DAQ_R5"')
     # Insert the measurements after COMPU_METHOD/RECORD_LAYOUTs, before IF_DATA.
     return doc.replace("    /begin IF_DATA XCP",
                        block + "\n    /begin IF_DATA XCP", 1)

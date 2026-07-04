@@ -32,9 +32,32 @@
 /* DAQ event handle (created in xcp_r5_init, triggered in xcp_r5_event). */
 uint16_t xcp_r5_daq_event = 0u;
 
+/* Diagnostics (inspect via JTAG or XCP SHORT_UPLOAD):
+ *   xcp_r5_init_result      0 = ok, negative = init failed (engine disabled)
+ *   xcp_r5_cycle_count      increments each control cycle -> liveness probe
+ *   xcp_r5_tx_oversize_drop popped segment > 255 B (must stay 0; cfg bounds it) */
+volatile int32_t  xcp_r5_init_result = 0x7FFFFFFF; /* "init not run yet" */
+volatile uint32_t xcp_r5_cycle_count = 0u;
+volatile uint32_t xcp_r5_tx_oversize_drop = 0u;
+
 static MUTEX        gCtrMutex;
 static uint16_t     gCtr   = 0u;
 static tQueueHandle gQueue = NULL;
+
+/* Memory access gate for SHORT_UPLOAD/UPLOAD/DOWNLOAD/DAQ entries: without it
+ * the engine memcpy()s ANY 32-bit address the master sends -> a stray address
+ * (e.g. an A53 symbol) raises an R5 data abort inside ISR_Control and kills
+ * the motor control. Allow only memory the R5 actually maps (cf. lscript.ld). */
+static uint8_t xcp_r5_check_memory(uint8_t ext, uint32_t addr, uint8_t size) {
+    (void)ext; /* only ABS (0x00) reaches the engine's direct memory path */
+    const uint64_t a = addr;
+    const uint64_t end = a + size; /* u64: no wrap at the top of OCM */
+    if (end <= 0x00010000u) return CRC_CMD_OK;                        /* ATCM  */
+    if (a >= 0x00020000u && end <= 0x00030000u) return CRC_CMD_OK;    /* BTCM  */
+    if (a >= 0x40000000u && end <= 0x47FF0000u) return CRC_CMD_OK;    /* DDR   */
+    if (a >= 0xFFFC0000u && end <= 0x100000000ull) return CRC_CMD_OK; /* OCM   */
+    return CRC_ACCESS_DENIED;
+}
 
 /* --- engine-facing transport API ----------------------------------------- */
 
@@ -59,10 +82,16 @@ void XcpTlSendCrm(const uint8_t *data, uint8_t size) {
  * XcpTlHandleTransmitQueue (queue32 path): the ctr mutex keeps the TL counter
  * consistent across response and DAQ packets; queuePop() stamps the ctr. */
 void xcp_r5_tx_pump(void) {
+    if (gQueue == NULL) {
+        return; /* init failed or not run: engine disabled */
+    }
     for (;;) {
         mutexLock(&gCtrMutex);
         uint32_t lost = 0u;
-        tQueueBuffer qb = queuePop(gQueue, true /*accumulate*/, false /*flush*/, &lost);
+        /* flush=true: hand out the current partially-filled segment too. With
+         * flush=false, queue32's queuePop never returns a lone open segment,
+         * so DAQ data would sit in the queue until a full segment accumulates. */
+        tQueueBuffer qb = queuePop(gQueue, true /*accumulate*/, true /*flush*/, &lost);
         if (lost > 0u) {
             gCtr += (uint16_t)lost; /* account for dropped packets in the counter */
         }
@@ -71,7 +100,12 @@ void xcp_r5_tx_pump(void) {
             mutexUnlock(&gCtrMutex);
             break; /* queue empty */
         }
-        (void)ocm_xcp_fifo_write((uint8_t)l, qb.buffer);
+        if (l <= 0xFFu) {
+            (void)ocm_xcp_fifo_write((uint8_t)l, qb.buffer);
+        } else {
+            /* Impossible with XCPTL_MAX_SEGMENT_SIZE 252, but never truncate. */
+            xcp_r5_tx_oversize_drop++;
+        }
         mutexUnlock(&gCtrMutex);
         queueRelease(gQueue, &qb);
     }
@@ -88,6 +122,10 @@ bool XcpTlWaitForTransmitQueueEmpty(uint16_t timeout_ms) {
 /* Sample DAQ. Call from ISR_Control. Thin: XcpEvent pushes to the queue; the
  * OCM write happens in xcp_r5_poll() on the main loop, off the ISR. */
 void xcp_r5_event(void) {
+    if (gQueue == NULL) {
+        return; /* init failed or not run: engine disabled */
+    }
+    xcp_r5_cycle_count++;
     XcpEvent(xcp_r5_daq_event);
 }
 
@@ -96,6 +134,9 @@ void xcp_r5_event(void) {
  * append to XCP_OUT), drain the DAQ queue -> XCP_OUT, flush. The caller signals
  * the A53 (IPI) after this returns. */
 void xcp_r5_poll(void) {
+    if (gQueue == NULL) {
+        return; /* init failed or not run: engine disabled */
+    }
     ocm_xcp_fifo_prepare_write();
 
     ocm_xcp_fifo_cache_invalidate_before_read();
@@ -103,10 +144,23 @@ void xcp_r5_poll(void) {
     uint8_t len;
     uint8_t *data;
     while (ocm_xcp_fifo_read(&len, &data)) {
-        uint16_t dlc = (uint16_t)(data[0] | ((uint16_t)data[1] << 8));
-        XcpCommand((const uint32_t *)(const void *)(data + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
-                   (uint8_t)dlc);
+        /* One record = one UDP datagram, which may carry SEVERAL concatenated
+         * TL frames ([dlc][ctr][packet])+ (e.g. CANape block-mode commands). */
+        uint16_t off = 0u;
+        while ((uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE) <= (uint16_t)len) {
+            uint16_t dlc = (uint16_t)(data[off] | ((uint16_t)data[off + 1] << 8));
+            if (dlc == 0u ||
+                (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc) > (uint16_t)len) {
+                break; /* padding or malformed frame: stop parsing this record */
+            }
+            XcpCommand((const uint32_t *)(const void *)(data + off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE),
+                       (uint8_t)dlc);
+            off = (uint16_t)(off + XCPTL_TRANSPORT_LAYER_HEADER_SIZE + dlc);
+        }
     }
+    /* Zero the chain head we just consumed: if the A53's IPI handling slips
+     * past one control cycle, we must not re-execute the same commands. */
+    ocm_xcp_fifo_consume_read();
 
     xcp_r5_tx_pump();
 
@@ -120,14 +174,24 @@ int xcp_r5_init(const char *name, const char *epk) {
     gCtr = 0u;
     gQueue = queueInit((size_t)XCP_R5_QUEUE_SIZE_BYTES);
     if (gQueue == NULL) {
+        xcp_r5_init_result = -1;
         return -1;
     }
     ocm_xcp_fifo_init();
     ApplXcpSetBaseAddr((const uint8_t *)0);
+    ApplXcpRegisterCheckCallback(xcp_r5_check_memory);
     if (!XcpInit(name, epk, XCP_MODE_LOCAL)) {
+        gQueue = NULL; /* keep the ISR hooks inert */
+        xcp_r5_init_result = -2;
         return -2;
     }
     XcpStart(gQueue, false);
     xcp_r5_daq_event = (uint16_t)XcpCreateEvent("DAQ_R5", 1000000u, 0u);
+    if (xcp_r5_daq_event == 0xFFFFu) { /* XCP_UNDEFINED_EVENT_ID */
+        gQueue = NULL; /* keep the ISR hooks inert */
+        xcp_r5_init_result = -3;
+        return -3;
+    }
+    xcp_r5_init_result = 0;
     return 0;
 }

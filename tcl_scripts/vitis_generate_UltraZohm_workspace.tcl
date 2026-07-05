@@ -179,8 +179,9 @@ puts "Info (UltraZohm): import Baremetal Application sources"
 # import sources to baremetal project
 # first the source files are linked
 importsources -name Baremetal -path $filename_Baremetal -soft-link
-# add shared folder 
-importsources -name Baremetal -path $SHARED_FOLDER -soft-link
+# Shared headers and RPU_APU_exchange_impl.c are resolved through the include
+# path configured below. Do not import the folder: Vitis would also compile the
+# implementation directly, in addition to the per-application compile stub.
 # link to linker-script instead of copying it
 app config -name Baremetal -set linker-script $filename_Baremetal/lscript.ld
 
@@ -202,7 +203,6 @@ puts stdout $filename_FreeRTOS
 
 # first the source files are linked
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
-importsources -name FreeRTOS -path $SHARED_FOLDER -soft-link
 #link to linker-script instead of copying it
 app config -name FreeRTOS -set linker-script $filename_FreeRTOS/lscript.ld
 

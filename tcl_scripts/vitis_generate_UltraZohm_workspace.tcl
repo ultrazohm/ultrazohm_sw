@@ -124,11 +124,34 @@ bsp config lwip_dhcp true
 platform write 
 # increase heap size of freertos, to fix javascope glitches
 bsp config total_heap_size  200000000
+# Preserve the NEON/FPU context for every task. GCC uses NEON registers in
+# ordinary library code such as memcpy, so requiring tasks to opt in can
+# corrupt kernel data when such a task is preempted.
+bsp config use_task_fpu_support 2
 platform write 
 
 puts "Info (UltraZohm): regenerate FreeRTOS BSP"
 #regenerate board support package
 bsp regenerate
+
+# The Xilinx ARM_CA53 port leaves portMEMORY_BARRIER undefined, causing the
+# FreeRTOS fallback to expand to nothing. At optimization levels used by this
+# project, the compiler may then retain stale list state in xTaskResumeAll().
+# There is no BSP parameter for this compiler barrier, so patch every generated
+# FreeRTOSConfig.h before platform generation copies the BSP to its export tree.
+set barrier_define "#define portMEMORY_BARRIER() __asm volatile ( \"\" ::: \"memory\" )"
+foreach frtos_cfg [glob -nocomplain \
+        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/include/FreeRTOSConfig.h" \
+        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/libsrc/freertos10_xilinx_*/src/FreeRTOSConfig.h"] {
+    set fp [open $frtos_cfg r]; set cfg_content [read $fp]; close $fp
+    if {[string first "portMEMORY_BARRIER" $cfg_content] == -1} {
+        set cfg_content [string map [list "#define configASSERT" "$barrier_define\n#define configASSERT"] $cfg_content]
+        set fp [open $frtos_cfg w]; puts -nonewline $fp $cfg_content; close $fp
+        puts "Info (UltraZohm): patched portMEMORY_BARRIER into $frtos_cfg"
+    } else {
+        puts "Info (UltraZohm): portMEMORY_BARRIER already present in $frtos_cfg"
+    }
+}
 
 
 #Domain Baremetal R5_0

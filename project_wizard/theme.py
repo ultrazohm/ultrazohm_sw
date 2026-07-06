@@ -12,6 +12,12 @@ QWidget {
     selection-background-color: #2f6fed;
     selection-color: #ffffff;
 }
+QWidget:disabled,
+QLabel:disabled,
+QCheckBox:disabled,
+QGroupBox:disabled {
+    color: #8f949c;
+}
 QMainWindow,
 QDialog {
     background-color: #202124;

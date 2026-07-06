@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from PyQt6.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, QProcess, Qt, QTimer
-from PyQt6.QtGui import QAction, QColor, QFont, QKeySequence, QPainter, QPalette, QPixmap
+from PyQt6.QtGui import QAction, QColor, QFont, QKeySequence, QPainter, QPalette, QPixmap, QTextCursor
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -52,7 +52,7 @@ from ..services.cpld_programmer_service import generate_d_slot_xcf, read_cable_s
 from ..services.software_generator_service import SoftwareGenerator
 from ..services.system_resolver import SystemResolver
 from ..services.toolchain_service import TOOL_DEFINITIONS, detect_toolchain_executables
-from ..services.vivado_service import write_vivado_run_wrapper
+from ..services.vivado_service import clear_vivado_cache, vivado_cache_targets, write_vivado_run_wrapper
 from ..theme import set_dark_mode
 from ..tcl_generator import TclGenerator
 from ..version import __version__
@@ -158,6 +158,10 @@ class MainWindow(QMainWindow):
         self.import_cable_button: QPushButton | None = None
         self.tcl_export_checkbox: QCheckBox | None = None
         self.tcl_run_vivado_checkbox: QCheckBox | None = None
+        self.tcl_local_workflow_checkbox: QCheckBox | None = None
+        self.tcl_remote_workflow_checkbox: QCheckBox | None = None
+        self.tcl_local_workflow_content: QWidget | None = None
+        self.tcl_remote_workflow_content: QWidget | None = None
         self.tcl_workflow_button: QPushButton | None = None
         self.vivado_status: QPlainTextEdit | None = None
         self.detail_options: dict[str, dict[str, str]] = {}
@@ -637,7 +641,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(enable_group)
         hint = QLabel(
             "The wizard generates pwm_2L and pwm_3L inside an existing top-level uz_pwm hierarchy. "
-            "Configure the number of PWM instances, optional instrumentation, and shared timing values here."
+            "Configure the number of PWM instances, and shared timing values here."
         )
         hint.setWordWrap(True)
         layout.addWidget(hint)
@@ -1095,8 +1099,13 @@ class MainWindow(QMainWindow):
         controls = QWidget()
         controls_layout = QHBoxLayout(controls)
 
-        local_group = QGroupBox("Local Vivado builds")
-        local_layout = QVBoxLayout(local_group)
+        local_group = QGroupBox()
+        local_select = QCheckBox("Local Vivado builds")
+        local_content = QWidget()
+        local_group_layout = QVBoxLayout(local_group)
+        local_group_layout.addWidget(local_select)
+        local_group_layout.addWidget(local_content)
+        local_layout = QVBoxLayout(local_content)
 
         options_title = QLabel("Vivado execution options")
         options_title_font = QFont(options_title.font())
@@ -1110,6 +1119,7 @@ class MainWindow(QMainWindow):
         save_checkbox = QCheckBox("Save block design after applying TCL")
         open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
         disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
+        self.hardware_checkboxes["tcl_workflow_local"] = local_select
         self.hardware_checkboxes["validate_block_design"] = validate_checkbox
         self.hardware_checkboxes["save_block_design"] = save_checkbox
         self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
@@ -1121,7 +1131,7 @@ class MainWindow(QMainWindow):
         options_form.addRow("", disable_checkpoints_checkbox)
         hint = QLabel(
             "These options only affect the TCL execution/export flow. Complete the hardware configuration pages first, "
-            "then refresh the preview or run the workflow from here."
+            "then run the workflow from here."
         )
         hint.setWordWrap(True)
         options_form.addRow("", hint)
@@ -1137,20 +1147,23 @@ class MainWindow(QMainWindow):
         workflow_layout = QGridLayout(workflow_widget)
         preview_button = QPushButton("Refresh TCL Preview")
         preview_button.clicked.connect(self.refresh_tcl_preview)
+        clear_cache_button = QPushButton("Clear cache")
+        clear_cache_button.clicked.connect(self.clear_vivado_cache)
         export_button = QPushButton("Export TCL")
         export_button.clicked.connect(self.export_tcl)
         run_vivado_button = QPushButton("Run TCL in Vivado")
         run_vivado_button.clicked.connect(self.run_current_tcl_in_vivado)
         export_checkbox = QCheckBox("Include export")
-        export_checkbox.setChecked(True)
         run_vivado_checkbox = QCheckBox("Include Vivado run")
         workflow_button = QPushButton("Execute TCL workflow")
         workflow_button.clicked.connect(self.execute_tcl_workflow)
         self.tcl_export_checkbox = export_checkbox
         self.tcl_run_vivado_checkbox = run_vivado_checkbox
+        self.hardware_checkboxes["tcl_include_export"] = export_checkbox
+        self.hardware_checkboxes["tcl_include_vivado_run"] = run_vivado_checkbox
         self.tcl_workflow_button = workflow_button
         workflow_layout.addWidget(preview_button, 0, 0)
-        workflow_layout.addWidget(export_button, 0, 1)
+        workflow_layout.addWidget(clear_cache_button, 0, 1)
         workflow_layout.addWidget(run_vivado_button, 0, 2)
         workflow_layout.addWidget(export_checkbox, 1, 0)
         workflow_layout.addWidget(run_vivado_checkbox, 1, 1)
@@ -1165,9 +1178,57 @@ class MainWindow(QMainWindow):
         separator.setLineWidth(2)
         separator.setMidLineWidth(1)
 
-        remote_group = QGroupBox("Remote workstation builds")
-        remote_layout = QVBoxLayout(remote_group)
+        remote_group = QGroupBox()
+        remote_select = QCheckBox("Remote workstation builds")
+        remote_content = QWidget()
+        self.hardware_checkboxes["tcl_workflow_remote"] = remote_select
+        self.tcl_local_workflow_checkbox = local_select
+        self.tcl_remote_workflow_checkbox = remote_select
+        self.tcl_local_workflow_content = local_content
+        self.tcl_remote_workflow_content = remote_content
+        remote_group_layout = QVBoxLayout(remote_group)
+        remote_group_layout.addWidget(remote_select)
+        remote_group_layout.addWidget(remote_content)
+        remote_layout = QVBoxLayout(remote_content)
+        remote_title = QLabel("TCL export")
+        remote_title_font = QFont(remote_title.font())
+        remote_title_font.setBold(True)
+        remote_title.setFont(remote_title_font)
+        remote_layout.addWidget(remote_title)
+        remote_hint = QLabel("Export the generated TCL for execution on another workstation.")
+        remote_hint.setWordWrap(True)
+        remote_layout.addWidget(remote_hint)
+        remote_buttons = QHBoxLayout()
+        remote_buttons.addStretch(1)
+        remote_buttons.addWidget(export_button)
+        remote_layout.addLayout(remote_buttons)
         remote_layout.addStretch(1)
+
+        def select_local_workflow(checked: bool) -> None:
+            if checked:
+                remote_select.blockSignals(True)
+                remote_select.setChecked(False)
+                remote_select.blockSignals(False)
+                self.sync_tcl_workflow_sections()
+                return
+            if not remote_select.isChecked():
+                remote_select.setChecked(True)
+            self.sync_tcl_workflow_sections()
+
+        def select_remote_workflow(checked: bool) -> None:
+            if checked:
+                local_select.blockSignals(True)
+                local_select.setChecked(False)
+                local_select.blockSignals(False)
+                self.sync_tcl_workflow_sections()
+                return
+            if not local_select.isChecked():
+                local_select.setChecked(True)
+            self.sync_tcl_workflow_sections()
+
+        local_select.toggled.connect(select_local_workflow)
+        remote_select.toggled.connect(select_remote_workflow)
+        self.sync_tcl_workflow_sections()
 
         controls_layout.addWidget(local_group, 1)
         controls_layout.addWidget(separator)
@@ -1634,6 +1695,26 @@ class MainWindow(QMainWindow):
                 config[f"visualize_{signal_id}"] = "slow_data"
         return config
 
+    def sync_tcl_workflow_sections(self) -> None:
+        local_checkbox = self.tcl_local_workflow_checkbox
+        remote_checkbox = self.tcl_remote_workflow_checkbox
+        local_content = self.tcl_local_workflow_content
+        remote_content = self.tcl_remote_workflow_content
+        if not local_checkbox or not remote_checkbox or not local_content or not remote_content:
+            return
+
+        if local_checkbox.isChecked() and remote_checkbox.isChecked():
+            remote_checkbox.blockSignals(True)
+            remote_checkbox.setChecked(False)
+            remote_checkbox.blockSignals(False)
+        elif not local_checkbox.isChecked() and not remote_checkbox.isChecked():
+            local_checkbox.blockSignals(True)
+            local_checkbox.setChecked(True)
+            local_checkbox.blockSignals(False)
+
+        local_content.setEnabled(local_checkbox.isChecked())
+        remote_content.setEnabled(remote_checkbox.isChecked())
+
     def software_modes(self) -> dict[str, str]:
         return {slot: combo.currentData() or "follow_hardware" for slot, combo in self.software_mode_combos.items()}
 
@@ -1686,6 +1767,7 @@ class MainWindow(QMainWindow):
             checkbox.blockSignals(True)
             checkbox.setChecked(values.get(key, defaults.get(key, "false")).lower() in {"1", "true", "yes", "on"})
             checkbox.blockSignals(False)
+        self.sync_tcl_workflow_sections()
         for key, combo in self.pwm_combos.items():
             combo.blockSignals(True)
             value = values.get(key, defaults.get(key, ""))
@@ -1706,6 +1788,10 @@ class MainWindow(QMainWindow):
         return {
             "vivado_project_file": str(APP_DIR.parent / "vivado" / "project" / "ultrazohm.xpr"),
             "block_design_name": "zusys",
+            "tcl_workflow_local": "true",
+            "tcl_workflow_remote": "false",
+            "tcl_include_export": "true",
+            "tcl_include_vivado_run": "false",
             "validate_block_design": "true",
             "save_block_design": "false",
             "open_vivado_gui": "false",
@@ -3088,6 +3174,56 @@ class MainWindow(QMainWindow):
             self.tcl_run_vivado_checkbox.setChecked(True)
         self.execute_tcl_workflow()
 
+    def clear_vivado_cache(self) -> None:
+        if self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
+            QMessageBox.warning(self, "Vivado is running", "Close or stop the Vivado process before clearing the cache.")
+            return
+        hardware = self.hardware_config()
+        project_text = hardware.get("vivado_project_file", "").strip()
+        if not project_text:
+            QMessageBox.warning(self, "Vivado project missing", "Select a Vivado project file on the Hardware General page first.")
+            self.show_hardware_general()
+            return
+        project_path = Path(project_text)
+        if not project_path.is_file():
+            QMessageBox.warning(self, "Vivado project missing", f"Vivado project not found:\n{project_path}")
+            self.show_hardware_general()
+            return
+
+        targets = [target for target in vivado_cache_targets(project_path, hardware.get("block_design_name", "zusys")) if target.exists()]
+        if not targets:
+            self.set_vivado_status(f"No Vivado cache artifacts found under:\n{project_path.parent}")
+            return
+        target_list = "\n".join(f"- {target}" for target in targets)
+        question = QMessageBox(self)
+        question.setIcon(QMessageBox.Icon.Warning)
+        question.setWindowTitle("Clear Vivado cache")
+        question.setText("Remove generated Vivado cache/build artifacts?")
+        question.setInformativeText(
+            "This deletes local generated folders such as .Xil, *.cache, *.runs, *.sim, *.gen, and generated "
+            "block-design output below the selected Vivado project directory. The .xpr and source-controlled "
+            "block-design files are kept."
+        )
+        question.setDetailedText(target_list)
+        cancel_button = question.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+        clear_button = question.addButton("Clear cache", QMessageBox.ButtonRole.DestructiveRole)
+        question.setDefaultButton(cancel_button)
+        question.exec()
+        if question.clickedButton() != clear_button:
+            return
+
+        result = clear_vivado_cache(project_path, hardware.get("block_design_name", "zusys"))
+        status = ["Vivado cache cleanup complete."]
+        if result.removed:
+            status.append("")
+            status.append("Removed:")
+            status.extend(f"- {path}" for path in result.removed)
+        if result.errors:
+            status.append("")
+            status.append("Errors:")
+            status.extend(f"- {error}" for error in result.errors)
+        self.set_vivado_status("\n".join(status))
+
     def run_tcl_in_vivado(self, tcl_path: Path) -> None:
         if not self.require_toolchain_paths(
             [("vivado_executable", "Vivado executable", "file")],
@@ -3156,10 +3292,12 @@ class MainWindow(QMainWindow):
     def set_vivado_status(self, text: str) -> None:
         if self.vivado_status:
             self.vivado_status.setPlainText(text)
+            self.vivado_status.moveCursor(QTextCursor.MoveOperation.End)
 
     def append_vivado_status(self, text: str) -> None:
         if self.vivado_status:
             self.vivado_status.appendPlainText(text)
+            self.vivado_status.moveCursor(QTextCursor.MoveOperation.End)
 
     def read_vivado_process_stdout(self) -> None:
         if not self.vivado_process:

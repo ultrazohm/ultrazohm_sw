@@ -19,5 +19,4 @@ if {[catch {validate_bd_design} project_wizard_error]} {
     puts $project_wizard_error
 }
 save_bd_design
-save_project
 puts "Project Wizard: Vivado GUI mode is active for inspection."

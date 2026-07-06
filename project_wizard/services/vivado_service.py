@@ -1,10 +1,80 @@
 from __future__ import annotations
 
+import shutil
+from dataclasses import dataclass
 from pathlib import Path
+
+
+@dataclass(frozen=True)
+class VivadoCacheClearResult:
+    removed: list[Path]
+    missing: list[Path]
+    errors: list[str]
 
 
 def tcl_quote(value: Path | str) -> str:
     return "{" + str(value).replace("\\", "/") + "}"
+
+
+def vivado_cache_targets(project_path: Path, block_design_name: str) -> list[Path]:
+    project_dir = project_path.resolve().parent
+    project_stem = project_path.stem
+    bd_name = block_design_name.strip() or "zusys"
+    bd_dir = project_dir / bd_name
+
+    targets = [
+        project_dir / ".Xil",
+        project_dir / f"{project_stem}.cache",
+        project_dir / f"{project_stem}.gen",
+        project_dir / f"{project_stem}.hw",
+        project_dir / f"{project_stem}.runs",
+        project_dir / f"{project_stem}.sim",
+        project_dir / f"{project_stem}.srcs",
+    ]
+    if bd_dir.exists():
+        targets.extend(
+            [
+                bd_dir / "hw_handoff",
+                bd_dir / "ip",
+                bd_dir / "ipshared",
+                bd_dir / "sim",
+                bd_dir / "synth",
+                bd_dir / "ui",
+            ]
+        )
+        targets.extend(bd_dir.glob("*.bxml"))
+        targets.extend(bd_dir.glob("*.bda"))
+        targets.extend(bd_dir.glob("*.xdc"))
+    return targets
+
+
+def clear_vivado_cache(project_path: Path, block_design_name: str) -> VivadoCacheClearResult:
+    project_dir = project_path.resolve().parent
+    removed: list[Path] = []
+    missing: list[Path] = []
+    errors: list[str] = []
+
+    for target in vivado_cache_targets(project_path, block_design_name):
+        try:
+            resolved_target = target.resolve()
+        except OSError as error:
+            errors.append(f"{target}: {error}")
+            continue
+        if project_dir not in (resolved_target, *resolved_target.parents):
+            errors.append(f"Skipped outside project directory: {target}")
+            continue
+        if not target.exists():
+            missing.append(target)
+            continue
+        try:
+            if target.is_dir():
+                shutil.rmtree(target)
+            else:
+                target.unlink()
+            removed.append(target)
+        except OSError as error:
+            errors.append(f"{target}: {error}")
+    return VivadoCacheClearResult(removed=removed, missing=missing, errors=errors)
 
 
 def write_vivado_run_wrapper(
@@ -56,7 +126,7 @@ def write_vivado_run_wrapper(
         else:
             lines.append("validate_bd_design")
     if save_design:
-        lines.extend(["save_bd_design", "save_project"])
+        lines.append("save_bd_design")
     else:
         lines.append('puts "Project Wizard: block design was not saved because Save block design is disabled."')
     if open_gui:

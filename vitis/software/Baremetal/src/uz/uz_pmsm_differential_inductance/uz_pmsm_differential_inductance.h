@@ -21,18 +21,11 @@ struct uz_pmsm_differential_inductance_config_t {
     uz_array_float_t L_qq_H;            /**< dpsi_q/di_q grid, same layout */
 };
 
-/**
- * @brief Differential inductance matrix at one operating point.
- *
- * Relates the flux-linkage derivative to the current derivative:
+/*
+ * The four entries relate the flux-linkage derivative to the current derivative:
  * [dpsi_d/dt; dpsi_q/dt] = [[L_dd, L_dq]; [L_qd, L_qq]] * [di_d/dt; di_q/dt].
+ * Each entry has its own getter because the full matrix is rarely needed at once.
  */
-struct uz_pmsm_differential_inductance_matrix_t {
-    float L_dd_H; /**< dpsi_d/di_d in Henry */
-    float L_dq_H; /**< dpsi_d/di_q in Henry */
-    float L_qd_H; /**< dpsi_q/di_d in Henry */
-    float L_qq_H; /**< dpsi_q/di_q in Henry */
-};
 
 typedef struct uz_pmsm_differential_inductance_t uz_pmsm_differential_inductance_t;
 
@@ -49,14 +42,47 @@ typedef struct uz_pmsm_differential_inductance_t uz_pmsm_differential_inductance
 uz_pmsm_differential_inductance_t *uz_pmsm_differential_inductance_init(struct uz_pmsm_differential_inductance_config_t config);
 
 /**
- * @brief Returns the interpolated 2x2 differential inductance matrix at a dq current operating point.
+ * @brief Returns the interpolated L_dd = dpsi_d/di_d at a dq current operating point.
  *
  * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped.
  *
  * @param self Differential-inductance instance
  * @param i_dq_A dq current operating point in Ampere (only d and q are used)
- * @return uz_pmsm_differential_inductance_matrix_t with L_dd, L_dq, L_qd, L_qq in Henry
+ * @return L_dd in Henry
  */
-struct uz_pmsm_differential_inductance_matrix_t uz_pmsm_differential_inductance_get_L_dq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A);
+float uz_pmsm_differential_inductance_get_L_dd_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A);
+
+/**
+ * @brief Returns the interpolated L_dq = dpsi_d/di_q at a dq current operating point.
+ *
+ * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped.
+ *
+ * @param self Differential-inductance instance
+ * @param i_dq_A dq current operating point in Ampere (only d and q are used)
+ * @return L_dq in Henry
+ */
+float uz_pmsm_differential_inductance_get_L_dq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A);
+
+/**
+ * @brief Returns the interpolated L_qd = dpsi_q/di_d at a dq current operating point.
+ *
+ * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped.
+ *
+ * @param self Differential-inductance instance
+ * @param i_dq_A dq current operating point in Ampere (only d and q are used)
+ * @return L_qd in Henry
+ */
+float uz_pmsm_differential_inductance_get_L_qd_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A);
+
+/**
+ * @brief Returns the interpolated L_qq = dpsi_q/di_q at a dq current operating point.
+ *
+ * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped.
+ *
+ * @param self Differential-inductance instance
+ * @param i_dq_A dq current operating point in Ampere (only d and q are used)
+ * @return L_qq in Henry
+ */
+float uz_pmsm_differential_inductance_get_L_qq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A);
 
 #endif // UZ_PMSM_DIFFERENTIAL_INDUCTANCE_H

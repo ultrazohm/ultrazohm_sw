@@ -40,31 +40,31 @@ void test_uz_pmsm_differential_inductance_generated_dummy_grid_dimensions(void)
     TEST_ASSERT_EQUAL_UINT32(9U, UZ_ARRAY_SIZE(L_qq_data));
 }
 
-void test_uz_pmsm_differential_inductance_returns_expected_matrix_at_breakpoint(void)
+void test_uz_pmsm_differential_inductance_returns_expected_values_at_breakpoint(void)
 {
     uz_pmsm_differential_inductance_t *self = uz_pmsm_differential_inductance_init(config);
-    struct uz_pmsm_differential_inductance_matrix_t L = uz_pmsm_differential_inductance_get_L_dq_H(self, (uz_3ph_dq_t){.d = 0.0f, .q = 0.0f});
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, L.L_dd_H);
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.0f, L.L_dq_H);
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.0f, L.L_qd_H);
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, L.L_qq_H);
+    uz_3ph_dq_t i_dq_A = {.d = 0.0f, .q = 0.0f};
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, uz_pmsm_differential_inductance_get_L_dd_H(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.0f, uz_pmsm_differential_inductance_get_L_dq_H(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.0f, uz_pmsm_differential_inductance_get_L_qd_H(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, uz_pmsm_differential_inductance_get_L_qq_H(self, i_dq_A));
 }
 
 void test_uz_pmsm_differential_inductance_constant_map_is_interpolation_invariant(void)
 {
     uz_pmsm_differential_inductance_t *self = uz_pmsm_differential_inductance_init(config);
-    // Constant grid -> any interpolated point returns the same matrix.
-    struct uz_pmsm_differential_inductance_matrix_t L = uz_pmsm_differential_inductance_get_L_dq_H(self, (uz_3ph_dq_t){.d = -3.7f, .q = 6.2f});
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, L.L_dd_H);
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, L.L_qq_H);
+    // Constant grid -> any interpolated point returns the same values.
+    uz_3ph_dq_t i_dq_A = {.d = -3.7f, .q = 6.2f};
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, uz_pmsm_differential_inductance_get_L_dd_H(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, uz_pmsm_differential_inductance_get_L_qq_H(self, i_dq_A));
 }
 
 void test_uz_pmsm_differential_inductance_clamps_out_of_range_inputs(void)
 {
     uz_pmsm_differential_inductance_t *self = uz_pmsm_differential_inductance_init(config);
-    struct uz_pmsm_differential_inductance_matrix_t L = uz_pmsm_differential_inductance_get_L_dq_H(self, (uz_3ph_dq_t){.d = 1000.0f, .q = -1000.0f});
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, L.L_dd_H);
-    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, L.L_qq_H);
+    uz_3ph_dq_t i_dq_A = {.d = 1000.0f, .q = -1000.0f};
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.002f, uz_pmsm_differential_inductance_get_L_dd_H(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-7f, 0.003f, uz_pmsm_differential_inductance_get_L_qq_H(self, i_dq_A));
 }
 
 void test_uz_pmsm_differential_inductance_init_asserts_on_grid_length_mismatch(void)

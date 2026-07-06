@@ -16,7 +16,8 @@ The data is split into:
 * ``differential_inductances.csv`` contains the derivatives of the flux map when a model or controller needs them explicitly.
 
 The Python companion library :ref:`pyuzlib` reads, validates, plots, and exports these files and generates the C machine catalog.
-The files used by code generation and plots should use the canonical names and ordering described in the :ref:`file format reference <uz_pmsm_file_formats>`. The repository also contains measured and FEM source CSV examples with older column names; these are useful as import examples, but they are not canonical dataset directories.
+The files used by code generation and plots should use the canonical names and ordering described in the :ref:`file format reference <uz_pmsm_file_formats>`.
+The repository also contains measured and FEM source CSV examples with older column names; these are useful as import examples, but they are not canonical dataset directories.
 
 Quick start: use an existing motor in C
 =======================================
@@ -198,12 +199,18 @@ To avoid code duplication a function, which asserts every struct member, is avai
 Troubleshooting
 ===============
 
-* **The catalog generator fails with** ``Invalid PMSM parameter CSV <path>: ...`` — the named file contains an empty, unparsable, or constraint-violating value; the message names the offending parameter. A freshly scaffolded template fails like this until every value is filled in (Phase 2).
-* **The catalog generator fails with** ``machine_id must be a positive integer ...`` — the dataset uses ``machine_id = 0`` or a negative value. Keep ``0`` for manual or unassigned configs and use a positive catalog ID for committed datasets.
-* **The catalog generator fails with** ``Duplicate numeric machine_id ...`` — two ``machine_parameters.csv`` files use the same ``machine_id``; the message suggests the next unused value. This typically happens when two motors are added on separate branches and merged.
+* **The catalog generator fails with** ``Invalid PMSM parameter CSV <path>: ...`` — the named file contains an empty, unparsable, or constraint-violating value; the message names the offending parameter.
+  A freshly scaffolded template fails like this until every value is filled in (Phase 2).
+* **The catalog generator fails with** ``machine_id must be a positive integer ...`` — the dataset uses ``machine_id = 0`` or a negative value.
+  Keep ``0`` for manual or unassigned configs and use a positive catalog ID for committed datasets.
+* **The catalog generator fails with** ``Duplicate numeric machine_id ...`` — two ``machine_parameters.csv`` files use the same ``machine_id``; the message suggests the next unused value.
+  This typically happens when two motors are added on separate branches and merged.
 * **The catalog generator fails with** ``Invalid PMSM dataset maps ...`` — a canonical ``flux_map.csv`` is not finite, rectangular, or duplicate-free, or a sibling ``differential_inductances.csv`` does not match the same ``operating_point``, ``i_d_A``, and ``i_q_A`` order.
-* **The CI check** ``make check_available_machines`` **fails** — the committed generated files are out of sync with the CSV sources. Run ``make auto_generate_available_machines`` in ``docs/`` and commit **both** ``uz_available_machines_auto_generated.h`` and ``available_machines.csv``. CI only checks; it never regenerates or commits these files itself.
-* **The catalog generator fails with** ``pyuzlib.PMSMParameters and uz_PMSM_t differ`` — the ``uz_PMSM_t`` struct in ``uz_PMSM_config.h`` was changed without updating the Python model. Mirror the change in the ``PMSMParameters`` dataclass (``pyuzlib/src/pyuzlib/pmsm/parameters.py``, same field order), extend ``PMSM_PARAMETER_CONSTRAINTS`` and ``uz_PMSM_config_assert`` consistently, then regenerate the catalog.
+* **The CI check** ``make check_available_machines`` **fails** — the committed generated files are out of sync with the CSV sources.
+  Run ``make auto_generate_available_machines`` in ``docs/`` and commit **both** ``uz_available_machines_auto_generated.h`` and ``available_machines.csv``.
+  CI only checks; it never regenerates or commits these files itself.
+* **The catalog generator fails with** ``pyuzlib.PMSMParameters and uz_PMSM_t differ`` — the ``uz_PMSM_t`` struct in ``uz_PMSM_config.h`` was changed without updating the Python model.
+  Mirror the change in the ``PMSMParameters`` dataclass (``pyuzlib/src/pyuzlib/pmsm/parameters.py``, same field order), extend ``PMSM_PARAMETER_CONSTRAINTS`` and ``uz_PMSM_config_assert`` consistently, then regenerate the catalog.
 
 .. _uz_pmsm_file_formats:
 

@@ -78,12 +78,14 @@ The flux-map importer accepts custom column names and normalizes the data intern
 	    psi_q_col="PsiQ",
 	)
 
-``PMSMParameters`` stores all 20 C-compatible fields of ``uz_PMSM_t``: ``machine_id``, the physical parameters (``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``), and the rating and limit values (``I_max_Ampere``, ``I_rated_Ampere``, ``Torque_rated_Nm``, ``Torque_max_Nm``, ``Torque_min_Nm``, ``speed_rated_rpm``, ``speed_max_rpm``, ``speed_min_rpm``, ``V_dc_nominal_V``, ``I_d_max_A``, ``I_d_min_A``, ``I_q_max_A``, ``I_q_min_A``). Additional scalar values from parameter CSV files (e.g. ``machine_name``) are preserved separately in ``additional_parameters`` for documentation and controller workflows.
+``PMSMParameters`` stores all 20 C-compatible fields of ``uz_PMSM_t``: ``machine_id``, the physical parameters (``R_ph_Ohm``, ``Ld_Henry``, ``Lq_Henry``, ``Psi_PM_Vs``, ``polePairs``, ``J_kg_m_squared``), and the rating and limit values (``I_max_Ampere``, ``I_rated_Ampere``, ``Torque_rated_Nm``, ``Torque_max_Nm``, ``Torque_min_Nm``, ``speed_rated_rpm``, ``speed_max_rpm``, ``speed_min_rpm``, ``V_dc_nominal_V``, ``I_d_max_A``, ``I_d_min_A``, ``I_q_max_A``, ``I_q_min_A``).
+Additional scalar values from parameter CSV files (e.g. ``machine_name``) are preserved separately in ``additional_parameters`` for documentation and controller workflows.
 
 PMSM API overview
 =================
 
-The ``pyuzlib.pmsm.PMSM`` class bundles the whole workflow. Besides the methods shown above it provides:
+The ``pyuzlib.pmsm.PMSM`` class bundles the whole workflow.
+Besides the methods shown above it provides:
 
 * ``update_parameters(**values)`` — update C fields or additional parameters in place.
 * ``get_flux_map(name)`` — access a loaded flux map as a ``FluxMap`` object.
@@ -164,6 +166,8 @@ The following parts do not usually need manual changes:
 * ``uz_available_machines_auto_generated.h`` is regenerated automatically.
 * ``docs/source/software/control/uz_pmsm/generate_available_machines.py`` is only a thin wrapper.
 
-The important guardrail is that ``pyuzlib.machine_catalog`` compares the parsed ``uz_PMSM_t`` field list against ``PMSMParameters``. If the C struct changes but the Python data model is not updated, catalog generation fails with a clear mismatch instead of silently producing incorrect macros.
+The important guardrail is that ``pyuzlib.machine_catalog`` compares the parsed ``uz_PMSM_t`` field list against ``PMSMParameters``.
+If the C struct changes but the Python data model is not updated, catalog generation fails with a clear mismatch instead of silently producing incorrect macros.
 
-This workflow assumes that the new member can still be represented as a scalar ``parameter,value`` entry in ``machine_parameters.csv`` and that the C declaration is a supported scalar field type. If a future member is an array, nested struct, or otherwise not representable in the current CSV scheme, both the CSV schema and the generator logic must be extended.
+This workflow assumes that the new member can still be represented as a scalar ``parameter,value`` entry in ``machine_parameters.csv`` and that the C declaration is a supported scalar field type.
+If a future member is an array, nested struct, or otherwise not representable in the current CSV scheme, both the CSV schema and the generator logic must be extended.

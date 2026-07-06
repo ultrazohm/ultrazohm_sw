@@ -124,7 +124,8 @@ Integrator state: current or flux
 The ``integrator_state`` field of :c:struct:`uz_pmsm_swmodel_config_t` selects which electrical quantity is integrated:
 
 * ``uz_pmsm_swmodel_integrator_state_current`` (default) integrates the dq **currents** and derives the flux algebraically, :math:`\psi_d = L_d i_d + \psi_f,\; \psi_q = L_q i_q`.
-* ``uz_pmsm_swmodel_integrator_state_flux`` integrates the dq **flux linkages** and derives the current, :math:`i_d = (\psi_d - \psi_f)/L_d,\; i_q = \psi_q/L_q`. This matches the FPGA reference :ref:`uz_pmsmModel`.
+* ``uz_pmsm_swmodel_integrator_state_flux`` integrates the dq **flux linkages** and derives the current, :math:`i_d = (\psi_d - \psi_f)/L_d,\; i_q = \psi_q/L_q`.
+  This matches the FPGA reference :ref:`uz_pmsmModel`.
 
 Both share the voltage balance :math:`e_d = v_d - R_s i_d + \omega_e \psi_q`, :math:`e_q = v_q - R_s i_q - \omega_e \psi_d`; the current formulation integrates :math:`e/L`, the flux formulation integrates :math:`e`.
 For a linear machine (constant :math:`L_d, L_q`) the two are equivalent and produce the same trajectory up to floating-point rounding; the flux formulation is the basis for a future nonlinear flux-map machine where :math:`\psi(i)` is a lookup.

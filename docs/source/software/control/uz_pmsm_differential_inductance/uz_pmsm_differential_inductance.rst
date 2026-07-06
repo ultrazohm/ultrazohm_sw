@@ -4,11 +4,8 @@
 uz_pmsm_differential_inductance
 ===============================
 
-``uz_pmsm_differential_inductance`` loads a PMSM differential-inductance map — the four entries
-:math:`L_{dd}, L_{dq}, L_{qd}, L_{qq}` of the differential flux-linkage matrix — into four
-:ref:`uz_LUT_2D` instances and returns the interpolated 2x2 matrix at a dq current operating point.
-It is the companion of :ref:`uz_pmsm_flux_map`: the flux map gives :math:`\psi_{dq}(i_{dq})`, this
-module gives its Jacobian :math:`\partial\psi_{dq}/\partial i_{dq}`.
+``uz_pmsm_differential_inductance`` loads a PMSM differential-inductance map — the four entries :math:`L_{dd}, L_{dq}, L_{qd}, L_{qq}` of the differential flux-linkage matrix — into four :ref:`uz_LUT_2D` instances and returns any of the interpolated entries at a dq current operating point through a dedicated getter.
+It is the companion of :ref:`uz_pmsm_flux_map`: the flux map gives :math:`\psi_{dq}(i_{dq})`, this module gives its Jacobian :math:`\partial\psi_{dq}/\partial i_{dq}`.
 
 .. math::
 
@@ -20,19 +17,15 @@ module gives its Jacobian :math:`\partial\psi_{dq}/\partial i_{dq}`.
 Generated macro header
 ======================
 
-``pyuzlib.flux_map_catalog`` scans every ``differential_inductances.csv`` under the motor database
-(the same generator that emits the flux-map header) and writes
-``vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h``.
-For each dataset it defines, using the same ``<MOTOR_DIR>_<DATASET_DIR>`` naming as the flux-map and
-scalar catalogs:
+``pyuzlib.flux_map_catalog`` scans every ``differential_inductances.csv`` under the motor database (the same generator that emits the flux-map header) and writes ``vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h``.
+For each dataset it defines, using the same ``<MOTOR_DIR>_<DATASET_DIR>`` naming as the flux-map and scalar catalogs:
 
 * ``UZ_DIFFIND_<CATALOG_ID>_I_D_BREAKPOINTS_A`` / ``_I_Q_BREAKPOINTS_A`` — breakpoint initializer lists.
-* ``UZ_DIFFIND_<CATALOG_ID>_L_DD_H`` / ``_L_DQ_H`` / ``_L_QD_H`` / ``_L_QQ_H`` — the four inductance
-  grids, row-major with ``i_d`` (the LUT x-axis) changing fastest, matching :ref:`uz_LUT_2D`.
+* ``UZ_DIFFIND_<CATALOG_ID>_L_DD_H`` / ``_L_DQ_H`` / ``_L_QD_H`` / ``_L_QQ_H`` — the four inductance grids, row-major with ``i_d`` (the LUT x-axis) changing fastest, matching :ref:`uz_LUT_2D`.
 * ``UZ_DIFFIND_<CATALOG_ID>_I_D_LENGTH`` / ``_I_Q_LENGTH`` — the grid dimensions.
 
-As with the flux-map header, these are only preprocessor macros: **a macro that is never used
-contributes zero bytes to the binary.** Regenerate and verify the committed header:
+As with the flux-map header, these are only preprocessor macros: **a macro that is never used contributes zero bytes to the binary.**
+Regenerate and verify the committed header:
 
 .. code-block:: bash
 
@@ -43,9 +36,9 @@ contributes zero bytes to the binary.** Regenerate and verify the committed head
 Instance counts
 ===============
 
-Each ``uz_pmsm_differential_inductance`` instance builds **four** ``uz_LUT_2D`` instances (one per
-matrix entry). Both module instance counts default to ``0`` in production. To use differential
-inductances, set in ``uz_global_configuration.h``:
+Each ``uz_pmsm_differential_inductance`` instance builds **four** ``uz_LUT_2D`` instances (one per matrix entry).
+Both module instance counts default to ``0`` in production.
+To use differential inductances, set in ``uz_global_configuration.h``:
 
 .. code-block:: c
 
@@ -56,8 +49,8 @@ inductances, set in ``uz_global_configuration.h``:
 Usage
 =====
 
-The breakpoint and inductance arrays must outlive the instance because ``uz_LUT_2D`` stores pointers
-to them, so declare them ``static``. They are non-``const`` to match ``uz_array_float_t``.
+The breakpoint and inductance arrays must outlive the instance because ``uz_LUT_2D`` stores pointers to them, so declare them ``static``.
+They are non-``const`` to match ``uz_array_float_t``.
 
 .. code-block:: c
 
@@ -81,7 +74,9 @@ to them, so declare them ``static``. They are non-``const`` to match ``uz_array_
            .L_qq_H = {.length = UZ_ARRAY_SIZE(L_qq), .data = L_qq}});
 
    uz_3ph_dq_t i_dq_A = {.d = 0.0f, .q = 5.0f};
-   struct uz_pmsm_differential_inductance_matrix_t L = uz_pmsm_differential_inductance_get_L_dq_H(diff_ind, i_dq_A);
+   float L_qq = uz_pmsm_differential_inductance_get_L_qq_H(diff_ind, i_dq_A);
+
+Each matrix entry has its own getter because the full 2x2 matrix is rarely needed at once; call only the getters for the quantities you use.
 
 API
 ===
@@ -89,11 +84,14 @@ API
 .. doxygenstruct:: uz_pmsm_differential_inductance_config_t
     :members:
 
-.. doxygenstruct:: uz_pmsm_differential_inductance_matrix_t
-    :members:
-
 .. doxygentypedef:: uz_pmsm_differential_inductance_t
 
 .. doxygenfunction:: uz_pmsm_differential_inductance_init
 
+.. doxygenfunction:: uz_pmsm_differential_inductance_get_L_dd_H
+
 .. doxygenfunction:: uz_pmsm_differential_inductance_get_L_dq_H
+
+.. doxygenfunction:: uz_pmsm_differential_inductance_get_L_qd_H
+
+.. doxygenfunction:: uz_pmsm_differential_inductance_get_L_qq_H

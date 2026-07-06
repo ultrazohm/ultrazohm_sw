@@ -65,16 +65,32 @@ uz_pmsm_differential_inductance_t *uz_pmsm_differential_inductance_init(struct u
     return self;
 }
 
-struct uz_pmsm_differential_inductance_matrix_t uz_pmsm_differential_inductance_get_L_dq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A)
+float uz_pmsm_differential_inductance_get_L_dd_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    struct uz_pmsm_differential_inductance_matrix_t inductance = {
-        .L_dd_H = uz_LUT_2D_get_value(self->L_dd_lut, i_dq_A.d, i_dq_A.q),
-        .L_dq_H = uz_LUT_2D_get_value(self->L_dq_lut, i_dq_A.d, i_dq_A.q),
-        .L_qd_H = uz_LUT_2D_get_value(self->L_qd_lut, i_dq_A.d, i_dq_A.q),
-        .L_qq_H = uz_LUT_2D_get_value(self->L_qq_lut, i_dq_A.d, i_dq_A.q)};
-    return inductance;
+    return uz_LUT_2D_get_value(self->L_dd_lut, i_dq_A.d, i_dq_A.q);
+}
+
+float uz_pmsm_differential_inductance_get_L_dq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_LUT_2D_get_value(self->L_dq_lut, i_dq_A.d, i_dq_A.q);
+}
+
+float uz_pmsm_differential_inductance_get_L_qd_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_LUT_2D_get_value(self->L_qd_lut, i_dq_A.d, i_dq_A.q);
+}
+
+float uz_pmsm_differential_inductance_get_L_qq_H(uz_pmsm_differential_inductance_t *self, uz_3ph_dq_t i_dq_A)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_LUT_2D_get_value(self->L_qq_lut, i_dq_A.d, i_dq_A.q);
 }
 
 #endif

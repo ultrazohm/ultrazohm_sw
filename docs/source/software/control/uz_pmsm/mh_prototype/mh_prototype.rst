@@ -6,12 +6,18 @@ MH prototype machine, part of the :ref:`uz_pmsm` motor database; see there for t
 ``flux_map_raw_from_fem.csv`` holds FEM results, which are re-arranged to map the ``flux_map.csv`` format.
 The measured dataset in ``fem_overaged_over_angle/flux_map.csv`` can be plotted directly with :ref:`pyuzlib`.
 
-.. warning:: Dummy data for MH Prototype! The electrical parameters (R_ph_Ohm, Ld_Henry, Lq_Henry, Psi_PM_Vs) and inertia (J_kg_m_squared) in machine_parameters.csv are placeholder values copied from the beckhoff dataset and do not reflect actual characterization data.
+.. warning::
+
+   Dummy data for MH Prototype!
+   The electrical parameters (R_ph_Ohm, Ld_Henry, Lq_Henry, Psi_PM_Vs) and inertia (J_kg_m_squared) in machine_parameters.csv are placeholder values copied from the beckhoff dataset and do not reflect actual characterization data.
 
 C usage
 =======
 
-.. warning:: These parameters are placeholder values. Do not use this machine definition in production control code.
+.. warning::
+
+   These parameters are placeholder values.
+   Do not use this machine definition in production control code.
 
 .. code-block:: c
 

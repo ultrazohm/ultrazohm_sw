@@ -64,4 +64,18 @@ uz_3ph_dq_t uz_pmsm_flux_map_get_psi_dq_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t
     return psi_dq_Vs;
 }
 
+float uz_pmsm_flux_map_get_psi_d_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t i_dq_A)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_LUT_2D_get_value(self->psi_d_lut, i_dq_A.d, i_dq_A.q);
+}
+
+float uz_pmsm_flux_map_get_psi_q_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t i_dq_A)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_LUT_2D_get_value(self->psi_q_lut, i_dq_A.d, i_dq_A.q);
+}
+
 #endif

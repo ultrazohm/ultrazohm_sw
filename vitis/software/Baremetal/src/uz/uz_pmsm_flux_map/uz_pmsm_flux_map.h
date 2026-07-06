@@ -43,4 +43,28 @@ uz_pmsm_flux_map_t *uz_pmsm_flux_map_init(struct uz_pmsm_flux_map_config_t confi
  */
 uz_3ph_dq_t uz_pmsm_flux_map_get_psi_dq_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t i_dq_A);
 
+/**
+ * @brief Returns only the interpolated d-axis flux linkage at a given dq current operating point.
+ *
+ * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped. Use this
+ * instead of uz_pmsm_flux_map_get_psi_dq_Vs when only psi_d is needed to skip the psi_q lookup.
+ *
+ * @param self Flux-map instance
+ * @param i_dq_A dq current operating point in Ampere (only d and q are used)
+ * @return psi_d in Vs
+ */
+float uz_pmsm_flux_map_get_psi_d_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t i_dq_A);
+
+/**
+ * @brief Returns only the interpolated q-axis flux linkage at a given dq current operating point.
+ *
+ * Bilinear interpolation via uz_LUT_2D; inputs outside the breakpoint range are clamped. Use this
+ * instead of uz_pmsm_flux_map_get_psi_dq_Vs when only psi_q is needed to skip the psi_d lookup.
+ *
+ * @param self Flux-map instance
+ * @param i_dq_A dq current operating point in Ampere (only d and q are used)
+ * @return psi_q in Vs
+ */
+float uz_pmsm_flux_map_get_psi_q_Vs(uz_pmsm_flux_map_t *self, uz_3ph_dq_t i_dq_A);
+
 #endif // UZ_PMSM_FLUX_MAP_H

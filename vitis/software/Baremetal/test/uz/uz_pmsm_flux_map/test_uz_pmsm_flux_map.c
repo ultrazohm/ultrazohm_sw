@@ -56,6 +56,18 @@ void test_uz_pmsm_flux_map_bilinear_interpolation_on_linear_grid(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-6f, 0.015f, psi.q);
 }
 
+void test_uz_pmsm_flux_map_single_axis_getters_match_dq_getter(void)
+{
+    uz_pmsm_flux_map_t *self = uz_pmsm_flux_map_init(config);
+    uz_3ph_dq_t i_dq_A = {.d = 5.0f, .q = 5.0f};
+    uz_3ph_dq_t psi = uz_pmsm_flux_map_get_psi_dq_Vs(self, i_dq_A);
+    TEST_ASSERT_EQUAL_FLOAT(psi.d, uz_pmsm_flux_map_get_psi_d_Vs(self, i_dq_A));
+    TEST_ASSERT_EQUAL_FLOAT(psi.q, uz_pmsm_flux_map_get_psi_q_Vs(self, i_dq_A));
+    // Linear map -> exact values (psi_d = 0.052, psi_q = 0.015 at (5, 5)).
+    TEST_ASSERT_FLOAT_WITHIN(1e-6f, 0.052f, uz_pmsm_flux_map_get_psi_d_Vs(self, i_dq_A));
+    TEST_ASSERT_FLOAT_WITHIN(1e-6f, 0.015f, uz_pmsm_flux_map_get_psi_q_Vs(self, i_dq_A));
+}
+
 void test_uz_pmsm_flux_map_clamps_out_of_range_inputs(void)
 {
     uz_pmsm_flux_map_t *self = uz_pmsm_flux_map_init(config);

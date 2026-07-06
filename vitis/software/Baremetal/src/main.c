@@ -112,17 +112,6 @@ int main(void)
 			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
-			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
-			Global_Data.objects.inverter_adapter_d3 = initialize_inverter_adapter_d3();
-			Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
-			Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
-			Global_Data.objects.resolver_ip_d4_2 = initialize_resolver_ip_d4_2();
-			Global_Data.objects.resolver_pl_interface_d4_2 = initialize_resolver_pl_interface_d4_2();
-			Global_Data.objects.resolver_ip_d4_3 = initialize_resolver_ip_d4_3();
-			Global_Data.objects.resolver_pl_interface_d4_3 = initialize_resolver_pl_interface_d4_3();
-			Global_Data.objects.endat_encoder_d5_1 = initialize_endat_encoder_d5_1();
-			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_1, uz_endat_interface_send_position);
-			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

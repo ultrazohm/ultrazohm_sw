@@ -156,8 +156,8 @@ class MainWindow(QMainWindow):
         self.write_cpld_button: QPushButton | None = None
         self.program_cpld_button: QPushButton | None = None
         self.import_cable_button: QPushButton | None = None
-        self.tcl_export_checkbox: QCheckBox | None = None
-        self.tcl_run_vivado_checkbox: QCheckBox | None = None
+        self.tcl_disable_checkpoints_checkbox: QCheckBox | None = None
+        self.tcl_remote_disable_checkpoints_checkbox: QCheckBox | None = None
         self.tcl_local_workflow_checkbox: QCheckBox | None = None
         self.tcl_remote_workflow_checkbox: QCheckBox | None = None
         self.tcl_local_workflow_content: QWidget | None = None
@@ -1115,20 +1115,26 @@ class MainWindow(QMainWindow):
 
         options_widget = QWidget()
         options_form = QFormLayout(options_widget)
+        open_gui_checkbox = QCheckBox("Run Vivado in GUI mode")
+        disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
         validate_checkbox = QCheckBox("Validate block design after applying TCL")
         save_checkbox = QCheckBox("Save block design after applying TCL")
-        open_gui_checkbox = QCheckBox("Open Vivado GUI after applying TCL")
-        disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
+        bitstream_checkbox = QCheckBox("Generate bitstream")
+        export_xsa_checkbox = QCheckBox("Export .xsa after successful build")
+        self.tcl_disable_checkpoints_checkbox = disable_checkpoints_checkbox
         self.hardware_checkboxes["tcl_workflow_local"] = local_select
-        self.hardware_checkboxes["validate_block_design"] = validate_checkbox
-        self.hardware_checkboxes["save_block_design"] = save_checkbox
         self.hardware_checkboxes["open_vivado_gui"] = open_gui_checkbox
         self.hardware_checkboxes["disable_bd_synth_checkpoints"] = disable_checkpoints_checkbox
-        disable_checkpoints_checkbox.stateChanged.connect(lambda _state: self.guarded_refresh_tcl_preview())
-        options_form.addRow("", validate_checkbox)
-        options_form.addRow("", save_checkbox)
+        self.hardware_checkboxes["validate_block_design"] = validate_checkbox
+        self.hardware_checkboxes["save_block_design"] = save_checkbox
+        self.hardware_checkboxes["generate_bitstream"] = bitstream_checkbox
+        self.hardware_checkboxes["export_xsa_after_build"] = export_xsa_checkbox
         options_form.addRow("", open_gui_checkbox)
         options_form.addRow("", disable_checkpoints_checkbox)
+        options_form.addRow("", validate_checkbox)
+        options_form.addRow("", save_checkbox)
+        options_form.addRow("", bitstream_checkbox)
+        options_form.addRow("", export_xsa_checkbox)
         hint = QLabel(
             "These options only affect the TCL execution/export flow. Complete the hardware configuration pages first, "
             "then run the workflow from here."
@@ -1147,27 +1153,16 @@ class MainWindow(QMainWindow):
         workflow_layout = QGridLayout(workflow_widget)
         preview_button = QPushButton("Refresh TCL Preview")
         preview_button.clicked.connect(self.refresh_tcl_preview)
-        clear_cache_button = QPushButton("Clear cache")
+        clear_cache_button = QPushButton("Clear local Vivado artifacts")
         clear_cache_button.clicked.connect(self.clear_vivado_cache)
         export_button = QPushButton("Export TCL")
         export_button.clicked.connect(self.export_tcl)
-        run_vivado_button = QPushButton("Run TCL in Vivado")
-        run_vivado_button.clicked.connect(self.run_current_tcl_in_vivado)
-        export_checkbox = QCheckBox("Include export")
-        run_vivado_checkbox = QCheckBox("Include Vivado run")
         workflow_button = QPushButton("Execute TCL workflow")
         workflow_button.clicked.connect(self.execute_tcl_workflow)
-        self.tcl_export_checkbox = export_checkbox
-        self.tcl_run_vivado_checkbox = run_vivado_checkbox
-        self.hardware_checkboxes["tcl_include_export"] = export_checkbox
-        self.hardware_checkboxes["tcl_include_vivado_run"] = run_vivado_checkbox
         self.tcl_workflow_button = workflow_button
         workflow_layout.addWidget(preview_button, 0, 0)
         workflow_layout.addWidget(clear_cache_button, 0, 1)
-        workflow_layout.addWidget(run_vivado_button, 0, 2)
-        workflow_layout.addWidget(export_checkbox, 1, 0)
-        workflow_layout.addWidget(run_vivado_checkbox, 1, 1)
-        workflow_layout.addWidget(workflow_button, 1, 2)
+        workflow_layout.addWidget(workflow_button, 0, 2)
         workflow_layout.setColumnStretch(3, 1)
         local_layout.addWidget(workflow_widget)
         local_layout.addStretch(1)
@@ -1198,11 +1193,31 @@ class MainWindow(QMainWindow):
         remote_hint = QLabel("Export the generated TCL for execution on another workstation.")
         remote_hint.setWordWrap(True)
         remote_layout.addWidget(remote_hint)
+        remote_disable_checkpoints_checkbox = QCheckBox("Disable BD/IP synthesis checkpoints")
+        self.tcl_remote_disable_checkpoints_checkbox = remote_disable_checkpoints_checkbox
+        remote_layout.addWidget(remote_disable_checkpoints_checkbox)
         remote_buttons = QHBoxLayout()
         remote_buttons.addStretch(1)
         remote_buttons.addWidget(export_button)
+        remote_buttons.addStretch(1)
         remote_layout.addLayout(remote_buttons)
         remote_layout.addStretch(1)
+
+        def set_remote_disable_checkpoints(state: int) -> None:
+            remote_disable_checkpoints_checkbox.blockSignals(True)
+            remote_disable_checkpoints_checkbox.setChecked(state == Qt.CheckState.Checked.value)
+            remote_disable_checkpoints_checkbox.blockSignals(False)
+            self.guarded_refresh_tcl_preview()
+
+        def set_local_disable_checkpoints(state: int) -> None:
+            disable_checkpoints_checkbox.blockSignals(True)
+            disable_checkpoints_checkbox.setChecked(state == Qt.CheckState.Checked.value)
+            disable_checkpoints_checkbox.blockSignals(False)
+            self.guarded_refresh_tcl_preview()
+
+        disable_checkpoints_checkbox.stateChanged.connect(set_remote_disable_checkpoints)
+        remote_disable_checkpoints_checkbox.stateChanged.connect(set_local_disable_checkpoints)
+        self.sync_tcl_disable_checkpoints_checkbox()
 
         def select_local_workflow(checked: bool) -> None:
             if checked:
@@ -1715,6 +1730,15 @@ class MainWindow(QMainWindow):
         local_content.setEnabled(local_checkbox.isChecked())
         remote_content.setEnabled(remote_checkbox.isChecked())
 
+    def sync_tcl_disable_checkpoints_checkbox(self) -> None:
+        local_checkbox = self.tcl_disable_checkpoints_checkbox
+        remote_checkbox = self.tcl_remote_disable_checkpoints_checkbox
+        if not local_checkbox or not remote_checkbox:
+            return
+        remote_checkbox.blockSignals(True)
+        remote_checkbox.setChecked(local_checkbox.isChecked())
+        remote_checkbox.blockSignals(False)
+
     def software_modes(self) -> dict[str, str]:
         return {slot: combo.currentData() or "follow_hardware" for slot, combo in self.software_mode_combos.items()}
 
@@ -1768,6 +1792,7 @@ class MainWindow(QMainWindow):
             checkbox.setChecked(values.get(key, defaults.get(key, "false")).lower() in {"1", "true", "yes", "on"})
             checkbox.blockSignals(False)
         self.sync_tcl_workflow_sections()
+        self.sync_tcl_disable_checkpoints_checkbox()
         for key, combo in self.pwm_combos.items():
             combo.blockSignals(True)
             value = values.get(key, defaults.get(key, ""))
@@ -1790,12 +1815,12 @@ class MainWindow(QMainWindow):
             "block_design_name": "zusys",
             "tcl_workflow_local": "true",
             "tcl_workflow_remote": "false",
-            "tcl_include_export": "true",
-            "tcl_include_vivado_run": "false",
             "validate_block_design": "true",
-            "save_block_design": "false",
+            "save_block_design": "true",
             "open_vivado_gui": "false",
             "disable_bd_synth_checkpoints": "false",
+            "generate_bitstream": "false",
+            "export_xsa_after_build": "false",
             "pwm_2l_instances": "4",
             "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
             "pwm_2l_idle_error_duty_hb1": "0.0f",
@@ -3089,26 +3114,18 @@ class MainWindow(QMainWindow):
         return result.stdout.strip() or "unknown"
 
     def execute_tcl_workflow(self) -> None:
-        export_tcl = self.tcl_export_checkbox is None or self.tcl_export_checkbox.isChecked()
-        run_vivado = self.tcl_run_vivado_checkbox is not None and self.tcl_run_vivado_checkbox.isChecked()
-        if not export_tcl and not run_vivado:
-            QMessageBox.warning(self, "Nothing selected", "Select Export TCL, Run TCL in Vivado, or both.")
-            return
-        if run_vivado and self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
+        if self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
             QMessageBox.warning(self, "Vivado is running", "A Vivado process started by the wizard is still running.")
             return
-        if run_vivado and not self.require_toolchain_paths(
+        if not self.require_toolchain_paths(
             [("vivado_executable", "Vivado executable", "file")],
             "Vivado toolchain path missing",
         ):
             return
 
-        if export_tcl:
-            tcl_path = self.ask_tcl_export_path()
-            if tcl_path is None:
-                return
-        else:
-            tcl_path = OUTPUT_DIR / "project_wizard_config.tcl"
+        tcl_path = self.ask_tcl_export_path()
+        if tcl_path is None:
+            return
 
         try:
             self.write_generated_tcl(tcl_path)
@@ -3116,11 +3133,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Could not write TCL", str(error))
             return
 
-        if run_vivado:
-            self.run_tcl_in_vivado(tcl_path)
-            return
-
-        self.show_tcl_export_result(tcl_path)
+        self.run_tcl_in_vivado(tcl_path)
 
     def ask_tcl_export_path(self) -> Path | None:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -3161,18 +3174,15 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, "TCL exported", f"Wrote {path}")
 
     def export_tcl(self) -> None:
-        if self.tcl_export_checkbox:
-            self.tcl_export_checkbox.setChecked(True)
-        if self.tcl_run_vivado_checkbox:
-            self.tcl_run_vivado_checkbox.setChecked(False)
-        self.execute_tcl_workflow()
-
-    def run_current_tcl_in_vivado(self) -> None:
-        if self.tcl_export_checkbox:
-            self.tcl_export_checkbox.setChecked(True)
-        if self.tcl_run_vivado_checkbox:
-            self.tcl_run_vivado_checkbox.setChecked(True)
-        self.execute_tcl_workflow()
+        tcl_path = self.ask_tcl_export_path()
+        if tcl_path is None:
+            return
+        try:
+            self.write_generated_tcl(tcl_path)
+        except OSError as error:
+            QMessageBox.warning(self, "Could not write TCL", str(error))
+            return
+        self.show_tcl_export_result(tcl_path)
 
     def clear_vivado_cache(self) -> None:
         if self.vivado_process and self.vivado_process.state() != QProcess.ProcessState.NotRunning:
@@ -3243,6 +3253,15 @@ class MainWindow(QMainWindow):
             return
 
         wrapper_path = OUTPUT_DIR / "project_wizard_run_vivado.tcl"
+        generate_bitstream = hardware.get("generate_bitstream", "false").lower() in {"1", "true", "yes", "on"}
+        export_xsa = hardware.get("export_xsa_after_build", "false").lower() in {"1", "true", "yes", "on"}
+        if export_xsa and not generate_bitstream:
+            QMessageBox.warning(
+                self,
+                "Build step missing",
+                "Select Generate bitstream before exporting an .xsa after the build.",
+            )
+            return
         try:
             write_vivado_run_wrapper(
                 wrapper_path,
@@ -3252,8 +3271,11 @@ class MainWindow(QMainWindow):
                 hardware.get("validate_block_design", "true").lower() in {"1", "true", "yes", "on"},
                 hardware.get("save_block_design", "false").lower() in {"1", "true", "yes", "on"},
                 hardware.get("open_vivado_gui", "false").lower() in {"1", "true", "yes", "on"},
+                generate_bitstream,
+                export_xsa,
+                APP_DIR.parent / "tcl_scripts" / "vivado_export_xsa.tcl" if export_xsa else None,
             )
-        except OSError as error:
+        except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not write Vivado wrapper", str(error))
             return
 

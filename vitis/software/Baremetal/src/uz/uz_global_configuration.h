@@ -33,7 +33,7 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE   1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
 #define ADC_TRIGGER_DELAY_IN_US                  0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
-#define UZ_PWM_FREQUENCY                         5.0e3f
+#define UZ_PWM_FREQUENCY                         10.0e3f
 #define UZ_PWM_DEADTIME_IN_US                    0.3f
 #define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US         0.5f
 
@@ -72,11 +72,11 @@
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
-#define UZ_INVERTER_ADAPTER_MAX_INSTANCES                 2U
+#define UZ_INVERTER_ADAPTER_MAX_INSTANCES                 0U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 0U
-#define UZ_RESOLVERIP_MAX_INSTANCES                       3U
+#define UZ_RESOLVERIP_MAX_INSTANCES                       0U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
-#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES            3U
+#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES            0U
 #define UZ_AXI_GPIO_MAX_INSTANCES                         1U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
@@ -98,7 +98,7 @@
 #define UZ_LUT_1D_MAX_INSTANCES                         0U
 #define UZ_LUT_2D_MAX_INSTANCES                         0U
 #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             0U
-#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                  1U
+#define UZ_ENDAT_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            0U
 #define UZ_SSI_INTERFACE_MAX_INSTANCES                    0U
 #define UZ_HLS_TESTIP_MAX_INSTANCES                     0U

@@ -84,8 +84,6 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
 /* Project Wizard END: idle_state isr_actions */
     }
     else if (current_state == running_state)
@@ -93,8 +91,6 @@ void ISR_Control(void *data)
         /* Project Wizard BEGIN: running_state isr_actions */
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, true);
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
@@ -107,28 +103,6 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
         Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
         Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-
-        static uint64_t io_test_last_step_us = 0U;
-        static uint32_t d1_axi_tx_index = 0U;
-        static uint32_t d2_axi_tx_index = 0U;
-        static uint32_t d3_axi_tx_index = 0U;
-
-        uint64_t io_test_now_us = uz_SystemTime_GetUptimeInUs();
-        if ((io_test_now_us - io_test_last_step_us) >= 500000U) {
-            io_test_last_step_us = io_test_now_us;
-            d1_axi_tx_index = (d1_axi_tx_index + 1U) % 4U;
-            d2_axi_tx_index = (d2_axi_tx_index + 1U) % 4U;
-            d3_axi_tx_index = (d3_axi_tx_index + 1U) % 10U;
-        }
-
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d1, (1U << (d1_axi_tx_index + 6U)));
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d2, (1U << (d2_axi_tx_index + 16U)));
-        uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_d3, (1U << (d3_axi_tx_index + 6U)));
-
-        Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
-        Global_Data.av.io_card_d2_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
-        Global_Data.av.io_card_d3_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d3);
-        Global_Data.av.io_card_d4_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d4);
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */
@@ -144,8 +118,6 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d3, false);
 /* Project Wizard END: error_state isr_actions */
     }
     
@@ -221,55 +193,24 @@ static void update_adapter_d1(void)
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
-    update_inverter_adapter_d2_outputs(&Global_Data);
 /* Project Wizard END: D2 isr_control */
 }
 
 static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
-    update_inverter_adapter_d3_outputs(&Global_Data);
 /* Project Wizard END: D3 isr_control */
 }
 
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
-    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_1_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_1);
-    Global_Data.av.resolver_pl_interface_d4_1_revolution_counter = resolver_pl_interface_d4_1_outputs.revolution_counter;
-    Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi = resolver_pl_interface_d4_1_outputs.position_mech_2pi;
-    Global_Data.av.resolver_pl_interface_d4_1_position_el_2pi = resolver_pl_interface_d4_1_outputs.position_el_2pi;
-    Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s = resolver_pl_interface_d4_1_outputs.omega_mech_rad_s;
-    Global_Data.av.resolver_pl_interface_d4_1_n_mech_rpm = resolver_pl_interface_d4_1_outputs.n_mech_rpm;
-    Global_Data.av.resolver_pl_interface_d4_1_omega_el_rad_s = resolver_pl_interface_d4_1_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_1);
-    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_2_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_2);
-    Global_Data.av.resolver_pl_interface_d4_2_revolution_counter = resolver_pl_interface_d4_2_outputs.revolution_counter;
-    Global_Data.av.resolver_pl_interface_d4_2_position_mech_2pi = resolver_pl_interface_d4_2_outputs.position_mech_2pi;
-    Global_Data.av.resolver_pl_interface_d4_2_position_el_2pi = resolver_pl_interface_d4_2_outputs.position_el_2pi;
-    Global_Data.av.resolver_pl_interface_d4_2_omega_mech_rad_s = resolver_pl_interface_d4_2_outputs.omega_mech_rad_s;
-    Global_Data.av.resolver_pl_interface_d4_2_n_mech_rpm = resolver_pl_interface_d4_2_outputs.n_mech_rpm;
-    Global_Data.av.resolver_pl_interface_d4_2_omega_el_rad_s = resolver_pl_interface_d4_2_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_2);
-    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_3_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_3);
-    Global_Data.av.resolver_pl_interface_d4_3_revolution_counter = resolver_pl_interface_d4_3_outputs.revolution_counter;
-    Global_Data.av.resolver_pl_interface_d4_3_position_mech_2pi = resolver_pl_interface_d4_3_outputs.position_mech_2pi;
-    Global_Data.av.resolver_pl_interface_d4_3_position_el_2pi = resolver_pl_interface_d4_3_outputs.position_el_2pi;
-    Global_Data.av.resolver_pl_interface_d4_3_omega_mech_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s;
-    Global_Data.av.resolver_pl_interface_d4_3_n_mech_rpm = resolver_pl_interface_d4_3_outputs.n_mech_rpm;
-    Global_Data.av.resolver_pl_interface_d4_3_omega_el_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_3);
 /* Project Wizard END: D4 isr_control */
 }
 
 static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
-    Global_Data.av.endat_encoder_d5_1_position_raw_single_turn = uz_endat_interface_get_position_raw_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_raw_multi_turn = uz_endat_interface_get_position_raw_multi_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_multi_turn = uz_endat_interface_get_position_multi_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_mech_si_single_turn = uz_endat_interface_get_position_mech_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_position_el_si_single_turn = uz_endat_interface_get_position_el_si_single_turn(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_mech_si = uz_endat_interface_get_speed_mech_si(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_el_si = uz_endat_interface_get_speed_el_si(Global_Data.objects.endat_encoder_d5_1);
-    Global_Data.av.endat_encoder_d5_1_speed_mech_rpm = uz_endat_interface_get_speed_mech_rpm(Global_Data.objects.endat_encoder_d5_1);
 /* Project Wizard END: D5 isr_control */
 }
 

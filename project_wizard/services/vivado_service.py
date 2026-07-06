@@ -85,6 +85,9 @@ def write_vivado_run_wrapper(
     validate_design: bool,
     save_design: bool,
     open_gui: bool = False,
+    generate_bitstream: bool = False,
+    export_xsa: bool = False,
+    export_xsa_script_path: Path | None = None,
 ) -> Path:
     wrapper_path.parent.mkdir(parents=True, exist_ok=True)
     bd_name = block_design_name.strip() or "zusys"
@@ -129,6 +132,27 @@ def write_vivado_run_wrapper(
         lines.append("save_bd_design")
     else:
         lines.append('puts "Project Wizard: block design was not saved because Save block design is disabled."')
+    if generate_bitstream:
+        lines.extend(
+            [
+                'puts "Project Wizard: launching implementation run impl_1 to write bitstream."',
+                "launch_runs impl_1 -to_step write_bitstream -jobs 4",
+                "wait_on_run impl_1",
+                "set project_wizard_impl_status [get_property STATUS [get_runs impl_1]]",
+                'if {$project_wizard_impl_status ne "write_bitstream Complete!"} {',
+                '    error "Project Wizard: bitstream generation failed with status: $project_wizard_impl_status"',
+                "}",
+            ]
+        )
+    if export_xsa:
+        if export_xsa_script_path is None:
+            raise ValueError("XSA export was requested, but no export script path was provided.")
+        lines.extend(
+            [
+                'puts "Project Wizard: exporting XSA."',
+                f"source {tcl_quote(export_xsa_script_path)}",
+            ]
+        )
     if open_gui:
         lines.extend(
             [

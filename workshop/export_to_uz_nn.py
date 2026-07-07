@@ -5,12 +5,11 @@ import torch.nn as nn
 
 
 def export_to_uz_nn(trained_actor, export_dir="workshop/exported_paras"):
-    """Export a trained SB3 DQN Q-network to uz_nn-compatible CSV files.
+    """Export a trained SB3 policy network to uz_nn-compatible CSV files.
 
-    DQN does not have an actor network. Pass either the trained DQN model,
-    model.q_net, or the q_net Sequential module. The exported weights are
-    transposed from PyTorch's out_features x in_features layout to uz_nn's
-    number_of_inputs x number_of_neurons layout.
+    Pass a trained DQN model/Q-network or a DDPG actor/model. The exported
+    weights are transposed from PyTorch's out_features x in_features layout to
+    uz_nn's number_of_inputs x number_of_neurons layout.
     """
 
     export_path = Path(export_dir)
@@ -46,10 +45,13 @@ def _get_network_module(trained_actor):
     if hasattr(trained_actor, "q_net"):
         return _get_network_module(trained_actor.q_net)
 
+    if hasattr(trained_actor, "actor"):
+        return _get_network_module(trained_actor.actor)
+
     if isinstance(trained_actor, nn.Module):
         return trained_actor
 
-    raise TypeError("Expected a DQN model, QNetwork, or torch.nn.Module")
+    raise TypeError("Expected a DQN model, DDPG actor/model, or torch.nn.Module")
 
 
 def _get_bias(layer):

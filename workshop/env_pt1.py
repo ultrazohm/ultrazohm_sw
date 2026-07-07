@@ -102,7 +102,9 @@ class PT1Env(gym.Env):
 
     def step(self, action):
         u = float(self.actions[int(action)])
+        return self._step_with_input(u)
 
+    def _step_with_input(self, u):
         self.y = self.alpha * self.y + (1.0 - self.alpha) * self.gain * u
         self.step_count += 1
 
@@ -124,3 +126,50 @@ class PT1Env(gym.Env):
 
     def render(self):
         return f"step={self.step_count}, y={self.y:.4f}, ref={self.reference:.4f}"
+
+
+class ContinuousPT1Env(PT1Env):
+    """Same PT1 plant with one continuous action for DDPG."""
+
+    def __init__(
+        self,
+        *args,
+        action_low: float = -1.0,
+        action_high: float = 1.0,
+        **kwargs,
+    ):
+        if action_low >= action_high:
+            raise ValueError("action_low must be < action_high")
+
+        super().__init__(*args, **kwargs)
+
+        self.action_low = float(action_low)
+        self.action_high = float(action_high)
+        self.action_space = spaces.Box(
+            low=np.array([self.action_low], dtype=np.float32),
+            high=np.array([self.action_high], dtype=np.float32),
+            dtype=np.float32,
+        )
+        signal_limit = max(
+            abs(self.gain * self.action_low),
+            abs(self.gain * self.action_high),
+            abs(self.reference_default),
+            abs(self.reference_low) if self.reference_low is not None else 0.0,
+            abs(self.reference_high) if self.reference_high is not None else 0.0,
+            abs(self.initial_state_low),
+            abs(self.initial_state_high),
+            1.0,
+        )
+        self.observation_space = spaces.Box(
+            low=np.array([-signal_limit, -signal_limit], dtype=np.float32),
+            high=np.array([signal_limit, signal_limit], dtype=np.float32),
+            dtype=np.float32,
+        )
+
+    def step(self, action):
+        action_array = np.asarray(action, dtype=np.float32).reshape(-1)
+        if action_array.size != 1:
+            raise ValueError("ContinuousPT1Env expects one scalar action")
+
+        u = float(np.clip(action_array[0], self.action_low, self.action_high))
+        return self._step_with_input(u)

@@ -33,3 +33,4 @@ sphinx-sitemap
 snowballstemmer
 seaborn
 scipy
+stable-baselines3[extra] # for stable baselines3 used in workshop

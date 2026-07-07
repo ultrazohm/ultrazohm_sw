@@ -1,11 +1,14 @@
 			Lattice Semiconductor Corporation.
-			Lattice Programmer Diamond (64-bit) 3.14.0.75.2 Command Line (Database V3.11.1)
+			Lattice Programmer Diamond (64-bit) 3.13.0.56.2 Command Line (Database V3.11.1)
 
 
 
 System Information:
 -----------------------------------------------------
  Microsoft(R) Windows(R) 10.0  64-bit
+ 13th Gen Intel(R) Core(TM) i5-1335U 2496MHz
+
+
 Connected to Lattice Cable Server.
 Board with FTDI USB Host Chip detected.
 
@@ -16,34 +19,42 @@ JTAG Chain Verification. No Errors.
 Check configuration setup: Successful.
 Device1 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1340 ms.
+Total erase time: 1420 ms.
 
-Number of Loop = 134/1500
-Execution time: 00 min : 15 sec
+Number of Loop = 142/1500
+Execution time: 00 min : 16 sec
 Operation Done. No errors.
-Elapsed time: 00 min : 15 sec
+Elapsed time: 00 min : 17 sec
 Device2 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1410 ms.
+Total erase time: 1400 ms.
 
-Number of Loop = 141/1500
+Number of Loop = 140/1500
 Execution time: 00 min : 15 sec
 Operation Done. No errors.
 Elapsed time: 00 min : 16 sec
 Device3 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1650 ms.
+Total erase time: 1830 ms.
 
-Number of Loop = 165/1500
-Execution time: 00 min : 15 sec
+Number of Loop = 183/1500
+Execution time: 00 min : 16 sec
 Operation Done. No errors.
-Elapsed time: 00 min : 16 sec
+Elapsed time: 00 min : 18 sec
 Device4 LCMXO2-2000HC: FLASH Erase,Program,Verify
 
-Total erase time: 1470 ms.
+Total erase time: 1230 ms.
 
-Number of Loop = 147/1500
-Execution time: 00 min : 15 sec
+Number of Loop = 123/1500
+Execution time: 00 min : 17 sec
 Operation Done. No errors.
-Elapsed time: 00 min : 15 sec
+Elapsed time: 00 min : 19 sec
+Device5 LCMXO2-2000HC: FLASH Erase,Program,Verify
+
+Total erase time: 1740 ms.
+
+Number of Loop = 174/1500
+Execution time: 00 min : 17 sec
+Operation Done. No errors.
+Elapsed time: 00 min : 19 sec
 Operation: successful.

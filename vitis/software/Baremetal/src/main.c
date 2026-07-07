@@ -26,6 +26,12 @@ DS_Data Global_Data = {
         .pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f,
         .pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_2L_2_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_2_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_2_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_2L_3_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_3_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_3_halfBridgeDutyCycle_3 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
@@ -98,20 +104,29 @@ int main(void)
 			Global_Data.objects.project_wizard_deadtime_2l_1 = initialize_project_wizard_deadtime_2l_1();
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
 			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
+			Global_Data.objects.project_wizard_deadtime_2l_2 = initialize_project_wizard_deadtime_2l_2();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_2, true);
+			Global_Data.objects.project_wizard_pwm_2l_2 = initialize_project_wizard_pwm_2l_2();
+			Global_Data.objects.project_wizard_deadtime_2l_3 = initialize_project_wizard_deadtime_2l_3();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);
+			Global_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();
 			initialize_project_wizard_pwm_3l(&Global_Data);
 			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
-			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
-			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
-			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch1_sawtooth = uz_wavegen_sawtooth_init();
-			Global_Data.objects.dac8831_a2_ch2_triangle = uz_wavegen_triangle_init();
-			Global_Data.objects.dac8831_a2_ch3_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch4_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch5_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
-			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
-			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
+			Global_Data.objects.incremental_encoder_d1_1 = initialize_incremental_encoder_d1_1();
+			Global_Data.objects.incremental_encoder_d1_2 = initialize_incremental_encoder_d1_2();
+			Global_Data.objects.incremental_encoder_d1_3 = initialize_incremental_encoder_d1_3();
+			Global_Data.objects.incremental_encoder_d2_1 = initialize_incremental_encoder_d2_1();
+			Global_Data.objects.incremental_encoder_d2_2 = initialize_incremental_encoder_d2_2();
+			Global_Data.objects.incremental_encoder_d2_3 = initialize_incremental_encoder_d2_3();
+			Global_Data.objects.incremental_encoder_d3_1 = initialize_incremental_encoder_d3_1();
+			Global_Data.objects.incremental_encoder_d3_2 = initialize_incremental_encoder_d3_2();
+			Global_Data.objects.incremental_encoder_d3_3 = initialize_incremental_encoder_d3_3();
+			Global_Data.objects.incremental_encoder_d4_1 = initialize_incremental_encoder_d4_1();
+			Global_Data.objects.incremental_encoder_d4_2 = initialize_incremental_encoder_d4_2();
+			Global_Data.objects.incremental_encoder_d4_3 = initialize_incremental_encoder_d4_3();
+			Global_Data.objects.incremental_encoder_d5_1 = initialize_incremental_encoder_d5_1();
+			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
+			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

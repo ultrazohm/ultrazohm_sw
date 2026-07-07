@@ -1,0 +1,1070 @@
+{
+  "schema_version": 1,
+  "software_drivers": [
+    {
+      "id": "uz_axi_gpio",
+      "name": "AXI GPIO",
+      "templates": {
+        "header": "software/axi_gpio.h.tpl",
+        "source": "software/axi_gpio.c.tpl"
+      },
+      "config_fields": []
+    },
+    {
+      "id": "uz_adc_ltc2311",
+      "name": "ADC LTC2311",
+      "templates": {
+        "header": "software/adc_ltc2311.h.tpl",
+        "source": "software/adc_ltc2311.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "conversion_factor",
+          "label": "IP-core conversion factor",
+          "default": "1.0f",
+          "help": "This value is written into the LTC2311 IP-core channel configuration. It affects the PL-side conversion logic and is independent from the software raw-to-physical factors below."
+        },
+        {
+          "id": "conversion_factor_is_signed",
+          "label": "IP-core conversion factor signed",
+          "default": "true",
+          "help": "Defines whether the IP-core conversion factor is interpreted as signed fixed-point value."
+        },
+        {
+          "id": "conversion_factor_integer_bits",
+          "label": "IP-core conversion factor integer bits",
+          "default": "14",
+          "help": "Integer-bit width of the IP-core fixed-point conversion factor. Keep this consistent with the LTC2311 IP-core configuration."
+        },
+        {
+          "id": "conversion_factor_fractional_bits",
+          "label": "IP-core conversion factor fractional bits",
+          "default": "4",
+          "help": "Fractional-bit width of the IP-core fixed-point conversion factor. Keep this consistent with the LTC2311 IP-core configuration."
+        },
+        {
+          "id": "offset",
+          "label": "IP-core offset",
+          "default": "0"
+        },
+        {
+          "id": "samples",
+          "label": "Samples",
+          "default": "1U"
+        },
+        {
+          "id": "sample_time",
+          "label": "Sample time",
+          "default": "6U"
+        },
+        {
+          "id": "trigger_mode",
+          "label": "Trigger mode",
+          "default": "pl_trigger"
+        },
+        {
+          "id": "cpol",
+          "label": "CPOL",
+          "default": "1U"
+        },
+        {
+          "id": "cpha",
+          "label": "CPHA",
+          "default": "0U"
+        },
+        {
+          "id": "napping_spi_masters",
+          "label": "Napping SPI masters",
+          "default": "0U"
+        },
+        {
+          "id": "sleeping_spi_masters",
+          "label": "Sleeping SPI masters",
+          "default": "0U"
+        },
+        {
+          "id": "master_select",
+          "label": "Master select",
+          "default": "UZ_ADCLTC2311_MASTER1"
+        },
+        {
+          "id": "channel_select",
+          "label": "Channel select",
+          "default": "UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8"
+        },
+        {
+          "id": "pre_delay",
+          "label": "Pre delay",
+          "default": "0U"
+        },
+        {
+          "id": "post_delay",
+          "label": "Post delay",
+          "default": "0U"
+        },
+        {
+          "id": "clk_div",
+          "label": "Clock divider",
+          "default": "0U"
+        },
+        {
+          "id": "max_attempts",
+          "label": "Max attempts",
+          "default": "10U"
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch0",
+          "label": "Software raw-to-physical factor channel 0",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch1",
+          "label": "Software raw-to-physical factor channel 1",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch2",
+          "label": "Software raw-to-physical factor channel 2",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch3",
+          "label": "Software raw-to-physical factor channel 3",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch4",
+          "label": "Software raw-to-physical factor channel 4",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch5",
+          "label": "Software raw-to-physical factor channel 5",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch6",
+          "label": "Software raw-to-physical factor channel 6",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        },
+        {
+          "id": "software_raw_to_physical_value_factor_ch7",
+          "label": "Software raw-to-physical factor channel 7",
+          "default": "10.0f",
+          "help": "Software-only bipolar full-span scale factor used by uz_adcLtc2311_convert_raw_to_physical_value(). It does not configure the IP core. The raw ADC value is treated as signed int16_t differential/bipolar data. The formula is raw / 65536.0f * full_span_factor, so a factor of 10.0f maps the signed range approximately to -5.0 ... +5.0."
+        }
+      ]
+    },
+    {
+      "id": "temperature_card",
+      "name": "Temperature card",
+      "templates": {
+        "header": "software/temperature_card.h.tpl",
+        "source": "software/temperature_card.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000"
+        },
+        {
+          "id": "sample_frequency_hz",
+          "label": "Sample frequency Hz",
+          "default": "5"
+        },
+        {
+          "id": "config_global_a",
+          "label": "Config_Global_A",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_a",
+          "label": "Config_Mux_A",
+          "default": "0U"
+        },
+        {
+          "id": "config_global_b",
+          "label": "Config_Global_B",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_b",
+          "label": "Config_Mux_B",
+          "default": "0U"
+        },
+        {
+          "id": "config_global_c",
+          "label": "Config_Global_C",
+          "default": "0U"
+        },
+        {
+          "id": "config_mux_c",
+          "label": "Config_Mux_C",
+          "default": "0U"
+        },
+        {
+          "id": "configdata_a",
+          "label": "Configdata_A entries",
+          "default": "{{ temperature_configdata_a }}",
+          "multiline": true
+        },
+        {
+          "id": "configdata_b",
+          "label": "Configdata_B entries",
+          "default": "        [0] = 0U,",
+          "multiline": true
+        },
+        {
+          "id": "configdata_c",
+          "label": "Configdata_C entries",
+          "default": "        [0] = 0U,",
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "id": "uz_adc_max11331",
+      "name": "ADC MAX11331",
+      "templates": {
+        "header": "software/adc_max11331.h.tpl",
+        "source": "software/adc_max11331.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "conversion_factor",
+          "label": "Software conversion factor",
+          "default": "4.96241f",
+          "help": "Board-specific software-side conversion factor used for the packed MAX11331 raw values. The default 4.96241f is taken from the MAX11 adapter card documentation and is independent of the UltraZohm hardware revision. The current driver uses one conversion factor for all 24 channels."
+        },
+        {
+          "id": "conversion_factor_is_signed",
+          "label": "Conversion factor signed",
+          "default": "true"
+        },
+        {
+          "id": "conversion_factor_integer_bits",
+          "label": "Conversion factor integer bits",
+          "default": "14"
+        },
+        {
+          "id": "conversion_factor_fractional_bits",
+          "label": "Conversion factor fractional bits",
+          "default": "4"
+        },
+        {
+          "id": "offset",
+          "label": "Software offset",
+          "default": "0"
+        },
+        {
+          "id": "master_select",
+          "label": "Master select",
+          "default": "UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2 | UZ_ADCMAX11331_MASTER3"
+        },
+        {
+          "id": "trigger_mode",
+          "label": "Trigger mode",
+          "default": "UZ_ADCMAX11331_PL_TRIGGER"
+        },
+        {
+          "id": "adc_delay_offset",
+          "label": "ADC delay offset",
+          "default": "0U"
+        },
+        {
+          "id": "clk_div",
+          "label": "SPI clock divider",
+          "default": "UZ_ADCMAX11331_SPI_CLK_16_67MHZ"
+        },
+        {
+          "id": "cpha",
+          "label": "CPHA",
+          "default": "1U"
+        },
+        {
+          "id": "cpol",
+          "label": "CPOL",
+          "default": "1U"
+        },
+        {
+          "id": "error_code",
+          "label": "Initial error code",
+          "default": "0U"
+        }
+      ]
+    },
+    {
+      "id": "uz_dac_interface",
+      "name": "DAC8831 interface",
+      "templates": {
+        "header": "software/dac8831.h.tpl",
+        "source": "software/dac8831.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "gain_ch0",
+          "label": "Gain channel 0",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 0. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch1",
+          "label": "Gain channel 1",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 1. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch2",
+          "label": "Gain channel 2",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 2. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch3",
+          "label": "Gain channel 3",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 3. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch4",
+          "label": "Gain channel 4",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 4. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch5",
+          "label": "Gain channel 5",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 5. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch6",
+          "label": "Gain channel 6",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 6. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "gain_ch7",
+          "label": "Gain channel 7",
+          "default": "2.0f",
+          "help": "Software conversion gain for DAC output channel 7. The nominal adapter-card value is 2.0f."
+        },
+        {
+          "id": "output_ch0_source",
+          "label": "Output channel 0 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch0_constant",
+          "label": "Output channel 0 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch0_source": ["constant"]}
+        },
+        {
+          "id": "output_ch0_amplitude",
+          "label": "Output channel 0 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch0_frequency_Hz",
+          "label": "Output channel 0 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch0_duty_cycle",
+          "label": "Output channel 0 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch0_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch0_offset",
+          "label": "Output channel 0 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch0_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch1_source",
+          "label": "Output channel 1 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch1_constant",
+          "label": "Output channel 1 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch1_source": ["constant"]}
+        },
+        {
+          "id": "output_ch1_amplitude",
+          "label": "Output channel 1 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch1_frequency_Hz",
+          "label": "Output channel 1 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch1_duty_cycle",
+          "label": "Output channel 1 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch1_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch1_offset",
+          "label": "Output channel 1 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch1_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch2_source",
+          "label": "Output channel 2 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch2_constant",
+          "label": "Output channel 2 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch2_source": ["constant"]}
+        },
+        {
+          "id": "output_ch2_amplitude",
+          "label": "Output channel 2 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch2_frequency_Hz",
+          "label": "Output channel 2 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch2_duty_cycle",
+          "label": "Output channel 2 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch2_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch2_offset",
+          "label": "Output channel 2 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch2_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch3_source",
+          "label": "Output channel 3 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch3_constant",
+          "label": "Output channel 3 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch3_source": ["constant"]}
+        },
+        {
+          "id": "output_ch3_amplitude",
+          "label": "Output channel 3 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch3_frequency_Hz",
+          "label": "Output channel 3 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch3_duty_cycle",
+          "label": "Output channel 3 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch3_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch3_offset",
+          "label": "Output channel 3 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch3_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch4_source",
+          "label": "Output channel 4 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch4_constant",
+          "label": "Output channel 4 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch4_source": ["constant"]}
+        },
+        {
+          "id": "output_ch4_amplitude",
+          "label": "Output channel 4 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch4_frequency_Hz",
+          "label": "Output channel 4 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch4_duty_cycle",
+          "label": "Output channel 4 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch4_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch4_offset",
+          "label": "Output channel 4 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch4_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch5_source",
+          "label": "Output channel 5 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch5_constant",
+          "label": "Output channel 5 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch5_source": ["constant"]}
+        },
+        {
+          "id": "output_ch5_amplitude",
+          "label": "Output channel 5 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch5_frequency_Hz",
+          "label": "Output channel 5 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch5_duty_cycle",
+          "label": "Output channel 5 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch5_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch5_offset",
+          "label": "Output channel 5 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch5_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch6_source",
+          "label": "Output channel 6 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch6_constant",
+          "label": "Output channel 6 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch6_source": ["constant"]}
+        },
+        {
+          "id": "output_ch6_amplitude",
+          "label": "Output channel 6 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch6_frequency_Hz",
+          "label": "Output channel 6 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch6_duty_cycle",
+          "label": "Output channel 6 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch6_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch6_offset",
+          "label": "Output channel 6 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch6_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch7_source",
+          "label": "Output channel 7 source",
+          "default": "constant",
+          "input": "choice",
+          "options": [
+            {"value": "constant", "label": "Constant"},
+            {"value": "sine", "label": "Sine"},
+            {"value": "sawtooth", "label": "Sawtooth"},
+            {"value": "triangle", "label": "Triangle"},
+            {"value": "square", "label": "Square"},
+            {"value": "pulse", "label": "Pulse"},
+            {"value": "white_noise", "label": "White noise"}
+          ]
+        },
+        {
+          "id": "output_ch7_constant",
+          "label": "Output channel 7 constant value",
+          "default": "0.0f",
+          "visible_when": {"output_ch7_source": ["constant"]}
+        },
+        {
+          "id": "output_ch7_amplitude",
+          "label": "Output channel 7 amplitude",
+          "default": "1.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        },
+        {
+          "id": "output_ch7_frequency_Hz",
+          "label": "Output channel 7 frequency Hz",
+          "default": "10.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse"]}
+        },
+        {
+          "id": "output_ch7_duty_cycle",
+          "label": "Output channel 7 duty cycle",
+          "default": "0.5f",
+          "help": "Duty cycle for square and pulse waveforms. Valid range is 0.0f to 1.0f.",
+          "visible_when": {"output_ch7_source": ["square", "pulse"]}
+        },
+        {
+          "id": "output_ch7_offset",
+          "label": "Output channel 7 offset",
+          "default": "0.0f",
+          "visible_when": {"output_ch7_source": ["sine", "sawtooth", "triangle", "square", "pulse", "white_noise"]}
+        }
+      ]
+    },
+    {
+      "id": "uz_inverter_adapter",
+      "name": "UZ inverter adapter",
+      "templates": {
+        "header": "software/inverter_adapter.h.tpl",
+        "source": "software/inverter_adapter.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "linear_interpolation_a",
+          "label": "Temperature interpolation a",
+          "default": "-289.01f",
+          "help": "Gradient for the chip-temperature linear interpolation y = a*x + b."
+        },
+        {
+          "id": "linear_interpolation_b",
+          "label": "Temperature interpolation b",
+          "default": "218.72f",
+          "help": "Offset for the chip-temperature linear interpolation y = a*x + b."
+        }
+      ]
+    },
+    {
+      "id": "uz_endat_interface",
+      "name": "EnDat interface",
+      "templates": {
+        "header": "software/endat_interface.h.tpl",
+        "source": "software/endat_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "2U"
+        },
+        {
+          "id": "endat_clk_frequency_Hz",
+          "label": "EnDat clock frequency Hz",
+          "default": "2500000U"
+        },
+        {
+          "id": "position_mech_offset_si_single_turn",
+          "label": "Mechanical offset SI single turn",
+          "default": "-1.0f"
+        },
+        {
+          "id": "endat_encoder_bit_width_single_turn",
+          "label": "Single-turn bit width",
+          "default": "25U"
+        },
+        {
+          "id": "endat_encoder_bit_width_multi_turn",
+          "label": "Multi-turn bit width",
+          "default": "12U"
+        },
+        {
+          "id": "kp_pll",
+          "label": "PLL Kp",
+          "default": "628.3185f"
+        },
+        {
+          "id": "ki_pll",
+          "label": "PLL Ki",
+          "default": "98696.0f"
+        },
+        {
+          "id": "sampling_interval_seconds",
+          "label": "Sampling interval seconds",
+          "default": "0.0001f"
+        },
+        {
+          "id": "delay_sampling_in_clk_ticks",
+          "label": "Sampling delay clock ticks",
+          "default": "0U"
+        }
+      ]
+    },
+    {
+      "id": "uz_ssi_interface",
+      "name": "SSI interface",
+      "templates": {
+        "header": "software/ssi_interface.h.tpl",
+        "source": "software/ssi_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "2U"
+        },
+        {
+          "id": "ssi_clk_frequency_Hz",
+          "label": "SSI clock frequency Hz",
+          "default": "1000000U"
+        },
+        {
+          "id": "position_encoding",
+          "label": "Position encoding",
+          "default": "uz_ssi_interface_binary"
+        },
+        {
+          "id": "position_mech_offset_si_single_turn",
+          "label": "Mechanical offset SI single turn",
+          "default": "0.0f"
+        },
+        {
+          "id": "ssi_encoder_bit_width_single_turn",
+          "label": "Single-turn bit width",
+          "default": "19U"
+        },
+        {
+          "id": "ssi_encoder_bit_width_multi_turn",
+          "label": "Multi-turn bit width",
+          "default": "0U"
+        },
+        {
+          "id": "ssi_encoder_number_of_status_bits",
+          "label": "Status bit count",
+          "default": "0U"
+        },
+        {
+          "id": "sampling_interval_seconds",
+          "label": "Sampling interval seconds",
+          "default": "0.0001f"
+        },
+        {
+          "id": "kp_pll",
+          "label": "PLL Kp",
+          "default": "628.3185f"
+        },
+        {
+          "id": "ki_pll",
+          "label": "PLL Ki",
+          "default": "98696.0f"
+        },
+        {
+          "id": "sampling_delay_clk_ticks",
+          "label": "Sampling delay clock ticks",
+          "default": "0U"
+        }
+      ]
+    },
+    {
+      "id": "uz_resolverIP",
+      "name": "Resolver Interface",
+      "templates": {
+        "header": "software/resolver_ip.h.tpl",
+        "source": "software/resolver_ip.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "resolution",
+          "label": "Resolver resolution bits",
+          "default": "16U"
+        },
+        {
+          "id": "freq_clockin",
+          "label": "AD2S1210 clock input Hz",
+          "default": "8192000.0f"
+        },
+        {
+          "id": "zero_position_mechanical",
+          "label": "Mechanical zero position",
+          "default": "0.0f"
+        },
+        {
+          "id": "pole_pairs_machine",
+          "label": "Machine pole pairs",
+          "default": "4.0f"
+        },
+        {
+          "id": "pole_pairs_resolver",
+          "label": "Resolver pole pairs",
+          "default": "1.0f"
+        },
+        {
+          "id": "mode_after_init",
+          "label": "Mode after init",
+          "default": "POSITION_VELOCITY_MODE",
+          "input": "choice",
+          "options": [
+            {
+              "value": "POSITION_VELOCITY_MODE",
+              "label": "Position and velocity"
+            },
+            {
+              "value": "POSITION_MODE",
+              "label": "Position"
+            },
+            {
+              "value": "VELOCITY_MODE",
+              "label": "Velocity"
+            },
+            {
+              "value": "CONFIG_MODE",
+              "label": "Config"
+            }
+          ],
+          "help": "When the resolver PL interface is enabled, POSITION_VELOCITY_MODE keeps the resolver raw position and speed outputs updating for PL-side processing."
+        }
+      ]
+    },
+    {
+      "id": "uz_resolver_pl_interface",
+      "name": "Resolver PL interface",
+      "templates": {
+        "header": "software/resolver_pl_interface.h.tpl",
+        "source": "software/resolver_pl_interface.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_clk_frequency_Hz",
+          "label": "IP clock frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "resolver_polepairs",
+          "label": "Resolver pole pairs",
+          "default": "1"
+        },
+        {
+          "id": "machine_polepairs",
+          "label": "Machine pole pairs",
+          "default": "4"
+        },
+        {
+          "id": "position_intmax",
+          "label": "Position int max",
+          "default": "65535"
+        },
+        {
+          "id": "bitToRPS_factor",
+          "label": "Bit to RPS factor",
+          "default": "BIT_TO_RPS_FACTOR_16BIT"
+        },
+        {
+          "id": "theta_m_offset_rad",
+          "label": "Mechanical theta offset rad",
+          "default": "0.0f"
+        }
+      ]
+    },
+    {
+      "id": "uz_incrementalEncoder",
+      "name": "Incremental encoder",
+      "templates": {
+        "header": "software/incremental_encoder.h.tpl",
+        "source": "software/incremental_encoder.c.tpl"
+      },
+      "config_fields": [
+        {
+          "id": "ip_core_frequency_Hz",
+          "label": "IP core frequency Hz",
+          "default": "100000000U"
+        },
+        {
+          "id": "line_number_per_turn_mech",
+          "label": "Line number per mechanical turn",
+          "default": "5000U"
+        },
+        {
+          "id": "OmegaPerOverSample_in_rpm",
+          "label": "Omega per oversample rpm",
+          "default": "500.0f"
+        },
+        {
+          "id": "drive_pole_pair",
+          "label": "Drive pole pairs",
+          "default": "4U",
+          "help": "Pole-pair count passed to the incremental encoder driver configuration. Keep this consistent with the driver requirements for electrical-angle readout."
+        },
+        {
+          "id": "Encoder_mech_Offset",
+          "label": "Mechanical encoder offset",
+          "default": "0U"
+        },
+        {
+          "id": "Encoder_elec_Offset",
+          "label": "Electrical encoder offset",
+          "default": "0U"
+        },
+        {
+          "id": "counting_direction",
+          "label": "Counting direction",
+          "default": "uz_incrementalEncoder_counting_clock_wise",
+          "input": "choice",
+          "options": [
+            {
+              "value": "uz_incrementalEncoder_counting_clock_wise",
+              "label": "Clockwise"
+            },
+            {
+              "value": "uz_incrementalEncoder_counting_counter_clock_wise",
+              "label": "Counter-clockwise"
+            }
+          ]
+        },
+        {
+          "id": "Speed_Timeout_ms",
+          "label": "Speed timeout ms",
+          "default": "10U"
+        }
+      ]
+    }
+  ]
+}

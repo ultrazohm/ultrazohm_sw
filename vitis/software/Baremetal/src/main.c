@@ -115,6 +115,7 @@ int main(void)
 			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
 			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
+            dqn_pt1_control_init(&Global_Data);
             initialization_chain = print_msg;
             break;
         case print_msg:

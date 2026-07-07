@@ -7,6 +7,8 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
+#include "IP_Cores/uz_plantPT1/uz_plantPT1.h"
+#include "uz/uz_dqn/uz_dqn_agent.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -24,6 +26,10 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
+	float dqn_pt1_actual;
+	float dqn_pt1_reference;
+	float dqn_pt1_setpoint;
+	float dqn_pt1_action;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -106,6 +112,8 @@ typedef struct _referenceAndSetValues_ {
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
+	uz_plantPT1_t* plant_pt1;
+	uz_dqn_agent_t* dqn_agent;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;
@@ -136,4 +144,3 @@ typedef struct _DS_Data_ {
 } DS_Data;
 
 #endif
-

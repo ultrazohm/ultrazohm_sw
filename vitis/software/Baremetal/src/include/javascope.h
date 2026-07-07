@@ -68,6 +68,10 @@ enum JS_OberservableData {
 	JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S,
 	JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER,
 /* Project Wizard END: javascope_observables */
+	JSO_DQN_PT1_ACTUAL,
+	JSO_DQN_PT1_REFERENCE,
+	JSO_DQN_PT1_SETPOINT,
+	JSO_DQN_PT1_ACTION,
 	JSO_D3_INPUT_LOOPBACK_UINT32,
 	JSO_ENDMARKER
 };
@@ -137,7 +141,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
+	dqn_pt1_setpoint,
 	send_field_2,
 	send_field_3,
 	send_field_4,

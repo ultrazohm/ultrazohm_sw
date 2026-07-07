@@ -117,6 +117,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_omega_el_rad_s;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_revolution_counter;
 /* Project Wizard END: javascope_observable_pointers */
+	js_ch_observable[JSO_DQN_PT1_ACTUAL] = &data->av.dqn_pt1_actual;
+	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
+	js_ch_observable[JSO_DQN_PT1_SETPOINT] = &data->av.dqn_pt1_setpoint;
+	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

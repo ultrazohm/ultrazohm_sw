@@ -1,4 +1,8 @@
 #include "uz_dqn_agent.h"
+#include "../../include/pt1_control_config.h"
+
+#if (PT1_CONTROL_AGENT == PT1_CONTROL_AGENT_DQN)
+
 #include "../uz_HAL.h"
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_nn/uz_nn.h"
@@ -97,3 +101,5 @@ float uz_dqn_agent_step(uz_dqn_agent_t *self, float actual_value, float referenc
     uz_assert(action_index < UZ_DQN_NUMBER_OF_OUTPUTS);
     return dqn_action_values[action_index];
 }
+
+#endif

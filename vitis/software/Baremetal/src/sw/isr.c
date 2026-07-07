@@ -51,7 +51,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
-static uint32_t dqn_pt1_control_decimation_counter = 0U;
+static uint32_t pt1_control_decimation_counter = 0U;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -88,8 +88,8 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        dqn_pt1_control_stop(&Global_Data);
-        dqn_pt1_control_decimation_counter = 0U;
+        pt1_control_stop(&Global_Data);
+        pt1_control_decimation_counter = 0U;
 /* Project Wizard END: idle_state isr_actions */
     }
     else if (current_state == running_state)
@@ -99,7 +99,7 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
-        dqn_pt1_control_decimation_counter = 0U;
+        pt1_control_decimation_counter = 0U;
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
@@ -113,11 +113,11 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
         Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
 
-        dqn_pt1_control_decimation_counter++;
-        if (dqn_pt1_control_decimation_counter >= DQN_PT1_CONTROL_DECIMATION)
+        pt1_control_decimation_counter++;
+        if (pt1_control_decimation_counter >= PT1_CONTROL_DECIMATION)
         {
-            dqn_pt1_control_decimation_counter = 0U;
-            dqn_pt1_control_step(&Global_Data);
+            pt1_control_decimation_counter = 0U;
+            pt1_control_step(&Global_Data);
         }
 
         /* Project Wizard BEGIN: control_state isr_actions */
@@ -136,8 +136,8 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        dqn_pt1_control_stop(&Global_Data);
-        dqn_pt1_control_decimation_counter = 0U;
+        pt1_control_stop(&Global_Data);
+        pt1_control_decimation_counter = 0U;
 /* Project Wizard END: error_state isr_actions */
     }
     

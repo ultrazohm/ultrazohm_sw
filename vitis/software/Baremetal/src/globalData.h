@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "IP_Cores/uz_plantPT1/uz_plantPT1.h"
+#include "uz/uz_ddpg/uz_ddpg_agent.h"
 #include "uz/uz_dqn/uz_dqn_agent.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
@@ -114,6 +115,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_plantPT1_t* plant_pt1;
 	uz_dqn_agent_t* dqn_agent;
+	uz_ddpg_agent_t* ddpg_agent;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

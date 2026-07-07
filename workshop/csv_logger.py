@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import torch
 from stable_baselines3.common.callbacks import BaseCallback
 
@@ -21,6 +22,22 @@ FIELDNAMES = [
     "q_action_plus_1",
     "greedy_action_index",
     "greedy_action_value",
+    "exploration_rate",
+    "terminated",
+    "truncated",
+    "done",
+]
+
+TRAINING_FIELDNAMES = [
+    "time",
+    "episode",
+    "episode_k",
+    "y",
+    "reference",
+    "error",
+    "action_index",
+    "action_value",
+    "reward",
     "exploration_rate",
     "terminated",
     "truncated",
@@ -99,13 +116,22 @@ class CsvStepWriter:
 
 
 class EpisodeCsvLogger(BaseCallback):
-    def __init__(self, log_dir, action_values, file_name="training_log.csv"):
+    def __init__(self, log_dir, file_name="training_log.csv", log_every_n_episodes=1):
         super().__init__()
-        self.csv = CsvStepWriter(log_dir, action_values, file_name)
+        if log_every_n_episodes < 1:
+            raise ValueError("log_every_n_episodes must be >= 1")
+
+        self.log_dir = Path(log_dir)
+        self.path = self.log_dir / file_name
+        self.log_every_n_episodes = int(log_every_n_episodes)
         self.episode = 1
+        self.rows = []
+        self.dataframe = pd.DataFrame(columns=TRAINING_FIELDNAMES)
 
     def _on_training_start(self):
-        self.csv.open()
+        self.episode = 1
+        self.rows = []
+        self.dataframe = pd.DataFrame(columns=TRAINING_FIELDNAMES)
 
     def _on_step(self):
         observations = self.model._last_obs
@@ -119,20 +145,22 @@ class EpisodeCsvLogger(BaseCallback):
             action_index = int(actions[env_index])
             done = bool(dones[env_index])
 
-            self.csv.write_step(
-                time=self.num_timesteps - 1,
-                episode=self.episode,
-                episode_k=info["step"] - 1,
-                obs=obs,
-                action_index=action_index,
-                action_value=info["u"],
-                reward=rewards[env_index],
-                q_values=get_q_values(self.model, obs),
-                exploration_rate=self.model.exploration_rate,
-                terminated=info["terminated"],
-                truncated=info["truncated"],
-                done=done,
-            )
+            if self._should_log_episode(self.episode):
+                self.rows.append(
+                    self._make_row(
+                        time=self.num_timesteps - 1,
+                        episode=self.episode,
+                        episode_k=info["step"] - 1,
+                        obs=obs,
+                        action_index=action_index,
+                        action_value=info["u"],
+                        reward=rewards[env_index],
+                        exploration_rate=self.model.exploration_rate,
+                        terminated=info["terminated"],
+                        truncated=info["truncated"],
+                        done=done,
+                    )
+                )
 
             if done:
                 self.episode += 1
@@ -140,4 +168,41 @@ class EpisodeCsvLogger(BaseCallback):
         return True
 
     def _on_training_end(self):
-        self.csv.close()
+        self.dataframe = pd.DataFrame(self.rows, columns=TRAINING_FIELDNAMES)
+        self.log_dir.mkdir(parents=True, exist_ok=True)
+        self.dataframe.to_csv(self.path, index=False)
+
+    def _should_log_episode(self, episode):
+        return (episode - 1) % self.log_every_n_episodes == 0
+
+    def _make_row(
+        self,
+        time,
+        episode,
+        episode_k,
+        obs,
+        action_index,
+        action_value,
+        reward,
+        exploration_rate,
+        terminated,
+        truncated,
+        done,
+    ):
+        y = float(obs[0])
+        reference = float(obs[1])
+        return {
+            "time": int(time),
+            "episode": int(episode),
+            "episode_k": int(episode_k),
+            "y": y,
+            "reference": reference,
+            "error": reference - y,
+            "action_index": int(action_index),
+            "action_value": float(action_value),
+            "reward": float(reward),
+            "exploration_rate": float(exploration_rate),
+            "terminated": float(terminated),
+            "truncated": float(truncated),
+            "done": float(done),
+        }

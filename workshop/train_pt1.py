@@ -17,7 +17,9 @@ TRAIN_REFERENCE_LOW = -1.0
 TRAIN_REFERENCE_HIGH = 1.0
 INITIAL_STATE_LOW = 0.0
 INITIAL_STATE_HIGH = 0.0
-TRAINING_EPISODES = 100
+TRAINING_EPISODES = 1000
+# 1 logs every episode; 10 logs episodes 1, 11, 21, ...
+TRAIN_LOG_EVERY_N_EPISODES = 1
 STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
 TOTAL_TIMESTEPS = TRAINING_EPISODES * STEPS_PER_EPISODE
 MODEL_PATH = "dqn_pt1"
@@ -38,7 +40,7 @@ env = PT1Env(
 )
 check_env(env, warn=True)
 
-HIDDEN_LAYERS = [128, 128]
+HIDDEN_LAYERS = [32, 32]
 ACTIVATION_FN = th.nn.ReLU
 POLICY_KWARGS = {
     "net_arch": HIDDEN_LAYERS,
@@ -46,18 +48,22 @@ POLICY_KWARGS = {
 }
 
 model = DQN("MlpPolicy", env, verbose=1, policy_kwargs=POLICY_KWARGS, seed=0)
+training_logger = EpisodeCsvLogger(
+    LOG_DIR,
+    log_every_n_episodes=TRAIN_LOG_EVERY_N_EPISODES,
+)
 
 model.learn(
     total_timesteps=TOTAL_TIMESTEPS,
     log_interval=4,
-    callback=EpisodeCsvLogger(LOG_DIR, PT1Env.actions),
+    callback=training_logger,
 )
 
 model.save(MODEL_PATH)
 export_to_uz_nn(model, EXPORT_DIR)
 
 
-EVAL_REFERENCES = [-1.0, 0.0,0.5, 1.0]
+EVAL_REFERENCES = [-1.0, 0.0,0.5,0.1,0.2, 1.0]
 eval_log = CsvStepWriter(LOG_DIR, PT1Env.actions, "eval_log.csv")
 eval_log.open()
 time = 0

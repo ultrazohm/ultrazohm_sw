@@ -5,7 +5,7 @@ from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.noise import NormalActionNoise
 
 from csv_logger import ContinuousCsvStepWriter, ContinuousEpisodeCsvLogger
-from env_pt1 import ContinuousPT1Env
+from env_pt1 import PT1Env
 from export_to_uz_nn import export_to_uz_nn
 
 
@@ -31,7 +31,7 @@ LOG_DIR = "workshop/logs"
 EXPORT_DIR = "workshop/exported_paras_ddpg"
 
 
-env = ContinuousPT1Env(
+env = PT1Env(
     gain=GAIN,
     time_constant=TIME_CONSTANT,
     control_frequency=CONTROL_FREQUENCY,
@@ -41,8 +41,7 @@ env = ContinuousPT1Env(
     reference_high=TRAIN_REFERENCE_HIGH,
     initial_state_low=INITIAL_STATE_LOW,
     initial_state_high=INITIAL_STATE_HIGH,
-    action_low=ACTION_LOW,
-    action_high=ACTION_HIGH,
+    action_range=(ACTION_LOW, ACTION_HIGH),
 )
 check_env(env, warn=True)
 

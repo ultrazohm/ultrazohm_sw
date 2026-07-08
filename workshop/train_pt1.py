@@ -17,6 +17,7 @@ TRAIN_REFERENCE_LOW = -1.0
 TRAIN_REFERENCE_HIGH = 1.0
 INITIAL_STATE_LOW = 0.0
 INITIAL_STATE_HIGH = 0.0
+DISCRETE_ACTIONS = [-1.0, 0.0, 1.0]
 TRAINING_EPISODES = 1000
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
@@ -37,6 +38,7 @@ env = PT1Env(
     reference_high=TRAIN_REFERENCE_HIGH,
     initial_state_low=INITIAL_STATE_LOW,
     initial_state_high=INITIAL_STATE_HIGH,
+    action_values=DISCRETE_ACTIONS,
 )
 check_env(env, warn=True)
 
@@ -63,8 +65,8 @@ model.save(MODEL_PATH)
 export_to_uz_nn(model, EXPORT_DIR)
 
 
-EVAL_REFERENCES = [-1.0, 0.0,0.5,0.1,0.2, 1.0]
-eval_log = CsvStepWriter(LOG_DIR, PT1Env.actions, "eval_log.csv")
+EVAL_REFERENCES = [-1.0, 0.0, 0.5, 0.1, 0.2, 1.0]
+eval_log = CsvStepWriter(LOG_DIR, env.actions, "eval_log.csv")
 eval_log.open()
 time = 0
 

@@ -4,7 +4,7 @@ from gymnasium import spaces
 
 
 class PT1Env(gym.Env):
-    """Minimal PT1 control environment for DQN.
+    """Minimal PT1 control environment for discrete or continuous control.
 
     Plant:
         dy/dt = (gain * u - y) / time_constant
@@ -27,6 +27,8 @@ class PT1Env(gym.Env):
         reference_high: float | None = None,
         initial_state_low: float = -1.0,
         initial_state_high: float = 1.0,
+        action_values=None,
+        action_range: tuple[float, float] | None = None,
     ):
         super().__init__()
 
@@ -44,6 +46,8 @@ class PT1Env(gym.Env):
             raise ValueError("reference_low must be <= reference_high")
         if initial_state_low > initial_state_high:
             raise ValueError("initial_state_low must be <= initial_state_high")
+        if action_values is not None and action_range is not None:
+            raise ValueError("Set either action_values or action_range, not both")
 
         self.gain = float(gain)
         self.time_constant = float(time_constant)
@@ -58,10 +62,11 @@ class PT1Env(gym.Env):
         self.initial_state_low = float(initial_state_low)
         self.initial_state_high = float(initial_state_high)
 
-        self.action_space = spaces.Discrete(len(self.actions))
+        self._configure_actions(action_values, action_range)
 
         signal_limit = max(
-            abs(self.gain),
+            abs(self.gain * self.action_low),
+            abs(self.gain * self.action_high),
             abs(self.reference_default),
             abs(self.reference_low) if self.reference_low is not None else 0.0,
             abs(self.reference_high) if self.reference_high is not None else 0.0,
@@ -77,6 +82,34 @@ class PT1Env(gym.Env):
 
         self.y = 0.0
         self.step_count = 0
+
+    def _configure_actions(self, action_values, action_range):
+        if action_range is not None:
+            action_low, action_high = action_range
+            if action_low >= action_high:
+                raise ValueError("action_range low must be < high")
+
+            self.continuous_actions = True
+            self.actions = None
+            self.action_low = float(action_low)
+            self.action_high = float(action_high)
+            self.action_space = spaces.Box(
+                low=np.array([self.action_low], dtype=np.float32),
+                high=np.array([self.action_high], dtype=np.float32),
+                dtype=np.float32,
+            )
+            return
+
+        action_values = self.actions if action_values is None else action_values
+        actions = np.asarray(action_values, dtype=np.float32).reshape(-1)
+        if actions.size == 0:
+            raise ValueError("action_values must contain at least one action")
+
+        self.continuous_actions = False
+        self.actions = actions
+        self.action_low = float(np.min(actions))
+        self.action_high = float(np.max(actions))
+        self.action_space = spaces.Discrete(len(self.actions))
 
     def _get_obs(self):
         return np.array([self.y, self.reference], dtype=np.float32)
@@ -101,7 +134,16 @@ class PT1Env(gym.Env):
         return self._get_obs(), {"reference": self.reference}
 
     def step(self, action):
-        u = float(self.actions[int(action)])
+        if self.continuous_actions:
+            action_array = np.asarray(action, dtype=np.float32).reshape(-1)
+            if action_array.size != 1:
+                raise ValueError("PT1Env expects one scalar continuous action")
+
+            u = float(np.clip(action_array[0], self.action_low, self.action_high))
+        else:
+            action_index = int(action)
+            u = float(self.actions[action_index])
+
         return self._step_with_input(u)
 
     def _step_with_input(self, u):
@@ -127,49 +169,3 @@ class PT1Env(gym.Env):
     def render(self):
         return f"step={self.step_count}, y={self.y:.4f}, ref={self.reference:.4f}"
 
-
-class ContinuousPT1Env(PT1Env):
-    """Same PT1 plant with one continuous action for DDPG."""
-
-    def __init__(
-        self,
-        *args,
-        action_low: float = -1.0,
-        action_high: float = 1.0,
-        **kwargs,
-    ):
-        if action_low >= action_high:
-            raise ValueError("action_low must be < action_high")
-
-        super().__init__(*args, **kwargs)
-
-        self.action_low = float(action_low)
-        self.action_high = float(action_high)
-        self.action_space = spaces.Box(
-            low=np.array([self.action_low], dtype=np.float32),
-            high=np.array([self.action_high], dtype=np.float32),
-            dtype=np.float32,
-        )
-        signal_limit = max(
-            abs(self.gain * self.action_low),
-            abs(self.gain * self.action_high),
-            abs(self.reference_default),
-            abs(self.reference_low) if self.reference_low is not None else 0.0,
-            abs(self.reference_high) if self.reference_high is not None else 0.0,
-            abs(self.initial_state_low),
-            abs(self.initial_state_high),
-            1.0,
-        )
-        self.observation_space = spaces.Box(
-            low=np.array([-signal_limit, -signal_limit], dtype=np.float32),
-            high=np.array([signal_limit, signal_limit], dtype=np.float32),
-            dtype=np.float32,
-        )
-
-    def step(self, action):
-        action_array = np.asarray(action, dtype=np.float32).reshape(-1)
-        if action_array.size != 1:
-            raise ValueError("ContinuousPT1Env expects one scalar action")
-
-        u = float(np.clip(action_array[0], self.action_low, self.action_high))
-        return self._step_with_input(u)

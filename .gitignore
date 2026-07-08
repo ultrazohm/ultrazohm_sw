@@ -34,3 +34,4 @@ vitis/Packages/*
 __pycache__/
 *.pyc
 *.pyo
+venv/

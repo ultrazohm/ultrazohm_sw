@@ -131,6 +131,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DESKBENCH_DUT_V_Q_V] = &data->av.deskbench_dut_v_q_V;
 	js_ch_observable[JSO_DESKBENCH_DUT_SPEED_RPM] = &data->av.deskbench_dut_speed_rpm;
 	js_ch_observable[JSO_DESKBENCH_DUT_MEAN_TEMP_DEGC] = &data->av.deskbench_dut_mean_temp_degC;
+	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_D_A] = &data->av.deskbench_dut_pmsm_model_i_d_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_Q_A] = &data->av.deskbench_dut_pmsm_model_i_q_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_TORQUE_NM] = &data->av.deskbench_dut_pmsm_model_torque_Nm;
+	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_OMEGA_MECH_RAD_S] = &data->av.deskbench_dut_pmsm_model_omega_mech_rad_s;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_D_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.d;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_Q_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.q;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_A_A] = &data->av.deskbench_prime_mover_i_a_A;

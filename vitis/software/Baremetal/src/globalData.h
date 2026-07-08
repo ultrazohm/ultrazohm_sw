@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "IP_Cores/uz_plantPT1/uz_plantPT1.h"
+#include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
 #include "uz/uz_ddpg/uz_ddpg_agent.h"
 #include "uz/uz_dqn/uz_dqn_agent.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
@@ -50,6 +51,10 @@ typedef struct _actualValues_ {
 	float deskbench_dut_omega_mech_rad_s;
 	float deskbench_dut_speed_rpm;
 	float deskbench_dut_mean_temp_degC;
+	float deskbench_dut_pmsm_model_i_d_A;
+	float deskbench_dut_pmsm_model_i_q_A;
+	float deskbench_dut_pmsm_model_torque_Nm;
+	float deskbench_dut_pmsm_model_omega_mech_rad_s;
 	float deskbench_prime_mover_i_a_A;
 	float deskbench_prime_mover_i_b_A;
 	float deskbench_prime_mover_i_c_A;
@@ -156,6 +161,7 @@ typedef struct{
 	uz_plantPT1_t* plant_pt1;
 	uz_dqn_agent_t* dqn_agent;
 	uz_ddpg_agent_t* ddpg_agent;
+	uz_pmsmModel_t* deskbench_dut_pmsm_model;
 	uz_CurrentControl_t* deskbench_current_ctrl_prime_mover;
 	uz_CurrentControl_t* deskbench_current_ctrl_dut;
 	uz_SetPoint_t* deskbench_setpoint_ctrl_prime_mover;

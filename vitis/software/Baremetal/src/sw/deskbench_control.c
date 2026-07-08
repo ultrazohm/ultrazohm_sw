@@ -5,10 +5,13 @@
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_math_constants.h"
+#include "../IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/uz_platform_state_machine.h"
+#include "xparameters.h"
 #include <math.h>
 
 #define DESKBENCH_CURRENT_TO_AMPERE 12.5f
@@ -33,6 +36,7 @@ static void reset_prime_mover_control(DS_Data *data);
 static void reset_dut_control(DS_Data *data);
 static void control_prime_mover(DS_Data *data);
 static void control_dut(DS_Data *data);
+static void control_dut_pmsm_model(DS_Data *data);
 static float mean_inverter_temperature(struct uz_inverter_adapter_outputs_t status);
 static void stop_on_safety_limit(DS_Data *data);
 static struct uz_CurrentControl_config make_current_control_config(void);
@@ -67,6 +71,23 @@ void deskbench_control_init(DS_Data *data)
     data->av.deskbench_machine_polepairs = deskbench_beckhoff_am8141.polePairs;
     data->objects.deskbench_current_ctrl_prime_mover = uz_CurrentControl_init(make_current_control_config());
     data->objects.deskbench_current_ctrl_dut = uz_CurrentControl_init(make_current_control_config());
+#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
+    struct uz_pmsmModel_config_t pmsm_model_config = {
+        .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+        .ip_core_frequency_Hz = 100000000U,
+        .polepairs = deskbench_beckhoff_am8141.polePairs,
+        .r_1 = deskbench_beckhoff_am8141.R_ph_Ohm,
+        .L_d = deskbench_beckhoff_am8141.Ld_Henry,
+        .L_q = deskbench_beckhoff_am8141.Lq_Henry,
+        .psi_pm = deskbench_beckhoff_am8141.Psi_PM_Vs,
+        .friction_coefficient = 0.001f,
+        .coulomb_friction_constant = 0.0f,
+        .inertia = deskbench_beckhoff_am8141.J_kg_m_squared,
+        .simulate_mechanical_system = true
+    };
+    data->objects.deskbench_dut_pmsm_model = uz_pmsmModel_init(pmsm_model_config);
+    uz_pmsmModel_reset(data->objects.deskbench_dut_pmsm_model);
+#endif
     data->objects.deskbench_setpoint_ctrl_prime_mover = uz_SetPoint_init(setpoint_config);
     data->objects.deskbench_speed_ctrl_prime_mover = uz_SpeedControl_init(speed_control_config);
     data->objects.deskbench_speed_filter_prime_mover = uz_signals_IIR_Filter_init(speed_filter_config);
@@ -127,6 +148,10 @@ void deskbench_enter_idle(DS_Data *data)
 
 void deskbench_enter_running(DS_Data *data)
 {
+#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
+    disable_prime_mover(data);
+    disable_dut(data);
+#else
 #if UZ_DESKBENCH_CONTROL_PRIME_MOVER_ACTIVE
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0, false, false, false);
     uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, true);
@@ -140,10 +165,16 @@ void deskbench_enter_running(DS_Data *data)
 #else
     disable_dut(data);
 #endif
+#endif
 }
 
 void deskbench_control_step(DS_Data *data)
 {
+#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
+    disable_prime_mover(data);
+    disable_dut(data);
+    control_dut_pmsm_model(data);
+#else
     stop_on_safety_limit(data);
 #if UZ_DESKBENCH_CONTROL_PRIME_MOVER_ACTIVE
     control_prime_mover(data);
@@ -155,6 +186,7 @@ void deskbench_control_step(DS_Data *data)
     control_dut(data);
 #else
     disable_dut(data);
+#endif
 #endif
 }
 
@@ -255,6 +287,47 @@ static void control_dut(DS_Data *data)
     data->rasv.pwm_2L_1_halfBridgeDutyCycle_3 = duty.DutyCycle_C;
 }
 
+static void control_dut_pmsm_model(DS_Data *data)
+{
+#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
+    uz_pmsmModel_trigger_output_strobe(data->objects.deskbench_dut_pmsm_model);
+    struct uz_pmsmModel_outputs_t model_outputs = uz_pmsmModel_get_outputs(data->objects.deskbench_dut_pmsm_model);
+    data->av.deskbench_dut_pmsm_model_i_d_A = model_outputs.i_d_A;
+    data->av.deskbench_dut_pmsm_model_i_q_A = model_outputs.i_q_A;
+    data->av.deskbench_dut_pmsm_model_torque_Nm = model_outputs.torque_Nm;
+    data->av.deskbench_dut_pmsm_model_omega_mech_rad_s = model_outputs.omega_mech_1_s;
+    data->av.deskbench_dut_i_d_A = model_outputs.i_d_A;
+    data->av.deskbench_dut_i_q_A = model_outputs.i_q_A;
+    data->av.deskbench_dut_omega_mech_rad_s = model_outputs.omega_mech_1_s;
+    data->av.deskbench_dut_speed_rpm = (model_outputs.omega_mech_1_s * 60.0f) / (2.0f * UZ_PIf);
+    data->av.deskbench_dut_v_dc_V = UZ_DESKBENCH_DUT_PMSM_MODEL_V_DC;
+
+    uz_3ph_dq_t i_actual = {
+        .d = model_outputs.i_d_A,
+        .q = model_outputs.i_q_A
+    };
+    uz_3ph_dq_t v_ref = uz_CurrentControl_sample(
+        data->objects.deskbench_current_ctrl_dut,
+        data->rasv.deskbench_dut_i_dq_ref_A,
+        i_actual,
+        UZ_DESKBENCH_DUT_PMSM_MODEL_V_DC,
+        model_outputs.omega_mech_1_s * data->av.deskbench_machine_polepairs);
+    data->av.deskbench_dut_v_d_V = v_ref.d;
+    data->av.deskbench_dut_v_q_V = v_ref.q;
+
+    struct uz_pmsmModel_inputs_t model_inputs = {
+        .v_d_V = v_ref.d,
+        .v_q_V = v_ref.q,
+        .omega_mech_1_s = model_outputs.omega_mech_1_s,
+        .load_torque = 0.0f
+    };
+    uz_pmsmModel_set_inputs(data->objects.deskbench_dut_pmsm_model, model_inputs);
+    uz_pmsmModel_trigger_input_strobe(data->objects.deskbench_dut_pmsm_model);
+#else
+    (void)data;
+#endif
+}
+
 static void disable_prime_mover(DS_Data *data)
 {
     data->rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
@@ -290,6 +363,9 @@ static void reset_prime_mover_control(DS_Data *data)
 static void reset_dut_control(DS_Data *data)
 {
     uz_CurrentControl_reset(data->objects.deskbench_current_ctrl_dut);
+#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
+    uz_pmsmModel_reset(data->objects.deskbench_dut_pmsm_model);
+#endif
     data->rasv.deskbench_dut_i_dq_ref_A.d = 0.0f;
     data->rasv.deskbench_dut_i_dq_ref_A.q = 0.0f;
     data->av.deskbench_dut_v_d_V = 0.0f;

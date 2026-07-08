@@ -61,6 +61,7 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 #include "include/dqn_pt1_control.h"
+#include "include/deskbench_control.h"
 
 
 //----------------------------------------------------

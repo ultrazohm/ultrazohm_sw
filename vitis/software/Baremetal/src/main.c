@@ -88,6 +88,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            deskbench_control_init(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -115,7 +116,9 @@ int main(void)
 			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
 			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
+#if (UZ_APP != UZ_APP_DESKBENCH)
             pt1_control_init(&Global_Data);
+#endif
             initialization_chain = print_msg;
             break;
         case print_msg:

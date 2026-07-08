@@ -4,6 +4,8 @@
 #define PT1_CONTROL_AGENT_DQN 1U
 #define PT1_CONTROL_AGENT_DDPG 2U
 
+#include "../uz/uz_global_configuration.h"
+
 #ifndef PT1_CONTROL_AGENT
 #define PT1_CONTROL_AGENT PT1_CONTROL_AGENT_DQN
 #endif

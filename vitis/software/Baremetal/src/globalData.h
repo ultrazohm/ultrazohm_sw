@@ -10,6 +10,10 @@
 #include "IP_Cores/uz_plantPT1/uz_plantPT1.h"
 #include "uz/uz_ddpg/uz_ddpg_agent.h"
 #include "uz/uz_dqn/uz_dqn_agent.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -31,6 +35,37 @@ typedef struct _actualValues_ {
 	float dqn_pt1_reference;
 	float dqn_pt1_setpoint;
 	float dqn_pt1_action;
+	float deskbench_dut_i_a_A;
+	float deskbench_dut_i_b_A;
+	float deskbench_dut_i_c_A;
+	float deskbench_dut_i_dc_A;
+	float deskbench_dut_v_a_V;
+	float deskbench_dut_v_b_V;
+	float deskbench_dut_v_c_V;
+	float deskbench_dut_v_dc_V;
+	float deskbench_dut_i_d_A;
+	float deskbench_dut_i_q_A;
+	float deskbench_dut_v_d_V;
+	float deskbench_dut_v_q_V;
+	float deskbench_dut_omega_mech_rad_s;
+	float deskbench_dut_speed_rpm;
+	float deskbench_dut_mean_temp_degC;
+	float deskbench_prime_mover_i_a_A;
+	float deskbench_prime_mover_i_b_A;
+	float deskbench_prime_mover_i_c_A;
+	float deskbench_prime_mover_i_dc_A;
+	float deskbench_prime_mover_v_a_V;
+	float deskbench_prime_mover_v_b_V;
+	float deskbench_prime_mover_v_c_V;
+	float deskbench_prime_mover_v_dc_V;
+	float deskbench_prime_mover_i_d_A;
+	float deskbench_prime_mover_i_q_A;
+	float deskbench_prime_mover_v_d_V;
+	float deskbench_prime_mover_v_q_V;
+	float deskbench_prime_mover_omega_mech_rad_s;
+	float deskbench_prime_mover_speed_rpm;
+	float deskbench_prime_mover_mean_temp_degC;
+	float deskbench_machine_polepairs;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -98,6 +133,11 @@ typedef struct _actualValues_ {
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
+	float deskbench_prime_mover_n_ref_rpm;
+	float deskbench_prime_mover_n_ref_rpm_filtered;
+	float deskbench_prime_mover_M_ref_Nm;
+	uz_3ph_dq_t deskbench_prime_mover_i_dq_ref_A;
+	uz_3ph_dq_t deskbench_dut_i_dq_ref_A;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -116,6 +156,11 @@ typedef struct{
 	uz_plantPT1_t* plant_pt1;
 	uz_dqn_agent_t* dqn_agent;
 	uz_ddpg_agent_t* ddpg_agent;
+	uz_CurrentControl_t* deskbench_current_ctrl_prime_mover;
+	uz_CurrentControl_t* deskbench_current_ctrl_dut;
+	uz_SetPoint_t* deskbench_setpoint_ctrl_prime_mover;
+	uz_SpeedControl_t* deskbench_speed_ctrl_prime_mover;
+	uz_IIR_Filter_t* deskbench_speed_filter_prime_mover;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

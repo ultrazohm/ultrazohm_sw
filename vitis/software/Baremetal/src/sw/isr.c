@@ -30,6 +30,8 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_init.h"
 #include "../include/project_wizard_visualization.h"
+#include "../include/deskbench_control.h"
+#include "../uz/uz_global_configuration.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -73,6 +75,7 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
+    deskbench_update_measurements(&Global_Data);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
@@ -88,37 +91,39 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+        deskbench_enter_idle(&Global_Data);
+#if (UZ_APP != UZ_APP_DESKBENCH)
         pt1_control_stop(&Global_Data);
+#endif
         pt1_control_decimation_counter = 0U;
 /* Project Wizard END: idle_state isr_actions */
     }
     else if (current_state == running_state)
     {
         /* Project Wizard BEGIN: running_state isr_actions */
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
+#if (UZ_APP == UZ_APP_DESKBENCH)
+        deskbench_enter_running(&Global_Data);
+#else
+        deskbench_enter_idle(&Global_Data);
+#endif
         pt1_control_decimation_counter = 0U;
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-
+#if (UZ_APP == UZ_APP_DESKBENCH)
+        deskbench_enter_running(&Global_Data);
+        deskbench_control_step(&Global_Data);
+#else
+        deskbench_enter_idle(&Global_Data);
         pt1_control_decimation_counter++;
         if (pt1_control_decimation_counter >= PT1_CONTROL_DECIMATION)
         {
             pt1_control_decimation_counter = 0U;
             pt1_control_step(&Global_Data);
         }
+#endif
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */
@@ -136,7 +141,10 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+        deskbench_enter_idle(&Global_Data);
+#if (UZ_APP != UZ_APP_DESKBENCH)
         pt1_control_stop(&Global_Data);
+#endif
         pt1_control_decimation_counter = 0U;
 /* Project Wizard END: error_state isr_actions */
     }

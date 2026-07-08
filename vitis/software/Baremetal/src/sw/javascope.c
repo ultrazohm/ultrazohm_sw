@@ -121,6 +121,31 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
 	js_ch_observable[JSO_DQN_PT1_SETPOINT] = &data->av.dqn_pt1_setpoint;
 	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_A_A] = &data->av.deskbench_dut_i_a_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_B_A] = &data->av.deskbench_dut_i_b_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_C_A] = &data->av.deskbench_dut_i_c_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_D_A] = &data->av.deskbench_dut_i_d_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_Q_A] = &data->av.deskbench_dut_i_q_A;
+	js_ch_observable[JSO_DESKBENCH_DUT_V_DC_V] = &data->av.deskbench_dut_v_dc_V;
+	js_ch_observable[JSO_DESKBENCH_DUT_V_D_V] = &data->av.deskbench_dut_v_d_V;
+	js_ch_observable[JSO_DESKBENCH_DUT_V_Q_V] = &data->av.deskbench_dut_v_q_V;
+	js_ch_observable[JSO_DESKBENCH_DUT_SPEED_RPM] = &data->av.deskbench_dut_speed_rpm;
+	js_ch_observable[JSO_DESKBENCH_DUT_MEAN_TEMP_DEGC] = &data->av.deskbench_dut_mean_temp_degC;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_D_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.d;
+	js_ch_observable[JSO_DESKBENCH_DUT_I_Q_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.q;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_A_A] = &data->av.deskbench_prime_mover_i_a_A;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_B_A] = &data->av.deskbench_prime_mover_i_b_A;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_C_A] = &data->av.deskbench_prime_mover_i_c_A;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_D_A] = &data->av.deskbench_prime_mover_i_d_A;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_Q_A] = &data->av.deskbench_prime_mover_i_q_A;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_DC_V] = &data->av.deskbench_prime_mover_v_dc_V;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_D_V] = &data->av.deskbench_prime_mover_v_d_V;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_Q_V] = &data->av.deskbench_prime_mover_v_q_V;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_SPEED_RPM] = &data->av.deskbench_prime_mover_speed_rpm;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_MEAN_TEMP_DEGC] = &data->av.deskbench_prime_mover_mean_temp_degC;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM] = &data->rasv.deskbench_prime_mover_n_ref_rpm;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED] = &data->rasv.deskbench_prime_mover_n_ref_rpm_filtered;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_M_REF_NM] = &data->rasv.deskbench_prime_mover_M_ref_Nm;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

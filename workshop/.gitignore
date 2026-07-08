@@ -2,3 +2,5 @@ __pycache__/
 exported_paras/
 exported_paras_ddpg/
 logs/
+dqn_pt1.zip
+ddpg_pt1.zip

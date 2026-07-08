@@ -71,6 +71,12 @@ class CsvStepWriter:
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.action_values = np.asarray(action_values, dtype=np.float32)
+        if self.action_values.size != 3:
+            raise ValueError(
+                "CsvStepWriter logs exactly 3 q-value columns "
+                "(q_action_minus_1, q_action_0, q_action_plus_1); "
+                f"got {self.action_values.size} action values"
+            )
         self.path = self.log_dir / file_name
         self.file = None
         self.writer = None

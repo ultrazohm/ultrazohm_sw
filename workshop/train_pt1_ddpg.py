@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import torch as th
 from stable_baselines3 import DDPG
@@ -34,14 +36,35 @@ def squared_error_reward(
     return -error * error
 
 REWARD_FUNCTION = squared_error_reward
-TRAINING_EPISODES = 1000
+TRAINING_EPISODES = 100
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
 STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
 TOTAL_TIMESTEPS = TRAINING_EPISODES * STEPS_PER_EPISODE
-MODEL_PATH = "ddpg_pt1"
-LOG_DIR = "workshop/logs"
-EXPORT_DIR = "workshop/exported_paras_ddpg"
+
+# DDPG hyperparameters (stable-baselines3 2.9 defaults, except LEARNING_STARTS
+# and ACTION_NOISE_SIGMA which this script already set explicitly). Worth
+# revisiting: BUFFER_SIZE is 5x larger than TOTAL_TIMESTEPS.
+LEARNING_RATE = 1e-3
+BUFFER_SIZE = 1_000_000
+LEARNING_STARTS = STEPS_PER_EPISODE
+BATCH_SIZE = 256
+TAU = 0.005
+GAMMA = 0.99
+TRAIN_FREQ = (1, "episode")
+GRADIENT_STEPS = -1
+ACTION_NOISE_SIGMA = 0.1
+# The 2x32x32 networks are too small to benefit from multithreading; thread
+# synchronization overhead makes the default (all cores) several times slower.
+TORCH_NUM_THREADS = 1
+th.set_num_threads(TORCH_NUM_THREADS)
+
+# Anchor outputs to this file so runs work from any working directory; the
+# firmware includes the exported CSVs from <repo>/workshop/exported_paras_ddpg.
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "ddpg_pt1"
+LOG_DIR = BASE_DIR / "logs"
+EXPORT_DIR = BASE_DIR / "exported_paras_ddpg"
 
 
 env = PT1Env(
@@ -68,19 +91,29 @@ POLICY_KWARGS = {
     },
     "activation_fn": ACTIVATION_FN,
 }
+# The firmware (uz_ddpg_agent.c) hardcodes 2 inputs, 32/32 hidden neurons, and
+# 1 output; a smaller export would silently zero-fill the C weight arrays.
+assert HIDDEN_LAYERS == [32, 32], "uz_ddpg_agent.c expects 32/32 hidden neurons"
 
 action_noise = NormalActionNoise(
     mean=np.zeros(1, dtype=np.float32),
-    sigma=0.1 * np.ones(1, dtype=np.float32),
+    sigma=ACTION_NOISE_SIGMA * np.ones(1, dtype=np.float32),
 )
 
 model = DDPG(
     "MlpPolicy",
     env,
+    learning_rate=LEARNING_RATE,
+    buffer_size=BUFFER_SIZE,
+    learning_starts=LEARNING_STARTS,
+    batch_size=BATCH_SIZE,
+    tau=TAU,
+    gamma=GAMMA,
+    train_freq=TRAIN_FREQ,
+    gradient_steps=GRADIENT_STEPS,
+    action_noise=action_noise,
     verbose=1,
     policy_kwargs=POLICY_KWARGS,
-    action_noise=action_noise,
-    learning_starts=STEPS_PER_EPISODE,
     seed=0,
 )
 training_logger = ContinuousEpisodeCsvLogger(

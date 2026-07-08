@@ -1,3 +1,6 @@
+from pathlib import Path
+
+import numpy as np
 import torch as th
 from stable_baselines3 import DQN
 from stable_baselines3.common.env_checker import check_env
@@ -31,14 +34,38 @@ def squared_error_reward(
     return -error * error
 
 REWARD_FUNCTION = squared_error_reward
-TRAINING_EPISODES = 1000
+TRAINING_EPISODES = 100
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
 STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
 TOTAL_TIMESTEPS = TRAINING_EPISODES * STEPS_PER_EPISODE
-MODEL_PATH = "dqn_pt1"
-LOG_DIR = "workshop/logs"
-EXPORT_DIR = "workshop/exported_paras"
+
+# DQN hyperparameters (stable-baselines3 2.9 defaults). Worth revisiting for
+# this problem: TARGET_UPDATE_INTERVAL=10000 gives only ~20 target-net syncs
+# over TOTAL_TIMESTEPS, and BUFFER_SIZE is 5x larger than TOTAL_TIMESTEPS.
+LEARNING_RATE = 1e-4
+BUFFER_SIZE = 1_000_000
+LEARNING_STARTS = 100
+BATCH_SIZE = 32
+TAU = 1.0
+GAMMA = 0.99
+TRAIN_FREQ = 4
+GRADIENT_STEPS = 1
+TARGET_UPDATE_INTERVAL = 10_000
+EXPLORATION_FRACTION = 0.1
+EXPLORATION_INITIAL_EPS = 1.0
+EXPLORATION_FINAL_EPS = 0.05
+# The 2x32x32 network is too small to benefit from multithreading; thread
+# synchronization overhead makes the default (all cores) several times slower.
+TORCH_NUM_THREADS = 1
+th.set_num_threads(TORCH_NUM_THREADS)
+
+# Anchor outputs to this file so runs work from any working directory; the
+# firmware includes the exported CSVs from <repo>/workshop/exported_paras.
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / "dqn_pt1"
+LOG_DIR = BASE_DIR / "logs"
+EXPORT_DIR = BASE_DIR / "exported_paras"
 
 
 env = PT1Env(
@@ -62,8 +89,30 @@ POLICY_KWARGS = {
     "net_arch": HIDDEN_LAYERS,
     "activation_fn": ACTIVATION_FN,
 }
+# The firmware (uz_dqn_agent.c) hardcodes 2 inputs, 32/32 hidden neurons, and
+# 3 outputs; a smaller export would silently zero-fill the C weight arrays.
+assert HIDDEN_LAYERS == [32, 32], "uz_dqn_agent.c expects 32/32 hidden neurons"
+assert len(DISCRETE_ACTIONS) == 3, "uz_dqn_agent.c expects 3 actions"
 
-model = DQN("MlpPolicy", env, verbose=1, policy_kwargs=POLICY_KWARGS, seed=0)
+model = DQN(
+    "MlpPolicy",
+    env,
+    learning_rate=LEARNING_RATE,
+    buffer_size=BUFFER_SIZE,
+    learning_starts=LEARNING_STARTS,
+    batch_size=BATCH_SIZE,
+    tau=TAU,
+    gamma=GAMMA,
+    train_freq=TRAIN_FREQ,
+    gradient_steps=GRADIENT_STEPS,
+    target_update_interval=TARGET_UPDATE_INTERVAL,
+    exploration_fraction=EXPLORATION_FRACTION,
+    exploration_initial_eps=EXPLORATION_INITIAL_EPS,
+    exploration_final_eps=EXPLORATION_FINAL_EPS,
+    verbose=1,
+    policy_kwargs=POLICY_KWARGS,
+    seed=0,
+)
 training_logger = EpisodeCsvLogger(
     LOG_DIR,
     log_every_n_episodes=TRAIN_LOG_EVERY_N_EPISODES,
@@ -90,9 +139,10 @@ for episode, reference in enumerate(EVAL_REFERENCES, start=1):
 
     for episode_k in range(STEPS_PER_EPISODE):
         current_obs = obs
-        action, _ = model.predict(current_obs, deterministic=True)
-        action_index = int(action)
+        # Greedy action straight from the q-values; equivalent to
+        # model.predict(current_obs, deterministic=True) with one forward pass.
         q_values = get_q_values(model, current_obs)
+        action_index = int(np.argmax(q_values))
 
         obs, reward, terminated, truncated, info = env.step(action_index)
         done = terminated or truncated

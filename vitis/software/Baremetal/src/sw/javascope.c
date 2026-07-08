@@ -130,6 +130,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DESKBENCH_DUT_V_D_V] = &data->av.deskbench_dut_v_d_V;
 	js_ch_observable[JSO_DESKBENCH_DUT_V_Q_V] = &data->av.deskbench_dut_v_q_V;
 	js_ch_observable[JSO_DESKBENCH_DUT_SPEED_RPM] = &data->av.deskbench_dut_speed_rpm;
+	js_ch_observable[JSO_DESKBENCH_DUT_THETA_EL_RAD] = &data->av.deskbench_dut_theta_el_rad;
 	js_ch_observable[JSO_DESKBENCH_DUT_MEAN_TEMP_DEGC] = &data->av.deskbench_dut_mean_temp_degC;
 	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_D_A] = &data->av.deskbench_dut_pmsm_model_i_d_A;
 	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_Q_A] = &data->av.deskbench_dut_pmsm_model_i_q_A;
@@ -146,6 +147,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_D_V] = &data->av.deskbench_prime_mover_v_d_V;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_Q_V] = &data->av.deskbench_prime_mover_v_q_V;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_SPEED_RPM] = &data->av.deskbench_prime_mover_speed_rpm;
+	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_THETA_EL_RAD] = &data->av.deskbench_prime_mover_theta_el_rad;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_MEAN_TEMP_DEGC] = &data->av.deskbench_prime_mover_mean_temp_degC;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM] = &data->rasv.deskbench_prime_mover_n_ref_rpm;
 	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED] = &data->rasv.deskbench_prime_mover_n_ref_rpm_filtered;

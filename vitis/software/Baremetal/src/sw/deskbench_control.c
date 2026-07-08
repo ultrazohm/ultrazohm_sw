@@ -83,7 +83,7 @@ void deskbench_control_init(DS_Data *data)
         .friction_coefficient = 0.001f,
         .coulomb_friction_constant = 0.0f,
         .inertia = deskbench_beckhoff_am8141.J_kg_m_squared,
-        .simulate_mechanical_system = true
+        .simulate_mechanical_system = false
     };
     data->objects.deskbench_dut_pmsm_model = uz_pmsmModel_init(pmsm_model_config);
     uz_pmsmModel_reset(data->objects.deskbench_dut_pmsm_model);
@@ -113,11 +113,14 @@ void deskbench_update_measurements(DS_Data *data)
     data->av.deskbench_prime_mover_v_c_V = data->av.adc_ltc2311_a2_ch5 * DESKBENCH_VOLTAGE_TO_VOLTS;
     data->av.deskbench_prime_mover_v_dc_V = data->av.adc_ltc2311_a2_ch0 * DESKBENCH_VOLTAGE_TO_VOLTS;
 
-    data->av.deskbench_dut_omega_mech_rad_s = data->av.resolver_pl_interface_d4_2_omega_mech_rad_s;
-    data->av.deskbench_dut_speed_rpm = data->av.resolver_pl_interface_d4_2_n_mech_rpm;
+    data->av.deskbench_dut_omega_mech_rad_s = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
+    data->av.deskbench_dut_speed_rpm = data->av.resolver_pl_interface_d4_3_n_mech_rpm;
+    data->av.deskbench_dut_theta_el_rad = data->av.resolver_pl_interface_d4_3_position_el_2pi;
+    data->av.deskbench_dut_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d2);
+
     data->av.deskbench_prime_mover_omega_mech_rad_s = data->av.resolver_pl_interface_d4_1_omega_mech_rad_s;
     data->av.deskbench_prime_mover_speed_rpm = data->av.resolver_pl_interface_d4_1_n_mech_rpm;
-    data->av.deskbench_dut_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d2);
+    data->av.deskbench_prime_mover_theta_el_rad = data->av.resolver_pl_interface_d4_1_position_el_2pi;
     data->av.deskbench_prime_mover_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d1);
 
     uz_3ph_abc_t dut_i_abc = {
@@ -130,8 +133,8 @@ void deskbench_update_measurements(DS_Data *data)
         .b = data->av.deskbench_prime_mover_i_b_A,
         .c = data->av.deskbench_prime_mover_i_c_A
     };
-    uz_3ph_dq_t dut_i_dq = uz_transformation_3ph_abc_to_dq(dut_i_abc, data->av.resolver_pl_interface_d4_2_position_el_2pi);
-    uz_3ph_dq_t prime_mover_i_dq = uz_transformation_3ph_abc_to_dq(prime_mover_i_abc, data->av.resolver_pl_interface_d4_1_position_el_2pi);
+    uz_3ph_dq_t dut_i_dq = uz_transformation_3ph_abc_to_dq(dut_i_abc, data->av.deskbench_dut_theta_el_rad);
+    uz_3ph_dq_t prime_mover_i_dq = uz_transformation_3ph_abc_to_dq(prime_mover_i_abc, data->av.deskbench_prime_mover_theta_el_rad);
     data->av.deskbench_dut_i_d_A = dut_i_dq.d;
     data->av.deskbench_dut_i_q_A = dut_i_dq.q;
     data->av.deskbench_prime_mover_i_d_A = prime_mover_i_dq.d;
@@ -251,7 +254,7 @@ static void control_prime_mover(DS_Data *data)
     struct uz_DutyCycle_t duty = uz_Space_Vector_Modulation(
         v_ref,
         data->av.deskbench_prime_mover_v_dc_V,
-        data->av.resolver_pl_interface_d4_1_position_el_2pi);
+        data->av.deskbench_prime_mover_theta_el_rad);
     data->av.deskbench_prime_mover_v_d_V = v_ref.d;
     data->av.deskbench_prime_mover_v_q_V = v_ref.q;
     data->rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
@@ -279,7 +282,7 @@ static void control_dut(DS_Data *data)
     struct uz_DutyCycle_t duty = uz_Space_Vector_Modulation(
         v_ref,
         data->av.deskbench_dut_v_dc_V,
-        data->av.resolver_pl_interface_d4_2_position_el_2pi);
+        data->av.deskbench_dut_theta_el_rad);
     data->av.deskbench_dut_v_d_V = v_ref.d;
     data->av.deskbench_dut_v_q_V = v_ref.q;
     data->rasv.pwm_2L_1_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
@@ -318,9 +321,8 @@ static void control_dut_pmsm_model(DS_Data *data)
     struct uz_pmsmModel_inputs_t model_inputs = {
         .v_d_V = v_ref.d,
         .v_q_V = v_ref.q,
-        .omega_mech_1_s = model_outputs.omega_mech_1_s,
-        .load_torque = 0.0f
-    };
+        .omega_mech_1_s = data->rasv.deskbench_prime_mover_n_ref_rpm/60.0f,
+        .load_torque = 0.0f};
     uz_pmsmModel_set_inputs(data->objects.deskbench_dut_pmsm_model, model_inputs);
     uz_pmsmModel_trigger_input_strobe(data->objects.deskbench_dut_pmsm_model);
 #else

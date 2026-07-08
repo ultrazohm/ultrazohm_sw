@@ -50,6 +50,7 @@ typedef struct _actualValues_ {
 	float deskbench_dut_v_q_V;
 	float deskbench_dut_omega_mech_rad_s;
 	float deskbench_dut_speed_rpm;
+	float deskbench_dut_theta_el_rad;
 	float deskbench_dut_mean_temp_degC;
 	float deskbench_dut_pmsm_model_i_d_A;
 	float deskbench_dut_pmsm_model_i_q_A;
@@ -69,6 +70,7 @@ typedef struct _actualValues_ {
 	float deskbench_prime_mover_v_q_V;
 	float deskbench_prime_mover_omega_mech_rad_s;
 	float deskbench_prime_mover_speed_rpm;
+	float deskbench_prime_mover_theta_el_rad;
 	float deskbench_prime_mover_mean_temp_degC;
 	float deskbench_machine_polepairs;
 	/* Project Wizard BEGIN: actualValues */

@@ -18,6 +18,19 @@ TRAIN_REFERENCE_HIGH = 1.0
 INITIAL_STATE_LOW = 0.0
 INITIAL_STATE_HIGH = 0.0
 DISCRETE_ACTIONS = [-1.0, 0.0, 1.0]
+
+
+def squared_error_reward(
+    *,
+    y: float,
+    reference: float,
+    error: float,
+    u: float,
+    step: int,
+) -> float:
+    return -error * error
+
+REWARD_FUNCTION = squared_error_reward
 TRAINING_EPISODES = 1000
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
@@ -39,6 +52,7 @@ env = PT1Env(
     initial_state_low=INITIAL_STATE_LOW,
     initial_state_high=INITIAL_STATE_HIGH,
     action_values=DISCRETE_ACTIONS,
+    reward_function=REWARD_FUNCTION,
 )
 check_env(env, warn=True)
 

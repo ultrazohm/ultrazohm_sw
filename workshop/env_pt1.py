@@ -1,6 +1,20 @@
+from typing import Protocol
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
+
+
+class RewardFunction(Protocol):
+    def __call__(
+        self,
+        *,
+        y: float,
+        reference: float,
+        error: float,
+        u: float,
+        step: int,
+    ) -> float: ...
 
 
 class PT1Env(gym.Env):
@@ -29,6 +43,7 @@ class PT1Env(gym.Env):
         initial_state_high: float = 1.0,
         action_values=None,
         action_range: tuple[float, float] | None = None,
+        reward_function: RewardFunction | None = None,
     ):
         super().__init__()
 
@@ -48,6 +63,8 @@ class PT1Env(gym.Env):
             raise ValueError("initial_state_low must be <= initial_state_high")
         if action_values is not None and action_range is not None:
             raise ValueError("Set either action_values or action_range, not both")
+        if reward_function is None or not callable(reward_function):
+            raise ValueError("reward_function must be set to a callable")
 
         self.gain = float(gain)
         self.time_constant = float(time_constant)
@@ -61,6 +78,7 @@ class PT1Env(gym.Env):
         self.reference_high = None if reference_high is None else float(reference_high)
         self.initial_state_low = float(initial_state_low)
         self.initial_state_high = float(initial_state_high)
+        self.reward_function = reward_function
 
         self._configure_actions(action_values, action_range)
 
@@ -151,7 +169,13 @@ class PT1Env(gym.Env):
         self.step_count += 1
 
         error = self.reference - self.y
-        reward = -error * error
+        reward = self.reward_function(
+            y=self.y,
+            reference=self.reference,
+            error=error,
+            u=u,
+            step=self.step_count,
+        )
         terminated = False
         truncated = self.step_count >= self.max_steps
         info = {

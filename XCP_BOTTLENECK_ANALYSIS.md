@@ -187,6 +187,104 @@ window ceiling discussed under throughput). Same caveat as T6: changelog-
 mining cannot catch a silently fixed bug (T6 itself was not in any changelog)
 -- but every known post-2022.2 fix is already present, N/A, or a sizing knob.
 
+### T8. Session death under high DAQ load (27 signals @ 20 kHz) — **FIXED (3 defenses; hardware validation pending)**
+Report (2026-07, colleague's rig): 10 signals @ 20 kHz ran 12 h clean;
+27 signals @ 20 kHz (~2 MB/s) killed the session after a *random* 5 min–2 h.
+CANape log signature, in order: (1) "Timeout: Keine Response zur
+Request-Message empfangen!", then within milliseconds (2) a burst of
+"Ungültiger Zähler im XCP-Transport-Layer-Header" with received values
+clustering in two bands **exactly 0x8000 apart** (= header-byte mixing at
+wrong stream offsets) plus (3) "Ungültiges XCP-Paket mit Länge
+5648/7680/32768/53428" (> 1500). The debugger shows the A53 healthy and
+idle and the R5 running; **reconnecting always worked** (the one
+"Das Steuergerät antwortet nicht!" log entry was transient), so the
+user-visible damage is the aborted measurement, not a locked-up device.
+On the reference rig, 13 Mbit/s ran 60 h clean.
+
+**Analysis — two live defects match the two observed symptoms, plus one
+latent one fixed preventively:**
+
+1. **Response timeout — the OCM exchange has no flow control.** The R5
+   rewrites `XCP_OUT` from scratch every control cycle (`prepare_write()`
+   zeroes the chain head) and fires the IPI; nothing ever confirms the A53
+   actually *read* the previous cycle. Any IPI latency ≳ one cycle
+   (network-load-dependent on the A53) silently destroys that cycle's
+   frames — including a parked **command response**, and a lost response =
+   master timeout = dead session. Mid-read overlap additionally hands the
+   A53 **torn frames** (mixed cycles at cache-line granularity). Loss
+   probability grows with DAQ volume (longer reads, more lwIP load),
+   matching 10-signals-OK / 27-signals-dies and the random time-to-failure.
+2. **Wire garbage with *valid* TCP checksums — HW TX checksum offload.**
+   The A53 TX path provably cannot desynchronize the stream framing (the
+   batcher derives the appended byte count from the same buffer bytes it
+   copies, and stamps the CTR monotonically at append time in a single
+   task). Counters received out of order / ±0x8000 and lengths > 1500
+   therefore mean the **bytes on the wire are not the bytes written**, at
+   wrong stream positions — corruption below the socket API. With GEM HW
+   checksum offload, the checksum is computed **over whatever the DMA
+   reads out**, so any such corruption arrives at the PC as *valid* TCP
+   data and lands in CANape's parser.
+3. **Latent (not observed this time — reconnect worked): the zero-window
+   write() wedge.** Teardown currently depends on the master *closing* the
+   socket (read/write then error out). If a master ever stops reading but
+   keeps the connection open → TCP window 0 → the TX task blocks in
+   `write()` **forever** (persist probes keep the connection alive
+   indefinitely); `xcp_eth_connected` stays 1, the RX task stays blocked
+   in `read()`, the accept loop waits for both workers and (backlog 0)
+   refuses every new connection — device unreachable until power cycle.
+   CANape evidently closed its socket in these incidents, so this path was
+   dodged; it is fixed preventively.
+
+**Fixes:**
+
+- **Seqlock + CTO mailbox in the exchange layer**
+  (`RPU_APU_exchange_impl.c`, OCM layout change — **rebuild BOTH ELFs**):
+  `XCP_OUT` gains a 64-byte header: a cycle sequence word (odd while the
+  R5 writes; published *after* the payload flush) plus a CTO mailbox
+  (seq + len + 40-byte slot). The A53 stages all frames locally in the IPI
+  ISR and commits them to the queues **only if the sequence was stable**
+  — torn frames can no longer reach the network (dropped cycles are
+  counted: `xcp_ocm_torn`, `xcp_ocm_skipped_writing`,
+  `xcp_ocm_cycles_missed`, `xcp_ocm_capped`). CTO responses (PID ≥ 0xFC)
+  no longer travel in the per-cycle chain at all: the R5 parks them in the
+  mailbox (fed by a 4-deep pending FIFO in `xcp_interface.c`), where they
+  **persist across cycle rewrites until the A53 acknowledges** the
+  sequence through the `XCP_IN` header → a response can never be lost to
+  an overwritten cycle; delivery is exactly-once (A53 dedups by seq and
+  adopts-without-forwarding on reconnect).
+- **Software TCP/UDP/IP checksums** (`CHECKSUM_GEN_* = 1` patched into
+  lwipopts.h by both platform TCL scripts — **platform/BSP rebuild
+  required**; `main.c` clears the GEM's DMACR TX-offload bit when it sees
+  `CHECKSUM_GEN_TCP==1`; RX offload untouched): checksums are now computed
+  over the *intended* bytes at `tcp_write()` time, so below-socket
+  corruption fails verification at the PC and is retransmitted instead of
+  parsed. Doubles as the discriminator: if garbage still reaches CANape
+  with SW checksums, the corruption is on the PC side (NIC/driver), not in
+  the ECU.
+- **Bounded sends + guaranteed teardown** (`OCM_eth_adapter.c`): the
+  socket now runs non-blocking; `ocm_eth_send_all()` waits for
+  writability via `select()` and handles partial writes (mandatory — a
+  silently dropped tail WOULD desync the framed stream), and after
+  `XCP_SEND_STALL_LIMIT_MS` (5 s) without a single byte accepted the
+  connection is declared dead. The RX task polls via `select()` and exits
+  when the TX side tears down; listen backlog raised to 1. Worst case is
+  now: CANape shows an error, the user restarts the measurement —
+  **never** a power cycle.
+
+**Validation checklist for the next hardware run:**
+- Repeat the 27-signals/20 kHz overnight run; watch the new counters in
+  the debugger (`xcp_ocm_torn` / `xcp_ocm_cycles_missed` climbing =
+  defect 1 was live; `xcp_txq_overflow_dropped` = plain TCP-drain
+  overload).
+- Confirm the failing rig's build actually contains `portMEMORY_BARRIER`
+  and `use_task_fpu_support = 2` (grep the generated FreeRTOSConfig.h) —
+  a stale workspace re-introduces T5/T6-class corruption that mimics
+  defect 2.
+- If sessions still die: Wireshark on the CANape PC. Checksum errors on
+  captured frames → ECU DMA path (SW checksums will have converted this
+  into retransmits already); clean capture but CANape errors → PC-side
+  (NIC offload/driver — try the reference PC with the 27-signal config).
+
 ### T5. Earlier finding (real, but not the trigger): FPU context not saved on task switch — **FIXED**
 All "stall" incidents (T2's priority fix and the GEM watchdog helped real but
 secondary issues) shared one true root cause, finally caught **live** in the

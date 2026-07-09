@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "xil_cache.h"
+#include "RPU_APU_exchange.h"
 
 // A processor specific define like "ARMR5" is only available on R5.
 #ifdef ARMR5
@@ -31,7 +32,41 @@
 
 /*
  * Memory exchange via OCM
- * Memory layout:
+ *
+ * The R5 rewrites XCP_OUT from scratch every control-ISR cycle (20 kHz) and
+ * the A53 reads it from its IPI ISR -- there is no flow control between the
+ * two. Whenever the A53 is late (interrupt latency under network load), the
+ * R5 overwrites the region mid-read. Two mechanisms make that safe:
+ *
+ * 1. A seqlock on XCP_OUT: the R5 increments cycle_seq to an ODD value
+ *    (flushed) before touching the region and to an EVEN value (flushed
+ *    last, after the payload flush) when the cycle's content is complete.
+ *    The A53 samples the sequence before and after reading; a mismatch or an
+ *    odd value means the read raced the writer and everything read this IPI
+ *    is discarded. Torn frames can therefore never reach the network.
+ *    Discarded/overwritten DAQ frames are acceptable (a gap in the
+ *    measurement) and are counted.
+ *
+ * 2. A CTO mailbox with an acknowledge: command responses (RES/ERR/EV/SERV)
+ *    must NEVER be lost -- a lost response kills the XCP session (master
+ *    request timeout). The response is parked in a dedicated slot with its
+ *    own sequence number and stays there, surviving any number of cycle
+ *    rewrites, until the A53 acknowledges the sequence number through the
+ *    XCP_IN header. Delivery is exactly-once: the A53 forwards a mailbox
+ *    frame only when its sequence changes.
+ *
+ * XCP_OUT layout (R5 writes, A53 reads):
+ *   +0                   u32 cycle_seq   seqlock (odd = write in progress)
+ *   +4                   u32 cto_seq     mailbox sequence, 0 = never used
+ *   +8                   u32 cto_len     framed length of the mailbox message
+ *   +12                  u8  cto_frame[XCP_CTO_SLOT_LEN]
+ *   +XCP_OUT_HDR_LEN     message chain (see below)
+ *
+ * XCP_IN layout (A53 writes, R5 reads):
+ *   +0                   u32 cto_ack_seq last mailbox sequence consumed
+ *   +XCP_IN_HDR_LEN      message chain
+ *
+ * Message chain format (unchanged):
  * Byte [0..3]: package len
  * Byte [4..(3 + len)]: payload
  * Byte [(4 + len)..(7 + len)]: 0. Indicator for OCM reader, this is end of
@@ -60,11 +95,37 @@
 #define XCP_IN_ADDR 				0xFFFFC000
 #define XCP_IN_LEN					256
 
+/* Header sizes in front of the message chains. XCP_OUT_HDR_LEN is one A53
+ * cache line (64 B): the seqlock word, the mailbox and its frame slot all
+ * live in that single line, so one invalidate on the A53 refreshes them
+ * together and the R5's final header flush publishes cycle_seq, cto_seq and
+ * the mailbox atomically enough for the seqlock to cover them. */
+#define XCP_OUT_HDR_LEN				64
+#define XCP_IN_HDR_LEN				8
+
+/* Mailbox frame slot: a framed CTO message is 4 (transport header) +
+ * kXcpMaxCTO (32) = 36 bytes; the slot must also fit in the header line. */
+#define XCP_CTO_SLOT_LEN			RPU_APU_EXCHANGE_CTO_SLOT_LEN
+#if (12 + XCP_CTO_SLOT_LEN) > 64
+#error "CTO mailbox must fit into the 64-byte XCP_OUT header line"
+#endif
+
+#define XCP_OUT_CHAIN_ADDR			(XCP_OUT_ADDR + XCP_OUT_HDR_LEN)
+#define XCP_IN_CHAIN_ADDR			(XCP_IN_ADDR + XCP_IN_HDR_LEN)
+
+#define XCP_OUT_CYCLE_SEQ_P			((volatile uint32_t *)(XCP_OUT_ADDR + 0u))
+#define XCP_OUT_CTO_SEQ_P			((volatile uint32_t *)(XCP_OUT_ADDR + 4u))
+#define XCP_OUT_CTO_LEN_P			((volatile uint32_t *)(XCP_OUT_ADDR + 8u))
+#define XCP_OUT_CTO_FRAME_P			((volatile uint8_t *)(XCP_OUT_ADDR + 12u))
+#define XCP_IN_CTO_ACK_P			((volatile uint32_t *)(XCP_IN_ADDR + 0u))
+
 /*
  * RPU write side only: the last bytes of XCP_OUT are reserved for CTO frames
  * (XCP PID >= 0xFC: RES/ERR/EV/SERV). A DAQ burst that fills the region must
  * never squeeze out a command response -- the master times out on a lost
  * response, while a dropped DAQ frame is only a gap in the measurement.
+ * (With the CTO mailbox, responses normally bypass the chain entirely; the
+ * reserve stays as a second line of defense for oversized CTOs.)
  * No reserve on the APU write side (XCP_IN): there the payload starts with a
  * command code (0xC0..0xFF), not a response PID, and commands must never be
  * starved.
@@ -84,10 +145,17 @@
  * Variables
  *-----------------------------------------------------------------*/
 static volatile size_t addr_w = 0;
-static volatile size_t addr_w_start = 0;	// begin of the current write region
+static volatile size_t addr_w_start = 0;	// begin of the flushed write range
 static volatile size_t addr_w_end = 0;		// exclusive end of the write region
 static volatile size_t addr_r = 0;
 static volatile size_t addr_r_end = 0;		// exclusive end of the read region
+
+#ifdef RPU
+/* Writer-side shadows of the OCM sequence words (the R5 owns them and never
+ * needs to read them back). */
+static uint32_t cycle_seq_shadow = 0;
+static uint32_t cto_seq_shadow = 0;
+#endif
 
 // Statistics / debug counters (inspect via debugger)
 static volatile uint32_t cnt_msg_ocm_w = 0;
@@ -102,11 +170,15 @@ void rpu_apu_exchange_init(void)
 {
 	// The CPU which reads the OCM area initializes it
 #ifdef RPU
-    *(uint32_t *)XCP_IN_ADDR = 0;
+	*XCP_IN_CTO_ACK_P = 0;
+	*(uint32_t *)XCP_IN_CHAIN_ADDR = 0;
 	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
 #ifdef APU
-    *(uint32_t *)XCP_OUT_ADDR = 0;
+	*XCP_OUT_CYCLE_SEQ_P = 0;
+	*XCP_OUT_CTO_SEQ_P = 0;
+	*XCP_OUT_CTO_LEN_P = 0;
+	*(uint32_t *)XCP_OUT_CHAIN_ADDR = 0;
 	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
 }
@@ -116,31 +188,43 @@ void rpu_apu_exchange_cache_invalidate_before_read(void)
 #ifdef RPU
 	// XCP_IN is small: flush it in one go. (The R5 never dirties these
 	// lines, so flush = clean + invalidate behaves as an invalidate.)
+	// Covers the cto_ack word read by rpu_apu_exchange_cto_mailbox_free().
 	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
 #ifdef APU
 	// Intentionally empty: XCP_OUT is several KB and this runs in the IPI
 	// ISR at the control rate. readOCM() invalidates lazily, covering only
-	// the lines that actually hold messages.
+	// the lines that actually hold messages; the header line is invalidated
+	// by rpu_apu_exchange_out_seq_read().
 #endif
 }
 
 void rpu_apu_exchange_cache_flush_after_write(void)
 {
-	// Flush only the bytes actually written this cycle: region start up to
-	// and including the 4-byte end-of-messages terminator. (Flushing the
-	// whole region every cycle would burn ISR time for nothing.)
+#ifdef RPU
+	// Publish order matters: payload first, sequence word last. A reader
+	// that sees the new (even) cycle_seq must also see the chain content it
+	// describes; flushing the header before the chain would break that.
 	Xil_DCacheFlushRange(addr_w_start, (addr_w + 4u) - addr_w_start);
+	cycle_seq_shadow++;		// even: cycle content is complete
+	*XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
+	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_HDR_LEN);
+#endif
+#ifdef APU
+	// Flush the header (cto_ack) and the bytes actually written this cycle:
+	// region start up to and including the 4-byte end-of-messages terminator.
+	Xil_DCacheFlushRange(addr_w_start, (addr_w + 4u) - addr_w_start);
+#endif
 }
 
 void rpu_apu_exchange_prepare_read(void)
 {
 #ifdef RPU
-	addr_r = XCP_IN_ADDR;
+	addr_r = XCP_IN_CHAIN_ADDR;
 	addr_r_end = XCP_IN_ADDR + XCP_IN_LEN;
 #endif
 #ifdef APU
-	addr_r = XCP_OUT_ADDR;
+	addr_r = XCP_OUT_CHAIN_ADDR;
 	addr_r_end = XCP_OUT_ADDR + XCP_OUT_LEN;
 #endif
 }
@@ -148,16 +232,23 @@ void rpu_apu_exchange_prepare_read(void)
 void rpu_apu_exchange_prepare_write(void)
 {
 #ifdef RPU
-	addr_w = XCP_OUT_ADDR;
-	addr_w_start = XCP_OUT_ADDR;
+	// Seqlock write-begin: publish an ODD sequence before touching the
+	// region, so a concurrently reading A53 knows the content is in flux.
+	// (Only the first header line needs to reach the OCM here.)
+	cycle_seq_shadow++;
+	*XCP_OUT_CYCLE_SEQ_P = cycle_seq_shadow;
+	Xil_DCacheFlushRange(XCP_OUT_ADDR, 4u);
+
+	addr_w = XCP_OUT_CHAIN_ADDR;
+	addr_w_start = XCP_OUT_CHAIN_ADDR;	// header is flushed separately (last)
 	addr_w_end = XCP_OUT_ADDR + XCP_OUT_LEN;
 #endif
 #ifdef APU
-	addr_w = XCP_IN_ADDR;
-	addr_w_start = XCP_IN_ADDR;
+	addr_w = XCP_IN_CHAIN_ADDR;
+	addr_w_start = XCP_IN_ADDR;			// include the cto_ack header word
 	addr_w_end = XCP_IN_ADDR + XCP_IN_LEN;
 #endif
-    *(uint32_t *)addr_w = 0;
+	*(uint32_t *)addr_w = 0;
 }
 
 int rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
@@ -250,3 +341,81 @@ int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p)
 
 	return 1;
 }
+
+/*-------------------------------------------------------------------
+ * Seqlock accessors (APU read side)
+ *-----------------------------------------------------------------*/
+#ifdef APU
+uint32_t rpu_apu_exchange_out_seq_read(void)
+{
+	// Invalidating the header start refreshes the whole 64-byte header line
+	// (cycle_seq, cto_seq, cto_len and the mailbox frame slot).
+	Xil_DCacheInvalidateRange(XCP_OUT_ADDR, 4u);
+	return *XCP_OUT_CYCLE_SEQ_P;
+}
+
+int rpu_apu_exchange_out_seq_unchanged(uint32_t seq_begin)
+{
+	Xil_DCacheInvalidateRange(XCP_OUT_ADDR, 4u);
+	return (*XCP_OUT_CYCLE_SEQ_P == seq_begin);
+}
+
+/* Copy the mailbox frame out of the header. Returns 1 if the slot holds a
+ * plausible frame (nonzero seq, valid length), 0 otherwise. Must be called
+ * between out_seq_read() and out_seq_unchanged(); the copy is only
+ * trustworthy if the surrounding seqlock check passes. */
+int rpu_apu_exchange_read_cto(uint8_t *len, uint8_t *dst, uint32_t *seq)
+{
+	uint32_t s = *XCP_OUT_CTO_SEQ_P;
+	uint32_t l = *XCP_OUT_CTO_LEN_P;
+
+	if ((s == 0u) || (l == 0u) || (l > XCP_CTO_SLOT_LEN)) {
+		return 0;
+	}
+	memcpy(dst, (const void *)XCP_OUT_CTO_FRAME_P, l);
+	*len = (uint8_t)l;
+	*seq = s;
+	return 1;
+}
+
+/* Publish the last consumed mailbox sequence. Written into the XCP_IN header
+ * during the write phase; reaches the OCM with cache_flush_after_write(). */
+void rpu_apu_exchange_write_cto_ack(uint32_t seq)
+{
+	*XCP_IN_CTO_ACK_P = seq;
+}
+#endif /* APU */
+
+/*-------------------------------------------------------------------
+ * CTO mailbox (RPU write side)
+ *-----------------------------------------------------------------*/
+#ifdef RPU
+/* The mailbox is free once the A53 has acknowledged the last sequence.
+ * Relies on cache_invalidate_before_read() having refreshed XCP_IN this
+ * cycle. */
+int rpu_apu_exchange_cto_mailbox_free(void)
+{
+	return (*XCP_IN_CTO_ACK_P == cto_seq_shadow);
+}
+
+/* Park one framed CTO message in the mailbox. Call only while the seqlock
+ * is held (between prepare_write() and cache_flush_after_write()) and only
+ * when the mailbox is free. The content persists across cycle rewrites until
+ * acknowledged, so a response can never be lost to an overwritten cycle. */
+int rpu_apu_exchange_write_cto(uint8_t len, const uint8_t *data)
+{
+	if ((len == 0u) || (len > XCP_CTO_SLOT_LEN)) {
+		return 0;
+	}
+	memcpy((void *)XCP_OUT_CTO_FRAME_P, data, len);
+	*XCP_OUT_CTO_LEN_P = len;
+	cto_seq_shadow++;
+	if (cto_seq_shadow == 0u) {
+		cto_seq_shadow = 1u;	// 0 is reserved for "never used"
+	}
+	*XCP_OUT_CTO_SEQ_P = cto_seq_shadow;
+	// Published by the header flush in cache_flush_after_write(), together
+	// with the even cycle_seq -- the A53 only trusts it under the seqlock.
+	return 1;
+}
+#endif /* RPU */

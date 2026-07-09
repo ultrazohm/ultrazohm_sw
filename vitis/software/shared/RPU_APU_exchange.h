@@ -13,6 +13,12 @@
 #ifndef RPU_APU_EXCHANGE_H_
 #define RPU_APU_EXCHANGE_H_
 
+#include <stdint.h>
+
+/* Maximum framed CTO message the mailbox can hold (4-byte transport header
+ * + kXcpMaxCTO payload fits; see RPU_APU_exchange_impl.c). */
+#define RPU_APU_EXCHANGE_CTO_SLOT_LEN	40
+
 void rpu_apu_exchange_init(void);
 void rpu_apu_exchange_prepare_read(void);
 void rpu_apu_exchange_prepare_write(void);
@@ -24,5 +30,27 @@ int rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data);
 /* Returns 1 and points *data_p at the next message (length in *len), or 0 at
  * the end of the chain, on a corrupt length, or at the region end. */
 int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p);
+
+#ifndef ARMR5
+/* --- A53 (APU) side: seqlock + CTO mailbox read --- */
+/* Sample the XCP_OUT cycle sequence. Odd = R5 is currently rewriting the
+ * region; skip this IPI cycle. */
+uint32_t rpu_apu_exchange_out_seq_read(void);
+/* Re-sample after reading; 0 means the R5 rewrote the region mid-read and
+ * everything read since out_seq_read() must be discarded (torn). */
+int rpu_apu_exchange_out_seq_unchanged(uint32_t seq_begin);
+/* Copy the current mailbox frame (if any) and its sequence. Only valid under
+ * a passing seqlock check. */
+int rpu_apu_exchange_read_cto(uint8_t *len, uint8_t *dst, uint32_t *seq);
+/* Publish the last consumed mailbox sequence (write phase). */
+void rpu_apu_exchange_write_cto_ack(uint32_t seq);
+#else
+/* --- R5 (RPU) side: CTO mailbox write --- */
+/* 1 = the previously parked CTO has been acknowledged by the A53. */
+int rpu_apu_exchange_cto_mailbox_free(void);
+/* Park one framed CTO message; call between prepare_write() and
+ * cache_flush_after_write() and only when the mailbox is free. */
+int rpu_apu_exchange_write_cto(uint8_t len, const uint8_t *data);
+#endif
 
 #endif /* RPU_APU_EXCHANGE_H_ */

@@ -77,6 +77,20 @@
  * next cycle. */
 #define XCP_TX_DRAIN_MAX_PER_IRQ 32
 
+/* The socket runs non-blocking; send_all() waits for writability via
+ * select() in POLL_MS slices. If the master stops reading (its parser died,
+ * the tool hangs), the TCP window closes and stays closed: without a bound,
+ * write() would block forever, this task would never exit, the accept loop
+ * would never close the connection, and the device would be unreachable
+ * until a power cycle (observed as CANape "Das Steuergeraet antwortet
+ * nicht!"). After STALL_LIMIT_MS without a single byte accepted, the
+ * connection is declared dead and torn down; the master can simply
+ * reconnect. */
+#define XCP_SEND_POLL_MS        100
+#define XCP_SEND_STALL_LIMIT_MS 5000
+/* RX side: poll cadence for "connection torn down by the TX side?" checks. */
+#define XCP_RECV_POLL_MS        500
+
 #define XCP_ETH_PORT            (uint16_t) 12340
 
 /*-------------------------------------------------------------------
@@ -152,10 +166,47 @@ static uint32_t tx_batch_append(uint8_t *batch_buf, uint32_t batch_fill, const u
     return batch_fill + frame_total;
 }
 
+/* Write the whole buffer to the non-blocking socket. The lwIP socket layer
+ * may accept only part of the buffer (send buffer full): sending the rest is
+ * MANDATORY -- silently dropping the tail would desynchronize the
+ * length-prefixed XCP stream and the master would read garbage counters and
+ * lengths from mid-frame offsets. Returns 0 on success, -1 when the
+ * connection is dead (error or stalled past the deadline). */
+static int ocm_eth_send_all(int sd, const uint8_t *buf, uint32_t len)
+{
+    uint32_t off = 0;
+    TickType_t last_progress = xTaskGetTickCount();
+
+    while (off < len) {
+        int n = write(sd, buf + off, len - off);
+        if (n > 0) {
+            off += (uint32_t)n;
+            last_progress = xTaskGetTickCount();
+            continue;
+        }
+        if (n < 0 && errno != EWOULDBLOCK && errno != EAGAIN) {
+            return -1;  // reset/closed by the peer
+        }
+        // Send buffer full: the master is not reading (window closed) or is
+        // slow. Wait bounded for writability instead of blocking forever.
+        if ((xTaskGetTickCount() - last_progress) > pdMS_TO_TICKS(XCP_SEND_STALL_LIMIT_MS)) {
+            return -1;  // zero-window wedge; declare the connection dead
+        }
+        fd_set wfds;
+        struct timeval tv;
+        FD_ZERO(&wfds);
+        FD_SET(sd, &wfds);
+        tv.tv_sec = 0;
+        tv.tv_usec = XCP_SEND_POLL_MS * 1000;
+        (void)lwip_select(sd + 1, NULL, &wfds, NULL, &tv);
+        // Result irrelevant: the loop retries write() either way.
+    }
+    return 0;
+}
+
 static void ocm_eth_adapter_tx(void *arg_p)
 {
     int sd = (int)(intptr_t) arg_p;
-    int nwrote;
 
     xil_printf("%s() start\n", __func__);
 
@@ -213,10 +264,14 @@ static void ocm_eth_adapter_tx(void *arg_p)
             continue;
         }
 
-        if ((nwrote = write(sd, batch_buf, batch_fill)) < 0) {
-            break;  // socket closed/error; the accept loop owns close()
+        if (ocm_eth_send_all(sd, batch_buf, batch_fill) < 0) {
+            break;  // socket dead or stalled; the accept loop owns close()
         }
     }
+
+    // Signal the RX task (which may be idling in its poll loop) that this
+    // connection is finished, whether we exited on error, stall or teardown.
+    xcp_eth_connected = 0;
 
     xil_printf("%s(): tx exit\n", __func__);
     xcp_tx_task_running = 0;
@@ -239,9 +294,28 @@ static void ocm_eth_adapter_rx(void *arg_p)
     uint32_t stream_fill = 0;
     int      stream_corrupt = 0;
 
-    while (!stream_corrupt) {
-        // Blocks until the master sends data or closes the connection.
+    while (!stream_corrupt && xcp_eth_connected) {
+        // Non-blocking socket: wait for data in bounded slices so a
+        // connection declared dead by the TX side (stall teardown) is
+        // noticed here too instead of blocking in read() forever.
+        fd_set rfds;
+        struct timeval tv;
+        FD_ZERO(&rfds);
+        FD_SET(sd, &rfds);
+        tv.tv_sec = 0;
+        tv.tv_usec = XCP_RECV_POLL_MS * 1000;
+        int sel = lwip_select(sd + 1, &rfds, NULL, NULL, &tv);
+        if (sel < 0) {
+            break;      // socket error
+        }
+        if (sel == 0) {
+            continue;   // timeout: re-check xcp_eth_connected
+        }
+
         n = read(sd, &stream_buf[stream_fill], sizeof(stream_buf) - stream_fill);
+        if (n < 0 && (errno == EWOULDBLOCK || errno == EAGAIN)) {
+            continue;   // spurious wakeup on the non-blocking socket
+        }
         if (n <= 0) {
             // n < 0 = socket error, n == 0 = orderly close by the master
             break;
@@ -350,54 +424,145 @@ static BaseType_t read_rxQueue_write_OCM(void)
 	return task_woken;
 }
 
+/* The R5 rewrites the OCM window every control cycle with no flow control;
+ * reads are therefore staged locally and committed only if the seqlock says
+ * the window was stable throughout (see RPU_APU_exchange_impl.c). Statics are
+ * safe: this runs only in the (non-reentrant) IPI ISR. */
+static uint8_t  xcp_stage[XCP_TX_DRAIN_MAX_PER_IRQ][BUF_SIZE_XCP_TX];
+static uint8_t  xcp_stage_cto[BUF_SIZE_XCP_TX];
+static uint32_t xcp_last_cto_seq = 0;     // last mailbox seq forwarded (acked)
+static uint32_t xcp_prev_cycle_seq = 0;
+static int      xcp_prev_cycle_seq_valid = 0;
+// Set at connection start: adopt the current mailbox seq without forwarding,
+// so a response parked before/during a disconnect is not replayed into the
+// next session.
+static volatile int xcp_cto_adopt_pending = 1;
+
+// Exchange diagnostics (inspect via debugger)
+volatile uint32_t xcp_ocm_skipped_writing = 0;  // IPI hit the R5 mid-write (odd seq)
+volatile uint32_t xcp_ocm_torn = 0;             // R5 rewrote the window mid-read; cycle discarded
+volatile uint32_t xcp_ocm_cycles_missed = 0;    // R5 cycles never seen by any IPI read
+volatile uint32_t xcp_ocm_capped = 0;           // drain cap hit with frames left over
+
 static BaseType_t read_OCM_write_txQueue(void)
 {
 	BaseType_t task_woken = pdFALSE;
-	uint32_t drained = 0;
+	uint32_t n_staged = 0;
+	uint32_t capped = 0;
+	uint8_t  cto_len = 0;
+	uint32_t cto_seq = 0;
+	int      have_cto = 0;
 
-	while (1) {
-		if (xcp_eth_connected == 0) {
-			break;
+	// Seqlock begin: odd = the R5 is rewriting the window right now.
+	uint32_t seq_begin = rpu_apu_exchange_out_seq_read();
+	if (seq_begin & 1u) {
+		xcp_ocm_skipped_writing++;
+		return pdFALSE;
+	}
+
+	// Stage the CTO mailbox (persists across cycles until acked).
+	if (rpu_apu_exchange_read_cto(&cto_len, xcp_stage_cto, &cto_seq)) {
+		if (cto_seq != xcp_last_cto_seq) {
+			have_cto = 1;
 		}
+	}
+	if (cto_len < BUF_SIZE_XCP_TX) {
+		memset(&xcp_stage_cto[cto_len], 0, BUF_SIZE_XCP_TX - cto_len);
+	}
+
+	// Stage the DAQ message chain.
+	rpu_apu_exchange_prepare_read();
+	while (1) {
+		uint8_t *data;
+		uint8_t len;
 
 		// Bound the ISR time now that the OCM window holds up to ~100 frames.
 		// Frames beyond the cap are lost for this cycle (the R5 rewrites the
 		// window next cycle) -- under sustained overload the TCP drain rate is
 		// the limiter anyway, and the cap is far above it.
-		if (drained >= XCP_TX_DRAIN_MAX_PER_IRQ) {
+		if (n_staged >= XCP_TX_DRAIN_MAX_PER_IRQ) {
+			capped = 1;
 			break;
 		}
 
-		uint8_t *data;
-		uint8_t len;
 		try_to_read_ocm++;
 		if (! rpu_apu_exchange_readOCM(&len, &data)) {
-			// Could not read a message from OCM
+			break;	// end of chain (or bounds guard tripped)
+		}
+		if (len > BUF_SIZE_XCP_TX) {
+			// Torn length that still passed the region bounds check; the
+			// seqlock below would discard the cycle anyway, but never let a
+			// corrupt length overflow the staging buffer.
 			break;
 		}
-		drained++;
+		memcpy(xcp_stage[n_staged], data, len);
+		memset(&xcp_stage[n_staged][len], 0, BUF_SIZE_XCP_TX - len);
+		n_staged++;
+	}
 
+	// Seqlock end: if the R5 started a new cycle while we were reading, every
+	// staged byte is potentially a mix of two cycles -- discard it all. The
+	// data is gone either way (the window is being rewritten); what matters
+	// is that torn frames never reach the network.
+	if (! rpu_apu_exchange_out_seq_unchanged(seq_begin)) {
+		xcp_ocm_torn++;
+		return pdFALSE;
+	}
+
+	// Committed: the staged data is a consistent snapshot of cycle seq_begin.
+	if (xcp_prev_cycle_seq_valid) {
+		uint32_t delta = seq_begin - xcp_prev_cycle_seq;	// wrap-safe
+		if (delta > 2u) {
+			xcp_ocm_cycles_missed += (delta - 2u) / 2u;
+		}
+	}
+	xcp_prev_cycle_seq = seq_begin;
+	xcp_prev_cycle_seq_valid = 1;
+	if (capped) {
+		xcp_ocm_capped++;
+	}
+
+	if (xcp_cto_adopt_pending) {
+		// New connection: whatever sits in the mailbox predates this session.
+		xcp_last_cto_seq = cto_seq;
+		xcp_cto_adopt_pending = 0;
+		have_cto = 0;
+	}
+
+	if (have_cto) {
+		xcp_last_cto_seq = cto_seq;	// acked via the write phase this IPI
+		if (xQueueSendFromISR(queue_xcp_tx_cto, xcp_stage_cto, &task_woken) == pdPASS) {
+			msg_txq_written++;
+		}
+		// CTO queue full is practically impossible (request/response is
+		// serialized); if it happens the frame is dropped silently.
+	}
+
+	if (xcp_eth_connected == 0) {
+		// No consumer: drop the staged DAQ frames (the CTO ack above still
+		// advances, keeping the R5 mailbox from backing up while idle).
+		return task_woken;
+	}
+
+	for (uint32_t i = 0; i < n_staged; i++) {
 		// Classify by XCP PID (first payload byte after the 4-byte transport
 		// header): CTO packets (command responses etc.) take the dedicated
 		// queue so they never wait behind -- or get purged with -- the DAQ
-		// backlog. The master times out if a response is late or lost.
-		if (data[XCP_HEADER_LEN] >= XCP_PID_CTO_MIN) {
-			if (xQueueSendFromISR(queue_xcp_tx_cto, data, &task_woken) == pdPASS) {
+		// backlog. (Normally all chain frames are DAQ now that responses use
+		// the mailbox; kept as a defensive measure.)
+		if (xcp_stage[i][XCP_HEADER_LEN] >= XCP_PID_CTO_MIN) {
+			if (xQueueSendFromISR(queue_xcp_tx_cto, xcp_stage[i], &task_woken) == pdPASS) {
 				msg_txq_written++;
 			}
-			// CTO queue full is practically impossible (request/response is
-			// serialized); if it happens the frame is dropped silently.
 			continue;
 		}
 
-		if(xQueueSendFromISR(queue_xcp_tx, data, &task_woken) != pdPASS) {
+		if(xQueueSendFromISR(queue_xcp_tx, xcp_stage[i], &task_woken) != pdPASS) {
 			// DAQ queue full: the Ethernet client/link cannot keep up with the
 			// XCP DAQ rate. Drop this frame and ask the TX task to purge its
 			// stale backlog so latency stays bounded. Must NOT block, delay or
 			// printf from ISR context here -- doing so corrupts the FreeRTOS
 			// scheduler and freezes the system (the previous behaviour).
-			// Keep draining the OCM (continue, not break): a CTO response
-			// behind the overflowing DAQ frames must still get through.
 			xcp_txq_overflow_dropped++;
 			xcp_txq_purge_requested = 1;
 			continue;
@@ -432,7 +597,9 @@ void ocm_eth_adapter_task(void *p)
     if (lwip_bind(sock, (struct sockaddr *)&address, sizeof (address)) < 0) {
         return;
     }
-    lwip_listen(sock, 0);
+    // Backlog 1: a master reconnecting while the previous connection is
+    // still being torn down gets queued instead of refused.
+    lwip_listen(sock, 1);
 
     while (1) {
         int new_sd;
@@ -446,6 +613,17 @@ void ocm_eth_adapter_task(void *p)
 
         xil_printf("xcp master connected from\n");
         my_print_ip((ip_addr_t*) &remote.sin_addr);
+
+        // Non-blocking mode: the workers use select() with bounded waits so
+        // neither can wedge forever in write()/read() on a dead connection.
+        {
+            int nb_opt = 1;
+            (void)lwip_ioctl(new_sd, FIONBIO, &nb_opt);
+        }
+
+        // A CTO response parked in the OCM mailbox before/during a disconnect
+        // belongs to the previous session; consume it without forwarding.
+        xcp_cto_adopt_pending = 1;
 
         // Start a fresh TX+RX worker pair for this connection. The socket fd is
         // passed BY VALUE; the old code passed &new_sd, a dangling pointer to a
@@ -477,12 +655,15 @@ int ocm_eth_adapter_irq(void)
 	BaseType_t task_woken = pdFALSE;
 
 	rpu_apu_exchange_cache_invalidate_before_read();
-	rpu_apu_exchange_prepare_read();
+	// prepare_read/seqlock handling happens inside (staged, tear-guarded)
 	if (read_OCM_write_txQueue() != pdFALSE) {
 		task_woken = pdTRUE;
 	}
 
 	rpu_apu_exchange_prepare_write();
+	// Publish the last consumed mailbox sequence every cycle (idempotent);
+	// the R5 frees its CTO mailbox when this matches what it parked.
+	rpu_apu_exchange_write_cto_ack(xcp_last_cto_seq);
 	if (read_rxQueue_write_OCM() != pdFALSE) {
 		task_woken = pdTRUE;
 	}

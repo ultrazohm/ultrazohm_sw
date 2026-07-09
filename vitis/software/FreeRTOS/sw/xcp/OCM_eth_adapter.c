@@ -24,10 +24,11 @@
 /*-------------------------------------------------------------------
  * Configuration
  *-----------------------------------------------------------------*/
-// Copied from XCP implementation on R5
+// Copied from XCP implementation on R5 (xcp_config.h) -- keep identical,
+// the OCM frame sizes on both sides derive from it.
 #define XCP_HEADER_LEN          4
 #define kXcpMaxCTO              32
-#define kXcpMaxDTO              64
+#define kXcpMaxDTO              220
 
 #define BUF_SIZE_XCP_RX         (kXcpMaxDTO + XCP_HEADER_LEN)
 #define BUF_SIZE_XCP_TX         (kXcpMaxDTO + XCP_HEADER_LEN)
@@ -46,14 +47,13 @@
 #define PRIO_XCP_TX             3
 
 /* DAQ (DTO) queue: deep on purpose -- it is the burst absorber between DAQ
- * production (20..100 kHz control rate, up to ~800k frames/s) and the TCP
- * drain, and measurement gaps hurt more than backlog latency here (~100 ms
- * is acceptable). A deep DAQ backlog can no longer delay command responses:
- * CTOs bypass this queue entirely (dedicated queue + OCM mailbox), which is
- * what made the old bounded-latency sizing (512) obsolete.
- * 65536 x 68 B ~= 4.5 MB of the ~190 MB FreeRTOS heap; that is ~200 ms at
- * 40 kHz x 8 ODTs and ~80 ms at 100 kHz x 8 ODTs. */
-#define QUEUE_XCP_TX_LEN        65536
+ * production and the TCP drain, and measurement gaps hurt more than backlog
+ * latency here (~100 ms is acceptable). A deep DAQ backlog can no longer
+ * delay command responses: CTOs bypass this queue entirely (dedicated queue
+ * + OCM mailbox), which is what made the old bounded-latency sizing (512)
+ * obsolete. Sized for the 224-byte items of kXcpMaxDTO=220: 16384 x 224 B
+ * ~= 3.7 MB heap, ~140 ms of buffering at 40 kHz x 3 ODTs. */
+#define QUEUE_XCP_TX_LEN        16384
 #define QUEUE_XCP_RX_LEN        10
 
 /* Dedicated queue for CTO packets (command responses RES/ERR/EV/SERV,
@@ -424,9 +424,12 @@ static BaseType_t read_rxQueue_write_OCM(void)
 			}
 			uint16_t len_xcp_rx = (uint16_t)(buf_xcp_rx[0] | (buf_xcp_rx[1] << 8));
 			uint32_t msg_total = (uint32_t)len_xcp_rx + XCP_HEADER_LEN;
-			if (msg_total > BUF_SIZE_XCP_RX) {
-				// Corrupt entry (should be impossible, rx task validates
-				// framing): consume and drop it.
+			if (msg_total > BUF_SIZE_XCP_RX
+			    || msg_total + 4u > RPU_APU_EXCHANGE_IN_CHAIN_LEN - 4u) {
+				// Corrupt or oversized entry (real commands are <= MAX_CTO+4
+				// = 36 bytes; the rx task validates framing): consume and
+				// drop it -- leaving it queued would head-of-line block all
+				// future commands forever.
 				(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
 				continue;
 			}

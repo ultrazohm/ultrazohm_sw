@@ -55,15 +55,28 @@
  *    XCP_IN header. Delivery is exactly-once: the A53 forwards a mailbox
  *    frame only when its sequence changes.
  *
+ * 3. A generation handshake on XCP_IN (commands, A53 -> R5): the A53 keeps
+ *    the current command batch IN PLACE and rewrites it every IPI cycle,
+ *    publishing a generation number (in_seq) AFTER the chain bytes. The R5
+ *    processes a generation exactly once (in_seq != last processed) and
+ *    acknowledges it through in_consumed_seq in the XCP_OUT header; only
+ *    then does the A53 build the next batch. A command can therefore never
+ *    be lost to a missed cycle (the failure observed as CANape
+ *    "Timeout: Keine Response" with clean wire data, T8 pcap analysis)
+ *    nor executed twice (generation dedup on the R5).
+ *
  * XCP_OUT layout (R5 writes, A53 reads):
  *   +0                   u32 cycle_seq   seqlock (odd = write in progress)
  *   +4                   u32 cto_seq     mailbox sequence, 0 = never used
  *   +8                   u32 cto_len     framed length of the mailbox message
  *   +12                  u8  cto_frame[XCP_CTO_SLOT_LEN]
+ *   +12+SLOT             u32 in_consumed_seq  last XCP_IN generation processed
  *   +XCP_OUT_HDR_LEN     message chain (see below)
  *
  * XCP_IN layout (A53 writes, R5 reads):
  *   +0                   u32 cto_ack_seq last mailbox sequence consumed
+ *   +4                   u32 in_seq      command-batch generation, 0 = none;
+ *                                        published AFTER the chain bytes
  *   +XCP_IN_HDR_LEN      message chain
  *
  * Message chain format (unchanged):
@@ -95,13 +108,14 @@
 #define XCP_IN_ADDR 				0xFFFFC000
 #define XCP_IN_LEN					256
 
-/* Header sizes in front of the message chains. XCP_OUT_HDR_LEN is one A53
- * cache line (64 B): the seqlock word, the mailbox and its frame slot all
- * live in that single line, so one invalidate on the A53 refreshes them
- * together and the R5's final header flush publishes cycle_seq, cto_seq and
- * the mailbox atomically enough for the seqlock to cover them. */
+/* Header sizes in front of the message chains: one A53 cache line (64 B)
+ * each, so header words and chain bytes never share a cache line. That
+ * separation is what makes the publish-after-payload flush order real: the
+ * chain lines can be flushed completely before the line carrying the
+ * sequence/generation word goes out. (XCP_OUT: seqlock word + CTO mailbox +
+ * in_consumed ack in line 0. XCP_IN: cto_ack + in_seq in line 0.) */
 #define XCP_OUT_HDR_LEN				64
-#define XCP_IN_HDR_LEN				8
+#define XCP_IN_HDR_LEN				64
 
 /* Mailbox frame slot: a framed CTO message is 4 (transport header) +
  * kXcpMaxCTO (32) = 36 bytes; the slot must also fit in the header line. */
@@ -117,7 +131,16 @@
 #define XCP_OUT_CTO_SEQ_P			((volatile uint32_t *)(XCP_OUT_ADDR + 4u))
 #define XCP_OUT_CTO_LEN_P			((volatile uint32_t *)(XCP_OUT_ADDR + 8u))
 #define XCP_OUT_CTO_FRAME_P			((volatile uint8_t *)(XCP_OUT_ADDR + 12u))
+#define XCP_OUT_IN_CONSUMED_P		((volatile uint32_t *)(XCP_OUT_ADDR + 12u + XCP_CTO_SLOT_LEN))
 #define XCP_IN_CTO_ACK_P			((volatile uint32_t *)(XCP_IN_ADDR + 0u))
+#define XCP_IN_SEQ_P				((volatile uint32_t *)(XCP_IN_ADDR + 4u))
+
+#if (12 + XCP_CTO_SLOT_LEN + 4) > 64
+#error "XCP_OUT header fields must fit into the 64-byte header line"
+#endif
+#if (XCP_IN_LEN - XCP_IN_HDR_LEN) != RPU_APU_EXCHANGE_IN_CHAIN_LEN
+#error "RPU_APU_EXCHANGE_IN_CHAIN_LEN out of sync with the XCP_IN layout"
+#endif
 
 /*
  * RPU write side only: the last bytes of XCP_OUT are reserved for CTO frames
@@ -171,6 +194,7 @@ void rpu_apu_exchange_init(void)
 	// The CPU which reads the OCM area initializes it
 #ifdef RPU
 	*XCP_IN_CTO_ACK_P = 0;
+	*XCP_IN_SEQ_P = 0;
 	*(uint32_t *)XCP_IN_CHAIN_ADDR = 0;
 	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
@@ -178,6 +202,7 @@ void rpu_apu_exchange_init(void)
 	*XCP_OUT_CYCLE_SEQ_P = 0;
 	*XCP_OUT_CTO_SEQ_P = 0;
 	*XCP_OUT_CTO_LEN_P = 0;
+	*XCP_OUT_IN_CONSUMED_P = 0;
 	*(uint32_t *)XCP_OUT_CHAIN_ADDR = 0;
 	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
@@ -211,9 +236,11 @@ void rpu_apu_exchange_cache_flush_after_write(void)
 	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_HDR_LEN);
 #endif
 #ifdef APU
-	// Flush the header (cto_ack) and the bytes actually written this cycle:
-	// region start up to and including the 4-byte end-of-messages terminator.
+	// Publish order matters here too: chain bytes first, header (with the
+	// in_seq generation word) last. The R5 accepting a new generation must
+	// imply the chain content it describes is complete in the OCM.
 	Xil_DCacheFlushRange(addr_w_start, (addr_w + 4u) - addr_w_start);
+	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_HDR_LEN);
 #endif
 }
 
@@ -245,7 +272,7 @@ void rpu_apu_exchange_prepare_write(void)
 #endif
 #ifdef APU
 	addr_w = XCP_IN_CHAIN_ADDR;
-	addr_w_start = XCP_IN_ADDR;			// include the cto_ack header word
+	addr_w_start = XCP_IN_CHAIN_ADDR;	// header is flushed separately (last)
 	addr_w_end = XCP_IN_ADDR + XCP_IN_LEN;
 #endif
 	*(uint32_t *)addr_w = 0;
@@ -384,6 +411,21 @@ void rpu_apu_exchange_write_cto_ack(uint32_t seq)
 {
 	*XCP_IN_CTO_ACK_P = seq;
 }
+
+/* Publish the command-batch generation. Written during the write phase; the
+ * split flush in cache_flush_after_write() guarantees the chain bytes reach
+ * the OCM before this word does (publish-after-payload). */
+void rpu_apu_exchange_publish_in_seq(uint32_t seq)
+{
+	*XCP_IN_SEQ_P = seq;
+}
+
+/* Last XCP_IN generation the R5 has processed. Lives in the XCP_OUT header:
+ * only valid between out_seq_read() and a passing out_seq_unchanged(). */
+uint32_t rpu_apu_exchange_read_in_consumed(void)
+{
+	return *XCP_OUT_IN_CONSUMED_P;
+}
 #endif /* APU */
 
 /*-------------------------------------------------------------------
@@ -417,5 +459,21 @@ int rpu_apu_exchange_write_cto(uint8_t len, const uint8_t *data)
 	// Published by the header flush in cache_flush_after_write(), together
 	// with the even cycle_seq -- the A53 only trusts it under the seqlock.
 	return 1;
+}
+
+/* Current command-batch generation published by the A53. Relies on
+ * cache_invalidate_before_read() having refreshed XCP_IN this cycle. The
+ * A53 publishes the generation only after the chain bytes are in the OCM,
+ * so a new value here implies a complete, readable command chain. */
+uint32_t rpu_apu_exchange_in_seq_read(void)
+{
+	return *XCP_IN_SEQ_P;
+}
+
+/* Acknowledge a processed command-batch generation. Lands in the XCP_OUT
+ * header, published by the header flush in cache_flush_after_write(). */
+void rpu_apu_exchange_write_in_consumed(uint32_t seq)
+{
+	*XCP_OUT_IN_CONSUMED_P = seq;
 }
 #endif /* RPU */

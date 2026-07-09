@@ -271,6 +271,29 @@ latent one fixed preventively:**
   now: CANape shows an error, the user restarts the measurement —
   **never** a power cycle.
 
+**T8 addendum (2026-07-09, pcap analysis of a live failure):** a pktmon
+capture of a crash (40 kHz, 170 Mbit/s, failure after 2 min) settled the
+open questions. (1) The wire stream was **clean**: 2125/2125 contiguous
+captured runs perfectly framed with monotonic CTR; every "Ungültiger
+Zähler/Ungültiges XCP-Paket" message was CANape misparsing its own buffer
+after the timeout (its reported length 15811 = 0x3DC3 = two bytes of a
+constant signal float 0x3DC3A6AA). (2) The Realtek USB adapter's RSC
+coalescing was byte-for-byte faithful (4276 merged packets, 0 mismatches).
+(3) The actual failure, captured directly: CANape sent GET_DAQ_CLOCK
+(0xDC) three times over 5 s with **no ECU response** — the T8 leading
+"Timeout" was always the real event, everything else noise. Root cause:
+**commands (XCP_IN) had no delivery guarantee** — the A53 wrote a command
+exactly once into a window the R5 reads once per cycle; IPI-latency
+overlap ate it silently. Fixed by the symmetric **generation handshake**:
+the A53 rewrites the current command batch every IPI under a generation
+number published after the chain bytes; the R5 executes each generation
+exactly once and acks via `in_consumed_seq` in the XCP_OUT header
+(counters: `xcp_in_batches_sent`, `xcp_in_retry_cycles` on the A53,
+`xcp_in_generations` on the R5). The SW-checksum experiment (reinstated
+for that run) is thereby also concluded: no ECU-side wire corruption
+exists; the checksum setting can stay or be reverted at will — it is not
+load-bearing. OCM layout changed again: **rebuild BOTH ELFs.**
+
 **Validation checklist for the next hardware run:**
 - Repeat the 27-signals/20 kHz overnight run; watch the new counters in
   the debugger (`xcp_ocm_torn` / `xcp_ocm_cycles_missed` climbing =

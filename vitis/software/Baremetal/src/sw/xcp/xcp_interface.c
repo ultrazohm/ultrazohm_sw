@@ -59,6 +59,12 @@ static uint8_t xcp_cto_pending_count = 0;
 // Debug counters (inspect via debugger)
 volatile uint32_t xcp_cto_pending_dropped = 0;	// pending FIFO full -> CTO lost
 volatile uint32_t xcp_cto_sent = 0;				// CTOs handed to the mailbox
+volatile uint32_t xcp_in_generations = 0;		// command batches processed
+
+/* Last XCP_IN command-batch generation processed. Each generation is
+ * executed exactly once, no matter how many cycles the A53 keeps offering
+ * it (rewrite-until-acked; see RPU_APU_exchange_impl.c). */
+static uint32_t xcp_in_seq_done = 0;
 
 /*-------------------------------------------------------------------
  * Static functions
@@ -160,8 +166,19 @@ void xcp_irq(void)
     xcp_interface_events();
 
 	rpu_apu_exchange_cache_invalidate_before_read();
-	rpu_apu_exchange_prepare_read();
-    xcp_interface_stim();
+
+	// Commands: process a batch only when its generation is new. The A53
+	// publishes the generation after the chain bytes, so a new value here
+	// implies a complete chain; an unchanged value means either nothing new
+	// or a batch already executed (never run a generation twice).
+	uint32_t in_seq = rpu_apu_exchange_in_seq_read();
+	if (in_seq != xcp_in_seq_done) {
+		rpu_apu_exchange_prepare_read();
+		xcp_interface_stim();
+		xcp_in_seq_done = in_seq;
+		xcp_in_generations++;
+	}
+	rpu_apu_exchange_write_in_consumed(xcp_in_seq_done);
 
 	// After stim: a command processed this cycle has queued its response.
 	// The ack word was refreshed by cache_invalidate_before_read() above.

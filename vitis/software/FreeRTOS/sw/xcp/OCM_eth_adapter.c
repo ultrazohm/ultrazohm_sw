@@ -377,6 +377,28 @@ static void ocm_eth_adapter_init(void)
     rpu_apu_exchange_init();
 }
 
+/* Command (XCP_IN) delivery uses a generation handshake: the current batch
+ * is REWRITTEN into the OCM every IPI, under an unchanged generation number,
+ * until the R5 acknowledges having processed it (in_consumed_seq in the
+ * XCP_OUT header). Only then is the next batch built from the RX queue.
+ * Before this, a command was written exactly once into a window the R5 reads
+ * exactly once per control cycle: any IPI-latency overlap silently ate the
+ * command -- observed as CANape "Timeout: Keine Response" with a perfectly
+ * clean wire capture (T8 pcap analysis). Responses were already protected by
+ * the CTO mailbox; this closes the same hole in the opposite direction. */
+#define XCP_IN_BATCH_MAX 3
+static struct {
+	uint8_t len;
+	uint8_t data[BUF_SIZE_XCP_RX];
+} xcp_in_batch[XCP_IN_BATCH_MAX];
+static uint8_t  xcp_in_batch_n = 0;
+static uint32_t xcp_in_seq = 0;          // generation of the in-flight batch
+static uint32_t xcp_in_consumed = 0;     // R5 ack, stashed under the OUT seqlock
+
+// Diagnostics (inspect via debugger)
+volatile uint32_t xcp_in_batches_sent = 0;
+volatile uint32_t xcp_in_retry_cycles = 0;  // IPIs spent re-offering an unconsumed batch
+
 static BaseType_t read_rxQueue_write_OCM(void)
 {
 	BaseType_t task_woken = pdFALSE;
@@ -386,37 +408,58 @@ static BaseType_t read_rxQueue_write_OCM(void)
 		return pdFALSE;
 	}
 
-	while (1) {
-		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
-
-		// Peek first: if the message does not fit into the OCM region we leave
-		// it queued for the next IPI cycle instead of losing it. XCP_IN is only
-		// 256 bytes, so command bursts are drained over several cycles rather
-		// than overrunning the region.
-		if(xQueuePeekFromISR(queue_xcp_rx, buf_xcp_rx) != pdPASS) {
-			break;
-		}
-
-		// Write the actual message size (header + payload), not the fixed
-		// buffer size: commands are small, this fits more per cycle and stops
-		// writing stale tail bytes into the OCM.
-		uint16_t len_xcp_rx = (uint16_t)(buf_xcp_rx[0] | (buf_xcp_rx[1] << 8));
-		uint32_t msg_total = (uint32_t)len_xcp_rx + XCP_HEADER_LEN;
-		if (msg_total > BUF_SIZE_XCP_RX) {
-			// Corrupt entry (should be impossible, rx task validates framing):
-			// consume and drop it.
-			(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
-			continue;
-		}
-
-		if (! rpu_apu_exchange_writeOCM((uint8_t)msg_total, buf_xcp_rx)) {
-			break;	// OCM write region full; retry remaining commands next cycle
-		}
-
-		// Written to OCM: now actually consume the message from the queue.
-		(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
-		msg_rxq_read++;
+	// Current batch processed by the R5? Then it is done for good.
+	if (xcp_in_batch_n != 0 && xcp_in_consumed == xcp_in_seq) {
+		xcp_in_batch_n = 0;
 	}
+
+	if (xcp_in_batch_n == 0) {
+		// Build the next batch from the RX queue (bounded by the region and
+		// the batch array; the rest stays queued for later generations).
+		size_t space = RPU_APU_EXCHANGE_IN_CHAIN_LEN - 4u;  // minus terminator
+		while (xcp_in_batch_n < XCP_IN_BATCH_MAX) {
+			uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
+			if (xQueuePeekFromISR(queue_xcp_rx, buf_xcp_rx) != pdPASS) {
+				break;
+			}
+			uint16_t len_xcp_rx = (uint16_t)(buf_xcp_rx[0] | (buf_xcp_rx[1] << 8));
+			uint32_t msg_total = (uint32_t)len_xcp_rx + XCP_HEADER_LEN;
+			if (msg_total > BUF_SIZE_XCP_RX) {
+				// Corrupt entry (should be impossible, rx task validates
+				// framing): consume and drop it.
+				(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
+				continue;
+			}
+			if (msg_total + 4u > space) {
+				break;	// batch full; remaining commands go into the next one
+			}
+			space -= msg_total + 4u;
+			xcp_in_batch[xcp_in_batch_n].len = (uint8_t)msg_total;
+			memcpy(xcp_in_batch[xcp_in_batch_n].data, buf_xcp_rx, msg_total);
+			xcp_in_batch_n++;
+			(void)xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, &task_woken);
+			msg_rxq_read++;
+		}
+		if (xcp_in_batch_n != 0) {
+			xcp_in_seq++;
+			if (xcp_in_seq == 0u) {
+				xcp_in_seq = 1u;	// 0 is reserved for "no batch ever"
+			}
+			xcp_in_batches_sent++;
+		}
+	} else {
+		xcp_in_retry_cycles++;
+	}
+
+	// (Re)write the in-flight batch -- identical bytes every IPI until the
+	// R5 acknowledges the generation, so a torn concurrent read on the R5
+	// still sees consistent content and nothing is ever lost.
+	for (uint8_t i = 0; i < xcp_in_batch_n; i++) {
+		if (! rpu_apu_exchange_writeOCM(xcp_in_batch[i].len, xcp_in_batch[i].data)) {
+			break;	// cannot happen (batch sized to the region); defensive
+		}
+	}
+	rpu_apu_exchange_publish_in_seq(xcp_in_seq);
 
 	return task_woken;
 }
@@ -457,7 +500,9 @@ static BaseType_t read_OCM_write_txQueue(void)
 		return pdFALSE;
 	}
 
-	// Stage the CTO mailbox (persists across cycles until acked).
+	// Stage the CTO mailbox (persists across cycles until acked) and the
+	// R5's command-batch ack; both live in the seqlock-guarded header.
+	uint32_t in_consumed_snapshot = rpu_apu_exchange_read_in_consumed();
 	if (rpu_apu_exchange_read_cto(&cto_len, xcp_stage_cto, &cto_seq)) {
 		if (cto_seq != xcp_last_cto_seq) {
 			have_cto = 1;
@@ -507,6 +552,7 @@ static BaseType_t read_OCM_write_txQueue(void)
 	}
 
 	// Committed: the staged data is a consistent snapshot of cycle seq_begin.
+	xcp_in_consumed = in_consumed_snapshot;
 	if (xcp_prev_cycle_seq_valid) {
 		uint32_t delta = seq_begin - xcp_prev_cycle_seq;	// wrap-safe
 		if (delta > 2u) {

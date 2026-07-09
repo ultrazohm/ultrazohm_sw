@@ -1,70 +1,142 @@
 {
   "CodeGenStatus": {
     "clockReportDatt": {
-      "modelBaseRate": 1E-8,
-      "dutBaseRate": 1E-8,
+      "modelBaseRate": 5E-7,
+      "dutBaseRate": 5E-7,
       "overSampleRequest": 1,
       "clockData": {
         "name": "ce_out",
-        "sampleTime": 1E-8,
+        "sampleTime": 5E-7,
         "ratio": 1,
         "domain": -1
       },
       "inData": [
         {
-          "signalName": "in_data_ads",
+          "signalName": "in_data_U",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
-          "signalName": "Dezimation",
+          "signalName": "Dezimation_U",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
           "signalName": "clk_ratio",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
-          "signalName": "in_clk_ads",
+          "signalName": "switch_edge",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
-          "domain": -1
-        },
-        {
-          "signalName": "switch_clk",
-          "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
           "signalName": "trigger_output",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "Dezimation_I",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "in_data_PH1",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "in_data_PH2",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "in_data_PH3",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "in_data_PH4",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
           "domain": -1
         }
       ],
       "outData": [
         {
-          "signalName": "data_out_ps",
+          "signalName": "data_out_ps_U",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
           "signalName": "out_clk_ads",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
           "domain": -1
         },
         {
-          "signalName": "data_raw_out",
+          "signalName": "data_raw_U",
           "clockingName": "ce_out",
-          "sampleTime": 1E-8,
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_raw_PH1",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_raw_PH2",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_raw_PH3",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_raw_PH4",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_out_ps_PH1",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_out_ps_PH2",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_out_ps_PH3",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
+          "domain": -1
+        },
+        {
+          "signalName": "data_out_ps_PH4",
+          "clockingName": "ce_out",
+          "sampleTime": 5E-7,
           "domain": -1
         }
       ],
@@ -73,10 +145,26 @@
   },
   "CriticalPathDelay": 9.386000000000001,
   "GenFileList": [
+    "uz_JL_SDDemod_src_CLk.vhd",
     "uz_JL_SDDemod_src_Differentierer.vhd",
     "uz_JL_SDDemod_src_Integratoren.vhd",
-    "uz_JL_SDDemod_src_Subsystem1.vhd",
-    "uz_JL_SDDemod_src_Subsystem5.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_PH1.vhd",
+    "uz_JL_SDDemod_src_Differentierer_block.vhd",
+    "uz_JL_SDDemod_src_Integratoren_block.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_PH2.vhd",
+    "uz_JL_SDDemod_src_Differentierer_block1.vhd",
+    "uz_JL_SDDemod_src_Integratoren_block1.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_PH3.vhd",
+    "uz_JL_SDDemod_src_Differentierer_block2.vhd",
+    "uz_JL_SDDemod_src_Integratoren_block2.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_PH4.vhd",
+    "uz_JL_SDDemod_src_Differentierer_block3.vhd",
+    "uz_JL_SDDemod_src_Integratoren_block3.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U.vhd",
+    "uz_JL_SDDemod_src_trigger_sec_edge.vhd",
+    "uz_JL_SDDemod_src_Subsystem.vhd",
+    "uz_JL_SDDemod_src_gen_slow_clk_I.vhd",
+    "uz_JL_SDDemod_src_gen_slow_clk_U.vhd",
     "uz_JL_SDDemod_src_uz_JL_SDDemodulator.vhd"
   ],
   "Latency": 0,
@@ -89,10 +177,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        1595485956,
-        796637795,
-        2407919041,
-        2981539788
+        4206323824,
+        3842134303,
+        4077589132,
+        683048727
       ],
       "MarkedUnique": false
     },
@@ -119,8 +207,8 @@
     "TopNetworkPortInfo": {
       "inputPorts": [
         {
-          "Name": "in_data_ads",
-          "Rate": 1E-8,
+          "Name": "in_data_U",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 0,
           "IsComplex": false,
@@ -129,8 +217,8 @@
           "Latency": -1
         },
         {
-          "Name": "Dezimation",
-          "Rate": 1E-8,
+          "Name": "Dezimation_U",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 1,
           "IsComplex": false,
@@ -140,7 +228,7 @@
         },
         {
           "Name": "clk_ratio",
-          "Rate": 1E-8,
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 2,
           "IsComplex": false,
@@ -149,8 +237,8 @@
           "Latency": -1
         },
         {
-          "Name": "in_clk_ads",
-          "Rate": 1E-8,
+          "Name": "switch_edge",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 3,
           "IsComplex": false,
@@ -159,8 +247,8 @@
           "Latency": -1
         },
         {
-          "Name": "switch_clk",
-          "Rate": 1E-8,
+          "Name": "trigger_output",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 4,
           "IsComplex": false,
@@ -169,10 +257,50 @@
           "Latency": -1
         },
         {
-          "Name": "trigger_output",
-          "Rate": 1E-8,
+          "Name": "Dezimation_I",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "in_data_PH1",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "in_data_PH2",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "in_data_PH3",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "in_data_PH4",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 9,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -181,8 +309,8 @@
       ],
       "outputPorts": [
         {
-          "Name": "data_out_ps",
-          "Rate": 1E-8,
+          "Name": "data_out_ps_U",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 0,
           "IsComplex": false,
@@ -192,7 +320,7 @@
         },
         {
           "Name": "out_clk_ads",
-          "Rate": 1E-8,
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 1,
           "IsComplex": false,
@@ -201,10 +329,90 @@
           "Latency": -1
         },
         {
-          "Name": "data_raw_out",
-          "Rate": 1E-8,
+          "Name": "data_raw_U",
+          "Rate": 5E-7,
           "Kind": "data",
           "PortIndex": 2,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_raw_PH1",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 3,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_raw_PH2",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 4,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_raw_PH3",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 5,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_raw_PH4",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 6,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_out_ps_PH1",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 7,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_out_ps_PH2",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_out_ps_PH3",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_out_ps_PH4",
+          "Rate": 5E-7,
+          "Kind": "data",
+          "PortIndex": 10,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -216,16 +424,24 @@
   "PhaseCycles": [
     0,
     0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0
   ],
   "ResourceSummary": {
     "multipliers": 0,
-    "addersSubtractors": 9,
-    "registers": 24,
-    "oneBitRegisters": 604,
+    "addersSubtractors": 34,
+    "registers": 97,
+    "oneBitRegisters": 2692,
     "rams": 0,
-    "multiplexers": 23,
-    "IOBits": 74,
+    "multiplexers": 67,
+    "IOBits": 225,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0
   }

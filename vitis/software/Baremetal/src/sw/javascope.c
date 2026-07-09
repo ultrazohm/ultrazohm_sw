@@ -59,6 +59,7 @@ extern uz_codegen regelung;
 extern struct uz_JL_SDDemod_output_t SD_Filter_out;
 extern bool input_bit;
 extern float SD_Filter_out_f;
+extern struct uz_JL_SDDemod_output_t_float SD_data;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -87,7 +88,6 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_phi]		= &pmsm_ideal_out.phi_mech_rad;
 //	js_ch_observable[JSO_pmsm_ideal_torque]		= &pmsm_ideal_out.torque_Nm;
 //	js_ch_observable[JSO_Soll_Drehzahl]			= &struct_ZM_In.Soll_Drehzahl;
-	js_ch_observable[JSO_input_bit]				= &input_bit;
 //	js_ch_observable[JSO_ctrl_Ualpha] 			= &voltages_alphabeta.alpha;
 //	js_ch_observable[JSO_ctrl_Ubeta] 			= &voltages_alphabeta.beta;
 //	js_ch_observable[JSO_ideal_ua] 				= &ideal_outputs.Ua;
@@ -96,7 +96,11 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-	js_ch_observable[JSO_SDFilter_OUT]			= &SD_Filter_out_f;
+	js_ch_observable[JSO_SD_U]					= &SD_data.data_U;
+	js_ch_observable[JSO_SD_PH1]				= &SD_data.data_PH1;
+	js_ch_observable[JSO_SD_PH2]				= &SD_data.data_PH2;
+	js_ch_observable[JSO_SD_PH3]				= &SD_data.data_PH3;
+	js_ch_observable[JSO_SD_PH4]				= &SD_data.data_PH4;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

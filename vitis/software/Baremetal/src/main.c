@@ -71,9 +71,10 @@ uz_JL_SDDemod_t *SD_Filter = NULL;
 struct uz_JL_SDDemod_config_t SD_Filter_config = {
 		.base_address = XPAR_UZ_JL_SDDEMOD_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
-		.R_axi = 256,
-		.clk_ratio = 5,
-		.switch_clk = true,
+		.dezimation_U = 20,
+		.dezimation_I = 20,
+		.clk_ratio = 100,
+		.switch_edge = true,
 };
 
 uz_axi_gpio_t* input_gpio=NULL;

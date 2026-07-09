@@ -17,9 +17,10 @@ typedef struct uz_JL_SDDemod_t uz_JL_SDDemod_t;
 struct uz_JL_SDDemod_config_t{
     uint32_t base_address;
     uint32_t ip_clk_frequency_Hz;
-    uint16_t R_axi;
+    uint16_t dezimation_U;
+    uint16_t dezimation_I;
     uint16_t clk_ratio;
-    bool switch_clk;
+    bool switch_edge;
 };
 
 /**
@@ -28,8 +29,21 @@ struct uz_JL_SDDemod_config_t{
  */
 struct uz_JL_SDDemod_output_t
 {
-    int32_t data;
+    int32_t data_U;
+    int32_t data_PH1;
+    int32_t data_PH2;
+    int32_t data_PH3;
+    int32_t data_PH4;
 };
+
+struct uz_JL_SDDemod_output_t_float
+{
+    float data_U;
+    float data_PH1;
+    float data_PH2;
+    float data_PH3;
+    float data_PH4;
+}; 
 
 /**
  * @brief Initialize an instance of the driver
@@ -46,7 +60,7 @@ uz_JL_SDDemod_t *uz_JL_SDDemod_init(struct uz_JL_SDDemod_config_t config);
  * @param self Pointer to driver instance
  * @param input_value
  */
-void uz_JL_SDDemod_set_Raxi(uz_JL_SDDemod_t *self, uint16_t R_axi);
+void uz_JL_SDDemod_set_dezimation(uz_JL_SDDemod_t *self, uint16_t dezimation_U, uint16_t dezimation_I);
 
 
 /**
@@ -63,7 +77,7 @@ void uz_JL_SDDemod_set_clk_ratio(uz_JL_SDDemod_t *self, uint16_t clk_ratio);
  * @param self Pointer to driver instance
  * @param switch_clk Switch clock value
  */
-void uz_JL_SDDemod_set_switch_clk(uz_JL_SDDemod_t *self, bool switch_clk);
+void uz_JL_SDDemod_set_switch_edge(uz_JL_SDDemod_t *self, bool switch_edge);
 
 /**
  * @brief Get Outputs

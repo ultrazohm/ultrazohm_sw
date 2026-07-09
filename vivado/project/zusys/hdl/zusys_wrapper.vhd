@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Tue Jun 16 14:23:36 2026
+--Date        : Thu Jul  9 13:25:23 2026
 --Host        : Jonathan-Link running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -28,6 +28,7 @@ entity zusys_wrapper is
     D2_IN : in STD_LOGIC_VECTOR ( 17 downto 0 );
     Dig_00_Ch1 : out STD_LOGIC;
     Dig_00_Ch4 : out STD_LOGIC;
+    Dig_01_Ch1 : out STD_LOGIC;
     Dig_01_Ch4 : out STD_LOGIC;
     Dig_02_Ch4 : out STD_LOGIC;
     Dig_03_Ch4 : out STD_LOGIC;
@@ -82,7 +83,8 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_08_Ch4 : in STD_LOGIC;
     Dig_17_Ch4 : in STD_LOGIC;
     D2_IN : in STD_LOGIC_VECTOR ( 17 downto 0 );
-    Dig_00_Ch1 : out STD_LOGIC
+    Dig_00_Ch1 : out STD_LOGIC;
+    Dig_01_Ch1 : out STD_LOGIC
   );
   end component zusys;
 begin
@@ -103,6 +105,7 @@ zusys_i: component zusys
       D2_IN(17 downto 0) => D2_IN(17 downto 0),
       Dig_00_Ch1 => Dig_00_Ch1,
       Dig_00_Ch4 => Dig_00_Ch4,
+      Dig_01_Ch1 => Dig_01_Ch1,
       Dig_01_Ch4 => Dig_01_Ch4,
       Dig_02_Ch4 => Dig_02_Ch4,
       Dig_03_Ch4 => Dig_03_Ch4,

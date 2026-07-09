@@ -32,8 +32,11 @@ enum JS_OberservableData {
 //	JSO_pmsm_ideal_torque,
 //	JSO_ctrl_Ualpha,
 //	JSO_ctrl_Ubeta,
-	JSO_input_bit,
-	JSO_SDFilter_OUT,
+	JSO_SD_U,
+	JSO_SD_PH1,
+	JSO_SD_PH2,
+	JSO_SD_PH3,
+	JSO_SD_PH4,
 	JSO_ENDMARKER
 };
 

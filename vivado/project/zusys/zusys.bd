@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xB79933EE944B85C8",
+      "boundary_crc": "0xB5F6EE9E8350BC73",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -100,9 +100,12 @@
       "uz_user": {
         "smartconnect_1": "",
         "axi_gpio_1": "",
-        "SD_data": "",
-        "SD_Clk": "",
+        "SD_data_U": "",
         "ila_0": "",
+        "SD_data_PH1": "",
+        "SD_data_PH2": "",
+        "SD_data_PH3": "",
+        "SD_data_PH4": "",
         "uz_JL_SDDemod_0": ""
       },
       "zynq_ultra_ps_e_0": ""
@@ -240,13 +243,10 @@
         "right": "0"
       },
       "Dig_00_Ch1": {
-        "direction": "O",
-        "parameters": {
-          "PortWidth": {
-            "value": "13",
-            "value_src": "ip_prop"
-          }
-        }
+        "direction": "O"
+      },
+      "Dig_01_Ch1": {
+        "direction": "O"
       }
     },
     "components": {
@@ -4846,7 +4846,7 @@
             "left": "17",
             "right": "0"
           },
-          "D1_OUT": {
+          "Clk_ADS_out": {
             "direction": "O"
           },
           "trigger_output": {
@@ -4963,34 +4963,17 @@
               }
             }
           },
-          "SD_data": {
+          "SD_data_U": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
             "xci_name": "zusys_SD_data_0",
             "xci_path": "ip\\zusys_SD_data_0_2\\zusys_SD_data_0.xci",
-            "inst_hier_path": "uz_user/SD_data",
+            "inst_hier_path": "uz_user/SD_data_U",
             "parameters": {
               "DIN_FROM": {
-                "value": "10"
+                "value": "8"
               },
               "DIN_TO": {
-                "value": "10"
-              },
-              "DIN_WIDTH": {
-                "value": "18"
-              }
-            }
-          },
-          "SD_Clk": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_SD_Clk_0",
-            "xci_path": "ip\\zusys_SD_Clk_0_2\\zusys_SD_Clk_0.xci",
-            "inst_hier_path": "uz_user/SD_Clk",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "11"
-              },
-              "DIN_TO": {
-                "value": "11"
+                "value": "8"
               },
               "DIN_WIDTH": {
                 "value": "18"
@@ -5004,13 +4987,81 @@
             "inst_hier_path": "uz_user/ila_0",
             "parameters": {
               "C_DATA_DEPTH": {
-                "value": "16384"
+                "value": "131072"
               },
               "C_MONITOR_TYPE": {
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
+                "value": "6"
+              }
+            }
+          },
+          "SD_data_PH1": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_SD_data_U_0",
+            "xci_path": "ip\\zusys_SD_data_U_0\\zusys_SD_data_U_0.xci",
+            "inst_hier_path": "uz_user/SD_data_PH1",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "0"
+              },
+              "DIN_TO": {
+                "value": "0"
+              },
+              "DIN_WIDTH": {
+                "value": "18"
+              }
+            }
+          },
+          "SD_data_PH2": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_SD_data_PH1_0",
+            "xci_path": "ip\\zusys_SD_data_PH1_0\\zusys_SD_data_PH1_0.xci",
+            "inst_hier_path": "uz_user/SD_data_PH2",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "2"
+              },
+              "DIN_TO": {
+                "value": "2"
+              },
+              "DIN_WIDTH": {
+                "value": "18"
+              }
+            }
+          },
+          "SD_data_PH3": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_SD_data_PH1_1",
+            "xci_path": "ip\\zusys_SD_data_PH1_1\\zusys_SD_data_PH1_1.xci",
+            "inst_hier_path": "uz_user/SD_data_PH3",
+            "parameters": {
+              "DIN_FROM": {
                 "value": "4"
+              },
+              "DIN_TO": {
+                "value": "4"
+              },
+              "DIN_WIDTH": {
+                "value": "18"
+              }
+            }
+          },
+          "SD_data_PH4": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_SD_data_PH1_2",
+            "xci_path": "ip\\zusys_SD_data_PH1_2\\zusys_SD_data_PH1_2.xci",
+            "inst_hier_path": "uz_user/SD_data_PH4",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "6"
+              },
+              "DIN_TO": {
+                "value": "6"
+              },
+              "DIN_WIDTH": {
+                "value": "18"
               }
             }
           },
@@ -5046,22 +5097,41 @@
             "ports": [
               "D2_IN",
               "axi_gpio_1/gpio_io_i",
-              "SD_data/Din",
-              "SD_Clk/Din"
+              "SD_data_U/Din",
+              "SD_data_PH2/Din",
+              "SD_data_PH3/Din",
+              "SD_data_PH4/Din",
+              "SD_data_PH1/Din"
             ]
           },
-          "SD_Clk_Dout": {
+          "SD_data_PH1_Dout": {
             "ports": [
-              "SD_Clk/Dout",
-              "ila_0/probe1",
-              "uz_JL_SDDemod_0/in_clk_ads"
+              "SD_data_PH1/Dout",
+              "uz_JL_SDDemod_0/in_data_PH1"
             ]
           },
-          "SD_data_Dout": {
+          "SD_data_PH2_Dout": {
             "ports": [
-              "SD_data/Dout",
-              "ila_0/probe0",
-              "uz_JL_SDDemod_0/in_data_ads"
+              "SD_data_PH2/Dout",
+              "uz_JL_SDDemod_0/in_data_PH2"
+            ]
+          },
+          "SD_data_PH3_Dout": {
+            "ports": [
+              "SD_data_PH3/Dout",
+              "uz_JL_SDDemod_0/in_data_PH3"
+            ]
+          },
+          "SD_data_PH4_Dout": {
+            "ports": [
+              "SD_data_PH4/Dout",
+              "uz_JL_SDDemod_0/in_data_PH4"
+            ]
+          },
+          "SD_data_U_Dout": {
+            "ports": [
+              "SD_data_U/Dout",
+              "uz_JL_SDDemod_0/in_data_U"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -5079,17 +5149,41 @@
               "uz_JL_SDDemod_0/trigger_output"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_out": {
+          "uz_JL_SDDemod_0_data_raw_PH1": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_out",
+              "uz_JL_SDDemod_0/data_raw_PH1",
+              "ila_0/probe1"
+            ]
+          },
+          "uz_JL_SDDemod_0_data_raw_PH2": {
+            "ports": [
+              "uz_JL_SDDemod_0/data_raw_PH2",
+              "ila_0/probe2"
+            ]
+          },
+          "uz_JL_SDDemod_0_data_raw_PH3": {
+            "ports": [
+              "uz_JL_SDDemod_0/data_raw_PH3",
               "ila_0/probe3"
+            ]
+          },
+          "uz_JL_SDDemod_0_data_raw_PH4": {
+            "ports": [
+              "uz_JL_SDDemod_0/data_raw_PH4",
+              "ila_0/probe4"
+            ]
+          },
+          "uz_JL_SDDemod_0_data_raw_U": {
+            "ports": [
+              "uz_JL_SDDemod_0/data_raw_U",
+              "ila_0/probe5"
             ]
           },
           "uz_JL_SDDemod_0_out_clk_ads": {
             "ports": [
               "uz_JL_SDDemod_0/out_clk_ads",
-              "ila_0/probe2",
-              "D1_OUT"
+              "Clk_ADS_out",
+              "ila_0/probe0"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -8481,8 +8575,9 @@
       },
       "uz_user_D1_OUT": {
         "ports": [
-          "uz_user/D1_OUT",
-          "Dig_00_Ch1"
+          "uz_user/Clk_ADS_out",
+          "Dig_00_Ch1",
+          "Dig_01_Ch1"
         ]
       },
       "xlconcat_0_dout": {

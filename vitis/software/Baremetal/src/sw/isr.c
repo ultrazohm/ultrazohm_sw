@@ -40,6 +40,7 @@ XIpiPsu IPI_instance;
 extern DS_Data Global_Data;
 extern  uz_axi_gpio_t* output_gpio;
 extern  uz_axi_gpio_t* input_gpio;
+extern struct uz_JL_SDDemod_config_t SD_Filter_config;
 
 uint32_t output_bitmask=0xFFFFFFFF;
 bool input_bit=false;
@@ -55,8 +56,9 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 extern uz_JL_SDDemod_t *SD_Filter;
 
 struct uz_JL_SDDemod_output_t SD_Filter_out = {0};
-float SD_Filter_out_f = 0;
 
+
+struct uz_JL_SDDemod_output_t_float SD_data;
 
 extern uz_codegen regelung;
 Bus_ZM_In struct_ZM_In;
@@ -66,63 +68,60 @@ uz_3ph_abc_t three_phase_sine = {0};
 
 
 /* --- System-Parameter (Konfiguration) --- */
-// Dein gewählter Dezimationsfaktor M im FPGA (z.B. hochgeschraubt auf 512)
-#define SINC_M_FACTOR           256
 
-// Theoretisches Maximum des Sinc3 Filters: M^3 (hier: 134.217.728)
-#define SINC3_MAX_VAL           262144
 
-// Nullpunkt des Filters (Mitte des Wertebereichs entspricht 0V am ADC)
-#define SINC_ZERO_OFFSET        (SINC3_MAX_VAL / 2)
+// Theoretisches Maximum des Sinc3 Filters
+int32_t SINC3_MAX_VAL_U = 8000;
+int32_t SINC3_MAX_VAL_I = 8000;
 
-/* --- Spannungsteiler-Konfiguration --- */
-// Angenommenes Design: Bei 800V liegen exakt 250mV am ADC an
-float DC_LINK_MAX_VOLTS=       100.0f;
+#define SINC_ZERO_OFFSET_U        (SINC3_MAX_VAL_U / 2)
+#define SINC_ZERO_OFFSET_I        (SINC3_MAX_VAL_I / 2)+SINC3_MAX_VAL_I/4
+
+#define DC_LINK_MAX_VOLTS      450
 #define ADS1202_VREF_VOLTS      0.250f
 
-// Der Skalierungsfaktor (k_v) deines Hardware-Spannungsteilers (z.B. 3200.0)
-#define VOLTAGE_DIVIDER_RATIO   (DC_LINK_MAX_VOLTS / ADS1202_VREF_VOLTS)
+#define LEM_MAX_A     150
 
+#define U_BITS_SHIFT 4
+#define I_BITS_SHIFT 4
+
+
+// Der Skalierungsfaktor (k_v) deines Hardware-Spannungsteilers (z.B. 3200.0)
+#define DIVIDER_RATIO_U   (DC_LINK_MAX_VOLTS / ADS1202_VREF_VOLTS)
+#define DIVIDER_RATIO_I   (LEM_MAX_A / ADS1202_VREF_VOLTS)
 
 /**
  * @brief Wandelt den Sinc3-Wert in die echte Zwischenkreisspannung (V) um.
  * @param raw_fpga_value Der unbeschnittene Wert aus dem FPGA.
  * @return float Die gemessene Zwischenkreisspannung in Volt.
  */
-float Process_DCLink_Voltage(int32_t raw_fpga_value) {
-
-	int32_t shifted_value = raw_fpga_value;// & 0x00FFFFFF;
-	shifted_value = shifted_value << 7;
-	shifted_value = shifted_value >> 14;
-//	shifted_value = shifted_value & 0x00FFFFFF;
+float Process_DCLink_Voltage(int32_t raw_fpga_value) 
+{
 
     // 1. DC-Offset abziehen (Zentrierung um 0V)
-	float centered_val = shifted_value - SINC_ZERO_OFFSET;
+	int32_t centered_val = raw_fpga_value - SINC_ZERO_OFFSET_U;
 
-    // 2. Rauschen bei 0V abfangen
-    // Da der Zwischenkreis nie negativ sein kann, ist ein negativer
-    // centered_val physikalisch unmöglich und reines thermisches Rauschen.
-//    if (centered_val < 0.0f) {
-//        centered_val = 0.0f;
-//    }
-
-    // 3. Normierung auf das Verhältnis (0.0 bis +1.0)
-    // Wir nutzen hier nur die positive obere Hälfte des Filters!
-	float shiftet_value_f = (float)shifted_value;
-	float  normalized_ratio = shiftet_value_f / (float)SINC_ZERO_OFFSET;
-
-    // 4. Umrechnung in die kleine Spannung am ADC (0V bis 0.25V)
-	float adc_voltage = normalized_ratio * (float)ADS1202_VREF_VOLTS;
-
-    // 5. Hochskalieren auf die tatsächliche Zwischenkreisspannung
-	float dc_link_voltage = adc_voltage * VOLTAGE_DIVIDER_RATIO;
-
-	if(raw_fpga_value & 0x01000000)
-	{
-		dc_link_voltage = -dc_link_voltage;
-	}
+	float shiftet_value_f = (float)centered_val;
+	float dc_link_voltage = (shiftet_value_f / (1 << U_BITS_SHIFT) *1280);
 
     return dc_link_voltage;
+}
+
+/**
+ * @brief Wandelt den Sinc3-Wert in die echte Zwischenkreisspannung (V) um.
+ * @param raw_fpga_value Der unbeschnittene Wert aus dem FPGA.
+ * @return float Die gemessene Zwischenkreisspannung in Volt.
+ */
+float Process_phase_current(int32_t raw_fpga_value) 
+{
+
+    // 1. DC-Offset abziehen (Zentrierung um 0V)
+	int32_t centered_val = raw_fpga_value - SINC_ZERO_OFFSET_I;
+
+	float shiftet_value_f = (float)centered_val;
+	float phase_current = (shiftet_value_f / (1 << I_BITS_SHIFT) *1280);
+
+    return phase_current;
 }
 
 
@@ -140,7 +139,11 @@ void ISR_Control(void *data)
 //    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
 
     SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
-    SD_Filter_out_f= Process_DCLink_Voltage(SD_Filter_out.data);
+    SD_data.data_U= Process_DCLink_Voltage(SD_Filter_out.data_U);
+    SD_data.data_PH1= Process_phase_current(SD_Filter_out.data_PH1);
+    SD_data.data_PH2= Process_phase_current(SD_Filter_out.data_PH2);
+    SD_data.data_PH3= Process_phase_current(SD_Filter_out.data_PH3);
+    SD_data.data_PH4= Process_phase_current(SD_Filter_out.data_PH4);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     switch(current_state)

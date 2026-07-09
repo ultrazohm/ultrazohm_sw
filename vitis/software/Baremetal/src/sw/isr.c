@@ -32,6 +32,7 @@
 #include "../include/project_wizard_visualization.h"
 #include "../include/deskbench_control.h"
 #include "../uz/uz_global_configuration.h"
+#include "../uz/uz_math_constants.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -227,6 +228,11 @@ static void update_adapter_d3(void)
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
+    float d1_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[5], -2.0f * UZ_PIf, 0.0f);
+    float d2_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[6], -2.0f * UZ_PIf, 0.0f);
+    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_3, d1_theta_m_offset_rad);
+    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_1, d2_theta_m_offset_rad);
+
     struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_1_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_1);
     Global_Data.av.resolver_pl_interface_d4_1_revolution_counter = resolver_pl_interface_d4_1_outputs.revolution_counter;
     Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi = resolver_pl_interface_d4_1_outputs.position_mech_2pi;

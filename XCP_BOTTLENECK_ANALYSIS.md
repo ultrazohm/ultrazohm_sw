@@ -252,15 +252,11 @@ latent one fixed preventively:**
   sequence through the `XCP_IN` header → a response can never be lost to
   an overwritten cycle; delivery is exactly-once (A53 dedups by seq and
   adopts-without-forwarding on reconnect).
-- **Software TCP/UDP/IP checksums** (`CHECKSUM_GEN_* = 1` patched into
-  lwipopts.h by both platform TCL scripts — **platform/BSP rebuild
-  required**; `main.c` clears the GEM's DMACR TX-offload bit when it sees
-  `CHECKSUM_GEN_TCP==1`; RX offload untouched): checksums are now computed
-  over the *intended* bytes at `tcp_write()` time, so below-socket
-  corruption fails verification at the PC and is retransmitted instead of
-  parsed. Doubles as the discriminator: if garbage still reaches CANape
-  with SW checksums, the corruption is on the PC side (NIC/driver), not in
-  the ECU.
+- ~~Software TCP/UDP/IP checksums~~ — implemented as an experiment, active
+  during the pcap-analyzed crash (see addendum below), **proven
+  non-load-bearing and reverted for good**: the wire carried no ECU-side
+  corruption with or without it. HW checksum offload is fully enabled
+  again (lwipopts `CHECKSUM_GEN_* = 0`, no TCL patch, no DMACR clear).
 - **Bounded sends + guaranteed teardown** (`OCM_eth_adapter.c`): the
   socket now runs non-blocking; `ocm_eth_send_all()` waits for
   writability via `select()` and handles partial writes (mandatory — a

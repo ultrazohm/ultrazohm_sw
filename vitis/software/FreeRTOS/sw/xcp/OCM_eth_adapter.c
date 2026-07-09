@@ -45,12 +45,15 @@
 #define PRIO_XCP_RX             3
 #define PRIO_XCP_TX             3
 
-/* DAQ (DTO) queue: sized for bounded latency, not maximum buffering. A deep
- * queue only delays the inevitable when DAQ rate exceeds TCP drain rate, and
- * the backlog latency made CANape requests time out (observed ~4 min into a
- * measurement with the previous 10000-entry queue). 512 frames ~= 35 KB is
- * tens of milliseconds at typical drain rates. */
-#define QUEUE_XCP_TX_LEN        512
+/* DAQ (DTO) queue: deep on purpose -- it is the burst absorber between DAQ
+ * production (20..100 kHz control rate, up to ~800k frames/s) and the TCP
+ * drain, and measurement gaps hurt more than backlog latency here (~100 ms
+ * is acceptable). A deep DAQ backlog can no longer delay command responses:
+ * CTOs bypass this queue entirely (dedicated queue + OCM mailbox), which is
+ * what made the old bounded-latency sizing (512) obsolete.
+ * 65536 x 68 B ~= 4.5 MB of the ~190 MB FreeRTOS heap; that is ~200 ms at
+ * 40 kHz x 8 ODTs and ~80 ms at 100 kHz x 8 ODTs. */
+#define QUEUE_XCP_TX_LEN        65536
 #define QUEUE_XCP_RX_LEN        10
 
 /* Dedicated queue for CTO packets (command responses RES/ERR/EV/SERV,

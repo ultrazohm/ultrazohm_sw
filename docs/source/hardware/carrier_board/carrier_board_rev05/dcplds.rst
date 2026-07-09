@@ -15,6 +15,33 @@ General
 - Programmable via JTAG, SPI (PS-SPI0) and I2C (PS-I2C0)
 - No external clock source integrated on carrier
 
+.. _dslot_cpld_heartbeat_rev05:
+
+Breaking change: CarrierReady heartbeat safe-state handling (07-08/2026)
+------------------------------------------------------------------------
+
+.. warning::
+
+   As of ``07/08/2026``, the S3C safe-state interface contains a breaking change:
+   ``CarrierReady`` carries a heartbeat as proof of an alive S3C/carrier side, while
+   ``ReqSafeState`` remains a static request for disabling outputs.
+   S3C and D-Slot programming files must be updated together; implementations that
+   still validate ``ReqSafeState`` as heartbeat input are incompatible with this interface.
+
+The heartbeat was introduced because a static safe-state level is not sufficient during all electrical transitions of the carrier board.
+During power-down or fault handling, the D-Slot CPLD's 1.8 V I/O supply can fall faster than the CPLD core supply.
+In this transition the CPLD can be operated outside its specified supply conditions, so a single static level is not a reliable proof of normal operation.
+Normal operation is therefore additionally encoded as an actively toggling ``CarrierReady`` heartbeat.
+The D-Slot receiver starts in its local safe state and requires 16 consecutive edges
+inside the configured timing window before heartbeat-gated output forwarding can be released.
+If heartbeat edges stop, the receiver returns to its local safe state after the no-edge timeout.
+
+The :ref:`digitalVoltage_3v3_5v` card is a special case only when its S2 DIP switch is configured to ``use CarrierBoard``.
+In this configuration, the card uses the carrier-board ``SlotOE`` / output-enable signal directly.
+This provides a second fallback layer on the adapter card itself: the level shifter outputs are disabled by the card's output-enable path, so the card does not show the power-down glitch behavior that motivated the heartbeat-based safe-state detection for generic D-Slot programs.
+If S2 is configured to ``use Supervisors`` instead, the card behaves equivalently to the other D-Slot adapter cards with respect to this heartbeat-based safe-state handling.
+The ``CarrierReady`` heartbeat is the system-level proof of normal S3C/carrier operation. ``ReqSafeState`` remains the separate static request that can disable forwarding even while the heartbeat is still valid.
+
 MachXO2 implementation notes
 ----------------------------
 
@@ -24,93 +51,67 @@ They represent states before the heartbeat-based safe-state handling was introdu
 Do not use these archived/pre-heartbeat folders for new programming files, timing checks or implementation comparisons unless the historical state is explicitly required.
 The current source of truth is the active implementation in ``uz_d_slots`` together with the shared ``xo2_libraries/lib_sXc.vhd`` helper library and the maintained implementation list below.
 All active implementations use Lattice Diamond with Synplify Pro as synthesis tool and the project strategy enables VHDL-2008.
-The ``Voltage_3v3_5v`` subfolder contains the maintained MachXO2 CPLD implementations for the :ref:`digitalVoltage_3v3_5v` adapter card.
-Because this card defines its signal directions in four hardware groups, the CPLD repository provides the generated variants below ``Voltage_3v3_5v/voltage_8*_8*_8*_6*``.
-The name encodes the direction of the four groups in D-Slot order: three groups with eight I/Os each and one group with six I/Os, e.g. ``voltage_8rx_8rx_8tx_6tx``.
-
 The common library currently provides the clock/reset helper, tick generator, debouncer and the D-Slot heartbeat receiver.
-D-Slot programs that actively drive adapter-card outputs use ``dslot_heartbeat_receiver`` to gate their output forwarding with the decoded safe-state request:
+The heartbeat receiver has the signal-neutral input port ``heartbeat_in``.
+For a CarrierReady-compatible output implementation it must be connected to the physical
+``carrierrdy`` / ``CarrierReady`` signal:
 
 .. code-block:: vhdl
 
-   dslot_heartbeat: ENTITY work.dslot_heartbeat_receiver
+   dslot_carrierready_receiver: ENTITY work.dslot_heartbeat_receiver
       PORT MAP (
-         reqsafestate       => reqsafestate,
-         safe_state_request => safe_state_request
+         clk                => clk,
+         heartbeat_in       => carrierrdy,
+         safe_state_request => carrier_ready_safe_request
       );
 
-   enable_forwarding <= user_enable_forwarding AND NOT safe_state_request;
+   carrier_ready_valid <= NOT carrier_ready_safe_request;
+
+``ReqSafeState`` is evaluated separately as a static S3C request:
+
+.. code-block:: vhdl
+
+   req_safe_state_request <= reqsafestate;
+   enable_forwarding <= user_enable_forwarding AND carrier_ready_valid AND NOT req_safe_state_request;
+
+This gives the D-slot CPLD two independent S3C safety conditions:
+
+* ``CarrierReady`` heartbeat valid: the S3C/carrier side is alive and the heartbeat timing is plausible.
+* ``ReqSafeState = 0``: the S3C does not request the D-slot outputs to enter the safe state.
+
+Safety-related output forwarding is only allowed if both conditions are fulfilled.
+The final forwarding condition may additionally contain card- or program-specific
+``user_enable_forwarding`` logic. A missing or static heartbeat cannot complete the
+initial qualification. After qualification, a missing heartbeat asserts
+``carrier_ready_safe_request`` after approximately 100 us without an edge. If
+``ReqSafeState`` is ``1``, forwarding is disabled immediately even when the
+``CarrierReady`` heartbeat is still valid.
 
 .. warning::
 
-   Breaking change: MachXO2 D-Slot programs must no longer treat ``reqsafestate`` as a purely static logic level.
-   During power-down or fault handling, the D-Slot CPLD's 1.8 V I/O supply can fall faster than the CPLD core supply.
-   In this transition the CPLD can be operated outside its specified supply conditions, so a static level on ``ReqSafeState`` is not sufficient to prove normal operation.
-   The heartbeat therefore defines the valid operating condition: only a continuously received and correctly timed heartbeat permits output forwarding.
-   A missing, stuck or malformed heartbeat forces the D-Slot CPLD into its safe state.
-
-   The :ref:`digitalVoltage_3v3_5v` card is a special case only when its S2 DIP switch is configured to ``use CarrierBoard``.
-   In this configuration, the card uses the carrier-board ``SlotOE`` / output-enable signal directly.
-   This provides a second fallback layer on the adapter card itself: the level shifter outputs are disabled by the card's output-enable path, so the card does not show the power-down glitch behavior that motivated the heartbeat-based safe-state detection for generic D-Slot programs.
-   If S2 is configured to ``use Supervisors`` instead, the card behaves equivalently to the other D-Slot adapter cards with respect to this heartbeat-based safe-state handling.
-   The heartbeat remains the default system-level proof of normal operation for the MachXO2 D-Slot CPLD.
-
-If the heartbeat from the S3C is missing or invalid, ``safe_state_request`` is asserted and the D-Slot outputs are disabled.
-Card-specific logic should therefore only define ``user_enable_forwarding``, optional local safety conditions and the concrete FPGA-to-adapter routing.
-The shared heartbeat and safe-state handling must stay common so all D-Slot programs react consistently to S3C faults and stop requests.
+   In the current receiver implementation, an out-of-window edge resets the qualification
+   counter to one but does not immediately clear an already valid heartbeat state.
+   Once validity has been reached, ``carrier_ready_safe_request`` is asserted again by
+   the no-edge timeout. A continuously toggling malformed heartbeat can therefore keep
+   an already released receiver valid. This behavior must be considered before release
+   if malformed-heartbeat revocation is a safety requirement.
 
 .. note::
 
-   The heartbeat is used for D-Slot programs that actively drive adapter-card outputs, i.e. general I/O, voltage-card, temperature-card and inverter-style programs.
+   Every output-driving implementation must connect ``heartbeat_in => carrierrdy`` and
+   evaluate the static ``reqsafestate`` level independently in its forwarding condition.
+   S3C and D-Slot programming files implementing this interface must be deployed together.
+
+.. figure:: img/s3c_dslot_heartbeat_receiver.svg
+   :width: 85%
+   :align: center
+
+   D-Slot heartbeat receiver: initial edge qualification, independent static ``ReqSafeState`` gating and the no-edge timeout.
+
+.. note::
+
    Pure receive/encoder signal paths do not use the heartbeat as output-enable condition because they do not actively drive the adapter-card outputs that need to be forced into the safe state.
    Some RX/encoder implementations may still contain the common heartbeat receiver template for ``SlotOK``/project consistency, but the safety-relevant heartbeat gating applies to the output-forwarding path only.
-
-.. list-table:: Heartbeat usage by maintained MachXO2 D-Slot program
-   :widths: 30 18 52
-   :header-rows: 1
-
-   * - Program / implementation
-     - Heartbeat-gated output forwarding
-     - Notes
-   * - ``tx30``
-     - Yes
-     - General-purpose output/I/O forwarding from FPGA to adapter card.
-   * - ``tx26_w_enable``
-     - Yes
-     - General-purpose output/I/O forwarding with additional user enable pattern.
-   * - ``tx16_14rx``
-     - Yes, for TX pins
-     - Mixed TX/RX program; heartbeat gates the output-driving TX path.
-   * - ``tx20_10rx``
-     - Yes, for TX pins
-     - Mixed TX/RX program; heartbeat gates the output-driving TX path.
-   * - ``optical_14tx_4rx``
-     - Yes, for TX pins
-     - Mixed optical program; heartbeat gates the output-driving TX path.
-   * - ``uz_d_3ph_inverter``
-     - Yes
-     - Inverter adapter program; gate outputs must enter the safe state when the heartbeat is missing or invalid.
-   * - ``uz_d_temperature_ltc2983``
-     - Yes
-     - Temperature-card SPI/control lines are output-gated through the common safe-state handling.
-   * - ``Voltage_3v3_5v/voltage_8*_8*_8*_6*``
-     - Yes, for TX groups
-     - Generated variants for the :ref:`digitalVoltage_3v3_5v` card; heartbeat gates all groups configured as outputs.
-   * - ``rx30``
-     - No
-     - Receive-only program; no adapter output path needs heartbeat-based disabling.
-   * - ``uz_d_abs_encoder``
-     - No
-     - Encoder signal routing is not treated as heartbeat-gated output forwarding.
-   * - ``uz_d_resolver_d1_to_d4``
-     - No
-     - Resolver/encoder-style signal routing is not treated as heartbeat-gated output forwarding.
-   * - ``uz_d_resolver_d5``
-     - No
-     - Resolver/encoder-style signal routing for D5 is not treated as heartbeat-gated output forwarding.
-   * - ``template_dslots``
-     - Yes
-     - Template for new output/I/O programs; keep the heartbeat-gated ``enable_forwarding`` pattern for output-driving designs.
 
 The MachXO2 D-Slot project contains the following maintained implementations:
 
@@ -125,5 +126,5 @@ The MachXO2 D-Slot project contains the following maintained implementations:
 - ``uz_d_temperature_ltc2983``
 - ``tx16_14rx``
 - ``tx20_10rx``
-- ``Voltage_3v3_5v`` with the generated ``voltage_8*_8*_8*_6*`` variants for the :ref:`digitalVoltage_3v3_5v` card
+- The ``Voltage_3v3_5v`` subfolder contains the maintained MachXO2 CPLD implementations for the :ref:`digitalVoltage_3v3_5v` adapter card. Because this card defines its signal directions in four hardware groups, the CPLD repository provides the generated variants below ``Voltage_3v3_5v/voltage_8*_8*_8*_6*``. The name encodes the direction of the four groups in D-Slot order: three groups with eight I/Os each and one group with six I/Os, e.g. ``voltage_8rx_8rx_8tx_6tx``.
 - ``template_dslots``

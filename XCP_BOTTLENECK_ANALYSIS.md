@@ -214,16 +214,23 @@ latent one fixed preventively:**
    A53 **torn frames** (mixed cycles at cache-line granularity). Loss
    probability grows with DAQ volume (longer reads, more lwIP load),
    matching 10-signals-OK / 27-signals-dies and the random time-to-failure.
-2. **Wire garbage with *valid* TCP checksums — HW TX checksum offload.**
-   The A53 TX path provably cannot desynchronize the stream framing (the
-   batcher derives the appended byte count from the same buffer bytes it
-   copies, and stamps the CTR monotonically at append time in a single
-   task). Counters received out of order / ±0x8000 and lengths > 1500
-   therefore mean the **bytes on the wire are not the bytes written**, at
-   wrong stream positions — corruption below the socket API. With GEM HW
-   checksum offload, the checksum is computed **over whatever the DMA
-   reads out**, so any such corruption arrives at the PC as *valid* TCP
-   data and lands in CANape's parser.
+2. **The ctr/length garbage burst — most plausibly a CANape parser
+   artifact of defect 1, not wire corruption.** The A53 TX path provably
+   cannot desynchronize the stream framing (the batcher derives the
+   appended byte count from the same buffer bytes it copies, and stamps
+   the CTR monotonically at append time in a single task). The timeout
+   precedes the garbage in both logs: after a fatal response timeout
+   CANape resynchronizes its transport parser mid-stream and misreads an
+   **intact** stream from mid-frame offsets — producing exactly this
+   burst (pseudo-counters from wrong offsets, pseudo-lengths > 1500)
+   with no ECU defect beyond the lost response of defect 1.
+   *Considered and rejected alternative:* real below-socket corruption
+   passed along by the GEM's HW TX checksum offload (which checksums
+   whatever the DMA reads). A software-checksum build was implemented
+   and then reverted — no concrete TX-path corruption mechanism exists
+   in this driver/config (T7 audit) and the GEM/PHY is assessed as
+   sound. If the garbage bursts persist *after* the defect-1 fix, revisit
+   via the Wireshark test below before reconsidering SW checksums.
 3. **Latent (not observed this time — reconnect worked): the zero-window
    write() wedge.** Teardown currently depends on the master *closing* the
    socket (read/write then error out). If a master ever stops reading but
@@ -252,15 +259,13 @@ latent one fixed preventively:**
   sequence through the `XCP_IN` header → a response can never be lost to
   an overwritten cycle; delivery is exactly-once (A53 dedups by seq and
   adopts-without-forwarding on reconnect).
-- **Software TCP/UDP/IP checksums** (`CHECKSUM_GEN_* = 1` patched into
-  lwipopts.h by both platform TCL scripts — **platform/BSP rebuild
-  required**; `main.c` clears the GEM's DMACR TX-offload bit when it sees
-  `CHECKSUM_GEN_TCP==1`; RX offload untouched): checksums are now computed
-  over the *intended* bytes at `tcp_write()` time, so below-socket
-  corruption fails verification at the PC and is retransmitted instead of
-  parsed. Doubles as the discriminator: if garbage still reaches CANape
-  with SW checksums, the corruption is on the PC side (NIC/driver), not in
-  the ECU.
+- ~~Software TCP/UDP/IP checksums~~ — implemented, then **reverted** (team
+  decision): no proven corruption mechanism, GEM/PHY assessed sound, and
+  the parser-artifact reading of the garbage burst (analysis item 2)
+  needs no wire corruption at all. HW checksum offload stays fully
+  enabled. If needed later, the change was: `CHECKSUM_GEN_TCP/UDP/IP = 1`
+  in lwipopts.h (BSP rebuild) + clear `XEMACPS_DMACR_TCPCKSUM_MASK` after
+  `xemac_add()` — see the T8 commit history.
 - **Bounded sends + guaranteed teardown** (`OCM_eth_adapter.c`): the
   socket now runs non-blocking; `ocm_eth_send_all()` waits for
   writability via `select()` and handles partial writes (mandatory — a
@@ -280,10 +285,12 @@ latent one fixed preventively:**
   and `use_task_fpu_support = 2` (grep the generated FreeRTOSConfig.h) —
   a stale workspace re-introduces T5/T6-class corruption that mimics
   defect 2.
-- If sessions still die: Wireshark on the CANape PC. Checksum errors on
-  captured frames → ECU DMA path (SW checksums will have converted this
-  into retransmits already); clean capture but CANape errors → PC-side
-  (NIC offload/driver — try the reference PC with the 27-signal config).
+- If sessions still die: Wireshark on the CANape PC during a failure.
+  A clean capture (monotonic CTRs, intact framing) while CANape logs
+  ctr/length errors → PC-side parsing/NIC (try the reference PC with the
+  27-signal config). Garbage bytes inside checksum-valid TCP segments →
+  genuine ECU-side corruption below the socket API → reinstate the
+  reverted SW-checksum build to convert it into retransmits.
 
 ### T5. Earlier finding (real, but not the trigger): FPU context not saved on task switch — **FIXED**
 All "stall" incidents (T2's priority fix and the GEM watchdog helped real but

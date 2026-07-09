@@ -136,34 +136,6 @@ foreach frtos_cfg [glob -nocomplain \
     }
 }
 
-# Generate TCP/UDP/IP checksums in SOFTWARE (CHECKSUM_GEN_* = 1). With the
-# GEM's hardware TX checksum offload, a frame corrupted anywhere between
-# tcp_write()'s copy and the DMA readout is transmitted with a VALID checksum
-# computed over the corrupted data and reaches the XCP master as garbage
-# (CANape "Ungueltiger Zaehler im XCP-Transport-Layer-Header" / "Ungueltiges
-# XCP-Paket" bursts under high DAQ load). With software checksums such a
-# frame fails verification at the PC and is retransmitted instead. The
-# application disables the GEM TX offload at runtime when it sees
-# CHECKSUM_GEN_TCP==1 (FreeRTOS main.c, network_thread); RX offload stays
-# enabled. No BSP parameter exists for these lwipopts, hence the textual
-# patch. Cf. XCP_BOTTLENECK_ANALYSIS.md (T8).
-foreach lwip_opts [glob -nocomplain \
-        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/include/lwipopts.h" \
-        "*/psu_cortexa53_0/FreeRTOS_domain/bsp/psu_cortexa53_0/libsrc/lwip211_v1_8/src/contrib/ports/xilinx/include/lwipopts.h"] {
-    set fp [open $lwip_opts r]; set opts_content [read $fp]; close $fp
-    set n_patched 0
-    foreach gen_macro {CHECKSUM_GEN_TCP CHECKSUM_GEN_UDP CHECKSUM_GEN_IP} {
-        incr n_patched [regsub -line "^#define ${gen_macro}(\[ \t\]+)0" \
-                $opts_content "#define ${gen_macro}\\11" opts_content]
-    }
-    if {$n_patched > 0} {
-        set fp [open $lwip_opts w]; puts -nonewline $fp $opts_content; close $fp
-        puts "Info (UltraZohm): patched SW checksum generation into $lwip_opts"
-    } else {
-        puts "Info (UltraZohm): SW checksum generation already present in $lwip_opts"
-    }
-}
-
 ####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain

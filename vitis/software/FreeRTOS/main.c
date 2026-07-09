@@ -20,9 +20,6 @@
 #if LWIP_DHCP==1
 #include "lwip/dhcp.h"
 #endif
-#if CHECKSUM_GEN_TCP==1
-#include "netif/xemacpsif.h"	/* GEM access to disable TX checksum offload */
-#endif
 
 //Includes for CAN
 #define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
@@ -152,28 +149,6 @@ void network_thread(void *p)
 	uz_printf("APU: Error adding N/W interface\r\n");
 	return;
     }
-
-#if CHECKSUM_GEN_TCP==1
-    /* lwIP generates TCP/UDP/IP checksums in software (CHECKSUM_GEN_* = 1,
-     * patched into lwipopts.h by the platform TCL scripts): disable the
-     * GEM's TX checksum offload so it does not recompute them over whatever
-     * the DMA reads out. With offload, a frame corrupted anywhere between
-     * tcp_write()'s copy and the DMA readout is transmitted with a VALID
-     * checksum and reaches the XCP master as garbage (observed as CANape
-     * "Ungueltiger Zaehler/Ungueltiges XCP-Paket" bursts). With software
-     * checksums such a frame fails verification at the PC and is simply
-     * retransmitted. RX offload stays enabled (NWCFG is untouched). */
-    {
-        struct xemac_s *xemac = (struct xemac_s *)(netif->state);
-        xemacpsif_s *xemacpsif = (xemacpsif_s *)(xemac->state);
-        u32 dmacr = XEmacPs_ReadReg(xemacpsif->emacps.Config.BaseAddress,
-                                    XEMACPS_DMACR_OFFSET);
-        dmacr &= ~(u32)XEMACPS_DMACR_TCPCKSUM_MASK;
-        XEmacPs_WriteReg(xemacpsif->emacps.Config.BaseAddress,
-                         XEMACPS_DMACR_OFFSET, dmacr);
-        uz_printf("APU: GEM TX checksum offload disabled (SW checksums)\r\n");
-    }
-#endif
 
     netif_set_default(netif);
 

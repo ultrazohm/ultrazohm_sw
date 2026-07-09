@@ -57,13 +57,17 @@
 #define QUEUE_XCP_RX_LEN        10
 
 /* Dedicated queue for CTO packets (command responses RES/ERR/EV/SERV,
- * PID >= 0xFC). Responses must never wait behind the DAQ backlog and must
- * survive a DAQ purge, otherwise the master times out under DAQ load. */
+ * PID >= 0xFC). Responses must never wait behind the DAQ backlog, otherwise
+ * the master times out under DAQ load. */
 #define QUEUE_XCP_TX_CTO_LEN    16
 
-/* TX batching: collect queued frames into one buffer of roughly a TCP MSS
- * before write(), instead of one socket call per 68-byte frame. */
-#define TX_BATCH_BUF_SIZE       1400
+/* TX batching: collect queued frames into one buffer of three TCP MSS
+ * (3 x 1460) before write(), instead of one socket call per 68-byte frame.
+ * Each write() is one tcpip_thread mailbox round-trip, so the batch size
+ * directly sets the socket-call rate (~16k/s at 40 kHz x 8 ODTs with 1400,
+ * a third of that now). Kept below TCP_SND_BUF (8 KB) so a write fits the
+ * send buffer in one piece. */
+#define TX_BATCH_BUF_SIZE       4380
 
 /* First payload byte after the 4-byte transport header is the XCP PID.
  * 0xFC..0xFF = CTO (SERV/EV/ERR/RES); 0x00..0xFB = DAQ DTO (ODT number). */
@@ -113,14 +117,13 @@ static volatile uint32_t msg_rxq_read = 0;
 
 volatile uint32_t try_to_read_ocm = 0;
 
-// TX-queue backpressure (cf. read_OCM_write_txQueue / ocm_eth_adapter_tx).
-// When the Ethernet link cannot keep up with the XCP DAQ rate the TX queue
-// fills. The producer runs in ISR context, so it must never block: it drops
-// the frame, counts it, and asks the TX task to purge the stale backlog so
-// latency stays bounded. This replaces a former vTaskDelay()/xil_printf() call
-// from ISR context that corrupted the FreeRTOS scheduler and froze the system.
+// TX-queue overflow policy: tail-drop. The producer runs in ISR context, so
+// it must never block (a former vTaskDelay()/xil_printf() here corrupted the
+// FreeRTOS scheduler and froze the system): when the deep queue is full the
+// new frame is dropped and counted, and the continuous older backlog keeps
+// draining. No purge: backlog latency is bounded by the queue depth (~100 ms
+// class, acceptable) and command responses never travel through this queue.
 static volatile uint32_t xcp_txq_overflow_dropped = 0;
-static volatile int      xcp_txq_purge_requested  = 0;
 
 // Per-connection worker lifecycle. The accept loop sets these before spawning
 // the TX/RX tasks and waits for both to clear before accepting the next master,
@@ -142,7 +145,7 @@ static void my_print_ip(ip_addr_t *ip)
  * transport endpoint, so it owns this counter: it is stamped here at
  * transmission time, in transmission order. The R5 also writes a counter at
  * production time, but that one becomes wrong whenever frames are reordered
- * (CTO responses overtake queued DAQ frames) or dropped (overflow, purge) --
+ * (CTO responses overtake queued DAQ frames) or dropped (queue overflow) --
  * observed as CANape "Ungueltiger Zaehler im XCP-Transport-Layer-Header". */
 static uint16_t xcp_eth_tx_ctr = 0;
 
@@ -215,7 +218,6 @@ static void ocm_eth_adapter_tx(void *arg_p)
 
     xQueueReset(queue_xcp_tx);
     xQueueReset(queue_xcp_tx_cto);
-    xcp_txq_purge_requested = 0;
     xcp_eth_tx_ctr = 0;  // fresh transport counter sequence per connection
 
     // Run until the connection is torn down (rx clears xcp_eth_connected) or a
@@ -223,15 +225,7 @@ static void ocm_eth_adapter_tx(void *arg_p)
     // even with no DAQ data queued, so it always exits and is recreated for the
     // next connection (it used to be created once per boot and never resumed).
     while (xcp_eth_connected) {
-        // Backpressure: if the ISR flagged a DAQ-queue overflow, drop the
-        // stale DAQ backlog rather than streaming seconds-old frames after a
-        // stall. CTO responses live in their own queue and are NOT purged.
-        if (xcp_txq_purge_requested) {
-            xcp_txq_purge_requested = 0;
-            xQueueReset(queue_xcp_tx);
-        }
-
-        // Batch as many queued frames as fit into ~one TCP MSS and send them
+        // Batch as many queued frames as fit into TX_BATCH_BUF_SIZE and send them
         // with a single write(). Each write() goes through the lwIP socket
         // layer / tcpip_thread mailbox, so one write per 68-byte frame was the
         // main throughput limiter at DAQ rates. Frames are length-prefixed on
@@ -550,9 +544,9 @@ static BaseType_t read_OCM_write_txQueue(void)
 	for (uint32_t i = 0; i < n_staged; i++) {
 		// Classify by XCP PID (first payload byte after the 4-byte transport
 		// header): CTO packets (command responses etc.) take the dedicated
-		// queue so they never wait behind -- or get purged with -- the DAQ
-		// backlog. (Normally all chain frames are DAQ now that responses use
-		// the mailbox; kept as a defensive measure.)
+		// queue so they never wait behind the DAQ backlog. (Normally all
+		// chain frames are DAQ now that responses use the mailbox; kept as a
+		// defensive measure.)
 		if (xcp_stage[i][XCP_HEADER_LEN] >= XCP_PID_CTO_MIN) {
 			if (xQueueSendFromISR(queue_xcp_tx_cto, xcp_stage[i], &task_woken) == pdPASS) {
 				msg_txq_written++;
@@ -561,13 +555,12 @@ static BaseType_t read_OCM_write_txQueue(void)
 		}
 
 		if(xQueueSendFromISR(queue_xcp_tx, xcp_stage[i], &task_woken) != pdPASS) {
-			// DAQ queue full: the Ethernet client/link cannot keep up with the
-			// XCP DAQ rate. Drop this frame and ask the TX task to purge its
-			// stale backlog so latency stays bounded. Must NOT block, delay or
-			// printf from ISR context here -- doing so corrupts the FreeRTOS
-			// scheduler and freezes the system (the previous behaviour).
+			// DAQ queue full: the Ethernet drain has stalled for longer than
+			// the queue depth covers. Tail-drop the new frame and count it.
+			// Must NOT block, delay or printf from ISR context here -- doing
+			// so corrupts the FreeRTOS scheduler and freezes the system (the
+			// previous behaviour).
 			xcp_txq_overflow_dropped++;
-			xcp_txq_purge_requested = 1;
 			continue;
 		}
 		msg_txq_written++;

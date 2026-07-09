@@ -148,15 +148,15 @@ void deskbench_enter_running(DS_Data *data)
     disable_dut(data);
 #else
 #if UZ_DESKBENCH_CONTROL_PRIME_MOVER_ACTIVE
-    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0, false, false, false);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, true);
+    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, false, false, false);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, true);
 #else
     disable_prime_mover(data);
 #endif
 
 #if UZ_DESKBENCH_CONTROL_DUT_ACTIVE
-    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1, false, false, false);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, true);
+    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, false, false, false);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, true);
 #else
     disable_dut(data);
 #endif
@@ -314,20 +314,20 @@ static void control_dut_pmsm_model(DS_Data *data)
 
 static void disable_prime_mover(DS_Data *data)
 {
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
-    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0, true, true, true);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, false);
+    data->rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
+    data->rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
+    data->rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
+    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, true, true, true);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, false);
 }
 
 static void disable_dut(DS_Data *data)
 {
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
-    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1, true, true, true);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, false);
+    data->rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
+    data->rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
+    data->rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
+    uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, true, true, true);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, false);
 }
 
 static void reset_prime_mover_control(DS_Data *data)

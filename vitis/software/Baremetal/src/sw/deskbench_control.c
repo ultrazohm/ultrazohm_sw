@@ -27,8 +27,7 @@ static const struct uz_PMSM_t deskbench_beckhoff_am8141 = {
     .Psi_PM_Vs = 0.042f,
     .polePairs = 4.0f,
     .I_max_Ampere = 12.0f,
-    .J_kg_m_squared = 0.000108f
-};
+    .J_kg_m_squared = 0.000108f};
 
 static void disable_prime_mover(DS_Data *data);
 static void disable_dut(DS_Data *data);
@@ -49,24 +48,20 @@ void deskbench_control_init(DS_Data *data)
         .Ki = 2.0f,
         .samplingTime_sec = 1.0f / UZ_PWM_FREQUENCY,
         .upper_limit = 6.0f,
-        .lower_limit = -6.0f
-    };
+        .lower_limit = -6.0f};
     struct uz_SetPoint_config setpoint_config = {
         .config_PMSM = deskbench_beckhoff_am8141,
         .control_type = FOC,
         .id_ref_Ampere = 0.0f,
         .is_field_weakening_enabled = false,
         .motor_type = SMPMSM,
-        .relative_torque_tolerance = 0.01f
-    };
+        .relative_torque_tolerance = 0.01f};
     struct uz_SpeedControl_config speed_control_config = {
-        .config_controller = speed_config
-    };
+        .config_controller = speed_config};
     struct uz_IIR_Filter_config speed_filter_config = {
         .selection = LowPass_first_order,
         .cutoff_frequency_Hz = 0.5f,
-        .sample_frequency_Hz = UZ_PWM_FREQUENCY
-    };
+        .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
     data->av.deskbench_machine_polepairs = deskbench_beckhoff_am8141.polePairs;
     data->objects.deskbench_current_ctrl_prime_mover = uz_CurrentControl_init(make_current_control_config());
@@ -83,8 +78,7 @@ void deskbench_control_init(DS_Data *data)
         .friction_coefficient = 0.001f,
         .coulomb_friction_constant = 0.0f,
         .inertia = deskbench_beckhoff_am8141.J_kg_m_squared,
-        .simulate_mechanical_system = false
-    };
+        .simulate_mechanical_system = false};
     data->objects.deskbench_dut_pmsm_model = uz_pmsmModel_init(pmsm_model_config);
     uz_pmsmModel_reset(data->objects.deskbench_dut_pmsm_model);
 #endif
@@ -116,23 +110,21 @@ void deskbench_update_measurements(DS_Data *data)
     data->av.deskbench_dut_omega_mech_rad_s = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
     data->av.deskbench_dut_speed_rpm = data->av.resolver_pl_interface_d4_3_n_mech_rpm;
     data->av.deskbench_dut_theta_el_rad = data->av.resolver_pl_interface_d4_3_position_el_2pi;
-    data->av.deskbench_dut_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d2);
+    data->av.deskbench_dut_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d1);
 
     data->av.deskbench_prime_mover_omega_mech_rad_s = data->av.resolver_pl_interface_d4_1_omega_mech_rad_s;
     data->av.deskbench_prime_mover_speed_rpm = data->av.resolver_pl_interface_d4_1_n_mech_rpm;
     data->av.deskbench_prime_mover_theta_el_rad = data->av.resolver_pl_interface_d4_1_position_el_2pi;
-    data->av.deskbench_prime_mover_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d1);
+    data->av.deskbench_prime_mover_mean_temp_degC = mean_inverter_temperature(data->av.inverter_adapter_d2);
 
     uz_3ph_abc_t dut_i_abc = {
         .a = data->av.deskbench_dut_i_a_A,
         .b = data->av.deskbench_dut_i_b_A,
-        .c = data->av.deskbench_dut_i_c_A
-    };
+        .c = data->av.deskbench_dut_i_c_A};
     uz_3ph_abc_t prime_mover_i_abc = {
         .a = data->av.deskbench_prime_mover_i_a_A,
         .b = data->av.deskbench_prime_mover_i_b_A,
-        .c = data->av.deskbench_prime_mover_i_c_A
-    };
+        .c = data->av.deskbench_prime_mover_i_c_A};
     uz_3ph_dq_t dut_i_dq = uz_transformation_3ph_abc_to_dq(dut_i_abc, data->av.deskbench_dut_theta_el_rad);
     uz_3ph_dq_t prime_mover_i_dq = uz_transformation_3ph_abc_to_dq(prime_mover_i_abc, data->av.deskbench_prime_mover_theta_el_rad);
     data->av.deskbench_dut_i_d_A = dut_i_dq.d;
@@ -201,37 +193,34 @@ static struct uz_CurrentControl_config make_current_control_config(void)
         .Ki = deskbench_beckhoff_am8141.R_ph_Ohm / (2.0f / UZ_PWM_FREQUENCY),
         .samplingTime_sec = 1.0f / UZ_PWM_FREQUENCY,
         .upper_limit = 48.0f,
-        .lower_limit = -48.0f
-    };
+        .lower_limit = -48.0f};
     struct uz_PI_Controller_config iq_config = {
         .type = UZ_PI_PARALLEL,
         .Kp = deskbench_beckhoff_am8141.Lq_Henry / (2.0f / UZ_PWM_FREQUENCY),
         .Ki = deskbench_beckhoff_am8141.R_ph_Ohm / (2.0f / UZ_PWM_FREQUENCY),
         .samplingTime_sec = 1.0f / UZ_PWM_FREQUENCY,
         .upper_limit = 48.0f,
-        .lower_limit = -48.0f
-    };
+        .lower_limit = -48.0f};
     struct uz_CurrentControl_config config = {
         .config_PMSM = deskbench_beckhoff_am8141,
         .config_id = id_config,
         .config_iq = iq_config,
         .decoupling_select = no_decoupling,
-        .max_modulation_index = 0.57735f
-    };
+        .max_modulation_index = 0.57735f};
     return config;
 }
 
 static void control_prime_mover(DS_Data *data)
 {
-    if (data->av.deskbench_prime_mover_v_dc_V <= DESKBENCH_MIN_V_DC_VOLTS) {
+    if (data->av.deskbench_prime_mover_v_dc_V <= DESKBENCH_MIN_V_DC_VOLTS)
+    {
         disable_prime_mover(data);
         return;
     }
 
     uz_3ph_dq_t i_actual = {
         .d = data->av.deskbench_prime_mover_i_d_A,
-        .q = data->av.deskbench_prime_mover_i_q_A
-    };
+        .q = data->av.deskbench_prime_mover_i_q_A};
     data->rasv.deskbench_prime_mover_n_ref_rpm_filtered = uz_signals_IIR_Filter_sample(
         data->objects.deskbench_speed_filter_prime_mover,
         data->rasv.deskbench_prime_mover_n_ref_rpm);
@@ -251,43 +240,37 @@ static void control_prime_mover(DS_Data *data)
         i_actual,
         data->av.deskbench_prime_mover_v_dc_V,
         data->av.deskbench_prime_mover_omega_mech_rad_s * data->av.deskbench_machine_polepairs);
-    struct uz_DutyCycle_t duty = uz_Space_Vector_Modulation(
+    data->rasv.prime_mover_duty_cycle = uz_Space_Vector_Modulation(
         v_ref,
         data->av.deskbench_prime_mover_v_dc_V,
         data->av.deskbench_prime_mover_theta_el_rad);
     data->av.deskbench_prime_mover_v_d_V = v_ref.d;
     data->av.deskbench_prime_mover_v_q_V = v_ref.q;
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_2 = duty.DutyCycle_B;
-    data->rasv.pwm_2L_0_halfBridgeDutyCycle_3 = duty.DutyCycle_C;
 }
 
 static void control_dut(DS_Data *data)
 {
-    if (data->av.deskbench_dut_v_dc_V <= DESKBENCH_MIN_V_DC_VOLTS) {
+    if (data->av.deskbench_dut_v_dc_V <= DESKBENCH_MIN_V_DC_VOLTS)
+    {
         disable_dut(data);
         return;
     }
 
     uz_3ph_dq_t i_actual = {
         .d = data->av.deskbench_dut_i_d_A,
-        .q = data->av.deskbench_dut_i_q_A
-    };
+        .q = data->av.deskbench_dut_i_q_A};
     uz_3ph_dq_t v_ref = uz_CurrentControl_sample(
         data->objects.deskbench_current_ctrl_dut,
         data->rasv.deskbench_dut_i_dq_ref_A,
         i_actual,
         data->av.deskbench_dut_v_dc_V,
         data->av.deskbench_dut_omega_mech_rad_s * data->av.deskbench_machine_polepairs);
-    struct uz_DutyCycle_t duty = uz_Space_Vector_Modulation(
+    data->rasv.dut_duty_cycle = uz_Space_Vector_Modulation(
         v_ref,
         data->av.deskbench_dut_v_dc_V,
         data->av.deskbench_dut_theta_el_rad);
     data->av.deskbench_dut_v_d_V = v_ref.d;
     data->av.deskbench_dut_v_q_V = v_ref.q;
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_2 = duty.DutyCycle_B;
-    data->rasv.pwm_2L_1_halfBridgeDutyCycle_3 = duty.DutyCycle_C;
 }
 
 static void control_dut_pmsm_model(DS_Data *data)
@@ -307,8 +290,7 @@ static void control_dut_pmsm_model(DS_Data *data)
 
     uz_3ph_dq_t i_actual = {
         .d = model_outputs.i_d_A,
-        .q = model_outputs.i_q_A
-    };
+        .q = model_outputs.i_q_A};
     uz_3ph_dq_t v_ref = uz_CurrentControl_sample(
         data->objects.deskbench_current_ctrl_dut,
         data->rasv.deskbench_dut_i_dq_ref_A,
@@ -321,7 +303,7 @@ static void control_dut_pmsm_model(DS_Data *data)
     struct uz_pmsmModel_inputs_t model_inputs = {
         .v_d_V = v_ref.d,
         .v_q_V = v_ref.q,
-        .omega_mech_1_s = data->rasv.deskbench_prime_mover_n_ref_rpm/60.0f,
+        .omega_mech_1_s = data->rasv.deskbench_prime_mover_n_ref_rpm / 60.0f,
         .load_torque = 0.0f};
     uz_pmsmModel_set_inputs(data->objects.deskbench_dut_pmsm_model, model_inputs);
     uz_pmsmModel_trigger_input_strobe(data->objects.deskbench_dut_pmsm_model);
@@ -394,7 +376,8 @@ static void stop_on_safety_limit(DS_Data *data)
         (data->av.deskbench_dut_mean_temp_degC > DESKBENCH_MAX_INVERTER_TEMP_DEGC) ||
         (data->av.deskbench_prime_mover_mean_temp_degC > DESKBENCH_MAX_INVERTER_TEMP_DEGC);
 
-    if (current_limit_exceeded || temperature_limit_exceeded) {
+    if (current_limit_exceeded || temperature_limit_exceeded)
+    {
         ultrazohm_state_machine_set_stop(true);
     }
 }

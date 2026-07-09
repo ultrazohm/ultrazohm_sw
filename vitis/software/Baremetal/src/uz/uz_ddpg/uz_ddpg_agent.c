@@ -1,7 +1,7 @@
 #include "uz_ddpg_agent.h"
 #include "../../include/pt1_control_config.h"
 
-#if (PT1_CONTROL_AGENT == PT1_CONTROL_AGENT_DDPG)
+#if (PT1_CONTROL_AGENT == PT1_CONTROL_AGENT_DDPG&& UZ_APP != UZ_APP_DESKBENCH)
 
 #include "../uz_HAL.h"
 #include "../uz_matrix/uz_matrix.h"

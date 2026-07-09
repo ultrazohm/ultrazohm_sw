@@ -36,21 +36,21 @@ static struct uz_PWM_SS_2L_config_t project_wizard_pwm_2l_0_config = {
     .trigger_source = trigger_at_MIN
 };
 
-static uz_interlockDeadtime2L project_wizard_deadtime_2l_0 = {
+static uz_interlockDeadtime2L project_wizard_deadtime_2l_0_d1 = {
     .base_address = XPAR_UZ_PWM_PWM_2L_UZ_INTERLOCKDEADTIME_0_BASEADDR,
     .clock_frequency_MHz = 100,
     .deadtime_us = UZ_PWM_DEADTIME_IN_US,
     .inverse_bottom_switch = false
 };
 
-uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_0(void)
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_0_d1(void)
 {
     return uz_PWM_SS_2L_init(project_wizard_pwm_2l_0_config);
 }
 
-uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_0(void)
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_0_d1(void)
 {
-    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_0);
+    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_0_d1);
 }
 
 
@@ -74,21 +74,21 @@ static struct uz_PWM_SS_2L_config_t project_wizard_pwm_2l_1_config = {
     .trigger_source = trigger_at_MIN
 };
 
-static uz_interlockDeadtime2L project_wizard_deadtime_2l_1 = {
+static uz_interlockDeadtime2L project_wizard_deadtime_2l_1_d2 = {
     .base_address = XPAR_UZ_PWM_PWM_2L_UZ_INTERLOCKDEADTIME_1_BASEADDR,
     .clock_frequency_MHz = 100,
     .deadtime_us = UZ_PWM_DEADTIME_IN_US,
     .inverse_bottom_switch = false
 };
 
-uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_1(void)
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_1_d2(void)
 {
     return uz_PWM_SS_2L_init(project_wizard_pwm_2l_1_config);
 }
 
-uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_1(void)
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_1_d2(void)
 {
-    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_1);
+    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_1_d2);
 }
 
 
@@ -169,17 +169,17 @@ void project_wizard_update_pwm_outputs(DS_Data* data)
 {
 
     uz_PWM_SS_2L_set_duty_cycle(
-        data->objects.project_wizard_pwm_2l_0,
-        data->rasv.pwm_2L_0_halfBridgeDutyCycle_1,
-        data->rasv.pwm_2L_0_halfBridgeDutyCycle_2,
-        data->rasv.pwm_2L_0_halfBridgeDutyCycle_3
+        data->objects.project_wizard_pwm_2l_1_d2,
+        data->rasv.prime_mover_duty_cycle.DutyCycle_A,
+        data->rasv.prime_mover_duty_cycle.DutyCycle_B,
+        data->rasv.prime_mover_duty_cycle.DutyCycle_C
     );
 
     uz_PWM_SS_2L_set_duty_cycle(
-        data->objects.project_wizard_pwm_2l_1,
-        data->rasv.pwm_2L_1_halfBridgeDutyCycle_1,
-        data->rasv.pwm_2L_1_halfBridgeDutyCycle_2,
-        data->rasv.pwm_2L_1_halfBridgeDutyCycle_3
+        data->objects.project_wizard_pwm_2l_0_d1,
+        data->rasv.dut_duty_cycle.DutyCycle_A,
+        data->rasv.dut_duty_cycle.DutyCycle_B,
+        data->rasv.dut_duty_cycle.DutyCycle_C
     );
 
 

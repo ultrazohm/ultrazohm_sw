@@ -81,14 +81,14 @@ void ISR_Control(void *data)
     if (current_state == idle_state)
     {
         /* Project Wizard BEGIN: idle_state isr_actions */
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, true, true, true);
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, true, true, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
         deskbench_enter_idle(&Global_Data);
@@ -131,14 +131,16 @@ void ISR_Control(void *data)
     else if (current_state == error_state)
     {
         /* Project Wizard BEGIN: error_state isr_actions */
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
+        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, true, true, true);
+
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
+        Global_Data.rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, true, true, true);
+        
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
         deskbench_enter_idle(&Global_Data);

@@ -20,12 +20,8 @@
 DS_Data Global_Data = {
     .rasv = {
 /* Project Wizard BEGIN: rasv_initializer */
-        .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
-        .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
-        .pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f,
-        .pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f,
-        .pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f,
-        .pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f,
+        .dut_duty_cycle = {0.0f},
+        .prime_mover_duty_cycle = {0.0f},
         .pwm_3L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
         .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
@@ -93,12 +89,12 @@ int main(void)
             break;
         case init_ip_cores:
             /* Project Wizard BEGIN: init_ip_cores */
-			Global_Data.objects.project_wizard_deadtime_2l_0 = initialize_project_wizard_deadtime_2l_0();
-			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0, true);
-			Global_Data.objects.project_wizard_pwm_2l_0 = initialize_project_wizard_pwm_2l_0();
-			Global_Data.objects.project_wizard_deadtime_2l_1 = initialize_project_wizard_deadtime_2l_1();
-			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
-			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
+			Global_Data.objects.project_wizard_deadtime_2l_0_d1 = initialize_project_wizard_deadtime_2l_0_d1();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0_d1, true);
+			Global_Data.objects.project_wizard_pwm_2l_0_d1 = initialize_project_wizard_pwm_2l_0_d1();
+			Global_Data.objects.project_wizard_deadtime_2l_1_d2 = initialize_project_wizard_deadtime_2l_1_d2();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1_d2, true);
+			Global_Data.objects.project_wizard_pwm_2l_1_d2 = initialize_project_wizard_pwm_2l_1_d2();
 			initialize_project_wizard_pwm_3l(&Global_Data);
 			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();

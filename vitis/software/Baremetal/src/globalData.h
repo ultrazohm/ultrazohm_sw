@@ -24,6 +24,7 @@
 #include "include/d3_adapter_init.h"
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -146,12 +147,8 @@ typedef struct _referenceAndSetValues_ {
 	uz_3ph_dq_t deskbench_prime_mover_i_dq_ref_A;
 	uz_3ph_dq_t deskbench_dut_i_dq_ref_A;
 /* Project Wizard BEGIN: referenceAndSetValues */
-	float pwm_2L_0_halfBridgeDutyCycle_1;
-	float pwm_2L_0_halfBridgeDutyCycle_2;
-	float pwm_2L_0_halfBridgeDutyCycle_3;
-	float pwm_2L_1_halfBridgeDutyCycle_1;
-	float pwm_2L_1_halfBridgeDutyCycle_2;
-	float pwm_2L_1_halfBridgeDutyCycle_3;
+	struct uz_DutyCycle_t prime_mover_duty_cycle;
+	struct uz_DutyCycle_t dut_duty_cycle;
 	float pwm_3L_0_halfBridgeDutyCycle_1;
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
@@ -170,10 +167,10 @@ typedef struct{
 	uz_SpeedControl_t* deskbench_speed_ctrl_prime_mover;
 	uz_IIR_Filter_t* deskbench_speed_filter_prime_mover;
 	/* Project Wizard BEGIN: objects */
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
-	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_1;
-	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1;
+	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0_d1;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;
+	uz_PWM_SS_2L_t* project_wizard_pwm_2l_1_d2;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1_d2;
 	uz_wavegen_three_phase* three_phase_sine;
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_adcLtc2311_t* adc_ltc2311_a2;

@@ -48,12 +48,16 @@
 
 /* DAQ (DTO) queue: deep on purpose -- it is the burst absorber between DAQ
  * production and the TCP drain, and measurement gaps hurt more than backlog
- * latency here (~100 ms is acceptable). A deep DAQ backlog can no longer
- * delay command responses: CTOs bypass this queue entirely (dedicated queue
- * + OCM mailbox), which is what made the old bounded-latency sizing (512)
- * obsolete. Sized for the 224-byte items of kXcpMaxDTO=220: 16384 x 224 B
- * ~= 3.7 MB heap, ~140 ms of buffering at 40 kHz x 3 ODTs. */
-#define QUEUE_XCP_TX_LEN        16384
+ * latency here. A deep DAQ backlog can no longer delay command responses:
+ * CTOs bypass this queue entirely (dedicated queue + OCM mailbox), which is
+ * what made the old bounded-latency sizing (512) obsolete.
+ * Sized to bridge multi-second PC-side receive pauses (observed: a ~2 s
+ * stall every few minutes on the CANape host that a 140 ms queue could not
+ * absorb -- the data then arrives late but complete instead of leaving a
+ * gap): 262144 x 224 B ~= 59 MB of the ~190 MB FreeRTOS heap, ~2.2 s of
+ * buffering at 40 kHz x 3 ODTs. Latency cost only while a backlog exists;
+ * the queue runs empty in steady state. */
+#define QUEUE_XCP_TX_LEN        262144
 #define QUEUE_XCP_RX_LEN        10
 
 /* Dedicated queue for CTO packets (command responses RES/ERR/EV/SERV,

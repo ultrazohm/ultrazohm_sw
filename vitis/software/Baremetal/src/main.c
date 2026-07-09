@@ -84,7 +84,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             Global_Data.av.snd_fld[5] = -0.4f;
-            Global_Data.av.snd_fld[6] = 0.0f;
+            Global_Data.av.snd_fld[6] = -0.4f;
             JavaScope_initialize(&Global_Data);
             deskbench_control_init(&Global_Data);
             initialization_chain = init_ip_cores;

@@ -79,8 +79,9 @@ void ISR_Control(void *data)
     deskbench_update_measurements(&Global_Data);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
-    if (current_state == idle_state)
+    switch (current_state)
     {
+    case idle_state:
         /* Project Wizard BEGIN: idle_state isr_actions */
         Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
         Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
@@ -97,27 +98,29 @@ void ISR_Control(void *data)
         pt1_control_stop(&Global_Data);
 #endif
         pt1_control_decimation_counter = 0U;
-/* Project Wizard END: idle_state isr_actions */
-    }
-    else if (current_state == running_state)
-    {
+        /* Project Wizard END: idle_state isr_actions */
+        break;
+
+    case running_state:
         /* Project Wizard BEGIN: running_state isr_actions */
 #if (UZ_APP == UZ_APP_DESKBENCH)
-        deskbench_enter_running(&Global_Data);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, false, false, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 #else
         deskbench_enter_idle(&Global_Data);
 #endif
         pt1_control_decimation_counter = 0U;
-/* Project Wizard END: running_state isr_actions */
-    }
-    else if (current_state == control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        /* Project Wizard END: running_state isr_actions */
+        break;
+
+    case control_state:
+        /* Start: Control algorithm - only if UltraZohm is in control state.
+         * Enable and tristate are intentionally left untouched here. */
 #if (UZ_APP == UZ_APP_DESKBENCH)
-        deskbench_enter_running(&Global_Data);
         deskbench_control_step(&Global_Data);
 #else
-        deskbench_enter_idle(&Global_Data);
         pt1_control_decimation_counter++;
         if (pt1_control_decimation_counter >= PT1_CONTROL_DECIMATION)
         {
@@ -125,23 +128,20 @@ void ISR_Control(void *data)
             pt1_control_step(&Global_Data);
         }
 #endif
-
         /* Project Wizard BEGIN: control_state isr_actions */
-/* Project Wizard END: control_state isr_actions */
-    }
-    else if (current_state == error_state)
-    {
+        /* Project Wizard END: control_state isr_actions */
+        break;
+
+    case error_state:
         /* Project Wizard BEGIN: error_state isr_actions */
         Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
         Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
         Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, true, true, true);
-
         Global_Data.rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
         Global_Data.rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
         Global_Data.rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, true, true, true);
-        
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
         deskbench_enter_idle(&Global_Data);
@@ -149,7 +149,11 @@ void ISR_Control(void *data)
         pt1_control_stop(&Global_Data);
 #endif
         pt1_control_decimation_counter = 0U;
-/* Project Wizard END: error_state isr_actions */
+        /* Project Wizard END: error_state isr_actions */
+        break;
+
+    default:
+        break;
     }
     
     /* Project Wizard BEGIN: pwm_runtime */

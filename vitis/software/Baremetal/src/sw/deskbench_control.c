@@ -29,6 +29,8 @@ static const struct uz_PMSM_t deskbench_beckhoff_am8141 = {
     .I_max_Ampere = 12.0f,
     .J_kg_m_squared = 0.000108f};
 
+static void zero_prime_mover_duty_cycle(DS_Data *data);
+static void zero_dut_duty_cycle(DS_Data *data);
 static void disable_prime_mover(DS_Data *data);
 static void disable_dut(DS_Data *data);
 static void reset_prime_mover_control(DS_Data *data);
@@ -166,8 +168,8 @@ void deskbench_enter_running(DS_Data *data)
 void deskbench_control_step(DS_Data *data)
 {
 #if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
-    disable_prime_mover(data);
     disable_dut(data);
+    disable_prime_mover(data);
     control_dut_pmsm_model(data);
 #else
     stop_on_safety_limit(data);
@@ -312,21 +314,31 @@ static void control_dut_pmsm_model(DS_Data *data)
 #endif
 }
 
-static void disable_prime_mover(DS_Data *data)
+static void zero_prime_mover_duty_cycle(DS_Data *data)
 {
     data->rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
     data->rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
     data->rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
+}
+
+static void zero_dut_duty_cycle(DS_Data *data)
+{
+    data->rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
+    data->rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
+    data->rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
+}
+
+static void disable_prime_mover(DS_Data *data)
+{
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, true, true, true);
+    zero_prime_mover_duty_cycle(data);
     uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, false);
 }
 
 static void disable_dut(DS_Data *data)
 {
-    data->rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
-    data->rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
-    data->rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, true, true, true);
+    zero_dut_duty_cycle(data);
     uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, false);
 }
 

@@ -21,7 +21,10 @@
 #include "lwip/dhcp.h"
 #endif
 #if CHECKSUM_GEN_TCP==1
-#include "netif/xemacpsif.h"	/* GEM access to disable TX checksum offload */
+/* Low-level GEM register access to disable TX checksum offload. Deliberately
+ * NOT netif/xemacpsif.h: that header drags in private lwIP-port headers
+ * (xpqueue.h -> debug.h) which are not exported to application builds. */
+#include "xemacps_hw.h"
 #endif
 
 //Includes for CAN
@@ -164,13 +167,11 @@ void network_thread(void *p)
      * checksums such a frame fails verification at the PC and is simply
      * retransmitted. RX offload stays enabled (NWCFG is untouched). */
     {
-        struct xemac_s *xemac = (struct xemac_s *)(netif->state);
-        xemacpsif_s *xemacpsif = (xemacpsif_s *)(xemac->state);
-        u32 dmacr = XEmacPs_ReadReg(xemacpsif->emacps.Config.BaseAddress,
-                                    XEMACPS_DMACR_OFFSET);
+        /* Same GEM the netif runs on: PLATFORM_EMAC_BASEADDR was passed to
+         * xemac_add() above; init_emacps has already programmed DMACR. */
+        u32 dmacr = XEmacPs_ReadReg(PLATFORM_EMAC_BASEADDR, XEMACPS_DMACR_OFFSET);
         dmacr &= ~(u32)XEMACPS_DMACR_TCPCKSUM_MASK;
-        XEmacPs_WriteReg(xemacpsif->emacps.Config.BaseAddress,
-                         XEMACPS_DMACR_OFFSET, dmacr);
+        XEmacPs_WriteReg(PLATFORM_EMAC_BASEADDR, XEMACPS_DMACR_OFFSET, dmacr);
         uz_printf("APU: GEM TX checksum offload disabled (SW checksums)\r\n");
     }
 #endif

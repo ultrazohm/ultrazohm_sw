@@ -2366,7 +2366,7 @@ uz_pw_delete_pin_if_exists "${adapter_parent_hier}/Din"
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/Din"
 uz_pw_delete_pin_if_exists "${adapter_parent_hier}/D2_Gate_Signals_2L_source"
 uz_pw_delete_pin_if_exists "${adapter_hier_path}/D2_Gate_Signals_2L_source"
-set gate_vector_source_pin "uz_pwm/Gate_Signals_2L_0"
+set gate_vector_source_pin "uz_pwm/Gate_Signals_2L_1"
 if {$gate_vector_source_pin eq "" || [llength [get_bd_pins -quiet $gate_vector_source_pin]] == 0} {
   puts "WARNING: Six-bit gate vector source '$gate_vector_source_pin' is not usable for D2 inverter adapter; using zero fallback."
   set gates_default_path "${adapter_hier_path}/D2_gates_default_zero"
@@ -2946,7 +2946,7 @@ uz_pw_apply_slot_constraints D5 [list "Digital_D5_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D5: Rev04
+# D5: Rev03
 # -----------------------------------------------------------------------------
 
 

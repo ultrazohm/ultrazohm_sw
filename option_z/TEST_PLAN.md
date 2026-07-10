@@ -185,9 +185,12 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_in_batches_sent` /
   `xcp_gw_in_retry_cycles` (command handshake at work; retries > 0 are
   normal under load, they are exactly the cycles that would have LOST the
-  command before CP7), `xcp_gw_sendto_err` (lwip_sendto failed on a
-  CTR-stamped batch — the only ECU-side source of wire counter gaps; wire
-  gaps with this at 0 are wire/PC-side loss, not the ECU).
+  command before CP7), `xcp_gw_sendto_err` (transient lwip_sendto failures —
+  retried since CP9, so this alone is pressure, not loss; the first
+  320 Mbit/s run measured 74 = exactly its 318 lost frames),
+  `xcp_gw_sendto_drop` (batch still failing after the bounded retries — the
+  only ECU-side source of wire counter gaps; wire gaps with this at 0 are
+  wire/PC-side loss, not the ECU; must stay 0).
 - **R5 ISR budget**: the R5 runs `xcp_r5_event()` + `xcp_r5_poll()` + IPI inside
   `ISR_Control` at the control rate. If `uz_SystemTime` ISR-exec jumps, the
   command/DAQ work is too heavy for the 100 µs budget — move `xcp_r5_poll()` to

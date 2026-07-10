@@ -65,6 +65,14 @@ proc uz_vitis_apply_freertos_bsp_settings {enable_dhcp} {
   bsp config api_mode SOCKET_API
   bsp config dhcp_does_arp_check $enable_dhcp
   bsp config lwip_dhcp $enable_dhcp
+  # UDP TX sizing for the XCP R5 gateway (Option Z): at 40k datagrams/s the
+  # defaults (MEM_SIZE 128K, 64 TX BDs) exhaust transiently and lwip_sendto
+  # fails -> wire counter gaps (measured: 74 failures = all loss of a 60 s
+  # 320 Mbit/s stress run, xcp_gw_sendto_err). 1 MB lwIP heap ~= 700 in-flight
+  # TX pbufs; 512 TX BDs ~= 5.9 ms of ring at gigabit wire speed.
+  bsp config mem_size 1048576
+  bsp config memp_n_pbuf 64
+  bsp config n_tx_descriptors 512
   # increase heap size of freertos, to fix javascope glitches
   bsp config total_heap_size 200000000
   # Enable NEON/FPU context save for ALL tasks (value 2).

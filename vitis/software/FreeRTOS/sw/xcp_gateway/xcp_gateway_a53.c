@@ -79,6 +79,16 @@
  * 1500-byte MTU — no IP fragmentation. */
 #define XCP_GW_BATCH_BUF_SIZE 1400
 
+/* Bounded send retry (hedrive "bounded sends", UDP flavor): lwip_sendto()
+ * fails transiently under burst load (pbuf/TX-BD exhaustion at 40k
+ * datagrams/s — every wire-loss frame of the first 320 Mbit/s hardware run
+ * traced to exactly these failures). The batch is already CTR-stamped, so
+ * dropping it tears a gap into the wire counter; the GEM TX ring drains by
+ * hardware in <1 ms, so waiting one tick (10 ms @ 100 Hz) converts the loss
+ * into latency the deep queue absorbs. Bounded so a persistent failure
+ * (master gone, no route) cannot wedge the task: worst ~50 ms, then drop. */
+#define XCP_GW_SEND_RETRY_MAX 5
+
 /* One XCP-on-Ethernet record in transit between a task and the IPI ISR.
  * data may hold SEVERAL concatenated TL frames ([dlc][ctr][packet])+ —
  * queue32 segments on the R5 and CANape command bursts both pack frames. */
@@ -111,10 +121,15 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
  *   xcp_gw_in_batches_sent     command batches (generations) offered to the R5
  *   xcp_gw_in_retry_cycles     IPIs spent re-offering an unconsumed batch
  *   xcp_gw_tx_malformed_drop   record failed the TL-frame walk on TX (must stay 0)
- *   xcp_gw_sendto_err          lwip_sendto() failed (pbuf shortage / ARP). The
- *                              batch was already CTR-stamped, so this is the
- *                              ONLY ECU-side source of wire counter gaps —
- *                              gaps with this at 0 mean the loss is wire/PC-side. */
+ *   xcp_gw_sendto_err          transient lwip_sendto() failures (pbuf/TX-BD
+ *                              exhaustion under burst load; observed 74x in a
+ *                              60 s 320 Mbit/s run). Retried, so err alone is
+ *                              pressure, not loss.
+ *   xcp_gw_sendto_drop         batch still failing after the bounded retries —
+ *                              the batch was already CTR-stamped, so each one
+ *                              is a wire counter gap and the ONLY ECU-side
+ *                              source of them. Gaps with this at 0 mean the
+ *                              loss is wire/PC-side. Must stay 0. */
 volatile uint32_t xcp_gw_ocm_skipped_writing = 0;
 volatile uint32_t xcp_gw_ocm_torn = 0;
 volatile uint32_t xcp_gw_ocm_cycles_missed = 0;
@@ -125,6 +140,7 @@ volatile uint32_t xcp_gw_in_batches_sent = 0;
 volatile uint32_t xcp_gw_in_retry_cycles = 0;
 volatile uint32_t xcp_gw_tx_malformed_drop = 0;
 volatile uint32_t xcp_gw_sendto_err = 0;
+volatile uint32_t xcp_gw_sendto_drop = 0;
 
 /*--------------------------------------------------------------------------
  * IPI ISR — read phase (XCP_OUT -> queues), seqlock-guarded.
@@ -445,8 +461,19 @@ static void xcp_gw_tx_task(void *arg) {
         taskENTER_CRITICAL();
         dst = gMaster; /* consistent copy vs. a concurrent endpoint change */
         taskEXIT_CRITICAL();
-        if (lwip_sendto(gSock, batch, fill, 0, (struct sockaddr *)&dst, sizeof(dst)) < 0) {
-            xcp_gw_sendto_err++; /* stamped frames lost -> wire CTR gap */
+        int sent = -1;
+        for (int attempt = 0; attempt <= XCP_GW_SEND_RETRY_MAX; attempt++) {
+            if (attempt != 0) {
+                vTaskDelay(1); /* one tick: GEM drains its TX ring by hardware */
+            }
+            sent = lwip_sendto(gSock, batch, fill, 0, (struct sockaddr *)&dst, sizeof(dst));
+            if (sent >= 0) {
+                break;
+            }
+            xcp_gw_sendto_err++;
+        }
+        if (sent < 0) {
+            xcp_gw_sendto_drop++; /* stamped frames lost -> wire CTR gap */
         }
     }
 }

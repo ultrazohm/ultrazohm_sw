@@ -104,6 +104,12 @@ domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
 bsp config total_heap_size  200000000
+# UDP TX sizing for the XCP R5 gateway (rationale in
+# vitis_configure_UltraZohm_bsp_settings.tcl): transient lwip_sendto failures
+# at 40k datagrams/s with the 128K-heap/64-TX-BD lwIP defaults.
+bsp config mem_size 1048576
+bsp config memp_n_pbuf 64
+bsp config n_tx_descriptors 512
 platform write
 bsp regenerate
 # Patch portMEMORY_BARRIER into the generated FreeRTOSConfig.h.

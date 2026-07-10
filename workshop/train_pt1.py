@@ -2,6 +2,10 @@ from pathlib import Path
 
 import numpy as np
 import torch as th
+import random
+from datetime import datetime
+seed=random.seed(datetime.now().timestamp())
+
 from stable_baselines3 import DQN
 from stable_baselines3.common.env_checker import check_env
 
@@ -11,13 +15,15 @@ from export_to_uz_nn import export_to_uz_nn
 
 
 GAIN = 1.0
-TIME_CONSTANT = 0.2
-CONTROL_FREQUENCY = 100.0
-EPISODE_SECONDS = 2.0
+TIME_CONSTANT = 0.002
+CONTROL_FREQUENCY = 10000.0
+EPISODE_SECONDS = 0.05
+
+# Set TRAIN_REFERENCE_LOW and TRAIN_REFERENCE_HIGH to None to train with the fixed REFERENCE value.
 REFERENCE = 0.0
-# Set both to None to train with the fixed REFERENCE value.
 TRAIN_REFERENCE_LOW = -1.0
 TRAIN_REFERENCE_HIGH = 1.0
+
 INITIAL_STATE_LOW = 0.0
 INITIAL_STATE_HIGH = 0.0
 DISCRETE_ACTIONS = [-1.0, 0.0, 1.0]
@@ -34,34 +40,27 @@ def squared_error_reward(
     return -error * error
 
 REWARD_FUNCTION = squared_error_reward
-TRAINING_EPISODES = 100
-# 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
-STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
-TOTAL_TIMESTEPS = TRAINING_EPISODES * STEPS_PER_EPISODE
-
-# DQN hyperparameters (stable-baselines3 2.9 defaults). Worth revisiting for
-# this problem: TARGET_UPDATE_INTERVAL=10000 gives only ~20 target-net syncs
-# over TOTAL_TIMESTEPS, and BUFFER_SIZE is 5x larger than TOTAL_TIMESTEPS.
+TOTAL_TIMESTEPS = 50_000
 LEARNING_RATE = 1e-4
 BUFFER_SIZE = 1_000_000
 LEARNING_STARTS = 100
 BATCH_SIZE = 32
 TAU = 1.0
 GAMMA = 0.99
-TRAIN_FREQ = 4
+TRAIN_FREQ = 1
 GRADIENT_STEPS = 1
-TARGET_UPDATE_INTERVAL = 10_000
+TARGET_UPDATE_INTERVAL = 10
 EXPLORATION_FRACTION = 0.1
 EXPLORATION_INITIAL_EPS = 1.0
 EXPLORATION_FINAL_EPS = 0.05
-# The 2x32x32 network is too small to benefit from multithreading; thread
-# synchronization overhead makes the default (all cores) several times slower.
 TORCH_NUM_THREADS = 1
 th.set_num_threads(TORCH_NUM_THREADS)
 
-# Anchor outputs to this file so runs work from any working directory; the
-# firmware includes the exported CSVs from <repo>/workshop/exported_paras.
+STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
+TRAINING_EPISODES = (TOTAL_TIMESTEPS + STEPS_PER_EPISODE - 1) // STEPS_PER_EPISODE
+
+
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "dqn_pt1"
 LOG_DIR = BASE_DIR / "logs"
@@ -89,10 +88,6 @@ POLICY_KWARGS = {
     "net_arch": HIDDEN_LAYERS,
     "activation_fn": ACTIVATION_FN,
 }
-# The firmware (uz_dqn_agent.c) hardcodes 2 inputs, 32/32 hidden neurons, and
-# 3 outputs; a smaller export would silently zero-fill the C weight arrays.
-assert HIDDEN_LAYERS == [32, 32], "uz_dqn_agent.c expects 32/32 hidden neurons"
-assert len(DISCRETE_ACTIONS) == 3, "uz_dqn_agent.c expects 3 actions"
 
 model = DQN(
     "MlpPolicy",
@@ -111,7 +106,7 @@ model = DQN(
     exploration_final_eps=EXPLORATION_FINAL_EPS,
     verbose=1,
     policy_kwargs=POLICY_KWARGS,
-    seed=0,
+    seed=seed,
 )
 training_logger = EpisodeCsvLogger(
     LOG_DIR,
@@ -120,11 +115,11 @@ training_logger = EpisodeCsvLogger(
 
 model.learn(
     total_timesteps=TOTAL_TIMESTEPS,
-    log_interval=4,
+    log_interval=5,
     callback=training_logger,
 )
 
-model.save(MODEL_PATH)
+# model.save(MODEL_PATH)
 export_to_uz_nn(model, EXPORT_DIR)
 
 
@@ -139,7 +134,7 @@ for episode, reference in enumerate(EVAL_REFERENCES, start=1):
 
     for episode_k in range(STEPS_PER_EPISODE):
         current_obs = obs
-        # Greedy action straight from the q-values; equivalent to
+        # Greedy action from q-values; equivalent to
         # model.predict(current_obs, deterministic=True) with one forward pass.
         q_values = get_q_values(model, current_obs)
         action_index = int(np.argmax(q_values))

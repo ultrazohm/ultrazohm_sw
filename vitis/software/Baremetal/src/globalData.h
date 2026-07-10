@@ -37,6 +37,7 @@ typedef struct _actualValues_ {
 	float dqn_pt1_reference;
 	float dqn_pt1_javascope_setpoint;
 	float dqn_pt1_action;
+	float dqn_pt1_eval_profile_episode;
 	float deskbench_dut_i_a_A;
 	float deskbench_dut_i_b_A;
 	float deskbench_dut_i_c_A;

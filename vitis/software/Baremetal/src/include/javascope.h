@@ -72,6 +72,7 @@ enum JS_OberservableData {
 	JSO_DQN_PT1_REFERENCE,
 	JSO_DQN_PT1_JAVASCOPE_SETPOINT,
 	JSO_DQN_PT1_ACTION,
+	JSO_DQN_PT1_EVAL_PROFILE_EPISODE,
 	JSO_DESKBENCH_DUT_I_A_A,
 	JSO_DESKBENCH_DUT_I_B_A,
 	JSO_DESKBENCH_DUT_I_C_A,
@@ -279,7 +280,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
+	PT1_Eval_Profile,
 	MyButton2,
 	MyButton3,
 	MyButton4,

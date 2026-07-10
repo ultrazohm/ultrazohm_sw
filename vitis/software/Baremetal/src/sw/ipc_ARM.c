@@ -270,7 +270,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+#if (UZ_APP != UZ_APP_DESKBENCH)
+			if (ultrazohm_state_machine_get_state() == control_state)
+			{
+				pt1_control_start_eval_profile(data);
+			}
+#endif
 			break;
 
 		case (My_Button_2):

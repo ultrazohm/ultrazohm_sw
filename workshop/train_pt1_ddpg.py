@@ -12,8 +12,8 @@ from export_to_uz_nn import export_to_uz_nn
 
 
 GAIN = 1.0
-TIME_CONSTANT = 0.2
-CONTROL_FREQUENCY = 100.0
+TIME_CONSTANT = 0.002
+CONTROL_FREQUENCY = 10000.0
 EPISODE_SECONDS = 2.0
 REFERENCE = 0.0
 # Set both to None to train with the fixed REFERENCE value.
@@ -36,11 +36,11 @@ def squared_error_reward(
     return -error * error
 
 REWARD_FUNCTION = squared_error_reward
-TRAINING_EPISODES = 100
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
 STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
-TOTAL_TIMESTEPS = TRAINING_EPISODES * STEPS_PER_EPISODE
+TOTAL_TIMESTEPS = 2_000_000
+TRAINING_EPISODES = (TOTAL_TIMESTEPS + STEPS_PER_EPISODE - 1) // STEPS_PER_EPISODE
 
 # DDPG hyperparameters (stable-baselines3 2.9 defaults, except LEARNING_STARTS
 # and ACTION_NOISE_SIGMA which this script already set explicitly). Worth
@@ -127,7 +127,7 @@ model.learn(
     callback=training_logger,
 )
 
-model.save(MODEL_PATH)
+# model.save(MODEL_PATH)
 export_to_uz_nn(model.actor, EXPORT_DIR)
 
 

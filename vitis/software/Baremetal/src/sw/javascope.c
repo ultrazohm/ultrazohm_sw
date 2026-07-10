@@ -121,6 +121,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
 	js_ch_observable[JSO_DQN_PT1_JAVASCOPE_SETPOINT] = &data->av.dqn_pt1_javascope_setpoint;
 	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
+	js_ch_observable[JSO_DQN_PT1_EVAL_PROFILE_EPISODE] = &data->av.dqn_pt1_eval_profile_episode;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_A_A] = &data->av.deskbench_dut_i_a_A;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_B_A] = &data->av.deskbench_dut_i_b_A;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_C_A] = &data->av.deskbench_dut_i_c_A;
@@ -194,6 +195,12 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+
+	if (data->av.dqn_pt1_eval_profile_episode > 0.0f) {
+		js_status_BareToRTOS |= (1U << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1U << 4);
+	}
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

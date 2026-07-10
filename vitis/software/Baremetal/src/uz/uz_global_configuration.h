@@ -3,7 +3,7 @@
 
 // Hardware version of the UltraZohm
 /* Project Wizard BEGIN: hardware_version */
-#define UZ_HARDWARE_VERSION 3U
+#define UZ_HARDWARE_VERSION 4U
 /* Project Wizard END: hardware_version */
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
@@ -22,7 +22,7 @@
 #define UZ_APP_DESKBENCH     3U
 
 #ifndef UZ_APP
-#define UZ_APP UZ_APP_DESKBENCH
+#define UZ_APP UZ_APP_DQN_PT1
 #endif
 
 #if (UZ_APP != UZ_APP_DQN_PT1) && (UZ_APP != UZ_APP_DDPG_PT1) && (UZ_APP != UZ_APP_DESKBENCH)
@@ -103,11 +103,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                        2U
 #define UZ_NN_LAYER_MAX_INSTANCES                       3U
 #define UZ_NN_MAX_INSTANCES                             1U
-#if UZ_DESKBENCH_CONTROL_DUT_PMSM_MODEL_ACTIVE
 #define UZ_PMSMMODEL_MAX_INSTANCES                      1U
-#else
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
-#endif
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U

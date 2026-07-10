@@ -119,7 +119,7 @@ int JavaScope_initialize(DS_Data* data)
 /* Project Wizard END: javascope_observable_pointers */
 	js_ch_observable[JSO_DQN_PT1_ACTUAL] = &data->av.dqn_pt1_actual;
 	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
-	js_ch_observable[JSO_DQN_PT1_SETPOINT] = &data->av.dqn_pt1_setpoint;
+	js_ch_observable[JSO_DQN_PT1_JAVASCOPE_SETPOINT] = &data->av.dqn_pt1_javascope_setpoint;
 	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_A_A] = &data->av.deskbench_dut_i_a_A;
 	js_ch_observable[JSO_DESKBENCH_DUT_I_B_A] = &data->av.deskbench_dut_i_b_A;

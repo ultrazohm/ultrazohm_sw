@@ -70,7 +70,7 @@ enum JS_OberservableData {
 /* Project Wizard END: javascope_observables */
 	JSO_DQN_PT1_ACTUAL,
 	JSO_DQN_PT1_REFERENCE,
-	JSO_DQN_PT1_SETPOINT,
+	JSO_DQN_PT1_JAVASCOPE_SETPOINT,
 	JSO_DQN_PT1_ACTION,
 	JSO_DESKBENCH_DUT_I_A_A,
 	JSO_DESKBENCH_DUT_I_B_A,
@@ -172,7 +172,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	dqn_pt1_setpoint,
+	dqn_pt1_javascope_setpoint,
 	deskbench_prime_mover_n_ref_rpm,
 	deskbench_dut_i_q_ref_A,
 	deskbench_dut_i_d_ref_A,

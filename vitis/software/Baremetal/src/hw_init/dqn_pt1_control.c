@@ -27,7 +27,7 @@ void pt1_control_init(DS_Data *data)
 
     data->av.dqn_pt1_actual = 0.0f;
     data->av.dqn_pt1_reference = PT1_CONTROL_INITIAL_SETPOINT;
-    data->av.dqn_pt1_setpoint = PT1_CONTROL_INITIAL_SETPOINT;
+    data->av.dqn_pt1_javascope_setpoint = PT1_CONTROL_INITIAL_SETPOINT;
     data->av.dqn_pt1_action = 0.0f;
 
     struct uz_plantPT1_config_t config = {
@@ -47,7 +47,7 @@ void pt1_control_step(DS_Data *data)
     uz_assert_not_NULL(data->objects.plant_pt1);
 
     data->av.dqn_pt1_actual = uz_plantPT1_read_output(data->objects.plant_pt1);
-    data->av.dqn_pt1_reference = data->av.dqn_pt1_setpoint;
+    data->av.dqn_pt1_reference = data->av.dqn_pt1_javascope_setpoint;
 
 #if (PT1_CONTROL_AGENT == PT1_CONTROL_AGENT_DDPG)
     uz_assert_not_NULL(data->objects.ddpg_agent);

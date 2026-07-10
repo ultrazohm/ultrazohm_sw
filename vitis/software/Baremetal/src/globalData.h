@@ -35,7 +35,7 @@ typedef struct _actualValues_ {
 	float d3_input_loopback_uint32;
 	float dqn_pt1_actual;
 	float dqn_pt1_reference;
-	float dqn_pt1_setpoint;
+	float dqn_pt1_javascope_setpoint;
 	float dqn_pt1_action;
 	float deskbench_dut_i_a_A;
 	float deskbench_dut_i_b_A;

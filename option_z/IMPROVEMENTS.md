@@ -54,8 +54,11 @@ network. Discards are counted (`xcp_gw_ocm_torn`, `xcp_gw_ocm_skipped_writing`).
 ### 2.3 Throughput ceiling — MITIGATED (CP7), lwIP knobs remain
 `xcp_gw_tx_task` now batches queued records into one ≤1400-byte UDP datagram
 per `sendto` (hedrive B1; both CANape and `xcp_poll.py` parse multi-frame
-datagrams), and the DAQ queue is a deep burst absorber (4096 records ≈ 1 MB
-heap, tail-drop + `xcp_gw_txq_dropped` on overflow — hedrive B5 final form).
+datagrams), and the DAQ queue is a deep burst absorber (262144 records ≈
+68 MB heap ≈ 1.5 s at 320 Mbit/s, matching hedrive's multi-second-stall
+sizing; tail-drop + `xcp_gw_txq_dropped` on overflow — hedrive B5 final
+form). UDP has no backpressure, so PC-side receive pauses are absorbed by
+the receiver instead (`xcp_poll.py` sets a 32 MB socket buffer).
 If throughput still limits: DAQ prescaler in CANape, or the parked lwIP BSP
 knobs (`TCP_SND_BUF`-class tuning does not apply to UDP; pbuf/GEM BD counts
 would).

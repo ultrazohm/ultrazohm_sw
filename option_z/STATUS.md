@@ -66,9 +66,10 @@ XCP_OUT is seqlock-guarded (torn reads discarded on the A53), command
 responses ride an acknowledged CTO mailbox (never lost to a cycle rewrite),
 commands ride a generation handshake on XCP_IN (rewritten every IPI until the
 R5 acks execution), the A53 owns the wire CTR (stamped at transmission time),
-CTO frames take a dedicated queue past the deep (4096-record) DAQ backlog, and
-the tx task batches records into ~1400-byte datagrams (one `sendto` for many
-frames). See `option_z/TEST_PLAN.md` (CP7 blockquote) for the counter set.
+CTO frames take a dedicated queue past the deep (262144-record ≈ 68 MB,
+hedrive stall-bridging sizing) DAQ backlog, and the tx task batches records
+into ~1400-byte datagrams (one `sendto` for many frames). See
+`option_z/TEST_PLAN.md` (CP7 blockquote) for the counter set.
 
 ## Integration — DONE (2026-06-17, hardened 2026-07-04)
 

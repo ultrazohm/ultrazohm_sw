@@ -39,8 +39,9 @@ stuck, the **fallback** (bottom) returns you to the validated curated path.
 > T3 — producer-side counters show gaps/reordering to CANape); (5) **dedicated
 > CTO queue** — responses jump the DAQ backlog and are never tail-dropped
 > (T1); (6) **UDP TX batching** — up to ~1400 B of TL frames per `sendto`
-> (B1); (7) **deep DAQ queue** (64 → 4096 records, tail-drop, no purge — B5
-> final form). **OCM layout changed: rebuild and reflash BOTH ELFs together.**
+> (B1); (7) **deep DAQ queue** (64 → 262144 records ≈ 68 MB, tail-drop, no
+> purge — B5 final form, hedrive's multi-second-stall sizing).
+> **OCM layout changed: rebuild and reflash BOTH ELFs together.**
 
 ## Configuration (what's active)
 
@@ -125,6 +126,31 @@ Sets up a real dynamic DAQ list (1 list / 1 ODT / 1 entry, timestamped, event 0
   `ocm_xcp_w_dropped` / `xcp_r5_tx_oversize_drop` on the R5 and `gMasterValid`
   on the A53 (JTAG).
 
+## Test 3c — throughput stress (the CP7 payoff; hedrive reference 160 Mbit/s)
+
+```
+python tools/xcp_test/xcp_poll.py --ip 192.168.1.233 --stress --daq-seconds 30
+```
+Builds one wide DAQ list (default 2000 B/cycle in 9 ODTs, reading the unused
+JavaScope OCM bank at `0xFFFF0000`) on event 0 at the control rate — at 10 kHz
+that is **160 Mbit/s of DAQ payload**, the rate the hedrive rig sustains.
+Scale with `--stress-bytes` (OCM ceiling ~6000 B/cycle ≈ 480 Mbit/s) or thin
+with `--prescaler`.
+
+The report verifies the CP7 mechanisms directly:
+- **frames/datagram** ≫ 1 → the gateway TX batching works (B1);
+- **ctr gaps = 0** → no records lost anywhere on the wire path (the A53
+  stamps the CTR contiguously at transmission time, so every drop —
+  gateway queue, OCM overwrite, PC-side rx — shows up here);
+- **event cycles ~ control rate** (from ODT0 target timestamps);
+- **R5 counter deltas** (`ocm_xcp_w_dropped`, `xcp_r5_cto_dropped`, … read
+  via SHORT_UPLOAD before/after) — the "must stay 0" set is flagged.
+
+Exit code: 0 = clean, 2 = ran but with wire loss (then check the JTAG-only
+A53 counters `xcp_gw_txq_dropped` / `xcp_gw_ocm_cycles_missed` to locate it).
+Escalation sequence for a soak: `--stress --daq-seconds 600`, then
+`--stress-bytes 4000 --daq-seconds 600`, then overnight.
+
 ## Test 4 — CANape (optional)
 
 ```
@@ -159,7 +185,9 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_in_batches_sent` /
   `xcp_gw_in_retry_cycles` (command handshake at work; retries > 0 are
   normal under load, they are exactly the cycles that would have LOST the
-  command before CP7).
+  command before CP7), `xcp_gw_sendto_err` (lwip_sendto failed on a
+  CTR-stamped batch — the only ECU-side source of wire counter gaps; wire
+  gaps with this at 0 are wire/PC-side loss, not the ECU).
 - **R5 ISR budget**: the R5 runs `xcp_r5_event()` + `xcp_r5_poll()` + IPI inside
   `ISR_Control` at the control rate. If `uz_SystemTime` ISR-exec jumps, the
   command/DAQ work is too heavy for the 100 µs budget — move `xcp_r5_poll()` to
@@ -191,9 +219,9 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   flushes) runs inside `ISR_Control`. Watch `uz_SystemTime` ISR-exec time under
   DAQ load; if it jumps, move `xcp_r5_poll()` to the main loop.
 - **DAQ rate**: event 0 fires at the full control rate. Since CP7 the gateway
-  batches records into ~1400-byte datagrams and buffers ~0.4 s of backlog; if
-  UDP drain still can't keep up, `xcp_gw_txq_dropped` climbs — set a
-  prescaler in CANape (or reduce the measurement).
+  batches records into ~1400-byte datagrams and buffers seconds of backlog
+  (262144 records); if UDP drain still can't keep up, `xcp_gw_txq_dropped`
+  climbs — set a prescaler in CANape (or reduce the measurement).
 - **UDP session boundaries are heuristic**: a "new master" is detected by a
   changed IP:port. If CANape reconnects from the SAME endpoint, a stale
   parked response could be forwarded into the new session (hedrive's TCP

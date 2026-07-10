@@ -50,11 +50,16 @@
 
 /* DAQ (DTO) queue: deep on purpose — it is the burst absorber between the
  * 10–20 kHz OCM drain and the UDP send rate, and measurement gaps hurt more
- * than backlog latency (hedrive T8: 512 was too shallow, final sizing is
- * hundreds of ms). 4096 x ~260 B ≈ 1 MB FreeRTOS heap (200 MB configured),
- * ~0.4 s of full-rate records. Overflow policy: tail-drop + count, never
- * purge, never block from the ISR. */
-#define XCP_GW_TXQ_DEPTH     4096
+ * than backlog latency. Sized to bridge multi-second send stalls, matching
+ * hedrive's final sizing (its rig saw ~2 s host receive pauses every few
+ * minutes that a 140 ms queue could not absorb): 262144 x ~260 B ≈ 68 MB of
+ * the 200 MB FreeRTOS heap ≈ 1.5 s of buffering at the 320 Mbit/s stress
+ * rate (~3 s at 160 Mbit/s). The queue runs empty in steady state, so normal
+ * latency is unaffected. NOTE: UDP has no backpressure — this queue covers
+ * ECU-side stalls (lwIP pbuf/ARP, task starvation); PC-side receive pauses
+ * must be absorbed by the receiver's socket buffer (xcp_poll.py sets 32 MB).
+ * Overflow policy: tail-drop + count, never purge, never block from the ISR. */
+#define XCP_GW_TXQ_DEPTH     262144
 /* Dedicated queue for CTO frames (RES/ERR/EV/SERV): responses must never
  * wait behind — or be dropped with — the DAQ backlog (hedrive T1). */
 #define XCP_GW_CTOQ_DEPTH    16
@@ -105,7 +110,11 @@ static volatile uint32_t  gMasterGen = 0;    /* bumped on endpoint change       
  *   xcp_gw_ctoq_dropped        CTO queue full -> frame dropped (must stay 0)
  *   xcp_gw_in_batches_sent     command batches (generations) offered to the R5
  *   xcp_gw_in_retry_cycles     IPIs spent re-offering an unconsumed batch
- *   xcp_gw_tx_malformed_drop   record failed the TL-frame walk on TX (must stay 0) */
+ *   xcp_gw_tx_malformed_drop   record failed the TL-frame walk on TX (must stay 0)
+ *   xcp_gw_sendto_err          lwip_sendto() failed (pbuf shortage / ARP). The
+ *                              batch was already CTR-stamped, so this is the
+ *                              ONLY ECU-side source of wire counter gaps —
+ *                              gaps with this at 0 mean the loss is wire/PC-side. */
 volatile uint32_t xcp_gw_ocm_skipped_writing = 0;
 volatile uint32_t xcp_gw_ocm_torn = 0;
 volatile uint32_t xcp_gw_ocm_cycles_missed = 0;
@@ -115,6 +124,7 @@ volatile uint32_t xcp_gw_ctoq_dropped = 0;
 volatile uint32_t xcp_gw_in_batches_sent = 0;
 volatile uint32_t xcp_gw_in_retry_cycles = 0;
 volatile uint32_t xcp_gw_tx_malformed_drop = 0;
+volatile uint32_t xcp_gw_sendto_err = 0;
 
 /*--------------------------------------------------------------------------
  * IPI ISR — read phase (XCP_OUT -> queues), seqlock-guarded.
@@ -435,7 +445,9 @@ static void xcp_gw_tx_task(void *arg) {
         taskENTER_CRITICAL();
         dst = gMaster; /* consistent copy vs. a concurrent endpoint change */
         taskEXIT_CRITICAL();
-        (void)lwip_sendto(gSock, batch, fill, 0, (struct sockaddr *)&dst, sizeof(dst));
+        if (lwip_sendto(gSock, batch, fill, 0, (struct sockaddr *)&dst, sizeof(dst)) < 0) {
+            xcp_gw_sendto_err++; /* stamped frames lost -> wire CTR gap */
+        }
     }
 }
 

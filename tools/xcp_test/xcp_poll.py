@@ -25,6 +25,8 @@ Usage
     python xcp_poll.py --ip 192.168.1.42                # connectivity: CONNECT only
     python xcp_poll.py --ip 192.168.1.42 --watch xcp_r5_cycle_count:u32
     python xcp_poll.py --ip 192.168.1.42 --daq          # DAQ smoke test (Option Z)
+    python xcp_poll.py --ip 192.168.1.42 --stress       # DAQ throughput stress
+    python xcp_poll.py --ip 192.168.1.42 --stress --stress-bytes 4000 --daq-seconds 60
     python xcp_poll.py --ip 192.168.1.42 --demo         # A53 demo counter/sine poll
 
 With no mode flag it only CONNECTs and prints MAX_CTO/MAX_DTO -- that already
@@ -260,11 +262,56 @@ class XcpUdp:
         self._cmd_checked("START_STOP_SYNCH(start)", bytes([0xDD, 0x01]))
         return first_pid
 
+    def daq_setup_stress(self, base, entry_sizes, event=0, prescaler=1):
+        """Dynamic DAQ for throughput stress: 1 list, len(entry_sizes) ODTs with
+        ONE entry each (entry i reads `base` + running offset), timestamped.
+        Returns the FIRST_PID of the DAQ list."""
+        n_odts = len(entry_sizes)
+        self._cmd_checked("FREE_DAQ", bytes([0xD6]))
+        self._cmd_checked("ALLOC_DAQ", bytes([0xD5, 0x00]) + struct.pack("<H", 1))
+        self._cmd_checked("ALLOC_ODT",
+                          bytes([0xD4, 0x00]) + struct.pack("<H", 0) + bytes([n_odts]))
+        for odt in range(n_odts):
+            self._cmd_checked("ALLOC_ODT_ENTRY",
+                              bytes([0xD3, 0x00]) + struct.pack("<H", 0) + bytes([odt, 1]))
+        off = 0
+        for odt, size in enumerate(entry_sizes):
+            self._cmd_checked("SET_DAQ_PTR",
+                              bytes([0xE2, 0x00]) + struct.pack("<H", 0) + bytes([odt, 0]))
+            self._cmd_checked("WRITE_DAQ",
+                              bytes([0xE1, 0xFF, size & 0xFF, 0x00]) +
+                              struct.pack("<I", (base + off) & 0xFFFFFFFF))
+            off += size
+        # mode 0x10 = TIMESTAMP; daq 0; event; prescaler; priority 0
+        self._cmd_checked("SET_DAQ_LIST_MODE",
+                          bytes([0xE0, 0x10]) + struct.pack("<HH", 0, event) +
+                          bytes([prescaler & 0xFF, 0]))
+        resp = self._cmd_checked("START_STOP_DAQ_LIST(select)",
+                                 bytes([0xDE, 0x02]) + struct.pack("<H", 0))
+        first_pid = resp[1] if len(resp) > 1 else 0
+        self._cmd_checked("START_STOP_SYNCH(start)", bytes([0xDD, 0x01]))
+        return first_pid
+
     def daq_stop(self):
         try:
             self._command(bytes([0xDD, 0x00]), retries=1)  # STOP all lists
         except TimeoutError:
             pass
+
+    def drain(self, quiet_s=0.3, max_s=3.0):
+        """Discard buffered/incoming datagrams until the line is quiet (used
+        after daq_stop so command responses are not fished out of a backlog)."""
+        old_to = self.sock.gettimeout()
+        self.sock.settimeout(quiet_s)
+        t_end = time.time() + max_s
+        try:
+            while time.time() < t_end:
+                try:
+                    self.sock.recvfrom(4096)
+                except socket.timeout:
+                    break
+        finally:
+            self.sock.settimeout(old_to)
 
 
 def run_daq(xcp, item, seconds):
@@ -285,11 +332,12 @@ def run_daq(xcp, item, seconds):
             except socket.timeout:
                 continue
             for pkt in iter_tl_frames(data):
-                # DTO: [pid][timestamp u32][data] (abs identification, ts in ODT 0)
-                if pkt[0] != first_pid or len(pkt) < 5 + size:
+                # DTO: [odt u8][fill u8][daq u16][ts u32 in ODT0][data]
+                # (xcplite.c ODT_HEADER_SIZE 4, DAQ_HDR_ODT_FIL_DAQW)
+                if pkt[0] != first_pid or len(pkt) < 8 + size:
                     continue
-                ts = struct.unpack_from("<I", pkt, 1)[0]
-                val = struct.unpack_from(fmt, pkt, 5)[0]
+                ts = struct.unpack_from("<I", pkt, 4)[0]
+                val = struct.unpack_from(fmt, pkt, 8)[0]
                 if first_ts is None:
                     first_ts = ts
                 last_ts = ts
@@ -307,6 +355,187 @@ def run_daq(xcp, item, seconds):
     print("\n[+] DAQ OK: %d samples in %.2fs of target time (~%.0f Hz)" %
           (n, span_s, (n - 1) / span_s if n > 1 else 0.0))
     return 0
+
+
+# R5 diagnostic counters sampled before/after a stress run (all u32; resolved
+# from Baremetal.elf). The A53 gateway counters (xcp_gw_*) are NOT readable
+# through the R5 slave -- check those via JTAG.
+R5_DIAG_COUNTERS = [
+    "xcp_r5_cycle_count", "ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
+    "xcp_r5_cto_sent", "xcp_r5_cto_dropped", "xcp_r5_in_generations",
+    "xcp_r5_tx_oversize_drop",
+]
+
+
+def read_r5_diag(xcp, addrs):
+    """Read the resolved diagnostic counters. Returns {name: value}."""
+    out = {}
+    for name in R5_DIAG_COUNTERS:
+        if name in addrs:
+            try:
+                out[name] = struct.unpack("<I", xcp.short_upload(addrs[name], 4))[0]
+            except (TimeoutError, RuntimeError):
+                pass
+    return out
+
+
+def stress_geometry(target_bytes, max_dto):
+    """Per-ODT entry sizes for a stress list. XCPlite DTO overhead per ODT:
+    4-byte header ([odt][fill][daq u16]) + 4-byte timestamp in ODT0 only
+    (xcplite.c: max payload = MAX_DTO - 4 - (odt==0 ? 4 : 0)). One entry per
+    ODT keeps the 3 KB DAQ table memory tiny."""
+    odt0_budget = (max_dto - 4 - 4) & ~3
+    odt_budget = (max_dto - 4) & ~3
+    sizes = []
+    remaining = target_bytes
+    budget = odt0_budget
+    while remaining > 0 and len(sizes) < 200:
+        sizes.append(min(remaining, budget))
+        remaining -= sizes[-1]
+        budget = odt_budget
+    return sizes
+
+
+def run_stress(xcp, args, max_dto):
+    """DAQ throughput stress: one wide multi-ODT list on event 0 at the full
+    control rate. Verifies the CP7 gateway path under load: UDP batching
+    (frames/datagram), transport-CTR continuity (gaps = lost records), and the
+    R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
+    sizes = stress_geometry(args.stress_bytes, max_dto)
+    per_cycle = sum(sizes)
+    # OCM ceiling: XCP_OUT chain 7360 B minus 512 B CTO reserve, each 252 B
+    # segment costs 8 B framing -> ~6500 B of DTO payload per control cycle.
+    if per_cycle > 5000:
+        print("[!] %d B/cycle is near/above the OCM per-cycle ceiling (~6 KB): "
+              "expect ocm_xcp_w_dropped to climb" % per_cycle)
+    print("[i] stress: %d B/cycle in %d ODTs @ base 0x%08X, event 0, %gs" %
+          (per_cycle, len(sizes), args.stress_base, args.daq_seconds))
+    print("[i]         (at 10 kHz control rate = %.0f Mbit/s DAQ payload)" %
+          (per_cycle * 10e3 * 8 / 1e6))
+
+    diag_addrs = nm_lookup(DEFAULT_ELF_R5, args.nm, R5_DIAG_COUNTERS)
+    pre = read_r5_diag(xcp, diag_addrs)
+    if not pre:
+        print("[!] R5 diag counters not resolvable (no Baremetal.elf?) -- skipping deltas")
+
+    # A large kernel receive buffer so the flood is not dropped PC-side: at
+    # 160 Mbit/s a ~100 ms Windows scheduling hiccup already costs 2 MB.
+    try:
+        xcp.sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 32 * 1024 * 1024)
+    except OSError:
+        pass
+    try:
+        print("[i] socket receive buffer: %.1f MB" %
+              (xcp.sock.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF) / 1e6))
+    except OSError:
+        pass
+
+    first_pid = xcp.daq_setup_stress(args.stress_base, sizes,
+                                     prescaler=args.prescaler)
+    print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs) -- collecting ...\n" %
+          (first_pid, len(sizes)))
+
+    buf = bytearray(4096)
+    dgrams = frames = payload = cycles = 0
+    ctr_gap_events = ctr_gap_frames = 0
+    ctr_reorder = 0
+    last_ctr = None
+    first_ts = last_ts = None
+    t0 = time.monotonic()
+    t_end = t0 + args.daq_seconds
+    t_tick = t0 + 1.0
+    tick_payload = tick_dgrams = 0
+    xcp.sock.settimeout(0.5)
+    try:
+        while True:
+            now = time.monotonic()
+            if now >= t_end:
+                break
+            if now >= t_tick:
+                print("    %5.1fs  %6d dgrams/s  %7.2f Mbit/s payload  ctr_gaps=%d" %
+                      (now - t0, dgrams - tick_dgrams,
+                       (payload - tick_payload) * 8 / 1e6, ctr_gap_frames))
+                t_tick += 1.0
+                tick_payload, tick_dgrams = payload, dgrams
+            try:
+                n = xcp.sock.recv_into(buf)
+            except socket.timeout:
+                continue
+            dgrams += 1
+            off = 0
+            while off + 4 <= n:
+                dlc, ctr = struct.unpack_from("<HH", buf, off)
+                if dlc == 0 or off + 4 + dlc > n:
+                    break  # padding / malformed tail
+                frames += 1
+                payload += dlc
+                if last_ctr is not None:
+                    delta = (ctr - last_ctr) & 0xFFFF
+                    if delta == 1:
+                        last_ctr = ctr
+                    elif delta > 0x8000:
+                        # CTR went backwards: a late/reordered datagram, not a
+                        # loss (its frames were already booked as a small gap
+                        # when they were skipped). Keep the high-water mark.
+                        ctr_reorder += 1
+                    else:
+                        ctr_gap_events += 1
+                        ctr_gap_frames += delta - 1
+                        last_ctr = ctr
+                else:
+                    last_ctr = ctr
+                # ODT0 DTO: [odt u8][fill u8][daq u16][ts u32][data]
+                if buf[off + 4] == first_pid and dlc >= 8:
+                    ts = struct.unpack_from("<I", buf, off + 8)[0]
+                    if first_ts is None:
+                        first_ts = ts
+                    last_ts = ts
+                    cycles += 1
+                off += 4 + dlc
+    finally:
+        xcp.daq_stop()
+        xcp.drain()
+
+    wall_s = max(time.monotonic() - t0, 1e-6)
+    post = read_r5_diag(xcp, diag_addrs)
+
+    print("\n[+] stress summary (%.2fs wall):" % wall_s)
+    print("    datagrams        %10d   (%.0f/s, %.1f frames/datagram)" %
+          (dgrams, dgrams / wall_s, frames / dgrams if dgrams else 0.0))
+    print("    TL frames        %10d   (%.0f/s)" % (frames, frames / wall_s))
+    print("    DAQ payload      %10d B (%.2f Mbit/s; wire ~%.2f Mbit/s)" %
+          (payload, payload * 8 / wall_s / 1e6,
+           (payload + 4 * frames + 42 * dgrams) * 8 / wall_s / 1e6))
+    if cycles > 1 and last_ts is not None:
+        span_s = max((last_ts - first_ts) & 0xFFFFFFFF, 1) / 1e6
+        print("    event cycles     %10d   (~%.0f Hz of target time)" %
+              (cycles, (cycles - 1) / span_s))
+    print("    ctr gaps         %10d frames lost in %d gaps%s" %
+          (ctr_gap_frames, ctr_gap_events,
+           "  <-- loss at/after sendto (lwIP pbuf, wire, PC rx)"
+           if ctr_gap_frames else ""))
+    if ctr_reorder:
+        print("    ctr reordering   %10d late frames (already counted in gaps "
+              "above; late, not lost)" % ctr_reorder)
+    if pre and post:
+        print("    R5 counter deltas over the run:")
+        for name in R5_DIAG_COUNTERS:
+            if name in pre and name in post:
+                d = (post[name] - pre[name]) & 0xFFFFFFFF
+                flag = ""
+                if d and name in ("ocm_xcp_w_dropped", "ocm_xcp_r_overrun",
+                                  "xcp_r5_cto_dropped", "xcp_r5_tx_oversize_drop"):
+                    flag = "  <-- investigate"
+                print("      %-24s +%d%s" % (name, d, flag))
+    print("    (A53 gateway counters xcp_gw_* are JTAG-only: torn/cycles_missed/"
+          "txq_dropped/in_retry_cycles; on ctr gaps check xcp_gw_sendto_err: "
+          ">0 = lwIP dropped it, 0 = wire/PC-side)")
+    if frames == 0:
+        print("\n[x] no DTOs received -- stress FAILED")
+        return 1
+    print("\n[+] stress %s" % ("PASSED (no wire loss)" if ctr_gap_frames == 0
+                               else "completed WITH LOSS -- see counters"))
+    return 0 if ctr_gap_frames == 0 else 2
 
 
 def main():
@@ -332,9 +561,24 @@ def main():
     ap.add_argument("--daq", action="store_true",
                     help="DAQ smoke test: stream the first --watch item (default "
                          "xcp_r5_cycle_count:u32) via a real DAQ list on event 0")
-    ap.add_argument("--daq-seconds", type=float, default=3.0,
-                    help="duration of the --daq capture (default 3s)")
+    ap.add_argument("--daq-seconds", type=float, default=None,
+                    help="capture duration (default: 3s for --daq, 10s for --stress)")
+    ap.add_argument("--stress", action="store_true",
+                    help="DAQ throughput stress: one wide multi-ODT list on event 0 "
+                         "at the control rate. Reports Mbit/s, frames/datagram "
+                         "(CP7 batching), transport-CTR gaps (= lost records) and "
+                         "R5 drop-counter deltas. hedrive reference: 160 Mbit/s.")
+    ap.add_argument("--stress-bytes", type=int, default=2000,
+                    help="target DAQ payload bytes per control cycle (default 2000 "
+                         "= 160 Mbit/s at 10 kHz; OCM ceiling ~6000)")
+    ap.add_argument("--stress-base", type=lambda x: int(x, 0), default=0xFFFF0000,
+                    help="measurement block base address (default 0xFFFF0000, the "
+                         "unused-under-XCP JavaScope OCM bank, 64 KB, allow-listed)")
+    ap.add_argument("--prescaler", type=int, default=1,
+                    help="DAQ event prescaler for --stress (default 1 = full rate)")
     args = ap.parse_args()
+    if args.daq_seconds is None:
+        args.daq_seconds = 10.0 if args.stress else 3.0
 
     print("[i] connecting to %s:%d ..." % (args.ip, args.port))
 
@@ -342,6 +586,9 @@ def main():
     try:
         info = xcp.connect()
         print("[+] CONNECTED  (MAX_CTO=%d  MAX_DTO=%d)" % (info["max_cto"], info["max_dto"]))
+
+        if args.stress:
+            return run_stress(xcp, args, info["max_dto"])
 
         if args.daq:
             specs = args.watch if args.watch else ["xcp_r5_cycle_count:u32"]

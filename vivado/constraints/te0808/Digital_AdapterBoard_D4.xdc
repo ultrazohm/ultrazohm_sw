@@ -74,4 +74,4 @@ set_property PACKAGE_PIN K14 [get_ports Dig_29_Ch4]
 ##Set voltage level
 ##All digital pins are 1.8V CMOS single-ended signals
 
-set_property IOSTANDARD LVCMOS18 [get_ports Dig*]
+set_property IOSTANDARD LVCMOS18 [get_ports Dig_*_Ch4]

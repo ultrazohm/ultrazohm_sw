@@ -37,7 +37,7 @@ uz_adcLtc2311_t *uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config)
     uz_assert_not_zero(config.base_address);
     uz_assert(config.napping_spi_masters == 0U);
     uz_assert(config.sleeping_spi_masters == 0U);
-    uz_assert(config.channel_config.conversion_factor != 0.0f);
+    uz_assert(config.ip_core_channel_config.conversion_factor != 0.0f);
     uz_assert(config.cpol != 0U);
     uz_assert(config.cpha == 0U);
     uz_assert(config.spi_master_config.samples > 0U);
@@ -134,15 +134,15 @@ void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t *self, float value, str
     uz_assert(self->is_ready);
     uz_assert(fixedpoint_definition.is_signed); // IP-Core only uses signed fixed point data type
     uz_assert(CONVERSION_FACTOR_NUMBER_OF_BITS >= (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits) );
-    self->config.channel_config.conversion_factor = value;
-    self->config.channel_config.conversion_factor_definition = fixedpoint_definition;
+    self->config.ip_core_channel_config.conversion_factor = value;
+    self->config.ip_core_channel_config.conversion_factor_definition = fixedpoint_definition;
 }
 
 void uz_adcLtc2311_set_offset(uz_adcLtc2311_t *self, int value)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->config.channel_config.offset = value;
+    self->config.ip_core_channel_config.offset = value;
 }
 
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t *self, uint32_t value)
@@ -238,14 +238,14 @@ float uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return (self->config.channel_config.conversion_factor);
+    return (self->config.ip_core_channel_config.conversion_factor);
 }
 
 int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return (self->config.channel_config.offset);
+    return (self->config.ip_core_channel_config.offset);
 }
 
 uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t *self)
@@ -318,6 +318,14 @@ uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t *self)
     return (self->config.sleeping_spi_masters);
 }
 
+float uz_adcLtc2311_convert_raw_to_physical_value(uz_adcLtc2311_t *self, int16_t raw_value, uint32_t channel_index)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(channel_index < 8U);
+    return ((float)raw_value / 65536.0f) * self->config.software_raw_to_physical_value_factor[channel_index];
+}
+
 uint32_t uz_adcLtc2311_get_base_address(uz_adcLtc2311_t *self)
 {
     uz_assert_not_NULL(self);
@@ -337,8 +345,8 @@ uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_assert(self->config.channel_config.conversion_factor_definition.is_signed); // IP-Core only uses signed fixed point data type
-    uz_assert(CONVERSION_FACTOR_NUMBER_OF_BITS >= (self->config.channel_config.conversion_factor_definition.fractional_bits + self->config.channel_config.conversion_factor_definition.integer_bits));
+    uz_assert(self->config.ip_core_channel_config.conversion_factor_definition.is_signed); // IP-Core only uses signed fixed point data type
+    uz_assert(CONVERSION_FACTOR_NUMBER_OF_BITS >= (self->config.ip_core_channel_config.conversion_factor_definition.fractional_bits + self->config.ip_core_channel_config.conversion_factor_definition.integer_bits));
 
     uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register
@@ -355,7 +363,7 @@ uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t *self)
     uz_adcLtc2311_hw_write_master_channel(self->config.base_address, self->config.master_select);
     uz_adcLtc2311_hw_write_channel(self->config.base_address, self->config.channel_select);
     // Write the desired factor
-    uz_adcLtc2311_hw_write_value_fixedpoint(self->config.base_address, self->config.channel_config.conversion_factor, self->config.channel_config.conversion_factor_definition);
+    uz_adcLtc2311_hw_write_value_fixedpoint(self->config.base_address, self->config.ip_core_channel_config.conversion_factor, self->config.ip_core_channel_config.conversion_factor_definition);
     // Trigger the update
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 
@@ -385,7 +393,7 @@ uint32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t *self)
     uz_adcLtc2311_hw_write_master_channel(self->config.base_address, self->config.master_select);
     uz_adcLtc2311_hw_write_channel(self->config.base_address, self->config.channel_select);
     // Write the desired factor
-    uz_adcLtc2311_hw_write_value_signed(self->config.base_address, self->config.channel_config.offset);
+    uz_adcLtc2311_hw_write_value_signed(self->config.base_address, self->config.ip_core_channel_config.offset);
     // Trigger the update
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 

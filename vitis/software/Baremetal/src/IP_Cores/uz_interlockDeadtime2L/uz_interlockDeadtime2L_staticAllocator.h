@@ -1,7 +1,6 @@
 #pragma once
 
-#include "uz_interlockDeadtime2L.h"
-uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5(void);
-uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11(void);
-uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17(void);
-uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23(void);
+/*
+ * Legacy D1 deadtime static allocator intentionally disabled.
+ * Use the Project Wizard-generated PWM initialization in include/pwm_init.h.
+ */

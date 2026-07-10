@@ -54,8 +54,8 @@ typedef struct uz_adcMax11331_t uz_adcMax11331_t;
  *
  */
 enum uz_adcMax11331_trigger_mode{
-    pl_trigger=0, /**< Conversion is only triggered by IP-Core PL port */
-    continuous_trigger, /**< Conversion is triggered continuously with the maximum frequency -> this is the default mode */
+    UZ_ADCMAX11331_PL_TRIGGER=0, /**< Conversion is only triggered by IP-Core PL port */
+    UZ_ADCMAX11331_CONTINUOUS_TRIGGER, /**< Conversion is triggered continuously with the maximum frequency -> this is the default mode */
 };
 
 /**
@@ -105,8 +105,8 @@ struct uz_adcMax11331_config_t{
  * The function initializes the hardware by executing the following functions:
  *
  * <UL>
- * <LI> @ref uz_adcMax11331_set_clk_div </LI>
- * <LI> @ref uz_adcMax11331_check_echo_of_master </LI>
+ * <LI> uz_adcMax11331_set_clk_div </LI>
+ * <LI> uz_adcMax11331_check_echo_of_master </LI>
  * </UL>
  *
  * @param config Configuration values for the IP-Core

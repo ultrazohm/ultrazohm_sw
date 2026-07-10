@@ -1,0 +1,2472 @@
+{
+  "schema_version": 1,
+  "cpld_programs": [
+    {
+      "id": "none",
+      "name": "No CPLD program",
+      "description": "No slot CPLD program selected."
+    },
+    {
+      "id": "rx30",
+      "name": "rx30",
+      "description": "D-slot CPLD program for receive-oriented digital adapter card pin routing."
+    },
+    {
+      "id": "tx30",
+      "name": "tx30",
+      "description": "D-slot CPLD program for transmit-oriented digital adapter card pin routing."
+    },
+    {
+      "id": "optical_14tx_4rx",
+      "name": "optical_14tx_4rx",
+      "description": "D-slot CPLD program for optical 14TX/4RX adapter card pin routing."
+    },
+    {
+      "id": "tx20_10rx",
+      "name": "tx20_10rx",
+      "description": "D-slot CPLD program for UZ_D Voltage RS422 20TX/10RX pin routing."
+    },
+    {
+      "id": "voltage_8rx_8rx_8rx_6rx",
+      "name": "voltage_8rx_8rx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8rx_6tx",
+      "name": "voltage_8rx_8rx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8tx_6rx",
+      "name": "voltage_8rx_8rx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8rx_8tx_6tx",
+      "name": "voltage_8rx_8rx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8rx_6rx",
+      "name": "voltage_8rx_8tx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8rx_6tx",
+      "name": "voltage_8rx_8tx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8tx_6rx",
+      "name": "voltage_8rx_8tx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8rx_8tx_8tx_6tx",
+      "name": "voltage_8rx_8tx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8rx_6rx",
+      "name": "voltage_8tx_8rx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8rx_6tx",
+      "name": "voltage_8tx_8rx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8tx_6rx",
+      "name": "voltage_8tx_8rx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8rx_8tx_6tx",
+      "name": "voltage_8tx_8rx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8rx_6rx",
+      "name": "voltage_8tx_8tx_8rx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8rx_6tx",
+      "name": "voltage_8tx_8tx_8rx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8tx_6rx",
+      "name": "voltage_8tx_8tx_8tx_6rx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "voltage_8tx_8tx_8tx_6tx",
+      "name": "voltage_8tx_8tx_8tx_6tx",
+      "description": "D-slot CPLD program for UZ_D Voltage 3V3/5V grouped directions."
+    },
+    {
+      "id": "uz_d_3ph_inverter",
+      "name": "uz_d_3ph_inverter",
+      "description": "Slot CPLD program for the UZ_D 3-phase inverter adapter card."
+    },
+    {
+      "id": "uz_d_abs_encoder",
+      "name": "uz_d_abs_encoder",
+      "description": "Slot CPLD program for the UZ_D absolute encoder adapter card."
+    },
+    {
+      "id": "uz_d_resolver_d1_to_d4",
+      "name": "uz_d_resolver_d1_to_d4",
+      "description": "Slot CPLD program for the UZ_D resolver adapter card in slots D1 to D4."
+    },
+    {
+      "id": "uz_d_resolver_d5",
+      "name": "uz_d_resolver_d5",
+      "description": "Slot CPLD program for the UZ_D resolver adapter card in slot D5."
+    },
+    {
+      "id": "uz_d_temperature_ltc2983",
+      "name": "uz_d_temperature_ltc2983",
+      "description": "Slot CPLD program for the UZ_D temperature card with LTC2983 devices."
+    }
+  ],
+  "cards": [
+    {
+      "id": "empty",
+      "name": "Bypass",
+      "family": "system",
+      "description": "Leave this slot untouched. No TCL commands are emitted for this slot.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_card.tcl",
+        "notes": [
+          "No TCL commands are emitted for bypassed slots."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
+      "id": "no_adapter_board",
+      "name": "No adapter board",
+      "family": "system",
+      "description": "Remove generated block design content for this adapter slot.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/no_adapter_board.tcl",
+        "cleanup_slot": true,
+        "notes": [
+          "Deletes external ports and hierarchy pins matching this slot.",
+          "Deletes the slot adapter hierarchy if it exists.",
+          "AXI boundary cleanup is handled by the shared AXI interconnect template."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
+      "id": "analog_ltc2311_16",
+      "name": "Analog LTC2311-16",
+      "family": "analog",
+      "description": "Analog A-slot adapter card using the ADC_LTC2311 IP core.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the ADC_LTC2311 IP core with the default adapter-card parameters.",
+          "Exposes the slot-specific ADC ports through the uz_analog_adapter hierarchy.",
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Contributes 8 packed 16-bit ADC samples to the AXI2TCM DataMover path."
+        ],
+        "adc_stream": {
+          "raw_value_signal": "{slot}_RAW_Value",
+          "raw_valid_signal": "{slot}_RAW_Valid",
+          "channel_count": 8,
+          "sample_width": 16
+        },
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_ADC_LTC2311",
+            "instance_prefix": "ADC_LTC2311",
+            "module": "ADC_LTC2311",
+            "vlnv": "UltraZohm:user:ADC_LTC2311",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ],
+            "properties": {
+              "CONFIG.DATA_WIDTH": "16",
+              "CONFIG.CHANNELS_PER_MASTER": "8",
+              "CONFIG.SPI_MASTER": "1",
+              "CONFIG.OFFSET_WIDTH": "16",
+              "CONFIG.CONVERSION_WIDTH": "18",
+              "CONFIG.RES_LSB": "0",
+              "CONFIG.RES_MSB": "34",
+              "CONFIG.DIFFERENTIAL": "false"
+            }
+          },
+          {
+            "instance_name": "{slot}_iobufds_inst",
+            "instance_prefix": "iobufds_inst",
+            "module": "iobufds_inst",
+            "vlnv": "xilinx.com:module_ref:iobufds_inst",
+            "cell_type": "module",
+            "reference": "iobufds_inst",
+            "properties": {
+              "CONFIG.CHANNELS_PER_MASTER": "8",
+              "CONFIG.SPI_MASTER": "1"
+            }
+          },
+          {
+            "instance_name": "{slot}_inv_input",
+            "instance_prefix": "inv_input",
+            "module": "xlconstant",
+            "vlnv": "xilinx.com:ip:xlconstant",
+            "properties": {
+              "CONFIG.CONST_WIDTH": "8",
+              "CONFIG.CONST_VAL": "0x00"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_inv_input",
+            "source_pin": "dout",
+            "sink_ip_core": "{slot}_iobufds_inst",
+            "sink_pin": "INVERT_OUTPUT"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_LTC2311",
+            "source_pin": "SCLK",
+            "sink_ip_core": "{slot}_iobufds_inst",
+            "sink_pin": "SCLK_IN"
+          },
+          {
+            "source_ip_core": "{slot}_iobufds_inst",
+            "source_pin": "MISO_OUT",
+            "sink_ip_core": "{slot}_ADC_LTC2311",
+            "sink_pin": "MISO"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "{slot}_OUT_CNV_1",
+            "ip_pin": "SS_N",
+            "direction": "out",
+            "pins": [
+              "{slot}_OUT_CNV_0",
+              "{slot}_OUT_CNV_1"
+            ],
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 0,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_OUT_CLK",
+            "ip_core": "{slot}_iobufds_inst",
+            "ip_pin": "SCLK_OUT",
+            "direction": "out",
+            "pin": "{slot}_OUT_CLK",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 1,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Value",
+            "ip_pin": "RAW_VALUE",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false,
+            "left": 127,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Valid",
+            "ip_pin": "RAW_VALID",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          },
+          {
+            "signal": "{slot}_IN",
+            "ip_core": "{slot}_iobufds_inst",
+            "ip_pin": "MISO_IN",
+            "direction": "in",
+            "pin": "{slot}_IN",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 15,
+            "right": 0
+          }
+        ],
+        "signals": [
+          {
+            "signal": "TRIGGER_CNV",
+            "direction": "in",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "interfaces": [],
+        "constraints": {
+          "enable": "Analog_{slot}_packed.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "S00_AXI",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_LTC2311/S00_AXI/S00_AXI_reg"
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "",
+        "notes": []
+      }
+    },
+    {
+      "id": "analog_max11331",
+      "name": "Analog MAX11331",
+      "family": "analog",
+      "description": "Analog A-slot adapter card using the ADC_MAX11331_top IP core.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the ADC_MAX11331_top IP core and standard xlconcat fanout helpers.",
+          "Routes MAX11331 SPI signals to slot-specific vector ports with generated concat fanout logic.",
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Contributes 24 packed 16-bit ADC samples to the AXI2TCM DataMover path."
+        ],
+        "adc_stream": {
+          "raw_value_signal": "{slot}_RAW_Value",
+          "raw_valid_signal": "{slot}_RAW_Valid",
+          "channel_count": 24,
+          "sample_width": 16
+        },
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_ADC_MAX11331",
+            "instance_prefix": "ADC_MAX11331_top",
+            "module": "ADC_MAX11331_top",
+            "vlnv": "Wendel_ZC:UZ_IP_Repository:ADC_MAX11331_top",
+            "clock_pins": [
+              "clk",
+              "s_axi_lite_aclk"
+            ],
+            "reset_pins": [
+              "reset_n",
+              "s_axi_lite_aresetn"
+            ],
+            "properties": {
+              "CONFIG.OUTPUT_WORD_WIDTH": "16",
+              "CONFIG.NUMBER_OF_ADCS": "3",
+              "CONFIG.DIFFERENTIAL_SAMPLING": "true",
+              "CONFIG.DEBUG_MESSAGE_INCLUDED": "false"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_sclk_fanout",
+            "instance_prefix": "max11331_sclk_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_cs_fanout",
+            "instance_prefix": "max11331_cs_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          },
+          {
+            "instance_name": "{slot}_max11331_mosi_fanout",
+            "instance_prefix": "max11331_mosi_fanout",
+            "module": "xlconcat",
+            "vlnv": "xilinx.com:ip:xlconcat",
+            "properties": {
+              "CONFIG.NUM_PORTS": "3"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "sclk",
+            "sink_ip_core": "{slot}_max11331_sclk_fanout",
+            "sink_pin": "In2"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "ss_n",
+            "sink_ip_core": "{slot}_max11331_cs_fanout",
+            "sink_pin": "In2"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In0"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In1"
+          },
+          {
+            "source_ip_core": "{slot}_ADC_MAX11331",
+            "source_pin": "mosi",
+            "sink_ip_core": "{slot}_max11331_mosi_fanout",
+            "sink_pin": "In2"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "{slot}_SCKL",
+            "ip_core": "{slot}_max11331_sclk_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_SCKL",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_CS",
+            "ip_core": "{slot}_max11331_cs_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_CS",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_MOSI",
+            "ip_core": "{slot}_max11331_mosi_fanout",
+            "ip_pin": "dout",
+            "direction": "out",
+            "pin": "{slot}_MOSI",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_MISO",
+            "ip_pin": "miso",
+            "direction": "in",
+            "pin": "{slot}_MISO",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_EOC",
+            "direction": "in",
+            "pin": "{slot}_EOC",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "connect_to_ip": false,
+            "left": 2,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Value",
+            "ip_pin": "raw_measured_data",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false,
+            "left": 383,
+            "right": 0
+          },
+          {
+            "signal": "{slot}_RAW_Valid",
+            "ip_pin": "new_data",
+            "direction": "out",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "signals": [
+          {
+            "signal": "TRIGGER_CNV",
+            "ip_pin": "enable_measure",
+            "direction": "in",
+            "adapter_pin_name_template": "{signal}",
+            "boundary_name_template": "{signal}",
+            "external_port": false
+          }
+        ],
+        "interfaces": [],
+        "constraints": {
+          "enable": "Analog_{slot}_ADC_MAX11331.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "s_axi_lite",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_ADC_MAX11331/s_axi_lite/reg0"
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "uz_adc_max11331",
+        "notes": [
+          "Generate slot-local MAX11331 initialization.",
+          "Read 24 packed 16-bit samples from the AXI2TCM DataMover buffer."
+        ]
+      }
+    },
+    {
+      "id": "analog_dac8831",
+      "name": "Analog DAC8831",
+      "family": "analog",
+      "description": "Analog A-slot adapter card with eight DAC8831 output channels.",
+      "compatible_slots": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "slot_cpld": "none",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "adapter_parent_hier": "uz_analog_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "s00_axi_aresetn",
+        "notes": [
+          "Creates uz_analog_adapter/Ax_adapter for the selected A-slot.",
+          "Instantiates the uz_dac_spi_interface IP core and ten OBUFDS utility buffers.",
+          "Routes SPI clock, chip select and eight DAC data outputs to slot-specific differential ports.",
+          "Connects AXI through the A-slot project-level AXI attachment point.",
+          "Does not participate in the AXI2TCM ADC data mover path."
+        ],
+        "ip_cores": [
+          {
+            "instance_name": "{slot}_DAC8831",
+            "instance_prefix": "uz_dac_spi_interface",
+            "module": "uz_dac_spi_interface",
+            "vlnv": "user.org:ip:uz_dac_spi_interface",
+            "clock_pins": [
+              "AXI4_ACLK",
+              "IPCORE_CLK"
+            ],
+            "reset_pins": [
+              "AXI4_ARESETN",
+              "IPCORE_RESETN"
+            ]
+          },
+          {
+            "instance_name": "{slot}_dac_clk_buf",
+            "instance_prefix": "dac_clk_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_cvn_buf",
+            "instance_prefix": "dac_cvn_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_1_buf",
+            "instance_prefix": "dac_data_1_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_2_buf",
+            "instance_prefix": "dac_data_2_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_3_buf",
+            "instance_prefix": "dac_data_3_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_4_buf",
+            "instance_prefix": "dac_data_4_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_5_buf",
+            "instance_prefix": "dac_data_5_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_6_buf",
+            "instance_prefix": "dac_data_6_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_7_buf",
+            "instance_prefix": "dac_data_7_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          },
+          {
+            "instance_name": "{slot}_dac_data_8_buf",
+            "instance_prefix": "dac_data_8_buf",
+            "module": "util_ds_buf",
+            "vlnv": "xilinx.com:ip:util_ds_buf",
+            "properties": {
+              "CONFIG.C_BUF_TYPE": "OBUFDS"
+            }
+          }
+        ],
+        "pin_connections": [
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "spi_clk_out",
+            "sink_ip_core": "{slot}_dac_clk_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "cs_out",
+            "sink_ip_core": "{slot}_dac_cvn_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_1",
+            "sink_ip_core": "{slot}_dac_data_1_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_2",
+            "sink_ip_core": "{slot}_dac_data_2_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_3",
+            "sink_ip_core": "{slot}_dac_data_3_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_4",
+            "sink_ip_core": "{slot}_dac_data_4_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_5",
+            "sink_ip_core": "{slot}_dac_data_5_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_6",
+            "sink_ip_core": "{slot}_dac_data_6_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_7",
+            "sink_ip_core": "{slot}_dac_data_7_buf",
+            "sink_pin": "OBUF_IN"
+          },
+          {
+            "source_ip_core": "{slot}_DAC8831",
+            "source_pin": "data_out_8",
+            "sink_ip_core": "{slot}_dac_data_8_buf",
+            "sink_pin": "OBUF_IN"
+          }
+        ],
+        "ports": [
+          {
+            "signal": "DAC_CLK_P_{slot}",
+            "ip_core": "{slot}_dac_clk_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_CLK_P_{slot}"
+          },
+          {
+            "signal": "DAC_CLK_N_{slot}",
+            "ip_core": "{slot}_dac_clk_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_CLK_N_{slot}"
+          },
+          {
+            "signal": "DAC_CVN_P_{slot}",
+            "ip_core": "{slot}_dac_cvn_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_CVN_P_{slot}"
+          },
+          {
+            "signal": "DAC_CVN_N_{slot}",
+            "ip_core": "{slot}_dac_cvn_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_CVN_N_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P1_{slot}",
+            "ip_core": "{slot}_dac_data_1_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P1_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N1_{slot}",
+            "ip_core": "{slot}_dac_data_1_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N1_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P2_{slot}",
+            "ip_core": "{slot}_dac_data_2_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P2_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N2_{slot}",
+            "ip_core": "{slot}_dac_data_2_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N2_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P3_{slot}",
+            "ip_core": "{slot}_dac_data_3_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P3_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N3_{slot}",
+            "ip_core": "{slot}_dac_data_3_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N3_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P4_{slot}",
+            "ip_core": "{slot}_dac_data_4_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P4_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N4_{slot}",
+            "ip_core": "{slot}_dac_data_4_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N4_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P5_{slot}",
+            "ip_core": "{slot}_dac_data_5_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P5_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N5_{slot}",
+            "ip_core": "{slot}_dac_data_5_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N5_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P6_{slot}",
+            "ip_core": "{slot}_dac_data_6_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P6_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N6_{slot}",
+            "ip_core": "{slot}_dac_data_6_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N6_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P7_{slot}",
+            "ip_core": "{slot}_dac_data_7_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P7_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N7_{slot}",
+            "ip_core": "{slot}_dac_data_7_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N7_{slot}"
+          },
+          {
+            "signal": "DAC_IN_P8_{slot}",
+            "ip_core": "{slot}_dac_data_8_buf",
+            "ip_pin": "OBUF_DS_P",
+            "direction": "out",
+            "pin": "DAC_IN_P8_{slot}"
+          },
+          {
+            "signal": "DAC_IN_N8_{slot}",
+            "ip_core": "{slot}_dac_data_8_buf",
+            "ip_pin": "OBUF_DS_N",
+            "direction": "out",
+            "pin": "DAC_IN_N8_{slot}"
+          }
+        ],
+        "constraints": {
+          "enable": "uz_dac8831_{slot}.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "AXI4",
+            "path_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4",
+            "addr_seg_template": "uz_analog_adapter/{slot}_adapter/{slot}_DAC8831/AXI4/reg0"
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "uz_dac_interface",
+        "notes": [
+          "Generate slot-local DAC initialization.",
+          "Write zero volts to all DAC channels until a configurable signal source is added."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_inverter_adapter",
+      "name": "UZ_D 3-Phase Inverter",
+      "family": "digital",
+      "description": "Digital inverter adapter card using uz_d_inverter_adapter plus the mapping IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "uz_d_3ph_inverter",
+      "vivado": {
+        "template": "cards/uz_d_inverter_adapter.tcl",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Create a hierarchy for the inverter adapter.",
+          "Instantiate uz_d_inverter_adapter v1.1.",
+          "Create the adapter-board ports and the small slice/concat plumbing directly.",
+          "Connect Gates[5:0] from a configurable block-design gate vector slice, with local zero fallback if the selected source is missing.",
+          "Connect PWM_UZ_Enable from a configurable block-design source pin, with local zero fallback if the selected source is missing.",
+          "Expose top-level ports with Digital_AdapterBoard_Dx.xdc Dig_XX_Chx names and disable the packed D-slot constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "gates_source",
+            "label": "Gate vector source",
+            "default": "uz_pwm/Gate_Signals_2L_0",
+            "placeholder": "uz_pwm/Gate_Signals_2L_0",
+            "help": "Six-bit vector source pin for one two-level PWM gate-signal instance."
+          },
+          {
+            "id": "pwm_enable_source",
+            "label": "PWM_UZ_Enable source",
+            "default": "uz_system/Enable_Inverter",
+            "placeholder": "Block design pin path",
+            "help": "Single-bit source pin that drives uz_d_inverter_adapter PWM_UZ_Enable. Leave empty or use an invalid path to fall back to zero."
+          }
+        ],
+        "ip_cores": [
+          {
+            "instance_prefix": "uz_d_inverter_adapter",
+            "module": "uz_d_inverter_adapter",
+            "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.1",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
+          }
+        ],
+        "interfaces": [],
+        "axi_interfaces": [
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/uz_d_inverter_adapter_{slot_lower}/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_d_inverter_adapter_{slot_lower}/AXI4_Lite/reg0"
+          }
+        ],
+        "ports": []
+      },
+      "vitis": {
+        "driver": "uz_inverter_adapter",
+        "notes": [
+          "Generate uz_inverter_adapter_init.c/.h.",
+          "Add object pointer to globalData.h.",
+          "Initialize the driver in main.c."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_optical_io",
+      "name": "UZ_D Optical IO",
+      "family": "digital",
+      "description": "Digital optical adapter card with selectable 14TX4RX, 18TX, or 18RX population.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "optical_14tx_4rx",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Routes the selected optical IO population through the slot CPLD.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Only Dig_00 through Dig_17 are used for the optical card.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "variant",
+          "pin_count": 18,
+          "variant_option": "optical_variant",
+          "default_variant": "14tx4rx",
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          },
+          "variants": [
+            {
+              "id": "14tx4rx",
+              "label": "14TX4RX",
+              "cpld_program": "optical_14tx_4rx",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 14
+                },
+                {
+                  "direction": "rx",
+                  "width": 4
+                }
+              ]
+            },
+            {
+              "id": "18tx",
+              "label": "18TX",
+              "cpld_program": "tx30",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 18
+                }
+              ]
+            },
+            {
+              "id": "18rx",
+              "label": "18RX",
+              "cpld_program": "rx30",
+              "directions": [
+                {
+                  "direction": "rx",
+                  "width": 18
+                }
+              ]
+            }
+          ]
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "optical_variant",
+          "label": "Optical variant",
+          "default": "14tx4rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "14tx4rx",
+              "label": "14TX4RX"
+            },
+            {
+              "id": "18tx",
+              "label": "18TX"
+            },
+            {
+              "id": "18rx",
+              "label": "18RX"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose AXI GPIO-backed IO pins for visualization."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_voltage_3v3_5v",
+      "name": "UZ_D Voltage 3V3/5V",
+      "family": "digital",
+      "description": "Digital voltage 3V3/5V adapter card with four hardware direction groups.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "voltage_8rx_8rx_8rx_6rx",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Routes all 30 voltage IO pins according to the four hardware direction groups.",
+          "The selected group directions determine the slot CPLD program.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "voltage_grouped",
+          "pin_count": 30,
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          },
+          "groups": [
+            {
+              "label": "DIG IO 00-07",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 08-15",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 16-23",
+              "width": 8,
+              "default": "rx"
+            },
+            {
+              "label": "DIG IO 24-29",
+              "width": 6,
+              "default": "rx"
+            }
+          ]
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "direction_group_1",
+          "label": "DIG IO 00-07 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_2",
+          "label": "DIG IO 08-15 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_3",
+          "label": "DIG IO 16-23 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        },
+        {
+          "id": "direction_group_4",
+          "label": "DIG IO 24-29 direction",
+          "default": "rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rx",
+              "label": "RX input to FPGA"
+            },
+            {
+              "id": "tx",
+              "label": "TX output from FPGA"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose AXI GPIO-backed IO pins for visualization."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_voltage_rs422",
+      "name": "UZ_D Voltage RS422",
+      "family": "digital",
+      "description": "Digital voltage RS422 adapter card with selectable 30TX, 20TX10RX, or 30RX population.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "rx30",
+      "vivado": {
+        "template": "cards/uz_d_io_card.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Routes all 30 RS422 IO pins according to the selected adapter population.",
+          "The selected RS422 variant determines the slot CPLD program.",
+          "Instantiates one AXI GPIO when at least one IO pin is AXI-backed.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "io_card": {
+          "kind": "variant",
+          "pin_count": 30,
+          "variant_option": "rs422_variant",
+          "default_variant": "30rx",
+          "default_modes": {
+            "tx": "axi_gpio",
+            "rx": "axi_gpio"
+          },
+          "variants": [
+            {
+              "id": "30rx",
+              "label": "30RX",
+              "cpld_program": "rx30",
+              "directions": [
+                {
+                  "direction": "rx",
+                  "width": 30
+                }
+              ]
+            },
+            {
+              "id": "20tx10rx",
+              "label": "20TX10RX",
+              "cpld_program": "tx20_10rx",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 20
+                },
+                {
+                  "direction": "rx",
+                  "width": 10
+                }
+              ]
+            },
+            {
+              "id": "30tx",
+              "label": "30TX",
+              "cpld_program": "tx30",
+              "directions": [
+                {
+                  "direction": "tx",
+                  "width": 30
+                }
+              ]
+            }
+          ]
+        },
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "ports": []
+      },
+      "options": [
+        {
+          "id": "rs422_variant",
+          "label": "RS422 variant",
+          "default": "30rx",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "30rx",
+              "label": "30RX"
+            },
+            {
+              "id": "20tx10rx",
+              "label": "20TX10RX"
+            },
+            {
+              "id": "30tx",
+              "label": "30TX"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_axi_gpio",
+        "notes": [
+          "Generate one AXI GPIO driver instance if at least one IO pin is AXI-backed.",
+          "Expose AXI GPIO-backed IO pins for visualization."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_incremental_encoder",
+      "name": "UZ_D Incremental Encoder",
+      "family": "digital",
+      "description": "Incremental encoder adapter card using the Incremental_Encoder_v26 IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "rx30",
+      "vivado": {
+        "template": "cards/uz_d_incremental_encoder.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Creates the selected Dx_adapter hierarchy for three fixed incremental encoder IP cores.",
+          "Routes the encoder index, A and B inputs from the slot-specific digital adapter pins.",
+          "Connects PeriodEnd to a configurable trigger source.",
+          "Connects AXI through the D-slot project-level AXI attachment point.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "period_end_source",
+            "label": "PeriodEnd source pin",
+            "default": "uz_system/trigger_conversions",
+            "help": "Block-design pin used to latch/update the incremental encoder period measurement. The legacy design used the conversion-trigger path."
+          }
+        ],
+        "incremental_encoder_default_revision": "rev04",
+        "incremental_encoder_revisions": {
+          "rev02": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_13_Ch{slot_index}",
+              "b_pin": "Dig_12_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_16_Ch{slot_index}",
+              "b_pin": "Dig_15_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_20_Ch{slot_index}",
+              "a_pin": "Dig_19_Ch{slot_index}",
+              "b_pin": "Dig_18_Ch{slot_index}"
+            }
+          ],
+          "rev03": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_11_Ch{slot_index}",
+              "a_pin": "Dig_12_Ch{slot_index}",
+              "b_pin": "Dig_13_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_15_Ch{slot_index}",
+              "b_pin": "Dig_16_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_18_Ch{slot_index}",
+              "b_pin": "Dig_19_Ch{slot_index}"
+            }
+          ],
+          "rev04": [
+            {
+              "channel": 1,
+              "index_pin": "Dig_11_Ch{slot_index}",
+              "a_pin": "Dig_12_Ch{slot_index}",
+              "b_pin": "Dig_13_Ch{slot_index}"
+            },
+            {
+              "channel": 2,
+              "index_pin": "Dig_14_Ch{slot_index}",
+              "a_pin": "Dig_15_Ch{slot_index}",
+              "b_pin": "Dig_16_Ch{slot_index}"
+            },
+            {
+              "channel": 3,
+              "index_pin": "Dig_17_Ch{slot_index}",
+              "a_pin": "Dig_18_Ch{slot_index}",
+              "b_pin": "Dig_19_Ch{slot_index}"
+            }
+          ]
+        },
+        "ip_cores": [
+          {
+            "instance_name": "incremental_encoder_{slot_lower}",
+            "instance_prefix": "incremental_encoder",
+            "module": "Incremental_Encoder_v26",
+            "vlnv": "xilinx.com:ip:Incremental_Encoder_v26",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
+          }
+        ],
+        "interfaces": [],
+        "incremental_encoder_outputs": [
+          {
+            "signal": "omega",
+            "left": 31,
+            "right": 0
+          },
+          {
+            "signal": "theta_el",
+            "left": 31,
+            "right": 0
+          },
+          {
+            "signal": "position",
+            "left": 15,
+            "right": 0
+          },
+          {
+            "signal": "omega_MA_N4",
+            "left": 31,
+            "right": 0
+          }
+        ],
+        "incremental_encoder_channels": [
+          {
+            "channel": 1,
+            "index_pin": "Dig_11_Ch{slot_index}",
+            "a_pin": "Dig_12_Ch{slot_index}",
+            "b_pin": "Dig_13_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "index_pin": "Dig_14_Ch{slot_index}",
+            "a_pin": "Dig_15_Ch{slot_index}",
+            "b_pin": "Dig_16_Ch{slot_index}"
+          },
+          {
+            "channel": 3,
+            "index_pin": "Dig_17_Ch{slot_index}",
+            "a_pin": "Dig_18_Ch{slot_index}",
+            "b_pin": "Dig_19_Ch{slot_index}"
+          }
+        ],
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_1/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_1/AXI4_Lite/reg0"
+          },
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_2/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_2/AXI4_Lite/reg0"
+          },
+          {
+            "name": "AXI4_Lite",
+            "path_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_3/AXI4_Lite",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/incremental_encoder_{slot_lower}_3/AXI4_Lite/reg0"
+          }
+        ]
+      },
+      "options": [
+        {
+          "id": "adapter_revision",
+          "label": "Adapter board revision",
+          "default": "rev04",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "rev02",
+              "label": "Rev02"
+            },
+            {
+              "id": "rev03",
+              "label": "Rev03"
+            },
+            {
+              "id": "rev04",
+              "label": "Rev04"
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "uz_incrementalEncoder",
+        "notes": [
+          "Generate slot-local incremental encoder initialization.",
+          "Read encoder position, speed and index status in the slot ISR update function."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_absolute_encoder",
+      "name": "UZ_D Absolute Encoder",
+      "family": "digital",
+      "description": "Absolute encoder adapter card with three encoder channels. Each channel can be configured independently, e.g. EnDat or SSI.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "uz_d_abs_encoder",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "notes": [
+          "Instantiate one encoder IP core per enabled channel inside uz_user.",
+          "Connect AXI4-Lite, 100 MHz clock and reset for every enabled channel.",
+          "Connect channel triggers to the intended trigger source.",
+          "D-slot channel mappings use Dig_XX_Chx names where x is the slot channel number."
+        ],
+        "ip_cores": [],
+        "interfaces": [],
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        }
+      },
+      "options": [
+        {
+          "id": "channel_1",
+          "label": "Channel 1 IP core",
+          "default": "endat",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [],
+                "ports": []
+              }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_15_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_08_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_17_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_11_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_07_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_15_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_17_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_11_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
+                    "direction": "in",
+                    "pin": "Dig_07_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        },
+        {
+          "id": "channel_2",
+          "label": "Channel 2 IP core",
+          "default": "none",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [],
+                "ports": []
+              }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_14_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_09_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_16_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_10_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_06_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_14_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_16_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_10_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
+                    "direction": "in",
+                    "pin": "Dig_06_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        },
+        {
+          "id": "channel_3",
+          "label": "Channel 3 IP core",
+          "default": "none",
+          "choices": [
+            {
+              "id": "none",
+              "label": "Not used",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [],
+                "ports": []
+              }
+            },
+            {
+              "id": "endat",
+              "label": "EnDat",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_endat_interface",
+                    "module": "uz_endat_interface",
+                    "vlnv": "xilinx.com:ip:uz_endat_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "endat_clk",
+                    "direction": "out",
+                    "pin": "Dig_22_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_mode_data_out",
+                    "direction": "out",
+                    "pin": "Dig_12_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_23_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_20_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "endat_data_in",
+                    "direction": "in",
+                    "pin": "Dig_18_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_endat_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_endat_read"
+                  }
+                ],
+                "outputs": [
+                  "endat_clk",
+                  "endat_mode_data_out",
+                  "RW_clk",
+                  "RW_data",
+                  "endat_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "CRC_raw",
+                  "endat_received_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_endat_interface"
+              }
+            },
+            {
+              "id": "ssi",
+              "label": "SSI",
+              "vivado": {
+                "template": "cards/generic_adapter_card.tcl",
+                "ip_cores": [
+                  {
+                    "instance_prefix": "uz_ssi_interface",
+                    "module": "uz_ssi_interface",
+                    "vlnv": "xilinx.com:ip:uz_ssi_interface"
+                  }
+                ],
+                "ports": [
+                  {
+                    "signal": "ssi_clk",
+                    "direction": "out",
+                    "pin": "Dig_22_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_clk",
+                    "direction": "out",
+                    "pin": "Dig_23_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "RW_data",
+                    "direction": "out",
+                    "pin": "Dig_20_Ch{slot_index}"
+                  },
+                  {
+                    "signal": "ssi_data_in",
+                    "direction": "in",
+                    "pin": "Dig_18_Ch{slot_index}"
+                  }
+                ],
+                "axi_interfaces": [
+                  {
+                    "name": "AXI4_Lite",
+                    "path_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite",
+                    "addr_seg_template": "uz_digital_adapter/{slot}_adapter/uz_ssi_interface_{slot_lower}_{option_id}/AXI4_Lite/reg0"
+                  }
+                ],
+                "trigger_inputs": [
+                  {
+                    "signal": "trigger_ssi_read"
+                  }
+                ],
+                "outputs": [
+                  "ssi_clk",
+                  "RW_clk",
+                  "RW_data",
+                  "ssi_transaction_done",
+                  "position_raw_single_turn",
+                  "position_raw_multi_turn",
+                  "status_raw",
+                  "ssi_data_out_SH",
+                  "position_mech_SI_single_turn",
+                  "position_el_SI",
+                  "position_multi_turn",
+                  "speed_mech_SI",
+                  "speed_el_SI",
+                  "speed_mech_rpm"
+                ]
+              },
+              "vitis": {
+                "driver": "uz_ssi_interface"
+              }
+            }
+          ]
+        }
+      ],
+      "vitis": {
+        "driver": "",
+        "notes": [
+          "Generate one init file or init section per enabled channel.",
+          "Add object pointer to globalData.h.",
+          "Initialize and enable the IP in main.c after xparameters.h contains the base address."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_resolver",
+      "name": "UZ_D Resolver",
+      "family": "digital",
+      "description": "Resolver adapter card using one Resolver Interface IP core per available AD2S1210 channel, optionally followed by the resolver PL interface IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "slot_cpld": "uz_d_resolver_d1_to_d4",
+      "slot_cpld_by_slot": {
+        "D1": "uz_d_resolver_d1_to_d4",
+        "D2": "uz_d_resolver_d1_to_d4",
+        "D3": "uz_d_resolver_d1_to_d4",
+        "D4": "uz_d_resolver_d1_to_d4",
+        "D5": "uz_d_resolver_d5"
+      },
+      "vivado": {
+        "template": "cards/uz_d_resolver.tcl",
+        "adapter_parent_hier": "uz_digital_adapter",
+        "adapter_clock_pin": "clk",
+        "adapter_resetn_pin": "resetn",
+        "notes": [
+          "Creates the selected Dx_adapter hierarchy for the resolver IP cores.",
+          "Routes the AD2S1210 SPI and control signals from the slot-specific digital adapter pins.",
+          "Connects sample_trigger to a configurable trigger source.",
+          "Optionally instantiates one resolver PL interface IP core per resolver channel.",
+          "Uses single-pin D-slot constraints instead of the packed constraint file."
+        ],
+        "source_fields": [
+          {
+            "id": "sample_trigger_source_ch1",
+            "label": "Channel 1 sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "resolver_channel": 1,
+            "help": "Block-design pin used to trigger resolver channel 1 sampling."
+          },
+          {
+            "id": "sample_trigger_source_ch2",
+            "label": "Channel 2 sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "resolver_channel": 2,
+            "help": "Block-design pin used to trigger resolver channel 2 sampling."
+          },
+          {
+            "id": "sample_trigger_source_ch3",
+            "label": "Channel 3 sample trigger source pin",
+            "default": "uz_system/trigger_conversions",
+            "resolver_channel": 3,
+            "help": "Block-design pin used to trigger resolver channel 3 sampling."
+          }
+        ],
+        "ip_cores": [
+          {
+            "instance_prefix": "resolver_ip",
+            "module": "Resolver_Interface_v1_0",
+            "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ]
+          },
+          {
+            "instance_prefix": "resolver_pl_interface",
+            "module": "uz_resolver_pl_interface",
+            "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
+            "clock_pins": [
+              "IPCORE_CLK",
+              "AXI4_Lite_ACLK"
+            ],
+            "reset_pins": [
+              "IPCORE_RESETN",
+              "AXI4_Lite_ARESETN"
+            ]
+          }
+        ],
+        "resolver_channels_d1_to_d4": [
+          {
+            "channel": 1,
+            "sample_pin": "Dig_00_Ch{slot_index}",
+            "sdo_pin": "Dig_01_Ch{slot_index}",
+            "fsync_pin": "Dig_02_Ch{slot_index}",
+            "sclk_pin": "Dig_03_Ch{slot_index}",
+            "reset_pin": "Dig_04_Ch{slot_index}",
+            "a1_pin": "Dig_05_Ch{slot_index}",
+            "a0_pin": "Dig_06_Ch{slot_index}",
+            "cs_pin": "Dig_07_Ch{slot_index}",
+            "sdi_pin": "Dig_08_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "sample_pin": "Dig_09_Ch{slot_index}",
+            "sdo_pin": "Dig_10_Ch{slot_index}",
+            "fsync_pin": "Dig_11_Ch{slot_index}",
+            "sclk_pin": "Dig_12_Ch{slot_index}",
+            "reset_pin": "Dig_13_Ch{slot_index}",
+            "a1_pin": "Dig_14_Ch{slot_index}",
+            "a0_pin": "Dig_15_Ch{slot_index}",
+            "cs_pin": "Dig_16_Ch{slot_index}",
+            "sdi_pin": "Dig_17_Ch{slot_index}"
+          },
+          {
+            "channel": 3,
+            "sample_pin": "Dig_18_Ch{slot_index}",
+            "sdo_pin": "Dig_19_Ch{slot_index}",
+            "fsync_pin": "Dig_20_Ch{slot_index}",
+            "sclk_pin": "Dig_21_Ch{slot_index}",
+            "reset_pin": "Dig_22_Ch{slot_index}",
+            "a1_pin": "Dig_23_Ch{slot_index}",
+            "a0_pin": "Dig_24_Ch{slot_index}",
+            "cs_pin": "Dig_25_Ch{slot_index}",
+            "sdi_pin": "Dig_26_Ch{slot_index}"
+          }
+        ],
+        "resolver_channels_d5": [
+          {
+            "channel": 1,
+            "sample_pin": "Dig_06_Ch{slot_index}",
+            "sdo_pin": "Dig_07_Ch{slot_index}",
+            "fsync_pin": "Dig_08_Ch{slot_index}",
+            "sclk_pin": "Dig_09_Ch{slot_index}",
+            "reset_pin": "Dig_10_Ch{slot_index}",
+            "a1_pin": "Dig_11_Ch{slot_index}",
+            "a0_pin": "Dig_12_Ch{slot_index}",
+            "cs_pin": "Dig_13_Ch{slot_index}",
+            "sdi_pin": "Dig_14_Ch{slot_index}"
+          },
+          {
+            "channel": 2,
+            "sample_pin": "Dig_15_Ch{slot_index}",
+            "sdo_pin": "Dig_16_Ch{slot_index}",
+            "fsync_pin": "Dig_17_Ch{slot_index}",
+            "sclk_pin": "Dig_18_Ch{slot_index}",
+            "reset_pin": "Dig_19_Ch{slot_index}",
+            "a1_pin": "Dig_20_Ch{slot_index}",
+            "a0_pin": "Dig_21_Ch{slot_index}",
+            "cs_pin": "Dig_22_Ch{slot_index}",
+            "sdi_pin": "Dig_23_Ch{slot_index}"
+          }
+        ],
+        "resolver_pl_outputs": [
+          {
+            "signal": "position_mech_raw",
+            "left": 15,
+            "right": 0
+          },
+          {
+            "signal": "position_mech_2pi",
+            "left": 26,
+            "right": 0
+          },
+          {
+            "signal": "position_el_2pi",
+            "left": 26,
+            "right": 0
+          },
+          {
+            "signal": "omega_mech_rad_s",
+            "left": 23,
+            "right": 0
+          },
+          {
+            "signal": "n_mech_rpm",
+            "left": 23,
+            "right": 0
+          },
+          {
+            "signal": "done",
+            "left": "",
+            "right": ""
+          }
+        ],
+        "ports": [],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "interfaces": []
+      },
+      "options": [
+        {
+          "id": "enable_pl_interface_ch1",
+          "label": "Channel 1 PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "resolver_channel": 1,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 1 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        },
+        {
+          "id": "enable_pl_interface_ch2",
+          "label": "Channel 2 PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "resolver_channel": 2,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 2 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        },
+        {
+          "id": "enable_pl_interface_ch3",
+          "label": "Channel 3 PL interface",
+          "default": "true",
+          "input": "checkbox",
+          "resolver_channel": 3,
+          "text": "Instantiate resolver PL interface IP",
+          "help": "When enabled, resolver channel 3 feeds one resolver_pl_interface IP. The PL-interface trigger is hard-wired to resolver valid_m."
+        }
+      ],
+      "vitis": {
+        "driver": "uz_resolverIP",
+        "notes": [
+          "Generate one resolver IP driver instance per available resolver channel.",
+          "When enabled, generate one resolver PL interface driver instance per resolver channel.",
+          "Read processed PL-interface angle and speed values in the slot ISR update function."
+        ]
+      }
+    },
+    {
+      "id": "uz_d_temperature_ltc2983",
+      "name": "UZ_D Temperature LTC2983",
+      "family": "digital",
+      "description": "Temperature measurement adapter card using the Temperature_Card_Interface IP core.",
+      "compatible_slots": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "slot_cpld": "uz_d_temperature_ltc2983",
+      "vivado": {
+        "template": "cards/generic_adapter_card.tcl",
+        "notes": [
+          "Instantiate Temperature_Card_Interface in uz_digital_adapter/Dx_adapter.",
+          "Use single-pin D-slot constraints instead of the packed constraint file.",
+          "D5 requires a custom CPLD file and is intentionally not listed as compatible."
+        ],
+        "ip_cores": [
+          {
+            "instance_name": "Temperature_Card_Int_0",
+            "instance_prefix": "temperature_card_interface",
+            "module": "Temperature_Card_Interface",
+            "vlnv": "xilinx.com:user:Temperature_Card_Interface_v1_0",
+            "clock_pins": [
+              "s00_axi_aclk"
+            ],
+            "reset_pins": [
+              "s00_axi_aresetn"
+            ]
+          }
+        ],
+        "interfaces": [],
+        "ports": [
+          {
+            "signal": "SPI_SCLK_1_Dig00",
+            "ip_pin": "SPI_SCLK_1",
+            "direction": "out",
+            "pin": "Dig_00_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_1_Dig01",
+            "ip_pin": "SPI_MOSI_1",
+            "direction": "out",
+            "pin": "Dig_01_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_1_Dig02",
+            "ip_pin": "SPI_MISO_1",
+            "direction": "in",
+            "pin": "Dig_02_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_1_Dig03",
+            "ip_pin": "SPI_SS_1",
+            "direction": "out",
+            "pin": "Dig_03_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_1_Dig04",
+            "ip_pin": "LTC_Interrupt_1",
+            "direction": "in",
+            "pin": "Dig_04_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SCLK_3_Dig06",
+            "ip_pin": "SPI_SCLK_3",
+            "direction": "out",
+            "pin": "Dig_06_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_3_Dig07",
+            "ip_pin": "SPI_MOSI_3",
+            "direction": "out",
+            "pin": "Dig_07_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_3_Dig08",
+            "ip_pin": "SPI_MISO_3",
+            "direction": "in",
+            "pin": "Dig_08_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_3_Dig09",
+            "ip_pin": "SPI_SS_3",
+            "direction": "out",
+            "pin": "Dig_09_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_3_Dig10",
+            "ip_pin": "LTC_Interrupt_3",
+            "direction": "in",
+            "pin": "Dig_10_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SCLK_2_Dig12",
+            "ip_pin": "SPI_SCLK_2",
+            "direction": "out",
+            "pin": "Dig_12_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MOSI_2_Dig13",
+            "ip_pin": "SPI_MOSI_2",
+            "direction": "out",
+            "pin": "Dig_13_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_MISO_2_Dig14",
+            "ip_pin": "SPI_MISO_2",
+            "direction": "in",
+            "pin": "Dig_14_Ch{slot_index}"
+          },
+          {
+            "signal": "SPI_SS_2_Dig15",
+            "ip_pin": "SPI_SS_2",
+            "direction": "out",
+            "pin": "Dig_15_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_Interrupt_2_Dig16",
+            "ip_pin": "LTC_Interrupt_2",
+            "direction": "in",
+            "pin": "Dig_16_Ch{slot_index}"
+          },
+          {
+            "signal": "LTC_resetn_1_Dig18",
+            "ip_pin": "LTC_resetn_1",
+            "direction": "out",
+            "pin": "Dig_18_Ch{slot_index}"
+          }
+        ],
+        "constraints": {
+          "disable": "Digital_{slot}_packed.xdc",
+          "enable": "Digital_AdapterBoard_{slot}.xdc"
+        },
+        "axi_interfaces": [
+          {
+            "name": "s00_axi",
+            "path_template": "uz_digital_adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi",
+            "addr_seg_template": "uz_digital_adapter/{slot}_adapter/Temperature_Card_Int_0/s00_axi/reg0"
+          }
+        ]
+      },
+      "vitis": {
+        "driver": "temperature_card_interface",
+        "notes": []
+      }
+    }
+  ]
+}

@@ -16,6 +16,16 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
+/*
+ * Legacy fixed D5 incremental encoder integration.
+ *
+ * The Project Wizard now owns adapter-slot IP placement and software
+ * integration. Keep these declarations parked for the later wizard-managed
+ * incremental encoder card support, but do not expose them as fixed framework
+ * API.
+ */
+#if 0
+
 #include "../uz/controlToolbox/control_toolbox.h"
 #include "../globalData.h"
 
@@ -25,5 +35,7 @@
 
 uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
 void update_speed_and_position_of_encoder_on_D5(DS_Data *const data);	// update speed and position in global data struct
+
+#endif
 
 #endif /* ENCODER_H_ */

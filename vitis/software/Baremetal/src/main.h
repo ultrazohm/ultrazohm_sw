@@ -26,8 +26,6 @@
 
 #include "include/uz_platform_state_machine.h"
 #include "uz/uz_global_configuration.h"
-#include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-#include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_rpu_assert_configuration.h"
 
@@ -36,11 +34,9 @@
 #include "globalData.h"
 #include "defines.h"
 #include "include/isr.h"
-#include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"
-#include "include/pwm_3L_driver.h"
 #include "uz/uz_boot_banner/uz_boot_banner.h"
 
 #include "uz/uz_HAL.h"
@@ -54,6 +50,16 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+
+// Project Wizard adapter slot init headers
+#include "include/a1_adapter_init.h"
+#include "include/a2_adapter_init.h"
+#include "include/a3_adapter_init.h"
+#include "include/d1_adapter_init.h"
+#include "include/d2_adapter_init.h"
+#include "include/d3_adapter_init.h"
+#include "include/d4_adapter_init.h"
+#include "include/d5_adapter_init.h"
 
 
 //----------------------------------------------------

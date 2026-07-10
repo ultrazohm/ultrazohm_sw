@@ -18,7 +18,9 @@
 #include <string.h> // for memcpy
 #include "../../uz/uz_HAL.h"
 #include "uz_dataMover.h" 
-#define UZ_DATAMOVER_ARRAY_LENGTH 24 // Number of variables that are written to TCM by the dataMover
+/* Project Wizard BEGIN: datamover_array_length */
+#define UZ_DATAMOVER_ARRAY_LENGTH 32
+/* Project Wizard END: datamover_array_length */
 
 // Number of elements in one array
 #define R5_0_BTCM_SPLIT_REG	0x20000U // Start of BTCM

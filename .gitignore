@@ -29,3 +29,8 @@ control_algorithms/uz_FOC.slxc
 vitis/Packages/*
 *.slxc
 *cpAnnotation.mat
+
+#ignore python cache
+__pycache__/
+*.pyc
+*.pyo

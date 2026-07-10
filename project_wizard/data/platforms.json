@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "platforms": [
+    {
+      "id": "ultrazohm",
+      "name": "UltraZohm",
+      "description": "UltraZohm hardware platform target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [
+        "Rev04",
+        "Rev05",
+        "Rev06"
+      ],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    },
+    {
+      "id": "microzohm",
+      "name": "MicroZohm",
+      "supported": false,
+      "description": "MicroZohm hardware platform target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [
+        "Rev01",
+        "Rev02",
+        "Rev03"
+      ],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    },
+    {
+      "id": "kria_kr260",
+      "name": "Kria KR260",
+      "supported": false,
+      "description": "Kria KR260 robotics starter kit target. Detailed Vivado and Vitis implications are still to be defined.",
+      "revisions": [],
+      "vivado": {
+        "notes": []
+      },
+      "vitis": {
+        "notes": []
+      }
+    }
+  ],
+  "axi_interconnect": {
+    "d_upstream_smartconnect": "uz_system/smartconnect_0",
+    "d_clock_pin": "uz_system/peripheral_clk",
+    "d_resetn_pin": "uz_system/peripheral_aresetn",
+    "d_address_space": "/zynq_ultra_ps_e_0/Data",
+    "a_upstream_smartconnect": "uz_system/smartconnect_0",
+    "a_clock_pin": "uz_system/peripheral_clk",
+    "a_resetn_pin": "uz_system/peripheral_aresetn",
+    "a_address_space": "/zynq_ultra_ps_e_0/Data",
+    "analog_axi2tcm_trigger_source": "uz_analog_adapter/A1_RAW_Valid",
+    "analog_axi2tcm_trigger_target": "uz_system/Trigger_AXI2TCM",
+    "analog_conversion_trigger_sources": "uz_system/trigger_conversions",
+    "analog_conversion_trigger_target": "uz_analog_adapter/TRIGGER_CNV",
+    "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect",
+    "local_smartconnect_name": "axi_smartconnect"
+  }
+}

@@ -6,120 +6,109 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
-#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-
-// union allows to access the values as array and individual variables
-// see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
-typedef union _ConversionFactors_ {
-	struct{
-		float ADC_A1;
-		float ADC_A2;
-		float ADC_A3;
-		float ADC_A4;
-		float ADC_B5;
-		float ADC_B6;
-		float ADC_B7;
-		float ADC_B8;
-		};
-	float ADC_array[8];
-} ConversionFactors;
-
-typedef union _Measurements_ {
-	struct{
-		float ADC_A1;
-		float ADC_A2;
-		float ADC_A3;
-		float ADC_A4;
-		float ADC_B5;
-		float ADC_B6;
-		float ADC_B7;
-		float ADC_B8;
-		};
-	float ADC_array[8];
-} Measurements;
-
-typedef struct _ADCcard_ {
-	ConversionFactors 	cf;
-	Measurements		me;
-} ADCcard;
-
-typedef struct _AnalogAdapters_ {
-	ADCcard A1;
-	ADCcard A2;
-	ADCcard A3;
-} AnalogAdapters;
+#include "uz/uz_wavegen/uz_wavegen.h"
+// Project Wizard adapter slot headers
+#include "include/a1_adapter_init.h"
+#include "include/a2_adapter_init.h"
+#include "include/a3_adapter_init.h"
+#include "include/d1_adapter_init.h"
+#include "include/d2_adapter_init.h"
+#include "include/d3_adapter_init.h"
+#include "include/d4_adapter_init.h"
+#include "include/d5_adapter_init.h"
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float d3_input_loopback_uint32;
+	/* Project Wizard BEGIN: actualValues */
+	float adc_ltc2311_a1_ch0;
+	float adc_ltc2311_a1_ch1;
+	float adc_ltc2311_a1_ch2;
+	float adc_ltc2311_a1_ch3;
+	float adc_ltc2311_a1_ch4;
+	float adc_ltc2311_a1_ch5;
+	float adc_ltc2311_a1_ch6;
+	float adc_ltc2311_a1_ch7;
+	float dac8831_a2_ch0;
+	float dac8831_a2_ch1;
+	float dac8831_a2_ch2;
+	float dac8831_a2_ch3;
+	float dac8831_a2_ch4;
+	float dac8831_a2_ch5;
+	float dac8831_a2_ch6;
+	float dac8831_a2_ch7;
+	float adc_max11331_a3_ch0;
+	float adc_max11331_a3_ch1;
+	float adc_max11331_a3_ch2;
+	float adc_max11331_a3_ch3;
+	float adc_max11331_a3_ch4;
+	float adc_max11331_a3_ch5;
+	float adc_max11331_a3_ch6;
+	float adc_max11331_a3_ch7;
+	float adc_max11331_a3_ch8;
+	float adc_max11331_a3_ch9;
+	float adc_max11331_a3_ch10;
+	float adc_max11331_a3_ch11;
+	float adc_max11331_a3_ch12;
+	float adc_max11331_a3_ch13;
+	float adc_max11331_a3_ch14;
+	float adc_max11331_a3_ch15;
+	float adc_max11331_a3_ch16;
+	float adc_max11331_a3_ch17;
+	float adc_max11331_a3_ch18;
+	float adc_max11331_a3_ch19;
+	float adc_max11331_a3_ch20;
+	float adc_max11331_a3_ch21;
+	float adc_max11331_a3_ch22;
+	float adc_max11331_a3_ch23;
+	uint32_t io_card_d1_state;
+/* Project Wizard END: actualValues */
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
-	float halfBridge1DutyCycle;
-	float halfBridge2DutyCycle;
-	float halfBridge3DutyCycle;
-	float halfBridge4DutyCycle;
-	float halfBridge5DutyCycle;
-	float halfBridge6DutyCycle;
-	float halfBridge7DutyCycle;
-	float halfBridge8DutyCycle;
-	float halfBridge9DutyCycle;
-	float halfBridge10DutyCycle;
-	float halfBridge11DutyCycle;
-	float halfBridge12DutyCycle;
+/* Project Wizard BEGIN: referenceAndSetValues */
+	float pwm_2L_0_halfBridgeDutyCycle_1;
+	float pwm_2L_0_halfBridgeDutyCycle_2;
+	float pwm_2L_0_halfBridgeDutyCycle_3;
+	float pwm_2L_1_halfBridgeDutyCycle_1;
+	float pwm_2L_1_halfBridgeDutyCycle_2;
+	float pwm_2L_1_halfBridgeDutyCycle_3;
+	float pwm_3L_0_halfBridgeDutyCycle_1;
+	float pwm_3L_0_halfBridgeDutyCycle_2;
+	float pwm_3L_0_halfBridgeDutyCycle_3;
+/* Project Wizard END: referenceAndSetValues */
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
-	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
-	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
-	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	/* Project Wizard BEGIN: objects */
+	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;
+	uz_PWM_SS_2L_t* project_wizard_pwm_2l_1;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1;
+	uz_wavegen_three_phase* three_phase_sine;
+	uz_adcLtc2311_t* adc_ltc2311_a1;
+	uz_dac_interface_t* dac8831_a2;
+	uz_wavegen_sine_t* dac8831_a2_ch0_sine;
+	uz_wavegen_sawtooth_t* dac8831_a2_ch1_sawtooth;
+	uz_wavegen_triangle_t* dac8831_a2_ch2_triangle;
+	uz_wavegen_sine_t* dac8831_a2_ch3_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch4_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch5_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch6_sine;
+	uz_wavegen_sine_t* dac8831_a2_ch7_sine;
+	uz_adcMax11331_t* adc_max11331_a3;
+	uz_axi_gpio_t* axi_gpio_d1;
+/* Project Wizard END: objects */
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
-	AnalogAdapters aa;
 	object_pointers_t objects;
 } DS_Data;
 

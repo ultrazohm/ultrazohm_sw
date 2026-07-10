@@ -19,21 +19,20 @@
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-        .halfBridge1DutyCycle = 0.0f,
-        .halfBridge2DutyCycle = 0.0f,
-        .halfBridge3DutyCycle = 0.0f,
-        .halfBridge4DutyCycle = 0.0f,
-        .halfBridge5DutyCycle = 0.0f,
-        .halfBridge6DutyCycle = 0.0f,
-        .halfBridge7DutyCycle = 0.0f,
-        .halfBridge8DutyCycle = 0.0f,
-        .halfBridge9DutyCycle = 0.0f,
-        .halfBridge10DutyCycle = 0.0f,
-        .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f},
+/* Project Wizard BEGIN: rasv_initializer */
+        .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_1 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_2 = 0.0f,
+        .pwm_3L_0_halfBridgeDutyCycle_3 = 0.0f,
+/* Project Wizard END: rasv_initializer */
+    },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
-    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)};
 
 enum init_chain
 {
@@ -92,21 +91,28 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-            uz_adcLtc2311_ip_core_init();
-            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
-            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
-            Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
-            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            /* Project Wizard BEGIN: init_ip_cores */
+			Global_Data.objects.project_wizard_deadtime_2l_0 = initialize_project_wizard_deadtime_2l_0();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0, true);
+			Global_Data.objects.project_wizard_pwm_2l_0 = initialize_project_wizard_pwm_2l_0();
+			Global_Data.objects.project_wizard_deadtime_2l_1 = initialize_project_wizard_deadtime_2l_1();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
+			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
+			initialize_project_wizard_pwm_3l(&Global_Data);
+			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
+			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
+			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
+			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch1_sawtooth = uz_wavegen_sawtooth_init();
+			Global_Data.objects.dac8831_a2_ch2_triangle = uz_wavegen_triangle_init();
+			Global_Data.objects.dac8831_a2_ch3_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch4_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch5_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch6_sine = uz_wavegen_sine_init();
+			Global_Data.objects.dac8831_a2_ch7_sine = uz_wavegen_sine_init();
+			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
+			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
+/* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;
         case print_msg:

@@ -71,6 +71,14 @@ void test_uz_adcLtc2311_successfull_init_(void)
     uz_adcLtc2311_t *test_instance = successfull_init();
     TEST_ASSERT_NOT_NULL(test_instance);
 }
+
+void test_uz_adcLtc2311_convert_raw_to_physical_value_uses_software_factor(void)
+{
+    uz_adcLtc2311_t *test_instance = successfull_init();
+    float converted_value = uz_adcLtc2311_convert_raw_to_physical_value(test_instance, 16384, 3U);
+    TEST_ASSERT_FLOAT_WITHIN(1e-6f, 1.0f, converted_value);
+}
+
 void test_uz_adcLtc2311_init_fail_assert_zero_base_address(void)
 {
     struct uz_adcLtc2311_config_t test_config = {
@@ -172,7 +180,7 @@ void test_uz_adcLtc2311_init_assertion_wrong_conversion_factor(void){
     struct uz_adcLtc2311_config_t default_configuration_assertion = {
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .channel_config = {
+        .ip_core_channel_config = {
             .conversion_factor = 1.0f,
             .conversion_factor_definition = {
                 .is_signed = true,
@@ -786,7 +794,16 @@ uz_adcLtc2311_t *successfull_init(void)
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .channel_config = {
+        .software_raw_to_physical_value_factor = {
+            1.0f,
+            2.0f,
+            3.0f,
+            4.0f,
+            5.0f,
+            6.0f,
+            7.0f,
+            8.0f},
+        .ip_core_channel_config = {
             .conversion_factor = conversion_factor,
             .conversion_factor_definition = {
                 .is_signed = true,
@@ -807,7 +824,7 @@ uz_adcLtc2311_t *successfull_init(void)
 
     expect_set_triggered_mode(&cr_content);
     expect_set_pl_trigger_mode(&cr_content);
-    expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.channel_config.conversion_factor_definition);
+    expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.ip_core_channel_config.conversion_factor_definition);
     expect_update_offset_success(&cr_content, master, channel, offset);
     expect_update_samples_success(&cr_content, master, samples);
     expect_update_sample_time_success(&cr_content, master, sample_time);

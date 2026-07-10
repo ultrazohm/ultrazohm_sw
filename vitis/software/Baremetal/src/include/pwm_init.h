@@ -1,7 +1,22 @@
-#pragma once
-#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+/*
+ * Project Wizard generated file.
+ *
+ * This file is fully owned by Project Wizard code generation.
+ * Manual changes may be overwritten the next time software files are generated.
+ */
 
-uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_0_to_5(void);
-uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_6_to_11(void);
-uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_12_to_17(void);
-uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_18_to_23(void);
+#pragma once
+
+#include "../globalData.h"
+
+
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_0(void);
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_0(void);
+
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_1(void);
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_1(void);
+
+
+void initialize_project_wizard_pwm_3l(DS_Data* data);
+
+void project_wizard_update_pwm_outputs(DS_Data* data);

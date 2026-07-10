@@ -22,6 +22,25 @@ stuck, the **fallback** (bottom) returns you to the validated curated path.
 > disabling XCP (`gQueue` guards + `xcp_r5_init_result` latch).
 > New diagnostics: `xcp_r5_init_result`, `xcp_r5_cycle_count`,
 > `xcp_r5_tx_oversize_drop` (all readable via JTAG or `--watch`).
+> Remaining gaps and the improvement backlog: see `option_z/IMPROVEMENTS.md`.
+
+> **2026-07-09 CP7: hedrive hardware lessons ported.** The sibling project
+> `uz_sw_xcp_hedrive_andi` spent weeks of hardware debugging on the SAME
+> OCM-exchange architecture (`XCP_BOTTLENECK_ANALYSIS.md`, esp. T8 + pcap
+> addendum); its fixes are now ported: (1) **seqlock on XCP_OUT** — the A53
+> stages records in the IPI ISR and commits only if the R5 didn't rewrite the
+> window mid-read (torn frames never reach the network); (2) **CTO mailbox
+> with acknowledge** — command responses persist across cycle rewrites until
+> the A53 acks (a lost response = master timeout = dead session, the T8
+> failure); (3) **XCP_IN generation handshake** — the A53 rewrites the current
+> command batch every IPI until the R5 acks execution (a lost command was the
+> T8-pcap-proven session killer; replaces the old consume-zeroing race);
+> (4) **A53 owns the transport CTR**, stamped at transmission time (hedrive
+> T3 — producer-side counters show gaps/reordering to CANape); (5) **dedicated
+> CTO queue** — responses jump the DAQ backlog and are never tail-dropped
+> (T1); (6) **UDP TX batching** — up to ~1400 B of TL frames per `sendto`
+> (B1); (7) **deep DAQ queue** (64 → 4096 records, tail-drop, no purge — B5
+> final form). **OCM layout changed: rebuild and reflash BOTH ELFs together.**
 
 ## Configuration (what's active)
 
@@ -128,6 +147,19 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
   length / past region). Non-zero → framing or sizing problem. Also
   `xcp_r5_tx_oversize_drop` (popped segment > 255 B — must stay 0; the R5
   config bounds segments to 252 B).
+- **Exchange-protocol counters (CP7, the hedrive validation set).** R5
+  (`xcptl_ocm.c`): `xcp_r5_cto_sent` (responses handed to the mailbox),
+  `xcp_r5_cto_dropped` (pending-FIFO overflow — must stay 0),
+  `xcp_r5_in_generations` (command batches executed). A53
+  (`xcp_gateway_a53.c`): `xcp_gw_ocm_torn` / `xcp_gw_ocm_skipped_writing`
+  (seqlock collisions — occasional is fine, monotonic climb at idle is not),
+  `xcp_gw_ocm_cycles_missed` (R5 cycles no IPI ever read = real DAQ gaps),
+  `xcp_gw_ocm_capped` (per-IPI drain cap hit), `xcp_gw_txq_dropped` (UDP
+  drain slower than DAQ production — plain overload), `xcp_gw_ctoq_dropped` +
+  `xcp_gw_tx_malformed_drop` (both must stay 0), `xcp_gw_in_batches_sent` /
+  `xcp_gw_in_retry_cycles` (command handshake at work; retries > 0 are
+  normal under load, they are exactly the cycles that would have LOST the
+  command before CP7).
 - **R5 ISR budget**: the R5 runs `xcp_r5_event()` + `xcp_r5_poll()` + IPI inside
   `ISR_Control` at the control rate. If `uz_SystemTime` ISR-exec jumps, the
   command/DAQ work is too heavy for the 100 µs budget — move `xcp_r5_poll()` to
@@ -148,17 +180,25 @@ Inspect these via the JTAG debugger (the R5 keeps stats):
 
 ### Known residual risks (accepted for bring-up)
 
-- **Lossy-by-design channel**: the R5 rewinds XCP_OUT every control cycle. If
-  the A53's IPI handling ever slips past a full cycle, that cycle's DAQ frames
-  are gone — visible to the master as transport-counter (ctr) gaps, and to
-  CANape as overload. Commands can also be lost in the mirror-image race after
-  the R5's consume-zeroing of XCP_IN; the master's retry covers it.
+- **DAQ frames of a missed cycle are lost (by design, now safe + counted)**:
+  the R5 still rewinds the XCP_OUT chain every control cycle. Since CP7 a
+  late/overlapping IPI can no longer tear frames (seqlock), lose a command
+  response (CTO mailbox) or eat a command (generation handshake) — but the
+  missed cycle's DAQ frames are gone: a gap in the measurement, counted in
+  `xcp_gw_ocm_cycles_missed`/`xcp_gw_ocm_torn`. No ctr gaps anymore (the A53
+  stamps the counter at transmission time).
 - **ISR budget**: `xcp_r5_poll()` (command processing + queue drain + cache
   flushes) runs inside `ISR_Control`. Watch `uz_SystemTime` ISR-exec time under
   DAQ load; if it jumps, move `xcp_r5_poll()` to the main loop.
-- **DAQ rate**: event 0 fires at the full control rate; a DAQ list without
-  prescaler streams one UDP datagram per cycle. If lwIP chokes, set a
+- **DAQ rate**: event 0 fires at the full control rate. Since CP7 the gateway
+  batches records into ~1400-byte datagrams and buffers ~0.4 s of backlog; if
+  UDP drain still can't keep up, `xcp_gw_txq_dropped` climbs — set a
   prescaler in CANape (or reduce the measurement).
+- **UDP session boundaries are heuristic**: a "new master" is detected by a
+  changed IP:port. If CANape reconnects from the SAME endpoint, a stale
+  parked response could be forwarded into the new session (hedrive's TCP
+  adapter had real connection boundaries; UDP does not). Harmless in
+  practice — masters ignore unsolicited responses before a request.
 
 ## Fallback to the validated curated path
 

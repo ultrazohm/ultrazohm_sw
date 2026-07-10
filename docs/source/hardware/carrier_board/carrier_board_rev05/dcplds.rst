@@ -62,10 +62,10 @@ For a CarrierReady-compatible output implementation it must be connected to the 
       PORT MAP (
          clk                => clk,
          heartbeat_in       => carrierrdy,
-         safe_state_request => carrier_ready_safe_request
+         heartbeat_invalid  => heartbeat_invalid
       );
 
-   carrier_ready_valid <= NOT carrier_ready_safe_request;
+   carrier_ready_valid <= NOT heartbeat_invalid;
 
 ``ReqSafeState`` is evaluated separately as a static S3C request:
 
@@ -83,7 +83,7 @@ Safety-related output forwarding is only allowed if both conditions are fulfille
 The final forwarding condition may additionally contain card- or program-specific
 ``user_enable_forwarding`` logic. A missing or static heartbeat cannot complete the
 initial qualification. After qualification, a missing heartbeat asserts
-``carrier_ready_safe_request`` after approximately 100 us without an edge. If
+``heartbeat_invalid`` after approximately 100 us without an edge. If
 ``ReqSafeState`` is ``1``, forwarding is disabled immediately even when the
 ``CarrierReady`` heartbeat is still valid.
 
@@ -91,7 +91,7 @@ initial qualification. After qualification, a missing heartbeat asserts
 
    In the current receiver implementation, an out-of-window edge resets the qualification
    counter to one but does not immediately clear an already valid heartbeat state.
-   Once validity has been reached, ``carrier_ready_safe_request`` is asserted again by
+   Once validity has been reached, ``heartbeat_invalid`` is asserted again by
    the no-edge timeout. A continuously toggling malformed heartbeat can therefore keep
    an already released receiver valid. This behavior must be considered before release
    if malformed-heartbeat revocation is a safety requirement.
@@ -128,3 +128,77 @@ The MachXO2 D-Slot project contains the following maintained implementations:
 - ``tx20_10rx``
 - The ``Voltage_3v3_5v`` subfolder contains the maintained MachXO2 CPLD implementations for the :ref:`digitalVoltage_3v3_5v` adapter card. Because this card defines its signal directions in four hardware groups, the CPLD repository provides the generated variants below ``Voltage_3v3_5v/voltage_8*_8*_8*_6*``. The name encodes the direction of the four groups in D-Slot order: three groups with eight I/Os each and one group with six I/Os, e.g. ``voltage_8rx_8rx_8tx_6tx``.
 - ``template_dslots``
+
+Rebuilding all D-Slot programming files
+---------------------------------------
+
+The D-Slot Diamond project contains several independent implementations in one
+``uz_d_slots.ldf`` project file. Each implementation has its own top-level VHDL
+file and produces one JEDEC programming file for the corresponding D-Slot CPLD
+configuration. The VHDL source files themselves are maintained manually in the
+implementation ``source`` directories; the build flow does not regenerate these
+VHDL files. Instead, the build flow recompiles every listed implementation and
+exports the matching ``.jed`` programming file.
+
+For this purpose, the project directory contains the helper script
+``build_all_jed_clean.tcl``:
+
+.. code-block:: text
+
+   MACHXO2/
+   `-- D_Slot_CPLD_LCMXO2-2000HC-4TG100C/
+       `-- uz_d_slots/
+           |-- uz_d_slots.ldf
+           |-- build_all_jed_clean.tcl
+           |-- tx30/
+           |-- tx20_10rx/
+           |-- Voltage_3v3_5v/
+           `-- ...
+
+The script performs the following steps:
+
+#. Read all implementations from ``uz_d_slots.ldf``.
+#. Remove old build artifacts and old programming files from the implementation
+   directories.
+#. Build every implementation with Lattice Diamond in the order listed in the
+   project file.
+#. Run synthesis, translate, map, place-and-route and JEDEC export for every
+   implementation.
+#. Remove intermediate files and generated ``.bit`` files after the build.
+#. Keep only the implementation ``source`` directory and the newly generated
+   ``.jed`` file in each implementation directory.
+
+The intended result is a clean project tree that contains the maintained VHDL
+sources and the current JEDEC programming files, but no temporary Diamond build
+products.
+
+Run the script from the D-Slot project directory with the Lattice Diamond command
+line frontend:
+
+.. code-block:: powershell
+
+   cd C:\cpld\cpld_lattice\MACHXO2\D_Slot_CPLD_LCMXO2-2000HC-4TG100C\uz_d_slots
+   C:\lscc\diamond\3.13\bin\nt64\pnmainc.exe build_all_jed_clean.tcl
+
+During execution, the script prints a progress line before each major build
+step. This makes long rebuilds easier to monitor from the terminal:
+
+.. code-block:: text
+
+   [####..........................]  13% | implementation 04/29 | step 2/6 synthesis | tx30 | elapsed 05m 12s | ETA 34m 40s
+
+The progress output is updated between Diamond build steps. A single
+``prj_run`` command can still be silent for several minutes because Diamond
+executes that step internally before control returns to the Tcl script.
+
+.. warning::
+
+   ``build_all_jed_clean.tcl`` intentionally deletes old generated files in the
+   implementation directories. Do not run it if intermediate reports, previous
+   ``.jed`` files or generated ``.bit`` files still need to be preserved.
+
+.. note::
+
+   The script exports JEDEC files only. Diamond may create additional files
+   internally during the build, but the cleanup step removes generated ``.bit``
+   files and intermediate artifacts afterwards.

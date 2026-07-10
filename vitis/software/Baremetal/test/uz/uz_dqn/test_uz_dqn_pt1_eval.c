@@ -18,12 +18,12 @@
 #define DQN_PT1_NUMBER_OF_NEURONS_IN_SECOND_LAYER 32U
 
 #define DQN_PT1_GAIN 1.0f
-#define DQN_PT1_TIME_CONSTANT_S 0.2f
-#define DQN_PT1_CONTROL_FREQUENCY_HZ 100.0f
+#define DQN_PT1_TIME_CONSTANT_S 0.002f
+#define DQN_PT1_CONTROL_FREQUENCY_HZ 10000.0f
 #define DQN_PT1_SAMPLE_TIME_S (1.0f / DQN_PT1_CONTROL_FREQUENCY_HZ)
-#define DQN_PT1_EPISODE_SECONDS 2.0f
+#define DQN_PT1_EPISODE_SECONDS 0.05f
 #define DQN_PT1_STEPS_PER_EPISODE ((uint32_t)(DQN_PT1_EPISODE_SECONDS * DQN_PT1_CONTROL_FREQUENCY_HZ))
-#define DQN_PT1_EVAL_EPISODES 4U
+#define DQN_PT1_EVAL_EPISODES 6U
 #define DQN_PT1_EVAL_LOG_PATH "../../../workshop/logs/ceedling_eval_log.csv"
 
 static float dqn_pt1_input_data[DQN_PT1_NUMBER_OF_INPUTS] = {0.0f};
@@ -84,7 +84,7 @@ static struct uz_nn_layer_config dqn_pt1_layer_config[DQN_PT1_NUMBER_OF_LAYERS] 
 };
 
 static const float dqn_pt1_action_values[DQN_PT1_NUMBER_OF_OUTPUTS] = {-1.0f, 0.0f, 1.0f};
-static const float dqn_pt1_eval_references[DQN_PT1_EVAL_EPISODES] = {-1.0f, 0.0f, 0.5f, 1.0f};
+static const float dqn_pt1_eval_references[DQN_PT1_EVAL_EPISODES] = {-1.0, 0.0, 0.5, 0.1, 0.2, 1.0};
 
 void setUp(void)
 {

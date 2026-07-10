@@ -54,8 +54,6 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
-static uint32_t pt1_control_decimation_counter = 0U;
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -97,7 +95,6 @@ void ISR_Control(void *data)
 #if (UZ_APP != UZ_APP_DESKBENCH)
         pt1_control_stop(&Global_Data);
 #endif
-        pt1_control_decimation_counter = 0U;
         /* Project Wizard END: idle_state isr_actions */
         break;
 
@@ -111,7 +108,6 @@ void ISR_Control(void *data)
 #else
         deskbench_enter_idle(&Global_Data);
 #endif
-        pt1_control_decimation_counter = 0U;
         /* Project Wizard END: running_state isr_actions */
         break;
 
@@ -121,12 +117,7 @@ void ISR_Control(void *data)
 #if (UZ_APP == UZ_APP_DESKBENCH)
         deskbench_control_step(&Global_Data);
 #else
-        pt1_control_decimation_counter++;
-        if (pt1_control_decimation_counter >= PT1_CONTROL_DECIMATION)
-        {
-            pt1_control_decimation_counter = 0U;
             pt1_control_step(&Global_Data);
-        }
 #endif
         /* Project Wizard BEGIN: control_state isr_actions */
         /* Project Wizard END: control_state isr_actions */
@@ -148,7 +139,6 @@ void ISR_Control(void *data)
 #if (UZ_APP != UZ_APP_DESKBENCH)
         pt1_control_stop(&Global_Data);
 #endif
-        pt1_control_decimation_counter = 0U;
         /* Project Wizard END: error_state isr_actions */
         break;
 

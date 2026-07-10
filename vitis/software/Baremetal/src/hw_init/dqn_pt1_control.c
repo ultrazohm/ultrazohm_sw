@@ -14,7 +14,7 @@
 
 void pt1_control_init(DS_Data *data)
 {
-    uz_assert_not_zero_uint32(PT1_CONTROL_PLANT_BASE_ADDRESS);
+    uz_assert_not_zero_uint32(XPAR_UZ_USER_UZ_PLANTMODEL_PT1_0_BASEADDR);
     data->objects.plant_pt1 = NULL;
     data->objects.dqn_agent = NULL;
     data->objects.ddpg_agent = NULL;
@@ -31,8 +31,8 @@ void pt1_control_init(DS_Data *data)
     data->av.dqn_pt1_action = 0.0f;
 
     struct uz_plantPT1_config_t config = {
-        .base_address = PT1_CONTROL_PLANT_BASE_ADDRESS,
-        .ip_core_frequency_Hz = PT1_CONTROL_PLANT_IP_CORE_FREQUENCY_HZ,
+        .base_address = XPAR_UZ_USER_UZ_PLANTMODEL_PT1_0_BASEADDR,
+        .ip_core_frequency_Hz = 100000000U,
         .gain = PT1_CONTROL_GAIN,
         .time_constant = PT1_CONTROL_TIME_CONSTANT_S,
     };

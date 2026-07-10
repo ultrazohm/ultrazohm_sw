@@ -146,10 +146,22 @@ The report verifies the CP7 mechanisms directly:
 - **R5 counter deltas** (`ocm_xcp_w_dropped`, `xcp_r5_cto_dropped`, … read
   via SHORT_UPLOAD before/after) — the "must stay 0" set is flagged.
 
-Exit code: 0 = clean, 2 = ran but with wire loss (then check the JTAG-only
-A53 counters `xcp_gw_txq_dropped` / `xcp_gw_ocm_cycles_missed` to locate it).
+Exit code: 0 = clean (pure reordering passes), 2 = ran with net loss (then
+check the JTAG-only A53 counters — `xcp_gw_sendto_drop`/`xcp_gw_sendto_err`
+attribute it: >0 = ECU lwIP; 0 = wire/PC receive path).
 Escalation sequence for a soak: `--stress --daq-seconds 600`, then
 `--stress-bytes 4000 --daq-seconds 600`, then overnight.
+
+**Interpreting "ctr reordering"**: the board serializes datagrams through a
+single GEM queue, so UDP reordering on a direct link can only happen in the
+PC's receive path (NIC RSS/DPC scheduling). Reordered frames arrived — the
+report's "net lost" is the real loss. Hardware baseline (2026-07-10, CP9,
+60 s @ 320 Mbit/s): `sendto_err/drop = 0` (ECU clean), ~128 net lost frames
+(0.0013 %) + 193 late frames, all PC-side. NB: CANape checks the transport
+counter too and may log "Ungültiger Zähler" on a reordering PC NIC even with
+zero loss — that is a PC/NIC-driver artifact (try: disable interrupt
+moderation/RSS on the adapter, raise its receive buffers, prefer a PCIe
+Intel NIC over USB adapters), not an ECU defect.
 
 ## Test 4 — CANape (optional)
 

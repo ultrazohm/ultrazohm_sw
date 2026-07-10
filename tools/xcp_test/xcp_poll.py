@@ -510,13 +510,16 @@ def run_stress(xcp, args, max_dto):
         span_s = max((last_ts - first_ts) & 0xFFFFFFFF, 1) / 1e6
         print("    event cycles     %10d   (~%.0f Hz of target time)" %
               (cycles, (cycles - 1) / span_s))
-    print("    ctr gaps         %10d frames lost in %d gaps%s" %
+    net_lost = ctr_gap_frames - ctr_reorder
+    print("    ctr gaps         %10d frames skipped in %d gaps%s" %
           (ctr_gap_frames, ctr_gap_events,
            "  <-- loss at/after sendto (lwIP pbuf, wire, PC rx)"
            if ctr_gap_frames else ""))
     if ctr_reorder:
-        print("    ctr reordering   %10d late frames (already counted in gaps "
-              "above; late, not lost)" % ctr_reorder)
+        print("    ctr reordering   %10d of those arrived late (PC rx path "
+              "reorders; late, not lost)" % ctr_reorder)
+        print("    net lost         %10d frames (%.5f%%)  <-- the real loss" %
+              (net_lost, 100.0 * net_lost / frames if frames else 0.0))
     if pre and post:
         print("    R5 counter deltas over the run:")
         for name in R5_DIAG_COUNTERS:
@@ -533,9 +536,11 @@ def run_stress(xcp, args, max_dto):
     if frames == 0:
         print("\n[x] no DTOs received -- stress FAILED")
         return 1
-    print("\n[+] stress %s" % ("PASSED (no wire loss)" if ctr_gap_frames == 0
+    if net_lost < 0:
+        net_lost = 0  # duplicated datagrams can over-count reordering
+    print("\n[+] stress %s" % ("PASSED (no wire loss)" if net_lost == 0
                                else "completed WITH LOSS -- see counters"))
-    return 0 if ctr_gap_frames == 0 else 2
+    return 0 if net_lost == 0 else 2
 
 
 def main():

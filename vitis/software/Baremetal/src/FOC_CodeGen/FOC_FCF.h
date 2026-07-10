@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.94
  * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
- * C/C++ source code generated on : Wed Jun  3 11:43:35 2026
+ * C/C++ source code generated on : Fri Jul 10 09:34:27 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -45,86 +45,86 @@ typedef struct {
   bus_InvStatus_t bus_InvStatus;       /* '<S8>/Bus Creator' */
   uint32_T Get_Status_Sys1;            /* '<S13>/Get_Status_Sys1' */
   uint32_T Mask_6Bits_Inv1_FLT;        /* '<S8>/Mask_6Bits_Inv1_FLT' */
-  uint32_T BitwiseNOT;                 /* '<S50>/Bitwise NOT' */
-  uint32_T MaskBit0;                   /* '<S50>/MaskBit0' */
-  uint32_T get_U_HS_FLT;               /* '<S50>/get_U_HS_FLT' */
-  uint32_T MaskBit1;                   /* '<S50>/MaskBit1' */
-  uint32_T get_U_LS_FLT;               /* '<S50>/get_U_LS_FLT' */
-  uint32_T MaskBit2;                   /* '<S50>/MaskBit2' */
-  uint32_T get_V_HS_FLT;               /* '<S50>/get_V_HS_FLT' */
-  uint32_T MaskBit3;                   /* '<S50>/MaskBit3' */
-  uint32_T get_V_LS_FLT;               /* '<S50>/get_V_LS_FLT' */
-  uint32_T MaskBit4;                   /* '<S50>/MaskBit4' */
-  uint32_T get_W_HS_FLT;               /* '<S50>/get_W_HS_FLT' */
-  uint32_T MaskBit5;                   /* '<S50>/MaskBit5' */
-  uint32_T get_W_LS_FLT;               /* '<S50>/get_W_LS_FLT' */
+  uint32_T BitwiseNOT;                 /* '<S52>/Bitwise NOT' */
+  uint32_T MaskBit0;                   /* '<S52>/MaskBit0' */
+  uint32_T get_U_HS_FLT;               /* '<S52>/get_U_HS_FLT' */
+  uint32_T MaskBit1;                   /* '<S52>/MaskBit1' */
+  uint32_T get_U_LS_FLT;               /* '<S52>/get_U_LS_FLT' */
+  uint32_T MaskBit2;                   /* '<S52>/MaskBit2' */
+  uint32_T get_V_HS_FLT;               /* '<S52>/get_V_HS_FLT' */
+  uint32_T MaskBit3;                   /* '<S52>/MaskBit3' */
+  uint32_T get_V_LS_FLT;               /* '<S52>/get_V_LS_FLT' */
+  uint32_T MaskBit4;                   /* '<S52>/MaskBit4' */
+  uint32_T get_W_HS_FLT;               /* '<S52>/get_W_HS_FLT' */
+  uint32_T MaskBit5;                   /* '<S52>/MaskBit5' */
+  uint32_T get_W_LS_FLT;               /* '<S52>/get_W_LS_FLT' */
   uint32_T Mask_6Bits_Inv1_RDY;        /* '<S8>/Mask_6Bits_Inv1_RDY' */
-  uint32_T MaskBit0_c;                 /* '<S51>/MaskBit0' */
-  uint32_T get_U_HS_RDY;               /* '<S51>/get_U_HS_RDY' */
-  uint32_T MaskBit1_b;                 /* '<S51>/MaskBit1' */
-  uint32_T get_U_LS_RDY;               /* '<S51>/get_U_LS_RDY' */
-  uint32_T MaskBit2_n;                 /* '<S51>/MaskBit2' */
-  uint32_T get_V_HS_RDY;               /* '<S51>/get_V_HS_RDY' */
-  uint32_T MaskBit3_a;                 /* '<S51>/MaskBit3' */
-  uint32_T get_V_LS_RDY;               /* '<S51>/get_V_LS_RDY' */
-  uint32_T MaskBit4_c;                 /* '<S51>/MaskBit4' */
-  uint32_T get_W_HS_RDY;               /* '<S51>/get_W_HS_RDY' */
-  uint32_T MaskBit5_l;                 /* '<S51>/MaskBit5' */
-  uint32_T get_W_LS_RDY;               /* '<S51>/get_W_LS_RDY' */
+  uint32_T MaskBit0_c;                 /* '<S53>/MaskBit0' */
+  uint32_T get_U_HS_RDY;               /* '<S53>/get_U_HS_RDY' */
+  uint32_T MaskBit1_b;                 /* '<S53>/MaskBit1' */
+  uint32_T get_U_LS_RDY;               /* '<S53>/get_U_LS_RDY' */
+  uint32_T MaskBit2_n;                 /* '<S53>/MaskBit2' */
+  uint32_T get_V_HS_RDY;               /* '<S53>/get_V_HS_RDY' */
+  uint32_T MaskBit3_a;                 /* '<S53>/MaskBit3' */
+  uint32_T get_V_LS_RDY;               /* '<S53>/get_V_LS_RDY' */
+  uint32_T MaskBit4_c;                 /* '<S53>/MaskBit4' */
+  uint32_T get_W_HS_RDY;               /* '<S53>/get_W_HS_RDY' */
+  uint32_T MaskBit5_l;                 /* '<S53>/MaskBit5' */
+  uint32_T get_W_LS_RDY;               /* '<S53>/get_W_LS_RDY' */
   uint32_T Mask_6Bits_Inv2_FLT;        /* '<S8>/Mask_6Bits_Inv2_FLT' */
-  uint32_T BitwiseNOT_j;               /* '<S52>/Bitwise NOT' */
-  uint32_T MaskBit0_o;                 /* '<S52>/MaskBit0' */
-  uint32_T get_U_HS_FLT_i;             /* '<S52>/get_U_HS_FLT' */
-  uint32_T MaskBit1_ba;                /* '<S52>/MaskBit1' */
-  uint32_T get_U_LS_FLT_a;             /* '<S52>/get_U_LS_FLT' */
-  uint32_T MaskBit2_d;                 /* '<S52>/MaskBit2' */
-  uint32_T get_V_HS_FLT_i;             /* '<S52>/get_V_HS_FLT' */
-  uint32_T MaskBit3_d;                 /* '<S52>/MaskBit3' */
-  uint32_T get_V_LS_FLT_c;             /* '<S52>/get_V_LS_FLT' */
-  uint32_T MaskBit4_p;                 /* '<S52>/MaskBit4' */
-  uint32_T get_W_HS_FLT_f;             /* '<S52>/get_W_HS_FLT' */
-  uint32_T MaskBit5_o;                 /* '<S52>/MaskBit5' */
-  uint32_T get_W_LS_FLT_l;             /* '<S52>/get_W_LS_FLT' */
+  uint32_T BitwiseNOT_j;               /* '<S54>/Bitwise NOT' */
+  uint32_T MaskBit0_o;                 /* '<S54>/MaskBit0' */
+  uint32_T get_U_HS_FLT_i;             /* '<S54>/get_U_HS_FLT' */
+  uint32_T MaskBit1_ba;                /* '<S54>/MaskBit1' */
+  uint32_T get_U_LS_FLT_a;             /* '<S54>/get_U_LS_FLT' */
+  uint32_T MaskBit2_d;                 /* '<S54>/MaskBit2' */
+  uint32_T get_V_HS_FLT_i;             /* '<S54>/get_V_HS_FLT' */
+  uint32_T MaskBit3_d;                 /* '<S54>/MaskBit3' */
+  uint32_T get_V_LS_FLT_c;             /* '<S54>/get_V_LS_FLT' */
+  uint32_T MaskBit4_p;                 /* '<S54>/MaskBit4' */
+  uint32_T get_W_HS_FLT_f;             /* '<S54>/get_W_HS_FLT' */
+  uint32_T MaskBit5_o;                 /* '<S54>/MaskBit5' */
+  uint32_T get_W_LS_FLT_l;             /* '<S54>/get_W_LS_FLT' */
   uint32_T Mask_6Bits_Inv2_RDY;        /* '<S8>/Mask_6Bits_Inv2_RDY' */
-  uint32_T MaskBit0_p;                 /* '<S53>/MaskBit0' */
-  uint32_T get_U_HS_RDY_i;             /* '<S53>/get_U_HS_RDY' */
-  uint32_T MaskBit1_m;                 /* '<S53>/MaskBit1' */
-  uint32_T get_U_LS_RDY_f;             /* '<S53>/get_U_LS_RDY' */
-  uint32_T MaskBit2_g;                 /* '<S53>/MaskBit2' */
-  uint32_T get_V_HS_RDY_j;             /* '<S53>/get_V_HS_RDY' */
-  uint32_T MaskBit3_k;                 /* '<S53>/MaskBit3' */
-  uint32_T get_V_LS_RDY_a;             /* '<S53>/get_V_LS_RDY' */
-  uint32_T MaskBit4_l;                 /* '<S53>/MaskBit4' */
-  uint32_T get_W_HS_RDY_n;             /* '<S53>/get_W_HS_RDY' */
-  uint32_T MaskBit5_lb;                /* '<S53>/MaskBit5' */
-  uint32_T get_W_LS_RDY_l;             /* '<S53>/get_W_LS_RDY' */
+  uint32_T MaskBit0_p;                 /* '<S55>/MaskBit0' */
+  uint32_T get_U_HS_RDY_i;             /* '<S55>/get_U_HS_RDY' */
+  uint32_T MaskBit1_m;                 /* '<S55>/MaskBit1' */
+  uint32_T get_U_LS_RDY_f;             /* '<S55>/get_U_LS_RDY' */
+  uint32_T MaskBit2_g;                 /* '<S55>/MaskBit2' */
+  uint32_T get_V_HS_RDY_j;             /* '<S55>/get_V_HS_RDY' */
+  uint32_T MaskBit3_k;                 /* '<S55>/MaskBit3' */
+  uint32_T get_V_LS_RDY_a;             /* '<S55>/get_V_LS_RDY' */
+  uint32_T MaskBit4_l;                 /* '<S55>/MaskBit4' */
+  uint32_T get_W_HS_RDY_n;             /* '<S55>/get_W_HS_RDY' */
+  uint32_T MaskBit5_lb;                /* '<S55>/MaskBit5' */
+  uint32_T get_W_LS_RDY_l;             /* '<S55>/get_W_LS_RDY' */
   uint32_T Mask_6Bits_Inv3_FLT;        /* '<S8>/Mask_6Bits_Inv3_FLT' */
-  uint32_T BitwiseNOT_c;               /* '<S54>/Bitwise NOT' */
-  uint32_T MaskBit0_ph;                /* '<S54>/MaskBit0' */
-  uint32_T get_U_HS_FLT_m;             /* '<S54>/get_U_HS_FLT' */
-  uint32_T MaskBit1_k;                 /* '<S54>/MaskBit1' */
-  uint32_T get_U_LS_FLT_h;             /* '<S54>/get_U_LS_FLT' */
-  uint32_T MaskBit2_f;                 /* '<S54>/MaskBit2' */
-  uint32_T get_V_HS_FLT_h;             /* '<S54>/get_V_HS_FLT' */
-  uint32_T MaskBit3_a2;                /* '<S54>/MaskBit3' */
-  uint32_T get_V_LS_FLT_g;             /* '<S54>/get_V_LS_FLT' */
-  uint32_T MaskBit4_f;                 /* '<S54>/MaskBit4' */
-  uint32_T get_W_HS_FLT_m;             /* '<S54>/get_W_HS_FLT' */
-  uint32_T MaskBit5_h;                 /* '<S54>/MaskBit5' */
-  uint32_T get_W_LS_FLT_g;             /* '<S54>/get_W_LS_FLT' */
+  uint32_T BitwiseNOT_c;               /* '<S56>/Bitwise NOT' */
+  uint32_T MaskBit0_ph;                /* '<S56>/MaskBit0' */
+  uint32_T get_U_HS_FLT_m;             /* '<S56>/get_U_HS_FLT' */
+  uint32_T MaskBit1_k;                 /* '<S56>/MaskBit1' */
+  uint32_T get_U_LS_FLT_h;             /* '<S56>/get_U_LS_FLT' */
+  uint32_T MaskBit2_f;                 /* '<S56>/MaskBit2' */
+  uint32_T get_V_HS_FLT_h;             /* '<S56>/get_V_HS_FLT' */
+  uint32_T MaskBit3_a2;                /* '<S56>/MaskBit3' */
+  uint32_T get_V_LS_FLT_g;             /* '<S56>/get_V_LS_FLT' */
+  uint32_T MaskBit4_f;                 /* '<S56>/MaskBit4' */
+  uint32_T get_W_HS_FLT_m;             /* '<S56>/get_W_HS_FLT' */
+  uint32_T MaskBit5_h;                 /* '<S56>/MaskBit5' */
+  uint32_T get_W_LS_FLT_g;             /* '<S56>/get_W_LS_FLT' */
   uint32_T Mask_6Bits_Inv3_RDY;        /* '<S8>/Mask_6Bits_Inv3_RDY' */
-  uint32_T MaskBit0_k;                 /* '<S55>/MaskBit0' */
-  uint32_T get_U_HS_RDY_e;             /* '<S55>/get_U_HS_RDY' */
-  uint32_T MaskBit1_o;                 /* '<S55>/MaskBit1' */
-  uint32_T get_U_LS_RDY_l;             /* '<S55>/get_U_LS_RDY' */
-  uint32_T MaskBit2_a;                 /* '<S55>/MaskBit2' */
-  uint32_T get_V_HS_RDY_e;             /* '<S55>/get_V_HS_RDY' */
-  uint32_T MaskBit3_kg;                /* '<S55>/MaskBit3' */
-  uint32_T get_V_LS_RDY_k;             /* '<S55>/get_V_LS_RDY' */
-  uint32_T MaskBit4_ch;                /* '<S55>/MaskBit4' */
-  uint32_T get_W_HS_RDY_h;             /* '<S55>/get_W_HS_RDY' */
-  uint32_T MaskBit5_p;                 /* '<S55>/MaskBit5' */
-  uint32_T get_W_LS_RDY_m;             /* '<S55>/get_W_LS_RDY' */
+  uint32_T MaskBit0_k;                 /* '<S57>/MaskBit0' */
+  uint32_T get_U_HS_RDY_e;             /* '<S57>/get_U_HS_RDY' */
+  uint32_T MaskBit1_o;                 /* '<S57>/MaskBit1' */
+  uint32_T get_U_LS_RDY_l;             /* '<S57>/get_U_LS_RDY' */
+  uint32_T MaskBit2_a;                 /* '<S57>/MaskBit2' */
+  uint32_T get_V_HS_RDY_e;             /* '<S57>/get_V_HS_RDY' */
+  uint32_T MaskBit3_kg;                /* '<S57>/MaskBit3' */
+  uint32_T get_V_LS_RDY_k;             /* '<S57>/get_V_LS_RDY' */
+  uint32_T MaskBit4_ch;                /* '<S57>/MaskBit4' */
+  uint32_T get_W_HS_RDY_h;             /* '<S57>/get_W_HS_RDY' */
+  uint32_T MaskBit5_p;                 /* '<S57>/MaskBit5' */
+  uint32_T get_W_LS_RDY_m;             /* '<S57>/get_W_LS_RDY' */
   real32_T Sum[9];                     /* '<S20>/Sum' */
   real32_T i_uvw_cal[9];               /* '<S20>/i_uvw_cal' */
   real32_T Gain;                       /* '<S20>/Gain' */
@@ -145,17 +145,16 @@ typedef struct {
   real32_T I_ph[9];                    /* '<S2>/Gain' */
   real32_T U_DC_fcf;                   /* '<S17>/U_DC_switch' */
   real32_T FOC_Mode_Request;           /* '<S1>/ModeSwitch' */
-  real32_T U_DC_Undervoltage_Error;    /* '<S64>/Selectphicalc1' */
-  real32_T U_DC_Overvoltage_Error;     /* '<S64>/Selectphicalc2' */
-  real32_T Abs[9];                     /* '<S63>/Abs' */
-  real32_T MinMax;                     /* '<S63>/MinMax' */
+  real32_T U_DC_Undervoltage_Error;    /* '<S66>/Selectphicalc1' */
+  real32_T U_DC_Overvoltage_Error;     /* '<S66>/Selectphicalc2' */
+  real32_T Abs[9];                     /* '<S65>/Abs' */
+  real32_T MinMax;                     /* '<S65>/MinMax' */
   real32_T FOC_Mode_after_checks;      /* '<S1>/Switch' */
   real32_T DiscreteTransferFcn;        /* '<S14>/Discrete Transfer Fcn' */
   real32_T f_2_w_el;                   /* '<S14>/f_2_w_el' */
-  real32_T Product;                    /* '<S95>/Product' */
-  real32_T UnitDelay;                  /* '<S95>/Unit Delay' */
-  real32_T Add;                        /* '<S95>/Add' */
-  real32_T TrafoMatrixuvwalphabeta[2]; /* '<S34>/TrafoMatrix uvw->alphabeta' */
+  real32_T Product;                    /* '<S97>/Product' */
+  real32_T UnitDelay;                  /* '<S97>/Unit Delay' */
+  real32_T Add;                        /* '<S97>/Add' */
   real32_T ResolverOffsetLimitation;   /* '<S4>/ResolverOffsetLimitation' */
   real32_T phi_raw_inv;                /* '<S25>/Switch' */
   real32_T Sum1;                       /* '<S4>/Sum1' */
@@ -173,54 +172,60 @@ typedef struct {
   real32_T UnitDelay_a;                /* '<S12>/Unit Delay' */
   real32_T Add_m;                      /* '<S12>/Add' */
   real32_T f_2_w_el_b;                 /* '<S9>/f_2_w_el' */
-  real32_T Product_h;                  /* '<S62>/Product' */
-  real32_T UnitDelay_j;                /* '<S62>/Unit Delay' */
-  real32_T Add_mp;                     /* '<S62>/Add' */
+  real32_T Product_h;                  /* '<S64>/Product' */
+  real32_T UnitDelay_j;                /* '<S64>/Unit Delay' */
+  real32_T Add_mp;                     /* '<S64>/Add' */
   real32_T Use_If_Mode[2];             /* '<S1>/Use_If_Mode' */
-  real32_T TrigonometricFunction1;     /* '<S34>/Trigonometric Function1' */
-  real32_T TrafoProd;                  /* '<S34>/TrafoProd' */
-  real32_T TrigonometricFunction;      /* '<S34>/Trigonometric Function' */
-  real32_T TrafoProd3;                 /* '<S34>/TrafoProd3' */
-  real32_T I_d1_Act;                   /* '<S34>/I_d1_Act' */
-  real32_T TrafoProd1;                 /* '<S34>/TrafoProd1' */
-  real32_T TrafoProd2;                 /* '<S34>/TrafoProd2' */
-  real32_T I_q1_Act;                   /* '<S34>/I_q1_Act' */
-  real32_T IdqErr[2];                  /* '<S31>/IdqErr' */
-  real32_T KPek1[2];                   /* '<S38>/KP*e[k]1' */
-  real32_T IntegDelay1[2];             /* '<S38>/IntegDelay1' */
-  real32_T Product1;                   /* '<S38>/Product1' */
+  real32_T TrafoMatrixuvwalphabeta[2]; /* '<S35>/TrafoMatrix uvw->alphabeta' */
+  real32_T TrigonometricFunction1;     /* '<S35>/Trigonometric Function1' */
+  real32_T TrafoProd;                  /* '<S35>/TrafoProd' */
+  real32_T TrigonometricFunction;      /* '<S35>/Trigonometric Function' */
+  real32_T TrafoProd3;                 /* '<S35>/TrafoProd3' */
+  real32_T I_d1_Act;                   /* '<S35>/I_d1_Act' */
+  real32_T TrafoProd1;                 /* '<S35>/TrafoProd1' */
+  real32_T TrafoProd2;                 /* '<S35>/TrafoProd2' */
+  real32_T I_q1_Act;                   /* '<S35>/I_q1_Act' */
+  real32_T Idq_err_ILR[2];             /* '<S31>/Add' */
+  real32_T FOC_ENABLE_ILR_switch1;     /* '<S31>/FOC_ENABLE_ILR_switch1' */
+  real32_T Gain_f;                     /* '<S31>/Gain' */
+  real32_T ILR_N;                      /* '<S31>/Divide' */
+  real32_T Idq_ref_ILR[2];             /* '<S31>/FOC_ENABLE_ILR_switch' */
+  real32_T IdqErr[2];                  /* '<S32>/IdqErr' */
+  real32_T KPek1[2];                   /* '<S40>/KP*e[k]1' */
+  real32_T IntegDelay1[2];             /* '<S40>/IntegDelay1' */
+  real32_T Product1;                   /* '<S40>/Product1' */
   real32_T DataTypeConversion1;        /* '<S13>/Data Type Conversion1' */
-  real32_T IntegEnaSwitch1[2];         /* '<S38>/IntegEnaSwitch1' */
-  real32_T TrafoMatrixuvwalphabeta_h[2];/* '<S35>/TrafoMatrix uvw->alphabeta' */
+  real32_T IntegEnaSwitch1[2];         /* '<S40>/IntegEnaSwitch1' */
+  real32_T TrafoMatrixuvwalphabeta_h[2];/* '<S36>/TrafoMatrix uvw->alphabeta' */
   real32_T Sum1_d;                     /* '<S6>/Sum1' */
-  real32_T TrigonometricFunction1_b;   /* '<S35>/Trigonometric Function1' */
-  real32_T TrafoProd_a;                /* '<S35>/TrafoProd' */
-  real32_T TrigonometricFunction_l;    /* '<S35>/Trigonometric Function' */
-  real32_T TrafoProd3_i;               /* '<S35>/TrafoProd3' */
-  real32_T TrafoSum;                   /* '<S35>/TrafoSum' */
-  real32_T TrafoProd1_b;               /* '<S35>/TrafoProd1' */
-  real32_T TrafoProd2_b;               /* '<S35>/TrafoProd2' */
-  real32_T TrafoSum1;                  /* '<S35>/TrafoSum1' */
-  real32_T IdqErr_l[2];                /* '<S32>/IdqErr' */
-  real32_T KPek1_l[2];                 /* '<S42>/KP*e[k]1' */
-  real32_T IntegDelay1_o[2];           /* '<S42>/IntegDelay1' */
-  real32_T Product1_k;                 /* '<S42>/Product1' */
-  real32_T IntegEnaSwitch1_n[2];       /* '<S42>/IntegEnaSwitch1' */
-  real32_T TrafoMatrixuvwalphabeta_m[2];/* '<S36>/TrafoMatrix uvw->alphabeta' */
+  real32_T TrigonometricFunction1_b;   /* '<S36>/Trigonometric Function1' */
+  real32_T TrafoProd_a;                /* '<S36>/TrafoProd' */
+  real32_T TrigonometricFunction_l;    /* '<S36>/Trigonometric Function' */
+  real32_T TrafoProd3_i;               /* '<S36>/TrafoProd3' */
+  real32_T TrafoSum;                   /* '<S36>/TrafoSum' */
+  real32_T TrafoProd1_b;               /* '<S36>/TrafoProd1' */
+  real32_T TrafoProd2_b;               /* '<S36>/TrafoProd2' */
+  real32_T TrafoSum1;                  /* '<S36>/TrafoSum1' */
+  real32_T IdqErr_l[2];                /* '<S33>/IdqErr' */
+  real32_T KPek1_l[2];                 /* '<S44>/KP*e[k]1' */
+  real32_T IntegDelay1_o[2];           /* '<S44>/IntegDelay1' */
+  real32_T Product1_k;                 /* '<S44>/Product1' */
+  real32_T IntegEnaSwitch1_n[2];       /* '<S44>/IntegEnaSwitch1' */
+  real32_T TrafoMatrixuvwalphabeta_m[2];/* '<S37>/TrafoMatrix uvw->alphabeta' */
   real32_T Sum2_m;                     /* '<S6>/Sum2' */
-  real32_T TrigonometricFunction1_k;   /* '<S36>/Trigonometric Function1' */
-  real32_T TrafoProd_n;                /* '<S36>/TrafoProd' */
-  real32_T TrigonometricFunction_k;    /* '<S36>/Trigonometric Function' */
-  real32_T TrafoProd3_o;               /* '<S36>/TrafoProd3' */
-  real32_T TrafoSum_n;                 /* '<S36>/TrafoSum' */
-  real32_T TrafoProd1_e;               /* '<S36>/TrafoProd1' */
-  real32_T TrafoProd2_h;               /* '<S36>/TrafoProd2' */
-  real32_T TrafoSum1_p;                /* '<S36>/TrafoSum1' */
-  real32_T IdqErr_e[2];                /* '<S33>/IdqErr' */
-  real32_T KPek1_h[2];                 /* '<S46>/KP*e[k]1' */
-  real32_T IntegDelay1_d[2];           /* '<S46>/IntegDelay1' */
-  real32_T Product1_b;                 /* '<S46>/Product1' */
-  real32_T IntegEnaSwitch1_h[2];       /* '<S46>/IntegEnaSwitch1' */
+  real32_T TrigonometricFunction1_k;   /* '<S37>/Trigonometric Function1' */
+  real32_T TrafoProd_n;                /* '<S37>/TrafoProd' */
+  real32_T TrigonometricFunction_k;    /* '<S37>/Trigonometric Function' */
+  real32_T TrafoProd3_o;               /* '<S37>/TrafoProd3' */
+  real32_T TrafoSum_n;                 /* '<S37>/TrafoSum' */
+  real32_T TrafoProd1_e;               /* '<S37>/TrafoProd1' */
+  real32_T TrafoProd2_h;               /* '<S37>/TrafoProd2' */
+  real32_T TrafoSum1_p;                /* '<S37>/TrafoSum1' */
+  real32_T IdqErr_e[2];                /* '<S34>/IdqErr' */
+  real32_T KPek1_h[2];                 /* '<S48>/KP*e[k]1' */
+  real32_T IntegDelay1_d[2];           /* '<S48>/IntegDelay1' */
+  real32_T Product1_b;                 /* '<S48>/Product1' */
+  real32_T IntegEnaSwitch1_h[2];       /* '<S48>/IntegEnaSwitch1' */
   real32_T Product_c;                  /* '<S5>/Product' */
   real32_T Sum_k;                      /* '<S5>/Sum' */
   real32_T Switch1_k;                  /* '<S30>/Switch1' */
@@ -228,37 +233,37 @@ typedef struct {
   real32_T Sum2_p;                     /* '<S5>/Sum2' */
   real32_T Sum1_l;                     /* '<S5>/Sum1' */
   real32_T SelectControlMode[9];       /* '<S1>/SelectControlMode' */
-  real32_T TrigonometricFunction_n;    /* '<S105>/Trigonometric Function' */
-  real32_T Gain1_n[4];                 /* '<S105>/Gain1' */
-  real32_T TrigonometricFunction1_j;   /* '<S105>/Trigonometric Function1' */
-  real32_T Gain_l[4];                  /* '<S105>/Gain' */
-  real32_T Sum1_g[4];                  /* '<S105>/Sum1' */
-  real32_T Product_c0[2];              /* '<S105>/Product' */
-  real32_T U_uvw1[3];                  /* '<S102>/Product' */
-  real32_T TrigonometricFunction_j;    /* '<S106>/Trigonometric Function' */
-  real32_T Gain1_i[4];                 /* '<S106>/Gain1' */
-  real32_T TrigonometricFunction1_h;   /* '<S106>/Trigonometric Function1' */
-  real32_T Gain_f[4];                  /* '<S106>/Gain' */
-  real32_T Sum1_f[4];                  /* '<S106>/Sum1' */
-  real32_T Product_f[2];               /* '<S106>/Product' */
-  real32_T Product_f3[3];              /* '<S103>/Product' */
-  real32_T TrigonometricFunction_h;    /* '<S107>/Trigonometric Function' */
-  real32_T Gain1_n4[4];                /* '<S107>/Gain1' */
-  real32_T TrigonometricFunction1_hh;  /* '<S107>/Trigonometric Function1' */
-  real32_T Gain_ld[4];                 /* '<S107>/Gain' */
-  real32_T Sum1_lz[4];                 /* '<S107>/Sum1' */
-  real32_T Product_i[2];               /* '<S107>/Product' */
-  real32_T Product_fb[3];              /* '<S104>/Product' */
+  real32_T TrigonometricFunction_n;    /* '<S107>/Trigonometric Function' */
+  real32_T Gain1_n[4];                 /* '<S107>/Gain1' */
+  real32_T TrigonometricFunction1_j;   /* '<S107>/Trigonometric Function1' */
+  real32_T Gain_l[4];                  /* '<S107>/Gain' */
+  real32_T Sum1_g[4];                  /* '<S107>/Sum1' */
+  real32_T Product_c0[2];              /* '<S107>/Product' */
+  real32_T U_uvw1[3];                  /* '<S104>/Product' */
+  real32_T TrigonometricFunction_j;    /* '<S108>/Trigonometric Function' */
+  real32_T Gain1_i[4];                 /* '<S108>/Gain1' */
+  real32_T TrigonometricFunction1_h;   /* '<S108>/Trigonometric Function1' */
+  real32_T Gain_fa[4];                 /* '<S108>/Gain' */
+  real32_T Sum1_f[4];                  /* '<S108>/Sum1' */
+  real32_T Product_f[2];               /* '<S108>/Product' */
+  real32_T Product_f3[3];              /* '<S105>/Product' */
+  real32_T TrigonometricFunction_h;    /* '<S109>/Trigonometric Function' */
+  real32_T Gain1_n4[4];                /* '<S109>/Gain1' */
+  real32_T TrigonometricFunction1_hh;  /* '<S109>/Trigonometric Function1' */
+  real32_T Gain_ld[4];                 /* '<S109>/Gain' */
+  real32_T Sum1_lz[4];                 /* '<S109>/Sum1' */
+  real32_T Product_i[2];               /* '<S109>/Product' */
+  real32_T Product_fb[3];              /* '<S106>/Product' */
   real32_T SelMod_DutyCycles[9];       /* '<S15>/SelectModulation' */
-  real32_T Scale02[9];                 /* '<S97>/Scale [0..2]' */
-  real32_T Scale01[9];                 /* '<S97>/Scale  [0..1]' */
-  real32_T Limit01[9];                 /* '<S97>/Limit [0..1]' */
+  real32_T Scale02[9];                 /* '<S99>/Scale [0..2]' */
+  real32_T Scale01[9];                 /* '<S99>/Scale  [0..1]' */
+  real32_T Limit01[9];                 /* '<S99>/Limit [0..1]' */
   real32_T Select_GateDriver_Assignment_1[3];
-                                   /* '<S100>/Select_GateDriver_Assignment_1' */
+                                   /* '<S102>/Select_GateDriver_Assignment_1' */
   real32_T Select_GateDriver_Assignment_2[3];
-                                   /* '<S100>/Select_GateDriver_Assignment_2' */
+                                   /* '<S102>/Select_GateDriver_Assignment_2' */
   real32_T Select_GateDriver_Assignment_3[3];
-                                   /* '<S100>/Select_GateDriver_Assignment_3' */
+                                   /* '<S102>/Select_GateDriver_Assignment_3' */
   real32_T DutyCycles_switch[9];       /* '<S3>/Manual_DutyCycles_switch' */
   real32_T Deviation;                  /* '<S24>/Deviation' */
   real32_T Product2;                   /* '<S24>/Product2' */
@@ -279,29 +284,30 @@ typedef struct {
   real32_T I_dq_Act[6];                /* '<S1>/Current_Controller' */
   real32_T usrpm;                      /* '<S11>/[1//s] => [rpm]' */
   real32_T Abs_d;                      /* '<S11>/Abs' */
-  real32_T EN_FLT_Switch_1;            /* '<S49>/EN_FLT_Switch_1' */
-  real32_T EN_FLT_Switch_2;            /* '<S49>/EN_FLT_Switch_2' */
-  real32_T EN_FLT_Switch_3;            /* '<S49>/EN_FLT_Switch_3' */
-  real32_T EN_RDY_Switch_1;            /* '<S49>/EN_RDY_Switch_1' */
-  real32_T EN_RDY_Switch_2;            /* '<S49>/EN_RDY_Switch_2' */
-  real32_T EN_RDY_Switch_3;            /* '<S49>/EN_RDY_Switch_3' */
+  real32_T EN_FLT_Switch_1;            /* '<S51>/EN_FLT_Switch_1' */
+  real32_T EN_FLT_Switch_2;            /* '<S51>/EN_FLT_Switch_2' */
+  real32_T EN_FLT_Switch_3;            /* '<S51>/EN_FLT_Switch_3' */
+  real32_T EN_RDY_Switch_1;            /* '<S51>/EN_RDY_Switch_1' */
+  real32_T EN_RDY_Switch_2;            /* '<S51>/EN_RDY_Switch_2' */
+  real32_T EN_RDY_Switch_3;            /* '<S51>/EN_RDY_Switch_3' */
   real32_T TmpSignalConversionAtDiscreteFI[6];
   real32_T U_dq_Act_filt[6];     /* '<S6>/Discrete FIR Filter 20th order Udq' */
-  real32_T IntegStopSwitch2[2];        /* '<S38>/IntegStopSwitch2' */
-  real32_T U_d1_CC;                    /* '<S31>/Gain1' */
-  real32_T U_q1_CC;                    /* '<S31>/Gain2' */
-  real32_T IntegStopSwitch2_o[2];      /* '<S42>/IntegStopSwitch2' */
-  real32_T IntegStopSwitch2_h[2];      /* '<S46>/IntegStopSwitch2' */
+  real32_T OmegaRot6;                  /* '<S31>/OmegaRot6' */
+  real32_T IntegStopSwitch2[2];        /* '<S40>/IntegStopSwitch2' */
+  real32_T U_d1_CC;                    /* '<S32>/Gain1' */
+  real32_T U_q1_CC;                    /* '<S32>/Gain2' */
+  real32_T IntegStopSwitch2_o[2];      /* '<S44>/IntegStopSwitch2' */
+  real32_T IntegStopSwitch2_h[2];      /* '<S48>/IntegStopSwitch2' */
   real32_T I_dq_Act_filt[6];     /* '<S6>/Discrete FIR Filter 20th order Idq' */
-  real32_T Abs_e;                      /* '<S62>/Abs' */
-  real32_T Switch_d;                   /* '<S62>/Switch' */
-  real32_T Add1;                       /* '<S62>/Add1' */
+  real32_T Abs_e;                      /* '<S64>/Abs' */
+  real32_T Switch_d;                   /* '<S64>/Switch' */
+  real32_T Add1;                       /* '<S64>/Add1' */
   real32_T Abs_b;                      /* '<S12>/Abs' */
   real32_T Switch_l;                   /* '<S12>/Switch' */
   real32_T Add1_j;                     /* '<S12>/Add1' */
-  real32_T Abs_f;                      /* '<S95>/Abs' */
-  real32_T Switch_n;                   /* '<S95>/Switch' */
-  real32_T Add1_c;                     /* '<S95>/Add1' */
+  real32_T Abs_f;                      /* '<S97>/Abs' */
+  real32_T Switch_n;                   /* '<S97>/Switch' */
+  real32_T Add1_c;                     /* '<S97>/Add1' */
   real32_T U_d1;                       /* '<S15>/Gain' */
   real32_T U_q1;                       /* '<S15>/Gain1' */
   real32_T U_alpha1;                   /* '<S15>/Gain2' */
@@ -310,87 +316,90 @@ typedef struct {
   real32_T U_q2;                       /* '<S15>/Gain5' */
   real32_T U_d3;                       /* '<S15>/Gain6' */
   real32_T U_q3;                       /* '<S15>/Gain7' */
-  real32_T DutyCycle_u1;               /* '<S100>/DutyCycle_u1' */
-  real32_T DutyCycle_u2;               /* '<S100>/DutyCycle_u2' */
-  real32_T DutyCycle_u3;               /* '<S100>/DutyCycle_u3' */
-  real32_T DutyCycle_v1;               /* '<S100>/DutyCycle_v1' */
-  real32_T DutyCycle_v2;               /* '<S100>/DutyCycle_v2' */
-  real32_T DutyCycle_v3;               /* '<S100>/DutyCycle_v3' */
-  real32_T DutyCycle_w1;               /* '<S100>/DutyCycle_w1' */
-  real32_T DutyCycle_w2;               /* '<S100>/DutyCycle_w2' */
-  real32_T DutyCycle_w3;               /* '<S100>/DutyCycle_w3' */
+  real32_T DutyCycle_u1;               /* '<S102>/DutyCycle_u1' */
+  real32_T DutyCycle_u2;               /* '<S102>/DutyCycle_u2' */
+  real32_T DutyCycle_u3;               /* '<S102>/DutyCycle_u3' */
+  real32_T DutyCycle_v1;               /* '<S102>/DutyCycle_v1' */
+  real32_T DutyCycle_v2;               /* '<S102>/DutyCycle_v2' */
+  real32_T DutyCycle_v3;               /* '<S102>/DutyCycle_v3' */
+  real32_T DutyCycle_w1;               /* '<S102>/DutyCycle_w1' */
+  real32_T DutyCycle_w2;               /* '<S102>/DutyCycle_w2' */
+  real32_T DutyCycle_w3;               /* '<S102>/DutyCycle_w3' */
   real32_T FCF_Cnt;                    /* '<S1>/FCF_Cnt' */
   real32_T Sum_o;                      /* '<S1>/Sum' */
-  real32_T MinMax2;                    /* '<S101>/MinMax2' */
-  real32_T MinMax3;                    /* '<S101>/MinMax3' */
-  real32_T Sum1_o;                     /* '<S101>/Sum1' */
-  real32_T Factor;                     /* '<S101>/Factor' */
-  real32_T DutyCycle_SuperSinus_1[3];  /* '<S101>/DutyCycle_SuperSinus_1' */
-  real32_T MinMax1;                    /* '<S101>/MinMax1' */
-  real32_T MinMax4;                    /* '<S101>/MinMax4' */
-  real32_T Sum2_i;                     /* '<S101>/Sum2' */
-  real32_T Factor1;                    /* '<S101>/Factor1' */
-  real32_T DutyCycle_SuperSinus_2[3];  /* '<S101>/DutyCycle_SuperSinus_2' */
-  real32_T MinMax5;                    /* '<S101>/MinMax5' */
-  real32_T MinMax6;                    /* '<S101>/MinMax6' */
-  real32_T Sum3_k;                     /* '<S101>/Sum3' */
-  real32_T Factor2;                    /* '<S101>/Factor2' */
-  real32_T DutyCycle_SuperSinus_3[3];  /* '<S101>/DutyCycle_SuperSinus_3' */
-  real32_T U_DC2;                      /* '<S99>/U_DC//2' */
-  real32_T AvoidDivBy0;                /* '<S99>/AvoidDivBy0' */
-  real32_T DutyCycle_normed[9];        /* '<S99>/DutyCycle_normalized' */
-  real32_T U_DC2_l;                    /* '<S98>/U_DC//2' */
-  real32_T AvoidDivBy0_f;              /* '<S98>/AvoidDivBy0' */
-  real32_T Square[2];                  /* '<S98>/Square' */
-  real32_T Sum_kr;                     /* '<S98>/Sum' */
-  real32_T Sqrt;                       /* '<S98>/Sqrt' */
-  real32_T Square1[2];                 /* '<S98>/Square1' */
-  real32_T Sum1_a;                     /* '<S98>/Sum1' */
-  real32_T Sqrt1;                      /* '<S98>/Sqrt1' */
-  real32_T Square2[2];                 /* '<S98>/Square2' */
-  real32_T Sum2_iq;                    /* '<S98>/Sum2' */
-  real32_T Sqrt2;                      /* '<S98>/Sqrt2' */
-  real32_T ModInd[3];                  /* '<S98>/Divide3' */
-  real32_T Sign;                       /* '<S95>/Sign' */
-  real32_T Gain1_o;                    /* '<S95>/Gain1' */
+  real32_T MinMax2;                    /* '<S103>/MinMax2' */
+  real32_T MinMax3;                    /* '<S103>/MinMax3' */
+  real32_T Sum1_o;                     /* '<S103>/Sum1' */
+  real32_T Factor;                     /* '<S103>/Factor' */
+  real32_T DutyCycle_SuperSinus_1[3];  /* '<S103>/DutyCycle_SuperSinus_1' */
+  real32_T MinMax1;                    /* '<S103>/MinMax1' */
+  real32_T MinMax4;                    /* '<S103>/MinMax4' */
+  real32_T Sum2_i;                     /* '<S103>/Sum2' */
+  real32_T Factor1;                    /* '<S103>/Factor1' */
+  real32_T DutyCycle_SuperSinus_2[3];  /* '<S103>/DutyCycle_SuperSinus_2' */
+  real32_T MinMax5;                    /* '<S103>/MinMax5' */
+  real32_T MinMax6;                    /* '<S103>/MinMax6' */
+  real32_T Sum3_k;                     /* '<S103>/Sum3' */
+  real32_T Factor2;                    /* '<S103>/Factor2' */
+  real32_T DutyCycle_SuperSinus_3[3];  /* '<S103>/DutyCycle_SuperSinus_3' */
+  real32_T U_DC2;                      /* '<S101>/U_DC//2' */
+  real32_T AvoidDivBy0;                /* '<S101>/AvoidDivBy0' */
+  real32_T DutyCycle_normed[9];        /* '<S101>/DutyCycle_normalized' */
+  real32_T U_DC2_l;                    /* '<S100>/U_DC//2' */
+  real32_T AvoidDivBy0_f;              /* '<S100>/AvoidDivBy0' */
+  real32_T Square[2];                  /* '<S100>/Square' */
+  real32_T Sum_kr;                     /* '<S100>/Sum' */
+  real32_T Sqrt;                       /* '<S100>/Sqrt' */
+  real32_T Square1[2];                 /* '<S100>/Square1' */
+  real32_T Sum1_a;                     /* '<S100>/Sum1' */
+  real32_T Sqrt1;                      /* '<S100>/Sqrt1' */
+  real32_T Square2[2];                 /* '<S100>/Square2' */
+  real32_T Sum2_iq;                    /* '<S100>/Sum2' */
+  real32_T Sqrt2;                      /* '<S100>/Sqrt2' */
+  real32_T ModInd[3];                  /* '<S100>/Divide3' */
+  real32_T Sign;                       /* '<S97>/Sign' */
+  real32_T Gain1_o;                    /* '<S97>/Gain1' */
   real32_T Use_If_Starter;             /* '<S1>/Use_If_Starter' */
   real32_T Selectphicalc2;             /* '<S4>/Selectphicalc2' */
   real32_T Switch1_d;                  /* '<S26>/Switch1' */
   real32_T Switch2_f;                  /* '<S26>/Switch2' */
   real32_T Sum3_h;                     /* '<S26>/Sum3' */
   real32_T Sum2_l;                     /* '<S26>/Sum2' */
-  real32_T Gain_fw;                    /* '<S96>/Gain' */
-  real32_T Sign_p;                     /* '<S96>/Sign' */
-  real32_T Abs_d3;                     /* '<S96>/Abs' */
-  real32_T Saturation1;                /* '<S96>/Saturation1' */
-  real32_T Product_j;                  /* '<S96>/Product' */
+  real32_T Gain_fw;                    /* '<S98>/Gain' */
+  real32_T Sign_p;                     /* '<S98>/Sign' */
+  real32_T Abs_d3;                     /* '<S98>/Abs' */
+  real32_T Saturation1;                /* '<S98>/Saturation1' */
+  real32_T Product_j;                  /* '<S98>/Product' */
   real32_T Sum1_n;                     /* '<S14>/Sum1' */
   real32_T Sum2_d;                     /* '<S14>/Sum2' */
   real32_T Sign_n;                     /* '<S12>/Sign' */
   real32_T Gain1_h;                    /* '<S12>/Gain1' */
-  real32_T Sign_d;                     /* '<S62>/Sign' */
-  real32_T Gain1_j;                    /* '<S62>/Gain1' */
-  real32_T IntegStopSwitch3[2];        /* '<S46>/IntegStopSwitch3' */
-  real32_T IntSum2[2];                 /* '<S46>/IntSum2' */
-  real32_T FOC_IntegDamp[2];           /* '<S46>/FOC_IntegDamp' */
-  real32_T antiWindupProd[2];          /* '<S45>/antiWindupProd' */
-  real32_T IntegStopSwitch1[2];        /* '<S46>/IntegStopSwitch1' */
-  real32_T Product2_e[2];              /* '<S46>/Product2' */
-  real32_T IntSum1[2];                 /* '<S46>/IntSum1' */
-  real32_T IntegStopSwitch3_n[2];      /* '<S42>/IntegStopSwitch3' */
-  real32_T IntSum2_f[2];               /* '<S42>/IntSum2' */
-  real32_T FOC_IntegDamp_g[2];         /* '<S42>/FOC_IntegDamp' */
-  real32_T antiWindupProd_d[2];        /* '<S41>/antiWindupProd' */
-  real32_T IntegStopSwitch1_g[2];      /* '<S42>/IntegStopSwitch1' */
-  real32_T Product2_b[2];              /* '<S42>/Product2' */
-  real32_T IntSum1_l[2];               /* '<S42>/IntSum1' */
-  real32_T IntegStopSwitch3_h[2];      /* '<S38>/IntegStopSwitch3' */
-  real32_T IntSum2_j[2];               /* '<S38>/IntSum2' */
-  real32_T FOC_IntegDamp_c[2];         /* '<S38>/FOC_IntegDamp' */
-  real32_T antiWindupProd_o[2];        /* '<S37>/antiWindupProd' */
-  real32_T IntegStopSwitch1_f[2];      /* '<S38>/IntegStopSwitch1' */
-  real32_T Product2_j[2];              /* '<S38>/Product2' */
-  real32_T IntSum1_p[2];               /* '<S38>/IntSum1' */
+  real32_T Sign_d;                     /* '<S64>/Sign' */
+  real32_T Gain1_j;                    /* '<S64>/Gain1' */
+  real32_T IntegStopSwitch3[2];        /* '<S48>/IntegStopSwitch3' */
+  real32_T IntSum2[2];                 /* '<S48>/IntSum2' */
+  real32_T FOC_IntegDamp[2];           /* '<S48>/FOC_IntegDamp' */
+  real32_T antiWindupProd[2];          /* '<S47>/antiWindupProd' */
+  real32_T IntegStopSwitch1[2];        /* '<S48>/IntegStopSwitch1' */
+  real32_T Product2_e[2];              /* '<S48>/Product2' */
+  real32_T IntSum1[2];                 /* '<S48>/IntSum1' */
+  real32_T IntegStopSwitch3_n[2];      /* '<S44>/IntegStopSwitch3' */
+  real32_T IntSum2_f[2];               /* '<S44>/IntSum2' */
+  real32_T FOC_IntegDamp_g[2];         /* '<S44>/FOC_IntegDamp' */
+  real32_T antiWindupProd_d[2];        /* '<S43>/antiWindupProd' */
+  real32_T IntegStopSwitch1_g[2];      /* '<S44>/IntegStopSwitch1' */
+  real32_T Product2_b[2];              /* '<S44>/Product2' */
+  real32_T IntSum1_l[2];               /* '<S44>/IntSum1' */
+  real32_T IntegStopSwitch3_h[2];      /* '<S40>/IntegStopSwitch3' */
+  real32_T IntSum2_j[2];               /* '<S40>/IntSum2' */
+  real32_T FOC_IntegDamp_c[2];         /* '<S40>/FOC_IntegDamp' */
+  real32_T antiWindupProd_o[2];        /* '<S39>/antiWindupProd' */
+  real32_T IntegStopSwitch1_f[2];      /* '<S40>/IntegStopSwitch1' */
+  real32_T Product2_j[2];              /* '<S40>/Product2' */
+  real32_T IntSum1_p[2];               /* '<S40>/IntSum1' */
+  real32_T Add1_o[2];                  /* '<S31>/Add1' */
+  real32_T correctiond;                /* '<S31>/MATLAB Function' */
+  real32_T correctionq;                /* '<S31>/MATLAB Function' */
   real32_T Sum3_d;                     /* '<S30>/Sum3' */
   real32_T Sum2_ez;                    /* '<S30>/Sum2' */
   real32_T PhiInverted;                /* '<S25>/PhiInverted' */
@@ -404,35 +413,35 @@ typedef struct {
   real32_T Divide[9];                  /* '<S22>/Divide' */
   real32_T Product_cdf[9];             /* '<S23>/Product' */
   real32_T Sum2_k[9];                  /* '<S23>/Sum2' */
-  uint8_T Compare;                     /* '<S48>/Compare' */
-  uint8_T Compare_k;                   /* '<S47>/Compare' */
-  uint8_T Compare_g;                   /* '<S44>/Compare' */
-  uint8_T Compare_i;                   /* '<S43>/Compare' */
-  uint8_T Compare_o;                   /* '<S40>/Compare' */
-  uint8_T Compare_f;                   /* '<S39>/Compare' */
-  boolean_T Compare_e;                 /* '<S80>/Compare' */
-  boolean_T LogicalOperator2;          /* '<S64>/Logical Operator2' */
-  boolean_T LogicalOperator4;          /* '<S64>/Logical Operator4' */
-  boolean_T Compare_d;                 /* '<S87>/Compare' */
-  boolean_T Uk1;                       /* '<S83>/Delay Input1' */
-  boolean_T Selectphicalc3;            /* '<S64>/Selectphicalc3' */
-  boolean_T Memory;                    /* '<S84>/Memory' */
-  boolean_T Logic[2];                  /* '<S84>/Logic' */
-  boolean_T Compare_n;                 /* '<S81>/Compare' */
-  boolean_T LogicalOperator3;          /* '<S64>/Logical Operator3' */
-  boolean_T Compare_iz;                /* '<S86>/Compare' */
-  boolean_T Uk1_m;                     /* '<S82>/Delay Input1' */
-  boolean_T Selectphicalc4;            /* '<S64>/Selectphicalc4' */
-  boolean_T Memory_o;                  /* '<S85>/Memory' */
-  boolean_T Logic_c[2];                /* '<S85>/Logic' */
-  boolean_T Compare_j;                 /* '<S65>/Compare' */
-  boolean_T LogicalOperator3_i;        /* '<S63>/Logical Operator3' */
-  boolean_T Compare_in;                /* '<S70>/Compare' */
-  boolean_T Uk1_g;                     /* '<S67>/Delay Input1' */
-  boolean_T Selectphicalc2_m;          /* '<S63>/Selectphicalc2' */
-  boolean_T Memory_n;                  /* '<S69>/Memory' */
-  boolean_T Logic_a[2];                /* '<S69>/Logic' */
-  boolean_T I_ph_Overcurrent_Error;    /* '<S63>/Selectphicalc1' */
+  uint8_T Compare;                     /* '<S50>/Compare' */
+  uint8_T Compare_k;                   /* '<S49>/Compare' */
+  uint8_T Compare_g;                   /* '<S46>/Compare' */
+  uint8_T Compare_i;                   /* '<S45>/Compare' */
+  uint8_T Compare_o;                   /* '<S42>/Compare' */
+  uint8_T Compare_f;                   /* '<S41>/Compare' */
+  boolean_T Compare_e;                 /* '<S82>/Compare' */
+  boolean_T LogicalOperator2;          /* '<S66>/Logical Operator2' */
+  boolean_T LogicalOperator4;          /* '<S66>/Logical Operator4' */
+  boolean_T Compare_d;                 /* '<S89>/Compare' */
+  boolean_T Uk1;                       /* '<S85>/Delay Input1' */
+  boolean_T Selectphicalc3;            /* '<S66>/Selectphicalc3' */
+  boolean_T Memory;                    /* '<S86>/Memory' */
+  boolean_T Logic[2];                  /* '<S86>/Logic' */
+  boolean_T Compare_n;                 /* '<S83>/Compare' */
+  boolean_T LogicalOperator3;          /* '<S66>/Logical Operator3' */
+  boolean_T Compare_iz;                /* '<S88>/Compare' */
+  boolean_T Uk1_m;                     /* '<S84>/Delay Input1' */
+  boolean_T Selectphicalc4;            /* '<S66>/Selectphicalc4' */
+  boolean_T Memory_o;                  /* '<S87>/Memory' */
+  boolean_T Logic_c[2];                /* '<S87>/Logic' */
+  boolean_T Compare_j;                 /* '<S67>/Compare' */
+  boolean_T LogicalOperator3_i;        /* '<S65>/Logical Operator3' */
+  boolean_T Compare_in;                /* '<S72>/Compare' */
+  boolean_T Uk1_g;                     /* '<S69>/Delay Input1' */
+  boolean_T Selectphicalc2_m;          /* '<S65>/Selectphicalc2' */
+  boolean_T Memory_n;                  /* '<S71>/Memory' */
+  boolean_T Logic_a[2];                /* '<S71>/Logic' */
+  boolean_T I_ph_Overcurrent_Error;    /* '<S65>/Selectphicalc1' */
   boolean_T OC_OV_UV_ERROR;            /* '<S10>/Logical Operator' */
   boolean_T LogicalOperator2_a;        /* '<S1>/Logical Operator2' */
   boolean_T LogicalOperator1;          /* '<S1>/Logical Operator1' */
@@ -441,80 +450,80 @@ typedef struct {
   boolean_T Sprung1;                   /* '<S27>/Sprung?1' */
   boolean_T DataTypeConversion14;      /* '<S13>/Data Type Conversion14' */
   boolean_T LogicalOperator1_a;        /* '<S13>/Logical Operator1' */
-  boolean_T Compare_jj;                /* '<S94>/Compare' */
-  boolean_T Uk1_c;                     /* '<S92>/Delay Input1' */
-  boolean_T FixPtRelationalOperator;   /* '<S92>/FixPt Relational Operator' */
-  boolean_T Memory_o2;                 /* '<S93>/Memory' */
-  boolean_T Logic_a0[2];               /* '<S93>/Logic' */
+  boolean_T Compare_jj;                /* '<S96>/Compare' */
+  boolean_T Uk1_c;                     /* '<S94>/Delay Input1' */
+  boolean_T FixPtRelationalOperator;   /* '<S94>/FixPt Relational Operator' */
+  boolean_T Memory_o2;                 /* '<S95>/Memory' */
+  boolean_T Logic_a0[2];               /* '<S95>/Logic' */
   boolean_T PyroFuse_Sys1_Error;       /* '<S13>/Selectphicalc2' */
   boolean_T LogicalOperator3_h;        /* '<S13>/Logical Operator3' */
   boolean_T FOC_Enable_Bus[3];         /* '<S6>/Logical Operator1' */
-  boolean_T Compare_c;                 /* '<S88>/Compare' */
+  boolean_T Compare_c;                 /* '<S90>/Compare' */
   boolean_T LogicalOperator3_p;        /* '<S11>/Logical Operator3' */
-  boolean_T Compare_gt;                /* '<S91>/Compare' */
-  boolean_T Uk1_h;                     /* '<S89>/Delay Input1' */
+  boolean_T Compare_gt;                /* '<S93>/Compare' */
+  boolean_T Uk1_h;                     /* '<S91>/Delay Input1' */
   boolean_T Selectphicalc2_d;          /* '<S11>/Selectphicalc2' */
-  boolean_T Memory_k;                  /* '<S90>/Memory' */
-  boolean_T Logic_e[2];                /* '<S90>/Logic' */
+  boolean_T Memory_k;                  /* '<S92>/Memory' */
+  boolean_T Logic_e[2];                /* '<S92>/Logic' */
   boolean_T Overspeed_Error;           /* '<S11>/Selectphicalc1' */
   boolean_T DataSourceSwitch;          /* '<S7>/DataSourceSwitch' */
-  boolean_T Compare_l;                 /* '<S56>/Compare' */
-  boolean_T Compare_fp;                /* '<S57>/Compare' */
-  boolean_T Compare_g1;                /* '<S58>/Compare' */
-  boolean_T Compare_e0;                /* '<S59>/Compare' */
-  boolean_T Compare_nd;                /* '<S60>/Compare' */
-  boolean_T Compare_cf;                /* '<S61>/Compare' */
-  boolean_T Gate_Driver_FLT_RDY_Error; /* '<S49>/Logical Operator3' */
+  boolean_T Compare_l;                 /* '<S58>/Compare' */
+  boolean_T Compare_fp;                /* '<S59>/Compare' */
+  boolean_T Compare_g1;                /* '<S60>/Compare' */
+  boolean_T Compare_e0;                /* '<S61>/Compare' */
+  boolean_T Compare_nd;                /* '<S62>/Compare' */
+  boolean_T Compare_cf;                /* '<S63>/Compare' */
+  boolean_T Gate_Driver_FLT_RDY_Error; /* '<S51>/Logical Operator3' */
   boolean_T LogicalOperator3_pp;       /* '<S7>/Logical Operator3' */
   boolean_T FOC_Enable_PWM[3];         /* '<S7>/Enable_PWM_' */
   boolean_T FCF_Error;                 /* '<S7>/Logical Operator6' */
-  boolean_T Compare_gv[9];             /* '<S66>/Compare' */
-  boolean_T Memory_f;                  /* '<S71>/Memory' */
-  boolean_T Logic_g[2];                /* '<S71>/Logic' */
-  boolean_T Memory_b;                  /* '<S72>/Memory' */
-  boolean_T Logic_i[2];                /* '<S72>/Logic' */
-  boolean_T Memory_ok;                 /* '<S73>/Memory' */
-  boolean_T Logic_b[2];                /* '<S73>/Logic' */
-  boolean_T Memory_c;                  /* '<S74>/Memory' */
-  boolean_T Logic_p[2];                /* '<S74>/Logic' */
-  boolean_T Memory_g;                  /* '<S75>/Memory' */
-  boolean_T Logic_d[2];                /* '<S75>/Logic' */
-  boolean_T Memory_j;                  /* '<S76>/Memory' */
-  boolean_T Logic_ev[2];               /* '<S76>/Logic' */
-  boolean_T Memory_nb;                 /* '<S77>/Memory' */
-  boolean_T Logic_bw[2];               /* '<S77>/Logic' */
-  boolean_T Memory_kp;                 /* '<S78>/Memory' */
-  boolean_T Logic_ag[2];               /* '<S78>/Logic' */
-  boolean_T Memory_p;                  /* '<S79>/Memory' */
-  boolean_T Logic_f[2];                /* '<S79>/Logic' */
-  boolean_T FixPtRelationalOperator_f; /* '<S89>/FixPt Relational Operator' */
-  boolean_T FixPtRelationalOperator_m; /* '<S82>/FixPt Relational Operator' */
-  boolean_T FixPtRelationalOperator_j; /* '<S83>/FixPt Relational Operator' */
-  boolean_T FixPtRelationalOperator_h; /* '<S67>/FixPt Relational Operator' */
+  boolean_T Compare_gv[9];             /* '<S68>/Compare' */
+  boolean_T Memory_f;                  /* '<S73>/Memory' */
+  boolean_T Logic_g[2];                /* '<S73>/Logic' */
+  boolean_T Memory_b;                  /* '<S74>/Memory' */
+  boolean_T Logic_i[2];                /* '<S74>/Logic' */
+  boolean_T Memory_ok;                 /* '<S75>/Memory' */
+  boolean_T Logic_b[2];                /* '<S75>/Logic' */
+  boolean_T Memory_c;                  /* '<S76>/Memory' */
+  boolean_T Logic_p[2];                /* '<S76>/Logic' */
+  boolean_T Memory_g;                  /* '<S77>/Memory' */
+  boolean_T Logic_d[2];                /* '<S77>/Logic' */
+  boolean_T Memory_j;                  /* '<S78>/Memory' */
+  boolean_T Logic_ev[2];               /* '<S78>/Logic' */
+  boolean_T Memory_nb;                 /* '<S79>/Memory' */
+  boolean_T Logic_bw[2];               /* '<S79>/Logic' */
+  boolean_T Memory_kp;                 /* '<S80>/Memory' */
+  boolean_T Logic_ag[2];               /* '<S80>/Logic' */
+  boolean_T Memory_p;                  /* '<S81>/Memory' */
+  boolean_T Logic_f[2];                /* '<S81>/Logic' */
+  boolean_T FixPtRelationalOperator_f; /* '<S91>/FixPt Relational Operator' */
+  boolean_T FixPtRelationalOperator_m; /* '<S84>/FixPt Relational Operator' */
+  boolean_T FixPtRelationalOperator_j; /* '<S85>/FixPt Relational Operator' */
+  boolean_T FixPtRelationalOperator_h; /* '<S69>/FixPt Relational Operator' */
   boolean_T LogicalOperator1_i;        /* '<S7>/Logical Operator1' */
-  boolean_T AntiWindupLE;              /* '<S45>/AntiWindupLE' */
-  boolean_T AntiWindupOR_q;            /* '<S45>/AntiWindupOR_q' */
-  boolean_T AntiWindupOR_d;            /* '<S45>/AntiWindupOR_d' */
-  boolean_T AntiWindupLE_f;            /* '<S41>/AntiWindupLE' */
-  boolean_T AntiWindupOR_q_l;          /* '<S41>/AntiWindupOR_q' */
-  boolean_T AntiWindupOR_d_m;          /* '<S41>/AntiWindupOR_d' */
-  boolean_T AntiWindupLE_l;            /* '<S37>/AntiWindupLE' */
-  boolean_T AntiWindupOR_q_o;          /* '<S37>/AntiWindupOR_q' */
-  boolean_T AntiWindupOR_d_e;          /* '<S37>/AntiWindupOR_d' */
+  boolean_T AntiWindupLE;              /* '<S47>/AntiWindupLE' */
+  boolean_T AntiWindupOR_q;            /* '<S47>/AntiWindupOR_q' */
+  boolean_T AntiWindupOR_d;            /* '<S47>/AntiWindupOR_d' */
+  boolean_T AntiWindupLE_f;            /* '<S43>/AntiWindupLE' */
+  boolean_T AntiWindupOR_q_l;          /* '<S43>/AntiWindupOR_q' */
+  boolean_T AntiWindupOR_d_m;          /* '<S43>/AntiWindupOR_d' */
+  boolean_T AntiWindupLE_l;            /* '<S39>/AntiWindupLE' */
+  boolean_T AntiWindupOR_q_o;          /* '<S39>/AntiWindupOR_q' */
+  boolean_T AntiWindupOR_d_e;          /* '<S39>/AntiWindupOR_d' */
 } B_FOC_FCF_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   real32_T DiscreteTransferFcn_states; /* '<S14>/Discrete Transfer Fcn' */
-  real32_T UnitDelay_DSTATE;           /* '<S95>/Unit Delay' */
+  real32_T UnitDelay_DSTATE;           /* '<S97>/Unit Delay' */
   real32_T UnitDelay1_DSTATE;          /* '<S28>/Unit Delay1' */
   real32_T UnitDelay_DSTATE_h;         /* '<S27>/Unit Delay' */
   real32_T UnitDelay3_DSTATE;          /* '<S24>/Unit Delay3' */
   real32_T UnitDelay_DSTATE_p;         /* '<S12>/Unit Delay' */
-  real32_T UnitDelay_DSTATE_f;         /* '<S62>/Unit Delay' */
-  real32_T IntegDelay1_DSTATE[2];      /* '<S38>/IntegDelay1' */
-  real32_T IntegDelay1_DSTATE_p[2];    /* '<S42>/IntegDelay1' */
-  real32_T IntegDelay1_DSTATE_h[2];    /* '<S46>/IntegDelay1' */
+  real32_T UnitDelay_DSTATE_f;         /* '<S64>/Unit Delay' */
+  real32_T IntegDelay1_DSTATE[2];      /* '<S40>/IntegDelay1' */
+  real32_T IntegDelay1_DSTATE_p[2];    /* '<S44>/IntegDelay1' */
+  real32_T IntegDelay1_DSTATE_h[2];    /* '<S48>/IntegDelay1' */
   real32_T UnitDelay1_DSTATE_i;        /* '<S29>/Unit Delay1' */
   real32_T DiscreteFIRFilter20thorderUdq_s[114];
                                  /* '<S6>/Discrete FIR Filter 20th order Udq' */
@@ -526,25 +535,28 @@ typedef struct {
                                  /* '<S6>/Discrete FIR Filter 20th order Udq' */
   int32_T DiscreteFIRFilter20thorderIdq_c;
                                  /* '<S6>/Discrete FIR Filter 20th order Idq' */
-  boolean_T DelayInput1_DSTATE;        /* '<S83>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_g;      /* '<S82>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_l;      /* '<S67>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_f;      /* '<S92>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_e;      /* '<S89>/Delay Input1' */
-  boolean_T Memory_PreviousInput;      /* '<S84>/Memory' */
-  boolean_T Memory_PreviousInput_e;    /* '<S85>/Memory' */
-  boolean_T Memory_PreviousInput_j;    /* '<S69>/Memory' */
-  boolean_T Memory_PreviousInput_g;    /* '<S93>/Memory' */
-  boolean_T Memory_PreviousInput_i;    /* '<S90>/Memory' */
-  boolean_T Memory_PreviousInput_n;    /* '<S71>/Memory' */
-  boolean_T Memory_PreviousInput_o;    /* '<S72>/Memory' */
-  boolean_T Memory_PreviousInput_nm;   /* '<S73>/Memory' */
-  boolean_T Memory_PreviousInput_ef;   /* '<S74>/Memory' */
-  boolean_T Memory_PreviousInput_c;    /* '<S75>/Memory' */
-  boolean_T Memory_PreviousInput_d;    /* '<S76>/Memory' */
-  boolean_T Memory_PreviousInput_os;   /* '<S77>/Memory' */
-  boolean_T Memory_PreviousInput_f;    /* '<S78>/Memory' */
-  boolean_T Memory_PreviousInput_b;    /* '<S79>/Memory' */
+  real32_T correctionCurve_d[3150];    /* '<S31>/Data Store Memory1' */
+  real32_T correctionCurve_q[3150];    /* '<S31>/Data Store Memory2' */
+  real32_T step;                       /* '<S31>/MATLAB Function' */
+  boolean_T DelayInput1_DSTATE;        /* '<S85>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_g;      /* '<S84>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_l;      /* '<S69>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_f;      /* '<S94>/Delay Input1' */
+  boolean_T DelayInput1_DSTATE_e;      /* '<S91>/Delay Input1' */
+  boolean_T Memory_PreviousInput;      /* '<S86>/Memory' */
+  boolean_T Memory_PreviousInput_e;    /* '<S87>/Memory' */
+  boolean_T Memory_PreviousInput_j;    /* '<S71>/Memory' */
+  boolean_T Memory_PreviousInput_g;    /* '<S95>/Memory' */
+  boolean_T Memory_PreviousInput_i;    /* '<S92>/Memory' */
+  boolean_T Memory_PreviousInput_n;    /* '<S73>/Memory' */
+  boolean_T Memory_PreviousInput_o;    /* '<S74>/Memory' */
+  boolean_T Memory_PreviousInput_nm;   /* '<S75>/Memory' */
+  boolean_T Memory_PreviousInput_ef;   /* '<S76>/Memory' */
+  boolean_T Memory_PreviousInput_c;    /* '<S77>/Memory' */
+  boolean_T Memory_PreviousInput_d;    /* '<S78>/Memory' */
+  boolean_T Memory_PreviousInput_os;   /* '<S79>/Memory' */
+  boolean_T Memory_PreviousInput_f;    /* '<S80>/Memory' */
+  boolean_T Memory_PreviousInput_b;    /* '<S81>/Memory' */
 } DW_FOC_FCF_T;
 
 /* External inputs (root inport signals with default storage) */
@@ -566,27 +578,27 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T ENABLE_GateDriver_FLT_Error_Sys1;
                                    /* Variable: ENABLE_GateDriver_FLT_Error_Sys1
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_FLT_Error_Sys1'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_FLT_Error_Sys1'
                                     */
   real32_T ENABLE_GateDriver_FLT_Error_Sys2;
                                    /* Variable: ENABLE_GateDriver_FLT_Error_Sys2
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_FLT_Error_Sys2'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_FLT_Error_Sys2'
                                     */
   real32_T ENABLE_GateDriver_FLT_Error_Sys3;
                                    /* Variable: ENABLE_GateDriver_FLT_Error_Sys3
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_FLT_Error_Sys3'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_FLT_Error_Sys3'
                                     */
   real32_T ENABLE_GateDriver_RDY_Error_Sys1;
                                    /* Variable: ENABLE_GateDriver_RDY_Error_Sys1
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_RDY_Error_Sys1'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_RDY_Error_Sys1'
                                     */
   real32_T ENABLE_GateDriver_RDY_Error_Sys2;
                                    /* Variable: ENABLE_GateDriver_RDY_Error_Sys2
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_RDY_Error_Sys2'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_RDY_Error_Sys2'
                                     */
   real32_T ENABLE_GateDriver_RDY_Error_Sys3;
                                    /* Variable: ENABLE_GateDriver_RDY_Error_Sys3
-                                    * Referenced by: '<S49>/ENABLE_GateDriver_RDY_Error_Sys3'
+                                    * Referenced by: '<S51>/ENABLE_GateDriver_RDY_Error_Sys3'
                                     */
   real32_T FOC_9ph_AngleShift;         /* Variable: FOC_9ph_AngleShift
                                         * Referenced by:
@@ -611,21 +623,24 @@ struct P_FOC_FCF_T_ {
   real32_T FOC_Calibrate_I_ph;         /* Variable: FOC_Calibrate_I_ph
                                         * Referenced by: '<S20>/calibrateSensors'
                                         */
+  real32_T FOC_ENABLE_HC;              /* Variable: FOC_ENABLE_HC
+                                        * Referenced by: '<S31>/OmegaRot5'
+                                        */
   real32_T FOC_ENABLE_Overcurrent_I_uvw;/* Variable: FOC_ENABLE_Overcurrent_I_uvw
-                                         * Referenced by: '<S63>/FOC_ENABLE_Overcurrent_I_uvw1'
+                                         * Referenced by: '<S65>/FOC_ENABLE_Overcurrent_I_uvw1'
                                          */
   real32_T FOC_ENABLE_Overspeed;       /* Variable: FOC_ENABLE_Overspeed
                                         * Referenced by: '<S11>/FOC_ENABLE_Overcurrent_I_uvw1'
                                         */
   real32_T FOC_ENABLE_Overvoltage_U_DC;/* Variable: FOC_ENABLE_Overvoltage_U_DC
-                                        * Referenced by: '<S64>/FOC_ENABLE_Overvoltage_U_DC1'
+                                        * Referenced by: '<S66>/FOC_ENABLE_Overvoltage_U_DC1'
                                         */
   real32_T FOC_ENABLE_PyroFuse_Deactivate_Sys;
                                  /* Variable: FOC_ENABLE_PyroFuse_Deactivate_Sys
                                   * Referenced by: '<S13>/FOC_ENABLE_PyroFuse_Deactivate_Sys'
                                   */
   real32_T FOC_ENABLE_Undervoltage_U_DC;/* Variable: FOC_ENABLE_Undervoltage_U_DC
-                                         * Referenced by: '<S64>/FOC_ENABLE_Undervoltage_U_DC1'
+                                         * Referenced by: '<S66>/FOC_ENABLE_Undervoltage_U_DC1'
                                          */
   real32_T FOC_Enable;                 /* Variable: FOC_Enable
                                         * Referenced by: '<S1>/Enable'
@@ -644,32 +659,32 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T FOC_IntegDamp;              /* Variable: FOC_IntegDamp
                                         * Referenced by:
-                                        *   '<S38>/FOC_IntegDamp'
-                                        *   '<S42>/FOC_IntegDamp'
-                                        *   '<S46>/FOC_IntegDamp'
+                                        *   '<S40>/FOC_IntegDamp'
+                                        *   '<S44>/FOC_IntegDamp'
+                                        *   '<S48>/FOC_IntegDamp'
                                         */
   real32_T FOC_KI;                     /* Variable: FOC_KI
                                         * Referenced by:
-                                        *   '<S38>/FOC_KI'
-                                        *   '<S42>/FOC_KI'
-                                        *   '<S46>/FOC_KI'
+                                        *   '<S40>/FOC_KI'
+                                        *   '<S44>/FOC_KI'
+                                        *   '<S48>/FOC_KI'
                                         */
   real32_T FOC_KP;                     /* Variable: FOC_KP
                                         * Referenced by:
-                                        *   '<S38>/FOC_KP1'
-                                        *   '<S42>/FOC_KP1'
-                                        *   '<S46>/FOC_KP1'
+                                        *   '<S40>/FOC_KP1'
+                                        *   '<S44>/FOC_KP1'
+                                        *   '<S48>/FOC_KP1'
                                         */
   real32_T FOC_LIMIT_Overcurrent_I_uvw;/* Variable: FOC_LIMIT_Overcurrent_I_uvw
                                         * Referenced by:
-                                        *   '<S65>/Constant'
-                                        *   '<S66>/Constant'
+                                        *   '<S67>/Constant'
+                                        *   '<S68>/Constant'
                                         */
   real32_T FOC_LIMIT_Overvoltage_U_DC; /* Variable: FOC_LIMIT_Overvoltage_U_DC
-                                        * Referenced by: '<S81>/Constant'
+                                        * Referenced by: '<S83>/Constant'
                                         */
   real32_T FOC_LIMIT_Undervoltage_U_DC;/* Variable: FOC_LIMIT_Undervoltage_U_DC
-                                        * Referenced by: '<S80>/Constant'
+                                        * Referenced by: '<S82>/Constant'
                                         */
   real32_T FOC_MANUAL_Error;           /* Variable: FOC_MANUAL_Error
                                         * Referenced by: '<S1>/FOC_MANUAL_Error'
@@ -679,9 +694,9 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T FOC_MaxModInd;              /* Variable: FOC_MaxModInd
                                         * Referenced by:
-                                        *   '<S37>/FOC_MaxModInd'
-                                        *   '<S41>/FOC_MaxModInd'
-                                        *   '<S45>/FOC_MaxModInd'
+                                        *   '<S39>/FOC_MaxModInd'
+                                        *   '<S43>/FOC_MaxModInd'
+                                        *   '<S47>/FOC_MaxModInd'
                                         */
   real32_T FOC_Mode_Intern;            /* Variable: FOC_Mode_Intern
                                         * Referenced by: '<S1>/FOC_Mode_Intern'
@@ -692,20 +707,26 @@ struct P_FOC_FCF_T_ {
   real32_T FOC_PhiSensorTdead;         /* Variable: FOC_PhiSensorTdead
                                         * Referenced by: '<S24>/DeadTimeCompensation'
                                         */
+  real32_T FOC_READ_ILR_MEMORY;        /* Variable: FOC_READ_ILR_MEMORY
+                                        * Referenced by: '<S31>/OmegaRot6'
+                                        */
+  real32_T FOC_RESET_ILR;              /* Variable: FOC_RESET_ILR
+                                        * Referenced by: '<S31>/OmegaRot2'
+                                        */
   real32_T FOC_RESET_OC_Error;         /* Variable: FOC_RESET_OC_Error
-                                        * Referenced by: '<S63>/Reset_OC_Error'
+                                        * Referenced by: '<S65>/Reset_OC_Error'
                                         */
   real32_T FOC_RESET_OS_Error;         /* Variable: FOC_RESET_OS_Error
                                         * Referenced by: '<S11>/Reset_OS_Error'
                                         */
   real32_T FOC_RESET_OV_Error;         /* Variable: FOC_RESET_OV_Error
-                                        * Referenced by: '<S64>/Reset_OV_Error'
+                                        * Referenced by: '<S66>/Reset_OV_Error'
                                         */
   real32_T FOC_RESET_PF_Error;         /* Variable: FOC_RESET_PF_Error
                                         * Referenced by: '<S13>/Reset_PF_Error'
                                         */
   real32_T FOC_RESET_UV_Error;         /* Variable: FOC_RESET_UV_Error
-                                        * Referenced by: '<S64>/Reset_UV_Error'
+                                        * Referenced by: '<S66>/Reset_UV_Error'
                                         */
   real32_T FOC_SELECT_InvertAngle;     /* Variable: FOC_SELECT_InvertAngle
                                         * Referenced by: '<S4>/FOC_Invert_Encoder'
@@ -716,13 +737,13 @@ struct P_FOC_FCF_T_ {
                                      */
   real32_T FOC_SELECT_Voltage_Assignment_UVW;
                                   /* Variable: FOC_SELECT_Voltage_Assignment_UVW
-                                   * Referenced by: '<S100>/Constant6'
+                                   * Referenced by: '<S102>/Constant6'
                                    */
   real32_T FOC_Uf_U_max;               /* Variable: FOC_Uf_U_max
-                                        * Referenced by: '<S96>/Saturation1'
+                                        * Referenced by: '<S98>/Saturation1'
                                         */
   real32_T FOC_Uf_U_min;               /* Variable: FOC_Uf_U_min
-                                        * Referenced by: '<S96>/Saturation1'
+                                        * Referenced by: '<S98>/Saturation1'
                                         */
   real32_T FOC_Uf_Ud;                  /* Variable: FOC_Uf_Ud
                                         * Referenced by: '<S14>/Uf_Ud'
@@ -731,7 +752,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S14>/Uf_w_el'
                                         */
   real32_T FOC_Uf_m;                   /* Variable: FOC_Uf_m
-                                        * Referenced by: '<S96>/Gain'
+                                        * Referenced by: '<S98>/Gain'
                                         */
   real32_T FOC_output_trafo_delay;     /* Variable: FOC_output_trafo_delay
                                         * Referenced by: '<S5>/FOC_output_trafo_delay'
@@ -739,8 +760,23 @@ struct P_FOC_FCF_T_ {
   real32_T FOC_phi_offset;             /* Variable: FOC_phi_offset
                                         * Referenced by: '<S4>/Constant'
                                         */
+  real32_T ILR_InvImp_d[3];            /* Variable: ILR_InvImp_d
+                                        * Referenced by: '<S31>/InvImp_d'
+                                        */
+  real32_T ILR_InvImp_q[3];            /* Variable: ILR_InvImp_q
+                                        * Referenced by: '<S31>/InvImp_d1'
+                                        */
+  real32_T ILR_NVec[9];                /* Variable: ILR_NVec
+                                        * Referenced by: '<S31>/NVec'
+                                        */
+  real32_T ILR_learnFactor;            /* Variable: ILR_learnFactor
+                                        * Referenced by: '<S31>/LearningFactor'
+                                        */
+  real32_T ILR_unlearnFactor;          /* Variable: ILR_unlearnFactor
+                                        * Referenced by: '<S31>/unlearnFactor'
+                                        */
   real32_T LIMIT_MAX_Overspeed;        /* Variable: LIMIT_MAX_Overspeed
-                                        * Referenced by: '<S88>/Constant'
+                                        * Referenced by: '<S90>/Constant'
                                         */
   real32_T Offset_ADC_Ph1;             /* Variable: Offset_ADC_Ph1
                                         * Referenced by: '<S20>/Offset_ADC_Ph1'
@@ -768,6 +804,12 @@ struct P_FOC_FCF_T_ {
                                         */
   real32_T Offset_ADC_Ph9;             /* Variable: Offset_ADC_Ph9
                                         * Referenced by: '<S20>/Offset_ADC_Ph9'
+                                        */
+  real32_T correctionCurve_ini_d[3150];/* Variable: correctionCurve_ini_d
+                                        * Referenced by: '<S31>/correctionCurve_ini_d '
+                                        */
+  real32_T correctionCurve_ini_q[3150];/* Variable: correctionCurve_ini_q
+                                        * Referenced by: '<S31>/correctionCurve_ini_q'
                                         */
   real32_T gain_current1;              /* Variable: gain_current1
                                         * Referenced by: '<S20>/Gain'
@@ -812,22 +854,22 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S4>/Constant3'
                                         */
   real32_T AntiWindupGT_d_const;       /* Mask Parameter: AntiWindupGT_d_const
-                                        * Referenced by: '<S39>/Constant'
+                                        * Referenced by: '<S41>/Constant'
                                         */
   real32_T AntiWindupGT_q_const;       /* Mask Parameter: AntiWindupGT_q_const
-                                        * Referenced by: '<S40>/Constant'
+                                        * Referenced by: '<S42>/Constant'
                                         */
   real32_T AntiWindupGT_d_const_n;     /* Mask Parameter: AntiWindupGT_d_const_n
-                                        * Referenced by: '<S43>/Constant'
+                                        * Referenced by: '<S45>/Constant'
                                         */
   real32_T AntiWindupGT_q_const_h;     /* Mask Parameter: AntiWindupGT_q_const_h
-                                        * Referenced by: '<S44>/Constant'
+                                        * Referenced by: '<S46>/Constant'
                                         */
   real32_T AntiWindupGT_d_const_f;     /* Mask Parameter: AntiWindupGT_d_const_f
-                                        * Referenced by: '<S47>/Constant'
+                                        * Referenced by: '<S49>/Constant'
                                         */
   real32_T AntiWindupGT_q_const_l;     /* Mask Parameter: AntiWindupGT_q_const_l
-                                        * Referenced by: '<S48>/Constant'
+                                        * Referenced by: '<S50>/Constant'
                                         */
   uint32_T Get_Status_Sys1_BitMask;   /* Mask Parameter: Get_Status_Sys1_BitMask
                                        * Referenced by: '<S13>/Get_Status_Sys1'
@@ -837,218 +879,218 @@ struct P_FOC_FCF_T_ {
                                    * Referenced by: '<S8>/Mask_6Bits_Inv1_FLT'
                                    */
   uint32_T MaskBit0_BitMask;           /* Mask Parameter: MaskBit0_BitMask
-                                        * Referenced by: '<S50>/MaskBit0'
+                                        * Referenced by: '<S52>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask;           /* Mask Parameter: MaskBit1_BitMask
-                                        * Referenced by: '<S50>/MaskBit1'
+                                        * Referenced by: '<S52>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask;           /* Mask Parameter: MaskBit2_BitMask
-                                        * Referenced by: '<S50>/MaskBit2'
+                                        * Referenced by: '<S52>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask;           /* Mask Parameter: MaskBit3_BitMask
-                                        * Referenced by: '<S50>/MaskBit3'
+                                        * Referenced by: '<S52>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask;           /* Mask Parameter: MaskBit4_BitMask
-                                        * Referenced by: '<S50>/MaskBit4'
+                                        * Referenced by: '<S52>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask;           /* Mask Parameter: MaskBit5_BitMask
-                                        * Referenced by: '<S50>/MaskBit5'
+                                        * Referenced by: '<S52>/MaskBit5'
                                         */
   uint32_T Mask_6Bits_Inv1_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv1_RDY_BitMask
                                    * Referenced by: '<S8>/Mask_6Bits_Inv1_RDY'
                                    */
   uint32_T MaskBit0_BitMask_b;         /* Mask Parameter: MaskBit0_BitMask_b
-                                        * Referenced by: '<S51>/MaskBit0'
+                                        * Referenced by: '<S53>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask_j;         /* Mask Parameter: MaskBit1_BitMask_j
-                                        * Referenced by: '<S51>/MaskBit1'
+                                        * Referenced by: '<S53>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask_m;         /* Mask Parameter: MaskBit2_BitMask_m
-                                        * Referenced by: '<S51>/MaskBit2'
+                                        * Referenced by: '<S53>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask_i;         /* Mask Parameter: MaskBit3_BitMask_i
-                                        * Referenced by: '<S51>/MaskBit3'
+                                        * Referenced by: '<S53>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask_d;         /* Mask Parameter: MaskBit4_BitMask_d
-                                        * Referenced by: '<S51>/MaskBit4'
+                                        * Referenced by: '<S53>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask_a;         /* Mask Parameter: MaskBit5_BitMask_a
-                                        * Referenced by: '<S51>/MaskBit5'
+                                        * Referenced by: '<S53>/MaskBit5'
                                         */
   uint32_T Mask_6Bits_Inv2_FLT_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv2_FLT_BitMask
                                    * Referenced by: '<S8>/Mask_6Bits_Inv2_FLT'
                                    */
   uint32_T MaskBit0_BitMask_g;         /* Mask Parameter: MaskBit0_BitMask_g
-                                        * Referenced by: '<S52>/MaskBit0'
+                                        * Referenced by: '<S54>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask_n;         /* Mask Parameter: MaskBit1_BitMask_n
-                                        * Referenced by: '<S52>/MaskBit1'
+                                        * Referenced by: '<S54>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask_n;         /* Mask Parameter: MaskBit2_BitMask_n
-                                        * Referenced by: '<S52>/MaskBit2'
+                                        * Referenced by: '<S54>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask_c;         /* Mask Parameter: MaskBit3_BitMask_c
-                                        * Referenced by: '<S52>/MaskBit3'
+                                        * Referenced by: '<S54>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask_o;         /* Mask Parameter: MaskBit4_BitMask_o
-                                        * Referenced by: '<S52>/MaskBit4'
+                                        * Referenced by: '<S54>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask_h;         /* Mask Parameter: MaskBit5_BitMask_h
-                                        * Referenced by: '<S52>/MaskBit5'
+                                        * Referenced by: '<S54>/MaskBit5'
                                         */
   uint32_T Mask_6Bits_Inv2_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv2_RDY_BitMask
                                    * Referenced by: '<S8>/Mask_6Bits_Inv2_RDY'
                                    */
   uint32_T MaskBit0_BitMask_bn;        /* Mask Parameter: MaskBit0_BitMask_bn
-                                        * Referenced by: '<S53>/MaskBit0'
+                                        * Referenced by: '<S55>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask_a;         /* Mask Parameter: MaskBit1_BitMask_a
-                                        * Referenced by: '<S53>/MaskBit1'
+                                        * Referenced by: '<S55>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask_o;         /* Mask Parameter: MaskBit2_BitMask_o
-                                        * Referenced by: '<S53>/MaskBit2'
+                                        * Referenced by: '<S55>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask_h;         /* Mask Parameter: MaskBit3_BitMask_h
-                                        * Referenced by: '<S53>/MaskBit3'
+                                        * Referenced by: '<S55>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask_e;         /* Mask Parameter: MaskBit4_BitMask_e
-                                        * Referenced by: '<S53>/MaskBit4'
+                                        * Referenced by: '<S55>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask_l;         /* Mask Parameter: MaskBit5_BitMask_l
-                                        * Referenced by: '<S53>/MaskBit5'
+                                        * Referenced by: '<S55>/MaskBit5'
                                         */
   uint32_T Mask_6Bits_Inv3_FLT_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv3_FLT_BitMask
                                    * Referenced by: '<S8>/Mask_6Bits_Inv3_FLT'
                                    */
   uint32_T MaskBit0_BitMask_m;         /* Mask Parameter: MaskBit0_BitMask_m
-                                        * Referenced by: '<S54>/MaskBit0'
+                                        * Referenced by: '<S56>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask_d;         /* Mask Parameter: MaskBit1_BitMask_d
-                                        * Referenced by: '<S54>/MaskBit1'
+                                        * Referenced by: '<S56>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask_b;         /* Mask Parameter: MaskBit2_BitMask_b
-                                        * Referenced by: '<S54>/MaskBit2'
+                                        * Referenced by: '<S56>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask_l;         /* Mask Parameter: MaskBit3_BitMask_l
-                                        * Referenced by: '<S54>/MaskBit3'
+                                        * Referenced by: '<S56>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask_b;         /* Mask Parameter: MaskBit4_BitMask_b
-                                        * Referenced by: '<S54>/MaskBit4'
+                                        * Referenced by: '<S56>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask_e;         /* Mask Parameter: MaskBit5_BitMask_e
-                                        * Referenced by: '<S54>/MaskBit5'
+                                        * Referenced by: '<S56>/MaskBit5'
                                         */
   uint32_T Mask_6Bits_Inv3_RDY_BitMask;
                                   /* Mask Parameter: Mask_6Bits_Inv3_RDY_BitMask
                                    * Referenced by: '<S8>/Mask_6Bits_Inv3_RDY'
                                    */
   uint32_T MaskBit0_BitMask_l;         /* Mask Parameter: MaskBit0_BitMask_l
-                                        * Referenced by: '<S55>/MaskBit0'
+                                        * Referenced by: '<S57>/MaskBit0'
                                         */
   uint32_T MaskBit1_BitMask_dr;        /* Mask Parameter: MaskBit1_BitMask_dr
-                                        * Referenced by: '<S55>/MaskBit1'
+                                        * Referenced by: '<S57>/MaskBit1'
                                         */
   uint32_T MaskBit2_BitMask_bx;        /* Mask Parameter: MaskBit2_BitMask_bx
-                                        * Referenced by: '<S55>/MaskBit2'
+                                        * Referenced by: '<S57>/MaskBit2'
                                         */
   uint32_T MaskBit3_BitMask_it;        /* Mask Parameter: MaskBit3_BitMask_it
-                                        * Referenced by: '<S55>/MaskBit3'
+                                        * Referenced by: '<S57>/MaskBit3'
                                         */
   uint32_T MaskBit4_BitMask_a;         /* Mask Parameter: MaskBit4_BitMask_a
-                                        * Referenced by: '<S55>/MaskBit4'
+                                        * Referenced by: '<S57>/MaskBit4'
                                         */
   uint32_T MaskBit5_BitMask_b;         /* Mask Parameter: MaskBit5_BitMask_b
-                                        * Referenced by: '<S55>/MaskBit5'
+                                        * Referenced by: '<S57>/MaskBit5'
                                         */
   uint32_T CompareToConstant_const;   /* Mask Parameter: CompareToConstant_const
-                                       * Referenced by: '<S57>/Constant'
+                                       * Referenced by: '<S59>/Constant'
                                        */
   uint32_T CompareToConstant_const_n;
                                     /* Mask Parameter: CompareToConstant_const_n
-                                     * Referenced by: '<S59>/Constant'
+                                     * Referenced by: '<S61>/Constant'
                                      */
   uint32_T CompareToConstant_const_h;
                                     /* Mask Parameter: CompareToConstant_const_h
-                                     * Referenced by: '<S61>/Constant'
+                                     * Referenced by: '<S63>/Constant'
                                      */
   boolean_T SRFlipFlop_initial_condition;
                                  /* Mask Parameter: SRFlipFlop_initial_condition
-                                  * Referenced by: '<S84>/Memory'
+                                  * Referenced by: '<S86>/Memory'
                                   */
   boolean_T SRFlipFlop1_initial_condition;
                                 /* Mask Parameter: SRFlipFlop1_initial_condition
-                                 * Referenced by: '<S85>/Memory'
+                                 * Referenced by: '<S87>/Memory'
                                  */
   boolean_T SRFlipFlop_initial_condition_d;
                                /* Mask Parameter: SRFlipFlop_initial_condition_d
-                                * Referenced by: '<S69>/Memory'
+                                * Referenced by: '<S71>/Memory'
                                 */
   boolean_T SRFlipFlop_initial_condition_e;
                                /* Mask Parameter: SRFlipFlop_initial_condition_e
-                                * Referenced by: '<S93>/Memory'
+                                * Referenced by: '<S95>/Memory'
                                 */
   boolean_T SRFlipFlop_initial_condition_k;
                                /* Mask Parameter: SRFlipFlop_initial_condition_k
-                                * Referenced by: '<S90>/Memory'
+                                * Referenced by: '<S92>/Memory'
                                 */
   boolean_T OverTemp_Latching_1_initial_con;
                               /* Mask Parameter: OverTemp_Latching_1_initial_con
-                               * Referenced by: '<S71>/Memory'
+                               * Referenced by: '<S73>/Memory'
                                */
   boolean_T OverTemp_Latching_2_initial_con;
                               /* Mask Parameter: OverTemp_Latching_2_initial_con
-                               * Referenced by: '<S72>/Memory'
+                               * Referenced by: '<S74>/Memory'
                                */
   boolean_T OverTemp_Latching_3_initial_con;
                               /* Mask Parameter: OverTemp_Latching_3_initial_con
-                               * Referenced by: '<S73>/Memory'
+                               * Referenced by: '<S75>/Memory'
                                */
   boolean_T OverTemp_Latching_4_initial_con;
                               /* Mask Parameter: OverTemp_Latching_4_initial_con
-                               * Referenced by: '<S74>/Memory'
+                               * Referenced by: '<S76>/Memory'
                                */
   boolean_T OverTemp_Latching_5_initial_con;
                               /* Mask Parameter: OverTemp_Latching_5_initial_con
-                               * Referenced by: '<S75>/Memory'
+                               * Referenced by: '<S77>/Memory'
                                */
   boolean_T OverTemp_Latching_6_initial_con;
                               /* Mask Parameter: OverTemp_Latching_6_initial_con
-                               * Referenced by: '<S76>/Memory'
+                               * Referenced by: '<S78>/Memory'
                                */
   boolean_T OverTemp_Latching_7_initial_con;
                               /* Mask Parameter: OverTemp_Latching_7_initial_con
-                               * Referenced by: '<S77>/Memory'
+                               * Referenced by: '<S79>/Memory'
                                */
   boolean_T OverTemp_Latching_8_initial_con;
                               /* Mask Parameter: OverTemp_Latching_8_initial_con
-                               * Referenced by: '<S78>/Memory'
+                               * Referenced by: '<S80>/Memory'
                                */
   boolean_T OverTemp_Latching_9_initial_con;
                               /* Mask Parameter: OverTemp_Latching_9_initial_con
-                               * Referenced by: '<S79>/Memory'
+                               * Referenced by: '<S81>/Memory'
                                */
   boolean_T DetectRisePositive1_vinit;
                                     /* Mask Parameter: DetectRisePositive1_vinit
-                                     * Referenced by: '<S83>/Delay Input1'
+                                     * Referenced by: '<S85>/Delay Input1'
                                      */
   boolean_T DetectRisePositive_vinit;/* Mask Parameter: DetectRisePositive_vinit
-                                      * Referenced by: '<S82>/Delay Input1'
+                                      * Referenced by: '<S84>/Delay Input1'
                                       */
   boolean_T DetectRisePositive_vinit_g;
                                    /* Mask Parameter: DetectRisePositive_vinit_g
-                                    * Referenced by: '<S67>/Delay Input1'
+                                    * Referenced by: '<S69>/Delay Input1'
                                     */
   boolean_T DetectRisePositive_vinit_b;
                                    /* Mask Parameter: DetectRisePositive_vinit_b
-                                    * Referenced by: '<S92>/Delay Input1'
+                                    * Referenced by: '<S94>/Delay Input1'
                                     */
   boolean_T DetectRisePositive_vinit_f;
                                    /* Mask Parameter: DetectRisePositive_vinit_f
-                                    * Referenced by: '<S89>/Delay Input1'
+                                    * Referenced by: '<S91>/Delay Input1'
                                     */
   real32_T cal_out_Y0;                 /* Computed Parameter: cal_out_Y0
                                         * Referenced by: '<S21>/cal_out'
@@ -1110,38 +1152,41 @@ struct P_FOC_FCF_T_ {
   real32_T Constant1_Value;            /* Computed Parameter: Constant1_Value
                                         * Referenced by: '<S30>/Constant1'
                                         */
+  real32_T LearningFactor0_Value;   /* Computed Parameter: LearningFactor0_Value
+                                     * Referenced by: '<S31>/LearningFactor0'
+                                     */
   real32_T Zero_Value;                 /* Computed Parameter: Zero_Value
-                                        * Referenced by: '<S38>/Zero'
+                                        * Referenced by: '<S40>/Zero'
                                         */
   real32_T IntegStopSwitch3_Threshold;
                                /* Computed Parameter: IntegStopSwitch3_Threshold
-                                * Referenced by: '<S38>/IntegStopSwitch3'
+                                * Referenced by: '<S40>/IntegStopSwitch3'
                                 */
   real32_T Zero_Value_o;               /* Computed Parameter: Zero_Value_o
-                                        * Referenced by: '<S42>/Zero'
+                                        * Referenced by: '<S44>/Zero'
                                         */
   real32_T IntegStopSwitch3_Threshold_a;
                              /* Computed Parameter: IntegStopSwitch3_Threshold_a
-                              * Referenced by: '<S42>/IntegStopSwitch3'
+                              * Referenced by: '<S44>/IntegStopSwitch3'
                               */
   real32_T Zero_Value_n;               /* Computed Parameter: Zero_Value_n
-                                        * Referenced by: '<S46>/Zero'
+                                        * Referenced by: '<S48>/Zero'
                                         */
   real32_T IntegStopSwitch3_Threshold_ad;
                             /* Computed Parameter: IntegStopSwitch3_Threshold_ad
-                             * Referenced by: '<S46>/IntegStopSwitch3'
+                             * Referenced by: '<S48>/IntegStopSwitch3'
                              */
   real32_T Gain1_Gain;                 /* Computed Parameter: Gain1_Gain
-                                        * Referenced by: '<S62>/Gain1'
+                                        * Referenced by: '<S64>/Gain1'
                                         */
   real32_T Constant1_Value_c;          /* Computed Parameter: Constant1_Value_c
-                                        * Referenced by: '<S62>/Constant1'
+                                        * Referenced by: '<S64>/Constant1'
                                         */
   real32_T Constant3_Value;            /* Computed Parameter: Constant3_Value
-                                        * Referenced by: '<S64>/Constant3'
+                                        * Referenced by: '<S66>/Constant3'
                                         */
   real32_T Constant1_Value_b;          /* Computed Parameter: Constant1_Value_b
-                                        * Referenced by: '<S64>/Constant1'
+                                        * Referenced by: '<S66>/Constant1'
                                         */
   real32_T Gain1_Gain_c;               /* Computed Parameter: Gain1_Gain_c
                                         * Referenced by: '<S12>/Gain1'
@@ -1169,37 +1214,37 @@ struct P_FOC_FCF_T_ {
                                 * Referenced by: '<S1>/SMF_IfStarter_Active'
                                 */
   real32_T Gain1_Gain_a;               /* Computed Parameter: Gain1_Gain_a
-                                        * Referenced by: '<S95>/Gain1'
+                                        * Referenced by: '<S97>/Gain1'
                                         */
   real32_T Constant1_Value_e;          /* Computed Parameter: Constant1_Value_e
-                                        * Referenced by: '<S95>/Constant1'
+                                        * Referenced by: '<S97>/Constant1'
                                         */
   real32_T Constant2_Value_d;          /* Computed Parameter: Constant2_Value_d
-                                        * Referenced by: '<S98>/Constant2'
+                                        * Referenced by: '<S100>/Constant2'
                                         */
   real32_T U_DC2_Gain;                 /* Computed Parameter: U_DC2_Gain
-                                        * Referenced by: '<S98>/U_DC//2'
+                                        * Referenced by: '<S100>/U_DC//2'
                                         */
   real32_T Constant2_Value_g;          /* Computed Parameter: Constant2_Value_g
-                                        * Referenced by: '<S99>/Constant2'
+                                        * Referenced by: '<S101>/Constant2'
                                         */
   real32_T U_DC2_Gain_p;               /* Computed Parameter: U_DC2_Gain_p
-                                        * Referenced by: '<S99>/U_DC//2'
+                                        * Referenced by: '<S101>/U_DC//2'
                                         */
   real32_T Factor_Gain;                /* Computed Parameter: Factor_Gain
-                                        * Referenced by: '<S101>/Factor'
+                                        * Referenced by: '<S103>/Factor'
                                         */
   real32_T Factor1_Gain;               /* Computed Parameter: Factor1_Gain
-                                        * Referenced by: '<S101>/Factor1'
+                                        * Referenced by: '<S103>/Factor1'
                                         */
   real32_T Factor2_Gain;               /* Computed Parameter: Factor2_Gain
-                                        * Referenced by: '<S101>/Factor2'
+                                        * Referenced by: '<S103>/Factor2'
                                         */
   real32_T Gain_Gain_k;                /* Computed Parameter: Gain_Gain_k
                                         * Referenced by: '<S2>/Gain'
                                         */
   real32_T Constant_Value_d[6];        /* Computed Parameter: Constant_Value_d
-                                        * Referenced by: '<S102>/Constant'
+                                        * Referenced by: '<S104>/Constant'
                                         */
   real32_T Null_Value[9];              /* Computed Parameter: Null_Value
                                         * Referenced by: '<S1>/Null'
@@ -1220,16 +1265,12 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S14>/f_2_w_el'
                                         */
   real32_T FOC_T_fast_Value_l;         /* Computed Parameter: FOC_T_fast_Value_l
-                                        * Referenced by: '<S95>/FOC_T_fast'
+                                        * Referenced by: '<S97>/FOC_T_fast'
                                         */
   real32_T UnitDelay_InitialCondition;
                                /* Computed Parameter: UnitDelay_InitialCondition
-                                * Referenced by: '<S95>/Unit Delay'
+                                * Referenced by: '<S97>/Unit Delay'
                                 */
-  real32_T TrafoMatrixuvwalphabeta_Gain[6];
-                             /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain
-                              * Referenced by: '<S34>/TrafoMatrix uvw->alphabeta'
-                              */
   real32_T ResolverOffsetLimitation_UpperS;
                           /* Computed Parameter: ResolverOffsetLimitation_UpperS
                            * Referenced by: '<S4>/ResolverOffsetLimitation'
@@ -1267,40 +1308,50 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S9>/f_2_w_el'
                                         */
   real32_T FOC_T_fast_Value_f;         /* Computed Parameter: FOC_T_fast_Value_f
-                                        * Referenced by: '<S62>/FOC_T_fast'
+                                        * Referenced by: '<S64>/FOC_T_fast'
                                         */
   real32_T UnitDelay_InitialCondition_d;
                              /* Computed Parameter: UnitDelay_InitialCondition_d
-                              * Referenced by: '<S62>/Unit Delay'
+                              * Referenced by: '<S64>/Unit Delay'
                               */
+  real32_T TrafoMatrixuvwalphabeta_Gain[6];
+                             /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain
+                              * Referenced by: '<S35>/TrafoMatrix uvw->alphabeta'
+                              */
+  real32_T f_ab_Value;                 /* Computed Parameter: f_ab_Value
+                                        * Referenced by: '<S31>/f_ab'
+                                        */
+  real32_T Gain_Gain_i;                /* Computed Parameter: Gain_Gain_i
+                                        * Referenced by: '<S31>/Gain'
+                                        */
   real32_T IntegDelay1_InitialCondition;
                              /* Computed Parameter: IntegDelay1_InitialCondition
-                              * Referenced by: '<S38>/IntegDelay1'
+                              * Referenced by: '<S40>/IntegDelay1'
                               */
   real32_T FOC_T_fast_Value_n;         /* Computed Parameter: FOC_T_fast_Value_n
-                                        * Referenced by: '<S38>/FOC_T_fast'
+                                        * Referenced by: '<S40>/FOC_T_fast'
                                         */
   real32_T TrafoMatrixuvwalphabeta_Gain_p[6];
                            /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain_p
-                            * Referenced by: '<S35>/TrafoMatrix uvw->alphabeta'
+                            * Referenced by: '<S36>/TrafoMatrix uvw->alphabeta'
                             */
   real32_T IntegDelay1_InitialCondition_m;
                            /* Computed Parameter: IntegDelay1_InitialCondition_m
-                            * Referenced by: '<S42>/IntegDelay1'
+                            * Referenced by: '<S44>/IntegDelay1'
                             */
   real32_T FOC_T_fast_Value_e;         /* Computed Parameter: FOC_T_fast_Value_e
-                                        * Referenced by: '<S42>/FOC_T_fast'
+                                        * Referenced by: '<S44>/FOC_T_fast'
                                         */
   real32_T TrafoMatrixuvwalphabeta_Gain_j[6];
                            /* Computed Parameter: TrafoMatrixuvwalphabeta_Gain_j
-                            * Referenced by: '<S36>/TrafoMatrix uvw->alphabeta'
+                            * Referenced by: '<S37>/TrafoMatrix uvw->alphabeta'
                             */
   real32_T IntegDelay1_InitialCondition_p;
                            /* Computed Parameter: IntegDelay1_InitialCondition_p
-                            * Referenced by: '<S46>/IntegDelay1'
+                            * Referenced by: '<S48>/IntegDelay1'
                             */
   real32_T FOC_T_fast_Value_er;       /* Computed Parameter: FOC_T_fast_Value_er
-                                       * Referenced by: '<S46>/FOC_T_fast'
+                                       * Referenced by: '<S48>/FOC_T_fast'
                                        */
   real32_T FOC_T_fast_Value_m;         /* Computed Parameter: FOC_T_fast_Value_m
                                         * Referenced by: '<S5>/FOC_T_fast'
@@ -1312,40 +1363,40 @@ struct P_FOC_FCF_T_ {
                                        * Referenced by: '<S30>/Switch2'
                                        */
   real32_T Gain1_Gain_h[4];            /* Computed Parameter: Gain1_Gain_h
-                                        * Referenced by: '<S105>/Gain1'
-                                        */
-  real32_T Gain_Gain_f[4];             /* Computed Parameter: Gain_Gain_f
-                                        * Referenced by: '<S105>/Gain'
-                                        */
-  real32_T Constant_Value_g[6];        /* Computed Parameter: Constant_Value_g
-                                        * Referenced by: '<S103>/Constant'
-                                        */
-  real32_T Gain1_Gain_ck[4];           /* Computed Parameter: Gain1_Gain_ck
-                                        * Referenced by: '<S106>/Gain1'
-                                        */
-  real32_T Gain_Gain_l[4];             /* Computed Parameter: Gain_Gain_l
-                                        * Referenced by: '<S106>/Gain'
-                                        */
-  real32_T Constant_Value_o[6];        /* Computed Parameter: Constant_Value_o
-                                        * Referenced by: '<S104>/Constant'
-                                        */
-  real32_T Gain1_Gain_k[4];            /* Computed Parameter: Gain1_Gain_k
                                         * Referenced by: '<S107>/Gain1'
                                         */
-  real32_T Gain_Gain_j[4];             /* Computed Parameter: Gain_Gain_j
+  real32_T Gain_Gain_f[4];             /* Computed Parameter: Gain_Gain_f
                                         * Referenced by: '<S107>/Gain'
                                         */
+  real32_T Constant_Value_g[6];        /* Computed Parameter: Constant_Value_g
+                                        * Referenced by: '<S105>/Constant'
+                                        */
+  real32_T Gain1_Gain_ck[4];           /* Computed Parameter: Gain1_Gain_ck
+                                        * Referenced by: '<S108>/Gain1'
+                                        */
+  real32_T Gain_Gain_l[4];             /* Computed Parameter: Gain_Gain_l
+                                        * Referenced by: '<S108>/Gain'
+                                        */
+  real32_T Constant_Value_o[6];        /* Computed Parameter: Constant_Value_o
+                                        * Referenced by: '<S106>/Constant'
+                                        */
+  real32_T Gain1_Gain_k[4];            /* Computed Parameter: Gain1_Gain_k
+                                        * Referenced by: '<S109>/Gain1'
+                                        */
+  real32_T Gain_Gain_j[4];             /* Computed Parameter: Gain_Gain_j
+                                        * Referenced by: '<S109>/Gain'
+                                        */
   real32_T Scale02_Bias;               /* Computed Parameter: Scale02_Bias
-                                        * Referenced by: '<S97>/Scale [0..2]'
+                                        * Referenced by: '<S99>/Scale [0..2]'
                                         */
   real32_T Scale01_Gain;               /* Computed Parameter: Scale01_Gain
-                                        * Referenced by: '<S97>/Scale  [0..1]'
+                                        * Referenced by: '<S99>/Scale  [0..1]'
                                         */
   real32_T Limit01_UpperSat;           /* Computed Parameter: Limit01_UpperSat
-                                        * Referenced by: '<S97>/Limit [0..1]'
+                                        * Referenced by: '<S99>/Limit [0..1]'
                                         */
   real32_T Limit01_LowerSat;           /* Computed Parameter: Limit01_LowerSat
-                                        * Referenced by: '<S97>/Limit [0..1]'
+                                        * Referenced by: '<S99>/Limit [0..1]'
                                         */
   real32_T FOC_T_fast_Value_df;       /* Computed Parameter: FOC_T_fast_Value_df
                                        * Referenced by: '<S24>/FOC_T_fast'
@@ -1373,7 +1424,7 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S11>/[1//s] => [rpm]'
                                         */
   real32_T NO_ERROR_Value;             /* Computed Parameter: NO_ERROR_Value
-                                        * Referenced by: '<S49>/NO_ERROR'
+                                        * Referenced by: '<S51>/NO_ERROR'
                                         */
   real32_T DiscreteFIRFilter20thorderUdq_I;
                           /* Computed Parameter: DiscreteFIRFilter20thorderUdq_I
@@ -1383,20 +1434,28 @@ struct P_FOC_FCF_T_ {
                           /* Computed Parameter: DiscreteFIRFilter20thorderUdq_C
                            * Referenced by: '<S6>/Discrete FIR Filter 20th order Udq'
                            */
+  real32_T DataStoreMemory1_InitialValue[3150];
+                            /* Computed Parameter: DataStoreMemory1_InitialValue
+                             * Referenced by: '<S31>/Data Store Memory1'
+                             */
+  real32_T DataStoreMemory2_InitialValue[3150];
+                            /* Computed Parameter: DataStoreMemory2_InitialValue
+                             * Referenced by: '<S31>/Data Store Memory2'
+                             */
   real32_T Zero1_Value[2];             /* Computed Parameter: Zero1_Value
-                                        * Referenced by: '<S38>/Zero1'
+                                        * Referenced by: '<S40>/Zero1'
                                         */
   real32_T Gain1_Gain_cs;              /* Computed Parameter: Gain1_Gain_cs
-                                        * Referenced by: '<S31>/Gain1'
+                                        * Referenced by: '<S32>/Gain1'
                                         */
   real32_T Gain2_Gain_f;               /* Computed Parameter: Gain2_Gain_f
-                                        * Referenced by: '<S31>/Gain2'
+                                        * Referenced by: '<S32>/Gain2'
                                         */
   real32_T Zero1_Value_l[2];           /* Computed Parameter: Zero1_Value_l
-                                        * Referenced by: '<S42>/Zero1'
+                                        * Referenced by: '<S44>/Zero1'
                                         */
   real32_T Zero1_Value_o[2];           /* Computed Parameter: Zero1_Value_o
-                                        * Referenced by: '<S46>/Zero1'
+                                        * Referenced by: '<S48>/Zero1'
                                         */
   real32_T DiscreteFIRFilter20thorderIdq_I;
                           /* Computed Parameter: DiscreteFIRFilter20thorderIdq_I
@@ -1407,13 +1466,13 @@ struct P_FOC_FCF_T_ {
                            * Referenced by: '<S6>/Discrete FIR Filter 20th order Idq'
                            */
   real32_T Switch_Threshold;           /* Computed Parameter: Switch_Threshold
-                                        * Referenced by: '<S62>/Switch'
+                                        * Referenced by: '<S64>/Switch'
                                         */
   real32_T Switch_Threshold_b;         /* Computed Parameter: Switch_Threshold_b
                                         * Referenced by: '<S12>/Switch'
                                         */
   real32_T Switch_Threshold_c;         /* Computed Parameter: Switch_Threshold_c
-                                        * Referenced by: '<S95>/Switch'
+                                        * Referenced by: '<S97>/Switch'
                                         */
   real32_T Gain_Gain_jm;               /* Computed Parameter: Gain_Gain_jm
                                         * Referenced by: '<S15>/Gain'
@@ -1440,31 +1499,31 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S15>/Gain7'
                                         */
   real32_T DutyCycle_u1_Gain;          /* Computed Parameter: DutyCycle_u1_Gain
-                                        * Referenced by: '<S100>/DutyCycle_u1'
+                                        * Referenced by: '<S102>/DutyCycle_u1'
                                         */
   real32_T DutyCycle_u2_Gain;          /* Computed Parameter: DutyCycle_u2_Gain
-                                        * Referenced by: '<S100>/DutyCycle_u2'
+                                        * Referenced by: '<S102>/DutyCycle_u2'
                                         */
   real32_T DutyCycle_u3_Gain;          /* Computed Parameter: DutyCycle_u3_Gain
-                                        * Referenced by: '<S100>/DutyCycle_u3'
+                                        * Referenced by: '<S102>/DutyCycle_u3'
                                         */
   real32_T DutyCycle_v1_Gain;          /* Computed Parameter: DutyCycle_v1_Gain
-                                        * Referenced by: '<S100>/DutyCycle_v1'
+                                        * Referenced by: '<S102>/DutyCycle_v1'
                                         */
   real32_T DutyCycle_v2_Gain;          /* Computed Parameter: DutyCycle_v2_Gain
-                                        * Referenced by: '<S100>/DutyCycle_v2'
+                                        * Referenced by: '<S102>/DutyCycle_v2'
                                         */
   real32_T DutyCycle_v3_Gain;          /* Computed Parameter: DutyCycle_v3_Gain
-                                        * Referenced by: '<S100>/DutyCycle_v3'
+                                        * Referenced by: '<S102>/DutyCycle_v3'
                                         */
   real32_T DutyCycle_w1_Gain;          /* Computed Parameter: DutyCycle_w1_Gain
-                                        * Referenced by: '<S100>/DutyCycle_w1'
+                                        * Referenced by: '<S102>/DutyCycle_w1'
                                         */
   real32_T DutyCycle_w2_Gain;          /* Computed Parameter: DutyCycle_w2_Gain
-                                        * Referenced by: '<S100>/DutyCycle_w2'
+                                        * Referenced by: '<S102>/DutyCycle_w2'
                                         */
   real32_T DutyCycle_w3_Gain;          /* Computed Parameter: DutyCycle_w3_Gain
-                                        * Referenced by: '<S100>/DutyCycle_w3'
+                                        * Referenced by: '<S102>/DutyCycle_w3'
                                         */
   real32_T Counter_Start_Value;       /* Computed Parameter: Counter_Start_Value
                                        * Referenced by: '<S1>/Counter_Start'
@@ -1474,28 +1533,28 @@ struct P_FOC_FCF_T_ {
                                   * Referenced by: '<S1>/FCF_Cnt'
                                   */
   uint32_T Constant_Value_l;           /* Computed Parameter: Constant_Value_l
-                                        * Referenced by: '<S56>/Constant'
-                                        */
-  uint32_T Constant_Value_eg;          /* Computed Parameter: Constant_Value_eg
                                         * Referenced by: '<S58>/Constant'
                                         */
-  uint32_T Constant_Value_f;           /* Computed Parameter: Constant_Value_f
+  uint32_T Constant_Value_eg;          /* Computed Parameter: Constant_Value_eg
                                         * Referenced by: '<S60>/Constant'
+                                        */
+  uint32_T Constant_Value_f;           /* Computed Parameter: Constant_Value_f
+                                        * Referenced by: '<S62>/Constant'
                                         */
   boolean_T NoError_Value;             /* Computed Parameter: NoError_Value
                                         * Referenced by: '<S7>/NoError'
                                         */
   boolean_T Constant2_Value_f;         /* Computed Parameter: Constant2_Value_f
-                                        * Referenced by: '<S63>/Constant2'
+                                        * Referenced by: '<S65>/Constant2'
                                         */
   boolean_T Constant1_Value_d;         /* Computed Parameter: Constant1_Value_d
-                                        * Referenced by: '<S63>/Constant1'
+                                        * Referenced by: '<S65>/Constant1'
                                         */
   boolean_T Constant2_Value_c;         /* Computed Parameter: Constant2_Value_c
-                                        * Referenced by: '<S64>/Constant2'
+                                        * Referenced by: '<S66>/Constant2'
                                         */
   boolean_T Constant4_Value_f;         /* Computed Parameter: Constant4_Value_f
-                                        * Referenced by: '<S64>/Constant4'
+                                        * Referenced by: '<S66>/Constant4'
                                         */
   boolean_T Constant2_Value_gw;        /* Computed Parameter: Constant2_Value_gw
                                         * Referenced by: '<S11>/Constant2'
@@ -1507,61 +1566,61 @@ struct P_FOC_FCF_T_ {
                                         * Referenced by: '<S13>/Constant1'
                                         */
   boolean_T Constant_Value_j;          /* Computed Parameter: Constant_Value_j
-                                        * Referenced by: '<S70>/Constant'
+                                        * Referenced by: '<S72>/Constant'
                                         */
   boolean_T Constant_Value_dc;         /* Computed Parameter: Constant_Value_dc
-                                        * Referenced by: '<S86>/Constant'
+                                        * Referenced by: '<S88>/Constant'
                                         */
   boolean_T Constant_Value_eo;         /* Computed Parameter: Constant_Value_eo
-                                        * Referenced by: '<S87>/Constant'
+                                        * Referenced by: '<S89>/Constant'
                                         */
   boolean_T Constant_Value_ep;         /* Computed Parameter: Constant_Value_ep
-                                        * Referenced by: '<S91>/Constant'
+                                        * Referenced by: '<S93>/Constant'
                                         */
   boolean_T Constant_Value_m;          /* Computed Parameter: Constant_Value_m
-                                        * Referenced by: '<S94>/Constant'
+                                        * Referenced by: '<S96>/Constant'
                                         */
   boolean_T Logic_table[16];           /* Computed Parameter: Logic_table
-                                        * Referenced by: '<S84>/Logic'
+                                        * Referenced by: '<S86>/Logic'
                                         */
   boolean_T Logic_table_l[16];         /* Computed Parameter: Logic_table_l
-                                        * Referenced by: '<S85>/Logic'
+                                        * Referenced by: '<S87>/Logic'
                                         */
   boolean_T Logic_table_o[16];         /* Computed Parameter: Logic_table_o
-                                        * Referenced by: '<S69>/Logic'
-                                        */
-  boolean_T Logic_table_e[16];         /* Computed Parameter: Logic_table_e
-                                        * Referenced by: '<S93>/Logic'
-                                        */
-  boolean_T Logic_table_lc[16];        /* Computed Parameter: Logic_table_lc
-                                        * Referenced by: '<S90>/Logic'
-                                        */
-  boolean_T Logic_table_l5[16];        /* Computed Parameter: Logic_table_l5
                                         * Referenced by: '<S71>/Logic'
                                         */
-  boolean_T Logic_table_p[16];         /* Computed Parameter: Logic_table_p
-                                        * Referenced by: '<S72>/Logic'
+  boolean_T Logic_table_e[16];         /* Computed Parameter: Logic_table_e
+                                        * Referenced by: '<S95>/Logic'
                                         */
-  boolean_T Logic_table_j[16];         /* Computed Parameter: Logic_table_j
+  boolean_T Logic_table_lc[16];        /* Computed Parameter: Logic_table_lc
+                                        * Referenced by: '<S92>/Logic'
+                                        */
+  boolean_T Logic_table_l5[16];        /* Computed Parameter: Logic_table_l5
                                         * Referenced by: '<S73>/Logic'
                                         */
-  boolean_T Logic_table_o1[16];        /* Computed Parameter: Logic_table_o1
+  boolean_T Logic_table_p[16];         /* Computed Parameter: Logic_table_p
                                         * Referenced by: '<S74>/Logic'
                                         */
-  boolean_T Logic_table_i[16];         /* Computed Parameter: Logic_table_i
+  boolean_T Logic_table_j[16];         /* Computed Parameter: Logic_table_j
                                         * Referenced by: '<S75>/Logic'
                                         */
-  boolean_T Logic_table_c[16];         /* Computed Parameter: Logic_table_c
+  boolean_T Logic_table_o1[16];        /* Computed Parameter: Logic_table_o1
                                         * Referenced by: '<S76>/Logic'
                                         */
-  boolean_T Logic_table_ij[16];        /* Computed Parameter: Logic_table_ij
+  boolean_T Logic_table_i[16];         /* Computed Parameter: Logic_table_i
                                         * Referenced by: '<S77>/Logic'
                                         */
-  boolean_T Logic_table_pd[16];        /* Computed Parameter: Logic_table_pd
+  boolean_T Logic_table_c[16];         /* Computed Parameter: Logic_table_c
                                         * Referenced by: '<S78>/Logic'
                                         */
-  boolean_T Logic_table_a[16];         /* Computed Parameter: Logic_table_a
+  boolean_T Logic_table_ij[16];        /* Computed Parameter: Logic_table_ij
                                         * Referenced by: '<S79>/Logic'
+                                        */
+  boolean_T Logic_table_pd[16];        /* Computed Parameter: Logic_table_pd
+                                        * Referenced by: '<S80>/Logic'
+                                        */
+  boolean_T Logic_table_a[16];         /* Computed Parameter: Logic_table_a
+                                        * Referenced by: '<S81>/Logic'
                                         */
 };
 
@@ -1633,83 +1692,85 @@ extern void FOC_FCF_terminate(RT_MODEL_FOC_FCF_T *const FOC_FCF_M);
  * '<S28>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver/integrator'
  * '<S29>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Adaption/AngleObserver/integrator1'
  * '<S30>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Angle_Lead/Modulo2Pi'
- * '<S31>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1'
- * '<S32>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2'
- * '<S33>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3'
- * '<S34>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_1'
- * '<S35>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_2'
- * '<S36>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_3'
- * '<S37>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup'
- * '<S38>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/FeedbackPI'
- * '<S39>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup/AntiWindupGT_d'
- * '<S40>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup/AntiWindupGT_q'
- * '<S41>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup'
- * '<S42>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/FeedbackPI'
- * '<S43>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup/AntiWindupGT_d'
- * '<S44>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup/AntiWindupGT_q'
- * '<S45>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup'
- * '<S46>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/FeedbackPI'
- * '<S47>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup/AntiWindupGT_d'
- * '<S48>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup/AntiWindupGT_q'
- * '<S49>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Error_Handling/Gate_Driver_FLT_RDY_Error'
- * '<S50>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_FLT'
- * '<S51>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_RDY'
- * '<S52>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_FLT'
- * '<S53>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_RDY'
- * '<S54>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_FLT'
- * '<S55>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_RDY'
- * '<S56>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_FLT/Compare To Zero'
- * '<S57>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_RDY/Compare To Constant'
- * '<S58>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_FLT/Compare To Zero'
- * '<S59>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_RDY/Compare To Constant'
- * '<S60>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_FLT/Compare To Zero'
- * '<S61>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_RDY/Compare To Constant'
- * '<S62>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/I_f/SubS_2pi_Integrator'
- * '<S63>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection'
- * '<S64>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection'
- * '<S65>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Compare To Constant'
- * '<S66>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Compare To Constant1'
- * '<S67>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Detect Rise Positive'
- * '<S68>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching'
- * '<S69>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/S-R Flip-Flop'
- * '<S70>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Detect Rise Positive/Positive'
- * '<S71>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_1'
- * '<S72>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_2'
- * '<S73>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_3'
- * '<S74>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_4'
- * '<S75>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_5'
- * '<S76>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_6'
- * '<S77>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_7'
- * '<S78>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_8'
- * '<S79>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_9'
- * '<S80>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Compare To Constant'
- * '<S81>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Compare To Constant1'
- * '<S82>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive'
- * '<S83>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive1'
- * '<S84>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/S-R Flip-Flop'
- * '<S85>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/S-R Flip-Flop1'
- * '<S86>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive/Positive'
- * '<S87>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive1/Positive'
- * '<S88>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Compare To Constant1'
- * '<S89>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Detect Rise Positive'
- * '<S90>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/S-R Flip-Flop'
- * '<S91>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Detect Rise Positive/Positive'
- * '<S92>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/Detect Rise Positive'
- * '<S93>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/S-R Flip-Flop'
- * '<S94>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/Detect Rise Positive/Positive'
- * '<S95>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f/SubS_2pi_Integrator'
- * '<S96>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f/UfKennlinie'
- * '<S97>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Adjust_duty_cycle_range'
- * '<S98>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Calc_Modulation_Index'
- * '<S99>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/NormalizedVoltage'
- * '<S100>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Phase_Assignment'
- * '<S101>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Super_Sinus_Modulation'
- * '<S102>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_1'
- * '<S103>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_2'
- * '<S104>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_3'
- * '<S105>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_1'
- * '<S106>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_2'
- * '<S107>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_3'
+ * '<S31>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/ILR_1'
+ * '<S32>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1'
+ * '<S33>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2'
+ * '<S34>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3'
+ * '<S35>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_1'
+ * '<S36>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_2'
+ * '<S37>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/UVW_DQ_3'
+ * '<S38>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/ILR_1/MATLAB Function'
+ * '<S39>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup'
+ * '<S40>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/FeedbackPI'
+ * '<S41>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup/AntiWindupGT_d'
+ * '<S42>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_1/AntiWindup/AntiWindupGT_q'
+ * '<S43>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup'
+ * '<S44>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/FeedbackPI'
+ * '<S45>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup/AntiWindupGT_d'
+ * '<S46>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_2/AntiWindup/AntiWindupGT_q'
+ * '<S47>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup'
+ * '<S48>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/FeedbackPI'
+ * '<S49>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup/AntiWindupGT_d'
+ * '<S50>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Current_Controller/PI_Controller_3/AntiWindup/AntiWindupGT_q'
+ * '<S51>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Error_Handling/Gate_Driver_FLT_RDY_Error'
+ * '<S52>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_FLT'
+ * '<S53>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_RDY'
+ * '<S54>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_FLT'
+ * '<S55>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_RDY'
+ * '<S56>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_FLT'
+ * '<S57>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_RDY'
+ * '<S58>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_FLT/Compare To Zero'
+ * '<S59>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv1_RDY/Compare To Constant'
+ * '<S60>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_FLT/Compare To Zero'
+ * '<S61>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv2_RDY/Compare To Constant'
+ * '<S62>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_FLT/Compare To Zero'
+ * '<S63>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Gate_Driver_Status/Inv3_RDY/Compare To Constant'
+ * '<S64>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/I_f/SubS_2pi_Integrator'
+ * '<S65>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection'
+ * '<S66>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection'
+ * '<S67>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Compare To Constant'
+ * '<S68>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Compare To Constant1'
+ * '<S69>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Detect Rise Positive'
+ * '<S70>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching'
+ * '<S71>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/S-R Flip-Flop'
+ * '<S72>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Detect Rise Positive/Positive'
+ * '<S73>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_1'
+ * '<S74>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_2'
+ * '<S75>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_3'
+ * '<S76>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_4'
+ * '<S77>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_5'
+ * '<S78>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_6'
+ * '<S79>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_7'
+ * '<S80>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_8'
+ * '<S81>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OC_Detection/Overcurrent_Latching/OverTemp_Latching_9'
+ * '<S82>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Compare To Constant'
+ * '<S83>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Compare To Constant1'
+ * '<S84>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive'
+ * '<S85>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive1'
+ * '<S86>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/S-R Flip-Flop'
+ * '<S87>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/S-R Flip-Flop1'
+ * '<S88>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive/Positive'
+ * '<S89>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/OC_OV_UV_Diagnosis/OV_UV_Detection/Detect Rise Positive1/Positive'
+ * '<S90>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Compare To Constant1'
+ * '<S91>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Detect Rise Positive'
+ * '<S92>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/S-R Flip-Flop'
+ * '<S93>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Overspeed_Diagnosis/Detect Rise Positive/Positive'
+ * '<S94>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/Detect Rise Positive'
+ * '<S95>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/S-R Flip-Flop'
+ * '<S96>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/SysEnableSwitch/Detect Rise Positive/Positive'
+ * '<S97>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f/SubS_2pi_Integrator'
+ * '<S98>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/U_f/UfKennlinie'
+ * '<S99>'  : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Adjust_duty_cycle_range'
+ * '<S100>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Calc_Modulation_Index'
+ * '<S101>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/NormalizedVoltage'
+ * '<S102>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Phase_Assignment'
+ * '<S103>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/Super_Sinus_Modulation'
+ * '<S104>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_1'
+ * '<S105>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_2'
+ * '<S106>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Clarke-Trafo_3'
+ * '<S107>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_1'
+ * '<S108>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_2'
+ * '<S109>' : 'MotorControl_HeadModel/Motor_Control_Model/FOC_FCF/Voltage_Output/inverse Park-Trafo_3'
  */
 #endif                                 /* FOC_FCF_h_ */
 

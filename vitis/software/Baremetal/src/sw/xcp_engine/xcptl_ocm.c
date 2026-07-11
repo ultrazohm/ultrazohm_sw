@@ -83,7 +83,13 @@ uint16_t xcp_r5_daq_event = 0u;
  *   xcp_r5_queue_lost       queue32 overflow between sweeps -> DAQ frames
  *                           lost at the source (raise QUEUE_SIZE or sweep
  *                           more often if this climbs)
- *   xcp_r5_sweep_count      main-loop sweeps executed -> liveness probe */
+ *   xcp_r5_sweep_count      main-loop sweeps executed -> liveness probe
+ *   xcp_r5_sweep_gap_max_us worst observed inter-sweep gap. THE main-loop
+ *                           health number: ~SWEEP_PERIOD = loop plenty fast;
+ *                           >> SWEEP_PERIOD = something in the main loop
+ *                           blocks (throughput caps at ~6.8 KB per gap;
+ *                           the 32 KB queue rides out gaps <= 0.8 ms at the
+ *                           320 Mbit/s worst case). Reset via debugger. */
 volatile int32_t  xcp_r5_init_result = 0x7FFFFFFF; /* "init not run yet" */
 volatile uint32_t xcp_r5_cycle_count = 0u;
 volatile uint32_t xcp_r5_tx_oversize_drop = 0u;
@@ -92,6 +98,7 @@ volatile uint32_t xcp_r5_cto_dropped = 0u;
 volatile uint32_t xcp_r5_in_generations = 0u;
 volatile uint32_t xcp_r5_queue_lost = 0u;
 volatile uint32_t xcp_r5_sweep_count = 0u;
+volatile uint32_t xcp_r5_sweep_gap_max_us = 0u;
 
 /* The transport-layer counter is stamped by queuePop()/XcpTlSendCrm(), both
  * of which run only in the main-loop sweep context (XcpCommand executes in
@@ -286,12 +293,19 @@ void xcp_r5_poll(void) {
  * sampling copy remains there. */
 int xcp_r5_background(void) {
     static uint32_t last_sweep_us = 0u;
+    static int first_sweep = 1;
     if (gQueue == NULL) {
         return 0; /* init failed or not run: engine disabled */
     }
     uint32_t now_us = (uint32_t)uz_SystemTime_GetUptimeInUs();
-    if ((uint32_t)(now_us - last_sweep_us) < XCP_R5_SWEEP_PERIOD_US) {
+    uint32_t gap_us = (uint32_t)(now_us - last_sweep_us);
+    if (gap_us < XCP_R5_SWEEP_PERIOD_US) {
         return 0;
+    }
+    if (first_sweep) {
+        first_sweep = 0; /* boot-to-first-sweep gap is not a loop-health signal */
+    } else if (gap_us > xcp_r5_sweep_gap_max_us) {
+        xcp_r5_sweep_gap_max_us = gap_us;
     }
     last_sweep_us = now_us;
     xcp_r5_poll();

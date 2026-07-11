@@ -28,10 +28,14 @@ corrupt wire data pre-CP7), `ocm_cycles_missed 943` (0.0026 % of cycles:
 IPI latency > 100 µs; pure DAQ gaps now — pre-CP7 any such cycle carrying
 a command response killed the session, the hedrive T8 random-death cause).
 
-R5 ISR budget measured (IMPROVEMENTS §1.1): ~10 µs engine base +
-~10 µs per KB of DAQ payload per cycle; 52.9 µs at the 326 Mbit/s worst
-case — fits the 100 µs cycle with 47 µs headroom. **All planned
-measurements complete; the transport is validated for use.**
+R5 ISR budget measured (IMPROVEMENTS §1.1): with the sweep in the ISR,
+~10 µs engine base + ~10 µs per KB of DAQ payload per cycle — too much for
+the 100 kHz ISR target, so CP11 moved the exchange sweep to the main loop
+(`xcp_r5_background()`, paced at 100 µs; only the XcpEvent sampling copy
+stays in the ISR). Re-measure `isr_execution_time_us` after rebuild:
+expected near the non-XCP baseline at idle, ~+5 µs/KB while streaming.
+**Transport validated for use (1 h soak); ISR-cost re-measurement after
+the CP11 split is the only open check.**
 
 ## Code-complete & compile-verified (2026-06-17)
 

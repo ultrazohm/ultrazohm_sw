@@ -15,26 +15,32 @@ of traffic" bug is covered.
 
 ## 1. Measure on first hardware contact (cheap, decides the next change)
 
-### 1.1 `xcp_r5_poll()` runs inside `ISR_Control` — MEASURED 2026-07-11, acceptable
-Command processing, DAQ queue drain, and cache flushes all execute in the
-~100 µs control ISR (`Baremetal/src/sw/isr.c`). Measured via `uz_SystemTime`
-`isr_execution_time_us` under `--stress` load (10 kHz):
+### 1.1 XCP sweep moved OUT of `ISR_Control` — implemented 2026-07-11 (CP11)
+Measured with the sweep still in the ISR (via `isr_execution_time_us`,
+`--stress` at 10 kHz): 16.1 µs XCP idle (engine ≈ +10 µs over baseline),
+18.3 µs @ 100 B, 27.1 µs @ 1 kB, 52.9 µs @ 4 kB/cycle — linear
+~10 µs base + ~10 µs/KB. Unacceptable for the **100 kHz ISR target**
+(10 µs total budget), so the §1.1 lever is now implemented:
 
-| DAQ payload/cycle | ISR exec | note |
-|---|---|---|
-| XCP idle | 16.1 µs | engine adds ~10 µs over the non-XCP baseline |
-| 100 B | 18.3 µs | |
-| 1000 B (80 Mbit/s) | 27.1 µs | |
-| 4000 B (326 Mbit/s) | 52.9 µs | soak-validated worst case; 47 µs headroom |
+- ISR keeps ONLY `xcp_r5_event()` (the DAQ sampling copy; ~sub-µs idle,
+  ~5 µs/KB measured-payload marginal).
+- Everything else (command processing, queue drain → OCM, cache
+  maintenance, IPI trigger) runs from the main loop via
+  `xcp_r5_background()`, paced at `XCP_R5_SWEEP_PERIOD_US` (100 µs — the
+  soak-validated exchange cadence; the A53 gateway sees the same IPI rate
+  as before).
+- queue32 (32 KB, was 8 KB) is the ISR/main boundary; its internal locks
+  are pointer-arithmetic-short, and the IRQ-disabling lock that used to sit
+  around the 252-byte OCM memcpy in `xcp_r5_tx_pump` is GONE (everything
+  CTR-related is single-context now). New counters: `xcp_r5_queue_lost`
+  (ISR out-produced the sweep — raise queue size/sweep rate),
+  `xcp_r5_sweep_count` (main-loop liveness).
 
-Scaling is linear: **~10 µs base + ~9–10 µs per KB of DAQ payload per cycle**
-(two copies: XcpEvent sample→queue + poll queue→OCM, plus cache flushes).
-Budgeting rule for real control applications: reserve
-`16 µs + 10 µs × (KB/cycle)` for XCP. If a heavy controller needs the
-headroom back, the prepared lever stands: move `xcp_r5_poll()` +
-`XIpiPsu_TriggerIpi` to the R5 main loop (halves the marginal cost — only
-the XcpEvent sampling copy must stay in the ISR; the mutex in
-`platform_baremetal.c` already makes the split safe).
+**Re-measure `isr_execution_time_us` after rebuild** — expected: near the
+non-XCP baseline at idle, ~+5 µs/KB of measured payload when streaming.
+At 100 kHz later: mind the queue sizing math in `xcptl_ocm.c`, the 1 µs DAQ
+timestamp granularity (10 ticks/cycle), and the R5 heap (queueInit now
+takes 32 KB of the 128 KB heap; watch `xcp_r5_init_result == -1`).
 
 ### 1.2 Declared vs real DAQ event rate (cosmetic)
 `XcpCreateEvent("DAQ_R5", 1000000, 0)` in `xcptl_ocm.c` declares 1 ms; the

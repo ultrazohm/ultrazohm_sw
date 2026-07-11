@@ -76,11 +76,12 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
     
 #if XCP_ENGINE_R5_ENABLE
-    /* Option Z: XCPlite engine on the R5. Sample DAQ, process commands + drain
-     * the DAQ queue into the OCM FIFO, then signal the A53 gateway via IPI. */
+    /* Option Z: XCPlite engine on the R5. ONLY the DAQ sampling copy runs in
+     * this ISR (cost: ~sub-us idle, ~5 us per KB of measured payload). The
+     * exchange sweep (commands, queue drain -> OCM, cache flushes, IPI) runs
+     * from the main loop via xcp_r5_background() — required headroom for
+     * high control rates (100 kHz target). */
     xcp_r5_event();
-    xcp_r5_poll();
-    XIpiPsu_TriggerIpi(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 #else
 #if XCP_MEAS_IMAGE_ENABLE
     /* Phase 3: write R5 measurements into the OCM MEAS image so the A53 can

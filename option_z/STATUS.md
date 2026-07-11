@@ -8,6 +8,31 @@ as an Ethernet gateway — the `uz_sw_xcp_hedrive_andi` architecture, but with
 
 See `XCPLITE_DEMO_PLAN.md` → "Option Z" for the rationale and milestones.
 
+## HARDWARE VALIDATED (2026-07-10/11)
+
+First hardware bring-up succeeded and the endurance soak is passed:
+**1 hour @ 325.7 Mbit/s** (4000 B/cycle, 10 kHz, 622 million TL frames,
+149 GB) with the session alive and responsive throughout — zero R5-side
+drops over 36.6 M control cycles, command/response handshake perfect
+(65/65 generations, 0 CTO drops), net wire loss 0.00055 % attributed to the
+lab PC's NIC receive path (see TEST_PLAN "Interpreting ctr reordering").
+That is 2x the sibling hedrive rig's reference rate, which historically
+died randomly within 5 min–2 h — the CP7 exchange protocol holds.
+
+A53 gateway counters after the soak (JTAG) — the CP7/CP9 mechanisms at work:
+`sendto_drop 0` / `txq_dropped 0` (nothing ECU-side ever lost),
+`sendto_err 17` (transient lwIP stumbles across 146 M datagrams, every one
+recovered by the CP9 bounded retry), `ocm_torn 10` + `ocm_skipped 10`
+(seqlock caught 20 R5/A53 write-read collisions — each would have been
+corrupt wire data pre-CP7), `ocm_cycles_missed 943` (0.0026 % of cycles:
+IPI latency > 100 µs; pure DAQ gaps now — pre-CP7 any such cycle carrying
+a command response killed the session, the hedrive T8 random-death cause).
+
+R5 ISR budget measured (IMPROVEMENTS §1.1): ~10 µs engine base +
+~10 µs per KB of DAQ payload per cycle; 52.9 µs at the 326 Mbit/s worst
+case — fits the 100 µs cycle with 47 µs headroom. **All planned
+measurements complete; the transport is validated for use.**
+
 ## Code-complete & compile-verified (2026-06-17)
 
 The full Option Z stack is written and compiles/links for both toolchains.

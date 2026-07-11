@@ -15,16 +15,26 @@ of traffic" bug is covered.
 
 ## 1. Measure on first hardware contact (cheap, decides the next change)
 
-### 1.1 `xcp_r5_poll()` runs inside `ISR_Control` — biggest architectural risk
+### 1.1 `xcp_r5_poll()` runs inside `ISR_Control` — MEASURED 2026-07-11, acceptable
 Command processing, DAQ queue drain, and cache flushes all execute in the
-~100 µs control ISR (`Baremetal/src/sw/isr.c`); the engine was designed for
-poll-in-main-loop. The CP7 exchange rework adds a little more per-cycle work
-(XCP_IN invalidate is now 1 KB, header flushes, occasional mailbox memcpy).
-**Measure** the `uz_SystemTime` ISR-exec time under DAQ load. If it spikes:
-move `xcp_r5_poll()` + the `XIpiPsu_TriggerIpi` call to the R5 main loop
-(`infinite_loop`) — the critical-section mutex in `platform_baremetal.c`
-already makes the ISR-producer / main-consumer split safe. Deliberately not
-done pre-hardware (one variable at a time).
+~100 µs control ISR (`Baremetal/src/sw/isr.c`). Measured via `uz_SystemTime`
+`isr_execution_time_us` under `--stress` load (10 kHz):
+
+| DAQ payload/cycle | ISR exec | note |
+|---|---|---|
+| XCP idle | 16.1 µs | engine adds ~10 µs over the non-XCP baseline |
+| 100 B | 18.3 µs | |
+| 1000 B (80 Mbit/s) | 27.1 µs | |
+| 4000 B (326 Mbit/s) | 52.9 µs | soak-validated worst case; 47 µs headroom |
+
+Scaling is linear: **~10 µs base + ~9–10 µs per KB of DAQ payload per cycle**
+(two copies: XcpEvent sample→queue + poll queue→OCM, plus cache flushes).
+Budgeting rule for real control applications: reserve
+`16 µs + 10 µs × (KB/cycle)` for XCP. If a heavy controller needs the
+headroom back, the prepared lever stands: move `xcp_r5_poll()` +
+`XIpiPsu_TriggerIpi` to the R5 main loop (halves the marginal cost — only
+the XcpEvent sampling copy must stay in the ISR; the mutex in
+`platform_baremetal.c` already makes the split safe).
 
 ### 1.2 Declared vs real DAQ event rate (cosmetic)
 `XcpCreateEvent("DAQ_R5", 1000000, 0)` in `xcptl_ocm.c` declares 1 ms; the
@@ -89,6 +99,22 @@ If Option Z fails on hardware, note that the "validated" curated fallback
 (`LOGGING_PATH_XCP_LITE`, A53 XCPlite server + MEAS image) **also never ran on
 hardware** — it is compile-validated only. The only hardware-proven fallback
 is `LOGGING_PATH_JAVASCOPE`.
+
+## 4b. Vendored XCPlite version (checked 2026-07-11)
+
+In-tree: **V2.1.0** (imported 2026-06-16) + one local fix (queue32.c
+`queuePop` reported `packets_lost` after zeroing it — upstream adopted the
+same fix later). Upstream: V2.1.5 (2026-06-18), **V2.1.6 (2026-07-08)**.
+Diffed V2.1.0→V2.1.6 for every file we vendor: no fix we are exposed to —
+the rest is refactoring (EPK API renames, xcp_evts event-registry rework,
+`ApplXcpRegisterIdleCallback`, atomic event counter for multithreaded
+producers, `queue32m.c` critical-section queue for FreeRTOS targets) that
+affects neither the single-context R5 engine nor the OCM transport. The
+harmless boot warning `No xcp_evts section found` is restructured upstream
+(we register events at runtime; the section legitimately doesn't exist).
+An upgrade to V2.1.6 is a backlog item (touches cfg headers +
+`platform_baremetal.c` against renamed APIs; the A53 fallback path would
+also need `queue32m.c`) — do it after the soak, not mid-bring-up.
 
 ## 5. Small stuff
 

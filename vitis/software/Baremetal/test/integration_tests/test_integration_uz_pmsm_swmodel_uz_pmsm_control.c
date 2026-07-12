@@ -28,7 +28,6 @@ TEST_SOURCE_FILE("uz_setpoint.c")
 TEST_SOURCE_FILE("uz_controller_setpoint_filter.c")
 TEST_SOURCE_FILE("uz_integrator.c")
 
-#define CSV_EXPORT 1
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
@@ -280,7 +279,7 @@ static void run_uz_pmsm_swmodel_uz_pmsm_control_profile(bool delay_measurements_
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 500.0f, sim_log[TOTAL_MODEL_ITERATIONS - 1U].speed_actual_rpm);
     TEST_ASSERT_EQUAL(uz_pmsm_control_no_violation, uz_pmsm_control_get_safe_operating_area_violation(controller));
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     const struct uz_pmsm_control_swmodel_config_export_t export_config = {
         .control_frequency_Hz = UZ_PMSM_CONTROL_FREQUENCY_HZ,
         .swmodel_oversampling_factor = UZ_PMSM_SWMODEL_OVERSAMPLING_FACTOR,

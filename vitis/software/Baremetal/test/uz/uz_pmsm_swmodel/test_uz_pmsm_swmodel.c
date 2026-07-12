@@ -12,7 +12,6 @@
 
 #include "export_struct_to_csv.h"
 
-#define CSV_EXPORT 1
 
 #define CSV_FIELD_DESCRIPTOR(struct_type, field_name, field_type) \
     {#field_name, offsetof(struct_type, field_name), field_type}
@@ -174,7 +173,7 @@ void test_uz_pmsm_swmodel_steady_state_standstill(void)
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, inputs.v_dq_V.q / config.pmsm_parameters.R_ph_Ohm, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.q);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 0.0f, outputs[STEADY_STATE_ITERATIONS - 1].omega_mech_1_s);
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_RESULTS_CSV_PATH, inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
     export_input_output_arrays_to_csv(UZ_PMSM_SWMODEL_CONFIG_CSV_PATH, &config, sizeof(config), empty_fields, 0U, &config, sizeof(config), config_fields, sizeof(config_fields) / sizeof(config_fields[0]), 1U, 0.0f);
 #endif
@@ -359,8 +358,7 @@ void test_uz_pmsm_swmodel_steady_state_rotating_no_voltage(void)
     const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
     const float expected_torque_Nm = 1.5f * config.pmsm_parameters.polePairs * (expected_psi_d_Vs * expected_i_q_A - expected_psi_q_Vs * expected_i_d_A);
 
-
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_steady_state_rotating_no_voltage.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
 #endif
     TEST_ASSERT_FLOAT_WITHIN(0.01f, expected_i_d_A, outputs[STEADY_STATE_ITERATIONS - 1].i_dq_A.d);
@@ -672,7 +670,7 @@ void test_uz_pmsm_swmodel_ipcore_no_mechanical(void)
     const float expected_psi_q_Vs = config.pmsm_parameters.Lq_Henry * expected_i_q_A;
     const float expected_torque_Nm = 1.5f * config.pmsm_parameters.polePairs * (expected_psi_d_Vs * expected_i_q_A - expected_psi_q_Vs * expected_i_d_A);
 
-#if CSV_EXPORT
+#if CEEDLING_GLOBAL_CSV_EXPORT
     export_input_output_arrays_to_csv("../../../docs/ceedling_test_output/uz/uz_pmsm_swmodel/uz_pmsm_swmodel_results_ipcore_no_mechanical.csv", inputs_k, sizeof(inputs_k[0]), input_fields, sizeof(input_fields) / sizeof(input_fields[0]), outputs, sizeof(outputs[0]), output_fields, sizeof(output_fields) / sizeof(output_fields[0]), STEADY_STATE_ITERATIONS, config.sample_time);
 #endif
 

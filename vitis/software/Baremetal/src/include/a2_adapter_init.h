@@ -2,12 +2,9 @@
 
 /* Project Wizard BEGIN: A2 includes */
 /* Project Wizard generated content for A2 */
-#include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
-#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
 /* Project Wizard END: A2 includes */
 
 /* Project Wizard BEGIN: A2 prototypes */
-struct _DS_Data_;
-uz_dac_interface_t* initialize_dac8831_a2(void);
-void update_dac8831_a2_outputs(struct _DS_Data_* data);
+uz_adcLtc2311_t* initialize_adc_ltc2311_a2(void);
 /* Project Wizard END: A2 prototypes */

@@ -76,13 +76,13 @@ void ISR_Control(void *data)
     if (current_state == idle_state)
     {
         /* Project Wizard BEGIN: idle_state isr_actions */
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: idle_state isr_actions */
     }
@@ -110,13 +110,13 @@ void ISR_Control(void *data)
     else if (current_state == error_state)
     {
         /* Project Wizard BEGIN: error_state isr_actions */
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.0f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.0f;
+        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: error_state isr_actions */
     }
@@ -149,37 +149,28 @@ static void update_adapter_a1(void)
 static void update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
-    update_dac8831_a2_outputs(&Global_Data);
+    Global_Data.av.adc_ltc2311_a2_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[8], 0U);
+    Global_Data.av.adc_ltc2311_a2_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[9], 1U);
+    Global_Data.av.adc_ltc2311_a2_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[10], 2U);
+    Global_Data.av.adc_ltc2311_a2_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[11], 3U);
+    Global_Data.av.adc_ltc2311_a2_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[12], 4U);
+    Global_Data.av.adc_ltc2311_a2_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[13], 5U);
+    Global_Data.av.adc_ltc2311_a2_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[14], 6U);
+    Global_Data.av.adc_ltc2311_a2_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[15], 7U);
 /* Project Wizard END: A2 isr_control */
 }
 
 static void update_adapter_a3(void)
 {
     /* Project Wizard BEGIN: A3 isr_control */
-    Global_Data.av.adc_max11331_a3_ch0 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[8]);
-    Global_Data.av.adc_max11331_a3_ch1 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[9]);
-    Global_Data.av.adc_max11331_a3_ch2 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[10]);
-    Global_Data.av.adc_max11331_a3_ch3 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[11]);
-    Global_Data.av.adc_max11331_a3_ch4 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[12]);
-    Global_Data.av.adc_max11331_a3_ch5 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[13]);
-    Global_Data.av.adc_max11331_a3_ch6 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[14]);
-    Global_Data.av.adc_max11331_a3_ch7 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[15]);
-    Global_Data.av.adc_max11331_a3_ch8 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[16]);
-    Global_Data.av.adc_max11331_a3_ch9 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[17]);
-    Global_Data.av.adc_max11331_a3_ch10 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[18]);
-    Global_Data.av.adc_max11331_a3_ch11 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[19]);
-    Global_Data.av.adc_max11331_a3_ch12 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[20]);
-    Global_Data.av.adc_max11331_a3_ch13 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[21]);
-    Global_Data.av.adc_max11331_a3_ch14 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[22]);
-    Global_Data.av.adc_max11331_a3_ch15 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[23]);
-    Global_Data.av.adc_max11331_a3_ch16 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[24]);
-    Global_Data.av.adc_max11331_a3_ch17 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[25]);
-    Global_Data.av.adc_max11331_a3_ch18 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[26]);
-    Global_Data.av.adc_max11331_a3_ch19 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[27]);
-    Global_Data.av.adc_max11331_a3_ch20 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[28]);
-    Global_Data.av.adc_max11331_a3_ch21 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[29]);
-    Global_Data.av.adc_max11331_a3_ch22 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[30]);
-    Global_Data.av.adc_max11331_a3_ch23 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[31]);
+    Global_Data.av.adc_ltc2311_a3_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[16], 0U);
+    Global_Data.av.adc_ltc2311_a3_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[17], 1U);
+    Global_Data.av.adc_ltc2311_a3_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[18], 2U);
+    Global_Data.av.adc_ltc2311_a3_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[19], 3U);
+    Global_Data.av.adc_ltc2311_a3_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[20], 4U);
+    Global_Data.av.adc_ltc2311_a3_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[21], 5U);
+    Global_Data.av.adc_ltc2311_a3_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[22], 6U);
+    Global_Data.av.adc_ltc2311_a3_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[23], 7U);
 /* Project Wizard END: A3 isr_control */
 }
 
@@ -193,24 +184,68 @@ static void update_adapter_d1(void)
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
+    Global_Data.av.io_card_d2_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
 /* Project Wizard END: D2 isr_control */
 }
 
 static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
+    uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
+    Global_Data.av.temperature_card_d3_channel_A = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
+    Global_Data.av.temperature_card_d3_channel_B = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'B');
+    Global_Data.av.temperature_card_d3_channel_C = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'C');
 /* Project Wizard END: D3 isr_control */
 }
 
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
+    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_1_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_1);
+    Global_Data.av.resolver_pl_interface_d4_1_revolution_counter = resolver_pl_interface_d4_1_outputs.revolution_counter;
+    Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi = resolver_pl_interface_d4_1_outputs.position_mech_2pi;
+    Global_Data.av.resolver_pl_interface_d4_1_position_el_2pi = resolver_pl_interface_d4_1_outputs.position_el_2pi;
+    Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s = resolver_pl_interface_d4_1_outputs.omega_mech_rad_s;
+    Global_Data.av.resolver_pl_interface_d4_1_n_mech_rpm = resolver_pl_interface_d4_1_outputs.n_mech_rpm;
+    Global_Data.av.resolver_pl_interface_d4_1_omega_el_rad_s = resolver_pl_interface_d4_1_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_1);
+    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_2_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_2);
+    Global_Data.av.resolver_pl_interface_d4_2_revolution_counter = resolver_pl_interface_d4_2_outputs.revolution_counter;
+    Global_Data.av.resolver_pl_interface_d4_2_position_mech_2pi = resolver_pl_interface_d4_2_outputs.position_mech_2pi;
+    Global_Data.av.resolver_pl_interface_d4_2_position_el_2pi = resolver_pl_interface_d4_2_outputs.position_el_2pi;
+    Global_Data.av.resolver_pl_interface_d4_2_omega_mech_rad_s = resolver_pl_interface_d4_2_outputs.omega_mech_rad_s;
+    Global_Data.av.resolver_pl_interface_d4_2_n_mech_rpm = resolver_pl_interface_d4_2_outputs.n_mech_rpm;
+    Global_Data.av.resolver_pl_interface_d4_2_omega_el_rad_s = resolver_pl_interface_d4_2_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_2);
+    struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_3_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_3);
+    Global_Data.av.resolver_pl_interface_d4_3_revolution_counter = resolver_pl_interface_d4_3_outputs.revolution_counter;
+    Global_Data.av.resolver_pl_interface_d4_3_position_mech_2pi = resolver_pl_interface_d4_3_outputs.position_mech_2pi;
+    Global_Data.av.resolver_pl_interface_d4_3_position_el_2pi = resolver_pl_interface_d4_3_outputs.position_el_2pi;
+    Global_Data.av.resolver_pl_interface_d4_3_omega_mech_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s;
+    Global_Data.av.resolver_pl_interface_d4_3_n_mech_rpm = resolver_pl_interface_d4_3_outputs.n_mech_rpm;
+    Global_Data.av.resolver_pl_interface_d4_3_omega_el_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_3);
 /* Project Wizard END: D4 isr_control */
 }
 
 static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
+    Global_Data.av.incremental_encoder_d5_1_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_1_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_1_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_1_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_1_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_1_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_1);
+    Global_Data.av.incremental_encoder_d5_2_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_3_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_3_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_3_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_3_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_3_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_3_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_3);
 /* Project Wizard END: D5 isr_control */
 }
 

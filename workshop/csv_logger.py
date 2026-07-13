@@ -7,6 +7,8 @@ import torch
 from stable_baselines3.common.callbacks import BaseCallback
 
 
+CSV_DELIMITER = ";"
+
 FIELDNAMES = [
     "time",
     "episode",
@@ -83,7 +85,9 @@ class CsvStepWriter:
 
     def open(self):
         self.file = self.path.open("w", newline="")
-        self.writer = csv.DictWriter(self.file, fieldnames=FIELDNAMES)
+        self.writer = csv.DictWriter(
+            self.file, fieldnames=FIELDNAMES, delimiter=CSV_DELIMITER
+        )
         self.writer.writeheader()
 
     def close(self):
@@ -146,7 +150,9 @@ class ContinuousCsvStepWriter:
 
     def open(self):
         self.file = self.path.open("w", newline="")
-        self.writer = csv.DictWriter(self.file, fieldnames=CONTINUOUS_FIELDNAMES)
+        self.writer = csv.DictWriter(
+            self.file, fieldnames=CONTINUOUS_FIELDNAMES, delimiter=CSV_DELIMITER
+        )
         self.writer.writeheader()
 
     def close(self):
@@ -239,7 +245,7 @@ class EpisodeCsvLogger(BaseCallback):
     def _on_training_end(self):
         self.dataframe = pd.DataFrame(self.rows, columns=TRAINING_FIELDNAMES)
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        self.dataframe.to_csv(self.path, index=False)
+        self.dataframe.to_csv(self.path, index=False, sep=CSV_DELIMITER)
 
     def _should_log_episode(self, episode):
         return (episode - 1) % self.log_every_n_episodes == 0
@@ -333,7 +339,7 @@ class ContinuousEpisodeCsvLogger(BaseCallback):
     def _on_training_end(self):
         self.dataframe = pd.DataFrame(self.rows, columns=CONTINUOUS_FIELDNAMES)
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        self.dataframe.to_csv(self.path, index=False)
+        self.dataframe.to_csv(self.path, index=False, sep=CSV_DELIMITER)
 
     def _should_log_episode(self, episode):
         return (episode - 1) % self.log_every_n_episodes == 0

@@ -108,9 +108,9 @@ static float dqn_pt1_reward(float y, float reference)
 
 static void dqn_pt1_write_csv_header(FILE *file)
 {
-    fprintf(file, "time,episode,episode_k,y,reference,error,action_index,action_value,reward,");
-    fprintf(file, "q_action_minus_1,q_action_0,q_action_plus_1,greedy_action_index,");
-    fprintf(file, "greedy_action_value,exploration_rate,terminated,truncated,done\n");
+    fprintf(file, "time;episode;episode_k;y;reference;error;action_index;action_value;reward;");
+    fprintf(file, "q_action_minus_1;q_action_0;q_action_plus_1;greedy_action_index;");
+    fprintf(file, "greedy_action_value;exploration_rate;terminated;truncated;done\n");
 }
 
 static void dqn_pt1_write_csv_step(FILE *file,
@@ -128,7 +128,7 @@ static void dqn_pt1_write_csv_step(FILE *file,
                                    float truncated)
 {
     fprintf(file,
-            "%lu,%lu,%lu,%.9g,%.9g,%.9g,%lu,%.9g,%.9g,%.9g,%.9g,%.9g,%lu,%.9g,%.9g,%.9g,%.9g,%.9g\n",
+            "%lu;%lu;%lu;%.9g;%.9g;%.9g;%lu;%.9g;%.9g;%.9g;%.9g;%.9g;%lu;%.9g;%.9g;%.9g;%.9g;%.9g\n",
             (unsigned long)time,
             (unsigned long)episode,
             (unsigned long)episode_k,

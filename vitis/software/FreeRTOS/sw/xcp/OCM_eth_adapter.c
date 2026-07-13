@@ -99,8 +99,18 @@
  * reconnect. */
 #define XCP_SEND_POLL_MS        100
 #define XCP_SEND_STALL_LIMIT_MS 5000
-/* RX side: poll cadence for "connection torn down by the TX side?" checks. */
-#define XCP_RECV_POLL_MS        500
+/* RX side: nonblocking-read poll cadence (1 tick at the 100 Hz tick rate).
+ * The RX task deliberately does NOT use select(): in the 2026-07-13 failure
+ * (pcap 2026_07_13_XCP_Messung_Wireshark.pcapng) select() stopped reporting
+ * the socket readable for 53 s while lwIP kept ACKing the master's commands
+ * into the receive mailbox -- yet the same loop reacted to the FIN within
+ * 16 ms, so the task was scheduled and the data was there; only the socket
+ * layer's select/rcvevent bookkeeping had lost it. A nonblocking read() polls
+ * the netconn receive mailbox directly and never consults that bookkeeping.
+ * This also leaves send_all() as the ONLY select() caller on the fd: lwIP
+ * 2.1.1's select event accounting is not trustworthy with two tasks selecting
+ * the same socket concurrently. */
+#define XCP_RECV_POLL_MS        10
 
 #define XCP_ETH_PORT            (uint16_t) 12340
 
@@ -128,6 +138,16 @@ volatile uint32_t try_to_read_ocm = 0;
 // draining. No purge: backlog latency is bounded by the queue depth (~100 ms
 // class, acceptable) and command responses never travel through this queue.
 static volatile uint32_t xcp_txq_overflow_dropped = 0;
+
+// Tripwire counters: every place a frame can silently vanish gets counted, so
+// a future "no response" failure is diagnosed by reading counters instead of
+// correlating pcaps against five equal totals (2026-07-13 lesson: the loss
+// was only locatable by elimination because the losing stage was uncounted).
+volatile uint32_t xcp_rx_reads = 0;            // successful read() calls
+volatile uint32_t xcp_rx_bytes = 0;            // bytes taken out of the socket
+volatile uint32_t xcp_rxq_full_dropped = 0;    // command parsed, RX queue full
+volatile uint32_t xcp_ctoq_full_dropped = 0;   // response lost, CTO queue full
+volatile uint32_t xcp_batch_len_dropped = 0;   // frame dropped in tx_batch_append
 
 // Per-connection worker lifecycle. The accept loop sets these before spawning
 // the TX/RX tasks and waits for both to clear before accepting the next master,
@@ -162,6 +182,7 @@ static uint32_t tx_batch_append(uint8_t *batch_buf, uint32_t batch_fill, const u
     uint32_t frame_total = (uint32_t)len_xcp_tx + XCP_HEADER_LEN;
 
     if (frame_total > BUF_SIZE_XCP_TX) {
+        xcp_batch_len_dropped++;
         return batch_fill;  // corrupt length field; drop the frame
     }
 
@@ -296,31 +317,20 @@ static void ocm_eth_adapter_rx(void *arg_p)
     int      stream_corrupt = 0;
 
     while (!stream_corrupt && xcp_eth_connected) {
-        // Non-blocking socket: wait for data in bounded slices so a
-        // connection declared dead by the TX side (stall teardown) is
-        // noticed here too instead of blocking in read() forever.
-        fd_set rfds;
-        struct timeval tv;
-        FD_ZERO(&rfds);
-        FD_SET(sd, &rfds);
-        tv.tv_sec = 0;
-        tv.tv_usec = XCP_RECV_POLL_MS * 1000;
-        int sel = lwip_select(sd + 1, &rfds, NULL, NULL, &tv);
-        if (sel < 0) {
-            break;      // socket error
-        }
-        if (sel == 0) {
-            continue;   // timeout: re-check xcp_eth_connected
-        }
-
+        // Poll the non-blocking socket directly -- no select(), see the
+        // XCP_RECV_POLL_MS comment. The bounded sleep also keeps disconnect
+        // detection (xcp_eth_connected cleared by the TX side) prompt.
         n = read(sd, &stream_buf[stream_fill], sizeof(stream_buf) - stream_fill);
         if (n < 0 && (errno == EWOULDBLOCK || errno == EAGAIN)) {
-            continue;   // spurious wakeup on the non-blocking socket
+            vTaskDelay(pdMS_TO_TICKS(XCP_RECV_POLL_MS));
+            continue;   // no data yet; re-check xcp_eth_connected and retry
         }
         if (n <= 0) {
             // n < 0 = socket error, n == 0 = orderly close by the master
             break;
         }
+        xcp_rx_reads++;
+        xcp_rx_bytes += (uint32_t)n;
         stream_fill += (uint32_t)n;
 
         // Extract every complete message currently in the buffer.
@@ -348,6 +358,7 @@ static void ocm_eth_adapter_rx(void *arg_p)
             if (xQueueSend(queue_xcp_rx, msg, 0) != pdPASS) {
                 // RX command queue full (ISR not draining fast enough): drop
                 // this command but keep the connection alive.
+                xcp_rxq_full_dropped++;
             } else {
                 msg_rxq_written++;
             }
@@ -583,9 +594,11 @@ static BaseType_t read_OCM_write_txQueue(void)
 		xcp_last_cto_seq = cto_seq;	// acked via the write phase this IPI
 		if (xQueueSendFromISR(queue_xcp_tx_cto, xcp_stage_cto, &task_woken) == pdPASS) {
 			msg_txq_written++;
+		} else {
+			// CTO queue full is practically impossible (request/response is
+			// serialized); count it so a lost response is never invisible.
+			xcp_ctoq_full_dropped++;
 		}
-		// CTO queue full is practically impossible (request/response is
-		// serialized); if it happens the frame is dropped silently.
 	}
 
 	if (xcp_eth_connected == 0) {
@@ -603,6 +616,8 @@ static BaseType_t read_OCM_write_txQueue(void)
 		if (xcp_stage[i][XCP_HEADER_LEN] >= XCP_PID_CTO_MIN) {
 			if (xQueueSendFromISR(queue_xcp_tx_cto, xcp_stage[i], &task_woken) == pdPASS) {
 				msg_txq_written++;
+			} else {
+				xcp_ctoq_full_dropped++;
 			}
 			continue;
 		}

@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -24,6 +25,18 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
+	float i_a_Beckhoff;
+	float i_b_Beckhoff;
+	float i_c_Beckhoff;
+	float v_a_Beckhoff;
+	float v_b_Beckhoff;
+	float v_c_Beckhoff;
+	float v_dc_Beckhoff;
+	float i_dc_Beckhoff;
+	float i_d_Beckhoff;
+	float i_q_Beckhoff;
+	float v_d_Beckhoff;
+	float v_q_Beckhoff;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -105,6 +118,7 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
+	float speed_n_ref_rpm_Beckhoff;
 } referenceAndSetValues;
 
 typedef struct{
@@ -131,6 +145,9 @@ typedef struct{
 	uz_incrementalEncoder_t* incremental_encoder_d5_2;
 	uz_incrementalEncoder_t* incremental_encoder_d5_3;
 /* Project Wizard END: objects */
+	uz_pmsm_control_t* pmsm_control_Beckhoff_AM8071;
+	uz_axi_gpio_t* dhg_reset_gpio;
+	uz_axi_gpio_t* dhg_input_gpio;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

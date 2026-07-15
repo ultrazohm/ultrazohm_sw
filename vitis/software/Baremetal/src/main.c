@@ -88,6 +88,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            init_control_Beckhoff_AM8071();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

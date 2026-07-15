@@ -38,6 +38,18 @@ XIpiPsu IPI_instance;
 // Global variable structure
 extern DS_Data Global_Data;
 
+bool HB_ok = false;
+bool OC_ok = false;
+bool reset_button = false;
+bool reset_button_was_pressed = false;
+uz_3ph_dq_t unused_current_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+#define		VOLTAGE_2_SI_VOLTS_DHG 		363.6f
+#define		VOLTAGE_2_SI_VOLTS_DHG_CH3	37.037f
+#define		VOLTAGE_2_SI_VOLTS_DHG_CH4	142.3f
+#define		CURRENT_CONV_HASS_50		40.0f // 50.0f / 0.625f datasheet
+#define		MAX_CURRENT					50.0f
+
 /* Project Wizard BEGIN: adc_readout_definitions */
 static uz_array_int16_t analog_adc_data;
 /* Project Wizard END: adc_readout_definitions */
@@ -64,13 +76,52 @@ void ISR_Control(void *data)
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
     update_adapter_a1();
-    update_adapter_a2();
+    update_adapter_a2(); // DHG inverter ADC
     update_adapter_a3();
-    update_adapter_d1();
+    update_adapter_d1(); // DHG inverter optical
     update_adapter_d2();
     update_adapter_d3();
-    update_adapter_d4();
+    update_adapter_d4(); // Resolver, 1: Beckhoff, 3: HM
     update_adapter_d5();
+
+	// Reset button
+    if (reset_button == true) {
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,1);
+    	reset_button_was_pressed = true;
+    	reset_button = false;
+//		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
+    } else {
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,0);
+    }
+    // read in status of hardware switch off of inverter
+    HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,14);
+    OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,15);
+    if ((HB_ok == false || OC_ok == false) && reset_button_was_pressed == true) {
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+	// assign measurements to Global_Data
+	Global_Data.av.i_a_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch0 * CURRENT_CONV_HASS_50 - 0.15f;
+	Global_Data.av.i_b_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch1 * CURRENT_CONV_HASS_50 + 0.1f;
+	Global_Data.av.i_c_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch2 * CURRENT_CONV_HASS_50 - 0.05f;
+	Global_Data.av.i_dc_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch7 * CURRENT_CONV_HASS_50 - 0.3f;
+	Global_Data.av.v_a_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch4 - 0.0033f) * VOLTAGE_2_SI_VOLTS_DHG;
+	Global_Data.av.v_b_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch5 - 0.001f) * VOLTAGE_2_SI_VOLTS_DHG;
+	Global_Data.av.v_c_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch6 - 0.0017f) * VOLTAGE_2_SI_VOLTS_DHG_CH3;
+	Global_Data.av.v_dc_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch3 + 0.0005f) * VOLTAGE_2_SI_VOLTS_DHG_CH4;
+
+    // check for current limit
+    if (fabs(Global_Data.av.i_a_Beckhoff) > MAX_CURRENT || fabs(Global_Data.av.i_b_Beckhoff) > MAX_CURRENT || fabs(Global_Data.av.i_c_Beckhoff) > MAX_CURRENT) {
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+    struct uz_pmsm_measurement_values measurements_Beckhoff = {
+        .i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
+        .v_abc_in_V = {.a = Global_Data.av.v_a_Beckhoff, .b = Global_Data.av.v_b_Beckhoff, .c = Global_Data.av.v_c_Beckhoff},
+        .v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
+        .i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
+        .omega_mech_rad_per_sec = Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s,
+        .theta_mech = Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi};
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
@@ -96,13 +147,23 @@ void ISR_Control(void *data)
     else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
+
+    	uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071, true);
+
+    	struct uz_DutyCycle_t duty_cycle_Beckhoff = uz_pmsm_control_sample_duty(
+    		Global_Data.objects.pmsm_control_Beckhoff_AM8071,
+    	    measurements_Beckhoff,
+    	    Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
+    	    unused_current_reference_A,
+    	    0.0f);
+
+        //uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty_cycle_Beckhoff.DutyCycle_A;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = duty_cycle_Beckhoff.DutyCycle_B;
+        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = duty_cycle_Beckhoff.DutyCycle_C;
+       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
+       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
+       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */

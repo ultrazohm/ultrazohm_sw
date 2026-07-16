@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -17,6 +18,11 @@
 #include "include/d3_adapter_init.h"
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
+
+enum control_mode {
+	CIL,
+	REAL
+};
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -37,6 +43,8 @@ typedef struct _actualValues_ {
 	float i_q_Beckhoff;
 	float v_d_Beckhoff;
 	float v_q_Beckhoff;
+	float speed_n_rpm_Beckhoff;
+	float theta_el_Beckhoff;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -119,6 +127,9 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
 	float speed_n_ref_rpm_Beckhoff;
+	float i_d_ref_A_Beckhoff_cil;
+	float i_q_ref_A_Beckhoff_cil;
+	enum control_mode control_mode_select;
 } referenceAndSetValues;
 
 typedef struct{
@@ -148,6 +159,7 @@ typedef struct{
 	uz_pmsm_control_t* pmsm_control_Beckhoff_AM8071;
 	uz_axi_gpio_t* dhg_reset_gpio;
 	uz_axi_gpio_t* dhg_input_gpio;
+	uz_pmsmModel_t* pmsm_cil_Beckhoff;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

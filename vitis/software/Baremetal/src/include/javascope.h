@@ -24,6 +24,14 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
+	JSO_speed,
+	JSO_id_Beckhoff,
+	JSO_iq_Beckhoff,
+	JSO_ia_Beckhoff,
+	JSO_ib_Beckhoff,
+	JSO_ic_Beckhoff,
+	JSO_vd_Beckhoff,
+	JSO_vq_Beckhoff,
 /* Project Wizard BEGIN: javascope_observables */
 	JSO_ADC_A1_CH0,
 	JSO_ADC_A1_CH1,
@@ -138,8 +146,8 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	n_ref,
-	send_field_2,
-	send_field_3,
+	i_d_ref_cil,
+	i_q_ref_cil,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -244,8 +252,8 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
+	CIL,
+	REAL,
 	MyButton3,
 	MyButton4,
 	MyButton5,

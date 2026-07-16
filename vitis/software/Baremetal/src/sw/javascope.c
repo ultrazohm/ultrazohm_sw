@@ -73,6 +73,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_speed]					= &data->av.speed_n_rpm_Beckhoff,
+	js_ch_observable[JSO_id_Beckhoff]			= &data->av.i_d_Beckhoff;
+	js_ch_observable[JSO_iq_Beckhoff]			= &data->av.i_q_Beckhoff;
+	js_ch_observable[JSO_ia_Beckhoff]			= &data->av.i_a_Beckhoff;
+	js_ch_observable[JSO_ib_Beckhoff]			= &data->av.i_b_Beckhoff;
+	js_ch_observable[JSO_ic_Beckhoff]			= &data->av.i_c_Beckhoff;
+	js_ch_observable[JSO_vd_Beckhoff]			= &data->av.v_d_Beckhoff;
+	js_ch_observable[JSO_vq_Beckhoff]			= &data->av.v_q_Beckhoff;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;

@@ -1,0 +1,11 @@
+# CANape files
+*.tmp
+CanapeCmd.ini
+*.A2LPROJ
+*.xml
+*.par
+*.mkv
+*.cnaxml
+*.dmp
+
+

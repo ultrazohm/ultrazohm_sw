@@ -48,6 +48,7 @@ uz_3ph_dq_t current_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 uz_3ph_dq_t v_dq_ref_cil = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_pmsmModel_inputs_t pmsm_cil_inputs_Beckhoff = {0.0f};
 struct uz_pmsmModel_outputs_t pmsm_cil_outputs_Beckhoff = {0.0f};
+struct uz_3ph_abc_t i_abc_cil = {0.0f};
 float theta_mech_Beckhoff = 0.0f;
 
 #define		VOLTAGE_2_SI_VOLTS_DHG 		363.6f
@@ -156,17 +157,23 @@ void ISR_Control(void *data)
 	    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
 	    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
 	    		pmsm_cil_outputs_Beckhoff = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil_Beckhoff);
-	    		Global_Data.av.speed_n_rpm_Beckhoff = pmsm_cil_outputs_Beckhoff.omega_mech_1_s / (2.0f * UZ_PIf);
+	    		Global_Data.av.speed_n_rpm_Beckhoff = pmsm_cil_outputs_Beckhoff.omega_mech_1_s * 60.0f / (2.0f * UZ_PIf);
 	    		Global_Data.av.i_d_Beckhoff = pmsm_cil_outputs_Beckhoff.i_d_A;
 	    		Global_Data.av.i_q_Beckhoff = pmsm_cil_outputs_Beckhoff.i_q_A;
 	    		struct uz_3ph_dq_t i_dq_Beckhoff_cil = {.d = Global_Data.av.i_d_Beckhoff, .q = Global_Data.av.i_q_Beckhoff, .zero = 0.0f};
 	    		Global_Data.av.theta_el_Beckhoff = theta_mech_Beckhoff * Beckhoff_AM8071_0R01.polePairs;
+	    		i_abc_cil = uz_transformation_3ph_dq_to_abc(i_dq_Beckhoff_cil, Global_Data.av.theta_el_Beckhoff);
+	    		Global_Data.av.i_a_Beckhoff = i_abc_cil.a;
+	    		Global_Data.av.i_b_Beckhoff = i_abc_cil.b;
+	    		Global_Data.av.i_c_Beckhoff = i_abc_cil.c;
 
+	    		Global_Data.av.v_dc_Beckhoff = V_DC;
+	    		Global_Data.av.i_dc_Beckhoff = 0.0f;
 	    		struct uz_pmsm_measurement_values measurements_Beckhoff_cil = {
-		            .i_abc_in_A = uz_transformation_3ph_dq_to_abc(i_dq_Beckhoff_cil, Global_Data.av.theta_el_Beckhoff),
+		            .i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
 		            .v_abc_in_V = uz_transformation_3ph_dq_to_abc(v_dq_ref_cil, Global_Data.av.theta_el_Beckhoff),
-		            .v_dc_in_V = V_DC,
-		            .i_dc_in_A = 0.0f,
+					.v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
+					.i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
 		            .omega_mech_rad_per_sec = pmsm_cil_outputs_Beckhoff.omega_mech_1_s,
 		            .theta_mech = theta_mech_Beckhoff};
 	    		theta_mech_Beckhoff = uz_signals_wrap(theta_mech_Beckhoff + pmsm_cil_outputs_Beckhoff.omega_mech_1_s * SAMPLE_TIME_CIL, 2.0f*UZ_PIf);
@@ -174,18 +181,18 @@ void ISR_Control(void *data)
 //	    		current_reference_A.d = Global_Data.rasv.i_d_ref_A_Beckhoff_cil;
 //	    		current_reference_A.q = Global_Data.rasv.i_q_ref_A_Beckhoff_cil;
 
-	    		uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071, true);
 	    		struct uz_3ph_dq_t v_dq_ref_cil = uz_pmsm_control_sample_dq(
 	    			Global_Data.objects.pmsm_control_Beckhoff_AM8071,
 					measurements_Beckhoff_cil,
 					Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
-		    	    unused_current_reference_A,
+		    	    current_reference_A,
 		    	    0.0f);
 	    		Global_Data.av.v_d_Beckhoff = v_dq_ref_cil.d;
 	    		Global_Data.av.v_q_Beckhoff = v_dq_ref_cil.q;
 	    		pmsm_cil_inputs_Beckhoff.v_d_V = v_dq_ref_cil.d;
 	    		pmsm_cil_inputs_Beckhoff.v_q_V = v_dq_ref_cil.q;
 	    		pmsm_cil_inputs_Beckhoff.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.speed_n_ref_rpm_Beckhoff / 60.0f;
+	    		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil_Beckhoff, pmsm_cil_inputs_Beckhoff);
 
 				break;
 			case REAL:
@@ -197,8 +204,6 @@ void ISR_Control(void *data)
 		            .omega_mech_rad_per_sec = Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s,
 		            .theta_mech = Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi};
 
-		    	uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071, true);
-
 		    	struct uz_DutyCycle_t duty_cycle_Beckhoff = uz_pmsm_control_sample_duty(
 		    		Global_Data.objects.pmsm_control_Beckhoff_AM8071,
 		    	    measurements_Beckhoff,
@@ -206,7 +211,6 @@ void ISR_Control(void *data)
 		    	    unused_current_reference_A,
 		    	    0.0f);
 
-		        //uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
 		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty_cycle_Beckhoff.DutyCycle_A;
 		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = duty_cycle_Beckhoff.DutyCycle_B;
 		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = duty_cycle_Beckhoff.DutyCycle_C;

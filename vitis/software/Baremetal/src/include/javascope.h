@@ -32,6 +32,7 @@ enum JS_OberservableData {
 	JSO_ic_Beckhoff,
 	JSO_vd_Beckhoff,
 	JSO_vq_Beckhoff,
+	JSO_theta_el_Beckhoff,
 /* Project Wizard BEGIN: javascope_observables */
 	JSO_ADC_A1_CH0,
 	JSO_ADC_A1_CH1,
@@ -84,7 +85,7 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_speed_n,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_Milliseconds,
@@ -199,7 +200,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	SecondsSinceSystemStart,
+	speed_n,
 	ISR_ExecTime,
 	ISR_PeriodTime,
 	MillisecondsTimer,
@@ -226,7 +227,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	s,
+	rpm,
 	us,
 	us,
 	ms,
@@ -269,7 +270,7 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_speed_n,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_Milliseconds,

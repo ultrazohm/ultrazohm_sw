@@ -81,6 +81,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ic_Beckhoff]			= &data->av.i_c_Beckhoff;
 	js_ch_observable[JSO_vd_Beckhoff]			= &data->av.v_d_Beckhoff;
 	js_ch_observable[JSO_vq_Beckhoff]			= &data->av.v_q_Beckhoff;
+	js_ch_observable[JSO_theta_el_Beckhoff]		= &data->av.theta_el_Beckhoff;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
@@ -131,7 +132,7 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_speed_n]						= &data->av.speed_n_rpm_Beckhoff;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;

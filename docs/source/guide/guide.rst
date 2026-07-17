@@ -194,3 +194,10 @@ Interfaces of Cabinet
    gui/javascope
    gui/dataviewer/dataviewer
 
+.. toctree::
+   :maxdepth: 1
+   :caption: XCP Communication
+
+   XCP/XCP_intro
+   XCP/CANape
+

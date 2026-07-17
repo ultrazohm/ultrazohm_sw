@@ -22,7 +22,7 @@
 #define UZ_APP_DESKBENCH     3U
 
 #ifndef UZ_APP
-#define UZ_APP UZ_APP_DQN_PT1
+#define UZ_APP UZ_APP_DDPG_PT1
 #endif
 
 #if (UZ_APP != UZ_APP_DQN_PT1) && (UZ_APP != UZ_APP_DDPG_PT1) && (UZ_APP != UZ_APP_DESKBENCH)
@@ -137,6 +137,8 @@
 #define UZ_PMSM_CONTROL_MAX_INSTANCES                   0U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
 #define UZ_PLANTPT1_MAX_INSTANCES                       1U
+#define UZ_DQN_AGENT_MAX_INSTANCES                      1U
+#define UZ_DDPG_AGENT_MAX_INSTANCES                     1U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
 #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
 #define UZ_PRNG_PCG_MAX_INSTANCES                       0U
@@ -173,6 +175,8 @@
     #define UZ_INCREMENTALENCODER_MAX_INSTANCES             20U
     #define UZ_NN_LAYER_MAX_INSTANCES                       100U
     #define UZ_NN_MAX_INSTANCES                             20U
+    #define UZ_DQN_AGENT_MAX_INSTANCES                      10U
+    #define UZ_DDPG_AGENT_MAX_INSTANCES                     10U
     #define UZ_PWM_SS_2L_MAX_INSTANCES                      50U
     #define UZ_MATRIX_MAX_INSTANCES                         201U
     #define UZ_PMSMMODEL_MAX_INSTANCES                      11U

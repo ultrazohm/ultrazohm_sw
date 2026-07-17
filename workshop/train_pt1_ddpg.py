@@ -14,7 +14,7 @@ from export_to_uz_nn import export_to_uz_nn
 GAIN = 1.0
 TIME_CONSTANT = 0.002
 CONTROL_FREQUENCY = 10000.0
-EPISODE_SECONDS = 2.0
+EPISODE_SECONDS = 0.2
 REFERENCE = 0.0
 # Set both to None to train with the fixed REFERENCE value.
 TRAIN_REFERENCE_LOW = -1.0
@@ -39,7 +39,7 @@ REWARD_FUNCTION = squared_error_reward
 # 1 logs every episode; 10 logs episodes 1, 11, 21, ...
 TRAIN_LOG_EVERY_N_EPISODES = 1
 STEPS_PER_EPISODE = round(EPISODE_SECONDS * CONTROL_FREQUENCY)
-TOTAL_TIMESTEPS = 2_000_000
+TOTAL_TIMESTEPS = 500_000
 TRAINING_EPISODES = (TOTAL_TIMESTEPS + STEPS_PER_EPISODE - 1) // STEPS_PER_EPISODE
 
 # DDPG hyperparameters (stable-baselines3 2.9 defaults, except LEARNING_STARTS

@@ -1004,7 +1004,7 @@ DUAL: on falling and rising edge*/
       /begin DAQ
         DYNAMIC
         0x00
-        0x05
+        0x01
         0x00
         OPTIMISATION_TYPE_DEFAULT
         ADDRESS_EXTENSION_FREE
@@ -1018,49 +1018,9 @@ DUAL: on falling and rising edge*/
           UNIT_1US
         /end TIMESTAMP_SUPPORTED
         /begin EVENT
-          "daq_fast"
-          "daq_fast"
+          "DAQ_R5"
+          "DAQ_R5"
           0x00
-          DAQ
-          0xFF
-          0x64
-          0x03
-          0x00
-        /end EVENT
-        /begin EVENT
-          "daq_1ms"
-          "daq_1ms"
-          0x01
-          DAQ
-          0xFF
-          0x01
-          0x06
-          0x00
-        /end EVENT
-        /begin EVENT
-          "daq_10ms"
-          "daq_10ms"
-          0x02
-          DAQ
-          0xFF
-          0x0A
-          0x06
-          0x00
-        /end EVENT
-        /begin EVENT
-          "daq_100ms"
-          "daq_100ms"
-          0x03
-          DAQ
-          0xFF
-          0x64
-          0x06
-          0x00
-        /end EVENT
-        /begin EVENT
-          "daq_1s"
-          "daq_1s"
-          0x04
           DAQ
           0xFF
           0x01
@@ -1076,30 +1036,21 @@ DUAL: on falling and rising edge*/
         0x00
         0x00
       /end PGM
-      /begin XCP_ON_TCP_IP
-        0x0103
-        0x3034
-        ADDRESS "169.254.1.8"
-      /end XCP_ON_TCP_IP
       /begin XCP_ON_UDP_IP
         0x0103
-        0x3034
+        0x15B4
         ADDRESS "192.168.1.233"
       /end XCP_ON_UDP_IP
     /end IF_DATA
 
     /begin MEASUREMENT ISR_execution_time_us ""
       FLOAT32_IEEE NO_COMPU_METHOD 0 0 -3.40282346639E+38 3.40282346639E+38
-      ECU_ADDRESS 0x400BA840
-      ECU_ADDRESS_EXTENSION 0x2F
-      SYMBOL_LINK "ISR_execution_time_us" 0
+      ECU_ADDRESS 0x400BA840      SYMBOL_LINK "ISR_execution_time_us" 0
     /end MEASUREMENT
 
     /begin MEASUREMENT ISR_period_us ""
       FLOAT32_IEEE NO_COMPU_METHOD 0 0 -3.40282346639E+38 3.40282346639E+38
-      ECU_ADDRESS 0x400BA848
-      ECU_ADDRESS_EXTENSION 0x2F
-      SYMBOL_LINK "ISR_period_us" 0
+      ECU_ADDRESS 0x400BA848      SYMBOL_LINK "ISR_period_us" 0
     /end MEASUREMENT
 
     /begin MEASUREMENT lifecheck ""

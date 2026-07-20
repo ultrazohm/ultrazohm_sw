@@ -54,6 +54,11 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
+enum control_mode_t{
+    DUT_ONLY_CURRENT_CONTROL = 0,
+};
+
+enum control_mode_t control_mode = DUT_ONLY_CURRENT_CONTROL; // Default control mode
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -77,68 +82,46 @@ void ISR_Control(void *data)
     deskbench_update_measurements(&Global_Data);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
+
+//        disable_dut(data);
+//    disable_prime_mover(data);
+//    control_dut_pmsm_model(data);
+//    control_prime_mover(data);
+    // if one of the controller is in error mode, ultrazohm_state_machine_set_stop
+
     switch (current_state)
     {
     case idle_state:
         /* Project Wizard BEGIN: idle_state isr_actions */
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, true, true, true);
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, true, true, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        deskbench_enter_idle(&Global_Data);
-#if (UZ_APP != UZ_APP_DESKBENCH)
-        pt1_control_stop(&Global_Data);
-#endif
+
         /* Project Wizard END: idle_state isr_actions */
         break;
 
     case running_state:
         /* Project Wizard BEGIN: running_state isr_actions */
-#if (UZ_APP == UZ_APP_DESKBENCH)
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, false, false, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
-#else
-        deskbench_enter_idle(&Global_Data);
-#endif
+
         /* Project Wizard END: running_state isr_actions */
         break;
 
     case control_state:
-        /* Start: Control algorithm - only if UltraZohm is in control state.
-         * Enable and tristate are intentionally left untouched here. */
-#if (UZ_APP == UZ_APP_DESKBENCH)
-        deskbench_control_step(&Global_Data);
-#else
-            pt1_control_step(&Global_Data);
-#endif
-        /* Project Wizard BEGIN: control_state isr_actions */
+    /* Project Wizard BEGIN: control_state isr_actions */
+        switch (control_mode)
+        {
+        case DUT_ONLY_CURRENT_CONTROL: // dut only current control
+            /* code */
+            break;
+        
+        default:
+            break;
+        }
         /* Project Wizard END: control_state isr_actions */
         break;
 
     case error_state:
         /* Project Wizard BEGIN: error_state isr_actions */
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_A = 0.0f;
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_B = 0.0f;
-        Global_Data.rasv.prime_mover_duty_cycle.DutyCycle_C = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1_d2, true, true, true);
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_A = 0.0f;
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_B = 0.0f;
-        Global_Data.rasv.dut_duty_cycle.DutyCycle_C = 0.0f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0_d1, true, true, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
-        deskbench_enter_idle(&Global_Data);
-#if (UZ_APP != UZ_APP_DESKBENCH)
-        pt1_control_stop(&Global_Data);
-#endif
+        // Tristate and enable off.
+        ultrazohm_state_machine_set_error(true);
+
         /* Project Wizard END: error_state isr_actions */
         break;
 

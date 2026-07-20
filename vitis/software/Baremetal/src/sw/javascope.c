@@ -117,42 +117,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_omega_el_rad_s;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_revolution_counter;
 /* Project Wizard END: javascope_observable_pointers */
-	js_ch_observable[JSO_DQN_PT1_ACTUAL] = &data->av.dqn_pt1_actual;
-	js_ch_observable[JSO_DQN_PT1_REFERENCE] = &data->av.dqn_pt1_reference;
-	js_ch_observable[JSO_DQN_PT1_JAVASCOPE_SETPOINT] = &data->av.dqn_pt1_javascope_setpoint;
-	js_ch_observable[JSO_DQN_PT1_ACTION] = &data->av.dqn_pt1_action;
-	js_ch_observable[JSO_DQN_PT1_EVAL_PROFILE_EPISODE] = &data->av.dqn_pt1_eval_profile_episode;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_A_A] = &data->av.deskbench_dut_i_a_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_B_A] = &data->av.deskbench_dut_i_b_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_C_A] = &data->av.deskbench_dut_i_c_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_D_A] = &data->av.deskbench_dut_i_d_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_Q_A] = &data->av.deskbench_dut_i_q_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_V_DC_V] = &data->av.deskbench_dut_v_dc_V;
-	js_ch_observable[JSO_DESKBENCH_DUT_V_D_V] = &data->av.deskbench_dut_v_d_V;
-	js_ch_observable[JSO_DESKBENCH_DUT_V_Q_V] = &data->av.deskbench_dut_v_q_V;
-	js_ch_observable[JSO_DESKBENCH_DUT_SPEED_RPM] = &data->av.deskbench_dut_speed_rpm;
-	js_ch_observable[JSO_DESKBENCH_DUT_THETA_EL_RAD] = &data->av.deskbench_dut_theta_el_rad;
-	js_ch_observable[JSO_DESKBENCH_DUT_MEAN_TEMP_DEGC] = &data->av.deskbench_dut_mean_temp_degC;
-	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_D_A] = &data->av.deskbench_dut_pmsm_model_i_d_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_I_Q_A] = &data->av.deskbench_dut_pmsm_model_i_q_A;
-	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_TORQUE_NM] = &data->av.deskbench_dut_pmsm_model_torque_Nm;
-	js_ch_observable[JSO_DESKBENCH_DUT_PMSM_MODEL_OMEGA_MECH_RAD_S] = &data->av.deskbench_dut_pmsm_model_omega_mech_rad_s;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_D_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.d;
-	js_ch_observable[JSO_DESKBENCH_DUT_I_Q_REF_A] = &data->rasv.deskbench_dut_i_dq_ref_A.q;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_A_A] = &data->av.deskbench_prime_mover_i_a_A;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_B_A] = &data->av.deskbench_prime_mover_i_b_A;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_C_A] = &data->av.deskbench_prime_mover_i_c_A;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_D_A] = &data->av.deskbench_prime_mover_i_d_A;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_I_Q_A] = &data->av.deskbench_prime_mover_i_q_A;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_DC_V] = &data->av.deskbench_prime_mover_v_dc_V;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_D_V] = &data->av.deskbench_prime_mover_v_d_V;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_V_Q_V] = &data->av.deskbench_prime_mover_v_q_V;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_SPEED_RPM] = &data->av.deskbench_prime_mover_speed_rpm;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_THETA_EL_RAD] = &data->av.deskbench_prime_mover_theta_el_rad;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_MEAN_TEMP_DEGC] = &data->av.deskbench_prime_mover_mean_temp_degC;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM] = &data->rasv.deskbench_prime_mover_n_ref_rpm;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_N_REF_RPM_FILTERED] = &data->rasv.deskbench_prime_mover_n_ref_rpm_filtered;
-	js_ch_observable[JSO_DESKBENCH_PRIME_MOVER_M_REF_NM] = &data->rasv.deskbench_prime_mover_M_ref_Nm;
+
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -195,12 +160,6 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
-
-	if (data->av.dqn_pt1_eval_profile_episode > 0.0f) {
-		js_status_BareToRTOS |= (1U << 4);
-	} else {
-		js_status_BareToRTOS &= ~(1U << 4);
-	}
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

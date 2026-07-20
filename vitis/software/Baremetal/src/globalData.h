@@ -9,8 +9,6 @@
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "IP_Cores/uz_plantPT1/uz_plantPT1.h"
 #include "IP_Cores/uz_pmsmmodel/uz_pmsmModel.h"
-#include "uz/uz_ddpg/uz_ddpg_agent.h"
-#include "uz/uz_dqn/uz_dqn_agent.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
@@ -26,6 +24,7 @@
 #include "include/d5_adapter_init.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -33,50 +32,10 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
-	float dqn_pt1_actual;
-	float dqn_pt1_reference;
-	float dqn_pt1_javascope_setpoint;
-	float dqn_pt1_action;
-	float dqn_pt1_eval_profile_episode;
-	float deskbench_dut_i_a_A;
-	float deskbench_dut_i_b_A;
-	float deskbench_dut_i_c_A;
-	float deskbench_dut_i_dc_A;
-	float deskbench_dut_v_a_V;
-	float deskbench_dut_v_b_V;
-	float deskbench_dut_v_c_V;
-	float deskbench_dut_v_dc_V;
-	float deskbench_dut_i_d_A;
-	float deskbench_dut_i_q_A;
-	float deskbench_dut_v_d_V;
-	float deskbench_dut_v_q_V;
-	float deskbench_dut_omega_mech_rad_s;
-	float deskbench_dut_speed_rpm;
-	float deskbench_dut_theta_el_rad;
-	float deskbench_dut_mean_temp_degC;
-	float deskbench_dut_pmsm_model_i_d_A;
-	float deskbench_dut_pmsm_model_i_q_A;
-	float deskbench_dut_pmsm_model_torque_Nm;
-	float deskbench_dut_pmsm_model_omega_mech_rad_s;
-	float deskbench_prime_mover_i_a_A;
-	float deskbench_prime_mover_i_b_A;
-	float deskbench_prime_mover_i_c_A;
-	float deskbench_prime_mover_i_dc_A;
-	float deskbench_prime_mover_v_a_V;
-	float deskbench_prime_mover_v_b_V;
-	float deskbench_prime_mover_v_c_V;
-	float deskbench_prime_mover_v_dc_V;
-	float deskbench_prime_mover_i_d_A;
-	float deskbench_prime_mover_i_q_A;
-	float deskbench_prime_mover_v_d_V;
-	float deskbench_prime_mover_v_q_V;
-	float deskbench_prime_mover_omega_mech_rad_s;
-	float deskbench_prime_mover_speed_rpm;
-	float deskbench_prime_mover_theta_el_rad;
-	float deskbench_prime_mover_mean_temp_degC;
-	float deskbench_machine_polepairs;
-	/* Project Wizard BEGIN: actualValues */
-	float adc_ltc2311_a1_ch0;
+	struct uz_pmsm_measurement_values dut_measurements;
+	struct uz_pmsm_measurement_values prime_mover_measurements;
+		/* Project Wizard BEGIN: actualValues */
+		float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
 	float adc_ltc2311_a1_ch2;
 	float adc_ltc2311_a1_ch3;
@@ -139,14 +98,18 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_3_position_w_offset;
 	uint32_t incremental_encoder_d5_3_index_found;
 /* Project Wizard END: actualValues */
+	float prime_mover_mean_temp_degC;
+	float dut_mean_temp_degC;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
-	float deskbench_prime_mover_n_ref_rpm;
-	float deskbench_prime_mover_n_ref_rpm_filtered;
-	float deskbench_prime_mover_M_ref_Nm;
-	uz_3ph_dq_t deskbench_prime_mover_i_dq_ref_A;
-	uz_3ph_dq_t deskbench_dut_i_dq_ref_A;
+
+	float prime_mover_n_ref_rpm;
+	float dut_n_ref_rpm;
+	float prime_mover_n_ref_rpm_filtered;
+	float prime_mover_M_ref_Nm;
+	uz_3ph_dq_t prime_mover_i_dq_ref_A;
+	uz_3ph_dq_t dut_i_dq_ref_A;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	struct uz_DutyCycle_t prime_mover_duty_cycle;
 	struct uz_DutyCycle_t dut_duty_cycle;
@@ -158,15 +121,9 @@ typedef struct _referenceAndSetValues_ {
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
-	uz_plantPT1_t* plant_pt1;
-	uz_dqn_agent_t* dqn_agent;
-	uz_ddpg_agent_t* ddpg_agent;
 	uz_pmsmModel_t* deskbench_dut_pmsm_model;
-	uz_CurrentControl_t* deskbench_current_ctrl_prime_mover;
-	uz_CurrentControl_t* deskbench_current_ctrl_dut;
-	uz_SetPoint_t* deskbench_setpoint_ctrl_prime_mover;
-	uz_SpeedControl_t* deskbench_speed_ctrl_prime_mover;
-	uz_IIR_Filter_t* deskbench_speed_filter_prime_mover;
+	uz_pmsm_control_t* prime_mover_control;
+	uz_pmsm_control_t* dut_control;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0_d1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;

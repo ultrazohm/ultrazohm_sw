@@ -114,9 +114,6 @@ int main(void)
 			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
 			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
-#if (UZ_APP != UZ_APP_DESKBENCH)
-            pt1_control_init(&Global_Data);
-#endif
             initialization_chain = print_msg;
             break;
         case print_msg:

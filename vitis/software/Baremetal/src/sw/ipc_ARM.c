@@ -187,22 +187,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 			data->av.snd_fld[1] = value;
-			data->av.dqn_pt1_javascope_setpoint = value;
 			break;
 
 		case (Set_Send_Field_2):
 			data->av.snd_fld[2] = value;
-			data->rasv.deskbench_prime_mover_n_ref_rpm = value;
+			data->rasv.prime_mover_n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_3):
 			data->av.snd_fld[3] = value;
-			data->rasv.deskbench_dut_i_dq_ref_A.q = value;
+			data->rasv.dut_i_dq_ref_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
-			data->rasv.deskbench_dut_i_dq_ref_A.d = value;
+			data->rasv.dut_i_dq_ref_A.d = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -270,12 +269,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-#if (UZ_APP != UZ_APP_DESKBENCH)
-			if (ultrazohm_state_machine_get_state() == control_state)
-			{
-				pt1_control_start_eval_profile(data);
-			}
-#endif
 			break;
 
 		case (My_Button_2):

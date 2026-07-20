@@ -11,7 +11,7 @@ When creating a schematic in Altium, there are many different ways to place comp
 If the required components are not available in the current library status they must be added. Newly added components must fulfill the following requirements:
 
 1. A ``.SchLib`` or ``.PcbLib`` file must contain only a single symbol or footprint. If this requirement is not fulfilled it is impossible to resolve merge conflicts when people are working on the library
-2. The footprint must follow the mapping of the mechanical layers. This is vital in order to generate high quality documentation and production output. The requirements can be found under :ref:`mech_layers` 
+2. The footprint must follow the mapping of the mechanical layers. This is vital in order to generate high quality documentation and production output. The requirements can be found under :ref:`mech_layers`
 3. If the manufacturer supplies a 3D model of the component it must be included to the footprint.
 
 If the user detects a footprint that does not follow the requirements mentioned above he is strongly encouraged to update the component or to open an issue and assign it to the maintainer (i.e. creator) of the component.
@@ -39,8 +39,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 1. Open the existing schematic library in Altium
 
-.. _100_OpenSchematic:
-
+   .. _100_OpenSchematic:
    .. figure:: img/100_Open_schematic_lib_Altium.png
       :width: 300px
 
@@ -48,8 +47,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 2. Use the Altium Library Splitter Wizard ``Tools`` --> ``Library Splitter Wizard``
 
-.. _101_Use_Lib_Splitter:
-
+   .. _101_Use_Lib_Splitter:
    .. figure:: img/101_Use_Lib_Splitter.png
       :width: 300px
 
@@ -57,8 +55,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 3. Press ``Next``
 
-.. _102_Lib_Splitter_1:
-
+   .. _102_Lib_Splitter_1:
    .. figure:: img/102_Lib_Splitter_1.png
       :width: 300px
 
@@ -66,8 +63,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 4. ``Add`` the schematic and footprint lib
 
-.. _103_Lib_Splitter_2:
-
+   .. _103_Lib_Splitter_2:
    .. figure:: img/103_Lib_Splitter_2.png
       :width: 300px
 
@@ -75,8 +71,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 5. Select both
 
-.. _104_Lib_Splitter_4:
-
+   .. _104_Lib_Splitter_4:
    .. figure:: img/104_Lib_Splitter_4.png
       :width: 300px
 
@@ -84,8 +79,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 6. Press ``Next``
 
-.. _105_Lib_Splitter_5:
-
+   .. _105_Lib_Splitter_5:
    .. figure:: img/105_Lib_Splitter_5.png
       :width: 300px
 
@@ -93,8 +87,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 7. Select the Output Directory (Therefore, it might be suitable to create one folder for the schematic symbols and one for the footprints.)
 
-.. _106_Lib_Splitter_6:
-
+   .. _106_Lib_Splitter_6:
    .. figure:: img/106_Lib_Splitter_6.png
       :width: 300px
 
@@ -102,8 +95,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 8. Press ``Next``
 
-.. _107_Lib_Splitter_7.png:
-
+   .. _107_Lib_Splitter_7.png:
    .. figure:: img/107_Lib_Splitter_7.png
       :width: 300px
 
@@ -111,8 +103,7 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 9. Press ``Next``
 
-.. _108_Lib_Splitter_8:
-
+   .. _108_Lib_Splitter_8:
    .. figure:: img/108_Lib_Splitter_8.png
       :width: 300px
 
@@ -120,39 +111,35 @@ Altium provides the ``Library Splitter Wizard`` for this purpose so no manual ex
 
 10. Press ``Next``
 
-.. _109_Lib_Splitter_9:
+    .. _109_Lib_Splitter_9:
+    .. figure:: img/109_Lib_Splitter_9.png
+       :width: 300px
 
-   .. figure:: img/109_Lib_Splitter_9.png
-      :width: 300px
-
-      Altium - Next.
+       Altium - Next.
 
 11. Press ``Finish``
 
-.. _110_Lib_Splitter_10:
+    .. _110_Lib_Splitter_10:
+    .. figure:: img/110_Lib_Splitter_10.png
+       :width: 300px
 
-   .. figure:: img/110_Lib_Splitter_10.png
-      :width: 300px
-
-      Altium - Finish.
+       Altium - Finish.
 
 12. All schematic symbols are separated from the others
 
-.. _111_Splitted_Schematic_11:
+    .. _111_Splitted_Schematic_11:
+    .. figure:: img/111_Splitted_Schematic_11.png
+       :width: 300px
 
-   .. figure:: img/111_Splitted_Schematic_11.png
-      :width: 300px
-
-      Altium - Schematic are separated.
+       Altium - Schematic are separated.
 
 13. All footprints are separated from the others
 
-.. _112_Splitted_Footprint_12:
+    .. _112_Splitted_Footprint_12:
+    .. figure:: img/112_Splitted_Footprint_12.png
+       :width: 300px
 
-   .. figure:: img/112_Splitted_Footprint_12.png
-      :width: 300px
-
-      Altium - Footprints are separated.
+       Altium - Footprints are separated.
 
 Now all components are separated from each other and it is possible to proceed with the instructions of :ref:`AltiumDB` .
 
@@ -163,8 +150,7 @@ Components are included in an integrated library
 
 1. Open the integrated library in Altium and choose ``Extract Sources``
 
-.. _120_Open_Integrated_Lib:
-
+   .. _120_Open_Integrated_Lib:
    .. figure:: img/120_Open_Integrated_Lib.png
       :width: 300px
 
@@ -172,8 +158,7 @@ Components are included in an integrated library
 
 2. All included schematic and footprint libs will be listed in Altium
 
-.. _121_Open_Integrated_Lib:
-
+   .. _121_Open_Integrated_Lib:
    .. figure:: img/121_Open_Integrated_Lib.png
       :width: 300px
 
@@ -181,8 +166,7 @@ Components are included in an integrated library
 
 3. If more than one schematic and one footprint lib exist in the integrated library, choose the necessary footprint library and press ``File`` -> ``Save as``.
 
-.. _122_Save_as_footprint:
-
+   .. _122_Save_as_footprint:
    .. figure:: img/122_Save_as_footprint.png
       :width: 300px
 
@@ -190,8 +174,7 @@ Components are included in an integrated library
 
 4. Save also the necessary schematic library.
 
-.. _123_Save_as_schematic:
-
+   .. _123_Save_as_schematic:
    .. figure:: img/123_Save_as_schematic.png
       :width: 300px
 
@@ -199,8 +182,7 @@ Components are included in an integrated library
 
 5. The integrated library is separated in schematic and footprint library.
 
-.. _104_124_Schematic_and_footprint_lib.png:
-
+   .. _104_124_Schematic_and_footprint_lib.png:
    .. figure:: img/124_Schematic_and_footprint_lib.png
       :width: 300px
 
@@ -214,14 +196,13 @@ Components are available as an ECAD MODEL
 *****************************************
 
 Sometimes, there are no symbols or footprints directly from the manufacturer available.
-Then you can use  the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already existing components or request new models for Altium. 
+Then you can use  the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already existing components or request new models for Altium.
 
 To enter these components into the database, proceed as follows:
 
 1. Download the Model from the homepage - Part 1
 
-.. _130_Download_Model:
-
+   .. _130_Download_Model:
    .. figure:: img/130_Download_Model.png
       :width: 300px
 
@@ -229,8 +210,7 @@ To enter these components into the database, proceed as follows:
 
 2. Download the Model from the homepage - Part 2
 
-.. _131_Download_Model:
-
+   .. _131_Download_Model:
    .. figure:: img/131_Download_Model.png
       :width: 300px
 
@@ -238,8 +218,7 @@ To enter these components into the database, proceed as follows:
 
 3. Save the model ``Ok``
 
-.. _132_Download_Model:
-
+   .. _132_Download_Model:
    .. figure:: img/132_Download_Model.png
       :width: 300px
 
@@ -247,19 +226,17 @@ To enter these components into the database, proceed as follows:
 
 4. Extract the zip-file
 
-.. _133_Extrahieren.png:
-
+   .. _133_Extrahieren.png:
    .. figure:: img/133_Extrahieren.png
       :width: 300px
 
       Altium - Extract.
 
 5. Open Altium and a schematic file before the Altium Loader will be opened by selecting ``File`` --> ``Symbols Footprints 3D Models``
-(If this tab does not exist, the necessary plug in is missing.
-Therefore read and install the Altium Library Loader https://www.samacsys.com/altium-designer-library-instructions/)
+   (If this tab does not exist, the necessary plug in is missing.
+   Therefore read and install the Altium Library Loader https://www.samacsys.com/altium-designer-library-instructions/)
 
-.. _134_Open_ECAD:
-
+   .. _134_Open_ECAD:
    .. figure:: img/134_Open_ECAD.png
       :width: 300px
 
@@ -267,8 +244,7 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
 6. Open the ECAD model
 
-.. _135_Open_ECAD_MODEL.png:
-
+   .. _135_Open_ECAD_MODEL.png:
    .. figure:: img/135_Open_ECAD_MODEL.png
       :width: 300px
 
@@ -276,8 +252,7 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
 7. Navigate to the unzipped epw-file and select it
 
-.. _136_Open_ECAD_MODEL:
-
+   .. _136_Open_ECAD_MODEL:
    .. figure:: img/136_Open_ECAD_MODEL.png
       :width: 300px
 
@@ -285,8 +260,7 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
 8. After a short load time the following message appears. Press ``OK``.
 
-.. _137_Altium_Library_Loader:
-
+   .. _137_Altium_Library_Loader:
    .. figure:: img/137_Altium_Library_Loader.png
       :width: 300px
 
@@ -294,8 +268,7 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
 9. The component is included in the SamacSys schematic and footprint lib (default generated)
 
-.. _138_SamacSys:
-
+   .. _138_SamacSys:
    .. figure:: img/138_SamacSys.png
       :width: 300px
 
@@ -325,33 +298,33 @@ in the PCB design when putting certain meta information in the layout.
 
 .. _table_mech_layer_pairs:
 .. csv-table:: Mapping of the mechanical layer pairs
-	:file: mech_layer_pairs.csv
-	:widths: 10 40
-	:header-rows: 1
+   :file: mech_layer_pairs.csv
+   :widths: 10 40
+   :header-rows: 1
 
 
 .. _table_other_mech_layers:
 .. csv-table:: Mapping of the other mechanical layers
-	:file: other_mech_layer.csv
-	:widths: 10 40
-	:header-rows: 1
+   :file: other_mech_layer.csv
+   :widths: 10 40
+   :header-rows: 1
 
 
 Unfortunately, the footprints that can be obtained from the manufacturer usually do not follow the mapping from the table above.
 :numref:`mech_layers_base_case` shows a typical mechanical layer stackup when a component is freshly downloaded from the manufacturer homepage.
 
-	.. _mech_layers_base_case:	
-	.. figure:: img/mech_layers/base_case.png
-		:width: 500px
-		:alt: Typical layer stack in AD before editing
-	   
-		Typical layer stack in AD before editing
+.. _mech_layers_base_case:
+.. figure:: img/mech_layers/base_case.png
+   :width: 500px
+   :alt: Typical layer stack in AD before editing
+
+   Typical layer stack in AD before editing
 
 
-In order to adapt those components to the required layer mapping there are two ways of editing your new library part: 
+In order to adapt those components to the required layer mapping there are two ways of editing your new library part:
 
-	a. Loading the stackup template file from the UltraZohm Altium Library
-	b. Editing the layers manually
+a. Loading the stackup template file from the UltraZohm Altium Library
+b. Editing the layers manually
 
 
 .. _loading_stackup_template_file:
@@ -364,20 +337,20 @@ Clone the UltraZohm Altium Library Repository to your local drive (https://bitbu
 #. Create a new PCB Library in Altium altium-designer
 
    .. figure:: img/mech_layers/01_Create_new_PCB_Lib.png
-		:width: 500px
+      :width: 500px
 
 #. Import the predefined mechanical layer stackup file that is located in the Altium Library Repository under ``..\altium_libraries\templates\mechanical_layers_Pcblib``
 
    .. figure:: img/mech_layers/02_Import_Mechanical_Layers.png
-		:width: 500px
+      :width: 500px
 
    .. figure:: img/mech_layers/03_Choose_Layer_Stackup_File.png
-		:width: 500px
+      :width: 500px
 
 #. After successful loading of the mechanical layer stackup template file your layer set should look like following
 
    .. figure:: img/mech_layers/04_Layer_Setting_Template.png
-		:width: 400px
+      :width: 400px
 
 
 .. _edit_layers_manually:
@@ -389,42 +362,42 @@ If you prefer to editing the layers manually, then the following steps are neces
 
 
 #. Create all required mechanical layer pairs. You do not need to create all layer pairs defined in :numref:`table_mech_layer_pairs`
-	
-	* ``Right-click`` in the layer area
-	* Select ``Add component layer pair`` and fill out the dialog with the mapping from :numref:`table_mech_layer_pairs`
-	
-	.. figure:: img/mech_layers/add_component_layer.png
-		:width: 500px
-		:alt: Dialog to add a component layer pair
-		
-		Dialog to add a component layer pair
-		
+
+   * ``Right-click`` in the layer area
+   * Select ``Add component layer pair`` and fill out the dialog with the mapping from :numref:`table_mech_layer_pairs`
+
+   .. figure:: img/mech_layers/add_component_layer.png
+      :width: 500px
+      :alt: Dialog to add a component layer pair
+
+      Dialog to add a component layer pair
+
 #. Move the objects from the previous layer to the new layer. Example: Moving the 3D body from layer M1 to M3
 
-	Hide all layers except M1
-	
-	.. figure:: img/mech_layers/m1.png
-		:width: 500px
-		:alt: Dialog to add a component layer pair
-		
-		Dialog to add a component layer pair
-	
-	Select everything on M1 (Ctrl-A) and move selected objects to M3 in the properties panel.
-	
-	.. figure:: img/mech_layers/m1_move.png
-		:width: 500px
-		:alt: Dialog to add a component layer pair
-		
-		Dialog to add a component layer pair
-	
-	Delete M1
-	
-	.. figure:: img/mech_layers/m1_delete.png
-		:width: 500px
-		:alt: Dialog to add a component layer pair
-		
-		Dialog to add a component layer pair
-		
+   Hide all layers except M1
+
+   .. figure:: img/mech_layers/m1.png
+      :width: 500px
+      :alt: Dialog to add a component layer pair
+
+      Dialog to add a component layer pair
+
+   Select everything on M1 (Ctrl-A) and move selected objects to M3 in the properties panel.
+
+   .. figure:: img/mech_layers/m1_move.png
+      :width: 500px
+      :alt: Dialog to add a component layer pair
+
+      Dialog to add a component layer pair
+
+   Delete M1
+
+   .. figure:: img/mech_layers/m1_delete.png
+      :width: 500px
+      :alt: Dialog to add a component layer pair
+
+      Dialog to add a component layer pair
+
 #. Repeat step 1 and 2 for all objects that are on the wrong layer
 
 

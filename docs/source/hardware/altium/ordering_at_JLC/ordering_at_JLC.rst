@@ -17,3 +17,4 @@ The third section will show you how to create all necessary outjob files, that a
    ordering_at_JLC_docs/LCSC_Part_Number
    ordering_at_JLC_docs/Generating_Outjob_Files_in_AltiumDesigner
    ordering_at_JLC_docs/Ordering_Process_with_SMT_Assembly
+   adapter_cards

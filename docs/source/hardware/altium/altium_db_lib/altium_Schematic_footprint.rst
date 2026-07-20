@@ -309,6 +309,23 @@ in the PCB design when putting certain meta information in the layout.
    :widths: 10 40
    :header-rows: 1
 
+.. warning::
+
+   Older versions of the edge connector footprints (embedded within the A & D templates, and provided by the library) have several shortcomings.
+   Firstly, they defined that paste should be applied to the pads, which is incorrect for ENIG ("gold") fingers.
+   Secondly, they did not remove the solder mask in the area between pads and board edge, which increases the risk of fabrication issues.
+   Thirdly, no measures were taken to prevent any copper (e.g., polygons) reaching that same area, which, technically, can prohibit beveling/chamfering (even when using 45°) due to clearance.
+
+   The above holds true for all design that were created before Q3 of 2026, which thus require manual intervention to avoid problems in future production runs.
+
+   To do so,
+
+   - ensure that your schematic references the edge connector part from the UZ library (part IDs ``21`` and ``2`` in ``Connectors - Board to Board``) by means of "Update Selected From Libraries",
+   - propagate this change to the board ("d+u"), and
+   - update the footprint in the board by means of "Update Selected Components From PCB Libraries".
+
+   After that, validate that the connector outline on layer M34 (cf. :ref:`table_other_mech_layers`) matches the actual board outline (defined via M1).
+
 
 Unfortunately, the footprints that can be obtained from the manufacturer usually do not follow the mapping from the table above.
 :numref:`mech_layers_base_case` shows a typical mechanical layer stackup when a component is freshly downloaded from the manufacturer homepage.

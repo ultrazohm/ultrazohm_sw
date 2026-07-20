@@ -164,7 +164,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
+	dut_n_ref_rpm,
 	prime_mover_n_ref_rpm,
 	deskbench_dut_i_q_ref_A,
 	deskbench_dut_i_d_ref_A,
@@ -311,7 +311,6 @@ enum gui_button_mapping {
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
-
 
 int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

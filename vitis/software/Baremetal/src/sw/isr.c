@@ -111,8 +111,9 @@ void ISR_Control(void *data)
         uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
         uz_pmsm_control_reset(Global_Data.objects.dut_control);
 
-        //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
-        //uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
+        uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+        uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
+        // uz_pmsmModel_reset setzt alle integratoren auf 0, wodurch i_d springt sobald reset auf 0 geht wegen PM -> nicht kompatibel mit uz_pmsm_control, which always checks for errors even in idle state.
 
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
@@ -130,7 +131,7 @@ void ISR_Control(void *data)
                 disable_dut(&Global_Data);
                 disable_prime_mover(&Global_Data);
                 uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, false);
-                //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
                 uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
                 uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
             }
@@ -148,7 +149,7 @@ void ISR_Control(void *data)
                 disable_dut(&Global_Data);
                 disable_prime_mover(&Global_Data);
                 uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, true);
-                //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
             }
             else
             {

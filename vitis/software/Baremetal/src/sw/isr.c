@@ -33,6 +33,7 @@
 #include "../include/deskbench_control.h"
 #include "../uz/uz_global_configuration.h"
 #include "../uz/uz_math_constants.h"
+#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -54,11 +55,24 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
-enum control_mode_t{
+enum control_mode_t
+{
     DUT_ONLY_CURRENT_CONTROL = 0,
+    PM_ONLY_CURRENT_CONTROL,
+    DUT_ONLY_SPEED_CONTROL,
+    PM_ONLY_SPEED_CONTROL,
+    PM_ONLY_DUTY_CYCLE,
+    DUT_ONLY_DUTY_CYCLE,
+    PM_SPEED_DUT_CURRENT,
+    PM_CURRENT_DUT_SPEED,
 };
 
+// ZU wenige Buttons im Javascope.
+
 enum control_mode_t control_mode = DUT_ONLY_CURRENT_CONTROL; // Default control mode
+
+// CIL DUT only, CIL PM only, CIL coupled.
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -67,10 +81,11 @@ enum control_mode_t control_mode = DUT_ONLY_CURRENT_CONTROL; // Default control 
 //----------------------------------------------------
 void ISR_Control(void *data)
 {
+	Global_Data.use_cil=true;
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-/* Project Wizard BEGIN: adc_readout */
+                             /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
-/* Project Wizard END: adc_readout */
+    /* Project Wizard END: adc_readout */
     update_adapter_a1();
     update_adapter_a2();
     update_adapter_a3();
@@ -78,60 +93,122 @@ void ISR_Control(void *data)
     update_adapter_d2();
     update_adapter_d3();
     update_adapter_d4();
-    update_adapter_d5();
+   // update_adapter_d5();
     deskbench_update_measurements(&Global_Data);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 
-//        disable_dut(data);
-//    disable_prime_mover(data);
-//    control_dut_pmsm_model(data);
-//    control_prime_mover(data);
-    // if one of the controller is in error mode, ultrazohm_state_machine_set_stop
+    // How to always keep everything in tristate
 
     switch (current_state)
     {
     case idle_state:
         /* Project Wizard BEGIN: idle_state isr_actions */
+        disable_prime_mover(&Global_Data);
+        disable_dut(&Global_Data);
+        uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+        uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+        uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
+        uz_pmsm_control_reset(Global_Data.objects.dut_control);
+
+        //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+        //uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
+
+        uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
+        uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
+        // Reset CIL
 
         /* Project Wizard END: idle_state isr_actions */
         break;
 
     case running_state:
-        /* Project Wizard BEGIN: running_state isr_actions */
-
-        /* Project Wizard END: running_state isr_actions */
-        break;
-
-    case control_state:
-    /* Project Wizard BEGIN: control_state isr_actions */
         switch (control_mode)
         {
-        case DUT_ONLY_CURRENT_CONTROL: // dut only current control
-            /* code */
+        case DUT_ONLY_CURRENT_CONTROL:
+            if (Global_Data.use_cil)
+            {
+                disable_dut(&Global_Data);
+                disable_prime_mover(&Global_Data);
+                uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, false);
+                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+                uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
+                uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
+            }
+            else
+            {
+                enable_dut(&Global_Data);
+                disable_prime_mover(&Global_Data);
+            }
             break;
-        
+        case DUT_ONLY_SPEED_CONTROL:
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.dut_control, true);
+            // Reset controller?
+            if (Global_Data.use_cil)
+            {
+                disable_dut(&Global_Data);
+                disable_prime_mover(&Global_Data);
+                uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, true);
+                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+            }
+            else
+            {
+                enable_dut(&Global_Data);
+                disable_prime_mover(&Global_Data);
+            }
+            break;
         default:
             break;
         }
-        /* Project Wizard END: control_state isr_actions */
+        break;
+
+    case control_state:
+        switch (control_mode)
+        {
+        case DUT_ONLY_CURRENT_CONTROL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            break;
+        default:
+            break;
+        }
         break;
 
     case error_state:
-        /* Project Wizard BEGIN: error_state isr_actions */
-        // Tristate and enable off.
-        ultrazohm_state_machine_set_error(true);
-
-        /* Project Wizard END: error_state isr_actions */
+        disable_prime_mover(&Global_Data);
+        disable_dut(&Global_Data);
         break;
 
     default:
         break;
     }
-    
+
+    Global_Data.rasv.dut_duty_cycle = uz_pmsm_control_sample_duty(Global_Data.objects.dut_control, Global_Data.av.dut_measurements, Global_Data.rasv.dut_n_ref_rpm, Global_Data.rasv.dut_i_dq_ref_A, 0.0f);
+    Global_Data.rasv.prime_mover_duty_cycle = uz_pmsm_control_sample_duty(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements, Global_Data.rasv.prime_mover_n_ref_rpm, Global_Data.rasv.prime_mover_i_dq_ref_A, 0.0f);
+
+    Global_Data.av.dut_safe_operating_region_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.dut_control);
+    Global_Data.av.prime_mover_safe_operating_region_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.prime_mover_control);
+
+    if (Global_Data.av.dut_safe_operating_region_violation != uz_pmsm_control_no_violation || Global_Data.av.prime_mover_safe_operating_region_violation != uz_pmsm_control_no_violation)
+    {
+        ultrazohm_state_machine_set_error(true);
+    }
+
+    // Set outputs to PMSM IP-Core
+    if(Global_Data.use_cil){
+           struct uz_pmsmModel_inputs_t dut_model_inputs = {
+               .v_d_V = Global_Data.objects.dut_reference_values->v_dq_in_V.d,
+               .v_q_V = Global_Data.objects.dut_reference_values->v_dq_in_V.q,
+               .omega_mech_1_s = Global_Data.rasv.prime_mover_n_ref_rpm / 60.0f,
+               .load_torque = 0.0f};
+           uz_pmsmModel_set_inputs(Global_Data.objects.dut_pmsm_model, dut_model_inputs);
+           uz_pmsmModel_trigger_input_strobe(Global_Data.objects.dut_pmsm_model);
+    }
+
+    // If manual mode, use manual duty cycles instead of the control output
+
     /* Project Wizard BEGIN: pwm_runtime */
     project_wizard_update_pwm_outputs(&Global_Data);
-/* Project Wizard END: pwm_runtime */
+    /* Project Wizard END: pwm_runtime */
 
     project_wizard_visualization_update(&Global_Data);
     JavaScope_update(&Global_Data);
@@ -151,7 +228,7 @@ static void update_adapter_a1(void)
     Global_Data.av.adc_ltc2311_a1_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, analog_adc_data.data[5], 5U);
     Global_Data.av.adc_ltc2311_a1_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, analog_adc_data.data[6], 6U);
     Global_Data.av.adc_ltc2311_a1_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a1, analog_adc_data.data[7], 7U);
-/* Project Wizard END: A1 isr_control */
+    /* Project Wizard END: A1 isr_control */
 }
 
 static void update_adapter_a2(void)
@@ -165,7 +242,7 @@ static void update_adapter_a2(void)
     Global_Data.av.adc_ltc2311_a2_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[13], 5U);
     Global_Data.av.adc_ltc2311_a2_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[14], 6U);
     Global_Data.av.adc_ltc2311_a2_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[15], 7U);
-/* Project Wizard END: A2 isr_control */
+    /* Project Wizard END: A2 isr_control */
 }
 
 static void update_adapter_a3(void)
@@ -179,27 +256,27 @@ static void update_adapter_a3(void)
     Global_Data.av.adc_ltc2311_a3_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[21], 5U);
     Global_Data.av.adc_ltc2311_a3_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[22], 6U);
     Global_Data.av.adc_ltc2311_a3_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a3, analog_adc_data.data[23], 7U);
-/* Project Wizard END: A3 isr_control */
+    /* Project Wizard END: A3 isr_control */
 }
 
 static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
     update_inverter_adapter_d1_outputs(&Global_Data);
-/* Project Wizard END: D1 isr_control */
+    /* Project Wizard END: D1 isr_control */
 }
 
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
     update_inverter_adapter_d2_outputs(&Global_Data);
-/* Project Wizard END: D2 isr_control */
+    /* Project Wizard END: D2 isr_control */
 }
 
 static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
-/* Project Wizard END: D3 isr_control */
+    /* Project Wizard END: D3 isr_control */
 }
 
 static void update_adapter_d4(void)
@@ -231,7 +308,7 @@ static void update_adapter_d4(void)
     Global_Data.av.resolver_pl_interface_d4_3_omega_mech_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s;
     Global_Data.av.resolver_pl_interface_d4_3_n_mech_rpm = resolver_pl_interface_d4_3_outputs.n_mech_rpm;
     Global_Data.av.resolver_pl_interface_d4_3_omega_el_rad_s = resolver_pl_interface_d4_3_outputs.omega_mech_rad_s * uz_resolverIP_getMachinePolePairs(Global_Data.objects.resolver_ip_d4_3);
-/* Project Wizard END: D4 isr_control */
+    /* Project Wizard END: D4 isr_control */
 }
 
 static void update_adapter_d5(void)
@@ -255,7 +332,7 @@ static void update_adapter_d5(void)
     Global_Data.av.incremental_encoder_d5_3_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_3);
     Global_Data.av.incremental_encoder_d5_3_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_3);
     Global_Data.av.incremental_encoder_d5_3_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_3);
-/* Project Wizard END: D5 isr_control */
+    /* Project Wizard END: D5 isr_control */
 }
 
 //==============================================================================================================================================================
@@ -291,7 +368,6 @@ int Initialize_ISR()
     return Status;
 }
 
-
 /**
  * @brief Initialize the R5 GIC and connect/enable the PL-to-PS interrupt used by the RPU.
  *
@@ -313,7 +389,7 @@ int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
     uz_assert_not_NULL(GIC_config);
 
     status = XScuGic_CfgInitialize(GIC_instance_ptr, GIC_config, GIC_config->CpuBaseAddress);
-	uz_assert(status == XST_SUCCESS);
+    uz_assert(status == XST_SUCCESS);
 
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, GIC_instance_ptr);
 
@@ -329,7 +405,7 @@ int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
                              Interrupt_ISR_ID,
                              (Xil_ExceptionHandler)ISR_Control,
                              NULL);
-	uz_assert(status == XST_SUCCESS);
+    uz_assert(status == XST_SUCCESS);
 
     // Enable only the connected interrupt
     XScuGic_Enable(GIC_instance_ptr, Interrupt_ISR_ID);
@@ -337,7 +413,6 @@ int Rpu_GicInit(XScuGic *GIC_instance_ptr, u16 DeviceId)
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
     return XST_SUCCESS;
 }
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -382,7 +457,6 @@ static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
     return ((act & bit) != 0U);
 }
 
-
 /**
  * @brief Clears stuck ACTIVE PL interrupts by writing GICC_EOIR (End Of Interrupt Register)
  * with the active interrupt ID, to enable soft restart without resetting entire system.
@@ -394,29 +468,28 @@ static inline bool uz_gic_is_active_id(XScuGic *Gic, u32 IntId)
  */
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
 {
-	// list of all PL Interrupt IDs
-	const uint16_t uz_fpga_spi_ids[] = {
-	    XPS_FPGA0_INT_ID,  XPS_FPGA1_INT_ID,  XPS_FPGA2_INT_ID,  XPS_FPGA3_INT_ID,
-	    XPS_FPGA4_INT_ID,  XPS_FPGA5_INT_ID,  XPS_FPGA6_INT_ID,  XPS_FPGA7_INT_ID,
-	    XPS_FPGA8_INT_ID,  XPS_FPGA9_INT_ID,  XPS_FPGA10_INT_ID, XPS_FPGA11_INT_ID,
-	    XPS_FPGA12_INT_ID, XPS_FPGA13_INT_ID, XPS_FPGA14_INT_ID, XPS_FPGA15_INT_ID
-	};
+    // list of all PL Interrupt IDs
+    const uint16_t uz_fpga_spi_ids[] = {
+        XPS_FPGA0_INT_ID, XPS_FPGA1_INT_ID, XPS_FPGA2_INT_ID, XPS_FPGA3_INT_ID,
+        XPS_FPGA4_INT_ID, XPS_FPGA5_INT_ID, XPS_FPGA6_INT_ID, XPS_FPGA7_INT_ID,
+        XPS_FPGA8_INT_ID, XPS_FPGA9_INT_ID, XPS_FPGA10_INT_ID, XPS_FPGA11_INT_ID,
+        XPS_FPGA12_INT_ID, XPS_FPGA13_INT_ID, XPS_FPGA14_INT_ID, XPS_FPGA15_INT_ID};
 
-	uz_assert_not_NULL(Gic);
-	uz_assert_not_NULL(Gic->Config);
+    uz_assert_not_NULL(Gic);
+    uz_assert_not_NULL(Gic->Config);
 
     // iterate over all PL interrupts
-	for (uint32_t i = 0U; i < (uint32_t)(sizeof(uz_fpga_spi_ids)/sizeof(uz_fpga_spi_ids[0])); ++i)
-	{
-		const uint32_t id = (uint32_t)uz_fpga_spi_ids[i];
+    for (uint32_t i = 0U; i < (uint32_t)(sizeof(uz_fpga_spi_ids) / sizeof(uz_fpga_spi_ids[0])); ++i)
+    {
+        const uint32_t id = (uint32_t)uz_fpga_spi_ids[i];
 
-		// check if id-interrupt is stuck on active
-		if (uz_gic_is_active_id(Gic, id)) {
+        // check if id-interrupt is stuck on active
+        if (uz_gic_is_active_id(Gic, id))
+        {
 
-			/* Writing IntId to EOIR to clear the stuck ACTIVE state */
-			XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
-			uz_printf("RPU: GIC Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
-
-		}
+            /* Writing IntId to EOIR to clear the stuck ACTIVE state */
+            XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
+            uz_printf("RPU: GIC Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
+        }
     }
 }

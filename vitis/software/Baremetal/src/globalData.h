@@ -25,17 +25,19 @@
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
-typedef struct _actualValues_ {
+
+typedef struct _actualValues_
+{
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	uint32_t  heartbeatframe_content;
+	uint32_t heartbeatframe_content;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
 	struct uz_pmsm_measurement_values dut_measurements;
 	struct uz_pmsm_measurement_values prime_mover_measurements;
-		/* Project Wizard BEGIN: actualValues */
-		float adc_ltc2311_a1_ch0;
+	/* Project Wizard BEGIN: actualValues */
+	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
 	float adc_ltc2311_a1_ch2;
 	float adc_ltc2311_a1_ch3;
@@ -97,12 +99,15 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_3_position;
 	uint32_t incremental_encoder_d5_3_position_w_offset;
 	uint32_t incremental_encoder_d5_3_index_found;
-/* Project Wizard END: actualValues */
+	/* Project Wizard END: actualValues */
 	float prime_mover_mean_temp_degC;
 	float dut_mean_temp_degC;
+	enum uz_pmsm_control_safe_operating_region_violation dut_safe_operating_region_violation;
+	enum uz_pmsm_control_safe_operating_region_violation prime_mover_safe_operating_region_violation;
 } actualValues;
 
-typedef struct _referenceAndSetValues_ {
+typedef struct _referenceAndSetValues_
+{
 
 	float prime_mover_n_ref_rpm;
 	float dut_n_ref_rpm;
@@ -110,47 +115,57 @@ typedef struct _referenceAndSetValues_ {
 	float prime_mover_M_ref_Nm;
 	uz_3ph_dq_t prime_mover_i_dq_ref_A;
 	uz_3ph_dq_t dut_i_dq_ref_A;
-/* Project Wizard BEGIN: referenceAndSetValues */
+	/* Project Wizard BEGIN: referenceAndSetValues */
 	struct uz_DutyCycle_t prime_mover_duty_cycle;
 	struct uz_DutyCycle_t dut_duty_cycle;
 	float pwm_3L_0_halfBridgeDutyCycle_1;
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
-/* Project Wizard END: referenceAndSetValues */
+	/* Project Wizard END: referenceAndSetValues */
 } referenceAndSetValues;
 
-typedef struct{
-	uz_mux_axi_t* mux_axi;
-	uz_pmsmModel_t* deskbench_dut_pmsm_model;
-	uz_pmsm_control_t* prime_mover_control;
-	uz_pmsm_control_t* dut_control;
+typedef struct
+{
+	uz_mux_axi_t *mux_axi;
+	uz_pmsmModel_t *dut_pmsm_model;
+	uz_pmsmModel_t *prime_mover_pmsm_model;
+	uz_pmsm_control_t *prime_mover_control;
+	uz_pmsm_control_t *dut_control;
+	struct uz_pmsm_actual_data const *prime_mover_actual_data;
+	struct uz_pmsm_actual_data const *dut_actual_data;
+	struct uz_pmsm_measurement_values const *prime_mover_measurements;
+	struct uz_pmsm_measurement_values const *dut_measurements;
+	struct uz_pmsm_reference_values const *prime_mover_reference_values;
+	struct uz_pmsm_reference_values const *dut_reference_values;
 	/* Project Wizard BEGIN: objects */
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0_d1;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_0_d1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;
-	uz_PWM_SS_2L_t* project_wizard_pwm_2l_1_d2;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_1_d2;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1_d2;
-	uz_wavegen_three_phase* three_phase_sine;
-	uz_adcLtc2311_t* adc_ltc2311_a1;
-	uz_adcLtc2311_t* adc_ltc2311_a2;
-	uz_adcLtc2311_t* adc_ltc2311_a3;
-	uz_inverter_adapter_t* inverter_adapter_d1;
-	uz_inverter_adapter_t* inverter_adapter_d2;
-	uz_resolverIP_t* resolver_ip_d4_1;
-	uz_resolver_pl_interface_t* resolver_pl_interface_d4_1;
-	uz_resolverIP_t* resolver_ip_d4_2;
-	uz_resolver_pl_interface_t* resolver_pl_interface_d4_2;
-	uz_resolverIP_t* resolver_ip_d4_3;
-	uz_resolver_pl_interface_t* resolver_pl_interface_d4_3;
-	uz_incrementalEncoder_t* incremental_encoder_d5_1;
-	uz_incrementalEncoder_t* incremental_encoder_d5_2;
-	uz_incrementalEncoder_t* incremental_encoder_d5_3;
-/* Project Wizard END: objects */
-}object_pointers_t;
+	uz_wavegen_three_phase *three_phase_sine;
+	uz_adcLtc2311_t *adc_ltc2311_a1;
+	uz_adcLtc2311_t *adc_ltc2311_a2;
+	uz_adcLtc2311_t *adc_ltc2311_a3;
+	uz_inverter_adapter_t *inverter_adapter_d1;
+	uz_inverter_adapter_t *inverter_adapter_d2;
+	uz_resolverIP_t *resolver_ip_d4_1;
+	uz_resolver_pl_interface_t *resolver_pl_interface_d4_1;
+	uz_resolverIP_t *resolver_ip_d4_2;
+	uz_resolver_pl_interface_t *resolver_pl_interface_d4_2;
+	uz_resolverIP_t *resolver_ip_d4_3;
+	uz_resolver_pl_interface_t *resolver_pl_interface_d4_3;
+	uz_incrementalEncoder_t *incremental_encoder_d5_1;
+	uz_incrementalEncoder_t *incremental_encoder_d5_2;
+	uz_incrementalEncoder_t *incremental_encoder_d5_3;
+	/* Project Wizard END: objects */
+} object_pointers_t;
 
-typedef struct _DS_Data_ {
+typedef struct _DS_Data_
+{
 	referenceAndSetValues rasv;
 	actualValues av;
 	object_pointers_t objects;
+	bool use_cil;
 } DS_Data;
 
 #endif

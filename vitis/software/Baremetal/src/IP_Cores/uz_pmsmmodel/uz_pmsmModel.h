@@ -98,5 +98,6 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  */
 void uz_pmsmModel_reset(uz_pmsmModel_t *self);
 
+void uz_pmsmModel_simulate_mechanical_system(uz_pmsmModel_t *self, bool simulate_mechanical_system);
 
 #endif // UZ_PMSMMODEL_H

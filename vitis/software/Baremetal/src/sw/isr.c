@@ -93,7 +93,7 @@ void ISR_Control(void *data)
     update_adapter_d2();
     update_adapter_d3();
     update_adapter_d4();
-   // update_adapter_d5();
+    update_adapter_d5();
     deskbench_update_measurements(&Global_Data);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
@@ -116,7 +116,7 @@ void ISR_Control(void *data)
 
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
-        // Reset CIL
+         //Reset CIL
 
         /* Project Wizard END: idle_state isr_actions */
         break;
@@ -130,7 +130,7 @@ void ISR_Control(void *data)
                 disable_dut(&Global_Data);
                 disable_prime_mover(&Global_Data);
                 uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, false);
-                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+                //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
                 uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
                 uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
             }
@@ -148,7 +148,7 @@ void ISR_Control(void *data)
                 disable_dut(&Global_Data);
                 disable_prime_mover(&Global_Data);
                 uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, true);
-                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+                //uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
             }
             else
             {
@@ -198,7 +198,7 @@ void ISR_Control(void *data)
            struct uz_pmsmModel_inputs_t dut_model_inputs = {
                .v_d_V = Global_Data.objects.dut_reference_values->v_dq_in_V.d,
                .v_q_V = Global_Data.objects.dut_reference_values->v_dq_in_V.q,
-               .omega_mech_1_s = Global_Data.rasv.prime_mover_n_ref_rpm / 60.0f,
+               .omega_mech_1_s = Global_Data.rasv.dut_n_ref_rpm * (2.0f * UZ_PIf / 60.0f),
                .load_torque = 0.0f};
            uz_pmsmModel_set_inputs(Global_Data.objects.dut_pmsm_model, dut_model_inputs);
            uz_pmsmModel_trigger_input_strobe(Global_Data.objects.dut_pmsm_model);

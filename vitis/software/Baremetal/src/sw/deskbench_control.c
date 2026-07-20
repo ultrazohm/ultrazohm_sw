@@ -153,7 +153,7 @@ void deskbench_update_measurements(DS_Data *data)
         float prime_mover_theta_el_rad = prime_mover_theta_mech_rad * 4.0f; // pole pairs, get somehow from configuration or move to driver. --> move to uz_pmsmModel_get_theta_el_rad
 
         data->av.prime_mover_measurements.i_abc_in_A = uz_transformation_3ph_dq_to_abc(prime_mover_model_i_dq_A, prime_mover_theta_el_rad); // also move this to driver as a dedicated get i_abc function.
-        data->av.dut_measurements.v_abc_in_V = uz_transformation_3ph_dq_to_abc(data->objects.prime_mover_reference_values->v_dq_in_V, prime_mover_theta_el_rad);
+        data->av.prime_mover_measurements.v_abc_in_V = uz_transformation_3ph_dq_to_abc(data->objects.prime_mover_reference_values->v_dq_in_V, prime_mover_theta_el_rad);
         data->av.prime_mover_measurements.omega_mech_rad_per_sec = prime_mover_model_outputs.omega_mech_1_s;
         data->av.prime_mover_measurements.theta_mech = prime_mover_theta_mech_rad;
         data->av.prime_mover_measurements.v_dc_in_V = 48.0f;

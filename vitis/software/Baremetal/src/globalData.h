@@ -131,12 +131,12 @@ typedef struct
 	uz_pmsmModel_t *prime_mover_pmsm_model;
 	uz_pmsm_control_t *prime_mover_control;
 	uz_pmsm_control_t *dut_control;
-	struct uz_pmsm_actual_data const *prime_mover_actual_data;
-	struct uz_pmsm_actual_data const *dut_actual_data;
-	struct uz_pmsm_measurement_values const *prime_mover_measurements;
-	struct uz_pmsm_measurement_values const *dut_measurements;
-	struct uz_pmsm_reference_values const *prime_mover_reference_values;
-	struct uz_pmsm_reference_values const *dut_reference_values;
+	struct uz_pmsm_actual_data *prime_mover_actual_data;
+	struct uz_pmsm_actual_data *dut_actual_data;
+	struct uz_pmsm_measurement_values *prime_mover_measurements;
+	struct uz_pmsm_measurement_values *dut_measurements;
+	struct uz_pmsm_reference_values *prime_mover_reference_values;
+	struct uz_pmsm_reference_values *dut_reference_values;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t *project_wizard_pwm_2l_0_d1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;

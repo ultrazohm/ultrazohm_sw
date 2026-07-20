@@ -83,10 +83,8 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            Global_Data.av.snd_fld[5] = -0.4f;
-            Global_Data.av.snd_fld[6] = -0.4f;
+            deskbench_control_init(&Global_Data); // must run before JavaScope_initialize: it assigns the objects.dut_* pointers that javascope caches (&pointer->field). Reversed order caches near-null addresses.
             JavaScope_initialize(&Global_Data);
-            deskbench_control_init(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

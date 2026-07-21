@@ -190,10 +190,5 @@ typedef struct _DS_Data_
 	struct uz_DutyCycle_t prime_mover_manual_duty_cycle;
 } DS_Data;
 
-   dut_duty_a
-16 dut_duty_b
-17	dut_duty_c
-18	pm_duty_a
-19	pm_duty_b pm_duty_c
-20	
+
 #endif

@@ -26,6 +26,26 @@
 
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
+enum control_mode_t
+{
+    DUT_ONLY_CURRENT_CONTROL = 0,
+    PM_ONLY_CURRENT_CONTROL,
+    DUT_ONLY_SPEED_CONTROL,
+    PM_ONLY_SPEED_CONTROL,
+    PM_ONLY_DUTY_CYCLE,
+    DUT_ONLY_DUTY_CYCLE,
+    PM_SPEED_DUT_CURRENT,
+    PM_CURRENT_DUT_SPEED,
+    DUT_ONLY_CURRENT_CONTROL_CIL,
+    PM_ONLY_CURRENT_CONTROL_CIL,
+    DUT_ONLY_SPEED_CONTROL_CIL,
+    PM_ONLY_SPEED_CONTROL_CIL,
+    PM_SPEED_DUT_CURRENT_CIL,
+    PM_CURRENT_DUT_SPEED_CIL,
+};
+
+// ZU wenige Buttons im Javascope.
+
 typedef struct _actualValues_
 {
 	float pwm_frequency_hz;
@@ -104,6 +124,8 @@ typedef struct _actualValues_
 	float dut_mean_temp_degC;
 	enum uz_pmsm_control_safe_operating_region_violation dut_safe_operating_region_violation;
 	enum uz_pmsm_control_safe_operating_region_violation prime_mover_safe_operating_region_violation;
+	float pm_torque_Nm;
+	float dut_torque_Nm;
 } actualValues;
 
 typedef struct _referenceAndSetValues_
@@ -165,7 +187,7 @@ typedef struct _DS_Data_
 	referenceAndSetValues rasv;
 	actualValues av;
 	object_pointers_t objects;
-	bool use_cil;
+	enum control_mode_t control_mode;
 } DS_Data;
 
 #endif

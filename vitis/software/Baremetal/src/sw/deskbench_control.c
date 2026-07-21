@@ -122,7 +122,12 @@ float prime_mover_theta_mech_rad = 0.0f;
 
 void deskbench_update_measurements(DS_Data *data)
 {
-    if (data->use_cil)
+    if ((data->control_mode==DUT_ONLY_CURRENT_CONTROL_CIL) ||
+    		(data->control_mode==DUT_ONLY_SPEED_CONTROL_CIL) ||
+    		(data->control_mode==PM_ONLY_CURRENT_CONTROL_CIL) ||
+			(data->control_mode==PM_ONLY_SPEED_CONTROL_CIL) ||
+			(data->control_mode==PM_SPEED_DUT_CURRENT_CIL) ||
+			(data->control_mode==PM_CURRENT_DUT_SPEED_CIL))
     {
         // read CIL data
         uz_pmsmModel_trigger_output_strobe(data->objects.dut_pmsm_model);
@@ -160,6 +165,8 @@ void deskbench_update_measurements(DS_Data *data)
         data->av.prime_mover_measurements.i_dc_in_A = 0.0f;
 
         // When coupling prime mover and dut in CIL, the torque of the the dut has to be the load torque of the primve mover? Its coupled with infinite stiffness this way, first or second order coupling could be achieved in software by defining a transfer function between the two torque values with damping and stiffness. Coupling would be implemented in isr.c
+        data->av.pm_torque_Nm=prime_mover_model_outputs.torque_Nm;
+        data->av.dut_torque_Nm=dut_model_outputs.torque_Nm;
     }
     else
     {

@@ -85,6 +85,7 @@ int main(void)
             uz_SystemTime_init();
             deskbench_control_init(&Global_Data); // must run before JavaScope_initialize: it assigns the objects.dut_* pointers that javascope caches (&pointer->field). Reversed order caches near-null addresses.
             JavaScope_initialize(&Global_Data);
+            Global_Data.control_mode = DUT_ONLY_CURRENT_CONTROL_CIL;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

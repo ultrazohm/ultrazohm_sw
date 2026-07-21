@@ -19,12 +19,13 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData {
-	JSO_ZEROVALUE=0,
+enum JS_OberservableData
+{
+	JSO_ZEROVALUE = 0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
-/* Project Wizard BEGIN: javascope_observables */
+	/* Project Wizard BEGIN: javascope_observables */
 	JSO_ADC_A1_CH0,
 	JSO_ADC_A1_CH1,
 	JSO_ADC_A1_CH2,
@@ -67,7 +68,7 @@ enum JS_OberservableData {
 	JSO_RESOLVER_PL_D4_CH3_N_MECH_RPM,
 	JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S,
 	JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER,
-/* Project Wizard END: javascope_observables */
+	/* Project Wizard END: javascope_observables */
 	JSO_DUT_I_A_A,
 	JSO_DUT_I_B_A,
 	JSO_DUT_I_C_A,
@@ -92,6 +93,8 @@ enum JS_OberservableData {
 	JSO_PRIME_MOVER_SPEED_RPM,
 	JSO_PRIME_MOVER_THETA_EL_RAD,
 	JSO_PRIME_MOVER_MEAN_TEMP_DEGC,
+	JSO_PRIME_MOVER_I_D_REF_A,
+	JSO_PRIME_MOVER_I_Q_REF_A,
 	JSO_PRIME_MOVER_N_REF_RPM,
 	JSO_PRIME_MOVER_N_REF_RPM_FILTERED,
 	JSO_PRIME_MOVER_M_REF_NM,
@@ -166,10 +169,10 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	dut_n_ref_rpm,
 	prime_mover_n_ref_rpm,
-	deskbench_dut_i_q_ref_A,
-	deskbench_dut_i_d_ref_A,
-	d1_theta_m_offset,
-	d2_theta_m_offset,
+	dut_i_q_ref_A,
+	dut_i_d_ref_A,
+	pm_i_q_ref_A,
+	pm_i_d_ref_A,
 	send_field_7,
 	send_field_8,
 	send_field_9,

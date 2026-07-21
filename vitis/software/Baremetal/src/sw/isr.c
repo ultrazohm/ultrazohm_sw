@@ -54,25 +54,6 @@ static void update_adapter_d2(void);
 static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
-
-enum control_mode_t
-{
-    DUT_ONLY_CURRENT_CONTROL = 0,
-    PM_ONLY_CURRENT_CONTROL,
-    DUT_ONLY_SPEED_CONTROL,
-    PM_ONLY_SPEED_CONTROL,
-    PM_ONLY_DUTY_CYCLE,
-    DUT_ONLY_DUTY_CYCLE,
-    PM_SPEED_DUT_CURRENT,
-    PM_CURRENT_DUT_SPEED,
-};
-
-// ZU wenige Buttons im Javascope.
-
-enum control_mode_t control_mode = DUT_ONLY_CURRENT_CONTROL; // Default control mode
-
-// CIL DUT only, CIL PM only, CIL coupled.
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -81,7 +62,6 @@ enum control_mode_t control_mode = DUT_ONLY_CURRENT_CONTROL; // Default control 
 //----------------------------------------------------
 void ISR_Control(void *data)
 {
-	Global_Data.use_cil=true;
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
                              /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
@@ -113,63 +93,108 @@ void ISR_Control(void *data)
 
         uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
         uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
-        // uz_pmsmModel_reset setzt alle integratoren auf 0, wodurch i_d springt sobald reset auf 0 geht wegen PM -> nicht kompatibel mit uz_pmsm_control, which always checks for errors even in idle state.
 
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
-         //Reset CIL
 
         /* Project Wizard END: idle_state isr_actions */
         break;
 
     case running_state:
-        switch (control_mode)
+        switch (Global_Data.control_mode)
         {
         case DUT_ONLY_CURRENT_CONTROL:
-            if (Global_Data.use_cil)
-            {
-                disable_dut(&Global_Data);
-                disable_prime_mover(&Global_Data);
-                uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, false);
-                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
-                uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
-                uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
-            }
-            else
-            {
-                enable_dut(&Global_Data);
-                disable_prime_mover(&Global_Data);
-            }
+            enable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.dut_control, false);
+            break;
+        case DUT_ONLY_CURRENT_CONTROL_CIL:
+            disable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, false);
+            uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+
             break;
         case DUT_ONLY_SPEED_CONTROL:
             uz_pmsm_control_enable_speed_control(Global_Data.objects.dut_control, true);
-            // Reset controller?
-            if (Global_Data.use_cil)
-            {
-                disable_dut(&Global_Data);
-                disable_prime_mover(&Global_Data);
-                uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, true);
-                uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
-            }
-            else
-            {
-                enable_dut(&Global_Data);
-                disable_prime_mover(&Global_Data);
-            }
+            uz_pmsm_control_reset(Global_Data.objects.dut_control);
+            enable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            break;
+        case DUT_ONLY_SPEED_CONTROL_CIL:
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_reset(Global_Data.objects.dut_control);
+            disable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.dut_pmsm_model, true);
+            uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
+            break;
+        case PM_ONLY_CURRENT_CONTROL:
+            disable_dut(&Global_Data);
+            enable_prime_mover(&Global_Data);
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.prime_mover_control, false);
+            break;
+        case PM_ONLY_CURRENT_CONTROL_CIL:
+            disable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            uz_pmsmModel_simulate_mechanical_system(Global_Data.objects.prime_mover_pmsm_model, false);
+            uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
+            break;
+        case PM_ONLY_SPEED_CONTROL:
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.prime_mover_control, true);
+            uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
+            disable_dut(&Global_Data);
+            enable_prime_mover(&Global_Data);
+            break;
+        case PM_ONLY_SPEED_CONTROL_CIL:
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.prime_mover_control, true);
+            uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
+            disable_dut(&Global_Data);
+            enable_prime_mover(&Global_Data);
             break;
         default:
+        	uz_assert(0);
             break;
         }
         break;
 
     case control_state:
-        switch (control_mode)
+        switch (Global_Data.control_mode)
         {
         case DUT_ONLY_CURRENT_CONTROL:
             uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
             uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
             break;
+        case DUT_ONLY_SPEED_CONTROL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            break;
+        case DUT_ONLY_CURRENT_CONTROL_CIL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            break;
+        case DUT_ONLY_SPEED_CONTROL_CIL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            break;
+        case PM_ONLY_CURRENT_CONTROL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
+        case PM_ONLY_SPEED_CONTROL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
+        case PM_ONLY_CURRENT_CONTROL_CIL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
+        case PM_ONLY_SPEED_CONTROL_CIL:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
         default:
+        	uz_assert(0);
             break;
         }
         break;
@@ -195,14 +220,28 @@ void ISR_Control(void *data)
     }
 
     // Set outputs to PMSM IP-Core
-    if(Global_Data.use_cil){
-           struct uz_pmsmModel_inputs_t dut_model_inputs = {
-               .v_d_V = Global_Data.objects.dut_reference_values->v_dq_in_V.d,
-               .v_q_V = Global_Data.objects.dut_reference_values->v_dq_in_V.q,
-               .omega_mech_1_s = Global_Data.rasv.dut_n_ref_rpm * (2.0f * UZ_PIf / 60.0f),
-               .load_torque = 0.0f};
-           uz_pmsmModel_set_inputs(Global_Data.objects.dut_pmsm_model, dut_model_inputs);
-           uz_pmsmModel_trigger_input_strobe(Global_Data.objects.dut_pmsm_model);
+    if ((Global_Data.control_mode==DUT_ONLY_CURRENT_CONTROL_CIL) ||
+    		(Global_Data.control_mode==DUT_ONLY_SPEED_CONTROL_CIL) ||
+    		(Global_Data.control_mode==PM_ONLY_CURRENT_CONTROL_CIL) ||
+			(Global_Data.control_mode==PM_ONLY_SPEED_CONTROL_CIL) ||
+			(Global_Data.control_mode==PM_SPEED_DUT_CURRENT_CIL) ||
+			(Global_Data.control_mode==PM_CURRENT_DUT_SPEED_CIL))
+    {
+        struct uz_pmsmModel_inputs_t dut_model_inputs = {
+            .v_d_V = Global_Data.objects.dut_reference_values->v_dq_in_V.d,
+            .v_q_V = Global_Data.objects.dut_reference_values->v_dq_in_V.q,
+            .omega_mech_1_s = Global_Data.rasv.dut_n_ref_rpm * (2.0f * UZ_PIf / 60.0f),
+            .load_torque = 0.0f};
+        uz_pmsmModel_set_inputs(Global_Data.objects.dut_pmsm_model, dut_model_inputs);
+        uz_pmsmModel_trigger_input_strobe(Global_Data.objects.dut_pmsm_model);
+
+        struct uz_pmsmModel_inputs_t pm_model_inputs = {
+            .v_d_V = Global_Data.objects.prime_mover_reference_values->v_dq_in_V.d,
+            .v_q_V = Global_Data.objects.prime_mover_reference_values->v_dq_in_V.q,
+            .omega_mech_1_s = Global_Data.rasv.prime_mover_n_ref_rpm * (2.0f * UZ_PIf / 60.0f),
+            .load_torque = 0.0f};
+        uz_pmsmModel_set_inputs(Global_Data.objects.prime_mover_pmsm_model, pm_model_inputs);
+        uz_pmsmModel_trigger_input_strobe(Global_Data.objects.prime_mover_pmsm_model);
     }
 
     // If manual mode, use manual duty cycles instead of the control output

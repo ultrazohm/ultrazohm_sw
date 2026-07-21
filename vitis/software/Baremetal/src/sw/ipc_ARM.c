@@ -186,32 +186,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			data->av.snd_fld[1] = value;
 			data->rasv.dut_n_ref_rpm = value;
-
 			break;
 
 		case (Set_Send_Field_2):
-			data->av.snd_fld[2] = value;
 			data->rasv.prime_mover_n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_3):
-			data->av.snd_fld[3] = value;
 			data->rasv.dut_i_dq_ref_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-			data->av.snd_fld[4] = value;
 			data->rasv.dut_i_dq_ref_A.d = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+			data->rasv.prime_mover_i_dq_ref_A.q = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+			data->rasv.prime_mover_i_dq_ref_A.d = value;
+
 			break;
 
 		case (Set_Send_Field_7):

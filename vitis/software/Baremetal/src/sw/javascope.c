@@ -129,6 +129,19 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DUT_I_D_REF_A] = &data->rasv.dut_i_dq_ref_A.d;
 	js_ch_observable[JSO_DUT_I_Q_REF_A] = &data->rasv.dut_i_dq_ref_A.q;
 
+	js_ch_observable[JSO_PRIME_MOVER_I_A_A] = &data->objects.prime_mover_measurements->i_abc_in_A.a;
+	js_ch_observable[JSO_PRIME_MOVER_I_B_A] = &data->objects.prime_mover_measurements->i_abc_in_A.b;
+	js_ch_observable[JSO_PRIME_MOVER_I_C_A] = &data->objects.prime_mover_measurements->i_abc_in_A.c;
+	js_ch_observable[JSO_PRIME_MOVER_I_D_A] = &data->objects.prime_mover_actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_PRIME_MOVER_I_Q_A] = &data->objects.prime_mover_actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_PRIME_MOVER_V_DC_V] = &data->objects.prime_mover_measurements->v_dc_in_V;
+	js_ch_observable[JSO_PRIME_MOVER_V_D_V] = &data->objects.prime_mover_reference_values->v_dq_in_V.d;
+	js_ch_observable[JSO_PRIME_MOVER_V_Q_V] = &data->objects.prime_mover_reference_values->v_dq_in_V.q;
+	js_ch_observable[JSO_PRIME_MOVER_SPEED_RPM] = &data->objects.prime_mover_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_PRIME_MOVER_THETA_EL_RAD] = &data->objects.prime_mover_actual_data->theta_el;
+	js_ch_observable[JSO_PRIME_MOVER_I_D_REF_A] = &data->rasv.prime_mover_i_dq_ref_A.d;
+	js_ch_observable[JSO_PRIME_MOVER_I_Q_REF_A] = &data->rasv.prime_mover_i_dq_ref_A.q;
+
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

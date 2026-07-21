@@ -30,6 +30,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_init.h"
 #include "../include/project_wizard_visualization.h"
+#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -41,14 +42,18 @@ extern struct uz_PMSM_t Beckhoff_AM8071_0R01;
 
 bool HB_ok = false;
 bool OC_ok = false;
-bool reset_button = false;
+bool reset_button_inv = false;
 bool reset_button_was_pressed = false;
-uz_3ph_dq_t unused_current_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+bool enable_controller_Beckhoff = false;
+bool acknowledge_error = false;
 uz_3ph_dq_t current_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-uz_3ph_dq_t v_dq_ref_cil = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+uz_3ph_dq_t v_dq_ref_Beckhoff = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_pmsmModel_inputs_t pmsm_cil_inputs_Beckhoff = {0.0f};
 struct uz_pmsmModel_outputs_t pmsm_cil_outputs_Beckhoff = {0.0f};
 struct uz_3ph_abc_t i_abc_cil = {0.0f};
+struct uz_3ph_dq_t i_dq_Beckhoff_cil = {0.0f};
+struct uz_pmsm_measurement_values measurements_Beckhoff;
+struct uz_DutyCycle_t duty_cycle_Beckhoff = {0.0f};
 float theta_mech_Beckhoff = 0.0f;
 
 #define		VOLTAGE_2_SI_VOLTS_DHG 		363.6f
@@ -72,6 +77,13 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
+static void read_adapter_cards(void);
+static void get_cil_measurements(void);
+static void get_real_measurements(void);
+static void perform_one_controller_step();
+static void set_controller_outputs_cil(void);
+static void set_controller_outputs_real(void);
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -81,47 +93,32 @@ static void update_adapter_d5(void);
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-/* Project Wizard BEGIN: adc_readout */
-    analog_adc_data = uz_dataMover_update_buffer_and_get_data();
-/* Project Wizard END: adc_readout */
-    update_adapter_a1();
-    update_adapter_a2(); // DHG inverter ADC
-    update_adapter_a3();
-    update_adapter_d1(); // DHG inverter optical
-    update_adapter_d2();
-    update_adapter_d3();
-    update_adapter_d4(); // Resolver, 1: Beckhoff, 3: HM
-    update_adapter_d5();
 
+    read_adapter_cards();
+
+    // get measurement values
+    if (Global_Data.rasv.control_mode_select == CIL) {
+    	get_cil_measurements();
+    	perform_one_controller_step();
+    	set_controller_outputs_cil();
+    } else if (Global_Data.rasv.control_mode_select == REAL) {
+    	get_real_measurements();
+    	perform_one_controller_step();
+    	set_controller_outputs_real();
+    }
+
+    // Check for safe operating region violation
+    Global_Data.av.status_safe_operating_area_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+    if (Global_Data.av.status_safe_operating_area_violation != uz_pmsm_control_no_violation) {
+//    	ultrazohm_state_machine_set_stop(true);
+    	ultrazohm_state_machine_set_error(true);
+    	ultrazohm_state_machine_set_userLED(true);
+    }
     if (Global_Data.rasv.control_mode_select == REAL) {
-    	// Reset button
-        if (reset_button == true) {
-        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,1);
-        	reset_button_was_pressed = true;
-        	reset_button = false;
-    //		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
-        } else {
-        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,0);
-        }
         // read in status of hardware switch off of inverter
         HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,14);
         OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,15);
         if ((HB_ok == false || OC_ok == false) && reset_button_was_pressed == true) {
-        	ultrazohm_state_machine_set_stop(true);
-        }
-
-    	// assign measurements to Global_Data
-    	Global_Data.av.i_a_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch0 * CURRENT_CONV_HASS_50 - 0.15f;
-    	Global_Data.av.i_b_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch1 * CURRENT_CONV_HASS_50 + 0.1f;
-    	Global_Data.av.i_c_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch2 * CURRENT_CONV_HASS_50 - 0.05f;
-    	Global_Data.av.i_dc_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch7 * CURRENT_CONV_HASS_50 - 0.3f;
-    	Global_Data.av.v_a_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch4 - 0.0033f) * VOLTAGE_2_SI_VOLTS_DHG;
-    	Global_Data.av.v_b_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch5 - 0.001f) * VOLTAGE_2_SI_VOLTS_DHG;
-    	Global_Data.av.v_c_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch6 - 0.0017f) * VOLTAGE_2_SI_VOLTS_DHG_CH3;
-    	Global_Data.av.v_dc_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch3 + 0.0005f) * VOLTAGE_2_SI_VOLTS_DHG_CH4;
-
-        // check for current limit
-        if (fabs(Global_Data.av.i_a_Beckhoff) > MAX_CURRENT || fabs(Global_Data.av.i_b_Beckhoff) > MAX_CURRENT || fabs(Global_Data.av.i_c_Beckhoff) > MAX_CURRENT) {
         	ultrazohm_state_machine_set_stop(true);
         }
     }
@@ -129,6 +126,17 @@ void ISR_Control(void *data)
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
+    	// Reset DHG inverter
+        if (reset_button_inv == true) {
+        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,1);
+        	reset_button_was_pressed = true;
+        	reset_button_inv = false;
+    //		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
+        } else {
+        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,0);
+        }
+    	enable_controller_Beckhoff = false;
+    	uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, enable_controller_Beckhoff);
         /* Project Wizard BEGIN: idle_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
@@ -151,84 +159,16 @@ void ISR_Control(void *data)
     else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-
-    	switch (Global_Data.rasv.control_mode_select) {
-			case CIL:
-	    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
-	    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
-	    		pmsm_cil_outputs_Beckhoff = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil_Beckhoff);
-	    		Global_Data.av.speed_n_rpm_Beckhoff = pmsm_cil_outputs_Beckhoff.omega_mech_1_s * 60.0f / (2.0f * UZ_PIf);
-	    		Global_Data.av.i_d_Beckhoff = pmsm_cil_outputs_Beckhoff.i_d_A;
-	    		Global_Data.av.i_q_Beckhoff = pmsm_cil_outputs_Beckhoff.i_q_A;
-	    		struct uz_3ph_dq_t i_dq_Beckhoff_cil = {.d = Global_Data.av.i_d_Beckhoff, .q = Global_Data.av.i_q_Beckhoff, .zero = 0.0f};
-	    		Global_Data.av.theta_el_Beckhoff = theta_mech_Beckhoff * Beckhoff_AM8071_0R01.polePairs;
-	    		i_abc_cil = uz_transformation_3ph_dq_to_abc(i_dq_Beckhoff_cil, Global_Data.av.theta_el_Beckhoff);
-	    		Global_Data.av.i_a_Beckhoff = i_abc_cil.a;
-	    		Global_Data.av.i_b_Beckhoff = i_abc_cil.b;
-	    		Global_Data.av.i_c_Beckhoff = i_abc_cil.c;
-
-	    		Global_Data.av.v_dc_Beckhoff = V_DC;
-	    		Global_Data.av.i_dc_Beckhoff = 0.0f;
-	    		struct uz_pmsm_measurement_values measurements_Beckhoff_cil = {
-		            .i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
-		            .v_abc_in_V = uz_transformation_3ph_dq_to_abc(v_dq_ref_cil, Global_Data.av.theta_el_Beckhoff),
-					.v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
-					.i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
-		            .omega_mech_rad_per_sec = pmsm_cil_outputs_Beckhoff.omega_mech_1_s,
-		            .theta_mech = theta_mech_Beckhoff};
-	    		theta_mech_Beckhoff = uz_signals_wrap(theta_mech_Beckhoff + pmsm_cil_outputs_Beckhoff.omega_mech_1_s * SAMPLE_TIME_CIL, 2.0f*UZ_PIf);
-
-//	    		current_reference_A.d = Global_Data.rasv.i_d_ref_A_Beckhoff_cil;
-//	    		current_reference_A.q = Global_Data.rasv.i_q_ref_A_Beckhoff_cil;
-
-	    		struct uz_3ph_dq_t v_dq_ref_cil = uz_pmsm_control_sample_dq(
-	    			Global_Data.objects.pmsm_control_Beckhoff_AM8071,
-					measurements_Beckhoff_cil,
-					Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
-		    	    current_reference_A,
-		    	    0.0f);
-	    		Global_Data.av.v_d_Beckhoff = v_dq_ref_cil.d;
-	    		Global_Data.av.v_q_Beckhoff = v_dq_ref_cil.q;
-	    		pmsm_cil_inputs_Beckhoff.v_d_V = v_dq_ref_cil.d;
-	    		pmsm_cil_inputs_Beckhoff.v_q_V = v_dq_ref_cil.q;
-	    		pmsm_cil_inputs_Beckhoff.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.speed_n_ref_rpm_Beckhoff / 60.0f;
-	    		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil_Beckhoff, pmsm_cil_inputs_Beckhoff);
-
-				break;
-			case REAL:
-		        struct uz_pmsm_measurement_values measurements_Beckhoff = {
-		            .i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
-		            .v_abc_in_V = {.a = Global_Data.av.v_a_Beckhoff, .b = Global_Data.av.v_b_Beckhoff, .c = Global_Data.av.v_c_Beckhoff},
-		            .v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
-		            .i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
-		            .omega_mech_rad_per_sec = Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s,
-		            .theta_mech = Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi};
-
-		    	struct uz_DutyCycle_t duty_cycle_Beckhoff = uz_pmsm_control_sample_duty(
-		    		Global_Data.objects.pmsm_control_Beckhoff_AM8071,
-		    	    measurements_Beckhoff,
-		    	    Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
-		    	    unused_current_reference_A,
-		    	    0.0f);
-
-		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty_cycle_Beckhoff.DutyCycle_A;
-		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = duty_cycle_Beckhoff.DutyCycle_B;
-		        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = duty_cycle_Beckhoff.DutyCycle_C;
-		       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-		       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-		       // Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-				break;
-			default:
-				break;
-    	}
-
-
+    	enable_controller_Beckhoff = true;
+    	uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, enable_controller_Beckhoff);
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */
     }
     else if (current_state == error_state)
     {
+    	enable_controller_Beckhoff = false;
+    	uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, enable_controller_Beckhoff);
         /* Project Wizard BEGIN: error_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;
@@ -239,6 +179,12 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: error_state isr_actions */
+    	if (acknowledge_error == true) {
+            uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.pmsm_control_Beckhoff_AM8071, measurements_Beckhoff);
+            ultrazohm_state_machine_set_stop(true);
+			ultrazohm_state_machine_set_userLED(false);
+			acknowledge_error = false;
+    	}
     }
     
     /* Project Wizard BEGIN: pwm_runtime */
@@ -370,6 +316,132 @@ static void update_adapter_d5(void)
 }
 
 //==============================================================================================================================================================
+
+static void read_adapter_cards(void)
+{
+	/* Project Wizard BEGIN: adc_readout */
+	    analog_adc_data = uz_dataMover_update_buffer_and_get_data();
+	/* Project Wizard END: adc_readout */
+	    update_adapter_a1();
+	    update_adapter_a2(); // DHG inverter ADC
+	    update_adapter_a3();
+	    update_adapter_d1(); // DHG inverter optical
+	    update_adapter_d2();
+	    update_adapter_d3();
+	    update_adapter_d4(); // Resolver, 1: Beckhoff, 3: HM
+	    update_adapter_d5();
+}
+
+static void get_cil_measurements(void)
+{
+    // trigger input and output strobe
+    uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
+	uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_cil_Beckhoff);
+
+	// assign output values to variables
+	pmsm_cil_outputs_Beckhoff = uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_cil_Beckhoff);
+	Global_Data.av.speed_n_rpm_Beckhoff = pmsm_cil_outputs_Beckhoff.omega_mech_1_s * 60.0f / (2.0f * UZ_PIf);
+	Global_Data.av.i_d_Beckhoff = pmsm_cil_outputs_Beckhoff.i_d_A;
+	Global_Data.av.i_q_Beckhoff = pmsm_cil_outputs_Beckhoff.i_q_A;
+	i_dq_Beckhoff_cil = (struct uz_3ph_dq_t){.d = Global_Data.av.i_d_Beckhoff, .q = Global_Data.av.i_q_Beckhoff, .zero = 0.0f};
+	Global_Data.av.theta_el_Beckhoff = theta_mech_Beckhoff * Beckhoff_AM8071_0R01.polePairs;
+	i_abc_cil = uz_transformation_3ph_dq_to_abc(i_dq_Beckhoff_cil, Global_Data.av.theta_el_Beckhoff);
+	Global_Data.av.i_a_Beckhoff = i_abc_cil.a;
+	Global_Data.av.i_b_Beckhoff = i_abc_cil.b;
+	Global_Data.av.i_c_Beckhoff = i_abc_cil.c;
+
+	// assign values to measurement struct for pmsm control module
+	Global_Data.av.v_dc_Beckhoff = V_DC; // fixed value in CIL
+	Global_Data.av.i_dc_Beckhoff = 0.0f;
+	measurements_Beckhoff = (struct uz_pmsm_measurement_values){
+		.i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
+		.v_abc_in_V = uz_transformation_3ph_dq_to_abc(v_dq_ref_Beckhoff, Global_Data.av.theta_el_Beckhoff),
+		.v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
+		.i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
+		.omega_mech_rad_per_sec = pmsm_cil_outputs_Beckhoff.omega_mech_1_s,
+		.theta_mech = theta_mech_Beckhoff};
+	theta_mech_Beckhoff = uz_signals_wrap(theta_mech_Beckhoff + pmsm_cil_outputs_Beckhoff.omega_mech_1_s * SAMPLE_TIME_CIL, 2.0f*UZ_PIf); // Forward Euler integration of theta_mech
+}
+
+static void get_real_measurements(void)
+{
+	// assign measurements to Global_Data
+	Global_Data.av.i_a_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch0 * CURRENT_CONV_HASS_50 - 0.15f;
+	Global_Data.av.i_b_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch1 * CURRENT_CONV_HASS_50 + 0.1f;
+	Global_Data.av.i_c_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch2 * CURRENT_CONV_HASS_50 - 0.05f;
+	Global_Data.av.i_dc_Beckhoff = Global_Data.av.adc_ltc2311_a2_ch7 * CURRENT_CONV_HASS_50 - 0.3f;
+	Global_Data.av.v_a_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch4 - 0.0033f) * VOLTAGE_2_SI_VOLTS_DHG;
+	Global_Data.av.v_b_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch5 - 0.001f) * VOLTAGE_2_SI_VOLTS_DHG;
+	Global_Data.av.v_c_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch6 - 0.0017f) * VOLTAGE_2_SI_VOLTS_DHG_CH3;
+	Global_Data.av.v_dc_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch3 + 0.0005f) * VOLTAGE_2_SI_VOLTS_DHG_CH4;
+
+	// assign values to measurement struct for pmsm control module
+	measurements_Beckhoff = (struct uz_pmsm_measurement_values){
+        .i_abc_in_A = {.a = Global_Data.av.i_a_Beckhoff, .b = Global_Data.av.i_b_Beckhoff, .c = Global_Data.av.i_c_Beckhoff},
+        .v_abc_in_V = {.a = Global_Data.av.v_a_Beckhoff, .b = Global_Data.av.v_b_Beckhoff, .c = Global_Data.av.v_c_Beckhoff},
+        .v_dc_in_V = Global_Data.av.v_dc_Beckhoff,
+        .i_dc_in_A = Global_Data.av.i_dc_Beckhoff,
+        .omega_mech_rad_per_sec = Global_Data.av.resolver_pl_interface_d4_1_omega_mech_rad_s,
+        .theta_mech = Global_Data.av.resolver_pl_interface_d4_1_position_mech_2pi};
+}
+
+static void perform_one_controller_step()
+{
+	// enable/disable speed control
+    if (Global_Data.rasv.dut_control_select == speed) {
+    	uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071,true);
+    } else {
+    	uz_pmsm_control_enable_speed_control(Global_Data.objects.pmsm_control_Beckhoff_AM8071,false);
+    }
+
+	// assign current reference (javascope user input)
+	current_reference_A.d = Global_Data.rasv.i_d_ref_A_Beckhoff;
+	current_reference_A.q = Global_Data.rasv.i_q_ref_A_Beckhoff;
+
+	if (Global_Data.rasv.control_mode_select == CIL) {
+		v_dq_ref_Beckhoff = (struct uz_3ph_dq_t)uz_pmsm_control_sample_dq(
+			Global_Data.objects.pmsm_control_Beckhoff_AM8071,
+			measurements_Beckhoff,
+			Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
+			current_reference_A,
+			0.0f);
+		Global_Data.av.v_d_Beckhoff = v_dq_ref_Beckhoff.d;
+		Global_Data.av.v_q_Beckhoff = v_dq_ref_Beckhoff.q;
+	} else {
+		struct uz_DutyCycle_t dutycycle_contr = uz_pmsm_control_sample_duty(
+			Global_Data.objects.pmsm_control_Beckhoff_AM8071,
+		    measurements_Beckhoff,
+		    Global_Data.rasv.speed_n_ref_rpm_Beckhoff,
+		    current_reference_A,
+		    0.0f);
+		if (Global_Data.rasv.dut_control_select == dutycycle) {
+			duty_cycle_Beckhoff.DutyCycle_A = Global_Data.rasv.dutycycle_A_Beckhoff;
+			duty_cycle_Beckhoff.DutyCycle_B = Global_Data.rasv.dutycycle_B_Beckhoff;
+			duty_cycle_Beckhoff.DutyCycle_C = Global_Data.rasv.dutycycle_C_Beckhoff;
+		} else {
+			duty_cycle_Beckhoff.DutyCycle_A = dutycycle_contr.DutyCycle_A;
+			duty_cycle_Beckhoff.DutyCycle_B = dutycycle_contr.DutyCycle_B;
+			duty_cycle_Beckhoff.DutyCycle_C = dutycycle_contr.DutyCycle_C;
+		}
+	}
+}
+
+static void set_controller_outputs_cil(void)
+{
+	// assign and set pmsm model inputs
+	pmsm_cil_inputs_Beckhoff.v_d_V = v_dq_ref_Beckhoff.d;
+	pmsm_cil_inputs_Beckhoff.v_q_V = v_dq_ref_Beckhoff.q;
+	pmsm_cil_inputs_Beckhoff.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.speed_n_ref_rpm_Beckhoff / 60.0f;
+	uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil_Beckhoff, pmsm_cil_inputs_Beckhoff);
+}
+
+static void set_controller_outputs_real(void)
+{
+	// set dutycycle
+	Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = duty_cycle_Beckhoff.DutyCycle_A;
+    Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = duty_cycle_Beckhoff.DutyCycle_B;
+    Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = duty_cycle_Beckhoff.DutyCycle_C;
+}
 
 //==============================================================================================================================================================
 //----------------------------------------------------

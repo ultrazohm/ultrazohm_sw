@@ -64,7 +64,7 @@ static struct uz_pmsm_control_configuration_t config_Beckhoff_AM8071 = {
 void init_control_Beckhoff_AM8071(void) {
 	Global_Data.objects.pmsm_control_Beckhoff_AM8071 = uz_pmsm_control_init(config_Beckhoff_AM8071, Beckhoff_AM8071_0R01);
     uz_pmsm_control_current_control_tune_magnitude_optimum(Global_Data.objects.pmsm_control_Beckhoff_AM8071, 1.5f * config_Beckhoff_AM8071.sample_time);
-    uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, true);
+    uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, false);
 }
 
 struct uz_pmsmModel_config_t pmsm_ip_config_Beckhoff={

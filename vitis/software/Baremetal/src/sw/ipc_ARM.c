@@ -22,6 +22,9 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+extern bool reset_button_inv;
+extern bool acknowledge_error;
+
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -190,23 +193,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.i_d_ref_A_Beckhoff_cil = value;
+		data->rasv.i_d_ref_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.i_q_ref_A_Beckhoff_cil = value;
+		data->rasv.i_q_ref_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->rasv.dutycycle_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->rasv.dutycycle_B_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		data->rasv.dutycycle_C_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -267,34 +270,44 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_1):
 				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.control_mode_select == CIL;
+					reset_button_inv = true;
 				}
 			break;
 
 		case (My_Button_2):
 				if (ultrazohm_state_machine_get_state() == idle_state) {
-					data->rasv.control_mode_select == REAL;
+					data->rasv.control_mode_select = CIL;
 				}
 			break;
 
 		case (My_Button_3):
-
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.control_mode_select = REAL;
+				}
 			break;
 
 		case (My_Button_4):
-
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.dut_control_select = speed;
+				}
 			break;
 
 		case (My_Button_5):
-
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.dut_control_select = current;
+				}
 			break;
 
 		case (My_Button_6):
-
+				if ((ultrazohm_state_machine_get_state() == idle_state) && (data->rasv.control_mode_select == REAL)) {
+					data->rasv.dut_control_select = dutycycle;
+				}
 			break;
 
 		case (My_Button_7):
-
+				if (ultrazohm_state_machine_get_state() == error_state) {
+					acknowledge_error = true;
+				}
 			break;
 
 		case (My_Button_8):
@@ -346,30 +359,46 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (data->rasv.control_mode_select == CIL) {
+	 if (reset_button_inv == true) {
 		js_status_BareToRTOS |= (1 << 4);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 4);
 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (data->rasv.control_mode_select == REAL) {
+	 if (data->rasv.control_mode_select == CIL) {
 		js_status_BareToRTOS |= (1 << 5);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 5);
 	 }
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	 if (data->rasv.control_mode_select == REAL) {
+		js_status_BareToRTOS |= (1 << 6);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	 }
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	 if (data->rasv.dut_control_select == speed) {
+		js_status_BareToRTOS |= (1 << 7);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	 }
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	 if (data->rasv.dut_control_select == current) {
+		js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	 if (data->rasv.dut_control_select == dutycycle) {
+		js_status_BareToRTOS |= (1 << 9);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	 }
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

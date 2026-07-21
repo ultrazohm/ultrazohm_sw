@@ -24,6 +24,12 @@ enum control_mode {
 	REAL
 };
 
+enum dut_control {
+	speed,
+	current,
+	dutycycle
+};
+
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -31,6 +37,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
+	float status_safe_operating_area_violation;
 	float i_a_Beckhoff;
 	float i_b_Beckhoff;
 	float i_c_Beckhoff;
@@ -127,9 +134,13 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
 	float speed_n_ref_rpm_Beckhoff;
-	float i_d_ref_A_Beckhoff_cil;
-	float i_q_ref_A_Beckhoff_cil;
+	float i_d_ref_A_Beckhoff;
+	float i_q_ref_A_Beckhoff;
+	float dutycycle_A_Beckhoff;
+	float dutycycle_B_Beckhoff;
+	float dutycycle_C_Beckhoff;
 	enum control_mode control_mode_select;
+	enum dut_control dut_control_select;
 } referenceAndSetValues;
 
 typedef struct{

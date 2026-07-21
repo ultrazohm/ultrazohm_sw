@@ -132,9 +132,9 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_speed_n]						= &data->av.speed_n_rpm_Beckhoff;
-	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_speed_n]				= &data->av.speed_n_rpm_Beckhoff;
+	js_slowDataArray[JSSD_FLOAT_id_Beckhoff] 			= &data->av.i_d_Beckhoff;
+	js_slowDataArray[JSSD_FLOAT_iq_Beckhoff] 			= &data->av.i_q_Beckhoff;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */

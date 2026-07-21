@@ -141,6 +141,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_PRIME_MOVER_THETA_EL_RAD] = &data->objects.prime_mover_actual_data->theta_el;
 	js_ch_observable[JSO_PRIME_MOVER_I_D_REF_A] = &data->rasv.prime_mover_i_dq_ref_A.d;
 	js_ch_observable[JSO_PRIME_MOVER_I_Q_REF_A] = &data->rasv.prime_mover_i_dq_ref_A.q;
+	js_ch_observable[JSO_PRIME_MOVER_N_REF_RPM] = &data->rasv.prime_mover_n_ref_rpm;
 
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 

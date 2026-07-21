@@ -57,7 +57,7 @@ D-Sub 9 Male Connector for soldering
 """"""""""""""""""""""""""""""""""""""
 
 - https://www.mouser.de/ProductDetail/636-171-009-102L001
-- https://www.mouser.de/ProductDetail/523-L777SDE09P
+- https://www.mouser.de/de/ProductDetail/NorComp/171-009-103L001?qs=pHTW2tU%2Fyq5HYqXsR83XCg%3D%3D
 
 D-Sub 9 Housing 
 """""""""""""""

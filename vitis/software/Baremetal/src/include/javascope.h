@@ -181,12 +181,12 @@ enum gui_button_mapping {
 	send_field_12,
 	send_field_13,
 	send_field_14,
-	send_field_15,
-	send_field_16,
-	send_field_17,
-	send_field_18,
-	send_field_19,
-	send_field_20,
+	dut_duty_a,
+	dut_duty_b,
+	dut_duty_c,
+	pm_duty_a,
+	pm_duty_b,
+	pm_duty_c,
 	SND_FLD_ENDMARKER
 
 

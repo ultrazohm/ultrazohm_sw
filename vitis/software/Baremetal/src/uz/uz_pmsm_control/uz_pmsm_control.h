@@ -144,6 +144,8 @@ struct uz_pmsm_control_configuration_t
  */
 uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data);
 
+void uz_pmsm_control_set_default_duty_cycle(uz_pmsm_control_t* self, struct uz_DutyCycle_t default_duty_cycle);
+
 /**
  * @brief Returns pointer to internal actual control data.
  *

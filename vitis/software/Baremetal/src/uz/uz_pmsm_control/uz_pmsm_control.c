@@ -70,6 +70,13 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     uz_assert(config.setpoint_filter_speed_cutoff_frequency >= 0.0f);
     uz_assert(config.speed_actual_value_filter_cutoff_frequency >= 0.0f);
 
+    uz_assert(config.default_duty_cycle.DutyCycle_A>= 0.0f);
+    uz_assert(config.default_duty_cycle.DutyCycle_A<= 1.0f);
+    uz_assert(config.default_duty_cycle.DutyCycle_B >= 0.0f);
+    uz_assert(config.default_duty_cycle.DutyCycle_B <= 1.0f);
+    uz_assert(config.default_duty_cycle.DutyCycle_C >= 0.0f);
+    uz_assert(config.default_duty_cycle.DutyCycle_C <= 1.0f);
+
     uz_pmsm_control_t *self = uz_pmsm_control_allocation();
     self->config = config;
     self->machine_data = machine_data;
@@ -143,6 +150,18 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
         self->setpoint_filter_speed = uz_signals_IIR_Filter_init(setpoint_filter_speed_config);
     }
     return (self);
+}
+
+void uz_pmsm_control_set_default_duty_cycle(uz_pmsm_control_t *self, struct uz_DutyCycle_t default_duty_cycle){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(default_duty_cycle.DutyCycle_A >= 0.0f);
+    uz_assert(default_duty_cycle.DutyCycle_A <= 1.0f);
+    uz_assert(default_duty_cycle.DutyCycle_B >= 0.0f);
+    uz_assert(default_duty_cycle.DutyCycle_B <= 1.0f);
+    uz_assert(default_duty_cycle.DutyCycle_C >= 0.0f);
+    uz_assert(default_duty_cycle.DutyCycle_C <= 1.0f);
+    self->config.default_duty_cycle=default_duty_cycle;
 }
 
 const struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)

@@ -97,6 +97,11 @@ void ISR_Control(void *data)
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
         uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.dut_control, Global_Data.av.dut_measurements);
 
+        Global_Data.dut_manual_duty_cycle = (struct uz_DutyCycle_t){.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f};
+        Global_Data.prime_mover_manual_duty_cycle = (struct uz_DutyCycle_t){.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f};
+        uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.dut_control, Global_Data.dut_manual_duty_cycle);
+        uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.prime_mover_control, Global_Data.prime_mover_manual_duty_cycle);
+
         /* Project Wizard END: idle_state isr_actions */
         break;
 
@@ -194,6 +199,20 @@ void ISR_Control(void *data)
             uz_pmsmModel_reset(Global_Data.objects.prime_mover_pmsm_model);
             uz_pmsmModel_reset(Global_Data.objects.dut_pmsm_model);
             break;
+        case PM_ONLY_DUTY_CYCLE:
+            uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
+            uz_pmsm_control_reset(Global_Data.objects.dut_control);
+            disable_dut(&Global_Data);
+            enable_prime_mover(&Global_Data);
+            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.prime_mover_control, Global_Data.prime_mover_manual_duty_cycle);
+            break;
+        case DUT_ONLY_DUTY_CYCLE:
+            uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
+            uz_pmsm_control_reset(Global_Data.objects.dut_control);
+            enable_dut(&Global_Data);
+            disable_prime_mover(&Global_Data);
+            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.dut_control, Global_Data.dut_manual_duty_cycle);
+            break;
         default:
             uz_assert(0);
             break;
@@ -242,6 +261,14 @@ void ISR_Control(void *data)
         case PM_CURRENT_DUT_SPEED_CIL:
             uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
             uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
+        case PM_ONLY_DUTY_CYCLE:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            break;
+        case DUT_ONLY_DUTY_CYCLE:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
             break;
         default:
             uz_assert(0);

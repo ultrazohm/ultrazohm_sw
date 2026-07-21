@@ -243,27 +243,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+		data->dut_manual_duty_cycle.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+		data->dut_manual_duty_cycle.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+		data->dut_manual_duty_cycle.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+		data->prime_mover_manual_duty_cycle.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+		data->prime_mover_manual_duty_cycle.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_20):
-		data->av.snd_fld[20] = value;
+		data->prime_mover_manual_duty_cycle.DutyCycle_C = value;
 			break;
 
 		case (My_Button_1):

@@ -44,8 +44,6 @@ enum control_mode_t
     PM_CURRENT_DUT_SPEED_CIL,
 };
 
-// ZU wenige Buttons im Javascope.
-
 typedef struct _actualValues_
 {
 	float pwm_frequency_hz;
@@ -188,6 +186,14 @@ typedef struct _DS_Data_
 	actualValues av;
 	object_pointers_t objects;
 	enum control_mode_t control_mode;
+	struct uz_DutyCycle_t dut_manual_duty_cycle;
+	struct uz_DutyCycle_t prime_mover_manual_duty_cycle;
 } DS_Data;
 
+   dut_duty_a
+16 dut_duty_b
+17	dut_duty_c
+18	pm_duty_a
+19	pm_duty_b pm_duty_c
+20	
 #endif

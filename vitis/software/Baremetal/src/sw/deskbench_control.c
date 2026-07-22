@@ -227,21 +227,26 @@ static void control_dut_pmsm_model(DS_Data *data)
 void disable_prime_mover(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, true, true, true);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2,false);
 }
 
 void disable_dut(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, true, true, true);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1,false);
+
 }
 
 void enable_prime_mover(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, false, false, false);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, true);
 }
 
 void enable_dut(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, false, false, false);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, true);
 }
 
 static float mean_inverter_temperature(struct uz_inverter_adapter_outputs_t status)

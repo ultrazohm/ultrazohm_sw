@@ -85,7 +85,7 @@ int main(void)
             uz_SystemTime_init();
             deskbench_control_init(&Global_Data); // must run before JavaScope_initialize: it assigns the objects.dut_* pointers that javascope caches (&pointer->field). Reversed order caches near-null addresses.
             JavaScope_initialize(&Global_Data);
-            Global_Data.control_mode = PM_SPEED_DUT_CURRENT_CIL;
+            Global_Data.control_mode = DUT_ONLY_CURRENT_CONTROL;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -103,8 +103,10 @@ int main(void)
 			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
 			Global_Data.objects.inverter_adapter_d1 = initialize_inverter_adapter_d1();
 			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
-			Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
-			Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
+            uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1,false);
+            uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2,false);
+                Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
+            Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
 			Global_Data.objects.resolver_ip_d4_2 = initialize_resolver_ip_d4_2();
 			Global_Data.objects.resolver_pl_interface_d4_2 = initialize_resolver_pl_interface_d4_2();
 			Global_Data.objects.resolver_ip_d4_3 = initialize_resolver_ip_d4_3();

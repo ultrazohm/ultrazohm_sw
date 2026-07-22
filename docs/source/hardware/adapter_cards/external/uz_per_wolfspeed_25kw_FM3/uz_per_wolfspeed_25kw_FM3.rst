@@ -36,10 +36,10 @@ Revision History
      - Not functional
      - Early hardware revision; no productive documentation in this repository.
    * - Rev03
-     - Productive
+     - Productive, **only for Inverter V1.1**
      - First functional and documented revision. Tested up to 10 kW with an RL load.
    * - Rev04
-     - Productive revision
+     - Productive revision, **only for Inverter V2.0**
      - Adds gate-enable derived fan control, overcurrent latch/reset logic, an optical temperature PWM output, and further hardware fixes.
 
 Common Function

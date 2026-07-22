@@ -19,6 +19,7 @@ NB:
 
 - Ensure that the termination switch ``SW1x`` is set according to your application
 - Ground on pin 3 depends on ``R9x`` being populated
+- Details of the board can be found in the `'uz_frontpanel_firstfloor' repository <https://bitbucket.org/ultrazohm/uz_frontpanel_firstfloor>`_
 
 On the software side, please refer to
 

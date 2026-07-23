@@ -20,12 +20,12 @@
 #include "include/d5_adapter_init.h"
 
 enum control_mode {
-	CIL,
-	REAL
+	REAL = 0,
+	CIL
 };
 
 enum dut_control {
-	speed,
+	speed = 0,
 	current,
 	dutycycle
 };
@@ -37,7 +37,7 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
-	float status_safe_operating_area_violation;
+	enum uz_pmsm_control_safe_operating_region_violation status_safe_operating_area_violation;
 	float i_a_Beckhoff;
 	float i_b_Beckhoff;
 	float i_c_Beckhoff;
@@ -177,7 +177,10 @@ typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	object_pointers_t objects;
-} DS_Data;
+	struct uz_pmsm_actual_data* beckhoff_actual_data;
+	struct uz_pmsm_measurement_values* beckhoff_measurement_values;
+	struct uz_pmsm_reference_values* beckhoff_reference_values;
+	} DS_Data;
 
 #endif
 

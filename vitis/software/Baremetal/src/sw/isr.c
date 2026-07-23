@@ -61,7 +61,7 @@ float theta_mech_Beckhoff = 0.0f;
 #define		VOLTAGE_2_SI_VOLTS_DHG_CH4	142.3f
 #define		CURRENT_CONV_HASS_50		40.0f // 50.0f / 0.625f datasheet
 #define		MAX_CURRENT					50.0f
-#define		V_DC						565.0f
+#define		V_DC						48.0f//565.0f
 #define		SAMPLE_TIME_CIL				0.0001f
 
 /* Project Wizard BEGIN: adc_readout_definitions */
@@ -137,6 +137,7 @@ void ISR_Control(void *data)
         }
     	enable_controller_Beckhoff = false;
     	uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, enable_controller_Beckhoff);
+    	uz_pmsm_control_reset(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
         /* Project Wizard BEGIN: idle_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f;

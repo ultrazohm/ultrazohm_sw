@@ -107,6 +107,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ADC_A3_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch5;
 	js_ch_observable[JSO_ADC_A3_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch6;
 	js_ch_observable[JSO_ADC_A3_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a3_ch7;
+	js_ch_observable[JSO_vdc_Beckhoff] = &data->av.v_dc_Beckhoff;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH1_POS_MECH_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_position_mech_2pi;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH1_POS_EL_2PI] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_position_el_2pi;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH1_OMEGA_MECH_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_1_omega_mech_rad_s;
@@ -125,6 +126,36 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_N_MECH_RPM] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_n_mech_rpm;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_OMEGA_EL_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_omega_el_rad_s;
 	js_ch_observable[JSO_RESOLVER_PL_D4_CH3_REVOLUTION_COUNTER] = &project_wizard_visualization_data.viz_resolver_pl_interface_d4_3_revolution_counter;
+	js_ch_observable[JSO_beck_actual_i_d]=&data->beckhoff_actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_beck_actual_i_q]=&data->beckhoff_actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_beck_actual_v_d]=&data->beckhoff_actual_data->v_dq_in_V.d;
+	js_ch_observable[JSO_beck_actual_v_q]=&data->beckhoff_actual_data->v_dq_in_V.q;
+	js_ch_observable[JSO_beck_actual_omega_el]=&data->beckhoff_actual_data->omega_el_rad_per_sec;
+	js_ch_observable[JSO_beck_actual_theta_el]=&data->beckhoff_actual_data->theta_el;
+	js_ch_observable[JSO_beck_actual_speed_rpm]=&data->beckhoff_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_beck_actual_theta_el_advanced]=&data->beckhoff_actual_data->theta_el_advanced;
+	js_ch_observable[JSO_beck_meas_i_a]=&data->beckhoff_measurement_values->i_abc_in_A.a;
+	js_ch_observable[JSO_beck_meas_i_b]=&data->beckhoff_measurement_values->i_abc_in_A.b;
+	js_ch_observable[JSO_beck_meas_i_c]=&data->beckhoff_measurement_values->i_abc_in_A.c;
+	js_ch_observable[JSO_beck_meas_v_a]=&data->beckhoff_measurement_values->v_abc_in_V.a;
+	js_ch_observable[JSO_beck_meas_v_b]=&data->beckhoff_measurement_values->v_abc_in_V.b;
+	js_ch_observable[JSO_beck_meas_v_c]=&data->beckhoff_measurement_values->v_abc_in_V.c;
+	js_ch_observable[JSO_beck_meas_vdc]=&data->beckhoff_measurement_values->v_dc_in_V;
+	js_ch_observable[JSO_beck_meas_idc]=&data->beckhoff_measurement_values->i_dc_in_A;
+	js_ch_observable[JSO_beck_meas_omega_mech]=&data->beckhoff_measurement_values->omega_mech_rad_per_sec;
+	js_ch_observable[JSO_beck_meas_theta_mech]=&data->beckhoff_measurement_values->theta_mech;
+	js_ch_observable[JSO_beck_ref_speed_rpm]=&data->beckhoff_reference_values->speed_in_rpm;
+	js_ch_observable[JSO_beck_ref_M_in_Nm]=&data->beckhoff_reference_values->M_in_Nm;
+	js_ch_observable[JSO_beck_ref_i_d]=&data->beckhoff_reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_beck_ref_i_q]=&data->beckhoff_reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_beck_ref_v_d]=&data->beckhoff_reference_values->v_dq_in_V.d;
+	js_ch_observable[JSO_beck_ref_v_q]=&data->beckhoff_reference_values->v_dq_in_V.q;
+	js_ch_observable[JSO_beck_ref_v_a]=&data->beckhoff_reference_values->v_abc_in_V.a;
+	js_ch_observable[JSO_beck_ref_v_b]=&data->beckhoff_reference_values->v_abc_in_V.b;
+	js_ch_observable[JSO_beck_ref_v_c]=&data->beckhoff_reference_values->v_abc_in_V.c;
+	js_ch_observable[JSO_beck_ref_duty_a]=&data->beckhoff_reference_values->duty_cycle.DutyCycle_A;
+	js_ch_observable[JSO_beck_ref_duty_b]=&data->beckhoff_reference_values->duty_cycle.DutyCycle_B;
+	js_ch_observable[JSO_beck_ref_duty_c]=&data->beckhoff_reference_values->duty_cycle.DutyCycle_C;
 /* Project Wizard END: javascope_observable_pointers */
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 

@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -87,8 +88,12 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            JavaScope_initialize(&Global_Data);
             init_control_Beckhoff_AM8071();
+            Global_Data.beckhoff_actual_data=uz_pmsm_control_get_actual_data(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            Global_Data.beckhoff_measurement_values=uz_pmsm_control_get_pmsm_measurement_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            Global_Data.beckhoff_reference_values=uz_pmsm_control_get_reference_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            JavaScope_initialize(&Global_Data);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

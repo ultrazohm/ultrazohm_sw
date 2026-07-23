@@ -29,26 +29,26 @@ const struct uz_PMSM_t Beckhoff_AM8071_0R01 = {
 static struct uz_pmsm_control_configuration_t config_Beckhoff_AM8071 = {
     .theta_el_offset = 0.0f, // adjust!
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = true,
+    .enable_speed_control = false,
     .speed_controller_kp = 0.122, //adjust!
-    .speed_controller_ki = 1.107, // adjust!
+    .speed_controller_ki = 0.0, //1.107, // adjust!
     .current_controller_d_kp = 3.667f,
     .current_controller_d_ki = 266.667f,
     .current_controller_q_kp = 3.667f,
     .current_controller_q_ki = 266.667f,
     .setpoint_limits = {
-        .speed_controller_torque_in_Nm = {.upper_bound = 78.0f, .lower_bound = -78.0f},
-        .i_d_in_A = {.upper_bound = 17.6f, .lower_bound = -17.6f},
-        .i_q_in_A = {.upper_bound = 17.6f, .lower_bound = -17.6f},
-        .speed_in_rpm = {.upper_bound = 4000.0f, .lower_bound = -4000.0f},
-        .disturbance_input_in_Nm = {.upper_bound = 10.0f, .lower_bound = -10.0f}},
+        .speed_controller_torque_in_Nm = {.upper_bound = 2.0f, .lower_bound = -2.0f},
+        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
+        .disturbance_input_in_Nm = {.upper_bound = 1.0f, .lower_bound = -1.0f}},
     .safe_operating_region = {
-        .speed_in_rpm = {.upper_bound = 5000.0f, .lower_bound = -5000.0f},
-        .i_d_in_A = {.upper_bound = 30.0f, .lower_bound = -30.0f},
-        .i_q_in_A = {.upper_bound = 30.0f, .lower_bound = -30.0f},
-        .i_abc_in_A = {.upper_bound = 30.0f, .lower_bound = -30.0f},
-        .v_dc_in_V = {.upper_bound = 600.0f, .lower_bound = 530.0f},
-        .i_dc_in_A = {.upper_bound = 80.0f, .lower_bound = -85.0f}},
+        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
+        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_abc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = -1.0f},
+        .i_dc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f}},
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 1.45f,

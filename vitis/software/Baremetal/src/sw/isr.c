@@ -375,6 +375,8 @@ static void get_real_measurements(void)
 	Global_Data.av.v_b_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch5 - 0.001f) * VOLTAGE_2_SI_VOLTS_DHG;
 	Global_Data.av.v_c_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch6 - 0.0017f) * VOLTAGE_2_SI_VOLTS_DHG_CH3;
 	Global_Data.av.v_dc_Beckhoff = (Global_Data.av.adc_ltc2311_a2_ch3 + 0.0005f) * VOLTAGE_2_SI_VOLTS_DHG_CH4;
+	Global_Data.av.theta_el_Beckhoff = Global_Data.av.resolver_pl_interface_d4_1_position_el_2pi;
+	Global_Data.av.speed_n_rpm_Beckhoff = Global_Data.av.resolver_pl_interface_d4_1_n_mech_rpm;
 
 	// assign values to measurement struct for pmsm control module
 	measurements_Beckhoff = (struct uz_pmsm_measurement_values){

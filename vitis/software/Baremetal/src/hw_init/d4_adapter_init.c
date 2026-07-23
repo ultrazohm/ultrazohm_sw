@@ -27,7 +27,7 @@ static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d4_1_confi
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_D4_ADAPTER_RESOLVER_PL_INTERFACE_D4_1_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
     .resolver_polepairs = 1,
-    .machine_polepairs = 4,
+    .machine_polepairs = 5,
     .position_intmax = 65535,
     .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
     .theta_m_offset_rad = 0.0f

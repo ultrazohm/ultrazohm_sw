@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:13 . Memory (MB): peak = 378.117 ; gain = 60.566
+create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:10 . Memory (MB): peak = 378.379 ; gain = 43.930
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SDDemod/ipcore/uz_JL_SDDemod_v1_0/prj_ip'.)
@@ -25,7 +25,7 @@ INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'A
 WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
 INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
-ipx::package_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 425.363 ; gain = 19.988
+ipx::package_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 424.336 ; gain = 18.168
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_src_CLk.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_src_CLk.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_src_Differentierer.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -92,6 +92,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_axi4.vhd" already exist
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SDDemod.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Jul  9 11:18:09 2026...
+INFO: [Common 17-206] Exiting Vivado at Thu Jul 23 15:12:41 2026...
 
-Elapsed time is 43.8065 seconds.
+Elapsed time is 26.3459 seconds.

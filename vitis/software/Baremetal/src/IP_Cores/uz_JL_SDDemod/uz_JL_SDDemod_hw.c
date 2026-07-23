@@ -1,4 +1,3 @@
-
 #include "uz_JL_SDDemod_hw.h"
 
 #include "uz_JL_SDDemod_hwAddresses.h"
@@ -10,6 +9,13 @@ void uz_JL_SDDemod_hw_write_dezi_U(uint32_t base_address, uint16_t dezimation)
     uz_assert_not_zero(base_address);
     uz_axi_write_uint32(base_address + Dezimation_U_Data_uz_JL_SDDemod, dezimation);
 }
+
+void uz_JL_SDDemod_hw_write_data_delay(uint32_t base_address, uint16_t filt_input_delay)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_uint32(base_address + filt_input_delay_Data_uz_JL_SDDemod, filt_input_delay);
+}
+
 
 void uz_JL_SDDemod_hw_write_dezi_I(uint32_t base_address, uint16_t dezimation)
 {
@@ -27,6 +33,25 @@ void uz_JL_SDDemod_hw_write_clk_ratio(uint32_t base_address, uint16_t clk_ratio)
 {
     uz_assert_not_zero(base_address);
     uz_axi_write_uint32(base_address + clk_ratio_Data_uz_JL_SDDemod, clk_ratio);
+}
+
+void uz_JL_SDDemod_hw_write_calib_ads_en(uint32_t base_address, bool calib_en)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + calibration_en_Data_uz_JL_SDDemod, calib_en);
+}
+
+void uz_JL_SDDemod_hw_write_clk_dsw_en(uint32_t base_address, bool dsw_clk_en)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_bool(base_address + DSW_clk_en_Data_uz_JL_SDDemod, dsw_clk_en);
+}
+
+void uz_JL_SDDemod_hw_write_clk_dutycycle(uint32_t base_address, float dutycycle)
+{
+    uz_assert_not_zero(base_address);
+    uint32_t raw_dutycycle = (uint32_t)(dutycycle *(1 << 10));
+    uz_axi_write_uint32(base_address + clk_dutycycle_Data_uz_JL_SDDemod, raw_dutycycle);
 }
 
 int32_t uz_JL_SDDemod_hw_read_data_out_ps_U(uint32_t base_address){

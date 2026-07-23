@@ -17,6 +17,10 @@ struct uz_JL_SDDemod_config_t config ={
     .dezimation_I = 500,
     .clk_ratio = 100,
     .switch_edge = true,
+    .filt_input_delay = 14,
+    .calib_en = true,
+    .dsw_clk_en = true,
+    .clk_dutycycle = 0.5f,
 };
 
 void setUp(void)
@@ -27,6 +31,10 @@ void setUp(void)
     config.dezimation_I = 500;
     config.clk_ratio = 100;
     config.switch_edge = true;
+    config.filt_input_delay = 14;
+    config.calib_en = true;
+    config.dsw_clk_en = true;
+    config.clk_dutycycle = 0.5f;
 }
 
 void tearDown(void)
@@ -39,6 +47,10 @@ void test_uz_JL_SDDemod_correct_init(void)
     uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
     uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
     uz_JL_SDDemod_t *test_instance = uz_JL_SDDemod_init(config);
     TEST_ASSERT_NOT_NULL(test_instance);
 }
@@ -63,6 +75,10 @@ void test_uz_JL_SDDemod_set_dezimation(void)
     uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
     uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
 
     uint16_t input_U = 500;
@@ -78,6 +94,10 @@ void test_uz_JL_SDDemod_set_clk_ratio(void)
     uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
     uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
 
     uint16_t input = 100;
@@ -91,11 +111,83 @@ void test_uz_JL_SDDemod_set_switch_edge(void)
     uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
     uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
 
     bool input = false;
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, input);
     uz_JL_SDDemod_set_switch_edge(instance, input);
+}
+
+void test_uz_JL_SDDemod_set_calib_en(void)
+{
+    uz_JL_SDDemod_hw_write_dezi_U_Expect(BASE_ADDRESS, config.dezimation_U);
+    uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    bool input = true;
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_calib_en(instance, input);
+}
+
+void test_uz_JL_SDDemod_set_dsw_clk_en(void)
+{
+    uz_JL_SDDemod_hw_write_dezi_U_Expect(BASE_ADDRESS, config.dezimation_U);
+    uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    bool input = true;
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_dsw_clk_en(instance, input);
+}
+
+void test_uz_JL_SDDemod_set_data_delay(void)
+{
+    uz_JL_SDDemod_hw_write_dezi_U_Expect(BASE_ADDRESS, config.dezimation_U);
+    uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    uint8_t input = 14;
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_data_delay(instance, input);
+}
+
+void test_uz_JL_SDDemod_set_clk_dutycycle(void)
+{
+    uz_JL_SDDemod_hw_write_dezi_U_Expect(BASE_ADDRESS, config.dezimation_U);
+    uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
+    uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
+    uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
+    uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
+
+    float input = 0.5f;
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, input);
+    uz_JL_SDDemod_set_clk_dutycycle(instance, input);
 }
 
 void test_uz_JL_SDDemod_get_outputs(void)
@@ -105,6 +197,10 @@ void test_uz_JL_SDDemod_get_outputs(void)
     uz_JL_SDDemod_hw_write_dezi_I_Expect(BASE_ADDRESS, config.dezimation_I);
     uz_JL_SDDemod_hw_write_clk_ratio_Expect(BASE_ADDRESS, config.clk_ratio);
     uz_JL_SDDemod_hw_write_switch_edge_Expect(BASE_ADDRESS, config.switch_edge);
+    uz_JL_SDDemod_hw_write_data_delay_Expect(BASE_ADDRESS, config.filt_input_delay);
+    uz_JL_SDDemod_hw_write_calib_ads_en_Expect(BASE_ADDRESS, config.calib_en);
+    uz_JL_SDDemod_hw_write_clk_dsw_en_Expect(BASE_ADDRESS, config.dsw_clk_en);
+    uz_JL_SDDemod_hw_write_clk_dutycycle_Expect(BASE_ADDRESS, config.clk_dutycycle);
     uz_JL_SDDemod_t *instance = uz_JL_SDDemod_init(config);
     TEST_ASSERT_NOT_NULL(instance);
 

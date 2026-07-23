@@ -73,8 +73,12 @@ struct uz_JL_SDDemod_config_t SD_Filter_config = {
 		.ip_clk_frequency_Hz = 100000000.0f,
 		.dezimation_U = 20,
 		.dezimation_I = 20,
-		.clk_ratio = 100,
-		.switch_edge = true,
+		.clk_ratio = 100, 		// 8 Mhz testen
+		.switch_edge = false,
+		.filt_input_delay = 0,	// bei 4 Mhz Delay = 12/13
+		.calib_en = false,
+		.dsw_clk_en = true,
+		.clk_dutycycle = 0.6,
 };
 
 uz_axi_gpio_t* input_gpio=NULL;

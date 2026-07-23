@@ -138,12 +138,12 @@ void ISR_Control(void *data)
 
 //    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
 
-    SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
-    SD_data.data_U= Process_DCLink_Voltage(SD_Filter_out.data_U);
-    SD_data.data_PH1= Process_phase_current(SD_Filter_out.data_PH1);
-    SD_data.data_PH2= Process_phase_current(SD_Filter_out.data_PH2);
-    SD_data.data_PH3= Process_phase_current(SD_Filter_out.data_PH3);
-    SD_data.data_PH4= Process_phase_current(SD_Filter_out.data_PH4);
+//    SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
+//    SD_data.data_U= Process_DCLink_Voltage(SD_Filter_out.data_U);
+//    SD_data.data_PH1= Process_phase_current(SD_Filter_out.data_PH1);
+//    SD_data.data_PH2= Process_phase_current(SD_Filter_out.data_PH2);
+//    SD_data.data_PH3= Process_phase_current(SD_Filter_out.data_PH3);
+//    SD_data.data_PH4= Process_phase_current(SD_Filter_out.data_PH4);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     switch(current_state)
@@ -189,7 +189,7 @@ void ISR_Control(void *data)
     			break;
     	}
     
-//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
 

@@ -36,6 +36,10 @@ uz_JL_SDDemod_t* uz_JL_SDDemod_init(struct uz_JL_SDDemod_config_t config) {
     uz_JL_SDDemod_set_dezimation(self, config.dezimation_U, config.dezimation_I);
     uz_JL_SDDemod_set_clk_ratio(self, config.clk_ratio);
     uz_JL_SDDemod_set_switch_edge(self, config.switch_edge);
+    uz_JL_SDDemod_set_data_delay(self, config.filt_input_delay);
+    uz_JL_SDDemod_set_calib_en(self, config.calib_en);
+    uz_JL_SDDemod_set_dsw_clk_en(self, config.dsw_clk_en);
+    uz_JL_SDDemod_set_clk_dutycycle(self, config.clk_dutycycle);
     return (self);
 }
 
@@ -54,11 +58,39 @@ uz_JL_SDDemod_t* uz_JL_SDDemod_init(struct uz_JL_SDDemod_config_t config) {
     uz_JL_SDDemod_hw_write_clk_ratio(self->config.base_address, clk_ratio);
 }
 
+void uz_JL_SDDemod_set_data_delay(uz_JL_SDDemod_t *self, uint8_t filt_input_delay)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_data_delay(self->config.base_address, filt_input_delay);
+}
+
  void uz_JL_SDDemod_set_switch_edge(uz_JL_SDDemod_t *self, bool switch_edge)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_JL_SDDemod_hw_write_switch_edge(self->config.base_address, switch_edge);
+}
+
+void uz_JL_SDDemod_set_calib_en(uz_JL_SDDemod_t *self, bool calib_en)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_calib_ads_en(self->config.base_address, calib_en);
+}
+
+void uz_JL_SDDemod_set_dsw_clk_en(uz_JL_SDDemod_t *self, bool dsw_clk_en)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_clk_dsw_en(self->config.base_address, dsw_clk_en);
+}
+
+void uz_JL_SDDemod_set_clk_dutycycle(uz_JL_SDDemod_t *self, float dutycycle)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SDDemod_hw_write_clk_dutycycle(self->config.base_address, dutycycle);
 }
 
 struct uz_JL_SDDemod_output_t uz_JL_SDDemod_get_outputs(uz_JL_SDDemod_t *self)

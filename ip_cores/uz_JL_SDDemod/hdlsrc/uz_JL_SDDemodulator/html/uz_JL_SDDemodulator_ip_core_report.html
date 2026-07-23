@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.36
+<td class="summaryTableSndColOddRow">1.54
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">09-Jul-2026 11:17:06
+<td class="summaryTableSndColOddRow">23-Jul-2026 15:12:08
 </td>
 </tr>
 <tr>
@@ -186,7 +186,7 @@ Target platform interface table:
 </td>
 <td>Inport
 </td>
-<td>int16
+<td>uint8
 </td>
 <td>AXI4
 </td>
@@ -200,7 +200,7 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">boolean
+<td class="distinctCellColor">uint8
 </td>
 <td class="distinctCellColor">AXI4
 </td>
@@ -289,6 +289,62 @@ Target platform interface table:
 <td class="distinctCellColor">External Port
 </td>
 <td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:763\')'})" >filt_input_delay</a>
+</td>
+<td>Inport
+</td>
+<td>int8
+</td>
+<td>AXI4
+</td>
+<td>x"124"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:786\')'})" >calibration_en</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"128"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:801\')'})" >DSW_clk_en</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>AXI4
+</td>
+<td>x"12C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:804\')'})" >clk_dutycycle</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">ufix8_En7
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"130"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -447,6 +503,34 @@ Target platform interface table:
 <td>
 </td>
 </tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:788\')'})" >signature_en</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'Simulink.ID.hilite(\'uz_JL_SDDemodulator:865\')'})" >fast_clk_filt</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -487,7 +571,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2607091117
+<td>contains unique IP timestamp (yymmddHHMM): 2607231505: 2607231507: 2607231510: 2607231512
 </td>
 </tr>
 <tr>
@@ -560,6 +644,38 @@ The following AXI4 bus accessible registers were generated for this IP core:
 <td class="distinctCellColor">0x120
 </td>
 <td class="distinctCellColor">data register for Outport data_out_ps_PH4
+</td>
+</tr>
+<tr>
+<td>filt_input_delay_Data
+</td>
+<td>0x124
+</td>
+<td>data register for Inport filt_input_delay
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">calibration_en_Data
+</td>
+<td class="distinctCellColor">0x128
+</td>
+<td class="distinctCellColor">data register for Inport calibration_en
+</td>
+</tr>
+<tr>
+<td>DSW_clk_en_Data
+</td>
+<td>0x12C
+</td>
+<td>data register for Inport DSW_clk_en
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">clk_dutycycle_Data
+</td>
+<td class="distinctCellColor">0x130
+</td>
+<td class="distinctCellColor">data register for Inport clk_dutycycle
 </td>
 </tr>
 </tbody>

@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>bbf5588c</spirit:value>
+            <spirit:value>c919f74e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>bbf5588c</spirit:value>
+            <spirit:value>c919f74e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1116,6 +1116,32 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>signature_en</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>fast_clk_filt</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1414,7 +1440,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_JL_SDDemod.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_0b50b05d</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_0d6eddeb</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1638,15 +1664,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_JL_SDDemod</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114689037</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-07-09T09:18:08Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114709432</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-07-23T13:12:41Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c5bf9ca0"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="ce1c4957"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="aa498132"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="d669ae63"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="aa9035a7"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

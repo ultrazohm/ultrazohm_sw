@@ -20,7 +20,11 @@ struct uz_JL_SDDemod_config_t{
     uint16_t dezimation_U;
     uint16_t dezimation_I;
     uint16_t clk_ratio;
+    uint8_t filt_input_delay;
     bool switch_edge;
+    bool calib_en;
+    bool dsw_clk_en;
+    float clk_dutycycle;
 };
 
 /**
@@ -78,6 +82,38 @@ void uz_JL_SDDemod_set_clk_ratio(uz_JL_SDDemod_t *self, uint16_t clk_ratio);
  * @param switch_clk Switch clock value
  */
 void uz_JL_SDDemod_set_switch_edge(uz_JL_SDDemod_t *self, bool switch_edge);
+
+/**
+ * @brief Set the switch clock
+ * 
+ * @param self Pointer to driver instance
+ * @param switch_clk Switch clock value
+ */
+void uz_JL_SDDemod_set_data_delay(uz_JL_SDDemod_t *self, uint8_t filt_input_delay);
+
+/**
+ * @brief Set the switch clock
+ * 
+ * @param self Pointer to driver instance
+ * @param switch_clk Switch clock value
+ */
+void uz_JL_SDDemod_set_calib_en(uz_JL_SDDemod_t *self, bool calib_en);
+
+/**
+ * @brief Set the switch clock
+ * 
+ * @param self Pointer to driver instance
+ * @param switch_clk Switch clock value
+ */
+void uz_JL_SDDemod_set_dsw_clk_en(uz_JL_SDDemod_t *self, bool dsw_clk_en);
+
+/**
+ * @brief Set the switch clock
+ * 
+ * @param self Pointer to driver instance
+ * @param switch_clk Switch clock value
+ */
+void uz_JL_SDDemod_set_clk_dutycycle(uz_JL_SDDemod_t *self, float dutycycle);
 
 /**
  * @brief Get Outputs

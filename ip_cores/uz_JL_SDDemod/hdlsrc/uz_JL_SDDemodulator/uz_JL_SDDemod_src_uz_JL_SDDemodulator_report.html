@@ -48,11 +48,23 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_JL_SDDemodulator/uz_JL_SDDemodulator'
 <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'open_system(\'uz_JL_SDDemodulator/uz_JL_SDDemodulator\');'})" >open model 'uz_JL_SDDemodulator/uz_JL_SDDemodulator'</a><BR>
-Generated on 2026-07-09 11:16:58</h1>
-<H2>HDL check for 'uz_JL_SDDemodulator' complete with 0 errors, 0 warnings, and 1 messages.</H2><BR>
+Generated on 2026-07-23 15:12:04</h1>
+<H2>HDL check for 'uz_JL_SDDemodulator' complete with 0 errors, 2 warnings, and 1 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE style="border: 2px solid; border-collapse: collapse;">
 <TR><TD style="border: 2px solid; border-collapse: collapse;"> <B>Simulink Blocks and resources</B> </TD><TD style="border: 2px solid; border-collapse: collapse;"> <B>Level</B> </TD><TD style="border: 2px solid; border-collapse: collapse;"> <B>Description</B> </TD></TR><TR><TD style="border: 2px solid; border-collapse: collapse;">
+<a alt="HDLShared:hdlshared:cpeignoresmultirate" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 83 68 68 101 109 111 100 117 108 97 116 111 114]),\'object\'),\'none\');open_system(char([117 122 95 74 76 95 83 68 68 101 109 111 100 117 108 97 116 111 114]))'})" >uz_JL_SDDemodulator</a>
+</TD>
+<TD style="border: 2px solid; border-collapse: collapse">Warning</TD>
+<TD style="border: 2px solid; border-collapse: collapse">The model contains multiple rates, which are either explicitly designed or introduced by optimizations. Critical Path Estimation does not account for multiple rates in the reported timing estimates.</TD>
+</TR>
+<TR><TD style="border: 2px solid; border-collapse: collapse;">
+<a alt="HDLShared:hdlshared:xilinxglblvdelay" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'hilite(get_param(char([117 122 95 74 76 95 83 68 68 101 109 111 100 117 108 97 116 111 114]),\'object\'),\'none\');open_system(char([117 122 95 74 76 95 83 68 68 101 109 111 100 117 108 97 116 111 114]))'})" >uz_JL_SDDemodulator</a>
+</TD>
+<TD style="border: 2px solid; border-collapse: collapse">Warning</TD>
+<TD style="border: 2px solid; border-collapse: collapse">$XILINX/verilog/src/glbl.v is used by simulation and requires reset be asserted for at least 100 ns.  However, the current test bench settings only assert reset for 20 ns, i.e. (ClockHighTime + ClockLowTime) * ResetLength.  It is recommended to increase ResetLength to extend the reset time.</TD>
+</TR>
+<TR><TD style="border: 2px solid; border-collapse: collapse;">
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'run(\'C:\\Users\\jonat\\Documents\\ultrazohm_sw\\ip_cores\\uz_JL_SDDemod\\hdlsrc\\uz_JL_SDDemodulator\\criticalPathEstimated\')'})" >C:\Users\jonat\Documents\ultrazohm_sw\ip_cores\uz_JL_SDDemod\hdlsrc\uz_JL_SDDemodulator\criticalPathEstimated.m</a>
 </TD>
 <TD style="border: 2px solid; border-collapse: collapse">Message</TD>

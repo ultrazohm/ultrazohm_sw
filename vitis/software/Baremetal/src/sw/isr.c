@@ -117,7 +117,7 @@ void ISR_Control(void *data)
     if (Global_Data.rasv.control_mode_select == REAL) {
         // read in status of hardware switch off of inverter
         HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,14);
-        OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,15);
+        OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1,16);
         if ((HB_ok == false || OC_ok == false) && reset_button_was_pressed == true) {
         	ultrazohm_state_machine_set_stop(true);
         }

@@ -126,15 +126,7 @@ void ISR_Control(void *data)
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
-    	// Reset DHG inverter
-        if (reset_button_inv == true) {
-        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,1);
-        	reset_button_was_pressed = true;
-        	reset_button_inv = false;
-    //		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
-        } else {
-        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,0);
-        }
+
     	enable_controller_Beckhoff = false;
     	uz_pmsm_control_enable(Global_Data.objects.pmsm_control_Beckhoff_AM8071, enable_controller_Beckhoff);
     	uz_pmsm_control_reset(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
@@ -156,6 +148,14 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
 /* Project Wizard END: running_state isr_actions */
+
+    	// Reset DHG inverter
+        if (reset_button_inv == true) {
+        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,1);
+        	reset_button_was_pressed = true;
+        } else {
+        	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1,6,0);
+        }
     }
     else if (current_state == control_state)
     {

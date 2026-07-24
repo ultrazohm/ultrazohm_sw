@@ -269,8 +269,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-				if (ultrazohm_state_machine_get_state() == idle_state) {
+				if ((ultrazohm_state_machine_get_state() == running_state) && (reset_button_inv == false)) {
 					reset_button_inv = true;
+				} else if ((ultrazohm_state_machine_get_state() == running_state) && (reset_button_inv == true)) {
+					reset_button_inv = false;
 				}
 			break;
 

@@ -28,8 +28,8 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands: # Modify the commands below to build your repository.
    - hostname -I
+   - python -m pip install -e ./pyuzlib -r docs/requirements.txt
    - cd docs
-   - pip install -r requirements.txt
    - pip list
    - make docs
    - cd build
@@ -40,8 +40,10 @@ steps:
    depends_on: [ Vivado_build_tcl ]
    commands:
    - hostname -I
+   - python -m pip install -e ./pyuzlib -r docs/requirements.txt
    - cd docs
    - make ceedling_test_output
+   - make check_all
    - ls
    - pwd
    - cd ..

@@ -42,4 +42,13 @@ void export_array_of_struct_to_csv(const char *filename,
                                   size_t length,
                                   float add_time);
 
+/* Same output as export_array_of_struct_to_csv, but buffered and much faster for large logs. */
+void export_array_of_struct_to_csv_fast(const char *filename,
+                                        const void *array,
+                                        size_t element_size,
+                                        const struct csv_field_descriptor_t *fields,
+                                        size_t field_count,
+                                        size_t length,
+                                        float add_time);
+
 void write_csv_field(FILE *file, const void *field_ptr, enum csv_field_type_t type);

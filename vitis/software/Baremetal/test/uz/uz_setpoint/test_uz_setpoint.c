@@ -5,6 +5,9 @@
 #include "uz_setpoint.h"
 #include "uz_newton_raphson.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_PMSM_config/uz_PMSM_config.h"
+
+TEST_SOURCE_FILE("src/uz/uz_PMSM_config/uz_PMSM_config.c")
 
 struct uz_SetPoint_config config = {0};
 float omega_m_rad_per_sec = 0.0f;
@@ -21,6 +24,19 @@ void setUp(void)
     config.config_PMSM.R_ph_Ohm = 0.1f;
     config.config_PMSM.polePairs = 4.0f;
     config.config_PMSM.Psi_PM_Vs = 0.0075f;
+    config.config_PMSM.J_kg_m_squared = 0.0001f;
+    config.config_PMSM.I_rated_Ampere = 10.0f;
+    config.config_PMSM.Torque_rated_Nm = 1.0f;
+    config.config_PMSM.Torque_max_Nm = 2.0f;
+    config.config_PMSM.Torque_min_Nm = -2.0f;
+    config.config_PMSM.speed_rated_rpm = 1000.0f;
+    config.config_PMSM.speed_max_rpm = 2000.0f;
+    config.config_PMSM.speed_min_rpm = -2000.0f;
+    config.config_PMSM.V_dc_nominal_V = 24.0f;
+    config.config_PMSM.I_d_max_A = 10.0f;
+    config.config_PMSM.I_d_min_A = -10.0f;
+    config.config_PMSM.I_q_max_A = 10.0f;
+    config.config_PMSM.I_q_min_A = -10.0f;
     config.motor_type = SMPMSM;
     config.is_field_weakening_enabled = false;
     config.relative_torque_tolerance = 1.0f;
@@ -28,6 +44,24 @@ void setUp(void)
     currents.q = 0.0f;
     omega_m_rad_per_sec = 0.0f;
     V_DC_Volts = 24.0f;
+}
+
+// Setpoint only needs the physical machine model, not the rating/limit envelope. A config with the
+// envelope fields left at zero must still initialize successfully.
+void test_uz_SetPoint_init_accepts_model_only_config(void){
+    config.config_PMSM.I_rated_Ampere = 0.0f;
+    config.config_PMSM.Torque_rated_Nm = 0.0f;
+    config.config_PMSM.Torque_max_Nm = 0.0f;
+    config.config_PMSM.Torque_min_Nm = 0.0f;
+    config.config_PMSM.speed_rated_rpm = 0.0f;
+    config.config_PMSM.speed_max_rpm = 0.0f;
+    config.config_PMSM.speed_min_rpm = 0.0f;
+    config.config_PMSM.V_dc_nominal_V = 0.0f;
+    config.config_PMSM.I_d_max_A = 0.0f;
+    config.config_PMSM.I_d_min_A = 0.0f;
+    config.config_PMSM.I_q_max_A = 0.0f;
+    config.config_PMSM.I_q_min_A = 0.0f;
+    TEST_ASSERT_PASS_ASSERT(uz_SetPoint_init(config));
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){
@@ -65,6 +99,11 @@ void test_uz_SetPoint_init_assert_Psi_pm(void){
     TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
 }
 
+void test_uz_SetPoint_init_assert_Psi_pm_zero(void){
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
+}
+
 void test_uz_SetPoint_init_assert_polePairs_negative(void){
     config.config_PMSM.polePairs = -2.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_init(config));
@@ -98,73 +137,79 @@ void test_uz_SetPoint_init_assert_Ld_non_equal_Lq_for_IPMSM(void){
 void test_uz_SetPoint_set_PMSM_config_assert_Rph_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.R_ph_Ohm = -0.08f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Rph_zero(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.R_ph_Ohm = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Ld_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Ld_Henry = -0.08f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Ld_zero(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Ld_Henry = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Lq_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Lq_Henry = -0.08f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Lq_zero(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Lq_Henry = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Psi_pm(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Psi_PM_Vs = -0.08f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
+}
+
+void test_uz_SetPoint_set_PMSM_config_assert_Psi_pm_zero(void){
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_polePairs_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.polePairs = -2.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_polePairs_zero(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.polePairs = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_polePairs_decimal_value(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.polePairs = 0.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_I_max_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.I_max_Ampere = -5.08f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_I_max_zero(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.I_max_Ampere = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_Ld_non_equal_Lq_for_IPMSM(void){
@@ -172,11 +217,16 @@ void test_uz_SetPoint_set_PMSM_config_assert_Ld_non_equal_Lq_for_IPMSM(void){
     config.config_PMSM.Lq_Henry = 0.0002f;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     config.config_PMSM.Lq_Henry = 0.0003f;
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, &config.config_PMSM));
 }
 
 void test_uz_SetPoint_set_PMSM_config_assert_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(NULL, config.config_PMSM));
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(NULL, &config.config_PMSM));
+}
+
+void test_uz_SetPoint_set_PMSM_config_assert_config_NULL(void) {
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_set_PMSM_config(instance, NULL));
 }
 
 void test_uz_SetPoint_set_field_weakening_assert_NULL(void) {

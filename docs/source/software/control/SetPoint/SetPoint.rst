@@ -4,8 +4,11 @@
 Set Point
 =========
 
-Toolbox for a standard set-point module. The input is a reference torque. This will then be converted, depending on the machine type selection, into d- and q-reference currents.
-It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines. IPMSM with a positive and negative saliency ratio are both supported.
+Toolbox for a standard set-point module.
+The input is a reference torque.
+This will then be converted, depending on the machine type selection, into d- and q-reference currents.
+It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines.
+IPMSM with a positive and negative saliency ratio are both supported.
 The output currents will, depending on the operating condition of the machine, either be calculated via MTPA or field-weakening.
 It can not control a machine on its own. 
 
@@ -121,6 +124,7 @@ Description
 
 Allocates the memory for the SetPoint instance. 
 Furthermore the input values of the configuration struct are asserted. 
+The setpoint module only requires the physical PMSM model fields, not the full rating envelope, but ``Psi_PM_Vs`` must be greater than zero because FOC setpoint generation divides by it.
 
 Functions
 =========

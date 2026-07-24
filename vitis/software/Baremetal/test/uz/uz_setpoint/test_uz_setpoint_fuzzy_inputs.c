@@ -16,7 +16,7 @@ static const uz_PMSM_t Beckhoff_AM8071_0R01 = {
     .machine_id = 0U,
     .R_ph_Ohm = 0.08f,
     .Ld_Henry = 0.0011f,
-    .Lq_Henry = 0.0011f,
+    .Lq_Henry = 0.002f,
     .Psi_PM_Vs = 0.1092f,
     .polePairs = 5.0f,
     .J_kg_m_squared = 0.00683f,
@@ -79,7 +79,7 @@ void test_uz_SetPoint_sample_fuzz_existing_motor_parameters(void)
         .config_PMSM = {
             .I_max_Ampere = 15.0f,
             .Ld_Henry = 0.0003f,
-            .Lq_Henry = 0.0003f,
+            .Lq_Henry = 0.0002f,
             .R_ph_Ohm = 0.1f,
             .polePairs = 4.0f,
             .Psi_PM_Vs = 0.0075f,
@@ -88,7 +88,7 @@ void test_uz_SetPoint_sample_fuzz_existing_motor_parameters(void)
         .id_ref_Ampere = 0.0f,
         .relative_torque_tolerance = 1.0f,
         .is_field_weakening_enabled = false,
-        .motor_type = SMPMSM,
+        .motor_type = IPMSM,
         .control_type = FOC
     };
     srand(0x5E7F01U);
@@ -104,9 +104,8 @@ void test_uz_SetPoint_sample_fuzz_Beckhoff_AM8071_0R01(void)
         .id_ref_Ampere = 0.0f,
         .relative_torque_tolerance = 1.0f,
         .is_field_weakening_enabled = false,
-        .motor_type = SMPMSM,
-        .control_type = FOC
-    };
+        .motor_type = IPMSM,
+        .control_type = FOC};
     srand(0x5E7F02U);
     uz_SetPoint_t *instance = uz_SetPoint_init(config);
 

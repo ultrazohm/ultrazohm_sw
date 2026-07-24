@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Jul 13 13:09:01 2026
+--Date        : Thu Jul 23 11:52:19 2026
 --Host        : LAPTOP-51A67LUD running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -112,7 +112,15 @@ entity zusys_wrapper is
     Dig_23_Ch4 : out STD_LOGIC;
     Dig_24_Ch4 : out STD_LOGIC;
     Dig_25_Ch4 : out STD_LOGIC;
-    Dig_26_Ch4 : in STD_LOGIC
+    Dig_26_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_26_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_26_Ch4 : in STD_LOGIC;
+    Dig_27_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_27_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_28_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_28_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_29_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_29_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
 end zusys_wrapper;
 
@@ -218,7 +226,15 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch5 : in STD_LOGIC;
     Dig_18_Ch5 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC
+    Dig_19_Ch5 : in STD_LOGIC;
+    Dig_29_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_28_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_27_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_26_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_29_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_28_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_27_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_26_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -323,6 +339,14 @@ zusys_i: component zusys
       Dig_23_Ch4 => Dig_23_Ch4,
       Dig_24_Ch4 => Dig_24_Ch4,
       Dig_25_Ch4 => Dig_25_Ch4,
-      Dig_26_Ch4 => Dig_26_Ch4
+      Dig_26_Ch1(0) => Dig_26_Ch1(0),
+      Dig_26_Ch2(0) => Dig_26_Ch2(0),
+      Dig_26_Ch4 => Dig_26_Ch4,
+      Dig_27_Ch1(0) => Dig_27_Ch1(0),
+      Dig_27_Ch2(0) => Dig_27_Ch2(0),
+      Dig_28_Ch1(0) => Dig_28_Ch1(0),
+      Dig_28_Ch2(0) => Dig_28_Ch2(0),
+      Dig_29_Ch1(0) => Dig_29_Ch1(0),
+      Dig_29_Ch2(0) => Dig_29_Ch2(0)
     );
 end STRUCTURE;

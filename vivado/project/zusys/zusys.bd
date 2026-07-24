@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x9148A4543808DB94",
+      "boundary_crc": "0x1556EC9BEF5DF059",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -93,7 +93,9 @@
           "uz_usr_access_bridge_0": "",
           "xlslice_Enable_AXI2TCM_Bit4": "",
           "xlslice_Enable_Gate_Bit1": "",
-          "xlslice_Enable_Inverter_Bit0": ""
+          "xlslice_Enable_Inverter_Bit0": "",
+          "xlconstant_0": "",
+          "xlconstant_1": ""
         },
         "proc_sys_reset_0": ""
       },
@@ -548,6 +550,46 @@
       },
       "Dig_19_Ch5": {
         "direction": "I"
+      },
+      "Dig_29_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_28_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_27_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_26_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_29_Ch2": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_28_Ch2": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_27_Ch2": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_26_Ch2": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
       }
     },
     "components": {
@@ -5125,6 +5167,16 @@
             "direction": "I",
             "left": "127",
             "right": "0"
+          },
+          "Dig_26_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_28_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -6203,6 +6255,16 @@
               "s_axi_aresetn": {
                 "type": "rst",
                 "direction": "I"
+              },
+              "Dig_26_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_28_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -6300,6 +6362,23 @@
                     "value": "8"
                   }
                 }
+              },
+              "xlconstant_0": {
+                "vlnv": "xilinx.com:ip:xlconstant:1.1",
+                "xci_name": "zusys_xlconstant_0_0",
+                "xci_path": "ip\\zusys_xlconstant_0_0\\zusys_xlconstant_0_0.xci",
+                "inst_hier_path": "uz_system/uz_enable/xlconstant_0",
+                "parameters": {
+                  "CONST_VAL": {
+                    "value": "0"
+                  }
+                }
+              },
+              "xlconstant_1": {
+                "vlnv": "xilinx.com:ip:xlconstant:1.1",
+                "xci_name": "zusys_xlconstant_1_0",
+                "xci_path": "ip\\zusys_xlconstant_1_0\\zusys_xlconstant_1_0.xci",
+                "inst_hier_path": "uz_system/uz_enable/xlconstant_1"
               }
             },
             "interface_nets": {
@@ -6329,6 +6408,18 @@
                 "ports": [
                   "uz_usr_access_bridge_0/usr_access_out",
                   "axi_gpio_2/gpio2_io_i"
+                ]
+              },
+              "xlconstant_0_dout": {
+                "ports": [
+                  "xlconstant_0/dout",
+                  "Dig_26_Ch1"
+                ]
+              },
+              "xlconstant_1_dout": {
+                "ports": [
+                  "xlconstant_1/dout",
+                  "Dig_28_Ch1"
                 ]
               },
               "xlslice_Enable_AXI2TCM_Bit4_Dout": {
@@ -6586,6 +6677,18 @@
             "ports": [
               "uz_enable/Enable_Gate",
               "Enable_Gate"
+            ]
+          },
+          "uz_enable_Dig_26_Ch1": {
+            "ports": [
+              "uz_enable/Dig_26_Ch1",
+              "Dig_26_Ch1"
+            ]
+          },
+          "uz_enable_Dig_28_Ch1": {
+            "ports": [
+              "uz_enable/Dig_28_Ch1",
+              "Dig_28_Ch1"
             ]
           },
           "uz_enable_Dout": {
@@ -13191,6 +13294,22 @@
           "uz_system/Interrupt3"
         ]
       },
+      "uz_system_Dig_26_Ch1": {
+        "ports": [
+          "uz_system/Dig_26_Ch1",
+          "Dig_26_Ch1",
+          "Dig_27_Ch1",
+          "Dig_27_Ch2",
+          "Dig_26_Ch2"
+        ]
+      },
+      "uz_system_Dig_28_Ch1": {
+        "ports": [
+          "uz_system/Dig_28_Ch1",
+          "Dig_28_Ch1",
+          "Dig_28_Ch2"
+        ]
+      },
       "uz_system_peripheral_clk": {
         "ports": [
           "uz_system/peripheral_clk",
@@ -13214,7 +13333,9 @@
       "xlslice_Enable_Gate_Dout": {
         "ports": [
           "uz_system/Enable_Gate",
-          "uz_pwm/Enable_Gate"
+          "uz_pwm/Enable_Gate",
+          "Dig_29_Ch1",
+          "Dig_29_Ch2"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {

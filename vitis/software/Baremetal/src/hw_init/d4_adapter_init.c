@@ -10,7 +10,7 @@ static struct uz_resolverIP_config_t resolver_ip_d4_1_config = {
     .resolution = 16U,
     .freq_clockin = 8192000.0f,
     .zero_position_mechanical = 0.0f,
-    .pole_pairs_machine = 4.0f,
+    .pole_pairs_machine = 5.0f,
     .pole_pairs_resolver = 1.0f,
     .mode_after_init = POSITION_VELOCITY_MODE
 };
@@ -30,7 +30,7 @@ static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d4_1_confi
     .machine_polepairs = 5,
     .position_intmax = 65535,
     .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-    .theta_m_offset_rad = 0.0f
+    .theta_m_offset_rad = -3.45f
 };
 
 static struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_1_outputs = {

@@ -1,8 +1,8 @@
 .. _uz_per_wolfspeed_25kw_FM3_rev03:
 
-================================================
+===========================================
 Wolfspeed Inverter 2L 25 kW Interface Rev03
-================================================
+===========================================
 
 Rev03 is the first productive revision of the ``uz_per_wolfspeed_25kw_FM3`` interface PCB.
 It interfaces the UltraZohm with the Wolfspeed ``CRD25DA12N-FMC`` inverter by replacing the original control card.

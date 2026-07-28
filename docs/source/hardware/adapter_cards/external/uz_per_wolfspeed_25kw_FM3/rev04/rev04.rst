@@ -1,27 +1,24 @@
 .. _uz_per_wolfspeed_25kw_FM3_rev04:
 
-================================================
+===========================================
 Wolfspeed Inverter 2L 25 kW Interface Rev04
-================================================
+===========================================
 
 Rev04 is the second productive revision of the ``uz_per_wolfspeed_25kw_FM3`` interface PCB.
-It keeps the Rev03 analog measurement concept and adds several digital functions for commissioning and inverter operation.
-The Rev04 schematic output was generated on 23.06.2026.
+Rev04 keeps the analog measurement concept of Rev03 and adds several digital functions for commissioning and inverter operation.
 
 .. figure:: rev04_pcb_overview_numbered.png
+   :width: 60%
 
    Functional areas of the Rev04 interface PCB.
 
-Layout
-======
-
-The PCB is structured by functional areas as shown in :ref:`uz_per_wolfspeed_rev03_function`.
+The PCB is structured by functional areas as shown in :ref:`uz_per_wolfspeed_rev03_function` with:
 
 1. HFBR-1521Z/2521Z digital optical transmitters and receivers
 2. RJ45 port for analog signal transmission
 3. Driver stages for the optical links
 4. TI THS4561 fully differential amplifier stages
-5. Power section with TPS7A20 3.3 V LDO and REF35 voltage references
+5. Power supply with TPS7A20 3.3 V LDO and REF35 voltage references
 6. Samtec HSEC8 120-pin edge-card connector mating with the Wolfspeed inverter
 7. Window comparators, AND gates, and flip-flop for overcurrent detection and latch
 8. LTC6992 analog NTC temperature to PWM conversion 
@@ -127,35 +124,32 @@ The schematic states the following behavior:
 Overcurrent Detection
 =====================
 
-The Rev04 overcurrent section uses TLV3502 comparators for the three phase-leg overcurrent signals:
+The Rev04 overcurrent (OC) detection uses TLV3502 comparators for the three phase-leg overcurrent signals:
 ``U_HI_OC``, ``U_LO_OC``, ``V_HI_OC``, ``V_LO_OC``, ``W_HI_OC`` and ``W_LO_OC``.
 The comparator outputs are combined with SN74HCS08DR logic.
 The result is latched with an SN74LVC1G74 flip-flop and routed to the ``OC`` optical transmitter.
 When the gates are enabled, protection is armed.
 When the gates are disabled, the latch is cleared.
 
-The optical ``OC`` signal is high when an overcurrent event has been latched. Independently of a still 
-active ``Gate_Driver_Enable`` signal, the inverter gates are disabled until the ``OC`` latch is reset via 
-a low level of ``Gate_Driver_Enable``.
-
+The optical ``OC`` signal is high when an overcurrent event has been detected, which latches the signal.
+The inverter gates are disabled until the ``OC`` latch is reset via a low signal on ``Gate_Driver_Enable``.
+Disabling the gate signals is independents of an active ``Gate_Driver_Enable`` signal.
 The OC trips at ``+/-49 A``.
-
 
 .. note::
    Rev04 includes a 2x3 jumper header in the overcurrent section for testing overcurrent events.
-   For normal operation, i.e., an active overcurrent detection, place the jumpers as stated in the explanatory figure, 
-   connecting left and right pins of each row.
+   For normal operation, i.e., an active overcurrent detection, place the jumpers as stated in the explanatory figure, connecting left and right pins of each row.
 
 .. figure:: rev04_oc_test_jumpers.png
    :width: 60%
 
-   Figure placeholder: add an annotated Rev04 schematic excerpt or PCB close-up of the overcurrent latch, indicator LED, and test jumper.
+   Jumper setup for overcurrent comparators.
 
 Inverter Temperature Measurement
 ================================
 
 Rev04 converts the isolated NTC voltage to an optical PWM signal.
-The ``NTC_ISO`` from the inverter PCB is expected to be in the range ``0 V`` to ``2 V`` and a voltage divider on the Rev04 PCB reduces this to ``0 V`` to ``1 V`` for matching the input range of the PWM generator (LTC6992CS6-2).
+The ``NTC_ISO`` from the inverter PCB is expected to be in the range of ``0 V`` to ``2 V`` and a voltage divider on the Rev04 PCB reduces this to ``0 V`` to ``1 V`` for matching the input range of the PWM generator (LTC6992CS6-2).
 
 The LTC6992CS6-2 is configured with:
 
@@ -170,8 +164,7 @@ Temperature from PWM Duty Cycle
    The following approximation is calculated from assumptions based on the inverter schematics. 
    The duty cycle to temperature function has not been validated on real hardware.
 
-The module temperature is approximated from the measured PWM duty cycle
-using the following linear regression:
+The module temperature is approximated from the measured PWM duty cycle using the following linear relationship:
 
 .. math::
 
@@ -182,7 +175,7 @@ where:
 * :math:`D` is the PWM duty cycle in percent.
 * :math:`T` is the estimated temperature in degrees Celsius.
 
-For example, a duty cycle of 25 percent gives:
+For example, a duty cycle of ``25 %`` gives:
 
 .. math::
 
@@ -303,7 +296,7 @@ Commissioning Notes
 
 Before first operation:
 
-* Mount the interface PCB with the two mentioned 3d-printed clamps tightly to the inverter. The .STL parts are available in the repository in: ``Altium\step\stl``
+* Mount the interface PCB with the two mentioned 3d-printed clamps tightly to the inverter. The .STL parts are available in the `PCB-repository <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/Altium/step/stl/>`_.
 * Check fan behavior before applying high DC-link voltage.
 * Verify the temperature PWM duty-cycle interpretation in the software or FPGA logic.
 * Check the overcurrent test jumper setting. Three jumpers need to be placed in order to set the OC detection active.

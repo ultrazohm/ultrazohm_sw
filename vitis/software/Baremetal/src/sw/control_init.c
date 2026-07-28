@@ -4,6 +4,9 @@
 #include "../globalData.h"
 extern DS_Data Global_Data;
 
+
+// Beckhoff AM8071-0R01-0000
+
 const struct uz_PMSM_t Beckhoff_AM8071_0R01 = {
 	.machine_id = 0U,
     .R_ph_Ohm = 0.08f,
@@ -44,9 +47,9 @@ static struct uz_pmsm_control_configuration_t config_Beckhoff_AM8071 = {
         .disturbance_input_in_Nm = {.upper_bound = 1.0f, .lower_bound = -1.0f}},
     .safe_operating_region = {
         .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
-        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
-        .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
-        .i_abc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_abc_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
         .v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = -1.0f},
         .i_dc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f}},
     .decoupling_method = linear_decoupling,
@@ -82,4 +85,87 @@ struct uz_pmsmModel_config_t pmsm_ip_config_Beckhoff={
 
 uz_pmsmModel_t* init_pmsm_cil_Beckhoff(void) {
 	return(uz_pmsmModel_init(pmsm_ip_config_Beckhoff));
+ 	}
+
+
+// Hans Mayer PMSM
+
+const struct uz_PMSM_t Hans_Mayer_PMSM_3ph = {
+	.machine_id = 0U,
+    .R_ph_Ohm = 0.3056f, // warm: 0.3056, cold: 0.2643
+    .Ld_Henry = 0.0048f,
+    .Lq_Henry = 0.019f,
+    .Psi_PM_Vs = 0.252f,
+    .polePairs = 4.0f,
+    .J_kg_m_squared = 0.00683f, // ?
+    .I_max_Ampere = 35.0f,
+	.I_rated_Ampere = 8.5f,
+	.Torque_rated_Nm = 20.0f,
+	.Torque_max_Nm = 60.0f, // ?
+	.Torque_min_Nm = 0.0f,
+	.speed_rated_rpm = 2000.0f,
+	.speed_max_rpm = 4000.0f, // 5000?
+	.speed_min_rpm = 0.0f,
+	.V_dc_nominal_V = 540.0f,
+	.I_d_max_A = 35.0f,
+	.I_d_min_A = -35.0f,
+	.I_q_max_A = 35.0f,
+	.I_q_min_A = -35.0f};
+
+static struct uz_pmsm_control_configuration_t config_HM_PMSM_3ph = {
+    .theta_el_offset = 5.6f, // adjust!
+    .sample_time = 1.0f / 10000.0f,
+    .enable_speed_control = false,
+    .speed_controller_kp = 0.1, //adjust!
+    .speed_controller_ki = 0.0, //1.107, // adjust!
+    .current_controller_d_kp = 16.0f,
+    .current_controller_d_ki = 1018.67f,
+    .current_controller_q_kp = 63.33f,
+    .current_controller_q_ki = 1018.67f,
+    .setpoint_limits = {
+        .speed_controller_torque_in_Nm = {.upper_bound = 20.0f, .lower_bound = -20.0f},
+        .i_d_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
+        .i_q_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
+        .speed_in_rpm = {.upper_bound = 5000.0f, .lower_bound = -5000.0f},
+        .disturbance_input_in_Nm = {.upper_bound = 1.0f, .lower_bound = -1.0f}},
+    .safe_operating_region = {
+        .speed_in_rpm = {.upper_bound = 500.0f, .lower_bound = -500.0f},
+        .i_d_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
+        .i_q_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
+        .i_abc_in_A = {.upper_bound = 35.0f, .lower_bound = -35.0f},
+        .v_dc_in_V = {.upper_bound = 540.0f, .lower_bound = -1.0f},
+        .i_dc_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f}},
+    .decoupling_method = linear_decoupling,
+    .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
+    .setpoint_filter_speed_cutoff_frequency = 0.0f,
+    .motor_type = SMPMSM, // adjust
+    .enable_field_weakening = false,
+    .relative_torque_tolerance = 0.1f,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
+    .theta_sampling_compensation = 0.0f,
+    .theta_svm_delay_compensation = 1.5f,
+    .voltage_theta_shift = 0.0f,
+    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
+
+void init_control_HM_PMSM(void) {
+	Global_Data.objects.pmsm_control_HM = uz_pmsm_control_init(config_HM_PMSM_3ph, Hans_Mayer_PMSM_3ph);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(Global_Data.objects.pmsm_control_HM, 1.5f * config_HM_PMSM_3ph.sample_time);
+    uz_pmsm_control_enable(Global_Data.objects.pmsm_control_HM, false);
+}
+
+struct uz_pmsmModel_config_t pmsm_ip_config_HM={
+    .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_1_BASEADDR,
+    .ip_core_frequency_Hz=100000000,
+    .simulate_mechanical_system = true,
+    .r_1 = Hans_Mayer_PMSM_3ph.R_ph_Ohm,
+    .L_d = Hans_Mayer_PMSM_3ph.Ld_Henry,
+    .L_q = Hans_Mayer_PMSM_3ph.Lq_Henry,
+    .psi_pm = Hans_Mayer_PMSM_3ph.Psi_PM_Vs,
+    .polepairs = Hans_Mayer_PMSM_3ph.polePairs,
+    .inertia = Hans_Mayer_PMSM_3ph.J_kg_m_squared,
+    .coulomb_friction_constant = 0.01f,
+    .friction_coefficient = 0.001f};
+
+uz_pmsmModel_t* init_pmsm_cil_HM(void) {
+	return(uz_pmsmModel_init(pmsm_ip_config_HM));
  	}

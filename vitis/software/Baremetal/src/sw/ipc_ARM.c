@@ -189,47 +189,51 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->rasv.speed_n_ref_rpm_Beckhoff = value;
+				if (data->rasv.dut_select == Beckhoff) {
+					data->rasv.speed_n_ref_rpm_Beckhoff = value;
+				} else {
+					data->rasv.speed_n_ref_rpm_HM = value;
+				}
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.i_d_ref_A_Beckhoff = value;
+		data->rasv.i_d_ref_A_HM = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.i_q_ref_A_Beckhoff = value;
+		data->rasv.i_q_ref_A_HM = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->rasv.dutycycle_A_Beckhoff = value;
+		data->rasv.dutycycle_A_HM = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->rasv.dutycycle_B_Beckhoff = value;
+		data->rasv.dutycycle_B_HM = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->rasv.dutycycle_C_Beckhoff = value;
+		data->rasv.dutycycle_C_HM = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		data->rasv.i_d_ref_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		data->rasv.i_q_ref_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		data->rasv.dutycycle_A_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+		data->rasv.dutycycle_B_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		data->rasv.dutycycle_C_Beckhoff = value;
 			break;
 
 		case (Set_Send_Field_12):
@@ -313,6 +317,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					if (data->rasv.dut_select == HM) {
+						data->rasv.dut_select = Beckhoff;
+					} else {
+						data->rasv.dut_select = HM;
+					}
+				}
 
 			break;
 

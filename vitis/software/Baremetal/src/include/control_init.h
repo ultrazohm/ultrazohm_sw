@@ -4,3 +4,5 @@
 
 void init_control_Beckhoff_AM8071(void);
 uz_pmsmModel_t* init_pmsm_cil_Beckhoff(void);
+void init_control_HM_PMSM(void);
+uz_pmsmModel_t* init_pmsm_cil_HM(void);

@@ -89,11 +89,14 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             init_control_Beckhoff_AM8071();
-            Global_Data.beckhoff_actual_data=uz_pmsm_control_get_actual_data(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
-            Global_Data.beckhoff_measurement_values=uz_pmsm_control_get_pmsm_measurement_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
-            Global_Data.beckhoff_reference_values=uz_pmsm_control_get_reference_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            Global_Data.beckhoff_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            Global_Data.beckhoff_measurement_values = uz_pmsm_control_get_pmsm_measurement_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            Global_Data.beckhoff_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.pmsm_control_Beckhoff_AM8071);
+            init_control_HM_PMSM();
+            Global_Data.hm_pmsm_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.pmsm_control_HM);
+            Global_Data.hm_pmsm_measurement_values = uz_pmsm_control_get_pmsm_measurement_values(Global_Data.objects.pmsm_control_HM);
+            Global_Data.hm_pmsm_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.pmsm_control_HM);
             JavaScope_initialize(&Global_Data);
-
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -105,7 +108,6 @@ int main(void)
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1, true);
 			Global_Data.objects.project_wizard_pwm_2l_1 = initialize_project_wizard_pwm_2l_1();
 			initialize_project_wizard_pwm_3l(&Global_Data);
-			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.adc_ltc2311_a2 = initialize_adc_ltc2311_a2();
 			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
@@ -125,6 +127,7 @@ int main(void)
 			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
 			Global_Data.objects.pmsm_cil_Beckhoff = init_pmsm_cil_Beckhoff();
+			Global_Data.objects.pmsm_cil_HM = init_pmsm_cil_HM();
             initialization_chain = print_msg;
             break;
         case print_msg:

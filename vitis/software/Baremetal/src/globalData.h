@@ -30,6 +30,11 @@ enum dut_control {
 	dutycycle
 };
 
+enum dut {
+	HM = 0,
+	Beckhoff
+};
+
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -52,6 +57,21 @@ typedef struct _actualValues_ {
 	float v_q_Beckhoff;
 	float speed_n_rpm_Beckhoff;
 	float theta_el_Beckhoff;
+	float i_a_HM;
+	float i_b_HM;
+	float i_c_HM;
+	float v_a_HM;
+	float v_b_HM;
+	float v_c_HM;
+	float v_dc_HM;
+	float i_dc_HM;
+	float i_d_HM;
+	float i_q_HM;
+	float v_d_HM;
+	float v_q_HM;
+	float speed_n_rpm_HM;
+	float theta_el_HM;
+	float speed_n_rpm_DUT;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -133,14 +153,22 @@ typedef struct _referenceAndSetValues_ {
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
 /* Project Wizard END: referenceAndSetValues */
+	float speed_n_ref_rpm_DUT;
 	float speed_n_ref_rpm_Beckhoff;
 	float i_d_ref_A_Beckhoff;
 	float i_q_ref_A_Beckhoff;
 	float dutycycle_A_Beckhoff;
 	float dutycycle_B_Beckhoff;
 	float dutycycle_C_Beckhoff;
+	float speed_n_ref_rpm_HM;
+	float i_d_ref_A_HM;
+	float i_q_ref_A_HM;
+	float dutycycle_A_HM;
+	float dutycycle_B_HM;
+	float dutycycle_C_HM;
 	enum control_mode control_mode_select;
 	enum dut_control dut_control_select;
+	enum dut dut_select;
 } referenceAndSetValues;
 
 typedef struct{
@@ -168,9 +196,11 @@ typedef struct{
 	uz_incrementalEncoder_t* incremental_encoder_d5_3;
 /* Project Wizard END: objects */
 	uz_pmsm_control_t* pmsm_control_Beckhoff_AM8071;
+	uz_pmsm_control_t* pmsm_control_HM;
 	uz_axi_gpio_t* dhg_reset_gpio;
 	uz_axi_gpio_t* dhg_input_gpio;
 	uz_pmsmModel_t* pmsm_cil_Beckhoff;
+	uz_pmsmModel_t* pmsm_cil_HM;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
@@ -180,6 +210,9 @@ typedef struct _DS_Data_ {
 	struct uz_pmsm_actual_data* beckhoff_actual_data;
 	struct uz_pmsm_measurement_values* beckhoff_measurement_values;
 	struct uz_pmsm_reference_values* beckhoff_reference_values;
+	struct uz_pmsm_actual_data* hm_pmsm_actual_data;
+	struct uz_pmsm_measurement_values* hm_pmsm_measurement_values;
+	struct uz_pmsm_reference_values* hm_pmsm_reference_values;
 	} DS_Data;
 
 #endif

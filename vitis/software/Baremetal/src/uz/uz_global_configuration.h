@@ -114,6 +114,7 @@
 #define UZ_PMSMMODEL_NONLINEAR_MAX_INSTANCES            0U
 #define UZ_SSI_INTERFACE_MAX_INSTANCES                    0U
 #define UZ_HLS_TESTIP_MAX_INSTANCES                     0U
+#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -188,4 +189,5 @@
     #define UZ_ENDAT_INTERFACE_MAX_INSTANCES		    	30U
     #define UZ_SSI_INTERFACE_MAX_INSTANCES		    		30U
     #define UZ_HLS_TESTIP_MAX_INSTANCES                     20U
+    #define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        10U
 #endif

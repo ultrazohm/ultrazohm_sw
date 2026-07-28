@@ -1,0 +1,4 @@
+vlib work
+vcom  uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd
+vcom  uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd
+vcom  uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd

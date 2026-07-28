@@ -19,7 +19,19 @@ Changes from Rev03
 
 * The LED issue present in Rev03 has been fixed.
 * An EEPROM has been added.
-* An ``LED_10mA`` circuit has been added to provide the minimum load on the ``VIN`` rail.
+* The ``Power_Load_LEDs10mA.SchDoc`` circuit has been added to provide a minimum load on the ``VIN`` rail.
+  This load allows the carrier board's rail monitoring to operate as intended, making the active-low ``RailnFAULT_1V8_DSLOT`` signal usable by the D-slot CPLD.
+
+VIN minimum load and rail-fault signal
+--------------------------------------
+
+The ``Power_Load_LEDs10mA.SchDoc`` schematic block provides a permanent minimum load on the ``VIN`` rail by means of the 10 mA LED load.
+The load enables reliable operation of the rail-monitoring circuit on the carrier board even when the encoder card itself otherwise draws only a small current from that rail.
+
+The encoder card neither generates nor directly uses the active-low ``RailnFAULT_1V8_DSLOT`` signal.
+Instead, the additional load on the card allows the carrier board to generate a valid rail-fault indication, which is already routed to the D-slot CPLD as ``RailnFAULT_1V8_DSLOT``.
+The card-specific CPLD firmware can evaluate this signal, for example to inhibit signal forwarding or to include a detected supply fault in the slot status reported to the carrier board.
+Its exact effect depends on the CPLD implementation programmed for the selected D-slot.
 
 Connector pinout
 ----------------

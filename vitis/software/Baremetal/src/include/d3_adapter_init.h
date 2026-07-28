@@ -5,3 +5,4 @@
 
 /* Project Wizard BEGIN: D3 prototypes */
 /* Project Wizard END: D3 prototypes */
+uz_axi_gpio_t *initialize_axi_gpio_d3(void);

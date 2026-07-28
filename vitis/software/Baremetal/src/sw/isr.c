@@ -42,6 +42,13 @@ XIpiPsu IPI_instance;
 // Global variable structure
 extern DS_Data Global_Data;
 
+bool d3_14_input=false;
+bool d3_15_input=false;
+bool d3_16_output = false;
+bool d3_17_output = false;
+
+// 16,17 pwmdutydetect
+
 /* Project Wizard BEGIN: adc_readout_definitions */
 static uz_array_int16_t analog_adc_data;
 /* Project Wizard END: adc_readout_definitions */
@@ -436,7 +443,23 @@ static void update_adapter_d2(void)
 static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
-    /* Project Wizard END: D3 isr_control */
+      Global_Data.av.io_card_d3_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d3);
+      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 16U, d3_16_output);
+      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 17U, d3_17_output);
+
+      // Reset DHG inverter
+    //   if (reset_button_inv == true)
+    //   {
+    //       uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 6, 1);
+    //       reset_button_was_pressed = true;
+    //   }
+    //   else
+    //   {
+    //       uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 6, 0);
+    //   }
+      // HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1, 14);
+      // OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1, 16);
+      /* Project Wizard END: D3 isr_control */
 }
 
 static void update_adapter_d4(void)

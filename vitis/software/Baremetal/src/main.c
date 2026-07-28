@@ -103,6 +103,7 @@ int main(void)
 			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
 			Global_Data.objects.inverter_adapter_d1 = initialize_inverter_adapter_d1();
 			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
+            Global_Data.objects.axi_gpio_d3 = initialize_axi_gpio_d3();
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1,false);
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2,false);
                 Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();

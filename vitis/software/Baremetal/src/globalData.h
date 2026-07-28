@@ -25,6 +25,7 @@
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 enum control_mode_t
 {
@@ -124,6 +125,7 @@ typedef struct _actualValues_
 	enum uz_pmsm_control_safe_operating_region_violation prime_mover_safe_operating_region_violation;
 	float pm_torque_Nm;
 	float dut_torque_Nm;
+	uint32_t io_card_d3_state;
 } actualValues;
 
 typedef struct _referenceAndSetValues_
@@ -177,6 +179,7 @@ typedef struct
 	uz_incrementalEncoder_t *incremental_encoder_d5_1;
 	uz_incrementalEncoder_t *incremental_encoder_d5_2;
 	uz_incrementalEncoder_t *incremental_encoder_d5_3;
+	uz_axi_gpio_t *axi_gpio_d3;
 	/* Project Wizard END: objects */
 } object_pointers_t;
 

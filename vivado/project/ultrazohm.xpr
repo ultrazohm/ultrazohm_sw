@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="/home/ts/Documents/pr_review/testbench/ultrazohm_sw/vivado/project/ultrazohm.xpr">
+<Project Version="7" Minor="61" Path="/home/ts/Documents/pr_review/testbench/old_testbench/ultrazohm_sw/vivado/project/ultrazohm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="1047f4ad754a4a449179a0c01724dc05"/>
@@ -190,7 +190,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Digital_AdapterBoard_D3.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>

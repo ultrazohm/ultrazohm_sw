@@ -33,5 +33,6 @@ IP Cores
     uz_resolver_pl_interface/uz_resolver_pl_interface
     uz_axi_gpio/uz_axi_gpio
     uz_NN_acc/uz_NN_acc
+    uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection
     uz_adc_max11331/uz_adc_max11331
     

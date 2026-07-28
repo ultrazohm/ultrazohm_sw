@@ -204,14 +204,12 @@ void ISR_Control(void *data)
             uz_pmsm_control_reset(Global_Data.objects.dut_control);
             disable_dut(&Global_Data);
             enable_prime_mover(&Global_Data);
-            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.prime_mover_control, Global_Data.prime_mover_manual_duty_cycle);
             break;
         case DUT_ONLY_DUTY_CYCLE:
             uz_pmsm_control_reset(Global_Data.objects.prime_mover_control);
             uz_pmsm_control_reset(Global_Data.objects.dut_control);
             enable_dut(&Global_Data);
             disable_prime_mover(&Global_Data);
-            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.dut_control, Global_Data.dut_manual_duty_cycle);
             break;
         default:
             uz_assert(0);
@@ -262,13 +260,23 @@ void ISR_Control(void *data)
             uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
             uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
             break;
+        case PM_CURRENT_DUT_SPEED:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
+        case PM_SPEED_DUT_CURRENT:
+            uz_pmsm_control_enable(Global_Data.objects.dut_control, true);
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            break;
         case PM_ONLY_DUTY_CYCLE:
             uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
             uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.prime_mover_control, Global_Data.prime_mover_manual_duty_cycle);
             break;
         case DUT_ONLY_DUTY_CYCLE:
             uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
             uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+            uz_pmsm_control_set_default_duty_cycle(Global_Data.objects.dut_control, Global_Data.dut_manual_duty_cycle);
             break;
         default:
             uz_assert(0);
@@ -434,10 +442,10 @@ static void update_adapter_d3(void)
 static void update_adapter_d4(void)
 {
     /* Project Wizard BEGIN: D4 isr_control */
-    float d1_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[5], -2.0f * UZ_PIf, 0.0f);
-    float d2_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[6], -2.0f * UZ_PIf, 0.0f);
-    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_3, d1_theta_m_offset_rad);
-    uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_1, d2_theta_m_offset_rad);
+    // float d1_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[5], -2.0f * UZ_PIf, 0.0f);
+    // float d2_theta_m_offset_rad = LIMIT(Global_Data.av.snd_fld[6], -2.0f * UZ_PIf, 0.0f);
+    // uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_3, d1_theta_m_offset_rad);
+    // uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_d4_1, d2_theta_m_offset_rad);
 
     struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_1_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4_1);
     Global_Data.av.resolver_pl_interface_d4_1_revolution_counter = resolver_pl_interface_d4_1_outputs.revolution_counter;

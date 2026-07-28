@@ -19,7 +19,6 @@
 #define DESKBENCH_VOLTAGE_TO_VOLTS 12.0f
 #define DESKBENCH_MAX_CURRENT_AMPERE 15.0f
 #define DESKBENCH_MAX_INVERTER_TEMP_DEGC 100.0f
-#define DESKBENCH_MIN_V_DC_VOLTS 5.0f
 
 static const struct uz_PMSM_t deskbench_beckhoff_am8141 = {
     .R_ph_Ohm = 0.51f,
@@ -51,7 +50,7 @@ static struct uz_pmsm_control_configuration_t pmsm_control_am8141_config = {
 			.i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
 			.i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
     		.i_abc_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
-			.v_dc_in_V = {.upper_bound = 48.0f, .lower_bound = 0.0f},
+			.v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = 0.0f},
 			.i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f}
     },
     .decoupling_method = linear_decoupling,

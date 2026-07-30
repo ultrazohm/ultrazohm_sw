@@ -5,19 +5,19 @@
     "uz_JL_SDDemod_src_CLk.vhd",
     "uz_JL_SDDemod_src_Differentierer.vhd",
     "uz_JL_SDDemod_src_Integratoren.vhd",
-    "uz_JL_SDDemod_src_Sinc3_Filter_PH1.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U.vhd",
     "uz_JL_SDDemod_src_Differentierer_block.vhd",
     "uz_JL_SDDemod_src_Integratoren_block.vhd",
-    "uz_JL_SDDemod_src_Sinc3_Filter_PH2.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U1.vhd",
     "uz_JL_SDDemod_src_Differentierer_block1.vhd",
     "uz_JL_SDDemod_src_Integratoren_block1.vhd",
-    "uz_JL_SDDemod_src_Sinc3_Filter_PH3.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U2.vhd",
     "uz_JL_SDDemod_src_Differentierer_block2.vhd",
     "uz_JL_SDDemod_src_Integratoren_block2.vhd",
-    "uz_JL_SDDemod_src_Sinc3_Filter_PH4.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U3.vhd",
     "uz_JL_SDDemod_src_Differentierer_block3.vhd",
     "uz_JL_SDDemod_src_Integratoren_block3.vhd",
-    "uz_JL_SDDemod_src_Sinc3_Filter_U.vhd",
+    "uz_JL_SDDemod_src_Sinc3_Filter_U4.vhd",
     "uz_JL_SDDemod_src_trigger_sec_edge.vhd",
     "uz_JL_SDDemod_src_Subsystem.vhd",
     "uz_JL_SDDemod_src_gen_slow_clk_I.vhd",
@@ -34,10 +34,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        238704603,
-        2161709082,
-        3973900998,
-        2670700051
+        130492589,
+        4159356900,
+        1187922333,
+        829965037
       ],
       "MarkedUnique": false
     },
@@ -356,10 +356,10 @@
   "ResourceSummary": {
     "multipliers": 1,
     "addersSubtractors": 34,
-    "registers": 203,
-    "oneBitRegisters": 2847,
+    "registers": 198,
+    "oneBitRegisters": 2687,
     "rams": 0,
-    "multiplexers": 74,
+    "multiplexers": 69,
     "IOBits": 247,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0

@@ -31,6 +31,7 @@
 #include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../include/SigmaDeltaWandler.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -40,11 +41,17 @@ XIpiPsu IPI_instance;
 extern DS_Data Global_Data;
 extern  uz_axi_gpio_t* output_gpio;
 extern  uz_axi_gpio_t* input_gpio;
-extern struct uz_JL_SDDemod_config_t SD_Filter_config;
+
+#define PWR_EN_BIT 6
+#define BOARD_EN_BIT 8
+#define BOARD_RST_BIT 10
+#define BOARD_READY_BIT 1
 
 uint32_t output_bitmask=0xFFFFFFFF;
 bool input_bit=false;
 bool output_bit=false;
+bool board_ready = false;
+
 uint32_t output_port = 0U;
 uint32_t input_port = 0U;
 
@@ -57,73 +64,15 @@ extern uz_JL_SDDemod_t *SD_Filter;
 
 struct uz_JL_SDDemod_output_t SD_Filter_out = {0};
 
-
-struct uz_JL_SDDemod_output_t_float SD_data;
-
 extern uz_codegen regelung;
 Bus_ZM_In struct_ZM_In;
 
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 uz_3ph_abc_t three_phase_sine = {0};
 
-
-/* --- System-Parameter (Konfiguration) --- */
-
-
-// Theoretisches Maximum des Sinc3 Filters
-int32_t SINC3_MAX_VAL_U = 8000;
-int32_t SINC3_MAX_VAL_I = 8000;
-
-#define SINC_ZERO_OFFSET_U        (SINC3_MAX_VAL_U / 2)
-#define SINC_ZERO_OFFSET_I        (SINC3_MAX_VAL_I / 2)+SINC3_MAX_VAL_I/4
-
-#define DC_LINK_MAX_VOLTS      450
-#define ADS1202_VREF_VOLTS      0.250f
-
-#define LEM_MAX_A     150
-
-#define U_BITS_SHIFT 4
-#define I_BITS_SHIFT 4
-
-
-// Der Skalierungsfaktor (k_v) deines Hardware-Spannungsteilers (z.B. 3200.0)
-#define DIVIDER_RATIO_U   (DC_LINK_MAX_VOLTS / ADS1202_VREF_VOLTS)
-#define DIVIDER_RATIO_I   (LEM_MAX_A / ADS1202_VREF_VOLTS)
-
-/**
- * @brief Wandelt den Sinc3-Wert in die echte Zwischenkreisspannung (V) um.
- * @param raw_fpga_value Der unbeschnittene Wert aus dem FPGA.
- * @return float Die gemessene Zwischenkreisspannung in Volt.
- */
-float Process_DCLink_Voltage(int32_t raw_fpga_value) 
-{
-
-    // 1. DC-Offset abziehen (Zentrierung um 0V)
-	int32_t centered_val = raw_fpga_value - SINC_ZERO_OFFSET_U;
-
-	float shiftet_value_f = (float)centered_val;
-	float dc_link_voltage = (shiftet_value_f / (1 << U_BITS_SHIFT) *1280);
-
-    return dc_link_voltage;
-}
-
-/**
- * @brief Wandelt den Sinc3-Wert in die echte Zwischenkreisspannung (V) um.
- * @param raw_fpga_value Der unbeschnittene Wert aus dem FPGA.
- * @return float Die gemessene Zwischenkreisspannung in Volt.
- */
-float Process_phase_current(int32_t raw_fpga_value) 
-{
-
-    // 1. DC-Offset abziehen (Zentrierung um 0V)
-	int32_t centered_val = raw_fpga_value - SINC_ZERO_OFFSET_I;
-
-	float shiftet_value_f = (float)centered_val;
-	float phase_current = (shiftet_value_f / (1 << I_BITS_SHIFT) *1280);
-
-    return phase_current;
-}
-
+float theta_el_unwrapped = 0.0f;
+int32_t fault = 0;
+float fault_f = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -136,60 +85,82 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
+	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
+
+//	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
+	Global_Data.av.theta_el = uz_signals_wrap(theta_el_unwrapped, 2.0f*UZ_PIf);
+
+//	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s
+//			* (float)uz_resolver_pl_interface_get_machine_polepairs(Global_Data.objects.resolver_pl_interface);
+
+	// fault = uz_resolverIP_getFLTRegister(Global_Data.objects.resolver);
+	// uz_resolverIP_setDataModePositionVelocity(Global_Data.objects.resolver); // getFLTRegister() switches the AD2S1210 into Config Mode internally; switch back so resolver_pl_interface keeps receiving valid position/velocity data
+	// fault_f = (float)fault;
 //    input_bit = uz_axi_gpio_read_pin_zero_based(input_gpio, 10);
 
-//    SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
-//    SD_data.data_U= Process_DCLink_Voltage(SD_Filter_out.data_U);
-//    SD_data.data_PH1= Process_phase_current(SD_Filter_out.data_PH1);
-//    SD_data.data_PH2= Process_phase_current(SD_Filter_out.data_PH2);
-//    SD_data.data_PH3= Process_phase_current(SD_Filter_out.data_PH3);
-//    SD_data.data_PH4= Process_phase_current(SD_Filter_out.data_PH4);
+    
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    struct_ZM_In.UZ_Platform_State = current_state;
     switch(current_state)
     	{
     		case idle_state:
-//    			struct_ZM_In.Soll_Status = Ready;
-//    			struct_ZM_In.Soll_Drehzahl = 0;
-//    			struct_ZM_In.Soll_id = 0;
-//    			struct_ZM_In.Soll_iq = 0;
-//    			struct_ZM_In.Fehlermeldung = false;
-//    			struct_ZM_In.Start_Traj = false;
-//    			voltages_alphabeta.alpha = 0.0f;
-//    			voltages_alphabeta.beta = 0.0f;
-//    		    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-//    		    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-//    		    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-//    			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
+
+    			struct_ZM_In.Soll_Drehzahl = 0;
+    			struct_ZM_In.Soll_id = 0;
+    			struct_ZM_In.Soll_iq = 0;
+    			struct_ZM_In.Fehlermeldung = false;
+    			struct_ZM_In.Start_Traj = false;
+    			voltages_alphabeta.alpha = 0.0f;
+    			voltages_alphabeta.beta = 0.0f;
+    		    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    		    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    		    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
     			break;
     		case running_state:
-//    			struct_ZM_In.Soll_Status = Run;
-//    			struct_ZM_In.Soll_Drehzahl = 0;
-//    			struct_ZM_In.Soll_id = 0;
-//    			struct_ZM_In.Soll_iq = 0;
-//    			voltages_alphabeta.alpha = 0.0f;
-//    			voltages_alphabeta.beta = 0.0f;
+    			// Set Enable Pins
+                SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
+   	            SigmaDeltaWandler_process(SD_Filter_out, &Global_Data.av.SD_data);
+    			struct_ZM_In.Soll_Drehzahl = 0;
+    			struct_ZM_In.Soll_id = 0;
+    			struct_ZM_In.Soll_iq = 0;
+    			voltages_alphabeta.alpha = 0.0f;
+    			voltages_alphabeta.beta = 0.0f;
     			break;
     		case control_state:
-//    //		    Start: Control algorithm - only if ultrazohm is in control state
-//    			struct_ZM_In.Soll_Status = En;
-//    			struct_ZM_In.Soll_Regelungsart = Drehzahl;
-//    			struct_ZM_In.Soll_Drehzahl = 2000;
-//    //			struct_ZM_In.Soll_iq = 10;
-//    			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-//    			regelung.input.Bus_ZM_In_f = struct_ZM_In;
-//    			uz_codegen_step(&regelung);
-//    		    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[0];
-//    		    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[1];
-//    		    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_k.Dutycycle[2];
-//    			voltages_alphabeta.alpha = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ualpha;
-//    			voltages_alphabeta.beta = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ubeta;
+                SD_Filter_out = uz_JL_SDDemod_get_outputs(SD_Filter);
+   	            SigmaDeltaWandler_process(SD_Filter_out, &Global_Data.av.SD_data);
+    			if(board_ready == true)
+    			{
+	//    			struct_ZM_In.Soll_Regelungsart = Drehzahl;
+	//    			struct_ZM_In.Soll_Drehzahl = 2000;
+	    //			struct_ZM_In.Soll_iq = 10;
+    			    if( regelung.output.Bus_Ctrl_Out_e.act_pwm == true)
+    			    	{
+    			    		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+    			    	}
+
+				Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[0];
+				Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[1];
+				Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[2];
+	//    			voltages_alphabeta.alpha = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ualpha;
+	//    			voltages_alphabeta.beta = regelung.PtrToModelData->outputs->Bus_Ctrl_Out_k.ctrl_Ubeta;
+    			}
     		   break;
     		default:
     			break;
     	}
     
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    regelung.input.Bus_ZM_In_c = struct_ZM_In;
+	uz_codegen_step(&regelung);
+	uz_axi_gpio_write_pin_zero_based(output_gpio, PWR_EN_BIT,  (bool)regelung.output.Bus_Ctrl_Out_e.pwr_en);
+	uz_axi_gpio_write_pin_zero_based(output_gpio, BOARD_EN_BIT,  (bool)regelung.output.Bus_Ctrl_Out_e.board_en);
+
+
+
+	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
 

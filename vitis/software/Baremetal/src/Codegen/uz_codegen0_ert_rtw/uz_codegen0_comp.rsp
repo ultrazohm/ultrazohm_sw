@@ -1,5 +1,5 @@
--IC:/Users/jonat/Documents/MA_JL_CIL/vitis/software/Baremetal/src/Codegen
--IC:/Users/jonat/Documents/MA_JL_CIL/vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw
+-IC:/Users/jonat/Documents/ultrazohm_sw/vitis/software/Baremetal/src/Codegen
+-IC:/Users/jonat/Documents/ultrazohm_sw/vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw
 -I"C:/Program Files/MATLAB/R2025a/extern/include"
 -I"C:/Program Files/MATLAB/R2025a/simulink/include"
 -I"C:/Program Files/MATLAB/R2025a/rtw/c/src"

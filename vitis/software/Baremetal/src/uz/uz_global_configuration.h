@@ -25,7 +25,7 @@
  * 4 for Interrupt_3L_start
  * 5 for Interrupt_3L_center
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        0U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        2U
 
 #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U // 0: ISR triggers on selected PWM event. 1: ISR triggers on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event
@@ -65,7 +65,7 @@
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   0U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
-#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
+#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            5U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               0U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               0U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U

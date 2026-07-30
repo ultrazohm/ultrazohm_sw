@@ -55,6 +55,14 @@
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 #include "IP_Cores/uz_JL_SDDemod/uz_JL_SDDemod.h"
+#include "include/SigmaDeltaWandler.h"
+#include "include/resolver.h"
+
+#include "uz/uz_signals/uz_signals.h"
+
+
+
+
 
 
 

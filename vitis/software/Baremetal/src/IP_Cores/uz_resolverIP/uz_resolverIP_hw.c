@@ -25,7 +25,7 @@ static int32_t REGISTER_ADDR_MAX = 0xFF;
 
 int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
 
-    uz_assert(addr >= REGISTER_ADDR_MIN && addr < REGISTER_ADDR_MAX);
+    uz_assert(addr >= REGISTER_ADDR_MIN && addr <= REGISTER_ADDR_MAX);
     
     int32_t rescon = uz_resolverIP_hw_read_RESCON(base_address);
     rescon &= ~(RESCON_Data_uz_axi_RW_bit);
@@ -46,8 +46,8 @@ int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
 }
 
 void uz_resolverIP_hw_writeRegister(uint32_t base_address, int32_t addr, int32_t val){
-    
-    uz_assert(addr >= REGISTER_ADDR_MIN && addr < REGISTER_ADDR_MAX);
+
+    uz_assert(addr >= REGISTER_ADDR_MIN && addr <= REGISTER_ADDR_MAX);
     uz_assert(val <= 0xFF);
     uz_assert(val >= 0);
 

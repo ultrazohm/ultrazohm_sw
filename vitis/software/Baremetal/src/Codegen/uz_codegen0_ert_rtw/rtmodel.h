@@ -7,14 +7,16 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.17
+ * Model version                  : 10.2
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Thu May 21 14:36:31 2026
+ * C/C++ source code generated on : Mon Jul 27 15:43:14 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
- * Code generation objective: Execution efficiency
- * Validation result: All passed
+ * Code generation objectives:
+ *    1. Execution efficiency
+ *    2. Traceability
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #ifndef rtmodel_h_

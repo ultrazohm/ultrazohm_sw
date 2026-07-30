@@ -16,8 +16,6 @@
 // Includes from own files
 #include "main.h"
 #include "Codegen/uz_codegen.h"
-#include "IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
-#include "IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -64,48 +62,44 @@ struct uz_axi_gpio_config_t input_config={
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
 };
 
+struct uz_axi_gpio_config_t gpio_out_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_0_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
+            .number_of_pins=19,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+};
 
 uz_JL_SDDemod_t *SD_Filter = NULL;
 
-
-struct uz_JL_SDDemod_config_t SD_Filter_config = {
-		.base_address = XPAR_UZ_JL_SDDEMOD_0_BASEADDR,
-		.ip_clk_frequency_Hz = 100000000.0f,
-		.dezimation_U = 20,
-		.dezimation_I = 20,
-		.clk_ratio = 100, 		// 8 Mhz testen
-		.switch_edge = false,
-		.filt_input_delay = 0,	// bei 4 Mhz Delay = 12/13
-		.calib_en = false,
-		.dsw_clk_en = true,
-		.clk_dutycycle = 0.6,
-};
-
 uz_axi_gpio_t* input_gpio=NULL;
+uz_axi_gpio_t* output_gpio=NULL;
 uz_codegen regelung;
 
 
 int main(void)
 {
-//	regelung.input.Bus_ZM_In_f.Fehlermeldung = false;
-//		regelung.input.Bus_ZM_In_f.Soll_Drehzahl = 0;
-//		regelung.input.Bus_ZM_In_f.Soll_Regelungsart = Drehzahl;
-//		regelung.input.Bus_ZM_In_f.Soll_Status = Ready;
-//		regelung.input.Bus_ZM_In_f.Soll_id = 0;,
-//		regelung.input.Bus_ZM_In_f.Soll_iq = 0;
-//		regelung.input.Bus_ZM_In_f.Start_Traj = false;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_Omega_mech = 0;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[0] = 0;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[1] = 0;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_Iuvw[2] = 0;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_m_mot = 0;
-//		regelung.input.Bus_PMSM_Out_e.pmsm_phi_mech = 0;
-//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[0] = 0.0;
-//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[1] = 0.0;
-//		regelung.output.Bus_Ctrl_Out_k.Dutycycle[2] = 0.0;
-//		regelung.output.Bus_Ctrl_Out_k.ctrl_Ualpha = 0;
-//		regelung.output.Bus_Ctrl_Out_k.ctrl_Ubeta = 0;
-//		regelung.output.Bus_Ctrl_Out_k.act_pwm = false;
+	regelung.input.Bus_ZM_In_c.Fehlermeldung = false;
+		regelung.input.Bus_ZM_In_c.Soll_Drehzahl = 0;
+		regelung.input.Bus_ZM_In_c.Soll_Regelungsart = Drehzahl;
+		regelung.input.Bus_ZM_In_c.Soll_Status = Ready;
+		regelung.input.Bus_ZM_In_c.Soll_id = 0;
+		regelung.input.Bus_ZM_In_c.Soll_iq = 0;
+		regelung.input.Bus_ZM_In_c.Start_Traj = false;
+		regelung.input.Bus_PMSM_Out_c.pmsm_Omega_mech = 0;
+		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[0] = 0;
+		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[1] = 0;
+		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[2] = 0;
+		regelung.input.Bus_PMSM_Out_c.pmsm_m_mot = 0;
+		regelung.input.Bus_PMSM_Out_c.pmsm_phi_mech = 0;
+		regelung.output.Bus_Ctrl_Out_e.Dutycycle[0] = 0.0;
+		regelung.output.Bus_Ctrl_Out_e.Dutycycle[1] = 0.0;
+		regelung.output.Bus_Ctrl_Out_e.Dutycycle[2] = 0.0;
+		regelung.output.Bus_Ctrl_Out_e.ctrl_Ualpha = 0;
+		regelung.output.Bus_Ctrl_Out_e.ctrl_Ubeta = 0;
+		regelung.output.Bus_Ctrl_Out_e.act_pwm = false;
+		regelung.output.Bus_Ctrl_Out_e.board_en = false;
+		regelung.output.Bus_Ctrl_Out_e.pwr_en = false;
+		regelung.output.Bus_Ctrl_Out_e.reset = false;
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -151,11 +145,11 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
-            input_gpio=uz_axi_gpio_init(input_config);
-//            inverter_ideal = uz_JL_invModel_ideal_init(ideal_config);
-//			pmsm_ideal = uz_JL_pmsmModel_init(pmsm_ideal_config);
-//			uz_JL_pmsmModel_set_inputs(pmsm_ideal, pmsm_ideal_in);
-			SD_Filter = uz_JL_SDDemod_init(SD_Filter_config);
+            Global_Data.objects.resolver = initialize_resolver();
+			Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
+            input_gpio= uz_axi_gpio_init(input_config);
+            output_gpio = uz_axi_gpio_init(gpio_out_config);
+			SD_Filter = SigmaDeltaWandler_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

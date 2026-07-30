@@ -58,7 +58,8 @@
           "Resolver_Interface_v_1": "",
           "uz_resolver_pl_inter_1": "",
           "smartconnect_0": ""
-        }
+        },
+        "ila_0": ""
       },
       "uz_system": {
         "DataMover": {
@@ -2661,6 +2662,23 @@
                 ]
               }
             }
+          },
+          "ila_0": {
+            "vlnv": "xilinx.com:ip:ila:6.2",
+            "xci_name": "zusys_ila_0_2",
+            "xci_path": "ip\\zusys_ila_0_2\\zusys_ila_0_2.xci",
+            "inst_hier_path": "uz_digital_adapter/ila_0",
+            "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "4096"
+              },
+              "C_MONITOR_TYPE": {
+                "value": "Native"
+              },
+              "C_NUM_OF_PROBES": {
+                "value": "6"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -2771,7 +2789,8 @@
           "D4_adapter_F_SYNC_1": {
             "ports": [
               "D4_adapter/F_SYNC_1",
-              "Dig_02_Ch4"
+              "Dig_02_Ch4",
+              "ila_0/probe5"
             ]
           },
           "D4_adapter_F_SYNC_2": {
@@ -2783,7 +2802,8 @@
           "D4_adapter_N_RESET_1": {
             "ports": [
               "D4_adapter/N_RESET_1",
-              "Dig_04_Ch4"
+              "Dig_04_Ch4",
+              "ila_0/probe3"
             ]
           },
           "D4_adapter_N_RESET_2": {
@@ -2795,7 +2815,8 @@
           "D4_adapter_N_SAMPLE_1": {
             "ports": [
               "D4_adapter/N_SAMPLE_1",
-              "Dig_00_CH4"
+              "Dig_00_CH4",
+              "ila_0/probe4"
             ]
           },
           "D4_adapter_N_SAMPLE_2": {
@@ -2807,7 +2828,8 @@
           "D4_adapter_SCLK_1": {
             "ports": [
               "D4_adapter/SCLK_1",
-              "Dig_03_Ch4"
+              "Dig_03_Ch4",
+              "ila_0/probe2"
             ]
           },
           "D4_adapter_SCLK_2": {
@@ -2819,7 +2841,8 @@
           "D4_adapter_SDO_1": {
             "ports": [
               "D4_adapter/SDO_1",
-              "Dig_01_Ch4"
+              "Dig_01_Ch4",
+              "ila_0/probe1"
             ]
           },
           "D4_adapter_SDO_2": {
@@ -2856,7 +2879,8 @@
           "SDI_1_1": {
             "ports": [
               "Dig_08_Ch4",
-              "D4_adapter/SDI_1"
+              "D4_adapter/SDI_1",
+              "ila_0/probe0"
             ]
           },
           "SDI_2_1": {
@@ -2876,7 +2900,8 @@
             "ports": [
               "clk",
               "D1_adapter/CLK",
-              "D4_adapter/clk"
+              "D4_adapter/clk",
+              "ila_0/clk"
             ]
           }
         }

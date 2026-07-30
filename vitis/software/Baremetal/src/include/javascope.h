@@ -37,6 +37,8 @@ enum JS_OberservableData {
 	JSO_SD_PH2,
 	JSO_SD_PH3,
 	JSO_SD_PH4,
+	JSO_theta_el,
+	JSO_omega_el,
 	JSO_ENDMARKER
 };
 
@@ -60,6 +62,11 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_SD_raw_avg_PH1,
+	JSSD_FLOAT_SD_raw_avg_PH2,
+	JSSD_FLOAT_SD_raw_avg_PH3,
+	JSSD_FLOAT_SD_raw_avg_PH4,
+	JSSD_FLOAT_SD_raw_avg_U,
 	JSSD_ENDMARKER
 };
 
@@ -117,7 +124,7 @@ enum gui_button_mapping {
 	input_port,
 	output_port,
 	Soll_Drehzahl,
-	Last_Moment,
+	filt_input_delay,
 	DutA,
 	DutB,
 	DutC,
@@ -144,7 +151,7 @@ enum gui_button_mapping {
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
 	Nm,
-	A,
+	10ns,
 	A,
 	A,
 	A,
@@ -244,11 +251,11 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_SD_raw_avg_PH1,
+	JSSD_FLOAT_SD_raw_avg_PH2,
+	JSSD_FLOAT_SD_raw_avg_PH3,
+	JSSD_FLOAT_SD_raw_avg_PH4,
+	JSSD_FLOAT_SD_raw_avg_U,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

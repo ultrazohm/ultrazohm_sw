@@ -23,6 +23,8 @@
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../Codegen/uz_codegen.h"
+#include "../globalData.h"
+
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
@@ -59,7 +61,9 @@ extern uz_codegen regelung;
 extern struct uz_JL_SDDemod_output_t SD_Filter_out;
 extern bool input_bit;
 extern float SD_Filter_out_f;
-extern struct uz_JL_SDDemod_output_t_float SD_data;
+extern int32_t fault;
+extern float fault_f;
+extern DS_Data Global_Data;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -96,17 +100,19 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-	js_ch_observable[JSO_SD_U]					= &SD_data.data_U;
-	js_ch_observable[JSO_SD_PH1]				= &SD_data.data_PH1;
-	js_ch_observable[JSO_SD_PH2]				= &SD_data.data_PH2;
-	js_ch_observable[JSO_SD_PH3]				= &SD_data.data_PH3;
-	js_ch_observable[JSO_SD_PH4]				= &SD_data.data_PH4;
-
+	js_ch_observable[JSO_SD_U]					= &Global_Data.av.SD_data.data_U;
+	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.SD_data.data_PH1;
+	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.SD_data.data_PH2;
+	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.SD_data.data_PH3;
+	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.SD_data.data_PH4;
+	js_ch_observable[JSO_theta_el]				= &Global_Data.av.resolver_pl_outputs.position_mech_2pi;
+	js_ch_observable[JSO_omega_el]				= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_Error_Code] 			= &fault_f;
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(Global_Data.av.resolver_pl_outputs.revolution_counter);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
@@ -116,6 +122,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH1);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH2);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH3);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH4]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH4);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_U]			= SigmaDeltaWandler_get_raw_average(SDW_CH_U);
 
 	return Status;
 }

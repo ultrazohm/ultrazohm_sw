@@ -14,6 +14,7 @@
 * limitations under the License.
 ******************************************************************************/
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
+#include "../include/uz_platform_state_machine.h"
 
 typedef struct{
 	ExtY output;

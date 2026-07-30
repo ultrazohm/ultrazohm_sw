@@ -73,6 +73,12 @@ void uz_resolver_pl_interface_reset(uz_resolver_pl_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, true);
-    uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, false);    
+    uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, false);
+}
+
+int32_t uz_resolver_pl_interface_get_machine_polepairs(uz_resolver_pl_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return(self->config.machine_polepairs);
 }
 #endif

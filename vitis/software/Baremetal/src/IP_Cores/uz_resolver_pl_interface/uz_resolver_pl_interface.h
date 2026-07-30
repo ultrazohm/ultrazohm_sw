@@ -84,4 +84,12 @@ void uz_resolver_pl_interface_set_theta_m_offset_rad(uz_resolver_pl_interface_t 
  */
 void uz_resolver_pl_interface_reset(uz_resolver_pl_interface_t *self);
 
+/**
+ * @brief Returns the configured machine pole pairs
+ *
+ * @param self Pointer to the instance
+ * @return Number of machine pole pairs
+ */
+int32_t uz_resolver_pl_interface_get_machine_polepairs(uz_resolver_pl_interface_t *self);
+
 #endif // UZ_RESOLVER_PL_INTERFACE_H

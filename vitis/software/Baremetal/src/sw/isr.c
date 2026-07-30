@@ -65,7 +65,7 @@ extern DS_Data Global_Data;
 
 #define ISR_SAMPLE_FREQ				20000
 
-#define MAX_CURRENT_ASSERTION 		380.0f
+#define MAX_CURRENT_ASSERTION 		320.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
 #define MAX_MOTOR_TEMP_ASSERTION	120.0f
@@ -165,8 +165,8 @@ void ISR_Control(void *data)
     Global_Data.av.omega_mech = uz_pos_to_speed_pll_get_omega_mech_si(Global_Data.objects.pll_0);
     Global_Data.av.omega_el = uz_pos_to_speed_pll_get_omega_el_si(Global_Data.objects.pll_0);
     Global_Data.av.mechanicalRotorSpeed = Global_Data.av.omega_mech*60.0f/(2.0f*M_PI);
-    Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * (1.0f/ISR_SAMPLE_FREQ) - 5.69415f;
-    Global_Data.av.theta_elec = Global_Data.av.theta_mech_comp * 21.0f  - Global_Data.av.theta_offset;
+    Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * (1.0f/ISR_SAMPLE_FREQ);
+    Global_Data.av.theta_elec = Global_Data.av.theta_mech_comp * 21.0f  - Global_Data.av.theta_offset +0.25f;
 
     // Read ADC-Values
     Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_U) - PHASE_CURRENT_OFFS_U;

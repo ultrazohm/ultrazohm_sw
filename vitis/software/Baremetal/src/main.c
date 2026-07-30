@@ -86,7 +86,7 @@ struct uz_wavegen_chirp_config config_chirp = {
         .end_frequency_Hz = 7000.0f,
         .duration_sec = 5.0f,
         .initial_delay_sec = 0.0f,
-        .offset = 150.0f
+        .offset = 50.0f
 };
 
 const struct uz_resonantController_config config_R = {
@@ -191,9 +191,9 @@ int main(void)
             JavaScope_initialize(&Global_Data);
 
             struct uz_PMSM_t config_PMSM = {
-               .Ld_Henry = 0.00001159f,				// 0.000027 fuer seg-rotor
-               .Lq_Henry = 0.000016663f,				// 0.000042 fuer seg_rotor
-               .Psi_PM_Vs = 0.0041939f,				// Leerlauf 80�C,  0.0071f (SM) oder 0.0073 (SEG) im Strang --> Umrechnung Sternschaltung fuer Umrichter
+               .Ld_Henry = 0.000027f,				// 0.000027 fuer seg-rotor
+               .Lq_Henry = 0.000042f,				// 0.000042 fuer seg_rotor
+               .Psi_PM_Vs = 0.0042f,				// Leerlauf 80�C,  0.0071f (SM) oder 0.0073 (SEG) im Strang --> Umrechnung Sternschaltung fuer Umrichter
                .polePairs = 21.0f,
                .J_kg_m_squared = 0.032972f,			// J_motor = 0.00156 kgm2 + J_T40B = 0.0015 + J_Kupplung= 0.005 + J_Last = 0.0249
                .R_ph_Ohm = 0.0071f,					// Gemessen aus Sollspannugn UZ
@@ -201,15 +201,15 @@ int main(void)
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.0509f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
-               .Ki = 54.7f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
+               .Kp = 0.01f,						// 0.1 seg-rotor, 0.08 SM-PMSM /  Betragsoptimum: 2.8975
+               .Ki = 80.0f,					// 173.3 seg-rotor, 87 SM-PMSM / Betragsoptimum: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.0578f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
-			   .Ki = 54.7f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
+               .Kp = 0.01f,						// 0.2 seg-rotor, 0.08 SM-PMSM / Opt: 4.16575
+			   .Ki = 80.0f,						// 173.3 seg-rotor, 87 SM-PMSM / Opt: 1775
 			   .type = UZ_PI_PARALLEL,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
@@ -231,7 +231,7 @@ int main(void)
             Global_Data.objects.current_setpoint_obj = uz_SetPoint_init(SP_config);
             Global_Data.rasv.flg_use_setpoint_calculation = 0.0f;
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
-            Global_Data.av.theta_offset = -0.0195f;
+            Global_Data.av.theta_offset = 0.09f;
             Global_Data.objects.pll_0 = pll_0_init();
 
             Global_Data.objects.encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UZ_IM_MOTOR_CONFIG_H
+#define UZ_IM_MOTOR_CONFIG_H
 /******************************************************************************
  * Motor / machine configuration
  *
@@ -102,10 +103,6 @@
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
 
-/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
-#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
-#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
-
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_LINDNER_3KW */
 
 
@@ -179,10 +176,6 @@
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* conservative ramp for commissioning */
 
-/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
-#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
-#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
-
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1LA7073 */
 
 #if (MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B)
@@ -196,7 +189,7 @@
 #define MOTOR_PolePairs           2.0f
 
 /* Mechanical */
-#define MOTOR_J_kgm2              0.0990      /* rotor inertia [kg·m²] (from datasheet) */
+#define MOTOR_J_kgm2              0.0990f     /* rotor inertia [kg·m²] (from datasheet) */
 
 /* Rated operating point */
 #define MOTOR_Psi_rated_Vs                1.0f    /* MOTOR_Lm_H* I_ma/I_D = 13.4A * sqrt(2) = 52.1e-3f* 19A */
@@ -234,14 +227,12 @@
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
 #define MOTOR_UF_frequency_ramp_Hz_per_s 2.5f  /* conservative ramp for commissioning */
 
-/* Speed outlier-rejection gate defaults — see speed_ol_filter.h for full documentation. */
-#define MOTOR_SPEED_OL_THR_SCALE      0.10f   /* window half-width as fraction of |y_prev| */
-#define MOTOR_SPEED_OL_THR_MIN_RPM    100.0f  /* minimum window half-width [RPM] — must be >= 80 */
-
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
 
 #if (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_LINDNER_3KW) && \
     (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_SIEMENS_1LA7073) && \
     (MOTOR_CONFIG_SELECT != MOTOR_CONFIG_SIEMENS_1C4164B)
-#error "Unknown MOTOR_CONFIG_SELECT in motor_config.h"
+#error "Unknown MOTOR_CONFIG_SELECT in uz_IM_motor_config.h"
 #endif
+
+#endif /* UZ_IM_MOTOR_CONFIG_H */

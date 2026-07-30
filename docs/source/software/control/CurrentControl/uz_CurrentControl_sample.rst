@@ -6,6 +6,8 @@ Sample function
 
 .. doxygenfunction:: uz_CurrentControl_sample
 
+.. doxygenfunction:: uz_CurrentControl_sample_general
+
 .. doxygenfunction:: uz_CurrentControl_sample_abc
 
 Example
@@ -31,6 +33,18 @@ Description
 
 Calculates one sample of the CurrentControl.
 
+The general sample function additionally supports rotor-flux-oriented induction
+machines. It accepts the synchronous angular velocity, rotor-flux magnitude and
+an optional additional voltage. The additional voltage, for example from a
+resonant controller, is added before the common space-vector limitation. Its
+return value exposes PI and decoupling contributions for diagnostics as well as
+the limited output voltage and clamping state.
+
+For induction-machine decoupling, select ``im_rotor_flux_decoupling``, populate
+``config_IM`` with a valid ``uz_IM_t``, and call
+``uz_CurrentControl_sample_general``. Existing PMSM users can continue using
+``uz_CurrentControl_sample`` without changes.
+
 .. note::
 
   Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_abc`` function to get the output voltages in the ABC-system. 
@@ -38,4 +52,3 @@ Calculates one sample of the CurrentControl.
 .. warning::
 
   The sample function has to be called with the same sample time as specified in the ``samplingTime_sec`` member of the :ref:`PI-Controller configuration struct <uz_piController_config>`.
-

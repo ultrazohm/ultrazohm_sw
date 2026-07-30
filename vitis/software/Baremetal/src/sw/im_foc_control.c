@@ -14,7 +14,6 @@
  ******************************************************************************/
 
 #include "../include/im_foc_control.h"
-#include "../include/motor_config.h"
 #include "../uz/uz_global_configuration.h"
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
@@ -26,7 +25,7 @@ void im_foc_control_init(const uz_IM_t *im_config, float sampling_time_s, im_foc
     uz_assert_not_NULL(state);
     uz_assert(sampling_time_s > 0.0f);
 
-    if (state->pi_id == NULL) {
+    if (state->current_control == NULL) {
         float const ls = im_config->Lsigma_s_Henry + im_config->Lm_Henry;
         float const lr = im_config->Lsigma_r_Henry + im_config->Lm_Henry;
         float const sigma = 1.0f - (im_config->Lm_Henry * im_config->Lm_Henry) / (ls * lr);
@@ -40,11 +39,18 @@ void im_foc_control_init(const uz_IM_t *im_config, float sampling_time_s, im_foc
             .Kp = kp,
             .Ki = ki,
             .samplingTime_sec = ts,
-            .upper_limit = 400.0f,
-            .lower_limit = -400.0f,
+            .upper_limit = INFINITY,
+            .lower_limit = -INFINITY,
         };
-        state->pi_id = uz_PI_Controller_init(pi_cfg);
-        state->pi_iq = uz_PI_Controller_init(pi_cfg);
+        struct uz_CurrentControl_config const current_cfg = {
+            .decoupling_select = im_rotor_flux_decoupling,
+            .config_id = pi_cfg,
+            .config_iq = pi_cfg,
+            .config_IM = *im_config,
+            .Kp_adjustment_flag = false,
+            .max_modulation_index = 1.0f / sqrtf(3.0f),
+        };
+        state->current_control = uz_CurrentControl_init(current_cfg);
 
         struct uz_PI_Controller_config const speed_cfg = {
             .type = UZ_PI_PARALLEL,
@@ -76,11 +82,8 @@ void im_foc_control_init(const uz_IM_t *im_config, float sampling_time_s, im_foc
 void im_foc_control_reset(im_foc_control_state_t *state)
 {
     uz_assert_not_NULL(state);
-    if (state->pi_id != NULL) {
-        uz_PI_Controller_reset(state->pi_id);
-    }
-    if (state->pi_iq != NULL) {
-        uz_PI_Controller_reset(state->pi_iq);
+    if (state->current_control != NULL) {
+        uz_CurrentControl_reset(state->current_control);
     }
     if (state->pi_speed != NULL) {
         uz_PI_Controller_reset(state->pi_speed);
@@ -111,8 +114,7 @@ void im_foc_control_step(actualValues *av,
     uz_assert_not_NULL(input);
     uz_assert_not_NULL(state);
     uz_assert_not_NULL(output);
-    uz_assert_not_NULL(state->pi_id);
-    uz_assert_not_NULL(state->pi_iq);
+    uz_assert_not_NULL(state->current_control);
     uz_assert_not_NULL(state->pi_speed);
     uz_assert_not_NULL(state->res_id_6th);
     uz_assert_not_NULL(state->res_iq_6th);
@@ -127,8 +129,6 @@ void im_foc_control_step(actualValues *av,
         }
     }
 
-    float const ud_pi = uz_PI_Controller_sample(state->pi_id, input->id_ref_A, av->IM_I_d, false);
-    float const uq_pi = uz_PI_Controller_sample(state->pi_iq, output->iq_cmd_A, av->IM_I_q, false);
     float ud_res = 0.0f;
     float uq_res = 0.0f;
 
@@ -152,26 +152,28 @@ void im_foc_control_step(actualValues *av,
     }
     state->resonant_enabled_last = input->use_resonant_6th;
 
-    float const ls = im_config->Lsigma_s_Henry + im_config->Lm_Henry;
-    float const lr = im_config->Lsigma_r_Henry + im_config->Lm_Henry;
-    float const sigma = 1.0f - (im_config->Lm_Henry * im_config->Lm_Henry) / (ls * lr);
-    float const sigma_ls = sigma * ls;
-    float const ud_decoup = -omega_s_rad_s * sigma_ls * av->IM_I_q;
-    float const uq_decoup = omega_s_rad_s * sigma_ls * av->IM_I_d +
-                            omega_s_rad_s * (im_config->Lm_Henry / lr) * psi_r_mag;
+    uz_CurrentControl_input_t const current_input = {
+        .i_reference_Ampere = {.d = input->id_ref_A, .q = output->iq_cmd_A, .zero = 0.0f},
+        .i_actual_Ampere = {.d = av->IM_I_d, .q = av->IM_I_q, .zero = 0.0f},
+        .V_dc_volts = av->IM_vdc,
+        .omega_dq_rad_per_sec = omega_s_rad_s,
+        .psi_r_Vs = psi_r_mag,
+        .v_additional_Volts = {.d = ud_res, .q = uq_res, .zero = 0.0f},
+        .omega_limitation_rad_per_sec = av->IM_mechanicalRotorSpeed_filtered
+                                         * (2.0f * UZ_PIf / 60.0f)
+                                         * im_config->polePairs,
+    };
+    uz_CurrentControl_output_t const current_output =
+        uz_CurrentControl_sample_general(state->current_control, current_input);
 
-    output->ud_pi    = ud_pi;
-    output->uq_pi    = uq_pi;
-    output->ud_decoup = ud_decoup;
-    output->uq_decoup = uq_decoup;
+    output->ud_pi    = current_output.v_pi_Volts.d;
+    output->uq_pi    = current_output.v_pi_Volts.q;
+    output->ud_decoup = current_output.v_decoupling_Volts.d;
+    output->uq_decoup = current_output.v_decoupling_Volts.q;
     output->ud_res   = ud_res;
     output->uq_res   = uq_res;
 
-    uz_3ph_dq_t const v_dq_ref = {
-        .d = ud_pi + ud_res + ud_decoup,
-        .q = uq_pi + uq_res + uq_decoup,
-        .zero = 0.0f
-    };
+    uz_3ph_dq_t const v_dq_ref = current_output.v_output_Volts;
 
     av->IM_vd = v_dq_ref.d;
     av->IM_vq = v_dq_ref.q;

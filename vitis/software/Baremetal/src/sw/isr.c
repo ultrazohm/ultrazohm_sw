@@ -14,7 +14,6 @@
  ******************************************************************************/
 
 #include "../include/isr.h"
-#include "../include/speed_ol_filter.h"
 #include "../defines.h"
 #include "../main.h"
 #include "../include/ipc_ARM.h"
@@ -34,7 +33,6 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 // Modular IM control
-#include "../include/motor_config.h"
 #include "../include/error_checks.h"
 #include "../include/im_observer.h"
 #include "../include/im_uf_control.h"
@@ -73,9 +71,6 @@ struct uz_DutyCycle_t dutycyc_VA = {0.0f};
 bool enable_controller_VA = false;
 bool enable_controller_IM = false;
 bool va_use_speed_control = false;
-bool  enable_speed_outlier_rejection = false;
-float speed_ol_thr_scale             = MOTOR_SPEED_OL_THR_SCALE;
-float speed_ol_thr_min_rpm           = MOTOR_SPEED_OL_THR_MIN_RPM;
 
 // V/f control parameters — user-settable (e.g. via JavaScope send fields)
 float vf_frequency_setpoint_Hz = 10.0f;
@@ -129,18 +124,8 @@ double totalU = 0;
 double totalV = 0;
 double totalW = 0;
 
-// Induction machine parameters — configured via motor_config.h
-static uz_IM_t IM_config = {
-    .Rs_Ohm         = MOTOR_Rs_Ohm,
-    .Rr_Ohm         = MOTOR_Rr_Ohm,
-    .Lsigma_s_Henry = MOTOR_Lsigma_s_H,
-    .Lsigma_r_Henry = MOTOR_Lsigma_r_H,
-    .Lm_Henry       = MOTOR_Lm_H,
-    .polePairs      = MOTOR_PolePairs,
-    .J_kg_m_squared = MOTOR_J_kgm2,
-    .I_max_Ampere   = MOTOR_Control_current_max_A,
-    .Psi_rated_Vs   = MOTOR_Psi_rated_Vs,
-};
+// Induction-machine parameters configured by uz_IM_config.
+static uz_IM_t IM_config = {0};
 
 static error_checks_config_t error_checks_config = {
     .im_vdc_min                  = v_dc_min_v,
@@ -223,6 +208,8 @@ void Initialize_ISR_Software(DS_Data *data)
     uz_assert_not_NULL(data);
     uz_assert(data->av.isr_samplerate_s > 0.0f);
 
+    IM_config = uz_IM_config_get_selected_motor();
+
     im_uf_control_reset(&uf_control_state);
 
     im_rotor_flux_observer_init(&IM_config, data->av.isr_samplerate_s, &rotor_flux_observer_state);
@@ -255,20 +242,9 @@ void ISR_Control(void *data)
 //    Global_Data.av.IM_mechanicalRotorSpeed = -1.0f * Global_Data.av.VA_mechanicalRotorSpeed;
     Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A2.me.ADC_B5;
 //    Global_Data.av.IM_mechanicalRotorSpeed = Global_Data.aa.A2.me.ADC_B5;
-    {
-        float const raw_rpm = Global_Data.av.IM_mechanicalRotorSpeed;
-        float const y_prev  = Global_Data.av.IM_mechanicalRotorSpeed_filtered;
-        float input;
-        if (enable_speed_outlier_rejection) {
-            float const thr   = fmaxf(speed_ol_thr_min_rpm,
-                                      speed_ol_thr_scale * fabsf(y_prev));
-            input = (fabsf(raw_rpm - y_prev) <= thr) ? raw_rpm : y_prev;
-        } else {
-            input = raw_rpm;
-        }
-        Global_Data.av.IM_mechanicalRotorSpeed_filtered =
-            uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM, input);
-    }
+    Global_Data.av.IM_mechanicalRotorSpeed_filtered =
+        uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_speed_IM,
+                                     Global_Data.av.IM_mechanicalRotorSpeed);
 
     calibrate_current_offsets();
     update_measurements_from_adc();

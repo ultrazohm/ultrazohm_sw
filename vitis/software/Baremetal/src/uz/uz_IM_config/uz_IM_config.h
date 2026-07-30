@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "uz_IM_motor_config.h"
+
 /**
  * @brief Configuration struct for an induction machine (IM). Accessible by the user.
  *
@@ -25,6 +27,13 @@ typedef struct uz_IM_t {
     float I_max_Ampere;        /**< Maximum allowed current per phase in Ampere. Must be greater than 0.0f */
     float Psi_rated_Vs;        /**< Rated rotor flux linkage in Volt-seconds. Must be greater than 0.0f */
 } uz_IM_t;
+
+/**
+ * @brief Return the compile-time selected induction-machine preset.
+ *
+ * Selection and preset values are defined in uz_IM_motor_config.h.
+ */
+uz_IM_t uz_IM_config_get_selected_motor(void);
 
 /**
  * @brief Validates all input values of the IM configuration struct

@@ -41,6 +41,8 @@ void im_rotor_flux_observer_init(const uz_IM_t *im_config,
             .sampling_time_in_seconds = fmaxf(sampling_time_s, 1.0e-6f),
         };
         state->stator_frequency_pll = uz_pos_to_speed_pll_init(pll_cfg);
+    } else {
+        uz_pos_to_speed_pll_reset(state->stator_frequency_pll);
     }
 }
 

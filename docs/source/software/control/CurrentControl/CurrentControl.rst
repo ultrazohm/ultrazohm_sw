@@ -5,7 +5,8 @@ CurrentControl
 ==============
 
 Toolbox for a standard CurrentControl with parallel :ref:`PI-Controllers <uz_piController>`, :ref:`linear decoupling <uz_lineardecoupling>` and a :ref:`space vector limitation <uz_spacevectorlimiation>`. 
-A space vector output limitation and a linear decoupling function are integrated. 
+A space vector output limitation and machine-specific PMSM or induction-machine
+decoupling functions are integrated.
 The decoupling function can be deactivated in the :ref:`CurrentControl configuration struct <uz_CurrentControl_config>`.
 
 .. tikz:: CurrentControl schematic
@@ -120,6 +121,12 @@ It is possible to use the CurrentControl with or without the :ref:`linear decoup
 If no decoupling is selected, no variables for the ``struct uz_PMSM_t`` have to be configured and can be left 0.
 Each of the two PI-Controller need their own :ref:`config struct <uz_piController_config>`.
 One for the id-Controller and the other one for the iq-Controller. 
+
+For rotor-flux-oriented induction machines, set ``decoupling_select`` to
+``im_rotor_flux_decoupling`` and provide ``config_IM`` as ``uz_IM_t``.
+The synchronous flux-frame speed and rotor-flux magnitude are supplied with
+``uz_CurrentControl_sample_general``. Only the machine configuration required
+by the selected decoupling method is used.
 
 .. _uz_CurrentControl_init:
 

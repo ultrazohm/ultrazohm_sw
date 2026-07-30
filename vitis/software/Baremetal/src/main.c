@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#include "include/motor_config.h"
+#include "uz/uz_IM_config/uz_IM_config.h"
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
@@ -150,7 +150,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            Global_Data.av.IM_polepairs = MOTOR_PolePairs;
+            Global_Data.av.IM_polepairs = uz_IM_config_get_selected_motor().polePairs;
             Global_Data.av.VA_polepairs = Voestalpine.polePairs;
             Global_Data.objects.current_ctrl_VA = current_ctrl_VA_init();
             Global_Data.objects.setpoint_ctrl_VA = setpoint_ctrl_VA_init();

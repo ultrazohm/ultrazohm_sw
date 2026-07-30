@@ -15,9 +15,24 @@
 
 #include "uz_IM_config.h"
 #include "../uz_global_configuration.h"
-#include "../../include/motor_config.h"
 #include "../uz_HAL.h"
 #include <math.h>
+
+uz_IM_t uz_IM_config_get_selected_motor(void) {
+    uz_IM_t const config = {
+        .Rs_Ohm = MOTOR_Rs_Ohm,
+        .Rr_Ohm = MOTOR_Rr_Ohm,
+        .Lsigma_s_Henry = MOTOR_Lsigma_s_H,
+        .Lsigma_r_Henry = MOTOR_Lsigma_r_H,
+        .Lm_Henry = MOTOR_Lm_H,
+        .polePairs = MOTOR_PolePairs,
+        .J_kg_m_squared = MOTOR_J_kgm2,
+        .I_max_Ampere = MOTOR_Control_current_max_A,
+        .Psi_rated_Vs = MOTOR_Psi_rated_Vs,
+    };
+    uz_IM_config_assert(config);
+    return config;
+}
 
 void uz_IM_config_assert(uz_IM_t config) {
     // Electrical parameters
@@ -135,7 +150,7 @@ uz_IM_ss_t uz_IM_ss_compute(uz_IM_t config, float Ts) {
     ss.B[1][2] = -k / sqrtf(3.0f);
     // ss.B[2][*] and ss.B[3][*] remain 0
 
-    // Default Kalman tuning — defined in motor_config.h alongside the motor parameters.
+    // Default Kalman tuning from uz_IM_motor_config.h.
     ss.Q_diag[0] = MOTOR_KF_Q_i;
     ss.Q_diag[1] = MOTOR_KF_Q_i;
     ss.Q_diag[2] = MOTOR_KF_Q_psi;

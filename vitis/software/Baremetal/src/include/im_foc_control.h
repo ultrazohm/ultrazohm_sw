@@ -19,6 +19,7 @@
 #include "../globalData.h"
 #include "../uz/uz_IM_config/uz_IM_config.h"
 #include "../uz/uz_piController/uz_piController.h"
+#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_ResonantController/uz_resonant_controller.h"
 #include <stdbool.h>
 
@@ -52,9 +53,8 @@ typedef struct {
 } im_foc_control_output_t;
 
 typedef struct {
-    uz_PI_Controller *pi_id;
-    uz_PI_Controller *pi_iq;
-    uz_PI_Controller *pi_speed;
+	uz_CurrentControl_t *current_control;
+	uz_PI_Controller *pi_speed;
     uz_resonantController_t *res_id_6th;
     uz_resonantController_t *res_iq_6th;
     bool resonant_enabled_last;

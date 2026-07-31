@@ -88,7 +88,7 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                       3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES            3U
-#define UZ_AXI_GPIO_MAX_INSTANCES                         0U
+#define UZ_AXI_GPIO_MAX_INSTANCES                         2U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U

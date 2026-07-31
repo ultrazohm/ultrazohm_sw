@@ -170,6 +170,8 @@ typedef struct
 	uz_adcLtc2311_t *adc_ltc2311_a3;
 	uz_inverter_adapter_t *inverter_adapter_d1;
 	uz_inverter_adapter_t *inverter_adapter_d2;
+	uz_inverter_adapter_t *inverter_adapter_d3_1;
+	uz_inverter_adapter_t *inverter_adapter_d3_2;
 	uz_resolverIP_t *resolver_ip_d4_1;
 	uz_resolver_pl_interface_t *resolver_pl_interface_d4_1;
 	uz_resolverIP_t *resolver_ip_d4_2;

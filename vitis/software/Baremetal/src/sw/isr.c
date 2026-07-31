@@ -34,6 +34,7 @@
 #include "../uz/uz_global_configuration.h"
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;

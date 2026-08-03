@@ -1,23 +1,12 @@
 /******************************************************************************
-* Copyright 2026 Jonathan Link
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and limitations under the License.
+Jonathan Link 2026
 ******************************************************************************/
 
 #ifndef INCLUDE_SIGMADELTAWANDLER_H_
 #define INCLUDE_SIGMADELTAWANDLER_H_
 
 #include <stdint.h>
-#include "../IP_Cores/uz_JL_SDDemod/uz_JL_SDDemod.h"
+#include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
 
 // Kanaele des SD-Demodulators (Auswahl der Kalibrierwerte/OSR)
 enum SigmaDeltaWandler_channel {
@@ -33,9 +22,9 @@ enum SigmaDeltaWandler_channel {
  * @brief Initialisiert den SD-Demod-IP-Core (SD_Filter_config).
  * Muss in main.c (init_ip_cores) vor dem ersten Aufruf von
  * SigmaDeltaWandler_process ausgefuehrt werden.
- * @return uz_JL_SDDemod_t* Initialisierte SD_Filter-Instanz (siehe SD_Filter in main.c).
+ * @return uz_JL_SigmaDelta_Interface_t* Initialisierte Sinc3_Filter-Instanz (siehe Sinc3_Filter in main.c).
  */
-uz_JL_SDDemod_t *SigmaDeltaWandler_init(void);
+uz_JL_SigmaDelta_Interface_t *SigmaDeltaWandler_init(void);
 
 /**
  * @brief Wandelt die rohen Sinc3-Ausgangswerte des SD-Demod-IP-Cores (Spannung + 4
@@ -48,7 +37,7 @@ uz_JL_SDDemod_t *SigmaDeltaWandler_init(void);
  * @param raw Unbeschnittene Rohwerte aus den Sinc3-Ausgangsregistern (uz_JL_SDDemod_get_outputs).
  * @param result Ausgabe: kalibrierte Werte (data_U in Volt, data_PH1..PH4 in Ampere).
  */
-void SigmaDeltaWandler_process(struct uz_JL_SDDemod_output_t raw, struct uz_JL_SDDemod_output_t_float *result);
+void SigmaDeltaWandler_process(struct uz_JL_SigmaDelta_Interface_output_t raw, struct uz_JL_SigmaDelta_Interface_output_t_float *result);
 
 /**
  * @brief Liefert einen Pointer auf den gleitenden Fenster-Mittelwert (uz_movingAverageFilter,

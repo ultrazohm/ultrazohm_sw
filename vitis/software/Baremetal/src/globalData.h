@@ -9,7 +9,8 @@
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
-#include "IP_Cores/uz_JL_SDDemod/uz_JL_SDDemod.h"
+#include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
+#include "include/JL_SH_Umrichter.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -92,7 +93,7 @@ typedef struct _actualValues_ {
 	float omega_el;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs;
 	uint32_t slowDataCounter;
-	struct uz_JL_SDDemod_output_t_float SD_data;
+	struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -108,6 +109,10 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	ctrl_state_t ctrl_state;
+	float Soll_Drehzahl; // speed setpoint for rpm_control, in rpm
+	float Soll_id; // d-axis current setpoint for current_control, in A
+	float Soll_iq; // q-axis current setpoint for current_control, in A
 } referenceAndSetValues;
 
 typedef struct{

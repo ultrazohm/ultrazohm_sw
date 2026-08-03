@@ -1,0 +1,75 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Mon Aug  3 19:23:22 2026
+# Process ID: 6908
+# Current directory: C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip/vivado.log
+# Journal file: C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip\vivado.jou
+# Running On: Jonathan-Link, OS: Windows, CPU Frequency: 1697 MHz, CPU Physical cores: 16, Host memory: 33528 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 377.867 ; gain = 45.102
+update_compile_order: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 377.871 ; gain = 0.000
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'IPCORE_RESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_ACLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'IPCORE_CLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_ARESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_RESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_ACLK': Added interface parameter 'ASSOCIATED_BUSIF' with value 'AXI4'.
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_ACLK': Added interface parameter 'ASSOCIATED_RESET' with value 'AXI4_ARESETN'.
+INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'ASSOCIATED_RESET' with value 'IPCORE_RESETN'.
+WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_CLk.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_CLk.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_trigger_sec_edge.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_trigger_sec_edge.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Subsystem.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Subsystem.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Integratoren.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Differentierer.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_Differentierer.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_reset_sync.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_dut.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_dut.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_addr_decoder.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_addr_decoder.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_SimpleDualPortRAM_generic.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_SimpleDualPortRAM_generic.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_data.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_data.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_SimpleDualPortRAM_singlebit.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_SimpleDualPortRAM_singlebit.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_last.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_last.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_rid.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_rdfifo_rid.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4_module.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4_module.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_JL_SigmaDelta_Interface.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+INFO: [Common 17-206] Exiting Vivado at Mon Aug  3 19:23:47 2026...

@@ -21,7 +21,7 @@
 #include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
-#include "../IP_Cores/uz_JL_SDDemod/uz_JL_SDDemod.h"
+#include "../IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -41,7 +41,7 @@ extern float DutC;
 
 extern Bus_ZM_In struct_ZM_In;
 extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
-extern uz_JL_SDDemod_t *SD_Filter;
+extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -212,12 +212,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		struct_ZM_In.Soll_Drehzahl = value;
+		data->rasv.Soll_Drehzahl = value;
 			break;
 
 		case (Set_Send_Field_4): // filt_input_delay
 		data->av.snd_fld[4] = value;
-		uz_JL_SDDemod_set_data_delay(SD_Filter, (uint8_t)value);
+		uz_JL_SigmaDelta_Interface_set_data_delay(Sinc3_Filter, (uint8_t)value);
 			break;
 
 		case (Set_Send_Field_5):
@@ -232,12 +232,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[7] = value;
 			break;
 
-		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		case (Set_Send_Field_8): // Soll_id
+		data->rasv.Soll_id = value;
 			break;
 
-		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		case (Set_Send_Field_9): // Soll_iq
+		data->rasv.Soll_iq = value;
 			break;
 
 		case (Set_Send_Field_10):
@@ -303,20 +303,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			ultrazohm_state_machine_set_userLED(false);
 			break;
 
-		case (My_Button_4):
-
+		case (My_Button_4): // switch to current_control
+			data->rasv.ctrl_state = current_control;
 			break;
 
-		case (My_Button_5):
-
+		case (My_Button_5): // switch to rpm_control
+			data->rasv.ctrl_state = rpm_control;
 			break;
 
-		case (My_Button_6):
-
+		case (My_Button_6): // switch to test_sine
+			data->rasv.ctrl_state = test_sine;
 			break;
 
-		case (My_Button_7):
-
+		case (My_Button_7): // switch back to ctrl_state_none
+			data->rasv.ctrl_state = ctrl_state_none;
 			break;
 
 		case (My_Button_8):

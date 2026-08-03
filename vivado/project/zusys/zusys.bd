@@ -113,7 +113,7 @@
         "Test_Clk": "",
         "util_vector_logic_0": "",
         "util_vector_logic_1": "",
-        "uz_JL_SDDemod_0": ""
+        "uz_JL_SigmaDelta_Int_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5161,7 +5161,7 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "10"
+                "value": "9"
               }
             }
           },
@@ -5343,11 +5343,11 @@
               }
             }
           },
-          "uz_JL_SDDemod_0": {
-            "vlnv": "xilinx.com:ip:uz_JL_SDDemod:1.0",
-            "xci_name": "zusys_uz_JL_SDDemod_0_0",
-            "xci_path": "ip\\zusys_uz_JL_SDDemod_0_0\\zusys_uz_JL_SDDemod_0_0.xci",
-            "inst_hier_path": "uz_user/uz_JL_SDDemod_0"
+          "uz_JL_SigmaDelta_Int_0": {
+            "vlnv": "xilinx.com:ip:uz_JL_SigmaDelta_Interface:1.0",
+            "xci_name": "zusys_uz_JL_SigmaDelta_Int_0_0",
+            "xci_path": "ip\\zusys_uz_JL_SigmaDelta_Int_0_0\\zusys_uz_JL_SigmaDelta_Int_0_0.xci",
+            "inst_hier_path": "uz_user/uz_JL_SigmaDelta_Int_0"
           }
         },
         "interface_nets": {
@@ -5366,7 +5366,7 @@
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
               "smartconnect_1/M01_AXI",
-              "uz_JL_SDDemod_0/AXI4"
+              "uz_JL_SigmaDelta_Int_0/AXI4"
             ]
           },
           "smartconnect_1_M02_AXI": {
@@ -5409,39 +5409,39 @@
           "SD_data_PH1_Dout": {
             "ports": [
               "SD_data_PH1/Dout",
-              "uz_JL_SDDemod_0/in_data_PH1"
+              "uz_JL_SigmaDelta_Int_0/in_data_PH1"
             ]
           },
           "SD_data_PH2_Dout": {
             "ports": [
               "SD_data_PH2/Dout",
-              "uz_JL_SDDemod_0/in_data_PH2"
+              "uz_JL_SigmaDelta_Int_0/in_data_PH2"
             ]
           },
           "SD_data_PH3_Dout": {
             "ports": [
               "SD_data_PH3/Dout",
-              "uz_JL_SDDemod_0/in_data_PH3"
+              "uz_JL_SigmaDelta_Int_0/in_data_PH3"
             ]
           },
           "SD_data_PH4_Dout": {
             "ports": [
               "SD_data_PH4/Dout",
-              "uz_JL_SDDemod_0/in_data_PH4"
+              "uz_JL_SigmaDelta_Int_0/in_data_PH4"
             ]
           },
           "SD_data_U_Dout": {
             "ports": [
               "SD_data_U/Dout",
               "util_vector_logic_1/Op1",
-              "uz_JL_SDDemod_0/in_data_U"
+              "uz_JL_SigmaDelta_Int_0/in_data_U"
             ]
           },
           "Test_Clk_Dout": {
             "ports": [
               "Test_Clk/Dout",
               "util_vector_logic_0/Op2",
-              "ila_0/probe8"
+              "ila_0/probe7"
             ]
           },
           "axi_gpio_0_gpio_io_o": {
@@ -5459,14 +5459,8 @@
               "smartconnect_1/aresetn",
               "axi_gpio_1/s_axi_aresetn",
               "axi_gpio_0/s_axi_aresetn",
-              "uz_JL_SDDemod_0/IPCORE_RESETN",
-              "uz_JL_SDDemod_0/AXI4_ARESETN"
-            ]
-          },
-          "trigger_output_1": {
-            "ports": [
-              "trigger_output",
-              "uz_JL_SDDemod_0/trigger_output"
+              "uz_JL_SigmaDelta_Int_0/AXI4_ARESETN",
+              "uz_JL_SigmaDelta_Int_0/IPCORE_RESETN"
             ]
           },
           "util_vector_logic_0_Res": {
@@ -5481,53 +5475,47 @@
               "ila_0/probe6"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_PH1": {
+          "uz_JL_SigmaDelta_Int_0_data_raw_PH1": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_PH1",
+              "uz_JL_SigmaDelta_Int_0/data_raw_PH1",
               "ila_0/probe1"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_PH2": {
+          "uz_JL_SigmaDelta_Int_0_data_raw_PH2": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_PH2",
+              "uz_JL_SigmaDelta_Int_0/data_raw_PH2",
               "ila_0/probe2"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_PH3": {
+          "uz_JL_SigmaDelta_Int_0_data_raw_PH3": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_PH3",
+              "uz_JL_SigmaDelta_Int_0/data_raw_PH3",
               "ila_0/probe3"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_PH4": {
+          "uz_JL_SigmaDelta_Int_0_data_raw_PH4": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_PH4",
+              "uz_JL_SigmaDelta_Int_0/data_raw_PH4",
               "ila_0/probe4"
             ]
           },
-          "uz_JL_SDDemod_0_data_raw_U": {
+          "uz_JL_SigmaDelta_Int_0_data_raw_U": {
             "ports": [
-              "uz_JL_SDDemod_0/data_raw_U",
+              "uz_JL_SigmaDelta_Int_0/data_raw_U",
               "ila_0/probe5"
             ]
           },
-          "uz_JL_SDDemod_0_fast_clk_filt": {
+          "uz_JL_SigmaDelta_Int_0_fast_clk_filt": {
             "ports": [
-              "uz_JL_SDDemod_0/fast_clk_filt",
-              "ila_0/probe9"
+              "uz_JL_SigmaDelta_Int_0/fast_clk_filt",
+              "ila_0/probe8"
             ]
           },
-          "uz_JL_SDDemod_0_out_clk_ads": {
+          "uz_JL_SigmaDelta_Int_0_out_clk_ads": {
             "ports": [
-              "uz_JL_SDDemod_0/out_clk_ads",
-              "util_vector_logic_0/Op1",
-              "ila_0/probe0"
-            ]
-          },
-          "uz_JL_SDDemod_0_signature_en": {
-            "ports": [
-              "uz_JL_SDDemod_0/signature_en",
-              "ila_0/probe7"
+              "uz_JL_SigmaDelta_Int_0/out_clk_ads",
+              "ila_0/probe0",
+              "util_vector_logic_0/Op1"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5537,8 +5525,8 @@
               "axi_gpio_1/s_axi_aclk",
               "ila_0/clk",
               "axi_gpio_0/s_axi_aclk",
-              "uz_JL_SDDemod_0/IPCORE_CLK",
-              "uz_JL_SDDemod_0/AXI4_ACLK"
+              "uz_JL_SigmaDelta_Int_0/IPCORE_CLK",
+              "uz_JL_SigmaDelta_Int_0/AXI4_ACLK"
             ]
           }
         }
@@ -9107,9 +9095,9 @@
                 "offset": "0x00800E0000",
                 "range": "64K"
               },
-              "SEG_uz_JL_SDDemod_0_reg0": {
-                "address_block": "/uz_user/uz_JL_SDDemod_0/AXI4/reg0",
-                "offset": "0x0080130000",
+              "SEG_uz_JL_SigmaDelta_Int_0_reg0": {
+                "address_block": "/uz_user/uz_JL_SigmaDelta_Int_0/AXI4/reg0",
+                "offset": "0x0080060000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {

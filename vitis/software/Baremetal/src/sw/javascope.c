@@ -58,9 +58,9 @@ extern uint32_t output_bitmask;
 extern float input_bit_float;
 extern Bus_ZM_In struct_ZM_In;
 extern uz_codegen regelung;
-extern struct uz_JL_SDDemod_output_t SD_Filter_out;
+extern struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_out;
 extern bool input_bit;
-extern float SD_Filter_out_f;
+extern float Sinc3_Filter_out_f;
 extern int32_t fault;
 extern float fault_f;
 extern DS_Data Global_Data;
@@ -100,11 +100,11 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-	js_ch_observable[JSO_SD_U]					= &Global_Data.av.SD_data.data_U;
-	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.SD_data.data_PH1;
-	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.SD_data.data_PH2;
-	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.SD_data.data_PH3;
-	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.SD_data.data_PH4;
+	js_ch_observable[JSO_SD_U]					= &Global_Data.av.Sinc3_Filter.data_U;
+	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
+	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
+	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
+	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.Sinc3_Filter.data_PH4;
 	js_ch_observable[JSO_theta_el]				= &Global_Data.av.resolver_pl_outputs.position_mech_2pi;
 	js_ch_observable[JSO_omega_el]				= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
 	// Store slow / not-time-critical signals into the SlowData-Array.

@@ -1,0 +1,16 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_JL_SigmaDelta_Interface', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_JL_SigmaDelta_Interface', 'handle'));
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/CLk', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Delay11', 1, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/CLk/HDL Counter2', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/CLk/Relational Operator', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge', 0, 2, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/Logical Operator', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/Switch1', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/Add', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/Logical Operator1', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/Logical Operator2', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/NOT', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/Relational Operator1', 0, 1, '');
+annotate_port('gm_uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Inferface/Subsystem/trigger_sec_edge/Switch', 0, 1, '');

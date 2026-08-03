@@ -31,7 +31,11 @@ DS_Data Global_Data = {
         .halfBridge9DutyCycle = 0.0f,
         .halfBridge10DutyCycle = 0.0f,
         .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f},
+        .halfBridge12DutyCycle = 0.0f,
+        .ctrl_state = ctrl_state_none,
+        .Soll_Drehzahl = 0.0f,
+        .Soll_id = 0.0f,
+        .Soll_iq = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
@@ -69,7 +73,7 @@ struct uz_axi_gpio_config_t gpio_out_config={
             .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
 };
 
-uz_JL_SDDemod_t *SD_Filter = NULL;
+uz_JL_SigmaDelta_Interface_t *Sinc3_Filter = NULL;
 
 uz_axi_gpio_t* input_gpio=NULL;
 uz_axi_gpio_t* output_gpio=NULL;
@@ -149,7 +153,7 @@ int main(void)
 			Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
             input_gpio= uz_axi_gpio_init(input_config);
             output_gpio = uz_axi_gpio_init(gpio_out_config);
-			SD_Filter = SigmaDeltaWandler_init();
+			Sinc3_Filter = SigmaDeltaWandler_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

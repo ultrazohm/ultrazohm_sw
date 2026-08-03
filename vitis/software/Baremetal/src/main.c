@@ -93,9 +93,16 @@ int main(void)
 			Global_Data.objects.project_wizard_deadtime_2l_0_d1 = initialize_project_wizard_deadtime_2l_0_d1();
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0_d1, true);
 			Global_Data.objects.project_wizard_pwm_2l_0_d1 = initialize_project_wizard_pwm_2l_0_d1();
-			Global_Data.objects.project_wizard_deadtime_2l_1_d2 = initialize_project_wizard_deadtime_2l_1_d2();
-			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1_d2, true);
-			Global_Data.objects.project_wizard_pwm_2l_1_d2 = initialize_project_wizard_pwm_2l_1_d2();
+
+			Global_Data.objects.project_wizard_deadtime_2l_d3_1 = initialize_project_wizard_deadtime_2l_d3_1();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_d3_1, true);
+			Global_Data.objects.project_wizard_pwm_2l_d3_1 = initialize_project_wizard_pwm_2l_d3_1();
+
+
+			Global_Data.objects.project_wizard_deadtime_2l_d3_2 = initialize_project_wizard_deadtime_2l_d3_2();
+			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_d3_2, true);
+			Global_Data.objects.project_wizard_pwm_2l_d3_2 = initialize_project_wizard_pwm_2l_d3_2();
+
 			initialize_project_wizard_pwm_3l(&Global_Data);
 			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
@@ -103,12 +110,10 @@ int main(void)
 			Global_Data.objects.adc_ltc2311_a3 = initialize_adc_ltc2311_a3();
 			Global_Data.objects.inverter_adapter_d1 = initialize_inverter_adapter_d1();
 			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
-			Global_Data.objects.inverter_adapter_d3_1 = initialize_inverter_adapter_d3_1();
-			Global_Data.objects.inverter_adapter_d3_2 = initialize_inverter_adapter_d3_2();
             Global_Data.objects.axi_gpio_d3 = initialize_axi_gpio_d3();
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d1,false);
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2,false);
-                Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
+            Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
             Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
 			Global_Data.objects.resolver_ip_d4_2 = initialize_resolver_ip_d4_2();
 			Global_Data.objects.resolver_pl_interface_d4_2 = initialize_resolver_pl_interface_d4_2();

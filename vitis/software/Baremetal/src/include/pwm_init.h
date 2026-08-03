@@ -20,3 +20,9 @@ uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_1_d2(void);
 void initialize_project_wizard_pwm_3l(DS_Data* data);
 
 void project_wizard_update_pwm_outputs(DS_Data* data);
+
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_d3_2(void);
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_d3_2(void);
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_d3_1(void);
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_d3_1(void);
+

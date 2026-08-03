@@ -165,8 +165,85 @@ void initialize_project_wizard_pwm_3l(DS_Data* data)
 }
 
 
+
+static struct uz_PWM_SS_2L_config_t project_wizard_pwm_2l_d3_1_config = {
+    .base_address = XPAR_UZ_PWM_PWM_2L_PWM_AND_SS_CONTROL_V_2_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .Tristate_HB1 = false,
+    .Tristate_HB2 = false,
+    .Tristate_HB3 = false,
+    .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
+    .PWM_freq_Hz = UZ_PWM_FREQUENCY,
+    .PWM_mode = normalized_input_via_AXI,
+    .PWM_en = true,
+    .use_external_counter = true,
+    .init_dutyCyc_HB1 = 0.0f,
+    .init_dutyCyc_HB2 = 0.0f,
+    .init_dutyCyc_HB3 = 0.0f,
+    .triangle_shift_HB1 = 0.0f,
+    .triangle_shift_HB2 = 0.0f,
+    .triangle_shift_HB3 = 0.0f,
+    .trigger_source = trigger_at_MIN
+};
+
+static uz_interlockDeadtime2L project_wizard_deadtime_2l_d3_1 = {
+    .base_address = XPAR_UZ_PWM_PWM_2L_UZ_INTERLOCKDEADTIME_2_BASEADDR,
+    .clock_frequency_MHz = 100,
+    .deadtime_us = UZ_PWM_DEADTIME_IN_US,
+    .inverse_bottom_switch = false
+};
+
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_d3_1(void)
+{
+    return uz_PWM_SS_2L_init(project_wizard_pwm_2l_d3_1_config);
+}
+
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_d3_1(void)
+{
+    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_d3_1);
+}
+
+static struct uz_PWM_SS_2L_config_t project_wizard_pwm_2l_d3_2_config = {
+    .base_address = XPAR_UZ_PWM_PWM_2L_PWM_AND_SS_CONTROL_V_3_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .Tristate_HB1 = false,
+    .Tristate_HB2 = false,
+    .Tristate_HB3 = false,
+    .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,
+    .PWM_freq_Hz = UZ_PWM_FREQUENCY,
+    .PWM_mode = normalized_input_via_AXI,
+    .PWM_en = true,
+    .use_external_counter = true,
+    .init_dutyCyc_HB1 = 0.0f,
+    .init_dutyCyc_HB2 = 0.0f,
+    .init_dutyCyc_HB3 = 0.0f,
+    .triangle_shift_HB1 = 0.0f,
+    .triangle_shift_HB2 = 0.0f,
+    .triangle_shift_HB3 = 0.0f,
+    .trigger_source = trigger_at_MIN
+};
+
+static uz_interlockDeadtime2L project_wizard_deadtime_2l_d3_2 = {
+    .base_address = XPAR_UZ_PWM_PWM_2L_UZ_INTERLOCKDEADTIME_3_BASEADDR,
+    .clock_frequency_MHz = 100,
+    .deadtime_us = UZ_PWM_DEADTIME_IN_US,
+    .inverse_bottom_switch = false
+};
+
+uz_PWM_SS_2L_t* initialize_project_wizard_pwm_2l_d3_2(void)
+{
+    return uz_PWM_SS_2L_init(project_wizard_pwm_2l_d3_2_config);
+}
+
+uz_interlockDeadtime2L_handle initialize_project_wizard_deadtime_2l_d3_2(void)
+{
+    return uz_interlockDeadtime2L_init(&project_wizard_deadtime_2l_d3_2);
+}
+
 void project_wizard_update_pwm_outputs(DS_Data* data)
 {
+
+	// Set project_wizard_deadtime_2l_0_d3_2 and project_wizard_deadtime_2l_0_d3_1 here but with a switch to set what is dut and what is PM.
 
     uz_PWM_SS_2L_set_duty_cycle(
         data->objects.project_wizard_pwm_2l_1_d2,

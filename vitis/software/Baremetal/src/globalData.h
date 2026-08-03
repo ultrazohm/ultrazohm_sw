@@ -164,14 +164,16 @@ typedef struct
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;
 	uz_PWM_SS_2L_t *project_wizard_pwm_2l_1_d2;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1_d2;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_d3_1;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_d3_1;
+	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_d3_2;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_d3_2;
 	uz_wavegen_three_phase *three_phase_sine;
 	uz_adcLtc2311_t *adc_ltc2311_a1;
 	uz_adcLtc2311_t *adc_ltc2311_a2;
 	uz_adcLtc2311_t *adc_ltc2311_a3;
 	uz_inverter_adapter_t *inverter_adapter_d1;
 	uz_inverter_adapter_t *inverter_adapter_d2;
-	uz_inverter_adapter_t *inverter_adapter_d3_1;
-	uz_inverter_adapter_t *inverter_adapter_d3_2;
 	uz_resolverIP_t *resolver_ip_d4_1;
 	uz_resolver_pl_interface_t *resolver_pl_interface_d4_1;
 	uz_resolverIP_t *resolver_ip_d4_2;

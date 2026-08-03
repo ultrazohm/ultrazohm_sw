@@ -56,6 +56,12 @@ PID_ERR = 0xFE   # error response
 PID_EV = 0xFD    # event packet (async)
 PID_SERV = 0xFC  # service request packet (async, e.g. SERV_TEXT)
 
+# --- DAQ event channels of the Option Z R5 slave ----------------------------
+# Created in xcp_r5_init() (xcptl_ocm.c) and declared in CANape/UZ_XCP/uz.A2L.
+# Channel 0 runs at the control-ISR rate, 1..4 are derived time slices.
+R5_EVENT_NAMES = {0: "DAQ_R5", 1: "daq_1ms", 2: "daq_10ms",
+                  3: "daq_100ms", 4: "daq_1s"}
+
 # --- Defaults baked in from the build that created this file ----------------
 # (FreeRTOS.elf, feature/xcp_lite). Override with --*-addr or let --elf resolve.
 DEFAULT_ADDR = {
@@ -314,12 +320,12 @@ class XcpUdp:
             self.sock.settimeout(old_to)
 
 
-def run_daq(xcp, item, seconds):
+def run_daq(xcp, item, seconds, event=0):
     """DAQ smoke test: stream one variable via a 1-list/1-ODT DAQ session."""
     label, a, fmt, size = item
-    print("[i] DAQ target: %s @ 0x%08X (%d bytes), event 0, %gs" %
-          (label, a, size, seconds))
-    first_pid = xcp.daq_setup_single(a, size)
+    print("[i] DAQ target: %s @ 0x%08X (%d bytes), event %d (%s), %gs" %
+          (label, a, size, event, R5_EVENT_NAMES.get(event, "?"), seconds))
+    first_pid = xcp.daq_setup_single(a, size, event=event)
     print("[+] DAQ RUNNING (first_pid=0x%02X) -- collecting ...\n" % first_pid)
     n = 0
     shown = 0
@@ -397,8 +403,8 @@ def stress_geometry(target_bytes, max_dto):
 
 
 def run_stress(xcp, args, max_dto):
-    """DAQ throughput stress: one wide multi-ODT list on event 0 at the full
-    control rate. Verifies the CP7 gateway path under load: UDP batching
+    """DAQ throughput stress: one wide multi-ODT list on args.daq_event (by
+    default the full control rate). Verifies the CP7 gateway path under load: UDP batching
     (frames/datagram), transport-CTR continuity (gaps = lost records), and the
     R5-side drop counters. hedrive reference: 160 Mbit/s sustained."""
     sizes = stress_geometry(args.stress_bytes, max_dto)
@@ -408,8 +414,9 @@ def run_stress(xcp, args, max_dto):
     if per_cycle > 5000:
         print("[!] %d B/cycle is near/above the OCM per-cycle ceiling (~6 KB): "
               "expect ocm_xcp_w_dropped to climb" % per_cycle)
-    print("[i] stress: %d B/cycle in %d ODTs @ base 0x%08X, event 0, %gs" %
-          (per_cycle, len(sizes), args.stress_base, args.daq_seconds))
+    print("[i] stress: %d B/cycle in %d ODTs @ base 0x%08X, event %d (%s), %gs" %
+          (per_cycle, len(sizes), args.stress_base, args.daq_event,
+           R5_EVENT_NAMES.get(args.daq_event, "?"), args.daq_seconds))
     print("[i]         (at 10 kHz control rate = %.0f Mbit/s DAQ payload)" %
           (per_cycle * 10e3 * 8 / 1e6))
 
@@ -431,6 +438,7 @@ def run_stress(xcp, args, max_dto):
         pass
 
     first_pid = xcp.daq_setup_stress(args.stress_base, sizes,
+                                     event=args.daq_event,
                                      prescaler=args.prescaler)
     print("[+] DAQ RUNNING (first_pid=0x%02X, %d ODTs) -- collecting ...\n" %
           (first_pid, len(sizes)))
@@ -565,12 +573,16 @@ def main():
                          "Baremetal.elf (the Option Z R5 engine, arbitrary addressing).")
     ap.add_argument("--daq", action="store_true",
                     help="DAQ smoke test: stream the first --watch item (default "
-                         "xcp_r5_cycle_count:u32) via a real DAQ list on event 0")
+                         "xcp_r5_cycle_count:u32) via a real DAQ list on --daq-event")
     ap.add_argument("--daq-seconds", type=float, default=None,
                     help="capture duration (default: 3s for --daq, 10s for --stress)")
+    ap.add_argument("--daq-event", type=int, default=0, choices=sorted(R5_EVENT_NAMES),
+                    help="DAQ event channel for --daq/--stress: "
+                         + ", ".join("%d=%s" % (k, v) for k, v in sorted(R5_EVENT_NAMES.items()))
+                         + " (default 0 = control-ISR rate)")
     ap.add_argument("--stress", action="store_true",
-                    help="DAQ throughput stress: one wide multi-ODT list on event 0 "
-                         "at the control rate. Reports Mbit/s, frames/datagram "
+                    help="DAQ throughput stress: one wide multi-ODT list on --daq-event "
+                         "(default the control rate). Reports Mbit/s, frames/datagram "
                          "(CP7 batching), transport-CTR gaps (= lost records) and "
                          "R5 drop-counter deltas. hedrive reference: 160 Mbit/s.")
     ap.add_argument("--stress-bytes", type=int, default=2000,
@@ -601,7 +613,7 @@ def main():
             if not items:
                 print("[x] cannot resolve a DAQ target (use --watch NAME:TYPE or 0xADDR:TYPE)")
                 return 1
-            return run_daq(xcp, items[0], args.daq_seconds)
+            return run_daq(xcp, items[0], args.daq_seconds, event=args.daq_event)
 
         if args.watch:
             # Arbitrary read (Option Z: any R5 address via the identity-mapped engine).

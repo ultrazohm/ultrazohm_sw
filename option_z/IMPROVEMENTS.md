@@ -42,11 +42,23 @@ At 100 kHz later: mind the queue sizing math in `xcptl_ocm.c`, the 1 µs DAQ
 timestamp granularity (10 ticks/cycle), and the R5 heap (queueInit now
 takes 32 KB of the 128 KB heap; watch `xcp_r5_init_result == -1`).
 
-### 1.2 Declared vs real DAQ event rate (cosmetic)
-`XcpCreateEvent("DAQ_R5", 1000000, 0)` in `xcptl_ocm.c` declares 1 ms; the
-event actually fires at the control rate (likely 100 µs). Only affects
-CANape's displayed rate. Align the constant once the real rate is confirmed
-on the bench.
+### 1.2 Declared vs real DAQ event rate — RESOLVED (CP12, 2026-08-03)
+`DAQ_R5` used to declare a hardcoded 1 ms while firing at the control rate.
+It now declares `XCP_R5_ISR_PERIOD_NS`, derived in `xcptl_ocm.c` from
+`UZ_PWM_FREQUENCY x Interrupt_ISR_freq_factor / INTERRUPT_ADC_TO_ISR_RATIO`
+(the expression `main.c` uses for `isr_samplerate_s`) — 25 µs at the current
+40 kHz configuration.
+
+Same pass added the hedrive time slices as derived rasters (see
+`kXcpR5Slice`): event channels 1..4 = `daq_1ms` / `daq_10ms` / `daq_100ms` /
+`daq_1s`, counted down from the ISR rate and staggered so they never fire in
+the same control cycle. Slow signals no longer have to ride the ISR raster,
+which is the cheapest possible bandwidth cut on the OCM/UDP path. Channel
+numbers are creation order and are mirrored in `CANape/UZ_XCP/uz.A2L` — a
+mismatch would silently move signals to the wrong raster, so `xcp_r5_init()`
+verifies the numbering and latches `xcp_r5_init_result = -4` if it ever
+shifts. DAQ table memory went 3 KB → 6 KB (`OPTION_DAQ_MEM_SIZE`) for the
+five lists.
 
 ## 2. Design debt — fix only if symptoms appear
 

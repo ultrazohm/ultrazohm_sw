@@ -37,6 +37,19 @@ expected near the non-XCP baseline at idle, ~+5 µs/KB while streaming.
 **Transport validated for use (1 h soak); ISR-cost re-measurement after
 the CP11 split is the only open check.**
 
+## DAQ rasters (CP12, 2026-08-03)
+
+The slave offers the hedrive set of measurement rasters, all served from
+`ISR_Control` (`xcp_r5_event()`): event channel 0 `DAQ_R5` at the control-ISR
+rate (now *declared* at its real period instead of a hardcoded 1 ms) plus the
+derived slices 1 `daq_1ms`, 2 `daq_10ms`, 3 `daq_100ms`, 4 `daq_1s`. Dividers
+come from `UZ_PWM_FREQUENCY` and the trigger factor, so they follow a PWM
+frequency change (40 kHz today → 40 control cycles per ms); the counters are
+staggered so no two slices fire in the same cycle. Channel numbers are the
+creation order and are mirrored in `CANape/UZ_XCP/uz.A2L`; `xcp_r5_init()`
+refuses to run (`xcp_r5_init_result = -4`) if the numbering ever shifts.
+Test without CANape: `xcp_poll.py --daq --daq-event 1..4`.
+
 ## Code-complete & compile-verified (2026-06-17)
 
 The full Option Z stack is written and compiles/links for both toolchains.

@@ -1,5 +1,7 @@
 # CANape files
 *.tmp
+~*
+RecycleBin.ini
 CanapeCmd.ini
 *.A2LPROJ
 *.xml

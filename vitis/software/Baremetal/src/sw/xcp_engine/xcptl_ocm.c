@@ -13,6 +13,12 @@
 |     xcp_r5_background() from the MAIN LOOP: paced command + DAQ sweep;
 |                         caller fires the IPI when it returns 1
 |
+|   DAQ rasters offered to the master (hedrive parity, see kXcpR5Slice below):
+|   DAQ_R5 at the control-ISR rate plus the derived time slices daq_1ms,
+|   daq_10ms, daq_100ms and daq_1s (hedrive names, as configured in the CANape
+|   project). Event channel numbers are the creation order 0..4 and are
+|   hardcoded in the A2L (CANape/UZ_XCP/uz.A2L) — keep both sides in sync.
+|
 |   Context split (required for high control rates, e.g. a future 100 kHz
 |   ISR): only the DAQ sampling copy (XcpEvent -> queue32) runs in the ISR;
 |   everything else — command processing, queue drain, OCM writes, cache
@@ -44,6 +50,7 @@
 #include "platform.h"
 #include "xcptl_cfg.h"
 #include "ocm_xcp_fifo.h"
+#include "../../include/isr.h" /* UZ_PWM_FREQUENCY, Interrupt_ISR_freq_factor */
 #include <string.h>
 #include <stdint.h>
 
@@ -70,8 +77,50 @@ extern uint64_t uz_SystemTime_GetUptimeInUs(void);
  * master, so depth > 1 is only used by bursts XCPlite produces itself. */
 #define XCP_R5_CTO_PENDING_DEPTH 4u
 
-/* DAQ event handle (created in xcp_r5_init, triggered in xcp_r5_event). */
+/* Control-ISR rate = the base DAQ raster. Same expression main.c uses for
+ * Global_Data.av.isr_samplerate_s, so it follows UZ_PWM_FREQUENCY, the trigger
+ * source and the ADC-to-ISR ratio automatically. */
+#define XCP_R5_ISR_FREQ_HZ                                                     \
+    ((uint32_t)((UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor) /               \
+                INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE))
+
+/* Base event period in ns, reported to the master via GET_DAQ_EVENT_INFO
+ * (0 = "sporadic or unknown", the sane answer for a misconfigured 0 Hz ISR). */
+#define XCP_R5_ISR_PERIOD_NS ((XCP_R5_ISR_FREQ_HZ) > 0u ? (1000000000u / (XCP_R5_ISR_FREQ_HZ)) : 0u)
+
+/* Control cycles per millisecond, the divider base of the named time slices.
+ * Clamped to >= 1 so an ISR slower than 1 kHz yields slow-but-sane rasters
+ * instead of one that fires every cycle. Note the rasters drift when the ISR
+ * rate is not an integer multiple of 1 kHz (e.g. at 12.5 kHz "1 ms" becomes
+ * 12 cycles = 0.96 ms); the timestamp CANape sees is always the true one. */
+#define XCP_R5_CYCLES_PER_MS (((XCP_R5_ISR_FREQ_HZ) / 1000u) > 0u ? ((XCP_R5_ISR_FREQ_HZ) / 1000u) : 1u)
+
+/* Named DAQ time slices, ported from the hedrive project: slow signals get a
+ * slow raster instead of riding the control-ISR rate (which is what actually
+ * costs OCM/UDP bandwidth). Derived from the base event by integer division.
+ * Event channel = index + 1 (channel 0 is DAQ_R5), enforced in xcp_r5_init. */
+#define XCP_R5_SLICE_COUNT 4u
+
+static const struct {
+    const char *name;       /* A2L EVENT name */
+    uint32_t cycle_time_ns; /* nominal period, for GET_DAQ_EVENT_INFO */
+    uint32_t divider;       /* control cycles per raster tick */
+} kXcpR5Slice[XCP_R5_SLICE_COUNT] = {
+    {"daq_1ms", 1000000u, 1u * XCP_R5_CYCLES_PER_MS},
+    {"daq_10ms", 10000000u, 10u * XCP_R5_CYCLES_PER_MS},
+    {"daq_100ms", 100000000u, 100u * XCP_R5_CYCLES_PER_MS},
+    {"daq_1s", 1000000000u, 1000u * XCP_R5_CYCLES_PER_MS},
+};
+
+/* DAQ event handles (created in xcp_r5_init, triggered in xcp_r5_event):
+ * xcp_r5_daq_event is the base raster, xcp_r5_daq_slice_event[] the named
+ * time slices in kXcpR5Slice order. */
 uint16_t xcp_r5_daq_event = 0u;
+uint16_t xcp_r5_daq_slice_event[XCP_R5_SLICE_COUNT] = {0u};
+
+/* Slice down-counters, staggered so the slices never all fire in the same
+ * control cycle (bounds the DAQ payload one ISR run can produce). */
+static uint32_t gSliceCnt[XCP_R5_SLICE_COUNT] = {0u, 1u, 2u, 3u};
 
 /* Diagnostics (inspect via JTAG or XCP SHORT_UPLOAD):
  *   xcp_r5_init_result      0 = ok, negative = init failed (engine disabled)
@@ -220,13 +269,22 @@ bool XcpTlWaitForTransmitQueueEmpty(uint16_t timeout_ms) {
 /* --- R5 driving API ------------------------------------------------------- */
 
 /* Sample DAQ. Call from ISR_Control. Thin: XcpEvent pushes to the queue; the
- * OCM write happens in xcp_r5_poll(). */
+ * OCM write happens in xcp_r5_poll(). An event with no running DAQ list costs
+ * only the isStarted()/isDaqRunning() checks, so the unused rasters are free. */
 void xcp_r5_event(void) {
     if (gQueue == NULL) {
         return; /* init failed or not run: engine disabled */
     }
     xcp_r5_cycle_count++;
     XcpEvent(xcp_r5_daq_event);
+
+    /* Named time slices derived from the control-ISR rate. */
+    for (uint32_t i = 0u; i < XCP_R5_SLICE_COUNT; i++) {
+        if (++gSliceCnt[i] >= kXcpR5Slice[i].divider) {
+            gSliceCnt[i] = 0u;
+            XcpEvent(xcp_r5_daq_slice_event[i]);
+        }
+    }
 }
 
 /* One full exchange sweep (MAIN-LOOP context; use xcp_r5_background() for
@@ -331,11 +389,23 @@ int xcp_r5_init(const char *name, const char *epk) {
         return -2;
     }
     XcpStart(gQueue, false);
-    xcp_r5_daq_event = (uint16_t)XcpCreateEvent("DAQ_R5", 1000000u, 0u);
+    xcp_r5_daq_event = (uint16_t)XcpCreateEvent("DAQ_R5", XCP_R5_ISR_PERIOD_NS, 0u);
     if (xcp_r5_daq_event == 0xFFFFu) { /* XCP_UNDEFINED_EVENT_ID */
         gQueue = NULL; /* keep the ISR hooks inert */
         xcp_r5_init_result = -3;
         return -3;
+    }
+    /* Named time slices, created in A2L channel order. A shifted channel
+     * number would silently move every signal to the wrong raster, so a
+     * mismatch disables the engine instead (the A2L numbers are static). */
+    for (uint32_t i = 0u; i < XCP_R5_SLICE_COUNT; i++) {
+        xcp_r5_daq_slice_event[i] =
+            (uint16_t)XcpCreateEvent(kXcpR5Slice[i].name, kXcpR5Slice[i].cycle_time_ns, 0u);
+        if (xcp_r5_daq_slice_event[i] != (uint16_t)(xcp_r5_daq_event + 1u + i)) {
+            gQueue = NULL; /* keep the ISR hooks inert */
+            xcp_r5_init_result = -4;
+            return -4;
+        }
     }
     xcp_r5_init_result = 0;
     return 0;

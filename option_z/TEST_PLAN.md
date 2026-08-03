@@ -122,6 +122,9 @@ Sets up a real dynamic DAQ list (1 list / 1 ODT / 1 entry, timestamped, event 0
 
 - ✅ `DAQ OK: N samples … (~F Hz)` with F ≈ the control frequency → the entire
   DAQ path (XcpEvent → queue → OCM → gateway → UDP) is proven; CANape will work.
+- Add `--daq-event 1|2|3|4` to run the same test on the derived rasters
+  `daq_1ms` / `daq_10ms` / `daq_100ms` / `daq_1s` (CP12). Expected F: 1000,
+  100, 10 and 1 Hz — the fastest check that the ISR dividers are right.
 - ❌ commands OK but `no DTOs received` → DAQ transmit path: check
   `ocm_xcp_w_dropped` / `xcp_r5_tx_oversize_drop` on the R5 and `gMasterValid`
   on the A53 (JTAG).
@@ -171,7 +174,10 @@ python tools/xcp_test/gen_a2l.py --elf vitis/workspace/Baremetal/Debug/Baremetal
   --out UltraZohm_XCP_R5.a2l
 ```
 Attach to a CANape XCP/UDP device at `192.168.1.233:5556`, measure, and try DAQ
-on the `DAQ_R5` event.
+on the `DAQ_R5` event. The generated A2L (and the ready-made project in
+`CANape/UZ_XCP/uz.A2L`) declares all five rasters — `DAQ_R5` (control-ISR
+rate) and the derived `daq_1ms` / `daq_10ms` / `daq_100ms` / `daq_1s` on event
+channels 1..4 — so each signal can be assigned to the raster it needs.
 
 ## Debugging (it's untested — likely first-try issues)
 

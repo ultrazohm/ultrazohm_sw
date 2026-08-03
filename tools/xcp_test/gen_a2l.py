@@ -10,7 +10,9 @@ reads the symbol addresses with the Vitis 'nm' tool and emits an A2L containing:
   - RECORD_LAYOUTs + an identity COMPU_METHOD
   - MEASUREMENT objects (counter, sine, Phase-3 timestamp + 8 image signals)
     with correct ECU_ADDRESS
-  - an XCP IF_DATA block (UDP, port 5556) with the DAQ_1ms event
+  - an XCP IF_DATA block (UDP, port 5556) with the DAQ_1ms event (the A53
+    demo) or the R5 engine's five rasters DAQ_R5 + daq_1ms/10ms/100ms/1s
+    (--symbols)
 
 Usage:
     python gen_a2l.py --ip 192.168.1.42
@@ -54,12 +56,13 @@ def nm_addresses(elf, nm):
     return addrs
 
 
-def measurement(name, dtype, addr, comment, lower="0", upper="4294967295"):
+def measurement(name, dtype, addr, comment, lower="0", upper="4294967295",
+                daq_event="FIXED_EVENT_LIST EVENT 0x0000"):
     return f"""    /begin MEASUREMENT {name} "{comment}"
       {dtype} identity 0 0 {lower} {upper}
       ECU_ADDRESS 0x{addr:08X}
       /begin IF_DATA XCP
-        /begin DAQ_EVENT FIXED_EVENT_LIST EVENT 0x0000 /end DAQ_EVENT
+        /begin DAQ_EVENT {daq_event} /end DAQ_EVENT
       /end IF_DATA
     /end MEASUREMENT
 """
@@ -152,21 +155,44 @@ SYM_TYPEMAP = {
     "f32": ("FLOAT32_IEEE", "-3.4E38", "3.4E38"),
 }
 
+# DAQ rasters of the R5 engine, in the order xcp_r5_init() creates them
+# (xcptl_ocm.c): (name, channel, TIME_CYCLE, TIME_UNIT). The unit codes are
+# the ASAM ones GET_DAQ_EVENT_INFO derives from the event cycle time
+# (0x02 = 100 ns, 0x04 = 10 us, 0x05 = 100 us, 0x06 = 1 ms, 0x07 = 10 ms).
+# Channel 0 follows the ISR rate: 250 x 100 ns = 25 us at the default 40 kHz.
+R5_EVENTS = [
+    ("DAQ_R5", 0, 0xFA, 0x02),
+    ("daq_1ms", 1, 0x64, 0x04),
+    ("daq_10ms", 2, 0x64, 0x05),
+    ("daq_100ms", 3, 0x64, 0x06),
+    ("daq_1s", 4, 0x64, 0x07),
+]
+
 
 def build_symbols_a2l(items, ip, port):
     """items: [(name, addr, type)] -> a full A2L (Option Z, R5 ELF symbols)."""
+    # Every symbol may be measured on any raster; default to the fast one.
+    daq_event = ("VARIABLE /begin AVAILABLE_EVENT_LIST "
+                 + " ".join("EVENT 0x%04X" % ch for _, ch, _, _ in R5_EVENTS)
+                 + " /end AVAILABLE_EVENT_LIST /begin DEFAULT_EVENT_LIST "
+                   "EVENT 0x0000 /end DEFAULT_EVENT_LIST")
     meas = []
     for name, a, typ in items:
         dtype, lo, hi = SYM_TYPEMAP.get(typ, SYM_TYPEMAP["f32"])
-        meas.append(measurement(name, dtype, a, "R5 %s" % name, lo, hi))
+        meas.append(measurement(name, dtype, a, "R5 %s" % name, lo, hi, daq_event))
     block = "\n".join(meas)
     # Reuse build_a2l's document shell by string-substituting the meas block and title.
     doc = build_a2l({}, ip, port)  # empty -> shell with no measurements
     doc = doc.replace("XCPlite on A53 / FreeRTOS / lwIP (UDP)",
                       "XCPlite engine on R5 (Option Z, arbitrary addressing)")
-    # The R5 engine's event 0 is named DAQ_R5 (created in xcp_r5_init).
-    doc = doc.replace('/begin EVENT "DAQ_1ms" "DAQ1ms"',
-                      '/begin EVENT "DAQ_R5" "DAQ_R5"')
+    # Replace the single-event demo raster with the R5 engine's event list.
+    events = "\n".join(
+        '        /begin EVENT "%s" "%s" 0x%04X DAQ 0xFF 0x%02X 0x%02X 0x00 /end EVENT'
+        % (name, name, ch, cycle, unit) for name, ch, cycle, unit in R5_EVENTS)
+    doc = doc.replace(
+        '        /begin EVENT "DAQ_1ms" "DAQ1ms" 0x0000 DAQ 0xFF 0x01 0x07 0x00 /end EVENT',
+        events)
+    doc = doc.replace("DYNAMIC 0 1 0", "DYNAMIC 0 %d 0" % len(R5_EVENTS))
     # Insert the measurements after COMPU_METHOD/RECORD_LAYOUTs, before IF_DATA.
     return doc.replace("    /begin IF_DATA XCP",
                        block + "\n    /begin IF_DATA XCP", 1)

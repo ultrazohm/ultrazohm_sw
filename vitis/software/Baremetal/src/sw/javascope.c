@@ -93,6 +93,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_VA_DUTY_B] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_2;
 	js_ch_observable[JSO_VA_DUTY_C] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_3;
 	js_ch_observable[JSO_VA_SOR_VIOLATION] = &data->av.va_control_violation_code;
+	js_ch_observable[JSO_IM_1LA7073_I_A]=&data->av.im_siemens_1LA7073_ia;
+	js_ch_observable[JSO_IM_1LA7073_I_B]=&data->av.im_siemens_1LA7073_ib;
+	js_ch_observable[JSO_IM_1LA7073_I_C]=&data->av.im_siemens_1LA7073_ic;
+	js_ch_observable[JSO_IM_1LA7073_V_DC]=&data->av.im_siemens_1LA7073_vdc;
+	js_ch_observable[JSO_IM_1LA7073_SPEED_RPM]=&data->av.im_siemens_1LA7073_speed_rpm;
+	js_ch_observable[JSO_IM_1LA7073_FREQUENCY_HZ]=&data->av.im_siemens_1LA7073_uf_data.frequency_command_Hz;
+	js_ch_observable[JSO_IM_1LA7073_VOLTAGE_V]=&data->av.im_siemens_1LA7073_uf_data.applied_voltage_magnitude_V;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
@@ -146,6 +153,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_VA_I_D] = &data->av.va_control_actual.i_dq_in_A.d;
 	js_slowDataArray[JSSD_FLOAT_VA_I_Q] = &data->av.va_control_actual.i_dq_in_A.q;
 	js_slowDataArray[JSSD_FLOAT_VA_SOR_Violation] = &data->av.va_control_violation_code;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Speed_RPM] = &data->av.im_siemens_1LA7073_speed_rpm;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_V_DC] = &data->av.im_siemens_1LA7073_vdc;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_A] = &data->av.im_siemens_1LA7073_ia;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_B] = &data->av.im_siemens_1LA7073_ib;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_C] = &data->av.im_siemens_1LA7073_ic;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Frequency_Hz] = &data->av.im_siemens_1LA7073_uf_data.frequency_command_Hz;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Voltage_V] = &data->av.im_siemens_1LA7073_uf_data.applied_voltage_magnitude_V;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 

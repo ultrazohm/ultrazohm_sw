@@ -208,6 +208,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		data->rasv.im_siemens_1LA7073_frequency_reference_Hz = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -272,6 +273,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_1): // Toggle VA speed controller (ACT button)
 			uz_pmsm_control_reset(data->objects.va_control);
+			uz_u_f_control_acknowledge_and_reset_error(data->objects.im_siemens_1LA7073_control,40.0f);
+			uz_u_f_control_reset(data->objects.im_siemens_1LA7073_control);
 			error_checks_reset();
 			data->rasv.va_enable_speed_control = !data->rasv.va_enable_speed_control;
 			break;

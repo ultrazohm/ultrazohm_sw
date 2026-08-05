@@ -62,6 +62,10 @@ static const error_checks_config_t va_error_checks_config = {
 	.iphase_max_A = VA_PROTECTION_MAX_PHASE_CURRENT_A,
 	.max_mechanical_speed_rpm = VA_PROTECTION_MAX_SPEED_RPM,
 };
+static const error_checks_config_t im_error_checks_config={.vdc_min_V=IM_1LA7073_VDC_MIN_V,.vdc_max_V=IM_1LA7073_VDC_MAX_V,.iphase_max_A=IM_1LA7073_PHASE_CURRENT_MAX_A,.max_mechanical_speed_rpm=IM_1LA7073_SPEED_MAX_RPM};
+static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
+static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
+static uint32_t im_current_offset_samples;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -83,14 +87,22 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
+	if(im_current_offset_samples<1000U){im_current_sum_a+=Global_Data.av.adc_ltc2311_a1_ch0;im_current_sum_b+=Global_Data.av.adc_ltc2311_a1_ch1;im_current_sum_c+=Global_Data.av.adc_ltc2311_a1_ch2;im_current_offset_samples++;if(im_current_offset_samples==1000U){im_current_offset_a=(float)(im_current_sum_a/1000.0);im_current_offset_b=(float)(im_current_sum_b/1000.0);im_current_offset_c=(float)(im_current_sum_c/1000.0);}}
+	Global_Data.av.im_siemens_1LA7073_ia=Global_Data.av.adc_ltc2311_a1_ch0-im_current_offset_a;
+	Global_Data.av.im_siemens_1LA7073_ib=Global_Data.av.adc_ltc2311_a1_ch1-im_current_offset_b;
+	Global_Data.av.im_siemens_1LA7073_ic=Global_Data.av.adc_ltc2311_a1_ch2-im_current_offset_c;
+	Global_Data.av.im_siemens_1LA7073_vdc=Global_Data.av.adc_ltc2311_a1_ch3-2.5f;
+	Global_Data.av.im_siemens_1LA7073_speed_rpm=-Global_Data.av.va_control_actual.speed_in_rpm;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 	bool const monitor_dc_undervoltage =
 		(current_state == running_state) || (current_state == control_state);
 	(void)error_checks_step(&Global_Data.av, &va_error_checks_config, monitor_dc_undervoltage);
+	(void)error_checks_step_im(Global_Data.av.im_siemens_1LA7073_vdc,Global_Data.av.im_siemens_1LA7073_ia,Global_Data.av.im_siemens_1LA7073_ib,Global_Data.av.im_siemens_1LA7073_ic,Global_Data.av.im_siemens_1LA7073_speed_rpm,&im_error_checks_config,monitor_dc_undervoltage);
 	current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
+		uz_u_f_control_reset(Global_Data.objects.im_siemens_1LA7073_control);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
 		update_va_control(false, false);
@@ -121,6 +133,12 @@ void ISR_Control(void *data)
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
         // Start: Control algorithm - only if ultrazohm is in control state
 		update_va_control(true, true);
+		uz_u_f_control_set_frequency(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz);
+		struct uz_DutyCycle_t im_duty=uz_u_f_control_sample(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.av.im_siemens_1LA7073_vdc,Global_Data.av.isr_samplerate_s);
+		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=im_duty.DutyCycle_A;
+		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=im_duty.DutyCycle_B;
+		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3=im_duty.DutyCycle_C;
+		Global_Data.av.im_siemens_1LA7073_uf_data=*uz_u_f_control_get_data(Global_Data.objects.im_siemens_1LA7073_control);
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */

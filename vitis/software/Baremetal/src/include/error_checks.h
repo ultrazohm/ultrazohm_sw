@@ -13,6 +13,13 @@
 #define ERR_VA_OVERCURRENT_W    (1U << 4)
 #define ERR_VA_OVERSPEED        (1U << 5)
 #define ERR_VA_NAN_MEASUREMENT  (1U << 6)
+#define ERR_IM_UNDERVOLTAGE_DC  (1U << 7)
+#define ERR_IM_OVERVOLTAGE_DC   (1U << 8)
+#define ERR_IM_OVERCURRENT_U    (1U << 9)
+#define ERR_IM_OVERCURRENT_V    (1U << 10)
+#define ERR_IM_OVERCURRENT_W    (1U << 11)
+#define ERR_IM_OVERSPEED        (1U << 12)
+#define ERR_IM_NAN_MEASUREMENT  (1U << 13)
 
 typedef struct {
 	float vdc_min_V;
@@ -32,5 +39,7 @@ uint32_t error_checks_step(const actualValues *av, const error_checks_config_t *
 	bool monitor_dc_undervoltage);
 bool error_checks_trip_pending(void);
 void error_checks_reset(void);
+uint32_t error_checks_step_im(float vdc,float ia,float ib,float ic,float speed_rpm,
+	const error_checks_config_t *config,bool monitor_dc_undervoltage);
 
 #endif /* ERROR_CHECKS_H_ */

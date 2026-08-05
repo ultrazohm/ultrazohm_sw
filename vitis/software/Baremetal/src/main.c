@@ -24,6 +24,7 @@ DS_Data Global_Data = {
 		.va_disturbance_torque_Nm = 0.0f,
 		.va_enable_speed_control = false,
 		.va_acknowledge_error = false,
+		.im_siemens_1LA7073_frequency_reference_Hz = 0.0f,
 /* Project Wizard BEGIN: rasv_initializer */
         .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
@@ -94,6 +95,7 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
 			Global_Data.objects.va_control = va_control_init();
+			Global_Data.objects.im_siemens_1LA7073_control = im_siemens_1LA7073_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

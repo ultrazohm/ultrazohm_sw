@@ -1,0 +1,14 @@
+#ifndef IM_SIEMENS_1LA7073_H
+#define IM_SIEMENS_1LA7073_H
+#include "../uz/uz_u_f_control/uz_u_f_control.h"
+#define IM_1LA7073_VDC_MIN_V 20.0f
+#define IM_1LA7073_VDC_MAX_V 400.0f
+#define IM_1LA7073_PHASE_CURRENT_MAX_A 6.0f
+#define IM_1LA7073_SPEED_MAX_RPM 1800.0f
+#define IM_1LA7073_UF_RATIO_V_PER_HZ 4.6f
+#define IM_1LA7073_UF_BOOST_V 5.0f
+#define IM_1LA7073_UF_MAX_VOLTAGE_V 225.0f
+#define IM_1LA7073_UF_MAX_FREQUENCY_HZ 50.0f
+#define IM_1LA7073_UF_RAMP_HZ_PER_S 5.0f
+uz_u_f_control_t *im_siemens_1LA7073_init(void);
+#endif

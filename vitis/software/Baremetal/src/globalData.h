@@ -16,6 +16,7 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "uz/uz_u_f_control/uz_u_f_control.h"
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -28,6 +29,9 @@ typedef struct _actualValues_ {
 	struct uz_pmsm_reference_values va_control_reference;
 	enum uz_pmsm_control_safe_operating_region_violation va_control_violation;
 	float va_control_violation_code;
+	float im_siemens_1LA7073_ia, im_siemens_1LA7073_ib, im_siemens_1LA7073_ic;
+	float im_siemens_1LA7073_vdc, im_siemens_1LA7073_speed_rpm;
+	struct uz_u_f_control_data_t im_siemens_1LA7073_uf_data;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -62,6 +66,7 @@ typedef struct _referenceAndSetValues_ {
 	float va_disturbance_torque_Nm;
 	bool va_enable_speed_control;
 	bool va_acknowledge_error;
+	float im_siemens_1LA7073_frequency_reference_Hz;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -78,6 +83,7 @@ typedef struct _referenceAndSetValues_ {
 typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsm_control_t* va_control;
+	uz_u_f_control_t* im_siemens_1LA7073_control;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

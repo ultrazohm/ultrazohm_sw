@@ -51,6 +51,7 @@
 
 #include "include/pwm_init.h"
 #include "include/va_control.h"
+#include "include/im_siemens_1LA7073.h"
 
 // Project Wizard adapter slot init headers
 #include "include/a1_adapter_init.h"

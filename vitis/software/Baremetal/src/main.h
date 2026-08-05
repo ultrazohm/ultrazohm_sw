@@ -50,6 +50,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "include/va_control.h"
 
 // Project Wizard adapter slot init headers
 #include "include/a1_adapter_init.h"

@@ -30,6 +30,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_init.h"
 #include "../include/project_wizard_visualization.h"
+#include "../include/error_checks.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -50,6 +51,17 @@ static void update_adapter_d2(void);
 static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
+static void update_va_control(bool enable_output, bool monitor_dc_undervoltage);
+
+/* AXI-GPIO bit index matching the bitstream signal DIG_13. */
+#define D1_DIG_13_PIN_ZERO_BASED 13U
+
+static const error_checks_config_t va_error_checks_config = {
+	.vdc_min_V = VA_PROTECTION_MIN_DC_VOLTAGE_V,
+	.vdc_max_V = VA_PROTECTION_MAX_DC_VOLTAGE_V,
+	.iphase_max_A = VA_PROTECTION_MAX_PHASE_CURRENT_A,
+	.max_mechanical_speed_rpm = VA_PROTECTION_MAX_SPEED_RPM,
+};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -73,8 +85,15 @@ void ISR_Control(void *data)
     update_adapter_d5();
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
+	bool const monitor_dc_undervoltage =
+		(current_state == running_state) || (current_state == control_state);
+	(void)error_checks_step(&Global_Data.av, &va_error_checks_config, monitor_dc_undervoltage);
+	current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
+		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
+		update_va_control(false, false);
         /* Project Wizard BEGIN: idle_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
@@ -88,6 +107,9 @@ void ISR_Control(void *data)
     }
     else if (current_state == running_state)
     {
+		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
+		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
+		update_va_control(false, true);
         /* Project Wizard BEGIN: running_state isr_actions */
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
@@ -95,20 +117,19 @@ void ISR_Control(void *data)
     }
     else if (current_state == control_state)
     {
+		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
+		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
         // Start: Control algorithm - only if ultrazohm is in control state
-        uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
+		update_va_control(true, true);
 
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */
     }
     else if (current_state == error_state)
     {
+		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
+		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
+		update_va_control(false, false);
         /* Project Wizard BEGIN: error_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
@@ -149,37 +170,20 @@ static void update_adapter_a1(void)
 static void update_adapter_a2(void)
 {
     /* Project Wizard BEGIN: A2 isr_control */
-    update_dac8831_a2_outputs(&Global_Data);
+    Global_Data.av.adc_ltc2311_a2_ch0 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[8], 0U);
+    Global_Data.av.adc_ltc2311_a2_ch1 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[9], 1U);
+    Global_Data.av.adc_ltc2311_a2_ch2 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[10], 2U);
+    Global_Data.av.adc_ltc2311_a2_ch3 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[11], 3U);
+    Global_Data.av.adc_ltc2311_a2_ch4 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[12], 4U);
+    Global_Data.av.adc_ltc2311_a2_ch5 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[13], 5U);
+    Global_Data.av.adc_ltc2311_a2_ch6 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[14], 6U);
+    Global_Data.av.adc_ltc2311_a2_ch7 = uz_adcLtc2311_convert_raw_to_physical_value(Global_Data.objects.adc_ltc2311_a2, analog_adc_data.data[15], 7U);
 /* Project Wizard END: A2 isr_control */
 }
 
 static void update_adapter_a3(void)
 {
     /* Project Wizard BEGIN: A3 isr_control */
-    Global_Data.av.adc_max11331_a3_ch0 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[8]);
-    Global_Data.av.adc_max11331_a3_ch1 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[9]);
-    Global_Data.av.adc_max11331_a3_ch2 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[10]);
-    Global_Data.av.adc_max11331_a3_ch3 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[11]);
-    Global_Data.av.adc_max11331_a3_ch4 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[12]);
-    Global_Data.av.adc_max11331_a3_ch5 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[13]);
-    Global_Data.av.adc_max11331_a3_ch6 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[14]);
-    Global_Data.av.adc_max11331_a3_ch7 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[15]);
-    Global_Data.av.adc_max11331_a3_ch8 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[16]);
-    Global_Data.av.adc_max11331_a3_ch9 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[17]);
-    Global_Data.av.adc_max11331_a3_ch10 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[18]);
-    Global_Data.av.adc_max11331_a3_ch11 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[19]);
-    Global_Data.av.adc_max11331_a3_ch12 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[20]);
-    Global_Data.av.adc_max11331_a3_ch13 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[21]);
-    Global_Data.av.adc_max11331_a3_ch14 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[22]);
-    Global_Data.av.adc_max11331_a3_ch15 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[23]);
-    Global_Data.av.adc_max11331_a3_ch16 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[24]);
-    Global_Data.av.adc_max11331_a3_ch17 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[25]);
-    Global_Data.av.adc_max11331_a3_ch18 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[26]);
-    Global_Data.av.adc_max11331_a3_ch19 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[27]);
-    Global_Data.av.adc_max11331_a3_ch20 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[28]);
-    Global_Data.av.adc_max11331_a3_ch21 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[29]);
-    Global_Data.av.adc_max11331_a3_ch22 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[30]);
-    Global_Data.av.adc_max11331_a3_ch23 = convert_adc_max11331_a3_raw_to_physical_value(analog_adc_data.data[31]);
 /* Project Wizard END: A3 isr_control */
 }
 
@@ -193,6 +197,7 @@ static void update_adapter_d1(void)
 static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
+    update_inverter_adapter_d2_outputs(&Global_Data);
 /* Project Wizard END: D2 isr_control */
 }
 
@@ -211,7 +216,62 @@ static void update_adapter_d4(void)
 static void update_adapter_d5(void)
 {
     /* Project Wizard BEGIN: D5 isr_control */
+    Global_Data.av.incremental_encoder_d5_2_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_2);
+    Global_Data.av.incremental_encoder_d5_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_2);
 /* Project Wizard END: D5 isr_control */
+}
+
+static void update_va_control(bool enable_output, bool monitor_dc_undervoltage)
+{
+    struct uz_pmsm_measurement_values measurements = {
+        .i_abc_in_A = {.a = Global_Data.av.adc_ltc2311_a2_ch3, .b = Global_Data.av.adc_ltc2311_a2_ch2, .c = Global_Data.av.adc_ltc2311_a2_ch1},
+        .v_abc_in_V = {.a = Global_Data.av.adc_ltc2311_a2_ch7, .b = Global_Data.av.adc_ltc2311_a2_ch6, .c = Global_Data.av.adc_ltc2311_a2_ch5},
+        .v_dc_in_V = Global_Data.av.adc_ltc2311_a2_ch0,
+        .i_dc_in_A = Global_Data.av.adc_ltc2311_a2_ch4,
+        .omega_mech_rad_per_sec = Global_Data.av.incremental_encoder_d5_2_omega_mech,
+        .theta_mech = Global_Data.av.incremental_encoder_d5_2_theta_el / 4.0f};
+
+	/* An unpowered DC link is valid in idle/error. Overvoltage and overcurrent
+	 * remain active in every state; undervoltage is armed in running/control. */
+	if ((!monitor_dc_undervoltage) && (measurements.v_dc_in_V < VA_PROTECTION_MIN_DC_VOLTAGE_V)) {
+		measurements.v_dc_in_V = VA_PROTECTION_MIN_DC_VOLTAGE_V;
+	}
+
+	bool const acknowledge_error = Global_Data.rasv.va_acknowledge_error;
+	if (acknowledge_error) {
+		/* The test-bench reset clears its error latch unconditionally. Do the
+		 * equivalent for uz_pmsm_control with a neutral, valid measurement set.
+		 * The real measurements are sampled and checked again directly below. */
+		struct uz_pmsm_measurement_values reset_measurements = measurements;
+		reset_measurements.i_abc_in_A = (uz_3ph_abc_t){.a = 0.0f, .b = 0.0f, .c = 0.0f};
+		reset_measurements.v_dc_in_V = 0.5f * (VA_PROTECTION_MIN_DC_VOLTAGE_V + VA_PROTECTION_MAX_DC_VOLTAGE_V);
+		reset_measurements.i_dc_in_A = 0.0f;
+		reset_measurements.omega_mech_rad_per_sec = 0.0f;
+		uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.va_control, reset_measurements);
+		uz_pmsm_control_reset(Global_Data.objects.va_control);
+		Global_Data.rasv.va_acknowledge_error = false;
+	}
+
+    uz_pmsm_control_enable_speed_control(Global_Data.objects.va_control, Global_Data.rasv.va_enable_speed_control);
+    uz_pmsm_control_enable(Global_Data.objects.va_control, enable_output);
+    struct uz_DutyCycle_t duty = uz_pmsm_control_sample_duty(Global_Data.objects.va_control, measurements,
+        Global_Data.rasv.va_speed_reference_rpm, Global_Data.rasv.va_current_reference_A,
+        Global_Data.rasv.va_disturbance_torque_Nm);
+
+    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
+    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = duty.DutyCycle_B;
+    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = duty.DutyCycle_C;
+    Global_Data.av.va_control_actual = *uz_pmsm_control_get_actual_data(Global_Data.objects.va_control);
+    Global_Data.av.va_control_reference = *uz_pmsm_control_get_reference_values(Global_Data.objects.va_control);
+    Global_Data.av.va_control_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.va_control);
+	Global_Data.av.va_control_violation_code = (float)Global_Data.av.va_control_violation;
+	if (Global_Data.av.va_control_violation != uz_pmsm_control_no_violation) {
+		ultrazohm_state_machine_set_error(true);
+	}
 }
 
 //==============================================================================================================================================================
@@ -376,6 +436,3 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
 		}
     }
 }
-
-
-

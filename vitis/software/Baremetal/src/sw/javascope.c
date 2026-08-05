@@ -19,6 +19,7 @@
 #include "../include/project_wizard_visualization.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../include/error_checks.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
@@ -73,6 +74,25 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_VA_I_A] = &data->av.adc_ltc2311_a2_ch3;
+	js_ch_observable[JSO_VA_I_B] = &data->av.adc_ltc2311_a2_ch2;
+	js_ch_observable[JSO_VA_I_C] = &data->av.adc_ltc2311_a2_ch1;
+	js_ch_observable[JSO_VA_V_DC] = &data->av.adc_ltc2311_a2_ch0;
+	js_ch_observable[JSO_VA_I_DC] = &data->av.adc_ltc2311_a2_ch4;
+	js_ch_observable[JSO_VA_SPEED_RPM] = &data->av.va_control_actual.speed_in_rpm;
+	js_ch_observable[JSO_VA_OMEGA_MECH] = &data->av.incremental_encoder_d5_2_omega_mech;
+	js_ch_observable[JSO_VA_THETA_EL] = &data->av.va_control_actual.theta_el;
+	js_ch_observable[JSO_VA_I_D] = &data->av.va_control_actual.i_dq_in_A.d;
+	js_ch_observable[JSO_VA_I_Q] = &data->av.va_control_actual.i_dq_in_A.q;
+	js_ch_observable[JSO_VA_V_D] = &data->av.va_control_actual.v_dq_in_V.d;
+	js_ch_observable[JSO_VA_V_Q] = &data->av.va_control_actual.v_dq_in_V.q;
+	js_ch_observable[JSO_VA_I_D_REF] = &data->av.va_control_reference.i_dq_in_A.d;
+	js_ch_observable[JSO_VA_I_Q_REF] = &data->av.va_control_reference.i_dq_in_A.q;
+	js_ch_observable[JSO_VA_SPEED_REF_RPM] = &data->rasv.va_speed_reference_rpm;
+	js_ch_observable[JSO_VA_DUTY_A] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_1;
+	js_ch_observable[JSO_VA_DUTY_B] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_2;
+	js_ch_observable[JSO_VA_DUTY_C] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_3;
+	js_ch_observable[JSO_VA_SOR_VIOLATION] = &data->av.va_control_violation_code;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
@@ -117,6 +137,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Error_Code] = &js_error_code;
+	js_slowDataArray[JSSD_FLOAT_VA_Speed_RPM] = &data->av.va_control_actual.speed_in_rpm;
+	js_slowDataArray[JSSD_FLOAT_VA_V_DC] = &data->av.adc_ltc2311_a2_ch0;
+	js_slowDataArray[JSSD_FLOAT_VA_I_A] = &data->av.adc_ltc2311_a2_ch3;
+	js_slowDataArray[JSSD_FLOAT_VA_I_B] = &data->av.adc_ltc2311_a2_ch2;
+	js_slowDataArray[JSSD_FLOAT_VA_I_C] = &data->av.adc_ltc2311_a2_ch1;
+	js_slowDataArray[JSSD_FLOAT_VA_I_D] = &data->av.va_control_actual.i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_VA_I_Q] = &data->av.va_control_actual.i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_VA_SOR_Violation] = &data->av.va_control_violation_code;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 

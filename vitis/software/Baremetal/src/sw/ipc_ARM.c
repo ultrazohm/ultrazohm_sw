@@ -18,6 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../include/error_checks.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -186,19 +187,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+			data->av.snd_fld[1] = value;
+			data->rasv.va_speed_reference_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+			data->av.snd_fld[2] = value;
+			data->rasv.va_current_reference_A.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+			data->av.snd_fld[3] = value;
+			data->rasv.va_current_reference_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+			data->av.snd_fld[4] = value;
+			data->rasv.va_disturbance_torque_Nm = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -265,8 +270,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+		case (My_Button_1): // Toggle VA speed controller (ACT button)
+			uz_pmsm_control_reset(data->objects.va_control);
+			error_checks_reset();
+			data->rasv.va_enable_speed_control = !data->rasv.va_enable_speed_control;
 			break;
 
 		case (My_Button_2):
@@ -298,7 +305,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
-
+			data->rasv.va_enable_speed_control = false;
+			uz_pmsm_control_reset(data->objects.va_control);
+			data->rasv.va_acknowledge_error = true;
+			/* Same reset sequence as the VA test-bench error handling. */
+			ultrazohm_state_machine_set_stop(true);
+			ultrazohm_state_machine_set_error(false);
 			break;
 
 		case (0xFFFF):
@@ -311,7 +323,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -341,12 +352,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	/* Bit 4 - My_Button_1: ACT feedback for VA speed controller */
+	if (data->rasv.va_enable_speed_control) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

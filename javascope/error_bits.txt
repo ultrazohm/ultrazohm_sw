@@ -1,0 +1,7 @@
+Bit 0: VA-Unterspannung
+Bit 1: VA-Überspannung
+Bit 2: Überstrom Phase U
+Bit 3: Überstrom Phase V
+Bit 4: Überstrom Phase W
+Bit 5: Überdrehzahl
+Bit 6: NaN/ungültiger Messwert

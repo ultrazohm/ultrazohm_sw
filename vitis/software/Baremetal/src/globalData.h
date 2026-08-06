@@ -140,6 +140,7 @@ typedef struct _referenceAndSetValues_
 	/* Project Wizard BEGIN: referenceAndSetValues */
 	struct uz_DutyCycle_t prime_mover_duty_cycle;
 	struct uz_DutyCycle_t dut_duty_cycle;
+	struct uz_DutyCycle_t wolfspeed_d3_1_duty_cycle;
 	float pwm_3L_0_halfBridgeDutyCycle_1;
 	float pwm_3L_0_halfBridgeDutyCycle_2;
 	float pwm_3L_0_halfBridgeDutyCycle_3;
@@ -160,13 +161,13 @@ typedef struct
 	struct uz_pmsm_reference_values *prime_mover_reference_values;
 	struct uz_pmsm_reference_values *dut_reference_values;
 	/* Project Wizard BEGIN: objects */
-	uz_PWM_SS_2L_t *project_wizard_pwm_2l_0_d1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0_d1;
-	uz_PWM_SS_2L_t *project_wizard_pwm_2l_1_d2;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_1_d2;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_d3_1;
-	uz_PWM_SS_2L_t *project_wizard_pwm_2l_d3_1;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_d3_2;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_0_d1;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_1_d2;
+	uz_PWM_SS_2L_t *project_wizard_pwm_2l_d3_1;
 	uz_PWM_SS_2L_t *project_wizard_pwm_2l_d3_2;
 	uz_wavegen_three_phase *three_phase_sine;
 	uz_adcLtc2311_t *adc_ltc2311_a1;

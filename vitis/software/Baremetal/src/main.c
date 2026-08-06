@@ -85,7 +85,7 @@ int main(void)
             uz_SystemTime_init();
             deskbench_control_init(&Global_Data); // must run before JavaScope_initialize: it assigns the objects.dut_* pointers that javascope caches (&pointer->field). Reversed order caches near-null addresses.
             JavaScope_initialize(&Global_Data);
-            Global_Data.control_mode = DUT_ONLY_CURRENT_CONTROL_CIL;
+            Global_Data.control_mode = PM_CURRENT_DUT_SPEED_CIL;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -94,10 +94,16 @@ int main(void)
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_0_d1, true);
 			Global_Data.objects.project_wizard_pwm_2l_0_d1 = initialize_project_wizard_pwm_2l_0_d1();
 
-			Global_Data.objects.project_wizard_deadtime_2l_d3_1 = initialize_project_wizard_deadtime_2l_d3_1();
+            Global_Data.objects.project_wizard_deadtime_2l_1_d2 = initialize_project_wizard_deadtime_2l_1_d2();
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_1_d2, true);
+            Global_Data.objects.project_wizard_pwm_2l_1_d2 = initialize_project_wizard_pwm_2l_1_d2();
+
+            Global_Data.objects.project_wizard_deadtime_2l_d3_1 = initialize_project_wizard_deadtime_2l_d3_1();
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_d3_1, true);
 			Global_Data.objects.project_wizard_pwm_2l_d3_1 = initialize_project_wizard_pwm_2l_d3_1();
-
+            Global_Data.rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_A=0.0f;
+            Global_Data.rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_B=0.0f;
+            Global_Data.rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_C=0.0f;
 
 			Global_Data.objects.project_wizard_deadtime_2l_d3_2 = initialize_project_wizard_deadtime_2l_d3_2();
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_d3_2, true);

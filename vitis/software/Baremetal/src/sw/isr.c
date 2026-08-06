@@ -45,8 +45,20 @@ extern DS_Data Global_Data;
 
 bool d3_14_input=false;
 bool d3_15_input=false;
-bool d3_16_output = false;
-bool d3_17_output = false;
+bool d3_06_output = false; // Enables gates. If zero, all switches are in tristate and the wolfspeed fan stops
+bool d3_07_output = false;
+
+float wolfspeed_current_offset_a=-1.75f;
+float wolfspeed_current_offset_b=-1.75;
+float wolfspeed_current_offset_c=-1.75f;
+float wolfspeed_vdc_offset=3.7f;
+float wolfspeed_current_sum_a=0.0f;
+float wolfspeed_current_sum_b=0.0f;
+float wolfspeed_current_sum_c=0.0f;
+uint32_t wolfspeed_current_offset_samples = 0U;
+
+// 14 and 15 are 32-1 and 32-2 of GPIO
+// GPIO pin 6 and 7 are enables
 
 // 16,17 pwmdutydetect
 
@@ -83,6 +95,25 @@ void ISR_Control(void *data)
     update_adapter_d4();
     update_adapter_d5();
     deskbench_update_measurements(&Global_Data);
+
+    if (wolfspeed_current_offset_samples < 1000U)
+    {
+    	wolfspeed_current_sum_a += Global_Data.av.adc_ltc2311_a3_ch0;
+    	wolfspeed_current_sum_b += Global_Data.av.adc_ltc2311_a3_ch1;
+    	wolfspeed_current_sum_c += Global_Data.av.adc_ltc2311_a3_ch2;
+        wolfspeed_current_offset_samples++;
+        if (wolfspeed_current_offset_samples == 1000U)
+        {
+        	wolfspeed_current_offset_a = (float)(wolfspeed_current_sum_a / 1000.0);
+        	wolfspeed_current_offset_b = (float)(wolfspeed_current_sum_b / 1000.0);
+        	wolfspeed_current_offset_c = (float)(wolfspeed_current_sum_c / 1000.0);
+        }
+    }
+
+    Global_Data.av.adc_ltc2311_a3_ch0 = Global_Data.av.adc_ltc2311_a3_ch0 - wolfspeed_current_offset_a;
+    Global_Data.av.adc_ltc2311_a3_ch1 = Global_Data.av.adc_ltc2311_a3_ch1 - wolfspeed_current_offset_b;
+    Global_Data.av.adc_ltc2311_a3_ch2 = Global_Data.av.adc_ltc2311_a3_ch2 - wolfspeed_current_offset_c;
+    Global_Data.av.adc_ltc2311_a3_ch3 = Global_Data.av.adc_ltc2311_a3_ch3 - wolfspeed_vdc_offset;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 
@@ -445,8 +476,8 @@ static void update_adapter_d3(void)
 {
     /* Project Wizard BEGIN: D3 isr_control */
       Global_Data.av.io_card_d3_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d3);
-      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 16U, d3_16_output);
-      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 17U, d3_17_output);
+      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 6U, d3_06_output);
+      uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d3, 7U, d3_07_output);
 
       // Reset DHG inverter
     //   if (reset_button_inv == true)

@@ -253,12 +253,16 @@ void project_wizard_update_pwm_outputs(DS_Data* data)
     );
 
     uz_PWM_SS_2L_set_duty_cycle(
-        data->objects.project_wizard_pwm_2l_0_d1,
-        data->rasv.dut_duty_cycle.DutyCycle_A,
-        data->rasv.dut_duty_cycle.DutyCycle_B,
-        data->rasv.dut_duty_cycle.DutyCycle_C
-    );
+        data->objects.project_wizard_pwm_2l_d3_1,
+        data->rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_A,
+        data->rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_B,
+        data->rasv.wolfspeed_d3_1_duty_cycle.DutyCycle_C);
 
+        uz_PWM_SS_2L_set_duty_cycle(
+            data->objects.project_wizard_pwm_2l_0_d1,
+            data->rasv.dut_duty_cycle.DutyCycle_A,
+            data->rasv.dut_duty_cycle.DutyCycle_B,
+            data->rasv.dut_duty_cycle.DutyCycle_C);
 
     project_wizard_pwm_3l_set_duty_cycle(
         data->rasv.pwm_3L_0_halfBridgeDutyCycle_1,

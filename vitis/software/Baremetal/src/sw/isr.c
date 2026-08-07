@@ -94,7 +94,6 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
-    deskbench_update_measurements(&Global_Data);
 
     if (wolfspeed_current_offset_samples < 1000U)
     {
@@ -115,6 +114,8 @@ void ISR_Control(void *data)
     Global_Data.av.adc_ltc2311_a3_ch2 = Global_Data.av.adc_ltc2311_a3_ch2 - wolfspeed_current_offset_c;
     Global_Data.av.adc_ltc2311_a3_ch3 = Global_Data.av.adc_ltc2311_a3_ch3 - wolfspeed_vdc_offset;
 
+    deskbench_update_measurements(&Global_Data);
+
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 
     // How to always keep everything in tristate
@@ -123,7 +124,8 @@ void ISR_Control(void *data)
     {
     case idle_state:
         /* Project Wizard BEGIN: idle_state isr_actions */
-        disable_prime_mover(&Global_Data);
+        d3_06_output=false;
+            disable_prime_mover(&Global_Data);
         disable_dut(&Global_Data);
         uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
         uz_pmsm_control_enable(Global_Data.objects.dut_control, false);
@@ -145,6 +147,7 @@ void ISR_Control(void *data)
         break;
 
     case running_state:
+        d3_06_output=true; // enables wolfspeed inverter
         switch (Global_Data.control_mode)
         {
         case DUT_ONLY_CURRENT_CONTROL:

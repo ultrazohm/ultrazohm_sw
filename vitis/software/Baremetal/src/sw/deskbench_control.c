@@ -20,6 +20,8 @@
 #define DESKBENCH_MAX_CURRENT_AMPERE 15.0f
 #define DESKBENCH_MAX_INVERTER_TEMP_DEGC 100.0f
 
+bool use_wolfspeed_for_dut = true;
+
 static const struct uz_PMSM_t deskbench_beckhoff_am8141 = {
     .R_ph_Ohm = 0.51f,
     .Ld_Henry = 0.002f,
@@ -45,14 +47,7 @@ static struct uz_pmsm_control_configuration_t pmsm_control_am8141_config = {
         .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
         .speed_in_rpm = {.upper_bound = 1100.0f, .lower_bound = -1100.0f},
         .disturbance_input_in_Nm = {.upper_bound = 10.0f, .lower_bound = -10.0f}},
-    .safe_operating_region = {
-    		.speed_in_rpm = {.upper_bound = 1500.0f, .lower_bound = -1500.0f},
-			.i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-			.i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
-    		.i_abc_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f},
-			.v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = 0.0f},
-			.i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f}
-    },
+    .safe_operating_region = {.speed_in_rpm = {.upper_bound = 1500.0f, .lower_bound = -1500.0f}, .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f}, .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f}, .i_abc_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f}, .v_dc_in_V = {.upper_bound = 50.0f, .lower_bound = 0.0f}, .i_dc_in_A = {.upper_bound = 15.0f, .lower_bound = -15.0f}},
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 0.0f,
@@ -107,7 +102,7 @@ void deskbench_control_init(DS_Data *data)
     data->objects.prime_mover_actual_data = uz_pmsm_control_get_actual_data(data->objects.prime_mover_control);
     data->objects.prime_mover_reference_values = uz_pmsm_control_get_reference_values(data->objects.prime_mover_control);
     uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.prime_mover_control, 1.5f * pmsm_control_am8141_config.sample_time);
-    
+
     data->objects.dut_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
     data->objects.dut_actual_data = uz_pmsm_control_get_actual_data(data->objects.dut_control);
     data->objects.dut_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.dut_control);
@@ -121,12 +116,12 @@ float prime_mover_theta_mech_rad = 0.0f;
 
 void deskbench_update_measurements(DS_Data *data)
 {
-    if ((data->control_mode==DUT_ONLY_CURRENT_CONTROL_CIL) ||
-    		(data->control_mode==DUT_ONLY_SPEED_CONTROL_CIL) ||
-    		(data->control_mode==PM_ONLY_CURRENT_CONTROL_CIL) ||
-			(data->control_mode==PM_ONLY_SPEED_CONTROL_CIL) ||
-			(data->control_mode==PM_SPEED_DUT_CURRENT_CIL) ||
-			(data->control_mode==PM_CURRENT_DUT_SPEED_CIL))
+    if ((data->control_mode == DUT_ONLY_CURRENT_CONTROL_CIL) ||
+        (data->control_mode == DUT_ONLY_SPEED_CONTROL_CIL) ||
+        (data->control_mode == PM_ONLY_CURRENT_CONTROL_CIL) ||
+        (data->control_mode == PM_ONLY_SPEED_CONTROL_CIL) ||
+        (data->control_mode == PM_SPEED_DUT_CURRENT_CIL) ||
+        (data->control_mode == PM_CURRENT_DUT_SPEED_CIL))
     {
         // read CIL data
         uz_pmsmModel_trigger_output_strobe(data->objects.dut_pmsm_model);
@@ -164,21 +159,38 @@ void deskbench_update_measurements(DS_Data *data)
         data->av.prime_mover_measurements.i_dc_in_A = 0.0f;
 
         // When coupling prime mover and dut in CIL, the torque of the the dut has to be the load torque of the primve mover? Its coupled with infinite stiffness this way, first or second order coupling could be achieved in software by defining a transfer function between the two torque values with damping and stiffness. Coupling would be implemented in isr.c
-        data->av.pm_torque_Nm=prime_mover_model_outputs.torque_Nm;
-        data->av.dut_torque_Nm=dut_model_outputs.torque_Nm;
+        data->av.pm_torque_Nm = prime_mover_model_outputs.torque_Nm;
+        data->av.dut_torque_Nm = dut_model_outputs.torque_Nm;
     }
     else
     {
-        data->av.dut_measurements.i_abc_in_A.a = data->av.adc_ltc2311_a1_ch3 * DESKBENCH_CURRENT_TO_AMPERE;
-        data->av.dut_measurements.i_abc_in_A.b = data->av.adc_ltc2311_a1_ch2 * DESKBENCH_CURRENT_TO_AMPERE;
-        data->av.dut_measurements.i_abc_in_A.c = data->av.adc_ltc2311_a1_ch1 * DESKBENCH_CURRENT_TO_AMPERE;
-        data->av.dut_measurements.i_dc_in_A = data->av.adc_ltc2311_a1_ch4 * DESKBENCH_CURRENT_TO_AMPERE;
-        data->av.dut_measurements.v_abc_in_V.a = data->av.adc_ltc2311_a1_ch7 * DESKBENCH_VOLTAGE_TO_VOLTS;
-        data->av.dut_measurements.v_abc_in_V.b = data->av.adc_ltc2311_a1_ch6 * DESKBENCH_VOLTAGE_TO_VOLTS;
-        data->av.dut_measurements.v_abc_in_V.c = data->av.adc_ltc2311_a1_ch5 * DESKBENCH_VOLTAGE_TO_VOLTS;
-        data->av.dut_measurements.v_dc_in_V = data->av.adc_ltc2311_a1_ch0 * DESKBENCH_VOLTAGE_TO_VOLTS;
-        data->av.dut_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
-        data->av.dut_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
+        // Add a "use wolfspeed" flag here <<<<<<<<<<<<<
+        if (use_wolfspeed_for_dut)
+        {
+            data->av.dut_measurements.i_abc_in_A.a = data->av.adc_ltc2311_a3_ch0;
+            data->av.dut_measurements.i_abc_in_A.b = data->av.adc_ltc2311_a3_ch1;
+            data->av.dut_measurements.i_abc_in_A.c = data->av.adc_ltc2311_a3_ch2;
+            data->av.dut_measurements.i_dc_in_A = 0.0f; 
+            data->av.dut_measurements.v_abc_in_V.a = 0.0f; 
+            data->av.dut_measurements.v_abc_in_V.b = 0.0f; 
+            data->av.dut_measurements.v_abc_in_V.c = 0.0f;
+            data->av.dut_measurements.v_dc_in_V = data->av.adc_ltc2311_a3_ch3;
+            data->av.dut_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
+            data->av.dut_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
+        }
+        else
+        {
+            data->av.dut_measurements.i_abc_in_A.a = data->av.adc_ltc2311_a1_ch3 * DESKBENCH_CURRENT_TO_AMPERE;
+            data->av.dut_measurements.i_abc_in_A.b = data->av.adc_ltc2311_a1_ch2 * DESKBENCH_CURRENT_TO_AMPERE;
+            data->av.dut_measurements.i_abc_in_A.c = data->av.adc_ltc2311_a1_ch1 * DESKBENCH_CURRENT_TO_AMPERE;
+            data->av.dut_measurements.i_dc_in_A = data->av.adc_ltc2311_a1_ch4 * DESKBENCH_CURRENT_TO_AMPERE;
+            data->av.dut_measurements.v_abc_in_V.a = data->av.adc_ltc2311_a1_ch7 * DESKBENCH_VOLTAGE_TO_VOLTS;
+            data->av.dut_measurements.v_abc_in_V.b = data->av.adc_ltc2311_a1_ch6 * DESKBENCH_VOLTAGE_TO_VOLTS;
+            data->av.dut_measurements.v_abc_in_V.c = data->av.adc_ltc2311_a1_ch5 * DESKBENCH_VOLTAGE_TO_VOLTS;
+            data->av.dut_measurements.v_dc_in_V = data->av.adc_ltc2311_a1_ch0 * DESKBENCH_VOLTAGE_TO_VOLTS;
+            data->av.dut_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
+            data->av.dut_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
+        }
 
         data->av.prime_mover_measurements.i_abc_in_A.a = data->av.adc_ltc2311_a2_ch3 * DESKBENCH_CURRENT_TO_AMPERE;
         data->av.prime_mover_measurements.i_abc_in_A.b = data->av.adc_ltc2311_a2_ch2 * DESKBENCH_CURRENT_TO_AMPERE;
@@ -226,14 +238,13 @@ static void control_dut_pmsm_model(DS_Data *data)
 void disable_prime_mover(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_1_d2, true, true, true);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2,false);
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d2, false);
 }
 
 void disable_dut(DS_Data *data)
 {
     uz_PWM_SS_2L_set_tristate(data->objects.project_wizard_pwm_2l_0_d1, true, true, true);
-    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1,false);
-
+    uz_inverter_adapter_set_PWM_EN(data->objects.inverter_adapter_d1, false);
 }
 
 void enable_prime_mover(DS_Data *data)

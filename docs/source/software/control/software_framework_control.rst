@@ -18,6 +18,7 @@ Control
     ParameterID/ParameterID
     piController/piController
     PMSM_config/uz_PMSM_config
+    uz_pmsm_control/uz_pmsm_control
     SetPoint/SetPoint
     space_vector_limitation/space_vector_limitation
     space_vector_modulation/space_vector_modulation
@@ -32,3 +33,4 @@ Control
     uz_Transformation/uz_Transformation
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
     uz_pos_to_speed_pll/pos_to_speed_pll
+    uz_pmsm_swmodel/uz_pmsm_swmodel

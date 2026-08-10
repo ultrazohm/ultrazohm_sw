@@ -77,8 +77,13 @@ void ISR_Control(void *baseaddr_p);
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
 int Initialize_ISR(void);
+void Initialize_ISR_Software(DS_Data *data);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
+void reset_asm(void);
+void reset_im(void);
+void set_im_speed_pi_kp(float new_kp);
+void set_im_speed_pi_ki(float new_ki);
 
 
 #endif /* ISR_H_ */

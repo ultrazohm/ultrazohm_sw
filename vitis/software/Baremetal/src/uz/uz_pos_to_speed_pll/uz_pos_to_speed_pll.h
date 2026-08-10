@@ -63,4 +63,15 @@ float uz_pos_to_speed_pll_get_omega_mech_si(uz_pos_to_speed_pll_t* self);
  */
 float uz_pos_to_speed_pll_get_omega_el_si(uz_pos_to_speed_pll_t* self);
 
+
+/**
+ * @brief Reset the PLL internal state to initial conditions (omega=0, phi=0).
+ *
+ * Call this whenever the angle source restarts from zero (e.g. after observer
+ * reset) so the PLL does not carry stale speed/phase state into the new run.
+ *
+ * @param self pointer to the instance
+ */
+void uz_pos_to_speed_pll_reset(uz_pos_to_speed_pll_t* self);
+
 #endif // UZ_POS_TO_SPEED_PLL_H

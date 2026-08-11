@@ -203,16 +203,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
-			data->rasv.va_disturbance_torque_Nm = value;
+			data->rasv.im_siemens_1LA7073_id_reference_A = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		data->rasv.im_siemens_1LA7073_frequency_reference_Hz = value;
+		data->rasv.im_siemens_1LA7073_iq_reference_A = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		data->rasv.im_siemens_1LA7073_frequency_reference_Hz = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -279,16 +280,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->rasv.va_enable_speed_control = !data->rasv.va_enable_speed_control;
 			break;
 
-		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+		case (My_Button_2): // Toggle IM U/f / FOC (ACT button)
+			data->rasv.im_siemens_1LA7073_enable_foc = !data->rasv.im_siemens_1LA7073_enable_foc;
+			uz_u_f_control_reset(data->objects.im_siemens_1LA7073_control);
+			im_foc_control_reset(data->objects.im_siemens_1LA7073_foc_control);
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.im_siemens_1LA7073_enable_kalman_filter =
+				!data->rasv.im_siemens_1LA7073_enable_kalman_filter;
 			break;
 
 		case (My_Button_4):
-
+			data->rasv.im_siemens_1LA7073_enable_resonant_control =
+				!data->rasv.im_siemens_1LA7073_enable_resonant_control;
 			break;
 
 		case (My_Button_5):
@@ -309,6 +314,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Error_Reset):
 			data->rasv.va_enable_speed_control = false;
+			data->rasv.im_siemens_1LA7073_enable_foc = false;
+			data->rasv.im_siemens_1LA7073_enable_kalman_filter = false;
+			data->rasv.im_siemens_1LA7073_enable_resonant_control = false;
+			im_foc_control_reset(data->objects.im_siemens_1LA7073_foc_control);
 			uz_pmsm_control_reset(data->objects.va_control);
 			data->rasv.va_acknowledge_error = true;
 			/* Same reset sequence as the VA test-bench error handling. */
@@ -363,13 +372,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	if (data->rasv.im_siemens_1LA7073_enable_foc) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	if (data->rasv.im_siemens_1LA7073_enable_kalman_filter) {
+		js_status_BareToRTOS |= (1 << 6);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if (data->rasv.im_siemens_1LA7073_enable_resonant_control) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
 	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);

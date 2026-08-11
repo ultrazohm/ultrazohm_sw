@@ -11,8 +11,8 @@
 #define VA_PROTECTION_MAX_SPEED_RPM       1000.0f
 #define VA_PROTECTION_MAX_DC_VOLTAGE_V      60.0f
 #define VA_PROTECTION_MIN_DC_VOLTAGE_V      20.0f
-#define VA_PROTECTION_MAX_PHASE_CURRENT_A   15.0f
-#define VA_PROTECTION_MAX_DQ_CURRENT_A      15.0f
+#define VA_PROTECTION_MAX_PHASE_CURRENT_A   20.0f
+#define VA_PROTECTION_MAX_DQ_CURRENT_A      20.0f
 
 uz_pmsm_control_t *va_control_init(void);
 

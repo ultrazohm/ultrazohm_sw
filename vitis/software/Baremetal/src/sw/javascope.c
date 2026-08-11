@@ -100,6 +100,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_1LA7073_SPEED_RPM]=&data->av.im_siemens_1LA7073_speed_rpm;
 	js_ch_observable[JSO_IM_1LA7073_FREQUENCY_HZ]=&data->av.im_siemens_1LA7073_uf_data.frequency_command_Hz;
 	js_ch_observable[JSO_IM_1LA7073_VOLTAGE_V]=&data->av.im_siemens_1LA7073_uf_data.applied_voltage_magnitude_V;
+	js_ch_observable[JSO_IM_1LA7073_I_D]=&data->av.im_siemens_1LA7073_id;
+	js_ch_observable[JSO_IM_1LA7073_I_Q]=&data->av.im_siemens_1LA7073_iq;
+	js_ch_observable[JSO_IM_1LA7073_I_D_REF]=&data->rasv.im_siemens_1LA7073_id_reference_A;
+	js_ch_observable[JSO_IM_1LA7073_I_Q_REF]=&data->rasv.im_siemens_1LA7073_iq_reference_A;
+	js_ch_observable[JSO_IM_1LA7073_FLUX_VS]=&data->av.im_siemens_1LA7073_flux_magnitude_Vs;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;

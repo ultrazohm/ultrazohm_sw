@@ -25,6 +25,11 @@ DS_Data Global_Data = {
 		.va_enable_speed_control = false,
 		.va_acknowledge_error = false,
 		.im_siemens_1LA7073_frequency_reference_Hz = 0.0f,
+		.im_siemens_1LA7073_id_reference_A = 1.26f,
+		.im_siemens_1LA7073_iq_reference_A = 0.0f,
+		.im_siemens_1LA7073_enable_foc = false,
+		.im_siemens_1LA7073_enable_kalman_filter = false,
+		.im_siemens_1LA7073_enable_resonant_control = false,
 /* Project Wizard BEGIN: rasv_initializer */
         .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
@@ -96,6 +101,7 @@ int main(void)
             JavaScope_initialize(&Global_Data);
 			Global_Data.objects.va_control = va_control_init();
 			Global_Data.objects.im_siemens_1LA7073_control = im_siemens_1LA7073_init();
+			Global_Data.objects.im_siemens_1LA7073_foc_control = im_foc_control_init(Global_Data.av.isr_samplerate_s);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

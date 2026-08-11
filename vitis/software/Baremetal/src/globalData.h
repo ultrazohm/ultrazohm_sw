@@ -17,6 +17,7 @@
 #include "include/d5_adapter_init.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
 #include "uz/uz_u_f_control/uz_u_f_control.h"
+#include "include/im_foc_control.h"
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -32,6 +33,8 @@ typedef struct _actualValues_ {
 	float im_siemens_1LA7073_ia, im_siemens_1LA7073_ib, im_siemens_1LA7073_ic;
 	float im_siemens_1LA7073_vdc, im_siemens_1LA7073_speed_rpm;
 	struct uz_u_f_control_data_t im_siemens_1LA7073_uf_data;
+	float im_siemens_1LA7073_id, im_siemens_1LA7073_iq;
+	float im_siemens_1LA7073_flux_angle_rad, im_siemens_1LA7073_flux_magnitude_Vs;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -67,6 +70,11 @@ typedef struct _referenceAndSetValues_ {
 	bool va_enable_speed_control;
 	bool va_acknowledge_error;
 	float im_siemens_1LA7073_frequency_reference_Hz;
+	float im_siemens_1LA7073_id_reference_A;
+	float im_siemens_1LA7073_iq_reference_A;
+	bool im_siemens_1LA7073_enable_foc;
+	bool im_siemens_1LA7073_enable_kalman_filter;
+	bool im_siemens_1LA7073_enable_resonant_control;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -84,6 +92,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsm_control_t* va_control;
 	uz_u_f_control_t* im_siemens_1LA7073_control;
+	im_foc_control_t* im_siemens_1LA7073_foc_control;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

@@ -51,14 +51,14 @@ DS_Data Global_Data = {
         },
         .A2 = {
             .cf = {
-                .ADC_A1 = 10.0f,
-                .ADC_A2 = 10.0f,
-                .ADC_A3 = 10.0f,
-                .ADC_A4 = 10.0f,
-                .ADC_B5 = 10000.0f / 1.25f,
-                .ADC_B6 = 10.0f,
-                .ADC_B7 = 10.0f,
-                .ADC_B8 = 10.0f,
+                .ADC_A1 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_A2 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_A3 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_A4 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_B5 = 10.0f * CURRENT_2_SI_AMPERE,
+                .ADC_B6 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_B7 = 10.0f * VOLTAGE_2_SI_VOLTS,
+                .ADC_B8 = 10.0f * VOLTAGE_2_SI_VOLTS,
             },
         },
         .A3 = {

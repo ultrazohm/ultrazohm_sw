@@ -265,12 +265,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		iq_ref_A = value;
 			break;
 
-		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		case (Set_Send_Field_5): // VA q-axis current reference
+		data->rasv.i_dq_ref_VA.q = value;
 			break;
 
-		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		case (Set_Send_Field_6): // VA mechanical speed reference
+		data->rasv.n_ref_VA = value;
 			break;
 
 		case (Set_Send_Field_7): // KF Q_psi noise covariance
@@ -333,13 +333,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			enable_speed_outlier_rejection = !enable_speed_outlier_rejection;
 			break;
 
-		case (My_Button_2):
-			break; /* unused */
+		case (My_Button_2): // Enable VA speed control
+			reset_VA();
+			va_use_speed_control = true;
+			enable_controller_VA = true;
+			break;
 
-		case (My_Button_3):
-			break; /* unused */
+		case (My_Button_3): // Enable VA current control
+			reset_VA();
+			va_use_speed_control = false;
+			enable_controller_VA = true;
+			break;
 
-		case (My_Button_4): // Toggle FOC on/off for IM
+		case (My_Button_4): // Switch IM control mode between FOC and U/f
+			reset_im();
 			use_foc = !use_foc;
 			break;
 
@@ -424,13 +431,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - unused */
-	js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 5 - My_Button_2 (Enable_VA_Speed_Control) */
+	if (enable_controller_VA && va_use_speed_control) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
-	/* Bit 6 - unused */
-	js_status_BareToRTOS &= ~(1 << 6);
+	/* Bit 6 - My_Button_3 (Enable_VA_Current_Control) */
+	if (enable_controller_VA && !va_use_speed_control) {
+		js_status_BareToRTOS |= (1 << 6);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 
-	/* Bit 7 - My_Button_4 (Toggle_FOC) */
+	/* Bit 7 - My_Button_4 (green: FOC mode, off: U/f mode) */
 	if (use_foc) {
 		js_status_BareToRTOS |= (1 << 7);
 	} else {

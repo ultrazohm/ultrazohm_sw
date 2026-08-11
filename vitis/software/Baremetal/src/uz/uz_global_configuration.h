@@ -2,13 +2,13 @@
 
 /* Enable/disable available machine parameter sets (1U = enabled, 0U = disabled) */
 #ifndef UZ_MACHINE_ENABLE_IM_SIEMENS
-#define UZ_MACHINE_ENABLE_IM_SIEMENS 1U
+#define UZ_MACHINE_ENABLE_IM_SIEMENS 0U
 #endif
 #ifndef UZ_MACHINE_ENABLE_VOESTALPINE
 #define UZ_MACHINE_ENABLE_VOESTALPINE 1U
 #endif
 #ifndef UZ_MACHINE_ENABLE_IM_THN
-#define UZ_MACHINE_ENABLE_IM_THN 0U
+#define UZ_MACHINE_ENABLE_IM_THN 1U
 #endif
 #ifndef UZ_MACHINE_ENABLE_IM_TUM
 #define UZ_MACHINE_ENABLE_IM_TUM 0U

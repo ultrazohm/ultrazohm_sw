@@ -39,14 +39,14 @@
 #define MOTOR_CONFIG_SIEMENS_1C4164B    3
 
 /* ===== Select active motor configuration ===== */
-#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_SIEMENS_1C4164B
+#define MOTOR_CONFIG_SELECT  MOTOR_CONFIG_SIEMENS_1LA7073
 
 /* VA hardware protection limits are board-specific and independent of the IM under test. */
-#define VA_VDC_MAX_V              52.0f
+#define VA_VDC_MAX_V              60.0f
 #define VA_IPHASE_MAX_A           15.0f
 
 /* Preliminary IM DC-link undervoltage threshold for test bench protection. */
-#define v_dc_min_v                100.0f
+#define v_dc_min_v                20.0f
 
 
 /* ============================================================

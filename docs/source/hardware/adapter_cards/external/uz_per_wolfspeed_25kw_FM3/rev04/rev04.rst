@@ -145,151 +145,159 @@ The OC trips at ``+/-49 A``.
 
    Jumper setup for overcurrent comparators.
 
-Inverter Temperature Measurement
-================================
 
-Rev04 converts the isolated NTC voltage to an optical PWM signal.
-The ``NTC_ISO`` from the inverter PCB is expected to be in the range of ``0 V`` to ``2 V`` and a voltage divider on the Rev04 PCB reduces this to ``0 V`` to ``1 V`` for matching the input range of the PWM generator (LTC6992CS6-2).
+NTC_ISO conversion for inverter V2.0
+====================================
 
-The LTC6992CS6-2 is configured with:
+For the CRD25DA12N-FMC V2.0 inverter and adapter Rev04, the signal chain is ``NTC`` -> analog
+``NTC_ISO`` -> 1:2 adapter voltage divider -> LTC6992-2 -> optical ``Temp_PWM`` -> duty ratio.
 
-* ``R_SET = 68 kOhm``, resulting in approximately ``46 kHz`` PWM frequency.
-* ``DIVCODE = 2`` / ``N_DIV = 16`` from the ``182 kOhm`` and ``976 kOhm`` divider.
-* ``POL = 1`` so rising NTC temperature results in increasing duty cycle.
+The LTC6992-2 is configured with:
 
-Temperature from PWM Duty Cycle
-===============================
+* ``R_SET = 68 kOhm``, resulting in an approximately ``46 kHz`` PWM frequency.
+* ``DIVCODE = 2`` / ``N_DIV = 16``, selected by the ``182 kOhm`` and ``976 kOhm`` divider.
+* ``POL = 1``, so increasing NTC temperature results in increasing duty cycle.
 
-.. warning::
-   The following approximation is calculated from assumptions based on the inverter schematics. 
-   The duty cycle to temperature function has not been validated on real hardware.
-
-The module temperature is approximated from the measured PWM duty cycle using the following linear relationship:
+On the inverter, the NTC is in parallel with :math:`1.8\,\mathrm{k\Omega}`; this combination and
+:math:`2.2\,\mathrm{k\Omega}` form a divider supplied by :math:`5\,\mathrm{V}`. Consequently,
 
 .. math::
 
-   T(D) = 1.55 \cdot D + 13.639
+   R_{\mathrm{NTC}} = \frac{3960 V_{\mathrm{NTC\_ISO}}}
+   {9 - 4 V_{\mathrm{NTC\_ISO}}}.
 
-where:
-
-* :math:`D` is the PWM duty cycle in percent.
-* :math:`T` is the estimated temperature in degrees Celsius.
-
-For example, a duty cycle of ``25 %`` gives:
+The adapter and LTC6992-2 transfer functions are
 
 .. math::
 
-   T(25) = 1.55 \cdot 25 + 13.639 = 52.389\ ^\circ\mathrm{C}
+   V_{\mathrm{MOD}} = \frac{V_{\mathrm{NTC\_ISO}}}{2}, \qquad
+   D = \frac{0.9 - V_{\mathrm{MOD}}}{0.8}, \qquad
+   V_{\mathrm{NTC\_ISO}} = 1.8 - 1.6D,
 
+where :math:`D` is a ratio from ``0.0`` to ``1.0``. Thus,
 
-Temperature-over-Duty-Cycle Graph
----------------------------------
+.. math::
 
-.. plot::
-   :caption: Estimated module temperature as a function of PWM duty cycle.
-   :align: center
-   :include-source: false
+   R_{\mathrm{NTC}}(D) = \frac{3960(1.8 - 1.6D)}
+   {9 - 4(1.8 - 1.6D)}.
 
-   import matplotlib.pyplot as plt
-   import numpy as np
+Using the WolfPACK NTC approximation :math:`R_{25}=5\,\mathrm{k\Omega}` and
+:math:`\beta_{25/100}\approx3523\,\mathrm{K}`, the temperature follows from
 
-   # Duty-cycle points derived from the NTC model.
-   duty_points = np.array([
-       5.7,
-       8.8,
-       15.7,
-       23.4,
-       31.5,
-       43.6,
-       60.8,
-       72.9,
-       80.7,
-   ])
+.. math::
 
-   # Temperatures calculated using the linear regression.
-   temperature_points = 1.55 * duty_points + 13.639
+   T[{}^\circ\mathrm{C}] = \left[\frac{1}{298.15}
+   + \frac{1}{3523}\ln\left(\frac{R_{\mathrm{NTC}}}{5000}\right)\right]^{-1} - 273.15.
 
-   # Continuous regression line.
-   duty = np.linspace(5.0, 95.0, 500)
-   temperature = 1.55 * duty + 13.639
-
-   plt.figure(figsize=(8, 5))
-
-   plt.plot(
-       duty,
-       temperature,
-       label=r"$T = 1.55D + 13.639$",
-   )
-
-   plt.scatter(
-       duty_points,
-       temperature_points,
-       label="Calculated data points",
-       zorder=3,
-   )
-
-   for duty_value, temperature_value in zip(
-       duty_points,
-       temperature_points,
-   ):
-       plt.annotate(
-           f"{temperature_value:.1f} °C",
-           (duty_value, temperature_value),
-           xytext=(5, 5),
-           textcoords="offset points",
-           fontsize=8,
-       )
-
-   plt.xlabel("PWM duty cycle (%)")
-   plt.ylabel("Estimated temperature (°C)")
-   plt.title("Estimated Temperature from PWM Duty Cycle")
-   plt.xlim(0, 100)
-   plt.grid(True)
-   plt.legend()
-   plt.tight_layout()
-
-
-Reference Data
+Clamp behavior
 --------------
 
-The following table contains the previously estimated NTC-model data and
-the corresponding result from the linear regression.
+The LTC6992-2 clamps its PWM output outside the nominal ``5 %`` to ``95 %`` duty-cycle range.
+Below or above these limits the PWM does not contain an unambiguous temperature. The lower clamp
+corresponds to approximately :math:`T\leq36.6\,{}^\circ\mathrm{C}` and the upper clamp to
+:math:`T\geq154.1\,{}^\circ\mathrm{C}`. The implementation returns these boundary values instead
+of extrapolating outside the valid range.
 
-.. list-table:: Duty-cycle and temperature reference values
+.. list-table:: Approximate reference values
    :header-rows: 1
-   :widths: 25 35 40
-   :align: center
+   :widths: 25 25 50
 
-   * - Duty cycle
-     - NTC-model estimate
-     - Linear-regression result
-   * - 5.7 %
-     - 25.0 °C
-     - 22.5 °C
-   * - 8.8 %
-     - 30.1 °C
-     - 27.3 °C
-   * - 15.7 %
-     - 40.0 °C
-     - 38.0 °C
-   * - 23.4 %
-     - 50.0 °C
-     - 49.9 °C
-   * - 31.5 %
-     - 60.0 °C
-     - 62.5 °C
-   * - 43.6 %
-     - 75.0 °C
-     - 81.2 °C
-   * - 60.8 %
-     - 100.0 °C
-     - 107.9 °C
-   * - 72.9 %
-     - 124.9 °C
-     - 126.6 °C
-   * - 80.7 %
-     - 149.9 °C
-     - 138.7 °C
+   * - Duty ratio
+     - Duty cycle
+     - Approximate temperature
+   * - :math:`D \leq 0.05`
+     - :math:`\leq 5\,\%`
+     - :math:`\leq 36.6\,{}^\circ\mathrm{C}`; lower clamp
+   * - 0.10
+     - 10 %
+     - 42 |degC|
+   * - 0.20
+     - 20 %
+     - 52 |degC|
+   * - 0.30
+     - 30 %
+     - 61 |degC|
+   * - 0.40
+     - 40 %
+     - 70 |degC|
+   * - 0.50
+     - 50 %
+     - 81 |degC|
+   * - 0.60
+     - 60 %
+     - 91 |degC|
+   * - 0.70
+     - 70 %
+     - 103 |degC|
+   * - 0.80
+     - 80 %
+     - 119 |degC|
+   * - 0.90
+     - 90 %
+     - 140 |degC|
+   * - :math:`D \geq 0.95`
+     - :math:`\geq 95\,\%`
+     - :math:`\geq 154.1\,{}^\circ\mathrm{C}`; upper clamp
+
+Conversion code
+---------------
+
+.. code-block:: c
+
+   #include <math.h>
+   #include "../include/wolfspeed_inverter_temperature.h"
+   #include "../uz/uz_HAL.h"
+
+   float wolfspeed_inverter_temperature_from_duty_ratio(float duty_ratio)
+   {
+       uz_assert(duty_ratio >= 0.0f);
+       uz_assert(duty_ratio <= 1.0f);
+
+       const float duty_min = 0.05f;
+       const float duty_max = 0.95f;
+       if (duty_ratio <= duty_min)
+       {
+           return 36.6f;
+       }
+       if (duty_ratio >= duty_max)
+       {
+           return 154.1f;
+       }
+
+       const float v_ntc_iso = 1.8f - 1.6f * duty_ratio;
+       const float r_ntc_ohm =
+           (3960.0f * v_ntc_iso) / (9.0f - 4.0f * v_ntc_iso);
+
+       const float r_25_ohm = 5000.0f;
+       const float beta_K = 3523.0f;
+       const float t_25_K = 298.15f;
+       const float inverse_temperature_K =
+           (1.0f / t_25_K)
+           + (logf(r_ntc_ohm / r_25_ohm) / beta_K);
+
+       const float temperature_K = 1.0f / inverse_temperature_K;
+       return temperature_K - 273.15f;
+   }
+
+The following application call has not yet been merged:
+
+.. code-block:: c
+
+   float const temperature_duty_ratio =
+       uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(
+           Global_Data.objects.inverter_temperature_pwm);
+   Global_Data.av.inverter_temperature_pwm_duty_cycle_percent =
+       temperature_duty_ratio * 100.0f;
+   Global_Data.av.inverter_temperature_pwm_frequency_Hz =
+       uz_PWM_duty_freq_detection_get_frequency_in_Hz(
+           Global_Data.objects.inverter_temperature_pwm);
+   Global_Data.av.inverter_temperature_degC =
+       wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
+
+.. note::
+   Despite the API name ``uz_PWM_duty_freq_detection_get_duty_cycle_in_percent``, the conversion
+   expects a ratio from ``0.0`` to ``1.0``. The example therefore multiplies the result by ``100.0f``
+   only when writing the ``_percent`` application variable.
 
 Commissioning Notes
 ===================

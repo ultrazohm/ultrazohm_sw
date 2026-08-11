@@ -24,9 +24,9 @@ Modul ist angepasst für SH-Strommessplatine
 
 /* Initilalisieurng des IP Cores (s. Treiber)*/
 struct uz_JL_SigmaDelta_Interface_config_t Sinc3_Filter_config = {
-		.base_address = XPAR_UZ_JL_SDDEMOD_0_BASEADDR,
+		.base_address = XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
-		.dezimation = 250,	// Dezimierungsfaktor für ZK-Spannungsmessung
+		.dezimation = 400,	// Dezimierungsfaktor für ZK-Spannungsmessung
 		.clk_ratio = 20, 		// Taktrate des Sigma-Delta-Modulators (5 Mhz untere Grenze AMC1204)
 		.switch_edge = 0,	    //0 = every falling edge, 1 = every second even falling edge, 2 = every second odd falling edge; anpassbar für verschiedene Sigma-Delta-Wandler
 		.filt_input_delay = 9,	// Verzögerung des Abtastzeitpunkts, um Gruppenlaufzeit zu kompensieren, in 10 ns Schritten

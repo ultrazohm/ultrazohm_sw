@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "Codegen/uz_codegen.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -35,7 +34,14 @@ DS_Data Global_Data = {
         .ctrl_state = ctrl_state_none,
         .Soll_Drehzahl = 0.0f,
         .Soll_id = 0.0f,
-        .Soll_iq = 0.0f},
+        .Soll_iq = 0.0f,
+        .Soll_Square_DutyCycle = 0.5f,
+        .Soll_Square_Frequency_Hz = 25.0f,
+        .Soll_DPT_Current_A = 0.0f,
+        .Soll_DPT_MaxCurrent_A = 10.0f,
+        .Soll_DPT_ChargeTimeout_ms = 100.0f,
+        .Soll_DPT_Deadtime_us = 5.0f,
+        .Soll_DPT_Pulse2_us = 5.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
@@ -167,6 +173,7 @@ int main(void)
         case init_interrupts:
             uz_axigpio_enable_datamover();
             Initialize_ISR();
+            uz_dpt_init(); // uses the GIC instance initialized in Initialize_ISR(), must be called after it
             Global_Data.objects.mux_axi = initialize_uz_mux_axi(); // Initialize the Interrupt-Mux - last line of code before infinite loop
             initialization_chain = infinite_loop;
             break;

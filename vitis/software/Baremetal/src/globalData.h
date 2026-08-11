@@ -11,6 +11,7 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
 #include "include/JL_SH_Umrichter.h"
+#include "include/uz_dpt.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -93,7 +94,8 @@ typedef struct _actualValues_ {
 	float omega_el;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs;
 	uint32_t slowDataCounter;
-	struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter;
+	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter;
+	uz_dpt_state_t dpt_state;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -113,6 +115,13 @@ typedef struct _referenceAndSetValues_ {
 	float Soll_Drehzahl; // speed setpoint for rpm_control, in rpm
 	float Soll_id; // d-axis current setpoint for current_control, in A
 	float Soll_iq; // q-axis current setpoint for current_control, in A
+	float Soll_Square_DutyCycle; // duty cycle setpoint for test_square, 0.0 .. 1.0
+	float Soll_Square_Frequency_Hz; // frequency setpoint for test_square, in Hz
+	float Soll_DPT_Current_A; // target current at which pulse 1 of the DPT ends, in A
+	float Soll_DPT_MaxCurrent_A; // hard overcurrent threshold, aborts the DPT immediately, in A
+	float Soll_DPT_ChargeTimeout_ms; // safety timeout for pulse 1 (target current never reached), in ms
+	float Soll_DPT_Deadtime_us; // time between end of pulse 1 and start of pulse 2, in us
+	float Soll_DPT_Pulse2_us; // width of pulse 2, in us
 } referenceAndSetValues;
 
 typedef struct{

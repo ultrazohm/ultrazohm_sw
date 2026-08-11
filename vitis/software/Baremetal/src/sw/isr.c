@@ -14,28 +14,10 @@
  ******************************************************************************/
 
 #include "../include/isr.h"
-#include "../defines.h"
-#include "../main.h"
-#include "../include/ipc_ARM.h"
-#include <math.h>
-#include <xtmrctr.h>
-#include "../include/javascope.h"
-#include "../include/adc.h"
-#include "../IP_Cores/mux_axi_ip_addr.h"
-#include "xtime_l.h"
-#include "../uz/uz_SystemTime/uz_SystemTime.h"
-#include "../include/uz_platform_state_machine.h"
-#include "../Codegen/uz_codegen.h"
-#include "../include/mux_axi.h"
-#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
-#include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
-#include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../include/SigmaDeltaWandler.h"
-#include "../uz/uz_wavegen/uz_wavegen.h"
 
 #define TEST_SINE_AMPLITUDE 1.0f
 #define TEST_SINE_FREQUENCY_HZ 25.0f
+#define TEST_SQUARE_AMPLITUDE 1.0f
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -45,39 +27,21 @@ XIpiPsu IPI_instance;
 extern DS_Data Global_Data;
 extern  uz_axi_gpio_t* output_gpio;
 extern  uz_axi_gpio_t* input_gpio;
+extern conv_status_signals_t conv_status_signals;
+extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
+extern uz_codegen regelung;
 
-#define PWR_EN_BIT 6
-#define BOARD_EN_BIT 8
-#define BOARD_RST_BIT 10
-#define BOARD_READY_BIT 1
-#define IGBT_Desat_BIT 3
 
-uint32_t output_bitmask=0xFFFFFFFF;
-bool input_bit=false;
-bool output_bit=false;
-bool board_ready = false;
-
-uint32_t output_port = 0U;
-uint32_t input_port = 0U;
-
-float input_bit_float = 0;
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
-
-extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
-
 struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_out = {0};
-
-extern uz_codegen regelung;
 Bus_ZM_In struct_ZM_In;
-
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 float sine = 0.0f;
+float square = 0.0f;
 
 float theta_el_unwrapped = 0.0f;
-int32_t fault = 0;
-float fault_f = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -90,20 +54,18 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
+    /* Read status signal READY of the converter*/
+    conv_status_signals.board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
+    struct_ZM_In.Inv_Ready = conv_status_signals.board_ready;
+
 	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
 
-//	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
+	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
 	Global_Data.av.theta_el = uz_signals_wrap(theta_el_unwrapped, 2.0f*UZ_PIf);
+	Global_Data.av.mechanicalPosition = uz_signals_wrap(Global_Data.av.resolver_pl_outputs.position_mech_2pi, 2.0f*UZ_PIf);
+	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
 
-//	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s
-//			* (float)uz_resolver_pl_interface_get_machine_polepairs(Global_Data.objects.resolver_pl_interface);
-
-	// fault = uz_resolverIP_getFLTRegister(Global_Data.objects.resolver);
-	// uz_resolverIP_setDataModePositionVelocity(Global_Data.objects.resolver); // getFLTRegister() switches the AD2S1210 into Config Mode internally; switch back so resolver_pl_interface keeps receiving valid position/velocity data
-
-    
-
+	/* Read UZ state for control state machine*/
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     struct_ZM_In.UZ_Platform_State = current_state;
     switch(current_state)
@@ -121,15 +83,21 @@ void ISR_Control(void *data)
     		    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     		    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, false);
+    			if (uz_dpt_get_state() != dpt_idle)
+    			{
+    				uz_dpt_abort();
+    			}
     			break;
     		case running_state:
     			// Set Enable Pins
                 Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
    	            SigmaDeltaWandler_process(Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
-   	            Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-				Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-				Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+   	            Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+				Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+				Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+                
    	            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     			struct_ZM_In.Soll_Drehzahl = 0;
     			struct_ZM_In.Soll_id = 0;
     			struct_ZM_In.Soll_iq = 0;
@@ -139,6 +107,11 @@ void ISR_Control(void *data)
     		case control_state:
                 Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
    	            SigmaDeltaWandler_process(Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
+                if (Global_Data.rasv.ctrl_state != DPT && uz_dpt_get_state() != dpt_idle)
+                {
+                	// ctrl_state was left while a DPT run was still active (e.g. Stop button) -> abort safely
+                	uz_dpt_abort();
+                }
                 switch (Global_Data.rasv.ctrl_state)
                 {
                     case current_control:
@@ -146,26 +119,28 @@ void ISR_Control(void *data)
                         struct_ZM_In.Soll_id = Global_Data.rasv.Soll_id;
                         struct_ZM_In.Soll_Drehzahl = 0;
                         struct_ZM_In.Soll_Regelungsart = Strom;
-                        if(regelung.output.Bus_Ctrl_Out_e.act_pwm == true && board_ready == true)
+                        if(regelung.output.Bus_Ctrl_Out_e.act_pwm == true && conv_status_signals.board_ready == true)
                             {
 
                                 Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[0];
                                 Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[1];
                                 Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[2];
                             }
+                            uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
                         break;
                     case rpm_control:
                         struct_ZM_In.Soll_iq = 0;
                         struct_ZM_In.Soll_id = 0;
                         struct_ZM_In.Soll_Drehzahl = Global_Data.rasv.Soll_Drehzahl;
                         struct_ZM_In.Soll_Regelungsart = Drehzahl;
-                        if( regelung.output.Bus_Ctrl_Out_e.act_pwm == true && board_ready == true)
+                        if( regelung.output.Bus_Ctrl_Out_e.act_pwm == true && conv_status_signals.board_ready == true)
                             {
 
                                 Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[0];
                                 Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[1];
                                 Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_e.Dutycycle[2];
                             }
+                            uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
                         break;
                     case test_sine:
                         struct_ZM_In.Soll_iq = 0;
@@ -175,6 +150,36 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge1DutyCycle = sine;
                         Global_Data.rasv.halfBridge2DutyCycle = sine;
                         Global_Data.rasv.halfBridge3DutyCycle = sine;
+                        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+                        break;
+
+                    case test_square:
+                        struct_ZM_In.Soll_iq = 0;
+                        struct_ZM_In.Soll_id = 0;
+                        struct_ZM_In.Soll_Drehzahl = 0;
+                        square = uz_wavegen_square(TEST_SQUARE_AMPLITUDE, Global_Data.rasv.Soll_Square_Frequency_Hz, Global_Data.rasv.Soll_Square_DutyCycle);
+                        Global_Data.rasv.halfBridge1DutyCycle = square;
+                        Global_Data.rasv.halfBridge2DutyCycle = square;
+                        Global_Data.rasv.halfBridge3DutyCycle = square;
+                        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+                        break;
+
+                    case DPT:
+                        struct_ZM_In.Soll_iq = 0;
+                        struct_ZM_In.Soll_id = 0;
+                        struct_ZM_In.Soll_Drehzahl = 0;
+                        // Puls 1 (Ladephase) laeuft ueber den 10 kHz Control-ISR mit dem
+                        // Sinc3-Strommesswert des Pruefling-Kanals (PH1 <-> HB1, ggf. an
+                        // die tatsaechliche Beschaltung anpassen). Trennzeit und Puls 2
+                        // uebernimmt ab dem Erreichen des Zielstroms der TTC0-Timer in uz_dpt.c.
+                        // Wird der DPT stattdessen auf HB2/HB3 angewendet (siehe Kommentare in
+                        // uz_dpt.c/uz_dpt_set_outputs), muss hier auf den passenden Kanal
+                        // umgestellt werden: data_PH2 <-> HB2, data_PH3 <-> HB3.
+                        if (uz_dpt_get_state() == dpt_charging)
+                        {
+                            uz_dpt_update_charging(Global_Data.av.Sinc3_Filter.data_PH1);
+                        }
+                        Global_Data.av.dpt_state = uz_dpt_get_state();
                         break;
 
                     default:
@@ -190,10 +195,16 @@ void ISR_Control(void *data)
     
     regelung.input.Bus_ZM_In_c = struct_ZM_In;
 	uz_codegen_step(&regelung);
-	uz_axi_gpio_write_pin_zero_based(output_gpio, PWR_EN_BIT,  (bool)regelung.output.Bus_Ctrl_Out_e.pwr_en);
-	uz_axi_gpio_write_pin_zero_based(output_gpio, BOARD_EN_BIT,  (bool)regelung.output.Bus_Ctrl_Out_e.board_en);
+    
+    conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_e.pwr_en;
+    conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_e.board_en;
+    conv_status_signals.board_rst =  (bool)regelung.output.Bus_Ctrl_Out_e.reset;
+	uz_axi_gpio_write_pin_zero_based(output_gpio, PWR_EN_BIT, conv_status_signals.pwr_en);
+	uz_axi_gpio_write_pin_zero_based(output_gpio, BOARD_EN_BIT, conv_status_signals.board_en);
+    uz_axi_gpio_write_pin_zero_based(output_gpio, BOARD_RST_BIT, conv_status_signals.board_rst);
 
-	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+
+	
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
 

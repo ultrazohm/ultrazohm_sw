@@ -20,6 +20,26 @@
 #include "xgpio.h"
 #include <stdbool.h>
 #include "../uz/uz_global_configuration.h"
+#include "../defines.h"
+#include "../include/ipc_ARM.h"
+#include <math.h>
+#include <xtmrctr.h>
+#include "../include/javascope.h"
+#include "../include/adc.h"
+#include "../IP_Cores/mux_axi_ip_addr.h"
+#include "xtime_l.h"
+#include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../include/uz_platform_state_machine.h"
+//#include "../Codegen/uz_codegen.h"
+#include "../include/mux_axi.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_JL_invModel_ideal/uz_JL_invModel_ideal.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../include/SigmaDeltaWandler.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../include/JL_SH_Umrichter.h"
+#include "../include/uz_dpt.h"
+
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 
 // Shared Peripheral Interrupts: PL->PS

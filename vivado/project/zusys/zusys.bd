@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x4E16370ADA107E8C",
+      "boundary_crc": "0x4E16370A45913AEC",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -113,7 +113,8 @@
         "Test_Clk": "",
         "util_vector_logic_0": "",
         "util_vector_logic_1": "",
-        "uz_JL_SigmaDelta_Int_0": ""
+        "uz_JL_SigmaDelta_Int_0": "",
+        "util_vector_logic_2": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -247,7 +248,17 @@
       "D2_IN": {
         "direction": "I",
         "left": "17",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortType": {
+            "value": "undef",
+            "value_src": "ip_prop"
+          },
+          "PortType.PROP_SRC": {
+            "value": "false",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "Dig_12_Ch1": {
         "direction": "O",
@@ -5348,6 +5359,20 @@
             "xci_name": "zusys_uz_JL_SigmaDelta_Int_0_0",
             "xci_path": "ip\\zusys_uz_JL_SigmaDelta_Int_0_0\\zusys_uz_JL_SigmaDelta_Int_0_0.xci",
             "inst_hier_path": "uz_user/uz_JL_SigmaDelta_Int_0"
+          },
+          "util_vector_logic_2": {
+            "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+            "xci_name": "zusys_util_vector_logic_1_0",
+            "xci_path": "ip\\zusys_util_vector_logic_1_0\\zusys_util_vector_logic_1_0.xci",
+            "inst_hier_path": "uz_user/util_vector_logic_2",
+            "parameters": {
+              "C_OPERATION": {
+                "value": "not"
+              },
+              "C_SIZE": {
+                "value": "18"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -5386,12 +5411,12 @@
           "D2_IN_1": {
             "ports": [
               "D2_IN",
-              "axi_gpio_1/gpio_io_i",
               "SD_data_U/Din",
               "SD_data_PH2/Din",
               "SD_data_PH3/Din",
               "SD_data_PH4/Din",
-              "SD_data_PH1/Din"
+              "SD_data_PH1/Din",
+              "util_vector_logic_2/Op1"
             ]
           },
           "PWR_EN_Dout": {
@@ -5473,6 +5498,12 @@
             "ports": [
               "util_vector_logic_1/Res",
               "ila_0/probe6"
+            ]
+          },
+          "util_vector_logic_2_Res": {
+            "ports": [
+              "util_vector_logic_2/Res",
+              "axi_gpio_1/gpio_io_i"
             ]
           },
           "uz_JL_SigmaDelta_Int_0_data_raw_PH1": {

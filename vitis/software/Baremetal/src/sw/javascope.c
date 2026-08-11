@@ -22,8 +22,9 @@
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../Codegen/uz_codegen.h"
+//#include "../Codegen/uz_codegen.h"
 #include "../globalData.h"
+#include "../include/JL_SH_Umrichter.h"
 
 
 // maximum number of while loops in the polling function for the acknowledge flag
@@ -43,6 +44,12 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+static float conv_pwr_en_f;
+static float conv_board_en_f;
+static float conv_board_rst_f;
+static float conv_board_ready_f;
+static float conv_igbt_desat_f;
+static float dpt_state_f;
 
 uint32_t pollErrorCnt = 0U;
 
@@ -64,6 +71,7 @@ extern float Sinc3_Filter_out_f;
 extern int32_t fault;
 extern float fault_f;
 extern DS_Data Global_Data;
+extern conv_status_signals_t conv_status_signals;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -100,24 +108,28 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-	js_ch_observable[JSO_SD_U]					= &Global_Data.av.Sinc3_Filter.data_U;
-	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
-	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
-	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
-	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.Sinc3_Filter.data_PH4;
-	js_ch_observable[JSO_theta_el]				= &Global_Data.av.resolver_pl_outputs.position_mech_2pi;
-	js_ch_observable[JSO_omega_el]				= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+//	js_ch_observable[JSO_SD_U]					= &Global_Data.av.Sinc3_Filter.data_U;
+//	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
+//	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
+//	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
+//	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.Sinc3_Filter.data_PH4;
+	js_ch_observable[JSO_theta_el]				= &Global_Data.av.theta_el;
+	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;
+	js_ch_observable[JSO_n_rpm]					= &Global_Data.av.resolver_pl_outputs.n_mech_rpm;
+	js_ch_observable[JSO_omega_mech]			= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+	js_ch_observable[JSO_dpt_state]				= &dpt_state_f;
+	js_ch_observable[JSO_dpt_current]			= &Global_Data.av.Sinc3_Filter.data_PH1;
+	js_ch_observable[JSO_conv_pwr_en]			= &conv_pwr_en_f;
+	js_ch_observable[JSO_conv_board_en]			= &conv_board_en_f;
+	js_ch_observable[JSO_conv_board_rst]		= &conv_board_rst_f;
+	js_ch_observable[JSO_conv_board_ready]		= &conv_board_ready_f;
+	js_ch_observable[JSO_conv_igbt_desat]		= &conv_igbt_desat_f;
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_Error_Code] 			= &fault_f;
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(Global_Data.av.resolver_pl_outputs.revolution_counter);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_resolver_counter] 		= &(Global_Data.av.resolver_pl_outputs.revolution_counter);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
@@ -125,8 +137,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH1);
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH2);
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH3);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH4]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH4);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_U]			= SigmaDeltaWandler_get_raw_average(SDW_CH_U);
+
 
 	return Status;
 }
@@ -157,6 +168,12 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	conv_pwr_en_f			= (float)conv_status_signals.pwr_en;
+	conv_board_en_f			= (float)conv_status_signals.board_en;
+	conv_board_rst_f		= (float)conv_status_signals.board_rst;
+	conv_board_ready_f		= (float)conv_status_signals.board_ready;
+	conv_igbt_desat_f		= (float)conv_status_signals.igbt_desat;
+	dpt_state_f				= (float)data->av.dpt_state;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

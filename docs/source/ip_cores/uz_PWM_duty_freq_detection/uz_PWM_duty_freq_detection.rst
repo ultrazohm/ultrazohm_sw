@@ -21,6 +21,11 @@ From these two values, the duty cycle is calculated as:
 
     DutyCycle=\frac{N_{high}}{N_{period}}
 
+The driver provides this result in two explicitly named units:
+
+* ``uz_PWM_duty_freq_detection_get_duty_cycle_normalized`` returns a normalized ratio from ``0.0`` to ``1.0``.
+* ``uz_PWM_duty_freq_detection_get_duty_cycle_in_percent`` returns a percentage from ``0.0`` to ``100.0``.
+
 Usage
 -----
 
@@ -108,15 +113,20 @@ Vitis
    .. code-block:: c
       :caption: Code for ``isr.c`` file
 
-       extern struct uz_PWM_duty_freq_detection_outputs_t outputs;
        extern struct linear_interpolation_parameters_t lin_inter_param;
        ...
        void ISR_Control(void *data) {
         ...
         float pwm_freq = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.PWM_Detect_instance);
-        float duty_cycle = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.PWM_Detect_instance);
-        float temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(duty_cycle,lin_inter_param);
+        float duty_cycle_normalized = uz_PWM_duty_freq_detection_get_duty_cycle_normalized(Global_Data.objects.PWM_Detect_instance);
+        float duty_cycle_percent = duty_cycle_normalized * 100.0f;
+        float temp = uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(duty_cycle_normalized,lin_inter_param);
         ...
+
+   Alternatively, call ``uz_PWM_duty_freq_detection_get_duty_cycle_in_percent`` directly if only
+   the percentage value is required. Calling both getters consecutively performs two separate
+   hardware snapshots; derive the percentage from one normalized measurement when both values must
+   represent the same PWM period.
 
 Driver reference
 ----------------
@@ -132,6 +142,8 @@ Driver reference
 .. doxygenfunction:: uz_PWM_duty_freq_detection_init
 
 .. doxygenfunction:: uz_PWM_duty_freq_detection_get_frequency_in_Hz
+
+.. doxygenfunction:: uz_PWM_duty_freq_detection_get_duty_cycle_normalized
 
 .. doxygenfunction:: uz_PWM_duty_freq_detection_get_duty_cycle_in_percent
 

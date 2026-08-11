@@ -41,7 +41,7 @@ float uz_PWM_duty_freq_detection_get_frequency_in_Hz(uz_PWM_duty_freq_detection_
     return((float)self->config.ip_clk_frequency_Hz / PWM_period_ticks);
 }
 
-float uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(uz_PWM_duty_freq_detection_t *self) {
+float uz_PWM_duty_freq_detection_get_duty_cycle_normalized(uz_PWM_duty_freq_detection_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_PWM_duty_freq_detection_hw_trigger_output_strobe(self->config.base_address);
@@ -50,10 +50,14 @@ float uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(uz_PWM_duty_freq_dete
     return((float)PWM_high_ticks / (float)PWM_period_ticks);
 }
 
-float uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(float Duty_cycle_in_percent, struct linear_interpolation_parameters_t lin_interp_param) {
-    uz_assert(Duty_cycle_in_percent >= 0.0f);
-    uz_assert(Duty_cycle_in_percent <= 1.0f);
-    return(Duty_cycle_in_percent * lin_interp_param.a + lin_interp_param.b);
+float uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(uz_PWM_duty_freq_detection_t *self) {
+    return(uz_PWM_duty_freq_detection_get_duty_cycle_normalized(self) * 100.0f);
+}
+
+float uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(float duty_cycle_normalized, struct linear_interpolation_parameters_t lin_interp_param) {
+    uz_assert(duty_cycle_normalized >= 0.0f);
+    uz_assert(duty_cycle_normalized <= 1.0f);
+    return(duty_cycle_normalized * lin_interp_param.a + lin_interp_param.b);
 }
 
 

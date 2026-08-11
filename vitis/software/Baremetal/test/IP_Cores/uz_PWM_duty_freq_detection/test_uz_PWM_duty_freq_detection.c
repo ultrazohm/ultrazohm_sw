@@ -66,18 +66,32 @@ void test_uz_PWM_duty_freq_detection_get_frequency_in_Hz(void) {
     TEST_ASSERT_EQUAL_FLOAT(expected_freq, output);
 }
 
+void test_uz_PWM_duty_freq_detection_get_duty_cycle_normalized_assert(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_duty_cycle_normalized(NULL));
+}
+
+void test_uz_PWM_duty_freq_detection_get_duty_cycle_normalized(void) {
+    uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
+    float expected_duty_cycle = 0.743f;
+    uz_PWM_duty_freq_detection_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, 10000U);
+    uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks_ExpectAndReturn(BASE_ADDRESS, 7430U);
+    float output = uz_PWM_duty_freq_detection_get_duty_cycle_normalized(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected_duty_cycle,output);
+}
+
 void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent_assert(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(NULL));
 }
 
 void test_uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(void) {
     uz_PWM_duty_freq_detection_t *test_instance = successful_init(config);
-    float expected_duty_cycle = 0.743f;
+    float expected_duty_cycle_percent = 74.3f;
     uz_PWM_duty_freq_detection_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
     uz_PWM_duty_freq_detection_hw_get_PWM_period_ticks_ExpectAndReturn(BASE_ADDRESS, 10000U);
     uz_PWM_duty_freq_detection_hw_get_PWM_hightime_ticks_ExpectAndReturn(BASE_ADDRESS, 7430U);
     float output = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(expected_duty_cycle,output);
+    TEST_ASSERT_EQUAL_FLOAT(expected_duty_cycle_percent, output);
 }
 
 void test_uz_PWM_duty_freq_detection_get_Temperature_in_degree_C_assert_negative(void) {

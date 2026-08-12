@@ -14,6 +14,6 @@
 #define VA_PROTECTION_MAX_PHASE_CURRENT_A   20.0f
 #define VA_PROTECTION_MAX_DQ_CURRENT_A      20.0f
 
-uz_pmsm_control_t *va_control_init(void);
+uz_pmsm_control_t *va_control_init(float sampling_time_s);
 
 #endif

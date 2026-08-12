@@ -6,6 +6,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -34,7 +35,18 @@ typedef struct _actualValues_ {
 	float im_siemens_1LA7073_vdc, im_siemens_1LA7073_speed_rpm;
 	struct uz_u_f_control_data_t im_siemens_1LA7073_uf_data;
 	float im_siemens_1LA7073_id, im_siemens_1LA7073_iq;
+	float im_siemens_1LA7073_id_raw, im_siemens_1LA7073_iq_raw;
 	float im_siemens_1LA7073_flux_angle_rad, im_siemens_1LA7073_flux_magnitude_Vs;
+	float im_siemens_1LA7073_rotor_electrical_angle_rad;
+	float im_siemens_1LA7073_flux_rotor_angle_difference_rad;
+	float im_siemens_1LA7073_rotor_electrical_frequency_Hz;
+	float im_siemens_1LA7073_slip_frequency_Hz;
+	float im_siemens_1LA7073_slip_percent;
+	float im_siemens_1LA7073_stator_frequency_Hz;
+	float inverter_temperature_pwm_duty_cycle_percent;
+	float inverter_temperature_pwm_frequency_Hz;
+	float inverter_temperature_degC;
+	float inverter_hardware_overcurrent;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;
@@ -75,6 +87,7 @@ typedef struct _referenceAndSetValues_ {
 	bool im_siemens_1LA7073_enable_foc;
 	bool im_siemens_1LA7073_enable_kalman_filter;
 	bool im_siemens_1LA7073_enable_resonant_control;
+	im_foc_control_parameters_t im_siemens_1LA7073_foc_parameters;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -92,6 +105,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsm_control_t* va_control;
 	uz_u_f_control_t* im_siemens_1LA7073_control;
+	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
 	im_foc_control_t* im_siemens_1LA7073_foc_control;
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

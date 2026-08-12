@@ -16,7 +16,6 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
-#include "../include/project_wizard_visualization.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 #include "../include/error_checks.h"
@@ -74,25 +73,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-	js_ch_observable[JSO_VA_I_A] = &data->av.adc_ltc2311_a2_ch3;
-	js_ch_observable[JSO_VA_I_B] = &data->av.adc_ltc2311_a2_ch2;
-	js_ch_observable[JSO_VA_I_C] = &data->av.adc_ltc2311_a2_ch1;
-	js_ch_observable[JSO_VA_V_DC] = &data->av.adc_ltc2311_a2_ch0;
-	js_ch_observable[JSO_VA_I_DC] = &data->av.adc_ltc2311_a2_ch4;
-	js_ch_observable[JSO_VA_SPEED_RPM] = &data->av.va_control_actual.speed_in_rpm;
-	js_ch_observable[JSO_VA_OMEGA_MECH] = &data->av.incremental_encoder_d5_2_omega_mech;
-	js_ch_observable[JSO_VA_THETA_EL] = &data->av.va_control_actual.theta_el;
-	js_ch_observable[JSO_VA_I_D] = &data->av.va_control_actual.i_dq_in_A.d;
-	js_ch_observable[JSO_VA_I_Q] = &data->av.va_control_actual.i_dq_in_A.q;
-	js_ch_observable[JSO_VA_V_D] = &data->av.va_control_actual.v_dq_in_V.d;
-	js_ch_observable[JSO_VA_V_Q] = &data->av.va_control_actual.v_dq_in_V.q;
-	js_ch_observable[JSO_VA_I_D_REF] = &data->av.va_control_reference.i_dq_in_A.d;
-	js_ch_observable[JSO_VA_I_Q_REF] = &data->av.va_control_reference.i_dq_in_A.q;
-	js_ch_observable[JSO_VA_SPEED_REF_RPM] = &data->rasv.va_speed_reference_rpm;
-	js_ch_observable[JSO_VA_DUTY_A] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_1;
-	js_ch_observable[JSO_VA_DUTY_B] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_2;
-	js_ch_observable[JSO_VA_DUTY_C] = &data->rasv.pwm_2L_1_halfBridgeDutyCycle_3;
-	js_ch_observable[JSO_VA_SOR_VIOLATION] = &data->av.va_control_violation_code;
 	js_ch_observable[JSO_IM_1LA7073_I_A]=&data->av.im_siemens_1LA7073_ia;
 	js_ch_observable[JSO_IM_1LA7073_I_B]=&data->av.im_siemens_1LA7073_ib;
 	js_ch_observable[JSO_IM_1LA7073_I_C]=&data->av.im_siemens_1LA7073_ic;
@@ -102,44 +82,32 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_1LA7073_VOLTAGE_V]=&data->av.im_siemens_1LA7073_uf_data.applied_voltage_magnitude_V;
 	js_ch_observable[JSO_IM_1LA7073_I_D]=&data->av.im_siemens_1LA7073_id;
 	js_ch_observable[JSO_IM_1LA7073_I_Q]=&data->av.im_siemens_1LA7073_iq;
+	js_ch_observable[JSO_IM_1LA7073_I_D_RAW]=&data->av.im_siemens_1LA7073_id_raw;
+	js_ch_observable[JSO_IM_1LA7073_I_Q_RAW]=&data->av.im_siemens_1LA7073_iq_raw;
 	js_ch_observable[JSO_IM_1LA7073_I_D_REF]=&data->rasv.im_siemens_1LA7073_id_reference_A;
 	js_ch_observable[JSO_IM_1LA7073_I_Q_REF]=&data->rasv.im_siemens_1LA7073_iq_reference_A;
 	js_ch_observable[JSO_IM_1LA7073_FLUX_VS]=&data->av.im_siemens_1LA7073_flux_magnitude_Vs;
-/* Project Wizard BEGIN: javascope_observable_pointers */
-	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
-	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
-	js_ch_observable[JSO_ADC_A1_CH2] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch2;
-	js_ch_observable[JSO_ADC_A1_CH3] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch3;
-	js_ch_observable[JSO_ADC_A1_CH4] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch4;
-	js_ch_observable[JSO_ADC_A1_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch5;
-	js_ch_observable[JSO_ADC_A1_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch6;
-	js_ch_observable[JSO_ADC_A1_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch7;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH0] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch0;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH1] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch1;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH2] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch2;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH3] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch3;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH4] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch4;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH5] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch5;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH6] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch6;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH7] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch7;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH8] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch8;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH9] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch9;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH10] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch10;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH11] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch11;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH12] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch12;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH13] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch13;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH14] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch14;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH15] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch15;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH16] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch16;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH17] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch17;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH18] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch18;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH19] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch19;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH20] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch20;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH21] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch21;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH22] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch22;
-	js_ch_observable[JSO_ADC_MAX11331_A3_CH23] = &project_wizard_visualization_data.viz_adc_max11331_a3_ch23;
-/* Project Wizard END: javascope_observable_pointers */
+	js_ch_observable[JSO_IM_1LA7073_FLUX_ANGLE_RAD]=&data->av.im_siemens_1LA7073_flux_angle_rad;
+	js_ch_observable[JSO_IM_1LA7073_ROTOR_ELECTRICAL_ANGLE_RAD]=&data->av.im_siemens_1LA7073_rotor_electrical_angle_rad;
+	js_ch_observable[JSO_IM_1LA7073_FLUX_ROTOR_ANGLE_DIFFERENCE_RAD]=&data->av.im_siemens_1LA7073_flux_rotor_angle_difference_rad;
+	js_ch_observable[JSO_IM_1LA7073_ROTOR_ELECTRICAL_FREQUENCY_HZ]=&data->av.im_siemens_1LA7073_rotor_electrical_frequency_Hz;
+	js_ch_observable[JSO_IM_1LA7073_SLIP_FREQUENCY_HZ]=&data->av.im_siemens_1LA7073_slip_frequency_Hz;
+	js_ch_observable[JSO_IM_1LA7073_SLIP_PERCENT]=&data->av.im_siemens_1LA7073_slip_percent;
+	js_ch_observable[JSO_IM_1LA7073_STATOR_FREQUENCY_HZ]=&data->av.im_siemens_1LA7073_stator_frequency_Hz;
+	js_ch_observable[JSO_IM_1LA7073_DUTY_A]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_1;
+	js_ch_observable[JSO_IM_1LA7073_DUTY_B]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_2;
+	js_ch_observable[JSO_IM_1LA7073_DUTY_C]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_3;
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
+	js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C] = &data->av.inverter_temperature_degC;
+	js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_DUTY_CYCLE_PERCENT] = &data->av.inverter_temperature_pwm_duty_cycle_percent;
+	js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_FREQUENCY_HZ] = &data->av.inverter_temperature_pwm_frequency_Hz;
+
+	js_ch_selected[0] = js_ch_observable[JSO_IM_1LA7073_I_A];
+	js_ch_selected[1] = js_ch_observable[JSO_IM_1LA7073_I_B];
+	js_ch_selected[2] = js_ch_observable[JSO_IM_1LA7073_I_C];
+	js_ch_selected[17] = js_ch_observable[JSO_IM_1LA7073_SLIP_PERCENT];
+	js_ch_selected[18] = js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_DUTY_CYCLE_PERCENT];
+	js_ch_selected[19] = js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -150,21 +118,38 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_Error_Code] = &js_error_code;
-	js_slowDataArray[JSSD_FLOAT_VA_Speed_RPM] = &data->av.va_control_actual.speed_in_rpm;
-	js_slowDataArray[JSSD_FLOAT_VA_V_DC] = &data->av.adc_ltc2311_a2_ch0;
-	js_slowDataArray[JSSD_FLOAT_VA_I_A] = &data->av.adc_ltc2311_a2_ch3;
-	js_slowDataArray[JSSD_FLOAT_VA_I_B] = &data->av.adc_ltc2311_a2_ch2;
-	js_slowDataArray[JSSD_FLOAT_VA_I_C] = &data->av.adc_ltc2311_a2_ch1;
-	js_slowDataArray[JSSD_FLOAT_VA_I_D] = &data->av.va_control_actual.i_dq_in_A.d;
-	js_slowDataArray[JSSD_FLOAT_VA_I_Q] = &data->av.va_control_actual.i_dq_in_A.q;
-	js_slowDataArray[JSSD_FLOAT_VA_SOR_Violation] = &data->av.va_control_violation_code;
 	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Speed_RPM] = &data->av.im_siemens_1LA7073_speed_rpm;
 	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_V_DC] = &data->av.im_siemens_1LA7073_vdc;
-	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_A] = &data->av.im_siemens_1LA7073_ia;
-	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_B] = &data->av.im_siemens_1LA7073_ib;
-	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_C] = &data->av.im_siemens_1LA7073_ic;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Slip_Percent] = &data->av.im_siemens_1LA7073_slip_percent;
 	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Frequency_Hz] = &data->av.im_siemens_1LA7073_uf_data.frequency_command_Hz;
 	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Voltage_V] = &data->av.im_siemens_1LA7073_uf_data.applied_voltage_magnitude_V;
+	js_slowDataArray[JSSD_FLOAT_Inverter_Temperature_DegC] = &data->av.inverter_temperature_degC;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_D] = &data->av.im_siemens_1LA7073_id;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_Q] = &data->av.im_siemens_1LA7073_iq;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_D_Raw] = &data->av.im_siemens_1LA7073_id_raw;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_Q_Raw] = &data->av.im_siemens_1LA7073_iq_raw;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Flux_Vs] = &data->av.im_siemens_1LA7073_flux_magnitude_Vs;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Flux_Angle_Rad] = &data->av.im_siemens_1LA7073_flux_angle_rad;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Rotor_Electrical_Angle_Rad] = &data->av.im_siemens_1LA7073_rotor_electrical_angle_rad;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Flux_Rotor_Angle_Difference_Rad] = &data->av.im_siemens_1LA7073_flux_rotor_angle_difference_rad;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Rotor_Electrical_Frequency_Hz] = &data->av.im_siemens_1LA7073_rotor_electrical_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_Inverter_Hardware_Overcurrent] = &data->av.inverter_hardware_overcurrent;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Slip_Frequency_Hz] = &data->av.im_siemens_1LA7073_slip_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_Stator_Frequency_Hz] = &data->av.im_siemens_1LA7073_stator_frequency_Hz;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_D_Reference_A] = &data->rasv.im_siemens_1LA7073_id_reference_A;
+	js_slowDataArray[JSSD_FLOAT_IM_1LA7073_I_Q_Reference_A] = &data->rasv.im_siemens_1LA7073_iq_reference_A;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Kp_D] = &data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_d;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Ki_D] = &data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_d;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Kp_Q] = &data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_q;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Ki_Q] = &data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_q;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Kalman_Q_A2_Per_S] = &data->rasv.im_siemens_1LA7073_foc_parameters.kalman_q_A2_per_s;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Kalman_R_A2] = &data->rasv.im_siemens_1LA7073_foc_parameters.kalman_r_A2;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Gain_D] = &data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_d;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Gain_Q] = &data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_q;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Harmonic_Order] = &data->rasv.im_siemens_1LA7073_foc_parameters.resonant_harmonic_order;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Antiwindup_Gain] = &data->rasv.im_siemens_1LA7073_foc_parameters.resonant_antiwindup_gain;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V] = &data->rasv.im_siemens_1LA7073_foc_parameters.resonant_voltage_limit_V;
+	js_slowDataArray[JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs] = &data->rasv.im_siemens_1LA7073_foc_parameters.slip_flux_minimum_Vs;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 

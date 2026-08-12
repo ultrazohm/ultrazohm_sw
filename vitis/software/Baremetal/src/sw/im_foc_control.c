@@ -13,11 +13,8 @@
 #define IM_LM_H            0.271f
 #define IM_LSIGMA_S_H      31.3e-3f
 #define IM_LSIGMA_R_H      35.6e-3f
-#define IM_POLE_PAIRS      2.0f
 #define IM_CURRENT_KP_SCALE 0.1f
 #define IM_CURRENT_KI_SCALE 0.2f
-#define IM_KF_Q_CURRENT_A2  1.0e-5f
-#define IM_KF_R_CURRENT_A2  5.0e-2f
 #define IM_RESONANT_GAIN_SCALE 0.3f
 
 struct im_foc_control_t {
@@ -33,6 +30,8 @@ struct im_foc_control_t {
     uz_resonantController_t *resonant_iq;
     bool kalman_enabled_last;
     bool resonant_enabled_last;
+    float sampling_time_s;
+    im_foc_control_parameters_t parameters;
 };
 
 static im_foc_control_t instance;
@@ -68,10 +67,68 @@ im_foc_control_t *im_foc_control_init(float sampling_time_s)
         };
         instance.resonant_id = uz_resonantController_init(resonant_cfg);
         instance.resonant_iq = uz_resonantController_init(resonant_cfg);
+        instance.parameters = (im_foc_control_parameters_t){
+            .current_kp_d = cfg.Kp,
+            .current_ki_d = cfg.Ki,
+            .current_kp_q = cfg.Kp,
+            .current_ki_q = cfg.Ki,
+            .kalman_q_A2_per_s = 1.0e-1f,
+            .kalman_r_A2 = 5.0e-2f,
+            .resonant_gain_d = resonant_cfg.gain,
+            .resonant_gain_q = resonant_cfg.gain,
+            .resonant_harmonic_order = resonant_cfg.harmonic_order,
+            .resonant_antiwindup_gain = resonant_cfg.antiwindup_gain,
+            .resonant_voltage_limit_V = resonant_cfg.upper_limit,
+            .slip_flux_minimum_Vs = 0.02f,
+        };
         initialized = true;
     }
     im_foc_control_reset(&instance);
+    instance.sampling_time_s = sampling_time_s;
     return &instance;
+}
+
+im_foc_control_parameters_t im_foc_control_get_parameters(im_foc_control_t *self)
+{
+    uz_assert_not_NULL(self);
+    return self->parameters;
+}
+
+void im_foc_control_set_parameters(im_foc_control_t *self, im_foc_control_parameters_t parameters)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(parameters.current_kp_d >= 0.0f);
+    uz_assert(parameters.current_ki_d >= 0.0f);
+    uz_assert(parameters.current_kp_q >= 0.0f);
+    uz_assert(parameters.current_ki_q >= 0.0f);
+    uz_assert(parameters.kalman_q_A2_per_s >= 0.0f);
+    uz_assert(parameters.kalman_r_A2 > 0.0f);
+    uz_assert(parameters.resonant_gain_d > 0.0f);
+    uz_assert(parameters.resonant_gain_q > 0.0f);
+    uz_assert(parameters.resonant_harmonic_order > 0.0f);
+    uz_assert(parameters.resonant_antiwindup_gain >= 0.0f);
+    uz_assert(parameters.resonant_voltage_limit_V > 0.0f);
+    uz_assert(parameters.slip_flux_minimum_Vs > 0.0f);
+
+    uz_PI_Controller_set_Kp(self->id_controller, parameters.current_kp_d);
+    uz_PI_Controller_set_Ki(self->id_controller, parameters.current_ki_d);
+    uz_PI_Controller_set_Kp(self->iq_controller, parameters.current_kp_q);
+    uz_PI_Controller_set_Ki(self->iq_controller, parameters.current_ki_q);
+    struct uz_resonantController_config resonant_config = {
+        .sampling_time = self->sampling_time_s,
+        .harmonic_order = parameters.resonant_harmonic_order,
+        .fundamental_frequency = 1.0f,
+        .lower_limit = -parameters.resonant_voltage_limit_V,
+        .upper_limit = parameters.resonant_voltage_limit_V,
+        .antiwindup_gain = parameters.resonant_antiwindup_gain,
+        .in_reference_value = 0.0f,
+        .in_measured_value = 0.0f,
+    };
+    resonant_config.gain = parameters.resonant_gain_d;
+    uz_resonantController_set_config(self->resonant_id, resonant_config);
+    resonant_config.gain = parameters.resonant_gain_q;
+    uz_resonantController_set_config(self->resonant_iq, resonant_config);
+    self->parameters = parameters;
 }
 
 void im_foc_control_reset(im_foc_control_t *self)
@@ -105,13 +162,15 @@ im_foc_control_output_t im_foc_control_sample(im_foc_control_t *self,
     }
 
     uz_3ph_alphabeta_t i_ab = uz_transformation_3ph_abc_to_alphabeta(input.currents_A);
+    uz_3ph_alphabeta_t const i_ab_raw = i_ab;
     if (input.enable_kalman_filter) {
-        self->kf_p_alpha_A2 += IM_KF_Q_CURRENT_A2;
-        self->kf_p_beta_A2 += IM_KF_Q_CURRENT_A2;
+        float const kalman_process_noise_A2 = self->parameters.kalman_q_A2_per_s * self->sampling_time_s;
+        self->kf_p_alpha_A2 += kalman_process_noise_A2;
+        self->kf_p_beta_A2 += kalman_process_noise_A2;
         output.kalman_innovation_alpha_A = i_ab.alpha - self->kf_i_alpha_A;
         output.kalman_innovation_beta_A = i_ab.beta - self->kf_i_beta_A;
-        float const gain_alpha = self->kf_p_alpha_A2 / (self->kf_p_alpha_A2 + IM_KF_R_CURRENT_A2);
-        float const gain_beta = self->kf_p_beta_A2 / (self->kf_p_beta_A2 + IM_KF_R_CURRENT_A2);
+        float const gain_alpha = self->kf_p_alpha_A2 / (self->kf_p_alpha_A2 + self->parameters.kalman_r_A2);
+        float const gain_beta = self->kf_p_beta_A2 / (self->kf_p_beta_A2 + self->parameters.kalman_r_A2);
         self->kf_i_alpha_A += gain_alpha * output.kalman_innovation_alpha_A;
         self->kf_i_beta_A += gain_beta * output.kalman_innovation_beta_A;
         self->kf_p_alpha_A2 *= 1.0f - gain_alpha;
@@ -129,7 +188,8 @@ im_foc_control_output_t im_foc_control_sample(im_foc_control_t *self,
     self->kalman_enabled_last = input.enable_kalman_filter;
     float const lr = IM_LM_H + IM_LSIGMA_R_H;
     float const inv_tr = IM_RR_OHM / lr;
-    float const omega_r_el = input.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f) * IM_POLE_PAIRS;
+    float const omega_r_el = input.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f) * IM_1LA7073_POLE_PAIRS;
+    output.rotor_electrical_frequency_Hz = omega_r_el / (2.0f * UZ_PIf);
 
     /* Rotor-current-model observer in stationary alpha/beta coordinates. */
     float const dpsi_alpha = inv_tr * (IM_LM_H * i_ab.alpha - self->psi_alpha_Vs)
@@ -141,23 +201,41 @@ im_foc_control_output_t im_foc_control_sample(im_foc_control_t *self,
 
     output.flux_magnitude_Vs = hypotf(self->psi_alpha_Vs, self->psi_beta_Vs);
     output.flux_angle_rad = atan2f(self->psi_beta_Vs, self->psi_alpha_Vs);
+    uz_3ph_dq_t const i_dq_raw = uz_transformation_3ph_alphabeta_to_dq(i_ab_raw, output.flux_angle_rad);
     uz_3ph_dq_t const i_dq = uz_transformation_3ph_alphabeta_to_dq(i_ab, output.flux_angle_rad);
+    output.id_raw_A = i_dq_raw.d;
+    output.iq_raw_A = i_dq_raw.q;
     output.id_A = i_dq.d;
     output.iq_A = i_dq.q;
+
+    float const ls = IM_LM_H + IM_LSIGMA_S_H;
+    float const sigma_ls = (1.0f - (IM_LM_H * IM_LM_H) / (ls * lr)) * ls;
+    float omega_slip = 0.0f;
+    if (output.flux_magnitude_Vs > self->parameters.slip_flux_minimum_Vs) {
+        omega_slip = (IM_RR_OHM * IM_LM_H / lr) * i_dq.q / output.flux_magnitude_Vs;
+    }
+    float const omega_s = omega_r_el + omega_slip;
+    output.slip_frequency_Hz = omega_slip / (2.0f * UZ_PIf);
+    output.stator_frequency_Hz = omega_s / (2.0f * UZ_PIf);
+    output.slip_percent = fabsf(output.stator_frequency_Hz) > 1.0e-3f
+        ? 100.0f * output.slip_frequency_Hz / output.stator_frequency_Hz
+        : 0.0f;
+    if (input.observer_only) {
+        /* Keep control states neutral while Kalman filter, flux observer and
+         * dq diagnostics continue to run under externally generated U/f PWM. */
+        uz_PI_Controller_reset(self->id_controller);
+        uz_PI_Controller_reset(self->iq_controller);
+        uz_resonantController_reset(self->resonant_id);
+        uz_resonantController_reset(self->resonant_iq);
+        self->resonant_enabled_last = false;
+        return output;
+    }
 
     float const voltage_limit = input.dc_link_voltage_V * 0.57735026919f;
     uz_PI_Controller_update_limits(self->id_controller, voltage_limit, -voltage_limit);
     uz_PI_Controller_update_limits(self->iq_controller, voltage_limit, -voltage_limit);
     float const ud_pi = uz_PI_Controller_sample(self->id_controller, input.id_reference_A, i_dq.d, false);
     float const uq_pi = uz_PI_Controller_sample(self->iq_controller, input.iq_reference_A, i_dq.q, false);
-
-    float const ls = IM_LM_H + IM_LSIGMA_S_H;
-    float const sigma_ls = (1.0f - (IM_LM_H * IM_LM_H) / (ls * lr)) * ls;
-    float omega_slip = 0.0f;
-    if (output.flux_magnitude_Vs > 0.02f) {
-        omega_slip = (IM_RR_OHM * IM_LM_H / lr) * i_dq.q / output.flux_magnitude_Vs;
-    }
-    float const omega_s = omega_r_el + omega_slip;
     if (input.enable_resonant_control) {
         float const resonant_frequency = fmaxf(fabsf(omega_s), 1.0f);
         output.resonant_ud_V = uz_resonantController_step(self->resonant_id,

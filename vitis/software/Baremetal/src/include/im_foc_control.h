@@ -1,78 +1,62 @@
-/******************************************************************************
- * Copyright 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and limitations under the License.
- ******************************************************************************/
-
 #ifndef IM_FOC_CONTROL_H_
 #define IM_FOC_CONTROL_H_
 
-#include "../globalData.h"
-#include "../uz/uz_IM_config/uz_IM_config.h"
-#include "../uz/uz_piController/uz_piController.h"
-#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
-#include "../uz/uz_ResonantController/uz_resonant_controller.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include <stdbool.h>
 
+typedef struct im_foc_control_t im_foc_control_t;
+
 typedef struct {
-    bool use_speed_control;
-    bool use_resonant_6th;
-    float id_ref_A;
-    float iq_ref_A;
-    float speed_ref_rpm;
-    /** Measured d/q currents from raw abc → dq transform at theta_flux.
-     *  Used by the resonant controller so it sees the full harmonic content
-     *  even when the KF observer attenuates harmonics in av.I_d/I_q. */
-    float id_meas_A;
-    float iq_meas_A;
-    /** Stator angular frequency [rad/s] for resonant controller frequency tracking.
-     *  Prefer the deterministic observer PLL when available because it is
-     *  smoother than the KF slip estimate. If the deterministic observer is
-     *  disabled, the caller may fall back to the selected observer omega_s. */
-    float omega_s_for_resonant_rad_s;
+    float current_kp_d;
+    float current_ki_d;
+    float current_kp_q;
+    float current_ki_q;
+    float kalman_q_A2_per_s;
+    float kalman_r_A2;
+    float resonant_gain_d;
+    float resonant_gain_q;
+    float resonant_harmonic_order;
+    float resonant_antiwindup_gain;
+    float resonant_voltage_limit_V;
+    float slip_flux_minimum_Vs;
+} im_foc_control_parameters_t;
+
+typedef struct {
+    uz_3ph_abc_t currents_A;
+    float rotor_speed_rpm;
+    float dc_link_voltage_V;
+    float id_reference_A;
+    float iq_reference_A;
+    float sampling_time_s;
+    bool enable_kalman_filter;
+    bool enable_resonant_control;
+    bool observer_only;
 } im_foc_control_input_t;
 
 typedef struct {
-    float id_cmd_A;
-    float iq_cmd_A;
-    float ud_pi;      // d-axis PI output before decoupling (should approach Rs*id at steady state)
-    float uq_pi;      // q-axis PI output before decoupling (should approach Rs*iq at steady state)
-    float ud_decoup;  // d-axis feedforward: -omega_s * sigma_ls * iq
-    float uq_decoup;  // q-axis feedforward: omega_s * sigma_ls * id + omega_s * (Lm/Lr) * psi_r
-    float ud_res;     // d-axis resonant controller output (zero when resonant disabled)
-    float uq_res;     // q-axis resonant controller output (zero when resonant disabled)
+    struct uz_DutyCycle_t duty;
+    float id_A;
+    float iq_A;
+    float id_raw_A;
+    float iq_raw_A;
+    float flux_angle_rad;
+    float flux_magnitude_Vs;
+    float rotor_electrical_frequency_Hz;
+    float slip_frequency_Hz;
+    float slip_percent;
+    float stator_frequency_Hz;
+    float kalman_innovation_alpha_A;
+    float kalman_innovation_beta_A;
+    float resonant_ud_V;
+    float resonant_uq_V;
 } im_foc_control_output_t;
 
-typedef struct {
-	uz_CurrentControl_t *current_control;
-	uz_PI_Controller *pi_speed;
-    uz_resonantController_t *res_id_6th;
-    uz_resonantController_t *res_iq_6th;
-    bool resonant_enabled_last;
-    float resonant_omega_filtered; // IIR-smoothed fundamental omega fed to resonant controller
-} im_foc_control_state_t;
+im_foc_control_t *im_foc_control_init(float sampling_time_s);
+void im_foc_control_reset(im_foc_control_t *self);
+im_foc_control_parameters_t im_foc_control_get_parameters(im_foc_control_t *self);
+void im_foc_control_set_parameters(im_foc_control_t *self, im_foc_control_parameters_t parameters);
+im_foc_control_output_t im_foc_control_sample(im_foc_control_t *self,
+                                               im_foc_control_input_t input);
 
-void im_foc_control_init(const uz_IM_t *im_config,
-                          float sampling_time_s,
-                          im_foc_control_state_t *state);
-void im_foc_control_reset(im_foc_control_state_t *state);
-void im_foc_control_step(actualValues *av,
-                          referenceAndSetValues *rasv,
-                          const uz_IM_t *im_config,
-                          const im_foc_control_input_t *input,
-                          float omega_s_rad_s,
-                          float psi_r_mag,
-                          float theta_flux_rad,
-                          im_foc_control_state_t *state,
-                          im_foc_control_output_t *output);
-
-#endif /* IM_FOC_CONTROL_H_ */
+#endif

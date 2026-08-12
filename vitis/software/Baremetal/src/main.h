@@ -54,14 +54,8 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
-#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
-#include "uz/uz_CurrentControl/uz_CurrentControl.h"
-#include "uz/uz_signals/uz_signals.h"
-#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
-#include "include/uz_inverter_adapter_init.h"
-#include "include/init_control_machines.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

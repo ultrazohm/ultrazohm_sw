@@ -264,7 +264,7 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_Cu
 		break;
 	case im_rotor_flux_decoupling:
 		decouple_voltage = uz_CurrentControl_IM_decoupling(self->config.config_IM, input.i_actual_Ampere, input.omega_dq_rad_per_sec, input.psi_r_Vs);
-      	break;
+		break;
     default:
         break;
     }

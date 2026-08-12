@@ -172,25 +172,28 @@ FOC interface
 .. doxygenstruct:: im_foc_control_output_t
    :members:
 
-.. doxygenstruct:: im_foc_control_state_t
+.. doxygenstruct:: im_foc_control_parameters_t
    :members:
 
 .. doxygenfunction:: im_foc_control_init
 
-.. doxygenfunction:: im_foc_control_step
-
 .. doxygenfunction:: im_foc_control_reset
+
+.. doxygenfunction:: im_foc_control_get_parameters
+
+.. doxygenfunction:: im_foc_control_set_parameters
+
+.. doxygenfunction:: im_foc_control_sample
 
 Reset behavior
 ==============
 
 ``im_foc_control_reset`` resets all persistent control states:
 
-* both current PI controllers and their external clamping state,
-* the speed PI controller,
+* both current PI controllers,
 * both resonant controllers,
-* the resonant-frequency filter,
-* flux-approximation and gain-adjustment states in ``uz_CurrentControl``.
+* the stationary rotor-flux observer,
+* the current Kalman-filter states and covariance.
 
 The deterministic and Kalman observers are reinitialized separately when the
 IM is stopped. Their flux, covariance, innovation and PLL states are reset.
@@ -202,28 +205,21 @@ Usage example
 
 .. code-block:: c
 
+   im_foc_control_t *controller = im_foc_control_init(sampling_time_s);
+
    im_foc_control_input_t input = {
-      .use_speed_control = true,
-      .use_resonant_6th = true,
-      .id_ref_A = id_reference_A,
-      .iq_ref_A = 0.0f,
-      .speed_ref_rpm = speed_reference_rpm,
-      .id_meas_A = measured_current_d_A,
-      .iq_meas_A = measured_current_q_A,
-      .omega_s_for_resonant_rad_s = omega_s_rad_per_sec,
+      .currents_A = measured_currents_A,
+      .rotor_speed_rpm = rotor_speed_rpm,
+      .dc_link_voltage_V = dc_link_voltage_V,
+      .id_reference_A = id_reference_A,
+      .iq_reference_A = iq_reference_A,
+      .sampling_time_s = sampling_time_s,
+      .enable_kalman_filter = true,
+      .enable_resonant_control = true,
+      .observer_only = false,
    };
 
-   im_foc_control_output_t output = {0};
-
-   im_foc_control_step(&actual_values,
-                       &reference_values,
-                       &im_config,
-                       &input,
-                       omega_s_rad_per_sec,
-                       psi_r_Vs,
-                       theta_flux_rad,
-                       &control_state,
-                       &output);
+   im_foc_control_output_t output = im_foc_control_sample(controller, input);
 
 Tests
 =====

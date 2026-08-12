@@ -63,11 +63,12 @@ struct uz_im_control_configuration_t {
 
 /** @brief Measurements consumed by one control step. */
 struct uz_im_measurement_values {
-    uz_3ph_abc_t i_abc_A;
-    uz_3ph_abc_t v_abc_V;
-    float v_dc_V;
-    float i_dc_A;
-    float rotor_speed_rpm;
+    uz_3ph_abc_t i_abc_A;             /**< Measured stator phase currents. */
+    uz_3ph_abc_t v_abc_V;             /**< Measured stator phase voltages. */
+    float v_dc_V;                     /**< Measured DC-link voltage. */
+    float i_dc_A;                     /**< Measured DC-link current. */
+    float rotor_speed_rpm;            /**< Mechanical rotor speed. */
+    float rotor_mechanical_angle_rad; /**< Mechanical rotor angle in rad. */
 };
 
 /** @brief References and generated commands of the most recent step. */
@@ -81,14 +82,26 @@ struct uz_im_reference_values {
 
 /** @brief Observer and controller diagnostics of the most recent step. */
 struct uz_im_actual_data {
-    uz_3ph_dq_t i_dq_A;
-    uz_3ph_dq_t i_dq_raw_A;
-    float rotor_flux_angle_rad;
-    float rotor_flux_magnitude_Vs;
-    float rotor_electrical_frequency_Hz;
-    float slip_frequency_Hz;
-    float stator_frequency_Hz;
-    float u_f_applied_voltage_V;
+    uz_3ph_dq_t i_dq_A;                    /**< Currents used by the controller. */
+    uz_3ph_dq_t i_dq_raw_A;                /**< Unfiltered measured dq currents. */
+    uz_3ph_dq_t current_pi_voltage_dq_V;    /**< Separate d/q current-PI outputs. */
+    uz_3ph_dq_t decoupling_voltage_dq_V;    /**< Rotor-flux-oriented decoupling voltages. */
+    float rotor_flux_angle_rad;             /**< Estimated rotor-flux angle. */
+    float rotor_flux_magnitude_Vs;           /**< Estimated rotor-flux magnitude. */
+    float rotor_electrical_angle_rad;        /**< Electrical angle derived from measured rotor angle. */
+    float flux_rotor_angle_difference_rad;   /**< Wrapped flux-angle minus rotor-angle difference. */
+    float rotor_electrical_angular_speed_rad_per_s; /**< Electrical rotor angular speed. */
+    float slip_angular_frequency_rad_per_s;  /**< Estimated slip angular frequency. */
+    float stator_angular_frequency_rad_per_s;/**< Estimated synchronous angular frequency. */
+    float rotor_electrical_frequency_Hz;     /**< Electrical rotor frequency. */
+    float slip_frequency_Hz;                 /**< Estimated slip frequency. */
+    float slip_percent;                      /**< Slip relative to stator frequency. */
+    float stator_frequency_Hz;               /**< Estimated synchronous stator frequency. */
+    float kalman_innovation_alpha_A;          /**< Alpha-current Kalman innovation. */
+    float kalman_innovation_beta_A;           /**< Beta-current Kalman innovation. */
+    float u_f_command_frequency_Hz;           /**< Ramped U/f stator-frequency command. */
+    float u_f_electrical_angle_rad;           /**< U/f rotating-voltage-vector angle. */
+    float u_f_applied_voltage_V;              /**< U/f voltage magnitude before SVM. */
 };
 
 /** @brief Initialize one self-contained induction-machine controller. */

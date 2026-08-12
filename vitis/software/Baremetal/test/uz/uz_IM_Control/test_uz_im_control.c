@@ -70,4 +70,19 @@ void test_uz_im_control_u_f_ramps_frequency(void) {
     uz_im_control_sample_duty(self, m, 0.0f, (uz_3ph_dq_t){0}, 20.0f);
     TEST_ASSERT_TRUE(uz_im_control_get_actual_data(self)->u_f_applied_voltage_V > 0.0f);
 }
+
+void test_uz_im_control_actual_frequency_units_are_consistent(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f,
+        .rotor_speed_rpm = 600.0f,
+        .rotor_mechanical_angle_rad = 0.25f
+    };
+    uz_im_control_sample_duty(self, measurements, 0.0f, (uz_3ph_dq_t){0}, 0.0f);
+    const struct uz_im_actual_data *actual = uz_im_control_get_actual_data(self);
+    TEST_ASSERT_FLOAT_WITHIN(1.0e-5f, actual->rotor_electrical_angular_speed_rad_per_s / (2.0f * 3.14159265358979323846f), actual->rotor_electrical_frequency_Hz);
+    TEST_ASSERT_FLOAT_WITHIN(1.0e-5f, actual->slip_angular_frequency_rad_per_s / (2.0f * 3.14159265358979323846f), actual->slip_frequency_Hz);
+    TEST_ASSERT_FLOAT_WITHIN(1.0e-5f, actual->stator_angular_frequency_rad_per_s / (2.0f * 3.14159265358979323846f), actual->stator_frequency_Hz);
+}
 #endif

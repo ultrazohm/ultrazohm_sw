@@ -127,13 +127,17 @@ static void update_observers(uz_im_control_t *self) {
         self->kalman_p_beta_A2 += self->control_config.kalman_process_noise_A2_per_s * self->control_config.sample_time_s;
         float ka = self->kalman_p_alpha_A2 / (self->kalman_p_alpha_A2 + self->control_config.kalman_measurement_noise_A2);
         float kb = self->kalman_p_beta_A2 / (self->kalman_p_beta_A2 + self->control_config.kalman_measurement_noise_A2);
-        self->kalman_i_alpha_A += ka * (current.alpha - self->kalman_i_alpha_A);
-        self->kalman_i_beta_A += kb * (current.beta - self->kalman_i_beta_A);
+        self->actual.kalman_innovation_alpha_A = current.alpha - self->kalman_i_alpha_A;
+        self->actual.kalman_innovation_beta_A = current.beta - self->kalman_i_beta_A;
+        self->kalman_i_alpha_A += ka * self->actual.kalman_innovation_alpha_A;
+        self->kalman_i_beta_A += kb * self->actual.kalman_innovation_beta_A;
         self->kalman_p_alpha_A2 *= 1.0f - ka;
         self->kalman_p_beta_A2 *= 1.0f - kb;
         current.alpha = self->kalman_i_alpha_A;
         current.beta = self->kalman_i_beta_A;
     } else {
+        self->actual.kalman_innovation_alpha_A = 0.0f;
+        self->actual.kalman_innovation_beta_A = 0.0f;
         self->kalman_i_alpha_A = current.alpha;
         self->kalman_i_beta_A = current.beta;
     }
@@ -146,13 +150,23 @@ static void update_observers(uz_im_control_t *self) {
     self->psi_beta_Vs += self->control_config.sample_time_s * dpsi_b;
     self->actual.rotor_flux_magnitude_Vs = hypotf(self->psi_alpha_Vs, self->psi_beta_Vs);
     self->actual.rotor_flux_angle_rad = atan2f(self->psi_beta_Vs, self->psi_alpha_Vs);
+    self->actual.rotor_electrical_angle_rad = fmodf(self->machine_config.polePairs * self->measurements.rotor_mechanical_angle_rad, 2.0f * UZ_PIf);
+    if (self->actual.rotor_electrical_angle_rad < 0.0f) self->actual.rotor_electrical_angle_rad += 2.0f * UZ_PIf;
+    float const flux_rotor_angle_delta = self->actual.rotor_flux_angle_rad - self->actual.rotor_electrical_angle_rad;
+    self->actual.flux_rotor_angle_difference_rad = atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
     self->actual.i_dq_raw_A = uz_transformation_3ph_alphabeta_to_dq(raw, self->actual.rotor_flux_angle_rad);
     self->actual.i_dq_A = uz_transformation_3ph_alphabeta_to_dq(current, self->actual.rotor_flux_angle_rad);
     float slip = 0.0f;
     if (self->actual.rotor_flux_magnitude_Vs > self->control_config.minimum_observer_flux_Vs) slip = (self->machine_config.Rr_Ohm * self->machine_config.Lm_Henry / lr) * self->actual.i_dq_A.q / self->actual.rotor_flux_magnitude_Vs;
-    self->actual.rotor_electrical_frequency_Hz = omega_r / (2.0f * UZ_PIf);
-    self->actual.slip_frequency_Hz = slip / (2.0f * UZ_PIf);
-    self->actual.stator_frequency_Hz = (omega_r + slip) / (2.0f * UZ_PIf);
+    self->actual.rotor_electrical_angular_speed_rad_per_s = omega_r;
+    self->actual.slip_angular_frequency_rad_per_s = slip;
+    self->actual.stator_angular_frequency_rad_per_s = omega_r + slip;
+    self->actual.rotor_electrical_frequency_Hz = self->actual.rotor_electrical_angular_speed_rad_per_s / (2.0f * UZ_PIf);
+    self->actual.slip_frequency_Hz = self->actual.slip_angular_frequency_rad_per_s / (2.0f * UZ_PIf);
+    self->actual.stator_frequency_Hz = self->actual.stator_angular_frequency_rad_per_s / (2.0f * UZ_PIf);
+    self->actual.slip_percent = fabsf(self->actual.stator_frequency_Hz) > 1.0e-3f
+        ? 100.0f * self->actual.slip_frequency_Hz / self->actual.stator_frequency_Hz
+        : 0.0f;
     if (!isfinite(self->actual.rotor_flux_magnitude_Vs)) self->violation = uz_im_control_observer_violation;
 }
 
@@ -163,6 +177,9 @@ static struct uz_DutyCycle_t sample_u_f(uz_im_control_t *self, float target_Hz) 
     self->u_f_frequency_Hz += fminf(fmaxf(error, -step), step);
     float magnitude = fminf(fabsf(self->u_f_frequency_Hz) * self->control_config.u_f_ratio_V_per_Hz + ((fabsf(self->u_f_frequency_Hz) > 0.1f) ? self->control_config.u_f_boost_voltage_V : 0.0f), self->control_config.u_f_max_voltage_V);
     self->u_f_angle_rad = fmodf(self->u_f_angle_rad + 2.0f * UZ_PIf * self->u_f_frequency_Hz * self->control_config.sample_time_s, 2.0f * UZ_PIf);
+    if (self->u_f_angle_rad < 0.0f) self->u_f_angle_rad += 2.0f * UZ_PIf;
+    self->actual.u_f_command_frequency_Hz = self->u_f_frequency_Hz;
+    self->actual.u_f_electrical_angle_rad = self->u_f_angle_rad;
     self->actual.u_f_applied_voltage_V = magnitude;
     self->references.v_dq_V = (uz_3ph_dq_t){.d = magnitude * sqrtf(2.0f / 3.0f)};
     return uz_Space_Vector_Modulation(self->references.v_dq_V, self->measurements.v_dc_V, self->u_f_angle_rad);
@@ -183,7 +200,15 @@ uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurem
     float lr = uz_IM_config_get_Lr(self->machine_config);
     float sigma_ls = uz_IM_config_get_sigma(self->machine_config) * ls;
     float omega_s = 2.0f * UZ_PIf * self->actual.stator_frequency_Hz;
-    self->references.v_dq_V = (uz_3ph_dq_t){.d = vd - omega_s * sigma_ls * self->actual.i_dq_A.q, .q = vq + omega_s * sigma_ls * self->actual.i_dq_A.d + omega_s * (self->machine_config.Lm_Henry / lr) * self->actual.rotor_flux_magnitude_Vs};
+    self->actual.current_pi_voltage_dq_V = (uz_3ph_dq_t){.d = vd, .q = vq};
+    self->actual.decoupling_voltage_dq_V = (uz_3ph_dq_t){
+        .d = -omega_s * sigma_ls * self->actual.i_dq_A.q,
+        .q = omega_s * sigma_ls * self->actual.i_dq_A.d + omega_s * (self->machine_config.Lm_Henry / lr) * self->actual.rotor_flux_magnitude_Vs
+    };
+    self->references.v_dq_V = (uz_3ph_dq_t){
+        .d = self->actual.current_pi_voltage_dq_V.d + self->actual.decoupling_voltage_dq_V.d,
+        .q = self->actual.current_pi_voltage_dq_V.q + self->actual.decoupling_voltage_dq_V.q
+    };
     return self->references.v_dq_V;
 }
 

@@ -42,6 +42,7 @@ DS_Data Global_Data = {
         .Soll_DPT_ChargeTimeout_ms = 100.0f,
         .Soll_DPT_Deadtime_us = 5.0f,
         .Soll_DPT_Pulse2_us = 5.0f},
+    .objects.platform_state_old = running_state,
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE / (UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
@@ -88,28 +89,28 @@ uz_codegen regelung;
 
 int main(void)
 {
-	regelung.input.Bus_ZM_In_c.Fehlermeldung = false;
-		regelung.input.Bus_ZM_In_c.Soll_Drehzahl = 0;
-		regelung.input.Bus_ZM_In_c.Soll_Regelungsart = Drehzahl;
-		regelung.input.Bus_ZM_In_c.Soll_Status = Ready;
-		regelung.input.Bus_ZM_In_c.Soll_id = 0;
-		regelung.input.Bus_ZM_In_c.Soll_iq = 0;
-		regelung.input.Bus_ZM_In_c.Start_Traj = false;
-		regelung.input.Bus_PMSM_Out_c.pmsm_Omega_mech = 0;
-		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[0] = 0;
-		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[1] = 0;
-		regelung.input.Bus_PMSM_Out_c.pmsm_Iuvw[2] = 0;
-		regelung.input.Bus_PMSM_Out_c.pmsm_m_mot = 0;
-		regelung.input.Bus_PMSM_Out_c.pmsm_phi_mech = 0;
-		regelung.output.Bus_Ctrl_Out_e.Dutycycle[0] = 0.0;
-		regelung.output.Bus_Ctrl_Out_e.Dutycycle[1] = 0.0;
-		regelung.output.Bus_Ctrl_Out_e.Dutycycle[2] = 0.0;
-		regelung.output.Bus_Ctrl_Out_e.ctrl_Ualpha = 0;
-		regelung.output.Bus_Ctrl_Out_e.ctrl_Ubeta = 0;
-		regelung.output.Bus_Ctrl_Out_e.act_pwm = false;
-		regelung.output.Bus_Ctrl_Out_e.board_en = false;
-		regelung.output.Bus_Ctrl_Out_e.pwr_en = false;
-		regelung.output.Bus_Ctrl_Out_e.reset = false;
+	regelung.input.Bus_ZM_In_a.Fehlermeldung = false;
+		regelung.input.Bus_ZM_In_a.Soll_Drehzahl = 0;
+		regelung.input.Bus_ZM_In_a.Soll_Regelungsart = Drehzahl;
+		regelung.input.Bus_ZM_In_a.Soll_Status = Ready;
+		regelung.input.Bus_ZM_In_a.Soll_id = 0;
+		regelung.input.Bus_ZM_In_a.Soll_iq = 0;
+		regelung.input.Bus_ZM_In_a.Start_Traj = false;
+		regelung.input.Bus_PMSM_Out_j.pmsm_Omega_mech = 0;
+		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[0] = 0;
+		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[1] = 0;
+		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[2] = 0;
+		regelung.input.Bus_PMSM_Out_j.pmsm_m_mot = 0;
+		regelung.input.Bus_PMSM_Out_j.pmsm_phi_mech = 0;
+		regelung.output.Bus_Ctrl_Out_i.Dutycycle[0] = 0.0;
+		regelung.output.Bus_Ctrl_Out_i.Dutycycle[1] = 0.0;
+		regelung.output.Bus_Ctrl_Out_i.Dutycycle[2] = 0.0;
+		regelung.output.Bus_Ctrl_Out_i.ctrl_Ualpha = 0;
+		regelung.output.Bus_Ctrl_Out_i.ctrl_Ubeta = 0;
+		regelung.output.Bus_Ctrl_Out_i.act_pwm = false;
+		regelung.output.Bus_Ctrl_Out_i.board_en = false;
+		regelung.output.Bus_Ctrl_Out_i.pwr_en = false;
+		regelung.output.Bus_Ctrl_Out_i.reset = false;
     int status = UZ_SUCCESS;
     while (1)
     {

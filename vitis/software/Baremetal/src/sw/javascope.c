@@ -109,9 +109,9 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
 //	js_ch_observable[JSO_SD_U]					= &Global_Data.av.Sinc3_Filter.data_U;
-//	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
-//	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
-//	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
+	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
+	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
+	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;
 //	js_ch_observable[JSO_SD_PH4]				= &Global_Data.av.Sinc3_Filter.data_PH4;
 	js_ch_observable[JSO_theta_el]				= &Global_Data.av.theta_el;
 	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;

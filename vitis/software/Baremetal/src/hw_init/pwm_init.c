@@ -6,7 +6,7 @@
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
-        .Tristate_HB1 = false,
+        .Tristate_HB1 = true,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
         .min_pulse_width_in_microseconds = UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US + UZ_PWM_DEADTIME_IN_US,

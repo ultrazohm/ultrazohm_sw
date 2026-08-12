@@ -12,6 +12,8 @@
 #include "IP_Cores/uz_JL_SigmaDelta_Interface/uz_JL_SigmaDelta_Interface.h"
 #include "include/JL_SH_Umrichter.h"
 #include "include/uz_dpt.h"
+#include "include/uz_platform_state_machine.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -137,6 +139,7 @@ typedef struct{
 	uz_resolverIP_t* resolver;
 	uz_resolver_pl_interface_t* resolver_pl_interface;
 	uz_mux_axi_t* mux_axi;
+	platform_state_t platform_state_old;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

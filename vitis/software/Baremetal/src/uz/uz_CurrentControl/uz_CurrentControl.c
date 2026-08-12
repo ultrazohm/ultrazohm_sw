@@ -21,7 +21,6 @@
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
-#include "uz_im_decoupling.h"
 #include <math.h>
 
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
@@ -43,7 +42,7 @@ typedef struct uz_CurrentControl_t {
 }uz_CurrentControl_t;
 
 static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
-static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_CurrentControl_input_t input);
+static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static uint32_t instances_counter_CurrentControl = 0;
 
 static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTANCES] = {0};
@@ -80,37 +79,15 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
 }
 
 uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
-	uz_CurrentControl_input_t const input = {
-		.i_reference_Ampere = i_reference_Ampere,
-		.i_actual_Ampere = i_actual_Ampere,
-		.V_dc_volts = V_dc_volts,
-		.omega_dq_rad_per_sec = omega_el_rad_per_sec,
-		.psi_r_Vs = 0.0f,
-		.v_additional_Volts = {0},
-		.omega_limitation_rad_per_sec = omega_el_rad_per_sec,
-	};
-	return uz_CurrentControl_sample_general(self, input).v_output_Volts;
-}
-
-uz_CurrentControl_output_t uz_CurrentControl_sample_general(uz_CurrentControl_t* self, uz_CurrentControl_input_t input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(input.V_dc_volts > 0.0f);
-	uz_3ph_dq_t const v_pi_Volts = uz_CurrentControl_sample_pi_controllers(self, input.i_reference_Ampere, input.i_actual_Ampere);
-	uz_3ph_dq_t v_pre_limit_Volts = v_pi_Volts;
-	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self, input);
+	uz_assert(V_dc_volts > 0.0f);
+	uz_3ph_dq_t v_pre_limit_Volts = uz_CurrentControl_sample_pi_controllers(self, i_reference_Ampere, i_actual_Ampere);
+	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self, i_actual_Ampere, omega_el_rad_per_sec);
 	v_pre_limit_Volts.d += v_decoup_Volts.d;
 	v_pre_limit_Volts.q += v_decoup_Volts.q;
-	v_pre_limit_Volts.d += input.v_additional_Volts.d;
-	v_pre_limit_Volts.q += input.v_additional_Volts.q;
-	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation(v_pre_limit_Volts, input.V_dc_volts, self->config.max_modulation_index, input.omega_limitation_rad_per_sec, input.i_reference_Ampere, &self->ext_clamping);
-	uz_CurrentControl_output_t const output = {
-		.v_output_Volts = v_output_Volts,
-		.v_pi_Volts = v_pi_Volts,
-		.v_decoupling_Volts = v_decoup_Volts,
-		.ext_clamping = self->ext_clamping,
-	};
-	return output;
+	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &self->ext_clamping);
+	return (v_output_Volts);
 }
 
 uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
@@ -137,9 +114,6 @@ void uz_CurrentControl_reset(uz_CurrentControl_t* self){
 	uz_PI_Controller_reset(self->Controller_id);
 	uz_PI_Controller_reset(self->Controller_iq);
 	self->ext_clamping = false;
-	self->flux_approx_real = (uz_3ph_dq_t){0};
-	self->flux_approx_reference = (uz_3ph_dq_t){0};
-	self->kp_adjustment_parameter = (uz_3ph_dq_t){0};
 }
 
 void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx_real, uz_3ph_dq_t flux_approx_reference){
@@ -230,13 +204,6 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
 	self->config.config_PMSM = pmsm_config;
 }
 
-void uz_CurrentControl_set_IM_parameters(uz_CurrentControl_t* self, uz_IM_t im_config) {
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	uz_IM_config_assert(im_config);
-	self->config.config_IM = im_config;
-}
-
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -249,7 +216,7 @@ bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
 	return(self->ext_clamping);
 }
 
-static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_CurrentControl_input_t input){
+static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	uz_3ph_dq_t decouple_voltage={0};
 	switch (self->config.decoupling_select)
     {
@@ -257,14 +224,11 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_Cu
         // do nothing since no decoupling
         break;
     case linear_decoupling:
-        decouple_voltage=uz_CurrentControl_linear_decoupling(self->config.config_PMSM, input.i_actual_Ampere, input.omega_dq_rad_per_sec);
+        decouple_voltage=uz_CurrentControl_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
 	case static_nonlinear_decoupling:
-		decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx_real, input.omega_dq_rad_per_sec);
-		break;
-	case im_rotor_flux_decoupling:
-		decouple_voltage = uz_CurrentControl_IM_decoupling(self->config.config_IM, input.i_actual_Ampere, input.omega_dq_rad_per_sec, input.psi_r_Vs);
-		break;
+     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx_real, omega_el_rad_per_sec);
+     	break;
     default:
         break;
     }

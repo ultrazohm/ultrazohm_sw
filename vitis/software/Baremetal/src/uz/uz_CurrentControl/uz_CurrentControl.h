@@ -5,7 +5,6 @@
 #include "../uz_piController/uz_piController.h"
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
-#include "../uz_IM_config/uz_IM_config.h"
 #include <stdbool.h>
 
 
@@ -14,31 +13,8 @@
 enum uz_CurrentControl_decoupling_select {
 	no_decoupling=0, 
 	linear_decoupling,
-	static_nonlinear_decoupling,
-	im_rotor_flux_decoupling
+	static_nonlinear_decoupling
 	}; 
-
-typedef struct {
-	uz_3ph_dq_t i_reference_Ampere;
-	uz_3ph_dq_t i_actual_Ampere;
-	float V_dc_volts;
-	/** Angular velocity of the dq reference frame. PMSM: rotor electrical
-	 * speed; rotor-flux-oriented IM: synchronous flux speed. */
-	float omega_dq_rad_per_sec;
-	/** IM rotor-flux magnitude. Only used by im_rotor_flux_decoupling. */
-	float psi_r_Vs;
-	/** Optional controller voltage added before the common space-vector limit. */
-	uz_3ph_dq_t v_additional_Volts;
-	/** Mechanical electrical speed used to choose the voltage-limit priority. */
-	float omega_limitation_rad_per_sec;
-} uz_CurrentControl_input_t;
-
-typedef struct {
-	uz_3ph_dq_t v_output_Volts;
-	uz_3ph_dq_t v_pi_Volts;
-	uz_3ph_dq_t v_decoupling_Volts;
-	bool ext_clamping;
-} uz_CurrentControl_output_t;
 
 /**
  * @brief Configuration struct for CurrentControl. Accessible by the user
@@ -50,7 +26,6 @@ struct uz_CurrentControl_config {
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
-	uz_IM_t config_IM; /**< Configuration struct for induction-machine parameters */
 	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps (gain scheduling) on or off */
 	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
@@ -80,15 +55,6 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
  * @return uz_dq_t Output dq-reference voltage struct
  */
 uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
-
-/**
- * @brief General current-control step supporting PMSM and induction machines.
- *
- * The optional additional voltage is summed with PI and decoupling voltages
- * before the common space-vector limitation. This allows e.g. resonant
- * controllers to share the same saturation and PI clamping path.
- */
-uz_CurrentControl_output_t uz_CurrentControl_sample_general(uz_CurrentControl_t* self, uz_CurrentControl_input_t input);
 
 /**
  * @brief calculates last sample and transforms the dq-output voltage into the abc-system
@@ -181,9 +147,6 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t* self, float Ki_iq);
  * @param pmsm_config PMSM_config struct with updated values
  */
 void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t pmsm_config);
-
-/** @brief Update induction-machine parameters used for IM decoupling. */
-void uz_CurrentControl_set_IM_parameters(uz_CurrentControl_t* self, uz_IM_t im_config);
 
 /**
  * @brief Function to change the type of decoupling during runtime

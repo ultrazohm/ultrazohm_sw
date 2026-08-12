@@ -1,235 +1,103 @@
-.. _uz_IM_Control:
+.. _uz_im_control:
 
+=========================
+Induction Machine Control
+=========================
+
+``uz_im_control`` is a self-contained induction-machine controller following
+the same module pattern as :ref:`uz_pmsm_control`. Application-specific data,
+ISR code and hardware addresses are deliberately not part of the module.
+
+The module owns all persistent state required by:
+
+* two PI current controllers for the rotor-flux-oriented d/q axes,
+* one PI speed controller whose output is the q-current reference,
+* rotor-current-model flux observation,
+* optional Kalman filtering of the measured alpha/beta currents,
+* scalar U/f operation with frequency ramp, voltage boost and SVM,
+* safe-operating-region checks and a latched fault state.
+
+Structure
+=========
+
+The complete implementation is located in ``uz/uz_IM_Control`` and consists
+of one public header and one implementation file. Machine parameters are passed
+to ``uz_im_control_init`` using :ref:`uz_IM_config`; the control module contains
+no machine-specific presets.
+
+Configuration and data types
 ============================
-Induction machine FOC control
-============================
 
-.. toctree::
-   :maxdepth: 1
-
-   IM_config
-   IM_current_control
-   IM_observers
-   IM_uf_control
-   IM_protection
-
-The induction-machine (IM) control implements rotor-flux-oriented control and
-reuses the common UltraZohm control modules. The current loop is based on
-:ref:`uz_CurrentControl`, the harmonic compensation uses the
-:ref:`uz_resonant_controller`, and the resulting voltage vector is passed to the
-:ref:`space vector modulation <uz_spacevectormodulation>`.
-
-The implementation consists of the following parts:
-
-* ``uz_IM_config`` contains the ``uz_IM_t`` machine model, derived
-  quantities and the selected machine preset.
-* ``uz_CurrentControl`` contains both current PI controllers, IM decoupling,
-  voltage-vector limitation and PI clamping.
-* ``im_foc_control`` combines speed control, current control, resonant control
-  and space-vector modulation.
-* ``im_observer`` selects either the deterministic rotor-flux observer or the
-  Kalman-filter observer.
-
-Control flow
-============
-
-The controller is called once per control ISR:
-
-.. code-block:: text
-
-   phase currents, speed and previous applied voltage
-                         |
-                         v
-                 IM flux observer
-                         |
-               i_dq, psi_r, theta_flux, omega_s
-                         |
-             speed PI or direct i_q reference
-                         |
-      +------------------+------------------+
-      |                  |                  |
-   current PI       IM decoupling     resonant control
-      |                  |                  |
-      +------------------+------------------+
-                         |
-              space-vector limitation
-                         |
-                         v
-                space-vector modulation
-
-Machine configuration
-=====================
-
-The active preset is selected in
-``uz/uz_IM_config/uz_IM_motor_config.h``. All electrical parameters are
-star-equivalent, per-phase values referred to the stator side.
+.. doxygentypedef:: uz_IM_t
 
 .. doxygenstruct:: uz_IM_t
    :members:
 
-.. doxygenfunction:: uz_IM_config_get_selected_motor
+.. doxygenstruct:: uz_im_control_configuration_t
+   :members:
 
-.. doxygenfunction:: uz_IM_config_assert
+.. doxygenstruct:: uz_im_control_limits_t
+   :members:
 
-The selected preset is obtained during software initialization:
+.. doxygenstruct:: uz_im_measurement_values
+   :members:
+
+.. doxygenstruct:: uz_im_reference_values
+   :members:
+
+.. doxygenstruct:: uz_im_actual_data
+   :members:
+
+Operation
+=========
+
+FOC is the default mode. ``uz_im_control_sample_duty`` executes observation,
+speed control when enabled, both current controllers, IM decoupling and SVM.
+In U/f mode, the same function ramps the requested stator frequency and
+generates the rotating voltage vector internally. Observer diagnostics remain
+available in both modes.
 
 .. code-block:: c
 
-   #include "uz/uz_IM_config/uz_IM_config.h"
+   uz_im_control_t *control = uz_im_control_init(configuration, machine);
+   uz_im_control_enable(control, true);
 
-   uz_IM_t im_config = uz_IM_config_get_selected_motor();
+   struct uz_DutyCycle_t duty = uz_im_control_sample_duty(
+       control,
+       measurements,
+       speed_reference_rpm,
+       current_reference_dq_A,
+       u_f_frequency_reference_Hz);
 
-Derived machine quantities
---------------------------
+The module returns the configured default duty cycle while disabled or after a
+safe-operating-region violation. A fault remains latched until explicitly
+acknowledged.
 
-.. doxygenfunction:: uz_IM_get_Ls
-
-.. doxygenfunction:: uz_IM_get_Lr
-
-.. doxygenfunction:: uz_IM_get_sigma
-
-.. doxygenfunction:: uz_IM_get_tau_r
-
-.. doxygenfunction:: uz_IM_get_id_ref_for_psi_r
-
-Current controller configuration
-================================
-
-Select ``im_rotor_flux_decoupling`` and assign ``config_IM`` when creating the
-common current-controller instance. Existing PMSM users can continue using the
-original configuration and sample function.
-
-.. code-block:: c
-
-   struct uz_CurrentControl_config current_config = {
-      .decoupling_select = im_rotor_flux_decoupling,
-      .config_id = config_id,
-      .config_iq = config_iq,
-      .config_IM = im_config,
-      .Kp_adjustment_flag = false,
-      .max_modulation_index = 1.0f / sqrtf(3.0f),
-   };
-
-   uz_CurrentControl_t *current_control =
-      uz_CurrentControl_init(current_config);
-
-The general sample input separates the angular velocity of the rotating
-reference frame from the velocity used to choose the voltage-limitation
-priority. This distinction is required for an induction machine because the
-synchronous flux-frame velocity and electrical rotor velocity are different.
-
-.. doxygenstruct:: uz_CurrentControl_input_t
-   :members:
-
-.. doxygenstruct:: uz_CurrentControl_output_t
-   :members:
-
-.. doxygenfunction:: uz_CurrentControl_sample_general
-
-IM decoupling
+API reference
 =============
 
-The rotor-flux-oriented decoupling voltages are
-
-.. math::
-
-   u_{d,\mathrm{dec}} = -\omega_s \sigma L_s i_q
-
-.. math::
-
-   u_{q,\mathrm{dec}} = \omega_s \sigma L_s i_d
-      + \omega_s \frac{L_m}{L_r}\lvert\Psi_r\rvert .
-
-Here, :math:`\omega_s` is the signed synchronous angular velocity of the rotor
-flux frame. The implementation is also available as a standalone stateless
-function:
-
-.. doxygenfunction:: uz_CurrentControl_IM_decoupling
-
-Resonant controller integration
-===============================
-
-Two :ref:`uz_resonant_controller` instances compensate the selected harmonic in
-the d- and q-axes. The controllers use raw measured dq currents so that the
-harmonic content is not attenuated by the Kalman-filter estimate.
-
-The resonant voltage is provided through
-``uz_CurrentControl_input_t.v_additional_Volts``. It is therefore added before
-the common voltage-vector limitation. PI voltage, IM decoupling and resonant
-voltage cannot independently exceed the voltage available from the DC link.
-
-For sixth-harmonic compensation, configure ``harmonic_order`` as ``6.0f`` and
-pass the fundamental signed angular velocity to
-``uz_resonantController_step``. The resonant controller performs the harmonic
-multiplication internally.
-
-FOC interface
-=============
-
-.. doxygenstruct:: im_foc_control_input_t
-   :members:
-
-.. doxygenstruct:: im_foc_control_output_t
-   :members:
-
-.. doxygenstruct:: im_foc_control_parameters_t
-   :members:
-
-.. doxygenfunction:: im_foc_control_init
-
-.. doxygenfunction:: im_foc_control_reset
-
-.. doxygenfunction:: im_foc_control_get_parameters
-
-.. doxygenfunction:: im_foc_control_set_parameters
-
-.. doxygenfunction:: im_foc_control_sample
-
-Reset behavior
-==============
-
-``im_foc_control_reset`` resets all persistent control states:
-
-* both current PI controllers,
-* both resonant controllers,
-* the stationary rotor-flux observer,
-* the current Kalman-filter states and covariance.
-
-The deterministic and Kalman observers are reinitialized separately when the
-IM is stopped. Their flux, covariance, innovation and PLL states are reset.
-The IM decoupling and machine-preset functions are stateless and therefore do
-not require reset functions.
-
-Usage example
-=============
-
-.. code-block:: c
-
-   im_foc_control_t *controller = im_foc_control_init(sampling_time_s);
-
-   im_foc_control_input_t input = {
-      .currents_A = measured_currents_A,
-      .rotor_speed_rpm = rotor_speed_rpm,
-      .dc_link_voltage_V = dc_link_voltage_V,
-      .id_reference_A = id_reference_A,
-      .iq_reference_A = iq_reference_A,
-      .sampling_time_s = sampling_time_s,
-      .enable_kalman_filter = true,
-      .enable_resonant_control = true,
-      .observer_only = false,
-   };
-
-   im_foc_control_output_t output = im_foc_control_sample(controller, input);
+.. doxygenfunction:: uz_im_control_init
+.. doxygenfunction:: uz_im_control_enable
+.. doxygenfunction:: uz_im_control_set_mode
+.. doxygenfunction:: uz_im_control_enable_speed_control
+.. doxygenfunction:: uz_im_control_set_observer
+.. doxygenfunction:: uz_im_control_sample_duty
+.. doxygenfunction:: uz_im_control_sample_dq
+.. doxygenfunction:: uz_im_control_reset
+.. doxygenfunction:: uz_im_control_get_actual_data
+.. doxygenfunction:: uz_im_control_get_reference_values
+.. doxygenfunction:: uz_im_control_get_im_measurement_values
+.. doxygenfunction:: uz_im_control_get_safe_operating_area_violation
+.. doxygenfunction:: uz_im_control_acknowledge_and_reset_error
+.. doxygenfunction:: uz_im_control_current_control_set_Kp_id
+.. doxygenfunction:: uz_im_control_current_control_set_Ki_id
+.. doxygenfunction:: uz_im_control_current_control_set_Kp_iq
+.. doxygenfunction:: uz_im_control_current_control_set_Ki_iq
+.. doxygenfunction:: uz_im_control_speed_control_set_Kp_speed
+.. doxygenfunction:: uz_im_control_speed_control_set_Ki_speed
 
 Tests
 =====
 
-The unit tests are located in:
-
-* ``test/uz/uz_IM_config/test_uz_IM_config.c``
-* ``test/uz/uz_CurrentControl/test_uz_im_decoupling.c``
-* ``test/uz/uz_CurrentControl/test_uz_CurrentControl.c``
-
-They cover the selected machine preset, configuration validation, positive and
-negative synchronous speed, zero-speed decoupling, invalid rotor flux, the
-general IM sample path, additional resonant voltage and reset-related APIs.
+Unit tests are located in ``test/uz/uz_IM_Control`` and cover initialization,
+disabled output, fault latching and U/f operation.

@@ -69,23 +69,6 @@ void test_uz_CurrentControl_set_Kp_id_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_Kp_id(NULL, Kp_id));
 }
 
-void test_uz_CurrentControl_set_IM_parameters_NULL(void){
-    uz_IM_t im_config = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_IM_parameters(NULL, im_config));
-}
-
-void test_uz_CurrentControl_set_IM_parameters_valid(void){
-    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
-    uz_IM_t const im_config = {
-        .Rs_Ohm = 0.5f, .Rr_Ohm = 0.4f,
-        .Lsigma_s_Henry = 0.01f, .Lsigma_r_Henry = 0.015f,
-        .Lm_Henry = 0.1f, .polePairs = 2.0f,
-        .J_kg_m_squared = 0.01f, .I_max_Ampere = 10.0f,
-        .Psi_rated_Vs = 0.5f,
-    };
-    TEST_ASSERT_PASS_ASSERT(uz_CurrentControl_set_IM_parameters(instance, im_config));
-}
-
 void test_uz_CurrentControl_set_Kp_id_negative(void){
     float Kp_id = -10.0f;
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
@@ -131,40 +114,6 @@ void test_uz_CurrentControl_sample_output(void){
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
-}
-
-void test_uz_CurrentControl_sample_general_IM_adds_voltage_before_limitation(void){
-    config.decoupling_select = im_rotor_flux_decoupling;
-    config.config_id.Kp = 0.0f;
-    config.config_id.Ki = 0.0f;
-    config.config_iq.Kp = 0.0f;
-    config.config_iq.Ki = 0.0f;
-    config.config_IM = (uz_IM_t){
-        .Rs_Ohm = 0.5f, .Rr_Ohm = 0.4f,
-        .Lsigma_s_Henry = 0.01f, .Lsigma_r_Henry = 0.015f,
-        .Lm_Henry = 0.1f, .polePairs = 2.0f,
-        .J_kg_m_squared = 0.01f, .I_max_Ampere = 10.0f,
-        .Psi_rated_Vs = 0.5f,
-    };
-    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
-    uz_CurrentControl_input_t const input = {
-        .i_reference_Ampere = {0},
-        .i_actual_Ampere = {.d = 2.0f, .q = 3.0f},
-        .V_dc_volts = 1000.0f,
-        .omega_dq_rad_per_sec = 100.0f,
-        .psi_r_Vs = 0.5f,
-        .v_additional_Volts = {.d = 1.0f, .q = -2.0f},
-        .omega_limitation_rad_per_sec = 100.0f,
-    };
-
-    uz_CurrentControl_output_t const output =
-        uz_CurrentControl_sample_general(instance, input);
-
-    TEST_ASSERT_FLOAT_WITHIN(1.0e-4f, -6.9130435f, output.v_decoupling_Volts.d);
-    TEST_ASSERT_FLOAT_WITHIN(1.0e-4f, 48.0869565f, output.v_decoupling_Volts.q);
-    TEST_ASSERT_FLOAT_WITHIN(1.0e-4f, -5.9130435f, output.v_output_Volts.d);
-    TEST_ASSERT_FLOAT_WITHIN(1.0e-4f, 46.0869565f, output.v_output_Volts.q);
-    TEST_ASSERT_FALSE(output.ext_clamping);
 }
 
 void test_uz_CurrentControl_sample_abc_output(void) {

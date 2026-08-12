@@ -9,6 +9,7 @@ Control
     controller_setpoint_filter/controller_setpoint_filter
     CurrentControl/CurrentControl
     IM_Control/IM_Control
+    IM_config/uz_IM_config
     encoder_offset_estimation/encoder_offset_estimation
     flux_approximation/flux_approximation
     flux_approximation/uz_flux_approximation_script

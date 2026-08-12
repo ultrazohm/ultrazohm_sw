@@ -18,6 +18,7 @@
 #include "include/d5_adapter_init.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
 #include "uz/uz_u_f_control/uz_u_f_control.h"
+#include "uz/uz_Trajectory/uz_Trajectory.h"
 #include "include/im_foc_control.h"
 
 typedef struct _actualValues_ {
@@ -81,6 +82,9 @@ typedef struct _referenceAndSetValues_ {
 	float va_disturbance_torque_Nm;
 	bool va_enable_speed_control;
 	bool va_acknowledge_error;
+	float setpoint_ramp_start[6];
+	float setpoint_ramp_target[6];
+	float setpoint_ramp_active_target[6];
 	float im_siemens_1LA7073_frequency_reference_Hz;
 	float im_siemens_1LA7073_id_reference_A;
 	float im_siemens_1LA7073_iq_reference_A;
@@ -107,6 +111,7 @@ typedef struct{
 	uz_u_f_control_t* im_siemens_1LA7073_control;
 	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
 	im_foc_control_t* im_siemens_1LA7073_foc_control;
+	uz_Trajectory_t* setpoint_trajectories[6];
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

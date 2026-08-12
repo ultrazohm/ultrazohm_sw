@@ -59,6 +59,46 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "xparameters.h"
+
+static const struct uz_PWM_duty_freq_detection_config_t inverter_temperature_pwm_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_UZ_PWMDUTYFREQDETECT_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000U,
+};
+
+static void initialize_setpoint_trajectories(void)
+{
+	const float initial_values[6] = {
+		Global_Data.rasv.va_speed_reference_rpm,
+		Global_Data.rasv.va_current_reference_A.d,
+		Global_Data.rasv.va_current_reference_A.q,
+		Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
+		Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
+		Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz,
+	};
+	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+		struct uz_Trajectory_config config = {
+			.selection_interpolation = Linear,
+			.selection_XAxis = Seconds,
+			.StopStyle = ForceToZero,
+			.RepeatStyle = Repeat_Times,
+			.Number_Sample_Points = 2U,
+			.Repeats = 1U,
+			.Stepwidth_ISR = Global_Data.av.isr_samplerate_s,
+		};
+		for (uint32_t sample = 0U; sample < MAX_TRAJECTORY_SAMPLES; sample++) {
+			config.Sample_Amplitude_Y[sample] = 0.0f;
+			config.Sample_Duration_X[sample] = 1.0f;
+		}
+		/* The trajectory supplies a normalized remaining-distance factor.
+		 * The ISR stops it at zero before uz_Trajectory's return segment. */
+		config.Sample_Amplitude_Y[0] = 1.0f;
+		Global_Data.rasv.setpoint_ramp_start[trajectory] = initial_values[trajectory];
+		Global_Data.rasv.setpoint_ramp_target[trajectory] = initial_values[trajectory];
+		Global_Data.rasv.setpoint_ramp_active_target[trajectory] = initial_values[trajectory];
+		Global_Data.objects.setpoint_trajectories[trajectory] = uz_Trajectory_init(config);
+	}
+}
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
@@ -99,9 +139,24 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-			Global_Data.objects.va_control = va_control_init();
+			Global_Data.objects.va_control = va_control_init(Global_Data.av.isr_samplerate_s);
 			Global_Data.objects.im_siemens_1LA7073_control = im_siemens_1LA7073_init();
 			Global_Data.objects.im_siemens_1LA7073_foc_control = im_foc_control_init(Global_Data.av.isr_samplerate_s);
+			initialize_setpoint_trajectories();
+			Global_Data.rasv.im_siemens_1LA7073_foc_parameters =
+				im_foc_control_get_parameters(Global_Data.objects.im_siemens_1LA7073_foc_control);
+			Global_Data.av.snd_fld[7] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_kp_d;
+			Global_Data.av.snd_fld[8] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_ki_d;
+			Global_Data.av.snd_fld[9] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_kp_q;
+			Global_Data.av.snd_fld[10] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_ki_q;
+			Global_Data.av.snd_fld[11] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.kalman_q_A2_per_s;
+			Global_Data.av.snd_fld[12] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.kalman_r_A2;
+			Global_Data.av.snd_fld[13] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_d;
+			Global_Data.av.snd_fld[14] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_q;
+			Global_Data.av.snd_fld[15] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_harmonic_order;
+			Global_Data.av.snd_fld[16] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_antiwindup_gain;
+			Global_Data.av.snd_fld[17] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_voltage_limit_V;
+			Global_Data.av.snd_fld[18] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.slip_flux_minimum_Vs;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -118,6 +173,7 @@ int main(void)
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
 			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
 			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
+			Global_Data.objects.inverter_temperature_pwm = uz_PWM_duty_freq_detection_init(inverter_temperature_pwm_config);
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

@@ -31,6 +31,8 @@
 #include "../include/pwm_init.h"
 #include "../include/project_wizard_visualization.h"
 #include "../include/error_checks.h"
+#include "../include/wolfspeed_inverter_temperature.h"
+#include "../uz/uz_math_constants.h"
 
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
@@ -55,6 +57,7 @@ static void update_va_control(bool enable_output, bool monitor_dc_undervoltage);
 
 /* AXI-GPIO bit index matching the bitstream signal DIG_13. */
 #define D1_DIG_13_PIN_ZERO_BASED 13U
+#define D1_DIG_15_PIN_ZERO_BASED 15U
 
 static const error_checks_config_t va_error_checks_config = {
 	.vdc_min_V = VA_PROTECTION_MIN_DC_VOLTAGE_V,
@@ -76,6 +79,35 @@ static uint32_t im_current_offset_samples;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+	float* const setpoints[6] = {
+		&Global_Data.rasv.va_speed_reference_rpm,
+		&Global_Data.rasv.va_current_reference_A.d,
+		&Global_Data.rasv.va_current_reference_A.q,
+		&Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
+		&Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
+		&Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz,
+	};
+	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+		if (Global_Data.rasv.setpoint_ramp_target[trajectory] !=
+			Global_Data.rasv.setpoint_ramp_active_target[trajectory]) {
+			/* Only the ISR modifies the active ramp. A new command therefore
+			 * always starts exactly at the last value emitted by the ISR. */
+			Global_Data.rasv.setpoint_ramp_start[trajectory] = *setpoints[trajectory];
+			Global_Data.rasv.setpoint_ramp_active_target[trajectory] =
+				Global_Data.rasv.setpoint_ramp_target[trajectory];
+			uz_Trajectory_Reset(Global_Data.objects.setpoint_trajectories[trajectory]);
+			uz_Trajectory_Start(Global_Data.objects.setpoint_trajectories[trajectory]);
+		}
+		float const ramp_factor = uz_Trajectory_Step(Global_Data.objects.setpoint_trajectories[trajectory]);
+		if (ramp_factor <= 0.0f) {
+			/* A short uz_Trajectory repeats back to its first sample after the
+			 * final point. Stop at the target before that return can begin. */
+			uz_Trajectory_Stop(Global_Data.objects.setpoint_trajectories[trajectory]);
+		}
+		*setpoints[trajectory] = Global_Data.rasv.setpoint_ramp_active_target[trajectory] + ramp_factor *
+			(Global_Data.rasv.setpoint_ramp_start[trajectory] -
+			 Global_Data.rasv.setpoint_ramp_active_target[trajectory]);
+	}
 /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
 /* Project Wizard END: adc_readout */
@@ -87,6 +119,16 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
+	float const encoder_mechanical_angle_rad =
+		(2.0f * UZ_PIf * (float)(Global_Data.av.incremental_encoder_d5_2_position_w_offset %
+		 IM_1LA7073_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
+		(float)IM_1LA7073_ENCODER_INCREMENTS_PER_MECHANICAL_TURN;
+	Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad =
+		fmodf(IM_1LA7073_POLE_PAIRS * encoder_mechanical_angle_rad, 2.0f * UZ_PIf);
+	float const temperature_duty_ratio = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.inverter_temperature_pwm);
+	Global_Data.av.inverter_temperature_pwm_duty_cycle_percent = temperature_duty_ratio * 100.0f;
+	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.inverter_temperature_pwm);
+	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
 	Global_Data.av.im_siemens_1LA7073_vdc = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
 
 	/* The current-sensor operating point is only valid with an energized DC link.
@@ -181,19 +223,61 @@ void ISR_Control(void *data)
 				.sampling_time_s = Global_Data.av.isr_samplerate_s,
 				.enable_kalman_filter = Global_Data.rasv.im_siemens_1LA7073_enable_kalman_filter,
 				.enable_resonant_control = Global_Data.rasv.im_siemens_1LA7073_enable_resonant_control,
+				.observer_only = false,
 			};
 			im_foc_control_output_t const foc_output =
 				im_foc_control_sample(Global_Data.objects.im_siemens_1LA7073_foc_control, foc_input);
 			im_duty = foc_output.duty;
 			Global_Data.av.im_siemens_1LA7073_id = foc_output.id_A;
 			Global_Data.av.im_siemens_1LA7073_iq = foc_output.iq_A;
+			Global_Data.av.im_siemens_1LA7073_id_raw = foc_output.id_raw_A;
+			Global_Data.av.im_siemens_1LA7073_iq_raw = foc_output.iq_raw_A;
 			Global_Data.av.im_siemens_1LA7073_flux_angle_rad = foc_output.flux_angle_rad;
+			float const flux_rotor_angle_delta = foc_output.flux_angle_rad -
+				Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad;
+			Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad =
+				atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
 			Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = foc_output.flux_magnitude_Vs;
+			Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = foc_output.rotor_electrical_frequency_Hz;
+			Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = foc_output.slip_frequency_Hz;
+			Global_Data.av.im_siemens_1LA7073_slip_percent = foc_output.slip_percent;
+			Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = foc_output.stator_frequency_Hz;
 			}
 		} else {
 			uz_u_f_control_set_frequency(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz);
 			im_duty=uz_u_f_control_sample(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.av.im_siemens_1LA7073_vdc,Global_Data.av.isr_samplerate_s);
 			Global_Data.av.im_siemens_1LA7073_uf_data=*uz_u_f_control_get_data(Global_Data.objects.im_siemens_1LA7073_control);
+			if (im_current_offset_samples == IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
+				im_foc_control_input_t const observer_input = {
+					.currents_A = {.a = Global_Data.av.im_siemens_1LA7073_ia,
+						.b = Global_Data.av.im_siemens_1LA7073_ib,
+						.c = Global_Data.av.im_siemens_1LA7073_ic},
+					.rotor_speed_rpm = Global_Data.av.im_siemens_1LA7073_speed_rpm,
+					.dc_link_voltage_V = Global_Data.av.im_siemens_1LA7073_vdc,
+					.id_reference_A = Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
+					.iq_reference_A = Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
+					.sampling_time_s = Global_Data.av.isr_samplerate_s,
+					.enable_kalman_filter = Global_Data.rasv.im_siemens_1LA7073_enable_kalman_filter,
+					.enable_resonant_control = false,
+					.observer_only = true,
+				};
+				im_foc_control_output_t const observer_output =
+					im_foc_control_sample(Global_Data.objects.im_siemens_1LA7073_foc_control, observer_input);
+				Global_Data.av.im_siemens_1LA7073_id = observer_output.id_A;
+				Global_Data.av.im_siemens_1LA7073_iq = observer_output.iq_A;
+				Global_Data.av.im_siemens_1LA7073_id_raw = observer_output.id_raw_A;
+				Global_Data.av.im_siemens_1LA7073_iq_raw = observer_output.iq_raw_A;
+				Global_Data.av.im_siemens_1LA7073_flux_angle_rad = observer_output.flux_angle_rad;
+				Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = observer_output.flux_magnitude_Vs;
+				Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = observer_output.rotor_electrical_frequency_Hz;
+				Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = observer_output.slip_frequency_Hz;
+				Global_Data.av.im_siemens_1LA7073_slip_percent = observer_output.slip_percent;
+				Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = observer_output.stator_frequency_Hz;
+				float const flux_rotor_angle_delta = observer_output.flux_angle_rad -
+					Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad;
+				Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad =
+					atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
+			}
 		}
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=im_duty.DutyCycle_A;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=im_duty.DutyCycle_B;
@@ -269,6 +353,8 @@ static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
     Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
+    Global_Data.av.inverter_hardware_overcurrent =
+        uz_axi_gpio_read_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_15_PIN_ZERO_BASED) ? 1.0f : 0.0f;
 /* Project Wizard END: D1 isr_control */
 }
 

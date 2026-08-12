@@ -188,80 +188,80 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 			data->av.snd_fld[1] = value;
-			data->rasv.va_speed_reference_rpm = value;
+			data->rasv.setpoint_ramp_target[0] = value;
 			break;
 
 		case (Set_Send_Field_2):
 			data->av.snd_fld[2] = value;
-			data->rasv.va_current_reference_A.d = value;
+			data->rasv.setpoint_ramp_target[1] = value;
 			break;
 
 		case (Set_Send_Field_3):
 			data->av.snd_fld[3] = value;
-			data->rasv.va_current_reference_A.q = value;
+			data->rasv.setpoint_ramp_target[2] = value;
 			break;
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
-			data->rasv.im_siemens_1LA7073_id_reference_A = value;
+			data->rasv.setpoint_ramp_target[3] = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
-		data->rasv.im_siemens_1LA7073_iq_reference_A = value;
+			data->av.snd_fld[5] = value;
+			data->rasv.setpoint_ramp_target[4] = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
-		data->rasv.im_siemens_1LA7073_frequency_reference_Hz = value;
+			data->av.snd_fld[6] = value;
+			data->rasv.setpoint_ramp_target[5] = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_d = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_q = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_q = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.kalman_q_A2_per_s = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.kalman_r_A2 = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_d = value;
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_q = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_harmonic_order = value;
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_antiwindup_gain = value;
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_voltage_limit_V = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.slip_flux_minimum_Vs = value;
 			break;
 
 		case (Set_Send_Field_19):
@@ -332,6 +332,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		default:
 			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
 			uz_assert(0); // unknown command -> throw error
+		}
+		if ((msgId >= (uint32_t)Set_Send_Field_7) && (msgId <= (uint32_t)Set_Send_Field_18)) {
+			im_foc_control_set_parameters(data->objects.im_siemens_1LA7073_foc_control,
+				data->rasv.im_siemens_1LA7073_foc_parameters);
+			data->av.snd_fld[msgId - (uint32_t)Set_Send_Field_1 + 1U] = value;
 		}
 	}
 

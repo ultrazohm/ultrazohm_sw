@@ -108,13 +108,24 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_CURRENT_OFFSET_MAX_STDDEV_A] = &data->av.im_current_offset_max_stddev_A;
 	js_ch_observable[JSO_IM_CURRENT_SUM_ERROR_A] = &data->av.im_current_sum_error_A;
 	js_ch_observable[JSO_IM_CURRENT_OFFSET_VALID] = &data->av.im_current_offset_valid;
+	js_ch_observable[JSO_IM_ROTOR_FLUX_VALID] = &data->av.im_control_actual.rotor_flux_valid;
+	js_ch_observable[JSO_IM_SLIP_FREQUENCY_LIMITED] = &data->av.im_control_actual.slip_frequency_limited;
+	js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_RAD] = &data->av.im_control_actual.flux_angle_step_rad;
+	js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_VIOLATION] = &data->av.im_control_actual.flux_angle_step_violation;
+	js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_A] = &data->av.im_control_actual.phase_current_sum_A;
+	js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_VIOLATION] = &data->av.im_control_actual.phase_current_sum_violation;
+	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_MAGNITUDE_V] = &data->av.im_control_actual.voltage_vector_magnitude_V;
+	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_LIMIT_V] = &data->av.im_control_actual.voltage_vector_limit_V;
+	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED] = &data->av.im_control_actual.voltage_vector_saturated;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
-	js_ch_selected[17] = js_ch_observable[JSO_IM_SLIP_PERCENT];
-	js_ch_selected[18] = js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_DUTY_CYCLE_PERCENT];
-	js_ch_selected[19] = js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C];
+	js_ch_selected[15] = js_ch_observable[JSO_IM_CURRENT_OFFSET_VALID];
+	js_ch_selected[16] = js_ch_observable[JSO_IM_ROTOR_FLUX_VALID];
+	js_ch_selected[17] = js_ch_observable[JSO_IM_SLIP_FREQUENCY_LIMITED];
+	js_ch_selected[18] = js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_VIOLATION];
+	js_ch_selected[19] = js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -145,26 +156,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_IM_Stator_Frequency_Hz] = &data->av.im_control_actual.stator_frequency_Hz;
 	js_slowDataArray[JSSD_FLOAT_IM_I_D_Reference_A] = &data->rasv.im_i_d_reference_A;
 	js_slowDataArray[JSSD_FLOAT_IM_I_Q_Reference_A] = &data->rasv.im_i_q_reference_A;
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Kp_D] = &data->av.snd_fld[7];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Ki_D] = &data->av.snd_fld[8];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Kp_Q] = &data->av.snd_fld[9];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Current_Ki_Q] = &data->av.snd_fld[10];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Kalman_Q_A2_Per_S] = &data->av.snd_fld[11];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Kalman_R_A2] = &data->av.snd_fld[12];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Gain_D] = &data->av.snd_fld[13];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Gain_Q] = &data->av.snd_fld[14];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Harmonic_Order] = &data->av.snd_fld[15];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Antiwindup_Gain] = &data->av.snd_fld[16];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V] = &data->av.snd_fld[17];
-	js_slowDataArray[JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs] = &data->av.snd_fld[18];
 	js_slowDataArray[JSSD_FLOAT_IM_FOC_SOR_Status] = &data->av.im_control_violation_code;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_A_A] = &data->av.im_current_offset_a_A;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_B_A] = &data->av.im_current_offset_b_A;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_C_A] = &data->av.im_current_offset_c_A;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Progress_Percent] = &data->av.im_current_offset_progress_percent;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Max_Stddev_A] = &data->av.im_current_offset_max_stddev_A;
-	js_slowDataArray[JSSD_FLOAT_IM_Current_Sum_Error_A] = &data->av.im_current_sum_error_A;
 	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Valid] = &data->av.im_current_offset_valid;
+	js_slowDataArray[JSSD_FLOAT_IM_Rotor_Flux_Valid] = &data->av.im_control_actual.rotor_flux_valid;
+	js_slowDataArray[JSSD_FLOAT_IM_Slip_Frequency_Limited] = &data->av.im_control_actual.slip_frequency_limited;
+	js_slowDataArray[JSSD_FLOAT_IM_Flux_Angle_Step_Violation] = &data->av.im_control_actual.flux_angle_step_violation;
+	js_slowDataArray[JSSD_FLOAT_IM_Phase_Current_Sum_Violation] = &data->av.im_control_actual.phase_current_sum_violation;
+	js_slowDataArray[JSSD_FLOAT_IM_Voltage_Vector_Saturated] = &data->av.im_control_actual.voltage_vector_saturated;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 

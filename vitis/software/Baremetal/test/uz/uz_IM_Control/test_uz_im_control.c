@@ -2,6 +2,7 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_im_control.h"
+#include <math.h>
 
 static uz_IM_t machine_config = {
     .Rs_Ohm = 2.0f,
@@ -23,7 +24,6 @@ static struct uz_im_control_configuration_t control_config = {
     .current_controller_q_ki = 10.0f,
     .speed_controller_kp = 0.1f,
     .speed_controller_ki = 1.0f,
-    .speed_controller_iq_limit_A = 5.0f,
     .u_f_ratio_V_per_Hz = 4.0f,
     .u_f_boost_voltage_V = 2.0f,
     .u_f_max_frequency_Hz = 50.0f,
@@ -32,9 +32,32 @@ static struct uz_im_control_configuration_t control_config = {
     .kalman_process_noise_A2_per_s = 0.1f,
     .kalman_measurement_noise_A2 = 0.05f,
     .minimum_observer_flux_Vs = 0.01f,
+    .maximum_slip_frequency_Hz = 5.0f,
+    .maximum_flux_angle_step_rad = 0.25f,
+    .maximum_phase_current_sum_A = 1.0f,
+    .resonant_gain_d = 0.1f,
+    .resonant_gain_q = 0.1f,
+    .resonant_harmonic_order = 6.0f,
+    .resonant_antiwindup_gain = 1.0f,
+    .resonant_voltage_limit_V = 20.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.5f, .DutyCycle_B = 0.5f, .DutyCycle_C = 0.5f},
-    .safe_operating_region = {.speed_abs_max_rpm = 3000.0f, .phase_current_abs_max_A = 10.0f, .dc_link_voltage_min_V = 10.0f, .dc_link_voltage_max_V = 400.0f},
+    .setpoint_limits = {
+        .speed_controller_torque_in_Nm = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .speed_in_rpm = {.upper_bound = 3000.0f, .lower_bound = -3000.0f},
+    },
+    .safe_operating_region = {
+        .speed_in_rpm = {.upper_bound = 3000.0f, .lower_bound = -3000.0f},
+        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_abc_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .v_dc_in_V = {.upper_bound = 400.0f, .lower_bound = 10.0f},
+        .i_dc_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+    },
     .enable_speed_control = true,
+    .enable_resonant_control = false,
+    .enable_voltage_vector_limiting = true,
     .observer = uz_im_control_observer_kalman_rotor_flux_model
 };
 
@@ -59,7 +82,59 @@ void test_uz_im_control_detects_dc_link_violation(void) {
     uz_im_control_enable(self, true);
     struct uz_im_measurement_values m = {.v_dc_V = 500.0f};
     uz_im_control_sample_duty(self, m, 0.0f, (uz_3ph_dq_t){0}, 0.0f);
-    TEST_ASSERT_EQUAL(uz_im_control_dc_link_voltage_violation, uz_im_control_get_safe_operating_area_violation(self));
+    TEST_ASSERT_EQUAL(uz_im_control_dc_overvoltage, uz_im_control_get_safe_operating_area_violation(self));
+}
+
+void test_uz_im_control_suppresses_torque_reference_until_flux_is_valid(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f};
+    uz_im_control_sample_dq(self, measurements, 0.0f, (uz_3ph_dq_t){.d = 1.0f, .q = 2.0f});
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_reference_values(self)->i_dq_A.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->rotor_flux_valid);
+}
+
+void test_uz_im_control_reports_phase_current_sum_violation(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f,
+        .i_abc_A = {.a = 1.0f, .b = 1.0f, .c = 1.0f},
+    };
+    uz_im_control_sample_dq(self, measurements, 0.0f, (uz_3ph_dq_t){0});
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_im_control_get_actual_data(self)->phase_current_sum_violation);
+}
+
+void test_uz_im_control_limits_final_voltage_vector(void) {
+    struct uz_im_control_configuration_t config = control_config;
+    config.current_controller_d_kp = 1000.0f;
+    config.current_controller_q_kp = 1000.0f;
+    config.enable_speed_control = false;
+    config.minimum_observer_flux_Vs = 1.0e-7f;
+    uz_im_control_t *self = uz_im_control_init(config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f,
+        .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f},
+    };
+    uz_3ph_dq_t const voltage = uz_im_control_sample_dq(self, measurements, 0.0f,
+        (uz_3ph_dq_t){.d = 10.0f, .q = 10.0f});
+    TEST_ASSERT_TRUE(hypotf(voltage.d, voltage.q) <= (100.0f / sqrtf(3.0f)) + 1.0e-4f);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_im_control_get_actual_data(self)->voltage_vector_saturated);
+}
+
+void test_uz_im_control_preserves_flux_during_mode_change(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_set_mode(self, uz_im_control_mode_u_f);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f,
+        .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f},
+    };
+    uz_im_control_sample_duty(self, measurements, 0.0f, (uz_3ph_dq_t){0}, 10.0f);
+    float const flux_before = uz_im_control_get_actual_data(self)->rotor_flux_magnitude_Vs;
+    uz_im_control_set_mode(self, uz_im_control_mode_foc);
+    TEST_ASSERT_EQUAL_FLOAT(flux_before, uz_im_control_get_actual_data(self)->rotor_flux_magnitude_Vs);
 }
 
 void test_uz_im_control_u_f_ramps_frequency(void) {

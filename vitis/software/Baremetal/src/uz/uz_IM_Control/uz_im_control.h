@@ -78,6 +78,9 @@ struct uz_im_control_configuration_t {
     float kalman_process_noise_A2_per_s;
     float kalman_measurement_noise_A2;
     float minimum_observer_flux_Vs;
+    float maximum_slip_frequency_Hz;       /**< Absolute limit of estimated slip frequency. */
+    float maximum_flux_angle_step_rad;     /**< Plausible flux-angle change per control step. */
+    float maximum_phase_current_sum_A;     /**< Plausibility limit for abs(ia+ib+ic). */
     float resonant_gain_d;
     float resonant_gain_q;
     float resonant_harmonic_order;
@@ -91,6 +94,7 @@ struct uz_im_control_configuration_t {
     float speed_actual_value_filter_cutoff_frequency;
     bool enable_speed_control;
     bool enable_resonant_control;
+    bool enable_voltage_vector_limiting;   /**< Limit final dq voltage to Vdc/sqrt(3). */
     enum uz_im_control_observer observer;
 };
 
@@ -137,6 +141,15 @@ struct uz_im_actual_data {
     float u_f_electrical_angle_rad;           /**< U/f rotating-voltage-vector angle. */
     float u_f_applied_voltage_V;              /**< U/f voltage magnitude before SVM. */
     uz_3ph_dq_t resonant_voltage_dq_V;        /**< Resonant-controller voltage contribution. */
+    float rotor_flux_valid;                   /**< 1 if flux exceeds the configured minimum. */
+    float slip_frequency_limited;             /**< 1 if the slip-frequency clamp is active. */
+    float flux_angle_step_rad;                /**< Wrapped observer-angle change per step. */
+    float flux_angle_step_violation;          /**< 1 if flux-angle step exceeds its limit. */
+    float phase_current_sum_A;                /**< ia+ib+ic plausibility residual. */
+    float phase_current_sum_violation;        /**< 1 if current-sum residual exceeds its limit. */
+    float voltage_vector_magnitude_V;         /**< Magnitude before final vector saturation. */
+    float voltage_vector_limit_V;             /**< Available linear SVM voltage magnitude. */
+    float voltage_vector_saturated;           /**< 1 if final dq vector was scaled. */
 };
 
 /** @brief Initialize one self-contained induction-machine controller. */

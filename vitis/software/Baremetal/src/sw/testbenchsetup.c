@@ -38,6 +38,9 @@ struct testbenchsetup_im_t testbenchsetup_create_im(float sample_time_s)
         .kalman_process_noise_A2_per_s = MOTOR_KF_Q_i,
         .kalman_measurement_noise_A2 = MOTOR_KF_R_i,
         .minimum_observer_flux_Vs = MOTOR_Minimum_observer_flux_Vs,
+        .maximum_slip_frequency_Hz = MOTOR_Maximum_slip_frequency_Hz,
+        .maximum_flux_angle_step_rad = MOTOR_Maximum_flux_angle_step_rad,
+        .maximum_phase_current_sum_A = MOTOR_Maximum_phase_current_sum_A,
         .resonant_gain_d = MOTOR_Resonant_gain_scale * current_kp,
         .resonant_gain_q = MOTOR_Resonant_gain_scale * current_kp,
         .resonant_harmonic_order = MOTOR_Resonant_harmonic_order,
@@ -67,6 +70,7 @@ struct testbenchsetup_im_t testbenchsetup_create_im(float sample_time_s)
         .speed_actual_value_filter_cutoff_frequency = MOTOR_Speed_actual_filter_cutoff_Hz,
         .enable_speed_control = false,
         .enable_resonant_control = false,
+        .enable_voltage_vector_limiting = MOTOR_Enable_voltage_vector_limiting,
         .observer = uz_im_control_observer_rotor_flux_model,
     };
     return setup;

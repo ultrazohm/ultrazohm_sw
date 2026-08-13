@@ -297,6 +297,10 @@
 #define MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN  	5000U
 #define MOTOR_Speed_controller_torque_max_Nm          	8.0f
 #define MOTOR_Minimum_observer_flux_Vs                 	0.02f
+#define MOTOR_Maximum_slip_frequency_Hz                	20.0f
+#define MOTOR_Maximum_flux_angle_step_rad              	0.25f
+#define MOTOR_Maximum_phase_current_sum_A              	1.0f
+#define MOTOR_Enable_voltage_vector_limiting           	true
 #define MOTOR_Resonant_harmonic_order                  	6.0f
 #define MOTOR_Resonant_antiwindup_gain                 	10.0f
 #define MOTOR_Resonant_voltage_limit_V                 	100.0f

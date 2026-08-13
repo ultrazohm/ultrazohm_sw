@@ -24,12 +24,13 @@ DS_Data Global_Data = {
 		.va_disturbance_torque_Nm = 0.0f,
 		.va_enable_speed_control = false,
 		.va_acknowledge_error = false,
-		.im_siemens_1LA7073_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
-		.im_siemens_1LA7073_id_reference_A = MOTOR_Default_i_d_reference_A,
-		.im_siemens_1LA7073_iq_reference_A = MOTOR_Default_i_q_reference_A,
-		.im_siemens_1LA7073_enable_foc = false,
-		.im_siemens_1LA7073_enable_kalman_filter = false,
-		.im_siemens_1LA7073_enable_resonant_control = false,
+		.setpoint_trajectories_enabled = true,
+		.im_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
+		.im_i_d_reference_A = MOTOR_Default_i_d_reference_A,
+		.im_i_q_reference_A = MOTOR_Default_i_q_reference_A,
+		.im_enable_foc = false,
+		.im_enable_kalman_filter = false,
+		.im_enable_resonant_control = false,
 /* Project Wizard BEGIN: rasv_initializer */
         .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
@@ -72,9 +73,9 @@ static void initialize_setpoint_trajectories(void)
 		Global_Data.rasv.va_speed_reference_rpm,
 		Global_Data.rasv.va_current_reference_A.d,
 		Global_Data.rasv.va_current_reference_A.q,
-		Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
-		Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
-		Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz,
+		Global_Data.rasv.im_i_d_reference_A,
+		Global_Data.rasv.im_i_q_reference_A,
+		Global_Data.rasv.im_frequency_reference_Hz,
 	};
 	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
 		struct uz_Trajectory_config config = {

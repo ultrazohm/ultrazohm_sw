@@ -298,7 +298,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.setpoint_trajectories_enabled =
+				!data->rasv.setpoint_trajectories_enabled;
 			break;
 
 		case (My_Button_6):
@@ -371,7 +372,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1: IM FOC active */
-	if (data->rasv.im_siemens_1LA7073_enable_foc) {
+	if (data->rasv.im_enable_foc) {
 		js_status_BareToRTOS |= (1 << 4);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 4);
@@ -385,21 +386,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 6 - My_Button_3 */
-	if (data->rasv.im_siemens_1LA7073_enable_kalman_filter) {
+	if (data->rasv.im_enable_kalman_filter) {
 		js_status_BareToRTOS |= (1 << 6);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
 
 	/* Bit 7 - My_Button_4 */
-	if (data->rasv.im_siemens_1LA7073_enable_resonant_control) {
+	if (data->rasv.im_enable_resonant_control) {
 		js_status_BareToRTOS |= (1 << 7);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
-	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	/* Bit 8 - My_Button_5: setpoint trajectories enabled */
+	if (data->rasv.setpoint_trajectories_enabled) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);

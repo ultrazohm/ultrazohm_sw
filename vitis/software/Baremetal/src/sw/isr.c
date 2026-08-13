@@ -69,6 +69,7 @@ static const error_checks_config_t im_error_checks_config={.vdc_min_V=MOTOR_SOR_
 static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
 static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
 static uint32_t im_current_offset_samples;
+static bool setpoint_trajectories_enabled_last = true;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -83,11 +84,26 @@ void ISR_Control(void *data)
 		&Global_Data.rasv.va_speed_reference_rpm,
 		&Global_Data.rasv.va_current_reference_A.d,
 		&Global_Data.rasv.va_current_reference_A.q,
-		&Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
-		&Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
-		&Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz,
+		&Global_Data.rasv.im_i_d_reference_A,
+		&Global_Data.rasv.im_i_q_reference_A,
+		&Global_Data.rasv.im_frequency_reference_Hz,
 	};
+	if (setpoint_trajectories_enabled_last && !Global_Data.rasv.setpoint_trajectories_enabled) {
+		for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+			uz_Trajectory_Stop(Global_Data.objects.setpoint_trajectories[trajectory]);
+			uz_Trajectory_Reset(Global_Data.objects.setpoint_trajectories[trajectory]);
+		}
+	}
+	setpoint_trajectories_enabled_last = Global_Data.rasv.setpoint_trajectories_enabled;
 	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+		if (!Global_Data.rasv.setpoint_trajectories_enabled) {
+			Global_Data.rasv.setpoint_ramp_start[trajectory] =
+				Global_Data.rasv.setpoint_ramp_target[trajectory];
+			Global_Data.rasv.setpoint_ramp_active_target[trajectory] =
+				Global_Data.rasv.setpoint_ramp_target[trajectory];
+			*setpoints[trajectory] = Global_Data.rasv.setpoint_ramp_target[trajectory];
+			continue;
+		}
 		if (Global_Data.rasv.setpoint_ramp_target[trajectory] !=
 			Global_Data.rasv.setpoint_ramp_active_target[trajectory]) {
 			/* Only the ISR modifies the active ramp. A new command therefore
@@ -123,19 +139,19 @@ void ISR_Control(void *data)
 		(2.0f * UZ_PIf * (float)(Global_Data.av.incremental_encoder_d5_2_position_w_offset %
 		 MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
 		(float)MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN;
-	Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad =
+	Global_Data.av.im_rotor_electrical_angle_rad =
 		fmodf(MOTOR_PolePairs * encoder_mechanical_angle_rad, 2.0f * UZ_PIf);
 	float const temperature_duty_ratio = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_pwm_duty_cycle_percent = temperature_duty_ratio * 100.0f;
 	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
-	Global_Data.av.im_siemens_1LA7073_vdc = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
+	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
 
 	/* The current-sensor operating point is only valid with an energized DC link.
 	 * Use 1000 consecutive valid samples; restart if the DC link drops out. */
 	if (im_current_offset_samples < MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
-		if (isfinite(Global_Data.av.im_siemens_1LA7073_vdc) &&
-			(Global_Data.av.im_siemens_1LA7073_vdc >= MOTOR_SOR_v_dc_lower_V)) {
+		if (isfinite(Global_Data.av.im_v_dc_V) &&
+			(Global_Data.av.im_v_dc_V >= MOTOR_SOR_v_dc_lower_V)) {
 			im_current_sum_a += Global_Data.av.adc_ltc2311_a1_ch0;
 			im_current_sum_b += Global_Data.av.adc_ltc2311_a1_ch1;
 			im_current_sum_c += Global_Data.av.adc_ltc2311_a1_ch2;
@@ -155,22 +171,22 @@ void ISR_Control(void *data)
 	}
 
 	if (im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
-		Global_Data.av.im_siemens_1LA7073_ia = Global_Data.av.adc_ltc2311_a1_ch0 - im_current_offset_a;
-		Global_Data.av.im_siemens_1LA7073_ib = Global_Data.av.adc_ltc2311_a1_ch1 - im_current_offset_b;
-		Global_Data.av.im_siemens_1LA7073_ic = Global_Data.av.adc_ltc2311_a1_ch2 - im_current_offset_c;
+		Global_Data.av.im_i_a_A = Global_Data.av.adc_ltc2311_a1_ch0 - im_current_offset_a;
+		Global_Data.av.im_i_b_A = Global_Data.av.adc_ltc2311_a1_ch1 - im_current_offset_b;
+		Global_Data.av.im_i_c_A = Global_Data.av.adc_ltc2311_a1_ch2 - im_current_offset_c;
 	} else {
 		/* Avoid interpreting the uncorrected sensor operating point as current. */
-		Global_Data.av.im_siemens_1LA7073_ia = 0.0f;
-		Global_Data.av.im_siemens_1LA7073_ib = 0.0f;
-		Global_Data.av.im_siemens_1LA7073_ic = 0.0f;
+		Global_Data.av.im_i_a_A = 0.0f;
+		Global_Data.av.im_i_b_A = 0.0f;
+		Global_Data.av.im_i_c_A = 0.0f;
 	}
-	Global_Data.av.im_siemens_1LA7073_speed_rpm=-Global_Data.av.va_control_actual.speed_in_rpm;
+	Global_Data.av.im_speed_rpm=-Global_Data.av.va_control_actual.speed_in_rpm;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
 	bool const monitor_dc_undervoltage =
 		(current_state == running_state) || (current_state == control_state);
 	(void)error_checks_step(&Global_Data.av, &va_error_checks_config, monitor_dc_undervoltage);
-	(void)error_checks_step_im(Global_Data.av.im_siemens_1LA7073_vdc,Global_Data.av.im_siemens_1LA7073_ia,Global_Data.av.im_siemens_1LA7073_ib,Global_Data.av.im_siemens_1LA7073_ic,Global_Data.av.im_siemens_1LA7073_speed_rpm,&im_error_checks_config,monitor_dc_undervoltage);
+	(void)error_checks_step_im(Global_Data.av.im_v_dc_V,Global_Data.av.im_i_a_A,Global_Data.av.im_i_b_A,Global_Data.av.im_i_c_A,Global_Data.av.im_speed_rpm,&im_error_checks_config,monitor_dc_undervoltage);
 	current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
@@ -206,17 +222,17 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 		update_va_control(true, true);
 		struct uz_im_measurement_values const im_measurements = {
-			.i_abc_A = {.a = Global_Data.av.im_siemens_1LA7073_ia, .b = Global_Data.av.im_siemens_1LA7073_ib, .c = Global_Data.av.im_siemens_1LA7073_ic},
-			.v_abc_V = {0}, .v_dc_V = Global_Data.av.im_siemens_1LA7073_vdc, .i_dc_A = 0.0f,
-			.rotor_speed_rpm = Global_Data.av.im_siemens_1LA7073_speed_rpm,
+			.i_abc_A = {.a = Global_Data.av.im_i_a_A, .b = Global_Data.av.im_i_b_A, .c = Global_Data.av.im_i_c_A},
+			.v_abc_V = {0}, .v_dc_V = Global_Data.av.im_v_dc_V, .i_dc_A = 0.0f,
+			.rotor_speed_rpm = Global_Data.av.im_speed_rpm,
 			.rotor_mechanical_angle_rad = encoder_mechanical_angle_rad,
 		};
 		uz_im_control_enable(Global_Data.objects.im_control,
 			im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
 		struct uz_DutyCycle_t const im_duty = uz_im_control_sample_duty(Global_Data.objects.im_control,
 			im_measurements, 0.0f,
-			(uz_3ph_dq_t){.d = Global_Data.rasv.im_siemens_1LA7073_id_reference_A, .q = Global_Data.rasv.im_siemens_1LA7073_iq_reference_A},
-			Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz);
+			(uz_3ph_dq_t){.d = Global_Data.rasv.im_i_d_reference_A, .q = Global_Data.rasv.im_i_q_reference_A},
+			Global_Data.rasv.im_frequency_reference_Hz);
 		Global_Data.av.im_control_actual = *uz_im_control_get_actual_data(Global_Data.objects.im_control);
 		Global_Data.av.im_control_reference = *uz_im_control_get_reference_values(Global_Data.objects.im_control);
 		Global_Data.av.im_control_measurements = *uz_im_control_get_im_measurement_values(Global_Data.objects.im_control);
@@ -225,18 +241,18 @@ void ISR_Control(void *data)
 		if (Global_Data.av.im_control_violation != uz_im_control_no_violation) {
 			ultrazohm_state_machine_set_error(true);
 		}
-		Global_Data.av.im_siemens_1LA7073_id = Global_Data.av.im_control_actual.i_dq_A.d;
-		Global_Data.av.im_siemens_1LA7073_iq = Global_Data.av.im_control_actual.i_dq_A.q;
-		Global_Data.av.im_siemens_1LA7073_id_raw = Global_Data.av.im_control_actual.i_dq_raw_A.d;
-		Global_Data.av.im_siemens_1LA7073_iq_raw = Global_Data.av.im_control_actual.i_dq_raw_A.q;
-		Global_Data.av.im_siemens_1LA7073_flux_angle_rad = Global_Data.av.im_control_actual.rotor_flux_angle_rad;
-		Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = Global_Data.av.im_control_actual.rotor_flux_magnitude_Vs;
-		Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad = Global_Data.av.im_control_actual.rotor_electrical_angle_rad;
-		Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad = Global_Data.av.im_control_actual.flux_rotor_angle_difference_rad;
-		Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = Global_Data.av.im_control_actual.rotor_electrical_frequency_Hz;
-		Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = Global_Data.av.im_control_actual.slip_frequency_Hz;
-		Global_Data.av.im_siemens_1LA7073_slip_percent = Global_Data.av.im_control_actual.slip_percent;
-		Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = Global_Data.av.im_control_actual.stator_frequency_Hz;
+		Global_Data.av.im_i_d_A = Global_Data.av.im_control_actual.i_dq_A.d;
+		Global_Data.av.im_i_q_A = Global_Data.av.im_control_actual.i_dq_A.q;
+		Global_Data.av.im_i_d_raw_A = Global_Data.av.im_control_actual.i_dq_raw_A.d;
+		Global_Data.av.im_i_q_raw_A = Global_Data.av.im_control_actual.i_dq_raw_A.q;
+		Global_Data.av.im_flux_angle_rad = Global_Data.av.im_control_actual.rotor_flux_angle_rad;
+		Global_Data.av.im_flux_magnitude_Vs = Global_Data.av.im_control_actual.rotor_flux_magnitude_Vs;
+		Global_Data.av.im_rotor_electrical_angle_rad = Global_Data.av.im_control_actual.rotor_electrical_angle_rad;
+		Global_Data.av.im_flux_rotor_angle_difference_rad = Global_Data.av.im_control_actual.flux_rotor_angle_difference_rad;
+		Global_Data.av.im_rotor_electrical_frequency_Hz = Global_Data.av.im_control_actual.rotor_electrical_frequency_Hz;
+		Global_Data.av.im_slip_frequency_Hz = Global_Data.av.im_control_actual.slip_frequency_Hz;
+		Global_Data.av.im_slip_percent = Global_Data.av.im_control_actual.slip_percent;
+		Global_Data.av.im_stator_frequency_Hz = Global_Data.av.im_control_actual.stator_frequency_Hz;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=im_duty.DutyCycle_A;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=im_duty.DutyCycle_B;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3=im_duty.DutyCycle_C;

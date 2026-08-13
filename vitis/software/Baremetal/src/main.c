@@ -19,11 +19,6 @@
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-		.va_speed_reference_rpm = 0.0f,
-		.va_current_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
-		.va_disturbance_torque_Nm = 0.0f,
-		.va_enable_speed_control = false,
-		.va_acknowledge_error = false,
 		.setpoint_trajectories_enabled = true,
 		.im_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
 		.im_i_d_reference_A = MOTOR_Default_i_d_reference_A,
@@ -70,9 +65,6 @@ static const struct uz_PWM_duty_freq_detection_config_t inverter_temperature_pwm
 static void initialize_setpoint_trajectories(void)
 {
 	const float initial_values[SETPOINT_TRAJECTORY_COUNT] = {
-		Global_Data.rasv.va_speed_reference_rpm,
-		Global_Data.rasv.va_current_reference_A.d,
-		Global_Data.rasv.va_current_reference_A.q,
 		Global_Data.rasv.im_i_d_reference_A,
 		Global_Data.rasv.im_i_q_reference_A,
 		Global_Data.rasv.im_frequency_reference_Hz,
@@ -142,7 +134,6 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-			Global_Data.objects.va_control = va_control_init(Global_Data.av.isr_samplerate_s);
 			IM_testbench_init(&Global_Data);
 			initialize_setpoint_trajectories();
             initialization_chain = init_ip_cores;

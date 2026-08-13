@@ -53,7 +53,6 @@ static void update_adapter_d2(void);
 static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
-static void update_va_control(bool enable_output, bool monitor_dc_undervoltage);
 static void reset_im_current_offset_calibration(void);
 static void update_setpoint_trajectories(void);
 static float update_measurements(void);
@@ -65,12 +64,6 @@ static void update_im_control(float encoder_mechanical_angle_rad);
 #define D1_DIG_13_PIN_ZERO_BASED 13U
 #define D1_DIG_15_PIN_ZERO_BASED 15U
 
-static const error_checks_config_t va_error_checks_config = {
-	.vdc_min_V = VA_PROTECTION_MIN_DC_VOLTAGE_V,
-	.vdc_max_V = VA_PROTECTION_MAX_DC_VOLTAGE_V,
-	.iphase_max_A = VA_PROTECTION_MAX_PHASE_CURRENT_A,
-	.max_mechanical_speed_rpm = VA_PROTECTION_MAX_SPEED_RPM,
-};
 static const error_checks_config_t im_error_checks_config={.vdc_min_V=MOTOR_SOR_v_dc_lower_V,.vdc_max_V=MOTOR_SOR_v_dc_upper_V,.iphase_max_A=MOTOR_SOR_i_abc_upper_A,.max_mechanical_speed_rpm=MOTOR_SOR_speed_upper_rpm};
 static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
 static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
@@ -97,9 +90,6 @@ static void reset_im_current_offset_calibration(void)
 static void update_setpoint_trajectories(void)
 {
 	float* const setpoints[SETPOINT_TRAJECTORY_COUNT] = {
-		&Global_Data.rasv.va_speed_reference_rpm,
-		&Global_Data.rasv.va_current_reference_A.d,
-		&Global_Data.rasv.va_current_reference_A.q,
 		&Global_Data.rasv.im_i_d_reference_A,
 		&Global_Data.rasv.im_i_q_reference_A,
 		&Global_Data.rasv.im_frequency_reference_Hz,
@@ -147,7 +137,7 @@ static float update_measurements(void)
 		Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
 	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
-	Global_Data.av.im_speed_rpm = -Global_Data.av.va_control_actual.speed_in_rpm;
+	Global_Data.av.im_speed_rpm = -Global_Data.av.incremental_encoder_d5_2_omega_mech * (60.0f / (2.0f * UZ_PIf));
 	return encoder_mechanical_angle_rad;
 }
 
@@ -196,7 +186,6 @@ static void update_im_current_offset_calibration(platform_state_t current_state)
 static platform_state_t update_protection(platform_state_t current_state)
 {
 	bool const monitor_dc_undervoltage = (current_state == running_state) || (current_state == control_state);
-	(void)error_checks_step(&Global_Data.av, &va_error_checks_config, monitor_dc_undervoltage);
 	(void)error_checks_step_im(Global_Data.av.im_v_dc_V, Global_Data.av.im_i_a_A, Global_Data.av.im_i_b_A,
 		Global_Data.av.im_i_c_A, Global_Data.av.im_speed_rpm, &im_error_checks_config, monitor_dc_undervoltage);
 	return ultrazohm_state_machine_get_state();
@@ -261,16 +250,11 @@ void ISR_Control(void *data)
 		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
-		update_va_control(false, false);
         /* Project Wizard BEGIN: idle_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: idle_state isr_actions */
 		im_pwm_tristated_for_calibration = true;
     }
@@ -279,12 +263,10 @@ void ISR_Control(void *data)
 		idle_reset_done = false;
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
-		update_va_control(false, true);
         /* Project Wizard BEGIN: running_state isr_actions */
 		bool const im_offset_valid = im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT;
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0,
 			!im_offset_valid, !im_offset_valid, !im_offset_valid);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
@@ -293,7 +275,6 @@ void ISR_Control(void *data)
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
         // Start: Control algorithm - only if ultrazohm is in control state
-		update_va_control(true, true);
 		update_im_control(encoder_mechanical_angle_rad);
 
         /* Project Wizard BEGIN: control_state isr_actions */
@@ -305,16 +286,11 @@ void ISR_Control(void *data)
 		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
-		update_va_control(false, false);
         /* Project Wizard BEGIN: error_state isr_actions */
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = 0.5f;
         Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, true, true, true);
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = 0.5f;
-        Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: error_state isr_actions */
     }
     
@@ -401,55 +377,6 @@ static void update_adapter_d5(void)
     Global_Data.av.incremental_encoder_d5_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_2);
 /* Project Wizard END: D5 isr_control */
-}
-
-static void update_va_control(bool enable_output, bool monitor_dc_undervoltage)
-{
-    struct uz_pmsm_measurement_values measurements = {
-        .i_abc_in_A = {.a = Global_Data.av.adc_ltc2311_a2_ch3, .b = Global_Data.av.adc_ltc2311_a2_ch2, .c = Global_Data.av.adc_ltc2311_a2_ch1},
-        .v_abc_in_V = {.a = Global_Data.av.adc_ltc2311_a2_ch7, .b = Global_Data.av.adc_ltc2311_a2_ch6, .c = Global_Data.av.adc_ltc2311_a2_ch5},
-        .v_dc_in_V = Global_Data.av.adc_ltc2311_a2_ch0,
-        .i_dc_in_A = Global_Data.av.adc_ltc2311_a2_ch4,
-        .omega_mech_rad_per_sec = Global_Data.av.incremental_encoder_d5_2_omega_mech,
-        .theta_mech = Global_Data.av.incremental_encoder_d5_2_theta_el / 4.0f};
-
-	/* An unpowered DC link is valid in idle/error. Overvoltage and overcurrent
-	 * remain active in every state; undervoltage is armed in running/control. */
-	if ((!monitor_dc_undervoltage) && (measurements.v_dc_in_V < VA_PROTECTION_MIN_DC_VOLTAGE_V)) {
-		measurements.v_dc_in_V = VA_PROTECTION_MIN_DC_VOLTAGE_V;
-	}
-
-	bool const acknowledge_error = Global_Data.rasv.va_acknowledge_error;
-	if (acknowledge_error) {
-		/* The test-bench reset clears its error latch unconditionally. Do the
-		 * equivalent for uz_pmsm_control with a neutral, valid measurement set.
-		 * The real measurements are sampled and checked again directly below. */
-		struct uz_pmsm_measurement_values reset_measurements = measurements;
-		reset_measurements.i_abc_in_A = (uz_3ph_abc_t){.a = 0.0f, .b = 0.0f, .c = 0.0f};
-		reset_measurements.v_dc_in_V = 0.5f * (VA_PROTECTION_MIN_DC_VOLTAGE_V + VA_PROTECTION_MAX_DC_VOLTAGE_V);
-		reset_measurements.i_dc_in_A = 0.0f;
-		reset_measurements.omega_mech_rad_per_sec = 0.0f;
-		uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.va_control, reset_measurements);
-		uz_pmsm_control_reset(Global_Data.objects.va_control);
-		Global_Data.rasv.va_acknowledge_error = false;
-	}
-
-    uz_pmsm_control_enable_speed_control(Global_Data.objects.va_control, Global_Data.rasv.va_enable_speed_control);
-    uz_pmsm_control_enable(Global_Data.objects.va_control, enable_output);
-    struct uz_DutyCycle_t duty = uz_pmsm_control_sample_duty(Global_Data.objects.va_control, measurements,
-        Global_Data.rasv.va_speed_reference_rpm, Global_Data.rasv.va_current_reference_A,
-        Global_Data.rasv.va_disturbance_torque_Nm);
-
-    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = duty.DutyCycle_A;
-    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = duty.DutyCycle_B;
-    Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = duty.DutyCycle_C;
-    Global_Data.av.va_control_actual = *uz_pmsm_control_get_actual_data(Global_Data.objects.va_control);
-    Global_Data.av.va_control_reference = *uz_pmsm_control_get_reference_values(Global_Data.objects.va_control);
-    Global_Data.av.va_control_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.va_control);
-	Global_Data.av.va_control_violation_code = (float)Global_Data.av.va_control_violation;
-	if (Global_Data.av.va_control_violation != uz_pmsm_control_no_violation) {
-		ultrazohm_state_machine_set_error(true);
-	}
 }
 
 //==============================================================================================================================================================

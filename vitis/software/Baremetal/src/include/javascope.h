@@ -163,12 +163,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	VA_Speed_Reference,
-	VA_Id_Reference,
-	VA_Iq_Reference,
 	IM_Id_Reference,
 	IM_Iq_Reference,
 	IM_UF_Frequency,
+	send_field_4,
+	send_field_5,
+	send_field_6,
 	IM_FOC_Current_Kp_D,
 	IM_FOC_Current_Ki_D,
 	IM_FOC_Current_Kp_Q,
@@ -190,12 +190,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	rpm,
-	A,
-	A,
 	A,
 	A,
 	Hz,
+	-,
+	-,
+	-,
 	V_per_A,
 	V_per_As,
 	V_per_A,
@@ -273,7 +273,7 @@ enum gui_button_mapping {
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	IM_FOC__OFF_UF,
-	VA_Speed__OFF_Current,
+	Unused_2,
 	IM_Kalman_Filter,
 	IM_Resonant_6th,
 	Enable_Trajectories,

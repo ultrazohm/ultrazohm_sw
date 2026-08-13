@@ -204,17 +204,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
-			data->objects.setpoint_trajectories[3].target = value;
 			break;
 
 		case (Set_Send_Field_5):
 			data->av.snd_fld[5] = value;
-			data->objects.setpoint_trajectories[4].target = value;
 			break;
 
 		case (Set_Send_Field_6):
 			data->av.snd_fld[6] = value;
-			data->objects.setpoint_trajectories[5].target = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -284,9 +281,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			IM_testbench_toggle_control_mode(data);
 			break;
 
-		case (My_Button_2): // Toggle VA speed controller
-			uz_pmsm_control_reset(data->objects.va_control);
-			data->rasv.va_enable_speed_control = !data->rasv.va_enable_speed_control;
+		case (My_Button_2):
 			break;
 
 		case (My_Button_3):
@@ -316,8 +311,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Error_Reset):
 			IM_testbench_reset(data);
-			data->rasv.va_acknowledge_error = true;
-			/* Same reset sequence as the VA test-bench error handling. */
 			ultrazohm_state_machine_set_stop(true);
 			ultrazohm_state_machine_set_error(false);
 			break;
@@ -376,12 +369,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - My_Button_2: VA speed controller */
-	if (data->rasv.va_enable_speed_control) {
-		js_status_BareToRTOS |= (1 << 5);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 5);
-	}
+	/* Bit 5 - My_Button_2: unused */
+	js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
 	if (data->rasv.im_enable_kalman_filter) {

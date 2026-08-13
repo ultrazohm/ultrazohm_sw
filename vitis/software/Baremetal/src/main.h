@@ -50,7 +50,6 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-#include "include/va_control.h"
 #include "include/testbenchsetup.h"
 #include "include/IM_testbench.h"
 

@@ -16,11 +16,10 @@
 #include "include/d3_adapter_init.h"
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
-#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 #include "uz/uz_IM_Control/uz_im_control.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
 
-#define SETPOINT_TRAJECTORY_COUNT 6U
+#define SETPOINT_TRAJECTORY_COUNT 3U
 
 /** Runtime state of one JavaScope-controlled setpoint trajectory. */
 typedef struct {
@@ -37,10 +36,6 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
-	struct uz_pmsm_actual_data va_control_actual;
-	struct uz_pmsm_reference_values va_control_reference;
-	enum uz_pmsm_control_safe_operating_region_violation va_control_violation;
-	float va_control_violation_code;
 	float im_i_a_A, im_i_b_A, im_i_c_A;
 	float im_v_dc_V, im_speed_rpm;
 	struct uz_im_actual_data im_control_actual;
@@ -86,11 +81,6 @@ typedef struct _actualValues_ {
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
-	float va_speed_reference_rpm;
-	uz_3ph_dq_t va_current_reference_A;
-	float va_disturbance_torque_Nm;
-	bool va_enable_speed_control;
-	bool va_acknowledge_error;
 	bool setpoint_trajectories_enabled;
 	float im_frequency_reference_Hz;
 	float im_i_d_reference_A;
@@ -113,7 +103,6 @@ typedef struct _referenceAndSetValues_ {
 
 typedef struct{
 	uz_mux_axi_t* mux_axi;
-	uz_pmsm_control_t* va_control;
 	uz_im_control_t* im_control;
 	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
 	setpoint_trajectory_state_t setpoint_trajectories[SETPOINT_TRAJECTORY_COUNT];

@@ -44,8 +44,6 @@
 #endif
 
 /* VA hardware protection limits are board-specific and independent of the IM under test. */
-#define VA_VDC_MAX_V              60.0f
-#define VA_IPHASE_MAX_A           15.0f
 
 /* ============================================================
  * Lindner 3 kW IM — Wolfspeed adapter board testbed

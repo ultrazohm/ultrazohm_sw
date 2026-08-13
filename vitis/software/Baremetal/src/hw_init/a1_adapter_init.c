@@ -4,6 +4,7 @@
 /* Project Wizard generated content for A1 */
 #include "../uz/uz_HAL.h"
 #include "../uz/uz_global_configuration.h"
+#include "../include/testbenchsetup.h"
 #include "xparameters.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -12,10 +13,10 @@ static struct uz_adcLtc2311_config_t config_adc_ltc2311_a1 = {
     .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
     .software_raw_to_physical_value_factor = {
-        10.0f / 0.03993f,
-        10.0f / 0.03993f,
-        10.0f / 0.03993f,
-        10.0f / 0.003764f,
+        10.0f / MOTOR_CURRENT_2_SI,
+        10.0f / MOTOR_CURRENT_2_SI,
+        10.0f / MOTOR_CURRENT_2_SI,
+        10.0f / DC_VOLTAGE_2_SI,
         10.0f,
         10.0f,
         10.0f,

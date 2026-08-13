@@ -19,6 +19,7 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 #include "../include/error_checks.h"
+#include "../include/IM_testbench.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -217,51 +218,58 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_d = value;
+			data->av.snd_fld[7] = value;
+			if (value >= 0.0f) uz_im_control_current_control_set_Kp_id(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_8):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_d = value;
+			data->av.snd_fld[8] = value;
+			if (value >= 0.0f) uz_im_control_current_control_set_Ki_id(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_9):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_kp_q = value;
+			data->av.snd_fld[9] = value;
+			if (value >= 0.0f) uz_im_control_current_control_set_Kp_iq(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_10):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.current_ki_q = value;
+			data->av.snd_fld[10] = value;
+			if (value >= 0.0f) uz_im_control_current_control_set_Ki_iq(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_11):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.kalman_q_A2_per_s = value;
+			data->av.snd_fld[11] = value;
+			if (value >= 0.0f) uz_im_control_set_kalman_process_noise(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_12):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.kalman_r_A2 = value;
+			data->av.snd_fld[12] = value;
+			if (value > 0.0f) uz_im_control_set_kalman_measurement_noise(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_13):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_d = value;
+			data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_q = value;
+			data->av.snd_fld[14] = value;
 			break;
 
 		case (Set_Send_Field_15):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_harmonic_order = value;
+			data->av.snd_fld[15] = value;
 			break;
 
 		case (Set_Send_Field_16):
-			if (value >= 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_antiwindup_gain = value;
+			data->av.snd_fld[16] = value;
 			break;
 
 		case (Set_Send_Field_17):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.resonant_voltage_limit_V = value;
+			data->av.snd_fld[17] = value;
 			break;
 
 		case (Set_Send_Field_18):
-			if (value > 0.0f) data->rasv.im_siemens_1LA7073_foc_parameters.slip_flux_minimum_Vs = value;
+			data->av.snd_fld[18] = value;
+			if (value > 0.0f) uz_im_control_set_minimum_observer_flux(data->objects.im_control, value);
 			break;
 
 		case (Set_Send_Field_19):
@@ -272,28 +280,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1): // Toggle VA speed controller (ACT button)
+		case (My_Button_1): // Toggle IM U/f / FOC
+			IM_testbench_toggle_control_mode(data);
+			break;
+
+		case (My_Button_2): // Toggle VA speed controller
 			uz_pmsm_control_reset(data->objects.va_control);
-			uz_u_f_control_acknowledge_and_reset_error(data->objects.im_siemens_1LA7073_control,40.0f);
-			uz_u_f_control_reset(data->objects.im_siemens_1LA7073_control);
-			error_checks_reset();
 			data->rasv.va_enable_speed_control = !data->rasv.va_enable_speed_control;
 			break;
 
-		case (My_Button_2): // Toggle IM U/f / FOC (ACT button)
-			data->rasv.im_siemens_1LA7073_enable_foc = !data->rasv.im_siemens_1LA7073_enable_foc;
-			uz_u_f_control_reset(data->objects.im_siemens_1LA7073_control);
-			im_foc_control_reset(data->objects.im_siemens_1LA7073_foc_control);
-			break;
-
 		case (My_Button_3):
-			data->rasv.im_siemens_1LA7073_enable_kalman_filter =
-				!data->rasv.im_siemens_1LA7073_enable_kalman_filter;
+			IM_testbench_toggle_kalman_filter(data);
 			break;
 
 		case (My_Button_4):
-			data->rasv.im_siemens_1LA7073_enable_resonant_control =
-				!data->rasv.im_siemens_1LA7073_enable_resonant_control;
+			IM_testbench_toggle_resonant_control(data);
 			break;
 
 		case (My_Button_5):
@@ -314,10 +315,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Error_Reset):
 			data->rasv.va_enable_speed_control = false;
-			data->rasv.im_siemens_1LA7073_enable_foc = false;
-			data->rasv.im_siemens_1LA7073_enable_kalman_filter = false;
-			data->rasv.im_siemens_1LA7073_enable_resonant_control = false;
-			im_foc_control_reset(data->objects.im_siemens_1LA7073_foc_control);
+			IM_testbench_reset(data);
 			uz_pmsm_control_reset(data->objects.va_control);
 			data->rasv.va_acknowledge_error = true;
 			/* Same reset sequence as the VA test-bench error handling. */
@@ -333,10 +331,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
 			uz_assert(0); // unknown command -> throw error
 		}
-		if ((msgId >= (uint32_t)Set_Send_Field_7) && (msgId <= (uint32_t)Set_Send_Field_18)) {
-			im_foc_control_set_parameters(data->objects.im_siemens_1LA7073_foc_control,
-				data->rasv.im_siemens_1LA7073_foc_parameters);
-			data->av.snd_fld[msgId - (uint32_t)Set_Send_Field_1 + 1U] = value;
+		if ((msgId >= (uint32_t)Set_Send_Field_13) && (msgId <= (uint32_t)Set_Send_Field_17) &&
+			(data->av.snd_fld[13] >= 0.0f) && (data->av.snd_fld[14] >= 0.0f) &&
+			(data->av.snd_fld[15] > 0.0f) && (data->av.snd_fld[16] >= 0.0f) &&
+			(data->av.snd_fld[17] > 0.0f)) {
+			uz_im_control_set_resonant_parameters(data->objects.im_control,
+				data->av.snd_fld[13], data->av.snd_fld[14], data->av.snd_fld[15],
+				data->av.snd_fld[16], data->av.snd_fld[17]);
 		}
 	}
 
@@ -369,15 +370,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1: ACT feedback for VA speed controller */
-	if (data->rasv.va_enable_speed_control) {
+	/* Bit 4 - My_Button_1: IM FOC active */
+	if (data->rasv.im_siemens_1LA7073_enable_foc) {
 		js_status_BareToRTOS |= (1 << 4);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - My_Button_2 */
-	if (data->rasv.im_siemens_1LA7073_enable_foc) {
+	/* Bit 5 - My_Button_2: VA speed controller */
+	if (data->rasv.va_enable_speed_control) {
 		js_status_BareToRTOS |= (1 << 5);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 5);

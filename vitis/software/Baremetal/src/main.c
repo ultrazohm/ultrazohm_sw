@@ -24,9 +24,9 @@ DS_Data Global_Data = {
 		.va_disturbance_torque_Nm = 0.0f,
 		.va_enable_speed_control = false,
 		.va_acknowledge_error = false,
-		.im_siemens_1LA7073_frequency_reference_Hz = 0.0f,
-		.im_siemens_1LA7073_id_reference_A = 1.26f,
-		.im_siemens_1LA7073_iq_reference_A = 0.0f,
+		.im_siemens_1LA7073_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
+		.im_siemens_1LA7073_id_reference_A = MOTOR_Default_i_d_reference_A,
+		.im_siemens_1LA7073_iq_reference_A = MOTOR_Default_i_q_reference_A,
 		.im_siemens_1LA7073_enable_foc = false,
 		.im_siemens_1LA7073_enable_kalman_filter = false,
 		.im_siemens_1LA7073_enable_resonant_control = false,
@@ -140,23 +140,8 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
 			Global_Data.objects.va_control = va_control_init(Global_Data.av.isr_samplerate_s);
-			Global_Data.objects.im_siemens_1LA7073_control = im_siemens_1LA7073_init();
-			Global_Data.objects.im_siemens_1LA7073_foc_control = im_foc_control_init(Global_Data.av.isr_samplerate_s);
+			IM_testbench_init(&Global_Data);
 			initialize_setpoint_trajectories();
-			Global_Data.rasv.im_siemens_1LA7073_foc_parameters =
-				im_foc_control_get_parameters(Global_Data.objects.im_siemens_1LA7073_foc_control);
-			Global_Data.av.snd_fld[7] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_kp_d;
-			Global_Data.av.snd_fld[8] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_ki_d;
-			Global_Data.av.snd_fld[9] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_kp_q;
-			Global_Data.av.snd_fld[10] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.current_ki_q;
-			Global_Data.av.snd_fld[11] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.kalman_q_A2_per_s;
-			Global_Data.av.snd_fld[12] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.kalman_r_A2;
-			Global_Data.av.snd_fld[13] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_d;
-			Global_Data.av.snd_fld[14] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_gain_q;
-			Global_Data.av.snd_fld[15] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_harmonic_order;
-			Global_Data.av.snd_fld[16] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_antiwindup_gain;
-			Global_Data.av.snd_fld[17] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.resonant_voltage_limit_V;
-			Global_Data.av.snd_fld[18] = Global_Data.rasv.im_siemens_1LA7073_foc_parameters.slip_flux_minimum_Vs;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

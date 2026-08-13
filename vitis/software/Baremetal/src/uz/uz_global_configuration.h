@@ -48,7 +48,7 @@
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                       2U
 #define UZ_ADCMAX11331_MAX_INSTANCES                      0U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  5U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES               1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                        2U
@@ -71,6 +71,7 @@
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            2U
+#define UZ_IM_CONTROL_MAX_INSTANCES                      1U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES                 1U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 0U
@@ -86,7 +87,6 @@
 #define UZ_TRAJECTORY_MAX_INSTANCES                     6U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #define UZ_PMSM_CONTROL_MAX_INSTANCES                   1U
-#define UZ_U_F_CONTROL_MAX_INSTANCES                    1U
 #define UZ_NN_ACC_IP_MAX_INSTANCES                  	0U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES                   0U
 #define UZ_PRNG_MTWISTER_MAX_INSTANCES                  0U
@@ -163,7 +163,7 @@
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_PMSM_CONTROL_MAX_INSTANCES                   15U
-    #define UZ_U_F_CONTROL_MAX_INSTANCES                    10U
+    #define UZ_IM_CONTROL_MAX_INSTANCES                     10U
     #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
     #define UZ_PMSMMODEL_6PH_DQXY_MAX_INSTANCES             50U
     #define UZ_PRNG_SQUARES_MAX_INSTANCES                   50U

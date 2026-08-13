@@ -17,9 +17,8 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
-#include "uz/uz_u_f_control/uz_u_f_control.h"
+#include "uz/uz_IM_Control/uz_im_control.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
-#include "include/im_foc_control.h"
 
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
@@ -34,7 +33,11 @@ typedef struct _actualValues_ {
 	float va_control_violation_code;
 	float im_siemens_1LA7073_ia, im_siemens_1LA7073_ib, im_siemens_1LA7073_ic;
 	float im_siemens_1LA7073_vdc, im_siemens_1LA7073_speed_rpm;
-	struct uz_u_f_control_data_t im_siemens_1LA7073_uf_data;
+	struct uz_im_actual_data im_control_actual;
+	struct uz_im_reference_values im_control_reference;
+	struct uz_im_measurement_values im_control_measurements;
+	enum uz_im_control_safe_operating_region_violation im_control_violation;
+	float im_control_violation_code;
 	float im_siemens_1LA7073_id, im_siemens_1LA7073_iq;
 	float im_siemens_1LA7073_id_raw, im_siemens_1LA7073_iq_raw;
 	float im_siemens_1LA7073_flux_angle_rad, im_siemens_1LA7073_flux_magnitude_Vs;
@@ -91,7 +94,6 @@ typedef struct _referenceAndSetValues_ {
 	bool im_siemens_1LA7073_enable_foc;
 	bool im_siemens_1LA7073_enable_kalman_filter;
 	bool im_siemens_1LA7073_enable_resonant_control;
-	im_foc_control_parameters_t im_siemens_1LA7073_foc_parameters;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -108,9 +110,8 @@ typedef struct _referenceAndSetValues_ {
 typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_pmsm_control_t* va_control;
-	uz_u_f_control_t* im_siemens_1LA7073_control;
+	uz_im_control_t* im_control;
 	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
-	im_foc_control_t* im_siemens_1LA7073_foc_control;
 	uz_Trajectory_t* setpoint_trajectories[6];
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

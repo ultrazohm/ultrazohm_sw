@@ -65,7 +65,7 @@ static const error_checks_config_t va_error_checks_config = {
 	.iphase_max_A = VA_PROTECTION_MAX_PHASE_CURRENT_A,
 	.max_mechanical_speed_rpm = VA_PROTECTION_MAX_SPEED_RPM,
 };
-static const error_checks_config_t im_error_checks_config={.vdc_min_V=IM_1LA7073_VDC_MIN_V,.vdc_max_V=IM_1LA7073_VDC_MAX_V,.iphase_max_A=IM_1LA7073_PHASE_CURRENT_MAX_A,.max_mechanical_speed_rpm=IM_1LA7073_SPEED_MAX_RPM};
+static const error_checks_config_t im_error_checks_config={.vdc_min_V=MOTOR_SOR_v_dc_lower_V,.vdc_max_V=MOTOR_SOR_v_dc_upper_V,.iphase_max_A=MOTOR_SOR_i_abc_upper_A,.max_mechanical_speed_rpm=MOTOR_SOR_speed_upper_rpm};
 static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
 static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
 static uint32_t im_current_offset_samples;
@@ -121,10 +121,10 @@ void ISR_Control(void *data)
     update_adapter_d5();
 	float const encoder_mechanical_angle_rad =
 		(2.0f * UZ_PIf * (float)(Global_Data.av.incremental_encoder_d5_2_position_w_offset %
-		 IM_1LA7073_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
-		(float)IM_1LA7073_ENCODER_INCREMENTS_PER_MECHANICAL_TURN;
+		 MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
+		(float)MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN;
 	Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad =
-		fmodf(IM_1LA7073_POLE_PAIRS * encoder_mechanical_angle_rad, 2.0f * UZ_PIf);
+		fmodf(MOTOR_PolePairs * encoder_mechanical_angle_rad, 2.0f * UZ_PIf);
 	float const temperature_duty_ratio = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_pwm_duty_cycle_percent = temperature_duty_ratio * 100.0f;
 	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.inverter_temperature_pwm);
@@ -133,18 +133,18 @@ void ISR_Control(void *data)
 
 	/* The current-sensor operating point is only valid with an energized DC link.
 	 * Use 1000 consecutive valid samples; restart if the DC link drops out. */
-	if (im_current_offset_samples < IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
+	if (im_current_offset_samples < MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
 		if (isfinite(Global_Data.av.im_siemens_1LA7073_vdc) &&
-			(Global_Data.av.im_siemens_1LA7073_vdc >= IM_1LA7073_VDC_MIN_V)) {
+			(Global_Data.av.im_siemens_1LA7073_vdc >= MOTOR_SOR_v_dc_lower_V)) {
 			im_current_sum_a += Global_Data.av.adc_ltc2311_a1_ch0;
 			im_current_sum_b += Global_Data.av.adc_ltc2311_a1_ch1;
 			im_current_sum_c += Global_Data.av.adc_ltc2311_a1_ch2;
 			im_current_offset_samples++;
 
-			if (im_current_offset_samples == IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
-				im_current_offset_a = (float)(im_current_sum_a / (double)IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT);
-				im_current_offset_b = (float)(im_current_sum_b / (double)IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT);
-				im_current_offset_c = (float)(im_current_sum_c / (double)IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT);
+			if (im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
+				im_current_offset_a = (float)(im_current_sum_a / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
+				im_current_offset_b = (float)(im_current_sum_b / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
+				im_current_offset_c = (float)(im_current_sum_c / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
 			}
 		} else {
 			im_current_sum_a = 0.0;
@@ -154,7 +154,7 @@ void ISR_Control(void *data)
 		}
 	}
 
-	if (im_current_offset_samples == IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
+	if (im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
 		Global_Data.av.im_siemens_1LA7073_ia = Global_Data.av.adc_ltc2311_a1_ch0 - im_current_offset_a;
 		Global_Data.av.im_siemens_1LA7073_ib = Global_Data.av.adc_ltc2311_a1_ch1 - im_current_offset_b;
 		Global_Data.av.im_siemens_1LA7073_ic = Global_Data.av.adc_ltc2311_a1_ch2 - im_current_offset_c;
@@ -174,8 +174,7 @@ void ISR_Control(void *data)
 	current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
-		uz_u_f_control_reset(Global_Data.objects.im_siemens_1LA7073_control);
-		im_foc_control_reset(Global_Data.objects.im_siemens_1LA7073_foc_control);
+		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
 		update_va_control(false, false);
@@ -206,79 +205,38 @@ void ISR_Control(void *data)
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
         // Start: Control algorithm - only if ultrazohm is in control state
 		update_va_control(true, true);
-		struct uz_DutyCycle_t im_duty;
-		if (Global_Data.rasv.im_siemens_1LA7073_enable_foc) {
-			if (im_current_offset_samples != IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
-				im_foc_control_reset(Global_Data.objects.im_siemens_1LA7073_foc_control);
-				im_duty = (struct uz_DutyCycle_t){.DutyCycle_A = 0.5f, .DutyCycle_B = 0.5f, .DutyCycle_C = 0.5f};
-			} else {
-			im_foc_control_input_t const foc_input = {
-				.currents_A = {.a = Global_Data.av.im_siemens_1LA7073_ia,
-					.b = Global_Data.av.im_siemens_1LA7073_ib,
-					.c = Global_Data.av.im_siemens_1LA7073_ic},
-				.rotor_speed_rpm = Global_Data.av.im_siemens_1LA7073_speed_rpm,
-				.dc_link_voltage_V = Global_Data.av.im_siemens_1LA7073_vdc,
-				.id_reference_A = Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
-				.iq_reference_A = Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
-				.sampling_time_s = Global_Data.av.isr_samplerate_s,
-				.enable_kalman_filter = Global_Data.rasv.im_siemens_1LA7073_enable_kalman_filter,
-				.enable_resonant_control = Global_Data.rasv.im_siemens_1LA7073_enable_resonant_control,
-				.observer_only = false,
-			};
-			im_foc_control_output_t const foc_output =
-				im_foc_control_sample(Global_Data.objects.im_siemens_1LA7073_foc_control, foc_input);
-			im_duty = foc_output.duty;
-			Global_Data.av.im_siemens_1LA7073_id = foc_output.id_A;
-			Global_Data.av.im_siemens_1LA7073_iq = foc_output.iq_A;
-			Global_Data.av.im_siemens_1LA7073_id_raw = foc_output.id_raw_A;
-			Global_Data.av.im_siemens_1LA7073_iq_raw = foc_output.iq_raw_A;
-			Global_Data.av.im_siemens_1LA7073_flux_angle_rad = foc_output.flux_angle_rad;
-			float const flux_rotor_angle_delta = foc_output.flux_angle_rad -
-				Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad;
-			Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad =
-				atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
-			Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = foc_output.flux_magnitude_Vs;
-			Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = foc_output.rotor_electrical_frequency_Hz;
-			Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = foc_output.slip_frequency_Hz;
-			Global_Data.av.im_siemens_1LA7073_slip_percent = foc_output.slip_percent;
-			Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = foc_output.stator_frequency_Hz;
-			}
-		} else {
-			uz_u_f_control_set_frequency(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz);
-			im_duty=uz_u_f_control_sample(Global_Data.objects.im_siemens_1LA7073_control,Global_Data.av.im_siemens_1LA7073_vdc,Global_Data.av.isr_samplerate_s);
-			Global_Data.av.im_siemens_1LA7073_uf_data=*uz_u_f_control_get_data(Global_Data.objects.im_siemens_1LA7073_control);
-			if (im_current_offset_samples == IM_1LA7073_CURRENT_OFFSET_SAMPLE_COUNT) {
-				im_foc_control_input_t const observer_input = {
-					.currents_A = {.a = Global_Data.av.im_siemens_1LA7073_ia,
-						.b = Global_Data.av.im_siemens_1LA7073_ib,
-						.c = Global_Data.av.im_siemens_1LA7073_ic},
-					.rotor_speed_rpm = Global_Data.av.im_siemens_1LA7073_speed_rpm,
-					.dc_link_voltage_V = Global_Data.av.im_siemens_1LA7073_vdc,
-					.id_reference_A = Global_Data.rasv.im_siemens_1LA7073_id_reference_A,
-					.iq_reference_A = Global_Data.rasv.im_siemens_1LA7073_iq_reference_A,
-					.sampling_time_s = Global_Data.av.isr_samplerate_s,
-					.enable_kalman_filter = Global_Data.rasv.im_siemens_1LA7073_enable_kalman_filter,
-					.enable_resonant_control = false,
-					.observer_only = true,
-				};
-				im_foc_control_output_t const observer_output =
-					im_foc_control_sample(Global_Data.objects.im_siemens_1LA7073_foc_control, observer_input);
-				Global_Data.av.im_siemens_1LA7073_id = observer_output.id_A;
-				Global_Data.av.im_siemens_1LA7073_iq = observer_output.iq_A;
-				Global_Data.av.im_siemens_1LA7073_id_raw = observer_output.id_raw_A;
-				Global_Data.av.im_siemens_1LA7073_iq_raw = observer_output.iq_raw_A;
-				Global_Data.av.im_siemens_1LA7073_flux_angle_rad = observer_output.flux_angle_rad;
-				Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = observer_output.flux_magnitude_Vs;
-				Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = observer_output.rotor_electrical_frequency_Hz;
-				Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = observer_output.slip_frequency_Hz;
-				Global_Data.av.im_siemens_1LA7073_slip_percent = observer_output.slip_percent;
-				Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = observer_output.stator_frequency_Hz;
-				float const flux_rotor_angle_delta = observer_output.flux_angle_rad -
-					Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad;
-				Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad =
-					atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
-			}
+		struct uz_im_measurement_values const im_measurements = {
+			.i_abc_A = {.a = Global_Data.av.im_siemens_1LA7073_ia, .b = Global_Data.av.im_siemens_1LA7073_ib, .c = Global_Data.av.im_siemens_1LA7073_ic},
+			.v_abc_V = {0}, .v_dc_V = Global_Data.av.im_siemens_1LA7073_vdc, .i_dc_A = 0.0f,
+			.rotor_speed_rpm = Global_Data.av.im_siemens_1LA7073_speed_rpm,
+			.rotor_mechanical_angle_rad = encoder_mechanical_angle_rad,
+		};
+		uz_im_control_enable(Global_Data.objects.im_control,
+			im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
+		struct uz_DutyCycle_t const im_duty = uz_im_control_sample_duty(Global_Data.objects.im_control,
+			im_measurements, 0.0f,
+			(uz_3ph_dq_t){.d = Global_Data.rasv.im_siemens_1LA7073_id_reference_A, .q = Global_Data.rasv.im_siemens_1LA7073_iq_reference_A},
+			Global_Data.rasv.im_siemens_1LA7073_frequency_reference_Hz);
+		Global_Data.av.im_control_actual = *uz_im_control_get_actual_data(Global_Data.objects.im_control);
+		Global_Data.av.im_control_reference = *uz_im_control_get_reference_values(Global_Data.objects.im_control);
+		Global_Data.av.im_control_measurements = *uz_im_control_get_im_measurement_values(Global_Data.objects.im_control);
+		Global_Data.av.im_control_violation = uz_im_control_get_safe_operating_area_violation(Global_Data.objects.im_control);
+		Global_Data.av.im_control_violation_code = (float)Global_Data.av.im_control_actual.safe_operating_region_status;
+		if (Global_Data.av.im_control_violation != uz_im_control_no_violation) {
+			ultrazohm_state_machine_set_error(true);
 		}
+		Global_Data.av.im_siemens_1LA7073_id = Global_Data.av.im_control_actual.i_dq_A.d;
+		Global_Data.av.im_siemens_1LA7073_iq = Global_Data.av.im_control_actual.i_dq_A.q;
+		Global_Data.av.im_siemens_1LA7073_id_raw = Global_Data.av.im_control_actual.i_dq_raw_A.d;
+		Global_Data.av.im_siemens_1LA7073_iq_raw = Global_Data.av.im_control_actual.i_dq_raw_A.q;
+		Global_Data.av.im_siemens_1LA7073_flux_angle_rad = Global_Data.av.im_control_actual.rotor_flux_angle_rad;
+		Global_Data.av.im_siemens_1LA7073_flux_magnitude_Vs = Global_Data.av.im_control_actual.rotor_flux_magnitude_Vs;
+		Global_Data.av.im_siemens_1LA7073_rotor_electrical_angle_rad = Global_Data.av.im_control_actual.rotor_electrical_angle_rad;
+		Global_Data.av.im_siemens_1LA7073_flux_rotor_angle_difference_rad = Global_Data.av.im_control_actual.flux_rotor_angle_difference_rad;
+		Global_Data.av.im_siemens_1LA7073_rotor_electrical_frequency_Hz = Global_Data.av.im_control_actual.rotor_electrical_frequency_Hz;
+		Global_Data.av.im_siemens_1LA7073_slip_frequency_Hz = Global_Data.av.im_control_actual.slip_frequency_Hz;
+		Global_Data.av.im_siemens_1LA7073_slip_percent = Global_Data.av.im_control_actual.slip_percent;
+		Global_Data.av.im_siemens_1LA7073_stator_frequency_Hz = Global_Data.av.im_control_actual.stator_frequency_Hz;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=im_duty.DutyCycle_A;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=im_duty.DutyCycle_B;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3=im_duty.DutyCycle_C;
@@ -288,7 +246,7 @@ void ISR_Control(void *data)
     }
     else if (current_state == error_state)
     {
-		im_foc_control_reset(Global_Data.objects.im_siemens_1LA7073_foc_control);
+		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
 		update_va_control(false, false);

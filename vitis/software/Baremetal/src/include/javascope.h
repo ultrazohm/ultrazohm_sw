@@ -96,6 +96,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_IM_FOC_Resonant_Antiwindup_Gain,
 	JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V,
 	JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs,
+	JSSD_FLOAT_IM_FOC_SOR_Status,
 /* Project Wizard BEGIN: javascope_slowdata */
 /* Project Wizard END: javascope_slowdata */
 	JSSD_ENDMARKER
@@ -225,6 +226,7 @@ enum gui_button_mapping {
 	IM_FOC_Resonant_Voltage_Limit,
 	IM_FOC_Slip_Flux_Minimum,
 	IM_Inverter_Temperature,
+	IM_FOC_SOR_Status,
 	Error_Code,
 	RCV_FLD_ENDMARKER
 
@@ -253,14 +255,15 @@ enum gui_button_mapping {
 	Vs,
 	degC,
 	-,
+	-,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	VA_Speed__OFF_Current,
 	IM_FOC__OFF_UF,
+	VA_Speed__OFF_Current,
 	IM_Kalman_Filter,
 	IM_Resonant_6th,
 	Unused_5,
@@ -295,6 +298,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V,
 	JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs,
 	JSSD_FLOAT_Inverter_Temperature_DegC,
+	JSSD_FLOAT_IM_FOC_SOR_Status,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

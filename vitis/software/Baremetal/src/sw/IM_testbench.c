@@ -35,6 +35,18 @@ void IM_testbench_toggle_control_mode(DS_Data *data)
 {
     uz_assert_not_NULL(data);
     data->rasv.im_enable_foc = !data->rasv.im_enable_foc;
+    if (data->rasv.im_enable_foc) {
+        /* FOC always starts with its configured magnetizing current. Keep the
+         * trajectory state synchronized so no pending ramp can overwrite it. */
+        setpoint_trajectory_state_t * const i_d_trajectory = &data->objects.setpoint_trajectories[3];
+        i_d_trajectory->start = MOTOR_Default_i_d_reference_A;
+        i_d_trajectory->target = MOTOR_Default_i_d_reference_A;
+        i_d_trajectory->active_target = MOTOR_Default_i_d_reference_A;
+        uz_Trajectory_Stop(i_d_trajectory->instance);
+        uz_Trajectory_Reset(i_d_trajectory->instance);
+        data->rasv.im_i_d_reference_A = MOTOR_Default_i_d_reference_A;
+        data->av.snd_fld[4] = MOTOR_Default_i_d_reference_A;
+    }
     uz_im_control_set_mode(data->objects.im_control, data->rasv.im_enable_foc
         ? uz_im_control_mode_foc : uz_im_control_mode_u_f);
 }
@@ -55,12 +67,45 @@ void IM_testbench_toggle_resonant_control(DS_Data *data)
         data->rasv.im_enable_resonant_control);
 }
 
+static void reset_setpoints_and_trajectories(DS_Data *data)
+{
+    data->rasv.va_speed_reference_rpm = 0.0f;
+    data->rasv.va_current_reference_A = (uz_3ph_dq_t){0};
+    data->rasv.va_disturbance_torque_Nm = 0.0f;
+    data->rasv.va_acknowledge_error = false;
+    data->rasv.im_frequency_reference_Hz = 0.0f;
+    data->rasv.im_i_d_reference_A = 0.0f;
+    data->rasv.im_i_q_reference_A = 0.0f;
+    for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
+        setpoint_trajectory_state_t * const state = &data->objects.setpoint_trajectories[trajectory];
+        state->start = 0.0f;
+        state->target = 0.0f;
+        state->active_target = 0.0f;
+        data->av.snd_fld[trajectory + 1U] = 0.0f;
+        uz_Trajectory_Stop(state->instance);
+        uz_Trajectory_Reset(state->instance);
+    }
+}
+
+void IM_testbench_reset_idle(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    reset_setpoints_and_trajectories(data);
+    uz_pmsm_control_reset(data->objects.va_control);
+    /* Reset dynamic controller/observer states, but keep the selected mode and
+     * feature switches so a subsequent start uses the user's selection. */
+    uz_im_control_reset(data->objects.im_control);
+}
+
 void IM_testbench_reset(DS_Data *data)
 {
     uz_assert_not_NULL(data);
+    reset_setpoints_and_trajectories(data);
+    data->rasv.va_enable_speed_control = false;
     data->rasv.im_enable_foc = false;
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
+    uz_pmsm_control_reset(data->objects.va_control);
     uz_im_control_acknowledge_and_reset_error(data->objects.im_control);
     uz_im_control_set_mode(data->objects.im_control, uz_im_control_mode_u_f);
     uz_im_control_set_observer(data->objects.im_control, uz_im_control_observer_rotor_flux_model);

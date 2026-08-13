@@ -69,7 +69,7 @@ static const struct uz_PWM_duty_freq_detection_config_t inverter_temperature_pwm
 
 static void initialize_setpoint_trajectories(void)
 {
-	const float initial_values[6] = {
+	const float initial_values[SETPOINT_TRAJECTORY_COUNT] = {
 		Global_Data.rasv.va_speed_reference_rpm,
 		Global_Data.rasv.va_current_reference_A.d,
 		Global_Data.rasv.va_current_reference_A.q,
@@ -77,7 +77,7 @@ static void initialize_setpoint_trajectories(void)
 		Global_Data.rasv.im_i_q_reference_A,
 		Global_Data.rasv.im_frequency_reference_Hz,
 	};
-	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+	for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
 		struct uz_Trajectory_config config = {
 			.selection_interpolation = Linear,
 			.selection_XAxis = Seconds,
@@ -94,10 +94,12 @@ static void initialize_setpoint_trajectories(void)
 		/* The trajectory supplies a normalized remaining-distance factor.
 		 * The ISR stops it at zero before uz_Trajectory's return segment. */
 		config.Sample_Amplitude_Y[0] = 1.0f;
-		Global_Data.rasv.setpoint_ramp_start[trajectory] = initial_values[trajectory];
-		Global_Data.rasv.setpoint_ramp_target[trajectory] = initial_values[trajectory];
-		Global_Data.rasv.setpoint_ramp_active_target[trajectory] = initial_values[trajectory];
-		Global_Data.objects.setpoint_trajectories[trajectory] = uz_Trajectory_init(config);
+		Global_Data.objects.setpoint_trajectories[trajectory] = (setpoint_trajectory_state_t){
+			.instance = uz_Trajectory_init(config),
+			.start = initial_values[trajectory],
+			.target = initial_values[trajectory],
+			.active_target = initial_values[trajectory],
+		};
 	}
 }
 

@@ -292,6 +292,8 @@
 /* Testbench defaults shared by all available motor configurations. */
 
 #define MOTOR_CURRENT_OFFSET_SAMPLE_COUNT             	1000U
+/** Maximum accepted standard deviation of each current channel during offset calibration. */
+#define MOTOR_CURRENT_OFFSET_MAX_STDDEV_A              	0.05f
 #define MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN  	5000U
 #define MOTOR_Speed_controller_torque_max_Nm          	8.0f
 #define MOTOR_Minimum_observer_flux_Vs                 	0.02f

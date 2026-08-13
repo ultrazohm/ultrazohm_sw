@@ -20,6 +20,16 @@
 #include "uz/uz_IM_Control/uz_im_control.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
 
+#define SETPOINT_TRAJECTORY_COUNT 6U
+
+/** Runtime state of one JavaScope-controlled setpoint trajectory. */
+typedef struct {
+	uz_Trajectory_t *instance;
+	float start;
+	float target;
+	float active_target;
+} setpoint_trajectory_state_t;
+
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
@@ -38,6 +48,11 @@ typedef struct _actualValues_ {
 	struct uz_im_measurement_values im_control_measurements;
 	enum uz_im_control_safe_operating_region_violation im_control_violation;
 	float im_control_violation_code;
+	float im_current_offset_a_A, im_current_offset_b_A, im_current_offset_c_A;
+	float im_current_offset_progress_percent;
+	float im_current_offset_max_stddev_A;
+	float im_current_sum_error_A;
+	float im_current_offset_valid;
 	float inverter_temperature_pwm_duty_cycle_percent;
 	float inverter_temperature_pwm_frequency_Hz;
 	float inverter_temperature_degC;
@@ -77,9 +92,6 @@ typedef struct _referenceAndSetValues_ {
 	bool va_enable_speed_control;
 	bool va_acknowledge_error;
 	bool setpoint_trajectories_enabled;
-	float setpoint_ramp_start[6];
-	float setpoint_ramp_target[6];
-	float setpoint_ramp_active_target[6];
 	float im_frequency_reference_Hz;
 	float im_i_d_reference_A;
 	float im_i_q_reference_A;
@@ -104,7 +116,7 @@ typedef struct{
 	uz_pmsm_control_t* va_control;
 	uz_im_control_t* im_control;
 	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
-	uz_Trajectory_t* setpoint_trajectories[6];
+	setpoint_trajectory_state_t setpoint_trajectories[SETPOINT_TRAJECTORY_COUNT];
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_0;

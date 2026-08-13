@@ -101,6 +101,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C] = &data->av.inverter_temperature_degC;
 	js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_DUTY_CYCLE_PERCENT] = &data->av.inverter_temperature_pwm_duty_cycle_percent;
 	js_ch_observable[JSO_INVERTER_TEMPERATURE_PWM_FREQUENCY_HZ] = &data->av.inverter_temperature_pwm_frequency_Hz;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_A_A] = &data->av.im_current_offset_a_A;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_B_A] = &data->av.im_current_offset_b_A;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_C_A] = &data->av.im_current_offset_c_A;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_PROGRESS_PERCENT] = &data->av.im_current_offset_progress_percent;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_MAX_STDDEV_A] = &data->av.im_current_offset_max_stddev_A;
+	js_ch_observable[JSO_IM_CURRENT_SUM_ERROR_A] = &data->av.im_current_sum_error_A;
+	js_ch_observable[JSO_IM_CURRENT_OFFSET_VALID] = &data->av.im_current_offset_valid;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
@@ -151,6 +158,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V] = &data->av.snd_fld[17];
 	js_slowDataArray[JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs] = &data->av.snd_fld[18];
 	js_slowDataArray[JSSD_FLOAT_IM_FOC_SOR_Status] = &data->av.im_control_violation_code;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_A_A] = &data->av.im_current_offset_a_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_B_A] = &data->av.im_current_offset_b_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_C_A] = &data->av.im_current_offset_c_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Progress_Percent] = &data->av.im_current_offset_progress_percent;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Max_Stddev_A] = &data->av.im_current_offset_max_stddev_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Sum_Error_A] = &data->av.im_current_sum_error_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_Offset_Valid] = &data->av.im_current_offset_valid;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 

@@ -54,6 +54,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 static void update_va_control(bool enable_output, bool monitor_dc_undervoltage);
+static void reset_im_current_offset_calibration(void);
 
 /* AXI-GPIO bit index matching the bitstream signal DIG_13. */
 #define D1_DIG_13_PIN_ZERO_BASED 13U
@@ -68,8 +69,25 @@ static const error_checks_config_t va_error_checks_config = {
 static const error_checks_config_t im_error_checks_config={.vdc_min_V=MOTOR_SOR_v_dc_lower_V,.vdc_max_V=MOTOR_SOR_v_dc_upper_V,.iphase_max_A=MOTOR_SOR_i_abc_upper_A,.max_mechanical_speed_rpm=MOTOR_SOR_speed_upper_rpm};
 static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
 static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
+static double im_current_square_sum_a,im_current_square_sum_b,im_current_square_sum_c;
 static uint32_t im_current_offset_samples;
 static bool setpoint_trajectories_enabled_last = true;
+static bool idle_reset_done;
+static bool im_pwm_tristated_for_calibration;
+
+static void reset_im_current_offset_calibration(void)
+{
+	im_current_offset_a = 0.0f;
+	im_current_offset_b = 0.0f;
+	im_current_offset_c = 0.0f;
+	im_current_sum_a = 0.0;
+	im_current_sum_b = 0.0;
+	im_current_sum_c = 0.0;
+	im_current_square_sum_a = 0.0;
+	im_current_square_sum_b = 0.0;
+	im_current_square_sum_c = 0.0;
+	im_current_offset_samples = 0U;
+}
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -89,40 +107,36 @@ void ISR_Control(void *data)
 		&Global_Data.rasv.im_frequency_reference_Hz,
 	};
 	if (setpoint_trajectories_enabled_last && !Global_Data.rasv.setpoint_trajectories_enabled) {
-		for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
-			uz_Trajectory_Stop(Global_Data.objects.setpoint_trajectories[trajectory]);
-			uz_Trajectory_Reset(Global_Data.objects.setpoint_trajectories[trajectory]);
+		for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
+			uz_Trajectory_Stop(Global_Data.objects.setpoint_trajectories[trajectory].instance);
+			uz_Trajectory_Reset(Global_Data.objects.setpoint_trajectories[trajectory].instance);
 		}
 	}
 	setpoint_trajectories_enabled_last = Global_Data.rasv.setpoint_trajectories_enabled;
-	for (uint32_t trajectory = 0U; trajectory < 6U; trajectory++) {
+	for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
+		setpoint_trajectory_state_t * const state = &Global_Data.objects.setpoint_trajectories[trajectory];
 		if (!Global_Data.rasv.setpoint_trajectories_enabled) {
-			Global_Data.rasv.setpoint_ramp_start[trajectory] =
-				Global_Data.rasv.setpoint_ramp_target[trajectory];
-			Global_Data.rasv.setpoint_ramp_active_target[trajectory] =
-				Global_Data.rasv.setpoint_ramp_target[trajectory];
-			*setpoints[trajectory] = Global_Data.rasv.setpoint_ramp_target[trajectory];
+			state->start = state->target;
+			state->active_target = state->target;
+			*setpoints[trajectory] = state->target;
 			continue;
 		}
-		if (Global_Data.rasv.setpoint_ramp_target[trajectory] !=
-			Global_Data.rasv.setpoint_ramp_active_target[trajectory]) {
+		if (state->target != state->active_target) {
 			/* Only the ISR modifies the active ramp. A new command therefore
 			 * always starts exactly at the last value emitted by the ISR. */
-			Global_Data.rasv.setpoint_ramp_start[trajectory] = *setpoints[trajectory];
-			Global_Data.rasv.setpoint_ramp_active_target[trajectory] =
-				Global_Data.rasv.setpoint_ramp_target[trajectory];
-			uz_Trajectory_Reset(Global_Data.objects.setpoint_trajectories[trajectory]);
-			uz_Trajectory_Start(Global_Data.objects.setpoint_trajectories[trajectory]);
+			state->start = *setpoints[trajectory];
+			state->active_target = state->target;
+			uz_Trajectory_Reset(state->instance);
+			uz_Trajectory_Start(state->instance);
 		}
-		float const ramp_factor = uz_Trajectory_Step(Global_Data.objects.setpoint_trajectories[trajectory]);
+		float const ramp_factor = uz_Trajectory_Step(state->instance);
 		if (ramp_factor <= 0.0f) {
 			/* A short uz_Trajectory repeats back to its first sample after the
 			 * final point. Stop at the target before that return can begin. */
-			uz_Trajectory_Stop(Global_Data.objects.setpoint_trajectories[trajectory]);
+			uz_Trajectory_Stop(state->instance);
 		}
-		*setpoints[trajectory] = Global_Data.rasv.setpoint_ramp_active_target[trajectory] + ramp_factor *
-			(Global_Data.rasv.setpoint_ramp_start[trajectory] -
-			 Global_Data.rasv.setpoint_ramp_active_target[trajectory]);
+		*setpoints[trajectory] = state->active_target + ramp_factor *
+			(state->start - state->active_target);
 	}
 /* Project Wizard BEGIN: adc_readout */
     analog_adc_data = uz_dataMover_update_buffer_and_get_data();
@@ -144,27 +158,43 @@ void ISR_Control(void *data)
 	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
 	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
+	platform_state_t current_state = ultrazohm_state_machine_get_state();
+	if (current_state != idle_state) {
+		im_pwm_tristated_for_calibration = false;
+	}
 
-	/* The current-sensor operating point is only valid with an energized DC link.
-	 * Use 1000 consecutive valid samples; restart if the DC link drops out. */
+	/* In idle the DC link is energized while the IM PWM outputs are tristated.
+	 * This is the defined current-free state for automatic offset calibration. */
 	if (im_current_offset_samples < MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
-		if (isfinite(Global_Data.av.im_v_dc_V) &&
+		if ((current_state == idle_state) && im_pwm_tristated_for_calibration
+			&& isfinite(Global_Data.av.im_v_dc_V) &&
 			(Global_Data.av.im_v_dc_V >= MOTOR_SOR_v_dc_lower_V)) {
 			im_current_sum_a += Global_Data.av.adc_ltc2311_a1_ch0;
 			im_current_sum_b += Global_Data.av.adc_ltc2311_a1_ch1;
 			im_current_sum_c += Global_Data.av.adc_ltc2311_a1_ch2;
+			im_current_square_sum_a += (double)Global_Data.av.adc_ltc2311_a1_ch0 * Global_Data.av.adc_ltc2311_a1_ch0;
+			im_current_square_sum_b += (double)Global_Data.av.adc_ltc2311_a1_ch1 * Global_Data.av.adc_ltc2311_a1_ch1;
+			im_current_square_sum_c += (double)Global_Data.av.adc_ltc2311_a1_ch2 * Global_Data.av.adc_ltc2311_a1_ch2;
 			im_current_offset_samples++;
 
 			if (im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) {
-				im_current_offset_a = (float)(im_current_sum_a / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
-				im_current_offset_b = (float)(im_current_sum_b / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
-				im_current_offset_c = (float)(im_current_sum_c / (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT);
+				double const sample_count = (double)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT;
+				double const mean_a = im_current_sum_a / sample_count;
+				double const mean_b = im_current_sum_b / sample_count;
+				double const mean_c = im_current_sum_c / sample_count;
+				im_current_offset_a = (float)mean_a;
+				im_current_offset_b = (float)mean_b;
+				im_current_offset_c = (float)mean_c;
+				float const variance_a = fmaxf(0.0f, (float)(im_current_square_sum_a / sample_count - mean_a * mean_a));
+				float const variance_b = fmaxf(0.0f, (float)(im_current_square_sum_b / sample_count - mean_b * mean_b));
+				float const variance_c = fmaxf(0.0f, (float)(im_current_square_sum_c / sample_count - mean_c * mean_c));
+				Global_Data.av.im_current_offset_max_stddev_A = sqrtf(fmaxf(variance_a, fmaxf(variance_b, variance_c)));
+				if (Global_Data.av.im_current_offset_max_stddev_A > MOTOR_CURRENT_OFFSET_MAX_STDDEV_A) {
+					reset_im_current_offset_calibration();
+				}
 			}
 		} else {
-			im_current_sum_a = 0.0;
-			im_current_sum_b = 0.0;
-			im_current_sum_c = 0.0;
-			im_current_offset_samples = 0U;
+			reset_im_current_offset_calibration();
 		}
 	}
 
@@ -178,9 +208,15 @@ void ISR_Control(void *data)
 		Global_Data.av.im_i_b_A = 0.0f;
 		Global_Data.av.im_i_c_A = 0.0f;
 	}
+	Global_Data.av.im_current_offset_a_A = im_current_offset_a;
+	Global_Data.av.im_current_offset_b_A = im_current_offset_b;
+	Global_Data.av.im_current_offset_c_A = im_current_offset_c;
+	Global_Data.av.im_current_offset_progress_percent = 100.0f * (float)im_current_offset_samples /
+		(float)MOTOR_CURRENT_OFFSET_SAMPLE_COUNT;
+	Global_Data.av.im_current_offset_valid = (im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT) ? 1.0f : 0.0f;
+	Global_Data.av.im_current_sum_error_A = Global_Data.av.im_i_a_A + Global_Data.av.im_i_b_A + Global_Data.av.im_i_c_A;
 	Global_Data.av.im_speed_rpm=-Global_Data.av.va_control_actual.speed_in_rpm;
 
-    platform_state_t current_state = ultrazohm_state_machine_get_state();
 	bool const monitor_dc_undervoltage =
 		(current_state == running_state) || (current_state == control_state);
 	(void)error_checks_step(&Global_Data.av, &va_error_checks_config, monitor_dc_undervoltage);
@@ -188,6 +224,10 @@ void ISR_Control(void *data)
 	current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
     {
+		if (!idle_reset_done) {
+			IM_testbench_reset_idle(&Global_Data);
+			idle_reset_done = true;
+		}
 		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);
@@ -202,19 +242,24 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = 0.5f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: idle_state isr_actions */
+		im_pwm_tristated_for_calibration = true;
     }
     else if (current_state == running_state)
     {
+		idle_reset_done = false;
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
 		update_va_control(false, true);
         /* Project Wizard BEGIN: running_state isr_actions */
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0, false, false, false);
+		bool const im_offset_valid = im_current_offset_samples == MOTOR_CURRENT_OFFSET_SAMPLE_COUNT;
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_0,
+			!im_offset_valid, !im_offset_valid, !im_offset_valid);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
 /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
     {
+		idle_reset_done = false;
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, true);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, true);
         // Start: Control algorithm - only if ultrazohm is in control state
@@ -248,6 +293,7 @@ void ISR_Control(void *data)
     }
     else if (current_state == error_state)
     {
+		idle_reset_done = false;
 		uz_im_control_enable(Global_Data.objects.im_control, false);
 		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_adapter_d2, false);
 		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, D1_DIG_13_PIN_ZERO_BASED, false);

@@ -52,6 +52,13 @@ enum JS_OberservableData {
 	JSO_INVERTER_TEMPERATURE_DEG_C,
 	JSO_INVERTER_TEMPERATURE_PWM_DUTY_CYCLE_PERCENT,
 	JSO_INVERTER_TEMPERATURE_PWM_FREQUENCY_HZ,
+	JSO_IM_CURRENT_OFFSET_A_A,
+	JSO_IM_CURRENT_OFFSET_B_A,
+	JSO_IM_CURRENT_OFFSET_C_A,
+	JSO_IM_CURRENT_OFFSET_PROGRESS_PERCENT,
+	JSO_IM_CURRENT_OFFSET_MAX_STDDEV_A,
+	JSO_IM_CURRENT_SUM_ERROR_A,
+	JSO_IM_CURRENT_OFFSET_VALID,
 	JSO_ENDMARKER
 };
 
@@ -97,6 +104,13 @@ enum JS_SlowData {
 	JSSD_FLOAT_IM_FOC_Resonant_Voltage_Limit_V,
 	JSSD_FLOAT_IM_FOC_Slip_Flux_Minimum_Vs,
 	JSSD_FLOAT_IM_FOC_SOR_Status,
+	JSSD_FLOAT_IM_Current_Offset_A_A,
+	JSSD_FLOAT_IM_Current_Offset_B_A,
+	JSSD_FLOAT_IM_Current_Offset_C_A,
+	JSSD_FLOAT_IM_Current_Offset_Progress_Percent,
+	JSSD_FLOAT_IM_Current_Offset_Max_Stddev_A,
+	JSSD_FLOAT_IM_Current_Sum_Error_A,
+	JSSD_FLOAT_IM_Current_Offset_Valid,
 /* Project Wizard BEGIN: javascope_slowdata */
 /* Project Wizard END: javascope_slowdata */
 	JSSD_ENDMARKER
@@ -266,7 +280,7 @@ enum gui_button_mapping {
 	VA_Speed__OFF_Current,
 	IM_Kalman_Filter,
 	IM_Resonant_6th,
-	Unused_5,
+	Enable_Trajectories,
 	Unused_6,
 	Unused_7,
 	Unused_8,

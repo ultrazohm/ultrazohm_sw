@@ -304,6 +304,11 @@ enum gui_button_mapping {
 	JSSD_FLOAT_IM_Phase_Current_Sum_Violation,
 	JSSD_FLOAT_IM_Voltage_Vector_Saturated,
 	JSSD_FLOAT_Error_Code,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
+	JSSD_ZEROVALUE,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

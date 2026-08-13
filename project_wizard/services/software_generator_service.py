@@ -338,6 +338,7 @@ class SoftwareGenerator:
         datamover_array_length = max(2, sum(stream["channel_count"] for stream in analog_adc_offsets.values()))
         endat_instances = 0
         ssi_instances = 0
+        default_axi_gpio_slots: list[str] = []
         pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
         pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
         reference_and_set_values.extend(half_bridge_duty_cycle_fields(pwm_2l_instance_count, pwm_3l_enabled))
@@ -689,6 +690,9 @@ class SoftwareGenerator:
                     slot_content[slot].source_definitions.append(
                         self.renderer.render_file(self.driver_template("uz_axi_gpio", "source"), context).rstrip()
                     )
+                    driver_mode = driver_config.get(f"{context['slot_lower']}_axi_gpio", {}).get("mode", "default")
+                    if driver_mode != "custom":
+                        default_axi_gpio_slots.append(slot)
                     objects.append(f"\tuz_axi_gpio_t* axi_gpio_{context['slot_lower']};")
                     actual_values.append(f"\tuint32_t io_card_{context['slot_lower']}_state;")
                     main_init.append(
@@ -819,6 +823,8 @@ class SoftwareGenerator:
         generated_files["sw/project_wizard_visualization.c"] = self.renderer.render_file(
             "software/project_wizard_visualization.c.tpl", visualization_context
         ).rstrip() + "\n"
+        generated_files["include/project_wizard_io.h"] = project_wizard_io_header(default_axi_gpio_slots)
+        generated_files["sw/project_wizard_io.c"] = project_wizard_io_source(default_axi_gpio_slots)
         return SoftwarePlan(
             slot_content=slot_content,
             generated_files=generated_files,
@@ -1524,6 +1530,99 @@ def driver_instance_values(
     if configured.get("mode") != "custom":
         configured = {}
     return {field.id: configured.get(field.id, field.default) for field in fields}
+
+
+def project_wizard_io_header(slots: list[str]) -> str:
+    slot_entries = ",\n".join(f"    AXI_GPIO_SLOT_{slot}" for slot in slots) or "    AXI_GPIO_SLOT_NONE = 0"
+    pin_entries = ",\n".join(f"    DIG_{index:02d} = {index}U" for index in range(30))
+    return f"""/*
+ * Project Wizard generated file.
+ *
+ * This file is fully owned by Project Wizard code generation.
+ * Manual changes may be overwritten the next time software files are generated.
+ */
+#pragma once
+
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef enum {{
+    LOW = false,
+    HIGH = true
+}} project_wizard_io_level_t;
+
+typedef enum {{
+{pin_entries}
+}} project_wizard_dig_pin_t;
+
+typedef enum {{
+{slot_entries}
+}} project_wizard_axi_gpio_slot_t;
+
+bool project_wizard_io_read(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin);
+void project_wizard_io_write(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin, project_wizard_io_level_t level);
+void project_wizard_io_set(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin);
+void project_wizard_io_clear(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin);
+"""
+
+
+def project_wizard_io_source(slots: list[str]) -> str:
+    cases = "\n".join(
+        f"    case AXI_GPIO_SLOT_{slot}:\n        return Global_Data.objects.axi_gpio_{slot.lower()};"
+        for slot in slots
+    )
+    return f"""/*
+ * Project Wizard generated file.
+ *
+ * This file is fully owned by Project Wizard code generation.
+ * Manual changes may be overwritten the next time software files are generated.
+ */
+#include "../include/project_wizard_io.h"
+
+#include <stddef.h>
+
+#include "../globalData.h"
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+
+extern DS_Data Global_Data;
+
+static uz_axi_gpio_t* project_wizard_io_slot_to_gpio(project_wizard_axi_gpio_slot_t slot)
+{{
+    switch (slot) {{
+{cases}
+    default:
+        return NULL;
+    }}
+}}
+
+bool project_wizard_io_read(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin)
+{{
+    uz_axi_gpio_t* gpio = project_wizard_io_slot_to_gpio(slot);
+    if (gpio == NULL) {{
+        return false;
+    }}
+    return uz_axi_gpio_read_pin_zero_based(gpio, (uint32_t)pin);
+}}
+
+void project_wizard_io_write(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin, project_wizard_io_level_t level)
+{{
+    uz_axi_gpio_t* gpio = project_wizard_io_slot_to_gpio(slot);
+    if (gpio == NULL) {{
+        return;
+    }}
+    uz_axi_gpio_write_pin_zero_based(gpio, (uint32_t)pin, level == HIGH);
+}}
+
+void project_wizard_io_set(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin)
+{{
+    project_wizard_io_write(slot, pin, HIGH);
+}}
+
+void project_wizard_io_clear(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin)
+{{
+    project_wizard_io_write(slot, pin, LOW);
+}}
+"""
 
 
 def pwm_2l_config_fields() -> list[DriverConfigField]:

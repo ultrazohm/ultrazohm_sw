@@ -93,11 +93,7 @@ Minimum `vivado` shape:
     {
       "name": "AXI4_Lite",
       "path_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite",
-      "addr_seg_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite/reg0",
-      "range": "0x00010000",
-      "offsets": {
-        "A1": "0x80000000"
-      }
+      "addr_seg_template": "uz_digital_adapter/{slot}_adapter/ip_instance/AXI4_Lite/reg0"
     }
   ],
   "constraints": {
@@ -111,6 +107,12 @@ For option-based cards, put the same `vivado` shape inside each selectable
 choice. The GUI stores configurable trigger sources as
 `<option_id>_trigger_source`; if the value has no slash, the generator prefixes
 it with `uz_system/`.
+
+AXI interfaces are connected and assigned by the generated TCL with Vivado's
+automatic address assignment. Card definitions provide the interface pin path in
+`path_template` and the address segment in `addr_seg_template`; they do not
+define fixed address offsets or ranges. Software drivers use the generated
+`xparameters.h` macros to pick up the final addresses.
 
 Generated signal path for an external pin:
 

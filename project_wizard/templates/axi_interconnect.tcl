@@ -317,8 +317,8 @@ proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier local_smartconnect
   uz_pw_compact_upstream_mi_connections $::uz_pw_upstream_smartconnect
 }
 
-{% if has_no_adapter_slots %}
-{% for slot in no_adapter_slots %}
+{% if has_stale_axi_cleanup_slots %}
+{% for slot in stale_axi_cleanup_slots %}
 set uz_pw_upstream_smartconnect {{ slot.upstream_smartconnect }}
 if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
   puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for {{ slot.slot }}."

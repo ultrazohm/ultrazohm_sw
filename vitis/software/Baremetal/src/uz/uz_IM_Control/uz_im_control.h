@@ -2,6 +2,7 @@
 #define UZ_IM_CONTROL_H
 
 #include <stdbool.h>
+#include <stdint.h>
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz_IM_config/uz_IM_config.h"
@@ -22,19 +23,44 @@ enum uz_im_control_observer {
 
 /** @brief Latched safe-operating-region violations. */
 enum uz_im_control_safe_operating_region_violation {
-    uz_im_control_no_violation = 0,
-    uz_im_control_speed_violation,
-    uz_im_control_phase_current_violation,
-    uz_im_control_dc_link_voltage_violation,
-    uz_im_control_observer_violation
+    uz_im_control_no_violation = 0,          /**< No violation. */
+    uz_im_control_underspeed = 1,            /**< Mechanical speed below its lower bound. */
+    uz_im_control_overspeed = 2,             /**< Mechanical speed above its upper bound. */
+    uz_im_control_dc_overvoltage = 3,        /**< DC-link voltage above its upper bound. */
+    uz_im_control_dc_undervoltage = 4,       /**< DC-link voltage below its lower bound. */
+    uz_im_control_dc_overcurrent = 5,        /**< DC-link current above its upper bound. */
+    uz_im_control_dc_undercurrent = 6,       /**< DC-link current below its lower bound. */
+    uz_im_control_i_d_overcurrent = 7,       /**< d-current above its upper bound. */
+    uz_im_control_i_d_undercurrent = 8,      /**< d-current below its lower bound. */
+    uz_im_control_i_q_overcurrent = 9,       /**< q-current above its upper bound. */
+    uz_im_control_i_q_undercurrent = 10,     /**< q-current below its lower bound. */
+    uz_im_control_phase_overcurrent = 11,    /**< At least one phase current above its upper bound. */
+    uz_im_control_phase_undercurrent = 12,   /**< At least one phase current below its lower bound. */
+    uz_im_control_observer_violation = 13    /**< Observer generated a non-finite flux value. */
 };
 
-/** @brief Runtime limits checked before producing inverter commands. */
+/** @brief Lower and upper bound of one control quantity. */
 struct uz_im_control_limits_t {
-    float speed_abs_max_rpm;
-    float phase_current_abs_max_A;
-    float dc_link_voltage_min_V;
-    float dc_link_voltage_max_V;
+    float upper_bound;
+    float lower_bound;
+};
+
+/** @brief Limits applied to external references before filtering and control. */
+struct uz_im_setpoint_limits_t {
+    struct uz_im_control_limits_t speed_controller_torque_in_Nm; /**< Reserved for a future torque-to-current setpoint stage. */
+    struct uz_im_control_limits_t i_d_in_A;
+    struct uz_im_control_limits_t i_q_in_A;
+    struct uz_im_control_limits_t speed_in_rpm;
+};
+
+/** @brief Measurement limits checked before producing inverter commands. */
+struct uz_im_safe_operating_region_t {
+    struct uz_im_control_limits_t speed_in_rpm;
+    struct uz_im_control_limits_t i_d_in_A;
+    struct uz_im_control_limits_t i_q_in_A;
+    struct uz_im_control_limits_t i_abc_in_A;
+    struct uz_im_control_limits_t v_dc_in_V;
+    struct uz_im_control_limits_t i_dc_in_A;
 };
 
 /** @brief Complete configuration of the integrated IM controller. */
@@ -46,7 +72,6 @@ struct uz_im_control_configuration_t {
     float current_controller_q_ki;
     float speed_controller_kp;
     float speed_controller_ki;
-    float speed_controller_iq_limit_A;
     float u_f_ratio_V_per_Hz;
     float u_f_boost_voltage_V;
     float u_f_max_frequency_Hz;
@@ -56,7 +81,11 @@ struct uz_im_control_configuration_t {
     float kalman_measurement_noise_A2;
     float minimum_observer_flux_Vs;
     struct uz_DutyCycle_t default_duty_cycle;
-    struct uz_im_control_limits_t safe_operating_region;
+    struct uz_im_setpoint_limits_t setpoint_limits;
+    struct uz_im_safe_operating_region_t safe_operating_region;
+    float setpoint_filter_i_dq_cutoff_frequency; /**< Current-reference low-pass cutoff in Hz; zero disables it. */
+    float setpoint_filter_speed_cutoff_frequency; /**< Speed-reference low-pass cutoff in Hz; zero disables it. */
+    float speed_actual_value_filter_cutoff_frequency; /**< Measured-speed low-pass cutoff in Hz; zero disables it. */
     bool enable_speed_control;
     enum uz_im_control_observer observer;
 };
@@ -82,6 +111,7 @@ struct uz_im_reference_values {
 
 /** @brief Observer and controller diagnostics of the most recent step. */
 struct uz_im_actual_data {
+    uint32_t safe_operating_region_status;       /**< Latched SOR code for JavaScope; see uz_im_control_safe_operating_region_violation. */
     uz_3ph_dq_t i_dq_A;                    /**< Currents used by the controller. */
     uz_3ph_dq_t i_dq_raw_A;                /**< Unfiltered measured dq currents. */
     uz_3ph_dq_t current_pi_voltage_dq_V;    /**< Separate d/q current-PI outputs. */

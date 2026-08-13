@@ -39,6 +39,12 @@ Configuration and data types
 .. doxygenstruct:: uz_im_control_limits_t
    :members:
 
+.. doxygenstruct:: uz_im_setpoint_limits_t
+   :members:
+
+.. doxygenstruct:: uz_im_safe_operating_region_t
+   :members:
+
 .. doxygenstruct:: uz_im_measurement_values
    :members:
 
@@ -56,6 +62,65 @@ speed control when enabled, both current controllers, IM decoupling and SVM.
 In U/f mode, the same function ramps the requested stator frequency and
 generates the rotating voltage vector internally. Observer diagnostics remain
 available in both modes.
+
+Speed and d/q-current references are first restricted to ``setpoint_limits``.
+First-order low-pass filters for the d/q-current references, speed reference
+and measured speed are enabled by setting their respective cutoff frequency
+to a value greater than zero; a value of zero bypasses the filter. The speed
+PI directly produces the q-current reference and therefore uses the configured
+``i_q_in_A`` bounds. The torque bounds are retained in the public configuration
+for a future torque-to-current setpoint stage, but are not applied by the
+current q-current-based speed controller.
+
+The safe-operating-region limits independently cover speed, d/q currents,
+all three phase currents, DC-link voltage and DC-link current. Violations are
+latched before a new inverter command is returned.
+
+SOR diagnosis in JavaScope
+--------------------------
+
+``uz_im_actual_data.safe_operating_region_status`` exposes the latched SOR
+state as an unsigned integer and can be added directly as a JavaScope variable.
+The first detected violation remains visible until
+``uz_im_control_acknowledge_and_reset_error`` is called.
+
+.. list-table:: SOR status codes
+   :header-rows: 1
+   :widths: 15 45 40
+
+   * - Code
+     - Enum
+     - Meaning
+   * - 0
+     - ``uz_im_control_no_violation``
+     - No violation
+   * - 1
+     - ``uz_im_control_underspeed``
+     - Speed below lower limit
+   * - 2
+     - ``uz_im_control_overspeed``
+     - Speed above upper limit
+   * - 3
+     - ``uz_im_control_dc_overvoltage``
+     - DC-link voltage above upper limit
+   * - 4
+     - ``uz_im_control_dc_undervoltage``
+     - DC-link voltage below lower limit
+   * - 5 / 6
+     - ``uz_im_control_dc_overcurrent`` / ``uz_im_control_dc_undercurrent``
+     - DC-link current above / below its limits
+   * - 7 / 8
+     - ``uz_im_control_i_d_overcurrent`` / ``uz_im_control_i_d_undercurrent``
+     - d-current above / below its limits
+   * - 9 / 10
+     - ``uz_im_control_i_q_overcurrent`` / ``uz_im_control_i_q_undercurrent``
+     - q-current above / below its limits
+   * - 11 / 12
+     - ``uz_im_control_phase_overcurrent`` / ``uz_im_control_phase_undercurrent``
+     - At least one phase current above / below its limits
+   * - 13
+     - ``uz_im_control_observer_violation``
+     - Observer produced a non-finite flux value
 
 .. code-block:: c
 
@@ -75,6 +140,8 @@ acknowledged.
 
 API reference
 =============
+
+.. doxygenenum:: uz_im_control_safe_operating_region_violation
 
 .. doxygenfunction:: uz_im_control_init
 .. doxygenfunction:: uz_im_control_enable
@@ -100,4 +167,5 @@ Tests
 =====
 
 Unit tests are located in ``test/uz/uz_IM_Control`` and cover initialization,
-disabled output, fault latching and U/f operation.
+configuration validation, setpoint limiting, disabled output, fault latching
+and U/f operation.

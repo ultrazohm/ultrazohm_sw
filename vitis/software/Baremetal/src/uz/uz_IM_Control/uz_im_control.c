@@ -4,6 +4,8 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 #include "../uz_piController/uz_piController.h"
+#include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "../uz_signals/uz_signals.h"
 #include <math.h>
 
 struct uz_im_control_t {
@@ -21,6 +23,9 @@ struct uz_im_control_t {
     uz_PI_Controller *current_controller_d;
     uz_PI_Controller *current_controller_q;
     uz_PI_Controller *speed_controller;
+    uz_dq_setpoint_filter *setpoint_filter_i_dq;
+    uz_IIR_Filter_t *setpoint_filter_speed;
+    uz_IIR_Filter_t *speed_filter;
     float psi_alpha_Vs;
     float psi_beta_Vs;
     float kalman_i_alpha_A;
@@ -43,7 +48,6 @@ static void validate_configuration(struct uz_im_control_configuration_t control_
     uz_assert(control_config.current_controller_q_ki >= 0.0f);
     uz_assert(control_config.speed_controller_kp >= 0.0f);
     uz_assert(control_config.speed_controller_ki >= 0.0f);
-    uz_assert(control_config.speed_controller_iq_limit_A > 0.0f);
     uz_assert(control_config.u_f_ratio_V_per_Hz >= 0.0f);
     uz_assert(control_config.u_f_max_frequency_Hz > 0.0f);
     uz_assert(control_config.u_f_max_voltage_V > 0.0f);
@@ -51,21 +55,30 @@ static void validate_configuration(struct uz_im_control_configuration_t control_
     uz_assert(control_config.kalman_process_noise_A2_per_s >= 0.0f);
     uz_assert(control_config.kalman_measurement_noise_A2 > 0.0f);
     uz_assert(control_config.minimum_observer_flux_Vs > 0.0f);
-    uz_assert(control_config.safe_operating_region.speed_abs_max_rpm > 0.0f);
-    uz_assert(control_config.safe_operating_region.phase_current_abs_max_A > 0.0f);
-    uz_assert(control_config.safe_operating_region.dc_link_voltage_min_V >= 0.0f);
-    uz_assert(control_config.safe_operating_region.dc_link_voltage_max_V > control_config.safe_operating_region.dc_link_voltage_min_V);
+    uz_assert(control_config.setpoint_limits.speed_controller_torque_in_Nm.upper_bound >= control_config.setpoint_limits.speed_controller_torque_in_Nm.lower_bound);
+    uz_assert(control_config.setpoint_limits.i_d_in_A.upper_bound >= control_config.setpoint_limits.i_d_in_A.lower_bound);
+    uz_assert(control_config.setpoint_limits.i_q_in_A.upper_bound >= control_config.setpoint_limits.i_q_in_A.lower_bound);
+    uz_assert(control_config.setpoint_limits.speed_in_rpm.upper_bound >= control_config.setpoint_limits.speed_in_rpm.lower_bound);
+    uz_assert(control_config.safe_operating_region.speed_in_rpm.upper_bound >= control_config.safe_operating_region.speed_in_rpm.lower_bound);
+    uz_assert(control_config.safe_operating_region.i_d_in_A.upper_bound >= control_config.safe_operating_region.i_d_in_A.lower_bound);
+    uz_assert(control_config.safe_operating_region.i_q_in_A.upper_bound >= control_config.safe_operating_region.i_q_in_A.lower_bound);
+    uz_assert(control_config.safe_operating_region.i_abc_in_A.upper_bound >= control_config.safe_operating_region.i_abc_in_A.lower_bound);
+    uz_assert(control_config.safe_operating_region.v_dc_in_V.upper_bound >= control_config.safe_operating_region.v_dc_in_V.lower_bound);
+    uz_assert(control_config.safe_operating_region.i_dc_in_A.upper_bound >= control_config.safe_operating_region.i_dc_in_A.lower_bound);
+    uz_assert(control_config.setpoint_filter_i_dq_cutoff_frequency >= 0.0f);
+    uz_assert(control_config.setpoint_filter_speed_cutoff_frequency >= 0.0f);
+    uz_assert(control_config.speed_actual_value_filter_cutoff_frequency >= 0.0f);
     uz_IM_config_assert(machine_config);
 }
 
-static uz_PI_Controller *create_pi(float kp, float ki, float ts, float limit) {
+static uz_PI_Controller *create_pi(float kp, float ki, float ts, float upper_limit, float lower_limit) {
     struct uz_PI_Controller_config pi_config = {
         .type = UZ_PI_PARALLEL,
         .Kp = kp,
         .Ki = ki,
         .samplingTime_sec = ts,
-        .upper_limit = limit,
-        .lower_limit = -limit
+        .upper_limit = upper_limit,
+        .lower_limit = lower_limit
     };
     return uz_PI_Controller_init(pi_config);
 }
@@ -82,9 +95,19 @@ uz_im_control_t *uz_im_control_init(struct uz_im_control_configuration_t control
     self->speed_control_enabled = control_config.enable_speed_control;
     self->observer = control_config.observer;
     self->mode = uz_im_control_mode_foc;
-    self->current_controller_d = create_pi(control_config.current_controller_d_kp, control_config.current_controller_d_ki, control_config.sample_time_s, control_config.safe_operating_region.dc_link_voltage_max_V);
-    self->current_controller_q = create_pi(control_config.current_controller_q_kp, control_config.current_controller_q_ki, control_config.sample_time_s, control_config.safe_operating_region.dc_link_voltage_max_V);
-    self->speed_controller = create_pi(control_config.speed_controller_kp, control_config.speed_controller_ki, control_config.sample_time_s, control_config.speed_controller_iq_limit_A);
+    self->current_controller_d = create_pi(control_config.current_controller_d_kp, control_config.current_controller_d_ki, control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound, -control_config.safe_operating_region.v_dc_in_V.upper_bound);
+    self->current_controller_q = create_pi(control_config.current_controller_q_kp, control_config.current_controller_q_ki, control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound, -control_config.safe_operating_region.v_dc_in_V.upper_bound);
+    self->speed_controller = create_pi(control_config.speed_controller_kp, control_config.speed_controller_ki, control_config.sample_time_s, control_config.setpoint_limits.i_q_in_A.upper_bound, control_config.setpoint_limits.i_q_in_A.lower_bound);
+    if (control_config.setpoint_filter_i_dq_cutoff_frequency != 0.0f) {
+        struct uz_IIR_Filter_config filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = control_config.setpoint_filter_i_dq_cutoff_frequency, .sample_frequency_Hz = 1.0f / control_config.sample_time_s};
+        self->setpoint_filter_i_dq = uz_dq_setpoint_filter_init((struct uz_dq_setpoint_filter_config){.config_filter_d = filter, .config_filter_q = filter});
+    }
+    if (control_config.setpoint_filter_speed_cutoff_frequency != 0.0f) {
+        self->setpoint_filter_speed = uz_signals_IIR_Filter_init((struct uz_IIR_Filter_config){.selection = LowPass_first_order, .cutoff_frequency_Hz = control_config.setpoint_filter_speed_cutoff_frequency, .sample_frequency_Hz = 1.0f / control_config.sample_time_s});
+    }
+    if (control_config.speed_actual_value_filter_cutoff_frequency != 0.0f) {
+        self->speed_filter = uz_signals_IIR_Filter_init((struct uz_IIR_Filter_config){.selection = LowPass_first_order, .cutoff_frequency_Hz = control_config.speed_actual_value_filter_cutoff_frequency, .sample_frequency_Hz = 1.0f / control_config.sample_time_s});
+    }
     uz_im_control_reset(self);
     return self;
 }
@@ -95,6 +118,9 @@ void uz_im_control_reset(uz_im_control_t *self) {
     uz_PI_Controller_reset(self->current_controller_d);
     uz_PI_Controller_reset(self->current_controller_q);
     uz_PI_Controller_reset(self->speed_controller);
+    if (self->setpoint_filter_i_dq != NULL) uz_dq_setpoint_filter_reset(self->setpoint_filter_i_dq);
+    if (self->setpoint_filter_speed != NULL) uz_signals_IIR_Filter_reset(self->setpoint_filter_speed);
+    if (self->speed_filter != NULL) uz_signals_IIR_Filter_reset(self->speed_filter);
     self->psi_alpha_Vs = 0.0f;
     self->psi_beta_Vs = 0.0f;
     self->kalman_i_alpha_A = 0.0f;
@@ -105,6 +131,7 @@ void uz_im_control_reset(uz_im_control_t *self) {
     self->u_f_angle_rad = 0.0f;
     self->references = (struct uz_im_reference_values){.duty_cycle = self->control_config.default_duty_cycle};
     self->actual = (struct uz_im_actual_data){0};
+    self->actual.safe_operating_region_status = (uint32_t)self->violation;
 }
 
 void uz_im_control_enable(uz_im_control_t *self, bool enable) { uz_assert_not_NULL(self); self->enable = enable; if (!enable) uz_im_control_reset(self); }
@@ -113,10 +140,22 @@ void uz_im_control_enable_speed_control(uz_im_control_t *self, bool enable) { uz
 void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer) { uz_assert_not_NULL(self); self->observer = observer; }
 
 static void check_safe_operating_region(uz_im_control_t *self) {
-    struct uz_im_control_limits_t l = self->control_config.safe_operating_region;
-    if (fabsf(self->measurements.rotor_speed_rpm) > l.speed_abs_max_rpm) self->violation = uz_im_control_speed_violation;
-    if ((fabsf(self->measurements.i_abc_A.a) > l.phase_current_abs_max_A) || (fabsf(self->measurements.i_abc_A.b) > l.phase_current_abs_max_A) || (fabsf(self->measurements.i_abc_A.c) > l.phase_current_abs_max_A)) self->violation = uz_im_control_phase_current_violation;
-    if ((self->measurements.v_dc_V < l.dc_link_voltage_min_V) || (self->measurements.v_dc_V > l.dc_link_voltage_max_V)) self->violation = uz_im_control_dc_link_voltage_violation;
+    if (self->violation != uz_im_control_no_violation) return;
+    struct uz_im_safe_operating_region_t l = self->control_config.safe_operating_region;
+    float speed = self->measurements.rotor_speed_rpm;
+    if (speed < l.speed_in_rpm.lower_bound) self->violation = uz_im_control_underspeed;
+    else if (speed > l.speed_in_rpm.upper_bound) self->violation = uz_im_control_overspeed;
+    else if (self->measurements.v_dc_V > l.v_dc_in_V.upper_bound) self->violation = uz_im_control_dc_overvoltage;
+    else if (self->measurements.v_dc_V < l.v_dc_in_V.lower_bound) self->violation = uz_im_control_dc_undervoltage;
+    else if (self->measurements.i_dc_A > l.i_dc_in_A.upper_bound) self->violation = uz_im_control_dc_overcurrent;
+    else if (self->measurements.i_dc_A < l.i_dc_in_A.lower_bound) self->violation = uz_im_control_dc_undercurrent;
+    else if (self->actual.i_dq_A.d > l.i_d_in_A.upper_bound) self->violation = uz_im_control_i_d_overcurrent;
+    else if (self->actual.i_dq_A.d < l.i_d_in_A.lower_bound) self->violation = uz_im_control_i_d_undercurrent;
+    else if (self->actual.i_dq_A.q > l.i_q_in_A.upper_bound) self->violation = uz_im_control_i_q_overcurrent;
+    else if (self->actual.i_dq_A.q < l.i_q_in_A.lower_bound) self->violation = uz_im_control_i_q_undercurrent;
+    else if ((self->measurements.i_abc_A.a > l.i_abc_in_A.upper_bound) || (self->measurements.i_abc_A.b > l.i_abc_in_A.upper_bound) || (self->measurements.i_abc_A.c > l.i_abc_in_A.upper_bound)) self->violation = uz_im_control_phase_overcurrent;
+    else if ((self->measurements.i_abc_A.a < l.i_abc_in_A.lower_bound) || (self->measurements.i_abc_A.b < l.i_abc_in_A.lower_bound) || (self->measurements.i_abc_A.c < l.i_abc_in_A.lower_bound)) self->violation = uz_im_control_phase_undercurrent;
+    self->actual.safe_operating_region_status = (uint32_t)self->violation;
 }
 
 static void update_observers(uz_im_control_t *self) {
@@ -167,7 +206,10 @@ static void update_observers(uz_im_control_t *self) {
     self->actual.slip_percent = fabsf(self->actual.stator_frequency_Hz) > 1.0e-3f
         ? 100.0f * self->actual.slip_frequency_Hz / self->actual.stator_frequency_Hz
         : 0.0f;
-    if (!isfinite(self->actual.rotor_flux_magnitude_Vs)) self->violation = uz_im_control_observer_violation;
+    if ((!isfinite(self->actual.rotor_flux_magnitude_Vs)) && (self->violation == uz_im_control_no_violation)) {
+        self->violation = uz_im_control_observer_violation;
+        self->actual.safe_operating_region_status = (uint32_t)self->violation;
+    }
 }
 
 static struct uz_DutyCycle_t sample_u_f(uz_im_control_t *self, float target_Hz) {
@@ -188,12 +230,20 @@ static struct uz_DutyCycle_t sample_u_f(uz_im_control_t *self, float target_Hz) 
 uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurement_values m, float speed_ref, uz_3ph_dq_t current_ref) {
     uz_assert_not_NULL(self);
     self->measurements = m;
+    if (self->speed_filter != NULL) self->measurements.rotor_speed_rpm = uz_signals_IIR_Filter_sample(self->speed_filter, m.rotor_speed_rpm);
+    speed_ref = uz_signals_saturation(speed_ref, self->control_config.setpoint_limits.speed_in_rpm.upper_bound, self->control_config.setpoint_limits.speed_in_rpm.lower_bound);
+    current_ref.d = uz_signals_saturation(current_ref.d, self->control_config.setpoint_limits.i_d_in_A.upper_bound, self->control_config.setpoint_limits.i_d_in_A.lower_bound);
+    current_ref.q = uz_signals_saturation(current_ref.q, self->control_config.setpoint_limits.i_q_in_A.upper_bound, self->control_config.setpoint_limits.i_q_in_A.lower_bound);
+    if (self->setpoint_filter_speed != NULL) speed_ref = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, speed_ref);
+    if (self->setpoint_filter_i_dq != NULL) current_ref = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, current_ref);
     self->references.speed_rpm = speed_ref;
     self->references.i_dq_A = current_ref;
-    check_safe_operating_region(self);
     update_observers(self);
+    check_safe_operating_region(self);
     if ((!self->enable) || (self->violation != uz_im_control_no_violation) || (self->mode != uz_im_control_mode_foc)) return (uz_3ph_dq_t){0};
-    if (self->speed_control_enabled) self->references.i_dq_A.q = uz_PI_Controller_sample(self->speed_controller, speed_ref, m.rotor_speed_rpm, false);
+    if (self->speed_control_enabled) self->references.i_dq_A.q = uz_PI_Controller_sample(self->speed_controller, speed_ref, self->measurements.rotor_speed_rpm, false);
+    self->references.i_dq_A.d = uz_signals_saturation(self->references.i_dq_A.d, self->control_config.setpoint_limits.i_d_in_A.upper_bound, self->control_config.setpoint_limits.i_d_in_A.lower_bound);
+    self->references.i_dq_A.q = uz_signals_saturation(self->references.i_dq_A.q, self->control_config.setpoint_limits.i_q_in_A.upper_bound, self->control_config.setpoint_limits.i_q_in_A.lower_bound);
     float vd = uz_PI_Controller_sample(self->current_controller_d, self->references.i_dq_A.d, self->actual.i_dq_A.d, false);
     float vq = uz_PI_Controller_sample(self->current_controller_q, self->references.i_dq_A.q, self->actual.i_dq_A.q, false);
     float ls = uz_IM_config_get_Ls(self->machine_config);
@@ -216,8 +266,9 @@ struct uz_DutyCycle_t uz_im_control_sample_duty(uz_im_control_t *self, struct uz
     self->references.u_f_frequency_Hz = u_f_ref;
     if (self->mode == uz_im_control_mode_u_f) {
         self->measurements = m;
-        check_safe_operating_region(self);
+        if (self->speed_filter != NULL) self->measurements.rotor_speed_rpm = uz_signals_IIR_Filter_sample(self->speed_filter, m.rotor_speed_rpm);
         update_observers(self);
+        check_safe_operating_region(self);
         if ((!self->enable) || (self->violation != uz_im_control_no_violation)) return self->control_config.default_duty_cycle;
         self->references.duty_cycle = sample_u_f(self, u_f_ref);
     }

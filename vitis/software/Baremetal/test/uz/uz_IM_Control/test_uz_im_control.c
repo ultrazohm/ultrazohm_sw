@@ -23,7 +23,6 @@ static struct uz_im_control_configuration_t control_config = {
     .current_controller_q_ki = 10.0f,
     .speed_controller_kp = 0.1f,
     .speed_controller_ki = 1.0f,
-    .speed_controller_iq_limit_A = 5.0f,
     .u_f_ratio_V_per_Hz = 4.0f,
     .u_f_boost_voltage_V = 2.0f,
     .u_f_max_frequency_Hz = 50.0f,
@@ -33,7 +32,21 @@ static struct uz_im_control_configuration_t control_config = {
     .kalman_measurement_noise_A2 = 0.05f,
     .minimum_observer_flux_Vs = 0.01f,
     .default_duty_cycle = {.DutyCycle_A = 0.5f, .DutyCycle_B = 0.5f, .DutyCycle_C = 0.5f},
-    .safe_operating_region = {.speed_abs_max_rpm = 3000.0f, .phase_current_abs_max_A = 10.0f, .dc_link_voltage_min_V = 10.0f, .dc_link_voltage_max_V = 400.0f},
+    .setpoint_limits = {
+        .speed_controller_torque_in_Nm = {.upper_bound = 20.0f, .lower_bound = -20.0f},
+        .i_d_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .i_q_in_A = {.upper_bound = 5.0f, .lower_bound = -5.0f},
+        .speed_in_rpm = {.upper_bound = 2500.0f, .lower_bound = -2500.0f}},
+    .safe_operating_region = {
+        .speed_in_rpm = {.upper_bound = 3000.0f, .lower_bound = -3000.0f},
+        .i_d_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_q_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .i_abc_in_A = {.upper_bound = 10.0f, .lower_bound = -10.0f},
+        .v_dc_in_V = {.upper_bound = 400.0f, .lower_bound = 10.0f},
+        .i_dc_in_A = {.upper_bound = 20.0f, .lower_bound = -20.0f}},
+    .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
+    .setpoint_filter_speed_cutoff_frequency = 0.0f,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .enable_speed_control = true,
     .observer = uz_im_control_observer_kalman_rotor_flux_model
 };
@@ -43,6 +56,49 @@ void tearDown(void) {}
 
 void test_uz_im_control_init(void) {
     TEST_ASSERT_NOT_NULL(uz_im_control_init(control_config, machine_config));
+}
+
+void test_uz_im_control_rejects_reversed_setpoint_limit(void) {
+    struct uz_im_control_configuration_t invalid = control_config;
+    invalid.setpoint_limits.i_q_in_A.lower_bound = invalid.setpoint_limits.i_q_in_A.upper_bound + 1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_im_control_init(invalid, machine_config));
+}
+
+void test_uz_im_control_rejects_negative_filter_frequency(void) {
+    struct uz_im_control_configuration_t invalid = control_config;
+    invalid.setpoint_filter_speed_cutoff_frequency = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_im_control_init(invalid, machine_config));
+}
+
+void test_uz_im_control_limits_current_and_speed_references(void) {
+    struct uz_im_control_configuration_t config = control_config;
+    config.enable_speed_control = false;
+    uz_im_control_t *self = uz_im_control_init(config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f};
+    uz_im_control_sample_dq(self, measurements, 4000.0f, (uz_3ph_dq_t){.d = 8.0f, .q = -8.0f});
+    const struct uz_im_reference_values *references = uz_im_control_get_reference_values(self);
+    TEST_ASSERT_EQUAL_FLOAT(2500.0f, references->speed_rpm);
+    TEST_ASSERT_EQUAL_FLOAT(5.0f, references->i_dq_A.d);
+    TEST_ASSERT_EQUAL_FLOAT(-5.0f, references->i_dq_A.q);
+}
+
+void test_uz_im_control_filters_setpoints_and_measured_speed(void) {
+    struct uz_im_control_configuration_t config = control_config;
+    config.enable_speed_control = false;
+    config.setpoint_filter_i_dq_cutoff_frequency = 100.0f;
+    config.setpoint_filter_speed_cutoff_frequency = 100.0f;
+    config.speed_actual_value_filter_cutoff_frequency = 100.0f;
+    uz_im_control_t *self = uz_im_control_init(config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f, .rotor_speed_rpm = 1000.0f};
+    uz_im_control_sample_dq(self, measurements, 1000.0f, (uz_3ph_dq_t){.d = 4.0f, .q = 4.0f});
+    const struct uz_im_reference_values *references = uz_im_control_get_reference_values(self);
+    const struct uz_im_measurement_values *filtered_measurements = uz_im_control_get_im_measurement_values(self);
+    TEST_ASSERT_TRUE((references->speed_rpm > 0.0f) && (references->speed_rpm < 1000.0f));
+    TEST_ASSERT_TRUE((references->i_dq_A.d > 0.0f) && (references->i_dq_A.d < 4.0f));
+    TEST_ASSERT_TRUE((references->i_dq_A.q > 0.0f) && (references->i_dq_A.q < 4.0f));
+    TEST_ASSERT_TRUE((filtered_measurements->rotor_speed_rpm > 0.0f) && (filtered_measurements->rotor_speed_rpm < 1000.0f));
 }
 
 void test_uz_im_control_disabled_returns_default_duty(void) {
@@ -59,7 +115,26 @@ void test_uz_im_control_detects_dc_link_violation(void) {
     uz_im_control_enable(self, true);
     struct uz_im_measurement_values m = {.v_dc_V = 500.0f};
     uz_im_control_sample_duty(self, m, 0.0f, (uz_3ph_dq_t){0}, 0.0f);
-    TEST_ASSERT_EQUAL(uz_im_control_dc_link_voltage_violation, uz_im_control_get_safe_operating_area_violation(self));
+    TEST_ASSERT_EQUAL(uz_im_control_dc_overvoltage, uz_im_control_get_safe_operating_area_violation(self));
+    TEST_ASSERT_EQUAL_UINT32(3U, uz_im_control_get_actual_data(self)->safe_operating_region_status);
+}
+
+void test_uz_im_control_sor_code_decodes_overspeed(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {.v_dc_V = 100.0f, .rotor_speed_rpm = 3100.0f};
+    uz_im_control_sample_duty(self, measurements, 0.0f, (uz_3ph_dq_t){0}, 0.0f);
+    TEST_ASSERT_EQUAL(uz_im_control_overspeed, uz_im_control_get_safe_operating_area_violation(self));
+    TEST_ASSERT_EQUAL_UINT32(2U, uz_im_control_get_actual_data(self)->safe_operating_region_status);
+}
+
+void test_uz_im_control_sor_code_decodes_dc_undervoltage(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    struct uz_im_measurement_values measurements = {.v_dc_V = 5.0f};
+    uz_im_control_sample_duty(self, measurements, 0.0f, (uz_3ph_dq_t){0}, 0.0f);
+    TEST_ASSERT_EQUAL(uz_im_control_dc_undervoltage, uz_im_control_get_safe_operating_area_violation(self));
+    TEST_ASSERT_EQUAL_UINT32(4U, uz_im_control_get_actual_data(self)->safe_operating_region_status);
 }
 
 void test_uz_im_control_u_f_ramps_frequency(void) {

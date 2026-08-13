@@ -19,7 +19,7 @@
 #include "uz/uz_IM_Control/uz_im_control.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
 
-#define SETPOINT_TRAJECTORY_COUNT 3U
+#define SETPOINT_TRAJECTORY_COUNT 4U
 
 /** Runtime state of one JavaScope-controlled setpoint trajectory. */
 typedef struct {
@@ -71,12 +71,24 @@ typedef struct _actualValues_ {
 	float adc_ltc2311_a2_ch7;
 	uint32_t io_card_d1_state;
 	struct uz_inverter_adapter_outputs_t inverter_adapter_d2;
+	float incremental_encoder_d5_1_theta_el;
+	float incremental_encoder_d5_1_omega_mech;
+	float incremental_encoder_d5_1_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d5_1_position;
+	uint32_t incremental_encoder_d5_1_position_w_offset;
+	uint32_t incremental_encoder_d5_1_index_found;
 	float incremental_encoder_d5_2_theta_el;
 	float incremental_encoder_d5_2_omega_mech;
 	float incremental_encoder_d5_2_omega_mech_ma_n4;
 	uint32_t incremental_encoder_d5_2_position;
 	uint32_t incremental_encoder_d5_2_position_w_offset;
 	uint32_t incremental_encoder_d5_2_index_found;
+	float incremental_encoder_d5_3_theta_el;
+	float incremental_encoder_d5_3_omega_mech;
+	float incremental_encoder_d5_3_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d5_3_position;
+	uint32_t incremental_encoder_d5_3_position_w_offset;
+	uint32_t incremental_encoder_d5_3_index_found;
 /* Project Wizard END: actualValues */
 } actualValues;
 
@@ -85,7 +97,9 @@ typedef struct _referenceAndSetValues_ {
 	float im_frequency_reference_Hz;
 	float im_i_d_reference_A;
 	float im_i_q_reference_A;
+	float im_speed_reference_rpm;
 	bool im_enable_foc;
+	bool im_enable_speed_control;
 	bool im_enable_kalman_filter;
 	bool im_enable_resonant_control;
 /* Project Wizard BEGIN: referenceAndSetValues */
@@ -115,7 +129,9 @@ typedef struct{
 	uz_adcLtc2311_t* adc_ltc2311_a2;
 	uz_axi_gpio_t* axi_gpio_d1;
 	uz_inverter_adapter_t* inverter_adapter_d2;
+	uz_incrementalEncoder_t* incremental_encoder_d5_1;
 	uz_incrementalEncoder_t* incremental_encoder_d5_2;
+	uz_incrementalEncoder_t* incremental_encoder_d5_3;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

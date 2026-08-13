@@ -23,7 +23,9 @@ DS_Data Global_Data = {
 		.im_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
 		.im_i_d_reference_A = MOTOR_Default_i_d_reference_A,
 		.im_i_q_reference_A = MOTOR_Default_i_q_reference_A,
+		.im_speed_reference_rpm = 0.0f,
 		.im_enable_foc = false,
+		.im_enable_speed_control = false,
 		.im_enable_kalman_filter = false,
 		.im_enable_resonant_control = false,
 /* Project Wizard BEGIN: rasv_initializer */
@@ -68,6 +70,7 @@ static void initialize_setpoint_trajectories(void)
 		Global_Data.rasv.im_i_d_reference_A,
 		Global_Data.rasv.im_i_q_reference_A,
 		Global_Data.rasv.im_frequency_reference_Hz,
+		Global_Data.rasv.im_speed_reference_rpm,
 	};
 	for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
 		struct uz_Trajectory_config config = {
@@ -151,7 +154,9 @@ int main(void)
 			Global_Data.objects.adc_ltc2311_a2 = initialize_adc_ltc2311_a2();
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
 			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
+			Global_Data.objects.incremental_encoder_d5_1 = initialize_incremental_encoder_d5_1();
 			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
+			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 			Global_Data.objects.inverter_temperature_pwm = uz_PWM_duty_freq_detection_init(inverter_temperature_pwm_config);
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;

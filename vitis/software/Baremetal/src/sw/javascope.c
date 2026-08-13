@@ -121,7 +121,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
-	js_ch_selected[15] = js_ch_observable[JSO_IM_CURRENT_OFFSET_VALID];
+	js_ch_selected[15] = js_ch_observable[JSO_IM_FLUX_VS];
 	js_ch_selected[16] = js_ch_observable[JSO_IM_ROTOR_FLUX_VALID];
 	js_ch_selected[17] = js_ch_observable[JSO_IM_SLIP_FREQUENCY_LIMITED];
 	js_ch_selected[18] = js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_VIOLATION];

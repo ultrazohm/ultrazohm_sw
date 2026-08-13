@@ -14,9 +14,14 @@ void IM_testbench_init(DS_Data *data)
     data->objects.im_control = uz_im_control_init(config, setup.machine);
     uz_im_control_set_mode(data->objects.im_control, uz_im_control_mode_u_f);
     data->rasv.im_enable_foc = false;
+    data->rasv.im_enable_speed_control = false;
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
 
+    data->av.snd_fld[1] = data->rasv.im_i_d_reference_A;
+    data->av.snd_fld[2] = data->rasv.im_i_q_reference_A;
+    data->av.snd_fld[3] = data->rasv.im_frequency_reference_Hz;
+    data->av.snd_fld[4] = data->rasv.im_speed_reference_rpm;
     data->av.snd_fld[7] = config.current_controller_d_kp;
     data->av.snd_fld[8] = config.current_controller_d_ki;
     data->av.snd_fld[9] = config.current_controller_q_kp;
@@ -29,6 +34,13 @@ void IM_testbench_init(DS_Data *data)
     data->av.snd_fld[16] = config.resonant_antiwindup_gain;
     data->av.snd_fld[17] = config.resonant_voltage_limit_V;
     data->av.snd_fld[18] = config.minimum_observer_flux_Vs;
+}
+
+void IM_testbench_toggle_speed_control(DS_Data *data)
+{
+    uz_assert_not_NULL(data);
+    data->rasv.im_enable_speed_control = !data->rasv.im_enable_speed_control;
+    uz_im_control_enable_speed_control(data->objects.im_control, data->rasv.im_enable_speed_control);
 }
 
 void IM_testbench_toggle_control_mode(DS_Data *data)
@@ -45,7 +57,7 @@ void IM_testbench_toggle_control_mode(DS_Data *data)
         uz_Trajectory_Stop(i_d_trajectory->instance);
         uz_Trajectory_Reset(i_d_trajectory->instance);
         data->rasv.im_i_d_reference_A = MOTOR_Default_i_d_reference_A;
-        data->av.snd_fld[4] = MOTOR_Default_i_d_reference_A;
+        data->av.snd_fld[1] = MOTOR_Default_i_d_reference_A;
     }
     uz_im_control_set_mode(data->objects.im_control, data->rasv.im_enable_foc
         ? uz_im_control_mode_foc : uz_im_control_mode_u_f);
@@ -72,6 +84,7 @@ static void reset_setpoints_and_trajectories(DS_Data *data)
     data->rasv.im_frequency_reference_Hz = 0.0f;
     data->rasv.im_i_d_reference_A = 0.0f;
     data->rasv.im_i_q_reference_A = 0.0f;
+    data->rasv.im_speed_reference_rpm = 0.0f;
     for (uint32_t trajectory = 0U; trajectory < SETPOINT_TRAJECTORY_COUNT; trajectory++) {
         setpoint_trajectory_state_t * const state = &data->objects.setpoint_trajectories[trajectory];
         state->start = 0.0f;
@@ -97,10 +110,12 @@ void IM_testbench_reset(DS_Data *data)
     uz_assert_not_NULL(data);
     reset_setpoints_and_trajectories(data);
     data->rasv.im_enable_foc = false;
+    data->rasv.im_enable_speed_control = false;
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
     uz_im_control_acknowledge_and_reset_error(data->objects.im_control);
     uz_im_control_set_mode(data->objects.im_control, uz_im_control_mode_u_f);
     uz_im_control_set_observer(data->objects.im_control, uz_im_control_observer_rotor_flux_model);
+    uz_im_control_enable_speed_control(data->objects.im_control, false);
     uz_im_control_enable_resonant_control(data->objects.im_control, false);
 }

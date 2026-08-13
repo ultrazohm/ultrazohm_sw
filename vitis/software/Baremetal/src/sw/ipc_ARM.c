@@ -204,6 +204,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 			data->av.snd_fld[4] = value;
+			data->objects.setpoint_trajectories[3].target = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -282,6 +283,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
+			IM_testbench_toggle_speed_control(data);
 			break;
 
 		case (My_Button_3):
@@ -369,8 +371,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - My_Button_2: unused */
-	js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 5 - My_Button_2: IM speed controller */
+	if (data->rasv.im_enable_speed_control) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
 	/* Bit 6 - My_Button_3 */
 	if (data->rasv.im_enable_kalman_filter) {

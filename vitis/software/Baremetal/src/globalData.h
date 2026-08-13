@@ -38,15 +38,6 @@ typedef struct _actualValues_ {
 	struct uz_im_measurement_values im_control_measurements;
 	enum uz_im_control_safe_operating_region_violation im_control_violation;
 	float im_control_violation_code;
-	float im_i_d_A, im_i_q_A;
-	float im_i_d_raw_A, im_i_q_raw_A;
-	float im_flux_angle_rad, im_flux_magnitude_Vs;
-	float im_rotor_electrical_angle_rad;
-	float im_flux_rotor_angle_difference_rad;
-	float im_rotor_electrical_frequency_Hz;
-	float im_slip_frequency_Hz;
-	float im_slip_percent;
-	float im_stator_frequency_Hz;
 	float inverter_temperature_pwm_duty_cycle_percent;
 	float inverter_temperature_pwm_frequency_Hz;
 	float inverter_temperature_degC;

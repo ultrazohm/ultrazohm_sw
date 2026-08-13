@@ -139,8 +139,6 @@ void ISR_Control(void *data)
 		(2.0f * UZ_PIf * (float)(Global_Data.av.incremental_encoder_d5_2_position_w_offset %
 		 MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
 		(float)MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN;
-	Global_Data.av.im_rotor_electrical_angle_rad =
-		fmodf(MOTOR_PolePairs * encoder_mechanical_angle_rad, 2.0f * UZ_PIf);
 	float const temperature_duty_ratio = uz_PWM_duty_freq_detection_get_duty_cycle_in_percent(Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_pwm_duty_cycle_percent = temperature_duty_ratio * 100.0f;
 	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(Global_Data.objects.inverter_temperature_pwm);
@@ -241,18 +239,6 @@ void ISR_Control(void *data)
 		if (Global_Data.av.im_control_violation != uz_im_control_no_violation) {
 			ultrazohm_state_machine_set_error(true);
 		}
-		Global_Data.av.im_i_d_A = Global_Data.av.im_control_actual.i_dq_A.d;
-		Global_Data.av.im_i_q_A = Global_Data.av.im_control_actual.i_dq_A.q;
-		Global_Data.av.im_i_d_raw_A = Global_Data.av.im_control_actual.i_dq_raw_A.d;
-		Global_Data.av.im_i_q_raw_A = Global_Data.av.im_control_actual.i_dq_raw_A.q;
-		Global_Data.av.im_flux_angle_rad = Global_Data.av.im_control_actual.rotor_flux_angle_rad;
-		Global_Data.av.im_flux_magnitude_Vs = Global_Data.av.im_control_actual.rotor_flux_magnitude_Vs;
-		Global_Data.av.im_rotor_electrical_angle_rad = Global_Data.av.im_control_actual.rotor_electrical_angle_rad;
-		Global_Data.av.im_flux_rotor_angle_difference_rad = Global_Data.av.im_control_actual.flux_rotor_angle_difference_rad;
-		Global_Data.av.im_rotor_electrical_frequency_Hz = Global_Data.av.im_control_actual.rotor_electrical_frequency_Hz;
-		Global_Data.av.im_slip_frequency_Hz = Global_Data.av.im_control_actual.slip_frequency_Hz;
-		Global_Data.av.im_slip_percent = Global_Data.av.im_control_actual.slip_percent;
-		Global_Data.av.im_stator_frequency_Hz = Global_Data.av.im_control_actual.stator_frequency_Hz;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=im_duty.DutyCycle_A;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=im_duty.DutyCycle_B;
 		Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3=im_duty.DutyCycle_C;

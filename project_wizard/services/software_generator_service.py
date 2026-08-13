@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
+from ..models import ResolvedSystemModel
 from ..repositories import CardDatabase
 from ..template_renderer import SimpleTemplateRenderer
 
@@ -869,6 +870,19 @@ class SoftwareGenerator:
             warnings=warnings,
         )
 
+    def build_plan_model(self, model: ResolvedSystemModel, resolve_base_addresses: bool = True) -> SoftwarePlan:
+        return self.build_plan(
+            model.config.software_source_dir,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.software_modes,
+            model.config.software_presets,
+            model.config.visualization_routes,
+            model.config.driver_config,
+            model.config.hardware,
+            resolve_base_addresses=resolve_base_addresses,
+        )
+
     def preview(
         self,
         source_dir: Path,
@@ -967,6 +981,19 @@ class SoftwareGenerator:
             lines.extend(f"- {warning}" for warning in plan.warnings)
         return "\n".join(lines)
 
+    def preview_model(self, model: ResolvedSystemModel) -> str:
+        return self.preview(
+            model.config.software_source_dir,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.platform_revision,
+            model.config.software_modes,
+            model.config.software_presets,
+            model.config.visualization_routes,
+            model.config.driver_config,
+            model.config.hardware,
+        )
+
     def visualization_signals(
         self,
         source_dir: Path,
@@ -984,6 +1011,15 @@ class SoftwareGenerator:
             resolve_base_addresses=False,
         )
         return plan.available_visualization_signals
+
+    def visualization_signals_model(self, model: ResolvedSystemModel) -> list[VisualizationSignal]:
+        return self.visualization_signals(
+            model.config.software_source_dir,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.software_modes,
+            model.config.software_presets,
+        )
 
     def driver_config_instances(
         self,
@@ -1152,6 +1188,28 @@ class SoftwareGenerator:
                             )
                         )
         return instances
+
+    def driver_config_instances_model(self, model: ResolvedSystemModel) -> list[DriverConfigInstance]:
+        return self.driver_config_instances(
+            model.config.slots,
+            model.config.slot_options,
+            model.config.software_modes,
+            model.config.software_presets,
+            model.config.hardware,
+        )
+
+    def generate_model(self, model: ResolvedSystemModel) -> SoftwareGenerationResult:
+        return self.generate(
+            model.config.software_source_dir,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.platform_revision,
+            model.config.software_modes,
+            model.config.software_presets,
+            model.config.visualization_routes,
+            model.config.driver_config,
+            model.config.hardware,
+        )
 
     def generate(
         self,

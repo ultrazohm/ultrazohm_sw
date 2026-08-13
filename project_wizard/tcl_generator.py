@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .models import ResolvedSystemModel
 from .paths import DIGITAL_SLOTS, SLOTS
 from .repositories import CardDatabase
 from .template_renderer import SimpleTemplateRenderer
@@ -12,6 +13,29 @@ class TclGenerator:
     def __init__(self, database: CardDatabase) -> None:
         self.database = database
         self.renderer = SimpleTemplateRenderer()
+
+    def generate_model(self, model: ResolvedSystemModel) -> str:
+        platform = {
+            "id": model.config.platform,
+            "name": (model.platform or {}).get("name", model.config.platform),
+            "revision": model.config.platform_revision,
+        }
+        return self.generate(
+            platform,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.slot_cplds,
+            model.config.axi,
+            model.config.hardware,
+        )
+
+    def validation_warnings_model(self, model: ResolvedSystemModel) -> list[str]:
+        return self.validation_warnings(
+            model.config.slots,
+            model.config.axi,
+            model.config.slot_options,
+            model.config.software_modes,
+        )
 
     def generate(
         self,

@@ -2012,12 +2012,8 @@ class MainWindow(QMainWindow):
         self.driver_config_mode_combos.clear()
         self.driver_config_fields.clear()
 
-        instances = self.software_generator.driver_config_instances(
-            self.assignments(),
-            self.option_values(),
-            self.software_modes(),
-            self.software_presets(),
-            self.hardware_config(),
+        instances = self.software_generator.driver_config_instances_model(
+            self.resolved_system_model(refresh_dependent_views=False)
         )
         instances_by_slot: dict[str, list[Any]] = {slot: [] for slot in ["PWM", *SLOTS]}
         for instance in instances:
@@ -2165,14 +2161,8 @@ class MainWindow(QMainWindow):
                     layout.removeItem(item)
         self.visualization_route_checkboxes.clear()
 
-        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
-        source_dir = Path(source_text) if source_text else Path("<software source folder>")
-        signals = self.software_generator.visualization_signals(
-            source_dir,
-            self.assignments(),
-            self.detail_options,
-            self.software_modes(),
-            self.software_presets(),
+        signals = self.software_generator.visualization_signals_model(
+            self.resolved_system_model(refresh_dependent_views=False)
         )
         signals_by_slot: dict[str, list[Any]] = {slot: [] for slot in SLOTS}
         for signal in signals:
@@ -2705,20 +2695,9 @@ class MainWindow(QMainWindow):
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
-        assignments = self.assignments()
-        option_values = self.option_values()
-        axi_config = self.axi_config()
-        self.tcl_preview.setPlainText(
-            self.generator.generate(
-                self.selected_platform(),
-                assignments,
-                option_values,
-                self.cpld_assignments(),
-                axi_config,
-                self.hardware_config(),
-            )
-        )
-        warnings = self.generator.validation_warnings(assignments, axi_config, option_values, self.software_modes())
+        model = self.resolved_system_model()
+        self.tcl_preview.setPlainText(self.generator.generate_model(model))
+        warnings = self.generator.validation_warnings_model(model)
         if warnings and self.vivado_status:
             self.vivado_status.setPlainText("\n".join(f"- {warning}" for warning in warnings))
         elif self.vivado_status:
@@ -2729,21 +2708,7 @@ class MainWindow(QMainWindow):
     def refresh_software_preview(self) -> None:
         if self.software_preview is None:
             return
-        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
-        source_dir = Path(source_text) if source_text else Path("<software source folder>")
-        self.software_preview.setPlainText(
-            self.software_generator.preview(
-                source_dir,
-                self.assignments(),
-                self.option_values(),
-                self.selected_platform().get("revision", ""),
-                self.software_modes(),
-                self.software_presets(),
-                self.selected_visualization_signals(),
-                self.driver_config_values(),
-                self.hardware_config(),
-            )
-        )
+        self.software_preview.setPlainText(self.software_generator.preview_model(self.resolved_system_model()))
 
     def generate_software_files(self) -> None:
         self.refresh_dirty_software_dependent_views()
@@ -2752,26 +2717,9 @@ class MainWindow(QMainWindow):
         if not source_text:
             QMessageBox.warning(self, "Software source folder missing", "Please select the folder that contains globalData.h.")
             return
-        source_dir = Path(source_text)
-        assignments = self.assignments()
-        option_values = self.option_values()
-        platform_revision = self.selected_platform().get("revision", "")
-        software_modes = self.software_modes()
-        software_presets = self.software_presets()
-        visualization_signals = self.selected_visualization_signals()
-        driver_config = self.driver_config_values()
-        hardware_config = self.hardware_config()
+        model = self.resolved_system_model()
         try:
-            plan = self.software_generator.build_plan(
-                source_dir,
-                assignments,
-                option_values,
-                software_modes,
-                software_presets,
-                visualization_signals,
-                driver_config,
-                hardware_config,
-            )
+            plan = self.software_generator.build_plan_model(model)
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not prepare software generation", str(error))
             return
@@ -2806,17 +2754,7 @@ class MainWindow(QMainWindow):
                 self.software_status.setPlainText("Software generation canceled.")
             return
         try:
-            result = self.software_generator.generate(
-                source_dir,
-                assignments,
-                option_values,
-                platform_revision,
-                software_modes,
-                software_presets,
-                visualization_signals,
-                driver_config,
-                hardware_config,
-            )
+            result = self.software_generator.generate_model(model)
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))
             return
@@ -2960,9 +2898,7 @@ class MainWindow(QMainWindow):
     def finish_config_load_refresh(self, document: dict[str, Any]) -> None:
         self.set_bulk_updates_enabled(False)
         try:
-            software = document.get("software", {})
-            software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
-            self.refresh_software_preset_options(software_values)
+            self.refresh_software_preset_options(SystemConfig.from_document(document).software)
             self.software_dependent_views_dirty = False
             self.refresh_tcl_preview()
         except Exception as error:  # noqa: BLE001 - keep the GUI alive after refresh errors.
@@ -3036,22 +2972,32 @@ class MainWindow(QMainWindow):
         return False
 
     def config_document(self) -> dict[str, Any]:
-        self.refresh_dirty_software_dependent_views()
-        return build_config_document(
-            self.selected_platform(),
-            self.platform_cpld_config(),
-            self.toolchain_config(),
-            self.hardware_config(),
-            self.assignments(),
-            self.option_values(),
-            self.cpld_assignments(),
-            self.cpld_programmer_config(),
-            self.axi_config(),
-            self.software_config(),
+        return self.system_config().to_document()
+
+    def system_config(self, refresh_dependent_views: bool = True) -> SystemConfig:
+        if refresh_dependent_views:
+            self.refresh_dirty_software_dependent_views()
+        return SystemConfig.from_document(
+            build_config_document(
+                self.selected_platform(),
+                self.platform_cpld_config(),
+                self.toolchain_config(),
+                self.hardware_config(),
+                self.assignments(),
+                self.option_values(),
+                self.cpld_assignments(),
+                self.cpld_programmer_config(),
+                self.axi_config(),
+                self.software_config(),
+                self.software_modes(),
+                self.software_presets(),
+                self.selected_visualization_signals(),
+                self.driver_config_values(),
+            )
         )
 
-    def resolved_system_model(self):
-        return self.system_resolver.resolve(SystemConfig.from_document(self.config_document()))
+    def resolved_system_model(self, refresh_dependent_views: bool = True):
+        return self.system_resolver.resolve(self.system_config(refresh_dependent_views))
 
     def update_config_load_progress(self, progress: QProgressDialog | None, value: int, message: str) -> None:
         if progress is None:
@@ -3061,46 +3007,25 @@ class MainWindow(QMainWindow):
         QApplication.processEvents()
 
     def load_config_document(self, document: dict[str, Any], progress: QProgressDialog | None = None) -> None:
-        if not isinstance(document, dict):
-            raise ValueError("Config must be a JSON object.")
+        config = SystemConfig.from_document(document)
         self.update_config_load_progress(progress, 2, "Loading platform and toolchain...")
-        platform_id = document.get("platform", "")
+        platform_id = config.platform
         platform_index = self.platform_combo.findData(platform_id)
         if platform_index >= 0:
             self.platform_combo.setCurrentIndex(platform_index)
-        platform_revision = str(document.get("platform_revision", ""))
-        self.refresh_platform_revisions(platform_revision)
+        self.refresh_platform_revisions(config.platform_revision)
 
-        platform_cpld = document.get("platform_cpld", {})
-        if platform_cpld is None:
-            platform_cpld = {}
-        if not isinstance(platform_cpld, dict):
-            raise ValueError("Config field 'platform_cpld' must be a JSON object.")
-        self.load_platform_cpld_config({str(key): str(value) for key, value in platform_cpld.items()})
+        self.load_platform_cpld_config(config.platform_cpld)
         self.refresh_platform_cpld_visibility()
 
-        toolchain = document.get("toolchain", {})
-        if toolchain is None:
-            toolchain = {}
-        if not isinstance(toolchain, dict):
-            raise ValueError("Config field 'toolchain' must be a JSON object.")
-        self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
+        self.load_toolchain_config(config.toolchain)
 
-        hardware = document.get("hardware", {})
-        if hardware is None:
-            hardware = {}
-        if not isinstance(hardware, dict):
-            raise ValueError("Config field 'hardware' must be a JSON object.")
-        self.load_hardware_config({str(key): str(value) for key, value in hardware.items()})
+        self.load_hardware_config(config.hardware)
 
         self.update_config_load_progress(progress, 3, "Loading adapter cards...")
-        slots = document.get("slots", {})
-        if not isinstance(slots, dict):
-            raise ValueError("Config field 'slots' must be a JSON object.")
+        slots = config.slots
         for slot, combo in self.slot_combos.items():
             card_id = slots.get(slot, "empty")
-            if slot.startswith("A") and card_id == "empty":
-                card_id = "no_adapter_board"
             index = combo.findData(card_id)
             if index < 0:
                 fallback_card_id = "no_adapter_board" if slot.startswith("A") else "empty"
@@ -3108,30 +3033,16 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
 
         self.update_config_load_progress(progress, 4, "Loading adapter card details...")
-        slot_options = document.get("slot_options", {})
-        if not isinstance(slot_options, dict):
-            raise ValueError("Config field 'slot_options' must be a JSON object.")
-        self.detail_options = {
-            str(slot): {str(option_id): str(value) for option_id, value in options.items()}
-            for slot, options in slot_options.items()
-            if isinstance(options, dict)
-        }
+        self.detail_options = {slot: dict(options) for slot, options in config.slot_options.items()}
         if self.adapter_details is not None:
             self.adapter_details.detail_options = self.detail_options
         self.rebuild_details()
 
         self.update_config_load_progress(progress, 5, "Loading software configuration...")
-        software = document.get("software", {})
-        if software is None:
-            software = {}
-        if not isinstance(software, dict):
-            raise ValueError("Config field 'software' must be a JSON object.")
-        self.load_software_config({str(key): str(value) for key, value in software.items()})
+        self.load_software_config(config.software)
 
         self.update_config_load_progress(progress, 6, "Loading CPLD and AXI settings...")
-        slot_cplds = document.get("slot_cplds", {})
-        if not isinstance(slot_cplds, dict):
-            raise ValueError("Config field 'slot_cplds' must be a JSON object.")
+        slot_cplds = config.slot_cplds
         for slot, combo in self.cpld_combos.items():
             program_id = slot_cplds.get(slot)
             if program_id is None:
@@ -3142,17 +3053,9 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
             combo.blockSignals(False)
 
-        cpld_programmer = document.get("cpld_programmer", {})
-        if cpld_programmer is None:
-            cpld_programmer = {}
-        if not isinstance(cpld_programmer, dict):
-            raise ValueError("Config field 'cpld_programmer' must be a JSON object.")
-        self.load_cpld_programmer_config({str(key): str(value) for key, value in cpld_programmer.items()})
+        self.load_cpld_programmer_config(config.cpld_programmer)
 
-        axi = document.get("axi", self.database.axi_interconnect)
-        if not isinstance(axi, dict):
-            raise ValueError("Config field 'axi' must be a JSON object.")
-        self.load_axi_config({str(key): str(value) for key, value in axi.items()})
+        self.load_axi_config(config.axi)
 
     def show_docs(self) -> None:
         QMessageBox.information(
@@ -3261,27 +3164,12 @@ class MainWindow(QMainWindow):
 
     def write_generated_tcl(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            self.generator.generate(
-                self.selected_platform(),
-                self.assignments(),
-                self.option_values(),
-                self.cpld_assignments(),
-                self.axi_config(),
-                self.hardware_config(),
-            ),
-            encoding="utf-8",
-        )
+        path.write_text(self.generator.generate_model(self.resolved_system_model()), encoding="utf-8")
         if self.vivado_status:
             self.vivado_status.setPlainText(f"Wrote TCL: {path}")
 
     def show_tcl_export_result(self, path: Path) -> None:
-        warnings = self.generator.validation_warnings(
-            self.assignments(),
-            self.axi_config(),
-            self.option_values(),
-            self.software_modes(),
-        )
+        warnings = self.generator.validation_warnings_model(self.resolved_system_model())
         if warnings:
             QMessageBox.warning(
                 self,

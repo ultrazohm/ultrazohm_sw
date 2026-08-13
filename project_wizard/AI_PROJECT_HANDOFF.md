@@ -553,6 +553,14 @@ Likely follow-up tasks:
 - If Vivado address assignment fails randomly, rerun generation after ensuring stale AXI pins/legacy hierarchies are cleaned.
 - Legacy uncontrolled BD content can cause confusing build errors. The long-term goal is a cleaner, fully wizard-owned script path, but current strategy is still piecewise migration.
 - Tcl template safety was smoke-tested at generator level across bypass, no-adapter, checkpoint on/off, every card in every compatible slot, selectable option choices, all-option-`none` paths, and IO-card no-AXI paths. This catches template/rendering errors but does not replace Vivado execution tests.
+- Project configuration uses schema version 2. The saved JSON now has typed sections:
+  - `platform`: `{id, revision, cpld}`
+  - `slots`: per-slot `{card, options, cpld}`
+  - `software`: `{source_dir, modes, presets, visualization_routes, driver_config, extra}`
+  - top-level `toolchain`, `hardware`, `cpld_programmer`, and `axi`.
+- `project_wizard/models.py` owns the typed config dataclasses. `SystemConfig` still exposes legacy-shaped projection properties (`slots`, `slot_options`, `slot_cplds`, flat `software`) so proven generators can remain behaviorally stable while the app boundary is typed.
+- GUI preview/export/generate paths should go through `MainWindow.resolved_system_model()` and generator model facades such as `TclGenerator.generate_model()` and `SoftwareGenerator.build_plan_model()`.
+- Golden scenario baselines live in `project_wizard/generated/golden_scenarios/`. Run `python -m project_wizard.golden_scenarios --check` after config/resolver/generator changes; it compares ten representative scenarios against TCL and software-summary baselines.
 - Open Vivado-live Tcl transition tests to run during field testing or a focused validation pass:
   - AXI card -> `No adapter board`: generated Tcl should fully remove slot content and stale AXI wiring.
   - AXI card -> selected non-AXI card: generated Tcl should remove stale AXI wiring and create only the non-AXI card content.

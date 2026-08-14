@@ -21,6 +21,10 @@
 # https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
 
+# Capture the script directory at source time (info script is only valid here,
+# not inside a proc invoked later) so shared helpers can be sourced reliably.
+set ::uz_vitis_script_dir [file dirname [file normalize [info script]]]
+
 
 proc app_clean {{name *}} {
   set tmplist [app list]
@@ -79,6 +83,9 @@ cd ..
 set FOLDER_PATH [pwd]
 cd $WS_PATH
 
+# Shared patch portMEMORY_BARRIER bug
+source [file join $::uz_vitis_script_dir vitis_patch_UltraZohm_freertos_bsp.tcl]
+
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
 
@@ -102,8 +109,13 @@ domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
 bsp config total_heap_size  200000000
-platform write 
+# save FPU/NEON context for all tasks (re-applied here like the heap, since the
+# .xsa re-import resets BSP settings)
+bsp config use_task_fpu_support 2
+platform write
 bsp regenerate
+# Re-apply FreeRTOS kernel settings that 'bsp regenerate' resets (see proc).
+uz_vitis_patch_freertos_bsp $WS_PATH
 
 #####################################################
 puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"

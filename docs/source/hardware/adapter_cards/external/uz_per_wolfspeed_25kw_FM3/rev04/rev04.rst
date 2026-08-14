@@ -204,40 +204,40 @@ of extrapolating outside the valid range.
 
    * - Duty ratio
      - Duty cycle
-     - Approximate temperature
+     - Approximate temperature in :math:`{}^\circ\mathrm{C}`
    * - :math:`D \leq 0.05`
      - :math:`\leq 5\,\%`
-     - :math:`\leq 36.6\,{}^\circ\mathrm{C}`; lower clamp
+     - :math:`\leq 36.6`; lower clamp
    * - 0.10
      - 10 %
-     - 42 |degC|
+     - 42 
    * - 0.20
      - 20 %
-     - 52 |degC|
+     - 52 
    * - 0.30
      - 30 %
-     - 61 |degC|
+     - 61 
    * - 0.40
      - 40 %
-     - 70 |degC|
+     - 70 
    * - 0.50
      - 50 %
-     - 81 |degC|
+     - 81 
    * - 0.60
      - 60 %
-     - 91 |degC|
+     - 91 
    * - 0.70
      - 70 %
-     - 103 |degC|
+     - 103 
    * - 0.80
      - 80 %
-     - 119 |degC|
+     - 119 
    * - 0.90
      - 90 %
-     - 140 |degC|
+     - 140 
    * - :math:`D \geq 0.95`
      - :math:`\geq 95\,\%`
-     - :math:`\geq 154.1\,{}^\circ\mathrm{C}`; upper clamp
+     - :math:`\geq 154.1`; upper clamp
 
 Conversion code
 ---------------

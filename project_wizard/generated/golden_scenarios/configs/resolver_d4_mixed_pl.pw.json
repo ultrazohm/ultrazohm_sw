@@ -1,0 +1,126 @@
+{
+  "axi": {
+    "a_address_space": "/zynq_ultra_ps_e_0/Data",
+    "a_clock_pin": "uz_system/peripheral_clk",
+    "a_resetn_pin": "uz_system/peripheral_aresetn",
+    "a_upstream_smartconnect": "uz_system/smartconnect_0",
+    "analog_axi2tcm_trigger_source": "uz_analog_adapter/A1_RAW_Valid",
+    "analog_axi2tcm_trigger_target": "uz_system/Trigger_AXI2TCM",
+    "analog_conversion_trigger_sources": "uz_system/trigger_conversions",
+    "analog_conversion_trigger_target": "uz_analog_adapter/TRIGGER_CNV",
+    "d_address_space": "/zynq_ultra_ps_e_0/Data",
+    "d_clock_pin": "uz_system/peripheral_clk",
+    "d_resetn_pin": "uz_system/peripheral_aresetn",
+    "d_upstream_smartconnect": "uz_system/smartconnect_0",
+    "local_smartconnect_name": "axi_smartconnect",
+    "local_smartconnect_vlnv": "xilinx.com:ip:smartconnect"
+  },
+  "cpld_programmer": {},
+  "hardware": {
+    "adc_trigger_delay_us": "0.01f",
+    "block_design_name": "zusys",
+    "disable_bd_synth_checkpoints": "false",
+    "export_xsa_after_build": "false",
+    "generate_bitstream": "false",
+    "interrupt_adc_to_isr_ratio": "1U",
+    "interrupt_isr_source": "1U",
+    "interrupt_isr_trigger_on_adc_data_ready": "0U",
+    "open_vivado_gui": "false",
+    "pwm_2l_idle_error_behavior": "tristate_with_duty_cycle",
+    "pwm_2l_idle_error_duty_hb1": "0.0f",
+    "pwm_2l_idle_error_duty_hb2": "0.0f",
+    "pwm_2l_idle_error_duty_hb3": "0.0f",
+    "pwm_2l_instances": "4",
+    "pwm_3l_instances": "1",
+    "pwm_deadtime_us": "1.0f",
+    "pwm_enable_source": "uz_system/Enable_Gate",
+    "pwm_frequency": "10.0e3f",
+    "pwm_min_pulse_width_us": "0.5f",
+    "save_block_design": "true",
+    "tcl_workflow_local": "true",
+    "tcl_workflow_remote": "false",
+    "validate_block_design": "true",
+    "vivado_project_file": "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_ZC_test\\vivado\\project\\ultrazohm.xpr"
+  },
+  "platform": {
+    "cpld": {
+      "rev04_cpld_type": "la4128v"
+    },
+    "id": "ultrazohm",
+    "revision": "Rev06"
+  },
+  "schema_version": 2,
+  "slots": {
+    "A1": {
+      "card": "no_adapter_board",
+      "cpld": "none",
+      "options": {}
+    },
+    "A2": {
+      "card": "no_adapter_board",
+      "cpld": "none",
+      "options": {}
+    },
+    "A3": {
+      "card": "no_adapter_board",
+      "cpld": "none",
+      "options": {}
+    },
+    "D1": {
+      "card": "empty",
+      "cpld": "none",
+      "options": {}
+    },
+    "D2": {
+      "card": "empty",
+      "cpld": "none",
+      "options": {}
+    },
+    "D3": {
+      "card": "empty",
+      "cpld": "none",
+      "options": {}
+    },
+    "D4": {
+      "card": "uz_d_resolver",
+      "cpld": "uz_d_resolver_d1_to_d4",
+      "options": {
+        "enable_pl_interface_ch1": "true",
+        "enable_pl_interface_ch2": "false",
+        "enable_pl_interface_ch3": "true"
+      }
+    },
+    "D5": {
+      "card": "empty",
+      "cpld": "none",
+      "options": {}
+    }
+  },
+  "software": {
+    "driver_config": {},
+    "extra": {},
+    "modes": {
+      "A1": "follow_hardware",
+      "A2": "follow_hardware",
+      "A3": "follow_hardware",
+      "D1": "follow_hardware",
+      "D2": "follow_hardware",
+      "D3": "follow_hardware",
+      "D4": "follow_hardware",
+      "D5": "follow_hardware"
+    },
+    "presets": {
+      "A1": "default",
+      "A2": "default",
+      "A3": "default",
+      "D1": "default",
+      "D2": "default",
+      "D3": "default",
+      "D4": "default",
+      "D5": "default"
+    },
+    "source_dir": "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_ZC_test\\vitis\\software\\Baremetal\\src",
+    "visualization_routes": {}
+  },
+  "toolchain": {}
+}

@@ -12,6 +12,8 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QTabWidget,
@@ -172,6 +174,14 @@ class AdapterCardDetailsWidget(QGroupBox):
     def _add_card_options(self, slot: str, card_id: str, card: dict[str, Any], group_layout: QVBoxLayout) -> None:
         if not card.get("options"):
             return
+        if card_id == "uz_d_resolver":
+            group_layout.addLayout(
+                self._resolver_help_row(
+                    slot,
+                    "Resolver Options",
+                    self._resolver_help_text(slot),
+                )
+            )
         form = QFormLayout()
         for option in card.get("options", []):
             option_id = option.get("id", "")
@@ -226,6 +236,37 @@ class AdapterCardDetailsWidget(QGroupBox):
             else:
                 form.addRow(option.get("label", option_id or "Option"), combo)
         group_layout.addLayout(form)
+
+    def _resolver_help_row(self, slot: str, title: str, text: str) -> QHBoxLayout:
+        row = QHBoxLayout()
+        row.setContentsMargins(0, 0, 0, 0)
+        row.addStretch(1)
+        button = QPushButton("?")
+        button.setFixedWidth(28)
+        button.setToolTip(text)
+        button.clicked.connect(lambda: QMessageBox.information(self, title, text))
+        row.addWidget(button)
+        return row
+
+    @staticmethod
+    def _resolver_help_text(slot: str) -> str:
+        channel_count = resolver_channel_count(slot)
+        channel_text = "three resolver channels" if channel_count == 3 else "two resolver channels"
+        return (
+            f"{slot} supports {channel_text}.\n\n"
+            "Pin mapping:\n"
+            "The generated block design uses the resolver card pin mapping from adapter_cards.json. "
+            "D1-D4 use the three-channel mapping, while D5 uses the dedicated two-channel D5 mapping.\n\n"
+            "PL-interface checkbox:\n"
+            "Checked: the wizard instantiates one resolver_pl_interface IP for that channel. "
+            "The resolver valid_m signal triggers the PL interface, and software/visualization use the processed "
+            "PL-interface position and speed outputs.\n\n"
+            "Unchecked: the resolver IP is still generated for that channel, but no resolver_pl_interface IP is "
+            "created. Software reads position and speed directly from the base resolver IP.\n\n"
+            "Sample trigger source:\n"
+            "Each resolver IP sample trigger defaults to uz_system/trigger_conversions unless a different block-design "
+            "pin is configured."
+        )
 
     def _add_source_fields(self, slot: str, card_id: str, card: dict[str, Any], group_layout: QVBoxLayout) -> None:
         source_fields = card.get("vivado", {}).get("source_fields", [])

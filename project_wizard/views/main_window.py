@@ -43,7 +43,18 @@ from PyQt6.QtWidgets import (
     QWidgetAction,
 )
 
-from ..paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, OUTPUT_DIR, SLOTS
+from ..paths import (
+    APP_DIR,
+    CPLD_CONFIG_DIR,
+    DATA_FILE,
+    DIGITAL_SLOTS,
+    LOG_DIR,
+    OUTPUT_DIR,
+    SLOTS,
+    USER_CONFIG_DIR,
+    VIVADO_BD_CONFIG_DIR,
+    VIVADO_RUN_SCRIPT_DIR,
+)
 from ..models import SystemConfig
 from ..repositories import CardDatabase
 from ..services.card_service import default_cpld_for_card
@@ -151,7 +162,7 @@ class MainWindow(QMainWindow):
         self.cpld_process: QProcess | None = None
         self.vivado_process: QProcess | None = None
         self.cpld_log_path: Path | None = None
-        self.cpld_xcf_path: Path = OUTPUT_DIR / "project_wizard_slot_cplds.xcf"
+        self.cpld_xcf_path: Path = CPLD_CONFIG_DIR / "project_wizard_slot_cplds.xcf"
         self.cpld_xcf_current = False
         self.write_cpld_button: QPushButton | None = None
         self.program_cpld_button: QPushButton | None = None
@@ -284,6 +295,13 @@ class MainWindow(QMainWindow):
         info_action.triggered.connect(self.show_info)
         help_menu.addAction(info_action)
 
+    def _help_button(self, title: str, text: str) -> QPushButton:
+        button = QPushButton("?")
+        button.setFixedWidth(28)
+        button.setToolTip(title)
+        button.clicked.connect(lambda _checked=False: QMessageBox.information(self, title, text))
+        return button
+
     def add_file_menu_action(
         self,
         menu,
@@ -344,8 +362,8 @@ class MainWindow(QMainWindow):
         tcl_generation = QTreeWidgetItem(["TCL generation"])
         slot_cplds = QTreeWidgetItem(["Slot CPLDs"])
         config.addChild(hardware_general)
-        config.addChild(adapter_cards)
         config.addChild(pwm)
+        config.addChild(adapter_cards)
         config.addChild(axi_interconnect)
         config.addChild(tcl_generation)
         config.addChild(slot_cplds)
@@ -910,6 +928,15 @@ class MainWindow(QMainWindow):
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
         buttons.addWidget(generate_button)
+        buttons.addWidget(
+            self._help_button(
+                "Generate software files",
+                "Writes generated adapter-slot init files to the selected software source folder.\n\n"
+                "Also patches shared Vitis source files only inside Project Wizard marker blocks, for example "
+                "globalData.h, main.c, isr.c, javascope files, and uz_global_configuration.h.\n\n"
+                "The action asks for confirmation before writing files.",
+            )
+        )
         controls_layout.addLayout(buttons)
         controls_layout.addStretch(1)
         splitter.addWidget(controls)
@@ -972,6 +999,15 @@ class MainWindow(QMainWindow):
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
         buttons.addWidget(generate_button)
+        buttons.addWidget(
+            self._help_button(
+                "Generate software files",
+                "Writes generated adapter-slot init files to the selected software source folder.\n\n"
+                "Also patches shared Vitis source files only inside Project Wizard marker blocks, for example "
+                "globalData.h, main.c, isr.c, javascope files, and uz_global_configuration.h.\n\n"
+                "The action asks for confirmation before writing files.",
+            )
+        )
         layout.addLayout(buttons)
         return page
 
@@ -1018,6 +1054,15 @@ class MainWindow(QMainWindow):
         generate_button.clicked.connect(self.generate_software_files)
         buttons.addStretch(1)
         buttons.addWidget(generate_button)
+        buttons.addWidget(
+            self._help_button(
+                "Generate software files",
+                "Writes generated adapter-slot init files to the selected software source folder.\n\n"
+                "Also patches shared Vitis source files only inside Project Wizard marker blocks, for example "
+                "globalData.h, main.c, isr.c, javascope files, and uz_global_configuration.h.\n\n"
+                "The action asks for confirmation before writing files.",
+            )
+        )
         action_layout.addLayout(buttons)
         layout.addWidget(action_group)
 
@@ -1162,8 +1207,32 @@ class MainWindow(QMainWindow):
         self.tcl_workflow_button = workflow_button
         workflow_layout.addWidget(preview_button, 0, 0)
         workflow_layout.addWidget(clear_cache_button, 0, 1)
-        workflow_layout.addWidget(workflow_button, 0, 2)
-        workflow_layout.setColumnStretch(3, 1)
+        workflow_layout.addWidget(
+            self._help_button(
+                "Clear local Vivado artifacts",
+                "Deletes local Vivado cache/build artifacts for the configured Vivado project and block design.\n\n"
+                "This is useful after switching branches or changing the block design structure, because stale cached "
+                "IP data can cause misleading Vivado errors.\n\n"
+                "The action asks for confirmation before deleting anything.",
+            ),
+            0,
+            2,
+        )
+        workflow_layout.addWidget(workflow_button, 0, 3)
+        workflow_layout.addWidget(
+            self._help_button(
+                "Execute TCL workflow",
+                "Exports the generated block-design TCL, writes a Vivado run wrapper, and starts Vivado with the "
+                "selected local workflow options.\n\n"
+                f"Default TCL export folder:\n{VIVADO_BD_CONFIG_DIR}\n\n"
+                f"Vivado run wrapper folder:\n{VIVADO_RUN_SCRIPT_DIR}\n\n"
+                "Depending on the selected checkboxes, Vivado can validate/save the block design, run in GUI mode, "
+                "generate a bitstream, and export an XSA.",
+            ),
+            0,
+            4,
+        )
+        workflow_layout.setColumnStretch(5, 1)
         local_layout.addWidget(workflow_widget)
         local_layout.addStretch(1)
 
@@ -1199,6 +1268,15 @@ class MainWindow(QMainWindow):
         remote_buttons = QHBoxLayout()
         remote_buttons.addStretch(1)
         remote_buttons.addWidget(export_button)
+        remote_buttons.addWidget(
+            self._help_button(
+                "Export TCL",
+                "Writes the generated block-design TCL to a user-selected file.\n\n"
+                f"Default folder:\n{VIVADO_BD_CONFIG_DIR}\n\n"
+                "Use this when the TCL should be copied to or executed on another workstation. The export dialog is "
+                "shown before writing the file.",
+            )
+        )
         remote_buttons.addStretch(1)
         remote_layout.addLayout(remote_buttons)
         remote_layout.addStretch(1)
@@ -1378,7 +1456,25 @@ class MainWindow(QMainWindow):
         program_button.setEnabled(False)
         buttons.addStretch(1)
         buttons.addWidget(lattice_button)
+        buttons.addWidget(
+            self._help_button(
+                "Write Lattice Diamond Programmer project file",
+                "Writes a Diamond Programmer XCF file for the currently selected D-slot CPLD programs.\n\n"
+                f"Default folder:\n{CPLD_CONFIG_DIR}\n\n"
+                "The save dialog is shown before writing the file. Existing files are overwritten only if you confirm "
+                "that path in the dialog.",
+            )
+        )
         buttons.addWidget(program_button)
+        buttons.addWidget(
+            self._help_button(
+                "Programm CPLDs via CLI",
+                "Runs the configured Lattice Diamond Programmer command-line executable with the current XCF file.\n\n"
+                f"Programmer output log folder:\n{LOG_DIR}\n\n"
+                "The XCF must be generated first, and the Toolchain page must contain a valid Programmer executable "
+                "path. This workflow is intended for MachXO2 D-slot CPLDs.",
+            )
+        )
         buttons.addStretch(1)
         outer.addLayout(buttons)
         cpld_cli_hint = QLabel(
@@ -1916,12 +2012,8 @@ class MainWindow(QMainWindow):
         self.driver_config_mode_combos.clear()
         self.driver_config_fields.clear()
 
-        instances = self.software_generator.driver_config_instances(
-            self.assignments(),
-            self.option_values(),
-            self.software_modes(),
-            self.software_presets(),
-            self.hardware_config(),
+        instances = self.software_generator.driver_config_instances_model(
+            self.resolved_system_model(refresh_dependent_views=False)
         )
         instances_by_slot: dict[str, list[Any]] = {slot: [] for slot in ["PWM", *SLOTS]}
         for instance in instances:
@@ -1941,6 +2033,14 @@ class MainWindow(QMainWindow):
             mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
             self.driver_config_mode_combos[instance.id] = mode_combo
             form.addRow("Config mode", mode_combo)
+            if instance.driver == "axi_gpio":
+                hint = QLabel(
+                    "Default generates Arduino-style helper functions with AXI_GPIO_SLOT_Dx, DIG_xx, LOW, and HIGH. "
+                    "Custom keeps only the raw bitmask readout in Global_Data.av.io_card_dx_state."
+                )
+                hint.setWordWrap(True)
+                hint.setStyleSheet("color: palette(mid);")
+                group_layout.addWidget(hint)
 
             field_widgets: list[QWidget] = []
             field_rows: dict[str, tuple[QWidget, QWidget | None]] = {}
@@ -2061,14 +2161,8 @@ class MainWindow(QMainWindow):
                     layout.removeItem(item)
         self.visualization_route_checkboxes.clear()
 
-        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
-        source_dir = Path(source_text) if source_text else Path("<software source folder>")
-        signals = self.software_generator.visualization_signals(
-            source_dir,
-            self.assignments(),
-            self.detail_options,
-            self.software_modes(),
-            self.software_presets(),
+        signals = self.software_generator.visualization_signals_model(
+            self.resolved_system_model(refresh_dependent_views=False)
         )
         signals_by_slot: dict[str, list[Any]] = {slot: [] for slot in SLOTS}
         for signal in signals:
@@ -2153,7 +2247,11 @@ class MainWindow(QMainWindow):
         if slot in DIGITAL_SLOTS:
             self.prefill_cpld_for_slot(slot)
         self.refresh_software_preset_options(refresh_dependent=False)
-        self.software_dependent_views_dirty = True
+        values = self.software_config()
+        self.refresh_advanced_driver_config_options(values)
+        self.refresh_data_visualization_options(values, refresh_preview=False)
+        self.software_dependent_views_dirty = False
+        self.guarded_refresh_software_preview()
         self.guarded_refresh_tcl_preview()
 
     def adapter_detail_changed(self, slot: str | None, cpld_may_change: bool) -> None:
@@ -2172,7 +2270,10 @@ class MainWindow(QMainWindow):
     def software_driver_selection_changed(self) -> None:
         if self.is_loading_config:
             return
-        self.software_dependent_views_dirty = True
+        values = self.software_config()
+        self.refresh_advanced_driver_config_options(values)
+        self.refresh_data_visualization_options(values, refresh_preview=False)
+        self.software_dependent_views_dirty = False
         self.refresh_software_preview()
 
     def prefill_cpld_for_slot(self, slot: str) -> None:
@@ -2309,7 +2410,7 @@ class MainWindow(QMainWindow):
 
     def show_adapter_cards(self) -> None:
         self.stack.setCurrentIndex(3)
-        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(1))
+        self.tree.setCurrentItem(self.tree.topLevelItem(2).child(2))
 
     def show_hardware_configuration(self) -> None:
         self.show_hardware_general()
@@ -2389,10 +2490,10 @@ class MainWindow(QMainWindow):
         self.set_cpld_status("\n".join(messages))
 
     def ask_cpld_project_export_path(self) -> Path | None:
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        default_path = self.cpld_xcf_path if self.cpld_xcf_path else OUTPUT_DIR / "project_wizard_slot_cplds.xcf"
+        CPLD_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        default_path = self.cpld_xcf_path if self.cpld_xcf_path else CPLD_CONFIG_DIR / "project_wizard_slot_cplds.xcf"
         if not default_path.is_absolute():
-            default_path = OUTPUT_DIR / default_path.name
+            default_path = CPLD_CONFIG_DIR / default_path.name
         path_text, _ = QFileDialog.getSaveFileName(
             self,
             "Write Lattice Diamond Programmer project file",
@@ -2415,7 +2516,8 @@ class MainWindow(QMainWindow):
                 raise FileNotFoundError(f"Lattice Programmer executable not found: {programmer_path}")
             if not self.cpld_xcf_current or not self.cpld_xcf_path.exists():
                 raise FileNotFoundError("Generate the Lattice Diamond Programmer project file before programming.")
-            log_path = OUTPUT_DIR / "project_wizard_slot_cplds.log"
+            LOG_DIR.mkdir(parents=True, exist_ok=True)
+            log_path = LOG_DIR / "project_wizard_slot_cplds.log"
         except (OSError, ValueError) as error:
             self.set_cpld_status(f"Could not program CPLDs:\n{error}")
             QMessageBox.warning(self, "Could not program CPLDs", str(error))
@@ -2593,20 +2695,9 @@ class MainWindow(QMainWindow):
         self.guarded_refresh_tcl_preview()
 
     def refresh_tcl_preview(self) -> None:
-        assignments = self.assignments()
-        option_values = self.option_values()
-        axi_config = self.axi_config()
-        self.tcl_preview.setPlainText(
-            self.generator.generate(
-                self.selected_platform(),
-                assignments,
-                option_values,
-                self.cpld_assignments(),
-                axi_config,
-                self.hardware_config(),
-            )
-        )
-        warnings = self.generator.validation_warnings(assignments, axi_config, option_values, self.software_modes())
+        model = self.resolved_system_model()
+        self.tcl_preview.setPlainText(self.generator.generate_model(model))
+        warnings = self.generator.validation_warnings_model(model)
         if warnings and self.vivado_status:
             self.vivado_status.setPlainText("\n".join(f"- {warning}" for warning in warnings))
         elif self.vivado_status:
@@ -2617,21 +2708,7 @@ class MainWindow(QMainWindow):
     def refresh_software_preview(self) -> None:
         if self.software_preview is None:
             return
-        source_text = self.software_fields.get("source_dir").text().strip() if self.software_fields.get("source_dir") else ""
-        source_dir = Path(source_text) if source_text else Path("<software source folder>")
-        self.software_preview.setPlainText(
-            self.software_generator.preview(
-                source_dir,
-                self.assignments(),
-                self.option_values(),
-                self.selected_platform().get("revision", ""),
-                self.software_modes(),
-                self.software_presets(),
-                self.selected_visualization_signals(),
-                self.driver_config_values(),
-                self.hardware_config(),
-            )
-        )
+        self.software_preview.setPlainText(self.software_generator.preview_model(self.resolved_system_model()))
 
     def generate_software_files(self) -> None:
         self.refresh_dirty_software_dependent_views()
@@ -2640,26 +2717,9 @@ class MainWindow(QMainWindow):
         if not source_text:
             QMessageBox.warning(self, "Software source folder missing", "Please select the folder that contains globalData.h.")
             return
-        source_dir = Path(source_text)
-        assignments = self.assignments()
-        option_values = self.option_values()
-        platform_revision = self.selected_platform().get("revision", "")
-        software_modes = self.software_modes()
-        software_presets = self.software_presets()
-        visualization_signals = self.selected_visualization_signals()
-        driver_config = self.driver_config_values()
-        hardware_config = self.hardware_config()
+        model = self.resolved_system_model()
         try:
-            plan = self.software_generator.build_plan(
-                source_dir,
-                assignments,
-                option_values,
-                software_modes,
-                software_presets,
-                visualization_signals,
-                driver_config,
-                hardware_config,
-            )
+            plan = self.software_generator.build_plan_model(model)
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not prepare software generation", str(error))
             return
@@ -2694,17 +2754,7 @@ class MainWindow(QMainWindow):
                 self.software_status.setPlainText("Software generation canceled.")
             return
         try:
-            result = self.software_generator.generate(
-                source_dir,
-                assignments,
-                option_values,
-                platform_revision,
-                software_modes,
-                software_presets,
-                visualization_signals,
-                driver_config,
-                hardware_config,
-            )
+            result = self.software_generator.generate_model(model)
         except (OSError, ValueError) as error:
             QMessageBox.warning(self, "Could not generate software files", str(error))
             return
@@ -2800,10 +2850,11 @@ class MainWindow(QMainWindow):
     def open_config(self) -> None:
         if not self.confirm_save_config_changes("opening another config"):
             return
+        USER_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         path_text, _ = QFileDialog.getOpenFileName(
             self,
             "Open config",
-            str(APP_DIR),
+            str(USER_CONFIG_DIR),
             "Project Wizard config (*.pw.json);;JSON files (*.json)",
         )
         if not path_text:
@@ -2847,9 +2898,7 @@ class MainWindow(QMainWindow):
     def finish_config_load_refresh(self, document: dict[str, Any]) -> None:
         self.set_bulk_updates_enabled(False)
         try:
-            software = document.get("software", {})
-            software_values = {str(key): str(value) for key, value in software.items()} if isinstance(software, dict) else {}
-            self.refresh_software_preset_options(software_values)
+            self.refresh_software_preset_options(SystemConfig.from_document(document).software)
             self.software_dependent_views_dirty = False
             self.refresh_tcl_preview()
         except Exception as error:  # noqa: BLE001 - keep the GUI alive after refresh errors.
@@ -2872,7 +2921,7 @@ class MainWindow(QMainWindow):
         return self.write_config(self.current_config_path)
 
     def save_config_as(self) -> bool:
-        default_path = self.current_config_path or (APP_DIR / "generated" / "project_wizard_config.pw.json")
+        default_path = self.current_config_path or (USER_CONFIG_DIR / "project_wizard_config.pw.json")
         path_text, _ = QFileDialog.getSaveFileName(
             self,
             "Save config as",
@@ -2923,22 +2972,32 @@ class MainWindow(QMainWindow):
         return False
 
     def config_document(self) -> dict[str, Any]:
-        self.refresh_dirty_software_dependent_views()
-        return build_config_document(
-            self.selected_platform(),
-            self.platform_cpld_config(),
-            self.toolchain_config(),
-            self.hardware_config(),
-            self.assignments(),
-            self.option_values(),
-            self.cpld_assignments(),
-            self.cpld_programmer_config(),
-            self.axi_config(),
-            self.software_config(),
+        return self.system_config().to_document()
+
+    def system_config(self, refresh_dependent_views: bool = True) -> SystemConfig:
+        if refresh_dependent_views:
+            self.refresh_dirty_software_dependent_views()
+        return SystemConfig.from_document(
+            build_config_document(
+                self.selected_platform(),
+                self.platform_cpld_config(),
+                self.toolchain_config(),
+                self.hardware_config(),
+                self.assignments(),
+                self.option_values(),
+                self.cpld_assignments(),
+                self.cpld_programmer_config(),
+                self.axi_config(),
+                self.software_config(),
+                self.software_modes(),
+                self.software_presets(),
+                self.selected_visualization_signals(),
+                self.driver_config_values(),
+            )
         )
 
-    def resolved_system_model(self):
-        return self.system_resolver.resolve(SystemConfig.from_document(self.config_document()))
+    def resolved_system_model(self, refresh_dependent_views: bool = True):
+        return self.system_resolver.resolve(self.system_config(refresh_dependent_views))
 
     def update_config_load_progress(self, progress: QProgressDialog | None, value: int, message: str) -> None:
         if progress is None:
@@ -2948,46 +3007,25 @@ class MainWindow(QMainWindow):
         QApplication.processEvents()
 
     def load_config_document(self, document: dict[str, Any], progress: QProgressDialog | None = None) -> None:
-        if not isinstance(document, dict):
-            raise ValueError("Config must be a JSON object.")
+        config = SystemConfig.from_document(document)
         self.update_config_load_progress(progress, 2, "Loading platform and toolchain...")
-        platform_id = document.get("platform", "")
+        platform_id = config.platform
         platform_index = self.platform_combo.findData(platform_id)
         if platform_index >= 0:
             self.platform_combo.setCurrentIndex(platform_index)
-        platform_revision = str(document.get("platform_revision", ""))
-        self.refresh_platform_revisions(platform_revision)
+        self.refresh_platform_revisions(config.platform_revision)
 
-        platform_cpld = document.get("platform_cpld", {})
-        if platform_cpld is None:
-            platform_cpld = {}
-        if not isinstance(platform_cpld, dict):
-            raise ValueError("Config field 'platform_cpld' must be a JSON object.")
-        self.load_platform_cpld_config({str(key): str(value) for key, value in platform_cpld.items()})
+        self.load_platform_cpld_config(config.platform_cpld)
         self.refresh_platform_cpld_visibility()
 
-        toolchain = document.get("toolchain", {})
-        if toolchain is None:
-            toolchain = {}
-        if not isinstance(toolchain, dict):
-            raise ValueError("Config field 'toolchain' must be a JSON object.")
-        self.load_toolchain_config({str(key): str(value) for key, value in toolchain.items()})
+        self.load_toolchain_config(config.toolchain)
 
-        hardware = document.get("hardware", {})
-        if hardware is None:
-            hardware = {}
-        if not isinstance(hardware, dict):
-            raise ValueError("Config field 'hardware' must be a JSON object.")
-        self.load_hardware_config({str(key): str(value) for key, value in hardware.items()})
+        self.load_hardware_config(config.hardware)
 
         self.update_config_load_progress(progress, 3, "Loading adapter cards...")
-        slots = document.get("slots", {})
-        if not isinstance(slots, dict):
-            raise ValueError("Config field 'slots' must be a JSON object.")
+        slots = config.slots
         for slot, combo in self.slot_combos.items():
             card_id = slots.get(slot, "empty")
-            if slot.startswith("A") and card_id == "empty":
-                card_id = "no_adapter_board"
             index = combo.findData(card_id)
             if index < 0:
                 fallback_card_id = "no_adapter_board" if slot.startswith("A") else "empty"
@@ -2995,30 +3033,16 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else 0)
 
         self.update_config_load_progress(progress, 4, "Loading adapter card details...")
-        slot_options = document.get("slot_options", {})
-        if not isinstance(slot_options, dict):
-            raise ValueError("Config field 'slot_options' must be a JSON object.")
-        self.detail_options = {
-            str(slot): {str(option_id): str(value) for option_id, value in options.items()}
-            for slot, options in slot_options.items()
-            if isinstance(options, dict)
-        }
+        self.detail_options = {slot: dict(options) for slot, options in config.slot_options.items()}
         if self.adapter_details is not None:
             self.adapter_details.detail_options = self.detail_options
         self.rebuild_details()
 
         self.update_config_load_progress(progress, 5, "Loading software configuration...")
-        software = document.get("software", {})
-        if software is None:
-            software = {}
-        if not isinstance(software, dict):
-            raise ValueError("Config field 'software' must be a JSON object.")
-        self.load_software_config({str(key): str(value) for key, value in software.items()})
+        self.load_software_config(config.software)
 
         self.update_config_load_progress(progress, 6, "Loading CPLD and AXI settings...")
-        slot_cplds = document.get("slot_cplds", {})
-        if not isinstance(slot_cplds, dict):
-            raise ValueError("Config field 'slot_cplds' must be a JSON object.")
+        slot_cplds = config.slot_cplds
         for slot, combo in self.cpld_combos.items():
             program_id = slot_cplds.get(slot)
             if program_id is None:
@@ -3029,17 +3053,9 @@ class MainWindow(QMainWindow):
             combo.setCurrentIndex(index if index >= 0 else max(combo.findData("none"), 0))
             combo.blockSignals(False)
 
-        cpld_programmer = document.get("cpld_programmer", {})
-        if cpld_programmer is None:
-            cpld_programmer = {}
-        if not isinstance(cpld_programmer, dict):
-            raise ValueError("Config field 'cpld_programmer' must be a JSON object.")
-        self.load_cpld_programmer_config({str(key): str(value) for key, value in cpld_programmer.items()})
+        self.load_cpld_programmer_config(config.cpld_programmer)
 
-        axi = document.get("axi", self.database.axi_interconnect)
-        if not isinstance(axi, dict):
-            raise ValueError("Config field 'axi' must be a JSON object.")
-        self.load_axi_config({str(key): str(value) for key, value in axi.items()})
+        self.load_axi_config(config.axi)
 
     def show_docs(self) -> None:
         QMessageBox.information(
@@ -3088,7 +3104,12 @@ class MainWindow(QMainWindow):
                     "Paths:",
                     f"  Wizard folder: {APP_DIR}",
                     f"  Data folder: {DATA_FILE.parent}",
+                    f"  User configurations folder: {USER_CONFIG_DIR}",
                     f"  Generated folder: {OUTPUT_DIR}",
+                    f"  Vivado BD TCL folder: {VIVADO_BD_CONFIG_DIR}",
+                    f"  Vivado run scripts folder: {VIVADO_RUN_SCRIPT_DIR}",
+                    f"  CPLD config folder: {CPLD_CONFIG_DIR}",
+                    f"  Logs folder: {LOG_DIR}",
                     "",
                     "License:",
                     "  Apache License 2.0",
@@ -3136,34 +3157,19 @@ class MainWindow(QMainWindow):
         self.run_tcl_in_vivado(tcl_path)
 
     def ask_tcl_export_path(self) -> Path | None:
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        default_path = OUTPUT_DIR / "project_wizard_config.tcl"
+        VIVADO_BD_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        default_path = VIVADO_BD_CONFIG_DIR / "project_wizard_config.tcl"
         path_text, _ = QFileDialog.getSaveFileName(self, "Export TCL", str(default_path), "TCL files (*.tcl)")
         return Path(path_text) if path_text else None
 
     def write_generated_tcl(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            self.generator.generate(
-                self.selected_platform(),
-                self.assignments(),
-                self.option_values(),
-                self.cpld_assignments(),
-                self.axi_config(),
-                self.hardware_config(),
-            ),
-            encoding="utf-8",
-        )
+        path.write_text(self.generator.generate_model(self.resolved_system_model()), encoding="utf-8")
         if self.vivado_status:
             self.vivado_status.setPlainText(f"Wrote TCL: {path}")
 
     def show_tcl_export_result(self, path: Path) -> None:
-        warnings = self.generator.validation_warnings(
-            self.assignments(),
-            self.axi_config(),
-            self.option_values(),
-            self.software_modes(),
-        )
+        warnings = self.generator.validation_warnings_model(self.resolved_system_model())
         if warnings:
             QMessageBox.warning(
                 self,
@@ -3252,7 +3258,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Vivado project missing", f"Vivado project not found:\n{project_path}")
             return
 
-        wrapper_path = OUTPUT_DIR / "project_wizard_run_vivado.tcl"
+        wrapper_path = VIVADO_RUN_SCRIPT_DIR / "project_wizard_run_vivado.tcl"
         generate_bitstream = hardware.get("generate_bitstream", "false").lower() in {"1", "true", "yes", "on"}
         export_xsa = hardware.get("export_xsa_after_build", "false").lower() in {"1", "true", "yes", "on"}
         if export_xsa and not generate_bitstream:

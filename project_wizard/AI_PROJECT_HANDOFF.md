@@ -8,7 +8,7 @@ This file captures project-specific knowledge for future AI/code-assistant sessi
 
 - Main repo: UltraZohm software/Vivado/Vitis repository.
 - Wizard path: `project_wizard/`.
-- Main generated config: `project_wizard/generated/project_wizard_config.pw.json`.
+- Main saved wizard config: `project_wizard/user_configurations/project_wizard_config.pw.json`.
 - Vivado block design target: `vivado/project/zusys/zusys.bd`.
 - Vitis bare-metal sources: `vitis/software/Baremetal/src/`.
 - Neighbor reference repos used during development:
@@ -545,12 +545,34 @@ Likely follow-up tasks:
 
 ## 5. Known Caveats And Watch Points
 
-- Generated files in `project_wizard/generated/` are often user/local state. Be careful before editing or reverting.
+- Files in `project_wizard/generated/` and `project_wizard/user_configurations/` are often user/local state. Be careful before editing or reverting.
 - The working tree may be dirty from user tests. Never revert unrelated files.
 - `compileall` creates `__pycache__`; remove those before finalizing.
 - The UI may remain open while files are edited; Python source changes require restarting the wizard. JSON/templates are generally read when workflows run, but restart is still safest.
 - The Vivado GUI flow and generated Tcl flow should behave the same. Avoid special cases that only work when Tcl is pasted manually.
 - If Vivado address assignment fails randomly, rerun generation after ensuring stale AXI pins/legacy hierarchies are cleaned.
 - Legacy uncontrolled BD content can cause confusing build errors. The long-term goal is a cleaner, fully wizard-owned script path, but current strategy is still piecewise migration.
+- Tcl template safety was smoke-tested at generator level across bypass, no-adapter, checkpoint on/off, every card in every compatible slot, selectable option choices, all-option-`none` paths, and IO-card no-AXI paths. This catches template/rendering errors but does not replace Vivado execution tests.
+- Project configuration uses schema version 2. The saved JSON now has typed sections:
+  - `platform`: `{id, revision, cpld}`
+  - `slots`: per-slot `{card, options, cpld}`
+  - `software`: `{source_dir, modes, presets, visualization_routes, driver_config, extra}`
+  - top-level `toolchain`, `hardware`, `cpld_programmer`, and `axi`.
+- `project_wizard/models.py` owns the typed config dataclasses. `SystemConfig` still exposes legacy-shaped projection properties (`slots`, `slot_options`, `slot_cplds`, flat `software`) so proven generators can remain behaviorally stable while the app boundary is typed.
+- GUI preview/export/generate paths should go through `MainWindow.resolved_system_model()` and generator model facades such as `TclGenerator.generate_model()` and `SoftwareGenerator.build_plan_model()`.
+- Golden scenario baselines live in `project_wizard/generated/golden_scenarios/`. Run `python -m project_wizard.golden_scenarios --check` after config/resolver/generator changes; it compares ten representative scenarios against TCL and software-summary baselines.
+- Open Vivado-live Tcl transition tests to run during field testing or a focused validation pass:
+  - AXI card -> `No adapter board`: generated Tcl should fully remove slot content and stale AXI wiring.
+  - AXI card -> selected non-AXI card: generated Tcl should remove stale AXI wiring and create only the non-AXI card content.
+  - Any existing slot content -> `Bypass`: generated Tcl should leave that slot untouched, including stale AXI wiring.
+  - Dirty/legacy BD -> selected AXI card: generated Tcl should clean old slot-local AXI attachment, recreate the current one, and let Vivado auto-assign addresses without conflict.
+- Open local Vivado workflow matrix tests to run manually with Vivado or by test users:
+  - Batch mode with `Validate BD` only.
+  - Batch mode with `Validate BD` + `Save BD`.
+  - GUI mode with validate/save enabled.
+  - `Generate bitstream` enabled.
+  - `Generate bitstream` + `Export .xsa after successful build` enabled.
+  - Confirm workflow output autoscrolls and contains enough error context for failed Vivado runs.
+  - Confirm `Clear local Vivado artifacts` reliably fixes stale cache/IP issues before rerunning.
 - Do not reintroduce fixed AXI addresses.
 - Do not reintroduce old `xz` naming.

@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .models import ResolvedSystemModel
 from .paths import DIGITAL_SLOTS, SLOTS
 from .repositories import CardDatabase
 from .template_renderer import SimpleTemplateRenderer
@@ -12,6 +13,29 @@ class TclGenerator:
     def __init__(self, database: CardDatabase) -> None:
         self.database = database
         self.renderer = SimpleTemplateRenderer()
+
+    def generate_model(self, model: ResolvedSystemModel) -> str:
+        platform = {
+            "id": model.config.platform,
+            "name": (model.platform or {}).get("name", model.config.platform),
+            "revision": model.config.platform_revision,
+        }
+        return self.generate(
+            platform,
+            model.config.slots,
+            model.config.slot_options,
+            model.config.slot_cplds,
+            model.config.axi,
+            model.config.hardware,
+        )
+
+    def validation_warnings_model(self, model: ResolvedSystemModel) -> list[str]:
+        return self.validation_warnings(
+            model.config.slots,
+            model.config.axi,
+            model.config.slot_options,
+            model.config.software_modes,
+        )
 
     def generate(
         self,
@@ -1128,15 +1152,18 @@ class TclGenerator:
         }
         axi_slots = []
         axi_connections = []
-        no_adapter_slots = []
+        stale_axi_cleanup_slots = []
         upstream_smartconnects = []
         local_name = config.get("local_smartconnect_name", "axi_smartconnect")
         for slot in SLOTS:
             card_id = assignments.get(slot, "empty")
+            # Bypass means the wizard must not touch this slot, including AXI cleanup.
+            if card_id == "empty":
+                continue
             if card_id == "no_adapter_board":
                 slot_axi = a_slot_axi if slot.startswith("A") else d_slot_axi
                 adapter_root_hier = self._adapter_root_hier(slot)
-                no_adapter_slots.append(
+                stale_axi_cleanup_slots.append(
                     {
                         "slot": slot,
                         "adapter_root_hier": adapter_root_hier,
@@ -1144,6 +1171,7 @@ class TclGenerator:
                         "upstream_smartconnect": slot_axi["upstream_smartconnect"],
                     }
                 )
+                continue
             card = self.database.card_by_id(card_id)
             if not card:
                 continue
@@ -1151,7 +1179,7 @@ class TclGenerator:
             if not interfaces:
                 slot_axi = a_slot_axi if slot.startswith("A") else d_slot_axi
                 adapter_root_hier = card.get("vivado", {}).get("adapter_parent_hier", self._adapter_root_hier(slot))
-                no_adapter_slots.append(
+                stale_axi_cleanup_slots.append(
                     {
                         "slot": slot,
                         "adapter_root_hier": adapter_root_hier,
@@ -1200,8 +1228,8 @@ class TclGenerator:
                 )
             if slot_axi["upstream_smartconnect"] and slot_axi["upstream_smartconnect"] not in upstream_smartconnects:
                 upstream_smartconnects.append(slot_axi["upstream_smartconnect"])
-        for no_adapter_slot in no_adapter_slots:
-            upstream = no_adapter_slot["upstream_smartconnect"]
+        for cleanup_slot in stale_axi_cleanup_slots:
+            upstream = cleanup_slot["upstream_smartconnect"]
             if upstream and upstream not in upstream_smartconnects:
                 upstream_smartconnects.append(upstream)
         return {
@@ -1218,8 +1246,8 @@ class TclGenerator:
             "a_resetn_pin": config.get("a_resetn_pin", ""),
             "a_address_space": config.get("a_address_space", ""),
             "local_smartconnect_vlnv": config.get("local_smartconnect_vlnv", "xilinx.com:ip:smartconnect"),
-            "has_no_adapter_slots": bool(no_adapter_slots),
-            "no_adapter_slots": no_adapter_slots,
+            "has_stale_axi_cleanup_slots": bool(stale_axi_cleanup_slots),
+            "stale_axi_cleanup_slots": stale_axi_cleanup_slots,
             "has_axi": bool(axi_slots),
             "axi_slots": axi_slots,
             "axi_connections": axi_connections,

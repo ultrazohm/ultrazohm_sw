@@ -31,7 +31,11 @@ On Windows, you can also double-click `run_project_wizard.bat`.
 - `main.py`: PyQt GUI entry point.
 - `data/adapter_cards.json`: Git-trackable card/IP metadata database.
 - `data/platforms.json`: Git-trackable platform revisions and project-level AXI defaults.
-- `generated/`: Output folder for generated project files.
+- `user_configurations/`: Saved user-owned wizard configuration files.
+- `generated/vivado_bd_config/`: Generated Vivado block-design TCL.
+- `generated/vivado_run_scripts/`: Generated helper TCL for local Vivado execution.
+- `generated/cpld_config/`: Generated CPLD programmer project files.
+- `generated/logs/`: Local workflow log files.
 
 ## Data Model Idea
 

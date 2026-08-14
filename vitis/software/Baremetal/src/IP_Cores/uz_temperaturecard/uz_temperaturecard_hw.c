@@ -46,6 +46,16 @@ void uz_TempCard_IF_hw_Stop(uint32_t base_address){                          // 
     uz_axi_write_uint32(base_address + TempCard_IF_Controlreg, Regdata & ~(0x00000001U));
 }
 
+uint32_t uz_TempCard_IF_hw_readErrorReg(uint32_t base_address){              // reads the Error_Register
+    uz_assert_not_zero(base_address);
+    return (uz_axi_read_uint32(base_address + TempCard_IF_internal_error));
+}
+
+uint32_t uz_TempCard_IF_hw_readReadbackReg(uint32_t base_address){           // reads the IP-Core Readback
+    uz_assert_not_zero(base_address);
+    return (uz_axi_read_uint32(base_address + TempCard_IF_Design_RB));
+}
+
 void uz_TempCard_IF_hw_writeReg(uint32_t base_address,uint32_t data){         // write one Register
     uz_assert_not_zero(base_address);
     uz_axi_write_uint32(base_address,data);

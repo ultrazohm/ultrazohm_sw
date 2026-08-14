@@ -32,7 +32,7 @@ enum JS_OberservableData {
 //	JSO_pmsm_ideal_torque,
 //	JSO_ctrl_Ualpha,
 //	JSO_ctrl_Ubeta,
-//	JSO_SD_U,
+	JSO_SD_U,
 	JSO_SD_PH1,
 	JSO_SD_PH2,
 	JSO_SD_PH3,
@@ -122,12 +122,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	input_port,
-	output_port,
+	HB1_DutyCycle,
+	HB2_DutyCycle,
+	HB3_DutyCycle,
 	Soll_Drehzahl,
-	filt_input_delay,
-	DutA,
-	DutB,
+	Clk_Dut,
+	send_field_6,
 	DutC,
 	send_field_7,
 	Soll_id,
@@ -150,12 +150,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
+	-,
+	-,
+	-,
 	RPM,
-	Nm,
-	10ns,
-	A,
-	A,
-	A,
+	-,
+	-,
 	-,
 	A,
 	A,
@@ -230,7 +230,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
+	manual_duty_cycle,
 	MyButton2,
 	MyButton3,
 	current_control,

@@ -34,10 +34,7 @@ extern uint32_t input_port;
 extern uz_JL_pmsmModel_t *pmsm_ideal;
 extern float DC_LINK_MAX_VOLTS;
 
-extern float DutA;
-extern float DutB;
 extern float DutC;
-
 
 extern Bus_ZM_In struct_ZM_In;
 extern struct uz_JL_pmsmModel_inputs_t pmsm_ideal_in;
@@ -237,25 +234,34 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		case (Set_Send_Field_1): // HB1 duty cycle, wirkt nur im manual_duty_cycle state
+			if (data->rasv.ctrl_state == manual_duty_cycle)
+			{
+				data->rasv.Soll_HB1_DutyCycle = value;
+			}
 			break;
 
-		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		case (Set_Send_Field_2): // HB2 duty cycle, wirkt nur im manual_duty_cycle state
+			if (data->rasv.ctrl_state == manual_duty_cycle)
+			{
+				data->rasv.Soll_HB2_DutyCycle = value;
+			}
 			break;
 
-		case (Set_Send_Field_3):
+		case (Set_Send_Field_3): // HB3 duty cycle, wirkt nur im manual_duty_cycle state
+			if (data->rasv.ctrl_state == manual_duty_cycle)
+			{
+				data->rasv.Soll_HB3_DutyCycle = value;
+			}
+			break;
+
+		case (Set_Send_Field_4): // Soll_Drehzahl (verschoben von Slot 3)
 		data->rasv.Soll_Drehzahl = value;
-			break;
-
-		case (Set_Send_Field_4): // filt_input_delay
-		data->av.snd_fld[4] = value;
-		uz_JL_SigmaDelta_Interface_set_data_delay(Sinc3_Filter, (uint8_t)value);
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		uz_JL_SigmaDelta_Interface_set_clk_dutycycle(Sinc3_Filter, value);
 			break;
 
 		case (Set_Send_Field_6):
@@ -318,8 +324,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1):
-
+		case (My_Button_1): // switch to manual_duty_cycle (set via Set_Send_Field_1..3)
+			data->rasv.ctrl_state = manual_duty_cycle;
+			break;
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);

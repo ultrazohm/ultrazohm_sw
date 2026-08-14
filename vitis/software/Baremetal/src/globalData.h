@@ -119,6 +119,9 @@ typedef struct _referenceAndSetValues_ {
 	float Soll_iq; // q-axis current setpoint for current_control, in A
 	float Soll_Square_DutyCycle; // duty cycle setpoint for test_square, 0.0 .. 1.0
 	float Soll_Square_Frequency_Hz; // frequency setpoint for test_square, in Hz
+	float Soll_HB1_DutyCycle; // manual duty cycle setpoint for HB1, 0.0 .. 1.0
+	float Soll_HB2_DutyCycle; // manual duty cycle setpoint for HB2, 0.0 .. 1.0
+	float Soll_HB3_DutyCycle; // manual duty cycle setpoint for HB3, 0.0 .. 1.0
 	float Soll_DPT_Current_A; // target current at which pulse 1 of the DPT ends, in A
 	float Soll_DPT_MaxCurrent_A; // hard overcurrent threshold, aborts the DPT immediately, in A
 	float Soll_DPT_ChargeTimeout_ms; // safety timeout for pulse 1 (target current never reached), in ms

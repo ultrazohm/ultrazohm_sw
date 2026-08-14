@@ -72,6 +72,7 @@ extern int32_t fault;
 extern float fault_f;
 extern DS_Data Global_Data;
 extern conv_status_signals_t conv_status_signals;
+extern float sine;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -108,7 +109,7 @@ int JavaScope_initialize(DS_Data* data)
 //	js_ch_observable[JSO_pmsm_ideal_ia]			= &pmsm_ideal_out.i_a_A;
 //	js_ch_observable[JSO_pmsm_ideal_ib]			= &pmsm_ideal_out.i_b_A;
 //	js_ch_observable[JSO_pmsm_ideal_ic]			= &pmsm_ideal_out.i_c_A;
-//	js_ch_observable[JSO_SD_U]					= &Global_Data.av.Sinc3_Filter.data_U;
+	js_ch_observable[JSO_SD_U]					= &sine;
 	js_ch_observable[JSO_SD_PH1]				= &Global_Data.av.Sinc3_Filter.data_PH1;
 	js_ch_observable[JSO_SD_PH2]				= &Global_Data.av.Sinc3_Filter.data_PH2;
 	js_ch_observable[JSO_SD_PH3]				= &Global_Data.av.Sinc3_Filter.data_PH3;

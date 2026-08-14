@@ -53,13 +53,13 @@ const Bus_ZM_Out uz_codegen0_rtZBus_ZM_Out = {
 
 /* Exported block parameters */
 Bus_Ctrl_Config struct_Ctrl_Config = {
-  5.0e-5F,
-  5.0e-5F,
+  1.0e-4F,
+  1.0e-4F,
   0.004F,
   92.0F,
   0.0001F,
   0.0004F,
-  57.4889374F,
+  15.4889374F,
   0.15121232F,
   -0.15121232F,
   0.2F,
@@ -108,7 +108,7 @@ Bus_PMSM_Config struct_PMSM_Config = {
 
 Bus_Inv_Config struct_Inv_Config = {
   PT1,
-  678.0F,
+  48.0F,
   1.0F,
   40000.0F,
   false

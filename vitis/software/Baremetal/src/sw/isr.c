@@ -15,8 +15,8 @@
 
 #include "../include/isr.h"
 
-#define TEST_SINE_AMPLITUDE 1.0f
-#define TEST_SINE_FREQUENCY_HZ 25.0f
+#define TEST_SINE_AMPLITUDE 0.5f
+#define TEST_SINE_FREQUENCY_HZ 50.0f
 #define TEST_SQUARE_AMPLITUDE 1.0f
 
 // Initialize the Interrupt structure
@@ -58,6 +58,10 @@ void ISR_Control(void *data)
     conv_status_signals.board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
     struct_ZM_In.Inv_Ready = conv_status_signals.board_ready;
 
+    /* Read IGBT desaturation fault signal */
+    // conv_status_signals.igbt_desat = uz_axi_gpio_read_pin_zero_based(input_gpio, IGBT_Desat_BIT);
+    // struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
+
 	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
 
 	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
@@ -74,6 +78,7 @@ void ISR_Control(void *data)
                 if (Global_Data.objects.platform_state_old != idle_state)
                 {
                     Global_Data.objects.platform_state_old = idle_state;
+                    Global_Data.rasv.ctrl_state = ctrl_state_none;
                     struct_ZM_In.Soll_Drehzahl = 0;
                     struct_ZM_In.Soll_id = 0;
                     struct_ZM_In.Soll_iq = 0;
@@ -95,10 +100,11 @@ void ISR_Control(void *data)
                 if (Global_Data.objects.platform_state_old != running_state)
                 {
                     Global_Data.objects.platform_state_old = running_state;
+                    Global_Data.rasv.ctrl_state = ctrl_state_none;
                     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
                     Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 				    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-				    Global_Data.rasv.halfBridge3DutyCycle = 1.0f;
+				    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                     struct_ZM_In.Soll_Drehzahl = 0;
     			    struct_ZM_In.Soll_id = 0;
     			    struct_ZM_In.Soll_iq = 0;
@@ -136,13 +142,21 @@ void ISR_Control(void *data)
                             struct_ZM_In.Soll_id = Global_Data.rasv.Soll_id;
                             struct_ZM_In.Soll_Drehzahl = 0;
                             struct_ZM_In.Soll_Regelungsart = Strom;
+                            regelung.input.Bus_ZM_In_a = struct_ZM_In;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[0] = Global_Data.av.Sinc3_Filter.data_PH1;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[1] = Global_Data.av.Sinc3_Filter.data_PH2;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[2] = Global_Data.av.Sinc3_Filter.data_PH3;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_phi_mech = Global_Data.av.mechanicalPosition;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Omega_mech = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+	                        uz_codegen_step(&regelung);
                             if(regelung.output.Bus_Ctrl_Out_i.act_pwm == true && conv_status_signals.board_ready == true)
                                 {
 
-                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[0];
-                                    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[1];
-                                    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[2];
+                                    Global_Data.rasv.halfBridge1DutyCycle =  regelung.output.Bus_Ctrl_Out_i.Dutycycle[0];
+                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_i.Dutycycle[1];
+                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_i.Dutycycle[2];
                                 }
+                            
 
                             break;
                         case rpm_control:
@@ -150,12 +164,19 @@ void ISR_Control(void *data)
                             struct_ZM_In.Soll_id = 0;
                             struct_ZM_In.Soll_Drehzahl = Global_Data.rasv.Soll_Drehzahl;
                             struct_ZM_In.Soll_Regelungsart = Drehzahl;
+                            regelung.input.Bus_ZM_In_a = struct_ZM_In;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[0] = Global_Data.av.Sinc3_Filter.data_PH1;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[1] = Global_Data.av.Sinc3_Filter.data_PH2;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[2] = Global_Data.av.Sinc3_Filter.data_PH3;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_phi_mech = Global_Data.av.mechanicalPosition;
+                            regelung.input.Bus_PMSM_Out_j.pmsm_Omega_mech = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+	                        uz_codegen_step(&regelung);
                             if( regelung.output.Bus_Ctrl_Out_i.act_pwm == true && conv_status_signals.board_ready == true)
                                 {
 
                                     Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[0];
-                                    Global_Data.rasv.halfBridge2DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[1];
-                                    Global_Data.rasv.halfBridge3DutyCycle = regelung.output.Bus_Ctrl_Out_i.Dutycycle[2];
+                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_i.Dutycycle[1];
+                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_i.Dutycycle[2];
                                 }
 
                             break;
@@ -163,10 +184,12 @@ void ISR_Control(void *data)
                             struct_ZM_In.Soll_iq = 0;
                             struct_ZM_In.Soll_id = 0;
                             struct_ZM_In.Soll_Drehzahl = 0;
-                            sine = uz_wavegen_sine(TEST_SINE_AMPLITUDE, TEST_SINE_FREQUENCY_HZ);
-                            Global_Data.rasv.halfBridge1DutyCycle = sine;
-                            Global_Data.rasv.halfBridge2DutyCycle = sine;
+                            sine = uz_wavegen_sine_with_offset(TEST_SINE_AMPLITUDE, TEST_SINE_FREQUENCY_HZ, 0.5f);
+                            Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+                            Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
                             Global_Data.rasv.halfBridge3DutyCycle = sine;
+//                            Global_Data.rasv.halfBridge2DutyCycle = sine;
+//                            Global_Data.rasv.halfBridge3DutyCycle = sine;
 
                             break;
 
@@ -178,6 +201,15 @@ void ISR_Control(void *data)
                             Global_Data.rasv.halfBridge1DutyCycle = square;
                             Global_Data.rasv.halfBridge2DutyCycle = square;
                             Global_Data.rasv.halfBridge3DutyCycle = square;
+                            break;
+
+                        case manual_duty_cycle:
+                            struct_ZM_In.Soll_iq = 0;
+                            struct_ZM_In.Soll_id = 0;
+                            struct_ZM_In.Soll_Drehzahl = 0;
+                            Global_Data.rasv.halfBridge1DutyCycle = Global_Data.rasv.Soll_HB1_DutyCycle;
+                            Global_Data.rasv.halfBridge2DutyCycle = Global_Data.rasv.Soll_HB2_DutyCycle;
+                            Global_Data.rasv.halfBridge3DutyCycle = Global_Data.rasv.Soll_HB3_DutyCycle;
                             break;
 
                         case DPT:
@@ -202,11 +234,13 @@ void ISR_Control(void *data)
                             struct_ZM_In.Soll_iq = 0;
                             struct_ZM_In.Soll_id = 0;
                             struct_ZM_In.Soll_Drehzahl = 0;
+                            Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+							Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+							Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                             break;
                     }    
                 } 
-                regelung.input.Bus_ZM_In_a = struct_ZM_In;
-	            uz_codegen_step(&regelung);
+   
     		   break;
     		case error_state:
                 if (Global_Data.objects.platform_state_old != error_state)
@@ -247,7 +281,7 @@ void ISR_Control(void *data)
     uz_axi_gpio_write_bitmask(output_gpio, output_bitmask_local);
 
 
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, (1.0f-Global_Data.rasv.halfBridge1DutyCycle), (1.0f-Global_Data.rasv.halfBridge2DutyCycle), (1.0f-Global_Data.rasv.halfBridge3DutyCycle));
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, (1.0f-Global_Data.rasv.halfBridge1DutyCycle), (1.0f-Global_Data.rasv.halfBridge2DutyCycle),(1.0f-Global_Data.rasv.halfBridge3DutyCycle));
 //    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
 

@@ -32,7 +32,7 @@
 #define ADC_TRIGGER_DELAY_IN_US                 0.01f // ADC trigger delay in us; applies in both ISR trigger modes. 10ns delay to keep default behavior. See uz_mux_axi in docs.
 
 #define UZ_PWM_FREQUENCY                        10.0e3f
-#define UZ_PWM_DEADTIME_IN_US                   1.0f
+#define UZ_PWM_DEADTIME_IN_US                   0.5f
 #define UZ_PWM_MINIMUM_PULSE_WIDTH_IN_US        0.5f
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f

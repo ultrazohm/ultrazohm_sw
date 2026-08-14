@@ -56,6 +56,7 @@ static void update_adapter_d5(void);
 static void reset_im_current_offset_calibration(void);
 static void update_setpoint_trajectories(void);
 static float update_measurements(void);
+static void update_temperature_user_led(float temperature_degC);
 static void update_im_current_offset_calibration(platform_state_t current_state);
 static platform_state_t update_protection(platform_state_t current_state);
 static void update_im_control(float encoder_mechanical_angle_rad);
@@ -137,9 +138,25 @@ static float update_measurements(void)
 	Global_Data.av.inverter_temperature_pwm_frequency_Hz = uz_PWM_duty_freq_detection_get_frequency_in_Hz(
 		Global_Data.objects.inverter_temperature_pwm);
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
+	update_temperature_user_led(Global_Data.av.inverter_temperature_degC);
 	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
 	Global_Data.av.im_speed_rpm = -Global_Data.av.incremental_encoder_d5_2_omega_mech * (60.0f / (2.0f * UZ_PIf));
 	return encoder_mechanical_angle_rad;
+}
+
+static void update_temperature_user_led(float temperature_degC)
+{
+	bool led_on = false;
+	if (isfinite(temperature_degC)) {
+		if (temperature_degC >= INVERTER_TEMPERATURE_USER_LED_BLINK_DEG_C) {
+			uint32_t const blink_phase = uz_SystemTime_GetUptimeInMs() /
+				INVERTER_TEMPERATURE_USER_LED_BLINK_HALF_PERIOD_MS;
+			led_on = (blink_phase % 2U) != 0U;
+		} else if (temperature_degC >= INVERTER_TEMPERATURE_USER_LED_ON_DEG_C) {
+			led_on = true;
+		}
+	}
+	ultrazohm_state_machine_set_userLED(led_on);
 }
 
 static void update_im_current_offset_calibration(platform_state_t current_state)

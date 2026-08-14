@@ -3,7 +3,7 @@
 
 /* Change this single define to select the motor used by the testbench. */
 #ifndef MOTOR_CONFIG_SELECT
-#define MOTOR_CONFIG_SELECT MOTOR_CONFIG_SIEMENS_1LA7073
+#define MOTOR_CONFIG_SELECT MOTOR_CONFIG_SIEMENS_1C4164B
 #endif
 #include "motor_config.h"
 #include "../uz/uz_IM_Control/uz_im_control.h"

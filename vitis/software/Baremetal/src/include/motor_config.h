@@ -33,6 +33,11 @@
  * IP instance counts) remain in uz_global_configuration.h.
  ******************************************************************************/
 
+/* Inverter-temperature indication on the front-panel user LED. */
+#define INVERTER_TEMPERATURE_USER_LED_ON_DEG_C       70.0f
+#define INVERTER_TEMPERATURE_USER_LED_BLINK_DEG_C   100.0f
+#define INVERTER_TEMPERATURE_USER_LED_BLINK_HALF_PERIOD_MS 500U
+
 /* ===== Available configurations ===== */
 #define MOTOR_CONFIG_LINDNER_3KW        1
 #define MOTOR_CONFIG_SIEMENS_1LA7073    2   /* Siemens 1LA7073-4AB10-Z, 0.37 kW, delta 230V / star 400V */

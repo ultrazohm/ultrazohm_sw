@@ -109,6 +109,12 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../src/hdl/iobufds_inst.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../../ip_cores/Interlock_Module_3L/npc_phase_state_machine.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -167,13 +173,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/hdl/iobufds_inst.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../../ip_cores/Extend_Interrupt/extend_interrupt.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
@@ -212,14 +211,12 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Digital_AdapterBoard_D1.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Digital_AdapterBoard_D2.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -238,7 +235,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Digital_AdapterBoard_D5.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -279,7 +275,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Analog_A1_packed.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -307,14 +302,12 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/uz_dac8831_A2.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Analog_A3_ADC_MAX11331.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>

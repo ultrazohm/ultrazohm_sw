@@ -5,7 +5,7 @@
 	<Chain>
 		<Comm>JTAG</Comm>
 		<Device>
-			<SelectedProg value="FALSE"/>
+			<SelectedProg value="TRUE"/>
 			<Pos>1</Pos>
 			<Vendor>Lattice</Vendor>
 			<Family>MachXO2</Family>
@@ -19,9 +19,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/template_dslots/uz_d_slots_template_dslots.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/Voltage_3v3_5v/voltage_8tx_8rx_8tx_6tx/uz_d_slots_voltage_8tx_8rx_8tx_6tx.jed</File>
 			<FileTime>07/21/26 09:52:28</FileTime>
-			<JedecChecksum>0xD6B6</JedecChecksum>
+			<JedecChecksum>0x8BF5</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
@@ -35,7 +35,7 @@
 			</Option>
 		</Device>
 		<Device>
-			<SelectedProg value="FALSE"/>
+			<SelectedProg value="TRUE"/>
 			<Pos>2</Pos>
 			<Vendor>Lattice</Vendor>
 			<Family>MachXO2</Family>
@@ -49,9 +49,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/template_dslots/uz_d_slots_template_dslots.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/uz_d_3ph_inverter/uz_d_slots_uz_d_3ph_inverter.jed</File>
 			<FileTime>07/21/26 09:52:28</FileTime>
-			<JedecChecksum>0xD6B6</JedecChecksum>
+			<JedecChecksum>0x2220</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
@@ -80,8 +80,8 @@
 				<BScanVal>0</BScanVal>
 			</Bypass>
 			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/uz_d_temperature_ltc2983/uz_d_slots_uz_d_temperature_ltc2983.jed</File>
-			<FileTime>07/21/26 09:52:28</FileTime>
-			<JedecChecksum>0xB9B3</JedecChecksum>
+			<FileTime>08/12/26 16:51:29</FileTime>
+			<JedecChecksum>0x68AC</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
@@ -109,9 +109,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/uz_d_temperature_ltc2983/uz_d_slots_uz_d_temperature_ltc2983.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/uz_d_resolver_d1_to_d4/uz_d_slots_uz_d_resolver_d1_to_d4.jed</File>
 			<FileTime>07/21/26 09:52:28</FileTime>
-			<JedecChecksum>0xB9B3</JedecChecksum>
+			<JedecChecksum>0x32C2</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>
@@ -125,7 +125,7 @@
 			</Option>
 		</Device>
 		<Device>
-			<SelectedProg value="FALSE"/>
+			<SelectedProg value="TRUE"/>
 			<Pos>5</Pos>
 			<Vendor>Lattice</Vendor>
 			<Family>MachXO2</Family>
@@ -139,9 +139,9 @@
 				<BScanLen>1</BScanLen>
 				<BScanVal>0</BScanVal>
 			</Bypass>
-			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/template_dslots/uz_d_slots_template_dslots.jed</File>
+			<File>C:/GIT/UltraZohm/software/cpld_lattice/MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/uz_d_abs_encoder/uz_d_slots_uz_d_abs_encoder.jed</File>
 			<FileTime>07/21/26 09:52:28</FileTime>
-			<JedecChecksum>0xD6B6</JedecChecksum>
+			<JedecChecksum>0xC9EC</JedecChecksum>
 			<Operation>FLASH Erase,Program,Verify</Operation>
 			<Option>
 				<SVFVendor>JTAG STANDARD</SVFVendor>

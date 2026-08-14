@@ -19,7 +19,7 @@
 #include "../../uz/uz_HAL.h"
 #include "uz_dataMover.h" 
 /* Project Wizard BEGIN: datamover_array_length */
-#define UZ_DATAMOVER_ARRAY_LENGTH 2
+#define UZ_DATAMOVER_ARRAY_LENGTH 32
 /* Project Wizard END: datamover_array_length */
 
 // Number of elements in one array

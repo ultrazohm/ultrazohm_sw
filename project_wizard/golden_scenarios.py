@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -225,6 +226,15 @@ def scenario_documents(database: CardDatabase) -> list[GoldenScenario]:
             ),
         ),
     ]
+    proven_config = GOLDEN_SCENARIO_DIR / "configs" / "proven_large_integration.pw.json"
+    if proven_config.exists():
+        scenarios.append(
+            GoldenScenario(
+                "proven_large_integration",
+                "User-proven large integration scenario built successfully via workstation flow.",
+                json.loads(proven_config.read_text(encoding="utf-8")),
+            )
+        )
     return scenarios
 
 
@@ -238,6 +248,7 @@ def render_outputs(database: CardDatabase, document: dict[str, Any]) -> tuple[st
         "tcl_line_count": len(tcl_text.splitlines()),
         "tcl_warning_count": len(re.findall(r"^# WARNING:", tcl_text, re.MULTILINE)),
         "software_warnings": plan.warnings,
+        "software_content_hashes": software_content_hashes(plan),
         "generated_files": sorted(plan.generated_files),
         "actual_values": plan.actual_values,
         "reference_and_set_values": plan.reference_and_set_values,
@@ -249,6 +260,25 @@ def render_outputs(database: CardDatabase, document: dict[str, Any]) -> tuple[st
         "visualization_signal_ids": sorted(signal.signal_id for signal in plan.available_visualization_signals),
     }
     return tcl_text, summary
+
+
+def software_content_hashes(plan: Any) -> dict[str, str]:
+    hashes = {
+        f"generated_files/{path}": sha256_text(content)
+        for path, content in sorted(plan.generated_files.items())
+    }
+    for slot, content in sorted(plan.slot_content.items()):
+        for index, text in enumerate(content.header_includes):
+            hashes[f"slot_content/{slot}/header_includes/{index}"] = sha256_text(text)
+        for index, text in enumerate(content.header_prototypes):
+            hashes[f"slot_content/{slot}/header_prototypes/{index}"] = sha256_text(text)
+        for index, text in enumerate(content.source_definitions):
+            hashes[f"slot_content/{slot}/source_definitions/{index}"] = sha256_text(text)
+    return hashes
+
+
+def sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def write_golden_outputs(output_dir: Path = GOLDEN_SCENARIO_DIR) -> None:

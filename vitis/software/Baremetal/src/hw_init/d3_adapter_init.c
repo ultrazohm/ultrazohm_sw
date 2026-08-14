@@ -52,9 +52,9 @@ uz_temperaturecard_t* initialize_temperature_card_d3(void)
     uint32_t readback = uz_TempCard_IF_hw_readReadbackReg(config_temperature_card_d3.base_address);
     uint32_t internal_error = uz_TempCard_IF_hw_readErrorReg(config_temperature_card_d3.base_address);
     if (readback == IP_CORE_READBACK_VALUE) {
-        uz_printf("RPU: D3 temperature card AXI readback OK: 0x%x, internal error: 0x%x\r\n", readback, internal_error);
+        uz_printf("RPU: D3 temperature card AXI readback OK: 0x%x, internal error: 0x%x", readback, internal_error);
     } else {
-        uz_printf("RPU: D3 temperature card AXI readback FAILED: expected 0x%x, got 0x%x, internal error: 0x%x\r\n", IP_CORE_READBACK_VALUE, readback, internal_error);
+        uz_printf("RPU: D3 temperature card AXI readback FAILED: expected 0x%x, got 0x%x, internal error: 0x%x", IP_CORE_READBACK_VALUE, readback, internal_error);
     }
     return temperature_card;
 }

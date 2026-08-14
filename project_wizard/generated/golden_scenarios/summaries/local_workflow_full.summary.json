@@ -97,6 +97,18 @@
     "\tfloat pwm_3L_0_halfBridgeDutyCycle_2;",
     "\tfloat pwm_3L_0_halfBridgeDutyCycle_3;"
   ],
+  "software_content_hashes": {
+    "generated_files/hw_init/pwm_init.c": "06691b0d1db043c8c781b85f560a88c816c89e44319ef0465ecbfcf18c37f73f",
+    "generated_files/include/project_wizard_io.h": "aff8d3ff9f3a5296518d552b262569a83ae6f922c4aa6a086c5a333ec9347896",
+    "generated_files/include/project_wizard_visualization.h": "d383b4a058116a19ff58be695eeccaad1d389584352c2323f59a34f9c18ed3b5",
+    "generated_files/include/pwm_init.h": "89ea8dff59ceb9d081be4a1cc9a351a5ab4d3c5294525ee5beba681b9e01bd91",
+    "generated_files/sw/project_wizard_io.c": "dacd7b7ba108dc9bad0b30ba5b5ca752baba2fc2433f623fe743422c39b4bad4",
+    "generated_files/sw/project_wizard_visualization.c": "e599c177d10b1e2a3d5e9a16d3fdbbe44d41a2655a6a560849c8fe13a6aecb94",
+    "slot_content/D3/header_includes/0": "446a6b40ca78f67ee57d9f7800fe41179fff4905553be566c07672929b8aca66",
+    "slot_content/D3/header_includes/1": "714002c2a35f342705538ee6be1ef6170b71e97dd321ffe97534c2aff5d4d6d6",
+    "slot_content/D3/header_prototypes/0": "c3990dfa4f65f4a98daa3fe35e15b2d3ac5c6d5f5d5c5e88be5596f25418929b",
+    "slot_content/D3/source_definitions/0": "a11c0eb9af9a8dcbf215f415ffc0669d5b77f9d4b7366ed6d3541badd4074ce0"
+  },
   "software_warnings": [],
   "tcl_line_count": 2522,
   "tcl_warning_count": 1,

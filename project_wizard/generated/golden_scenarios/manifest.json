@@ -68,5 +68,12 @@
     "name": "local_workflow_full",
     "summary": "summaries\\local_workflow_full.summary.json",
     "tcl": "tcl\\local_workflow_full.tcl"
+  },
+  {
+    "config": "configs\\proven_large_integration.pw.json",
+    "description": "User-proven large integration scenario built successfully via workstation flow.",
+    "name": "proven_large_integration",
+    "summary": "summaries\\proven_large_integration.summary.json",
+    "tcl": "tcl\\proven_large_integration.tcl"
   }
 ]

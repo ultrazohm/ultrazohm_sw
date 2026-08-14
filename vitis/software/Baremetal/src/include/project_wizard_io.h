@@ -48,7 +48,7 @@ typedef enum {
 } project_wizard_dig_pin_t;
 
 typedef enum {
-    AXI_GPIO_SLOT_NONE = 0
+    AXI_GPIO_SLOT_D1
 } project_wizard_axi_gpio_slot_t;
 
 bool project_wizard_io_read(project_wizard_axi_gpio_slot_t slot, project_wizard_dig_pin_t pin);

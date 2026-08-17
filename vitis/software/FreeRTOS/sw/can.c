@@ -31,27 +31,30 @@ extern uz_can_t *can_instance_0;
 extern uz_can_t *can_instance_1;
 uint32_t i_LifeCheck_CAN_Thread0 = 0;
 uint32_t i_LifeCheck_CAN_Thread1 = 0;
+volatile struct hioki_pw8001_can_values_t hioki_pw8001_can_values = {0};
+
+static void process_hioki_pw8001_frame(const uz_can_frame_t *frame)
+{
+	if ((frame->std_id != HIOKI_PW8001_CAN_ID) || (frame->dlc < 3U)) {
+		return;
+	}
+
+	/* Commissioning mapping: copy three payload bytes without scaling. */
+	hioki_pw8001_can_values.u4 = (float)frame->data[0];
+	hioki_pw8001_can_values.u5 = (float)frame->data[1];
+	hioki_pw8001_can_values.u6 = (float)frame->data[2];
+}
 
 void CAN_Thread_CAN0(void *p)
 {
     uz_can_frame_t can_framebuffer_rx={0};
-    uz_can_frame_t can_framebuffer_tx={0};
 
     while (1)
     {
-        if (!uz_can_is_rx_empty(can_instance_0))
+        while (!uz_can_is_rx_empty(can_instance_0))
         {
             uz_can_receive_frame_blocking(can_instance_0, &can_framebuffer_rx);
-
-            if (can_framebuffer_rx.std_id == 0x22)
-            {
-                can_received_0[0] = can_framebuffer_rx.data[0];
-                can_received_0[1] = can_framebuffer_rx.data[1];
-                can_received_0[2] = can_framebuffer_rx.data[2];
-                can_received_0[3] = can_framebuffer_rx.data[3];
-                can_received_0[4] = can_framebuffer_rx.data[4];
-                can_received_0[5] = can_framebuffer_rx.data[5];
-            }
+			process_hioki_pw8001_frame(&can_framebuffer_rx);
         }
 
         // create Lifecheck--------------------------------------------------------------------------------------------------------------------------
@@ -60,14 +63,6 @@ void CAN_Thread_CAN0(void *p)
         {
             i_LifeCheck_CAN_Thread0 = 0;
         }
-        // Build Can-Message for the Lifecheck
-        can_framebuffer_tx.std_id = CAN_Msg_Start;
-        can_framebuffer_tx.dlc = 1;
-        can_framebuffer_tx.data[0] = i_LifeCheck_CAN_Thread0;
-        // Send Heartbeat of the CAN-Thread0
-        uz_can_send_frame_blocking(can_instance_0, &can_framebuffer_tx);
-
-        // Delays the Thread to decrease busload-----------------------------------------------------------------------------------------------------
         vTaskDelay(ThreadDelay_CAN_Thread0 / portTICK_RATE_MS);
     }
 }
@@ -75,11 +70,10 @@ void CAN_Thread_CAN0(void *p)
 void CAN_Thread_CAN1(void *p)
 {
     uz_can_frame_t can_framebuffer_rx={0};
-    uz_can_frame_t can_framebuffer_tx={0};
 
     while (1)
     {
-        if (!uz_can_is_rx_empty(can_instance_1))
+        while (!uz_can_is_rx_empty(can_instance_1))
         {
             uz_can_receive_frame_blocking(can_instance_1, &can_framebuffer_rx);
 
@@ -100,14 +94,6 @@ void CAN_Thread_CAN1(void *p)
         {
             i_LifeCheck_CAN_Thread1 = 0;
         }
-        // Build Can-Message for the Lifecheck
-        can_framebuffer_tx.std_id = CAN_Msg_Start;
-        can_framebuffer_tx.dlc = 1;
-        can_framebuffer_tx.data[0] = i_LifeCheck_CAN_Thread1;
-        // Send Heartbeat of the CAN-Thread1
-        uz_can_send_frame_blocking(can_instance_1, &can_framebuffer_tx);
-
-        // Delays the Thread to decrease busload-----------------------------------------------------------------------------------------------------
         vTaskDelay(ThreadDelay_CAN_Thread1 / portTICK_RATE_MS);
     }
 }

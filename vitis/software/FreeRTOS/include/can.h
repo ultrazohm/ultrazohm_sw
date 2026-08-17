@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
 
+#include "APU_RPU_shared.h"
+
 // DEBUG-DEFINES----------------------------------------------------------------------------------------------
 #define DEBUG_ThreadAlive_CAN_Thread0 0    // Debug-Variable. Tells the Thread to signalize if he is active.
 #define DEBUG_ThreadDelay_CAN_Thread0 1000 // time in ms. Controlls the period of the Thread (Debug only / active when ThreadAlive_CAN_Thread1 is 1)
@@ -28,8 +30,11 @@
  *
  * @param   Value time in ms between the CAN-Send-Bursts
  */
-#define ThreadDelay_CAN_Thread0 10 // delays the Thread for 50 ms
-#define ThreadDelay_CAN_Thread1 10 // delays the Thread for 50 ms
+#define ThreadDelay_CAN_Thread0 1
+#define ThreadDelay_CAN_Thread1 1
+
+/** Standard CAN identifier carrying the raw HIOKI PW8001 U4-U6 test values. */
+#define HIOKI_PW8001_CAN_ID 0x22U
 
 /**
  * @brief   CAN-ID for the Control-Message
@@ -52,3 +57,5 @@
 
 void CAN_Thread_CAN0(void *p);
 void CAN_Thread_CAN1(void *p);
+
+extern volatile struct hioki_pw8001_can_values_t hioki_pw8001_can_values;

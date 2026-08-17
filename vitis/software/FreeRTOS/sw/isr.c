@@ -21,6 +21,7 @@
 #endif
 
 #include "../include/isr.h"
+#include "../include/can.h"
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
@@ -120,6 +121,10 @@ void APU_IPI_ISR(void *data)
 
 	/* ...until here */
 #endif
+
+	/* Publish the latest asynchronously received HIOKI CAN values to the R5. */
+	apu_to_rpu_user_data->hioki_pw8001 = hioki_pw8001_can_values;
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	// Return the next control command, or an explicit no-op, to the R5.
 	status = XIpiPsu_WriteMessage(&IPI_instance, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
@@ -318,4 +323,3 @@ static void uz_a53_gic_reset_active_ipi_interrupts(XScuGic *Gic)
 
 
 }
-

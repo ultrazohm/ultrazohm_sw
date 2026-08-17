@@ -121,15 +121,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_2_omega_mech;
 	js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_2_position_w_offset_javascope;
 	js_ch_observable[JSO_ENCODER_D5_2_INDEX_FOUND] = &data->av.incremental_encoder_d5_2_index_found_javascope;
+	js_ch_observable[JSO_HIOKI_PW8001_U4_RAW] = &data->av.hioki_pw8001_u4_raw;
+	js_ch_observable[JSO_HIOKI_PW8001_U5_RAW] = &data->av.hioki_pw8001_u5_raw;
+	js_ch_observable[JSO_HIOKI_PW8001_U6_RAW] = &data->av.hioki_pw8001_u6_raw;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
 	js_ch_selected[15] = js_ch_observable[JSO_IM_FLUX_VS];
 	js_ch_selected[16] = js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD];
-	js_ch_selected[17] = js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S];
-	js_ch_selected[18] = js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET];
-	js_ch_selected[19] = js_ch_observable[JSO_ENCODER_D5_2_INDEX_FOUND];
+	js_ch_selected[17] = js_ch_observable[JSO_HIOKI_PW8001_U4_RAW];
+	js_ch_selected[18] = js_ch_observable[JSO_HIOKI_PW8001_U5_RAW];
+	js_ch_selected[19] = js_ch_observable[JSO_HIOKI_PW8001_U6_RAW];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -251,6 +254,11 @@ void JavaScope_update(DS_Data* data){
 	// get data from apu_to_rpu_user_data struct and use it
 	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
 #endif
+	/* CAN reception is asynchronous on the A53 and does not require ISR polling. */
+	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+	data->av.hioki_pw8001_u4_raw = apu_to_rpu_user_data->hioki_pw8001.u4;
+	data->av.hioki_pw8001_u5_raw = apu_to_rpu_user_data->hioki_pw8001.u5;
+	data->av.hioki_pw8001_u6_raw = apu_to_rpu_user_data->hioki_pw8001.u6;
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 

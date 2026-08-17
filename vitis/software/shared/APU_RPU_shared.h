@@ -25,10 +25,19 @@ struct APU_to_RPU_t
 	float value;
 };
 
+/** Raw HIOKI PW8001 values received by the A53 over CAN. */
+struct hioki_pw8001_can_values_t
+{
+	float u4;
+	float u5;
+	float u6;
+};
+
 struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
 	uint32_t slowDataCounter;
+	struct hioki_pw8001_can_values_t hioki_pw8001;
 };
 
 struct RPU_to_APU_user_data_t
@@ -64,5 +73,4 @@ static inline void write_rpu_version(uint32_t version){
     *rpu_version=version;
     Xil_DCacheFlushRange((uintptr_t)rpu_version, sizeof(uint32_t));
 }
-
 

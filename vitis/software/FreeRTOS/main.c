@@ -22,7 +22,7 @@
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
+#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 
 //Includes from own files
 #include "main.h"

@@ -52,6 +52,9 @@ typedef struct _actualValues_ {
 	float inverter_temperature_pwm_frequency_Hz;
 	float inverter_temperature_degC;
 	float inverter_hardware_overcurrent;
+	float hioki_pw8001_u4_raw;
+	float hioki_pw8001_u5_raw;
+	float hioki_pw8001_u6_raw;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;

@@ -55,6 +55,7 @@ typedef struct _actualValues_ {
 	float hioki_pw8001_u4_raw;
 	float hioki_pw8001_u5_raw;
 	float hioki_pw8001_u6_raw;
+	float im_duty_cycle_sum;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
 	float adc_ltc2311_a1_ch1;

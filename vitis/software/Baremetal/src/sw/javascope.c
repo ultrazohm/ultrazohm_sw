@@ -124,10 +124,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_HIOKI_PW8001_U4_RAW] = &data->av.hioki_pw8001_u4_raw;
 	js_ch_observable[JSO_HIOKI_PW8001_U5_RAW] = &data->av.hioki_pw8001_u5_raw;
 	js_ch_observable[JSO_HIOKI_PW8001_U6_RAW] = &data->av.hioki_pw8001_u6_raw;
+	js_ch_observable[JSO_IM_DUTY_SUM] = &data->av.im_duty_cycle_sum;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
+	js_ch_selected[9] = js_ch_observable[JSO_IM_DUTY_A];
+	js_ch_selected[10] = js_ch_observable[JSO_IM_DUTY_B];
+	js_ch_selected[11] = js_ch_observable[JSO_IM_DUTY_C];
+	js_ch_selected[12] = js_ch_observable[JSO_IM_DUTY_SUM];
 	js_ch_selected[15] = js_ch_observable[JSO_IM_FLUX_VS];
 	js_ch_selected[16] = js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD];
 	js_ch_selected[17] = js_ch_observable[JSO_HIOKI_PW8001_U4_RAW];
@@ -202,6 +207,10 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+	data->av.im_duty_cycle_sum =
+		data->rasv.pwm_2L_0_halfBridgeDutyCycle_1 +
+		data->rasv.pwm_2L_0_halfBridgeDutyCycle_2 +
+		data->rasv.pwm_2L_0_halfBridgeDutyCycle_3;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){

@@ -1,4 +1,5 @@
 #include "../include/IM_testbench.h"
+#include "../include/error_checks.h"
 #include "../globalData.h"
 #include "../include/testbenchsetup.h"
 #include "../uz/uz_HAL.h"
@@ -114,6 +115,9 @@ void IM_testbench_reset(DS_Data *data)
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
     uz_im_control_acknowledge_and_reset_error(data->objects.im_control);
+	data->av.im_control_violation = uz_im_control_no_violation;
+	data->av.im_control_violation_code = 0.0f;
+	error_checks_reset();
     uz_im_control_set_mode(data->objects.im_control, uz_im_control_mode_u_f);
     uz_im_control_set_observer(data->objects.im_control, uz_im_control_observer_rotor_flux_model);
     uz_im_control_enable_speed_control(data->objects.im_control, false);

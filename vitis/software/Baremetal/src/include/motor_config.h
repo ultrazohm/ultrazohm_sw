@@ -236,8 +236,8 @@
 #define MOTOR_Control_current_max_A      50.0f //50.0f
 
 /* Protection limits — hardware-level fault thresholds */
-#define vdc_max_v                          800.0f //800.0f
-#define vdc_min_v                          40.0f
+#define vdc_max_v                          800.0f
+#define vdc_min_v                          200.0f
 #define MOTOR_Protection_phase_max_A       50.0f //50.0f   /* hard trip threshold checked against measured phase currents */
 #define MOTOR_Speed_max_rpm               1800.0f  /* 1.2× synchronous speed (1500 rpm) */
 
@@ -297,7 +297,7 @@
 #define MOTOR_CURRENT_OFFSET_SAMPLE_COUNT             	1000U
 /** Maximum accepted standard deviation of each current channel during offset calibration. */
 #define MOTOR_CURRENT_OFFSET_MAX_STDDEV_A              	0.05f
-#define MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN  	5000U
+#define MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN  	1024U
 #define MOTOR_Speed_controller_torque_max_Nm          	8.0f
 #define MOTOR_Minimum_observer_flux_Vs                 	0.02f
 #define MOTOR_Maximum_slip_frequency_Hz                	20.0f

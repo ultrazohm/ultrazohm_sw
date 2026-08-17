@@ -140,7 +140,14 @@ static float update_measurements(void)
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
 	update_temperature_user_led(Global_Data.av.inverter_temperature_degC);
 	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
-	Global_Data.av.im_speed_rpm = -Global_Data.av.incremental_encoder_d5_2_omega_mech * (60.0f / (2.0f * UZ_PIf));
+	if (Global_Data.rasv.im_enable_foc) {
+		Global_Data.av.im_speed_rpm = -Global_Data.av.incremental_encoder_d5_2_omega_mech
+			* (60.0f / (2.0f * UZ_PIf));
+	} else {
+		/* Commissioning estimate for U/f operation with an assumed 2 % slip. */
+		Global_Data.av.im_speed_rpm = Global_Data.av.im_control_actual.u_f_command_frequency_Hz
+			* (60.0f / MOTOR_PolePairs) * 0.98f;
+	}
 	return encoder_mechanical_angle_rad;
 }
 
@@ -387,25 +394,17 @@ static void update_adapter_d4(void)
 
 static void update_adapter_d5(void)
 {
-    /* Project Wizard BEGIN: D5 isr_control */
-    Global_Data.av.incremental_encoder_d5_1_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_1);
-    Global_Data.av.incremental_encoder_d5_1_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_1);
+/* Project Wizard BEGIN: D5 isr_control */
     Global_Data.av.incremental_encoder_d5_2_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_2);
     Global_Data.av.incremental_encoder_d5_2_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_2);
-    Global_Data.av.incremental_encoder_d5_3_theta_el = uz_incrementalEncoder_get_theta_el(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_omega_mech = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_omega_mech_ma_n4 = uz_incrementalEncoder_get_omega_mech_MA_N4(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_position = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_position_w_offset = uz_incrementalEncoder_get_position_wOffset(Global_Data.objects.incremental_encoder_d5_3);
-    Global_Data.av.incremental_encoder_d5_3_index_found = uz_incrementalEncoder_get_Index_Found(Global_Data.objects.incremental_encoder_d5_3);
+    Global_Data.av.incremental_encoder_d5_2_position_w_offset_javascope =
+        (float)Global_Data.av.incremental_encoder_d5_2_position_w_offset;
+    Global_Data.av.incremental_encoder_d5_2_index_found_javascope =
+        Global_Data.av.incremental_encoder_d5_2_index_found ? 1.0f : 0.0f;
 /* Project Wizard END: D5 isr_control */
 }
 

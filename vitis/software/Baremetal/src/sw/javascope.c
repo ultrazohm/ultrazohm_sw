@@ -117,15 +117,19 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_MAGNITUDE_V] = &data->av.im_control_actual.voltage_vector_magnitude_V;
 	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_LIMIT_V] = &data->av.im_control_actual.voltage_vector_limit_V;
 	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED] = &data->av.im_control_actual.voltage_vector_saturated;
+	js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD] = &data->av.incremental_encoder_d5_2_theta_el;
+	js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_2_omega_mech;
+	js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_2_position_w_offset_javascope;
+	js_ch_observable[JSO_ENCODER_D5_2_INDEX_FOUND] = &data->av.incremental_encoder_d5_2_index_found_javascope;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
 	js_ch_selected[15] = js_ch_observable[JSO_IM_FLUX_VS];
-	js_ch_selected[16] = js_ch_observable[JSO_IM_ROTOR_FLUX_VALID];
-	js_ch_selected[17] = js_ch_observable[JSO_IM_SLIP_FREQUENCY_LIMITED];
-	js_ch_selected[18] = js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_VIOLATION];
-	js_ch_selected[19] = js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED];
+	js_ch_selected[16] = js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD];
+	js_ch_selected[17] = js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S];
+	js_ch_selected[18] = js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET];
+	js_ch_selected[19] = js_ch_observable[JSO_ENCODER_D5_2_INDEX_FOUND];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

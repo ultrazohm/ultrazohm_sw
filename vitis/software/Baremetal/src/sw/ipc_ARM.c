@@ -278,12 +278,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[20] = value;
 			break;
 
-		case (My_Button_1): // Toggle IM U/f / FOC
-			IM_testbench_toggle_control_mode(data);
+		case (My_Button_1):
 			break;
 
 		case (My_Button_2):
-			IM_testbench_toggle_speed_control(data);
 			break;
 
 		case (My_Button_3):
@@ -364,19 +362,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 3);
 		}
 
-	/* Bit 4 - My_Button_1: IM FOC active */
-	if (data->rasv.im_enable_foc) {
-		js_status_BareToRTOS |= (1 << 4);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}
-
-	/* Bit 5 - My_Button_2: IM speed controller */
-	if (data->rasv.im_enable_speed_control) {
-		js_status_BareToRTOS |= (1 << 5);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 5);
-	}
+	/* Bits 4 and 5 - unused buttons */
+	js_status_BareToRTOS &= ~(1 << 4);
+	js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
 	if (data->rasv.im_enable_kalman_filter) {

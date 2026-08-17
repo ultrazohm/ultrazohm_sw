@@ -8,9 +8,9 @@ static struct uz_incrementalEncoder_config create_incremental_encoder_config(uin
     return (struct uz_incrementalEncoder_config){
         .base_address = base_address,
         .ip_core_frequency_Hz = 100000000U,
-        .line_number_per_turn_mech = 5000U,
+        .line_number_per_turn_mech = 1024U,
         .OmegaPerOverSample_in_rpm = 500.0f,
-        .drive_pole_pair = 4U,
+        .drive_pole_pair = 2U,
         .Encoder_mech_Offset = 0U,
         .Encoder_elec_Offset = 0U,
         .counting_direction = uz_incrementalEncoder_counting_clock_wise,

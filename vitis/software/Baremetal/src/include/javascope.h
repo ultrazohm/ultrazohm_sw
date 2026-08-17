@@ -68,6 +68,10 @@ enum JS_OberservableData {
 	JSO_IM_VOLTAGE_VECTOR_MAGNITUDE_V,
 	JSO_IM_VOLTAGE_VECTOR_LIMIT_V,
 	JSO_IM_VOLTAGE_VECTOR_SATURATED,
+	JSO_ENCODER_D5_2_THETA_EL_RAD,
+	JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S,
+	JSO_ENCODER_D5_2_POSITION_WITH_OFFSET,
+	JSO_ENCODER_D5_2_INDEX_FOUND,
 	JSO_ENDMARKER
 };
 
@@ -272,8 +276,8 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	IM_FOC__OFF_UF,
-	IM_Speed_Control,
+	Unused_1,
+	Unused_2,
 	IM_Kalman_Filter,
 	IM_Resonant_6th,
 	Enable_Trajectories,

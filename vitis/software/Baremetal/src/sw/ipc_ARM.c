@@ -14,6 +14,7 @@
  ******************************************************************************/
 
 #include <string.h>
+#include "APU_RPU_shared.h"
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
@@ -279,9 +280,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
+			data->rasv.im_use_filtered_v_dc = !data->rasv.im_use_filtered_v_dc;
 			break;
 
 		case (My_Button_2):
+			data->rasv.im_enable_u_f_observer = !data->rasv.im_enable_u_f_observer;
+			uz_im_control_enable_u_f_observer(data->objects.im_control,
+				data->rasv.im_enable_u_f_observer);
 			break;
 
 		case (My_Button_3):
@@ -349,22 +354,41 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 2 - Error LED */
+#if HIOKI_PW8001_CAN_ACTIVE == 1
+	bool const hioki_can_working = data->av.hioki_pw8001_can_connection_working > 0.5f;
+	if (ultrazohm_state_get_led_error() || !hioki_can_working) {
+#else
 	if (ultrazohm_state_get_led_error()) {
+#endif
 		js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
 
 	/* Bit 3 - User LED */
+#if HIOKI_PW8001_CAN_ACTIVE == 1
+	if (hioki_can_working && !ultrazohm_state_get_led_error()) {
+#else
 	if (ultrazohm_state_get_led_user()) {
+#endif
 		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
 
-	/* Bits 4 and 5 - unused buttons */
-	js_status_BareToRTOS &= ~(1 << 4);
-	js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 4 - My_Button_1: filtered VDC used by IM control */
+	if (data->rasv.im_use_filtered_v_dc) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
+
+	/* Bit 5 - unused button */
+	if (data->rasv.im_enable_u_f_observer) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
 	/* Bit 6 - My_Button_3 */
 	if (data->rasv.im_enable_kalman_filter) {

@@ -163,6 +163,8 @@ void uz_im_control_set_mode(uz_im_control_t *self, enum uz_im_control_mode mode)
 void uz_im_control_enable_speed_control(uz_im_control_t *self, bool enable);
 /** @brief Select the observer path used for feedback and diagnostics. */
 void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer);
+/** @brief Enable observer and rotor-flux estimation while operating in scalar U/f mode. Disabled by default. */
+void uz_im_control_enable_u_f_observer(uz_im_control_t *self, bool enable);
 void uz_im_control_enable_resonant_control(uz_im_control_t *self, bool enable);
 /** @brief Reset all three PI controllers, U/f state and observer state. */
 void uz_im_control_reset(uz_im_control_t *self);

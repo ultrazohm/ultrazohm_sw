@@ -33,8 +33,12 @@
 #define ThreadDelay_CAN_Thread0 1
 #define ThreadDelay_CAN_Thread1 1
 
-/** Standard CAN identifier carrying the raw HIOKI PW8001 U4-U6 test values. */
-#define HIOKI_PW8001_CAN_ID 0x22U
+/** Standard CAN identifiers carrying the raw HIOKI PW8001 U4-U6 test values. */
+#define HIOKI_PW8001_CAN_ID_U4_U5 0x22U
+#define HIOKI_PW8001_CAN_ID_U6    0x23U
+
+/** CAN is considered disconnected if no valid HIOKI frame arrives in this interval. */
+#define HIOKI_PW8001_CAN_TIMEOUT_MS 1000U
 
 /**
  * @brief   CAN-ID for the Control-Message

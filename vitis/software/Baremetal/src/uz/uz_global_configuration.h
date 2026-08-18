@@ -72,7 +72,7 @@
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            2U
 #define UZ_IM_CONTROL_MAX_INSTANCES                      1U
-#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
+#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            1U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES                 1U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES                 0U
 #define UZ_RESOLVERIP_MAX_INSTANCES                       0U

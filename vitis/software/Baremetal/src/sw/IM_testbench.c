@@ -18,6 +18,9 @@ void IM_testbench_init(DS_Data *data)
     data->rasv.im_enable_speed_control = false;
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
+	data->rasv.im_enable_u_f_observer = false;
+	uz_im_control_enable_u_f_observer(data->objects.im_control, false);
+	data->rasv.im_use_filtered_v_dc = false;
 
     data->av.snd_fld[1] = data->rasv.im_i_d_reference_A;
     data->av.snd_fld[2] = data->rasv.im_i_q_reference_A;
@@ -114,6 +117,8 @@ void IM_testbench_reset(DS_Data *data)
     data->rasv.im_enable_speed_control = false;
     data->rasv.im_enable_kalman_filter = false;
     data->rasv.im_enable_resonant_control = false;
+	data->rasv.im_enable_u_f_observer = false;
+	data->rasv.im_use_filtered_v_dc = false;
     uz_im_control_acknowledge_and_reset_error(data->objects.im_control);
 	data->av.im_control_violation = uz_im_control_no_violation;
 	data->av.im_control_violation_code = 0.0f;
@@ -122,4 +127,5 @@ void IM_testbench_reset(DS_Data *data)
     uz_im_control_set_observer(data->objects.im_control, uz_im_control_observer_rotor_flux_model);
     uz_im_control_enable_speed_control(data->objects.im_control, false);
     uz_im_control_enable_resonant_control(data->objects.im_control, false);
+	uz_im_control_enable_u_f_observer(data->objects.im_control, false);
 }

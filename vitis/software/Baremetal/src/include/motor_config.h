@@ -38,6 +38,10 @@
 #define INVERTER_TEMPERATURE_USER_LED_BLINK_DEG_C   100.0f
 #define INVERTER_TEMPERATURE_USER_LED_BLINK_HALF_PERIOD_MS 500U
 
+/* Temporary commissioning override: use a fixed DC-link voltage for U/f only. */
+#define MOTOR_U_F_USE_FIXED_V_DC  0
+#define MOTOR_U_F_FIXED_V_DC_V    560.0f
+
 /* ===== Available configurations ===== */
 #define MOTOR_CONFIG_LINDNER_3KW        1
 #define MOTOR_CONFIG_SIEMENS_1LA7073    2   /* Siemens 1LA7073-4AB10-Z, 0.37 kW, delta 230V / star 400V */
@@ -281,7 +285,7 @@
 #define MOTOR_UF_boost_voltage_V      1.0f
 #define MOTOR_UF_max_voltage_V        399.0f    /* rated RMS L-L (star at 400 V, phase Voltage 230V) */
 #define MOTOR_UF_max_frequency_Hz     50.0f     /* rated frequency */
-#define MOTOR_UF_frequency_ramp_Hz_per_s 2.5f  /* conservative ramp for commissioning */
+#define MOTOR_UF_frequency_ramp_Hz_per_s 5.0f  /* commissioning ramp */
 
 
 #endif /* MOTOR_CONFIG_SELECT == MOTOR_CONFIG_SIEMENS_1C4164B */
@@ -295,6 +299,8 @@
 /* Testbench defaults shared by all available motor configurations. */
 
 #define MOTOR_CURRENT_OFFSET_SAMPLE_COUNT             	1000U
+/** Number of raw DC-link voltage samples used by the moving-average filter. */
+#define MOTOR_V_DC_MOVING_AVERAGE_LENGTH               10U
 /** Maximum accepted standard deviation of each current channel during offset calibration. */
 #define MOTOR_CURRENT_OFFSET_MAX_STDDEV_A              	0.05f
 #define MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN  	1024U

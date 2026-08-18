@@ -21,9 +21,6 @@
  #include "lwip/dhcp.h"
 #endif
 
-//Includes for CAN
-#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
-
 //Includes from own files
 #include "main.h"
 #include "defines.h"
@@ -155,7 +152,7 @@ int main()
 			// Initialize the interrupt handler here in main() rather than in network_bringup_thread, to avoid the
 			// interrupt handler being registered before the thread stack is fully established.
 			Initialize_InterruptHandler();
-			#if CAN_ACTIVE==1
+			#if HIOKI_PW8001_CAN_ACTIVE == 1
 			uz_printf("APU: Init CAN \r\n"); // CAN interface
 			can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
 			can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
@@ -397,7 +394,7 @@ int main_thread()
 			THREAD_STACKSIZE,
             THREAD_PRIO_NETWORK_BRINGUP);
 
-#if CAN_ACTIVE == 1
+#if HIOKI_PW8001_CAN_ACTIVE == 1
 	sys_thread_new("CAN_Thread_CAN0", CAN_Thread_CAN0, NULL,
 				   THREAD_STACKSIZE,
 				   THREAD_PRIO_CAN);

@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include "xil_printf.h"
 #include "FreeRTOS.h"
@@ -32,17 +33,22 @@ extern uz_can_t *can_instance_1;
 uint32_t i_LifeCheck_CAN_Thread0 = 0;
 uint32_t i_LifeCheck_CAN_Thread1 = 0;
 volatile struct hioki_pw8001_can_values_t hioki_pw8001_can_values = {0};
+static TickType_t hioki_pw8001_last_valid_frame_tick = 0U;
+static bool hioki_pw8001_frame_received = false;
 
 static void process_hioki_pw8001_frame(const uz_can_frame_t *frame)
 {
-	if ((frame->std_id != HIOKI_PW8001_CAN_ID) || (frame->dlc < 3U)) {
+	if ((frame->std_id == HIOKI_PW8001_CAN_ID_U4_U5) && (frame->dlc >= 2U)) {
+		/* HIOKI Data 1 and Data 2 are payload bytes 0 and 1 in C. */
+		hioki_pw8001_can_values.u4 = (float)frame->data[0];
+		hioki_pw8001_can_values.u5 = (float)frame->data[1];
+	} else if ((frame->std_id == HIOKI_PW8001_CAN_ID_U6) && (frame->dlc >= 1U)) {
+		hioki_pw8001_can_values.u6 = (float)frame->data[0];
+	} else {
 		return;
 	}
-
-	/* Commissioning mapping: copy three payload bytes without scaling. */
-	hioki_pw8001_can_values.u4 = (float)frame->data[0];
-	hioki_pw8001_can_values.u5 = (float)frame->data[1];
-	hioki_pw8001_can_values.u6 = (float)frame->data[2];
+	hioki_pw8001_last_valid_frame_tick = xTaskGetTickCount();
+	hioki_pw8001_frame_received = true;
 }
 
 void CAN_Thread_CAN0(void *p)
@@ -63,6 +69,11 @@ void CAN_Thread_CAN0(void *p)
         {
             i_LifeCheck_CAN_Thread0 = 0;
         }
+		TickType_t const now = xTaskGetTickCount();
+		hioki_pw8001_can_values.connection_working =
+			(hioki_pw8001_frame_received &&
+			 ((now - hioki_pw8001_last_valid_frame_tick) <= pdMS_TO_TICKS(HIOKI_PW8001_CAN_TIMEOUT_MS)))
+			? 1U : 0U;
         vTaskDelay(ThreadDelay_CAN_Thread0 / portTICK_RATE_MS);
     }
 }

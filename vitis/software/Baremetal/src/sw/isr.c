@@ -70,7 +70,7 @@ static float im_current_offset_a,im_current_offset_b,im_current_offset_c;
 static double im_current_sum_a,im_current_sum_b,im_current_sum_c;
 static double im_current_square_sum_a,im_current_square_sum_b,im_current_square_sum_c;
 static uint32_t im_current_offset_samples;
-static bool setpoint_trajectories_enabled_last = true;
+static bool setpoint_trajectories_enabled_last = false;
 static bool idle_reset_done;
 static bool im_pwm_tristated_for_calibration;
 
@@ -128,6 +128,7 @@ static void update_setpoint_trajectories(void)
 
 static float update_measurements(void)
 {
+	static bool v_dc_filter_initialized = false;
 	float const encoder_mechanical_angle_rad =
 		(2.0f * UZ_PIf * (float)(Global_Data.av.incremental_encoder_d5_2_position_w_offset %
 		 MOTOR_ENCODER_INCREMENTS_PER_MECHANICAL_TURN)) /
@@ -140,6 +141,17 @@ static float update_measurements(void)
 	Global_Data.av.inverter_temperature_degC = wolfspeed_inverter_temperature_from_duty_ratio(temperature_duty_ratio);
 	update_temperature_user_led(Global_Data.av.inverter_temperature_degC);
 	Global_Data.av.im_v_dc_V = Global_Data.av.adc_ltc2311_a1_ch3 - 2.5f;
+	if (!v_dc_filter_initialized) {
+		/* Prefill the complete window to avoid a zero-valued startup transient. */
+		for (uint32_t sample = 0U; sample < MOTOR_V_DC_MOVING_AVERAGE_LENGTH; sample++) {
+			Global_Data.av.im_v_dc_filtered_V = uz_movingAverageFilter_sample(
+				Global_Data.objects.im_v_dc_moving_average, Global_Data.av.im_v_dc_V);
+		}
+		v_dc_filter_initialized = true;
+	} else {
+		Global_Data.av.im_v_dc_filtered_V = uz_movingAverageFilter_sample(
+			Global_Data.objects.im_v_dc_moving_average, Global_Data.av.im_v_dc_V);
+	}
 	if (Global_Data.rasv.im_enable_foc) {
 		Global_Data.av.im_speed_rpm = -Global_Data.av.incremental_encoder_d5_2_omega_mech
 			* (60.0f / (2.0f * UZ_PIf));
@@ -208,19 +220,31 @@ static void update_im_current_offset_calibration(platform_state_t current_state)
 	Global_Data.av.im_current_sum_error_A = Global_Data.av.im_i_a_A + Global_Data.av.im_i_b_A + Global_Data.av.im_i_c_A;
 }
 
+static float get_im_control_v_dc_V(void)
+{
+	#if MOTOR_U_F_USE_FIXED_V_DC == 1
+	return Global_Data.rasv.im_enable_foc
+		? Global_Data.av.im_v_dc_V : MOTOR_U_F_FIXED_V_DC_V;
+	#else
+	return (!Global_Data.rasv.im_enable_foc && Global_Data.rasv.im_use_filtered_v_dc)
+		? Global_Data.av.im_v_dc_filtered_V : Global_Data.av.im_v_dc_V;
+	#endif
+}
+
 static platform_state_t update_protection(platform_state_t current_state)
 {
 	bool const monitor_dc_undervoltage = (current_state == running_state) || (current_state == control_state);
-	(void)error_checks_step_im(Global_Data.av.im_v_dc_V, Global_Data.av.im_i_a_A, Global_Data.av.im_i_b_A,
+	(void)error_checks_step_im(get_im_control_v_dc_V(), Global_Data.av.im_i_a_A, Global_Data.av.im_i_b_A,
 		Global_Data.av.im_i_c_A, Global_Data.av.im_speed_rpm, &im_error_checks_config, monitor_dc_undervoltage);
 	return ultrazohm_state_machine_get_state();
 }
 
 static void update_im_control(float encoder_mechanical_angle_rad)
 {
+	float const control_v_dc_V = get_im_control_v_dc_V();
 	struct uz_im_measurement_values const measurements = {
 		.i_abc_A = {.a = Global_Data.av.im_i_a_A, .b = Global_Data.av.im_i_b_A, .c = Global_Data.av.im_i_c_A},
-		.v_abc_V = {0}, .v_dc_V = Global_Data.av.im_v_dc_V, .i_dc_A = 0.0f,
+		.v_abc_V = {0}, .v_dc_V = control_v_dc_V, .i_dc_A = 0.0f,
 		.rotor_speed_rpm = Global_Data.av.im_speed_rpm,
 		.rotor_mechanical_angle_rad = encoder_mechanical_angle_rad,
 	};

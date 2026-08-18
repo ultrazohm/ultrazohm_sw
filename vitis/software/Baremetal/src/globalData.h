@@ -18,6 +18,7 @@
 #include "include/d5_adapter_init.h"
 #include "uz/uz_IM_Control/uz_im_control.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 #define SETPOINT_TRAJECTORY_COUNT 4U
 
@@ -37,7 +38,7 @@ typedef struct _actualValues_ {
 	uint32_t slowDataCounter;
 	float d3_input_loopback_uint32;
 	float im_i_a_A, im_i_b_A, im_i_c_A;
-	float im_v_dc_V, im_speed_rpm;
+	float im_v_dc_V, im_v_dc_filtered_V, im_speed_rpm;
 	struct uz_im_actual_data im_control_actual;
 	struct uz_im_reference_values im_control_reference;
 	struct uz_im_measurement_values im_control_measurements;
@@ -55,6 +56,7 @@ typedef struct _actualValues_ {
 	float hioki_pw8001_u4_raw;
 	float hioki_pw8001_u5_raw;
 	float hioki_pw8001_u6_raw;
+	float hioki_pw8001_can_connection_working;
 	float im_duty_cycle_sum;
 	/* Project Wizard BEGIN: actualValues */
 	float adc_ltc2311_a1_ch0;
@@ -108,6 +110,8 @@ typedef struct _referenceAndSetValues_ {
 	bool im_enable_speed_control;
 	bool im_enable_kalman_filter;
 	bool im_enable_resonant_control;
+	bool im_enable_u_f_observer;
+	bool im_use_filtered_v_dc;
 /* Project Wizard BEGIN: referenceAndSetValues */
 	float pwm_2L_0_halfBridgeDutyCycle_1;
 	float pwm_2L_0_halfBridgeDutyCycle_2;
@@ -125,6 +129,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_im_control_t* im_control;
 	uz_PWM_duty_freq_detection_t* inverter_temperature_pwm;
+	uz_movingAverageFilter_t* im_v_dc_moving_average;
 	setpoint_trajectory_state_t setpoint_trajectories[SETPOINT_TRAJECTORY_COUNT];
 	/* Project Wizard BEGIN: objects */
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_0;

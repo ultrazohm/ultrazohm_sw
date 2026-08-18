@@ -1,5 +1,8 @@
 //APU_RPU_shared.h
 #pragma once
+
+#include <stdint.h>
+
 // OCM Bank Addresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 #define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
@@ -7,6 +10,9 @@
 #define MEM_SHARED_START_OCM_BANK_3_JAVASCOPE 	0xFFFF0000 // bank 3 is for r5->a53 javascope
 #define JS_CHANNELS 		20
 #define JAVASCOPE_DATA_SIZE sizeof(struct javascope_data_t)
+
+/** Set to 1 to initialize CAN and enable the temporary HIOKI CAN LED diagnostic. */
+#define HIOKI_PW8001_CAN_ACTIVE 0
 
 // Experimental feature - read docs before use
 #define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
@@ -31,6 +37,7 @@ struct hioki_pw8001_can_values_t
 	float u4;
 	float u5;
 	float u6;
+	uint32_t connection_working;
 };
 
 struct APU_to_RPU_user_data_t
@@ -73,4 +80,3 @@ static inline void write_rpu_version(uint32_t version){
     *rpu_version=version;
     Xil_DCacheFlushRange((uintptr_t)rpu_version, sizeof(uint32_t));
 }
-

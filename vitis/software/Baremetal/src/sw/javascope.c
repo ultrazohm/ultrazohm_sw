@@ -80,20 +80,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_SPEED_RPM]=&data->av.im_speed_rpm;
 	js_ch_observable[JSO_IM_FREQUENCY_HZ]=&data->av.im_control_actual.u_f_command_frequency_Hz;
 	js_ch_observable[JSO_IM_VOLTAGE_V]=&data->av.im_control_actual.u_f_applied_voltage_V;
-	js_ch_observable[JSO_IM_I_D]=&data->av.im_control_actual.i_dq_A.d;
-	js_ch_observable[JSO_IM_I_Q]=&data->av.im_control_actual.i_dq_A.q;
-	js_ch_observable[JSO_IM_I_D_RAW]=&data->av.im_control_actual.i_dq_raw_A.d;
-	js_ch_observable[JSO_IM_I_Q_RAW]=&data->av.im_control_actual.i_dq_raw_A.q;
-	js_ch_observable[JSO_IM_I_D_REF]=&data->rasv.im_i_d_reference_A;
-	js_ch_observable[JSO_IM_I_Q_REF]=&data->rasv.im_i_q_reference_A;
-	js_ch_observable[JSO_IM_FLUX_VS]=&data->av.im_control_actual.rotor_flux_magnitude_Vs;
-	js_ch_observable[JSO_IM_FLUX_ANGLE_RAD]=&data->av.im_control_actual.rotor_flux_angle_rad;
-	js_ch_observable[JSO_IM_ROTOR_ELECTRICAL_ANGLE_RAD]=&data->av.im_control_actual.rotor_electrical_angle_rad;
-	js_ch_observable[JSO_IM_FLUX_ROTOR_ANGLE_DIFFERENCE_RAD]=&data->av.im_control_actual.flux_rotor_angle_difference_rad;
-	js_ch_observable[JSO_IM_ROTOR_ELECTRICAL_FREQUENCY_HZ]=&data->av.im_control_actual.rotor_electrical_frequency_Hz;
-	js_ch_observable[JSO_IM_SLIP_FREQUENCY_HZ]=&data->av.im_control_actual.slip_frequency_Hz;
-	js_ch_observable[JSO_IM_SLIP_PERCENT]=&data->av.im_control_actual.slip_percent;
-	js_ch_observable[JSO_IM_STATOR_FREQUENCY_HZ]=&data->av.im_control_actual.stator_frequency_Hz;
 	js_ch_observable[JSO_IM_DUTY_A]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_1;
 	js_ch_observable[JSO_IM_DUTY_B]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_2;
 	js_ch_observable[JSO_IM_DUTY_C]=&data->rasv.pwm_2L_0_halfBridgeDutyCycle_3;
@@ -108,15 +94,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_CURRENT_OFFSET_MAX_STDDEV_A] = &data->av.im_current_offset_max_stddev_A;
 	js_ch_observable[JSO_IM_CURRENT_SUM_ERROR_A] = &data->av.im_current_sum_error_A;
 	js_ch_observable[JSO_IM_CURRENT_OFFSET_VALID] = &data->av.im_current_offset_valid;
-	js_ch_observable[JSO_IM_ROTOR_FLUX_VALID] = &data->av.im_control_actual.rotor_flux_valid;
-	js_ch_observable[JSO_IM_SLIP_FREQUENCY_LIMITED] = &data->av.im_control_actual.slip_frequency_limited;
-	js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_RAD] = &data->av.im_control_actual.flux_angle_step_rad;
-	js_ch_observable[JSO_IM_FLUX_ANGLE_STEP_VIOLATION] = &data->av.im_control_actual.flux_angle_step_violation;
 	js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_A] = &data->av.im_control_actual.phase_current_sum_A;
 	js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_VIOLATION] = &data->av.im_control_actual.phase_current_sum_violation;
-	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_MAGNITUDE_V] = &data->av.im_control_actual.voltage_vector_magnitude_V;
-	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_LIMIT_V] = &data->av.im_control_actual.voltage_vector_limit_V;
 	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED] = &data->av.im_control_actual.voltage_vector_saturated;
+	js_ch_observable[JSO_IM_OUTPUT_VOLTAGE_VECTOR_V] = &data->av.im_control_reference.v_dq_V.d;
 	js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD] = &data->av.incremental_encoder_d5_2_theta_el;
 	js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_2_omega_mech;
 	js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_2_position_w_offset_javascope;
@@ -125,16 +106,27 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_HIOKI_PW8001_U5_RAW] = &data->av.hioki_pw8001_u5_raw;
 	js_ch_observable[JSO_HIOKI_PW8001_U6_RAW] = &data->av.hioki_pw8001_u6_raw;
 	js_ch_observable[JSO_IM_DUTY_SUM] = &data->av.im_duty_cycle_sum;
+	js_ch_observable[JSO_IM_V_DC_FILTERED] = &data->av.im_v_dc_filtered_V;
+	js_ch_observable[JSO_HIOKI_PW8001_CAN_CONNECTION_WORKING] =
+		&data->av.hioki_pw8001_can_connection_working;
 
 	js_ch_selected[0] = js_ch_observable[JSO_IM_I_A];
 	js_ch_selected[1] = js_ch_observable[JSO_IM_I_B];
 	js_ch_selected[2] = js_ch_observable[JSO_IM_I_C];
-	js_ch_selected[9] = js_ch_observable[JSO_IM_DUTY_A];
-	js_ch_selected[10] = js_ch_observable[JSO_IM_DUTY_B];
-	js_ch_selected[11] = js_ch_observable[JSO_IM_DUTY_C];
-	js_ch_selected[12] = js_ch_observable[JSO_IM_DUTY_SUM];
-	js_ch_selected[15] = js_ch_observable[JSO_IM_FLUX_VS];
-	js_ch_selected[16] = js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD];
+	js_ch_selected[3] = js_ch_observable[JSO_IM_V_DC];
+	js_ch_selected[4] = js_ch_observable[JSO_IM_V_DC_FILTERED];
+	js_ch_selected[5] = js_ch_observable[JSO_IM_SPEED_RPM];
+	js_ch_selected[6] = js_ch_observable[JSO_IM_FREQUENCY_HZ];
+	js_ch_selected[7] = js_ch_observable[JSO_IM_VOLTAGE_V];
+	js_ch_selected[8] = js_ch_observable[JSO_IM_DUTY_A];
+	js_ch_selected[9] = js_ch_observable[JSO_IM_DUTY_B];
+	js_ch_selected[10] = js_ch_observable[JSO_IM_DUTY_C];
+	js_ch_selected[11] = js_ch_observable[JSO_IM_DUTY_SUM];
+	js_ch_selected[12] = js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_A];
+	js_ch_selected[13] = js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED];
+	js_ch_selected[14] = js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C];
+	js_ch_selected[15] = js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S];
+	js_ch_selected[16] = js_ch_observable[JSO_IM_OUTPUT_VOLTAGE_VECTOR_V];
 	js_ch_selected[17] = js_ch_observable[JSO_HIOKI_PW8001_U4_RAW];
 	js_ch_selected[18] = js_ch_observable[JSO_HIOKI_PW8001_U5_RAW];
 	js_ch_selected[19] = js_ch_observable[JSO_HIOKI_PW8001_U6_RAW];
@@ -175,6 +167,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_IM_Flux_Angle_Step_Violation] = &data->av.im_control_actual.flux_angle_step_violation;
 	js_slowDataArray[JSSD_FLOAT_IM_Phase_Current_Sum_Violation] = &data->av.im_control_actual.phase_current_sum_violation;
 	js_slowDataArray[JSSD_FLOAT_IM_Voltage_Vector_Saturated] = &data->av.im_control_actual.voltage_vector_saturated;
+	js_slowDataArray[JSSD_FLOAT_IM_Current_A] = &data->av.im_i_a_A;
+	js_slowDataArray[JSSD_FLOAT_IM_Output_Voltage_Vector_V] = &data->av.im_control_reference.v_dq_V.d;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
 /* Project Wizard END: javascope_slowdata_pointers */
 
@@ -268,6 +262,8 @@ void JavaScope_update(DS_Data* data){
 	data->av.hioki_pw8001_u4_raw = apu_to_rpu_user_data->hioki_pw8001.u4;
 	data->av.hioki_pw8001_u5_raw = apu_to_rpu_user_data->hioki_pw8001.u5;
 	data->av.hioki_pw8001_u6_raw = apu_to_rpu_user_data->hioki_pw8001.u6;
+	data->av.hioki_pw8001_can_connection_working =
+		apu_to_rpu_user_data->hioki_pw8001.connection_working ? 1.0f : 0.0f;
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 

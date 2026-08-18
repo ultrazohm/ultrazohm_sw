@@ -13,6 +13,7 @@ struct uz_im_control_t {
     bool is_ready;
     bool enable;
     bool speed_control_enabled;
+    bool u_f_observer_enabled;
     enum uz_im_control_observer observer;
     enum uz_im_control_mode mode;
     enum uz_im_control_safe_operating_region_violation violation;
@@ -109,6 +110,7 @@ uz_im_control_t *uz_im_control_init(struct uz_im_control_configuration_t control
     self->control_config = control_config;
     self->machine_config = machine_config;
     self->speed_control_enabled = control_config.enable_speed_control;
+    self->u_f_observer_enabled = false;
     self->observer = control_config.observer;
     self->resonant_control_enabled = control_config.enable_resonant_control;
     self->mode = uz_im_control_mode_foc;
@@ -186,6 +188,7 @@ void uz_im_control_set_mode(uz_im_control_t *self, enum uz_im_control_mode mode)
 }
 void uz_im_control_enable_speed_control(uz_im_control_t *self, bool enable) { uz_assert_not_NULL(self); self->speed_control_enabled = enable; uz_PI_Controller_reset(self->speed_controller); }
 void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer) { uz_assert_not_NULL(self); self->observer = observer; }
+void uz_im_control_enable_u_f_observer(uz_im_control_t *self, bool enable) { uz_assert_not_NULL(self); self->u_f_observer_enabled = enable; }
 void uz_im_control_enable_resonant_control(uz_im_control_t *self, bool enable) {
     uz_assert_not_NULL(self);
     if (self->resonant_control_enabled != enable) {
@@ -302,13 +305,23 @@ static struct uz_DutyCycle_t sample_u_f(uz_im_control_t *self, float target_Hz) 
     float step = self->control_config.u_f_frequency_ramp_Hz_per_s * self->control_config.sample_time_s;
     float error = target - self->u_f_frequency_Hz;
     self->u_f_frequency_Hz += fminf(fmaxf(error, -step), step);
-    float magnitude = fminf(fabsf(self->u_f_frequency_Hz) * self->control_config.u_f_ratio_V_per_Hz + ((fabsf(self->u_f_frequency_Hz) > 0.1f) ? self->control_config.u_f_boost_voltage_V : 0.0f), self->control_config.u_f_max_voltage_V);
+    float const requested_line_voltage_rms_V = fminf(fabsf(self->u_f_frequency_Hz) * self->control_config.u_f_ratio_V_per_Hz + ((fabsf(self->u_f_frequency_Hz) > 0.1f) ? self->control_config.u_f_boost_voltage_V : 0.0f), self->control_config.u_f_max_voltage_V);
+    float const requested_vector_magnitude_V = requested_line_voltage_rms_V * sqrtf(2.0f / 3.0f);
+    float const voltage_vector_limit_V = self->measurements.v_dc_V / sqrtf(3.0f);
+    float applied_vector_magnitude_V = requested_vector_magnitude_V;
+    self->actual.voltage_vector_magnitude_V = requested_vector_magnitude_V;
+    self->actual.voltage_vector_limit_V = voltage_vector_limit_V;
+    self->actual.voltage_vector_saturated = requested_vector_magnitude_V > voltage_vector_limit_V ? 1.0f : 0.0f;
+    if (self->control_config.enable_voltage_vector_limiting && (self->actual.voltage_vector_saturated != 0.0f)) {
+        applied_vector_magnitude_V = voltage_vector_limit_V;
+    }
+    self->voltage_vector_saturated_last = self->actual.voltage_vector_saturated != 0.0f;
     self->u_f_angle_rad = fmodf(self->u_f_angle_rad + 2.0f * UZ_PIf * self->u_f_frequency_Hz * self->control_config.sample_time_s, 2.0f * UZ_PIf);
     if (self->u_f_angle_rad < 0.0f) self->u_f_angle_rad += 2.0f * UZ_PIf;
     self->actual.u_f_command_frequency_Hz = self->u_f_frequency_Hz;
     self->actual.u_f_electrical_angle_rad = self->u_f_angle_rad;
-    self->actual.u_f_applied_voltage_V = magnitude;
-    self->references.v_dq_V = (uz_3ph_dq_t){.d = magnitude * sqrtf(2.0f / 3.0f)};
+    self->actual.u_f_applied_voltage_V = applied_vector_magnitude_V * sqrtf(3.0f / 2.0f);
+    self->references.v_dq_V = (uz_3ph_dq_t){.d = applied_vector_magnitude_V};
     return uz_Space_Vector_Modulation(self->references.v_dq_V, self->measurements.v_dc_V, self->u_f_angle_rad);
 }
 
@@ -388,7 +401,9 @@ struct uz_DutyCycle_t uz_im_control_sample_duty(uz_im_control_t *self, struct uz
     if (self->mode == uz_im_control_mode_u_f) {
         self->measurements = m;
         if (self->speed_filter != NULL) self->measurements.rotor_speed_rpm = uz_signals_IIR_Filter_sample(self->speed_filter, m.rotor_speed_rpm);
-        update_observers(self);
+        if (self->u_f_observer_enabled) {
+            update_observers(self);
+        }
         check_safe_operating_region(self);
         if ((!self->enable) || (self->violation != uz_im_control_no_violation)) return self->control_config.default_duty_cycle;
         self->references.duty_cycle = sample_u_f(self, u_f_ref);

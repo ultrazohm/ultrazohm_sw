@@ -19,7 +19,7 @@
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-		.setpoint_trajectories_enabled = true,
+		.setpoint_trajectories_enabled = false,
 		.im_frequency_reference_Hz = MOTOR_Default_u_f_frequency_Hz,
 		.im_i_d_reference_A = MOTOR_Default_i_d_reference_A,
 		.im_i_q_reference_A = MOTOR_Default_i_q_reference_A,
@@ -28,6 +28,8 @@ DS_Data Global_Data = {
 		.im_enable_speed_control = false,
 		.im_enable_kalman_filter = false,
 		.im_enable_resonant_control = false,
+		.im_enable_u_f_observer = false,
+		.im_use_filtered_v_dc = false,
 /* Project Wizard BEGIN: rasv_initializer */
         .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,
         .pwm_2L_0_halfBridgeDutyCycle_2 = 0.0f,
@@ -63,6 +65,8 @@ static const struct uz_PWM_duty_freq_detection_config_t inverter_temperature_pwm
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_UZ_PWMDUTYFREQDETECT_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
 };
+
+static float im_v_dc_moving_average_buffer[MOTOR_V_DC_MOVING_AVERAGE_LENGTH] = {0};
 
 static void initialize_setpoint_trajectories(void)
 {
@@ -136,6 +140,12 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+			Global_Data.objects.im_v_dc_moving_average = uz_movingAverageFilter_init(
+				(struct uz_movingAverageFilter_config){.filterLength = MOTOR_V_DC_MOVING_AVERAGE_LENGTH},
+				(uz_array_float_t){
+					.length = UZ_ARRAY_SIZE(im_v_dc_moving_average_buffer),
+					.data = im_v_dc_moving_average_buffer,
+				});
             JavaScope_initialize(&Global_Data);
 			IM_testbench_init(&Global_Data);
 			initialize_setpoint_trajectories();

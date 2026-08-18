@@ -1,0 +1,79 @@
+[
+  {
+    "config": "configs\\default_empty.pw.json",
+    "description": "Default project with A-slots removed and D-slots bypassed.",
+    "name": "default_empty",
+    "summary": "summaries\\default_empty.summary.json",
+    "tcl": "tcl\\default_empty.tcl"
+  },
+  {
+    "config": "configs\\all_no_adapter.pw.json",
+    "description": "Every adapter slot selected as No adapter board.",
+    "name": "all_no_adapter",
+    "summary": "summaries\\all_no_adapter.summary.json",
+    "tcl": "tcl\\all_no_adapter.tcl"
+  },
+  {
+    "config": "configs\\temperature_d3_d4.pw.json",
+    "description": "Two temperature cards with Type K software presets and visualization routes.",
+    "name": "temperature_d3_d4",
+    "summary": "summaries\\temperature_d3_d4.summary.json",
+    "tcl": "tcl\\temperature_d3_d4.tcl"
+  },
+  {
+    "config": "configs\\optical_axi_gpio_d2.pw.json",
+    "description": "Optical 14TX4RX card using default AXI GPIO visualization-capable IO.",
+    "name": "optical_axi_gpio_d2",
+    "summary": "summaries\\optical_axi_gpio_d2.summary.json",
+    "tcl": "tcl\\optical_axi_gpio_d2.tcl"
+  },
+  {
+    "config": "configs\\optical_no_axi_d2.pw.json",
+    "description": "Optical card with TX pins driven from PWM/custom sources and RX pins as top-level ports.",
+    "name": "optical_no_axi_d2",
+    "summary": "summaries\\optical_no_axi_d2.summary.json",
+    "tcl": "tcl\\optical_no_axi_d2.tcl"
+  },
+  {
+    "config": "configs\\resolver_d4_mixed_pl.pw.json",
+    "description": "D4 resolver with channel 2 using base resolver IP readout and channels 1/3 using PL interface.",
+    "name": "resolver_d4_mixed_pl",
+    "summary": "summaries\\resolver_d4_mixed_pl.summary.json",
+    "tcl": "tcl\\resolver_d4_mixed_pl.tcl"
+  },
+  {
+    "config": "configs\\resolver_d5_two_channel.pw.json",
+    "description": "D5 resolver two-channel mapping with PL interfaces enabled.",
+    "name": "resolver_d5_two_channel",
+    "summary": "summaries\\resolver_d5_two_channel.summary.json",
+    "tcl": "tcl\\resolver_d5_two_channel.tcl"
+  },
+  {
+    "config": "configs\\analog_adc_chain.pw.json",
+    "description": "A-slot ADC chain to exercise analog datamover and trigger wiring.",
+    "name": "analog_adc_chain",
+    "summary": "summaries\\analog_adc_chain.summary.json",
+    "tcl": "tcl\\analog_adc_chain.tcl"
+  },
+  {
+    "config": "configs\\ten_pwm_2l.pw.json",
+    "description": "Maximum 2L PWM instance count.",
+    "name": "ten_pwm_2l",
+    "summary": "summaries\\ten_pwm_2l.summary.json",
+    "tcl": "tcl\\ten_pwm_2l.tcl"
+  },
+  {
+    "config": "configs\\local_workflow_full.pw.json",
+    "description": "Local workflow with GUI mode, bitstream generation, XSA export, and disabled checkpoints.",
+    "name": "local_workflow_full",
+    "summary": "summaries\\local_workflow_full.summary.json",
+    "tcl": "tcl\\local_workflow_full.tcl"
+  },
+  {
+    "config": "configs\\proven_large_integration.pw.json",
+    "description": "User-proven large integration scenario built successfully via workstation flow.",
+    "name": "proven_large_integration",
+    "summary": "summaries\\proven_large_integration.summary.json",
+    "tcl": "tcl\\proven_large_integration.tcl"
+  }
+]

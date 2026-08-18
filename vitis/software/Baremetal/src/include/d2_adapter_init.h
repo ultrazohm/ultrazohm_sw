@@ -1,12 +1,11 @@
 #pragma once
 
 /* Project Wizard BEGIN: D2 includes */
-/* Project Wizard generated content for D2 */
-#include "../IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+/* Project Wizard generated content for D2 AXI GPIO IO card */
+#include <stdint.h>
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 /* Project Wizard END: D2 includes */
 
 /* Project Wizard BEGIN: D2 prototypes */
-struct _DS_Data_;
-uz_inverter_adapter_t* initialize_inverter_adapter_d2(void);
-void update_inverter_adapter_d2_outputs(struct _DS_Data_* data);
+uz_axi_gpio_t* initialize_axi_gpio_d2(void);
 /* Project Wizard END: D2 prototypes */

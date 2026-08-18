@@ -18,6 +18,10 @@ static uz_axi_gpio_t* project_wizard_io_slot_to_gpio(project_wizard_axi_gpio_slo
     switch (slot) {
     case AXI_GPIO_SLOT_D1:
         return Global_Data.objects.axi_gpio_d1;
+    case AXI_GPIO_SLOT_D2:
+        return Global_Data.objects.axi_gpio_d2;
+    case AXI_GPIO_SLOT_D3:
+        return Global_Data.objects.axi_gpio_d3;
     default:
         return NULL;
     }

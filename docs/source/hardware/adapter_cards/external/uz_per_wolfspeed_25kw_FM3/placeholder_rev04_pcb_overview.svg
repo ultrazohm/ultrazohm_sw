@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">Rev04 PCB overview placeholder</title>
+  <desc id="desc">Placeholder for a top-side photo or 3D render of the Rev04 PCB.</desc>
+  <rect width="960" height="420" fill="#f5f5f5"/>
+  <rect x="80" y="80" width="800" height="260" rx="8" fill="#ffffff" stroke="#555" stroke-width="3"/>
+  <rect x="110" y="120" width="130" height="180" fill="#d9e8f5" stroke="#336b91" stroke-width="2"/>
+  <rect x="290" y="120" width="160" height="80" fill="#e6f0d8" stroke="#5f7f36" stroke-width="2"/>
+  <rect x="500" y="120" width="160" height="80" fill="#f4e2c6" stroke="#9a6a28" stroke-width="2"/>
+  <rect x="710" y="120" width="120" height="160" fill="#ead8ef" stroke="#764783" stroke-width="2"/>
+  <text x="480" y="370" font-family="Arial, sans-serif" font-size="26" text-anchor="middle" fill="#333">Placeholder: add total top-side view or 3D render of Rev04 PCB</text>
+</svg>

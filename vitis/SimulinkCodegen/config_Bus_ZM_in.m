@@ -3,17 +3,17 @@ clear elems;
 i = 1;
 
 elems(i) = Simulink.BusElement;
-elems(i).Name = 'Soll_Drehzahl';
+elems(i).Name = 'Soll_Drehzahl_Umin';
 elems(i).DataType = 'single';
 i = i + 1;
 
 elems(i) = Simulink.BusElement;
-elems(i).Name = 'Soll_id';
+elems(i).Name = 'Soll_id_A';
 elems(i).DataType = 'single';
 i = i + 1;
 
 elems(i) = Simulink.BusElement;
-elems(i).Name = 'Soll_iq';
+elems(i).Name = 'Soll_iq_A';
 elems(i).DataType = 'single';
 i = i + 1;
 
@@ -52,8 +52,6 @@ elems(i).Name = 'IGBT_desat';
 elems(i).DataType = 'boolean';
 i = i + 1;
 
-
-
 Bus_ZM_In = Simulink.Bus;
 Bus_ZM_In.Elements = elems;
 clear i;
@@ -61,9 +59,9 @@ clear elems;
 % --- Parameter-Definition (Die Werte) ---
 clear data;
 
-data.Soll_Drehzahl = 2000; 
-data.Soll_id = 0; 
-data.Soll_iq = 0; 
+data.Soll_Drehzahl_Umin = 0; 
+data.Soll_id_A = 0; 
+data.Soll_iq_A = 0; 
 data.Start_Traj = 0; 
 data.Fehlermeldung = 0; 
 data.Soll_Status = Status_Ctrl.Ready; 

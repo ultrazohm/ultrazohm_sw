@@ -38,7 +38,7 @@ DS_Data Global_Data = {
         .Soll_Square_DutyCycle = 0.5f,
         .Soll_Square_Frequency_Hz = 25.0f,
         .Soll_DPT_Current_A = 0.0f,
-        .Soll_DPT_MaxCurrent_A = 10.0f,
+        .Soll_DPT_MaxCurrent_A = 2.0f,
         .Soll_DPT_ChargeTimeout_ms = 100.0f,
         .Soll_DPT_Deadtime_us = 5.0f,
         .Soll_DPT_Pulse2_us = 5.0f},
@@ -62,6 +62,8 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "include/uz_foc_init.h"
+
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
@@ -90,28 +92,28 @@ uz_codegen regelung;
 
 int main(void)
 {
-	regelung.input.Bus_ZM_In_a.Fehlermeldung = false;
-		regelung.input.Bus_ZM_In_a.Soll_Drehzahl = 0;
-		regelung.input.Bus_ZM_In_a.Soll_Regelungsart = Drehzahl;
-		regelung.input.Bus_ZM_In_a.Soll_Status = Ready;
-		regelung.input.Bus_ZM_In_a.Soll_id = 0;
-		regelung.input.Bus_ZM_In_a.Soll_iq = 0;
-		regelung.input.Bus_ZM_In_a.Start_Traj = false;
-		regelung.input.Bus_PMSM_Out_j.pmsm_Omega_mech = 0;
-		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[0] = 0;
-		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[1] = 0;
-		regelung.input.Bus_PMSM_Out_j.pmsm_Iuvw[2] = 0;
-		regelung.input.Bus_PMSM_Out_j.pmsm_m_mot = 0;
-		regelung.input.Bus_PMSM_Out_j.pmsm_phi_mech = 0;
-		regelung.output.Bus_Ctrl_Out_i.Dutycycle[0] = 0.0;
-		regelung.output.Bus_Ctrl_Out_i.Dutycycle[1] = 0.0;
-		regelung.output.Bus_Ctrl_Out_i.Dutycycle[2] = 0.0;
-		regelung.output.Bus_Ctrl_Out_i.ctrl_Ualpha = 0;
-		regelung.output.Bus_Ctrl_Out_i.ctrl_Ubeta = 0;
-		regelung.output.Bus_Ctrl_Out_i.act_pwm = false;
-		regelung.output.Bus_Ctrl_Out_i.board_en = false;
-		regelung.output.Bus_Ctrl_Out_i.pwr_en = false;
-		regelung.output.Bus_Ctrl_Out_i.reset = false;
+		regelung.input.Bus_ZM_In_g.Fehlermeldung = false;
+		regelung.input.Bus_ZM_In_g.Soll_Drehzahl_Umin = 0;
+		regelung.input.Bus_ZM_In_g.Soll_Regelungsart = Drehzahl;
+		regelung.input.Bus_ZM_In_g.Soll_Status = Ready;
+		regelung.input.Bus_ZM_In_g.Soll_id_A = 0;
+		regelung.input.Bus_ZM_In_g.Soll_iq_A = 0;
+		regelung.input.Bus_ZM_In_g.Start_Traj = false;
+		regelung.input.Bus_PMSM_Out_m.pmsm_Omega_mech_rad_s = 0;
+		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[0] = 0;
+		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[1] = 0;
+		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[2] = 0;
+		regelung.input.Bus_PMSM_Out_m.pmsm_m_mot_Nm = 0;
+		regelung.input.Bus_PMSM_Out_m.pmsm_theta_mech_rad = 0;
+		regelung.output.Bus_Ctrl_Out_m.Dutycycle[0] = 0.0;
+		regelung.output.Bus_Ctrl_Out_m.Dutycycle[1] = 0.0;
+		regelung.output.Bus_Ctrl_Out_m.Dutycycle[2] = 0.0;
+		regelung.output.Bus_Ctrl_Out_m.ctrl_Ualpha_V = 0;
+		regelung.output.Bus_Ctrl_Out_m.ctrl_Ubeta_V = 0;
+		regelung.output.Bus_Ctrl_Out_m.act_pwm = false;
+		regelung.output.Bus_Ctrl_Out_m.board_en = false;
+		regelung.output.Bus_Ctrl_Out_m.pwr_en = false;
+		regelung.output.Bus_Ctrl_Out_m.reset = false;
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -162,6 +164,9 @@ int main(void)
             input_gpio= uz_axi_gpio_init(input_config);
             output_gpio = uz_axi_gpio_init(gpio_out_config);
 			Sinc3_Filter = SigmaDeltaWandler_init();
+			Global_Data.objects.current_controller=init_uz_foc();
+			Global_Data.objects.speed_controller = speed_ctrl_init();
+			Global_Data.objects.setpoint_controller = setpoint_ctrl_init();
             initialization_chain = print_msg;
             break;
         case print_msg:

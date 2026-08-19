@@ -1,0 +1,9 @@
+#pragma once
+
+#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz/uz_setpoint/uz_setpoint.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+
+uz_CurrentControl_t* init_uz_foc(void);
+uz_SpeedControl_t* speed_ctrl_init(void);
+uz_SetPoint_t* setpoint_ctrl_init(void);

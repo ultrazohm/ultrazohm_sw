@@ -48,6 +48,11 @@ enum JS_OberservableData {
 	JSO_conv_board_rst,
 	JSO_conv_board_ready,
 	JSO_conv_igbt_desat,
+	JSO_duty_phase_one,
+	JSO_ctrl_Iqref,
+	JSO_ctrl_Soll_Moment,
+	JSO_ctrl_soll_omega,
+	JSO_ctrl_ist_omega,
 	JSO_ENDMARKER
 };
 
@@ -67,6 +72,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_SD_raw_avg_PH1,
 	JSSD_FLOAT_SD_raw_avg_PH2,
 	JSSD_FLOAT_SD_raw_avg_PH3,
+	JSSD_FLOAT_Soll_Drehzahl,
 	JSSD_ENDMARKER
 };
 
@@ -108,8 +114,8 @@ enum gui_button_mapping {
 	My_Button_6,
 	My_Button_7,
 	My_Button_8,
+	My_Button_9,
 	Error_Reset,
-	My_Button_9, // Start DPT (Doppelpulstest), see uz_dpt.h. Appended at the end (not inserted above) so existing button IDs (e.g. Error_Reset) keep their numeric value. Needs a new button/msgId wired up in the GUI project.
 	GUI_BTN_ENDMARKER
 };
 
@@ -126,9 +132,8 @@ enum gui_button_mapping {
 	HB2_DutyCycle,
 	HB3_DutyCycle,
 	Soll_Drehzahl,
-	Clk_Dut,
-	send_field_6,
-	DutC,
+	KPn,
+	TNn,
 	send_field_7,
 	Soll_id,
 	Soll_iq,
@@ -231,8 +236,8 @@ enum gui_button_mapping {
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	manual_duty_cycle,
-	MyButton2,
-	MyButton3,
+	uz_current_ctrl,
+	uz_speed_ctrl,
 	current_control,
 	rpm_control,
 	test_sine,
@@ -255,7 +260,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_SD_raw_avg_PH1,
 	JSSD_FLOAT_SD_raw_avg_PH2,
 	JSSD_FLOAT_SD_raw_avg_PH3,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_Soll_Drehzahl,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

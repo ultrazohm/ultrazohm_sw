@@ -1,34 +1,44 @@
 % Definition Motorparamter für Bus_Config_PMSM
 clear elems;
+i =1;
 elems(1) = Simulink.BusElement;
-elems(1).Name = 'Dutycycle';
-elems(1).DataType = 'single';
-elems(1).Dimensions = '3';
+elems(i).Name = 'Dutycycle';
+elems(i).DataType = 'single';
+elems(i).Dimensions = '3';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'act_pwm';
+elems(i).DataType = 'boolean';
+i = i + 1;
 
-elems(2) = Simulink.BusElement;
-elems(2).Name = 'act_pwm';
-elems(2).DataType = 'boolean';
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'ctrl_Ualpha_V';
+elems(i).DataType = 'single';
+i = i + 1;
 
-elems(3) = Simulink.BusElement;
-elems(3).Name = 'ctrl_Ualpha';
-elems(3).DataType = 'single';
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'ctrl_Ubeta_V';
+elems(i).DataType = 'single';
+i = i + 1;
 
-elems(4) = Simulink.BusElement;
-elems(4).Name = 'ctrl_Ubeta';
-elems(4).DataType = 'single';
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'pwr_en';
+elems(i).DataType = 'boolean';
+i = i + 1;
 
-elems(5) = Simulink.BusElement;
-elems(5).Name = 'pwr_en';
-elems(5).DataType = 'boolean';
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'board_en';
+elems(i).DataType = 'boolean';
+i = i + 1;
 
-elems(6) = Simulink.BusElement;
-elems(6).Name = 'board_en';
-elems(6).DataType = 'boolean';
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'reset';
+elems(i).DataType = 'boolean';
+i = i + 1;
 
-elems(7) = Simulink.BusElement;
-elems(7).Name = 'reset';
-elems(7).DataType = 'boolean';
-
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'ZM_Ist_Status';
+elems(i).DataType = 'Enum: Status_Ctrl';
 
 Bus_Ctrl_Out = Simulink.Bus;
 Bus_Ctrl_Out.Elements = elems;
@@ -44,6 +54,7 @@ data.ctrl_Ubeta = 0;
 data.pwr_en = false;
 ddata.board_en = false;
 data.reset = false;
+data.ZM_Ist_Status = Status_Ctrl.Ready;
 
 struct_Ctrl_Out = Simulink.Parameter;
 struct_Ctrl_Out.Value = data;

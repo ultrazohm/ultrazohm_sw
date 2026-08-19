@@ -28,7 +28,7 @@ clear elems;
 % --- Parameter-Definition (Die Werte) ---
 clear data;
 data.SwitchInv = Auswahl_Inverter.PT1; % Standard Inverter Modell ist PT1-Übertragungsglied
-data.Udc = 678; % DC link voltage
+data.Udc = 48; % DC link voltage
 data.PT1_Gain = 1.0; % Gain for PT1
 data.PT1_Ts = 1/(0.5*struct_Ctrl_Config.Value.Tsample); % Time constant for PT1
 data.PT1_reset = 0; % Reset value for PT1

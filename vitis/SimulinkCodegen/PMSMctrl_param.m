@@ -20,7 +20,7 @@ step_size = struct_Model_Config.Value.step_size;
 % Defines
 
 GAIN_UMIN_TO_HZ = Simulink.Parameter;
-GAIN_UMIN_TO_HZ.Value = 1/(2*pi*60);
+GAIN_UMIN_TO_HZ.Value = 1/(60);
 GAIN_UMIN_TO_HZ.DataType = 'single';
 GAIN_UMIN_TO_HZ.StorageClass = 'Define';
 

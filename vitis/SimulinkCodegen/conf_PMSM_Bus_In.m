@@ -2,11 +2,11 @@
 clear elems;
 
 elems(1) = Simulink.BusElement;
-elems(1).Name = 'Last_M';
+elems(1).Name = 'Last_M_Nm';
 elems(1).DataType = 'single';
 
 elems(2) = Simulink.BusElement;
-elems(2).Name = 'Last_J';
+elems(2).Name = 'Last_J_kgmsqr';
 elems(2).DataType = 'single';
 
 elems(3) = Simulink.BusElement;
@@ -14,7 +14,7 @@ elems(3).Name = 'Bremse';
 elems(3).DataType = 'boolean';
 
 elems(4) = Simulink.BusElement;
-elems(4).Name = 'Udq';
+elems(4).Name = 'Udq_V';
 elems(4).DataType = 'single';
 elems(4).Dimensions = '2';
 
@@ -30,10 +30,10 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.Last_M = 0; % DC link voltage
-data.Last_J = 0; % Gain for PT1
+data.Last_M_Nm = 0.5; % DC link voltage
+data.Last_J_kgmsqr = 0; % Gain for PT1
 data.Bremse = 0; % Time constant for PT1
-data.Udq = [0 0];
+data.Udq_V = [0 0];
 data.switchUabc_dq = false; 
 struct_PMSM_In = Simulink.Parameter;
 struct_PMSM_In.Value = data;

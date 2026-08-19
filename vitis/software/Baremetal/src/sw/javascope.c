@@ -22,7 +22,6 @@
 #include "../IP_Cores/uz_JL_pmsmModel/uz_JL_pmsmModel.h"
 #include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-//#include "../Codegen/uz_codegen.h"
 #include "../globalData.h"
 #include "../include/JL_SH_Umrichter.h"
 
@@ -73,6 +72,7 @@ extern float fault_f;
 extern DS_Data Global_Data;
 extern conv_status_signals_t conv_status_signals;
 extern float sine;
+extern uz_codegen regelung;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -118,13 +118,19 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech]			= &Global_Data.av.mechanicalPosition;
 	js_ch_observable[JSO_n_rpm]					= &Global_Data.av.resolver_pl_outputs.n_mech_rpm;
 	js_ch_observable[JSO_omega_mech]			= &Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-	js_ch_observable[JSO_dpt_state]				= &dpt_state_f;
-	js_ch_observable[JSO_dpt_current]			= &Global_Data.av.Sinc3_Filter.data_PH1;
+//	js_ch_observable[JSO_dpt_state]				= &dpt_state_f;
+//	js_ch_observable[JSO_dpt_current]			= &Global_Data.av.Sinc3_Filter.data_PH1;
 	js_ch_observable[JSO_conv_pwr_en]			= &conv_pwr_en_f;
 	js_ch_observable[JSO_conv_board_en]			= &conv_board_en_f;
 	js_ch_observable[JSO_conv_board_rst]		= &conv_board_rst_f;
 	js_ch_observable[JSO_conv_board_ready]		= &conv_board_ready_f;
 	js_ch_observable[JSO_conv_igbt_desat]		= &conv_igbt_desat_f;
+	js_ch_observable[JSO_duty_phase_one]		= &Global_Data.rasv.halfBridge10DutyCycle;
+	js_ch_observable[JSO_ctrl_Iqref]		= &regelung.output.IQRef;
+	js_ch_observable[JSO_ctrl_Soll_Moment]		= &regelung.output.Soll_Moment;
+	js_ch_observable[JSO_ctrl_ist_omega]		= &regelung.output.ctrl_omega;
+	js_ch_observable[JSO_ctrl_soll_omega]		= &regelung.output.soll_omega;
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -138,6 +144,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH1);
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH2);
 	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH3);
+js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_g.Soll_Drehzahl_Umin;
+
 
 
 	return Status;

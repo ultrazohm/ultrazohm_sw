@@ -26,12 +26,12 @@ Modul ist angepasst für SH-Strommessplatine
 struct uz_JL_SigmaDelta_Interface_config_t Sinc3_Filter_config = {
 		.base_address = XPAR_UZ_USER_UZ_JL_SIGMADELTA_INT_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000.0f,
-		.dezimation = 1000,	// Dezimierungsfaktor für ZK-Spannungsmessung
+		.dezimation = 128,	// Dezimierungsfaktor für ZK-Spannungsmessung
 		.clk_ratio = 10, 		// Taktrate des Sigma-Delta-Modulators (5 Mhz untere Grenze AMC1204)
 		.switch_edge = 0,	    //0 = every falling edge, 1 = every second even falling edge, 2 = every second odd falling edge; anpassbar für verschiedene Sigma-Delta-Wandler
 		.filt_input_delay = 3,	// Verzögerung des Abtastzeitpunkts, um Gruppenlaufzeit zu kompensieren, in 10 ns Schritten; 9 f�r 5 Mhz, 3 f�r 10 Mhz
 		.dsw_clk_en = true,		// Aktivieren der Clock des DSW
-		.clk_dutycycle = 0.75,  // Clock Dutycycle, anpassbar zur kompensation von Signalverzerrung durch LWL; 5MHz 0,65, 10Mhz 0,75,
+		.clk_dutycycle = 0.8,  // Clock Dutycycle, anpassbar zur kompensation von Signalverzerrung durch LWL; 5MHz 0,65, 10Mhz 0,8 -> nur 10% Schritte,
 };
 
 /**
@@ -54,9 +54,9 @@ struct SigmaDeltaWandler_calibration_t {
 
 /* Struct zum Kalibrieren der Kanäle. Hier für vier Strommessungen und eine Spannungsmeessung*/
 static struct SigmaDeltaWandler_calibration_t calibration[SDW_CH_ENDMARKER] = {
-	[SDW_CH_PH1] = {.k_manual = 68.91812f, .offset_manual = -0.000139975f},
-	[SDW_CH_PH2] = {.k_manual = 71.22505f, .offset_manual = -0.00075595f},
-	[SDW_CH_PH3] = {.k_manual = 70.028f, .offset_manual = -0.000338208f},
+	[SDW_CH_PH1] = {.k_manual = 70.0f, .offset_manual = -0.000139975f},//68.91812
+	[SDW_CH_PH2] = {.k_manual = 69.0f, .offset_manual = -0.00075595f},//71.22505
+	[SDW_CH_PH3] = {.k_manual = 70.0f, .offset_manual = -0.000338208f},
 	[SDW_CH_PH4] = {.k_manual = 1.0f, .offset_manual = 0.0f},
 	[SDW_CH_U]   = {.k_manual = 1.0f, .offset_manual = 0.0f},
 };

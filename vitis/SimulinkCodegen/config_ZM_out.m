@@ -17,15 +17,15 @@ elems(4).Name = 'Ist_Regelungsart';
 elems(4).DataType = 'Enum: Soll_Regelungsart_en';
 
 elems(5) = Simulink.BusElement;
-elems(5).Name = 'Soll_Drehzahl';
+elems(5).Name = 'Soll_Drehzahl_Umin';
 elems(5).DataType = 'single';
 
 elems(6) = Simulink.BusElement;
-elems(6).Name = 'Soll_id';
+elems(6).Name = 'Soll_id_A';
 elems(6).DataType = 'single';
 
 elems(7) = Simulink.BusElement;
-elems(7).Name = 'Soll_iq';
+elems(7).Name = 'Soll_iq_A';
 elems(7).DataType = 'single';
 
 elems(8) = Simulink.BusElement;
@@ -51,9 +51,9 @@ data.En_Traj = false; % Standard Inverter Modell ist PT1-Übertragungsglied
 data.Pulsfreigabe = false; % DC link voltage
 data.Ist_Status = Status_Ctrl.Ready; % Gain for PT1
 data.Ist_Regelungsart = Soll_Regelungsart_en.Drehzahl; % Time constant for PT1
-data.Soll_Drehzahl = 0; % Reset value for PT1
-data.Soll_id = 0;
-data.Soll_iq = 0;
+data.Soll_Drehzahl_Umin = 0; % Reset value for PT1
+data.Soll_id_A = 0;
+data.Soll_iq_A = 0;
 data.pwr_en = false;
 ddata.board_en = false;
 data.reset = false;

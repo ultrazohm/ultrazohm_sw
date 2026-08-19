@@ -13,6 +13,9 @@
 #include "include/JL_SH_Umrichter.h"
 #include "include/uz_dpt.h"
 #include "include/uz_platform_state_machine.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -135,6 +138,9 @@ typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
 	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
+	uz_CurrentControl_t* current_controller;
+	uz_SpeedControl_t* speed_controller;
+	uz_SetPoint_t* setpoint_controller;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;

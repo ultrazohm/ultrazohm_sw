@@ -6,7 +6,7 @@
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
-#define UZ_USE_EXTERNAL_STOP 0U
+#define UZ_USE_EXTERNAL_STOP 1U
 
 #if (UZ_HARDWARE_VERSION < 4U) && (UZ_USE_EXTERNAL_STOP == 1U)
 #error The UZ_USE_EXTERNAL_STOP flag must not be used on hardware version 3 or earlier. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
@@ -25,7 +25,7 @@
  * 4 for Interrupt_3L_start
  * 5 for Interrupt_3L_center
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        2U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 
 #define INTERRUPT_ISR_TRIGGER_ON_ADC_DATA_READY 0U // 0: ISR triggers on selected PWM event. 1: ISR triggers on axi2tcm_write_done (ADC data in TCM). See r5_interrupts in docs.
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  1U  // Trigger the ADC at every PWM event, but trigger ISR_Control only every N-th interrupt event

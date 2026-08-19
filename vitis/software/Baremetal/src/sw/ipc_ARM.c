@@ -33,7 +33,7 @@ extern uint32_t output_port;
 extern uint32_t input_port;
 extern uz_JL_pmsmModel_t *pmsm_ideal;
 extern float DC_LINK_MAX_VOLTS;
-
+extern Bus_Ctrl_Config struct_Ctrl_Config;
 extern float DutC;
 
 extern Bus_ZM_In struct_ZM_In;
@@ -255,17 +255,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			}
 			break;
 
-		case (Set_Send_Field_4): // Soll_Drehzahl (verschoben von Slot 3)
+		case (Set_Send_Field_4):
 		data->rasv.Soll_Drehzahl = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		uz_JL_SigmaDelta_Interface_set_clk_dutycycle(Sinc3_Filter, value);
+		struct_Ctrl_Config.KPn = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		struct_Ctrl_Config.KIn = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -330,10 +331,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);
+		data->rasv.ctrl_state=uz_current_control;
 			break;
 
 		case (My_Button_3):
 			ultrazohm_state_machine_set_userLED(false);
+		data->rasv.ctrl_state=uz_speed_control;
 			break;
 
 		case (Error_Reset):

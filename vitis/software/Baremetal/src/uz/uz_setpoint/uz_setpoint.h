@@ -16,7 +16,12 @@ enum uz_Setpoint_control_type {
 	FOC = 0,
 };
 
-/**
+/*! enum for selection of use case. */
+enum uz_Setpoint_usecase {
+	uz_Setpoint_use_speed_control = 0,
+  	uz_Setpoint_use_torque_control
+};
+/** 
  * @brief Object definition for uz_SetPoint_t
  *
  */
@@ -27,7 +32,6 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
  */
 struct uz_SetPoint_config {
 	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening and MTPA */
-	float id_ref_Ampere; 	/**< manual i_d reference current. Will be added on top of the MTPA d-current. Unused, if FW is active. */
 	float relative_torque_tolerance; /**< sets the relative torque tolerance for the newton raphson solver in percent. I.e. with 0.01 tolerance and a M_ref = 8 Nm, the absolute tolerance
 									will be max 0.08 Nm. An assertion triggers, if the approximated iq-current leads to a estimated M_ref which is outside of this tolerance band. */
 	bool is_field_weakening_enabled; /**< flag to enable field_weaking. True = enabled */
@@ -35,7 +39,10 @@ struct uz_SetPoint_config {
 											SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
 											IPMSM -> interior PMSM (Ld=/=Lq) */
 	enum uz_Setpoint_control_type control_type; /**< Selection for which control type is used \n
-											FOC -> field oriented control \n */							
+											FOC -> field oriented control \n */
+	enum uz_Setpoint_usecase use_case;		/**<SpeedControl -> if a SpeedControl module is used to set the reference torque \n
+  	  	  	  	  	  	  	  	  	  	  	  	  TorqueControl -> if a reference torque is set manually \n*/
+	float max_modulation_index; 		/**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
 
 /**
@@ -81,4 +88,5 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
  * @param id_ref_Ampere new value for manual id-reference current
  */
 void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere);
+
 #endif // UZ_SETPOINT_H

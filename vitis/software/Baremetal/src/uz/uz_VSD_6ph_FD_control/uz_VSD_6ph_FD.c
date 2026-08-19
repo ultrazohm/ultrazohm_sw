@@ -162,12 +162,12 @@ uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t inp
 
 uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lowerlimit, float upperlimit){
 
-	input.R1 = uz_signals_hysteresisband_filter(input.R1, upperlimit, lowerlimit);
-	input.R2 = uz_signals_hysteresisband_filter(input.R2, upperlimit, lowerlimit);
-	input.R3 = uz_signals_hysteresisband_filter(input.R3, upperlimit, lowerlimit);
-	input.R4 = uz_signals_hysteresisband_filter(input.R4, upperlimit, lowerlimit);
-	input.R5 = uz_signals_hysteresisband_filter(input.R5, upperlimit, lowerlimit);
-	input.R6 = uz_signals_hysteresisband_filter(input.R6, upperlimit, lowerlimit);
+	input.R1 = uz_signals_window_filter(input.R1, upperlimit, lowerlimit);
+	input.R2 = uz_signals_window_filter(input.R2, upperlimit, lowerlimit);
+	input.R3 = uz_signals_window_filter(input.R3, upperlimit, lowerlimit);
+	input.R4 = uz_signals_window_filter(input.R4, upperlimit, lowerlimit);
+	input.R5 = uz_signals_window_filter(input.R5, upperlimit, lowerlimit);
+	input.R6 = uz_signals_window_filter(input.R6, upperlimit, lowerlimit);
 	return input;
 }
 

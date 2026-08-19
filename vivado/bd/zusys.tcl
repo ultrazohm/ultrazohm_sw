@@ -134,6 +134,7 @@ xilinx.com:ip:axi_timebase_wdt:3.0\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:axi_timer:2.0\
 user.org:ip:uz_axi_testIP:1.0\
+user.org:ip:uz_pmsm_model:1.0\
 UltraZohm:user:ADC_LTC2311:3.0\
 xilinx.com:ip:xlconstant:1.1\
 xilinx.com:ip:vio:3.0\
@@ -1797,7 +1798,7 @@ proc create_hier_cell_uz_user { parentCell nameHier } {
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_1 ]
   set_property -dict [list \
-    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_MI {2} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_1
 
@@ -1805,13 +1806,17 @@ proc create_hier_cell_uz_user { parentCell nameHier } {
   # Create instance: uz_axi_testIP_0, and set properties
   set uz_axi_testIP_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_axi_testIP:1.0 uz_axi_testIP_0 ]
 
+  # Create instance: uz_pmsm_model_0, and set properties
+  set uz_pmsm_model_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_pmsm_model:1.0 uz_pmsm_model_0 ]
+
   # Create interface connections
   connect_bd_intf_net -intf_net smartconnect_0_M10_AXI [get_bd_intf_pins S00_AXI] [get_bd_intf_pins smartconnect_1/S00_AXI]
   connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins smartconnect_1/M00_AXI] [get_bd_intf_pins uz_axi_testIP_0/AXI4]
+  connect_bd_intf_net -intf_net smartconnect_1_M01_AXI [get_bd_intf_pins smartconnect_1/M01_AXI] [get_bd_intf_pins uz_pmsm_model_0/AXI4]
 
   # Create port connections
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN] [get_bd_pins uz_pmsm_model_0/AXI4_ARESETN] [get_bd_pins uz_pmsm_model_0/IPCORE_RESETN]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK] [get_bd_pins uz_pmsm_model_0/AXI4_ACLK] [get_bd_pins uz_pmsm_model_0/IPCORE_CLK]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -3385,7 +3390,6 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -3397,4 +3401,6 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
 
 create_root_design ""
 
+
+common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

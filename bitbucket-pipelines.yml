@@ -43,9 +43,9 @@ pipelines:
          deployment: contabo
          script:
           - ls
+          - python -m pip install -e ./pyuzlib -r docs/requirements.txt
           - cd docs
           - ls
-          - pip install -r requirements.txt
           - make docs
           - ls
           - echo "Deploying to test environment"
@@ -78,4 +78,3 @@ pipelines:
             - git remote add mirrorOriginTwo git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
             - git lfs fetch --all
             - git push --all mirrorOriginTwo
-

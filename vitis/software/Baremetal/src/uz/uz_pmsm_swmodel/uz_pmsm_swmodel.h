@@ -1,12 +1,39 @@
 #ifndef UZ_PMSM_SWMODEL_H
 #define UZ_PMSM_SWMODEL_H
 
+#include <stdbool.h>
+
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include "../uz_Transformation/uz_Transformation.h"
 
+/**
+ * @brief Selects the numerical integration method used by the software model.
+ */
+enum uz_pmsm_swmodel_integration_method_t {
+    uz_pmsm_swmodel_euler_forward = 0, /**< Explicit Euler (1st order). Default. */
+    uz_pmsm_swmodel_heun               /**< Heun's method (explicit trapezoidal, 2nd order). */
+};
+
+/**
+ * @brief Selects which quantity is used as the electrical integrator state.
+ *
+ * For a linear machine (constant inductances) both choices are equivalent; the flux
+ * formulation matches the FPGA IP-core reference and is the basis for nonlinear flux maps.
+ */
+enum uz_pmsm_swmodel_integrator_state_t {
+    uz_pmsm_swmodel_integrator_state_current = 0, /**< Integrate the dq currents (default). */
+    uz_pmsm_swmodel_integrator_state_flux         /**< Integrate the dq flux linkages. */
+};
+
 struct uz_pmsm_swmodel_config_t {
-    float sample_time; /**< Sample time for the software model in seconds */
+    float sample_time; /**< Sample time for the software model in seconds. Must be greater than 0.0f */
     struct uz_PMSM_t pmsm_parameters; /**< Configuration struct for PMSM parameters */
+    enum uz_pmsm_swmodel_integration_method_t integration_method; /**< Integration method (defaults to Euler forward) */
+    enum uz_pmsm_swmodel_integrator_state_t integrator_state; /**< Electrical integrator state (defaults to current) */
+    bool preload_flux_state; /**< If true and integrator_state is flux, preload the d-axis flux state with the PM flux linkage Psi_PM_Vs on reset; otherwise all states reset to zero (default false) */
+    bool simulate_mechanical_system; /**< If true, integrate the mechanical speed from the torque balance; otherwise the input speed is passed through (default false) */
+    float coulomb_friction_constant; /**< Coulomb friction torque in Nm. Must be greater or equal than 0.0f */
+    float friction_coefficient; /**< Viscous friction coefficient in Nm*s. Must be greater or equal than 0.0f */
 };
 
 struct uz_pmsm_swmodel_outputs_t
@@ -29,6 +56,12 @@ struct uz_pmsm_swmodel_inputs_t
 
 typedef struct uz_pmsm_swmodel_t uz_pmsm_swmodel_t;
 
+/**
+ * @brief Initializes a PMSM software model instance.
+ *
+ * @param config Model configuration. The PMSM parameters, sample time, and friction coefficients are asserted for valid values.
+ * @return Pointer to the initialized PMSM software model instance
+ */
 uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
 
 /**
@@ -40,7 +73,7 @@ uz_pmsm_swmodel_t* uz_pmsm_swmodel_init(struct uz_pmsm_swmodel_config_t config);
  */
 struct uz_pmsm_swmodel_outputs_t uz_pmsm_swmodel_step(uz_pmsm_swmodel_t *self, struct uz_pmsm_swmodel_inputs_t inputs);
 
-/*
+/**
  * @brief Resets the PMSM software model, i.e., sets all internal states to zero
  * @param self Pointer to the PMSM software model instance
  */

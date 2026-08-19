@@ -17,19 +17,24 @@ The documentation is hosted on a web server, and the build and deployment are ha
 Installation
 ============
 
-.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date! Using the :ref:`vscode_remote_container` is strongly recommended!
+.. tip::
+
+   Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date!
+   Using the :ref:`vscode_remote_container` is strongly recommended!
 
 To build and edit the documentation on your native system, you need to:
 
 #. Install `Python <https://www.python.org/>`_ 
 #. Install pip (included in current Python versions)
-#. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
-#. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
+#. Install the local ``pyuzlib`` package and everything in ``docs/requirements.txt`` by invoking ``python -m pip install -e ./pyuzlib -r docs/requirements.txt`` in a command shell inside the workspace root
+#. Install everything required for the extension ``sphinxcontrib.tikz``.
+   `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
   
    * As image processing ``suite`` you have to install `Ghostscript <https://www.ghostscript.com/>`_
    * Assuming a standard installation path, the include path for Ghostscript is: ``C:\Program Files\gs\gs9.54.0\bin`` (Windows)
 
-#. Install everything required for the extension ``Breathe`` (`connects Doxygen to Sphinx <https://www.doxygen.nl/index.html>`_). `Install guide <https://github.com/michaeljones/breathe>`_!
+#. Install everything required for the extension ``Breathe`` (`connects Doxygen to Sphinx <https://www.doxygen.nl/index.html>`_).
+   `Install guide <https://github.com/michaeljones/breathe>`_!
 #. Build Doxygen by invoking ``make doxygen`` in a shell inside ``/docs``
 #. Build the documentation by invoking ``make html``
 #. You can open the docs in ``/docs/build/html/index.html``
@@ -47,24 +52,42 @@ To build and edit the documentation on your native system, you need to:
   :alt: Alternative text
 
 
-.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
-
 Makefile reference
 ******************
 
 The following commands are available to call with ``make``.
 Generating the sphinx documentation requires that Doxygen was already generated.
 
-====================== ================================
-Command                Function
-====================== ================================
-``make clean``         deletes sphinx build folder
-``make doxygen_clean`` deletes the Doxygen build folder
-``make html``          builds sphinx documentation
-``make doxygen``       builds Doxygen
-``make docs``          builds Doxygen and sphinx
-``make livehtml``      builds sphinx with live preview
-====================== ================================
+========================================= =========================================================================
+Command                                   Function
+========================================= =========================================================================
+``make clean``                            deletes sphinx build folder
+``make doxygen_clean``                    deletes the Doxygen build folder
+``make html``                             builds sphinx documentation
+``make doxygen``                          builds Doxygen
+``make docs``                             builds Doxygen and sphinx (what the CI docs steps run)
+``make livehtml``                         builds sphinx with live preview
+``make ceedling_test_output``             wipes and recreates ``docs/ceedling_test_output/``
+``make ceedling_tests``                   recreates ``docs/ceedling_test_output/``, then runs all ceedling tests
+``make docs_with_ceedling_tests``         full pipeline: test output dirs, ceedling tests, Doxygen, sphinx
+``make auto_generate_available_machines`` regenerates the PMSM machine catalog (header and inventory CSV)
+``make check_available_machines``         verifies the committed machine catalog matches the CSV sources (CI check)
+========================================= =========================================================================
+
+Docs and ceedling test output
+*****************************
+
+Some unit tests export their results as CSV files to ``docs/ceedling_test_output/`` so the documentation can plot them.
+This directory is gitignored and is created by the ``ceedling_test_output`` Makefile target, which ``make ceedling_tests`` and ``make docs_with_ceedling_tests`` run automatically.
+Running ``ceedling test:all`` directly from ``vitis/software/Baremetal`` requires ``docs/ceedling_test_output/`` to exist; otherwise the CSV-exporting tests fail with an error naming the missing CSV path — run ``make ceedling_test_output`` (or ``make ceedling_tests``) in ``docs/`` first.
+The relationship between the docs build and the tests is deliberately decoupled:
+
+* ``make docs`` builds Doxygen and sphinx only and never runs ceedling.
+  This is what the CI docs steps run and what is published online.
+* ``make docs_with_ceedling_tests`` is the full pipeline: it recreates ``docs/ceedling_test_output/``, runs all ceedling tests (which regenerate the CSV files), and then builds the docs.
+
+Plot directives that read files from ``docs/ceedling_test_output/`` (e.g. in :ref:`uz_pmsm_swmodel`) are currently disabled, because ``make docs`` in CI would fail without the test output (sphinx runs with warnings-as-errors).
+Only re-enable such directives together with switching the CI docs steps to ``make docs_with_ceedling_tests``.
 
 Video
 *****
@@ -122,7 +145,10 @@ Structure
 The structure of ``.rst`` files is based on indentation with spaces.
 These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
 
-.. note:: Spaces are recommended for indentation, but tabs may also be used. For tabs, refer to :ref:`notepad`.
+.. note::
+
+   Spaces are recommended for indentation, but tabs may also be used.
+   For tabs, refer to :ref:`notepad`.
 
 **Example**
 
@@ -434,7 +460,10 @@ Known Issues
 Compatibility issue with Notepad++ and .rst files 
 *************************************************
 
-.. warning:: This is not recommended! Use the :ref:`vscode_remote_container` instead!
+.. warning::
+
+   This is not recommended!
+   Use the :ref:`vscode_remote_container` instead!
 
 * If u edit ``.rst`` files in the UltraZohm documentation, an issue whilst using the tabulator key in Notepad++ can occur.
 
@@ -446,7 +475,8 @@ Compatibility issue with Notepad++ and .rst files
 
   .. image:: ./img/Editor_tabulator.png
 
-  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the misalignment highlighted in green.
+  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**.
+    You can see the misalignment highlighted in green.
 
   .. image:: ./img/CMD_tabulator.png
   

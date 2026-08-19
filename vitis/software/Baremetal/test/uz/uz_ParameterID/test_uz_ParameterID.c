@@ -40,6 +40,8 @@
 #include "rt_nonfinite.h"
 #include "rtGetInf.h"
 
+TEST_SOURCE_FILE("src/uz/uz_PMSM_config/uz_PMSM_config.c")
+
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};
 struct uz_SpeedControl_config config_n = {0};
@@ -59,10 +61,25 @@ void setUp(void)
     config_n.config_controller.samplingTime_sec = 0.00001f;
     config_n.config_controller.upper_limit = 10.0f;
     config_n.config_controller.lower_limit = -10.0f;
+    config_sp.config_PMSM.machine_id = 0U;
     config_sp.config_PMSM.Ld_Henry = 0.1f;
     config_sp.config_PMSM.Lq_Henry = 0.1f;
+    config_sp.config_PMSM.Psi_PM_Vs = 0.042f;
     config_sp.config_PMSM.polePairs = 4.0f;
+    config_sp.config_PMSM.J_kg_m_squared = 0.000108f;
     config_sp.config_PMSM.I_max_Ampere = 10.0f;
+    config_sp.config_PMSM.I_rated_Ampere = 8.0f;
+    config_sp.config_PMSM.Torque_rated_Nm = 1.2f;
+    config_sp.config_PMSM.Torque_max_Nm = 2.0f;
+    config_sp.config_PMSM.Torque_min_Nm = -2.0f;
+    config_sp.config_PMSM.speed_rated_rpm = 1000.0f;
+    config_sp.config_PMSM.speed_max_rpm = 1500.0f;
+    config_sp.config_PMSM.speed_min_rpm = -1500.0f;
+    config_sp.config_PMSM.V_dc_nominal_V = 24.0f;
+    config_sp.config_PMSM.I_d_max_A = 10.0f;
+    config_sp.config_PMSM.I_d_min_A = -10.0f;
+    config_sp.config_PMSM.I_q_max_A = 10.0f;
+    config_sp.config_PMSM.I_q_min_A = -10.0f;
     config_sp.config_PMSM.R_ph_Ohm = 0.3f;
 
 }

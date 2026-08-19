@@ -17,6 +17,11 @@ Example to plot test results
 
 The following plots are different examples to show the results of a unit test in the documentation.
 
+.. The plot directives below read CSV files that the ceedling tests write to
+   docs/ceedling_test_output/. They are disabled because the CI docs build runs
+   `make docs` without running ceedling first, and sphinx treats warnings as
+   errors (-W). Only re-enable them together with switching the CI docs steps
+   to `make docs_with_ceedling_tests`, see the howToDocs guide.
 
 .. .. plot:: software/control/uz_pmsm_swmodel/view_pmsm_model_test_results.py
 ..     :caption: Result of a test
@@ -90,10 +95,76 @@ For :math:`L_d = L_q = L`, this becomes
 
     i_d = -\frac{\omega_e^2 L \psi_f}{R_s^2 + (\omega_e L)^2}.
 
+Integration method and oversampling
+===================================
+
+The model integrates the dq electrical ODE with a selectable method, set via the ``integration_method`` field of :c:struct:`uz_pmsm_swmodel_config_t`.
+
+* ``uz_pmsm_swmodel_euler_forward`` -- explicit Euler (1st order, default).
+* ``uz_pmsm_swmodel_heun`` -- Heun's method (explicit trapezoidal rule, 2nd order), see :ref:`uz_integrator <uz_integrator>` (``Heun's method``).
+
+Why oversampling produces smooth *and* accurate output
+------------------------------------------------------
+
+When the model is driven from a controller, the controller input (the applied voltage :math:`\boldsymbol{v}_{dq}` and the speed :math:`\omega`) is held constant between control updates (zero-order hold).
+"Smooth" output is then simply a matter of **output-point density**: the model is stepped many times (oversampled) per control period, so the plotted current trajectory is sampled finely while the input stays constant.
+
+A common question is whether forward Euler is even valid here, since within one control period the current changes, which changes the flux :math:`\psi_d = L_d i_d + \psi_{pm},\; \psi_q = L_q i_q`, which changes the derivative, and so on.
+Forward Euler does **not** ignore this coupling -- it resolves it *across* substeps: every oversampling substep recomputes :math:`\psi(i)` from the current state and forms a fresh derivative, so the next substep already sees the updated flux.
+What forward Euler approximates is only the variation *within* a single substep: it freezes the start-of-substep derivative and applies it across the whole substep.
+Its local truncation error is :math:`\mathcal{O}(T_s^2\,\ddot{y})`, so a small substep :math:`T_s` (i.e. a high oversampling factor relative to the electrical time constant :math:`L/R`) drives that residual to zero.
+That is why fine-step Euler is both accurate and smooth.
+
+Heun's method attacks the within-step approximation directly: it evaluates the derivative at the start **and** at the Euler-predicted end of the step (re-evaluating :math:`\psi(i)` at the predicted current) and averages the two.
+It therefore captures the within-step current/flux change to 2nd order, achieving comparable accuracy at a much larger step -- i.e. with much less oversampling.
+
+Integrator state: current or flux
+=================================
+
+The ``integrator_state`` field of :c:struct:`uz_pmsm_swmodel_config_t` selects which electrical quantity is integrated:
+
+* ``uz_pmsm_swmodel_integrator_state_current`` (default) integrates the dq **currents** and derives the flux algebraically, :math:`\psi_d = L_d i_d + \psi_f,\; \psi_q = L_q i_q`.
+* ``uz_pmsm_swmodel_integrator_state_flux`` integrates the dq **flux linkages** and derives the current, :math:`i_d = (\psi_d - \psi_f)/L_d,\; i_q = \psi_q/L_q`.
+  This matches the FPGA reference :ref:`uz_pmsmModel`.
+
+Both share the voltage balance :math:`e_d = v_d - R_s i_d + \omega_e \psi_q`, :math:`e_q = v_q - R_s i_q - \omega_e \psi_d`; the current formulation integrates :math:`e/L`, the flux formulation integrates :math:`e`.
+For a linear machine (constant :math:`L_d, L_q`) the two are equivalent and produce the same trajectory up to floating-point rounding; the flux formulation is the basis for a future nonlinear flux-map machine where :math:`\psi(i)` is a lookup.
+
+For the flux formulation the reset value of the d-axis flux state matters, because the derived current is :math:`i_d = (\psi_d - \psi_f)/L_d`.
+By default the integrator state resets to zero, which starts the machine at :math:`i_d = -\psi_f/L_d`.
+Setting ``preload_flux_state = true`` instead preloads the d-axis flux state with :math:`\psi_f` on reset, so the machine starts from zero current (matching the current formulation).
+The flag has no effect when ``integrator_state`` is current.
+
+Mechanical model
+================
+
+By default the model is electrical only and the rotor speed :math:`\omega_{mech}` is an input that is passed straight through to the output.
+In this mode ``load_torque`` does not affect the speed output.
+Setting ``simulate_mechanical_system = true`` makes the model integrate the speed from the torque balance instead (the input speed is then ignored and :math:`\omega_{mech}` starts at zero; use :c:func:`uz_pmsm_swmodel_reset` to re-zero it), matching :ref:`uz_pmsmModel`:
+
+.. math::
+
+    \frac{d \omega_{mech}}{dt} = \frac{M_i - M_F - T_L}{J}, \qquad
+    M_i = \tfrac{3}{2} p (\psi_d i_q - \psi_q i_d),
+
+with Coulomb plus viscous friction
+
+.. math::
+
+    M_F = \operatorname{sign}(\omega_{mech})\,(M_{R0} + \mu\,|\omega_{mech}|).
+
+The inertia :math:`J` is taken from ``pmsm_parameters.J_kg_m_squared``; the friction constants :math:`M_{R0}` and :math:`\mu` are the ``coulomb_friction_constant`` and ``friction_coefficient`` config fields, and the load torque :math:`T_L` is the ``load_torque`` model input.
+Both friction constants must be nonnegative; zero is valid for friction-free simulations.
+The mechanical state is integrated with the same selected ``integration_method`` (Euler or Heun) as the electrical state, as one coupled system.
+
 Software reference
 ==================
 
 .. doxygentypedef:: uz_pmsm_swmodel_t
+
+.. doxygenenum:: uz_pmsm_swmodel_integration_method_t
+
+.. doxygenenum:: uz_pmsm_swmodel_integrator_state_t
 
 .. doxygenstruct:: uz_pmsm_swmodel_config_t
   :members:

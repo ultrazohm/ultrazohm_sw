@@ -17,6 +17,37 @@ help:
 # Delete build folder before make
 .PHONY: clean
 
+auto_generate_available_machines:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.machine_catalog
+
+check_available_machines:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.machine_catalog --inventory-output /tmp/available_machines_check.csv --header-output /tmp/uz_available_machines_check.h
+	grep -v "^/\* Generated machine inventory:" /tmp/uz_available_machines_check.h > /tmp/uz_available_machines_check_stripped.h
+	grep -v "^/\* Generated machine inventory:" ../vitis/software/Baremetal/src/uz/uz_PMSM_config/uz_available_machines_auto_generated.h > /tmp/uz_available_machines_committed_stripped.h
+	diff /tmp/uz_available_machines_check_stripped.h /tmp/uz_available_machines_committed_stripped.h
+	diff /tmp/available_machines_check.csv source/software/control/uz_pmsm/available_machines.csv
+	@echo "Generated artifacts are up-to-date."
+
+auto_generate_flux_maps:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog
+
+check_flux_maps:
+	PYTHONPATH=../pyuzlib/src python3 -m pyuzlib.flux_map_catalog --header-output /tmp/uz_pmsm_flux_maps_check.h --diffind-header-output /tmp/uz_pmsm_differential_inductances_check.h
+	diff /tmp/uz_pmsm_flux_maps_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_flux_map/uz_pmsm_flux_maps_auto_generated.h
+	diff /tmp/uz_pmsm_differential_inductances_check.h ../vitis/software/Baremetal/src/uz/uz_pmsm_differential_inductance/uz_pmsm_differential_inductances_auto_generated.h
+	@echo "Generated flux-map and differential-inductance headers are up-to-date."
+
+# Umbrella targets: regenerate/verify every committed PMSM artifact (scalar machine catalog + the
+# flux-map and differential-inductance headers) in one command. Use check_all in CI so a stale
+# generated header can never pass unnoticed. The explicit recipe and .PHONY entry keep the catch-all
+# "%: Makefile" (sphinx-build) rule below from matching these recipe-less names.
+.PHONY: auto_generate_all check_all
+auto_generate_all: auto_generate_available_machines auto_generate_flux_maps
+	@echo "Regenerated machine catalog, flux-map, and differential-inductance artifacts."
+
+check_all: check_available_machines check_flux_maps
+	@echo "All generated PMSM artifacts are up-to-date."
+
 clean:
 	 rm -r build
 
@@ -27,8 +58,10 @@ doxygen_clean:
 	 rm -r doxygen_output
 
 # Taken from here since I'm not sure how to ensure the proper environment for ceedling otherwise https://stackoverflow.com/questions/10566532/how-can-bash-execute-a-command-in-a-different-directory-context
-ceedling_tests:
-	(cd ../vitis/software/Baremetal/; ceedling test:all) 
+# The CSV-exporting tests write into ceedling_test_output, so the directory tree is (re)created first.
+.PHONY: ceedling_tests ceedling_test_output
+ceedling_tests: ceedling_test_output
+	(cd ../vitis/software/Baremetal/; ceedling test:all)
 
 ceedling_clean:
 	(cd ../vitis/software/Baremetal/; ceedling clobber)
@@ -39,7 +72,6 @@ ceedling_test_output:
 	cd ../vitis/software/Baremetal/test && find . -type d -exec mkdir -p ../../../../docs/ceedling_test_output/{} \;
 
 docs_with_ceedling_tests:
-	make ceedling_test_output
 	make ceedling_tests
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"

@@ -12,5 +12,6 @@ Software
     library/software_library
     platform/software_platform
     control/software_framework_control
+    pyuzlib/pyuzlib
 
     

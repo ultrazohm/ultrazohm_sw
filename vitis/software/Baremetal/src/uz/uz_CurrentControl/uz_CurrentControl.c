@@ -194,14 +194,15 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
 	uz_assert(max_modulation_index > 0.0f);
 	self->config.max_modulation_index = max_modulation_index;
 }
-void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t pmsm_config) {
+void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, const uz_PMSM_t *pmsm_config) {
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(pmsm_config);
 	uz_assert(self->is_ready);
 	//Only assert relevant parts of the PMSM-struct
-    uz_assert(pmsm_config.Ld_Henry > 0.0f);
-	uz_assert(pmsm_config.Lq_Henry > 0.0f);
-	uz_assert(pmsm_config.Psi_PM_Vs >= 0.0f);
-	self->config.config_PMSM = pmsm_config;
+    uz_assert(pmsm_config->Ld_Henry > 0.0f);
+	uz_assert(pmsm_config->Lq_Henry > 0.0f);
+	uz_assert(pmsm_config->Psi_PM_Vs >= 0.0f);
+	self->config.config_PMSM = *pmsm_config;
 }
 
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select) {
@@ -224,7 +225,7 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3p
         // do nothing since no decoupling
         break;
     case linear_decoupling:
-        decouple_voltage=uz_CurrentControl_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+        decouple_voltage=uz_CurrentControl_linear_decoupling(&self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
 	case static_nonlinear_decoupling:
      	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx_real, omega_el_rad_per_sec);

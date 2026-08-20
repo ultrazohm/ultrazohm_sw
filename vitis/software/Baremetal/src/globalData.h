@@ -133,13 +133,44 @@ typedef struct{
 	uz_resolver_pl_interface_t* resolver_pl_interface_d5_1;
 	uz_resolverIP_t* resolver_ip_d5_2;
 	uz_resolver_pl_interface_t* resolver_pl_interface_d5_2;
-/* Project Wizard END: objects */
+	uz_wavegen_three_phase* m1_sine;
+	uz_wavegen_three_phase* m2_sine;
+	uz_wavegen_three_phase* m3_sine;
+	uz_wavegen_three_phase* m4_sine;
+	/* Project Wizard END: objects */
 }object_pointers_t;
+
+enum control_mode_t {
+	control_mode_manual = 0,
+	control_mode_wavegen};
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	object_pointers_t objects;
+	struct uz_3ph_abc_t m1_duty;
+	struct uz_3ph_abc_t m2_duty;
+	struct uz_3ph_abc_t m3_duty;
+	struct uz_3ph_abc_t m4_duty;
+	struct uz_3ph_abc_t m1_duty_from_javascope;
+	struct uz_3ph_abc_t m2_duty_from_javascope;
+	struct uz_3ph_abc_t m3_duty_from_javascope;
+	struct uz_3ph_abc_t m4_duty_from_javascope;
+	struct uz_3ph_abc_t m1_phase_current;
+	struct uz_3ph_abc_t m1_phase_voltage;
+	struct uz_3ph_abc_t m2_phase_current;
+	struct uz_3ph_abc_t m2_phase_voltage;
+	float m1_dc_current;
+	float m2_dc_current;
+	float m12_dc_voltage;
+	bool d1_inverter_enable;
+	bool d2_inverter_enable;
+	bool d3_inverter_enable;
+	bool d4_inverter_enable;
+	enum control_mode_t control_mode;
+	float sine_amp;
+	float sine_frq;
+
 } DS_Data;
 
 #endif

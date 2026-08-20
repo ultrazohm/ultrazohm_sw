@@ -19,12 +19,13 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData {
-	JSO_ZEROVALUE=0,
+enum JS_OberservableData
+{
+	JSO_ZEROVALUE = 0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
-/* Project Wizard BEGIN: javascope_observables */
+	/* Project Wizard BEGIN: javascope_observables */
 	JSO_ADC_A1_CH0,
 	JSO_ADC_A1_CH1,
 	JSO_ADC_A1_CH2,
@@ -49,6 +50,21 @@ enum JS_OberservableData {
 	JSO_ADC_A3_CH5,
 	JSO_ADC_A3_CH6,
 	JSO_ADC_A3_CH7,
+	JSO_m1_phase_voltage_a,
+	JSO_m1_phase_voltage_b,
+	JSO_m1_phase_voltage_c,
+	JSO_m12_dc_voltage,
+	JSO_m1_phase_current_a,
+	JSO_m1_phase_current_b,
+	JSO_m1_phase_current_c,
+	JSO_m2_phase_current_a,
+	JSO_m2_phase_voltage_a,
+	JSO_m2_phase_voltage_b,
+	JSO_m2_phase_voltage_c,
+	JSO_m2_phase_current_b,
+	JSO_m2_phase_current_c,
+	JSO_m1_dc_current,
+	JSO_m2_dc_current,
 	JSO_RESOLVER_PL_D4_CH1_POS_MECH_2PI,
 	JSO_RESOLVER_PL_D4_CH1_POS_EL_2PI,
 	JSO_RESOLVER_PL_D4_CH1_OMEGA_MECH_RAD_S,
@@ -79,7 +95,7 @@ enum JS_OberservableData {
 	JSO_RESOLVER_PL_D5_CH2_N_MECH_RPM,
 	JSO_RESOLVER_PL_D5_CH2_OMEGA_EL_RAD_S,
 	JSO_RESOLVER_PL_D5_CH2_REVOLUTION_COUNTER,
-/* Project Wizard END: javascope_observables */
+	/* Project Wizard END: javascope_observables */
 	JSO_D3_INPUT_LOOPBACK_UINT32,
 	JSO_ENDMARKER
 };
@@ -140,7 +156,6 @@ enum gui_button_mapping {
 	GUI_BTN_ENDMARKER
 };
 
-
 /* Visualization Config for GUI*/
 // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
 // Change entries according to your needs.
@@ -149,24 +164,24 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
+	sine_amp,
+	sine_frq,
 	send_field_3,
 	send_field_4,
 	send_field_5,
 	send_field_6,
-	send_field_7,
-	send_field_8,
-	send_field_9,
-	send_field_10,
-	send_field_11,
-	send_field_12,
-	send_field_13,
-	send_field_14,
-	send_field_15,
-	send_field_16,
-	send_field_17,
-	send_field_18,
+	m1_duty_a,
+	m1_duty_b,
+	m1_duty_c,
+	m2_duty_a,
+	m2_duty_b,
+	m2_duty_c,
+	m3_duty_a,
+	m3_duty_b,
+	m3_duty_c,
+	m4_duty_a,
+	m4_duty_b,
+	m4_duty_c,
 	send_field_19,
 	send_field_20,
 	SND_FLD_ENDMARKER
@@ -256,10 +271,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
-	MyButton3,
-	MyButton4,
+	m1_enable,
+	m2_enable,
+	m3_enable,
+	m4_enable,
 	MyButton5,
 	MyButton6,
 	MyButton7,
@@ -296,7 +311,6 @@ enum gui_button_mapping {
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
-
 
 int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

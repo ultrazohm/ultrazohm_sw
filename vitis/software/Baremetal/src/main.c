@@ -128,8 +128,12 @@ int main(void)
 			Global_Data.objects.resolver_pl_interface_d5_1 = initialize_resolver_pl_interface_d5_1();
 			Global_Data.objects.resolver_ip_d5_2 = initialize_resolver_ip_d5_2();
 			Global_Data.objects.resolver_pl_interface_d5_2 = initialize_resolver_pl_interface_d5_2();
-/* Project Wizard END: init_ip_cores */
-            initialization_chain = print_msg;
+            Global_Data.objects.m1_sine = uz_wavegen_three_phase_init();
+            Global_Data.objects.m2_sine = uz_wavegen_three_phase_init();
+            Global_Data.objects.m3_sine = uz_wavegen_three_phase_init();
+            Global_Data.objects.m4_sine = uz_wavegen_three_phase_init();
+                /* Project Wizard END: init_ip_cores */
+                initialization_chain = print_msg;
             break;
         case print_msg:
             uz_printf("\r\n\r\n");

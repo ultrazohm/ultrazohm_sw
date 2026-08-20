@@ -17,12 +17,15 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
+
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -266,18 +269,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->d1_inverter_enable = !data->d1_inverter_enable;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->d2_inverter_enable = !data->d2_inverter_enable;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			data->d3_inverter_enable = !data->d3_inverter_enable;
 			break;
-
-		case (My_Button_4):
+			
+			case (My_Button_4):
+			data->d4_inverter_enable = !data->d4_inverter_enable;
 
 			break;
 
@@ -342,20 +346,44 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+		if (data->d1_inverter_enable == true)
+		{
+			js_status_BareToRTOS |= (1 << 4);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 4);
+		}
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+		if (data->d2_inverter_enable == true)
+		{
+			js_status_BareToRTOS |= (1 << 5);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 5);
+		}
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+		if (data->d3_inverter_enable == true)
+		{
+			js_status_BareToRTOS |= (1 << 6);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 6);
+		}
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+		if (data->d4_inverter_enable == true)
+		{
+			js_status_BareToRTOS |= (1 << 7);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 7);
+		}
 
 	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);

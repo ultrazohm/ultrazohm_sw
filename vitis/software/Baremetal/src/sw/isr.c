@@ -32,12 +32,19 @@
 #include "../include/project_wizard_visualization.h"
 #include "../include/project_wizard_io.h"
 
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_signals/uz_signals.h"
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+
+
+#define CURRENT_TO_AMPERE 12.5f
+#define VOLTAGE_TO_VOLTS 12.0f
 
 /* Project Wizard BEGIN: adc_readout_definitions */
 static uz_array_int16_t analog_adc_data;
@@ -73,6 +80,41 @@ void ISR_Control(void *data)
     update_adapter_d4();
     update_adapter_d5();
 
+    // Current mapping
+    Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
+    Global_Data.m1_phase_voltage.b = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch2;
+    Global_Data.m1_phase_voltage.c = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch1;
+    Global_Data.m12_dc_voltage     = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch0;
+
+    Global_Data.m1_phase_current.a = CURRENT_TO_AMPERE*Global_Data.av.adc_ltc2311_a1_ch7;
+    Global_Data.m1_phase_current.b = CURRENT_TO_AMPERE*Global_Data.av.adc_ltc2311_a1_ch6;
+    Global_Data.m1_phase_current.c = CURRENT_TO_AMPERE*Global_Data.av.adc_ltc2311_a1_ch5;
+    Global_Data.m2_phase_current.a = CURRENT_TO_AMPERE*Global_Data.av.adc_ltc2311_a1_ch4;
+
+    Global_Data.m2_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a2_ch3;
+    Global_Data.m2_phase_voltage.b = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a2_ch2;
+    Global_Data.m2_phase_voltage.c = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a2_ch1;
+    Global_Data.m2_phase_current.b = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch7;
+    Global_Data.m2_phase_current.c = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch6;
+    Global_Data.m1_dc_current = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch5;
+    Global_Data.m2_dc_current = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch4;
+
+
+    Global_Data.m1_duty_from_javascope.a = Global_Data.av.snd_fld[7];
+    Global_Data.m1_duty_from_javascope.b=Global_Data.av.snd_fld[8];
+    Global_Data.m1_duty_from_javascope.c=Global_Data.av.snd_fld[9];
+
+    Global_Data.m2_duty_from_javascope.a = Global_Data.av.snd_fld[10];
+    Global_Data.m2_duty_from_javascope.b = Global_Data.av.snd_fld[11];
+    Global_Data.m2_duty_from_javascope.c = Global_Data.av.snd_fld[12];
+
+    Global_Data.m3_duty_from_javascope.a = Global_Data.av.snd_fld[13];
+    Global_Data.m3_duty_from_javascope.b = Global_Data.av.snd_fld[14];
+    Global_Data.m3_duty_from_javascope.c = Global_Data.av.snd_fld[15];
+
+    Global_Data.m4_duty_from_javascope.a = Global_Data.av.snd_fld[16];
+    Global_Data.m4_duty_from_javascope.b = Global_Data.av.snd_fld[17];
+    Global_Data.m4_duty_from_javascope.c = Global_Data.av.snd_fld[18];
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)
@@ -94,6 +136,10 @@ void ISR_Control(void *data)
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = 0.0f;
         Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = 0.0f;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
+        Global_Data.d1_inverter_enable=false;
+        Global_Data.d2_inverter_enable=false;
+        Global_Data.d3_inverter_enable=false;
+        Global_Data.d4_inverter_enable=false;
 /* Project Wizard END: idle_state isr_actions */
     }
     else if (current_state == running_state)
@@ -108,14 +154,53 @@ void ISR_Control(void *data)
     else if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        uz_3ph_abc_t three_phase_sine_wave = uz_wavegen_three_phase_sample(Global_Data.objects.three_phase_sine, 0.5f, 2.0f, 0.5f);
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_1 = three_phase_sine_wave.a;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_2 = three_phase_sine_wave.b;
-        Global_Data.rasv.pwm_3L_0_halfBridgeDutyCycle_3 = three_phase_sine_wave.c;
+        switch (Global_Data.control_mode)
+        {
+        case control_mode_manual:
+        	Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1=Global_Data.m1_duty_from_javascope.a;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2=Global_Data.m1_duty_from_javascope.b;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3=Global_Data.m1_duty_from_javascope.c;
 
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = Global_Data.m2_duty_from_javascope.a;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = Global_Data.m2_duty_from_javascope.b;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = Global_Data.m2_duty_from_javascope.c;
+
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_1 = Global_Data.m3_duty_from_javascope.a;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_2 = Global_Data.m3_duty_from_javascope.b;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_3 = Global_Data.m3_duty_from_javascope.c;
+
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_1 = Global_Data.m4_duty_from_javascope.a;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = Global_Data.m4_duty_from_javascope.b;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = Global_Data.m4_duty_from_javascope.c;
+            break;
+        case control_mode_wavegen:
+            Global_Data.sine_amp=Global_Data.av.snd_fld[1];
+            Global_Data.sine_frq = uz_signals_saturation(Global_Data.av.snd_fld[2],1000.0f,1.0f);
+            Global_Data.m1_duty= uz_wavegen_three_phase_sample(Global_Data.objects.m1_sine, Global_Data.sine_amp, Global_Data.sine_frq, 0.5f);
+            Global_Data.m2_duty= uz_wavegen_three_phase_sample(Global_Data.objects.m2_sine, Global_Data.sine_amp, Global_Data.sine_frq, 0.5f);
+            Global_Data.m3_duty= uz_wavegen_three_phase_sample(Global_Data.objects.m3_sine, Global_Data.sine_amp, Global_Data.sine_frq, 0.5f);
+            Global_Data.m4_duty= uz_wavegen_three_phase_sample(Global_Data.objects.m4_sine, Global_Data.sine_amp, Global_Data.sine_frq, 0.5f);
+
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = Global_Data.m1_duty.a;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = Global_Data.m1_duty.b;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = Global_Data.m1_duty.c;
+
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_1 = Global_Data.m2_duty.a;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_2 = Global_Data.m2_duty.b;
+            Global_Data.rasv.pwm_2L_1_halfBridgeDutyCycle_3 = Global_Data.m2_duty.c;
+
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_1 = Global_Data.m3_duty.a;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_2 = Global_Data.m3_duty.b;
+            Global_Data.rasv.pwm_2L_2_halfBridgeDutyCycle_3 = Global_Data.m3_duty.c;
+
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_1 = Global_Data.m4_duty.a;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_2 = Global_Data.m4_duty.b;
+            Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = Global_Data.m4_duty.c;
+
+            break;
+        default:
+            break;
+        }
         /* Project Wizard BEGIN: control_state isr_actions */
 /* Project Wizard END: control_state isr_actions */
     }
@@ -198,7 +283,11 @@ static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
     Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
-/* Project Wizard END: D1 isr_control */
+    uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 3U,  Global_Data.d1_inverter_enable);
+    uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 10U, Global_Data.d2_inverter_enable);
+    uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 17U, Global_Data.d3_inverter_enable);
+    uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_d1, 24U, Global_Data.d4_inverter_enable);
+    /* Project Wizard END: D1 isr_control */
 
 }
 

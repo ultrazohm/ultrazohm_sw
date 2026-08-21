@@ -80,6 +80,14 @@ struct uz_im_control_configuration_t {
     float kalman_process_noise_A2_per_s;
     float kalman_measurement_noise_A2;
     float minimum_observer_flux_Vs;
+    float maximum_slip_frequency_Hz;       /**< Absolute limit of estimated slip frequency. */
+    float maximum_flux_angle_step_rad;     /**< Plausible flux-angle change per control step. */
+    float maximum_phase_current_sum_A;     /**< Plausibility limit for abs(ia+ib+ic). */
+    float resonant_gain_d; /**< Resonant-controller gain for the d axis. */
+    float resonant_gain_q; /**< Resonant-controller gain for the q axis. */
+    float resonant_harmonic_order; /**< Controlled harmonic order; must be greater than zero. */
+    float resonant_antiwindup_gain; /**< Resonant-controller anti-windup gain. */
+    float resonant_voltage_limit_V; /**< Symmetric voltage limit of each resonant controller. */
     struct uz_DutyCycle_t default_duty_cycle;
     struct uz_im_setpoint_limits_t setpoint_limits;
     struct uz_im_safe_operating_region_t safe_operating_region;
@@ -87,6 +95,8 @@ struct uz_im_control_configuration_t {
     float setpoint_filter_speed_cutoff_frequency; /**< Speed-reference low-pass cutoff in Hz; zero disables it. */
     float speed_actual_value_filter_cutoff_frequency; /**< Measured-speed low-pass cutoff in Hz; zero disables it. */
     bool enable_speed_control;
+    bool enable_resonant_control; /**< Enable the two resonant current controllers at initialization. */
+    bool enable_voltage_vector_limiting; /**< Limit the final d/q voltage vector to Vdc/sqrt(3). */
     enum uz_im_control_observer observer;
 };
 
@@ -116,6 +126,7 @@ struct uz_im_actual_data {
     uz_3ph_dq_t i_dq_raw_A;                /**< Unfiltered measured dq currents. */
     uz_3ph_dq_t current_pi_voltage_dq_V;    /**< Separate d/q current-PI outputs. */
     uz_3ph_dq_t decoupling_voltage_dq_V;    /**< Rotor-flux-oriented decoupling voltages. */
+    uz_3ph_dq_t resonant_voltage_dq_V;      /**< Resonant-controller voltage contribution. */
     float rotor_flux_angle_rad;             /**< Estimated rotor-flux angle. */
     float rotor_flux_magnitude_Vs;           /**< Estimated rotor-flux magnitude. */
     float rotor_electrical_angle_rad;        /**< Electrical angle derived from measured rotor angle. */
@@ -132,6 +143,15 @@ struct uz_im_actual_data {
     float u_f_command_frequency_Hz;           /**< Ramped U/f stator-frequency command. */
     float u_f_electrical_angle_rad;           /**< U/f rotating-voltage-vector angle. */
     float u_f_applied_voltage_V;              /**< U/f voltage magnitude before SVM. */
+    float rotor_flux_valid;                   /**< 1 if flux exceeds the configured minimum. */
+    float slip_frequency_limited;             /**< 1 if the slip-frequency clamp is active. */
+    float flux_angle_step_rad;                /**< Wrapped observer-angle change per step. */
+    float flux_angle_step_violation;          /**< 1 if flux-angle step exceeds its limit. */
+    float phase_current_sum_A;                /**< ia+ib+ic plausibility residual. */
+    float phase_current_sum_violation;        /**< 1 if current-sum residual exceeds its limit. */
+    float voltage_vector_magnitude_V;         /**< Magnitude before final vector saturation. */
+    float voltage_vector_limit_V;             /**< Available linear-SVM voltage magnitude. */
+    float voltage_vector_saturated;           /**< 1 if the final d/q vector was scaled. */
 };
 
 /** @brief Initialize one self-contained induction-machine controller. */
@@ -145,6 +165,8 @@ void uz_im_control_set_mode(uz_im_control_t *self, enum uz_im_control_mode mode)
 void uz_im_control_enable_speed_control(uz_im_control_t *self, bool enable);
 /** @brief Select the observer path used for feedback and diagnostics. */
 void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer);
+/** @brief Enable or disable both resonant current controllers and reset their states on a change. */
+void uz_im_control_enable_resonant_control(uz_im_control_t *self, bool enable);
 /** @brief Reset all three PI controllers, U/f state and observer state. */
 void uz_im_control_reset(uz_im_control_t *self);
 
@@ -180,5 +202,14 @@ void uz_im_control_current_control_set_Kp_iq(uz_im_control_t *self, float Kp_iq)
 void uz_im_control_current_control_set_Ki_iq(uz_im_control_t *self, float Ki_iq);
 void uz_im_control_speed_control_set_Kp_speed(uz_im_control_t *self, float Kp_speed);
 void uz_im_control_speed_control_set_Ki_speed(uz_im_control_t *self, float Ki_speed);
+/** @brief Update the Kalman process noise at runtime. */
+void uz_im_control_set_kalman_process_noise(uz_im_control_t *self, float value);
+/** @brief Update the Kalman measurement noise at runtime. */
+void uz_im_control_set_kalman_measurement_noise(uz_im_control_t *self, float value);
+/** @brief Update both resonant controllers at runtime. */
+void uz_im_control_set_resonant_parameters(uz_im_control_t *self, float gain_d, float gain_q,
+    float harmonic_order, float antiwindup_gain, float voltage_limit_V);
+/** @brief Update the minimum flux required for valid FOC feedback. */
+void uz_im_control_set_minimum_observer_flux(uz_im_control_t *self, float value);
 
 #endif

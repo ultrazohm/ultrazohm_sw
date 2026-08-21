@@ -12,6 +12,7 @@ The module owns all persistent state required by:
 
 * two PI current controllers for the rotor-flux-oriented d/q axes,
 * one PI speed controller whose output is the q-current reference,
+* two optional resonant current controllers for periodic d/q-current errors,
 * rotor-current-model flux observation,
 * optional Kalman filtering of the measured alpha/beta currents,
 * scalar U/f operation with frequency ramp, voltage boost and SVM,
@@ -63,6 +64,12 @@ In U/f mode, the same function ramps the requested stator frequency and
 generates the rotating voltage vector internally. Observer diagnostics remain
 available in both modes.
 
+Changing between U/f and FOC preserves the flux-observer state for a smooth
+takeover while resetting the PI, resonant and setpoint-filter states. During
+FOC startup the d-axis magnetizing-current reference remains active, but the
+q-axis torque reference and decoupling terms are held at zero until the
+estimated rotor flux exceeds ``minimum_observer_flux_Vs``.
+
 Speed and d/q-current references are first restricted to ``setpoint_limits``.
 First-order low-pass filters for the d/q-current references, speed reference
 and measured speed are enabled by setting their respective cutoff frequency
@@ -75,6 +82,42 @@ current q-current-based speed controller.
 The safe-operating-region limits independently cover speed, d/q currents,
 all three phase currents, DC-link voltage and DC-link current. Violations are
 latched before a new inverter command is returned.
+
+Additional plausibility and limiting
+------------------------------------
+
+``maximum_slip_frequency_Hz`` limits the absolute estimated slip frequency.
+``maximum_flux_angle_step_rad`` checks the wrapped observer-angle increment per
+control step, while ``maximum_phase_current_sum_A`` checks the residual
+``abs(i_a + i_b + i_c)``. These checks are exposed as diagnostics and do not
+create additional latched SOR codes.
+
+When ``enable_voltage_vector_limiting`` is set, the complete voltage vector
+(PI, decoupling and resonant contributions) is limited to the linear SVM range
+``V_dc / sqrt(3)``. The current-controller integrators receive the saturation
+state as external clamping for anti-windup.
+
+The corresponding fields in ``uz_im_actual_data`` are
+``rotor_flux_valid``, ``slip_frequency_limited``,
+``flux_angle_step_violation``, ``phase_current_sum_violation`` and
+``voltage_vector_saturated``. Their associated continuous diagnostic values
+are also available for detailed debugging.
+
+Resonant current control
+------------------------
+
+The module always initializes one resonant controller per d/q axis. Set
+``enable_resonant_control`` to enable their voltage contribution initially or
+use ``uz_im_control_enable_resonant_control`` at runtime. A change of the enable
+state resets both controller states. ``resonant_gain_d``, ``resonant_gain_q``,
+``resonant_harmonic_order``, ``resonant_antiwindup_gain`` and
+``resonant_voltage_limit_V`` configure the controllers. Their combined output
+is exposed as ``actual_data.resonant_voltage_dq_V`` and is added to the PI and
+decoupling voltages.
+
+Each IM-control instance consumes two resonant-controller instances. Therefore
+``UZ_RESONANT_CONTROLLER_MAX_INSTANCES`` must be at least twice
+``UZ_IM_CONTROL_MAX_INSTANCES`` when IM Control is enabled.
 
 SOR diagnosis in JavaScope
 --------------------------
@@ -148,6 +191,7 @@ API reference
 .. doxygenfunction:: uz_im_control_set_mode
 .. doxygenfunction:: uz_im_control_enable_speed_control
 .. doxygenfunction:: uz_im_control_set_observer
+.. doxygenfunction:: uz_im_control_enable_resonant_control
 .. doxygenfunction:: uz_im_control_sample_duty
 .. doxygenfunction:: uz_im_control_sample_dq
 .. doxygenfunction:: uz_im_control_reset
@@ -162,10 +206,16 @@ API reference
 .. doxygenfunction:: uz_im_control_current_control_set_Ki_iq
 .. doxygenfunction:: uz_im_control_speed_control_set_Kp_speed
 .. doxygenfunction:: uz_im_control_speed_control_set_Ki_speed
+.. doxygenfunction:: uz_im_control_set_kalman_process_noise
+.. doxygenfunction:: uz_im_control_set_kalman_measurement_noise
+.. doxygenfunction:: uz_im_control_set_resonant_parameters
+.. doxygenfunction:: uz_im_control_set_minimum_observer_flux
 
 Tests
 =====
 
 Unit tests are located in ``test/uz/uz_IM_Control`` and cover initialization,
 configuration validation, setpoint limiting, disabled output, fault latching
-and U/f operation.
+and U/f operation. They also verify FOC startup without valid flux, phase-current
+sum diagnosis, final voltage-vector limiting and observer-state preservation
+during mode changes.

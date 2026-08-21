@@ -34,6 +34,9 @@
 
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_signals/uz_signals.h"
+#include "../include/deskbench_control.h"
+#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
+
 // Initialize the Interrupt structure
 XScuGic GIC_instance;
 XIpiPsu IPI_instance;
@@ -99,6 +102,7 @@ void ISR_Control(void *data)
     Global_Data.m1_dc_current = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch5;
     Global_Data.m2_dc_current = CURRENT_TO_AMPERE * Global_Data.av.adc_ltc2311_a2_ch4;
 
+    deskbench_update_measurements(&Global_Data);
 
     Global_Data.m1_duty_from_javascope.a = Global_Data.av.snd_fld[7];
     Global_Data.m1_duty_from_javascope.b=Global_Data.av.snd_fld[8];
@@ -140,7 +144,10 @@ void ISR_Control(void *data)
         Global_Data.d2_inverter_enable=false;
         Global_Data.d3_inverter_enable=false;
         Global_Data.d4_inverter_enable=false;
-/* Project Wizard END: idle_state isr_actions */
+
+        uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, false);
+        uz_pmsm_control_acknowledge_and_reset_error(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements);
+        /* Project Wizard END: idle_state isr_actions */
     }
     else if (current_state == running_state)
     {
@@ -149,7 +156,8 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_2, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, false, false, false);
-/* Project Wizard END: running_state isr_actions */
+
+        /* Project Wizard END: running_state isr_actions */
     }
     else if (current_state == control_state)
     {
@@ -198,6 +206,18 @@ void ISR_Control(void *data)
             Global_Data.rasv.pwm_2L_3_halfBridgeDutyCycle_3 = Global_Data.m4_duty.c;
 
             break;
+        case control_mode_m1_only_foc:
+            Global_Data.prime_mover_n_ref_rpm=Global_Data.av.snd_fld[3];
+            Global_Data.prime_mover_i_dq_ref_A.d= Global_Data.av.snd_fld[4];
+            Global_Data.prime_mover_i_dq_ref_A.q=Global_Data.av.snd_fld[5];
+            uz_pmsm_control_enable(Global_Data.objects.prime_mover_control, true);
+            uz_pmsm_control_enable_speed_control(Global_Data.objects.prime_mover_control, Global_Data.enable_speed_control);
+            struct uz_DutyCycle_t prime_mover_duty_cycle = uz_pmsm_control_sample_duty(Global_Data.objects.prime_mover_control, Global_Data.av.prime_mover_measurements, Global_Data.prime_mover_n_ref_rpm, Global_Data.prime_mover_i_dq_ref_A, 0.0f);
+            Global_Data.av.pm_safe_operating_region_violation = uz_pmsm_control_get_safe_operating_area_violation(Global_Data.objects.prime_mover_control);
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_1 = prime_mover_duty_cycle.DutyCycle_A;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_2 = prime_mover_duty_cycle.DutyCycle_B;
+            Global_Data.rasv.pwm_2L_0_halfBridgeDutyCycle_3 = prime_mover_duty_cycle.DutyCycle_C;
+            break;
         default:
             break;
         }
@@ -225,7 +245,13 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_3, true, true, true);
 /* Project Wizard END: error_state isr_actions */
     }
-    
+
+    if (Global_Data.av.pm_safe_operating_region_violation)
+    {
+
+        ultrazohm_state_machine_set_error(true);
+    }
+
     /* Project Wizard BEGIN: pwm_runtime */
     project_wizard_update_pwm_outputs(&Global_Data);
 /* Project Wizard END: pwm_runtime */

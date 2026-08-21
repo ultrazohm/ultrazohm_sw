@@ -16,8 +16,10 @@
 #include "include/d3_adapter_init.h"
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
-typedef struct _actualValues_ {
+typedef struct _actualValues_
+{
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
 	uint32_t  heartbeatframe_content;
@@ -82,7 +84,9 @@ typedef struct _actualValues_ {
 	float resolver_pl_interface_d5_2_omega_mech_rad_s;
 	float resolver_pl_interface_d5_2_n_mech_rpm;
 	float resolver_pl_interface_d5_2_omega_el_rad_s;
-/* Project Wizard END: actualValues */
+	enum uz_pmsm_control_safe_operating_region_violation pm_safe_operating_region_violation;
+	struct uz_pmsm_measurement_values prime_mover_measurements;
+	/* Project Wizard END: actualValues */
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -137,12 +141,17 @@ typedef struct{
 	uz_wavegen_three_phase* m2_sine;
 	uz_wavegen_three_phase* m3_sine;
 	uz_wavegen_three_phase* m4_sine;
+	uz_pmsm_control_t *prime_mover_control;
+	struct uz_pmsm_measurement_values *prime_mover_measurements;
+	struct uz_pmsm_actual_data *prime_mover_actual_data;
+	struct uz_pmsm_reference_values *prime_mover_reference_values;
 	/* Project Wizard END: objects */
 }object_pointers_t;
 
 enum control_mode_t {
 	control_mode_manual = 0,
-	control_mode_wavegen};
+	control_mode_wavegen,
+	control_mode_m1_only_foc};
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
@@ -170,7 +179,9 @@ typedef struct _DS_Data_ {
 	enum control_mode_t control_mode;
 	float sine_amp;
 	float sine_frq;
-
+	float prime_mover_n_ref_rpm;
+	struct uz_3ph_dq_t prime_mover_i_dq_ref_A;
+	bool enable_speed_control;
 } DS_Data;
 
 #endif

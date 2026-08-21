@@ -30,6 +30,7 @@ extern uint32_t js_status_BareToRTOS;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
+	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	if (msgId != 0)
 	{
 		// GENERAL VARIABLES
@@ -286,19 +287,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
-
+			if(current_state==idle_state){
+				data->control_mode=control_mode_manual;
+			}
 			break;
-
-		case (My_Button_6):
-
+			
+			case (My_Button_6):
+				if (current_state == idle_state)
+				{
+					data->control_mode=control_mode_wavegen;
+				}
+			
 			break;
-
-		case (My_Button_7):
-
-			break;
+			
+			case (My_Button_7):
+				if (current_state == idle_state)
+				{
+					data->control_mode=control_mode_m1_only_foc;
+				}
+			 break;
 
 		case (My_Button_8):
-
+			data->enable_speed_control = !data->enable_speed_control;
 			break;
 
 		case (Error_Reset):
@@ -315,7 +325,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
+
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -386,17 +396,41 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
-
+		if (data->control_mode == control_mode_manual)
+		{
+			js_status_BareToRTOS |= (1 << 8);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 8);
+		}
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
-
+		if (data->control_mode == control_mode_wavegen)
+		{
+			js_status_BareToRTOS |= (1 << 9);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 9);
+		}
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
-
+		if (data->control_mode == control_mode_m1_only_foc)
+		{
+			js_status_BareToRTOS |= (1 << 10);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 10);
+		}
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
-
+		if (data->enable_speed_control == true)
+		{
+			js_status_BareToRTOS |= (1 << 11);
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 11);
+		}
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {
 	//	js_status_BareToRTOS |= (1 << 12);

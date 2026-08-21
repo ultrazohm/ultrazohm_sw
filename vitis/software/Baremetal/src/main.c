@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "include/deskbench_control.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -132,6 +133,7 @@ int main(void)
             Global_Data.objects.m2_sine = uz_wavegen_three_phase_init();
             Global_Data.objects.m3_sine = uz_wavegen_three_phase_init();
             Global_Data.objects.m4_sine = uz_wavegen_three_phase_init();
+            deskbench_control_init(&Global_Data);
                 /* Project Wizard END: init_ip_cores */
                 initialization_chain = print_msg;
             break;

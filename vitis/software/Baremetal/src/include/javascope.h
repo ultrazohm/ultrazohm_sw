@@ -166,9 +166,9 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	sine_amp,
 	sine_frq,
-	send_field_3,
-	send_field_4,
-	send_field_5,
+	n_ref,
+	i_d,
+	i_q,
 	send_field_6,
 	m1_duty_a,
 	m1_duty_b,
@@ -275,10 +275,10 @@ enum gui_button_mapping {
 	m2_enable,
 	m3_enable,
 	m4_enable,
-	MyButton5,
-	MyButton6,
-	MyButton7,
-	MyButton8,
+	ManualDuty,
+	Wavegen,
+	FOC,
+	SpeedControlEnable,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

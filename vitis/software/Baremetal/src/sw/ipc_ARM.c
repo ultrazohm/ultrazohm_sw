@@ -204,23 +204,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->rasv.i_d_ref_A_load = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		data->rasv.i_q_ref_A_load = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.DutyCycle_manual_DUT.DutyCycle_A = value;
+				if ((data->av.DutyCycle_manual_load.DutyCycle_A == 0) && (data->av.DutyCycle_manual_load.DutyCycle_B == 0) && (data->av.DutyCycle_manual_load.DutyCycle_C == 0)) {
+					data->av.DutyCycle_manual_DUT.DutyCycle_A = value;
+				}
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.DutyCycle_manual_DUT.DutyCycle_B = value;
+				if ((data->av.DutyCycle_manual_load.DutyCycle_A == 0) && (data->av.DutyCycle_manual_load.DutyCycle_B == 0) && (data->av.DutyCycle_manual_load.DutyCycle_C == 0)) {
+					data->av.DutyCycle_manual_DUT.DutyCycle_B = value;
+				}
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.DutyCycle_manual_DUT.DutyCycle_C = value;
+				if ((data->av.DutyCycle_manual_load.DutyCycle_A == 0) && (data->av.DutyCycle_manual_load.DutyCycle_B == 0) && (data->av.DutyCycle_manual_load.DutyCycle_C == 0)) {
+					data->av.DutyCycle_manual_DUT.DutyCycle_C = value;
+				}
 			break;
 
 		case (Set_Send_Field_10):
@@ -228,23 +234,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+			if ((data->av.DutyCycle_manual_DUT.DutyCycle_A == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_B == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_C == 0)) {
+				data->av.DutyCycle_manual_load.DutyCycle_A = value;
+			}
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+			if ((data->av.DutyCycle_manual_DUT.DutyCycle_A == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_B == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_C == 0)) {
+				data->av.DutyCycle_manual_load.DutyCycle_B = value;
+			}
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+			if ((data->av.DutyCycle_manual_DUT.DutyCycle_A == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_B == 0) && (data->av.DutyCycle_manual_DUT.DutyCycle_C == 0)) {
+				data->av.DutyCycle_manual_load.DutyCycle_C = value;
+			}
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+		data->av.tune_Kp_speed_control = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+		data->av.tune_Ki_speed_control = value;
 			break;
 
 		case (Set_Send_Field_16):
@@ -268,23 +280,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-		ConApplication = CIL;
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+			ConApplication = CIL;}
 			break;
 
 		case (My_Button_2):
-		ConApplication = REAL;
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+			ConApplication = REAL;}
 			break;
 
 		case (My_Button_3):
-		ConSelection = LUT_FOC;
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+			ConSelection = LUT_FOC;}
 			break;
 
 		case (My_Button_4):
-		ConSelection = RL;
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+			ConSelection = RL;}
 			break;
 
 		case (My_Button_5):
-		ConSelection = manual;
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+			ConSelection = manual;}
 			break;
 
 		case (My_Button_6):
@@ -292,11 +309,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					if (data->av.tune_speed_control_flag == false) {
+						data->av.tune_speed_control_flag =  true;
+					} else {
+						data->av.tune_speed_control_flag =  false;
+					}
 
+				}
 			break;
 
 		case (My_Button_8):
+			if (ultrazohm_state_machine_get_state() == idle_state) {
+				if (data->av.load_machine_cc_only == false) {
+					data->av.load_machine_cc_only = true;
+				} else {
+					data->av.load_machine_cc_only = false;
+				}
 
+			}
 			break;
 
 		case (Error_Reset):
@@ -386,10 +417,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	 if (data->av.tune_speed_control_flag) {
+		js_status_BareToRTOS |= (1 << 10);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	 }
 
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	 if (data->av.load_machine_cc_only) {
+		js_status_BareToRTOS |= (1 << 11);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	 }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

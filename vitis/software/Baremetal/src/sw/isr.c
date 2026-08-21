@@ -89,6 +89,8 @@ uint32_t setpoint_index=0U;
 bool StepProfile=false; // hack to only do it once
 bool start_angle_found = false;
 bool change_speed = false;
+bool profile_ramp_down = false;
+bool profile_at_rated_speed = false;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -152,7 +154,7 @@ void ISR_Control(void *data)
 		Global_Data.av.v_abc_Load.b 			= (Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2) + PHASE_VOLT_OFFSET_B2;
 		Global_Data.av.v_abc_Load.c 			= (Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2) + PHASE_VOLT_OFFSET_C2;
 		Global_Data.av.v_dc_Load 				= (Global_Data.aa.A2.me.ADC_A1 * DC_VOLT_CONV);
-		Global_Data.av.Torque_DUT				= (Global_Data.aa.A3.me.ADC_A4 * TORQUE_NM_CONV);
+		Global_Data.av.Torque_DUT				= -(Global_Data.aa.A3.me.ADC_A4 * TORQUE_NM_CONV);
 
 		//TODO ADC Measurement of Torque
 
@@ -165,13 +167,29 @@ void ISR_Control(void *data)
 					 Global_Data.av.inverter_outputs_d2_Load.ChipTempDegreesCelsius_H3, Global_Data.av.inverter_outputs_d2_Load.ChipTempDegreesCelsius_L3);
 
 		 //Safety checks
-		 float V_Limit = Global_Data.rasv.PMSM_DUT_config.V_DC_Volts * 1.03f;//allow 3 percent higher VDC before error
-	    if((Global_Data.av.i_abc_DUT.a > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) || (Global_Data.av.i_abc_DUT.b > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) || (Global_Data.av.i_abc_DUT.c > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere)
-	    		|| (Global_Data.av.i_dc_DUT > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) || (Global_Data.av.v_dc_DUT > V_Limit)) {
+		float V_Limit = 50.0f; //Global_Data.rasv.PMSM_DUT_config.V_DC_Volts * 1.03f;//allow 3 percent higher VDC before stop
+	    if ((fabs(Global_Data.av.i_abc_DUT.a) > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) || (fabs(Global_Data.av.i_abc_DUT.b) > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) || (fabs(Global_Data.av.i_abc_DUT.c) > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere)) {
+	    	Global_Data.av.error_code = overcurrent_dut;
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+	    if (fabsf(Global_Data.av.i_dc_DUT) > Global_Data.rasv.PMSM_DUT_config.I_max_Ampere) {
+	    	Global_Data.av.error_code = i_dc_error_dut;
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+	    if (fabs(Global_Data.av.v_dc_DUT) > V_Limit) {
+	    	Global_Data.av.error_code = v_dc_error_dut;
 			ultrazohm_state_machine_set_stop(true);
 	    }
-	    if((Global_Data.av.i_abc_Load.a > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) || (Global_Data.av.i_abc_Load.b > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) || (Global_Data.av.i_abc_Load.c > Global_Data.rasv.PMSM_Load_config.I_max_Ampere)
-	    		|| (Global_Data.av.i_dc_Load > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) || (Global_Data.av.v_dc_Load > V_Limit)) {
+	    if ((fabs(Global_Data.av.i_abc_Load.a) > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) || (fabs(Global_Data.av.i_abc_Load.b) > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) || (fabs(Global_Data.av.i_abc_Load.c) > Global_Data.rasv.PMSM_Load_config.I_max_Ampere)) {
+	    	Global_Data.av.error_code = overcurrent_load;
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+	    if (fabs(Global_Data.av.i_dc_Load) > Global_Data.rasv.PMSM_Load_config.I_max_Ampere) {
+	    	Global_Data.av.error_code = i_dc_error_load;
+	    	ultrazohm_state_machine_set_stop(true);
+	    }
+	    if (Global_Data.av.v_dc_Load > V_Limit) {
+	    	Global_Data.av.error_code = v_dc_error_load;
 			ultrazohm_state_machine_set_stop(true);
 	    }
 
@@ -196,6 +214,8 @@ void ISR_Control(void *data)
      	StepProfile = false;
      	setpoint_index = 0U;
      	start_angle_found = false;
+		profile_ramp_down = false;
+		profile_at_rated_speed = false;
      	Global_Data.rasv.StartMarker = 0.0f;
      	Global_Data.av.speed_ref_Load = 0.0f;
      	ext_clamping = false;
@@ -233,7 +253,11 @@ void ISR_Control(void *data)
 
       	    case REAL:
       	    	// disable inverters
-      	    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_DUT, true);
+      	    	if ((Global_Data.av.load_machine_cc_only == true) || (Global_Data.av.tune_speed_control_flag == true)) {
+      	    		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_DUT, false);
+      	    	} else {
+      	    		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_DUT, true);
+      	    	}
       	    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_Load, true);
       	    	break;
 
@@ -246,58 +270,105 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
-        if( (StepProfile) ){
+
+		if( (StepProfile) ){
     		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
         	if ((((Global_Data.av.theta_elec_old_DUT - Global_Data.av.theta_elec_DUT) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_DUT < 10.0f) || ConApplication==CIL)&& (!start_angle_found)) {
-        		if(current_uptime>(old_uptime + 4360)) {
+        		if(current_uptime>(old_uptime + 15000)) {
         			start_angle_found = true;
         			old_uptime=current_uptime;
         		}
         	}
-        	if (start_angle_found) {
-        		// step throught the array
-        		if((current_uptime > (old_uptime +200)) && (!change_speed) ){
-        			old_uptime=current_uptime;
-            		Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index] * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
-        			Global_Data.rasv.StartMarker=1.0f;
-        			if(setpoint_index < 50){
-        				setpoint_index++;
-        			}else{
-        				setpoint_index=0;
-        				change_speed = true;
-        				Global_Data.rasv.StartMarker=0.0f;
-        				Global_Data.av.Torque_ref_DUT = 0.0f;
-        			}
-        		}
-        		if (change_speed) {
-        			Global_Data.av.Torque_ref_DUT = 0.0f;
-        			if(current_uptime > (old_uptime + 1000)) {
-        				if(ConApplication == CIL) {
-        					Global_Data.av.speed_ref_Load = Global_Data.av.speed_ref_Load + 100.0f;
-        				}
-        				change_speed = false;
-        				start_angle_found = false;
-        				//StepProfile = false;
-        			}
-        		}
-        		if(fabs(Global_Data.av.speed_ref_Load) > Global_Data.rasv.PMSM_DUT_config.n_rated_rpm) {
-        			StepProfile = false;
-        			Global_Data.av.speed_ref_Load = 0.0f;
-        			Global_Data.av.Torque_ref_DUT = 0.0f;
-        		}
-        	}
+		if (start_angle_found) {
+			// Run the complete profile repeatedly and change speed between runs.
+			if((current_uptime > (old_uptime + 3000U)) && (!change_speed)) {
+				old_uptime = current_uptime;
+				Global_Data.av.Torque_ref_DUT = M_ref_setpoints[setpoint_index] * Global_Data.rasv.PMSM_DUT_config.M_rated_Nm;
+				Global_Data.rasv.StartMarker = 1.0f;
+				setpoint_index++;
+
+				if (setpoint_index >= 50U) {
+					setpoint_index = 0U;
+					Global_Data.rasv.StartMarker = 0.0f;
+					Global_Data.av.Torque_ref_DUT = 0.0f;
+					change_speed = true;
+					start_angle_found = false;
+
+					if (profile_at_rated_speed) {
+						profile_ramp_down = true;
+					} else if (ConApplication == CIL) {
+						if (fabsf(Global_Data.av.speed_ref_Load + 100.0f) >= Global_Data.rasv.PMSM_DUT_config.n_rated_rpm) {
+							Global_Data.av.speed_ref_Load = Global_Data.rasv.PMSM_DUT_config.n_rated_rpm;
+							profile_at_rated_speed = true;
+//							change_speed = false;
+//							start_angle_found = true;
+						} else {
+							Global_Data.av.speed_ref_Load += 100.0f;
+						}
+					} else if (ConApplication == REAL) {
+						if (fabsf(Global_Data.av.speed_ref_Load - 100.0f) >= Global_Data.rasv.PMSM_DUT_config.n_rated_rpm) {
+							Global_Data.av.speed_ref_Load = -Global_Data.rasv.PMSM_DUT_config.n_rated_rpm;
+							profile_at_rated_speed = true;
+//							change_speed = false;
+//							start_angle_found = true;
+						} else {
+							Global_Data.av.speed_ref_Load -= 100.0f;
+						}
+					}
+				}
+			}
+		}
+
+		if (change_speed && (current_uptime > (old_uptime + 1000U))) {
+			old_uptime = current_uptime;
+			if (profile_ramp_down) {
+				if (ConApplication == CIL) {
+					Global_Data.av.speed_ref_Load -= 100.0f;
+					if (fabsf(Global_Data.av.speed_ref_Load) <= 100.0f) {
+						Global_Data.av.speed_ref_Load = 0.0f;
+						StepProfile = false;
+						change_speed = false;
+						profile_ramp_down = false;
+					}
+				} else if (ConApplication == REAL) {
+					Global_Data.av.speed_ref_Load += 100.0f;
+					if (fabsf(Global_Data.av.speed_ref_Load) <= 100.0f) {
+						Global_Data.av.speed_ref_Load = 0.0f;
+						StepProfile = false;
+						change_speed = false;
+						profile_ramp_down = false;
+					}
+				}
+				if (!profile_ramp_down) {
+					Global_Data.av.speed_ref_Load = 0.0f;
+				}
+			} else {
+				change_speed = false;
+				start_angle_found = false;
+			}
+			Global_Data.av.Torque_ref_DUT = 0.0f;
+		}
         }
         Global_Data.av.theta_elec_old_DUT = Global_Data.av.theta_elec_DUT;
 
 
     	if(ConApplication == REAL && ConSelection != manual) {
     		//Only use load machine when REAL
-    		Global_Data.av.speed_ref_filtered_Load 	= uz_signals_IIR_Filter_sample(Global_Data.objects.Speed_Filter_Load, Global_Data.av.speed_ref_Load);
-    	    //Approximates required torque based on dq-Setpoints of DUT machine
-    		Global_Data.av.Torque_ref_Load 			= uz_SpeedControl_sample(Global_Data.objects.SpeedControl_Load, Global_Data.av.omega_mech_Load, Global_Data.av.speed_ref_filtered_Load);
-    		//Adds required torque of DUT as Vorsteuerung
-    		Global_Data.av.Torque_ref_Load 			-= Global_Data.av.Torque_ref_DUT;
-    		Global_Data.av.i_ref_dq_Load 			= uz_SetPoint_sample(Global_Data.objects.SetPoint_Load, Global_Data.av.omega_mech_Load, Global_Data.av.Torque_ref_Load, Global_Data.av.v_dc_Load, Global_Data.av.i_dq_Load);
+    		if (Global_Data.av.tune_speed_control_flag == true) {
+    			uz_SpeedControl_set_Kp(Global_Data.objects.SpeedControl_Load, Global_Data.av.tune_Kp_speed_control);
+    			uz_SpeedControl_set_Ki(Global_Data.objects.SpeedControl_Load, Global_Data.av.tune_Ki_speed_control);
+    		}
+    		if (Global_Data.av.load_machine_cc_only == true) {
+    			Global_Data.av.i_ref_dq_Load.d = Global_Data.rasv.i_d_ref_A_load;
+    			Global_Data.av.i_ref_dq_Load.q = Global_Data.rasv.i_q_ref_A_load;
+    		} else {
+        		Global_Data.av.speed_ref_filtered_Load 	= uz_signals_IIR_Filter_sample(Global_Data.objects.Speed_Filter_Load, Global_Data.av.speed_ref_Load);
+        	    //Approximates required torque based on dq-Setpoints of DUT machine
+        		Global_Data.av.Torque_ref_Load 			= uz_SpeedControl_sample(Global_Data.objects.SpeedControl_Load, Global_Data.av.omega_mech_Load, Global_Data.av.speed_ref_filtered_Load);
+        		//Adds required torque of DUT as Vorsteuerung
+        		//Global_Data.av.Torque_ref_Load 			-= Global_Data.av.Torque_ref_DUT;
+        		Global_Data.av.i_ref_dq_Load 			= uz_SetPoint_sample(Global_Data.objects.SetPoint_Load, Global_Data.av.omega_mech_Load, Global_Data.av.Torque_ref_Load, Global_Data.av.v_dc_Load, Global_Data.av.i_dq_Load);
+    		}
     		Global_Data.av.v_ref_dq_Load 			= uz_CurrentControl_sample(Global_Data.objects.CurrentControl_Load, Global_Data.av.i_ref_dq_Load, Global_Data.av.i_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.omega_elec_Load);
     		Global_Data.av.DutyCycle_Load 			= uz_Space_Vector_Modulation(Global_Data.av.v_ref_dq_Load, Global_Data.av.v_dc_Load, Global_Data.av.theta_elec_advanced_Load);
     	}
@@ -340,6 +411,7 @@ void ISR_Control(void *data)
         	Global_Data.av.v_ref_dq_DUT = Global_Data.av.v_dq_ref_CIL_manual;
         	//REAL set DutyCycles manual via GUI
         	Global_Data.av.DutyCycle_DUT = Global_Data.av.DutyCycle_manual_DUT;
+        	Global_Data.av.DutyCycle_Load = Global_Data.av.DutyCycle_manual_load;
         	break;
     	}
     	switch(ConApplication) {

@@ -23,6 +23,16 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_signals/uz_signals.h"
 
+enum show_error {
+	no_error = 0,
+	overcurrent_dut,
+	overcurrent_load,
+	i_dc_error_dut,
+	i_dc_error_load,
+	v_dc_error_dut,
+	v_dc_error_load
+};
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -128,9 +138,15 @@ typedef struct _actualValues_ {
 	float speed_ref_Load;
 	float speed_ref_filtered_Load;
 	struct uz_DutyCycle_t DutyCycle_Load;
+	struct uz_DutyCycle_t DutyCycle_manual_load;
+	float tune_Kp_speed_control;
+	float tune_Ki_speed_control;
+	bool tune_speed_control_flag;
+	bool load_machine_cc_only;
 
 	//other stuff
 	float start_marker;
+	enum show_error error_code;
 
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
@@ -154,6 +170,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float i_d_ref_A_load;
+	float i_q_ref_A_load;
 } referenceAndSetValues;
 
 typedef struct{

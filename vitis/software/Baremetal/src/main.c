@@ -89,11 +89,13 @@ int main(void)
             Global_Data.objects.CurrentControl_Load = init_FOC_Load();
             Global_Data.objects.SetPoint_Load = init_SetPoint_Load();
             Global_Data.objects.SpeedControl_Load = init_SpeedControl_Load();
+            Global_Data.av.tune_speed_control_flag = 0;
+            Global_Data.av.load_machine_cc_only = 0;
             Global_Data.objects.LUT_id = init_LUT_id();
             Global_Data.objects.LUT_iq = init_LUT_iq();
             Global_Data.objects.FluxApproximation_DUT = init_FluxApproximation_DUT();
             Global_Data.objects.Speed_Filter_Load = init_SpeedFilter_Load();
-            Global_Data.av.theta_offset_DUT = 0.1f;//1.63f;
+            Global_Data.av.theta_offset_DUT = 1.62;//0.1f;//1.63f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

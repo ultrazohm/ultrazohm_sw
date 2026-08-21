@@ -10,7 +10,7 @@ static const struct uz_PMSM_t PMSM_DUT_config = { //Hoerner Prototyp
         .polePairs = 4.0f,
 		.M_rated_Nm = 1.6f,
 		.I_rated_Ampere = 15.0f,
-		.n_rated_rpm = 1500.0f,
+		.n_rated_rpm = 1200,//1500.0f,
 		.V_DC_Volts = 48.0f};
 
 static const struct uz_PMSM_t PMSM_Load_config = {//Beckhoff AM8141
@@ -101,10 +101,10 @@ struct uz_PI_Controller_config config_iq_Load = {
 };
 
 static const struct uz_PI_Controller_config config_speed_Load = {
-		.Kp = 0.1f,
-		.Ki = 0.5f,
-		.lower_limit = -3.0f,
-		.upper_limit = 3.0f,
+		.Kp = 0.15f,
+		.Ki = 1.0f, //0.5
+		.lower_limit = -5.0f,
+		.upper_limit = 5.0f,
 		.samplingTime_sec = SAMPLE_TIME_SEC_CURRENT_CONTROL,
 		.type = UZ_PI_PARALLEL
 };

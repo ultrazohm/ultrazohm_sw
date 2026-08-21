@@ -24,6 +24,7 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
+	JSO_iir_1_out,
 /* Project Wizard BEGIN: javascope_observables */
 	JSO_ADC_A1_CH0,
 	JSO_ADC_A1_CH1,
@@ -88,6 +89,14 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Error_Code,
 /* Project Wizard BEGIN: javascope_slowdata */
+	JSSD_FLOAT_ADC_A1_CH0,
+	JSSD_FLOAT_ADC_A1_CH1,
+	JSSD_FLOAT_ADC_A1_CH2,
+	JSSD_FLOAT_ADC_A1_CH3,
+	JSSD_FLOAT_ADC_A1_CH4,
+	JSSD_FLOAT_ADC_A1_CH5,
+	JSSD_FLOAT_ADC_A1_CH6,
+	JSSD_FLOAT_ADC_A1_CH7,
 	JSSD_FLOAT_TEMP_D3_A_CH4,
 	JSSD_FLOAT_TEMP_D3_A_CH5,
 	JSSD_FLOAT_TEMP_D3_A_CH19,

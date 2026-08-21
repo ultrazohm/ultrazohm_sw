@@ -58,6 +58,12 @@ enum init_chain initialization_chain = init_assertions;
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+struct uz_IIR_Filter_config iir_1_config = {
+		.cutoff_frequency_Hz = 0.1f,
+		.sample_frequency_Hz = 10000.0f,
+		.selection = LowPass_first_order
+};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -95,6 +101,7 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
+            Global_Data.objects.iir_1_instance = uz_signals_IIR_Filter_init(iir_1_config);
             break;
         case init_ip_cores:
             /* Project Wizard BEGIN: init_ip_cores */

@@ -73,6 +73,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_iir_1_out]				= &data->av.iir_1_out;
 /* Project Wizard BEGIN: javascope_observable_pointers */
 	js_ch_observable[JSO_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
 	js_ch_observable[JSO_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
@@ -134,6 +135,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 /* Project Wizard BEGIN: javascope_slowdata_pointers */
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH0] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch0;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH1] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch1;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH2] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch2;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH3] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch3;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH4] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch4;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH5] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch5;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH6] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch6;
+	js_slowDataArray[JSSD_FLOAT_ADC_A1_CH7] = &project_wizard_visualization_data.viz_adc_ltc2311_a1_ch7;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D3_A_CH4] = &project_wizard_visualization_data.viz_temp_d3_a_4;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D3_A_CH5] = &project_wizard_visualization_data.viz_temp_d3_a_5;
 	js_slowDataArray[JSSD_FLOAT_TEMP_D3_A_CH19] = &project_wizard_visualization_data.viz_temp_d3_a_19;

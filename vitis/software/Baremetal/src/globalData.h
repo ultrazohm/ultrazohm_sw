@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_signals/uz_signals.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -95,6 +96,7 @@ typedef struct _actualValues_ {
 	float endat_encoder_d5_1_speed_el_si;
 	float endat_encoder_d5_1_speed_mech_rpm;
 /* Project Wizard END: actualValues */
+	float iir_1_out;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -149,6 +151,7 @@ typedef struct{
 	uz_resolverIP_t* resolver_ip_d4_3;
 	uz_endat_interface_t* endat_encoder_d5_1;
 /* Project Wizard END: objects */
+	uz_IIR_Filter_t* iir_1_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

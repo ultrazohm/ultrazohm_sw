@@ -52,6 +52,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -73,6 +74,7 @@ void ISR_Control(void *data)
     update_adapter_d4();
     update_adapter_d5();
 
+    Global_Data.av.iir_1_out = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_1_instance, Global_Data.av.adc_ltc2311_a1_ch4);
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == idle_state)

@@ -28,7 +28,9 @@ This file captures project-specific knowledge for future AI/code-assistant sessi
 ### Important Wizard Files
 
 - `project_wizard/views/main_window.py`
-  - Main PyQt UI. Large, but many workflows are still wired here.
+  - Main PyQt shell: menu, service wiring, navigation stack, and page registration.
+- `project_wizard/views/mixins/`
+  - Focused GUI page/workflow modules used by `MainWindow`.
 - `project_wizard/data/adapter_cards.json`
   - Hardware/card catalog: compatible slots, Vivado templates, IP VLNVs, ports, AXI interfaces, constraints, default CPLD program.
 - `project_wizard/data/software_drivers.json`
@@ -38,35 +40,74 @@ This file captures project-specific knowledge for future AI/code-assistant sessi
 - `project_wizard/tcl_generator.py`
   - High-level Tcl generation coordinator.
 - `project_wizard/services/software_generator_service.py`
-  - Vitis source generation and marker patching.
+  - Model-based Vitis software integration generator.
+- `project_wizard/services/software_analog.py`
+  - Analog-card software contexts, ADC readout snippets, ADC packed-buffer offsets, and DAC wavegen helper logic.
+- `project_wizard/services/software_models.py`
+  - Software-generation plan dataclasses, marker definitions, and small shared constants.
+- `project_wizard/services/software_driver_config.py`
+  - Reusable driver-configuration value resolution for default/custom advanced driver options.
+- `project_wizard/services/software_digital.py`
+  - Digital-card software contexts and generated snippets for inverter, incremental encoder, absolute encoder, and resolver integrations.
+- `project_wizard/services/software_patcher.py`
+  - Marker-based Vitis file patching and generated software file writes.
+- `project_wizard/services/software_pwm.py`
+  - PWM software config fields, PWM init context, PWM runtime ISR lines, and PWM-owned RASV duty-cycle entries.
+- `project_wizard/services/software_temperature_io.py`
+  - Temperature-card software context, temperature readout snippets, AXI GPIO IO-card context, and generated Arduino-style IO wrapper files.
+- `project_wizard/services/software_visualization.py`
+  - Formatting of generated visualization fields, Javascope observable entries, and slow-data entries.
+- `project_wizard/services/xparameters.py`
+  - `xparameters.h` discovery and generated base-address/device-id macro selection.
+- `project_wizard/services/visualization_catalog.py`
+  - Shared visualization signal catalog plus IO-card direction/AXI helper functions.
 - `project_wizard/services/cpld_programmer_service.py`
   - `.xcf` generation and Diamond Programmer CLI handling.
 - `project_wizard/services/vivado_service.py`
   - Vivado TCL execution wrapper.
 - `project_wizard/models.py` and `project_wizard/services/system_resolver.py`
-  - First step toward typed config/resolver architecture. Not yet the single source for all generation.
+  - Typed config/resolver boundary for wizard workflows.
 
 ### Current Data Model
 
-The saved `.pw.json` config is still mostly user-facing, with dictionaries for:
+Project configuration uses schema version 2 and is loaded through `SystemConfig`.
+The saved `.pw.json` has typed top-level sections:
 
-- `slots`
-- `slot_options`
-- `slot_cplds`
+- `platform`: `{id, revision, cpld}`
+- `slots`: per-slot `{card, options, cpld}`
+- `software`: `{source_dir, modes, presets, visualization_routes, driver_config, extra}`
+- `toolchain`
+- `hardware`
+- `cpld_programmer`
 - `axi`
-- `software`
-- `visualization`
-- `hardware_config`
 
-There is an early model/resolver layer, but generators still directly consume much of the raw config. Future refactoring should move toward:
+The application boundary is:
 
 ```text
-raw config JSON
+GUI widget state / saved JSON
   -> typed SystemConfig
   -> ResolvedSystemModel
-  -> ValidationService
   -> Tcl/Software/CPLD generators
 ```
+
+Generator public APIs are model-based. Legacy-shaped dictionaries remain only as
+private implementation details inside generators where they preserve proven
+behavior.
+
+Resolver-owned facts currently include:
+
+- Resolved slots, card metadata, and selected option choices.
+- Card-derived default CPLD programs and selected slot CPLD programs.
+- Software-driver instance discovery for advanced driver configuration.
+- Available visualization signal discovery for the GUI.
+- Analog datamover streams, packed offsets, channel count, and data width.
+- Slot-local AXI cleanup/attachment facts and AXI interface lists.
+- Shared IO-card direction/AXI participation helpers through
+  `services/visualization_catalog.py`.
+
+The remaining high-risk area is dirty Vivado BD transition behavior around AXI
+cleanup/attachment. The facts are resolver-owned and the Tcl is golden-tested,
+but actual dirty-BD cleanup still needs manual Vivado testing when changed.
 
 Current platform-scope note:
 
@@ -491,10 +532,15 @@ High-level list of important touched areas:
 - `project_wizard/templates/helpers/bd_helpers.tcl`
 - `project_wizard/templates/software/*.tpl`
 - `project_wizard/tcl_generator.py`
+- `project_wizard/models.py`
+- `project_wizard/golden_scenarios.py`
 - `project_wizard/services/software_generator_service.py`
+- `project_wizard/services/system_resolver.py`
+- `project_wizard/services/visualization_catalog.py`
 - `project_wizard/services/cpld_programmer_service.py`
 - `project_wizard/services/vivado_service.py`
 - `project_wizard/views/main_window.py`
+- `project_wizard/views/mixins/*.py`
 - `project_wizard/theme.py`
 - `project_wizard/assets/checkmark.svg`
 - `vitis/software/Baremetal/src/globalData.h`
@@ -508,40 +554,29 @@ High-level list of important touched areas:
 
 ## 4. Next Concrete Steps
 
-Immediate next task in the new chat:
+Immediate start for a new assistant session:
 
-1. Start by reading this file.
-2. Validate the resolver implementation:
-   - Open the wizard.
-   - Select `UZ_D Resolver` in D4 first, then D5.
-   - Confirm default CPLD becomes `uz_d_resolver_d1_to_d4` for D1-D4 and `uz_d_resolver_d5` for D5.
-   - Confirm the resolver PL interface channel checkboxes are enabled by default.
-   - Confirm all visible channel sample trigger sources default to `uz_system/trigger_conversions`.
-   - Generate Tcl.
-   - Apply Tcl in Vivado GUI.
-   - Check BD:
-     - D1-D4 create 3 `resolver_ip_*` instances and only the checked `resolver_pl_interface_*` instances.
-     - D5 creates 2 `resolver_ip_*` instances and only the checked `resolver_pl_interface_*` instances.
-     - `valid_m` connects to PL-interface `trigger`.
-     - resolver sample trigger connects from configured source to each resolver IP.
-     - PL-interface outputs are exposed through the D-slot adapter hierarchy.
-     - No ILA exists for this card.
-     - AXI4-Lite is connected through the D-slot AXI flow.
-     - `Digital_AdapterBoard_Dx.xdc` enabled, `Digital_Dx_packed.xdc` disabled.
-   - Validate BD.
-   - Build bitstream.
-   - Export hardware and regenerate Vitis workspace.
-   - Generate software from wizard.
-   - Build Vitis.
-   - If hardware is available, test resolver position/speed readout and PL-interface output signals.
+1. Read this file and `project_wizard/README.md`.
+2. Inspect the current working tree before editing. User test files and generated
+   output may be present.
+3. Run the standard wizard checks before and after structural changes:
+   - `python -m json.tool project_wizard/data/adapter_cards.json`
+   - `python -m json.tool project_wizard/data/software_drivers.json`
+   - `python -m compileall project_wizard`
+   - `python -m project_wizard.golden_scenarios --check`
+4. For changes touching TCL behavior, also scan generated TCL for leaked template
+   markers such as `{%` and `{{`.
 
-Likely follow-up tasks:
+Current roadmap:
 
-- If sample trigger source name differs in the live BD, adjust the default source field.
-- If xparameters macro names differ from fallbacks, confirm `resolve_base_address_macro` finds resolver IP and PL-interface macros without warning after workspace regeneration.
-- Decide whether resolver readout should optionally map to legacy motor variables (`theta_elec`, `mechanicalRotorSpeed`) or remain purely slot-local.
-- Add docs or GUI hint for resolver pin mapping and PL-interface checkbox behavior.
-- Continue with voltage and optical IO cards after resolver is validated.
+- Keep the public wizard boundary model-first: GUI state and saved JSON become
+  `SystemConfig`, then `ResolvedSystemModel`, then generator/service calls.
+- Keep the Adapter Card Database page read-only for v1. Do not wire the draft
+  `CardEditorDialog` back into the GUI without a deliberate schema-complete
+  editor redesign.
+- Continue field testing with Vivado/hardware configurations, especially slot
+  transition cleanup and local Vivado workflow combinations.
+- Add new adapter cards through JSON/templates/docs and golden scenario checks.
 
 ## 5. Known Caveats And Watch Points
 
@@ -558,14 +593,18 @@ Likely follow-up tasks:
   - `slots`: per-slot `{card, options, cpld}`
   - `software`: `{source_dir, modes, presets, visualization_routes, driver_config, extra}`
   - top-level `toolchain`, `hardware`, `cpld_programmer`, and `axi`.
-- `project_wizard/models.py` owns the typed config dataclasses. `SystemConfig` still exposes legacy-shaped projection properties (`slots`, `slot_options`, `slot_cplds`, flat `software`) so proven generators can remain behaviorally stable while the app boundary is typed.
-- GUI preview/export/generate paths should go through `MainWindow.resolved_system_model()` and generator model facades such as `TclGenerator.generate_model()` and `SoftwareGenerator.build_plan_model()`.
-- Golden scenario baselines live in `project_wizard/generated/golden_scenarios/`. Run `python -m project_wizard.golden_scenarios --check` after config/resolver/generator changes; it compares ten representative scenarios against TCL and software-summary baselines.
-- Open Vivado-live Tcl transition tests to run during field testing or a focused validation pass:
-  - AXI card -> `No adapter board`: generated Tcl should fully remove slot content and stale AXI wiring.
-  - AXI card -> selected non-AXI card: generated Tcl should remove stale AXI wiring and create only the non-AXI card content.
-  - Any existing slot content -> `Bypass`: generated Tcl should leave that slot untouched, including stale AXI wiring.
-  - Dirty/legacy BD -> selected AXI card: generated Tcl should clean old slot-local AXI attachment, recreate the current one, and let Vivado auto-assign addresses without conflict.
+- `project_wizard/models.py` owns the typed config dataclasses. `SystemConfig` no longer exposes ambiguous old-style public properties such as `slots`, `slot_options`, or flat `software`. Private generator internals that still preserve proven historical rendering behavior receive those shapes through the explicit `SystemConfig.legacy_generator_values()` bridge.
+- GUI preview/export/generate paths should go through `MainWindow.resolved_system_model()` and model-based generator APIs such as `TclGenerator.generate()` and `SoftwareGenerator.build_plan()`.
+- `SystemResolver` owns card-derived CPLD defaults, software driver instance discovery, visualization signal discovery, and analog datamover facts. Do not reintroduce duplicate public GUI/generator discovery logic for those domains.
+- `SystemResolver` owns slot-local AXI cleanup/attachment facts and AXI interface lists. `tcl_generator.py` should render those facts, not rediscover them from card JSON.
+- `services/visualization_catalog.py` is the shared owner for visualization signal helpers and IO-card direction/AXI helper functions. Use it from resolver/generators instead of copying IO-card rules.
+- Golden scenario baselines live in `project_wizard/generated/golden_scenarios/`. Run `python -m project_wizard.golden_scenarios --check` after config/resolver/generator changes; it compares representative scenarios against TCL and software-summary baselines.
+- The Adapter Card Database page is intentionally read-only for v1. `adapter_cards.json` remains the source of truth. The old draft `CardEditorDialog` exists in the source tree but is not wired into the GUI because it is not schema-complete and can break the wizard catalog if used casually. New cards should be added by editing JSON/templates through the developer workflow and running golden checks.
+- Vivado-live Tcl transition tests after the resolver refactor were run by the user with the complex golden scenario:
+  - D5 absolute encoder -> `No adapter board`: BD validated OK.
+  - D4 resolver -> 3V3/5V card with PWM/constant pins and no AXI GPIO pins selected: BD validated OK.
+  - Dirty D1 slot with manually added AXI GPIO -> selected absolute encoder card with one EnDat instance: BD validated OK.
+  - D1 set to `Bypass`: slot internals were correctly untouched. Vivado validation reported a dangling external input warning for `D1_to_pwm_source_2l_0` on `uz_d_adapter`; keep this edge case in mind when evaluating bypass behavior. Bypass intentionally does not clean or repair slot-local contents, but external wizard-owned wiring can still interact with an untouched slot.
 - Open local Vivado workflow matrix tests to run manually with Vivado or by test users:
   - Batch mode with `Validate BD` only.
   - Batch mode with `Validate BD` + `Save BD`.

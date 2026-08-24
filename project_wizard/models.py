@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -150,7 +151,7 @@ class SystemConfig:
         }
 
     @property
-    def platform(self) -> str:
+    def platform_id(self) -> str:
         return self.platform_config.id
 
     @property
@@ -162,11 +163,11 @@ class SystemConfig:
         return self.platform_config.cpld
 
     @property
-    def slots(self) -> dict[str, str]:
+    def slot_card_assignments(self) -> dict[str, str]:
         return {slot: self.slot_configs.get(slot, SlotConfig()).card_id for slot in SLOTS}
 
     @property
-    def slot_options(self) -> dict[str, dict[str, str]]:
+    def slot_option_values(self) -> dict[str, dict[str, str]]:
         return {slot: self.slot_configs.get(slot, SlotConfig()).options for slot in SLOTS}
 
     @property
@@ -177,8 +178,17 @@ class SystemConfig:
         }
 
     @property
-    def software(self) -> dict[str, str]:
+    def flat_software_values(self) -> dict[str, str]:
         return self.software_config.to_flat_dict()
+
+    def legacy_generator_values(self) -> dict[str, Any]:
+        """Return the old flat shapes still used by private generator internals."""
+        return {
+            "slots": self.slot_card_assignments,
+            "slot_options": self.slot_option_values,
+            "slot_cplds": self.slot_cplds,
+            "software": self.flat_software_values,
+        }
 
     @property
     def software_modes(self) -> dict[str, str]:
@@ -214,6 +224,8 @@ class ResolvedSlot:
     name: str
     card_id: str
     card: dict[str, Any] | None
+    cpld_program: str = "none"
+    default_cpld_program: str = "none"
     option_values: dict[str, str] = field(default_factory=dict)
     options: list[ResolvedOptionChoice] = field(default_factory=list)
 
@@ -258,14 +270,101 @@ class ResolvedAnalogDataMover:
 
 
 @dataclass(frozen=True)
+class ResolvedAxiInterface:
+    name: str
+    path: str
+    addr_seg: str
+    index: int = 0
+
+
+@dataclass(frozen=True)
+class ResolvedAxiSlot:
+    slot: str
+    adapter_root_hier: str
+    adapter_hier_path: str
+    local_smartconnect_path: str
+    adapter_clock_pin: str
+    adapter_resetn_pin: str
+    upstream_smartconnect: str
+    clock_pin: str
+    resetn_pin: str
+    address_space: str
+    axi_interfaces: list[ResolvedAxiInterface] = field(default_factory=list)
+
+    @property
+    def slot_lower(self) -> str:
+        return self.slot.lower()
+
+
+@dataclass(frozen=True)
+class ResolvedAxiCleanupSlot:
+    slot: str
+    adapter_root_hier: str
+    local_smartconnect_path: str
+    upstream_smartconnect: str
+
+
+@dataclass(frozen=True)
+class ResolvedAxiInterconnect:
+    context: dict[str, Any] = field(default_factory=dict)
+    axi_slots: list[ResolvedAxiSlot] = field(default_factory=list)
+    stale_cleanup_slots: list[ResolvedAxiCleanupSlot] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class ResolvedSoftwareDriverInstance:
+    id: str
+    slot: str
+    label: str
+    driver: str
+    driver_definition_id: str
+    preset: str = "default"
+
+
+@dataclass(frozen=True)
+class VisualizationSignal:
+    signal_id: str
+    slot: str
+    label: str
+    enum_name: str
+    pointer_expression: str
+    source_expression: str = ""
+    source_type: str = "float"
+
+    @property
+    def field_name(self) -> str:
+        return f"viz_{re.sub(r'[^0-9A-Za-z_]', '_', self.signal_id)}"
+
+    @property
+    def float_expression(self) -> str:
+        expression = self.source_expression or self.pointer_expression.removeprefix("&")
+        if self.source_type == "bool":
+            return f"({expression} ? 1.0f : 0.0f)"
+        if self.source_type in {"uint32", "int32", "uint16", "int16", "enum"}:
+            return f"((float){expression})"
+        return expression
+
+
+@dataclass(frozen=True)
 class ResolvedSystemModel:
     config: SystemConfig
     platform: dict[str, Any] | None
     slots: list[ResolvedSlot]
     analog_datamover: ResolvedAnalogDataMover = field(default_factory=ResolvedAnalogDataMover)
+    axi_interconnect: ResolvedAxiInterconnect = field(default_factory=ResolvedAxiInterconnect)
+    software_driver_instances: list[ResolvedSoftwareDriverInstance] = field(default_factory=list)
+    available_visualization_signals: list[VisualizationSignal] = field(default_factory=list)
 
     def slot(self, name: str) -> ResolvedSlot | None:
         return next((slot for slot in self.slots if slot.name == name), None)
+
+    @property
+    def slot_cpld_programs(self) -> dict[str, str]:
+        return {slot.name: slot.cpld_program for slot in self.slots if slot.name in DIGITAL_SLOTS}
+
+    @property
+    def default_slot_cpld_programs(self) -> dict[str, str]:
+        return {slot.name: slot.default_cpld_program for slot in self.slots if slot.name in DIGITAL_SLOTS}
 
 
 @dataclass(frozen=True)

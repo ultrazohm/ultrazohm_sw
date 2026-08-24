@@ -1,5 +1,14 @@
 from __future__ import annotations
 
+"""Unused draft adapter-card editor.
+
+The production wizard keeps the adapter-card catalog read-only for v1. The
+source of truth is `project_wizard/data/adapter_cards.json`, changed through the
+developer workflow and verified with golden scenarios. This dialog is kept only
+as a reference draft and must not be wired into the GUI without making it
+schema-complete first.
+"""
+
 import json
 from copy import deepcopy
 from typing import Any

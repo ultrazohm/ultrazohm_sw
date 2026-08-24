@@ -48,6 +48,11 @@ class CardDatabase:
         return self.document.setdefault("software_drivers", [])
 
     def save(self) -> None:
+        """Write adapter-card catalog changes.
+
+        Intentionally unused by the v1 GUI. The Adapter Card Database page is
+        read-only; catalog edits are developer-owned JSON/template changes.
+        """
         adapter_document = {
             "schema_version": self.document.get("schema_version", 1),
             "cpld_programs": self.cpld_programs,
@@ -78,6 +83,7 @@ class CardDatabase:
         return compatible
 
     def add_card(self, card: dict[str, Any]) -> None:
+        """Unused draft mutation helper for the disabled card editor."""
         if self.card_by_id(card["id"]) is not None:
             raise ValueError(f"Card id already exists: {card['id']}")
         self.cards.append(card)
@@ -85,6 +91,7 @@ class CardDatabase:
         self.save()
 
     def update_card(self, original_id: str, updated_card: dict[str, Any]) -> None:
+        """Unused draft mutation helper for the disabled card editor."""
         updated_id = updated_card["id"]
         for index, card in enumerate(self.cards):
             if card.get("id") != original_id and card.get("id") == updated_id:

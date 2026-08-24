@@ -397,15 +397,15 @@ uz_pw_delete_child_cells_in_slot_hierarchy uz_analog_adapter/D5_adapter
 
 
 
-# Slot CPLD D1: voltage_8tx_8rx_8tx_6tx (voltage_8tx_8rx_8tx_6tx)
+# Slot CPLD D1: uz_d_abs_encoder (uz_d_abs_encoder)
 
 # Slot CPLD D2: uz_d_3ph_inverter (uz_d_3ph_inverter)
 
 # Slot CPLD D3: uz_d_temperature_ltc2983 (uz_d_temperature_ltc2983)
 
-# Slot CPLD D4: uz_d_resolver_d1_to_d4 (uz_d_resolver_d1_to_d4)
+# Slot CPLD D4: voltage_8tx_8rx_8tx_6rx (voltage_8tx_8rx_8tx_6rx)
 
-# Slot CPLD D5: uz_d_abs_encoder (uz_d_abs_encoder)
+# Slot CPLD D5: No CPLD program (none)
 
 
 # -----------------------------------------------------------------------------
@@ -2609,22 +2609,19 @@ uz_pw_apply_slot_constraints A3 [list "Analog_A3_packed.xdc" "Analog_AdapterBoar
 
 
 # -----------------------------------------------------------------------------
-# D1: UZ_D Voltage 3V3/5V
+# D1: UZ_D Absolute Encoder
 # -----------------------------------------------------------------------------
 
-# NOTE: Routes all 30 voltage IO pins according to the four hardware direction groups.
+# NOTE: Instantiate one encoder IP core per enabled channel inside uz_user.
 
-# NOTE: The selected group directions determine the slot CPLD program.
+# NOTE: Connect AXI4-Lite, 100 MHz clock and reset for every enabled channel.
 
-# NOTE: Instantiates one AXI GPIO when at least one IO pin is AXI-backed.
+# NOTE: Connect channel triggers to the intended trigger source.
 
-# NOTE: Uses single-pin D-slot constraints instead of the packed constraint file.
+# NOTE: D-slot channel mappings use Dig_XX_Chx names where x is the slot channel number.
 
 
-puts "Adding UZ_D Voltage 3V3/5V for slot D1"
-
-# IO summary: 30 pins: 22 TX, 8 RX, AXI GPIO used
-
+puts "Adding UZ_D Absolute Encoder for slot D1"
 
 set adapter_parent_hier uz_digital_adapter
 set adapter_hier_name D1_adapter
@@ -2633,778 +2630,18 @@ set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
 uz_pw_create_hier_if_missing ${adapter_parent_hier}
 uz_pw_create_hier_if_missing ${adapter_hier_path}
 
-# Remove known non-slot-prefixed pins from previous D-slot card templates.
-# Do not bulk-delete hierarchy pins here because AXI interface scalar pins are
-# represented as BD pins and cannot be removed individually.
-uz_pw_delete_pin_if_exists ${adapter_hier_path}/Enable_Gate
-uz_pw_delete_pin_if_exists ${adapter_hier_path}/Gate_Signals_2L
-
-uz_pw_delete_pin_if_exists ${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0
-
-
-proc uz_pw_io_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
-  uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $internal_name "$left" "$right"
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path $direction $internal_name "$left" "$right"
-
-  if {$direction ne "O"} {
-    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
-    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
-  }
-}
-
-proc uz_pw_io_connect_slot_output {adapter_parent_hier adapter_hier_path internal_name external_name} {
-  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${internal_name}"
-  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
-}
-
-proc uz_pw_io_create_xlslice {cell_path din_width bit_index} {
-  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlslice
-  uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH $din_width CONFIG.DIN_FROM $bit_index CONFIG.DIN_TO $bit_index CONFIG.DOUT_WIDTH {1}] [get_bd_cells -quiet $cell_path] $cell_path
-}
-
-proc uz_pw_io_create_xlconstant {cell_path width value} {
-  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconstant
-  uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
-}
-
-
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
 uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/resetn
-set io_gpio_path ${adapter_hier_path}/axi_gpio_d1
-uz_pw_create_ip_cell_if_missing $io_gpio_path xilinx.com:ip:axi_gpio
-uz_pw_set_property_dict_if_objects [list CONFIG.C_GPIO_WIDTH 30 CONFIG.C_ALL_INPUTS 0 CONFIG.C_ALL_OUTPUTS 0 CONFIG.C_IS_DUAL 0] [get_bd_cells -quiet $io_gpio_path] $io_gpio_path
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${io_gpio_path}/s_axi_aclk
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/resetn ${io_gpio_path}/s_axi_aresetn
 
 
 
-set io_gpio_i_concat_path ${adapter_hier_path}/d1_io_gpio_i_concat
-uz_pw_create_ip_cell_if_missing $io_gpio_i_concat_path xilinx.com:ip:xlconcat
-uz_pw_set_property_dict_if_objects [list CONFIG.NUM_PORTS 30] [get_bd_cells -quiet $io_gpio_i_concat_path] $io_gpio_i_concat_path
 
 
 
-set io_gpio_zero_path ${adapter_hier_path}/d1_io_gpio_zero
-uz_pw_io_create_xlconstant $io_gpio_zero_path 1 0
 
 
 
-set d1_io_pwm_source_pwm_2l_0 "uz_pwm/Gate_Signals_2L_0"
-if {$d1_io_pwm_source_pwm_2l_0 eq "" || [llength [get_bd_pins -quiet $d1_io_pwm_source_pwm_2l_0]] == 0} {
-  puts "WARNING: PWM vector source '$d1_io_pwm_source_pwm_2l_0' not found for D1 IO card; using zero fallback."
-  set d1_io_pwm_source_pwm_2l_0_zero_path "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0_zero"
-  uz_pw_io_create_xlconstant $d1_io_pwm_source_pwm_2l_0_zero_path 6 0x00
-  set d1_io_pwm_source_pwm_2l_0 "${d1_io_pwm_source_pwm_2l_0_zero_path}/dout"
-} else {
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D1_io_pwm_source_pwm_2l_0 5 0
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path I D1_io_pwm_source_pwm_2l_0 5 0
-  uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 "${adapter_parent_hier}/D1_io_pwm_source_pwm_2l_0"
-  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/D1_io_pwm_source_pwm_2l_0" "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0"
-  set d1_io_pwm_source_pwm_2l_0 "${adapter_hier_path}/D1_io_pwm_source_pwm_2l_0"
-}
 
-
-
-# Dig_00_Ch1: TX, PWM, pwm_2l_0 s0_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_00_Ch1 Dig_00_Ch1
-
-
-
-
-
-
-
-set d1_io_00_pwm_slice_path ${adapter_hier_path}/d1_io_00_pwm_slice
-uz_pw_io_create_xlslice $d1_io_00_pwm_slice_path 6 0
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_00_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_00_pwm_slice_path/Dout ${adapter_hier_path}/Dig_00_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_00_Ch1 Dig_00_Ch1
-
-
-
-# Dig_01_Ch1: TX, PWM, pwm_2l_0 s1_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_01_Ch1 Dig_01_Ch1
-
-
-
-
-
-
-
-set d1_io_01_pwm_slice_path ${adapter_hier_path}/d1_io_01_pwm_slice
-uz_pw_io_create_xlslice $d1_io_01_pwm_slice_path 6 1
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_01_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_01_pwm_slice_path/Dout ${adapter_hier_path}/Dig_01_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_01_Ch1 Dig_01_Ch1
-
-
-
-# Dig_02_Ch1: TX, PWM, pwm_2l_0 s2_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_02_Ch1 Dig_02_Ch1
-
-
-
-
-
-
-
-set d1_io_02_pwm_slice_path ${adapter_hier_path}/d1_io_02_pwm_slice
-uz_pw_io_create_xlslice $d1_io_02_pwm_slice_path 6 2
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_02_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_02_pwm_slice_path/Dout ${adapter_hier_path}/Dig_02_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_02_Ch1 Dig_02_Ch1
-
-
-
-# Dig_03_Ch1: TX, PWM, pwm_2l_0 s3_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_03_Ch1 Dig_03_Ch1
-
-
-
-
-
-
-
-set d1_io_03_pwm_slice_path ${adapter_hier_path}/d1_io_03_pwm_slice
-uz_pw_io_create_xlslice $d1_io_03_pwm_slice_path 6 3
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_03_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_03_pwm_slice_path/Dout ${adapter_hier_path}/Dig_03_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_03_Ch1 Dig_03_Ch1
-
-
-
-# Dig_04_Ch1: TX, PWM, pwm_2l_0 s4_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_04_Ch1 Dig_04_Ch1
-
-
-
-
-
-
-
-set d1_io_04_pwm_slice_path ${adapter_hier_path}/d1_io_04_pwm_slice
-uz_pw_io_create_xlslice $d1_io_04_pwm_slice_path 6 4
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_04_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_04_pwm_slice_path/Dout ${adapter_hier_path}/Dig_04_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_04_Ch1 Dig_04_Ch1
-
-
-
-# Dig_05_Ch1: TX, PWM, pwm_2l_0 s5_out
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_05_Ch1 Dig_05_Ch1
-
-
-
-
-
-
-
-set d1_io_05_pwm_slice_path ${adapter_hier_path}/d1_io_05_pwm_slice
-uz_pw_io_create_xlslice $d1_io_05_pwm_slice_path 6 5
-uz_pw_connect_pin_pair_if_unconnected $d1_io_pwm_source_pwm_2l_0 $d1_io_05_pwm_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_05_pwm_slice_path/Dout ${adapter_hier_path}/Dig_05_Ch1
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_05_Ch1 Dig_05_Ch1
-
-
-
-# Dig_06_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_06_Ch1 Dig_06_Ch1
-
-
-
-
-
-set d1_io_06_slice_path ${adapter_hier_path}/d1_io_06_slice
-uz_pw_io_create_xlslice $d1_io_06_slice_path 30 6
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_06_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_06_slice_path/Dout ${adapter_hier_path}/Dig_06_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_06_Ch1 Dig_06_Ch1
-
-
-
-# Dig_07_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_07_Ch1 Dig_07_Ch1
-
-
-
-
-
-set d1_io_07_slice_path ${adapter_hier_path}/d1_io_07_slice
-uz_pw_io_create_xlslice $d1_io_07_slice_path 30 7
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_07_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_07_slice_path/Dout ${adapter_hier_path}/Dig_07_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_07_Ch1 Dig_07_Ch1
-
-
-
-# Dig_08_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_08_Ch1 Dig_08_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_08_Ch1 ${io_gpio_i_concat_path}/In8
-
-
-
-
-
-
-
-
-# Dig_09_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_09_Ch1 Dig_09_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_09_Ch1 ${io_gpio_i_concat_path}/In9
-
-
-
-
-
-
-
-
-# Dig_10_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_10_Ch1 Dig_10_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_10_Ch1 ${io_gpio_i_concat_path}/In10
-
-
-
-
-
-
-
-
-# Dig_11_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_11_Ch1 Dig_11_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_11_Ch1 ${io_gpio_i_concat_path}/In11
-
-
-
-
-
-
-
-
-# Dig_12_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_12_Ch1 Dig_12_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_12_Ch1 ${io_gpio_i_concat_path}/In12
-
-
-
-
-
-
-
-
-# Dig_13_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_13_Ch1 Dig_13_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_13_Ch1 ${io_gpio_i_concat_path}/In13
-
-
-
-
-
-
-
-
-# Dig_14_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_14_Ch1 Dig_14_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_14_Ch1 ${io_gpio_i_concat_path}/In14
-
-
-
-
-
-
-
-
-# Dig_15_Ch1: RX, AXI GPIO
-
-
-
-uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_15_Ch1 Dig_15_Ch1
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/Dig_15_Ch1 ${io_gpio_i_concat_path}/In15
-
-
-
-
-
-
-
-
-# Dig_16_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_16_Ch1 Dig_16_Ch1
-
-
-
-
-
-set d1_io_16_slice_path ${adapter_hier_path}/d1_io_16_slice
-uz_pw_io_create_xlslice $d1_io_16_slice_path 30 16
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_16_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_16_slice_path/Dout ${adapter_hier_path}/Dig_16_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_16_Ch1 Dig_16_Ch1
-
-
-
-# Dig_17_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_17_Ch1 Dig_17_Ch1
-
-
-
-
-
-set d1_io_17_slice_path ${adapter_hier_path}/d1_io_17_slice
-uz_pw_io_create_xlslice $d1_io_17_slice_path 30 17
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_17_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_17_slice_path/Dout ${adapter_hier_path}/Dig_17_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_17_Ch1 Dig_17_Ch1
-
-
-
-# Dig_18_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_18_Ch1 Dig_18_Ch1
-
-
-
-
-
-set d1_io_18_slice_path ${adapter_hier_path}/d1_io_18_slice
-uz_pw_io_create_xlslice $d1_io_18_slice_path 30 18
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_18_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_18_slice_path/Dout ${adapter_hier_path}/Dig_18_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_18_Ch1 Dig_18_Ch1
-
-
-
-# Dig_19_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_19_Ch1 Dig_19_Ch1
-
-
-
-
-
-set d1_io_19_slice_path ${adapter_hier_path}/d1_io_19_slice
-uz_pw_io_create_xlslice $d1_io_19_slice_path 30 19
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_19_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_19_slice_path/Dout ${adapter_hier_path}/Dig_19_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_19_Ch1 Dig_19_Ch1
-
-
-
-# Dig_20_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_20_Ch1 Dig_20_Ch1
-
-
-
-
-
-set d1_io_20_slice_path ${adapter_hier_path}/d1_io_20_slice
-uz_pw_io_create_xlslice $d1_io_20_slice_path 30 20
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_20_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_20_slice_path/Dout ${adapter_hier_path}/Dig_20_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_20_Ch1 Dig_20_Ch1
-
-
-
-# Dig_21_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_21_Ch1 Dig_21_Ch1
-
-
-
-
-
-set d1_io_21_slice_path ${adapter_hier_path}/d1_io_21_slice
-uz_pw_io_create_xlslice $d1_io_21_slice_path 30 21
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_21_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_21_slice_path/Dout ${adapter_hier_path}/Dig_21_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_21_Ch1 Dig_21_Ch1
-
-
-
-# Dig_22_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_22_Ch1 Dig_22_Ch1
-
-
-
-
-
-set d1_io_22_slice_path ${adapter_hier_path}/d1_io_22_slice
-uz_pw_io_create_xlslice $d1_io_22_slice_path 30 22
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_22_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_22_slice_path/Dout ${adapter_hier_path}/Dig_22_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_22_Ch1 Dig_22_Ch1
-
-
-
-# Dig_23_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_23_Ch1 Dig_23_Ch1
-
-
-
-
-
-set d1_io_23_slice_path ${adapter_hier_path}/d1_io_23_slice
-uz_pw_io_create_xlslice $d1_io_23_slice_path 30 23
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_23_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_23_slice_path/Dout ${adapter_hier_path}/Dig_23_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_23_Ch1 Dig_23_Ch1
-
-
-
-# Dig_24_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_24_Ch1 Dig_24_Ch1
-
-
-
-
-
-set d1_io_24_slice_path ${adapter_hier_path}/d1_io_24_slice
-uz_pw_io_create_xlslice $d1_io_24_slice_path 30 24
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_24_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_24_slice_path/Dout ${adapter_hier_path}/Dig_24_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_24_Ch1 Dig_24_Ch1
-
-
-
-# Dig_25_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_25_Ch1 Dig_25_Ch1
-
-
-
-
-
-set d1_io_25_slice_path ${adapter_hier_path}/d1_io_25_slice
-uz_pw_io_create_xlslice $d1_io_25_slice_path 30 25
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_25_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_25_slice_path/Dout ${adapter_hier_path}/Dig_25_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_25_Ch1 Dig_25_Ch1
-
-
-
-# Dig_26_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_26_Ch1 Dig_26_Ch1
-
-
-
-
-
-set d1_io_26_slice_path ${adapter_hier_path}/d1_io_26_slice
-uz_pw_io_create_xlslice $d1_io_26_slice_path 30 26
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_26_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_26_slice_path/Dout ${adapter_hier_path}/Dig_26_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_26_Ch1 Dig_26_Ch1
-
-
-
-# Dig_27_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_27_Ch1 Dig_27_Ch1
-
-
-
-
-
-set d1_io_27_slice_path ${adapter_hier_path}/d1_io_27_slice
-uz_pw_io_create_xlslice $d1_io_27_slice_path 30 27
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_27_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_27_slice_path/Dout ${adapter_hier_path}/Dig_27_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_27_Ch1 Dig_27_Ch1
-
-
-
-# Dig_28_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_28_Ch1 Dig_28_Ch1
-
-
-
-
-
-set d1_io_28_slice_path ${adapter_hier_path}/d1_io_28_slice
-uz_pw_io_create_xlslice $d1_io_28_slice_path 30 28
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_28_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_28_slice_path/Dout ${adapter_hier_path}/Dig_28_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_28_Ch1 Dig_28_Ch1
-
-
-
-# Dig_29_Ch1: TX, AXI GPIO
-
-uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_29_Ch1 Dig_29_Ch1
-
-
-
-
-
-set d1_io_29_slice_path ${adapter_hier_path}/d1_io_29_slice
-uz_pw_io_create_xlslice $d1_io_29_slice_path 30 29
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_path}/gpio_io_o $d1_io_29_slice_path/Din
-uz_pw_connect_pin_pair_if_unconnected $d1_io_29_slice_path/Dout ${adapter_hier_path}/Dig_29_Ch1
-
-
-
-
-
-
-
-uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_29_Ch1 Dig_29_Ch1
-
-
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In0
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In1
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In2
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In3
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In4
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In5
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In6
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In7
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In16
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In17
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In18
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In19
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In20
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In21
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In22
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In23
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In24
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In25
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In26
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In27
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In28
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_zero_path}/dout ${io_gpio_i_concat_path}/In29
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${io_gpio_i_concat_path}/dout ${io_gpio_path}/gpio_io_i
 
 
 
@@ -3412,60 +2649,298 @@ uz_pw_apply_slot_constraints D1 [list "Digital_D1_packed.xdc" "Digital_AdapterBo
 
 
 
-# Vitis driver hook: uz_axi_gpio
-
 
 # -----------------------------------------------------------------------------
-# D1: TX output from FPGA
+# D1: EnDat
 # -----------------------------------------------------------------------------
 
 
+puts "Adding EnDat for slot D1"
+
+set adapter_parent_hier uz_digital_adapter
+set adapter_hier_name D1_adapter
+set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
+
+uz_pw_create_hier_if_missing ${adapter_parent_hier}
+uz_pw_create_hier_if_missing ${adapter_hier_path}
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/resetn
+
+
+set uz_endat_interface_d1_channel_1_path ${adapter_hier_path}/uz_endat_interface_d1_channel_1
+if {[llength [get_bd_cells -quiet $uz_endat_interface_d1_channel_1_path]] == 0} {
+
+
+  set uz_endat_interface_d1_channel_1 [create_bd_cell -type ip -vlnv xilinx.com:ip:uz_endat_interface $uz_endat_interface_d1_channel_1_path]
+
+} else {
+  puts "Reusing existing IP $uz_endat_interface_d1_channel_1_path"
+}
+# Module: uz_endat_interface
+
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${uz_endat_interface_d1_channel_1_path}/AXI4_Lite_ACLK
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${uz_endat_interface_d1_channel_1_path}/IPCORE_CLK
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/resetn ${uz_endat_interface_d1_channel_1_path}/AXI4_Lite_ARESETN
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/resetn ${uz_endat_interface_d1_channel_1_path}/IPCORE_RESETN
 
 
 
 
 
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_clk_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_clk_d1_ch1 "" ""
+
+
+uz_pw_create_bd_port_if_missing O Dig_15_Ch1 "" ""
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/endat_clk ${adapter_hier_path}/endat_clk_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_clk_d1_ch1 ${adapter_parent_hier}/endat_clk_d1_ch1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_clk_d1_ch1 Dig_15_Ch1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_mode_data_out_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_mode_data_out_d1_ch1 "" ""
+
+
+uz_pw_create_bd_port_if_missing O Dig_08_Ch1 "" ""
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/endat_mode_data_out ${adapter_hier_path}/endat_mode_data_out_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_mode_data_out_d1_ch1 ${adapter_parent_hier}/endat_mode_data_out_d1_ch1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_mode_data_out_d1_ch1 Dig_08_Ch1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/RW_clk_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/RW_clk_d1_ch1 "" ""
+
+
+uz_pw_create_bd_port_if_missing O Dig_17_Ch1 "" ""
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/RW_clk ${adapter_hier_path}/RW_clk_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_clk_d1_ch1 ${adapter_parent_hier}/RW_clk_d1_ch1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/RW_clk_d1_ch1 Dig_17_Ch1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/RW_data_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/RW_data_d1_ch1 "" ""
+
+
+uz_pw_create_bd_port_if_missing O Dig_11_Ch1 "" ""
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/RW_data ${adapter_hier_path}/RW_data_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_data_d1_ch1 ${adapter_parent_hier}/RW_data_d1_ch1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/RW_data_d1_ch1 Dig_11_Ch1
+
+
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/endat_data_in_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/endat_data_in_d1_ch1 "" ""
+
+
+uz_pw_create_bd_port_if_missing I Dig_07_Ch1 "" ""
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_data_in_d1_ch1 ${adapter_hier_path}/uz_endat_interface_d1_channel_1/endat_data_in
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/endat_data_in_d1_ch1 ${adapter_hier_path}/endat_data_in_d1_ch1
+
+
+uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_data_in_d1_ch1 Dig_07_Ch1
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_transaction_done_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_transaction_done_d1_ch1 "" ""
 
 
 
-# -----------------------------------------------------------------------------
-# D1: RX input to FPGA
-# -----------------------------------------------------------------------------
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/endat_transaction_done ${adapter_hier_path}/endat_transaction_done_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_transaction_done_d1_ch1 ${adapter_parent_hier}/endat_transaction_done_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_raw_single_turn_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_raw_single_turn_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/position_raw_single_turn ${adapter_hier_path}/position_raw_single_turn_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_single_turn_d1_ch1 ${adapter_parent_hier}/position_raw_single_turn_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_raw_multi_turn_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_raw_multi_turn_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/position_raw_multi_turn ${adapter_hier_path}/position_raw_multi_turn_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_multi_turn_d1_ch1 ${adapter_parent_hier}/position_raw_multi_turn_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/CRC_raw_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/CRC_raw_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/CRC_raw ${adapter_hier_path}/CRC_raw_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/CRC_raw_d1_ch1 ${adapter_parent_hier}/CRC_raw_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_received_data_out_SH_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_received_data_out_SH_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/endat_received_data_out_SH ${adapter_hier_path}/endat_received_data_out_SH_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_received_data_out_SH_d1_ch1 ${adapter_parent_hier}/endat_received_data_out_SH_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_mech_SI_single_turn_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_mech_SI_single_turn_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/position_mech_SI_single_turn ${adapter_hier_path}/position_mech_SI_single_turn_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_mech_SI_single_turn_d1_ch1 ${adapter_parent_hier}/position_mech_SI_single_turn_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_el_SI_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_el_SI_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/position_el_SI ${adapter_hier_path}/position_el_SI_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_el_SI_d1_ch1 ${adapter_parent_hier}/position_el_SI_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_multi_turn_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_multi_turn_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/position_multi_turn ${adapter_hier_path}/position_multi_turn_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_multi_turn_d1_ch1 ${adapter_parent_hier}/position_multi_turn_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_mech_SI_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_mech_SI_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/speed_mech_SI ${adapter_hier_path}/speed_mech_SI_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_SI_d1_ch1 ${adapter_parent_hier}/speed_mech_SI_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_el_SI_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_el_SI_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/speed_el_SI ${adapter_hier_path}/speed_el_SI_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_el_SI_d1_ch1 ${adapter_parent_hier}/speed_el_SI_d1_ch1
+
+
+
+uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_mech_rpm_d1_ch1 "" ""
+
+uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_mech_rpm_d1_ch1 "" ""
+
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d1_channel_1/speed_mech_rpm ${adapter_hier_path}/speed_mech_rpm_d1_ch1
+
+
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_rpm_d1_ch1 ${adapter_parent_hier}/speed_mech_rpm_d1_ch1
 
 
 
 
 
+uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/trigger_endat_read_d1_ch1
+uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/trigger_endat_read_d1_ch1
+uz_pw_connect_upper_boundary_net_if_unconnected uz_system/trigger_conversions ${adapter_parent_hier}/trigger_endat_read_d1_ch1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/trigger_endat_read_d1_ch1 ${adapter_hier_path}/trigger_endat_read_d1_ch1
+uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/trigger_endat_read_d1_ch1 ${adapter_hier_path}/uz_endat_interface_d1_channel_1/trigger_endat_read
 
 
 
 
 
-# -----------------------------------------------------------------------------
-# D1: TX output from FPGA
-# -----------------------------------------------------------------------------
+# Vitis driver hook: uz_endat_interface
 
 
+# Channel 2 IP core: Not used
 
-
-
-
-
-
-
-
-# -----------------------------------------------------------------------------
-# D1: TX output from FPGA
-# -----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
+# Channel 3 IP core: Not used
 
 # -----------------------------------------------------------------------------
 # D2: UZ_D 3-Phase Inverter
@@ -4063,531 +3538,778 @@ uz_pw_apply_slot_constraints D3 [list "Digital_D3_packed.xdc" "Digital_AdapterBo
 
 
 # -----------------------------------------------------------------------------
-# D4: UZ_D Resolver
+# D4: UZ_D Voltage 3V3/5V
 # -----------------------------------------------------------------------------
 
-# NOTE: Creates the selected Dx_adapter hierarchy for the resolver IP cores.
+# NOTE: Routes all 30 voltage IO pins according to the four hardware direction groups.
 
-# NOTE: Routes the AD2S1210 SPI and control signals from the slot-specific digital adapter pins.
+# NOTE: The selected group directions determine the slot CPLD program.
 
-# NOTE: Connects sample_trigger to a configurable trigger source.
-
-# NOTE: Optionally instantiates one resolver PL interface IP core per resolver channel.
+# NOTE: Instantiates one AXI GPIO when at least one IO pin is AXI-backed.
 
 # NOTE: Uses single-pin D-slot constraints instead of the packed constraint file.
 
 
+puts "Adding UZ_D Voltage 3V3/5V for slot D4"
+
+# IO summary: 30 pins: 16 TX, 14 RX, AXI GPIO not used
+
+
 set adapter_parent_hier uz_digital_adapter
 set adapter_hier_name D4_adapter
-set adapter_hier_path "${adapter_parent_hier}/${adapter_hier_name}"
-set adapter_clock_pin clk
-set adapter_resetn_pin resetn
+set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
 
-# Recreate the selected slot content so the wizard configuration wins over stale IP.
-uz_pw_delete_child_cells_in_slot_hierarchy $adapter_hier_path
-uz_pw_create_hier_if_missing $adapter_parent_hier
-uz_pw_create_hier_if_missing $adapter_hier_path
+uz_pw_create_hier_if_missing ${adapter_parent_hier}
+uz_pw_create_hier_if_missing ${adapter_hier_path}
 
-uz_pw_delete_pin_if_exists "${adapter_hier_path}/aclk"
-uz_pw_delete_pin_if_exists "${adapter_hier_path}/aresetn"
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_clock_pin
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I $adapter_resetn_pin
+# Remove known non-slot-prefixed pins from previous D-slot card templates.
+# Do not bulk-delete hierarchy pins here because AXI interface scalar pins are
+# represented as BD pins and cannot be removed individually.
+uz_pw_delete_pin_if_exists ${adapter_hier_path}/Enable_Gate
+uz_pw_delete_pin_if_exists ${adapter_hier_path}/Gate_Signals_2L
 
-proc uz_pw_resolver_create_input_path {adapter_parent_hier adapter_hier_path internal_name external_name target_pin} {
-  uz_pw_create_bd_port_if_missing I $external_name
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $internal_name
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path I $internal_name
-  uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
-  uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
-  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" $target_pin
+uz_pw_delete_pin_if_exists ${adapter_hier_path}/D4_io_pwm_source_pwm_2l_0
+
+
+proc uz_pw_io_create_slot_signal {direction adapter_parent_hier adapter_hier_path internal_name external_name {left ""} {right ""}} {
+  uz_pw_create_bd_port_if_missing $direction $external_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier $direction $internal_name "$left" "$right"
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path $direction $internal_name "$left" "$right"
+
+  if {$direction ne "O"} {
+    uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
+    uz_pw_connect_pin_pair_if_unconnected "${adapter_parent_hier}/${internal_name}" "${adapter_hier_path}/${internal_name}"
+  }
 }
 
-proc uz_pw_resolver_create_output_path {adapter_parent_hier adapter_hier_path internal_name external_name source_pin} {
-  uz_pw_create_bd_port_if_missing O $external_name
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier O $internal_name
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path O $internal_name
-  uz_pw_connect_pin_pair_if_unconnected $source_pin "${adapter_hier_path}/${internal_name}"
-  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${internal_name}"
+proc uz_pw_io_connect_slot_output {adapter_parent_hier adapter_hier_path internal_name external_name} {
+  uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${internal_name}" "${adapter_parent_hier}/${internal_name}"
   uz_pw_connect_port_if_unconnected "${adapter_parent_hier}/${internal_name}" $external_name
 }
 
-proc uz_pw_resolver_create_pl_output_path {adapter_parent_hier adapter_hier_path boundary_name source_pin left right} {
-  uz_pw_create_hier_pin_if_missing $adapter_hier_path O $boundary_name $left $right
-  uz_pw_create_hier_pin_if_missing $adapter_parent_hier O $boundary_name $left $right
-  uz_pw_connect_pin_pair_if_unconnected $source_pin "${adapter_hier_path}/${boundary_name}"
-  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_hier_path}/${boundary_name}" "${adapter_parent_hier}/${boundary_name}"
+proc uz_pw_io_create_xlslice {cell_path din_width bit_index} {
+  uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlslice
+  uz_pw_set_property_dict_if_objects [list CONFIG.DIN_WIDTH $din_width CONFIG.DIN_FROM $bit_index CONFIG.DIN_TO $bit_index CONFIG.DOUT_WIDTH {1}] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
-proc uz_pw_resolver_create_xlconstant {cell_path width value} {
+proc uz_pw_io_create_xlconstant {cell_path width value} {
   uz_pw_create_ip_cell_if_missing $cell_path xilinx.com:ip:xlconstant
   uz_pw_set_property_dict_if_objects [list CONFIG.CONST_WIDTH $width CONFIG.CONST_VAL $value] [get_bd_cells -quiet $cell_path] $cell_path
 }
 
 
-set resolver_ip_1_path "${adapter_hier_path}/resolver_ip_d4_1"
-uz_pw_create_ip_cell_if_missing $resolver_ip_1_path ki_power:user:Resolver_Interface_v1_0:1.0
 
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${resolver_ip_1_path}/s00_axi_aclk"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${resolver_ip_1_path}/s00_axi_aresetn"
 
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_n_sample Dig_00_Ch4 "${resolver_ip_1_path}/AD2S1210_n_sample"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_sdo Dig_01_Ch4 "${resolver_ip_1_path}/SPI_MOSI"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_n_fsync Dig_02_Ch4 "${resolver_ip_1_path}/AD2S1210_n_fsync"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_sclk Dig_03_Ch4 "${resolver_ip_1_path}/SPI_SCLK"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_n_reset Dig_04_Ch4 "${resolver_ip_1_path}/AD2S1210_n_reset"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_a1 Dig_05_Ch4 "${resolver_ip_1_path}/AD2S1210_mode_A1"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_a0 Dig_06_Ch4 "${resolver_ip_1_path}/AD2S1210_mode_A0"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_cs Dig_07_Ch4 "${resolver_ip_1_path}/SPI_SS"
-uz_pw_resolver_create_input_path $adapter_parent_hier $adapter_hier_path D4_resolver_1_sdi Dig_08_Ch4 "${resolver_ip_1_path}/SPI_MISO"
 
-set sample_trigger_source_pin_1 "uz_system/trigger_conversions"
-if {$sample_trigger_source_pin_1 eq "" || [llength [get_bd_pins -quiet $sample_trigger_source_pin_1]] == 0} {
-  puts "WARNING: sample_trigger source '$sample_trigger_source_pin_1' not found for D4 resolver channel 1; using zero fallback."
-  set sample_trigger_default_path_1 "${adapter_hier_path}/D4_resolver_sample_trigger_1_default_zero"
-  uz_pw_resolver_create_xlconstant $sample_trigger_default_path_1 1 0
-  set sample_trigger_source_pin_1 "${sample_trigger_default_path_1}/dout"
+
+
+
+set d4_io_pwm_source_pwm_2l_0 "uz_pwm/Gate_Signals_2L_0"
+if {$d4_io_pwm_source_pwm_2l_0 eq "" || [llength [get_bd_pins -quiet $d4_io_pwm_source_pwm_2l_0]] == 0} {
+  puts "WARNING: PWM vector source '$d4_io_pwm_source_pwm_2l_0' not found for D4 IO card; using zero fallback."
+  set d4_io_pwm_source_pwm_2l_0_zero_path "${adapter_hier_path}/D4_io_pwm_source_pwm_2l_0_zero"
+  uz_pw_io_create_xlconstant $d4_io_pwm_source_pwm_2l_0_zero_path 6 0x00
+  set d4_io_pwm_source_pwm_2l_0 "${d4_io_pwm_source_pwm_2l_0_zero_path}/dout"
+} else {
+  uz_pw_create_hier_pin_if_missing $adapter_parent_hier I D4_io_pwm_source_pwm_2l_0 5 0
+  uz_pw_create_hier_pin_if_missing $adapter_hier_path I D4_io_pwm_source_pwm_2l_0 5 0
+  uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 "${adapter_parent_hier}/D4_io_pwm_source_pwm_2l_0"
+  uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/D4_io_pwm_source_pwm_2l_0" "${adapter_hier_path}/D4_io_pwm_source_pwm_2l_0"
+  set d4_io_pwm_source_pwm_2l_0 "${adapter_hier_path}/D4_io_pwm_source_pwm_2l_0"
 }
 
-set sample_trigger_parent_pin "D4_resolver_sample_trigger_1"
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $sample_trigger_parent_pin
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I $sample_trigger_parent_pin
-uz_pw_connect_pin_pair_if_unconnected $sample_trigger_source_pin_1 "${adapter_parent_hier}/${sample_trigger_parent_pin}"
-uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${sample_trigger_parent_pin}" "${adapter_hier_path}/${sample_trigger_parent_pin}"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${sample_trigger_parent_pin}" "${resolver_ip_1_path}/sample_trigger"
 
 
-set resolver_pl_1_path "${adapter_hier_path}/resolver_pl_interface_d4_1"
-uz_pw_create_ip_cell_if_missing $resolver_pl_1_path xilinx.com:ip:uz_resolver_pl_interface:1.0
+# Dig_00_Ch4: TX, PWM, pwm_2l_0 s0_out
 
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${resolver_pl_1_path}/IPCORE_CLK"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${resolver_pl_1_path}/AXI4_Lite_ACLK"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${resolver_pl_1_path}/IPCORE_RESETN"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${resolver_pl_1_path}/AXI4_Lite_ARESETN"
-uz_pw_connect_pin_pair_if_unconnected "${resolver_ip_1_path}/position_out_m" "${resolver_pl_1_path}/position_raw"
-uz_pw_connect_pin_pair_if_unconnected "${resolver_ip_1_path}/velocity_out_m" "${resolver_pl_1_path}/velocity_raw"
-uz_pw_connect_pin_pair_if_unconnected "${resolver_ip_1_path}/valid_m" "${resolver_pl_1_path}/trigger"
-
-
-set resolver_ip_2_path "${adapter_hier_path}/resolver_ip_d4_2"
-uz_pw_create_ip_cell_if_missing $resolver_ip_2_path ki_power:user:Resolver_Interface_v1_0:1.0
-
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${resolver_ip_2_path}/s00_axi_aclk"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${resolver_ip_2_path}/s00_axi_aresetn"
-
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_n_sample Dig_09_Ch4 "${resolver_ip_2_path}/AD2S1210_n_sample"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_sdo Dig_10_Ch4 "${resolver_ip_2_path}/SPI_MOSI"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_n_fsync Dig_11_Ch4 "${resolver_ip_2_path}/AD2S1210_n_fsync"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_sclk Dig_12_Ch4 "${resolver_ip_2_path}/SPI_SCLK"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_n_reset Dig_13_Ch4 "${resolver_ip_2_path}/AD2S1210_n_reset"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_a1 Dig_14_Ch4 "${resolver_ip_2_path}/AD2S1210_mode_A1"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_a0 Dig_15_Ch4 "${resolver_ip_2_path}/AD2S1210_mode_A0"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_cs Dig_16_Ch4 "${resolver_ip_2_path}/SPI_SS"
-uz_pw_resolver_create_input_path $adapter_parent_hier $adapter_hier_path D4_resolver_2_sdi Dig_17_Ch4 "${resolver_ip_2_path}/SPI_MISO"
-
-set sample_trigger_source_pin_2 "uz_system/trigger_conversions"
-if {$sample_trigger_source_pin_2 eq "" || [llength [get_bd_pins -quiet $sample_trigger_source_pin_2]] == 0} {
-  puts "WARNING: sample_trigger source '$sample_trigger_source_pin_2' not found for D4 resolver channel 2; using zero fallback."
-  set sample_trigger_default_path_2 "${adapter_hier_path}/D4_resolver_sample_trigger_2_default_zero"
-  uz_pw_resolver_create_xlconstant $sample_trigger_default_path_2 1 0
-  set sample_trigger_source_pin_2 "${sample_trigger_default_path_2}/dout"
-}
-
-set sample_trigger_parent_pin "D4_resolver_sample_trigger_2"
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $sample_trigger_parent_pin
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I $sample_trigger_parent_pin
-uz_pw_connect_pin_pair_if_unconnected $sample_trigger_source_pin_2 "${adapter_parent_hier}/${sample_trigger_parent_pin}"
-uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${sample_trigger_parent_pin}" "${adapter_hier_path}/${sample_trigger_parent_pin}"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${sample_trigger_parent_pin}" "${resolver_ip_2_path}/sample_trigger"
-
-
-
-set resolver_ip_3_path "${adapter_hier_path}/resolver_ip_d4_3"
-uz_pw_create_ip_cell_if_missing $resolver_ip_3_path ki_power:user:Resolver_Interface_v1_0:1.0
-
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_clock_pin}" "${resolver_ip_3_path}/s00_axi_aclk"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${adapter_resetn_pin}" "${resolver_ip_3_path}/s00_axi_aresetn"
-
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_n_sample Dig_18_Ch4 "${resolver_ip_3_path}/AD2S1210_n_sample"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_sdo Dig_19_Ch4 "${resolver_ip_3_path}/SPI_MOSI"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_n_fsync Dig_20_Ch4 "${resolver_ip_3_path}/AD2S1210_n_fsync"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_sclk Dig_21_Ch4 "${resolver_ip_3_path}/SPI_SCLK"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_n_reset Dig_22_Ch4 "${resolver_ip_3_path}/AD2S1210_n_reset"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_a1 Dig_23_Ch4 "${resolver_ip_3_path}/AD2S1210_mode_A1"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_a0 Dig_24_Ch4 "${resolver_ip_3_path}/AD2S1210_mode_A0"
-uz_pw_resolver_create_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_cs Dig_25_Ch4 "${resolver_ip_3_path}/SPI_SS"
-uz_pw_resolver_create_input_path $adapter_parent_hier $adapter_hier_path D4_resolver_3_sdi Dig_26_Ch4 "${resolver_ip_3_path}/SPI_MISO"
-
-set sample_trigger_source_pin_3 "uz_system/trigger_conversions"
-if {$sample_trigger_source_pin_3 eq "" || [llength [get_bd_pins -quiet $sample_trigger_source_pin_3]] == 0} {
-  puts "WARNING: sample_trigger source '$sample_trigger_source_pin_3' not found for D4 resolver channel 3; using zero fallback."
-  set sample_trigger_default_path_3 "${adapter_hier_path}/D4_resolver_sample_trigger_3_default_zero"
-  uz_pw_resolver_create_xlconstant $sample_trigger_default_path_3 1 0
-  set sample_trigger_source_pin_3 "${sample_trigger_default_path_3}/dout"
-}
-
-set sample_trigger_parent_pin "D4_resolver_sample_trigger_3"
-uz_pw_create_hier_pin_if_missing $adapter_parent_hier I $sample_trigger_parent_pin
-uz_pw_create_hier_pin_if_missing $adapter_hier_path I $sample_trigger_parent_pin
-uz_pw_connect_pin_pair_if_unconnected $sample_trigger_source_pin_3 "${adapter_parent_hier}/${sample_trigger_parent_pin}"
-uz_pw_connect_upper_boundary_net_if_unconnected "${adapter_parent_hier}/${sample_trigger_parent_pin}" "${adapter_hier_path}/${sample_trigger_parent_pin}"
-uz_pw_connect_pin_pair_if_unconnected "${adapter_hier_path}/${sample_trigger_parent_pin}" "${resolver_ip_3_path}/sample_trigger"
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_00_Ch4 Dig_00_Ch4
 
 
 
 
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_position_mech_raw "${resolver_pl_1_path}/position_mech_raw" 15 0
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_position_mech_2pi "${resolver_pl_1_path}/position_mech_2pi" 26 0
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_position_el_2pi "${resolver_pl_1_path}/position_el_2pi" 26 0
+set d4_io_00_pwm_slice_path ${adapter_hier_path}/d4_io_00_pwm_slice
+uz_pw_io_create_xlslice $d4_io_00_pwm_slice_path 6 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_00_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_00_pwm_slice_path/Dout ${adapter_hier_path}/Dig_00_Ch4
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_omega_mech_rad_s "${resolver_pl_1_path}/omega_mech_rad_s" 23 0
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_n_mech_rpm "${resolver_pl_1_path}/n_mech_rpm" 23 0
 
-uz_pw_resolver_create_pl_output_path $adapter_parent_hier $adapter_hier_path D4_resolver_pl_1_done "${resolver_pl_1_path}/done" "" ""
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_00_Ch4 Dig_00_Ch4
+
+
+
+# Dig_01_Ch4: TX, PWM, pwm_2l_0 s1_out
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_01_Ch4 Dig_01_Ch4
+
+
+
+
+
+
+
+set d4_io_01_pwm_slice_path ${adapter_hier_path}/d4_io_01_pwm_slice
+uz_pw_io_create_xlslice $d4_io_01_pwm_slice_path 6 1
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_01_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_01_pwm_slice_path/Dout ${adapter_hier_path}/Dig_01_Ch4
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_01_Ch4 Dig_01_Ch4
+
+
+
+# Dig_02_Ch4: TX, PWM, pwm_2l_0 s2_out
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_02_Ch4 Dig_02_Ch4
+
+
+
+
+
+
+
+set d4_io_02_pwm_slice_path ${adapter_hier_path}/d4_io_02_pwm_slice
+uz_pw_io_create_xlslice $d4_io_02_pwm_slice_path 6 2
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_02_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_02_pwm_slice_path/Dout ${adapter_hier_path}/Dig_02_Ch4
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_02_Ch4 Dig_02_Ch4
+
+
+
+# Dig_03_Ch4: TX, PWM, pwm_2l_0 s3_out
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_03_Ch4 Dig_03_Ch4
+
+
+
+
+
+
+
+set d4_io_03_pwm_slice_path ${adapter_hier_path}/d4_io_03_pwm_slice
+uz_pw_io_create_xlslice $d4_io_03_pwm_slice_path 6 3
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_03_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_03_pwm_slice_path/Dout ${adapter_hier_path}/Dig_03_Ch4
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_03_Ch4 Dig_03_Ch4
+
+
+
+# Dig_04_Ch4: TX, PWM, pwm_2l_0 s3_out
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_04_Ch4 Dig_04_Ch4
+
+
+
+
+
+
+
+set d4_io_04_pwm_slice_path ${adapter_hier_path}/d4_io_04_pwm_slice
+uz_pw_io_create_xlslice $d4_io_04_pwm_slice_path 6 3
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_04_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_04_pwm_slice_path/Dout ${adapter_hier_path}/Dig_04_Ch4
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_04_Ch4 Dig_04_Ch4
+
+
+
+# Dig_05_Ch4: TX, PWM, pwm_2l_0 s5_out
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_05_Ch4 Dig_05_Ch4
+
+
+
+
+
+
+
+set d4_io_05_pwm_slice_path ${adapter_hier_path}/d4_io_05_pwm_slice
+uz_pw_io_create_xlslice $d4_io_05_pwm_slice_path 6 5
+uz_pw_connect_pin_pair_if_unconnected $d4_io_pwm_source_pwm_2l_0 $d4_io_05_pwm_slice_path/Din
+uz_pw_connect_pin_pair_if_unconnected $d4_io_05_pwm_slice_path/Dout ${adapter_hier_path}/Dig_05_Ch4
+
+
+
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_05_Ch4 Dig_05_Ch4
+
+
+
+# Dig_06_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_06_Ch4 Dig_06_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_06_const_path ${adapter_hier_path}/d4_io_06_const
+uz_pw_io_create_xlconstant $d4_io_06_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_06_const_path/dout ${adapter_hier_path}/Dig_06_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_06_Ch4 Dig_06_Ch4
+
+
+
+# Dig_07_Ch4: TX, Constant, High
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_07_Ch4 Dig_07_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_07_const_path ${adapter_hier_path}/d4_io_07_const
+uz_pw_io_create_xlconstant $d4_io_07_const_path 1 1
+uz_pw_connect_pin_pair_if_unconnected $d4_io_07_const_path/dout ${adapter_hier_path}/Dig_07_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_07_Ch4 Dig_07_Ch4
+
+
+
+# Dig_08_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_08_Ch4 Dig_08_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_09_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_09_Ch4 Dig_09_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_10_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_10_Ch4 Dig_10_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_11_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_11_Ch4 Dig_11_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_12_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_12_Ch4 Dig_12_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_13_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_13_Ch4 Dig_13_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_14_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_14_Ch4 Dig_14_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_15_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_15_Ch4 Dig_15_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_16_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_16_Ch4 Dig_16_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_16_const_path ${adapter_hier_path}/d4_io_16_const
+uz_pw_io_create_xlconstant $d4_io_16_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_16_const_path/dout ${adapter_hier_path}/Dig_16_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_16_Ch4 Dig_16_Ch4
+
+
+
+# Dig_17_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_17_Ch4 Dig_17_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_17_const_path ${adapter_hier_path}/d4_io_17_const
+uz_pw_io_create_xlconstant $d4_io_17_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_17_const_path/dout ${adapter_hier_path}/Dig_17_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_17_Ch4 Dig_17_Ch4
+
+
+
+# Dig_18_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_18_Ch4 Dig_18_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_18_const_path ${adapter_hier_path}/d4_io_18_const
+uz_pw_io_create_xlconstant $d4_io_18_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_18_const_path/dout ${adapter_hier_path}/Dig_18_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_18_Ch4 Dig_18_Ch4
+
+
+
+# Dig_19_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_19_Ch4 Dig_19_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_19_const_path ${adapter_hier_path}/d4_io_19_const
+uz_pw_io_create_xlconstant $d4_io_19_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_19_const_path/dout ${adapter_hier_path}/Dig_19_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_19_Ch4 Dig_19_Ch4
+
+
+
+# Dig_20_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_20_Ch4 Dig_20_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_20_const_path ${adapter_hier_path}/d4_io_20_const
+uz_pw_io_create_xlconstant $d4_io_20_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_20_const_path/dout ${adapter_hier_path}/Dig_20_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_20_Ch4 Dig_20_Ch4
+
+
+
+# Dig_21_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_21_Ch4 Dig_21_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_21_const_path ${adapter_hier_path}/d4_io_21_const
+uz_pw_io_create_xlconstant $d4_io_21_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_21_const_path/dout ${adapter_hier_path}/Dig_21_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_21_Ch4 Dig_21_Ch4
+
+
+
+# Dig_22_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_22_Ch4 Dig_22_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_22_const_path ${adapter_hier_path}/d4_io_22_const
+uz_pw_io_create_xlconstant $d4_io_22_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_22_const_path/dout ${adapter_hier_path}/Dig_22_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_22_Ch4 Dig_22_Ch4
+
+
+
+# Dig_23_Ch4: TX, Constant, Low
+
+uz_pw_io_create_slot_signal O $adapter_parent_hier $adapter_hier_path Dig_23_Ch4 Dig_23_Ch4
+
+
+
+
+
+
+
+
+
+
+set d4_io_23_const_path ${adapter_hier_path}/d4_io_23_const
+uz_pw_io_create_xlconstant $d4_io_23_const_path 1 0
+uz_pw_connect_pin_pair_if_unconnected $d4_io_23_const_path/dout ${adapter_hier_path}/Dig_23_Ch4
+
+
+uz_pw_io_connect_slot_output $adapter_parent_hier $adapter_hier_path Dig_23_Ch4 Dig_23_Ch4
+
+
+
+# Dig_24_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_24_Ch4 Dig_24_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_25_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_25_Ch4 Dig_25_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_26_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_26_Ch4 Dig_26_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_27_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_27_Ch4 Dig_27_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_28_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_28_Ch4 Dig_28_Ch4
+
+
+
+
+
+
+
+
+
+
+
+# Dig_29_Ch4: RX, Top-level port
+
+
+
+uz_pw_io_create_slot_signal I $adapter_parent_hier $adapter_hier_path Dig_29_Ch4 Dig_29_Ch4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 uz_pw_apply_slot_constraints D4 [list "Digital_D4_packed.xdc" "Digital_AdapterBoard_D4.xdc"] [list "Digital_AdapterBoard_D4.xdc"]
 
 
-# Vitis driver hook: uz_resolverIP
+
+# Vitis driver hook: uz_axi_gpio
 
 
 # -----------------------------------------------------------------------------
-# D5: UZ_D Absolute Encoder
+# D4: TX output from FPGA
 # -----------------------------------------------------------------------------
 
-# NOTE: Instantiate one encoder IP core per enabled channel inside uz_user.
-
-# NOTE: Connect AXI4-Lite, 100 MHz clock and reset for every enabled channel.
-
-# NOTE: Connect channel triggers to the intended trigger source.
-
-# NOTE: D-slot channel mappings use Dig_XX_Chx names where x is the slot channel number.
-
-
-puts "Adding UZ_D Absolute Encoder for slot D5"
-
-set adapter_parent_hier uz_digital_adapter
-set adapter_hier_name D5_adapter
-set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
-
-uz_pw_create_hier_if_missing ${adapter_parent_hier}
-uz_pw_create_hier_if_missing ${adapter_hier_path}
-
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/resetn
 
 
 
 
 
-
-
-
-
-
-
-
-
-uz_pw_apply_slot_constraints D5 [list "Digital_D5_packed.xdc" "Digital_AdapterBoard_D5.xdc"] [list "Digital_AdapterBoard_D5.xdc"]
 
 
 
 
 # -----------------------------------------------------------------------------
-# D5: EnDat
+# D4: RX input to FPGA
 # -----------------------------------------------------------------------------
 
 
-puts "Adding EnDat for slot D5"
-
-set adapter_parent_hier uz_digital_adapter
-set adapter_hier_name D5_adapter
-set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
-
-uz_pw_create_hier_if_missing ${adapter_parent_hier}
-uz_pw_create_hier_if_missing ${adapter_hier_path}
-
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/clk
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/resetn
 
 
-set uz_endat_interface_d5_channel_1_path ${adapter_hier_path}/uz_endat_interface_d5_channel_1
-if {[llength [get_bd_cells -quiet $uz_endat_interface_d5_channel_1_path]] == 0} {
 
 
-  set uz_endat_interface_d5_channel_1 [create_bd_cell -type ip -vlnv xilinx.com:ip:uz_endat_interface $uz_endat_interface_d5_channel_1_path]
 
-} else {
-  puts "Reusing existing IP $uz_endat_interface_d5_channel_1_path"
+
+
+
+# -----------------------------------------------------------------------------
+# D4: TX output from FPGA
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# D4: RX input to FPGA
+# -----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# D5: No adapter board
+# -----------------------------------------------------------------------------
+
+puts "Removing adapter slot D5 because no adapter board is selected"
+
+set slot "D5"
+set adapter_hier_name "D5_adapter"
+set slot_cleanup_patterns [list "*D5*" "*d5*" "*_Ch5*"]
+set slot_constraint_names [list "Digital_D5_packed.xdc" "Digital_AdapterBoard_D5.xdc"]
+
+# Apply the slot-removal cleanup locally so the No adapter board workflow stays
+# isolated from adapter-card generation.
+uz_pw_delete_external_ports_for_slot $slot $slot_cleanup_patterns
+uz_pw_disable_slot_constraints $slot $slot_constraint_names
+
+foreach adapter_parent_hier [list uz_digital_adapter uz_analog_adapter] {
+  set adapter_hier_path ${adapter_parent_hier}/${adapter_hier_name}
+
+  if {[llength [get_bd_cells -quiet $adapter_hier_path]] == 0} {
+    puts "No existing adapter hierarchy found at $adapter_hier_path"
+    continue
+  }
+
+  puts "Deleting existing adapter hierarchy $adapter_hier_path"
+
+  foreach intf_pin [get_bd_intf_pins -quiet ${adapter_hier_path}/*] {
+    uz_pw_disconnect_intf_pin_from_all_nets $intf_pin
+  }
+
+  foreach pin [get_bd_pins -quiet ${adapter_hier_path}/*] {
+    uz_pw_disconnect_pin_from_all_nets $pin
+  }
+
+  catch {delete_bd_objs [get_bd_cells $adapter_hier_path]}
 }
-# Module: uz_endat_interface
 
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${uz_endat_interface_d5_channel_1_path}/AXI4_Lite_ACLK
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/clk ${uz_endat_interface_d5_channel_1_path}/IPCORE_CLK
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/resetn ${uz_endat_interface_d5_channel_1_path}/AXI4_Lite_ARESETN
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/resetn ${uz_endat_interface_d5_channel_1_path}/IPCORE_RESETN
-
-
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_clk_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_clk_d5_ch1 "" ""
-
-
-uz_pw_create_bd_port_if_missing O Dig_15_Ch5 "" ""
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/endat_clk ${adapter_hier_path}/endat_clk_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_clk_d5_ch1 ${adapter_parent_hier}/endat_clk_d5_ch1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_clk_d5_ch1 Dig_15_Ch5
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_mode_data_out_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_mode_data_out_d5_ch1 "" ""
-
-
-uz_pw_create_bd_port_if_missing O Dig_08_Ch5 "" ""
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/endat_mode_data_out ${adapter_hier_path}/endat_mode_data_out_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_mode_data_out_d5_ch1 ${adapter_parent_hier}/endat_mode_data_out_d5_ch1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_mode_data_out_d5_ch1 Dig_08_Ch5
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/RW_clk_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/RW_clk_d5_ch1 "" ""
-
-
-uz_pw_create_bd_port_if_missing O Dig_17_Ch5 "" ""
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/RW_clk ${adapter_hier_path}/RW_clk_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_clk_d5_ch1 ${adapter_parent_hier}/RW_clk_d5_ch1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/RW_clk_d5_ch1 Dig_17_Ch5
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/RW_data_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/RW_data_d5_ch1 "" ""
-
-
-uz_pw_create_bd_port_if_missing O Dig_11_Ch5 "" ""
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/RW_data ${adapter_hier_path}/RW_data_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/RW_data_d5_ch1 ${adapter_parent_hier}/RW_data_d5_ch1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/RW_data_d5_ch1 Dig_11_Ch5
-
-
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/endat_data_in_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/endat_data_in_d5_ch1 "" ""
-
-
-uz_pw_create_bd_port_if_missing I Dig_07_Ch5 "" ""
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_data_in_d5_ch1 ${adapter_hier_path}/uz_endat_interface_d5_channel_1/endat_data_in
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/endat_data_in_d5_ch1 ${adapter_hier_path}/endat_data_in_d5_ch1
-
-
-uz_pw_connect_port_if_unconnected ${adapter_parent_hier}/endat_data_in_d5_ch1 Dig_07_Ch5
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_transaction_done_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_transaction_done_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/endat_transaction_done ${adapter_hier_path}/endat_transaction_done_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_transaction_done_d5_ch1 ${adapter_parent_hier}/endat_transaction_done_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_raw_single_turn_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_raw_single_turn_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/position_raw_single_turn ${adapter_hier_path}/position_raw_single_turn_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_single_turn_d5_ch1 ${adapter_parent_hier}/position_raw_single_turn_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_raw_multi_turn_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_raw_multi_turn_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/position_raw_multi_turn ${adapter_hier_path}/position_raw_multi_turn_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_raw_multi_turn_d5_ch1 ${adapter_parent_hier}/position_raw_multi_turn_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/CRC_raw_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/CRC_raw_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/CRC_raw ${adapter_hier_path}/CRC_raw_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/CRC_raw_d5_ch1 ${adapter_parent_hier}/CRC_raw_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/endat_received_data_out_SH_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/endat_received_data_out_SH_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/endat_received_data_out_SH ${adapter_hier_path}/endat_received_data_out_SH_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/endat_received_data_out_SH_d5_ch1 ${adapter_parent_hier}/endat_received_data_out_SH_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_mech_SI_single_turn_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/position_mech_SI_single_turn ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_mech_SI_single_turn_d5_ch1 ${adapter_parent_hier}/position_mech_SI_single_turn_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_el_SI_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_el_SI_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/position_el_SI ${adapter_hier_path}/position_el_SI_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_el_SI_d5_ch1 ${adapter_parent_hier}/position_el_SI_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/position_multi_turn_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/position_multi_turn_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/position_multi_turn ${adapter_hier_path}/position_multi_turn_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/position_multi_turn_d5_ch1 ${adapter_parent_hier}/position_multi_turn_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_mech_SI_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_mech_SI_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/speed_mech_SI ${adapter_hier_path}/speed_mech_SI_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_SI_d5_ch1 ${adapter_parent_hier}/speed_mech_SI_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_el_SI_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_el_SI_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/speed_el_SI ${adapter_hier_path}/speed_el_SI_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_el_SI_d5_ch1 ${adapter_parent_hier}/speed_el_SI_d5_ch1
-
-
-
-uz_pw_create_bd_pin_if_missing O ${adapter_hier_path}/speed_mech_rpm_d5_ch1 "" ""
-
-uz_pw_create_bd_pin_if_missing O ${adapter_parent_hier}/speed_mech_rpm_d5_ch1 "" ""
-
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/uz_endat_interface_d5_channel_1/speed_mech_rpm ${adapter_hier_path}/speed_mech_rpm_d5_ch1
-
-
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/speed_mech_rpm_d5_ch1 ${adapter_parent_hier}/speed_mech_rpm_d5_ch1
-
-
-
-
-
-uz_pw_create_bd_pin_if_missing I ${adapter_hier_path}/trigger_endat_read_d5_ch1
-uz_pw_create_bd_pin_if_missing I ${adapter_parent_hier}/trigger_endat_read_d5_ch1
-uz_pw_connect_upper_boundary_net_if_unconnected uz_system/trigger_conversions ${adapter_parent_hier}/trigger_endat_read_d5_ch1
-uz_pw_connect_pin_pair_if_unconnected ${adapter_parent_hier}/trigger_endat_read_d5_ch1 ${adapter_hier_path}/trigger_endat_read_d5_ch1
-uz_pw_connect_pin_pair_if_unconnected ${adapter_hier_path}/trigger_endat_read_d5_ch1 ${adapter_hier_path}/uz_endat_interface_d5_channel_1/trigger_endat_read
-
-
-
-
-
-# Vitis driver hook: uz_endat_interface
-
-
-# Channel 2 IP core: Not used
-
-# Channel 3 IP core: Not used
+foreach adapter_parent_hier [list uz_digital_adapter uz_analog_adapter] {
+  uz_pw_disconnect_matching_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
+  uz_pw_delete_matching_nets_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
+  uz_pw_delete_matching_intf_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
+  uz_pw_delete_matching_pins_in_hierarchy $adapter_parent_hier $slot_cleanup_patterns
+}
 
 # -----------------------------------------------------------------------------
 # AXI interconnect setup
@@ -4907,6 +4629,23 @@ proc uz_pw_remove_slot_axi_attachment {slot adapter_root_hier local_smartconnect
 
   uz_pw_compact_upstream_mi_connections $::uz_pw_upstream_smartconnect
 }
+
+
+
+set uz_pw_upstream_smartconnect uz_system/smartconnect_0
+if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for D4."
+} else {
+  uz_pw_remove_slot_axi_attachment D4 uz_digital_adapter uz_digital_adapter/D4_adapter/axi_smartconnect
+}
+
+set uz_pw_upstream_smartconnect uz_system/smartconnect_0
+if {$uz_pw_upstream_smartconnect eq "" || [llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
+  puts "WARNING: Upstream AXI SmartConnect not found; skipping AXI attachment cleanup for D5."
+} else {
+  uz_pw_remove_slot_axi_attachment D5 uz_digital_adapter uz_digital_adapter/D5_adapter/axi_smartconnect
+}
+
 
 
 
@@ -5374,160 +5113,6 @@ uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundar
 uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
 
 
-set uz_pw_upstream_smartconnect uz_system/smartconnect_0
-set uz_pw_axi_clock_pin uz_system/peripheral_clk
-set uz_pw_axi_resetn_pin uz_system/peripheral_aresetn
-set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
-
-if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
-  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
-}
-
-if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
-  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
-}
-
-if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
-  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
-}
-
-puts "Refreshing AXI attachment for slot D4"
-uz_pw_remove_slot_axi_attachment D4 uz_digital_adapter uz_digital_adapter/D4_adapter/axi_smartconnect
-
-puts "Configuring local AXI SmartConnect for slot D4"
-
-# Remove non-canonical slot-local AXI boundary names before creating the generated
-# boundary. Older designs used IP-specific names such as AXI4_Lite here;
-# Project Wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
-# SmartConnect.
-foreach previous_slot_axi_pin [list \
-  uz_digital_adapter/D4_adapter/AXI4_Lite \
-  uz_digital_adapter/D4_adapter/s00_axi \
-  uz_digital_adapter/D4_adapter/s_axi_lite \
-] {
-  uz_pw_delete_intf_pin_and_net_if_present $previous_slot_axi_pin
-}
-
-set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
-if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
-  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
-} else {
-  puts "Reusing existing local SmartConnect $slot_sc"
-}
-
-set slot_sc_cell [get_bd_cells -quiet $slot_sc]
-uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 4] $slot_sc_cell $slot_sc
-
-uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
-uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
-uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_digital_adapter/D4_adapter/clk
-uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_digital_adapter/D4_adapter/resetn
-
-set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
-set adapter_root_boundary_pin uz_digital_adapter/D4_AXI
-set slot_boundary_pin uz_digital_adapter/D4_adapter/S00_AXI
-
-set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
-if {$upstream_boundary_pin eq ""} {
-  if {$upstream_hier_path eq ""} {
-    set upstream_boundary_pin D4_AXI
-  } else {
-    set upstream_boundary_pin ${upstream_hier_path}/D4_AXI
-  }
-}
-
-uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
-uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
-uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
-
-set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
-if {$upstream_mi_pin eq ""} {
-  set upstream_mi_pin [uz_pw_get_or_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
-}
-
-uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
-
-
-set uz_pw_upstream_smartconnect uz_system/smartconnect_0
-set uz_pw_axi_clock_pin uz_system/peripheral_clk
-set uz_pw_axi_resetn_pin uz_system/peripheral_aresetn
-set uz_pw_axi_address_space /zynq_ultra_ps_e_0/Data
-
-if {[llength [get_bd_cells -quiet $uz_pw_upstream_smartconnect]] == 0} {
-  error "Configured upstream AXI SmartConnect not found: $uz_pw_upstream_smartconnect"
-}
-
-if {[llength [get_bd_pins -quiet $uz_pw_axi_clock_pin]] == 0} {
-  error "Configured AXI clock pin not found: $uz_pw_axi_clock_pin"
-}
-
-if {[llength [get_bd_pins -quiet $uz_pw_axi_resetn_pin]] == 0} {
-  error "Configured AXI resetn pin not found: $uz_pw_axi_resetn_pin"
-}
-
-puts "Refreshing AXI attachment for slot D5"
-uz_pw_remove_slot_axi_attachment D5 uz_digital_adapter uz_digital_adapter/D5_adapter/axi_smartconnect
-
-puts "Configuring local AXI SmartConnect for slot D5"
-
-# Remove non-canonical slot-local AXI boundary names before creating the generated
-# boundary. Older designs used IP-specific names such as AXI4_Lite here;
-# Project Wizard uses S00_AXI consistently between Dx/Ax_adapter and the local
-# SmartConnect.
-foreach previous_slot_axi_pin [list \
-  uz_digital_adapter/D5_adapter/AXI4_Lite \
-  uz_digital_adapter/D5_adapter/s00_axi \
-  uz_digital_adapter/D5_adapter/s_axi_lite \
-] {
-  uz_pw_delete_intf_pin_and_net_if_present $previous_slot_axi_pin
-}
-
-set slot_sc uz_digital_adapter/D5_adapter/axi_smartconnect
-if {[llength [get_bd_cells -quiet $slot_sc]] == 0} {
-  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect $slot_sc
-} else {
-  puts "Reusing existing local SmartConnect $slot_sc"
-}
-
-set slot_sc_cell [get_bd_cells -quiet $slot_sc]
-uz_pw_set_property_dict_if_objects [list CONFIG.NUM_SI 1 CONFIG.NUM_MI 1] $slot_sc_cell $slot_sc
-
-uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin ${slot_sc}/aclk
-uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin ${slot_sc}/aresetn
-uz_pw_connect_net_if_unconnected $uz_pw_axi_clock_pin uz_digital_adapter/D5_adapter/clk
-uz_pw_connect_net_if_unconnected $uz_pw_axi_resetn_pin uz_digital_adapter/D5_adapter/resetn
-
-set upstream_hier_path [uz_pw_parent_path $uz_pw_upstream_smartconnect]
-set adapter_root_boundary_pin uz_digital_adapter/D5_AXI
-set slot_boundary_pin uz_digital_adapter/D5_adapter/S00_AXI
-
-set upstream_boundary_pin [uz_pw_find_peer_intf_pin $adapter_root_boundary_pin "*${upstream_hier_path}/M*_AXI"]
-if {$upstream_boundary_pin eq ""} {
-  if {$upstream_hier_path eq ""} {
-    set upstream_boundary_pin D5_AXI
-  } else {
-    set upstream_boundary_pin ${upstream_hier_path}/D5_AXI
-  }
-}
-
-uz_pw_create_intf_pin_if_missing Master $upstream_boundary_pin
-uz_pw_create_intf_pin_if_missing Slave $adapter_root_boundary_pin
-uz_pw_create_intf_pin_if_missing Slave $slot_boundary_pin
-
-set upstream_mi_pin [uz_pw_find_peer_intf_pin $upstream_boundary_pin "*${uz_pw_upstream_smartconnect}/M*_AXI"]
-if {$upstream_mi_pin eq ""} {
-  set upstream_mi_pin [uz_pw_get_or_add_upstream_mi_pin $uz_pw_upstream_smartconnect]
-}
-
-uz_pw_connect_intf_if_unconnected $upstream_mi_pin $upstream_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $upstream_boundary_pin $adapter_root_boundary_pin
-uz_pw_connect_intf_upper_if_unconnected $adapter_root_boundary_pin $slot_boundary_pin
-uz_pw_connect_intf_preserve_source_if_unconnected $slot_boundary_pin ${slot_sc}/S00_AXI
-
-
 
 
 set slot_sc uz_analog_adapter/A1_adapter/axi_smartconnect
@@ -5547,8 +5132,8 @@ assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_seg
 
 set slot_sc uz_digital_adapter/D1_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D1_adapter/axi_gpio_d1/S_AXI
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D1_adapter/axi_gpio_d1/S_AXI/Reg] -force
+uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D1_adapter/uz_endat_interface_d1_channel_1/AXI4_Lite
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D1_adapter/uz_endat_interface_d1_channel_1/AXI4_Lite/reg0] -force
 
 set slot_sc uz_digital_adapter/D2_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
@@ -5559,31 +5144,6 @@ set slot_sc uz_digital_adapter/D3_adapter/axi_smartconnect
 set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
 uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D3_adapter/Temperature_Card_Int_0/s00_axi
 assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D3_adapter/Temperature_Card_Int_0/s00_axi/reg0] -force
-
-set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
-set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D4_adapter/resolver_ip_d4_1/s00_axi
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D4_adapter/resolver_ip_d4_1/s00_axi/reg0] -force
-
-set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
-set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 1]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D4_adapter/resolver_pl_interface_d4_1/AXI4_Lite
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D4_adapter/resolver_pl_interface_d4_1/AXI4_Lite/reg0] -force
-
-set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
-set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 2]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D4_adapter/resolver_ip_d4_2/s00_axi
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D4_adapter/resolver_ip_d4_2/s00_axi/reg0] -force
-
-set slot_sc uz_digital_adapter/D4_adapter/axi_smartconnect
-set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 3]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D4_adapter/resolver_ip_d4_3/s00_axi
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D4_adapter/resolver_ip_d4_3/s00_axi/reg0] -force
-
-set slot_sc uz_digital_adapter/D5_adapter/axi_smartconnect
-set slot_mi_pin [uz_pw_get_sc_mi_pin $slot_sc 0]
-uz_pw_connect_intf_if_unconnected $slot_mi_pin uz_digital_adapter/D5_adapter/uz_endat_interface_d5_channel_1/AXI4_Lite
-assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_digital_adapter/D5_adapter/uz_endat_interface_d5_channel_1/AXI4_Lite/reg0] -force
 
 
 

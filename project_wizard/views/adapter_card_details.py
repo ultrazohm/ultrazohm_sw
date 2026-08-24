@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
 from ..paths import DIGITAL_SLOTS, SLOTS
 from ..repositories import CardDatabase
 from ..services.software_generator_service import resolver_channel_count
+from ..services.visualization_catalog import io_card_directions
 from ..tcl_generator import TclGenerator
 
 
@@ -302,7 +303,7 @@ class AdapterCardDetailsWidget(QGroupBox):
         hint.setWordWrap(True)
         layout.addWidget(hint)
 
-        directions = TclGenerator._io_card_directions(card.get("vivado", {}).get("io_card", {}), self.detail_options.get(slot, {}))
+        directions = io_card_directions(card, self.detail_options.get(slot, {}))
         summary = TclGenerator._io_card_context(slot, slot[1:], card, self.detail_options.get(slot, {})).get("io_summary", "")
         if summary:
             summary_label = QLabel(summary)

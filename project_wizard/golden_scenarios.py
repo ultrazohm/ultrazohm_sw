@@ -12,7 +12,6 @@ from typing import Any
 from .models import SystemConfig
 from .paths import APP_DIR, DATA_FILE, DIGITAL_SLOTS, GOLDEN_SCENARIO_DIR, SLOTS
 from .repositories import CardDatabase
-from .services.card_service import default_cpld_for_card
 from .services.software_generator_service import SoftwareGenerator
 from .services.system_resolver import SystemResolver
 from .tcl_generator import TclGenerator
@@ -116,17 +115,10 @@ def with_assignments(
             else:
                 result["software"]["extra"][key] = value
     result["hardware"].update(hardware or {})
-    for slot, slot_config in result["slots"].items():
-        if slot in DIGITAL_SLOTS:
-            card_id = slot_config["card"]
-            card = database.card_by_id(card_id)
-            if card and card.get("vivado", {}).get("io_card"):
-                slot_config["cpld"] = TclGenerator.io_card_cpld_program(
-                    card,
-                    slot_config.get("options", {}),
-                )
-            else:
-                slot_config["cpld"] = default_cpld_for_card(database, card_id, slot)
+    resolver = SystemResolver(database)
+    model = resolver.resolve(SystemConfig.from_document(result))
+    for slot, program_id in model.default_slot_cpld_programs.items():
+        result["slots"][slot]["cpld"] = program_id
     return result
 
 
@@ -242,8 +234,8 @@ def render_outputs(database: CardDatabase, document: dict[str, Any]) -> tuple[st
     tcl_generator = TclGenerator(database)
     software_generator = SoftwareGenerator(database)
     model = SystemResolver(database).resolve(SystemConfig.from_document(document))
-    tcl_text = tcl_generator.generate_model(model)
-    plan = software_generator.build_plan_model(model, resolve_base_addresses=False)
+    tcl_text = tcl_generator.generate(model)
+    plan = software_generator.build_plan(model, resolve_base_addresses=False)
     summary = {
         "tcl_line_count": len(tcl_text.splitlines()),
         "tcl_warning_count": len(re.findall(r"^# WARNING:", tcl_text, re.MULTILINE)),

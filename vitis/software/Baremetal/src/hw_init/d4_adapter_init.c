@@ -77,7 +77,7 @@ static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d4_2_confi
     .machine_polepairs = 4,
     .position_intmax = 65535,
     .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-    .theta_m_offset_rad = 0.0f
+    .theta_m_offset_rad = -0.4f
 };
 
 static struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_2_outputs = {
@@ -124,7 +124,7 @@ static struct uz_resolver_pl_interface_config_t resolver_pl_interface_d4_3_confi
     .machine_polepairs = 4,
     .position_intmax = 65535,
     .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-    .theta_m_offset_rad = 0.0f
+    .theta_m_offset_rad = -0.4f
 };
 
 static struct uz_resolver_pl_interface_outputs_t resolver_pl_interface_d4_3_outputs = {

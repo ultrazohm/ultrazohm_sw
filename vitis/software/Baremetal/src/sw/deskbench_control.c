@@ -61,29 +61,89 @@ static struct uz_pmsm_control_configuration_t pmsm_control_am8141_config = {
 
 void deskbench_control_init(DS_Data *data)
 {
-    data->objects.prime_mover_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
-    uz_pmsm_control_enable(data->objects.prime_mover_control, true);
-    data->objects.prime_mover_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.prime_mover_control);
-    data->objects.prime_mover_actual_data = uz_pmsm_control_get_actual_data(data->objects.prime_mover_control);
-    data->objects.prime_mover_reference_values = uz_pmsm_control_get_reference_values(data->objects.prime_mover_control);
-    uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.prime_mover_control, 1.5f * pmsm_control_am8141_config.sample_time);
+    data->objects.m1_prime_mover_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
+    uz_pmsm_control_enable(data->objects.m1_prime_mover_control, true);
+    data->objects.m1_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.m1_prime_mover_control);
+    data->objects.m1_actual_data = uz_pmsm_control_get_actual_data(data->objects.m1_prime_mover_control);
+    data->objects.m1_reference_values = uz_pmsm_control_get_reference_values(data->objects.m1_prime_mover_control);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.m1_prime_mover_control, 1.5f * pmsm_control_am8141_config.sample_time);
+
+    data->objects.m2_dut_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
+    uz_pmsm_control_enable(data->objects.m2_dut_control, true);
+    data->objects.m2_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.m2_dut_control);
+    data->objects.m2_actual_data = uz_pmsm_control_get_actual_data(data->objects.m2_dut_control);
+    data->objects.m2_reference_values = uz_pmsm_control_get_reference_values(data->objects.m2_dut_control);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.m2_dut_control, 1.5f * pmsm_control_am8141_config.sample_time);
+
+    data->objects.m3_prime_mover_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
+    uz_pmsm_control_enable(data->objects.m3_prime_mover_control, true);
+    data->objects.m3_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.m3_prime_mover_control);
+    data->objects.m3_actual_data = uz_pmsm_control_get_actual_data(data->objects.m3_prime_mover_control);
+    data->objects.m3_reference_values = uz_pmsm_control_get_reference_values(data->objects.m3_prime_mover_control);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.m3_prime_mover_control, 1.5f * pmsm_control_am8141_config.sample_time);
+
+    data->objects.m4_dut_control = uz_pmsm_control_init(pmsm_control_am8141_config, deskbench_beckhoff_am8141);
+    uz_pmsm_control_enable(data->objects.m4_dut_control, true);
+    data->objects.m4_measurements = uz_pmsm_control_get_pmsm_measurement_values(data->objects.m4_dut_control);
+    data->objects.m4_actual_data = uz_pmsm_control_get_actual_data(data->objects.m4_dut_control);
+    data->objects.m4_reference_values = uz_pmsm_control_get_reference_values(data->objects.m4_dut_control);
+    uz_pmsm_control_current_control_tune_magnitude_optimum(data->objects.m4_dut_control, 1.5f * pmsm_control_am8141_config.sample_time);
 }
 
-float dut_theta_mech_rad = 0.0f;
-float prime_mover_theta_mech_rad = 0.0f;
 
 void deskbench_update_measurements(DS_Data *data)
 {
-    data->av.prime_mover_measurements.i_abc_in_A.a = data->m1_phase_current.a;
-    data->av.prime_mover_measurements.i_abc_in_A.b = data->m1_phase_current.b;
-    data->av.prime_mover_measurements.i_abc_in_A.c = data->m1_phase_current.c;
+    data->av.m1_measurements.i_abc_in_A.a = data->m1_phase_current.a;
+    data->av.m1_measurements.i_abc_in_A.b = data->m1_phase_current.b;
+    data->av.m1_measurements.i_abc_in_A.c = data->m1_phase_current.c;
 
-    data->av.prime_mover_measurements.i_dc_in_A = data->m1_dc_current;
-    data->av.prime_mover_measurements.v_abc_in_V.a = data->m1_phase_voltage.a;
-    data->av.prime_mover_measurements.v_abc_in_V.b = data->m1_phase_voltage.b;
-    data->av.prime_mover_measurements.v_abc_in_V.c = data->m1_phase_voltage.c;
+    data->av.m1_measurements.i_dc_in_A = data->m1_dc_current;
+    data->av.m1_measurements.v_abc_in_V.a = data->m1_phase_voltage.a;
+    data->av.m1_measurements.v_abc_in_V.b = data->m1_phase_voltage.b;
+    data->av.m1_measurements.v_abc_in_V.c = data->m1_phase_voltage.c;
 
-    data->av.prime_mover_measurements.v_dc_in_V = data->m12_dc_voltage;
-    data->av.prime_mover_measurements.theta_mech = data->av.resolver_pl_interface_d4_1_position_mech_2pi;
-    data->av.prime_mover_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_1_omega_mech_rad_s;
+    data->av.m1_measurements.v_dc_in_V = data->m12_dc_voltage;
+    data->av.m1_measurements.theta_mech = data->av.resolver_pl_interface_d4_1_position_mech_2pi;
+    data->av.m1_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_1_omega_mech_rad_s;
+
+    data->av.m2_measurements.i_abc_in_A.a = data->m2_phase_current.a;
+    data->av.m2_measurements.i_abc_in_A.b = data->m2_phase_current.b;
+    data->av.m2_measurements.i_abc_in_A.c = data->m2_phase_current.c;
+
+    data->av.m2_measurements.i_dc_in_A = data->m2_dc_current;
+    data->av.m2_measurements.v_abc_in_V.a = data->m2_phase_voltage.a;
+    data->av.m2_measurements.v_abc_in_V.b = data->m2_phase_voltage.b;
+    data->av.m2_measurements.v_abc_in_V.c = data->m2_phase_voltage.c;
+
+    data->av.m2_measurements.v_dc_in_V = data->m12_dc_voltage;
+    data->av.m2_measurements.theta_mech = data->av.resolver_pl_interface_d4_3_position_mech_2pi;
+    data->av.m2_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d4_3_omega_mech_rad_s;
+
+////////////// Second test bench
+
+    data->av.m3_measurements.i_abc_in_A.a = data->m3_phase_current.a;
+    data->av.m3_measurements.i_abc_in_A.b = data->m3_phase_current.b;
+    data->av.m3_measurements.i_abc_in_A.c = data->m3_phase_current.c;
+
+    data->av.m3_measurements.i_dc_in_A = data->m3_dc_current;
+    data->av.m3_measurements.v_abc_in_V.a = data->m3_phase_voltage.a;
+    data->av.m3_measurements.v_abc_in_V.b = data->m3_phase_voltage.b;
+    data->av.m3_measurements.v_abc_in_V.c = data->m3_phase_voltage.c;
+
+    data->av.m3_measurements.v_dc_in_V = data->m34_dc_voltage;
+    data->av.m3_measurements.theta_mech = data->av.resolver_pl_interface_d5_1_position_mech_2pi;
+    data->av.m3_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_1_omega_mech_rad_s;
+
+    data->av.m4_measurements.i_abc_in_A.a = data->m4_phase_current.a;
+    data->av.m4_measurements.i_abc_in_A.b = data->m4_phase_current.b;
+    data->av.m4_measurements.i_abc_in_A.c = data->m4_phase_current.c;
+
+    data->av.m4_measurements.i_dc_in_A = data->m4_dc_current;
+    data->av.m4_measurements.v_abc_in_V.a = data->m4_phase_voltage.a;
+    data->av.m4_measurements.v_abc_in_V.b = data->m4_phase_voltage.b;
+    data->av.m4_measurements.v_abc_in_V.c = data->m4_phase_voltage.c;
+
+    data->av.m4_measurements.v_dc_in_V = data->m34_dc_voltage;
+    data->av.m4_measurements.theta_mech = data->av.resolver_pl_interface_d5_2_position_mech_2pi;
+    data->av.m4_measurements.omega_mech_rad_per_sec = data->av.resolver_pl_interface_d5_2_omega_mech_rad_s;
 }

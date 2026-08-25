@@ -295,20 +295,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			case (My_Button_6):
 				if (current_state == idle_state)
 				{
-					data->control_mode=control_mode_wavegen;
+					data->control_mode = control_mode_m12_only_foc;
 				}
-			
 			break;
 			
 			case (My_Button_7):
 				if (current_state == idle_state)
 				{
-					data->control_mode=control_mode_m1_only_foc;
+					data->control_mode = control_mode_m34_only_foc;
 				}
 			 break;
 
 		case (My_Button_8):
-			data->enable_speed_control = !data->enable_speed_control;
+			if (current_state == idle_state)
+			{
+				data->control_mode = control_mode_m1234_foc;
+			}
 			break;
 
 		case (Error_Reset):
@@ -405,7 +407,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 8);
 		}
 	/* Bit 9 - My_Button_6 */
-		if (data->control_mode == control_mode_wavegen)
+		if (data->control_mode == control_mode_m12_only_foc)
 		{
 			js_status_BareToRTOS |= (1 << 9);
 		}
@@ -414,7 +416,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 9);
 		}
 	/* Bit 10 - My_Button_7 */
-		if (data->control_mode == control_mode_m1_only_foc)
+		if (data->control_mode == control_mode_m34_only_foc)
 		{
 			js_status_BareToRTOS |= (1 << 10);
 		}
@@ -423,7 +425,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 10);
 		}
 	/* Bit 11 - My_Button_8 */
-		if (data->enable_speed_control == true)
+		if (data->control_mode == control_mode_m1234_foc)
 		{
 			js_status_BareToRTOS |= (1 << 11);
 		}

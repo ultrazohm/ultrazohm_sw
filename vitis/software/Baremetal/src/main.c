@@ -94,7 +94,6 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -134,6 +133,7 @@ int main(void)
             Global_Data.objects.m3_sine = uz_wavegen_three_phase_init();
             Global_Data.objects.m4_sine = uz_wavegen_three_phase_init();
             deskbench_control_init(&Global_Data);
+            JavaScope_initialize(&Global_Data);
                 /* Project Wizard END: init_ip_cores */
                 initialization_chain = print_msg;
             break;

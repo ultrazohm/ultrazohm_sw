@@ -84,8 +84,14 @@ typedef struct _actualValues_
 	float resolver_pl_interface_d5_2_omega_mech_rad_s;
 	float resolver_pl_interface_d5_2_n_mech_rpm;
 	float resolver_pl_interface_d5_2_omega_el_rad_s;
-	enum uz_pmsm_control_safe_operating_region_violation pm_safe_operating_region_violation;
-	struct uz_pmsm_measurement_values prime_mover_measurements;
+	enum uz_pmsm_control_safe_operating_region_violation m1_safe_operating_region_violation;
+	enum uz_pmsm_control_safe_operating_region_violation m2_safe_operating_region_violation;
+	enum uz_pmsm_control_safe_operating_region_violation m3_safe_operating_region_violation;
+	enum uz_pmsm_control_safe_operating_region_violation m4_safe_operating_region_violation;
+	struct uz_pmsm_measurement_values m1_measurements;
+	struct uz_pmsm_measurement_values m2_measurements;
+	struct uz_pmsm_measurement_values m3_measurements;
+	struct uz_pmsm_measurement_values m4_measurements;
 	/* Project Wizard END: actualValues */
 } actualValues;
 
@@ -141,17 +147,36 @@ typedef struct{
 	uz_wavegen_three_phase* m2_sine;
 	uz_wavegen_three_phase* m3_sine;
 	uz_wavegen_three_phase* m4_sine;
-	uz_pmsm_control_t *prime_mover_control;
-	struct uz_pmsm_measurement_values *prime_mover_measurements;
-	struct uz_pmsm_actual_data *prime_mover_actual_data;
-	struct uz_pmsm_reference_values *prime_mover_reference_values;
+	uz_pmsm_control_t *m1_prime_mover_control;
+	uz_pmsm_control_t *m2_dut_control;
+	uz_pmsm_control_t *m3_prime_mover_control;
+	uz_pmsm_control_t *m4_dut_control;
+	struct uz_pmsm_measurement_values *m1_measurements;
+	struct uz_pmsm_measurement_values *m2_measurements;
+	struct uz_pmsm_measurement_values *m3_measurements;
+	struct uz_pmsm_measurement_values *m4_measurements;
+	struct uz_pmsm_actual_data *m1_actual_data;
+	struct uz_pmsm_actual_data *m2_actual_data;
+	struct uz_pmsm_actual_data *m3_actual_data;
+	struct uz_pmsm_actual_data *m4_actual_data;
+	struct uz_pmsm_reference_values *m1_reference_values;
+	struct uz_pmsm_reference_values *m2_reference_values;
+	struct uz_pmsm_reference_values *m3_reference_values;
+	struct uz_pmsm_reference_values *m4_reference_values;
 	/* Project Wizard END: objects */
 }object_pointers_t;
 
-enum control_mode_t {
-	control_mode_manual = 0,
-	control_mode_wavegen,
-	control_mode_m1_only_foc};
+enum control_mode_t
+{
+	control_mode_m1_only_foc = 0,
+	control_mode_m2_only_foc,
+	control_mode_m3_only_foc,
+	control_mode_m4_only_foc,
+	control_mode_m12_only_foc,
+	control_mode_m34_only_foc,
+	control_mode_m1234_foc,
+	control_mode_manual
+};
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
@@ -169,8 +194,15 @@ typedef struct _DS_Data_ {
 	struct uz_3ph_abc_t m1_phase_voltage;
 	struct uz_3ph_abc_t m2_phase_current;
 	struct uz_3ph_abc_t m2_phase_voltage;
+	struct uz_3ph_abc_t m3_phase_current;
+	struct uz_3ph_abc_t m3_phase_voltage;
+	struct uz_3ph_abc_t m4_phase_current;
+	struct uz_3ph_abc_t m4_phase_voltage;
 	float m1_dc_current;
 	float m2_dc_current;
+	float m3_dc_current;
+	float m4_dc_current;
+	float m34_dc_voltage;
 	float m12_dc_voltage;
 	bool d1_inverter_enable;
 	bool d2_inverter_enable;
@@ -179,9 +211,14 @@ typedef struct _DS_Data_ {
 	enum control_mode_t control_mode;
 	float sine_amp;
 	float sine_frq;
-	float prime_mover_n_ref_rpm;
-	struct uz_3ph_dq_t prime_mover_i_dq_ref_A;
-	bool enable_speed_control;
+	float m1_prime_mover_n_ref_rpm;
+	float m2_dut_n_ref_rpm;
+	float m3_prime_mover_n_ref_rpm;
+	float m4_dut_n_ref_rpm;
+	struct uz_3ph_dq_t m1_prime_mover_i_dq_ref_A;
+	struct uz_3ph_dq_t m2_dut_i_dq_ref_A;
+	struct uz_3ph_dq_t m3_prime_mover_i_dq_ref_A;
+	struct uz_3ph_dq_t m4_dut_i_dq_ref_A;
 } DS_Data;
 
 #endif

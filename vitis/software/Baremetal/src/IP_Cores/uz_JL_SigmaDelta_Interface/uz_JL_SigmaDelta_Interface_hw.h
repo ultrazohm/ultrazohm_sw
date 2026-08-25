@@ -9,7 +9,7 @@ void uz_JL_SigmaDelta_Interface_hw_write_dezimation(uint32_t base_address, uint1
 void uz_JL_SigmaDelta_Interface_hw_write_switch_edge(uint32_t base_address, uint8_t switch_edge);
 void uz_JL_SigmaDelta_Interface_hw_write_clk_ratio(uint32_t base_address, uint16_t clk_ratio);
 void uz_JL_SigmaDelta_Interface_hw_write_data_delay(uint32_t base_address, uint16_t filt_input_delay);
-void uz_JL_SigmaDelta_Interface_hw_write_clk_dsw_en(uint32_t base_address, bool dsw_clk_en);
+void uz_JL_SigmaDelta_Interface_hw_write_switch_cont_disc(uint32_t base_address, bool switch_cont_disc);
 void uz_JL_SigmaDelta_Interface_hw_write_clk_dutycycle(uint32_t base_address, float dutycycle);
 int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_U(uint32_t base_address);
 int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_PH1(uint32_t base_address);
@@ -17,6 +17,13 @@ int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_PH2(uint32_t base_address);
 int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_PH3(uint32_t base_address);
 int32_t uz_JL_SigmaDelta_Interface_hw_read_data_out_PH4(uint32_t base_address);
 void uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(uint32_t base_address);
+void uz_JL_SigmaDelta_Interface_hw_write_start_time_us(uint32_t base_address, float start_time_us);
+void uz_JL_SigmaDelta_Interface_hw_write_delay_data_valid(uint32_t base_address, uint8_t delay_data_valid);
+bool uz_JL_SigmaDelta_Interface_hw_read_data_valid(uint32_t base_address);
+void uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(uint32_t base_address, uint8_t sinc_sample_periods);
+void uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(uint32_t base_address, bool use_clk_ext);
+void uz_JL_SigmaDelta_Interface_hw_reset_data_valid_cnt(uint32_t base_address);
+uint8_t uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(uint32_t base_address);
 
 
 #endif // UZ_JL_SigmaDelta_Interface_HW_H

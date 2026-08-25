@@ -31,13 +31,16 @@ extern  uz_axi_gpio_t* output_gpio;
 extern  uz_axi_gpio_t* input_gpio;
 extern conv_status_signals_t conv_status_signals;
 extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter;
+extern uz_JL_SigmaDelta_Interface_t *Sinc3_Filter_2;
 extern uz_codegen regelung;
-
+bool data_valid= 0;
 
 static void ReadAllADC();
 static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic);
 
 struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_out = {0};
+struct uz_JL_SigmaDelta_Interface_output_t Sinc3_Filter_2_out = {0};
+static bool Sinc3_Filter_2_data_ready = false;
 Bus_ZM_In struct_ZM_In;
 uz_3ph_alphabeta_t  voltages_alphabeta = {0};
 float sine = 0.0f;
@@ -54,7 +57,8 @@ float theta_el_unwrapped = 0.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    // ReadAllADC();            // Nur bei Benutzung von ADC Karten
+    //ReadAllADC();            // Nur bei Benutzung von ADC Karten
+
 
     /* Read status signal READY of the converter*/
     conv_status_signals.board_ready = uz_axi_gpio_read_pin_zero_based(input_gpio, BOARD_READY_BIT);
@@ -63,7 +67,10 @@ void ISR_Control(void *data)
     /* Read IGBT desaturation fault signal */
     // conv_status_signals.igbt_desat = uz_axi_gpio_read_pin_zero_based(input_gpio, IGBT_Desat_BIT);
     // struct_ZM_In.IGBT_desat = conv_status_signals.igbt_desat;
-
+//    for(int i=0;i==100;i++)
+//    {
+//    	 data_valid = data_valid || uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter);
+//    }
 	Global_Data.av.resolver_pl_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface);
 
 	theta_el_unwrapped = Global_Data.av.resolver_pl_outputs.position_el_2pi - Global_Data.av.theta_el_offset;
@@ -98,7 +105,7 @@ void ISR_Control(void *data)
     			        }
 
                 }
-                regelung.input.Bus_ZM_In_g = struct_ZM_In;
+                regelung.input.Bus_ZM_In_j = struct_ZM_In;
 				uz_codegen_step(&regelung);
     			break;
     		case running_state:
@@ -114,30 +121,72 @@ void ISR_Control(void *data)
                     struct_ZM_In.Soll_Drehzahl_Umin = 0;
     			    struct_ZM_In.Soll_id_A = 0;
     			    struct_ZM_In.Soll_iq_A = 0;
-                    Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
-   	                SigmaDeltaWandler_process(Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
                 }
                 else
                 {
-                    Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
-   	                SigmaDeltaWandler_process(Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
-                    regelung.input.Bus_ZM_In_g = struct_ZM_In;
+                	 while (!(uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter)))
+                		{
+                			// do nothing while output is not valid
+                		}
+                		Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
+                		SigmaDeltaWandler_process(SDW_FILTER_0, Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
+#if SDW_SECOND_FILTER_HW_AVAILABLE
+                		if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Sinc3_Filter_2) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
+                		{
+                			Sinc3_Filter_2_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter_2);
+                			SigmaDeltaWandler_process(SDW_FILTER_1, Sinc3_Filter_2_out, &Global_Data.av.Sinc3_Filter_2);
+                			uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Sinc3_Filter_2);
+                			Sinc3_Filter_2_data_ready = true;
+                		}
+                		else
+                		{
+                			Sinc3_Filter_2_data_ready = false;
+                		}
+#else
+                		Sinc3_Filter_2_data_ready = false;
+#endif
+                		if((fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
+                		{
+                					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+                					Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+                					Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+                					Global_Data.rasv.ctrl_state = ctrl_state_none;
+                		}
+                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
 	                uz_codegen_step(&regelung);
                 }
     			break;
     		case control_state:
 				Global_Data.objects.platform_state_old = control_state;
-				Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
-				SigmaDeltaWandler_process(Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
-   	            if((fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f))
-				{
-							Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-							Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-							Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-							Global_Data.rasv.ctrl_state = ctrl_state_none;
-				}
-   	            else
-   	            {
+				 while (!(uz_JL_SigmaDelta_Interface_is_data_valid(Sinc3_Filter)))
+					{
+						// do nothing while output is not valid
+					}
+					Sinc3_Filter_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter);
+					SigmaDeltaWandler_process(SDW_FILTER_0, Sinc3_Filter_out, &Global_Data.av.Sinc3_Filter);
+#if SDW_SECOND_FILTER_HW_AVAILABLE
+					if (uz_JL_SigmaDelta_Interface_get_data_valid_cnt(Sinc3_Filter_2) >= SDW_FILTER2_DATA_VALID_CNT_THRESHOLD)
+					{
+						Sinc3_Filter_2_out = uz_JL_SigmaDelta_Interface_get_outputs(Sinc3_Filter_2);
+						SigmaDeltaWandler_process(SDW_FILTER_1, Sinc3_Filter_2_out, &Global_Data.av.Sinc3_Filter_2);
+						uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(Sinc3_Filter_2);
+						Sinc3_Filter_2_data_ready = true;
+					}
+					else
+					{
+						Sinc3_Filter_2_data_ready = false;
+					}
+#else
+					Sinc3_Filter_2_data_ready = false;
+#endif
+					if((fabs(Global_Data.av.Sinc3_Filter.data_PH1) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH2) >= 18.0f) || (fabs(Global_Data.av.Sinc3_Filter.data_PH3) >= 18.0f))
+					{
+								Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+								Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+								Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+								Global_Data.rasv.ctrl_state = ctrl_state_none;
+								ultrazohm_state_machine_set_stop(true);
+					}
                     if (Global_Data.rasv.ctrl_state != DPT && uz_dpt_get_state() != dpt_idle)
                     {
                         // ctrl_state was left while a DPT run was still active (e.g. Stop button) -> abort safely
@@ -173,21 +222,25 @@ void ISR_Control(void *data)
                         struct_ZM_In.Soll_id_A = Global_Data.rasv.Soll_id;
                         struct_ZM_In.Soll_Drehzahl_Umin = 0;
                         struct_ZM_In.Soll_Regelungsart = Strom;
-                        regelung.input.Bus_ZM_In_g = struct_ZM_In;
-                        regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[0] = Global_Data.av.Sinc3_Filter.data_PH1;
-                        regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[1] = Global_Data.av.Sinc3_Filter.data_PH2;
-                        regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[2] = Global_Data.av.Sinc3_Filter.data_PH3;
-                        regelung.input.Bus_PMSM_Out_m.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
-						regelung.input.Bus_PMSM_Out_m.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-						regelung.input.Bus_PMSM_Out_m.pmsm_theta_el_rad = Global_Data.av.theta_el;
-						regelung.input.Bus_PMSM_Out_m.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
+                        regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter.data_PH1;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter.data_PH2;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter.data_PH3;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_2.data_PH1;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_2.data_PH2;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_2.data_PH3;
+                        regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_2_data_ready;
+                        regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
+						regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+						regelung.input.Bus_PMSM_Out_f.pmsm_theta_el_rad = Global_Data.av.theta_el;
+						regelung.input.Bus_PMSM_Out_f.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
                         uz_codegen_step(&regelung);
-                        if(regelung.output.Bus_Ctrl_Out_m.act_pwm == true && conv_status_signals.board_ready == true)
+                        if(regelung.output.Bus_Ctrl_Out_f.act_pwm == true && conv_status_signals.board_ready == true)
                             {
 
-                                Global_Data.rasv.halfBridge1DutyCycle =  regelung.output.Bus_Ctrl_Out_m.Dutycycle[0];
-                                Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_m.Dutycycle[1];
-                                Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_m.Dutycycle[2];
+                                Global_Data.rasv.halfBridge1DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[0];
+                                Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[1];
+                                Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[2];
                             }
                         break;
 
@@ -219,21 +272,25 @@ void ISR_Control(void *data)
                         case rpm_control:
                             struct_ZM_In.Soll_Drehzahl_Umin = Global_Data.rasv.Soll_Drehzahl;
                             struct_ZM_In.Soll_Regelungsart = Drehzahl;
-                            regelung.input.Bus_ZM_In_g = struct_ZM_In;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[0] = Global_Data.av.Sinc3_Filter.data_PH1;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[1] = Global_Data.av.Sinc3_Filter.data_PH2;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[2] = Global_Data.av.Sinc3_Filter.data_PH3;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_theta_el_rad = Global_Data.av.theta_el;
-                            regelung.input.Bus_PMSM_Out_m.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
+                            regelung.input.Bus_ZM_In_j = struct_ZM_In;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = Global_Data.av.Sinc3_Filter.data_PH1;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = Global_Data.av.Sinc3_Filter.data_PH2;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = Global_Data.av.Sinc3_Filter.data_PH3;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = Global_Data.av.Sinc3_Filter_2.data_PH1;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = Global_Data.av.Sinc3_Filter_2.data_PH2;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = Global_Data.av.Sinc3_Filter_2.data_PH3;
+                            regelung.input.trigger_actI_I_calc = SDW_ACT_I_SEPARATE_CALC_ENABLED && Sinc3_Filter_2_data_ready;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = Global_Data.av.mechanicalPosition;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = Global_Data.av.resolver_pl_outputs.omega_mech_rad_s;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_theta_el_rad = Global_Data.av.theta_el;
+                            regelung.input.Bus_PMSM_Out_f.pmsm_Omega_el_rad_s = Global_Data.av.omega_el;
 	                        uz_codegen_step(&regelung);
-                            if( regelung.output.Bus_Ctrl_Out_m.act_pwm == true && conv_status_signals.board_ready == true)
+                            if( regelung.output.Bus_Ctrl_Out_f.act_pwm == true && conv_status_signals.board_ready == true)
                                 {
 
-                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_m.Dutycycle[0];
-                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_m.Dutycycle[1];
-                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_m.Dutycycle[2];
+                                    Global_Data.rasv.halfBridge1DutyCycle = regelung.output.Bus_Ctrl_Out_f.Dutycycle[0];
+                                    Global_Data.rasv.halfBridge2DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[1];
+                                    Global_Data.rasv.halfBridge3DutyCycle =  regelung.output.Bus_Ctrl_Out_f.Dutycycle[2];
                                 }
                             break;
                         case test_sine:
@@ -295,7 +352,7 @@ void ISR_Control(void *data)
 							Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
                             break;
                     }    
-                } 
+
 
     		   break;
     		case error_state:
@@ -315,7 +372,7 @@ void ISR_Control(void *data)
     			        {
     				        uz_dpt_abort();
     			        }
-                    regelung.input.Bus_ZM_In_g = struct_ZM_In;
+                    regelung.input.Bus_ZM_In_j = struct_ZM_In;
 	                uz_codegen_step(&regelung);
                 }
     			break;
@@ -325,9 +382,9 @@ void ISR_Control(void *data)
     
     
     
-    conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_m.pwr_en;
-    conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_m.board_en;
-    conv_status_signals.board_rst =  !(bool)regelung.output.Bus_Ctrl_Out_m.reset;
+    conv_status_signals.pwr_en = (bool)regelung.output.Bus_Ctrl_Out_f.pwr_en;
+    conv_status_signals.board_en =  (bool)regelung.output.Bus_Ctrl_Out_f.board_en;
+    conv_status_signals.board_rst =  !(bool)regelung.output.Bus_Ctrl_Out_f.reset;
     // Combine the three status bits into a single read + write instead of three
     // separate read-modify-write AXI transactions (one per bit) to shorten ISR runtime.
     uint32_t output_bitmask_local = uz_axi_gpio_read_bitmask(output_gpio);

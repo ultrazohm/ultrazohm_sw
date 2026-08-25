@@ -4,7 +4,11 @@ vcom  uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_CLk.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_trigger_sec_edge.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_Subsystem.vhd
+vcom  uz_JL_SigmaDelta_Interface_src_CLk1.vhd
+vcom  uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd
+vcom  uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd
+vcom  uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_Integratoren.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_Differentierer.vhd
 vcom  uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd

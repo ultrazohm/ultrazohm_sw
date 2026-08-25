@@ -84,6 +84,7 @@ struct uz_axi_gpio_config_t gpio_out_config={
 };
 
 uz_JL_SigmaDelta_Interface_t *Sinc3_Filter = NULL;
+uz_JL_SigmaDelta_Interface_t *Sinc3_Filter_2 = NULL;
 
 uz_axi_gpio_t* input_gpio=NULL;
 uz_axi_gpio_t* output_gpio=NULL;
@@ -92,28 +93,33 @@ uz_codegen regelung;
 
 int main(void)
 {
-		regelung.input.Bus_ZM_In_g.Fehlermeldung = false;
-		regelung.input.Bus_ZM_In_g.Soll_Drehzahl_Umin = 0;
-		regelung.input.Bus_ZM_In_g.Soll_Regelungsart = Drehzahl;
-		regelung.input.Bus_ZM_In_g.Soll_Status = Ready;
-		regelung.input.Bus_ZM_In_g.Soll_id_A = 0;
-		regelung.input.Bus_ZM_In_g.Soll_iq_A = 0;
-		regelung.input.Bus_ZM_In_g.Start_Traj = false;
-		regelung.input.Bus_PMSM_Out_m.pmsm_Omega_mech_rad_s = 0;
-		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[0] = 0;
-		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[1] = 0;
-		regelung.input.Bus_PMSM_Out_m.pmsm_Iuvw_A[2] = 0;
-		regelung.input.Bus_PMSM_Out_m.pmsm_m_mot_Nm = 0;
-		regelung.input.Bus_PMSM_Out_m.pmsm_theta_mech_rad = 0;
-		regelung.output.Bus_Ctrl_Out_m.Dutycycle[0] = 0.0;
-		regelung.output.Bus_Ctrl_Out_m.Dutycycle[1] = 0.0;
-		regelung.output.Bus_Ctrl_Out_m.Dutycycle[2] = 0.0;
-		regelung.output.Bus_Ctrl_Out_m.ctrl_Ualpha_V = 0;
-		regelung.output.Bus_Ctrl_Out_m.ctrl_Ubeta_V = 0;
-		regelung.output.Bus_Ctrl_Out_m.act_pwm = false;
-		regelung.output.Bus_Ctrl_Out_m.board_en = false;
-		regelung.output.Bus_Ctrl_Out_m.pwr_en = false;
-		regelung.output.Bus_Ctrl_Out_m.reset = false;
+		regelung.input.Bus_ZM_In_j.Fehlermeldung = false;
+		regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin = 0;
+		regelung.input.Bus_ZM_In_j.Soll_Regelungsart = Drehzahl;
+		regelung.input.Bus_ZM_In_j.Soll_Status = Ready;
+		regelung.input.Bus_ZM_In_j.Soll_id_A = 0;
+		regelung.input.Bus_ZM_In_j.Soll_iq_A = 0;
+		regelung.input.Bus_ZM_In_j.Start_Traj = false;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Omega_mech_rad_s = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[0] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[1] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_P_A[2] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[0] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[1] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_Iuvw_I_A[2] = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_m_mot_Nm = 0;
+		regelung.input.Bus_PMSM_Out_f.pmsm_theta_mech_rad = 0;
+		regelung.input.trigger_actI_I_calc = false; // wird pro ISR-Zyklus in isr.c gesetzt (siehe Sinc3_Filter_2_data_ready, SDW_ACT_I_SEPARATE_CALC_ENABLED)
+		struct_Ctrl_Config.sel_act_I = (bool)SDW_ACT_I_SEPARATE_CALC_ENABLED; // Start-Konfiguration: (de)aktiviert die P-/I-Trennung in der Regelung
+		regelung.output.Bus_Ctrl_Out_f.Dutycycle[0] = 0.0;
+		regelung.output.Bus_Ctrl_Out_f.Dutycycle[1] = 0.0;
+		regelung.output.Bus_Ctrl_Out_f.Dutycycle[2] = 0.0;
+		regelung.output.Bus_Ctrl_Out_f.ctrl_Ualpha_V = 0;
+		regelung.output.Bus_Ctrl_Out_f.ctrl_Ubeta_V = 0;
+		regelung.output.Bus_Ctrl_Out_f.act_pwm = false;
+		regelung.output.Bus_Ctrl_Out_f.board_en = false;
+		regelung.output.Bus_Ctrl_Out_f.pwr_en = false;
+		regelung.output.Bus_Ctrl_Out_f.reset = false;
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -163,7 +169,8 @@ int main(void)
 			Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
             input_gpio= uz_axi_gpio_init(input_config);
             output_gpio = uz_axi_gpio_init(gpio_out_config);
-			Sinc3_Filter = SigmaDeltaWandler_init();
+			Sinc3_Filter = SigmaDeltaWandler_init(SDW_FILTER_0);
+			Sinc3_Filter_2 = SigmaDeltaWandler_init(SDW_FILTER_1); // liefert NULL, solange SDW_SECOND_FILTER_HW_AVAILABLE == 0
 			Global_Data.objects.current_controller=init_uz_foc();
 			Global_Data.objects.speed_controller = speed_ctrl_init();
 			Global_Data.objects.setpoint_controller = setpoint_ctrl_init();

@@ -1,12 +1,16 @@
 {
   "CodeGenStatus": [],
-  "CriticalPathDelay": 7.115,
+  "CriticalPathDelay": 7.244,
   "GenFileList": [
     "uz_JL_SigmaDelta_Interface_src_uz_JL_SigmaDelta_Inferface_pkg.vhd",
     "uz_JL_SigmaDelta_Interface_src_CLk.vhd",
     "uz_JL_SigmaDelta_Interface_src_trigger_sec_edge.vhd",
     "uz_JL_SigmaDelta_Interface_src_Subsystem.vhd",
+    "uz_JL_SigmaDelta_Interface_src_CLk1.vhd",
+    "uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd",
     "uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd",
+    "uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd",
+    "uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd",
     "uz_JL_SigmaDelta_Interface_src_Integratoren.vhd",
     "uz_JL_SigmaDelta_Interface_src_Differentierer.vhd",
     "uz_JL_SigmaDelta_Interface_src_For_Each_Subsystem.vhd",
@@ -22,10 +26,10 @@
     },
     "ModelStructuralChecksum": {
       "Value": [
-        409722830,
-        299040993,
-        342714391,
-        3041455865
+        4240836359,
+        617570955,
+        1632900101,
+        2438416835
       ],
       "MarkedUnique": false
     },
@@ -40,7 +44,7 @@
     "TopModelNonStructuralData": {
       "SimulationMode": "accelerator",
       "StartTime": "0.0",
-      "StopTime": "0.01",
+      "StopTime": "0.02",
       "SolverType": "Fixed-step",
       "Solver": "FixedStepDiscrete"
     },
@@ -142,7 +146,7 @@
           "Latency": -1
         },
         {
-          "Name": "DSW_clk_en",
+          "Name": "clk_dutycycle",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 9,
@@ -152,10 +156,80 @@
           "Latency": -1
         },
         {
-          "Name": "clk_dutycycle",
+          "Name": "pwm_trigger",
           "Rate": 1E-8,
           "Kind": "data",
           "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "start_time_us",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "delay_data_valid",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 12,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "sinc_sample_periods",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 13,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "switch_cont_disc",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 14,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "clk_ext",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 15,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "use_clk_ext",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 16,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "rst_data_valid_cnt",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 17,
           "IsComplex": false,
           "Testpoint": false,
           "TunableName": "",
@@ -242,6 +316,56 @@
           "Testpoint": false,
           "TunableName": "",
           "Latency": -1
+        },
+        {
+          "Name": "Data_valid",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 8,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "reset",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 9,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_valid_pl",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 10,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "filt_slow_clk",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 11,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
+        },
+        {
+          "Name": "data_valid_cnt",
+          "Rate": 1E-8,
+          "Kind": "data",
+          "PortIndex": 12,
+          "IsComplex": false,
+          "Testpoint": false,
+          "TunableName": "",
+          "Latency": -1
         }
       ]
     }
@@ -254,16 +378,21 @@
     0,
     0,
     0,
+    0,
+    0,
+    0,
+    0,
+    0,
     0
   ],
   "ResourceSummary": {
     "multipliers": 1,
-    "addersSubtractors": 33,
-    "registers": 197,
-    "oneBitRegisters": 2655,
+    "addersSubtractors": 37,
+    "registers": 713,
+    "oneBitRegisters": 3389,
     "rams": 0,
-    "multiplexers": 66,
-    "IOBits": 228,
+    "multiplexers": 717,
+    "IOBits": 289,
     "staticShiftOperators": 0,
     "dynamicShiftOperators": 0
   }

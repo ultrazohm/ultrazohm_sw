@@ -73,6 +73,7 @@ extern DS_Data Global_Data;
 extern conv_status_signals_t conv_status_signals;
 extern float sine;
 extern uz_codegen regelung;
+extern bool data_valid;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -130,6 +131,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ctrl_Soll_Moment]		= &regelung.output.Soll_Moment;
 	js_ch_observable[JSO_ctrl_ist_omega]		= &regelung.output.ctrl_omega;
 	js_ch_observable[JSO_ctrl_soll_omega]		= &regelung.output.soll_omega;
+	js_ch_observable[JSO_ctrl_Ist_Iq]			= &regelung.output.Ist_Iq;
+	js_ch_observable[JSO_ctrl_act_id_I]			= &regelung.output.act_id_I;
+	js_ch_observable[JSO_ctrl_act_iq_I]			= &regelung.output.act_iq_I;
+	js_ch_observable[JSO_ctrl_act_id_P]			= &regelung.output.act_id_P;
+	js_ch_observable[JSO_ctrl_ref_Id]			= &regelung.output.ref_Id;
+	js_ch_observable[JSO_data_valid]		= &data_valid;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -141,10 +148,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH1);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH2);
-	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_CH_PH3);
-js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_g.Soll_Drehzahl_Umin;
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH1]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH1);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH2]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH2);
+	js_slowDataArray[JSSD_FLOAT_SD_raw_avg_PH3]			= SigmaDeltaWandler_get_raw_average(SDW_FILTER_0, SDW_CH_PH3);
+	js_slowDataArray[JSSD_FLOAT_Soll_Drehzahl]				= &regelung.input.Bus_ZM_In_j.Soll_Drehzahl_Umin;
 
 
 

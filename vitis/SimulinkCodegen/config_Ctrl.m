@@ -57,8 +57,15 @@ i = i + 1;
 elems(i) = Simulink.BusElement;
 elems(i).Name = 'IGBT_deadtime';
 elems(i).DataType = 'single';
+
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'sel_act_I';
+elems(i).DataType = 'boolean';
+
 Bus_Ctrl_Config = Simulink.Bus;
 Bus_Ctrl_Config.Elements = elems;
+
 clear i;
 clear elems;
 
@@ -75,14 +82,15 @@ data.KIi = data.KPi / data.TNi;    % Ki für parallele Form (= mot_R1 / TEi)
 
 % --- Drehzahlregler (Symmetrisches Optimum) ---
 data.TNn = 8 * data.TEi;
-data.KPn = 0.5 * 2 * pi * (struct_PMSM_Config.Value.mot_J_kgmsqr + struct_PMSM_In.Value.Last_J_kgmsqr) / (2*data.TEi);
-data.KIn = data.KPn / data.TNn;    % Ki für parallele Form
+data.KPn = 0.5;%0.5 * 2 * pi * (struct_PMSM_Config.Value.mot_J_kgmsqr + struct_PMSM_In.Value.Last_J_kgmsqr) / (2*data.TEi);
+data.KIn = 2;% data.KPn / data.TNn;    % Ki für parallele Form
 
 data.n_hyst_upperlimit = struct_PMSM_Config.Value.mot_n_N_Umin/60/2/pi/100*1.0001; % Hysterese Drehzahlregler: 1% des Sollwerts
 data.n_hyst_lowerlimit = -data.n_hyst_upperlimit;
 data.t_traj = 0.2; % Zeit bis Ende Plateau Trapez
 data.IGBT_dc_min = 0; %minimale Einschaltzeit IGBT
 data.IGBT_deadtime = 0 ; % IGBT Totzeit zwischen Top und Bot Schalter
+data.sel_act_I = false;
 
 struct_Ctrl_Config = Simulink.Parameter;
 struct_Ctrl_Config.Value = data;

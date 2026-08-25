@@ -3,9 +3,14 @@ clear elems;
 
 i = 1;
 elems(i) = Simulink.BusElement;
-elems(i).Name = 'pmsm_Iuvw_A';
+elems(i).Name = 'pmsm_Iuvw_P_A';
 elems(i).DataType = 'single';
-elems(1).Dimensions = '3';
+elems(i).Dimensions = '3';
+i = i + 1;
+elems(i) = Simulink.BusElement;
+elems(i).Name = 'pmsm_Iuvw_I_A';
+elems(i).DataType = 'single';
+elems(i).Dimensions = '3';
 i = i + 1;
 elems(i) = Simulink.BusElement;
 elems(i).Name = 'pmsm_Omega_mech_rad_s';
@@ -34,7 +39,8 @@ clear elems;
 
 % --- Parameter-Definition (Die Werte) ---
 clear data;
-data.pmsm_Iuvw_A = [0,0,0]; % Standard Inverter Modell ist PT1-Übertragungsglied
+data.pmsm_Iuvw_P_A = [0,0,0]; 
+data.pmsm_Iuvw_I_A = [0,0,0]; 
 data.pmsm_Omega_mech_rad_s = 0; % DC link voltage
 data.pmsm_Omega_el_rad_s = 0;
 data.pmsm_theta_mech_rad = 0; % Gain for PT1

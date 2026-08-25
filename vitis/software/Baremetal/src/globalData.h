@@ -100,6 +100,7 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs;
 	uint32_t slowDataCounter;
 	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter;
+	struct uz_JL_SigmaDelta_Interface_output_t_float Sinc3_Filter_2;
 	uz_dpt_state_t dpt_state;
 } actualValues;
 

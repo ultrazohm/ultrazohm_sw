@@ -45,9 +45,13 @@ static void write_config_to_pl(uz_JL_SigmaDelta_Interface_t *self)
     uz_JL_SigmaDelta_Interface_hw_write_clk_ratio(self->config.base_address, self->config.clk_ratio);
     uz_JL_SigmaDelta_Interface_hw_write_data_delay(self->config.base_address, self->config.filt_input_delay);
     uz_JL_SigmaDelta_Interface_hw_write_switch_edge(self->config.base_address, self->config.switch_edge);
+    uz_JL_SigmaDelta_Interface_hw_write_switch_cont_disc(self->config.base_address, self->config.switch_cont_disc);
     uz_JL_SigmaDelta_Interface_hw_write_dezimation(self->config.base_address, self->config.dezimation);
-    uz_JL_SigmaDelta_Interface_hw_write_clk_dsw_en(self->config.base_address, self->config.dsw_clk_en);
     uz_JL_SigmaDelta_Interface_hw_write_clk_dutycycle(self->config.base_address, self->config.clk_dutycycle);
+    uz_JL_SigmaDelta_Interface_hw_write_start_time_us(self->config.base_address, self->config.start_time_us);
+    uz_JL_SigmaDelta_Interface_hw_write_delay_data_valid(self->config.base_address, self->config.delay_data_valid);
+    uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(self->config.base_address, self->config.sinc_sample_periods);
+    uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(self->config.base_address, self->config.use_clk_ext);
 }
 
 void uz_JL_SigmaDelta_Interface_set_data_delay(uz_JL_SigmaDelta_Interface_t *self, uint8_t filt_input_delay)
@@ -64,11 +68,11 @@ void uz_JL_SigmaDelta_Interface_set_switch_edge(uz_JL_SigmaDelta_Interface_t *se
     uz_JL_SigmaDelta_Interface_hw_write_switch_edge(self->config.base_address, switch_edge);
 }
 
-void uz_JL_SigmaDelta_Interface_set_dsw_clk_en(uz_JL_SigmaDelta_Interface_t *self, bool dsw_clk_en)
+void uz_JL_SigmaDelta_Interface_set_switch_cont_disc(uz_JL_SigmaDelta_Interface_t *self, bool switch_cont_disc)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_JL_SigmaDelta_Interface_hw_write_clk_dsw_en(self->config.base_address, dsw_clk_en);
+    uz_JL_SigmaDelta_Interface_hw_write_switch_cont_disc(self->config.base_address, switch_cont_disc);
 }
 
 void uz_JL_SigmaDelta_Interface_set_clk_dutycycle(uz_JL_SigmaDelta_Interface_t *self, float dutycycle)
@@ -76,6 +80,48 @@ void uz_JL_SigmaDelta_Interface_set_clk_dutycycle(uz_JL_SigmaDelta_Interface_t *
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_JL_SigmaDelta_Interface_hw_write_clk_dutycycle(self->config.base_address, dutycycle);
+}
+
+void uz_JL_SigmaDelta_Interface_set_delay_data_valid(uz_JL_SigmaDelta_Interface_t *self, uint8_t delay_data_valid)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_write_delay_data_valid(self->config.base_address, delay_data_valid);
+}
+
+void uz_JL_SigmaDelta_Interface_set_sinc_sample_periods(uz_JL_SigmaDelta_Interface_t *self, uint8_t sinc_sample_periods)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_write_sinc_sample_periods(self->config.base_address, sinc_sample_periods);
+}
+
+void uz_JL_SigmaDelta_Interface_set_use_clk_ext(uz_JL_SigmaDelta_Interface_t *self, bool use_clk_ext)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_write_use_clk_ext(self->config.base_address, use_clk_ext);
+}
+
+bool uz_JL_SigmaDelta_Interface_is_data_valid(uz_JL_SigmaDelta_Interface_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_JL_SigmaDelta_Interface_hw_read_data_valid(self->config.base_address);
+}
+
+void uz_JL_SigmaDelta_Interface_reset_data_valid_cnt(uz_JL_SigmaDelta_Interface_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_JL_SigmaDelta_Interface_hw_reset_data_valid_cnt(self->config.base_address);
+}
+
+uint8_t uz_JL_SigmaDelta_Interface_get_data_valid_cnt(uz_JL_SigmaDelta_Interface_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_JL_SigmaDelta_Interface_hw_read_data_valid_cnt(self->config.base_address);
 }
 
 struct uz_JL_SigmaDelta_Interface_output_t uz_JL_SigmaDelta_Interface_get_outputs(uz_JL_SigmaDelta_Interface_t *self)
@@ -89,6 +135,8 @@ struct uz_JL_SigmaDelta_Interface_output_t uz_JL_SigmaDelta_Interface_get_output
         .data_PH3 = 0,
         .data_PH4 = 0
     };
+    
+
     uz_JL_SigmaDelta_Interface_hw_trigger_output_strobe(self->config.base_address);
     outputs.data_U = uz_JL_SigmaDelta_Interface_hw_read_data_out_U(self->config.base_address);
     outputs.data_PH1 = uz_JL_SigmaDelta_Interface_hw_read_data_out_PH1(self->config.base_address);

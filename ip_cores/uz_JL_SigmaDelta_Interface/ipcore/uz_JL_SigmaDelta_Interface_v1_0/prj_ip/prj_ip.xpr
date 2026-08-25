@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/jonat/Documents/ultrazohm_sw/ip_cores/uz_JL_SigmaDelta_Interface/ipcore/uz_JL_SigmaDelta_Interface_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="772f0a1a5d14496995042fe70fb24cf7"/>
+    <Option Name="Id" Val="611c7a7f63be47b4afd7a614a6435c61"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -155,6 +155,18 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_S_R_Flip_Flop.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_sync_clk_pwm.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_CLk.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -174,6 +186,18 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_gen_slow_clk.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_CLk1.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_JL_SigmaDelta_Interface_src_Subsystem1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 10.10
+ * Model version                  : 10.18
  * Simulink Coder version         : 25.1 (R2025a) 21-Nov-2024
- * C/C++ source code generated on : Wed Aug 19 17:30:40 2026
+ * C/C++ source code generated on : Tue Aug 25 22:54:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -26,7 +26,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "complex_types.h"
-#include "../../include/uz_platform_state_machine.h"
 #endif                                 /* uz_codegen0_COMMON_INCLUDES_ */
 
 #include <string.h>
@@ -63,15 +62,19 @@
 /* Definition for custom storage class: Define */
 #define DIVIDE_ONE_BY_SQRT_THREE       0.577350259F              /* Referenced by: '<S17>/Gain2' */
 #define DIVIDE_SQRT_THREE_BY_TWO       0.866025388F              /* Referenced by:
-                                                                  * '<S29>/Gain5'
-                                                                  * '<S29>/sqrt(3)//2'
+                                                                  * '<S32>/Gain5'
+                                                                  * '<S32>/sqrt(3)//2'
+                                                                  * '<S34>/Gain5'
+                                                                  * '<S34>/sqrt(3)//2'
                                                                   */
 #define DIVIDE_TWO_BY_THREE            0.666666687F              /* Referenced by:
-                                                                  * '<S29>/Gain'
-                                                                  * '<S29>/Gain1'
+                                                                  * '<S32>/Gain'
+                                                                  * '<S32>/Gain1'
+                                                                  * '<S34>/Gain'
+                                                                  * '<S34>/Gain1'
                                                                   */
 #define GAIN_RADS_TO_HZ                0.159154937F              /* Referenced by: '<S11>/Gain' */
-#define GAIN_UMIN_TO_HZ                0.016666666F            /* Referenced by: '<S8>/Gain' */
+#define GAIN_UMIN_TO_HZ                0.0166666675F             /* Referenced by: '<S8>/Gain' */
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
@@ -106,6 +109,7 @@ typedef struct {
   float t_traj;
   float IGBT_dc_min;
   float IGBT_deadtime;
+  bool sel_act_I;
 } Bus_Ctrl_Config;
 
 #endif
@@ -114,7 +118,8 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_Bus_PMSM_Out_
 
 typedef struct {
-  float pmsm_Iuvw_A[3];
+  float pmsm_Iuvw_P_A[3];
+  float pmsm_Iuvw_I_A[3];
   float pmsm_Omega_mech_rad_s;
   float pmsm_Omega_el_rad_s;
   float pmsm_theta_mech_rad;
@@ -139,6 +144,13 @@ typedef enum {
 
 #ifndef DEFINED_TYPEDEF_FOR_platform_state_t_
 #define DEFINED_TYPEDEF_FOR_platform_state_t_
+
+typedef enum {
+  idle_state = 0,                      /* Default value */
+  running_state,
+  control_state,
+  error_state
+} platform_state_t;
 
 #endif
 
@@ -239,14 +251,15 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<S3>/Drehzahlregelung' */
 typedef struct {
-  float UnitDelay_DSTATE;              /* '<S12>/Unit Delay' */
+  float UnitDelay_DSTATE;              /* '<S13>/Unit Delay' */
+  float UnitDelay_DSTATE_i;            /* '<S12>/Unit Delay' */
   bool Drehzahlregelung_MODE;          /* '<S3>/Drehzahlregelung' */
 } DW_Drehzahlregelung;
 
 /* Block signals and states (default storage) for system '<S3>/Stromregelung' */
 typedef struct {
-  float UnitDelay_DSTATE;              /* '<S24>/Unit Delay' */
-  float UnitDelay_DSTATE_i;            /* '<S25>/Unit Delay' */
+  float UnitDelay_DSTATE;              /* '<S25>/Unit Delay' */
+  float UnitDelay_DSTATE_i;            /* '<S26>/Unit Delay' */
 } DW_Stromregelung;
 
 /* Block signals and states (default storage) for system '<S1>/Regelung' */
@@ -280,17 +293,23 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  Bus_PMSM_Out Bus_PMSM_Out_m;         /* '<Root>/Bus_Live_Out_PMSM' */
-  Bus_ZM_In Bus_ZM_In_g;               /* '<Root>/Bus_ZM_In' */
+  Bus_PMSM_Out Bus_PMSM_Out_f;         /* '<Root>/Bus_Live_Out_PMSM' */
+  Bus_ZM_In Bus_ZM_In_j;               /* '<Root>/Bus_ZM_In' */
+  bool trigger_actI_I_calc;            /* '<Root>/trigger_actI_I_calc' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  Bus_Ctrl_Out Bus_Ctrl_Out_m;         /* '<Root>/Bus_Ctrl_Out' */
+  Bus_Ctrl_Out Bus_Ctrl_Out_f;         /* '<Root>/Bus_Ctrl_Out' */
   float Soll_Moment;                   /* '<Root>/Soll_Moment' */
   float IQRef;                         /* '<Root>/IQRef' */
   float ctrl_omega;                    /* '<Root>/ctrl_omega' */
   float soll_omega;                    /* '<Root>/soll_omega' */
+  float Ist_Iq;                        /* '<Root>/Ist_Iq' */
+  float act_id_I;                      /* '<Root>/act_id_I,' */
+  float act_iq_I;                      /* '<Root>/act_iq_I' */
+  float act_id_P;                      /* '<Root>/act_id_P' */
+  float ref_Id;                        /* '<Root>/ref_Id' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -321,25 +340,27 @@ extern Bus_Ctrl_Config struct_Ctrl_Config;/* Variable: struct_Ctrl_Config
                                            *   '<S5>/Switch2'
                                            *   '<S5>/Switch3'
                                            *   '<S5>/Switch4'
+                                           *   '<S9>/Constant2'
                                            *   '<S9>/Constant3'
                                            *   '<S12>/Constant'
                                            *   '<S12>/Constant1'
                                            *   '<S12>/Constant3'
-                                           *   '<S24>/Constant'
-                                           *   '<S24>/Constant1'
-                                           *   '<S24>/Constant3'
+                                           *   '<S13>/Constant3'
                                            *   '<S25>/Constant'
                                            *   '<S25>/Constant1'
                                            *   '<S25>/Constant3'
+                                           *   '<S26>/Constant'
+                                           *   '<S26>/Constant1'
+                                           *   '<S26>/Constant3'
                                            */
 extern Bus_PMSM_Config struct_PMSM_Config;/* Variable: struct_PMSM_Config
                                            * Referenced by:
                                            *   '<S11>/Constant'
-                                           *   '<S18>/Constant'
-                                           *   '<S20>/Gain'
-                                           *   '<S22>/Constant'
+                                           *   '<S19>/Constant'
                                            *   '<S23>/Constant'
-                                           *   '<S23>/Constant1'
+                                           *   '<S24>/Constant'
+                                           *   '<S24>/Constant1'
+                                           *   '<S31>/Gain'
                                            */
 extern Bus_Inv_Config struct_Inv_Config;/* Variable: struct_Inv_Config
                                          * Referenced by:
@@ -356,21 +377,13 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  *
  * Block '<S10>/Compare' : Unused code path elimination
  * Block '<S10>/Constant' : Unused code path elimination
- * Block '<S13>/Data Type Duplicate' : Unused code path elimination
- * Block '<S13>/Data Type Propagation' : Unused code path elimination
- * Block '<S27>/Data Type Duplicate' : Unused code path elimination
- * Block '<S27>/Data Type Propagation' : Unused code path elimination
+ * Block '<S14>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S14>/Data Type Propagation' : Unused code path elimination
  * Block '<S28>/Data Type Duplicate' : Unused code path elimination
  * Block '<S28>/Data Type Propagation' : Unused code path elimination
- * Block '<S12>/Cast To Single' : Eliminate redundant data type conversion
- * Block '<S12>/Cast To Single1' : Eliminate redundant data type conversion
- * Block '<S12>/Cast To Single2' : Eliminate redundant data type conversion
- * Block '<S24>/Cast To Single' : Eliminate redundant data type conversion
- * Block '<S24>/Cast To Single1' : Eliminate redundant data type conversion
- * Block '<S24>/Cast To Single2' : Eliminate redundant data type conversion
- * Block '<S25>/Cast To Single' : Eliminate redundant data type conversion
- * Block '<S25>/Cast To Single1' : Eliminate redundant data type conversion
- * Block '<S25>/Cast To Single2' : Eliminate redundant data type conversion
+ * Block '<S29>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S29>/Data Type Propagation' : Unused code path elimination
+ * Block '<S11>/Constant1' : Unused code path elimination
  */
 
 /*-
@@ -403,25 +416,30 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * '<S10>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/CMP_Ctrl_Traj'
  * '<S11>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/Drehzahlregelung'
  * '<S12>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/Drehzahlregelung/PI-Ctrl'
- * '<S13>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/Drehzahlregelung/PI-Ctrl/Saturation Dynamic'
- * '<S14>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Compare To Constant'
- * '<S15>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Compare To Constant1'
- * '<S16>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Compare To Constant2'
+ * '<S13>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/Drehzahlregelung/n_filt'
+ * '<S14>'  : 'uz_codegen/uz_codegen/Regelung/Drehzahlregelung/Drehzahlregelung/PI-Ctrl/Saturation Dynamic'
+ * '<S15>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Compare To Constant'
+ * '<S16>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Compare To Constant1'
  * '<S17>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl'
- * '<S18>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Ueberstromabschaltung'
- * '<S19>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq'
- * '<S20>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/calcIq'
- * '<S21>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/dq_zu_alphabeta'
- * '<S22>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/DecouplingD'
- * '<S23>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/DecouplingQ'
- * '<S24>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl'
- * '<S25>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl1'
- * '<S26>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/volategeLimitation'
- * '<S27>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl/Saturation Dynamic'
- * '<S28>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl1/Saturation Dynamic'
- * '<S29>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq/Clarke-Transformation'
- * '<S30>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq/Park-Transformation'
- * '<S31>'  : 'uz_codegen/uz_codegen/Zustandsmaschine/state_chart'
+ * '<S18>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Subsystem'
+ * '<S19>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Ueberstromabschaltung'
+ * '<S20>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq'
+ * '<S21>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq1'
+ * '<S22>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/dq_zu_alphabeta'
+ * '<S23>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/DecouplingD'
+ * '<S24>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/DecouplingQ'
+ * '<S25>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl'
+ * '<S26>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl1'
+ * '<S27>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/volategeLimitation'
+ * '<S28>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl/Saturation Dynamic'
+ * '<S29>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/IDQCtrl/PI-Ctrl1/Saturation Dynamic'
+ * '<S30>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Subsystem/Compare To Constant2'
+ * '<S31>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/Subsystem/calcIq'
+ * '<S32>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq/Clarke-Transformation'
+ * '<S33>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq/Park-Transformation'
+ * '<S34>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq1/Clarke-Transformation'
+ * '<S35>'  : 'uz_codegen/uz_codegen/Regelung/Stromregelung/abc_zu_dq1/Park-Transformation'
+ * '<S36>'  : 'uz_codegen/uz_codegen/Zustandsmaschine/state_chart'
  */
 
 /*-

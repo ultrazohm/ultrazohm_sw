@@ -53,6 +53,12 @@ enum JS_OberservableData {
 	JSO_ctrl_Soll_Moment,
 	JSO_ctrl_soll_omega,
 	JSO_ctrl_ist_omega,
+	JSO_data_valid,
+	JSO_ctrl_Ist_Iq,
+	JSO_ctrl_act_id_I,
+	JSO_ctrl_act_iq_I,
+	JSO_ctrl_act_id_P,
+	JSO_ctrl_ref_Id,
 	JSO_ENDMARKER
 };
 

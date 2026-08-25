@@ -60,6 +60,7 @@ static void update_adapter_d3(void);
 static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
+void update_temperatures_round_robin(void);
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -80,6 +81,7 @@ void ISR_Control(void *data)
     update_adapter_d3();
     update_adapter_d4();
     update_adapter_d5();
+    update_temperatures_round_robin();
 
     // Current mapping
     Global_Data.m1_phase_voltage.a = VOLTAGE_TO_VOLTS * Global_Data.av.adc_ltc2311_a1_ch3;
@@ -601,5 +603,124 @@ static void uz_r5_gic_reset_active_pl_interrupts(XScuGic *Gic)
             XScuGic_CPUWriteReg(Gic, XSCUGIC_EOI_OFFSET, (id & XSCUGIC_EOI_INTID_MASK));
             uz_printf("RPU: GIC Cleared ACTIVE for PL interrupt ID %u\r\n", (unsigned long)id);
         }
+    }
+}
+
+void update_temperatures_round_robin(void)
+{
+    static uint32_t temp_counter = 0U;
+    linear_interpolation_parameters_t linear_interpolation_params = {
+        .a = -289.01f,
+        .b = 218.72f};
+        
+    switch (temp_counter)
+    {
+    case 0U:
+        Global_Data.av.temp_m1_h1 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m1_h1),
+                linear_interpolation_params);
+        break;
+
+    case 1U:
+        Global_Data.av.temp_m1_h2 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m1_h2),
+                linear_interpolation_params);
+        break;
+
+    case 2U:
+        Global_Data.av.temp_m1_h3 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m1_h3),
+                linear_interpolation_params);
+        break;
+
+    case 3U:
+        Global_Data.av.temp_m2_h1 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m2_h1),
+                linear_interpolation_params);
+        break;
+
+    case 4U:
+        Global_Data.av.temp_m2_h2 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m2_h2),
+                linear_interpolation_params);
+        break;
+
+    case 5U:
+        Global_Data.av.temp_m2_h3 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m2_h3),
+                linear_interpolation_params);
+        break;
+
+    case 6U:
+        Global_Data.av.temp_m3_h1 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m3_h1),
+                linear_interpolation_params);
+        break;
+
+    case 7U:
+        Global_Data.av.temp_m3_h2 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m3_h2),
+                linear_interpolation_params);
+        break;
+
+    case 8U:
+        Global_Data.av.temp_m3_h3 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m3_h3),
+                linear_interpolation_params);
+        break;
+
+    case 9U:
+        Global_Data.av.temp_m4_h1 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m4_h1),
+                linear_interpolation_params);
+        break;
+
+    case 10U:
+        Global_Data.av.temp_m4_h2 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m4_h2),
+                linear_interpolation_params);
+        break;
+
+    case 11U:
+        Global_Data.av.temp_m4_h3 =
+            uz_PWM_duty_freq_detection_get_Temperature_in_degree_C(
+                uz_PWM_duty_freq_detection_get_duty_cycle_normalized(
+                    Global_Data.objects.temp_m4_h3),
+                linear_interpolation_params);
+        break;
+
+    default:
+        /* Defensive reset in case temp_counter becomes invalid. */
+        temp_counter = 0U;
+        return;
+    }
+
+    temp_counter++;
+
+    if (temp_counter >= 12U)
+    {
+        temp_counter = 0U;
     }
 }

@@ -17,6 +17,7 @@
 #include "include/d4_adapter_init.h"
 #include "include/d5_adapter_init.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 
 typedef struct _actualValues_
 {
@@ -92,6 +93,18 @@ typedef struct _actualValues_
 	struct uz_pmsm_measurement_values m2_measurements;
 	struct uz_pmsm_measurement_values m3_measurements;
 	struct uz_pmsm_measurement_values m4_measurements;
+	float temp_m1_h1;
+	float temp_m1_h2;
+	float temp_m1_h3;
+	float temp_m2_h1;
+	float temp_m2_h2;
+	float temp_m2_h3;
+	float temp_m3_h1;
+	float temp_m3_h2;
+	float temp_m3_h3;
+	float temp_m4_h1;
+	float temp_m4_h2;
+	float temp_m4_h3;
 	/* Project Wizard END: actualValues */
 } actualValues;
 
@@ -163,6 +176,18 @@ typedef struct{
 	struct uz_pmsm_reference_values *m2_reference_values;
 	struct uz_pmsm_reference_values *m3_reference_values;
 	struct uz_pmsm_reference_values *m4_reference_values;
+	uz_PWM_duty_freq_detection_t* temp_m1_h1;
+	uz_PWM_duty_freq_detection_t* temp_m1_h2;
+	uz_PWM_duty_freq_detection_t* temp_m1_h3;
+	uz_PWM_duty_freq_detection_t *temp_m2_h1;
+	uz_PWM_duty_freq_detection_t *temp_m2_h2;
+	uz_PWM_duty_freq_detection_t *temp_m2_h3;
+	uz_PWM_duty_freq_detection_t *temp_m3_h1;
+	uz_PWM_duty_freq_detection_t *temp_m3_h2;
+	uz_PWM_duty_freq_detection_t *temp_m3_h3;
+	uz_PWM_duty_freq_detection_t *temp_m4_h1;
+	uz_PWM_duty_freq_detection_t *temp_m4_h2;
+	uz_PWM_duty_freq_detection_t *temp_m4_h3;
 	/* Project Wizard END: objects */
 }object_pointers_t;
 

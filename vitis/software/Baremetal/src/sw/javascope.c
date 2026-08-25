@@ -195,7 +195,19 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_N_MECH_RPM] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_n_mech_rpm;
 	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_OMEGA_EL_RAD_S] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_omega_el_rad_s;
 	js_ch_observable[JSO_RESOLVER_PL_D5_CH2_REVOLUTION_COUNTER] = &project_wizard_visualization_data.viz_resolver_pl_interface_d5_2_revolution_counter;
-/* Project Wizard END: javascope_observable_pointers */
+	js_ch_observable[JSO_M1_TMP_H1]=&data->av.temp_m1_h1;
+	js_ch_observable[JSO_M1_TMP_H2]=&data->av.temp_m1_h2;
+	js_ch_observable[JSO_M1_TMP_H3]=&data->av.temp_m1_h3;
+	js_ch_observable[JSO_M2_TMP_H1]=&data->av.temp_m2_h1;
+	js_ch_observable[JSO_M2_TMP_H2]=&data->av.temp_m2_h2;
+	js_ch_observable[JSO_M2_TMP_H3]=&data->av.temp_m2_h3;
+	js_ch_observable[JSO_M3_TMP_H1]=&data->av.temp_m3_h1;
+	js_ch_observable[JSO_M3_TMP_H2]=&data->av.temp_m3_h2;
+	js_ch_observable[JSO_M3_TMP_H3]=&data->av.temp_m3_h3;
+	js_ch_observable[JSO_M4_TMP_H1]=&data->av.temp_m4_h1;
+	js_ch_observable[JSO_M4_TMP_H2]=&data->av.temp_m4_h2;
+	js_ch_observable[JSO_M4_TMP_H3]=&data->av.temp_m4_h3;
+	/* Project Wizard END: javascope_observable_pointers */
 	js_ch_observable[JSO_D3_INPUT_LOOPBACK_UINT32] = &data->av.d3_input_loopback_uint32;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -206,8 +218,20 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-/* Project Wizard BEGIN: javascope_slowdata_pointers */
-/* Project Wizard END: javascope_slowdata_pointers */
+	js_slowDataArray[JSSD_FLOAT_M1_TMP_H1] = &data->av.temp_m1_h1;
+	js_slowDataArray[JSSD_FLOAT_M1_TMP_H2] = &data->av.temp_m1_h2;
+	js_slowDataArray[JSSD_FLOAT_M1_TMP_H3] = &data->av.temp_m1_h3;
+	js_slowDataArray[JSSD_FLOAT_M2_TMP_H1] = &data->av.temp_m2_h1;
+	js_slowDataArray[JSSD_FLOAT_M2_TMP_H2] = &data->av.temp_m2_h2;
+	js_slowDataArray[JSSD_FLOAT_M2_TMP_H3] = &data->av.temp_m2_h3;
+	js_slowDataArray[JSSD_FLOAT_M3_TMP_H1] = &data->av.temp_m3_h1;
+	js_slowDataArray[JSSD_FLOAT_M3_TMP_H2] = &data->av.temp_m3_h2;
+	js_slowDataArray[JSSD_FLOAT_M3_TMP_H3] = &data->av.temp_m3_h3;
+	js_slowDataArray[JSSD_FLOAT_M4_TMP_H1] = &data->av.temp_m4_h1;
+	js_slowDataArray[JSSD_FLOAT_M4_TMP_H2] = &data->av.temp_m4_h2;
+	js_slowDataArray[JSSD_FLOAT_M4_TMP_H3] = &data->av.temp_m4_h3;
+	/* Project Wizard BEGIN: javascope_slowdata_pointers */
+	/* Project Wizard END: javascope_slowdata_pointers */
 
 	return Status;
 }

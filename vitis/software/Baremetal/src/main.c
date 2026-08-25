@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 #include "include/deskbench_control.h"
+#include "xparameters.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -58,6 +59,23 @@ enum init_chain initialization_chain = init_assertions;
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
+
+struct uz_PWM_duty_freq_detection_config_t temp_m1_h1_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_0_BASEADDR,.ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m1_h2_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_1_BASEADDR,.ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m1_h3_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_2_BASEADDR,.ip_clk_frequency_Hz = 100000000U};
+
+struct uz_PWM_duty_freq_detection_config_t temp_m2_h1_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_3_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m2_h2_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_4_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m2_h3_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_5_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+
+struct uz_PWM_duty_freq_detection_config_t temp_m3_h1_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_6_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m3_h2_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_7_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m3_h3_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_8_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+
+struct uz_PWM_duty_freq_detection_config_t temp_m4_h1_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_9_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m4_h2_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_10_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+struct uz_PWM_duty_freq_detection_config_t temp_m4_h3_config = {.base_address = XPAR_UZ_DIGITAL_ADAPTER_D3_ADAPTER_UZ_PWMDUTYFREQDETECT_11_BASEADDR, .ip_clk_frequency_Hz = 100000000U};
+
 
 int main(void)
 {
@@ -132,6 +150,18 @@ int main(void)
             Global_Data.objects.m2_sine = uz_wavegen_three_phase_init();
             Global_Data.objects.m3_sine = uz_wavegen_three_phase_init();
             Global_Data.objects.m4_sine = uz_wavegen_three_phase_init();
+            Global_Data.objects.temp_m1_h1 = uz_PWM_duty_freq_detection_init(temp_m1_h1_config);
+            Global_Data.objects.temp_m1_h2 = uz_PWM_duty_freq_detection_init(temp_m1_h2_config);
+            Global_Data.objects.temp_m1_h3 = uz_PWM_duty_freq_detection_init(temp_m1_h3_config);
+            Global_Data.objects.temp_m2_h1 = uz_PWM_duty_freq_detection_init(temp_m2_h1_config);
+            Global_Data.objects.temp_m2_h2 = uz_PWM_duty_freq_detection_init(temp_m2_h2_config);
+            Global_Data.objects.temp_m2_h3 = uz_PWM_duty_freq_detection_init(temp_m2_h3_config);
+            Global_Data.objects.temp_m3_h1 = uz_PWM_duty_freq_detection_init(temp_m3_h1_config);
+            Global_Data.objects.temp_m3_h2 = uz_PWM_duty_freq_detection_init(temp_m3_h2_config);
+            Global_Data.objects.temp_m3_h3 = uz_PWM_duty_freq_detection_init(temp_m3_h3_config);
+            Global_Data.objects.temp_m4_h1 = uz_PWM_duty_freq_detection_init(temp_m4_h1_config);
+            Global_Data.objects.temp_m4_h2 = uz_PWM_duty_freq_detection_init(temp_m4_h2_config);
+            Global_Data.objects.temp_m4_h3 = uz_PWM_duty_freq_detection_init(temp_m4_h3_config);
             deskbench_control_init(&Global_Data);
             JavaScope_initialize(&Global_Data);
                 /* Project Wizard END: init_ip_cores */

@@ -354,15 +354,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 2 - Error LED */
+	bool const state_machine_error_led = ultrazohm_state_get_led_error();
 #if HIOKI_PW8001_CAN_ACTIVE == 1
 	bool const hioki_can_working = data->av.hioki_pw8001_can_connection_working > 0.5f;
-	if (ultrazohm_state_get_led_error() || !hioki_can_working) {
+	bool const show_physical_error_led = state_machine_error_led || !hioki_can_working;
 #else
-	if (ultrazohm_state_get_led_error()) {
+	bool const show_physical_error_led = state_machine_error_led;
 #endif
+	if (show_physical_error_led) {
 		js_status_BareToRTOS |= 1 << 2;
+		uz_led_set_errorLED_on();
 	} else {
 		js_status_BareToRTOS &= ~(1 << 2);
+		uz_led_set_errorLED_off();
 	}
 
 	/* Bit 3 - User LED */

@@ -155,7 +155,6 @@ int main()
 			#if HIOKI_PW8001_CAN_ACTIVE == 1
 			uz_printf("APU: Init CAN \r\n"); // CAN interface
 			can_instance_0 = uz_can_init(can_config_0); // CAN 0 interface
-			can_instance_1 = uz_can_init(can_config_1); // CAN 1 interface
 
 			#endif
 			// Start the main thread
@@ -400,11 +399,6 @@ int main_thread()
 				   THREAD_PRIO_CAN);
 	xil_printf("APU: CAN-Thread0 started\r\n");
 
-	sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
-				   THREAD_STACKSIZE,
-				   THREAD_PRIO_CAN);
-
-	xil_printf("APU: CAN-Thread1 started\r\n");
 #endif
 
 #if LWIP_DHCP==1

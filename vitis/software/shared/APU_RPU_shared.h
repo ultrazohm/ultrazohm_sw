@@ -12,7 +12,7 @@
 #define JAVASCOPE_DATA_SIZE sizeof(struct javascope_data_t)
 
 /** Set to 1 to initialize CAN and enable the temporary HIOKI CAN LED diagnostic. */
-#define HIOKI_PW8001_CAN_ACTIVE 0
+#define HIOKI_PW8001_CAN_ACTIVE 1
 
 // Experimental feature - read docs before use
 #define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE

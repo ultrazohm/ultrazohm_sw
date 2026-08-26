@@ -182,6 +182,8 @@ Guideline
             chirp_output2 = uz_wavegen_chirp_sample(chirp_instance2);
             chirp_output3 = uz_wavegen_chirp_sample(chirp_instance3);
          }
+         // This snippet shows the legacy/manual PWM integration flow.
+         // Project Wizard generated PWM designs use project_wizard_update_pwm_outputs().
          uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
          // Set duty cycles for three-level modulator
          PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

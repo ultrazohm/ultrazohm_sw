@@ -27,8 +27,20 @@
 void        uz_TempCard_IF_hw_Reset(uint32_t base_address);                         	// Resets the Interface-IP to write new Channel configs
 void        uz_TempCard_IF_hw_Start(uint32_t base_address);                         	// Starts the Interface-IP
 void        uz_TempCard_IF_hw_Stop(uint32_t base_address);                          	// Stops the Interface-IP
-uint32_t    uz_TempCard_IF_hw_readErrorReg(uint32_t base_address);                  	// reads the Error_Register
-uint32_t    uz_TempCard_IF_hw_readReadbackReg(uint32_t base_address);               	// reads the IP-Core Readback
+/**
+ * @brief Read the internal error register of the temperature card interface IP.
+ *
+ * @param base_address Base address of the temperature card interface IP
+ * @return Internal error register value
+ */
+uint32_t    uz_TempCard_IF_hw_readErrorReg(uint32_t base_address);
+/**
+ * @brief Read the design readback register of the temperature card interface IP.
+ *
+ * @param base_address Base address of the temperature card interface IP
+ * @return Readback register value
+ */
+uint32_t    uz_TempCard_IF_hw_readReadbackReg(uint32_t base_address);
 void        uz_TempCard_IF_hw_writeReg(uint32_t base_address,uint32_t data);            // write one Register
 uint32_t    uz_TempCard_IF_hw_readReg(uint32_t base_address);                       	// read one Register
 void        uz_TempCard_IF_hw_writeCounterReg(uint32_t base_address,uint32_t data);     // write the Counter Register

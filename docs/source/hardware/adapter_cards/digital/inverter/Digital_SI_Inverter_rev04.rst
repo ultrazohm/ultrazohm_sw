@@ -177,6 +177,11 @@ Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an 
 A safe value with a considerable safety margin is ``200ns``. 
 No matter what, the deadtime should not be lower than ``150ns``.
 
+.. note::
+
+   This describes the legacy/manual integration flow.
+   Project Wizard generated PWM designs configure the deadtime instances in ``include/pwm_init.h`` and ``hw_init/pwm_init.c``.
+
 .. code-block:: c
  :caption: set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file. Shown is an example for the D1 slot.
 

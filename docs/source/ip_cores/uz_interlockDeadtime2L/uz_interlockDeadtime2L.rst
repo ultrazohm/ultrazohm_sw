@@ -33,6 +33,11 @@ The driver interface is located in ``uz_interlockDeadtime2L.h`` and has four pub
 
 Additionally, the static allocator has to be used for initialization and allocation of instances of the struct.
 
+.. note::
+
+   The static allocator example below describes the legacy/manual integration flow.
+   Project Wizard generated PWM designs create the interlock instances in ``include/pwm_init.h`` and ``hw_init/pwm_init.c``.
+
 How-to use
 ----------
 

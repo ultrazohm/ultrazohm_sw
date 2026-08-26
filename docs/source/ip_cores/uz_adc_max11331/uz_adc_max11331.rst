@@ -182,7 +182,7 @@ Example initialization of three IP-Core driver instances:
                    .fractional_bits = DEFAULT_MAX11331_FRACTIONAL_BITS},
                .offset = DEFAULT_MAX11331_OFFSET,
            },
-           .trigger_mode=pl_trigger,
+           .trigger_mode = UZ_ADCMAX11331_PL_TRIGGER,
            .cpol = 1U,
            .cpha = 1U,
            .master_select = UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2  | UZ_ADCMAX11331_MASTER3,

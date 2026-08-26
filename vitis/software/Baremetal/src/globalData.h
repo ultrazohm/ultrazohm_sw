@@ -7,7 +7,6 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
-#include "uz/uz_signals/uz_signals.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -67,36 +66,26 @@ typedef struct _actualValues_ {
 	float adc_max11331_a3_ch22;
 	float adc_max11331_a3_ch23;
 	uint32_t io_card_d1_state;
-	struct uz_inverter_adapter_outputs_t inverter_adapter_d2;
-	uz_temperaturecard_OneGroup temperature_card_d3_channel_A;
-	uz_temperaturecard_OneGroup temperature_card_d3_channel_B;
-	uz_temperaturecard_OneGroup temperature_card_d3_channel_C;
-	int32_t resolver_pl_interface_d4_1_revolution_counter;
-	float resolver_pl_interface_d4_1_position_mech_2pi;
-	float resolver_pl_interface_d4_1_position_el_2pi;
-	float resolver_pl_interface_d4_1_omega_mech_rad_s;
-	float resolver_pl_interface_d4_1_n_mech_rpm;
-	float resolver_pl_interface_d4_1_omega_el_rad_s;
-	float resolver_ip_d4_2_position_mech_2pi;
-	float resolver_ip_d4_2_position_el_2pi;
-	float resolver_ip_d4_2_omega_mech_rad_s;
-	float resolver_ip_d4_2_n_mech_rpm;
-	float resolver_ip_d4_2_omega_el_rad_s;
-	float resolver_ip_d4_3_position_mech_2pi;
-	float resolver_ip_d4_3_position_el_2pi;
-	float resolver_ip_d4_3_omega_mech_rad_s;
-	float resolver_ip_d4_3_n_mech_rpm;
-	float resolver_ip_d4_3_omega_el_rad_s;
-	uint32_t endat_encoder_d5_1_position_raw_single_turn;
-	uint32_t endat_encoder_d5_1_position_raw_multi_turn;
-	uint32_t endat_encoder_d5_1_position_multi_turn;
-	float endat_encoder_d5_1_position_mech_si_single_turn;
-	float endat_encoder_d5_1_position_el_si_single_turn;
-	float endat_encoder_d5_1_speed_mech_si;
-	float endat_encoder_d5_1_speed_el_si;
-	float endat_encoder_d5_1_speed_mech_rpm;
+	uint32_t io_card_d2_state;
+	float incremental_encoder_d5_1_theta_el;
+	float incremental_encoder_d5_1_omega_mech;
+	float incremental_encoder_d5_1_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d5_1_position;
+	uint32_t incremental_encoder_d5_1_position_w_offset;
+	uint32_t incremental_encoder_d5_1_index_found;
+	float incremental_encoder_d5_2_theta_el;
+	float incremental_encoder_d5_2_omega_mech;
+	float incremental_encoder_d5_2_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d5_2_position;
+	uint32_t incremental_encoder_d5_2_position_w_offset;
+	uint32_t incremental_encoder_d5_2_index_found;
+	float incremental_encoder_d5_3_theta_el;
+	float incremental_encoder_d5_3_omega_mech;
+	float incremental_encoder_d5_3_omega_mech_ma_n4;
+	uint32_t incremental_encoder_d5_3_position;
+	uint32_t incremental_encoder_d5_3_position_w_offset;
+	uint32_t incremental_encoder_d5_3_index_found;
 /* Project Wizard END: actualValues */
-	float iir_1_out;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -133,25 +122,13 @@ typedef struct{
 	uz_wavegen_three_phase* three_phase_sine;
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
-	uz_wavegen_sine_t* dac8831_a2_ch0_sine;
-	uz_wavegen_sawtooth_t* dac8831_a2_ch1_sawtooth;
-	uz_wavegen_triangle_t* dac8831_a2_ch2_triangle;
-	uz_wavegen_square_t* dac8831_a2_ch3_square;
-	uz_wavegen_pulse_t* dac8831_a2_ch4_pulse;
-	uz_wavegen_sine_t* dac8831_a2_ch5_sine;
-	uz_wavegen_sawtooth_t* dac8831_a2_ch6_sawtooth;
-	uz_wavegen_triangle_t* dac8831_a2_ch7_triangle;
 	uz_adcMax11331_t* adc_max11331_a3;
 	uz_axi_gpio_t* axi_gpio_d1;
-	uz_inverter_adapter_t* inverter_adapter_d2;
-	uz_temperaturecard_t* temperature_card_d3;
-	uz_resolverIP_t* resolver_ip_d4_1;
-	uz_resolver_pl_interface_t* resolver_pl_interface_d4_1;
-	uz_resolverIP_t* resolver_ip_d4_2;
-	uz_resolverIP_t* resolver_ip_d4_3;
-	uz_endat_interface_t* endat_encoder_d5_1;
+	uz_axi_gpio_t* axi_gpio_d2;
+	uz_incrementalEncoder_t* incremental_encoder_d5_1;
+	uz_incrementalEncoder_t* incremental_encoder_d5_2;
+	uz_incrementalEncoder_t* incremental_encoder_d5_3;
 /* Project Wizard END: objects */
-	uz_IIR_Filter_t* iir_1_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

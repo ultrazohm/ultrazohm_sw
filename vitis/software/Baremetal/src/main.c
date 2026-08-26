@@ -58,12 +58,6 @@ enum init_chain initialization_chain = init_assertions;
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
-struct uz_IIR_Filter_config iir_1_config = {
-		.cutoff_frequency_Hz = 0.1f,
-		.sample_frequency_Hz = 10000.0f,
-		.selection = LowPass_first_order
-};
-
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -101,7 +95,6 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
-            Global_Data.objects.iir_1_instance = uz_signals_IIR_Filter_init(iir_1_config);
             break;
         case init_ip_cores:
             /* Project Wizard BEGIN: init_ip_cores */
@@ -121,27 +114,12 @@ int main(void)
 			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
-			Global_Data.objects.dac8831_a2_ch0_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch1_sawtooth = uz_wavegen_sawtooth_init();
-			Global_Data.objects.dac8831_a2_ch2_triangle = uz_wavegen_triangle_init();
-			Global_Data.objects.dac8831_a2_ch3_square = uz_wavegen_square_init();
-			Global_Data.objects.dac8831_a2_ch4_pulse = uz_wavegen_pulse_init();
-			Global_Data.objects.dac8831_a2_ch5_sine = uz_wavegen_sine_init();
-			Global_Data.objects.dac8831_a2_ch6_sawtooth = uz_wavegen_sawtooth_init();
-			Global_Data.objects.dac8831_a2_ch7_triangle = uz_wavegen_triangle_init();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
-			Global_Data.objects.inverter_adapter_d2 = initialize_inverter_adapter_d2();
-			Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
-			uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
-			uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
-			Global_Data.objects.resolver_ip_d4_1 = initialize_resolver_ip_d4_1();
-			Global_Data.objects.resolver_pl_interface_d4_1 = initialize_resolver_pl_interface_d4_1();
-			Global_Data.objects.resolver_ip_d4_2 = initialize_resolver_ip_d4_2();
-			Global_Data.objects.resolver_ip_d4_3 = initialize_resolver_ip_d4_3();
-			Global_Data.objects.endat_encoder_d5_1 = initialize_endat_encoder_d5_1();
-			uz_endat_interface_set_mode_command(Global_Data.objects.endat_encoder_d5_1, uz_endat_interface_send_position);
-			uz_endat_interface_enable_ip(Global_Data.objects.endat_encoder_d5_1, true);
+			Global_Data.objects.axi_gpio_d2 = initialize_axi_gpio_d2();
+			Global_Data.objects.incremental_encoder_d5_1 = initialize_incremental_encoder_d5_1();
+			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
+			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

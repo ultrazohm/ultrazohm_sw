@@ -1,25 +1,61 @@
 #include "../include/d5_adapter_init.h"
 
 /* Project Wizard BEGIN: D5 definitions */
-/* Project Wizard generated content for D5 channel 1 */
+/* Project Wizard generated content for D5 incremental encoder channel 1 */
 #include "xparameters.h"
 
-static struct uz_endat_interface_config_t endat_encoder_d5_1_config = {
-    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_ENDAT_INTERFACE_D5_CHANNEL_1_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000U,
-    .machine_polepairs = 2U,
-    .endat_clk_frequency_Hz = 2500000U,
-    .position_mech_offset_si_single_turn = -1.0f,
-    .endat_encoder_bit_width_single_turn = 25U,
-    .endat_encoder_bit_width_multi_turn = 12U,
-    .kp_pll = 628.3185f,
-    .ki_pll = 98696.0f,
-    .sampling_interval_seconds = 0.0001f,
-    .delay_sampling_in_clk_ticks = 0U
+static struct uz_incrementalEncoder_config incremental_encoder_d5_1_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_D5_1_BASEADDR,
+    .ip_core_frequency_Hz = 100000000U,
+    .line_number_per_turn_mech = 5000U,
+    .OmegaPerOverSample_in_rpm = 500.0f,
+    .drive_pole_pair = 4U,
+    .Encoder_mech_Offset = 0U,
+    .Encoder_elec_Offset = 0U,
+    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
+    .Speed_Timeout_ms = 10U
 };
 
-uz_endat_interface_t* initialize_endat_encoder_d5_1(void)
+uz_incrementalEncoder_t* initialize_incremental_encoder_d5_1(void)
 {
-    return uz_endat_interface_init(endat_encoder_d5_1_config);
+    return uz_incrementalEncoder_init(incremental_encoder_d5_1_config);
+}
+/* Project Wizard generated content for D5 incremental encoder channel 2 */
+#include "xparameters.h"
+
+static struct uz_incrementalEncoder_config incremental_encoder_d5_2_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_D5_2_BASEADDR,
+    .ip_core_frequency_Hz = 100000000U,
+    .line_number_per_turn_mech = 5000U,
+    .OmegaPerOverSample_in_rpm = 500.0f,
+    .drive_pole_pair = 4U,
+    .Encoder_mech_Offset = 0U,
+    .Encoder_elec_Offset = 0U,
+    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
+    .Speed_Timeout_ms = 10U
+};
+
+uz_incrementalEncoder_t* initialize_incremental_encoder_d5_2(void)
+{
+    return uz_incrementalEncoder_init(incremental_encoder_d5_2_config);
+}
+/* Project Wizard generated content for D5 incremental encoder channel 3 */
+#include "xparameters.h"
+
+static struct uz_incrementalEncoder_config incremental_encoder_d5_3_config = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_D5_3_BASEADDR,
+    .ip_core_frequency_Hz = 100000000U,
+    .line_number_per_turn_mech = 5000U,
+    .OmegaPerOverSample_in_rpm = 500.0f,
+    .drive_pole_pair = 4U,
+    .Encoder_mech_Offset = 0U,
+    .Encoder_elec_Offset = 0U,
+    .counting_direction = uz_incrementalEncoder_counting_clock_wise,
+    .Speed_Timeout_ms = 10U
+};
+
+uz_incrementalEncoder_t* initialize_incremental_encoder_d5_3(void)
+{
+    return uz_incrementalEncoder_init(incremental_encoder_d5_3_config);
 }
 /* Project Wizard END: D5 definitions */

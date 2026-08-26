@@ -12,14 +12,14 @@ static struct uz_adcLtc2311_config_t config_adc_ltc2311_a1 = {
     .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
     .ip_clk_frequency_Hz = 100000000U,
     .software_raw_to_physical_value_factor = {
-        2506.6f,
-        2506.6f,
-        2506.6f,
-        2506.6f,
-        119.8f,
-        119.8f,
-        119.8f,
-        119.8f},
+        10.0f,
+        10.0f,
+        10.0f,
+        10.0f,
+        10.0f,
+        10.0f,
+        10.0f,
+        10.0f},
     .ip_core_channel_config = {
         .conversion_factor = 1.0f,
         .conversion_factor_definition = {

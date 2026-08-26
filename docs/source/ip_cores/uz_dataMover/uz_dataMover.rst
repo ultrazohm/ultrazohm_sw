@@ -39,6 +39,10 @@ IP core
 
 The data mover uses the AXI2TCM IP core.
 
+.. note::
+
+   Project Wizard generated block designs can change the number of 16 bit blocks and the matching software buffer length to fit the generated ADC packing.
+
 .. table:: Settings of IP core
 
    ========================== =========== =========================================

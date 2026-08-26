@@ -94,6 +94,8 @@ Software
                initialization_chain = init_ip_cores;
                break;
            case init_ip_cores:
+               // This snippet shows the legacy/manual PWM integration flow.
+               // Project Wizard generated PWM designs use include/pwm_init.h.
                uz_adcLtc2311_ip_core_init();
                Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
                uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);

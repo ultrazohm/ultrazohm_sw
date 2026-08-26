@@ -77,6 +77,8 @@ Guideline
          {
             if (is_three_phase_active) { three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset); }
          }
+         // This snippet shows the legacy/manual PWM integration flow.
+         // Project Wizard generated PWM designs use project_wizard_update_pwm_outputs().
          uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
          // Set duty cycles for three-level modulator
          PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

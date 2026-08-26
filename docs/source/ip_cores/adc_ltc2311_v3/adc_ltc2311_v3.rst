@@ -122,7 +122,11 @@ Example initialization of three IP core driver instances:
        struct uz_adcLtc2311_config_t default_configuration = {
            .base_address = XPAR_A1_ADC_LTC2311_S00_AXI_BASEADDR,
            .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
-           .channel_config = {
+           .software_raw_to_physical_value_factor = {
+               10.0f, 10.0f, 10.0f, 10.0f,
+               10.0f, 10.0f, 10.0f, 10.0f,
+           },
+           .ip_core_channel_config = {
                .conversion_factor = DEFAULT_CONVERSION_FACTOR,
                .conversion_factor_definition = {
                    .is_signed = true,
@@ -188,6 +192,7 @@ Change conversion factor of ADC1, ADC2, and ADC3 of SPI-Master 1 to ``2.0`` and 
 .. note:: The conversion factor only affects the output of the IP core ``SI_VALUE``.
           Additionally, the number of fractional bits of the conversion factor implicitly determine the number of fractional bits of the ``SI_VALUE`` port.
           Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP core settings and an conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
+          This IP-core conversion factor is independent from the software-only ``software_raw_to_physical_value_factor`` values used by ``uz_adcLtc2311_convert_raw_to_physical_value``.
 
 
 .. _uz_adcLtc2311_software_driver:
@@ -239,6 +244,8 @@ Operation
 .. doxygenfunction:: uz_adcLtc2311_software_trigger
 
 .. doxygenfunction:: uz_adcLtc2311_software_reset
+
+.. doxygenfunction:: uz_adcLtc2311_convert_raw_to_physical_value
 
 Nap and Sleep Mode
 ******************
@@ -608,7 +615,11 @@ All channels are configured with the same parameters.
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
-        .channel_config = {
+        .software_raw_to_physical_value_factor = {
+            10.0f, 10.0f, 10.0f, 10.0f,
+            10.0f, 10.0f, 10.0f, 10.0f,
+        },
+        .ip_core_channel_config = {
             .conversion_factor = 0.001526, 		
             .conversion_factor_definition = {
                 .is_signed = true,

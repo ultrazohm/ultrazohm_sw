@@ -158,6 +158,8 @@ For each LTC2983 (ChannelGroup) on the temperature card, the ``uz_temperaturecar
 This allows the user a comprehensive use of the measured values with some manual implementations.
 The driver will perform a small check if the measurement is valid and calculate the temperature value from the raw value and stores the results in the temperature-array inside the group.
 
+Low-level hardware helpers expose the IP-core readback and internal error registers for basic AXI/IP alive checks.
+
 .. note::
 
    If the measurement is not valid, the results in the temperature-array is fixed to the impossible value of ``-333.3f``.
@@ -388,6 +390,10 @@ Operation
 .. doxygenfunction:: uz_TempCard_IF_Start
 
 .. doxygenfunction:: uz_TempCard_IF_Stop
+
+.. doxygenfunction:: uz_TempCard_IF_hw_readReadbackReg
+
+.. doxygenfunction:: uz_TempCard_IF_hw_readErrorReg
 
 .. doxygenfunction:: uz_TempCard_IF_MeasureTemps_cyclic
 

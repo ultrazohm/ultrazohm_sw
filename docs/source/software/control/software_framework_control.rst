@@ -11,6 +11,7 @@ Control
     encoder_offset_estimation/encoder_offset_estimation
     flux_approximation/flux_approximation
     flux_approximation/uz_flux_approximation_script
+    IM_Control/IM_Control
     linear_decoupling/linear_decoupling
     static_nonlinear_decoupling/static_nonlinear_decoupling
     movingAverage/movingAverage

@@ -36,7 +36,10 @@ struct testbenchsetup_im_t testbenchsetup_create_im(float sample_time_s)
         .u_f_max_voltage_V = MOTOR_UF_max_voltage_V,
         .u_f_frequency_ramp_Hz_per_s = MOTOR_UF_frequency_ramp_Hz_per_s,
         .kalman_process_noise_A2_per_s = MOTOR_KF_Q_i,
+        .kalman_flux_process_noise_Vs2_per_s = MOTOR_KF_Q_psi,
         .kalman_measurement_noise_A2 = MOTOR_KF_R_i,
+        .observer_pll_kp = 628.3185f,
+        .observer_pll_ki = 98696.0f,
         .minimum_observer_flux_Vs = MOTOR_Minimum_observer_flux_Vs,
         .maximum_slip_frequency_Hz = MOTOR_Maximum_slip_frequency_Hz,
         .maximum_flux_angle_step_rad = MOTOR_Maximum_flux_angle_step_rad,
@@ -70,7 +73,6 @@ struct testbenchsetup_im_t testbenchsetup_create_im(float sample_time_s)
         .speed_actual_value_filter_cutoff_frequency = MOTOR_Speed_actual_filter_cutoff_Hz,
         .enable_speed_control = false,
         .enable_resonant_control = false,
-        .enable_voltage_vector_limiting = MOTOR_Enable_voltage_vector_limiting,
         .observer = uz_im_control_observer_rotor_flux_model,
     };
     return setup;

@@ -63,4 +63,10 @@ float uz_pos_to_speed_pll_get_omega_mech_si(uz_pos_to_speed_pll_t* self);
  */
 float uz_pos_to_speed_pll_get_omega_el_si(uz_pos_to_speed_pll_t* self);
 
+/**
+ * @brief Reset all dynamic PLL states and outputs.
+ * @param self Pointer to the PLL instance.
+ */
+void uz_pos_to_speed_pll_reset(uz_pos_to_speed_pll_t* self);
+
 #endif // UZ_POS_TO_SPEED_PLL_H

@@ -100,9 +100,9 @@
 /* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
 #define MOTOR_Resonant_gain_scale 0.3f
 
-/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
-#define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
-#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+/* Kalman Q values are continuous-time densities; IM Control multiplies them by the ISR sample time. */
+#define MOTOR_KF_Q_i              1.0e-1f       /* process noise — stator current states */
+#define MOTOR_KF_Q_psi            1.0e-3f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
 
 /* ADC current scaling for IM phase current channels on the Wolfspeed v1.1 board */
@@ -192,9 +192,9 @@
 /* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
 #define MOTOR_Resonant_gain_scale 0.3f
 
-/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
+/* Kalman Q values are continuous-time densities; IM Control multiplies them by the ISR sample time. */
 #define MOTOR_KF_Q_i              1.0e-1f       /* process noise — matches the proven current-filter implementation */
-#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+#define MOTOR_KF_Q_psi            1.0e-3f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
 
 /* ADC current scaling for IM phase current channels on the Wolfspeed v2.0 board */
@@ -263,9 +263,9 @@
 /* Resonant (6th harmonic) controller gain as a fraction of the current PI kp */
 #define MOTOR_Resonant_gain_scale 0.3f
 
-/* Default Kalman filter noise matrices (overridable at runtime via JavaScope SF9/SF7/SF8) */
-#define MOTOR_KF_Q_i              1.0e-5f       /* process noise — stator current states */
-#define MOTOR_KF_Q_psi            1.0e-7f       /* process noise — rotor flux states */
+/* Kalman Q values are continuous-time densities; IM Control multiplies them by the ISR sample time. */
+#define MOTOR_KF_Q_i              1.0e-1f       /* process noise — stator current states */
+#define MOTOR_KF_Q_psi            1.0e-3f       /* process noise — rotor flux states */
 #define MOTOR_KF_R_i              5.0e-2f       /* measurement noise — stator current */
 
 /* ADC current scaling for IM phase current channels on the Wolfspeed v2.0 board */

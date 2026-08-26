@@ -92,5 +92,13 @@ float uz_pos_to_speed_pll_get_omega_el_si(uz_pos_to_speed_pll_t* self) {
     return(self->output.omega_el);
 }
 
+void uz_pos_to_speed_pll_reset(uz_pos_to_speed_pll_t* self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_codegen_pos_to_speed_pll_initialize(self->PtrToModelData);
+    self->output.omega_mech = 0.0f;
+    self->output.omega_el = 0.0f;
+}
+
 
 #endif

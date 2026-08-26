@@ -217,6 +217,7 @@ static void update_im_control(float encoder_mechanical_angle_rad)
 		(uz_3ph_dq_t){.d = Global_Data.rasv.im_i_d_reference_A, .q = Global_Data.rasv.im_i_q_reference_A},
 		Global_Data.rasv.im_frequency_reference_Hz);
 	Global_Data.av.im_control_actual = *uz_im_control_get_actual_data(Global_Data.objects.im_control);
+	Global_Data.av.im_observer_diagnostics = *uz_im_control_get_observer_diagnostics(Global_Data.objects.im_control);
 	Global_Data.av.im_control_reference = *uz_im_control_get_reference_values(Global_Data.objects.im_control);
 	Global_Data.av.im_control_measurements = *uz_im_control_get_im_measurement_values(Global_Data.objects.im_control);
 	Global_Data.av.im_control_violation = uz_im_control_get_safe_operating_area_violation(Global_Data.objects.im_control);
@@ -317,7 +318,7 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.project_wizard_pwm_2l_1, true, true, true);
 /* Project Wizard END: error_state isr_actions */
     }
-    
+
     /* Project Wizard BEGIN: pwm_runtime */
     project_wizard_update_pwm_outputs(&Global_Data);
 /* Project Wizard END: pwm_runtime */

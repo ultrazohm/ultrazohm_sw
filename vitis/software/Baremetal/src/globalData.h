@@ -44,6 +44,7 @@ typedef struct _actualValues_ {
 	float im_i_a_A, im_i_b_A, im_i_c_A;
 	float im_v_dc_V, im_speed_rpm;
 	struct uz_im_actual_data im_control_actual;
+	struct uz_im_observer_diagnostics_t im_observer_diagnostics;
 	struct uz_im_reference_values im_control_reference;
 	struct uz_im_measurement_values im_control_measurements;
 	enum uz_im_control_safe_operating_region_violation im_control_violation;

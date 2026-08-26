@@ -166,22 +166,21 @@ def io_card_visualization_signals(
     option_values: dict[str, str],
 ) -> list[VisualizationSignal]:
     slot = slot_lower.upper()
-    pins = io_card_axi_visualization_pins(card, option_values)
+    pins = io_card_axi_input_pins(card, option_values)
     return [
         VisualizationSignal(
             signal_id=f"io_card_{slot_lower}_pin_{pin:02d}",
             slot=slot,
-            label=f"{slot} IO pin {pin:02d} ({direction.upper()}, AXI GPIO)",
+            label=f"{slot} IO pin {pin:02d} (RX, AXI GPIO)",
             enum_name=f"JSO_IO_CARD_{slot}_PIN_{pin:02d}",
-            pointer_expression=f"&data->av.io_card_{slot_lower}_state",
-            source_expression=f"((data->av.io_card_{slot_lower}_state >> {pin}U) & 0x1U)",
+            pointer_expression=f"&data->av.io_card_{slot_lower}_dig_{pin:02d}",
             source_type="uint32",
         )
-        for pin, direction in pins
+        for pin in pins
     ]
 
 
-def io_card_axi_visualization_pins(card: dict[str, object], option_values: dict[str, str]) -> list[tuple[int, str]]:
+def io_card_axi_pins(card: dict[str, object], option_values: dict[str, str]) -> list[tuple[int, str]]:
     directions = io_card_directions(card, option_values)
     default_modes = card.get("vivado", {}).get("io_card", {}).get("default_modes", {})
     if not isinstance(default_modes, dict):
@@ -198,20 +197,16 @@ def io_card_axi_visualization_pins(card: dict[str, object], option_values: dict[
     return pins
 
 
+def io_card_axi_output_pins(card: dict[str, object], option_values: dict[str, str]) -> list[int]:
+    return [index for index, direction in io_card_axi_pins(card, option_values) if direction == "tx"]
+
+
+def io_card_axi_input_pins(card: dict[str, object], option_values: dict[str, str]) -> list[int]:
+    return [index for index, direction in io_card_axi_pins(card, option_values) if direction == "rx"]
+
+
 def io_card_needs_axi(card: dict[str, object], option_values: dict[str, str]) -> bool:
-    directions = io_card_directions(card, option_values)
-    default_modes = card.get("vivado", {}).get("io_card", {}).get("default_modes", {})
-    if not isinstance(default_modes, dict):
-        default_modes = {}
-    for index, direction in enumerate(directions):
-        mode = option_values.get(f"io_pin_{index:02d}_mode", str(default_modes.get(direction, "axi_gpio")))
-        if direction == "rx" and mode not in {"axi_gpio", "top_level"}:
-            mode = "axi_gpio"
-        if direction == "tx" and mode not in {"axi_gpio", "source_pin", "pwm", "constant"}:
-            mode = "axi_gpio"
-        if mode == "axi_gpio":
-            return True
-    return False
+    return bool(io_card_axi_pins(card, option_values))
 
 
 def io_card_direction_mask(card: dict[str, object], option_values: dict[str, str]) -> int:

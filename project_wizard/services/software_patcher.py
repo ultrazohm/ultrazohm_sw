@@ -53,6 +53,7 @@ def apply_software_plan(
     patch_marker_file(isr_c, "pwm_runtime", pwm_runtime_lines)
     patch_platform_state_isr_actions(isr_c, plan.state_isr_actions)
     patch_slot_isr_control(isr_c, plan.isr_control_by_slot)
+    patch_slot_isr_user_blocks(isr_c, plan.isr_user_blocks_by_slot)
     patched_files.append(isr_c)
 
     datamover_c = source_dir / "IP_Cores" / "uz_dataMover" / "uz_dataMover.c"
@@ -108,6 +109,32 @@ def patch_slot_isr_control(path: Path, isr_control_by_slot: dict[str, list[str]]
     text = path.read_text(encoding="utf-8")
     for slot in SLOTS:
         text = replace_named_block(text, slot, "isr_control", isr_control_by_slot.get(slot, []))
+    path.write_text(text, encoding="utf-8")
+
+
+def patch_slot_isr_user_blocks(path: Path, isr_user_blocks_by_slot: dict[str, list[str]]) -> None:
+    text = path.read_text(encoding="utf-8")
+    missing_blocks: list[str] = []
+    for slot in SLOTS:
+        lines = isr_user_blocks_by_slot.get(slot, [])
+        if not lines:
+            continue
+        begin, end = user_named_block_markers(slot, "axi_gpio_outputs")
+        if begin in text and end in text:
+            continue
+        body = "\n".join(lines)
+        if body:
+            body = body + "\n"
+        missing_blocks.append(f"{begin}\n{body}{end}\n")
+    if not missing_blocks:
+        return
+
+    insertion = "\n".join(missing_blocks)
+    anchor = "\n\n//================================================================"
+    if anchor in text:
+        text = text.replace(anchor, f"\n{insertion}{anchor}", 1)
+    else:
+        text = text.rstrip() + "\n\n" + insertion
     path.write_text(text, encoding="utf-8")
 
 
@@ -181,6 +208,13 @@ def replace_named_block(text: str, slot: str, block_name: str, lines: list[str])
         f"/* Project Wizard END: {slot} {block_name} */",
     )
     return replace_block(text, marker, lines)
+
+
+def user_named_block_markers(slot: str, block_name: str) -> tuple[str, str]:
+    return (
+        f"/* Project Wizard USER BEGIN: {slot} {block_name} */",
+        f"/* Project Wizard USER END: {slot} {block_name} */",
+    )
 
 
 def replace_block(text: str, marker: tuple[str, str], lines: list[str]) -> str:

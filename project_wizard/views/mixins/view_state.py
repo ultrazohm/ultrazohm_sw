@@ -482,7 +482,11 @@ class ViewStateMixin:
             form.addRow("Config mode", mode_combo)
             if instance.driver == "axi_gpio":
                 hint = QLabel(
-                    "Default initializes the selected AXI GPIO driver and reads its pin bitmask into Global_Data.av.io_card_dx_state."
+                    "Default initializes the selected AXI GPIO driver. Input pins are read as a full bitmask into "
+                    "Global_Data.av.io_card_dx_state and AXI-backed input pins are sliced into "
+                    "Global_Data.av.io_card_dx_dig_yy variables for user code and visualization. If AXI GPIO output "
+                    "pins are present, the wizard creates a user-owned output function in isr.c once, preserves it on "
+                    "later regenerations, and flushes the output shadow once per ISR cycle."
                 )
                 hint.setWordWrap(True)
                 hint.setStyleSheet("color: palette(mid);")

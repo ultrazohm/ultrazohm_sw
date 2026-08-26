@@ -161,6 +161,7 @@ class SoftwarePlan:
     main_init: list[str]
     main_rasv_initializer: list[str]
     isr_control_by_slot: dict[str, list[str]]
+    isr_user_blocks_by_slot: dict[str, list[str]]
     state_isr_actions: dict[str, list[str]]
     datamover_array_length: int
     javascope_observable_enums: list[str]

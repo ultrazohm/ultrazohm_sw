@@ -52,6 +52,25 @@ static void update_adapter_d4(void);
 static void update_adapter_d5(void);
 
 
+/* Project Wizard USER BEGIN: D1 axi_gpio_outputs */
+static void update_axi_gpio_d1_outputs(void)
+{
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_24, LOW);
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d1, DIG_25, LOW);
+}
+/* Project Wizard USER END: D1 axi_gpio_outputs */
+
+/* Project Wizard USER BEGIN: D2 axi_gpio_outputs */
+static void update_axi_gpio_d2_outputs(void)
+{
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_12, LOW);
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_13, LOW);
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_14, LOW);
+    uz_axi_gpio_set_output_pin_to(Global_Data.objects.axi_gpio_d2, DIG_15, LOW);
+}
+/* Project Wizard USER END: D2 axi_gpio_outputs */
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -206,6 +225,8 @@ static void update_adapter_d1(void)
 {
     /* Project Wizard BEGIN: D1 isr_control */
     Global_Data.av.io_card_d1_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d1);
+    update_axi_gpio_d1_outputs();
+    uz_axi_gpio_flush_outputs(Global_Data.objects.axi_gpio_d1);
 /* Project Wizard END: D1 isr_control */
 
 }
@@ -214,6 +235,22 @@ static void update_adapter_d2(void)
 {
     /* Project Wizard BEGIN: D2 isr_control */
     Global_Data.av.io_card_d2_state = uz_axi_gpio_read_bitmask(Global_Data.objects.axi_gpio_d2);
+    Global_Data.av.io_card_d2_dig_16 = (Global_Data.av.io_card_d2_state >> DIG_16) & 0x1U;
+    Global_Data.av.io_card_d2_dig_17 = (Global_Data.av.io_card_d2_state >> DIG_17) & 0x1U;
+    Global_Data.av.io_card_d2_dig_18 = (Global_Data.av.io_card_d2_state >> DIG_18) & 0x1U;
+    Global_Data.av.io_card_d2_dig_19 = (Global_Data.av.io_card_d2_state >> DIG_19) & 0x1U;
+    Global_Data.av.io_card_d2_dig_20 = (Global_Data.av.io_card_d2_state >> DIG_20) & 0x1U;
+    Global_Data.av.io_card_d2_dig_21 = (Global_Data.av.io_card_d2_state >> DIG_21) & 0x1U;
+    Global_Data.av.io_card_d2_dig_22 = (Global_Data.av.io_card_d2_state >> DIG_22) & 0x1U;
+    Global_Data.av.io_card_d2_dig_23 = (Global_Data.av.io_card_d2_state >> DIG_23) & 0x1U;
+    Global_Data.av.io_card_d2_dig_24 = (Global_Data.av.io_card_d2_state >> DIG_24) & 0x1U;
+    Global_Data.av.io_card_d2_dig_25 = (Global_Data.av.io_card_d2_state >> DIG_25) & 0x1U;
+    Global_Data.av.io_card_d2_dig_26 = (Global_Data.av.io_card_d2_state >> DIG_26) & 0x1U;
+    Global_Data.av.io_card_d2_dig_27 = (Global_Data.av.io_card_d2_state >> DIG_27) & 0x1U;
+    Global_Data.av.io_card_d2_dig_28 = (Global_Data.av.io_card_d2_state >> DIG_28) & 0x1U;
+    Global_Data.av.io_card_d2_dig_29 = (Global_Data.av.io_card_d2_state >> DIG_29) & 0x1U;
+    update_axi_gpio_d2_outputs();
+    uz_axi_gpio_flush_outputs(Global_Data.objects.axi_gpio_d2);
 /* Project Wizard END: D2 isr_control */
 }
 

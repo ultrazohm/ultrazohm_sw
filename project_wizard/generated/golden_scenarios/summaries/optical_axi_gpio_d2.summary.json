@@ -1,6 +1,10 @@
 {
   "actual_values": [
-    "\tuint32_t io_card_d2_state;"
+    "\tuint32_t io_card_d2_state;",
+    "\tuint32_t io_card_d2_dig_14;",
+    "\tuint32_t io_card_d2_dig_15;",
+    "\tuint32_t io_card_d2_dig_16;",
+    "\tuint32_t io_card_d2_dig_17;"
   ],
   "datamover_array_length": 2,
   "generated_files": [
@@ -96,6 +100,7 @@
     "generated_files/include/project_wizard_visualization.h": "d383b4a058116a19ff58be695eeccaad1d389584352c2323f59a34f9c18ed3b5",
     "generated_files/include/pwm_init.h": "89ea8dff59ceb9d081be4a1cc9a351a5ab4d3c5294525ee5beba681b9e01bd91",
     "generated_files/sw/project_wizard_visualization.c": "e599c177d10b1e2a3d5e9a16d3fdbbe44d41a2655a6a560849c8fe13a6aecb94",
+    "isr_user_blocks/D2": "47c3bbd6c32685473843c7a08219c3db2e49b855fef8ddda4f49e436ee40b839",
     "slot_content/D2/header_includes/0": "7ed51707c84329c89a42deaf8c8e4888bf31263f8d5a9e4c7b17bc1dc4879e80",
     "slot_content/D2/header_includes/1": "a0bbda66ad9a477ef42f8795fce4377ab6b775c680c694940f8941738aa8027f",
     "slot_content/D2/header_includes/2": "a4ab99864e0ca86289a0e8b99b2372c228c4d6873bcf80a0506e5199c4d20059",
@@ -106,20 +111,6 @@
   "tcl_line_count": 2748,
   "tcl_warning_count": 1,
   "visualization_signal_ids": [
-    "io_card_d2_pin_00",
-    "io_card_d2_pin_01",
-    "io_card_d2_pin_02",
-    "io_card_d2_pin_03",
-    "io_card_d2_pin_04",
-    "io_card_d2_pin_05",
-    "io_card_d2_pin_06",
-    "io_card_d2_pin_07",
-    "io_card_d2_pin_08",
-    "io_card_d2_pin_09",
-    "io_card_d2_pin_10",
-    "io_card_d2_pin_11",
-    "io_card_d2_pin_12",
-    "io_card_d2_pin_13",
     "io_card_d2_pin_14",
     "io_card_d2_pin_15",
     "io_card_d2_pin_16",

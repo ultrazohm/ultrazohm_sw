@@ -266,6 +266,9 @@ def software_content_hashes(plan: Any) -> dict[str, str]:
             hashes[f"slot_content/{slot}/header_prototypes/{index}"] = sha256_text(text)
         for index, text in enumerate(content.source_definitions):
             hashes[f"slot_content/{slot}/source_definitions/{index}"] = sha256_text(text)
+    for slot, lines in sorted(plan.isr_user_blocks_by_slot.items()):
+        if lines:
+            hashes[f"isr_user_blocks/{slot}"] = sha256_text("\n".join(lines))
     return hashes
 
 

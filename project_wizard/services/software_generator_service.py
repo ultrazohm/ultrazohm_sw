@@ -68,6 +68,7 @@ from .software_temperature_io import (
     axi_gpio_actual_values,
     axi_gpio_context,
     axi_gpio_isr_lines,
+    axi_gpio_isr_user_block,
     axi_gpio_main_init,
     temperature_actual_values,
     temperature_configdata_a,
@@ -175,6 +176,7 @@ class SoftwareGenerator:
         main_init: list[str] = []
         main_rasv_initializer: list[str] = []
         isr_control_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
+        isr_user_blocks_by_slot: dict[str, list[str]] = {slot: [] for slot in SLOTS}
         state_isr_actions: dict[str, list[str]] = {
             "idle_state": [],
             "running_state": [],
@@ -520,9 +522,14 @@ class SoftwareGenerator:
                         self.renderer.render_file(self.driver_template("uz_axi_gpio", "source"), context).rstrip()
                     )
                     objects.append(f"\tuz_axi_gpio_t* axi_gpio_{context['slot_lower']};")
-                    actual_values.extend(axi_gpio_actual_values(str(context["slot_lower"])))
+                    input_pins = list(context["axi_input_pins"])
+                    output_pins = list(context["axi_output_pins"])
+                    actual_values.extend(axi_gpio_actual_values(str(context["slot_lower"]), input_pins))
                     main_init.extend(axi_gpio_main_init(str(context["slot_lower"])))
-                    isr_control_by_slot[slot].extend(axi_gpio_isr_lines(str(context["slot_lower"])))
+                    isr_control_by_slot[slot].extend(axi_gpio_isr_lines(str(context["slot_lower"]), input_pins, output_pins))
+                    isr_user_blocks_by_slot[slot].extend(
+                        axi_gpio_isr_user_block(str(context["slot_lower"]), output_pins)
+                    )
                     available_visualization_signals.extend(
                         io_card_visualization_signals(str(context["slot_lower"]), card, slot_options)
                     )
@@ -625,6 +632,7 @@ class SoftwareGenerator:
             main_init=main_init,
             main_rasv_initializer=main_rasv_initializer,
             isr_control_by_slot=isr_control_by_slot,
+            isr_user_blocks_by_slot=isr_user_blocks_by_slot,
             state_isr_actions=state_isr_actions,
             datamover_array_length=datamover_array_length,
             javascope_observable_enums=visualization_fragments.javascope_observable_enums,

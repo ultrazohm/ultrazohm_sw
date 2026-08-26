@@ -83,6 +83,7 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_1_position;
 	uint32_t incremental_encoder_d5_1_position_w_offset;
 	uint32_t incremental_encoder_d5_1_index_found;
+	float incremental_encoder_d5_1_position_w_offset_javascope;
 	float incremental_encoder_d5_2_theta_el;
 	float incremental_encoder_d5_2_omega_mech;
 	float incremental_encoder_d5_2_omega_mech_ma_n4;
@@ -97,6 +98,7 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_3_position;
 	uint32_t incremental_encoder_d5_3_position_w_offset;
 	uint32_t incremental_encoder_d5_3_index_found;
+	float incremental_encoder_d5_3_position_w_offset_javascope;
 /* Project Wizard END: actualValues */
 } actualValues;
 

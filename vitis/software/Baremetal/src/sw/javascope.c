@@ -98,10 +98,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_VIOLATION] = &data->av.im_control_actual.phase_current_sum_violation;
 	js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED] = &data->av.im_control_actual.voltage_vector_saturated;
 	js_ch_observable[JSO_IM_OUTPUT_VOLTAGE_VECTOR_V] = &data->av.im_control_reference.v_dq_V.d;
+	js_ch_observable[JSO_ENCODER_D5_1_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_1_position_w_offset_javascope;
+	js_ch_observable[JSO_ENCODER_D5_1_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_1_omega_mech;
 	js_ch_observable[JSO_ENCODER_D5_2_THETA_EL_RAD] = &data->av.incremental_encoder_d5_2_theta_el;
 	js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_2_omega_mech;
 	js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_2_position_w_offset_javascope;
 	js_ch_observable[JSO_ENCODER_D5_2_INDEX_FOUND] = &data->av.incremental_encoder_d5_2_index_found_javascope;
+	js_ch_observable[JSO_ENCODER_D5_3_POSITION_WITH_OFFSET] = &data->av.incremental_encoder_d5_3_position_w_offset_javascope;
+	js_ch_observable[JSO_ENCODER_D5_3_OMEGA_MECH_RAD_PER_S] = &data->av.incremental_encoder_d5_3_omega_mech;
 	js_ch_observable[JSO_HIOKI_PW8001_U4_RAW] = &data->av.hioki_pw8001_u4_raw;
 	js_ch_observable[JSO_HIOKI_PW8001_U5_RAW] = &data->av.hioki_pw8001_u5_raw;
 	js_ch_observable[JSO_HIOKI_PW8001_U6_RAW] = &data->av.hioki_pw8001_u6_raw;
@@ -124,12 +128,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_selected[11] = js_ch_observable[JSO_IM_DUTY_SUM];
 	js_ch_selected[12] = js_ch_observable[JSO_IM_PHASE_CURRENT_SUM_A];
 	js_ch_selected[13] = js_ch_observable[JSO_IM_VOLTAGE_VECTOR_SATURATED];
-	js_ch_selected[14] = js_ch_observable[JSO_INVERTER_TEMPERATURE_DEG_C];
-	js_ch_selected[15] = js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S];
-	js_ch_selected[16] = js_ch_observable[JSO_IM_OUTPUT_VOLTAGE_VECTOR_V];
-	js_ch_selected[17] = js_ch_observable[JSO_HIOKI_PW8001_U4_RAW];
-	js_ch_selected[18] = js_ch_observable[JSO_HIOKI_PW8001_U5_RAW];
-	js_ch_selected[19] = js_ch_observable[JSO_HIOKI_PW8001_U6_RAW];
+	js_ch_selected[14] = js_ch_observable[JSO_ENCODER_D5_1_POSITION_WITH_OFFSET];
+	js_ch_selected[15] = js_ch_observable[JSO_ENCODER_D5_1_OMEGA_MECH_RAD_PER_S];
+	js_ch_selected[16] = js_ch_observable[JSO_ENCODER_D5_2_POSITION_WITH_OFFSET];
+	js_ch_selected[17] = js_ch_observable[JSO_ENCODER_D5_2_OMEGA_MECH_RAD_PER_S];
+	js_ch_selected[18] = js_ch_observable[JSO_ENCODER_D5_3_POSITION_WITH_OFFSET];
+	js_ch_selected[19] = js_ch_observable[JSO_ENCODER_D5_3_OMEGA_MECH_RAD_PER_S];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

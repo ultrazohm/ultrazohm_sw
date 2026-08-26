@@ -5,10 +5,8 @@
   "datamover_array_length": 2,
   "generated_files": [
     "hw_init/pwm_init.c",
-    "include/project_wizard_io.h",
     "include/project_wizard_visualization.h",
     "include/pwm_init.h",
-    "sw/project_wizard_io.c",
     "sw/project_wizard_visualization.c"
   ],
   "instance_counts": {
@@ -95,10 +93,8 @@
   ],
   "software_content_hashes": {
     "generated_files/hw_init/pwm_init.c": "06691b0d1db043c8c781b85f560a88c816c89e44319ef0465ecbfcf18c37f73f",
-    "generated_files/include/project_wizard_io.h": "48b3d7277cd51e782241eb383c7abc42952748b8aebf6ecb8d0e9d9eb4e27994",
     "generated_files/include/project_wizard_visualization.h": "d383b4a058116a19ff58be695eeccaad1d389584352c2323f59a34f9c18ed3b5",
     "generated_files/include/pwm_init.h": "89ea8dff59ceb9d081be4a1cc9a351a5ab4d3c5294525ee5beba681b9e01bd91",
-    "generated_files/sw/project_wizard_io.c": "495e793d5664c3a09c724fced0d4737b714dea83855683c3687904c96987e1b9",
     "generated_files/sw/project_wizard_visualization.c": "e599c177d10b1e2a3d5e9a16d3fdbbe44d41a2655a6a560849c8fe13a6aecb94",
     "slot_content/D2/header_includes/0": "7ed51707c84329c89a42deaf8c8e4888bf31263f8d5a9e4c7b17bc1dc4879e80",
     "slot_content/D2/header_includes/1": "a0bbda66ad9a477ef42f8795fce4377ab6b775c680c694940f8941738aa8027f",

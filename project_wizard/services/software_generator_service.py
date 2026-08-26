@@ -69,8 +69,6 @@ from .software_temperature_io import (
     axi_gpio_context,
     axi_gpio_isr_lines,
     axi_gpio_main_init,
-    project_wizard_io_header,
-    project_wizard_io_source,
     temperature_actual_values,
     temperature_configdata_a,
     temperature_context,
@@ -215,7 +213,6 @@ class SoftwareGenerator:
             datamover_array_length = analog_datamover.channel_count
         endat_instances = 0
         ssi_instances = 0
-        default_axi_gpio_slots: list[str] = []
         pwm_2l_instance_count = config_int(hardware_config.get("pwm_2l_instances", "4"), default=4, minimum=1, maximum=10)
         pwm_3l_enabled = config_int(hardware_config.get("pwm_3l_instances", "1"), default=1, minimum=0, maximum=1) > 0
         reference_and_set_values.extend(half_bridge_duty_cycle_fields(pwm_2l_instance_count, pwm_3l_enabled))
@@ -522,9 +519,6 @@ class SoftwareGenerator:
                     slot_content[slot].source_definitions.append(
                         self.renderer.render_file(self.driver_template("uz_axi_gpio", "source"), context).rstrip()
                     )
-                    driver_mode = driver_config.get(f"{context['slot_lower']}_axi_gpio", {}).get("mode", "default")
-                    if driver_mode != "custom":
-                        default_axi_gpio_slots.append(slot)
                     objects.append(f"\tuz_axi_gpio_t* axi_gpio_{context['slot_lower']};")
                     actual_values.extend(axi_gpio_actual_values(str(context["slot_lower"])))
                     main_init.extend(axi_gpio_main_init(str(context["slot_lower"])))
@@ -620,8 +614,6 @@ class SoftwareGenerator:
         generated_files["sw/project_wizard_visualization.c"] = self.renderer.render_file(
             "software/project_wizard_visualization.c.tpl", visualization_fragments.generated_file_context
         ).rstrip() + "\n"
-        generated_files["include/project_wizard_io.h"] = project_wizard_io_header(default_axi_gpio_slots)
-        generated_files["sw/project_wizard_io.c"] = project_wizard_io_source(default_axi_gpio_slots)
         return SoftwarePlan(
             slot_content=slot_content,
             generated_files=generated_files,

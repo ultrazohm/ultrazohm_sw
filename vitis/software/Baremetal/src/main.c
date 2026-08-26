@@ -118,8 +118,6 @@ int main(void)
 			Global_Data.objects.axi_gpio_d1 = initialize_axi_gpio_d1();
 			Global_Data.objects.axi_gpio_d2 = initialize_axi_gpio_d2();
 			Global_Data.objects.incremental_encoder_d5_1 = initialize_incremental_encoder_d5_1();
-			Global_Data.objects.incremental_encoder_d5_2 = initialize_incremental_encoder_d5_2();
-			Global_Data.objects.incremental_encoder_d5_3 = initialize_incremental_encoder_d5_3();
 /* Project Wizard END: init_ip_cores */
             initialization_chain = print_msg;
             break;

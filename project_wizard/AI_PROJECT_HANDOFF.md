@@ -54,7 +54,7 @@ This file captures project-specific knowledge for future AI/code-assistant sessi
 - `project_wizard/services/software_pwm.py`
   - PWM software config fields, PWM init context, PWM runtime ISR lines, and PWM-owned RASV duty-cycle entries.
 - `project_wizard/services/software_temperature_io.py`
-  - Temperature-card software context, temperature readout snippets, AXI GPIO IO-card context, and generated Arduino-style IO wrapper files.
+  - Temperature-card software context, temperature readout snippets, and AXI GPIO IO-card context.
 - `project_wizard/services/software_visualization.py`
   - Formatting of generated visualization fields, Javascope observable entries, and slow-data entries.
 - `project_wizard/services/xparameters.py`

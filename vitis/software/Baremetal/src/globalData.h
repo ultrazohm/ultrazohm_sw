@@ -73,18 +73,6 @@ typedef struct _actualValues_ {
 	uint32_t incremental_encoder_d5_1_position;
 	uint32_t incremental_encoder_d5_1_position_w_offset;
 	uint32_t incremental_encoder_d5_1_index_found;
-	float incremental_encoder_d5_2_theta_el;
-	float incremental_encoder_d5_2_omega_mech;
-	float incremental_encoder_d5_2_omega_mech_ma_n4;
-	uint32_t incremental_encoder_d5_2_position;
-	uint32_t incremental_encoder_d5_2_position_w_offset;
-	uint32_t incremental_encoder_d5_2_index_found;
-	float incremental_encoder_d5_3_theta_el;
-	float incremental_encoder_d5_3_omega_mech;
-	float incremental_encoder_d5_3_omega_mech_ma_n4;
-	uint32_t incremental_encoder_d5_3_position;
-	uint32_t incremental_encoder_d5_3_position_w_offset;
-	uint32_t incremental_encoder_d5_3_index_found;
 /* Project Wizard END: actualValues */
 } actualValues;
 
@@ -126,8 +114,6 @@ typedef struct{
 	uz_axi_gpio_t* axi_gpio_d1;
 	uz_axi_gpio_t* axi_gpio_d2;
 	uz_incrementalEncoder_t* incremental_encoder_d5_1;
-	uz_incrementalEncoder_t* incremental_encoder_d5_2;
-	uz_incrementalEncoder_t* incremental_encoder_d5_3;
 /* Project Wizard END: objects */
 }object_pointers_t;
 

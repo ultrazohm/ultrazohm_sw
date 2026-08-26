@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Tue Aug 25 14:20:24 2026
+--Date        : Wed Aug 26 10:50:28 2026
 --Host        : eln177123 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -75,22 +75,16 @@ entity zusys_wrapper is
     Dig_13_Ch5 : in STD_LOGIC;
     Dig_14_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_14_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_14_Ch5 : in STD_LOGIC;
     Dig_15_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_15_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_15_Ch5 : in STD_LOGIC;
     Dig_16_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_16_Ch2 : in STD_LOGIC;
-    Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_17_Ch2 : in STD_LOGIC;
-    Dig_17_Ch5 : in STD_LOGIC;
     Dig_18_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_18_Ch2 : in STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC;
     Dig_19_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_19_Ch2 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC;
     Dig_20_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_20_Ch2 : in STD_LOGIC;
     Dig_21_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -208,13 +202,7 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_29_Ch2 : in STD_LOGIC;
     Dig_11_Ch5 : in STD_LOGIC;
     Dig_12_Ch5 : in STD_LOGIC;
-    Dig_13_Ch5 : in STD_LOGIC;
-    Dig_14_Ch5 : in STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
-    Dig_16_Ch5 : in STD_LOGIC;
-    Dig_17_Ch5 : in STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC
+    Dig_13_Ch5 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -282,22 +270,16 @@ zusys_i: component zusys
       Dig_13_Ch5 => Dig_13_Ch5,
       Dig_14_Ch1(0) => Dig_14_Ch1(0),
       Dig_14_Ch2(0) => Dig_14_Ch2(0),
-      Dig_14_Ch5 => Dig_14_Ch5,
       Dig_15_Ch1(0) => Dig_15_Ch1(0),
       Dig_15_Ch2(0) => Dig_15_Ch2(0),
-      Dig_15_Ch5 => Dig_15_Ch5,
       Dig_16_Ch1(0) => Dig_16_Ch1(0),
       Dig_16_Ch2 => Dig_16_Ch2,
-      Dig_16_Ch5 => Dig_16_Ch5,
       Dig_17_Ch1(0) => Dig_17_Ch1(0),
       Dig_17_Ch2 => Dig_17_Ch2,
-      Dig_17_Ch5 => Dig_17_Ch5,
       Dig_18_Ch1(0) => Dig_18_Ch1(0),
       Dig_18_Ch2 => Dig_18_Ch2,
-      Dig_18_Ch5 => Dig_18_Ch5,
       Dig_19_Ch1(0) => Dig_19_Ch1(0),
       Dig_19_Ch2 => Dig_19_Ch2,
-      Dig_19_Ch5 => Dig_19_Ch5,
       Dig_20_Ch1(0) => Dig_20_Ch1(0),
       Dig_20_Ch2 => Dig_20_Ch2,
       Dig_21_Ch1(0) => Dig_21_Ch1(0),

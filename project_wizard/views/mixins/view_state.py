@@ -473,7 +473,8 @@ class ViewStateMixin:
             form = QFormLayout()
             mode_combo = QComboBox()
             mode_combo.addItem("Default", "default")
-            mode_combo.addItem("Custom", "custom")
+            if instance.driver != "axi_gpio":
+                mode_combo.addItem("Custom", "custom")
             mode_value = values.get(f"driver_config_{instance.id}_mode", "default")
             mode_index = mode_combo.findData(mode_value)
             mode_combo.setCurrentIndex(mode_index if mode_index >= 0 else 0)
@@ -481,8 +482,7 @@ class ViewStateMixin:
             form.addRow("Config mode", mode_combo)
             if instance.driver == "axi_gpio":
                 hint = QLabel(
-                    "Default generates Arduino-style helper functions with AXI_GPIO_SLOT_Dx, DIG_xx, LOW, and HIGH. "
-                    "Custom keeps only the raw bitmask readout in Global_Data.av.io_card_dx_state."
+                    "Default initializes the selected AXI GPIO driver and reads its pin bitmask into Global_Data.av.io_card_dx_state."
                 )
                 hint.setWordWrap(True)
                 hint.setStyleSheet("color: palette(mid);")

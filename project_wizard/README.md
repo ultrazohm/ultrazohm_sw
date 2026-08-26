@@ -60,8 +60,7 @@ Important files:
 - `services/software_pwm.py`: PWM software config fields, PWM init context,
   PWM runtime ISR lines, and PWM-owned RASV duty-cycle entries.
 - `services/software_temperature_io.py`: temperature-card software context,
-  temperature readout snippets, AXI GPIO IO-card context, and generated
-  Arduino-style IO wrapper files.
+  temperature readout snippets, and AXI GPIO IO-card context.
 - `services/software_visualization.py`: formatting of generated visualization
   fields, Javascope observable entries, and slow-data entries.
 - `services/xparameters.py`: `xparameters.h` discovery and generated

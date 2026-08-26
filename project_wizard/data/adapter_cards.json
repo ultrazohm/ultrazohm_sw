@@ -1400,7 +1400,7 @@
         "adapter_clock_pin": "clk",
         "adapter_resetn_pin": "resetn",
         "notes": [
-          "Creates the selected Dx_adapter hierarchy for three fixed incremental encoder IP cores.",
+          "Creates the selected Dx_adapter hierarchy for the enabled incremental encoder IP cores.",
           "Routes the encoder index, A and B inputs from the slot-specific digital adapter pins.",
           "Connects PeriodEnd to a configurable trigger source.",
           "Connects AXI through the D-slot project-level AXI attachment point.",
@@ -1577,6 +1577,54 @@
             {
               "id": "rev04",
               "label": "Rev04"
+            }
+          ]
+        },
+        {
+          "id": "channel_1",
+          "label": "Channel 1",
+          "default": "incremental_encoder",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "incremental_encoder",
+              "label": "Incremental encoder"
+            },
+            {
+              "id": "none",
+              "label": "Not used"
+            }
+          ]
+        },
+        {
+          "id": "channel_2",
+          "label": "Channel 2",
+          "default": "incremental_encoder",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "incremental_encoder",
+              "label": "Incremental encoder"
+            },
+            {
+              "id": "none",
+              "label": "Not used"
+            }
+          ]
+        },
+        {
+          "id": "channel_3",
+          "label": "Channel 3",
+          "default": "incremental_encoder",
+          "show_trigger_source": false,
+          "choices": [
+            {
+              "id": "incremental_encoder",
+              "label": "Incremental encoder"
+            },
+            {
+              "id": "none",
+              "label": "Not used"
             }
           ]
         }

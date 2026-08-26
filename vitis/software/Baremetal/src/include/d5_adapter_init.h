@@ -1,11 +1,6 @@
 #pragma once
 
 /* Project Wizard BEGIN: D5 includes */
-/* Project Wizard generated content for D5 incremental encoder channel 1 */
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-/* Project Wizard generated content for D5 incremental encoder channel 2 */
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-/* Project Wizard generated content for D5 incremental encoder channel 3 */
 #include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 /* Project Wizard END: D5 includes */
 

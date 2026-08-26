@@ -110,7 +110,7 @@ For this inverter card they should be:
 
  .linear_interpolation_params = {-289.01f, 218.72f}
 
-Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an appropriate value. 
+Set the deadtime in the manual ``uz_interlockDeadtime2L`` instance to an appropriate value.
 A safe value with a considerable safety margin is ``200ns``. 
 No matter what, the deadtime should not be lower than ``150ns``.
 
@@ -120,7 +120,7 @@ No matter what, the deadtime should not be lower than ``150ns``.
    Project Wizard generated PWM designs configure the deadtime instances in ``include/pwm_init.h`` and ``hw_init/pwm_init.c``.
 
 .. code-block:: c
- :caption: set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file. Shown is an example for the D1 slot.
+ :caption: set the deadtime in a manual ``uz_interlockDeadtime2L`` instance. Shown is an example for the D1 slot.
 
  static uz_interlockDeadtime2L interlock_slotD1_pin_0_to_5 = { 
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR,

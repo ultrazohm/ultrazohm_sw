@@ -341,7 +341,7 @@ Important A-slot architecture:
 #### PWM Software
 
 - `hw_init/pwm_init.c` and `include/pwm_init.h` are wizard-owned.
-- Legacy `pwm_3L_driver.c` was removed.
+- Legacy fixed-flow PWM files are removed; wizard-owned PWM init lives in `hw_init/pwm_init.c` and `include/pwm_init.h`.
 - Advanced driver config exists for:
   - 2L PWM
   - 2L deadtime
@@ -370,11 +370,15 @@ Recently added and hardware-smoke-tested implementation:
 - Default CPLD program: `rx30`.
 - Vivado template: `project_wizard/templates/cards/uz_d_incremental_encoder.tcl`.
 - IP VLNV: `xilinx.com:ip:Incremental_Encoder_v26`.
-- Instance naming: `incremental_encoder_{slot_lower}_1`, `_2`, `_3`.
+- Instance naming for enabled channels: `incremental_encoder_{slot_lower}_1`, `_2`, `_3`.
 - Adapter revision dropdown exists in the adapter-card detail view:
   - default: Rev04
   - Rev03 and Rev04 share the same pinout.
   - Rev02 uses the older documented pinout.
+- Channel 1/2/3 dropdowns exist below the revision selector:
+  - default: `Incremental encoder`
+  - alternative: `Not used`
+  - disabled channels are omitted from Vivado IP generation, AXI attachment, software driver generation, instance counts, and visualization signals.
 - Physical pins by revision:
   - Rev03/Rev04:
     - channel 1 I/A/B: `Dig_11_Chx`, `Dig_12_Chx`, `Dig_13_Chx`

@@ -389,7 +389,10 @@
       "card": "uz_d_incremental_encoder",
       "options": {
         "adapter_revision": "rev04",
-        "period_end_source": "uz_system/trigger_conversions"
+        "period_end_source": "uz_system/trigger_conversions",
+        "channel_1": "incremental_encoder",
+        "channel_2": "none",
+        "channel_3": "none"
       },
       "cpld": "rx30"
     }
@@ -438,7 +441,40 @@
       "D4": "default",
       "D5": "default"
     },
-    "visualization_routes": {},
+    "visualization_routes": {
+      "adc_ltc2311_a1_ch0": "javascope",
+      "adc_ltc2311_a1_ch1": "javascope",
+      "adc_ltc2311_a1_ch2": "javascope",
+      "adc_ltc2311_a1_ch3": "javascope",
+      "adc_ltc2311_a1_ch4": "javascope",
+      "adc_ltc2311_a1_ch5": "javascope",
+      "adc_ltc2311_a1_ch6": "javascope",
+      "adc_ltc2311_a1_ch7": "javascope",
+      "adc_max11331_a3_ch0": "javascope",
+      "adc_max11331_a3_ch1": "javascope",
+      "adc_max11331_a3_ch2": "javascope",
+      "adc_max11331_a3_ch3": "javascope",
+      "adc_max11331_a3_ch4": "javascope",
+      "adc_max11331_a3_ch5": "javascope",
+      "adc_max11331_a3_ch6": "javascope",
+      "adc_max11331_a3_ch7": "javascope",
+      "adc_max11331_a3_ch8": "javascope",
+      "adc_max11331_a3_ch9": "javascope",
+      "adc_max11331_a3_ch10": "javascope",
+      "adc_max11331_a3_ch11": "javascope",
+      "adc_max11331_a3_ch12": "javascope",
+      "adc_max11331_a3_ch13": "javascope",
+      "adc_max11331_a3_ch14": "javascope",
+      "adc_max11331_a3_ch15": "javascope",
+      "adc_max11331_a3_ch16": "javascope",
+      "adc_max11331_a3_ch17": "javascope",
+      "adc_max11331_a3_ch18": "javascope",
+      "adc_max11331_a3_ch19": "javascope",
+      "adc_max11331_a3_ch20": "javascope",
+      "adc_max11331_a3_ch21": "javascope",
+      "adc_max11331_a3_ch22": "javascope",
+      "adc_max11331_a3_ch23": "javascope"
+    },
     "driver_config": {
       "pwm_2l_0": {
         "mode": "default",
@@ -665,28 +701,6 @@
         "mode": "default"
       },
       "d5_incremental_encoder_1": {
-        "mode": "default",
-        "ip_core_frequency_Hz": "100000000U",
-        "line_number_per_turn_mech": "5000U",
-        "OmegaPerOverSample_in_rpm": "500.0f",
-        "drive_pole_pair": "4U",
-        "Encoder_mech_Offset": "0U",
-        "Encoder_elec_Offset": "0U",
-        "counting_direction": "uz_incrementalEncoder_counting_clock_wise",
-        "Speed_Timeout_ms": "10U"
-      },
-      "d5_incremental_encoder_2": {
-        "mode": "default",
-        "ip_core_frequency_Hz": "100000000U",
-        "line_number_per_turn_mech": "5000U",
-        "OmegaPerOverSample_in_rpm": "500.0f",
-        "drive_pole_pair": "4U",
-        "Encoder_mech_Offset": "0U",
-        "Encoder_elec_Offset": "0U",
-        "counting_direction": "uz_incrementalEncoder_counting_clock_wise",
-        "Speed_Timeout_ms": "10U"
-      },
-      "d5_incremental_encoder_3": {
         "mode": "default",
         "ip_core_frequency_Hz": "100000000U",
         "line_number_per_turn_mech": "5000U",

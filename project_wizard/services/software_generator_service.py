@@ -401,7 +401,10 @@ class SoftwareGenerator:
                 isr_control_by_slot[slot].extend(temperature_isr_lines(str(context["slot_lower"])))
                 available_visualization_signals.extend(temperature_visualization_signals(str(context["slot_lower"]), preset))
             elif card_id == "uz_d_incremental_encoder":
+                slot_options = option_values.get(slot, {})
                 for channel_index in range(1, 4):
+                    if slot_options.get(f"channel_{channel_index}", "incremental_encoder") == "none":
+                        continue
                     incremental_encoder_instances += 1
                     context = incremental_encoder_context(
                         slot,
@@ -418,7 +421,7 @@ class SoftwareGenerator:
                     header_includes, header_prototypes = split_header_template(
                         self.renderer.render_file(self.driver_template("uz_incrementalEncoder", "header"), context)
                     )
-                    slot_content[slot].header_includes.extend(header_includes)
+                    _extend_unique(slot_content[slot].header_includes, header_includes)
                     slot_content[slot].header_prototypes.extend(header_prototypes)
                     slot_content[slot].source_definitions.append(
                         self.renderer.render_file(self.driver_template("uz_incrementalEncoder", "source"), context).rstrip()
@@ -860,15 +863,31 @@ class SoftwareGenerator:
 def split_header_template(rendered_header: str) -> tuple[list[str], list[str]]:
     includes: list[str] = []
     prototypes: list[str] = []
+    seen_includes: set[str] = set()
     for line in rendered_header.splitlines():
         stripped = line.strip()
         if not stripped:
             continue
-        if stripped.startswith("#include") or stripped.startswith("/*"):
+        if stripped.startswith("#include"):
+            if stripped in seen_includes:
+                continue
+            seen_includes.add(stripped)
+            includes.append(line)
+        elif stripped.startswith("/*"):
             includes.append(line)
         else:
             prototypes.append(line)
     return includes, prototypes
+
+
+def _extend_unique(target: list[str], entries: list[str]) -> None:
+    seen = {entry.strip() for entry in target}
+    for entry in entries:
+        key = entry.strip()
+        if key in seen:
+            continue
+        seen.add(key)
+        target.append(entry)
 
 
 

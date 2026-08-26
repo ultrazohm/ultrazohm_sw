@@ -320,6 +320,8 @@ class SystemResolver:
         slot_index = slot.name[1:]
         if slot.card_id == "uz_d_resolver":
             interfaces = self._resolver_axi_interfaces(slot)
+        elif slot.card_id == "uz_d_incremental_encoder":
+            interfaces = self._incremental_encoder_axi_interfaces(slot)
         elif slot.card.get("vivado", {}).get("io_card"):
             if not io_card_needs_axi(slot.card, slot.option_values):
                 interfaces = []
@@ -356,6 +358,25 @@ class SystemResolver:
             )
             for index, interface in enumerate(interfaces)
         ]
+
+    @staticmethod
+    def _incremental_encoder_axi_interfaces(slot: ResolvedSlot) -> list[ResolvedAxiInterface]:
+        interfaces: list[ResolvedAxiInterface] = []
+        slot_lower = slot.name.lower()
+        for channel_index in range(1, 4):
+            if not _incremental_encoder_enabled(slot.option_values, channel_index):
+                continue
+            interfaces.append(
+                ResolvedAxiInterface(
+                    name="AXI4_Lite",
+                    path=f"uz_digital_adapter/{slot.name}_adapter/incremental_encoder_{slot_lower}_{channel_index}/AXI4_Lite",
+                    addr_seg=(
+                        f"uz_digital_adapter/{slot.name}_adapter/incremental_encoder_{slot_lower}_{channel_index}/"
+                        "AXI4_Lite/reg0"
+                    ),
+                )
+            )
+        return interfaces
 
     @staticmethod
     def _resolver_axi_interfaces(slot: ResolvedSlot) -> list[ResolvedAxiInterface]:
@@ -474,6 +495,8 @@ class SystemResolver:
                 instances.append(_software_instance(slot.name, "inverter_adapter", "inverter adapter", "uz_inverter_adapter"))
             elif card_id == "uz_d_incremental_encoder":
                 for channel_index in range(1, 4):
+                    if not _incremental_encoder_enabled(slot.option_values, channel_index):
+                        continue
                     instances.append(
                         ResolvedSoftwareDriverInstance(
                             id=f"{slot_lower}_incremental_encoder_{channel_index}",
@@ -553,6 +576,8 @@ class SystemResolver:
                 signals.extend(temperature_visualization_signals(slot_lower, config.software_presets.get(slot.name, "default")))
             elif card_id == "uz_d_incremental_encoder":
                 for channel_index in range(1, 4):
+                    if not _incremental_encoder_enabled(slot.option_values, channel_index):
+                        continue
                     signals.extend(incremental_encoder_visualization_signals(slot_lower, channel_index))
             elif card_id == "uz_d_resolver":
                 for channel_index in range(1, _resolver_channel_count(slot.name) + 1):
@@ -636,3 +661,7 @@ def _resolver_channel_count(slot: str) -> int:
 
 def _resolver_pl_interface_enabled(option_values: dict[str, str], channel: int) -> bool:
     return option_values.get(f"enable_pl_interface_ch{channel}", "true") == "true"
+
+
+def _incremental_encoder_enabled(option_values: dict[str, str], channel: int) -> bool:
+    return option_values.get(f"channel_{channel}", "incremental_encoder") == "incremental_encoder"

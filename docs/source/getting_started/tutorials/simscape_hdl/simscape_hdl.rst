@@ -97,13 +97,10 @@ Software
                // This snippet shows the legacy/manual PWM integration flow.
                // Project Wizard generated PWM designs use include/pwm_init.h.
                uz_adcLtc2311_ip_core_init();
-               Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-               uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
-               Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
+               // Initialize manually allocated deadtime and PWM instances here.
                Global_Data.objects.mux_axi = initialize_uz_mux_axi();
                sim_halfWaveRectifier = uz_simscapeExample_staticAllocator();
-               PWM_3L_Initialize(&Global_Data); // three-level modulator
-               initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+               // Initialize additional manually integrated IP cores here.
                initialization_chain = print_msg;
                break;
            case print_msg:

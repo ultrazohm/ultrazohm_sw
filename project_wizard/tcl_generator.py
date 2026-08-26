@@ -436,6 +436,8 @@ class TclGenerator:
             channel = str(raw_channel.get("channel", ""))
             if not channel:
                 continue
+            if option_values.get(f"channel_{channel}", "incremental_encoder") == "none":
+                continue
             format_context = {
                 "slot": slot,
                 "slot_lower": slot.lower(),

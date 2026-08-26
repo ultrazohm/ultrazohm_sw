@@ -31,11 +31,11 @@ The driver interface is located in ``uz_interlockDeadtime2L.h`` and has four pub
  * uz_interlockDeadtime2L_set_deadtime_us
  * uz_interlockDeadtime2L_get_deadtime_us
 
-Additionally, the static allocator has to be used for initialization and allocation of instances of the struct.
+For manual integration, allocate a static instance in the application code and pass it to ``uz_interlockDeadtime2L_init``.
 
 .. note::
 
-   The static allocator example below describes the legacy/manual integration flow.
+   The example below describes the legacy/manual integration flow.
    Project Wizard generated PWM designs create the interlock instances in ``include/pwm_init.h`` and ``hw_init/pwm_init.c``.
 
 How-to use
@@ -47,17 +47,26 @@ An example initialization and usage is listed in the following.
    :linenos:
    :caption: Example initialization and enable output
 
-   #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+   #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
+   #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_private.h"
+
+   static uz_interlockDeadtime2L deadtime_slotd1 = {
+      .base_address = XPAR_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR,
+      .clock_frequency_MHz = 100,
+      .deadtime_us = 1,
+      .inverse_bottom_switch = false
+   };
+
    int main(void){
-   uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-   uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
+   uz_interlockDeadtime2L_handle deadtime_slotd1_handle = uz_interlockDeadtime2L_init(&deadtime_slotd1);
+   uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1_handle, true);
    }
 
-In configure the configuration values in the static allocator function using the base address from ``xparameters.h``.
+Configure the static instance using the base address from ``xparameters.h``.
 
 .. code-block:: c
    :linenos:
-   :caption: Example configuration with deadtime of :math:`1\,us` and no inverted bottom switch signals. Code snippet from ``uz_interlockDeadtime2L_staticAllocator_slotD1``
+   :caption: Example configuration with deadtime of :math:`1\,us` and no inverted bottom switch signals.
 
    static uz_interlockDeadtime2L interlock_slotD1 = { 
        .base_address = XPAR_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR,

@@ -39,8 +39,7 @@
     "\t\t\tGlobal_Data.objects.project_wizard_deadtime_2l_3 = initialize_project_wizard_deadtime_2l_3();",
     "\t\t\tuz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);",
     "\t\t\tGlobal_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();",
-    "\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);",
-    "\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();"
+    "\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);"
   ],
   "main_rasv_initializer": [
     "        .pwm_2L_0_halfBridgeDutyCycle_1 = 0.0f,",
@@ -67,8 +66,7 @@
     "\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_2;",
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;",
     "\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_3;",
-    "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;",
-    "\tuz_wavegen_three_phase* three_phase_sine;"
+    "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;"
   ],
   "reference_and_set_values": [
     "\tfloat pwm_2L_0_halfBridgeDutyCycle_1;",

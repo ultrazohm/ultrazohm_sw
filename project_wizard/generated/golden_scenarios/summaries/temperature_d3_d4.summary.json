@@ -47,7 +47,6 @@
     "\t\t\tuz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);",
     "\t\t\tGlobal_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();",
     "\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);",
-    "\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();",
     "\t\t\tGlobal_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();",
     "\t\t\tuz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);",
     "\t\t\tuz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);",
@@ -81,7 +80,6 @@
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;",
     "\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_3;",
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;",
-    "\tuz_wavegen_three_phase* three_phase_sine;",
     "\tuz_temperaturecard_t* temperature_card_d3;",
     "\tuz_temperaturecard_t* temperature_card_d4;"
   ],

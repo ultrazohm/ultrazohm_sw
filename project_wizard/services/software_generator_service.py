@@ -246,8 +246,6 @@ class SoftwareGenerator:
             )
         if pwm_3l_enabled:
             main_init.append("\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);")
-        objects.append("\tuz_wavegen_three_phase* three_phase_sine;")
-        main_init.append("\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();")
 
         for slot in SLOTS:
             mode = software_modes.get(slot, "follow_hardware")

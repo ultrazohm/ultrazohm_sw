@@ -6,7 +6,6 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
-#include "uz/uz_wavegen/uz_wavegen.h"
 // Project Wizard adapter slot headers
 #include "include/a1_adapter_init.h"
 #include "include/a2_adapter_init.h"
@@ -121,7 +120,6 @@ typedef struct{
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;
 	uz_PWM_SS_2L_t* project_wizard_pwm_2l_3;
 	uz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;
-	uz_wavegen_three_phase* three_phase_sine;
 	uz_adcLtc2311_t* adc_ltc2311_a1;
 	uz_dac_interface_t* dac8831_a2;
 	uz_adcMax11331_t* adc_max11331_a3;

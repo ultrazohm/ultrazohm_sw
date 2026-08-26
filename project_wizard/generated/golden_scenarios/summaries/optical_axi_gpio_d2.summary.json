@@ -46,7 +46,6 @@
     "\t\t\tuz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);",
     "\t\t\tGlobal_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();",
     "\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);",
-    "\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();",
     "\t\t\tGlobal_Data.objects.axi_gpio_d2 = initialize_axi_gpio_d2();"
   ],
   "main_rasv_initializer": [
@@ -75,7 +74,6 @@
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;",
     "\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_3;",
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;",
-    "\tuz_wavegen_three_phase* three_phase_sine;",
     "\tuz_axi_gpio_t* axi_gpio_d2;"
   ],
   "reference_and_set_values": [

@@ -81,7 +81,6 @@
     "\t\t\tuz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);",
     "\t\t\tGlobal_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();",
     "\t\t\tinitialize_project_wizard_pwm_3l(&Global_Data);",
-    "\t\t\tGlobal_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();",
     "\t\t\tGlobal_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();",
     "\t\t\tGlobal_Data.objects.adc_max11331_a2 = initialize_adc_max11331_a2();",
     "\t\t\tGlobal_Data.objects.dac8831_a3 = initialize_dac8831_a3();"
@@ -112,7 +111,6 @@
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_2;",
     "\tuz_PWM_SS_2L_t* project_wizard_pwm_2l_3;",
     "\tuz_interlockDeadtime2L_handle project_wizard_deadtime_2l_3;",
-    "\tuz_wavegen_three_phase* three_phase_sine;",
     "\tuz_adcLtc2311_t* adc_ltc2311_a1;",
     "\tuz_adcMax11331_t* adc_max11331_a2;",
     "\tuz_dac_interface_t* dac8831_a3;"

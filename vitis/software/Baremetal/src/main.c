@@ -111,7 +111,6 @@ int main(void)
 			uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.project_wizard_deadtime_2l_3, true);
 			Global_Data.objects.project_wizard_pwm_2l_3 = initialize_project_wizard_pwm_2l_3();
 			initialize_project_wizard_pwm_3l(&Global_Data);
-			Global_Data.objects.three_phase_sine = uz_wavegen_three_phase_init();
 			Global_Data.objects.adc_ltc2311_a1 = initialize_adc_ltc2311_a1();
 			Global_Data.objects.dac8831_a2 = initialize_dac8831_a2();
 			Global_Data.objects.adc_max11331_a3 = initialize_adc_max11331_a3();

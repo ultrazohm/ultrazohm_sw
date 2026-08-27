@@ -21,7 +21,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   openjdk-21-jdk \
                                                   ant
 
-RUN gem install ceedling && ln -sf /usr/local/bin/ceedling /usr/bin/ceedling
+RUN gem install ceedling --no-document && ln -sf /usr/local/bin/ceedling /usr/bin/ceedling
 
 RUN wget -O pcre-8.45.tar.gz https://github.com/pfultz2/pcre/archive/refs/tags/8.45.tar.gz \
      && echo "d6f7182602a775a7d500a0cedca6449af0400c6493951513046d17615ed0bf11  pcre-8.45.tar.gz" | sha256sum -c - \

@@ -165,6 +165,7 @@ Syllabus
    hardware/hardware
    software/software
    ip_cores/ip_cores
+   project_wizard/project_wizard
 
 Indices and Tables
 ==================

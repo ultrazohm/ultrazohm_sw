@@ -22,8 +22,10 @@ from .software_analog import (
     adc_max11331_context,
     adc_max11331_isr_lines,
     analog_adc_packed_offsets,
-    dac8831_actual_values,
+    dac8831_active_channels,
     dac8831_context,
+    dac8831_rasv_initializers,
+    dac8831_reference_and_set_values,
 )
 from .software_driver_config import driver_instance_values
 from .software_digital import (
@@ -329,7 +331,10 @@ class SoftwareGenerator:
                 objects.append(f"\tuz_dac_interface_t* dac8831_{context['slot_lower']};")
                 for instance in wavegen_instances:
                     objects.append(f"\t{instance['type']}* {instance['object_name']};")
-                actual_values.extend(dac8831_actual_values(str(context["slot_lower"])))
+                reference_and_set_values.extend(
+                    dac8831_reference_and_set_values(str(context["slot_lower"]), context)
+                )
+                main_rasv_initializer.extend(dac8831_rasv_initializers(str(context["slot_lower"]), context))
                 main_init.append(
                     f"\t\t\tGlobal_Data.objects.dac8831_{context['slot_lower']} = initialize_dac8831_{context['slot_lower']}();"
                 )
@@ -343,7 +348,12 @@ class SoftwareGenerator:
                         slot_lower=context["slot_lower"]
                     )
                 )
-                available_visualization_signals.extend(dac8831_visualization_signals(str(context["slot_lower"])))
+                available_visualization_signals.extend(
+                    dac8831_visualization_signals(
+                        str(context["slot_lower"]),
+                        dac8831_active_channels(context),
+                    )
+                )
             elif card_id == "uz_d_inverter_adapter":
                 inverter_adapter_instances += 1
                 context = inverter_adapter_context(

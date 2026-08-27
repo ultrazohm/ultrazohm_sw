@@ -6,6 +6,9 @@ from .software_models import DAC_WAVEGEN_TYPES
 from .xparameters import resolve_base_address_macro
 
 
+DAC8831_ACTIVE_SOURCES = {"user_variable", "constant", "white_noise", *DAC_WAVEGEN_TYPES.keys()}
+
+
 def adc_ltc2311_context(
     slot: str,
     source_dir: Path,
@@ -78,7 +81,12 @@ def dac8831_context(
 
 def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict[str, str]) -> str:
     prefix = f"output_ch{channel}"
-    mode = config_values.get(f"{prefix}_source", "constant")
+    mode = config_values.get(f"{prefix}_source", "not_used")
+    command_value = f"data->rasv.dac8831_{slot_lower}_ch{channel}"
+    if mode == "not_used":
+        return f"    /* Channel {channel} is not used. The initialized zero output value is kept. */"
+    if mode == "user_variable":
+        return f"    dac8831_{slot_lower}_outputs[{channel}] = {command_value};"
     constant = config_values.get(f"{prefix}_constant", "0.0f")
     amplitude = config_values.get(f"{prefix}_amplitude", "1.0f")
     frequency = config_values.get(f"{prefix}_frequency_Hz", "10.0f")
@@ -116,13 +124,34 @@ def dac8831_output_assignment(slot_lower: str, channel: int, config_values: dict
     else:
         expression = constant
     return (
-        f"    data->av.dac8831_{slot_lower}_ch{channel} = {expression};\n"
-        f"    dac8831_{slot_lower}_outputs[{channel}] = data->av.dac8831_{slot_lower}_ch{channel};"
+        f"    {command_value} = {expression};\n"
+        f"    dac8831_{slot_lower}_outputs[{channel}] = {command_value};"
     )
 
 
-def dac8831_actual_values(slot_lower: str) -> list[str]:
-    return [f"\tfloat dac8831_{slot_lower}_ch{channel};" for channel in range(8)]
+def dac8831_reference_and_set_values(slot_lower: str, config_values: dict[str, str]) -> list[str]:
+    return [
+        f"\tfloat dac8831_{slot_lower}_ch{channel};"
+        for channel in range(8)
+        if dac8831_channel_is_active(config_values, channel)
+    ]
+
+
+def dac8831_rasv_initializers(slot_lower: str, config_values: dict[str, str]) -> list[str]:
+    return [
+        f"        .dac8831_{slot_lower}_ch{channel} = 0.0f,"
+        for channel in range(8)
+        if dac8831_channel_is_active(config_values, channel)
+    ]
+
+
+def dac8831_active_channels(config_values: dict[str, str]) -> list[int]:
+    return [channel for channel in range(8) if dac8831_channel_is_active(config_values, channel)]
+
+
+def dac8831_channel_is_active(config_values: dict[str, str], channel: int) -> bool:
+    mode = config_values.get(f"output_ch{channel}_source", "not_used")
+    return mode in DAC8831_ACTIVE_SOURCES
 
 
 def dac8831_wavegen_object_name(slot_lower: str, channel: int, mode: str) -> str:
@@ -132,7 +161,7 @@ def dac8831_wavegen_object_name(slot_lower: str, channel: int, mode: str) -> str
 def dac8831_wavegen_instances(slot_lower: str, config_values: dict[str, str]) -> list[dict[str, str]]:
     instances: list[dict[str, str]] = []
     for channel in range(8):
-        mode = config_values.get(f"output_ch{channel}_source", "constant")
+        mode = config_values.get(f"output_ch{channel}_source", "not_used")
         metadata = DAC_WAVEGEN_TYPES.get(mode)
         if metadata is None:
             continue

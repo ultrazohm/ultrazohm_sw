@@ -33,6 +33,7 @@ from .visualization_catalog import (
     selected_io_card_variant,
     temperature_visualization_signals,
 )
+from .software_analog import dac8831_active_channels
 
 
 class SystemResolver:
@@ -569,7 +570,12 @@ class SystemResolver:
             elif card_id == "analog_max11331":
                 signals.extend(adc_max11331_visualization_signals(slot_lower))
             elif card_id == "analog_dac8831":
-                signals.extend(dac8831_visualization_signals(slot_lower))
+                signals.extend(
+                    dac8831_visualization_signals(
+                        slot_lower,
+                        dac8831_active_channels(_driver_config_values(config, f"{slot_lower}_dac8831")),
+                    )
+                )
             elif card_id == "uz_d_inverter_adapter":
                 signals.extend(inverter_adapter_visualization_signals(slot_lower))
             elif card_id == "uz_d_temperature_ltc2983":
@@ -653,6 +659,13 @@ def _software_instance(
         driver=driver,
         driver_definition_id=driver_definition_id,
     )
+
+
+def _driver_config_values(config: SystemConfig, instance_id: str) -> dict[str, str]:
+    values = config.driver_config.get(instance_id, {})
+    if values.get("mode") != "custom":
+        return {}
+    return values
 
 
 def _resolver_channel_count(slot: str) -> int:

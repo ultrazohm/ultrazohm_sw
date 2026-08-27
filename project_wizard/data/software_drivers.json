@@ -375,9 +375,11 @@
         {
           "id": "output_ch0_source",
           "label": "Output channel 0 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -385,7 +387,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch0_constant",
@@ -421,9 +424,11 @@
         {
           "id": "output_ch1_source",
           "label": "Output channel 1 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -431,7 +436,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch1_constant",
@@ -467,9 +473,11 @@
         {
           "id": "output_ch2_source",
           "label": "Output channel 2 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -477,7 +485,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch2_constant",
@@ -513,9 +522,11 @@
         {
           "id": "output_ch3_source",
           "label": "Output channel 3 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -523,7 +534,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch3_constant",
@@ -559,9 +571,11 @@
         {
           "id": "output_ch4_source",
           "label": "Output channel 4 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -569,7 +583,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch4_constant",
@@ -605,9 +620,11 @@
         {
           "id": "output_ch5_source",
           "label": "Output channel 5 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -615,7 +632,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch5_constant",
@@ -651,9 +669,11 @@
         {
           "id": "output_ch6_source",
           "label": "Output channel 6 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -661,7 +681,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch6_constant",
@@ -697,9 +718,11 @@
         {
           "id": "output_ch7_source",
           "label": "Output channel 7 source",
-          "default": "constant",
+          "default": "not_used",
           "input": "choice",
           "options": [
+            {"value": "not_used", "label": "Not used"},
+            {"value": "user_variable", "label": "User/application variable"},
             {"value": "constant", "label": "Constant"},
             {"value": "sine", "label": "Sine"},
             {"value": "sawtooth", "label": "Sawtooth"},
@@ -707,7 +730,8 @@
             {"value": "square", "label": "Square"},
             {"value": "pulse", "label": "Pulse"},
             {"value": "white_noise", "label": "White noise"}
-          ]
+          ],
+          "help": "Not used leaves the DAC channel at its initialized zero output. User/application variable creates a rasv command value that user code can write without being overwritten by the wizard. Constant and waveform sources are wizard-owned and update the rasv command value before writing the DAC."
         },
         {
           "id": "output_ch7_constant",

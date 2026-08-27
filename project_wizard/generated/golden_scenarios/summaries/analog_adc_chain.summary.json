@@ -31,15 +31,7 @@
     "\tfloat adc_max11331_a2_ch20;",
     "\tfloat adc_max11331_a2_ch21;",
     "\tfloat adc_max11331_a2_ch22;",
-    "\tfloat adc_max11331_a2_ch23;",
-    "\tfloat dac8831_a3_ch0;",
-    "\tfloat dac8831_a3_ch1;",
-    "\tfloat dac8831_a3_ch2;",
-    "\tfloat dac8831_a3_ch3;",
-    "\tfloat dac8831_a3_ch4;",
-    "\tfloat dac8831_a3_ch5;",
-    "\tfloat dac8831_a3_ch6;",
-    "\tfloat dac8831_a3_ch7;"
+    "\tfloat adc_max11331_a2_ch23;"
   ],
   "datamover_array_length": 32,
   "generated_files": [
@@ -152,7 +144,7 @@
     "slot_content/A3/header_prototypes/0": "9ebd1a5be31751b40dee6f319e488eb9e6e1cadcbcc58f686ac119a833324fa8",
     "slot_content/A3/header_prototypes/1": "aeb478ab1050736dccf98c265d69ef24b53c320bae36c7a73085d91ab6c96c64",
     "slot_content/A3/header_prototypes/2": "a02003362625fb4af56587c8c399da3184685b1330b4b86390d694b2a74a6f81",
-    "slot_content/A3/source_definitions/0": "81f47780c066b5984b969dfd2175b45d3c6681daefc024c907455044f2be850f"
+    "slot_content/A3/source_definitions/0": "a6834ee450c578079bf9759e7f5b00fd39165a28182c907bab5131996fbdd933"
   },
   "software_warnings": [],
   "tcl_line_count": 3199,
@@ -189,14 +181,6 @@
     "adc_max11331_a2_ch6",
     "adc_max11331_a2_ch7",
     "adc_max11331_a2_ch8",
-    "adc_max11331_a2_ch9",
-    "dac8831_a3_ch0",
-    "dac8831_a3_ch1",
-    "dac8831_a3_ch2",
-    "dac8831_a3_ch3",
-    "dac8831_a3_ch4",
-    "dac8831_a3_ch5",
-    "dac8831_a3_ch6",
-    "dac8831_a3_ch7"
+    "adc_max11331_a2_ch9"
   ]
 }

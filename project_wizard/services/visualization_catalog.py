@@ -13,17 +13,18 @@ def config_int(value: str, default: int, minimum: int, maximum: int) -> int:
     return max(minimum, min(maximum, parsed))
 
 
-def dac8831_visualization_signals(slot_lower: str) -> list[VisualizationSignal]:
+def dac8831_visualization_signals(slot_lower: str, active_channels: list[int] | None = None) -> list[VisualizationSignal]:
     slot = slot_lower.upper()
+    channels = active_channels if active_channels is not None else list(range(8))
     return [
         VisualizationSignal(
             signal_id=f"dac8831_{slot_lower}_ch{channel}",
             slot=slot,
             label=f"{slot} DAC8831 output channel {channel}",
             enum_name=f"JSO_DAC8831_{slot}_CH{channel}",
-            pointer_expression=f"&data->av.dac8831_{slot_lower}_ch{channel}",
+            pointer_expression=f"&data->rasv.dac8831_{slot_lower}_ch{channel}",
         )
-        for channel in range(8)
+        for channel in channels
     ]
 
 

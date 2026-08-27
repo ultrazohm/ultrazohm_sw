@@ -32,14 +32,6 @@ typedef struct _actualValues_ {
 	float adc_ltc2311_a1_ch5;
 	float adc_ltc2311_a1_ch6;
 	float adc_ltc2311_a1_ch7;
-	float dac8831_a2_ch0;
-	float dac8831_a2_ch1;
-	float dac8831_a2_ch2;
-	float dac8831_a2_ch3;
-	float dac8831_a2_ch4;
-	float dac8831_a2_ch5;
-	float dac8831_a2_ch6;
-	float dac8831_a2_ch7;
 	float adc_max11331_a3_ch0;
 	float adc_max11331_a3_ch1;
 	float adc_max11331_a3_ch2;

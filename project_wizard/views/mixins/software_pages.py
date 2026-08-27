@@ -78,8 +78,8 @@ class SoftwarePageMixin:
         source_form = QFormLayout(source_group)
         source_form.addRow("Source folder", self._software_path_picker("source_dir", file_mode=False))
         source_hint = QLabel(
-            "Select the folder that contains globalData.h. For the current Baremetal framework this is "
-            "usually vitis/software/Baremetal/src."
+            "Select the folder that contains the R5 baremetal software sources. "
+            "This is usually vitis/software/Baremetal/src"
         )
         source_hint.setWordWrap(True)
         source_form.addRow("", source_hint)

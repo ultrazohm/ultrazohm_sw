@@ -114,12 +114,6 @@ class TclGenerationPageMixin:
         options_form.addRow("", save_checkbox)
         options_form.addRow("", bitstream_checkbox)
         options_form.addRow("", export_xsa_checkbox)
-        hint = QLabel(
-            "These options only affect the TCL execution/export flow. Complete the hardware configuration pages first, "
-            "then run the workflow from here."
-        )
-        hint.setWordWrap(True)
-        options_form.addRow("", hint)
         local_layout.addWidget(options_widget)
 
         workflow_title = QLabel("TCL workflow")

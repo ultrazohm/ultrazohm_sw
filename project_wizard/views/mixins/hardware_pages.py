@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QGroupBox,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -77,9 +78,18 @@ class HardwarePageMixin:
         vivado_group = QGroupBox("Vivado project")
         vivado_form = QFormLayout(vivado_group)
         vivado_form.addRow("Project file", self._hardware_path_picker("vivado_project_file", file_mode=True))
+
+        block_design_container = QWidget()
+        block_design_layout = QHBoxLayout(block_design_container)
+        block_design_layout.setContentsMargins(0, 0, 0, 0)
         block_design_name = QLineEdit()
+        block_design_name.setEnabled(False)
+        edit_block_design_button = QPushButton("Edit")
+        edit_block_design_button.clicked.connect(lambda: self.edit_block_design_name(block_design_name))
         self.hardware_fields["block_design_name"] = block_design_name
-        vivado_form.addRow("Block design name", block_design_name)
+        block_design_layout.addWidget(block_design_name, 1)
+        block_design_layout.addWidget(edit_block_design_button)
+        vivado_form.addRow("Block design name", block_design_container)
         hint = QLabel(
             "Select the Vivado project and block design that the generated TCL should target. "
             "TCL execution options are configured on the TCL generation page."
@@ -89,6 +99,24 @@ class HardwarePageMixin:
         layout.addWidget(vivado_group)
         layout.addStretch(1)
         return page
+
+
+
+    def edit_block_design_name(self, field: QLineEdit) -> None:
+        current_name = field.text().strip() or "zusys"
+        new_name, accepted = QInputDialog.getText(
+            self,
+            "Edit block design name",
+            "Block design name:",
+            text=current_name,
+        )
+        if not accepted:
+            return
+        new_name = new_name.strip()
+        if not new_name:
+            QMessageBox.warning(self, "Block design name missing", "Please enter a block design name.")
+            return
+        field.setText(new_name)
 
 
 

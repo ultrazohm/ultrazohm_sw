@@ -12,6 +12,8 @@ Prerequisites
 Before starting, make sure that:
 
 * the UltraZohm repository is checked out locally;
+* Python is installed and available from the terminal;
+* the Project Wizard Python dependencies are installed with ``pip install -r project_wizard/requirements.txt``;
 * Vivado and Vitis are installed for the project version used by the repository;
 * Lattice Diamond is installed if slot CPLDs should be programmed from the wizard;
 * the base Vivado project exists under ``vivado/project/``;
@@ -114,4 +116,3 @@ After a successful quick-start flow:
 * the Vitis software compiles;
 * selected visualization signals are available in the configured Javascope and slow-data paths;
 * saved wizard configuration can be reopened and regenerated.
-

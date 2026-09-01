@@ -7,6 +7,8 @@
 #include "../uz_ResonantController/uz_resonant_controller.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_pos_to_speed_pll/uz_pos_to_speed_pll.h"
+#include "../uz_CurrentControl/uz_space_vector_limitation.h"
 #include <math.h>
 
 struct uz_im_control_t {
@@ -30,14 +32,11 @@ struct uz_im_control_t {
     uz_resonantController_t *resonant_controller_d;
     uz_resonantController_t *resonant_controller_q;
     bool resonant_control_enabled;
-    bool kalman_enabled_last;
     bool voltage_vector_saturated_last;
-    float psi_alpha_Vs;
-    float psi_beta_Vs;
-    float kalman_i_alpha_A;
-    float kalman_i_beta_A;
-    float kalman_p_alpha_A2;
-    float kalman_p_beta_A2;
+    struct uz_im_observer_diagnostics_t observer_diagnostics;
+    uz_pos_to_speed_pll_t *deterministic_observer_pll;
+    uz_pos_to_speed_pll_t *kalman_observer_pll;
+    uz_3ph_abc_t previous_applied_v_abc_V;
     float u_f_frequency_Hz;
     float u_f_angle_rad;
     float previous_flux_angle_rad;
@@ -61,7 +60,10 @@ static void validate_configuration(struct uz_im_control_configuration_t control_
     uz_assert(control_config.u_f_max_voltage_V > 0.0f);
     uz_assert(control_config.u_f_frequency_ramp_Hz_per_s > 0.0f);
     uz_assert(control_config.kalman_process_noise_A2_per_s >= 0.0f);
+    uz_assert(control_config.kalman_flux_process_noise_Vs2_per_s >= 0.0f);
     uz_assert(control_config.kalman_measurement_noise_A2 > 0.0f);
+    uz_assert(control_config.observer_pll_kp >= 0.0f);
+    uz_assert(control_config.observer_pll_ki >= 0.0f);
     uz_assert(control_config.minimum_observer_flux_Vs > 0.0f);
     uz_assert(control_config.maximum_slip_frequency_Hz > 0.0f);
     uz_assert(control_config.maximum_flux_angle_step_rad > 0.0f);
@@ -112,8 +114,12 @@ uz_im_control_t *uz_im_control_init(struct uz_im_control_configuration_t control
     self->observer = control_config.observer;
     self->resonant_control_enabled = control_config.enable_resonant_control;
     self->mode = uz_im_control_mode_foc;
-    self->current_controller_d = create_pi(control_config.current_controller_d_kp, control_config.current_controller_d_ki, control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound, -control_config.safe_operating_region.v_dc_in_V.upper_bound);
-    self->current_controller_q = create_pi(control_config.current_controller_q_kp, control_config.current_controller_q_ki, control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound, -control_config.safe_operating_region.v_dc_in_V.upper_bound);
+    self->current_controller_d = create_pi(control_config.current_controller_d_kp, control_config.current_controller_d_ki,
+        control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound,
+        -control_config.safe_operating_region.v_dc_in_V.upper_bound);
+    self->current_controller_q = create_pi(control_config.current_controller_q_kp, control_config.current_controller_q_ki,
+        control_config.sample_time_s, control_config.safe_operating_region.v_dc_in_V.upper_bound,
+        -control_config.safe_operating_region.v_dc_in_V.upper_bound);
     self->speed_controller = create_pi(control_config.speed_controller_kp, control_config.speed_controller_ki, control_config.sample_time_s, control_config.setpoint_limits.i_q_in_A.upper_bound, control_config.setpoint_limits.i_q_in_A.lower_bound);
     if (control_config.setpoint_filter_i_dq_cutoff_frequency != 0.0f) {
         struct uz_IIR_Filter_config filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = control_config.setpoint_filter_i_dq_cutoff_frequency, .sample_frequency_Hz = 1.0f / control_config.sample_time_s};
@@ -137,6 +143,14 @@ uz_im_control_t *uz_im_control_init(struct uz_im_control_configuration_t control
     self->resonant_controller_d = uz_resonantController_init(resonant_config);
     resonant_config.gain = control_config.resonant_gain_q;
     self->resonant_controller_q = uz_resonantController_init(resonant_config);
+    struct uz_pos_to_speed_pll_config_t const observer_pll_config = {
+        .machine_polepairs = machine_config.polePairs,
+        .kp_pll = control_config.observer_pll_kp,
+        .ki_pll = control_config.observer_pll_ki,
+        .sampling_time_in_seconds = control_config.sample_time_s,
+    };
+    self->deterministic_observer_pll = uz_pos_to_speed_pll_init(observer_pll_config);
+    self->kalman_observer_pll = uz_pos_to_speed_pll_init(observer_pll_config);
     uz_im_control_reset(self);
     return self;
 }
@@ -152,13 +166,13 @@ void uz_im_control_reset(uz_im_control_t *self) {
     if (self->speed_filter != NULL) uz_signals_IIR_Filter_reset(self->speed_filter);
     uz_resonantController_reset(self->resonant_controller_d);
     uz_resonantController_reset(self->resonant_controller_q);
-    self->psi_alpha_Vs = 0.0f;
-    self->psi_beta_Vs = 0.0f;
-    self->kalman_i_alpha_A = 0.0f;
-    self->kalman_i_beta_A = 0.0f;
-    self->kalman_p_alpha_A2 = 1.0f;
-    self->kalman_p_beta_A2 = 1.0f;
-    self->kalman_enabled_last = false;
+    self->observer_diagnostics = (struct uz_im_observer_diagnostics_t){0};
+    for (uint32_t i = 0U; i < 4U; i++) {
+        self->observer_diagnostics.covariance[i][i] = 1.0f;
+    }
+    uz_pos_to_speed_pll_reset(self->deterministic_observer_pll);
+    uz_pos_to_speed_pll_reset(self->kalman_observer_pll);
+    self->previous_applied_v_abc_V = (uz_3ph_abc_t){0};
     self->u_f_frequency_Hz = 0.0f;
     self->u_f_angle_rad = 0.0f;
     self->previous_flux_angle_rad = 0.0f;
@@ -185,7 +199,18 @@ void uz_im_control_set_mode(uz_im_control_t *self, enum uz_im_control_mode mode)
     self->mode = mode;
 }
 void uz_im_control_enable_speed_control(uz_im_control_t *self, bool enable) { uz_assert_not_NULL(self); self->speed_control_enabled = enable; uz_PI_Controller_reset(self->speed_controller); }
-void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer) { uz_assert_not_NULL(self); self->observer = observer; }
+void uz_im_control_set_observer(uz_im_control_t *self, enum uz_im_control_observer observer) {
+    uz_assert_not_NULL(self);
+    if (self->observer != observer) {
+        self->observer = observer;
+        self->observer_diagnostics = (struct uz_im_observer_diagnostics_t){0};
+        for (uint32_t i = 0U; i < 4U; i++) self->observer_diagnostics.covariance[i][i] = 1.0f;
+        uz_pos_to_speed_pll_reset(self->deterministic_observer_pll);
+        uz_pos_to_speed_pll_reset(self->kalman_observer_pll);
+        self->previous_flux_angle_rad = 0.0f;
+        self->previous_flux_angle_valid = false;
+    }
+}
 void uz_im_control_enable_resonant_control(uz_im_control_t *self, bool enable) {
     uz_assert_not_NULL(self);
     if (self->resonant_control_enabled != enable) {
@@ -214,45 +239,192 @@ static void check_safe_operating_region(uz_im_control_t *self) {
     self->actual.safe_operating_region_status = (uint32_t)self->violation;
 }
 
-static void update_observers(uz_im_control_t *self) {
-    uz_3ph_alphabeta_t current = uz_transformation_3ph_abc_to_alphabeta(self->measurements.i_abc_A);
-    uz_3ph_alphabeta_t raw = current;
-    if (self->observer == uz_im_control_observer_kalman_rotor_flux_model) {
-        self->kalman_p_alpha_A2 += self->control_config.kalman_process_noise_A2_per_s * self->control_config.sample_time_s;
-        self->kalman_p_beta_A2 += self->control_config.kalman_process_noise_A2_per_s * self->control_config.sample_time_s;
-        float ka = self->kalman_p_alpha_A2 / (self->kalman_p_alpha_A2 + self->control_config.kalman_measurement_noise_A2);
-        float kb = self->kalman_p_beta_A2 / (self->kalman_p_beta_A2 + self->control_config.kalman_measurement_noise_A2);
-        self->actual.kalman_innovation_alpha_A = current.alpha - self->kalman_i_alpha_A;
-        self->actual.kalman_innovation_beta_A = current.beta - self->kalman_i_beta_A;
-        self->kalman_i_alpha_A += ka * self->actual.kalman_innovation_alpha_A;
-        self->kalman_i_beta_A += kb * self->actual.kalman_innovation_beta_A;
-        self->kalman_p_alpha_A2 *= 1.0f - ka;
-        self->kalman_p_beta_A2 *= 1.0f - kb;
-        current.alpha = self->kalman_i_alpha_A;
-        current.beta = self->kalman_i_beta_A;
-    } else {
-        self->actual.kalman_innovation_alpha_A = 0.0f;
-        self->actual.kalman_innovation_beta_A = 0.0f;
-        if (self->kalman_enabled_last) {
-            self->kalman_p_alpha_A2 = 1.0f;
-            self->kalman_p_beta_A2 = 1.0f;
-        }
-        self->kalman_i_alpha_A = current.alpha;
-        self->kalman_i_beta_A = current.beta;
+static float observer_pll_step(uz_pos_to_speed_pll_t *pll, float flux_angle_rad) {
+    float wrapped_angle = flux_angle_rad;
+    if (wrapped_angle < 0.0f) wrapped_angle += 2.0f * UZ_PIf;
+    wrapped_angle = fminf(fmaxf(wrapped_angle, 0.0f), 2.0f * UZ_PIf);
+    uz_pos_to_speed_pll_step(pll, wrapped_angle);
+    /* Preserve the direction estimated from the flux-angle rotation. Taking
+     * the absolute value here makes the stator frequency always positive and
+     * therefore produces an incorrect slip for reverse rotation. */
+    return uz_pos_to_speed_pll_get_omega_mech_si(pll) / (2.0f * UZ_PIf);
+}
+
+static void update_deterministic_observer(uz_im_control_t *self, uz_3ph_alphabeta_t current) {
+    struct uz_im_observer_diagnostics_t *diagnostics = &self->observer_diagnostics;
+    float const ts = self->control_config.sample_time_s;
+    float const lr = uz_IM_config_get_Lr(self->machine_config);
+    float const inverse_tau_r = self->machine_config.Rr_Ohm / lr;
+    float const omega_r = self->measurements.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f)
+        * self->machine_config.polePairs;
+    float const half_ts = 0.5f * ts;
+    float const m00 = 1.0f + half_ts * inverse_tau_r;
+    float const m01 = half_ts * omega_r;
+    float const m10 = -half_ts * omega_r;
+    float const m11 = m00;
+    float const n00 = 1.0f - half_ts * inverse_tau_r;
+    float const n01 = -half_ts * omega_r;
+    float const n10 = half_ts * omega_r;
+    float const n11 = n00;
+    float const current_gain = ts * self->machine_config.Lm_Henry * inverse_tau_r;
+    float const rhs_alpha = n00 * diagnostics->deterministic_flux_alpha_Vs
+        + n01 * diagnostics->deterministic_flux_beta_Vs + current_gain * current.alpha;
+    float const rhs_beta = n10 * diagnostics->deterministic_flux_alpha_Vs
+        + n11 * diagnostics->deterministic_flux_beta_Vs + current_gain * current.beta;
+    float const determinant = m00 * m11 - m01 * m10;
+    if (fabsf(determinant) < 1.0e-12f) {
+        diagnostics->deterministic_flux_alpha_Vs = 0.0f;
+        diagnostics->deterministic_flux_beta_Vs = 0.0f;
+        self->violation = uz_im_control_observer_violation;
+        return;
     }
-    self->kalman_enabled_last = self->observer == uz_im_control_observer_kalman_rotor_flux_model;
-    float lr = uz_IM_config_get_Lr(self->machine_config);
-    float inv_tr = self->machine_config.Rr_Ohm / lr;
-    float omega_r = self->measurements.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f) * self->machine_config.polePairs;
-    float dpsi_a = inv_tr * (self->machine_config.Lm_Henry * current.alpha - self->psi_alpha_Vs) - omega_r * self->psi_beta_Vs;
-    float dpsi_b = inv_tr * (self->machine_config.Lm_Henry * current.beta - self->psi_beta_Vs) + omega_r * self->psi_alpha_Vs;
-    self->psi_alpha_Vs += self->control_config.sample_time_s * dpsi_a;
-    self->psi_beta_Vs += self->control_config.sample_time_s * dpsi_b;
-    self->actual.rotor_flux_magnitude_Vs = hypotf(self->psi_alpha_Vs, self->psi_beta_Vs);
-    self->actual.rotor_flux_angle_rad = atan2f(self->psi_beta_Vs, self->psi_alpha_Vs);
+    diagnostics->deterministic_flux_alpha_Vs = (m11 * rhs_alpha - m01 * rhs_beta) / determinant;
+    diagnostics->deterministic_flux_beta_Vs = (-m10 * rhs_alpha + m00 * rhs_beta) / determinant;
+    self->actual.rotor_flux_angle_rad = atan2f(diagnostics->deterministic_flux_beta_Vs,
+        diagnostics->deterministic_flux_alpha_Vs);
+    self->actual.rotor_flux_magnitude_Vs = hypotf(diagnostics->deterministic_flux_alpha_Vs,
+        diagnostics->deterministic_flux_beta_Vs);
+    diagnostics->deterministic_stator_frequency_Hz = observer_pll_step(self->deterministic_observer_pll,
+        self->actual.rotor_flux_angle_rad);
+    self->actual.i_dq_A = uz_transformation_3ph_alphabeta_to_dq(current, self->actual.rotor_flux_angle_rad);
+    self->actual.kalman_innovation_alpha_A = 0.0f;
+    self->actual.kalman_innovation_beta_A = 0.0f;
+}
+
+static bool update_kalman_observer(uz_im_control_t *self, uz_3ph_alphabeta_t measured_current) {
+    struct uz_im_observer_diagnostics_t *diagnostics = &self->observer_diagnostics;
+    float const ts = self->control_config.sample_time_s;
+    float const ls = uz_IM_config_get_Ls(self->machine_config);
+    float const lr = uz_IM_config_get_Lr(self->machine_config);
+    float const sigma_ls = uz_IM_config_get_sigma(self->machine_config) * ls;
+    float const lm = self->machine_config.Lm_Henry;
+    float const rr = self->machine_config.Rr_Ohm;
+    float const omega_r = self->measurements.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f)
+        * self->machine_config.polePairs;
+    float const a = -(self->machine_config.Rs_Ohm / sigma_ls
+        + lm * lm * rr / (sigma_ls * lr * lr));
+    float const b = lm * rr / (sigma_ls * lr * lr);
+    float const c = lm / (sigma_ls * lr);
+    float const d = lm * rr / lr;
+    float const e = rr / lr;
+    float A[4][4] = {
+        {1.0f + a * ts, 0.0f, b * ts, c * omega_r * ts},
+        {0.0f, 1.0f + a * ts, -c * omega_r * ts, b * ts},
+        {d * ts, 0.0f, 1.0f - e * ts, -omega_r * ts},
+        {0.0f, d * ts, omega_r * ts, 1.0f - e * ts},
+    };
+    float const input_gain = ts / sigma_ls;
+    float const voltage_input[4] = {
+        input_gain * ((2.0f / 3.0f) * self->measurements.v_abc_V.a
+            - (1.0f / 3.0f) * self->measurements.v_abc_V.b
+            - (1.0f / 3.0f) * self->measurements.v_abc_V.c),
+        input_gain * ((self->measurements.v_abc_V.b - self->measurements.v_abc_V.c) / sqrtf(3.0f)),
+        0.0f,
+        0.0f,
+    };
+    float predicted_state[4] = {0};
+    float AP[4][4] = {{0}};
+    float predicted_covariance[4][4] = {{0}};
+    for (uint32_t row = 0U; row < 4U; row++) {
+        predicted_state[row] = voltage_input[row];
+        for (uint32_t column = 0U; column < 4U; column++) {
+            predicted_state[row] += A[row][column] * diagnostics->state[column];
+            for (uint32_t k = 0U; k < 4U; k++) {
+                AP[row][column] += A[row][k] * diagnostics->covariance[k][column];
+            }
+        }
+    }
+    float const current_process_noise = self->control_config.kalman_process_noise_A2_per_s * ts;
+    float const flux_process_noise = self->control_config.kalman_flux_process_noise_Vs2_per_s * ts;
+    for (uint32_t row = 0U; row < 4U; row++) {
+        for (uint32_t column = 0U; column < 4U; column++) {
+            for (uint32_t k = 0U; k < 4U; k++) {
+                predicted_covariance[row][column] += AP[row][k] * A[column][k];
+            }
+        }
+        predicted_covariance[row][row] += (row < 2U) ? current_process_noise : flux_process_noise;
+    }
+    diagnostics->innovation[0] = measured_current.alpha - predicted_state[0];
+    diagnostics->innovation[1] = measured_current.beta - predicted_state[1];
+    diagnostics->innovation_covariance[0][0] = predicted_covariance[0][0]
+        + self->control_config.kalman_measurement_noise_A2;
+    diagnostics->innovation_covariance[0][1] = predicted_covariance[0][1];
+    diagnostics->innovation_covariance[1][0] = predicted_covariance[1][0];
+    diagnostics->innovation_covariance[1][1] = predicted_covariance[1][1]
+        + self->control_config.kalman_measurement_noise_A2;
+    float const determinant = diagnostics->innovation_covariance[0][0]
+        * diagnostics->innovation_covariance[1][1]
+        - diagnostics->innovation_covariance[0][1] * diagnostics->innovation_covariance[1][0];
+    if ((!isfinite(determinant)) || (fabsf(determinant) < 1.0e-10f)) return false;
+    float const inverse_determinant = 1.0f / determinant;
+    float const inverse_S[2][2] = {
+        {diagnostics->innovation_covariance[1][1] * inverse_determinant,
+            -diagnostics->innovation_covariance[0][1] * inverse_determinant},
+        {-diagnostics->innovation_covariance[1][0] * inverse_determinant,
+            diagnostics->innovation_covariance[0][0] * inverse_determinant},
+    };
+    for (uint32_t row = 0U; row < 4U; row++) {
+        diagnostics->kalman_gain[row][0] = predicted_covariance[row][0] * inverse_S[0][0]
+            + predicted_covariance[row][1] * inverse_S[1][0];
+        diagnostics->kalman_gain[row][1] = predicted_covariance[row][0] * inverse_S[0][1]
+            + predicted_covariance[row][1] * inverse_S[1][1];
+        diagnostics->state[row] = predicted_state[row]
+            + diagnostics->kalman_gain[row][0] * diagnostics->innovation[0]
+            + diagnostics->kalman_gain[row][1] * diagnostics->innovation[1];
+    }
+    for (uint32_t row = 0U; row < 4U; row++) {
+        for (uint32_t column = 0U; column < 4U; column++) {
+            diagnostics->covariance[row][column] = predicted_covariance[row][column]
+                - diagnostics->kalman_gain[row][0] * predicted_covariance[0][column]
+                - diagnostics->kalman_gain[row][1] * predicted_covariance[1][column];
+        }
+        if ((!isfinite(diagnostics->state[row])) || (!isfinite(diagnostics->covariance[row][row]))) return false;
+    }
+    self->actual.rotor_flux_angle_rad = atan2f(diagnostics->state[3], diagnostics->state[2]);
+    self->actual.rotor_flux_magnitude_Vs = hypotf(diagnostics->state[2], diagnostics->state[3]);
+    self->actual.i_dq_A = uz_transformation_3ph_alphabeta_to_dq(
+        (uz_3ph_alphabeta_t){.alpha = diagnostics->state[0], .beta = diagnostics->state[1]},
+        self->actual.rotor_flux_angle_rad);
+    self->actual.kalman_innovation_alpha_A = diagnostics->innovation[0];
+    self->actual.kalman_innovation_beta_A = diagnostics->innovation[1];
+    return true;
+}
+
+static void update_observers(uz_im_control_t *self) {
+    uz_3ph_alphabeta_t const raw_current = uz_transformation_3ph_abc_to_alphabeta(self->measurements.i_abc_A);
+    float const omega_r = self->measurements.rotor_speed_rpm * (2.0f * UZ_PIf / 60.0f)
+        * self->machine_config.polePairs;
+    bool observer_valid = true;
+    if (self->observer == uz_im_control_observer_kalman_rotor_flux_model) {
+        observer_valid = update_kalman_observer(self, raw_current);
+    } else {
+        update_deterministic_observer(self, raw_current);
+        observer_valid = self->violation != uz_im_control_observer_violation;
+    }
+    if (!observer_valid) {
+        self->violation = uz_im_control_observer_violation;
+        self->actual.safe_operating_region_status = (uint32_t)self->violation;
+        self->actual.rotor_flux_angle_rad = 0.0f;
+        self->actual.rotor_flux_magnitude_Vs = 0.0f;
+        self->actual.i_dq_A = (uz_3ph_dq_t){0};
+    }
+    if (observer_valid && (self->observer == uz_im_control_observer_kalman_rotor_flux_model)) {
+        /* Keep the PLL call outside update_kalman_observer: the Kalman matrix
+         * temporaries have left the ISR stack before the PLL evaluates sin/cos. */
+        self->observer_diagnostics.kalman_stator_frequency_Hz = observer_pll_step(
+            self->kalman_observer_pll, self->actual.rotor_flux_angle_rad);
+    }
     bool const flux_valid = isfinite(self->actual.rotor_flux_magnitude_Vs)
         && (self->actual.rotor_flux_magnitude_Vs > self->control_config.minimum_observer_flux_Vs);
     self->actual.rotor_flux_valid = flux_valid ? 1.0f : 0.0f;
+    if (!flux_valid) {
+        self->actual.i_dq_A = (uz_3ph_dq_t){0};
+    }
+    float const lr = uz_IM_config_get_Lr(self->machine_config);
+    self->actual.estimated_electrical_torque_Nm = flux_valid
+        ? 1.5f * self->machine_config.polePairs * (self->machine_config.Lm_Henry / lr)
+            * self->actual.rotor_flux_magnitude_Vs * self->actual.i_dq_A.q
+        : 0.0f;
     self->actual.flux_angle_step_rad = 0.0f;
     if (flux_valid && self->previous_flux_angle_valid) {
         float const delta = self->actual.rotor_flux_angle_rad - self->previous_flux_angle_rad;
@@ -270,13 +442,13 @@ static void update_observers(uz_im_control_t *self) {
     if (self->actual.rotor_electrical_angle_rad < 0.0f) self->actual.rotor_electrical_angle_rad += 2.0f * UZ_PIf;
     float const flux_rotor_angle_delta = self->actual.rotor_flux_angle_rad - self->actual.rotor_electrical_angle_rad;
     self->actual.flux_rotor_angle_difference_rad = atan2f(sinf(flux_rotor_angle_delta), cosf(flux_rotor_angle_delta));
-    self->actual.i_dq_raw_A = uz_transformation_3ph_alphabeta_to_dq(raw, self->actual.rotor_flux_angle_rad);
-    self->actual.i_dq_A = uz_transformation_3ph_alphabeta_to_dq(current, self->actual.rotor_flux_angle_rad);
+    self->actual.i_dq_raw_A = uz_transformation_3ph_alphabeta_to_dq(raw_current, self->actual.rotor_flux_angle_rad);
     float slip = 0.0f;
     self->actual.slip_frequency_limited = 0.0f;
     if (flux_valid) {
-        slip = (self->machine_config.Rr_Ohm * self->machine_config.Lm_Henry / lr)
-            * self->actual.i_dq_A.q / self->actual.rotor_flux_magnitude_Vs;
+        slip = ((self->observer == uz_im_control_observer_kalman_rotor_flux_model)
+            ? self->observer_diagnostics.kalman_stator_frequency_Hz
+            : self->observer_diagnostics.deterministic_stator_frequency_Hz) * (2.0f * UZ_PIf) - omega_r;
         float const maximum_slip = 2.0f * UZ_PIf * self->control_config.maximum_slip_frequency_Hz;
         float const limited_slip = uz_signals_saturation(slip, maximum_slip, -maximum_slip);
         self->actual.slip_frequency_limited = (limited_slip != slip) ? 1.0f : 0.0f;
@@ -315,6 +487,7 @@ static struct uz_DutyCycle_t sample_u_f(uz_im_control_t *self, float target_Hz) 
 uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurement_values m, float speed_ref, uz_3ph_dq_t current_ref) {
     uz_assert_not_NULL(self);
     self->measurements = m;
+    self->measurements.v_abc_V = self->previous_applied_v_abc_V;
     if (self->speed_filter != NULL) self->measurements.rotor_speed_rpm = uz_signals_IIR_Filter_sample(self->speed_filter, m.rotor_speed_rpm);
     speed_ref = uz_signals_saturation(speed_ref, self->control_config.setpoint_limits.speed_in_rpm.upper_bound, self->control_config.setpoint_limits.speed_in_rpm.lower_bound);
     current_ref.d = uz_signals_saturation(current_ref.d, self->control_config.setpoint_limits.i_d_in_A.upper_bound, self->control_config.setpoint_limits.i_d_in_A.lower_bound);
@@ -325,7 +498,10 @@ uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurem
     self->references.i_dq_A = current_ref;
     update_observers(self);
     check_safe_operating_region(self);
-    if ((!self->enable) || (self->violation != uz_im_control_no_violation) || (self->mode != uz_im_control_mode_foc)) return (uz_3ph_dq_t){0};
+    if ((!self->enable) || (self->violation != uz_im_control_no_violation) || (self->mode != uz_im_control_mode_foc)) {
+        self->previous_applied_v_abc_V = (uz_3ph_abc_t){0};
+        return (uz_3ph_dq_t){0};
+    }
     if (self->speed_control_enabled) self->references.i_dq_A.q = uz_PI_Controller_sample(self->speed_controller, speed_ref, self->measurements.rotor_speed_rpm, false);
     if (self->actual.rotor_flux_valid == 0.0f) {
         /* Keep d-axis magnetization active for FOC startup, but do not request
@@ -334,12 +510,11 @@ uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurem
     }
     self->references.i_dq_A.d = uz_signals_saturation(self->references.i_dq_A.d, self->control_config.setpoint_limits.i_d_in_A.upper_bound, self->control_config.setpoint_limits.i_d_in_A.lower_bound);
     self->references.i_dq_A.q = uz_signals_saturation(self->references.i_dq_A.q, self->control_config.setpoint_limits.i_q_in_A.upper_bound, self->control_config.setpoint_limits.i_q_in_A.lower_bound);
-    /* Keep the PI outputs inside the linear SVM voltage range of the measured
-     * DC link. A fixed limit based on the SOR maximum can heavily overmodulate
-     * the inverter when the testbench is operated at a lower DC voltage. */
+    /* The static PI limits provide an additional SOR-derived plausibility
+     * bound. The tighter Current Control space-vector limiter below constrains
+     * the combined PI, IM-decoupling and resonant voltage and feeds its state
+     * back for integrator clamping. */
     float const voltage_limit_V = self->measurements.v_dc_V / sqrtf(3.0f);
-    uz_PI_Controller_update_limits(self->current_controller_d, voltage_limit_V, -voltage_limit_V);
-    uz_PI_Controller_update_limits(self->current_controller_q, voltage_limit_V, -voltage_limit_V);
     float vd = uz_PI_Controller_sample(self->current_controller_d, self->references.i_dq_A.d,
         self->actual.i_dq_A.d, self->voltage_vector_saturated_last);
     float vq = uz_PI_Controller_sample(self->current_controller_q, self->references.i_dq_A.q,
@@ -370,40 +545,57 @@ uz_3ph_dq_t uz_im_control_sample_dq(uz_im_control_t *self, struct uz_im_measurem
     };
     self->actual.voltage_vector_limit_V = voltage_limit_V;
     self->actual.voltage_vector_magnitude_V = hypotf(self->references.v_dq_V.d, self->references.v_dq_V.q);
-    self->actual.voltage_vector_saturated = 0.0f;
-    if (self->control_config.enable_voltage_vector_limiting
-        && (self->actual.voltage_vector_magnitude_V > voltage_limit_V)
-        && (self->actual.voltage_vector_magnitude_V > 0.0f)) {
-        float const scale = voltage_limit_V / self->actual.voltage_vector_magnitude_V;
-        self->references.v_dq_V.d *= scale;
-        self->references.v_dq_V.q *= scale;
-        self->actual.voltage_vector_saturated = 1.0f;
-    }
+    bool current_control_clamping = false;
+    self->references.v_dq_V = uz_CurrentControl_SpaceVector_Limitation(
+        self->references.v_dq_V,
+        self->measurements.v_dc_V,
+        1.0f / sqrtf(3.0f),
+        omega_s,
+        self->references.i_dq_A,
+        &current_control_clamping);
+    self->actual.voltage_vector_saturated = current_control_clamping ? 1.0f : 0.0f;
     self->voltage_vector_saturated_last = self->actual.voltage_vector_saturated != 0.0f;
+    self->previous_applied_v_abc_V = uz_transformation_3ph_dq_to_abc(
+        self->references.v_dq_V, self->actual.rotor_flux_angle_rad);
     return self->references.v_dq_V;
 }
 
 struct uz_DutyCycle_t uz_im_control_sample_duty(uz_im_control_t *self, struct uz_im_measurement_values m, float speed_ref, uz_3ph_dq_t current_ref, float u_f_ref) {
+    uz_assert_not_NULL(self);
     self->references.u_f_frequency_Hz = u_f_ref;
+    struct uz_DutyCycle_t duty = self->control_config.default_duty_cycle;
     if (self->mode == uz_im_control_mode_u_f) {
         self->measurements = m;
+        self->measurements.v_abc_V = self->previous_applied_v_abc_V;
         if (self->speed_filter != NULL) self->measurements.rotor_speed_rpm = uz_signals_IIR_Filter_sample(self->speed_filter, m.rotor_speed_rpm);
         update_observers(self);
         check_safe_operating_region(self);
-        if ((!self->enable) || (self->violation != uz_im_control_no_violation)) return self->control_config.default_duty_cycle;
-        self->references.duty_cycle = sample_u_f(self, u_f_ref);
+        if (self->enable && (self->violation == uz_im_control_no_violation)) {
+            duty = sample_u_f(self, u_f_ref);
+        }
     }
     else {
         uz_3ph_dq_t v = uz_im_control_sample_dq(self, m, speed_ref, current_ref);
-        if ((!self->enable) || (self->violation != uz_im_control_no_violation)) return self->control_config.default_duty_cycle;
-        self->references.duty_cycle = uz_Space_Vector_Modulation(v, m.v_dc_V, self->actual.rotor_flux_angle_rad);
+        if (self->enable && (self->violation == uz_im_control_no_violation)) {
+            duty = uz_Space_Vector_Modulation(v, m.v_dc_V, self->actual.rotor_flux_angle_rad);
+        }
     }
-    return self->references.duty_cycle;
+    self->references.duty_cycle = duty;
+    /* Reconstruct the average inverter pole voltages. Their common-mode
+     * component cancels in the observer's Clarke transformation. Keeping the
+     * vector here guarantees that cycle k+1 uses the voltage applied in k. */
+    self->previous_applied_v_abc_V = (uz_3ph_abc_t){
+        .a = duty.DutyCycle_A * m.v_dc_V,
+        .b = duty.DutyCycle_B * m.v_dc_V,
+        .c = duty.DutyCycle_C * m.v_dc_V,
+    };
+    return duty;
 }
 
 const struct uz_im_actual_data *uz_im_control_get_actual_data(uz_im_control_t *self) { uz_assert_not_NULL(self); return &self->actual; }
 const struct uz_im_reference_values *uz_im_control_get_reference_values(uz_im_control_t *self) { uz_assert_not_NULL(self); return &self->references; }
 const struct uz_im_measurement_values *uz_im_control_get_im_measurement_values(uz_im_control_t *self) { uz_assert_not_NULL(self); return &self->measurements; }
+const struct uz_im_observer_diagnostics_t *uz_im_control_get_observer_diagnostics(uz_im_control_t *self) { uz_assert_not_NULL(self); return &self->observer_diagnostics; }
 enum uz_im_control_safe_operating_region_violation uz_im_control_get_safe_operating_area_violation(uz_im_control_t *self) { uz_assert_not_NULL(self); return self->violation; }
 void uz_im_control_acknowledge_and_reset_error(uz_im_control_t *self) { uz_assert_not_NULL(self); self->violation = uz_im_control_no_violation; uz_im_control_reset(self); }
 

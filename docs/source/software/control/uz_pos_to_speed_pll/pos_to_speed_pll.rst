@@ -175,6 +175,8 @@ Driver references
 
 .. doxygenfunction:: uz_pos_to_speed_pll_get_omega_el_si
 
+.. doxygenfunction:: uz_pos_to_speed_pll_reset
+
 
 Literature References
 ---------------------

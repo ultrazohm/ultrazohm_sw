@@ -17,8 +17,9 @@ enum uz_im_control_mode {
 
 /** @brief Rotor-flux observer implementation used for FOC feedback. */
 enum uz_im_control_observer {
-    uz_im_control_observer_rotor_flux_model = 0,
-    uz_im_control_observer_kalman_rotor_flux_model
+    uz_im_control_observer_rotor_flux_model = 0, /**< Tustin rotor-current model using measured currents directly. */
+    uz_im_control_observer_kalman_rotor_flux_model, /**< Full four-state current and rotor-flux Kalman observer. */
+    uz_im_control_observer_filtered_rotor_flux_model /**< Two scalar current Kalman filters followed by the Tustin flux model. */
 };
 
 /** @brief Latched safe-operating-region violations. */
@@ -157,7 +158,7 @@ struct uz_im_actual_data {
     float voltage_vector_saturated;           /**< 1 if the final d/q vector was scaled. */
 };
 
-/** @brief Complete read-only diagnostics of both integrated rotor-flux observers. */
+/** @brief Complete read-only diagnostics of all integrated rotor-flux observers. */
 struct uz_im_observer_diagnostics_t {
     float state[4];                 /**< [i_alpha, i_beta, psi_r_alpha, psi_r_beta]. */
     float covariance[4][4];         /**< State-estimation covariance P. */
@@ -168,6 +169,10 @@ struct uz_im_observer_diagnostics_t {
     float deterministic_flux_beta_Vs;
     float kalman_stator_frequency_Hz;
     float deterministic_stator_frequency_Hz;
+    float simplified_current_alpha_A; /**< Scalar-Kalman filtered alpha current. */
+    float simplified_current_beta_A;  /**< Scalar-Kalman filtered beta current. */
+    float simplified_current_covariance_alpha_A2; /**< Scalar alpha-current covariance. */
+    float simplified_current_covariance_beta_A2;  /**< Scalar beta-current covariance. */
 };
 
 /** @brief Initialize one self-contained induction-machine controller. */

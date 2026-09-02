@@ -1,8 +1,8 @@
 .. _uz_IM_config:
 
-============================
+===============================
 Induction Machine Configuration
-============================
+===============================
 
 ``uz_IM_config`` contains the electrical and mechanical machine parameters
 used by :ref:`uz_im_control`. It follows the same separation as

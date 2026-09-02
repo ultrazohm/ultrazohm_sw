@@ -15,6 +15,8 @@ The module owns all persistent state required by:
 * two optional resonant current controllers for periodic d/q-current errors,
 * a Tustin-discretized rotor-current-model flux observer,
 * a four-state Kalman observer for alpha/beta current and rotor flux,
+* an optional simplified scalar current Kalman filter followed by the Tustin
+  rotor-current model,
 * scalar U/f operation with frequency ramp, voltage boost and SVM,
 * safe-operating-region checks and a latched fault state.
 
@@ -29,10 +31,9 @@ no machine-specific presets.
 Configuration and data types
 ============================
 
-.. doxygentypedef:: uz_IM_t
-
-.. doxygenstruct:: uz_IM_t
-   :members:
+The machine-data type :c:type:`uz_IM_t` and its derived-parameter helpers are
+documented once on the :ref:`uz_IM_config` page. They are not repeated here to
+avoid duplicate C-domain declarations in Sphinx.
 
 .. doxygenstruct:: uz_im_control_configuration_t
    :members:
@@ -55,8 +56,11 @@ Configuration and data types
 .. doxygenstruct:: uz_im_actual_data
    :members:
 
-.. doxygenstruct:: uz_im_observer_diagnostics_t
-   :members:
+``uz_im_observer_diagnostics_t`` contains the complete four-state estimate,
+the covariance, innovation covariance, Kalman gain, innovations, deterministic
+flux components, simplified filtered currents and their scalar covariances.
+The individual members and their interpretation are described in the observer
+and validation sections below.
 
 Operation
 =========
@@ -116,10 +120,10 @@ checked before changing to FOC.
 Observer structure
 ------------------
 
-Two observer implementations are integrated. Only the selected observer is
+Three observer implementations are integrated. Only the selected observer is
 executed; they are not evaluated in parallel. Consequently, a comparison of
-both implementations must use repeated operating points or separate runs.
-Changing the selection resets both observers and both PLLs.
+the implementations must use repeated operating points or separate runs.
+Changing the selection resets all observer states and both PLLs.
 
 .. tikz:: Rotor-flux observer paths and common post-processing
 
@@ -136,22 +140,27 @@ Changing the selection resets both observers and both PLLs.
       \node[block, below=of iabc] (vabc) {$v_{abc}[k-1]$};
       \node[block, below=of vabc] (speed) {$\omega_{r,el}[k]$};
       \node[block, right=of iabc] (clarke) {Clarke\\transformation};
-      \node[selected, above right=3mm and 18mm of clarke] (det)
-         {Tustin rotor-current\\model};
-      \node[selected, below right=3mm and 18mm of clarke] (kf)
-         {four-state discrete\\Kalman filter};
-      \node[block, right=25mm of clarke] (select) {observer\\selection};
+      \node[selected, above right=12mm and 18mm of clarke] (det)
+         {deterministic\\Tustin flux model};
+      \node[selected, right=18mm of clarke] (simple)
+         {scalar current KFs\\+ Tustin flux model};
+      \node[selected, below right=12mm and 18mm of clarke] (kf)
+         {four-state motor-model\\Kalman filter};
+      \node[block, right=32mm of simple] (select) {observer\\selection};
       \node[block, right=of select] (polar) {$\operatorname{atan2}$, norm\\and $\alpha\beta\!\rightarrow\!dq$};
       \node[block, above=of polar] (pll) {angle PLL};
       \node[block, right=of polar] (valid) {flux validation, slip,\\torque and diagnostics};
 
       \draw[->] (iabc) -- (clarke);
       \draw[->] (clarke) |- node[pos=0.65,above,signal] {$i_{\alpha\beta}$} (det);
+      \draw[->] (clarke) -- node[above,signal] {$i_{\alpha\beta}$} (simple);
       \draw[->] (clarke) |- node[pos=0.65,below,signal] {$i_{\alpha\beta}$} (kf);
       \draw[->] (vabc.east) -| node[pos=0.2,below,signal] {$v_{\alpha\beta}$} (kf.south);
       \draw[->] (speed.east) -| (det.south);
+      \draw[->] (speed.east) -| (simple.south);
       \draw[->] (speed.east) -| (kf.south);
       \draw[->] (det) -| (select);
+      \draw[->] (simple) -- (select);
       \draw[->] (kf) -| (select);
       \draw[->] (select) -- node[above,signal] {$\hat\psi_{r,\alpha\beta}$} (polar);
       \draw[->] (polar) -- (valid);
@@ -269,6 +278,120 @@ rotor-flux states are corrected indirectly through the cross-covariances in
 covariance :math:`S`; a singular or non-finite determinant is treated as an
 observer violation.
 
+Simplified current Kalman filter with rotor-flux model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``uz_im_control_observer_filtered_rotor_flux_model`` preserves the earlier,
+computationally inexpensive implementation. It is not a four-state flux
+Kalman observer. Instead, two independent scalar Kalman filters smooth the
+measured alpha/beta currents before the filtered currents enter the same
+Tustin rotor-current model used by the deterministic observer.
+
+For each current axis, the scalar update is
+
+.. math::
+
+   P_k^- = P_{k-1}+Q_iT_s,\qquad
+   K_k=\frac{P_k^-}{P_k^-+R},
+
+.. math::
+
+   \nu_k=i_k-\hat i_{k-1},\qquad
+   \hat i_k=\hat i_{k-1}+K_k\nu_k,\qquad
+   P_k=(1-K_k)P_k^-.
+
+This variant does not use stator voltage, rotor speed or machine parameters
+inside the Kalman correction. Rotor speed and machine parameters enter only
+the subsequent deterministic flux model. It therefore behaves primarily as
+an adaptive current low-pass filter. It is cheaper and less sensitive to an
+incorrect reconstructed voltage, but it cannot use the coupled motor model to
+correct the flux states and does not provide a full state covariance.
+
+The default and recommended Kalman implementation is
+``uz_im_control_observer_kalman_rotor_flux_model``. The simplified variant is
+retained for commissioning and A/B comparison. The purely deterministic
+``uz_im_control_observer_rotor_flux_model`` remains available when Kalman
+filtering is disabled.
+
+Calling ``uz_im_control_set_observer`` with a different selection clears the
+four-state estimate, both covariance representations, deterministic flux
+states, innovations, angle history and both PLLs. Runtime applications should
+switch at zero frequency or in U/f mode; switching the angle source during
+active FOC can otherwise produce an unavoidable transient even with clean
+internal resets.
+
+Runtime selection and reset behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The module API selects one of three observer values directly. A testbench GUI
+can expose this with two Boolean controls: one enables Kalman processing and a
+second chooses the Kalman implementation. The resulting mapping is:
+
+.. list-table:: Recommended two-button mapping
+   :header-rows: 1
+   :widths: 18 22 60
+
+   * - Kalman enable
+     - Simplified mode
+     - Selected observer
+   * - 0
+     - 0 or 1
+     - ``uz_im_control_observer_rotor_flux_model``
+   * - 1
+     - 0
+     - ``uz_im_control_observer_kalman_rotor_flux_model`` (default Kalman mode)
+   * - 1
+     - 1
+     - ``uz_im_control_observer_filtered_rotor_flux_model``
+
+.. tikz:: Runtime observer selection controlled by Kalman enable and mode buttons
+
+   \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+   \begin{tikzpicture}[
+      >=Latex,
+      node distance=22mm and 28mm,
+      state/.style={draw,rounded corners,align=center,minimum width=35mm,
+                    minimum height=12mm,fill=black!5},
+      active/.style={state,fill=blue!10},
+      label/.style={align=center,font=\small}]
+      \node[state] (det) {deterministic\\Tustin observer};
+      \node[active, above right=of det] (full) {full four-state\\Kalman observer};
+      \node[active, below right=of det] (simple) {scalar current KFs\\+ Tustin observer};
+
+      \draw[->,bend left=12] (det) to node[label,above left]
+         {enable Kalman\\mode = full} (full);
+      \draw[->,bend left=12] (full) to node[label,below right]
+         {disable Kalman} (det);
+      \draw[->,bend right=12] (det) to node[label,below left]
+         {enable Kalman\\mode = simplified} (simple);
+      \draw[->,bend right=12] (simple) to node[label,above right]
+         {disable Kalman} (det);
+      \draw[<->] (full) -- node[label,right] {toggle Kalman mode} (simple);
+   \end{tikzpicture}
+
+The mode button may be changed while Kalman processing is disabled; this only
+changes which Kalman implementation will be activated next. If Kalman is
+already enabled, changing the mode immediately calls
+``uz_im_control_set_observer`` and therefore performs the complete observer
+reset. Enabling Kalman also calls this function and initializes the selected
+filter from a defined zero state. Disabling it selects the deterministic
+observer and performs the same reset sequence.
+
+The reset deliberately clears
+
+* the four-state Kalman estimate and its :math:`4\times4` covariance,
+* both scalar current estimates and scalar covariances,
+* deterministic rotor-flux alpha/beta states,
+* innovations and derived observer diagnostics,
+* both angle PLLs and the previous-angle validity state.
+
+The PI controllers and the U/f frequency state are not reset merely by an
+observer selection change. A full controller reset additionally clears these
+states. Even though the observer reset is deterministic, changing observers
+inside active FOC changes the feedback angle source abruptly. Prefer switching
+at zero frequency or while U/f is active, validate ``rotor_flux_valid`` and
+only then transfer to FOC.
+
 Observer timing and applied-voltage delay
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -362,7 +485,7 @@ selection should be added rather than silently writing
 Observer outputs and derived quantities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For either observer, flux magnitude and angle are calculated from
+For every observer path, flux magnitude and angle are calculated from
 
 .. math::
 
@@ -426,11 +549,10 @@ The state transition uses the configured IM parameters and rotor electrical
 speed. Separate current and flux process-noise densities and the current
 measurement variance configure the covariance update.
 
-The alternative ``uz_im_control_observer_rotor_flux_model`` implements the
-same rotor-current model with Tustin discretization. Each observer owns a PLL
-which derives stator frequency from the estimated flux angle. Selecting a
-different observer resets both observer states and PLLs, avoiding a transient
-caused by incompatible internal states.
+The deterministic and simplified observer paths share the Tustin rotor-current
+model and its PLL. The full four-state Kalman observer owns a separate PLL.
+Selecting a different observer resets all observer states and both PLLs,
+preventing stale or mutually incompatible internal states from being reused.
 
 ``uz_im_control_get_observer_diagnostics`` provides read-only access to all
 four Kalman states, the complete covariance, innovation covariance, Kalman
@@ -536,6 +658,40 @@ SOR diagnosis in JavaScope
 state as an unsigned integer and can be added directly as a JavaScope variable.
 The first detected violation remains visible until
 ``uz_im_control_acknowledge_and_reset_error`` is called.
+
+.. tikz:: Latched safe-operating-region protection and explicit recovery
+
+   \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+   \begin{tikzpicture}[
+      >=Latex,
+      node distance=13mm and 17mm,
+      block/.style={draw,rounded corners,fill=black!5,align=center,
+                    minimum height=10mm,minimum width=29mm},
+      decision/.style={draw,diamond,aspect=2.1,fill=blue!7,align=center,
+                       inner sep=1.5pt},
+      fault/.style={block,fill=red!9}]
+      \node[block] (sample) {new measurements};
+      \node[decision,right=of sample] (limits) {inside SOR?};
+      \node[block,right=of limits] (control) {observer and\control step};
+      \node[block,right=of control] (pwm) {return calculated\duty cycles};
+      \node[fault,below=of limits] (latch) {latch first\violation code};
+      \node[fault,right=of latch] (safe) {return safe default\duty cycle};
+      \node[block,below=of latch] (reset) {acknowledge and\reset error};
+
+      \draw[->] (sample) -- (limits);
+      \draw[->] (limits) -- node[above] {yes} (control);
+      \draw[->] (control) -- (pwm);
+      \draw[->] (limits) -- node[left] {no} (latch);
+      \draw[->] (latch) -- (safe);
+      \draw[->] (safe.south) |- node[pos=0.25,right] {subsequent calls} (latch.east);
+      \draw[->] (latch) -- node[right] {explicit action} (reset);
+      \draw[->] (reset.west) -| node[pos=0.25,left] {fault cleared} (sample.south);
+   \end{tikzpicture}
+
+The SOR status is a latch, not a live comparator output. Once a violation is
+stored, subsequent calls keep returning the safe default duty cycle even if
+the measured value has returned inside its limits. Recovery therefore requires
+an explicit acknowledge/reset after the physical cause has been removed.
 
 .. list-table:: SOR status codes
    :header-rows: 1
@@ -643,6 +799,31 @@ damping, a displaced orbit an offset and a pronounced ellipse an alpha/beta
 scaling or model asymmetry. Include only the stationary part of the plateau;
 mixing ramps and holds naturally creates multiple concentric trajectories.
 
+.. tikz:: Qualitative interpretation of stationary rotor-flux XY plots
+
+   \usetikzlibrary{arrows.meta,positioning}
+   \begin{tikzpicture}[>=Latex,font=\small,
+      panel/.style={draw,rounded corners,minimum width=35mm,minimum height=31mm},
+      caption/.style={align=center,text width=35mm}]
+      \node[panel] (good) {};
+      \node[panel,right=12mm of good] (offset) {};
+      \node[panel,right=12mm of offset] (ellipse) {};
+      \node[panel,right=12mm of ellipse] (spiral) {};
+      \foreach \p in {good,offset,ellipse,spiral} {
+         \draw[->,gray] ($ (\p.center)+(-14mm,0) $) -- ($ (\p.center)+(14mm,0) $);
+         \draw[->,gray] ($ (\p.center)+(0,-12mm) $) -- ($ (\p.center)+(0,12mm) $);
+      }
+      \draw[blue,thick] (good.center) circle[radius=9mm];
+      \draw[blue,thick] ($ (offset.center)+(5mm,3mm) $) circle[radius=8mm];
+      \draw[blue,thick] (ellipse.center) ellipse[x radius=12mm,y radius=6mm];
+      \draw[blue,thick,domain=0:720,samples=120,smooth,variable=\t]
+         plot ({\t/720*1.2*cos(\t)},{\t/720*1.0*sin(\t)});
+      \node[caption,below=3mm of good] {centered orbit:\stable balanced estimate};
+      \node[caption,below=3mm of offset] {offset orbit:\current or model bias};
+      \node[caption,below=3mm of ellipse] {ellipse:\axis scaling or asymmetry};
+      \node[caption,below=3mm of spiral] {growing spiral:\observer divergence};
+   \end{tikzpicture}
+
 The flux-magnitude ripple can be summarized by
 
 .. math::
@@ -682,14 +863,12 @@ API reference
 .. doxygenfunction:: uz_im_control_set_mode
 .. doxygenfunction:: uz_im_control_enable_speed_control
 .. doxygenfunction:: uz_im_control_set_observer
-.. doxygenfunction:: uz_im_control_enable_resonant_control
 .. doxygenfunction:: uz_im_control_sample_duty
 .. doxygenfunction:: uz_im_control_sample_dq
 .. doxygenfunction:: uz_im_control_reset
 .. doxygenfunction:: uz_im_control_get_actual_data
 .. doxygenfunction:: uz_im_control_get_reference_values
 .. doxygenfunction:: uz_im_control_get_im_measurement_values
-.. doxygenfunction:: uz_im_control_get_observer_diagnostics
 .. doxygenfunction:: uz_im_control_get_safe_operating_area_violation
 .. doxygenfunction:: uz_im_control_acknowledge_and_reset_error
 .. doxygenfunction:: uz_im_control_current_control_set_Kp_id
@@ -698,10 +877,17 @@ API reference
 .. doxygenfunction:: uz_im_control_current_control_set_Ki_iq
 .. doxygenfunction:: uz_im_control_speed_control_set_Kp_speed
 .. doxygenfunction:: uz_im_control_speed_control_set_Ki_speed
-.. doxygenfunction:: uz_im_control_set_kalman_process_noise
-.. doxygenfunction:: uz_im_control_set_kalman_measurement_noise
-.. doxygenfunction:: uz_im_control_set_resonant_parameters
-.. doxygenfunction:: uz_im_control_set_minimum_observer_flux
+
+The runtime observer and resonant-control functions
+``uz_im_control_enable_resonant_control``,
+``uz_im_control_get_observer_diagnostics``,
+``uz_im_control_set_kalman_process_noise``,
+``uz_im_control_set_kalman_measurement_noise``,
+``uz_im_control_set_resonant_parameters`` and
+``uz_im_control_set_minimum_observer_flux`` are declared in
+``uz_im_control.h``. They are listed here as plain C identifiers until the
+generated Doxygen XML used by the documentation build contains these newer API
+symbols.
 
 Tests
 =====

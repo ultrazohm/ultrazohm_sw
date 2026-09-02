@@ -275,4 +275,30 @@ void test_uz_im_control_observer_selection_resets_and_runs_tustin_model(void) {
     TEST_ASSERT_TRUE(hypotf(observer->deterministic_flux_alpha_Vs,
         observer->deterministic_flux_beta_Vs) > 0.0f);
 }
+
+void test_uz_im_control_simplified_kalman_filters_current_and_resets_cleanly(void) {
+    uz_im_control_t *self = uz_im_control_init(control_config, machine_config);
+    uz_im_control_enable(self, true);
+    uz_im_control_set_observer(self, uz_im_control_observer_filtered_rotor_flux_model);
+    struct uz_im_measurement_values measurements = {
+        .v_dc_V = 100.0f,
+        .i_abc_A = {.a = 1.0f, .b = -0.5f, .c = -0.5f},
+        .rotor_speed_rpm = 300.0f,
+    };
+    uz_im_control_sample_dq(self, measurements, 0.0f, (uz_3ph_dq_t){0});
+    const struct uz_im_observer_diagnostics_t *observer = uz_im_control_get_observer_diagnostics(self);
+    TEST_ASSERT_NOT_EQUAL(0.0f, observer->simplified_current_alpha_A);
+    TEST_ASSERT_TRUE(observer->simplified_current_covariance_alpha_A2 < 1.0f);
+    TEST_ASSERT_TRUE(hypotf(observer->deterministic_flux_alpha_Vs,
+        observer->deterministic_flux_beta_Vs) > 0.0f);
+    TEST_ASSERT_TRUE(isfinite(uz_im_control_get_actual_data(self)->kalman_innovation_alpha_A));
+
+    uz_im_control_set_observer(self, uz_im_control_observer_kalman_rotor_flux_model);
+    observer = uz_im_control_get_observer_diagnostics(self);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, observer->simplified_current_alpha_A);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, observer->simplified_current_covariance_alpha_A2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->rotor_flux_magnitude_Vs);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->kalman_innovation_alpha_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_im_control_get_actual_data(self)->rotor_flux_valid);
+}
 #endif

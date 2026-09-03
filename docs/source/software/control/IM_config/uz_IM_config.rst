@@ -28,8 +28,6 @@ application-specific motor preset is included.
 API reference
 =============
 
-.. doxygentypedef:: uz_IM_t
-
 .. doxygenstruct:: uz_IM_t
    :members:
 

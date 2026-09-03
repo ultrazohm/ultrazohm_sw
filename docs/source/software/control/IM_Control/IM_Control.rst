@@ -73,7 +73,7 @@ available in both modes.
 
 .. tikz:: Signal flow of the integrated induction-machine controller
 
-   \usetikzlibrary{arrows.meta,positioning,fit,calc}
+   \usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
    \begin{tikzpicture}[
       >=Latex,
       node distance=9mm and 13mm,
@@ -672,11 +672,11 @@ The first detected violation remains visible until
       fault/.style={block,fill=red!9}]
       \node[block] (sample) {new measurements};
       \node[decision,right=of sample] (limits) {inside SOR?};
-      \node[block,right=of limits] (control) {observer and\control step};
-      \node[block,right=of control] (pwm) {return calculated\duty cycles};
-      \node[fault,below=of limits] (latch) {latch first\violation code};
-      \node[fault,right=of latch] (safe) {return safe default\duty cycle};
-      \node[block,below=of latch] (reset) {acknowledge and\reset error};
+      \node[block,right=of limits] (control) {observer and\\control step};
+      \node[block,right=of control] (pwm) {return calculated\\duty cycles};
+      \node[fault,below=of limits] (latch) {latch first\\violation code};
+      \node[fault,right=of latch] (safe) {return safe default\\duty cycle};
+      \node[block,below=of latch] (reset) {acknowledge and\\reset error};
 
       \draw[->] (sample) -- (limits);
       \draw[->] (limits) -- node[above] {yes} (control);
@@ -801,7 +801,7 @@ mixing ramps and holds naturally creates multiple concentric trajectories.
 
 .. tikz:: Qualitative interpretation of stationary rotor-flux XY plots
 
-   \usetikzlibrary{arrows.meta,positioning}
+   \usetikzlibrary{arrows.meta,positioning,calc}
    \begin{tikzpicture}[>=Latex,font=\small,
       panel/.style={draw,rounded corners,minimum width=35mm,minimum height=31mm},
       caption/.style={align=center,text width=35mm}]
@@ -818,10 +818,10 @@ mixing ramps and holds naturally creates multiple concentric trajectories.
       \draw[blue,thick] (ellipse.center) ellipse[x radius=12mm,y radius=6mm];
       \draw[blue,thick,domain=0:720,samples=120,smooth,variable=\t]
          plot ({\t/720*1.2*cos(\t)},{\t/720*1.0*sin(\t)});
-      \node[caption,below=3mm of good] {centered orbit:\stable balanced estimate};
-      \node[caption,below=3mm of offset] {offset orbit:\current or model bias};
-      \node[caption,below=3mm of ellipse] {ellipse:\axis scaling or asymmetry};
-      \node[caption,below=3mm of spiral] {growing spiral:\observer divergence};
+      \node[caption,below=3mm of good] {centered orbit:\\stable balanced estimate};
+      \node[caption,below=3mm of offset] {offset orbit:\\current or model bias};
+      \node[caption,below=3mm of ellipse] {ellipse:\\axis scaling or asymmetry};
+      \node[caption,below=3mm of spiral] {growing spiral:\\observer divergence};
    \end{tikzpicture}
 
 The flux-magnitude ripple can be summarized by

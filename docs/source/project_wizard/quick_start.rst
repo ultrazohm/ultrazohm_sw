@@ -11,13 +11,12 @@ Prerequisites
 
 Before starting, make sure that:
 
-* the UltraZohm repository is checked out locally;
-* Python is installed and available from the terminal;
-* the Project Wizard Python dependencies are installed with ``pip install -r project_wizard/requirements.txt``;
+* the UltraZohm repository ``ultrazohm_sw`` is checked out locally;
+* Python is installed and available from the terminal (tested with Python 3.12);
+* the Project Wizard Python dependencies, i.e., ``PyQT6``, are installed with ``pip install -r project_wizard/requirements.txt``;
 * Vivado and Vitis are installed for the project version used by the repository;
 * Lattice Diamond is installed if slot CPLDs should be programmed from the wizard;
-* the base Vivado project exists under ``vivado/project/``;
-* the Vitis bare-metal source folder exists under ``vitis/software/Baremetal/src/``.
+* The ``cpld_lattice`` repository is checked out locally.
 
 Start The Wizard
 ----------------
@@ -45,34 +44,73 @@ Use **File -> Open** to open an existing ``.pw.json`` file from ``project_wizard
 Save the configuration early with **File -> Save As**.
 The wizard configuration is user-owned project state and is not a generated output file.
 
+Configure Toolchain and Platform
+--------------------------------
+
+1. After starting the Project Wizard the **Toolchain** page is already open. Press the **Detect Toolchain** button to let the Project Wizard automatically check for the paths to your local Vivado/Vitis and Diamond Programmer installation. The path to the CPLD repository **cpld_lattice** has to be provided manually in any case.
+
+.. figure:: img/quickstart/toolchain.png
+   :width: 800
+   :align: center
+
+   Toolchain page of the Project Wizard
+
+2. Open **Platform** and select the platform and hardware revision. Use the displayed nameplate hint to identify the correct UltraZohm revision.
+
+.. figure:: img/quickstart/platform.png
+   :width: 800
+   :align: center
+
+   Platform page of the Project Wizard
+
 Configure Hardware
 ------------------
 
-1. Open **Platform**.
-2. Select the platform and hardware revision.
-3. Use the displayed nameplate hint to identify the correct UltraZohm revision.
-4. Open **Hardware configuration -> General**.
-5. Select the Vivado project file, usually ``vivado/project/ultrazohm.xpr``.
-6. Confirm the block-design name, usually ``zusys``.
-7. Open **PWM / Timing / Interrupts** and configure the global timing values.
-8. Open **Adapter cards** and select the installed cards for each A and D slot.
-9. For cards with additional options, configure the card detail view.
-10. Open **ADC triggers** and keep the defaults unless the application needs different trigger wiring.
+3. Open **Hardware configuration -> General**. The Vivado project file, usually ``$yourrepopath$/vivado/project/ultrazohm.xpr`` should be already set automatically. Confirm **Block design name**, usually ``zusys``.
 
-When removing a card from a slot, use **No adapter board** if wizard-owned slot content should be cleaned.
-Use **Bypass** only if the slot must remain untouched.
+.. figure:: img/quickstart/hardware_general.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> General page of the Project Wizard
+
+4. Open **PWM / Timing / Interrupts** and configure the global timing values.
+
+.. figure:: img/quickstart/pwm_timing_interrupts.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> PWM / Timing / Interrupts page of the Project Wizard
+
+5. Open **Adapter cards** and select the installed cards for each A and D slot. For cards with additional options, configure the card details view.
+
+.. figure:: img/quickstart/adapter_cards.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> Adapter Cards page of the Project Wizard
+
+6.  Open **ADC triggers** and keep the defaults unless the application needs different trigger wiring.
+
+.. figure:: img/quickstart/adc_triggers.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> ADC triggers page of the Project Wizard
 
 Generate And Apply Vivado TCL
 -----------------------------
 
-1. Open **TCL generation**.
-2. Select either **Local Vivado builds** or **Remote workstation builds**.
-3. Press **Refresh TCL preview** and inspect warnings.
-4. For local builds, optionally press **Clear local Vivado artifacts** after branch changes or stale Vivado errors.
-5. Press **Execute TCL workflow** for a local run, or **Export TCL** for execution on another workstation.
+7. Open **TCL generation**. Select either **Local Vivado builds** or **Remote workstation builds**. Press **Refresh TCL preview** and inspect warnings. 
+For local builds, optionally press **Clear local Vivado artifacts** after branch changes or stale Vivado errors. Press **Execute TCL workflow** for a local run, 
+or **Export TCL** for execution on another workstation. For a first validation, use **Validate BD** and **Save BD**. For a complete hardware build, 
+enable **Generate bitstream** and optionally **Export .xsa after successful build**.
 
-For a first validation, use **Validate BD** and **Save BD**.
-For a complete hardware build, enable **Generate bitstream** and optionally **Export .xsa after successful build**.
+.. figure:: img/quickstart/tcl_generation.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> TCL generation page of the Project Wizard
 
 Generate CPLD Programmer Files
 ------------------------------

@@ -35,6 +35,16 @@ steps:
    - cd build
    - ls
   
+ # Drone has no native includePaths condition; ci_build.sh filters push changes.
+ - name: Build javascope
+   image: ultrazohm/ultrazohm_remote_container_new:9750fb1
+   depends_on: [Vivado_build_tcl]
+   commands:
+   - bash javascope/ci_build.sh
+   when:
+     event:
+     - push
+
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container_new:2f93599
    depends_on: [ Vivado_build_tcl ]

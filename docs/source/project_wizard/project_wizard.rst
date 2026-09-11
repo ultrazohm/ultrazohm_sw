@@ -5,7 +5,7 @@ Project Wizard
 ===============
 
 The Project Wizard is a graphical configuration tool for UltraZohm Vivado and Vitis projects.
-It guides users from platform and adapter-card selection to generated Vivado TCL, CPLD programmer files, and marker-based Vitis software integration.
+It guides users from platform and adapter-card selection to generated Vivado TCL for block design changes, CPLD programmer files, and marker-based Vitis software integration.
 
 .. figure:: img/pw_startpage.png
    :width: 800

@@ -115,34 +115,62 @@ enable **Generate bitstream** and optionally **Export .xsa after successful buil
 Generate CPLD Programmer Files
 ------------------------------
 
-1. Open **Slot CPLDs**.
-2. Check that the proposed CPLD programs match the selected digital adapter cards.
-3. Generate the programmer project file.
-4. Execute it from the wizard or open it in Lattice Diamond Programmer.
+8. Open **Slot CPLDs**. Check that the proposed CPLD programs match the selected digital adapter cards.
+Generate the programmer project file. Execute Diamond Programmer Command-Line Interface (CLI) from the wizard or open the project file in Lattice Diamond Programmer. 
+Be aware that the CLI workflow is only tested with MACHXO2 CPLDs that are used from UltraZohm Rev05 and higher.
 
-For older CPLD families, the graphical Diamond Programmer workflow may be more reliable than the command-line workflow.
+.. figure:: img/quickstart/slot_cplds.png
+   :width: 800
+   :align: center
+
+   Hardware configuration -> Slot CPLDs page of the Project Wizard
 
 Configure Software
 ------------------
 
-1. Open **Software configuration -> General**.
-2. Select the source folder that contains ``globalData.h``, usually ``vitis/software/Baremetal/src``.
-3. Choose whether each slot follows the hardware selection or should generate no software driver.
-4. Open **IP core drivers setup**.
-5. Keep driver options on **Default** unless the application needs custom configuration values.
-6. Open **Data visualization**.
-7. Select signals for Javascope, slow data, or both.
+9. Open **Software configuration -> General**. Check if the source folder that contains ``globalData.h``, usually ``vitis/software/Baremetal/src``, is already selected.
+
+.. figure:: img/quickstart/sw_general.png
+   :width: 800
+   :align: center
+
+   Software configuration -> General page of the Project Wizard
+
+10. Open **Software configuration -> IP core driver setup**. Choose whether each slot follows the hardware selection or should generate no software driver. Keep Mode options on **Follow hardware selection** and Presets on **Default** unless the application needs differently.
+
+.. figure:: img/quickstart/ip_core_driver_setup.png
+   :width: 800
+   :align: center
+
+   Software configuration -> IP core driver setup page of the Project Wizard
+
+11. Open **Software configuration -> Advanced driver configuration**. Check the config parameters for each adapter card driver. Select Config mode **Custom** if you need to set specific parameters.
+
+.. figure:: img/quickstart/advanced_driver_config.png
+   :width: 800
+   :align: center
+
+   Software configuration -> Advanced driver configuration page of the Project Wizard
+
+12. Open **Software configuration -> Data visualization**. Select signals for Javascope, slow data, or both. 
+
+.. figure:: img/quickstart/data_visualization.png
+   :width: 800
+   :align: center
+
+   Software configuration -> Data visualization page of the Project Wizard
 
 Generate Software
 -----------------
 
 1. Press **Generate software files**.
-2. Confirm the warning dialog.
+2. Confirm the warning dialog if present.
 3. Inspect the software generation output.
 4. Rebuild the Vitis workspace.
 
 The Vitis workspace must match the current bitstream.
-The generated software uses base-address macros from ``xparameters.h``; stale exported hardware can therefore result in wrong software integration.
+The generated software uses base-address macros from ``xparameters.h``; stale exported bitstream can therefore result in wrong software integration.
+However, fallback base-addresses are used, that usually match wizard placed IP-Cores, if the Vitis workspace has not been updated with the recently generated bitstream. 
 
 Expected Result
 ---------------

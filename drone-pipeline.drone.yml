@@ -115,9 +115,16 @@ steps:
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream
    image: vivado:2022.2
+   # Requires the persistent helper with the MAC bound to the Vivado license.
+   network_mode: container:vivado-license-net
    depends_on: [ Vivado_validate_board_design ]
    commands:
    - ip link show
+   - |
+     if ! ip -o link show | grep -Fq 'link/ether 02:42:c0:a8:40:03 '; then
+       echo "Vivado license MAC 02:42:c0:a8:40:03 is missing from the shared network." >&2
+       exit 1
+     fi
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
    - /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl

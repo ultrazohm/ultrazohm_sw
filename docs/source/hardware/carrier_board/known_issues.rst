@@ -36,7 +36,7 @@ Ethernet PHY Reset pins (≤ Rev04)
 **Problem description**
 
 The Ethernet PHYs (one or two, dependent on the HW version) own a reset pin ``RESETn``, which should be toggled by a GPIO after power-up. Due to a design mistake, those 
-``RESETn`` pins were not connected to any GPIO. Therefore, on some UltraZohm systems the PHYs might end up in an undefined state after power-up and not reachable via Ethernet connection.
+``RESETn`` pins were not connected to any GPIO. Therefore, on some UltraZohm systems the PHYs might end up in an undefined state after power-up with the system unreachable via Ethernet connection.
 
 **Remedy**
 
